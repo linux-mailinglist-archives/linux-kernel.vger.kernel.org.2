@@ -2,121 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 017B0425173
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BFB42517C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241008AbhJGKty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:49:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39134 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241030AbhJGKtw (ORCPT
+        id S240800AbhJGKwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:52:10 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:48373 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240896AbhJGKwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:49:52 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 6E67F225E5;
-        Thu,  7 Oct 2021 10:47:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633603677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mcWJYTrnWNl9H+OH2VlIp+D8YPfOLYhVh6/tuPxFG6E=;
-        b=XLa1+jaF+yRNiuxXt1smb033r6qPpmsLlMjdHa2HtGvwNEuK5fBVKAPThwB7m1bk/Vi7dT
-        BZszrjex1rujp9HJ6R4DaGydGClIQPMBl2Dv4sFPEbaM6g9lRavt9Cywa9zVGxqqlQogRE
-        vEL107lCkhZivdYEgi/rxv64AAdFOmU=
-Received: from suse.cz (unknown [10.100.201.86])
+        Thu, 7 Oct 2021 06:52:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633603809; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
+ To: From: Sender; bh=mRlN5Ip/ZB+VIMd86+Ux36qweq4CFDscRaEK9N9zKkQ=; b=vAUgGBNXr6vBkYL6EYLswOCInrjNdsRo9NMkmpgAi/r82Dweg86w7sUjyZUSzqsBwIYqwsEm
+ 2iqrbUanEUJeOunVWdzoNHLQdenFw2lrmCoMfwnHWv5CO8WAnVRnOOBeZBfE2Tgv//CFf5bM
+ lEa6SLDQqYsaQyZjo8guj1pOUsY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 615ed0d3de4c4ed385977aad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 10:49:55
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1EDE3C43616; Thu,  7 Oct 2021 10:49:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EDCE8A3B85;
-        Thu,  7 Oct 2021 10:47:56 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 12:47:53 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm v2] vmalloc: back off when the current task is
- OOM-killed
-Message-ID: <YV7QWYO0MwHzXya7@dhcp22.suse.cz>
-References: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
- <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 24F38C4338F;
+        Thu,  7 Oct 2021 10:49:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 24F38C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org,
+        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+        <3570035.Z1gqkuQO5x@pc-42> <875yu9cjvk.fsf@codeaurora.org>
+        <2672405.M38RcEoSet@pc-42> <87zgrl86cx.fsf@codeaurora.org>
+Date:   Thu, 07 Oct 2021 13:49:47 +0300
+In-Reply-To: <87zgrl86cx.fsf@codeaurora.org> (Kalle Valo's message of "Thu, 07
+        Oct 2021 13:41:18 +0300")
+Message-ID: <87v92985ys.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-10-21 16:52:40, Vasily Averin wrote:
-> Huge vmalloc allocation on heavy loaded node can lead to a global
-> memory shortage. Task called vmalloc can have worst badness and
-> be selected by OOM-killer, however taken fatal signal does not
-> interrupt allocation cycle. Vmalloc repeat page allocaions
-> again and again, exacerbating the crisis and consuming the memory
-> freed up by another killed tasks.
-> 
-> After a successful completion of the allocation procedure, a fatal
-> signal will be processed and task will be destroyed finally.
-> However it may not release the consumed memory, since the allocated
-> object may have a lifetime unrelated to the completed task.
-> In the worst case, this can lead to the host will panic
-> due to "Out of memory and no killable processes..."
-> 
-> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> effective and avoid host panic. It does not check oom condition directly,
-> however, and breaks page allocation cycle when fatal signal was received.
+Kalle Valo <kvalo@codeaurora.org> writes:
 
-This will allow also interrupting a user space requist which happens to
-trigger a large vmalloc, hence the reason for going for
-fatal_signal_pending rather than oom specific condition.
+> J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
+>
+>>> >> >> I'm not really fond of having this kind of ASCII based parser in =
+the
+>>> >> >> kernel. Do you have an example compressed file somewhere?
+>>> >> >
+>>> >> > An example of uncompressed configuration file can be found here[1]=
+. Once
+>>> >> > compressed with [2], you get:
+>>> >> >
+>>> >> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B=
+},c:{a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f=
+:{a:4,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a=
+:4,b:0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,=
+b:0,c:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:=
+{a:6},e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0=
+,0]},{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},=
+{a:B,b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{=
+a:0,b:0}}
+>>> >>
+>>> >> So what's the grand idea with this braces format? I'm not getting it.
+>>> >
+>>> >   - It allows to describe a tree structure
+>>> >   - It is ascii (easy to dump, easy to copy-paste)
+>>> >   - It is small (as I explain below, size matters)
+>>> >   - Since it is similar to JSON, the structure is obvious to many peo=
+ple
+>>> >
+>>> > Anyway, I am not the author of that and I have to deal with it.
+>>>=20
+>>> I'm a supported for JSON like formats, flexibility and all that. But
+>>> they belong to user space, not kernel.
+>>>=20
+>>> >> Usually the drivers just consider this kind of firmware configuration
+>>> >> data as a binary blob and dump it to the firmware, without knowing w=
+hat
+>>> >> the data contains. Can't you do the same?
+>>> >
+>>> > [I didn't had received this mail :( ]
+>>> >
+>>> > The idea was also to send it as a binary blob. However, the firmware =
+use
+>>> > a limited buffer (1500 bytes) to parse it. In most of case the PDS ex=
+ceeds
+>>> > this size. So, we have to split the PDS before to send it.
+>>> >
+>>> > Unfortunately, we can't split it anywhere. The PDS is a tree structur=
+e and
+>>> > the firmware expects to receive a well formatted tree.
+>>> >
+>>> > So, the easiest way to send it to the firmware is to split the tree
+>>> > between each root nodes and send each subtree separately (see also the
+>>> > comment above wfx_send_pds()).
+>>> >
+>>> > Anyway, someone has to cook this configuration before to send it to t=
+he
+>>> > firmware. This could be done by a script outside of the kernel. Then =
+we
+>>> > could change the input format to simplify a bit the processing in the
+>>> > kernel.
+>>>=20
+>>> I think a binary file with TLV format would be much better, but I'm sure
+>>> there also other good choises.
+>>>=20
+>>> > However, the driver has already some users and I worry that changing
+>>> > the input format would lead to a mess.
+>>>=20
+>>> You can implement a script which converts the old format to the new
+>>> format. And you can use different naming scheme in the new format so
+>>> that we don't accidentally load the old format. And even better if you
+>>> add a some kind of signature in the new format and give a proper error
+>>> from the driver if it doesn't match.
+>>
+>> Ok. I am going to change the input format. I think the new function is
+>> going to look like:
+>>
+>> int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t buf_len)
+>> {
+>> 	int ret;
+>> 	int start =3D 0;
+>>
+>> 	if (buf[start] !=3D '{') {
+>> 		dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to compre=
+ss it?\n");
+>> 		return -EINVAL;
+>> 	}
+>> 	while (start < buf_len) {
+>> 		len =3D strnlen(buf + start, buf_len - start);
+>> 		if (len > WFX_PDS_MAX_SIZE) {
+>> 			dev_err(wdev->dev, "PDS chunk is too big (legacy format?)\n");
+>> 			return -EINVAL;
+>> 		}
+>> 		dev_dbg(wdev->dev, "send PDS '%s'\n", buf + start);
+>> 		ret =3D wfx_hif_configuration(wdev, buf + start, len);
+>> 		/* FIXME: Add error handling here */
+>> 		start +=3D len;
+>> 	}
+>> 	return 0;
+>
+> Did you read at all what I wrote above? Please ditch the ASCII format
+> completely.
 
-> This may trigger some hidden problems, when caller does not handle
-> vmalloc failures, or when rollaback after failed vmalloc calls own
-> vmallocs inside. However all of these scenarios are incorrect:
-> vmalloc does not guarantee successful allocation, it has never been called
-> with __GFP_NOFAIL and threfore either should not be used for any rollbacks
-> or should handle such errors correctly and not lead to critical
-> failures.
+Sorry, I read this too hastily. I just saw "buf[start] !=3D '{'" and
+assumed this is the same ASCII format, but not sure anymore. Can you
+explain what changes you made now?
 
-__GFP_NOFAIL semantic is explicitly not supported for vmalloc.
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-I would keep it sitting in the linux-next for some time to sort out
-potential fallouts and have them fixed before this one gets merged.
-
-Thanks!
-> ---
-> v2: tsk_is_oom_victim() check replaced by fatal_signal_pending(current),
->     removed check inside __alloc_pages_bulk(),
->     according to feedback from mhocko@.
->     Updated patch description.
-> ---
->  mm/vmalloc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> index d77830ff604c..71706f5447f0 100644
-> --- a/mm/vmalloc.c
-> +++ b/mm/vmalloc.c
-> @@ -2860,6 +2860,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  		struct page *page;
->  		int i;
->  
-> +		if (fatal_signal_pending(current))
-> +			break;
-> +
->  		page = alloc_pages_node(nid, gfp, order);
->  		if (unlikely(!page))
->  			break;
-> -- 
-> 2.31.1
-
--- 
-Michal Hocko
-SUSE Labs
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
