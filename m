@@ -2,331 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214EC425CD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69407425CDB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:03:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241572AbhJGUFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 16:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbhJGUFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:05:00 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E10C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 13:03:05 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id i24so28204817lfj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 13:03:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cogentembedded-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iHfwn5Mw1HIjzLjvAUYzp2UZuoIMubw7afJsID4hRF4=;
-        b=6gPe8ovz715qy+bgnvbNn2LceiWbPVtDmCs0IZNihJLAQkZ6bSU5nWkI2B1HMq2UoK
-         frewdN+w64hYefylYfZ6wmyD2kBDsL3IbMUsHzVOYbppJoQfimgEyvxBm6tEaaAWqfTI
-         u5xtWFYIVsE7XhEVY5d9rerurg9lpMaphCbCftMYELwjv2dS863s0LfbG/5lrRn0xtiB
-         yqx+oj1t+vLF8JRw8wwgxD5+kQ6kaOeFkYt5WkJZqgR5WHkz8dRixSWJuRT4/NJhL1X2
-         gTIuHMhiH1huwQScoQs3Fa61Dpt0waeAua2S55fu1I3Z9PmNtmrxaCwQEgB8peyi3Fl5
-         VTLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iHfwn5Mw1HIjzLjvAUYzp2UZuoIMubw7afJsID4hRF4=;
-        b=W2alyhMr6475rRZzY+wFQDCRewbmKHIWEcTAYHKuZBVhKxhFADK9PU1AOoyNx4jQs3
-         LdMOTCqirdNbTJPbZpMF92OhSBxJ7xN8qDblFDAV4qmQ4Ah4x2e40b+4UN/n122ry2Ph
-         7yjlR8i0fOAq73+1ysY8thFjUtO88o5IeXqoIyb8cAhdeWfE1b3wab54xY6GYw229iTw
-         jYKfeMbw+QpEpZrx+N6Oep6sCq7jvbTMvN/KKmExWhCTtb2I8ZqZxOO5S7esEiclUbNw
-         UDggXItRAsOFa4A1NIkVtvIQPJpzrvVsAu1uHPi3vtcirJOZCQwQ7tQy7lVoxTcGs3xM
-         OHrQ==
-X-Gm-Message-State: AOAM530zcpG3ZNA4+l+ChleE2fmSsik0mx3yi3Jp15sIAS2igBiFDsTI
-        gPHDWw7OShO79SSydTp/fG7d0A==
-X-Google-Smtp-Source: ABdhPJwUTdNezcC5wW4gCTIJ3haGM1K/ML/ZXF+EY/kmPq3gJBxkEj57luHb7Djq5RuRpmw1I/4B+g==
-X-Received: by 2002:a2e:9410:: with SMTP id i16mr6915894ljh.134.1633636983860;
-        Thu, 07 Oct 2021 13:03:03 -0700 (PDT)
-Received: from cobook.home (nikaet.starlink.ru. [94.141.168.29])
-        by smtp.gmail.com with ESMTPSA id y3sm28182lfh.132.2021.10.07.13.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 13:03:02 -0700 (PDT)
-From:   Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        LUU HOAI <hoai.luu.ub@renesas.com>,
-        Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
-Date:   Thu,  7 Oct 2021 23:02:50 +0300
-Message-Id: <20211007200250.20661-1-nikita.yoush@cogentembedded.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
-References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
+        id S233621AbhJGUFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 16:05:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230060AbhJGUFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 16:05:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 328D8610CC;
+        Thu,  7 Oct 2021 20:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633637036;
+        bh=tQrT1H6vAX9nQCz4/UDBS/7Ka8j9BQl8nLNXbURKSDI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Nml8N5qqjVN6g8w0QWjm28r40muERJvTDBtJlVP//mHm4s0tHUFPuxt57uMWKSCEQ
+         yMH4MD9jY75zoV+M+Q71r/nRh0VUlXT1gmXy0wsBUG5BVjlWlb+Vy6iZvIKP0c8yWU
+         rV8rKO/kskkzqUqKzNPluHfavLiBrTtaKK3CLm9BR1bgX5d2RDNl81xjt+R0fwf6sZ
+         cHw6kcBLirU68a4v8+HKgirdWl4e+HhtVjlIzQjucZu73aGzjf/djJ0w5amLvEaqwN
+         414d2CXmVLxr5XLDm5AGVPJfUvoEPcmduqXkSi2hdncHKLfXUcIBp6R6dtLtrz1e7S
+         mcpMSf7yuR4sA==
+Received: by mail-ed1-f53.google.com with SMTP id d3so128345edp.3;
+        Thu, 07 Oct 2021 13:03:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531Jn2/OA5hN6sd+cpkpUASigNTttcZzIhJD+RLj+aIWUFHsZMrO
+        sJRw9a+uSfAEMO1LJmZ/QHIQgReb6MyvCE0Jqw==
+X-Google-Smtp-Source: ABdhPJy8X406aFLvUmYkMkdUnIEqcALE1K/+nEQVAeFie0M4tlomNRuuYu3oyJV5PQ2EW4dv9srP6exyuQeR2iodti4=
+X-Received: by 2002:a17:907:7d8b:: with SMTP id oz11mr8581991ejc.84.1633637034696;
+ Thu, 07 Oct 2021 13:03:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211007000954.30621-1-zev@bewilderbeest.net> <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+ <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net> <YV7Miz9RMMx/17A0@kroah.com> <YV8VGeMreR6NJad4@hatter.bewilderbeest.net>
+In-Reply-To: <YV8VGeMreR6NJad4@hatter.bewilderbeest.net>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 7 Oct 2021 15:03:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLk-CqKVgWp3=XccHrCdQgdGoezB6=HAXMDe1Q5R4-0HA@mail.gmail.com>
+Message-ID: <CAL_JsqLk-CqKVgWp3=XccHrCdQgdGoezB6=HAXMDe1Q5R4-0HA@mail.gmail.com>
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+To:     Zev Weiss <zev@bewilderbeest.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
+On Thu, Oct 7, 2021 at 10:41 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+>
+> On Thu, Oct 07, 2021 at 03:31:39AM PDT, Greg Kroah-Hartman wrote:
+> >On Thu, Oct 07, 2021 at 02:05:41AM -0700, Zev Weiss wrote:
+> >> On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
+> >> > On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+> >> > > This patch series is in some ways kind of a v2 for the "Dynamic
+> >> > > aspeed-smc flash chips via 'reserved' DT status" series I posted
+> >> > > previously [0], but takes a fairly different approach suggested by Rob
+> >> > > Herring [1] and doesn't actually touch the aspeed-smc driver or
+> >> > > anything in the MTD subsystem, so I haven't marked it as such.
+> >> > >
+> >> > > To recap a bit of the context from that series, in OpenBMC there's a
+> >> > > need for certain devices (described by device-tree nodes) to be able
+> >> > > to be attached and detached at runtime (for example the SPI flash for
+> >> > > the host's firmware, which is shared between the BMC and the host but
+> >> > > can only be accessed by one or the other at a time).
+> >> >
+> >> > This seems quite dangerous. Why do you need that?
+> >>
+> >> Sometimes the host needs access to the flash (it's the host's firmware,
+> >> after all), sometimes the BMC needs access to it (e.g. to perform an
+> >> out-of-band update to the host's firmware).  To achieve the latter, the
+> >> flash needs to be attached to the BMC, but that requires some careful
+> >> coordination with the host to arbitrate which one actually has access to it
+> >> (that coordination is handled by userspace, which then tells the kernel
+> >> explicitly when the flash should be attached and detached).
+> >>
+> >> What seems dangerous?
+> >>
+> >> > Why can't device tree overlays be used?
+> >>
+> >> I'm hoping to stay closer to mainline.  The OpenBMC kernel has a documented
+> >> policy strongly encouraging upstream-first development:
+> >> https://github.com/openbmc/docs/blob/master/kernel-development.md
+> >>
+> >> I doubt Joel (the OpenBMC kernel maintainer) would be eager to start
+> >> carrying the DT overlay patches; I'd likewise strongly prefer to avoid
+> >> carrying them myself as additional downstream patches.  Hence the attempt at
+> >> getting a solution to the problem upstream.
+> >
+> >Then why not work to get device tree overlays to be merged properly?
 
-This adds pins, groups, and functions for MediaLB device on Renesas
-H3 and M3.
+TBC, it's 'just' the general purpose userspace interface to apply
+overlays that's missing.
 
-Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-Signed-off-by: LUU HOAI <hoai.luu.ub@renesas.com>
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
-Changes from v1:
-- move mlb_3pin from common[] to automotive[] arrays
-- fix missed array size update in pfc-r8a7796.c
+I did suggest what's done here as overlays are kind of an overkill for
+this usecase. Much easier to write to a sysfs file than write an
+overlay, compile it with dtc, and provide it to the kernel all just to
+enable a device.
 
- drivers/pinctrl/renesas/pfc-r8a77950.c | 14 ++++++++++++++
- drivers/pinctrl/renesas/pfc-r8a77951.c | 18 ++++++++++++++++--
- drivers/pinctrl/renesas/pfc-r8a7796.c  | 18 ++++++++++++++++--
- drivers/pinctrl/renesas/pfc-r8a77965.c | 18 ++++++++++++++++--
- 4 files changed, 62 insertions(+), 6 deletions(-)
+Perhaps this could also be supported in the driver model directly.
+Given the "what about ACPI question", that is probably what should be
+done unless the answer is we don't care. I think we'd just need a flag
+to create devices, but not bind automatically. Or maybe abusing
+driver_override can accomplish that.
 
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77950.c b/drivers/pinctrl/renesas/pfc-r8a77950.c
-index ee4ce9349aae..c86064900c6e 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77950.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77950.c
-@@ -2369,6 +2369,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -3987,6 +3995,7 @@ static const struct sh_pfc_pin_group pinmux_groups[] = {
- 	SH_PFC_PIN_GROUP(intc_ex_irq3),
- 	SH_PFC_PIN_GROUP(intc_ex_irq4),
- 	SH_PFC_PIN_GROUP(intc_ex_irq5),
-+	SH_PFC_PIN_GROUP(mlb_3pin),
- 	SH_PFC_PIN_GROUP(msiof0_clk),
- 	SH_PFC_PIN_GROUP(msiof0_sync),
- 	SH_PFC_PIN_GROUP(msiof0_ss1),
-@@ -4380,6 +4389,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -4709,6 +4722,7 @@ static const struct sh_pfc_function pinmux_functions[] = {
- 	SH_PFC_FUNCTION(i2c5),
- 	SH_PFC_FUNCTION(i2c6),
- 	SH_PFC_FUNCTION(intc_ex),
-+	SH_PFC_FUNCTION(mlb_3pin),
- 	SH_PFC_FUNCTION(msiof0),
- 	SH_PFC_FUNCTION(msiof1),
- 	SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77951.c b/drivers/pinctrl/renesas/pfc-r8a77951.c
-index 84c0ea5d59c1..b55c4d4156ce 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77951.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77951.c
-@@ -2453,6 +2453,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4235,7 +4243,7 @@ static const unsigned int vin5_clk_mux[] = {
- static const struct {
- 	struct sh_pfc_pin_group common[328];
- #ifdef CONFIG_PINCTRL_PFC_R8A77951
--	struct sh_pfc_pin_group automotive[30];
-+	struct sh_pfc_pin_group automotive[31];
- #endif
- } pinmux_groups = {
- 	.common = {
-@@ -4600,6 +4608,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(drif3_ctrl_b),
- 		SH_PFC_PIN_GROUP(drif3_data0_b),
- 		SH_PFC_PIN_GROUP(drif3_data1_b),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 	}
- #endif /* CONFIG_PINCTRL_PFC_R8A77951 */
- };
-@@ -4795,6 +4804,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5142,7 +5155,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[55];
-+	struct sh_pfc_function common[56];
- #ifdef CONFIG_PINCTRL_PFC_R8A77951
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5168,6 +5181,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a7796.c b/drivers/pinctrl/renesas/pfc-r8a7796.c
-index a4d74df3d201..14c437c3b6f5 100644
---- a/drivers/pinctrl/renesas/pfc-r8a7796.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a7796.c
-@@ -2458,6 +2458,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4210,7 +4218,7 @@ static const unsigned int vin5_clk_mux[] = {
- static const struct {
- 	struct sh_pfc_pin_group common[324];
- #if defined(CONFIG_PINCTRL_PFC_R8A77960) || defined(CONFIG_PINCTRL_PFC_R8A77961)
--	struct sh_pfc_pin_group automotive[30];
-+	struct sh_pfc_pin_group automotive[31];
- #endif
- } pinmux_groups = {
- 	.common = {
-@@ -4571,6 +4579,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(drif3_ctrl_b),
- 		SH_PFC_PIN_GROUP(drif3_data0_b),
- 		SH_PFC_PIN_GROUP(drif3_data1_b),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 	}
- #endif /* CONFIG_PINCTRL_PFC_R8A77960 || CONFIG_PINCTRL_PFC_R8A77961 */
- };
-@@ -4766,6 +4775,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5100,7 +5113,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[52];
-+	struct sh_pfc_function common[53];
- #if defined(CONFIG_PINCTRL_PFC_R8A77960) || defined(CONFIG_PINCTRL_PFC_R8A77961)
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5126,6 +5139,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
-diff --git a/drivers/pinctrl/renesas/pfc-r8a77965.c b/drivers/pinctrl/renesas/pfc-r8a77965.c
-index a7607a679886..b6adef9e8761 100644
---- a/drivers/pinctrl/renesas/pfc-r8a77965.c
-+++ b/drivers/pinctrl/renesas/pfc-r8a77965.c
-@@ -2609,6 +2609,14 @@ static const unsigned int intc_ex_irq5_mux[] = {
- 	IRQ5_MARK,
- };
- 
-+/* - MLB+ ------------------------------------------------------------------- */
-+static const unsigned int mlb_3pin_pins[] = {
-+	RCAR_GP_PIN(5, 23), RCAR_GP_PIN(5, 24), RCAR_GP_PIN(5, 25),
-+};
-+static const unsigned int mlb_3pin_mux[] = {
-+	MLB_CLK_MARK, MLB_SIG_MARK, MLB_DAT_MARK,
-+};
-+
- /* - MSIOF0 ----------------------------------------------------------------- */
- static const unsigned int msiof0_clk_pins[] = {
- 	/* SCK */
-@@ -4460,7 +4468,7 @@ static const unsigned int vin5_clk_mux[] = {
- static const struct {
- 	struct sh_pfc_pin_group common[326];
- #ifdef CONFIG_PINCTRL_PFC_R8A77965
--	struct sh_pfc_pin_group automotive[30];
-+	struct sh_pfc_pin_group automotive[31];
- #endif
- } pinmux_groups = {
- 	.common = {
-@@ -4823,6 +4831,7 @@ static const struct {
- 		SH_PFC_PIN_GROUP(drif3_ctrl_b),
- 		SH_PFC_PIN_GROUP(drif3_data0_b),
- 		SH_PFC_PIN_GROUP(drif3_data1_b),
-+		SH_PFC_PIN_GROUP(mlb_3pin),
- 	}
- #endif /* CONFIG_PINCTRL_PFC_R8A77965 */
- };
-@@ -5018,6 +5027,10 @@ static const char * const intc_ex_groups[] = {
- 	"intc_ex_irq5",
- };
- 
-+static const char * const mlb_3pin_groups[] = {
-+	"mlb_3pin",
-+};
-+
- static const char * const msiof0_groups[] = {
- 	"msiof0_clk",
- 	"msiof0_sync",
-@@ -5356,7 +5369,7 @@ static const char * const vin5_groups[] = {
- };
- 
- static const struct {
--	struct sh_pfc_function common[53];
-+	struct sh_pfc_function common[54];
- #ifdef CONFIG_PINCTRL_PFC_R8A77965
- 	struct sh_pfc_function automotive[4];
- #endif
-@@ -5382,6 +5395,7 @@ static const struct {
- 		SH_PFC_FUNCTION(i2c5),
- 		SH_PFC_FUNCTION(i2c6),
- 		SH_PFC_FUNCTION(intc_ex),
-+		SH_PFC_FUNCTION(mlb_3pin),
- 		SH_PFC_FUNCTION(msiof0),
- 		SH_PFC_FUNCTION(msiof1),
- 		SH_PFC_FUNCTION(msiof2),
--- 
-2.30.2
+> >Don't work on a half-of-a-solution when the real solution is already
+> >here.
+> >
+>
+> I had been under the impression that the overlay patches had very dim
+> prospects of ever being accepted and that this might be a more tractable
+> alternative, but apparently was mistaken -- I'll look into what the
+> outstanding issues were with that and perhaps take a stab at addressing
+> them.
 
+What's dim is the patches allowing any modification to any part of the
+DT. Any changes to a DT need to work (i.e. have some effect). For
+example, randomly changing/adding/removing properties wouldn't have
+any effect because they've probably already be read and used.
+
+What I've suggested before is some sort of registration of nodes
+allowed to apply child nodes and properties to. That would serve the
+add-on board usecases which have been the main driver of this to date.
+That also got hung up on defining interface nodes to add-on boards.
+Your scope is more limited and can be limited to that scope while
+using the same configfs interface.
+
+Rob
