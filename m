@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8966F425370
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232AC425374
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240556AbhJGMxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:53:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233158AbhJGMxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:53:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1183560FD9;
-        Thu,  7 Oct 2021 12:51:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633611068;
-        bh=hGb1JlSq3PyDNYIwuBLjqtVcvfwVEJsqNcLLoxwPxrA=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=JQlRXG6uQElZuNBU25HjOW2Z50lvgIaIFzqH99ISbjZ5ul3yX1dvICAyukffAbirD
-         lpNyGolcbqpZx+B9GYw1ZVFPPQe96WlxX6676eMc3ckSPcGTOJ9Gm/L2BrZzuCnbGo
-         NRJY5hvH18zGgGBvXPR8hWAgLAp55z1CkMyeFEBvgkNmYNcC6UDl/BikQ16ngjnN1p
-         udPsi2QFDIzAQ/Aafy50txU+4l7BuqBfOWoj4S9tgycrCxHW/QI6NS7uFHQxY/4/Lx
-         2tB2dBRPhPugwOgEkl6r1SMgOduKZXmmbdUpbFkeV0i/kL2QVd8NoQBmt3a0ceYwkj
-         kUZ8xgKRMVBhg==
-Received: by mail-ot1-f42.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so7327637otq.7;
-        Thu, 07 Oct 2021 05:51:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532CMfuLo71tXHsAGnXEAbPlB8vR9TTVJaMuBffD7FuACxyB8rxo
-        C5+Qr3OBHg8mGN4lXTox3w1oLucEdbJZPA1Sx7A=
-X-Google-Smtp-Source: ABdhPJysCr3QF8C/JF361ORGGTB9ixnldGaFIvfP0+9SIYfPx+0S7pLuGcrcyoeRLUI1m7x4UFkPwcN4/Kt196fqhaQ=
-X-Received: by 2002:a05:6830:1147:: with SMTP id x7mr3435144otq.18.1633611067465;
- Thu, 07 Oct 2021 05:51:07 -0700 (PDT)
+        id S240676AbhJGMxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:53:47 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:46785 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232166AbhJGMxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:53:46 -0400
+Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M3DBd-1mVQTK2aEf-003dgE; Thu, 07 Oct 2021 14:51:51 +0200
+Received: by mail-wr1-f52.google.com with SMTP id v25so18730657wra.2;
+        Thu, 07 Oct 2021 05:51:51 -0700 (PDT)
+X-Gm-Message-State: AOAM531sDq++uOQUXoXGc8bWyn+Zbwp+Jvi+iUbk2curmoLadenEuEAZ
+        xOYwvTldW3FdUZykS9oUifknApofcXGu92SbyeQ=
+X-Google-Smtp-Source: ABdhPJwv+l/CSOosTq8f+t6BW8AyR/xkVWW8CL/ivITsueRIFGBny/+Bu+Rd/xm6OVcd3RpGweAFgtMqaVkf5mzVlu8=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr5045788wrb.336.1633611111268;
+ Thu, 07 Oct 2021 05:51:51 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac9:31e7:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 05:51:06 -0700 (PDT)
-In-Reply-To: <CAKYAXd_aOawm4MkBtkTxnLfeEk+F5VgrJHjyH8GSaeHjQbLtGQ@mail.gmail.com>
-References: <20211007114716.13123-1-colin.king@canonical.com> <CAKYAXd_aOawm4MkBtkTxnLfeEk+F5VgrJHjyH8GSaeHjQbLtGQ@mail.gmail.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Thu, 7 Oct 2021 21:51:06 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd9Mm_X_xhhB5ivk-n7zYySzxKSGkp5VYiaMRMo2GH_5zA@mail.gmail.com>
-Message-ID: <CAKYAXd9Mm_X_xhhB5ivk-n7zYySzxKSGkp5VYiaMRMo2GH_5zA@mail.gmail.com>
-Subject: Re: [PATCH][next] cifsd: Fix a less than zero comparison with the
- unsigned int nbytes
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-cifs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20211007123147.5780-1-rpalethorpe@suse.com>
+In-Reply-To: <20211007123147.5780-1-rpalethorpe@suse.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 7 Oct 2021 14:51:34 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3ctLB=0-E18xqBQAF8LiiE345rnwG0ZKBTt1W9qKC0bg@mail.gmail.com>
+Message-ID: <CAK8P3a3ctLB=0-E18xqBQAF8LiiE345rnwG0ZKBTt1W9qKC0bg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] vsock: Refactor vsock_*_getsockopt to resemble sock_getsockopt
+To:     Richard Palethorpe <rpalethorpe@suse.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Palethorpe <rpalethorpe@richiejp.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:D2S/l2x1wMKaseE4m/80bf4ZZ4PkKOQfgPZjO3SOvtCE2rVhB7n
+ 0Q2r+XZKdUXQ4z2uGFtNE6CT5lySaL+omivmJuhD+iurnZzAKvt6h5jJ5CbHRQz6RELX6EM
+ iZT9yCWdDR+tQH8D5at4N+ewlQ6HOiO5swCbmlAnk4l8M+a+MVaL59DzWCo+mU0JpbAYtxp
+ fRyhJ2GpDaPfJPlbyxZbA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VQubckiNZmg=:nXAB3n5VDNHcOGbUjqyVIK
+ xqWVfPHxB/HPq6GgWhFlSV1/ZuURL93eS10GCANrDTIab+GdCKlzOuuqo5OHDeE1RdCxCkW+H
+ jbLeaWuL+jxtKsHrgD4e85HkMkmkcZadzlIOBLEJxxg3D9wV3RA8PsCfmfR//HfGITTxR1/QI
+ FAjFr+vdOWAhmyBfZfqhYB9A0K4j3BYTo2Bt5zZZpDzdVi7Rz1IBqFmJwlczT4H8Icr/pE7GP
+ rwcARj+ZVRm3IiYvHqdoqzmz5gpRXU+nM/H+fNIowISd3EEl3oAsCD66iGvYYszfFKrN5zBCa
+ xYngTmbQljVxJfiph6draSAjrbjrvV+9678qJIFGXnwzdAUyOYEhX2Ed4FAnFetO0972weO1W
+ nEz5ijSi4i6Wl6ryIjV+eyyeM269cc4gPaqZOErqvH4xImpaGZrSqGt+Tg4PnxNs/e2eP1jM1
+ 59hr5gi1qq0DjIBkfIm+WiSRB/1ombN8aoz2GSBTHpzuZJfhhCD+0ygLiCeSRil29fXVFHVnO
+ D8lespEaZzbUSu+BRBhz6GjLJlBVFktpK02hV268PJRi7qUnW/bLI0Ex7bBm2X5rRUcDqXsj0
+ G4zAnxZliOOCB3XqPBP3CVJyefaUscl6ml3uZZ4lZ68V+zq/WWBESLF1QhHb72KlVkYlp3NS8
+ AYPz0sZTn1EcTn2ZzSh8XADCE9awteVxGdjfItW66kJzzXeBWI94EF9QlP+zHFHZFVAFFPsbr
+ RKAp9OFFs2eFSGLVC56SPIMFdL/Id5kMa++WsA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-10-07 21:37 GMT+09:00, Namjae Jeon <linkinjeon@kernel.org>:
-> 2021-10-07 20:47 GMT+09:00, Colin King <colin.king@canonical.com>:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Currently the check for nbytes < 0 is always false because nbytes
->> is an unsigned int and can never be less than zero.  Fix this by
->> using ret for the assignment and comparison and assigning nbytes
->> to ret later if the check is successful. The fix also passes the
->> error return in ret to the error handling path that caters for
->> various values of ret.
->>
->> Addresses-Coverity: ("Unsigned compared against 0")
->> Fixes: e2f34481b24d ("cifsd: add server-side procedures for SMB3")
-> I think that this alarm is caused by 	b66732021c64 (ksmbd: add
-> validation in smb2_ioctl).
-> Fixes tag may be not needed. Because b66732021c64 patch is not applied
-> to Linus' tree yet ?
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Acked-by: Namjae Jeon <linkinjeon@kernel.org>
-
-I found one issue in this patch.
-if ret is -EINVAL, Status is changed to STATUS_INVALID_PARAMETER from
-STATUS_BUFFER_TOO_SMALL.
-
-static int fsctl_query_iface_info_ioctl(struct ksmbd_conn *conn,
-                                        struct smb2_ioctl_rsp *rsp,
-                                        unsigned int out_buf_len)
-...
-        if (!nbytes) {
-                rsp->hdr.Status = STATUS_BUFFER_TOO_SMALL;
-                return -EINVAL;
-        }
-
+On Thu, Oct 7, 2021 at 2:33 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
 >
-> Thanks!
+> In preparation for sharing the implementation of sock_get_timeout.
 >
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+
+Looks good to me, both as a standalone cleanup and as a preparation for patch 2.
+
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
