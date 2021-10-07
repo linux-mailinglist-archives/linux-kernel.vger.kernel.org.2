@@ -2,236 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC7142562B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18AB425650
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242370AbhJGPLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242315AbhJGPLh (ORCPT
+        id S242331AbhJGPON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:14:13 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:53441 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242271AbhJGPOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:11:37 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822E8C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:09:43 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so7937550otj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:09:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FYo7EHL9Mnnw2Pbk+sbyOdAsnHyB2q2PGgm3gbch2Zs=;
-        b=GSAPPny7p8tF7CCsB6kbvbd2ym7QhbkVo/wy5rOviFww/h4f1kDF4kIISUlaHF4W2G
-         xzLmY5ZtE9Hnc6Q7o/Z24Ql/OFV7QnoMHyk/XUqsHdtdq0kwCk+hoYECOZ1aaSVZ+rdT
-         EugahHFFl4QD/SPU9buzW2KTceq7iMOLgDD1p3TSlj8GQJgOsujSTkmwnjK1EkPCLAao
-         k+x1UzWJjbtpezKU+yLgx3t66xaNGBZpKsOYi4+sTmNROrmzuIjsGQUMttff3wKTfExp
-         Wcxre0Qtba9lOpqWQTrjyjfo2V1bogeZRk1B8p20vKti4yIX+ONu+JHz+gNGX+CF7ekG
-         URlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FYo7EHL9Mnnw2Pbk+sbyOdAsnHyB2q2PGgm3gbch2Zs=;
-        b=rlDN2Kqm6BsorsGm1cFYMQU2MMYd/g6ux7bGtKxNQpAUW23mYjWHwPfdkGl0CZo2Bu
-         Xh+8xKDlo2Lo/JwtRwOUH2ndASn0jcBlpXAYAF0aOa575RE1kdspOb90HOik8/YNS1Wr
-         ego1WrCj9dAU71XUuJHjl5GX1UZGLBja36AdKlfXlZSdpwZTdY2wbXsGd3RpolrzS06x
-         Dt5EGHFFu9qReQ5gbBcsU/juNAnYW3aaGj5qjP9srXCCFyvE9tJy8bEJXaEl/7xFXbmI
-         PlCBYs345N4taQIJRbkET4i/uydtZj+mrDJTVDNZVZySzqW5EELS5Msg8pJZ3PeNvLNH
-         akQQ==
-X-Gm-Message-State: AOAM530bTS7QQeNscvX6wCaCOKa8CpTXjkBiyGIjh0U/L5FpTgMT0M1m
-        NkAVA0SGfghPa45bfFR7Ep3//w==
-X-Google-Smtp-Source: ABdhPJwfQ6v0FMSxUb9rF8iRJwwenr7bymU5Cb6SGJlz3nh/XOmbJu6ChIlLPj1/n+hssOFvTFsJPg==
-X-Received: by 2002:a05:6830:1ae3:: with SMTP id c3mr2025514otd.185.1633619382749;
-        Thu, 07 Oct 2021 08:09:42 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id j10sm4623946oog.39.2021.10.07.08.09.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 08:09:42 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 08:11:22 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] clk: qcom: gdsc: enable optional power domain
- support
-Message-ID: <YV8OGqMMEUu4mZLu@ripper>
-References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
- <20210829154757.784699-6-dmitry.baryshkov@linaro.org>
+        Thu, 7 Oct 2021 11:14:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633619537; x=1665155537;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=D70JVxMfSfmVMdTOKpBTDmpFGOLkWX+Th0+hTLH1Meo=;
+  b=W6qfQIpULaAe05p98Z+6jKLk/GeoS4e8gPiGmRXxAZGFAE66wCqEGQ2j
+   wIQFnCL8bTLDGfpnplcqnwvn93pghX4HPiJhc4C2zhlA0j27VshIdSBx7
+   orUTsrp5Epdk6EPKM6ksQV3G1oc+wZtYvI9c7CgCyV5KWqJ3r73Jwxd78
+   QNBp6rKA4y7xSHuWu4KlKm2ZmGd4J4oMFru/xyF41ABV98ZU0R0OitnID
+   zHLde7WDnpFRJDg0fIjo56jfDv7HbeWsNEeCQkqDkthtWmvStiYFM7w4t
+   2PdrpeJ4Wp5IyicmSh+3gfXC/NXTe62KmpXS6ub40f1m/pqEHmbWe7A+a
+   g==;
+IronPort-SDR: mTP/yqyaYfZ9eqHtC9SHbyzQCzK+gLn7k6Ho+GqkN24RYnnplvSKR9kx4QH6S4ysAxTUskxJh3
+ SYcicyUCzEry0WA2DISoc10dv5etfazlYDUvsBMKDFYxny1OzVJBwFGMu1TaIfrKpZZm6otyc7
+ Ak2nFeypUOBb3blCX7UKygHQlSOWwCzIb1oZ/EapH2IC7Z90LDjmRjjUBz/8qbjTOV7+/FzLWX
+ dA30U0X0y3rL3iVxFjR5Wkt/rAK4Kanq3ubukrcyW1UEL3AzdvJlMZtziDJFpjb0ogp2NqASc3
+ 58Bm+X4WfWUqSojKoki3dItu
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="72033694"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 08:12:12 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 7 Oct 2021 08:12:12 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Thu, 7 Oct 2021 08:12:04 -0700
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
+        <robh+dt@kernel.org>
+CC:     <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Subject: [PATCH v4 net-next 00/10] net: dsa: microchip: DSA driver support for LAN937x switch
+Date:   Thu, 7 Oct 2021 20:41:50 +0530
+Message-ID: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210829154757.784699-6-dmitry.baryshkov@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
+LAN937x is a Multi-Port 100BASE-T1 Ethernet Physical Layer switch  
+compliant with the IEEE 802.3bw-2015 specification. The device  
+provides 100 Mbit/s transmit and receive capability over a single 
+Unshielded Twisted Pair (UTP) cable. LAN937x is successive revision 
+of KSZ series switch. This series of patches provide the DSA driver  
+support for Microchip LAN937X switch and it configures through  
+SPI interface. 
 
-> On sm8250 dispcc and videocc registers are powered up by the MMCX power
-> domain. Currently we use a regulator to enable this domain on demand,
-> however this has some consequences, as genpd code is not reentrant.
-> 
-> Make gdsc code also use pm_runtime calls to ensure that registers are
-> accessible during the gdsc_enable/gdsc_disable operations.
-> 
+This driver shares some of the functions from KSZ common 
+layer. 
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+The LAN937x switch series family consists of following SKUs: 
 
-Regards,
-Bjorn
+LAN9370: 
+  - 4 T1 Phys 
+  - 1 RGMII port 
 
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
->  drivers/clk/qcom/gdsc.c | 51 ++++++++++++++++++++++++++++++++++++++---
->  drivers/clk/qcom/gdsc.h |  2 ++
->  2 files changed, 50 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/gdsc.c b/drivers/clk/qcom/gdsc.c
-> index 4ece326ea233..7e1dd8ccfa38 100644
-> --- a/drivers/clk/qcom/gdsc.c
-> +++ b/drivers/clk/qcom/gdsc.c
-> @@ -11,6 +11,7 @@
->  #include <linux/kernel.h>
->  #include <linux/ktime.h>
->  #include <linux/pm_domain.h>
-> +#include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
->  #include <linux/regulator/consumer.h>
->  #include <linux/reset-controller.h>
-> @@ -50,6 +51,22 @@ enum gdsc_status {
->  	GDSC_ON
->  };
->  
-> +static int gdsc_pm_runtime_get(struct gdsc *sc)
-> +{
-> +	if (!sc->dev)
-> +		return 0;
-> +
-> +	return pm_runtime_resume_and_get(sc->dev);
-> +}
-> +
-> +static int gdsc_pm_runtime_put(struct gdsc *sc)
-> +{
-> +	if (!sc->dev)
-> +		return 0;
-> +
-> +	return pm_runtime_put_sync(sc->dev);
-> +}
-> +
->  /* Returns 1 if GDSC status is status, 0 if not, and < 0 on error */
->  static int gdsc_check_status(struct gdsc *sc, enum gdsc_status status)
->  {
-> @@ -232,9 +249,8 @@ static void gdsc_retain_ff_on(struct gdsc *sc)
->  	regmap_update_bits(sc->regmap, sc->gdscr, mask, mask);
->  }
->  
-> -static int gdsc_enable(struct generic_pm_domain *domain)
-> +static int _gdsc_enable(struct gdsc *sc)
->  {
-> -	struct gdsc *sc = domain_to_gdsc(domain);
->  	int ret;
->  
->  	if (sc->pwrsts == PWRSTS_ON)
-> @@ -290,11 +306,22 @@ static int gdsc_enable(struct generic_pm_domain *domain)
->  	return 0;
->  }
->  
-> -static int gdsc_disable(struct generic_pm_domain *domain)
-> +static int gdsc_enable(struct generic_pm_domain *domain)
->  {
->  	struct gdsc *sc = domain_to_gdsc(domain);
->  	int ret;
->  
-> +	ret = gdsc_pm_runtime_get(sc);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return _gdsc_enable(sc);
-> +}
-> +
-> +static int _gdsc_disable(struct gdsc *sc)
-> +{
-> +	int ret;
-> +
->  	if (sc->pwrsts == PWRSTS_ON)
->  		return gdsc_assert_reset(sc);
->  
-> @@ -329,6 +356,18 @@ static int gdsc_disable(struct generic_pm_domain *domain)
->  	return 0;
->  }
->  
-> +static int gdsc_disable(struct generic_pm_domain *domain)
-> +{
-> +	struct gdsc *sc = domain_to_gdsc(domain);
-> +	int ret;
-> +
-> +	ret = _gdsc_disable(sc);
-> +
-> +	gdsc_pm_runtime_put(sc);
-> +
-> +	return ret;
-> +}
-> +
->  static int gdsc_init(struct gdsc *sc)
->  {
->  	u32 mask, val;
-> @@ -443,6 +482,8 @@ int gdsc_register(struct gdsc_desc *desc,
->  	for (i = 0; i < num; i++) {
->  		if (!scs[i])
->  			continue;
-> +		if (pm_runtime_enabled(dev))
-> +			scs[i]->dev = dev;
->  		scs[i]->regmap = regmap;
->  		scs[i]->rcdev = rcdev;
->  		ret = gdsc_init(scs[i]);
-> @@ -457,6 +498,8 @@ int gdsc_register(struct gdsc_desc *desc,
->  			continue;
->  		if (scs[i]->parent)
->  			pm_genpd_add_subdomain(scs[i]->parent, &scs[i]->pd);
-> +		else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> +			pm_genpd_add_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
->  	}
->  
->  	return of_genpd_add_provider_onecell(dev->of_node, data);
-> @@ -475,6 +518,8 @@ void gdsc_unregister(struct gdsc_desc *desc)
->  			continue;
->  		if (scs[i]->parent)
->  			pm_genpd_remove_subdomain(scs[i]->parent, &scs[i]->pd);
-> +		else if (!IS_ERR_OR_NULL(dev->pm_domain))
-> +			pm_genpd_remove_subdomain(pd_to_genpd(dev->pm_domain), &scs[i]->pd);
->  	}
->  	of_genpd_del_provider(dev->of_node);
->  }
-> diff --git a/drivers/clk/qcom/gdsc.h b/drivers/clk/qcom/gdsc.h
-> index 5bb396b344d1..702d47a87af6 100644
-> --- a/drivers/clk/qcom/gdsc.h
-> +++ b/drivers/clk/qcom/gdsc.h
-> @@ -25,6 +25,7 @@ struct reset_controller_dev;
->   * @resets: ids of resets associated with this gdsc
->   * @reset_count: number of @resets
->   * @rcdev: reset controller
-> + * @dev: the device holding the GDSC, used for pm_runtime calls
->   */
->  struct gdsc {
->  	struct generic_pm_domain	pd;
-> @@ -58,6 +59,7 @@ struct gdsc {
->  
->  	const char 			*supply;
->  	struct regulator		*rsupply;
-> +	struct device 			*dev;
->  };
->  
->  struct gdsc_desc {
-> -- 
-> 2.33.0
-> 
+LAN9371: 
+  - 3 T1 Phys & 1 TX Phy 
+  - 2 RGMII ports 
+
+LAN9372: 
+  - 5 T1 Phys & 1 TX Phy 
+  - 2 RGMII ports 
+
+LAN9373: 
+  - 5 T1 Phys 
+  - 2 RGMII & 1 SGMII port 
+
+LAN9374: 
+  - 6 T1 Phys 
+  - 2 RGMII ports 
+
+More support will be added at a later stage.
+
+Changes in v4:
+- tag_ksz.c: cpu_to_be16 to  put_unaligned_be16
+- correct spacing in comments
+- tag_ksz.c: NETIF_F_HW_CSUM fix is integrated 
+- lan937x_dev.c: mdio_np is removed from global and handled locally
+- lan937x_dev.c: unused functions removed lan937x_cfg32 & lan937x_port_cfg32
+- lan937x_dev.c: lan937x_is_internal_100BTX_phy_port function name changes
+- lan937x_dev.c: RGMII internal delay handling for MAC. Delay values are
+  retrieved from DTS and updated
+- lan937x_dev.c: corrected mutex operations for few dev variables
+- microchip,lan937x.yaml: introduced rx-internal-delay-ps & 
+  tx-internal-delay-ps for RGMII internal delay
+- lan937x_dev.c: Unnecessary mutex_lock has been removed
+- lan937x_main.c: PHY_INTERFACE_MODE_NA handling for lan937x_phylink_validate
+- lan937x_main.c: PORT_MIRROR_SNIFFER check in right place
+- lan937x_main.c: memset is used instead of writing 0's individually in 
+  lan937x_port_fdb_add function
+- lan937x_main.c: Removed \n from NL_SET_ERR_MSG_MOD calls
+
+Changes in v3: 
+- Removed settings of cnt_ptr to zero and the memset() 
+  added a cleanup patch which moves this into ksz_init_mib_timer().
+- Used ret everywhere instead of rc
+- microchip,lan937x.yaml: Remove mdio compatible
+- microchip_t1.c: Renaming standard phy registers
+- tag_ksz.c: LAN937X_TAIL_TAG_OVERRIDE renaming 
+  LAN937X_TAIL_TAG_BLOCKING_OVERRIDE
+- tag_ksz.c: Changed Ingress and Egress naming convention based on 
+  Host
+- tag_ksz.c: converted to skb_mac_header(skb) from 
+  (is_link_local_ether_addr(hdr->h_dest))
+- lan937x_dev.c: Removed BCAST Storm protection settings since we
+  have Tc commands for them
+- lan937x_dev.c: Flow control setting in lan937x_port_setup function
+- lan937x_dev.c: RGMII internal delay added only for cpu port, 
+- lan937x_dev.c: of_get_compatible_child(node, 
+  "microchip,lan937x-mdio") to of_get_child_by_name(node, "mdio");
+- lan937x_dev.c:lan937x_get_interface API: returned 
+  PHY_INTERFACE_MODE_INTERNAL instead of PHY_INTERFACE_MODE_NA
+- lan937x_main.c: Removed compat interface implementation in 
+  lan937x_config_cpu_port() API & dev_info corrected as well
+- lan937x_main.c: deleted ds->configure_vlan_while_not_filtering 
+  = true
+- lan937x_main.c: Added explanation for lan937x_setup lines
+- lan937x_main.c: FR_MAX_SIZE correction in lan937x_get_max_mtu API 
+- lan937x_main.c: removed lan937x_port_bridge_flags dummy functions
+- lan937x_spi.c - mdiobus_unregister to be added to spi_remove 
+  function
+- lan937x_main.c: phy link layer changes  
+- lan937x_main.c: port mirroring: sniff port selection limiting to
+  one port
+- lan937x_main.c: Changed to global vlan filtering
+- lan937x_main.c: vlan_table array to structure
+- lan937x_main.c -Use extack instead of reporting errors to Console
+- lan937x_main.c - Remove cpu_port addition in vlan_add api
+- lan937x_main.c - removed pvid resetting
+
+Changes in v2:
+- return check for register read/writes
+- dt compatible compatible check is added against chip id value 
+- lan937x_internal_t1_tx_phy_write() is renamed to 
+  lan937x_internal_phy_write()
+- lan937x_is_internal_tx_phy_port is renamed to 
+  lan937x_is_internal_100BTX_phy_port as it is 100Base-Tx phy
+- Return value for lan937x_internal_phy_write() is -EOPNOTSUPP 
+  in case of failures 
+- Return value for lan937x_internal_phy_read() is 0xffff 
+  for non existent phy 
+- cpu_port checking is removed from lan937x_port_stp_state_set()
+- lan937x_phy_link_validate: 100baseT_Full to 100baseT1_Full
+- T1 Phy driver is moved to drivers/net/phy/microchip_t1.c 
+- Tx phy driver support will be added later 
+- Legacy switch checkings in dts file are removed.
+- tag_ksz.c: Re-used ksz9477_rcv for lan937x_rcv 
+- tag_ksz.c: Xmit() & rcv() Comments are corrected w.r.to host
+- net/dsa/Kconfig: Family skew numbers altered in ascending order
+- microchip,lan937x.yaml: eth is replaced with ethernet
+- microchip,lan937x.yaml: spi1 is replaced with spi 
+- microchip,lan937x.yaml: cpu labelling is removed 
+- microchip,lan937x.yaml: port@x value will match the reg value now
+
+Prasanna Vengateshan (10):
+  dt-bindings: net: dsa: dt bindings for microchip lan937x
+  net: dsa: move mib->cnt_ptr reset code to ksz_common.c
+  net: phy: Add support for LAN937x T1 phy driver
+  net: dsa: tag_ksz: add tag handling for Microchip LAN937x
+  net: dsa: microchip: add DSA support for microchip lan937x
+  net: dsa: microchip: add support for phylink management
+  net: dsa: microchip: add support for ethtool port counters
+  net: dsa: microchip: add support for port mirror operations
+  net: dsa: microchip: add support for fdb and mdb management
+  net: dsa: microchip: add support for vlan operations
+
+ .../bindings/net/dsa/microchip,lan937x.yaml   |  160 ++
+ MAINTAINERS                                   |    1 +
+ drivers/net/dsa/microchip/Kconfig             |   12 +
+ drivers/net/dsa/microchip/Makefile            |    5 +
+ drivers/net/dsa/microchip/ksz8795.c           |    2 -
+ drivers/net/dsa/microchip/ksz9477.c           |    3 -
+ drivers/net/dsa/microchip/ksz_common.c        |    8 +-
+ drivers/net/dsa/microchip/ksz_common.h        |    5 +
+ drivers/net/dsa/microchip/lan937x_dev.c       |  725 +++++++++
+ drivers/net/dsa/microchip/lan937x_dev.h       |   80 +
+ drivers/net/dsa/microchip/lan937x_main.c      | 1310 +++++++++++++++++
+ drivers/net/dsa/microchip/lan937x_reg.h       |  683 +++++++++
+ drivers/net/dsa/microchip/lan937x_spi.c       |  227 +++
+ drivers/net/phy/microchip_t1.c                |  339 ++++-
+ include/net/dsa.h                             |    2 +
+ net/dsa/Kconfig                               |    4 +-
+ net/dsa/tag_ksz.c                             |   59 +
+ 17 files changed, 3554 insertions(+), 71 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/dsa/microchip,lan937x.yaml
+ create mode 100644 drivers/net/dsa/microchip/lan937x_dev.c
+ create mode 100644 drivers/net/dsa/microchip/lan937x_dev.h
+ create mode 100644 drivers/net/dsa/microchip/lan937x_main.c
+ create mode 100644 drivers/net/dsa/microchip/lan937x_reg.h
+ create mode 100644 drivers/net/dsa/microchip/lan937x_spi.c
+
+-- 
+2.27.0
+
