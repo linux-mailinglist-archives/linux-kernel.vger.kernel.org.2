@@ -2,80 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723F2425982
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51FE425985
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242603AbhJGRc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:32:58 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:37501 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbhJGRc4 (ORCPT
+        id S242757AbhJGRdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:33:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242611AbhJGRc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:32:56 -0400
-Received: by mail-oi1-f171.google.com with SMTP id o83so2554411oif.4;
-        Thu, 07 Oct 2021 10:31:02 -0700 (PDT)
+        Thu, 7 Oct 2021 13:32:59 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889CEC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:31:05 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id q189so15135457ybq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:31:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SFMiH5k6bTZykMDXuEggSN9IEsmXGxbcwFTl7AqjDQA=;
+        b=LXyUtPBgoQ0wuEV8jWO3qbh1aq19+NB+Lj3QNc8iavlMTVCNb3Lk/5pepq+lRv3WYF
+         94s526BQ8dmH0rW/nFdrbOb89wLb+OWnuC+dtYRmV+1sbJrOJhY9zSecE06C9uTm4xlH
+         fdYjDMcpjNGy+xyqXbncZwjLyqXnUpnfnO7i3TsvElWM0IrdlUitVY2kmAUTtXWeO7jx
+         lw+0RiP24lrJgk6TVwzr0YwO+kywWFJCBHnCq2t6zYMHIhiqydOujR+iLK080jPLYONs
+         UVeo+0K7lnbrpeGaHWAnIRPbDndeAKwkb3Drmwgirj/J55VfQL74Zpd29efvaZAJy4Wn
+         HtiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uoOCJc/OhL1VGTaVAt2b5BnE1dyTODrBWIacv8WKckE=;
-        b=HLHpyzZ6tNkgpBEEZfVGewQxDzyXuEY8TVTPWVadbRfeMio7BRFXxtXdjNymvLv7Di
-         D9GU3VditXTS0Pr4RJSW3W9HEd99NBrgCOt6hBCyT3j64CodtmyyNABvkpUC2B32iXt9
-         DGa9PcMEB+D8Ewps8gK1x4gIgScj5jVWQPJZX31rp6fytS/nasX3K/jgPnMwLPDq/4II
-         j5eg/C+nmSffW+4qk0Y4GM+TPy1P3jUhg4EgKFVT/+mk80WLRTRWcJ0SD8aIj2aUJezC
-         IMltJEV/oFp7C2Xo19MtZ13uKXeu+nzIRsqNpeO1gnkKzPtuZtsPrKXhkHZpDEncWrkS
-         eYsQ==
-X-Gm-Message-State: AOAM530oYSZg8bOJWI+73RInAAGMo0Yxz+miohTxl8Vk7ntGoARBhqys
-        rWtqKxTKNc2CJ3R2V2fXodmmZpV5HZ6Q0arWC+JsN8hM
-X-Google-Smtp-Source: ABdhPJxmEJ1idd3/RB9cDqXJQoZPrBgqsPf63OwxW2T8mQSGPWgWmUQN/OaSKAS6S6GTQWoHfDDkrH6thKA1FO/RrXc=
-X-Received: by 2002:a05:6808:1520:: with SMTP id u32mr4144304oiw.154.1633627860250;
- Thu, 07 Oct 2021 10:31:00 -0700 (PDT)
+        bh=SFMiH5k6bTZykMDXuEggSN9IEsmXGxbcwFTl7AqjDQA=;
+        b=J/TOU7sY9qSI9Zq73dinoEIebH/COTTT4pGvVvg2XGQ9Ua9BVsxZcyX49K1zgxit/5
+         pwnV/cwz2uxcgN4CaX4f2GDHpdNFzaXS0wU3J1acuLb2/jnMFvI3NqMUxL6CUJlCJhDM
+         TLoG8RQ0Lh2Dwdcv+JKH6DA0pAwPRUkszFSuqqPuXmDDY7JK271zx3W3LvgUNMYogbPG
+         tDGhsb1eWnViknYURCqeLgds2wpBHPzia/5FnoLhdyIkXEjVOLcB/DUD+gumFkG6M0oD
+         bwvwoU9V2QiR+oghcUf4/DMLoz0JwxEbSxWqyWNXSRanGoEAzf0/lbDc5m9VTOY9Weba
+         pGvQ==
+X-Gm-Message-State: AOAM5327xU62afttmLio44pxKOo7IbHBkIA/yjdfRmaVppvnhTZdNYGl
+        qKqHdYWJxyd1WaJVbw4alxntPMQ9s8j11DuzQhpnRg==
+X-Google-Smtp-Source: ABdhPJwpjKoLoBI5gOCik6Ve1waW1iJ2N/hIfjVfZ1uubfoQdCVIbn77Huwx2Za7fOFEIH/xXPzNZFvP9AfPUdJ//Pg=
+X-Received: by 2002:a25:552:: with SMTP id 79mr6071995ybf.202.1633627863712;
+ Thu, 07 Oct 2021 10:31:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <864dd17a1bff58770b1c1dc0b430bd26b6d7fa01.1633595141.git.mchehab+huawei@kernel.org>
- <CAJZ5v0hj1jZtZ-cD_4jy94cjMbyix-=QcN2Qn9pkW7H1kn16LQ@mail.gmail.com> <581a7222-0a01-6292-5b14-ca0e4690bc67@linaro.org>
-In-Reply-To: <581a7222-0a01-6292-5b14-ca0e4690bc67@linaro.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Oct 2021 19:30:49 +0200
-Message-ID: <CAJZ5v0g1bFdZsyTQYtUbFMRs_GDqRWCg=RnMnLx4kN1JWEW6Cw@mail.gmail.com>
-Subject: Re: [PATCH v2] thermal: Move ABI documentation do Documentation/ABI
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <20211005200411.GB19804@duo.ucw.cz> <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com> <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com> <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <YV6o3Bsb4f87FaAy@dhcp22.suse.cz> <CAJuCfpGZAWewsEzqA5=+z_CaBLcPQX+sYF-FM0o_58UMCZoJfw@mail.gmail.com>
+ <YV8iXQ9npVOLEeuc@dhcp22.suse.cz> <CAJuCfpHWeK71Eh1dcKr1+_ijUJ-6LFBe0Rjk4hP7NCrnWpXFcw@mail.gmail.com>
+ <YV8tlUTdsiVuACx+@dhcp22.suse.cz>
+In-Reply-To: <YV8tlUTdsiVuACx+@dhcp22.suse.cz>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Thu, 7 Oct 2021 10:30:52 -0700
+Message-ID: <CAJuCfpHM-W3iAANgudmgivz+aFMWxdVpPnZgQvibxwVE=L098g@mail.gmail.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 6:42 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+On Thu, Oct 7, 2021 at 10:25 AM 'Michal Hocko' via kernel-team
+<kernel-team@android.com> wrote:
 >
-> On 07/10/2021 18:39, Rafael J. Wysocki wrote:
-> > On Thu, Oct 7, 2021 at 10:25 AM Mauro Carvalho Chehab
-> > <mchehab+huawei@kernel.org> wrote:
-> >>
-> >> The thermal ABI is described, together with the internal
-> >> development details at:
-> >>
-> >>         Documentation/driver-api/thermal/sysfs-api.rst
-> >>
-> >> Move the sysfs API description to Documentation/ABI,
-> >> ensuring that scripts/get_abi.pl will properly parse it.
-> >>
-> >> While here, also update MAINTAINERS for it to point to
-> >> the documentation.
-> >>
-> >> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> On Thu 07-10-21 09:43:14, Suren Baghdasaryan wrote:
+> > On Thu, Oct 7, 2021 at 9:37 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > OK, so there is no real authority or any real naming convention. You
+> > > just hope that applications will behave so that the consumer of those
+> > > names can make proper calls. Correct?
+> > >
+> > > In that case the same applies to numbers and I do not see any strong
+> > > argument for strings other than it is more pleasing to a human eye when
+> > > reading the file. And that doesn't sound like a strong argument to make
+> > > the kernel more complicated. Functionally both approaches are equal from
+> > > a practical POV.
 > >
-> > There is a typo in the subject, but I can fix it up.
-> >
-> > Daniel, would you mind if I applied this?
+> > I don't think that's correct. Names like [anon:.bss],
+> > [anon:dalvik-zygote space] and
+> > [anon:dalvik-/system/framework/boot-core-icu4j.art] provide user with
+> > actionable information about the use of that memory or the allocator
+> > using it.
 >
-> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+> No, none of the above is really actionable without a common
+> understanding. Both dalvik* are a complete gibberish to me.
 
-Applied as 5.16 material, thanks!
+Ok, maybe I was unclear. Some names, as the first two in the above
+example are quite standard for Android and tools do use them to
+identify specific specialized areas. Some names are not standardized
+and can contain package names, like
+anon:dalvik-/system/framework/boot-core-icu4j.art. In this case while
+tools do not process them in any special way, they still convey enough
+information for a user to identify the corresponding component.
+
+> --
+> Michal Hocko
+> SUSE Labs
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
