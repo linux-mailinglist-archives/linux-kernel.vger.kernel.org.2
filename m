@@ -2,103 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F1E74256C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB384256CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:41:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242379AbhJGPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        id S242386AbhJGPnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbhJGPmE (ORCPT
+        with ESMTP id S234337AbhJGPnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:42:04 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F1EC061570;
-        Thu,  7 Oct 2021 08:40:10 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id i11so5823198ila.12;
-        Thu, 07 Oct 2021 08:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7jRrqeIN2Ff7fhNeRl05LpK9LcpWLgKaWr6uuwqcXss=;
-        b=fSM6z68idkwQOzyYwSOc2QFqnsNNFr9HkHzjw3yuwj0J7UUwvGMwTk+N/1z6GE0Y7X
-         q+/60JLPu28hZVnTReYYr5PL1+mv8ubaBURWau9zpWjIpOpqh1hULgdj/5I/XH/x0WNa
-         CVGbJIKcz/YUrMMNkvRWMV7r9Ijiky6Xlp/I0NmgO0S6FjjL0w8If5dptZL3yLp5EKqj
-         S3DLwNhokX4iaYtyn76b2R+bJLiy+W0m+Eyu89xezQ5Opwzi4r9jIb6f5FPKD9VANgCp
-         tzXMjMpjkstTFLZ8nnsxYgdxfwLfMPLvyqr+0tKt0GP011JILUtbRl+IY/qB22+FYMeu
-         xPig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7jRrqeIN2Ff7fhNeRl05LpK9LcpWLgKaWr6uuwqcXss=;
-        b=fLrPQ/n5czNAnHO7WVdpZHCZorknIdBwfBVzmxYdmfHXnq29KybEO5N4gXkGs346K/
-         hSaTXQAjvhObPgs1IVWU7SqmW6uUv1m3kf9KLPv2IgXbupJTjToICFWZQwjogK0KYJwO
-         KvukB+DyTZ18E/9qlHWl0o8d1oLfuGZOsAQPjHKqa7pRh9nr9W/vMNIidfXGU0L4NKHX
-         stRumyDbrMuMqoQF346tnFqrgvzy0VMBACDjPM+FSaj81o+yU7N50wECW+6MhL9Q5jdx
-         roqbzeSgWMWDzKtzTYdY7BxDYTcqXSiagFm43hAoS0PYcBo5PtnyQSr92i06PeYYRaoM
-         CRLw==
-X-Gm-Message-State: AOAM533NMZEHIY9D4sa4FgNvLm7v+OVNvuqkYwlDqkJHZx1xLdT0DiYn
-        +Iv2+0CoY7gztoqO1iQa/p3gaHuHIm0zfX7Z5y8=
-X-Google-Smtp-Source: ABdhPJzmCAOtDz+UuxP6PWhiyG+6fzRKXux3+EgPurp4BoC5M9RS/AFDw5yQUapIS1E3o7122IF4UpnHfA3HbFH+hww=
-X-Received: by 2002:a05:6e02:b2a:: with SMTP id e10mr3838016ilu.151.1633621207286;
- Thu, 07 Oct 2021 08:40:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210713084541.7958-1-andriy.shevchenko@linux.intel.com>
- <20210713084541.7958-3-andriy.shevchenko@linux.intel.com> <YO1s+rHEqC9RjMva@kroah.com>
- <YO12ARa3i1TprGnJ@smile.fi.intel.com> <YO13lSUdPfNGOnC3@kroah.com>
- <CANiq72=vs8-88h3Z+BON=qA4CZQ1pS1nggnCFHDEHYyG+Y+3JQ@mail.gmail.com> <YV67+vrn3MxpXABy@smile.fi.intel.com>
-In-Reply-To: <YV67+vrn3MxpXABy@smile.fi.intel.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 7 Oct 2021 17:39:56 +0200
-Message-ID: <CANiq72nKya4OW0Eof=7PP-U78uo+j8DL0UUDNsW3ww_5PPJVtA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/3] kernel.h: Split out container_of() and
- typeof_memeber() macros
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
+        Thu, 7 Oct 2021 11:43:13 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58644C061570;
+        Thu,  7 Oct 2021 08:41:19 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 5595F3F9;
+        Thu,  7 Oct 2021 08:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1633621278;
+        bh=Sp4De8iMtZ/6e2Np59FI+yTdsoee6zx033jfHJqL1Pc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=osSImv0naSv90iNaTrO7E06s7W++x6zvCTTPMROOgiTfywg5ODLiD6boZlkAh0jBO
+         18YZTarxBxjDUQESB9+wTQfy6L5oZsNKFCJbzgM+oiUnN4rG+5myF5vXMEijHzTa3t
+         9QLrBQncRbV0hoNa2Cqc/4rjtV5K6xRl0Uz4ksQU=
+Date:   Thu, 7 Oct 2021 08:41:13 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Thomas Graf <tgraf@suug.ch>,
+        Andy Shevchenko <andy@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset="UTF-8"
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+Message-ID: <YV8VGeMreR6NJad4@hatter.bewilderbeest.net>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+ <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+ <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
+ <YV7Miz9RMMx/17A0@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YV7Miz9RMMx/17A0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 11:21 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Thu, Oct 07, 2021 at 03:31:39AM PDT, Greg Kroah-Hartman wrote:
+>On Thu, Oct 07, 2021 at 02:05:41AM -0700, Zev Weiss wrote:
+>> On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
+>> > On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+>> > > This patch series is in some ways kind of a v2 for the "Dynamic
+>> > > aspeed-smc flash chips via 'reserved' DT status" series I posted
+>> > > previously [0], but takes a fairly different approach suggested by Rob
+>> > > Herring [1] and doesn't actually touch the aspeed-smc driver or
+>> > > anything in the MTD subsystem, so I haven't marked it as such.
+>> > >
+>> > > To recap a bit of the context from that series, in OpenBMC there's a
+>> > > need for certain devices (described by device-tree nodes) to be able
+>> > > to be attached and detached at runtime (for example the SPI flash for
+>> > > the host's firmware, which is shared between the BMC and the host but
+>> > > can only be accessed by one or the other at a time).
+>> >
+>> > This seems quite dangerous. Why do you need that?
+>>
+>> Sometimes the host needs access to the flash (it's the host's firmware,
+>> after all), sometimes the BMC needs access to it (e.g. to perform an
+>> out-of-band update to the host's firmware).  To achieve the latter, the
+>> flash needs to be attached to the BMC, but that requires some careful
+>> coordination with the host to arbitrate which one actually has access to it
+>> (that coordination is handled by userspace, which then tells the kernel
+>> explicitly when the flash should be attached and detached).
+>>
+>> What seems dangerous?
+>>
+>> > Why can't device tree overlays be used?
+>>
+>> I'm hoping to stay closer to mainline.  The OpenBMC kernel has a documented
+>> policy strongly encouraging upstream-first development:
+>> https://github.com/openbmc/docs/blob/master/kernel-development.md
+>>
+>> I doubt Joel (the OpenBMC kernel maintainer) would be eager to start
+>> carrying the DT overlay patches; I'd likewise strongly prefer to avoid
+>> carrying them myself as additional downstream patches.  Hence the attempt at
+>> getting a solution to the problem upstream.
 >
-> It does almost 2% (steady) speedup. I will send a v2 with methodology
-> and numbers of testing.
+>Then why not work to get device tree overlays to be merged properly?
+>Don't work on a half-of-a-solution when the real solution is already
+>here.
+>
 
-Thanks for taking the time to get the numbers!
+I had been under the impression that the overlay patches had very dim 
+prospects of ever being accepted and that this might be a more tractable 
+alternative, but apparently was mistaken -- I'll look into what the 
+outstanding issues were with that and perhaps take a stab at addressing 
+them.
 
-Cheers,
-Miguel
+
+Zev
+
