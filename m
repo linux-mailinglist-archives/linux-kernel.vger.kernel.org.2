@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC63426D04
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC6B426CF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242992AbhJHOvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:51:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24668 "EHLO
+        id S242774AbhJHOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:51:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:47830 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242845AbhJHOva (ORCPT
+        by vger.kernel.org with ESMTP id S242653AbhJHOvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:51:30 -0400
+        Fri, 8 Oct 2021 10:51:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633704569;
+        s=mimecast20190719; t=1633704548;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=yCMj7cGiAu5uMlGEpnkY5Gp+0hj0LFryQP/5PMxjEWw=;
-        b=Ci59J2pB74HcwcExil1md0wOuutbVpdb71QpNrQwRrpxTflDzqavrl0vrxPlk4rhafdzz7
-        vKQjb620fG8fb4Rlwg4xtHiifgbLjyovJyRL+LQ9Vc9gm73beqv0gQcPNCyr33Trj7NTts
-        ++XoEw5ttqt6Vb8g1kpzTxrpmP/zlu4=
+         references:references; bh=FUgOIM0mALPuGj0Gvlv7KffAFCl7xoo+tdMxUhAnWb0=;
+        b=P6wu1IDfCmbOoW/1w0zKk2CB/OjmCwaNnFUkyfjCNn2b1qnTCjLEHuGosTlRAWHBfxsDRK
+        RvBhkwDZvq6bEfD1dN9j597+zKTOEfCD/B5gtZyUNaGh995mwquH+yYZevCB8tfHoONRXj
+        NLjY25pJklcsbkfRbu8IAjbW8gHfuvU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-1hu7g4w8Ne6UZIZ-JY0hqg-1; Fri, 08 Oct 2021 10:49:24 -0400
-X-MC-Unique: 1hu7g4w8Ne6UZIZ-JY0hqg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+ us-mta-39-8M4qnWHaPU6N0oevlCb_uw-1; Fri, 08 Oct 2021 10:49:07 -0400
+X-MC-Unique: 8M4qnWHaPU6N0oevlCb_uw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 31E67EC1A6;
-        Fri,  8 Oct 2021 14:49:23 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34397802C8A;
+        Fri,  8 Oct 2021 14:49:06 +0000 (UTC)
 Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 409995F4ED;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C1E560C17;
         Fri,  8 Oct 2021 14:49:05 +0000 (UTC)
 Received: by fuller.cnet (Postfix, from userid 1000)
-        id EEC7E425E3F9; Fri,  8 Oct 2021 11:48:13 -0300 (-03)
-Message-ID: <20211007193526.450327326@fedora.localdomain>
+        id F3157406E9F5; Fri,  8 Oct 2021 11:48:13 -0300 (-03)
+Message-ID: <20211007193526.592705266@fedora.localdomain>
 User-Agent: quilt/0.66
-Date:   Thu, 07 Oct 2021 16:23:52 -0300
+Date:   Thu, 07 Oct 2021 16:23:53 -0300
 From:   Marcelo Tosatti <mtosatti@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Nitesh Lal <nilal@redhat.com>,
@@ -47,46 +47,101 @@ Cc:     Nitesh Lal <nilal@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
         Marcelo Tosatti <mtosatti@redhat.com>
-Subject: [patch v4 6/8] KVM: x86: call isolation prepare from VM-entry code path
+Subject: [patch v4 7/8] mm: vmstat: move need_update
 References: <20211007192346.731667417@fedora.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VM-entry code path is an entry point similar to userspace return
-when task isolation is concerned.
+Move need_update() function up in vmstat.c, needed by next patch.
+No code changes.
 
-Call isolation_exit_to_user_mode_prepare before VM-enter.
+Remove a duplicate comment while at it.
 
 Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
 ---
- arch/x86/kvm/x86.c |    3 +++
- 1 file changed, 3 insertions(+)
+ mm/vmstat.c |   67 +++++++++++++++++++++++++++---------------------------------
+ 1 file changed, 31 insertions(+), 36 deletions(-)
 
-Index: linux-2.6/arch/x86/kvm/x86.c
+Index: linux-2.6/mm/vmstat.c
 ===================================================================
---- linux-2.6.orig/arch/x86/kvm/x86.c
-+++ linux-2.6/arch/x86/kvm/x86.c
-@@ -59,6 +59,7 @@
- #include <linux/mem_encrypt.h>
- #include <linux/entry-kvm.h>
- #include <linux/suspend.h>
-+#include <linux/task_isolation.h>
+--- linux-2.6.orig/mm/vmstat.c
++++ linux-2.6/mm/vmstat.c
+@@ -1864,6 +1864,35 @@ static const struct seq_operations vmsta
+ static DEFINE_PER_CPU(struct delayed_work, vmstat_work);
+ int sysctl_stat_interval __read_mostly = HZ;
  
- #include <trace/events/kvm.h>
- 
-@@ -9574,6 +9575,8 @@ static int vcpu_enter_guest(struct kvm_v
- 		goto cancel_injection;
- 	}
- 
-+	isolation_exit_to_user_mode_prepare();
++/*
++ * Check if the diffs for a certain cpu indicate that
++ * an update is needed.
++ */
++static bool need_update(int cpu)
++{
++	pg_data_t *last_pgdat = NULL;
++	struct zone *zone;
 +
- 	preempt_disable();
++	for_each_populated_zone(zone) {
++		struct per_cpu_zonestat *pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
++		struct per_cpu_nodestat *n;
++
++		/*
++		 * The fast way of checking if there are any vmstat diffs.
++		 */
++		if (memchr_inv(pzstats->vm_stat_diff, 0, sizeof(pzstats->vm_stat_diff)))
++			return true;
++
++		if (last_pgdat == zone->zone_pgdat)
++			continue;
++		last_pgdat = zone->zone_pgdat;
++		n = per_cpu_ptr(zone->zone_pgdat->per_cpu_nodestats, cpu);
++		if (memchr_inv(n->vm_node_stat_diff, 0, sizeof(n->vm_node_stat_diff)))
++			return true;
++	}
++	return false;
++}
++
+ #ifdef CONFIG_PROC_FS
+ static void refresh_vm_stats(struct work_struct *work)
+ {
+@@ -1945,35 +1974,6 @@ static void vmstat_update(struct work_st
+ }
  
- 	static_call(kvm_x86_prepare_guest_switch)(vcpu);
+ /*
+- * Check if the diffs for a certain cpu indicate that
+- * an update is needed.
+- */
+-static bool need_update(int cpu)
+-{
+-	pg_data_t *last_pgdat = NULL;
+-	struct zone *zone;
+-
+-	for_each_populated_zone(zone) {
+-		struct per_cpu_zonestat *pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+-		struct per_cpu_nodestat *n;
+-
+-		/*
+-		 * The fast way of checking if there are any vmstat diffs.
+-		 */
+-		if (memchr_inv(pzstats->vm_stat_diff, 0, sizeof(pzstats->vm_stat_diff)))
+-			return true;
+-
+-		if (last_pgdat == zone->zone_pgdat)
+-			continue;
+-		last_pgdat = zone->zone_pgdat;
+-		n = per_cpu_ptr(zone->zone_pgdat->per_cpu_nodestats, cpu);
+-		if (memchr_inv(n->vm_node_stat_diff, 0, sizeof(n->vm_node_stat_diff)))
+-			return true;
+-	}
+-	return false;
+-}
+-
+-/*
+  * Switch off vmstat processing and then fold all the remaining differentials
+  * until the diffs stay at zero. The function is used by NOHZ and can only be
+  * invoked when tick processing is not active.
 
 
