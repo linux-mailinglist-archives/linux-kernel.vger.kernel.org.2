@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D3742549B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9514254A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241728AbhJGNt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:49:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63884 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241536AbhJGNt4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:49:56 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197D7OKe030374;
-        Thu, 7 Oct 2021 09:47:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=FiAyj+X+y5/IyCfXO7F3VRxntxo6XoOu/dw9JbbDB2Y=;
- b=eL2KlNIqIUV8C0YgFryIw4rMR8gpwCRD6gLX/1MuxBdEAZmfHqp7C0+tm1iVbm3DNUUR
- QARL+q4F5KeLIt2XZLKOQIoknFMkg9aaaffi2KlmPCTw5VlHiMCVppjnF/EivKEmkKSC
- kAj8/h1eV47hr5+wheFw27XR1gCjwQrb1PXZ7He9UjnbR8OGZeM5xwpaXy3e2GFvMMXQ
- U13sXSmBsJos7M3hLSzuV62VRxgpxgeCb5b/J5wtUQSLkYPdeW6IIhD3tPehV/KCmUrY
- fYB+AKCfK46+2z/y1TKNCJBqik+c++pPLrT/TGHBFyT+oKdLgqeU0BKgd6XCmKcAACpi Jg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhksyadhy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 09:47:56 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 197D8ASZ003008;
-        Thu, 7 Oct 2021 09:47:56 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhksyadhu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 09:47:56 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 197DcAiT012729;
-        Thu, 7 Oct 2021 13:47:55 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 3bef2dhaka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 13:47:55 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 197Dls5B44892634
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Oct 2021 13:47:54 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D0B77C607F;
-        Thu,  7 Oct 2021 13:47:53 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B11AEC6063;
-        Thu,  7 Oct 2021 13:47:52 +0000 (GMT)
-Received: from li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com (unknown [9.160.40.117])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Thu,  7 Oct 2021 13:47:52 +0000 (GMT)
-Date:   Thu, 7 Oct 2021 08:47:50 -0500
-From:   "Paul A. Clarke" <pc@us.ibm.com>
-To:     Kajol Jain <kjain@linux.ibm.com>
-Cc:     acme@kernel.org, maddy@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, atrajeev@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] perf vendor events power10: Add metric events json file
- for power10 platform
-Message-ID: <20211007134750.GA243632@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-References: <20211006073119.276340-1-kjain@linux.ibm.com>
- <20211006173248.GA7389@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006173248.GA7389@li-24c3614c-2adc-11b2-a85c-85f334518bdb.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Smn2mgYwX25dnRXqKmiHLNPLX2XAYLvY
-X-Proofpoint-ORIG-GUID: bxvGvEuneP8OjqU1yMDF0RuGYm4V-sJu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_01,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110070092
+        id S241774AbhJGNvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:51:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:14389 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241783AbhJGNvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 09:51:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633614554; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=LJlIsAmhsWWtNJvtDA2z8gf+SVO6RTgCLs6jKSGxJaU=; b=GrfDjRf3Ch8TvBR8uqXWGo9AVk6IJNstDQXwJcoiZMhhOm4NBghCIcVBB4t68XbEjhx8uCpp
+ S2ynlKPkOC6GxRoKQOCjnPZkzGyRa9iFCXEnmuHI9nNf5K04afzWBbgjTTIjNv9JqRRdxktX
+ wyyOeSR4vUQKCPmVzVR9uE2xi60=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 615efacbff0285fb0ab7bf5e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 13:48:59
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D52C2C4361C; Thu,  7 Oct 2021 13:48:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C796FC4338F;
+        Thu,  7 Oct 2021 13:48:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C796FC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH 0/3] Add pin control support for lpass sc7280
+Date:   Thu,  7 Oct 2021 19:18:36 +0530
+Message-Id: <1633614519-26680-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 12:32:48PM -0500, Paul A. Clarke wrote:
-> > +    {
-> > +        "BriefDescription": "Average cycles per instruction when the instruction finishes at dispatch",
-> 
-> I'm not sure what that means.
+This patch series is to make lpass variant independent pin control
+functions common and to add lpass sc7280 pincontrol support.
+It also includes dt-bindings for lpass sc7280 lpi compatible. 
 
-After doing a bit of research, I think it might be a bit more clear as:
-"Average cycles per instruction when the NTF instruction finishes at dispatch"
+Srinivasa Rao Mandadapu (3):
+  pinctrl: qcom: Update lpass variant independent functions as generic
+  dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi pinctrl compatible
+  pinctrl: qcom: Add SC7280 lpass pin configuration
 
-> > +        "MetricExpr": "PM_EXEC_STALL_FIN_AT_DISP / PM_RUN_INST_CMPL",
-> > +        "MetricGroup": "CPI",
-> > +        "MetricName": "FIN_AT_DISP_STALL_CPI"
-> > +    },
+ .../bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml   |  4 +-
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c           | 57 +++++++++++++++++++---
+ 2 files changed, 52 insertions(+), 9 deletions(-)
 
-PC
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
