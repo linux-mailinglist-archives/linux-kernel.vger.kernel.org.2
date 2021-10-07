@@ -2,111 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7DB4252B6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702DE42529B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241315AbhJGMLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:11:54 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:64006 "EHLO mx1.tq-group.com"
+        id S241283AbhJGMKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241348AbhJGMLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:11:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1633608587; x=1665144587;
-  h=from:to:cc:subject:date:message-id;
-  bh=7w27w8BwmpEXztoWO/m+fRD1rLpJNdh3W4ZaUKWsinE=;
-  b=N6EuElsQ+ukpgt5sOJGCABSVx30QlLcyFzaqICdq99XB+nJwJhxqRee9
-   jL/qNgp2BeHrTBu7PngMi6hZSu9JgD8MOdODJ5jIl2EMuDXFCP4UuEnWo
-   4SCUcD/iXYrl+KM9uxPWJL1BF+LICrq981PhJaHDk5T544ABzNd/PHNkP
-   AGiaMaY5mU54UhK0lCwtrpQ/tEIgTjdovdBwjhfiDNgy5ZZPwWb5CMj58
-   q3+5MpWxuJ6+u3fqvDNGcYCE6eB6INxQL7qG5IJ6omZ3U3WcT4irUnRTi
-   YZYo6XWGIpatlkgrdwCoxTLEs9xkJLZzzwyl9mLONbgbtxY5Z7v7knnZv
-   A==;
-X-IronPort-AV: E=Sophos;i="5.85,354,1624312800"; 
-   d="scan'208";a="19920238"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 07 Oct 2021 14:09:25 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Thu, 07 Oct 2021 14:09:25 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Thu, 07 Oct 2021 14:09:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1633608565; x=1665144565;
-  h=from:to:cc:subject:date:message-id;
-  bh=7w27w8BwmpEXztoWO/m+fRD1rLpJNdh3W4ZaUKWsinE=;
-  b=RfgtTIe8JPr8Wr15X/N9m+bqWvC6SlFrscrTRU1FeCxRJla/ZBO6PdJU
-   ya/RWtwOGVMljgJuxQxAl/TT33BdAALmVc6qPksVfIVJGoFL8kLCDWfMo
-   fVn7rMJBl2ltQPouNqhd0+G912OgtTaZgb/a2KTfuta4eJZjDBU159D91
-   LSRDo5Ts0cGKn1GA1NK5Krndtkb3vJ3q41Rg4cxwCN5EcBaJqobhRyqSn
-   jDxUsHqaVE6OOwvJNvTNLP88BkYovlGhdID5JlY0z8WHnkubbsSBPZ1WP
-   ZwVnyeB7or0Kzgt5C7IQ4BSAJBTVWlRbdQZXWyHpD5sVaA/f5cwAWqFFa
-   g==;
-X-IronPort-AV: E=Sophos;i="5.85,354,1624312800"; 
-   d="scan'208";a="19920237"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 07 Oct 2021 14:09:25 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id 0DE61280075;
-        Thu,  7 Oct 2021 14:09:25 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH v2 2/2] mtd: spi-nor: micron-st: add support for mt25ql01g and mt25qu01g
-Date:   Thu,  7 Oct 2021 14:08:12 +0200
-Message-Id: <c347908fd453fadf673000144cdbdf63c51db303.1633607826.git.matthias.schiffer@ew.tq-group.com>
+        id S241286AbhJGMK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:10:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0E46124A;
+        Thu,  7 Oct 2021 12:08:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633608515;
+        bh=HGmW2Bpu1a5bINyn8Ucb9I/QzXitFICRrfHlC6pBvyo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qrpuaWuWYUgvFHeoxYcoGRQfTOKj/mc808W/UqinXepQ5T7choodbBwd5koV1P1FQ
+         tnxk/DB1uq1ENhO4rRokT0ymGl88lECHW2GT51fIP02rcKkYyhhNsgryArkzEXyH4S
+         o9+cPFdfFhGAeEe1HAB9sdqOWl4PxxvzOsrgXjAZaDFKrlLIlf2/r3yzDKecYa9Z+P
+         bNjcxikeMXEjGYpLXkdn+OFirALx2Bdf6tUecjnnnR5Xn2zG8xwiLSnboBTX8L5w4c
+         awGfaC0DiP4/K0utyH2X2YdWrgNL2552Efl4NUd2xl89jiynScHxKiKz2x8kcc/WET
+         Sm8ViJilejvFg==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     tony@atomide.com
+Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+        lokeshvutla@ti.com, nsekhar@ti.com,
+        krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v5 0/8] dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+Date:   Thu,  7 Oct 2021 15:08:22 +0300
+Message-Id: <20211007120830.17221-1-rogerq@kernel.org>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
-References: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
-In-Reply-To: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
-References: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split these mt25q models from the older n25q models by matching their
-extended IDs to allow adding support for 4byte opcodes.
+Hi,
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+This series converts ti,gpmc memory controller and ti,gpmc-nand and
+ti,gpmc-onenand MTD controller bindings to yaml.
 
-v2: add NO_CHIP_ERASE
+cheers,
+-roger
 
- drivers/mtd/spi-nor/micron-st.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Changelog:
+v5
+- separated DT changes so easy to review
+- dropped ethernet@gpmc label changes. I was trying to fix the dtbs_check
+ warning "'ethernet@gpmc' does not match any of the regexes: '@[0-7],[a-f0-9]+$', 'pinctrl-[0-9]+'"
+ but the patch causes a side effect for omap4-duovero-parlor.dts such that the
+ GPMC timings specified in the board DTS wer not being used but
+ being overridden by omap-gpmc-smsc911x.dtsi instead. This is not what we
+ want.
+- dropped patch "memory: gpmc-omap: "gpmc,device-width" DT property is optional"
+ I will pick this up in another series. Don't want this patch to hold back the .yaml cleanup series.
+- arranged compatibles in alphabetical order in ti,gpmc.yaml
+- fixed example in ti,gpmc-onenand.yaml
+- Rebased on 5.15-rc1
+- Added Acks
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index a000a0790ecd..6593b6ebe0da 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -172,11 +172,19 @@ static const struct flash_info st_parts[] = {
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6) },
-+	{ "mt25ql01g",   INFO6(0x20ba21, 0x104400, 64 * 1024, 2048,
-+			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-+			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			       NO_CHIP_ERASE) },
- 	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB |
- 			      SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6 |
- 			      NO_CHIP_ERASE) },
-+	{ "mt25qu01g",   INFO6(0x20bb21, 0x104400, 64 * 1024, 2048,
-+			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
-+			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
-+			       NO_CHIP_ERASE) },
- 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048,
- 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
- 			      NO_CHIP_ERASE) },
+v4
+- reference partition.yaml in ti,gpmc-nand.yaml and ti,gpmc-onenenc.yaml
+- use address-cells/size-cells: true instead of absolute size.
+
+v3:
+- fix indentation
+- split GPMC child timings/settings into ti,gpmc-child.yaml
+This allows us to refer to it at 3 places and avoid use of
+'additionalProperties: true' at 2 places.
+- specify defaults where applicable
+- reordered patches
+- added patch for making "gpmc,device-width" optional with defaults.
+- address all review comments.
+
+v2:
+- Fix all errors in dtbs_check and dt_bindings_check
+- remove references to gpmc-omap.txt
+- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
+
+Roger Quadros (8):
+  dt-bindings: mtd: Remove gpmc-nor.txt
+  dt-bindings: net: Remove gpmc-eth.txt
+  dt-bindings: memory-controllers: Introduce ti,gpmc-child
+  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
+  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+  ARM: dts: omap: Fix boolean properties
+    gpmc,cycle2cycle-{same|diff}csen
+  ARM: dts: omap: fix gpmc,mux-add-data type
+
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 -----------
+ .../memory-controllers/ti,gpmc-child.yaml     | 245 ++++++++++++++++++
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 172 ++++++++++++
+ .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -----------
+ .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -------
+ .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ----
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 121 +++++++++
+ .../bindings/mtd/ti,gpmc-onenand.yaml         |  81 ++++++
+ .../devicetree/bindings/net/gpmc-eth.txt      |  97 -------
+ arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |   4 +-
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |   2 +-
+ arch/arm/boot/dts/omap-zoom-common.dtsi       |   4 +-
+ arch/arm/boot/dts/omap2430-sdp.dts            |   4 +-
+ .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
+ .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   2 +-
+ arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
+ 16 files changed, 631 insertions(+), 559 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc-child.yaml
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
+
 -- 
 2.17.1
 
