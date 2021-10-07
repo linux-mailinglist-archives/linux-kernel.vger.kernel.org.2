@@ -2,126 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4A442562D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B223425639
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242377AbhJGPLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242312AbhJGPLr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:11:47 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 115F5C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:09:54 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso6650795pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EwBFVgL0rWbgcfbyCDG1TsRp9Ifys2zsPzP9eEcQnP8=;
-        b=Lt2MndVhQ6hEVWM3iH8Kh6Tp3WCXCBYbRdJJD8TrlN5XO4q9z1/5o39ICKHnf+oO/p
-         Ug5Vv2y8LHjMCYy6uVFN03eFh0AyYJsueTHlrT7Fo+UGvzUwDY4310poHgxXfOtOTTTN
-         tilWf03y6mHUBEzx9gTWv+ASxy76ndmGWfKqc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EwBFVgL0rWbgcfbyCDG1TsRp9Ifys2zsPzP9eEcQnP8=;
-        b=huZI59jEn4EJcxG3BhLGtZhUG4OPq2AkA7/em6ULiLNygHkZK0sHkeVH2JWtNINLNv
-         h5GUHFbAxrIrrSuP2rrPyyrsMOnUJEP1OmePqs8CKMc0TW49i6vZ5SwAF81X4/4uJWMl
-         85piDAl3A4j8q1nWJAiwZHXdMoRFV8YlNKmkk5F0jgdqjlzIWWFpDcNiNS/c0p8Vpydl
-         1vR0XMQF0vaMb4l59odAZMzMLacEqKlHordGWi5BAQCHxSU65Zlm5LbuECqR6yZR/D7N
-         f4yfU2VHhN9rRam/9sZgpuYwQzE5lkSf4ojbLXohv8c2P4hTLEZSMPgWPDNVptq7CKI+
-         jh/A==
-X-Gm-Message-State: AOAM531z0g5kE/2lCLH6aD24gX77ayGIrnX5iBJtdyX696wUFuwVE6Tc
-        I3L81G6yS7jGs0Sc+MqzS4ladA==
-X-Google-Smtp-Source: ABdhPJwgJRDpyE4ODOGMol25UhHL7pnQaUCFbPzPAocJvk3WdlZI3UQNRLhj6geomI4URbu2NaOb6Q==
-X-Received: by 2002:a17:90a:9f91:: with SMTP id o17mr6036386pjp.225.1633619393507;
-        Thu, 07 Oct 2021 08:09:53 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n207sm15374608pfd.143.2021.10.07.08.09.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 08:09:53 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 08:09:52 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     pmladek@suse.com, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, peterz@infradead.org,
-        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org,
-        Vladimir Zapolskiy <vzapolskiy@gmail.com>
-Subject: Re: [PATCH v2 1/4] cn_proc.h: use TASK_COMM_LEN instread of 16 in
- struct proc_event
-Message-ID: <202110070808.43B5AAEB9@keescook>
-References: <20211007120752.5195-1-laoar.shao@gmail.com>
- <20211007120752.5195-2-laoar.shao@gmail.com>
- <202110070750.8754AA33@keescook>
+        id S242382AbhJGPMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242275AbhJGPMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:12:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B0B26113E;
+        Thu,  7 Oct 2021 15:10:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633619423;
+        bh=6XparVng5W/AReJHiKchmXlIe9lsC3Z91YzkLUlPNCg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uGBU3w5ZPcovOtfzM/FIsHTD7h3JxuPJygqvsc/Akx8WIgRCpgs3UgXZBZTV82I1O
+         pW+TIPVurN88xf3WvDzFDkgp4KUNa7HpHH0yruRMhNm5135jx5bqq+/CKSzQGvE9Do
+         ViwsXF7lFqxOsI6bHhr9Jy2jv4XcchqTsLVaQi+z5d/b1rYbgoS7hR41kw3y30v3an
+         GfXh2Vp3SSFv+/Ic2Yauk4D9evUCiGVqN10/ZzGkA3ER8QQimEVtKd0+OTGa/g7KUM
+         0ggiEgI2DrGim19ev5P6YtxGkOvCy0ZLC7gw6ICyGtfCMR5AINWv1keeKoUptUyCZ3
+         OdUDZ2/BTlnCQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Will Deacon <will@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH v2 1/2] firmware: include drivers/firmware/Kconfig unconditionally
+Date:   Thu,  7 Oct 2021 17:10:09 +0200
+Message-Id: <20211007151010.333516-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110070750.8754AA33@keescook>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 07:51:35AM -0700, Kees Cook wrote:
-> On Thu, Oct 07, 2021 at 12:07:49PM +0000, Yafang Shao wrote:
-> > struct comm_proc_event was introduced in commit
-> > f786ecba4158 ("connector: add comm change event report to proc connector").
-> > It seems that there is no strong reason we must define the comm as a
-> > hardcode 16 bytes. So we can use TASK_COMM_LEN instead.
-> > 
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  include/uapi/linux/cn_proc.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/uapi/linux/cn_proc.h b/include/uapi/linux/cn_proc.h
-> > index db210625cee8..351d02786350 100644
-> > --- a/include/uapi/linux/cn_proc.h
-> > +++ b/include/uapi/linux/cn_proc.h
-> > @@ -110,7 +110,7 @@ struct proc_event {
-> >  		struct comm_proc_event {
-> >  			__kernel_pid_t process_pid;
-> >  			__kernel_pid_t process_tgid;
-> > -			char           comm[16];
-> > +			char           comm[TASK_COMM_LEN];
-> >  		} comm;
-> 
-> Hrmm. This is UAPI -- we can't change it without potentially breaking
-> things (i.e. userspace binaries have this size built in, so we can't
-> just change the size). This will either need to stay truncated, or may
-> need a new interface with a variable-sized structure...
+From: Arnd Bergmann <arnd@arndb.de>
 
-Specifically, this is needed for this series:
+Compile-testing drivers that require access to a firmware layer
+fails when that firmware symbol is unavailable. This happened
+twice this week:
 
+ - My proposed to change to rework the QCOM_SCM firmware symbol
+   broke on ppc64 and others.
 
-diff --git a/drivers/connector/cn_proc.c b/drivers/connector/cn_proc.c
-index 646ad385e490..34bcba25c488 100644
---- a/drivers/connector/cn_proc.c
-+++ b/drivers/connector/cn_proc.c
-@@ -230,7 +230,9 @@ void proc_comm_connector(struct task_struct *task)
- 	ev->what = PROC_EVENT_COMM;
- 	ev->event_data.comm.process_pid  = task->pid;
- 	ev->event_data.comm.process_tgid = task->tgid;
--	get_task_comm(ev->event_data.comm.comm, task);
-+	/* This may get truncated. */
-+	__get_task_comm(ev->event_data.comm.comm,
-+			sizeof(ev->event_data.comm.comm), task);
+ - The cs_dsp firmware patch added device specific firmware loader
+   into drivers/firmware, which broke on the same set of
+   architectures.
+
+We should probably do the same thing for other subsystems as well,
+but fix this one first as this is a dependency for other patches
+getting merged.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Will Deacon <will@kernel.org>
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Simon Trimmer <simont@opensource.cirrus.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+No changes in v2, but it's now queued in my asm-generic
+tree for v5.15
+
+ arch/arm/Kconfig    | 2 --
+ arch/arm64/Kconfig  | 2 --
+ arch/ia64/Kconfig   | 2 --
+ arch/mips/Kconfig   | 2 --
+ arch/parisc/Kconfig | 2 --
+ arch/riscv/Kconfig  | 2 --
+ arch/x86/Kconfig    | 2 --
+ drivers/Kconfig     | 2 ++
+ 8 files changed, 2 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index fc196421b2ce..59baf6c132a7 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -1989,8 +1989,6 @@ config ARCH_HIBERNATION_POSSIBLE
  
- 	memcpy(&msg->id, &cn_proc_event_id, sizeof(msg->id));
- 	msg->ack = 0; /* not used */
-
+ endmenu
+ 
+-source "drivers/firmware/Kconfig"
+-
+ if CRYPTO
+ source "arch/arm/crypto/Kconfig"
+ endif
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 077f2ec4eeb2..407b4addea36 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1931,8 +1931,6 @@ source "drivers/cpufreq/Kconfig"
+ 
+ endmenu
+ 
+-source "drivers/firmware/Kconfig"
+-
+ source "drivers/acpi/Kconfig"
+ 
+ source "arch/arm64/kvm/Kconfig"
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 045792cde481..1e33666fa679 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -388,8 +388,6 @@ config CRASH_DUMP
+ 	  help
+ 	    Generate crash dump after being started by kexec.
+ 
+-source "drivers/firmware/Kconfig"
+-
+ endmenu
+ 
+ menu "Power management and ACPI options"
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 771ca53af06d..6b8f591c5054 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -3316,8 +3316,6 @@ source "drivers/cpuidle/Kconfig"
+ 
+ endmenu
+ 
+-source "drivers/firmware/Kconfig"
+-
+ source "arch/mips/kvm/Kconfig"
+ 
+ source "arch/mips/vdso/Kconfig"
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 4742b6f169b7..27a8b49af11f 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -384,6 +384,4 @@ config KEXEC_FILE
+ 
+ endmenu
+ 
+-source "drivers/firmware/Kconfig"
+-
+ source "drivers/parisc/Kconfig"
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index c3f3fd583e04..8bc71ab143e3 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -561,5 +561,3 @@ menu "Power management options"
+ source "kernel/power/Kconfig"
+ 
+ endmenu
+-
+-source "drivers/firmware/Kconfig"
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 4e001bbbb425..4dca39744ee9 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2828,8 +2828,6 @@ config HAVE_ATOMIC_IOMAP
+ 	def_bool y
+ 	depends on X86_32
+ 
+-source "drivers/firmware/Kconfig"
+-
+ source "arch/x86/kvm/Kconfig"
+ 
+ source "arch/x86/Kconfig.assembler"
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index 30d2db37cc87..0d399ddaa185 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -17,6 +17,8 @@ source "drivers/bus/Kconfig"
+ 
+ source "drivers/connector/Kconfig"
+ 
++source "drivers/firmware/Kconfig"
++
+ source "drivers/gnss/Kconfig"
+ 
+ source "drivers/mtd/Kconfig"
 -- 
-Kees Cook
+2.29.2
+
