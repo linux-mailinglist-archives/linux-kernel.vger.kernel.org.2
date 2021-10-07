@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8291A425ABC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5AFE425ABF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243666AbhJGS3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        id S243648AbhJGSap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhJGS3i (ORCPT
+        with ESMTP id S231340AbhJGSao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:29:38 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A36C061570;
-        Thu,  7 Oct 2021 11:27:44 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id h10so378191ilq.3;
-        Thu, 07 Oct 2021 11:27:44 -0700 (PDT)
+        Thu, 7 Oct 2021 14:30:44 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A538C061570;
+        Thu,  7 Oct 2021 11:28:50 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g8so26534512edt.7;
+        Thu, 07 Oct 2021 11:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hTmSLuC5KvcfBNoN/JulGigdZCXvDXx6oyLyWAeBh50=;
-        b=PKOIFLpOvb1GVCDeXgmng7e5pVjnw17YFBuTLRiMYolahDTeFWOYcDM4su7McU8uvG
-         Dxw0PAelKB2/Pr9eukgQ2CGo3HHToIeU14Pey6vJZ677pfI7b8Bw/Vbh+CJdNfy/1ln9
-         bfgDTICx0/O/tlLnTGAVHjzeZhyCBAih71w4xj6tqZXXxIiUyups9UNOBCkOkVb6c3yF
-         L2Axj647q5ht7FJZ8pZfFrneyiYKl27EAIF9/nwSi7Pm0cC68w1cx+g+IF7V05s1ZhAg
-         Z/ZQdpx2SIp81gQ4c0i6Dnx2P3fOkssIEeP9ZEyegYA9MJvrotfTuslf/QXlXbYrMcb2
-         vnHQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l3qN3MfhA2hn5WSk7ueIGscDIBqNVWdM54go8zsGIic=;
+        b=Auj2KFW+kPtGThvhI+koW38dm6Ae65UgyBYLsvi9U0XXo9T/IielNC2jqDw9Hk4S7K
+         fYVtZFT911RTIffZu7LmOnPmTF1KKDtK2U75lQ65ejFcBSpAN+P2HIh0FY/12zbaRHtf
+         Wi1TsUfYqzj+7qGJ/+L+Kd+gCQ3jJk/55WFjJNZqrDjwcDQvgVle/2a4FR1TUgh6zDZ7
+         Go2uA6U4+bRUdLEs2EPp7ekzffIVKNFEx/jvizl77Fb3J2m5JS4RSQ2Q5cYnnv3fAL9q
+         k1566krTjZnKWC7ueFrkBtcormsgRnk95T32xWXXKca8XQCDePLfHw8N7KNxm/Q7DGby
+         WNYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hTmSLuC5KvcfBNoN/JulGigdZCXvDXx6oyLyWAeBh50=;
-        b=Sb4fvjH8AzA9jdVWCextRVBxctIXYsRnfw/VlcMD8qtfh2UcDs0AT8Zcotu74nOhkd
-         xda89nc+oRYE6SB6BFUXgi58KFxY15HWiWezPksDWfWnTrfny7TZDHs3d/zzlmgfQYNp
-         lOiEwMoj0UhNZ/egk4R7Ipxe/WtxgGQYOKm1d8H2NAuzaxUsOYpyh9TDzYicyOhb78wk
-         XfODUBNUKiQpBRrkpZgKqln4uMcZ6IUUDiF/oE/5MyqFz37cuVYQVwXjfdNI2L9wVfOf
-         zcRMT7joRujKiixtoEYCdQZA2wCXzW95nQHm4bpMk3JreShVQxdrFDz88VfEIVNJGXSt
-         zSkw==
-X-Gm-Message-State: AOAM533Wh6GkexBzj9Q0QA9pAGRoonkWcu6oyYVT7IS5aEK5m4z+jolj
-        Py9byMEaGJwJ0gvTsJhxSX4rlgGVP5qu/g==
-X-Google-Smtp-Source: ABdhPJzCgNX8oJGtwmBHcJPqdYu9zPp24PO171StgIofcJwCErVdCfcJ1RNMi+tEa0OAm0RnqYNriw==
-X-Received: by 2002:a05:6e02:16cc:: with SMTP id 12mr4428989ilx.296.1633631263772;
-        Thu, 07 Oct 2021 11:27:43 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id k4sm59522ilc.10.2021.10.07.11.27.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 11:27:43 -0700 (PDT)
-Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
- <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
- <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
-Date:   Thu, 7 Oct 2021 12:27:41 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l3qN3MfhA2hn5WSk7ueIGscDIBqNVWdM54go8zsGIic=;
+        b=4oGo3fwtmAIX3hJV0QRY5UUI77wLxdwBq7FCuMYCes2cUWw0IYgVCkrw2Y4LvNGtur
+         XIBf4W8w1JUlU+ah1CYPP3bNBitZmqqQlxABlxFg8HvHZCBil0ED4/L5xd+z7DjrNYX9
+         Dcer/gcmD3rbNxR0JEwqKOBasCNXt2hkTEG4f+GVkcqsEIc5AZcDtrIBazCA7Yl044xZ
+         YyV++9jNFeAagmBH/lRRAjeDUNMGUCxS4H2/VRXG8vgr4rxyIA05fnw/RmsWgPB3cdXZ
+         LVyxOfNh3P00HV7OgCpJgojEFuP9f/mnpEZ2eAvJEQjlNRmgL3TWl9ZGe8zxvvIyqYvO
+         /pxg==
+X-Gm-Message-State: AOAM532jiTcb620vm1wrt3MM9OfANdEexMspV2oUx7jsuG3nbXF5E5dF
+        tI8jpafDHXyZqlaAYm9cWebEm0DyrZmgSx7/M+M=
+X-Google-Smtp-Source: ABdhPJxgA18qK6hmXeIHMAGh+5TJ2JdQ0I/UDZzyKNqTvy46A6PUHs1z0LiF4dRutRMHydJpjbA4mGjN7IDVUb7O4C8=
+X-Received: by 2002:a50:8d85:: with SMTP id r5mr8303074edh.312.1633631328877;
+ Thu, 07 Oct 2021 11:28:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <20211004140637.qejvenbkmrulqdno@box.shutemov.name> <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
+ <20211004194130.6hdzanjl2e2np4we@box.shutemov.name> <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
+ <YV3+6K3uupLit3aH@t490s> <CAHbLzkpWSM_HvCmgaLd748BLcmZ3cnDRQ577o_U+qDi1iSK3Og@mail.gmail.com>
+ <YV8c1ZoMveUUlG+v@t490s>
+In-Reply-To: <YV8c1ZoMveUUlG+v@t490s>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 7 Oct 2021 11:28:36 -0700
+Message-ID: <CAHbLzkrzYfQHh=u5574++s4U6hPK2Cax00W2w3nYDGmmL4=M+g@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Peter Xu <peterx@redhat.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 12:41 AM, Leonard Crestez wrote:
-> 
-> 
-> On 07.10.2021 04:14, David Ahern wrote:
->> On 10/6/21 11:48 AM, Leonard Crestez wrote:
->>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key
->>> *tcp_md5_do_lookup_exact(const struct sock *sk,
->>>   #endif
->>>       hlist_for_each_entry_rcu(key, &md5sig->head, node,
->>>                    lockdep_sock_is_held(sk)) {
->>>           if (key->family != family)
->>>               continue;
->>> -        if (key->l3index && key->l3index != l3index)
->>> +        if (key->l3index != l3index)
->>
->> That seems like the bug fix there. The L3 reference needs to match for
->> new key and existing key. I think the same change is needed in
->> __tcp_md5_do_lookup.
-> 
-> Current behavior is that keys added without tcpm_ifindex will match
-> connections both inside and outside VRFs. Changing this might break real
-> applications, is it really OK to claim that this behavior was a bug all
-> along?
+On Thu, Oct 7, 2021 at 9:14 AM Peter Xu <peterx@redhat.com> wrote:
+>
+> On Wed, Oct 06, 2021 at 04:41:35PM -0700, Yang Shi wrote:
+> > > Or maybe we just don't touch it until there's need for a functional change?  I
+> > > feel it a pity to lose the git blame info for reindent-only patches, but no
+> > > strong opinion, because I know many people don't think the same and I'm fine
+> > > with either ways.
+> >
+> > TBH I really don't think keeping old "git blame" info should be an
+> > excuse to avoid any coding style cleanup.
+>
+> Sure.
+>
+> >
+> > >
+> > > Another side note: perhaps a comment above pageflags enum on PG_has_hwpoisoned
+> > > would be nice?  I saw that we've got a bunch of those already.
+> >
+> > I was thinking about that, but it seems PG_double_map doesn't have
+> > comment there either so I didn't add.
+>
+> IMHO that means we may just need even more documentations? :)
+>
+> I won't ask for documenting doublemap bit in this series, but I just don't
+> think it's a good excuse to not provide documentations if we still can.
+> Especially to me PageHasHwpoisoned looks really so like PageHwpoisoned, so
+> it'll be still very nice to have some good document along with the patch it's
+> introduced.
 
-no.
+OK, I could add more comments for this flag in the enum. It should be
+just a duplicate of the comment right before the PAGEFLAG definition.
 
-It's been a few years. I need to refresh on the logic and that is not
-going to happen before this weekend.
-
+>
+> Thanks,
+>
+> --
+> Peter Xu
+>
