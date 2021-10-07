@@ -2,65 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E3A424BF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A271E424BDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239876AbhJGCzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 22:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S232361AbhJGCsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 22:48:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhJGCzZ (ORCPT
+        with ESMTP id S232191AbhJGCsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 22:55:25 -0400
-Received: from dnyon.com (unknown [IPv6:2001:ba0:1800:12f::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD63AC061746;
-        Wed,  6 Oct 2021 19:53:32 -0700 (PDT)
-Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net [81.39.194.55])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dnyon.com (Postfix) with ESMTPSA id 067AE3FD76;
-        Thu,  7 Oct 2021 02:44:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
-        t=1633574695; bh=yXdyabDfjZ+A/RncXyoHHMmlJkHBFE+VzZdU52kMq60=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FttTzjp5tZcPDEDtWtG8vxozXND13c9yZCVON+ZIGwbPu+sPC4kpChGIBva9TmLYG
-         ayyCxQvmsEJF3zDOku9CLaFW3EsAUcz+o+jSR9m/81xybYWav66u5CPxGvJT0a4On4
-         0N9zJfCoOtxjPOjxBURICf1qn33EKuviLFl6Lu5V795aa4LMI6AdI50Vq0GanAw6NL
-         0CutSADQV3JcnMdNW/sRODXaDyTBZSJW/sKLe1xnM5fJ9jVX745EbXi4atP7a1y8FR
-         0GKyhSQR2umIn40SBNETounjF5qRQEox5+ElRodwMlXyFtpdRvRyW+z2fg0nwE7Zzc
-         2VKo5Z/pXYGRg==
-From:   Alejandro Tafalla <atafalla@dnyon.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        =?ISO-8859-1?Q?P=E9ter?= Ujfalusi 
-        <peter.ujfalusi@linux.intel.com>,
-        ~postmarketos/upstreaming@lists.sr.ht, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] dt-bindings: sound: max98927: Add reset-gpios optional property
-Date:   Thu, 07 Oct 2021 04:44:49 +0200
-Message-ID: <4682758.31r3eYUQgx@alexpc>
-In-Reply-To: <5004d52da527bf1dd9e5b17e20b2ce50a0b57b5a.1633572679.git.atafalla@dnyon.com>
-References: <cover.1633572679.git.atafalla@dnyon.com> <5004d52da527bf1dd9e5b17e20b2ce50a0b57b5a.1633572679.git.atafalla@dnyon.com>
+        Wed, 6 Oct 2021 22:48:15 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB18C061746;
+        Wed,  6 Oct 2021 19:46:22 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id p1so4035851pfh.8;
+        Wed, 06 Oct 2021 19:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=IpVh1IYfpzKfR6GkSU+3lboEb+0mbcf/l+spamR+b4w=;
+        b=qUqtdUagXGAHjJ02iK3EMfeQQVQwbLTfNID8omD0ZiAPu6CSf3U3Hub+uP53ewURUY
+         HShMwL8OiIp1x1Z/xPUraEDuIWFQi4OIqZi6hXbo6pbXXrlpohC3u2r/tM1f7h2wavk4
+         tj33wD82910933jV6FPkEiv0xW8psa2+sKnso4MtRvBFTvOqx7eDFLxDAKasxS025rQC
+         UNZt5jEiU/XUnLiIkebPOE7rLHZK3BOogYPCBEUrB5yxk5K+8u8ArXY72L9+y8H3vgRI
+         SjxdRwBT5ON7qIvRxaFOUfbpeoiXaI8aMH3qUGUCSPYrqZRDDWLN5vhxzgW3/lm2odmA
+         CgRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=IpVh1IYfpzKfR6GkSU+3lboEb+0mbcf/l+spamR+b4w=;
+        b=kfoQjQjK8DA7IGY9nA7o78EY6oipkJD/XvvxEnVXzKkZr3prvUYHbBR9Q5SK5gxa1Z
+         zIqkgSg5FksTSX3NxjEmvvRVy5LhQ7kZ638/DkaG/ZAznupbSpUypBhnRqjYI3umpL7u
+         7xbuAfInd5CwTtIlbU8nQw42t6LsRwohDL1hJoMaXOevkgTSwlrTjTvVrg2m0M7e+BET
+         +bSoeuCKz5WIOM/ZYmH9Nw/+M8d5ZeTe7Cy4C8+7ADrg2z9PLwkmPThIqlF/Dq+ok/7Y
+         72igykPo0w3fsmo3BPPcnlhktH52T/QWKKQ/6vVjkbub7bi+SWGKS0y020EPocOpRbAt
+         Zbtw==
+X-Gm-Message-State: AOAM530duHzJNZ5hxn7mPvFuXe7lQoEY5EIh+hKGRhSzCd80o454c4Fh
+        /o7N7n/6v7D1MKB5bYCcILc=
+X-Google-Smtp-Source: ABdhPJwl5RGXpQauISnEDl9qOpBhvRuE7gS6xNbt6Ro1NKjU7GGs7xBeC94oFMrkiB25zWuCItbO/A==
+X-Received: by 2002:aa7:8439:0:b0:44c:80da:fc39 with SMTP id q25-20020aa78439000000b0044c80dafc39mr1806612pfn.47.1633574781962;
+        Wed, 06 Oct 2021 19:46:21 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id t6sm22435915pfh.63.2021.10.06.19.46.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 19:46:21 -0700 (PDT)
+Message-ID: <99b43bbf-b63e-d684-dd61-3087e9f22dc4@gmail.com>
+Date:   Wed, 6 Oct 2021 19:46:08 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+Content-Language: en-US
+To:     Zev Weiss <zev@bewilderbeest.net>, openbmc@lists.ozlabs.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20211007000954.30621-1-zev@bewilderbeest.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/10/21 4:38 Alejandro Tafalla wrote:
-> Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> ---
->  Documentation/devicetree/bindings/sound/max9892x.txt | 3 +++
->  1 file changed, 3 insertions(+)
 
-Sorry, I forgot to add:  Acked-by: Rob Herring <robh@kernel.org>
 
+On 10/6/2021 5:09 PM, Zev Weiss wrote:
+> Hello,
+> 
+> This patch series is in some ways kind of a v2 for the "Dynamic
+> aspeed-smc flash chips via 'reserved' DT status" series I posted
+> previously [0], but takes a fairly different approach suggested by Rob
+> Herring [1] and doesn't actually touch the aspeed-smc driver or
+> anything in the MTD subsystem, so I haven't marked it as such.
+> 
+> To recap a bit of the context from that series, in OpenBMC there's a
+> need for certain devices (described by device-tree nodes) to be able
+> to be attached and detached at runtime (for example the SPI flash for
+> the host's firmware, which is shared between the BMC and the host but
+> can only be accessed by one or the other at a time).  To provide that
+> ability, this series adds support for a new common device-tree
+> property, a boolean "dynamic" that indicates that the device may come
+> and go at runtime.  When present on a node, the sysfs file for that
+> node's "status" property is made writable, allowing userspace to do
+> things like:
+> 
+>    $ echo okay > /sys/firmware/devicetree/.../status
+>    $ echo reserved > /sys/firmware/devicetree/.../status
+> 
+> to activate and deactivate a dynamic device.
+
+This is a completely drive by comment here, but cannot you already 
+achieve what you want today by making the SPI-NOR to be loaded as a 
+module, probe it when you need it from the BMC, and unbind or rmmod the 
+drive when you need it on the server/host attached to the BMC?
+
+Looking at [0] there appears to be enough signaling visible by the BMC's 
+user-space that it ought to be possible?
+
+Assuming that there may be multiple flash chips and you somehow need to 
+access one in order to complete the BMC device boot, but not the other 
+one(s), you could imagine unbinding the spi-nor driver from the ones you 
+don't want to drive and wait until you have appropriate signaling made 
+available to your or is there a risk of racing with the host in doing so?
 -- 
-Alejandro Tafalla
-
-
+Florian
