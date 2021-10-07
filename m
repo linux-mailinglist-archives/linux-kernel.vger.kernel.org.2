@@ -2,231 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F6424F5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C09424F65
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240618AbhJGIhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 04:37:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:30992 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232348AbhJGIhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:37:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633595757; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Message-ID: In-Reply-To: Date: References: Subject: Cc:
- To: From: Sender; bh=THqy+F0YtKNfeYDAR6Uu0AL5jJ4BrmAfvTC+DB6h4Dw=; b=EjfAbrh/FhmOPJ6/BT9ZCjp89ZRPrxt65WmJGkWEfF+rxbLvXtVA4expr2Hj1PNa63eKdVs4
- /Q4B87MgGtdfwPPayupzyLJ201F5NwX7NwNA7yCzMDecNtgWyiQX6+a/S0omOG9iLKUamhvi
- UP+CfX3F5xeqmy1MLSw2hujUdxo=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615eb169b8ab9916b3ee7add (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 08:35:53
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7136FC43616; Thu,  7 Oct 2021 08:35:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tykki (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D47DBC4338F;
-        Thu,  7 Oct 2021 08:35:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org D47DBC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?utf-8?Q?Roh?= =?utf-8?Q?=C3=A1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 05/24] wfx: add main.c/main.h
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
-        <2723787.uDASXpoAWK@pc-42> <87k0ixj5vn.fsf@codeaurora.org>
-        <3570035.Z1gqkuQO5x@pc-42>
-Date:   Thu, 07 Oct 2021 11:35:43 +0300
-In-Reply-To: <3570035.Z1gqkuQO5x@pc-42> (=?utf-8?B?IkrDqXLDtG1l?=
- Pouiller"'s message of "Wed,
-        06 Oct 2021 09:32:49 +0200")
-Message-ID: <875yu9cjvk.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232578AbhJGInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:43:31 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:45136 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232348AbhJGInP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:43:15 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D39A11C0BD1; Thu,  7 Oct 2021 10:41:20 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 10:41:20 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <20211007084120.GB15698@duo.ucw.cz>
+References: <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
+ <20211005200411.GB19804@duo.ucw.cz>
+ <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
+ <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz>
+ <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="/NkBOFFp2J2Af1nK"
+Content-Disposition: inline
+In-Reply-To: <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
 
-> Hi Kalle,
->
-> On Friday 1 October 2021 14:18:04 CEST Kalle Valo wrote:
->> J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com> writes:
->>=20
->> > On Friday 1 October 2021 11:22:08 CEST Kalle Valo wrote:
->> >> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
->> >>=20
->> >> > From: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.com>
->> >> >
->> >> > Signed-off-by: J=C3=A9r=C3=B4me Pouiller <jerome.pouiller@silabs.co=
-m>
->> >>=20
->> >> [...]
->> >>=20
->> >> > +/* The device needs data about the antenna configuration. This inf=
-ormation in
->> >> > + * provided by PDS (Platform Data Set, this is the wording used in=
- WF200
->> >> > + * documentation) files. For hardware integrators, the full proces=
-s to create
->> >> > + * PDS files is described here:
->> >> > + *   https:github.com/SiliconLabs/wfx-firmware/blob/master/PDS/REA=
-DME.md
->> >> > + *
->> >> > + * So this function aims to send PDS to the device. However, the P=
-DS file is
->> >> > + * often bigger than Rx buffers of the chip, so it has to be sent =
-in multiple
->> >> > + * parts.
->> >> > + *
->> >> > + * In add, the PDS data cannot be split anywhere. The PDS files co=
-ntains tree
->> >> > + * structures. Braces are used to enter/leave a level of the tree =
-(in a JSON
->> >> > + * fashion). PDS files can only been split between root nodes.
->> >> > + */
->> >> > +int wfx_send_pds(struct wfx_dev *wdev, u8 *buf, size_t len)
->> >> > +{
->> >> > +     int ret;
->> >> > +     int start, brace_level, i;
->> >> > +
->> >> > +     start =3D 0;
->> >> > +     brace_level =3D 0;
->> >> > +     if (buf[0] !=3D '{') {
->> >> > + dev_err(wdev->dev, "valid PDS start with '{'. Did you forget to
->> >> > compress it?\n");
->> >> > +             return -EINVAL;
->> >> > +     }
->> >> > +     for (i =3D 1; i < len - 1; i++) {
->> >> > +             if (buf[i] =3D=3D '{')
->> >> > +                     brace_level++;
->> >> > +             if (buf[i] =3D=3D '}')
->> >> > +                     brace_level--;
->> >> > +             if (buf[i] =3D=3D '}' && !brace_level) {
->> >> > +                     i++;
->> >> > +                     if (i - start + 1 > WFX_PDS_MAX_SIZE)
->> >> > +                             return -EFBIG;
->> >> > +                     buf[start] =3D '{';
->> >> > +                     buf[i] =3D 0;
->> >> > +                     dev_dbg(wdev->dev, "send PDS '%s}'\n", buf + =
-start);
->> >> > +                     buf[i] =3D '}';
->> >> > +                     ret =3D hif_configuration(wdev, buf + start,
->> >> > +                                             i - start + 1);
->> >> > +                     if (ret > 0) {
->> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: invalid data (unsupported
->> >> > options?)\n",
->> >> > +                                     start, i);
->> >> > +                             return -EINVAL;
->> >> > +                     }
->> >> > +                     if (ret =3D=3D -ETIMEDOUT) {
->> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip didn't reply (corrup=
-ted
->> >> > file?)\n",
->> >> > +                                     start, i);
->> >> > +                             return ret;
->> >> > +                     }
->> >> > +                     if (ret) {
->> >> > + dev_err(wdev->dev, "PDS bytes %d to %d: chip returned an unknown
->> >> > error\n",
->> >> > +                                     start, i);
->> >> > +                             return -EIO;
->> >> > +                     }
->> >> > +                     buf[i] =3D ',';
->> >> > +                     start =3D i;
->> >> > +             }
->> >> > +     }
->> >> > +     return 0;
->> >> > +}
->> >>=20
->> >> I'm not really fond of having this kind of ASCII based parser in the
->> >> kernel. Do you have an example compressed file somewhere?
->> >
->> > An example of uncompressed configuration file can be found here[1]. On=
-ce
->> > compressed with [2], you get:
->> >
->> >     {a:{a:4,b:1},b:{a:{a:4,b:0,c:0,d:0,e:A},b:{a:4,b:0,c:0,d:0,e:B},c:=
-{a:4,b:0,c:0,d:0,e:C},d:{a:4,b:0,c:0,d:0,e:D},e:{a:4,b:0,c:0,d:0,e:E},f:{a:=
-4,b:0,c:0,d:0,e:F},g:{a:4,b:0,c:0,d:0,e:G},h:{a:4,b:0,c:0,d:0,e:H},i:{a:4,b=
-:0,c:0,d:0,e:I},j:{a:4,b:0,c:0,d:0,e:J},k:{a:4,b:0,c:0,d:0,e:K},l:{a:4,b:0,=
-c:0,d:1,e:L},m:{a:4,b:0,c:0,d:1,e:M}},c:{a:{a:4},b:{a:6},c:{a:6,c:0},d:{a:6=
-},e:{a:6},f:{a:6}},e:{b:0,c:1},h:{e:0,a:50,b:0,d:0,c:[{a:1,b:[0,0,0,0,0,0]}=
-,{a:2,b:[0,0,0,0,0,0]},{a:[3,9],b:[0,0,0,0,0,0]},{a:A,b:[0,0,0,0,0,0]},{a:B=
-,b:[0,0,0,0,0,0]},{a:[C,D],b:[0,0,0,0,0,0]},{a:E,b:[0,0,0,0,0,0]}]},j:{a:0,=
-b:0}}
->>=20
->> So what's the grand idea with this braces format? I'm not getting it.
->
->   - It allows to describe a tree structure
->   - It is ascii (easy to dump, easy to copy-paste)
->   - It is small (as I explain below, size matters)
->   - Since it is similar to JSON, the structure is obvious to many people
->
-> Anyway, I am not the author of that and I have to deal with it.
+--/NkBOFFp2J2Af1nK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm a supported for JSON like formats, flexibility and all that. But
-they belong to user space, not kernel.
+Hi!
 
->> Usually the drivers just consider this kind of firmware configuration
->> data as a binary blob and dump it to the firmware, without knowing what
->> the data contains. Can't you do the same?
->
-> [I didn't had received this mail :( ]
->
-> The idea was also to send it as a binary blob. However, the firmware use
-> a limited buffer (1500 bytes) to parse it. In most of case the PDS exceeds
-> this size. So, we have to split the PDS before to send it.
->
-> Unfortunately, we can't split it anywhere. The PDS is a tree structure and
-> the firmware expects to receive a well formatted tree.
->
-> So, the easiest way to send it to the firmware is to split the tree
-> between each root nodes and send each subtree separately (see also the
-> comment above wfx_send_pds()).
->
-> Anyway, someone has to cook this configuration before to send it to the
-> firmware. This could be done by a script outside of the kernel. Then we
-> could change the input format to simplify a bit the processing in the
-> kernel.
+> [...]
+> > > That "central facility" option can be as simple as "mkdir
+> > > /somewhere/sanitized_id", using inode numbers for example. You don't
+> > > really need IPC.
+> >=20
+> > Hmm, so the suggestion is to have some directory which contains files
+> > representing IDs, each containing the string name of the associated
+> > vma? Then let's say we are creating a new VMA and want to name it. We
+> > would have to scan that directory, check all files and see if any of
+> > them contain the name we want to reuse the same ID.
+>=20
+> I believe Pavel meant something as simple as
+> $ YOUR_FILE=3D$YOUR_IDS_DIR/my_string_name
+> $ touch $YOUR_FILE
+> $ stat -c %i $YOUR_FILE
+>=20
+> YOUR_IDS_DIR can live on a tmpfs and you can even implement a policy on
+> top of that (who can generate new ids, gurantee uniqness etc...).
+>=20
+> The above is certainly not for free of course but if you really need a
+> system wide consistency when using names then you need some sort of
+> central authority. How you implement that is not all that important
+> but I do not think we want to handle that in the kernel.
 
-I think a binary file with TLV format would be much better, but I'm sure
-there also other good choises.
+For the record, yes, that is what I meant.
 
-> However, the driver has already some users and I worry that changing
-> the input format would lead to a mess.
-
-You can implement a script which converts the old format to the new
-format. And you can use different naming scheme in the new format so
-that we don't accidentally load the old format. And even better if you
-add a some kind of signature in the new format and give a proper error
-from the driver if it doesn't match.
-
+Thanks,
+								Pavel
 --=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+http://www.livejournal.com/~pavelmachek
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+--/NkBOFFp2J2Af1nK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYV6ysAAKCRAw5/Bqldv6
+8so3AJ95heGJRCzxbpdQQFfSmV03PcZOGwCgtziQNAZ2Yv2ZLm5e5UwviJ4kwxg=
+=TOZ1
+-----END PGP SIGNATURE-----
+
+--/NkBOFFp2J2Af1nK--
