@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D023D42593D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1531425941
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243254AbhJGRWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:22:05 -0400
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:45775 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243253AbhJGRV6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:21:58 -0400
-Received: by mail-oo1-f46.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso2100046oot.12;
-        Thu, 07 Oct 2021 10:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pRS9W9aYA7YdWQXQJjG/aiOW5ROYwoQLPuWu0OWbdFI=;
-        b=l9TkqxbrFxiFPfT8L69Pb5NWWiqUbWrL6HAEIcGdjVK5vwSBkrCK3C3PV3EO1csfN8
-         6wvIdnlIK/1Iz9OAD8EDD5nPf4jYM0VQZtlxkNVTZcvMRdY5IyII4G5OCANudR1ABpoy
-         IT6rByNhktYEkI3QlPhSkjsbT6dbNoWK4xET0GoHUX/K0lsRUZSHAtA3l4t9KQpAa/Io
-         GXdXw7woN2nzQmXvjQbbKsB3IPmk4pZDR58+5SEIhPxgj1LKXVyqvhtt12YwvAHm0qOJ
-         v5VeR08HoWUfc8pdf6ExYZCbFxMpUDZbDgnTLfH4hkqvkYW0RLV1Hhwm7ZkX8m75ZwTC
-         5SFQ==
-X-Gm-Message-State: AOAM5303XSmwNepGZhTlg9tFItLTH59f2zNPoTV+jbLxtqDUeKjVaqyL
-        w/rZtXL/GManmJoCKxw/H90slmbuYXAfonxR4rc=
-X-Google-Smtp-Source: ABdhPJzeFDGczUHdstuoM/GQcLNSMSRwrYuwJDUIsKQLkq5Ru7MjdScPDlrmNeRstIpg6hGwi6j8+iM/I/6PVL+DVY8=
-X-Received: by 2002:a4a:ca98:: with SMTP id x24mr4183071ooq.91.1633627204058;
- Thu, 07 Oct 2021 10:20:04 -0700 (PDT)
+        id S243341AbhJGRWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:22:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:59828 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243315AbhJGRWD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:22:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225087853"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="225087853"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:20:08 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="522677255"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:20:03 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYX3m-009bza-In;
+        Thu, 07 Oct 2021 20:19:58 +0300
+Date:   Thu, 7 Oct 2021 20:19:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        jic23@kernel.org, linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v4 6/7] plist: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YV8sPjLn1jqLOm2H@smile.fi.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+ <20211007154407.29746-7-andriy.shevchenko@linux.intel.com>
+ <1ec405c5a8fd24de9066277ce855d7e39f93e691.camel@perches.com>
 MIME-Version: 1.0
-References: <20211006051318.117094-1-miguel.bernal.marin@linux.intel.com>
-In-Reply-To: <20211006051318.117094-1-miguel.bernal.marin@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Oct 2021 19:19:53 +0200
-Message-ID: <CAJZ5v0h7OVzjJNP9BXw5XucL3JQ7tY9wHLD8TZXjAKx_gxiDtA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: tools: fix compilation error
-To:     Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
-Cc:     Rafael J Wysocki <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ec405c5a8fd24de9066277ce855d7e39f93e691.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 7:13 AM Miguel Bernal Marin
-<miguel.bernal.marin@linux.intel.com> wrote:
->
-> When acpi tools are compiled the following error is showed:
->
->    $ cd tools/power/acpi
->    $ make
->      DESCEND tools/acpidbg
->      MKDIR    include
->      CP       include
->      CC       tools/acpidbg/acpidbg.o
->    In file included from /home/linux/tools/power/acpi/include/acpi/platform/acenv.h:152,
->                     from /home/linux/tools/power/acpi/include/acpi/acpi.h:22,
->                     from acpidbg.c:9:
->    /home/linux/tools/power/acpi/include/acpi/platform/acgcc.h:25:10: fatal error: linux/stdarg.h: No such file or directory
->       29 | #include <linux/stdarg.h>
->          |          ^~~~~~~~~~~~~~~~
->    compilation terminated.
->
-> Keep the same logic from ACPICA, just identify when is used inside kernel
-> or by acpi tool.
->
-> Fixes: c0891ac15f04 ("isystem: ship and use stdarg.h")
-> Signed-off-by: Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
-> ---
->  include/acpi/platform/acgcc.h | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/include/acpi/platform/acgcc.h b/include/acpi/platform/acgcc.h
-> index fb172a03a753..20ecb004f5a4 100644
-> --- a/include/acpi/platform/acgcc.h
-> +++ b/include/acpi/platform/acgcc.h
-> @@ -22,9 +22,14 @@ typedef __builtin_va_list va_list;
->  #define va_arg(v, l)            __builtin_va_arg(v, l)
->  #define va_copy(d, s)           __builtin_va_copy(d, s)
->  #else
-> +#ifdef __KERNEL__
->  #include <linux/stdarg.h>
-> -#endif
-> -#endif
-> +#else
-> +/* Used to build acpi tools */
-> +#include <stdarg.h>
-> +#endif /* __KERNEL__ */
-> +#endif /* ACPI_USE_BUILTIN_STDARG */
-> +#endif /* ! va_arg */
->
->  #define ACPI_INLINE             __inline__
->
-> --
+On Thu, Oct 07, 2021 at 10:12:56AM -0700, Joe Perches wrote:
+> On Thu, 2021-10-07 at 18:44 +0300, Andy Shevchenko wrote:
+> > When kernel.h is used in the headers it adds a lot into dependency hell,
+> > especially when there are circular dependencies are involved.
+> > 
+> > Replace kernel.h inclusion with the list of what is really being used.
+> []
+> > diff --git a/include/linux/plist.h b/include/linux/plist.h
+> []
+> > @@ -73,8 +73,11 @@
+> []
+> > +#include <asm/bug.h>
+> 
+> why asm/bug.h and not linux/bug.h ?
 
-Applied as 5.16 material, thanks!
+The direct inclusion is from that one. Why linux/bug? What are we going
+to use from it?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
