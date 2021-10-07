@@ -2,80 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C57B42576B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6808425764
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242100AbhJGQOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:14:06 -0400
-Received: from mga07.intel.com ([134.134.136.100]:43753 "EHLO mga07.intel.com"
+        id S241663AbhJGQLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhJGQOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:14:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="289792597"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="289792597"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:08:25 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="440316846"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:08:21 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mYVwJ-009aZx-0L;
-        Thu, 07 Oct 2021 19:08:11 +0300
-Date:   Thu, 7 Oct 2021 19:08:11 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, kunit-dev@googlegroups.com,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: [PATCH v4 2/7] kernel.h: Split out container_of() and
- typeof_member() macros
-Message-ID: <YV8ba+rzdornmMgF@smile.fi.intel.com>
-References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
- <20211007154407.29746-3-andriy.shevchenko@linux.intel.com>
- <CANiq72=pCQgwHe5u2nS_RkGBnRLdcw2v=vk-8eNDeAP9ygO0SQ@mail.gmail.com>
+        id S232589AbhJGQLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:11:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B664461074;
+        Thu,  7 Oct 2021 16:09:46 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 17:09:44 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        maz@kernel.org, mark.rutland@arm.com, james.morse@arm.com,
+        anshuman.khandual@arm.com, leo.yan@linaro.org,
+        mike.leach@linaro.org, mathieu.poirier@linaro.org, will@kernel.org,
+        lcherian@marvell.com, coresight@lists.linaro.org
+Subject: Re: [PATCH v2 10/17] arm64: Enable workaround for TRBE overwrite in
+ FILL mode
+Message-ID: <YV8byOXAhk+ydZkY@arm.com>
+References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
+ <20210921134121.2423546-11-suzuki.poulose@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiq72=pCQgwHe5u2nS_RkGBnRLdcw2v=vk-8eNDeAP9ygO0SQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210921134121.2423546-11-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 05:54:32PM +0200, Miguel Ojeda wrote:
-> On Thu, Oct 7, 2021 at 5:44 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > +#define typeof_member(T, m)    typeof(((T*)0)->m)
+On Tue, Sep 21, 2021 at 02:41:14PM +0100, Suzuki K Poulose wrote:
+> Now that we have the work around implmented in the TRBE
+> driver, add the Kconfig entries and document the errata.
 > 
-> Is the patch missing the removal from the other place?
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-Possibly, but I leave it for now for builders to place with the series and
-people having chance to comment.
-
-Thanks for review!
-
-Maybe Andrew can fix this when applying?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
