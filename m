@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60E7B425293
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163184252B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241234AbhJGMKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:10:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241155AbhJGMJ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:09:57 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E08C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:08:03 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id 145so5148152pfz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:08:03 -0700 (PDT)
+        id S241360AbhJGMLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:11:41 -0400
+Received: from mx1.tq-group.com ([93.104.207.81]:64006 "EHLO mx1.tq-group.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241424AbhJGMLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:11:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GvtEAmv10KTKNmGmr2+wYmiKP1biHINp8QYP5Zd8fX4=;
-        b=pWyUbNC5DgTs8jQLSOUmzAHeWqwkPRcLECVbpCjZKwHWxLV6mlPQrEL/ULSHvci2BS
-         749PE8M//SfV0aNoIQjXTovMMhvLFnBMU7wB+9A8hsD1CpixK1jaKq0oPwJVb6s/wxbU
-         0ynI70tEuEvGR08nm/bNASlY1nO0T+jOFJz9h4HuX81Ii77kJA2AUB2Aaxo3Tgyyr7NH
-         oBo8Tlje8pgrvxMSKBF4OfVjgf/9bir5kdwaexD8F/RJcS/qUtVKBt6ycHlGLzaqldo+
-         5Wf6t8n3ESWwo9K9XVYZfwkIPoAMgkwMkQpyamx7htVmpDr7wLZpiGg5/rEKs2rPEBGn
-         oNYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GvtEAmv10KTKNmGmr2+wYmiKP1biHINp8QYP5Zd8fX4=;
-        b=3tIub07XY8ayNdV9FzCdwkDAnStoVs4jPku8tfnyPYhFI5WRyQjEe6yQBaFgVSgfMF
-         ZLayRpankWZMO1Rt3C8QzP7cX76swuQf+YXbx77pX40Hb73FtRCHszgMmX4YL0qt7uoP
-         DHSyS0HFp2A1AOHTYN6XFgmDM66CMDO700UQGIK4RURTWDqIH0jwzD7ygYTE1eUMdzjU
-         6a8MjqrEcEFn2wCd+fyyKeGk3gUGfRRkUQ6B/uWttxrgAFi6nyAbJ35MOfC8Vzc8qjyz
-         x8TSUG5E+RdPIgJQDGC2EQldtzi0vo1qdilZuiSxJdFeLrS1eLyweLbi79vBv6FngEp8
-         fPQA==
-X-Gm-Message-State: AOAM530lQCgICK/I+Qi9UD3mMMexgkHF5lifcX+zvg7/wUIs8t+SpWhy
-        Z3R3LXkeBJEy4kN3XP7Jz2c=
-X-Google-Smtp-Source: ABdhPJyG7ap2acFO/8tJlIiam0O7cMsNnLU7UN3wsq1pC86XFgokQwPgoZOaCSSa6MQVf6/eQP3weA==
-X-Received: by 2002:aa7:9f05:0:b0:44c:619e:87da with SMTP id g5-20020aa79f05000000b0044c619e87damr4003879pfr.42.1633608482857;
-        Thu, 07 Oct 2021 05:08:02 -0700 (PDT)
-Received: from localhost.localdomain ([144.202.123.152])
-        by smtp.gmail.com with ESMTPSA id c8sm23915582pfj.204.2021.10.07.05.08.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 05:08:02 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     pmladek@suse.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, peterz@infradead.org,
-        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v2 4/4] kernel/kthread: show a warning if kthread's comm is truncated
-Date:   Thu,  7 Oct 2021 12:07:52 +0000
-Message-Id: <20211007120752.5195-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211007120752.5195-1-laoar.shao@gmail.com>
-References: <20211007120752.5195-1-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1633608567; x=1665144567;
+  h=from:to:cc:subject:date:message-id;
+  bh=VI9Tcp4Ze00HFFj8ItEOXjKUFSXQBnT6Yos7WuUkTbY=;
+  b=H9TdhNo+glNitSVOQgiatDXj5WelBwHtASVFYnowxRMm2MEL1gvLm0qx
+   b/CtvvRvz1GegPeLcOxg41Fb7JNyS8PZ1otgXLrii3dFC2cmbz6Yjfw0j
+   u7WyjIO27SakMtZiLHl2SMnGVhTp2KR9RU4v3QE/RXbebotlCipy+C757
+   wYezQ7riQk3J0/d1AE7vc8kJg6x4opP/ns7X3soGOPqz+S12rCOgeYM9a
+   +N1l04BkAP2U6qoOxHcoPUas4ZK17rUBZHA7jYvXLkEAtiz+3X3GNT7X8
+   /Ai/4Phppm4YpduX+fCgtZF5BLEnDXeh42JYE5dvx4ML8LIXP9p7BLczj
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.85,354,1624312800"; 
+   d="scan'208";a="19920236"
+Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
+  by mx1-pgp.tq-group.com with ESMTP; 07 Oct 2021 14:09:25 +0200
+Received: from mx1.tq-group.com ([192.168.6.7])
+  by tq-pgp-pr1.tq-net.de (PGP Universal service);
+  Thu, 07 Oct 2021 14:09:25 +0200
+X-PGP-Universal: processed;
+        by tq-pgp-pr1.tq-net.de on Thu, 07 Oct 2021 14:09:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1633608565; x=1665144565;
+  h=from:to:cc:subject:date:message-id;
+  bh=VI9Tcp4Ze00HFFj8ItEOXjKUFSXQBnT6Yos7WuUkTbY=;
+  b=CzWoZOWDApOfsKfHLh9Q5UtAUT7nWAE9kcfDv6plMYpsSmPnvBAAZCOZ
+   MvVic/DtXpadPDzmLmuRwy1ZDFHdJRbwYoIntHwWJj11e/ti7coDAWLKR
+   2Mj46pElk6fysTzKS+0HV7duCN0s2t4lE/T40OLEZt7jRr4aZ8EvcSA6l
+   r+D+vzMnyjemMu96sahu4Rrm37zu1RW0lh6AxTr4imspmiqPH4hTbWQ/+
+   dkAB1/OnD9Xtda1b43UEddohYYDEv6CI3wEUKCwEoLJYAu7oHFgFaY94b
+   u3VNtWhreP8NWhUoJKor0XmDg0Tsaj/u9nFG+2Y4GHiquzrlzqh5SQN3E
+   g==;
+X-IronPort-AV: E=Sophos;i="5.85,354,1624312800"; 
+   d="scan'208";a="19920235"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 07 Oct 2021 14:09:25 +0200
+Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.121.48.12])
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id DABEE280065;
+        Thu,  7 Oct 2021 14:09:24 +0200 (CEST)
+From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Subject: [PATCH v2 1/2] mtd: spi-nor: micron-st: make mt25ql02g/mt25qu02g match more specific, add 4B opcodes
+Date:   Thu,  7 Oct 2021 14:08:11 +0200
+Message-Id: <a69181ccf225424a8bd11349aad0df7face9715e.1633607826.git.matthias.schiffer@ew.tq-group.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Show a warning if task comm is truncated. Below is the result
-of my test case:
+Change the mt25ql02g/mt25qu02g entries to include SPI_NOR_4B_OPCODES. In
+addition, the SPI_NOR_DUAL_READ flag is added to mt25ql02g; this seems
+to have been an accidental omission, as mt25ql02g and mt25qu02g should
+support the same features.
 
-truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
+In addition, the entries are made more specific by matching on the mt25q
+extended ID, like it is already done for the smaller n25q derivatives.
+It is unclear whether n25q derivatives with 2Gbit exist that do not
+support 4B opcodes (like it is the case for sizes up to 512MBit), so we
+do not have a match for such variants anymore (as we wouldn't even know
+how to name such hypothetical models).
 
-Suggtested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Petr Mladek <pmladek@suse.com>
+The changes were tested with a mt25qu01g, which should support the same
+features as the mt25ql02g/mt25qu02g.
+
+Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
 ---
- kernel/kthread.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..46b924c92078 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
- 	if (!IS_ERR(task)) {
- 		static const struct sched_param param = { .sched_priority = 0 };
- 		char name[TASK_COMM_LEN];
-+		int len;
+v2:
+- add extended ID match
+- add back NO_CHIP_ERASE
+
+ drivers/mtd/spi-nor/micron-st.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
+index c224e59820a1..a000a0790ecd 100644
+--- a/drivers/mtd/spi-nor/micron-st.c
++++ b/drivers/mtd/spi-nor/micron-st.c
+@@ -180,12 +180,14 @@ static const struct flash_info st_parts[] = {
+ 	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048,
+ 			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+ 			      NO_CHIP_ERASE) },
+-	{ "mt25ql02g",   INFO(0x20ba22, 0, 64 * 1024, 4096,
+-			      SECT_4K | USE_FSR | SPI_NOR_QUAD_READ |
+-			      NO_CHIP_ERASE) },
+-	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096,
+-			      SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
+-			      SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
++	{ "mt25ql02g",   INFO6(0x20ba22, 0x104400, 64 * 1024, 4096,
++			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
++			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
++			       NO_CHIP_ERASE) },
++	{ "mt25qu02g",   INFO6(0x20bb22, 0x104400, 64 * 1024, 4096,
++			       SECT_4K | USE_FSR | SPI_NOR_DUAL_READ |
++			       SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES |
++			       NO_CHIP_ERASE) },
  
- 		/*
- 		 * task is already visible to other tasks, so updating
- 		 * COMM must be protected.
- 		 */
--		vsnprintf(name, sizeof(name), namefmt, args);
-+		len = vsnprintf(name, sizeof(name), namefmt, args);
-+		if (len >= TASK_COMM_LEN) {
-+			pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
-+				name, task->pid, len - TASK_COMM_LEN + 1);
-+		}
- 		set_task_comm(task, name);
- 		/*
- 		 * root may have changed our (kthreadd's) priority or CPU mask.
+ 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+ 	{ "m25p10",  INFO(0x202011,  0,  32 * 1024,   4, 0) },
 -- 
-2.18.2
+2.17.1
 
