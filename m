@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E064258CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A741F4258C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243000AbhJGRGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:06:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:39494 "EHLO mga01.intel.com"
+        id S242931AbhJGRFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:05:13 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1126 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243001AbhJGRF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:05:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249630162"
+        id S241576AbhJGRFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:05:12 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312503913"
 X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="249630162"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:02:48 -0700
+   d="scan'208";a="312503913"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:02:48 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="715241975"
+   d="scan'208";a="489088104"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2021 10:02:45 -0700
+  by orsmga008.jf.intel.com with ESMTP; 07 Oct 2021 10:02:45 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 624A5291; Thu,  7 Oct 2021 20:02:52 +0300 (EEST)
+        id 6DAAA299; Thu,  7 Oct 2021 20:02:52 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
@@ -34,9 +34,9 @@ Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
         Takashi Iwai <tiwai@suse.com>,
         Hans de Goede <hdegoede@redhat.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional() for mclk
-Date:   Thu,  7 Oct 2021 20:02:49 +0300
-Message-Id: <20211007170250.27997-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 4/4] ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log saturation
+Date:   Thu,  7 Oct 2021 20:02:50 +0300
+Message-Id: <20211007170250.27997-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
 References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
@@ -46,124 +46,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The devm_clk_get_optional() helper returns NULL when devm_clk_get()
-returns -ENOENT. This makes things slightly cleaner. The added benefit
-is mostly cosmetic.
+dev_err_probe() avoids printing into log when the deferred probe is invoked.
+This is possible when clock provider is pending to appear.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 69 ++++++++++++---------------
- 1 file changed, 30 insertions(+), 39 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 36f63516f0cb..28c561302e69 100644
+index 28c561302e69..5e9c53dadbc7 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -188,13 +188,10 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	}
- 
- 	if (SND_SOC_DAPM_EVENT_ON(event)) {
--		if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
--			ret = clk_prepare_enable(priv->mclk);
--			if (ret < 0) {
--				dev_err(card->dev,
--					"could not configure MCLK state");
--				return ret;
--			}
-+		ret = clk_prepare_enable(priv->mclk);
-+		if (ret < 0) {
-+			dev_err(card->dev, "could not configure MCLK state");
-+			return ret;
- 		}
- 		ret = byt_rt5651_prepare_and_enable_pll1(codec_dai, 48000, 50);
- 	} else {
-@@ -207,8 +204,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 					     48000 * 512,
- 					     SND_SOC_CLOCK_IN);
- 		if (!ret)
--			if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN)
--				clk_disable_unprepare(priv->mclk);
-+			clk_disable_unprepare(priv->mclk);
- 	}
- 
- 	if (ret < 0) {
-@@ -629,29 +625,25 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 		return ret;
- 	}
- 
--	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
--		/*
--		 * The firmware might enable the clock at
--		 * boot (this information may or may not
--		 * be reflected in the enable clock register).
--		 * To change the rate we must disable the clock
--		 * first to cover these cases. Due to common
--		 * clock framework restrictions that do not allow
--		 * to disable a clock that has not been enabled,
--		 * we need to enable the clock first.
--		 */
--		ret = clk_prepare_enable(priv->mclk);
--		if (!ret)
--			clk_disable_unprepare(priv->mclk);
-+	/*
-+	 * The firmware might enable the clock at boot (this information
-+	 * may or may not be reflected in the enable clock register).
-+	 * To change the rate we must disable the clock first to cover
-+	 * these cases. Due to common clock framework restrictions that
-+	 * do not allow to disable a clock that has not been enabled,
-+	 * we need to enable the clock first.
-+	 */
-+	ret = clk_prepare_enable(priv->mclk);
-+	if (!ret)
-+		clk_disable_unprepare(priv->mclk);
- 
--		if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
--			ret = clk_set_rate(priv->mclk, 25000000);
--		else
--			ret = clk_set_rate(priv->mclk, 19200000);
-+	if (byt_rt5651_quirk & BYT_RT5651_MCLK_25MHZ)
-+		ret = clk_set_rate(priv->mclk, 25000000);
-+	else
-+		ret = clk_set_rate(priv->mclk, 19200000);
- 
--		if (ret)
--			dev_err(card->dev, "unable to set MCLK rate\n");
--	}
-+	if (ret)
-+		dev_err(card->dev, "unable to set MCLK rate\n");
- 
- 	report = 0;
- 	if (BYT_RT5651_JDSRC(byt_rt5651_quirk))
-@@ -1064,21 +1056,20 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		byt_rt5651_dais[dai_index].cpus->dai_name = "ssp0-port";
- 
+@@ -1058,10 +1058,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
--		priv->mclk = devm_clk_get(dev, "pmc_plt_clk_3");
-+		priv->mclk = devm_clk_get_optional(dev, "pmc_plt_clk_3");
+ 		priv->mclk = devm_clk_get_optional(dev, "pmc_plt_clk_3");
  		if (IS_ERR(priv->mclk)) {
- 			ret_val = PTR_ERR(priv->mclk);
- 			dev_err(dev,
- 				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
- 				ret_val);
--			/*
--			 * Fall back to bit clock usage for -ENOENT (clock not
--			 * available likely due to missing dependencies), bail
--			 * for all other errors, including -EPROBE_DEFER
--			 */
--			if (ret_val != -ENOENT)
--				goto err;
--			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
-+			goto err;
+-			ret_val = PTR_ERR(priv->mclk);
+-			dev_err(dev,
+-				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
+-				ret_val);
++			ret_val = dev_err_probe(dev, PTR_ERR(priv->mclk),
++						"Failed to get MCLK from pmc_plt_clk_3\n");
+ 			goto err;
  		}
-+		/*
-+		 * Fall back to bit clock usage when clock is not
-+		 * available likely due to missing dependencies.
-+		 */
-+		if (!priv->mclk)
-+			byt_rt5651_quirk &= ~BYT_RT5651_MCLK_EN;
- 	}
- 
- 	snprintf(byt_rt5651_components, sizeof(byt_rt5651_components),
+ 		/*
 -- 
 2.33.0
 
