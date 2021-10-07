@@ -2,142 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF659425953
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:23:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE0C42595A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:24:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241738AbhJGRZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:25:40 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:43982 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbhJGRZi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:25:38 -0400
-Received: by mail-vs1-f49.google.com with SMTP id p2so7543326vst.10;
-        Thu, 07 Oct 2021 10:23:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V+O/Tzkp10P1T+2/uoWEpVc+uysV2odcVKV4KvQ215U=;
-        b=mUQyB0CmULvhRojj4nHZ+DkXDyV6mZVwVT+UxOlHCanmvS0wFj72FbNuB9C+86vzX6
-         oLEnJZDmg7Eizykec56R5J7iWxhA1y8shCeAx1GrbpfxdESVVpcXDgRTEEmUljdJl1HQ
-         iQ9al3xQCmloX2srfuB0WTs/ft7lrinHQwZf289W/W8VpY7WRJ5b96J8qzwcOCNDiiuO
-         Zu68P/FtRBIXNZYreZAK2f6BjohwEZlV7eHhS2WGuAwxpS06eEe5cHVXsZa5htuJo3Wy
-         g2VV0ohxotVqvdA0HHcq7y7qqV+EBXVXm/La7sgkh94/nN/v0dGF2llyuSH2N/JkWMZ9
-         Eucg==
-X-Gm-Message-State: AOAM530jm7n/LFWa4C+lCHeq2rNoJcdt1cB36hz4X77oemp3RjPAHiTn
-        l18OCVME3I/CYjG3AGAr6lrzMfxTvcXnJX3ba5g=
-X-Google-Smtp-Source: ABdhPJy4V/GXmg0AB22mdAwPWs3SRDpQ98AGJjXgLUnixh5p7JM+hRNLqYF8eYaypEWmH3xNHiXW9XwGfcfP15BVtaQ=
-X-Received: by 2002:a67:d583:: with SMTP id m3mr5601152vsj.41.1633627423685;
- Thu, 07 Oct 2021 10:23:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210930121630.17449-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210930121630.17449-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 Oct 2021 19:23:31 +0200
-Message-ID: <CAMuHMdXHv7H3xxEYFLhfBf+Pun-w=F4k5S2RAYJY6qz75QpxhQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 4/4] pinctrl: renesas: pinctrl-rzg2l: Add support to
- get/set drive-strength and output-impedance
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        id S241518AbhJGR0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:26:49 -0400
+Received: from muru.com ([72.249.23.125]:41966 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233133AbhJGR0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:26:48 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6E3E080C7;
+        Thu,  7 Oct 2021 17:25:24 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 20:24:52 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Suman Anna <s-anna@ti.com>
+Subject: Re: [PATCH 1/3] dt-bindings: bus: simple-pm-bus: Make clocks and
+ power-domains optional
+Message-ID: <YV8tZP05lAukFc4E@atomide.com>
+References: <20211007124858.44011-1-tony@atomide.com>
+ <20211007124858.44011-2-tony@atomide.com>
+ <CAMuHMdX3XBA25sUMF2SpfbH7XX5-UpPFj-0nHuwDOv49YWQn+A@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdX3XBA25sUMF2SpfbH7XX5-UpPFj-0nHuwDOv49YWQn+A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+* Geert Uytterhoeven <geert@linux-m68k.org> [211007 13:27]:
+> Hi Tony,
+> 
+> Thanks for your patch!
+> 
+> On Thu, Oct 7, 2021 at 2:49 PM Tony Lindgren <tony@atomide.com> wrote:
+> > Clocks and power domains are not required by the simple-pm-bus driver.
+> > There are buses with read-only registers for clocks and power domains
+> > that are always on.
+> 
+> The presence of clocks or power-domains properties is the only
+> distinguishing factor between simple-pm-bus and simple-bus, from a
+> DT point of view.  So if there has to be a distinguishment, the
+> properties should be required
 
-On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add support to get/set drive-strength and output-impedance of the pins.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Heh seems there is no need for distinguishment beyond the compatible
+property here though :)
 
-Thanks for your patch!
+> If you don't have clocks and power-domains, you should use simple-bus.
 
-> --- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> +++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-> @@ -47,6 +47,7 @@
->  #define PIN_CFG_FILONOFF               BIT(9)
->  #define PIN_CFG_FILNUM                 BIT(10)
->  #define PIN_CFG_FILCLKSEL              BIT(11)
-> +#define PIN_CFG_GROUP_B                        BIT(12)
+Except simple-bus is not the same as simple-pm-bus. We do not have
+simple-bus do pm_runtime_enable() as you well know having written it :)
 
-Perhaps it would be easier to have separate PIN_CFG_IOLH_A and
-PIN_CFG_IOLH_B flags, instead of a PIN_CFG_IOLH flag and a
-PIN_CFG_GROUP_B modifier flag?
+> > Even without clocks and power domains configured, simple-pm-bus is still
+> > different from simple-bus as simple-pm-bus enables runtime PM for the bus
+> > driver.
+> 
+> Which you need to have working Runtime PM for child devices, right? ;-)
 
->
->  #define RZG2L_MPXED_PIN_FUNCS          (PIN_CFG_IOLH | \
->                                          PIN_CFG_SR | \
+Right. And based on what I remember we simply cannot do pm_runtime_enable()
+for simple-bus without breaking tons of devices.
 
-> @@ -484,6 +513,38 @@ static int rzg2l_pinctrl_pinconf_get(struct pinctrl_dev *pctldev,
->                 break;
->         }
->
-> +       case PIN_CONFIG_OUTPUT_IMPEDANCE:
-> +       case PIN_CONFIG_DRIVE_STRENGTH: {
-> +               unsigned int mA[4] = { 2, 4, 8, 12 };
-> +               unsigned int oi[4] = { 100, 66, 50, 33 };
+> This is not specific to DT, but to Linux.
+> One more reason to let Linux treat simple-pm-bus and simple-bus exactly
+> the same.  Linux handles the clocks and power-domains (if present)
+> transparently anyway, through PM Domains
 
-static const
+I agree they should be treated the same way with simple-pm-bus just
+doing the pm_runtime_enable() being the only difference.
 
-> +
-> +               if (param == PIN_CONFIG_DRIVE_STRENGTH) {
-> +                       if (!(cfg & PIN_CFG_IOLH) || groupb_pin)
-> +                               return -EINVAL;
-> +               } else {
-> +                       if (!(cfg & PIN_CFG_IOLH) || !groupb_pin)
-> +                               return -EINVAL;
-> +               }
-> +
-> +               spin_lock_irqsave(&pctrl->lock, flags);
-> +
-> +               /* handle _L/_H for 32-bit register read/write */
-> +               addr = pctrl->base + IOLH(port);
-> +               if (bit >= 4) {
-> +                       bit -= 4;
-> +                       addr += 4;
-> +               }
-> +
-> +               reg = readl(addr) & (IOLH_MASK << (bit * 8));
-> +               reg = reg >> (bit * 8);
-> +               if (param == PIN_CONFIG_DRIVE_STRENGTH)
-> +                       arg = mA[reg];
-> +               else
-> +                       arg = oi[reg];
-> +               spin_unlock_irqrestore(&pctrl->lock, flags);
+But the clocks and power domain still should be optional. They are
+not required by simple-pm-bus.c driver, and may not be required by
+the hardware.
 
-I think you've reached the point where it starts to make sense to
-have helper functions to read and modify these sub-register fields
-that may be located into the current or next register.
+Got any better solutions in mind? Adding yet another compatible or
+another driver does not seem to get us anywhere either with this :)
 
-And after that, you can split it in two smaller separate cases for
-drive strength and output impedance.
+Regards,
 
-> +               break;
-> +       }
-> +
->         default:
->                 return -ENOTSUPP;
->         }
+Tony
 
-Gr{oetje,eeting}s,
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
