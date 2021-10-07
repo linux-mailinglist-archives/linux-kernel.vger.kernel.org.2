@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEEC42537F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E20425385
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhJGMzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:55:48 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:49977 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhJGMzq (ORCPT
+        id S233867AbhJGM6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhJGM6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:55:46 -0400
-Received: from mail-wr1-f52.google.com ([209.85.221.52]) by
- mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MXp1Q-1mHrpT1A5c-00YBFI; Thu, 07 Oct 2021 14:53:51 +0200
-Received: by mail-wr1-f52.google.com with SMTP id u18so18820851wrg.5;
-        Thu, 07 Oct 2021 05:53:51 -0700 (PDT)
-X-Gm-Message-State: AOAM533K7aW770QGwh1w3YzCr42cxRnA2bTLhGUYLZl2FbGbkyJSIg/u
-        377Ycaek8Ol3dvQbemYa0VUZILfPkwuP72b8jQo=
-X-Google-Smtp-Source: ABdhPJx3qpUbWvyNMVy1KNbxDMh4MqLKS5JIkc9RcdtCSvZi8OuENV0QF2OhHn5yo1RJXygzw/amDKF1gMtu7FnhAM8=
-X-Received: by 2002:adf:f481:: with SMTP id l1mr5064678wro.411.1633611230987;
- Thu, 07 Oct 2021 05:53:50 -0700 (PDT)
+        Thu, 7 Oct 2021 08:58:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C458C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:56:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=t2gI7q5/NIhb/glXH3O3Crq4bZm/0b4Cyew47K+4HGs=; b=RyiNaVJETD+rRsxfT5begYrjSD
+        /gjFqOCHepSY+F5xnOqZl5/KIBgLcOazz8PE7EpUfA+DOFAdgZufKUiyde7wfdkH9cBDQJu40Ldjj
+        1rDfM2wlsnESA8/PCvS7xHWuyj0qvBx8rui6MQVZrmwmmo9ewT8bp4nHqhXBnaoMK7n8ALzlZsSFY
+        82fc3lZ084uULAmX4KoEhYQSywAxRh1KsZSfd4Q9WixRxc+oSs/dfybJNTLhwQRQH9to3TP/n1dWh
+        L68TgBVJa6tHiqW8EZHSCJ0Xnu5MdiE1tDfMt2BB2wAo9R7HYS/Ci4VRbFmLm7o3MJBe2Yy3VwynT
+        hy0AW16Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYSuX-001qzE-G4; Thu, 07 Oct 2021 12:54:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 75880300079;
+        Thu,  7 Oct 2021 14:54:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 19607214490DF; Thu,  7 Oct 2021 14:54:07 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 14:54:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     pmladek@suse.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, valentin.schneider@arm.com,
+        mathieu.desnoyers@efficios.com, qiang.zhang@windriver.com,
+        robdclark@chromium.org, christian@brauner.io,
+        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] sched.h: extend task comm from 16 to 24 for
+ CONFIG_BASE_FULL
+Message-ID: <YV7t748s8vJQS9Bi@hirez.programming.kicks-ass.net>
+References: <20211007120752.5195-1-laoar.shao@gmail.com>
+ <20211007120752.5195-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-References: <20211007123147.5780-1-rpalethorpe@suse.com> <20211007123147.5780-2-rpalethorpe@suse.com>
-In-Reply-To: <20211007123147.5780-2-rpalethorpe@suse.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 7 Oct 2021 14:53:35 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0BiS=mOxS8FeJnxz7pjWFuVNJz0WPFVVEPzsZ0bmzYkQ@mail.gmail.com>
-Message-ID: <CAK8P3a0BiS=mOxS8FeJnxz7pjWFuVNJz0WPFVVEPzsZ0bmzYkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] vsock: Enable y2038 safe timeval for timeout
-To:     Richard Palethorpe <rpalethorpe@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Deepa Dinamani <deepa.kernel@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Palethorpe <rpalethorpe@richiejp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:0GPU+MHX7I6yLvPa5zhiZVDGC6SFqOrtvW27rHZ7j1V5l/Cm0KL
- u4B3D/KoB58F9TkE88+YTIhBeuJM2LThgqm2EOowLyKhAnt7JmKUg4oyE/qhHnO14BeP/fr
- GAIPPJ1Q9ECNqQ6PLLfH+iJOc1db/IltNX8jf4PdBqHeo9YqUZMZ+yHkrHe6KY4oJJvLHcG
- vhGR8Nanabz8W2sxTwEbA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:yAE/U057YVE=:wlh4KPRNxsy7azG19DE9BS
- g0yR7iI2u1R8XoOo7WU7gavbvsJJhli2LDLKqGMC0EZUrEAxGe7aMTCZJW00vN3gBE8PPj/cs
- MyRniNJzoTN0FyUFOaSFswiTBrO8Iv6IwJTbrDMBTI9+Had5vv8WSHBS3pz5CQ4hlpPHqO5+m
- Gqq4CJgaMarA1lEUrU1xS6Y5mAemIWD1RUGAOPp5hbbM13LY9szgLE7Pkh0NxVCWmh5evFM9d
- L7XuGmMWwzlXQm++h/uNyyNvxFPN+JPp3Ha7wrG8GT75E1b+Nt31dB9SuDzC3D5H78kqFmGKX
- fURUS0n8crl94wHycowQilB5+zAUSL6zoiPG7obFDTQeXSfAg5n1LC6TokU3jMz/fmzHgUCby
- 1SPgNzJ8ouNmP14fbRG4OxK8UqSxo8CpGH5RTrP1V5GDZv2CfHw3KrnWN0mfxDll3ezrVdFJr
- BQgMeD0UHJ9zPJo654ZUfU4+X7Vp8rv0wT7CDon+VXdFv4QBfrkiGSdLDTvSsbDZu5V5rxM9H
- C/3xHFnixzto/CwDxI4B2ysI8vfbi6J9HrQXQXWV85PVKKbkMUaRACJsN0s8hpd83pS6qISJY
- +A6pcc4UXLrRTDaJ84J25nPG5bfcKNnKXRkz/IBTv+bVJzgb5D7lhGBAc4j/HH6t6B/7ThSHx
- d1xMTX4fTHDIkiVlkmWCEkazSEzNCt3R4lv1Y/C8iwovDzNUmhcY6DTT6MPSxFY30iffdqrOg
- JutxSpvljkd+rioGKLTbFsjnW+DigA/eON0Dh1lnHsmkjbgcsKLh/nn3kdg/1htkBAlAsJ9kT
- 3dey1bvhxqjAP1Vi6zn5hA+2yUJ6pOjIzJ4EdZXBYlvd0tcD8YcPStpS/USlMg476qemxk+9f
- EQn03qGgXvbKNUrxuQ8w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007120752.5195-4-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 2:34 PM Richard Palethorpe <rpalethorpe@suse.com> wrote:
->
-> Reuse the timeval compat code from core/sock to handle 32-bit and
-> 64-bit timeval structures. Also introduce a new socket option define
-> to allow using y2038 safe timeval under 32-bit.
->
-> The existing behavior of sock_set_timeout and vsock's timeout setter
-> differ when the time value is out of bounds. vsocks current behavior
-> is retained at the expense of not being able to share the full
-> implementation.
->
-> This allows the LTP test vsock01 to pass under 32-bit compat mode.
->
-> Fixes: fe0c72f3db11 ("socket: move compat timeout handling into sock.c")
-> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
-> Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+On Thu, Oct 07, 2021 at 12:07:51PM +0000, Yafang Shao wrote:
+> Besides the in-tree kthreads listed above, the out-of-tree kthreads may
+> also be truncated:
+> 
+>     rtase_work_queu
+>     nvidia-modeset/
+>     UVM global queu
+>     UVM deferred re
+>     ...
+> 
 
-I had a look to make sure you've covered all the tricky corner cases,
-
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Fundamentally we don't give a crap about out of tree stuff. And their
+behaviour or not should be of absolutely no concern what so ever for any
+patch ever.
