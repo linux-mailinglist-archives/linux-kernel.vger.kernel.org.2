@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3644424EF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87672424EF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240598AbhJGIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 04:14:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240664AbhJGIOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:14:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E9AB6101B;
-        Thu,  7 Oct 2021 08:12:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633594365;
-        bh=SQB2zfHQFfQ/x60bhQw8zEe4m6OGM4AGyHdrnROOqbI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=q9GZXqYsflDS4zc3YJhVc6+repZCqZezIx4Rbg1y9ePoODozTm+GicsmQBxVFE2Kc
-         v/IkMTJvxTVdch4/O4a2Qu2f43d4pxVG6HFKu5VWl1HEHHCnvcnb168K2FUsWcAa7n
-         HmGr0foNE0Ja1k3TKOgLb6Tesw2DOEF872uSsBWOdAzes4Qa7TzqD5FkdNgCqAGFnp
-         F6JzFs8hNEpCLnYeWfB8ffFMlUf0R1M+MZQYxk8SGlwmdgIC3AJvlxTcbu5/kJvLSd
-         dm5pU6HZd+XT4daRnXpzC3nnlS92HotwI71boZFzGyR29rG4Elja0QTceu0KC0wqJH
-         kR4zzHt+SUCvg==
-From:   Ard Biesheuvel <ardb@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     keescook@chromium.org, Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH] lkdtm: avoid printk() in recursive_loop()
-Date:   Thu,  7 Oct 2021 10:12:35 +0200
-Message-Id: <20211007081235.382697-1-ardb@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S240651AbhJGIPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:15:23 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:51582 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233489AbhJGIPS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:15:18 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id DE2F51FF45;
+        Thu,  7 Oct 2021 08:13:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633594403; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6kWPeAL5YdhKOgGiPm0d0ACf2LYS8mjdOECzh1wZutw=;
+        b=SwzZDw98grNFIGy/1P65glPZG+dWl9idjalCyIqFu2qTCnRYtiatBwG3vqjPjLctW7ORql
+        bbPf5k2lOY29DT+MUNU+fq9PAEA84G+KTQyuqB8/VUKqtedYbR7SCDZvfnMWKXc+lh2BIp
+        /VEESlmkT/m7HLy9D2jbyCv3z5reyvE=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id AD7C2A3B83;
+        Thu,  7 Oct 2021 08:13:23 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 10:13:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel@openvz.org
+Subject: Re: memcg memory accounting in vmalloc is broken
+Message-ID: <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
+References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2442; h=from:subject; bh=SQB2zfHQFfQ/x60bhQw8zEe4m6OGM4AGyHdrnROOqbI=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhXqvxgncc86QaL0J3FCuxZHgZntAYazouYSyk7KgH 9Fw5DF+JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYV6r8QAKCRDDTyI5ktmPJBqxC/ 4iRi6Lm21BRUBaN+nO9y7ethkqX74FeMj3Ugip4jr64vqcTnTm35Mpaqx1Xv7UnmtMAGj9Askt/EWY 99feFimeleJPH3dOgj6xgTvdFQ5+foaW+wi68DpH7C1LY52bdRfd+BDzICkcaNz41x3GvSECIwEyRd MMxoo/o85IvWJ2UgGt88raA8gQZzT+CtEpWLs0QYUW4J2gMyiPLg90lbt0+8HgNiVEHrA9Ccj73H3s mNbmsxo3buWDCmgzbfAxwQNUAxBDmSkgIatbPKY4HUFmaG8ZPrtSPo8qf9+R3Bn7Bcc6OU3kvzE4+6 cfuQuejjXa3i1TQa7X/e8KdzCjn0ex0FxMje2K1/1AwFpEIK6uge8JQ3pbOMYr94NoHSd5w1FhuUet maOa8HzCvFSWDCg6ekuUKqn6x5DGqZzcvbIFoTusNL8ocYLdrPWDVWMhJ/6sUCNq9tKLdgHjLfWgEk feYhsyxLLKEovFfTbKN0U+D9BlTIHLMLu3in0xmr0RaNY=
-X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recursive_loop() function is intended as a diagnostic to ensure that
-exhausting the stack is caught and mitigated. Currently, it uses
-pr_info() to ensure that the function has side effects that the compiler
-cannot simply optimize away, so that the stack footprint does not get
-reduced inadvertently.
+On Thu 07-10-21 11:04:40, Vasily Averin wrote:
+> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+> 
+> Is it known issue perhaps?
 
-The typical mitigation for stack overflow is to kill the task, and this
-overflow may occur inside the call to pr_info(), which means it could be
-holding the console lock when this happens. This means that the console
-lock is never going to be released again, preventing the diagnostic
-prints related to the stack overflow handling from being visible on the
-console.
-
-So let's replace the call to pr_info() with a call to
-memzero_explicit(), which is not a 'magic' function name like memset()
-or memcpy(), which the compiler may replace with plain loads and stores.
-To ensure that the stack frames are nested rather than tail-called, put
-the call to memzero_explicit() after the recursive call.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/misc/lkdtm/bugs.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-index 4282b625200f..41fa558675c4 100644
---- a/drivers/misc/lkdtm/bugs.c
-+++ b/drivers/misc/lkdtm/bugs.c
-@@ -41,20 +41,22 @@ static DEFINE_SPINLOCK(lock_me_up);
-  * Make sure compiler does not optimize this function or stack frame away:
-  * - function marked noinline
-  * - stack variables are marked volatile
-- * - stack variables are written (memset()) and read (pr_info())
-- * - function has external effects (pr_info())
-- * */
-+ * - stack variables are written (memset()) and read (buf[..] passed as arg)
-+ * - function may have external effects (memzero_explicit())
-+ * - no tail recursion possible
-+ */
- static int noinline recursive_loop(int remaining)
- {
- 	volatile char buf[REC_STACK_SIZE];
-+	volatile int ret;
- 
- 	memset((void *)buf, remaining & 0xFF, sizeof(buf));
--	pr_info("loop %d/%d ...\n", (int)buf[remaining % sizeof(buf)],
--		recur_count);
- 	if (!remaining)
--		return 0;
-+		ret = 0;
- 	else
--		return recursive_loop(remaining - 1);
-+		ret = recursive_loop((int)buf[remaining % sizeof(buf)] - 1);
-+	memzero_explicit((void *)buf, sizeof(buf));
-+	return ret;
- }
- 
- /* If the depth is negative, use the default, otherwise keep parameter. */
+No, I think this was just overlooked. Definitely doesn't look
+intentional to me.
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
