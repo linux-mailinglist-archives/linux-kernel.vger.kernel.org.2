@@ -2,148 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F0C424FA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5064D424FAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240412AbhJGJF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhJGJFx (ORCPT
+        id S240413AbhJGJHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:07:42 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:37829 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232589AbhJGJHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:05:53 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12835C061746;
-        Thu,  7 Oct 2021 02:04:00 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t4so6265102oie.5;
-        Thu, 07 Oct 2021 02:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PAvueer9aMZMZvA0DKMfvJRj/glamcb5kqpTYRoRQhY=;
-        b=lKlD+hr2jcOq+xfOQL+fH4N6Vj8osuEH96ZjBU2A2Kp7fJ7UZ3v8O/r2eeUhQkbxuW
-         L0rg32EiIiAjO4rVIxjlpqlt6GKkq1d+szlwe5+cAEqI2w/zczgy9JzsCkXeBOlowsr7
-         +8ypz2VNgviy+g/rz8kH8GrRf3eiuxkYnVi+pgEFh+TupL7v0jfwoIpcFWgy0MZYKRN9
-         UA/GgRT/lE8se0E429zsIz1I+SAMp8ibWIOltL4tRg5hcBSZvohZK3o1XzuHQC0RogRQ
-         CMo6T6um/QxBRpaWkNetoxN6mTxbGdeEn/dyAJ+vsowiYg1FmAdgf7Vykvifx92JjKwY
-         Jruw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PAvueer9aMZMZvA0DKMfvJRj/glamcb5kqpTYRoRQhY=;
-        b=to7NV04iVabcbFoR89ngPcxdLpcOS1rJDYnFFzFJzJ9BF+l0WvmPEnHgDjQZXaOk4Z
-         7xm/N9wij8KwHXM9l1ZKuh0WrdxUnIdI96pLbmUAm91UYWsuh6X80PnCF0IwzNg2dkNU
-         J+XQUVJZBslYaJzCnz67PYcGZ7MIC18eKkNBrqE0f8z0Z87KmE/IKwb132xyN8ziLXQ6
-         61EU8X8lcBlZ6pLMRVChbc8BSYPcotV+pH1frsrZIjavSu0F2binNHkT6qA+1/gX47wn
-         0YDKcLLD85KHnivkWyRaf3U9+jnko8JyoTWsI4Koroev+ZOpRexoBTv6X9xw36fIhngU
-         cIpQ==
-X-Gm-Message-State: AOAM530TTbwczQYWZ0lHO3/2dGgnWMSsFXFD+MPDGlQXXj4ONe7u7A3k
-        kImJacW0SGEVkRTuiXnc7U4rZSPZGW5rOd1Ulek=
-X-Google-Smtp-Source: ABdhPJy2GrEsiJAKuVqIdJoO4A3ktMZrrc6cWXQ/zErXZkYIiF2eZA4ONUe7M1MJoqWmNIU8yzCFCf3lCmZX5W+8RvA=
-X-Received: by 2002:a05:6808:1211:: with SMTP id a17mr2142069oil.91.1633597439475;
- Thu, 07 Oct 2021 02:03:59 -0700 (PDT)
+        Thu, 7 Oct 2021 05:07:41 -0400
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id B54F0F6;
+        Thu,  7 Oct 2021 02:05:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1633597547;
+        bh=m8q3ivL4JNCs32ZTM2MObocXXvZZ0W1tFJVUtNGkFTo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bHul7hklIuebeh7G55Y6p0NYVNaTJUWiM8AusuYh/yvLMc68T/jZr57bQqtm137Qx
+         TTowiEFnPLLwhTTzX6T53EhX5grk/BiRFRiPNcRwk7NruSlyTjHZz7msTpDRr47dFu
+         fQA8Vvc9186bmCEsWWzYAuF+qPu9L4x1tcyk0+VE=
+Date:   Thu, 7 Oct 2021 02:05:41 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+Message-ID: <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+ <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
- <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com> <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
- <20211004163146.6b34936b.alex.williamson@redhat.com>
-In-Reply-To: <20211004163146.6b34936b.alex.williamson@redhat.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Thu, 7 Oct 2021 14:33:47 +0530
-Message-ID: <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Alex for the reply.
-
-
-Lu, Alex :
-
-I got my diagnosis regarding the host-driver wrong, my apologies.
-There is no issue with the pci-device's host-driver (confirmed by
-preventing the loading of host-driver at host-bootup). Thus, nothing
-to be fixed at the host-driver side.
-
-Rather seems some dma mapping/unmapping inconsistency is happening,
-when kvm/qemu boots up with the pci-device attached to the guest.
-
-I put up debug-logs in "vfio_iommu_type1_ioctl" method in
-"vfio_iommu_type1.c" (on the host-machine).
-When the guest boots up, repeated DMA-mappings are observed for the
-same address as per the host-machine's logs (without a corresponding
-DMA-unmapping first) :
-
-##########################################################################################
-ajay@ajay-Latitude-E6320:~$ tail -f /var/log/syslog | grep "ajay: "
-Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.202297] ajay:
-_MAP_DMA for [0x7ffe724a8670] status [0]
-Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.583179] ajay:
-_MAP_DMA for [0x7ffe724a8670] status [0]
-Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.583253] ajay:
-_MAP_DMA for [0x7ffe724a8670] status [0]
-Oct  7 14:12:36 ajay-Latitude-E6320 kernel: [  150.105584] ajay:
-_MAP_DMA for [0x7ffe724a8670] status [0]
-Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986499] ajay:
-_UNMAP_DMA for [0x7ffe724a9840] status [0]
-Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986559] ajay:
-_MAP_DMA for [0x7ffe724a97d0] status [0]
-Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986638] ajay:
-_MAP_DMA for [0x7ffe724a97d0] status [0]
-Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  181.087359] ajay:
-_MAP_DMA for [0x7ffe724a97d0] status [0]
-Oct  7 14:13:13 ajay-Latitude-E6320 kernel: [  187.271232] ajay:
-_UNMAP_DMA for [0x7fde7b7fcfa0] status [0]
-Oct  7 14:13:13 ajay-Latitude-E6320 kernel: [  187.271320] ajay:
-_UNMAP_DMA for [0x7fde7b7fcfa0] status [0]
-....
-##########################################################################################
-
-
-I'll try and backtrack to the userspace process that is sending these ioctls.
-
-
-Thanks and Regards,
-Ajay
-
-
-
-
-
-
-On Tue, Oct 5, 2021 at 4:01 AM Alex Williamson
-<alex.williamson@redhat.com> wrote:
+On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
+>On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+>> This patch series is in some ways kind of a v2 for the "Dynamic
+>> aspeed-smc flash chips via 'reserved' DT status" series I posted
+>> previously [0], but takes a fairly different approach suggested by Rob
+>> Herring [1] and doesn't actually touch the aspeed-smc driver or
+>> anything in the MTD subsystem, so I haven't marked it as such.
+>>
+>> To recap a bit of the context from that series, in OpenBMC there's a
+>> need for certain devices (described by device-tree nodes) to be able
+>> to be attached and detached at runtime (for example the SPI flash for
+>> the host's firmware, which is shared between the BMC and the host but
+>> can only be accessed by one or the other at a time).
 >
-> On Sat, 2 Oct 2021 22:48:24 +0530
-> Ajay Garg <ajaygargnsit@gmail.com> wrote:
+>This seems quite dangerous. Why do you need that? 
+
+Sometimes the host needs access to the flash (it's the host's firmware, 
+after all), sometimes the BMC needs access to it (e.g. to perform an 
+out-of-band update to the host's firmware).  To achieve the latter, the 
+flash needs to be attached to the BMC, but that requires some careful 
+coordination with the host to arbitrate which one actually has access to 
+it (that coordination is handled by userspace, which then tells the 
+kernel explicitly when the flash should be attached and detached).
+
+What seems dangerous?
+
+>Why can't device tree overlays be used?
+
+I'm hoping to stay closer to mainline.  The OpenBMC kernel has a 
+documented policy strongly encouraging upstream-first development: 
+https://github.com/openbmc/docs/blob/master/kernel-development.md
+
+I doubt Joel (the OpenBMC kernel maintainer) would be eager to start 
+carrying the DT overlay patches; I'd likewise strongly prefer to avoid 
+carrying them myself as additional downstream patches.  Hence the 
+attempt at getting a solution to the problem upstream.
+
 >
-> > Thanks Lu for the reply.
-> >
-> > >
-> > > Isn't the domain should be switched from a default domain to an
-> > > unmanaged domain when the device is assigned to the guest?
-> > >
-> > > Even you want to r-setup the same mappings, you need to un-map all
-> > > existing mappings, right?
-> > >
-> >
-> > Hmm, I guess that's a (design) decision the KVM/QEMU/VFIO communities
-> > need to take.
-> > May be the patch could suppress the flooding till then?
+>> To provide that
+>> ability, this series adds support for a new common device-tree
+>> property, a boolean "dynamic" that indicates that the device may come
+>> and go at runtime.  When present on a node, the sysfs file for that
+>> node's "status" property is made writable, allowing userspace to do
+>> things like:
+>>
+>>   $ echo okay > /sys/firmware/devicetree/.../status
+>>   $ echo reserved > /sys/firmware/devicetree/.../status
+>>
+>> to activate and deactivate a dynamic device.
+>>
+>> Because it leans on the OF_DYNAMIC machinery internally, this
+>> functionality will only work on busses that register for OF reconfig
+>> notifications and handle them appropriately (presently platform, i2c,
+>> and spi).  This series does not attempt to solve the "dynamic devices
+>> further down the tree" problem [2]; my hope is that handling for OF
+>> reconfig notifications can be extended to other families of devices
+>> (e.g. individual MTD spi-nor flash chips) in the future.
 >
-> No, this is wrong.  The pte values should not exist, it doesn't matter
-> that they're the same.  Is the host driver failing to remove mappings
-> and somehow they persist in the new vfio owned domain?  There's
-> definitely a bug beyond logging going on here.  Thanks,
->
-> Alex
->
+>What about ACPI and software nodes?
+
+I'm afraid I don't understand the question, can you elaborate on what 
+you mean?
+
+>How will all this affect the host?
+
+Assuming the coordination mentioned above is done properly, the host 
+will be in a quiesced state whenever the BMC is accessing the flash and 
+hence won't notice much of anything at all (the BMC will detach the 
+flash and relinquish control of it back to the host before the host is 
+reactivated).
+
+
+Zev
+
