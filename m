@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1938425280
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2385425283
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241172AbhJGMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:07:36 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:44990 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241164AbhJGMHf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:07:35 -0400
-Received: by mail-oi1-f175.google.com with SMTP id y207so5521838oia.11;
-        Thu, 07 Oct 2021 05:05:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=hzJFD9sphiC3TMOrWvmRyZB23LNjrFexhFogsT1/1mA=;
-        b=xZtCx9ZvvC7F47R22yuvI8MQsfCQTbytdS8U7kCn71Pcxt+ra86gob7ujDqQQUQDBK
-         Jr0JIKnVFvP1S30MszwAunB9XnWBdUvH+dLuDaTmBwRLvK3RhXXP/Ga6HCDwBruAi7UX
-         3iMa4MJfA2rCNSRZ1D1FL4wFvyuGFhiYMw6dZoLji2vNVvkAUTu5XoVhpAZS0juS2Zke
-         4kYjoVFrhSxNaL9a1x50SeL/Wnmhv8xKA4jIWX0pTxSAxpLpa90uz0YAInE/VRtGdm+5
-         XnNlrJ9IYd61NP0hP3GFIzQdBKzi2p/Hb7ohRmE9cHLRhMjNX5ls8ClZyPWfaMbWuR0i
-         pNxA==
-X-Gm-Message-State: AOAM530Uh8ShuPk1TF47e6bRMjg2c7y2/A+reXZR1gUtfz6HsfEzjJP8
-        XfyrRQtyIgps8lDUTAjliA==
-X-Google-Smtp-Source: ABdhPJw9o2pj552FafT4KjVB3daTmAbpQfS0yh5dFgZ+ghTcm2MIJEWHU2B3zKI3V9c5FFIhO/OyrQ==
-X-Received: by 2002:aca:6283:: with SMTP id w125mr11720753oib.133.1633608340920;
-        Thu, 07 Oct 2021 05:05:40 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l13sm3786690otp.32.2021.10.07.05.05.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 05:05:40 -0700 (PDT)
-Received: (nullmailer pid 121525 invoked by uid 1000);
-        Thu, 07 Oct 2021 12:05:36 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     robh+dt@kernel.org, daniel@ffwll.ch, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        m.purski@samsung.com, devicetree@vger.kernel.org
-In-Reply-To: <20211006152158.601856-1-angelogioacchino.delregno@collabora.com>
-References: <20211006152158.601856-1-angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH] dt-bindings: display/bridge: sil,sii9234: Convert to YAML binding
-Date:   Thu, 07 Oct 2021 07:05:36 -0500
-Message-Id: <1633608336.205912.121524.nullmailer@robh.at.kernel.org>
+        id S241178AbhJGMHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:07:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241133AbhJGMHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:07:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA7F66103B;
+        Thu,  7 Oct 2021 12:05:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633608361;
+        bh=jVv3R6sqeVy1rgVRcy65RPB2wy1r6zROcghoRzfBqXM=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=W5ZpuGjPqIe9DU1k6XcVtWMHxLsA4k3Bn1jXLfj4/c3FK/Ro5GAXcgxfV6OHmaNZB
+         8v0tOt0pqX0+fEBHnioUxIJyYrDdcLxxteuJ/auDrbBTlvhkbmzFUFb5hypywmFmdZ
+         O4s9T0TVxejSKr4T8wbACKrmthnR6L7inwCTGGwgwTI9v+cYGth/I7S6LXkKXajUas
+         XjyZJGMapPt0O7jEjK44uneAjtRHLpXbjMYdAppYPa9/G0PYsA9GeazX4kko55k/6L
+         dUelJpVTIUxBl4EpaPB8kpJOvxztSb4C4Knffi2u+I09aVNpfi52NfDckP6g9csTND
+         I76ETkcml/hIg==
+Date:   Thu, 7 Oct 2021 14:05:58 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     =?ISO-8859-15?Q?Jos=E9_Exp=F3sito?= <jose.exposito89@gmail.com>
+cc:     benjamin.tissoires@redhat.com, rydberg@bitmath.org,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: multitouch: disable sticky fingers for UPERFECT Y
+In-Reply-To: <20211001172513.27822-1-jose.exposito89@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2110071405490.29107@cbobk.fhfr.pm>
+References: <20211001172513.27822-1-jose.exposito89@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 06 Oct 2021 17:21:58 +0200, AngeloGioacchino Del Regno wrote:
-> Convert the Silicon Image SiI9234 HDMI/MHL bridge documentation to YAML.
+On Fri, 1 Oct 2021, José Expósito wrote:
+
+> When a finger is on the screen, the UPERFECT Y portable touchscreen
+> monitor reports a contact in the first place. However, after this
+> initial report, contacts are not reported at the refresh rate of the
+> screen as required by the Windows 8 specs.
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> ---
->  .../bindings/display/bridge/sii9234.txt       |  49 --------
->  .../bindings/display/bridge/sil,sii9234.yaml  | 110 ++++++++++++++++++
->  2 files changed, 110 insertions(+), 49 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/display/bridge/sii9234.txt
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/sil,sii9234.yaml
+> This behaviour triggers the release_timer, removing the fingers even
+> though they are still present.
 > 
+> To avoid it, add a new class, similar to MT_CLS_WIN_8 but without the
+> MT_QUIRK_STICKY_FINGERS quirk for this device.
+> 
+> Suggested-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Signed-off-by: José Expósito <jose.exposito89@gmail.com>
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+Applied, thanks.
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
-
-Full log is available here: https://patchwork.ozlabs.org/patch/1537190
-
-
-hdmi-bridge@39: 'port' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/exynos4412-i9300.dt.yaml
-	arch/arm/boot/dts/exynos4412-i9305.dt.yaml
-	arch/arm/boot/dts/exynos4412-n710x.dt.yaml
-	arch/arm/boot/dts/exynos4412-trats2.dt.yaml
-
-hdmi-bridge@39: 'ports' is a required property
-	arch/arm/boot/dts/exynos4412-i9300.dt.yaml
-	arch/arm/boot/dts/exynos4412-i9305.dt.yaml
-	arch/arm/boot/dts/exynos4412-n710x.dt.yaml
-	arch/arm/boot/dts/exynos4412-trats2.dt.yaml
+-- 
+Jiri Kosina
+SUSE Labs
 
