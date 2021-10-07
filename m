@@ -2,94 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1431E4250B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3012D4250BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240766AbhJGKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:10:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:50112 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240743AbhJGKKc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:10:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B164F2008A;
-        Thu,  7 Oct 2021 10:08:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633601317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3G2bH2N+XRfVhANdLLTSFVWFnNxjpsfsI2fUkInvKBw=;
-        b=CrOdU3gG8cpo5xfQ58KOOUZT6kC73I9ccroWpXYuSA6z+sweBO4lrYQxoIsSO2TyxFIEw1
-        cjAbmHhbHtkp7rL3do7yvOGj5K6kLMlPrV3+hVLoic9kE5SMz2xCgB1yWXCX3UU+75Z3s4
-        mAW/5FOlrRoe7eDO5ITZY9ScswmKMBc=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7FA75A3B87;
-        Thu,  7 Oct 2021 10:08:37 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 12:08:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel@openvz.org, Mel Gorman <mgorman@suse.de>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: memcg memory accounting in vmalloc is broken
-Message-ID: <YV7HJd4r8tcLUpTB@dhcp22.suse.cz>
-References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
- <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
- <YV6s+ze8LzuxfvOM@dhcp22.suse.cz>
- <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
+        id S240779AbhJGKMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:12:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232642AbhJGKL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:11:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97909610EA;
+        Thu,  7 Oct 2021 10:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633601405;
+        bh=Dv3qgGnXN5hf3/aR7Ya39BbKuSxyHbv2DT0bSXt0WUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EU/xBtuIlE9aHhOu1bi02mIAyV71Vv0ij2ZszvgT9cOyeyl2HZCR9osGMmPqSs7TI
+         QdR5zFBc2o4JyTRFcYMlHF9WUaUnF9sIXJw9Pri6tVWG8PV19AuhUDl4txxE0f3/Bs
+         DTOVDZdowRBa7Fq863R9rXJPA7HIhaR6CpzpmzjMAn4ZiB+rlLQCSOoZM+1QC3GC6V
+         tisoKT4jGORLgEXbQb7FPzXcWvYDzlBTNnVc/yortQ1RcOvFTpTz361L3C6UASKJP0
+         Q2gtn+n9Qq/BQqRCS1+ERJHA9XE8tVRBxVMxO45IvxVARQHAcjVMcduuvc2nq0xXev
+         Fvw6FuE7kpgcg==
+Received: by pali.im (Postfix)
+        id 499CF81A; Thu,  7 Oct 2021 12:10:03 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 12:10:03 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     =?utf-8?B?SsOpcsO0bWU=?= Pouiller <jerome.pouiller@silabs.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 10/24] wfx: add fwio.c/fwio.h
+Message-ID: <20211007101003.na5rdtildnatx432@pali>
+References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com>
+ <2174509.SLDT7moDbM@pc-42>
+ <20211001160832.ozxc7bhlwlmjeqbo@pali>
+ <19961646.Mslci0rqIs@pc-42>
+ <87lf35ckn5.fsf@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87lf35ckn5.fsf@codeaurora.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-10-21 11:50:44, Vasily Averin wrote:
-> On 10/7/21 11:16 AM, Michal Hocko wrote:
-> > Cc Mel and Uladzislau
-> > 
-> > On Thu 07-10-21 10:13:23, Michal Hocko wrote:
-> >> On Thu 07-10-21 11:04:40, Vasily Averin wrote:
-> >>> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
-> >>>
-> >>> Is it known issue perhaps?
-> >>
-> >> No, I think this was just overlooked. Definitely doesn't look
-> >> intentional to me.
+On Thursday 07 October 2021 11:19:10 Kalle Valo wrote:
+> Jérôme Pouiller <jerome.pouiller@silabs.com> writes:
 > 
-> I use following patch as a quick fix,
-> it helps though it is far from ideal and can be optimized.
+> > On Friday 1 October 2021 18:08:32 CEST Pali Rohár wrote:
+> >> On Friday 01 October 2021 17:09:41 Jérôme Pouiller wrote:
+> >> > On Friday 1 October 2021 13:58:38 CEST Kalle Valo wrote:
+> >> > > Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
+> >> > >
+> >> > > > From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> >> > > >
+> >> > > > Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> >> > >
+> >> > > [...]
+> >> > >
+> >> > > > +static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
+> >> > > > +                     const struct firmware **fw, int *file_offset)
+> >> > > > +{
+> >> > > > +     int keyset_file;
+> >> > > > +     char filename[256];
+> >> > > > +     const char *data;
+> >> > > > +     int ret;
+> >> > > > +
+> >> > > > +     snprintf(filename, sizeof(filename), "%s_%02X.sec",
+> >> > > > +              wdev->pdata.file_fw, keyset_chip);
+> >> > > > +     ret = firmware_request_nowarn(fw, filename, wdev->dev);
+> >> > > > +     if (ret) {
+> >> > > > +             dev_info(wdev->dev, "can't load %s, falling back to %s.sec\n",
+> >> > > > +                      filename, wdev->pdata.file_fw);
+> >> > > > +             snprintf(filename, sizeof(filename), "%s.sec",
+> >> > > > +                      wdev->pdata.file_fw);
+> >> > > > +             ret = request_firmware(fw, filename, wdev->dev);
+> >> > > > +             if (ret) {
+> >> > > > +                     dev_err(wdev->dev, "can't load %s\n", filename);
+> >> > > > +                     *fw = NULL;
+> >> > > > +                     return ret;
+> >> > > > +             }
+> >> > > > +     }
+> >> > >
+> >> > > How is this firmware file loading supposed to work? If I'm reading the
+> >> > > code right, the driver tries to load file "wfm_wf200_??.sec" but in
+> >> > > linux-firmware the file is silabs/wfm_wf200_C0.sec:
+> >> > >
+> >> > > https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/tree/silabs
+> >> > >
+> >> > > That can't work automatically, unless I'm missing something of course.
+> >> >
+> >> > The firmware are signed. "C0" is the key used to sign this firmware. This
+> >> > key must match with the key burned into the chip. Fortunately, the driver
+> >> > is able to read the key accepted by the chip and automatically choose the
+> >> > right firmware.
+> >> >
+> >> > We could imagine to add a attribute in the DT to choose the firmware to
+> >> > load. However, it would be a pity to have to specify it manually whereas
+> >> > the driver is able to detect it automatically.
+> >> >
+> >> > Currently, the only possible key is C0. However, it exists some internal
+> >> > parts with other keys. In addition, it is theoretically possible to ask
+> >> > to Silabs to burn parts with a specific key in order to improve security
+> >> > of a product.
+> >> >
+> >> > Obviously, for now, this feature mainly exists for the Silabs firmware
+> >> > developers who have to work with other keys.
+> >> >
+> >> > > Also I would prefer to use directory name as the driver name wfx, but I
+> >> > > guess silabs is also doable.
+> >> >
+> >> > I have no opinion.
+> >> >
+> >> >
+> >> > > Also I'm not seeing the PDS files in linux-firmware. The idea is that
+> >> > > when user installs an upstream kernel and the linux-firmware everything
+> >> > > will work automatically, without any manual file installations.
+> >> >
+> >> > WF200 is just a chip. Someone has to design an antenna before to be able
+> >> > to use.
+> >> >
+> >> > However, we have evaluation boards that have antennas and corresponding
+> >> > PDS files[1]. Maybe linux-firmware should include the PDS for these boards
+> >> 
+> >> So chip vendor provides firmware and card vendor provides PDS files.
+> >
+> > Exactly.
+> >
+> >> In
+> >> my opinion all files should go into linux-firmware repository. If Silabs
+> >> has PDS files for its devel boards (which are basically cards) then I
+> >> think these files should go also into linux-firmware repository.
+> >> 
+> >> And based on some parameter, driver should load correct PDS file. Seems
+> >> like DT can be a place where to put something which indicates which PDS
+> >> file should be used.
+> >> 
+> >> But should be in DT directly name of PDS file? Or should be in DT just
+> >> additional compatible string with card vendor name and then in driver
+> >> itself should be mapping table from compatible string to filename? I do
+> >> not know what is better.
+> >
+> > The DT already accepts the attribute silabs,antenna-config-file (see
+> > patch #2).
+> >
+> > I think that linux-firmware repository will reject the pds files if
+> > no driver in the kernel directly point to it. Else how to detect
+> > orphans?
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..e6abe2cac159 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5290,6 +5290,12 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->  
->  		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
->  								pcp, pcp_list);
-> +
-> +		if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT) && page &&
-> +		    unlikely(__memcg_kmem_charge_page(page, gfp, 0) != 0)) {
-> +			__free_pages(page, 0);
-> +			page = NULL;
-> +		}
->  		if (unlikely(!page)) {
->  			/* Try and get at least one page */
->  			if (!nr_populated)
+> This (linux-firmware rejecting files) is news to me, do you have any
+> pointers?
+
+I understand this as, linux-firmware rejects files which are not used by
+any driver yet.
+
+But you can send both pull request for linux-firmware and pull request
+for your kernel driver to mailing lists. And once driver changes are
+merged into -net tree then pull request for linux-firmware can be merged
+too.
+
+> > So, I think it is slightly better to use a mapping table.
+> 
+> Not following you here.
+
+I understand this part to have mapping table between DTS compatible
+string and pds firmware name in driver code.
+
 > -- 
-> 2.31.1
-
-Yes, this makes sense to me.
-
--- 
-Michal Hocko
-SUSE Labs
+> https://patchwork.kernel.org/project/linux-wireless/list/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
