@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1158425940
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDCC42593A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243332AbhJGRWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:22:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243314AbhJGRWB (ORCPT
+        id S243233AbhJGRVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:21:51 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3942 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243264AbhJGRVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:22:01 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1BBC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:20:06 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id t16so4007136eds.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yKsD+bnBh7ZowB88TXB3Da8yHTszLtLZ5FscyLH62G8=;
-        b=qzJrudNAbjJ/u+lxCUM3pJBXvEy8hefF83Q86cfsnLIin8POqkGg0iuOyBIR4DlTp0
-         K2oM59cTFvIVXUM3XbgezLXqKRoa8rVCPeK94yyzT8E6iDfmrIPKTapu3/Qzf4FNUrEm
-         /F9kl8OSoIsJvd++1BVBabNT2J9ORCI9wjGML666IbcpYE4nV5CMOHHOgqxkfMSLTiVU
-         gSH2G2QJ8eR4bCJv9eF5NQni6/OBtEESs4WV9YWEThjGTrKbAyZejJ7Ve+d3sXznupud
-         iNFEiG/gVwSrDr6qmfpqTFuWscx8Pls0/026nK0PEc/WfbRZU9T3UXrFVZTV61pDMnIi
-         lAKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKsD+bnBh7ZowB88TXB3Da8yHTszLtLZ5FscyLH62G8=;
-        b=ASPoTpC3kAl7FlyGTwhD1MQ+gIjQaMPBeaJkd6IpPA7L8t2qG0EIz0QnHxIinRPR8a
-         x4BjOcQC9xl4+Z2RW/8gjqKc0ysSdPMlIzY7+Z0x/YINuj9u3uSNffE4/XidCWF2PExo
-         JAAjRW+gwlRB0DNJyVnU7HBUi6ACzYXffQUvxfs2dPvbASrSQ6MPvOT7LlBBIQWvSCU4
-         c7kF6htYyabUCMd51VwIz/U/IPXl6aZnBtU4eBRMiR6WvMOnuRsvgMKACuDUpj18Xmuj
-         YxykQPR8jDnmRDvxbrToYsWGALKC4JT1WvcXYAUCvjqHOjHkMOtOS2eqydWpuzrKcU7n
-         JySw==
-X-Gm-Message-State: AOAM531Sm5cu1UdRbimEZCJzazhxc78BQj1R9YyBl9FcXa1Qhmf7AW5I
-        DO+DZ/tdsCW40IEWRZADtuDiKXEPfA==
-X-Google-Smtp-Source: ABdhPJx8BYLOJmIwk+xBK893swv1kTtzx0xJKr7m4H59dRnP4dxtfrlc6GiZr32dobuooNI4/mJ4wg==
-X-Received: by 2002:a50:eb9a:: with SMTP id y26mr7684875edr.186.1633627205494;
-        Thu, 07 Oct 2021 10:20:05 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.254.50])
-        by smtp.gmail.com with ESMTPSA id n10sm4937ejk.86.2021.10.07.10.20.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:20:05 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 20:20:03 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
-Message-ID: <YV8sQ5vhD+V6XLXx@localhost.localdomain>
-References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
- <202110051929.37279B6B4A@keescook>
+        Thu, 7 Oct 2021 13:21:31 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HQHzz5BJqz67nPb;
+        Fri,  8 Oct 2021 01:16:47 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 7 Oct 2021 19:19:34 +0200
+Received: from [10.47.80.141] (10.47.80.141) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 7 Oct 2021
+ 18:19:33 +0100
+Subject: Re: [PATCH 1/3] perf vendor-events: Fix all remaining invalid JSON
+ files
+To:     James Clark <james.clark@arm.com>, <acme@kernel.org>,
+        <ak@linux.intel.com>, <linux-perf-users@vger.kernel.org>
+CC:     <Nick.Forrington@arm.com>, <Andrew.Kilroy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <20211007110543.564963-2-james.clark@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <c73a8d30-a2ed-fec7-1537-c0ec79c1ad6f@huawei.com>
+Date:   Thu, 7 Oct 2021 18:22:06 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202110051929.37279B6B4A@keescook>
+In-Reply-To: <20211007110543.564963-2-james.clark@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.141]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 07:31:09PM -0700, Kees Cook wrote:
-> On Sun, Oct 03, 2021 at 03:11:24PM +0300, Alexey Dobriyan wrote:
-> > Kernel assumes that ELF program headers are ordered by mapping address,
-> > but doesn't enforce it. It is possible to make mapping size extremely huge
-> > by simply shuffling first and last PT_LOAD segments.
-> > 
-> > As long as PT_LOAD segments do not overlap, it is silly to require
-> > sorting by v_addr anyway because mmap() doesn't care.
-> > 
-> > Don't assume PT_LOAD segments are sorted and calculate min and max
-> > addresses correctly.
+On 07/10/2021 12:05, James Clark wrote:
+> Remove trailing commas. A later commit will make the parser more strict
+> and these will not be valid anymore.
 > 
-> Nice! Yes, this all make sense.
-> 
-> > 
-> > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > ---
-> > 
-> >  fs/binfmt_elf.c |   23 +++++++++++------------
-> >  1 file changed, 11 insertions(+), 12 deletions(-)
-> > 
-> > --- a/fs/binfmt_elf.c
-> > +++ b/fs/binfmt_elf.c
-> > @@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
-> >  #define ELF_CORE_EFLAGS	0
-> >  #endif
-> >  
-> > -#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
-> > +#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
-> 
-> Errr, this I don't like. I assume this is because of the min() use
-> below?
+> Signed-off-by: James Clark<james.clark@arm.com>
+> ---
+>   .../arch/arm64/ampere/emag/bus.json           |  2 +-
+>   .../arch/arm64/ampere/emag/cache.json         | 20 +++++++++----------
+>   .../arch/arm64/ampere/emag/clock.json         |  2 +-
+>   .../arch/arm64/ampere/emag/exception.json     |  4 ++--
+>   .../arch/arm64/ampere/emag/instruction.json   | 10 +++++-----
+>   .../arch/arm64/ampere/emag/memory.json        |  4 ++--
+>   .../arch/arm64/hisilicon/hip08/metrics.json   |  2 +-
+>   .../pmu-events/arch/nds32/n13/atcpmu.json     |  2 +-
+>   .../pmu-events/arch/s390/cf_z10/basic.json    |  2 +-
+>   .../pmu-events/arch/s390/cf_z10/crypto.json   |  2 +-
+>   .../pmu-events/arch/s390/cf_z10/extended.json |  2 +-
+>   .../pmu-events/arch/s390/cf_z13/basic.json    |  2 +-
+>   .../pmu-events/arch/s390/cf_z13/crypto.json   |  2 +-
+>   .../pmu-events/arch/s390/cf_z13/extended.json |  2 +-
+>   .../pmu-events/arch/s390/cf_z14/basic.json    |  2 +-
+>   .../pmu-events/arch/s390/cf_z14/crypto.json   |  2 +-
+>   .../pmu-events/arch/s390/cf_z14/extended.json |  2 +-
+>   .../pmu-events/arch/s390/cf_z15/basic.json    |  2 +-
+>   .../pmu-events/arch/s390/cf_z15/crypto.json   |  2 +-
+>   .../pmu-events/arch/s390/cf_z15/crypto6.json  |  2 +-
+>   .../pmu-events/arch/s390/cf_z15/extended.json |  2 +-
+>   .../pmu-events/arch/s390/cf_z196/basic.json   |  2 +-
+>   .../pmu-events/arch/s390/cf_z196/crypto.json  |  2 +-
+>   .../arch/s390/cf_z196/extended.json           |  2 +-
+>   .../pmu-events/arch/s390/cf_zec12/basic.json  |  2 +-
+>   .../pmu-events/arch/s390/cf_zec12/crypto.json |  2 +-
+>   .../arch/s390/cf_zec12/extended.json          |  2 +-
+>   .../arch/test/test_soc/cpu/uncore.json        |  2 +-
+>   .../arch/x86/icelakex/icx-metrics.json        |  2 +-
 
-Yes, this is to shut up the warning.
 
-The macro is slightly incorrect because "_v" can be either uint32_t or
-uint64_t. But standard ALIGN macros are slightly incorrect too.
+This seems fine. But, as mentioned earlier, I do worry that some of 
+these JSONs are copied from some downstream repositories, and now they 
+will go out of sync. That could cause problems, so need to check with 
+respective owners.
 
-I don't want to clean this particular mess right now. Those are separate stables.
+Apart from that caveat, it seems ok:
 
-> >  #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
-> >  #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
-> >  
-> > @@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
-> >  	return(map_addr);
-> >  }
-> >  
-> > -static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
-> > +static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
-> >  {
-> > -	int i, first_idx = -1, last_idx = -1;
-> > +	elf_addr_t min_addr = -1;
-> > +	elf_addr_t max_addr = 0;
-> > +	bool pt_load = false;
-> > +	int i;
-> >  
-> >  	for (i = 0; i < nr; i++) {
-> > -		if (cmds[i].p_type == PT_LOAD) {
-> > -			last_idx = i;
-> > -			if (first_idx == -1)
-> > -				first_idx = i;
-> > +		if (phdr[i].p_type == PT_LOAD) {
-> > +			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-> > +			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-> 
-> How about:
-> 		min_addr = min_t(elf_addr_t, min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-> 		max_addr = max_t(elf_addr_t, max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-No! The proper fix is to fix ELF_PAGESTART().
+
