@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BB8424B96
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B7F424B99
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhJGBVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 21:21:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230252AbhJGBVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 21:21:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 033C660FE8;
-        Thu,  7 Oct 2021 01:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633569594;
-        bh=mAlcbkwLUu1GMNBclsHIHwCJroCIYt6S7isa3owuQmg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ey8acv+oeE21F5mAwbUV1k9qrvuz/vx4jKjwHS6W6FNKAkentHTKqwtsTnh24Z7G8
-         f53M+LIPHFZCp2f1fjUnsgv8HyynaPJB8z5aAPfGo5Os8hEcLbZrkIO+mSb6QaTTiW
-         90TcFQhChrBcdYb4VIQoqEaVWiM8sRXkF32ErE0EKwskwhjstkdPIIXUNIl4ZwVRMr
-         zKo7vVRblqpSZ8ML/8mq4ymFwXJOqi7C1LRHagSp0g/91MoCa4lKwuSiXhBvzdduLF
-         KXnn85pck3Q6m2lbvvMaFT8B2lzMewWdlChMtZ6BtsynIrJjpzSlqZYelgJxVruiHI
-         EAaQ1B//zrG2w==
-Date:   Thu, 7 Oct 2021 10:19:52 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Tom Zanussi <zanussi@kernel.org>
-Subject: Re: [PATCH] tracing/synthetic_events: Fix use when created by
- dynamic_events file
-Message-Id: <20211007101952.d9d282257b9c49fe699c0679@kernel.org>
-In-Reply-To: <20211006115317.2cfcc742@gandalf.local.home>
-References: <20211006115317.2cfcc742@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232023AbhJGBYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 21:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhJGBYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 21:24:41 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771E5C061746;
+        Wed,  6 Oct 2021 18:22:48 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id h189so2063399iof.1;
+        Wed, 06 Oct 2021 18:22:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ll0oa75vwhrd/jX569DuLEC0YhlCdGYCCf3ViMztJWY=;
+        b=XI9c895b2ORswndS2kO8/54RqxOi4N4Y/aDaXGGuPcUzXKv509ghzLFNCLwZQEzu+C
+         6o8cl1x14ANfLLWcEEYzyIp3DHpvnRFY+OAaNJy4VlGrPecgrwwgbg/qBu+IABIa5/XE
+         MB6VR3rDdODDoBj9Qb7I+F3aaUGuv6P2LUqW8PiZxDMj6b13g9CRJL3qsiY6emhRYODD
+         J6tGEWH30YnenomVB4vh9OM4q5E764cKtZM8nyjH9sbuJBp9KOE7NaL8pwYnE03/BBq8
+         41+RrUArdcvUBU/sO42N971kvkeZFDvcDtDhSAxCvZOW7HAQyYYplfNA/WQ0dBmKTW+5
+         wbaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ll0oa75vwhrd/jX569DuLEC0YhlCdGYCCf3ViMztJWY=;
+        b=LfYy213qG1l6NSyNGHDjTpUrzhbtoDmPA8K57M+4dpU5K4RZ84UDlDEtcJC9pzZMax
+         TEE+Kzi6Vf2mhF16cPY0jXQx05KYVEmtWrMQAmgBlayI/QUQrMnJb2BAm2633xW7UG61
+         f+8YE6dQRy3rs2QUB4UI9EOnRSze+OfHQhk3YAj/qkpDgfuqqoBdg/rfJxl8h2EWKhxF
+         TR265Dk77KlPdBL6xtmxTofZVGChtajOINuRi9l8oeFYVZzhOTsodOYSPV1VDh1nESJD
+         ojmcAJU2czhMmcpYccQySEHw0zA+WiAjfeGN0gteQSOUmxIiIvusOHnwcYDBOIUZpjaj
+         1piQ==
+X-Gm-Message-State: AOAM530aXGs46P+gYOFqavFXbS8jWmWEYFSaeJ8pflylkyepQqRcxiPH
+        jHQNaUaBbddxtCySLnebCuyI7waFsQpyqA==
+X-Google-Smtp-Source: ABdhPJyUBKkqYtLhwhfFhyTmGHceMBGSgF4rJ3DHDWyO1q38N5zNLE2m3V1mkvbYuFMuaXGYoBTDRw==
+X-Received: by 2002:a05:6602:1644:: with SMTP id y4mr1123006iow.82.1633569767459;
+        Wed, 06 Oct 2021 18:22:47 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id q6sm1549712ile.23.2021.10.06.18.22.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 18:22:47 -0700 (PDT)
+Subject: Re: [PATCH 08/11] selftests: net/fcnal: Replace sleep after server
+ start with -k
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Seth David Schoen <schoen@loyalty.org>,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1633520807.git.cdleonard@gmail.com>
+ <ec40bd7128a30e93b90ba888f3468f394617a010.1633520807.git.cdleonard@gmail.com>
+ <43210038-b04b-3726-1355-d5f132f6c64e@gmail.com>
+ <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <888962dc-8d55-4875-cf44-c0b8ebaa1978@gmail.com>
+Date:   Wed, 6 Oct 2021 19:22:45 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 11:53:17 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 10/6/21 3:35 PM, Leonard Crestez wrote:
 > 
-> The dynamic_events file can create kprobe, uprobe, event probes as well as
-> synthetic events. New dynamic events will also be created by this file.
-> Each of these kinds of events register a "create" function, that gets
-> called, and if the prefix does not match the type of event, the create
-> function is to return -ECANCELED to tell the dynamic event code that the
-> command does not belong to it, and other events should be tried.
+> I counted the [FAIL] or [ OK ] markers but not the output of nettest
+> itself. I don't know what to look for, I guess I could diff the outputs?
 > 
-> The synthetic event does some format checking before it determines that it
-> is the event that should be created, and if that format check does not
-> match, it will return an error, telling the dynamic event code that it was
-> the expected event to be created and that the input had an error. This
-> returns an error code back to the user. But unfortunately, because it does
-> the check before it determines that it is indeed the proper event to parse
-> the input, it may fail the call even though the input is a proper syntax
-> for another event type.
+> Shouldn't it be sufficient to compare the exit codes of the nettest client?
+
+mistakes happen. The 700+ tests that exist were verified by me when I
+submitted the script - that each test passes when it should and fails
+when it should. "FAIL" has many reasons. I tried to have separate exit
+codes for nettest.c to capture the timeouts vs ECONNREFUSED, etc., but I
+could easily have made a mistake. scanning the output is the best way.
+Most of the 'supposed to fail' tests have a HINT saying why it should fail.
+
 > 
-> Have it confirm that the input is for the synthetic event before it
-> returns an error due to parsing failure.
+> The output is also modified by a previous change to not capture server
+> output separately and instead let it be combined with that of the
+> client. That change is required for this one, doing out=$(nettest -k)
+> does not return on fork unless the pipe is also closed.
 > 
-> Fixes: c9e759b1e8456 ("tracing: Rework synthetic event command parsing")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  kernel/trace/trace_events_synth.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-> index d54094b7a9d7..feb87e5817e9 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -2045,11 +2045,17 @@ static int create_synth_event(const char *raw_command)
->  {
->  	char *fields, *p;
->  	const char *name;
-> -	int len, ret = 0;
-> +	int len, ret;
->  
->  	raw_command = skip_spaces(raw_command);
->  	if (raw_command[0] == '\0')
-> -		return ret;
-> +		return -ECANCELED;
+> I did not look at your change, mine is relatively minimal because it
+> only changes who decide when the server goes into the background: the
+> shell script or the server itself. This makes it work very easily even
+> for tests with multiple server instances.
 
-Good catch! BTW, I thought trace_parse_run_command() skips such empty line.
+The logging issue is why I went with 1 binary do both server and client
+after nettest.c got support for changing namespaces.
 
-Anyway,
-
-Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you,
-
-> +
-> +	name = raw_command;
-> +
-> +	if (name[0] != 's' || name[1] != ':')
-> +		return -ECANCELED;
-> +	name += 2;
->  
->  	last_cmd_set(raw_command);
->  
-> @@ -2061,12 +2067,6 @@ static int create_synth_event(const char *raw_command)
->  
->  	fields = skip_spaces(p);
->  
-> -	name = raw_command;
-> -
-> -	if (name[0] != 's' || name[1] != ':')
-> -		return -ECANCELED;
-> -	name += 2;
-> -
->  	/* This interface accepts group name prefix */
->  	if (strchr(name, '/')) {
->  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
-> -- 
-> 2.31.1
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
