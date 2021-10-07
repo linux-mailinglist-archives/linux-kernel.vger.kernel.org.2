@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C001424FC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:11:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC41424FC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240452AbhJGJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:13:10 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9876 "EHLO mga03.intel.com"
+        id S240493AbhJGJNQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Oct 2021 05:13:16 -0400
+Received: from ni.piap.pl ([195.187.100.5]:34414 "EHLO ni.piap.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231661AbhJGJNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:13:07 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226156583"
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="226156583"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:11:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="590075333"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:11:09 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1mYPQg-009Tan-2D;
-        Thu, 07 Oct 2021 12:11:06 +0300
-Date:   Thu, 7 Oct 2021 12:11:06 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v1 0/6] Introduce power off call chain API
-Message-ID: <YV65qsQPtQfWvE9W@smile.fi.intel.com>
-References: <20211007060253.17049-1-digetx@gmail.com>
- <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
- <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
+        id S232629AbhJGJNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:13:08 -0400
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+References: <m3fstfoexa.fsf@t19.piap.pl>
+        <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu>
+Date:   Thu, 07 Oct 2021 11:11:09 +0200
+In-Reply-To: <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> (Sakari Ailus's message
+        of "Wed, 6 Oct 2021 20:10:41 +0300")
+Message-ID: <m3zgrlkxn6.fsf@t19.piap.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 11:52:46AM +0300, Dmitry Osipenko wrote:
-> 07.10.2021 10:18, Andy Shevchenko пишет:
-> > On Thu, Oct 7, 2021 at 9:05 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+Hi Sakari,
 
-...
+Thanks for your input.
 
-> >> This
-> >> is a somewhat simplified version which doesn't try to convert whole kernel
-> >> to the new API at once, but solves immediate practical problem that we
-> > 
-> > problems
-> > 
-> >> have on Nexus 7 Android tablet where device needs to chain power off
-> > 
-> > tablets where the device
-> 
-> Thank you for the corrections, so far there is one problem and one tablet :)
+> Where's the corresponding DT binding patch? Ideally it would be part of the
+> same set.
 
-Then use "the Nexus 7 Android tablet" :-)
+Well I've sent it a moment before this one. Will make them a set next
+time.
 
-> > Immediate question here is how do you see the plan of spreading this.
-> > I.o.w. can you put an explanation that you have checked, let's say
-> >> 80% current users, and they may be converted like [example
-> > placeholder] without any special tricks?
-> 
-> The rough plan is:
-> 
-> 1. Add new API.
-> 2. Convert drivers to the new API per subsystem.
+>> +#define AR0521_WIDTH_BLANKING_MIN     572u
+>> +#define AR0521_HEIGHT_BLANKING_MIN     28u // must be even
+>
+> Please use /* */ for comments. The SPDX tag is an exception.
 
-I would suggest to show that you are actually into it by converting a couple of
-the subsystems for the starter.
+As far as I know, this is no longer the case, the C99 comments are now
+permitted and maybe even encouraged. Or was I dreaming?
 
-> 3. Expose do_kernel_restart().
-> 4. Replace pm_power_off() with do_kernel_poweroff() per arch/, making
-> power off similar to the restart that uses do_kernel_restart().
-> 5. Remove do_kernel_restart() from kernel/reboot.c
-> 
-> Majority of pm_power_off() users shouldn't need the chaining and
-> pm_power_off() doesn't conflict with the new API, so there is no need to
-> rush the conversion.
-> 
-> The single-link chain users could be converted to the new API directly,
-> this will remove some global variables. But at first should be better to
-> gain more users who actually need the chained power off since they may
-> have very specific requirements not covered by the current variant of
-> the API and will be easier to evolve API with less users.
+checkpatch doesn't protest either.
 
-All above in one or another form should be in cover letter.
+> Please wrap your lines at 80 or earlier, unless a sound reason exists to do
+> otherwise.
 
+This limitation appears to be lifted as well, after all those years.
+Is there a specific reason to still use it here? Yes, lines longer than
+80 chars make the code much more readable (for my eyes, at least).
+Yes, I know there is some "soft" limit, and I trim lines when it makes
+them better in my opinion.
+
+>> +static int ar0521_s_ctrl(struct v4l2_ctrl *ctrl)
+>> +{
+>> +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+>> +	struct ar0521_dev *sensor = to_ar0521_dev(sd);
+>> +	int ret;
+>> +
+>> +	// v4l2_ctrl_lock() locks our own mutex
+>> +
+>> +	dev_dbg(&sensor->i2c_client->dev, "%s(0x%X)\n", __func__, ctrl->id);
+>
+> Please make sure the sensor is powered on before accessing it. See e.g.
+> imx219_set_ctrl() how to do this.
+
+I do, the lower-level IO function ar0521_write_regs() checks for this.
+However, I identified a case when pm_runtime_* isn't available
+(CONFIG_*), so I will post corrected patch.
+
+> Please drop the s_power callback and rely on runtime PM.
+
+Ok
+
+> Please drop *frame_interval() callbacks. See
+> https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html for an
+> explanation.
+>
+> Let me know if you have questions.
+
+I already wrote about this, you must have missed it:
+
+...However, it apparently isn't as flexible as *frame_interval() -
+I can't control the precise timings:
+- the V4L2_CID_PIXEL_RATE is discrete and R/O (i.e. the application
+  can't control it)
+- even if I could somehow control pixel rate, frame interval is
+  calculated as (width + h_blanking) * (height + v_blanking) /
+  pixel_rate, which may be a bit coarse for precise video.
+  With *frame_interval(), I compensate with per-frame "extra" delay
+  (in single pixels, not whole H or V lines).
+
+If the (userspace) application can control pixel rate and the "extra"
+timing (well maybe pixel rate and the total number of pixels including
+blanking and "extra") then I would be more than happy dropping
+frame_interval().
+
+I guess I could easily do that myself, if there is consensus about it.
+
+E.g. V4L2_CID_PIXEL_RATE would not be forced R/O (and discrete) anymore
+and I would invent a V4L2_CID_TOTAL_PIXELS or something.
+
+The V4L2_CID_PIXEL_RATE issue may be somehow offset by the
+V4L2_CID_LINK_FREQ, but the latter is "menu" type and thus not very
+useful (am I to populate it with 250 values 1 MHz apart?).
+
+Perhaps the receiver could publish it's input frequency range instead,
+then the transmitter would set a fixed value? I don't know. And this
+doesn't cover a case where the user needs a slower rate than max(tx, rx)
+for some reason.
+
+We should decide something about this, though.
+
+I look forward for your comments,
 -- 
-With Best Regards,
-Andy Shevchenko
+Krzysztof "Chris" Hałasa
 
-
+Sieć Badawcza Łukasiewicz
+Przemysłowy Instytut Automatyki i Pomiarów PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
