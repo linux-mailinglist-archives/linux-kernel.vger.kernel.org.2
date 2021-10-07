@@ -2,83 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F8C0425690
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:29:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A867425692
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233133AbhJGPa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:30:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:20942 "EHLO mga09.intel.com"
+        id S238404AbhJGPbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:31:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:32786 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230410AbhJGPa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:30:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226179253"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="226179253"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 08:28:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="560602099"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 08:28:44 -0700
-Received: from andy by smile with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1mYVK3-009ZkW-DK;
-        Thu, 07 Oct 2021 18:28:39 +0300
-Date:   Thu, 7 Oct 2021 18:28:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH v3 2/7] kernel.h: Split out container_of() and
- typeof_member() macros
-Message-ID: <YV8SJxgXmyQhhAsg@smile.fi.intel.com>
-References: <20211007150339.28910-1-andriy.shevchenko@linux.intel.com>
- <20211007150339.28910-3-andriy.shevchenko@linux.intel.com>
- <YV8NlXMJpVRcH42I@kroah.com>
+        id S230410AbhJGPbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:31:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D9AF1FB;
+        Thu,  7 Oct 2021 08:29:46 -0700 (PDT)
+Received: from e123427-lin.arm.com (unknown [10.57.53.143])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CEF823F66F;
+        Thu,  7 Oct 2021 08:29:43 -0700 (PDT)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     bhelgaas@google.com, robh@kernel.org,
+        brookxu <brookxu.cn@gmail.com>, jonathan.derrick@intel.com
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        linux-kernel@vger.kernel.org, helgaas@kernel.org,
+        linux-pci@vger.kernel.org, kw@linux.com
+Subject: Re: [PATCH v4] PCI: vmd: Assign a number to each VMD controller
+Date:   Thu,  7 Oct 2021 16:29:38 +0100
+Message-Id: <163362056400.23598.4839753526203041343.b4-ty@arm.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
+References: <1631884404-24141-1-git-send-email-brookxu.cn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV8NlXMJpVRcH42I@kroah.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 05:09:09PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 07, 2021 at 06:03:34PM +0300, Andy Shevchenko wrote:
+On Fri, 17 Sep 2021 21:13:24 +0800, brookxu wrote:
+> From: Chunguang Xu <brookxu@tencent.com>
+> 
+> If the system has multiple VMD controllers, the driver does not assign
+> a number to each controller, so when analyzing the interrupt through
+> /proc/interrupts, the names of all controllers are the same, which is
+> not very convenient for problem analysis. Here, try to assign a number
+> to each VMD controller.
+> 
+> [...]
 
-...
+Applied to pci/vmd, thanks!
 
-> Why did you touch kobject.h here?
+[1/1] PCI: vmd: Assign a number to each VMD controller
+      https://git.kernel.org/lpieralisi/pci/c/42da7911b8
 
-Because it uses it, but indirectly. Now we may include it directly.
-
-> It shouldn't have been needed to change for this commit.
-
-OK. I will split it to a separate change. Would it be okay?
-
-> Anyway, I really don't think this is all worth any more work at all,
->	as
-> I'm not going to be the one taking it...
-
-It's fine. There are more people in favour of this change anyway.
-
-Thanks for review!
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Lorenzo
