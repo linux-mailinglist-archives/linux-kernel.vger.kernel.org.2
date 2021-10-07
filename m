@@ -2,123 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A60D0424ECB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3644424EF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240639AbhJGIMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 04:12:55 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51312 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240554AbhJGIMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:12:53 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E76371FF49;
-        Thu,  7 Oct 2021 08:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633594259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Oc55QYscnPdKzwCjb0ywVfd/doUxkdVcTeLmeqISr7o=;
-        b=M+pb6kZBKTijfupuQci9zI0JzzADDVtW/KDSipGnsBgM01o/2Zfd8Zf2qDwIDRzPapNAPw
-        C/a15erqzs5+/vNjqXtbDZovG90WNGdDWv3/UjXvA8ptySXIDaLgqT+N+M30EdJqu5Rni2
-        QHhYCD82KKUdf/uvulrMMidepD6Q69c=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 43D35A3B85;
-        Thu,  7 Oct 2021 08:10:59 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 10:10:58 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
-References: <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz>
- <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
- <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
- <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <20211006175821.GA1941@duo.ucw.cz>
- <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+        id S240598AbhJGIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:14:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240664AbhJGIOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E9AB6101B;
+        Thu,  7 Oct 2021 08:12:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633594365;
+        bh=SQB2zfHQFfQ/x60bhQw8zEe4m6OGM4AGyHdrnROOqbI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q9GZXqYsflDS4zc3YJhVc6+repZCqZezIx4Rbg1y9ePoODozTm+GicsmQBxVFE2Kc
+         v/IkMTJvxTVdch4/O4a2Qu2f43d4pxVG6HFKu5VWl1HEHHCnvcnb168K2FUsWcAa7n
+         HmGr0foNE0Ja1k3TKOgLb6Tesw2DOEF872uSsBWOdAzes4Qa7TzqD5FkdNgCqAGFnp
+         F6JzFs8hNEpCLnYeWfB8ffFMlUf0R1M+MZQYxk8SGlwmdgIC3AJvlxTcbu5/kJvLSd
+         dm5pU6HZd+XT4daRnXpzC3nnlS92HotwI71boZFzGyR29rG4Elja0QTceu0KC0wqJH
+         kR4zzHt+SUCvg==
+From:   Ard Biesheuvel <ardb@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     keescook@chromium.org, Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH] lkdtm: avoid printk() in recursive_loop()
+Date:   Thu,  7 Oct 2021 10:12:35 +0200
+Message-Id: <20211007081235.382697-1-ardb@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2442; h=from:subject; bh=SQB2zfHQFfQ/x60bhQw8zEe4m6OGM4AGyHdrnROOqbI=; b=owEB7QES/pANAwAKAcNPIjmS2Y8kAcsmYgBhXqvxgncc86QaL0J3FCuxZHgZntAYazouYSyk7KgH 9Fw5DF+JAbMEAAEKAB0WIQT72WJ8QGnJQhU3VynDTyI5ktmPJAUCYV6r8QAKCRDDTyI5ktmPJBqxC/ 4iRi6Lm21BRUBaN+nO9y7ethkqX74FeMj3Ugip4jr64vqcTnTm35Mpaqx1Xv7UnmtMAGj9Askt/EWY 99feFimeleJPH3dOgj6xgTvdFQ5+foaW+wi68DpH7C1LY52bdRfd+BDzICkcaNz41x3GvSECIwEyRd MMxoo/o85IvWJ2UgGt88raA8gQZzT+CtEpWLs0QYUW4J2gMyiPLg90lbt0+8HgNiVEHrA9Ccj73H3s mNbmsxo3buWDCmgzbfAxwQNUAxBDmSkgIatbPKY4HUFmaG8ZPrtSPo8qf9+R3Bn7Bcc6OU3kvzE4+6 cfuQuejjXa3i1TQa7X/e8KdzCjn0ex0FxMje2K1/1AwFpEIK6uge8JQ3pbOMYr94NoHSd5w1FhuUet maOa8HzCvFSWDCg6ekuUKqn6x5DGqZzcvbIFoTusNL8ocYLdrPWDVWMhJ/6sUCNq9tKLdgHjLfWgEk feYhsyxLLKEovFfTbKN0U+D9BlTIHLMLu3in0xmr0RaNY=
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06-10-21 11:18:31, Suren Baghdasaryan wrote:
-> On Wed, Oct 6, 2021 at 10:58 AM Pavel Machek <pavel@ucw.cz> wrote:
-[...]
-> > That "central facility" option can be as simple as "mkdir
-> > /somewhere/sanitized_id", using inode numbers for example. You don't
-> > really need IPC.
-> 
-> Hmm, so the suggestion is to have some directory which contains files
-> representing IDs, each containing the string name of the associated
-> vma? Then let's say we are creating a new VMA and want to name it. We
-> would have to scan that directory, check all files and see if any of
-> them contain the name we want to reuse the same ID.
+The recursive_loop() function is intended as a diagnostic to ensure that
+exhausting the stack is caught and mitigated. Currently, it uses
+pr_info() to ensure that the function has side effects that the compiler
+cannot simply optimize away, so that the stack footprint does not get
+reduced inadvertently.
 
-I believe Pavel meant something as simple as
-$ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
-$ touch $YOUR_FILE
-$ stat -c %i $YOUR_FILE
+The typical mitigation for stack overflow is to kill the task, and this
+overflow may occur inside the call to pr_info(), which means it could be
+holding the console lock when this happens. This means that the console
+lock is never going to be released again, preventing the diagnostic
+prints related to the stack overflow handling from being visible on the
+console.
 
-YOUR_IDS_DIR can live on a tmpfs and you can even implement a policy on
-top of that (who can generate new ids, gurantee uniqness etc...).
+So let's replace the call to pr_info() with a call to
+memzero_explicit(), which is not a 'magic' function name like memset()
+or memcpy(), which the compiler may replace with plain loads and stores.
+To ensure that the stack frames are nested rather than tail-called, put
+the call to memzero_explicit() after the recursive call.
 
-The above is certainly not for free of course but if you really need a
-system wide consistency when using names then you need some sort of
-central authority. How you implement that is not all that important
-but I do not think we want to handle that in the kernel.
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/misc/lkdtm/bugs.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+index 4282b625200f..41fa558675c4 100644
+--- a/drivers/misc/lkdtm/bugs.c
++++ b/drivers/misc/lkdtm/bugs.c
+@@ -41,20 +41,22 @@ static DEFINE_SPINLOCK(lock_me_up);
+  * Make sure compiler does not optimize this function or stack frame away:
+  * - function marked noinline
+  * - stack variables are marked volatile
+- * - stack variables are written (memset()) and read (pr_info())
+- * - function has external effects (pr_info())
+- * */
++ * - stack variables are written (memset()) and read (buf[..] passed as arg)
++ * - function may have external effects (memzero_explicit())
++ * - no tail recursion possible
++ */
+ static int noinline recursive_loop(int remaining)
+ {
+ 	volatile char buf[REC_STACK_SIZE];
++	volatile int ret;
+ 
+ 	memset((void *)buf, remaining & 0xFF, sizeof(buf));
+-	pr_info("loop %d/%d ...\n", (int)buf[remaining % sizeof(buf)],
+-		recur_count);
+ 	if (!remaining)
+-		return 0;
++		ret = 0;
+ 	else
+-		return recursive_loop(remaining - 1);
++		ret = recursive_loop((int)buf[remaining % sizeof(buf)] - 1);
++	memzero_explicit((void *)buf, sizeof(buf));
++	return ret;
+ }
+ 
+ /* If the depth is negative, use the default, otherwise keep parameter. */
 -- 
-Michal Hocko
-SUSE Labs
+2.30.2
+
