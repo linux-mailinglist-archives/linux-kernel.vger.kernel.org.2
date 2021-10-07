@@ -2,166 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EF5424BB6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 250FE424BB8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232085AbhJGCHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 22:07:06 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24173 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230491AbhJGCHF (ORCPT
+        id S232223AbhJGCQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 22:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230443AbhJGCQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 22:07:05 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HPvkN746Dz13VY4;
-        Thu,  7 Oct 2021 10:03:40 +0800 (CST)
-Received: from dggpemm500008.china.huawei.com (7.185.36.136) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 7 Oct 2021 10:05:09 +0800
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpemm500008.china.huawei.com (7.185.36.136) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Thu, 7 Oct 2021 10:05:09 +0800
-Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
- dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
- Thu, 7 Oct 2021 10:05:09 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "kamal@canonical.com" <kamal@canonical.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "sgarzare@redhat.com" <sgarzare@redhat.com>,
-        "stefanha@redhat.com" <stefanha@redhat.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "ne-devel-upstream@amazon.com" <ne-devel-upstream@amazon.com>,
-        "lexnv@amazon.com" <lexnv@amazon.com>,
-        "alcioa@amazon.com" <alcioa@amazon.com>
-Subject: RE: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
- functionality
-Thread-Topic: [PATCH v2 3/4] nitro_enclaves: add test framework for the misc
- functionality
-Thread-Index: AQHXrvrbICRRDj4Na0elarumsuHBnqvA1wQAgAX+DAA=
-Date:   Thu, 7 Oct 2021 02:05:09 +0000
-Message-ID: <03ec1f44847d4fc196080c28aadc1b65@huawei.com>
-References: <20210921151039.1502-1-longpeng2@huawei.com>
- <20210921151039.1502-4-longpeng2@huawei.com>
- <ccb2b514-6fb7-440a-b498-037f0163e0c3@amazon.com>
-In-Reply-To: <ccb2b514-6fb7-440a-b498-037f0163e0c3@amazon.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 6 Oct 2021 22:16:24 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFEEC061746;
+        Wed,  6 Oct 2021 19:14:31 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m14so3978379pfc.9;
+        Wed, 06 Oct 2021 19:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zE7hlODd6NPyiXnEakuG69lfP+QvHTUKQl/iJbEFaPM=;
+        b=GD3SSn1gy0zxUJnMRAdQxxFXRtoyqFzb+PfuuIo93r/swOQI+Pxq2p0ETTrJAGEYME
+         eRJOxeDqvK1xuIaICv9ssQU9qB4InEa1eOBgDGLzaptRcOUpu0diCXIm0ZH6kQYrIlDe
+         O7bzhOuXiQJj1zcl++uBAxnavege+K2jBQ2T9PsreKjQ80RpeSbxBSUUONxbnDumjADS
+         cs+XPUxA0M61EC04lzXvTdcUSlX0wMCCow4lBbyumG+0HTSF7k4LMbfnLL6rSnK9h4K5
+         /Eup7rTxlqWGmcvOj8qHjBTx63krdk061r3stfp4tC2YdcFEspxaMg05bsYPEflTHa4M
+         ROUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zE7hlODd6NPyiXnEakuG69lfP+QvHTUKQl/iJbEFaPM=;
+        b=pDPexeX45v91TISINLYLa0g7qJQ5bmwwCFeqb9l3sdmKcEUBgaNXtIqDbtFPyfiz3R
+         K+xuc1jXjSyKduNCjpDQrDBoGtESQ2Ppa4oFH7B9iGiIPvTIwmQTohBNUcxJHwvNOm4L
+         zjmIQU/RbifVAIroUCaHkuIDrytUBSx/dGzQXtCLJzdPA26v+a4veGgYzRzKrC154mP8
+         ZYcziVOOMLdPWCindVG55KmGyhbJPeIQN8XStkA7vUKtjT5B8d+RpfocJl10oFpDEtMg
+         syPliY/CoryfwM7946t09w7zfLa093QLYA4S9kEQFinMNPyzQygAb3ld05j0MW/7FGQx
+         qEHA==
+X-Gm-Message-State: AOAM530zd+0dwJN/FLNVqc9mT4bq9dcuYT069HTYIcMiPcWv0kgKP9vn
+        tTkRvU+qYxASvsZohAaSIgQ=
+X-Google-Smtp-Source: ABdhPJxQqVylmn8imZ+r34wMCfcyjjPD2wtrRwePCKvKmyEhmxq2TLGobVaYx+eNuIcfRkhEMzBZ9w==
+X-Received: by 2002:a05:6a00:b4d:b0:44c:b7a7:cab2 with SMTP id p13-20020a056a000b4d00b0044cb7a7cab2mr1480805pfo.20.1633572871034;
+        Wed, 06 Oct 2021 19:14:31 -0700 (PDT)
+Received: from sol (106-69-170-56.dyn.iinet.net.au. [106.69.170.56])
+        by smtp.gmail.com with ESMTPSA id z4sm22772247pfz.99.2021.10.06.19.14.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Oct 2021 19:14:30 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 10:14:24 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     lakshmi.sowjanya.d@intel.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, mgross@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        tamal.saha@intel.com, bala.senthil@intel.com
+Subject: Re: [RFC PATCH v1 02/20] gpio: Add GPIO polling interface to GPIO lib
+Message-ID: <20211007021424.GA13920@sol>
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
+ <20210824164801.28896-3-lakshmi.sowjanya.d@intel.com>
+ <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMpxmJWeZP-f-3BoWwX7PkWNZySn5RP=rc4cVyLEwYmSb6if+w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogUGFyYXNjaGl2LCBBbmRy
-YS1JcmluYSBbbWFpbHRvOmFuZHJhcHJzQGFtYXpvbi5jb21dDQo+IFNlbnQ6IFN1bmRheSwgT2N0
-b2JlciAzLCAyMDIxIDk6NTAgUE0NCj4gVG86IExvbmdwZW5nIChNaWtlLCBDbG91ZCBJbmZyYXN0
-cnVjdHVyZSBTZXJ2aWNlIFByb2R1Y3QgRGVwdC4pDQo+IDxsb25ncGVuZzJAaHVhd2VpLmNvbT4N
-Cj4gQ2M6IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEdvbmdsZWkgKEFyZWkpIDxhcmVp
-LmdvbmdsZWlAaHVhd2VpLmNvbT47DQo+IGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnOyBrYW1h
-bEBjYW5vbmljYWwuY29tOyBwYm9uemluaUByZWRoYXQuY29tOw0KPiBzZ2FyemFyZUByZWRoYXQu
-Y29tOyBzdGVmYW5oYUByZWRoYXQuY29tOyB2a3V6bmV0c0ByZWRoYXQuY29tOw0KPiBuZS1kZXZl
-bC11cHN0cmVhbUBhbWF6b24uY29tOyBsZXhudkBhbWF6b24uY29tOyBhbGNpb2FAYW1hem9uLmNv
-bQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYyIDMvNF0gbml0cm9fZW5jbGF2ZXM6IGFkZCB0ZXN0
-IGZyYW1ld29yayBmb3IgdGhlIG1pc2MNCj4gZnVuY3Rpb25hbGl0eQ0KPiANCj4gDQo+IA0KPiBP
-biAyMS8wOS8yMDIxIDE4OjEwLCBMb25ncGVuZyhNaWtlKSB3cm90ZToNCj4gPiBBZGQgdGVzdCBm
-cmFtZXdvcmsgZm9yIHRoZSBtaXNjIGZ1bmN0aW9uYWxpdHkuDQo+IA0KPiBMZXQncyBhZGQgbW9y
-ZSBzcGVjaWZpY3MgaGVyZS4NCj4gDQo+IG5pdHJvX2VuY2xhdmVzOiBBZGQgS1VuaXQgdGVzdHMg
-c2V0dXAgZm9yIHRoZSBtaXNjIGRldmljZSBmdW5jdGlvbmFsaXR5DQo+IA0KPiBBZGQgdGhlIGlu
-aXRpYWwgc2V0dXAgZm9yIHRoZSBLVW5pdCB0ZXN0cyB0aGF0IHdpbGwgdGFyZ2V0IHRoZSBOaXRy
-bw0KPiBFbmNsYXZlcyBtaXNjIGRldmljZSBmdW5jdGlvbmFsaXR5Lg0KPiANCg0KT0ssIHRoYW5r
-cy4NCg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTG9uZ3BlbmcoTWlrZSkgPGxvbmdwZW5nMkBo
-dWF3ZWkuY29tPg0KPiA+IC0tLQ0KPiA+ICAgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL0tj
-b25maWcgICAgICAgIHwgIDggKysrKysrKysNCj4gPiAgIGRyaXZlcnMvdmlydC9uaXRyb19lbmNs
-YXZlcy9uZV9taXNjX2Rldi5jICB8IDI3DQo+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKw0K
-PiA+ICAgZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL25lX21pc2NfdGVzdC5jIHwgMTcgKysr
-KysrKysrKysrKysrKysNCj4gPiAgIDMgZmlsZXMgY2hhbmdlZCwgNTIgaW5zZXJ0aW9ucygrKQ0K
-PiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9t
-aXNjX3Rlc3QuYw0KPiANCj4gUGxlYXNlIG1vZGlmeSBpbiBhbGwgcGxhY2VzIHdoZXJlIG5lY2Vz
-c2FyeSB0byBtZW50aW9uIE5pdHJvIEVuY2xhdmVzDQo+ICJtaXNjIGRldmljZSIsIGluc3RlYWQg
-b2YganVzdCAibWlzYyIsIHRvIGJlIG1vcmUgc3BlY2lmaWMuDQo+IA0KPiBGb3IgZXhhbXBsZSwg
-aGVyZSBjYW4gYmUgIm5lX21pc2NfZGV2X3Rlc3QuYyIuDQo+IA0KDQpPSy4NCg0KPiA+DQo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9LY29uZmlnDQo+IGIvZHJp
-dmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL0tjb25maWcNCj4gPiBpbmRleCA4YzkzODdhLi4yNGM1
-NGRhIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9LY29uZmln
-DQo+ID4gKysrIGIvZHJpdmVycy92aXJ0L25pdHJvX2VuY2xhdmVzL0tjb25maWcNCj4gPiBAQCAt
-MTgsMyArMTgsMTEgQEAgY29uZmlnIE5JVFJPX0VOQ0xBVkVTDQo+ID4NCj4gPiAgIAkgIFRvIGNv
-bXBpbGUgdGhpcyBkcml2ZXIgYXMgYSBtb2R1bGUsIGNob29zZSBNIGhlcmUuDQo+ID4gICAJICBU
-aGUgbW9kdWxlIHdpbGwgYmUgY2FsbGVkIG5pdHJvX2VuY2xhdmVzLg0KPiA+ICsNCj4gPiArY29u
-ZmlnIE5JVFJPX0VOQ0xBVkVTX01JU0NfVEVTVA0KPiANCj4gTklUUk9fRU5DTEFWRVNfTUlTQ19E
-RVZfVEVTVA0KPiANCj4gPiArCWJvb2wgIlRlc3RzIGZvciB0aGUgbWlzYyBmdW5jdGlvbmFsaXR5
-IG9mIE5pdHJvIGVuY2xhdmVzIg0KPiANCj4gbWlzYyBkZXZpY2UgZnVuY3Rpb25hbGl0eSBvZiB0
-aGUgTml0cm8gRW5jbGF2ZXMNCj4gDQo+ID4gKwlkZXBlbmRzIG9uIE5JVFJPX0VOQ0xBVkVTICYm
-IEtVTklUPXkNCj4gPiArCWhlbHANCj4gPiArCSAgRW5hYmxlIEtVbml0IHRlc3RzIGZvciB0aGUg
-bWlzYyBmdW5jdGlvbmFsaXR5IG9mIE5pdHJvIEVuY2xhdmVzLiBTZWxlY3QNCj4gDQo+IG1pc2Mg
-ZGV2aWNlIGZ1bmN0aW9uYWxpdHkgb2YgdGhlIE5pdHJvIEVuY2xhdmVzDQo+IA0KDQpPSywgdGhh
-bmtzLg0KDQo+ID4gKwkgIHRoaXMgb3B0aW9uIG9ubHkgaWYgeW91IHdpbGwgYm9vdCB0aGUga2Vy
-bmVsIGZvciB0aGUgcHVycG9zZSBvZiBydW5uaW5nDQo+ID4gKwkgIHVuaXQgdGVzdHMgKGUuZy4g
-dW5kZXIgVU1MIG9yIHFlbXUpLiBJZiB1bnN1cmUsIHNheSBOLg0KPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19kZXYuYw0KPiBiL2RyaXZlcnMvdmly
-dC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5jDQo+ID4gaW5kZXggZDU1MWI4OC4uMDEzMWUx
-YiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY19k
-ZXYuYw0KPiA+ICsrKyBiL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX2Rldi5j
-DQo+ID4gQEAgLTE3MzUsOCArMTczNSwzMyBAQCBzdGF0aWMgbG9uZyBuZV9pb2N0bChzdHJ1Y3Qg
-ZmlsZSAqZmlsZSwgdW5zaWduZWQgaW50DQo+IGNtZCwgdW5zaWduZWQgbG9uZyBhcmcpDQo+ID4g
-ICAJcmV0dXJuIDA7DQo+ID4gICB9DQo+ID4NCj4gPiArI2lmIGRlZmluZWQoQ09ORklHX05JVFJP
-X0VOQ0xBVkVTX01JU0NfVEVTVCkNCj4gPiArI2luY2x1ZGUgIm5lX21pc2NfdGVzdC5jIg0KPiA+
-ICsNCj4gPiArc3RhdGljIGlubGluZSBpbnQgbmVfbWlzY190ZXN0X2luaXQodm9pZCkNCj4gPiAr
-ew0KPiA+ICsJcmV0dXJuIF9fa3VuaXRfdGVzdF9zdWl0ZXNfaW5pdChuZV9taXNjX3Rlc3Rfc3Vp
-dGVzKTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGlubGluZSB2b2lkIG5lX21pc2NfdGVz
-dF9leGl0KHZvaWQpDQo+ID4gK3sNCj4gPiArCV9fa3VuaXRfdGVzdF9zdWl0ZXNfZXhpdChuZV9t
-aXNjX3Rlc3Rfc3VpdGVzKTsNCj4gPiArfQ0KPiA+ICsjZWxzZQ0KPiA+ICtzdGF0aWMgaW5saW5l
-IGludCBuZV9taXNjX3Rlc3RfaW5pdCh2b2lkKQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4gMDsNCj4g
-PiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGlubGluZSB2b2lkIG5lX21pc2NfdGVzdF9leGl0KHZv
-aWQpDQo+ID4gK3sNCj4gPiArfQ0KPiA+ICsjZW5kaWYNCj4gDQo+IHMvbWlzYy9taXNjX2Rldi9n
-DQo+IA0KPiBXaHkgYXJlIHRoZXNlIG5lZWRlZD8gQ2FuJ3QgdGhlIHRlc3Qgc3VpdGUgYmUgc2V0
-dXAgdXNpbmcNCj4gImt1bml0X3Rlc3Rfc3VpdGUiIGFzIGluIHRoZSBLVW5pdCBkb2N1bWVudGF0
-aW9uIGV4YW1wbGUgWzFdPw0KPiANCj4gV291bGRuJ3QgYmUgbmVjZXNzYXJ5IHRvIGNvbmRpdGlv
-bmFsbHkgY29tcGlsZSB0aGUgbmVfbWlzY19kZXZfdGVzdCwNCj4gYmFzZWQgb24gdGhlIGtlcm5l
-bCBjb25maWcgYWJvdmU/DQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2Mv
-aHRtbC9sYXRlc3QvZGV2LXRvb2xzL2t1bml0L3N0YXJ0Lmh0bWwjd3JpdGluZy15DQo+IG91ci1m
-aXJzdC10ZXN0DQo+IA0KDQpCb3RoIG9mIHRoZXNlIHR3byB3YXlzIGFyZSBzdXBwb3J0ZWQgaW4g
-a2VybmVsLCBmb3IgZXhhbXBsZSBbMl0uDQoNClRoZXJlIGFyZSB0d28gcmVhc29ucyB3aHkgSSBj
-aG9vc2UgdGhpcyB3YXk6DQoxLiBUaGUgZnVuY3Rpb25zICh0byB0ZXN0KSBpbiAibmVfbWlzY19k
-ZXYuYyIgYXJlICdzdGF0aWMnLCB3ZSBjYW5ub3QgaW52b2tlDQogICAgdGhlbSBpbiAgIm5lX21p
-c2NfZGV2X3Rlc3QuYyIuDQoyLiBrdW5pdF90ZXN0X3N1aXRlIGRlZmluZXMgYSBtb2R1bGUgaW5p
-dCBmdW5jdGlvbiBpbnRlcm5hbCwgYW5kICJuZV9taXNjX2Rldi5jIg0KICAgIGFsc28gZGVmaW5l
-cyBvbmUsIHNvIHRoZXkgY2Fubm90IGJlIGNvbXBpbGVkIGludG8gb25lIG1vZHVsZS4NCg0KDQpb
-Ml0NCmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L3Y1LjE1LXJjNC9zb3VyY2UvZHJp
-dmVycy9tbWMvaG9zdC9zZGhjaS1vZi1hc3BlZWQuYyNMNjEyDQoNCj4gPiArDQo+ID4gICBzdGF0
-aWMgaW50IF9faW5pdCBuZV9pbml0KHZvaWQpDQo+ID4gICB7DQo+ID4gKwluZV9taXNjX3Rlc3Rf
-aW5pdCgpOw0KPiA+ICsNCj4gPiAgIAltdXRleF9pbml0KCZuZV9jcHVfcG9vbC5tdXRleCk7DQo+
-ID4NCj4gPiAgIAlyZXR1cm4gcGNpX3JlZ2lzdGVyX2RyaXZlcigmbmVfcGNpX2RyaXZlcik7DQo+
-ID4gQEAgLTE3NDcsNiArMTc3Miw4IEBAIHN0YXRpYyB2b2lkIF9fZXhpdCBuZV9leGl0KHZvaWQp
-DQo+ID4gICAJcGNpX3VucmVnaXN0ZXJfZHJpdmVyKCZuZV9wY2lfZHJpdmVyKTsNCj4gPg0KPiA+
-ICAgCW5lX3RlYXJkb3duX2NwdV9wb29sKCk7DQo+ID4gKw0KPiA+ICsJbmVfbWlzY190ZXN0X2V4
-aXQoKTsNCj4gPiAgIH0NCj4gPg0KPiA+ICAgbW9kdWxlX2luaXQobmVfaW5pdCk7DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX3Rlc3QuYw0KPiBi
-L2RyaXZlcnMvdmlydC9uaXRyb19lbmNsYXZlcy9uZV9taXNjX3Rlc3QuYw0KPiA+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0DQo+ID4gaW5kZXggMDAwMDAwMC4uMzQyNmMzNQ0KPiA+IC0tLSAvZGV2L251
-bGwNCj4gPiArKysgYi9kcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMvbmVfbWlzY190ZXN0LmMN
-Cj4gPiBAQCAtMCwwICsxLDE3IEBADQo+ID4gKy8vIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBH
-UEwtMi4wLW9yLWxhdGVyDQo+ID4gKw0KPiA+ICsjaW5jbHVkZSA8a3VuaXQvdGVzdC5oPg0KPiA+
-ICsNCj4gPiArc3RhdGljIHN0cnVjdCBrdW5pdF9jYXNlIG5lX21pc2NfdGVzdF9jYXNlc1tdID0g
-ew0KPiA+ICsJe30NCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBzdHJ1Y3Qga3VuaXRfc3Vp
-dGUgbmVfbWlzY190ZXN0X3N1aXRlID0gew0KPiA+ICsJLm5hbWUgPSAibmVfbWlzY190ZXN0IiwN
-Cj4gPiArCS50ZXN0X2Nhc2VzID0gbmVfbWlzY190ZXN0X2Nhc2VzLA0KPiA+ICt9Ow0KPiA+ICsN
-Cj4gPiArc3RhdGljIHN0cnVjdCBrdW5pdF9zdWl0ZSAqbmVfbWlzY190ZXN0X3N1aXRlc1tdID0g
-ew0KPiA+ICsJJm5lX21pc2NfdGVzdF9zdWl0ZSwNCj4gPiArCU5VTEwNCj4gPiArfTsNCj4gPg0K
-PiANCj4gQ2FuIHJlcGxhY2UgIm5lX21pc2MiIHdpdGggIm5lX21pc2NfZGV2Ii4NCj4gDQo+IFRo
-YW5rcywNCj4gQW5kcmENCj4gDQo+IA0KPiANCj4gQW1hem9uIERldmVsb3BtZW50IENlbnRlciAo
-Um9tYW5pYSkgUy5SLkwuIHJlZ2lzdGVyZWQgb2ZmaWNlOiAyN0EgU2YuIExhemFyDQo+IFN0cmVl
-dCwgVUJDNSwgZmxvb3IgMiwgSWFzaSwgSWFzaSBDb3VudHksIDcwMDA0NSwgUm9tYW5pYS4gUmVn
-aXN0ZXJlZCBpbiBSb21hbmlhLg0KPiBSZWdpc3RyYXRpb24gbnVtYmVyIEoyMi8yNjIxLzIwMDUu
-DQo=
+On Wed, Sep 22, 2021 at 12:03:53PM +0200, Bartosz Golaszewski wrote:
+> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
+> >
+> > From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> >
+> > Some Intel Timed I/O devices do not implement IRQ functionality. Augment
+> > read() interface to allow polling.
+> >
+> > Add two GPIO device methods: setup_poll() and poll():
+> > - setup_poll() configures the GPIO interface e.g. capture rising edges
+> > - poll() checks for events on the interface
+> >
+> > To implement polling, the driver must implement the two functions above
+> > and should either leave to_irq() method NULL or return irq 0.
+> >
+> > setup_poll() should configure the hardware to 'listen' for input events.
+> >
+> > poll() driver implementation must return the realtime timestamp
+> > corresponding to the event and -EAGAIN if no data is available.
+> >
+> > Co-developed-by: Christopher Hall <christopher.s.hall@intel.com>
+> > Signed-off-by: Christopher Hall <christopher.s.hall@intel.com>
+> > Signed-off-by: Tamal Saha <tamal.saha@intel.com>
+> > Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+> > Reviewed-by: Mark Gross <mgross@linux.intel.com>
+> > ---
+> 
+> Interesting. So the idea is to allow user-space to read line events as
+> if they were generated by interrupts handled in the kernel. While this
+> whole series has a long way to go and this patch looks wrong to me in
+> several places at first glance, I find the idea interesting. Cc'ing
+> Kent who's the author of most of this code - Kent: what do you think?
+> 
+
+It is interesting that we're seeing more hardware that provides more
+detailed edge info than we get from irq.  The hte patch series can also
+provide hardware timestamps, but the Timed I/O could even provide the
+sequence numbers.
+It might be worth abstracting the edge detection so edge events could be
+more easily driven by subsystems other than irq, without festooning cdev
+with special cases.
+
+I'm not a fan of the polling here though, particularly from userspace.
+If polling can't be avoided (why did they not provide an irq??) then I
+would do the polling in kernel and place any resulting events in the
+cdev kfifo for userspace to read as per the existing events.
+
+Of course that is without knowing a whole lot about the hardware or use
+cases.  The Intel datasheet doesn't provide much in the way of data :|.
+
+Cheers,
+Kent.
