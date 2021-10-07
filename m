@@ -2,75 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18871425862
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF54425879
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242901AbhJGQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:51:05 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54680 "EHLO vps0.lunn.ch"
+        id S241332AbhJGQzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:55:45 -0400
+Received: from mga11.intel.com ([192.55.52.93]:2424 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242827AbhJGQvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:51:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=K1pNxZtqLLgIwOkunNdpRqqwnHYphnkviPFOPxcGXU4=; b=Rxr8aMFIyN/YJ83Sty0Iv50PAL
-        jlB1fO+QAOaN/bqBlSK9X2nUNE6Ob1i5GcgQz4dNd9ONjF9ifkB4BXRQdAgMRt3BgVDkSGMkXCOe8
-        0QC27dlh3KgoMicJ1sBIl8Q/EN7zLKxHpeK59Iij83ZHazSmeJX1kigQ3CKMkoyi0IIE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mYWZu-009yNO-4q; Thu, 07 Oct 2021 18:49:06 +0200
-Date:   Thu, 7 Oct 2021 18:49:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Hagan <mnhagan88@gmail.com>
-Subject: Re: [net-next PATCH 07/13] net: dsa: qca8k: add support for
- mac6_exchange, sgmii falling edge
-Message-ID: <YV8lAvzocfvvsA/I@lunn.ch>
-References: <20211006223603.18858-1-ansuelsmth@gmail.com>
- <20211006223603.18858-8-ansuelsmth@gmail.com>
- <YV472otG4JTeppou@lunn.ch>
- <YV71nZsSDEeY97yt@Ansuel-xps.localdomain>
+        id S229810AbhJGQzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:55:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="223706424"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="223706424"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:50:09 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="458860073"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:50:03 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 2514C201C4;
+        Thu,  7 Oct 2021 19:50:01 +0300 (EEST)
+Date:   Thu, 7 Oct 2021 19:50:01 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        jic23@kernel.org, linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v4 7/7] media: entity: Replace kernel.h with the
+ necessary inclusions
+Message-ID: <YV8lOdumrYU9jNOo@paasikivi.fi.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+ <20211007154407.29746-8-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YV71nZsSDEeY97yt@Ansuel-xps.localdomain>
+In-Reply-To: <20211007154407.29746-8-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 03:26:53PM +0200, Ansuel Smith wrote:
-> On Thu, Oct 07, 2021 at 02:14:18AM +0200, Andrew Lunn wrote:
-> > On Thu, Oct 07, 2021 at 12:35:57AM +0200, Ansuel Smith wrote:
-> > > Some device set the switch to exchange the mac0 port with mac6 port. Add
-> > > support for this in the qca8k driver. Also add support for SGMII rx/tx
-> > > clock falling edge. This is only present for pad0, pad5 and pad6 have
-> > > these bit reserved from Documentation.
-> > > 
-> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> > 
-> > Who wrote this patch? The person submitting it should be last. If
-> > Matthew actually wrote it, you want to play with git commit --author=
-> > to set the correct author.
-> > 
-> >    Andrew
+On Thu, Oct 07, 2021 at 06:44:07PM +0300, Andy Shevchenko wrote:
+> When kernel.h is used in the headers it adds a lot into dependency hell,
+> especially when there are circular dependencies are involved.
 > 
-> I wrote it and Matthew did some very minor changes (binding name).
-> Should I use co-developed by ?
+> Replace kernel.h inclusion with the list of what is really being used.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-In that case, just reverse the order of the two Signed-off-by, and
-leave the author information as you.
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-      Andrew
+-- 
+Sakari Ailus
