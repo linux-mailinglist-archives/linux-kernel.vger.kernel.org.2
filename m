@@ -2,73 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E8C1425332
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2801542534B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241449AbhJGMjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:39:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35110 "EHLO mail.kernel.org"
+        id S241436AbhJGMlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:41:17 -0400
+Received: from first.geanix.com ([116.203.34.67]:37344 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241433AbhJGMi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:38:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 000FF6137F;
-        Thu,  7 Oct 2021 12:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633610225;
-        bh=j7T30MWfBZ37KKV75705QjJRPWVEgJm1h5JiJ53Ih+k=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=DL22dAXI0oNlF+831yD2/MSR6JnjU09CpPQqlLUuPbTq888CBpQkLDypnbE/48hwB
-         v6zK/VIxdsms1NzFIIiC/2yYItk4KhoO0FqkZwGzP+eecC5c8JEUBnoHf201MWxNx8
-         ERVFs3Y3Q7jEGd+JNQ2e0gbkuqUS91u+8JawxfEkVhRbLp6Rnhj25QtL/h6FMn5jJE
-         qNnmx4fsG+4h+/SQPlTTRoBoFd1UjhK0O4Xe2QzkQIxltWZq+nQAxp40T8szhOu6Wg
-         3w4Wa6sdj8+KawAQrdHN53GwPJmFAIXLbs44v7IhSgzwd4Inns8KdZRbNSd0X3vybK
-         T0YbeCagyUKyg==
-Received: by mail-oi1-f178.google.com with SMTP id y207so5634839oia.11;
-        Thu, 07 Oct 2021 05:37:04 -0700 (PDT)
-X-Gm-Message-State: AOAM532c80usCWFEVx9Drq+8VWkE82iI4nWlkvs5moxiKLnKlruQTYXA
-        LiGLXcqs/+mEBMc7fvAo8W6ysFkGslxrkKzruFg=
-X-Google-Smtp-Source: ABdhPJxdYakXmOwXP80XIWRD6rzCBWj0KIXOR4XlvuA7IBP9I+OexJSlLCZz4t11+FqAJ48T+YXJvDvrJA2Dv7mReBE=
-X-Received: by 2002:aca:b5c3:: with SMTP id e186mr11725969oif.51.1633610224391;
- Thu, 07 Oct 2021 05:37:04 -0700 (PDT)
+        id S233145AbhJGMlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:41:13 -0400
+Received: from skn-laptop (unknown [185.17.218.86])
+        by first.geanix.com (Postfix) with ESMTPSA id 6747FC38AD;
+        Thu,  7 Oct 2021 12:39:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633610357; bh=gap7Kd40aiSOak1xNMAurxLqrfVo/s5iZGzZdq6IBm8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=ZtSPiNmlrjmHUMzlTsujBrrcz+58ly2fhLzSb/Vf82OTurAWrbWVfvXDJ3ID7TvCD
+         1RWTYm0nUTAgXjThvBXSQ/zqdiYy3VtX10k5F15hfrB5GWEFSzW3G5BjPhooxPWm1k
+         JIfVDMSdcawkbZ94mkauxPkw8ret/TPyRpKs6T4ai1SH8Gksw4XWiYOF6wnTQsaXGv
+         Hau/mUiH5dlWnAEqmC0BsqfXnRTjdzPljXjK+Gp09KEgJJNocjKdoa7Fdf1FbsRd/l
+         iUhj3DhTGkxCrABQEbQ2IOsVSVVugTffuEPB0bO5V1W+TkP8lRJyFW6x1CJ0D6KZ6E
+         B+ezAs1wIDjYg==
+Date:   Thu, 7 Oct 2021 14:39:16 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
+References: <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+ <20211004115817.18739936@collabora.com>
+ <20211004101246.kagtezizympxupat@skn-laptop>
+ <20211004134700.26327f6f@collabora.com>
+ <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+ <20211005102300.5da6d480@collabora.com>
+ <20211005084938.jcbw24umhehoiirs@skn-laptop>
+ <20211005105836.6c300f25@collabora.com>
+ <20211007114351.3nafhtpefezxhanc@skn-laptop>
+ <20211007141858.314533f2@collabora.com>
 MIME-Version: 1.0
-Received: by 2002:ac9:31e7:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 05:37:04 -0700 (PDT)
-In-Reply-To: <20211007114716.13123-1-colin.king@canonical.com>
-References: <20211007114716.13123-1-colin.king@canonical.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Thu, 7 Oct 2021 21:37:04 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd_aOawm4MkBtkTxnLfeEk+F5VgrJHjyH8GSaeHjQbLtGQ@mail.gmail.com>
-Message-ID: <CAKYAXd_aOawm4MkBtkTxnLfeEk+F5VgrJHjyH8GSaeHjQbLtGQ@mail.gmail.com>
-Subject: Re: [PATCH][next] cifsd: Fix a less than zero comparison with the
- unsigned int nbytes
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-cifs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211007141858.314533f2@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-10-07 20:47 GMT+09:00, Colin King <colin.king@canonical.com>:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently the check for nbytes < 0 is always false because nbytes
-> is an unsigned int and can never be less than zero.  Fix this by
-> using ret for the assignment and comparison and assigning nbytes
-> to ret later if the check is successful. The fix also passes the
-> error return in ret to the error handling path that caters for
-> various values of ret.
->
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: e2f34481b24d ("cifsd: add server-side procedures for SMB3")
-I think that this alarm is caused by 	b66732021c64 (ksmbd: add
-validation in smb2_ioctl).
-Fixes tag may be not needed. Because b66732021c64 patch is not applied
-to Linus' tree yet ?
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Namjae Jeon <linkinjeon@kernel.org>
+On Thu, Oct 07, 2021 at 02:18:58PM +0200, Boris Brezillon wrote:
+> On Thu, 7 Oct 2021 13:43:51 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
 
-Thanks!
+[ ... ]
+
+> > 
+> > I have a proposal [0] and yes I have ended up in many deadlocks during
+> > testing. The hardest part is the locking when going into suspend.
+> > I'm not sure the wait_queue is initialized the right place :)
+> > And I'm kinda abusing the nand_get_device() for this...
+> > 
+> > Who do you think we should add to the discussion?
+> > 
+> > /Sean
+> > 
+> > [0]:
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 3d6c6e880520..735dfff18143 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> 
+> As I said previously, I think this should be handled MTD level
+> (drivers/mtd/mtdcore.c) not in the raw NAND framework.
+> 
+> > @@ -337,11 +337,10 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+> >   */
+> >  static int nand_get_device(struct nand_chip *chip)
+> >  {
+> > +       struct mtd_info *mtd = nand_to_mtd(chip);
+> > +
+> > +       wait_event(mtd->wait_queue, atomic_read(&chip->suspended) == 0);
+> >         mutex_lock(&chip->lock);
+> > -       if (chip->suspended) {
+> > -               mutex_unlock(&chip->lock);
+> > -               return -EBUSY;
+> > -       }
+> 
+> There's a race here: the device might enter suspend again before you're
+> able to acquire the lock.
+> 
+
+Thought so :)
+
+> >         mutex_lock(&chip->controller->lock);
+> > 
+> >         return 0;
+> > @@ -4562,11 +4561,15 @@ static int nand_suspend(struct mtd_info *mtd)
+> >         struct nand_chip *chip = mtd_to_nand(mtd);
+> >         int ret = 0;
+> > 
+> > +       atomic_inc(&chip->suspended);
+> >         mutex_lock(&chip->lock);
+> 
+> And it's racy here as well: you mark the device as suspended before you
+> even acquired the lock.
+> 
+> >         if (chip->ops.suspend)
+> >                 ret = chip->ops.suspend(chip);
+> > -       if (!ret)
+> > -               chip->suspended = 1;
+> > +       if (ret) {
+> > +               /* Wake things up again if suspend fails */
+> > +               atomic_dec(&chip->suspended);
+> > +               wake_up(&mtd->wait_queue);
+> > +       }
+> >         mutex_unlock(&chip->lock);
+> > 
+> >         return ret;
+> > @@ -4581,10 +4584,12 @@ static void nand_resume(struct mtd_info *mtd)
+> >         struct nand_chip *chip = mtd_to_nand(mtd);
+> > 
+> >         mutex_lock(&chip->lock);
+> > -       if (chip->suspended) {
+> > +       if (atomic_read(&chip->suspended)) {
+> >                 if (chip->ops.resume)
+> >                         chip->ops.resume(chip);
+> > -               chip->suspended = 0;
+> > +
+> > +               atomic_dec(&chip->suspended);
+> > +               wake_up(&mtd->wait_queue);
+> >         } else {
+> >                 pr_err("%s called for a chip which is not in suspended state\n",
+> >                         __func__);
+> > @@ -5099,6 +5104,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+> >         pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+> >                 (int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+> >                 mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+> > +
+> > +       init_waitqueue_head(&mtd->wait_queue);
+> > +
+> 
+> It's an MTD field. It should be initialized somewhere in mtdcore.c.
+> 
+> >         return 0;
+> > 
+> >  free_detect_allocation:
+> > @@ -6264,6 +6272,8 @@ static int nand_scan_tail(struct nand_chip *chip)
+> >         if (chip->options & NAND_SKIP_BBTSCAN)
+> >                 return 0;
+> > 
+> > +       atomic_set(&chip->suspended, 0);
+> > +
+> >         /* Build bad block table */
+> >         ret = nand_create_bbt(chip);
+> >         if (ret)
+> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> > index 88227044fc86..f7dcbc336170 100644
+> > --- a/include/linux/mtd/mtd.h
+> > +++ b/include/linux/mtd/mtd.h
+> > @@ -360,6 +360,8 @@ struct mtd_info {
+> >         int (*_get_device) (struct mtd_info *mtd);
+> >         void (*_put_device) (struct mtd_info *mtd);
+> > 
+> > +       wait_queue_head_t wait_queue;
+> > +
+> 
+> wait_queue doesn't really describe what this waitqueue is used for
+> (maybe resume_wq), and the suspended state should be here as well
+> (actually, there's one already).
+
+I'll rename to something meaningful.
+> 
+> Actually, what we need is a way to prevent the device from being
+> suspended while accesses are still in progress, and new accesses from
+> being queued if a suspend is pending. So, I think you need a readwrite
+> lock here:
+> 
+> * take the lock in read mode for all IO accesses, check the
+>   mtd->suspended value
+>   - if true, release the lock, and wait (retry on wakeup)
+>   - if false, just do the IO
+> 
+> * take the lock in write mode when you want to suspend/resume the
+>   device and update the suspended field. Call wake_up_all() in the
+>   resume path
+
+Could we use the chip->lock mutex for this? It's does kinda what you
+described above?
+If we introduce a new lock, do we really need to have the suspended as
+an atomic?
+
+I will test with some wait and retry added to nand_get_device().
