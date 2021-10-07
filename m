@@ -2,92 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280174257E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7054257F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242648AbhJGQ1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:27:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241716AbhJGQ1V (ORCPT
+        id S242508AbhJGQ3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:29:42 -0400
+Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:53130 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233610AbhJGQ3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:27:21 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0159CC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:25:28 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y201so9764608oie.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:25:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Quh5CwhJrhMwts1row+sDHXdLRUbxO8BF6swndVKvFY=;
-        b=i/MsWp7YvHVYXYUfhlyTfpdUeeFpOyF/y+NqOu4hLZ9GiOnZ/mBRG2lmS8S5Cna2Vg
-         iq56IrFzbCYyYieRAqf3vfdgfBHSn27gFTQt7ppmaRZfFAdG43JqTJqLjfGMBDwjsZGN
-         scrlnmY2xFUDty+TIJVEtPhvgzJiPg7IWyh9zMPrrG+r6JDBli8E4Q+JaNtIauyHowJS
-         O3teZbmk79zkC1YbCEVE1PkmCoY2uuCJCgLjGrFoD1NtnUEqnwPR/bkVTDxsgRoll5/W
-         eG5suHixTa2uYtyuZ9Sw84qcGSbKi0qMec1h+KXLnQwuasc4fuPmZsV2uvmIaHixV6+v
-         FahQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Quh5CwhJrhMwts1row+sDHXdLRUbxO8BF6swndVKvFY=;
-        b=pkWfaSo0PGGU0uI5BxyWheNoOC0gcC23cFuAg+VOe2ZKHOCb/ksOsGk1E2LSrG1teD
-         DcArLEAPJ7nvFgfIqSz92x1SIizdikosZEsyB559BlagKOQB6XRmP/eDaeSsx7/Dh8qG
-         rePoAoX4jcBd9646/u+TlSVhimtm0u4HwMqoRLYHcSmmwtsjJrDXuhP9lyeaZgwKljaG
-         2Nc5PEuLRolNxNMzy5As6bQwc4Um30BMxpNpDLcb/Wn3BRMe1xcsohSTPGcs7mqyjTLN
-         FUksPFsQNJYScqf1RsaywdaXCGvr3PZN2mSKZh1PR3xABOS24FOmUfC/ept3u+QrXsQJ
-         3B4w==
-X-Gm-Message-State: AOAM531XVroymKfXTPzGPQJ7QEkbJJC5KLLwhoWgaZ+Q1o0Y2O1MEE91
-        vJP56rwW5cthNMbUD1DcLCPFJCmoR5KuxwgTLyE=
-X-Google-Smtp-Source: ABdhPJw0HiGhqFmhHAndqbyQdohXZDjUYsZV8rp/o4KkVkc+VL0MynBZojtf4em7ZuzWCDLmQaoJD1qnCHDe/QHl0ac=
-X-Received: by 2002:a05:6808:2128:: with SMTP id r40mr3951944oiw.24.1633623927375;
- Thu, 07 Oct 2021 09:25:27 -0700 (PDT)
+        Thu, 7 Oct 2021 12:29:41 -0400
+Received: from omf12.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 8E76932068;
+        Thu,  7 Oct 2021 16:27:44 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf12.hostedemail.com (Postfix) with ESMTPA id 1F152240237;
+        Thu,  7 Oct 2021 16:27:40 +0000 (UTC)
+Message-ID: <86b05929e5aa8fa6e975c59cf523ad84498351b6.camel@perches.com>
+Subject: Re: [PATCH v4 2/7] kernel.h: Split out container_of() and
+ typeof_member() macros
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        jic23@kernel.org, linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Date:   Thu, 07 Oct 2021 09:27:38 -0700
+In-Reply-To: <20211007154407.29746-3-andriy.shevchenko@linux.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+         <20211007154407.29746-3-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Received: by 2002:a9d:7841:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 09:25:27 -0700 (PDT)
-Reply-To: tonyelumelu5501@gmail.com
-From:   Post office lome <togounionlomewesternoffice@gmail.com>
-Date:   Thu, 7 Oct 2021 16:25:27 +0000
-Message-ID: <CABY4=WCtd5AE==c3zy3hxUyfCsy+itttrBSyaFUzJ5ZjjH_8gg@mail.gmail.com>
-Subject: =?UTF-8?B?Q2llbsSramFtYWlzIGZvbmRhIMSrcGHFoW5pZWsh?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 1F152240237
+X-Spam-Status: No, score=0.46
+X-Stat-Signature: gosseop3rb95z89swki8e9bzmog67jrw
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX196qwUvlrD61uEpXpW7FIgH2TG8JPkatj8=
+X-HE-Tag: 1633624060-492939
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q2llbsSramFtYWlzIGZvbmRhIMSrcGHFoW5pZWshDQoNCkVzIG5vc8WrdMSranUganVtcyDFoW8g
-dsSTc3R1bGkgcGlybXMgbcSTbmXFoWEsIGJldCBlcyBuZWR6aXJkxJNqdSBubyBqdW1zLA0KZXMg
-bmVlc211IHDEgXJsaWVjaW7EgXRzLCB2YWkgasWrcyB0byBzYcWGxJNtxIF0LiBVbiB0xIFwxJNj
-IGVzIHRvIHNha3UNCnbEk2xyZWl6OiBwaXJta8SBcnQsIGVzIGVzbXUgS3Jpc3RhbGluYSBHZW9y
-Z2lldmEga3VuZHplLCBTdGFycHRhdXRpc2vEgQ0KVmFsxat0YXMgZm9uZGEgcsSra290xIFqZGly
-ZWt0b3JlIHVuIHByZXppZGVudGUuDQoNClBhdGllc8SrYsSBIG3Ek3MgZXNhbSBwxIFyc2thdMSr
-anXFoWkgdmlzdXMgxaHEt8STcsWhxLx1cyB1biBwcm9ibMSTbWFzLCBrYXMNCnNhaXN0xKt0YXMg
-YXIgasWrc3UgbmVwYWJlaWd0byBkYXLEq2p1bXUgdW4gasWrc3UgbmVzcMSTanUgaXpwaWxkxKt0
-DQpwxIFyc2thaXTEq2p1bWEgbWFrc3UsIGthcyBubyBqdW1zIGlla2FzxJN0YSBubyBpZXByaWVr
-xaHEk2rEgW0NCnDEgXJza2FpdMSranVtYSBpZXNwxJNqxIFtLiBBcHN0aXByaW7EgWp1bXUgc2th
-dGlldCBtxatzdSB2aWV0bsSTIDM4IMKwIDUz4oCyNTYNCuKAsyBOIDc3IMKwIDIg4oCyIDM5IOKA
-syBXDQoNCk3Ek3MsIERpcmVrdG9ydSBwYWRvbWUsIFBhc2F1bGVzIEJhbmthIHVuIFN0YXJwdGF1
-dGlza2FpcyBWYWzFq3RhcyBmb25kcw0KKFNWRikgVmHFoWluZ3RvbmEsIHNhZGFyYsSrYsSBIGFy
-IEFTViBWYWxzdHMga2FzaSB1biBkYcW+xIFtIGNpdMSBbQ0KYXRiaWxzdG/FocSBbSBwxJN0xKtq
-dW11IGHEo2VudMWrcsSBbSDFoWVpdCwgQVNWLiBpciBwYXbEk2zEk2ppcyBtxatzdSDEgHJ2YWxz
-dHUNCm1ha3PEgWp1bXUgcMSBcnZlZHVtdSBub2RhxLxhaSwgxIBmcmlrYXMgQXB2aWVub3RhamFp
-IGJhbmthaSBMb21lIFRvZ28sDQppenNuaWVndCBqdW1zIFZJU0Ega2FydGksIHV6IGt1cnUgdGlr
-cyBub3PFq3TEq3RzIGrFq3N1IGZvbmRzIChVU0QgMSwyDQptaWxqb25pKSwgbGFpIHbEk2zEgWsg
-aXrFhmVtdHUgbm8gasWrc3UgZm9uZGEuDQoNCkl6bWVrbMSTxaFhbmFzIGxhaWvEgSBtxJNzIGJp
-asSBbSBwxIFyc3RlaWd0aSwga2Ega29ydW1wxJN0xIFzIGJhbmthcw0KYW1hdHBlcnNvbmFzIG5l
-dmFqYWR6xKtnaSBrYXbEk2phIG3Fq3N1IG1ha3PEgWp1bXUsIGNlbsWhb3RpZXMgbm92aXJ6xKt0
-DQpzYXZ1cyBsxKtkemVrxLx1cyB1eiBzYXZpZW0gcHJpdsSBdGFqaWVtIGtvbnRpZW0uDQoNClVu
-IMWhb2RpZW4gbcSTcyBqxatzIGluZm9ybcSTamFtLCBrYSBqxatzdSBmb25kcyBpciBpZXNrYWl0
-xKt0cyBVQkEgYmFua2FzDQpWSVNBIGthcnTEkyB1biBpciBnYXRhdnMgYXLEqyBwaWVnxIFkZWku
-IFRhZ2FkIHNhemluaWV0aWVzIGFyIFVCQSBiYW5rYXMNCnNla3JldMSBcnUuIFZpxYZ1IHNhdWMg
-VG9uaWpzIEVsdW1lbHUga3VuZ3MsDQoNCktvbnRha3RwZXJzb25hcyBlIC1wYXN0czogKHRvbnll
-bHVtZWx1NTUwMUBnbWFpbC5jb20pDQoNCkzFq2R6dSwgbm9zxat0aWV0IHZpxYZhbSDFocSBZHUg
-aW5mb3JtxIFjaWp1IHBhciBqxatzdSBha3JlZGl0xJN0xIFzIFZpc2EgVklTQQ0Ka2FydGVzIHBp
-ZWfEgWRpIHV6IGrFq3N1IGFkcmVzaS4NCg0KSsWrc3UgcGlsbnMgdsSBcmRzOiA9PT09PT09PT09
-PT09PT09PT09PQ0KDQpKxatzdSBtxKt0bmVzIHZhbHN0czogPT09PT09PT09PT09PT09PT09PT0N
-Cg0KSsWrc3UgbcSBamFzIGFkcmVzZTogPT09PT09PT09PT09PT09PQ0KDQpKxatzdSB0xIFscnXF
-hmEgbnVtdXJzOiA9PT09PT09PT09PT09PT09PQ0KDQpTdmVpY2llbmksDQpLcmlzdGFsaW5hIEdl
-b3JnaWV2YSBrdW5kemUuDQo=
+On Thu, 2021-10-07 at 18:44 +0300, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt cleaning it up by splitting out container_of() and
+> typeof_member() macros.
+> 
+> For time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
+
+IMO: this new file is missing 2 #include directives.
+
+> diff --git a/include/linux/container_of.h b/include/linux/container_of.h
+[]
+> @@ -0,0 +1,37 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+
+And trivially: I'd prefer GPL-2.0-only
+
+> +#ifndef _LINUX_CONTAINER_OF_H
+> +#define _LINUX_CONTAINER_OF_H
+> +
+> +#define typeof_member(T, m)	typeof(((T*)0)->m)
+> +
+> +/**
+> + * container_of - cast a member of a structure out to the containing structure
+> + * @ptr:	the pointer to the member.
+> + * @type:	the type of the container struct this is embedded in.
+> + * @member:	the name of the member within the struct.
+> + *
+> + */
+> +#define container_of(ptr, type, member) ({				\
+> +	void *__mptr = (void *)(ptr);					\
+> +	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> +			 !__same_type(*(ptr), void),			\
+> +			 "pointer type mismatch in container_of()");	\
+
+This is not a self-contained header as it requires
+#include <linux/build_bug.h>
+which should be at the top of this file.
+
+> +	((type *)(__mptr - offsetof(type, member))); })
+> +
+> +/**
+> + * container_of_safe - cast a member of a structure out to the containing structure
+> + * @ptr:	the pointer to the member.
+> + * @type:	the type of the container struct this is embedded in.
+> + * @member:	the name of the member within the struct.
+> + *
+> + * If IS_ERR_OR_NULL(ptr), ptr is returned unchanged.
+> + */
+> +#define container_of_safe(ptr, type, member) ({				\
+> +	void *__mptr = (void *)(ptr);					\
+> +	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> +			 !__same_type(*(ptr), void),			\
+> +			 "pointer type mismatch in container_of()");	\
+> +	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
+> +		((type *)(__mptr - offsetof(type, member))); })
+
+And this requires
+
+#include <linux/err.h>
+
+> +
+> +#endif	/* _LINUX_CONTAINER_OF_H */
+
+
+
