@@ -2,205 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483E842519D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60B64251A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240700AbhJGLC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:02:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62300 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240599AbhJGLCU (ORCPT
+        id S232482AbhJGLDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:03:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230410AbhJGLDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:02:20 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1979aNfX021276;
-        Thu, 7 Oct 2021 06:59:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=jOJ33YjEn/VRMnsqj2+ffjTRn0vZYsJ/XCDQ0GiGnls=;
- b=jr+8GLibaHwM1kjWjATXF0cYfbeacTlie4xgKxlJ7bDH0gRKe2V8CRPS1H4fDyF0/L/g
- YIdDIHwL5HS9ETSZn+E9tWI0vqQjAry5apqmf0d4M+mlbN+uY7xyq6pXMiKxSdetUJAX
- QZmevIeuEBhYMZqWx5L5ZIVU09N8fm2pPXl/BRUEJclX+xeSuoMphowjwPnTNyXfFOSx
- ffQ8ZscPllw84WFaciDWrZFR5YUDQUTPuWETRpzREShITo0PumB7v8vnqvjdD0CCHIBZ
- yqDzVfjza6e9++HDJz7oSRWGG0fn2/68TydTHcuKUhHgAjHVov0RlRPXnU9OVAfzxAnb qQ== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bhksy6j8g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 06:59:37 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 197Au2xF019413;
-        Thu, 7 Oct 2021 10:59:35 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bhepd002r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 10:59:35 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 197AxWgC45613416
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Oct 2021 10:59:32 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4973AE074;
-        Thu,  7 Oct 2021 10:59:32 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E49E6AE070;
-        Thu,  7 Oct 2021 10:59:31 +0000 (GMT)
-Received: from [9.171.95.81] (unknown [9.171.95.81])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 Oct 2021 10:59:31 +0000 (GMT)
-Message-ID: <fd4a2d8d-3f9d-51f3-1c86-8009ad50e6a1@linux.ibm.com>
-Date:   Thu, 7 Oct 2021 12:59:32 +0200
+        Thu, 7 Oct 2021 07:03:51 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68881C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:01:58 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id y207so5297015oia.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MFLTJIiHDCdoWGozrgcXT8vP3XOP5pGhvQd0Nr+SVb4=;
+        b=CWIileFSkxrIxbuk4WvpY2lcTq5p2qu5RXuCIgYwkcj1po7j2q7SfR4U64LKCkK4ns
+         ZnDj74129ok0RTrhAMwvhcU901TSmC3Xt/SCDIS603kCmLmuy4iDE4WK+mf3NhmhhXRP
+         yRMcfTwQplrjFRbee+wIcVjrg2ddvDDeforfpJFd7lcWGoT7bgyaIw2pJyJhDJGvbTDh
+         Wnm6Ao8LpI4kKGrXoQORcVM+QgqdxLFyNzhfdLyZ0VJq8XS18rQMHSU0IBl1BVQclasC
+         QXnDjWSiBxmrZIP4mVXdHh0nuBnDCYXlV8hbMJoACe1SObrjDPg/hd9gTr5ke0uMc3b3
+         2UhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MFLTJIiHDCdoWGozrgcXT8vP3XOP5pGhvQd0Nr+SVb4=;
+        b=rz9Z8dFbceF3nQFtbqDpGt1r+XqFmqDzeuo1T9+D+1LjrTz+4xTpPlvJJkwqMOCKet
+         BmjLj/iRQxXKJ88IiKdDvIIKTdQn6guuJ5ZaoirVJ300Wzh2H+slwvJFivMHbc20tHI0
+         y6CIIb/08fT2gQIjS3bfCw8ZtoztTjATubm0o/UVperI5P2/9fpBFZIN/5WgkMs8SwnK
+         uGaaMfsFqczvNX5sR4fEGQBNC0gn3wjEkK/wEMX1zCGaV88zB6OgEpOuApTcwS9dK62I
+         blelG8YkUjZfEGazsh+lsNYpse36UPTnqZTT8zoHZ2qCZoT9OtstsEQ/oQiOxP4JKyNe
+         I46g==
+X-Gm-Message-State: AOAM533DAb9VNTpMDyJqrPJcp/z5lQR2IQeWeOSGfb8o/uHwnJcHar2A
+        o3P0Qsn4Y+GJduFSD4OlAquXSLhtTELrMKHvmyhQ7lAQATURgA==
+X-Google-Smtp-Source: ABdhPJwDdjLFOhOsIy9bVZnjGcflPRPIPcv53e7rmMVYMarGVPhiPYauAwXZqMj3TyMWNEoCDEoHVKhYdJkkSIWGsJc=
+X-Received: by 2002:a05:6808:1991:: with SMTP id bj17mr11056054oib.160.1633604517467;
+ Thu, 07 Oct 2021 04:01:57 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: DPAA2 triggers, [PATCH] dma debug: report -EEXIST errors in
- add_dma_entry
-Content-Language: en-US
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Hamza Mahfooz <someguy@effective-light.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Dan Williams <dan.j.williams@intel.com>
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-References: <20210518125443.34148-1-someguy@effective-light.com>
- <fd67fbac-64bf-f0ea-01e1-5938ccfab9d0@arm.com>
- <20210914154504.z6vqxuh3byqwgfzx@skbuf>
- <185e7ee4-3749-4ccb-6d2e-da6bc8f30c04@linux.ibm.com>
- <20211001145256.0323957a@thinkpad> <20211006151043.61fe9613@thinkpad>
- <4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <4a96b583-1119-8b26-cc85-f77a6b4550a2@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: kDPanIe3NO7XqJurDB-cWKBky-zO4U2A
-X-Proofpoint-ORIG-GUID: kDPanIe3NO7XqJurDB-cWKBky-zO4U2A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_01,2021-10-07_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 suspectscore=0 mlxscore=0 spamscore=0
- clxscore=1015 bulkscore=0 adultscore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2110070072
+References: <20211007095815.3563-1-vbabka@suse.cz>
+In-Reply-To: <20211007095815.3563-1-vbabka@suse.cz>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 7 Oct 2021 13:01:45 +0200
+Message-ID: <CACT4Y+bigoRHKxPG6G-E1OwfCBE+JFCq_Y1FbL78t368-sX+hg@mail.gmail.com>
+Subject: Re: [PATCH] lib/stackdepot: allow optional init and stack_table
+ allocation by kvmalloc()
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, kasan-dev@googlegroups.com,
+        Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/10/2021 16:23, Robin Murphy wrote:
-> On 2021-10-06 14:10, Gerald Schaefer wrote:
->> On Fri, 1 Oct 2021 14:52:56 +0200
->> Gerald Schaefer <gerald.schaefer@linux.ibm.com> wrote:
->>
->>> On Thu, 30 Sep 2021 15:37:33 +0200
->>> Karsten Graul <kgraul@linux.ibm.com> wrote:
->>>
->>>> On 14/09/2021 17:45, Ioana Ciornei wrote:
->>>>> On Wed, Sep 08, 2021 at 10:33:26PM -0500, Jeremy Linton wrote:
->>>>>> +DPAA2, netdev maintainers
->>>>>> Hi,
->>>>>>
->>>>>> On 5/18/21 7:54 AM, Hamza Mahfooz wrote:
->>>>>>> Since, overlapping mappings are not supported by the DMA API we should
->>>>>>> report an error if active_cacheline_insert returns -EEXIST.
->>>>>>
->>>>>> It seems this patch found a victim. I was trying to run iperf3 on a
->>>>>> honeycomb (5.14.0, fedora 35) and the console is blasting this error message
->>>>>> at 100% cpu. So, I changed it to a WARN_ONCE() to get the call trace, which
->>>>>> is attached below.
->>>>>>
->>>>>
->>>>> These frags are allocated by the stack, transformed into a scatterlist
->>>>> by skb_to_sgvec and then DMA mapped with dma_map_sg. It was not the
->>>>> dpaa2-eth's decision to use two fragments from the same page (that will
->>>>> also end un in the same cacheline) in two different in-flight skbs.
->>>>>
->>>>> Is this behavior normal?
->>>>>
->>>>
->>>> We see the same problem here and it started with 5.15-rc2 in our nightly CI runs.
->>>> The CI has panic_on_warn enabled so we see the panic every day now.
->>>
->>> Adding a WARN for a case that be detected false-positive seems not
->>> acceptable, exactly for this reason (kernel panic on unaffected
->>> systems).
->>>
->>> So I guess it boils down to the question if the behavior that Ioana
->>> described is legit behavior, on a system that is dma coherent. We
->>> are apparently hitting the same scenario, although it could not yet be
->>> reproduced with debug printks for some reason.
->>>
->>> If the answer is yes, than please remove at lease the WARN, so that
->>> it will not make systems crash that behave valid, and have
->>> panic_on_warn set. Even a normal printk feels wrong to me in that
->>> case, it really sounds rather like you want to fix / better refine
->>> the overlap check, if you want to report anything here.
->>
->> Dan, Christoph, any opinion?
->>
->> So far it all looks a lot like a false positive, so could you please
->> see that those patches get reverted? I do wonder a bit why this is
->> not an issue for others, we surely cannot be the only ones running
->> CI with panic_on_warn.
-> 
-> What convinces you it's a false-positive? I'm hardly familiar with most of that callstack, but it appears to be related to mlx5, and I know that exists on expansion cards which could be plugged into a system with non-coherent PCIe where partial cacheline overlap *would* be a real issue. Of course it's dubious that there are many real use-cases for plugging a NIC with a 4-figure price tag into a little i.MX8 or whatever, but the point is that it *should* still work correctly.
-> 
->> We would need to disable DEBUG_DMA if this WARN stays in, which
->> would be a shame. Of course, in theory, this might also indicate
->> some real bug, but there really is no sign of that so far.
-> 
-> The whole point of DMA debug is to flag up things that you *do* get away with on the vast majority of systems, precisely because most testing happens on those systems rather than more esoteric embedded setups. Say your system only uses dma-direct and a driver starts triggering the warning for not calling dma_mapping_error(), would you argue for removing that warning as well since dma_map_single() can't fail on your machine so it's "not a bug"?
-> 
->> Having multiple sg elements in the same page (or cacheline) is
->> valid, correct? And this is also not a decision of the driver
->> IIUC, so if it was bug, it should be addressed in common code,
->> correct?
-> 
-> According to the streaming DMA API documentation, it is *not* valid:
-> 
-> ".. warning::
-> 
->   Memory coherency operates at a granularity called the cache
->   line width.  In order for memory mapped by this API to operate
->   correctly, the mapped region must begin exactly on a cache line
->   boundary and end exactly on one (to prevent two separately mapped
->   regions from sharing a single cache line).  Since the cache line size
->   may not be known at compile time, the API will not enforce this
->   requirement.  Therefore, it is recommended that driver writers who
->   don't take special care to determine the cache line size at run time
->   only map virtual regions that begin and end on page boundaries (which
->   are guaranteed also to be cache line boundaries)."
-> 
->>> BTW, there is already a WARN in the add_dma_entry() path, related
->>> to cachlline overlap and -EEXIST:
->>>
->>> add_dma_entry() -> active_cacheline_insert() -> -EEXIST ->
->>> active_cacheline_inc_overlap()
->>>
->>> That will only trigger when "overlap > ACTIVE_CACHELINE_MAX_OVERLAP".
->>> Not familiar with that code, but it seems that there are now two
->>> warnings for more or less the same, and the new warning is much more
->>> prone to false-positives.
->>>
->>> How do these 2 warnings relate, are they both really necessary?
->>> I think the new warning was only introduced because of some old
->>> TODO comment in add_dma_entry(), see commit 2b4bbc6231d78
->>> ("dma-debug: report -EEXIST errors in add_dma_entry").
-> 
-> AFAICS they are different things. I believe the new warning is supposed to be for the fundementally incorrect API usage (as above) of mapping different regions overlapping within the same cacheline. The existing one is about dma-debug losing internal consistency when tracking the *same* region being mapped multiple times, which is a legal thing to do - e.g. buffer sharing between devices - but if anyone's doing it to excess that's almost certainly a bug (i.e. they probably intended to unmap it in between but missed that out).
+On Thu, 7 Oct 2021 at 11:58, Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> Currently, enabling CONFIG_STACKDEPOT means its stack_table will be allocated
+> from memblock, even if stack depot ends up not actually used. The default size
+> of stack_table is 4MB on 32-bit, 8MB on 64-bit.
+>
+> This is fine for use-cases such as KASAN which is also a config option and
+> has overhead on its own. But it's an issue for functionality that has to be
+> actually enabled on boot (page_owner) or depends on hardware (GPU drivers)
+> and thus the memory might be wasted. This was raised as an issue when trying
+> to add stackdepot support for SLUB's debug object tracking functionality. It's
+> common to build kernels with CONFIG_SLUB_DEBUG and enable slub_debug on boot
+> only when needed, or create specific kmem caches with debugging for testing
+> purposes.
+>
+> It would thus be more efficient if stackdepot's table was allocated only when
+> actually going to be used. This patch thus makes the allocation (and whole
+> stack_depot_init() call) optional:
+>
+> - Add a CONFIG_STACKDEPOT_ALWAYS_INIT flag to keep using the current
+>   well-defined point of allocation as part of mem_init(). Make CONFIG_KASAN
+>   select this flag.
+> - Other users have to call stack_depot_init() as part of their own init when
+>   it's determined that stack depot will actually be used. This may depend on
+>   both config and runtime conditions. Convert current users which are
+>   page_owner and several in the DRM subsystem. Same will be done for SLUB
+>   later.
+> - Because the init might now be called after the boot-time memblock allocation
+>   has given all memory to the buddy allocator, change stack_depot_init() to
+>   allocate stack_table with kvmalloc() when memblock is no longer available.
+>   Also handle allocation failure by disabling stackdepot (could have
+>   theoretically happened even with memblock allocation previously), and don't
+>   unnecessarily align the memblock allocation to its own size anymore.
+>
+> [1] https://lore.kernel.org/all/CAMuHMdW=eoVzM1Re5FVoEN87nKfiLmM2+Ah7eNu2KXEhCvbZyA@mail.gmail.com/
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Marco Elver <elver@google.com>
+> Cc: Vijayanand Jitta <vjitta@codeaurora.org>
+> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> Cc: Andrey Konovalov <andreyknvl@gmail.com>
+> Cc: Dmitry Vyukov <dvyukov@google.com>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Oliver Glitta <glittao@gmail.com>
+> Cc: Imran Khan <imran.f.khan@oracle.com>
 
-Thanks for the explanation Robin. 
+Acked-by: Dmitry Vyukov <dvyukov@google.com>
 
-In our case its really that a buffer is mapped twice for 2 different devices which we use in SMC to provide failover capabilities. We see that -EEXIST is returned when a buffer is mapped for the second device. Since there is a maximum of 2 parallel mappings we never see the warning shown by active_cacheline_inc_overlap() because we don't exceed ACTIVE_CACHELINE_MAX_OVERLAP.
-
-So how to deal with this kind of "legal thing", looks like there is no way to suppress the newly introduced EEXIST warning for that case?
-
-
-Karsten
+> ---
+> Hi, I'd appreciate review of the DRM parts - namely that I've got correctly
+> that stack_depot_init() is called from the proper init functions and iff
+> stack_depot_save() is going to be used later. Thanks!
+>
+>  drivers/gpu/drm/drm_dp_mst_topology.c   |  1 +
+>  drivers/gpu/drm/drm_mm.c                |  4 ++++
+>  drivers/gpu/drm/i915/intel_runtime_pm.c |  3 +++
+>  include/linux/stackdepot.h              | 19 ++++++++-------
+>  init/main.c                             |  3 ++-
+>  lib/Kconfig                             |  3 +++
+>  lib/Kconfig.kasan                       |  1 +
+>  lib/stackdepot.c                        | 32 +++++++++++++++++++++----
+>  mm/page_owner.c                         |  2 ++
+>  9 files changed, 53 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 2d1adab9e360..bbe972d59dae 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -5490,6 +5490,7 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
+>         mutex_init(&mgr->probe_lock);
+>  #if IS_ENABLED(CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS)
+>         mutex_init(&mgr->topology_ref_history_lock);
+> +       stack_depot_init();
+>  #endif
+>         INIT_LIST_HEAD(&mgr->tx_msg_downq);
+>         INIT_LIST_HEAD(&mgr->destroy_port_list);
+> diff --git a/drivers/gpu/drm/drm_mm.c b/drivers/gpu/drm/drm_mm.c
+> index 7d1c578388d3..8257f9d4f619 100644
+> --- a/drivers/gpu/drm/drm_mm.c
+> +++ b/drivers/gpu/drm/drm_mm.c
+> @@ -980,6 +980,10 @@ void drm_mm_init(struct drm_mm *mm, u64 start, u64 size)
+>         add_hole(&mm->head_node);
+>
+>         mm->scan_active = 0;
+> +
+> +#ifdef CONFIG_DRM_DEBUG_MM
+> +       stack_depot_init();
+> +#endif
+>  }
+>  EXPORT_SYMBOL(drm_mm_init);
+>
+> diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
+> index 0d85f3c5c526..806c32ab410b 100644
+> --- a/drivers/gpu/drm/i915/intel_runtime_pm.c
+> +++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
+> @@ -68,6 +68,9 @@ static noinline depot_stack_handle_t __save_depot_stack(void)
+>  static void init_intel_runtime_pm_wakeref(struct intel_runtime_pm *rpm)
+>  {
+>         spin_lock_init(&rpm->debug.lock);
+> +
+> +       if (rpm->available)
+> +               stack_depot_init();
+>  }
+>
+>  static noinline depot_stack_handle_t
+> diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+> index c34b55a6e554..60ba99a43745 100644
+> --- a/include/linux/stackdepot.h
+> +++ b/include/linux/stackdepot.h
+> @@ -15,6 +15,16 @@
+>
+>  typedef u32 depot_stack_handle_t;
+>
+> +/*
+> + * Every user of stack depot has to call this during its own init when it's
+> + * decided that it will be calling stack_depot_save() later.
+> + *
+> + * The alternative is to select STACKDEPOT_ALWAYS_INIT to have stack depot
+> + * enabled as part of mm_init(), for subsystems where it's known at compile time
+> + * that stack depot will be used.
+> + */
+> +int stack_depot_init(void);
+> +
+>  depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+>                                         unsigned int nr_entries,
+>                                         gfp_t gfp_flags, bool can_alloc);
+> @@ -30,13 +40,4 @@ int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
+>
+>  void stack_depot_print(depot_stack_handle_t stack);
+>
+> -#ifdef CONFIG_STACKDEPOT
+> -int stack_depot_init(void);
+> -#else
+> -static inline int stack_depot_init(void)
+> -{
+> -       return 0;
+> -}
+> -#endif /* CONFIG_STACKDEPOT */
+> -
+>  #endif
+> diff --git a/init/main.c b/init/main.c
+> index ee4d3e1b3eb9..b6a5833d98f5 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -844,7 +844,8 @@ static void __init mm_init(void)
+>         init_mem_debugging_and_hardening();
+>         kfence_alloc_pool();
+>         report_meminit();
+> -       stack_depot_init();
+> +       if (IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT))
+> +               stack_depot_init();
+>         mem_init();
+>         mem_init_print_info();
+>         /* page_owner must be initialized after buddy is ready */
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index 5e7165e6a346..df6bcf0a4cc3 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -671,6 +671,9 @@ config STACKDEPOT
+>         bool
+>         select STACKTRACE
+>
+> +config STACKDEPOT_ALWAYS_INIT
+> +       bool
+> +
+>  config STACK_HASH_ORDER
+>         int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
+>         range 12 20
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index cdc842d090db..695deb603c66 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -39,6 +39,7 @@ menuconfig KASAN
+>                    HAVE_ARCH_KASAN_HW_TAGS
+>         depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+>         select STACKDEPOT
+> +       select STACKDEPOT_ALWAYS_INIT
+>         help
+>           Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
+>           designed to find out-of-bounds accesses and use-after-free bugs.
+> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> index b437ae79aca1..a4f449ccd0dc 100644
+> --- a/lib/stackdepot.c
+> +++ b/lib/stackdepot.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/jhash.h>
+>  #include <linux/kernel.h>
+>  #include <linux/mm.h>
+> +#include <linux/mutex.h>
+>  #include <linux/percpu.h>
+>  #include <linux/printk.h>
+>  #include <linux/slab.h>
+> @@ -145,6 +146,7 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+>  #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+>  #define STACK_HASH_SEED 0x9747b28c
+>
+> +DEFINE_MUTEX(stack_depot_init_mutex);
+>  static bool stack_depot_disable;
+>  static struct stack_record **stack_table;
+>
+> @@ -161,18 +163,38 @@ static int __init is_stack_depot_disabled(char *str)
+>  }
+>  early_param("stack_depot_disable", is_stack_depot_disabled);
+>
+> -int __init stack_depot_init(void)
+> +/*
+> + * __ref because of memblock_alloc(), which will not be actually called after
+> + * the __init code is gone
+> + */
+> +__ref int stack_depot_init(void)
+>  {
+> -       if (!stack_depot_disable) {
+> +       mutex_lock(&stack_depot_init_mutex);
+> +       if (!stack_depot_disable && stack_table == NULL) {
+>                 size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
+>                 int i;
+>
+> -               stack_table = memblock_alloc(size, size);
+> -               for (i = 0; i < STACK_HASH_SIZE;  i++)
+> -                       stack_table[i] = NULL;
+> +               if (slab_is_available()) {
+> +                       pr_info("Stack Depot allocating hash table with kvmalloc\n");
+> +                       stack_table = kvmalloc(size, GFP_KERNEL);
+> +               } else {
+> +                       pr_info("Stack Depot allocating hash table with memblock_alloc\n");
+> +                       stack_table = memblock_alloc(size, SMP_CACHE_BYTES);
+> +               }
+> +               if (stack_table) {
+> +                       for (i = 0; i < STACK_HASH_SIZE;  i++)
+> +                               stack_table[i] = NULL;
+> +               } else {
+> +                       pr_err("Stack Depot failed hash table allocationg, disabling\n");
+> +                       stack_depot_disable = true;
+> +                       mutex_unlock(&stack_depot_init_mutex);
+> +                       return -ENOMEM;
+> +               }
+>         }
+> +       mutex_unlock(&stack_depot_init_mutex);
+>         return 0;
+>  }
+> +EXPORT_SYMBOL_GPL(stack_depot_init);
+>
+>  /* Calculate hash for a stack */
+>  static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index a83f546c06b5..a48607b51a97 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -80,6 +80,8 @@ static void init_page_owner(void)
+>         if (!page_owner_enabled)
+>                 return;
+>
+> +       stack_depot_init();
+> +
+>         register_dummy_stack();
+>         register_failure_stack();
+>         register_early_stack();
+> --
+> 2.33.0
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20211007095815.3563-1-vbabka%40suse.cz.
