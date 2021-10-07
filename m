@@ -2,307 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A002425678
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4295425680
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242565AbhJGPPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:15:32 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:8260 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242471AbhJGPPM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:15:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633619598; x=1665155598;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=F8AdM2bQCohn5beRmiDST/s0/uszilKdA86p30O7lEw=;
-  b=IzD0mu1g/rT6sufgiS/D53kyoUknwAPwS1UJBVdL66yGbjY+LsMCFhMG
-   IGaLWa+yOEk6SmBRC/i61WHtMDuUc5AHgq+t8WODVN4q/IYqu5h1KVoq4
-   fxx2SW6Ph60LMibXpEVY6xJ4Xa2L82NCq78QXYQLzDCBcFkeJg43zMgDS
-   aMQkXT1qKCJEBv3BGBQEMhjsL9KOcEa7fXKzBV5+NbpZtpqXIRgo5jXJc
-   kxCztEfHz+fdghloiQNYLRXk2IskyG3HJJwfpVmmvWFK9tb+K9EjtMa6a
-   U+vkUaouoJXQhhDXI3VgwkCC4NYDWUma5aPMqtAcrrFzTCTsqwdMJugTD
-   w==;
-IronPort-SDR: MkGKzUC7AxLA0MUaSxHENuNq44veaNwnp2v1i+x6YaH28orBGd+ZC2aXiaL0DLoMob+Piwpmag
- u6DE5NXxqxKvOiW1FjWbj/qH9KbHGAOJIGZz1EEsgcJAaUZ+d0WB42e3S/QYE+O55e9lZX64b4
- LwRZPZgiD8el8HQRUcBpvIuKS5/T/Zit3PE93/66ku0GqucXPSQ7n3mWKeoI/E4YxIewHBnUtL
- WXUVQpyXhbBV74YpRGrpWPsI2SEq3PuNLzBq6xfNgXFeR7s85HWDZFw3eukqoSWU1LjjrBknVT
- VCduOEg1k5liBuy2Dj8Gp/HR
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="139412269"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 08:13:17 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 7 Oct 2021 08:13:17 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 7 Oct 2021 08:13:12 -0700
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <olteanv@gmail.com>,
-        <robh+dt@kernel.org>
-CC:     <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Subject: [PATCH v4 net-next 10/10] net: dsa: microchip: add support for vlan operations
-Date:   Thu, 7 Oct 2021 20:42:00 +0530
-Message-ID: <20211007151200.748944-11-prasanna.vengateshan@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
-References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+        id S240975AbhJGPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:24:13 -0400
+Received: from mail-bn7nam10on2125.outbound.protection.outlook.com ([40.107.92.125]:27873
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232533AbhJGPYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:24:12 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZoLq1/fIWeIrURMLkud1Q9U8fkLCpIUOXutMG+GnUMT/WqNSHE1nc94olDgSp0PnuIGXNjNNripUuF+alGWme2lnRJZGs6OtajV7ehA7kf7x2qxEPiRixVP7gWraO4IuNgzj9BA8tDB9bohWqR+WHm7mWNcVEvqTPIt7I2tI5z3h2omUiG9rOcVcJOXy0d/xBcKYAXcgZu/S2TBlhZCZR16x/lu/RYZ8Z+Zk4o8O1eLDtFV2pIwId34zTeEgPqZrstqIrjkM6YsilgLrl7C7sQLaoTfIcWb5dnw3A+uYlXvj+wv6HAUTef8MGwV7lcB+5+avR7IZR3hQQIz7Q8q5uw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9V/AjU0ek6b0sCXquIkYzsa/FtO9AXxybA7AOZym1so=;
+ b=oDY+tK40EXrH5ALo9Iz4uzrdng7U2kjpdrV8PhsKXdPxK1UvKYUuykb9Rd8W8sdvAlexXCN6DzqkK3psfFgd1dL1GnQ5P1TmOm5Pnr+VHvQ2+090FnXUBe11ixzzkTN7r5lvX13FUHpPQmnKPXq6M8xsWRHIeu+Nz8TiieJJAlbJ5o7bNcagyqv1Sg7OS0AxFyY6JMx7PvQi84xOdIpY4uh3bY/G2NMN6PcVg208KMVFuekjEjqQsE8R9LzV8Rt5Jg+PVMwWnr4wCil6qZ2rYsrDblnHiKrbFFuQ6zuGJq0uDXdthNTPXJyfytgpKvYKUFUl51d5G+CZoi7b4tWgfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9V/AjU0ek6b0sCXquIkYzsa/FtO9AXxybA7AOZym1so=;
+ b=VjEHFCvdnZvj0+IvVDov/AL3VZSx7FzIh3TOwoTpJ4vu4zgumjNYz2ePqnGgtVtka29VX50+ead1+LfavnF2SBRnmPZO4Ax/tsggoE/IkClelk1Uk7VKB9+91ms9qZ9/dTe73S5/5za8Vi6TnBNh1glNqRXyVlTlez2s+pEJoBw=
+Received: from MW2SPR01MB07.namprd21.prod.outlook.com (2603:10b6:302:a::17) by
+ BL0PR2101MB1777.namprd21.prod.outlook.com (2603:10b6:207:32::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.1; Thu, 7 Oct
+ 2021 15:22:15 +0000
+Received: from MW2SPR01MB07.namprd21.prod.outlook.com
+ ([fe80::899d:a1ed:4bd3:1159]) by MW2SPR01MB07.namprd21.prod.outlook.com
+ ([fe80::899d:a1ed:4bd3:1159%6]) with mapi id 15.20.4608.003; Thu, 7 Oct 2021
+ 15:22:14 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+CC:     KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: RE: [PATCH v3] scsi: storvsc: Fix validation for unsolicited incoming
+ packets
+Thread-Topic: [PATCH v3] scsi: storvsc: Fix validation for unsolicited
+ incoming packets
+Thread-Index: AQHXu3bfZFP6gztYLkmn+PhsgCNhE6vHptNg
+Date:   Thu, 7 Oct 2021 15:22:14 +0000
+Message-ID: <MW2SPR01MB07E58BE5A2AA1ADDF4302BCAB19@MW2SPR01MB07.namprd21.prod.outlook.com>
+References: <20211007122828.469289-1-parri.andrea@gmail.com>
+In-Reply-To: <20211007122828.469289-1-parri.andrea@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=63d3338d-c697-4bb5-b9cf-db7b49bb914f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-07T15:20:35Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d83ce84a-6435-4451-287b-08d989a63e21
+x-ms-traffictypediagnostic: BL0PR2101MB1777:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR2101MB1777B5FE5BFB12178031DD58CAB19@BL0PR2101MB1777.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dZeG2P2JWks+j6L5Fp03Q8ug0naN5ZD7uAEZaTRvWVsPNAstwzXLo0l/s6+Ok+8Kg+rei4xdW5/Er0+PPHvXHp4Jg4+BxHpZtPH+fEZUOLqtUlLJD/lpP+fGU0EWH6mrKqlHoDXnlspHRTPzY3CA1S8ZcUqYZTC1bnzPlC/32kAl7U0UiQ53bU/eHslVkV1bFdSRHoomvVGNy24g+qmVg1yD2aT4MXbDGWOR92WjRiiv23mqXk0JE9mNyoXHEKOzvTv7NNs67B2aSr8bXJlaq11/UnRC+Y0Y1K4Jhs9FFYZ5RSU+w2RsLLZeve0Usi/5sUlz2BhTpdIlzHW+del1iOYGbz8KEWwd56pRXZOKY+WWXdNuMz1rW7hXzd4PJ8Hy2oY9c0UeJLKryuBY94Au1A6yYaeGJxysKEPwPQhuS9vRMj5K3/y5Q9r2w1n3PLRsg3jNOX8H7nk4kmudxaLAw8PRknALXJlCLDZc9eHYd22Gk3mdBHAmDXYtmSxwMHNLzDwby2zO6KvWFMLn3HPoUx/HumiVXDq9Lmlp7eNeqpRkhIgFO1aylGOjeihpiGxZ3+Z96aAqfDlcPm3RucU3V5AjNBcpDAQadLlBRjJfGP5J+I183w9RX52sFqx68dBCf78LfPfB7Wup8pmkjJXFOCkNqxRyrIzE3v7efz49zwLek+Mi5Iw/37/WrUhCVj+jFheHWteYfM+4i8EmCJPTog==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2SPR01MB07.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(2906002)(5660300002)(8936002)(10290500003)(53546011)(9686003)(52536014)(66476007)(186003)(107886003)(316002)(7696005)(66946007)(6506007)(55016002)(66446008)(71200400001)(82960400001)(66556008)(64756008)(82950400001)(26005)(8676002)(54906003)(76116006)(110136005)(83380400001)(38070700005)(33656002)(86362001)(122000001)(38100700002)(8990500004)(4326008)(4744005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?CEfOCpjC0OtwQ3Ne4poLrm1do8JKMA5MgyC6DozgHjtYoIED++7Zbpbikx7U?=
+ =?us-ascii?Q?DMDzIpu3gtlvwb607KXmdRxulVMB3bi7/z+Misv1QLjsdRgJqvc0cm4Jfnlp?=
+ =?us-ascii?Q?5a92Pl2faLfPc0WlomomKq3YJWonXhX1NWCj4BVkBooobCxPhJ8pWjl3Cdtu?=
+ =?us-ascii?Q?JZpSudwpTFJBJcNExnZWxM8juO7zUH2hFOkmAy+hIoBuMiFYHdnlT06LzD9+?=
+ =?us-ascii?Q?sMdLBfzQ5fzmDgkeafkCSDIkPoRW22KDMNIfzrDp2p0uIWaEdRvTGdJ4RBO3?=
+ =?us-ascii?Q?fwS/VNXnRCu4tk7eqJvfg9Nb5iEKs9oso6Y2oB6xYroed97pW3pgIkG+v+Pr?=
+ =?us-ascii?Q?9BLrAcjnvB5EZ4ZG8TRYNShNG+dfIFTN+3CQxDv7nwS4BgmCEO3v4tGaqr5v?=
+ =?us-ascii?Q?xmnar0sv4WRUB+zpue6kd2lxM0SmBv6tS6+MFC04dimKwBoCk8q5S5e627Uu?=
+ =?us-ascii?Q?Sfg/dE0NNH7tOyqBWUGhzV7PD8/7VVkDGBBIysS1ApjWLAP2Z3k0458LDeXq?=
+ =?us-ascii?Q?4kb5JBBzdU4UVzO6GYY2n/EeI77udIk/zNtJ0H75xngQh6xGidukD+oPmcao?=
+ =?us-ascii?Q?AKNJCySR2OnKphxljWStTNqjYDLm11sZMmDypoY/Mc9embElIP4YdybBU3xn?=
+ =?us-ascii?Q?jZoV+XsPMx/hshj4DXLdkMrQJk8qdwScABfM2b39qEnjGZBshH/j3NSah37c?=
+ =?us-ascii?Q?q6kDGBFPfT4Zx7t5rlTrwqVCSSvHfaCX0RnGMvJVM4lDGnTEX8pPXFKLQRRy?=
+ =?us-ascii?Q?LjHJLvK/tqlo+wt+4gvCEnzae4Lc8j6i1x/u0wuAYjOiuWQoxpVlrT/jbF8E?=
+ =?us-ascii?Q?llOvCClfIWll6lsUva9p9qPxjRCpJDUcE3+MRdEm/rsaunbOu5JSbP9U/VAr?=
+ =?us-ascii?Q?sdgKGYUjwgsvqcfcvoCL0/9hSAxlqksfeMA7gQrA5e31Vng4jDGDsnL9BEC0?=
+ =?us-ascii?Q?UZ1Vnc5Q/nL69qgKZ4iFFMf1oQpo5W/5ZCFpdN7X9uHJdQIKwPlcxavG9COl?=
+ =?us-ascii?Q?sRQUBjeME9VAvHozJjPCpNVqUQyxjD6GxM6HhyjrrTemXW2hKvmCa8/DDrP8?=
+ =?us-ascii?Q?Md/Y8pX25Kkqs2wqQChVFIoRLxp0mmpxAXFWwvVZ18Y1GrOHqk3l1Jjt8ZEv?=
+ =?us-ascii?Q?ydN+OGKDWUTLSZ/eLuDdiSZm8SD5k5X4Ks5lD1iH5Z9w0hWe3N34UC6sdEk4?=
+ =?us-ascii?Q?fnQJzTk3PyI2yIZ5YoBVgmc8HzA8/0PPS7+3BPW93z2onDyCPkmKuo8LeaId?=
+ =?us-ascii?Q?KxbsX0EltdBELElzJmJC1VDRodYRmTzezkhqCdETy+lSE8dolEn9FcjMGwOu?=
+ =?us-ascii?Q?p3mLJ83BDzak+g3u47QmYcRE?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2SPR01MB07.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d83ce84a-6435-4451-287b-08d989a63e21
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Oct 2021 15:22:14.7543
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MuDjVtpKYlTPOuQRbHxHX5iekfqn5NTxcClu8q2/zO4BGLKuqMu3xce5Ha84xfJMQHtQD6RgYzXcCWC9jqEcxg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1777
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for VLAN add, del, prepare and filtering operations.
 
-The VLAN aware is a global setting. Mixed vlan filterings
-are not supported. vlan_filtering_is_global is made as true
-in lan937x_setup function.
 
-Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
----
- drivers/net/dsa/microchip/lan937x_main.c | 198 +++++++++++++++++++++++
- 1 file changed, 198 insertions(+)
+> -----Original Message-----
+> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Sent: Thursday, October 7, 2021 8:28 AM
+> To: linux-kernel@vger.kernel.org; linux-hyperv@vger.kernel.org; linux-
+> scsi@vger.kernel.org
+> Cc: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>;
+> Wei Liu <wei.liu@kernel.org>; James E . J . Bottomley
+> <jejb@linux.ibm.com>; Martin K . Petersen <martin.petersen@oracle.com>;
+> Michael Kelley <mikelley@microsoft.com>; Andrea Parri (Microsoft)
+> <parri.andrea@gmail.com>; Dexuan Cui <decui@microsoft.com>
+> Subject: [PATCH v3] scsi: storvsc: Fix validation for unsolicited
+> incoming packets
+>=20
+> The validation on the length of incoming packets performed in
+> storvsc_on_channel_callback() does not apply to unsolicited packets with
+> ID of 0 sent by Hyper-V.  Adjust the validation for such unsolicited
+> packets.
+>=20
+> Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming
+> packet in storvsc_on_channel_callback()")
+> Reported-by: Dexuan Cui <decui@microsoft.com>
+> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+> ---
 
-diff --git a/drivers/net/dsa/microchip/lan937x_main.c b/drivers/net/dsa/microchip/lan937x_main.c
-index f55b2a037ad9..25fa352ec857 100644
---- a/drivers/net/dsa/microchip/lan937x_main.c
-+++ b/drivers/net/dsa/microchip/lan937x_main.c
-@@ -17,6 +17,14 @@
- #include "ksz_common.h"
- #include "lan937x_dev.h"
- 
-+static int lan937x_wait_vlan_ctrl_ready(struct ksz_device *dev)
-+{
-+	unsigned int val;
-+
-+	return regmap_read_poll_timeout(dev->regmap[0], REG_SW_VLAN_CTRL, val,
-+					!(val & VLAN_START), 10, 1000);
-+}
-+
- static u8 lan937x_get_fid(u16 vid)
- {
- 	if (vid > ALU_FID_SIZE)
-@@ -25,6 +33,97 @@ static u8 lan937x_get_fid(u16 vid)
- 		return vid;
- }
- 
-+static int lan937x_get_vlan_table(struct ksz_device *dev, u16 vid,
-+				  struct lan937x_vlan *vlan_entry)
-+{
-+	u32 data;
-+	int ret;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	ret = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_READ | VLAN_START);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	ret = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY__4, &data);
-+	if (ret < 0)
-+		goto exit;
-+
-+	vlan_entry->valid = !!(data & VLAN_VALID);
-+	vlan_entry->fid	= data & VLAN_FID_M;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY_UNTAG__4,
-+			 &vlan_entry->untag_prtmap);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_read32(dev, REG_SW_VLAN_ENTRY_PORTS__4,
-+			 &vlan_entry->fwd_map);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
-+	if (ret < 0)
-+		goto exit;
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return ret;
-+}
-+
-+static int lan937x_set_vlan_table(struct ksz_device *dev, u16 vid,
-+				  struct lan937x_vlan *vlan_entry)
-+{
-+	u32 data;
-+	int ret;
-+
-+	mutex_lock(&dev->vlan_mutex);
-+
-+	data = vlan_entry->valid ? VLAN_VALID : 0;
-+	data |= vlan_entry->fid;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY__4, data);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY_UNTAG__4,
-+			  vlan_entry->untag_prtmap);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write32(dev, REG_SW_VLAN_ENTRY_PORTS__4, vlan_entry->fwd_map);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
-+	if (ret < 0)
-+		goto exit;
-+
-+	ret = ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_START | VLAN_WRITE);
-+	if (ret < 0)
-+		goto exit;
-+
-+	/* wait to be cleared */
-+	ret = lan937x_wait_vlan_ctrl_ready(dev);
-+	if (ret < 0)
-+		goto exit;
-+
-+exit:
-+	mutex_unlock(&dev->vlan_mutex);
-+
-+	return ret;
-+}
-+
- static int lan937x_read_table(struct ksz_device *dev, u32 *table)
- {
- 	int ret;
-@@ -193,6 +292,102 @@ static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
- 		ksz_update_port_member(dev, port);
- }
- 
-+static int lan937x_port_vlan_filtering(struct dsa_switch *ds, int port,
-+				       bool flag,
-+				       struct netlink_ext_ack *extack)
-+{
-+	struct ksz_device *dev = ds->priv;
-+	int ret;
-+
-+	ret = lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE,
-+			  flag);
-+
-+	return ret;
-+}
-+
-+static int lan937x_port_vlan_add(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan,
-+				 struct netlink_ext_ack *extack)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	struct lan937x_vlan vlan_entry;
-+	int ret;
-+
-+	ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to get vlan table");
-+		return ret;
-+	}
-+
-+	vlan_entry.fid = lan937x_get_fid(vlan->vid);
-+	vlan_entry.valid = true;
-+
-+	/* set/clear switch port when updating vlan table registers */
-+	if (untagged)
-+		vlan_entry.untag_prtmap |= BIT(port);
-+	else
-+		vlan_entry.untag_prtmap &= ~BIT(port);
-+
-+	vlan_entry.fwd_map |= BIT(port);
-+
-+	ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to set vlan table");
-+		return ret;
-+	}
-+
-+	/* change PVID */
-+	if (vlan->flags & BRIDGE_VLAN_INFO_PVID) {
-+		ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID,
-+				       vlan->vid);
-+		if (ret < 0) {
-+			NL_SET_ERR_MSG_MOD(extack, "Failed to set pvid");
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int lan937x_port_vlan_del(struct dsa_switch *ds, int port,
-+				 const struct switchdev_obj_port_vlan *vlan)
-+{
-+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-+	struct ksz_device *dev = ds->priv;
-+	struct lan937x_vlan vlan_entry;
-+	u16 pvid;
-+	int ret;
-+
-+	lan937x_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
-+	pvid &= 0xFFF;
-+
-+	ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		dev_err(dev->dev, "Failed to get vlan table\n");
-+		return ret;
-+	}
-+	/* clear port fwd map */
-+	vlan_entry.fwd_map &= ~BIT(port);
-+
-+	if (untagged)
-+		vlan_entry.untag_prtmap &= ~BIT(port);
-+
-+	ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
-+	if (ret < 0) {
-+		dev_err(dev->dev, "Failed to set vlan table\n");
-+		return ret;
-+	}
-+
-+	ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID, pvid);
-+	if (ret < 0) {
-+		dev_err(dev->dev, "Failed to set pvid\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int lan937x_port_fdb_add(struct dsa_switch *ds, int port,
- 				const unsigned char *addr, u16 vid)
- {
-@@ -1086,6 +1281,9 @@ const struct dsa_switch_ops lan937x_switch_ops = {
- 	.port_bridge_leave = ksz_port_bridge_leave,
- 	.port_stp_state_set = lan937x_port_stp_state_set,
- 	.port_fast_age = ksz_port_fast_age,
-+	.port_vlan_filtering = lan937x_port_vlan_filtering,
-+	.port_vlan_add = lan937x_port_vlan_add,
-+	.port_vlan_del = lan937x_port_vlan_del,
- 	.port_fdb_dump = lan937x_port_fdb_dump,
- 	.port_fdb_add = lan937x_port_fdb_add,
- 	.port_fdb_del = lan937x_port_fdb_del,
--- 
-2.27.0
+Thanks.
+
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
 
