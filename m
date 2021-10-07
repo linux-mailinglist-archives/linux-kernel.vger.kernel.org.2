@@ -2,164 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 056DE425FFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E09426026
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235233AbhJGWgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 18:36:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
+        id S234163AbhJGXG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbhJGWgt (ORCPT
+        with ESMTP id S230120AbhJGXG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 18:36:49 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48DFC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:34:54 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso2369641oom.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:34:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=xvLkmQK9Bybd4TfsJEOa13aU7h3LNEaMsTOh+C5eBTg=;
-        b=RrC+LQ4p5RknyhummIEgUPYOa5Fz91+AtAnA3rEUlbkmAuwRbsdE6lfznJHa0LlbJD
-         gHeKxZrbTLMQqWWXvsiNBMMeaRwgA2mRA/n0nVIfo+Vcylr2NHZLoSz93AavNudYmQay
-         JhoZXgGqu43xpmqTbQ4Z52i8Am0AOPbAQSlwg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=xvLkmQK9Bybd4TfsJEOa13aU7h3LNEaMsTOh+C5eBTg=;
-        b=BLJxYmAAvi2Nx9mX+ZO4SZ7mXkjgfr1FKpLmrKhv2pR1sBQYP/C6wzkOQYvAglTjPn
-         d/WhJi6MX6BLhNYggvCnKLyOwexgx94N1wc+yl8Bh/XRW/KC5afqvz5C0RoRuTGv8mDD
-         PjDLVrn3HlUckFv4Yl2gND03Fp9aJKzSQG7kh+8N+ReRwvPSVsXMyGY//mYFsDa781yj
-         Cu9YmEo9h6G1w43div5M+4kpHuQwEzfnX3kXBfIBkX7To1MHIgUqR5f6uUoT2XM7VGvF
-         QXlAaNfkFwa0dnTdt7NrGjgkbfMaBh+22XzrqOb4xefD233h616amZUYWL5RgigkeIvF
-         1b8w==
-X-Gm-Message-State: AOAM531MjHqyP4bOrZKGCx4QYisp6oT/+o8vc5/BOBRM8l8RyRUGy8Eh
-        Ui8wDtaKy9F9nvOL1BIuZLq+qgQgQmTDcpdh/LiMzQ==
-X-Google-Smtp-Source: ABdhPJxw5GB+L1Z2oveCShSFbqavZMVrh82r2Kmb+640p8VfkAcz3rr6nqKCzxe0QKBNen93cGn02/Y5v97GrzlGfSM=
-X-Received: by 2002:a4a:e2d3:: with SMTP id l19mr5401226oot.1.1633646094225;
- Thu, 07 Oct 2021 15:34:54 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 7 Oct 2021 18:34:53 -0400
+        Thu, 7 Oct 2021 19:06:26 -0400
+X-Greylist: delayed 1669 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Oct 2021 16:04:32 PDT
+Received: from fudo.makrotopia.org (fudo.makrotopia.org [IPv6:2a07:2ec0:3002::71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A50BC061570;
+        Thu,  7 Oct 2021 16:04:32 -0700 (PDT)
+Received: from local
+        by fudo.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.94.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1mYc00-0003P2-Io; Fri, 08 Oct 2021 00:36:25 +0200
+Date:   Thu, 7 Oct 2021 23:36:10 +0100
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Nick Hainke <vincent@systemli.org>
+Cc:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        matthias.bgg@gmail.com, sean.wang@mediatek.com,
+        shayne.chen@mediatek.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Robert Foss <robert.foss@linaro.org>
+Subject: Re: [RFC v1] mt76: mt7615: mt7622: fix adhoc and ibss mode
+Message-ID: <YV92Wjo+3dZ49DL6@makrotopia.org>
+References: <20211007212323.1223602-1-vincent@systemli.org>
 MIME-Version: 1.0
-In-Reply-To: <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
-References: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
- <YVzGVmJXEDH0HfIL@ripper> <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
- <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org> <YV0FlTyMEzlyNsN9@ripper>
- <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org> <YV3dddt/GOidTmlN@ripper>
- <9dc50145fb3e9b189fd38857b20f326a@codeaurora.org> <YV9TQEKPh4SXYFF/@ripper> <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 7 Oct 2021 18:34:53 -0400
-Message-ID: <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>, khsieh@codeaurora.org
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Sankeerth Billakanti <sbillaka@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007212323.1223602-1-vincent@systemli.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2021-10-07 13:28:12)
-> On 2021-10-07 13:06, Bjorn Andersson wrote:
-> > On Thu 07 Oct 12:51 PDT 2021, khsieh@codeaurora.org wrote:
-> >
-> >> On 2021-10-06 10:31, Bjorn Andersson wrote:
-> >> > On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
-> >> >
-> >> > > On 2021-10-05 19:10, Bjorn Andersson wrote:
-> >> > > > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
-> >> > > >
-> >> > > > > On 2021-10-05 15:36, Stephen Boyd wrote:
-> >> > > > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
-> >> > > > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
-> >> > > > > > >
-> >> > > > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
-> >> > > > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
-> >> > > > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
-> >> > > > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
-> >> > > > > > > > > eDP this reduction improves the user experience dramatically - i.e.
-> >> > > > > > > > > removes 9.9s of bland screen time at boot.
-> >> > > > > > > > >
-> >> > > > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
-> >> > > > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> >> > > > > > > > > ---
-> >> > > > > > > >
-> >> > > > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
-> >> > > > > > > > re-read the code a couple times to understand that it's waiting 100ms
-> >> > > > > > > > times the 'delay' number. Whaaaaat?
-> >> > > > > > > >
-> >> > > > > > >
-> >> > > > > > > I assume you're happy with the current 10s delay on the current
-> >> > > > > > > devices, so I don't think we should push for this to be backported.
-> >> > > > > > > I have no need for it to be backported on my side at least.
-> >> > > > > > >
-> >> > > > > >
-> >> > > > > > Sure. Fixes tag != backported to stable trees but it is close.
-> >> > > > > >
-> >> > > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> >> > > > > > >
-> >> > > > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
-> >> > > > >
-> >> > > > > This patch will prevent usb3 from working due to dp driver
-> >> > > > > initialize phy
-> >> > > > > earlier than usb3 which cause timeout error at power up usb3 phy
-> >> > > > > when both
-> >> > > > > edp and dp are enabled.
-> >> > > >
-> >> > > > Can you please help me understand what you mean here, I use this on my
-> >> > > > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
-> >> > > > work? Or am I just lucky in some race condition?
-> >> > > >
-> >> > > > Thanks,
-> >> > > > Bjorn
-> >> > > >
-> >> > > The problem is seen at sc7280.
-> >> > > Apple dongle have both  hdmi and usb port.
-> >> > > plug Apple dongle into type-c, then plug DP into apple's hdmi port
-> >> > > and usb
-> >> > > mouse into apple's usb port.
-> >> > > If edp enabled at this time, then usb mouse will not work due to
-> >> > > timeout at
-> >> > > phy power up.
-> >> > >
-> >> >
-> >> > Okay, so you're saying that if the DP driver invokes phy_power_on()
-> >> > before the USB driver does, USB initialization fails (or at least USB
-> >> > doesn't work)?
-> >>
-> >> if dp driver call qcom_qmp_phy_init() before usb3 call
-> >> qcom_qmp_phy_init(),
-> >> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
-> >> mask) ==
-> >> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
-> >
-> > Thanks, I will try to reproduce this on my side. So the 10 seconds here
-> > is strictly to give good enough time for the dwc3 driver to probe...
-> >
-> > Any idea why you're saying that this is specific to sc7280, what
-> > changed
-> > from sc7180?
->
-> I did not have sc7180 with edp before so that i am not sure it will
-> happen on sc7180 or not.
-> The usb3 does not work when both edp and dp enabled I just seen at
-> sc7280.
-> Current at sc7280 EC is not boot up correctly when system power up.
-> I have to manual reboot EC from linux kernel shell before DP/usb3 can
-> work.
-> I am not sure this contribute to this problem or not.
->
 
-Can you make the usb driver into a module and only load that module
-later in boot after the DP driver calls qcom_qmp_phy_init()? That would
-be an easy way to move usb probe after DP probe and expose this problem.
+On Thu, Oct 07, 2021 at 11:23:23PM +0200, Nick Hainke wrote:
+> Subject: [RFC v1] mt76: mt7615: mt7622: fix adhoc and ibss mode
+Ad-Hoc and IBSS mode are synonyms.
+What probably meant to write 'fix adhoc and mesh mode', right?
+
+> Fixes: d8d59f66d136 ("mt76: mt7615: support 16 interfaces").
+> 
+> commit 7f4b7920318b ("mt76: mt7615: add ibss support") introduced IBSS
+> and commit f4ec7fdf7f83 ("mt76: mt7615: enable support for mesh")
+> meshpoint support.
+> 
+> Both used in the "get_omac_idx"-function:
+> 
+> 	if (~mask & BIT(HW_BSSID_0))
+> 		return HW_BSSID_0;
+> 
+> With commit d8d59f66d136 ("mt76: mt7615: support 16 interfaces") the
+> adhoc and meshpoint mode should "prefer hw bssid slot 1-3". However,
+> with that change the ibss or meshpoint mode will not send any beacon on
+> the mt7622 wifi anymore. Devices were still able to exchange data but
+> only if a bssid already existed. Two mt7622 devices will never be able
+> to communicate.
+> 
+> This commits reverts the preferation of slot 1-3 for adhoc and
+> meshpoint. Only NL80211_IFTYPE_STATION will still prefer slot 1-3.
+> 
+> Tested on Banana Pi R64.
+> 
+> Signed-off-by: Nick Hainke <vincent@systemli.org>
+> ---
+>  drivers/net/wireless/mediatek/mt76/mt7615/main.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/main.c b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+> index dada43d6d879..51260a669d16 100644
+> --- a/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+> +++ b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+> @@ -135,8 +135,6 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
+>  	int i;
+>  
+>  	switch (type) {
+> -	case NL80211_IFTYPE_MESH_POINT:
+> -	case NL80211_IFTYPE_ADHOC:
+>  	case NL80211_IFTYPE_STATION:
+>  		/* prefer hw bssid slot 1-3 */
+>  		i = get_free_idx(mask, HW_BSSID_1, HW_BSSID_3);
+> @@ -160,6 +158,8 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
+>  			return HW_BSSID_0;
+>  
+>  		break;
+> +	case NL80211_IFTYPE_ADHOC:
+> +	case NL80211_IFTYPE_MESH_POINT:
+>  	case NL80211_IFTYPE_MONITOR:
+>  	case NL80211_IFTYPE_AP:
+>  		/* ap uses hw bssid 0 and ext bssid */
+> -- 
+> 2.33.0
+> 
+> 
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
