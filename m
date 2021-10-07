@@ -2,142 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559B8425315
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529A42531A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241391AbhJGMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:32:57 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59378 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241261AbhJGMcz (ORCPT
+        id S241398AbhJGMex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:34:53 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47298 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241222AbhJGMet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:32:55 -0400
+        Thu, 7 Oct 2021 08:34:49 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 89AFC224B8;
-        Thu,  7 Oct 2021 12:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633609860; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QqTBeTOLXh63TdbL8mtx0+7eTpit6RF97QgRBdN8vW0=;
-        b=TYcZyGM6Ri1W/rO+n037uidWhkcJU2ItEow+bpzHwW0KbQGPBoDo2kz6enohP2dTOtJa0O
-        knwFRdyXCWHhnMLYA0W0e22AGm558SSMBfbumeCnjdaf3jxc/YUExLw/9oB3msV9k3OF3S
-        N1HRgOz6ysvATX2MsqElT2g62rnrtYI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633609860;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QqTBeTOLXh63TdbL8mtx0+7eTpit6RF97QgRBdN8vW0=;
-        b=wy3U7YQmfuke6i/OE5U17gI8qoAbb9s9gYkHwOBnwiycVPVYAgGpUhplk0zbVFLJgZxXZ9
-        z7J+2e82lRt3L4CA==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 78BA0A3B83;
-        Thu,  7 Oct 2021 12:31:00 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5FBC11F2C96; Thu,  7 Oct 2021 14:31:00 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 14:31:00 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-Message-ID: <20211007123100.GG12712@quack2.suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
+        by smtp-out2.suse.de (Postfix) with ESMTP id 9C6EB200B8;
+        Thu,  7 Oct 2021 12:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633609974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=w5hRO0ggi6f6CPWquu4xGEKh4nCUYk0yWV6Bvi7G6II=;
+        b=osjiG0VJRfFpHGqVrLVot0ga2RL8rn1fbLgkYfbxWUndyu0mY22emQt1HKT0ja4IlDQUXz
+        mZyrpqq6jvC7yvHYpB/nmNq2tfV6VV3os1lOJKQrQonqM7XeQR5JWNv5jD60ciS6JNq1x1
+        Bsf5cb5tTblz2OnqqLsHSTT6AclGP8k=
+Received: from g78.suse.de (unknown [10.163.24.38])
+        by relay2.suse.de (Postfix) with ESMTP id 92C60A3B83;
+        Thu,  7 Oct 2021 12:32:53 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Palethorpe <rpalethorpe@richiejp.com>
+Subject: [PATCH v2 1/2] vsock: Refactor vsock_*_getsockopt to resemble sock_getsockopt
+Date:   Thu,  7 Oct 2021 13:31:46 +0100
+Message-Id: <20211007123147.5780-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911090059.1876456-3-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 11-09-21 17:00:55, Ye Bin wrote:
-> kmmpd:
-> ...
->     diff = jiffies - last_update_time;
->     if (diff > mmp_check_interval * HZ) {
-> ...
-> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
-> than 'mmp_update_interval', so there will never trigger detection.
-> Introduce last_check_time record previous check time.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+In preparation for sharing the implementation of sock_get_timeout.
 
-I think the check is there only for the case where write_mmp_block() +
-sleep took longer than mmp_check_interval. I agree that should rarely
-happen but on a really busy system it is possible and in that case we would
-miss updating mmp block for too long and so another node could have started
-using the filesystem. I actually don't see a reason why kmmpd should be
-checking the block each mmp_check_interval as you do - mmp_check_interval
-is just for ext4_multi_mount_protect() to know how long it should wait
-before considering mmp block stale... Am I missing something?
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+---
 
-								Honza
+V1: https://lore.kernel.org/netdev/20211006074547.14724-1-rpalethorpe@suse.com/
 
-> ---
->  fs/ext4/mmp.c | 14 +++++++++-----
->  1 file changed, 9 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index 12af6dc8457b..c781b09a78c9 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
->  	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->  	unsigned mmp_check_interval;
->  	unsigned long last_update_time;
-> +	unsigned long last_check_time;
->  	unsigned long diff;
->  	int retval = 0;
->  
-> @@ -170,6 +171,7 @@ static int kmmpd(void *data)
->  
->  	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
->  	       sizeof(mmp->mmp_nodename));
-> +	last_check_time = jiffies;
->  
->  	while (!kthread_should_stop() && !sb_rdonly(sb)) {
->  		if (!ext4_has_feature_mmp(sb)) {
-> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
->  		}
->  
->  		diff = jiffies - last_update_time;
-> -		if (diff < mmp_update_interval * HZ)
-> +		if (diff < mmp_update_interval * HZ) {
->  			schedule_timeout_interruptible(mmp_update_interval *
->  						       HZ - diff);
-> +			diff = jiffies - last_update_time;
-> +		}
->  
->  		/*
->  		 * We need to make sure that more than mmp_check_interval
-> -		 * seconds have not passed since writing. If that has happened
-> -		 * we need to check if the MMP block is as we left it.
-> +		 * seconds have not passed since check. If that has happened
-> +		 * we need to check if the MMP block is as we write it.
->  		 */
-> -		diff = jiffies - last_update_time;
-> -		if (diff > mmp_check_interval * HZ) {
-> +		if (jiffies - last_check_time > mmp_check_interval * HZ) {
->  			struct buffer_head *bh_check = NULL;
->  			struct mmp_struct *mmp_check;
->  
-> @@ -234,6 +237,7 @@ static int kmmpd(void *data)
->  				goto wait_to_exit;
->  			}
->  			put_bh(bh_check);
-> +			last_check_time = jiffies;
->  		}
->  
->  		 /*
-> -- 
-> 2.31.1
-> 
+V2:
+* Try to share more code with core/sock.c
+* Handle 64-bit timeout values in 32-bit
+
+ net/vmw_vsock/af_vsock.c | 65 +++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 37 deletions(-)
+
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 3e02cc3b24f8..97d56f6a4480 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1648,68 +1648,59 @@ static int vsock_connectible_getsockopt(struct socket *sock,
+ 					char __user *optval,
+ 					int __user *optlen)
+ {
+-	int err;
++	struct sock *sk = sock->sk;
++	struct vsock_sock *vsk = vsock_sk(sk);
++
++	union {
++		u64 val64;
++		struct __kernel_old_timeval tm;
++	} v;
++
++	int lv = sizeof(v.val64);
+ 	int len;
+-	struct sock *sk;
+-	struct vsock_sock *vsk;
+-	u64 val;
+ 
+ 	if (level != AF_VSOCK)
+ 		return -ENOPROTOOPT;
+ 
+-	err = get_user(len, optlen);
+-	if (err != 0)
+-		return err;
+-
+-#define COPY_OUT(_v)                            \
+-	do {					\
+-		if (len < sizeof(_v))		\
+-			return -EINVAL;		\
+-						\
+-		len = sizeof(_v);		\
+-		if (copy_to_user(optval, &_v, len) != 0)	\
+-			return -EFAULT;				\
+-								\
+-	} while (0)
++	if (get_user(len, optlen))
++		return -EFAULT;
+ 
+-	err = 0;
+-	sk = sock->sk;
+-	vsk = vsock_sk(sk);
++	memset(&v, 0, sizeof(v));
+ 
+ 	switch (optname) {
+ 	case SO_VM_SOCKETS_BUFFER_SIZE:
+-		val = vsk->buffer_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_size;
+ 		break;
+ 
+ 	case SO_VM_SOCKETS_BUFFER_MAX_SIZE:
+-		val = vsk->buffer_max_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_max_size;
+ 		break;
+ 
+ 	case SO_VM_SOCKETS_BUFFER_MIN_SIZE:
+-		val = vsk->buffer_min_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_min_size;
+ 		break;
+ 
+-	case SO_VM_SOCKETS_CONNECT_TIMEOUT: {
+-		struct __kernel_old_timeval tv;
+-		tv.tv_sec = vsk->connect_timeout / HZ;
+-		tv.tv_usec =
++	case SO_VM_SOCKETS_CONNECT_TIMEOUT:
++		lv = sizeof(v.tm);
++		v.tm.tv_sec = vsk->connect_timeout / HZ;
++		v.tm.tv_usec =
+ 		    (vsk->connect_timeout -
+-		     tv.tv_sec * HZ) * (1000000 / HZ);
+-		COPY_OUT(tv);
++		     v.tm.tv_sec * HZ) * (1000000 / HZ);
+ 		break;
+-	}
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
+ 
+-	err = put_user(len, optlen);
+-	if (err != 0)
++	if (len < lv)
++		return -EINVAL;
++	if (len > lv)
++		len = lv;
++	if (copy_to_user(optval, &v, len))
+ 		return -EFAULT;
+ 
+-#undef COPY_OUT
++	if (put_user(len, optlen))
++		return -EFAULT;
+ 
+ 	return 0;
+ }
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.33.0
+
