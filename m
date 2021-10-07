@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6C6425756
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1380A42574D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242331AbhJGQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:05:36 -0400
-Received: from mga05.intel.com ([192.55.52.43]:31298 "EHLO mga05.intel.com"
+        id S242254AbhJGQE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:04:27 -0400
+Received: from marcansoft.com ([212.63.210.85]:55964 "EHLO mail.marcansoft.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242330AbhJGQFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:05:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312493187"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="312493187"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 08:44:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="560607981"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Oct 2021 08:44:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 68FD7489; Thu,  7 Oct 2021 18:44:10 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        jic23@kernel.org, linux@rasmusvillemoes.dk,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: [PATCH v4 5/7] llist: Replace kernel.h with the necessary inclusions
-Date:   Thu,  7 Oct 2021 18:44:05 +0300
-Message-Id: <20211007154407.29746-6-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
-References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+        id S233255AbhJGQEZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:04:25 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id C2AE4419BC;
+        Thu,  7 Oct 2021 16:02:25 +0000 (UTC)
+Subject: Re: [PATCH v5 12/14] arm64: dts: apple: t8103: Add PCIe DARTs
+To:     Marc Zyngier <maz@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <kettenis@openbsd.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Robin Murphy <Robin.Murphy@arm.com>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Joerg Roedel <joro@8bytes.org>, kernel-team@android.com
+References: <20210929163847.2807812-1-maz@kernel.org>
+ <20210929163847.2807812-13-maz@kernel.org>
+From:   Hector Martin <marcan@marcan.st>
+Message-ID: <6939501d-23b6-59ba-a2e4-b1217e7918a8@marcan.st>
+Date:   Fri, 8 Oct 2021 01:02:23 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210929163847.2807812-13-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kernel.h is used in the headers it adds a lot into dependency hell,
-especially when there are circular dependencies are involved.
+On 30/09/2021 01.38, Marc Zyngier wrote:
+> PCIe on the Apple M1 (aka t8103) requires the use of IOMMUs (aka
+> DARTs). Add the three instances that deal with the internal PCIe
+> ports and route each port's traffic through its DART.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>   arch/arm64/boot/dts/apple/t8103.dtsi | 30 ++++++++++++++++++++++++++++
+>   1 file changed, 30 insertions(+)
+> 
 
-Replace kernel.h inclusion with the list of what is really being used.
+Acked-by: Hector Martin <marcan@marcan.st>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/llist.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/llist.h b/include/linux/llist.h
-index 24f207b0190b..85bda2d02d65 100644
---- a/include/linux/llist.h
-+++ b/include/linux/llist.h
-@@ -49,7 +49,9 @@
-  */
- 
- #include <linux/atomic.h>
--#include <linux/kernel.h>
-+#include <linux/container_of.h>
-+#include <linux/stddef.h>
-+#include <linux/types.h>
- 
- struct llist_head {
- 	struct llist_node *first;
 -- 
-2.33.0
-
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
