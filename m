@@ -2,83 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C4D425578
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D7C42557B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242093AbhJGOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233381AbhJGOdH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:33:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D3E2610EA;
-        Thu,  7 Oct 2021 14:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633617073;
-        bh=VN63RB522o8WFY2Ey9405BvBXJdWFy4UFPRQ2hg36Ig=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=SoVky5XUMZsKen9HX7ymW9QmSloaYyq4Q4U2w4sa7YDxDZWRCEdxvgMHuaOXOg+NK
-         xnbaYmAT2977HqGJUhq/yb4rrYIxmO3Z9uB1d2ipjdKYaT43m6ojzYGlXFsNUVX9gk
-         d8gvfre0yRDb3QO+RN6oKN2exgo0vEtqQ6j3YOwljkq33M3DDWesAM7zF/Hyt22TiS
-         i5Nrlbv8UG2L6b/h63tlgZLWqHy1Gmw38XlFQ22xWEQFNwqC07Ftw0CJ5UqCiSM1MI
-         bEN9uHqWIfSeHGnAga32sYA212uPljZ/hIzSnYlUIqJNE/C4ltrgibNLQ3lAzyRoWA
-         s8avTIB4fKATQ==
-Received: by mail-ot1-f42.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so3209924ote.8;
-        Thu, 07 Oct 2021 07:31:13 -0700 (PDT)
-X-Gm-Message-State: AOAM5339G/3nDfu8HQlYHEuTkSwLejvt5vgv3F8dsn3dftHaotydZpOr
-        8dO5AKh6EspSby2swDrIVbloASjAMBV1d9/jF+A=
-X-Google-Smtp-Source: ABdhPJx9+OtS8s0Zlrpz2JV2zuvtULulfL7uYDLsTkKxgEkDIeKPkAnSu95wk6RUbALrfaoxXD7ny9OgEXtPNLiwgt8=
-X-Received: by 2002:a05:6830:17da:: with SMTP id p26mr3953027ota.116.1633617072833;
- Thu, 07 Oct 2021 07:31:12 -0700 (PDT)
+        id S242099AbhJGOdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:33:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242066AbhJGOdr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:33:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633617113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2Ne/ymk4Q7iDTXHBvug37fNABdO4OvzkbsGDyNPNSVw=;
+        b=bCkuw1vG4yBBtxv0IhDhB4nNOciHwzcN4IkMcZwH5Vv0QhdqBb9sReRWri3oWKb6+VqCCH
+        CpBWT/DHQy6vH/OgeSBQYi3t/itRhMHbicPXmk6qUWhO8KZSWn4+nED2OlZzrQbvGwAz1e
+        xzfWViSFFqOl1ypp0G3iPgSWpyhruNM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-124-tDoKpp68Nqya6BvUiGVMEw-1; Thu, 07 Oct 2021 10:31:49 -0400
+X-MC-Unique: tDoKpp68Nqya6BvUiGVMEw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E340291165;
+        Thu,  7 Oct 2021 14:31:48 +0000 (UTC)
+Received: from [10.22.32.238] (unknown [10.22.32.238])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93A545C1A3;
+        Thu,  7 Oct 2021 14:31:48 +0000 (UTC)
+Message-ID: <7177cfa8-260a-6e5c-06a5-1683bcf21679@redhat.com>
+Date:   Thu, 7 Oct 2021 10:31:48 -0400
 MIME-Version: 1.0
-Received: by 2002:ac9:31e7:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 07:31:12 -0700 (PDT)
-In-Reply-To: <20211007133541.GC2048@kadam>
-References: <20211007114716.13123-1-colin.king@canonical.com>
- <CAKYAXd_aOawm4MkBtkTxnLfeEk+F5VgrJHjyH8GSaeHjQbLtGQ@mail.gmail.com> <20211007133541.GC2048@kadam>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Thu, 7 Oct 2021 23:31:12 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd824PDidipzYR3ZqP0BkQqi2MXXQRhqZ_OUAO62AtdQXQ@mail.gmail.com>
-Message-ID: <CAKYAXd824PDidipzYR3ZqP0BkQqi2MXXQRhqZ_OUAO62AtdQXQ@mail.gmail.com>
-Subject: Re: [PATCH][next] cifsd: Fix a less than zero comparison with the
- unsigned int nbytes
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        linux-cifs@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: Reason for unused flags argument in trace_raw_output_* function?
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     mingo@redhat.com, LKML <linux-kernel@vger.kernel.org>
+References: <4988d521-472f-a50e-4686-52afde08d2e9@redhat.com>
+ <20211007092026.644d25de@gandalf.local.home>
+From:   William Cohen <wcohen@redhat.com>
+In-Reply-To: <20211007092026.644d25de@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-10-07 22:35 GMT+09:00, Dan Carpenter <dan.carpenter@oracle.com>:
-> On Thu, Oct 07, 2021 at 09:37:04PM +0900, Namjae Jeon wrote:
->> 2021-10-07 20:47 GMT+09:00, Colin King <colin.king@canonical.com>:
->> >
->> > Fixes: e2f34481b24d ("cifsd: add server-side procedures for SMB3")
->> I think that this alarm is caused by 	b66732021c64 (ksmbd: add
->> validation in smb2_ioctl).
->> Fixes tag may be not needed. Because b66732021c64 patch is not applied
->> to Linus' tree yet ?
->
-> If you are going to modify the commit to include this fix then that's
-> fine.  Otherise if you are going to apply this commit then the Fixes
-> tag is still required.
->
-> The fixes tag saves time for backporters because they can automatically
-> rule out that this patch needs to be backported.  Or if they backport
-> commit b66732021c64 then they know they have to backport the fix as
-> well.
->
-> Also the Fixes tag is used for other purposes besides backporting.
-> It helps review.  It's also an interesting metric to measure how long
-> between the bug is introduced and the fix is applied.
-Okay, Thanks for your detailed explanation:)
->
-> regards,
-> dan carpenter
->
->
+On 10/7/21 09:20, Steven Rostedt wrote:
+> On Wed, 6 Oct 2021 23:49:22 -0400
+> William Cohen <wcohen@redhat.com> wrote:
+> 
+>> Hi,
+>>
+>> I have some code that analyzes x86_64 binaries
+>> (https://developers.redhat.com/articles/2021/08/09/debugging-function-parameters-
+>> dyninst#liveness_analysis) and list which function parameters are unused.
+>>  I noticed that trace_raw_output_* functions have an unused flags
+>> argument.  I assume this is is to make the argument list match up with
+>> some other function, but I couldn't see which function(s) the
+>> trace_raw_output_* functions are trying to match up with.  Which
+>> functions are the trace_raw_output_* function's arguments trying to match?
+>>
+> 
+> The match of other printing functions is in kernel/trace/trace_output.c
+> 
+> And is called from kernel/trace/trace.c where one place it does pass in
+> flags:
+> 
+> 
+> static enum print_line_t print_trace_fmt(struct trace_iterator *iter)
+> {
+> 	[..]
+> 	if (event)
+> 		return event->funcs->trace(iter, sym_flags, event);
+
+
+Hi Steve,
+
+Thanks for pointing to where the trace_raw_output_* functions are called from.
+
+> 
+> Now if they are still used, is something we should investigate.
+
+For the trace_raw_output_* functions the flags arg all seems to be unused.  Are there other trace functions should examining for unused args?  With the extensive macro use I could see where some vestigial unused argument gets left behind.
+
+> 
+> This code has changed a lot over the years when that "flags" parameter was
+> introduced. It could now just be a relic from the old implementations.
+> 
+> Thanks for pointing this out. If I get time I'll look deeper into it, but
+> feel free to look at it yourself.
+> 
+> -- Steve
+> 
+
+Thanks again,
+
+-Will
+
