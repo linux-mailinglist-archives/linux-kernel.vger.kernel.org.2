@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70C2425411
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F013425431
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhJGN3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:29:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37074 "EHLO mail.kernel.org"
+        id S241576AbhJGNh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:37:59 -0400
+Received: from mout01.posteo.de ([185.67.36.141]:40905 "EHLO mout01.posteo.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhJGN3I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:29:08 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69E9561058;
-        Thu,  7 Oct 2021 13:27:13 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 09:27:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Zack Weinberg <zack@owlfolio.org>, libc-alpha@sourceware.org,
-        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        linux-api@vger.kernel.org, mtk.manpages@gmail.com,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 16/22] futex: Implement sys_futex_waitv()
-Message-ID: <20211007092712.1884d1b3@gandalf.local.home>
-In-Reply-To: <20211007090837.GQ174703@worktop.programming.kicks-ass.net>
-References: <20210923171111.300673-1-andrealmeid@collabora.com>
-        <20210923171111.300673-17-andrealmeid@collabora.com>
-        <20211006115022.GH174703@worktop.programming.kicks-ass.net>
-        <47b13460-27a4-474c-879b-ed1c668e5923@www.fastmail.com>
-        <20211007090837.GQ174703@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233197AbhJGNh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 09:37:58 -0400
+X-Greylist: delayed 460 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Oct 2021 09:37:57 EDT
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout01.posteo.de (Postfix) with ESMTPS id A5AC824002A
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:28:22 +0200 (CEST)
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4HQBwL6nS7z9rxK;
+        Thu,  7 Oct 2021 15:28:18 +0200 (CEST)
+Subject: Re: [PATCH] tty: serial: atmel: use macros instead of hardcoded
+ values
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        richard.genoud@gmail.com, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, nicolas.ferre@microchip.com,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com
+Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20211007112014.2332019-1-claudiu.beznea@microchip.com>
+From:   Richard Genoud <richard.genoud@gmail.com>
+Message-ID: <5e1ab713-b198-b3ed-27eb-0af728ebe274@posteo.net>
+Date:   Thu,  7 Oct 2021 13:28:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211007112014.2332019-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 11:08:37 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > 'wake events' is correct here, but you introduced an unrelated error:
-> > 'loose' is the opposite of 'tight', you want 'lose' with only one O.  
+Le 07/10/2021 à 13:20, Claudiu Beznea a écrit :
+> Use UART_PM_STATE_ON, UART_PM_STATE_OFF instead of hardcoded values.
 > 
-> I shall forever make that mistake :-(
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+Acked-by: Richard Genoud <richard.genoud@gmail.com>
 
-Don't lose the loose moose goose ;-)
-
--- Steve
+> ---
+>   drivers/tty/serial/atmel_serial.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+> index 249ea35088d2..2c99a47a2535 100644
+> --- a/drivers/tty/serial/atmel_serial.c
+> +++ b/drivers/tty/serial/atmel_serial.c
+> @@ -2084,7 +2084,7 @@ static void atmel_serial_pm(struct uart_port *port, unsigned int state,
+>   	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
+>   
+>   	switch (state) {
+> -	case 0:
+> +	case UART_PM_STATE_ON:
+>   		/*
+>   		 * Enable the peripheral clock for this serial port.
+>   		 * This is called on uart_open() or a resume event.
+> @@ -2094,7 +2094,7 @@ static void atmel_serial_pm(struct uart_port *port, unsigned int state,
+>   		/* re-enable interrupts if we disabled some on suspend */
+>   		atmel_uart_writel(port, ATMEL_US_IER, atmel_port->backup_imr);
+>   		break;
+> -	case 3:
+> +	case UART_PM_STATE_OFF:
+>   		/* Back up the interrupt mask and disable all interrupts */
+>   		atmel_port->backup_imr = atmel_uart_readl(port, ATMEL_US_IMR);
+>   		atmel_uart_writel(port, ATMEL_US_IDR, -1);
+> 
+Thanks !
