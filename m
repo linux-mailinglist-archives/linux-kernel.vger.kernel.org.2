@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC4D4254D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39B774254D3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241886AbhJGNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S241868AbhJGNza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:55:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241883AbhJGNz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Oct 2021 09:55:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:55630 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241887AbhJGNzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:55:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4BC271FB;
-        Thu,  7 Oct 2021 06:53:26 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.53.122])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0845F3F66F;
-        Thu,  7 Oct 2021 06:53:23 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     bhelgaas@google.com, robh@kernel.org, kishon@ti.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        skananth@codeaurora.org, vbadigan@codeaurora.org,
-        sallenki@codeaurora.org, vpernami@codeaurora.org,
-        hemantk@codeaurora.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v8 0/3] Add Qualcomm PCIe Endpoint driver support
-Date:   Thu,  7 Oct 2021 14:53:17 +0100
-Message-Id: <163361478005.9266.2494067596905949961.b4-ty@arm.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210920065946.15090-1-manivannan.sadhasivam@linaro.org>
-References: <20210920065946.15090-1-manivannan.sadhasivam@linaro.org>
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A601BC061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 06:53:33 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id b16so6146331qtt.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:53:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4D+8fIGQfZQRL6O4ilxte9acbk0yTFGz3kGbSFrFrjQ=;
+        b=S4TlnmGf7fi2da0VpIauoGdtpAJV+eZPvZcJOHWpH+jfyiZLWL2u6prLmVlXzTNHTS
+         3NWVgVksHlLSni+Zh0aCeVJOcRAnwic8Wj34OMyRQlGjq6bM/jPybQuzRrsgOkVGzayG
+         XqrRZYYyKo1yWqnLu7VhI8h9lK1JpBXbA5hWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4D+8fIGQfZQRL6O4ilxte9acbk0yTFGz3kGbSFrFrjQ=;
+        b=4147wnqe1y5QGzql4b7RE/U7EbsDIY/JDoH3oCwfXjqAQntaD5ni0GmtbtYF54idhQ
+         gCAfaOYN9tRl2hz1nZaDFWAWGQ12tf490xEP9muxLQHO5Royn7xI3tAeFlU5tY9seXzP
+         q29gPErtU6NPN7O2aYxzT7hX3odwD6E6pFQAvFWlpQoj/bYreex2/tWx0Qzw9dyehjVc
+         LshY09IZPNHR4onOA6yVlO6aGdKpPX/W3VGlORVbh7PeAmosafH/s/L5Ix2XVgYBdktJ
+         p4sSNJMBwWujdbEb95i83QEBA2RTKt2jdSEIqeUsFfEhYHvjPjDm7OpTzmSxOa/jj79Y
+         5Slw==
+X-Gm-Message-State: AOAM5318gePZeZomIetIs21y+LV+aAtnRvFkbPYp+S85nAV+k/HKWZql
+        Fe2KcC3UEVbgz90VPbEfHEl3+f6Mzy+M1Q==
+X-Google-Smtp-Source: ABdhPJwcHrr57LfvIwqtKNYhUgrL8xhLV52BLnYDjYiyfPL9kN5rmd66eD+Gnx3mCFC6OBQwVa0b5g==
+X-Received: by 2002:ac8:24e:: with SMTP id o14mr4893747qtg.183.1633614812739;
+        Thu, 07 Oct 2021 06:53:32 -0700 (PDT)
+Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
+        by smtp.gmail.com with ESMTPSA id s203sm140319qke.21.2021.10.07.06.53.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 06:53:32 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 09:53:31 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Thorsten Leemhuis <linux@leemhuis.info>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] Prefer lore.kernel.org and explain Link: tags
+ better
+Message-ID: <20211007135331.3gi33cltdybljq54@meerkat.local>
+References: <cover.1633593385.git.linux@leemhuis.info>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cover.1633593385.git.linux@leemhuis.info>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 20 Sep 2021 12:29:43 +0530, Manivannan Sadhasivam wrote:
-> This series adds support for Qualcomm PCIe Endpoint controller found
-> in platforms like SDX55. The Endpoint controller is based on the designware
-> core with additional Qualcomm wrappers around the core.
-> 
-> The driver is added separately unlike other Designware based drivers that
-> combine RC and EP in a single driver. This is done to avoid complexity and
-> to maintain this driver autonomously.
-> 
-> [...]
+On Thu, Oct 07, 2021 at 10:04:59AM +0200, Thorsten Leemhuis wrote:
+> v2:
+> - slightly reword after suggestiones from Konstantin (thx!)
+> - make this a patch series with an preparatory patch that does
+>   s!lkml.kernel.org!lore.kernel.org! everywhere in the docs
 
-Applied to pci/qcom, thanks!
-
-[1/3] dt-bindings: pci: Add devicetree binding for Qualcomm PCIe EP controller
-      https://git.kernel.org/lpieralisi/pci/c/6da2051594
-[2/3] PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver
-      https://git.kernel.org/lpieralisi/pci/c/c206ae06ea
-[3/3] MAINTAINERS: Add entry for Qualcomm PCIe Endpoint driver and binding
-      https://git.kernel.org/lpieralisi/pci/c/b969e621b1
+Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
 
 Thanks,
-Lorenzo
+-K
