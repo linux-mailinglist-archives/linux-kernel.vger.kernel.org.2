@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61D5424B94
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5BB8424B96
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbhJGBTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 21:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230252AbhJGBTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 21:19:42 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82AD9C061746;
-        Wed,  6 Oct 2021 18:17:49 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id h16-20020a9d3e50000000b0054e25708f41so4691072otg.0;
-        Wed, 06 Oct 2021 18:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jT9z8RRT0XYjL+Fp0fFDi5Odn8ZxEN6A9XJGxWw8lg8=;
-        b=HP9QVcmSp8NN3FqweRkOGP4M76pSrRIIOtOPfKadKK20lVgfJPapDLoY8r/pYW1MsH
-         YZi6gn+rHkuPdHP4118JDz+t6vBk+phqGm338GRW74850DjHmJuSBZKy4TyyI3Jerucb
-         +O/xf8Bi5XMdcpNsgbHhSuSgn8qjYjeMB8GlSWKScHE3gpsVWwObkZ2u4/qRL4oZ9JPm
-         D9bPKwB7Jf0ewRPEX8EJW9qkJi5eOGFKd1xXjXMXVTFEXnuY+2uQuXUxGZFQi95OdbHr
-         Eqvw9TKDL7I5ru5bOpZwnNnVMc17mIPvlY84As3svAfH0/zbp2KHU4Gf3QlvWrBd0XHv
-         P1QQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jT9z8RRT0XYjL+Fp0fFDi5Odn8ZxEN6A9XJGxWw8lg8=;
-        b=xLyM6hmYFifdB6qQwqwG13rQZ7O+l8yeaaChqmcgvKWSgCcvWzSLmxFsOG476A/JO8
-         Ib1uCD0jQELhSx5vrrg4QhLB9KVfmDev8oL+LC5yVXiKEtWrmnKMA7GHC2e8rU1tjKYG
-         NsFyg0TlJVK1J+vVLqbe4WOtNgnthe0O5phN2SeHWoMraSSOq1g8uEBItU0UmkYYwrpv
-         R3E50uqkS34xu/zSf/BsbNdVYVDaFVC1GYfBOBPreN4ku3RRFagiraKH8zMsi0+OjH5O
-         7acJn5JAoTc2uYJhxfitliSeEn91B9MI3L/F6BDsHMdGa3PqTwMz229TuXfIFUIBG2kv
-         Af7w==
-X-Gm-Message-State: AOAM533HjTV2Q5fFatvXwZVcd6mqaLrw4OV5N9ayciap045BNXSBZ51y
-        CruspAYPEjDz/2KvBPQGFyyXT2Dckz90Bw==
-X-Google-Smtp-Source: ABdhPJxr/YZkcQ5fbUlhN7RK5hl+obnSIonACN81a+1seHzogzBLQ9nkW6BS4M+2L4VdDNRhr4opiQ==
-X-Received: by 2002:a05:6830:112:: with SMTP id i18mr1279668otp.186.1633569468757;
-        Wed, 06 Oct 2021 18:17:48 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id bl23sm2655160oib.40.2021.10.06.18.17.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 18:17:48 -0700 (PDT)
-Subject: Re: [PATCH 11/11] selftests: net/fcnal: Reduce client timeout
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <516043441bd13bc1e6ba7f507a04362e04c06da5.1633520807.git.cdleonard@gmail.com>
- <3ed2262e-fce2-c587-5112-e4583cd042ed@gmail.com>
- <c48ea9e2-acdc-eb11-a4b0-35474003fcf3@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <65ae97e3-73c1-3221-96fe-6096a8aacfa1@gmail.com>
-Date:   Wed, 6 Oct 2021 19:17:47 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <c48ea9e2-acdc-eb11-a4b0-35474003fcf3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231627AbhJGBVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 21:21:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230252AbhJGBVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 21:21:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 033C660FE8;
+        Thu,  7 Oct 2021 01:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633569594;
+        bh=mAlcbkwLUu1GMNBclsHIHwCJroCIYt6S7isa3owuQmg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ey8acv+oeE21F5mAwbUV1k9qrvuz/vx4jKjwHS6W6FNKAkentHTKqwtsTnh24Z7G8
+         f53M+LIPHFZCp2f1fjUnsgv8HyynaPJB8z5aAPfGo5Os8hEcLbZrkIO+mSb6QaTTiW
+         90TcFQhChrBcdYb4VIQoqEaVWiM8sRXkF32ErE0EKwskwhjstkdPIIXUNIl4ZwVRMr
+         zKo7vVRblqpSZ8ML/8mq4ymFwXJOqi7C1LRHagSp0g/91MoCa4lKwuSiXhBvzdduLF
+         KXnn85pck3Q6m2lbvvMaFT8B2lzMewWdlChMtZ6BtsynIrJjpzSlqZYelgJxVruiHI
+         EAaQ1B//zrG2w==
+Date:   Thu, 7 Oct 2021 10:19:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH] tracing/synthetic_events: Fix use when created by
+ dynamic_events file
+Message-Id: <20211007101952.d9d282257b9c49fe699c0679@kernel.org>
+In-Reply-To: <20211006115317.2cfcc742@gandalf.local.home>
+References: <20211006115317.2cfcc742@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 3:26 PM, Leonard Crestez wrote:
-> 
-> 
-> On 06.10.2021 18:01, David Ahern wrote:
->> On 10/6/21 5:47 AM, Leonard Crestez wrote:
->>> Reduce default client timeout from 5 seconds to 500 miliseconds.
->>> Can be overridden from environment by exporting NETTEST_CLIENT_TIMEOUT=5
->>>
->>> Some tests need ICMP timeouts so pass an explicit -t5 for those.
->>>
->>> Signed-off-by: Leonard Crestez <cdleonard@gmail.com>
->>> ---
->>>   tools/testing/selftests/net/fcnal-test.sh | 17 +++++++++++------
->>>   1 file changed, 11 insertions(+), 6 deletions(-)
->>>
->>
->> The problem with blindly reducing the timeouts is running the script on
->> a loaded server. Some tests are expected to timeout while for tests a
->> timeout is a failure.
-> 
-> Keeping the default value "5" would be fine as long as it is possible to
-> override externally and get fast results on a mostly-idle machine.
+On Wed, 6 Oct 2021 11:53:17 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-5 is the default for nettest.c; the test script passes in -t1 for all tests.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> The dynamic_events file can create kprobe, uprobe, event probes as well as
+> synthetic events. New dynamic events will also be created by this file.
+> Each of these kinds of events register a "create" function, that gets
+> called, and if the prefix does not match the type of event, the create
+> function is to return -ECANCELED to tell the dynamic event code that the
+> command does not belong to it, and other events should be tried.
+> 
+> The synthetic event does some format checking before it determines that it
+> is the event that should be created, and if that format check does not
+> match, it will return an error, telling the dynamic event code that it was
+> the expected event to be created and that the input had an error. This
+> returns an error code back to the user. But unfortunately, because it does
+> the check before it determines that it is indeed the proper event to parse
+> the input, it may fail the call even though the input is a proper syntax
+> for another event type.
+> 
+> Have it confirm that the input is for the synthetic event before it
+> returns an error due to parsing failure.
+> 
+> Fixes: c9e759b1e8456 ("tracing: Rework synthetic event command parsing")
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/trace_events_synth.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
+> index d54094b7a9d7..feb87e5817e9 100644
+> --- a/kernel/trace/trace_events_synth.c
+> +++ b/kernel/trace/trace_events_synth.c
+> @@ -2045,11 +2045,17 @@ static int create_synth_event(const char *raw_command)
+>  {
+>  	char *fields, *p;
+>  	const char *name;
+> -	int len, ret = 0;
+> +	int len, ret;
+>  
+>  	raw_command = skip_spaces(raw_command);
+>  	if (raw_command[0] == '\0')
+> -		return ret;
+> +		return -ECANCELED;
 
-> 
-> Placing a default value in the environment which is overriden by certain
-> tests achieves that.
-> 
-> In theory it would also be possible for fcnal-test.sh to parse as
-> "--timeout" option and pass it into every single test but that solution
-> would cause much more code churn.
-> 
-> Having default values in environment variables that can still be
-> overridden by command-line arguments is a common pattern in many tools.
-> It also avoids having to pass-through every flag through every
-> intermediate wrapper.
+Good catch! BTW, I thought trace_parse_run_command() skips such empty line.
 
-I do not agree with env variables here.
+Anyway,
+
+Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
+
+Thank you,
+
+> +
+> +	name = raw_command;
+> +
+> +	if (name[0] != 's' || name[1] != ':')
+> +		return -ECANCELED;
+> +	name += 2;
+>  
+>  	last_cmd_set(raw_command);
+>  
+> @@ -2061,12 +2067,6 @@ static int create_synth_event(const char *raw_command)
+>  
+>  	fields = skip_spaces(p);
+>  
+> -	name = raw_command;
+> -
+> -	if (name[0] != 's' || name[1] != ':')
+> -		return -ECANCELED;
+> -	name += 2;
+> -
+>  	/* This interface accepts group name prefix */
+>  	if (strchr(name, '/')) {
+>  		len = str_has_prefix(name, SYNTH_SYSTEM "/");
+> -- 
+> 2.31.1
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
