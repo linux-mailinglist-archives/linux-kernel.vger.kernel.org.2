@@ -2,187 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769FC42586B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B40425875
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235301AbhJGQwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhJGQwt (ORCPT
+        id S242826AbhJGQxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:53:54 -0400
+Received: from brightrain.aerifal.cx ([216.12.86.13]:41990 "EHLO
+        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhJGQxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:52:49 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE79C061570;
-        Thu,  7 Oct 2021 09:50:55 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id t8so21185796wri.1;
-        Thu, 07 Oct 2021 09:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5jhkUPyFzXyVrFDP0KthQbkrB1NpkofJ0PvTGbaiHos=;
-        b=PHfp8kvtKekPBEMn6WV56NGi+S8wLg45jAgU6yq8ksGrsghES1yyuKloB+bj6yxXCF
-         MwhI39KrmSQhRNyrtMcE2u/hQzoWLpLlJI1S9uf0iQuXnfc6WKdy3dERixu9MlJ6+vhq
-         M775TVYhFcHxhOe8AraoSHv1MBTelcG2iW+aMMqQy410ykci282M5n2/+wRYU5ECc1Nb
-         ORAslnQDepgxKoVogoj0zDVjo63ytr3cQ6Re+m/W9FpdqZCzuB5l8gm4DcxyO5vR9C7w
-         CRYijpEJI/G/yaocQBrkReCPdcV02/iUih5JFPXl/r7XfegP6IgHNgAUKxqdJCN2ggh3
-         YZ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5jhkUPyFzXyVrFDP0KthQbkrB1NpkofJ0PvTGbaiHos=;
-        b=DJLX+hvJLPhq2cOJQGx2CoBaiz1U5Evsw2Q6UKkMdrSGRVlIz+11J4rE/aazeYjLuw
-         jzYztjEpkuK9r6uw+jLvFgLCfS/e8nW6qyxjVbZgrYcp5W4ZFAm6Qjw4qYLU9sP5MhgJ
-         E2j6fAErNlkRtdTT2SKzf+ptAKbkEKtLziq+gC+5/9PKToAiquV/mj+8+6fQI1OmEo0l
-         aXf/n8RiZioqo+TxurKLqNiqCJKXqBKx6pcgKiTYD3fedsF4nRDw83gFGxPAszRtm+3X
-         WSvQNU0g4nlWwCbaCHMqWIUO6BCeCtK9kqn5DnDFxcSeezXgjod+8CaiymazFMEYLEFZ
-         dzMw==
-X-Gm-Message-State: AOAM5314wfzx3XmU/GBQzLaUMxkz+cDitXY6LYvJlDQ2fr9V/0C60qLz
-        LIz/RJUSutUZe+Lq1LfmrMM=
-X-Google-Smtp-Source: ABdhPJzetsAoFeFigPW64yidJmga4qIMgj3V6oupZ4iNduaR9ycNlNrDWQ3WpSE7zJQJu9y2DPdX1g==
-X-Received: by 2002:adf:b199:: with SMTP id q25mr6758970wra.414.1633625454097;
-        Thu, 07 Oct 2021 09:50:54 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id o19sm152877wrg.60.2021.10.07.09.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 09:50:53 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 18:50:52 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6 2/6] iommu/tegra-smmu: Rename struct
- tegra_smmu_group_soc *soc to *group_soc
-Message-ID: <YV8lbCePQet+vICa@orome.fritz.box>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-3-nicoleotsuka@gmail.com>
+        Thu, 7 Oct 2021 12:53:53 -0400
+Date:   Thu, 7 Oct 2021 12:51:58 -0400
+From:   Rich Felker <dalias@libc.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+Message-ID: <20211007165158.GC7074@brightrain.aerifal.cx>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+ <20191211212025.1981822-9-arnd@arndb.de>
+ <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+ <s5hpmsh9kdx.wl-tiwai@suse.de>
+ <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+ <s5hee8x9f92.wl-tiwai@suse.de>
+ <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+ <s5hy27497eo.wl-tiwai@suse.de>
+ <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="exooZ6C2N7YMZiZO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210914013858.31192-3-nicoleotsuka@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <s5hr1cw95ar.wl-tiwai@suse.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
+> On Thu, 07 Oct 2021 18:06:36 +0200,
+> Rich Felker wrote:
+> > 
+> > On Thu, Oct 07, 2021 at 05:33:19PM +0200, Takashi Iwai wrote:
+> > > On Thu, 07 Oct 2021 15:11:00 +0200,
+> > > Arnd Bergmann wrote:
+> > > > 
+> > > >  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
+> > > > > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > > > > >
+> > > > > > As far as I can tell, the broken interface will always result in
+> > > > > > user space seeing a zero value for "avail_min". Can you
+> > > > > > make a prediction what that would mean for actual
+> > > > > > applications? Will they have no audio output, run into
+> > > > > > a crash, or be able to use recover and appear to work normally
+> > > > > > here?
+> > > > >
+> > > > > No, fortunately it's only about control->avail_min, and fiddling this
+> > > > > value can't break severely (otherwise it'd be a security problem ;)
+> > > > >
+> > > > > In the buggy condition, it's always zero, and the kernel treated as if
+> > > > > 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> > > > > applications.   Apps usually don't care about the wake-up condition so
+> > > > > much.  There are subtle difference and may influence on the stability
+> > > > > of stream processing, but the stability usually depends more strongly
+> > > > > on the hardware and software configurations.
+> > > > >
+> > > > > That being said, the impact by this bug (from the application behavior
+> > > > > POV) is likely quite small, but the contamination is large; as you
+> > > > > pointed out, it's much larger than I thought.
+> > > > 
+> > > > Ok, got it.
+> > > > 
+> > > > > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> > > > > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> > > > > problem rather hits more widely on 64bit archs silently.  Then, the
+> > > > > influence by this bug must be almost negligible, as we've had no bug
+> > > > > report about the behavior change.
+> > > > 
+> > > > While __snd_pcm_mmap_control64 is only used on 32-bit
+> > > > architectures when 64-bit time_t is used. At the moment, this
+> > > > means all users of musl-1.2.x libc, but not glibc.
+> > > > 
+> > > > On 64-bit architectures, __snd_pcm_mmap_control and
+> > > > __snd_pcm_mmap_control64 are meant to be identical,
+> > > > and this is actually true regardless of the bug, since
+> > > > __pad_before_uframe and __pad_after_uframe both
+> > > > end up as zero-length arrays here.
+> > > > 
+> > > > > We may just fix it in kernel and for new library with hoping that no
+> > > > > one sees the actual problem.  Or, we may provide a complete new set of
+> > > > > mmap offsets and ioctl to cover both broken and fixed interfaces...
+> > > > > The decision depends on how perfectly we'd like to address the bug.
+> > > > > As of now, I'm inclined to go for the former, but I'm open for more
+> > > > > opinions.
+> > > > 
+> > > > Adding the musl list to Cc for additional testers, anyone interested
+> > > > please see [1] for the original report.
+> > > > 
+> > > > It would be good to hear from musl users that are already using
+> > > > audio support with 32-bit applications on 64-bit kernels, which
+> > > > is the case that has the problem today. Have you noticed any
+> > > > problems with audio support here? If not, we can probably
+> > > > "fix" the kernel here and make the existing binaries behave
+> > > > the same way on 32-bit kernels. If there are applications that
+> > > > don't work in that environment today, I think we need to instead
+> > > > change the kernel to accept the currently broken format on
+> > > > both 32-bit and 64-bit kernels, possibly introducing yet another
+> > > > format that works as originally intended but requires a newly
+> > > > built kernel.
+> > > 
+> > > Thanks!
+> > > 
+> > > And now, looking more deeply, I feel more desperate.
+> > > 
+> > > This bug makes the expected padding gone on little-endian.
+> > > On LE 32bit, the buggy definition is:
+> > > 
+> > > 	char __pad1[0];
+> > > 	u32 appl_ptr;
+> > > 	char __pad2[0]; // this should have been [4]
+> > > 	char __pad3[0];
+> > > 	u32 avail_min;
+> > > 	char __pad4[4];
+> > > 	
+> > > When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
+> > > avail_min updates, 64bit kernel (in compat mode) reads directly as:
+> > > 
+> > > 	u64 appl_ptr;
+> > > 	u64 avail_min;
+> > > 
+> > > Hence a bogus appl_ptr would be passed if avail_min != 0.
+> > > And usually application sets non-zero avail_min.
+> > > That is, the bug must hit more severely if the new API were really
+> > > used.  It wouldn't crash, but some weird streaming behavior can
+> > > happen like noise, jumping or underruns.
+> > > 
+> > > (Reading back avail_min=0 to user-space is rather harmless.  Ditto for
+> > >  the case of BE, then at least there is no appl_ptr corruption.)
+> > > 
+> > > This made me wonder which way to go:
+> > > it's certainly possible to fix the new kernel to treat both buggy and
+> > > sane formats (disabling compat mmap and re-define ioctls, having the
+> > > code for old APIs).  The problem is, however, in the case where the
+> > > application needs to run on the older kernel that expects the buggy
+> > > format.  Then apps would still have to send in the old buggy format --
+> > > or maybe better in the older 32bit format that won't hit the bug
+> > > above.  It makes situation more complicated.
+> > 
+> > Can't an ioctl number just be redefined so that, on old kernels with
+> > the buggy one, newly built applications get told that mmap is not
+> > available and use the unaffected non-mmap fallback?
+> 
+> The problem is that the SYNC_PTR64 ioctl itself for non-mmap fallback
+> is equally buggy due to this bug, too.  So disabling mmap doesn't help
+> alone.
+> 
+> And, yes, we can redefine ioctl numbers.  But, then, application would
+> have to be bilingual, as well as the kernel; it'll have to switch back
+> to old API when running on older kernel, while the same binary would
+> need to run in a new API for a newer kernel.
+> 
+> Maybe we can implement it in alsa-lib, if it really worth for it.
 
---exooZ6C2N7YMZiZO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In musl we already have ioctl struct conversion for running on
+time32-only kernels. So it may be practical to convert this too if
+needed.
 
-On Mon, Sep 13, 2021 at 06:38:54PM -0700, Nicolin Chen wrote:
-> There are both tegra_smmu_soc and tegra_smmu_group_soc using "soc"
-> for their pointer instances. This patch renames the one of struct
-> tegra_smmu_group_soc from "soc" to "group_soc" to distinguish it.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-
-I think the context makes it clear which one this is. The "soc" field in
-struct tegra_smmu_group clearly refers to the group SoC data, whereas
-the "soc" field in struct tegra_smmu refers to the SMMU SoC data.
-
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 6ebae635d3aa..a32ed347e25d 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -22,7 +22,7 @@
->  struct tegra_smmu_group {
->  	struct list_head list;
->  	struct tegra_smmu *smmu;
-> -	const struct tegra_smmu_group_soc *soc;
-> +	const struct tegra_smmu_group_soc *group_soc;
->  	struct iommu_group *grp;
->  	unsigned int swgroup;
->  };
-> @@ -870,7 +870,7 @@ static struct iommu_device *tegra_smmu_probe_device(s=
-truct device *dev)
->  static void tegra_smmu_release_device(struct device *dev) {}
-> =20
->  static const struct tegra_smmu_group_soc *
-> -tegra_smmu_find_group(struct tegra_smmu *smmu, unsigned int swgroup)
-> +tegra_smmu_find_group_soc(struct tegra_smmu *smmu, unsigned int swgroup)
-
-This one might be okay to disambiguate, but even here I think this isn't
-really necessary. It's already clear from the return value what's being
-returned.
-
->  {
->  	unsigned int i, j;
-> =20
-> @@ -896,19 +896,20 @@ static struct iommu_group *tegra_smmu_device_group(=
-struct device *dev)
->  {
->  	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
->  	struct tegra_smmu *smmu =3D dev_iommu_priv_get(dev);
-> -	const struct tegra_smmu_group_soc *soc;
-> +	const struct tegra_smmu_group_soc *group_soc;
->  	unsigned int swgroup =3D fwspec->ids[0];
->  	struct tegra_smmu_group *group;
->  	struct iommu_group *grp;
-> =20
->  	/* Find group_soc associating with swgroup */
-> -	soc =3D tegra_smmu_find_group(smmu, swgroup);
-> +	group_soc =3D tegra_smmu_find_group_soc(smmu, swgroup);
-> =20
->  	mutex_lock(&smmu->lock);
-> =20
->  	/* Find existing iommu_group associating with swgroup or group_soc */
->  	list_for_each_entry(group, &smmu->groups, list)
-> -		if ((group->swgroup =3D=3D swgroup) || (soc && group->soc =3D=3D soc))=
- {
-> +		if ((group->swgroup =3D=3D swgroup) ||
-> +		    (group_soc && group->group_soc =3D=3D group_soc)) {
->  			grp =3D iommu_group_ref_get(group->grp);
->  			mutex_unlock(&smmu->lock);
->  			return grp;
-> @@ -921,9 +922,9 @@ static struct iommu_group *tegra_smmu_device_group(st=
-ruct device *dev)
->  	}
-> =20
->  	INIT_LIST_HEAD(&group->list);
-> +	group->group_soc =3D group_soc;
->  	group->swgroup =3D swgroup;
->  	group->smmu =3D smmu;
-> -	group->soc =3D soc;
-
-As another example, it's pretty evident that group->soc refers to the
-group SoC data rather than the SMMU SoC data. The latter can be obtained
-=66rom group->smmu->soc, which again is enough context to make it clear
-what this is.
-
-So I don't think this makes things any clearer. It only makes the names
-more redundant and awkward to write.
-
-Thierry
-
---exooZ6C2N7YMZiZO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfJWwACgkQ3SOs138+
-s6EtzBAAlbmsyoqvR9EXxdf+cslYTE4fSEGehtr+WGZgxOL/HybkiImRvJBELQfK
-UrIyyKbHMD1gLC/mpK6A8L3MoPmnzxVTmsB3kG3VF+1F/iEQsHtd337Ilga7pBSU
-Q84pUMl1fdbZZcAq2gYfUMPELmdMmIqWKvNOgXa/+Mrlrjf9kaTHtcKxshyzRVCU
-xd6bvebuZbN6txvbEGJAeoPBGJqd3CKen5JJg1GF2/2GAuFuiZNUSMslY6zB1rSC
-MSuorCqnsxXP1LIL++JY0WACgare8moemq/BRuaqbDyJRE+l8OfmqEfizJKFcbGQ
-vjzMhr6IXu0FLkYFuezgcrt+T2WfvI3RwOJVKHbGwJ3WXrTSUYEOwLMbV2JKUsFv
-omlEXYMOQZXTIBdfoyln+dj7Rad2LZqCOxQJ+SULxXptfWhmuwXsEtSogOwNc9u2
-uwiX7k1ZlBzw94TKyTF/CPyyETPSieDQFek4XFmIDp/F8Q6U25+OC7QIHUZJaN9Y
-qoyGOWJon4kjpO9QTq9rQbCmpwLGaYdAU7lcrIDQ6H3zbBtf6P22xjuIdkW9Amlc
-Zn51De/iVev5ufGKpmrYYkf6peTk5lWQjmnzpQMPJrY47qmqipfVy60f7wGSNhsl
-T9dwkMeSYqQYTAigI6Vnl8or2EdCFhIl+gBLHGC4bEE/VDhBOj0=
-=AbZe
------END PGP SIGNATURE-----
-
---exooZ6C2N7YMZiZO--
+Rich
