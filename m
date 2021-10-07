@@ -2,113 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4BF74255DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4919B4255DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242231AbhJGO47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:56:59 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25387 "EHLO
-        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242165AbhJGO45 (ORCPT
+        id S242220AbhJGO6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:58:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233341AbhJGO6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:56:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1633618471; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=HuRRC8o89jqXdAXVbjrxVI1PAXvlKBSNAc+uNFZjL2NgJJTRuAhMHQxm4V9zSoRmmCFC5iHxRFzT5VHy1kRI2Rdytn8jdGPewcR+jvZ9H3d759zvHDHmOiOqoTR5lAM1uD04z6rPgngkAHul2qsM9DRxYjnTXbyycX+G1fppE38=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1633618471; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=xzGQg15CyPL9rja2MEzz8Q9NJqJTQGoAsftMpINsBoE=; 
-        b=WGmzFrbfmQPRYihO2XT6A4obP8SSizg2eO7aXYZ1cZxNd2AxW6PRIlKd+JdVNiTBtVhkDVEvDOXwFaenP/ibpKtrux5PI1lKI/ORV7o6zRFrpDtoy0XefjTRYQhf7x5QoucpNDy7+qJ5y+/9fjXMgvqoCM7hP90+P4t0WaHnz78=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1633618471;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=xzGQg15CyPL9rja2MEzz8Q9NJqJTQGoAsftMpINsBoE=;
-        b=KP6fJyBuyrfbQcekxkh1j/JZXkWMrHSdsD/B/proBGV6DZaJr0WaNpP+ivrlB3FB
-        uqoxOXLxitTySKnSebFh/tFElyQFKXI02/LJuaCLihozAgwoScjnoQ9KbfmNhBDAxDj
-        CDizZCMUBEJDJXED9RNG8bD69lfU39zVPicganJ8=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1633618469389517.6363333473703; Thu, 7 Oct 2021 22:54:29 +0800 (CST)
-Date:   Thu, 07 Oct 2021 22:54:29 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Jan Kara" <jack@suse.cz>
-Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <17c5b3fa20a.ff02131b26074.9058176981832458952@mykernel.net>
-In-Reply-To: <20211007144156.GK12712@quack2.suse.cz>
-References: <20210923130814.140814-1-cgxu519@mykernel.net>
- <20210923130814.140814-7-cgxu519@mykernel.net>
- <20211007090157.GB12712@quack2.suse.cz>
- <17c5ab83d6d.10cdb35ab25883.3563739472838823734@mykernel.net> <20211007144156.GK12712@quack2.suse.cz>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
+        Thu, 7 Oct 2021 10:58:54 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424C6C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:56:59 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id r201so53347pgr.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aY9YNaCzgoUZ9uT+Ybn9qFqS/TgJNUNrYOj5uKjtZis=;
+        b=eq7nqeO7gD4JfZB5BNsV68QEzyUQAkTeYyRndfSvY/hscVVEna52P4W6ZL6Y95wdyK
+         3OWRU9H71Yn5UWwpMr5sv+OvNQMlWu4Z6iSEvM6A9EismHzhme7kHz15SW26tYf+WSMu
+         KOPNs+PxbtN03MF6n4st8zFcs0v+iteS7dkd0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aY9YNaCzgoUZ9uT+Ybn9qFqS/TgJNUNrYOj5uKjtZis=;
+        b=79ksEIht3EjZJ+or7UKXie9c4kAVPalOoNsYX7492tZXEmQSb+KyEdXyyxCKiDER88
+         uwDOx55jncx9ssSMBh8DR4LJVF3ti+VJz19ZnYsr/L5ML3jDzyTzcyzBoPlGDlEOm1Lq
+         hiNkiVHkzS7bczoy6d7oPqzOSbK6oajGTgPHX7ERSURCN1uNWc0q+1g7LIdkYeY6z9zy
+         cA+yi59reYHKWdY1BBp4r7HuAcsw9h2KDW9iGSmMhNYzCbgapvzjuKTj3MlWp0TmZqoq
+         iM+LwxZqTLJoJoB98bnsrzHKx87tfLaSWkAejwsuwV0rVqeJEB25j9bj5DNXw0B0YR7u
+         latw==
+X-Gm-Message-State: AOAM531wA3oLXPBIE7p/1NT0ev6AOm0Sq7xcwbjQjR94GCfZaGmtKdTz
+        UrbKosdzpQnF+cDMWCAK7bbTNQ==
+X-Google-Smtp-Source: ABdhPJwdjJVWqzJK8hHj1Fqq59k1QINSAPGBZwIJevmzwG7MkvAgaiMb4RYfSb8lGRNYW2Qf62JSCA==
+X-Received: by 2002:a63:374c:: with SMTP id g12mr85093pgn.35.1633618618740;
+        Thu, 07 Oct 2021 07:56:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z7sm14483740pff.23.2021.10.07.07.56.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 07:56:58 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 07:56:57 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     pmladek@suse.com, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, peterz@infradead.org,
+        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] sched.h: extend task comm from 16 to 24 for
+ CONFIG_BASE_FULL
+Message-ID: <202110070755.60DFB87711@keescook>
+References: <20211007120752.5195-1-laoar.shao@gmail.com>
+ <20211007120752.5195-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007120752.5195-4-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 07, 2021 at 12:07:51PM +0000, Yafang Shao wrote:
+> When I was implementing a new per-cpu kthread cfs_migration, I found the
+> comm of it "cfs_migration/%u" is truncated due to the limitation of
+> TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
+> all with the same name "cfs_migration/1", which will confuse the user. This
+> issue is not critical, because we can get the corresponding CPU from the
+> task's Cpus_allowed. But for kthreads correspoinding to other hardware
+> devices, it is not easy to get the detailed device info from task comm,
+> for example,
+> 
+>     jbd2/nvme0n1p2-
+>     nvidia-modeset/
+> 
+> We can also shorten the name to work around this problem, but I find
+> there are so many truncated kthreads:
+> 
+>     rcu_tasks_kthre
+>     rcu_tasks_rude_
+>     rcu_tasks_trace
+>     poll_mpt3sas0_s
+>     ext4-rsv-conver
+>     xfs-reclaim/sd{a, b, c, ...}
+>     xfs-blockgc/sd{a, b, c, ...}
+>     xfs-inodegc/sd{a, b, c, ...}
+>     audit_send_repl
+>     ecryptfs-kthrea
+>     vfio-irqfd-clea
+>     jbd2/nvme0n1p2-
+>     ...
+> 
+> Besides the in-tree kthreads listed above, the out-of-tree kthreads may
+> also be truncated:
+> 
+>     rtase_work_queu
+>     nvidia-modeset/
+>     UVM global queu
+>     UVM deferred re
+>     ...
+> 
+> We should improve this problem fundamentally.
+> 
+> This patch extends the size of task comm to 24 bytes, which is the
+> same length with workqueue's, for the CONFIG_BASE_FULL case. And for the
+> CONFIG_BASE_SMALL case, the size of task comm is still kept as 16 bytes.
+> 
+> Suggested-by: Petr Mladek <pmladek@suse.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 22:41:56 Jan Kara <=
-jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > On Thu 07-10-21 20:26:36, Chengguang Xu wrote:
- > >  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:01:57 Jan K=
-ara <jack@suse.cz> =E6=92=B0=E5=86=99 ----
- > >  >=20
- > >  > > +    if (mapping_writably_mapped(upper->i_mapping) ||
- > >  > > +        mapping_tagged(upper->i_mapping, PAGECACHE_TAG_WRITEBACK=
-))
- > >  > > +        iflag |=3D I_DIRTY_PAGES;
- > >  > > +
- > >  > > +    iflag |=3D upper->i_state & I_DIRTY_ALL;
- > >  >=20
- > >  > Also since you call ->write_inode directly upper->i_state won't be =
-updated
- > >  > to reflect that inode has been written out (I_DIRTY flags get clear=
-ed in
- > >  > __writeback_single_inode()). So it seems to me overlayfs will keep =
-writing
- > >  > out upper inode until flush worker on upper filesystem also writes =
-the
- > >  > inode and clears the dirty flags? So you rather need to call someth=
-ing like
- > >  > write_inode_now() that will handle the flag clearing and do writeba=
-ck list
- > >  > handling for you?
- > >  >=20
- > >=20
- > > Calling ->write_inode directly upper->i_state won't be updated, howeve=
-r,
- > > I don't think overlayfs will keep writing out upper inode since
- > > ->write_inode will be called when only overlay inode itself marked dir=
-ty.
- > > Am I missing something?
- >=20
- > Well, if upper->i_state is not updated, you are more or less guaranteed
- > upper->i_state & I_DIRTY_ALL !=3D 0 and thus even overlay inode stays di=
-rty.
- > And thus next time writeback runs you will see dirty overlay inode and
- > writeback the upper inode again although it is not necessary.
- >=20
+This, as expected, adds 8 bytes to task_struct, which is reasonable. I
+don't see any easy places to consolidate other members to make this a
+"free" change, but I did just remove 64 bytes from task_struct[1], so
+this is okay. :)
 
-Hi Jan,
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Yes, I get the point now. Thanks for the explanation.
+[1] https://lore.kernel.org/lkml/20210924025450.4138503-1-keescook@chromium.org/
 
-
-Thanks,
-Chengguang
-
-
-
-
+-- 
+Kees Cook
