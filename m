@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE55425113
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24BA425117
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:31:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240863AbhJGKcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240726AbhJGKcs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:32:48 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDC6C061746;
-        Thu,  7 Oct 2021 03:30:54 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id v18so21287029edc.11;
-        Thu, 07 Oct 2021 03:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8mY64fv5z2ogFhndQ+OIlGH9TZ8lF/cAOTOOGKeTfLw=;
-        b=IV75uUEO7ve3jcFTQQ6a0Hr/G1GyiMzZzVnGSB7EfvQMJ5tIWrRC4wF6dETgBP4aDw
-         l26+4R5zB9K6adNvVf9SVfyBAsgFP8lbqeUHJvfvuAYiSSQkwm8m+SkeHYD8tHk5mup5
-         SaK99WGZ+f09FzfaOoX3ifT96Zb3j0QaIBe9rUIRX/GusHmqapUI5FCmZn9gZ6fFbPV8
-         DNU0yTuvia/M83FHOsFokMOfUvhxRoWNmwhtlYgaPrqhnIoV/hb+sg3gao2eWTy5A82D
-         xo5dZHxTHTL/hajBtitEialaqAsDyE/gPdPJOPq7XAeaU9sykqpOHKixZnA/Ac++g4nu
-         LgLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8mY64fv5z2ogFhndQ+OIlGH9TZ8lF/cAOTOOGKeTfLw=;
-        b=PAKVYZ2jjv7k56TgDOpyLUGobPHlbvqISxfKh2j3MSWwfHK57V/2cS7TKW7FZVCywq
-         iGRKz3tUcmpxhJJtcucy0R03oORjFy/sDcESdiPF06MdI6NgyMe0bxCB67FFg5aakTD1
-         BBodVpFvwaQAkQevqc0hGtpxFhQx0CVPNryevet2JER2QZB0uzssUyveNybA/0HcZXZX
-         FxVd8tGG+Z2ummwHGoNoYlwHattkB7hd7Me/iB5/oaOpvRlFr3ey6SAZP8Hphxkzdbls
-         LlID424mxP42r/VhThMzW5CXkaxovmQDsdc1vy9zD0AUqLtj4ugQKuqxXnlR/QNXMXjU
-         o8yA==
-X-Gm-Message-State: AOAM532KB3vP5LaTqmMgZyK14lzWZC1BDuYP1RW+cgm4dkzxE1bAf8in
-        kvGKOtI6KA24Fk2KgkMAUbRttMZQ9tKiJtluk8A=
-X-Google-Smtp-Source: ABdhPJzrxcI8+MEuid+j/nPlF6m0fxTDB9iXiOL8Z0cef8F4m1dbX18KPjmL0x/le3rVHgOioxp/v891RcG75XEOdZA=
-X-Received: by 2002:a17:906:3383:: with SMTP id v3mr4674165eja.213.1633602648062;
- Thu, 07 Oct 2021 03:30:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210924085104.44806-1-21cnbao@gmail.com> <20210924085104.44806-2-21cnbao@gmail.com>
- <87o883l9c8.mognet@arm.com> <CAGsJ_4zCYjha8E6km9fDO8gFR-_vO1Nr0=a7V-b9yLRZGGAC9g@mail.gmail.com>
- <CAGsJ_4ycKDfFY+LoaUBJ5huH8+kUsGGsC1po4DDQQPU5-ikf8A@mail.gmail.com>
- <20211006121858.GI174703@worktop.programming.kicks-ass.net>
- <CAGsJ_4zdr-Y5=TckNELoxgHDzNKhJuRsF5YAfEep24Ga7Y5ENg@mail.gmail.com> <20211006135550.GJ174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211006135550.GJ174703@worktop.programming.kicks-ass.net>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Thu, 7 Oct 2021 23:30:36 +1300
-Message-ID: <CAGsJ_4xvNCQ=sPzdhmsXbbjsOn4R1+bxYwLvrRNi1wiium5O7g@mail.gmail.com>
-Subject: Re: [PATCH RESEND 1/3] topology: Represent clusters of CPUs within a die
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ben Segall <bsegall@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guodong Xu <guodong.xu@linaro.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        "Cc: Len Brown" <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mel Gorman <mgorman@suse.de>, msys.mizuma@gmail.com,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        id S240889AbhJGKdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:33:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240726AbhJGKde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:33:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC7D60FC3;
+        Thu,  7 Oct 2021 10:31:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633602701;
+        bh=rjKhAROtKEemtbK1MVWHzDSSAHwzCKKa7aWIBII+u6M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TVp1j6rPJYoLyLt69ZNT1udPquyr/jFRQSTF7wMlB1LXK+gRz7W1gztYG8NuWXV5K
+         3k+GYtqr+AHd7kjE7khwdWutNiVXOERGnxcRBRzRylGTlRseYSSAz5Ah5koaYjtfiV
+         CaJq3tPOwQ2j6tYoxFbKJj/yQKXeJEukMZ4RPdYc=
+Date:   Thu, 7 Oct 2021 12:31:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, x86 <x86@kernel.org>,
-        yangyicong <yangyicong@huawei.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+Message-ID: <YV7Miz9RMMx/17A0@kroah.com>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+ <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+ <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 2:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Oct 07, 2021 at 01:50:43AM +1300, Barry Song wrote:
-> > On Thu, Oct 7, 2021 at 1:20 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > >
-> > > On Wed, Oct 06, 2021 at 11:50:35PM +1300, Barry Song wrote:
-> > >
-> > > > > diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> > > > > index 7cb31d959f33..fc0836f460fb 100644
-> > > > > --- a/drivers/base/arch_topology.c
-> > > > > +++ b/drivers/base/arch_topology.c
-> > > > > @@ -622,7 +622,8 @@ void update_siblings_masks(unsigned int cpuid)
-> > > > >                 if (cpuid_topo->package_id != cpu_topo->package_id)
-> > > > >                         continue;
-> > > > >
-> > > > > -               if (cpuid_topo->cluster_id == cpu_topo->cluster_id) {
-> > > > > +               if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-> > > > > +                   cpuid_topo->cluster_id != -1) {
-> > > > >                         cpumask_set_cpu(cpu, &cpuid_topo->cluster_sibling);
-> > > > >                         cpumask_set_cpu(cpuid, &cpu_topo->cluster_sibling);
-> > > > >                 }
-> > > > >
-> > > >
-> > > > Hi Peter,
-> > > > Would you like to change this line in your tree?
-> > >
-> > > Can you please double check:
-> > >
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=sched/next
-> >
-> > yes. It is correct for patch 1/3, thanks!
+On Thu, Oct 07, 2021 at 02:05:41AM -0700, Zev Weiss wrote:
+> On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
+> > On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+> > > This patch series is in some ways kind of a v2 for the "Dynamic
+> > > aspeed-smc flash chips via 'reserved' DT status" series I posted
+> > > previously [0], but takes a fairly different approach suggested by Rob
+> > > Herring [1] and doesn't actually touch the aspeed-smc driver or
+> > > anything in the MTD subsystem, so I haven't marked it as such.
+> > > 
+> > > To recap a bit of the context from that series, in OpenBMC there's a
+> > > need for certain devices (described by device-tree nodes) to be able
+> > > to be attached and detached at runtime (for example the SPI flash for
+> > > the host's firmware, which is shared between the BMC and the host but
+> > > can only be accessed by one or the other at a time).
+> > 
+> > This seems quite dangerous. Why do you need that?
+> 
+> Sometimes the host needs access to the flash (it's the host's firmware,
+> after all), sometimes the BMC needs access to it (e.g. to perform an
+> out-of-band update to the host's firmware).  To achieve the latter, the
+> flash needs to be attached to the BMC, but that requires some careful
+> coordination with the host to arbitrate which one actually has access to it
+> (that coordination is handled by userspace, which then tells the kernel
+> explicitly when the flash should be attached and detached).
+> 
+> What seems dangerous?
+> 
+> > Why can't device tree overlays be used?
+> 
+> I'm hoping to stay closer to mainline.  The OpenBMC kernel has a documented
+> policy strongly encouraging upstream-first development:
+> https://github.com/openbmc/docs/blob/master/kernel-development.md
+> 
+> I doubt Joel (the OpenBMC kernel maintainer) would be eager to start
+> carrying the DT overlay patches; I'd likewise strongly prefer to avoid
+> carrying them myself as additional downstream patches.  Hence the attempt at
+> getting a solution to the problem upstream.
 
-oops, there is a typo there:
-+ if (cpuid_topo->cluster_id == cpu_topo->cluster_id &&
-+ cpuid_topo->clister_id != -1) {
+Then why not work to get device tree overlays to be merged properly?
+Don't work on a half-of-a-solution when the real solution is already
+here.
 
-clister should be cluster.
+thanks,
 
-> >
-> > BTW, patch2/3  is missing some benchmark data and tested-by/SOB tags, i guess
-> > it is because you are still editing?
->
-> Urgh, no, that's my script thinking one of the many
->
-> --------------
->
-> lines you got in there was a terminator. Fixed it, should be pushed out
-> again in a few minutes.
-
-Thanks
-barry
+greg k-h
