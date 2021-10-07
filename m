@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2B0425A56
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7370E425A5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243480AbhJGSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:07:55 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54798 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233770AbhJGSHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:07:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=uqZhubrZS0AC3XCDxYOs5HijLXlbSUCH28Z8t+sc3d0=; b=loExcZsc/YaIjMqkO/RpnyxTf2
-        Ouop7cKYoMODlVT0BhuhEZ+4sSV5CkVylC0KAeGrR588aM4gpRU9JptqndcNyZ2AYq9YfDm4L/UPp
-        9V8jrzl41TZXWP+Ni96CKAaVtaM3N/LiWppIg+ixvxz6+V67MiXvYZuYqBly1251YJSY=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mYXmG-009ykS-Dh; Thu, 07 Oct 2021 20:05:56 +0200
-Date:   Thu, 7 Oct 2021 20:05:56 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 10/13] net: dsa: qca8k: add explicit SGMII PLL
- enable
-Message-ID: <YV83BAmhHfmDyCjv@lunn.ch>
-References: <20211006223603.18858-1-ansuelsmth@gmail.com>
- <20211006223603.18858-11-ansuelsmth@gmail.com>
- <YV4/ehy9aYJyozvy@lunn.ch>
- <YV73umYovC0wh5hz@Ansuel-xps.localdomain>
+        id S243473AbhJGSIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:08:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233770AbhJGSIn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 14:08:43 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F55C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:06:49 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id o204so1964070oih.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:06:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=SF++BOLAlw+gmm2whEMt+9+RSjiVl4Y2q05QuVk4Bi8=;
+        b=JZUaORpsBwKxCbhGCZt/3OvFehX/ZlMOjau9tKi7+z6xpNwYIt1zuCmCkfwEglbruc
+         J8OZV8RKA3NXLumvqbyNfDifsmDTF2igARFQvGcaHdtQvHP+VNSTxt9Tcya6GuhKPOTB
+         KOVQOInU7Vu3fm+/FryIhsq3PpPd9yW6ghyD0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=SF++BOLAlw+gmm2whEMt+9+RSjiVl4Y2q05QuVk4Bi8=;
+        b=tCqG+A61Z//TW67AYhsA7R/X0E6NaG31cYV3WDCctBKg0CnLOEFPzs9RrF8u72h6ih
+         mcivG0D+mSM6yoSUFE757sqIcTDvjk6Wh3j7HyFuPpYqvVv9Al/9ngRXqOHhGa8BwX84
+         PPhcqC5Pt8gHRWwilr6zQWk92kgoVxEyCzAtg0ctLZYTJkJ2uz82Mvxo221i7QWR7FoV
+         XHMpG1w5yerc9zmS13+8Mnmmx2ynzKk+7OZLtM4iZkW6w3vkhz1K3UN8lDfQ3m5htNFO
+         PkrsovarVIQpl0RmYQtf8DfeGCqrivPVSyjWla9hjPZEhgpgUyx2oP3t3zJDwpLTc+X7
+         Ktsg==
+X-Gm-Message-State: AOAM530mWu1fn39P7D6zw/mj5uLIlfABOniCw1Wo71+uYHO+0jxOmjdM
+        tQqMusqrdEUG+ExQVLsCQBcY/GhNRrRDpq6ksNRoFA==
+X-Google-Smtp-Source: ABdhPJxT78LC/jFpZgqZ7+FEhoNmAoI/1qtnz4jLeheFfZGuTZ4oIZcVBly+qSTc29jruR3Jqoqm6fohXJ6TdNNiEO0=
+X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr12828011oiw.164.1633630009087;
+ Thu, 07 Oct 2021 11:06:49 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 7 Oct 2021 14:06:48 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV73umYovC0wh5hz@Ansuel-xps.localdomain>
+In-Reply-To: <20211007052812.3717-1-quic_saipraka@quicinc.com>
+References: <20211007052812.3717-1-quic_saipraka@quicinc.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 7 Oct 2021 14:06:48 -0400
+Message-ID: <CAE-0n51EBGqOZ7D+sn5=M-ig=6p_NUb+8veaaXXQJo+UrLoQfA@mail.gmail.com>
+Subject: Re: [PATCH] arm64: defconfig: Enable QTI SC7280 pinctrl, gcc and interconnect
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Sai Prakash Ranjan (2021-10-06 22:28:12)
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 156d96afbbfc..87584769cf71 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -984,6 +985,7 @@ CONFIG_MSM_MMCC_8996=y
+>  CONFIG_MSM_GCC_8998=y
+>  CONFIG_QCS_GCC_404=y
+>  CONFIG_SC_GCC_7180=y
+> +CONFIG_SC_GCC_7280=y
 
-On Thu, Oct 07, 2021 at 03:35:54PM +0200, Ansuel Smith wrote:
-> On Thu, Oct 07, 2021 at 02:29:46AM +0200, Andrew Lunn wrote:
-> > On Thu, Oct 07, 2021 at 12:36:00AM +0200, Ansuel Smith wrote:
-> > > Support enabling PLL on the SGMII CPU port. Some device require this
-> > > special configuration or no traffic is transmitted and the switch
-> > > doesn't work at all. A dedicated binding is added to the CPU node
-> > > port to apply the correct reg on mac config.
-> > 
-> > Why not just enable this all the time when the CPU port is in SGMII
-> > mode?
-> 
-> I don't know if you missed the cover letter with the reason. Sgmii PLL
-> is a mess. Some device needs it and some doesn't. With a wrong
-> configuration the result is not traffic. As it's all messy we decided to
-> set the PLL to be enabled with a dedicated binding and set it disabled
-> by default. We enouncer more device that require it disabled than device
-> that needs it enabled. (in the order of 70 that doesn't needed it and 2
-> that requires it enabled or port instability/no traffic/leds problem)
+Any reason to not enable DISPCC or GPUCC which selects the GCC config?
+Same goes for sc7180.
 
-What exactly does this PLL do? Clock recovery of the SGMII clock, and
-then using it in the opposite direction? What combinations of PHYs
-need it, and which don't?
-
-> > Is it also needed for 1000BaseX?
-> > 
-> 
-> We assume it really depends on the device.
-
-That i find surprising. 1000BaseX and SGMII are very similar. I would
-expect a device with requires the PLL enabled for SGMII also needs it
-for 1000BaseX.
-
-> > DT properties like this are hard to use. It would be better if the
-> > switch can decide for itself if it needs the PLL enabled.
-> 
-> Again reason in the cover letter sgmii part. Some qca driver have some
-> logic based on switch revision. We tried that and it didn't work since
-> some device had no traffic with pll enabled (and with the revision set
-> to enable pll)
-
-This is my main problem with this patchset. You are adding lots of
-poorly documented properties which are proprietary to this switch. And
-you are saying, please try all 2^N combinations and see what works
-best. That is not very friendly at all.
-
-So it would be good to explain each one in detail. Maybe given the
-explanation, we can figure out a way to detect at runtime, and not
-need the option. If not, you can add it to the DT binding to help
-somebody pick a likely starting point for the 2^N search.
-
-	 Andrew
+>  CONFIG_SDM_CAMCC_845=m
+>  CONFIG_SDM_GCC_845=y
+>  CONFIG_SDM_GPUCC_845=y
