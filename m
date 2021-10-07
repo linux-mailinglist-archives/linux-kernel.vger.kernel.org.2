@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5AFE425ABF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E554C425ACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243648AbhJGSap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbhJGSao (ORCPT
+        id S243660AbhJGSeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:34:25 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:14135 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233598AbhJGSeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:30:44 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A538C061570;
-        Thu,  7 Oct 2021 11:28:50 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g8so26534512edt.7;
-        Thu, 07 Oct 2021 11:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l3qN3MfhA2hn5WSk7ueIGscDIBqNVWdM54go8zsGIic=;
-        b=Auj2KFW+kPtGThvhI+koW38dm6Ae65UgyBYLsvi9U0XXo9T/IielNC2jqDw9Hk4S7K
-         fYVtZFT911RTIffZu7LmOnPmTF1KKDtK2U75lQ65ejFcBSpAN+P2HIh0FY/12zbaRHtf
-         Wi1TsUfYqzj+7qGJ/+L+Kd+gCQ3jJk/55WFjJNZqrDjwcDQvgVle/2a4FR1TUgh6zDZ7
-         Go2uA6U4+bRUdLEs2EPp7ekzffIVKNFEx/jvizl77Fb3J2m5JS4RSQ2Q5cYnnv3fAL9q
-         k1566krTjZnKWC7ueFrkBtcormsgRnk95T32xWXXKca8XQCDePLfHw8N7KNxm/Q7DGby
-         WNYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l3qN3MfhA2hn5WSk7ueIGscDIBqNVWdM54go8zsGIic=;
-        b=4oGo3fwtmAIX3hJV0QRY5UUI77wLxdwBq7FCuMYCes2cUWw0IYgVCkrw2Y4LvNGtur
-         XIBf4W8w1JUlU+ah1CYPP3bNBitZmqqQlxABlxFg8HvHZCBil0ED4/L5xd+z7DjrNYX9
-         Dcer/gcmD3rbNxR0JEwqKOBasCNXt2hkTEG4f+GVkcqsEIc5AZcDtrIBazCA7Yl044xZ
-         YyV++9jNFeAagmBH/lRRAjeDUNMGUCxS4H2/VRXG8vgr4rxyIA05fnw/RmsWgPB3cdXZ
-         LVyxOfNh3P00HV7OgCpJgojEFuP9f/mnpEZ2eAvJEQjlNRmgL3TWl9ZGe8zxvvIyqYvO
-         /pxg==
-X-Gm-Message-State: AOAM532jiTcb620vm1wrt3MM9OfANdEexMspV2oUx7jsuG3nbXF5E5dF
-        tI8jpafDHXyZqlaAYm9cWebEm0DyrZmgSx7/M+M=
-X-Google-Smtp-Source: ABdhPJxgA18qK6hmXeIHMAGh+5TJ2JdQ0I/UDZzyKNqTvy46A6PUHs1z0LiF4dRutRMHydJpjbA4mGjN7IDVUb7O4C8=
-X-Received: by 2002:a50:8d85:: with SMTP id r5mr8303074edh.312.1633631328877;
- Thu, 07 Oct 2021 11:28:48 -0700 (PDT)
+        Thu, 7 Oct 2021 14:34:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633631361;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=y+ZVoE7qvcX3dWBAXSBwFesU2ut2MT+SqkKvb13XGbo=;
+    b=DwMUQt1GkP+JDXX3EyCgGOsJaQEWrgh9jv+3dgC31T6rLd2fH0zc19/ccPF+gvOjHn
+    bW7lNOE/WHfj5i+0Srlh8u1DA1Mv2+fkxgtZji15ck+TR0VV/pU38a6Fc4xIeyDvqkuf
+    5X830QxC2K9ijIhaPVh9DWMATknZqMqf0LMNIjFSVLAo2S6T0QLqcd1XZ5PCUNy7BABe
+    h4xLIe0mir3STtrRrIPxzwy/phAIb2nsijnL+ih6efj5BkjZWJK3HwLndFAt4qAXuptd
+    owZ/W1ACDc/2DX2PMe6GU9XfRo8wyrPxinCoZyxgP7LsYdix2L9vg3Wgo7zSynpZzvIa
+    0AlA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8pmE1A=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
+    with ESMTPSA id 301038x97ITLfFt
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Thu, 7 Oct 2021 20:29:21 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 20:29:16 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
+        lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: Re: [PATCH v11 2/5] soc: qcom: Add Sleep stats driver
+Message-ID: <YV88fNYF0i1Wkr73@gerhold.net>
+References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
+ <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
 MIME-Version: 1.0
-References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
- <20211004140637.qejvenbkmrulqdno@box.shutemov.name> <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
- <20211004194130.6hdzanjl2e2np4we@box.shutemov.name> <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
- <YV3+6K3uupLit3aH@t490s> <CAHbLzkpWSM_HvCmgaLd748BLcmZ3cnDRQ577o_U+qDi1iSK3Og@mail.gmail.com>
- <YV8c1ZoMveUUlG+v@t490s>
-In-Reply-To: <YV8c1ZoMveUUlG+v@t490s>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Thu, 7 Oct 2021 11:28:36 -0700
-Message-ID: <CAHbLzkrzYfQHh=u5574++s4U6hPK2Cax00W2w3nYDGmmL4=M+g@mail.gmail.com>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-To:     Peter Xu <peterx@redhat.com>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 9:14 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Wed, Oct 06, 2021 at 04:41:35PM -0700, Yang Shi wrote:
-> > > Or maybe we just don't touch it until there's need for a functional change?  I
-> > > feel it a pity to lose the git blame info for reindent-only patches, but no
-> > > strong opinion, because I know many people don't think the same and I'm fine
-> > > with either ways.
-> >
-> > TBH I really don't think keeping old "git blame" info should be an
-> > excuse to avoid any coding style cleanup.
->
-> Sure.
->
-> >
-> > >
-> > > Another side note: perhaps a comment above pageflags enum on PG_has_hwpoisoned
-> > > would be nice?  I saw that we've got a bunch of those already.
-> >
-> > I was thinking about that, but it seems PG_double_map doesn't have
-> > comment there either so I didn't add.
->
-> IMHO that means we may just need even more documentations? :)
->
-> I won't ask for documenting doublemap bit in this series, but I just don't
-> think it's a good excuse to not provide documentations if we still can.
-> Especially to me PageHasHwpoisoned looks really so like PageHwpoisoned, so
-> it'll be still very nice to have some good document along with the patch it's
-> introduced.
+Hi Maulik,
 
-OK, I could add more comments for this flag in the enum. It should be
-just a duplicate of the comment right before the PAGEFLAG definition.
+On Thu, Oct 07, 2021 at 03:27:26PM +0530, Maulik Shah wrote:
+> From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> 
+> Let's add a driver to read the stats from remote processor and
+> export to debugfs.
+> 
+> The driver creates "qcom_sleep_stats" directory in debugfs and
+> adds files for various low power mode available. Below is sample
+> output with command
+> 
+> cat /sys/kernel/debug/qcom_sleep_stats/ddr
+> count = 0
+> Last Entered At = 0
+> Last Exited At = 0
+> Accumulated Duration = 0
+> 
+> Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> [mkshah: add subsystem sleep stats, create one file for each stat]
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
+>  drivers/soc/qcom/Kconfig            |  10 ++
+>  drivers/soc/qcom/Makefile           |   1 +
+>  drivers/soc/qcom/qcom_sleep_stats.c | 259 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 270 insertions(+)
+>  create mode 100644 drivers/soc/qcom/qcom_sleep_stats.c
+> 
+> [...]
+> +
+> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+> +{
+> +	struct subsystem_data *subsystem = s->private;
+> +	struct sleep_stats *stat;
+> +
+> +	/* Items are allocated lazily, so lookup pointer each time */
+> +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+> +	if (IS_ERR(stat))
+> +		return -EIO;
+> +
+> [...]
+> +
+> +static void qcom_create_subsystem_stat_files(struct dentry *root)
+> +{
+> +	const struct sleep_stats *stat;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+> +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+> +		if (IS_ERR(stat))
+> +			continue;
+> +
+> +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+> +				    &qcom_subsystem_sleep_stats_fops);
 
->
-> Thanks,
->
-> --
-> Peter Xu
->
+This causes WARNINGs on MSM8996 and MSM8916:
+
+[    0.503054] ------------[ cut here ]------------
+[    0.503100] WARNING: CPU: 1 PID: 1 at drivers/soc/qcom/smem.c:587 qcom_smem_get+0x184/0x1b0
+[    0.503184] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4+ #378
+[    0.503218] Hardware name: Xiaomi Mi Note 2 (DT)
+[    0.503278] pc : qcom_smem_get+0x184/0x1b0
+[    0.503307] lr : qcom_sleep_stats_probe+0xfc/0x20
+[    0.503875] Call trace:
+[    0.503896]  qcom_smem_get+0x184/0x1b0
+[    0.503925]  qcom_sleep_stats_probe+0xfc/0x270
+
+AFAICT from downstream the smem subsystem information is only read in
+the rpmh_master_stat.c driver, should this be specific to RPMh?
+
+There is a rpm_master_stat.c too but that looks quite different,
+so I guess the approach is different with RPM?
+
+Two more (unrelated) issues here:
+
+  1. This will silently not register anything if SMEM probes after the
+     qcom-sleep-stats driver (qcom_smem_get() will return -EPROBE_DEFER)
+     and you will just skip registering the debugfs files.
+
+  2. In qcom_subsystem_sleep_stats_show() you say
+     /* Items are allocated lazily, so lookup pointer each time */
+
+     But, if the lookup fails here you don't register the debugfs file
+     at all. Does this work if the subsystem is started after this driver?
+
+Thanks,
+Stephan
