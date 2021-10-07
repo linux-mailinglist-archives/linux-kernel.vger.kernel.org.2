@@ -2,283 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C338C425FDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0A7425FEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236900AbhJGWb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 18:31:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:40174 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233370AbhJGWb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 18:31:57 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633645803; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=WPlsjcASrIFnWjau3JCRcYa5Ieggti3cBN5snQedytI=;
- b=xTQJC0FbRC/2gh8Mmxcli6rNG1O64Jb64hp+vS09Ekq6UfTTFjApCdwLBpjVfkbLSKVh9fFE
- lLKo/eGDW8wL5Uz5Yip2XivH6k7RDg5JQ30u4TNpgqp/iMqcyYu9vjydJdqovHsTklAFQ6Im
- Z9d3uXFSpJoVxwF5vxdL5GTg+rY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615f74e9de4c4ed385e607f6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 22:30:01
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2787EC4361B; Thu,  7 Oct 2021 22:30:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01255C4338F;
-        Thu,  7 Oct 2021 22:29:58 +0000 (UTC)
+        id S241062AbhJGWcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 18:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233370AbhJGWct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 18:32:49 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13647C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:30:55 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id y201so11168243oie.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:30:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+SJoi0Snz/oq9JLZNnX6mqSWELZniZgWhRIMWDewmho=;
+        b=AVcnW+XSkKZ72eLY8MixRNioRH04dH52umImlb/oo36/V9316NGN1xJKaHVg9n4hqT
+         tCmBCM28VaXulLZBMaWUD344x2BOrxzh3wr6twwyXRuYS9hGzS6zBNaFK4JnbIVc09/y
+         P78JuNKFvPLVuTrZ5MzI6FNr+AaAIpuTyUDexmdqtMvlDlSSSgdCbpTZJk+2lqyN8q2x
+         HqA3swjceXCCM5B73YLIR6PuX3BeWuV226we53zX45jRIrQUPYVHbXJWgE9NGSJjS0sj
+         aPH0KZqUv7xS9uPwySqO9jo0qx3IuJhuVB6lxW9/m7uU2ap0F7rfZbpC+ZdQ/qO8VfGk
+         4rSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+SJoi0Snz/oq9JLZNnX6mqSWELZniZgWhRIMWDewmho=;
+        b=Ff8HR/JI09eetu2HU6M8wTyKY8E+h51VkhNqMs2Mm7udRZaM7tM3Rdj8UAFTPcJI1D
+         2t6mZ3Redy7K8TPFtCCItgEyMvHlqPsj0WD8QNsUBbtO2uXSnHOuXmmJQwHdDH5ZQFIq
+         GhykNqLLf/AcR9jHaGVSpEkcuuudI69i6c6G+4yI8x5eR9TXP23yzYqNWYz2McMdUcI9
+         4gpxvGTjh1foAZP7eFM0++t5NYJzRAEeKjMBmZKmi0ASX29dVr0hDIuwGZsmfSLtOuJe
+         6i2UUGPpXR8mBPyt2RLQFeMKI5Tfdb4uosUXwCD2bH5KyZHuW7AKAEJVovAxu4D5xE8N
+         Qiew==
+X-Gm-Message-State: AOAM532exsIDTLOC2yJwE8b2qJkUBDJY7CuoldzmHexBegiT9+7ICLi9
+        64CoTAHTLNbiIgcYEdbglqidPbcMl6zQ4v1U6gfJyQ==
+X-Google-Smtp-Source: ABdhPJzD9AouEqEHxIcbYnUOPTHlfOXjH5VZQW/OzgCaxpM+6OOAokXt9bw+TAy+TP3wOS8pWmS8vaLoxF8Hu5vsLFg=
+X-Received: by 2002:a05:6808:60f:: with SMTP id y15mr5294386oih.15.1633645854179;
+ Thu, 07 Oct 2021 15:30:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Oct 2021 15:29:58 -0700
-From:   abhinavk@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/7] drm/msm/dp: Support up to 3 DP controllers
-In-Reply-To: <YV4JjutldSujvoT8@ripper>
-References: <20211005231323.2663520-6-bjorn.andersson@linaro.org>
- <CAE-0n52gOCC8bUfMFnNHRKFoq2=q4Ho8a-UYH5JKgumguhUD2A@mail.gmail.com>
- <YVz/NOL3AFn2zBA0@ripper>
- <CAE-0n513cs282Dh_YFMHK2uKCVFSWxtNyfRaFwWGyUvpfShixw@mail.gmail.com>
- <YV0MAF/Y5BR1e6My@ripper>
- <CAE-0n53TwEyycpAaWVpRUKPpos4z-gqwrvyUdgobh1V88VUsXg@mail.gmail.com>
- <YV3XxadYE/KU2w89@ripper>
- <CAE-0n52q=iEhRO1V-ked6SEesJGozLWv-H1mK81oyP7zAeO6QQ@mail.gmail.com>
- <YV3lVWjct5RQ5FEK@ripper>
- <CAE-0n537_YLDkWOX0kBHZHPHMi4-XTODeJ8TB=_xOrZwJc1HfQ@mail.gmail.com>
- <YV4JjutldSujvoT8@ripper>
-Message-ID: <33aa53c7e1784440ae2892163830acf1@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20211005195213.2905030-1-pgonda@google.com>
+In-Reply-To: <20211005195213.2905030-1-pgonda@google.com>
+From:   Marc Orr <marcorr@google.com>
+Date:   Thu, 7 Oct 2021 15:30:43 -0700
+Message-ID: <CAA03e5FpP2XbWB5T=aM7jE9FTHHwJ04Kqc0PAz07F2f2ux6RuA@mail.gmail.com>
+Subject: Re: [PATCH] crypto: ccp - Consolidate sev INIT logic
+To:     Peter Gonda <pgonda@google.com>
+Cc:     "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        David Rientjes <rientjes@google.com>,
+        John Allen <john.allen@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn and Stephen
+On Tue, Oct 5, 2021 at 12:52 PM Peter Gonda <pgonda@google.com> wrote:
+>
+> Adds new helper function sev_init_if_required() for use in sev_ioctl().
+> The function calls __sev_platform_init_locked() if the command requires
+> the PSP's internal state be at least SEV_STATE_INIT. This consolidates
+> many checks scattered through out the ioctl delegation functions.
+>
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Brijesh Singh <brijesh.singh@amd.com>
+> Cc: Marc Orr <marcorr@google.com>
+> Cc: Joerg Roedel <jroedel@suse.de>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: John Allen <john.allen@amd.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: linux-crypto@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/crypto/ccp/sev-dev.c | 63 +++++++++++++++---------------------
+>  1 file changed, 26 insertions(+), 37 deletions(-)
+>
+> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+> index e09925d86bf3..071d57fec4c4 100644
+> --- a/drivers/crypto/ccp/sev-dev.c
+> +++ b/drivers/crypto/ccp/sev-dev.c
+> @@ -386,24 +386,14 @@ static int sev_ioctl_do_platform_status(struct sev_issue_cmd *argp)
+>
+>  static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool writable)
+>  {
+> -       struct sev_device *sev = psp_master->sev_data;
+> -       int rc;
+> -
+>         if (!writable)
+>                 return -EPERM;
 
-On 2021-10-06 13:39, Bjorn Andersson wrote:
-> On Wed 06 Oct 11:59 PDT 2021, Stephen Boyd wrote:
-> 
->> Quoting Bjorn Andersson (2021-10-06 11:05:09)
->> > On Wed 06 Oct 10:19 PDT 2021, Stephen Boyd wrote:
->> >
->> > > Quoting Bjorn Andersson (2021-10-06 10:07:17)
->> > > > On Tue 05 Oct 21:26 PDT 2021, Stephen Boyd wrote:
->> > > >
->> > > > > Quoting Bjorn Andersson (2021-10-05 19:37:52)
->> > > > > > On Tue 05 Oct 19:06 PDT 2021, Stephen Boyd wrote:
->> > > > > >
->> > > > > > > Quoting Bjorn Andersson (2021-10-05 18:43:16)
->> > > > > > > > On Tue 05 Oct 17:43 PDT 2021, Stephen Boyd wrote:
->> > > > > > > >
->> > > > > > > > > Quoting Bjorn Andersson (2021-10-05 16:13:21)
->> > > > > > > > > > diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
->> > > > > > > > > > index bdaf227f05dc..674cddfee5b0 100644
->> > > > > > > > > > --- a/drivers/gpu/drm/msm/dp/dp_display.c
->> > > > > > > > > > +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->> > > > > > > > > > @@ -1233,7 +1239,7 @@ static int dp_display_probe(struct platform_device *pdev)
->> > > > > > > > > >         if (!dp)
->> > > > > > > > > >                 return -ENOMEM;
->> > > > > > > > > >
->> > > > > > > > > > -       desc = dp_display_get_desc(pdev);
->> > > > > > > > > > +       desc = dp_display_get_desc(pdev, &dp->id);
->> > > > > > > > >
->> > > > > > > > > I'm sad that dp->id has to match the number in the SoC specific
->> > > > > > > > > dpu_intf_cfg array in drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c
->> > > > > > > > > still. Is there any way we can avoid that? Also, notice how those arrays
->> > > > > > > > > already have INTF_DP macros, which makes me think that it may be better
->> > > > > > > > > to connect this to those arrays instead of making an msm_dp_desc
->> > > > > > > > > structure and then make sure the 'type' member matches a connector
->> > > > > > > > > type number. Otherwise this code is super fragile.
->> > > > > > > > >
->> > > > > > > >
->> > > > > > > > I'm afraid I don't understand what you're proposing. Or which part you
->> > > > > > > > consider fragile, the indices of the INTF_DP instances aren't going to
->> > > > > > > > move around...
->> > > > > > > >
->> > > > > > > > I have N instances of the DP driver that I need to match to N entries
->> > > > > > > > from the platform specific intf array, I need some stable reference
->> > > > > > > > between them. When I started this journey I figured I could rely on the
->> > > > > > > > of_graph between the DPU and the interface controllers, but the values
->> > > > > > > > used there today are just bogus, so that was a no go.
->> > > > > > > >
->> > > > > > > > We can use whatever, as long as _dpu_kms_initialize_displayport() can
->> > > > > > > > come up with an identifier to put in h_tile_instance[0] so that
->> > > > > > > > dpu_encoder_setup_display() can find the relevant INTF.
->> > > > > > > >
->> > > > > > >
->> > > > > > > To make it more concrete we can look at sc7180
->> > > > > > >
->> > > > > > > static const struct dpu_intf_cfg sc7180_intf[] = {
->> > > > > > >         INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24,
->> > > > > > > INTF_SC7180_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
->> > > > > > >                                                      ^
->> > > > > > >                                                      |
->> > > > > > >
->> > > > > > > intf0 is irrelevant. Also the address is irrelevant. But here we have a
->> > > > > > > zero, the number after INTF_DP, and that is very relevant. That number
->> > > > > > > needs to match the dp->id. Somewhere we have a match between
->> > > > > > > controller_id and dp->id in the code.
->> > > > > >
->> > > > > > That number (the 0, not INTF_0) is what the code matches against dp->id
->> > > > > > in _dpu_kms_initialize_displayport(), in order to figure out that this
->> > > > > > is INTF_0 in dpu_encoder_setup_display().
->> > > > > >
->> > > > > > I.e. look at the sc8180x patch:
->> > > > > >
->> > > > > > INTF_BLK("intf_0", INTF_0, 0x6A000, INTF_DP, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
->> > > > > > INTF_BLK("intf_1", INTF_1, 0x6A800, INTF_DSI, 0, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
->> > > > > > INTF_BLK("intf_2", INTF_2, 0x6B000, INTF_DSI, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 28, 29),
->> > > > > > /* INTF_3 is for MST, wired to INTF_DP 0 and 1, use dummy index until this is supported */
->> > > > > > INTF_BLK("intf_3", INTF_3, 0x6B800, INTF_DP, 999, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 30, 31),
->> > > > > > INTF_BLK("intf_4", INTF_4, 0x6C000, INTF_DP, 1, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 20, 21),
->> > > > > > INTF_BLK("intf_5", INTF_5, 0x6C800, INTF_DP, 2, 24, INTF_SC8180X_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
->> > > > > >
->> > > > > > Where the DP driver defines the 3 controllers with dp->id of 0, 1 and 2,
->> > > > > > which the DPU code will match against to INTF_0, INTF_4 and INTF_5.
->> > > > > >
->> > > > >
->> > > > > Yep. I'm saying that having to make that number in this intf array match
->> > > > > the order of the register mapping descriptor array is fragile. Why can't
->> > > > > we indicate the interface is DP or eDP with INTF_DP or INTF_EDP and then
->> > > > > map from the descriptor array to this intf array somehow so that the
->> > > > > order of the descriptor array doesn't matter? Then we don't have to put
->> > > > > the connector type in the descriptor array, and we don't have to keep
->> > > > > the order of the array a certain way to match this intf descriptor.
->> > > > >
->> > > > > Maybe
->> > > > >
->> > > > >       struct msm_dp_desc {
->> > > > >               phys_addr_t io_start;
->> > > > >               unsigned int id;
->> > > >
->> > > > The INTF_<N> constants are a property of the DPU driver and not
->> > > > available in the DP driver and the msm_dp struct is a property of the DP
->> > > > driver and can't be dereferenced in the DPU driver.
->> > > >
->> > > > The proposed way around this is that the descs array defines the order
->> > > > in priv->dp[N] and this N is used as controller_id.
->> > >
->> > > I'm pretty sure I'm following along.
->> > >
->> > > >
->> > > > So the only thing that I don't find straight forward here is that the
->> > > > eDP controller is considered just a DP controller, so you have to use
->> > > > INTF_DP, <N> for that, and not just INTF_EDP, 0.
->> > > >
->> > > > >       };
->> > > > >
->> > > > > and then have msm_dp_desc::id equal INTF_<N> and then look through the
->> > > > > intf from DPU here in the DP driver to find the id and type of connector
->> > > > > that should be used by default? Still sort of fragile because the only
->> > > > > connection is an unsigned int which isn't great, but at least it's
->> > > > > explicit instead of implicit based on the array order.
->> > > >
->> > > > No matter how I look at this, you need to put some number somewhere here
->> > > > that will be used to match up the INTF with the right DSI/DP encoder.
->> > >
->> > > Correct.
->> > >
->> > > >
->> > > > Using the proposed number scheme follows the numbering of all the DP
->> > > > controllers from the documentation.
->> > > >
->> > >
->> > > Maybe I can make a better example. I have this for sc7280 in dpu_hw_catalog.c:
->> > >
->> > >       static const struct dpu_intf_cfg sc7280_intf[] = {
->> > >               INTF_BLK("intf_0", INTF_0, 0x34000, INTF_DP, CONTROLLER_ID_A, 24,
->> > > INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 24, 25),
->> > >               INTF_BLK("intf_1", INTF_1, 0x35000, INTF_DSI, 0, 24,
->> > > INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 26, 27),
->> > >               INTF_BLK("intf_5", INTF_5, 0x39000, INTF_DP, CONTROLLER_ID_B, 24,
->> > > INTF_SC7280_MASK, MDP_SSPP_TOP0_INTR, 22, 23),
->> > >       };
->> > >
->> > > And then this array for sc7280 in dp_display.c:
->> > >
->> > >       static const struct msm_dp_desc sc7280_dp_cfg = {
->> > >               .desc = {
->> > >                       [CONTROLLER_ID_A] = { 0xaea0000, DRM_MODE_CONNECTOR_eDP },
->> > >                       [CONTROLLER_ID_B] = { 0xae90000, DRM_MODE_CONNECTOR_DisplayPort },
->> > >               },
->> > >               .num_dp = 2,
->> > >       };
->> > >
->> > > So these two arrays must match based on CONTROLLER_ID_{A,B}. I don't
->> > > like having to make these two numbers match so if it was explicit, even
->> > > possibly by having a bunch of macros put in both places then I would be
->> > > happy. I spent a few hours when I messed up the order of the
->> > > sc7280_dp_cfg.desc array trying to figure out why things weren't
->> > > working.
->> >
->> > So essentially, you didn't know that the controller_id has to match the
->> > index in priv->dsi[] and priv->dp[] and providing a define for them
->> > would make this more obvious?
->> 
->> Now you got it!
->> 
->> >
->> > I think per your argument the 0 following INTF_DSI should also be using
->> > this scheme, so we'd have multiple CONTROLLER_ID_A, which probably is
->> > confusing as well.
->> 
->> Agreed.
->> 
->> >
->> > I tried it out with below patch; it documents the relationship, provides
->> > constants for the magic 2 and 3 for number of DSI and DP controllers in
->> > struct msm_drm_private.
->> >
->> > I like it.
->> 
->> Thanks. I prefer this approach as well.
-> 
-> Sweet, I'll update my patch set accordingly.
-Yes, I also agree with this approach to better document the relationship 
-between the hw_catalog array
-and the dp_display msm_dp_desc
+This check can be removed because it's is handled by
+`sev_init_if_required()`. Same is true for all the other commands.
 
-> 
->> I can see now why qcom always wants to change the output ports on the
->> DPU node in DT to match the INTF number. If they would have described
->> this problem it may have made sense to have the graph endpoints with
->> reg properties matching the interface number in the intf array. Sigh.
-> 
-> Yes, I think the supposed design is that you should use the of_graph 
-> and
-> then call of_find_possible_crtcs() to figure out your links.
-> 
-> Unfortunately that doesn't work with the design of the DPU driver,
-> because the crtcs doesn't represent the INTFs - and as you say, the
-> existing of_graphs are full of incorrect data.
-> 
-> Which also means that I don't know why we keep filling out the 
-> of_graph,
-> because afaict it's not used and it contains invalid information.
-> 
-> Thanks,
-> Bjorn
+>
+> -       if (sev->state == SEV_STATE_UNINIT) {
+> -               rc = __sev_platform_init_locked(&argp->error);
+> -               if (rc)
+> -                       return rc;
+> -       }
+> -
+>         return __sev_do_cmd_locked(cmd, NULL, &argp->error);
+>  }
+>
+>  static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
+>  {
+> -       struct sev_device *sev = psp_master->sev_data;
+>         struct sev_user_data_pek_csr input;
+>         struct sev_data_pek_csr data;
+>         void __user *input_address;
+> @@ -435,12 +425,6 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
+>         data.len = input.length;
+>
+>  cmd:
+> -       if (sev->state == SEV_STATE_UNINIT) {
+> -               ret = __sev_platform_init_locked(&argp->error);
+> -               if (ret)
+> -                       goto e_free_blob;
+> -       }
+> -
+>         ret = __sev_do_cmd_locked(SEV_CMD_PEK_CSR, &data, &argp->error);
+>
+>          /* If we query the CSR length, FW responded with expected data. */
+> @@ -586,7 +570,6 @@ static int sev_update_firmware(struct device *dev)
+>
+>  static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
+>  {
+> -       struct sev_device *sev = psp_master->sev_data;
+>         struct sev_user_data_pek_cert_import input;
+>         struct sev_data_pek_cert_import data;
+>         void *pek_blob, *oca_blob;
+> @@ -617,17 +600,10 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
+>         data.oca_cert_address = __psp_pa(oca_blob);
+>         data.oca_cert_len = input.oca_cert_len;
+>
+> -       /* If platform is not in INIT state then transition it to INIT */
+> -       if (sev->state != SEV_STATE_INIT) {
+> -               ret = __sev_platform_init_locked(&argp->error);
+> -               if (ret)
+> -                       goto e_free_oca;
+> -       }
+> -
+>         ret = __sev_do_cmd_locked(SEV_CMD_PEK_CERT_IMPORT, &data, &argp->error);
+>
+> -e_free_oca:
+>         kfree(oca_blob);
+> +
+>  e_free_pek:
+>         kfree(pek_blob);
+>         return ret;
+> @@ -730,7 +706,6 @@ static int sev_ioctl_do_get_id(struct sev_issue_cmd *argp)
+>
+>  static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+>  {
+> -       struct sev_device *sev = psp_master->sev_data;
+>         struct sev_user_data_pdh_cert_export input;
+>         void *pdh_blob = NULL, *cert_blob = NULL;
+>         struct sev_data_pdh_cert_export data;
+> @@ -738,16 +713,6 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+>         void __user *input_pdh_cert_address;
+>         int ret;
+>
+> -       /* If platform is not in INIT state then transition it to INIT. */
+> -       if (sev->state != SEV_STATE_INIT) {
+> -               if (!writable)
+> -                       return -EPERM;
+> -
+> -               ret = __sev_platform_init_locked(&argp->error);
+> -               if (ret)
+> -                       return ret;
+> -       }
+> -
+>         if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
+>                 return -EFAULT;
+>
+> @@ -819,6 +784,26 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
+>         return ret;
+>  }
+>
+> +static int sev_init_if_required(int cmd_id, bool writable,
+> +                               struct sev_issue_cmd *argp)
+> +{
+> +       struct sev_device *sev = psp_master->sev_data;
+> +
+> +       lockdep_assert_held(&sev_cmd_mutex);
+> +
+> +       if (!writable)
+> +               return -EPERM;
+> +
+> +       if (cmd_id == SEV_FACTORY_RESET || cmd_id == SEV_PLATFORM_STATUS ||
+> +           cmd_id == SEV_GET_ID || cmd_id == SEV_GET_ID2)
+> +               return 0;
+
+I really like this patch and would like to see it get reviewed and
+merged. I've often thought of writing up a similar patch every time I
+look at the PSP code, but never took the initiative to do it myself.
+Overall, I wonder if it's trying too hard to reduce redundant code. In
+particular, we could avoid this awkward check if we put this helper
+inline, in the command helpers themselves. Perhaps we split this out
+into two helpers or instead add a parameter to this helper to control
+whether to check if `state` is `SEV_STATE_UNINIT`. What do you think?
+
+> +
+> +       if (sev->state == SEV_STATE_UNINIT)
+> +               return __sev_platform_init_locked(&argp->error);
+> +
+> +       return 0;
+> +}
+> +
+>  static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+>  {
+>         void __user *argp = (void __user *)arg;
+> @@ -840,8 +825,11 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+>
+>         mutex_lock(&sev_cmd_mutex);
+>
+> -       switch (input.cmd) {
+> +       ret = sev_init_if_required(input.cmd, writable, &input);
+> +       if (ret)
+> +               goto copy_out;
+>
+> +       switch (input.cmd) {
+
+nit: Not sure what changed on this line. Was there an unintended
+whitespace change here?
+
+>         case SEV_FACTORY_RESET:
+>                 ret = sev_ioctl_do_reset(&input, writable);
+>                 break;
+> @@ -875,6 +863,7 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
+>                 goto out;
+>         }
+>
+> +copy_out:
+>         if (copy_to_user(argp, &input, sizeof(struct sev_issue_cmd)))
+>                 ret = -EFAULT;
+>  out:
+> --
+> 2.33.0.800.g4c38ced690-goog
+>
