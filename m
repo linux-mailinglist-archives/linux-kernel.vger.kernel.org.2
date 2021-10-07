@@ -2,135 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F178F424D37
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:19:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F403B424D3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240290AbhJGGVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S240255AbhJGGYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240279AbhJGGV1 (ORCPT
+        with ESMTP id S232667AbhJGGYL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:21:27 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A874C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 23:19:33 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x27so20254734lfa.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 23:19:33 -0700 (PDT)
+        Thu, 7 Oct 2021 02:24:11 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7695AC061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 23:22:18 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id i12so2925785wrb.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 23:22:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Pbt0M1pfebFlXF5gGyoPFy/r4iSAUgGDM1yjl8UFi1s=;
-        b=mm+XH+Tb9gnmJRPx/G9P0Y606Qd51LNtkhCrsau62ZJrgUSfYMrPtKYE6WePjzCEen
-         B4COrh9PSi75LfF9U0jgulJsvyGECR8lFXFwScyqwE7F5BaW+gFp3oLS3wyn5DgmV92P
-         ol6QoXhbsqm22YeUx/CRC1PkPnCZEakgA+88yplcG8pvQbFFl8dICKisaM77yethRrDw
-         ++8Dxwm9kx2AG7hqEBT13zgBw3uimZSzgCEhmIG4YOdtmrC/pxb3rXL4D5g9WWrTxDFW
-         SbLJ1FawIXo+Aj+H6YBZPLN7qYSVPemgUgSXCEH4oUGM98JMK/hPtRVI2NipK1DLLvox
-         PEbA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iaq5nU4GLaIaZC0meQweypNii34zyivZ0fMvPt1tbnU=;
+        b=kI7aZw6yORYbMtcxAl6QRwzFXWNiCvIA1hTkd3rfw4ZpgpmJo9xJdezhlLdHMM9U0t
+         DwJ+/LqXxv6eXDT+lNE385nITwFkxe4VuuaCozoNYsWfjtoxFivWMHLzOtQq6+LwJ9ZO
+         Ul88ZugDMVh2erdGjKcv7iM0+l9AlPEbLYwza7HGIbVreTw6NGX08GsVj2qoPQTCQGn/
+         TQC2gdPbBwreC4H3pVC7sqPDDzUClrzeLW5azmYnUcpMRopgH/KljDCLIgp3IPSrK/dJ
+         RV06xIPSokaNFA+FVKUjZEeBbX0/jUECn4Ttc1ib4ZL8AZ8ksFJuq3ZAxM8eQKGZmojD
+         bp0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Pbt0M1pfebFlXF5gGyoPFy/r4iSAUgGDM1yjl8UFi1s=;
-        b=vGA5HgTdM7p40fdPtqbaw+4kPV8LB+nXqpsJxzdDX+PBCkOlxqGPduKcdZRzzF/JEr
-         UZGMuILVhX2K2IRqo4B0ABmU09ZP5wgZWITjrNHCs05/5FH8igoCb67+hcVFcIcYTdi4
-         AO2iLJKxEZSkgJUxnCBOkZcdWryhDtX7q0l4eKYs8r9B3pXbkBiVtMGLyC5fmiblL9G1
-         uMuAvl0k58u0jUFIxWAbqgYdSQ81yeJMR1vExbLh/oX8Cbjk5mLg4SozuuvvJCB+Jzrn
-         dX7V7wt3XnQ7vuxl+X0LmryCggwmjPFPZP6d261ArvZCUQjqZSqEtzJzKIbNTl11eVGl
-         rYlw==
-X-Gm-Message-State: AOAM532fOHILPKTRLdb/2nVRiw+MxUFfg2mY19YDVHmSsICXyOz2OFPi
-        dM2xKJVRN23+aMN0iPVF6zA=
-X-Google-Smtp-Source: ABdhPJziLnJtfIU4RXcVvsu+d9g0wj22SYNyeiQwIm8KZ4b+hkCi+TvSjK9GeCoSC8wzifkc+AmK0Q==
-X-Received: by 2002:a05:6512:31d3:: with SMTP id j19mr2598683lfe.140.1633587571776;
-        Wed, 06 Oct 2021 23:19:31 -0700 (PDT)
-Received: from hyperiorarchmachine.localnet (dcx52mygz59ds--wvhkvy-3.rev.dnainternet.fi. [2001:14ba:14f3:6500:b4cf:46ff:fe51:3222])
-        by smtp.gmail.com with ESMTPSA id h10sm978046lfp.187.2021.10.06.23.19.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 23:19:31 -0700 (PDT)
-From:   Jarmo Tiitto <jarmo.tiitto@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Daniel Axtens <dja@axtens.net>,
-        Mark Rutland <mark.rutland@arm.com>, catalin.marinas@arm.com,
-        clang-built-linux@googlegroups.com, hca@linux.ibm.com,
-        jarmo.tiitto@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com, masahiroy@kernel.org, maskray@google.com,
-        morbo@google.com, nathan@kernel.org, ndesaulniers@google.com,
-        oberpar@linux.ibm.com, ojeda@kernel.org, peterz@infradead.org,
-        samitolvanen@google.com, torvalds@linux-foundation.org,
-        wcw@google.com, will@kernel.org
-Subject: Re: ARCH_WANTS_NO_INSTR (Re: [GIT PULL] Clang feature updates for v5.14-rc1)
-Date:   Thu, 07 Oct 2021 09:19:29 +0300
-Message-ID: <1803114.lsCNsgVnni@hyperiorarchmachine>
-In-Reply-To: <20211005143003.GC6678@C02TD0UTHF1T.local>
-References: <202106281231.E99B92BB13@keescook> <20211005131015.3153458-1-dja@axtens.net> <20211005143003.GC6678@C02TD0UTHF1T.local>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iaq5nU4GLaIaZC0meQweypNii34zyivZ0fMvPt1tbnU=;
+        b=LBk6UzW8xgireyNcDAnFeaX3NOaeW3+l6UovNsBmMx4e0Im40rAm9EerkYh6v7cRde
+         IPA44w7WHb4O/9mSW5ncK/qEpql6Otizc1pu4PHGybBSM5osWvg65/Rzy+27hC+XSK5X
+         9p1zqwYTU9jamdD2hVr+GkBNmHVRFs52uBUOQYNMl3oxebcCReRQZvLi8K4iJApDnhOv
+         3oGRA8F1fVOfRiiv4gsdny9KD7CVbzEQFSnde/LEq6Gmk2GyIj0vXPnBqDtFRrP6jyy/
+         rJYpZWXr7X60qp3AslI+7e7B5PS+VDytE46n1Dwh9eLNxawyGUqmDTNSmQ3dIY0gLRr6
+         +exw==
+X-Gm-Message-State: AOAM531OkIi/XkVLecJxEeZoDhj+lL6dH4N3GprfvqDwBNBBtRpEtKSd
+        uu96T2EF4vty0kXKNcKxOWTQ9OQXizzOy9MyZlvQQQ==
+X-Google-Smtp-Source: ABdhPJxltkfELzP1Sj98wJJVPLf/rcHIL7//lDCPacy+UhPycFVG4s0SAFlkuXzufb7RwHHMsjR95a2Vafkfwx8PeCM=
+X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr2443559wmb.179.1633587736875;
+ Wed, 06 Oct 2021 23:22:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+References: <20211006170049.106852-1-dlatypov@google.com>
+In-Reply-To: <20211006170049.106852-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 7 Oct 2021 14:22:05 +0800
+Message-ID: <CABVgOS=Bvf_ESOZP_5FJxYe4rBOjR=VZ4bhwgLYOdLu5=-W4+g@mail.gmail.com>
+Subject: Re: [PATCH v6] kunit: tool: improve compatibility of kunit_parser
+ with KTAP specification
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Rutland wrote tiistaina 5. lokakuuta 2021 17.30.03 EEST:
-> On Wed, Oct 06, 2021 at 12:10:15AM +1100, Daniel Axtens wrote:
-> > Hi,
-> 
-> Hi Daniel,
-> 
-> > Apologies, I can't find the original email for this:
-> > >      Kconfig: Introduce ARCH_WANTS_NO_INSTR and CC_HAS_NO_PROFILE_FN_ATTR
-> > 
-> > which is now commit 51c2ee6d121c ("Kconfig: Introduce ARCH_WANTS_NO_INSTR
-> > and
-> > CC_HAS_NO_PROFILE_FN_ATTR"). It doesn't seem to show up on Google, this 
-was
-> > the best I could find.
-> 
-> Unless I've misunderstood, the commit title was rewritten when the patch
-> was applied, from the third link in commit 51c2ee6d121c. For reference,
-> those three links are:
-> 
->   Link:
-> https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net
-> / Link:
-> https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.n
-> et/ Link:
-> https://lore.kernel.org/r/20210621231822.2848305-4-ndesaulniers@google.com
+On Thu, Oct 7, 2021 at 1:00 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> From: Rae Moar <rmoar@google.com>
+>
+> Update to kunit_parser to improve compatibility with KTAP
+> specification including arbitrarily nested tests. Patch accomplishes
+> three major changes:
+>
+> - Use a general Test object to represent all tests rather than TestCase
+> and TestSuite objects. This allows for easier implementation of arbitrary
+> levels of nested tests and promotes the idea that both test suites and test
+> cases are tests.
+>
+> - Print errors incrementally rather than all at once after the
+> parsing finishes to maximize information given to the user in the
+> case of the parser given invalid input and to increase the helpfulness
+> of the timestamps given during printing. Note that kunit.py parse does
+> not print incrementally yet. However, this fix brings us closer to
+> this feature.
+>
+> - Increase compatibility for different formats of input. Arbitrary levels
+> of nested tests supported. Also, test cases and test suites are now
+> supported to be present on the same level of testing.
+>
+> This patch now implements the draft KTAP specification here:
+> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> We'll update the parser as the spec evolves.
+>
+> This patch adjusts the kunit_tool_test.py file to check for
+> the correct outputs from the new parser and adds a new test to check
+> the parsing for a KTAP result log with correct format for multiple nested
+> subtests (test_is_test_passed-all_passed_nested.log).
+>
+> This patch also alters the kunit_json.py file to allow for arbitrarily
+> nested tests.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
+> ---
+> NOTE: this patch is now applied on top of
+> https://lore.kernel.org/linux-kselftest/20210930222048.1692635-5-dlatypov@google.com/
+> to resolve a conflict.
+>
+> Change log from v5:
+> https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
+> - Tweak commit message to reflect the KTAP spec is a draft
+> - Add missing Signed-off-by
+> - Tweak docstrings
+>
+> Change log from v3,4:
+> https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
+> - Move test_kselftest_nested from LinuxSourceTreeTest => KUnitParserTest.
+> - Resolve conflict with hermetic testing patches.
+>   - max_status is no longer defined, so we need to use the TestCounts
+>     type now. And to keep --raw_output working, we need to set this to
+>     SUCCESS to avoid the default assumption that the kernel crashed.
+>
+> Ignore v4, was accidentally based on v2.
+>
+> Change log from v2:
+> https://lore.kernel.org/linux-kselftest/20210826195505.3066755-1-rmoar@google.com/
+> - Fixes bug of type disagreement in kunit_json.py for build_dir
+> - Removes raw_output()
+> - Changes docstrings in kunit_parser.py (class docstring, LineStream
+>   docstrings, add_error(), total(), get_status(), all parsing methods)
+> - Fixes bug of not printing diagnostic log in the case of end of lines
+> - Sets default status of all tests to TEST_CRASHED
+> - Adds and prints empty tests with crashed status in case of missing
+>   tests
+> - Prints 'subtest' in instance of 1 subtest instead of 'subtests'
+> - Includes checking for 'BUG:' message in search of crash messages in
+>   log (note that parse_crash_in_log method could be removed but would
+>   require deleting tests in kunit_tool_test.py that include the crash
+>   message that is no longer used. If removed, parser would still print
+>   log in cases of test crashed or failure, which would now include
+>   missing subtests)
+> - Fixes bug of including directives (other than SKIP) in test name
+>   when matching name in result line for subtests
+>
+>
+> Change log from v1:
+> https://lore.kernel.org/linux-kselftest/20210820200032.2178134-1-rmoar@google.com/
+> - Rebase onto kselftest/kunit branch
+> - Add tests to kunit_tool_test.py to check parser is correctly stripping
+>   hyphen, producing correct json objects with nested tests, correctly
+>   passing kselftest TAP output, and correctly deals with missing test plan.
+> - Fix bug to correctly match test name in instance of a missing test plan.
+> - Fix bug in kunit_tool_test.py pointed out by Daniel where it was not
+>   correctly checking for a proper match to the '0 tests run!' error
+>   message. Reverts changes back to original.
+> - A few minor changes to commit message using Daniel's comments.
+> - Change docstrings using Daniel's comments to reduce:
+>   - Shortens some docstrings to be one-line or just description if it is
+>     self explanatory.
+>   - Remove explicit respecification of types of parameters and returns
+>     because this is already specified in the function annoations. However,
+>     some descriptions of the parameters and returns remain and some contain
+>     the type for context. Additionally, the types of public attributes of
+>     classes remain.
+>   - Remove any documentation of 'Return: None'
+>   - Remove docstrings of helper methods within other methods
+> ---
 
-Hello, Kees and others cc'd !
-I got above mail, and went through an rabbit hole of lkml messages since I was 
-involved with the clang-pgo feature.
+Looks good to me, thanks!
 
-I'll like to know what is the current situation about GCOV and PGO?
+This is still:
+Reviewed-by: David Gow <davidgow@google.com>
 
-I saw that for-next/clang/pgo had some new interesting patches applied.
-Would it be good time now to continue make instrumented kernel?
-
-Background:
-I essentially stopped my work at the point where Peter Z noted -fprofile-
-generate breaks the kernel+gcov and noinstr needs to be fixed.
-
-My situation here is that I have very old non-public PGO hacks that date back 
-to v4.11 - v4.19 era using GCOV subsystem and now with the newer clang-pgo 
-patches that are in usable state.
-
-These previous attempts all broke apart because of the noinstr not doing it's 
-job with -fprofile-generate: the compiler could generate a call to gcov/pgo 
-profiler hook in wrong place (in interrupt context, If I remember) and the 
-kernel was doomed.
-
-One thing has not changed over the years: I still don't have a single CPU that 
-has hardware PMU capable of LBR and generating AutoFDO profiles. :(
-
-So I have written code/hacks now for two subsystems to gain profile data for 
-PGO. In the end, I don't care from what instrumented kernel pipes I have to 
-pull the data out, and what format it is in, as long as the compiler accepts 
-it. :-P
-PS: gcov-pgo had waayy too many pipes for doing just pgo. /s
-
-Well, that was my past on this PGO topic.
-
-Thanks all,
--Jarmo Tiitto
-
-
+Cheers,
+-- David
