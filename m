@@ -2,83 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C09425228
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD8E42522D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241069AbhJGLko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:40:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhJGLkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:40:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66F0B61139;
-        Thu,  7 Oct 2021 11:38:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633606728;
-        bh=L/hUnFbL8E5m8uUbr/4q4eZDVlgAdpApRMT2soUfbsU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=exSsfhQcJLCg3pS34CUf3tR49DeihE8X0tgWhegqkCnyxRErRXtcg78s9nsDUmBRZ
-         GGUXOEpzuUgcnOOOK6BJfdc2gGfTjoycpo8Xyw4drIs2nORs6n1rMzMNyxAfRR6XCe
-         DtYJ1DhBahJkQVbhNpxUO+W5cdM8JvgjuvRCM67WCkRdn4HlVykT6qEKW4UgVAevDt
-         pFhOKrNw15qJz6hkLP1PN7FbthJDQgB4eH4GU0Te5F3iaHN7cqvd9N4SxYM9wTcUAL
-         5oe/el/Ik8LqD0WY4id5a47ETAbiyFf4Q8NpGHPzUulYACeKHHfTJUGv2Ri1qf6X8g
-         BirybJrt2C3Sw==
-Date:   Thu, 7 Oct 2021 13:38:45 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Gerecke <jason.gerecke@wacom.com>,
-        Ping Cheng <ping.cheng@wacom.com>
-Subject: Re: [PATCH] HID: wacom: Make use of the helper function
- devm_add_action_or_reset()
-In-Reply-To: <20210922125939.427-1-caihuoqing@baidu.com>
-Message-ID: <nycvar.YFH.7.76.2110071338010.29107@cbobk.fhfr.pm>
-References: <20210922125939.427-1-caihuoqing@baidu.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S241094AbhJGLmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241067AbhJGLmP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 07:42:15 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50795C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:40:22 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id e16so5780333qts.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:40:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=t6zk3xfTxx+/7P9iF/K8HrCXbNIyzmGrI92g0qF/r8U=;
+        b=Z5BfJR12ZF73sqboFqV6Iftg9Fca9z5gXZZEXjYRHqQq4qghp9RcfRyFFD74hFJVbF
+         FNLutLPICI+kRSkp0Z/yFqmimbN9Ix8EcbdmC0wcW6HYgMzZJ9IIWTzsnMKZKBZoNhv9
+         zaexlFTVGrzQz2Ql0HdZgeURLnwPVZTWxTAHSKEEeFsa+vKjn/xx0eRp4/wVP1DzlqFE
+         ar+4ieCc7nQ6y3JoLjU0zomWckcMr9Zoag4Qfwzclr8meuO+iIDsNKzFr7jgwJ99Du0E
+         soapNjOR5PLotwgmP+WLBkjuhluBIgE9jOgZiReEmqHG6viISNvPtCsj7/VSuA1TZOC6
+         0mEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t6zk3xfTxx+/7P9iF/K8HrCXbNIyzmGrI92g0qF/r8U=;
+        b=PlwAB+cxyWClEsXASZSoRBApoigvBpAJv/8rHoYKVDxDoaUq2wkOU3CmiFDiamc1kT
+         aThcVPS0uwDgCUpfeDIp6Ix5n0Ssv2jzH/921bX65TAFDus+6R1p8kL4dHDiAQKUhRHm
+         TwDo1sOVgHc81Y3hHuq8SXycqxr5zMjBQcCHWvem/M8LGCYU8a8i4fS7QHwNQf/n5LnD
+         YOKagc8QB44Mv+NHpyRNNyhLl3nMsVe1AocP2F2bFLx6akL1K9L3f6bih/I+/NsO5pag
+         MxqBMXEY6tykjLLhluv/eYTKu/dWxOmqXw9C0TJrBFE9ZzMJmg+AaKbe2r7GPbfYq7Iv
+         GPVg==
+X-Gm-Message-State: AOAM530vxa9E/2P35GCXzdftFU9jUaNugpr9K95OyM8ZxUUO4A5IMiBf
+        yCf+Ztj5DJtMq0EDpWayx3czvw==
+X-Google-Smtp-Source: ABdhPJymysJt76mkPddOVzIeZPor2OGBI9wov7yUB7IjZKcEEdbzf/i3QALNpMKmZP+iJVKPXTtQ+g==
+X-Received: by 2002:ac8:57d0:: with SMTP id w16mr4342934qta.96.1633606820017;
+        Thu, 07 Oct 2021 04:40:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id v8sm17498391qta.21.2021.10.07.04.40.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 04:40:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mYRl4-00Br7G-Sw; Thu, 07 Oct 2021 08:40:18 -0300
+Date:   Thu, 7 Oct 2021 08:40:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Firas Jahjah <firasj@amazon.com>
+Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
+Message-ID: <20211007114018.GD2688930@ziepe.ca>
+References: <20211007104301.76693-1-galpress@amazon.com>
+ <20211007104301.76693-3-galpress@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007104301.76693-3-galpress@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021, Cai Huoqing wrote:
+On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
 
-> The helper function devm_add_action_or_reset() will internally
-> call devm_add_action(), and if devm_add_action() fails then it will
-> execute the action mentioned and return the error code. So
-> use devm_add_action_or_reset() instead of devm_add_action()
-> to simplify the error handling, reduce the code.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-
-CCing Jason and Ping to Ack this for the Wacom driver.
-
-> ---
->  drivers/hid/wacom_sys.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/hid/wacom_sys.c b/drivers/hid/wacom_sys.c
-> index 93f49b766376..3aed7ba249f7 100644
-> --- a/drivers/hid/wacom_sys.c
-> +++ b/drivers/hid/wacom_sys.c
-> @@ -892,10 +892,9 @@ static int wacom_add_shared_data(struct hid_device *hdev)
+> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
+>  	return 0;
+>  }
 >  
->  	wacom_wac->shared = &data->shared;
->  
-> -	retval = devm_add_action(&hdev->dev, wacom_remove_shared_data, wacom);
-> +	retval = devm_add_action_or_reset(&hdev->dev, wacom_remove_shared_data, wacom);
->  	if (retval) {
->  		mutex_unlock(&wacom_udev_list_lock);
-> -		wacom_remove_shared_data(wacom);
->  		return retval;
->  	}
->  
-> -- 
-> 2.25.1
-> 
+> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+> -			 u64 virt_addr, int access_flags,
+> -			 struct ib_udata *udata)
+> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
+> +{
+> +	WARN_ON_ONCE(1,
+> +		     "Invalidate callback should not be called when memory is pinned\n");
+> +}
+> +
+> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
+> +	.allow_peer2peer = true,
+> +	.move_notify = efa_dmabuf_invalidate_cb,
+> +};
 
--- 
-Jiri Kosina
-SUSE Labs
+Shouldn't move_notify really just be left as NULL? I mean fixing
+whatever is preventing that?
 
+> +struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
+> +				     u64 length, u64 virt_addr,
+> +				     int fd, int access_flags,
+> +				     struct ib_udata *udata)
+> +{
+> +	struct efa_dev *dev = to_edev(ibpd->device);
+> +	struct ib_umem_dmabuf *umem_dmabuf;
+> +	struct efa_mr *mr;
+> +	int err;
+> +
+> +	mr = efa_alloc_mr(ibpd, access_flags, udata);
+> +	if (IS_ERR(mr)) {
+> +		err = PTR_ERR(mr);
+> +		goto err_out;
+> +	}
+> +
+> +	umem_dmabuf = ib_umem_dmabuf_get(ibpd->device, start, length, fd,
+> +					 access_flags, &efa_dmabuf_attach_ops);
+> +	if (IS_ERR(umem_dmabuf)) {
+> +		ibdev_dbg(&dev->ibdev, "Failed to get dmabuf[%d]\n", err);
+> +		err = PTR_ERR(umem_dmabuf);
+> +		goto err_free;
+> +	}
+> +
+> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
+> +	err = dma_buf_pin(umem_dmabuf->attach);
+> +	if (err) {
+> +		ibdev_dbg(&dev->ibdev, "Failed to pin dmabuf memory\n");
+> +		goto err_release;
+> +	}
+> +
+> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
+> +	if (err) {
+> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
+> +		goto err_unpin;
+> +	}
+> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+
+If it is really this simple the core code should have this logic,
+'ib_umem_dmabuf_get_pinned()' or something
+
+Jason
