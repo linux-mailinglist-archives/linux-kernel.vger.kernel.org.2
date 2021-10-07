@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA8B425B52
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6509B425B61
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243870AbhJGTJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:09:39 -0400
-Received: from mga09.intel.com ([134.134.136.24]:42498 "EHLO mga09.intel.com"
+        id S243881AbhJGTOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:14:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233876AbhJGTJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:09:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226239735"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="226239735"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 12:07:44 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="713470498"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 12:07:43 -0700
-Date:   Thu, 7 Oct 2021 12:11:27 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, iommu@lists.linux-foundation.org,
+        id S233869AbhJGTOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:14:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74C066103B;
+        Thu,  7 Oct 2021 19:12:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633633947;
+        bh=pLn061djoRVzHpAKyRTFX/vkEhTok2R4aa1KwWy8B3g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ok3fbvQdtkocugVAcgvNahdNC/KlhcNi46ZcODAoQzM413B4PrdWyZ7epBOp0RrYb
+         AQdnwYV2YOZAKz4p3pfOeV4fQwpcq2cTKqklzDYCYpfGk0iq43R0Q1XoqZgzJC1mO3
+         SMAYAIwsroP3j/a5mDId3q5HV/RBX7PGDoZcj8J3BeZdv5JjNMc/O1wDvjS8/RRH+B
+         E8VldLzOQPKPkf4PGXx6aUFX37VFR2V8OdG+MK1RcrEROk4h/dtGTFIVIiiVTl8+Ec
+         Rd8sb8AH2adGH0/YLJycfTPr3AZ13CoIyv9SbtudeK+3eqkeZZdbCLYzHYQNTk91kp
+         k/U4XzH5tavkg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 490FE5C0870; Thu,  7 Oct 2021 12:12:27 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 12:12:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
-        Yi Liu <yi.l.liu@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
-Message-ID: <20211007121127.53956635@jacob-builder>
-In-Reply-To: <CAGsJ_4w+ed78cnJusM_enEZpdGghzvjgt0aYDPpfwk4z7PQqxQ@mail.gmail.com>
-References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
-        <20211001123623.GM964074@nvidia.com>
-        <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
-        <20211004094003.527222e5@jacob-builder>
-        <20211004182142.GM964074@nvidia.com>
-        <CAGsJ_4w+ed78cnJusM_enEZpdGghzvjgt0aYDPpfwk4z7PQqxQ@mail.gmail.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
+ + a few other fixes
+Message-ID: <20211007191227.GM880162@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210929221012.228270-1-frederic@kernel.org>
+ <20211006151339.GA422833@paulmck-ThinkPad-P17-Gen-1>
+ <20211007084920.4wo5fmjxmistivqa@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007084920.4wo5fmjxmistivqa@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
-
-On Thu, 7 Oct 2021 18:43:33 +1300, Barry Song <21cnbao@gmail.com> wrote:
-
-> > > Security-wise, KVA respects kernel mapping. So permissions are better
-> > > enforced than pass-through and identity mapping.  
-> >
-> > Is this meaningful? Isn't the entire physical map still in the KVA and
-> > isn't it entirely RW ?  
+On Thu, Oct 07, 2021 at 10:49:20AM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-10-06 08:13:39 [-0700], Paul E. McKenney wrote:
+> > On Thu, Sep 30, 2021 at 12:10:01AM +0200, Frederic Weisbecker wrote:
+> > > PREEMPT_RT has made rcu_core() preemptible, making it unsafe against
+> > > concurrent NOCB (de-)offloading.
+> > > 
+> > > Thomas suggested to drop the local_lock() based solution and simply
+> > > check the offloaded state while context looks safe but that's not
+> > > enough. Here is a bit of rework.
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+> > > 	rcu/rt
+> > > 
+> > > HEAD: aac1c58961446c731f2e989bd822ca1fd2659bad
+> > 
+> > Many of these look quite good, but any chance of getting an official
+> > Tested-by from someone in the -rt community?
 > 
-> Some areas are RX, for example, ARCH64 supports KERNEL_TEXT_RDONLY.
-> But the difference is really minor.
-That brought up a good point if we were to use DMA API to give out KVA as
-dma_addr for trusted devices. We cannot satisfy DMA direction requirements
-since we can't change kernel mapping. It will be similar to DMA direct
-where dir is ignored AFAICT.
+> I looked over the series, bootet the series and run a quick rcutorture
+> and didn't notice anything.
+> 
+> Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Or we are saying if the device is trusted, using pass-through is allowed.
-i.e. physical address.
+Thank you, Sebastian!!!
 
-Thoughts?
-
-Thanks,
-
-Jacob
+							Thanx, Paul
