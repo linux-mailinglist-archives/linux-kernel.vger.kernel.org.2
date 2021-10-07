@@ -2,1533 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1029425E6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203A9425E78
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhJGVLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S233241AbhJGVQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhJGVLO (ORCPT
+        with ESMTP id S231366AbhJGVQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:11:14 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF9CAC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 14:09:19 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v11so1002284pgb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 14:09:19 -0700 (PDT)
+        Thu, 7 Oct 2021 17:16:25 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F037C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 14:14:31 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id z2-20020a254c02000000b005b68ef4fe24so9671072yba.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 14:14:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u52N+cbwVpOFSWnnyvX1A8cHaq7mWivKTauiQLdFM8c=;
-        b=Y2VB88KW5qD32p0pZeuZmPGNy3qab7zhSDvJBVe6dBXWI1I7/h6rHxF8aPps6t+1qd
-         Wz9GfEEWiDqZU/GgnwGd4D9gjfiZ/Q2urcX4F6eELjn3vispPERDjJcRSxb2nOHWqtn9
-         bsIZErFExUmGJ0emFBvq6BkcYcy5b9hltCptg=
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=QYGKxotwOcPsXmj43VBoU9pQOLFuT2uLTis5fRvj88s=;
+        b=fmXA3WlKA9IYiKNbasInmYKjaJDAYFxX9c/RV7umEiDNCkbwCK05JjD5ASiwR6AqR5
+         QJxPX5W1JGFbUmlT2zyWDebPrZrLFbDartfJwvSNbI5wN4+GYcj4hUFQrJ0zKAFdGEl7
+         XVdEUUsNRLetemOWYMObcXhQmSXLyKcGIpyfgkwnRIhcT7cdEF1oGXksXeIuYcAO1fMA
+         EvdvTdJc7eMl3ofHCXdwJUFm+uXt3nwzEXZMgnG3rJU5K7AVd7hOE3DcNbrPWMpgZK7L
+         3z/Vinf+I7MDy7snZc5FdMwXb+ILHgg2fQsxOLa8eNMmZSOMCOaXR13jfERIPF7kw7WH
+         8utw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u52N+cbwVpOFSWnnyvX1A8cHaq7mWivKTauiQLdFM8c=;
-        b=Ty94IRRVuo28/0imU//2rfov7LeKvebzQ8po+5jMZuuwZCLx2oTrBT23id65XHdf27
-         TXqH5rSKWWtjupVgSZoUIlY2anEcPXMUbEHOpDLLug1gk+XVeKh/aDUJusXECrus/2cg
-         yGYE1EZ6w1lvHgEWNIqcIv9/HIQ9UvKcgaevuaC+2OqaCYqNCfn7rR42ZNSMLXQLxJBQ
-         Aay/kfui74NzAIVmj7SgTyLlUXNnLhb1rdv7sgHXLkEuwibYj9KE7E3e3MIgbtvfvg/K
-         awI52YI3JyScFiuhBotOG/sI+8A9i9R5ERaMtY6rhdnFuB1KZX9O/mhbz9WkpFi9LKft
-         LbIw==
-X-Gm-Message-State: AOAM532YHBr/EIoisf37zqjSE5zSe0NhMwbMbxiQM190tEZ5/3Qlm1ZW
-        IS7L1tyyYwY/ucM6WdcveyklHw==
-X-Google-Smtp-Source: ABdhPJzGsBeJ1jVwOM4OvfVUEetnjASMGUeFBRHyaSSsVLCzHuFHkJkQ2CVVs6oSqkkxXTFK+EqZKg==
-X-Received: by 2002:a63:da49:: with SMTP id l9mr1429632pgj.277.1633640958734;
-        Thu, 07 Oct 2021 14:09:18 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:5b2d:31f3:e20a:7f17])
-        by smtp.gmail.com with UTF8SMTPSA id on17sm6688483pjb.47.2021.10.07.14.09.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 14:09:18 -0700 (PDT)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add Herobrine
-Date:   Thu,  7 Oct 2021 14:09:11 -0700
-Message-Id: <20211007140854.1.I70615769f27bbaf7e480419d0f660f802b1fea43@changeid>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=QYGKxotwOcPsXmj43VBoU9pQOLFuT2uLTis5fRvj88s=;
+        b=pGdHTXQqkQjYud6E/zGbHSJxmmUnnEz+UufwUQFEWl77Jav1w/MnK0grxWsqAtER/y
+         KNlJFoymBxaB9enNCP415CGlIhv3PC9fFeOZWd2Rjiv9+SjysV7D9ccQXPMlFHRbCuwg
+         DEuP2L95uVIPwebBeexvd+irSITH55ApNzfqjLdtUwrFOj6UDRKGmpyBEFMLsROvSpEy
+         Nxh6B9YRcvNvT8E+2RkVtZQaCgMmw7ZHuqdAONW6w4ATMMm1xZqp2xdRYcrK5Ex3R4Sl
+         sFVGXvdb5jgsn8CxD9mJYtV1NnaMbUqF6tbL+XuQZgGSZfIIKrqGt00qo96CSV8LBYM3
+         awgw==
+X-Gm-Message-State: AOAM531xFuv+FWqSl0RzgVN0Y8iJez60DC5c292vho44HZSXrCAKDQHP
+        a2gpL6cFm+gDQYo61FSdtNRFjbaU5DABWg==
+X-Google-Smtp-Source: ABdhPJyYeXvyhKMpNjfCqT4Dg6TOKoEu+S1T6ztqUBnX7ipEbVB+fVtb3ck49GfPfZ9ZT9CkbSzIn/+pBjbBSQ==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:e436:7947:9f25:884c])
+ (user=dlatypov job=sendgmr) by 2002:a25:1845:: with SMTP id
+ 66mr7248914yby.396.1633641270158; Thu, 07 Oct 2021 14:14:30 -0700 (PDT)
+Date:   Thu,  7 Oct 2021 14:14:17 -0700
+Message-Id: <20211007211417.728268-1-dlatypov@google.com>
+Mime-Version: 1.0
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2] kunit: tool: print parsed test results fully incrementally
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herobrine is a Chrome OS board/platform based on the QCA SC7280.
-Add a .dtsi for the platform parts and a .dts for the board
-specific bits. Currently the .dtsi has everything except the
-compatible strings, things will likely get shuffled around in the
-future as we learn more about the differences between boards.
+With the parser rework [1] and run_kernel() rework [2], this allows the
+parser to print out test results incrementally.
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Currently, that's held up by the fact that the LineStream eagerly
+pre-fetches the next line when you call pop().
+This blocks parse_test_result() from returning until the line *after*
+the "ok 1 - test name" line is also printed.
+
+One can see this with the following example:
+$ (echo -e 'TAP version 14\n1..3\nok 1 - fake test'; sleep 2; echo -e 'ok 2 - fake test 2'; sleep 3; echo -e 'ok 3 - fake test 3') | ./tools/testing/kunit/kunit.py parse
+
+Before this patch [1]: there's a pause before 'fake test' is printed.
+After this patch: 'fake test' is printed out immediately.
+
+This patch also adds
+* a unit test to verify LineStream's behavior directly
+* a test case to ensure that it's lazily calling the generator
+* an explicit exception for when users go beyond EOF
+
+[1] https://lore.kernel.org/linux-kselftest/20211006170049.106852-1-dlatypov@google.com/
+[2] https://lore.kernel.org/linux-kselftest/20211005011340.2826268-1-dlatypov@google.com/
+
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Reviewed-by: David Gow <davidgow@google.com>
 ---
+v1 -> v2: rebase onto v7 of parser rewrite
+https://lore.kernel.org/all/20211007210324.707912-1-dlatypov@google.com/
+---
+ tools/testing/kunit/kunit_parser.py    | 22 ++++++++++----
+ tools/testing/kunit/kunit_tool_test.py | 42 +++++++++++++++++++++++++-
+ 2 files changed, 57 insertions(+), 7 deletions(-)
 
- arch/arm64/boot/dts/qcom/Makefile             |    1 +
- arch/arm64/boot/dts/qcom/sc7280-herobrine.dts |   14 +
- .../arm64/boot/dts/qcom/sc7280-herobrine.dtsi | 1412 +++++++++++++++++
- 3 files changed, 1427 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sc7280-herobrine.dts
- create mode 100644 arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index f01fd565f978..82900a5f9ad6 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -172,42 +172,51 @@ class TestCounts:
+ class LineStream:
+ 	"""
+ 	A class to represent the lines of kernel output.
+-	Provides a peek()/pop() interface over an iterator of
++	Provides a lazy peek()/pop() interface over an iterator of
+ 	(line#, text).
+ 	"""
+ 	_lines: Iterator[Tuple[int, str]]
+ 	_next: Tuple[int, str]
++	_need_next: bool
+ 	_done: bool
+ 
+ 	def __init__(self, lines: Iterator[Tuple[int, str]]):
+ 		"""Creates a new LineStream that wraps the given iterator."""
+ 		self._lines = lines
+ 		self._done = False
++		self._need_next = True
+ 		self._next = (0, '')
+-		self._get_next()
+ 
+ 	def _get_next(self) -> None:
+-		"""Advances the LineSteam to the next line."""
++		"""Advances the LineSteam to the next line, if necessary."""
++		if not self._need_next:
++			return
+ 		try:
+ 			self._next = next(self._lines)
+ 		except StopIteration:
+ 			self._done = True
++		finally:
++			self._need_next = False
+ 
+ 	def peek(self) -> str:
+ 		"""Returns the current line, without advancing the LineStream.
+ 		"""
++		self._get_next()
+ 		return self._next[1]
+ 
+ 	def pop(self) -> str:
+ 		"""Returns the current line and advances the LineStream to
+ 		the next line.
+ 		"""
+-		n = self._next
+-		self._get_next()
+-		return n[1]
++		s = self.peek()
++		if self._done:
++			raise ValueError(f'LineStream: going past EOF, last line was {s}')
++		self._need_next = True
++		return s
+ 
+ 	def __bool__(self) -> bool:
+ 		"""Returns True if stream has more lines."""
++		self._get_next()
+ 		return not self._done
+ 
+ 	# Only used by kunit_tool_test.py.
+@@ -220,6 +229,7 @@ class LineStream:
+ 
+ 	def line_number(self) -> int:
+ 		"""Returns the line number of the current line."""
++		self._get_next()
+ 		return self._next[0]
+ 
+ # Parsing helper methods:
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 6648de1f9ceb..77e61b0a40e8 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -13,9 +13,10 @@ import tempfile, shutil # Handling test_tmpdir
+ 
+ import itertools
+ import json
++import os
+ import signal
+ import subprocess
+-import os
++from typing import Iterable
+ 
+ import kunit_config
+ import kunit_parser
+@@ -319,6 +320,45 @@ class KUnitParserTest(unittest.TestCase):
+ 				result.status)
+ 			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+ 
++def line_stream_from_strs(strs: Iterable[str]) -> kunit_parser.LineStream:
++	return kunit_parser.LineStream(enumerate(strs, start=1))
++
++class LineStreamTest(unittest.TestCase):
++
++	def test_basic(self):
++		stream = line_stream_from_strs(['hello', 'world'])
++
++		self.assertTrue(stream, msg='Should be more input')
++		self.assertEqual(stream.line_number(), 1)
++		self.assertEqual(stream.peek(), 'hello')
++		self.assertEqual(stream.pop(), 'hello')
++
++		self.assertTrue(stream, msg='Should be more input')
++		self.assertEqual(stream.line_number(), 2)
++		self.assertEqual(stream.peek(), 'world')
++		self.assertEqual(stream.pop(), 'world')
++
++		self.assertFalse(stream, msg='Should be no more input')
++		with self.assertRaisesRegex(ValueError, 'LineStream: going past EOF'):
++			stream.pop()
++
++	def test_is_lazy(self):
++		called_times = 0
++		def generator():
++			nonlocal called_times
++			for i in range(1,5):
++				called_times += 1
++				yield called_times, str(called_times)
++
++		stream = kunit_parser.LineStream(generator())
++		self.assertEqual(called_times, 0)
++
++		self.assertEqual(stream.pop(), '1')
++		self.assertEqual(called_times, 1)
++
++		self.assertEqual(stream.pop(), '2')
++		self.assertEqual(called_times, 2)
++
+ class LinuxSourceTreeTest(unittest.TestCase):
+ 
+ 	def setUp(self):
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 8398c0a2150f..eb1228f646cb 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -74,6 +74,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r3.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-pompom-r3-lte.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-r1.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-trogdor-r1-lte.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sc7280-herobrine.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7280-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sc7280-idp2.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-ganges-kirin.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dts b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dts
-new file mode 100644
-index 000000000000..7a92679a688b
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dts
-@@ -0,0 +1,14 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Herobrine board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+#include "sc7280-herobrine.dtsi"
-+
-+/ {
-+	model = "Google Herobrine";
-+	compatible = "google,herobrine",
-+		     "qcom,sc7280";
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
-new file mode 100644
-index 000000000000..4619fa9fcacd
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine.dtsi
-@@ -0,0 +1,1412 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Google Herobrine board device tree source
-+ *
-+ * Copyright 2021 Google LLC.
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmr735a.h>
-+#include <dt-bindings/input/gpio-keys.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+
-+#include "sc7280.dtsi"
-+
-+/* PMICs depend on spmi_bus label and so must come after SoC */
-+#include "pm7325.dtsi"
-+#include "pm8350c.dtsi"
-+#include "pmk8350.dtsi"
-+
-+/*
-+ * Reserved memory changes
-+ *
-+ * Delete all unused memory nodes and define the peripheral memory regions
-+ * required by the board dts.
-+ *
-+ */
-+
-+/delete-node/ &hyp_mem;
-+/delete-node/ &xbl_mem;
-+/delete-node/ &sec_apps_mem;
-+
-+/* Increase the size from 2MB to 8MB */
-+&rmtfs_mem {
-+	reg = <0x0 0x83600000 0x0 0x800000>;
-+};
-+
-+/ {
-+	reserved-memory {
-+		adsp_mem: memory@86700000 {
-+			reg = <0x0 0x86700000 0x0 0x2800000>;
-+			no-map;
-+		};
-+
-+		camera_mem: memory@8ad00000 {
-+			reg = <0x0 0x8ad00000 0x0 0x500000>;
-+			no-map;
-+		};
-+
-+		venus_mem: memory@8b200000 {
-+			reg = <0x0 0x8b200000 0x0 0x500000>;
-+			no-map;
-+		};
-+
-+		mpss_mem: memory@8b800000 {
-+			reg = <0x0 0x8b800000 0x0 0xf600000>;
-+			no-map;
-+		};
-+
-+		wpss_mem: memory@9ae00000 {
-+			reg = <0x0 0x9ae00000 0x0 0x1900000>;
-+			no-map;
-+		};
-+
-+		mba_mem: memory@9c700000 {
-+			reg = <0x0 0x9c700000 0x0 0x200000>;
-+			no-map;
-+		};
-+	};
-+
-+	aliases {
-+		serial0 = &uart5;
-+		serial1 = &uart7;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	/* FIXED REGULATORS - parents above children */
-+
-+	/* This is the top level supply and variable voltage */
-+	ppvar_sys: ppvar-sys-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "ppvar_sys";
-+		regulator-always-on;
-+		regulator-boot-on;
-+	};
-+
-+	/* This divides ppvar_sys by 2, so voltage is variable */
-+	src_vph_pwr: src-vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "src_vph_pwr";
-+
-+		/* EC turns on with switchcap_on; always on for AP */
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&ppvar_sys>;
-+	};
-+
-+	pp5000_s3: pp5000-s3-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp5000_s3";
-+
-+		/* EC turns on with en_pp5000_s3; always on for AP */
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+
-+		vin-supply = <&ppvar_sys>;
-+	};
-+
-+	pp3300_z1: pp3300-z1-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_z1";
-+
-+		/* EC turns on with en_pp3300_z1; always on for AP */
-+		regulator-always-on;
-+		regulator-boot-on;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		vin-supply = <&ppvar_sys>;
-+	};
-+
-+	pp3300_audio:
-+	pp3300_codec: pp3300-codec-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_codec";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpio = <&tlmm 67 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_pp3300_codec>;
-+
-+		vin-supply = <&pp3300_z1>;
-+	};
-+
-+	pp3300_cam:
-+	pp3300_edp:
-+	pp3300_ts: pp3300-edp-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_edp";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		gpio = <&tlmm 80 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_pp3300_dx_edp>;
-+
-+		vin-supply = <&pp3300_z1>;
-+	};
-+
-+	pp3300_fp:
-+	pp3300_fp_ls:
-+	pp3300_mcu: pp3300-fp-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_fp";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		regulator-boot-on;
-+		regulator-always-on;
-+
-+		/*
-+		 * WARNING: it is intentional that GPIO 42 isn't listed here.
-+		 * The userspace script for updating the fingerprint firmware
-+		 * needs to control the FP regulators during a FW update,
-+		 * hence the signal can't be owned by the kernel regulator.
-+		 */
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_fp_rails>;
-+
-+		vin-supply = <&pp3300_z1>;
-+	};
-+
-+	pp3300_hub: pp3300-hub-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_hub";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		regulator-boot-on;
-+		regulator-always-on;
-+
-+		gpio = <&tlmm 24 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_pp3300_hub>;
-+
-+		vin-supply = <&pp3300_z1>;
-+	};
-+
-+	pp3300_tp: pp3300-tp-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp3300_tp";
-+
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		/* AP turns on with PP1800_L18B_S0; always on for AP */
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&pp3300_z1>;
-+	};
-+
-+	pp2850_uf_cam: pp2850-uf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp2850_uf_cam";
-+
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+
-+		gpio = <&tlmm 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&uf_cam_en>;
-+
-+		vin-supply = <&pp3300_cam>;
-+	};
-+
-+	pp2850_vcm_wf_cam: pp2850-vcm-wf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp2850_vcm_wf_cam";
-+
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+
-+		gpio = <&tlmm 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&wf_cam_en>;
-+
-+		vin-supply = <&pp3300_cam>;
-+	};
-+
-+	pp2850_wf_cam: pp2850-wf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp2850_wf_cam";
-+
-+		regulator-min-microvolt = <2850000>;
-+		regulator-max-microvolt = <2850000>;
-+
-+		gpio = <&tlmm 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		/*
-+		 * The pinconf can only be referenced once so we put it on the
-+		 * first regulator and comment it out here.
-+		 *
-+		 * pinctrl-names = "default";
-+		 * pinctrl-0 = <&wf_cam_en>;
-+		 */
-+
-+		vin-supply = <&pp3300_cam>;
-+	};
-+
-+	pp1800_fp: pp1800-fp-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp1800_fp";
-+
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+
-+		regulator-boot-on;
-+		regulator-always-on;
-+
-+		/*
-+		 * WARNING: it is intentional that GPIO 42 isn't listed here.
-+		 * The userspace script for updating the fingerprint firmware
-+		 * needs to control the FP regulators during a FW update,
-+		 * hence the signal can't be owned by the kernel regulator.
-+		 */
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&en_fp_rails>;
-+
-+		vin-supply = <&pp1800_l18b_s0>;
-+		status = "disabled";
-+	};
-+
-+	pp1800_uf_cam: pp1800-uf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp1800_uf_cam";
-+
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+
-+		gpio = <&tlmm 6 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		/*
-+		 * The pinconf can only be referenced once so we put it on the
-+		 * first regulator and comment it out here.
-+		 *
-+		 * pinctrl-names = "default";
-+		 * pinctrl-0 = <&uf_cam_en>;
-+		 */
-+
-+		vin-supply = <&pp1800_l19b>;
-+	};
-+
-+	pp1800_wf_cam: pp1800-wf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp1800_wf_cam";
-+
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+
-+		gpio = <&tlmm 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		/*
-+		 * The pinconf can only be referenced once so we put it on the
-+		 * first regulator and comment it out here.
-+		 *
-+		 * pinctrl-names = "default";
-+		 * pinctrl-0 = <&wf_cam_en>;
-+		 */
-+
-+		vin-supply = <&pp1800_l19b>;
-+	};
-+
-+	pp1200_wf_cam: pp1200-wf-cam {
-+		compatible = "regulator-fixed";
-+		regulator-name = "pp1200_wf_cam";
-+
-+		regulator-min-microvolt = <1200000>;
-+		regulator-max-microvolt = <1200000>;
-+
-+		gpio = <&tlmm 7 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+		/*
-+		 * The pinconf can only be referenced once so we put it on the
-+		 * first regulator and comment it out here.
-+		 *
-+		 * pinctrl-names = "default";
-+		 * pinctrl-0 = <&wf_cam_en>;
-+		 */
-+
-+		vin-supply = <&pp1200_l6b>;
-+	};
-+
-+	/* BOARD-SPECIFIC TOP LEVEL NODES */
-+
-+	gpio_keys: gpio-keys {
-+		compatible = "gpio-keys";
-+		status = "disabled";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pen_pdct_l>;
-+
-+		pen_insert: pen-insert {
-+			label = "Pen Insert";
-+
-+			/* Insert = low, eject = high */
-+			gpios = <&tlmm 39 GPIO_ACTIVE_LOW>;
-+			linux,code = <SW_PEN_INSERTED>;
-+			linux,input-type = <EV_SW>;
-+			wakeup-event-action = <EV_ACT_DEASSERTED>;
-+			wakeup-source;
-+		};
-+	};
-+
-+	pwmleds {
-+		compatible = "pwm-leds";
-+		status = "disabled";
-+		keyboard_backlight: keyboard-backlight {
-+			status = "disabled";
-+			label = "cros_ec::kbd_backlight";
-+			pwms = <&cros_ec_pwm 0>;
-+			max-brightness = <1023>;
-+		};
-+	};
-+};
-+
-+&apps_rsc {
-+	pm7325-regulators {
-+		compatible = "qcom,pm7325-rpmh-regulators";
-+		qcom,pmic-id = "b";
-+
-+		vdd19_pmu_pcie_i:
-+		vdd19_pmu_rfa_i:
-+		vreg_s1b_wlan:
-+		vreg_s1b: smps1 {
-+			regulator-min-microvolt = <1856000>;
-+			regulator-max-microvolt = <2040000>;
-+		};
-+
-+		vdd_pmu_aon_i:
-+		vreg_s7b_wlan:
-+		vreg_s7b: smps7 {
-+			regulator-min-microvolt = <535000>;
-+			regulator-max-microvolt = <1120000>;
-+		};
-+
-+		vdd13_pmu_pcie_i:
-+		vdd13_pmu_rfa_i:
-+		vreg_s8b_wlan:
-+		vreg_s8b: smps8 {
-+			regulator-min-microvolt = <1256000>;
-+			regulator-max-microvolt = <1500000>;
-+		};
-+
-+		vdda_usb_ss_dp_core:
-+		vreg_l1b: ldo1 {
-+			regulator-min-microvolt = <825000>;
-+			regulator-max-microvolt = <925000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vdda_usb_hs0_3p1:
-+		vreg_l2b: ldo2 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp1200_l6b:
-+		vdd_ufs_1p2:
-+		vdd_vref:
-+		vdda_csi01_1p2:
-+		vdda_csi23_1p2:
-+		vdda_csi4_1p2:
-+		vdda_dsi0_1p2:
-+		vdda_pcie0_1p2:
-+		vdda_pcie1_1p2:
-+		vdda_usb_ss_dp_1p2:
-+		vdda_qlink0_1p2_ck:
-+		vdda_qlink1_1p2_ck:
-+		vreg_l6b_1p2:
-+		vreg_l6b: ldo6 {
-+			regulator-min-microvolt = <1120000>;
-+			regulator-max-microvolt = <1408000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp2950_l7b:
-+		vreg_l7b: ldo7 {
-+			regulator-min-microvolt = <2960000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		codec_vcc:
-+		pp1800_l18b_s0:
-+		pp1800_ts:
-+		vdd1:
-+		vddpx_0:
-+		vddpx_3:
-+		vddpx_7:
-+		vreg_l18b: ldo18 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp1800_l19b:
-+		vddpx_ts:
-+		vddpx_wl4otp:
-+		vreg_l19b: ldo19 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	pm8350c-regulators {
-+		compatible = "qcom,pm8350c-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vreg_s1c: smps1 {
-+			regulator-min-microvolt = <2190000>;
-+			regulator-max-microvolt = <2210000>;
-+		};
-+
-+		vddpx_1:
-+		vreg_s9c: smps9 {
-+			regulator-min-microvolt = <1010000>;
-+			regulator-max-microvolt = <1170000>;
-+		};
-+
-+		pp1800_l1c:
-+		pp1800_pen:
-+		vdd_a_gfx_cs_1p1:
-+		vdd_a_cxo_1p8:
-+		vdd_qfprom:
-+		vdda_apc_cs_1p8:
-+		vdda_qrefs_1p8:
-+		vdda_turing_q6_cs_1p8:
-+		vdda_usb_hs0_1p8:
-+		vreg_l1c: ldo1 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		dmic_vdd:
-+		pp1800_alc5682:
-+		pp1800_l2c:
-+		pp1800_vreg_alc5682:
-+		vreg_l2c: ldo2 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp3300_sar:
-+		pp3300_sensor:
-+		vreg_l3c: ldo3 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3540000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		ppvar_uim1:
-+		vddpx_5:
-+		vreg_l4c: ldo4 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp2950_l5c:
-+		uim_vcc:
-+		vddpx_6:
-+		vreg_l5c: ldo5 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		ppvar_l6c:
-+		vddpx_2:
-+		vreg_l6c: ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2950000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7c: ldo7 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp1800_prox:
-+		pp1800_sar:
-+		vreg_l8c: ldo8 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp2950_l9c:
-+		vreg_l9c: ldo9 {
-+			regulator-min-microvolt = <2960000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vdd_a_gnss_0p9:
-+		vdd_ufs_core:
-+		vdd_usb_hs0_core:
-+		vdd_vref_0p9:
-+		vdda_csi01_0p9:
-+		vdda_csi23_0p9:
-+		vdda_csi4_0p9:
-+		vdda_dsi0_pll_0p9:
-+		vdda_dsi0_0p9:
-+		vdda_pcie0_core:
-+		vdda_pcie1_core:
-+		vdda_qlink0_0p9:
-+		vdda_qlink1_0p9:
-+		vdda_qlink0_0p9_ck:
-+		vdda_qlink1_0p9_ck:
-+		vdda_qrefs_0p875:
-+		vreg_l10c_0p8:
-+		vreg_l10c: ldo10 {
-+			regulator-min-microvolt = <720000>;
-+			regulator-max-microvolt = <1050000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp2800_l11c:
-+		vreg_l11c: ldo11 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp1800_l12c:
-+		vreg_l12c: ldo12 {
-+			regulator-min-microvolt = <1650000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		pp3300_l13c:
-+		vreg_l13c: ldo13 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_bob: bob {
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_AUTO>;
-+		};
-+	};
-+};
-+
-+ap_tp_i2c: &i2c1 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	trackpad: trackpad@15 {
-+		compatible = "elan,ekth3000";
-+		reg = <0x15>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&tp_int_odl>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <102 IRQ_TYPE_EDGE_FALLING>;
-+
-+		vcc-supply = <&pp3300_z1>;
-+
-+		wakeup-source;
-+	};
-+};
-+
-+ap_h1_i2c: &i2c12 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	tpm@50 {
-+		compatible = "google,cr50";
-+		reg = <0x50>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&h1_ap_int_odl>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <54 IRQ_TYPE_EDGE_RISING>;
-+	};
-+};
-+
-+ap_ts_pen: &i2c13 {
-+	status = "okay";
-+	clock-frequency = <400000>;
-+
-+	ap_ts: touchscreen@10 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x10>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ts_int_l>, <&ts_reset_l>;
-+
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <81 IRQ_TYPE_LEVEL_LOW>;
-+
-+		post-power-on-delay-ms = <20>;
-+		hid-descr-addr = <0x0001>;
-+
-+		vdd-supply = <&pp3300_ts>;
-+	};
-+};
-+
-+&pm7325_gpios {
-+	status = "disabled"; /* No GPIOs are connected */
-+};
-+
-+&pmk8350_gpios {
-+	status = "disabled"; /* No GPIOs are connected */
-+};
-+
-+&pmk8350_pon {
-+	status = "disabled";
-+};
-+
-+&pmk8350_rtc {
-+	status = "disabled";
-+};
-+
-+&pmk8350_vadc {
-+	pmk8350_die_temp {
-+		reg = <PMK8350_ADC7_DIE_TEMP>;
-+		label = "pmk8350_die_temp";
-+		qcom,pre-scaling = <1 1>;
-+	};
-+
-+	pmr735a_die_temp {
-+		reg = <PMR735A_ADC7_DIE_TEMP>;
-+		label = "pmr735a_die_temp";
-+		qcom,pre-scaling = <1 1>;
-+	};
-+};
-+
-+&qfprom {
-+	vcc-supply = <&vdd_qfprom>;
-+};
-+
-+&qspi {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&qspi_clk>, <&qspi_cs0>, <&qspi_data01>;
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+
-+		spi-max-frequency = <37500000>;
-+		spi-tx-bus-width = <2>;
-+		spi-rx-bus-width = <2>;
-+	};
-+};
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	status = "okay";
-+
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&sdc1_on>;
-+	pinctrl-1 = <&sdc1_off>;
-+	vmmc-supply = <&pp2950_l7b>;
-+	vqmmc-supply = <&pp1800_l19b>;
-+};
-+
-+&sdhc_2 {
-+	status = "okay";
-+
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&sdc2_on>;
-+	pinctrl-1 = <&sdc2_off>;
-+	vmmc-supply = <&pp2950_l9c>;
-+	vqmmc-supply = <&ppvar_l6c>;
-+
-+	cd-gpios = <&tlmm 91 GPIO_ACTIVE_LOW>;
-+};
-+
-+ap_ec_spi: &spi8 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&qup_spi8_data_clk>, <&qup_spi8_cs_gpio_init_high>, <&qup_spi8_cs_gpio>;
-+	cs-gpios = <&tlmm 35 GPIO_ACTIVE_LOW>;
-+
-+	cros_ec: ec@0 {
-+		compatible = "google,cros-ec-spi";
-+		reg = <0>;
-+		interrupt-parent = <&tlmm>;
-+		interrupts = <142 IRQ_TYPE_LEVEL_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&ap_ec_int_l>;
-+		spi-max-frequency = <3000000>;
-+
-+		cros_ec_pwm: ec-pwm {
-+			compatible = "google,cros-ec-pwm";
-+			#pwm-cells = <1>;
-+		};
-+
-+		i2c_tunnel: i2c-tunnel {
-+			compatible = "google,cros-ec-i2c-tunnel";
-+			google,remote-bus = <0>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+		};
-+
-+		typec {
-+			compatible = "google,cros-ec-typec";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			usb_c0: connector@0 {
-+				compatible = "usb-c-connector";
-+				reg = <0>;
-+				label = "left";
-+				power-role = "dual";
-+				data-role = "host";
-+				try-power-role = "source";
-+			};
-+
-+			usb_c1: connector@1 {
-+				compatible = "usb-c-connector";
-+				reg = <1>;
-+				label = "right";
-+				power-role = "dual";
-+				data-role = "host";
-+				try-power-role = "source";
-+			};
-+		};
-+	};
-+};
-+
-+#include <arm/cros-ec-keyboard.dtsi>
-+#include <arm/cros-ec-sbs.dtsi>
-+
-+&keyboard_controller {
-+	function-row-physmap = <
-+		MATRIX_KEY(0x00, 0x02, 0)	/* T1 */
-+		MATRIX_KEY(0x03, 0x02, 0)	/* T2 */
-+		MATRIX_KEY(0x02, 0x02, 0)	/* T3 */
-+		MATRIX_KEY(0x01, 0x02, 0)	/* T4 */
-+		MATRIX_KEY(0x03, 0x04, 0)	/* T5 */
-+		MATRIX_KEY(0x02, 0x04, 0)	/* T6 */
-+		MATRIX_KEY(0x01, 0x04, 0)	/* T7 */
-+		MATRIX_KEY(0x02, 0x09, 0)	/* T8 */
-+		MATRIX_KEY(0x01, 0x09, 0)	/* T9 */
-+		MATRIX_KEY(0x00, 0x04, 0)	/* T10 */
-+	>;
-+	linux,keymap = <
-+		MATRIX_KEY(0x00, 0x02, KEY_BACK)
-+		MATRIX_KEY(0x03, 0x02, KEY_REFRESH)
-+		MATRIX_KEY(0x02, 0x02, KEY_ZOOM)
-+		MATRIX_KEY(0x01, 0x02, KEY_SCALE)
-+		MATRIX_KEY(0x03, 0x04, KEY_SYSRQ)
-+		MATRIX_KEY(0x02, 0x04, KEY_BRIGHTNESSDOWN)
-+		MATRIX_KEY(0x01, 0x04, KEY_BRIGHTNESSUP)
-+		MATRIX_KEY(0x02, 0x09, KEY_MUTE)
-+		MATRIX_KEY(0x01, 0x09, KEY_VOLUMEDOWN)
-+		MATRIX_KEY(0x00, 0x04, KEY_VOLUMEUP)
-+
-+		CROS_STD_MAIN_KEYMAP
-+	>;
-+};
-+
-+&uart5 {
-+	compatible = "qcom,geni-debug-uart";
-+	status = "okay";
-+};
-+
-+&uart7 {
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "host";
-+};
-+
-+&usb_1_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vdd_usb_hs0_core>;
-+	vdda33-supply = <&vdda_usb_hs0_3p1>;
-+	vdda18-supply = <&vdda_usb_hs0_1p8>;
-+};
-+
-+&usb_1_qmpphy {
-+	status = "okay";
-+
-+	vdda-phy-supply = <&vdda_usb_ss_dp_1p2>;
-+	vdda-pll-supply = <&vdda_usb_ss_dp_core>;
-+};
-+
-+&usb_2 {
-+	status = "okay";
-+};
-+
-+&usb_2_dwc3 {
-+	dr_mode = "host";
-+};
-+
-+&usb_2_hsphy {
-+	status = "okay";
-+
-+	vdda-pll-supply = <&vdd_usb_hs0_core>;
-+	vdda33-supply = <&vdda_usb_hs0_3p1>;
-+	vdda18-supply = <&vdda_usb_hs0_1p8>;
-+};
-+
-+/* PINCTRL - additions to nodes defined in sc7280.dtsi */
-+
-+&qspi_cs0 {
-+	bias-disable;
-+};
-+
-+&qspi_clk {
-+	bias-disable;
-+};
-+
-+&qspi_data01 {
-+	/* High-Z when no transfers; nice to park the lines */
-+	bias-pull-up;
-+};
-+
-+&qup_uart5_rx {
-+	drive-strength = <2>;
-+	bias-pull-up;
-+};
-+
-+&qup_uart5_tx {
-+	drive-strength = <2>;
-+	bias-disable;
-+};
-+
-+&qup_uart7_cts {
-+	/*
-+	 * Configure a pull-down on CTS to match the pull of
-+	 * the Bluetooth module.
-+	 */
-+	bias-pull-down;
-+};
-+
-+&qup_uart7_rts {
-+	/* We'll drive RTS, so no pull */
-+	drive-strength = <2>;
-+	bias-disable;
-+};
-+
-+&qup_uart7_tx {
-+	/* We'll drive TX, so no pull */
-+	drive-strength = <2>;
-+	bias-disable;
-+};
-+
-+&qup_uart7_rx {
-+	/*
-+	 * Configure a pull-up on RX. This is needed to avoid
-+	 * garbage data when the TX pin of the Bluetooth module is
-+	 * in tri-state (module powered off or not driving the
-+	 * signal yet).
-+	 */
-+	bias-pull-up;
-+};
-+
-+&sdc1_on {
-+	clk {
-+		bias-disable;
-+		drive-strength = <16>;
-+	};
-+
-+	cmd {
-+		bias-pull-up;
-+		drive-strength = <10>;
-+	};
-+
-+	data {
-+		bias-pull-up;
-+		drive-strength = <10>;
-+	};
-+
-+	rclk {
-+		bias-pull-down;
-+	};
-+};
-+
-+&sdc2_on {
-+	clk {
-+		bias-disable;
-+		drive-strength = <16>;
-+	};
-+
-+	cmd {
-+		bias-pull-up;
-+		drive-strength = <10>;
-+	};
-+
-+	data {
-+		bias-pull-up;
-+		drive-strength = <10>;
-+	};
-+
-+	sd-cd {
-+		pins = "gpio91";
-+		bias-pull-up;
-+	};
-+};
-+
-+/* PINCTRL - board-specific pinctrl */
-+
-+&pm8350c_gpios {
-+	gpio-line-names = "AP_SUSPEND",
-+			  "",
-+			  "",
-+			  "AP_BL_EN",
-+			  "",
-+			  "SD_CD_ODL",
-+			  "",
-+			  "",
-+			  "AP_BL_PWM";
-+
-+	ap_bl_en: ap-bl-en {
-+		pins = "gpio4";
-+		function = "normal";
-+		qcom,drive-strength = <PMIC_GPIO_STRENGTH_LOW>;
-+		bias-disable;
-+
-+		/* Force backlight to be disabled to match state at boot. */
-+		output-low;
-+	};
-+};
-+
-+&tlmm {
-+	gpio-line-names = "HP_I2C_SDA",			/* 0 */
-+			  "HP_I2C_SCL",
-+			  "SSD_RST_L",
-+			  "PE_WAKE_ODL",
-+			  "AP_TP_I2C_SDA",
-+			  "AP_TP_I2C_SCL",
-+			  "UF_CAM_EN",
-+			  "WF_CAM_EN",
-+			  "AP_SAR_SENSOR_SDA",
-+			  "AP_SAR_SENSOR_SCL",
-+
-+			  "",				/* 10 */
-+			  "",
-+			  "AP_SPI_MOSI",
-+			  "AP_SPI_MISO",
-+			  "AP_SPI_CLK",
-+			  "AP_SPI_CS0_L",
-+			  "",
-+			  "",
-+			  "EDP_HPD",
-+			  "",
-+
-+			  "UF_CAM_RST_L",		/* 20 */
-+			  "WF_CAM_RST_L",
-+			  "UART_AP_TX_DBG_RX",
-+			  "UART_DBG_TX_AP_RX",
-+			  "EN_PP3300_HUB",
-+			  "",
-+			  "HOST2WLAN_SOL",
-+			  "WLAN2HOST_SOL",
-+			  "BT_UART_CTS",
-+			  "BT_UART_RTS",
-+
-+			  "BT_UART_TXD",		/* 30 */
-+			  "BT_UART_RXD",
-+			  "AP_EC_SPI_MISO",
-+			  "AP_EC_SPI_MOSI",
-+			  "AP_EC_SPI_CLK",
-+			  "AP_EC_SPI_CS_L",
-+			  "",
-+			  "",
-+			  "",
-+			  "PEN_PDCT_L",
-+
-+			  "IO_BRD_ID0",			/* 40 */
-+			  "IO_BRD_ID1",
-+			  "EN_FP_RAILS",
-+			  "PEN_IRQ_L",
-+			  "AP_SPI_FP_MISO",
-+			  "AP_SPI_FP_MOSI",
-+			  "AP_SPI_FP_CLK",
-+			  "AP_SPI_FP_CS_L",
-+			  "AP_H1_SPI_MISO",
-+			  "AP_H1_SPI_MOSI",
-+
-+			  "AP_H1_SPI_CLK",		/* 50 */
-+			  "AP_H1_SPI_CS_L",
-+			  "AP_TS_PEN_I2C_SDA",
-+			  "AP_TS_PEN_I2C_SCL",
-+			  "H1_AP_INT_ODL",
-+			  "",
-+			  "LCM_RST_1V8_L",
-+			  "AMP_EN",
-+			  "",
-+			  "DP_HOT_PLUG_DET",
-+
-+			  "HUB_RST_L",			/* 60 */
-+			  "FP_TO_AP_IRQ_L",
-+			  "",
-+			  "",
-+			  "UF_CAM_MCLK",
-+			  "WF_CAM_MCLK",
-+			  "IO_BRD_ID2",
-+			  "EN_PP3300_CODEC",
-+			  "EC_IN_RW_ODL",
-+			  "UF_CAM_SDA",
-+
-+			  "UF_CAM_SCL",			/* 70 */
-+			  "WF_CAM_SDA",
-+			  "WF_CAM_SCL",
-+			  "AP_BRD_ID0",
-+			  "AP_BRD_ID1",
-+			  "AP_BRD_ID2",
-+			  "",
-+			  "FPMCU_BOOT0",
-+			  "FP_RST_L",
-+			  "PE_CLKREQ_ODL",
-+
-+			  "EN_EDP_PP3300",		/* 80 */
-+			  "TS_INT_L",
-+			  "FORCE_USB_BOOT",
-+			  "WCD_RST_L",
-+			  "WLAN_EN",
-+			  "BT_EN",
-+			  "WLAN_SW_CTRL",
-+			  "PCIE0_RESET_L",
-+			  "PCIE0_CLK_REQ_L",
-+			  "PCIE0_WAKE_L",
-+
-+			  "AS_EN",			/* 90 */
-+			  "SD_CD_ODL",
-+			  "",
-+			  /*
-+			   * AP_FLASH_WP_L is crossystem ABI. Schematics
-+			   * call it BIOS_FLASH_WP_L.
-+			   */
-+			  "AP_FLASH_WP_L",
-+			  "BT_WLAN_SB_CLK",
-+			  "BT_WLAN_SB_DATA",
-+			  "HP_MCLK",
-+			  "HP_BCLK",
-+			  "HP_DOUT",
-+			  "HP_DIN",
-+
-+			  "HP_LRCLK",			/* 100 */
-+			  "HP_IRQ",
-+			  "TP_INT_ODL",
-+			  "",
-+			  "IO_SKU_ID2",
-+			  "TS_RESET_L",
-+			  "AMP_BCLK",
-+			  "AMP_DIN",
-+			  "AMP_LRCLK",
-+			  "UIM2_DATA",
-+
-+			  "UIM2_CLK",			/* 110 */
-+			  "UIM2_RST",
-+			  "UIM2_PRESENT",
-+			  "UIM1_DATA",
-+			  "UIM1_CLK",
-+			  "UIM1_RST",
-+			  "",
-+			  "RFFE0_CLK",
-+			  "RFFE0_DATA/BOOT_CONFIG_0",
-+			  "RFFE1_CLK",
-+
-+			  "RFFE1_DATA/BOOT_CONFIG_1",	/* 120 */
-+			  "RFFE2_CLK",
-+			  "RFFE2_DATA/BOOT_CONFIG_2",
-+			  "RFFE3_CLK",
-+			  "RFFE3_DATA/BOOT_CONFIG_3",
-+			  "RFFE4_CLK",
-+			  "RFFE4_DATA",
-+			  "WCI2_LTE_COEX_RXD",
-+			  "WCI2_LTE_COEX_TXD",
-+			  "IO_SKU_ID0",
-+
-+			  "IO_SKU_ID1",			/* 130 */
-+			  "",
-+			  "",
-+			  "QLINK0_REQ",
-+			  "QLINK0_EN",
-+			  "QLINK0_WMSS_RESET_L",
-+			  "QLINK1_REQ",
-+			  "QLINK1_EN",
-+			  "QLINK1_WMSS_RESET_L",
-+			  "FORCED_USB_BOOT_POL",
-+
-+			  "",				/* 140 */
-+			  "P_SENSOR_INT_L",
-+			  "AP_EC_INT_L",
-+			  "",
-+			  "WCD_SWR_TX_CLK",
-+			  "WCD_SWR_TX_DATA_0",
-+			  "WCD_SWR_TX_DATA_1",
-+			  "WCD_SWR_RX_CLK",
-+			  "WCD_SWR_RX_DATA_0",
-+			  "WCD_SWR_RX_DATA_1",
-+
-+			  "",				/* 150 */
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "WCD_SWR_TX_DATA_2",
-+			  "",
-+
-+			  "",				/* 160 */
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+			  "",
-+
-+			  "",				/* 170 */
-+			  "SENS_UART_TXD",
-+			  "SENS_UART_RXD",
-+			  "",
-+			  "",
-+			  "";
-+
-+	/*
-+	 * pinctrl settings for pins that have no real owners.
-+	 */
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&bios_flash_wp_l>;
-+
-+	amp_en: amp-en {
-+		pins = "gpio57";
-+		function = "gpio";
-+		bias-pull-down;
-+	};
-+
-+	ap_ec_int_l: ap-ec-int-l {
-+		pins = "gpio142";
-+		input-enable;
-+		bias-pull-up;
-+	};
-+
-+	bios_flash_wp_l: bios-flash-wp-l {
-+		pins = "gpio93";
-+		function = "gpio";
-+		input-enable;
-+		bias-disable;
-+	};
-+
-+	bt_en: bt-en {
-+		pins = "gpio85";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		output-low;
-+		bias-pull-down;
-+	};
-+
-+	en_fp_rails: en-fp-rails {
-+		pins = "gpio42";
-+		drive-strength = <2>;
-+		output-high;
-+		bias-disable;
-+	};
-+
-+	en_pp3300_codec: en-pp3300-codec {
-+		pins = "gpio67";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	en_pp3300_dx_edp: en-pp3300-dx-edp {
-+		pins = "gpio80";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		/* Has external pulldown */
-+		bias-disable;
-+	};
-+
-+	en_pp3300_hub: en-pp3300-hub {
-+		pins = "gpio24";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		/* Has external pulldown */
-+		bias-disable;
-+	};
-+
-+	fp_to_ap_irq_l: fp-to-ap-irq-l {
-+		pins = "gpio61";
-+		function = "gpio";
-+		input-enable;
-+		/* Has external pullup */
-+		bias-disable;
-+	};
-+
-+	h1_ap_int_odl: h1-ap-int-odl {
-+		pins = "gpio54";
-+		function = "gpio";
-+		input-enable;
-+		bias-pull-up;
-+	};
-+
-+	hp_irq: hp-irq {
-+		pins = "gpio101";
-+		function = "gpio";
-+		bias-pull-up;
-+	};
-+
-+	p_sensor_int_l: p-sensor-int-l {
-+		pins = "gpio141";
-+		function = "gpio";
-+		input-enable;
-+		bias-pull-up;
-+	};
-+
-+	pen_irq_l: pen-irq-l {
-+		pins = "gpio43";
-+		function = "gpio";
-+		/* Has external pullup */
-+		bias-disable;
-+	};
-+
-+	pen_pdct_l: pen-pdct-l {
-+		pins = "gpio39";
-+		function = "gpio";
-+		/* Has external pullup */
-+		bias-disable;
-+	};
-+
-+	qup_spi8_cs_gpio_init_high: qup-spi8-cs-gpio-init-high {
-+		pins = "gpio35";
-+		output-high;
-+	};
-+
-+	qup_spi11_cs_gpio_init_high: qup-spi11-cs-gpio-init-high {
-+		pins = "gpio47";
-+		output-high;
-+	};
-+
-+	qup_spi12_cs_gpio_init_high: qup-spi12-cs-gpio-init-high {
-+		pins = "gpio51";
-+		output-high;
-+	};
-+
-+	qup_uart7_sleep_cts: qup-uart7-sleep-cts {
-+		pins = "gpio28";
-+		function = "gpio";
-+		/*
-+		 * Configure a pull-down on CTS to match the pull of
-+		 * the Bluetooth module.
-+		 */
-+		bias-pull-down;
-+	};
-+
-+	qup_uart7_sleep_rts: qup-uart7-sleep-rts {
-+		pins = "gpio29";
-+		function = "gpio";
-+		/*
-+		 * Configure pull-down on RTS. As RTS is active low
-+		 * signal, pull it low to indicate the BT SoC that it
-+		 * can wakeup the system anytime from suspend state by
-+		 * pulling RX low (by sending wakeup bytes).
-+		 */
-+		bias-pull-down;
-+	};
-+
-+	qup_uart7_sleep_rx: qup-uart7-sleep-rx {
-+		pins = "gpio31";
-+		function = "gpio";
-+		/*
-+		 * Configure a pull-up on RX. This is needed to avoid
-+		 * garbage data when the TX pin of the Bluetooth module
-+		 * is floating which may cause spurious wakeups.
-+		 */
-+		bias-pull-up;
-+	};
-+
-+	qup_uart7_sleep_tx: qup-uart7-sleep-tx {
-+		pins = "gpio30";
-+		function = "gpio";
-+		/*
-+		 * Configure pull-up on TX when it isn't actively driven
-+		 * to prevent BT SoC from receiving garbage during sleep.
-+		 */
-+		bias-pull-up;
-+	};
-+
-+	tp_int_odl: tp-int-odl {
-+		pins = "gpio102";
-+		function = "gpio";
-+		/* Has external pullup */
-+		bias-disable;
-+	};
-+
-+	ts_int_l: ts-int-l {
-+		pins = "gpio81";
-+		function = "gpio";
-+		/* Has external pullup */
-+		bias-pull-up;
-+	};
-+
-+	ts_reset_l: ts-reset-l {
-+		pins = "gpio105";
-+		function = "gpio";
-+		/* Has external pullup */
-+		bias-disable;
-+		drive-strength = <2>;
-+	};
-+
-+	uf_cam_en: uf-cam-en {
-+		pins = "gpio6";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		/* Has external pulldown */
-+		bias-disable;
-+	};
-+
-+	wf_cam_en: wf-cam-en {
-+		pins = "gpio7";
-+		function = "gpio";
-+		drive-strength = <2>;
-+		/* Has external pulldown */
-+		bias-disable;
-+	};
-+};
+base-commit: e3c6457b588d83b7ecd40eb4bd6d95007020fbe4
 -- 
 2.33.0.882.g93a45727a2-goog
 
