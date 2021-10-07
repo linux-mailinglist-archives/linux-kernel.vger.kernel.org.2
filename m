@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E158142511B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411BA42511C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:34:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240882AbhJGKew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:34:52 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:35651 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240726AbhJGKet (ORCPT
+        id S240899AbhJGKfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:35:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240726AbhJGKfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:34:49 -0400
-Received: by mail-wr1-f45.google.com with SMTP id v25so17530521wra.2;
-        Thu, 07 Oct 2021 03:32:55 -0700 (PDT)
+        Thu, 7 Oct 2021 06:35:48 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860C0C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 03:33:54 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id t8so17699340wri.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 03:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2vkP/kA6kiLr73Y55x//tja21zt1DDkWWiAuXv2My8U=;
+        b=H6Mx+RR/XjdDCZFWBjJSy7pIhrg983S1bSBY9GzwGNdMG+1hCmeseyLnGOR9pLYVsH
+         gm3q3K8kCb9ysSn125/iCTVavamaOTC6rl/sWpw3t3Szn/RcVZgHuLcpU46HR/yecEDJ
+         JNLcc2tnbN8Hpxag20iMIsPRUuN+PUAzSjIWaRlLBaICambTaIlkEJP2EMrRs7gVvTdC
+         biDtG6ZPbAp2jbYEncbnpnM5Yvt1qOu+a6kT6TKPnIGbdfYgX9BM69apLSpCmSDtC9IZ
+         6P3nM/ckQZJr13ml/Mj75czvFihAyz5uPlU9/9ZyB+lx5HK3hPRZEjwdln78QgOm2OY4
+         79vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=7Xmki6fF5vViToxMGr5FsbK+wRiXFgs+grhsOFW8tw8=;
-        b=a28XSEkKiz4p86tIVi7YKyczw/bYhQiaegN3iF/G3lG9K6RsEMxSl4i6sSqdJXwACA
-         SqJrRt23Mx/T838GyTAVcaSpViUWCxxPp87KUVVOXnRmQW1Qgxx0Jn8NUhc4I+flAm5u
-         xlJXuYjxU5uA/xjMCGAGleIkCKmHF7lAQduxUqUob8nPLKMc3t0/9iuhEclMQzgytHBG
-         IrbT1r3xCUa7/ZEKYhWnQ6VoPRXiCXmUC+ru7A7gwMuAlI6KDtykIrt7TsexrtezT1iH
-         Sc5BvjvcqSO7xKPn1Z2u8lFgVccvfqrr3D8dBZeKnzJv9MEfHZHS011Hkju2u6vGizAw
-         Dr9w==
-X-Gm-Message-State: AOAM531DSIXW8QsmCN7c8ZZEOaG9xhB+fP53wcWrIkdFGG10/JbUthw7
-        nEmmKnUpxJlel+OKnSo09onRrJpSmHY=
-X-Google-Smtp-Source: ABdhPJwLMoMHFNctErtMFmGemYZdEZ8XXA36zgtdDZN5fAfcY7qMGN/l5Vyo5LLTXaQCpJe5+VwrIw==
-X-Received: by 2002:a5d:64e9:: with SMTP id g9mr4364354wri.99.1633602774988;
-        Thu, 07 Oct 2021 03:32:54 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id d7sm24080006wrh.13.2021.10.07.03.32.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 03:32:54 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 10:32:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, decui@microsoft.com, sthemmin@microsoft.com
-Subject: [GIT PULL] Hyper-V fixes for 5.15-rc8
-Message-ID: <20211007103253.t5w5pgpmzvkffvwp@liuwe-devbox-debian-v2>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2vkP/kA6kiLr73Y55x//tja21zt1DDkWWiAuXv2My8U=;
+        b=xqQJd5ZByviQTYm3/OIVNVfMMtPGpUGL2b4RFc09x6SkO7aHMrmFlGVJKONI64Txxs
+         9iT7qsH1eSLHYJiiMvhCgsxLzWjl7Cc3WD4ru1q+0HlS/hthjxVVq0rSDebONQfFJJe8
+         oWZpKWSOkwWYh43szmXXkY42p6rh7HsUeputtUm7fPzFa4KX0sW1TeN1FoAvF+TBVvi5
+         +vbVwwYp7QyCBXnc0mCDcUjOr4MwTwzezV9d6wGLwwCLXnv2qiCNNqSp2MtvvZWWVvvc
+         xVNb4XCqLDm6ZvRwCmv1MKxlLVwmgZSgt+CDmjii4iOWoRfFNH2ZDEDm+f3cYFIV+BbH
+         iWQQ==
+X-Gm-Message-State: AOAM533O/Y7ZOjtNrFAvQyjr8ixbwPudbNwnaVhYokaNvo83kHHYEVoi
+        05ljeqIqjCi2Mb7kwxumXVGj14EepsucpWNnCplZaOlpiakQ
+X-Google-Smtp-Source: ABdhPJxThgQti3zjoaVSlTZyezNipDaGjOsd988iEKS7nIfgFPLIZdQxx142UYGnOXrIww/j95Y8EdkOYfEg/audeVU=
+X-Received: by 2002:a05:600c:201:: with SMTP id 1mr14043538wmi.61.1633602822495;
+ Thu, 07 Oct 2021 03:33:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a5d:61cd:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 03:33:42 -0700 (PDT)
+Reply-To: mrsaishagaddafi3@gmail.com
+From:   Mrs Aisha Gaddafi <wendykhilpaya@gmail.com>
+Date:   Thu, 7 Oct 2021 03:33:42 -0700
+Message-ID: <CAK1Zteq=KYsD_K3bu+Kz6zu6eyvJPTA8TZV51ZBTMJSMfz5XsA@mail.gmail.com>
+Subject: Greetings from Aisha Gaddafi,dear friend i need your urgent help
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+I am sending my greetings to you from the Sultanate of Oman,
+In the capital city of Muscat.
 
-The following changes since commit dfb5c1e12c28e35e4d4e5bc8022b0e9d585b89a7:
+May i  use this medium to open a mutual communication with you, and
+seeking your acceptance towards investing in your country under your
+management as my partner, My name is Aisha Gaddafi and presently
+living in Oman, i am a Widow and single Mother with three Children,
+the only biological Daughter of late Libyan President (Late Colonel
+Muammar Gaddafi) and presently i am under political asylum protection
+by the Omani Government.
 
-  x86/hyperv: remove on-stack cpumask from hv_send_ipi_mask_allbutself (2021-09-11 15:41:00 +0000)
+I have funds worth "Twenty Seven Million Five Hundred Thousand United
+State Dollars" -$27.500.000.00 US Dollars which i want to entrust on
+you for investment project in your country.If you are willing to
+handle this project on my behalf, kindly reply urgent to enable me
+provide you more details to start the transfer process.
 
-are available in the Git repository at:
+I shall appreciate your urgent response.
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20211007
-
-for you to fetch changes up to f5c20e4a5f18677e22d8dd2846066251b006a62d:
-
-  x86/hyperv: Avoid erroneously sending IPI to 'self' (2021-10-06 15:56:45 +0000)
-
-----------------------------------------------------------------
-hyperv-fixes for 5.15
-  - Replace uuid.h with types.h in a header (Andy Shevchenko)
-  - Avoid sleeping in atomic context in PCI driver (Long Li)
-  - Avoid sending IPI to self when it shouldn't (Vitaly Kuznetsov)
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      hyper-v: Replace uuid.h with types.h
-
-Long Li (1):
-      PCI: hv: Fix sleep while in non-sleep context when removing child devices from the bus
-
-Vitaly Kuznetsov (1):
-      x86/hyperv: Avoid erroneously sending IPI to 'self'
-
- arch/x86/hyperv/hv_apic.c           | 20 +++++++++++++++-----
- drivers/pci/controller/pci-hyperv.c | 13 ++++++++++---
- include/uapi/linux/hyperv.h         |  2 +-
- 3 files changed, 26 insertions(+), 9 deletions(-)
+Thanks
+Yours Truly Aisha
