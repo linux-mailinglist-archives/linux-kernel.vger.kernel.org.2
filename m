@@ -2,101 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA649424D57
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34532424D5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240203AbhJGGjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:39:09 -0400
-Received: from sonic317-22.consmr.mail.gq1.yahoo.com ([98.137.66.148]:37002
-        "EHLO sonic317-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230491AbhJGGjH (ORCPT
+        id S240178AbhJGGmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232680AbhJGGmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:39:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1633588632; bh=lSPFEV4jButoTElTw5/K8Lz6m5y9sdQDE0xu+Hd4ZCE=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=eqRCPu9UsCXvr/h44H70ZAywcgenDodPNCy46wFsGaosBO39OyXHiD/7W7rpsqyasJAWUO3Saq9EUuXQ0Ns2j3FFX14vsE11CdNNAW6aHa0vwQQv7DZHzHlM+oK2N1mcnYmrCz38U6G3OcbbUHHAUgolBcJotq0CfBKZpwHSIKcpOEm4K+uPfdI2xXiRwqFLm8xE3TE/CFFba0hHZaMWln3+do5DbpZjaKNCPHSkr3BhcDU6Cu2+48NvmVlOkIjXeHPoOKdbRil9piDMpHALLo/DhmTdeapeGbg72dRNnbk+vTim5pLTk17eaFLFThhhnturAQeFLxscRz7ea/sDkg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633588632; bh=X9b5tbG0XK0qKfb8I7T1xiU+zpLFi9FEtJGotYy17NM=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=s3eSZqeeQVURyTiRHTSCxNSV4uS3bu0V6P4C6l1Cp7RCTSrPso4sYO7z4K2/1Dcb6xLHYmUJF1PZTAPbLR6FehM1yTXriCTnmZqwci69nsLEATXiRUSR1dpUvzP1g2TLquuW6iBjDNq3xuNr//v+JhsW567BLXelNi5QCPxDpG77SE5nd4g1blOqtw/D2H/Zp5hBPxyczUttcsBhp8hbxT1LnaPWooIMwUwEcePBLlItfps89+0FSE2SGowHHnq9Xaje4M+fmliKNLUKAsX/woTabg0wSvxldtToY3oH59jWMJAWNu75MbQXJ+w5IODOeEze+wmBsBn3rMRvUIbYyQ==
-X-YMail-OSG: X3Z6AKwVM1kHEaBDKjVnfyogvy2ujoQSWmwy1zvVQ92VWhAxZtGZmPwVGcVg0bf
- GBufUnRrH_yJ7j9ffSzZHJlRfR_q0ThvCOghYhf.CoBqStQwLdAmL79zoBwFHLyGVf4e2VDzufw8
- Zv_mXT6RXGj_baSztJD9d2ikL3ONJz4GxlKvWPewWkCyzogqUgijzXmKS.VusOgt5LyzwnWeJMBi
- g8MQShGJVSDB8TuD6FwslynHSM7vALRYOk2Oez4KDa7GZkpr9RU_lPosJUDbvXR7W3CCHXOqcuae
- epFcfYDD0Y4R0MB71daFbASRCWBabC3qGq5F.FXG2oNFfiZEhMtC.H1Xl.Mauxt52A.Hu1t.SqB_
- i50Pbh3F_sUcTj406yGH4tAStHIF97hp0buFo1Vwhu.sbR7tCP0mWyBncEvoW7V6ne5hY2nrionm
- qZrZHWiSQ3nR_73qj2HQso05aODvBTMyIEz8ELKUwb9lUjGQQT6TIh5_REIyx45PyKmH_wITFXlr
- il0Fmgj2kgkNr8gdnHHyqf39IwMuqddsSoW6mKMS6WLZLMqjMJnXB07EovKvdwKIfXwWSJHGnPIu
- lwMJJmZGQR.3c9ylteL1Ii5AUWptbKKPNGA_N455wrEi3kmSyK1cl9Qv5GtWisCJ9jd067cLXMoA
- BsquNCzLeLbUUvMzRiKcf8XFX3HLGAYYGh1yUJkUpgX0D7T3QvSbA0ZGpMDU2b6g4zZwX_uIb5Q9
- OY8Jx7FaP0hCMGWC3UQlN3mIR5J8h1bv4hCMK3bWwugXBavKJTwnta2q_NttNnh6hZn3npOF3_gV
- PE0N.lQfko9xLWQCV09To_FU_cRfvliEyW9N6mxDOzqyil.Q3XC8662i1pnNH5rbSZ9Jo8T67Yz6
- FBWgDyjzgyuYee8rOjubkJnJ3kIXiNxBYe8Y6FoCI.VB.ck3Vm6MStxkgdaLYlsDOeuoDzTQEXcz
- i0ux8iNOj_8_59P8gJq0isocY82hGWtcI_i1290.hyowPb_LNPCBPRQfv2LL1QyOt4YkI2qZNolJ
- Cd1u7II_pwdYIMGcaYgdOWysjigy8Nxx3VqjepPLmpOyyxN1vK6S1ZqPNROW8zBQJL6__4nggRrw
- 1tYflm_KVDCFMFZpQfvXgV7q4QD0OKQlOJQSrGHBh92ydXynU.Izjx4cbfN2GIgSjhzdEuif8yaz
- I3HBDRKWsArvooEsM65r6oYr7XBMDVtCN28BqUwBdgi6nMGaQNNzPn56s.Xa_jszfdD4gXYocD25
- RhX0yBCKgn2tj3hvF9NKG8H1DAQwg0yWFKW5r8ZtzalQi_qcJ7oe3sJzwWsWOIjIIM8W9ruRGVl5
- vFkzFobOtQTEf.QkqAhqKZo1svyMTbd2_QHXe7828zvOL89QItOqhkDZb.Wums.bHrChebrP6cmS
- n6bybiwmXrfb1DMiqgmCI2e9EYW_7j_ujlblWY3EWTabnX6OkzmG3aTdc3HVYuTZpVDa_OKvvrhO
- 1TE1c8uVTUmk1CgIz4lJyc3h4_5qG4yByvDMroGo5mWw4Mt5GdotCqTr5kNhQ6ZHhjTP10RG6Xlq
- HqgJP8_xJCe_HzjvtAlwS35K070zAkk35E_BBNvXiKqvLbvP6ygW1_tadHyYxE5ttOsvsuCp0d8d
- evNuEVzpuf2DRC8h3BndjXgIWLZBNYUqxUy2w_2K1Mw32qmmrv5HFVsnnSa7MmE6Uysiqba1uWEW
- dxcrh18xqUfb_sDQd5rZZ3olqj12GqNd31dAiId3YEBN5LZwxwZqx5nWX9buGZ6uk9Y0EtpHw_YX
- rBIxQNF.vB9qm6TRi1ebsKJH5nnB08K3lrng4DD1iheqw5ujn7h93RComTYwkrYCvTkyiPJnKBAf
- s8PajFYh60hUMr27uykg_e.8Mt3BbOyBweKfiIXLgL0R0YVTWYEETfY9yWtPfN5sgb6Le.ApBDMr
- 1RSHbHhKYB_jAHkMwsEqsgZV3rOdbvGk05iTj5Fg0qIFuqLEDM218.oWEQNKOfUCuTUhBNGRahht
- EAZtQpQA9PBxf5YixbwgiYoQvaldj6dDyBFcRUNlEklLrQy_AQgx1qo_53vJp2plSGgHZzssJSFt
- uJEiv9cqZAr0ito8S7R72i3MqCjWEeWNfcpYS.Is5ALuSiewq_Zi8iiXtFI9jfOPIGVh0W6ckWuP
- B_9D9kIH0dxuhq7v3fcPddBK.KWS3FxGdKmzT6QJ15wuVqt7KVSKOOF5v3lpsX4MvdsdPnWJ8FN7
- ypMKJFaBbZdzv0FSOhg1o5y8e5QlPLK5PJQXiPHJdlZguhHIm6S3rZEOcWkbBB4IG1b9WxS.SKNG
- 7U3UmagTJLlwN82RkUCwsQHZHdPf5mmexNN9q6kjieF09E_NPdTzC0ASikA--
-X-Sonic-MF: <alex_y_xu@yahoo.ca>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.gq1.yahoo.com with HTTP; Thu, 7 Oct 2021 06:37:12 +0000
-Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID fd4e705cbc19264f98ad12010b56fdd1;
-          Thu, 07 Oct 2021 06:37:08 +0000 (UTC)
-From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-To:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
-Cc:     ville.syrjala@linux.intel.com, linux-kernel@vger.kernel.org,
-        Simon Ser <contact@emersion.fr>,
-        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
-Subject: [PATCH v3] drm/plane-helper: fix uninitialized variable reference
-Date:   Thu,  7 Oct 2021 02:37:06 -0400
-Message-Id: <20211007063706.305984-1-alex_y_xu@yahoo.ca>
-X-Mailer: git-send-email 2.33.0
+        Thu, 7 Oct 2021 02:42:33 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8C3C061746;
+        Wed,  6 Oct 2021 23:40:40 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c29so4506786pfp.2;
+        Wed, 06 Oct 2021 23:40:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=rchYZ1OmvrTj6Dnb5m6nbANunxf9oFlLci7r8WnLUPs=;
+        b=O+7v3Tfioq20KfK+iM0C+zGiMKkOfAsz+ANPc0m+oNdQQOsOiltCkSWLlWzH3uGSAw
+         6VTdx1hFDFjrc2AKEBhK2aNu1U8F5Dqcef+wgfRGfqO+kA86OnmQL+fAqGMGJ6Cgf794
+         2apr60YhCU8TtaK892mqvAlkPPf54ZQLDkmeB/kp2lU/AGyPMwXSv66laka4M0tQoLZ4
+         uV/ieHXAPFvzBTrBe4C8m4y5/UgTdzQcY9gQ9TvpJpzfeg1V4AEjYblTstjiYX2+8QFR
+         DtVpbsVrNOPBb2jH3eXW1FUjU1hFa90FaXO3MyxAAPeEPXv3qHPjpXb+LZe3H1w8lbKO
+         IsmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=rchYZ1OmvrTj6Dnb5m6nbANunxf9oFlLci7r8WnLUPs=;
+        b=eZB0eAnEDRLkxKE2EbWgwNBPhFZm47FbP7QvcPTTkXxntJooigy0rnoIk/QOUosPmN
+         0Sncq0QRLqQlSaFWS+9OHvb8S9gXqIQqjB8d09C9TzYH82XCtbc54g85oKWIUWnr7fS0
+         VH8qPScG1vtLTI9f2vR681dfzyXu2INoOAcenLLbJXdu5bBSXsB40ECsX8UCM6YNTDfJ
+         JLeG6mMrqlOZM+Y2+rkyuIKzaa3C4hKEKD+MUcel1w6hcdm/eaPVM84kiKqoq5LXcqhz
+         lPsX5TsLVSQHc0LzllZGAwpEu6Ck0ACD1+kPFFh80FzmRDi6brE1fO/IVswUlapCYBHA
+         Jqhg==
+X-Gm-Message-State: AOAM533ZhXfdvv+YYsN8OmLpSvMg08Q21XyzzF7a55xNEFTJSzBkq45u
+        HMx7fVEPCte7a3CHATafbMKi+ffFfKjgPr0IRyp7E6CfaKFB+N0=
+X-Google-Smtp-Source: ABdhPJxrWmcU7AzTy6Llp+zmxjXH3KAy/mRdFUScx+jA5RlbVQ4lgC0RabvXrznpxqpNB3TfgOmg0bxTrCTOmnCrneg=
+X-Received: by 2002:a63:85c6:: with SMTP id u189mr1970797pgd.381.1633588840007;
+ Wed, 06 Oct 2021 23:40:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-References: <20211007063706.305984-1-alex_y_xu.ref@yahoo.ca>
+References: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
+In-Reply-To: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Thu, 7 Oct 2021 14:40:29 +0800
+Message-ID: <CACkBjsb0Hxam_e5+vOOanF_BfGAcf5UY+=Cc-pyphQftETTe8Q@mail.gmail.com>
+Subject: Re: kernel BUG in block_invalidatepage
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
-drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
-  113 |         struct drm_plane_state plane_state = {
-      |                                ^~~~~~~~~~~
-drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
-  178 |         bool visible;
-      |              ^~~~~~~
-cc1: all warnings being treated as errors
+Hello,
 
-visible is an output, not an input. in practice this use might turn out
-OK but it's still UB.
+This crash can still be triggered repeatedly on the latest kernel.
 
-Fixes: df86af9133 ("drm/plane-helper: Add drm_plane_helper_check_state()")
-Reviewed-by: Simon Ser <contact@emersion.fr>
-Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
----
- drivers/gpu/drm/drm_plane_helper.c | 1 -
- 1 file changed, 1 deletion(-)
+HEAD commit: 60a9483534ed Merge tag 'warning-fixes-20211005'
+git tree: upstream
+kernel config: https://drive.google.com/file/d/1u-ncYGLkq3xqdlNQYJz8-G6Fhf3H-moP/view?usp=sharing
 
-diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
-index 5b2d0ca03705..838b32b70bce 100644
---- a/drivers/gpu/drm/drm_plane_helper.c
-+++ b/drivers/gpu/drm/drm_plane_helper.c
-@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
- 		.crtc_w = drm_rect_width(dst),
- 		.crtc_h = drm_rect_height(dst),
- 		.rotation = rotation,
--		.visible = *visible,
- 	};
- 	struct drm_crtc_state crtc_state = {
- 		.crtc = crtc,
--- 
-2.33.0
-
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:1514!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 3 PID: 25416 Comm: syz-executor Not tainted 5.15.0-rc4+ #22
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:block_invalidatepage+0x27f/0x2a0 fs/buffer.c:1514
+Code: ff ff e8 b4 fd d6 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
+c7 c2 40 b1 25 84 e8 8b 1b c5 02 e9 c9 fe ff ff e8 91 fd d6 ff <0f> 0b
+e8 8a fd d6 ff 0f 0b e8 83 fd d6 ff 48 8d 5d ff e9 57 ff ff
+RSP: 0018:ffffc9000538fa70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffea0004518000 RCX: 0000000000000000
+RDX: ffff88810dd2a280 RSI: ffffffff8160943f RDI: ffffea0004518000
+RBP: ffffea0004518000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffc9000538f908 R11: 0000000000000001 R12: ffffffff816091c0
+R13: ffffc9000538fb78 R14: 0000000000000000 R15: ffffc9000538fb00
+FS:  0000000000000000(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020590008 CR3: 000000000588a000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ do_invalidatepage mm/truncate.c:157 [inline]
+ truncate_cleanup_page+0x15c/0x280 mm/truncate.c:176
+ truncate_inode_pages_range+0x169/0xc20 mm/truncate.c:325
+ kill_bdev.isra.16+0x28/0x30 block/bdev.c:77
+ blkdev_flush_mapping+0x4c/0x130 block/bdev.c:658
+ blkdev_put_whole+0x54/0x60 block/bdev.c:689
+ blkdev_put+0x6f/0x210 block/bdev.c:953
+ blkdev_close+0x26/0x30 block/fops.c:460
+ __fput+0xdf/0x380 fs/file_table.c:280
+ task_work_run+0x86/0xd0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0x4f1/0x11c0 kernel/exit.c:825
+ do_group_exit+0x57/0xe0 kernel/exit.c:922
+ get_signal+0x1d0/0x10b0 kernel/signal.c:2868
+ arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4196af
+Code: Unable to access opcode bytes at RIP 0x419685.
+RSP: 002b:00007faeee07b9c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000012
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000004196af
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000003 R15: 000000002059c040
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace bb86c370c06fa387 ]---
+RIP: 0010:block_invalidatepage+0x27f/0x2a0 fs/buffer.c:1514
+Code: ff ff e8 b4 fd d6 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
+c7 c2 40 b1 25 84 e8 8b 1b c5 02 e9 c9 fe ff ff e8 91 fd d6 ff <0f> 0b
+e8 8a fd d6 ff 0f 0b e8 83 fd d6 ff 48 8d 5d ff e9 57 ff ff
+RSP: 0018:ffffc9000538fa70 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffea0004518000 RCX: 0000000000000000
+RDX: ffff88810dd2a280 RSI: ffffffff8160943f RDI: ffffea0004518000
+RBP: ffffea0004518000 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffc9000538f908 R11: 0000000000000001 R12: ffffffff816091c0
+R13: ffffc9000538fb78 R14: 0000000000000000 R15: ffffc9000538fb00
+FS:  0000000000000000(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f397f798010 CR3: 0000000012392000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
