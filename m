@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA18425DB0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC275425D58
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235284AbhJGUjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 16:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58818 "EHLO
+        id S242202AbhJGUb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 16:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233223AbhJGUjO (ORCPT
+        with ESMTP id S241991AbhJGUbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:39:14 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A44ABC061570;
-        Thu,  7 Oct 2021 13:37:20 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id c29so6341463pfp.2;
-        Thu, 07 Oct 2021 13:37:20 -0700 (PDT)
+        Thu, 7 Oct 2021 16:31:53 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB61AC061570;
+        Thu,  7 Oct 2021 13:29:58 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id r18so27787355edv.12;
+        Thu, 07 Oct 2021 13:29:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=/R6h2Xb41+ZaL3s6zRGcSwU7ER8EXS0p7pKvPqDNMfk=;
-        b=L6g7yBOFXxdPb9Sw7whNFWQtYTIW8g0VqYh6a43KbeHiW0W3tdpWnLy//caAJsFdas
-         gZTblvWzCyBXOcFPMAY2u030GV2zbAWPtwLPC52ofNnui+8Ta9oaGW9G9oZUDgBJYM4r
-         /zH3pDcHHiWAtFNfxQKjdueMGJsVVhrW7vh8oqYbmUgVqUmMzjSVG651It3EP4LCP8RI
-         3kJDljtbgyH+v+X4TNh7HlA394H9uFMMHOz8l8Z3ammocv/8Nj6LdZpXVh74TdTdargp
-         CMgAHS9h1W0TNprmb16TRkVstAYWmuqEv5MIUc4AXzJyOiR3+GBcn5wb5HUtJ9vrzAM+
-         C4Ag==
+         :content-disposition:in-reply-to;
+        bh=/j6SIVjca5oFQGCoksjBCyHVLuFBGRC7s2+Csc09TLc=;
+        b=lmms50BUytqGRHsvSDFgMyhziIPoqPIFe1Yihz2EnmTV44OQr0/sRQvZfdZ+LG/yCN
+         hOgbs5bVN32umgsdKIJVCL84j9FIQODW3rWLDVezUUYV2Xhh+wREitZ79ChyWXbjpK7z
+         ujO1MaQ2Fuz/qClLB74PJh3k9t8qA5WFblJO3wH9fiM7vsW0lRFtDekWr36puLDdS8oR
+         fuaM9XHe0zbRsOiUJh63PJrHRy/dATJLBwsuKJlniZ06SujOVgK5y00SBo/Wlt/lrqA5
+         tXdzt9skLxW24WQgVNTU7hqdRqMN2ON+2+CKu3Gh8UFvhurtLevUO7xIanychVgnBHtz
+         l4oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=/R6h2Xb41+ZaL3s6zRGcSwU7ER8EXS0p7pKvPqDNMfk=;
-        b=EqCoQxBilrUymuA24EaHOPUHoxzlqZysvsN1gwHTlRayDITzAolVwGAHH2WzzpJSd2
-         O0JnyStMIsJ6aNBGCF9jQQcf1KbYLRCSRSvQvOC/CXT6hDtjaoiWCUK168xWYyjwqbp1
-         qcoKzhO9RJVN1gnyngOi8fpU6XA2bDsw4SclPWhKfb1dQDmkWI/7PxAR9MQau1BIUyBL
-         RbOanFAYHSxtaExAxAg0Jp4z5R2XKlPWI9ajgCanpE9yvl3xzqOwcXEzOSfcQTBbqTVO
-         AH6XteS/SnArwgeWBRr/+mHUQb2g7JtjLT/90QfYPB2/f19A/Zn3yE1zw0S8Rg7WhKNM
-         qU/w==
-X-Gm-Message-State: AOAM5325SsgoIU/v6DXRkpQsopHfW8tCUXmdQ/M2EDRbFz1s6BEmDbpQ
-        fiof+d5loAVPJ+jp0QFDY80=
-X-Google-Smtp-Source: ABdhPJyxnnukeMgGct7B/INdlC+uTL5TVWEre3A7xHinHV428Lh7zSEjFjOwZvXHlHGRTg3XVZj8FA==
-X-Received: by 2002:a63:4b63:: with SMTP id k35mr1394325pgl.206.1633639038818;
-        Thu, 07 Oct 2021 13:37:18 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id p2sm129926pja.51.2021.10.07.13.37.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 Oct 2021 13:37:18 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 13:29:45 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6 3/6] iommu/tegra-smmu: Rename struct
- tegra_smmu_swgroup *group to *swgrp
-Message-ID: <20211007202945.GB20821@Asurada-Nvidia>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-4-nicoleotsuka@gmail.com>
- <YV8m+0qP2ibQBvNs@orome.fritz.box>
+         :mime-version:content-disposition:in-reply-to;
+        bh=/j6SIVjca5oFQGCoksjBCyHVLuFBGRC7s2+Csc09TLc=;
+        b=yzxaalyr0YX9iCFN0CKhJN/c49ZwFSof5Sey+CnzAGmo5oaaj6wn/ozDYLgUlIjfft
+         +CPetVdzAOYZcgnWZGStYPzCRnIftmy56t9V/llVfFTYNq6Dzu73IdJkaNK2xcbOBM1p
+         786r2DYcCe1o+r4x1ORzsIpbjSjhri/RtU0kr/r5QGjcVNO5j6YdDXG0D+8ahBZLI+xZ
+         PP3RrSJsuttIUdA/+DotcEp/6Xnx9IcJQle4iu/eZct3JiNumBhKTK3M/vbm17hkBmqV
+         NcQ+Lw/P2qba8dwephQCtr3eXiVppna+ImiS2zI/n+9niIzvjVmdcizelxkMBdk8mluw
+         pYog==
+X-Gm-Message-State: AOAM533tN44/OUrrtdnVzVdGd94+Kyujr3Sw4Nk13npFED7PnxFmzD1N
+        HoAfg8szoYV6PMt9Xn09PYE=
+X-Google-Smtp-Source: ABdhPJwqIjcQ8cwFRkmJq3b+tVjVG48iJwKh2gpZMI6ewwR990dt4U0YZWh+ZgBLLUuzKhaHZOt7PQ==
+X-Received: by 2002:a17:906:b884:: with SMTP id hb4mr8028043ejb.376.1633638597258;
+        Thu, 07 Oct 2021 13:29:57 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id h9sm183167edr.67.2021.10.07.13.29.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 13:29:57 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 23:29:55 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, robh+dt@kernel.org,
+        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 net-next 09/10] net: dsa: microchip: add support for
+ fdb and mdb management
+Message-ID: <20211007202955.vwasddyxouqy5ccw@skbuf>
+References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+ <20211007151200.748944-10-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YV8m+0qP2ibQBvNs@orome.fritz.box>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211007151200.748944-10-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 06:57:31PM +0200, Thierry Reding wrote:
-> On Mon, Sep 13, 2021 at 06:38:55PM -0700, Nicolin Chen wrote:
-> > There are both tegra_smmu_swgroup and tegra_smmu_group structs
-> > using "group" for their pointer instances. This gets confusing
-> > to read the driver sometimes.
-> > 
-> > So this patch renames "group" of struct tegra_smmu_swgroup to
-> > "swgrp" as a cleanup. Also renames its "find" function.
-> > 
-> > Note that we already have "swgroup" being used for an unsigned
-> > int type variable that is inside struct tegra_smmu_swgroup, so
-> > it's not able to use "swgroup" but only something like "swgrp".
-> > 
-> > Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> > ---
-> >  drivers/iommu/tegra-smmu.c | 34 +++++++++++++++++-----------------
-> >  1 file changed, 17 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> > index a32ed347e25d..0f3883045ffa 100644
-> > --- a/drivers/iommu/tegra-smmu.c
-> > +++ b/drivers/iommu/tegra-smmu.c
-> > @@ -334,35 +334,35 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
-> >  }
-> >  
-> >  static const struct tegra_smmu_swgroup *
-> > -tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
-> > +tegra_smmu_find_swgrp(struct tegra_smmu *smmu, unsigned int swgroup)
+On Thu, Oct 07, 2021 at 08:41:59PM +0530, Prasanna Vengateshan wrote:
+> Support for fdb_add, mdb_add, fdb_del, mdb_del and
+> fdb_dump operations. ALU1 and ALU2 are used for fdb operations.
 > 
-> This makes things inconsistent now. The tegra_smmu_find_swgroup() name
-> indicates that we're looking for some "swgroup" entity within an "smmu"
-> object. The entity that we're looking for is a struct tegra_smmu_swgroup
-> so I think it makes sense to use that full name in the function name.
-
-This is more like an indirect change to keep consistency between
-function name and pointer name.
-
-> >  {
-> > -	const struct tegra_smmu_swgroup *group = NULL;
-> > +	const struct tegra_smmu_swgroup *swgrp = NULL;
+> fdb_add: find any existing entries and update the port map.
+> if ALU1 write is failed and attempt to write ALU2.
+> If ALU2 is also failed then exit. Clear WRITE_FAIL for both ALU1
+> & ALU2.
 > 
-> I don't think the existing naming is confusing. The variable name
-> "group" is consistently used for tegra_smmu_swgroup structures and there
-> are no cases where we would confuse them with struct tegra_smmu_group
-> instances.
+> fdb_del: find the matching entry and clear the respective port
+> in the port map by writing the ALU tables
+> 
+> fdb_dump: read and dump 2 ALUs upto last entry. ALU_START bit is
+> used to find the last entry. If the read is timed out, then pass
+> the error message.
+> 
+> mdb_add: Find the empty slot in ALU and update the port map &
+> mac address by writing the ALU
+> 
+> mdb_del: find the matching entry and delete the respective port
+> in port map by writing the ALU
+> 
+> For MAC address, could not use upper_32_bits() & lower_32_bits()
+> as per Vladimir proposal since it gets accessed in terms of 16bits.
+> I tried to have common API to get 16bits based on index but shifting
+> seems to be straight-forward.
+> 
+> Signed-off-by: Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+> ---
 
-If we don't rename it, then PATCH-4 adds to struct tegra_smmu_group
-a "struct tegra_smmu_swgroup *group", which results in a confusing
-group->group...
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-> However, I don't feel strongly about it, so I'm fine with changing the
-> variable names to "swgrp" if you think that makes things less confusing.
+> +static int lan937x_port_fdb_dump(struct dsa_switch *ds, int port,
+> +				 dsa_fdb_dump_cb_t *cb, void *data)
+> +{
 
-Yea, I'd like to keep this change. I will respin it in next version
-after fixing other comments.
+> +			if (alu.port_forward & BIT(port)) {
+> +				ret = cb(alu.mac, alu.fid, alu.is_static, data);
+
+A bit strange that you report the FID and not the VID here.
+
+> +				if (ret)
+> +					goto exit;
+> +			}
+> +		} while (lan937x_data & ALU_START);
+> +
+> +exit:
+> +		/* stop ALU search & continue to next ALU if available */
+> +		ret = ksz_write32(dev, REG_SW_ALU_CTRL(i), 0);
+> +	}
+> +
+> +	mutex_unlock(&dev->alu_mutex);
+> +
+> +	return ret;
+> +}
