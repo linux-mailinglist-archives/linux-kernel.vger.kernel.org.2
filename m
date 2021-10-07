@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA1B425040
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C001424FC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240698AbhJGJoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:44:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24231 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232665AbhJGJoO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:44:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633599740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yF185G3CUaIimxEtaF4EwIKwxKpiut8yc194c2IfaRo=;
-        b=bYhUAHMfOtZhGub/bhhmNSxo9Qfy6XSqFWLc+BRVT/aoagrn/HVZFGZ/YoUfGq5R0ehGsi
-        g0lNekRMecFfdY3u5owy1NGnb1K/gSPgzUgELYIQ9anOomefv4gAnhTQShGq5Dwd5BUam/
-        ++RlLes1YQQ0f03xxH7Nt0LjxHZscnU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-n9J6L_YaNQykxgpnhNy_4g-1; Thu, 07 Oct 2021 05:42:19 -0400
-X-MC-Unique: n9J6L_YaNQykxgpnhNy_4g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6CE968010ED;
-        Thu,  7 Oct 2021 09:42:18 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 33E7E5C1B4;
-        Thu,  7 Oct 2021 09:42:05 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id D53BF416D862; Thu,  7 Oct 2021 06:10:03 -0300 (-03)
-Date:   Thu, 7 Oct 2021 06:10:03 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Xu <peterx@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
-Message-ID: <20211007091003.GA337010@fuller.cnet>
-References: <20211006175106.GA295227@fuller.cnet>
- <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
- <20211007071856.GM174703@worktop.programming.kicks-ass.net>
+        id S240452AbhJGJNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:13:10 -0400
+Received: from mga03.intel.com ([134.134.136.65]:9876 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231661AbhJGJNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:13:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="226156583"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="226156583"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:11:13 -0700
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="590075333"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 02:11:09 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1mYPQg-009Tan-2D;
+        Thu, 07 Oct 2021 12:11:06 +0300
+Date:   Thu, 7 Oct 2021 12:11:06 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v1 0/6] Introduce power off call chain API
+Message-ID: <YV65qsQPtQfWvE9W@smile.fi.intel.com>
+References: <20211007060253.17049-1-digetx@gmail.com>
+ <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
+ <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211007071856.GM174703@worktop.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter, Song,
+On Thu, Oct 07, 2021 at 11:52:46AM +0300, Dmitry Osipenko wrote:
+> 07.10.2021 10:18, Andy Shevchenko пишет:
+> > On Thu, Oct 7, 2021 at 9:05 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 
-On Thu, Oct 07, 2021 at 09:18:56AM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 06, 2021 at 02:37:09PM -0700, Song Liu wrote:
-> > On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
-> > >
-> > >
-> > >
-> > > Add bpf_raw_read_cpu_clock helper, to read architecture specific
-> > > CPU clock. In x86's case, this is the TSC.
-> > >
-> > > This is necessary to synchronize bpf traces from host and guest bpf-programs
-> > > (after subtracting guest tsc-offset from guest timestamps).
+...
+
+> >> This
+> >> is a somewhat simplified version which doesn't try to convert whole kernel
+> >> to the new API at once, but solves immediate practical problem that we
 > > 
-> > Trying to understand the use case. So in a host-guest scenario,
-> > bpf_ktime_get_ns()
-> > will return different values in host and guest, but rdtsc() will give
-> > the same value.
-> > Is this correct?
+> > problems
+> > 
+> >> have on Nexus 7 Android tablet where device needs to chain power off
+> > 
+> > tablets where the device
 > 
-> No, it will not. 
+> Thank you for the corrections, so far there is one problem and one tablet :)
 
-No, but we can find out the delta between host and guest TSCs.
+Then use "the Nexus 7 Android tablet" :-)
 
-On x86, you can read the offset through debugfs file:
+> > Immediate question here is how do you see the plan of spreading this.
+> > I.o.w. can you put an explanation that you have checked, let's say
+> >> 80% current users, and they may be converted like [example
+> > placeholder] without any special tricks?
+> 
+> The rough plan is:
+> 
+> 1. Add new API.
+> 2. Convert drivers to the new API per subsystem.
 
-        debugfs_create_file("tsc-offset", 0444, debugfs_dentry, vcpu,
-                            &vcpu_tsc_offset_fops);
+I would suggest to show that you are actually into it by converting a couple of
+the subsystems for the starter.
 
-Other architectures can expose that offset.
+> 3. Expose do_kernel_restart().
+> 4. Replace pm_power_off() with do_kernel_poweroff() per arch/, making
+> power off similar to the restart that uses do_kernel_restart().
+> 5. Remove do_kernel_restart() from kernel/reboot.c
+> 
+> Majority of pm_power_off() users shouldn't need the chaining and
+> pm_power_off() doesn't conflict with the new API, so there is no need to
+> rush the conversion.
+> 
+> The single-link chain users could be converted to the new API directly,
+> this will remove some global variables. But at first should be better to
+> gain more users who actually need the chained power off since they may
+> have very specific requirements not covered by the current variant of
+> the API and will be easier to evolve API with less users.
 
-> Also, please explain if any of this stands a chance of
-> working for anything other than x86. 
+All above in one or another form should be in cover letter.
 
-Yes, the same pattern repeats
+-- 
+With Best Regards,
+Andy Shevchenko
 
-ARM:
-
-With offset between guest and host:
-https://developer.arm.com/documentation/ddi0595/2020-12/AArch64-Registers/CNTVCT-EL0--Counter-timer-Virtual-Count-register?lang=en
-
-Without offset:
-commit 051ff581ce70e822729e9474941f3c206cbf7436
-
-PPC:
-https://yhbt.net/lore/all/5f267a8aec5b8199a580c96ab2b1a3c27de4eb09.camel@gmail.com/T/
-
-(Time Base Register is read through mftb instruction).
-
-> Or even on x86 in the face of
-> guest migration.
-
-It won't, but honestly we don't care about tracing at this level across
-migration.
-
-> Also, please explain, again, what's wrong with dumping snapshots of
-> CLOCK_MONOTONIC{,_RAW} from host and guest and correlating time that
-> way?
-
-You can't read the guest and the host clock at the same time (there will always
-be some variable delay between reading the two clocks). And that delay
-is not fixed, but variable (depending on scheduling of the guest vcpus, 
-for example). So you will need an algorithm to estimate their differences, 
-with non zero error bounds:
-
-"
- Add a driver with gettime method returning hosts realtime clock.
- This allows Chrony to synchronize host and guest clocks with 
- high precision (see results below).
- 
- chronyc> sources
- MS Name/IP address         Stratum Poll Reach LastRx Last sample
- ===============================================================================
- #* PHC0                          0   3   377     6     +4ns[   +4ns] +/-    3ns
-"
-
-Now with the hardware clock (which is usually the base for CLOCK_MONOTONIC_RAW),
-there are no errors (offset will be 0 ns, rather than 3/4ns).
-
-> And also explain why BPF needs to do this differently than all the other
-> tracers.
-
-For x86 we use:
-
-echo "x86-tsc" > /sys/kernel/debug/tracing/trace_clock
-
-For this purpose, on x86, so its not like anything different is being
-done?
 
