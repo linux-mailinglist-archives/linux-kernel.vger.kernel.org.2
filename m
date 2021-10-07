@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41284260B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D94E4260B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhJGXvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbhJGXvF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:51:05 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB3EC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 16:49:10 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id z20so29022926edc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 16:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=6e39aL4HLnRACkqXPdSOU02ep3H9ltSIfuFtoAOZeqE=;
-        b=OOAyfAz1BBcaxtO0aWdjutrTQ/sat7LfWu4imx/Yrr+QnoTt6nR/vi48nebxdF4B7G
-         yFa0m5bIIPVeNnpFPyoiUnkoS0BLzXOrF1MNZ2tpp6TOxe1RL+XCxEp8CF7fA1kKzUjO
-         rRPNlOrGNKuiFlIRnZO3NHGd0iL0AsLNDznctjUWcL/INqy9gw4trwdx/EjPsRyX9aOm
-         iWVSMrieMz0B9ibHYdXf1fRDL9Gr3Pd+O7NlXQGEmwsYmmBz3/8bH0Za6Qj7JfLj2yuW
-         19QuWfMPuEpFdQCkEFOpjuaQMu6tS2Ryi4jAYJ44Qnd60J0F+CbQ2Ko3DLF8z/uzWMRX
-         3V+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6e39aL4HLnRACkqXPdSOU02ep3H9ltSIfuFtoAOZeqE=;
-        b=PwJgz29SdpWzgFDioDQJ1KplL+QAiYxu6ZRWD7+zcY2eGSGAnLHWI//kKE9V34NS6W
-         4MCL/I3WahOVWiSj8k37kiRNVBRFTD38By0qgZwYw0AsN5PYRMQVdCzjNImqKnBwnCU9
-         OCPA3qmpyUoRTDIhnd8odq+F17HuD1bhlFYKHox1ZoUCNJpz0NZXRQBNd8hb+aKDHUtr
-         FkQ0nOjbUU63+KTm9NACOqQcy5myZPP+OFQ/YwRv5O4CzoXV3lrhvA6l+7EKhCNo5TJR
-         HtOjBpCqLGRtHgk7nTaflNBPC0gv63/LI+jXh0v4IgRh7XbmTB3SSt3Fr6VJcTkhSzNa
-         6qZg==
-X-Gm-Message-State: AOAM531pSxfFKh8PdcwWmBkI89kZ8YikRSmBfz9dJRkEGCnQAPUPhRRV
-        cHYkrgtbquhPEUXHYJOY1DE=
-X-Google-Smtp-Source: ABdhPJyNKUswlS5x/VnZKIhpayeiajXIiJCLF0ShkeFc7ptetTpkUC0i3VMFOQMKVuDjxtTzV/I/JA==
-X-Received: by 2002:a05:6402:2712:: with SMTP id y18mr8428679edd.116.1633650549129;
-        Thu, 07 Oct 2021 16:49:09 -0700 (PDT)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id s24sm333820edy.38.2021.10.07.16.49.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 Oct 2021 16:49:08 -0700 (PDT)
-From:   Wei Yang <richard.weiyang@gmail.com>
-To:     kuba@kernel.org, gregkh@linuxfoundation.org, neilb@suse.com,
-        mojha@codeaurora.org, jkosina@suse.cz
-Cc:     linux-kernel@vger.kernel.org, Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH] hashtable: add documentation for hash_for_each[_xxx]
-Date:   Thu,  7 Oct 2021 23:48:07 +0000
-Message-Id: <20211007234807.4292-1-richard.weiyang@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        id S237054AbhJGXxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:53:51 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55548 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235212AbhJGXxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 19:53:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=0rTewvTn7wvPrU49mGtxMSiIC3GvG3uEdCDWIJLYZlY=; b=iDNv5SmtdL/sto2WTJBuv+Qy9K
+        qWsec2pgRPVUMa38yi8FO7+5r+S9plISdXi586uZpllPSo6oIvkJTy4UfuZ0aFsASeOmcdZIOBQjy
+        cNqEGAddjJI3nEQ5AiLm02W3Jancv/gV51TmTal2XlvSRE+wSRu9ursCYyc0MeBjc/vM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYdAt-00A0Tc-JC; Fri, 08 Oct 2021 01:51:43 +0200
+Date:   Fri, 8 Oct 2021 01:51:43 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        robh+dt@kernel.org, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm/arm64: dts: Add MV88E6393X to CN9130-CRB device
+ tree
+Message-ID: <YV+IDzEdYuy+s/Ak@lunn.ch>
+References: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
+ <20211007230619.957016-3-chris.packham@alliedtelesis.co.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007230619.957016-3-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hash_for_each[_xxx] introduce a new loop command constructed from 2
-nested loops. To make it work like normal loop, 'obj == NULL' is
-explicitly put in loop check to break out not only inner loop but also
-the outer loop.
+On Fri, Oct 08, 2021 at 12:06:19PM +1300, Chris Packham wrote:
+> The CN9130-CRB boards have a MV88E6393X switch connected to eth0.  Add
+> the necessary dts nodes and properties for this.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> This is taken from the Marvell SDK. I've re-ordered the port entries to
+> be in ascending order.
+> 
+>  arch/arm64/boot/dts/marvell/cn9130-crb.dtsi | 125 ++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+> index e7918f325646..171f7394948e 100644
+> --- a/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+> +++ b/arch/arm64/boot/dts/marvell/cn9130-crb.dtsi
+> @@ -185,6 +185,131 @@ &cp0_mdio {
+>  	phy0: ethernet-phy@0 {
+>  		reg = <0>;
+>  	};
+> +
+> +	switch6: switch0@6 {
+> +		/* Actual device is MV88E6393X */
+> +		compatible = "marvell,mv88e6190";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <6>;
 
-This patch adds a documentation to clarify this behavior.
+Is the interrupt output connected to a GPIO?
 
-Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
-Reviewed-by: NeilBrown <neilb@suse.de>
----
- include/linux/hashtable.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+> +
+> +		dsa,member = <0 0>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			port@0 {
+> +				reg = <0>;
+> +				label = "notused-port0";
+> +				phy-mode = "10gbase-kr";
+> +				status = "disabled";
 
-diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-index f6c666730b8c..355681c632ff 100644
---- a/include/linux/hashtable.h
-+++ b/include/linux/hashtable.h
-@@ -122,6 +122,10 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @bkt: integer to use as bucket loop cursor
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
-+ *
-+ * Note: It is safe to 'break' out of this loop even though it is a two nested
-+ * loops.  The 'obj == NULL' test ensures that when the inner loop is broken,
-+ * the outer loop will break too.
-  */
- #define hash_for_each(name, bkt, obj, member)				\
- 	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-@@ -134,6 +138,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @bkt: integer to use as bucket loop cursor
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
-+ *
-+ * Note: It is safe to 'break' out of this loop.
-  */
- #define hash_for_each_rcu(name, bkt, obj, member)			\
- 	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
-@@ -148,6 +154,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @tmp: a &struct hlist_node used for temporary storage
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
-+ *
-+ * Note: It is safe to 'break' out of this loop.
-  */
- #define hash_for_each_safe(name, bkt, tmp, obj, member)			\
- 	for ((bkt) = 0, obj = NULL; obj == NULL && (bkt) < HASH_SIZE(name);\
--- 
-2.23.0
+What is meant by not used? Does it go to a header? Is it not wired at
+all? You don't need to list a port if it is not actually used. So
+maybe you just want to delete this port all together?
 
+> +
+> +			};
+> +
+> +			port@1 {
+> +				reg = <1>;
+> +				label = "wan1";
+> +				phy-handle = <&switch0phy1>;
+> +			};
+> +
+
+
+> +
+> +			port@8 {
+> +				reg = <8>;
+> +				label = "lan8";
+> +				phy-handle = <&switch0phy8>;
+> +			};
+> +
+> +			port@9 {
+> +				reg = <9>;
+> +				label = "wanp9";
+
+Do these names correspond to some labeling? Ether the case or the silk
+screen? wanp9 is an odd name. Is it connected to a header?
+
+> +				phy-mode = "10gbase-kr";
+> +				fixed-link {
+> +					speed = <10000>;
+> +					full-duplex;
+> +				};
+> +			};
+
+  Andrew
