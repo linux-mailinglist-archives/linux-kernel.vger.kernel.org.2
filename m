@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC6B424F91
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415FD424F8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240508AbhJGIy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 04:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhJGIy4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:54:56 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06690C061760;
-        Thu,  7 Oct 2021 01:53:03 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u18so21603171lfd.12;
-        Thu, 07 Oct 2021 01:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FD69cuvZkC5frBLfjKoSH67ZfStJ8NSIyGL77cvLjU4=;
-        b=kZUE3L2Qdz1RASPPcawAIPwjstl13lFlpqEYDJU+JFBegHqLhO731K7OfXlliVog+3
-         cJCyj6kyGy1u/kkulVUvLoz8X33Uz+ujUOZQqsB1E+JtXH+Pux594XX5WDJZgb/QautM
-         w3bARkXOkUOBk8HLC3MFpYUCL+yRDk/ftqr+fR8Jzl1ZH8H7v5tcTVZDPZfyu/sJSyRr
-         yj6/bGQUVqwxdcGMAgQe+urTCiqoIAX+h09nQdz8hQkjCbo8LpZ+OyjbLZAZS/Lrt/Pf
-         Q/IeVYTqd6Dg5JF2uHuhB4HN/kHeW5NxN3O3+3b4iFoUx3b5aFaa3hUD9fOs/uUSeuw0
-         Rnsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FD69cuvZkC5frBLfjKoSH67ZfStJ8NSIyGL77cvLjU4=;
-        b=m62WUpt1QsWhBUVtCRrF8klTf0aywzlT74xgofx3muUhjr/7CRjWA42KR9ukWnGZEU
-         1FDyNw2bPQF1GfOzcg6sE5JdOUYxuyJ/Mvik0IfwTQTBgOtV6cCeLNb8Rn4ui2k5bnJx
-         vMksu6HqVjGO2tho11ydRUcqFmwVP+PLfpwqoapqaG0HL4073+xGnL9Iy/zvtQG4lMkV
-         JWq856vlN+mZBVc6MKXdiOxxDtkghWtH665spW+AYSvBh9Sq/jvVxIORIcPkEtFJDAl4
-         kO6uQWYbcQW1LBO2HklvLEmEn8XDN2Fyidf+sskHI1xvCYlu6AISsaghj53MWwEhUBtj
-         Ysiw==
-X-Gm-Message-State: AOAM530CEdT0sUPjQqbwTPSfbED33iU1oUhUQZOEJ/SKo5z8PR4bbldk
-        C5dOrZBkDSd+MNwCFnIdKb+LAzdOJyY=
-X-Google-Smtp-Source: ABdhPJwEvnuZuywecghOTQy8+ySAzGDwf14DqcNddha50yLhvpBgOWLzPRJAGLtn1PU82MV4saOGSw==
-X-Received: by 2002:a2e:98c3:: with SMTP id s3mr3475791ljj.430.1633596781205;
-        Thu, 07 Oct 2021 01:53:01 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id v4sm1812991ljc.16.2021.10.07.01.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 01:53:00 -0700 (PDT)
-Subject: Re: [PATCH v1 0/6] Introduce power off call chain API
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20211007060253.17049-1-digetx@gmail.com>
- <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
-Date:   Thu, 7 Oct 2021 11:52:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S240537AbhJGIyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:54:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55566 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232608AbhJGIyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:54:46 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B13A611AE;
+        Thu,  7 Oct 2021 08:52:52 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mYP90-00FHIu-HJ; Thu, 07 Oct 2021 09:52:50 +0100
+Date:   Thu, 07 Oct 2021 09:52:50 +0100
+Message-ID: <87bl41qkrh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Rui Salvaterra <rsalvaterra@gmail.com>
+Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
+In-Reply-To: <CALjTZvakX8Hz+ow3UeAuQiicVXtbkXEDFnHU-+n8Ts6i1LRyHQ@mail.gmail.com>
+References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
+        <87ee8yquyi.wl-maz@kernel.org>
+        <CALjTZvakX8Hz+ow3UeAuQiicVXtbkXEDFnHU-+n8Ts6i1LRyHQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rsalvaterra@gmail.com, tglx@linutronix.de, linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.10.2021 10:18, Andy Shevchenko пишет:
-> On Thu, Oct 7, 2021 at 9:05 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Introduce power off call chain API that is inspired by the restart API.
->> It allows to have multiple power off handlers invoked along the chain
+On Wed, 06 Oct 2021 12:06:55 +0100,
+Rui Salvaterra <rsalvaterra@gmail.com> wrote:
 > 
-> allows multiple
+> Hi, Marc,
 > 
->> until system is powered off. For the starter this series converts couple
+> On Wed, 6 Oct 2021 at 12:00, Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > Could you please give more context for this error? I assume that this
+> > is some ATA device probing, but this is unclear at best. A full dmesg
+> > definitely help.
 > 
-> the system
-> a couple
-> 
->> NVIDIA Tegra drivers to the new API. Existing pm_power_off() method
->> stays around and may be removed once all users will adopt the new API.
-> 
-> users adopt
-> 
->>
->> There were couple attempts in the past to add power off API from
-> 
-> a couple
-> 
->> Guenter Roeck and Thierry Reding, but they were never completed. This
->> is a somewhat simplified version which doesn't try to convert whole kernel
->> to the new API at once, but solves immediate practical problem that we
-> 
-> problems
-> 
->> have on Nexus 7 Android tablet where device needs to chain power off
-> 
-> tablets where the device
+> I'd love to have it, but I don't have a serial console to get it from.
+> I can take a photo, of course, but there's no stack dump.
 
-Thank you for the corrections, so far there is one problem and one tablet :)
+That wouldn't be very helpful, unfortunately.
 
-> Immediate question here is how do you see the plan of spreading this.
-> I.o.w. can you put an explanation that you have checked, let's say
->> 80% current users, and they may be converted like [example
-> placeholder] without any special tricks?
+> 
+> > 'lspci -vvnn' would also be useful to understand what the device wants
+> > in terms of PCI configuration.
+> 
+> Sure thing, here it goes (complete dump):
+> 
+> 00:0b.0 SATA controller [0106]: NVIDIA Corporation MCP79 AHCI
+> Controller [10de:0ab8] (rev b1) (prog-if 01 [AHCI 1.0])
+>     Subsystem: ZOTAC International (MCO) Ltd. MCP79 AHCI Controller [19da:a108]
+>     Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+> ParErr- Stepping- SERR- FastB2B- DisINTx+
+>     Status: Cap+ 66MHz+ UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort-
+> <TAbort- <MAbort- >SERR- <PERR- INTx-
+>     Latency: 0 (750ns min, 250ns max)
+>     Interrupt: pin A routed to IRQ 30
+>     Region 0: I/O ports at d000 [size=8]
+>     Region 1: I/O ports at cc00 [size=4]
+>     Region 2: I/O ports at c880 [size=8]
+>     Region 3: I/O ports at c800 [size=4]
+>     Region 4: I/O ports at c480 [size=16]
+>     Region 5: Memory at fae76000 (32-bit, non-prefetchable) [size=8K]
+>     Capabilities: [44] Power Management version 2
+>         Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA
+> PME(D0-,D1-,D2-,D3hot-,D3cold-)
+>         Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+>     Capabilities: [8c] SATA HBA v1.0 InCfgSpace
+>     Capabilities: [b0] MSI: Enable+ Count=1/8 Maskable- 64bit+
+>         Address: 00000000fee02004  Data: 0026
+>     Kernel driver in use: ahci
 
-The rough plan is:
+I guess this is the relevant device? It is interesting that it
+advertises not supporting interrupt masking... Can you, you, out of
+curiosity, give the following hack a go? I would expect things to
+behave badly too (and maybe be even worse). But one way or another, it
+may give us a hint.
 
-1. Add new API.
-2. Convert drivers to the new API per subsystem.
-3. Expose do_kernel_restart().
-4. Replace pm_power_off() with do_kernel_poweroff() per arch/, making
-power off similar to the restart that uses do_kernel_restart().
-5. Remove do_kernel_restart() from kernel/reboot.c
+Thanks,
 
-Majority of pm_power_off() users shouldn't need the chaining and
-pm_power_off() doesn't conflict with the new API, so there is no need to
-rush the conversion.
+	M.
 
-The single-link chain users could be converted to the new API directly,
-this will remove some global variables. But at first should be better to
-gain more users who actually need the chained power off since they may
-have very specific requirements not covered by the current variant of
-the API and will be easier to evolve API with less users.
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 0099a00af361..b3c0b9d07f17 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -205,7 +205,7 @@ static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
+ 
+ 	if (desc->msi_attrib.is_msix)
+ 		pci_msix_mask(desc);
+-	else if (desc->msi_attrib.maskbit)
++	else //if (desc->msi_attrib.maskbit)
+ 		pci_msi_mask(desc, mask);
+ }
+ 
+@@ -216,7 +216,7 @@ static void __pci_msi_unmask_desc(struct msi_desc *desc, u32 mask)
+ 
+ 	if (desc->msi_attrib.is_msix)
+ 		pci_msix_unmask(desc);
+-	else if (desc->msi_attrib.maskbit)
++	else //if (desc->msi_attrib.maskbit)
+ 		pci_msi_unmask(desc, mask);
+ }
+ 
+
+-- 
+Without deviation from the norm, progress is not possible.
