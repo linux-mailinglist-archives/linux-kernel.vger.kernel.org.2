@@ -2,108 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5BDC425834
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DB042585C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242794AbhJGQn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242791AbhJGQn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:43:56 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312DAC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:42:02 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id u18so21007775wrg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8ajzGuCxxALkqNCR+XhT+VAIcrm47k8+MziyY8FwPVc=;
-        b=Mwp5XWdJw+rhnpdyUDtr3zlhpvorTxmeLO6G3ozIXikMS6s0PUcyeh+UF5nBeJF4ZG
-         t37h83kzMNjaXwICDo0hVfBXWj0Vgbkeui95/7R+rWaHIFlWrRtP426iHBn9y8tpmP5S
-         EBu2yzbKv8+nEiACp8FWalnkASYl+o2cN7Fk0zg5QD1az810dCBbxkghrtYL4SJqxQgQ
-         6StSfSjZ1ruz8ifgWTD1nn7zaOxdP9/1/eomMBlHGyEpc3Ut2QcAvTrsiZVhQBsgl8K8
-         grRP7dyyjxi9MH267r71ZH7jSloJiu4PGplirvxAC3PLQBF7s9um1oxkY+IWyZZT8dlK
-         hYRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8ajzGuCxxALkqNCR+XhT+VAIcrm47k8+MziyY8FwPVc=;
-        b=nFcMovdDBE5YlJDiXNe2W+NPrbX5A03KvA14539tGs4hOmaeL2gn5vxrL9LLb3mMtr
-         80A0kxHSYmGImPBBn9kwUgCY1zbpjSc3As+qpLweyUYQi8cAi2wss+HQt0FrkPqun8pe
-         8su4B79cBi4ZRnJFXKfm/ZwQCK1Ab90SQt5EQLaH/Et/1s2CgpxTmW/HEA7gjGhBZYh0
-         bFdvoS4zAhL0ks2gVPNqlEGWKeV7togU3Spr6wHQkcD1W0O4dN6iDxQWxht6TVP6t5O5
-         FqYR7RRSD2yC60XfP/1ARxge1JF+4s6BWTspGq37diaZ/ZFY71PkPm9kTh2RRtvoIT6z
-         YMQQ==
-X-Gm-Message-State: AOAM530gXwhNJlJYJ8jpcYgLaEfhi1k2AyYPrQn3Gtpn+5FoT23Uk+Ka
-        dPvcKDDXB5fptg1PBmJJ2MIFSw==
-X-Google-Smtp-Source: ABdhPJy+nvrsw9oOziGHzyYh3otCLg8zWQxb7IvReSS2o2opPk3C7vyanVbcxqhLFBWFiEZCr4vE+A==
-X-Received: by 2002:a05:600c:4f12:: with SMTP id l18mr17563231wmq.156.1633624920613;
-        Thu, 07 Oct 2021 09:42:00 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:d502:2b58:17d:d5b? ([2a01:e34:ed2f:f020:d502:2b58:17d:d5b])
-        by smtp.googlemail.com with ESMTPSA id y11sm154144wrg.18.2021.10.07.09.41.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 09:42:00 -0700 (PDT)
-Subject: Re: [PATCH v2] thermal: Move ABI documentation do Documentation/ABI
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Amit Kucheria <amitk@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <864dd17a1bff58770b1c1dc0b430bd26b6d7fa01.1633595141.git.mchehab+huawei@kernel.org>
- <CAJZ5v0hj1jZtZ-cD_4jy94cjMbyix-=QcN2Qn9pkW7H1kn16LQ@mail.gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <581a7222-0a01-6292-5b14-ca0e4690bc67@linaro.org>
-Date:   Thu, 7 Oct 2021 18:41:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242872AbhJGQuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:50:54 -0400
+Received: from mga05.intel.com ([192.55.52.43]:19567 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242790AbhJGQuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:50:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312499421"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="312499421"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:42:42 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="522664785"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:42:40 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYWTd-009bFv-IM;
+        Thu, 07 Oct 2021 19:42:37 +0300
+Date:   Thu, 7 Oct 2021 19:42:37 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] mmc: sdhci-pci: Add some CD GPIO related quirks
+Message-ID: <YV8jfavX/W9T25YX@smile.fi.intel.com>
+References: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0hj1jZtZ-cD_4jy94cjMbyix-=QcN2Qn9pkW7H1kn16LQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 18:39, Rafael J. Wysocki wrote:
-> On Thu, Oct 7, 2021 at 10:25 AM Mauro Carvalho Chehab
-> <mchehab+huawei@kernel.org> wrote:
->>
->> The thermal ABI is described, together with the internal
->> development details at:
->>
->>         Documentation/driver-api/thermal/sysfs-api.rst
->>
->> Move the sysfs API description to Documentation/ABI,
->> ensuring that scripts/get_abi.pl will properly parse it.
->>
->> While here, also update MAINTAINERS for it to point to
->> the documentation.
->>
->> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Tue, Oct 05, 2021 at 01:24:24PM +0300, Andy Shevchenko wrote:
+> It appears that one of the supported platform magically worked with the
+> custom IRQ handler (any hints how?) while having two PCB designs with
+> an opposite CD sense level. Here is an attempt to fix it by quirking out
+> CD GPIO.
 > 
-> There is a typo in the subject, but I can fix it up.
+> Patch 1 introduces two additional quirks (it's done this way due to
+> patch 3, see below). Patch 2 is an actual fix for the mentioned platform.
+> If backported need to be taken with patch 1 together. Patch 3 is (RFT)
+> clean up. The questionable part here is the locking scheme. Shouldn't
+> we do something similar in the generic IRQ handler of SDHCI? Or Broxton
+> case has something quite different in mind?
 > 
-> Daniel, would you mind if I applied this?
+> Patches 4-6 are dead-code removals. Patch 4 accompanying patch 2, patches
+> 5-6 just similar to it, but (functionally) independent. Would like to hear
+> if it's okay to do.
+> 
+> Any comments, hints, advice are welcome!
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-
-
-
+Adrian, Ulf, any comments on this? At least first two fix the regression and
+would be nice to have them in sooner than later (I can split them separately
+if required).
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+With Best Regards,
+Andy Shevchenko
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+
