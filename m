@@ -2,155 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBC9424EBE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEA8424E7C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 10:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240626AbhJGILO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 04:11:14 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:60818 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240630AbhJGILK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 04:11:10 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1971C9So007983;
-        Thu, 7 Oct 2021 04:09:03 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 3bhq19sjp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 04:09:03 -0400
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 197891YY046835
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Oct 2021 04:09:02 -0400
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
- Thu, 7 Oct 2021 01:09:00 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
- Transport; Thu, 7 Oct 2021 01:09:00 -0700
-Received: from ubuntuservermchindri.ad.analog.com ([10.32.225.109])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 19780oI3008100;
-        Thu, 7 Oct 2021 04:08:57 -0400
-From:   Mihail Chindris <mihail.chindris@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>, <alexandru.ardelean@analog.com>,
-        Mihail Chindris <mihail.chindris@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-Subject: [PATCH v6 6/6] drivers:iio:dac:ad5766.c: Add trigger buffer
-Date:   Thu, 7 Oct 2021 08:00:37 +0000
-Message-ID: <20211007080035.2531-7-mihail.chindris@analog.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211007080035.2531-1-mihail.chindris@analog.com>
-References: <20211007080035.2531-1-mihail.chindris@analog.com>
+        id S240506AbhJGIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 04:04:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233511AbhJGIEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 04:04:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DD4C61053;
+        Thu,  7 Oct 2021 08:02:05 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 09:02:02 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] elfcore: correct reference to CONFIG_UML
+Message-ID: <YV6pejGzLy5ppEpt@arm.com>
+References: <20211006082209.417-1-lukas.bulwahn@gmail.com>
+ <CAKwvOd=X-ZFPraS2EL24ps1aKdT3bWhtASA0vUjXdzo655XGiQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: lfzYUhIIiZnzR-98iWPRJIla1K4HM57f
-X-Proofpoint-ORIG-GUID: lfzYUhIIiZnzR-98iWPRJIla1K4HM57f
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-06_04,2021-10-07_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 phishscore=0 clxscore=1015 spamscore=0 suspectscore=0
- impostorscore=0 adultscore=0 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110070055
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOd=X-ZFPraS2EL24ps1aKdT3bWhtASA0vUjXdzo655XGiQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This chip is able to generate waveform and using an
-with the output trigger buffer will be easy to generate one.
+On Wed, Oct 6, 2021 at 1:22 AM Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> Commit 6e7b64b9dd6d ("elfcore: fix building with clang") introduces
+> special handling for two architectures, ia64 and User Mode Linux.
+> However, the wrong name, i.e., CONFIG_UM, for the intended Kconfig symbol
+> for User-Mode Linux was used.
+>
+> Although the directory for User Mode Linux is ./arch/um; the Kconfig
+> symbol for this architecture is called CONFIG_UML.
+>
+> Luckily, ./scripts/checkkconfigsymbols.py warns on non-existing configs:
+>
+> UM
+> Referencing files: include/linux/elfcore.h
+> Similar symbols: UML, NUMA
+>
+> Correct the name of the config to the intended one.
+>
+> Fixes: 6e7b64b9dd6d ("elfcore: fix building with clang")
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20211005
+>
+> Arnd, please ack.
+> Andrew, please pick this fix.
+>
+>  include/linux/elfcore.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/include/linux/elfcore.h b/include/linux/elfcore.h
+> index 2aaa15779d50..127716b58235 100644
+> --- a/include/linux/elfcore.h
+> +++ b/include/linux/elfcore.h
+> @@ -109,7 +109,7 @@ static inline int elf_core_copy_task_fpregs(struct task_struct *t, struct pt_reg
+>  #endif
+>  }
+>
+> -#if defined(CONFIG_UM) || defined(CONFIG_IA64)
+> +#if defined(CONFIG_UML) || defined(CONFIG_IA64)
 
-Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
----
- drivers/iio/dac/ad5766.c | 42 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+This fails to build with 'make ARCH=um SUBARCH=x86_64' since
+arch/x86/um/elfcore.c is only compiled for x86_32. You'd need another
+check on CONFIG_X86_32 (as per my patch ;)).
 
-diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
-index dafda84fdea3..b0d220c3a126 100644
---- a/drivers/iio/dac/ad5766.c
-+++ b/drivers/iio/dac/ad5766.c
-@@ -5,10 +5,13 @@
-  * Copyright 2019-2020 Analog Devices Inc.
-  */
- #include <linux/bitfield.h>
-+#include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/gpio/consumer.h>
- #include <linux/iio/iio.h>
-+#include <linux/iio/triggered_buffer.h>
-+#include <linux/iio/trigger_consumer.h>
- #include <linux/module.h>
- #include <linux/spi/spi.h>
- #include <asm/unaligned.h>
-@@ -455,6 +458,7 @@ static const struct iio_chan_spec_ext_info ad5766_ext_info[] = {
- 	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),			\
- 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OFFSET) |		\
- 		BIT(IIO_CHAN_INFO_SCALE),				\
-+	.scan_index = (_chan),						\
- 	.scan_type = {							\
- 		.sign = 'u',						\
- 		.realbits = (_bits),					\
-@@ -576,6 +580,35 @@ static int ad5766_default_setup(struct ad5766_state *st)
- 	return  __ad5766_spi_write(st, AD5766_CMD_SPAN_REG, st->crt_range);
- }
- 
-+static irqreturn_t ad5766_trigger_handler(int irq, void *p)
-+{
-+	struct iio_poll_func *pf = p;
-+	struct iio_dev *indio_dev = pf->indio_dev;
-+	struct iio_buffer *buffer = indio_dev->buffer;
-+	struct ad5766_state *st = iio_priv(indio_dev);
-+	int ret, ch, i;
-+	u16 data[ARRAY_SIZE(ad5766_channels)];
-+
-+	ret = iio_pop_from_buffer(buffer, data);
-+	if (ret)
-+		goto done;
-+
-+	i = 0;
-+	mutex_lock(&st->lock);
-+	for_each_set_bit(ch, indio_dev->active_scan_mask,
-+			 st->chip_info->num_channels - 1)
-+		__ad5766_spi_write(st, AD5766_CMD_WR_IN_REG(ch), data[i++]);
-+
-+	__ad5766_spi_write(st, AD5766_CMD_SW_LDAC,
-+			   *indio_dev->active_scan_mask);
-+	mutex_unlock(&st->lock);
-+
-+done:
-+	iio_trigger_notify_done(indio_dev->trig);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int ad5766_probe(struct spi_device *spi)
- {
- 	enum ad5766_type type;
-@@ -609,6 +642,15 @@ static int ad5766_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
-+	/* Configure trigger buffer */
-+	ret = devm_iio_triggered_buffer_setup_ext(&spi->dev, indio_dev, NULL,
-+						  ad5766_trigger_handler,
-+						  IIO_BUFFER_DIRECTION_OUT,
-+						  NULL,
-+						  NULL);
-+	if (ret)
-+		return ret;
-+
- 	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
+Thanks.
+
 -- 
-2.27.0
-
+Catalin
