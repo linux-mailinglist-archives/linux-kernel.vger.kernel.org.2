@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA21425F3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3957E425F40
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242208AbhJGVkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:40:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S242363AbhJGVkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:40:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242218AbhJGVkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:40:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C371961212;
-        Thu,  7 Oct 2021 21:38:07 +0000 (UTC)
+        id S242333AbhJGVkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:40:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F86B61245;
+        Thu,  7 Oct 2021 21:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633642688;
-        bh=4TP2znbdwj0H4YvHogb8ZrGweVg56RD4YiI0IW4v1e8=;
+        s=k20201202; t=1633642690;
+        bh=4vRh1y+xg/pfgwZWyOIc9oYS+SyNhWVKlApXMzlafFM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ptLS1W8BTb9pfQqTxETwpsqQZdqJZ0FG2SPbnpFoiMvY5qENhgokCN7g/NcddRD17
-         jl2qoveZamrSVsK8OncuOrNQmhS18xGB1kB7IXDtUJV4CFDZYuLzDIxk3HgNk3XE1F
-         H3N7wB0Ax05E5kT3s1dkoXthtkCESYryURJD8VEkuYckLh1n4rlGz9iM0sr40K7ENm
-         rP9+RhFtUz5f3TmDyAMcXwYX4A5pU/Z+3yNhEj7WSXqTppTUfGUtm04qp/mcavEeFi
-         MwCgH0UiyrXdsMXc4M9DVRrJkpKDnr4GNjW6tmb26a8+eDR8ipcrXjkFtyG97ehyzf
-         8NCrcda73htjw==
+        b=qk+xMv47J8u8vh4QEs92r0oEkKY4tQReLijaMwkLCJDbxpMGAKb6Is8y7+feI7RvE
+         pp3akkZeROrwMosXVTOt/Lu0ulZX5o5Btdvkp+5bqj+mSqlPQBwTV9+93UfpPS5Ypr
+         qryJocO/3lgs+VVhBWxpxs2kHfZchef/OnAgIZ+rphytjuU09fRPtvlS65wUMe5nkd
+         GXdy6kCg0TUpp6xa+G/hmE6d4h8DBGsp0rJe7zsPS+Ykshz6PtrWg1Uo2zB0fGksxm
+         rhlSNRO1xEJEGjZw0CVezPdJXgonfmA6MakV2ZHUr5Yd6r2gYJ17CWMLuLdEBII3jf
+         yAWq16282CdKg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
-Cc:     Mark Brown <broonie@kernel.org>, peter.ujfalusi@linux.intel.com,
-        guennadi.liakhovetski@linux.intel.com,
-        linux-kernel@vger.kernel.org, pierre-louis.bossart@linux.intel.com,
-        alsa-devel@alsa-project.org, yang.jie@linux.intel.com,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        ranjani.sridharan@linux.intel.com, budliviu@gmail.com,
-        sound-open-firmware@alsa-project.org, kai.vehmanen@linux.intel.com
-Subject: Re: [PATCH 0/4] Introduce new SOF helpers
-Date:   Thu,  7 Oct 2021 22:37:33 +0100
-Message-Id: <163364264608.649699.787228689014334103.b4-ty@kernel.org>
+To:     devicetree@vger.kernel.org, agross@kernel.org,
+        rohitkr@codeaurora.org, robh+dt@kernel.org, perex@perex.cz,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        swboyd@chromium.org, plai@codeaurora.org,
+        srinivas.kandagatla@linaro.org, lgirdwood@gmail.com,
+        judyhsiao@chromium.org, bgoswami@codeaurora.org,
+        linux-arm-msm@vger.kernel.org,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        tiwai@suse.com, bjorn.andersson@linaro.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Venkata Prasad Potturu <potturu@codeaurora.org>
+Subject: Re: [PATCH] ASoC: wcd938x: Fix jack detection issue
+Date:   Thu,  7 Oct 2021 22:37:34 +0100
+Message-Id: <163364264608.649699.14554141644947512653.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211004152147.1268978-1-daniel.baluta@oss.nxp.com>
-References: <20211004152147.1268978-1-daniel.baluta@oss.nxp.com>
+In-Reply-To: <1633614619-27026-1-git-send-email-srivasam@codeaurora.org>
+References: <1633614619-27026-1-git-send-email-srivasam@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -45,16 +48,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 18:21:43 +0300, Daniel Baluta wrote:
-> From: Daniel Baluta <daniel.baluta@nxp.com>
+On Thu, 7 Oct 2021 19:20:19 +0530, Srinivasa Rao Mandadapu wrote:
+> This patch is to fix audio 3.5mm jack detection failure
+> on wcd938x codec based target.
 > 
-> This patchseries adds new helpers in order to reduce code duplication
-> and prepare for compress audio support with SOF.
+> Fixes: bcee7ed09b8e (ASoC: codecs: wcd938x: add Multi Button Headset Control support)
 > 
-> Bud Liviu-Alexandru (1):
->   ASoC: SOF: Make Intel IPC stream ops generic
 > 
-> [...]
 
 Applied to
 
@@ -62,14 +62,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: SOF: Introduce snd_sof_mailbox_read / snd_sof_mailbox_write callbacks
-      commit: f71f59dd450813684d838e0c1d6602186b7d2d8f
-[2/4] ASoC: SOF: Make Intel IPC stream ops generic
-      commit: 97e22cbd0dc318f1cedb3546d2047403506bdc2d
-[3/4] ASoC: SOF: imx: Use newly introduced generic IPC stream ops
-      commit: 40834190aa81270c52104fa9c82a1cae4bd1d359
-[4/4] ASoC: SOF: Introduce fragment elapsed notification API
-      commit: 858f7a5c45cacbf9965c4735330ee34baa0728f4
+[1/1] ASoC: wcd938x: Fix jack detection issue
+      commit: db0767b8a6e620b99459d2e688c1983c2e5add0d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
