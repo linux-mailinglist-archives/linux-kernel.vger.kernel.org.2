@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5A8425D25
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC178425D39
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241642AbhJGUYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 16:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
+        id S233953AbhJGU3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 16:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbhJGUYJ (ORCPT
+        with ESMTP id S230060AbhJGU3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:24:09 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CB1C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 13:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=iFfb36heb1Xp0rc1qf/DNK3t0gf0dV0IKh/PpKDQeRs=; b=Dw7oQ2k1EKObaQAcRyeGwT/wRV
-        En6bWFGQjQoCLmVJ3d+0GbZ/k8xoJfLLSeDlFtmyzyVZhrA7AlrfpTEgIzgjZRKPrWIxPoHdoztYp
-        wORzGZmzm3Q+djkFyD82slzRQevx7CFgZUuGq1oOQq2FUlx+rjWegKhmeBZSSViglxePRLGGUwZeG
-        GTqIYkkotaTMQVHKY6mCw0EgdRSKblMWpuSBax4/7uCNOhL0xVB3n18gAsMwNP47AR8Amx7r19f+7
-        VKBqIQYt+6GtY7AQEHBKolPF9AfLUYheiLVYAZ1e+tcYycgW7eTGETODf7+lbv7heXe0fCRYZSJ1V
-        bh1XmLlg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYZu0-008XiL-SC; Thu, 07 Oct 2021 20:22:05 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4204F981261; Thu,  7 Oct 2021 22:22:04 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 22:22:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     herbert@gondor.apana.org.au, tianjia.zhang@linux.alibaba.com,
-        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org
-Subject: [RFC] crypto/sm4: Fix objtool/libelf warning
-Message-ID: <20211007202204.GT174703@worktop.programming.kicks-ass.net>
+        Thu, 7 Oct 2021 16:29:19 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBC1C061570;
+        Thu,  7 Oct 2021 13:27:25 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id v18so28036926edc.11;
+        Thu, 07 Oct 2021 13:27:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=meVJZ/Jk9W+dixJB/LuoRy3/ra68qi2MQkPwKdp2JR0=;
+        b=dC3cFYY77OUrg+THR4IJ3I2oKuVLU5NSml5IEdGdu6ALMQsgw7cGj1UOTk+KnVafC8
+         WmMnI2+MGrYTNPMEsAYvM4Zu3CRhN0teC0n5DOZhRZciYUG0Fetg16qbxTcZSNhMU3Tp
+         JujjjOUoFS9YamfOmoBzKq+V5TbhO0vk9t7lUAk4L0/vHkvXFyak1xXYvDGIebJ23aq2
+         hi3trJbkmsgYlk7Khk9I6T4vZwH4CJZBuaCXtD+hptTOB3SCIMtJkwQ0mkb5DMCW6IZd
+         nJkx8OiRHss3dQDysCNPuNadNVY6furpZhVuSqTjCWtr3RfsdfqzJJkpTiDpXQsGaCUT
+         1+pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=meVJZ/Jk9W+dixJB/LuoRy3/ra68qi2MQkPwKdp2JR0=;
+        b=BM/9pA0Agfuq5w7F1CJeSiWoJjirD4EQtH4zT0U2gDI1pI7VVsmTPzBQwHn4S6ZOv1
+         8azR8CS+FGhqgAnng5GyxWVAhaiI9C9wAsk5bl07fqV+gljE9Vs8f6mkqS875DceAU82
+         LVIt8ZK9dbR0d9N7uZVPr0l9gJdYlDI33hkpF27Rx4d/s3GX33ckOZvHHDrxTKW+PuPN
+         TdyFsoldK2Do0OWRhPP+XLCtM4RKgGmSLFOWlL86ujY6jZ3uSTgLrD86yyKDVaxyjnII
+         Lb76GmFAFfIfBqxFuNaelc0jSohaCMk5G5+CzRS1ghCJCimfUkeTaPOUlT0CoGlt1nHb
+         Qq0A==
+X-Gm-Message-State: AOAM530H2ZyCHYriK/I3q00Xc5n6kTvxNBiChxwaMsfCq00ezD8o1Bc3
+        E4OBS8X5WYHwSZJRIVhDoGv8WBzhG4DizJnUwBE=
+X-Google-Smtp-Source: ABdhPJyVJJHP5DLZjFy9sZ2fQ4TiUIi7xOmAIdHWsergF9thozLAZHG3qA9EUTfaiTDl1+7P+HlIL3WfongsKIaiFx8=
+X-Received: by 2002:a17:906:c2ca:: with SMTP id ch10mr5567576ejb.311.1633638443670;
+ Thu, 07 Oct 2021 13:27:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210930215311.240774-1-shy828301@gmail.com> <20210930215311.240774-3-shy828301@gmail.com>
+ <YV4Dz3y4NXhtqd6V@t490s> <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+ <YV8bChbXop3FuwPC@t490s> <CAHbLzkq-18rDvfVepNTfKzPbb0+Tg9S=bwFCgjXGv0RxgouptA@mail.gmail.com>
+In-Reply-To: <CAHbLzkq-18rDvfVepNTfKzPbb0+Tg9S=bwFCgjXGv0RxgouptA@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 7 Oct 2021 13:27:11 -0700
+Message-ID: <CAHbLzkoRtASPUejXwDJOd9794hXyC9pnccwO1hx8sanpoTECtQ@mail.gmail.com>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+To:     Peter Xu <peterx@redhat.com>
+Cc:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 7, 2021 at 11:19 AM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Thu, Oct 7, 2021 at 9:06 AM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Wed, Oct 06, 2021 at 04:57:38PM -0700, Yang Shi wrote:
+> > > > For example, I see that both unpoison_memory() and soft_offline_page() will
+> > > > call it too, does it mean that we'll also set the bits e.g. even when we want
+> > > > to inject an unpoison event too?
+> > >
+> > > unpoison_memory() should be not a problem since it will just bail out
+> > > once THP is met as the comment says:
+> > >
+> > > /*
+> > > * unpoison_memory() can encounter thp only when the thp is being
+> > > * worked by memory_failure() and the page lock is not held yet.
+> > > * In such case, we yield to memory_failure() and make unpoison fail.
+> > > */
+> >
+> > But I still think setting the subpage-hwpoison bit hides too deep there, it'll
+> > be great we can keep get_hwpoison_page() as simple as a safe version of getting
+> > the refcount of the page we want.  Or we'd still better touch up the comment
+> > above get_hwpoison_page() to show that side effect.
+> >
+> > >
+> > >
+> > > And I think we should set the flag for soft offline too, right? The
+> >
+> > I'm not familiar with either memory failure or soft offline, so far it looks
+> > right to me.  However..
+> >
+> > > soft offline does set the hwpoison flag for the corrupted sub page and
+> > > doesn't split file THP,
+> >
+> > .. I believe this will become not true after your patch 5, right?
+>
+> But THP split may fail, right?
+>
+> >
+> > > so it should be captured by page fault as well. And yes for poison injection.
+> >
+> > One more thing: besides thp split and page free, do we need to conditionally
+> > drop the HasHwpoisoned bit when received an unpoison event?
+>
+> It seems not to me, as the above comment from unpoison_memory() says
+> unpoison can encounter thp only when the thp is being worked by
+> memory_failure() and the page lock is not held yet. So it just bails
+> out.
+>
+> In addition, unpoison just works for software injected errors, not
+> real hardware failure.
+>
+> >
+> > If my understanding is correct, we may need to scan all the subpages there, to
+> > make sure HasHwpoisoned bit reflects the latest status for the thp in question.
+> >
+> > >
+> > > But your comment reminds me that get_hwpoison_page() is just called
+> > > when !MF_COUNT_INCREASED, so it means MADV_HWPOISON still could
+> > > escape. This needs to be covered too.
+> >
+> > Right, maybe that's also a clue that we shouldn't set the new page flag within
+> > get_hwpoison_page(), since get_hwpoison_page() is actually well coupled with
+> > MF_COUNT_INCREASED and all of them are only about refcounting of the pages.
+>
+> Yeah, maybe, as long as there is not early bail out in some error
+> handling paths.
 
-objtool is yielding the obscure libelf warning:
+It seems fine to move setting the flag out of get_hwpoison_page() to
+right before splitting THP so that both MF_COUNT_INCREASED and
+!MF_COUNT_INCREASED could be covered.
 
-  vmlinux.o: warning: objtool: elf_update: invalid section entry size
 
-Which I tracked down to section:
-
-  [3023] .rodata.cst164    PROGBITS        0000000000000000 1ab501e0 000154 a4  AM  0   0 16
-
-Which has a section size of 0x154 (340) and an entry size of 0xa4 (164).
-An obvious mis-match.
-
-From there, git-grep quickly yields:
-
-  arch/x86/crypto/sm4-aesni-avx-asm_64.S:.section .rodata.cst164, "aM", @progbits, 164
-  arch/x86/crypto/sm4-aesni-avx2-asm_64.S:.section        .rodata.cst164, "aM", @progbits, 164
-
-So those files create this .rodata section with an explicit entry size,
-but then don't respect it themselves. Removing the entry size makes the
-warning go away, but I can't tell if that's right or not, given there is
-zero clue as to why that entry size was specified to begin with.
-
-Please explain...
-
----
-diff --git a/arch/x86/crypto/sm4-aesni-avx-asm_64.S b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-index 18d2f5199194..d089cccf4db7 100644
---- a/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx-asm_64.S
-@@ -78,7 +78,7 @@
- 	vpxor tmp0, x, x;
- 
- 
--.section	.rodata.cst164, "aM", @progbits, 164
-+.section	.rodata.cst164, "aM", @progbits
- .align 16
- 
- /*
-diff --git a/arch/x86/crypto/sm4-aesni-avx2-asm_64.S b/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-index d2ffd7f76ee2..a0f7541c2246 100644
---- a/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-+++ b/arch/x86/crypto/sm4-aesni-avx2-asm_64.S
-@@ -93,7 +93,7 @@
- 	vpxor tmp0, x, x;
- 
- 
--.section	.rodata.cst164, "aM", @progbits, 164
-+.section	.rodata.cst164, "aM", @progbits
- .align 16
- 
- /*
+>
+> >
+> > --
+> > Peter Xu
+> >
