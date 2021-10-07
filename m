@@ -2,216 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2862A425580
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC873425582
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242066AbhJGOfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:35:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1890 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233392AbhJGOfR (ORCPT
+        id S242107AbhJGOfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:35:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:36778 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242098AbhJGOf2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:35:17 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197E23fN020503;
-        Thu, 7 Oct 2021 10:33:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=NoNLb9O2Ylblm/UT4O7Gwa5G1mVfnGxhcTyqUTBS/Uc=;
- b=Lgf+IMnky8RA4LGUUKxABDm0r25FNaEt7AwQYybt02Vw4Z0+8oDbqVCGt0c5axMiK7uM
- YmQ80BCbIm/j9txNteL3ZywLBiNeZ++dtifGEoZviSSJsvsOlpiMs8s86X3/zn5M2m8y
- 7YaCaH0LCXV2Gqo1mdCx4vlLlaVFbqnam3HD97fNxsujUF8K5KhC6TvvhXNNEslcjz3f
- MUSCAWp7ykYkh9r1lNBDGmSHkpRvJW0A6KXnitVr+GTtESgbXOWToFgIg9N6uumfZU3K
- YHR0iLIt5E945qOkWWSh26F7DjhKUoaqhesYLVHTya76WX3Wh4UruGSV5LYj6LdzT4M5 DA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bj2a60vqh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 10:33:12 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 197E2EE0021020;
-        Thu, 7 Oct 2021 10:33:11 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bj2a60vpr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 10:33:11 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 197ERxsQ029185;
-        Thu, 7 Oct 2021 14:33:09 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04fra.de.ibm.com with ESMTP id 3bef2antge-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 14:33:09 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 197EX3lt57999802
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Oct 2021 14:33:03 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E89E152077;
-        Thu,  7 Oct 2021 14:33:02 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 32E0B52052;
-        Thu,  7 Oct 2021 14:32:58 +0000 (GMT)
-Date:   Thu, 7 Oct 2021 16:32:55 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        markver@us.ibm.com, qemu-devel@nongnu.org,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        stefanha@redhat.com, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
-Message-ID: <20211007163255.61d95513.pasic@linux.ibm.com>
-In-Reply-To: <875yu9yruv.fsf@redhat.com>
-References: <20211006142533.2735019-1-pasic@linux.ibm.com>
-        <875yu9yruv.fsf@redhat.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Thu, 7 Oct 2021 10:35:28 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2A52F22415;
+        Thu,  7 Oct 2021 14:33:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633617214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0kPHCIwOi6yOaCscKFUvZxr3E139xXkUk3nwqYFUxz4=;
+        b=oKTEOQskEQU0aKd1HxqbqVqjt3iUS3Nt0AgXdS8uqgdHyXaGuufu39K5xwLiI8LNdcJ9tk
+        CVivdl4kq2hTgxNvydXSOuq52Udn8oCCUV0Eu/GSDwoGBL1BSXeBv4E9sFb36DTN8Cp23G
+        T1jbXNQmNVZS3rhYpZOve21YpD9ucog=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633617214;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0kPHCIwOi6yOaCscKFUvZxr3E139xXkUk3nwqYFUxz4=;
+        b=QvzadQVxDJkNVrPvCNmNPMZ2FFnyLamTc7FUVMZMgbVYrDWXyFSH0uyCYiAqk4b7HcfO9r
+        NNldXwuAUnygTHBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F08D613CE5;
+        Thu,  7 Oct 2021 14:33:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AH60OT0FX2EmXAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 07 Oct 2021 14:33:33 +0000
+Message-ID: <3353e013-6716-ea90-2eb1-8352279ed685@suse.de>
+Date:   Thu, 7 Oct 2021 16:33:33 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: qeK7nbZ2KeUM7JcqUzlrqeLx442UyBNv
-X-Proofpoint-GUID: QajmWxVzsbJhM8yN1H-5c34I4WM2FG8d
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_02,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 adultscore=0 spamscore=0 mlxscore=0 clxscore=1015
- bulkscore=0 suspectscore=0 phishscore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110070097
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v2] drm/hyperv: Fix double mouse pointers
+Content-Language: en-US
+To:     Dexuan Cui <decui@microsoft.com>,
+        "drawat.floss@gmail.com" <drawat.floss@gmail.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210916193644.45650-1-decui@microsoft.com>
+ <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------EGwy7DhMFr9056g8B08VlDj0"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 13:52:24 +0200
-Cornelia Huck <cohuck@redhat.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------EGwy7DhMFr9056g8B08VlDj0
+Content-Type: multipart/mixed; boundary="------------A2jFUXct9OonL9tnO0ep48x8";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Dexuan Cui <decui@microsoft.com>,
+ "drawat.floss@gmail.com" <drawat.floss@gmail.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, "airlied@linux.ie"
+ <airlied@linux.ie>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Cc: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <3353e013-6716-ea90-2eb1-8352279ed685@suse.de>
+Subject: Re: [PATCH v2] drm/hyperv: Fix double mouse pointers
+References: <20210916193644.45650-1-decui@microsoft.com>
+ <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
+In-Reply-To: <BYAPR21MB1270B4AB0AFC1668C9D9009FBFB09@BYAPR21MB1270.namprd21.prod.outlook.com>
 
-> On Wed, Oct 06 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
-> 
-> > The virtio specification virtio-v1.1-cs01 states: Transitional devices
-> > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-> > been acknowledged by the driver.  This is exactly what QEMU as of 6.1
-> > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
-> >
-> > However, the specification also says: driver MAY read (but MUST NOT
-> > write) the device-specific configuration fields to check that it can
-> > support the device before setting FEATURES_OK.  
-> 
-> Suggest to put the citations from the spec into quotes, so that they are
-> distinguishable from the rest of the text.
+--------------A2jFUXct9OonL9tnO0ep48x8
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-For the record: I basically took Michael's description, the one which you
-said you prefer, with some minor changes.
+SGkNCg0KQW0gMDYuMTAuMjEgdW0gMjA6NDMgc2NocmllYiBEZXh1YW4gQ3VpOg0KPj4gRnJv
+bTogRGV4dWFuIEN1aSA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4NCj4+IFNlbnQ6IFRodXJzZGF5
+LCBTZXB0ZW1iZXIgMTYsIDIwMjEgMTI6MzcgUE0NCj4+IFRvOiBkcmF3YXQuZmxvc3NAZ21h
+aWwuY29tOyBIYWl5YW5nIFpoYW5nIDxoYWl5YW5nekBtaWNyb3NvZnQuY29tPjsNCj4+IGFp
+cmxpZWRAbGludXguaWU7IGRhbmllbEBmZndsbC5jaDsgdHppbW1lcm1hbm5Ac3VzZS5kZTsN
+Cj4+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcNCj4+IENjOiBsaW51eC1oeXBl
+cnZAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBEZXh1
+YW4gQ3VpDQo+PiA8ZGVjdWlAbWljcm9zb2Z0LmNvbT4NCj4+IFN1YmplY3Q6IFtQQVRDSCB2
+Ml0gZHJtL2h5cGVydjogRml4IGRvdWJsZSBtb3VzZSBwb2ludGVycw0KPj4NCj4+IEh5cGVy
+LVYgc3VwcG9ydHMgYSBoYXJkd2FyZSBjdXJzb3IgZmVhdHVyZS4gSXQgaXMgbm90IHVzZWQg
+YnkgTGludXggVk0sDQo+PiBidXQgdGhlIEh5cGVyLVYgaG9zdCBzdGlsbCBkcmF3cyBhIHBv
+aW50IGFzIGFuIGV4dHJhIG1vdXNlIHBvaW50ZXIsDQo+PiB3aGljaCBpcyB1bndhbnRlZCwg
+ZXNwZWNpYWxseSB3aGVuIFhvcmcgaXMgcnVubmluZy4NCj4+DQo+PiBUaGUgaHlwZXJ2X2Zi
+IGRyaXZlciB1c2VzIHN5bnRodmlkX3NlbmRfcHRyKCkgdG8gaGlkZSB0aGUgdW53YW50ZWQg
+cG9pbnRlci4NCj4+IFdoZW4gdGhlIGh5cGVydl9kcm0gZHJpdmVyIHdhcyBkZXZlbG9wZWQs
+IHRoZSBmdW5jdGlvbiBzeW50aHZpZF9zZW5kX3B0cigpDQo+PiB3YXMgbm90IGNvcGllZCBm
+cm9tIHRoZSBoeXBlcnZfZmIgZHJpdmVyLiBGaXggdGhlIGlzc3VlIGJ5IGFkZGluZyB0aGUN
+Cj4+IGZ1bmN0aW9uIGludG8gaHlwZXJ2X2RybS4NCj4+DQo+PiBGaXhlczogNzZjNTZhNWFm
+ZmViICgiZHJtL2h5cGVydjogQWRkIERSTSBkcml2ZXIgZm9yIGh5cGVydiBzeW50aGV0aWMg
+dmlkZW8NCj4+IGRldmljZSIpDQo+PiBTaWduZWQtb2ZmLWJ5OiBEZXh1YW4gQ3VpIDxkZWN1
+aUBtaWNyb3NvZnQuY29tPg0KPj4gUmV2aWV3ZWQtYnk6IEhhaXlhbmcgWmhhbmcgPGhhaXlh
+bmd6QG1pY3Jvc29mdC5jb20+DQo+PiBSZXZpZXdlZC1ieTogRGVlcGFrIFJhd2F0IDxkcmF3
+YXQuZmxvc3NAZ21haWwuY29tPg0KPj4gLS0tDQo+Pg0KPj4gQ2hhbmdlcyBpbiB2MjoNCj4+
+IAlSZW5hbWVkIGh5cGVydl9zZW5kX3B0cigpIHRvIGh5cGVydl9oaWRlX2h3X3B0cigpLg0K
+Pj4gCUltcHJvdmVkIHRoZSBjb21tZW50cyBhbmQgdGhlIGdpdCBjb21taXQgbWVzc2FnZS4N
+Cj4+IAlBZGRlZCBSZXZpZXdlZC1ieSdzIGZyb20gSGFpeWFuZyBhbmQgRGVlcGFrLg0KPj4N
+Cj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtLmggICAgICAgICB8ICAx
+ICsNCj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtX21vZGVzZXQuYyB8
+ICAxICsNCj4+ICAgZHJpdmVycy9ncHUvZHJtL2h5cGVydi9oeXBlcnZfZHJtX3Byb3RvLmMg
+ICB8IDU0DQo+PiArKysrKysrKysrKysrKysrKysrKy0NCj4+ICAgMyBmaWxlcyBjaGFuZ2Vk
+LCA1NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBIaSBEUk0gbWFpbnRh
+aW5lcnMsDQo+IENvdWxkIHlvdSBwbGVhc2UgdGFrZSBhIGxvb2sgYXQgdGhlIHBhdGNoPw0K
+DQpJIHB1c2hlZCB0aGUgcGF0Y2ggaW50byBkcm0tbWlzYy1maXhlcy4gSXQgc2hvdWxkIHJl
+YWNoIHVwc3RyZWFtIHNvb25lZC4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4g
+VGhhbmtzLA0KPiAtLSBEZXh1YW4NCj4gDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdy
+YXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1h
+bnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBHZXJtYW55DQooSFJC
+IDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTD
+tnJmZmVyDQo=
 
-This is one of the changes, which renders this a paraphrase and not a
-quote. Michael didn't use quotation marks so I was not sure it is was
-a word by word quote anyway. It was. But the spec depends on "During this
-step" which does not make any sense without the context. That is why I made
-the end of step explicit.
+--------------A2jFUXct9OonL9tnO0ep48x8--
 
-I think we are fine without quotation marks. Those who care can read the
-spec.
+--------------EGwy7DhMFr9056g8B08VlDj0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-> 
-> >
-> > In that case, any transitional device relying solely on
-> > VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-> > legacy format.  In particular, this implies that it is in big endian
-> > format for big endian guests. This naturally confuses the driver which
-> > expects little endian in the modern mode.
-> >
-> > It is probably a good idea to amend the spec to clarify that
-> > VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-> > is complete. However, we already have regression so let's try to address  
-> 
-> s/regression/a regression/
-> 
+-----BEGIN PGP SIGNATURE-----
 
-Yes. Was like this in the original. Will change
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFfBT0FAwAAAAAACgkQlh/E3EQov+BU
+6RAAogq8ib94GKJSAb5fLjIAWDYEcz7t5jbbjVZcxQile7oAlI3/0/BBwkkN1qRD9ndt5+tIcIAF
+aouzdfU98LjJSpAT5E0KXQPRC7AdVAr37gPZPcEISrjzMFUCGAWKSjQbDCF4s+g8PmTdlaSITKl7
+oyNrRepbPtiXAAWOacpsfX2pHWQamGTpmxUckDVN03XU7y+xQZBt6atyH9VJtQJb5BxB4xLUKWKD
+xtyZN3rQSsl3H5AP2OEVePY/yqWToRy8MWDRqKd14jrfdm/wOJagZ+ewqoERo460z3LddzosbpRc
+SF1T7XBzP/XJc/reMN5t11GCYqEw7wFG016kjOthImQC6pbkDeb6oiiuU1wJ0F8dVi+vTeZi8CcA
+qdU+Zx8X4aDd9gsk5K9d1yIFs3usTKXpJZl3WQMJCRH7z62aXMrCI44uJUEoPSSEWW1kBAF4T+XK
+IjqBHM/xvHvzEszmL+yIOPc2kVmTmVwIPyEj00Ifa2ofTcWkOEw/fY2CiTFZnQr8YIphpEjtXkEG
+B7o9rmjNr6CcPjI5nFbWf6WEHMEXplrZrNoYH5GpOEocI1Nd6sLvp8f4zMjtgcSTEYEv+peLkXBh
+AJbPYXxGF1JBVO/w50at6+CVt10pHuEqetoDJFMtbBIR72wyLBbYnmJ+zv8vM5yRpxy8AhdtCTGI
+UxU=
+=vjnW
+-----END PGP SIGNATURE-----
 
-> > it.  
-> 
-> Maybe mention what the regression is?
-
-How about the following?
-
-The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and the
-VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when virtio
-1.0 is used on both sides. The latter renders virtio-blk unusable with
-DASD backing, because things simply don't work with the default.
-
-> 
-> Also mention that we use this workaround for modern on BE only?
-
-We have that already, don't we. The sentence that starts with "In
-particular". The regression description should reinforce that
-sufficiently IMHO.
-
-> 
-> >
-> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> > Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-> > Reported-by: markver@us.ibm.com
-> > ---
-> >  drivers/virtio/virtio.c | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> > index 0a5b54034d4b..494cfecd3376 100644
-> > --- a/drivers/virtio/virtio.c
-> > +++ b/drivers/virtio/virtio.c
-> > @@ -239,6 +239,16 @@ static int virtio_dev_probe(struct device *_d)
-> >  		driver_features_legacy = driver_features;
-> >  	}
-> >  
-> > +	/*
-> > +	 * Some devices detect legacy solely via F_VERSION_1. Write
-> > +	 * F_VERSION_1 to force LE for these when needed.  
-> 
-> "...to force LE config space accesses before FEATURES_OK for these when
-> needed (BE)."
-> 
-> ?
-
-Can do, but I would rather omit the (BE) at the end. All the conditions
-are necessary:
-* have validate callback
-* device offered VERSION_1
-* virtio legacy is be
-
-> 
-> > +	 */
-> > +	if (drv->validate && !virtio_legacy_is_little_endian()
-> > +			  && BIT_ULL(VIRTIO_F_VERSION_1) & device_features) {  
-> 
-> Nit: putting device_features first would read more naturally to me.
-> 
-
-Can do.
-
-> > +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-> > +		dev->config->finalize_features(dev);
-> > +	}
-> > +
-> >  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
-> >  		dev->features = driver_features & device_features;
-> >  	else  
-> 
-> Patch LGTM.
-> 
-> 
-
-Thanks for having a look. If you are fine with the proposed solution
-please tell me, so I can send out a v2.
-
-If not let us work towards an acceptable solution.
-
-Regards,
-Halil
+--------------EGwy7DhMFr9056g8B08VlDj0--
