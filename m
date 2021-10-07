@@ -2,77 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917E1425190
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6899D425192
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233872AbhJGK6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:58:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230319AbhJGK6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:58:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DAE66125F;
-        Thu,  7 Oct 2021 10:56:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633604180;
-        bh=ThIL5wTqkNiACMqeeSl39LO0ke5MAX68IFzHv68/mWI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YT2alqyBuji3GiowZLfZazBMG94K/C66fT1m30UGQAAj5PU+N440j1v/iR9khsZju
-         5kViA2pY8LK6nXYdHpH46ejmMmzXbkLR5hYwao699vyKZ9ZAVV1Dr4tNjiFkn14n6F
-         a6RPw/nc0+PvQtSGCg9rQGTg6uO6WZ0/sL2XKS6jCrDo1Dg71yjiCZgf0w15UMHENl
-         xpWPlL5i2LpzXvyp5ZGOIG3W0aqahYSm6XdRg3VxVMIke7KgSdVnEaYC7kYptdjcR5
-         Xpqkn2akCzaUcoN5I+WZ7BqwixRJc4b7CxKnnIkE/KiL0n7u/CEDyP7PumLO3KyK1X
-         YlE7a6r6zfzxA==
-Received: by mail-yb1-f169.google.com with SMTP id r1so12396908ybo.10;
-        Thu, 07 Oct 2021 03:56:20 -0700 (PDT)
-X-Gm-Message-State: AOAM531S9+vYu9fUE4anF+90Q/M3V5Ga2u/R3WLpisGD18mqiKewY1qS
-        leOu+w0nk1yrXXCBa9H86vcIsPg0O7cf2ocIvCA=
-X-Google-Smtp-Source: ABdhPJzwxU3qp/2r+9YudGCUJue9BH8SS1W+JH6xZ5rfm/idWD4VsigFIU10SCXzX+AOt3Hbjgk+16k+dUIMb6/O+CE=
-X-Received: by 2002:a25:9007:: with SMTP id s7mr3881247ybl.142.1633604179700;
- Thu, 07 Oct 2021 03:56:19 -0700 (PDT)
+        id S241005AbhJGK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232810AbhJGK6P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:58:15 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26991C061746;
+        Thu,  7 Oct 2021 03:56:22 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id x1so2301208iof.7;
+        Thu, 07 Oct 2021 03:56:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=23gZkYObBsS9Oz5ktS9sLtCgLLCB25YH4/s8PNfqgmI=;
+        b=V3OGQW4hPGJ6lZQLXw+ruDHmH5KvebYrClY7D+6/GJACExdiAhHzLf4n8LNWRn1fLd
+         VB7bDLWaOBF9cyD2gZoRnqQDNH0GYkaPJafzX7FeqI5fDnh19VtodYxatxP7pU0M56DF
+         sPnCnsLfPu9MXnwj4CYb6+mVTEclSs05XpKu9OkUBAvOkl+sOXKRK6c0osdVp3Lcop4c
+         7FFSCzBF727P75fzJZfwEGYO2FlM0jNxjFGCvDYGPwWu9MhJkbZgfgdTccU48RECrsDs
+         TmfZ3b5bBwuc3cXqUAwOL4FK9GvUAqmYPTWY/XKo0PZididPiadxo4UmPLso0wZcdKpc
+         S3gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=23gZkYObBsS9Oz5ktS9sLtCgLLCB25YH4/s8PNfqgmI=;
+        b=jDSwdJInD6zknMJrB44XLr6NW5QgNxd7z0dO72cCFcdyZ+05g1wCfP3ORPAeJFcSCu
+         xSp5HahN9RKAn5wop7MB5n3RrGIJx6kqGn3kueffQLoiN+D9t7Tarvnibq1/zHBjkdw8
+         bXG2T9xu5bpbrwOSZB4Cz58UN+2MIZ23QJdHTUVp/ATekiv3IC71g4IATJTnmulddCL3
+         0kkQw0XpSjCshBCiNdWwQbe9Zfw8+YiURggemo1+mYR3QznfixdIOlUBVsqIeN5HW6vL
+         2SmZuSuhOfIzbUFelE+7vbMMOAO2wVM8M2Dwy+tJznoJPMaPGBO1krgS43+NOhRPQ/pT
+         iOMA==
+X-Gm-Message-State: AOAM531tYkOQp4fnAEExplmx83xsPW6YngR8B8ZG43s3QP3kmM/g0yfZ
+        h7tse461TLH80XomDizxqGi96tFZO0QqV2hWZJA=
+X-Google-Smtp-Source: ABdhPJwZKwsiANsg+UcfYgpf9G8lRlY/XlXD48WbnKmE8u1o5TkbjgyLVxLDudYTFxaewl53ADYtcKRk2KXfxt3MJG0=
+X-Received: by 2002:a6b:f816:: with SMTP id o22mr2692120ioh.106.1633604181530;
+ Thu, 07 Oct 2021 03:56:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211003090756.117809-1-ogabbay@kernel.org>
-In-Reply-To: <20211003090756.117809-1-ogabbay@kernel.org>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Thu, 7 Oct 2021 13:55:52 +0300
-X-Gmail-Original-Message-ID: <CAFCwf13nkoyk9QmtsyAno6QZCgmh1EdhN=diKvUpKxwTXYQMvw@mail.gmail.com>
-Message-ID: <CAFCwf13nkoyk9QmtsyAno6QZCgmh1EdhN=diKvUpKxwTXYQMvw@mail.gmail.com>
-Subject: Re: [PATCH v7 0/2] Add p2p via dmabuf to habanalabs
-To:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Dave Airlie <airlied@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
+References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-4-pauk.denis@gmail.com>
+In-Reply-To: <20211006222502.645003-4-pauk.denis@gmail.com>
+From:   Eugene Shalygin <eugene.shalygin@gmail.com>
+Date:   Thu, 7 Oct 2021 12:56:09 +0200
+Message-ID: <CAB95QASyv0MGiPGeu3ie7VSK_EjOR7x6kRsK57J5W-56dU0Nxw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] hwmon: (asus_wmi_sensors) Support X370 Asus WMI.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     andy.shevchenko@gmail.com, Ed Brindley <kernel@maidavale.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 3, 2021 at 12:08 PM Oded Gabbay <ogabbay@kernel.org> wrote:
->
-> Hi,
-> I'm sending v7 after the latest review from Jason.
-> All the changes are detailed in the commit messages.
->
-> Dave, I'll appreciate if you can also a-b this patchset.
->
-> Thanks,
-> Oded
+Hello, Denis,
 
-Hi,
-I would like to send a pull request with these patches next week, so
-if you have any more comments, please let me know.
-Oded
+On Thu, 7 Oct 2021 at 00:25, Denis Pauk <pauk.denis@gmail.com> wrote:
+
+> +MODULE_AUTHOR("Eugene Shalygin <eugene.shalygin@gmail.com>");
+
+No, I am not.
+
+Best regards,
+Eugene
+
+P.S. You stripped module aliases for this one too. Why? This driver
+certainly can benefit from them, because the presence of the specific
+WMI UUIDs unambiguously defines its condition to work.
