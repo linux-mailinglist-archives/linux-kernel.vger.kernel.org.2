@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7ED4255A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8954A4255AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242118AbhJGOnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:43:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:58324 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242115AbhJGOnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:43:04 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F30291FB;
-        Thu,  7 Oct 2021 07:41:09 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DCAF3F66F;
-        Thu,  7 Oct 2021 07:41:08 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 15:41:03 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
-Message-ID: <20211007144103.GA23778@lpieralisi>
-References: <20211005112448.2c40dc10@coco.lan>
- <20211005182321.GA1106986@bhelgaas>
+        id S242160AbhJGOnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:43:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38230 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242110AbhJGOnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:43:51 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id A26E522415;
+        Thu,  7 Oct 2021 14:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633617716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wg27QjHqYVAaPstpf7so0rTJ0eaThEY9sMKMxSud6sM=;
+        b=ZNQracSvE5WinILbpjV5/pnPN/WhcsGYEbozg2lYkFmxM8w9LMxyrRLkjz0YkLxLctxJfq
+        Ail7uzAM79IsU/KTJXUQtPiXWN/DOimtNRXCUWg6qz8sWhoIpiaQVNrMZiirTMHSEeif2H
+        EBuLbdN3NiRia3c+RNicp6S3QK6m1rI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633617716;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wg27QjHqYVAaPstpf7so0rTJ0eaThEY9sMKMxSud6sM=;
+        b=YD5i1L6NIygVjyo/v1tKRFa66cgqmirpQnXpl9Z6oWH6LwcqCTatziIQJZIZiOSAM4pBvO
+        8Ej2oPK7pkC4iYCQ==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 59C6FA3B87;
+        Thu,  7 Oct 2021 14:41:56 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 34B7D1F2C96; Thu,  7 Oct 2021 16:41:56 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 16:41:56 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, miklos <miklos@szeredi.hu>,
+        amir73il <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
+ operation
+Message-ID: <20211007144156.GK12712@quack2.suse.cz>
+References: <20210923130814.140814-1-cgxu519@mykernel.net>
+ <20210923130814.140814-7-cgxu519@mykernel.net>
+ <20211007090157.GB12712@quack2.suse.cz>
+ <17c5ab83d6d.10cdb35ab25883.3563739472838823734@mykernel.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211005182321.GA1106986@bhelgaas>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17c5ab83d6d.10cdb35ab25883.3563739472838823734@mykernel.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 01:23:21PM -0500, Bjorn Helgaas wrote:
-> [+cc Lorenzo]
+On Thu 07-10-21 20:26:36, Chengguang Xu wrote:
+>  ---- 在 星期四, 2021-10-07 17:01:57 Jan Kara <jack@suse.cz> 撰写 ----
+>  > 
+>  > > +    if (mapping_writably_mapped(upper->i_mapping) ||
+>  > > +        mapping_tagged(upper->i_mapping, PAGECACHE_TAG_WRITEBACK))
+>  > > +        iflag |= I_DIRTY_PAGES;
+>  > > +
+>  > > +    iflag |= upper->i_state & I_DIRTY_ALL;
+>  > 
+>  > Also since you call ->write_inode directly upper->i_state won't be updated
+>  > to reflect that inode has been written out (I_DIRTY flags get cleared in
+>  > __writeback_single_inode()). So it seems to me overlayfs will keep writing
+>  > out upper inode until flush worker on upper filesystem also writes the
+>  > inode and clears the dirty flags? So you rather need to call something like
+>  > write_inode_now() that will handle the flag clearing and do writeback list
+>  > handling for you?
+>  > 
 > 
-> On Tue, Oct 05, 2021 at 11:24:48AM +0200, Mauro Carvalho Chehab wrote:
-> > Hi Bjorn,
-> > 
-> > Em Tue, 28 Sep 2021 09:34:10 +0200
-> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-> 
-> > >   PCI: kirin: Reorganize the PHY logic inside the driver
-> > >   PCI: kirin: Add support for a PHY layer
-> > >   PCI: kirin: Use regmap for APB registers
-> > >   PCI: kirin: Add support for bridge slot DT schema
-> > >   PCI: kirin: Add Kirin 970 compatible
-> > >   PCI: kirin: Add MODULE_* macros
-> > >   PCI: kirin: Allow building it as a module
-> > >   PCI: kirin: Add power_off support for Kirin 960 PHY
-> > >   PCI: kirin: fix poweroff sequence
-> > >   PCI: kirin: Allow removing the driver
-> > 
-> > I guess everything is already satisfying the review feedbacks.
-> > If so, could you please merge the PCI ones?
-> 
-> Lorenzo takes care of the native host bridge drivers, so I'm sure this
-> is on his list.  I added him to cc: in case not.
+> Calling ->write_inode directly upper->i_state won't be updated, however,
+> I don't think overlayfs will keep writing out upper inode since
+> ->write_inode will be called when only overlay inode itself marked dirty.
+> Am I missing something?
 
-Ideally I'd like to see these patches ACKed/Review-ed by the kirin
-maintainers - that's what I was waiting for and that's what they
-are there for.
+Well, if upper->i_state is not updated, you are more or less guaranteed
+upper->i_state & I_DIRTY_ALL != 0 and thus even overlay inode stays dirty.
+And thus next time writeback runs you will see dirty overlay inode and
+writeback the upper inode again although it is not necessary.
 
-Having said that, I will keep an eye on this series so that we
-can hopefully queue it for v5.16.
-
-Lorenzo
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
