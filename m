@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B5D424BC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397E2424BCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 04:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232296AbhJGC1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 22:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33034 "EHLO
+        id S232401AbhJGC1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 22:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbhJGC1I (ORCPT
+        with ESMTP id S230489AbhJGC10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 22:27:08 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66A6C061746;
-        Wed,  6 Oct 2021 19:25:15 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id j15so2923760plh.7;
-        Wed, 06 Oct 2021 19:25:15 -0700 (PDT)
+        Wed, 6 Oct 2021 22:27:26 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD89C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 19:25:33 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id b5-20020a251b05000000b005b575f23711so6093913ybb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 19:25:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=wdvJk6D1ViEBYH6uB0AwglzPFWNo7cbOO7fkxMbJ9dA=;
-        b=Sp/MggvYZ1fkKseKOIqheZEqgIYO9U7l3Fb+F7r4AF1HJvKza55doAM4VFHekfLjFx
-         l0h9QKBGfCRkc0EqNboiOVTNmHzg/SEEuLqwArpOJayKxQme+kLkxEIGqZgvnMWmieNx
-         fhuC+ZFrD2D0fjMPYFbqmZAg8gVdJN6nAW585b1RLttDiggeBCq69kYRXGKHA2qSZytw
-         hSaCB+BvsDGvSowzyJ3w/Myei9Krute/Mf+n+VyS3y75NZoqIH2HR+hkZeD1eiqFJV9a
-         +rouVDBNrFLQuldI1V/ceTpSLwESV/R60I9q1ajynvnJIpy9PEOAXakMQE5+aA6KEYjv
-         CNsw==
+        d=google.com; s=20210112;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=+lgV5393cFjBh0OcyjGhmElpsLJbmXQnVDvf2tqgKRU=;
+        b=SDM6DPCnvAVmyIyC8CgVNOyFkplTs3mrdtXk35LmUG5RBm0pUvO+HHlqkjUVpYTmfs
+         9Xv0MDXZn4zHKc6M7mWRwKI2GIVG7bwGgJzEGUEMhXedXuF7MiGU1hEEaPqMM/p1eEzg
+         zbpEec0uHkJ6eJWPEMgB2l7dDarVcDQ5a04qs+MXY+zYz4K7oAMckQ1Mc73Dt6/RHDxZ
+         upqOghZffTePnlTfWAhSLzP3DIQg+Q29ptDGCxwDUdEb4o3wu03qNnvuyS4dqUT3QA2V
+         bRSu79Q5q1NbwcdKXWQK6ma6KbugoHnPsGk6uIWLmuH4amu+iQtaSKmLZlEZV+SdnjK2
+         PMGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=wdvJk6D1ViEBYH6uB0AwglzPFWNo7cbOO7fkxMbJ9dA=;
-        b=TZ37vfO6R3gET+dkdYrf05rwjO8kMxaQzmf0S1NBy7jpGMksdjXHG/fA0Qr9T+aFfm
-         /S9JTYVMU/yJJG3HlyNj81Nme/m6Sjt0Q1WjHrbFcE1o70VOeAPXHjhRkfOP2XI2O2ui
-         oO431bmZti/GcRSS4gGT6Q07buJc+W/PtTsi76ix7xz4x9nfE/xW+usdyi3cIkz2kWxl
-         mx/De84jAhB9gjkJweQYvbra6PE/mJuz3NdfCY3ZLPRv8EWEbMUOXg2O2WSILlU35lTM
-         6p6i0yMtSU6bJmMnvyik9+TBPIkv63OPLagq9zDvIqsHztZpa+4e/KX3Cb9kaVkQiprN
-         5GSg==
-X-Gm-Message-State: AOAM5318p+uruklQ1o52FqVem66cO+lMNT0dbZQSqkCyO3w661J+n7cB
-        yElePYAZs6Ip6denRNjaAUw=
-X-Google-Smtp-Source: ABdhPJwHRb5SJb8sNMUH9CwZYyScBHBUSvA5u2yjHWxgkKCOzGkTQ5PtC45GQtM+mqCrbUx1dMutLQ==
-X-Received: by 2002:a17:90a:8b8d:: with SMTP id z13mr2492694pjn.214.1633573515375;
-        Wed, 06 Oct 2021 19:25:15 -0700 (PDT)
-Received: from [10.230.29.137] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k14sm22015549pgg.92.2021.10.06.19.25.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 19:25:14 -0700 (PDT)
-Message-ID: <ad0c1e14-62f9-0b9c-0b84-d31a213d53de@gmail.com>
-Date:   Wed, 6 Oct 2021 19:24:58 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 03/12] ARM: broadcom: Use of_get_cpu_hwid()
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, x86@kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211006164332.1981454-1-robh@kernel.org>
- <20211006164332.1981454-4-robh@kernel.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211006164332.1981454-4-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=+lgV5393cFjBh0OcyjGhmElpsLJbmXQnVDvf2tqgKRU=;
+        b=JwvCSwJcK1mRXAEQF51zYWsizfciV4fgLY66mBVLGc8EGfi+YbM0D3tosB9GoF2PTC
+         0J6LuGja6hLa+zRcLQg4aPoC4RibaC6yyvdbMCBbB+loCi7jdQiQt+L18qMIUJghOd7O
+         LVZhnWoPICAkyCTOCsjrUGHWSBKmQT+CjVDsGR/Z8QqVVLFPq0BHxZLZ01dMgvC84Da8
+         8TEOpsDpgnZ/5lAG0L1NJ+ebZEgogbCyl/AHUmogJjieE3KQH0p+lC6OQrDuwWsciwkk
+         gfTLuJyQmpKzKd3aQbTLKYybO4wtKzAwWLKgEba6x7vbjJeqO4InZRmek/7LUT6qdp7x
+         NlhQ==
+X-Gm-Message-State: AOAM531B8LeDk1gNtRepTndZPrBdptCBqGajlB5yFIrAFxEVtVRIy8Ix
+        FY+RRTGkYftuLuTPW/dP/hEjO3q+o4Sy
+X-Google-Smtp-Source: ABdhPJxdWRNuGydztvP98gc+krEQfH0p+cM9r9M3dF+WfW/5/3p7oGLL5Tt5s5OWY71JlW25rQvZ7bKnctIe
+X-Received: from rajat2.mtv.corp.google.com ([2620:15c:202:201:c416:e725:30cd:a48])
+ (user=rajatja job=sendgmr) by 2002:a25:5bc5:: with SMTP id
+ p188mr1748856ybb.301.1633573532920; Wed, 06 Oct 2021 19:25:32 -0700 (PDT)
+Date:   Wed,  6 Oct 2021 19:25:27 -0700
+In-Reply-To: <20210210230800.30291-2-sakari.ailus@linux.intel.com>
+Message-Id: <20211007022527.2448652-1-rajatja@google.com>
+Mime-Version: 1.0
+References: <20210210230800.30291-2-sakari.ailus@linux.intel.com>
+X-Mailer: git-send-email 2.33.0.800.g4c38ced690-goog
+Subject: Re: ACPI: scan: Obtain device's desired enumeration power state
+From:   Rajat Jain <rajatja@google.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Robert Moore <robert.moore@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, rajatxjain@gmail.com,
+        sakari.ailus@linux.intel.com
+Cc:     Rajat Jain <rajatja@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Hello,
 
-On 10/6/2021 9:43 AM, Rob Herring wrote:
-> Replace open coded parsing of CPU nodes 'reg' property with
-> of_get_cpu_hwid().
-> 
-> Cc: Florian Fainelli <f.fainelli@gmail.com>
-> Cc: Ray Jui <rjui@broadcom.com>
-> Cc: Scott Branden <sbranden@broadcom.com>
-> Cc: bcm-kernel-feedback-list@broadcom.com
-> Cc: Russell King <linux@armlinux.org.uk>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Now that we have landed the ACPI object for _DSC in the spec:
+https://lore.kernel.org/linux-acpi/CAJZ5v0gwDEjC9T7wfCqDr7R0q_ptz2nVU52_8i8noXHPEign1g@mail.gmail.com/T/
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+I was wondering what is happening with the corresponding kernel patchset:
+https://lore.kernel.org/linux-acpi/20210210230800.30291-1-sakari.ailus@linux.intel.com/T/#m24e9f51119cbe6eb39f31c097ea3941d00a0baeb
+
+I didn't see any pending comments, so is there a reason it did not land?
+
+Thanks,
+
+Rajat 
+
 -- 
-Florian
+2.33.0.685.g46640cef36-goog
+
