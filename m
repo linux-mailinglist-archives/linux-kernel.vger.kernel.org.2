@@ -2,62 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3714424CFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FBE424D15
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240133AbhJGGFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:05:05 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:36821 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhJGGFC (ORCPT
+        id S240158AbhJGGKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:10:02 -0400
+Received: from n169-114.mail.139.com ([120.232.169.114]:9964 "EHLO
+        n169-114.mail.139.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhJGGKB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:05:02 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id E2CE252;
-        Wed,  6 Oct 2021 23:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1633586589;
-        bh=BMDC3Op7w/U0rIg38TVt+UVWdc8mvdr7eIpHHCG/AdY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wy70ZNaE+bRqJ+L8pts4q6urOnfg6qnsoWv2oYdXjwlnW6h7wT29/4rfHkq8hVVm6
-         C1v5YmX6sEpnVEa0YBd9BL7ywbB98xJwyWCG4zEmlPV67NjzOZoONdsSnBI0uws8z0
-         X9uzLIyHHpQU+SOYPpXUCHg9L2LnAmuHWjK/Y/4M=
-Date:   Wed, 6 Oct 2021 23:03:07 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     openbmc@lists.ozlabs.org, Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/9] dt-bindings: document new 'dynamic' common property
-Message-ID: <YV6Nm9jVeZ5Adte5@hatter.bewilderbeest.net>
-References: <20211007000954.30621-1-zev@bewilderbeest.net>
- <20211007000954.30621-9-zev@bewilderbeest.net>
- <YV6FEisHXqdBuduZ@kroah.com>
+        Thu, 7 Oct 2021 02:10:01 -0400
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM:                                                                                        
+X-RM-SPAM-FLAG: 00000000
+Received: from [192.168.255.10] (unknown[116.30.194.209])
+        by rmsmtp-lg-appmail-37-12051 (RichMail) with SMTP id 2f13615e8ec1772-7b31d;
+        Thu, 07 Oct 2021 14:08:05 +0800 (CST)
+X-RM-TRANSID: 2f13615e8ec1772-7b31d
+Message-ID: <c7bf6194-2613-0245-e133-8b6ad1386eb8@139.com>
+Date:   Thu, 7 Oct 2021 14:08:03 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YV6FEisHXqdBuduZ@kroah.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [RFC PATCH v5 03/10] ovl: implement overlayfs' ->evict_inode
+ operation
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210923130814.140814-1-cgxu519@mykernel.net>
+ <20210923130814.140814-4-cgxu519@mykernel.net>
+ <CAJfpegvh9if1tZOdnzn87JmDBZC0XBzf63NoOydkCGyX4ssaag@mail.gmail.com>
+From:   Chengguang Xu <cgxu519@139.com>
+In-Reply-To: <CAJfpegvh9if1tZOdnzn87JmDBZC0XBzf63NoOydkCGyX4ssaag@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:26:42PM PDT, Greg Kroah-Hartman wrote:
->On Wed, Oct 06, 2021 at 05:09:53PM -0700, Zev Weiss wrote:
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->
->I know I can not take patches without any changelog text.  Maybe other
->maintainers are more "lax" :(
->
+在 2021/10/6 23:33, Miklos Szeredi 写道:
+> On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>> Implement overlayfs' ->evict_inode operation,
+>> so that we can clear dirty flags of overlayfs inode.
+>>
+>> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+>> ---
+>>   fs/overlayfs/super.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+>> index 51886ba6130a..2ab77adf7256 100644
+>> --- a/fs/overlayfs/super.c
+>> +++ b/fs/overlayfs/super.c
+>> @@ -406,11 +406,18 @@ static int ovl_remount(struct super_block *sb, int *flags, char *data)
+>>          return ret;
+>>   }
+>>
+>> +static void ovl_evict_inode(struct inode *inode)
+>> +{
+>> +       inode->i_state &= ~I_DIRTY_ALL;
+>> +       clear_inode(inode);
+> clear_inode() should already clear the dirty flags; the default
+> eviction should work fine without having to define an ->evict_inode.
+> What am I missing?
 
-Okay -- for this one I wasn't sure what to put in the body that wasn't 
-basically just duplicating the subject line or the content of the patch, 
-but I'll make sure to put something there in the future.
+Yeah, you are right, we don't need overlayfs' own ->evict_inode anymore
+
+because we wait all writeback upper inodes in overlayfs' ->sync_fs.
 
 
-Zev
+Thanks,
+
+Chengguang
+
 
