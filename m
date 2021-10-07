@@ -2,119 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4B9425B4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C1A425B57
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243866AbhJGTGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233903AbhJGTGX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:06:23 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B948C061570;
-        Thu,  7 Oct 2021 12:04:29 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id s75so699238pgs.5;
-        Thu, 07 Oct 2021 12:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mOdDUK0yJ3uQFwhSQJDO4d6YpI2NOJDULvWFd8/xqZY=;
-        b=GkoBh4jHzExfAoI2V8vm59ZJ5Z9aLcMgolxvOnW+rm8JECz817t83MuEYgfDe+lAyt
-         C0whHGQ30eX0BFyj3sJl78AdyrJ8TUpzVm0aQ8bUxFiPONoDDuKqAHDGpeLdvrauipRb
-         S3Ex+eKYknMsL8syMwQAmPnaoWsy7e9RYMj+d4j9MNZaB2tr4bou3joYgY8AA6MNiCz9
-         lazUxjvJw2Qu3t8WdglF9pD6U/uQdYSp/uW53VD9AGkV6Ez9BQvGwqWn+2wUcNMY5M/l
-         Paz0/ivEX7NJZ5jwhRY+X5frNsX6Azdz9ohkPk+Uja9RyC0zjJQu7hUBPwf1jnebmZL+
-         Ug3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mOdDUK0yJ3uQFwhSQJDO4d6YpI2NOJDULvWFd8/xqZY=;
-        b=chinJ/0d3tc0qeoDkkoSEnxu0ED263a0TglNL7uo9JdrLm9Qx0jAFjbcujHiqfOCM9
-         qY97f4dl4+YMF3cyNJT/YZj6hfcFcHFFjafb4fBiv4aczm2bjlyL4puKyiBZd9xeHvQg
-         gBpl07NIo4eiznqkYuul8+pb3vDmOEzlKgaZt8eUcvBua49YRuEzpUalAAzQaM7Dtf4L
-         pXUEs8RzZ7ZZioYNRDL3xyCqGQYlOa0YgJkfvylZd9I65lUWb1noP9pPAnZh0/ChBPAo
-         1bx5dK1JSwczMWULQUWdsZKIOb1qPrFBsZW73Fl8Wo328U2ma+wkGwsupCpVvgJLw/kX
-         7gfw==
-X-Gm-Message-State: AOAM533lanLu7r9UehwJOwvLBHXeJ+xkRSHBVj3M3eCnBxnf+7GOBkOG
-        XOAkV09TY4Lvo2k3A7/q8bU=
-X-Google-Smtp-Source: ABdhPJy4Z/2SFAtOCnw2xD5a1CT70zeopUGODXNuEOeu0pDOEGOOfA3IR+mf/iA/Rq6Zd2KlPDwvsg==
-X-Received: by 2002:a63:2b8c:: with SMTP id r134mr1049130pgr.420.1633633469149;
-        Thu, 07 Oct 2021 12:04:29 -0700 (PDT)
-Received: from localhost.localdomain (bb42-60-144-185.singnet.com.sg. [42.60.144.185])
-        by smtp.gmail.com with ESMTPSA id k190sm164396pfd.211.2021.10.07.12.04.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 12:04:28 -0700 (PDT)
-From:   Nguyen Dinh Phi <phind.uet@gmail.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+4c4ffd1e1094dae61035@syzkaller.appspotmail.com
-Subject: [PATCH] Bluetooth: hci_sock: purge socket queues in the destruct() callback
-Date:   Fri,  8 Oct 2021 03:04:24 +0800
-Message-Id: <20211007190424.196281-1-phind.uet@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S243848AbhJGTMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:12:52 -0400
+Received: from mail-mw2nam12on2066.outbound.protection.outlook.com ([40.107.244.66]:41369
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233876AbhJGTMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:12:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=erqK89pqRM+4dYnM+REjjZAcguO7NoLTjflp7UxJbla7SW/hn0tOmSyiCWqG1Uq3+Skx0JR3+UkOCInNf6rR5eYJQ4H1jjQXEAtW37oSMqxx9omuZ03O8dy4gzUTfeBD6gtW/MQUFjassiVHpxLcumpD+BxuD5LQk2C6e6hGzTkkCv17jDF9ZDQzwdi3TLr9y83usUiOBUIiUI9I/MJB88WCBCifkaWYpxTnManMztXMKyyNs66Nygv5sdipDKS0UhFlWYVpSCVGU1m+kgRvCtw8FkrpQ8wuoYCgmV5EXWr2fUzyya20VXh9zV0bnQxx2w4YWJdG9KAi3yoI9+tuSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zDck53DgoKLA8ks+IP+umZuNwqeLJdE3LqK8CQJomCY=;
+ b=bmAI8ob2Slu7jOFaf9GiPWE0MIfd+PW2+vrXY1xcam0eHfHv/PL1AkMzDhe9iWdZRgflJEx+X8OaPHNjAkHzT/O/mZT0MpaUAIGhfz/y5TtNdHj6WVQtZ5TSYq1tDXbWTI1Wm/aTy3O1tD30jEknDtqh9rAOnehLGEPQmh1WFOIsLjNqq7n3SRmurD9Ws95HyPkJSBW29Il6LLsjKbLoKIMZQPY170eKY/thc/sk4NlDetgwkTuFAolpw5OpIt5YTmhvDiAiKgRUuIlqN2Ofmn2ziVuG6woeH2RIt478vqawYMTXvtzMGxUR7p09VPXxza43WVegpGoPXgffPXiH4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zDck53DgoKLA8ks+IP+umZuNwqeLJdE3LqK8CQJomCY=;
+ b=QdPoAB41oRF6z15KQ/KSs7YqJiNeflLTm4NQeuR9BOErsQDlhLnbZcb4A4fLv9lGSlkl+LC4hn1aZa0T6qoBRyFw2WcgpwxmlfGPfUCECibaA6zqs8l5OBdCblCcvQOQYiD5a87SW+dIWApbdhGsHjMA/+Jcnaf4RSyiaV1pGe5ket8qudCyiri3EiYGScKyfKx24E9GV2g5Qy1V+uhKRmdP57Etehq+lfeTkWBiyzm5dUM2K9z4sqzZmFjencIQKEdBhAgGFcYoJmMEiRIysFahLkyGa/Mqm671xHEz3sBo1HRVOZzOAf21YgvKKZY+M0SlPdzqaS4Cabb+UJbQow==
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5125.namprd12.prod.outlook.com (2603:10b6:208:309::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Thu, 7 Oct
+ 2021 19:10:54 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%7]) with mapi id 15.20.4587.020; Thu, 7 Oct 2021
+ 19:10:54 +0000
+Date:   Thu, 7 Oct 2021 16:10:53 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     Barry Song <21cnbao@gmail.com>, iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+Message-ID: <20211007191053.GN2744544@nvidia.com>
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
+ <20211001123623.GM964074@nvidia.com>
+ <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+ <20211004094003.527222e5@jacob-builder>
+ <20211004182142.GM964074@nvidia.com>
+ <CAGsJ_4w+ed78cnJusM_enEZpdGghzvjgt0aYDPpfwk4z7PQqxQ@mail.gmail.com>
+ <20211007121127.53956635@jacob-builder>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007121127.53956635@jacob-builder>
+X-ClientProxiedBy: BL0PR02CA0050.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::27) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0050.namprd02.prod.outlook.com (2603:10b6:207:3d::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.17 via Frontend Transport; Thu, 7 Oct 2021 19:10:54 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mYYn7-00C5bk-NM; Thu, 07 Oct 2021 16:10:53 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 224e6d8f-3f28-44f9-bc16-08d989c62fac
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5125:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5125E31464052CF8AE4E2BF1C2B19@BL1PR12MB5125.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c+b7tS54DKtOKG54gBAi/Gypnr0QNhSzMgcJWpttGfR0aLfY+E8wS5DUz3F0VHGEdMQ7k7ecqr3mBtVV1mhNStxgVnTlzkNscOn+LpY45csp0colbQISkMgFhRh/t0owlFv0sEH2UqzqVajfWJx0EHGQNDDCZ8VfmxY1VvMJGzxBhg2RUDOZJ64uZCR7lqF1dSzN1Nn+aEPZvJfeITAOmmw80iE2lRZS+hyfDNCCnFdBCzntcQ6USbWJldzlFcvftlJwaC53+uXw1o/yNmmZR6EOMGkMmE8SlbYHKKeWQYUb+q4KCoBwGVmcV3/gUAHgfxdm/vU3g6usX86BksubIIQgjfhPL31SmLBha0MDM5XK6ZUp/KGfhLe9l1l0D4CkjwgI6u22rUQ6j1u8vj/EtczpiwVxHfneWCNbXj/KcnIwY99kfHVHiordpJPDZ9ZNqX/zGPWXWIEgEqzM3rkuT/f75Z8rg6WOTVLJXHKwCp3VJCC1z5oA0gi9ePU45wPFizWQoDXx5lEKgepLCfUOFL0Q99lOZyTW5TZv7gWi9eO0EGY7wodaDB9lukXrVu5OJH4UBeRbXFYBnsDldGxW3Yar9KaZa/J0zQnpgnltqgk/8AXAFKZozpvv/rWYXrNteh8zYbx0iYEHyvHHaz0b1A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(7416002)(508600001)(5660300002)(9786002)(9746002)(1076003)(83380400001)(38100700002)(26005)(186003)(66556008)(66946007)(33656002)(86362001)(8676002)(426003)(2906002)(54906003)(66476007)(8936002)(6916009)(316002)(4326008)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gQgPbuFH0i3eBDxdu6iS3HGixpdalBoPVB25FDcIW6Vviv4Ymr7dk3ZBELfK?=
+ =?us-ascii?Q?jpYa3pyH1H0iNA8OkpxlgMCqhPc6DDGApeLj41UKmMFmHCx2hGRG+mYaKX8u?=
+ =?us-ascii?Q?uzAP92cWUSdFm91P0kl9vWU6BkRNej0GocUQ2KFIMSABHFISWfS+wviyZp/y?=
+ =?us-ascii?Q?zmTqG3baBgsxxXMBl4hyzbSXPZK97fAcjfcSHGkZxQteqcLhl7mlGvlE4FwH?=
+ =?us-ascii?Q?ubZiEAh8AfVJpJhGHa2b19nQcni1sKsU3psI5X1fRYUuQdsc/2B10aGwpEY9?=
+ =?us-ascii?Q?5NQ0gGUkckjGlIYZXeJU56SRwDtGusrgR9L7yL/OluVGQ/qAu/LjZOIVn42h?=
+ =?us-ascii?Q?/BMwBEubZA41lFVusMonMmJ2KbdS0eNSOXgMOdfTt+04H9sd/39lNJV6j7XH?=
+ =?us-ascii?Q?kiDFgFKQIMNLwPjIUbO0M/ePgMwdmoER2ce3bD2pmjjegjywonLpsPH8BpgL?=
+ =?us-ascii?Q?Q9GiQske646kRROuju/UT6D4UBQL1VA50YIagpP0NOluswGwGzX3pvPImnog?=
+ =?us-ascii?Q?0bXrRF2IbGuCtxkZrKYOtoeIFU32yC6+gHPkwUZgsnX2rTpg5JLYCDppJ46a?=
+ =?us-ascii?Q?9cEG0B9vRGL1HtZFqY6j7tjvxh11ARhO1/H/EXBNngECvC90h1V7hM+9uFzl?=
+ =?us-ascii?Q?Ii69InVTI7EcTCTPMTqmCNxx5eTIZwo6mYViLlo+SJafJDJpLFrhGp0qQDBr?=
+ =?us-ascii?Q?f0sw8+A3ULUwBel0tgjtn9+qpL9BMPQuAPROAKKQ9ouB26gZaIztSlJLE6dr?=
+ =?us-ascii?Q?ymcMBYS/bgKd6n0XVh+C+KijIXPlxWnDUFtEXonFweHaZ28VmQnR6pB3wFh0?=
+ =?us-ascii?Q?3ZvXCvBDD83asBHYx8bDH57OHSkjz9fbzZwif6mNfkr2PGruOMcfp8dDwR2a?=
+ =?us-ascii?Q?olu25XxXBz2TkVmHAyhzYT1xTnFZ/ejSEm5+kMz6DJh6U4YaPxJ8fX7rtjjN?=
+ =?us-ascii?Q?3MxD9tor6Yv57BjjcM2TV8wvBloKzOZJnfNxvEE1ebKcix61jjITH/zPAUuD?=
+ =?us-ascii?Q?/Y43KgmnXMXlRteVqkUJ1YZFqcwlIe+WGG+8/XF6/93T+ReWFYExY/FNyChp?=
+ =?us-ascii?Q?wG3GKLySNpWek0AO0Nqu79emWtxMWlSUcyNTQZJah3hCP+hjbAH1jfx6DOxr?=
+ =?us-ascii?Q?eF5iS3GJrioW/eFp431GTP/L9m9vnf7diGkBIq9d87l8AE+0SGfBMVGBDA9T?=
+ =?us-ascii?Q?u7z5vgkZMPYhUwCLqytdyAguMzkOA+fMZFJHB0Uk0wOhW9XUi3hsSKFGeJl5?=
+ =?us-ascii?Q?yCH66Vnw+tpIAkxBynfUv4T60YXluahd02keGK9u1FE7wWQ3GUxAex3pwnwC?=
+ =?us-ascii?Q?3wqzMqQqftjfC2+C8H6cLGcy4VI9WN8lpdL6bM83M/3y6w=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 224e6d8f-3f28-44f9-bc16-08d989c62fac
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 19:10:54.6861
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lR2412qrpFDKLCRLUce3o8cABNQGB3jtcHjJGrXWrpmh7Z77qwWQIFLDhkWjvJt2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The receive path may take the socket right before hci_sock_release(),
-but it may enqueue the packets to the socket queues after the call to
-skb_queue_purge(), therefore the socket can be destroyed without clear
-its queues completely.
+On Thu, Oct 07, 2021 at 12:11:27PM -0700, Jacob Pan wrote:
+> Hi Barry,
+> 
+> On Thu, 7 Oct 2021 18:43:33 +1300, Barry Song <21cnbao@gmail.com> wrote:
+> 
+> > > > Security-wise, KVA respects kernel mapping. So permissions are better
+> > > > enforced than pass-through and identity mapping.  
+> > >
+> > > Is this meaningful? Isn't the entire physical map still in the KVA and
+> > > isn't it entirely RW ?  
+> > 
+> > Some areas are RX, for example, ARCH64 supports KERNEL_TEXT_RDONLY.
+> > But the difference is really minor.
+> That brought up a good point if we were to use DMA API to give out KVA as
+> dma_addr for trusted devices. We cannot satisfy DMA direction requirements
+> since we can't change kernel mapping. It will be similar to DMA direct
+> where dir is ignored AFAICT.
 
-Moving these skb_queue_purge() to the hci_sock_destruct() will fix this
-issue, because nothing is referencing the socket at this point.
+Right.
 
-Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
-Reported-by: syzbot+4c4ffd1e1094dae61035@syzkaller.appspotmail.com
----
- net/bluetooth/hci_sock.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Using the DMA API to DMA to read only kernel memory is a bug in the
+first place.
 
-diff --git a/net/bluetooth/hci_sock.c b/net/bluetooth/hci_sock.c
-index d0dad1fafe07..446573a12571 100644
---- a/net/bluetooth/hci_sock.c
-+++ b/net/bluetooth/hci_sock.c
-@@ -889,10 +889,6 @@ static int hci_sock_release(struct socket *sock)
- 	}
- 
- 	sock_orphan(sk);
--
--	skb_queue_purge(&sk->sk_receive_queue);
--	skb_queue_purge(&sk->sk_write_queue);
--
- 	release_sock(sk);
- 	sock_put(sk);
- 	return 0;
-@@ -2058,6 +2054,12 @@ static int hci_sock_getsockopt(struct socket *sock, int level, int optname,
- 	return err;
- }
- 
-+static void hci_sock_destruct(struct sock *sk)
-+{
-+	skb_queue_purge(&sk->sk_receive_queue);
-+	skb_queue_purge(&sk->sk_write_queue);
-+}
-+
- static const struct proto_ops hci_sock_ops = {
- 	.family		= PF_BLUETOOTH,
- 	.owner		= THIS_MODULE,
-@@ -2111,6 +2113,7 @@ static int hci_sock_create(struct net *net, struct socket *sock, int protocol,
- 
- 	sock->state = SS_UNCONNECTED;
- 	sk->sk_state = BT_OPEN;
-+	sk->sk_destruct = hci_sock_destruct;
- 
- 	bt_sock_link(&hci_sk_list, sk);
- 	return 0;
--- 
-2.25.1
+> Or we are saying if the device is trusted, using pass-through is allowed.
+> i.e. physical address.
 
+I don't see trusted being relavent here beyond the usual decision to
+use the trusted map or not.
+
+Jason
