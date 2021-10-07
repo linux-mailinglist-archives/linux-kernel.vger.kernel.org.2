@@ -2,244 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC06424D8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDD6424D8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240428AbhJGG55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S240388AbhJGG6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240338AbhJGG5c (ORCPT
+        with ESMTP id S240370AbhJGG5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:57:32 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B783CC061770
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 23:55:37 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id i12so3160633wrb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 23:55:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B8RUD7tgl7QBdRvO3S95Wf0Fqgv9Sk7pIXK1c0ZKGNo=;
-        b=kGbrd6nJPydsGcCe1K/7K2ucX7InBSm+e+PCuITNTKJ24khyutoW8rGdBJSCb+ojdx
-         NnFmUzXtqUY0KapTp34iZCFrHIAD6oKfWL74F0GZZE8456ik87GFvuCLS8hTSE8ZqAQw
-         /azyoMSCwf6/LWZ++su08CVRkUkdQv9ua9AVJBCL4NVatmUGbsrRLGH1iEMJj3uvgMNI
-         +re5NrU96RafWbrBrvEG49SALATPBDYEhsNbOUhMn4YN9JP4qj/Hp3R+VKPd3Ta/jS5j
-         iPVIdI1OA3dWxz7IzGxIeNtBOvPU0aKEjxbD+WaNGhCwFmVNpHLBrlR0vHwfby57kRdi
-         353Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B8RUD7tgl7QBdRvO3S95Wf0Fqgv9Sk7pIXK1c0ZKGNo=;
-        b=w3msEl6+o4TloA8ZVu8zyZc1gA+VkQYieNkXT+4gZvM990cpF0FBvX+tj10T9Mk1ge
-         Mc8uPeIRcD1TgV11s/Y6AFNHeVJeu1aWJ3jUk2TuXn41PCKNf8CTKEYbOLOu+B8W4kMf
-         QSwhrP3PWhyEsWv8kNTou8cPqO4iWWfenRMdi23iYekCvqufl4JnXSzZgQQHRAPbfzcO
-         lbB/jIasYsTXy8JioNklibrl9LdZYv1HHn907t/kUK3XFZRB7euU+yXFPF2QpQqhxXj0
-         GeNa29MaDnRSyMSgeNHJt5NkCGl9Mo6V2EENNT1K3oFJn/V26ca/LLINSXHv82yDScDN
-         1LIA==
-X-Gm-Message-State: AOAM532lz3wa9Wzpn+Sgw+uIwlRT6PFcg9dWdJuKrJlMefMmt1TtwZ6a
-        /ELfgigIZCeN+YrHqa5kvxk2WM/A6daAMN8H4/+lWxlYm9TAdg==
-X-Google-Smtp-Source: ABdhPJyhav1vupCSDW40GLrZgzAwI3C1wfuH+z5yfi4o1Rr8u/qKLGD8HzQDC4g6gB+s8+80wLJb6+PVyNCm29rPuu4=
-X-Received: by 2002:a7b:c453:: with SMTP id l19mr2730254wmi.7.1633589735502;
- Wed, 06 Oct 2021 23:55:35 -0700 (PDT)
+        Thu, 7 Oct 2021 02:57:39 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A5CC061772;
+        Wed,  6 Oct 2021 23:55:44 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id B8E35F6;
+        Wed,  6 Oct 2021 23:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1633589744;
+        bh=1Wnuz/Ot9jwM2pt8JkasgbgyztxL92GcR7WxaDAQsMg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d5tMm6wvON4Ka6HD3KVoHPZnEeSqOGW5/n2AeX6jFtaU8leqXHQu8oT2UNmuqcqJ4
+         Wafw5+Mp3KeyDx0m0jaTH/2vxMlBW4NyWO+VwuEL3Z23iy37CM0GGSTQkSRk0qH2ql
+         ZdtANJGsy5ExgP78bBO9UQQ46SzJQ+lw8Y5iTrMw=
+Date:   Wed, 6 Oct 2021 23:55:38 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     openbmc@lists.ozlabs.org, Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/9] sysfs: add sysfs_remove_bin_file_self() function
+Message-ID: <YV6Z6omsBKgKqeoZ@hatter.bewilderbeest.net>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+ <20211007000954.30621-2-zev@bewilderbeest.net>
+ <YV6EVcKUQj5DNiXZ@kroah.com>
+ <YV6Moz5eCsf6ZZWb@hatter.bewilderbeest.net>
+ <YV6P1dM6U6sSsefc@kroah.com>
 MIME-Version: 1.0
-References: <20211007054410.290427-1-dlatypov@google.com>
-In-Reply-To: <20211007054410.290427-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 7 Oct 2021 14:55:24 +0800
-Message-ID: <CABVgOS=V-+DRtjrtEXn6fJgfe-jZJU1t_0CLfWWN=fRUUe74hw@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: print parsed test results fully incrementally
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YV6P1dM6U6sSsefc@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 1:44 PM Daniel Latypov <dlatypov@google.com> wrote:
+On Wed, Oct 06, 2021 at 11:12:37PM PDT, Greg Kroah-Hartman wrote:
+>On Wed, Oct 06, 2021 at 10:58:59PM -0700, Zev Weiss wrote:
+>> On Wed, Oct 06, 2021 at 10:23:33PM PDT, Greg Kroah-Hartman wrote:
+>> > On Wed, Oct 06, 2021 at 05:09:46PM -0700, Zev Weiss wrote:
+>> > > This is simply the bin_attribute analog to sysfs_remove_file_self().
+>> >
+>> > No, no binary sysfs file should be triggering a remove.
+>> >
+>> > binary sysfs files are "pass-through-only" from userspace to hardware,
+>> > the kernel should not be even knowing what is read/written to them.
+>> >
+>> > What do you think this is needed for?
+>> >
+>>
+>> So, I initially set out to be able to activate/deactivate specific DT nodes
+>> at runtime by using the device-tree "reserved" status as defined in the spec
+>> (but not currently used anywhere in the kernel) to mean essentially "create
+>> a device for this but don't bind a driver to it" (leaving it to userspace to
+>> invoke bind/unbind or similar), and added initial support for the specific
+>> driver I'm concerned with at the moment (aspeed-smc) -- that was the
+>> previous patch series linked in the cover letter of this one.
+>>
+>> In the discussion of that series, Rob suggested as an alternate approach:
+>>
+>> > Another possibility is making 'status' writeable from userspace. It is
+>> > just a sysfs file.
+>>
+>> That seemed sort of appealing to me, and this seemed like the most obvious
+>> way to go about implementing it.  Given that DT properties are binary
+>> attributes, I gather you'd consider that a non-starter though?
 >
-> With the parser rework [1] and run_kernel() rework [2], this allows the
-> parser to print out test results incrementally.
+>Why would a text attribute of "status" be a binary sysfs file?  That
+>feels really wrong as again, binary sysfs files are not supposed to be
+>parsed or handled by the kernel at all, they are only a pass-through.
 >
-> Currently, that's held up by the fact that the LineStream eagerly
-> pre-fetches the next line when you call pop().
-> This blocks parse_test_result() from returning until the line *after*
-> the "ok 1 - test name" line is also printed.
->
-> One can see this with the following example:
-> $ (echo -e 'TAP version 14\n1..3\nok 1 - fake test'; sleep 2; echo -e 'ok 2 - fake test 2'; sleep 3; echo -e 'ok 3 - fake test 3') | ./tools/testing/kunit/kunit.py parse
->
-> Before this patch [1]: there's a pause before 'fake test' is printed.
-> After this patch: 'fake test' is printed out immediately.
->
-> This patch also adds
-> * a unit test to verify LineStream's behavior directly
-> * a test case to ensure that it's lazily calling the generator
-> * an explicit exception for when users go beyond EOF
->
-> [1] https://lore.kernel.org/linux-kselftest/20211006170049.106852-1-dlatypov@google.com/
-> [2] https://lore.kernel.org/linux-kselftest/20211005011340.2826268-1-dlatypov@google.com/
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> ---
 
-Thanks. I tried this out with qemu/i386 and it does appropriately
-pause while 'time_test_cases' is running, but shows all the results
-beforehand. For reference, the output (with timestamps):
-[23:53:06] =============== time_test_cases (1 subtest) ================
-[23:53:58] [PASSED] time64_to_tm_test_date_range
-[23:53:58] ================= [PASSED] time_test_cases =================
+Well, at present all device tree properties are binary sysfs files 
+regardless of type, and from a brief git history check it appears 
+they've been that way since DT sysfs support was introduced in commit 
+75b57ecf9d1d ("of: Make device nodes kobjects so they show up in 
+sysfs").
+
+On the surface it seems like it would make sense for string properties 
+like status to be text files instead of binary, but (a) looking at some 
+of the discussion that preceded that patch, it sounds like there may be 
+some ambiguity regarding what the "true" types of different properties 
+actually are [0], and (b) changing the contents of those files from e.g.  
+"okay\0" to "okay\n" seems likely to lead to broken userspace, so I'd 
+guess it's probably moot anyway.
+
+[0] https://lore.kernel.org/lkml/1363801579.17680.3.camel@pasglop/
 
 
-Reviewed-by: David Gow <davidgow@google.com>
+Zev
 
-Cheers,
--- David
-
->  tools/testing/kunit/kunit_parser.py    | 22 ++++++++++----
->  tools/testing/kunit/kunit_tool_test.py | 42 +++++++++++++++++++++++++-
->  2 files changed, 57 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-> index f01fd565f978..82900a5f9ad6 100644
-> --- a/tools/testing/kunit/kunit_parser.py
-> +++ b/tools/testing/kunit/kunit_parser.py
-> @@ -172,42 +172,51 @@ class TestCounts:
->  class LineStream:
->         """
->         A class to represent the lines of kernel output.
-> -       Provides a peek()/pop() interface over an iterator of
-> +       Provides a lazy peek()/pop() interface over an iterator of
->         (line#, text).
->         """
->         _lines: Iterator[Tuple[int, str]]
->         _next: Tuple[int, str]
-> +       _need_next: bool
->         _done: bool
->
->         def __init__(self, lines: Iterator[Tuple[int, str]]):
->                 """Creates a new LineStream that wraps the given iterator."""
->                 self._lines = lines
->                 self._done = False
-> +               self._need_next = True
->                 self._next = (0, '')
-> -               self._get_next()
->
->         def _get_next(self) -> None:
-> -               """Advances the LineSteam to the next line."""
-> +               """Advances the LineSteam to the next line, if necessary."""
-> +               if not self._need_next:
-> +                       return
->                 try:
->                         self._next = next(self._lines)
->                 except StopIteration:
->                         self._done = True
-> +               finally:
-> +                       self._need_next = False
->
->         def peek(self) -> str:
->                 """Returns the current line, without advancing the LineStream.
->                 """
-> +               self._get_next()
->                 return self._next[1]
->
->         def pop(self) -> str:
->                 """Returns the current line and advances the LineStream to
->                 the next line.
->                 """
-> -               n = self._next
-> -               self._get_next()
-> -               return n[1]
-> +               s = self.peek()
-> +               if self._done:
-> +                       raise ValueError(f'LineStream: going past EOF, last line was {s}')
-> +               self._need_next = True
-> +               return s
->
->         def __bool__(self) -> bool:
->                 """Returns True if stream has more lines."""
-> +               self._get_next()
->                 return not self._done
->
->         # Only used by kunit_tool_test.py.
-> @@ -220,6 +229,7 @@ class LineStream:
->
->         def line_number(self) -> int:
->                 """Returns the line number of the current line."""
-> +               self._get_next()
->                 return self._next[0]
->
->  # Parsing helper methods:
-> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-> index c309ed76aef5..3cb02827c941 100755
-> --- a/tools/testing/kunit/kunit_tool_test.py
-> +++ b/tools/testing/kunit/kunit_tool_test.py
-> @@ -13,8 +13,9 @@ import tempfile, shutil # Handling test_tmpdir
->
->  import itertools
->  import json
-> -import signal
->  import os
-> +import signal
-> +from typing import Iterable
->
->  import kunit_config
->  import kunit_parser
-> @@ -320,6 +321,45 @@ class KUnitParserTest(unittest.TestCase):
->                                 result.status)
->                         self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
->
-> +def line_stream_from_strs(strs: Iterable[str]) -> kunit_parser.LineStream:
-> +       return kunit_parser.LineStream(enumerate(strs, start=1))
-> +
-> +class LineStreamTest(unittest.TestCase):
-> +
-> +       def test_basic(self):
-> +               stream = line_stream_from_strs(['hello', 'world'])
-> +
-> +               self.assertTrue(stream, msg='Should be more input')
-> +               self.assertEqual(stream.line_number(), 1)
-> +               self.assertEqual(stream.peek(), 'hello')
-> +               self.assertEqual(stream.pop(), 'hello')
-> +
-> +               self.assertTrue(stream, msg='Should be more input')
-> +               self.assertEqual(stream.line_number(), 2)
-> +               self.assertEqual(stream.peek(), 'world')
-> +               self.assertEqual(stream.pop(), 'world')
-> +
-> +               self.assertFalse(stream, msg='Should be no more input')
-> +               with self.assertRaisesRegex(ValueError, 'LineStream: going past EOF'):
-> +                       stream.pop()
-> +
-> +       def test_is_lazy(self):
-> +               called_times = 0
-> +               def generator():
-> +                       nonlocal called_times
-> +                       for i in range(1,5):
-> +                               called_times += 1
-> +                               yield called_times, str(called_times)
-> +
-> +               stream = kunit_parser.LineStream(generator())
-> +               self.assertEqual(called_times, 0)
-> +
-> +               self.assertEqual(stream.pop(), '1')
-> +               self.assertEqual(called_times, 1)
-> +
-> +               self.assertEqual(stream.pop(), '2')
-> +               self.assertEqual(called_times, 2)
-> +
->  class LinuxSourceTreeTest(unittest.TestCase):
->
->         def setUp(self):
->
-> base-commit: 9b409050eaf2da929408fa60fbf535745d828e67
-> --
-> 2.33.0.882.g93a45727a2-goog
->
