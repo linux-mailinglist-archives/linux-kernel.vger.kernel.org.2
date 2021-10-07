@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7E6425087
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD4AC42507F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:57:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240708AbhJGKAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:00:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:35850 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232705AbhJGKAA (ORCPT
+        id S232699AbhJGJ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232638AbhJGJ70 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:00:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633600686; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=mCPurcUvV8kI/PhHsWC7WRTfsOodLPkXvwgcM6A0LQw=; b=GuJ4x7K6Hd3YUQO4He3tk6uM4uRs0D7+kfbepecWfX3AwLvJndufp0DOD67tyCt4MH1aC9gP
- nIDvbbsv+fKBT9m92QOMiD93RiC32YRGwNvIt8GrWh53muXRDk1biyeDbWeeoA1lRT5eTsaO
- SppGoyG7henE4u7st6D0n930pg0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 615ec4ae8ea00a941f6040d3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 09:58:06
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 1C724C43617; Thu,  7 Oct 2021 09:58:06 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 135BFC4338F;
-        Thu,  7 Oct 2021 09:58:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 135BFC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-Subject: [PATCH v11 3/5] arm64: defconfig: Enable Sleep stats driver
-Date:   Thu,  7 Oct 2021 15:27:27 +0530
-Message-Id: <1633600649-7164-4-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
-References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
+        Thu, 7 Oct 2021 05:59:26 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8D8C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:57:32 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mYQ9a-0001oY-EZ; Thu, 07 Oct 2021 11:57:30 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mYQ9Z-0007hx-Gq; Thu, 07 Oct 2021 11:57:29 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v1] Input: resistive-adc-touch - fix division by zero error on z1 == 0
+Date:   Thu,  7 Oct 2021 11:57:27 +0200
+Message-Id: <20211007095727.29579-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable Sleep stats driver. The driver gives statistics for various
-low power modes on Qualcomm Technologies, Inc. (QTI) SoCs.
+For proper pressure calculation we need at least x and z1 to be non
+zero. Even worse, in case z1 we may run in to division by zero
+error.
 
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 60b7db914ddd ("Input: resistive-adc-touch - rework mapping of channels")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ .../input/touchscreen/resistive-adc-touch.c   | 29 ++++++++++---------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index da988a5..1d151a9 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1043,6 +1043,7 @@ CONFIG_QCOM_SMEM=y
- CONFIG_QCOM_SMD_RPM=y
- CONFIG_QCOM_SMP2P=y
- CONFIG_QCOM_SMSM=y
-+CONFIG_QCOM_SLEEP_STATS=m
- CONFIG_QCOM_SOCINFO=m
- CONFIG_QCOM_APR=m
- CONFIG_ARCH_R8A774A1=y
+diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
+index 744544a723b7..6f754a8d30b1 100644
+--- a/drivers/input/touchscreen/resistive-adc-touch.c
++++ b/drivers/input/touchscreen/resistive-adc-touch.c
+@@ -71,19 +71,22 @@ static int grts_cb(const void *data, void *private)
+ 		unsigned int z2 = touch_info[st->ch_map[GRTS_CH_Z2]];
+ 		unsigned int Rt;
+ 
+-		Rt = z2;
+-		Rt -= z1;
+-		Rt *= st->x_plate_ohms;
+-		Rt = DIV_ROUND_CLOSEST(Rt, 16);
+-		Rt *= x;
+-		Rt /= z1;
+-		Rt = DIV_ROUND_CLOSEST(Rt, 256);
+-		/*
+-		 * On increased pressure the resistance (Rt) is decreasing
+-		 * so, convert values to make it looks as real pressure.
+-		 */
+-		if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
+-			press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
++		if (likely(x && z1)) {
++			Rt = z2;
++			Rt -= z1;
++			Rt *= st->x_plate_ohms;
++			Rt = DIV_ROUND_CLOSEST(Rt, 16);
++			Rt *= x;
++			Rt /= z1;
++			Rt = DIV_ROUND_CLOSEST(Rt, 256);
++			/*
++			 * On increased pressure the resistance (Rt) is
++			 * decreasing so, convert values to make it looks as
++			 * real pressure.
++			 */
++			if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
++				press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
++		}
+ 	}
+ 
+ 	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.30.2
 
