@@ -2,109 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06B842526F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA2542526E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241151AbhJGMFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241031AbhJGMFd (ORCPT
+        id S241144AbhJGMFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:05:34 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:57447 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232915AbhJGMFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Oct 2021 08:05:33 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F44C061746;
-        Thu,  7 Oct 2021 05:03:40 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id f3so534588uap.6;
-        Thu, 07 Oct 2021 05:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MVcDs6bbL2O9asL/kMqUU5jJQKNfK27/hmjb5hU6Yr0=;
-        b=DRNSKqR02DK/oG0s2OJi8uaXxbvdNBKaaVId+HcLS3ox/9AIJyH4bslaMHlbL/S/wy
-         JmALCpu9S27iezO7HbVMwe9ZDVjfHUhqhi2b4wXCX6p7wguNgsWLdgnx95ue9bGeEhgc
-         IsWVtutYqWZ9uCUIYqE4h653LwArJGzp5yKNd4BBgnWnf3vXHrn3LHgT0d9z02MChJ0o
-         AazurHlOPVYaxg0WIdAykgVqrM8S3N0Og7C15vqIoimdMcyq8k29AYXoM1IXh7PDzn7X
-         BXTD4qL4PNzrUL2ywVG9vk2Ou8d2DWQs9YugYALGTKL5oj7Xerw+66eJSvWe/y7HWkMZ
-         tTJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MVcDs6bbL2O9asL/kMqUU5jJQKNfK27/hmjb5hU6Yr0=;
-        b=iccuM+6FvpMq3yuPqtYJhmVysAnGqC7cpKV+6+r/2miIzESD6+pylquiT401myJ1sI
-         gV49nh/3t91Z4qBcKeKouHiCyUoq06dH8CHiahjMJTkEMyJOrITBzB3bMi4cpZ1qeuyS
-         WaGouU0jlYUF5uwTeJvm1PAVx81C0W9P4c21rIONpJZV+V/fDB0fxWPFkGzx1+yDkiuL
-         05seDaCCk5lrUX7C43UzN0ONiJrbrDM9XhoAQxjPb/MKG2B9ZOiHzXda/4qZnOAZV07J
-         o+YRj4/+zg6NHJ4e5I+pijPSZr870sNZ7GRXslZSgNOUkxcwlMqpVjbqdws+HKWLJe18
-         PTaw==
-X-Gm-Message-State: AOAM530OxVedJ6bzn4GcJzoeTrgLrqYDlO6Tu4tfzhWEe+6nkGPM/z1r
-        GpI2v6EYM7s08W52memV3RWPfedX46jQ7IXHPCUDzJ8tjQ==
-X-Google-Smtp-Source: ABdhPJwPOFXY4auLpePQoUCQ/QHcz1sLbVtPsumuTPpOZbkJFhn2hDxDQ5FS62P38SCaY54PspTqCF+rWn3OOgY4NFo=
-X-Received: by 2002:ab0:5b17:: with SMTP id u23mr3765044uae.18.1633608219344;
- Thu, 07 Oct 2021 05:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633608220; x=1665144220;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=KfmQwXwjpkUqzPCW9Vy8rMSdY83umdm3xb0l1zYj0nw=;
+  b=YZVlhv2pW2mJHnciZ2vVYwG4bIhtRMJHBr03Z8ieU5nMMelrRFX9cA4A
+   oshxxR78pNKpimdwuGtTAQ4kOlytFh4f7W9NrUTS2z5zVMUmCNROecpQr
+   WS5EDXAK0oKldfX1KuPFck8OOxY3vStpWnR8GnzAPl3zenWcSzG1y0Dbm
+   HzvF60GT1gtf+EOG+uQjOww2RZJ+XQjLuMquAcidm4bTrRYQWtU4zGooS
+   Ydxl+xffuN4us2coq4/xUZm7qKiVt+VDz44tyIjzMEtHPkfhFbOSaBPsz
+   KOIYUc9GAqlY4n3uXAOjXf/MhA1thcJ6ZjlGXX8BmgZOh63Q2wQ29kxS2
+   g==;
+IronPort-SDR: sr4jnZM+FJXVKAHXkdEmopkV7mfeWrF/Zy72PBxUBULmyt8Ycn01hSZ4g8SZQMHXuvoIn7oQ0j
+ vVoxKUZz7jx4OwaT25md21ZKYO4zORIzQ0j67knVZmyERH6sf2J4LZ+FuSYax3cxc+c/+JcHrH
+ Z+XFnXpd0Gbame39i9wKftNf1q0QcF9Maz2K1BmMSza1AAZqHlwR2bt/vUkwfQ5cDoAG/N3mMV
+ BqeLrTql0HR//pRz+PvTTjohYBThBRAR7d7Pzj0mXnu3C2/H5pZ66djoTPRniQzn1wh0GYS+qv
+ a5kXWeqsevX3iI57bv9AAE+p
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="134584212"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 05:03:39 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 7 Oct 2021 05:03:39 -0700
+Received: from [10.159.245.112] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Thu, 7 Oct 2021 05:03:36 -0700
+Subject: Re: [PATCH] tty: serial: atmel: use macros instead of hardcoded
+ values
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <richard.genoud@gmail.com>, <gregkh@linuxfoundation.org>,
+        <jirislaby@kernel.org>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-serial@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211007112014.2332019-1-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <336df8ff-72fa-90af-607b-eeb683de4a37@microchip.com>
+Date:   Thu, 7 Oct 2021 14:03:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <CALjTZvbzYfBuLB+H=fj2J+9=DxjQ2Uqcy0if_PvmJ-nU-qEgkg@mail.gmail.com>
- <87ee8yquyi.wl-maz@kernel.org> <CALjTZvakX8Hz+ow3UeAuQiicVXtbkXEDFnHU-+n8Ts6i1LRyHQ@mail.gmail.com>
- <87bl41qkrh.wl-maz@kernel.org>
-In-Reply-To: <87bl41qkrh.wl-maz@kernel.org>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Thu, 7 Oct 2021 13:03:28 +0100
-Message-ID: <CALjTZvbsvsD6abpw0H5D4ngUXPrgM2mDV0DX5BQi0z8cd-yxzA@mail.gmail.com>
-Subject: Re: [REGRESSION][BISECTED] 5.15-rc1: Broken AHCI on NVIDIA ION (MCP79)
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     tglx@linutronix.de, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211007112014.2332019-1-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again, Marc,
+On 07/10/2021 at 13:20, Claudiu Beznea wrote:
+> Use UART_PM_STATE_ON, UART_PM_STATE_OFF instead of hardcoded values.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-On Thu, 7 Oct 2021 at 09:52, Marc Zyngier <maz@kernel.org> wrote:
->
-[snipped]
->
-> I guess this is the relevant device?
+Reviewed-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Pretty much, yes.
+Thanks Claudiu, best regards,
+   Nicolas
 
-> It is interesting that it
-> advertises not supporting interrupt masking... Can you, you, out of
-> curiosity, give the following hack a go? I would expect things to
-> behave badly too (and maybe be even worse). But one way or another, it
-> may give us a hint.
->
-> Thanks,
->
->         M.
->
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index 0099a00af361..b3c0b9d07f17 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -205,7 +205,7 @@ static void __pci_msi_mask_desc(struct msi_desc *desc, u32 mask)
->
->         if (desc->msi_attrib.is_msix)
->                 pci_msix_mask(desc);
-> -       else if (desc->msi_attrib.maskbit)
-> +       else //if (desc->msi_attrib.maskbit)
->                 pci_msi_mask(desc, mask);
->  }
->
-> @@ -216,7 +216,7 @@ static void __pci_msi_unmask_desc(struct msi_desc *desc, u32 mask)
->
->         if (desc->msi_attrib.is_msix)
->                 pci_msix_unmask(desc);
-> -       else if (desc->msi_attrib.maskbit)
-> +       else //if (desc->msi_attrib.maskbit)
->                 pci_msi_unmask(desc, mask);
->  }
+> ---
+>   drivers/tty/serial/atmel_serial.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
+> index 249ea35088d2..2c99a47a2535 100644
+> --- a/drivers/tty/serial/atmel_serial.c
+> +++ b/drivers/tty/serial/atmel_serial.c
+> @@ -2084,7 +2084,7 @@ static void atmel_serial_pm(struct uart_port *port, unsigned int state,
+>   	struct atmel_uart_port *atmel_port = to_atmel_uart_port(port);
+>   
+>   	switch (state) {
+> -	case 0:
+> +	case UART_PM_STATE_ON:
+>   		/*
+>   		 * Enable the peripheral clock for this serial port.
+>   		 * This is called on uart_open() or a resume event.
+> @@ -2094,7 +2094,7 @@ static void atmel_serial_pm(struct uart_port *port, unsigned int state,
+>   		/* re-enable interrupts if we disabled some on suspend */
+>   		atmel_uart_writel(port, ATMEL_US_IER, atmel_port->backup_imr);
+>   		break;
+> -	case 3:
+> +	case UART_PM_STATE_OFF:
+>   		/* Back up the interrupt mask and disable all interrupts */
+>   		atmel_port->backup_imr = atmel_uart_readl(port, ATMEL_US_IMR);
+>   		atmel_uart_writel(port, ATMEL_US_IDR, -1);
+> 
 
-Hm. You belive the controller is lying? :) Sure thing, I'll give it a
-spin and let you know the result.
 
-Thanks,
-Rui
+-- 
+Nicolas Ferre
