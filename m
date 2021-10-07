@@ -2,91 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2338425CB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9911425CB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240879AbhJGT5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:57:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232829AbhJGT5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:57:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1C360F6E;
-        Thu,  7 Oct 2021 19:55:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633636542;
-        bh=l66xkvwo5JDJqPQgPip89gZwXEOnO407CqbFPpfYp94=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NSeYGN3XXLrQYf0fPcCt6hWBohOXv+xiotZkcXFQ7+M4XEPsvno7qUvSzhInEfkdm
-         na9gMTTn3OoaSGuNFnHSOIEs1c+kqJVJe+nyBfC4krIYIcGU/spgPCxbMvUP/9futO
-         kEDwoSwwNI8UT31HhqEGNTNN+DhPwAyl8Aej+Ruo=
-Date:   Thu, 7 Oct 2021 12:55:41 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH mm v2] vmalloc: back off when the current task is
- OOM-killed
-Message-Id: <20211007125541.db0f3ff2bdbd8fa7dc1db03d@linux-foundation.org>
-In-Reply-To: <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-References: <YVGmMSJ3NrQZjLP8@dhcp22.suse.cz>
-        <83efc664-3a65-2adb-d7c4-2885784cf109@virtuozzo.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S236210AbhJGT6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231993AbhJGT6A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:58:00 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A9CC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 12:56:05 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id n8so27765943lfk.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 12:56:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jqpcvvl386bx1gPuTlre4q9J/DGcDYFjm1lcO6usPDw=;
+        b=w0x3HtI6PyLR/xm5MhD0TIPZNUaafPUX84ca78HYmn7HdYOgNTKuPs7YJHh3WErDIk
+         KmLCMcgEJYWewlGi8PP8ssYhah1SBVbWLTsryOIU025XgiLUJWauzhdYboIb6iPutKWH
+         hLOLtvK/9Wie6IR057gqUDa82peq1IkysorOhcRs6YI0m2kCtnvNLHvcb9hvhwMTFR79
+         he8LJ2QRredO3HIrnbs9oPO38zwboCi/zGBZDSh+9qfKFI7xdIFEjj1jTqE7JeG6ic6r
+         q716cF4lIumj6vcRu5UDlVszSSOSKH5Pbs3bfUn7nwFGpMhNaIAaSKBo9GYzfBHiXqhc
+         1kuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jqpcvvl386bx1gPuTlre4q9J/DGcDYFjm1lcO6usPDw=;
+        b=kFpVZ3JwZSEjtp17KgrwUagiJaunxKYQ69uig/K5iAAYYN1LSOw+1LAxyVfZViWSW+
+         sDcskNUb3nWrejf/elKCdc+0Q6Aizh/+TRKZwXCcaW+5DJEbV1boeR4SokaT1cGqsMVN
+         2V7Zf/9Vgn5HtnLUhjDs9HLCMIdvCE8yd1EClEnOFaRhcJAOZ2GhhfbxmxPP9QSjP5VN
+         LPhAE7Y8BrOGGqQIdQNEIuDDdCYex7YsC8XAGzVBtCpkSdyWy+/s2zbCOMuXmmk8p/qU
+         XdB0/glbF+cbJdupd5/hWEFr8ojGpRvwKC6ThS7DNefRCi0TY2DlC7NvZkHVlgrVzOk2
+         pKGA==
+X-Gm-Message-State: AOAM533stRaswTyz2lrr+mcBmlXm0VhsKj2I6/Bf0EAKMbdCqmdXIoBd
+        QG3Yz0l8jsy68+eP7u6f+R4CwSVT97N8XQ==
+X-Google-Smtp-Source: ABdhPJxybQdrT1W7cgKjvNrBAzn+LLbQt2R8iC0c/F8kfdJI+F5d/FMNMnqnHoGJsuiNttUR5BDjwA==
+X-Received: by 2002:a05:6512:2202:: with SMTP id h2mr6335380lfu.151.1633636563739;
+        Thu, 07 Oct 2021 12:56:03 -0700 (PDT)
+Received: from localhost (c-9b28e555.07-21-73746f28.bbcust.telenor.se. [85.229.40.155])
+        by smtp.gmail.com with ESMTPSA id t17sm25439lfl.223.2021.10.07.12.56.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 12:56:03 -0700 (PDT)
+From:   Anders Roxell <anders.roxell@linaro.org>
+To:     catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: [PATCH] arm64: asm: setup.h: export common variables
+Date:   Thu,  7 Oct 2021 21:56:01 +0200
+Message-Id: <20211007195601.677474-1-anders.roxell@linaro.org>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Oct 2021 16:52:40 +0300 Vasily Averin <vvs@virtuozzo.com> wrote:
+When building the kernel with sparse enabled 'C=1' the following
+warnings can be seen:
 
-> Huge vmalloc allocation on heavy loaded node can lead to a global
-> memory shortage. Task called vmalloc can have worst badness and
-> be selected by OOM-killer, however taken fatal signal does not
-> interrupt allocation cycle. Vmalloc repeat page allocaions
-> again and again, exacerbating the crisis and consuming the memory
-> freed up by another killed tasks.
-> 
-> After a successful completion of the allocation procedure, a fatal
-> signal will be processed and task will be destroyed finally.
-> However it may not release the consumed memory, since the allocated
-> object may have a lifetime unrelated to the completed task.
-> In the worst case, this can lead to the host will panic
-> due to "Out of memory and no killable processes..."
-> 
-> This patch allows OOM-killer to break vmalloc cycle, makes OOM more
-> effective and avoid host panic. It does not check oom condition directly,
-> however, and breaks page allocation cycle when fatal signal was received.
-> 
-> This may trigger some hidden problems, when caller does not handle
-> vmalloc failures, or when rollaback after failed vmalloc calls own
-> vmallocs inside. However all of these scenarios are incorrect:
-> vmalloc does not guarantee successful allocation, it has never been called
-> with __GFP_NOFAIL and threfore either should not be used for any rollbacks
-> or should handle such errors correctly and not lead to critical
-> failures.
-> 
+arch/arm64/kernel/setup.c:58:13: warning: symbol '__fdt_pointer' was not declared. Should it be static?
+arch/arm64/kernel/setup.c:84:25: warning: symbol 'boot_args' was not declared. Should it be static?
 
-This needed a little rework due to
-https://lkml.kernel.org/r/20210928121040.2547407-1-chenwandun@huawei.com.
-Please check and retest sometime?
+Rework so the variables are exported, since these two variable are
+created and used in setup.c, also used in head.S.
 
---- a/mm/vmalloc.c~vmalloc-back-off-when-the-current-task-is-oom-killed
-+++ a/mm/vmalloc.c
-@@ -2887,6 +2887,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+---
+ arch/arm64/include/asm/setup.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
+index d3320618ed14..6437df661700 100644
+--- a/arch/arm64/include/asm/setup.h
++++ b/arch/arm64/include/asm/setup.h
+@@ -8,4 +8,10 @@
+ void *get_early_fdt_ptr(void);
+ void early_fdt_map(u64 dt_phys);
  
- 	page = NULL;
- 	while (nr_allocated < nr_pages) {
-+		if (fatal_signal_pending(current))
-+			break;
++/*
++ * These two variables are used in the head.S file.
++ */
++extern phys_addr_t __fdt_pointer __initdata;
++extern u64 __cacheline_aligned boot_args[4];
 +
- 		if (nid == NUMA_NO_NODE)
- 			page = alloc_pages(gfp, order);
- 		else
-_
+ #endif
+-- 
+2.33.0
 
