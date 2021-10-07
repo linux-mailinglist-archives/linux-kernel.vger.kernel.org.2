@@ -2,72 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54804259A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C584259AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243335AbhJGRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:41:44 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35518
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242882AbhJGRlm (ORCPT
+        id S243347AbhJGRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242882AbhJGRl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:41:42 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1FF973F22C;
-        Thu,  7 Oct 2021 17:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633628383;
-        bh=AGmPEyKfrMO2SB0GuUzpEOSqBSptCQbYUMRwx/G05Wg=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=PDcBRlwNR0KSI7F21Iul29r+ViC10Ua6ZyXlsT5HvH0BLFL3fYopja0pAHYHDLUJQ
-         xRyMa2BIYSVpQaAhTDarxTrDS52rCHwaXvm0McpIsRmtHL3Y3ikyaqha1LvL8EapoG
-         O39oj+Vz3yGirhMoxJGHNKYuNJqll5uCAP5KdT9+vnqEjf4g/I/4xF9EH7NOmuLfIA
-         lgE0dUqEEmRptGkNTticRSB6UevJGsGJFp7VUiEUeNB7gHL/q8MxCvQ/5USooMNIL9
-         5gGs/1dZ7BzzU/FhS37koLmo17bUjBZ24QwyH202qgaxrXDfIIQnyQIBdopkZnvF62
-         JW2g8VM5MlZ5A==
-From:   Colin King <colin.king@canonical.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/iwpm: Remove redundant initialization of pointer err_str
-Date:   Thu,  7 Oct 2021 18:39:42 +0100
-Message-Id: <20211007173942.21933-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 7 Oct 2021 13:41:56 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AD6C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:40:03 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so5679943pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:40:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bb1PkufxTe67IhpBxyKhxa8OO+NUTrwc7Sa3gVKgQik=;
+        b=QdfITAjwVIWvpjbba2nldZcuwI42UwAeKz/mh7y2UX41AOpUsHwg3GSQ9xCeCDkhnC
+         HANw7QQld2O14WtMeHp4d9JBofQ7cXYRXi1Xgn7ardWnp5M0vOMmhkWIOzxQZi+DGU63
+         T6fdi0CRBNgETYeE+MQPfbL80xYR+qc2vxEp0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bb1PkufxTe67IhpBxyKhxa8OO+NUTrwc7Sa3gVKgQik=;
+        b=aKlkFYK1tYqpVTjyIgPX5pwv7D0MD1FIu+bTiAVf7eibl8QW9oiRKiUvN1tHW5eY8a
+         AevFZ19bUk9QjzOX5GtivEeUPm/ipH123RyzaFvmf9zMpA7A506NTTxB2I5bbHvINT24
+         NQtmZwkceJ+2m7BS2iq7bOmGAxu3r8eetaASqwqpxZslZy+JJ+SOi8ysJ+mGf704IrsN
+         nuqRoWYygLeERkkK7oCTZrRUYg7DSzMitLzCDoaDLzUki+AuTxSwiLYomEfLoCejEVev
+         9cPDmVVMvn0DUbKMxci6nAYFhJUfRJljGMIVa6jBPvBf8U0L65ebvWUpbkNNK7vMbY0y
+         yJbg==
+X-Gm-Message-State: AOAM533MaTtAEBDp1HExSXijIU4nxVNuDc5u3kDBwiIV+LdAYYF9T0w5
+        DL+N+mm3Xf9D6klRJ1gPBn/ZX0u8cTdXCA==
+X-Google-Smtp-Source: ABdhPJy2dPjsVPaV/5Jd9g8K/7TyeNi/lc7GoBrxtoOJyFRPBerhbrZK09W53FOLQm3NxYo+UK6g5A==
+X-Received: by 2002:a17:90a:1a58:: with SMTP id 24mr6997975pjl.45.1633628402419;
+        Thu, 07 Oct 2021 10:40:02 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t3sm111954pgo.51.2021.10.07.10.40.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 10:40:01 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 10:40:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
+Message-ID: <202110071038.B589687@keescook>
+References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
+ <202110051929.37279B6B4A@keescook>
+ <YV8sQ5vhD+V6XLXx@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV8sQ5vhD+V6XLXx@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Oct 07, 2021 at 08:20:03PM +0300, Alexey Dobriyan wrote:
+> On Tue, Oct 05, 2021 at 07:31:09PM -0700, Kees Cook wrote:
+> > On Sun, Oct 03, 2021 at 03:11:24PM +0300, Alexey Dobriyan wrote:
+> > > Kernel assumes that ELF program headers are ordered by mapping address,
+> > > but doesn't enforce it. It is possible to make mapping size extremely huge
+> > > by simply shuffling first and last PT_LOAD segments.
+> > > 
+> > > As long as PT_LOAD segments do not overlap, it is silly to require
+> > > sorting by v_addr anyway because mmap() doesn't care.
+> > > 
+> > > Don't assume PT_LOAD segments are sorted and calculate min and max
+> > > addresses correctly.
+> > 
+> > Nice! Yes, this all make sense.
+> > 
+> > > 
+> > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> > > ---
+> > > 
+> > >  fs/binfmt_elf.c |   23 +++++++++++------------
+> > >  1 file changed, 11 insertions(+), 12 deletions(-)
+> > > 
+> > > --- a/fs/binfmt_elf.c
+> > > +++ b/fs/binfmt_elf.c
+> > > @@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
+> > >  #define ELF_CORE_EFLAGS	0
+> > >  #endif
+> > >  
+> > > -#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
+> > > +#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
+> > 
+> > Errr, this I don't like. I assume this is because of the min() use
+> > below?
+> 
+> Yes, this is to shut up the warning.
+> 
+> The macro is slightly incorrect because "_v" can be either uint32_t or
+> uint64_t. But standard ALIGN macros are slightly incorrect too.
 
-The pointer err_str is being initialized with a value that is
-never read, it is being updated later on. The assignment is
-redundant and can be removed.
+Right, but "int" is neither 64-sized nor unsigned. :P I would just leave
+this macro as-is.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/infiniband/core/iwpm_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> I don't want to clean this particular mess right now. Those are separate stables.
+> 
+> > >  #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
+> > >  #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
+> > >  
+> > > @@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
+> > >  	return(map_addr);
+> > >  }
+> > >  
+> > > -static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
+> > > +static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
+> > >  {
+> > > -	int i, first_idx = -1, last_idx = -1;
+> > > +	elf_addr_t min_addr = -1;
+> > > +	elf_addr_t max_addr = 0;
+> > > +	bool pt_load = false;
+> > > +	int i;
+> > >  
+> > >  	for (i = 0; i < nr; i++) {
+> > > -		if (cmds[i].p_type == PT_LOAD) {
+> > > -			last_idx = i;
+> > > -			if (first_idx == -1)
+> > > -				first_idx = i;
+> > > +		if (phdr[i].p_type == PT_LOAD) {
+> > > +			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
+> > > +			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
+> > 
+> > How about:
+> > 		min_addr = min_t(elf_addr_t, min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
+> > 		max_addr = max_t(elf_addr_t, max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
+> 
+> No! The proper fix is to fix ELF_PAGESTART().
 
-diff --git a/drivers/infiniband/core/iwpm_util.c b/drivers/infiniband/core/iwpm_util.c
-index 54f4feb604d8..358a2db38d23 100644
---- a/drivers/infiniband/core/iwpm_util.c
-+++ b/drivers/infiniband/core/iwpm_util.c
-@@ -762,7 +762,7 @@ int iwpm_send_hello(u8 nl_client, int iwpm_pid, u16 abi_version)
- {
- 	struct sk_buff *skb = NULL;
- 	struct nlmsghdr *nlh;
--	const char *err_str = "";
-+	const char *err_str;
- 	int ret = -EINVAL;
- 
- 	skb = iwpm_create_nlmsg(RDMA_NL_IWPM_HELLO, &nlh, nl_client);
+Why? The warning from min() is about making sure there isn't an
+unexpected type conversion. min_t() uses an explicit type, so why not
+the above?
+
 -- 
-2.32.0
-
+Kees Cook
