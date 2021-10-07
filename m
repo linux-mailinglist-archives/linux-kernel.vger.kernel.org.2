@@ -2,317 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4164258D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A954258EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243039AbhJGRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:06:29 -0400
-Received: from mail-eopbgr60077.outbound.protection.outlook.com ([40.107.6.77]:49890
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243021AbhJGRGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:06:25 -0400
+        id S243131AbhJGRKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:10:24 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51290 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242959AbhJGRKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:10:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226264296"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="226264296"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:05:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="439610672"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP; 07 Oct 2021 10:05:51 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 7 Oct 2021 10:05:51 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Thu, 7 Oct 2021 10:05:51 -0700
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Thu, 7 Oct 2021 10:05:50 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dF6dpYhc5L1MdU57A2+FIU7uCevCGSsaGMliURUdhbguFh8ocRKXdQZvWO+c9fdBDO3DGVbGy4Axb5A3ypyOoa7Orrk8KRtynFvCesfeQWzPpMnRM28iVsGc4XXMczgFWuE4q65DOu+r8FMpBP6jFobmeWnweABLsK4dHo373O6s79+z4GBA9AYzdSZrnRaxC8j/LHsC2IYW/DllqUcKANsgIxKk/pTHxxjqAdDV/uuspJRStJdvHJXSRTNrawoCmmEwykryTL0+Rv2XS497Sug5s2Zd715Z/RUxSxFJRp8O4FcL9f4sp4U1zt2XvZWPNmv8uCy6Xavm4vyawWucCA==
+ b=PC1O0eF6EFXsQVh0DDIZPQFrqi0FsO415q38GNhQus7op+8S5QK2uCSJ+iGKfX1LvmQjvyYbULv1AK90DlW+8hDrJi8A2HTYPh9NKEhf3yBtdkLUY1r9hLQAsqZ9VRKrGK7PZFNHYLDKGFdkFt/AUG1ZBso8yGlYQxyXtPozhshs/n1iUsGU13pEu3cLQOkX9f6z0YoyQlLB/7ftSKWU4z0Qh3rjvebxfQoN6MqY/Y9agqzOzt9xCS/nIhqNd1L01ixQcolhZ/lkeQLY2PN/hhL3OhiSBFIURCAiyCvjS/ubWiYHrDVlZpUUpmC2swURWlOqePNqut1bk4n+FlY+/Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M25ClWXYrK1qjGdnoXQeD+iF3KYxMvz5B7i0bmNZ5EU=;
- b=GnnbQTJlzBPhoc9CuO+rNzHUYn69Rzwr+fk5tURfh1r8XbMc8OGXyONpIyQjzH17VX9xPQRn3q+jshnxJOh0eI1ylXoOhSLcHCGHRqkCHSJXSJDD/5n+eor/AfqhDSu+hCjFsJxxJmfVo1K9v3PorGd1/NOBoKVxO+blphmJuuiM1ew+c1UlYXRZM4SyjvEqw8OhFPw9Gua/XfbHjtfW/7gWe/ZdfxAsYlBraL49bfeF2keCAm8kKZyCZ9lJW+D7Bf2/GFFMGgNSaxOP3Z5RdjDm1tca46YUc58z8GsJ8FkoQQdMqc64Kps+Tf04aODLsENii/1PGkbZOw52UZHjgg==
+ bh=1vISxBCPVLnm3Xwiw7NaT3dcEfYOA0FyRUQZP9eGnAw=;
+ b=ERgJwGW24+Bdj+0Jut7sA2LlOiTX5KUWSkZdjQ+YwGxoqR6cluZAlAUYLmyuI0+Q0bN50ri8gkLMJvtjFcBmRqOZKhz5OsscEsN7R6VHZcm3bZbT4SXfExuat/yd9Dl7vMxeGhhq2bwFWUy0xuGq/TNfzMW6w51o0Tht91TNDu5s8XX/SghHBcZF1kbK2O03+1MrQhsgLzST/IFRD3OJwjSNy8vos1g4ZYRtP28du262eAtUE/bPHpDnTjXTPgfKF+4nj4Z+2WBBbruA2wB2p4cBNcYcV5f0rQKOaAEmxRiF9suFcptABlb8xqf1zpKQE3EnVumNSC6N7WVVS02N3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M25ClWXYrK1qjGdnoXQeD+iF3KYxMvz5B7i0bmNZ5EU=;
- b=TVmhy6xfRfFrMxkGYz+zOvWwZeroJBybr5L7tqrSNFKXQY2F73IH5hq8tJtM7l1GlLhg+yyEvnxN+/YIC7z21/GAWd/FKgkN4KoBVnJc6TDuCDtK07xlr8y4eJPuK+2iMCkOEPXZqF9fa5Nyxc1jYQ/vXkQAunj/xZwui8ARiG0=
-Authentication-Results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=seco.com;
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
- by DB6PR0302MB2824.eurprd03.prod.outlook.com (2603:10a6:4:ad::19) with
+ bh=1vISxBCPVLnm3Xwiw7NaT3dcEfYOA0FyRUQZP9eGnAw=;
+ b=mhEcw4PIgMoGU2chhj7sYjbWm0SOLUJO0jrUdWVlgl6f9UAjRDbJIr66e4nWJlW0obMKPrdXtmTVxttvXUPqYH98UtLJPN9QYKgS7Wihd4M4AC2asRQ806mOfaiLEAymDPcOptblU+IPsXEdgheGnpfuT9tsYvqgzOES967Wvlg=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+Received: from BN6PR11MB4049.namprd11.prod.outlook.com (2603:10b6:405:7f::12)
+ by BN7PR11MB2625.namprd11.prod.outlook.com (2603:10b6:406:b9::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.19; Thu, 7 Oct
- 2021 17:04:29 +0000
-Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf]) by DB7PR03MB4523.eurprd03.prod.outlook.com
- ([fe80::a9aa:f363:66e:fadf%6]) with mapi id 15.20.4587.019; Thu, 7 Oct 2021
- 17:04:29 +0000
-Subject: Re: [RFC net-next PATCH 10/16] net: macb: Move PCS settings to PCS
- callbacks
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>
-References: <20211004191527.1610759-1-sean.anderson@seco.com>
- <20211004191527.1610759-11-sean.anderson@seco.com>
- <YVwjjghGcXaEYgY+@shell.armlinux.org.uk>
- <7c92218c-baec-a991-9d6b-af42dfabbad3@seco.com>
- <YVyfEOu+emsX/ERr@shell.armlinux.org.uk>
- <ddb81bf5-af74-1619-b083-0dba189a5061@seco.com>
- <YVzPgTAS0grKl6CN@shell.armlinux.org.uk>
- <YV7NHZRFZ9U3Xj8v@shell.armlinux.org.uk>
- <YV7Z/MF7geOp+JM2@shell.armlinux.org.uk>
- <YV8fCAkcIGY+yEmQ@shell.armlinux.org.uk>
-From:   Sean Anderson <sean.anderson@seco.com>
-Message-ID: <1f7fb0a4-e830-7548-b4fc-8abf6f446f83@seco.com>
-Date:   Thu, 7 Oct 2021 13:04:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <YV8fCAkcIGY+yEmQ@shell.armlinux.org.uk>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Thu, 7 Oct
+ 2021 17:05:49 +0000
+Received: from BN6PR11MB4049.namprd11.prod.outlook.com
+ ([fe80::2091:65f4:8530:1542]) by BN6PR11MB4049.namprd11.prod.outlook.com
+ ([fe80::2091:65f4:8530:1542%6]) with mapi id 15.20.4587.020; Thu, 7 Oct 2021
+ 17:05:49 +0000
+Subject: Re: [PATCH v2 1/3] ASoC: soc-acpi: add comp_ids field for machine
+ driver matching
+To:     Brent Lu <brent.lu@intel.com>, <alsa-devel@alsa-project.org>
+CC:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Pierre-Louis Bossart" <pierre-louis.bossart@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Vamshi Krishna Gopal <vamshi.krishna.gopal@intel.com>,
+        <linux-kernel@vger.kernel.org>,
+        Rander Wang <rander.wang@intel.com>,
+        "Bard Liao" <bard.liao@intel.com>,
+        Malik_Hsu <malik_hsu@wistron.corp-partner.google.com>,
+        Libin Yang <libin.yang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Paul Olaru <paul.olaru@oss.nxp.com>,
+        "Curtis Malainey" <cujomalainey@chromium.org>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Gongjun Song <gongjun.song@intel.com>
+References: <20211007133516.1464655-1-brent.lu@intel.com>
+ <20211007133516.1464655-2-brent.lu@intel.com>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <7e6cf92f-b889-aed9-b13a-615d4d5f9b93@intel.com>
+Date:   Thu, 7 Oct 2021 19:05:39 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
+In-Reply-To: <20211007133516.1464655-2-brent.lu@intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0020.namprd13.prod.outlook.com
- (2603:10b6:208:256::25) To DB7PR03MB4523.eurprd03.prod.outlook.com
- (2603:10a6:10:19::27)
+X-ClientProxiedBy: DU2PR04CA0205.eurprd04.prod.outlook.com
+ (2603:10a6:10:28d::30) To BN6PR11MB4049.namprd11.prod.outlook.com
+ (2603:10b6:405:7f::12)
 MIME-Version: 1.0
-Received: from [172.27.1.65] (50.195.82.171) by BL1PR13CA0020.namprd13.prod.outlook.com (2603:10b6:208:256::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.4 via Frontend Transport; Thu, 7 Oct 2021 17:04:27 +0000
+Received: from [192.168.0.164] (89.64.109.202) by DU2PR04CA0205.eurprd04.prod.outlook.com (2603:10a6:10:28d::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Thu, 7 Oct 2021 17:05:44 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 251b59ea-a940-4017-4749-08d989b48636
-X-MS-TrafficTypeDiagnostic: DB6PR0302MB2824:
-X-Microsoft-Antispam-PRVS: <DB6PR0302MB28249D18ABE958AF1FEA2E0296B19@DB6PR0302MB2824.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: ae614808-1c82-400a-0309-08d989b4b58e
+X-MS-TrafficTypeDiagnostic: BN7PR11MB2625:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN7PR11MB26255A39B82601E342D2294FE3B19@BN7PR11MB2625.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LaZRq+decfYfR8aUtOYgzlZmm4DwoHVsbnTOVNFE7zRO3Rb71okI8ZdsSiGV//4hlr97ahbJuYT/sEvDJ4aCvsujEh5dHqcIOTFVIM6/dvV+oZcGBiw58SL372/yvLe1sS1FWcgGDJOt14JPR22h16wVMSTLmt5Ef1VmiO3Ume1wb9xlapY7Lag/GRc5eYoH/TkmKwVgxZxustHyvll9OjqM9A4izmguBJzVMPtYkdpcvNJy0SweHPg01zJ/rr4H8X4t9MRGH4ZH74R18il3+xRsOZmZdYkLayn5fTZWEByDvtrZ8XAZIdJqR/eUii6pbkbkn+J0VNj895O0czJhlOprnQZ6nvxjyIyMacb7Tq1i2Yg8BIlEXEea5VVW5oWaKmaqq4xpaiq9DFcEJN3VuvcGNLr4Lwjr8QjqBZjCgJJaMK9Lc0VfjrrryMLL1vk8E5uKdNOMd2LK/IKsHgdY+NjBRAMrA2nEdmVfEt4tkZyBrcSxwUGZCLcnc4XZsrTPTvJ6AzHthRaZyxPrVFh/jYQSzSUrVS5L7Oi0q6C04d9itUmxOEGg3sFdTW6n/s8GmrIuvLZPbxt8lIK9Lkig1u7AIF2NbBWuDwCqrJlFp1th1yxVwyR5UxkHdD+2Bv+y1Mix5zLL5ImeLhTvHuNudkZWsJRoOsJ22T+1fag3xLtxLOBa8nQO7oGch5JsQUtS1W8BQIytPqOfJ8L3Z+12y17UMXoQ0mhSp0sBa7zP7sBnQf7grMtH7yelyymSGu4XdI1KcFGSVlV9lw/RteB/28shG+lz8hVuTVUudyHVDdyEw99ktmqru2RULF8OL8c27sryT2G8nOPrInsNEZt79Lvs9vIrKCeeKPT6P95Ab+c=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(8936002)(956004)(38100700002)(31696002)(31686004)(86362001)(36756003)(6486002)(66946007)(83380400001)(6666004)(8676002)(6916009)(44832011)(5660300002)(66556008)(26005)(53546011)(66476007)(508600001)(16576012)(2906002)(52116002)(966005)(2616005)(54906003)(4326008)(186003)(316002)(38350700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: R0jJ04O0wQAJuCdz4OIJTSgcEi3m8ybIH82OlQVPPlVU3e5NWaxdNjNvm79aRu923Uq6yXbHtvNwykRFzgPAvtIJdI/dD2TdnPij0RmhCxNQpgTB0AZfWu8AH9aeqkyvMvVbi7PNXEGkiroVZL9PH4OnbYUle2lOsJw3yj5jcCiZ73xZKcZ5aaiDRsS/qsIMQNCK1hdoh27A0eFbkzUrkVbyu8p7pC5zu8ho9fAV/Fgnq7VW8gytvtQth2Fhu5CAHlIZDjU/D6Z9KmsIVK0r6JTyjx0n9Hl02KoJTaLeAcceDXRjmKSRh1UftbIcSfTYaCkgV7F+doydHJXNQU1kcv6Y7WV08/20oWUdKcsmFidIntwwjg59Z4ex5AOarht5JHCRdD4gN8H/nAezJFFHRWFLcO0pxj43EFLcm/JNKFsjGp9nx9F36v0igbnRCIWirLbDGdRBMOBjHd4B8PP3EU8W7LxyQk0YySTcbio9Fe6ChBvKogHU2HhQc1iO13SvFWKZ+GtFzKaf4sUWHUGKzk1tZYdmZ58SL4lnd42o7E8Mu0gdP+8izTi+/EDrm6989MV4qfaGOiAx2r5AmYlrVPPTbU/PIvjjmcqcuJ8+Iyvs6xPeHGFStB6AtwbaSI8odPXUBaQVUNDjdIuD5nuxt2ybijzxdql+tT58yFMznWnG/ri19+9Pux666XFMfG6V6dQjguUJNEAWdiKnLzwA54S4gnTtDHrR9+wGda2Viyw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR11MB4049.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(6666004)(66556008)(66476007)(4326008)(16576012)(26005)(31686004)(2616005)(956004)(44832011)(36756003)(2906002)(8676002)(54906003)(316002)(53546011)(31696002)(5660300002)(8936002)(86362001)(7416002)(38100700002)(6486002)(508600001)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?U3IrMCtaVUJoOGtlaEMzcWxoZzl0a1dQMDNFNlRjUWxNdEJ3clhwcmltQkYy?=
- =?utf-8?B?dGZWYURGM0lUS0dWU2wzekpBSTNZbkZuVjhPb1lwNytnOStmaTFiT2FGZHJ2?=
- =?utf-8?B?SVUzMUpEZi9RQzN1MnFhUmFlNnh0aXRyNkFXcG9SNXhxTTFVdENoN202NitK?=
- =?utf-8?B?cWQwSTBJcTBPbnQ2VWhJaDlqbitiMERvdEk0S3ZvNCt5SnRFK3RxK2JiVnF4?=
- =?utf-8?B?V0w4ckdJeVdrYzEzVmRlcnc4WWkrVU5ZUDY2TWIwQW5hMHAyMGVMUDV6eHVZ?=
- =?utf-8?B?TFptaCtWOTBCOThaa1B5bzk3RW4wN3k5NGV2dFNFRWtuYmpxdFJIUUZiaUN0?=
- =?utf-8?B?ZWJDVk9TRHZyVFZXVkdsbnpIald2MmJGS05US2VPa1VrK3hZV1VvbXhvWW1x?=
- =?utf-8?B?Sm16alE0elJSNnB1SS9LdGpLcGtuTGY2YWNpNVhhSHFzOHV1UlJuU2Z6bFZz?=
- =?utf-8?B?VHNxUVFEYnJWaUh0V3lOOVJVaWpuUnE0NUpHUXlWcGQ2NlFNeXVXbXM4MkJL?=
- =?utf-8?B?QzVWNVFmU3FuZVRueE9IdHdZZ3MzMEYza1JNYW1WVGtqUEQ0TVJCNmpXajJG?=
- =?utf-8?B?T09pOVQ1cENFR3J3TG1lOUpKdXFIWWtTdnN4ajJoZjhKNm9yQVd6T1M5ZUxY?=
- =?utf-8?B?enBlRWxQbkNsNHFQT2t0Q0pXYUg0eU43K0VvUEF5cUE0ZXBzMThRQ2I0dVkr?=
- =?utf-8?B?OE81L3J0ZW4yL0thOGo1RWZmU29OQlllSVpFZFBrVU5rQlkyOVY3cmowUmJD?=
- =?utf-8?B?N1RPaHBEalU3UVp1RUx5dStCQ2pIeXNXb1k1bFFUTkxIc2dyalo0eFA2dkpI?=
- =?utf-8?B?dUVDTzAzbXZienMyMWEwdzF0UWVDVm9iZ3pjTGZ1UW03Zi9XcFQzQVZwNDVv?=
- =?utf-8?B?bVFFUVFRSnJKVFRvUnc4Zm8yQ0ViTk1KUHZmVERNMENlNGxTZ2l1VXp0K2hC?=
- =?utf-8?B?QkZNSDdXZmc1VHp1TFYwdUx3dGIvckw4anVoY0NpZmZDaDFCMVRkWVRGem14?=
- =?utf-8?B?ZDFhUnRyVUZleHR6TGIyTm5pcllPdUNhQUFjUkZsRjZ3NThSWEkxd0kvWFcw?=
- =?utf-8?B?Sk9DRDlPNnJHOXVucEh2bjNpTS96bnQzbmNpdDloOGJzL3ZYNU9oYUh4bDR4?=
- =?utf-8?B?cy9ZZm5LS3hPcjQxMHMveFdJUHJ0ZVRrODI3TWZNQ1R1N2Mvb1U0c0ZmSGRm?=
- =?utf-8?B?T0YreFpIK0tpeDQvS2NKQlE1UHloUWk5THowYmVIbSt4ZitmZTAvRXdnNlRi?=
- =?utf-8?B?VWZVdXN3RWdxaUJuUnhoYUFDTHVqUi90TGw1RDVQNUw2bHYyaXcrUGVReW8z?=
- =?utf-8?B?THdIOUo2UkVvOUpYZXdWTlMvQlFpNU5Wdno3ajFCQlJVV25FVDQ0SCs0bERO?=
- =?utf-8?B?WDNscmIyVE8vMzNnNEVqZ1RRNXpuWXl2SUJSa0xvVmNMOFVSeXlmN0ZKZEk2?=
- =?utf-8?B?Ry9KZzZPWWxmd1JtV0xOVlJGdzQvQzJyUG93T254RHJSZlVkTFFnKzRmQ0Fq?=
- =?utf-8?B?c0FvY3NNeXpESXE1VHFkdlZjUTgvRkNYdlhTY3JMZkZhd2NHbG9jaktGQ3Fx?=
- =?utf-8?B?ckdONWlKbmFOdWRDRk52K3V1OVNEWWRodCtmNENmTkRwQ204Sk1HUU01MXJ0?=
- =?utf-8?B?YzU5cUpITWwxTGcwWmJ1NGQ5RFUxTWxIcDdlNVpMRktXWjArVWxwT3NiZW5p?=
- =?utf-8?B?YkR0ditBN3hVNUxRMEVrTTZzUUc1OFdtdGFTUm1VY0JSNDVSaTNQSlYwbzZW?=
- =?utf-8?Q?qoaCvmvBiVQGRpjjheRCVNH5uDh2yWVMnJKrodW?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 251b59ea-a940-4017-4749-08d989b48636
-X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bEpQK05GVE1Fa3Qva2pLVG9mVDZHK3ROemtva2Ntek9mcFk1cDZUUHV0aVJY?=
+ =?utf-8?B?OHpBZVozMnBzQ2RpL2NReVBscWRBYXN2MzV0KzJEbmxFMGdzRHYwRnlhNGdR?=
+ =?utf-8?B?SzZyc0FjWkFnSjVtQ2ZhN2RiQk5LekIxWDFkK2ppYmRmNE5sbU1ZNGR5Zzhv?=
+ =?utf-8?B?U2MzRUo4QkRrMEMzNEh3YzRnT2N2WGcyK0czVERNbS9KVXFZeG5SWWhUaklQ?=
+ =?utf-8?B?TTRWZU5iWEdySC9wZlRMeXVTVTBKaHEwdGZVeVFQVTcvRlhFZjVTK0JpNUl6?=
+ =?utf-8?B?Q2I5Z3FITnFrbmZKR21UQWY4VUgzWFYwVk9Vb243YkJRU0ZzM0FUYU9hMTkw?=
+ =?utf-8?B?a04vc2RFSXY4TjJGS2hsZG8zTEpTcEpvU2tjYStHRVh1LzZ5VWk5SGJPSkgv?=
+ =?utf-8?B?KzBIYVRpcDFaTlFYandrV2habWt4N3BBYVlsM2pBY2xnWGdlcHFhSUwrZU0z?=
+ =?utf-8?B?Z1lrL0FML1c4ZFIxR0hFVUFzRlUyRzFFUXlKYklYNFFKQ3Fyd2pZL21GMjh0?=
+ =?utf-8?B?c1dIYW5HbUlKcE9Da3Q0TzZkS1lqS0V1N1ZmNTRqMGN5VTBSc2RTbi8xaUQw?=
+ =?utf-8?B?UXhXRkR4elFrUDNYd0tBSEpVQjNjR0RtODV4WnhteDhmamxjdUNjSkRON0xx?=
+ =?utf-8?B?MDRWcTlCVUtFUnlrbTdSMzdhRFpIU3dmbkJQYlFpYzNNNEJtRVo1dHJCcXgr?=
+ =?utf-8?B?QkJoMXpwVG9qZTh6a3Z1SGFwcEdPZENuQ25CSEhqVm84MVN1YVZ4TUVXTHIw?=
+ =?utf-8?B?bVRGVGhLTGpsOEJhb095Y1ppWEVZSWxNTFpvSnNBTG5PUjljRDRVOEovYXNk?=
+ =?utf-8?B?K0s0WXhRZDlRazZGcEJielVLdUtTQ3Rpc1oxTFVYTzdtQ1pyWGhvODZLa0pK?=
+ =?utf-8?B?S1AvNFNpYUxSajJWR1JKd1YvMWI4Q09ic09TS0xmMTd5TUNsSThSZkhtU3Z6?=
+ =?utf-8?B?ekExT1p5TnBoUVpMUmFsL3JQVjRJdTJ4Smd1K1BucktiVlV4RWY1ZFA4eS8r?=
+ =?utf-8?B?eWtDalMzdVlJM0tSWEU2UE4wK01SaDV4RmMvNUp4dVZjS0ZwcUIvT3BoeTk2?=
+ =?utf-8?B?bVEyWDdUQmRLdWg0S2tNV0gxNitnT2dhNUhBYVk1NE9XTExOb21UcHl2bDhT?=
+ =?utf-8?B?YWI5ZXEvQkVTYnZMR0dJZzQ1NDRlMFAzOUltUWVocTZjZ09RL3hJNkVMeFla?=
+ =?utf-8?B?SnJpdG9Pd3VrQkNZZW1uS253b3lQdVUzRVNKWGF0WVUrSXNxQ0dpTmI0a0N3?=
+ =?utf-8?B?MkZxazJMdlZFeHRNd2hQUXZFOXN4N2NLUkN3NXBxck94VTFuMzBjU3pFemdI?=
+ =?utf-8?B?VnY5OFcvTkNZeTJ0Z1NaaGhXZHF6cXhsdjlqSmhWYmFkSDZiTVUyM3ZJUWN3?=
+ =?utf-8?B?eFV6SHdRNzczN1E1ekVwRkJta3ZuMHV6TTluZE9KRE5sWGJjUmJVMC9XUUVP?=
+ =?utf-8?B?ODRudDdTOGdMRjYxWW9GWmI3Sml5cjMrMTR1QzNWYlRkdXdHL05TTWNFeGVk?=
+ =?utf-8?B?MVhIeThzcmFrRmVZTWtWR2NsSGZZRnZ5eEJSNnR5cWVaT0M1VHgzRXVCcnVl?=
+ =?utf-8?B?TE8yRWEzSmVuTTFsTzVEUkUwajRIMzVmMklyVW53SWxTbXZwSWVUWkJic1Vt?=
+ =?utf-8?B?OWdHeldHSFVZS3VHYkhSaEZ0SnJXNWd6ajJ3SWdFS2FDZmFSS2ZjVTREZXBX?=
+ =?utf-8?B?OXoreGt6dFBOM2dGVjNPZDgxMUcvTlJ3M3FvNVIyek9XcHBPNVhLUHlRZy8z?=
+ =?utf-8?Q?o2NtTn3oDf+iEOmpml4K1IJpKjdLAXfO+XUrVeP?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae614808-1c82-400a-0309-08d989b4b58e
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR11MB4049.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 17:04:29.1007
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 17:05:48.6315
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +oPJKwz+Ys4QfPbwGce7e0Rs8QTjTWLX6IDl2WZm8hf+0ZYOK676HLhCvMw8F8KOqJJGZq7oqU/Por5p762v+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0302MB2824
+X-MS-Exchange-CrossTenant-UserPrincipalName: jaL2zJFLAce6SMEEam8rKCyQXOs6B4vgcVwBvXCrGkq9rUqbog9HU4IKihbhfN6BsGW/V4TIq9whJEnO9vm3M3khuJdRY/2ZDfGJeOSNEx4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR11MB2625
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-10-07 3:35 PM, Brent Lu wrote:
 
+...
 
-On 10/7/21 12:23 PM, Russell King (Oracle) wrote:
-> On Thu, Oct 07, 2021 at 12:29:00PM +0100, Russell King (Oracle) wrote:
->> Here's a patch which illustrates roughly what I'm thinking at the
->> moment - only build tested.
->> 
->> mac_select_pcs() should not ever fail in phylink_major_config() - that
->> would be a bug. I've hooked mac_select_pcs() also into the validate
->> function so we can catch problems there, but we will need to involve
->> the PCS in the interface selection for SFPs etc.
->> 
->> Note that mac_select_pcs() must be inconsequential - it's asking the
->> MAC which PCS it wishes to use for the interface mode.
->> 
->> I am still very much undecided whether we wish phylink to parse the
->> pcs-handle property and if present, override the MAC - I feel that
->> logic depends in the MAC driver, since a single PCS can be very
->> restrictive in terms of what interface modes are supportable. If the
->> MAC wishes pcs-handle to override its internal ones, then it can
->> always do:
->> 
->> 	if (port->external_pcs)
->> 		return port->external_pcs;
->> 
->> in its mac_select_pcs() implementation. This gives us a bit of future
->> flexibility.
->> 
->> If we parse pcs-handle in phylink, then if we end up with multiple PCS
->> to choose from, we then need to work out how to either allow the MAC
->> driver to tell phylink not to parse pcs-handle, or we need some way for
->> phylink to ask the MAC "these are the PCS I have, which one should I
->> use" which is yet another interface.
->> 
->> What I don't like about the patch is the need to query the PCS based on
->> interface - when we have a SFP plugged in, it may support multiple
->> interfaces. I think we still need the MAC to restrict what it returns
->> in its validate() method according to the group of PCS that it has
->> available for the SFP interface selection to work properly. Things in
->> this regard should become easier _if_ I can switch phylink over to
->> selecting interface based on phy_interface_t bitmaps rather than the
->> current bodge using ethtool link modes, but that needs changes to phylib
->> and all MAC drivers, otherwise we have to support two entirely separate
->> ways to select the interface mode.
->> 
->> My argument against that is... I'll end up converting the network
->> interfaces that I use to the new implementation, and the old version
->> will start to rot. I've already stopped testing phylink without a PCS
->> attached for this very reason. The more legacy code we keep, the worse
->> this problem becomes.
+>   
+> +static bool snd_soc_acpi_id_present(struct snd_soc_acpi_mach *machine)
+> +{
+> +	struct snd_soc_acpi_codecs *comp_ids = machine->comp_ids;
+> +	int i;
+> +
+> +	if (machine->id[0]) {
+> +		if (acpi_dev_present(machine->id, NULL, -1))
+> +			return true;
+> +	}
+> +
+> +	if (comp_ids) {
+> +		for (i = 0; i < comp_ids->num_codecs; i++) {
+> +			if (acpi_dev_present(comp_ids->codecs[i], NULL, -1))
+> +				return true;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+
+In cover letter you mention:
+"- can use 'comp_ids' field alone to enumerate driver"
+
+which leads me to an opinion that field 'id' should be removed, 
+entirely. With 'comp_ids' added, 'id' is basically rendered 
+optional/redundant.
+
+> +
+>   struct snd_soc_acpi_mach *
+>   snd_soc_acpi_find_machine(struct snd_soc_acpi_mach *machines)
+>   {
+>   	struct snd_soc_acpi_mach *mach;
+>   	struct snd_soc_acpi_mach *mach_alt;
+>   
+> -	for (mach = machines; mach->id[0]; mach++) {
+> -		if (acpi_dev_present(mach->id, NULL, -1)) {
+> +	for (mach = machines; mach->id[0] || mach->comp_ids; mach++) {
+
+Such loops are hard to maintain i.e. 'comp_ids' acts here like a flex 
+array that follows 'id'. Removal of 'id' field and streamlining code to 
+only use 'comp_ids' should make this loop more intuitive.
+
+> +		if (snd_soc_acpi_id_present(mach)) {
+>   			if (mach->machine_quirk) {
+>   				mach_alt = mach->machine_quirk(mach);
+>   				if (!mach_alt)
 > 
-> Having finished off the SFP side of the phy_interface_t bitmap
-> (http://git.armlinux.org.uk/cgit/linux-arm.git/log/?h=net-queue)
-> and I think the mac_select_pcs() approach will work.
-> 
-> See commit
-> http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=net-queue&id=3e0d51c361f5191111af206e3ed024d4367fce78
-> where we have a set of phy_interface_t to choose one from, and if
-> we add PCS selection into that logic, the loop becomes:
-> 
-> static phy_interface_t phylink_select_interface(struct phylink *pl,
-> 						const unsigned long *intf
-> 						const char *intf_name)
-> {
-> 	phy_interface_t interface, intf;
-> 
-> 	...
-> 
-> 	interface = PHY_INTERFACE_MODE_NA;
-> 	for (i = 0; i < ARRAY_SIZE(phylink_sfp_interface_preference); i++) {
-> 		intf = phylink_sfp_interface_preference[i];
-> 
-> 		if (!test_bit(intf, u))
-> 			continue;
-> 
-> 		pcs = pl->pcs;
-> 		if (pl->mac_ops->mac_select_pcs) {
-> 			pcs = pl->mac_ops->mac_select_pcs(pl->config, intf);
-> 			if (!pcs)
-> 				continue;
-> 		}
-> 
-> 		if (pcs && !test_bit(intf, pcs->supported_interfaces))
-> 			continue;
-> 
-> 		interface = intf;
-> 		break;
-> 	}
-> 	...
-> }
-> 
-> The alternative would be to move some of that logic into
-> phylink_sfp_config_nophy(), and will mean knocking out bits from
-> the mask supplied to phylink_select_interface() each time we select
-> an interface mode that the PCS doesn't support... which sounds rather
-> more yucky to me.
-> 
-
-With appropriate helper functions, I don't think we would need to have a
-separate mac_select_pcs callback:
-
-probe()
-{
-	priv->pl = phylink_create();
-	priv->pcs1 = my_internal_pcs;
-	priv->pcs2 = phylink_find_pcs();
-}
-
-validate()
-{
-	switch (state->interface) {
-	case PHY_INTERFACE_MODE_NA:
-	case PHY_INTERFACE_GMII:
-		phylink_set(mask, 1000baseT_Full);
-		phylink_set(mask, 1000baseX_Full);
-		if (one)
-			break;
-		fallthrough;
-	default:
-		matched = phylink_set_pcs_modes(mask, priv->pcs1, state);
-		matched ||= phylink_set_pcs_modes(mask, priv->pcs2, state);
-		if (matched)
-			break;
-		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
-		return;
-	}
-	bitmap_and(supported, supported, mask, __ETHTOOL_LINK_MODE_MASK_NBITS);
-}
-
-prepare()
-{
-	switch (state->interface) {
-	case PHY_INTERFACE_GMII:
-		enable_gmii();
-		break;
-	default:
-		if (phylink_attach_matching_pcs(priv->pl, priv->pcs1, state->interface)) {
-			enable_internal_pcs();
-			break;
-		}
-		if (phylink_attach_matching_pcs(priv->pl, priv->pcs2, state->interface)) {
-			enable_external_pcs();
-			break;	
-		}
-		BUG();
-	}
-}
-
-int phylink_set_interface_mode(mask, iface)
-{
-	/* switch statement from phylink_parse_mode here */
-}
-
-bool phylink_set_pcs_modes(mask, pcs, state)
-{
-	if (state->interface != PHY_INTERFACE_MODE_NA) {
-		if (!test_bit(state->interface, pcs->supported_interfaces))
-			return false;
-		phylink_set_interface_mode(mask, state->interface);
-		return true;
-	}
-	
-	for (i = 0; i < PHY_INTERFACE_MODE_MAX; i++) {
-		if (test_bit(i, pcs->supported_interfaces))
-			phylink_set_interface_mode(mask, state->interface);
-	}
-	return true;
-}
-
-bool phylink_attach_matching_pcs(pl, pcs, iface)
-{
-	if (!test_bit(iface, pcs->supported_interfaces))
-		return false;
-	phylink_set_pcs(pl, pcs);
-	return true;
-}
-
-I think this has some advantages over a separate mac_select_pcs():
-
-- In validate() you get all the available interfaces.
-- The MAC can set the priority of its PCSs however it likes, which is
-   probably good enough for almost every case.
-- The MAC doesn't care about what interfaces the PCSs actually support.
-- phylink can do whatever logic it wants for selection under the hood.
-- From phylink's POV, drivers behave the same way no matter whether they
-   use these helpers or whether they just say "If we use SGMII, then use
-   our internal PCS)".
-
---Sean
