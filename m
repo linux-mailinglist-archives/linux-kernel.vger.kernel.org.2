@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B6542553D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A7C425540
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241978AbhJGOX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241042AbhJGOX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:23:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA10F610CC;
-        Thu,  7 Oct 2021 14:21:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633616492;
-        bh=xTguGxb+pvfpaW8x929jVClMOsoXSvmHcgRLD9+ZJIk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FFLspULtvPRf6zffVeQl4pF5v3TsK9H33qbffAfhUHTtRE7+N3w5yENNsIMH7xUlz
-         ANAEhsEb5S+yVA9TmCVyuOpcttIqjWm7cZCMcRjBJJh7tMCyn/HYWD5zyT68lIqRQ4
-         38ypdOnelP0+T3knnMsp9mBKTlx683lZ+t9gA3zI=
-Date:   Thu, 7 Oct 2021 16:21:30 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Subject: Re: [PATCH] Revert "serial: 8250: Fix reporting real baudrate value
- in c_ospeed field"
-Message-ID: <YV8CavX93a8XCSJP@kroah.com>
-References: <20211007133146.28949-1-johan@kernel.org>
+        id S242005AbhJGOXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:23:40 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37124 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241042AbhJGOXk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:23:40 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 197ELfBE021443
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Oct 2021 10:21:41 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 1635015C34DF; Thu,  7 Oct 2021 10:21:41 -0400 (EDT)
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     adilger.kernel@dilger.ca, Shaoying Xu <shaoyi@amazon.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, benh@amazon.com
+Subject: Re: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule time computation in more granular unit
+Date:   Thu,  7 Oct 2021 10:21:34 -0400
+Message-Id: <163361646350.569327.18128912303237466845.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
+References: <20210902164412.9994-1-shaoyi@amazon.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211007133146.28949-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 03:31:46PM +0200, Johan Hovold wrote:
-> This reverts commit 32262e2e429cdb31f9e957e997d53458762931b7.
+On Thu, 2 Sep 2021 16:44:11 +0000, Shaoying Xu wrote:
+> Description
+> ===========
+> Ext4 FS has inappropriate implementations on the next schedule time calculation
+> that use jiffies to measure the time for one request to zero out inode table. This
+> actually makes the wait time effectively dependent on CONFIG_HZ, which is
+> undesirable. We have observed on server systems with 100HZ some fairly long delays
+> in initialization as a result. Therefore, we propose to use more granular unit to
+> calculate the next schedule time.
 > 
-> The commit in question claims to determine the inverse of
-> serial8250_get_divisor() but failed to notice that some drivers override
-> the default implementation using a get_divisor() callback.
-> 
-> This means that the computed line-speed values can be completely wrong
-> and results in regular TCSETS requests failing (the incorrect values
-> would also be passed to any overridden set_divisor() callback).
-> 
-> Similarly, it also failed to honour the old (deprecated) ASYNC_SPD_FLAGS
-> and would break applications relying on those when re-encoding the
-> actual line speed.
-> 
-> There are also at least two quirks, UART_BUG_QUOT and an OMAP1510
-> workaround, which were happily ignored and that are now broken.
-> 
-> Finally, even if the offending commit were to be implemented correctly,
-> this is a new feature and not something which should be backported to
-> stable.
-> 
-> Cc: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/tty/serial/8250/8250_port.c | 17 -----------------
->  1 file changed, 17 deletions(-)
+> [...]
 
-Argh, sorry I missed this, good catch.  I'll go queue this up now,
-thanks.
+Applied, thanks!
 
-greg k-h
+[1/1] ext4: fix lazy initialization next schedule time computation in more granular unit
+      commit: 3782027982881d2c1105ffe058aecb69cc780dfa
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
