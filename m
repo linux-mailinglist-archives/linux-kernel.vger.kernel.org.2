@@ -2,141 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34532424D5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:40:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B51F9424D5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240178AbhJGGmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S240231AbhJGGnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:43:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbhJGGmd (ORCPT
+        with ESMTP id S232680AbhJGGnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:42:33 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D8C3C061746;
-        Wed,  6 Oct 2021 23:40:40 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c29so4506786pfp.2;
-        Wed, 06 Oct 2021 23:40:40 -0700 (PDT)
+        Thu, 7 Oct 2021 02:43:42 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14F4C061746;
+        Wed,  6 Oct 2021 23:41:48 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id m26so5236013qtn.1;
+        Wed, 06 Oct 2021 23:41:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=rchYZ1OmvrTj6Dnb5m6nbANunxf9oFlLci7r8WnLUPs=;
-        b=O+7v3Tfioq20KfK+iM0C+zGiMKkOfAsz+ANPc0m+oNdQQOsOiltCkSWLlWzH3uGSAw
-         6VTdx1hFDFjrc2AKEBhK2aNu1U8F5Dqcef+wgfRGfqO+kA86OnmQL+fAqGMGJ6Cgf794
-         2apr60YhCU8TtaK892mqvAlkPPf54ZQLDkmeB/kp2lU/AGyPMwXSv66laka4M0tQoLZ4
-         uV/ieHXAPFvzBTrBe4C8m4y5/UgTdzQcY9gQ9TvpJpzfeg1V4AEjYblTstjiYX2+8QFR
-         DtVpbsVrNOPBb2jH3eXW1FUjU1hFa90FaXO3MyxAAPeEPXv3qHPjpXb+LZe3H1w8lbKO
-         IsmA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZZjWmchPl2AxV82USMwNoOi/IEatk9SR7+Ig2TwmG/s=;
+        b=JqZE6CCAF/RQeMAZIe6O3bLpkOg6dzcF8ZNo4aciaNw0pz7oWeRjn00CFeUfeq1h35
+         ImHlbbbRZEe2yDqxJLlXD2ni4MkVJVBsPtr+jpnXof7GYA8M2mOCWE7a6ghGWtd/XFNo
+         4aum+Oaq9MT1/X5FG3XtSIb5Z7HpdGHAhe1XlCOQWg5rAToQiLTfAQ3f6OE94NVTY0kh
+         uwf7Kc9bj9yoQxgP9gcUY11ES4vWX+7ET8QOg9OmNEQnZOXUlNmrONZvnD8d4fdvcUVj
+         V2AaNheugAyyxKJXYDnjMHQ+2sWnNfF6y6dHt4s4DQZJkGcIw6MurZmsyB4NmsZWeLiU
+         KLHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=rchYZ1OmvrTj6Dnb5m6nbANunxf9oFlLci7r8WnLUPs=;
-        b=eZB0eAnEDRLkxKE2EbWgwNBPhFZm47FbP7QvcPTTkXxntJooigy0rnoIk/QOUosPmN
-         0Sncq0QRLqQlSaFWS+9OHvb8S9gXqIQqjB8d09C9TzYH82XCtbc54g85oKWIUWnr7fS0
-         VH8qPScG1vtLTI9f2vR681dfzyXu2INoOAcenLLbJXdu5bBSXsB40ECsX8UCM6YNTDfJ
-         JLeG6mMrqlOZM+Y2+rkyuIKzaa3C4hKEKD+MUcel1w6hcdm/eaPVM84kiKqoq5LXcqhz
-         lPsX5TsLVSQHc0LzllZGAwpEu6Ck0ACD1+kPFFh80FzmRDi6brE1fO/IVswUlapCYBHA
-         Jqhg==
-X-Gm-Message-State: AOAM533ZhXfdvv+YYsN8OmLpSvMg08Q21XyzzF7a55xNEFTJSzBkq45u
-        HMx7fVEPCte7a3CHATafbMKi+ffFfKjgPr0IRyp7E6CfaKFB+N0=
-X-Google-Smtp-Source: ABdhPJxrWmcU7AzTy6Llp+zmxjXH3KAy/mRdFUScx+jA5RlbVQ4lgC0RabvXrznpxqpNB3TfgOmg0bxTrCTOmnCrneg=
-X-Received: by 2002:a63:85c6:: with SMTP id u189mr1970797pgd.381.1633588840007;
- Wed, 06 Oct 2021 23:40:40 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZZjWmchPl2AxV82USMwNoOi/IEatk9SR7+Ig2TwmG/s=;
+        b=qhfbh+Hx7PHdZRX7rJTVMfMoSzLN+Ta0er78bzYI4QswE4TXxJTZBRGAyg/NRFgcR7
+         pyWKy1KnNMXU1GFqvLEmltf7NL/zsZu5CDyKazdcj3nmkNkW/RHT8Xbjoyaa1SShImIV
+         tv8iRFLSsHqmpW5xoyvjd7oaG0QZydiuOyYWXOtOiWwUWsYtLGKV7oAOaxjVEw7YV7Ft
+         U6PCxIYs/QQOUjdqUGgDcvU38hhbDDnPUFmb3wph28Q9QtY9BsubDUjRaV9rrASaPj9h
+         GT5/Th2XxWvOThmQkyVpoU9iAz4I9iMZs/OyFszJ8hdw07Mp9ItGKjvaFkWkJMejPBcq
+         FW3A==
+X-Gm-Message-State: AOAM531gRULqOHBWGqfCvIpAV5bBokf9vgXhxQ0D2G6XjhNf48ukHwPV
+        cXlLUzQhWa5rBxZxy2e+CRejgiDe4wEq81LC6Ws=
+X-Google-Smtp-Source: ABdhPJxXzEUsy3BbvH/t+km/X+wRBIXB0Y7FI32KfJ7Bvg3Oi0R6bsnbeK8TBZzrlcuzkNR+hfP87g==
+X-Received: by 2002:ac8:6683:: with SMTP id d3mr3010580qtp.291.1633588908181;
+        Wed, 06 Oct 2021 23:41:48 -0700 (PDT)
+Received: from [10.20.0.12] ([37.120.215.226])
+        by smtp.gmail.com with ESMTPSA id a3sm13146306qkh.67.2021.10.06.23.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Oct 2021 23:41:47 -0700 (PDT)
+Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
+To:     David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
+ <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
+Date:   Thu, 7 Oct 2021 09:41:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
-In-Reply-To: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 7 Oct 2021 14:40:29 +0800
-Message-ID: <CACkBjsb0Hxam_e5+vOOanF_BfGAcf5UY+=Cc-pyphQftETTe8Q@mail.gmail.com>
-Subject: Re: kernel BUG in block_invalidatepage
-To:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-This crash can still be triggered repeatedly on the latest kernel.
 
-HEAD commit: 60a9483534ed Merge tag 'warning-fixes-20211005'
-git tree: upstream
-kernel config: https://drive.google.com/file/d/1u-ncYGLkq3xqdlNQYJz8-G6Fhf3H-moP/view?usp=sharing
+On 07.10.2021 04:14, David Ahern wrote:
+> On 10/6/21 11:48 AM, Leonard Crestez wrote:
+>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key *tcp_md5_do_lookup_exact(const struct sock *sk,
+>>   #endif
+>>   	hlist_for_each_entry_rcu(key, &md5sig->head, node,
+>>   				 lockdep_sock_is_held(sk)) {
+>>   		if (key->family != family)
+>>   			continue;
+>> -		if (key->l3index && key->l3index != l3index)
+>> +		if (key->l3index != l3index)
+> 
+> That seems like the bug fix there. The L3 reference needs to match for
+> new key and existing key. I think the same change is needed in
+> __tcp_md5_do_lookup.
 
-------------[ cut here ]------------
-kernel BUG at fs/buffer.c:1514!
-invalid opcode: 0000 [#1] PREEMPT SMP
-CPU: 3 PID: 25416 Comm: syz-executor Not tainted 5.15.0-rc4+ #22
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:block_invalidatepage+0x27f/0x2a0 fs/buffer.c:1514
-Code: ff ff e8 b4 fd d6 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-c7 c2 40 b1 25 84 e8 8b 1b c5 02 e9 c9 fe ff ff e8 91 fd d6 ff <0f> 0b
-e8 8a fd d6 ff 0f 0b e8 83 fd d6 ff 48 8d 5d ff e9 57 ff ff
-RSP: 0018:ffffc9000538fa70 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffea0004518000 RCX: 0000000000000000
-RDX: ffff88810dd2a280 RSI: ffffffff8160943f RDI: ffffea0004518000
-RBP: ffffea0004518000 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffc9000538f908 R11: 0000000000000001 R12: ffffffff816091c0
-R13: ffffc9000538fb78 R14: 0000000000000000 R15: ffffc9000538fb00
-FS:  0000000000000000(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020590008 CR3: 000000000588a000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- do_invalidatepage mm/truncate.c:157 [inline]
- truncate_cleanup_page+0x15c/0x280 mm/truncate.c:176
- truncate_inode_pages_range+0x169/0xc20 mm/truncate.c:325
- kill_bdev.isra.16+0x28/0x30 block/bdev.c:77
- blkdev_flush_mapping+0x4c/0x130 block/bdev.c:658
- blkdev_put_whole+0x54/0x60 block/bdev.c:689
- blkdev_put+0x6f/0x210 block/bdev.c:953
- blkdev_close+0x26/0x30 block/fops.c:460
- __fput+0xdf/0x380 fs/file_table.c:280
- task_work_run+0x86/0xd0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0x4f1/0x11c0 kernel/exit.c:825
- do_group_exit+0x57/0xe0 kernel/exit.c:922
- get_signal+0x1d0/0x10b0 kernel/signal.c:2868
- arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4196af
-Code: Unable to access opcode bytes at RIP 0x419685.
-RSP: 002b:00007faeee07b9c0 EFLAGS: 00000293 ORIG_RAX: 0000000000000012
-RAX: 0000000000000000 RBX: 0000000000000003 RCX: 00000000004196af
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000003 R15: 000000002059c040
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace bb86c370c06fa387 ]---
-RIP: 0010:block_invalidatepage+0x27f/0x2a0 fs/buffer.c:1514
-Code: ff ff e8 b4 fd d6 ff b9 02 00 00 00 be 02 00 00 00 4c 89 ff 48
-c7 c2 40 b1 25 84 e8 8b 1b c5 02 e9 c9 fe ff ff e8 91 fd d6 ff <0f> 0b
-e8 8a fd d6 ff 0f 0b e8 83 fd d6 ff 48 8d 5d ff e9 57 ff ff
-RSP: 0018:ffffc9000538fa70 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffea0004518000 RCX: 0000000000000000
-RDX: ffff88810dd2a280 RSI: ffffffff8160943f RDI: ffffea0004518000
-RBP: ffffea0004518000 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffc9000538f908 R11: 0000000000000001 R12: ffffffff816091c0
-R13: ffffc9000538fb78 R14: 0000000000000000 R15: ffffc9000538fb00
-FS:  0000000000000000(0000) GS:ffff88813dd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f397f798010 CR3: 0000000012392000 CR4: 0000000000750ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
+Current behavior is that keys added without tcpm_ifindex will match 
+connections both inside and outside VRFs. Changing this might break real 
+applications, is it really OK to claim that this behavior was a bug all 
+along?
+
+The approach with most backward compatibility would be to add a new flag 
+for keys that only match non-vrf connections.
+
+Alternatively (TCP_MD5SIG_FLAG_IFINDEX && tcpm_ifindex == 0) could be 
+defined as "only non-vrf connections" while TCP_MD5SIG_FLAG_IFINDEX 
+missing could be "either".
+
+--
+Regards,
+Leonard
