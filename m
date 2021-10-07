@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6899D425192
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63C73425196
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241005AbhJGK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232810AbhJGK6P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:58:15 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26991C061746;
-        Thu,  7 Oct 2021 03:56:22 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id x1so2301208iof.7;
-        Thu, 07 Oct 2021 03:56:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=23gZkYObBsS9Oz5ktS9sLtCgLLCB25YH4/s8PNfqgmI=;
-        b=V3OGQW4hPGJ6lZQLXw+ruDHmH5KvebYrClY7D+6/GJACExdiAhHzLf4n8LNWRn1fLd
-         VB7bDLWaOBF9cyD2gZoRnqQDNH0GYkaPJafzX7FeqI5fDnh19VtodYxatxP7pU0M56DF
-         sPnCnsLfPu9MXnwj4CYb6+mVTEclSs05XpKu9OkUBAvOkl+sOXKRK6c0osdVp3Lcop4c
-         7FFSCzBF727P75fzJZfwEGYO2FlM0jNxjFGCvDYGPwWu9MhJkbZgfgdTccU48RECrsDs
-         TmfZ3b5bBwuc3cXqUAwOL4FK9GvUAqmYPTWY/XKo0PZididPiadxo4UmPLso0wZcdKpc
-         S3gg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=23gZkYObBsS9Oz5ktS9sLtCgLLCB25YH4/s8PNfqgmI=;
-        b=jDSwdJInD6zknMJrB44XLr6NW5QgNxd7z0dO72cCFcdyZ+05g1wCfP3ORPAeJFcSCu
-         xSp5HahN9RKAn5wop7MB5n3RrGIJx6kqGn3kueffQLoiN+D9t7Tarvnibq1/zHBjkdw8
-         bXG2T9xu5bpbrwOSZB4Cz58UN+2MIZ23QJdHTUVp/ATekiv3IC71g4IATJTnmulddCL3
-         0kkQw0XpSjCshBCiNdWwQbe9Zfw8+YiURggemo1+mYR3QznfixdIOlUBVsqIeN5HW6vL
-         2SmZuSuhOfIzbUFelE+7vbMMOAO2wVM8M2Dwy+tJznoJPMaPGBO1krgS43+NOhRPQ/pT
-         iOMA==
-X-Gm-Message-State: AOAM531tYkOQp4fnAEExplmx83xsPW6YngR8B8ZG43s3QP3kmM/g0yfZ
-        h7tse461TLH80XomDizxqGi96tFZO0QqV2hWZJA=
-X-Google-Smtp-Source: ABdhPJwZKwsiANsg+UcfYgpf9G8lRlY/XlXD48WbnKmE8u1o5TkbjgyLVxLDudYTFxaewl53ADYtcKRk2KXfxt3MJG0=
-X-Received: by 2002:a6b:f816:: with SMTP id o22mr2692120ioh.106.1633604181530;
- Thu, 07 Oct 2021 03:56:21 -0700 (PDT)
+        id S232680AbhJGK7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:59:43 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:43152 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232418AbhJGK7m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:59:42 -0400
+Received: from zn.tnic (p200300ec2f0cc9001cdbae1e4e88a0d5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:c900:1cdb:ae1e:4e88:a0d5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 84DE81EC04BF;
+        Thu,  7 Oct 2021 12:57:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633604267;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=n2EzrSXyJXy4xBzeKLs8hZc3s5Q+reOgF2SKerQIEfs=;
+        b=eDgX7rfOeF2rdIHNGVX2rT9jQXah3wX+ZwEbCG3apyTI5BFxxIrNX5NvL7U61TxyfyHpaF
+        eqiPf1eFTmfEtfKpOyR8hQSMUmxmbNiUbOJQzjk7Lerbvq9FoRSIsQuIOGaf2b6bbKqDPc
+        Xsf3kUGFMI0RVLBJIYBSB6VYDiaOROU=
+Date:   Thu, 7 Oct 2021 12:57:41 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
+        rric@kernel.org, Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH] EDAC/amd64: Handle three rank interleaving mode
+Message-ID: <YV7SpRD3b0eRkXcQ@zn.tnic>
+References: <20211005154419.2060504-1-yazen.ghannam@amd.com>
 MIME-Version: 1.0
-References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-4-pauk.denis@gmail.com>
-In-Reply-To: <20211006222502.645003-4-pauk.denis@gmail.com>
-From:   Eugene Shalygin <eugene.shalygin@gmail.com>
-Date:   Thu, 7 Oct 2021 12:56:09 +0200
-Message-ID: <CAB95QASyv0MGiPGeu3ie7VSK_EjOR7x6kRsK57J5W-56dU0Nxw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] hwmon: (asus_wmi_sensors) Support X370 Asus WMI.
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     andy.shevchenko@gmail.com, Ed Brindley <kernel@maidavale.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211005154419.2060504-1-yazen.ghannam@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Denis,
+On Tue, Oct 05, 2021 at 03:44:19PM +0000, Yazen Ghannam wrote:
+> AMD Rome systems and later support interleaving between three identical
+> ranks within a channel.
+> 
+> Check for this mode by counting the number of enabled chip selects and
+> comparing their masks. If there are exactly three enabled chip selects
+> and their masks are identical, then three rank interleaving is enabled.
+> 
+> The size of a rank is determined from its mask value. However, three
+> rank interleaving doesn't follow the method of swapping an interleave
+> bit with the most significant bit. Rather, the interleave bit is flipped
+> and the most significant bit remains the same. There is only a single
+> interleave bit in this case.
+> 
+> Account for this when determining the chip select size by keeping the
+> most significant bit at its original value and ignoring any zero bits.
+> This will return a full bitmask in [MSB:1].
+> 
+> Fixes: e53a3b267fb0 ("EDAC/amd64: Find Chip Select memory size using Address Mask")
+> 
+> Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
+> ---
+>  drivers/edac/amd64_edac.c | 22 +++++++++++++++++++++-
+>  1 file changed, 21 insertions(+), 1 deletion(-)
 
-On Thu, 7 Oct 2021 at 00:25, Denis Pauk <pauk.denis@gmail.com> wrote:
+Applied, thanks.
 
-> +MODULE_AUTHOR("Eugene Shalygin <eugene.shalygin@gmail.com>");
+-- 
+Regards/Gruss,
+    Boris.
 
-No, I am not.
-
-Best regards,
-Eugene
-
-P.S. You stripped module aliases for this one too. Why? This driver
-certainly can benefit from them, because the presence of the specific
-WMI UUIDs unambiguously defines its condition to work.
+https://people.kernel.org/tglx/notes-about-netiquette
