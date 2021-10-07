@@ -2,208 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3520424E21
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3FA424E27
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240420AbhJGHfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:35:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27884 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232512AbhJGHfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:35:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633591996;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IcGgFJhn+URtM5zX70uUXK5bzpT3Lent47sXcqP2HJM=;
-        b=FyCFxfnezggtY0IafaJ94a8W1eIWRINWWJcM+nt/ate+7i22ctDm9ufzfNluR4j+iATvnG
-        kMH4otrrnoWb9d+xPaQiTzwNRw52XOXbYoG0c27ybxbzBGIzlifxs4nsKx//BL6uZdAXF0
-        RvgudLW3PTDOlNJQ3Meje+LjjgAdSfI=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-CSMZqewAOZeqKKLZSBeUKA-1; Thu, 07 Oct 2021 03:33:14 -0400
-X-MC-Unique: CSMZqewAOZeqKKLZSBeUKA-1
-Received: by mail-wr1-f70.google.com with SMTP id h11-20020adfa4cb000000b00160c791a550so3768564wrb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 00:33:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=IcGgFJhn+URtM5zX70uUXK5bzpT3Lent47sXcqP2HJM=;
-        b=PZYcuTgubJT3sOScdViNtnW4Yiyx5XIoVtih+73CmI3w/l/KSFlYZIK5RYzU/1Y+X3
-         DDsniqCtjStxaL2d7ivssolIVdiw6zbs/Y2aRlm43QkFiTg+7dkiBRIHrNkJs9BRMLr1
-         DSP3adGGjlm3YwKpEBbtVzJce5Xfo3cpIqsdSav8QyV1ReUAk2evu6ufrf9QzsFNuiMq
-         YqlT1Mi8Z/M+IUZ+bEgseSWKoob7WKeWzF8dkfQ3SMN5eLifSdyycSu7bj43TJvINqXS
-         IHCn5XowTujZ207TbXRp65Xtrtxy3fbqUgcjVBkeMqGUCMDj1pcwnbswMEfU3ApFjy6g
-         foGw==
-X-Gm-Message-State: AOAM532Aalg4aVR5hgbmT276JegLS4Rc57zLejuwO03bWBX7DemL36va
-        CrpbfZFMvgxU0SXYcuGAV2gI1WI2XZzUUKXHlzvtpDW1OeQM1eIvPBsDckfAsOMsc82YwuRU3+r
-        vWLOtI4kK+MN2GJSRqDnkvUiq
-X-Received: by 2002:a1c:7dc8:: with SMTP id y191mr2863370wmc.181.1633591993768;
-        Thu, 07 Oct 2021 00:33:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwE8uu5BiQUJRBqH4gg1xzkNu2l2F2J06nqsFu854Q1VUXlrztTCS9j5p/4FyrKQnwZ7WGKOA==
-X-Received: by 2002:a1c:7dc8:: with SMTP id y191mr2863339wmc.181.1633591993537;
-        Thu, 07 Oct 2021 00:33:13 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6886.dip0.t-ipconnect.de. [91.12.104.134])
-        by smtp.gmail.com with ESMTPSA id l124sm7732468wml.8.2021.10.07.00.33.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 00:33:13 -0700 (PDT)
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>, John Hubbard <jhubbard@nvidia.com>,
-        Pavel Machek <pavel@ucw.cz>,
+        id S240403AbhJGHjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 03:39:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232512AbhJGHjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 03:39:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B83760F22;
+        Thu,  7 Oct 2021 07:37:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633592236;
+        bh=EeaDISX4nx0CukTLIziNpZxMI2I7MdtAi3qldQDb+ms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HGt3VR213kXy//b4+APJwNkKQv2k0VvCeoLnXnMgqEEP4ycnXc96fo7EFRCNm9yn8
+         iBZDt4mkYgEZup1PPBdyMm/f7WpZcmY+j9LGfMvYyT18xqoIrFHCGNLIABym13fHZV
+         lYIYkYbXbddv/7DE///K2Q0phL860mAxoR09rYo6cJwsmbmES2DmTODAC2sgGgCCBd
+         /+8P0aMDC1AzyYEvLfytFxr6Ovv6gJebEFxvEwa+Wa97FQAhY2dJWULS+8y3nxkIW6
+         fbXkvHIaGGrErHKdu5EnIkMYRON4nvEO/0Q6B7N/oGAX4rWI5WP/CrmHJ1W+tR6GTr
+         0N0Bw68QP9g7w==
+Date:   Thu, 7 Oct 2021 10:37:10 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
         Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <20211001205657.815551-1-surenb@google.com>
- <20211001205657.815551-3-surenb@google.com>
- <20211005184211.GA19804@duo.ucw.cz>
- <CAJuCfpE5JEThTMhwKPUREfSE1GYcTx4YSLoVhAH97fJH_qR0Zg@mail.gmail.com>
- <20211005200411.GB19804@duo.ucw.cz>
- <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
- <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
- <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <192438ab-a095-d441-6843-432fbbb8e38a@redhat.com>
- <CAJuCfpH4KT=fOAWsYhaAb_LLg-VwPvL4Bmv32NYuUtZ3Ceo+PA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <cb910cf1-1463-8c4f-384e-8b0096a0e01f@redhat.com>
-Date:   Thu, 7 Oct 2021 09:33:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v1 3/3] memory-hotplug.rst: document the "auto-movable"
+ online policy
+Message-ID: <YV6jpoVERotn/New@kernel.org>
+References: <20210930144117.23641-1-david@redhat.com>
+ <20210930144117.23641-4-david@redhat.com>
+ <YVzvYmf4xWC1DORO@kernel.org>
+ <4bab9000-0b49-a852-d574-1c8b2fe10de1@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJuCfpH4KT=fOAWsYhaAb_LLg-VwPvL4Bmv32NYuUtZ3Ceo+PA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4bab9000-0b49-a852-d574-1c8b2fe10de1@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.10.21 17:20, Suren Baghdasaryan wrote:
-> On Wed, Oct 6, 2021 at 8:08 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 06.10.21 17:01, Suren Baghdasaryan wrote:
->>> On Wed, Oct 6, 2021 at 2:27 AM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 06.10.21 10:27, Michal Hocko wrote:
->>>>> On Tue 05-10-21 23:57:36, John Hubbard wrote:
->>>>> [...]
->>>>>> 1) Yes, just leave the strings in the kernel, that's simple and
->>>>>> it works, and the alternatives don't really help your case nearly
->>>>>> enough.
->>>>>
->>>>> I do not have a strong opinion. Strings are easier to use but they
->>>>> are more involved and the necessity of kref approach just underlines
->>>>> that. There are going to be new allocations and that always can lead
->>>>> to surprising side effects.  These are small (80B at maximum) so the
->>>>> overall footpring shouldn't all that large by default but it can grow
->>>>> quite large with a very high max_map_count. There are workloads which
->>>>> really require the default to be set high (e.g. heavy mremap users). So
->>>>> if anything all those should be __GFP_ACCOUNT and memcg accounted.
->>>>>
->>>>> I do agree that numbers are just much more simpler from accounting,
->>>>> performance and implementation POV.
->>>>
->>>> +1
->>>>
->>>> I can understand that having a string can be quite beneficial e.g., when
->>>> dumping mmaps. If only user space knows the id <-> string mapping, that
->>>> can be quite tricky.
->>>>
->>>> However, I also do wonder if there would be a way to standardize/reserve
->>>> ids, such that a given id always corresponds to a specific user. If we
->>>> use an uint64_t for an id, there would be plenty room to reserve ids ...
->>>>
->>>> I'd really prefer if we can avoid using strings and instead using ids.
->>>
->>> I wish it was that simple and for some names like [anon:.bss] or
->>> [anon:dalvik-zygote space] reserving a unique id would work, however
->>> some names like [anon:dalvik-/system/framework/boot-core-icu4j.art]
->>> are generated dynamically at runtime and include package name.
->>
->> Valuable information
+On Wed, Oct 06, 2021 at 10:01:39AM +0200, David Hildenbrand wrote:
+> On 06.10.21 02:35, Mike Rapoport wrote:
+> > On Thu, Sep 30, 2021 at 04:41:17PM +0200, David Hildenbrand wrote:
+> > > In commit e83a437faa62 ("mm/memory_hotplug: introduce "auto-movable" online
+> > > policy") we introduced a new memory online policy to automatically
+> > > select a zone for memory blocks to be onlined. We added a way to
+> > > set the active online policy and tunables for the auto-movable online
+> > > policy. In follow-up commits we tweaked the "auto-movable" policy to also
+> > > consider memory device details when selecting zones for memory blocks to
+> > > be onlined.
+> > > 
+> > > Let's document the new toggles and how the two online policies we have
+> > > work.
+> > > 
+> > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > > ---
+> > >   .../admin-guide/mm/memory-hotplug.rst         | 128 +++++++++++++++---
+> > >   1 file changed, 108 insertions(+), 20 deletions(-)
+> > > 
+> > > diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+> > > index ee00b70dedde..c20a2c0031cf 100644
+> > > --- a/Documentation/admin-guide/mm/memory-hotplug.rst
+> > > +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+> > > @@ -165,9 +165,8 @@ Or alternatively::
+> > >   	% echo 1 > /sys/devices/system/memory/memoryXXX/online
+> > > -The kernel will select the target zone automatically, usually defaulting to
+> > > -``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
+> > > -command line or if the memory block would intersect the ZONE_MOVABLE already.
+> > > +The kernel will select the target zone automatically, depending on the
+> > > +configured ``online_policy``.
+> > >   One can explicitly request to associate an offline memory block with
+> > >   ZONE_MOVABLE by::
+> > > @@ -198,6 +197,9 @@ Auto-onlining can be enabled by writing ``online``, ``online_kernel`` or
+> > >   	% echo online > /sys/devices/system/memory/auto_online_blocks
+> > > +Similarly to manual onlining, with ``online`` the kernel will select the
+> > > +target zone automatically, depending on the configured ``online_policy``.
+> > > +
+> > >   Modifying the auto-online behavior will only affect all subsequently added
+> > >   memory blocks only.
+> > > @@ -393,9 +395,11 @@ command line parameters are relevant:
+> > >   ======================== =======================================================
+> > >   ``memhp_default_state``	 configure auto-onlining by essentially setting
+> > >                            ``/sys/devices/system/memory/auto_online_blocks``.
+> > > -``movable_node``	 configure automatic zone selection in the kernel. When
+> > > -			 set, the kernel will default to ZONE_MOVABLE, unless
+> > > -			 other zones can be kept contiguous.
+> > > +``movable_node``	 configure automatic zone selection in the kernel when
+> > > +			 using the ``contig-zones`` online policy. When
+> > > +			 set, the kernel will default to ZONE_MOVABLE when
+> > > +			 onlining a memory block, unless other zones can be kept
+> > > +			 contiguous.
+> > 
+> > The movable_node main purpose is to allow unplugging an entire node. Zone
+> > selection is a consequence of this. You may want to cite the description of
+> > movable_node in kernel-paramenters.txt here.
 > 
-> Yeah, I should have described it clearer the first time around.
+> Right, I only document the effects of these parameters on memory
+> hot(un)plug.
 > 
->>
->>> Packages are constantly evolving, new ones are developed, names can
->>> change, etc. So assigning a unique id for these names is not really
->>> feasible.
->>
->> So, you'd actually want to generate/reserve an id for a given string at
->> runtime, assign that id to the VMA, and have a way to match id <->
->> string somehow?
+> What about:
 > 
-> If we go with ids then yes, that is what we would have to do.
+> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst
+> b/Documentation/admin-guide/mm/memory-hotplug.rst
+> index c20a2c0031cf..f8976ded0863 100644
+> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
+> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+> @@ -402,6 +402,9 @@ command line parameters are relevant:
+>                          contiguous.
+>  ========================
+> =======================================================
 > 
->> That reservation service could be inside the kernel or even (better?) in
->> user space. The service could for example de-duplicates strings.
-> 
-> Yes but it would require an IPC call to that service potentially on
-> every mmap() when we want to name a mapped vma. This would be
-> prohibitive. Even on consumption side, instead of just dumping
-> /proc/$pid/maps we would have to parse the file and convert all
-> [anon:id] into [anon:name] with each conversion requiring an IPC call
-> (assuming no id->name pair caching on the client side).
+> +See Documentation/admin-guide/kernel-parameters.txt for a more generic
+> +description of these command line parameters.
+> +
 
-mmap() and prctl() already do take the mmap sem in write, so they are 
-not the "most lightweight" operations so to say.
+Ok.
 
-We already to have two separate operations, first the mmap(), then the 
-prctl(). IMHO you could defer the "naming" part to a later point in 
-time, without creating too many issues, moving it out of the 
-"hot/performance critical phase"
-
-Reading https://lwn.net/Articles/867818/, to me it feels like the use 
-case could live with a little larger delay between the mmap popping up 
-and a name getting assigned.
+>  Module Parameters
+>  ------------------
+> 
+> 
+> > 
+> > And, pardon my ignorance, how movable_node will play with auto-movable
+> > policy?
+> 
+> It's essentially ignored with the auto-movable policy for memory hotplugged
+> after boot (!MEMBLOCK_HOTPLUG). That's why only the description of
+> "contig-zones" below describes how it interacts with the ``movable_node``,
+> and we make it clear here that it's restricted to the "contig-zones" policy
+> as well.
+> 
+> <details>
+> Bare metal, where we care about reliably unplugging hotplugged memory
+> usually configures auto-onlining to "online_movable": for example, that's
+> the case on RHEL. auto-movable doesn't make too much sense for bare metal:
+> the nature of "movable_node" is to essentially online anything that might
+> get hotunplugged MOVABLE, especially after hotplugging memory and rebooting:
+> that is highly dangerous especially in virtualized environments.
+> 
+> "auto-movable" is valuable in virtualized environments, where we add memory
+> via:
+> * add_memory_driver_managed() like virtio-mem, whereby such memory is
+>   never part of the firmware provided memory-map, so the policy is
+>   always in control even after a reboot.
+> * Hotplugged virtual DIMMs, such as provided by x86-64/arm64, whereby we
+>   don't include these DIMMs in the firmware-provided memory map, but
+>   ACPI code adds them after early boot, making it behave similar to
+>   add_memory_driver_managed() -- the policy is always in control even
+>   after a reboot.
+> </details>
+ 
+Do you want to put it somewhere in Documentation/ ?
+It's already written anyway ;-)
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Sincerely yours,
+Mike.
