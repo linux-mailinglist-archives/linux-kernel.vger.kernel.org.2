@@ -2,84 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAA64251CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C0F4251DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241027AbhJGLPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:15:25 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:52142 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240912AbhJGLPU (ORCPT
+        id S240778AbhJGLTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:19:18 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33504
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230087AbhJGLTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:15:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633605208; x=1665141208;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=k/mSN7o+aoBZYxo/n7LsESco3AX+6x+Db3/dTL8XL34=;
-  b=Y0NZyOJi338jz2D0nVo6X6qhLzu2j/ggRmZpXco5TE18t1Ei5BpJIDCE
-   4NKznFpGkWsjciMYYZmv0bKDa18BpRgzbhxn4lrJSz7KNn0PcjPc7eK83
-   5cHOwdB9r2M3iD9hFqsAGZDpW8WFG77ewkRaPRhGRQDzw+jKiQeJqCGbN
-   aRiCU/R6EzePHkEUPyqPAaR44BRFXaownUpUWYNVi0yS2qD0C83anD3QZ
-   J8FIagR8Z1DPdIfuq+2IV9e14Mt4bv+ThqSn7xDH0U+tU0AVbI1DNORM/
-   MBXrKViulWWjh2ryMWZV2jYeZHd4VFQotS+n0yTIA2oMXz3cPYuIGXsVy
-   w==;
-IronPort-SDR: giOBcYN79/7gJcJ339ZhXg710xwf8hRdx3UUxXpgGI9hYeEBLw9OYTSP3MBFx0nj2rQvM1aj+i
- n2+1V4OGoAhWMnt5SbyT9WnMiqMA5t/bMh3Y8UMgtGoE6zbVwEWNbsEUOsHQgJxRwUEOpJp/Y9
- TBV0qNxzrJMmoTt6LYZnJwyy6MK5vMRhnaYakFXpEM0OrYIAp0k9OZIfgiCVzS7IgIN7uWzka/
- +P1xrivR6fiKGIKau3naW4E0AWOykxXuoBPWiCCNCGdvpKLzCGBxyxCkwVtEPk0yebRD9ed4Or
- jw/lO+hOr4vEExwoaxuseHFu
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="138808614"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 04:13:28 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 7 Oct 2021 04:13:26 -0700
-Received: from rob-dk-mpu01.microchip.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Thu, 7 Oct 2021 04:13:25 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <ludovic.desroches@microchip.com>, <tudor.ambarus@microchip.com>,
-        <vkoul@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 4/4] dmaengine: at_xdmac: use pm_ptr()
-Date:   Thu, 7 Oct 2021 14:12:30 +0300
-Message-ID: <20211007111230.2331837-5-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007111230.2331837-1-claudiu.beznea@microchip.com>
-References: <20211007111230.2331837-1-claudiu.beznea@microchip.com>
+        Thu, 7 Oct 2021 07:19:09 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 303683FFE4;
+        Thu,  7 Oct 2021 11:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633605434;
+        bh=avjKW1lulkmRLzQGJiNan2tRFayMsYMy4bdNSEG99Ds=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=GaMOJdxdCQFYwiz7lh3WZWOecf6ZSKndwxQKMwtsm16R4D4jqcCvmPjGX0jsqseVU
+         kW3R1FwLVxz7JMxgWXB4cY12aoAsATU4D1V3sIEykqtXBOUiWSbiH0Swo1R3VzMbyD
+         4CjoDRACB4g+if3xci9gNPS9K88sbxQzO5zrKiVyYf0OEAtuV8rq508/kzCP6U+ggy
+         bYxVpX16vfOZPPm7dc61cPy07LVKf/PHbmBLyKSweGMkhr7Zw4qQ536wzHG8Eo1zt6
+         ypMYa0tMA+h8F24FiKTkufrXVHLyoZ0nuYBc4ijC5B0RP7kg3PhKxfnlQSL29SfQD4
+         gsxHLeK2/EAkg==
+From:   Colin King <colin.king@canonical.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] Bluetooth: use bitmap_empty to check if a bitmap has any bits set
+Date:   Thu,  7 Oct 2021 12:17:13 +0100
+Message-Id: <20211007111713.12207-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pm_ptr() macro to fill at_xdmac_driver.driver.pm.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+The check to see if any tasks are left checks if bitmap array is zero
+rather than using the appropriate bitmap helper functions to check the
+bits in the array. Fix this by using bitmap_empty on the bitmap.
+
+Addresses-Coverity: (" Array compared against 0")
+Fixes: 912730b52552 ("Bluetooth: Fix wake up suspend_wait_q prematurely")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/dma/at_xdmac.c | 2 +-
+ net/bluetooth/hci_request.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 12371396fcc0..7fb19bd18ac3 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -2231,7 +2231,7 @@ static struct platform_driver at_xdmac_driver = {
- 	.driver = {
- 		.name		= "at_xdmac",
- 		.of_match_table	= of_match_ptr(atmel_xdmac_dt_ids),
--		.pm		= &atmel_xdmac_dev_pm_ops,
-+		.pm		= pm_ptr(&atmel_xdmac_dev_pm_ops),
- 	}
- };
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index 209f4fe17237..bad3b9c895ba 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -1108,7 +1108,7 @@ static void suspend_req_complete(struct hci_dev *hdev, u8 status, u16 opcode)
+ 	clear_bit(SUSPEND_SET_ADV_FILTER, hdev->suspend_tasks);
+ 
+ 	/* Wake up only if there are no tasks left */
+-	if (!hdev->suspend_tasks)
++	if (!bitmap_empty(hdev->suspend_tasks, __SUSPEND_NUM_TASKS))
+ 		wake_up(&hdev->suspend_wait_q);
+ }
  
 -- 
-2.25.1
+2.32.0
 
