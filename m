@@ -2,72 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612904256D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07FAD4256DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241570AbhJGPpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:45:38 -0400
-Received: from marcansoft.com ([212.63.210.85]:51204 "EHLO mail.marcansoft.com"
+        id S242414AbhJGPqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:46:03 -0400
+Received: from mga07.intel.com ([134.134.136.100]:40735 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233463AbhJGPpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:45:36 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id C74BB3FA60;
-        Thu,  7 Oct 2021 15:43:36 +0000 (UTC)
-Subject: Re: [PATCH v5 00/14] PCI: Add support for Apple M1
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <kettenis@openbsd.org>,
-        Sven Peter <sven@svenpeter.dev>,
-        Robin Murphy <Robin.Murphy@arm.com>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210929163847.2807812-1-maz@kernel.org>
- <20211004083845.GA22336@lpieralisi> <87czolrwgn.wl-maz@kernel.org>
- <CACRpkdZzdzJmatnYe2pcKCSW2=WJBa-DZQPib7aGW9m_GLrAwg@mail.gmail.com>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <d9491159-670b-87c6-65b4-10f7c7ba62fe@marcan.st>
-Date:   Fri, 8 Oct 2021 00:43:34 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S242389AbhJGPqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:46:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="289784186"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="289784186"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 08:44:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="624303794"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 07 Oct 2021 08:44:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 36214159; Thu,  7 Oct 2021 18:44:09 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        jic23@kernel.org, linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: [PATCH v4 0/7] kernel.h further split
+Date:   Thu,  7 Oct 2021 18:44:00 +0300
+Message-Id: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZzdzJmatnYe2pcKCSW2=WJBa-DZQPib7aGW9m_GLrAwg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 03.30, Linus Walleij wrote:
-> On Mon, Oct 4, 2021 at 11:05 AM Marc Zyngier <maz@kernel.org> wrote:
-> 
->> Yes, that's absolutely fine. I hope we can resolve the issue on the
->> pinctrl binding pretty quickly, and get the arm-soc folks to pull the
->> DT changes in for 5.16 too.
-> 
-> I think I ACKed a patch for apple,npins = <> yesterday.
+v3: https://lore.kernel.org/linux-media/20211007150339.28910-1-andriy.shevchenko@linux.intel.com/T/#u
+v2: https://lore.kernel.org/linux-media/20211007095129.22037-1-andriy.shevchenko@linux.intel.com/T/#u
 
-You reviewed it :)
+The kernel.h is a set of something which is not related to each other
+and often used in non-crossed compilation units, especially when drivers
+need only one or two macro definitions from it.
 
-It still needs some fixes to pass the schema linter though.
+Here is the split of container_of(). The goals are the following:
+- untwist the dependency hell a bit
+- drop kernel.h inclusion where it's only used for container_of()
+- speed up C preprocessing.
+
+The build speedup is
+	1.83% (ccache approach, see v2 cover letter for the details)
+	0.5%  (kcbench approach, see v3 cover letter for the details)
+
+In v4:
+- dropped kobject.h change (Greg)
+- Cc'ed more people (as per v1)
+
+In v3:
+- split patch 2 to more patches (Greg)
+- excluded C changes (Herbert, Greg)
+- measured with kcbench, see below (Greg)
+
+Andy Shevchenko (7):
+  kernel.h: Drop unneeded <linux/kernel.h> inclusion from other headers
+  kernel.h: Split out container_of() and typeof_member() macros
+  kunit: Replace kernel.h with the necessary inclusions
+  list.h: Replace kernel.h with the necessary inclusions
+  llist: Replace kernel.h with the necessary inclusions
+  plist: Replace kernel.h with the necessary inclusions
+  media: entity: Replace kernel.h with the necessary inclusions
+
+ include/kunit/test.h         | 14 ++++++++++++--
+ include/linux/container_of.h | 37 ++++++++++++++++++++++++++++++++++++
+ include/linux/kernel.h       | 31 +-----------------------------
+ include/linux/list.h         |  6 ++++--
+ include/linux/llist.h        |  4 +++-
+ include/linux/plist.h        |  5 ++++-
+ include/linux/rwsem.h        |  1 -
+ include/linux/spinlock.h     |  1 -
+ include/media/media-entity.h |  3 ++-
+ 9 files changed, 63 insertions(+), 39 deletions(-)
+ create mode 100644 include/linux/container_of.h
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.33.0
+
