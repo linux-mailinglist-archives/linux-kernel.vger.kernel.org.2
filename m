@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF20B4257C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6048A4257C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242576AbhJGQXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37332 "EHLO mail.kernel.org"
+        id S232418AbhJGQX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:23:29 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45061 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241846AbhJGQXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:23:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 85CE061245;
-        Thu,  7 Oct 2021 16:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633623671;
-        bh=BalsQIewaM6OZkJRMKgt4kFUsr36Qobh/+HBXkovAsc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=y6Xs1be47WqT0hbyAxXWOXgLhzPJqv324AjeinCjB5EwuxW2nCL+3jVTqN3Eut4Rp
-         pK25QjEfVNzObZVMj9ZY/oV4CWe5p87JLz8VzVnLhSRI8pAPXFQgSQ+d7yJBZVhM+1
-         S0fykHY/yLcLt09glThJFAA5xohUVMFG2jX2nykc=
-Date:   Thu, 7 Oct 2021 18:21:08 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.14 54/75] af_unix: fix races in sk_peer_pid and
- sk_peer_cred accesses
-Message-ID: <YV8edF6SILKaJ/o2@kroah.com>
-References: <20211004125031.530773667@linuxfoundation.org>
- <20211004125033.335733437@linuxfoundation.org>
- <CAG48ez1yJxTZJNPsxgy7FVq40MVXoc0_h4-s0gH-xfM1s2tStA@mail.gmail.com>
+        id S242646AbhJGQXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:23:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="289796113"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="289796113"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:21:27 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="458850412"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 09:21:22 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYW90-009anM-Ko;
+        Thu, 07 Oct 2021 19:21:18 +0300
+Date:   Thu, 7 Oct 2021 19:21:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v4 4/7] list.h: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YV8efjUfNXE6nbdy@smile.fi.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+ <20211007154407.29746-5-andriy.shevchenko@linux.intel.com>
+ <20211007171635.2f161739@jic23-huawei>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAG48ez1yJxTZJNPsxgy7FVq40MVXoc0_h4-s0gH-xfM1s2tStA@mail.gmail.com>
+In-Reply-To: <20211007171635.2f161739@jic23-huawei>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 05:57:54PM +0200, Jann Horn wrote:
-> On Mon, Oct 4, 2021 at 3:00 PM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > [ Upstream commit 35306eb23814444bd4021f8a1c3047d3cb0c8b2b ]
-> >
-> > Jann Horn reported that SO_PEERCRED and SO_PEERGROUPS implementations
-> > are racy, as af_unix can concurrently change sk_peer_pid and sk_peer_cred.
-> >
-> > In order to fix this issue, this patch adds a new spinlock that needs
-> > to be used whenever these fields are read or written.
-> >
-> > Jann also pointed out that l2cap_sock_get_peer_pid_cb() is currently
-> > reading sk->sk_peer_pid which makes no sense, as this field
-> > is only possibly set by AF_UNIX sockets.
-> > We will have to clean this in a separate patch.
-> > This could be done by reverting b48596d1dc25 "Bluetooth: L2CAP: Add get_peer_pid callback"
-> > or implementing what was truly expected.
-> >
-> > Fixes: 109f6e39fa07 ("af_unix: Allow SO_PEERCRED to work across namespaces.")
-> 
-> >From what I can tell, this fix only went into the stable trees for
-> >=4.14? SO_PEERGROUPS only appeared in 4.13, but the SO_PEERCRED in
-> 4.4 and 4.9 seems to have exactly the same UAF read as it has on the
-> newer kernels.
+On Thu, Oct 07, 2021 at 05:16:35PM +0100, Jonathan Cameron wrote:
+> On Thu,  7 Oct 2021 18:44:04 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-It doesn't apply cleanly there, can you provide a working backport?
+...
 
-thanks,
+> Is there a reason you didn't quite sort this into alphabetical order?
 
-greg k-h
+Glad you asked! Yes. Greg and possibly others will come and tell me that
+I mustn't do two things in one change.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
