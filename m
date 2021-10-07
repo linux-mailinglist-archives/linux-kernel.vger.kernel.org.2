@@ -2,110 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7943425B2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF92425B31
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:58:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243808AbhJGS7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:59:43 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:46128 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233866AbhJGS7m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:59:42 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:56214)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mYYaR-005Ij6-8u; Thu, 07 Oct 2021 12:57:47 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:48228 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mYYaP-006fsf-4s; Thu, 07 Oct 2021 12:57:46 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20211007144701.67592574@canb.auug.org.au>
-Date:   Thu, 07 Oct 2021 13:56:43 -0500
-In-Reply-To: <20211007144701.67592574@canb.auug.org.au> (Stephen Rothwell's
-        message of "Thu, 7 Oct 2021 14:47:01 +1100")
-Message-ID: <87fstcfytw.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S243828AbhJGTAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:00:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233866AbhJGTAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:00:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08093610A1;
+        Thu,  7 Oct 2021 18:58:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633633096;
+        bh=2AwiKwAfgkQnUVWir+EZWWKtgPpfXPVziWAXH8FRcTQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l/JSvVsKNSTD1V+Z2Us8BPrRTSQeBxo7IJwR3qjbO5GvjtlFm/nIa98ufJ7nmsI1f
+         1Zu/63oitEJVuTez7Fshovirl9qdxnAyq9op6pNEPpnaS1dZCFcYo0tGL3HXhoonfS
+         NV+8JE+ZlYx/4GzkW8/D1WYxARTO9TZYqcekD6lqSPb6QO94/pRnrjeZ+U5PpUe9Kl
+         1ancQJHjkDprC/9lJ2wTD2c+UJ6/kGwDc+TkvXzaYYnzqCY2EnqT832d/3uhx4OKpR
+         EaXdoaont6a5rZB6xydqftcqjrdSPCVb+/2JG43plo2Eft2JbJqOKZB5Okjo2eXP9/
+         Y8jDCqnNd/Yjg==
+Received: by mail-lf1-f50.google.com with SMTP id j21so11030011lfe.0;
+        Thu, 07 Oct 2021 11:58:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531mru635dYdfEdmwpjSJMo/R5c73TwVme3m9xZzf68m0hd8C5Qi
+        /lptS5rMlw21U40GL3ib88p4TOLeVs7DtDUM1eE=
+X-Google-Smtp-Source: ABdhPJz6h6oDBLzt4oyAaOokG7cnzpfDffOsDoMXtH47N7C4Fj45sFRXh8Gk/UgIaqJ6c2hjAhGmpMvWxYPSQ0WdksQ=
+X-Received: by 2002:ac2:5182:: with SMTP id u2mr5587218lfi.676.1633633094362;
+ Thu, 07 Oct 2021 11:58:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mYYaP-006fsf-4s;;;mid=<87fstcfytw.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1+CuyOSS9Ee+C+kXl+dwJxQ622Pnrj4nis=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.2187]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Stephen Rothwell <sfr@canb.auug.org.au>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1401 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.5 (0.3%), b_tie_ro: 3.1 (0.2%), parse: 1.03
-        (0.1%), extract_message_metadata: 11 (0.8%), get_uri_detail_list: 1.27
-        (0.1%), tests_pri_-1000: 4.0 (0.3%), tests_pri_-950: 1.15 (0.1%),
-        tests_pri_-900: 0.85 (0.1%), tests_pri_-90: 89 (6.4%), check_bayes: 88
-        (6.2%), b_tokenize: 3.9 (0.3%), b_tok_get_all: 5 (0.4%), b_comp_prob:
-        1.38 (0.1%), b_tok_touch_all: 74 (5.3%), b_finish: 0.78 (0.1%),
-        tests_pri_0: 1163 (83.0%), check_dkim_signature: 0.37 (0.0%),
-        check_dkim_adsp: 2.4 (0.2%), poll_dns_idle: 116 (8.2%), tests_pri_10:
-        1.70 (0.1%), tests_pri_500: 123 (8.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: linux-next: build failure after merge of the userns tree
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20211006175106.GA295227@fuller.cnet> <20211007175037.GA439973@fuller.cnet>
+In-Reply-To: <20211007175037.GA439973@fuller.cnet>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 7 Oct 2021 11:58:03 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW5H4iDghrj1BkBRAP4bXVOGPr_FmObaq5ZWhzs7V+_HBw@mail.gmail.com>
+Message-ID: <CAPhsuW5H4iDghrj1BkBRAP4bXVOGPr_FmObaq5ZWhzs7V+_HBw@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-
-> Hi all,
+On Thu, Oct 7, 2021 at 11:04 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
 >
-> After merging the userns tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
 >
-> In file included from include/linux/kernel.h:19,
->                  from mm/debug.c:9:
-> mm/debug.c: In function 'dump_mm':
-> mm/debug.c:251:28: error: 'const struct mm_struct' has no member named 'core_state'
->   251 |   mm->binfmt, mm->flags, mm->core_state,
->       |                            ^~
-> include/linux/printk.h:418:19: note: in definition of macro 'printk_index_wrap'
->   418 |   _p_func(_fmt, ##__VA_ARGS__);    \
->       |                   ^~~~~~~~~~~
-> include/linux/printk.h:459:2: note: in expansion of macro 'printk'
->   459 |  printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
->       |  ^~~~~~
-> mm/debug.c:208:2: note: in expansion of macro 'pr_emerg'
->   208 |  pr_emerg("mm %px mmap %px seqnum %llu task_size %lu\n"
->       |  ^~~~~~~~
+> Add bpf_raw_read_cpu_clock helper, to read architecture specific
+> CPU clock. In x86's case, this is the TSC.
 >
-> Caused by commit
+> This is necessary to synchronize bpf traces from host and guest bpf-programs
+> (after subtracting guest tsc-offset from guest timestamps).
 >
->   483f2bb374b7 ("coredump: Limit coredumps to a single thread group")
+> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+Could you please
+1) give more context on the target use case;
+2) add some selftests for the feature?
+
+Thanks,
+Song
+
 >
-> I have used the userns tree from next-20211006 for today.
-
-Thanks for the catch.
-
-I removed mm->core_state and apparently mm->debug was printing it out
-for no apparent reason.
-
-I will add a patch to remove the debug information as well.
-
-Eric
-
+> ---
+>
+> v2:
+> - drop redundant addition to bpf_tracing_func_proto (Song Liu)
+>
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index ab83c22d274e..832bb1f65f28 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -95,6 +95,7 @@ config X86
+>         select ARCH_HAS_UBSAN_SANITIZE_ALL
+>         select ARCH_HAS_DEBUG_WX
+>         select ARCH_HAS_ZONE_DMA_SET if EXPERT
+> +       select ARCH_HAS_BPF_RAW_CPU_CLOCK
+>         select ARCH_HAVE_NMI_SAFE_CMPXCHG
+>         select ARCH_MIGHT_HAVE_ACPI_PDC         if ACPI
+>         select ARCH_MIGHT_HAVE_PC_PARPORT
+> diff --git a/arch/x86/include/asm/bpf_raw_cpu_clock.h b/arch/x86/include/asm/bpf_raw_cpu_clock.h
+> new file mode 100644
+> index 000000000000..6951c399819e
+> --- /dev/null
+> +++ b/arch/x86/include/asm/bpf_raw_cpu_clock.h
+> @@ -0,0 +1,10 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_BPF_RAW_CPU_CLOCK_H_
+> +#define _ASM_X86_BPF_RAW_CPU_CLOCK_H_
+> +
+> +static inline unsigned long long read_raw_cpu_clock(void)
+> +{
+> +       return rdtsc_ordered();
+> +}
+> +
+> +#endif /* _ASM_X86_BPF_RAW_CPU_CLOCK_H_ */
+> diff --git a/drivers/media/rc/bpf-lirc.c b/drivers/media/rc/bpf-lirc.c
+> index 3eff08d7b8e5..844a44ff508d 100644
+> --- a/drivers/media/rc/bpf-lirc.c
+> +++ b/drivers/media/rc/bpf-lirc.c
+> @@ -105,6 +105,8 @@ lirc_mode2_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+>                 return &bpf_ktime_get_ns_proto;
+>         case BPF_FUNC_ktime_get_boot_ns:
+>                 return &bpf_ktime_get_boot_ns_proto;
+> +       case BPF_FUNC_read_raw_cpu_clock:
+> +               return &bpf_read_raw_cpu_clock_proto;
+>         case BPF_FUNC_tail_call:
+>                 return &bpf_tail_call_proto;
+>         case BPF_FUNC_get_prandom_u32:
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index d604c8251d88..b6cb426085fb 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -2058,6 +2058,7 @@ extern const struct bpf_func_proto bpf_get_numa_node_id_proto;
+>  extern const struct bpf_func_proto bpf_tail_call_proto;
+>  extern const struct bpf_func_proto bpf_ktime_get_ns_proto;
+>  extern const struct bpf_func_proto bpf_ktime_get_boot_ns_proto;
+> +extern const struct bpf_func_proto bpf_read_raw_cpu_clock_proto;
+>  extern const struct bpf_func_proto bpf_get_current_pid_tgid_proto;
+>  extern const struct bpf_func_proto bpf_get_current_uid_gid_proto;
+>  extern const struct bpf_func_proto bpf_get_current_comm_proto;
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 6fc59d61937a..52191791b089 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4037,6 +4037,13 @@ union bpf_attr {
+>   *     Return
+>   *             Current *ktime*.
+>   *
+> + * u64 bpf_read_raw_cpu_clock(void)
+> + *     Description
+> + *             Return the architecture specific CPU clock value.
+> + *             For x86, this is the TSC clock.
+> + *     Return
+> + *             *CPU clock value*
+> + *
+>   * long bpf_seq_printf(struct seq_file *m, const char *fmt, u32 fmt_size, const void *data, u32 data_len)
+>   *     Description
+>   *             **bpf_seq_printf**\ () uses seq_file **seq_printf**\ () to print
+> @@ -5089,6 +5096,7 @@ union bpf_attr {
+>         FN(task_pt_regs),               \
+>         FN(get_branch_snapshot),        \
+>         FN(trace_vprintk),              \
+> +       FN(read_raw_cpu_clock),         \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+> diff --git a/kernel/bpf/Kconfig b/kernel/bpf/Kconfig
+> index a82d6de86522..5815db157220 100644
+> --- a/kernel/bpf/Kconfig
+> +++ b/kernel/bpf/Kconfig
+> @@ -21,6 +21,10 @@ config HAVE_EBPF_JIT
+>  config ARCH_WANT_DEFAULT_BPF_JIT
+>         bool
+>
+> +# Used by archs to tell they support reading raw CPU clock
+> +config ARCH_HAS_BPF_RAW_CPU_CLOCK
+> +       bool
+> +
+>  menu "BPF subsystem"
+>
+>  config BPF_SYSCALL
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index b6c72af64d5d..8e2359dfd582 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2345,6 +2345,8 @@ const struct bpf_func_proto bpf_get_numa_node_id_proto __weak;
+>  const struct bpf_func_proto bpf_ktime_get_ns_proto __weak;
+>  const struct bpf_func_proto bpf_ktime_get_boot_ns_proto __weak;
+>  const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto __weak;
+> +const struct bpf_func_proto bpf_read_raw_cpu_clock_proto __weak;
+> +
+>
+>  const struct bpf_func_proto bpf_get_current_pid_tgid_proto __weak;
+>  const struct bpf_func_proto bpf_get_current_uid_gid_proto __weak;
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 1ffd469c217f..90b9e5efaf65 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -18,6 +18,10 @@
+>
+>  #include "../../lib/kstrtox.h"
+>
+> +#ifdef CONFIG_ARCH_HAS_BPF_RAW_CPU_CLOCK
+> +#include <asm/bpf_raw_cpu_clock.h>
+> +#endif
+> +
+>  /* If kernel subsystem is allowing eBPF programs to call this function,
+>   * inside its own verifier_ops->get_func_proto() callback it should return
+>   * bpf_map_lookup_elem_proto, so that verifier can properly check the arguments
+> @@ -168,6 +172,21 @@ const struct bpf_func_proto bpf_ktime_get_boot_ns_proto = {
+>         .ret_type       = RET_INTEGER,
+>  };
+>
+> +BPF_CALL_0(bpf_read_raw_cpu_clock)
+> +{
+> +#ifdef CONFIG_ARCH_HAS_BPF_RAW_CPU_CLOCK
+> +       return read_raw_cpu_clock();
+> +#else
+> +       return sched_clock();
+> +#endif
+> +}
+> +
+> +const struct bpf_func_proto bpf_read_raw_cpu_clock_proto = {
+> +       .func           = bpf_read_raw_cpu_clock,
+> +       .gpl_only       = false,
+> +       .ret_type       = RET_INTEGER,
+> +};
+> +
+>  BPF_CALL_0(bpf_ktime_get_coarse_ns)
+>  {
+>         return ktime_get_coarse_ns();
+> @@ -1366,6 +1385,8 @@ bpf_base_func_proto(enum bpf_func_id func_id)
+>                 return &bpf_ktime_get_boot_ns_proto;
+>         case BPF_FUNC_ktime_get_coarse_ns:
+>                 return &bpf_ktime_get_coarse_ns_proto;
+> +       case BPF_FUNC_read_raw_cpu_clock:
+> +               return &bpf_read_raw_cpu_clock_proto;
+>         case BPF_FUNC_ringbuf_output:
+>                 return &bpf_ringbuf_output_proto;
+>         case BPF_FUNC_ringbuf_reserve:
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 6fc59d61937a..52191791b089 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4037,6 +4037,13 @@ union bpf_attr {
+>   *     Return
+>   *             Current *ktime*.
+>   *
+> + * u64 bpf_read_raw_cpu_clock(void)
+> + *     Description
+> + *             Return the architecture specific CPU clock value.
+> + *             For x86, this is the TSC clock.
+> + *     Return
+> + *             *CPU clock value*
+> + *
+>   * long bpf_seq_printf(struct seq_file *m, const char *fmt, u32 fmt_size, const void *data, u32 data_len)
+>   *     Description
+>   *             **bpf_seq_printf**\ () uses seq_file **seq_printf**\ () to print
+> @@ -5089,6 +5096,7 @@ union bpf_attr {
+>         FN(task_pt_regs),               \
+>         FN(get_branch_snapshot),        \
+>         FN(trace_vprintk),              \
+> +       FN(read_raw_cpu_clock),         \
+>         /* */
+>
+>  /* integer value in 'imm' field of BPF_CALL instruction selects which helper
+>
