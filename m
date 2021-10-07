@@ -2,78 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C739D425101
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDFA425102
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240872AbhJGK1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:27:09 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51684 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231825AbhJGK1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:27:07 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 9B953203D3;
-        Thu,  7 Oct 2021 10:25:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633602312; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bMl2vQKXM/x6+ceqE26rgp1TKwW1WRTeZYtaGsc2hrY=;
-        b=hqOu0yU1oXHTKegGNlAhsyW7kjAeVNIy7PZ/g4Ekb5dTYlVdXKDw8xT21FXob6uFeNicPb
-        COdYkpKvoGPIs3dejZJjkYCpPNk+L/xLjW/CDVK8PujNrl2bd0inZYBc6Cj7fZj9Q5Lzdt
-        iRZ3tsMcT9JjDZF8CtO5Do2bxI+laeo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633602312;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bMl2vQKXM/x6+ceqE26rgp1TKwW1WRTeZYtaGsc2hrY=;
-        b=ClbAVRlaFzDs+umFnUwJ3dhDtrCFq18qtFZTKc6tQuWvrK2YGiifo0QqJdwkQBlCa0ZFWZ
-        2g608Kv3BAbh5gDg==
-Received: from suse.de (unknown [10.163.43.106])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 3F2EAA3B83;
-        Thu,  7 Oct 2021 10:25:12 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 11:25:10 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Bharata B Rao <bharata@amd.com>
-Cc:     linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org
-Subject: Re: [RFC PATCH 4/4] sched/numa: Don't update mm->numa_next_scan from
- fault path
-Message-ID: <20211007102510.GQ3891@suse.de>
-References: <20211004105706.3669-1-bharata@amd.com>
- <20211004105706.3669-5-bharata@amd.com>
- <20211005082335.GN3891@suse.de>
- <dbb74941-4d6c-3e5a-2f5c-d18001c2856c@amd.com>
+        id S240746AbhJGK1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:27:43 -0400
+Received: from mga01.intel.com ([192.55.52.88]:3730 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231825AbhJGK1l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:27:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249532625"
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="249532625"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 03:25:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
+   d="scan'208";a="657335423"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by orsmga005.jf.intel.com with ESMTP; 07 Oct 2021 03:25:45 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: [PATCH v3 0/5] perf session: Extend reader object to allow multiple readers
+Date:   Thu,  7 Oct 2021 13:25:35 +0300
+Message-Id: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <dbb74941-4d6c-3e5a-2f5c-d18001c2856c@amd.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 02:40:15PM +0530, Bharata B Rao wrote:
-> > 
-> > Updating via cmpxchg would be ok to avoid potential collisions between
-> > threads updating a shared mm.
-> 
-> Ok, may be I could just resend with changing the scan period update
-> to use cmpxchg.
-> 
-> I also notice that in this case of scan period update, we just return
-> without resetting the p->numa_faults_locality[]. Do you think if
-> skipping the reset doesn't matter in this case?
-> 
+Changes in v3:
+- removed struct reader_state in [PATCH v3 1/8]
+- fixed repeating code in [PATCH v3 2/8]
+- split [PATCH v2 4/5] to [PATCH v3 4/8], [PATCH v3 5/8]
+- split [PATCH v2 5/5] to [PATCH v3 6/8] - [PATCH v3 8/8]
 
-If there is no fault activity or migrations are failing, there is no
-advantage to clearing numa_faults_locality[]. The information there
-is still useful even if the scan period is updated.
+Changes in v2:
+- introduced struct decomp_data suggested by Jiri Olsa
+- removed unnecessary [PATCH v1 1/6]
+- removed unnecessary extra line in [PATCH v2 4/5]
+- removed unnecessary reader_state.eof flag in [PATCH v2 5/5]
+
+Patch set moves state info and decompressor object into reader object
+that made possible to split reader__process_events function into three
+logical parts: init, map/unmap and single event reader which are used
+in events reader loop. This approach allows reading multiple trace
+files at the same time. 
+
+The design and implementation are based on the prototype [1], [2].
+The patch set was separated from [3].
+
+Tested:
+
+tools/perf/perf record -o prof.data -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -z -- matrix.gcc.g.O3
+tools/perf/perf report -i prof.data
+tools/perf/perf report -i prof.data --call-graph=callee
+tools/perf/perf report -i prof.data --stdio --header
+tools/perf/perf report -i prof.data -D --header
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+[3] https://lore.kernel.org/lkml/cover.1629186429.git.alexey.v.bayduraev@linux.intel.com/
+
+Alexey Bayduraev (8):
+  perf session: Move all state items to reader object
+  perf session: Introduce decompressor in reader object
+  perf session: Move init/release code to separate functions
+  perf session: Move map code to separate function
+  perf session: Move unmap code to reader__mmap
+  perf session: Move event read code to separate function
+  perf session: Introduce reader return codes
+  perf session: Introduce reader EOF function
+
+ tools/perf/util/session.c | 192 ++++++++++++++++++++++++++------------
+ tools/perf/util/session.h |  10 +-
+ 2 files changed, 140 insertions(+), 62 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.19.0
+
