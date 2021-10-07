@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252914254FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6093425502
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241942AbhJGOGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241947AbhJGOGP (ORCPT
+        id S241936AbhJGOIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:08:37 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:55786 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240542AbhJGOIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:06:15 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 250DFC061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:04:22 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id i84so13583254ybc.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:04:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c+QZvDwemsFFIczEEWYwfhVIIBD8PeDyHFieg5RXpUw=;
-        b=lLc72o7s2z0McMBJd5JqBA1t6N9i4TsKLEJJitVTE6pmNOc6bDRxOvwjp0dJ8B+TxW
-         Hd2WEtShpX8Tzx7WEd27WXxhTdZOR6yE2wbV/gFQB7I9BauB+2I+8OVbQP/EWN0K3xJB
-         QqIPvW7MJpFGOaZYaGRqpv492JdLth7XhR1FgPwh8nFBB1mDowvR9WN56PwDZaN2Lj9b
-         cMMrxQ00KQuTG584aqunF2JgpK8ZTCQpITSOTjdlTPEsy5I+l8JdlfBaVnafRQDnRR/j
-         VozoQ3P8GGWiPMFtt1Otjd6TMgUuoht399nU/P7RdSA+nWCUu7Y6x/jLFfdiDNuaYrBQ
-         UXBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c+QZvDwemsFFIczEEWYwfhVIIBD8PeDyHFieg5RXpUw=;
-        b=1AvEZZKlW5tOhyfQ+jw9RVvcWIQ/jxTg2HutWZB3LztHI5zorDXPEYOsyOGCQ6LcM0
-         sHkzNxTM5dD1iIK0f5YQWLT5U5Ti6CwMpgd/bq/A3Vu353jZPMnXXdGqohyqc8K/9wHg
-         NCoUOnQphHPPl7aCule9K0PIB4cEzCzhFTwIt+zqf6NIOfIJwo17OgSUvk8qMc9SBZWS
-         XI8RrSLl3+W/bf3vO9Y2Sbg6lNC796dpJOFIbRV4Kcv/zGCRnUi08Y9ZB9mMV3oZK74z
-         F+YptnVypfGVkRJLu4lZSzY/EYtw5QWSUwSm2U08TJwTnLeY/9WlTu/ZRGQKeBZNOS6J
-         8Whg==
-X-Gm-Message-State: AOAM5315SZFZXRBjriC3MXEeOLR4pwEcxF4REuq5S68N9aql+x74j9x5
-        YcddzSpaErF8PUrohQwhhdc6Fad5Yhz5I9tr8vR8FP76Z4k=
-X-Google-Smtp-Source: ABdhPJxXJG5X/OkNue0yZkUB1yIFkaX9oe+9/9KMn1SAqXSnk+VMvqxx+vmGdIa2vdFK40GKF9Ss0Ioj9xHN4rkzDVc=
-X-Received: by 2002:a25:dd46:: with SMTP id u67mr5308520ybg.295.1633615460464;
- Thu, 07 Oct 2021 07:04:20 -0700 (PDT)
+        Thu, 7 Oct 2021 10:08:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0A09422536;
+        Thu,  7 Oct 2021 14:06:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633615601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xka3Ua8GP8dwpZVcT+jCR5YGpMzAvZ9aMTAX/ErpUZs=;
+        b=hw3U+6Xwd56vOSZN6W22mge/JpjzKqf/YAYWubamVh6NwMP2LawE8jDeFf4kj+mF6L7fT5
+        /2q3mo/J1gY4aJBOe72NuN88JmoHiAp/Iggxb+EWsOssYCprIkgsxKrVFUbHmVFsefrvwF
+        4Ug2Tct0IQoBbO6sU0npabl8Dq6nfW0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633615601;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xka3Ua8GP8dwpZVcT+jCR5YGpMzAvZ9aMTAX/ErpUZs=;
+        b=bJHonUxGlYgQaI/vYqrrLwLs7fLB23cTO2UGXojcwD70xA0olKouIvYPHv1uLdPgU0g5kH
+        BX+zPyXRlkoN6LAw==
+Received: from quack2.suse.cz (unknown [10.100.224.230])
+        by relay2.suse.de (Postfix) with ESMTP id 9C5A7A3B81;
+        Thu,  7 Oct 2021 14:06:40 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 621641F2C96; Thu,  7 Oct 2021 16:06:40 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 16:06:40 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Chenyuan Mi <cymi20@fudan.edu.cn>
+Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Fix handle refcount leak in ext4_write_begin()
+Message-ID: <20211007140640.GA2670@quack2.suse.cz>
+References: <20210908070640.7135-1-cymi20@fudan.edu.cn>
 MIME-Version: 1.0
-References: <20211007031756.345269-1-eric.dumazet@gmail.com> <20211007072917.GN174703@worktop.programming.kicks-ass.net>
-In-Reply-To: <20211007072917.GN174703@worktop.programming.kicks-ass.net>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 7 Oct 2021 07:04:09 -0700
-Message-ID: <CANn89iKOa+tqerm80vHvHEurc2UxTq_heQuOUE0KnVuJht8AKA@mail.gmail.com>
-Subject: Re: [PATCH] x86/apic: reduce cache line misses in __x2apic_send_IPI_mask()
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210908070640.7135-1-cymi20@fudan.edu.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 12:29 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Oct 06, 2021 at 08:17:56PM -0700, Eric Dumazet wrote:
-> > +/* __x2apic_send_IPI_mask() possibly needs to read
-> > + * x86_cpu_to_logical_apicid for all online cpus in a sequential way.
-> > + * Using per cpu variable would cost one cache line per cpu.
-> > + */
->
-> Broken comment style..
+On Wed 08-09-21 15:06:40, Chenyuan Mi wrote:
+> The reference counting issue happens when ret is zero,
+> the function forgets to decrease the refcount of handle
+> increased by ext4_journal_start().
+> 
+> Fix this issue by using ext4_journal_stop() to decrease
+> the refcount of handle.
+> 
+> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-I was not sure and ran checkpatch.pl before submission, but sure.
+Yes, but that is deliberate. We want to keep the transaction running until
+the write is done - i.e., until ->write_end() callback where we call
+ext4_journal_stop(). As a side note, please test your patches. You clearly
+didn't test this patch because if you did, you would notice that your patch
+breaks writing to ext4.
 
->
-> > +static u32 x86_cpu_to_logical_apicid[NR_CPUS] __read_mostly;
->
-> NR_CPUS is really sad, could this at all be dynamically allocated? Say
-> in x2apic_cluster_probe() ?
+                                                                Honza
 
-Good idea, I will try this.
-Hopefully nr_cpu_ids is populated there ?
-
->
->
-> Otherwise this looks very nice!
-
-Thanks !
+> ---
+>  fs/ext4/inode.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index d18852d6029c..90c57d8e3de1 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1249,6 +1249,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+>  		put_page(page);
+>  		return ret;
+>  	}
+> +	ext4_journal_stop(handle);
+>  	*pagep = page;
+>  	return ret;
+>  }
+> -- 
+> 2.17.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
