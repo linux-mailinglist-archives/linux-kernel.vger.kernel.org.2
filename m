@@ -2,140 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 967E74250D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EE54250D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240726AbhJGKRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:17:24 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53276 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhJGKRX (ORCPT
+        id S240763AbhJGKSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231825AbhJGKSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:17:23 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 4515F1C0B87; Thu,  7 Oct 2021 12:15:28 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 12:15:27 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <20211007101527.GA26288@duo.ucw.cz>
-References: <20211005200411.GB19804@duo.ucw.cz>
- <CAJuCfpFZkz2c0ZWeqzOAx8KFqk1ge3K-SiCMeu3dmi6B7bK-9w@mail.gmail.com>
- <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
- <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
- <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
- <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <20211006175821.GA1941@duo.ucw.cz>
- <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
- <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
- <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+        Thu, 7 Oct 2021 06:18:25 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B6CC061746;
+        Thu,  7 Oct 2021 03:16:31 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id o20so17426625wro.3;
+        Thu, 07 Oct 2021 03:16:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1gYAE2vWPz0MbraCtd8aQQgWxPLZqacAtSV7iYxbEtQ=;
+        b=EbdSYwqx3mHUc7kNlSYIJXdd6OTrPllHE9Wd8JhKhMNbu0hEFfGYAtI3UQ+Pa8yoxe
+         KC6ZA+SRfrhiNSnvdR1W5txmyvjKgQvkbk1BLqqkTs+K//aTJl1BC53AzkNZPhHbj4Cj
+         VWgCh+lDEedu1+BOMFt+UONsQg1FM8vjKTnvIKmXXQWDTgoWbkxMB4jvRxpk6o171WAf
+         7yV0zS2NI9Dh92/WE2viXUmxxoDadKN91gTfU54gtNyqhDdPq0E8yiM+a0umZ7edr7Md
+         lYfQC/RDsM6EOXB2s2fEJXkO/JIdRMVGLNaSrQs4xC7/Oq7vpju5VBSAX8hs1jbHr6pe
+         U5RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1gYAE2vWPz0MbraCtd8aQQgWxPLZqacAtSV7iYxbEtQ=;
+        b=T+VK2jwhupWP+dMbLbqheIhPfbQsLwnpuBVxFwM2NacZssS8HqnwbVorUGV04pO0YW
+         pTD2CQT4P8ydUb6pOkT6tHNdSYn+cb6dIV4eRxghK74u9wxIo/cgBRz8hK7ZYGrkqSIh
+         c24NNbS0ZGYWHGQqJJ63mHhGKN0OXUwQjPPWA48YkI/UO44TiudNpd1JE3dN1Vcj/zuG
+         Z9RAyKNsK8nPdmHfH8m7hVI97qPgE56BTNzt5/VRNhT2J8Nd6UXf08F6h9Bu2ugkFvii
+         aq4sCMfBYhJFyyRPG9K6wpWaLvBnBRr5H0DyULnNjCNsEigEgugmX9tgmNOXvmbStFyq
+         ic5w==
+X-Gm-Message-State: AOAM532xBQBmXGTNB+Mb/TvVV4n1288b4mWSQOjToKHpmELC9n6OZpgk
+        3M+NbSV8z7zkjolsuCooxJo=
+X-Google-Smtp-Source: ABdhPJyO84sEJgEs46P+YCpyCH8r2D08a2F9o/3ytykleY8cSd00FUEVVOpPAaOOAp7N04KX5vUOtQ==
+X-Received: by 2002:a1c:f302:: with SMTP id q2mr3697177wmq.56.1633601790274;
+        Thu, 07 Oct 2021 03:16:30 -0700 (PDT)
+Received: from [192.168.0.14] (095160158079.dynamic-2-waw-k-4-2-0.vectranet.pl. [95.160.158.79])
+        by smtp.gmail.com with ESMTPSA id e8sm9576415wrg.48.2021.10.07.03.16.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 03:16:29 -0700 (PDT)
+Subject: Re: [PATCH v2 00/34] component: Make into an aggregate bus
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Emma Anholt <emma@anholt.net>,
+        =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Inki Dae <inki.dae@samsung.com>,
+        James Qian Wang <james.qian.wang@arm.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Joerg Roedel <joro@8bytes.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-fbdev@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-pm@vger.kernel.org, Liviu Dudau <liviu.dudau@arm.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        Tomas Winkler <tomas.winkler@intel.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Yong Wu <yong.wu@mediatek.com>
+References: <20211006193819.2654854-1-swboyd@chromium.org>
+From:   Andrzej Hajda <andrzej.hajda@gmail.com>
+Message-ID: <5d3f4343-da38-04b4-fdb9-cb2dd4983db2@gmail.com>
+Date:   Thu, 7 Oct 2021 12:16:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
-Content-Disposition: inline
-In-Reply-To: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211006193819.2654854-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 06.10.2021 21:37, Stephen Boyd wrote:
+> This series is from discussion we had on reordering the device lists for
+> drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
+> the aggregate device onto and then we probe the aggregate device once
+> all the components are probed and call component_add(). The probe/remove
+> hooks are where the bind/unbind calls go, and then a shutdown hook is
+> added that can be used to shutdown the drm display pipeline at the right
+> time.
+> 
+> This works for me on my sc7180 board. I no longer get a warning from i2c
+> at shutdown that we're trying to make an i2c transaction after the i2c
+> bus has been shutdown. There's more work to do on the msm drm driver to
+> extract component device resources like clks, regulators, etc. out of
+> the component bind function into the driver probe but I wanted to move
+> everything over now in other component drivers before tackling that
+> problem.
 
-Hi!
 
-> >> Hmm, so the suggestion is to have some directory which contains files
-> >> representing IDs, each containing the string name of the associated
-> >> vma? Then let's say we are creating a new VMA and want to name it. We
-> >> would have to scan that directory, check all files and see if any of
-> >> them contain the name we want to reuse the same ID.
-> >=20
-> > I believe Pavel meant something as simple as
-> > $ YOUR_FILE=3D$YOUR_IDS_DIR/my_string_name
-> > $ touch $YOUR_FILE
-> > $ stat -c %i $YOUR_FILE
->=20
-> So in terms of syscall overhead, that would be open(..., O_CREAT |
-> O_CLOEXEC), fstat(), close() - or one could optimistically start by
+As I understand you have DSI host with i2c-controlled DSI bridge. And 
+there is an issue that bridge is shutdown before msmdrm. Your solution 
+is to 'adjust' device order on pm list.
+I had similar issue and solved it locally by adding notification from 
+DSI bridge to DSI host that is has to be removed: mipi_dsi_detach, this 
+notification escalates in DSI host to component_del and this allow to 
+react properly.
 
-You could get to two if you used mkdir instead of open.
+Advantages:
+- it is local (only involves DSI host and DSI device),
+- it does not depend on PM internals,
+- it can be used in other scenarios as well - unbinding DSI device driver
 
-> > YOUR_IDS_DIR can live on a tmpfs and you can even implement a policy on
-> > top of that (who can generate new ids, gurantee uniqness etc...).
-> >=20
-> > The above is certainly not for free of course but if you really need a
-> > system wide consistency when using names then you need some sort of
-> > central authority. How you implement that is not all that important
-> > but I do not think we want to handle that in the kernel.
->=20
-> IDK. If the whole thing could be put behind a CONFIG_ knob, with _zero_
-> overhead when not enabled (and I'm a bit worried about all the functions
-> that grow an extra argument that gets passed around), I don't mind the
-> string interface. But I don't really have a say either way.
+Disadvantage:
+- It is DSI specific (but this is your case), I have advertised some 
+time ago more general approach [1][2].
 
-If this is ever useful outside of Android, eventually distros will
-have it enabled.
+[1]: https://static.sched.com/hosted_files/osseu18/0f/deferred_problem.pdf
+[2]: https://lwn.net/Articles/625454/
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
 
---DocE+STaALJfprDB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYV7IvwAKCRAw5/Bqldv6
-8ij3AKCob2c0ihsUF0OGRBWpcwK/HrL/WwCfUjg8l8NuDcUriv7uo2C8eR0uTy8=
-=1GxR
------END PGP SIGNATURE-----
-
---DocE+STaALJfprDB--
+Regards
+Andrzej
