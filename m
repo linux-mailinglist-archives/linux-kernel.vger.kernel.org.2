@@ -2,93 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6AAC425EB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B69E425F4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241117AbhJGVZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:25:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240809AbhJGVZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:25:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82F77610C8;
-        Thu,  7 Oct 2021 21:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633641798;
-        bh=m67+Gx4edZFG0e9kSDkWEw4xwNUlK0EfQcB0SoTjt9I=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VJOMqaIFS8KPiVv7kGoClh3ku2N9QZcf4xZXiaMyidEX706SoLnDy0U8drfaL8xOG
-         Yi6JWg38Pe4Rg804YQE6aC6VlcjlGF309PgkhAk+479MtyHtT6VPX46es7mb1FFwUe
-         D2qi7PClHiYWFaFwo+Lu9fCXwGqaWliw0Iq/QWoY9QlIi7VBGtynz9K8+OW9mYBzuN
-         APVewmcgE+KFUuaCm/m36rLMBiZKunGvlKdbWWEAvUzEvcmAerTkDGMLjiw4WVY0L5
-         X2ZIc4aOwVET80UOlyl8c0cqlzWx2ZXw8BV2ARXDOIC7nyF1GgUlJBYt0EO+ZGyu5U
-         fVuMGNmG4CM4Q==
-Date:   Thu, 7 Oct 2021 16:23:17 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kelvin.Cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
-        kelvincao@outlook.com, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Message-ID: <20211007212317.GA1268429@bhelgaas>
+        id S242537AbhJGVlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhJGVly (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:41:54 -0400
+X-Greylist: delayed 601 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Oct 2021 14:40:00 PDT
+Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a00:c38:11e:ffff::a032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DD7C061570;
+        Thu,  7 Oct 2021 14:40:00 -0700 (PDT)
+From:   Nick Hainke <vincent@systemli.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
+        s=default; t=1633642197;
+        bh=MJwQ+q0KiuGyG+lblF9ElluwfUQc8/qwRfPq28lM2o8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aXjEQPOhEJAtZKrhCg2tupgKeTBMtvCx89IeBDqcVnMy6ZHWLTGO0bKGdJYlQN9Ri
+         h7CSbS/JDUSlmtDzRgmzcxFG0IKJZY4NHP4ezxQ7EKUqrJBxNiM2OY/vlEC0XewocM
+         X9OneCef1S2jmdPfB+CTkil+Hn0rLDiHRDc74tUtwetRmQigxkBEbCmsPw327FZ80Z
+         w84arZxSUZ4wLDvvmf0NB9wppmMgr/fxpzlGwouDIdWwaBuAeHo/XYTIdbU2Rc7LDI
+         s5eKOskI0pHDI4CcyGo7HNryZx4BkS9vNIak5JNH/C1FDiL+W003GoIKaJPYTpB3gS
+         YuBoaC52Xkkgw==
+To:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
+        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        matthias.bgg@gmail.com, sean.wang@mediatek.com,
+        shayne.chen@mediatek.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        Nick Hainke <vincent@systemli.org>
+Subject: [RFC v1] mt76: mt7615: mt7622: fix adhoc and ibss mode
+Date:   Thu,  7 Oct 2021 23:23:23 +0200
+Message-Id: <20211007212323.1223602-1-vincent@systemli.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <54263d552d05f2fae706e83aa4c2b31b1983b0e2.camel@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 09:27:49PM +0000, Kelvin.Cao@microchip.com wrote:
-> On Wed, 2021-10-06 at 15:20 -0500, Bjorn Helgaas wrote:
-> > On Wed, Oct 06, 2021 at 07:00:55PM +0000, Kelvin.Cao@microchip.com
-> > wrote:
+Fixes: d8d59f66d136 ("mt76: mt7615: support 16 interfaces").
 
-> > So wait, you mean you just intentionally ask the firmware to
-> > reset, knowing that the device will be unusable until the user
-> > reboots or does a manual rescan?  And the way to improve this is
-> > for the driver to report an error to the user instead of hanging?
-> > I *guess* that might be some sort of improvement, but seems like a
-> > pretty small one.
-> 
-> Yes, however, I believe it's something our users really like to
-> have...  With this, they can do their user space
-> programming/scripting more easily in a synchronous fashion.
-> 
-> > >   - The firwmare crashes and doesn't respond, which normally is
-> > >   the reason for users to issue a firmware reset command to try
-> > >   to recover it via either the driver or a sideband interface.
-> > >   The firmware may not be able to recover by a reset in some
-> > >   extream situations like hardware errors, so that an error
-> > >   return is probably all the users can get before another level
-> > >   of recovery happens.
-> > > 
-> > > So I'd think this patch is still making the driver better in
-> > > some way.
+commit 7f4b7920318b ("mt76: mt7615: add ibss support") introduced IBSS
+and commit f4ec7fdf7f83 ("mt76: mt7615: enable support for mesh")
+meshpoint support.
 
-OK.  I still think the fact that all these different mechanisms can
-reset the device behind your back and make the switch and anything on
-the other side of it just stop working is ..., well, let's just say
-it's quite surprising to me.
+Both used in the "get_omac_idx"-function:
 
-Well, at least this isn't quite so much a mystery anymore and maybe we
-can improve the commit log.  E.g., maybe something like this:
+	if (~mask & BIT(HW_BSSID_0))
+		return HW_BSSID_0;
 
-  A firmware hard reset may be initiated by various mechanisms
-  including a UART interface, TWI sideband interface from BMC, MRPC
-  command from userspace, etc.  The switchtec management driver is
-  unaware of these resets.
+With commit d8d59f66d136 ("mt76: mt7615: support 16 interfaces") the
+adhoc and meshpoint mode should "prefer hw bssid slot 1-3". However,
+with that change the ibss or meshpoint mode will not send any beacon on
+the mt7622 wifi anymore. Devices were still able to exchange data but
+only if a bssid already existed. Two mt7622 devices will never be able
+to communicate.
 
-  The reset clears PCI state including the BARs and Memory Space
-  Enable bits, so the device no longer responds to the MMIO accesses
-  the driver uses to operate it.
+This commits reverts the preferation of slot 1-3 for adhoc and
+meshpoint. Only NL80211_IFTYPE_STATION will still prefer slot 1-3.
 
-  MMIO reads to the device will fail with a PCIe error.  When the root
-  complex handles that error, it typically fabricates ~0 data to
-  complete the CPU read.
+Tested on Banana Pi R64.
 
-  Check for this sort of error by reading the device ID from MMIO
-  space.  This ID can never be ~0, so if we see that value, it
-  probably means the PCIe Memory Read failed and we should return an
-  error indication to the application using the switchtec driver.
+Signed-off-by: Nick Hainke <vincent@systemli.org>
+---
+ drivers/net/wireless/mediatek/mt76/mt7615/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/main.c b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+index dada43d6d879..51260a669d16 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/main.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/main.c
+@@ -135,8 +135,6 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
+ 	int i;
+ 
+ 	switch (type) {
+-	case NL80211_IFTYPE_MESH_POINT:
+-	case NL80211_IFTYPE_ADHOC:
+ 	case NL80211_IFTYPE_STATION:
+ 		/* prefer hw bssid slot 1-3 */
+ 		i = get_free_idx(mask, HW_BSSID_1, HW_BSSID_3);
+@@ -160,6 +158,8 @@ static int get_omac_idx(enum nl80211_iftype type, u64 mask)
+ 			return HW_BSSID_0;
+ 
+ 		break;
++	case NL80211_IFTYPE_ADHOC:
++	case NL80211_IFTYPE_MESH_POINT:
+ 	case NL80211_IFTYPE_MONITOR:
+ 	case NL80211_IFTYPE_AP:
+ 		/* ap uses hw bssid 0 and ext bssid */
+-- 
+2.33.0
+
