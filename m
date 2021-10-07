@@ -2,96 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 978D3425F59
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F93425F48
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242577AbhJGVnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:43:43 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55340 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241753AbhJGVnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:43:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=zNEViZ4F22HFg4Uu4a+UfpGs0GxPWIjVj+B5UlJ5o94=; b=lbM6QdQvarc7KVhE9pbwhxllcs
-        QcNF7HO3i1pdelW6SYw4kkjs7znaUSm/3ll9/kdFhc+MB8W5VzwCt0h68Vk/6MBhHb8bP9T/DueR+
-        anerbHXzrBy4iZcosJogRDpY7Qs/r80zYmPRkkiiRzcEbueXUO73tu9GAwl+ID6tkBMI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mYb91-009zsW-La; Thu, 07 Oct 2021 23:41:39 +0200
-Date:   Thu, 7 Oct 2021 23:41:39 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     netdev@vger.kernel.org, olteanv@gmail.com, robh+dt@kernel.org,
-        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 01/10] dt-bindings: net: dsa: dt bindings for
- microchip lan937x
-Message-ID: <YV9pk13TT9W7X2i1@lunn.ch>
-References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
- <20211007151200.748944-2-prasanna.vengateshan@microchip.com>
+        id S242497AbhJGVlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:41:15 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3943 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235665AbhJGVlM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:41:12 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HQPlc71p7z67bcg;
+        Fri,  8 Oct 2021 05:36:28 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 7 Oct 2021 23:39:15 +0200
+Received: from [10.47.80.141] (10.47.80.141) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Thu, 7 Oct 2021
+ 22:39:14 +0100
+Subject: Re: [PATCH v2] scsi: core: Fix shost->cmd_per_lun calculation in
+ scsi_add_host_with_dma()
+To:     Dexuan Cui <decui@microsoft.com>, <kys@microsoft.com>,
+        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <haiyangz@microsoft.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <longli@microsoft.com>,
+        <mikelley@microsoft.com>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20211007174957.2080-1-decui@microsoft.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <8fe3959d-9462-64f6-53d8-ef7036ec0545@huawei.com>
+Date:   Thu, 7 Oct 2021 22:41:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007151200.748944-2-prasanna.vengateshan@microchip.com>
+In-Reply-To: <20211007174957.2080-1-decui@microsoft.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.141]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    //Ethernet switch connected via spi to the host
-> +    ethernet {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      fixed-link {
-> +        speed = <1000>;
-> +        full-duplex;
-> +      };
-> +    };
-> +
-> +    spi {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      lan9374: switch@0 {
-> +        compatible = "microchip,lan9374";
-> +        reg = <0>;
-> +
-> +        spi-max-frequency = <44000000>;
-> +
-> +        ethernet-ports {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +          port@0 {
-> +            reg = <0>;
-> +            label = "lan1";
-> +            phy-mode = "internal";
-> +            phy-handle = <&t1phy0>;
-> +          };
+On 07/10/2021 18:49, Dexuan Cui wrote:
+> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
+> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
+> negative number (the below numbers may differ in different kernel versions):
+> in drivers/scsi/storvsc_drv.c, 	storvsc_drv_init() sets
+> 'max_outstanding_req_per_channel' to 352, and storvsc_probe() sets
+> 'max_sub_channels' to (416 - 1) / 4 = 103 and sets scsi_driver.can_queue to
+> 352 * (103 + 1) * (100 - 10) / 100 = 32947, which exceeds SHRT_MAX.
 
-...
+I think that you just need to mention that if can_queue exceeds 
+SHRT_MAX, then there is a data truncation issue.
 
-> +        mdio {
-> +          #address-cells = <1>;
-> +          #size-cells = <0>;
-> +
-> +          t1phy0: ethernet-phy@0{
-> +            reg = <0x0>;
-> +          };
+> 
+> Use min_t(int, ...) to fix the issue.
+> 
+> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
-Does this pass Rob's DT schema proof tools? You don't have any
-description of the mdio properties.
+It looks ok, I'd just like to test it a bit more.
 
-Maybe look at nxp,sja1105.yaml
+Thanks,
+John
 
-      Andrew
+> ---
+> 
+> v1 tried to fix the issue by changing the storvsc driver:
+> https://lwn.net/ml/linux-kernel/BYAPR21MB1270BBC14D5F1AE69FC31A16BFB09@BYAPR21MB1270.namprd21.prod.outlook.com/
+> 
+> v2 directly fixes the scsi core change instead as Michael Kelley and
+> John Garry suggested (refer to the above link).
+
+To be fair, it was Michael's suggestion
+
+> 
+>   drivers/scsi/hosts.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+> index 3f6f14f0cafb..24b72ee4246f 100644
+> --- a/drivers/scsi/hosts.c
+> +++ b/drivers/scsi/hosts.c
+> @@ -220,7 +220,8 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+>   		goto fail;
+>   	}
+>   
+> -	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
+> +	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
+> +	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
+>   				   shost->can_queue);
+>   
+>   	error = scsi_init_sense_cache(shost);
+> 
+
