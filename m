@@ -2,177 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F403B424D3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E37424D44
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240255AbhJGGYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232667AbhJGGYL (ORCPT
+        id S240242AbhJGG3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:29:17 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:56395 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232418AbhJGG3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:24:11 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7695AC061746
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 23:22:18 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id i12so2925785wrb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Oct 2021 23:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iaq5nU4GLaIaZC0meQweypNii34zyivZ0fMvPt1tbnU=;
-        b=kI7aZw6yORYbMtcxAl6QRwzFXWNiCvIA1hTkd3rfw4ZpgpmJo9xJdezhlLdHMM9U0t
-         DwJ+/LqXxv6eXDT+lNE385nITwFkxe4VuuaCozoNYsWfjtoxFivWMHLzOtQq6+LwJ9ZO
-         Ul88ZugDMVh2erdGjKcv7iM0+l9AlPEbLYwza7HGIbVreTw6NGX08GsVj2qoPQTCQGn/
-         TQC2gdPbBwreC4H3pVC7sqPDDzUClrzeLW5azmYnUcpMRopgH/KljDCLIgp3IPSrK/dJ
-         RV06xIPSokaNFA+FVKUjZEeBbX0/jUECn4Ttc1ib4ZL8AZ8ksFJuq3ZAxM8eQKGZmojD
-         bp0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iaq5nU4GLaIaZC0meQweypNii34zyivZ0fMvPt1tbnU=;
-        b=LBk6UzW8xgireyNcDAnFeaX3NOaeW3+l6UovNsBmMx4e0Im40rAm9EerkYh6v7cRde
-         IPA44w7WHb4O/9mSW5ncK/qEpql6Otizc1pu4PHGybBSM5osWvg65/Rzy+27hC+XSK5X
-         9p1zqwYTU9jamdD2hVr+GkBNmHVRFs52uBUOQYNMl3oxebcCReRQZvLi8K4iJApDnhOv
-         3oGRA8F1fVOfRiiv4gsdny9KD7CVbzEQFSnde/LEq6Gmk2GyIj0vXPnBqDtFRrP6jyy/
-         rJYpZWXr7X60qp3AslI+7e7B5PS+VDytE46n1Dwh9eLNxawyGUqmDTNSmQ3dIY0gLRr6
-         +exw==
-X-Gm-Message-State: AOAM531OkIi/XkVLecJxEeZoDhj+lL6dH4N3GprfvqDwBNBBtRpEtKSd
-        uu96T2EF4vty0kXKNcKxOWTQ9OQXizzOy9MyZlvQQQ==
-X-Google-Smtp-Source: ABdhPJxltkfELzP1Sj98wJJVPLf/rcHIL7//lDCPacy+UhPycFVG4s0SAFlkuXzufb7RwHHMsjR95a2Vafkfwx8PeCM=
-X-Received: by 2002:a05:600c:284b:: with SMTP id r11mr2443559wmb.179.1633587736875;
- Wed, 06 Oct 2021 23:22:16 -0700 (PDT)
+        Thu, 7 Oct 2021 02:29:13 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQ1ZX3qdCz4xR9;
+        Thu,  7 Oct 2021 17:27:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633588038;
+        bh=zjtDx4zHNJR4VbDkoPY/89x/X8qlLQcoip/asQkFUp8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WePKzxnlQ/lKg3Si8MMFZNKK/3KX6HjCPupK3dezwjCKbzbAfYXzA+MC+fpggPv1z
+         3v+2cPaFjCAwonQBV+T38+NusmXEaGG7Nl3XCgLujzatDaQFq/n/zKAohno/tc2+4Q
+         UMPfaOOhwDc9iEqlc7jPRE6w1Ds7kAoek1db6HGIzVwUZnZ8tLRozBhMhTdBvelPFJ
+         H84GKFwevqp9Rp/n9IY8zfnbGaRi+Y7f0FnicEUPQxePLjY/0kOTDlZP+fGr6o2CaR
+         28q0dKS/TG66PSiky3048mHIvjgt903mpwYl42sTpnzVm5ZuAbXZjfU7q8JGLHinoB
+         npqjctXoIUGWA==
+Date:   Thu, 7 Oct 2021 17:27:13 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: linux-next: manual merge of the akpm-current tree with the tip tree
+Message-ID: <20211007172713.2b8ffca0@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20211006170049.106852-1-dlatypov@google.com>
-In-Reply-To: <20211006170049.106852-1-dlatypov@google.com>
-From:   David Gow <davidgow@google.com>
-Date:   Thu, 7 Oct 2021 14:22:05 +0800
-Message-ID: <CABVgOS=Bvf_ESOZP_5FJxYe4rBOjR=VZ4bhwgLYOdLu5=-W4+g@mail.gmail.com>
-Subject: Re: [PATCH v6] kunit: tool: improve compatibility of kunit_parser
- with KTAP specification
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/RHZ9LbH/JA=oRFmb4GCgR.i";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 1:00 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> From: Rae Moar <rmoar@google.com>
->
-> Update to kunit_parser to improve compatibility with KTAP
-> specification including arbitrarily nested tests. Patch accomplishes
-> three major changes:
->
-> - Use a general Test object to represent all tests rather than TestCase
-> and TestSuite objects. This allows for easier implementation of arbitrary
-> levels of nested tests and promotes the idea that both test suites and test
-> cases are tests.
->
-> - Print errors incrementally rather than all at once after the
-> parsing finishes to maximize information given to the user in the
-> case of the parser given invalid input and to increase the helpfulness
-> of the timestamps given during printing. Note that kunit.py parse does
-> not print incrementally yet. However, this fix brings us closer to
-> this feature.
->
-> - Increase compatibility for different formats of input. Arbitrary levels
-> of nested tests supported. Also, test cases and test suites are now
-> supported to be present on the same level of testing.
->
-> This patch now implements the draft KTAP specification here:
-> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
-> We'll update the parser as the spec evolves.
->
-> This patch adjusts the kunit_tool_test.py file to check for
-> the correct outputs from the new parser and adds a new test to check
-> the parsing for a KTAP result log with correct format for multiple nested
-> subtests (test_is_test_passed-all_passed_nested.log).
->
-> This patch also alters the kunit_json.py file to allow for arbitrarily
-> nested tests.
->
-> Signed-off-by: Rae Moar <rmoar@google.com>
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> Reviewed-by: David Gow <davidgow@google.com>
-> ---
-> NOTE: this patch is now applied on top of
-> https://lore.kernel.org/linux-kselftest/20210930222048.1692635-5-dlatypov@google.com/
-> to resolve a conflict.
->
-> Change log from v5:
-> https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
-> - Tweak commit message to reflect the KTAP spec is a draft
-> - Add missing Signed-off-by
-> - Tweak docstrings
->
-> Change log from v3,4:
-> https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
-> - Move test_kselftest_nested from LinuxSourceTreeTest => KUnitParserTest.
-> - Resolve conflict with hermetic testing patches.
->   - max_status is no longer defined, so we need to use the TestCounts
->     type now. And to keep --raw_output working, we need to set this to
->     SUCCESS to avoid the default assumption that the kernel crashed.
->
-> Ignore v4, was accidentally based on v2.
->
-> Change log from v2:
-> https://lore.kernel.org/linux-kselftest/20210826195505.3066755-1-rmoar@google.com/
-> - Fixes bug of type disagreement in kunit_json.py for build_dir
-> - Removes raw_output()
-> - Changes docstrings in kunit_parser.py (class docstring, LineStream
->   docstrings, add_error(), total(), get_status(), all parsing methods)
-> - Fixes bug of not printing diagnostic log in the case of end of lines
-> - Sets default status of all tests to TEST_CRASHED
-> - Adds and prints empty tests with crashed status in case of missing
->   tests
-> - Prints 'subtest' in instance of 1 subtest instead of 'subtests'
-> - Includes checking for 'BUG:' message in search of crash messages in
->   log (note that parse_crash_in_log method could be removed but would
->   require deleting tests in kunit_tool_test.py that include the crash
->   message that is no longer used. If removed, parser would still print
->   log in cases of test crashed or failure, which would now include
->   missing subtests)
-> - Fixes bug of including directives (other than SKIP) in test name
->   when matching name in result line for subtests
->
->
-> Change log from v1:
-> https://lore.kernel.org/linux-kselftest/20210820200032.2178134-1-rmoar@google.com/
-> - Rebase onto kselftest/kunit branch
-> - Add tests to kunit_tool_test.py to check parser is correctly stripping
->   hyphen, producing correct json objects with nested tests, correctly
->   passing kselftest TAP output, and correctly deals with missing test plan.
-> - Fix bug to correctly match test name in instance of a missing test plan.
-> - Fix bug in kunit_tool_test.py pointed out by Daniel where it was not
->   correctly checking for a proper match to the '0 tests run!' error
->   message. Reverts changes back to original.
-> - A few minor changes to commit message using Daniel's comments.
-> - Change docstrings using Daniel's comments to reduce:
->   - Shortens some docstrings to be one-line or just description if it is
->     self explanatory.
->   - Remove explicit respecification of types of parameters and returns
->     because this is already specified in the function annoations. However,
->     some descriptions of the parameters and returns remain and some contain
->     the type for context. Additionally, the types of public attributes of
->     classes remain.
->   - Remove any documentation of 'Return: None'
->   - Remove docstrings of helper methods within other methods
-> ---
+--Sig_/RHZ9LbH/JA=oRFmb4GCgR.i
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks good to me, thanks!
+Hi all,
 
-This is still:
-Reviewed-by: David Gow <davidgow@google.com>
+Today's linux-next merge of the akpm-current tree got conflicts in:
 
+  include/linux/sched/mm.h
+  kernel/sched/core.c
+
+between commit:
+
+  8d491de6edc2 ("sched: Move mmdrop to RCU on RT")
+
+from the tip tree and commits:
+
+  5a21ba83ddb2 ("lazy tlb: introduce lazy mm refcount helper functions")
+  ade2ef2cb563 ("lazy tlb: allow lazy tlb mm refcounting to be configurable=
+")
+
+from the akpm-current tree.
+
+I don't know if my merging of both these makes sense, but guidance
+is welcome.
+
+I fixed it up (see below, and used the latter version of kernel/sched/core.c
+) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
 Cheers,
--- David
+Stephen Rothwell
+
+diff --cc include/linux/sched/mm.h
+index aca874d33fe6,fd6e4d14f477..000000000000
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@@ -49,35 -49,27 +49,56 @@@ static inline void mmdrop(struct mm_str
+  		__mmdrop(mm);
+  }
+ =20
+ +#ifdef CONFIG_PREEMPT_RT
+ +/*
+ + * RCU callback for delayed mm drop. Not strictly RCU, but call_rcu() is
+ + * by far the least expensive way to do that.
+ + */
+ +static inline void __mmdrop_delayed(struct rcu_head *rhp)
+ +{
+ +	struct mm_struct *mm =3D container_of(rhp, struct mm_struct, delayed_dro=
+p);
+ +
+ +	__mmdrop(mm);
+ +}
+ +
+ +/*
+ + * Invoked from finish_task_switch(). Delegates the heavy lifting on RT
+ + * kernels via RCU.
+ + */
+ +static inline void mmdrop_sched(struct mm_struct *mm)
+ +{
+ +	/* Provides a full memory barrier. See mmdrop() */
+ +	if (atomic_dec_and_test(&mm->mm_count))
+ +		call_rcu(&mm->delayed_drop, __mmdrop_delayed);
+ +}
+ +#else
+ +static inline void mmdrop_sched(struct mm_struct *mm)
+ +{
+ +	mmdrop(mm);
+ +}
+ +#endif
+ +
++ /* Helpers for lazy TLB mm refcounting */
++ static inline void mmgrab_lazy_tlb(struct mm_struct *mm)
++ {
++ 	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT))
++ 		mmgrab(mm);
++ }
++=20
++ static inline void mmdrop_lazy_tlb(struct mm_struct *mm)
++ {
++ 	if (IS_ENABLED(CONFIG_MMU_LAZY_TLB_REFCOUNT)) {
+ -		mmdrop(mm);
+++		mmdrop_sched(mm);
++ 	} else {
++ 		/*
++ 		 * mmdrop_lazy_tlb must provide a full memory barrier, see the
++ 		 * membarrier comment in finish_task_switch which relies on
++ 		 * this.
++ 		 */
++ 		smp_mb();
++ 	}
++ }
++=20
+  /**
+   * mmget() - Pin the address space associated with a &struct mm_struct.
+   * @mm: The address space to pin.
+
+--Sig_/RHZ9LbH/JA=oRFmb4GCgR.i
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFek0EACgkQAVBC80lX
+0GyPogf9ESZOk8MRUi5zZ0xXa/cPiX1hGaPZDOU+WJdyxvIalfhmQmY7QuU1cNpQ
+E5b2RjUWcwiFf3K63Y9F9RrT/TVBEARx5QnFUKnnU0x1koRvy2mrcwaM31s10X7+
+sMdAmEbhUCKB8BAGQ3vCOeKl2VQdJytUcGsMsyu8Mj61CKWHRrPxv0Cf4W0OT7B5
+/7xDvFk+B1VoAmO8h4LIR2N6873MV3YTO1iq1EGy7lDA8zn6Ze+yo5xWEQBE/zOW
+ugTZGZblVaAh3mQxii3H55qrRsiLVXjpgSVHtLNqDk8VS9XVXgAY5anfCUy7PbS4
+4Hj0F9mhyd7UZCTUZn8zrPPywjbRRg==
+=DCeU
+-----END PGP SIGNATURE-----
+
+--Sig_/RHZ9LbH/JA=oRFmb4GCgR.i--
