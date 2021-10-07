@@ -2,30 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09800424ADF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F851424AE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239983AbhJGAMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:12:00 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:44373 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239978AbhJGAL6 (ORCPT
+        id S239989AbhJGAMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:12:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239957AbhJGAL7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:11:58 -0400
+        Wed, 6 Oct 2021 20:11:59 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19FDC061746;
+        Wed,  6 Oct 2021 17:10:06 -0700 (PDT)
 Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 7055552;
-        Wed,  6 Oct 2021 17:10:04 -0700 (PDT)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 71073631;
+        Wed,  6 Oct 2021 17:10:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1633565405;
-        bh=XNJ+HTYwQ2IQpncUFadRIFOJg2t8M7ncy59/V0Jd3Ys=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gCPWmQkFOF+uxRlYH8EKU/FK5HMST9HArklIZhSLKVdDTYYhb9Bymp6Hx8f33g8dd
-         Jp2uDnMCw0LJeKx1I7VXrb+uSP7UVhulS1bCEkrHnzwQJtjhc2W+B222j3y1aPZZeT
-         emW63dSFGBweyF84xuzT9QN10IxpLVkH4i5CG7og=
+        s=thorn; t=1633565406;
+        bh=4NkVLqGg/KjNptjTQZ/atTM1MYPT1i0umkxcy4BLe98=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=CzSq95tbOSKIzT6diFAHOJsgLiMCNcj5ajO00p1C5HcInWN9ksZR/bd0WjLe6dBGX
+         RNX+QqLt7veMKgWlTCog4xgySxQadL7iZVufNPu5ud8/4AvocYLbQN4JOaS3PFXKKk
+         EY0IrOBtNn5Rng7h8pEcUZnxxX46TLGLyPNWAP6Y=
 From:   Zev Weiss <zev@bewilderbeest.net>
 To:     openbmc@lists.ozlabs.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -33,106 +36,68 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Joel Stanley <joel@jms.id.au>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Zev Weiss <zev@bewilderbeest.net>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
         =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Heiner Kallweit <hkallweit1@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org
-Subject: [PATCH 0/9] Dynamic DT device nodes
-Date:   Wed,  6 Oct 2021 17:09:45 -0700
-Message-Id: <20211007000954.30621-1-zev@bewilderbeest.net>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/9] sysfs: add sysfs_remove_bin_file_self() function
+Date:   Wed,  6 Oct 2021 17:09:46 -0700
+Message-Id: <20211007000954.30621-2-zev@bewilderbeest.net>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211007000954.30621-1-zev@bewilderbeest.net>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This is simply the bin_attribute analog to sysfs_remove_file_self().
 
-This patch series is in some ways kind of a v2 for the "Dynamic
-aspeed-smc flash chips via 'reserved' DT status" series I posted
-previously [0], but takes a fairly different approach suggested by Rob
-Herring [1] and doesn't actually touch the aspeed-smc driver or
-anything in the MTD subsystem, so I haven't marked it as such.
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+ fs/sysfs/file.c       | 13 +++++++++++++
+ include/linux/sysfs.h |  1 +
+ 2 files changed, 14 insertions(+)
 
-To recap a bit of the context from that series, in OpenBMC there's a
-need for certain devices (described by device-tree nodes) to be able
-to be attached and detached at runtime (for example the SPI flash for
-the host's firmware, which is shared between the BMC and the host but
-can only be accessed by one or the other at a time).  To provide that
-ability, this series adds support for a new common device-tree
-property, a boolean "dynamic" that indicates that the device may come
-and go at runtime.  When present on a node, the sysfs file for that
-node's "status" property is made writable, allowing userspace to do
-things like:
-
-  $ echo okay > /sys/firmware/devicetree/.../status
-  $ echo reserved > /sys/firmware/devicetree/.../status
-
-to activate and deactivate a dynamic device.
-
-Because it leans on the OF_DYNAMIC machinery internally, this
-functionality will only work on busses that register for OF reconfig
-notifications and handle them appropriately (presently platform, i2c,
-and spi).  This series does not attempt to solve the "dynamic devices
-further down the tree" problem [2]; my hope is that handling for OF
-reconfig notifications can be extended to other families of devices
-(e.g. individual MTD spi-nor flash chips) in the future.
-
-The central change of the series is patch 6; patches 1-5 are various
-small infrastructure bits and plumbing tweaks in preparation for #6;
-patches 7-9 are Kconfig, documentation, and an inaugural use of the
-new property in the ASRock e3c246d4i BMC device tree.
-
-Note that this series requires the duplicate-declaration removal patch
-that was recently merged in Rob's tree [3]; it changes one of the
-duplicated declarations and hence will not compile without that patch
-(because the declarations no longer match).
-
-[0] https://lore.kernel.org/openbmc/20210929115409.21254-1-zev@bewilderbeest.net/
-[1] https://lore.kernel.org/openbmc/CAL_JsqJH+b5oFuSP+KBLBsN5QTA6xASuqXJWXUaDkHhugXPpnQ@mail.gmail.com/
-[2] https://lore.kernel.org/openbmc/20210929220038.GS17315@packtop/
-[3] https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git/commit/?id=6663ae07d995f5fbe2988a19858b2f87e68cf929
-
-Zev Weiss (9):
-  sysfs: add sysfs_remove_bin_file_self() function
-  sysfs: add growable flag to struct bin_attribute
-  lib/string: add sysfs_buf_streq()
-  of: add self parameter to __of_sysfs_remove_bin_file()
-  of: add self parameter to of_update_property()
-  of: add support for 'dynamic' DT property
-  of: make OF_DYNAMIC selectable independently of OF_UNITTEST
-  dt-bindings: document new 'dynamic' common property
-  ARM: dts: aspeed: Add e3c246d4i BIOS flash device
-
- .../devicetree/bindings/common-properties.txt | 18 ++++
- .../boot/dts/aspeed-bmc-asrock-e3c246d4i.dts  | 23 ++++++
- drivers/of/Kconfig                            |  8 +-
- drivers/of/base.c                             |  7 +-
- drivers/of/dynamic.c                          |  2 +-
- drivers/of/kobj.c                             | 82 +++++++++++++++++--
- drivers/of/of_private.h                       |  6 +-
- fs/sysfs/file.c                               | 15 +++-
- include/linux/of.h                            |  7 +-
- include/linux/string.h                        |  1 +
- include/linux/sysfs.h                         |  2 +
- lib/string.c                                  | 34 ++++++++
- 12 files changed, 187 insertions(+), 18 deletions(-)
-
+diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
+index d019d6ac6ad0..b2b85be95adf 100644
+--- a/fs/sysfs/file.c
++++ b/fs/sysfs/file.c
+@@ -572,6 +572,19 @@ void sysfs_remove_bin_file(struct kobject *kobj,
+ }
+ EXPORT_SYMBOL_GPL(sysfs_remove_bin_file);
+ 
++/**
++ * sysfs_remove_file_self - remove binary object attribute from its own method
++ * @kobj: object to operate on
++ * @attr: binary attribute descriptor
++ *
++ * See kernfs_remove_self() for details.
++ */
++bool sysfs_remove_bin_file_self(struct kobject *kobj, const struct bin_attribute *attr)
++{
++	return sysfs_remove_file_self(kobj, &attr->attr);
++}
++EXPORT_SYMBOL_GPL(sysfs_remove_bin_file_self);
++
+ static int internal_change_owner(struct kernfs_node *kn, kuid_t kuid,
+ 				 kgid_t kgid)
+ {
+diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
+index e3f1e8ac1f85..49de5189cf88 100644
+--- a/include/linux/sysfs.h
++++ b/include/linux/sysfs.h
+@@ -273,6 +273,7 @@ int __must_check sysfs_create_bin_file(struct kobject *kobj,
+ 				       const struct bin_attribute *attr);
+ void sysfs_remove_bin_file(struct kobject *kobj,
+ 			   const struct bin_attribute *attr);
++bool sysfs_remove_bin_file_self(struct kobject *kobj, const struct bin_attribute *attr);
+ 
+ int __must_check sysfs_create_link(struct kobject *kobj, struct kobject *target,
+ 				   const char *name);
 -- 
 2.33.0
 
