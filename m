@@ -2,55 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F85E424B6F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726ED424B70
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:02:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhJGBC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 21:02:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38776 "EHLO mail.kernel.org"
+        id S240147AbhJGBEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 21:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231279AbhJGBC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 21:02:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65ECA61152;
-        Thu,  7 Oct 2021 01:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1633568434;
-        bh=XSea3xDREsS668JtnNhe6+YvbVphkxRN+hbEgepZfIY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qN23EiUnwaUxTtCzyddQ+UcOwjZfm+SfZJ7RIR2Q90Kpyavt4V1HnOtPpWsmyMzeE
-         7lVLRx+2Scxs9bhPZtUCfN2dvqfsJNgMAxLPrBjbydvre6Y0odB3YBNIp2PUDpbyoy
-         /B0hTgMYGfNeW1ctqFFsXgaiuDgtOINH/Wm997bM=
-Date:   Wed, 6 Oct 2021 18:00:33 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Add "exec & binfmt" section with myself
- and Eric
-Message-Id: <20211006180033.e31809540ed053192b423419@linux-foundation.org>
-In-Reply-To: <20211006180200.1178142-1-keescook@chromium.org>
-References: <20211006180200.1178142-1-keescook@chromium.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S240114AbhJGBEM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 21:04:12 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62A8060F6B;
+        Thu,  7 Oct 2021 01:02:18 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 21:02:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 1/4] bootconfig: init: Fix memblock leak in
+ xbc_make_cmdline()
+Message-ID: <20211006210216.2fdf63cd@rorschach.local.home>
+In-Reply-To: <163177339181.682366.8713781325929549256.stgit@devnote2>
+References: <163177338366.682366.5998343833719057348.stgit@devnote2>
+        <163177339181.682366.8713781325929549256.stgit@devnote2>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  6 Oct 2021 11:02:00 -0700 Kees Cook <keescook@chromium.org> wrote:
+On Thu, 16 Sep 2021 15:23:12 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
-> I'd like more continuity of review for the exec and binfmt (and ELF)
-> stuff. Eric and I have been the most active lately, so list us as
-> reviewers.
+> Free unused memblock in a error case to fix memblock leak
+> in xbc_make_cmdline().
+> 
+> Fixes: 51887d03aca1 ("bootconfig: init: Allow admin to use bootconfig for kernel command line")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  init/main.c |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/init/main.c b/init/main.c
+> index 3f7216934441..0b054fff8e92 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -382,6 +382,7 @@ static char * __init xbc_make_cmdline(const char *key)
+>  	ret = xbc_snprint_cmdline(new_cmdline, len + 1, root);
+>  	if (ret < 0 || ret > len) {
+>  		pr_err("Failed to print extra kernel cmdline.\n");
+> +		memblock_free_ptr(new_cmdline, len + 1);
+>  		return NULL;
+>  	}
+>  
 
-Could add myself sometime as well, I guess.  For some reason I am
-suspiciously absent from MAINTAINERS.
+Hmm, looking at my patch queue, I noticed that this did not get
+applied. I'm thinking I may have been confused with the other memory
+freeing that was put into the xbc_destroy(), thinking this was part of
+that. But now that I look at this patch in the context of the code, it
+looks like this patch is required, as "new_cmdline" never gets exposed
+on this error.
 
-	switch (subsystem) {
-		...
-	default:
-		akpm;
-	}
+Masami, I just want to confirm, that this patch is still relevant, right?
 
+Thanks!
 
+-- Steve
