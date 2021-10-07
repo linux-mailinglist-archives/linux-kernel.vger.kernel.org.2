@@ -2,249 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651D942575F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04386425762
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242431AbhJGQH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50646 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbhJGQH6 (ORCPT
+        id S242542AbhJGQIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:08:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49969 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241776AbhJGQIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:07:58 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005EAC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:06:03 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id v18so25250028edc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=B2GP95ACsrGPqNOFMP4WndjL9720rx1ixJlh/ODo5jg=;
-        b=w+eWUeAt/TCC5GiBzNq1fW7u9PrHKEJm6D63j/CmxM6sVPajEBgv5k3CVPFV0eiZ49
-         SrQejSvO8gX/GRhgjO8l6RO4kZxfethD1evLcPuzKgEB46Fabc15Ppj4Cp8I5MqHgl9L
-         HDbTanpz0+1g6aWMFZDL1A3TlC4Nn3JIB4LUa66gx6LRjivKXifW2WFJqMQYhhFodKWN
-         hudyr/RHuXBF6dB4WiOEz8X9uDhJg4ts1B9XFloPGVOnRjTW1uKFn7rDhVCTFKjvZmaA
-         aOANeAl73C+1afNNcmUxL6DWQlLxWe79GCmNvFVXwyrs4w8eixAsawwD7B92lkIQK0Aj
-         WH2A==
+        Thu, 7 Oct 2021 12:08:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633622800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2f7G2WKXlw2VVvH2sPBaPxflHdQi/DqI+SXI7iCozBY=;
+        b=dqnJL0prfXgWYQIQoK/pU5YgSeb/v2fbfGLnAyF30AUtE6Vh8nW9umXp16LNULAHUBhXTe
+        szrw+fDeRgcvblFVKz2Okun4JL4ZxYERgxNSNL8n+Egx8+zNIKhRLblZCTjbfy6g8Haqr6
+        lEqj66akDoAvrADCJRNAfsj3ha+Y8X4=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-9WYIRdrlPzCB0_bTyCZHJQ-1; Thu, 07 Oct 2021 12:06:38 -0400
+X-MC-Unique: 9WYIRdrlPzCB0_bTyCZHJQ-1
+Received: by mail-qk1-f200.google.com with SMTP id k3-20020a05620a414300b0045e623cd1afso5542647qko.20
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:06:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=B2GP95ACsrGPqNOFMP4WndjL9720rx1ixJlh/ODo5jg=;
-        b=rNeiRQar9f/iMKXxUEKNeMBITrKaazelajDw85UG0n8Q8Al3vwoPBQ++ckakLVv0Ze
-         a/aBLgJLtuWY/9/My+zxNoapnPZ30LrGrkDIL4CSeqDkWesr4SfJtEN8sN6HVnsLEEfO
-         v+9vPoHwF6iMqJN6AfJYiZ96cVXnnMOSEvp7cMp334/+CwltNJ8N3ZFN9yYdmGAw/Vm6
-         osqlaauDeU8uiCdJxYRQbEd7rqMUT9RmUjVBsLjgubTo7RvmLLoA1KBZmK8l3rs1yADE
-         I1ENEA/dYhMlVRNpZ4FeIoqVuN9FnNFvVTQB6tIfVvkwWlV/VKp/7QZov2ovQJmRZdFW
-         peqQ==
-X-Gm-Message-State: AOAM530oUU9X3bk8gFq0F3YTimgUKVQzCvLgiAsV3szUYFrqAzmcbYOh
-        hr/IVygGW/Js8SYwYauos7XNDL9DrgP+JfTT8gKTsw==
-X-Google-Smtp-Source: ABdhPJwbromX4cN4ky1jgs9USX6Ry/wldi67/IB1Vai/C2a66dHniysvFnWHCF5Hm3/YI2Xr/DFnkz8fqaNCTb2N4M8=
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr7366340edc.182.1633622761720;
- Thu, 07 Oct 2021 09:06:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211006073100.650368172@linuxfoundation.org>
-In-Reply-To: <20211006073100.650368172@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 7 Oct 2021 21:35:49 +0530
-Message-ID: <CA+G9fYt0LXxYa4Su-v1Sc-M+J2knj8Ukpi-tRewKfT4gjis1Fg@mail.gmail.com>
-Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc3 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2f7G2WKXlw2VVvH2sPBaPxflHdQi/DqI+SXI7iCozBY=;
+        b=RJDlXKkKV/CQ/Nk61GGCM/nUj+o+t9TJwhMJ6XSPe/o4iMwypa/AMXZF9S4y9ONeoC
+         7+qD7MYfpLUCmC92xIFkGoCALT/VOzsOM3cNbewGoqUwFes1ctWLfUMLBYOOGxHhpUgt
+         DoALtLJ1G9Xpa8UEDs8Ckb1Zt2GVr3yXpwmeJWadmk5bzIj+LaaQCOMrZgoczXap0RSW
+         4Njx5KoX/xkf449H929tIR11DGixGYigDE9c7LjPZ1V0Ru4bcf8jmA2Bv4faMzdEZGX/
+         K5eGiyyxsV9ATxYz1iWawibaS7VspY9FwKlyu7NAYFhGatumFQtUVehEfbDv/9Mm6t3M
+         ItNg==
+X-Gm-Message-State: AOAM531yT/lnHfl5n8eAT6JVkUAjWtYlEug5lCRSgnvI+9puSsA2Y1A6
+        bj7UwU/25/lzX6SDFGBkVTpODXEfWx7FVDrt5INKFWU+4WEjeHGinS8OZx86s3gfVW7oLHVvxzz
+        kIzPuMQeMDolxvav4CURU4Ctn
+X-Received: by 2002:a05:622a:316:: with SMTP id q22mr5879946qtw.225.1633622797389;
+        Thu, 07 Oct 2021 09:06:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQLtzYt82r2CQEo/KkLz+OGcn7fBHhOWmfQckkRZ52geA1vPZXzGXWU4k0xWh+LgMLH0BJxA==
+X-Received: by 2002:a05:622a:316:: with SMTP id q22mr5879906qtw.225.1633622797114;
+        Thu, 07 Oct 2021 09:06:37 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a2:9100::bed8])
+        by smtp.gmail.com with ESMTPSA id a16sm13820149qkn.16.2021.10.07.09.06.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 09:06:36 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 12:06:34 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
+ for PMD page fault
+Message-ID: <YV8bChbXop3FuwPC@t490s>
+References: <20210930215311.240774-1-shy828301@gmail.com>
+ <20210930215311.240774-3-shy828301@gmail.com>
+ <YV4Dz3y4NXhtqd6V@t490s>
+ <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkp8oO9qvDN66_ALOqNrUDrzHH7RZc3G5GQ1pxz8qXJjqw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 at 13:50, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.10 release.
-> There are 172 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 08 Oct 2021 07:30:34 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.14.10-rc3.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Wed, Oct 06, 2021 at 04:57:38PM -0700, Yang Shi wrote:
+> > For example, I see that both unpoison_memory() and soft_offline_page() will
+> > call it too, does it mean that we'll also set the bits e.g. even when we want
+> > to inject an unpoison event too?
+> 
+> unpoison_memory() should be not a problem since it will just bail out
+> once THP is met as the comment says:
+> 
+> /*
+> * unpoison_memory() can encounter thp only when the thp is being
+> * worked by memory_failure() and the page lock is not held yet.
+> * In such case, we yield to memory_failure() and make unpoison fail.
+> */
 
+But I still think setting the subpage-hwpoison bit hides too deep there, it'll
+be great we can keep get_hwpoison_page() as simple as a safe version of getting
+the refcount of the page we want.  Or we'd still better touch up the comment
+above get_hwpoison_page() to show that side effect.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> 
+> 
+> And I think we should set the flag for soft offline too, right? The
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+I'm not familiar with either memory failure or soft offline, so far it looks
+right to me.  However..
 
-## Build
-* kernel: 5.14.10-rc3
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.14.y
-* git commit: d1d4d31a257c9fb5087c34e33423b99ee508fdf6
-* git describe: v5.14.9-173-gd1d4d31a257c
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
-.9-173-gd1d4d31a257c
+> soft offline does set the hwpoison flag for the corrupted sub page and
+> doesn't split file THP,
 
-## No regressions (compared to v5.14.9-174-g355f3195d051)
+.. I believe this will become not true after your patch 5, right?
 
-## No fixes (compared to v5.14.9-174-g355f3195d051)
+> so it should be captured by page fault as well. And yes for poison injection.
 
-## Test result summary
-total: 77776, pass: 65121, fail: 1016, skip: 10611, xfail: 1028
+One more thing: besides thp split and page free, do we need to conditionally
+drop the HasHwpoisoned bit when received an unpoison event?
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 289 total, 260 passed, 29 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 38 total, 38 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* parisc: 12 total, 12 passed, 0 failed
-* powerpc: 36 total, 36 passed, 0 failed
-* riscv: 30 total, 30 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 24 total, 24 passed, 0 failed
-* sparc: 12 total, 12 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 39 total, 39 passed, 0 failed
+If my understanding is correct, we may need to scan all the subpages there, to
+make sure HasHwpoisoned bit reflects the latest status for the thp in question.
 
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-nptl-tests[
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+> 
+> But your comment reminds me that get_hwpoison_page() is just called
+> when !MF_COUNT_INCREASED, so it means MADV_HWPOISON still could
+> escape. This needs to be covered too.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Right, maybe that's also a clue that we shouldn't set the new page flag within
+get_hwpoison_page(), since get_hwpoison_page() is actually well coupled with
+MF_COUNT_INCREASED and all of them are only about refcounting of the pages.
+
+-- 
+Peter Xu
+
