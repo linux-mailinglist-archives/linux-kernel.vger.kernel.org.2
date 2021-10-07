@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B2C425CF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:09:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885EB425CED
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 22:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbhJGULN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 16:11:13 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51768 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232399AbhJGULM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 16:11:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633637358; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=TgUP7H/55CzhTMa+kBh6z+HzWDqvhowEqxczuK+iB1E=;
- b=cOgAqdGb37sKY9RaWlhMO89VjFQejErda0OF4E/C4d38cyh2HRouFSdh4W/RQJ/xQI5A8XrK
- s4kkEQYBLOxt2RLjC9ZgmbrdN+DEXVJjzMfEZmAvlJDbqK5Ds5QM7eZsXmtjGqlWyLbUZMJR
- eqFffOBSNgusWI/QkfchIFLt1rQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 615f53d9de4c4ed3855fb0f8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 20:08:57
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 379A6C4360D; Thu,  7 Oct 2021 20:08:57 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3021C4338F;
-        Thu,  7 Oct 2021 20:08:55 +0000 (UTC)
+        id S241991AbhJGUJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 16:09:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233699AbhJGUJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 16:09:11 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92CCCC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 13:07:17 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id n63so10586762oif.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 13:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FFdR5Q8dgTLESN1Y4gNMob3whbKhRrjkjEmOmQ6y9yQ=;
+        b=aX7Admelts4w34rqAbdl/SbF4t8Z67F8SAXPtFtaijXHf4rJx1NusmvOd2KPijxVah
+         AKLOdbtFlBTf+2lvoyZXVo74ssS0WgZHhK3gwlsyNEkuoFDlC+g/+uIHaaOolEVA2r/w
+         S4ZKu5DWg3rY5VXN983RhELO+szcRn7HNmRL5G7tKYtzGEeOr1wgMyRV24oMWLJhlU0a
+         /S03IyLnxjYn9eDNXWZAqazdU9rqQ9m6/e4v8xm85uUwsE1ojvMPFazbwgY3ttxnKgnY
+         AnIJnhKuLgCSlQHKC+Mw34SMrYSU7ErUufVzCMRzH6Mc53JCgl+l6OYVcnqylGdI0BO2
+         /wsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FFdR5Q8dgTLESN1Y4gNMob3whbKhRrjkjEmOmQ6y9yQ=;
+        b=Z1qgM0srJMtajS2IwHrdsTU8SZvLzsg6tzNHlSj5N9nQ7/7e+Unbi2B0ZJwpGxNN6u
+         9v5uWKuciizgpRpxal+cTtn2/jjQZ7IPas6C04CuOH+HSgDzbXOWqYYcRCWzzsD8wF0v
+         ehbdRVrSNtkWOMKRbpaZdUhxGygKGq5OSrEAmD56qwYmqNrDjtLmqCkrPSBH5FNyvPyW
+         P6EGS2KClb+R64wp6KBOXuMiZSkAl3ol2o57NMSxmIQqEC6nXAH2fMFjvy6+t0uzph4o
+         1uZn7fLyjmLrYQ7sG1uri/T+Ynkp4RIkk/JV1GhKOozFEJr8RcF9pEcjhPvnigJE7/zi
+         hTxQ==
+X-Gm-Message-State: AOAM532X41IMmohBoDmkLLc+ok83O0Mn7OuHPFDzX2XLAlFs/CMC7RrQ
+        eQ546m2PRSvqmm93sMRb4rNVNg==
+X-Google-Smtp-Source: ABdhPJx7H7wjQ1XMkdMLSYMQSnlDHjAaVETulRelH3QWqNk4dhNy4p2yg4mORba1D+SfMGWMldVNkA==
+X-Received: by 2002:aca:bd02:: with SMTP id n2mr13066786oif.113.1633637236885;
+        Thu, 07 Oct 2021 13:07:16 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id f10sm76209otl.57.2021.10.07.13.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 13:07:16 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 13:08:56 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>, Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v3] drivers: thermal: tsens: add timeout to
+ get_temp_tsens_valid
+Message-ID: <YV9T2Bq16Z6SdBDM@ripper>
+References: <20211007172859.583-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 Oct 2021 01:38:55 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     will@kernel.org
-Cc:     bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        saiprakash.ranjan@codeaurora.org, swboyd@chromium.org,
-        mka@chromium.org, ohad@wizery.com, agross@kernel.org,
-        mathieu.poirier@linaro.org, robin.murphy@arm.com, joro@8bytes.org,
-        p.zabel@pengutronix.de, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        evgreen@chromium.org, dianders@chromium.org,
-        sibis=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH v5 04/10] iommu/arm-smmu-qcom: Request direct mapping for
- modem device
-In-Reply-To: <1631886935-14691-5-git-send-email-sibis@codeaurora.org>
-References: <1631886935-14691-1-git-send-email-sibis@codeaurora.org>
- <1631886935-14691-5-git-send-email-sibis@codeaurora.org>
-Message-ID: <0dcf1cae8c8d173922788d2807a7975f@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007172859.583-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Will,
+On Thu 07 Oct 10:28 PDT 2021, Ansuel Smith wrote:
 
-Can you pick this patch up, the rest of
-the series is now in linux-next.
-
-On 2021-09-17 19:25, Sibi Sankar wrote:
-> The SID configuration requirement for Modem on SC7280 is similar to the
-> ones found on SC7180/SDM845 SoCs. So, add the SC7280 modem compatible 
-> to
-> the list to defer the programming of the modem SIDs to the kernel.
+> The function can loop and lock the system if for whatever reason the bit
+> for the target sensor is NEVER valid. This is the case if a sensor is
+> disabled by the factory and the valid bit is never reported as actually
+> valid. Add a timeout check and exit if a timeout occurs. As this is
+> a very rare condition, handle the timeout only if the first read fails.
+> While at it also rework the function to improve readability and convert
+> to poll_timeout generic macro.
 > 
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->  drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/thermal/qcom/tsens.c | 29 ++++++++++++++---------------
+>  1 file changed, 14 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> index 55690af1b25d..3b9b46fca0b3 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-> @@ -231,6 +231,7 @@ static const struct of_device_id
-> qcom_smmu_client_of_match[] __maybe_unused = {
->  	{ .compatible = "qcom,sc7180-mdss" },
->  	{ .compatible = "qcom,sc7180-mss-pil" },
->  	{ .compatible = "qcom,sc7280-mdss" },
-> +	{ .compatible = "qcom,sc7280-mss-pil" },
->  	{ .compatible = "qcom,sc8180x-mdss" },
->  	{ .compatible = "qcom,sdm845-mdss" },
->  	{ .compatible = "qcom,sdm845-mss-pil" },
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+> index b1162e566a70..99a8d9f3e03c 100644
+> --- a/drivers/thermal/qcom/tsens.c
+> +++ b/drivers/thermal/qcom/tsens.c
+> @@ -603,22 +603,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
+>  	int ret;
+>  
+>  	/* VER_0 doesn't have VALID bit */
+> -	if (tsens_version(priv) >= VER_0_1) {
+> -		ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -		if (ret)
+> -			return ret;
+> -		while (!valid) {
+> -			/* Valid bit is 0 for 6 AHB clock cycles.
+> -			 * At 19.2MHz, 1 AHB clock is ~60ns.
+> -			 * We should enter this loop very, very rarely.
+> -			 */
+> -			ndelay(400);
+> -			ret = regmap_field_read(priv->rf[valid_idx], &valid);
+> -			if (ret)
+> -				return ret;
+> -		}
+> -	}
+> +	if (tsens_version(priv) == VER_0)
+> +		goto get_temp;
+> +
+> +	/* Valid bit is 0 for 6 AHB clock cycles.
+> +	 * At 19.2MHz, 1 AHB clock is ~60ns.
+> +	 * We should enter this loop very, very rarely.
+> +	 * Wait 1 us since it's the min of poll_timeout macro.
+> +	 * Old value was 400 ns.
+> +	 */
+> +	ret = regmap_field_read_poll_timeout(priv->rf[valid_idx], valid,
+> +					     valid, 1, 20 * USEC_PER_MSEC);
+> +	if (ret)
+> +		return ret;
+>  
+> +get_temp:
+>  	/* Valid bit is set, OK to read the temperature */
+>  	*temp = tsens_hw_to_mC(s, temp_idx);
+>  
+> -- 
+> 2.32.0
+> 
