@@ -2,127 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B425425520
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C75842552D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242002AbhJGORU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:17:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56752 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233867AbhJGORR (ORCPT
+        id S242011AbhJGOTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241774AbhJGOTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:17:17 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0144222536;
-        Thu,  7 Oct 2021 14:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633616123; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tFMJH9cjoNNkanu2nS+bPYZOud1m0KHzHexWhpyQvEs=;
-        b=yonKk2B3+rCxghzoRgDE0fup5nfkd1Drw3MOB6Y9xCf22dcg1ggq2EH3JtkEt47WHlMNz5
-        d0s/yuKQ+qvo40BO2Oj7C/D2bcL9u9VcIvs2YU/T8ZqujLYLuV2b2sIQ15IY402gYsSQSD
-        F/BhzprGq8uAV6pdqETmP7f+5UIAv5Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633616123;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tFMJH9cjoNNkanu2nS+bPYZOud1m0KHzHexWhpyQvEs=;
-        b=hK5A9VRlN9LYhNf7mIOs7pU99Jv+mTfBhG1o+Xcl7ULyoI4kwVoAXYZz97mfECTDLptWZx
-        2Hln5Q67UPlxTKCg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id E5F64A3B85;
-        Thu,  7 Oct 2021 14:15:22 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C86BA1F2C96; Thu,  7 Oct 2021 16:15:22 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 16:15:22 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Chenyuan Mi <cymi20@fudan.edu.cn>
-Cc:     yuanxzhang@fudan.edu.cn, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix refcount leak bug in __ext4_new_inode()
-Message-ID: <20211007141522.GB2670@quack2.suse.cz>
-References: <20210908024605.16857-1-cymi20@fudan.edu.cn>
+        Thu, 7 Oct 2021 10:19:18 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB533C061570;
+        Thu,  7 Oct 2021 07:17:24 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id l22so4481703vsq.9;
+        Thu, 07 Oct 2021 07:17:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kUGVALwRFhn7djzeqRAdJzo6PRnh+KyG51uBsyXq45A=;
+        b=jaqZE5e8m5DWhlR6wa0Cu5GO/KwD5ezq5Wetl77u6k/WSOF+OIFZtB5X06sEoc/eBU
+         8jklJ6331LWgdBOdJ6ihpU9/FMM2ZIpG2j/sWpwks0Wn/IECHVu5gG7X16EzoLjOm7w3
+         N+o5falri+AAh5u6BgfRcJZ0YB1LosYX06v+s1AxINyXGelKYk5oq0dEKjbR7oPe0n+2
+         92p0oBQfgaE5sxepI3+b44MvB3eWWdaOiZZRW56ZP8FeJvqmkGkwO1BWZHHbbXESmD8Y
+         /0KUaIecdq094kwDftzR3TakbNORF3+uj2teSr3f1VisoLVcnNbCqUofoFmwFRPPBxdA
+         gi3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kUGVALwRFhn7djzeqRAdJzo6PRnh+KyG51uBsyXq45A=;
+        b=F5REJmo58NLyuEhGEpL5HRjaFR+qFw38Xw4w9nXUNSjaDBCG3NfigYL0Nn8WsGUT/4
+         SYGbuc1byec8+LwDuyBSrY4zqocz42bXA2tOnRRbOwFg2/aqJYeR0HH2Khkz+aHqK3nz
+         7WMyxn/Jq5zbacJ9M8oMw4MDtfPgrx7mwefifd3UHa45NEZFzn6Mfi5NToEkRzsrCHUj
+         0cCnP9eWXiHhrfaWIr5wNpHUke0R9Bt9+hsHX0crmIuWhVyxxIp3cnH4xqQM8vfoa1n/
+         3hRLoaUN7yAXLK3tisrGgtcYE4aT6Bl7P3qh1Nf56/e/flo/z4gpTptYBGjDoSJBuiqg
+         97JQ==
+X-Gm-Message-State: AOAM532HNH/Bc5Ppmn83sk0pNEQF4qetsAh7R+zTHB3Nz/kmfZiPBAqq
+        RK9hLZWZGSIbI1MX4g4+83pCFwX3Xg0m8teTeWg=
+X-Google-Smtp-Source: ABdhPJzrlMX1yIMDFSH8vgdQa1Pg7/P42ZfgGs4XlQGy4rm89w8A0r0fc4mDtnH0qIc6gQmuA0mreZCaV1wjaWgjklw=
+X-Received: by 2002:a05:6102:3e84:: with SMTP id m4mr2588359vsv.51.1633616244112;
+ Thu, 07 Oct 2021 07:17:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908024605.16857-1-cymi20@fudan.edu.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211007135635.2717-1-semen.protsenko@linaro.org>
+In-Reply-To: <20211007135635.2717-1-semen.protsenko@linaro.org>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 7 Oct 2021 11:17:13 -0300
+Message-ID: <CAOMZO5DNF8pO__+Yjn32KEXDG_rq7LoOt=aKrsBz8gPfuxUxPw@mail.gmail.com>
+Subject: Re: [PATCH v3] clk: Add clk_set_parent debugfs node
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 08-09-21 10:46:05, Chenyuan Mi wrote:
-> After successfully creating handle by __ext4_journal_start_sb(),
-> the function forgets to decrease the refcount of handle in several
-> paths, causing refcount leak.
-> 
-> Fix this issue by recording a flag when successfully getting handle
-> by __ext4_journal_start_sb(), and decrease the refcount of handle
-> when exiting this function if holding the flag.
-> 
-> Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
-> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Hi Sam,
 
-I'm sorry but this patch is wrong. We are expected to return with handle
-running from __ext4_new_inode(). Please have a look into callers of
-ext4_new_inode() and ext4_new_inode_start_handle() how they use and then
-stop the handle. And similarly as for the second patch I'd note that even a
-small amount of testing would show you that this patch does not work.
+On Thu, Oct 7, 2021 at 10:57 AM Sam Protsenko
+<semen.protsenko@linaro.org> wrote:
+>
+> Useful for testing mux clocks. One can write the index of the parent to
+> set into clk_parent node, starting from 0. Example
+>
+>     # cd /sys/kernel/debug/clk/mout_peri_bus
+>     # cat clk_possible_parrents
 
-                                                                Honza
-
-> 
-> ---
->  fs/ext4/ialloc.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index f73e5eb43eae..7563b892c64f 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -944,6 +944,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
->  	ext4_group_t flex_group;
->  	struct ext4_group_info *grp = NULL;
->  	bool encrypt = false;
-> +	bool create_handle = false;
->  
->  	/* Cannot create files in a deleted directory */
->  	if (!dir || !dir->i_nlink)
-> @@ -1085,6 +1086,7 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
->  				ext4_std_error(sb, err);
->  				goto out;
->  			}
-> +			create_handle = true;
->  		}
->  		BUFFER_TRACE(inode_bitmap_bh, "get_write_access");
->  		err = ext4_journal_get_write_access(handle, sb, inode_bitmap_bh,
-> @@ -1345,7 +1347,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
->  		ext4_std_error(sb, err);
->  		goto fail_free_drop;
->  	}
-> -
-> +	if (create_handle)
-> +		ext4_journal_stop(handle);
->  	ext4_debug("allocating inode %lu\n", inode->i_ino);
->  	trace_ext4_allocate_inode(inode, dir, mode);
->  	brelse(inode_bitmap_bh);
-> @@ -1357,6 +1360,8 @@ struct inode *__ext4_new_inode(struct user_namespace *mnt_userns,
->  	clear_nlink(inode);
->  	unlock_new_inode(inode);
->  out:
-> +	if (create_handle)
-> +		ext4_journal_stop(handle);
->  	dquot_drop(inode);
->  	inode->i_flags |= S_NOQUOTA;
->  	iput(inode);
-> -- 
-> 2.17.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+s/clk_possible_parrents/clk_possible_parents
