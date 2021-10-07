@@ -2,142 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5064D424FAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEF14424FB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240413AbhJGJHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:07:42 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:37829 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232589AbhJGJHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:07:41 -0400
-Received: from hatter.bewilderbeest.net (71-212-29-146.tukw.qwest.net [71.212.29.146])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id B54F0F6;
-        Thu,  7 Oct 2021 02:05:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1633597547;
-        bh=m8q3ivL4JNCs32ZTM2MObocXXvZZ0W1tFJVUtNGkFTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bHul7hklIuebeh7G55Y6p0NYVNaTJUWiM8AusuYh/yvLMc68T/jZr57bQqtm137Qx
-         TTowiEFnPLLwhTTzX6T53EhX5grk/BiRFRiPNcRwk7NruSlyTjHZz7msTpDRr47dFu
-         fQA8Vvc9186bmCEsWWzYAuF+qPu9L4x1tcyk0+VE=
-Date:   Thu, 7 Oct 2021 02:05:41 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>
-Subject: Re: [PATCH 0/9] Dynamic DT device nodes
-Message-ID: <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
-References: <20211007000954.30621-1-zev@bewilderbeest.net>
- <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+        id S240477AbhJGJIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:08:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240471AbhJGJIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:08:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32AEE610A0;
+        Thu,  7 Oct 2021 09:06:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633597581;
+        bh=6tNvzRHLV8l4CA0/hjuw2PI5nvhrwOnua9V6TngagYc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=KNul1VIfUwm9tjWcCiwNhEp+itDg4SNVjUGVkJ3GW8ZXC+R1iT6LVKQa/KAZU3YQQ
+         4rPCEoEaPQ/m6kIDyVDWunE2sEsM+U1VDGNLXSot6tbmgDgcUqV6DszwN8aZqSEUtm
+         JoXyycvyE7uam2un4GdQRo9uO/lfY0+fXpDpWFFtGjeodniycYQSxJYtWbXJhQVrbW
+         pr7v15782l7/iB9Z8S+kJUHDl7VINqS78jIfxUDepIlu9lRaSQMAjyITKaTszO4tVY
+         bqXK08aOe6FHW/M1XASTSeGnP3P4jPckC9xktFodMrfqx/TIqKvt/fKWgpsuOFJcLd
+         nzVH7e3wKNt0A==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mYPM3-0004zq-Bs; Thu, 07 Oct 2021 11:06:20 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Razvan Heghedus <heghedus.razvan@gmail.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH] Revert "usb: misc: ehset: Workaround for "special" hubs"
+Date:   Thu,  7 Oct 2021 11:06:01 +0200
+Message-Id: <20211007090601.19156-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
->On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
->> This patch series is in some ways kind of a v2 for the "Dynamic
->> aspeed-smc flash chips via 'reserved' DT status" series I posted
->> previously [0], but takes a fairly different approach suggested by Rob
->> Herring [1] and doesn't actually touch the aspeed-smc driver or
->> anything in the MTD subsystem, so I haven't marked it as such.
->>
->> To recap a bit of the context from that series, in OpenBMC there's a
->> need for certain devices (described by device-tree nodes) to be able
->> to be attached and detached at runtime (for example the SPI flash for
->> the host's firmware, which is shared between the BMC and the host but
->> can only be accessed by one or the other at a time).
->
->This seems quite dangerous. Why do you need that? 
+This reverts commit ce3e90d5a0cdbcb2ddebbf9e4363e59fa779ad3a.
 
-Sometimes the host needs access to the flash (it's the host's firmware, 
-after all), sometimes the BMC needs access to it (e.g. to perform an 
-out-of-band update to the host's firmware).  To achieve the latter, the 
-flash needs to be attached to the BMC, but that requires some careful 
-coordination with the host to arbitrate which one actually has access to 
-it (that coordination is handled by userspace, which then tells the 
-kernel explicitly when the flash should be attached and detached).
+The commit in question added list of quirky hubs, but the match
+implementation clearly hasn't been tested at all.
 
-What seems dangerous?
+First, hub_udev->dev.parent does not represent a USB interface so using
+to_usb_interface() makes no sense and we'd be passing a random pointer
+to usb_match_id().
 
->Why can't device tree overlays be used?
+Second, if hub_udev is a root hub it doesn't even even represent a USB
+device.
 
-I'm hoping to stay closer to mainline.  The OpenBMC kernel has a 
-documented policy strongly encouraging upstream-first development: 
-https://github.com/openbmc/docs/blob/master/kernel-development.md
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/misc/ehset.c | 81 ++++++++--------------------------------
+ 1 file changed, 16 insertions(+), 65 deletions(-)
 
-I doubt Joel (the OpenBMC kernel maintainer) would be eager to start 
-carrying the DT overlay patches; I'd likewise strongly prefer to avoid 
-carrying them myself as additional downstream patches.  Hence the 
-attempt at getting a solution to the problem upstream.
-
->
->> To provide that
->> ability, this series adds support for a new common device-tree
->> property, a boolean "dynamic" that indicates that the device may come
->> and go at runtime.  When present on a node, the sysfs file for that
->> node's "status" property is made writable, allowing userspace to do
->> things like:
->>
->>   $ echo okay > /sys/firmware/devicetree/.../status
->>   $ echo reserved > /sys/firmware/devicetree/.../status
->>
->> to activate and deactivate a dynamic device.
->>
->> Because it leans on the OF_DYNAMIC machinery internally, this
->> functionality will only work on busses that register for OF reconfig
->> notifications and handle them appropriately (presently platform, i2c,
->> and spi).  This series does not attempt to solve the "dynamic devices
->> further down the tree" problem [2]; my hope is that handling for OF
->> reconfig notifications can be extended to other families of devices
->> (e.g. individual MTD spi-nor flash chips) in the future.
->
->What about ACPI and software nodes?
-
-I'm afraid I don't understand the question, can you elaborate on what 
-you mean?
-
->How will all this affect the host?
-
-Assuming the coordination mentioned above is done properly, the host 
-will be in a quiesced state whenever the BMC is accessing the flash and 
-hence won't notice much of anything at all (the BMC will detach the 
-flash and relinquish control of it back to the host before the host is 
-reactivated).
-
-
-Zev
+diff --git a/drivers/usb/misc/ehset.c b/drivers/usb/misc/ehset.c
+index b848bbdee802..f87890f9cd26 100644
+--- a/drivers/usb/misc/ehset.c
++++ b/drivers/usb/misc/ehset.c
+@@ -18,47 +18,6 @@
+ #define TEST_SINGLE_STEP_GET_DEV_DESC		0x0107
+ #define TEST_SINGLE_STEP_SET_FEATURE		0x0108
+ 
+-/*
+- * A list of USB hubs which requires to disable the power
+- * to the port before starting the testing procedures.
+- */
+-static const struct usb_device_id ehset_hub_list[] = {
+-	{USB_DEVICE(0x0424, 0x4502)},
+-	{USB_DEVICE(0x0424, 0x4913)},
+-	{USB_DEVICE(0x0451, 0x8027)},
+-	{}
+-};
+-
+-static int ehset_prepare_port_for_testing(struct usb_device *hub_udev, u16 portnum)
+-{
+-	int ret = 0;
+-
+-	/*
+-	 * The USB2.0 spec chapter 11.24.2.13 says that the USB port which is
+-	 * going under test needs to be put in suspend before sending the
+-	 * test command. Most hubs don't enforce this precondition, but there
+-	 * are some hubs which needs to disable the power to the port before
+-	 * starting the test.
+-	 */
+-	if (usb_match_id(to_usb_interface(hub_udev->dev.parent), ehset_hub_list)) {
+-		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_CLEAR_FEATURE,
+-					   USB_RT_PORT, USB_PORT_FEAT_ENABLE,
+-					   portnum, NULL, 0, 1000, GFP_KERNEL);
+-		/* Wait for the port to be disabled. It's an arbitrary value
+-		 * which worked every time.
+-		 */
+-		msleep(100);
+-	} else {
+-		/* For the hubs which are compliant with the spec,
+-		 * put the port in SUSPEND.
+-		 */
+-		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+-					   USB_RT_PORT, USB_PORT_FEAT_SUSPEND,
+-					   portnum, NULL, 0, 1000, GFP_KERNEL);
+-	}
+-	return ret;
+-}
+-
+ static int ehset_probe(struct usb_interface *intf,
+ 		       const struct usb_device_id *id)
+ {
+@@ -71,36 +30,28 @@ static int ehset_probe(struct usb_interface *intf,
+ 
+ 	switch (test_pid) {
+ 	case TEST_SE0_NAK_PID:
+-		ret = ehset_prepare_port_for_testing(hub_udev, portnum);
+-		if (!ret)
+-			ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+-						   USB_RT_PORT, USB_PORT_FEAT_TEST,
+-						   (USB_TEST_SE0_NAK << 8) | portnum,
+-						   NULL, 0, 1000, GFP_KERNEL);
++		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
++					   USB_RT_PORT, USB_PORT_FEAT_TEST,
++					   (USB_TEST_SE0_NAK << 8) | portnum,
++					   NULL, 0, 1000, GFP_KERNEL);
+ 		break;
+ 	case TEST_J_PID:
+-		ret = ehset_prepare_port_for_testing(hub_udev, portnum);
+-		if (!ret)
+-			ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+-						   USB_RT_PORT, USB_PORT_FEAT_TEST,
+-						   (USB_TEST_J << 8) | portnum, NULL, 0,
+-						   1000, GFP_KERNEL);
++		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
++					   USB_RT_PORT, USB_PORT_FEAT_TEST,
++					   (USB_TEST_J << 8) | portnum, NULL, 0,
++					   1000, GFP_KERNEL);
+ 		break;
+ 	case TEST_K_PID:
+-		ret = ehset_prepare_port_for_testing(hub_udev, portnum);
+-		if (!ret)
+-			ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+-						   USB_RT_PORT, USB_PORT_FEAT_TEST,
+-						   (USB_TEST_K << 8) | portnum, NULL, 0,
+-						   1000, GFP_KERNEL);
++		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
++					   USB_RT_PORT, USB_PORT_FEAT_TEST,
++					   (USB_TEST_K << 8) | portnum, NULL, 0,
++					   1000, GFP_KERNEL);
+ 		break;
+ 	case TEST_PACKET_PID:
+-		ret = ehset_prepare_port_for_testing(hub_udev, portnum);
+-		if (!ret)
+-			ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
+-						   USB_RT_PORT, USB_PORT_FEAT_TEST,
+-						   (USB_TEST_PACKET << 8) | portnum,
+-						   NULL, 0, 1000, GFP_KERNEL);
++		ret = usb_control_msg_send(hub_udev, 0, USB_REQ_SET_FEATURE,
++					   USB_RT_PORT, USB_PORT_FEAT_TEST,
++					   (USB_TEST_PACKET << 8) | portnum,
++					   NULL, 0, 1000, GFP_KERNEL);
+ 		break;
+ 	case TEST_HS_HOST_PORT_SUSPEND_RESUME:
+ 		/* Test: wait for 15secs -> suspend -> 15secs delay -> resume */
+-- 
+2.32.0
 
