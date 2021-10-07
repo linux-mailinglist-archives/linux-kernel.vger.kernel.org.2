@@ -2,206 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BFD425006
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90916425007
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240619AbhJGJ1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:27:21 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:24867 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240575AbhJGJ1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:27:17 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633598724; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=He1YImUAbrn+znVMaV7NxWs7EFm5JsbfYiiJO2b7bpY=;
- b=XAW2IORiHWxvKHqgHs3lvLrz+msfkhI3kUVr+BMlpgfpuGwz7SvjRy0znUDGPw5F59LicS/i
- CHElI1WGd0P3EbpBQ8t+TlEFtbRwVMccB9IjtaaQceVl4KXs1Yq5Zg3HNf7fm27EPpYnGByb
- huPCuwCPCVOAQlS7rpLw0aIy0Ew=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 615ebcf7a45ca753077e8eca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 09:25:11
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 58276C43617; Thu,  7 Oct 2021 09:25:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 53DB6C4338F;
-        Thu,  7 Oct 2021 09:25:09 +0000 (UTC)
+        id S240635AbhJGJ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240575AbhJGJ2n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:28:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0F5C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:26:50 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 11:26:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633598807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AilrdFSAlxKC5ydVAZVuo+Oq65jLMFbW4eMgDywp68s=;
+        b=BmiQvpEY4KOCycoCb9Kk/xVlSGc3HZIGbHx7QOetFOPTfcDqe9MKNHK0tZMQidHs2Re7lL
+        nRxL4DenR2CfIonh0K/lR139j0TphvTUHnzcsdARwKSVFzTfSZ5RtR+RGYfKMy/Gya5k49
+        uj3iwCB7+9J2VPtrhnrrgquRU2fFPs9aV/h7pj0Q4AVc4g0PGPRD6zZEgcnvvCLDd/WDJA
+        xNeWllGvgx6O6oW5vlBcF8L8XvKf2wnlwsD6Ih4vZswqBV+w7mq8LA9C9mk7p2PVtDWsH0
+        VIIplUz0SYxEbrv5vB+7YSs4SbZ9XDqdoCtfcRf8Meod6HMXhRe7+22DXO0kUQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633598807;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AilrdFSAlxKC5ydVAZVuo+Oq65jLMFbW4eMgDywp68s=;
+        b=FyC/63jD/aI1BM3zjvD8rClYo7IBrPqemQEYvZNAM8PMFe39TEh9yst66INE+0jqxlC1S9
+        bYrJ11E4abO+CWBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v3 3/4] irq_work: Handle some irq_work in a per-CPU thread on
+ PREEMPT_RT
+Message-ID: <20211007092646.uhshe3ut2wkrcfzv@linutronix.de>
+References: <20211006111852.1514359-1-bigeasy@linutronix.de>
+ <20211006111852.1514359-4-bigeasy@linutronix.de>
+ <20211007085023.GP174703@worktop.programming.kicks-ass.net>
+ <20211007090810.7jbxj7giedmqlzyl@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Oct 2021 14:55:09 +0530
-From:   schowdhu@codeaurora.org
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        Bryan O'Donoghue <pure.logic@nexus-software.ie>,
-        Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-        ckadabi@codeaurora.org, tsoni@codeaurora.org,
-        bryanh@codeaurora.org, psodagud@codeaurora.org,
-        satyap@codeaurora.org, pheragu@codeaurora.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: Re: [PATCH V0 1/7] dt-bindings: connector: Add property for eud type
- c connector
-In-Reply-To: <YVx/U+w8zS6/P6oa@ripper>
-References: <cover.1633343547.git.schowdhu@codeaurora.org>
- <246c9d24da27b6ce91d5f1e536fa96ac5656a0b2.1633343547.git.schowdhu@codeaurora.org>
- <YVsttQySDnaXxOuI@robh.at.kernel.org>
- <b3d10d7b874c11462604a5f78bc0e8cf@codeaurora.org> <YVx/U+w8zS6/P6oa@ripper>
-Message-ID: <ad4f944d1166882c80a91b3fbbd15fc5@codeaurora.org>
-X-Sender: schowdhu@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211007090810.7jbxj7giedmqlzyl@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-05 22:07, Bjorn Andersson wrote:
-> On Tue 05 Oct 06:11 PDT 2021, schowdhu@codeaurora.org wrote:
-> 
->> On 2021-10-04 22:07, Rob Herring wrote:
->> > On Mon, Oct 04, 2021 at 04:46:19PM +0530, Souradeep Chowdhury wrote:
->> > > Added the property for EUD(Embedded USB Debug) connector.Added
->> > > the "reg" and "interrupts" property which is needed for EUD.
->> >
->> > You are going to need a better explanation of this h/w.
->> 
->> Ack. Will update this with the detailed hardware description
->> in the next version.
->> 
->> >
->> > >
->> > > Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
->> > > ---
->> > >  .../devicetree/bindings/connector/usb-connector.yaml      | 15
->> > > +++++++++++++++
->> > >  1 file changed, 15 insertions(+)
->> > >
->> > > diff --git
->> > > a/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> > > b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> > > index 7eb8659..908129f 100644
->> > > --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> > > +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
->> > > @@ -30,6 +30,21 @@ properties:
->> > >            - const: samsung,usb-connector-11pin
->> > >            - const: usb-b-connector
->> > >
->> > > +      - items:
->> > > +          - enum:
->> > > +              - qcom,sc7280-usb-connector-eud
->> > > +          - const: qcom,usb-connector-eud
->> > > +          - const: usb-c-connector
->> > > +
->> > > +  reg:
->> > > +    items:
->> > > +      - description: EUD Base Register Region
->> > > +      - description: EUD Mode Manager Region
->> >
->> > A connector node represents the physical connector on a board. That
->> > can't really be an MMIO peripheral. Maybe you need a node for EUD and
->> > then it should have a connector child node? Don't really know without
->> > understanding this h/w.
->> 
->> As per the previous discussion on the EUD, it was agreed upon to map 
->> EUD
->> as a type C connector and use Role-Switch to change the USB role 
->> instead
->> of extcon interface that was being used previously. The link for the 
->> same
->> is as follows:-
->> 
->> https://lore.kernel.org/lkml/5db1a666-62ec-c850-6626-ad33d337b452@codeaurora.org/
->> 
-> 
-> Not using extcon is the right thing, but perhaps we should make the EUD
-> a role_switch provider and client, so that we can describe how it sits
-> inbetween the connector and the controller.
-> 
-> That way it has the power to pass through or override requests from the
-> upstream role-switcher, based on the status of EUD.
-> 
-> 
-> That said, I'm still curious to what happens if I renegotiate the roles
-> dynamically in a Type-C environment, while enabling EUD. How would the
-> device on the other end of the cable know that it's supposed to be a
-> host? Or there's simply a reset of the link when this happens?
-> 
-> Thanks,
-> Bjorn
+The irq_work callback is invoked in hard IRQ context. By default all
+callbacks are scheduled for invocation right away (given supported by
+the architecture) except for the ones marked IRQ_WORK_LAZY which are
+delayed until the next timer-tick.
 
-Hi Bjorn,
+While looking over the callbacks, some of them may acquire locks
+(spinlock_t, rwlock_t) which are transformed into sleeping locks on
+PREEMPT_RT and must not be acquired in hard IRQ context.
+Changing the locks into locks which could be acquired in this context
+will lead to other problems such as increased latencies if everything
+in the chain has IRQ-off locks. This will not solve all the issues as
+one callback has been noticed which invoked kref_put() and its callback
+invokes kfree() and this can not be invoked in hardirq context.
 
-By making EUD Role-Switch provider and client do you mean that
-we should have a EUD node which will have a connector node as
-child and this connector node will have a port that points towards
-the drd role-switch?
+Some callbacks are required to be invoked in hardirq context even on
+PREEMPT_RT to work properly. This includes for instance the NO_HZ
+callback which needs to be able to observe the idle context.
 
-So that my device tree node will look like the following in that case
+The callbacks which require to be run in hardirq have already been
+marked. Use this information to split the callbacks onto the two lists
+on PREEMPT_RT:
+- lazy_list
+  Work items which are not marked with IRQ_WORK_HARD_IRQ will be added
+  to this list. Callbacks on this list will be invoked from a per-CPU
+  thread.
+  The handler here may acquire sleeping locks such as spinlock_t and
+  invoke kfree().
 
-eud@88e0000 {
-         compatible = "qcom,usb-connector-eud";
-         reg = <0 0x88e0000 0 0x2000>,
-               <0 0x88e2000 0 0x1000>;
-         interrupt-parent = <&pdc>;
-         interrupts = <11 IRQ_TYPE_LEVEL_HIGH>;
-         usb_con: connector {
-                 compatible = "usb-c-connector";
-                 label = "USB-C";
-                 port {
-                       eud_usb_output: endpoint {
-                       remote-endpoint = <&eud_usb3_input>;
-                  };
-         };
+- raised_list
+  Work items which are marked with IRQ_WORK_HARD_IRQ will be added to
+  this list. They will be invoked in hardirq context and must not
+  acquire any sleeping locks.
 
-};
+The wake up of the per-CPU thread occurs from irq_work handler/
+hardirq context. The thread runs with lowest RT priority to ensure it
+runs before any SCHED_OTHER tasks do.
 
+[bigeasy: melt tglx's irq_work_tick_soft() which splits irq_work_tick() into a
+	  hard and soft variant. Collected fixes over time from Steven
+	  Rostedt and Mike Galbraith. Move to per-CPU threads instead of
+	  softirq as suggested by PeterZ.]
 
-@usb2 {
-     dwc3 {
-        usb-role-switch;
-        port {
-              eud_usb3_input: endpoint {
-                    remote-endpoint = <&eud_usb_output>;
-              };
-      };
-};
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ kernel/irq_work.c | 118 +++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 106 insertions(+), 12 deletions(-)
 
-Also EUD functions only in device mode, so when the role-switch is done 
-by the controller
-to set the device mode, the PC on the other end becomes the host.
+diff --git a/kernel/irq_work.c b/kernel/irq_work.c
+index e789beda8297d..90b6b56f92e95 100644
+--- a/kernel/irq_work.c
++++ b/kernel/irq_work.c
+@@ -18,11 +18,36 @@
+ #include <linux/cpu.h>
+ #include <linux/notifier.h>
+ #include <linux/smp.h>
++#include <linux/smpboot.h>
+ #include <asm/processor.h>
+ #include <linux/kasan.h>
+ 
+ static DEFINE_PER_CPU(struct llist_head, raised_list);
+ static DEFINE_PER_CPU(struct llist_head, lazy_list);
++static DEFINE_PER_CPU(struct task_struct *, irq_workd);
++
++static void wake_irq_workd(void)
++{
++	struct task_struct *tsk = __this_cpu_read(irq_workd);
++
++	if (!llist_empty(this_cpu_ptr(&lazy_list)) && tsk)
++		wake_up_process(tsk);
++}
++
++#ifdef CONFIG_SMP
++static void irq_work_wake(struct irq_work *entry)
++{
++	wake_irq_workd();
++}
++
++static DEFINE_PER_CPU(struct irq_work, irq_work_wakeup) =
++	IRQ_WORK_INIT_HARD(irq_work_wake);
++#endif
++
++static int irq_workd_should_run(unsigned int cpu)
++{
++	return !llist_empty(this_cpu_ptr(&lazy_list));
++}
+ 
+ /*
+  * Claim the entry so that no one else will poke at it.
+@@ -52,15 +77,29 @@ void __weak arch_irq_work_raise(void)
+ /* Enqueue on current CPU, work must already be claimed and preempt disabled */
+ static void __irq_work_queue_local(struct irq_work *work)
+ {
++	struct llist_head *list;
++	bool rt_lazy_work = false;
++	bool lazy_work = false;
++	int work_flags;
++
++	work_flags = atomic_read(&work->node.a_flags);
++	if (work_flags & IRQ_WORK_LAZY)
++		lazy_work = true;
++	else if (IS_ENABLED(CONFIG_PREEMPT_RT) &&
++		 !(work_flags & IRQ_WORK_HARD_IRQ))
++		rt_lazy_work = true;
++
++	if (lazy_work || rt_lazy_work)
++		list = this_cpu_ptr(&lazy_list);
++	else
++		list = this_cpu_ptr(&raised_list);
++
++	if (!llist_add(&work->node.llist, list))
++		return;
++
+ 	/* If the work is "lazy", handle it from next tick if any */
+-	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
+-		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
+-		    tick_nohz_tick_stopped())
+-			arch_irq_work_raise();
+-	} else {
+-		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
+-			arch_irq_work_raise();
+-	}
++	if (!lazy_work || tick_nohz_tick_stopped())
++		arch_irq_work_raise();
+ }
+ 
+ /* Enqueue the irq work @work on the current CPU */
+@@ -104,17 +143,34 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
+ 	if (cpu != smp_processor_id()) {
+ 		/* Arch remote IPI send/receive backend aren't NMI safe */
+ 		WARN_ON_ONCE(in_nmi());
++
++		/*
++		 * On PREEMPT_RT the items which are not marked as
++		 * IRQ_WORK_HARD_IRQ are added to the lazy list and a HARD work
++		 * item is used on the remote CPU to wake the thread.
++		 */
++		if (IS_ENABLED(CONFIG_PREEMPT_RT) &&
++		    !(atomic_read(&work->node.a_flags) & IRQ_WORK_HARD_IRQ)) {
++
++			if (!llist_add(&work->node.llist, &per_cpu(lazy_list, cpu)))
++				goto out;
++
++			work = &per_cpu(irq_work_wakeup, cpu);
++			if (!irq_work_claim(work))
++				goto out;
++		}
++
+ 		__smp_call_single_queue(cpu, &work->node.llist);
+ 	} else {
+ 		__irq_work_queue_local(work);
+ 	}
++out:
+ 	preempt_enable();
+ 
+ 	return true;
+ #endif /* CONFIG_SMP */
+ }
+ 
+-
+ bool irq_work_needs_cpu(void)
+ {
+ 	struct llist_head *raised, *lazy;
+@@ -170,7 +226,12 @@ static void irq_work_run_list(struct llist_head *list)
+ 	struct irq_work *work, *tmp;
+ 	struct llist_node *llnode;
+ 
+-	BUG_ON(!irqs_disabled());
++	/*
++	 * On PREEMPT_RT IRQ-work which is not marked as HARD will be processed
++	 * in a per-CPU thread in preemptible context. Only the items which are
++	 * marked as IRQ_WORK_HARD_IRQ will be processed in hardirq context.
++	 */
++	BUG_ON(!irqs_disabled() && !IS_ENABLED(CONFIG_PREEMPT_RT));
+ 
+ 	if (llist_empty(list))
+ 		return;
+@@ -187,7 +248,10 @@ static void irq_work_run_list(struct llist_head *list)
+ void irq_work_run(void)
+ {
+ 	irq_work_run_list(this_cpu_ptr(&raised_list));
+-	irq_work_run_list(this_cpu_ptr(&lazy_list));
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		irq_work_run_list(this_cpu_ptr(&lazy_list));
++	else
++		wake_irq_workd();
+ }
+ EXPORT_SYMBOL_GPL(irq_work_run);
+ 
+@@ -197,7 +261,11 @@ void irq_work_tick(void)
+ 
+ 	if (!llist_empty(raised) && !arch_irq_work_has_interrupt())
+ 		irq_work_run_list(raised);
+-	irq_work_run_list(this_cpu_ptr(&lazy_list));
++
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
++		irq_work_run_list(this_cpu_ptr(&lazy_list));
++	else
++		wake_irq_workd();
+ }
+ 
+ /*
+@@ -219,3 +287,29 @@ void irq_work_sync(struct irq_work *work)
+ 		cpu_relax();
+ }
+ EXPORT_SYMBOL_GPL(irq_work_sync);
++
++static void run_irq_workd(unsigned int cpu)
++{
++	irq_work_run_list(this_cpu_ptr(&lazy_list));
++}
++
++static void irq_workd_setup(unsigned int cpu)
++{
++	sched_set_fifo_low(current);
++}
++
++static struct smp_hotplug_thread irqwork_threads = {
++	.store                  = &irq_workd,
++	.setup			= irq_workd_setup,
++	.thread_should_run      = irq_workd_should_run,
++	.thread_fn              = run_irq_workd,
++	.thread_comm            = "irq_work/%u",
++};
++
++static __init int irq_work_init_threads(void)
++{
++	if (IS_ENABLED(CONFIG_PREEMPT_RT))
++		BUG_ON(smpboot_register_percpu_thread(&irqwork_threads));
++	return 0;
++}
++early_initcall(irq_work_init_threads);
+-- 
+2.33.0
 
-Thanks,
-Souradeep
-
-> 
->> >
->> > > +
->> > > +  interrupts:
->> > > +    description:
->> > > +      EUD interrupt
->> > > +
->> > >    label:
->> > >      description: Symbolic name for the connector.
->> > >
->> > > --
->> > > QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
->> > > member
->> > > of Code Aurora Forum, hosted by The Linux Foundation
->> > >
->> > >
