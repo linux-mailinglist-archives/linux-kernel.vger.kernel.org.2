@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AF54257E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5356942576E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242634AbhJGQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:27:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241716AbhJGQ1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:27:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633623922;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1kbk2lcxg9O2Y1a76hO9mtdUGaa5nIQDze4u6D1O12E=;
-        b=PkHT6QrRFZHi8wg+5gLEvlzDKpgeuFejFwvg0IIjD0WDxGG/a/ec+JTboWjAq1iN7GHxfd
-        1awDTHsp5cjn8DdTnJm1ObPpb2lPpOqPteiVDqeNMVP5qlvklUP81jdcopuojVCzuJQfBo
-        hqp8xskq7MM+KJrbPjmVCXbgwqei6lg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-158-SUq8qOLJPw6XCB59yiXLGA-1; Thu, 07 Oct 2021 12:25:18 -0400
-X-MC-Unique: SUq8qOLJPw6XCB59yiXLGA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S242522AbhJGQOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:14:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231366AbhJGQO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 12:14:29 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9546111EB683;
-        Thu,  7 Oct 2021 16:17:01 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6506671B90;
-        Thu,  7 Oct 2021 16:16:18 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, markver@us.ibm.com,
-        "Michael S. Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
-In-Reply-To: <20211007175242.4b0155b8.pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20211006142533.2735019-1-pasic@linux.ibm.com>
- <875yu9yruv.fsf@redhat.com> <20211007163255.61d95513.pasic@linux.ibm.com>
- <8735pczwjj.fsf@redhat.com> <20211007175242.4b0155b8.pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Thu, 07 Oct 2021 18:16:16 +0200
-Message-ID: <87wnmoyfn3.fsf@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 911A461074;
+        Thu,  7 Oct 2021 16:12:31 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 17:16:35 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v4 4/7] list.h: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <20211007171635.2f161739@jic23-huawei>
+In-Reply-To: <20211007154407.29746-5-andriy.shevchenko@linux.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+        <20211007154407.29746-5-andriy.shevchenko@linux.intel.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+On Thu,  7 Oct 2021 18:44:04 +0300
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-> On Thu, 07 Oct 2021 17:25:52 +0200
-> Cornelia Huck <cohuck@redhat.com> wrote:
->
->> On Thu, Oct 07 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
->> 
->> > On Thu, 07 Oct 2021 13:52:24 +0200
->> > Cornelia Huck <cohuck@redhat.com> wrote:
->> >  
->> >> On Wed, Oct 06 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
->> >>   
->> >> > The virtio specification virtio-v1.1-cs01 states: "Transitional devices
->> >> > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
->> >> > been acknowledged by the driver."  This is exactly what QEMU as of 6.1
->> >> > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
->> >> >
->> >> > However, the specification also says: "... driver MAY read (but MUST NOT
->> >> > write) the device-specific configuration fields to check that it can
->> >> > support the device ..." before setting FEATURES_OK.    
->> >> 
->> >> Suggest to put the citations from the spec into quotes, so that they are
->> >> distinguishable from the rest of the text.  
->> >
->> > For the record: I basically took Michael's description, the one which you
->> > said you prefer, with some minor changes.  
->> 
->> Well I did look at what the text said, not the details in the formatting...
->> 
->> >
->> > This is one of the changes, which renders this a paraphrase and not a
->> > quote. Michael didn't use quotation marks so I was not sure it is was
->> > a word by word quote anyway. It was. But the spec depends on "During this
->> > step" which does not make any sense without the context. That is why I made
->> > the end of step explicit.  
->> 
->> I still think that would be nicer while using some quotation marks, even
->> if you are just doing a partial quote.
->> 
->> In the first paragraph, however, we really should mark the quote
->> properly. It gave me a stop when I first read it.
->
-> I've added in some quotation marks and ellipsis marks. Does that look
-> good for you?
+> When kernel.h is used in the headers it adds a lot into dependency hell,
+> especially when there are circular dependencies are involved.
+> 
+> Replace kernel.h inclusion with the list of what is really being used.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/list.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index f2af4b4aa4e9..5dc679b373da 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -2,11 +2,13 @@
+>  #ifndef _LINUX_LIST_H
+>  #define _LINUX_LIST_H
+>  
+> +#include <linux/container_of.h>
+> +#include <linux/const.h>
+>  #include <linux/types.h>
+>  #include <linux/stddef.h>
+>  #include <linux/poison.h>
 
-Yep, works for me.
+Is there a reason you didn't quite sort this into alphabetical order?
+
+> -#include <linux/const.h>
+> -#include <linux/kernel.h>
+> +
+> +#include <asm/barrier.h>
+>  
+>  /*
+>   * Circular doubly linked list implementation.
 
