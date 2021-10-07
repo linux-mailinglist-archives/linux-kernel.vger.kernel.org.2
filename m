@@ -2,145 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C584259AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3F94259AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243347AbhJGRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242882AbhJGRl4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:41:56 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AD6C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:40:03 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so5679943pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bb1PkufxTe67IhpBxyKhxa8OO+NUTrwc7Sa3gVKgQik=;
-        b=QdfITAjwVIWvpjbba2nldZcuwI42UwAeKz/mh7y2UX41AOpUsHwg3GSQ9xCeCDkhnC
-         HANw7QQld2O14WtMeHp4d9JBofQ7cXYRXi1Xgn7ardWnp5M0vOMmhkWIOzxQZi+DGU63
-         T6fdi0CRBNgETYeE+MQPfbL80xYR+qc2vxEp0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bb1PkufxTe67IhpBxyKhxa8OO+NUTrwc7Sa3gVKgQik=;
-        b=aKlkFYK1tYqpVTjyIgPX5pwv7D0MD1FIu+bTiAVf7eibl8QW9oiRKiUvN1tHW5eY8a
-         AevFZ19bUk9QjzOX5GtivEeUPm/ipH123RyzaFvmf9zMpA7A506NTTxB2I5bbHvINT24
-         NQtmZwkceJ+2m7BS2iq7bOmGAxu3r8eetaASqwqpxZslZy+JJ+SOi8ysJ+mGf704IrsN
-         nuqRoWYygLeERkkK7oCTZrRUYg7DSzMitLzCDoaDLzUki+AuTxSwiLYomEfLoCejEVev
-         9cPDmVVMvn0DUbKMxci6nAYFhJUfRJljGMIVa6jBPvBf8U0L65ebvWUpbkNNK7vMbY0y
-         yJbg==
-X-Gm-Message-State: AOAM533MaTtAEBDp1HExSXijIU4nxVNuDc5u3kDBwiIV+LdAYYF9T0w5
-        DL+N+mm3Xf9D6klRJ1gPBn/ZX0u8cTdXCA==
-X-Google-Smtp-Source: ABdhPJy2dPjsVPaV/5Jd9g8K/7TyeNi/lc7GoBrxtoOJyFRPBerhbrZK09W53FOLQm3NxYo+UK6g5A==
-X-Received: by 2002:a17:90a:1a58:: with SMTP id 24mr6997975pjl.45.1633628402419;
-        Thu, 07 Oct 2021 10:40:02 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t3sm111954pgo.51.2021.10.07.10.40.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:40:01 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 10:40:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ELF: fix overflow in total mapping size calculation
-Message-ID: <202110071038.B589687@keescook>
-References: <YVmd7D0M6G/DcP4O@localhost.localdomain>
- <202110051929.37279B6B4A@keescook>
- <YV8sQ5vhD+V6XLXx@localhost.localdomain>
+        id S242798AbhJGRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:43:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242002AbhJGRnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:43:01 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 081526121F;
+        Thu,  7 Oct 2021 17:41:05 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 13:41:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     pmladek@suse.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
+        akpm@linux-foundation.org, peterz@infradead.org,
+        valentin.schneider@arm.com, mathieu.desnoyers@efficios.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/4] kernel/kthread: show a warning if kthread's comm
+ is truncated
+Message-ID: <20211007134103.4da8a8ab@gandalf.local.home>
+In-Reply-To: <20211007120752.5195-5-laoar.shao@gmail.com>
+References: <20211007120752.5195-1-laoar.shao@gmail.com>
+        <20211007120752.5195-5-laoar.shao@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV8sQ5vhD+V6XLXx@localhost.localdomain>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 08:20:03PM +0300, Alexey Dobriyan wrote:
-> On Tue, Oct 05, 2021 at 07:31:09PM -0700, Kees Cook wrote:
-> > On Sun, Oct 03, 2021 at 03:11:24PM +0300, Alexey Dobriyan wrote:
-> > > Kernel assumes that ELF program headers are ordered by mapping address,
-> > > but doesn't enforce it. It is possible to make mapping size extremely huge
-> > > by simply shuffling first and last PT_LOAD segments.
-> > > 
-> > > As long as PT_LOAD segments do not overlap, it is silly to require
-> > > sorting by v_addr anyway because mmap() doesn't care.
-> > > 
-> > > Don't assume PT_LOAD segments are sorted and calculate min and max
-> > > addresses correctly.
-> > 
-> > Nice! Yes, this all make sense.
-> > 
-> > > 
-> > > Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> > > ---
-> > > 
-> > >  fs/binfmt_elf.c |   23 +++++++++++------------
-> > >  1 file changed, 11 insertions(+), 12 deletions(-)
-> > > 
-> > > --- a/fs/binfmt_elf.c
-> > > +++ b/fs/binfmt_elf.c
-> > > @@ -93,7 +93,7 @@ static int elf_core_dump(struct coredump_params *cprm);
-> > >  #define ELF_CORE_EFLAGS	0
-> > >  #endif
-> > >  
-> > > -#define ELF_PAGESTART(_v) ((_v) & ~(unsigned long)(ELF_MIN_ALIGN-1))
-> > > +#define ELF_PAGESTART(_v) ((_v) & ~(int)(ELF_MIN_ALIGN-1))
-> > 
-> > Errr, this I don't like. I assume this is because of the min() use
-> > below?
-> 
-> Yes, this is to shut up the warning.
-> 
-> The macro is slightly incorrect because "_v" can be either uint32_t or
-> uint64_t. But standard ALIGN macros are slightly incorrect too.
+On Thu,  7 Oct 2021 12:07:52 +0000
+Yafang Shao <laoar.shao@gmail.com> wrote:
 
-Right, but "int" is neither 64-sized nor unsigned. :P I would just leave
-this macro as-is.
+> -		vsnprintf(name, sizeof(name), namefmt, args);
+> +		len = vsnprintf(name, sizeof(name), namefmt, args);
+> +		if (len >= TASK_COMM_LEN) {
+> +			pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
+> +				name, task->pid, len - TASK_COMM_LEN + 1);
 
-> 
-> I don't want to clean this particular mess right now. Those are separate stables.
-> 
-> > >  #define ELF_PAGEOFFSET(_v) ((_v) & (ELF_MIN_ALIGN-1))
-> > >  #define ELF_PAGEALIGN(_v) (((_v) + ELF_MIN_ALIGN - 1) & ~(ELF_MIN_ALIGN - 1))
-> > >  
-> > > @@ -399,22 +399,21 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
-> > >  	return(map_addr);
-> > >  }
-> > >  
-> > > -static unsigned long total_mapping_size(const struct elf_phdr *cmds, int nr)
-> > > +static unsigned long total_mapping_size(const struct elf_phdr *phdr, int nr)
-> > >  {
-> > > -	int i, first_idx = -1, last_idx = -1;
-> > > +	elf_addr_t min_addr = -1;
-> > > +	elf_addr_t max_addr = 0;
-> > > +	bool pt_load = false;
-> > > +	int i;
-> > >  
-> > >  	for (i = 0; i < nr; i++) {
-> > > -		if (cmds[i].p_type == PT_LOAD) {
-> > > -			last_idx = i;
-> > > -			if (first_idx == -1)
-> > > -				first_idx = i;
-> > > +		if (phdr[i].p_type == PT_LOAD) {
-> > > +			min_addr = min(min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-> > > +			max_addr = max(max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-> > 
-> > How about:
-> > 		min_addr = min_t(elf_addr_t, min_addr, ELF_PAGESTART(phdr[i].p_vaddr));
-> > 		max_addr = max_t(elf_addr_t, max_addr, phdr[i].p_vaddr + phdr[i].p_memsz);
-> 
-> No! The proper fix is to fix ELF_PAGESTART().
+Instead of saying how many characters it is truncated to, what about just
+showing what it was truncated to?
 
-Why? The warning from min() is about making sure there isn't an
-unexpected type conversion. min_t() uses an explicit type, so why not
-the above?
+			pr_warn("truncated kthread comm from:%s to:%.*s for pid:%d\n",
+				name, TASK_COMM_LEN - 1, name, task->pid);
 
--- 
-Kees Cook
+?
+
+-- Steve
+
+> +		}
