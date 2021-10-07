@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A23425F3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 973A3425F3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242187AbhJGVjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:39:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51602 "EHLO mail.kernel.org"
+        id S241742AbhJGVkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:40:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241753AbhJGVjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD3B961175;
-        Thu,  7 Oct 2021 21:37:54 +0000 (UTC)
+        id S242066AbhJGVj5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 17:39:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CF81610C8;
+        Thu,  7 Oct 2021 21:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633642675;
-        bh=Q/3Zh6BeJ0iOh2f8WH4pqEQ0/pyFSZZFE+3zbz+hEPw=;
+        s=k20201202; t=1633642683;
+        bh=m4HJANNOPPFV57mqo5iLQB7fhTk2U2/wpkQ5dIfb3Ww=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uH5ZTUDgYLLeQ6DNOL/qeaXP9z8tc0HzqBKxO6xHh2yQZOR3LreWcUd0Yu7r3mkm8
-         Erdg9MED1gPeYR901gUffb/RmGcER8vwGrfsuc48ApRdDhF2c7RPwYpvhIyxjWabAb
-         lBVN3xpp97qqwCJYqyuGaRIuboDebSrkjykmFRCtSMLI0Go0xRDnBy8OcbGjAJuFFh
-         IMe5nJR/aupA2pCgh33BOo+mh8+QMF0TxP+w9RL/DtlYkUsaW7+SUNKZynNi20dNV9
-         jl/B2zgYLh125yuMGLD3wsOqltHiQwPDIUpjj1ls+Y/isIjCaKe/AIIwVp/3tJqV6g
-         wYS59zGy3g1cA==
+        b=eB+mq8je9u+SYMX7yuDyZRztJ1+TEQHdhGPN+qrZWD+uCtA4BBZw1ndVfDo5reiGw
+         ihje9A2hvtw0CFRlF+uuNO/yr9Kw7FPthacZASuLW/5ZFPtD7YrUZ0eXT99XBLojie
+         GZ6XjCHzrPc9ovJPMeb9bNkSCO13fZIoYxFH9m1VyCRcBw8BIi+mW+4OxYce997O75
+         R76c7ED/WcP02i3fm8rzNjbFWDsMWT+DYYO1KGLtgZ7cx2KBP0weNWmksNUGFhkWET
+         AoYsQQSEWd4RaIoCvSdwQZmFHyz+DGOErTFq2zIohPvr01w0t9q7NiQJuMuT6BzQel
+         ifWG83F3NhB9A==
 From:   Mark Brown <broonie@kernel.org>
-To:     =?UTF-8?q?P=C3=A9ter=20Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
-        Alejandro Tafalla <atafalla@dnyon.com>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
 Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v4 0/2] Add reset-gpios handling for max98927
-Date:   Thu,  7 Oct 2021 22:37:28 +0100
-Message-Id: <163364264607.649699.766377916130433507.b4-ty@kernel.org>
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-rockchip@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: (subset) [PATCH v5 0/4] Rockchip I2S/TDM controller
+Date:   Thu,  7 Oct 2021 22:37:31 +0100
+Message-Id: <163364264608.649699.437992626098307061.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1633572679.git.atafalla@dnyon.com>
-References: <cover.1633572679.git.atafalla@dnyon.com>
+In-Reply-To: <20211001171531.178775-1-frattaroli.nicolas@gmail.com>
+References: <20211001171531.178775-1-frattaroli.nicolas@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -46,15 +47,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 04:38:54 +0200, Alejandro Tafalla wrote:
-> The max98927 codec on some devices (i.e. Xiaomi Mi A2 Lite phone) requires
-> hardware-resetting the codec by driving a reset-gpio. This series adds
-> support for it through an optional reset-gpios property.
+On Fri, 1 Oct 2021 19:15:27 +0200, Nicolas Frattaroli wrote:
+> this is version 5 of the I2S/TDM driver patchset. A big thanks
+> to everyone who has provided their valuable feedback so far.
 > 
-> v4:
-> * Correctly assert/deassert the GPIO states
-> * Wait for the i2c port to be ready after reset
-> * Reset device when removed
+> Changes in v5:
+>  driver:
+>  - change comment style of the first comment to C++ style
+>  - make refcount non-atomic, as it's only ever used inside
+>    a spinlock
+>  - use newer SND_SOC_DAIFMT_CB* defines
+>  - change ternary statements to if/else conditions
+>  - make _clk_compensation_put return 1 if clock changed
+>  - implement set_bclk_ratio callback
+>  - always set half frame sync mode in TDM mode
+>  - automatically enable mclk-calibrate mode when the clocks for
+>    it are specified in the device tree
+>  bindings:
+>  - add Reviewed-by: Rob Herring
+>  - drop rockchip,frame-width property (done by set_bclk_ratio)
+>  - drop rockchip,fsync-half-frame property
+>  - drop rockchip,mclk-calibrate property
+>  dts:
+>  - drop empty codec block from Quartz64 device tree
 > 
 > [...]
 
@@ -64,10 +79,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: max98927: Handle reset gpio when probing i2c
-      commit: 4d67dc1998f1890a9d22d03208037075ea9f2562
-[2/2] dt-bindings: sound: max98927: Add reset-gpios optional property
-      commit: b23d3189c038c091adc8de382d20a8f5321645a1
+[1/4] ASoC: rockchip: add support for i2s-tdm controller
+      commit: 081068fd641403994f0505e6b91e021d3925f348
+[2/4] ASoC: dt-bindings: rockchip: add i2s-tdm bindings
+      commit: 510f1c133aedcf69847786c14681e7f7bf4db778
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
