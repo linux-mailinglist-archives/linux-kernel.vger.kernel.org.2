@@ -2,196 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D1E425472
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE574425483
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241622AbhJGNmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233331AbhJGNmE (ORCPT
+        id S241641AbhJGNrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:47:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56945 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241536AbhJGNrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:42:04 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A62C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 06:40:11 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id o124so6800962vsc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1c9Bs6nusuoOL+e643re/tA4r0t8kYh/Scmw4S9IkZ8=;
-        b=fT0+k27En3TnyRcfJlq4l1jQwbd3HzcNL5RPtCGxNg+eUKjfNnq1IjHURXEQTV88Vo
-         fr7qmB971FqWJwgnI0zWK+K9Jd08S2RATuEd7Ky4PChGehZXbXQuV+922dpWYepU59dR
-         /hNhHpaY6mKO/822LpygHj6dGlbVK88kHvi3zk6e04S4rZqKVDBi300XSl5GQPLMWWGA
-         Cq4USwlybP1lOv3KuiCMlh4jiteUCnFaORnTXloduWgbWpuf+lnep990ICR1kA787A7s
-         oaRzkCPjIw4D1uDRZKGVDRa1S1DyIdbKzGYnysCFrA8w0T043J0YOi08as8KUHC61lHw
-         F5rQ==
+        Thu, 7 Oct 2021 09:47:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633614318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6usspG94A1kNlqd/WFrWFDCc16P7tAqSAi+n+Gy8zoU=;
+        b=FWPeX95ARzuRE9XEbWHMuNFqAJYLUonkIFEyZKI5tOn3MQvTRDjPixBbLtYS1Xs4o1mIZ/
+        kG00kwnIOVqJ+0GbJjEveQ8EDBuP0KLkXQQ1y8lrybsv0FvBF9NxGXR/uDZGPIPEHnQ4UO
+        r5xRo2R3y3N7PimRROL2hVvy7gl+yUA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-R14SYCegMfmYK7caeXJXYQ-1; Thu, 07 Oct 2021 09:45:16 -0400
+X-MC-Unique: R14SYCegMfmYK7caeXJXYQ-1
+Received: by mail-wr1-f71.google.com with SMTP id r16-20020adfbb10000000b00160958ed8acso4728394wrg.16
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:45:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1c9Bs6nusuoOL+e643re/tA4r0t8kYh/Scmw4S9IkZ8=;
-        b=IuhDMM8MeiDq+aCFvkXQBBr1XDY8DBHcASKUp4UjAdEVcNYdI5nYbmucgeDkz7KKHc
-         q9lFBI93aXccTDQj2Vdlqm1H6hu0dKc85crATeYVH1ERKusLDQnnGJfIpeDiFOIiUocj
-         f87qJ+V3+abs3ymLEuAUQUzLgMO2RYpN8OtIH43I3dQTveXOHEfBf743cc4qyZhI9tzP
-         7NuTCJHGE8Us9TFwDGEVDq11Y7/16Jok7gYQml7J9JxvR+sVvSeAbZnyD+61prpk7Fbt
-         aZergzf3JPlGGqmBdgmPg5LIJPg9Ugi/8gEUP5Xcs8Z8X5BicDBnpYX35VBewzfui98V
-         Dp3Q==
-X-Gm-Message-State: AOAM53361jfaXgRfjb55bvltqzniaK3MGyUInjyfsJM4mYtZ3q6caKga
-        k+UGoaNfLdG3LoUCQvyddkbVVvFMezvmdDIOj3w2DA==
-X-Google-Smtp-Source: ABdhPJzDRlKFY14qZ2gPiRb6EyUDNAJg6Tx1mRwv4DIkuJdoBnTMESa0Ii3Ads1kGPK9oZd30QVKqELb8a7goNzF42Q=
-X-Received: by 2002:a67:1781:: with SMTP id 123mr3771949vsx.1.1633614008836;
- Thu, 07 Oct 2021 06:40:08 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6usspG94A1kNlqd/WFrWFDCc16P7tAqSAi+n+Gy8zoU=;
+        b=r5aMyyEm+FJlxrHaTms6wdXGQ7dpMLbXBkR8r2KAlc0Vb4BIBvMiUW+vSqy5NQz1GH
+         VyKhhj7qdPGpLdV46oI/9tl7gOr99PBTmZTjW0gW1gYk/xDuaUslap29h2mVX4bpueoC
+         uzhYQmo0PTXf6ob4wnB/YAGmZDdbmNlM5cQkVq5N/i9sCojNRQ2MLsE1CvR5bSeB2C02
+         khZ1cAjjc7xZDNqG32sjkK4v2vbdOOngrYlxiZ2iHOFRfR2p938rW5KZPbvxOqlhgxVF
+         YFDGjdlZ/xKf3wn1p3sYuoKxrLchAwopYvaPKh232UM5jOmiVd92I6ZuZRvi7H3jPghc
+         m7wQ==
+X-Gm-Message-State: AOAM532cG4AJyHJe3zM+TvC/CdAeTJFDJQ66t4/Nqsr4G/u/GwuBOsiF
+        5zzx52pflVQC2GZ+eDn0XD8dYX0bJVIUFB53LEE1OMdoioI9ts8o4LwJLHBvhFyt79sSoVHgP3E
+        SvhXAwjr/Xh5n4Ta1vv0nJtJH
+X-Received: by 2002:adf:bb08:: with SMTP id r8mr5750704wrg.222.1633614315041;
+        Thu, 07 Oct 2021 06:45:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5grJqb2V1AulhcQfdWUkwxLsq/AzMT1s5kA3HVmlm1/7Jko50u59wnpZfc6iu0gGMemasiQ==
+X-Received: by 2002:adf:bb08:: with SMTP id r8mr5750665wrg.222.1633614314742;
+        Thu, 07 Oct 2021 06:45:14 -0700 (PDT)
+Received: from [192.168.100.42] ([82.142.3.114])
+        by smtp.gmail.com with ESMTPSA id a81sm1300665wmd.30.2021.10.07.06.45.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 06:45:14 -0700 (PDT)
+Message-ID: <1bc32339-b786-99bd-d49c-ad19ac7ce29b@redhat.com>
+Date:   Thu, 7 Oct 2021 15:45:13 +0200
 MIME-Version: 1.0
-References: <20210914141939.26410-1-semen.protsenko@linaro.org>
- <CAPLW+4mhr4pJAUyGNpfWDnxgTsJ7-fj0hw=ehV8YkqRmaBSnag@mail.gmail.com> <CAMuHMdXVM4HZ6H4e=7u14qwmqszmR4cvNZ=K4h9O079fxZB95g@mail.gmail.com>
-In-Reply-To: <CAMuHMdXVM4HZ6H4e=7u14qwmqszmR4cvNZ=K4h9O079fxZB95g@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 7 Oct 2021 16:39:56 +0300
-Message-ID: <CAPLW+4neBGCKShs-S=sGpWUY74oPifAdPD5stkq8cXf80LR_cA@mail.gmail.com>
-Subject: Re: [PATCH] clk: Add clk_set_parent debugfs node
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] KVM: PPC: Defer vtime accounting 'til after IRQ handling
+Content-Language: en-US
+To:     Greg Kurz <groug@kaod.org>
+Cc:     kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>
+References: <20211006073745.82109-1-lvivier@redhat.com>
+ <20211006124204.4741bb5c@bahia.huguette>
+From:   Laurent Vivier <lvivier@redhat.com>
+In-Reply-To: <20211006124204.4741bb5c@bahia.huguette>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On Tue, 5 Oct 2021 at 13:43, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Sam,
->
-> On Tue, Oct 5, 2021 at 12:11 PM Sam Protsenko
-> <semen.protsenko@linaro.org> wrote:
-> > On Tue, 14 Sept 2021 at 17:19, Sam Protsenko <semen.protsenko@linaro.org> wrote:
-> > > Useful for testing mux clocks. One can write the index of the parent to
-> > > set into clk_set_parent node, starting from 0. Example
-> > >
-> > >     # cat clk_possible_parrents
-> > >       dout_shared0_div4 dout_shared1_div4
-> > >     # cat clk_parent
-> > >       dout_shared0_div4
-> > >     # echo 1 > clk_set_parent
-> > >     # cat clk_parent
-> > >       dout_shared1_div4
-> > >
-> > > Define CLOCK_ALLOW_WRITE_DEBUGFS in drivers/clk/clk.c in order to use
-> > > this feature.
-> > >
-> > > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > > ---
-> >
-> > + Adding more folks for review
-> >
-> > Guys, can you please review this one?
->
-> Thanks for your patch!
->
-
-Thanks for review! :)
-
-> > > --- a/drivers/clk/clk.c
-> > > +++ b/drivers/clk/clk.c
-> > > @@ -3214,6 +3214,30 @@ static int current_parent_show(struct seq_file *s, void *data)
-> > >  }
-> > >  DEFINE_SHOW_ATTRIBUTE(current_parent);
-> > >
-> > > +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> > > +static int clk_set_parent_set(void *data, u64 val)
->
-> u64 is overkill, num_parents is u8.
+On 06/10/2021 12:42, Greg Kurz wrote:
+> On Wed,  6 Oct 2021 09:37:45 +0200
+> Laurent Vivier <lvivier@redhat.com> wrote:
+> 
+>> Commit 61bd0f66ff92 has moved guest_enter() out of the interrupt
+>> protected area to be able to have updated tick counters, but
+>> commit 112665286d08 moved back to this area to avoid wrong
+>> context warning (or worse).
+>>
+>> None of them are correct, to fix the problem port to POWER
+>> the x86 fix 160457140187 ("KVM: x86: Defer vtime accounting 'til
+>> after IRQ handling"):
+>>
+>> "Defer the call to account guest time until after servicing any IRQ(s)
+>>   that happened in the guest or immediately after VM-Exit.  Tick-based
+>>   accounting of vCPU time relies on PF_VCPU being set when the tick IRQ
+>>   handler runs, and IRQs are blocked throughout the main sequence of
+>>   vcpu_enter_guest(), including the call into vendor code to actually
+>>   enter and exit the guest."
+>>
+>> Link: https://bugzilla.redhat.com/show_bug.cgi?id=2009312
+>> Fixes: 61bd0f66ff92 ("KVM: PPC: Book3S HV: Fix guest time accounting with VIRT_CPU_ACCOUNTING_GEN")
+> 
+> This patch was merged in linux 4.16 and thus is on the 4.16.y
+> stable branch and it was backported to stable 4.14.y. It would
+> make sense to Cc: stable # v4.14 also, but...
+> 
+>> Fixes: 112665286d08 ("KVM: PPC: Book3S HV: Context tracking exit guest context before enabling irqs")
+> 
+> ... this one, which was merged in linux 5.12, was never backported
+> anywhere because it wasn't considered as a fix, as commented here:
+> 
+> https://lore.kernel.org/linuxppc-dev/1610793296.fjhomer31g.astroid@bobo.none/
+> 
+> AFAICT commit 61bd0f66ff92 was never mentioned anywhere in a bug. The
+> first Fixes: tag thus looks a bit misleading. I'd personally drop it
+> and Cc: stable # v5.12.
 >
 
-u64 is required by simple_attr_open() signature, because
-clk_set_parent_set() is being passed there as a parameter eventually
-(via DEFINE_DEBUGFS_ATTRIBUTE()). But yeah, I'll use u8 when reworking
-the code for using with existing 'clk_parent' file.
+Ok, I update the comment.
 
-> > > +{
-> > > +       struct clk_core *core = data, *parent;
-> > > +       int ret;
-> > > +
-> > > +       if (val >= core->num_parents)
-> > > +               return -EINVAL;
->
-> clk_core_get_parent_by_index() called below already checks this.
->
+>> Cc: npiggin@gmail.com
+>>
+>> Signed-off-by: Laurent Vivier <lvivier@redhat.com>
+>> ---
+>>   arch/powerpc/kvm/book3s_hv.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+>> index 2acb1c96cfaf..43e1ce853785 100644
+>> --- a/arch/powerpc/kvm/book3s_hv.c
+>> +++ b/arch/powerpc/kvm/book3s_hv.c
+>> @@ -3695,6 +3695,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
+>>   
+>>   	srcu_read_unlock(&vc->kvm->srcu, srcu_idx);
+>>   
+>> +	context_tracking_guest_exit();
+>> +
+>>   	set_irq_happened(trap);
+>>   
+>>   	spin_lock(&vc->lock);
+>> @@ -3726,9 +3728,8 @@ static noinline void kvmppc_run_core(struct kvmppc_vcore *vc)
+>>   
+>>   	kvmppc_set_host_core(pcpu);
+>>   
+>> -	guest_exit_irqoff();
+>> -
+> 
+> 
+> Change looks ok but it might be a bit confusing for the
+> occasional reader that guest_enter_irqoff() isn't matched
+> by a guest_exit_irqoff().
+> 
+>>   	local_irq_enable();
+>> +	vtime_account_guest_exit();
+>>   
+> 
+> Maybe add a comment like in x86 ?
+> 
 
-Thanks, will remove this.
+done
 
-> > > +
-> > > +       parent = clk_core_get_parent_by_index(core, val);
-> > > +       if (IS_ERR_OR_NULL(parent))
-> > > +               return PTR_ERR(parent);
+>>   	/* Let secondaries go back to the offline loop */
+>>   	for (i = 0; i < controlled_threads; ++i) {
+>> @@ -4506,13 +4507,14 @@ int kvmhv_run_single_vcpu(struct kvm_vcpu *vcpu, u64 time_limit,
+>>   
+>>   	srcu_read_unlock(&kvm->srcu, srcu_idx);
+>>   
+>> +	context_tracking_guest_exit();
+>> +
+>>   	set_irq_happened(trap);
+>>   
+>>   	kvmppc_set_host_core(pcpu);
+>>   
+>> -	guest_exit_irqoff();
+>> -
+>>   	local_irq_enable();
+>> +	vtime_account_guest_exit();
+>>   
+>>   	cpumask_clear_cpu(pcpu, &kvm->arch.cpu_in_guest);
+>>   
+> 
+> Same remarks. FWIW a followup was immediately added to x86 to
+> encapsulate the enter/exit logic in common helpers :
+> 
+> ommit bc908e091b3264672889162733020048901021fb
+> Author: Sean Christopherson <seanjc@google.com>
+> Date:   Tue May 4 17:27:35 2021 -0700
+> 
+>      KVM: x86: Consolidate guest enter/exit logic to common helpers
+> 
+> This makes the code nicer. Maybe do something similar for POWER ?
 
-Also just noticed that this block is incorrect. I should've used just
-'if (!parent)' here instead. I remember Russel King was raising the
-question about removing that API for good, as too many people tend to
-use that incorrectly, and now I can see why.
+I don't like to modify kernel code when it's not needed. I just want to fix a bug, if 
+someone wants this nicer I let this to him...
 
-> > > +
-> > > +       clk_prepare_lock();
-> > > +       ret = clk_core_set_parent_nolock(core, parent);
-> > > +       clk_prepare_unlock();
-> > > +
-> > > +       return ret;
-> > > +}
-> > > +
-> > > +DEFINE_DEBUGFS_ATTRIBUTE(clk_set_parent_fops, NULL, clk_set_parent_set,
-> > > +                        "%llu\n");
-> > > +#endif
-> > > +
-> > >  static int clk_duty_cycle_show(struct seq_file *s, void *data)
-> > >  {
-> > >         struct clk_core *core = s->private;
-> > > @@ -3285,9 +3309,14 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
-> > >                 debugfs_create_file("clk_parent", 0444, root, core,
-> > >                                     &current_parent_fops);
-> > >
-> > > -       if (core->num_parents > 1)
-> > > +       if (core->num_parents > 1) {
-> > >                 debugfs_create_file("clk_possible_parents", 0444, root, core,
-> > >                                     &possible_parents_fops);
-> > > +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-> > > +               debugfs_create_file("clk_set_parent", 0200, root, core,
-> > > +                                   &clk_set_parent_fops);
-> > > +#endif
->
-> Why add a new file, instead of making the existing "clk_parent" file
-> writable, like is done for "clk_rate"?
-> Yes, "clk_parent" prints a name, while you use a parent number, but
-> I guess that can be fixed? Or even both can be accepted?
->
+Thanks,
+Laurent
 
-Ok, I'll merge that feature into existing 'clk_parent' file. At the
-time I implemented this I was busy with something else, and use
-existing code around as an example. But it's not too hard to do this
-properly, by defining 'struct file_operations' manually, like it's
-done for example in dwc3_lsp_write(). Will send v2 with fixes shortly.
-
-> > > +       }
-> > >
-> > >         if (core->ops->debug_init)
-> > >                 core->ops->debug_init(core->hw, core->dentry);
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
