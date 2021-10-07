@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB579425823
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:40:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B58B42582A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242747AbhJGQmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:42:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242297AbhJGQmB (ORCPT
+        id S242764AbhJGQmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:42:36 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33294 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242297AbhJGQmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:42:01 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A673C061570;
-        Thu,  7 Oct 2021 09:40:07 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id x27so27252969lfa.9;
-        Thu, 07 Oct 2021 09:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IkiYESUwPuOAhc/9Tu+J/TkjYtnEJg1nTu4gW+TNm28=;
-        b=S0Wej+NiSR7tu3xAmGqeGsTwG2U0U8SPQm0Z1R3fQVUn/2Vy7jIId541l1EbkuIgnv
-         +3LKLSh7iQtNtFKTXmsQteXU1olfcagzamtFxFf4bBSJWdDUYdU30xxNG3vzoU+xFnty
-         yZBZFZS9qWZm9XXl53ZL9Z3XCIKB/GV39LvUvRGsGvlMhCoLWJ65cFj4pasH+z6oQAyO
-         LjMeEB139hQ9uI63xhQ3WeEVSSjzL/ePvb8eTG5uKUK5qyd6jNQgYE+BfL/ju6mk2TYz
-         Dn8gNHgyA+0A+YuInKoNrqH32fgdONht86QNRKDcza1EnNgwZY4sPPU1XVGv3DOgidNI
-         g64Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IkiYESUwPuOAhc/9Tu+J/TkjYtnEJg1nTu4gW+TNm28=;
-        b=i+pT9Wr0unj4a2Sp74zoipzVZi1+A3YDKFOoTjEKXshHDJ5PG2UvmbgRCgunV1HfMA
-         Ja8e1qxFCzGS530grNrijYVYSKmncqxVKmsQcs9qthcJaKjaNgdCRyWTGu7C9V+GHhda
-         3R/Jw5VgysAGBlY8VhRpA40GfvNEhAe+JGOZHv/3wYJgG132l8HPil2Ai/oe9i+PvtQS
-         8EJo1Vdovz/ARoTk5HXL8UPLphzW/3Yjw6CajWU0U76ZQ/IH8xuEEA/bmHy7gARrKmSn
-         ahe3GyUqR3m/ocSNiVojbVNzptIf3t+u7MdUNO/VdZl/NnxFDauu2D8tPxeqU2LmaadU
-         7H3g==
-X-Gm-Message-State: AOAM530CcSXybmRTSpSHdqJMjCaL6Ds4Eztr3IdaDPOdDGlDa1g/+48v
-        PXgRbkeOh10qYJuwaxari4hjWvMHRqg=
-X-Google-Smtp-Source: ABdhPJx9C6dMgdo8FF7weruHR8bHFZH5KVNJJyGprjjGHakjPpRF/TfFZ+9CKEhsNcmHpq5YT9Znqg==
-X-Received: by 2002:a19:f805:: with SMTP id a5mr4995816lff.483.1633624805753;
-        Thu, 07 Oct 2021 09:40:05 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id e25sm5594lfn.82.2021.10.07.09.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 09:40:05 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] i2c:busses:Register PCI1XXXX adapter to I2C
- subsystem
-To:     LakshmiPraveen Kopparthi <LakshmiPraveen.Kopparthi@microchip.com>,
-        wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        treding@nvidia.com, mirq-linux@rere.qmqm.pl, s.shtylyov@omp.ru,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     UNGLinuxDriver@microchip.com
-References: <20210929062215.23905-1-LakshmiPraveen.Kopparthi@microchip.com>
- <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a63bbad2-b7b4-47da-93bd-4152a2c8b93f@gmail.com>
-Date:   Thu, 7 Oct 2021 19:40:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 7 Oct 2021 12:42:35 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 7ADFF21CB4;
+        Thu,  7 Oct 2021 16:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633624840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iFXDHIdmFx9kOd99BpBZhPs9QL1kZsGk7ICGKgi5oo4=;
+        b=P8Xk1Z595yZrs6BKXhkLSy617Pk/28mCV4RpLMtibIaiNBrHMQjdjq0pPiqN1cZqnfxQ+A
+        s/Nq4zSXnAnqCKum77vSyiENDBnG1Yl5fVHJkcIxh7EDiUOYbNmUQt6iVeDnmcCv8tbDeN
+        MHIzTFOhfoWhKJfWRACGPgInluA2SH0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 168ADA3B84;
+        Thu,  7 Oct 2021 16:40:40 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 18:40:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
+Message-ID: <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
+References: <efdffa68-d790-72e4-e6a3-80f2e194d811@nvidia.com>
+ <YV1eCu0eZ+gQADNx@dhcp22.suse.cz>
+ <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
+ <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
+ <20211006175821.GA1941@duo.ucw.cz>
+ <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
+ <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
+ <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
+ <20211007101527.GA26288@duo.ucw.cz>
+ <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210929062215.23905-2-LakshmiPraveen.Kopparthi@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-29.09.2021 09:22, LakshmiPraveen Kopparthi пишет:
-> +static int pci1xxxx_i2c_suspend(struct device *dev)
-> +{
-> +	struct pci1xxxx_i2c *i2c = dev_get_drvdata(dev);
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	u32 regval;
-> +
-> +	i2c_mark_adapter_suspended(&i2c->adap);
-> +
-> +	pci1xxxx_ack_high_level_intr(i2c, ALL_HIGH_LAYER_INTR);
-> +	pci1xxxx_i2c_config_high_level_intr(i2c, ALL_HIGH_LAYER_INTR, false);
-> +
-> +	/*
-> +	 * Enable the PERST_DIS bit to mask the PERST from
-> +	 * resetting the core regs
-> +	 */
-> +	regval = readl(i2c->i2c_base + SMBUS_RESET_REG);
-> +	regval |= PERI_SMBUS_D3_RESET_DIS;
-> +	writel(regval, i2c->i2c_base + SMBUS_RESET_REG);
-> +
-> +	return 0;
-> +}
-> +
-> +static int pci1xxxx_i2c_resume(struct device *dev)
-> +{
-> +	struct pci1xxxx_i2c *i2c = dev_get_drvdata(dev);
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	u32 regval;
-> +
-> +	i2c_mark_adapter_resumed(&i2c->adap);
-> +
-> +	regval = readl(i2c->i2c_base + SMBUS_RESET_REG);
-> +	regval &= ~PERI_SMBUS_D3_RESET_DIS;
-> +	writel(regval, i2c->i2c_base + SMBUS_RESET_REG);
-> +
-> +	return 0;
-> +}
-> +
-> +static SIMPLE_DEV_PM_OPS(pci1xxxx_i2c_pm_ops, pci1xxxx_i2c_suspend,
-> +			 pci1xxxx_i2c_resume);
+On Thu 07-10-21 09:04:09, Suren Baghdasaryan wrote:
+> On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
+> >
+> > Hi!
+> >
+> > > >> Hmm, so the suggestion is to have some directory which contains files
+> > > >> representing IDs, each containing the string name of the associated
+> > > >> vma? Then let's say we are creating a new VMA and want to name it. We
+> > > >> would have to scan that directory, check all files and see if any of
+> > > >> them contain the name we want to reuse the same ID.
+> > > >
+> > > > I believe Pavel meant something as simple as
+> > > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
+> > > > $ touch $YOUR_FILE
+> > > > $ stat -c %i $YOUR_FILE
+> 
+> Ah, ok, now I understand the proposal. Thanks for the clarification!
+> So, this would use filesystem as a directory for inode->name mappings.
+> One rough edge for me is that the consumer would still need to parse
+> /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
+> just dumping the content for the user. Would it be acceptable if we
+> require the ID provided by prctl() to always be a valid inode and
+> show_map_vma() would do the inode-to-filename conversion when
+> generating maps/smaps files? I know that inode->dentry is not
+> one-to-one mapping but we can simply output the first dentry name.
+> WDYT?
 
-Can you move suspend/resume to NOIRQ level? Device drivers may require
-to access I2C early on resume (or late on suspend), it's a common
-trouble for bus drivers.
+No. You do not want to dictate any particular way of the mapping. The
+above is just one way to do that without developing any actual mapping
+yourself. You just use a filesystem for that. Kernel doesn't and
+shouldn't understand the meaning of those numbers. It has no business in
+that.
+
+In a way this would be pushing policy into the kernel.
+
+-- 
+Michal Hocko
+SUSE Labs
