@@ -2,154 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7594425302
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB33425306
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241362AbhJGMai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241167AbhJGMaf (ORCPT
+        id S241374AbhJGMaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:30:55 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25332 "EHLO
+        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241238AbhJGMay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:30:35 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0E7C061746;
-        Thu,  7 Oct 2021 05:28:42 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id b8so22535598edk.2;
-        Thu, 07 Oct 2021 05:28:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0gW5u4BhwhxG/oEIcngyv5/5SCvI3u+z/IqA8blrDDU=;
-        b=VkDn2D93CoawI9XWWfHasf5S3RWzT/k7uvP19/IBwH0XAdrAo5zRZiZ8jK4xksx0xp
-         jihJDyxYBHRfmjP9KFK//j7RJYSlGfG7pvEROd8nOAfkCE9gSr3n0S/gVzADJedwlv/R
-         dUa3lirdU94qEfOXMStWaxH1fZ9oWllmvuYPNz5G0YDcVRD/gqmDvQzhktHkCmyNr3Wd
-         aDusuaQCAHyRGrc19KG01HsCNxcjIE2QwxZSHeu/IwmyLmzQeglxg+mQXYwEgOhgSmuX
-         RXWIxkYyEpQbv5vWGyhMQPKVmI/+cMSabVP4yo1Z4eF9Z5pfLi6rp5b4d4iL6GqvNRpx
-         HAjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0gW5u4BhwhxG/oEIcngyv5/5SCvI3u+z/IqA8blrDDU=;
-        b=ktziQ+O4rEjpwYTm1M9LnYEYKXUa8N3amw5N4/Lr7do6Eztb+3Qg9ufO+iUyIy31Co
-         TIICUYGE/19firhrUfMFuY+nU3w2iD0Iu9an3hCaH0Go9i64SXlxk+dxT2FcXIQn8wfY
-         u+CsHUwC4LNzrbUvrtf9rdHzFL0vMP+qnMgYWwT+5TKtyJyL0+MfDKo9Wg9maLLHZpvh
-         mLJHutw9cffJnw5RJqFwp4qtl8wD/6bVl4s25jg1U7ci5MXLu+XshTzVLpxavKGxphU5
-         Yfhmmi0u8aosuMikZPSpKVAlNzYUPIewXfCz5K0TBa76jNo2/IebklfNXfxSdZmepx6B
-         INSg==
-X-Gm-Message-State: AOAM5337JUim52o+j2kikREe8PsdpTpSvrPKgwwF/37qfmPx8T3rRUMv
-        lVJzfUfWMGJ8+WIjL64uh6FI/NqQOjm09gvmN1E=
-X-Google-Smtp-Source: ABdhPJz4FI7itBtEDRp3CzwWLpZdPRV57fg4dHaHnuD2URnnOUp9n3b/yi2ojIx0rXn+YPlCKqV5UQ==
-X-Received: by 2002:a17:906:3cb:: with SMTP id c11mr5446794eja.404.1633609720213;
-        Thu, 07 Oct 2021 05:28:40 -0700 (PDT)
-Received: from anparri.mshome.net (host-79-49-65-228.retail.telecomitalia.it. [79.49.65.228])
-        by smtp.gmail.com with ESMTPSA id d17sm7124216edv.58.2021.10.07.05.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 05:28:39 -0700 (PDT)
-From:   "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: [PATCH v3] scsi: storvsc: Fix validation for unsolicited incoming packets
-Date:   Thu,  7 Oct 2021 14:28:28 +0200
-Message-Id: <20211007122828.469289-1-parri.andrea@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 7 Oct 2021 08:30:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1633609721; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=jO5VSUtVuj5ZGL2dXmaje7hUPuDK/78OSMPF4FCxZ6amM5k9kM6C9DEROgLRiKlfozuCbEyQKdldr8o/MJsIEWZij2UQH75NCHVuKwt3DYDZjceB2PlZSVZW+9LpAgGOmu2Avlu39IeUqoKBN/haBA4O8PjzZqaMCRSnY+tCyFU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1633609721; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=htGAHz9e59NjyVWexCSrR7QA0fzfw1Pu+KZNBe+k36w=; 
+        b=m2GFrY6JxAWE3fv3R5c+uGFKV2SEue2M0EWzK5d6x2/YG/6Os0KtqUKoqoRZ7aOd2bMZmG2+eO29XP7kSfqB88LW9ALxV5bT9sWABt2Hob6o2zWNn454r+KsJCHrhUsFZLX/s4INea8gfpseDYD3ABlY0fvrzRV0dsAS8fCimP0=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1633609721;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=htGAHz9e59NjyVWexCSrR7QA0fzfw1Pu+KZNBe+k36w=;
+        b=AF+FIu6pYZetGusYQYc3nyjtnE3RwSNZp7GODBT0IUQ9Vp8hEYob1VBjMDy5Bn0P
+        mnKWrqQ0sHDsoZyhX7D697UkWRahKaJwPlfMIFi0S8J4CDet20/pxF7dmhQg4Il1D4I
+        FteZuH1KZ5IaVYahQMUjNrrI5KpRDv3z9kGvZhp0=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1633609719794520.3264862999721; Thu, 7 Oct 2021 20:28:39 +0800 (CST)
+Date:   Thu, 07 Oct 2021 20:28:39 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Miklos Szeredi" <miklos@szeredi.hu>
+Cc:     "Jan Kara" <jack@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+In-Reply-To: <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
+References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net> <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
+ operation
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The validation on the length of incoming packets performed in
-storvsc_on_channel_callback() does not apply to unsolicited
-packets with ID of 0 sent by Hyper-V.  Adjust the validation
-for such unsolicited packets.
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:23:06 Miklos Sze=
+redi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
+ > On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrot=
+e:
+ > >
+ > > Implement overlayfs' ->write_inode to sync dirty data
+ > > and redirty overlayfs' inode if necessary.
+ > >
+ > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ > > ---
+ > >  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
+ > >  1 file changed, 30 insertions(+)
+ > >
+ > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+ > > index 2ab77adf7256..cddae3ca2fa5 100644
+ > > --- a/fs/overlayfs/super.c
+ > > +++ b/fs/overlayfs/super.c
+ > > @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inode)
+ > >         clear_inode(inode);
+ > >  }
+ > >
+ > > +static int ovl_write_inode(struct inode *inode,
+ > > +                          struct writeback_control *wbc)
+ > > +{
+ > > +       struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
+ > > +       struct inode *upper =3D ovl_inode_upper(inode);
+ > > +       unsigned long iflag =3D 0;
+ > > +       int ret =3D 0;
+ > > +
+ > > +       if (!upper)
+ > > +               return 0;
+ > > +
+ > > +       if (!ovl_should_sync(ofs))
+ > > +               return 0;
+ > > +
+ > > +       if (upper->i_sb->s_op->write_inode)
+ > > +               ret =3D upper->i_sb->s_op->write_inode(inode, wbc);
+ >=20
+ > Where is page writeback on upper inode triggered?
+ >=20
 
-Fixes: 91b1b640b834b2 ("scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()")
-Reported-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
----
-Changes since v2[1]:
-  - Adjust inline comments (Michael Kelley)
+Should pass upper inode instead of overlay inode here.
 
-Changes since v1[2]:
-  - Use sizeof(enum vstor_packet_operation) instead of 48 (Michael Kelley)
-  - Filter out FCHBA_DATA packets (Michael Kelley)
+Thanks,
+Chengguang
 
-Changes since RFC[3]:
-  - Merge length checks (Haiyang Zhang)
-
-[1] https://lkml.kernel.org/r/20211006132026.4089-1-parri.andrea@gmail.com
-[2] https://lkml.kernel.org/r/20211005114103.3411-1-parri.andrea@gmail.com
-[3] https://lkml.kernel.org/r/20210928163732.5908-1-parri.andrea@gmail.com
-
- drivers/scsi/storvsc_drv.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index ebbbc1299c625..9eb1b88a29dde 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1285,11 +1285,15 @@ static void storvsc_on_channel_callback(void *context)
- 	foreach_vmbus_pkt(desc, channel) {
- 		struct vstor_packet *packet = hv_pkt_data(desc);
- 		struct storvsc_cmd_request *request = NULL;
-+		u32 pktlen = hv_pkt_datalen(desc);
- 		u64 rqst_id = desc->trans_id;
-+		u32 minlen = rqst_id ? sizeof(struct vstor_packet) -
-+			stor_device->vmscsi_size_delta : sizeof(enum vstor_packet_operation);
- 
--		if (hv_pkt_datalen(desc) < sizeof(struct vstor_packet) -
--				stor_device->vmscsi_size_delta) {
--			dev_err(&device->device, "Invalid packet len\n");
-+		if (pktlen < minlen) {
-+			dev_err(&device->device,
-+				"Invalid pkt: id=%llu, len=%u, minlen=%u\n",
-+				rqst_id, pktlen, minlen);
- 			continue;
- 		}
- 
-@@ -1302,13 +1306,23 @@ static void storvsc_on_channel_callback(void *context)
- 			if (rqst_id == 0) {
- 				/*
- 				 * storvsc_on_receive() looks at the vstor_packet in the message
--				 * from the ring buffer.  If the operation in the vstor_packet is
--				 * COMPLETE_IO, then we call storvsc_on_io_completion(), and
--				 * dereference the guest memory address.  Make sure we don't call
--				 * storvsc_on_io_completion() with a guest memory address that is
--				 * zero if Hyper-V were to construct and send such a bogus packet.
-+				 * from the ring buffer.
-+				 *
-+				 * - If the operation in the vstor_packet is COMPLETE_IO, then
-+				 *   we call storvsc_on_io_completion(), and dereference the
-+				 *   guest memory address.  Make sure we don't call
-+				 *   storvsc_on_io_completion() with a guest memory address
-+				 *   that is zero if Hyper-V were to construct and send such
-+				 *   a bogus packet.
-+				 *
-+				 * - If the operation in the vstor_packet is FCHBA_DATA, then
-+				 *   we call cache_wwn(), and access the data payload area of
-+				 *   the packet (wwn_packet); however, there is no guarantee
-+				 *   that the packet is big enough to contain such area.
-+				 *   Future-proof the code by rejecting such a bogus packet.
- 				 */
--				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO) {
-+				if (packet->operation == VSTOR_OPERATION_COMPLETE_IO ||
-+				    packet->operation == VSTOR_OPERATION_FCHBA_DATA) {
- 					dev_err(&device->device, "Invalid packet with ID of 0\n");
- 					continue;
- 				}
--- 
-2.25.1
 
