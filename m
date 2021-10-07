@@ -2,101 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACAA74259B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00ADF4259B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242538AbhJGRq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:46:58 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:36784
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233719AbhJGRq5 (ORCPT
+        id S242757AbhJGRrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241071AbhJGRrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:46:57 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id F09563F499
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 17:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633628702;
-        bh=Coe08tkAG3DLADP+J9knykBNBTwMfZOYcNMbzRGgajM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=VOsCr1ulRNevDdC9fABrnL2tyu4H3VuaSV6i3i5J7BZKxWXkQ8GwahM/yxPK+RalM
-         9iFaQMkv+xbNQrsWpOtubbUeqvz4QmhoN0+DurVm2Upjf98PqOf1wy22EhW/DLIiQG
-         LynpqKXf4kvXIv927ukfAYmW2oAheGLA+G9nuK/x0me8vO2xtkSimgHOShaByts/RN
-         RlYm6YQTrXQeVdA5bMFDYY5ahcUHpcXMrtYv/+oBJVi4DGp47Ci4He1YL0yRLUlQzW
-         C+PtOJ7zn3NydVqdbc2wI2FXjH/j4KV7y2y7Srs2+1zF50Y00bqU79hy6BHQqbRO3A
-         V5Hdupg19LDpA==
-Received: by mail-ed1-f72.google.com with SMTP id p20-20020a50cd94000000b003db23619472so6615648edi.19
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:45:02 -0700 (PDT)
+        Thu, 7 Oct 2021 13:47:17 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A196C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 10:45:23 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id 66so7606887vsd.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:45:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=f/SSd9taA/ux/WcbF4zPpx1nrfRSaWr/6ufk+sBjGOU=;
+        b=C6OV7fNTNszO83NEHaEe9WFS92ipi/64+l5QWmrSf08rqt21EdnbkzayDbeQbffi8q
+         4EWmBrvGTjXk+RskDMJyaOKcdhNgkhuFRmA0dqtR+2QoW5HNYt3KBYu8nzbKLKgkjz93
+         FQABPrg1LfIwwUdGSgzk8+H5moBYA8C7xiQueXjfOnfLBkqGIF7lssvawMvmoX7/PKWv
+         7FheqBOhkduhYGMxsRwICIRa6gj+Y60RtPOTQnfFw3qEpiNyUyt6awddo1vVc94PK/D9
+         ewFPU/aqeVl6SiMmF1dGHZH2dbPU1llOpwspC/hCI6y532BiXHKx06E64YciBBxxcwrd
+         urow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Coe08tkAG3DLADP+J9knykBNBTwMfZOYcNMbzRGgajM=;
-        b=AErdMxhOJakYt8ub0h6oeUQ4C+pWLZYhzOl7PP9LSGigl+AZGqjY+ZLd5t30jfrnvt
-         Buz0lstcgglSUeJirqHfYRI2zwNpTKZe68o/It1I2vTslOTOP4E5pQGFBJEkz7AFNKHy
-         45fRDcXqzhmv7b8xbRaAJmH6atYkJIZRTECjJ6hLiixdQDJzaQGQ0oQFF6oKQLH4Ho6D
-         zB5pM6pvrFKu7xTnLvWwCcVT2l6zBLuS4eNrqBtftNKm747cOGTHypcIcPv3Dm8uVcW1
-         jaLeMv49yBnSNi9d8gvONrkw1KNCKnouDvltFqSjyHnkle8ucXqfPULWtsXrjiUjErcO
-         bPYA==
-X-Gm-Message-State: AOAM530HbeBLmsj/kc+LS6jsjbIjRAYl4r7CX/GTcwDjGQrxBFlirwsx
-        G67MyZctB/cT8+1OMP5BzgevBKpcSvA8VRLCFbX6w5j70EA34DHKWGYYUxuGKk+OqPsgTw9lktq
-        b3CRypjelEwchfxYW6KPX4xE3kGzu6hhSdpW7ay9zIw==
-X-Received: by 2002:a05:6402:40f:: with SMTP id q15mr7790412edv.333.1633628702713;
-        Thu, 07 Oct 2021 10:45:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy/cRrFbBE0AEAY1wTn0RkOd29OzBi3ThqVg6eaCa0cLj3RymI+vrrOi/pDfxhLH7N7JZpaZg==
-X-Received: by 2002:a05:6402:40f:: with SMTP id q15mr7790386edv.333.1633628702498;
-        Thu, 07 Oct 2021 10:45:02 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
-        by smtp.gmail.com with ESMTPSA id u23sm24243ejx.99.2021.10.07.10.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:45:02 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Lin Ma <linma@zju.edu.cn>,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Greg KH <greg@kroah.com>, Will Deacon <will@kernel.org>
-Subject: [PATCH] nfc: nci: fix the UAF of rf_conn_info object
-Date:   Thu,  7 Oct 2021 19:44:30 +0200
-Message-Id: <20211007174430.62558-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f/SSd9taA/ux/WcbF4zPpx1nrfRSaWr/6ufk+sBjGOU=;
+        b=fOnftE9Z3Vlt7Hk5jVwvOjtimgkvYXy/p/tt5lFSRdFOjkoR1057kzx2czhDWGqyTt
+         O+yG9w36gAu39V0zvoWL4Np/Be5qqFpkJkqA1TqS7zaLavdmh9cc+AUJDj85037kBkKf
+         VdWJl8HdP7WPDsQB3l22tGQp+zJzjsrOCyJnPqoTxBwKwsKpkP6GI6XLwmNt60VGPHEr
+         wTCnDVM7QN3GAmjIJ00Rw7tkuaiRXw4b9ofnTNKf9UAbsjpoxTKNcTkJss7bq/0RXiBV
+         +kh3wu1us4HqbTu5ZvxAi7KXJkADKxkUQNxR5eaKDh3M0Za1WnsajNPYHgNK0RWzGswd
+         R49g==
+X-Gm-Message-State: AOAM530bd2tNu9Gthjn3hXVs4cpEeSiO0A8WFBEQSWkMZ31y/yK8v2Y/
+        wRfeKam6JjkFtmDoPx3VR3F9pGRGfabtOtL1IKQynw==
+X-Google-Smtp-Source: ABdhPJzs3BsUO8cKJEPJ0Qs45Sbe9/yBxJbj4v7ac+DJsZWM5TBVKa/rt3x2n3ALCUEU8THowSqy5JBQI6SxyrUFihM=
+X-Received: by 2002:a67:d289:: with SMTP id z9mr6123652vsi.39.1633628722573;
+ Thu, 07 Oct 2021 10:45:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211007140904.3085-1-semen.protsenko@linaro.org> <CAHp75Ve1+pJ3Mqc7ErDSheLu5rEvSOf2Cq9JtSfOxSFrazNObg@mail.gmail.com>
+In-Reply-To: <CAHp75Ve1+pJ3Mqc7ErDSheLu5rEvSOf2Cq9JtSfOxSFrazNObg@mail.gmail.com>
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+Date:   Thu, 7 Oct 2021 20:45:11 +0300
+Message-ID: <CAPLW+4=3Mx9HuLdDo8YQ7tjVMi2kaTP23N1E2b5Krp_RJbO5-g@mail.gmail.com>
+Subject: Re: [PATCH v4] clk: Add write operation for clk_parent debugfs node
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lin Ma <linma@zju.edu.cn>
+On Thu, 7 Oct 2021 at 17:39, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, Oct 7, 2021 at 5:09 PM Sam Protsenko <semen.protsenko@linaro.org> wrote:
+> >
+> > Useful for testing mux clocks. One can write the index of the parent to
+> > be set into clk_parent node, starting from 0. Example
+> >
+> >     # cd /sys/kernel/debug/clk/mout_peri_bus
+> >     # cat clk_possible_parrents
+> >       dout_shared0_div4 dout_shared1_div4
+> >     # cat clk_parent
+> >       dout_shared0_div4
+> >     # echo 1 > clk_parent
+> >     # cat clk_parent
+> >       dout_shared1_div4
+> >
+> > CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
+> > order to use this feature.
+>
+> ...
+>
+> > +static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
+> > +                                   size_t count, loff_t *ppos)
+> > +{
+> > +       struct seq_file *s = file->private_data;
+> > +       struct clk_core *core = s->private;
+> > +       struct clk_core *parent;
+>
+> > +       char buf[4] = { 0 };
+>
+> We may use {} (in a more standardized way), but see below.
+>
+> > +       u8 idx;
+> > +       int err;
+>
+> > +       if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
+> > +               return -EFAULT;
+> > +
+> > +       err = kstrtou8(buf, 0, &idx);
+> > +       if (err)
+> > +               return err;
+>
+> NIH kstrotu8_from_user().
+>
 
-The nci_core_conn_close_rsp_packet() function will release the conn_info
-with given conn_id. However, it needs to set the rf_conn_info to NULL to
-prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
-the UAF.
+Cool, didn't know about that API existence. Will fix in v5.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Signed-off-by: Lin Ma <linma@zju.edu.cn>
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- net/nfc/nci/rsp.c | 2 ++
- 1 file changed, 2 insertions(+)
+> > +       parent = clk_core_get_parent_by_index(core, idx);
+> > +       if (!parent)
+> > +               return -ENOENT;
+> > +
+> > +       clk_prepare_lock();
+> > +       err = clk_core_set_parent_nolock(core, parent);
+> > +       clk_prepare_unlock();
+> > +       if (err)
+> > +               return err;
+> > +
+> > +       return count;
+> > +}
+>
+> ...
+>
+> > +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
+> > +               if (core->num_parents > 1) {
+> > +                       debugfs_create_file("clk_parent", 0644, root, core,
+> > +                                           &current_parent_rw_fops);
+>
+> > +               } else {
+> > +                       debugfs_create_file("clk_parent", 0444, root, core,
+> > +                                           &current_parent_fops);
+> > +               }
+> > +#else
+> >                 debugfs_create_file("clk_parent", 0444, root, core,
+> >                                     &current_parent_fops);
+>
+> Dup. You can avoid it.
+>
 
-diff --git a/net/nfc/nci/rsp.c b/net/nfc/nci/rsp.c
-index a2e72c003805..b911ab78bed9 100644
---- a/net/nfc/nci/rsp.c
-+++ b/net/nfc/nci/rsp.c
-@@ -334,6 +334,8 @@ static void nci_core_conn_close_rsp_packet(struct nci_dev *ndev,
- 							 ndev->cur_conn_id);
- 		if (conn_info) {
- 			list_del(&conn_info->list);
-+			if (conn_info == ndev->rf_conn_info)
-+				ndev->rf_conn_info = NULL;
- 			devm_kfree(&ndev->nfc_dev->dev, conn_info);
- 		}
- 	}
--- 
-2.30.2
+You're right, will be fixed in v5.
 
+Thanks for the review!
+
+> > +#endif
+> > +       }
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
