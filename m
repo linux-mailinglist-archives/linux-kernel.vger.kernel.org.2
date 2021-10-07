@@ -2,59 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A3E4253F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5C74253FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241197AbhJGNZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:25:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhJGNZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:25:54 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1001261058;
-        Thu,  7 Oct 2021 13:23:59 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 09:23:58 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rjohnson@digitalocean.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
-Message-ID: <20211007092358.65152792@gandalf.local.home>
-In-Reply-To: <20211007071151.GL174703@worktop.programming.kicks-ass.net>
-References: <20210831043723.13481-1-robbat2@gentoo.org>
-        <20210907212426.73ed81d1@rorschach.local.home>
-        <20211007071151.GL174703@worktop.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S241450AbhJGN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232869AbhJGN1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 09:27:30 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8268C061570;
+        Thu,  7 Oct 2021 06:25:36 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id v18so23189841edc.11;
+        Thu, 07 Oct 2021 06:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZtaAQUcIMAxwmN/4pd2KyUfGo5ZqQSY8rbyvPPScUUo=;
+        b=Xm1SX2ysSVEfGgCINe/ENA/iSoFbIyj1gorUkdZtdfQ6DBiSFEsrtQQcTHU3/UxkQl
+         5jVFR9vi1SkN3Rfs6xYuBjv8Pte1xg/i6rBRyCUICzKH8tFYERvO8704Tn0xBNStoT1l
+         ZQ7iKoTTv3jNdWyVEdLftTo2v1GBHUKWRWStaI6PFov4qT1XMIx0Kgwba+pAjtt8Kfpd
+         KLcnToA794UC2J9tKJ0gr81XRj+iTMkEIp/RRxPcgJ4/Ojyttk24KI24T1/HTqEeybOo
+         oBBTOwNQZ87jrfAlCzDFWFhKlcTb/z+yvrazzlIhY5mZXty4OWNXeCJ5ervILn6emAMC
+         RpIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZtaAQUcIMAxwmN/4pd2KyUfGo5ZqQSY8rbyvPPScUUo=;
+        b=7GH6zm+tZmL3sxHndVmJkWSDqZ7o9mDm9hutZQPyV6qMkKBZUOBvx3WY+RO1e302B7
+         7CdAjLU54xcTTAX7oxkyow3DzTgpQbiXwTNFwZ+itihoFuT7UBiOmVCMWEZsiDmdFB3C
+         UbIb0hYW5ZaCsvFF0Hlq/Df2955lbc+IbQMGB4vdKD8oU5zB8reGScItY+/n4ttP97AD
+         64YduWIEnqTn/QXPoq9X4Ur/A8oTunxRvhqeRwevWW0A185C7Z0/JQjGJUCcJSLvtNJF
+         5Pj2sQECxET1pQ8RMsL8GfydY/zy7CSdcGizf+E97ZglRgZqv88KnxJe1XUeKcTZ4NS0
+         YVYg==
+X-Gm-Message-State: AOAM5334e0uoL6RZPhyPoSzEVC4Qgyca4vgcZtVuw6cc7yd7EV2Fr5U0
+        0KqAnczvOn65BdXQi5Sex2Y=
+X-Google-Smtp-Source: ABdhPJxXUzW/7r/ROuBTG2S2BtbY3zXzRrX1UFoZrW7TMnMowtCxZmU6F5irOgPstO+ySO+UqFBYMg==
+X-Received: by 2002:a17:906:b254:: with SMTP id ce20mr5767002ejb.306.1633613135214;
+        Thu, 07 Oct 2021 06:25:35 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id ay19sm8572792edb.20.2021.10.07.06.25.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 06:25:34 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 15:25:32 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH 06/13] Documentation: devicetree: net: dsa:
+ qca8k: document rgmii_1_8v bindings
+Message-ID: <YV71TCksnbixsYI0@Ansuel-xps.localdomain>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-7-ansuelsmth@gmail.com>
+ <YV46wJYlJZHAZLyD@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YV46wJYlJZHAZLyD@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 09:11:51 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> > > +++ b/kernel/trace/trace_event_perf.c
-> > > @@ -400,7 +400,8 @@ void *perf_trace_buf_alloc(int size, struct pt_regs **regs, int *rctxp)
-> > >  	BUILD_BUG_ON(PERF_MAX_TRACE_SIZE % sizeof(unsigned long));
-> > >  
-> > >  	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE,
-> > > -		      "perf buffer not large enough"))
-> > > +		      "perf buffer not large enough, wanted %d, have %d",
-> > > +		      size, PERF_MAX_TRACE_SIZE))  
+On Thu, Oct 07, 2021 at 02:09:36AM +0200, Andrew Lunn wrote:
+> On Thu, Oct 07, 2021 at 12:35:56AM +0200, Ansuel Smith wrote:
+> > Document new qca,rgmii0_1_8v and qca,rgmii56_1_8v needed to setup
+> > mac_pwr_sel register for ar8327 switch.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index 8c73f67c43ca..1f6b7d2f609e 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -13,6 +13,8 @@ Required properties:
+> >  Optional properties:
+> >  
+> >  - reset-gpios: GPIO to be used to reset the whole device
+> > +- qca,rgmii0-1-8v: Set the internal regulator to supply 1.8v for MAC0 port
+> > +- qca,rgmii56-1-8v: Set the internal regulator to supply 1.8v for MAC5/6 port
 > 
-> Priting a constant seems daft.. why is any of this important in any way?
+> What is the consumer of these 1.8v? The MACs are normally internal,
+> the regulators are internal, so why is a DT property needed?
+> 
+>     Andrew
 
-I see your point, but it can be useful if you changed it, and want to know
-if you are running the kernel with the change or not.
+Only some device require this, with these bit at 0, the internal
+regulator provide 1.5v. It's not really a on/off but a toggle of the
+different operating voltage. Some device require this and some doesn't.
 
-I've done daft things were I changed a const and was running a kernel
-without the change and couldn't understand why it wasn't working ;-)
-
--- Steve
+-- 
+	Ansuel
