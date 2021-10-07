@@ -2,87 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31524254C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92594254BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241865AbhJGNxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:53:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:54955 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241758AbhJGNx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:53:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633614696; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=cvQOaQjRiV0Owv2dzGPHD9DAMvMO8IIe/5JewsebalI=; b=MEBEomF0Lu1z9YnIevyHGOHytTduBJ4fgpIQUu1juSabLdz4mRJvv5DbfBPbuhqLjX42Db9P
- YTnp01dPuXxxQgr6DH4/AMY699UaGvLTwkyO2JKezgo2MnHgJwZC+cJCXC32rJeoc4PmZBFT
- l6jS36wZrNldmy8BDASCRA225p0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615efb65e77f9e0ee33169d1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 13:51:33
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5784AC4360C; Thu,  7 Oct 2021 13:51:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S241826AbhJGNxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241824AbhJGNxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 09:53:11 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DFA2FC43617;
-        Thu,  7 Oct 2021 13:51:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org DFA2FC43617
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH] ASoC: codec: wcd938x:  Add irq config support
-Date:   Thu,  7 Oct 2021 19:21:15 +0530
-Message-Id: <1633614675-27122-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BBD961251;
+        Thu,  7 Oct 2021 13:51:17 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 09:51:15 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: Re: tracing: Create a sparse bitmask for pid filtering
+Message-ID: <20211007095115.5d26c558@gandalf.local.home>
+In-Reply-To: <221bc7ba-a475-1cb9-1bbe-730bb9c2d448@canonical.com>
+References: <221bc7ba-a475-1cb9-1bbe-730bb9c2d448@canonical.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes compilation error in wcd98x codec driver.
+On Thu, 7 Oct 2021 12:26:32 +0100
+Colin Ian King <colin.king@canonical.com> wrote:
 
-Fixes: 045442228868 ("ASoC: codecs: wcd938x: add audio routing and Kconfig")
+> Hi,
+> 
+> Static analysis on linux-next with Coverity has identified two issues 
+> with reads of initialized pointers in the following commit:
+> 
+> commit 8d6e90983ade25ec7925211ac31d9ccaf64b7edf
+> Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Date:   Thu Sep 23 22:20:57 2021 -0400
+> 
+>      tracing: Create a sparse bitmask for pid filtering
+> 
+> The analysis is as follows:
+> 
+> 332 static void pid_list_refill_irq(struct irq_work *iwork)
+> 333 {
+> 
+>     1. Condition 0 /* !!(!__builtin_types_compatible_p() && 
+> !__builtin_types_compatible_p()) */, taking false branch.
 
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+What does the above mean?
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 82ee233..216cea0 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -1583,6 +1583,7 @@ config SND_SOC_WCD938X_SDW
- 	tristate "WCD9380/WCD9385 Codec - SDW"
- 	select SND_SOC_WCD938X
- 	select SND_SOC_WCD_MBHC
-+	select REGMAP_IRQ
- 	depends on SOUNDWIRE
- 	select REGMAP_SOUNDWIRE
- 	help
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+> 
+> 334        struct trace_pid_list *pid_list = container_of(iwork, struct 
+> trace_pid_list,
+> 335                                                       refill_irqwork);
+> 
+>     2. var_decl: Declaring variable upper without initializer.
+
+Hmm, I think this is legit. I should have both upper and lower initialized
+as NULL.
+
+> 
+> 336        union upper_chunk *upper;
+> 337        union lower_chunk *lower;
+> 338        union upper_chunk **upper_next = &upper;
+> 339        union lower_chunk **lower_next = &lower;
+> 340        int upper_count;
+> 341        int lower_count;
+> 342        int ucnt = 0;
+> 343        int lcnt = 0;
+> 344
+> 345 again:
+> 346        raw_spin_lock(&pid_list->lock);
+> 347        upper_count = CHUNK_ALLOC - pid_list->free_upper_chunks;
+> 348        lower_count = CHUNK_ALLOC - pid_list->free_lower_chunks;
+> 349        raw_spin_unlock(&pid_list->lock);
+> 350
+> 
+>     3. Condition upper_count <= 0, taking false branch.
+
+What does the above mean?
+
+> 
+> 351        if (upper_count <= 0 && lower_count <= 0)
+> 352                return;
+> 353
+> 
+>     4. Condition upper_count-- > 0, taking true branch.
+> 
+> 354        while (upper_count-- > 0) {
+> 355                union upper_chunk *chunk;
+> 356
+> 357                chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
+> 
+>     5. Condition !chunk, taking true branch.
+> 358                if (!chunk)
+>     6. Breaking from loop.
+> 
+> 359                        break;
+> 360                *upper_next = chunk;
+> 361                upper_next = &chunk->next;
+> 362                ucnt++;
+> 363        }
+> 364
+> 
+>     7. Condition lower_count-- > 0, taking true branch.
+> 
+> 365        while (lower_count-- > 0) {
+> 366                union lower_chunk *chunk;
+> 367
+> 368                chunk = kzalloc(sizeof(*chunk), GFP_KERNEL);
+> 
+>     8. Condition !chunk, taking true branch.
+> 
+> 369                if (!chunk)
+> 
+>     9. Breaking from loop.
+> 
+> 370                        break;
+> 371                *lower_next = chunk;
+> 372                lower_next = &chunk->next;
+> 373                lcnt++;
+> 374        }
+> 375
+> 376        raw_spin_lock(&pid_list->lock);
+> 
+>      Uninitialized pointer read (UNINIT)
+>      10. uninit_use: Using uninitialized value upper.
+
+Agreed.
+
+> 
+> 377        if (upper) {
+> 378                *upper_next = pid_list->upper_list;
+> 379                pid_list->upper_list = upper;
+> 380                pid_list->free_upper_chunks += ucnt;
+> 381        }
+> 
+>      Uninitialized pointer read (UNINIT)
+>      11. uninit_use: Using uninitialized value lower.
+
+Agreed.
+
+> 
+> 382        if (lower) {
+> 383                *lower_next = pid_list->lower_list;
+> 384                pid_list->lower_list = lower;
+> 385                pid_list->free_lower_chunks += lcnt;
+> 386        }
+> 387        raw_spin_unlock(&pid_list->lock);
+> 388
+> 
+> Colin
+
+So is this just a fancy way of saying that upper and lower were
+uninitialized?
+
+-- Steve
 
