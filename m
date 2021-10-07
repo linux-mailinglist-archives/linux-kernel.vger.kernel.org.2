@@ -2,57 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2AC42573A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69D842573F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242173AbhJGP6n convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Oct 2021 11:58:43 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:51172 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbhJGP6h (ORCPT
+        id S241411AbhJGQAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232860AbhJGQAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:58:37 -0400
-Received: from smtpclient.apple (p5b3d2185.dip0.t-ipconnect.de [91.61.33.133])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 1D7AFCECE5;
-        Thu,  7 Oct 2021 17:56:42 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <912f4b6441b54a1d89df6ffe4a0511ab@realtek.com>
-Date:   Thu, 7 Oct 2021 17:56:41 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
-        "apusaka@chromium.org" <apusaka@chromium.org>,
-        Max Chou <max.chou@realtek.com>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        KidmanLee <kidman@realtek.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <065AC802-1C20-42F0-9B2F-24F2B2698B90@holtmann.org>
-References: <20210930103634.1710-1-hildawu@realtek.com>
- <D5B18E08-AE60-4B8B-960B-694D62E067B5@holtmann.org>
- <912f4b6441b54a1d89df6ffe4a0511ab@realtek.com>
-To:     Hilda Wu <hildawu@realtek.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        Thu, 7 Oct 2021 12:00:17 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360F1C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:58:23 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id t9so25928357lfd.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y9D8Ve09aAWjj+21spNNEEpdiCF/o4uUCQG6xYqTvy0=;
+        b=aJUA2s1oJfnDQydP436Ez5/VDQ0bYnvJGzTDPHsMfz50GmcIY3ivci62T5PubiH+SC
+         aSGYTRD8Z1Y184KFqE6pXBWxSrDsfKQSg4DLvYciJJXanFulWp78RT/1A1GosY61yS6s
+         g8wcnYosq6WcsuGkq70E0Fc1LUxahT25WV0eDwQYlobQTD8JiJQ40E2N6w9CqYP8K2k2
+         qNUtNd45iPv2QmfWyOR7V0mBgyfC5U64hu8JUlVd2rJ2JHRCN9H1UQkgSGgANmSQpz6W
+         u7ugPWArHwKiOfRpjg+Vp8I1JvEfoMSXELBTEIs2j5opawevkN5mjkws7dDyfJi0VW7y
+         XtmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y9D8Ve09aAWjj+21spNNEEpdiCF/o4uUCQG6xYqTvy0=;
+        b=iv3DOvNa9eT1253oTfdVbQi3edmgF6LHDG3TiqBiUXEXR/9w8Mz0Q+0an07MJo322E
+         JWeTZhid+hA+wH5WfRjmvJK4BLPReW/KQn6B/rHSSpgXDmUBN3SxLUWa84NSJRpWAemG
+         bJG3dMALLnQGhjKP5HpOVNfS+XnKKi4SN40q9yxxfONWl3LDu7wQvkF67miPmPlngr9w
+         zBgdTmJ5GxwTrD4fELQQax0aJ9hfOuAxGhd73ccpFUNnZNxjod3HCrl4shiQ7ir54mNk
+         7PLAYGwCB83AXXmMWxPjUqgWi4JnUyH4K8ckCUYGUyKtBLELpnxaBytztMi1kdnm9Hfp
+         MLgw==
+X-Gm-Message-State: AOAM533hVWNYdJaj2zQKkUcjvnLE0ppVvrNs1y5EOSJ99dVS7OhcIGfM
+        UwRqLgLEX90Ef1bif6GQuH3p/cZS/50cMQYOzVUmjQ==
+X-Google-Smtp-Source: ABdhPJwIVCwN3c3pt9nOGgs56jlMyHiqHpflHpL2mRnwDSQ7tRST2kg7sTTwKYdOc33xvDwNhwzaeoe4pnwe64kKpz0=
+X-Received: by 2002:ac2:4f01:: with SMTP id k1mr5053506lfr.157.1633622300810;
+ Thu, 07 Oct 2021 08:58:20 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211004125031.530773667@linuxfoundation.org> <20211004125033.335733437@linuxfoundation.org>
+In-Reply-To: <20211004125033.335733437@linuxfoundation.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 7 Oct 2021 17:57:54 +0200
+Message-ID: <CAG48ez1yJxTZJNPsxgy7FVq40MVXoc0_h4-s0gH-xfM1s2tStA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 54/75] af_unix: fix races in sk_peer_pid and
+ sk_peer_cred accesses
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hilda,
+On Mon, Oct 4, 2021 at 3:00 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Eric Dumazet <edumazet@google.com>
+>
+> [ Upstream commit 35306eb23814444bd4021f8a1c3047d3cb0c8b2b ]
+>
+> Jann Horn reported that SO_PEERCRED and SO_PEERGROUPS implementations
+> are racy, as af_unix can concurrently change sk_peer_pid and sk_peer_cred.
+>
+> In order to fix this issue, this patch adds a new spinlock that needs
+> to be used whenever these fields are read or written.
+>
+> Jann also pointed out that l2cap_sock_get_peer_pid_cb() is currently
+> reading sk->sk_peer_pid which makes no sense, as this field
+> is only possibly set by AF_UNIX sockets.
+> We will have to clean this in a separate patch.
+> This could be done by reverting b48596d1dc25 "Bluetooth: L2CAP: Add get_peer_pid callback"
+> or implementing what was truly expected.
+>
+> Fixes: 109f6e39fa07 ("af_unix: Allow SO_PEERCRED to work across namespaces.")
 
-> The MSFT extension has a HCI_VS_MSFT_Read_Supported_Features command. The AOSP extension has a read capability cmd too.
-> https://docs.microsoft.com/en-us/windows-hardware/drivers/bluetooth/microsoft-defined-bluetooth-hci-commands-and-events#hci_vs_msft_read_supported_features
-> https://source.android.com/devices/bluetooth/hci_requirements#vendor-specific-capabilities
-> If commands did not support, the controller should feedback event status as Unknown HCI Command (0x01).
-> We can go on this way.
-
-I am not doing trial-and-error programming here. I rather better disable any extensions for Realtek devices altogether.
-
-Regards
-
-Marcel
-
+From what I can tell, this fix only went into the stable trees for
+>=4.14? SO_PEERGROUPS only appeared in 4.13, but the SO_PEERCRED in
+4.4 and 4.9 seems to have exactly the same UAF read as it has on the
+newer kernels.
