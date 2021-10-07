@@ -2,112 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122954258B9
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEDA4258BA
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243058AbhJGRCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S242957AbhJGRCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242997AbhJGRCA (ORCPT
+        with ESMTP id S243133AbhJGRCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:02:00 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7762DC0613E3;
-        Thu,  7 Oct 2021 09:59:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id u18so21158034wrg.5;
-        Thu, 07 Oct 2021 09:59:31 -0700 (PDT)
+        Thu, 7 Oct 2021 13:02:01 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA276C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:59:40 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id c4so4340191pls.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O/6xeTmbcSfH4dU0QlXPd2Z2HNBLZ+XUOU25+6nXnF8=;
-        b=Ujcn/9YFWw9MXCaG6NsmLaNNfvK/N1SiKzK4a4mqcfcyD/BeEse0PhnoEfbk4tOYnl
-         UiaOQMTY3oguzPKZEDbwyTy9ptHAwXbYsCFtc/Jzco9Xy5YshJ+BOXaO/sk3UFojjuBv
-         BsHB8PJ0sSCbWcxuH3YHGoXKLJSl079vyvhrAGpyx9RCUwEMwdkt+fSnfJvJ/GGogEtH
-         nLPEmFZBqXBoWakVni5oLyNf9KWN2jTvIpmLAAUHiyfdZhVZQV1Sd/+Fm9qfRHBWjW5R
-         olzwQJYxDwGjO50f+x8lmlJGW5vYtgRSNo6Fo0f8uNn65Ouoxo4GOkGIyobZC1+SQXfS
-         t1/Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=yERRP/h2WFq/6psT+T3rd8+HBUqGjcweMJ5gK787JbE=;
+        b=f0HjZkODIerWfA73piKz8wgMPXWjeyrXnfEBoSHUMtJhl6B7D6VdnaZbcdjTjXwzAx
+         NrQzen9rYkAlNYkhUi1Nz/gqTXQATpWBr2G6dy0VCm9mZmmmJKUVwKv2spS+4RTx/bF1
+         5TL4FTQXYQxhjoGx5TRXScjJRyl/V1syHb21k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O/6xeTmbcSfH4dU0QlXPd2Z2HNBLZ+XUOU25+6nXnF8=;
-        b=Ar18uk37laqD4LYi+Xew7lkeSsEICAoPdVk7y8Cd/9pInWtTL1mDtaxDBJQog1InC5
-         x2dIpfQreJHOc396p4rbDGkZitZk0MBzg/i40nkZ/kmMKQgm7lfmpfHqMgk0any0Aj6r
-         V2F/sJKUP43dUJTrCEHFpH9aIEfcPIG0Pj2hNKRIBLVbrcNy9TfDo6jgj6GBAu6A5ezB
-         2ftIBusXmQC2XwrQP0i+IOMIngVpjfhixvF5zu8mYS5YDIiHtXAMw5ssarkIdc1XiiJP
-         3hB7Tw6ht0Vo2M76CQ546E+/qLZZ5t01eLg5upCKVz7Y0qTanIctzMducU2D29xYJVXu
-         bktA==
-X-Gm-Message-State: AOAM532jq5fxbpb9x7JywNQXPnQGO7OoiDwcJxTmD/gxjgdRidkHnMuE
-        M3t/NwMoiMsb0156Ra5RGZM=
-X-Google-Smtp-Source: ABdhPJzcN9D8+20ZyMYSCztYzvvqG61UQ2rwsGhnrzQ/5vwoEHmaKS4ZAR3Ivcfrdkct8bSk4JkhTA==
-X-Received: by 2002:a5d:6b03:: with SMTP id v3mr6832345wrw.226.1633625970107;
-        Thu, 07 Oct 2021 09:59:30 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id x17sm173027wrc.51.2021.10.07.09.59.28
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=yERRP/h2WFq/6psT+T3rd8+HBUqGjcweMJ5gK787JbE=;
+        b=g+ncxJwtyOKnqRoWM6kFFqXC2U367131lcbJ5hj0no408GiI9uXqq9FkOtIoItuIZz
+         FwhQD9rQ8eVcBy/ipr+OiQsO3gkc8dSYkG6rKN9bNi7VWrJ9ceenJzRUx5SfQ0d9G820
+         tlQnJBLOE0QmCenL4m1TkTh2nvKWEV1zcCPyqAR4JZBlahluQJwDbfxr2YjXZeF3fuWj
+         KUZlRHbNc8EVbIB3jgytbQduZsx3txKmnsNpG79zrkaXb6u0HcINlQJsn8a+piqteLtO
+         fOBpDwd1wc2/A6XPUW2qvzYCzZNhHFVwzjbHtjgwF+yRF05HF2khbDq+45K+VZGRKCKW
+         AA+g==
+X-Gm-Message-State: AOAM530wMhyXYprs+VYZYgN/l6ZFVLEFZvijS5eeQX3JiWOG5MMKAw/R
+        qHm+fZQGxKe47M6xoo4Glzqvag==
+X-Google-Smtp-Source: ABdhPJyabiwLZ6Eai1H60q/0WMMp1G5b+0BUr+c1q8Sxwh/GZ2x23HKy6i2K4QZFKHeAU3BG0Qf8iQ==
+X-Received: by 2002:a17:90a:7348:: with SMTP id j8mr6065704pjs.104.1633625980235;
+        Thu, 07 Oct 2021 09:59:40 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k6sm15383pfg.18.2021.10.07.09.59.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 09:59:28 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 18:59:26 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        digetx@gmail.com
-Subject: Re: [PATCH v6 4/6] iommu/tegra-smmu: Use swgrp pointer instead of
- swgroup id
-Message-ID: <YV8nbgfZgkXHgsYm@orome.fritz.box>
-References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
- <20210914013858.31192-5-nicoleotsuka@gmail.com>
+        Thu, 07 Oct 2021 09:59:39 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] lkdtm: avoid printk() in recursive_loop()
+Date:   Thu,  7 Oct 2021 09:59:27 -0700
+Message-Id: <163362596339.2313433.1892710945535449841.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211007081235.382697-1-ardb@kernel.org>
+References: <20211007081235.382697-1-ardb@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XSdiJyX2ODUVHwjJ"
-Content-Disposition: inline
-In-Reply-To: <20210914013858.31192-5-nicoleotsuka@gmail.com>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 7 Oct 2021 10:12:35 +0200, Ard Biesheuvel wrote:
+> The recursive_loop() function is intended as a diagnostic to ensure that
+> exhausting the stack is caught and mitigated. Currently, it uses
+> pr_info() to ensure that the function has side effects that the compiler
+> cannot simply optimize away, so that the stack footprint does not get
+> reduced inadvertently.
+> 
+> The typical mitigation for stack overflow is to kill the task, and this
+> overflow may occur inside the call to pr_info(), which means it could be
+> holding the console lock when this happens. This means that the console
+> lock is never going to be released again, preventing the diagnostic
+> prints related to the stack overflow handling from being visible on the
+> console.
+> 
+> [...]
 
---XSdiJyX2ODUVHwjJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to for-next/lkdtm, thanks!
 
-On Mon, Sep 13, 2021 at 06:38:56PM -0700, Nicolin Chen wrote:
-> This patch changes in struct tegra_smmu_group to use swgrp
-> pointer instead of swgroup, as a preparational change for
-> the "mappings" debugfs feature.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
+[1/1] lkdtm: avoid printk() in recursive_loop()
+      https://git.kernel.org/kees/c/700fa7d22233
 
-Seems fine:
+-- 
+Kees Cook
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---XSdiJyX2ODUVHwjJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfJ24ACgkQ3SOs138+
-s6G4fg//RJ1qv8A19ca5R0BWaTPrbKYcwVRsYCJWUNSW+TuIOpUIWAR4BaymZSV/
-zYQwCVcjbXsrMWHmS/tFA8ySlceEncee13kTA5ypAHsZWOPZOyy3qlt6k6qXZYfc
-32SKK7Tq6vbgI5LdWBF8JstrNG50IOeV144GxIK1owgGs7Yht06oqXoCrfBJ48qr
-rH9jSZhYS11NvC17I7njqfIf4rSMxo1xVvMW2y1RJoh+rlbGWA9wSbqMDuHQR/Ek
-4x5RqN3Vd5pc2LZUZ0UWQt6XnLwMYR9BK3ajLWKMmYEzNveYh9OEnQjInKNF1hjW
-uloABAGbVtmf166hjoz/G+Vb7b0RZiskiz+FoljAekF1zFIh8z1J7USrEDcH9U5S
-/YO7eaRSfPnL5CGVdrJcDdQuKRsvVF3/ScB8w68L+2/MdibD+oZD8YxUfYsRzFFQ
-q2GbON+TSw6XVlpIGSuXlOQ8mmmPNvDv65k8/E0YvO1rkVd1Wll5sLIZqcTCc8t9
-XWNSe3Dl9iQYE6OzQms6wjewzTtd5Yg0ZFM3ru081lTiftgz0SjkHGomq8h60afU
-LTUaYmThVI1FmQiJZJrEoeHLTiiLF1614/EDSmgkbAfic/Hq7wYaQg4MMjvpAXDb
-CCPNWuCOTQwuQxErtNjzMUeZ2dN4r56kZ2vd0eZN8Q7L8Nq8NkU=
-=WxRa
------END PGP SIGNATURE-----
-
---XSdiJyX2ODUVHwjJ--
