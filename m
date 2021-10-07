@@ -2,131 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35968425A11
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0961A425A13
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243360AbhJGR5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S243373AbhJGR5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbhJGR5P (ORCPT
+        with ESMTP id S233768AbhJGR5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:57:15 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E180C061570;
-        Thu,  7 Oct 2021 10:55:21 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r7so21558673wrc.10;
-        Thu, 07 Oct 2021 10:55:21 -0700 (PDT)
+        Thu, 7 Oct 2021 13:57:32 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C45EC061570;
+        Thu,  7 Oct 2021 10:55:38 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id e144so7743241iof.3;
+        Thu, 07 Oct 2021 10:55:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GN5gadcVxRW0/dWf5obdZrMuIIY/mSpFCL/VLq2PcMI=;
-        b=ATkzJ5suTLby93G+Jf5ECZ4Kse4d6Tt+RI50oiT7elfe8GtVDdJzUT6PKp/2Xjw9LK
-         D+B8bLKl1SVZTcFbkLuBi8HkA6t9vKK1h7OBpt+KNzNb36ONYynwJ6HsUb2xbDvw9QfP
-         us8kcQRqmYK6SqLgs6J3BZ5Amq6inlB6SYe3KbnkjawFjrKH/jmDtgUQ9gAMFA0IgyKJ
-         UBTG1ZDGmjXfO76njwBzoK7/QWAFr3LDdpK1optVB0+4Hz4AMVsn96IY4yRQFu3M1TdQ
-         BmXnm1Yp1BOnUeoLEdPsSjJTrC9hbY7VkIut1JA1YfLGfYtslkTuzu/KM78STz0a4FOE
-         rF6Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FrGNn5RIbM+5z3syiy7rZwhzNEGPmxkkRjI9ZEr2V0M=;
+        b=FtI5DCu95hfjcxJOMlJ71CSjsqpZe5KCa7EHl9h0/uKN2ZfPPj7dE+miiJGeUTP3zw
+         gdvfwIJGT/XPleV4ICuHQrNL2IT6AAPVbJV+2FhbDAkchb7T7xVy+j+EycdNoWJvT/VY
+         +xomsYajaWCqoq8hoa/YvuSusJuEQhi9bmP5f5hUFP/8m0Gppdvdl83YWu8bm2QDILBj
+         LpdU1nQHTKt+N6Tqxbc+ZJHJkIFGvwl+idYxrp8egCrhRD/9cmbyJYCJH8JvinNoyE9z
+         7KrCwQpKNI6nQs5qANWUPYnfZ6sfFTTzbETLsXTbl3V3lCbJpWIdW9vg/L5+HDVP9IEX
+         fefw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GN5gadcVxRW0/dWf5obdZrMuIIY/mSpFCL/VLq2PcMI=;
-        b=4tgT7NIQhiPA2gFkphg8+qomz1Lz0E7hRNy+NH5rrz2ZpEkkdA5J2L2Okxyb9ozmQ5
-         QZ0zYFnLNzw1XZ4+s6EUANGN2AyoGTWr/b/Rk18ImC7kgiQ58HbHTto6beuny4gq3TKr
-         LrfnF3z60N5TNDnt+4bMcss1oYpkhW7LDx+2qN47989XDlDrlRmidBxh4lsPFhcY8KDE
-         4+1qcLpIyzYCc4OaHN5GGKLG03fYUo9KUPIAF10m7b1GdLgsvzHO2isZEUUrdGchiMk9
-         WkNPlQG51uz3LWEFHgjIZiHfmvwUEOg+eDvb+V9ZJYl/nJ+THwlNxto7QCz7dwv90J2c
-         x1hg==
-X-Gm-Message-State: AOAM532LFLy8zp8VOMSKwefqUDmGZ7//mGYAOXaXuoCumTP0OHdg1oyt
-        QOEiKX5cnq0Jr2eDaVIPi2s=
-X-Google-Smtp-Source: ABdhPJzrLInW4LCr55YGxgpVjG1U/ZqbR0mqwqupL9iDTS5inXXiGRBukzjvoIK+upKaPaXvbCJBEw==
-X-Received: by 2002:adf:b302:: with SMTP id j2mr7213302wrd.285.1633629320177;
-        Thu, 07 Oct 2021 10:55:20 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id v10sm46856wri.29.2021.10.07.10.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:55:19 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 19:55:18 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, JC Kuo <jckuo@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v3] usb: xhci: tegra: mark PM functions as
- __maybe_unused
-Message-ID: <YV80ht6e7rfK0cfx@orome.fritz.box>
-References: <20211005112057.2700888-1-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FrGNn5RIbM+5z3syiy7rZwhzNEGPmxkkRjI9ZEr2V0M=;
+        b=Uc5ZYJLOnexBmVkZZolO0OEi9LbexXNcfukWmXx425xzOTI++1nTIIBl95ZeutyT82
+         EtF8YXNYpH/Cg+CE0w10a2AwNXqL2/5P4CPJpdI/T+K6kXKAtyPXJOlH12GLonWrtPMW
+         D5n2Dt6pnP9s4tSg1md9C3Nwq9Oih4y3tLOi99U+8JtQ1ZUw9KpKlqlII84jTaH+xxvC
+         4+zC9MYsn6KgT8VlE3gMJYxw0U3SekvGjFLcmtWsW2JY1XJjFY6w9Ik+4ej1wi1dZx+I
+         zVsJmGgxIIQBIi5d8j/gD/+dgma9kAuRGm+wK40JDIeXxmewZ0B3u7VO/n8H3RcGh9vH
+         uQCA==
+X-Gm-Message-State: AOAM5319CYX+WOnEO6e8EZQKsjI7eXvxvnlnCR4PqRAPfkAIKTLaQ0JT
+        0uw8hnNIU1etrrR55xq2uMupCO+GdmYKXYsMizC8R82GE2vk7A==
+X-Google-Smtp-Source: ABdhPJzMzCc5rvtfRPkBuwXeB7W9EZH2D32DrgfS6d0OEmzpB90i3N/Bs5mUqHZpkDiSSmvJPZVYWKKG5F8y9G1c304=
+X-Received: by 2002:a5e:c202:: with SMTP id v2mr4240029iop.77.1633629337850;
+ Thu, 07 Oct 2021 10:55:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qXkdwZl/QpLWXbMS"
-Content-Disposition: inline
-In-Reply-To: <20211005112057.2700888-1-arnd@kernel.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+References: <20211006222502.645003-1-pauk.denis@gmail.com> <20211006222502.645003-3-pauk.denis@gmail.com>
+ <CAB95QARmjTBVRyru=ZDz9Wc5SX9EPFg7dg6vB+S8=pMtpg8FRw@mail.gmail.com> <20211007184644.1d042550@penguin.lxd>
+In-Reply-To: <20211007184644.1d042550@penguin.lxd>
+From:   Eugene Shalygin <eugene.shalygin@gmail.com>
+Date:   Thu, 7 Oct 2021 19:55:26 +0200
+Message-ID: <CAB95QASYPRZSFnpE5u=SYJ49Hd+=BAZY==Ky8dzjL8h7YZj-CQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
+To:     Denis Pauk <pauk.denis@gmail.com>
+Cc:     andy.shevchenko@gmail.com, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Denis,
 
---qXkdwZl/QpLWXbMS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+yes, the GH repo contains the fix and a few code cleanups, which I
+would like to propose for mainlining too. Also, please find below a
+draft of the documentation:
 
-On Tue, Oct 05, 2021 at 01:20:28PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> The added #ifdefs in the PM rework were almost correct, but still
-> cause warnings in some randconfig builds:
->=20
-> drivers/usb/host/xhci-tegra.c:2147:12: error: 'tegra_xusb_resume' defined=
- but not used [-Werror=3Dunused-function]
->  2147 | static int tegra_xusb_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~
-> drivers/usb/host/xhci-tegra.c:2105:12: error: 'tegra_xusb_suspend' define=
-d but not used [-Werror=3Dunused-function]
->  2105 | static int tegra_xusb_suspend(struct device *dev)
->=20
-> Replace the #ifdef checks with simpler __maybe_unused annotations to
-> reliably shut up these warnings.
->=20
-> Fixes: 971ee247060d ("usb: xhci: tegra: Enable ELPG for runtime/system PM=
-")
-> Reviewed-by: JC Kuo <jckuo@nvidia.com>
-> Link: https://lore.kernel.org/all/20210421135613.3560777-2-arnd@kernel.or=
-g/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v3: fix reference to original commit.
-> ---
->  drivers/usb/host/xhci-tegra.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
+Kernel driver asus-wmi-ec-sensors
+=================================
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+Authors:
+        <eugene.shalygin@gmail.com>
 
---qXkdwZl/QpLWXbMS
-Content-Type: application/pgp-signature; name="signature.asc"
+Description:
+------------
+ASUS mainboards publish hardware monitoring information via Super I/O
+chip and the ACPI embedded controller (EC) registers. Some of the sensors
+are only available via the EC.
 
------BEGIN PGP SIGNATURE-----
+ASUS WMI interface provides a method (BREC) to read data from EC registers,
+which is utilized by this driver to publish those sensor readings to the
+HWMON system. The driver is aware of and reads the following sensors:
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfNIYACgkQ3SOs138+
-s6EOIg/+Nbts8TwWrF20o18n0rSfockwRF9SwRwHLNHe8XPLpW/Dzd3wbgITfpAa
-XI/1pOKTxUyaYgIrPE23HZhlYzKsfrMZf9KRR70Etd7SrcBqONchh3DvhigBVYyg
-HbeNPmIpQgB/Fno2ZJcsuIFWoLBry51InCpsGlz5NgxvOddBreTrQro2RaC92N7Y
-xoW0qZarfCp7iEgJzAc88rR7Ra38HZFHYFjsvd/WqRzhektBi++bqi7QhTxYScEE
-rrYNZQbKE5EFR8K7eYiaHOHcin3TszwxD7nOkdRl4/1O+OV7Wf8tTEz+TB9FOS4j
-dbfGigDC9SPA1QV0uRtUv81m6qVvePX8TDVvZhNNEYY2l3Y1C1huOwAj9UFWOLuV
-Vy/y8XPubaK9r+VuiUjKDOUkGTeyi8p+QEPlAg9ARmLZfBFUpTUgNoOkYVhO9T26
-H46URITsxO4lIkaCP2T/lhrcfktkEkW5z+jPYOsxut5SdbPqWV9pwAqz0OmvhG4b
-uy1tIzA+8rF3SsJ/xxZULd3iYDhmhepsabhw/XX3x0ZmlEC4Ki20mPfLD29x63Gl
-W8WXwpmOF5SSSIEV1BK2SI1rcx0GG4CK8GZUfPK6UwwfHROfeo/O3TNoD67YnNr/
-Kj1/dq7whDUQvrl7KYD6VMIrKvnApeQi9FjFfOmZdUuhllL+Lu4=
-=/who
------END PGP SIGNATURE-----
+1. Chipset (PCH) temperature
+2. CPU package temperature
+3. Motherboard temperature
+4. Readings from the T_Sensor header
+5. VRM temperature
+6. CPU_Opt fan RPM
+7. Chipset fan RPM
+8. Readings from the "Water flow meter" header (RPM)
+9. Readings from the "Water In" and "Water Out" temperature headers
+10. CPU current
 
---qXkdwZl/QpLWXbMS--
+Best regards,
+Eugene
+
+On Thu, 7 Oct 2021 at 17:46, Denis Pauk <pauk.denis@gmail.com> wrote:
+>
+> Hi Eugene,
+>
+> On Thu, 7 Oct 2021 01:32:14 +0200
+> Eugene Shalygin <eugene.shalygin@gmail.com> wrote:
+>
+> > On Thu, 7 Oct 2021 at 00:25, Denis Pauk <pauk.denis@gmail.com> wrote:
+> > >
+> >
+> > > Supported motherboards:
+> > > * ROG CROSSHAIR VIII HERO
+> > > * ROG CROSSHAIR VIII DARK HERO
+> > > * ROG CROSSHAIR VIII FORMULA
+> > > * ROG STRIX X570-E GAMING
+> > > * ROG STRIX B550-E GAMING
+> >
+> > Pro WS X570-ACE is missing from this list.
+> Thanks, I will check.
+> >
+> > > + * EC provided:
+> > provides
+> Thanks, I will check.
+> >
+> > > + * Chipset temperature,
+> > > + * CPU temperature,
+> > > + * Motherboard temperature,
+> > > + * T_Sensor temperature,
+> > > + * VRM  temperature,
+> > > + * Water In temperature,
+> > > + * Water Out temperature,
+> > > + * CPU Optional Fan,
+> > Hereinafter "CPU Optional Fan RPM"?
+> >
+> Thanks, I will check.
+> > > +static const enum known_ec_sensor
+> > > known_board_sensors[BOARD_MAX][SENSOR_MAX + 1] = {
+> > > +       [BOARD_PW_X570_A] = {
+> > > +               SENSOR_TEMP_CHIPSET, SENSOR_TEMP_CPU,
+> > > SENSOR_TEMP_MB, SENSOR_TEMP_VRM,
+> > > +               SENSOR_FAN_CHIPSET,
+> >
+> > I missed SENSOR_CURR_CPU for a few boards, and unfortunately the
+> > mistake made it here too. Sorry for that.
+> >
+> Do you have such fix in your repository?
+> > > +/**
+> > > + * struct asus_wmi_ec_info - sensor info.
+> > > + * @sensors: list of sensors.
+> > > + * @read_arg: UTF-16 string to pass to BRxx() WMI function.
+> > > + * @read_buffer: WMI function output.
+> >
+> > This seems to be a bit misleading to me in a sense that the variable
+> > holds decoded output (array of numbers as opposed to array of
+> > characters in the WMI output buffer.
+> >
+> > > +struct asus_wmi_data {
+> > > +       int ec_board;
+> > > +};
+> >
+> > A leftover?
+> >
+> Its platform data and used to share board_id with probe.
+>
+> > > +static void asus_wmi_ec_decode_reply_buffer(const u8 *inp, u8 *out)
+> > > +{
+> > > +       unsigned int len = ACPI_MIN(ASUS_WMI_MAX_BUF_LEN, inp[0] /
+> > > 4);
+> > > +       char buffer[ASUS_WMI_MAX_BUF_LEN * 2];
+> > > +       const char *pos = buffer;
+> > > +       const u8 *data = inp + 2;
+> > > +       unsigned int i;
+> > > +
+> > > +       utf16s_to_utf8s((wchar_t *)data, len * 2,
+> > > UTF16_LITTLE_ENDIAN, buffer, len * 2);
+> > Errr... Why is it here? You need the same loop afterwards, just with a
+> > smaller stride.
+> I have tried to apply Andy's idea. And it looks it does not
+> provide benefits. Andy, what do you think? Maybe I understand it in
+> wrong way.
+> > > +
+> > > +       for (i = 0; i < len; i++, pos += 2)
+> > > +               out[i] = (hex_to_bin(pos[0]) << 4) +
+> > > hex_to_bin(pos[1]); +}
+> > > +
+> > > +static void asus_wmi_ec_encode_registers(u16 *registers, u8 len,
+> > > char *out) +{
+> > > +       char buffer[ASUS_WMI_MAX_BUF_LEN * 2];
+> > > +       char *pos = buffer;
+> > > +       unsigned int i;
+> > > +       u8 byte;
+> > > +
+> > > +       *out++ = len * 8;
+> > > +       *out++ = 0;
+> > > +
+> > > +       for (i = 0; i < len; i++) {
+> > > +               byte = registers[i] >> 8;
+> > > +               *pos = hex_asc_hi(byte);
+> > > +               pos++;
+> > > +               *pos = hex_asc_lo(byte);
+> > > +               pos++;
+> > > +               byte = registers[i];
+> > > +               *pos = hex_asc_hi(byte);
+> > > +               pos++;
+> > > +               *pos = hex_asc_lo(byte);
+> > > +               pos++;
+> > > +       }
+> > > +
+> > > +       utf8s_to_utf16s(buffer, len * 4, UTF16_LITTLE_ENDIAN,
+> > > (wchar_t *)out, len * 4);
+> > Same here. Just for the sake of calling utf8s_to_utf16s() you need the
+> > same loop plus an additional buffer. I don't get it.
+> >
+> I have tried to apply Andy's idea. And it looks it does not
+> provide benefits. Andy, what do you think? Maybe I understand it in
+> wrong way.
+> > > +}
+> > > +
+> > > +static void asus_wmi_ec_make_block_read_query(struct
+> > > asus_wmi_ec_info *ec) +{
+> > > +       u16 registers[ASUS_WMI_BLOCK_READ_REGISTERS_MAX];
+> > > +       const struct ec_sensor_info *si;
+> > > +       long i, j, register_idx = 0;
+> > long? maybe a simple unsigned or int?
+> >
+> Looks as it was in original patch, I will look.
+> > > +
+> > > +static int asus_wmi_ec_update_ec_sensors(struct asus_wmi_ec_info
+> > > *ec) +{
+> > > +       const struct ec_sensor_info *si;
+> > > +       struct ec_sensor *s;
+> > > +
+> > > +       u32 value;
+> > This variable is now redundant.
+> >
+> Thank you, I will look.
+>
+> > > +               if (si->addr.size == 1)
+> > Maybe switch(si->addr.size)?
+> >
+> Thank you, I will check.
+> > > +                       value = ec->read_buffer[read_reg_ct];
+> > > +               else if (si->addr.size == 2)
+> > > +                       value =
+> > > get_unaligned_le16(&ec->read_buffer[read_reg_ct]);
+> > > +               else if (si->addr.size == 4)
+> > > +                       value =
+> > > get_unaligned_le32(&ec->read_buffer[read_reg_ct]); +
+> > > +               read_reg_ct += si->addr.size;
+> > > +               s->cached_value = value;
+> > > +       }
+> > > +       return 0;
+> > > +}
+> >
+> >
+> > > +       mutex_lock(&sensor_data->lock);
+> > The mutex locking/unlocking should be moved inside the
+> > update_ec_sensors(), I guess.
+> >
+> > I re-read your answer to my question as to why don't you add module
+> > aliases to the driver, and I have to admit I don't really understand
+> > it. Could you, please, elaborate?
+> >
+> It looked complicated to support two kind of WMI interfaces with UUID.
+> As we split big support module to two separate - I will look to such
+> change also.
+>
+> > Thank you,
+> > Eugene
+>
+> Best regards,
+>      Denis.
