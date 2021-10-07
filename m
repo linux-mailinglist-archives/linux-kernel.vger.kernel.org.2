@@ -2,106 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B7F424B99
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290AE424B9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhJGBYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 21:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhJGBYl (ORCPT
+        id S232218AbhJGBZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 21:25:17 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:51283 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhJGBZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 21:24:41 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771E5C061746;
-        Wed,  6 Oct 2021 18:22:48 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id h189so2063399iof.1;
-        Wed, 06 Oct 2021 18:22:48 -0700 (PDT)
+        Wed, 6 Oct 2021 21:25:12 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HPtqp36Vbz4xbG; Thu,  7 Oct 2021 12:23:18 +1100 (AEDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ll0oa75vwhrd/jX569DuLEC0YhlCdGYCCf3ViMztJWY=;
-        b=XI9c895b2ORswndS2kO8/54RqxOi4N4Y/aDaXGGuPcUzXKv509ghzLFNCLwZQEzu+C
-         6o8cl1x14ANfLLWcEEYzyIp3DHpvnRFY+OAaNJy4VlGrPecgrwwgbg/qBu+IABIa5/XE
-         MB6VR3rDdODDoBj9Qb7I+F3aaUGuv6P2LUqW8PiZxDMj6b13g9CRJL3qsiY6emhRYODD
-         J6tGEWH30YnenomVB4vh9OM4q5E764cKtZM8nyjH9sbuJBp9KOE7NaL8pwYnE03/BBq8
-         41+RrUArdcvUBU/sO42N971kvkeZFDvcDtDhSAxCvZOW7HAQyYYplfNA/WQ0dBmKTW+5
-         wbaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ll0oa75vwhrd/jX569DuLEC0YhlCdGYCCf3ViMztJWY=;
-        b=LfYy213qG1l6NSyNGHDjTpUrzhbtoDmPA8K57M+4dpU5K4RZ84UDlDEtcJC9pzZMax
-         TEE+Kzi6Vf2mhF16cPY0jXQx05KYVEmtWrMQAmgBlayI/QUQrMnJb2BAm2633xW7UG61
-         f+8YE6dQRy3rs2QUB4UI9EOnRSze+OfHQhk3YAj/qkpDgfuqqoBdg/rfJxl8h2EWKhxF
-         TR265Dk77KlPdBL6xtmxTofZVGChtajOINuRi9l8oeFYVZzhOTsodOYSPV1VDh1nESJD
-         ojmcAJU2czhMmcpYccQySEHw0zA+WiAjfeGN0gteQSOUmxIiIvusOHnwcYDBOIUZpjaj
-         1piQ==
-X-Gm-Message-State: AOAM530aXGs46P+gYOFqavFXbS8jWmWEYFSaeJ8pflylkyepQqRcxiPH
-        jHQNaUaBbddxtCySLnebCuyI7waFsQpyqA==
-X-Google-Smtp-Source: ABdhPJyUBKkqYtLhwhfFhyTmGHceMBGSgF4rJ3DHDWyO1q38N5zNLE2m3V1mkvbYuFMuaXGYoBTDRw==
-X-Received: by 2002:a05:6602:1644:: with SMTP id y4mr1123006iow.82.1633569767459;
-        Wed, 06 Oct 2021 18:22:47 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id q6sm1549712ile.23.2021.10.06.18.22.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Oct 2021 18:22:47 -0700 (PDT)
-Subject: Re: [PATCH 08/11] selftests: net/fcnal: Replace sleep after server
- start with -k
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Seth David Schoen <schoen@loyalty.org>,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1633520807.git.cdleonard@gmail.com>
- <ec40bd7128a30e93b90ba888f3468f394617a010.1633520807.git.cdleonard@gmail.com>
- <43210038-b04b-3726-1355-d5f132f6c64e@gmail.com>
- <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <888962dc-8d55-4875-cf44-c0b8ebaa1978@gmail.com>
-Date:   Wed, 6 Oct 2021 19:22:45 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        d=gibson.dropbear.id.au; s=201602; t=1633569798;
+        bh=qstVtDT91XWliCaW5kitB3WljFF05mjQismqLt2KJ+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n70FR0j9KTEGEzxwCxf2JDFXaUu8zShyp+4N0lscr1waf+K/ZgaxwyX9ZowdEeqyT
+         93j/gp22nAcMRYODT0LPRwZZf8hod6y0LuY2l71D1O/R3Do5F53fEXCE37Ph8arTyB
+         8uacyxaJkPxNRjhkPqJtBB70Xzz+taoWwt0m2ERk=
+Date:   Thu, 7 Oct 2021 12:23:13 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
+        hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
+        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
+        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
+        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
+        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
+        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
+        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
+        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
+        nicolinc@nvidia.com
+Subject: Re: [RFC 07/20] iommu/iommufd: Add iommufd_[un]bind_device()
+Message-ID: <YV5MAdzR6c2knowf@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-8-yi.l.liu@intel.com>
+ <YVP44v4FVYJBSEEF@yekko>
+ <20210929122457.GP964074@nvidia.com>
+ <YVUqpff7DUtTLYKx@yekko>
+ <20211001124322.GN964074@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <d6882c3f-4ecf-4b4e-c20e-09b88da4fbd6@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KDKmP08LDN9ERU6o"
+Content-Disposition: inline
+In-Reply-To: <20211001124322.GN964074@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 3:35 PM, Leonard Crestez wrote:
-> 
-> I counted the [FAIL] or [ OK ] markers but not the output of nettest
-> itself. I don't know what to look for, I guess I could diff the outputs?
-> 
-> Shouldn't it be sufficient to compare the exit codes of the nettest client?
 
-mistakes happen. The 700+ tests that exist were verified by me when I
-submitted the script - that each test passes when it should and fails
-when it should. "FAIL" has many reasons. I tried to have separate exit
-codes for nettest.c to capture the timeouts vs ECONNREFUSED, etc., but I
-could easily have made a mistake. scanning the output is the best way.
-Most of the 'supposed to fail' tests have a HINT saying why it should fail.
+--KDKmP08LDN9ERU6o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> The output is also modified by a previous change to not capture server
-> output separately and instead let it be combined with that of the
-> client. That change is required for this one, doing out=$(nettest -k)
-> does not return on fork unless the pipe is also closed.
-> 
-> I did not look at your change, mine is relatively minimal because it
-> only changes who decide when the server goes into the background: the
-> shell script or the server itself. This makes it work very easily even
-> for tests with multiple server instances.
+On Fri, Oct 01, 2021 at 09:43:22AM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 30, 2021 at 01:10:29PM +1000, David Gibson wrote:
+> > On Wed, Sep 29, 2021 at 09:24:57AM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Sep 29, 2021 at 03:25:54PM +1000, David Gibson wrote:
+> > >=20
+> > > > > +struct iommufd_device {
+> > > > > +	unsigned int id;
+> > > > > +	struct iommufd_ctx *ictx;
+> > > > > +	struct device *dev; /* always be the physical device */
+> > > > > +	u64 dev_cookie;
+> > > >=20
+> > > > Why do you need both an 'id' and a 'dev_cookie'?  Since they're both
+> > > > unique, couldn't you just use the cookie directly as the index into
+> > > > the xarray?
+> > >=20
+> > > ID is the kernel value in the xarray - xarray is much more efficient &
+> > > safe with small kernel controlled values.
+> > >=20
+> > > dev_cookie is a user assigned value that may not be unique. It's
+> > > purpose is to allow userspace to receive and event and go back to its
+> > > structure. Most likely userspace will store a pointer here, but it is
+> > > also possible userspace could not use it.
+> > >=20
+> > > It is a pretty normal pattern
+> >=20
+> > Hm, ok.  Could you point me at an example?
+>=20
+> For instance user_data vs fd in io_uring
 
-The logging issue is why I went with 1 binary do both server and client
-after nettest.c got support for changing namespaces.
+Ok, but one of those is an fd, which is an existing type of handle.
+Here we're introducing two different unique handles that aren't an
+existing kernel concept.
 
+> RDMA has many similar examples.
+>=20
+> More or less anytime you want to allow the kernel to async retun some
+> information providing a 64 bit user_data lets userspace have an easier
+> time to deal with it.
+
+I absolutely see the need for user_data.  What I'm questioning is
+having two different, user-visible unique handles, neither of which is
+an fd.
+
+
+That said... is there any strong reason why user_data needs to be
+unique?  I can imagine userspace applications where you don't care
+which device the notification is coming from - or at least don't care
+down to the same granularity that /dev/iommu is using.  In which case
+having the kernel provided unique handle and the
+not-necessarily-unique user_data would make perfect sense.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--KDKmP08LDN9ERU6o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFeTAAACgkQbDjKyiDZ
+s5IHfA//dHZrmxuC2Eg7GpSZRzPqLOFtDPTlZ/fOS0A3Ww2bU6S+CuugltvCz+U2
+KZ65d6W7oAiRDmaxTdPARsY/JsYFSu+jGnVfYI4ZUf/N6v0NIInS5L5z31og1nhu
+VYPLtYEPenL5Ikj/e3Ul9E6l5AqLcRqRw/j5G83ygQB3Wk93LdeF/p8wdEvEt599
+U5V8JbGKUYzBySYD4+m6EhhYpAEagGRRltJE10AZm4WB9w6KbjkrQryg7zSfbbEo
+ulwVrlY/IBzHmbBi82IQOiXFIZkdbvuigelt34UPdMSVj50Wmo4t/bxyTbRGk9O8
+YMGa0Y5l0bH6gtl1M/e9Gq3rEwGrjSP/GyvLCZSv1D3nAti/WK7INv9NVEz1E74O
+frugTJBSsodRVz31hMt+WDT5NTTv+F+xQjEnFZTcCeogHvDissXh2wnhUXSi5kQq
+g8GcJfG621SrtvulFlFIhjgtXqxPzRJm+uXWTI5ESCA7+3g79Pr5kKo9UTiRK1c1
+HtB8mM70Hp+vOmWSZ5D3wYZX4ImXpcWdHk0y0c1O0QQVmFF07iyqjVXu+A6r/A5y
+ly8PwxvM0gnM7Ewuz37YXpGTgeiCTVaUVPITz09GN1mMqYa2V0l1X3q/G5iwb/g8
+0SqR8HFGjS87nbngGm/vjD/AscCOHePTMrFQvN/GFytfMWdJO3c=
+=VYju
+-----END PGP SIGNATURE-----
+
+--KDKmP08LDN9ERU6o--
