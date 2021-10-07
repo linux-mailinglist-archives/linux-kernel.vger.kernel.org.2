@@ -2,223 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5FB42552F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65CBB425532
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242018AbhJGOTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241774AbhJGOTe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:19:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15831610E6;
-        Thu,  7 Oct 2021 14:17:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633616260;
-        bh=HhRjJrw3Ksb9DfjgDbWP04ifVvu3DrunOrRolH4BuLU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cajSqv0IA40JjImpWjnGmYB9zwsS03MYmWWcnS3w0azuHXh9o93Sa7PGNvXUTgOjF
-         q/dGKZyWiaXI0E/BlY7ZdkCqsvw0SbeeZjrvyNtQsDRqbBJSu1R6So5Tf1Fea99+lb
-         o7OFmz3HpbLwvQaatuCvIsWAqMnSMVsmA6AKZ3fSp8a1Jyk6W/Ohk5FQrG+5ecCwSJ
-         XeIpJ2Qn6JlCnWKE2oKhUkKdXYP2jqp+S6v4tDsfYNHh8fmEJARvuPbFprtxoYzrEg
-         8YnjJkjxdIOfLw5H/zL1pFwDNw+23AadPw0eag1H2MpBda3grLY83X2V0KytIb0/CL
-         PM6AmedZhfxjQ==
-Date:   Thu, 7 Oct 2021 23:17:38 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-Id: <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
-In-Reply-To: <20211006175611.GA2995@kbox>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
-        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
-        <20211006175611.GA2995@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S242025AbhJGOUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:20:00 -0400
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:35423 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241774AbhJGOT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:19:59 -0400
+Received: by mail-oi1-f170.google.com with SMTP id n64so9248103oih.2;
+        Thu, 07 Oct 2021 07:18:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PUuKvP7McEiH/2qrThuKxg/iRjLtaPX3FoPmr3dvODk=;
+        b=yJXEebyNH8NtTtmWJN6hlUMWDeWD6MroXX+vAaPiZhmr73mA3tUI1UIIfvzBnX16bz
+         Jrzu3v2SgNL1TNON1YtncPtak17TWUuQUEwzhxYrPLbrGmf9Nobz2n/TdGiWS4zBx/st
+         vJUZwYzB3SMor3DDheeW6Kh8c6yNid11WEZzZQAUFd91MsYM0D2onDRVcpdg5YkS24gg
+         JdrlzIi9qnaxw6jtvFXwB8Y5UQr+UBeDwwLsrModGijYVCrjYEPcDciBkHUDjLQ8utzD
+         xeKxDo1tnHWhvZyD2kBuL0o+YZk1Dqrpfd8G3u0BIdfR4aN7kcV4P2qdwjLJP7sblUfY
+         Sy/Q==
+X-Gm-Message-State: AOAM532GyZf+AUC2U855Ruzthcu7c6vvLnMvDkVE1RbuMWzpLJmDYlyk
+        pb18iksRLFhl0fjs9Q1mZBQbrqyDKaSXIbtt0Kg=
+X-Google-Smtp-Source: ABdhPJzp+hAA4i0v+Q6m3uBwIrRd0bV6DM9jYnr2OTr2nEYW4FWptEGdI2RLCE7LuXBvecrvYF4x+iogguQ1nGg5+w4=
+X-Received: by 2002:aca:d1a:: with SMTP id 26mr3246401oin.166.1633616285156;
+ Thu, 07 Oct 2021 07:18:05 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210917072732.611140-1-abailon@baylibre.com> <bd347d14-0b42-f9ed-bf15-080c929e1cb7@linaro.org>
+ <7cddcdb7-4efd-bfdb-3d86-f5862ea0b7fe@baylibre.com> <8a9e5f13-6253-2d0d-35a8-789090af4521@linaro.org>
+ <c395abad-598b-c06a-9252-c8e62c977188@baylibre.com> <794e62ea-d867-3827-de5f-24ddc86c3524@linaro.org>
+ <4446577e-c7fa-daeb-e0fe-8a530633ef5d@baylibre.com> <d24ce6ec-eced-4e16-eb59-7c87f596ccca@linaro.org>
+ <CAJZ5v0iJCS+nRcnHXiprtJsBf6Q4=k4TFcUV2ma_GiK=MttFug@mail.gmail.com>
+ <03aeb132-bc0c-93f7-c7db-8575a665d2a7@linaro.org> <CAJZ5v0gVgw4qT9jmfr8U+t0j3JdmAAuVFf785NHozQxuKr56MA@mail.gmail.com>
+ <566c8f70-1445-caef-811d-398729869719@linaro.org>
+In-Reply-To: <566c8f70-1445-caef-811d-398729869719@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 7 Oct 2021 16:17:53 +0200
+Message-ID: <CAJZ5v0i1U5+gBHtSeamFMDovyTrpTMk+xGTatuQSVjrxrC8Uzg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Add a generic virtual thermal sensor
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexandre Bailon <abailon@baylibre.com>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ben.tseng@mediatek.com, Kevin Hilman <khilman@baylibre.com>,
+        Matthias Kaehlcke <mka@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Beau,
+On Wed, Oct 6, 2021 at 9:51 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+>
+> On 06/10/2021 20:00, Rafael J. Wysocki wrote:
+> > On Wed, Oct 6, 2021 at 6:06 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>
+> >> On 05/10/2021 18:45, Rafael J. Wysocki wrote:
+> >>> On Mon, Oct 4, 2021 at 3:42 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
+> >>>>
+> >>>> On 04/10/2021 12:24, Alexandre Bailon wrote:
+> >>>>>
+> >>>>> On 9/22/21 10:10 AM, Daniel Lezcano wrote:
+> >>>>>> On 20/09/2021 15:12, Alexandre Bailon wrote:
+> >>>>>>> On 9/17/21 4:03 PM, Daniel Lezcano wrote:
+> >>>>>>>> On 17/09/2021 15:33, Alexandre Bailon wrote:
+> >>>>>>>>> Hi Daniel,
+> >>>>>>>>>
+> >>>>>>>>> On 9/17/21 2:41 PM, Daniel Lezcano wrote:
+> >>>>>>>>>> On 17/09/2021 09:27, Alexandre Bailon wrote:
+> >>>>>>>>>>> This series add a virtual thermal sensor.
+> >>>>>>>>>>> It could be used to get a temperature using some thermal sensors.
+> >>>>>>>>>>> Currently, the supported operations are max, min and avg.
+> >>>>>>>>>>> The virtual sensor could be easily extended to support others
+> >>>>>>>>>>> operations.
+> >>>>>>>>>>>
+> >>>>>>>>>>> Note:
+> >>>>>>>>>>> Currently, thermal drivers must explicitly register their sensors to
+> >>>>>>>>>>> make them
+> >>>>>>>>>>> available to the virtual sensor.
+> >>>>>>>>>>> This doesn't seem a good solution to me and I think it would be
+> >>>>>>>>>>> preferable to
+> >>>>>>>>>>> update the framework to register the list of each available sensors.
+> >>>>>>>>>> Why must the drivers do that ?
+> >>>>>>>>> Because there are no central place where thermal sensor are
+> >>>>>>>>> registered.
+> >>>>>>>>> The only other way I found was to update thermal_of.c,
+> >>>>>>>>> to register the thermal sensors and make them available later to the
+> >>>>>>>>> virtual thermal sensor.
+> >>>>>>>>>
+> >>>>>>>>> To work, the virtual thermal need to get the sensor_data the ops from
+> >>>>>>>>> the thermal sensor.
+> >>>>>>>>> And as far I know, this is only registered in thermal_of.c, in the
+> >>>>>>>>> thermal zone data
+> >>>>>>>>> but I can't access it directly from the virtual thermal sensor.
+> >>>>>>>>>
+> >>>>>>>>> How would you do it ?
+> >>>>>>>> Via the phandles when registering the virtual sensor ?
+> >>>>>>> As far I know, we can't get the ops or the sensor_data from the phandle
+> >>>>>>> of a thermal sensor.
+> >>>>>>> The closest solution I found so far would be to aggregate the thermal
+> >>>>>>> zones instead of thermal sensors.
+> >>>>>>> thermal_zone_device has the data needed and a thermal zone could be find
+> >>>>>>> easily using its name.
+> >>>>>> Yeah, the concept of the thermal zone and the sensor are very close.
+> >>>>>>
+> >>>>>> There is the function in thermal_core.h:
+> >>>>>>
+> >>>>>>   -> for_each_thermal_zone()
+> >>>>>>
+> >>>>>> You should be able for each 'slave' sensor, do a lookup to find the
+> >>>>>> corresponding thermal_zone_device_ops.
+> >>>>>>
+> >>>>>>> But, using a thermal_zone_device, I don't see how to handle module
+> >>>>>>> unloading.
+> >>>>>> I think try_module_get() / module_put() are adequate for this situation
+> >>>>>> as it is done on an external module and we can not rely on the exported
+> >>>>>> symbols.
+> >>>>> I don't see how it would be possible to use these functions.
+> >>>>> The thermal zone doesn't have the data required to use it.
+> >>>>
+> >>>> Actually I was able to crash the kernel by doing:
+> >>>>
+> >>>> console 1:
+> >>>>
+> >>>> while $(true); do insmod <module> && rmmod <module>; done
+> >>>>
+> >>>> console 2:
+> >>>>
+> >>>> while $(true); cat /sys/class/thermal/thermal_zone0/temp; done
+> >>>>
+> >>>> So there is something wrong already in the thermal framework.
+> >>>
+> >>> Hmmm.
+> >>>
+> >>>> IMO, the first thing would be to fix this critical issue by getting the
+> >>>> sensor module refcount when the thermal zone is enabled and dropping it
+> >>>> when it is disabled.
+> >>>>
+> >>>> With that fixed, perhaps it will possible to get the device associated
+> >>>> with the sensor and then try_module_get(dev->driver->owner)
+> >>>>
+> >>>>> Maybe a more easier way is to use the thermal_zone_device mutex.
+> >>>>> If I get a lock before to use the thermal_zone_device ops, I have the
+> >>>>> guaranty that module won't be unloaded.
+> >>>
+> >>> That would be my approach too.
+> >>
+> >> The mutex is private to the thermal core. The virtual sensor should not
+> >> touch it :/
+> >>
+> >> Perhaps, it can work with a private spin_lock with a try_spinlock() ?
+> >
+> > IIUC this is a case when module A refers to some memory in module B
+> > and if the latter goes away, an access to that memory from the former
+> > is a use-after-free, so it is not sufficient to use a local spinlock.
+>
+> > This can be avoided by having a lock and a flag such that the flag is
+> > set under the lock by module B when making the memory in question
+> > available and cleared under the lock when freeing that memory.  Then,
+> > module A needs to check the flag under the lock on every access to
+> > that memory.  Also, the lock and the flag must be accessible all the
+> > time to both modules (ie. must not go away along with any of them if
+> > they don't depend on each other).
+>
+> Just to clarify, the idea behind the virtual sensor is the same as the
+> network bridge: the network interfaces are not aware they are attached
+> to a bridge.
 
-On Wed, 6 Oct 2021 10:56:11 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+But there's no code handling the bridge that needs to access memory
+controlled by network interface driver modules.
 
-> On Thu, Oct 07, 2021 at 01:28:27AM +0900, Masami Hiramatsu wrote:
-> > > User processes often want to trace only when it's useful. To enable this
-> > > a set of pages are mapped into the user process space that indicate the
-> > > current state of the user events that have been registered. User
-> > > processes can check if their event is hooked to a trace/probe, and if it
-> > > is, emit the event data out via the write() syscall.
-> > > 
-> > > Two files are added to tracefs to accomplish this:
-> > > user_events_mmap - This file is mmap'd into participating user mode
-> > > processes to indicate event status.
-> > 
-> > It seems like the "method" is used for the file name of user_events_mmap,
-> > instead of what is the purpose of the file.
-> > What about "user_events_status" and show the informations (which program
-> > made events and what tracer is using the events) when you read the file?
-> > And when you mmap it, or when you ioctl to get mmapable fd, your program
-> > can directly monitor the flags.
-> > 
-> This sounds good to me.
-> 
-> > > Psuedo code example of typical usage:
-> > > page_fd = open("user_events_mmap", O_RDWR);
-> > > page_data = mmap(NULL, PAGE_SIZE, PROT_READ, MAP_SHARED, page_fd, 0);
-> > > 
-> > > data_fd = open("user_events_data", O_RDWR);
-> > > data_id = ioctl(data_fd, DIAG_IOCSREG, "test");
-> > 
-> > Hmm, if the data_id is same as the ID in events/*/*/format, it will
-> > be queried by libtraceevent or libftrace, isn't it?
-> > And also, if you can define the user-event via dynamic_event interface,
-> > it should be used instead of using ioctl on data channel.
-> > 
-> These will not be the same ID. The data_id will be the offset within a
-> page to check for status. We don't want to give user mode processes
-> access to the entire tracefs, so we are isolating to a few files that
-> will get wider access.
+> The virtual sensor should attach and detach the physical sensors.
+>
+> The sensors should not un|register themselves from|to the virtual
+> sensor, nor having specific code related to the virtual sensor. De
+> facto, all the existing sensors will be compatible with the virtual sensor.
 
-OK, but how to query the id of the event which has been made
-from writing dynamic_events file? (maybe query from name by
-ioctl?)
+If I understand this patch series correctly, somebody is expected to
+call thermal_virtual_sensor_register() (or the devm_ variant of it) in
+order to add a sensor to the thermal_sensors list (which appears to be
+racy given the lack of locking or any kind of synchronization
+whatsoever).
 
-> > Oh, I thought that the each user events should not be accessible from other
-> > processes. And I got the reason, if you run different processes (instances)
-> > at the same time, those may need to share same events.
-> > 
-> > In summary, I would like to suggest following interface to split
-> > the control, monitor and data channels.
-> > 
-> > - dynamic_events : Add new 'u' command but derived from synth event (or share the parser)
-> > - user_event_status : monitor status by mmap, and showing human-readable status by read.
-> >                       query offset by ioctl.
-> Agree with the above, cool idea.
-> 
-> > - user_event_data : just write data (binary packet).
-> > 
-> We still require the ioctl to register and cannot bet solely on
-> dynamic_events. We want a fast way to register events on process startup
-> and get the data_id back as fast as possible.
+This appears to assume that all of the sensors will be added before
+running virtual_thermal_sensor_probe() which effectively is the only
+reader of the thermal_sensors list and runs as a ->probe() callbacks
+of virtual_thermal_sensor (there is a name clash between this and a
+struct data type which isn't useful) which gets registered as a
+platform driver when the module loads, as per
+module_platform_driver().
 
-What about using ioctl on 'user_event_status' file?
-But in this case, the name is not showing the function.
+So whoever called thermal_virtual_sensor_register() to register a
+sensor, will be required to call thermal_virtual_sensor_unregister()
+or devm_thermal_virtual_sensor_release() will be called for them when
+they are going away (again, no locking there).  That should also
+reconfigure all of the virtual sensors using the given sensor going
+away and which should take care of the problem we are discussing,
+shouldn't it?
 
-Then, what about renaming it as simply 'user_events'? :)
-This file will show the current user events as similar to synth_events,
-in addition, it will show the current status in "# comment".
-
-$ echo "user1 u32 arg1; u64 arg2" > user_events
-$ cat user_events
-user1 u32 arg1; u64 arg2
-$ echo 1 > events/user_events/user1/enable
-$ cat user_events
-user1 u32 arg1; u64 arg2 # Used by ftrace
-
-In addition, 
-- user-process can do ioctl() to query offset instead of id from name.
-- user-process can do mmap() the file to monitor the status.
-
-> The other thing is we need ref counting to know if the event is busy.
-> Having the ID in the packet avoids having a fd per-event, but it also
-> makes ref counting process lifetime of each event quite hard.
-
-Hmm, I don't think so. You can use an array of the pointer to
-events on the private data of the struct file.
-When you add (or start using) an event (this is identified by ioctl),
-you can increment the event refcount and add it to the array.
-When the file is closed (in exiting process), it will loop on the
-array and decrement the refcount for each event.
-Then, after all tracers disabled the event, ftrace can remove the
-event in background (unless it is defined through 'dynamic_events' or
-'user_events').
-
-> > User written binary packet will be based on the event format, for example,
-> > 
-> > echo "u:foo u64 mydata; char[] msg"
-> > 
-> > /sys/kernel/debug/tracing # cat events/user_events/foo/format 
-> > name: foo
-> > ID: 1234
-> > format:
-> > 	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-> > 	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-> > 	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-> > 	field:int common_pid;	offset:4;	size:4;	signed:1;
-> > 
-> > 	field:u64 mydata;	offset:8;	size:8;	signed:0;
-> > 	field:__data_loc char[] msg;	offset:16;	size:4;	signed:1;
-> > 
-> > Then, the binary should be formatted as;
-> > 
-> > [u32 ID][u64 mydata][u16 msg-len][u16 msg-offs][msg-data]
-> > 
-> > Then user will generate a packet like;
-> > 
-> > [1234][0xdeadbeef][12][16]["Hello world"]
-> > 
-> > And write it to the user_event_data file.
-> > 
-> > Kernel will verify len and offs if there is a dynamic array (string),
-> > and record common fields, update msg-offs (because it will be shift the
-> > size of common fields) and record user-data.
-> > 
-> We want to avoid the kernel component touching any of the user data. For
-> example eBPF programs will parse the data directly from definitions
-> provided by the user. If the kernel side changed what the user expected
-> from their side the eBPF program would fail to decode.
-
-Sorry, that's not doable unless we introduce a new __rel_loc__ attribute
-to the ftrace (and libtraceevent). With that, the dynamic data 
-(like string) offset can be written as the offset from itself.
-
-> > [1234][0xdeadbeef][12][0]["Hello world"]
-
-Anyway, as far as you are using trace event the data format itself is
-the contract between kernel and user, because *kernel* also has to 
-decode it (e.g. user will read the 'trace' file.) and other tools
-like perf has to decode it too.
-
-The kernel will not modify the data (again with __rel_loc__ attr) but
-it will add the common_* field and event ID as a header to its buffer
-when record it.
-
-> We also want
-> predicate filtering to work as cheap as possible. I would really like to
-> keep offset manipulation entirely in the user space to avoid confusion
-> across the various tracing mechanisms and avoid probing the user data
-> upon each call (eBPF programs only selectively probe in data).
-
-OK, so let's add __rel_loc__ attribute. The rel_loc type will be
-
-struct rel_loc {
-	uint16_t len;	/* The data size (including '\0' if string )*/
-	uint16_t offs;	/* The offset of actual data from this field */
-} __packed;
-
-Hmm, btw, this will be good for probe events... I don't need to pass
-the base address with this attribute.
-
-> 
-> > I also think we need a user-mode library for the above interface
-> > so that user can easily bind to each application and language.
-> I have a few colleagues testing some ideas out about this. Should I have
-> them reach out to you for ideas or collaboration?
-
-Yeah, we always collaborate on LKML and other MLs :)
-
-Thank you,
-
-> 
-> Thanks,
-> -Beau
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Let me respond to the patches, though.
