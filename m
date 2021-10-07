@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C2F4251C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165164251C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhJGLLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37676 "EHLO
+        id S233872AbhJGLOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhJGLLv (ORCPT
+        with ESMTP id S230087AbhJGLOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:11:51 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDEBC061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:09:58 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id 188so6414187vsv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:09:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HzsMoRJsH8Sqc/5QUEzazNk9LwUNPwGYQgI6XlOhwdM=;
-        b=jjMWBQ2b9mG7NVaxJoDtibQ3OU6rQZ2zpfbaqAgq2HL5qORXLUX1Vi07dspO0J6aAE
-         ICBr2srIBsmVhXWLi/2xcHtw0vRKfJqJudBZZkWofSZIHP70MUigU+lFODf0f10lqDtK
-         UBD1UJGTDLuVUHTwzgYl9626fOtXaPkl82ihM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HzsMoRJsH8Sqc/5QUEzazNk9LwUNPwGYQgI6XlOhwdM=;
-        b=3Zx5RAQs6r5OjU31a6zJMoHEPUbPd+D/T1+xdH5yFrHdQ50+490vTqKL5T2DIthN0v
-         96ctPdPr808NkSsmcRl5UONANoIdgw7VwAm0gI5cSM0YZbCAEs3l8iQozrgmiDecGyKJ
-         qoHuZUf7laftdnnshcPepCBtWdPl0xz9CHWHg1kAO9ypezGzEp3lhCCp1A5ZYU9jMSJz
-         1akTvBB5OCPObBqTA+eEOxwPjo8T1gPfL7iv8oNHP52gcPEe7MVi5OEAWLFg0/W6p1Co
-         fQsaOpEJ0fOut6O9ufas4O2uSZbVxHYnmJoL8/xRunpnh0vy0GiLWiEYG51zDsmWKpP3
-         OPXg==
-X-Gm-Message-State: AOAM53268RErLtm4C9g3zntWSeD8KMj65PhvTDRkzIzv8KlToxhRQcNK
-        uBvXzeeV2nzcJAD75YBo2TcNz48yksOgQUjCVvUK7w==
-X-Google-Smtp-Source: ABdhPJwwlMDrzL1eRmXK79q/c/bQxWvYBLZtluQeSTQttotP78WIpfO7fpUap6vTe2AKIKk7F7bBMi6PJsRRqyRS7HI=
-X-Received: by 2002:a05:6102:3c3:: with SMTP id n3mr3179780vsq.19.1633604997574;
- Thu, 07 Oct 2021 04:09:57 -0700 (PDT)
+        Thu, 7 Oct 2021 07:14:21 -0400
+Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C17FCC061746;
+        Thu,  7 Oct 2021 04:12:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
+        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
+        In-Reply-To:References; bh=5IpN7IfrzRhmhVgy9bZoBoDtYZ9yheLeeNt1arFGBas=; b=yl
+        DX/LOsLypu5ktwBawKB7+BerNbhpi0ag56AiHqkQlECmbtBr9BoT3qLUjSMjMEgTDfEAxe6JdfG9Q
+        XgXry/MBKyv/eFGiiSE84UMM0zjCSa7ZwB9nLS2cFOfls9Cjw46B3KRaoFRChO0h9Ss3AYjWN//Zt
+        n6m6ZPPtdTbkFcOQX+0gmsBk6ykp6qYnsNKbqI0xfGr/H3uHnq/HdFlea06zlekXV58YF2lpDIDoP
+        1jJ8jSiF6fGh7twPdWlHj9g9O0lSOEN87R20yKCYMNvJ0i1j7tqTYFXCOKGi73pEme2dTa7G+t2RF
+        dPkMYpYtLQ78cZznoANskBc/FmsChntA==;
+Received: from [81.174.171.191] (helo=donbot.metanate.com)
+        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <john@metanate.com>)
+        id 1mYRK2-0000Ri-P1; Thu, 07 Oct 2021 12:12:22 +0100
+From:   John Keeping <john@metanate.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     John Keeping <john@metanate.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Tretter <m.tretter@pengutronix.de>,
+        Andrej Valek <andrej.valek@siemens.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Input: st1232 - prefer asynchronous probing
+Date:   Thu,  7 Oct 2021 12:12:16 +0100
+Message-Id: <20211007111217.1935858-1-john@metanate.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-8-cgxu519@mykernel.net>
-In-Reply-To: <20210923130814.140814-8-cgxu519@mykernel.net>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 7 Oct 2021 13:09:46 +0200
-Message-ID: <CAJfpegtLi1PsfpkohJ-8kTHVazf7cZiX96OSBMn7Q39PY_PXaw@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 07/10] ovl: cache dirty overlayfs' inode
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Authenticated: YES
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrote:
->
-> Now drop overlayfs' inode will sync dirty data,
-> so we change to only drop clean inode.
->
-> The purpose of doing this is to keep compatible
-> behavior with before because without this change
-> dropping overlayfs inode will not trigger syncing
-> of underlying dirty inode.
->
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-> ---
->  fs/overlayfs/super.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> index cddae3ca2fa5..bf4000eb9be8 100644
-> --- a/fs/overlayfs/super.c
-> +++ b/fs/overlayfs/super.c
-> @@ -441,11 +441,25 @@ static int ovl_write_inode(struct inode *inode,
->         return ret;
->  }
->
-> +/*
-> + * In iput_final(), clean inode will drop directly and dirty inode will
-> + * keep in the cache until write back to sync dirty data then add to lru
-> + * list to wait reclaim.
-> + */
-> +static int ovl_drop_inode(struct inode *inode)
-> +{
-> +       struct inode *upper = ovl_inode_upper(inode);
-> +
-> +       if (!upper || !(inode->i_state & I_DIRTY_ALL))
+The device may take up to 100ms to become responsive during probe, so
+prefer asynchronous probing to avoid delaying the rest of the system.
 
-Could we check upper dirtyness here? That would give a more precise result.
+Suggested-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: John Keeping <john@metanate.com>
+---
+As suggested in [1]
 
-Alternatively don't set .drop_inode (i.e. use generic_drop_inode())
-and set I_DONTCACHE on overlay inodes.  That would cause the upper
-inode to be always written back before eviction.
+[1] https://lore.kernel.org/all/YV3mNMnWmUsasZ2h@google.com/
 
-The latter would result in simpler logic, and I think performance-wise
-it wouldn't matter.   But I may be missing something.
+ drivers/input/touchscreen/st1232.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks,
-Miklos
+diff --git a/drivers/input/touchscreen/st1232.c b/drivers/input/touchscreen/st1232.c
+index 6abae665ca71..45017ed94833 100644
+--- a/drivers/input/touchscreen/st1232.c
++++ b/drivers/input/touchscreen/st1232.c
+@@ -389,6 +389,7 @@ static struct i2c_driver st1232_ts_driver = {
+ 	.driver = {
+ 		.name	= ST1232_TS_NAME,
+ 		.of_match_table = st1232_ts_dt_ids,
++		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
+ 		.pm	= &st1232_ts_pm_ops,
+ 	},
+ };
+-- 
+2.33.0
+
