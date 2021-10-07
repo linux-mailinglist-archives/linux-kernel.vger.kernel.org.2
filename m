@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123634260BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B71E34260BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237830AbhJGXx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:53:57 -0400
-Received: from mga02.intel.com ([134.134.136.20]:3640 "EHLO mga02.intel.com"
+        id S238708AbhJGXzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:55:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238068AbhJGXxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:53:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213536473"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="213536473"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 16:51:59 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="440452771"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.19.60]) ([10.209.19.60])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 16:51:58 -0700
-Message-ID: <cff37252-4bef-8847-7373-d09008aa475a@linux.intel.com>
-Date:   Thu, 7 Oct 2021 16:51:57 -0700
+        id S229778AbhJGXzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 19:55:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1254360F46;
+        Thu,  7 Oct 2021 23:53:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633650797;
+        bh=y0qzneFXNeP9iCdOlPbYWTtbepyVfClijM/4p7T8XlA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W2kBPG+HleHUlHNFB3OZK0Y3M2Io8JMGKILpQdHpQgTdqWPucHcEt8k2RVIpPZ13t
+         aMPsX1nQtJ03z877pN86lqk5AhA3k1n+5laIm6GnHUFMoiuNtOht7Gf97eP8Hn+uf0
+         M53wCttwkvYru0DamLxOqJCWOffruMNdDpGIfgp5TlZcghmgPW+wHYpWFWobyhP+0R
+         ThGZEH5hnnft47AAQ38F+98mCWkLy/c4lU1MQCcJgvXE+Q9PXugzKQTqYmShGjvBLT
+         hf3CdD038lKs4Is7J97D1jdiYzrGFGx8LfIwXDjeoYKP/fEXQLzGeQsvitYsudc+tw
+         LEXGCQPVgiGwA==
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Enric Balletbo Serra <eballetbo@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Subject: [PATCH 0/5] Revert series "CMDQ refinement of Mediatek DRM driver"
+Date:   Fri,  8 Oct 2021 07:53:05 +0800
+Message-Id: <20211007235310.14626-1-chunkuang.hu@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
-Content-Language: en-US
-To:     James Clark <james.clark@arm.com>, acme@kernel.org,
-        john.garry@huawei.com, linux-perf-users@vger.kernel.org
-Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211007110543.564963-1-james.clark@arm.com>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211007110543.564963-1-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit c1ec54b7b5af
+("drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb")
+would cause numerous mtk cmdq mailbox driver warning:
 
-On 10/7/2021 4:05 AM, James Clark wrote:
-> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
-> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
-> remove the need to apply any future JSON comma fixup commits.
->
-> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
-> perf/core.
+WARNING: CPU: 0 PID: 0 at drivers/mailbox/mtk-cmdq-mailbox.c:198
+cmdq_task_exec_done+0xb8/0xe0
 
-Looks good to me.  The Intel files are already generated by automated 
-tools using the standard python JSON writer, I guess if it's out of sync 
-someone must have edited it by hand. So it should be fine to fix it.
+So revert that patch and all the patches depend on that patch.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Chun-Kuang Hu (5):
+  Revert "drm/mediatek: Clear pending flag when cmdq packet is done"
+  Revert "drm/mediatek: Add cmdq_handle in mtk_crtc"
+  Revert "drm/mediatek: Detect CMDQ execution timeout"
+  Revert "drm/mediatek: Remove struct cmdq_client"
+  Revert "drm/mediatek: Use mailbox rx_callback instead of cmdq_task_cb"
 
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 157 ++++--------------------
+ 1 file changed, 24 insertions(+), 133 deletions(-)
 
--Andi
+-- 
+2.25.1
 
