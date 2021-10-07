@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED15A4260AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4414260B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 01:45:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238318AbhJGXnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 19:43:53 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:36202
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229778AbhJGXnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 19:43:49 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id BEA443F226;
-        Thu,  7 Oct 2021 23:41:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633650113;
-        bh=xcI8ZGeSFCk6ZEUuzxl7/qYwHZsqf/PSG6Ov6OHHj+c=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=BQiKBs9mshkGku5TLdxn8jGHo9Yi/4GPqHXGx1oRJUNuRW8z1ZcHZyP5tQZ86tRi6
-         TlQb5HDR9kPEYFEfEY6EZT7iAG1vMiZbd+1+YYwU/SWlTjkmquB9O+sjrwtfebBmJI
-         Ck5rfbED65Ls+eA5fWWPc752AmcyL2HNWLUCjH26DmqHKwpJxGtN9JrI1opsQUQcAx
-         W0nJ9Nn1HurvlZRVkQez9WPti919HJZQMgW5kBRDe+KwgS8znuVMjTbevPqmJAdJlA
-         uoXfVOeH1j4khNn+rVZiHJB6p6F5qhUoXeCmyN1CZtHdq8x54DB1vB4QPQFejn+hA8
-         9VDH23jU9oBBg==
-From:   Colin King <colin.king@canonical.com>
-To:     Jakub Kicinski <kubakici@wp.pl>, Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mt7601u: Remove redundant initialization of variable ret
-Date:   Fri,  8 Oct 2021 00:41:53 +0100
-Message-Id: <20211007234153.31222-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S235642AbhJGXrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 19:47:31 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55524 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231513AbhJGXra (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 19:47:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=1Lv9ZYIcpMkYTukp7sKYhQ4VHfRciLDZTLg4KLS8D+I=; b=l4Yov2iOGpsjT6L3Hfr/FK5z+H
+        yZkLrjZXvsaxVnOoztqsJRqoxMduDCBRSZYdZ8TLnfbw6dn5pTD3p11SLms/y6XwUtt1l3YHgzaiv
+        iMb5vQyrTuEhqFmD1gdUdGy8epmH2zdOL++8z/bbz4bULcHz8ZzTwM/1jSrg5fRlNQFg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYd4i-00A0RM-9O; Fri, 08 Oct 2021 01:45:20 +0200
+Date:   Fri, 8 Oct 2021 01:45:20 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
+        robh+dt@kernel.org, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm/arm64: dts: Enable 2.5G Ethernet port on
+ CN9130-CRB
+Message-ID: <YV+GkHONfzvYNS4R@lunn.ch>
+References: <20211007230619.957016-1-chris.packham@alliedtelesis.co.nz>
+ <20211007230619.957016-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007230619.957016-2-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri, Oct 08, 2021 at 12:06:18PM +1300, Chris Packham wrote:
+> Enable the 2.5G Ethernet port by setting the status to "okay" and the
+> phy-mode to "2500base-x" on the cn9130-crb boards. Tested on a
+> CN9130-CRB-A.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> 
+> The Marvell SDK adds 2500base-t and uses it in the equivalent dtsi but
+> looking at the documentation for both the SoC and the PHY I think
+> 2500base-x is correct for the system interface (the line side is
+> 2500base-t).
 
-The variable ret is being initialized with a value that is never read,
-it is assigned later on with a different value. The initialization is
-redundant and can be removed.
+2500base-t does not make any sense. It does not even exist in
+mainline.
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/wireless/mediatek/mt7601u/dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-diff --git a/drivers/net/wireless/mediatek/mt7601u/dma.c b/drivers/net/wireless/mediatek/mt7601u/dma.c
-index ed78d2cb35e3..457147394edc 100644
---- a/drivers/net/wireless/mediatek/mt7601u/dma.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
-@@ -515,7 +515,7 @@ static int mt7601u_alloc_tx(struct mt7601u_dev *dev)
- 
- int mt7601u_dma_init(struct mt7601u_dev *dev)
- {
--	int ret = -ENOMEM;
-+	int ret;
- 
- 	tasklet_setup(&dev->tx_tasklet, mt7601u_tx_tasklet);
- 	tasklet_setup(&dev->rx_tasklet, mt7601u_rx_tasklet);
--- 
-2.32.0
-
+    Andrew
