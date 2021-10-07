@@ -2,88 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CDE425939
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D023D42593D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243317AbhJGRVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243233AbhJGRV2 (ORCPT
+        id S243254AbhJGRWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:22:05 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:45775 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243253AbhJGRV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:21:28 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345EFC061570;
-        Thu,  7 Oct 2021 10:19:34 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 19:19:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633627171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1wBNXpOyOE9HM/ZxKmlXobh0LUJjnX0lvRptKFcJ9OM=;
-        b=CplXng9MzFaWzWLGbE7dbGYVRiEz9vM+u23h7FsSuYGIATEg10B2TooG22kkSAGJ20c2tY
-        kO18pOcumb/6I9CoSGe4PnHi1cjlYlT3lQ0KMXdj13lwUEawnvhm73LHno9WpsP9L7+udR
-        CGnX7c4payqQPFfWHCx/dA3c2WpX3Fp1ELSmM5Ttnce0ypdJ8dRmqeB3xG5nzmR/MT23eF
-        vv2B85aL7V2SMTmu7yya3XqVQh3102h22WfSBEHJBqLAlSZ18I+17NWgxHMbx8aol2HDDk
-        XOJ66uvBHMXSXE7W8uK7PZv/Q1PphCbVQQ0ERi6CWaRxBdrdiCAtGA2N3PBnvg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633627171;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1wBNXpOyOE9HM/ZxKmlXobh0LUJjnX0lvRptKFcJ9OM=;
-        b=d7CGKbpnAf0ir+dumPZAcFuOBpLbCt/4ajaYrOsBVgdTNM/oeZSOm+W1Vwr+yC6HpHdzME
-        kph48471npeMewBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Joe Korty <joe.korty@concurrent-rt.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>,
-        Jun Miao <jun.miao@windriver.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
- local_lock.
-Message-ID: <20211007171929.hegwwqelf46skjyw@linutronix.de>
-References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
+        Thu, 7 Oct 2021 13:21:58 -0400
+Received: by mail-oo1-f46.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso2100046oot.12;
+        Thu, 07 Oct 2021 10:20:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pRS9W9aYA7YdWQXQJjG/aiOW5ROYwoQLPuWu0OWbdFI=;
+        b=l9TkqxbrFxiFPfT8L69Pb5NWWiqUbWrL6HAEIcGdjVK5vwSBkrCK3C3PV3EO1csfN8
+         6wvIdnlIK/1Iz9OAD8EDD5nPf4jYM0VQZtlxkNVTZcvMRdY5IyII4G5OCANudR1ABpoy
+         IT6rByNhktYEkI3QlPhSkjsbT6dbNoWK4xET0GoHUX/K0lsRUZSHAtA3l4t9KQpAa/Io
+         GXdXw7woN2nzQmXvjQbbKsB3IPmk4pZDR58+5SEIhPxgj1LKXVyqvhtt12YwvAHm0qOJ
+         v5VeR08HoWUfc8pdf6ExYZCbFxMpUDZbDgnTLfH4hkqvkYW0RLV1Hhwm7ZkX8m75ZwTC
+         5SFQ==
+X-Gm-Message-State: AOAM5303XSmwNepGZhTlg9tFItLTH59f2zNPoTV+jbLxtqDUeKjVaqyL
+        w/rZtXL/GManmJoCKxw/H90slmbuYXAfonxR4rc=
+X-Google-Smtp-Source: ABdhPJzeFDGczUHdstuoM/GQcLNSMSRwrYuwJDUIsKQLkq5Ru7MjdScPDlrmNeRstIpg6hGwi6j8+iM/I/6PVL+DVY8=
+X-Received: by 2002:a4a:ca98:: with SMTP id x24mr4183071ooq.91.1633627204058;
+ Thu, 07 Oct 2021 10:20:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20211007165928.GA43890@zipoli.concurrent-rt.com>
+References: <20211006051318.117094-1-miguel.bernal.marin@linux.intel.com>
+In-Reply-To: <20211006051318.117094-1-miguel.bernal.marin@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 7 Oct 2021 19:19:53 +0200
+Message-ID: <CAJZ5v0h7OVzjJNP9BXw5XucL3JQ7tY9wHLD8TZXjAKx_gxiDtA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: tools: fix compilation error
+To:     Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
+Cc:     Rafael J Wysocki <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-10-07 12:59:28 [-0400], Joe Korty wrote:
-> Convert IRQ blocking in intel_breadcrumbs_park() to a local lock.
->=20
-> Affects 5.10-rt and all later releases, up to and including when
-> rt was merged into mainline.
+On Wed, Oct 6, 2021 at 7:13 AM Miguel Bernal Marin
+<miguel.bernal.marin@linux.intel.com> wrote:
+>
+> When acpi tools are compiled the following error is showed:
+>
+>    $ cd tools/power/acpi
+>    $ make
+>      DESCEND tools/acpidbg
+>      MKDIR    include
+>      CP       include
+>      CC       tools/acpidbg/acpidbg.o
+>    In file included from /home/linux/tools/power/acpi/include/acpi/platform/acenv.h:152,
+>                     from /home/linux/tools/power/acpi/include/acpi/acpi.h:22,
+>                     from acpidbg.c:9:
+>    /home/linux/tools/power/acpi/include/acpi/platform/acgcc.h:25:10: fatal error: linux/stdarg.h: No such file or directory
+>       29 | #include <linux/stdarg.h>
+>          |          ^~~~~~~~~~~~~~~~
+>    compilation terminated.
+>
+> Keep the same logic from ACPICA, just identify when is used inside kernel
+> or by acpi tool.
+>
+> Fixes: c0891ac15f04 ("isystem: ship and use stdarg.h")
+> Signed-off-by: Miguel Bernal Marin <miguel.bernal.marin@linux.intel.com>
+> ---
+>  include/acpi/platform/acgcc.h | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/acpi/platform/acgcc.h b/include/acpi/platform/acgcc.h
+> index fb172a03a753..20ecb004f5a4 100644
+> --- a/include/acpi/platform/acgcc.h
+> +++ b/include/acpi/platform/acgcc.h
+> @@ -22,9 +22,14 @@ typedef __builtin_va_list va_list;
+>  #define va_arg(v, l)            __builtin_va_arg(v, l)
+>  #define va_copy(d, s)           __builtin_va_copy(d, s)
+>  #else
+> +#ifdef __KERNEL__
+>  #include <linux/stdarg.h>
+> -#endif
+> -#endif
+> +#else
+> +/* Used to build acpi tools */
+> +#include <stdarg.h>
+> +#endif /* __KERNEL__ */
+> +#endif /* ACPI_USE_BUILTIN_STDARG */
+> +#endif /* ! va_arg */
+>
+>  #define ACPI_INLINE             __inline__
+>
+> --
 
-RT was merged into mainline? Nobody tells me anything anymore=E2=80=A6=20
-
-> This problem has been reported in two other linux-rt-users postings,
->  =20
->    [PREEMPT_RT] i915: fix PREEMPT_RT locking splats (Clark Williams)
->    [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts e=
-nabled (Jun Miao)
->=20
-> Neither of these submit the obvious solution, nor,
-> AFAICT, has either yet been acted on.  So I muddy the
-> waters further by submitting this, a third fix.
-
-5.12 is longer maintained. Could you please take the latest devel tree
-for testing and participate in
-  https://lore.kernel.org/all/20211005150046.1000285-1-bigeasy@linutronix.d=
-e/
-
-?
-
-If anything I would prefer those patches backported into v5.10 if it is
-affected.
-
-Sebastian
+Applied as 5.16 material, thanks!
