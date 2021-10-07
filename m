@@ -2,112 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB27042590E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2E4425935
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243204AbhJGRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:16:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47828 "EHLO mail.kernel.org"
+        id S243281AbhJGRUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:20:53 -0400
+Received: from mga01.intel.com ([192.55.52.88]:40897 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242964AbhJGRQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:16:17 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE32E61108;
-        Thu,  7 Oct 2021 17:14:20 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 18:18:23 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        "Vladimir Zapolskiy" <vz@mleia.com>,
-        Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2 1/8] iio: dac: ad8801: Make use of the helper
- function dev_err_probe()
-Message-ID: <20211007181741.65f56d13@jic23-huawei>
-In-Reply-To: <20210928013902.1341-1-caihuoqing@baidu.com>
-References: <20210928013902.1341-1-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S243302AbhJGRUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:20:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249634844"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="249634844"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:18:49 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="590223287"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:18:46 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYX2Y-009byY-Pn;
+        Thu, 07 Oct 2021 20:18:42 +0300
+Date:   Thu, 7 Oct 2021 20:18:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: Re: [PATCH v2 3/3] gpiolib: acpi: Replace custom code with
+ device_match_acpi_handle()
+Message-ID: <YV8r8rdBugAd+Ab8@smile.fi.intel.com>
+References: <20211006173125.84423-1-andriy.shevchenko@linux.intel.com>
+ <20211006173125.84423-3-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iN+28gccy00_Ces9bYsLCNJaHaTZGMUwRrPA6TpY3H8A@mail.gmail.com>
+ <YV8oAThCe2dR6K1n@smile.fi.intel.com>
+ <CAJZ5v0hTqUnvvhEN4O-Boi-_RBFvT5mNKBn+fVdo4XWz0-XJ_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hTqUnvvhEN4O-Boi-_RBFvT5mNKBn+fVdo4XWz0-XJ_Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 09:38:54 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
+On Thu, Oct 07, 2021 at 07:07:19PM +0200, Rafael J. Wysocki wrote:
+> On Thu, Oct 7, 2021 at 7:02 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Thu, Oct 07, 2021 at 06:50:46PM +0200, Rafael J. Wysocki wrote:
 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
+...
+
+> > Thanks for review, I will update for v3.
+> > Any other comments to the series?
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> Not really.  Patch [2/3] is correct AFAICS.
 
-Hi Cai,
+v3 on its way!
 
-I made a modification to this patch whilst applying as described below.
-Please take care to not mix different types of change like you did here
-in one patch.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-With that change applied to the togreg branch of iio.git and pushed out as testing
-for 0-day to work it's magic and see if we missed anything,
-
-Thanks,
-
-Jonathan
-
-> ---
->  drivers/iio/dac/ad8801.c | 15 +++++++--------
->  1 file changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iio/dac/ad8801.c b/drivers/iio/dac/ad8801.c
-> index 6354b7c8f052..8acb9fee273c 100644
-> --- a/drivers/iio/dac/ad8801.c
-> +++ b/drivers/iio/dac/ad8801.c
-> @@ -123,10 +123,9 @@ static int ad8801_probe(struct spi_device *spi)
->  	id = spi_get_device_id(spi);
->  
->  	state->vrefh_reg = devm_regulator_get(&spi->dev, "vrefh");
-> -	if (IS_ERR(state->vrefh_reg)) {
-> -		dev_err(&spi->dev, "Vrefh regulator not specified\n");
-> -		return PTR_ERR(state->vrefh_reg);
-> -	}
-> +	if (IS_ERR(state->vrefh_reg))
-> +		return dev_err_probe(&spi->dev, PTR_ERR(state->vrefh_reg),
-> +				     "Vrefh regulator not specified\n");
->  
->  	ret = regulator_enable(state->vrefh_reg);
->  	if (ret) {
-> @@ -146,15 +145,15 @@ static int ad8801_probe(struct spi_device *spi)
->  	if (id->driver_data == ID_AD8803) {
->  		state->vrefl_reg = devm_regulator_get(&spi->dev, "vrefl");
->  		if (IS_ERR(state->vrefl_reg)) {
-> -			dev_err(&spi->dev, "Vrefl regulator not specified\n");
-> -			ret = PTR_ERR(state->vrefl_reg);
-> +			ret = dev_err_probe(&spi->dev, PTR_ERR(state->vrefl_reg),
-> +					    "Vrefl regulator not specified\n");
->  			goto error_disable_vrefh_reg;
->  		}
->  
->  		ret = regulator_enable(state->vrefl_reg);
->  		if (ret) {
-> -			dev_err(&spi->dev, "Failed to enable vrefl regulator: %d\n",
-> -					ret);
-> +			dev_err(&spi->dev,
-> +				"Failed to enable vrefl regulator: %d\n", ret);
-This last change is unconnected to the rest of the patch. I've dropped it whilst
-applying.
-
->  			goto error_disable_vrefh_reg;
->  		}
->  
 
