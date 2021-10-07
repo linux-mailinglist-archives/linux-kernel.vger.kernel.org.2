@@ -2,119 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B3A4259FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA394259FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243388AbhJGRxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242934AbhJGRxi (ORCPT
+        id S243116AbhJGRyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:54:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44592 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242757AbhJGRy3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:53:38 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E94AC061570;
-        Thu,  7 Oct 2021 10:51:44 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id u18so21606595wrg.5;
-        Thu, 07 Oct 2021 10:51:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qr9MDwBMzsyNipMpKSvmO1rGtnLhU3br6C9ogb2fBw8=;
-        b=l0gf8IrjazvORWdZh1xkbtoa0c0CKoUv4AKMehcFzvJQheuGcGirYhPyuyx7+hNTgI
-         s/7zGlnozqfQpeqd3vdzzNELUBwjwZVJwm23vLAT5AfQtTpys1t6Pu64Au9fq17Fvrds
-         +cr2luV22MzghTXwbPilEE2wvhdgWwNvPSRbKYOgjdnju/617H1R1SfDTg8zdTZjPkL6
-         zld5VpxrcX0+oY+gfbAStKRm/yjXp5GugPCK9xEAIggNMIaFuOOLlA99V1WvN7ibTnjB
-         FoNjYUaGaqApga+RajhPFk5VpnfDb7hOMiSLU8TCP255JHX/m+r1DwZGlBW8VKlj3LdZ
-         CTYg==
+        Thu, 7 Oct 2021 13:54:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633629155;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/dsIuaKlO7pigWC2XFT9YnQW2ugtzsHND9Ch5Tt4n8=;
+        b=By0UO2GxWtxfiDOv/cblKGeI/5CnHBy+dDLm8W9G9HsEDMUkKNzLEW8CqBXdrpqsNUjUIO
+        yNZk47mFgGqbuyeLUx09Wni1UkAFFRoloDpQUiZsfjZzqRLh9ibvqRIaMh+StlxrsBk8rk
+        aQIQEu3SOasaSbSKQahunTtW5jqs4YI=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-600-OXuJGl9oOE24oqBpwTrxdQ-1; Thu, 07 Oct 2021 13:52:34 -0400
+X-MC-Unique: OXuJGl9oOE24oqBpwTrxdQ-1
+Received: by mail-wr1-f70.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so5334310wrg.17
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 10:52:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qr9MDwBMzsyNipMpKSvmO1rGtnLhU3br6C9ogb2fBw8=;
-        b=woyKso1HKShQTr/Le1DxEMvoUTSnra7Ai9bSYxMIsHWDmPiccqq0x5fud1XD7p5Yzp
-         a+XRTXSr7dG5uhkJvn3JQo2mpdFga0erN+4lxgVK8rF93X7AUujJokG4tEXZ2CoNykit
-         gH+9aapgwDk93vinGcUWMX3cHh3G/rUYArry7QiVWoc5OnuLKWlRqvgYlZBULkVk7uUq
-         mEAFRbs9+XK3rWHylZvNg2J7F7rGAOYBaqZX2H00pKhdi9mGytCizaEXYtttHMbDV87f
-         efw2Udc0J9ZBz5NFniXequqYcDD9ctoflXZX/VHk1zwPZXaeE/IPfHxuBK/t2aULAZm9
-         t8Aw==
-X-Gm-Message-State: AOAM530pWUJMeSDoxgt4BSjCBZ5zhq/NflHgveWvDHdmM7nmERpinlJ5
-        PiKxz2B4UFy+PzwNRhbpXnuFXT7v1Cw=
-X-Google-Smtp-Source: ABdhPJzGYc6hxjff2pYBQkacMQj+RBkk0ySzdS5FILQml6vO4E7nfSEeog+342kYjoBnnZFmyPmmRg==
-X-Received: by 2002:a1c:1b89:: with SMTP id b131mr17756682wmb.71.1633629102798;
-        Thu, 07 Oct 2021 10:51:42 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id b19sm7506386wmb.1.2021.10.07.10.51.41
+         :mime-version:content-disposition:in-reply-to;
+        bh=g/dsIuaKlO7pigWC2XFT9YnQW2ugtzsHND9Ch5Tt4n8=;
+        b=xlCLVzPIeepXaFgO5k2bl2ZKpvrSdS1iZHpDw6Xg9BQC5XWFBvHMk8/nnq51J6J215
+         9ZkUHLlVxrxV2SkZDPf1Sd0kEv4HpE6Uvo8NWq3wQbLAUDzjUsz50Q62aM+pW7Vw0Im0
+         AN+bMtQm8aoKD9ZE077OILc1tEbzfFAlv6vXunaCcuKznR4zkMSHrhdiMrIT2s/CoBM2
+         VJDFbPXARdI5DLKudFY84mkJ5GGC7V7A62Cikbhyo6GsufVwj6pvhBHGgw6UqG8259h3
+         vle3ofue0i7vHOzKuxkMg9cG7ltU6YLccPfCThYkBlEc3fhZHBw0xw+SP780qkVvEJMU
+         qisQ==
+X-Gm-Message-State: AOAM530turqr/HFvsi2TfmB6MyonHqqdwwbZTc4zCdryZZ2O5D5hshT8
+        dv8WnuZXgd4lfZHqoYyq9uRB+G2jb6KpdkwODLZBU6VOFsoZoMe4x2+QyCRCqLi4eO23c2OKz+E
+        AAy+HFWeT9Ytp6+ocXP31yIW4
+X-Received: by 2002:a5d:6d81:: with SMTP id l1mr7351143wrs.404.1633629153519;
+        Thu, 07 Oct 2021 10:52:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyafTyNDWiUOPlT/5I+U5kxCtR83TrjDrwOixohVCTrB5p8tURvUf7GmVjfKI+aNKTjjpo9YQ==
+X-Received: by 2002:a5d:6d81:: with SMTP id l1mr7351125wrs.404.1633629153341;
+        Thu, 07 Oct 2021 10:52:33 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id q16sm35192wrw.23.2021.10.07.10.52.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 10:51:41 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 19:51:39 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-tegra@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2] host1x: bus.c: drop excess kernel-doc entry @key
-Message-ID: <YV8zqwBiAhOFh9r0@orome.fritz.box>
-References: <20211005053726.14738-1-rdunlap@infradead.org>
+        Thu, 07 Oct 2021 10:52:33 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 19:52:31 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, john.garry@huawei.com, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org, Nick.Forrington@arm.com,
+        Andrew.Kilroy@arm.com, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] perf tools: Make the JSON parser more conformant
+ when in strict mode
+Message-ID: <YV8z306sBJQsdNNR@krava>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <20211007110543.564963-3-james.clark@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kXhwAqbeq5nO1IC+"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005053726.14738-1-rdunlap@infradead.org>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <20211007110543.564963-3-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---kXhwAqbeq5nO1IC+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Oct 04, 2021 at 10:37:26PM -0700, Randy Dunlap wrote:
-> Fix kernel-doc warning in host1x:
->=20
-> ../drivers/gpu/host1x/bus.c:774: warning: Excess function parameter 'key'=
- description in '__host1x_client_register'
->=20
-> Fixes: 0cfe5a6e758f ("gpu: host1x: Split up client initalization and regi=
-stration")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-tegra@vger.kernel.org
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
+On Thu, Oct 07, 2021 at 12:05:41PM +0100, James Clark wrote:
+> Return an error when a trailing comma is found or a new item is
+> encountered before a comma or an opening brace. This ensures that the
+> perf json files conform more closely to the spec at https://www.json.org
+> 
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
-> v2: rebase and resend
->=20
->  drivers/gpu/host1x/bus.c |    1 -
->  1 file changed, 1 deletion(-)
+>  tools/perf/pmu-events/jsmn.c | 42 ++++++++++++++++++++++++++++++++++--
+>  1 file changed, 40 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
+> index 11d1fa18bfa5..8124d2d3ff0c 100644
+> --- a/tools/perf/pmu-events/jsmn.c
+> +++ b/tools/perf/pmu-events/jsmn.c
+> @@ -176,6 +176,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  	jsmnerr_t r;
+>  	int i;
+>  	jsmntok_t *token;
+> +#ifdef JSMN_STRICT
 
-Applied, thanks.
+I might have missed some discussion on this, but do we need the
+JSMN_STRICT define, if you enable it in the next patch?
+why can't we be more strict by default.. do you plan to disable
+it in future?
 
-Thierry
+thanks,
+jirka
 
---kXhwAqbeq5nO1IC+
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	/*
+> +	 * Keeps track of whether a new object/list/primitive is expected. New items are only
+> +	 * allowed after an opening brace, comma or colon. A closing brace after a comma is not
+> +	 * valid JSON.
+> +	 */
+> +	int expecting_item = 1;
+> +#endif
+>  
+>  	for (; parser->pos < len; parser->pos++) {
+>  		char c;
+> @@ -185,6 +193,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  		switch (c) {
+>  		case '{':
+>  		case '[':
+> +#ifdef JSMN_STRICT
+> +			if (!expecting_item)
+> +				return JSMN_ERROR_INVAL;
+> +#endif
+>  			token = jsmn_alloc_token(parser, tokens, num_tokens);
+>  			if (token == NULL)
+>  				return JSMN_ERROR_NOMEM;
+> @@ -196,6 +208,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  			break;
+>  		case '}':
+>  		case ']':
+> +#ifdef JSMN_STRICT
+> +			if (expecting_item)
+> +				return JSMN_ERROR_INVAL;
+> +#endif
+>  			type = (c == '}' ? JSMN_OBJECT : JSMN_ARRAY);
+>  			for (i = parser->toknext - 1; i >= 0; i--) {
+>  				token = &tokens[i];
+> @@ -219,6 +235,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  			}
+>  			break;
+>  		case '\"':
+> +#ifdef JSMN_STRICT
+> +			if (!expecting_item)
+> +				return JSMN_ERROR_INVAL;
+> +			expecting_item = 0;
+> +#endif
+>  			r = jsmn_parse_string(parser, js, len, tokens,
+>  					      num_tokens);
+>  			if (r < 0)
+> @@ -229,11 +250,15 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  		case '\t':
+>  		case '\r':
+>  		case '\n':
+> -		case ':':
+> -		case ',':
+>  		case ' ':
+>  			break;
+>  #ifdef JSMN_STRICT
+> +		case ':':
+> +		case ',':
+> +			if (expecting_item)
+> +				return JSMN_ERROR_INVAL;
+> +			expecting_item = 1;
+> +			break;
+>  			/*
+>  			 * In strict mode primitives are:
+>  			 * numbers and booleans.
+> @@ -253,6 +278,9 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  		case 'f':
+>  		case 'n':
+>  #else
+> +		case ':':
+> +		case ',':
+> +			break;
+>  			/*
+>  			 * In non-strict mode every unquoted value
+>  			 * is a primitive.
+> @@ -260,6 +288,12 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  			/*FALL THROUGH */
+>  		default:
+>  #endif
+> +
+> +#ifdef JSMN_STRICT
+> +			if (!expecting_item)
+> +				return JSMN_ERROR_INVAL;
+> +			expecting_item = 0;
+> +#endif
+>  			r = jsmn_parse_primitive(parser, js, len, tokens,
+>  						 num_tokens);
+>  			if (r < 0)
+> @@ -282,7 +316,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>  			return JSMN_ERROR_PART;
+>  	}
+>  
+> +#ifdef JSMN_STRICT
+> +	return expecting_item ? JSMN_ERROR_INVAL : JSMN_SUCCESS;
+> +#else
+>  	return JSMN_SUCCESS;
+> +#endif
+>  }
+>  
+>  /*
+> -- 
+> 2.28.0
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfM6kACgkQ3SOs138+
-s6FAVA//cxr3VWWOyxBD5qYYXmO+ZdMi5MeIZUI7hR7+Ure9SOXLlzZ7BOCU6vvh
-Mv2VxIUEExKVLlYrUEVlR4G/WfuQHCml/FQeR1PY9CE8uub2zNYorD/ct30hfTeK
-nmdxlK8SeQWldwfKxmuK0bL6sw/3riCFj5c2QruEjWDe3qNoeSS9+BHw/3h4PeNf
-bx9UdF8vdjnz6Vu4WfIHDTbEZYtpIPuFXvdVyqknGh7CA25yBHf4sdZANQnP45CU
-XMtJSvCDV75qTQNuJj5fpFxbuFAAhLCPoCWWrE2IvUluU3Q0wICrq7e5IuhzGBn9
-3+Ar6S46NL/VMfRUJuDLNYzNzqNr/APZqh1J9/D+oDvBP2HIkHTBN76nT0IwklKB
-j+pfdcFKD8qa4k1yelMznTSFlf9n4pYER3x4xezdl6jqsQtU0BAK88hy5tUP1M08
-fRlErL7N71P1KG2izQa8zbIH/slaYgNd4Rqm4pbLYvfel3rt0FHqPXv6JFQrACMY
-8Oub0cvReNN5YrVz1Qo2M0IkdPqHlhSTdvnXc4y3YdMkBsDhzLEULrp9cy7cqw4/
-olreNada5aP0ANRylBC5tidRK3wOoGFEhBxa7WNXfN8riW3TIcAC0jdoTlr0KYx2
-9rmf/oo/MvjnlKrXtb45xeVlVOLrqpwBO01xUZI7keSMbc7m5cA=
-=NJUt
------END PGP SIGNATURE-----
-
---kXhwAqbeq5nO1IC+--
