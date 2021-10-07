@@ -2,82 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30FF42510B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE8042510E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240965AbhJGK2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:28:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:3747 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240919AbhJGK2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:28:06 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249532681"
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="249532681"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 03:26:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="657335544"
-Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by orsmga005.jf.intel.com with ESMTP; 07 Oct 2021 03:26:10 -0700
-From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v3 8/8] perf session: Introduce reader EOF function
-Date:   Thu,  7 Oct 2021 13:25:43 +0300
-Message-Id: <80d22da1e90cb6da0d014087351d4cb95675fc4b.1633596227.git.alexey.v.bayduraev@linux.intel.com>
-X-Mailer: git-send-email 2.19.0
-In-Reply-To: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
-References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+        id S240557AbhJGK3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:29:48 -0400
+Received: from mail-4022.proton.ch ([185.70.40.22]:40661 "EHLO
+        mail-4022.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232781AbhJGK3r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:29:47 -0400
+Date:   Thu, 07 Oct 2021 10:27:51 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail; t=1633602472;
+        bh=SCRdqYu/X+JlKwPLq1M2s6KsWP3afb1Fv8d1g4YI73I=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=x8dUwwWILkAU4wRcL4uYHIN8jZr+f92xwSq0VH95fhJ0bo1z3w4wxSfhGCkTmwc5m
+         2rasuO02jhl6U6S7ZBF1h8YwPhoKAZpYJIXEzoFZ3rpMvEj4MAOYfc2jiRGRYgK9+e
+         CHHc57rNn06TLGCBfZ6U4bSdCNB32KvHr9OHFiKBN4yYBGwKOWK3tG/Qbx/e9SnWFS
+         TeGXKKJCJqqIt1Y+XUWi2Jx4IAn4l4HPc9q3C219litfkAfX/WtL9PZyfmV6CCowsq
+         h4o//ylnaC/3AoyNkK8zWA8N+FAPL7hjub93DLE03cc2mgivXEmX1SV9sIWtOu8UTZ
+         1JyA1E/rTFNbA==
+To:     "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        ville.syrjala@linux.intel.com, linux-kernel@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH v3] drm/plane-helper: fix uninitialized variable reference
+Message-ID: <8jznM1zShVceOF2IvoMF0A6tKwHeua93m1l2uVxmMy355OlLrGMKcf73CvXqtLtda8KfVxoeGW74yIjI-9N20g3pgzb41Eb11Ly2vSQf5Z8=@emersion.fr>
+In-Reply-To: <20211007063706.305984-1-alex_y_xu@yahoo.ca>
+References: <20211007063706.305984-1-alex_y_xu.ref@yahoo.ca> <20211007063706.305984-1-alex_y_xu@yahoo.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introducing a function to check end-of-file status.
-
-Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
----
- tools/perf/util/session.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 7d88c651ffd7..f74e153231fa 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -2311,6 +2311,12 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 	return err;
- }
- 
-+static inline bool
-+reader__eof(struct reader *rd)
-+{
-+	return (rd->file_pos >= rd->data_size + rd->data_offset);
-+}
-+
- static int
- reader__process_events(struct reader *rd, struct perf_session *session,
- 		       struct ui_progress *prog)
-@@ -2336,7 +2342,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
- 	if (session_done())
- 		goto out;
- 
--	if (rd->file_pos < rd->data_size + rd->data_offset)
-+	if (!reader__eof(rd))
- 		goto more;
- 
- out:
--- 
-2.19.0
-
+Pushed, thanks!
