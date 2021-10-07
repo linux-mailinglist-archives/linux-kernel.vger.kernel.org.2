@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09749425A42
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C933425A4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233770AbhJGSEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243452AbhJGSEy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:04:54 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650B0C061755;
-        Thu,  7 Oct 2021 11:03:00 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id t8so21809760wri.1;
-        Thu, 07 Oct 2021 11:03:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LzYgfKlvwHIBL3wW8fhtlH1KhCgihQqD0wQewNy3gTQ=;
-        b=CnrKfrCI/7b7P9niH6/3IP1Wt0eRn43RT4hn5SxwlYELYRR0SK5WKU/Vr/4eE2NQcv
-         Yg66RubvO6t+h58bUDi2pYnddx5mcj/CSK0pfE7DHvrb7yGY7Qhv/ZfWriK3aJqLFTg3
-         tAq/5wyD2bVUOe3NJNMdEP5hqzRwlSdreV3jtphDHyFNmrZEBU+M2Nhh+qmIEU2f8UHO
-         1VrYqfFkAbntzETc89XOlZd4C8rgPMX0beOiVqcuePDLJ2kAT5ax66nkwRbYc1Mrj1bq
-         wrfWIk9XqGS0KT08W9SaFguWb6nyttqseHLSsNtV3xtO8REQ8QIiT8KkOnOT6/8q6LhC
-         T7rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LzYgfKlvwHIBL3wW8fhtlH1KhCgihQqD0wQewNy3gTQ=;
-        b=PE5mnrDrHciKT2VxPe0McHqpprqk/ZavHsiZG/8XRH27Ngo2Wt6inPU+I8YWYJCgYJ
-         MVVrpHZv/qx3BBp6KxpN+Z5UAa3i+iNgFMrpU0yrFRoxw986eFb6/cAvJdUq+lbup5in
-         6FecLSseYhjQz6NUjUnoK9LGePFYG0KlOE5Htas65tqeFa9SaLu3VF6G9OCNOS2+HbS0
-         Y9llCk6NfsyxKlpWH+KeciBiZnfKxy2f38o7l3vQT5PYtULA/8B78gTTGsupv5AED4f/
-         eqnzGXkcwOg8X6BewMBT/phkdKwJSq/Xd2ijPtSOP+A/D1JzqFWJvE22FxEqI2KQFTqH
-         XJ1w==
-X-Gm-Message-State: AOAM530PFfezs8ofOXwb4Ww/JLQQKuXm0vN9vXwKr6+tst4Hjr5o8bV4
-        T+OLuEJu1DQLkoI4oI1ozco=
-X-Google-Smtp-Source: ABdhPJzLFQShRWgexENr9TAiLhixQbONosI4QunNbNjX2FeAqLNG3BVRbZG2LBnMAFnm0kRccGzhCw==
-X-Received: by 2002:a1c:f01a:: with SMTP id a26mr6084520wmb.150.1633629778982;
-        Thu, 07 Oct 2021 11:02:58 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id g2sm67566wrb.20.2021.10.07.11.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 11:02:58 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 20:02:57 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     vdumpa@nvidia.com, joro@8bytes.org, will@kernel.org,
-        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] iommu/tegra-smmu: Use devm_bitmap_zalloc when applicable
-Message-ID: <YV82USMgonpRzoWd@orome.fritz.box>
-References: <2c0f4da80c3b5ef83299c651f69a563034c1c6cb.1632661557.git.christophe.jaillet@wanadoo.fr>
+        id S243473AbhJGSGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:06:02 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38506 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243474AbhJGSGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 14:06:01 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="207134858"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="207134858"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 11:03:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="524759859"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga008.fm.intel.com with ESMTP; 07 Oct 2021 11:03:38 -0700
+Subject: Re: [PATCH v1 0/6] mmc: sdhci-pci: Add some CD GPIO related quirks
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
+ <YV8jfavX/W9T25YX@smile.fi.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <cc9d92a9-0896-5222-2080-1380afd480ba@intel.com>
+Date:   Thu, 7 Oct 2021 21:03:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="YJJooXTg9A0B1Lju"
-Content-Disposition: inline
-In-Reply-To: <2c0f4da80c3b5ef83299c651f69a563034c1c6cb.1632661557.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
+In-Reply-To: <YV8jfavX/W9T25YX@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 07/10/2021 19:42, Andy Shevchenko wrote:
+> On Tue, Oct 05, 2021 at 01:24:24PM +0300, Andy Shevchenko wrote:
+>> It appears that one of the supported platform magically worked with the
+>> custom IRQ handler (any hints how?) while having two PCB designs with
+>> an opposite CD sense level. Here is an attempt to fix it by quirking out
+>> CD GPIO.
+>>
+>> Patch 1 introduces two additional quirks (it's done this way due to
+>> patch 3, see below). Patch 2 is an actual fix for the mentioned platform.
+>> If backported need to be taken with patch 1 together. Patch 3 is (RFT)
+>> clean up. The questionable part here is the locking scheme. Shouldn't
+>> we do something similar in the generic IRQ handler of SDHCI? Or Broxton
+>> case has something quite different in mind?
+>>
+>> Patches 4-6 are dead-code removals. Patch 4 accompanying patch 2, patches
+>> 5-6 just similar to it, but (functionally) independent. Would like to hear
+>> if it's okay to do.
+>>
+>> Any comments, hints, advice are welcome!
+> 
+> Adrian, Ulf, any comments on this? At least first two fix the regression and
+> would be nice to have them in sooner than later (I can split them separately
+> if required).
 
---YJJooXTg9A0B1Lju
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Sep 26, 2021 at 03:07:18PM +0200, Christophe JAILLET wrote:
-> 'smmu->asids' is a bitmap. So use 'devm_kzalloc()' to simplify code,
-> improve the semantic of the code and avoid some open-coded arithmetic in
-> allocator arguments.
->=20
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/iommu/tegra-smmu.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---YJJooXTg9A0B1Lju
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfNlEACgkQ3SOs138+
-s6Ex8g/9FzkP6Q72V90vFaRIUz/isfotGtkN2TgNhkMcQ1nfh8YNMPDVdFOS0tPN
-eTBbg2moh1JaDxrQ6V6SWNypCZYzoN4fzCYrLOmCa2mC7Yteq5m5zXlIqt9wMmdd
-i1UAVw0u57F/Nyw9dH0bQxDZYNAYJzrhq8FUIlZ3UroysSKF+ipjf07k8ANtovrj
-Wq0q+xm+vn6MJS5TElVeCd0fLQWJvUwq6lZ9YUtB44uszvhciCy04xeMJ4sLAvdA
-0VA3BjOHglRi4bEivpviSMMw5viABX1ZedM5lrxkAZDzcoPEu4cNuri77aaAwcge
-XSDX/jViJASF73nqt5AI3mhDa8RUbtgKBDFbWi7dgpVSF9JAPdNbeWQKR/lNWdos
-7vLch3cbR7Zc6AGerOld5s7XDLAN85ocp5CexAr1Wj3UgYGmjk5RuvXQH6aHJ5Zr
-RJ1AV5yzu8FY6CzvKGR6ywoJbmzZTAK5R+XrhyBSDO0IuIKLPByRH12vOnzS8bEX
-5aJYrih3ugVLCgOLMda/qsRiKjhHZOeZYlFMxuXKqxLXsdOXcu27VuQg2Vu9mb53
-wJdioW3oDctaL6La9upYSerpBxzOxjcP+0aSBMAu1hUqOIU5m+0ktn05xl06OyY0
-sZ22iw1pYgmE7WGTmq2rTHksIX2WP1PipyJNpuJF4Xh5df/QOVY=
-=EYc+
------END PGP SIGNATURE-----
-
---YJJooXTg9A0B1Lju--
+I am not sure we need new quirks, given that we can just hook the callback
+and do anything that way.  However I really haven't had time to look closely
+yet, sorry.
