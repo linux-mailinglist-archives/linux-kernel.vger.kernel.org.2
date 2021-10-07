@@ -2,136 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C82424D4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA649424D57
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 08:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240293AbhJGGcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 02:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232418AbhJGGcu (ORCPT
+        id S240203AbhJGGjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:39:09 -0400
+Received: from sonic317-22.consmr.mail.gq1.yahoo.com ([98.137.66.148]:37002
+        "EHLO sonic317-22.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230491AbhJGGjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 02:32:50 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57635C061746;
-        Wed,  6 Oct 2021 23:30:57 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id r2so4704565pgl.10;
-        Wed, 06 Oct 2021 23:30:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=XO3lRP3cXCeiA36lTiqks/6MdSscV2guR0tRwbpc/co=;
-        b=TZLOwgtLn0f+U1XNxuBm2KRW16/C3qqQ6jnIXuY45BbooKD95XebnJpVdinf4d7nSl
-         K1Thjte4I7kraCYbZAbuhG5IXLrK8T9G/dZzXqPwPKKKtLkA9vnDUwKwfhOFEtQW6Q7f
-         EEXAdS4U1vSHsv96aDBWcjKQfKfcuDgkh09Nx6QCLsK1y+QenakRKtKIu/lnX/ZQOpYs
-         H3Kr4XnAm0Tig0l8BLj77s0qh8YyD6NfZxoKZZjUdfhkv3OdRX3uGGdR3xiCc+giTJmJ
-         RSglLuaKpvl+QTZ3qpaNFSdQ3cD8Wk4iRQLMybmVroW6y6wt9dWxT5Api2uK/LvoP+GB
-         lzmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=XO3lRP3cXCeiA36lTiqks/6MdSscV2guR0tRwbpc/co=;
-        b=o8cexz4G+UfpD52lK7q3JzMPv9JtGt67+E98ilIUL5zwWimcf2cunil8k6McFTT4UU
-         IvbxGk9xd5emAuSO09mUAIWoQ1xl5JqmikNswqR1XOxqvw90QUKCXZLo3j47yTQ9I+8b
-         uSq0W6mV61xM+aZJUQLmQa2rWJULvpHUTa8DH3h/LoJOLHv2txa+c/1cO9Ok0rKmra8k
-         fm2b2RnHYQ1O15quUlEdLYrmF/W8TS6oLc+A45ie0cMREpBxKvOtm/gwIuXcUDgwGLpp
-         wVd0e50fBFnvhX42WP+5rr5nueD8glu7A+Eib0rWKP9YNgaV7sG9YOxXS0Srl1aDHq+f
-         3YWQ==
-X-Gm-Message-State: AOAM5339AqezSwlbVGSmzXTjxyZLc3zl1wg/+TZyiAVbfP3g3Q+diQIV
-        rmDAU8zvFLZgx7o+Te9hpwjEc5OjUvDyDvxPJA==
-X-Google-Smtp-Source: ABdhPJwzjU7Qu19WUal3/nl1ajSXJc0XwY+mwUT5eBKbS2enAVCCGSEUgs1wyTLEnZ93Fno9LPq7lFgBS4euZ3vpsWk=
-X-Received: by 2002:a63:2c02:: with SMTP id s2mr1992750pgs.205.1633588256780;
- Wed, 06 Oct 2021 23:30:56 -0700 (PDT)
+        Thu, 7 Oct 2021 02:39:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1633588632; bh=lSPFEV4jButoTElTw5/K8Lz6m5y9sdQDE0xu+Hd4ZCE=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=eqRCPu9UsCXvr/h44H70ZAywcgenDodPNCy46wFsGaosBO39OyXHiD/7W7rpsqyasJAWUO3Saq9EUuXQ0Ns2j3FFX14vsE11CdNNAW6aHa0vwQQv7DZHzHlM+oK2N1mcnYmrCz38U6G3OcbbUHHAUgolBcJotq0CfBKZpwHSIKcpOEm4K+uPfdI2xXiRwqFLm8xE3TE/CFFba0hHZaMWln3+do5DbpZjaKNCPHSkr3BhcDU6Cu2+48NvmVlOkIjXeHPoOKdbRil9piDMpHALLo/DhmTdeapeGbg72dRNnbk+vTim5pLTk17eaFLFThhhnturAQeFLxscRz7ea/sDkg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633588632; bh=X9b5tbG0XK0qKfb8I7T1xiU+zpLFi9FEtJGotYy17NM=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=s3eSZqeeQVURyTiRHTSCxNSV4uS3bu0V6P4C6l1Cp7RCTSrPso4sYO7z4K2/1Dcb6xLHYmUJF1PZTAPbLR6FehM1yTXriCTnmZqwci69nsLEATXiRUSR1dpUvzP1g2TLquuW6iBjDNq3xuNr//v+JhsW567BLXelNi5QCPxDpG77SE5nd4g1blOqtw/D2H/Zp5hBPxyczUttcsBhp8hbxT1LnaPWooIMwUwEcePBLlItfps89+0FSE2SGowHHnq9Xaje4M+fmliKNLUKAsX/woTabg0wSvxldtToY3oH59jWMJAWNu75MbQXJ+w5IODOeEze+wmBsBn3rMRvUIbYyQ==
+X-YMail-OSG: X3Z6AKwVM1kHEaBDKjVnfyogvy2ujoQSWmwy1zvVQ92VWhAxZtGZmPwVGcVg0bf
+ GBufUnRrH_yJ7j9ffSzZHJlRfR_q0ThvCOghYhf.CoBqStQwLdAmL79zoBwFHLyGVf4e2VDzufw8
+ Zv_mXT6RXGj_baSztJD9d2ikL3ONJz4GxlKvWPewWkCyzogqUgijzXmKS.VusOgt5LyzwnWeJMBi
+ g8MQShGJVSDB8TuD6FwslynHSM7vALRYOk2Oez4KDa7GZkpr9RU_lPosJUDbvXR7W3CCHXOqcuae
+ epFcfYDD0Y4R0MB71daFbASRCWBabC3qGq5F.FXG2oNFfiZEhMtC.H1Xl.Mauxt52A.Hu1t.SqB_
+ i50Pbh3F_sUcTj406yGH4tAStHIF97hp0buFo1Vwhu.sbR7tCP0mWyBncEvoW7V6ne5hY2nrionm
+ qZrZHWiSQ3nR_73qj2HQso05aODvBTMyIEz8ELKUwb9lUjGQQT6TIh5_REIyx45PyKmH_wITFXlr
+ il0Fmgj2kgkNr8gdnHHyqf39IwMuqddsSoW6mKMS6WLZLMqjMJnXB07EovKvdwKIfXwWSJHGnPIu
+ lwMJJmZGQR.3c9ylteL1Ii5AUWptbKKPNGA_N455wrEi3kmSyK1cl9Qv5GtWisCJ9jd067cLXMoA
+ BsquNCzLeLbUUvMzRiKcf8XFX3HLGAYYGh1yUJkUpgX0D7T3QvSbA0ZGpMDU2b6g4zZwX_uIb5Q9
+ OY8Jx7FaP0hCMGWC3UQlN3mIR5J8h1bv4hCMK3bWwugXBavKJTwnta2q_NttNnh6hZn3npOF3_gV
+ PE0N.lQfko9xLWQCV09To_FU_cRfvliEyW9N6mxDOzqyil.Q3XC8662i1pnNH5rbSZ9Jo8T67Yz6
+ FBWgDyjzgyuYee8rOjubkJnJ3kIXiNxBYe8Y6FoCI.VB.ck3Vm6MStxkgdaLYlsDOeuoDzTQEXcz
+ i0ux8iNOj_8_59P8gJq0isocY82hGWtcI_i1290.hyowPb_LNPCBPRQfv2LL1QyOt4YkI2qZNolJ
+ Cd1u7II_pwdYIMGcaYgdOWysjigy8Nxx3VqjepPLmpOyyxN1vK6S1ZqPNROW8zBQJL6__4nggRrw
+ 1tYflm_KVDCFMFZpQfvXgV7q4QD0OKQlOJQSrGHBh92ydXynU.Izjx4cbfN2GIgSjhzdEuif8yaz
+ I3HBDRKWsArvooEsM65r6oYr7XBMDVtCN28BqUwBdgi6nMGaQNNzPn56s.Xa_jszfdD4gXYocD25
+ RhX0yBCKgn2tj3hvF9NKG8H1DAQwg0yWFKW5r8ZtzalQi_qcJ7oe3sJzwWsWOIjIIM8W9ruRGVl5
+ vFkzFobOtQTEf.QkqAhqKZo1svyMTbd2_QHXe7828zvOL89QItOqhkDZb.Wums.bHrChebrP6cmS
+ n6bybiwmXrfb1DMiqgmCI2e9EYW_7j_ujlblWY3EWTabnX6OkzmG3aTdc3HVYuTZpVDa_OKvvrhO
+ 1TE1c8uVTUmk1CgIz4lJyc3h4_5qG4yByvDMroGo5mWw4Mt5GdotCqTr5kNhQ6ZHhjTP10RG6Xlq
+ HqgJP8_xJCe_HzjvtAlwS35K070zAkk35E_BBNvXiKqvLbvP6ygW1_tadHyYxE5ttOsvsuCp0d8d
+ evNuEVzpuf2DRC8h3BndjXgIWLZBNYUqxUy2w_2K1Mw32qmmrv5HFVsnnSa7MmE6Uysiqba1uWEW
+ dxcrh18xqUfb_sDQd5rZZ3olqj12GqNd31dAiId3YEBN5LZwxwZqx5nWX9buGZ6uk9Y0EtpHw_YX
+ rBIxQNF.vB9qm6TRi1ebsKJH5nnB08K3lrng4DD1iheqw5ujn7h93RComTYwkrYCvTkyiPJnKBAf
+ s8PajFYh60hUMr27uykg_e.8Mt3BbOyBweKfiIXLgL0R0YVTWYEETfY9yWtPfN5sgb6Le.ApBDMr
+ 1RSHbHhKYB_jAHkMwsEqsgZV3rOdbvGk05iTj5Fg0qIFuqLEDM218.oWEQNKOfUCuTUhBNGRahht
+ EAZtQpQA9PBxf5YixbwgiYoQvaldj6dDyBFcRUNlEklLrQy_AQgx1qo_53vJp2plSGgHZzssJSFt
+ uJEiv9cqZAr0ito8S7R72i3MqCjWEeWNfcpYS.Is5ALuSiewq_Zi8iiXtFI9jfOPIGVh0W6ckWuP
+ B_9D9kIH0dxuhq7v3fcPddBK.KWS3FxGdKmzT6QJ15wuVqt7KVSKOOF5v3lpsX4MvdsdPnWJ8FN7
+ ypMKJFaBbZdzv0FSOhg1o5y8e5QlPLK5PJQXiPHJdlZguhHIm6S3rZEOcWkbBB4IG1b9WxS.SKNG
+ 7U3UmagTJLlwN82RkUCwsQHZHdPf5mmexNN9q6kjieF09E_NPdTzC0ASikA--
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.gq1.yahoo.com with HTTP; Thu, 7 Oct 2021 06:37:12 +0000
+Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID fd4e705cbc19264f98ad12010b56fdd1;
+          Thu, 07 Oct 2021 06:37:08 +0000 (UTC)
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+To:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>
+Cc:     ville.syrjala@linux.intel.com, linux-kernel@vger.kernel.org,
+        Simon Ser <contact@emersion.fr>,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: [PATCH v3] drm/plane-helper: fix uninitialized variable reference
+Date:   Thu,  7 Oct 2021 02:37:06 -0400
+Message-Id: <20211007063706.305984-1-alex_y_xu@yahoo.ca>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Thu, 7 Oct 2021 14:30:45 +0800
-Message-ID: <CACkBjsbBav-b7R0Lc9m1KX39hc3vNs=+zppUgwBwjPLR09LPFQ@mail.gmail.com>
-Subject: INFO: task hung in default_device_exit_batch
-To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        changbin.du@intel.com, christian.brauner@ubuntu.com,
-        Eric Dumazet <edumazet@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        yajun.deng@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+References: <20211007063706.305984-1-alex_y_xu.ref@yahoo.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
+drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
+  113 |         struct drm_plane_state plane_state = {
+      |                                ^~~~~~~~~~~
+drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
+  178 |         bool visible;
+      |              ^~~~~~~
+cc1: all warnings being treated as errors
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+visible is an output, not an input. in practice this use might turn out
+OK but it's still UB.
 
-HEAD commit: 60a9483534ed Merge tag 'warning-fixes-20211005'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1O9MGWT8Uz9KMQOs-sDxUh60WcV-aXBwc/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1u-ncYGLkq3xqdlNQYJz8-G6Fhf3H-moP/view?usp=sharing
+Fixes: df86af9133 ("drm/plane-helper: Add drm_plane_helper_check_state()")
+Reviewed-by: Simon Ser <contact@emersion.fr>
+Signed-off-by: Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+---
+ drivers/gpu/drm/drm_plane_helper.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
+index 5b2d0ca03705..838b32b70bce 100644
+--- a/drivers/gpu/drm/drm_plane_helper.c
++++ b/drivers/gpu/drm/drm_plane_helper.c
+@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
+ 		.crtc_w = drm_rect_width(dst),
+ 		.crtc_h = drm_rect_height(dst),
+ 		.rotation = rotation,
+-		.visible = *visible,
+ 	};
+ 	struct drm_crtc_state crtc_state = {
+ 		.crtc = crtc,
+-- 
+2.33.0
 
-INFO: task kworker/u8:0:8 blocked for more than 143 seconds.
-      Not tainted 5.15.0-rc4+ #22
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u8:0    state:D stack:12328 pid:    8 ppid:     2 flags:0x00004000
-Workqueue: netns cleanup_net
-Call Trace:
- context_switch kernel/sched/core.c:4940 [inline]
- __schedule+0x323/0xae0 kernel/sched/core.c:6287
- schedule+0x36/0xe0 kernel/sched/core.c:6366
- schedule_timeout+0x189/0x430 kernel/time/timer.c:1857
- wait_woken+0x38/0x80 kernel/sched/wait.c:453
- rtnl_lock_unregistering net/core/dev.c:11537 [inline]
- default_device_exit_batch+0xd3/0x1c0 net/core/dev.c:11564
- ops_exit_list.isra.8+0x73/0x80 net/core/net_namespace.c:171
- cleanup_net+0x2e6/0x4e0 net/core/net_namespace.c:591
- process_one_work+0x359/0x850 kernel/workqueue.c:2297
- worker_thread+0x41/0x4d0 kernel/workqueue.c:2444
- kthread+0x178/0x1b0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-INFO: lockdep is turned off.
-NMI backtrace for cpu 1
-CPU: 1 PID: 39 Comm: khungtaskd Not tainted 5.15.0-rc4+ #22
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- nmi_cpu_backtrace+0x1e9/0x210 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x120/0x180 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0x4e1/0x980 kernel/hung_task.c:295
- kthread+0x178/0x1b0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0,2-3:
-NMI backtrace for cpu 2 skipped: idling at native_safe_halt
-arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 2 skipped: idling at arch_safe_halt
-arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 2 skipped: idling at default_idle+0xb/0x10
-arch/x86/kernel/process.c:716
-NMI backtrace for cpu 0
-CPU: 0 PID: 3018 Comm: systemd-journal Not tainted 5.15.0-rc4+ #22
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0033:0x7f614e2500e0
-Code: 8b 83 c8 00 00 00 48 8b 48 70 48 c1 e9 04 48 85 c9 0f 84 f2 01
-00 00 31 d2 48 89 e8 48 f7 f1 48 c1 e2 04 48 03 93 d0 00 00 00 <4c> 8b
-3a 4d 85 ff 74 8a 48 8d 44 24 50 4c 8d 64 24 48 48 89 44 24
-RSP: 002b:00007ffe89863740 EFLAGS: 00010202
-RAX: 0001392b77a9677a RBX: 00005594ff7b3e80 RCX: 000000000000aa9c
-RDX: 00007f614b767320 RSI: 0000000000000000 RDI: 00005594ff7b3e80
-RBP: d0b5b3f369f2992c R08: 00007ffe89863818 R09: 00007ffe89863820
-R10: 00007f614e27aee8 R11: 00007f614d8aa060 R12: 00005594ff7b3e80
-R13: 0000000000000032 R14: 00005594ff7bde00 R15: 00007ffe89863820
-FS:  00007f614e55f8c0 GS:  0000000000000000
-NMI backtrace for cpu 3 skipped: idling at native_safe_halt
-arch/x86/include/asm/irqflags.h:51 [inline]
-NMI backtrace for cpu 3 skipped: idling at arch_safe_halt
-arch/x86/include/asm/irqflags.h:89 [inline]
-NMI backtrace for cpu 3 skipped: idling at default_idle+0xb/0x10
-arch/x86/kernel/process.c:716
