@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497CC425F76
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69330425F7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242611AbhJGVrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:47:35 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:42870 "EHLO
+        id S242786AbhJGVro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:47:44 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46048 "EHLO
         mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242589AbhJGVrc (ORCPT
+        by vger.kernel.org with ESMTP id S238388AbhJGVre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:47:32 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197KYYKT007651;
-        Thu, 7 Oct 2021 21:45:00 GMT
+        Thu, 7 Oct 2021 17:47:34 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197KYdAu001318;
+        Thu, 7 Oct 2021 21:45:01 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2021-07-09; bh=5W4ziSqooVtD/2GrxiD8RqOzuuK6GS2woUlCxi7bDZs=;
- b=vipNvufS5XM0YcSOGv5yUbDIXuK5GO1Qmkn+ymkpJXdXFTZvkwKq2RdBKJge+T4b3Kfr
- tOTFHpa/13XGTr+FuWgoTu0dbGmuXvv+9Q45ksddL3kwDNtWKA3ucA4HeQeEhh7hVxuB
- 9ZzGfhhmuOVzOYuc/Dm7fpa8Xkmu5E2qHRDGK8aoMzdofpmfY1hYIdnjMmPgn/V135JO
- jI8AVPtdJ98W3yZv8hhXjaCJ9gX24cAQOXEh7kHjzuJLJy4I/LjuyMwLS29NkJFb7z9l
- POnmlNtVh6qjL8WbEAPCRqet36A6ZvpUv2nVFwOi54pJpvvTLfb8t2NkKX+OUj3G0rmE kA== 
+ s=corp-2021-07-09; bh=mxWyxb4uR/Sa47xL/c2mXLefcr7NBWn3Z+y1OsW3BXs=;
+ b=Ad9w9n77u+jQG4X/ZNXMfgmRy/4ptW9G1WxwN8zvjTxtWg/7D09f7bgo4KfHhpi5zyBY
+ TDiULB3wl5erMpUt0uIDzkATHGPYcT5FNnGt7c4v54JWJg0wt5i+Nyi64JG8T61pPb91
+ D+m6CI1fsNy6bGzqR/kUzpAd9ARAgMJguqBwFNTPfPFYydxTnY7sStVp5rMt/NrEU95l
+ VrJ6syESlAAchCJJYyCt1FMP0ieqHrfzAaeo3KqslT0JbhjkEzjLOuV6PqTqTVBI8sQQ
+ K7p4KMZgcbKkQeFE+KtTRohyOoD5rmndX/F4+US6+egUTxXLO5tlEauOrPUL1ft2u9Ci KA== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bj0pw474j-1
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bj1eckwyu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Oct 2021 21:44:59 +0000
+        Thu, 07 Oct 2021 21:45:00 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 197Le8aQ113346;
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 197Le8aR113346;
         Thu, 7 Oct 2021 21:44:59 GMT
 Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by aserp3030.oracle.com with ESMTP id 3bev7x4uhn-2
+        by aserp3030.oracle.com with ESMTP id 3bev7x4uhn-3
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Oct 2021 21:44:58 +0000
+        Thu, 07 Oct 2021 21:44:59 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y9r2s/3vC0ioLnfvPF4y3E//qLuf1RttrKr+jBDU8dCn5jZ1AJgVRujwWZFiRUI1VmtmgDNxkgAUVoCy67hxgchMe9fgO0Wbm6P05TGL4zVZvVLsu2MupSdXOdDoXUBCxAbA3mEWvCTHsSpksoFWBIG5OXBIC0CLM5csk+85uD7+fIPSxrgCJUR/lYoof3K6TiaE9HhUTLUYbZlJliE4SbiX74CEvtxvTmQsunUGnA/vlPS9UkbevV3DpR2ymFQoc2+sZNv8PvPcBOjGNduSHxjJQX9/Q7VuvL9NhQWoQ5vbXa44qmd5BJHUeztPeqsWwQePXVQenZipcmbKMBt3qA==
+ b=PHWTzXpfuYFY9kYHp5Lo6ZFGiOhDR1K+yBFFrQNUDwjhwJt9hnFM1v0dG0YIP4Zgl+7lMgjQdtbcXXwYRdwTUsCEapAfoPBcDvA8ktAG9vIDPdE4BmTI8b0mykOltH86yavafQ9VzMZB2uNof41Y4c1o6DpRx2nP4OPJFk2ooNUfNpOY1fP9gVBpy3X13fVWLpMd7YsjBdaY2iEdvkKHbTCYma5RMapC/0X0K5Zq0O0ycwUcZjeswhx7KT/46GhGXMj/AhUA+VgDTnQBJTP5fSvmffcQNjHXSEEqny7XMC0IgtfxT63xPee9uZJaPV1y7uKoEaxMFScP3nyZQqOPBQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5W4ziSqooVtD/2GrxiD8RqOzuuK6GS2woUlCxi7bDZs=;
- b=O2AvqIVgpMiGi95Cwse2zfr3hRHPjPw0FWyBeD3oSsil2vQ6vo7+5fEMIVSH8H8zNYW2QJXaXhKn20/D1LM443GDE22U4+yK+MlsmN1llkiP0oD48kR0hj6WYGdMcokLNk4ZiPbFrb3uHx2Vw9MyfWntH2NvcGp7WdrXxBS+F1Iamn6DPCepfp95FrzJQ42asbLDF5TQOUx5FshFtJuJ5iSs0h+3NrNTGyQKM10o1xXm9cQJSnq7um6kR+WZhbR80n9Af17FVUh7qa9Njc+liBvNw/YQegwt2U7XREBot+0d8foq+qhOTwMlisjxor/YZiO3AsF3m0RQi7Mr6Wxbtg==
+ bh=mxWyxb4uR/Sa47xL/c2mXLefcr7NBWn3Z+y1OsW3BXs=;
+ b=TqfVGQLTwzuMpV55oczQPsaeDFsYjHqym4JlpCilLQ0vTExeXvQevxO8KA3Y0bQzJXEwmEtG16cURqT9mdmpHfb/HyDYFO5vttcGkgdxGdqy+Jh6JZ6w2UNVWb976CoXQjF0qfpe3ILvWTuj6iYCOy4QHhAk0miHugfSsKg5PauMwQK56md3ya/SyfO0ni4JG5tuCesbv3N7Yx9enM5m57WzbuA0qcNOoKSgNjgGQ8oVX6LccMDU5ypSsivy7nM8aPwnO43FaYNm/ccJfsVNMdBQ6n1krpQPghYx7qHKzV8a1wxYK3YdKTW4snPlJ6dXaytk0xwumgeNujisHNE+aw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5W4ziSqooVtD/2GrxiD8RqOzuuK6GS2woUlCxi7bDZs=;
- b=ZTx7BvEYgCALFf6Iw9SbLMcgzdL6ovrmWHEnZXhNZyot2nPP3lKWAvjK/KcdBO9GWz59JqX6vrgLWQOektUavzXu1jtVWbU8bXtB5X1Ncs2+fewqGkKKrpvv5rIlGQUvZgte7iIKL0qnD9x4cmCO45Hts9Xi/gsq86kMiWi+LJI=
+ bh=mxWyxb4uR/Sa47xL/c2mXLefcr7NBWn3Z+y1OsW3BXs=;
+ b=L0xpTlZ42rS/JxeTOqJGLURwNC78guMn2zxdYTuS/Sy/0JwGzI37BtsChAO18T+R8jCvhcglT9CZUB9vd2puoztqhdq5YWx/qdpKtb7SHqO2CZrFT82Oi1uJuUdZMLa08k0+Rhpau5OSXXDhDBhS1JpHnKyhEwN6jR11SX5pjaY=
 Authentication-Results: linux-m68k.org; dkim=none (message not signed)
  header.d=none;linux-m68k.org; dmarc=none action=none header.from=oracle.com;
 Received: from DM5PR10MB1466.namprd10.prod.outlook.com (2603:10b6:3:b::7) by
  DM5PR10MB1884.namprd10.prod.outlook.com (2603:10b6:3:106::16) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4566.19; Thu, 7 Oct 2021 21:44:56 +0000
+ 15.20.4566.19; Thu, 7 Oct 2021 21:44:57 +0000
 Received: from DM5PR10MB1466.namprd10.prod.outlook.com
  ([fe80::195:7e6b:efcc:f531]) by DM5PR10MB1466.namprd10.prod.outlook.com
  ([fe80::195:7e6b:efcc:f531%5]) with mapi id 15.20.4587.021; Thu, 7 Oct 2021
- 21:44:56 +0000
+ 21:44:57 +0000
 From:   Mike Christie <michael.christie@oracle.com>
 To:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
         hch@infradead.org, stefanha@redhat.com, jasowang@redhat.com,
@@ -68,9 +68,9 @@ To:     geert@linux-m68k.org, vverma@digitalocean.com, hdanton@sina.com,
         christian.brauner@ubuntu.com, axboe@kernel.dk,
         linux-kernel@vger.kernel.org
 Cc:     Mike Christie <michael.christie@oracle.com>
-Subject: [PATCH V4 1/8] fork: Make IO worker options flag based
-Date:   Thu,  7 Oct 2021 16:44:41 -0500
-Message-Id: <20211007214448.6282-2-michael.christie@oracle.com>
+Subject: [PATCH V4 2/8] fork: move PF_IO_WORKER's kernel frame setup to new flag
+Date:   Thu,  7 Oct 2021 16:44:42 -0500
+Message-Id: <20211007214448.6282-3-michael.christie@oracle.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211007214448.6282-1-michael.christie@oracle.com>
 References: <20211007214448.6282-1-michael.christie@oracle.com>
@@ -82,118 +82,453 @@ X-ClientProxiedBy: DM5PR20CA0008.namprd20.prod.outlook.com
 MIME-Version: 1.0
 Received: from localhost.localdomain (73.88.28.6) by DM5PR20CA0008.namprd20.prod.outlook.com (2603:10b6:3:93::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Thu, 7 Oct 2021 21:44:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0ca67b54-30b8-481e-619d-08d989dbb442
+X-MS-Office365-Filtering-Correlation-Id: def7273d-da13-4453-7852-08d989dbb499
 X-MS-TrafficTypeDiagnostic: DM5PR10MB1884:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR10MB18849A0B3D1DB64F425625D8F1B19@DM5PR10MB1884.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
+X-Microsoft-Antispam-PRVS: <DM5PR10MB188418517CFBEF96A40B7690F1B19@DM5PR10MB1884.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PWAdLtrmXzo/aqW/2FzM/4MZy4bkXyF88AGIz4GtFi6iy4urbU3E1NhVrXvYWPlIkXWz35ZKGzyPvm9fUevLAPIP6Tn5E1va7Ay7umuj2MTSg/YXj4xDuMgJ2y8pQ5hItsH1w09VgN25piyHMKoT3UHc+qIEG239IrGl6tbV7UWPlBsrv/uFbSU0gViRwx0qHFKHMmzFdCqQ4egdwu7tSjA4mlSVFrkKxF+s2Ez4fRE3xrNs1FN1of6fque32EGiu4ogN48cn1WmlTSF+CD5ZudiBSYohe1cSma2lsyQIQMt71MYrmwpNzdtGvxz1lmqEITsuqUpxFLhneSonOFrE9wWtOG3BsRWbk3brnvL6IjfFcAiNcdSfPEdDRP+wHkbmWwCW1K32AHnfUmAGTUkZ5zctE9Vvi8FZLJ2KQUj7fXO8rS5ScEvzj9gFQTWtq50R7qr675HFhYeKHuY9+g56sjUb9xttyNFzjtdv87mNQ4k0/apSPoUB2mKo262YcaG4tbTVsC9dRD9rCmxRKEeA+OcLSue2NHBJbHOO3pfOEooM/W5Ft7ynaDMgsrah0o1efww0hptFfV9QEiFyB8fvn6MsYD/3fOnX49ZMjmye55B34rLtTU3b8QiSbcEjNAOHT8hllgcTtTdRg76nKYrvCxlBY2Wawrh7vvTlcw7a/nCQkkl1kVAbCjoSzpUFif7rbfmSnfP/YZ7arHgJciHqThNhLBW7RxK1I6s4ZqSdvI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(508600001)(6506007)(66556008)(26005)(6512007)(2906002)(83380400001)(4326008)(921005)(1076003)(107886003)(66946007)(956004)(2616005)(186003)(6666004)(8676002)(38100700002)(8936002)(86362001)(36756003)(6486002)(5660300002)(7416002)(38350700002)(66476007)(316002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: snIp3NTrhrz1ZtWlregBsnAv48MiPdf9BDK4su26ugG3sNX0jOhbsyTZ2JdpH2lcexuo67LzxvcMBXLwnSrw7Y/jDcoEjeFaI7d7Hvpxl+hNt4SFExrBHC9x1IC7GiTJs4ZbcJ7aYvmrY15gm0ViC0xRQXZWEKRB5in4zMp0Jl3Rh0WFP17ZO9sW8IB6rzlKhDzi8kGLomO1FoREry9cD7ZGHXD8MK7pg69XLaeJxU0hW2UMn4AaJU47KP51RzeVrJiS4ih97bVVy6ijX2BJxcIvIl2JNQqLeG0ahieOs1D7a0898c6wBdhbEavnMPV0VvXG0yZOpijnlWwcMw5otd8shRF6e2LCJvbq6/1/uc9SpESqdPzeBm5Cl/TnuEvS/083u6FQwWzAEpY1gU2kIxlHyeEA0EVMClayCj7IXIRON1sHDxksEAAM7QKf9EXvMLxD1g6bibvmWO0Rve5zLCRWBWO8EBwZgeWuCq1Og6Z58HzNmVJ4SNjpKBjO6hh+TuU0+nXUr55rSXioVAg5jSBEb/xOxrVhQW8TH8c33LL2v1KQ+ZmCvM7jP0k7sQ2X3POFlhJur0OC7sXxiI0//ibS1hXk/DjdWnJor7au/IXfvLdGFXc2Vc8ig2QI0l1cfrbGW43kXdnb5hGxNJKLrDC3ZCjkpeRpQiLahExGetn9XucGishTBwaeWfpTmQ1hMbD07gvRy08EOvGuwN2drCJ/AnQMRh7AC8xf29rQ0go=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR10MB1466.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(30864003)(508600001)(6506007)(66556008)(26005)(6512007)(2906002)(83380400001)(4326008)(921005)(1076003)(107886003)(66946007)(956004)(2616005)(186003)(6666004)(8676002)(38100700002)(8936002)(86362001)(36756003)(6486002)(5660300002)(7416002)(38350700002)(66476007)(316002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aZ0wh2DLIPHrdCcDVlIsy8wslJuSHwt+tSyRTpKmVnNg8/XNE80PPg7qE2m6?=
- =?us-ascii?Q?wfQhknvv3A//CJ0XFK8FaWitVT2C9EcXrm4DWsNh59j8qpmbz0qIunO8N7w8?=
- =?us-ascii?Q?fzcQj50l3UQ8g+02lxVDhQNRct0oXHsHyY3icm3GQtIPW27ELEdpbZu14aK7?=
- =?us-ascii?Q?RV9ppdEt+aLTms4YNLXvS6Io7d3SB3d1Pt5qdXP3ZUKxmmGHFCHtioTTHXfe?=
- =?us-ascii?Q?omJxtQJF3P+fF6k7rx5q75ntiA9xeWI3kCZMCv5NR6fyjRjtvYZrG862IJ72?=
- =?us-ascii?Q?jaZtBrNgFUgD9Un8LlABWJv+8YXyoMwF8FriULEfLeoVWIoYZt/sVFeyD4p/?=
- =?us-ascii?Q?wZCg9jOoRtw81IDoUB1I0U70HIYCOqa2Po37xFJ0IecKrPTVT62+EVXHjvAP?=
- =?us-ascii?Q?iWJSwlG1zFUtCcJLaHC8aXpu9K/Ev4Gx48ceHIvObn2dJWnzFJ/U8NAEXsE6?=
- =?us-ascii?Q?v2vsWM2CtkOthKNuPRsunf8bD4F9tBoRj3CgKwi3Vt8Ec8JN9zra6U4JLlTl?=
- =?us-ascii?Q?ZjuKJPTkHoS6wnVEd6piei6WKon+5L//W4NbhwjeitTAOyMZIVgtXASVOWTP?=
- =?us-ascii?Q?Y6gVLkCssL6RScNf5BZKvQEbRrUwosw1ro8sO8yjORH5Vp0K8borsoyKXCyA?=
- =?us-ascii?Q?yEUtHH4t77L7i9E5ZcJM2AyfDSnRDjxEAiPQhqyoDpqUd0CXIkdZ0yZ7BMay?=
- =?us-ascii?Q?AN/TVKG2VyKOeOCV6WfI+X6BVdLefLqbJXuBqY8btrykiMm+K3tx1v0WWTJD?=
- =?us-ascii?Q?LWyaOAmg/C2TfdsaOTr/CLs4pFvQc0I0pQcj1I6/5Hap0e7oK+hqPxgTob59?=
- =?us-ascii?Q?lZ597YgBQjHlyLSiu46DGITHHEBny2C/i2wqiI+cnjBCZ4GA23iR3+kCa71Z?=
- =?us-ascii?Q?GHdcSz97P0hlsld6crpeO4sSArAjzQBuiWqAotWr1CiYLGIuuCU7ANdVRqXE?=
- =?us-ascii?Q?2KsqgYdzhrHR1iBUIuj+rYcJXUT4jqiL2jUUD/rRgKTBmrEHvWAahbPRj/cu?=
- =?us-ascii?Q?n256t6VLufpPKL3eV+gpSMqtSLIx3xUVnSGfb+6iq4EpJ/9B7tAbdoIKjoBq?=
- =?us-ascii?Q?+IXnfIF1IQ4GExBo6me7flVfjGPWnMz4KdTmgLs4sxrRuLtQXlUK3wJbQGeq?=
- =?us-ascii?Q?1l9Z1NyFJuk5uv3PAI/AvxBhCXcLNpHMutNNDPCLtUBoHTncrQsmn1PlOXhI?=
- =?us-ascii?Q?R5MWuob0vRSBb51Ec1UBosgmSb53ZWQKCEwRo2vEwDdVa1iOQUxbApX0PwbM?=
- =?us-ascii?Q?Dm640dpbLZoE3hfd3pdNpDCCznJEH8sHrjoNohNqZ3OSXS5kqN4rClWpKs7M?=
- =?us-ascii?Q?232NhyVc/S0fEpbQJZOzsR/k?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rA59+ArKk/hvVxLFk0l/ZdJPPy4Ai5T5PxJMZtyiAp9AxImg0zvWJOc90aYO?=
+ =?us-ascii?Q?fjtWFcxaEvfI/y7idd7LcaxNzck4oQC5NfsKyaksW8RSg4IyV9t+7yNqWzTj?=
+ =?us-ascii?Q?OUETQUOBT2jWlGQng8/1GUxuijuqlcY3e/F04vi0FH4RQj6o1fzMwa+FUH+8?=
+ =?us-ascii?Q?EhHVpUubZ6boYaJuVb/aPybvmrD9R9ev8ewaVBq7VfbLvkaboECDeI7FR1ZX?=
+ =?us-ascii?Q?8TSrDcpbC68X1IJI6yh1SGbOL+lTBbX/AMApb0eaXdKs3Af1awvuv326mv6j?=
+ =?us-ascii?Q?6QGXIy/FVqAAisrytQgVHbieM3XqYFLY0d7m6wTr8Mze8oo7xQbWOAl9lKAj?=
+ =?us-ascii?Q?aSIQo/KP4irzWQf1XX9bNJcV7FMKKroLcDIa0KPCS1TocVyokuJh20oe+ECr?=
+ =?us-ascii?Q?kZwsIoCZKywzJyiyNCscOlqGp3sSbjVw5+Rm4P6jPjF2//VODZH/ATiJDY1/?=
+ =?us-ascii?Q?w8+Qb7dPIMvDbX2cZALv5dLZ9uCCVXvWW6HpaXO/XB54/KmsIUZxbem+3brn?=
+ =?us-ascii?Q?PeVo2FoSmXHcbZGJB+i8J6t62taFHVO6KQzKrBEQDtF/K2DgNS0IxXLi0P+U?=
+ =?us-ascii?Q?ZMPI9xLimbIdiABk/iLea1Yc4Jqxol0nuMb2ebAUPPwWpUATejjztS01Gwa9?=
+ =?us-ascii?Q?mBjv0QthzIsYGRJqL38IuMqjtVvHZyomyOMHbnHh9RmD/hU7xieyWOl6Hfn3?=
+ =?us-ascii?Q?GnypB6eD4F58m1L0fqovBKktMbkUqdC62L1huWSrwnbOw09u2Hkib9Dbv1Aa?=
+ =?us-ascii?Q?G1szH/55Hfn7JuPeeGP4HsuprYqzIMV0A0ajwfHI/cFw7IB1rxiwKDzpWllZ?=
+ =?us-ascii?Q?PwbbukzpFuwY43rG0AOdgnHZnCoPqk9H1G50C8mr4RpZwk2wzh6pSRCc/i7A?=
+ =?us-ascii?Q?WKc26VeigdB5VlL/oJ5JtYy2I56lNragdWFScOzulkN3sKcbF9Sk6I6kMtMk?=
+ =?us-ascii?Q?Il/UteY5TC60w7krtQb2si/zkkg98Zw8N8sbnX8NQ6KvzoNwh/xLQXPxsw2s?=
+ =?us-ascii?Q?z67suu0HDd5Ac9iSQV4SFbWR3TiEKVvb8/b3X84u7HuUUX/Oyn7URfbckutM?=
+ =?us-ascii?Q?2gq4zkO7SLODmiSdHsjADd9Q7R5bNzYob073FwOMcw4DPPie9QiJrxXTrwYv?=
+ =?us-ascii?Q?Jq5vfJ+C1Mr+69vPzVYSVRofJamMdTX7vfxOLUpBXjFRSuB3n6CIK2Slr4o/?=
+ =?us-ascii?Q?nlAYa4ks3N2eycjAEi0svwBa7rDtZlp022Gdve9EkzDwI50KsGvcgnOwwp5r?=
+ =?us-ascii?Q?Vx9xJQhgeJV0ohUBZsu/HotjofFH6zqByLzta8VnKvx8/RjoUzjhve2y3EJO?=
+ =?us-ascii?Q?f76BfRlIPipFDdJfxKn535nq?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ca67b54-30b8-481e-619d-08d989dbb442
+X-MS-Exchange-CrossTenant-Network-Message-Id: def7273d-da13-4453-7852-08d989dbb499
 X-MS-Exchange-CrossTenant-AuthSource: DM5PR10MB1466.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 21:44:56.5957
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 21:44:57.2034
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dJ6/sMtDLpD4H05Ez42f3HM+Y2nX78BCYwpG3TuF9ggjiCe1a0dtt33ey63y8xOlRHoo3NeUmkq7JywukarPMl4NWqLFmcZ4EgpMRgh0blM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: 23YBvMf1QC9GEqgWgdYzVzdEPQPc/kkhOJ49hvPvGUBG+Sf7nkxwnwNDt3qMt5deis4L0ZGoL6FLbfsScPBJVO1+8+T4SDcFlBdKqjhByLM=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR10MB1884
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10130 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
  bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
  definitions=main-2110070137
-X-Proofpoint-ORIG-GUID: wGMWDJWFo7x54cwUMCs0F4M0pOGW6fl1
-X-Proofpoint-GUID: wGMWDJWFo7x54cwUMCs0F4M0pOGW6fl1
+X-Proofpoint-GUID: eYY5DqJG9PVXqn-hYIczjqkS6BXWQHtW
+X-Proofpoint-ORIG-GUID: eYY5DqJG9PVXqn-hYIczjqkS6BXWQHtW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds a couple new options to kernel_clone_args for IO thread
-like/related users. Instead of adding new fields to kernel_clone_args for
-each option, this moves us to a flags based approach by first converting
-io_thread.
+The vhost worker threads need the same frame setup as io_uring's worker
+threads, but handle signals differently and do not need the same
+scheduling behavior. This patch separate's the frame setup parts of
+PF_IO_WORKER into a new PF flag PF_USER_WORKER.
 
 Signed-off-by: Mike Christie <michael.christie@oracle.com>
-Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- include/linux/sched/task.h | 4 +++-
- kernel/fork.c              | 4 ++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ arch/alpha/kernel/process.c      | 2 +-
+ arch/arc/kernel/process.c        | 2 +-
+ arch/arm/kernel/process.c        | 2 +-
+ arch/arm64/kernel/process.c      | 2 +-
+ arch/csky/kernel/process.c       | 2 +-
+ arch/h8300/kernel/process.c      | 2 +-
+ arch/hexagon/kernel/process.c    | 2 +-
+ arch/ia64/kernel/process.c       | 2 +-
+ arch/m68k/kernel/process.c       | 2 +-
+ arch/microblaze/kernel/process.c | 2 +-
+ arch/mips/kernel/process.c       | 2 +-
+ arch/nds32/kernel/process.c      | 2 +-
+ arch/nios2/kernel/process.c      | 2 +-
+ arch/openrisc/kernel/process.c   | 2 +-
+ arch/parisc/kernel/process.c     | 2 +-
+ arch/powerpc/kernel/process.c    | 2 +-
+ arch/riscv/kernel/process.c      | 2 +-
+ arch/s390/kernel/process.c       | 2 +-
+ arch/sh/kernel/process_32.c      | 2 +-
+ arch/sparc/kernel/process_32.c   | 2 +-
+ arch/sparc/kernel/process_64.c   | 2 +-
+ arch/um/kernel/process.c         | 2 +-
+ arch/x86/kernel/process.c        | 2 +-
+ arch/xtensa/kernel/process.c     | 2 +-
+ include/linux/sched.h            | 1 +
+ include/linux/sched/task.h       | 1 +
+ kernel/fork.c                    | 4 +++-
+ 27 files changed, 29 insertions(+), 25 deletions(-)
 
+diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
+index a5123ea426ce..e350fff2ea14 100644
+--- a/arch/alpha/kernel/process.c
++++ b/arch/alpha/kernel/process.c
+@@ -249,7 +249,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	childti->pcb.ksp = (unsigned long) childstack;
+ 	childti->pcb.flags = 1;	/* set FEN, clear everything else */
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		memset(childstack, 0,
+ 			sizeof(struct switch_stack) + sizeof(struct pt_regs));
+diff --git a/arch/arc/kernel/process.c b/arch/arc/kernel/process.c
+index 3793876f42d9..c3f4952cce17 100644
+--- a/arch/arc/kernel/process.c
++++ b/arch/arc/kernel/process.c
+@@ -191,7 +191,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	childksp[0] = 0;			/* fp */
+ 	childksp[1] = (unsigned long)ret_from_fork; /* blink */
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(c_regs, 0, sizeof(struct pt_regs));
+ 
+ 		c_callee->r13 = kthread_arg;
+diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
+index 0e2d3051741e..449c9db3942a 100644
+--- a/arch/arm/kernel/process.c
++++ b/arch/arm/kernel/process.c
+@@ -247,7 +247,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 	thread->cpu_domain = get_domain();
+ #endif
+ 
+-	if (likely(!(p->flags & (PF_KTHREAD | PF_IO_WORKER)))) {
++	if (likely(!(p->flags & (PF_KTHREAD | PF_USER_WORKER)))) {
+ 		*childregs = *current_pt_regs();
+ 		childregs->ARM_r0 = 0;
+ 		if (stack_start)
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 40adb8cdbf5a..e2fe88a3ae90 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -333,7 +333,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 
+ 	ptrauth_thread_init_kernel(p);
+ 
+-	if (likely(!(p->flags & (PF_KTHREAD | PF_IO_WORKER)))) {
++	if (likely(!(p->flags & (PF_KTHREAD | PF_USER_WORKER)))) {
+ 		*childregs = *current_pt_regs();
+ 		childregs->regs[0] = 0;
+ 
+diff --git a/arch/csky/kernel/process.c b/arch/csky/kernel/process.c
+index 3d0ca22cd0e2..509f2bfe4ace 100644
+--- a/arch/csky/kernel/process.c
++++ b/arch/csky/kernel/process.c
+@@ -49,7 +49,7 @@ int copy_thread(unsigned long clone_flags,
+ 	/* setup thread.sp for switch_to !!! */
+ 	p->thread.sp = (unsigned long)childstack;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		childstack->r15 = (unsigned long) ret_from_kernel_thread;
+ 		childstack->r10 = kthread_arg;
+diff --git a/arch/h8300/kernel/process.c b/arch/h8300/kernel/process.c
+index 2ac27e4248a4..11baf058b6c5 100644
+--- a/arch/h8300/kernel/process.c
++++ b/arch/h8300/kernel/process.c
+@@ -112,7 +112,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 
+ 	childregs = (struct pt_regs *) (THREAD_SIZE + task_stack_page(p)) - 1;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		childregs->retpc = (unsigned long) ret_from_kernel_thread;
+ 		childregs->er4 = topstk; /* arg */
+diff --git a/arch/hexagon/kernel/process.c b/arch/hexagon/kernel/process.c
+index 6a6835fb4242..f17573b66303 100644
+--- a/arch/hexagon/kernel/process.c
++++ b/arch/hexagon/kernel/process.c
+@@ -73,7 +73,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 						    sizeof(*ss));
+ 	ss->lr = (unsigned long)ret_from_fork;
+ 	p->thread.switch_sp = ss;
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		/* r24 <- fn, r25 <- arg */
+ 		ss->r24 = usp;
+diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
+index e56d63f4abf9..4a58daa56af4 100644
+--- a/arch/ia64/kernel/process.c
++++ b/arch/ia64/kernel/process.c
+@@ -338,7 +338,7 @@ copy_thread(unsigned long clone_flags, unsigned long user_stack_base,
+ 
+ 	ia64_drop_fpu(p);	/* don't pick up stale state from a CPU's fph */
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		if (unlikely(!user_stack_base)) {
+ 			/* fork_idle() called us */
+ 			return 0;
+diff --git a/arch/m68k/kernel/process.c b/arch/m68k/kernel/process.c
+index 1ab692b952cd..e7474a118410 100644
+--- a/arch/m68k/kernel/process.c
++++ b/arch/m68k/kernel/process.c
+@@ -157,7 +157,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	 */
+ 	p->thread.fc = USER_DATA;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		memset(frame, 0, sizeof(struct fork_frame));
+ 		frame->regs.sr = PS_S;
+diff --git a/arch/microblaze/kernel/process.c b/arch/microblaze/kernel/process.c
+index 62aa237180b6..5b543be324d4 100644
+--- a/arch/microblaze/kernel/process.c
++++ b/arch/microblaze/kernel/process.c
+@@ -59,7 +59,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	struct pt_regs *childregs = task_pt_regs(p);
+ 	struct thread_info *ti = task_thread_info(p);
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* if we're creating a new kernel thread then just zeroing all
+ 		 * the registers. That's OK for a brand new thread.*/
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+index 95aa86fa6077..d9ca11dd544f 100644
+--- a/arch/mips/kernel/process.c
++++ b/arch/mips/kernel/process.c
+@@ -120,7 +120,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	/*  Put the stack after the struct pt_regs.  */
+ 	childksp = (unsigned long) childregs;
+ 	p->thread.cp0_status = (read_c0_status() & ~(ST0_CU2|ST0_CU1)) | ST0_KERNEL_CUMASK;
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		unsigned long status = p->thread.cp0_status;
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+diff --git a/arch/nds32/kernel/process.c b/arch/nds32/kernel/process.c
+index 391895b54d13..2dba51d1889c 100644
+--- a/arch/nds32/kernel/process.c
++++ b/arch/nds32/kernel/process.c
+@@ -156,7 +156,7 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+ 
+ 	memset(&p->thread.cpu_context, 0, sizeof(struct cpu_context));
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		/* kernel thread fn */
+ 		p->thread.cpu_context.r6 = stack_start;
+diff --git a/arch/nios2/kernel/process.c b/arch/nios2/kernel/process.c
+index 9ff37ba2bb60..ce6ad177da15 100644
+--- a/arch/nios2/kernel/process.c
++++ b/arch/nios2/kernel/process.c
+@@ -109,7 +109,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	struct switch_stack *childstack =
+ 		((struct switch_stack *)childregs) - 1;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childstack, 0,
+ 			sizeof(struct switch_stack) + sizeof(struct pt_regs));
+ 
+diff --git a/arch/openrisc/kernel/process.c b/arch/openrisc/kernel/process.c
+index b0698d9ce14f..d1d189c16676 100644
+--- a/arch/openrisc/kernel/process.c
++++ b/arch/openrisc/kernel/process.c
+@@ -172,7 +172,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	sp -= sizeof(struct pt_regs);
+ 	kregs = (struct pt_regs *)sp;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(kregs, 0, sizeof(struct pt_regs));
+ 		kregs->gpr[20] = usp; /* fn, kernel thread */
+ 		kregs->gpr[22] = arg;
+diff --git a/arch/parisc/kernel/process.c b/arch/parisc/kernel/process.c
+index 38ec4ae81239..257bec7e67d4 100644
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -197,7 +197,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	extern void * const ret_from_kernel_thread;
+ 	extern void * const child_return;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		memset(cregs, 0, sizeof(struct pt_regs));
+ 		if (!usp) /* idle thread */
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index 50436b52c213..817847723bff 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -1700,7 +1700,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	/* Copy registers */
+ 	sp -= sizeof(struct pt_regs);
+ 	childregs = (struct pt_regs *) sp;
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		childregs->gpr[1] = sp + sizeof(struct pt_regs);
+diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+index 03ac3aa611f5..8deeb94eb51e 100644
+--- a/arch/riscv/kernel/process.c
++++ b/arch/riscv/kernel/process.c
+@@ -125,7 +125,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 	struct pt_regs *childregs = task_pt_regs(p);
+ 
+ 	/* p->thread holds context to be restored by __switch_to() */
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* Kernel thread */
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		childregs->gp = gp_in_global;
+diff --git a/arch/s390/kernel/process.c b/arch/s390/kernel/process.c
+index 350e94d0cac2..f596843ab55c 100644
+--- a/arch/s390/kernel/process.c
++++ b/arch/s390/kernel/process.c
+@@ -130,7 +130,7 @@ int copy_thread(unsigned long clone_flags, unsigned long new_stackp,
+ 	frame->sf.gprs[9] = (unsigned long)frame;
+ 
+ 	/* Store access registers to kernel stack of new process. */
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		/* kernel thread */
+ 		memset(&frame->childregs, 0, sizeof(struct pt_regs));
+ 		frame->childregs.psw.mask = PSW_KERNEL_BITS | PSW_MASK_DAT |
+diff --git a/arch/sh/kernel/process_32.c b/arch/sh/kernel/process_32.c
+index 717de05c81f4..e74906f53c3e 100644
+--- a/arch/sh/kernel/process_32.c
++++ b/arch/sh/kernel/process_32.c
+@@ -114,7 +114,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp, unsigned long arg,
+ 
+ 	childregs = task_pt_regs(p);
+ 	p->thread.sp = (unsigned long) childregs;
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		p->thread.pc = (unsigned long) ret_from_kernel_thread;
+ 		childregs->regs[4] = arg;
+diff --git a/arch/sparc/kernel/process_32.c b/arch/sparc/kernel/process_32.c
+index bbbe0cfef746..978e0bc10ad4 100644
+--- a/arch/sparc/kernel/process_32.c
++++ b/arch/sparc/kernel/process_32.c
+@@ -296,7 +296,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	ti->ksp = (unsigned long) new_stack;
+ 	p->thread.kregs = childregs;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		extern int nwindows;
+ 		unsigned long psr;
+ 		memset(new_stack, 0, STACKFRAME_SZ + TRACEREG_SZ);
+diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
+index d1cc410d2f64..1c45cd5089f4 100644
+--- a/arch/sparc/kernel/process_64.c
++++ b/arch/sparc/kernel/process_64.c
+@@ -594,7 +594,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 				       sizeof(struct sparc_stackf));
+ 	t->fpsaved[0] = 0;
+ 
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		memset(child_trap_frame, 0, child_stack_sz);
+ 		__thread_flag_byte_ptr(t)[TI_FLAG_BYTE_CWP] = 
+ 			(current_pt_regs()->tstate + 1) & TSTATE_CWP;
+diff --git a/arch/um/kernel/process.c b/arch/um/kernel/process.c
+index 457a38db368b..2bc3141cbf01 100644
+--- a/arch/um/kernel/process.c
++++ b/arch/um/kernel/process.c
+@@ -157,7 +157,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
+ 		unsigned long arg, struct task_struct * p, unsigned long tls)
+ {
+ 	void (*handler)(void);
+-	int kthread = current->flags & (PF_KTHREAD | PF_IO_WORKER);
++	int kthread = current->flags & (PF_KTHREAD | PF_USER_WORKER);
+ 	int ret = 0;
+ 
+ 	p->thread = (struct thread_struct) INIT_THREAD;
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 1d9463e3096b..d88be9dd5dfd 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -178,7 +178,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	task_user_gs(p) = get_user_gs(current_pt_regs());
+ #endif
+ 
+-	if (unlikely(p->flags & PF_IO_WORKER)) {
++	if (unlikely(p->flags & PF_USER_WORKER)) {
+ 		/*
+ 		 * An IO thread is a user space thread, but it doesn't
+ 		 * return to ret_after_fork().
+diff --git a/arch/xtensa/kernel/process.c b/arch/xtensa/kernel/process.c
+index 060165340612..61ad0bfbd7ea 100644
+--- a/arch/xtensa/kernel/process.c
++++ b/arch/xtensa/kernel/process.c
+@@ -217,7 +217,7 @@ int copy_thread(unsigned long clone_flags, unsigned long usp_thread_fn,
+ 
+ 	p->thread.sp = (unsigned long)childregs;
+ 
+-	if (!(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (!(p->flags & (PF_KTHREAD | PF_USER_WORKER))) {
+ 		struct pt_regs *regs = current_pt_regs();
+ 		unsigned long usp = usp_thread_fn ?
+ 			usp_thread_fn : regs->areg[1];
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index c1a927ddec64..b1027e916be4 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1665,6 +1665,7 @@ extern struct pid *cad_pid;
+ #define PF_VCPU			0x00000001	/* I'm a virtual CPU */
+ #define PF_IDLE			0x00000002	/* I am an IDLE thread */
+ #define PF_EXITING		0x00000004	/* Getting shut down */
++#define PF_USER_WORKER		0x00000008	/* Kernel thread cloned from userspace thread */
+ #define PF_IO_WORKER		0x00000010	/* Task is an IO worker */
+ #define PF_WQ_WORKER		0x00000020	/* I'm a workqueue worker */
+ #define PF_FORKNOEXEC		0x00000040	/* Forked but didn't exec */
 diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index ef02be869cf2..48417c735438 100644
+index 48417c735438..53599a99d7e0 100644
 --- a/include/linux/sched/task.h
 +++ b/include/linux/sched/task.h
-@@ -18,8 +18,11 @@ struct css_set;
- /* All the bits taken by the old clone syscall. */
+@@ -19,6 +19,7 @@ struct css_set;
  #define CLONE_LEGACY_FLAGS 0xffffffffULL
  
-+#define KERN_WORKER_IO		BIT(0)
-+
+ #define KERN_WORKER_IO		BIT(0)
++#define KERN_WORKER_USER	BIT(1)
+ 
  struct kernel_clone_args {
  	u64 flags;
-+	u32 worker_flags;
- 	int __user *pidfd;
- 	int __user *child_tid;
- 	int __user *parent_tid;
-@@ -31,7 +34,6 @@ struct kernel_clone_args {
- 	/* Number of elements in *set_tid */
- 	size_t set_tid_size;
- 	int cgroup;
--	int io_thread;
- 	struct cgroup *cgrp;
- 	struct css_set *cset;
- };
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 38681ad44c76..3988106e9609 100644
+index 3988106e9609..4f780424de46 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -2026,7 +2026,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	p = dup_task_struct(current, node);
- 	if (!p)
- 		goto fork_out;
--	if (args->io_thread) {
-+	if (args->worker_flags & KERN_WORKER_IO) {
- 		/*
- 		 * Mark us an IO worker, and block any signal that isn't
- 		 * fatal or STOP
-@@ -2526,7 +2526,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
+@@ -2035,6 +2035,8 @@ static __latent_entropy struct task_struct *copy_process(
+ 		siginitsetinv(&p->blocked, sigmask(SIGKILL)|sigmask(SIGSTOP));
+ 	}
+ 
++	if (args->worker_flags & KERN_WORKER_USER)
++		p->flags |= PF_USER_WORKER;
+ 	/*
+ 	 * This _must_ happen before we call free_task(), i.e. before we jump
+ 	 * to any of the bad_fork_* labels. This is to avoid freeing
+@@ -2526,7 +2528,7 @@ struct task_struct *create_io_thread(int (*fn)(void *), void *arg, int node)
  		.exit_signal	= (lower_32_bits(flags) & CSIGNAL),
  		.stack		= (unsigned long)fn,
  		.stack_size	= (unsigned long)arg,
--		.io_thread	= 1,
-+		.worker_flags	= KERN_WORKER_IO,
+-		.worker_flags	= KERN_WORKER_IO,
++		.worker_flags	= KERN_WORKER_IO | KERN_WORKER_USER,
  	};
  
  	return copy_process(NULL, 0, node, &args);
