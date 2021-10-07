@@ -2,288 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90916425007
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74825425027
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240635AbhJGJ2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240575AbhJGJ2n (ORCPT
+        id S240698AbhJGJg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:36:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27019 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232700AbhJGJg1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:28:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C0F5C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:26:50 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 11:26:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633598807;
+        Thu, 7 Oct 2021 05:36:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633599274;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AilrdFSAlxKC5ydVAZVuo+Oq65jLMFbW4eMgDywp68s=;
-        b=BmiQvpEY4KOCycoCb9Kk/xVlSGc3HZIGbHx7QOetFOPTfcDqe9MKNHK0tZMQidHs2Re7lL
-        nRxL4DenR2CfIonh0K/lR139j0TphvTUHnzcsdARwKSVFzTfSZ5RtR+RGYfKMy/Gya5k49
-        uj3iwCB7+9J2VPtrhnrrgquRU2fFPs9aV/h7pj0Q4AVc4g0PGPRD6zZEgcnvvCLDd/WDJA
-        xNeWllGvgx6O6oW5vlBcF8L8XvKf2wnlwsD6Ih4vZswqBV+w7mq8LA9C9mk7p2PVtDWsH0
-        VIIplUz0SYxEbrv5vB+7YSs4SbZ9XDqdoCtfcRf8Meod6HMXhRe7+22DXO0kUQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633598807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AilrdFSAlxKC5ydVAZVuo+Oq65jLMFbW4eMgDywp68s=;
-        b=FyC/63jD/aI1BM3zjvD8rClYo7IBrPqemQEYvZNAM8PMFe39TEh9yst66INE+0jqxlC1S9
-        bYrJ11E4abO+CWBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v3 3/4] irq_work: Handle some irq_work in a per-CPU thread on
- PREEMPT_RT
-Message-ID: <20211007092646.uhshe3ut2wkrcfzv@linutronix.de>
-References: <20211006111852.1514359-1-bigeasy@linutronix.de>
- <20211006111852.1514359-4-bigeasy@linutronix.de>
- <20211007085023.GP174703@worktop.programming.kicks-ass.net>
- <20211007090810.7jbxj7giedmqlzyl@linutronix.de>
+        bh=YLM20CrNDiSc8ANWHfJkU17zM0jd+LCsGgIfHq5T3Hk=;
+        b=XS9GR2c4uAnVAYYAf/oJNBBn/PkBluAhZBiH3LhPrDPdGHvJcWm6tP39ZaPysuChfJeHXe
+        wciyfplnEmh0nOVgMn4CGKrIg0NmCEO0/wxtiDXAybZUz/23aiX64MHDO3tGpPZDiWcTJ+
+        3gKo/k8ieEaymn5k257uqcFSCtNYwHA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-333-zBa8RpnLNsmWXDDzEd50DA-1; Thu, 07 Oct 2021 05:34:33 -0400
+X-MC-Unique: zBa8RpnLNsmWXDDzEd50DA-1
+Received: by mail-wr1-f71.google.com with SMTP id o2-20020a5d4a82000000b00160c6b7622aso4115339wrq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 02:34:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YLM20CrNDiSc8ANWHfJkU17zM0jd+LCsGgIfHq5T3Hk=;
+        b=qC9XKx0QRhUns0vqTdUsHvxdKZgYsuFTHtKXvE9eYFd7r6kt8PxeN+Bz32K2YAaMM9
+         KTS/+HbWaOVRFZ0PAY/OMzX8t9R04+xY926tnhRyLJcglZmbyknZfafA3LD3S5WIvvbr
+         Hubx9iJ5WTVxJRjbfYguJS4amUhQE6utWfy+L0bbz2ouD54BmFRfcxTTxWlScpPjD2C+
+         Xv3ah3lIaQuj55Aq9Z8xNh51rynTg97AdJIn/SKUvtt/OZMAnvfivJ1PKABaEvou1cPd
+         exLoEHc7hndPEn8lGlJNvGtJaOFR4MdTKpJUE065LBzCo++wqw7vonjC3htzZfZ8tfV7
+         XGYg==
+X-Gm-Message-State: AOAM5307sgRqqFNw67Ez470tC1tz2dJCP6qriK6U2Hth+x4xYxYGAg3A
+        o9RTzhJgcjRLqhiL7PtRUB6tm+qRVVExd450hfJGkOEjWQZmcP8Cqipq4qAQ6GlQJj9Gv59HLue
+        pIzJEs/SOnFKrOgUcgp/gPd+c
+X-Received: by 2002:adf:a118:: with SMTP id o24mr3898228wro.15.1633598859308;
+        Thu, 07 Oct 2021 02:27:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwTkTGQO7OWYf67tE5FRQkAoLSad774DWcZLIKG1RX8coeD4jn+lqAsFsAow6Xbu9zf7PRTow==
+X-Received: by 2002:adf:a118:: with SMTP id o24mr3898207wro.15.1633598859138;
+        Thu, 07 Oct 2021 02:27:39 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6886.dip0.t-ipconnect.de. [91.12.104.134])
+        by smtp.gmail.com with ESMTPSA id l17sm23582725wrx.24.2021.10.07.02.27.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 02:27:38 -0700 (PDT)
+Subject: Re: [PATCH v1 6/6] x86: remove memory hotplug support on X86_32
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        virtualization@lists.linux-foundation.org
+References: <20210929143600.49379-1-david@redhat.com>
+ <20210929143600.49379-7-david@redhat.com>
+ <YV66zoLEP3niIHEu@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <565bdc3e-04b2-8eff-181c-d4dcf82e0e40@redhat.com>
+Date:   Thu, 7 Oct 2021 11:27:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211007090810.7jbxj7giedmqlzyl@linutronix.de>
+In-Reply-To: <YV66zoLEP3niIHEu@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The irq_work callback is invoked in hard IRQ context. By default all
-callbacks are scheduled for invocation right away (given supported by
-the architecture) except for the ones marked IRQ_WORK_LAZY which are
-delayed until the next timer-tick.
+On 07.10.21 11:15, Oscar Salvador wrote:
+> On Wed, Sep 29, 2021 at 04:36:00PM +0200, David Hildenbrand wrote:
+>> CONFIG_MEMORY_HOTPLUG was marked BROKEN over one year and we just
+>> restricted it to 64 bit. Let's remove the unused x86 32bit implementation
+>> and simplify the Kconfig.
+>>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> 
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-While looking over the callbacks, some of them may acquire locks
-(spinlock_t, rwlock_t) which are transformed into sleeping locks on
-PREEMPT_RT and must not be acquired in hard IRQ context.
-Changing the locks into locks which could be acquired in this context
-will lead to other problems such as increased latencies if everything
-in the chain has IRQ-off locks. This will not solve all the issues as
-one callback has been noticed which invoked kref_put() and its callback
-invokes kfree() and this can not be invoked in hardirq context.
+Thanks for the review Oscar!
 
-Some callbacks are required to be invoked in hardirq context even on
-PREEMPT_RT to work properly. This includes for instance the NO_HZ
-callback which needs to be able to observe the idle context.
-
-The callbacks which require to be run in hardirq have already been
-marked. Use this information to split the callbacks onto the two lists
-on PREEMPT_RT:
-- lazy_list
-  Work items which are not marked with IRQ_WORK_HARD_IRQ will be added
-  to this list. Callbacks on this list will be invoked from a per-CPU
-  thread.
-  The handler here may acquire sleeping locks such as spinlock_t and
-  invoke kfree().
-
-- raised_list
-  Work items which are marked with IRQ_WORK_HARD_IRQ will be added to
-  this list. They will be invoked in hardirq context and must not
-  acquire any sleeping locks.
-
-The wake up of the per-CPU thread occurs from irq_work handler/
-hardirq context. The thread runs with lowest RT priority to ensure it
-runs before any SCHED_OTHER tasks do.
-
-[bigeasy: melt tglx's irq_work_tick_soft() which splits irq_work_tick() into a
-	  hard and soft variant. Collected fixes over time from Steven
-	  Rostedt and Mike Galbraith. Move to per-CPU threads instead of
-	  softirq as suggested by PeterZ.]
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/irq_work.c | 118 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 106 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/irq_work.c b/kernel/irq_work.c
-index e789beda8297d..90b6b56f92e95 100644
---- a/kernel/irq_work.c
-+++ b/kernel/irq_work.c
-@@ -18,11 +18,36 @@
- #include <linux/cpu.h>
- #include <linux/notifier.h>
- #include <linux/smp.h>
-+#include <linux/smpboot.h>
- #include <asm/processor.h>
- #include <linux/kasan.h>
- 
- static DEFINE_PER_CPU(struct llist_head, raised_list);
- static DEFINE_PER_CPU(struct llist_head, lazy_list);
-+static DEFINE_PER_CPU(struct task_struct *, irq_workd);
-+
-+static void wake_irq_workd(void)
-+{
-+	struct task_struct *tsk = __this_cpu_read(irq_workd);
-+
-+	if (!llist_empty(this_cpu_ptr(&lazy_list)) && tsk)
-+		wake_up_process(tsk);
-+}
-+
-+#ifdef CONFIG_SMP
-+static void irq_work_wake(struct irq_work *entry)
-+{
-+	wake_irq_workd();
-+}
-+
-+static DEFINE_PER_CPU(struct irq_work, irq_work_wakeup) =
-+	IRQ_WORK_INIT_HARD(irq_work_wake);
-+#endif
-+
-+static int irq_workd_should_run(unsigned int cpu)
-+{
-+	return !llist_empty(this_cpu_ptr(&lazy_list));
-+}
- 
- /*
-  * Claim the entry so that no one else will poke at it.
-@@ -52,15 +77,29 @@ void __weak arch_irq_work_raise(void)
- /* Enqueue on current CPU, work must already be claimed and preempt disabled */
- static void __irq_work_queue_local(struct irq_work *work)
- {
-+	struct llist_head *list;
-+	bool rt_lazy_work = false;
-+	bool lazy_work = false;
-+	int work_flags;
-+
-+	work_flags = atomic_read(&work->node.a_flags);
-+	if (work_flags & IRQ_WORK_LAZY)
-+		lazy_work = true;
-+	else if (IS_ENABLED(CONFIG_PREEMPT_RT) &&
-+		 !(work_flags & IRQ_WORK_HARD_IRQ))
-+		rt_lazy_work = true;
-+
-+	if (lazy_work || rt_lazy_work)
-+		list = this_cpu_ptr(&lazy_list);
-+	else
-+		list = this_cpu_ptr(&raised_list);
-+
-+	if (!llist_add(&work->node.llist, list))
-+		return;
-+
- 	/* If the work is "lazy", handle it from next tick if any */
--	if (atomic_read(&work->node.a_flags) & IRQ_WORK_LAZY) {
--		if (llist_add(&work->node.llist, this_cpu_ptr(&lazy_list)) &&
--		    tick_nohz_tick_stopped())
--			arch_irq_work_raise();
--	} else {
--		if (llist_add(&work->node.llist, this_cpu_ptr(&raised_list)))
--			arch_irq_work_raise();
--	}
-+	if (!lazy_work || tick_nohz_tick_stopped())
-+		arch_irq_work_raise();
- }
- 
- /* Enqueue the irq work @work on the current CPU */
-@@ -104,17 +143,34 @@ bool irq_work_queue_on(struct irq_work *work, int cpu)
- 	if (cpu != smp_processor_id()) {
- 		/* Arch remote IPI send/receive backend aren't NMI safe */
- 		WARN_ON_ONCE(in_nmi());
-+
-+		/*
-+		 * On PREEMPT_RT the items which are not marked as
-+		 * IRQ_WORK_HARD_IRQ are added to the lazy list and a HARD work
-+		 * item is used on the remote CPU to wake the thread.
-+		 */
-+		if (IS_ENABLED(CONFIG_PREEMPT_RT) &&
-+		    !(atomic_read(&work->node.a_flags) & IRQ_WORK_HARD_IRQ)) {
-+
-+			if (!llist_add(&work->node.llist, &per_cpu(lazy_list, cpu)))
-+				goto out;
-+
-+			work = &per_cpu(irq_work_wakeup, cpu);
-+			if (!irq_work_claim(work))
-+				goto out;
-+		}
-+
- 		__smp_call_single_queue(cpu, &work->node.llist);
- 	} else {
- 		__irq_work_queue_local(work);
- 	}
-+out:
- 	preempt_enable();
- 
- 	return true;
- #endif /* CONFIG_SMP */
- }
- 
--
- bool irq_work_needs_cpu(void)
- {
- 	struct llist_head *raised, *lazy;
-@@ -170,7 +226,12 @@ static void irq_work_run_list(struct llist_head *list)
- 	struct irq_work *work, *tmp;
- 	struct llist_node *llnode;
- 
--	BUG_ON(!irqs_disabled());
-+	/*
-+	 * On PREEMPT_RT IRQ-work which is not marked as HARD will be processed
-+	 * in a per-CPU thread in preemptible context. Only the items which are
-+	 * marked as IRQ_WORK_HARD_IRQ will be processed in hardirq context.
-+	 */
-+	BUG_ON(!irqs_disabled() && !IS_ENABLED(CONFIG_PREEMPT_RT));
- 
- 	if (llist_empty(list))
- 		return;
-@@ -187,7 +248,10 @@ static void irq_work_run_list(struct llist_head *list)
- void irq_work_run(void)
- {
- 	irq_work_run_list(this_cpu_ptr(&raised_list));
--	irq_work_run_list(this_cpu_ptr(&lazy_list));
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		irq_work_run_list(this_cpu_ptr(&lazy_list));
-+	else
-+		wake_irq_workd();
- }
- EXPORT_SYMBOL_GPL(irq_work_run);
- 
-@@ -197,7 +261,11 @@ void irq_work_tick(void)
- 
- 	if (!llist_empty(raised) && !arch_irq_work_has_interrupt())
- 		irq_work_run_list(raised);
--	irq_work_run_list(this_cpu_ptr(&lazy_list));
-+
-+	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
-+		irq_work_run_list(this_cpu_ptr(&lazy_list));
-+	else
-+		wake_irq_workd();
- }
- 
- /*
-@@ -219,3 +287,29 @@ void irq_work_sync(struct irq_work *work)
- 		cpu_relax();
- }
- EXPORT_SYMBOL_GPL(irq_work_sync);
-+
-+static void run_irq_workd(unsigned int cpu)
-+{
-+	irq_work_run_list(this_cpu_ptr(&lazy_list));
-+}
-+
-+static void irq_workd_setup(unsigned int cpu)
-+{
-+	sched_set_fifo_low(current);
-+}
-+
-+static struct smp_hotplug_thread irqwork_threads = {
-+	.store                  = &irq_workd,
-+	.setup			= irq_workd_setup,
-+	.thread_should_run      = irq_workd_should_run,
-+	.thread_fn              = run_irq_workd,
-+	.thread_comm            = "irq_work/%u",
-+};
-+
-+static __init int irq_work_init_threads(void)
-+{
-+	if (IS_ENABLED(CONFIG_PREEMPT_RT))
-+		BUG_ON(smpboot_register_percpu_thread(&irqwork_threads));
-+	return 0;
-+}
-+early_initcall(irq_work_init_threads);
 -- 
-2.33.0
+Thanks,
+
+David / dhildenb
 
