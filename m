@@ -2,116 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C0642535B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E38D42535F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241487AbhJGMr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:47:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241444AbhJGMrZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:47:25 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E6BC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:45:32 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id x192so4365149vsx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wVGqCEv5OuW11NNJUvfsDwkjHfJJuYc/XpuXB4FLhAc=;
-        b=Rf8GuXJ7M1dKiqO3dvNXK4IDlZxdzcsLOAiqs622DUFDvs2+FoX0siDG7l7JBWAEFS
-         FYI/dFhiPr85/tr4UDhHFOmRdda7+AWL8LphfB1ZP5vUku44Hzy4boBbG3zsz2TDPmuy
-         5DL5cGMcOj/x7Vi4CsKCiyPW3sESFeeqwkNGI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wVGqCEv5OuW11NNJUvfsDwkjHfJJuYc/XpuXB4FLhAc=;
-        b=03dfDsB/M0gVrJZyfBz+pNTJVuDja0qPCO144oPdkoblurwUY7rlboEK9U6iX8CvJJ
-         1gPB6c4j9ZM9Rt7OiQmZzboPHGVbqXKPC2twQtJaPAhczK45DNCZcUhd/umUaQQUDHoQ
-         Oeqd9DGYuE+uIEOcY5xJwB0iX1W2/2dQ+LA112stg1dTsMz1ZzS411CDy5C/pewETtto
-         eGu1irlZDHHpVasdu5eV0INR+Hu4jCTcz72Jqmdx35uK47mZlcP9q8oKGfKyoxJltLaQ
-         tu6u4ueioaiDHI+L1sWGxwi02gp5HA0pTbORSqqHJE3qkZHfxst011/cjEZZtYMSTBGl
-         Nj3w==
-X-Gm-Message-State: AOAM532lQZOJaT8KCgcdBo5IlWdG8ySwb5A0F4F7Wi0bByM5R/Dllh9/
-        H7wvap/AZ/NYonZXlkGdGnupFgEVHzorXFoaF9leJA==
-X-Google-Smtp-Source: ABdhPJxxG+rpdbv8RJtQlpU0+LgZvCFIrN4KUwyYnxMZ5ZFAX5aUfgqwvRb/nmLCXUMWgnXFGfN2xtfZ/QtvjTVnx50=
-X-Received: by 2002:a67:ec94:: with SMTP id h20mr3614063vsp.59.1633610731189;
- Thu, 07 Oct 2021 05:45:31 -0700 (PDT)
+        id S241333AbhJGMvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:51:00 -0400
+Received: from muru.com ([72.249.23.125]:41842 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233158AbhJGMu7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:50:59 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id D715180C7;
+        Thu,  7 Oct 2021 12:49:34 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Herring <robh@kernel.org>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Suman Anna <s-anna@ti.com>
+Subject: [PATCH 0/3] Updates for simple-pm-bus and ti-sysc bindings
+Date:   Thu,  7 Oct 2021 15:48:55 +0300
+Message-Id: <20211007124858.44011-1-tony@atomide.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
- <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com> <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
-In-Reply-To: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Thu, 7 Oct 2021 14:45:20 +0200
-Message-ID: <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode operation
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 at 14:28, Chengguang Xu <cgxu519@mykernel.net> wrote:
->
->  ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:23:06 Miklos S=
-zeredi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
->  > On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wr=
-ote:
->  > >
->  > > Implement overlayfs' ->write_inode to sync dirty data
->  > > and redirty overlayfs' inode if necessary.
->  > >
->  > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
->  > > ---
->  > >  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
->  > >  1 file changed, 30 insertions(+)
->  > >
->  > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
->  > > index 2ab77adf7256..cddae3ca2fa5 100644
->  > > --- a/fs/overlayfs/super.c
->  > > +++ b/fs/overlayfs/super.c
->  > > @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inod=
-e)
->  > >         clear_inode(inode);
->  > >  }
->  > >
->  > > +static int ovl_write_inode(struct inode *inode,
->  > > +                          struct writeback_control *wbc)
->  > > +{
->  > > +       struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
->  > > +       struct inode *upper =3D ovl_inode_upper(inode);
->  > > +       unsigned long iflag =3D 0;
->  > > +       int ret =3D 0;
->  > > +
->  > > +       if (!upper)
->  > > +               return 0;
->  > > +
->  > > +       if (!ovl_should_sync(ofs))
->  > > +               return 0;
->  > > +
->  > > +       if (upper->i_sb->s_op->write_inode)
->  > > +               ret =3D upper->i_sb->s_op->write_inode(inode, wbc);
->  >
->  > Where is page writeback on upper inode triggered?
->  >
->
-> Should pass upper inode instead of overlay inode here.
+Hi,
 
-That's true and it does seem to indicate lack of thorough testing.
+Turns out we added a bunch of new devicetree warnings for omaps when we
+updated the dts files to use simple-pm-bus. Here are the binding changes
+to fix most of the introduced simple-pm-bus related warnings.
 
-However that wasn't what I was asking about.  AFAICS ->write_inode()
-won't start write back for dirty pages.   Maybe I'm missing something,
-but there it looks as if nothing will actually trigger writeback for
-dirty pages in upper inode.
+I'll post the dts changes separately as we have ranges missing for some
+interconnect segments, and can also now rename the ocp node.
 
-Thanks,
-Miklos
+Regards,
+
+Tony
+
+
+Tony Lindgren (3):
+  dt-bindings: bus: simple-pm-bus: Make clocks and power-domains
+    optional
+  dt-bindings: bus: simple-pm-bus: Add more matches for node name
+  dt-bindings: bus: ti-sysc: Update to use yaml binding
+
+ .../bindings/bus/simple-pm-bus.yaml           |  19 +--
+ .../devicetree/bindings/bus/ti-sysc.txt       | 139 ----------------
+ .../devicetree/bindings/bus/ti-sysc.yaml      | 150 ++++++++++++++++++
+ 3 files changed, 156 insertions(+), 152 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/bus/ti-sysc.txt
+ create mode 100644 Documentation/devicetree/bindings/bus/ti-sysc.yaml
+
+-- 
+2.33.0
