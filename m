@@ -2,153 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FE29424D9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED27A424DA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240245AbhJGHCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233511AbhJGHCS (ORCPT
+        id S240278AbhJGHEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 03:04:30 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:60933 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233511AbhJGHE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:02:18 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5D4C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 00:00:24 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id w13so5712209vsa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 00:00:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=KPvY9m8xF7OhMRrQhNbNUN45tpWYIkMldtqvzSBBP4Q=;
-        b=REIqf8NfQ1eKMpt6Uf2AM4qcDo68FgmR/POVotERZS0U2XCypUiwT89kbwcYYaTCEj
-         emvfkcnX+sY2WvZr+Ivm4po4OoFW2wid/mIBR7Rr2QunsXOHEe71Mi/nuaoJEWm+AG19
-         1tdijotabn3rz7HSb0wHuRNO343Y+4tUxpp9iA+vR44XiUNA5ShrcoRkMtBWbg1s6elE
-         YWwU0dvN+k+bjrY9oBAfp/M4/cWWbbMl4Bp0Vd/Dxosle3S5gi+Kyt/AepIkcL2bXA8Y
-         sOpPJPEb90+yI1IJKcT8z/c47tud19Bwvt/zw+75sREDHFlkLDnaP4bNHtUrR5XC6X+T
-         PNfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=KPvY9m8xF7OhMRrQhNbNUN45tpWYIkMldtqvzSBBP4Q=;
-        b=N4Cw0jIbZCSDdJwir40dTb3ZeAnGNp/vYSb3MU49XuhmXTJvPRAc+isJMlKCtiZRzi
-         11EZn7u0xgPWzs3TKexRCJAy37JVWBbxXfIpkpiO9YfqxIqe5kXMcp+mqrMe0TkkoorA
-         x3CQj+Be000Y+iJ5fvaY3rwiA2T3PR5rMfCLJei6++VLRaWELRiyveTXZ7LcVJLGl4y8
-         BvgrDWk/Ymn6WSqQ58S0VZAyVFLZKseoLse9gY87IhpH/FjXKuKH2hjqApBCZOFgmDQu
-         IYqve0hjFzbA/kNJ2q3/vuWTEOa/FIaJHOVVmoVWFiFbxerzRQTBCaCUa9wgp2mPfgSM
-         qlBA==
-X-Gm-Message-State: AOAM533Ayi3qS+5fcHcq3WjsTZxQrNaPpm6HTx5eVpBrRf23NehBivc5
-        kuSupz7UzKKoA1zS2ZyMhcf/wCEbxGI2e7cousEykyX7KGbKUg==
-X-Google-Smtp-Source: ABdhPJxhTIeTM2YsBQjs/Hxb8tjpMKMRA+oM7JCom2mWp29uuhG00YcV/ZEg5rWysJ0bwM2edQ4GNk9QbT2krnMKZFI=
-X-Received: by 2002:a67:d28f:: with SMTP id z15mr2434728vsi.44.1633590024062;
- Thu, 07 Oct 2021 00:00:24 -0700 (PDT)
+        Thu, 7 Oct 2021 03:04:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UqopuOM_1633590149;
+Received: from e18g06460.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UqopuOM_1633590149)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 07 Oct 2021 15:02:34 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        Liu Bo <bo.liu@linux.alibaba.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Yan Song <imeoer@linux.alibaba.com>,
+        Changwei Ge <chge@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v4 1/2] erofs: decouple basic mount options from fs_context
+Date:   Thu,  7 Oct 2021 15:02:23 +0800
+Message-Id: <20211007070224.12833-1-hsiangkao@linux.alibaba.com>
+X-Mailer: git-send-email 2.24.4
 MIME-Version: 1.0
-References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
- <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
-In-Reply-To: <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Thu, 7 Oct 2021 15:00:11 +0800
-Message-ID: <CAHckoCwk1i7_vV=oweLTNYkCjMi4ReyXed2NOvZ10z2J32xGBg@mail.gmail.com>
-Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
-To:     Song Liu <song@kernel.org>, linux-raid@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Continue ping...
+Previously, EROFS mount options are all in the basic types, so
+erofs_fs_context can be directly copied with assignment. However,
+when the multiple device feature is introduced, it's hard to handle
+multiple device information like the other basic mount options.
 
-Thanks,
-Feng Li
+Let's separate basic mount option usage from fs_context, thus
+multiple device information can be handled gracefully then.
 
-Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8827=E6=97=A5=E5=
-=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:24=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi Song,
->
-> What about this feature?
->
-> Thanks,
-> Feng Li
->
-> Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=A5=
-=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > ping ...
-> >
-> > Thanks,
-> > Feng Li
-> >
-> > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > When the running RAID1/RAID10 need to be set with the fail_fast flag,
-> > > we have to remove each device from RAID and re-add it again with the
-> > > --fail_fast flag.
-> > >
-> > > Export the fail_fast flag to the userspace to support the read and
-> > > write.
-> > >
-> > > Signed-off-by: Li Feng <fengli@smartx.com>
-> > > ---
-> > >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
-> > >  1 file changed, 30 insertions(+)
-> > >
-> > > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > > index ae8fe54ea358..ce63972a4555 100644
-> > > --- a/drivers/md/md.c
-> > > +++ b/drivers/md/md.c
-> > > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const cha=
-r *buf, size_t len)
-> > >  static struct rdev_sysfs_entry rdev_ppl_size =3D
-> > >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
-> > >
-> > > +static ssize_t
-> > > +fail_fast_show(struct md_rdev *rdev, char *page)
-> > > +{
-> > > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags)=
-);
-> > > +}
-> > > +
-> > > +static ssize_t
-> > > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
-> > > +{
-> > > +       int ret;
-> > > +       bool bit;
-> > > +
-> > > +       ret =3D kstrtobool(buf, &bit);
-> > > +       if (ret)
-> > > +               return ret;
-> > > +
-> > > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
-> > > +               clear_bit(FailFast, &rdev->flags);
-> > > +               md_update_sb(rdev->mddev, 1);
-> > > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
-> > > +               set_bit(FailFast, &rdev->flags);
-> > > +               md_update_sb(rdev->mddev, 1);
-> > > +       }
-> > > +       return len;
-> > > +}
-> > > +
-> > > +static struct rdev_sysfs_entry rdev_fail_fast =3D
-> > > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-> > > +
-> > >  static struct attribute *rdev_default_attrs[] =3D {
-> > >         &rdev_state.attr,
-> > >         &rdev_errors.attr,
-> > > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] =
-=3D {
-> > >         &rdev_unack_bad_blocks.attr,
-> > >         &rdev_ppl_sector.attr,
-> > >         &rdev_ppl_size.attr,
-> > > +       &rdev_fail_fast.attr,
-> > >         NULL,
-> > >  };
-> > >  static ssize_t
-> > > --
-> > > 2.31.1
-> > >
+No logic changes.
+
+Cc: Liu Bo <bo.liu@linux.alibaba.com>
+Cc: Chao Yu <chao@kernel.org>
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+v3: https://lore.kernel.org/r/20211006194453.130447-1-hsiangkao@linux.alibaba.com
+changes since v3:
+ - refine commit message pointed out by Bo.
+
+ fs/erofs/inode.c    |  2 +-
+ fs/erofs/internal.h | 16 ++++++++-----
+ fs/erofs/super.c    | 58 ++++++++++++++++++++++-----------------------
+ fs/erofs/xattr.c    |  4 ++--
+ fs/erofs/zdata.c    |  8 +++----
+ 5 files changed, 45 insertions(+), 43 deletions(-)
+
+diff --git a/fs/erofs/inode.c b/fs/erofs/inode.c
+index a552399e211d..2345f1de438e 100644
+--- a/fs/erofs/inode.c
++++ b/fs/erofs/inode.c
+@@ -192,7 +192,7 @@ static struct page *erofs_read_inode(struct inode *inode,
+ 	inode->i_atime.tv_nsec = inode->i_ctime.tv_nsec;
+ 
+ 	inode->i_flags &= ~S_DAX;
+-	if (test_opt(&sbi->ctx, DAX_ALWAYS) && S_ISREG(inode->i_mode) &&
++	if (test_opt(&sbi->opt, DAX_ALWAYS) && S_ISREG(inode->i_mode) &&
+ 	    vi->datalayout == EROFS_INODE_FLAT_PLAIN)
+ 		inode->i_flags |= S_DAX;
+ 	if (!nblks)
+diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+index 9524e155b38f..b1b9d1b5cb66 100644
+--- a/fs/erofs/internal.h
++++ b/fs/erofs/internal.h
+@@ -47,7 +47,7 @@ typedef u64 erofs_off_t;
+ /* data type for filesystem-wide blocks number */
+ typedef u32 erofs_blk_t;
+ 
+-struct erofs_fs_context {
++struct erofs_mount_opts {
+ #ifdef CONFIG_EROFS_FS_ZIP
+ 	/* current strategy of how to use managed cache */
+ 	unsigned char cache_strategy;
+@@ -60,6 +60,10 @@ struct erofs_fs_context {
+ 	unsigned int mount_opt;
+ };
+ 
++struct erofs_fs_context {
++	struct erofs_mount_opts opt;
++};
++
+ /* all filesystem-wide lz4 configurations */
+ struct erofs_sb_lz4_info {
+ 	/* # of pages needed for EROFS lz4 rolling decompression */
+@@ -69,6 +73,8 @@ struct erofs_sb_lz4_info {
+ };
+ 
+ struct erofs_sb_info {
++	struct erofs_mount_opts opt;	/* options */
++
+ #ifdef CONFIG_EROFS_FS_ZIP
+ 	/* list for all registered superblocks, mainly for shrinker */
+ 	struct list_head list;
+@@ -108,8 +114,6 @@ struct erofs_sb_info {
+ 	u8 volume_name[16];             /* volume name */
+ 	u32 feature_compat;
+ 	u32 feature_incompat;
+-
+-	struct erofs_fs_context ctx;	/* options */
+ };
+ 
+ #define EROFS_SB(sb) ((struct erofs_sb_info *)(sb)->s_fs_info)
+@@ -121,9 +125,9 @@ struct erofs_sb_info {
+ #define EROFS_MOUNT_DAX_ALWAYS		0x00000040
+ #define EROFS_MOUNT_DAX_NEVER		0x00000080
+ 
+-#define clear_opt(ctx, option)	((ctx)->mount_opt &= ~EROFS_MOUNT_##option)
+-#define set_opt(ctx, option)	((ctx)->mount_opt |= EROFS_MOUNT_##option)
+-#define test_opt(ctx, option)	((ctx)->mount_opt & EROFS_MOUNT_##option)
++#define clear_opt(opt, option)	((opt)->mount_opt &= ~EROFS_MOUNT_##option)
++#define set_opt(opt, option)	((opt)->mount_opt |= EROFS_MOUNT_##option)
++#define test_opt(opt, option)	((opt)->mount_opt & EROFS_MOUNT_##option)
+ 
+ enum {
+ 	EROFS_ZIP_CACHE_DISABLED,
+diff --git a/fs/erofs/super.c b/fs/erofs/super.c
+index 11b88559f8bf..25f6b8b37f28 100644
+--- a/fs/erofs/super.c
++++ b/fs/erofs/super.c
+@@ -340,15 +340,15 @@ static int erofs_read_superblock(struct super_block *sb)
+ static void erofs_default_options(struct erofs_fs_context *ctx)
+ {
+ #ifdef CONFIG_EROFS_FS_ZIP
+-	ctx->cache_strategy = EROFS_ZIP_CACHE_READAROUND;
+-	ctx->max_sync_decompress_pages = 3;
+-	ctx->readahead_sync_decompress = false;
++	ctx->opt.cache_strategy = EROFS_ZIP_CACHE_READAROUND;
++	ctx->opt.max_sync_decompress_pages = 3;
++	ctx->opt.readahead_sync_decompress = false;
+ #endif
+ #ifdef CONFIG_EROFS_FS_XATTR
+-	set_opt(ctx, XATTR_USER);
++	set_opt(&ctx->opt, XATTR_USER);
+ #endif
+ #ifdef CONFIG_EROFS_FS_POSIX_ACL
+-	set_opt(ctx, POSIX_ACL);
++	set_opt(&ctx->opt, POSIX_ACL);
+ #endif
+ }
+ 
+@@ -392,12 +392,12 @@ static bool erofs_fc_set_dax_mode(struct fs_context *fc, unsigned int mode)
+ 	switch (mode) {
+ 	case EROFS_MOUNT_DAX_ALWAYS:
+ 		warnfc(fc, "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+-		set_opt(ctx, DAX_ALWAYS);
+-		clear_opt(ctx, DAX_NEVER);
++		set_opt(&ctx->opt, DAX_ALWAYS);
++		clear_opt(&ctx->opt, DAX_NEVER);
+ 		return true;
+ 	case EROFS_MOUNT_DAX_NEVER:
+-		set_opt(ctx, DAX_NEVER);
+-		clear_opt(ctx, DAX_ALWAYS);
++		set_opt(&ctx->opt, DAX_NEVER);
++		clear_opt(&ctx->opt, DAX_ALWAYS);
+ 		return true;
+ 	default:
+ 		DBG_BUGON(1);
+@@ -424,9 +424,9 @@ static int erofs_fc_parse_param(struct fs_context *fc,
+ 	case Opt_user_xattr:
+ #ifdef CONFIG_EROFS_FS_XATTR
+ 		if (result.boolean)
+-			set_opt(ctx, XATTR_USER);
++			set_opt(&ctx->opt, XATTR_USER);
+ 		else
+-			clear_opt(ctx, XATTR_USER);
++			clear_opt(&ctx->opt, XATTR_USER);
+ #else
+ 		errorfc(fc, "{,no}user_xattr options not supported");
+ #endif
+@@ -434,16 +434,16 @@ static int erofs_fc_parse_param(struct fs_context *fc,
+ 	case Opt_acl:
+ #ifdef CONFIG_EROFS_FS_POSIX_ACL
+ 		if (result.boolean)
+-			set_opt(ctx, POSIX_ACL);
++			set_opt(&ctx->opt, POSIX_ACL);
+ 		else
+-			clear_opt(ctx, POSIX_ACL);
++			clear_opt(&ctx->opt, POSIX_ACL);
+ #else
+ 		errorfc(fc, "{,no}acl options not supported");
+ #endif
+ 		break;
+ 	case Opt_cache_strategy:
+ #ifdef CONFIG_EROFS_FS_ZIP
+-		ctx->cache_strategy = result.uint_32;
++		ctx->opt.cache_strategy = result.uint_32;
+ #else
+ 		errorfc(fc, "compression not supported, cache_strategy ignored");
+ #endif
+@@ -540,15 +540,16 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 		return -ENOMEM;
+ 
+ 	sb->s_fs_info = sbi;
++	sbi->opt = ctx->opt;
+ 	sbi->dax_dev = fs_dax_get_by_bdev(sb->s_bdev);
+ 	err = erofs_read_superblock(sb);
+ 	if (err)
+ 		return err;
+ 
+-	if (test_opt(ctx, DAX_ALWAYS) &&
++	if (test_opt(&sbi->opt, DAX_ALWAYS) &&
+ 	    !dax_supported(sbi->dax_dev, sb->s_bdev, EROFS_BLKSIZ, 0, bdev_nr_sectors(sb->s_bdev))) {
+ 		errorfc(fc, "DAX unsupported by block device. Turning off DAX.");
+-		clear_opt(ctx, DAX_ALWAYS);
++		clear_opt(&sbi->opt, DAX_ALWAYS);
+ 	}
+ 	sb->s_flags |= SB_RDONLY | SB_NOATIME;
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+@@ -557,13 +558,11 @@ static int erofs_fc_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	sb->s_op = &erofs_sops;
+ 	sb->s_xattr = erofs_xattr_handlers;
+ 
+-	if (test_opt(ctx, POSIX_ACL))
++	if (test_opt(&sbi->opt, POSIX_ACL))
+ 		sb->s_flags |= SB_POSIXACL;
+ 	else
+ 		sb->s_flags &= ~SB_POSIXACL;
+ 
+-	sbi->ctx = *ctx;
+-
+ #ifdef CONFIG_EROFS_FS_ZIP
+ 	xa_init(&sbi->managed_pslots);
+ #endif
+@@ -607,12 +606,12 @@ static int erofs_fc_reconfigure(struct fs_context *fc)
+ 
+ 	DBG_BUGON(!sb_rdonly(sb));
+ 
+-	if (test_opt(ctx, POSIX_ACL))
++	if (test_opt(&ctx->opt, POSIX_ACL))
+ 		fc->sb_flags |= SB_POSIXACL;
+ 	else
+ 		fc->sb_flags &= ~SB_POSIXACL;
+ 
+-	sbi->ctx = *ctx;
++	sbi->opt = ctx->opt;
+ 
+ 	fc->sb_flags |= SB_RDONLY;
+ 	return 0;
+@@ -640,7 +639,6 @@ static int erofs_init_fs_context(struct fs_context *fc)
+ 	erofs_default_options(fc->fs_private);
+ 
+ 	fc->ops = &erofs_context_ops;
+-
+ 	return 0;
+ }
+ 
+@@ -763,31 +761,31 @@ static int erofs_statfs(struct dentry *dentry, struct kstatfs *buf)
+ static int erofs_show_options(struct seq_file *seq, struct dentry *root)
+ {
+ 	struct erofs_sb_info *sbi = EROFS_SB(root->d_sb);
+-	struct erofs_fs_context *ctx = &sbi->ctx;
++	struct erofs_mount_opts *opt = &sbi->opt;
+ 
+ #ifdef CONFIG_EROFS_FS_XATTR
+-	if (test_opt(ctx, XATTR_USER))
++	if (test_opt(opt, XATTR_USER))
+ 		seq_puts(seq, ",user_xattr");
+ 	else
+ 		seq_puts(seq, ",nouser_xattr");
+ #endif
+ #ifdef CONFIG_EROFS_FS_POSIX_ACL
+-	if (test_opt(ctx, POSIX_ACL))
++	if (test_opt(opt, POSIX_ACL))
+ 		seq_puts(seq, ",acl");
+ 	else
+ 		seq_puts(seq, ",noacl");
+ #endif
+ #ifdef CONFIG_EROFS_FS_ZIP
+-	if (ctx->cache_strategy == EROFS_ZIP_CACHE_DISABLED)
++	if (opt->cache_strategy == EROFS_ZIP_CACHE_DISABLED)
+ 		seq_puts(seq, ",cache_strategy=disabled");
+-	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAHEAD)
++	else if (opt->cache_strategy == EROFS_ZIP_CACHE_READAHEAD)
+ 		seq_puts(seq, ",cache_strategy=readahead");
+-	else if (ctx->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
++	else if (opt->cache_strategy == EROFS_ZIP_CACHE_READAROUND)
+ 		seq_puts(seq, ",cache_strategy=readaround");
+ #endif
+-	if (test_opt(ctx, DAX_ALWAYS))
++	if (test_opt(opt, DAX_ALWAYS))
+ 		seq_puts(seq, ",dax=always");
+-	if (test_opt(ctx, DAX_NEVER))
++	if (test_opt(opt, DAX_NEVER))
+ 		seq_puts(seq, ",dax=never");
+ 	return 0;
+ }
+diff --git a/fs/erofs/xattr.c b/fs/erofs/xattr.c
+index 778f2c52295d..01c581e93c5f 100644
+--- a/fs/erofs/xattr.c
++++ b/fs/erofs/xattr.c
+@@ -429,7 +429,7 @@ static int shared_getxattr(struct inode *inode, struct getxattr_iter *it)
+ 
+ static bool erofs_xattr_user_list(struct dentry *dentry)
+ {
+-	return test_opt(&EROFS_SB(dentry->d_sb)->ctx, XATTR_USER);
++	return test_opt(&EROFS_SB(dentry->d_sb)->opt, XATTR_USER);
+ }
+ 
+ static bool erofs_xattr_trusted_list(struct dentry *dentry)
+@@ -476,7 +476,7 @@ static int erofs_xattr_generic_get(const struct xattr_handler *handler,
+ 
+ 	switch (handler->flags) {
+ 	case EROFS_XATTR_INDEX_USER:
+-		if (!test_opt(&sbi->ctx, XATTR_USER))
++		if (!test_opt(&sbi->opt, XATTR_USER))
+ 			return -EOPNOTSUPP;
+ 		break;
+ 	case EROFS_XATTR_INDEX_TRUSTED:
+diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+index 11c7a1aaebad..e59e22852c78 100644
+--- a/fs/erofs/zdata.c
++++ b/fs/erofs/zdata.c
+@@ -695,7 +695,7 @@ static int z_erofs_do_read_page(struct z_erofs_decompress_frontend *fe,
+ 		goto err_out;
+ 
+ 	/* preload all compressed pages (maybe downgrade role if necessary) */
+-	if (should_alloc_managed_pages(fe, sbi->ctx.cache_strategy, map->m_la))
++	if (should_alloc_managed_pages(fe, sbi->opt.cache_strategy, map->m_la))
+ 		cache_strategy = TRYALLOC;
+ 	else
+ 		cache_strategy = DONTALLOC;
+@@ -796,7 +796,7 @@ static void z_erofs_decompress_kickoff(struct z_erofs_decompressqueue *io,
+ 	/* Use workqueue and sync decompression for atomic contexts only */
+ 	if (in_atomic() || irqs_disabled()) {
+ 		queue_work(z_erofs_workqueue, &io->u.work);
+-		sbi->ctx.readahead_sync_decompress = true;
++		sbi->opt.readahead_sync_decompress = true;
+ 		return;
+ 	}
+ 	z_erofs_decompressqueue_work(&io->u.work);
+@@ -1411,8 +1411,8 @@ static void z_erofs_readahead(struct readahead_control *rac)
+ 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
+ 
+ 	unsigned int nr_pages = readahead_count(rac);
+-	bool sync = (sbi->ctx.readahead_sync_decompress &&
+-			nr_pages <= sbi->ctx.max_sync_decompress_pages);
++	bool sync = (sbi->opt.readahead_sync_decompress &&
++			nr_pages <= sbi->opt.max_sync_decompress_pages);
+ 	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
+ 	struct page *page, *head = NULL;
+ 	LIST_HEAD(pagepool);
+-- 
+2.24.4
+
