@@ -2,61 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255B2424CE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B9C424CF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240133AbhJGFyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 01:54:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45902 "EHLO mail.kernel.org"
+        id S240179AbhJGGAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 02:00:00 -0400
+Received: from a.mx.secunet.com ([62.96.220.36]:37766 "EHLO a.mx.secunet.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhJGFx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 01:53:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D2846120D;
-        Thu,  7 Oct 2021 05:52:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633585925;
-        bh=N7JY5bAzFOPn7GNNIPP2kkoavMMDFcgaUujRxu0X9Ew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AYWe8FoUg+elF9HRmMmKVJkxI3bkR1uvUZQNvy0nCyztML8t48+7s8NTw1BWlmWI9
-         dFLjCVz80GZSPOOypzxdPhKz+qp51sT5IXdzjh1nKVLitvwhHPFlkfMAJC7WvD/RgD
-         pMt7Oh7K6pMMOpA3uR7GynAJqEl/iL0btTnmXjQU=
-Date:   Thu, 7 Oct 2021 07:52:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 000/172] 5.14.10-rc3 review
-Message-ID: <YV6LA7Wld8R7BmW/@kroah.com>
-References: <20211006073100.650368172@linuxfoundation.org>
- <20211007004433.GG650309@roeck-us.net>
+        id S231661AbhJGF7x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 01:59:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 25CCD2056D;
+        Thu,  7 Oct 2021 07:57:55 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Qf5Dxb8xJ5-f; Thu,  7 Oct 2021 07:57:54 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id 5DC3720538;
+        Thu,  7 Oct 2021 07:57:54 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout2.secunet.com (Postfix) with ESMTP id 57BC480004A;
+        Thu,  7 Oct 2021 07:57:54 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Thu, 7 Oct 2021 07:57:54 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Thu, 7 Oct
+ 2021 07:57:53 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 8B0243183BED; Thu,  7 Oct 2021 07:57:53 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 07:57:53 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     "Dmitry V. Levin" <ldv@altlinux.org>
+CC:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+        Eugene Syromyatnikov <evgsyr@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: strace build error static assertion failed: "XFRM_MSG_MAPPING !=
+ 0x26"
+Message-ID: <20211007055753.GR36125@gauss3.secunet.de>
+References: <1eb25b8f-09c0-8f5e-3227-f0f318785995@alliedtelesis.co.nz>
+ <20211006214816.GA11000@altlinux.org>
+ <20211006215124.GB11000@altlinux.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Disposition: inline
-In-Reply-To: <20211007004433.GG650309@roeck-us.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211006215124.GB11000@altlinux.org>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 05:44:33PM -0700, Guenter Roeck wrote:
-> On Wed, Oct 06, 2021 at 10:19:58AM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.14.10 release.
-> > There are 172 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
+On Thu, Oct 07, 2021 at 12:51:24AM +0300, Dmitry V. Levin wrote:
+> On Thu, Oct 07, 2021 at 12:48:16AM +0300, Dmitry V. Levin wrote:
+> > On Wed, Oct 06, 2021 at 09:43:11PM +0000, Chris Packham wrote:
+> > > Hi,
+> > > 
+> > > When compiling strace-5.14 (although it looks like the same problem 
+> > > would exist with bleeding edge strace) with headers from the tip of 
+> > > Linus's tree (5.15.0-rc4) I get the following error
+> > > 
+> > > strace: In file included from static_assert.h:11,
+> > > strace:                  from print_fields.h:12,
+> > > strace:                  from defs.h:1901,
+> > > strace:                  from netlink.c:10:
+> > > strace: xlat/nl_xfrm_types.h:162:1: error: static assertion failed: 
+> > > "XFRM_MSG_MAPPING != 0x26"
+> > > strace:  static_assert((XFRM_MSG_MAPPING) == (0x26), "XFRM_MSG_MAPPING 
+> > > != 0x26");
+> > > strace:  ^~~~~~~~~~~~~
+> > > 
+> > > It looks like commit 2d151d39073a ("xfrm: Add possibility to set the 
+> > > default to block if we have no policy") added some XFRM messages and the 
+> > > numbers shifted. Is this considered an ABI breakage?
+> > > 
+> > > I'm not sure if this is a strace problem or a linux problem so I'm 
+> > > reporting it in both places.
 > > 
-> > Responses should be made by Fri, 08 Oct 2021 07:30:34 +0000.
-> > Anything received after that time might be too late.
+> > Yes, this is already covered by 
+> > https://lore.kernel.org/lkml/20210912122234.GA22469@asgard.redhat.com/T/#u
 > > 
+> > Thanks,
 > 
-> Build results:
-> 	total: 154 pass: 154 fail: 0
-> Qemu test results:
-> 	total: 480 pass: 480 fail: 0
-> 
-> The new warnings are now gone.
+> I wonder, why the fix hasn't been merged yet, though.
 
-Wonderful, thanks for testing this again and letting me know!
-
-greg k-h
+That was due to a delay on my side. I've just sent a pull request
+with the fix included.
