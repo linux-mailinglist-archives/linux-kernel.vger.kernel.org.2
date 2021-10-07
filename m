@@ -2,137 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290AE424B9B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28AD1424B9F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 03:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhJGBZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 21:25:17 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:51283 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhJGBZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 21:25:12 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HPtqp36Vbz4xbG; Thu,  7 Oct 2021 12:23:18 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633569798;
-        bh=qstVtDT91XWliCaW5kitB3WljFF05mjQismqLt2KJ+A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n70FR0j9KTEGEzxwCxf2JDFXaUu8zShyp+4N0lscr1waf+K/ZgaxwyX9ZowdEeqyT
-         93j/gp22nAcMRYODT0LPRwZZf8hod6y0LuY2l71D1O/R3Do5F53fEXCE37Ph8arTyB
-         8uacyxaJkPxNRjhkPqJtBB70Xzz+taoWwt0m2ERk=
-Date:   Thu, 7 Oct 2021 12:23:13 +1100
-From:   David Gibson <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Liu Yi L <yi.l.liu@intel.com>, alex.williamson@redhat.com,
-        hch@lst.de, jasowang@redhat.com, joro@8bytes.org,
-        jean-philippe@linaro.org, kevin.tian@intel.com, parav@mellanox.com,
-        lkml@metux.net, pbonzini@redhat.com, lushenming@huawei.com,
-        eric.auger@redhat.com, corbet@lwn.net, ashok.raj@intel.com,
-        yi.l.liu@linux.intel.com, jun.j.tian@intel.com, hao.wu@intel.com,
-        dave.jiang@intel.com, jacob.jun.pan@linux.intel.com,
-        kwankhede@nvidia.com, robin.murphy@arm.com, kvm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, dwmw2@infradead.org,
-        linux-kernel@vger.kernel.org, baolu.lu@linux.intel.com,
-        nicolinc@nvidia.com
-Subject: Re: [RFC 07/20] iommu/iommufd: Add iommufd_[un]bind_device()
-Message-ID: <YV5MAdzR6c2knowf@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-8-yi.l.liu@intel.com>
- <YVP44v4FVYJBSEEF@yekko>
- <20210929122457.GP964074@nvidia.com>
- <YVUqpff7DUtTLYKx@yekko>
- <20211001124322.GN964074@nvidia.com>
+        id S231279AbhJGBaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 21:30:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230300AbhJGB37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 21:29:59 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCD8F6113E;
+        Thu,  7 Oct 2021 01:28:05 +0000 (UTC)
+Date:   Wed, 6 Oct 2021 21:28:03 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: Re: [PATCH] tracing/synthetic_events: Fix use when created by
+ dynamic_events file
+Message-ID: <20211006212803.48151494@rorschach.local.home>
+In-Reply-To: <20211007101952.d9d282257b9c49fe699c0679@kernel.org>
+References: <20211006115317.2cfcc742@gandalf.local.home>
+        <20211007101952.d9d282257b9c49fe699c0679@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KDKmP08LDN9ERU6o"
-Content-Disposition: inline
-In-Reply-To: <20211001124322.GN964074@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 7 Oct 2021 10:19:52 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
 
---KDKmP08LDN9ERU6o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >  	raw_command = skip_spaces(raw_command);
+> >  	if (raw_command[0] == '\0')
+> > -		return ret;
+> > +		return -ECANCELED;  
+> 
+> Good catch! BTW, I thought trace_parse_run_command() skips such empty line.
 
-On Fri, Oct 01, 2021 at 09:43:22AM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 30, 2021 at 01:10:29PM +1000, David Gibson wrote:
-> > On Wed, Sep 29, 2021 at 09:24:57AM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Sep 29, 2021 at 03:25:54PM +1000, David Gibson wrote:
-> > >=20
-> > > > > +struct iommufd_device {
-> > > > > +	unsigned int id;
-> > > > > +	struct iommufd_ctx *ictx;
-> > > > > +	struct device *dev; /* always be the physical device */
-> > > > > +	u64 dev_cookie;
-> > > >=20
-> > > > Why do you need both an 'id' and a 'dev_cookie'?  Since they're both
-> > > > unique, couldn't you just use the cookie directly as the index into
-> > > > the xarray?
-> > >=20
-> > > ID is the kernel value in the xarray - xarray is much more efficient &
-> > > safe with small kernel controlled values.
-> > >=20
-> > > dev_cookie is a user assigned value that may not be unique. It's
-> > > purpose is to allow userspace to receive and event and go back to its
-> > > structure. Most likely userspace will store a pointer here, but it is
-> > > also possible userspace could not use it.
-> > >=20
-> > > It is a pretty normal pattern
-> >=20
-> > Hm, ok.  Could you point me at an example?
->=20
-> For instance user_data vs fd in io_uring
+I think it does, but I was paranoid to remove that part, as this is
+going to stable. As a clean up, we could remove that for the next merge
+window.
 
-Ok, but one of those is an fd, which is an existing type of handle.
-Here we're introducing two different unique handles that aren't an
-existing kernel concept.
+> 
+> Anyway,
+> 
+> Reviewed-by: Masami Hiramatsu <mhiramat@kernel.org>
 
-> RDMA has many similar examples.
->=20
-> More or less anytime you want to allow the kernel to async retun some
-> information providing a 64 bit user_data lets userspace have an easier
-> time to deal with it.
+Thanks!
 
-I absolutely see the need for user_data.  What I'm questioning is
-having two different, user-visible unique handles, neither of which is
-an fd.
-
-
-That said... is there any strong reason why user_data needs to be
-unique?  I can imagine userspace applications where you don't care
-which device the notification is coming from - or at least don't care
-down to the same granularity that /dev/iommu is using.  In which case
-having the kernel provided unique handle and the
-not-necessarily-unique user_data would make perfect sense.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---KDKmP08LDN9ERU6o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFeTAAACgkQbDjKyiDZ
-s5IHfA//dHZrmxuC2Eg7GpSZRzPqLOFtDPTlZ/fOS0A3Ww2bU6S+CuugltvCz+U2
-KZ65d6W7oAiRDmaxTdPARsY/JsYFSu+jGnVfYI4ZUf/N6v0NIInS5L5z31og1nhu
-VYPLtYEPenL5Ikj/e3Ul9E6l5AqLcRqRw/j5G83ygQB3Wk93LdeF/p8wdEvEt599
-U5V8JbGKUYzBySYD4+m6EhhYpAEagGRRltJE10AZm4WB9w6KbjkrQryg7zSfbbEo
-ulwVrlY/IBzHmbBi82IQOiXFIZkdbvuigelt34UPdMSVj50Wmo4t/bxyTbRGk9O8
-YMGa0Y5l0bH6gtl1M/e9Gq3rEwGrjSP/GyvLCZSv1D3nAti/WK7INv9NVEz1E74O
-frugTJBSsodRVz31hMt+WDT5NTTv+F+xQjEnFZTcCeogHvDissXh2wnhUXSi5kQq
-g8GcJfG621SrtvulFlFIhjgtXqxPzRJm+uXWTI5ESCA7+3g79Pr5kKo9UTiRK1c1
-HtB8mM70Hp+vOmWSZ5D3wYZX4ImXpcWdHk0y0c1O0QQVmFF07iyqjVXu+A6r/A5y
-ly8PwxvM0gnM7Ewuz37YXpGTgeiCTVaUVPITz09GN1mMqYa2V0l1X3q/G5iwb/g8
-0SqR8HFGjS87nbngGm/vjD/AscCOHePTMrFQvN/GFytfMWdJO3c=
-=VYju
------END PGP SIGNATURE-----
-
---KDKmP08LDN9ERU6o--
+-- Steve
