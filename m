@@ -2,136 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DCB2425F84
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D148425F92
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242681AbhJGVtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:49:09 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:37821 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbhJGVtI (ORCPT
+        id S241742AbhJGV63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:58:29 -0400
+Received: from www62.your-server.de ([213.133.104.62]:41334 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234055AbhJGV62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:49:08 -0400
-Received: by mail-pf1-f173.google.com with SMTP id q19so5981760pfl.4;
-        Thu, 07 Oct 2021 14:47:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XmCI1FNC/AApgJUnJ9aARbqTG/luu8fBLN0UmqhN8Ks=;
-        b=5PqFNKfVKB9gfu3dlYPKpBrCidmq4M8IfQCFPxCArA9PhYUvjNzNGd5bCbvRkxJNx/
-         dHzx2n6WHw2rytgVYmRKWOVHc/SUQ1ftPyRVoW9DYbDdVUni3sJxj3JDuP7Bhvfp90xy
-         U0bw8ITDFUvSdIIyaSEh1rmT/qN1zjl4H5WSph8zBg9dvkQb4ZpgAnlvIp6r3fYNTPrU
-         RQvDe8dGgp+74ZTyd4hj0aZG8jMYpcbcVryPrXBVFyvlF/6DQk/xeT7H4NnjBj4SyRlP
-         gwx3eNlEujpx2NqUix7LcYTX2v49YIzWAXeO7gSEpO9NMNW4O1cybq51JhXmT3NDktPG
-         aUMg==
-X-Gm-Message-State: AOAM530gTZ1KZmCZvvMueYVQrUEoqZBYnU+kO+/V4HW6GiAiaTax7EhF
-        67GFDp3OIPa+RG6HXAa+Te0=
-X-Google-Smtp-Source: ABdhPJzy7rsLDmHhzgspbXp+wTsIOC5azay4EgiZS+NVfpLf9SSgQwT1xVaQLysaCUPAwVAKV8GogA==
-X-Received: by 2002:aa7:8d86:0:b0:44c:9006:1b44 with SMTP id i6-20020aa78d86000000b0044c90061b44mr6737282pfr.36.1633643233614;
-        Thu, 07 Oct 2021 14:47:13 -0700 (PDT)
-Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:ae88:8f16:b90b:5f1d])
-        by smtp.gmail.com with ESMTPSA id nn14sm215393pjb.27.2021.10.07.14.47.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 14:47:12 -0700 (PDT)
-Subject: Re: [PATCH v1] scsi: ufs: clear doorbell for hibern8 errors when
- using ah8
-To:     Kiwoong Kim <kwmad.kim@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com, vkumar.1997@samsung.com
-References: <CGME20211007075635epcas2p16af95ce29750417f34f8490b0d8000d4@epcas2p1.samsung.com>
- <1633592411-129911-1-git-send-email-kwmad.kim@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <b548158d-a155-bde9-caff-0f3fefbda403@acm.org>
-Date:   Thu, 7 Oct 2021 14:47:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 7 Oct 2021 17:58:28 -0400
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mYbNN-000GEi-7x; Thu, 07 Oct 2021 23:56:29 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mYbNN-0000uR-1E; Thu, 07 Oct 2021 23:56:29 +0200
+Subject: Re: linux-next: Fixes tag needs some work in the bpf-next tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20211008083118.43f6d79f@canb.auug.org.au>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <002d3d66-9081-b117-ec93-4235450d6036@iogearbox.net>
+Date:   Thu, 7 Oct 2021 23:56:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <1633592411-129911-1-git-send-email-kwmad.kim@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211008083118.43f6d79f@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26315/Thu Oct  7 11:09:01 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 12:40 AM, Kiwoong Kim wrote:
-> When an scsi command is dispatched right after host complete
-> all the pending requests goes to idle and ufs driver tries
-> to ring a doorbell, host might be still during entering into
-> hibern8. If an error occurrs during that period, the doorbell
-> might not be zero. In this case, clearing it should be needed
-> to requeue its command.
-> Currently, ufshcd_err_handler goes directly to reset when the
-> driver's link state is broken. This patch is to make it clear
-> doorbells in the case. In the situation, communication would
-> be disabled, so TM isn't necessary or we can say it's not
-> available.
+On 10/7/21 11:31 PM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>    065485ac5e86 ("mips, bpf: Fix Makefile that referenced a removed file")
+> 
+> Fixes tag
+> 
+>    Fixes: 06b339fe5450 ("mips, bpf: Remove old BPF JIT implementations")
+> 
+> has these problem(s):
+> 
+>    - Target SHA1 does not exist
+> 
+> Maybe you meant
+> 
+> Fixes: ebcbacfa50ec ("mips, bpf: Remove old BPF JIT implementations")
 
-The above text is too hard to comprehend. Please make it more clear. As 
-an example, in the first sentence, what does "goes to idle" apply to? 
-Does it apply to "SCSI command", "pending requests" or something else?
-
-What mechanism does "If an error occurs" refer to? A SCSI command 
-processing error, a link error or another type of error?
-
-> Here's an actual symptom that I've faced. At the time, tag #17
-> is still pended even after host reset. And then the block timer
-> is expired.
-
-pended -> pending.
-
-> exynos-ufs 11100000.ufs: ufshcd_check_errors: Auto Hibern8
-> Enter failed - status: 0x00000040, upmcrs: 0x00000001
-> ..
-> host_regs: 00000050: b8671000 00000008 00020000 00000000
-> ..
-> exynos-ufs 11100000.ufs: ufshcd_abort: Device abort task at tag 17
-
-The relationship between the example and the description above the 
-example is not clear. If a command is pending before the error handler 
-starts, aborting that command fails and the host is not reset then the 
-command will still be pending after the error handler has finished.
-
-> @@ -6138,7 +6139,12 @@ static void ufshcd_err_handler(struct Scsi_Host *host)
->   	     (hba->saved_uic_err & (UFSHCD_UIC_DL_NAC_RECEIVED_ERROR |
->   				    UFSHCD_UIC_DL_TCx_REPLAY_ERROR)))) {
->   		needs_reset = true;
-> -		goto do_reset;
-> +		spin_lock_irqsave(hba->host->host_lock, flags);
-> +		if (!hba->ahit && ufshcd_is_link_broken(hba))
-> +			link_broken_in_ah8 = true;
-> +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> +		if (!link_broken_in_ah8)
-> +			goto do_reset;
->   	}
->   
-
-My understanding is that hba->ahit == 0 means that auto-hibernation is 
-disabled. Hence, the above code sets 'link_broken_in_ah8' only if 
-auto-hibernation is disabled. So what does the name of the variable 
-'link_broken_in_ah8' mean?
-
-> @@ -6168,6 +6174,9 @@ static void ufshcd_err_handler(struct Scsi_Host *host)
->   		}
->   	}
->   
-> +	if (link_broken_in_ah8)
-> +		goto lock_skip_pending_xfer_clear;
-> +
->   	/* Clear pending task management requests */
->   	for_each_set_bit(tag, &hba->outstanding_tasks, hba->nutmrs) {
->   		if (ufshcd_clear_tm_cmd(hba, tag)) {
-
-Why is skipping the ufshcd_clear_tm_cmd() calls useful in this case?
-
-Thanks,
-
-Bart.
-
-
+Yeah, Fixes tag was incorrect. Fixed up now, thanks for the heads up!
