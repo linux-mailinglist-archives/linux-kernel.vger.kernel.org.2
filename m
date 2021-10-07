@@ -2,250 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C254252DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1234252E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241222AbhJGMVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:21:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233128AbhJGMVA (ORCPT
+        id S241172AbhJGMVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:21:49 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41898 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233053AbhJGMVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:21:00 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A655C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:19:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7BFC71F450CC;
-        Thu,  7 Oct 2021 13:19:04 +0100 (BST)
-Date:   Thu, 7 Oct 2021 14:18:58 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
+        Thu, 7 Oct 2021 08:21:47 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 197CJnBb037285;
+        Thu, 7 Oct 2021 07:19:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633609189;
+        bh=9JwMLFdbNsLpLAiDqASjPrmPKp/VSOt/Bj/doasoH0U=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=OToP+/Mhx39NY0qtCVZ05rRs3mX4P8s1MLtO6z1vtQw3jz9sF9xxZVDk0RWx7oZ0N
+         PbsM69E6kNXmbD5YfCbahZn0KGLxo25uT6KwGsrJjN5kYZpoArFC/9dTmI6NiMjiS3
+         BAFUSCtzryaAaNSxc1Sw0JOWd7/Lz1YLT8U7DMKY=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 197CJn2r027336
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Oct 2021 07:19:49 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 7
+ Oct 2021 07:19:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Thu, 7 Oct 2021 07:19:49 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 197CJmjA111379;
+        Thu, 7 Oct 2021 07:19:49 -0500
+Date:   Thu, 7 Oct 2021 17:49:48 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211007141858.314533f2@collabora.com>
-In-Reply-To: <20211007114351.3nafhtpefezxhanc@skn-laptop>
-References: <20211004065608.3190348-1-sean@geanix.com>
-        <20211004104147.579f3b01@collabora.com>
-        <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
-        <20211004115817.18739936@collabora.com>
-        <20211004101246.kagtezizympxupat@skn-laptop>
-        <20211004134700.26327f6f@collabora.com>
-        <20211005070930.epgxb5qzumk4awxq@skn-laptop>
-        <20211005102300.5da6d480@collabora.com>
-        <20211005084938.jcbw24umhehoiirs@skn-laptop>
-        <20211005105836.6c300f25@collabora.com>
-        <20211007114351.3nafhtpefezxhanc@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Benoit Parrot <bparrot@ti.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-media@vger.kernel.org>
+Subject: Re: [PATCH v4 01/11] media: cadence: csi2rx: Unregister v4l2 async
+ notifier
+Message-ID: <20211007121946.tqkpgvej7xkb7xp3@ti.com>
+References: <20210915120240.21572-1-p.yadav@ti.com>
+ <20210915120240.21572-2-p.yadav@ti.com>
+ <YV4xwiUVGUi3biAT@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YV4xwiUVGUi3biAT@pendragon.ideasonboard.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 13:43:51 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
-
-> On Tue, Oct 05, 2021 at 10:58:36AM +0200, Boris Brezillon wrote:
-> > On Tue, 5 Oct 2021 10:49:38 +0200
-> > Sean Nyekjaer <sean@geanix.com> wrote:
-> >   
-> > > On Tue, Oct 05, 2021 at 10:23:00AM +0200, Boris Brezillon wrote:  
-> > > > On Tue, 5 Oct 2021 09:09:30 +0200
-> > > > Sean Nyekjaer <sean@geanix.com> wrote:    
-> > > 
-> > > [ ... ]
-> > >   
-> > > > > 
-> > > > > Have you seen the reproducer script?    
-> > > > 
-> > > > How would I know about this script or your previous attempt (mentioned
-> > > > at the end of this email) given I was not Cc-ed on the previous
-> > > > discussion, and nothing mentions it in this RFC...
-> > > >     
-> > > 
-> > > That's why I shared it here ;)
-> > > Initially I thought this was a bug introduced by exec_op.
-> > >   
-> > > > > ---
-> > > > > root@iwg26-v1:/data/root# cat /data/crash.sh
-> > > > > #!/bin/sh -x
-> > > > > 
-> > > > > echo enabled > /sys/devices/platform/soc/2100000.bus/21f4000.serial/tty/ttymxc4/power/wakeup
-> > > > > 
-> > > > > rm /data/test50M
-> > > > > dd if=/dev/urandom of=/tmp/test50M bs=1M count=50
-> > > > > cp /tmp/test50M /data/ &
-> > > > > sleep 1
-> > > > > echo mem > /sys/power/state
-> > > > > ---
-> > > > > 
-> > > > > As seen in the log above disk is synced before suspend.
-> > > > > cp is continuing to copy data to ubifs.
-> > > > > And then user space processes are frozen.
-> > > > > At this point the kernel thread would have unwritten data.
-> > > > > 
-> > > > > We tried to solve this with:
-> > > > > https://lkml.org/lkml/2021/9/1/280    
-> > > > 
-> > > > I see. It's still unclear to me when the write happens. Is it in the
-> > > > suspend path (before the system is actually suspended), or in the
-> > > > resume path (when the system is being resumed).
-> > > > 
-> > > > Anyway, let's admit writing to a storage device while it's suspended is
-> > > > a valid use case and requires the storage layer to put this request on
-> > > > old. This wait should not, IMHO, be handled at the NAND level, but at
-> > > > the MTD level (using a waitqueue, and an atomic to make
-> > > > suspended/resumed transitions safe). And abusing a mutex to implement
-> > > > that is certainly not a good idea.    
-> > > 
-> > > I did't say this was the right solution ;) I actually asked in the RFC:
-> > > "Should we introduce a new mutex? Or maybe a spin_lock?"
-> > > 
-> > > What are you proposing, a waitqueue in mtd_info? That gets checked in
-> > > mtd_write()/mtd_read()?  
+On 07/10/21 02:31AM, Laurent Pinchart wrote:
+> Hi Pratyush,
+> 
+> Thank you for the patch.
+> 
+> On Wed, Sep 15, 2021 at 05:32:30PM +0530, Pratyush Yadav wrote:
+> > The notifier is added to the global notifier list when registered. When
+> > the module is removed, the struct csi2rx_priv in which the notifier is
+> > embedded, is destroyed. As a result the notifier list has a reference to
+> > a notifier that no longer exists. This causes invalid memory accesses
+> > when the list is iterated over. Similar for when the probe fails.
 > > 
-> > Yes, and replacing the suspended state by an atomic, and providing a
-> > helper to wait on the device readiness. Helper you will call in every
-> > path involving a communication with the HW, not just mtd_read/write()
-> > (you're missing erase at least, and I fear there are other hooks that
-> > might lead to commands being issued to the device). But before we get
-> > there, I think it's important to understand what the kernel expects.
-> > IOW, if and when threads can do a request on a suspended device, and
-> > when it's acceptable to wait (vs returning -EBUSY), otherwise I fear
-> > we'll end up with deadlocks in the suspend/resume path.  
+> > Unregister and clean up the notifier to avoid this.
+> > 
+> > Fixes: 1fc3b37f34f6 ("media: v4l: cadence: Add Cadence MIPI-CSI2 RX driver")
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
 > 
-> I have a proposal [0] and yes I have ended up in many deadlocks during
-> testing. The hardest part is the locking when going into suspend.
-> I'm not sure the wait_queue is initialized the right place :)
-> And I'm kinda abusing the nand_get_device() for this...
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > 
-> Who do you think we should add to the discussion?
+> Note that there are other issues in the driver in cleanup paths, in
+> particular a missing v4l2_async_notifier_cleanup() call in
+> csi2rx_parse_dt() when v4l2_async_notifier_add_fwnode_remote_subdev()
+> fails (moving the one from the other error path to an err label would be
+> best), and missing media_entity_cleanup() calls in both the probe error
+> path and the remove handler. Would you like to submit fixes for those ?
+
+Sure, will do.
+
 > 
-> /Sean
+> > ---
+> > 
+> > (no changes since v3)
+> > 
+> > Changes in v3:
+> > - New in v3.
+> > 
+> >  drivers/media/platform/cadence/cdns-csi2rx.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/media/platform/cadence/cdns-csi2rx.c b/drivers/media/platform/cadence/cdns-csi2rx.c
+> > index 7b44ab2b8c9a..d60975f905d6 100644
+> > --- a/drivers/media/platform/cadence/cdns-csi2rx.c
+> > +++ b/drivers/media/platform/cadence/cdns-csi2rx.c
+> > @@ -469,6 +469,7 @@ static int csi2rx_probe(struct platform_device *pdev)
+> >  	return 0;
+> >  
+> >  err_cleanup:
+> > +	v4l2_async_nf_unregister(&csi2rx->notifier);
+> >  	v4l2_async_nf_cleanup(&csi2rx->notifier);
+> >  err_free_priv:
+> >  	kfree(csi2rx);
+> > @@ -479,6 +480,8 @@ static int csi2rx_remove(struct platform_device *pdev)
+> >  {
+> >  	struct csi2rx_priv *csi2rx = platform_get_drvdata(pdev);
+> >  
+> > +	v4l2_async_nf_unregister(&csi2rx->notifier);
+> > +	v4l2_async_nf_cleanup(&csi2rx->notifier);
+> >  	v4l2_async_unregister_subdev(&csi2rx->subdev);
+> >  	kfree(csi2rx);
+> >  
 > 
-> [0]:
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 3d6c6e880520..735dfff18143 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-
-As I said previously, I think this should be handled MTD level
-(drivers/mtd/mtdcore.c) not in the raw NAND framework.
-
-> @@ -337,11 +337,10 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
->   */
->  static int nand_get_device(struct nand_chip *chip)
->  {
-> +       struct mtd_info *mtd = nand_to_mtd(chip);
-> +
-> +       wait_event(mtd->wait_queue, atomic_read(&chip->suspended) == 0);
->         mutex_lock(&chip->lock);
-> -       if (chip->suspended) {
-> -               mutex_unlock(&chip->lock);
-> -               return -EBUSY;
-> -       }
-
-There's a race here: the device might enter suspend again before you're
-able to acquire the lock.
-
->         mutex_lock(&chip->controller->lock);
+> -- 
+> Regards,
 > 
->         return 0;
-> @@ -4562,11 +4561,15 @@ static int nand_suspend(struct mtd_info *mtd)
->         struct nand_chip *chip = mtd_to_nand(mtd);
->         int ret = 0;
-> 
-> +       atomic_inc(&chip->suspended);
->         mutex_lock(&chip->lock);
+> Laurent Pinchart
 
-And it's racy here as well: you mark the device as suspended before you
-even acquired the lock.
-
->         if (chip->ops.suspend)
->                 ret = chip->ops.suspend(chip);
-> -       if (!ret)
-> -               chip->suspended = 1;
-> +       if (ret) {
-> +               /* Wake things up again if suspend fails */
-> +               atomic_dec(&chip->suspended);
-> +               wake_up(&mtd->wait_queue);
-> +       }
->         mutex_unlock(&chip->lock);
-> 
->         return ret;
-> @@ -4581,10 +4584,12 @@ static void nand_resume(struct mtd_info *mtd)
->         struct nand_chip *chip = mtd_to_nand(mtd);
-> 
->         mutex_lock(&chip->lock);
-> -       if (chip->suspended) {
-> +       if (atomic_read(&chip->suspended)) {
->                 if (chip->ops.resume)
->                         chip->ops.resume(chip);
-> -               chip->suspended = 0;
-> +
-> +               atomic_dec(&chip->suspended);
-> +               wake_up(&mtd->wait_queue);
->         } else {
->                 pr_err("%s called for a chip which is not in suspended state\n",
->                         __func__);
-> @@ -5099,6 +5104,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
->         pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
->                 (int)(targetsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
->                 mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
-> +
-> +       init_waitqueue_head(&mtd->wait_queue);
-> +
-
-It's an MTD field. It should be initialized somewhere in mtdcore.c.
-
->         return 0;
-> 
->  free_detect_allocation:
-> @@ -6264,6 +6272,8 @@ static int nand_scan_tail(struct nand_chip *chip)
->         if (chip->options & NAND_SKIP_BBTSCAN)
->                 return 0;
-> 
-> +       atomic_set(&chip->suspended, 0);
-> +
->         /* Build bad block table */
->         ret = nand_create_bbt(chip);
->         if (ret)
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index 88227044fc86..f7dcbc336170 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -360,6 +360,8 @@ struct mtd_info {
->         int (*_get_device) (struct mtd_info *mtd);
->         void (*_put_device) (struct mtd_info *mtd);
-> 
-> +       wait_queue_head_t wait_queue;
-> +
-
-wait_queue doesn't really describe what this waitqueue is used for
-(maybe resume_wq), and the suspended state should be here as well
-(actually, there's one already).
-
-Actually, what we need is a way to prevent the device from being
-suspended while accesses are still in progress, and new accesses from
-being queued if a suspend is pending. So, I think you need a readwrite
-lock here:
-
-* take the lock in read mode for all IO accesses, check the
-  mtd->suspended value
-  - if true, release the lock, and wait (retry on wakeup)
-  - if false, just do the IO
-
-* take the lock in write mode when you want to suspend/resume the
-  device and update the suspended field. Call wake_up_all() in the
-  resume path
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
