@@ -2,181 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270A1425A9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E97E425AF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243588AbhJGSX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:23:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
+        id S233848AbhJGSjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233796AbhJGSX4 (ORCPT
+        with ESMTP id S243740AbhJGSjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:23:56 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E903DC061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:22:01 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id m3so28729692lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RePy4YWN0QrSCoH4w20ZWl3nlKJKvtiMzhDlSX/yriY=;
-        b=OxR9W+NREOChsdjDuhEuI7PNX0M+3YLpGr9UjwguYPWOZggjQMn2QUNfNgwKQqa9F6
-         V9Hi+egHduzv1YkEWEIr0SXHe5LUb2XrzrH3xfDwldcbiabvUcr0hAzwcJf7jZstBoZu
-         CGOHJtz9COkNmXL3XHmax8r2WkMjR955917ml2JcoOtjl1WmlYbbCDsIsR5f06uTagC6
-         L46CjBUSPiYsunaYJw854kzuBjBmCw6/mEWboopgjBGwk0WeHLpWg2FvkuWTss0M2SUS
-         r42QUzwMI0ksMLJoMFMUYdA4C9cae8/e6GSFC/97DaBFUUIoEVgYkZU2V3ctO94khGhb
-         vHzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RePy4YWN0QrSCoH4w20ZWl3nlKJKvtiMzhDlSX/yriY=;
-        b=gwx09xadVH+P+qABh4q81efkS22Z4gCuZUUx7WJqTfutJ1QpeVk+bLWw7w1F2lZ/l1
-         ncZshZIlBY1eximtOcDQ1gGvWVsPWx4YcUqUOL3OLU2Pf2zN8ghNCBtQUKurMwSx4c/H
-         vPzlMmtKopoZ0TBypmmqsdGK/JB90w7EFuRuOJLOSnCDVAAWywCnP2VSLuj4IcRegR5C
-         4FThcRlQlJu/xEopDZbLca489YLgTgitKJLNF+dueRi40qGC8kF/PFq6pfFV1MtQj6rS
-         R7A3uwAKPsfxfJlV0UAEii5jMS0zFHa5EfE3+rblqWCvNx4UgSJd4w/D83km1oVABAoK
-         Hbpw==
-X-Gm-Message-State: AOAM532jZ1s9vEmkTkhd9+i7Ho1/SFQzNyOgp3AtGltiLUjdXk4x6hJ7
-        E/f9mcH0xq0ZkuCqUTyX2hGQGw==
-X-Google-Smtp-Source: ABdhPJykk3FE+YFgHXntejj5zMNl7VFdjwhG6jc9O1q6+cMbS6+8ktVb/uAvHVg8NfSkvUmr3wsIAQ==
-X-Received: by 2002:a05:6512:3c95:: with SMTP id h21mr5851195lfv.128.1633630920288;
-        Thu, 07 Oct 2021 11:22:00 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id v23sm8069ljj.97.2021.10.07.11.21.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 11:21:59 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
+        Thu, 7 Oct 2021 14:39:08 -0400
+Received: from smtp-190c.mail.infomaniak.ch (smtp-190c.mail.infomaniak.ch [IPv6:2001:1600:4:17::190c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A642C061755;
+        Thu,  7 Oct 2021 11:37:09 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HQKT12vHQzMq0sR;
+        Thu,  7 Oct 2021 20:23:33 +0200 (CEST)
+Received: from localhost (unknown [23.97.221.149])
+        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4HQKSz4sQnzlhNwn;
+        Thu,  7 Oct 2021 20:23:31 +0200 (CEST)
+From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] clk: Add write operation for clk_parent debugfs node
-Date:   Thu,  7 Oct 2021 21:21:58 +0300
-Message-Id: <20211007182158.7490-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        =?UTF-8?q?Philippe=20Tr=C3=A9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH v13 0/3] Add trusted_for(2) (was O_MAYEXEC)
+Date:   Thu,  7 Oct 2021 20:23:17 +0200
+Message-Id: <20211007182321.872075-1-mic@digikod.net>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for testing mux clocks. One can write the index of the parent to
-be set into clk_parent node, starting from 0. Example
+Hi,
 
-    # cd /sys/kernel/debug/clk/mout_peri_bus
-    # cat clk_possible_parents
-      dout_shared0_div4 dout_shared1_div4
-    # cat clk_parent
-      dout_shared0_div4
-    # echo 1 > clk_parent
-    # cat clk_parent
-      dout_shared1_div4
+This patch series is mainly a rebase on v5.15-rc4 .  Andrew, can you
+please consider to merge this into your tree?
 
-CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
-order to use this feature.
+Overview
+========
 
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
-Changes in v5:
-  - Used kstrtou8_from_user() API
-  - Got rid of code duplication
-  - Fixed typo in commit message
-  - Added R-b tag by Andy Shevchenko
+The final goal of this patch series is to enable the kernel to be a
+global policy manager by entrusting processes with access control at
+their level.  To reach this goal, two complementary parts are required:
+* user space needs to be able to know if it can trust some file
+  descriptor content for a specific usage;
+* and the kernel needs to make available some part of the policy
+  configured by the system administrator.
 
-Changes in v4:
-  - Fixed the commit title
+Primary goal of trusted_for(2)
+==============================
 
-Changes in v3:
-  - Removed unwanted changes added by mistake
+This new syscall enables user space to ask the kernel: is this file
+descriptor's content trusted to be used for this purpose?  The set of
+usage currently only contains "execution", but other may follow (e.g.
+"configuration", "sensitive_data").  If the kernel identifies the file
+descriptor as trustworthy for this usage, user space should then take
+this information into account.  The "execution" usage means that the
+content of the file descriptor is trusted according to the system policy
+to be executed by user space, which means that it interprets the content
+or (try to) maps it as executable memory.
 
-Changes in v2:
-  - Merged write() function into existing 'clk_parent' file
-  - Removed 'if (val >= core->num_parents)' check
-  - Removed incorrect usage of IS_ERR_OR_NULL()
+A simple system-wide security policy can be enforced by the system
+administrator through a sysctl configuration consistent with the mount
+points or the file access rights.  The documentation patch explains the
+prerequisites.
 
- drivers/clk/clk.c | 50 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 47 insertions(+), 3 deletions(-)
+It is important to note that this can only enable to extend access
+control managed by the kernel.  Hence it enables current access control
+mechanism to be extended and become a superset of what they can
+currently control.  Indeed, the security policy could also be delegated
+to an LSM, either a MAC system or an integrity system.  For instance,
+this is required to close a major IMA measurement/appraisal interpreter
+integrity gap by bringing the ability to check the use of scripts [1].
+Other uses are expected, such as for magic-links [2], SGX integration
+[3], bpffs [4].
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 806c55f0991b..6154d5bc2b45 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3224,6 +3224,42 @@ static int current_parent_show(struct seq_file *s, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(current_parent);
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct seq_file *s = file->private_data;
-+	struct clk_core *core = s->private;
-+	struct clk_core *parent;
-+	u8 idx;
-+	int err;
-+
-+	err = kstrtou8_from_user(ubuf, count, 0, &idx);
-+	if (err < 0)
-+		return err;
-+
-+	parent = clk_core_get_parent_by_index(core, idx);
-+	if (!parent)
-+		return -ENOENT;
-+
-+	clk_prepare_lock();
-+	err = clk_core_set_parent_nolock(core, parent);
-+	clk_prepare_unlock();
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static const struct file_operations current_parent_rw_fops = {
-+	.open		= current_parent_open,
-+	.write		= current_parent_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+#endif
-+
- static int clk_duty_cycle_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *core = s->private;
-@@ -3291,9 +3327,17 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
- 			    &clk_prepare_enable_fops);
- #endif
- 
--	if (core->num_parents > 0)
--		debugfs_create_file("clk_parent", 0444, root, core,
--				    &current_parent_fops);
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+	if (core->num_parents > 1)
-+		debugfs_create_file("clk_parent", 0644, root, core,
-+				    &current_parent_rw_fops);
-+	else
-+#endif
-+	{
-+		if (core->num_parents > 0)
-+			debugfs_create_file("clk_parent", 0444, root, core,
-+					    &current_parent_fops);
-+	}
- 
- 	if (core->num_parents > 1)
- 		debugfs_create_file("clk_possible_parents", 0444, root, core,
+Complementary W^X protections can be brought by SELinux, IPE [5] and
+trampfd [6].
+
+Prerequisite of its use
+=======================
+
+User space needs to adapt to take advantage of this new feature.  For
+example, the PEP 578 [7] (Runtime Audit Hooks) enables Python 3.8 to be
+extended with policy enforcement points related to code interpretation,
+which can be used to align with the PowerShell audit features.
+Additional Python security improvements (e.g. a limited interpreter
+without -c, stdin piping of code) are on their way [8].
+
+Examples
+========
+
+The initial idea comes from CLIP OS 4 and the original implementation
+has been used for more than 12 years:
+https://github.com/clipos-archive/clipos4_doc
+Chrome OS has a similar approach:
+https://chromium.googlesource.com/chromiumos/docs/+/master/security/noexec_shell_scripts.md
+
+Userland patches can be found here:
+https://github.com/clipos-archive/clipos4_portage-overlay/search?q=O_MAYEXEC
+Actually, there is more than the O_MAYEXEC changes (which matches this search)
+e.g., to prevent Python interactive execution. There are patches for
+Bash, Wine, Java (Icedtea), Busybox's ash, Perl and Python. There are
+also some related patches which do not directly rely on O_MAYEXEC but
+which restrict the use of browser plugins and extensions, which may be
+seen as scripts too:
+https://github.com/clipos-archive/clipos4_portage-overlay/tree/master/www-client
+
+An introduction to O_MAYEXEC was given at the Linux Security Summit
+Europe 2018 - Linux Kernel Security Contributions by ANSSI:
+https://www.youtube.com/watch?v=chNjCRtPKQY&t=17m15s
+The "write xor execute" principle was explained at Kernel Recipes 2018 -
+CLIP OS: a defense-in-depth OS:
+https://www.youtube.com/watch?v=PjRE0uBtkHU&t=11m14s
+See also a first LWN article about O_MAYEXEC and a new one about
+trusted_for(2) and its background:
+* https://lwn.net/Articles/820000/
+* https://lwn.net/Articles/832959/
+
+This patch series can be applied on top of v5.10-rc6 .  This can be
+tested with CONFIG_SYSCTL.  I would really appreciate constructive
+comments on this patch series.
+
+Previous series:
+https://lore.kernel.org/lkml/20201203173118.379271-1-mic@digikod.net/
+
+[1] https://lore.kernel.org/lkml/1544647356.4028.105.camel@linux.ibm.com/
+[2] https://lore.kernel.org/lkml/20190904201933.10736-6-cyphar@cyphar.com/
+[3] https://lore.kernel.org/lkml/CALCETrVovr8XNZSroey7pHF46O=kj_c5D9K8h=z2T_cNrpvMig@mail.gmail.com/
+[4] https://lore.kernel.org/lkml/CALCETrVeZ0eufFXwfhtaG_j+AdvbzEWE0M3wjXMWVEO7pj+xkw@mail.gmail.com/
+[5] https://lore.kernel.org/lkml/20200406221439.1469862-12-deven.desai@linux.microsoft.com/
+[6] https://lore.kernel.org/lkml/20200922215326.4603-1-madvenka@linux.microsoft.com/
+[7] https://www.python.org/dev/peps/pep-0578/
+[8] https://lore.kernel.org/lkml/0c70debd-e79e-d514-06c6-4cd1e021fa8b@python.org/
+
+Regards,
+
+Mickaël Salaün (3):
+  fs: Add trusted_for(2) syscall implementation and related sysctl
+  arch: Wire up trusted_for(2)
+  selftest/interpreter: Add tests for trusted_for(2) policies
+
+ Documentation/admin-guide/sysctl/fs.rst       |  50 +++
+ arch/alpha/kernel/syscalls/syscall.tbl        |   1 +
+ arch/arm/tools/syscall.tbl                    |   1 +
+ arch/arm64/include/asm/unistd.h               |   2 +-
+ arch/arm64/include/asm/unistd32.h             |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl         |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl         |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl     |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl     |   1 +
+ arch/parisc/kernel/syscalls/syscall.tbl       |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl           |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl        |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl        |   1 +
+ arch/xtensa/kernel/syscalls/syscall.tbl       |   1 +
+ fs/open.c                                     |  78 ++++
+ include/linux/fs.h                            |   1 +
+ include/linux/syscalls.h                      |   2 +
+ include/uapi/asm-generic/unistd.h             |   4 +-
+ include/uapi/linux/trusted-for.h              |  18 +
+ kernel/sysctl.c                               |  12 +-
+ tools/testing/selftests/Makefile              |   1 +
+ .../testing/selftests/interpreter/.gitignore  |   2 +
+ tools/testing/selftests/interpreter/Makefile  |  21 +
+ tools/testing/selftests/interpreter/config    |   1 +
+ .../selftests/interpreter/trust_policy_test.c | 362 ++++++++++++++++++
+ 30 files changed, 568 insertions(+), 4 deletions(-)
+ create mode 100644 include/uapi/linux/trusted-for.h
+ create mode 100644 tools/testing/selftests/interpreter/.gitignore
+ create mode 100644 tools/testing/selftests/interpreter/Makefile
+ create mode 100644 tools/testing/selftests/interpreter/config
+ create mode 100644 tools/testing/selftests/interpreter/trust_policy_test.c
+
+
+base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
 -- 
-2.30.2
+2.32.0
 
