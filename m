@@ -2,156 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7BC4256A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C0F4256A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241224AbhJGPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:34:48 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45496 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhJGPer (ORCPT
+        id S241267AbhJGPfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:35:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:49972 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJGPfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:34:47 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC7041FE5D;
-        Thu,  7 Oct 2021 15:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633620772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        Thu, 7 Oct 2021 11:35:14 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0E2BC21DA9;
+        Thu,  7 Oct 2021 15:33:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633620800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6B1VO+DAyC0SNt7AIeINO89Y01c7kiMHh/J/8X3K/8g=;
-        b=EXhzSbJpJrTL4FOchfh0da/gwXR8mST5Kuv4U4Dcy2y8v/Kl/NmPDMULfluACAgJJDrUNi
-        UQMcPzGHj0mO/Oxmf1Hhlqoapd/7B4fXamGoz8Lbub2iqL/QRMOA7hgv4eiA004ixW8OtG
-        2uWAj8PQCugzThuNpVRPSW8k+l2ynzA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633620772;
+        bh=HNbVqhTP/+kArtGfK2vUCeGnFIBp5ns2iEX512Ous+4=;
+        b=q3IOkd6KvO3mrfx7LpvSEFRHtI4nB1GFR5/ZEfx8HwK3IMG30+Yek+mTzVurpcVc9B+unN
+        gxTZ0MWDEw25c6Tyi62cus/pJZHGSBtjFNSjTPnSqXvwUR4eLg8iumpDv68VPwQWAiEJqO
+        pToVv4rlyoeOVbLSqa7jO6ifZEZGs/s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633620800;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6B1VO+DAyC0SNt7AIeINO89Y01c7kiMHh/J/8X3K/8g=;
-        b=CyQ4yNgz1MUmR/R2AHC0yG55AEMOZGP7q7SuSqu3LZehv81fVnKbHDSeHwUWmOWzsUiKVO
-        RDZRXIxEknKNJLDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AEBD13EB7;
-        Thu,  7 Oct 2021 15:32:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id c+BDHSQTX2FVfwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 07 Oct 2021 15:32:52 +0000
-Message-ID: <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
-Date:   Thu, 7 Oct 2021 17:32:52 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Content-Language: en-US
-To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Howard McLauchlan <hmclauchlan@fb.com>
-References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Cc:     bpf@vger.kernel.org
-Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
-In-Reply-To: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+        bh=HNbVqhTP/+kArtGfK2vUCeGnFIBp5ns2iEX512Ous+4=;
+        b=50JD83zapy2z2GwupUl/DY4XtCa7gTMugJIb+MCc1QfgIHjRntIvc8uUgYHWJfPZ7ssgSf
+        TEGbrCRb1YK6FoBQ==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id EF31DA3B81;
+        Thu,  7 Oct 2021 15:33:19 +0000 (UTC)
+Date:   Thu, 07 Oct 2021 17:33:19 +0200
+Message-ID: <s5hy27497eo.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
+Subject: Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+In-Reply-To: <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+        <20191211212025.1981822-9-arnd@arndb.de>
+        <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+        <s5hpmsh9kdx.wl-tiwai@suse.de>
+        <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+        <s5hee8x9f92.wl-tiwai@suse.de>
+        <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/5/21 17:31, Jens Axboe wrote:
-> Allocations can be a very hot path, and this out-of-line function
-> call is noticeable.
+On Thu, 07 Oct 2021 15:11:00 +0200,
+Arnd Bergmann wrote:
 > 
-> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-
-It used to be inline b4 (hi, Konstantin!) and then was converted to be like
-this intentionally :/
-
-See 4f6923fbb352 ("mm: make should_failslab always available for fault
-injection")
-
-And now also kernel/bpf/verifier.c contains:
-BTF_ID(func, should_failslab)
-
-I think either your or Andrew's version will break this BTF_ID thing, at the
-very least.
-
-But I do strongly agree that putting unconditionally a non-inline call into
-slab allocator fastpath sucks. Can we make it so that bpf can only do these
-overrides when CONFIG_FAILSLAB is enabled?
-I don't know, perhaps putting this BTF_ID() in #ifdef as well, or providing
-a dummy that is always available (so that nothing breaks), but doesn't
-actually affect slab_pre_alloc_hook() unless CONFIG_FAILSLAB has been enabled?
-
-> ---
+>  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
+> > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > >
+> > > As far as I can tell, the broken interface will always result in
+> > > user space seeing a zero value for "avail_min". Can you
+> > > make a prediction what that would mean for actual
+> > > applications? Will they have no audio output, run into
+> > > a crash, or be able to use recover and appear to work normally
+> > > here?
+> >
+> > No, fortunately it's only about control->avail_min, and fiddling this
+> > value can't break severely (otherwise it'd be a security problem ;)
+> >
+> > In the buggy condition, it's always zero, and the kernel treated as if
+> > 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> > applications.   Apps usually don't care about the wake-up condition so
+> > much.  There are subtle difference and may influence on the stability
+> > of stream processing, but the stability usually depends more strongly
+> > on the hardware and software configurations.
+> >
+> > That being said, the impact by this bug (from the application behavior
+> > POV) is likely quite small, but the contamination is large; as you
+> > pointed out, it's much larger than I thought.
 > 
-> diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
-> index e525f6957c49..3128d2c8b3b4 100644
-> --- a/include/linux/fault-inject.h
-> +++ b/include/linux/fault-inject.h
-> @@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
->  
->  struct kmem_cache;
->  
-> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->  #ifdef CONFIG_FAILSLAB
-> +int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->  extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
->  #else
->  static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 58c01a34e5b8..92fd6fe01877 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
->  
->  	might_alloc(flags);
->  
-> +#ifdef CONFIG_FAILSLAB
->  	if (should_failslab(s, flags))
->  		return NULL;
-> +#endif
->  
->  	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
->  		return NULL;
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index ec2bb0beed75..c21bd447f237 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
->  EXPORT_TRACEPOINT_SYMBOL(kfree);
->  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
->  
-> +#ifdef CONFIG_FAILSLAB
->  int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->  {
->  	if (__should_failslab(s, gfpflags))
-> @@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
->  	return 0;
->  }
->  ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> +#endif
+> Ok, got it.
 > 
+> > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> > problem rather hits more widely on 64bit archs silently.  Then, the
+> > influence by this bug must be almost negligible, as we've had no bug
+> > report about the behavior change.
+> 
+> While __snd_pcm_mmap_control64 is only used on 32-bit
+> architectures when 64-bit time_t is used. At the moment, this
+> means all users of musl-1.2.x libc, but not glibc.
+> 
+> On 64-bit architectures, __snd_pcm_mmap_control and
+> __snd_pcm_mmap_control64 are meant to be identical,
+> and this is actually true regardless of the bug, since
+> __pad_before_uframe and __pad_after_uframe both
+> end up as zero-length arrays here.
+> 
+> > We may just fix it in kernel and for new library with hoping that no
+> > one sees the actual problem.  Or, we may provide a complete new set of
+> > mmap offsets and ioctl to cover both broken and fixed interfaces...
+> > The decision depends on how perfectly we'd like to address the bug.
+> > As of now, I'm inclined to go for the former, but I'm open for more
+> > opinions.
+> 
+> Adding the musl list to Cc for additional testers, anyone interested
+> please see [1] for the original report.
+> 
+> It would be good to hear from musl users that are already using
+> audio support with 32-bit applications on 64-bit kernels, which
+> is the case that has the problem today. Have you noticed any
+> problems with audio support here? If not, we can probably
+> "fix" the kernel here and make the existing binaries behave
+> the same way on 32-bit kernels. If there are applications that
+> don't work in that environment today, I think we need to instead
+> change the kernel to accept the currently broken format on
+> both 32-bit and 64-bit kernels, possibly introducing yet another
+> format that works as originally intended but requires a newly
+> built kernel.
 
+Thanks!
+
+And now, looking more deeply, I feel more desperate.
+
+This bug makes the expected padding gone on little-endian.
+On LE 32bit, the buggy definition is:
+
+	char __pad1[0];
+	u32 appl_ptr;
+	char __pad2[0]; // this should have been [4]
+	char __pad3[0];
+	u32 avail_min;
+	char __pad4[4];
+	
+When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
+avail_min updates, 64bit kernel (in compat mode) reads directly as:
+
+	u64 appl_ptr;
+	u64 avail_min;
+
+Hence a bogus appl_ptr would be passed if avail_min != 0.
+And usually application sets non-zero avail_min.
+That is, the bug must hit more severely if the new API were really
+used.  It wouldn't crash, but some weird streaming behavior can
+happen like noise, jumping or underruns.
+
+(Reading back avail_min=0 to user-space is rather harmless.  Ditto for
+ the case of BE, then at least there is no appl_ptr corruption.)
+
+This made me wonder which way to go:
+it's certainly possible to fix the new kernel to treat both buggy and
+sane formats (disabling compat mmap and re-define ioctls, having the
+code for old APIs).  The problem is, however, in the case where the
+application needs to run on the older kernel that expects the buggy
+format.  Then apps would still have to send in the old buggy format --
+or maybe better in the older 32bit format that won't hit the bug
+above.  It makes situation more complicated.
+
+Do we know how widely the __USE_TIME_BITS64 is deployed nowadays?
+
+
+Takashi
