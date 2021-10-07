@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B70EC425291
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E7B425293
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241219AbhJGMKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
+        id S241234AbhJGMKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241151AbhJGMJz (ORCPT
+        with ESMTP id S241155AbhJGMJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:09:55 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D09E8C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:08:01 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id a73so5528163pge.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:08:01 -0700 (PDT)
+        Thu, 7 Oct 2021 08:09:57 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E08C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 05:08:03 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 145so5148152pfz.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 05:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5V/J1/aXDGVV4wyqf1r6JVjxcMSRd0cNHZIq8gu/D4I=;
-        b=q1jsaFLjFvCjOHeVtRFHGwUTQR06+C2Ay/fody6XeFxE2m77CwnzN375ExkkN96df3
-         /AcMSnF0r0VER3DgwOy5IG1+MiNm7vBFoA1hGkod1hym4Drz82l9Y0w2BOQeFOBXZ2pV
-         NrvrtHDh3SFKKdRC3D8M0g6iBjJ9NvOAy9DLz88efuCqK9jY0xPWKOWcb/yyeWVsjjZL
-         wrrNO8LtbuVpmHC4N7KimcXTwfNNO9Y3DAUIhzNRQ6O6YbQ5vbek6f5lvWGhx4tyC4ju
-         lDDVmcu5zB15YLlyepUKGtEo0Foban1uMpG/o4ulTM1fNapTnxbM/tpPPc8prh/f1kdr
-         Ds7g==
+        bh=GvtEAmv10KTKNmGmr2+wYmiKP1biHINp8QYP5Zd8fX4=;
+        b=pWyUbNC5DgTs8jQLSOUmzAHeWqwkPRcLECVbpCjZKwHWxLV6mlPQrEL/ULSHvci2BS
+         749PE8M//SfV0aNoIQjXTovMMhvLFnBMU7wB+9A8hsD1CpixK1jaKq0oPwJVb6s/wxbU
+         0ynI70tEuEvGR08nm/bNASlY1nO0T+jOFJz9h4HuX81Ii77kJA2AUB2Aaxo3Tgyyr7NH
+         oBo8Tlje8pgrvxMSKBF4OfVjgf/9bir5kdwaexD8F/RJcS/qUtVKBt6ycHlGLzaqldo+
+         5Wf6t8n3ESWwo9K9XVYZfwkIPoAMgkwMkQpyamx7htVmpDr7wLZpiGg5/rEKs2rPEBGn
+         oNYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5V/J1/aXDGVV4wyqf1r6JVjxcMSRd0cNHZIq8gu/D4I=;
-        b=nOU4aWYr1z/tX7NC/pAOf6rv8BiUGyQMOwzg0ZmwmZsEQ4pJbKwrXSn57GHMbl3ivH
-         6FCd2GW4NVhMizLnwNXr2RW2V6Zw9uA2l5RxkoxUFCBtVcU58EHNZIJyZdXXp99EE3+R
-         NvqSQeJXvDVSS/3RGZR3nlh+NqBnx8EjEryA2d1/gDhh/wCvhYh2y8kzyRXYDONuDE81
-         agCEOq2iA3/7v+m3uqzKfa32ZodM0WaJVP7i2EZMBBAiLHfVWwFukUYr+u8tsaq7Ofgl
-         7GPwrCtLKKGfXwICfC1Nl8At2TNeRX8Wl/tnClfbN1sy4Q+9DvWNUyuK8TWayKHpzbTm
-         ndXA==
-X-Gm-Message-State: AOAM532/4rWZFzdIvvrbjYcZsCaCuQVxtDIxGFe9DlsHYhBk9zOZxwkD
-        bIeNLkW4MkDKWf6iYFkkCQI=
-X-Google-Smtp-Source: ABdhPJz3bCEDTJnavY3w1N/mcBERy6ktAD3DlOkQlsbWTFYCM3/vbQxM7vBaNZ8Ot8U9QR3SuvnJJA==
-X-Received: by 2002:aa7:8d53:0:b0:44b:fcd8:112 with SMTP id s19-20020aa78d53000000b0044bfcd80112mr4072029pfe.26.1633608481413;
-        Thu, 07 Oct 2021 05:08:01 -0700 (PDT)
+        bh=GvtEAmv10KTKNmGmr2+wYmiKP1biHINp8QYP5Zd8fX4=;
+        b=3tIub07XY8ayNdV9FzCdwkDAnStoVs4jPku8tfnyPYhFI5WRyQjEe6yQBaFgVSgfMF
+         ZLayRpankWZMO1Rt3C8QzP7cX76swuQf+YXbx77pX40Hb73FtRCHszgMmX4YL0qt7uoP
+         DHSyS0HFp2A1AOHTYN6XFgmDM66CMDO700UQGIK4RURTWDqIH0jwzD7ygYTE1eUMdzjU
+         6a8MjqrEcEFn2wCd+fyyKeGk3gUGfRRkUQ6B/uWttxrgAFi6nyAbJ35MOfC8Vzc8qjyz
+         x8TSUG5E+RdPIgJQDGC2EQldtzi0vo1qdilZuiSxJdFeLrS1eLyweLbi79vBv6FngEp8
+         fPQA==
+X-Gm-Message-State: AOAM530lQCgICK/I+Qi9UD3mMMexgkHF5lifcX+zvg7/wUIs8t+SpWhy
+        Z3R3LXkeBJEy4kN3XP7Jz2c=
+X-Google-Smtp-Source: ABdhPJyG7ap2acFO/8tJlIiam0O7cMsNnLU7UN3wsq1pC86XFgokQwPgoZOaCSSa6MQVf6/eQP3weA==
+X-Received: by 2002:aa7:9f05:0:b0:44c:619e:87da with SMTP id g5-20020aa79f05000000b0044c619e87damr4003879pfr.42.1633608482857;
+        Thu, 07 Oct 2021 05:08:02 -0700 (PDT)
 Received: from localhost.localdomain ([144.202.123.152])
-        by smtp.gmail.com with ESMTPSA id c8sm23915582pfj.204.2021.10.07.05.08.00
+        by smtp.gmail.com with ESMTPSA id c8sm23915582pfj.204.2021.10.07.05.08.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 05:08:01 -0700 (PDT)
+        Thu, 07 Oct 2021 05:08:02 -0700 (PDT)
 From:   Yafang Shao <laoar.shao@gmail.com>
 To:     pmladek@suse.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
         akpm@linux-foundation.org, peterz@infradead.org,
@@ -58,9 +58,9 @@ To:     pmladek@suse.com, keescook@chromium.org, viro@zeniv.linux.org.uk,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com
 Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v2 3/4] sched.h: extend task comm from 16 to 24 for CONFIG_BASE_FULL
-Date:   Thu,  7 Oct 2021 12:07:51 +0000
-Message-Id: <20211007120752.5195-4-laoar.shao@gmail.com>
+Subject: [PATCH v2 4/4] kernel/kthread: show a warning if kthread's comm is truncated
+Date:   Thu,  7 Oct 2021 12:07:52 +0000
+Message-Id: <20211007120752.5195-5-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211007120752.5195-1-laoar.shao@gmail.com>
 References: <20211007120752.5195-1-laoar.shao@gmail.com>
@@ -70,75 +70,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When I was implementing a new per-cpu kthread cfs_migration, I found the
-comm of it "cfs_migration/%u" is truncated due to the limitation of
-TASK_COMM_LEN. For example, the comm of the percpu thread on CPU10~19 are
-all with the same name "cfs_migration/1", which will confuse the user. This
-issue is not critical, because we can get the corresponding CPU from the
-task's Cpus_allowed. But for kthreads correspoinding to other hardware
-devices, it is not easy to get the detailed device info from task comm,
-for example,
+Show a warning if task comm is truncated. Below is the result
+of my test case:
 
-    jbd2/nvme0n1p2-
-    nvidia-modeset/
+truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
 
-We can also shorten the name to work around this problem, but I find
-there are so many truncated kthreads:
-
-    rcu_tasks_kthre
-    rcu_tasks_rude_
-    rcu_tasks_trace
-    poll_mpt3sas0_s
-    ext4-rsv-conver
-    xfs-reclaim/sd{a, b, c, ...}
-    xfs-blockgc/sd{a, b, c, ...}
-    xfs-inodegc/sd{a, b, c, ...}
-    audit_send_repl
-    ecryptfs-kthrea
-    vfio-irqfd-clea
-    jbd2/nvme0n1p2-
-    ...
-
-Besides the in-tree kthreads listed above, the out-of-tree kthreads may
-also be truncated:
-
-    rtase_work_queu
-    nvidia-modeset/
-    UVM global queu
-    UVM deferred re
-    ...
-
-We should improve this problem fundamentally.
-
-This patch extends the size of task comm to 24 bytes, which is the
-same length with workqueue's, for the CONFIG_BASE_FULL case. And for the
-CONFIG_BASE_SMALL case, the size of task comm is still kept as 16 bytes.
-
-Suggested-by: Petr Mladek <pmladek@suse.com>
+Suggtested-by: Petr Mladek <pmladek@suse.com>
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 Cc: Kees Cook <keescook@chromium.org>
 Cc: Al Viro <viro@zeniv.linux.org.uk>
 Cc: Petr Mladek <pmladek@suse.com>
 ---
- include/linux/sched.h | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/kthread.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 39039ce8ac4c..e0796068dee0 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -275,7 +275,11 @@ struct task_group;
- #define get_current_state()	READ_ONCE(current->__state)
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 5b37a8567168..46b924c92078 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+ 	if (!IS_ERR(task)) {
+ 		static const struct sched_param param = { .sched_priority = 0 };
+ 		char name[TASK_COMM_LEN];
++		int len;
  
- /* Task command name length: */
-+#if CONFIG_BASE_SMALL
- #define TASK_COMM_LEN			16
-+#else
-+#define TASK_COMM_LEN			24
-+#endif
- 
- extern void scheduler_tick(void);
- 
+ 		/*
+ 		 * task is already visible to other tasks, so updating
+ 		 * COMM must be protected.
+ 		 */
+-		vsnprintf(name, sizeof(name), namefmt, args);
++		len = vsnprintf(name, sizeof(name), namefmt, args);
++		if (len >= TASK_COMM_LEN) {
++			pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
++				name, task->pid, len - TASK_COMM_LEN + 1);
++		}
+ 		set_task_comm(task, name);
+ 		/*
+ 		 * root may have changed our (kthreadd's) priority or CPU mask.
 -- 
 2.18.2
 
