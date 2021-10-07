@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFE04258C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DFF4258BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242986AbhJGREJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:04:09 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:35706 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242929AbhJGREI (ORCPT
+        id S242911AbhJGREF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:04:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238287AbhJGRED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:04:08 -0400
-Received: by mail-vs1-f53.google.com with SMTP id w13so7545845vsa.2;
-        Thu, 07 Oct 2021 10:02:13 -0700 (PDT)
+        Thu, 7 Oct 2021 13:04:03 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88A7C061570;
+        Thu,  7 Oct 2021 10:02:09 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id r7so21102638wrc.10;
+        Thu, 07 Oct 2021 10:02:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4i3GVmpkBuD3m3Dx++9hKY9H5Zr+5vF1Cseny6w5ZcE=;
+        b=ayFMQsGJOdGUZ1MVTHTYDiZ1SQc6yze4ghyhItnIni3RQ6J67klDWuwGH42IOH+nJg
+         5tlO0ZVqzUWHDqJLUpaD45xszQxcRtBv1p9VUHdyIYwkrWRze0j3a0Is+2i7Y8ITkbk6
+         N1FUIm1G1eFOpdzLtQUGzMm4NLXYV9dHfXfC7rumNPJlXd3YBtztiCv71q+ddCxGuvZ/
+         QuyI8Ax8QFpUBtNsswLR8L7lBmdO0QKvOznAWLOobCnhe547npz7cDvmR27CXF58qKO+
+         dtxiaB3YEP64mX3PbAyJ1j8u+XA8RrfTtXqNoXCr4AP4XRmcutHgG1mYHeMucHysNipO
+         9lRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Net6A8uPndAbUJ/QYF9dWGXevGNTqsRWAodqdtCMsEE=;
-        b=a3AH8lJ25c2IqDesnUpgKMiv4JLi4VTKuA6iZnJT7u9QmmFoIVZonTOimgx8Cmo5BA
-         OwQLqP9p3kgdXd46hYX8clAyPMNMYcszKnPOrYrKlP1LanjUdQfVhP4W1nlDTylqkm61
-         ouS5oD0naWRMghQeGL+RR4fTBYFnShsMiKrMdS1UV+5m6ymQTG+7/VqibVMXBkvWd6p+
-         97+qwpZfMJBusBYCtkONl9Lk9lrFqg5XZzcJT5fe1SN8BlcxwoYsn2hvJMn2STicKLPA
-         8P5BPFtzLBYghvIiAPprAgj8naSK5B+Rw4CusGEDE+JOVjKy+T2SwJM221P2Alq9xat3
-         rp6A==
-X-Gm-Message-State: AOAM532sd+ROhdggJyVf6L4py4HQSPoapEO31H6dWu6PsKbx6I9hackS
-        9Kreddm9KEN57aRyFh7IdKRo9zKkxubNJympOwcqHso6qTo=
-X-Google-Smtp-Source: ABdhPJzVmcl8PZkb76DK9qwOf9kWSU1i0RLwFeh1d7XJBpKhfCCDagP8eWWePrc2v0sVe7t2WFcWBkJeMX/uQi0Udfs=
-X-Received: by 2002:a67:2c58:: with SMTP id s85mr5480132vss.35.1633626133545;
- Thu, 07 Oct 2021 10:02:13 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4i3GVmpkBuD3m3Dx++9hKY9H5Zr+5vF1Cseny6w5ZcE=;
+        b=05VvMN5pHJqQH3svVvY/fOZceVqiFdiqLJ29+HoCRDUY4eGb86W5PGGwfghZk5SIpI
+         YzTcjPT3ROq/adW2T9juRUD6HstBTDfI5XwyB9PILB9OAVR4njfBg4uwEaIg8TjbbV5C
+         efaHvR4eDB76/GoRw76bD2IE9twsTTknPlo73OQSMTXx68MmgMwEqkpcq8uritYyP0OL
+         sB22F/9o06byJXFweLik4PsXdd392AkM6SkdChIR3aWGMEbr4tux66dx3BzN8/POPRL6
+         ewAiC8DrofyNviIz/pgqXUk+CxY7pI/XXMC+eu/gMfGurkV+/w1Qr9hIzGqso8hPFncs
+         ryZQ==
+X-Gm-Message-State: AOAM531jDGaPuAbmxiooun/289OZnpKbqvymiIZKm0tWBVK3nRX35wax
+        NdQP+fmiwAuBI7KQBV8k9T4=
+X-Google-Smtp-Source: ABdhPJztK3Ymj0FVvTj85HCmP4sz33hCB1vgj2DcsLNkHyhcBy4oQgS6eSoRfo+Q7Joqansxy3VJ2Q==
+X-Received: by 2002:a05:600c:3b21:: with SMTP id m33mr5805316wms.80.1633626128447;
+        Thu, 07 Oct 2021 10:02:08 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id d8sm174568wrv.80.2021.10.07.10.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 10:02:07 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 19:02:06 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>
+Cc:     joro@8bytes.org, will@kernel.org, vdumpa@nvidia.com,
+        jonathanh@nvidia.com, linux-tegra@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        digetx@gmail.com
+Subject: Re: [PATCH v6 5/6] iommu/tegra-smmu: Attach as pointer to
+ tegra_smmu_group
+Message-ID: <YV8oDrIweDV3Mo++@orome.fritz.box>
+References: <20210914013858.31192-1-nicoleotsuka@gmail.com>
+ <20210914013858.31192-6-nicoleotsuka@gmail.com>
 MIME-Version: 1.0
-References: <20210930121630.17449-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210930121630.17449-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210930121630.17449-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 7 Oct 2021 19:02:02 +0200
-Message-ID: <CAMuHMdVd8nhWX9__bo9oxE44_+FNYs3RhxmJNbz-kKnRzKJZYA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] pinctrl: pinconf-generic: Add support for
- "output-impedance" to be extracted from DT files
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="9bn30aZWl2it19YI"
+Content-Disposition: inline
+In-Reply-To: <20210914013858.31192-6-nicoleotsuka@gmail.com>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
 
-On Thu, Sep 30, 2021 at 2:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add "output-impedance" property to generic options used for DT parsing
-> files. This enables drivers, which use generic pin configurations, to
-> get the value passed to this property.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+--9bn30aZWl2it19YI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch!
+On Mon, Sep 13, 2021 at 06:38:57PM -0700, Nicolin Chen wrote:
+> This could ease driver to access corresponding as pointer
+> when having tegra_smmu_group pointer only, which can help
+> new mappings debugfs nodes.
+>=20
+> Also moving tegra_smmu_find_group_soc() upward, for using
+> it in new tegra_smmu_attach_as(); and it's better to have
+> all tegra_smmu_find_* functions together.
+>=20
+> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
+> ---
+>  drivers/iommu/tegra-smmu.c | 94 +++++++++++++++++++++++++++++++-------
+>  1 file changed, 78 insertions(+), 16 deletions(-)
 
-> --- a/drivers/pinctrl/pinconf-generic.c
-> +++ b/drivers/pinctrl/pinconf-generic.c
-> @@ -46,6 +46,7 @@ static const struct pin_config_item conf_items[] = {
->         PCONFDUMP(PIN_CONFIG_MODE_LOW_POWER, "pin low power", "mode", true),
->         PCONFDUMP(PIN_CONFIG_OUTPUT_ENABLE, "output enabled", NULL, false),
->         PCONFDUMP(PIN_CONFIG_OUTPUT, "pin output", "level", true),
-> +       PCONFDUMP(PIN_CONFIG_OUTPUT_IMPEDANCE, "output impedance", "ohm", true),
->         PCONFDUMP(PIN_CONFIG_POWER_SOURCE, "pin power source", "selector", true),
->         PCONFDUMP(PIN_CONFIG_SLEEP_HARDWARE_STATE, "sleep hardware state", NULL, false),
->         PCONFDUMP(PIN_CONFIG_SLEW_RATE, "slew rate", NULL, true),
-> @@ -179,6 +180,7 @@ static const struct pinconf_generic_params dt_params[] = {
->         { "output-disable", PIN_CONFIG_OUTPUT_ENABLE, 0 },
->         { "output-enable", PIN_CONFIG_OUTPUT_ENABLE, 1 },
->         { "output-high", PIN_CONFIG_OUTPUT, 1, },
-> +       { "output-impedance", PIN_CONFIG_OUTPUT_IMPEDANCE, 0 },
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-"output-impedance-ohms", as per DT standardized property units.
+--9bn30aZWl2it19YI
+Content-Type: application/pgp-signature; name="signature.asc"
 
->         { "output-low", PIN_CONFIG_OUTPUT, 0, },
->         { "power-source", PIN_CONFIG_POWER_SOURCE, 0 },
->         { "sleep-hardware-state", PIN_CONFIG_SLEEP_HARDWARE_STATE, 0 },
+-----BEGIN PGP SIGNATURE-----
 
-With the above fixed:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfKA4ACgkQ3SOs138+
+s6Fisg//YTpYUjCFbuDVLZtxhX/A7K4EQHHaz4cKA4GOVp54LNy4eEX6BNOsHo9/
+fkWFS3/4n5WmT+NRbwicvBJz2OTTDDzZfZPumPO5RUh1W95O7TaD8NJba0eKT+qD
++W9EESBwVQhDoPMC56Pfiuri+4HUY/QvPWSH90fG3eFbAuCwEOYYlEsoll/B7d+x
+OmgnnZD8UQeV/84HpAZNQ5S20KmvWhXL6uP7AzPWXfU084UFt8oh4ozmPqu/qoCg
+BZtxmlFp1M77UTmlwSgqVbI0F7X2iY1pmxviJjhJ0iU44UWCE5AxlKVtNwYooyJV
+yIwuHh5B3VJq5F6JhHXa55OPS0IYwS4+nM9HlSDHPIYwjZCwhPxTuQ+3UfvsWUrJ
+rlUyqtXJxq3juJT3q//uQk+LSBbE3HTx0gOlng0Wo3eA7c1KLXvgq0OWIW+g445Z
+hV9kQPYa7aVciNYF2YvGqnzFuCZLl65zZiO5yfVJHI2K4ynO8attd6IEuioc6ML8
+J0XaI7j/16l8wyi5JvQ82M4WxhHsy7Yl6OrpsuC0Jv50tIg++YZ6oxYKXfAYumaL
+RzE9xwZbSlMN56gljpkhqgxmUU7ibmvxdZM681V2uydFHCEjvI2iJQfwkCtgqyjt
+yRy7dkap/ebKVI6+gEijJHQIWPNM+ZN/VjDXxpFMOceW3nQVXDU=
+=mbcy
+-----END PGP SIGNATURE-----
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--9bn30aZWl2it19YI--
