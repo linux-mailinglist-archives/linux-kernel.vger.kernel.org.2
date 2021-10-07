@@ -2,125 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D222B426D33
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D90426F06
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242896AbhJHPFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:05:15 -0400
-Received: from mout.web.de ([217.72.192.78]:35987 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242175AbhJHPFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:05:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1633705397;
-        bh=3R3mBzzGUL/YB2mbcVYhoFKRkUk0wVNN7isx4+oPMmA=;
-        h=X-UI-Sender-Class:To:Subject:From:Date;
-        b=pFBiXZY0AuJEEwv0tUSoUDb3ARDF0d60NwXYBixM2eVGX7iWaHhiWtdq3v5fqkUIZ
-         No45lUL5Mv8a/wCAEI1EEWnLSuDhJTZ8fNlk+3ehV08JXjpW4FcjFwgVm8aJfmUNpu
-         e3wpWckamgQyV5DAQEe2q6szXJ1w7xeZsqQCOTF4=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from localhost.localdomain ([178.9.168.248]) by smtp.web.de
- (mrweb101 [213.165.67.124]) with ESMTPSA (Nemesis) id
- 0Ljrdd-1nAezs0pBJ-00btjU for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021
- 17:03:17 +0200
+        id S238287AbhJHQeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:34:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239288AbhJHQd6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 12:33:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633710723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=kK1fYXuNv+ywQ5icgeMPInL7gyKox4tRv0GlzEiEwao=;
+        b=ej+gn0uCG8LZxPmoogK2hCoJVjNhNi4/sRYgSv/e8RB7Ux5wtHhxu2tB7ylHQ2jnY0bAVu
+        iam5ynKiPOtjEDMQGFuUcfcgEZUuboYAfOfd1C4iM+HjTmQbei6pcjzKLW1wGbJoYPXwEu
+        /zVW2nyOmmcExLVLKhUyxj/w3YXa91c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-597-9HsIyXDcNLGU_xTbRMusIw-1; Fri, 08 Oct 2021 10:49:24 -0400
+X-MC-Unique: 9HsIyXDcNLGU_xTbRMusIw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB356100B704;
+        Fri,  8 Oct 2021 14:49:22 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E97D52AF99;
+        Fri,  8 Oct 2021 14:49:04 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id EAD77425E3F0; Fri,  8 Oct 2021 11:48:13 -0300 (-03)
+Message-ID: <20211007193526.308047182@fedora.localdomain>
+User-Agent: quilt/0.66
+Date:   Thu, 07 Oct 2021 16:23:51 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
 To:     linux-kernel@vger.kernel.org
-Subject: Unwanted activation of root-processes getting highly activated
-From:   secret <andreas-stoewing@web.de>
-Date:   Fri, 8 Oct 2021 17:04:55 +0000
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Subject: [patch v4 5/8] task isolation: sync vmstats conditional on changes
+References: <20211007192346.731667417@fedora.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <202110081704.58659.andreas-stoewing@web.de>
-X-Provags-ID: V03:K1:VntlmNsOXkemaPUbETqdYEW9hkMn3e8qLFkEZj1Q4wQSrq+wmQD
- eGP1PqdOmyuKCtxiBv2GNE0DAUunKhrNJuooJU4HuRK8j5Ia6UPwegraNbPqA4eh7e2aptW
- D7a/ETQgkkwc/owRigaZMxmjQypxKaNsiMZ5BU8r97uDfy6R74PEqZfi5qrYmjV/xjszG4h
- Z6Ozp20YBWwhrkA9tzLqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8TDFa/9ejXA=://TpY/KbGLc0EC9R1s//in
- BJtSAEhgpsQiB+xiqOhKkIw0Xotk03Mrychii3bGwV17iZl1PnJiIOL1d4kFoSENWzOgkX6xx
- gsnzUIjd5Bf7n+YNLB78xINMgk49SlXi+QGr1HpVXyGlfSGtAyRqZfsMJWkwZj6TSsw1fYl50
- b8YhAE91Io/p4fpgQHGfzRbcoAeT1JCPrMx0cIUiXq9gIH6Z45aL1B1hmiYPocujTIQ9IYFWm
- J3H5ulwqT19FughNpFwHmg10PrboNZwddkfoeXi/xYQk17n/E4jiMI/6nIMLTTCMx3PPD9wmb
- HOHdHuPYZUWIUy5T4EtkdcuZ19gBfnpUxnjq+YNRYuSlI8FwCHIlwAOm4SUDuSgELcqK+wXJI
- vad0heJQTK7iceFnBeq+Ny1v+gbBOvJD4nrVJEoMjGwTmNpBq1fCCevmrGck4pE9nqcXJgWti
- TX8PV+9A4VrNBaqPyKPh6zTplg9VSRZr/gSH6iCDdi7zsAz4kjbFzXEBGCawWaFkLFp45qlcD
- NcrCyKjEMkJzVqh+Al8iuodNa8TOu1uHGtFsLCbinI0M0bcRf92y7uU7C9DlACXcFVfIIv9aN
- ag1GNDPQ8OumI8FbSjEkdq9vH7bwIQc12femd6r5Jgq6lHEv3B6WQoP+xN6Yw7p5sD7vFDTwN
- AjajyWq2IpPQjUQZQ2M2cgfKpP/+HCYgSaLtwucuy1pOjW8rkh5safoBjCmpU1cAtKXSzQplZ
- /St7238yjF1/ZC1kt336iqyssxCb2x+KKisOL+ZT42wvudvNDQQO88eEI2NjoiSb9mHA9778o
- MOWQVL3rbXEV+aPFLT3xW3IICEpXEnfMNlZ0hIuv/e9nb6df69bmBxj2WmzZDugyWWvQaMq8s
- IDq/1W3HaxGqPj7TGR7RLOpE4OKwFHL+fKT5+fpMktLJmMIvbjJQ8FYjVxrEJ0XxVHZtpYSN5
- LLg/d/9fa8qx0cAHKjtKnxJE5LU8V8miyHy5bF5otf+RGLcn+exnj6XPF4uLksiY6a06QSvzV
- DMPeYypeURGfovUEspjHlZSeAJldndPNtqoo4144jbgIdr+k9D2BQ+G8gHPQVxyEWgNN22+Wr
- ndBd65i6PU8Rns=
+Content-Type: text/plain; charset=UTF-8
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Date: 08.10.2021
+Rather than syncing VM-stats on every return to userspace
+(or VM-entry), keep track of changes through a per-CPU bool.
 
-Subject/Betreff: Unwanted activation of root-processes reading and writing=
- out
-the whole SSD/harddrive ! / Kernel-5.4.134 (pclos, AppArmor / Tor (OpenSuS=
-E)
-usw. etc.: Freigabe von Informationen, Ausf=FChren von Code mit h=F6heren
-Privilegien und beliebiger Kommandos in Linux, Erzeugung, Lesen und
-=DCberschreiben beliebiger Dateien
+This improves performance when enabling task isolated
+for vcpu VMs.
 
-Hi, Greg, dear Linux experts and friends,
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
 
-this is one of the most dangerous and worst things, Linux can happen!
-Refering to the actual kernel 5.4.134 ( now up to the actual version 5.4.1=
-51
-and higher, additional remark from 10.08.2021), there still is a problem w=
-ith
-unexpectedly activated, highly active root-processes (making the tower-LED
-causing readwrites onto harddiscs and making the SSD/harddrive blink serio=
-us-
-madly hard for about up to 20 minutes). The whole SSD/harddrive seems to g=
-et
-read out and overwritten!
+Index: linux-2.6/include/linux/vmstat.h
+===================================================================
+--- linux-2.6.orig/include/linux/vmstat.h
++++ linux-2.6/include/linux/vmstat.h
+@@ -22,7 +22,16 @@ int sysctl_vm_numa_stat_handler(struct c
+ #endif
+ 
+ #ifdef CONFIG_SMP
+-void sync_vmstat(void);
++extern struct static_key vmstat_sync_enabled;
++
++void __sync_vmstat(void);
++static inline void sync_vmstat(void)
++{
++	if (static_key_false(&vmstat_sync_enabled))
++		__sync_vmstat();
++}
++
++void init_sync_vmstat(void);
+ #else
+ static inline void sync_vmstat(void)
+ {
+Index: linux-2.6/kernel/task_isolation.c
+===================================================================
+--- linux-2.6.orig/kernel/task_isolation.c
++++ linux-2.6/kernel/task_isolation.c
+@@ -21,6 +21,17 @@
+ #include <linux/mm.h>
+ #include <linux/vmstat.h>
+ 
++void __tsk_isol_exit(struct task_struct *tsk)
++{
++	struct isol_info *i;
++
++	i = tsk->isol_info;
++	if (!i)
++		return;
++
++	static_key_slow_dec(&vmstat_sync_enabled);
++}
++
+ void __tsk_isol_free(struct task_struct *tsk)
+ {
+ 	if (!tsk->isol_info)
+@@ -37,6 +48,12 @@ static struct isol_info *tsk_isol_alloc_
+ 	if (unlikely(!info))
+ 		return ERR_PTR(-ENOMEM);
+ 
++	preempt_disable();
++	init_sync_vmstat();
++	preempt_enable();
++
++	static_key_slow_inc(&vmstat_sync_enabled);
++
+ 	return info;
+ }
+ 
+Index: linux-2.6/mm/vmstat.c
+===================================================================
+--- linux-2.6.orig/mm/vmstat.c
++++ linux-2.6/mm/vmstat.c
+@@ -28,6 +28,7 @@
+ #include <linux/mm_inline.h>
+ #include <linux/page_ext.h>
+ #include <linux/page_owner.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "internal.h"
+ 
+@@ -306,6 +307,22 @@ void set_pgdat_percpu_threshold(pg_data_
+ 	}
+ }
+ 
++struct static_key vmstat_sync_enabled;
++static DEFINE_PER_CPU_ALIGNED(bool, vmstat_dirty);
++
++static inline void mark_vmstat_dirty(void)
++{
++	if (!static_key_false(&vmstat_sync_enabled))
++		return;
++
++	raw_cpu_write(vmstat_dirty, true);
++}
++
++void init_sync_vmstat(void)
++{
++	raw_cpu_write(vmstat_dirty, true);
++}
++
+ /*
+  * For use when we know that interrupts are disabled,
+  * or when we know that preemption is disabled and that
+@@ -338,6 +355,7 @@ void __mod_zone_page_state(struct zone *
+ 		x = 0;
+ 	}
+ 	__this_cpu_write(*p, x);
++	mark_vmstat_dirty();
+ 
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 		preempt_enable();
+@@ -376,6 +394,7 @@ void __mod_node_page_state(struct pglist
+ 		x = 0;
+ 	}
+ 	__this_cpu_write(*p, x);
++	mark_vmstat_dirty();
+ 
+ 	if (IS_ENABLED(CONFIG_PREEMPT_RT))
+ 		preempt_enable();
+@@ -574,6 +593,7 @@ static inline void mod_zone_state(struct
+ 
+ 	if (z)
+ 		zone_page_state_add(z, zone, item);
++	mark_vmstat_dirty();
+ }
+ 
+ void mod_zone_page_state(struct zone *zone, enum zone_stat_item item,
+@@ -642,6 +662,7 @@ static inline void mod_node_state(struct
+ 
+ 	if (z)
+ 		node_page_state_add(z, pgdat, item);
++	mark_vmstat_dirty();
+ }
+ 
+ void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+@@ -1082,6 +1103,7 @@ static void fill_contig_page_info(struct
+ 			info->free_blocks_suitable += blocks <<
+ 						(order - suitable_order);
+ 	}
++	mark_vmstat_dirty();
+ }
+ 
+ /*
+@@ -1434,6 +1456,7 @@ static void walk_zones_in_node(struct se
+ 		if (!nolock)
+ 			spin_unlock_irqrestore(&zone->lock, flags);
+ 	}
++	mark_vmstat_dirty();
+ }
+ #endif
+ 
+@@ -1499,6 +1522,7 @@ static void pagetypeinfo_showfree_print(
+ 		}
+ 		seq_putc(m, '\n');
+ 	}
++	mark_vmstat_dirty();
+ }
+ 
+ /* Print out the free pages at each order for each migatetype */
+@@ -1917,6 +1941,7 @@ static void vmstat_update(struct work_st
+ 				this_cpu_ptr(&vmstat_work),
+ 				round_jiffies_relative(sysctl_stat_interval));
+ 	}
++	mark_vmstat_dirty();
+ }
+ 
+ /*
+@@ -2003,13 +2028,18 @@ static void vmstat_shepherd(struct work_
+ 		round_jiffies_relative(sysctl_stat_interval));
+ }
+ 
+-void sync_vmstat(void)
++void __sync_vmstat(void)
+ {
+ 	int cpu;
+ 
+ 	cpu = get_cpu();
++	if (per_cpu(vmstat_dirty, cpu) == false) {
++		put_cpu();
++		return;
++	}
+ 
+ 	refresh_cpu_vm_stats(false);
++	raw_cpu_write(vmstat_dirty, false);
+ 	put_cpu();
+ 
+ 	/*
+Index: linux-2.6/include/linux/task_isolation.h
+===================================================================
+--- linux-2.6.orig/include/linux/task_isolation.h
++++ linux-2.6/include/linux/task_isolation.h
+@@ -27,6 +27,13 @@ static inline void tsk_isol_free(struct
+ 		__tsk_isol_free(tsk);
+ }
+ 
++void __tsk_isol_exit(struct task_struct *tsk);
++static inline void tsk_isol_exit(struct task_struct *tsk)
++{
++	if (tsk->isol_info)
++		__tsk_isol_exit(tsk);
++}
++
+ int prctl_task_isolation_feat_get(unsigned long arg2, unsigned long arg3,
+ 				  unsigned long arg4, unsigned long arg5);
+ int prctl_task_isolation_cfg_get(unsigned long arg2, unsigned long arg3,
+@@ -58,6 +65,10 @@ static inline void tsk_isol_free(struct
+ {
+ }
+ 
++static inline void tsk_isol_exit(struct task_struct *tsk)
++{
++}
++
+ static inline int prctl_task_isolation_feat_get(unsigned long arg2,
+ 						unsigned long arg3,
+ 						unsigned long arg4,
+Index: linux-2.6/kernel/exit.c
+===================================================================
+--- linux-2.6.orig/kernel/exit.c
++++ linux-2.6/kernel/exit.c
+@@ -64,6 +64,7 @@
+ #include <linux/rcuwait.h>
+ #include <linux/compat.h>
+ #include <linux/io_uring.h>
++#include <linux/task_isolation.h>
+ 
+ #include <linux/uaccess.h>
+ #include <asm/unistd.h>
+@@ -778,6 +779,7 @@ void __noreturn do_exit(long code)
+ 	}
+ 
+ 	io_uring_files_cancel();
++	tsk_isol_exit(tsk);
+ 	exit_signals(tsk);  /* sets PF_EXITING */
+ 
+ 	/* sync mm's RSS info before statistics gathering */
+Index: linux-2.6/kernel/fork.c
+===================================================================
+--- linux-2.6.orig/kernel/fork.c
++++ linux-2.6/kernel/fork.c
+@@ -2446,6 +2446,7 @@ bad_fork_free_pid:
+ 	if (pid != &init_struct_pid)
+ 		free_pid(pid);
+ bad_fork_cleanup_task_isolation:
++	tsk_isol_exit(p);
+ 	tsk_isol_free(p);
+ bad_fork_cleanup_thread:
+ 	exit_thread(p);
 
-The unwanted, highly by tor (pclos, mga7) resp. firejail activated kernel-
-root-processes are named
 
-kworker/u2:1-kcryptd/253:2 (escpecially this one, CPU: gt; 10%)
-kworker/0:1H-kblockd
-dmcrypt_write/2 and
-jbd2/dm2--8
-
-This occurs since kernel around 5.4.13, whenever I start browsing (with Pa=
-le
-Moon), activating firejail and tor.
-
-Please patch the kernel-5.4 to prevent it in future!
-Regards
-Andreas St=F6wing (Gooken-producer, Gooken: https://gooken.safe-ws.de/gook=
-en)
-
-Appendix
-libapparmor.so.required by firejail (OpenSuSE 15.X) needed by tor (rosa201=
-6.1,
-mga7) must be the cause for the activation as much as high activity of som=
-e
-root-processes!
-I have got no other explanation.
-Kernel security module apparmor itself got deactivated within the kernel b=
-y my
-boot-parameters "security=3Dnone" and "apparmor=3Dnone".
-
-After tor and firejail version got changed from OpenSuSE 15.X to mga7
-(firejail) resp. to CentOS el7 (Tor), so that libapparmor.so.1  is not
-required anymore, such root-processes did not get activated resp. active t=
-oo
-much!<BR>
-But they did appear unexpectedly again in kernel-5.4.151 !
-<BR><BR>
-So I still await your patches for kernel-5.4.
-In my opinion, Linux is killing spy-software and rubbish, if you won&#180;=
-t
-patch it !
-
-Regards
-Gooken
