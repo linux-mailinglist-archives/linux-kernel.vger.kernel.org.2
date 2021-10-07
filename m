@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463414250C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702D94250C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240802AbhJGKMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:12:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:16030 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232642AbhJGKMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:12:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="207025280"
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="207025280"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 03:10:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="560517398"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
-  by FMSMGA003.fm.intel.com with SMTP; 07 Oct 2021 03:10:34 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 07 Oct 2021 13:10:32 +0300
-Date:   Thu, 7 Oct 2021 13:10:32 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, jani.nikula@linux.intel.com,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, tiwai@suse.de,
-        wanghaibin.wang@huawei.com,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH] drm/i915: Free the returned object of acpi_evaluate_dsm()
-Message-ID: <YV7HmF3J6RI9L40u@intel.com>
-References: <20210906033541.862-1-yuzenghui@huawei.com>
+        id S240800AbhJGKNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240807AbhJGKNP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:13:15 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD0DC061746;
+        Thu,  7 Oct 2021 03:11:22 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id y26so22938019lfa.11;
+        Thu, 07 Oct 2021 03:11:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gAsO5CGDd+Gl/+s+z+h8owFe4pxvJKVtZk+XjdJj9Hg=;
+        b=JpI+ZgQThl3v74t8a5dCSw2TfKJCMMwkfXdQTKZ3mz21GBvG1s+0LvJAYoTkUj2iu1
+         vtvflnbnIhWaQwrfPL5UIRs71n1tf3JJvnXJ5jWwdxyUJ+kc0X1dLxbSawE3rwmEEjYu
+         EiLyCzpLQ1hxPlVrpcf1ykwNfMiOUrN/6LD3DQyanR29+2SkAZQOqjIJG7TSjolOO8xq
+         oxYX7BNQKwsrPcbpsVTtWqfxJ+PQkVqBBai4W2Uc//UV3W/kWOpxmBF11RHQjD/cLTv6
+         YljLfnt2e1vdrE4a7RQ4bSZYiiQpOYF1Knk2BBSjVGNqMfKTRYvdcpw1oqTMQBxthdOV
+         eukg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gAsO5CGDd+Gl/+s+z+h8owFe4pxvJKVtZk+XjdJj9Hg=;
+        b=QVI9zF6N71OwGH0ssm4LjCsATQEJCfadkTmCdBhWD5GPi74K+nhE1lv7bLd5uynbfe
+         dLJopQJkEv1pVcU3DJY1SGkaNUVnAhAN0E9vLrMIv1j5eN13iVMcsuJ6JF6DNZEqya/r
+         dhJuAnuGXWZqu0kRKu3RqYnEf8OynNXSsCBVEHLwLfuMfTUEoryfil5fVM8pkvBJa/nf
+         xr44e6DHbzqZ7DIl7M9IR/hqdpU4XRs9BpQfd0T5IWPeqTJVak5ouGcB6LvC3/WN+fo2
+         0w/tQvw1Zs/zf+AD7P0ayirphuLVYd7VgdbBSbuNwgVd10uIOvPzNeof/d/J/lGq5Row
+         XeDA==
+X-Gm-Message-State: AOAM530NHODXB2xo5XMuThLAVRFnpXOVIynKFkIR22DZNXmac7zBybp/
+        Dcch+wYibUyRkvBsyPKceKSyBovMjkU=
+X-Google-Smtp-Source: ABdhPJzS/9lNiRXorykyaMPF2frSJSeqRPBB2y8Ryzu2InchB+s0YRrpJax64rfsMScVWYkoSgckiw==
+X-Received: by 2002:a2e:a7d5:: with SMTP id x21mr3670821ljp.8.1633601480253;
+        Thu, 07 Oct 2021 03:11:20 -0700 (PDT)
+Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
+        by smtp.googlemail.com with ESMTPSA id f4sm2507075lfr.43.2021.10.07.03.11.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 03:11:19 -0700 (PDT)
+Subject: Re: [PATCH v1 0/6] Introduce power off call chain API
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20211007060253.17049-1-digetx@gmail.com>
+ <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
+ <e7763b75-205c-4e9f-ecdc-a32571a4b822@gmail.com>
+ <YV65qsQPtQfWvE9W@smile.fi.intel.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <54c7b83e-22ae-2521-1f44-ec9b2e21464e@gmail.com>
+Date:   Thu, 7 Oct 2021 13:11:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <YV65qsQPtQfWvE9W@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210906033541.862-1-yuzenghui@huawei.com>
-X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 11:35:41AM +0800, Zenghui Yu wrote:
-> As per the comment on top of acpi_evaluate_dsm():
+07.10.2021 12:11, Andy Shevchenko пишет:
+> On Thu, Oct 07, 2021 at 11:52:46AM +0300, Dmitry Osipenko wrote:
+>> 07.10.2021 10:18, Andy Shevchenko пишет:
+>>> On Thu, Oct 7, 2021 at 9:05 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 > 
-> | * Evaluate device's _DSM method with specified GUID, revision id and
-> | * function number. Caller needs to free the returned object.
+> ...
 > 
-> We should free the returned object of acpi_evaluate_dsm() to avoid memory
-> leakage. Otherwise the kmemleak splat will be triggered at boot time (if we
-> compile kernel with CONFIG_DEBUG_TEST_DRIVER_REMOVE=y).
+>>>> This
+>>>> is a somewhat simplified version which doesn't try to convert whole kernel
+>>>> to the new API at once, but solves immediate practical problem that we
+>>>
+>>> problems
+>>>
+>>>> have on Nexus 7 Android tablet where device needs to chain power off
+>>>
+>>> tablets where the device
+>>
+>> Thank you for the corrections, so far there is one problem and one tablet :)
 > 
-> Fixes: 8e55f99c510f ("drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops")
-> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+> Then use "the Nexus 7 Android tablet" :-)
+> 
+>>> Immediate question here is how do you see the plan of spreading this.
+>>> I.o.w. can you put an explanation that you have checked, let's say
+>>>> 80% current users, and they may be converted like [example
+>>> placeholder] without any special tricks?
+>>
+>> The rough plan is:
+>>
+>> 1. Add new API.
+>> 2. Convert drivers to the new API per subsystem.
+> 
+> I would suggest to show that you are actually into it by converting a couple of
+> the subsystems for the starter.
 
-Applied to drm-intel-next. Thanks, and sorry for the lag.
+Noted
 
-> ---
->  drivers/gpu/drm/i915/display/intel_acpi.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+>> 3. Expose do_kernel_restart().
+>> 4. Replace pm_power_off() with do_kernel_poweroff() per arch/, making
+>> power off similar to the restart that uses do_kernel_restart().
+>> 5. Remove do_kernel_restart() from kernel/reboot.c
+>>
+>> Majority of pm_power_off() users shouldn't need the chaining and
+>> pm_power_off() doesn't conflict with the new API, so there is no need to
+>> rush the conversion.
+>>
+>> The single-link chain users could be converted to the new API directly,
+>> this will remove some global variables. But at first should be better to
+>> gain more users who actually need the chained power off since they may
+>> have very specific requirements not covered by the current variant of
+>> the API and will be easier to evolve API with less users.
 > 
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> index 7cfe91fc05f2..68abeaf2d7d4 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> @@ -186,13 +186,16 @@ void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
->  {
->  	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
->  	acpi_handle dhandle;
-> +	union acpi_object *obj;
->  
->  	dhandle = ACPI_HANDLE(&pdev->dev);
->  	if (!dhandle)
->  		return;
->  
-> -	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-> -			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
-> +	obj = acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-> +				INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
-> +	if (obj)
-> +		ACPI_FREE(obj);
->  }
->  
->  /*
-> -- 
-> 2.19.1
+> All above in one or another form should be in cover letter.
 
--- 
-Ville Syrj�l�
-Intel
+Alright, apparently I overestimated a tad awareness about the current
+status. I'll extend the cover letter next time, thanks.
