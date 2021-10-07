@@ -2,139 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7DE4252F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8724252FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241336AbhJGM2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:28:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58898 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241144AbhJGM2B (ORCPT
+        id S241345AbhJGM3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:29:06 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25310 "EHLO
+        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233135AbhJGM3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:28:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E55AC224B0;
-        Thu,  7 Oct 2021 12:26:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633609566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ND8Yu8tDRqDniMgWsqUamQ6A8/6Z3CCF0JWxZLsBwo=;
-        b=GsWTr/NdzN4wqt0jaDcZd+eDNbJpFC7Vd0/Nmq+1s9m3AobioQbOLwj3QZiPy01Xb8abTv
-        M96GTCGlJD/Uaq4E6Ptm836oUTrQZiG/B7de1iXH1UP4ExtmYnLtS158LBGkXj+6azsR3W
-        RB/wI9dZh390HGZn2/09AlUJOezU/Cg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633609566;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5ND8Yu8tDRqDniMgWsqUamQ6A8/6Z3CCF0JWxZLsBwo=;
-        b=6/uqmmbZjg0Rx9H2Zq8j+EX+Bbo/qtOmvrLi1wU/3NHBeYHJblzp3ts4gXD7E7LYWEdTpd
-        xGVcxRBtd96uDdBQ==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 96CF6A3B8A;
-        Thu,  7 Oct 2021 12:26:06 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 5ADAC1F2C96; Thu,  7 Oct 2021 14:26:04 +0200 (CEST)
-Date:   Thu, 7 Oct 2021 14:26:04 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH -next v2 1/6] ext4: init seq with random value in kmmpd
-Message-ID: <20211007122604.GF12712@quack2.suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-2-yebin10@huawei.com>
+        Thu, 7 Oct 2021 08:29:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1633609599; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=pbVwJUO76c5OfYRLmclbHoK69TAyZ5YoRXtcgY/bqEBmjPnVUq5lDuAX5JD0uKnqMRINYTR0slHr0idsqHUxXsFj9Pode4MrKMEaJXG2qCS1Ccl059aerxJKAlHPEaCF/dAmf/J7Q3KlyLObr6DENE69/vlAyqT9h6FHlnuymkE=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1633609599; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=ZmDQWllWGjCMvtEuij8KJbKB+KItbbkjy4HSIF8fY/w=; 
+        b=HaFm5YkJxmLKrToodDRb8aUqwVddH7KC7kao0e+i3TpeNw9/MlXk46f3yelj8fxTEdBmsAyuAU0Sg7Id+/t87OsT8gYTRPlccE+o7Dp55/AjdoHzU0Kln8yZbAEDKGun2de7bSz5lULNu/i9cNBsNq3fofvJX0hJvJsLx3SHjBA=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1633609599;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=ZmDQWllWGjCMvtEuij8KJbKB+KItbbkjy4HSIF8fY/w=;
+        b=GeOvSt6R+tkMXJTQKpbnRvahIqsn55ytgPpB5ilePhrXK9obLeko2E6XKBbhIV3Z
+        6kBisByT+sz1Tp4mRWUE5FUs4ifKPCyGWaFM+JKxTwON7bfTccnC43z7QWsXBJmNJFT
+        /5OO78gyh6XAYCGnuwspIxcuuEXtc2jO/w8RmlMQ=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1633609596273981.3428858564824; Thu, 7 Oct 2021 20:26:36 +0800 (CST)
+Date:   Thu, 07 Oct 2021 20:26:36 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Jan Kara" <jack@suse.cz>
+Cc:     "miklos" <miklos@szeredi.hu>, "amir73il" <amir73il@gmail.com>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "linux-unionfs" <linux-unionfs@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <17c5ab83d6d.10cdb35ab25883.3563739472838823734@mykernel.net>
+In-Reply-To: <20211007090157.GB12712@quack2.suse.cz>
+References: <20210923130814.140814-1-cgxu519@mykernel.net>
+ <20210923130814.140814-7-cgxu519@mykernel.net> <20211007090157.GB12712@quack2.suse.cz>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
+ operation
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210911090059.1876456-2-yebin10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 11-09-21 17:00:54, Ye Bin wrote:
-> If two host has the same nodename, and seq start from 0, May cause the
-> detection mechanism to fail.
-> So init seq with random value to accelerate conflict detection.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:01:57 Jan Kara <=
+jack@suse.cz> =E6=92=B0=E5=86=99 ----
+ > On Thu 23-09-21 21:08:10, Chengguang Xu wrote:
+ > > Implement overlayfs' ->write_inode to sync dirty data
+ > > and redirty overlayfs' inode if necessary.
+ > >=20
+ > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ >=20
+ > ...
+ >=20
+ > > +static int ovl_write_inode(struct inode *inode,
+ > > +               struct writeback_control *wbc)
+ > > +{
+ > > +    struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
+ > > +    struct inode *upper =3D ovl_inode_upper(inode);
+ > > +    unsigned long iflag =3D 0;
+ > > +    int ret =3D 0;
+ > > +
+ > > +    if (!upper)
+ > > +        return 0;
+ > > +
+ > > +    if (!ovl_should_sync(ofs))
+ > > +        return 0;
+ > > +
+ > > +    if (upper->i_sb->s_op->write_inode)
+ > > +        ret =3D upper->i_sb->s_op->write_inode(inode, wbc);
+ > > +
+ >=20
+ > I'm somewhat confused here. 'inode' is overlayfs inode AFAIU, so how is =
+it
+ > correct to pass it to ->write_inode function of upper filesystem? Should=
+n't
+ > you pass 'upper' there instead?
 
-Thanks for the patch. I agree the code in kmmpd looks suspicious.  The
-sequence number is initialized to a random number in
-ext4_multi_mount_protect() which is called before kmmpd is started. I think
-kmmpd() should initialize its 'seq' to a number fetched from the mmp
-block, instead of 0 as is currently in the code. I don't think generating a
-new random number as you do is really needed...
+That's right!
 
-								Honza
+ >=20
+ > > +    if (mapping_writably_mapped(upper->i_mapping) ||
+ > > +        mapping_tagged(upper->i_mapping, PAGECACHE_TAG_WRITEBACK))
+ > > +        iflag |=3D I_DIRTY_PAGES;
+ > > +
+ > > +    iflag |=3D upper->i_state & I_DIRTY_ALL;
+ >=20
+ > Also since you call ->write_inode directly upper->i_state won't be updat=
+ed
+ > to reflect that inode has been written out (I_DIRTY flags get cleared in
+ > __writeback_single_inode()). So it seems to me overlayfs will keep writi=
+ng
+ > out upper inode until flush worker on upper filesystem also writes the
+ > inode and clears the dirty flags? So you rather need to call something l=
+ike
+ > write_inode_now() that will handle the flag clearing and do writeback li=
+st
+ > handling for you?
+ >=20
 
-> ---
->  fs/ext4/mmp.c | 32 ++++++++++++++++----------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
-> index cebea4270817..12af6dc8457b 100644
-> --- a/fs/ext4/mmp.c
-> +++ b/fs/ext4/mmp.c
-> @@ -122,6 +122,21 @@ void __dump_mmp_msg(struct super_block *sb, struct mmp_struct *mmp,
->  		       (int)sizeof(mmp->mmp_bdevname), mmp->mmp_bdevname);
->  }
->  
-> +/*
-> + * Get a random new sequence number but make sure it is not greater than
-> + * EXT4_MMP_SEQ_MAX.
-> + */
-> +static unsigned int mmp_new_seq(void)
-> +{
-> +	u32 new_seq;
-> +
-> +	do {
-> +		new_seq = prandom_u32();
-> +	} while (new_seq > EXT4_MMP_SEQ_MAX);
-> +
-> +	return new_seq;
-> +}
-> +
->  /*
->   * kmmpd will update the MMP sequence every s_mmp_update_interval seconds
->   */
-> @@ -132,7 +147,7 @@ static int kmmpd(void *data)
->  	struct buffer_head *bh = EXT4_SB(sb)->s_mmp_bh;
->  	struct mmp_struct *mmp;
->  	ext4_fsblk_t mmp_block;
-> -	u32 seq = 0;
-> +	u32 seq = mmp_new_seq();
->  	unsigned long failed_writes = 0;
->  	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->  	unsigned mmp_check_interval;
-> @@ -258,21 +273,6 @@ void ext4_stop_mmpd(struct ext4_sb_info *sbi)
->  	}
->  }
->  
-> -/*
-> - * Get a random new sequence number but make sure it is not greater than
-> - * EXT4_MMP_SEQ_MAX.
-> - */
-> -static unsigned int mmp_new_seq(void)
-> -{
-> -	u32 new_seq;
-> -
-> -	do {
-> -		new_seq = prandom_u32();
-> -	} while (new_seq > EXT4_MMP_SEQ_MAX);
-> -
-> -	return new_seq;
-> -}
-> -
->  /*
->   * Protect the filesystem from being mounted more than once.
->   */
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Calling ->write_inode directly upper->i_state won't be updated,=20
+however, I don't think overlayfs will keep writing out upper inode since ->=
+write_inode
+will be called when only overlay inode itself marked dirty.  Am I missing s=
+omething?
+
+
+Thanks,
+Chengguang
+
+
