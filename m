@@ -2,86 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 882AD425698
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E7BC4256A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241012AbhJGPdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240882AbhJGPdJ (ORCPT
+        id S241224AbhJGPes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:34:48 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:45496 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhJGPer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:33:09 -0400
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCC7C061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:31:15 -0700 (PDT)
-Received: by mail-ua1-x934.google.com with SMTP id c33so4539574uae.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:31:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6eZtlPFWAta9cWAbKSnTEB89ZaaeeH9U6d/DiOEDJ4A=;
-        b=dSEFfmniVED8B0xlIitfvX1io/mo+EB6OxRxCeRsqQQOqXu8Y72WwneAxwuNDoe69v
-         BltyEpHe86PnqfjjHAUK1PjmNBgotm95hdp4tKWXeJykq2KNmKOHSrFfxX7toaIjPOfJ
-         7KqGxdqAgndPB2tVNBcbqIHAtAWWhn/cuALeqgZrgREUg4TJAk85Ca53Z3Jm66fno/uE
-         Q1Sh5R/ov3gQgUKc//zHbyd+xFxb8U+MZye4mJIvvC7RWb+DGs8q8cjv+7Qcn1kLhZZf
-         xs3u5tMlYkDPCJj0auNZsSPVhyF1ybFBz00i/6KF34LWbR1REswR8stXwDQl0FSLq61r
-         AduQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6eZtlPFWAta9cWAbKSnTEB89ZaaeeH9U6d/DiOEDJ4A=;
-        b=0P/tUoNnjSHG+yuqHYwIP2oEx2cW3RIOwArq609OouIX91lo02EkTY7o4RClEdRAf6
-         /PbRupfvxChZW4RJFNCM+reZpTS+1WyZcbpsUuF/f/A7ZJoUyWmfFkhffXLpOFso9eFu
-         j1NMECcUADUw2NJCJwV2FqZ22dp4hrmPbFdc0bVyPDbPTPlJDA2UPJrFp48HCL+Uf6pY
-         hOf0Y53R9tnv6Pqy3NLbPjhLaHrsphu5g7cgcV6KqZhOqwv0nzrCymCao31o6WyDgebl
-         JamD8tpiSs7Cz5iUstr8F3eAG1iLwKw6b7wR/romsuzC3RpkV5lWksvPn4U2gZRO1UFP
-         njtw==
-X-Gm-Message-State: AOAM533U0il77dAP3h2DzqFdyw++EEvK+d8K10T4vdqWKZmS4bmZ9fMW
-        qebfLs3yGklw1aH44jAe/Pd/bSH0y9CdpfmuQC13sA==
-X-Google-Smtp-Source: ABdhPJzJnBuoD5URWYj80Agkqe+rghbldVV6ScEzSmK94NikdpG2KTBrSoM/XAT9r2zcxGPvCBrwXT1z5VtSuHdXSzk=
-X-Received: by 2002:ab0:708e:: with SMTP id m14mr2737190ual.104.1633620675136;
- Thu, 07 Oct 2021 08:31:15 -0700 (PDT)
+        Thu, 7 Oct 2021 11:34:47 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id BC7041FE5D;
+        Thu,  7 Oct 2021 15:32:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633620772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6B1VO+DAyC0SNt7AIeINO89Y01c7kiMHh/J/8X3K/8g=;
+        b=EXhzSbJpJrTL4FOchfh0da/gwXR8mST5Kuv4U4Dcy2y8v/Kl/NmPDMULfluACAgJJDrUNi
+        UQMcPzGHj0mO/Oxmf1Hhlqoapd/7B4fXamGoz8Lbub2iqL/QRMOA7hgv4eiA004ixW8OtG
+        2uWAj8PQCugzThuNpVRPSW8k+l2ynzA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633620772;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6B1VO+DAyC0SNt7AIeINO89Y01c7kiMHh/J/8X3K/8g=;
+        b=CyQ4yNgz1MUmR/R2AHC0yG55AEMOZGP7q7SuSqu3LZehv81fVnKbHDSeHwUWmOWzsUiKVO
+        RDZRXIxEknKNJLDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7AEBD13EB7;
+        Thu,  7 Oct 2021 15:32:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id c+BDHSQTX2FVfwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 07 Oct 2021 15:32:52 +0000
+Message-ID: <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
+Date:   Thu, 7 Oct 2021 17:32:52 +0200
 MIME-Version: 1.0
-References: <20211007135635.2717-1-semen.protsenko@linaro.org> <CAOMZO5DNF8pO__+Yjn32KEXDG_rq7LoOt=aKrsBz8gPfuxUxPw@mail.gmail.com>
-In-Reply-To: <CAOMZO5DNF8pO__+Yjn32KEXDG_rq7LoOt=aKrsBz8gPfuxUxPw@mail.gmail.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Thu, 7 Oct 2021 18:31:03 +0300
-Message-ID: <CAPLW+4kEaJGbSFcY-Pex2jZdenjAfLakqy1ezGMKOAGHnab5Kg@mail.gmail.com>
-Subject: Re: [PATCH v3] clk: Add clk_set_parent debugfs node
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Content-Language: en-US
+To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Howard McLauchlan <hmclauchlan@fb.com>
+References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Cc:     bpf@vger.kernel.org
+Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
+In-Reply-To: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 at 17:17, Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Sam,
->
-> On Thu, Oct 7, 2021 at 10:57 AM Sam Protsenko
-> <semen.protsenko@linaro.org> wrote:
-> >
-> > Useful for testing mux clocks. One can write the index of the parent to
-> > set into clk_parent node, starting from 0. Example
-> >
-> >     # cd /sys/kernel/debug/clk/mout_peri_bus
-> >     # cat clk_possible_parrents
->
-> s/clk_possible_parrents/clk_possible_parents
+On 10/5/21 17:31, Jens Axboe wrote:
+> Allocations can be a very hot path, and this out-of-line function
+> call is noticeable.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-Thanks, will be fixed.
+It used to be inline b4 (hi, Konstantin!) and then was converted to be like
+this intentionally :/
+
+See 4f6923fbb352 ("mm: make should_failslab always available for fault
+injection")
+
+And now also kernel/bpf/verifier.c contains:
+BTF_ID(func, should_failslab)
+
+I think either your or Andrew's version will break this BTF_ID thing, at the
+very least.
+
+But I do strongly agree that putting unconditionally a non-inline call into
+slab allocator fastpath sucks. Can we make it so that bpf can only do these
+overrides when CONFIG_FAILSLAB is enabled?
+I don't know, perhaps putting this BTF_ID() in #ifdef as well, or providing
+a dummy that is always available (so that nothing breaks), but doesn't
+actually affect slab_pre_alloc_hook() unless CONFIG_FAILSLAB has been enabled?
+
+> ---
+> 
+> diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
+> index e525f6957c49..3128d2c8b3b4 100644
+> --- a/include/linux/fault-inject.h
+> +++ b/include/linux/fault-inject.h
+> @@ -64,8 +64,8 @@ static inline struct dentry *fault_create_debugfs_attr(const char *name,
+>  
+>  struct kmem_cache;
+>  
+> -int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  #ifdef CONFIG_FAILSLAB
+> +int should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  extern bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags);
+>  #else
+>  static inline bool __should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 58c01a34e5b8..92fd6fe01877 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -491,8 +491,10 @@ static inline struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+>  
+>  	might_alloc(flags);
+>  
+> +#ifdef CONFIG_FAILSLAB
+>  	if (should_failslab(s, flags))
+>  		return NULL;
+> +#endif
+>  
+>  	if (!memcg_slab_pre_alloc_hook(s, objcgp, size, flags))
+>  		return NULL;
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index ec2bb0beed75..c21bd447f237 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -1323,6 +1323,7 @@ EXPORT_TRACEPOINT_SYMBOL(kmem_cache_alloc_node);
+>  EXPORT_TRACEPOINT_SYMBOL(kfree);
+>  EXPORT_TRACEPOINT_SYMBOL(kmem_cache_free);
+>  
+> +#ifdef CONFIG_FAILSLAB
+>  int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>  {
+>  	if (__should_failslab(s, gfpflags))
+> @@ -1330,3 +1331,4 @@ int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>  	return 0;
+>  }
+>  ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+> +#endif
+> 
+
