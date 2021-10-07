@@ -2,190 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4550B425590
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAA842559C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242121AbhJGOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:40:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36690 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242064AbhJGOkv (ORCPT
+        id S242112AbhJGOlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233341AbhJGOlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:40:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633617537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NGm1yWS8geF2sO0H/4Ce/J+RgIXVQpoAvhPhIp+yNF0=;
-        b=eBv43nVHJisCj5KeeiFg3sxc4ydpeSBt/22ZkCu7r+KAet2c6Cd3Mh3ddR0ueJOf2FXe0H
-        4a7ew+HNP7ABCcS07heUEVGtGOBi5XpOe2Nos7DD6DKDp0l5SGrKQIv9DymthZABXZO5Up
-        dvb7GxOXL0dvDheaMHUbSAwsV5+WeDk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-BSZ7An4GMJSw9Rwc9g-GQw-1; Thu, 07 Oct 2021 10:38:55 -0400
-X-MC-Unique: BSZ7An4GMJSw9Rwc9g-GQw-1
-Received: by mail-wr1-f72.google.com with SMTP id p12-20020adfc38c000000b00160d6a7e293so2384476wrf.18
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:38:55 -0700 (PDT)
+        Thu, 7 Oct 2021 10:41:50 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DFFC061570;
+        Thu,  7 Oct 2021 07:39:56 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id x7so23487376edd.6;
+        Thu, 07 Oct 2021 07:39:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vDd26SQflN3P15ZnRadh5CKU3JrRFB6su1ADFuo1p5Q=;
+        b=aXjT2T8U43nvqPI2L6L8w9OE+OIk6DuNIqUQSPyjSEf9XYdclcKF5RXhssyOOA2vlL
+         7auIDaSc5CEdbQGZMQtgzhq4siGf2Tk4qO8RHzle07tp0QXSLQI1LNvrn2JCi/Jll1LZ
+         S2KuP4XdnLEN5WQ7cAYWzwjdSw/6rhvH+tSXT5Oxay/paOh0Cg+ToAz/3n3PTui9tioJ
+         pIVzR/HoM9tAd37qi8pPZ7acSJOULeO5UXVUPjJk60cJTMsMSUSvDTYxORhbhIWI+zbi
+         1uLUTJgRf84K6UA4Ig6GAoxdKdfRwIGYhoVMhCw1G8MA2E3CASe7GwLZdfiuG2KnRnTo
+         Ie0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NGm1yWS8geF2sO0H/4Ce/J+RgIXVQpoAvhPhIp+yNF0=;
-        b=nrkz58iseRfehFdkE3EnQAE90tqiam0/cwwV6XU6ydD9GZpl09SjRgoKxL6S67TILq
-         +0HpxbtKazHXbt+Ba9wVOo+PZfUTRulSfWF0WurGSvMWedHEILZV3zC3CMdPnP4Qalg4
-         iBALPShqsN/pUSg/R/hkhjZKHR5tI32usYPHIFZSyK9Dbj8uosDAazdlN3nJF33seR1y
-         qKgB3IDkRrguP5PDIQwAJenF+bL1usrHzsfUm9zl/wGweRU0imxPb7QVnlxH8LcK8A9T
-         shiVF4sg6s7yrI8Y9MuANFKI7ZVe7joey84xo2izBrMv19NEqcaDoPHbjl4KoxERKi5J
-         XfTA==
-X-Gm-Message-State: AOAM533yetu1IP+5cN6+Sp9vMHXOzoUZEmIkUDj+822NM26cVUX30QaL
-        SqSJkg6S2eqbRRCmNCoKDCiz/U3NfpBFJRZsBo9xDOEOFHFufMe2EXvXnCwXfG0hSHaCJp/z/Cv
-        q62XmcoNi9xVmsPswdpFhDLe8
-X-Received: by 2002:adf:bb09:: with SMTP id r9mr6004147wrg.238.1633617534447;
-        Thu, 07 Oct 2021 07:38:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxO9BCo0zdcmxbDxAudW4jdTSomLkbbEHDoD+axd3gGY/vYr4NNhmBMpyQQvOrtL3YclzCczw==
-X-Received: by 2002:adf:bb09:: with SMTP id r9mr6004113wrg.238.1633617534208;
-        Thu, 07 Oct 2021 07:38:54 -0700 (PDT)
-Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id a2sm9231329wrv.15.2021.10.07.07.38.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 07:38:53 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 16:38:52 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org, will@kernel.org,
-        qperret@google.com, dbrazdil@google.com,
-        Steven Price <steven.price@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Srivatsa Vaddagiri <vatsa@codeaurora.org>,
-        Shanker R Donthineni <sdonthineni@nvidia.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kernel-team@android.com
-Subject: Re: [PATCH v2 10/16] KVM: arm64: Add some documentation for the MMIO
- guard feature
-Message-ID: <20211007143852.pyae42sbovi4vk23@gator>
-References: <20211004174849.2831548-1-maz@kernel.org>
- <20211004174849.2831548-11-maz@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vDd26SQflN3P15ZnRadh5CKU3JrRFB6su1ADFuo1p5Q=;
+        b=I/Mc8ylyHSpVrPN90NQ38ghb8gIw/oI4+sVd4ktYv4RtTUtwaxeMtjGjn88mjlLrd0
+         0eUWDSqSfLrHAzdy/3DSFq4i59pQZhsxbNdXScs2/+dca+X196NoDvTusDH4jQGj53Je
+         tw8XGg9tbAPNxZ0POyGRKcv51PauugdyKDadO8pZo8dB9WpJvyqULlK4xDC1AEEeVb7D
+         CkHhAeYT3uvKnHlpTHMhFTA/3QIbj75rue0AjKOmLqGgSjAD3DHmMTTmkunR9nodz8jk
+         twvwGZpTARVbrD0+o+Zeza/hpT0LUCeeGZUWEKnwXpu1gKRJ8ZkBL3mANHjjxaZULWME
+         rukQ==
+X-Gm-Message-State: AOAM530EoDDlssUKZIxoeJC3A1R9paufjgLDAMxxlc1SlfuHWk6lP+cj
+        XWJ8DVlHU1JHrMMGjtTD7KEIyLIHofi0prrK4hI=
+X-Google-Smtp-Source: ABdhPJy0saGklfOotT2S0NR7z3BspcHZidiLqxG4LQ11G1f9JKWJq0vbux4MMkLZhGWyd7GdAD7MmHU5U/86H3vI6Jk=
+X-Received: by 2002:a05:6402:358a:: with SMTP id y10mr6698350edc.238.1633617595253;
+ Thu, 07 Oct 2021 07:39:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004174849.2831548-11-maz@kernel.org>
+References: <20211007140904.3085-1-semen.protsenko@linaro.org>
+In-Reply-To: <20211007140904.3085-1-semen.protsenko@linaro.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 7 Oct 2021 17:39:18 +0300
+Message-ID: <CAHp75Ve1+pJ3Mqc7ErDSheLu5rEvSOf2Cq9JtSfOxSFrazNObg@mail.gmail.com>
+Subject: Re: [PATCH v4] clk: Add write operation for clk_parent debugfs node
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mike Tipton <mdtipton@codeaurora.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andy Shevchenko <andy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 06:48:43PM +0100, Marc Zyngier wrote:
-> Document the hypercalls user for the MMIO guard infrastructure.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  Documentation/virt/kvm/arm/index.rst      |  1 +
->  Documentation/virt/kvm/arm/mmio-guard.rst | 74 +++++++++++++++++++++++
->  2 files changed, 75 insertions(+)
->  create mode 100644 Documentation/virt/kvm/arm/mmio-guard.rst
-> 
-> diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-> index 78a9b670aafe..e77a0ee2e2d4 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -11,3 +11,4 @@ ARM
->     psci
->     pvtime
->     ptp_kvm
-> +   mmio-guard
-> diff --git a/Documentation/virt/kvm/arm/mmio-guard.rst b/Documentation/virt/kvm/arm/mmio-guard.rst
-> new file mode 100644
-> index 000000000000..8b3c852c5d92
-> --- /dev/null
-> +++ b/Documentation/virt/kvm/arm/mmio-guard.rst
-> @@ -0,0 +1,74 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==============
-> +KVM MMIO guard
-> +==============
-> +
-> +KVM implements device emulation by handling translation faults to any
-> +IPA range that is not contained in a memory slot. Such a translation
-> +fault is in most cases passed on to userspace (or in rare cases to the
-> +host kernel) with the address, size and possibly data of the access
-> +for emulation.
-> +
-> +Should the guest exit with an address that is not one that corresponds
-> +to an emulatable device, userspace may take measures that are not the
-> +most graceful as far as the guest is concerned (such as terminating it
-> +or delivering a fatal exception).
-> +
-> +There is also an element of trust: by forwarding the request to
-> +userspace, the kernel assumes that the guest trusts userspace to do
-> +the right thing.
-> +
-> +The KVM MMIO guard offers a way to mitigate this last point: a guest
-> +can request that only certain regions of the IPA space are valid as
-> +MMIO. Only these regions will be handled as an MMIO, and any other
-> +will result in an exception being delivered to the guest.
-> +
-> +This relies on a set of hypercalls defined in the KVM-specific range,
-> +using the HVC64 calling convention.
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_INFO
-> +
-> +    ==============    ========    ================================
-> +    Function ID:      (uint32)    0xC6000002
-> +    Arguments:        none
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                      (uint64)    Protection Granule (PG) size in
-> +                                  bytes (r0)
-> +    ==============    ========    ================================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_ENROLL
-> +
-> +    ==============    ========    ==============================
-> +    Function ID:      (uint32)    0xC6000003
-> +    Arguments:        none
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ==============================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_MAP
-> +
-> +    ==============    ========    ====================================
-> +    Function ID:      (uint32)    0xC6000004
-> +    Arguments:        (uint64)    The base of the PG-sized IPA range
-> +                                  that is allowed to be accessed as
-> +                                  MMIO. Must be aligned to the PG size
-> +                                  (r1)
-> +                      (uint64)    Index in the MAIR_EL1 register
-> +		                  providing the memory attribute that
-> +				  is used by the guest (r2)
-    ^^ some tabs got in here
-
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ====================================
-> +
-> +* ARM_SMCCC_KVM_FUNC_MMIO_GUARD_UNMAP
-> +
-> +    ==============    ========    ======================================
-> +    Function ID:      (uint32)    0xC6000005
-> +    Arguments:        (uint64)    PG-sized IPA range aligned to the PG
-> +                                  size which has been previously mapped.
-> +                                  Must be aligned to the PG size and
-> +                                  have been previously mapped (r1)
-> +    Return Values:    (int64)     NOT_SUPPORTED(-1) on error, or
-> +                                  RET_SUCCESS(0) (r0)
-> +    ==============    ========    ======================================
-> -- 
-> 2.30.2
+On Thu, Oct 7, 2021 at 5:09 PM Sam Protsenko <semen.protsenko@linaro.org> wrote:
 >
+> Useful for testing mux clocks. One can write the index of the parent to
+> be set into clk_parent node, starting from 0. Example
+>
+>     # cd /sys/kernel/debug/clk/mout_peri_bus
+>     # cat clk_possible_parrents
+>       dout_shared0_div4 dout_shared1_div4
+>     # cat clk_parent
+>       dout_shared0_div4
+>     # echo 1 > clk_parent
+>     # cat clk_parent
+>       dout_shared1_div4
+>
+> CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
+> order to use this feature.
 
-Otherwise,
+...
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+> +static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
+> +                                   size_t count, loff_t *ppos)
+> +{
+> +       struct seq_file *s = file->private_data;
+> +       struct clk_core *core = s->private;
+> +       struct clk_core *parent;
 
-Thanks,
-drew 
+> +       char buf[4] = { 0 };
 
+We may use {} (in a more standardized way), but see below.
+
+> +       u8 idx;
+> +       int err;
+
+> +       if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
+> +               return -EFAULT;
+> +
+> +       err = kstrtou8(buf, 0, &idx);
+> +       if (err)
+> +               return err;
+
+NIH kstrotu8_from_user().
+
+> +       parent = clk_core_get_parent_by_index(core, idx);
+> +       if (!parent)
+> +               return -ENOENT;
+> +
+> +       clk_prepare_lock();
+> +       err = clk_core_set_parent_nolock(core, parent);
+> +       clk_prepare_unlock();
+> +       if (err)
+> +               return err;
+> +
+> +       return count;
+> +}
+
+...
+
+> +#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
+> +               if (core->num_parents > 1) {
+> +                       debugfs_create_file("clk_parent", 0644, root, core,
+> +                                           &current_parent_rw_fops);
+
+> +               } else {
+> +                       debugfs_create_file("clk_parent", 0444, root, core,
+> +                                           &current_parent_fops);
+> +               }
+> +#else
+>                 debugfs_create_file("clk_parent", 0444, root, core,
+>                                     &current_parent_fops);
+
+Dup. You can avoid it.
+
+> +#endif
+> +       }
+
+-- 
+With Best Regards,
+Andy Shevchenko
