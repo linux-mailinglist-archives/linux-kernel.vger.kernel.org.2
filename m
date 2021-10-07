@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7370E425A5A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2957425A5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 20:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243473AbhJGSIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 14:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233770AbhJGSIn (ORCPT
+        id S243487AbhJGSJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 14:09:14 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48974 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243373AbhJGSJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 14:08:43 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F55C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 11:06:49 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id o204so1964070oih.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 11:06:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=SF++BOLAlw+gmm2whEMt+9+RSjiVl4Y2q05QuVk4Bi8=;
-        b=JZUaORpsBwKxCbhGCZt/3OvFehX/ZlMOjau9tKi7+z6xpNwYIt1zuCmCkfwEglbruc
-         J8OZV8RKA3NXLumvqbyNfDifsmDTF2igARFQvGcaHdtQvHP+VNSTxt9Tcya6GuhKPOTB
-         KOVQOInU7Vu3fm+/FryIhsq3PpPd9yW6ghyD0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=SF++BOLAlw+gmm2whEMt+9+RSjiVl4Y2q05QuVk4Bi8=;
-        b=tCqG+A61Z//TW67AYhsA7R/X0E6NaG31cYV3WDCctBKg0CnLOEFPzs9RrF8u72h6ih
-         mcivG0D+mSM6yoSUFE757sqIcTDvjk6Wh3j7HyFuPpYqvVv9Al/9ngRXqOHhGa8BwX84
-         PPhcqC5Pt8gHRWwilr6zQWk92kgoVxEyCzAtg0ctLZYTJkJ2uz82Mvxo221i7QWR7FoV
-         XHMpG1w5yerc9zmS13+8Mnmmx2ynzKk+7OZLtM4iZkW6w3vkhz1K3UN8lDfQ3m5htNFO
-         PkrsovarVIQpl0RmYQtf8DfeGCqrivPVSyjWla9hjPZEhgpgUyx2oP3t3zJDwpLTc+X7
-         Ktsg==
-X-Gm-Message-State: AOAM530mWu1fn39P7D6zw/mj5uLIlfABOniCw1Wo71+uYHO+0jxOmjdM
-        tQqMusqrdEUG+ExQVLsCQBcY/GhNRrRDpq6ksNRoFA==
-X-Google-Smtp-Source: ABdhPJxT78LC/jFpZgqZ7+FEhoNmAoI/1qtnz4jLeheFfZGuTZ4oIZcVBly+qSTc29jruR3Jqoqm6fohXJ6TdNNiEO0=
-X-Received: by 2002:a05:6808:f8f:: with SMTP id o15mr12828011oiw.164.1633630009087;
- Thu, 07 Oct 2021 11:06:49 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Thu, 7 Oct 2021 14:06:48 -0400
+        Thu, 7 Oct 2021 14:09:13 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197HX7bc009387;
+        Thu, 7 Oct 2021 14:07:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=7LpLDTRHXFsC4nZgyOmnyv5fLVJVby6YT8fyKx6CqSk=;
+ b=j0XwB64Jz/PM6yWyDzpg9V9/oROfqgCi61BMMCnypeKMcDs2quRYDuoKCr/75Zp7NHfB
+ 6pNpYo+lA9b8oLP6CfAsaMOnF2Rzq2X7IpaXXF6e5z3UFIDCRZO7KJS65a1aeFwJqd9z
+ zgUrUC1E6u+bbMQ2gb/EqXsbxbh6uU3h2J+NwKGzg4Kr+ue+V5kWSLK1MrbPzG/ggUMA
+ zz+sYRcwwmE3vVmAsaWaFjwEgVqpuQV/p735/jSUL7UT+FrGG+z4NwgResyIo3toyQlX
+ Y71MpJntwV4LkkLztOYpIJ6by+WeqCR+ZhJa5O23ZCLIRMEkaPPGwBvUK8D4iq7uZDEt JQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bj1dsynp2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 14:07:18 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 197I42nZ023658;
+        Thu, 7 Oct 2021 18:07:16 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 3bef2bjtmb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Oct 2021 18:07:16 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 197I7CuX67043740
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Oct 2021 18:07:12 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A09604C044;
+        Thu,  7 Oct 2021 18:07:12 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D2084C062;
+        Thu,  7 Oct 2021 18:07:12 +0000 (GMT)
+Received: from osiris (unknown [9.145.86.18])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  7 Oct 2021 18:07:12 +0000 (GMT)
+Date:   Thu, 7 Oct 2021 20:07:10 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: [PATCH v1 1/1] s390: Use string_upper() instead of open coded
+ variant
+Message-ID: <YV83TqdODBXRomA4@osiris>
+References: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20211007052812.3717-1-quic_saipraka@quicinc.com>
-References: <20211007052812.3717-1-quic_saipraka@quicinc.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Thu, 7 Oct 2021 14:06:48 -0400
-Message-ID: <CAE-0n51EBGqOZ7D+sn5=M-ig=6p_NUb+8veaaXXQJo+UrLoQfA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: Enable QTI SC7280 pinctrl, gcc and interconnect
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211001130201.72545-1-andriy.shevchenko@linux.intel.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NJDm2HhHsc2Lk0BADRBRAQBMHCa1MCNw
+X-Proofpoint-ORIG-GUID: NJDm2HhHsc2Lk0BADRBRAQBMHCa1MCNw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-07_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ clxscore=1015 priorityscore=1501 phishscore=0 mlxlogscore=904
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110070117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sai Prakash Ranjan (2021-10-06 22:28:12)
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 156d96afbbfc..87584769cf71 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -984,6 +985,7 @@ CONFIG_MSM_MMCC_8996=y
->  CONFIG_MSM_GCC_8998=y
->  CONFIG_QCS_GCC_404=y
->  CONFIG_SC_GCC_7180=y
-> +CONFIG_SC_GCC_7280=y
+On Fri, Oct 01, 2021 at 04:02:01PM +0300, Andy Shevchenko wrote:
+> Use string_upper() from string helper module instead of open coded variant.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  arch/s390/mm/cmm.c    | 11 ++++-------
+>  arch/s390/mm/extmem.c | 21 ++++++++++++---------
+>  2 files changed, 16 insertions(+), 16 deletions(-)
 
-Any reason to not enable DISPCC or GPUCC which selects the GCC config?
-Same goes for sc7180.
-
->  CONFIG_SDM_CAMCC_845=m
->  CONFIG_SDM_GCC_845=y
->  CONFIG_SDM_GPUCC_845=y
+Applied, but as discussed only the cmm part.
