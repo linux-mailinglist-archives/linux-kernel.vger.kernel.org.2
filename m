@@ -2,59 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 312D74250B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1431E4250B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240736AbhJGKK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:10:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38764 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232573AbhJGKKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:10:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B2026610E6;
-        Thu,  7 Oct 2021 10:08:29 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 11:08:26 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, wanghaibin.wang@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] arm64: defconfig: drop obsolete ARCH_* configs
-Message-ID: <YV7HGniKSKe7nXp/@arm.com>
-References: <20210821030519.127-1-yuzenghui@huawei.com>
- <39c2b2f9-4de2-8e7d-2135-96f1dab750e0@canonical.com>
- <5991e347-18f0-30cd-58b9-9e3276bd98bd@huawei.com>
+        id S240766AbhJGKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:10:34 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:50112 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240743AbhJGKKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:10:32 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id B164F2008A;
+        Thu,  7 Oct 2021 10:08:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633601317; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3G2bH2N+XRfVhANdLLTSFVWFnNxjpsfsI2fUkInvKBw=;
+        b=CrOdU3gG8cpo5xfQ58KOOUZT6kC73I9ccroWpXYuSA6z+sweBO4lrYQxoIsSO2TyxFIEw1
+        cjAbmHhbHtkp7rL3do7yvOGj5K6kLMlPrV3+hVLoic9kE5SMz2xCgB1yWXCX3UU+75Z3s4
+        mAW/5FOlrRoe7eDO5ITZY9ScswmKMBc=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 7FA75A3B87;
+        Thu,  7 Oct 2021 10:08:37 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 12:08:37 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vasily Averin <vvs@virtuozzo.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel@openvz.org, Mel Gorman <mgorman@suse.de>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: memcg memory accounting in vmalloc is broken
+Message-ID: <YV7HJd4r8tcLUpTB@dhcp22.suse.cz>
+References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
+ <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
+ <YV6s+ze8LzuxfvOM@dhcp22.suse.cz>
+ <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5991e347-18f0-30cd-58b9-9e3276bd98bd@huawei.com>
+In-Reply-To: <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 05:42:46PM +0800, Zenghui Yu wrote:
-> On 2021/8/23 21:01, Krzysztof Kozlowski wrote:
-> > On 21/08/2021 05:05, Zenghui Yu wrote:
-> > > Per commit 4a9a1a5602d8 ("arm64: socfpga: merge Agilex and N5X into
-> > > ARCH_INTEL_SOCFPGA") and commit 89d4f98ae90d ("ARM: remove zte zx
-> > > platform"), they can be dropped from defconfig now.
-> > > 
-> > > Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> > > Cc: Arnd Bergmann <arnd@arndb.de>
-> > > Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> > > ---
-> > >  arch/arm64/configs/defconfig | 3 ---
-> > >  1 file changed, 3 deletions(-)
+On Thu 07-10-21 11:50:44, Vasily Averin wrote:
+> On 10/7/21 11:16 AM, Michal Hocko wrote:
+> > Cc Mel and Uladzislau
 > > 
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > On Thu 07-10-21 10:13:23, Michal Hocko wrote:
+> >> On Thu 07-10-21 11:04:40, Vasily Averin wrote:
+> >>> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+> >>>
+> >>> Is it known issue perhaps?
+> >>
+> >> No, I think this was just overlooked. Definitely doesn't look
+> >> intentional to me.
 > 
-> I have no idea about which tree should this patch go via, so a gentle
-> ping here. I've verified that this can still be applied cleanly on top
-> of today's -next.
+> I use following patch as a quick fix,
+> it helps though it is far from ideal and can be optimized.
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b37435c274cf..e6abe2cac159 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5290,6 +5290,12 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>  
+>  		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+>  								pcp, pcp_list);
+> +
+> +		if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT) && page &&
+> +		    unlikely(__memcg_kmem_charge_page(page, gfp, 0) != 0)) {
+> +			__free_pages(page, 0);
+> +			page = NULL;
+> +		}
+>  		if (unlikely(!page)) {
+>  			/* Try and get at least one page */
+>  			if (!nr_populated)
+> -- 
+> 2.31.1
 
-Usually defconfig changes go in via the arm-soc tree rather than the
-arm64 one.
+Yes, this makes sense to me.
 
 -- 
-Catalin
+Michal Hocko
+SUSE Labs
