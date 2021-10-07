@@ -2,294 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829EF42524E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE35D425251
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241135AbhJGLzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:55:07 -0400
-Received: from mga12.intel.com ([192.55.52.136]:34319 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhJGLy5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:54:57 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="206349650"
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="gz'50?scan'50,208,50";a="206349650"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 04:52:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="gz'50?scan'50,208,50";a="478531944"
-Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2021 04:52:45 -0700
-Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mYRx7-0007N6-BN; Thu, 07 Oct 2021 11:52:45 +0000
-Date:   Thu, 7 Oct 2021 19:51:55 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     kbuild-all@lists.01.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [djwong-xfs:zero-initialize-pmem-5.16 25/28]
- fs/iomap/buffered-io.c:943: warning: This comment starts with '/**', but
- isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-Message-ID: <202110071951.xYAkEWMm-lkp@intel.com>
+        id S241147AbhJGLzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:55:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40267 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241137AbhJGLzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 07:55:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633607594;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AZvF8lHSRTx5C1gxLkoYVX71Yos23PQLi8wLibZ0710=;
+        b=RRNO7UaWRln5krpU8DC7iMldqpMlM+58xdAVjMNZ0sx9YE6f+HKbYNIcM0XCkYPD1Cp0bK
+        /svtFwpTgnu3XI99rJvwgD9wssytxPW7Glh6IRtuK+ggh69ezreEwoZ7KAzmwyMGKcdN8/
+        gERj3+v88ez60x4M7ZRQ+EtOeE8MYsQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-f60KTsS4N0205Zinm8Nj0g-1; Thu, 07 Oct 2021 07:52:49 -0400
+X-MC-Unique: f60KTsS4N0205Zinm8Nj0g-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 985AB100CC84;
+        Thu,  7 Oct 2021 11:52:47 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7F47D4EC7D;
+        Thu,  7 Oct 2021 11:52:26 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Halil Pasic <pasic@linux.ibm.com>, markver@us.ibm.com,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
+In-Reply-To: <20211006142533.2735019-1-pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20211006142533.2735019-1-pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Thu, 07 Oct 2021 13:52:24 +0200
+Message-ID: <875yu9yruv.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="Nq2Wo0NMKNjxTN9z"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 06 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> The virtio specification virtio-v1.1-cs01 states: Transitional devices
+> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+> been acknowledged by the driver.  This is exactly what QEMU as of 6.1
+> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+>
+> However, the specification also says: driver MAY read (but MUST NOT
+> write) the device-specific configuration fields to check that it can
+> support the device before setting FEATURES_OK.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git zero-initialize-pmem-5.16
-head:   34b80c3d1203abd5fd64242ef25898c7d64166ca
-commit: 262459cd3e039d51ed6f6c478e1b794dda7d9de8 [25/28] iomap: use accelerated zeroing on a block device to zero a file range
-config: um-x86_64_defconfig (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/commit/?id=262459cd3e039d51ed6f6c478e1b794dda7d9de8
-        git remote add djwong-xfs https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git
-        git fetch --no-tags djwong-xfs zero-initialize-pmem-5.16
-        git checkout 262459cd3e039d51ed6f6c478e1b794dda7d9de8
-        # save the attached .config to linux build tree
-        make W=1 ARCH=um SUBARCH=x86_64
+Suggest to put the citations from the spec into quotes, so that they are
+distinguishable from the rest of the text.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+>
+> In that case, any transitional device relying solely on
+> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+> legacy format.  In particular, this implies that it is in big endian
+> format for big endian guests. This naturally confuses the driver which
+> expects little endian in the modern mode.
+>
+> It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. However, we already have regression so let's try to address
 
-All warnings (new ones prefixed by >>):
+s/regression/a regression/
 
->> fs/iomap/buffered-io.c:943: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Force a filesystem to write zeroes to mapped extents, even if they're
---
->> fs/iomap/buffered-io.c:948:1: warning: no previous prototype for 'iomap_zeroinit_range' [-Wmissing-prototypes]
-     948 | iomap_zeroinit_range(struct inode *inode, loff_t pos, loff_t len,
-         | ^~~~~~~~~~~~~~~~~~~~
+> it.
 
+Maybe mention what the regression is?
 
-vim +943 fs/iomap/buffered-io.c
+Also mention that we use this workaround for modern on BE only?
 
-   941	
-   942	/**
- > 943	 * Force a filesystem to write zeroes to mapped extents, even if they're
-   944	 * unwritten.  DAX files are not supported, and the caller should fsync the
-   945	 * file before returning to userspace.
-   946	 */
-   947	int
- > 948	iomap_zeroinit_range(struct inode *inode, loff_t pos, loff_t len,
-   949			     const struct iomap_ops *ops)
-   950	{
-   951		struct iomap_iter iter = {
-   952			.inode		= inode,
-   953			.pos		= pos,
-   954			.len		= len,
-   955			.flags		= IOMAP_ZERO,
-   956		};
-   957		int ret;
-   958	
-   959		if (IS_DAX(inode))
-   960			return -EOPNOTSUPP;
-   961	
-   962		while ((ret = iomap_iter(&iter, ops)) > 0)
-   963			iter.processed = iomap_zero_iter(&iter, NULL, false);
-   964		return ret;
-   965	}
-   966	EXPORT_SYMBOL_GPL(iomap_zeroinit_range);
-   967	
+>
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
+> Reported-by: markver@us.ibm.com
+> ---
+>  drivers/virtio/virtio.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 0a5b54034d4b..494cfecd3376 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -239,6 +239,16 @@ static int virtio_dev_probe(struct device *_d)
+>  		driver_features_legacy = driver_features;
+>  	}
+>  
+> +	/*
+> +	 * Some devices detect legacy solely via F_VERSION_1. Write
+> +	 * F_VERSION_1 to force LE for these when needed.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+"...to force LE config space accesses before FEATURES_OK for these when
+needed (BE)."
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+?
 
-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
+> +	 */
+> +	if (drv->validate && !virtio_legacy_is_little_endian()
+> +			  && BIT_ULL(VIRTIO_F_VERSION_1) & device_features) {
 
---Nq2Wo0NMKNjxTN9z--
+Nit: putting device_features first would read more naturally to me.
+
+> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+> +		dev->config->finalize_features(dev);
+> +	}
+> +
+>  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>  		dev->features = driver_features & device_features;
+>  	else
+
+Patch LGTM.
+
