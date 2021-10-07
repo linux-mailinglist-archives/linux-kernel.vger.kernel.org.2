@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232C4424B3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B53D424B3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240061AbhJGAon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
+        id S240072AbhJGApH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240053AbhJGAol (ORCPT
+        with ESMTP id S232532AbhJGApG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:44:41 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5595CC061746;
-        Wed,  6 Oct 2021 17:42:48 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id o4so6522870oia.10;
-        Wed, 06 Oct 2021 17:42:48 -0700 (PDT)
+        Wed, 6 Oct 2021 20:45:06 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E331C061746;
+        Wed,  6 Oct 2021 17:43:13 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso5341913otj.13;
+        Wed, 06 Oct 2021 17:43:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=sTsgBtmsm9AteCMlgNfGMOTf/vWdyns4PjV0/8nTTdw=;
-        b=Kkwvjjt4SwwfI0yUQrTPTCGMKnpHvyYFoaBIlAisFzSzV7WAv2/zvxVwJoMcSALdQN
-         YwWQnqjRLMNBR5hwCpd5a5h18ZFn/izU3/Lw0FxFp1xyFZocfQSXhezWyxHG7vMJZzIs
-         i8hdKCFuNRRk4bbK7VW1XRIp8gqrQKGT4drjkj1me5klbHIj+nb/x9q+M9xGo4y2vEjE
-         3bK3VZ/kiSXgSMT7SOpZlDXywYJKAKlmJYkdH2vBvRDCLQLkSuIaa3Xax9zpy0zOo01+
-         6vURj3xHjeUI3SbGEGqTxs0QlpxQxvAK7hNoz1eBIpdWFnf1tJjWOuniSkNffbGEmXf4
-         gtKQ==
+        bh=Td0Dtgu17zpQt8hn4faWYt5YgHOCJGVHulmC4DGtAWs=;
+        b=fVz7KIfzToLqIu9dD1Lf3017Gi/+o1iJgRvOGkfi4WpSqysEN+wuPCVi6Brl/hyl8q
+         vR1ooypLkJfMhZvuDXW4OSXvcba4As2+VS77fW5+wfK+QO5FI4FgJxjF63o+i71K4gx4
+         721AmgbuRtYKG5PtsJGP1T8eGd6cAl1rpNvf7QDKHb0QRxU+4RW/xroCXB2xiZRVIJUa
+         U/yPVy7xJdF3TpGHLOJOouD2ftfJWpkrt2tC9/0q1JAPwl/kRbwHeYHdzFV5fHRrRfks
+         cfanT++BuPQUyB2+yMwbZM7K4VhzbsLG/JBbUgqtxl6A0Z2Nu7hKiNGLXQsX53qGeEJH
+         7+dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=sTsgBtmsm9AteCMlgNfGMOTf/vWdyns4PjV0/8nTTdw=;
-        b=PGULHiL6Y729levwh9XzxAFsY9UOwrqjQAptBzO5+q+jK0OoCwgYYZdmMxU6vYXvmY
-         U8wdP9+SYUiKEmKKRc/E/bk8r9apSuBpc7SLym2SVd2T4sromZpDcN/qFQf7XRsCyvqU
-         Ll/B2lJDXVPI4pbYDQvlvbZPLEaMUYKOe6FPzhJO53gsP4y1BTzLJz/kldWYlTt2wXOg
-         OtSGZRD0/V2sXc12vycRzVsT93tmM3PTniaPiQK76YaCk2QuIc6hLt82gUsjLRCsyb/H
-         v07fHfPnwhrbi6TNXcSi20kZPZQe++DzLTPMefDDkT7sWIwu8gr4Pg8OwpXn3uGESFIL
-         wSiA==
-X-Gm-Message-State: AOAM530002a4qwl7CifMG+DsWtsXMo9rBNWVSDsmDbDzLpT+52mK6qRG
-        H6HB5QPb2J01VEd6/WN5isA=
-X-Google-Smtp-Source: ABdhPJyM2fZOiv9hXBv1ctMzy1USBjxK/5WAza+eUX9+3/ywNEh8oDNAnpXTRP6oyL00S0mFuDkQHA==
-X-Received: by 2002:a05:6808:a06:: with SMTP id n6mr966654oij.86.1633567367809;
-        Wed, 06 Oct 2021 17:42:47 -0700 (PDT)
+        bh=Td0Dtgu17zpQt8hn4faWYt5YgHOCJGVHulmC4DGtAWs=;
+        b=qARnEVQAcLH6VpF9mKQ96qD/mcEGknr2ifj01FY0m08zzvAiBgJJnbcdBG6FiD6JWO
+         +cY/E6beNkKLkWmDvKRJA23hwUJjM5D3z0hWOIXkAFdOFZDMtVqF6bMfMnixMEsrZMss
+         3+FlA5FiBzMha2vSoDpdkEPPVkhVMLs5yI7TXivKSBmjwr/W5F0Gsk4+TJXp4gT1OYJ6
+         ce2sBxOqnJiuCkV6Z7114b91NNyoy3t0doISvQu7So1alOWx3D+X1sXYtJEjbhGUVsU7
+         qVc2Frf1ZCh/EUt90IMBiDC56TsW+kcdgsFpUoDbKU52OvYrdNDArAVu7iNJSBxKGF6V
+         12wQ==
+X-Gm-Message-State: AOAM532bd18yh+Bzf+NK2f0ael6G0YvZgaRvzobNGYsvIQc+GHpzV2xL
+        YGgQU6yzeL8QEvgnbPQCMj2vNL7CvT8=
+X-Google-Smtp-Source: ABdhPJzqGJE+IBCsr8BcjoTWvBOSq8xTaTBwOOIa7daas1foQ9Hkj8XN0Xk7TA4ftlfeF0cGcl90lA==
+X-Received: by 2002:a05:6830:2706:: with SMTP id j6mr1184076otu.380.1633567392744;
+        Wed, 06 Oct 2021 17:43:12 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 15sm399313otf.14.2021.10.06.17.42.46
+        by smtp.gmail.com with ESMTPSA id s7sm4284313oiw.27.2021.10.06.17.43.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Oct 2021 17:42:47 -0700 (PDT)
+        Wed, 06 Oct 2021 17:43:12 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 6 Oct 2021 17:42:46 -0700
+Date:   Wed, 6 Oct 2021 17:43:10 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
         akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
         lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
         f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/95] 4.19.209-rc2 review
-Message-ID: <20211007004246.GD650309@roeck-us.net>
-References: <20211005083300.523409586@linuxfoundation.org>
+Subject: Re: [PATCH 5.4 00/53] 5.4.151-rc2 review
+Message-ID: <20211007004310.GE650309@roeck-us.net>
+References: <20211005083256.183739807@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211005083300.523409586@linuxfoundation.org>
+In-Reply-To: <20211005083256.183739807@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:38:15AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.209 release.
-> There are 95 patches in this series, all will be posted as a response
+On Tue, Oct 05, 2021 at 10:38:25AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.151 release.
+> There are 53 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -78,9 +78,9 @@ On Tue, Oct 05, 2021 at 10:38:15AM +0200, Greg Kroah-Hartman wrote:
 > 
 
 Build results:
-	total: 155 pass: 155 fail: 0
+	total: 157 pass: 157 fail: 0
 Qemu test results:
-	total: 439 pass: 439 fail: 0
+	total: 444 pass: 444 fail: 0
 
 Tested-by: Guenter Roeck <linux@roeck-us.net>
 
