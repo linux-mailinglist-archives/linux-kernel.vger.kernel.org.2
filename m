@@ -2,165 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3FA424E27
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E33A424E28
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240403AbhJGHjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:39:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232512AbhJGHjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:39:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B83760F22;
-        Thu,  7 Oct 2021 07:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633592236;
-        bh=EeaDISX4nx0CukTLIziNpZxMI2I7MdtAi3qldQDb+ms=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HGt3VR213kXy//b4+APJwNkKQv2k0VvCeoLnXnMgqEEP4ycnXc96fo7EFRCNm9yn8
-         iBZDt4mkYgEZup1PPBdyMm/f7WpZcmY+j9LGfMvYyT18xqoIrFHCGNLIABym13fHZV
-         lYIYkYbXbddv/7DE///K2Q0phL860mAxoR09rYo6cJwsmbmES2DmTODAC2sgGgCCBd
-         /+8P0aMDC1AzyYEvLfytFxr6Ovv6gJebEFxvEwa+Wa97FQAhY2dJWULS+8y3nxkIW6
-         fbXkvHIaGGrErHKdu5EnIkMYRON4nvEO/0Q6B7N/oGAX4rWI5WP/CrmHJ1W+tR6GTr
-         0N0Bw68QP9g7w==
-Date:   Thu, 7 Oct 2021 10:37:10 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v1 3/3] memory-hotplug.rst: document the "auto-movable"
- online policy
-Message-ID: <YV6jpoVERotn/New@kernel.org>
-References: <20210930144117.23641-1-david@redhat.com>
- <20210930144117.23641-4-david@redhat.com>
- <YVzvYmf4xWC1DORO@kernel.org>
- <4bab9000-0b49-a852-d574-1c8b2fe10de1@redhat.com>
+        id S232512AbhJGHjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 03:39:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240311AbhJGHjX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 03:39:23 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB7CCC061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 00:37:29 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id BD00322234;
+        Thu,  7 Oct 2021 09:37:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1633592248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XjCSY4XhccjbtaclWk/3U2lD3pRMWvVvTqTn+9l+6po=;
+        b=WXlwBRgzZcy5UO+kZECN816WJnCfTYuwc9asjo694LCh6Y5thB033LNI+dj7v87/02kc5Z
+        9/UBScEaIiDw4K9KkHP1HJ4BNniIdeS4Urb3DZ20uqPA0qZhRuZQcAJWlUPR0xAwEg2qaa
+        6nsflXPbPtGQeElflFOwUeUMU441QIU=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bab9000-0b49-a852-d574-1c8b2fe10de1@redhat.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Oct 2021 09:37:27 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: (EXT) Re: (EXT) Re: [PATCH 1/2] mtd: spi-nor: micron-st: sync
+ flags of mt25ql02g and mt25qu02g with other mt25q
+In-Reply-To: <0e2ad27b00d85c1dfa489d91b54d2a3af41f5edb.camel@ew.tq-group.com>
+References: <c7b6c666aef9a8a2195acabe9954a417f04b6582.1627039534.git.matthias.schiffer@ew.tq-group.com>
+ <f3dbab898e9f1946129e5733095bdf3c@walle.cc>
+ <3258026683c916a3a42e98ba76628228cddacb23.camel@ew.tq-group.com>
+ <969e9169b77bb314aaa2e97789c76c00@walle.cc>
+ <0e2ad27b00d85c1dfa489d91b54d2a3af41f5edb.camel@ew.tq-group.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <6ea1852ddc390cf18db0ae927b88b2b9@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 10:01:39AM +0200, David Hildenbrand wrote:
-> On 06.10.21 02:35, Mike Rapoport wrote:
-> > On Thu, Sep 30, 2021 at 04:41:17PM +0200, David Hildenbrand wrote:
-> > > In commit e83a437faa62 ("mm/memory_hotplug: introduce "auto-movable" online
-> > > policy") we introduced a new memory online policy to automatically
-> > > select a zone for memory blocks to be onlined. We added a way to
-> > > set the active online policy and tunables for the auto-movable online
-> > > policy. In follow-up commits we tweaked the "auto-movable" policy to also
-> > > consider memory device details when selecting zones for memory blocks to
-> > > be onlined.
-> > > 
-> > > Let's document the new toggles and how the two online policies we have
-> > > work.
-> > > 
-> > > Signed-off-by: David Hildenbrand <david@redhat.com>
-> > > ---
-> > >   .../admin-guide/mm/memory-hotplug.rst         | 128 +++++++++++++++---
-> > >   1 file changed, 108 insertions(+), 20 deletions(-)
-> > > 
-> > > diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-> > > index ee00b70dedde..c20a2c0031cf 100644
-> > > --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> > > +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> > > @@ -165,9 +165,8 @@ Or alternatively::
-> > >   	% echo 1 > /sys/devices/system/memory/memoryXXX/online
-> > > -The kernel will select the target zone automatically, usually defaulting to
-> > > -``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
-> > > -command line or if the memory block would intersect the ZONE_MOVABLE already.
-> > > +The kernel will select the target zone automatically, depending on the
-> > > +configured ``online_policy``.
-> > >   One can explicitly request to associate an offline memory block with
-> > >   ZONE_MOVABLE by::
-> > > @@ -198,6 +197,9 @@ Auto-onlining can be enabled by writing ``online``, ``online_kernel`` or
-> > >   	% echo online > /sys/devices/system/memory/auto_online_blocks
-> > > +Similarly to manual onlining, with ``online`` the kernel will select the
-> > > +target zone automatically, depending on the configured ``online_policy``.
-> > > +
-> > >   Modifying the auto-online behavior will only affect all subsequently added
-> > >   memory blocks only.
-> > > @@ -393,9 +395,11 @@ command line parameters are relevant:
-> > >   ======================== =======================================================
-> > >   ``memhp_default_state``	 configure auto-onlining by essentially setting
-> > >                            ``/sys/devices/system/memory/auto_online_blocks``.
-> > > -``movable_node``	 configure automatic zone selection in the kernel. When
-> > > -			 set, the kernel will default to ZONE_MOVABLE, unless
-> > > -			 other zones can be kept contiguous.
-> > > +``movable_node``	 configure automatic zone selection in the kernel when
-> > > +			 using the ``contig-zones`` online policy. When
-> > > +			 set, the kernel will default to ZONE_MOVABLE when
-> > > +			 onlining a memory block, unless other zones can be kept
-> > > +			 contiguous.
-> > 
-> > The movable_node main purpose is to allow unplugging an entire node. Zone
-> > selection is a consequence of this. You may want to cite the description of
-> > movable_node in kernel-paramenters.txt here.
+Am 2021-10-07 09:18, schrieb Matthias Schiffer:
+> On Thu, 2021-10-07 at 09:08 +0200, Michael Walle wrote:
+>> Am 2021-10-06 14:32, schrieb Matthias Schiffer:
+>> > On Tue, 2021-07-27 at 09:09 +0200, Michael Walle wrote:
+>> > > Am 2021-07-23 13:27, schrieb Matthias Schiffer:
+>> > > > All mt25q variants have the same features.
+>> > > >
+>> > > > Unlike the smaller variants, no n25q with 2G exists, so we don't need
+>> > > > to
+>> > > > match on the extended ID to distinguish n25q and mt25q series for these
+>> > > > models.
+>> > >
+>> > > But why shouldn't we? What if there will be another flash with
+>> > > the same first three id bytes?
+>> >
+>> > How do you suggest we proceed here? At the moment there are entries
+>> > matching on 0x20b[ab]22 (ignoring the extended ID) with the name
+>> > mt25q[lu]02g.
+>> >
+>> > Should I change these entries to match on on the extended ID
+>> > 0x20b[ab]22 / 0x104400 instead when I add the bits for the features
+>> > specific to the variant, removing support for other 0x20b[ab]22
+>> > variants that may or may not actually exist? Keeping both entries (with
+>> > and without extended ID match) would preserve compatiblity with such
+>> > variants, but this approach seems problematic to me as well, as I can't
+>> > even give a name to the more generic entries (and there is no natural
+>> > extension of the n25q naming scheme to a 2G variant).
+>> 
+>> Mh, what do you think of adding three entries and make the last one,
+>> the one with the short id, as a fallback so to speak. This should
+>> retrain backwards compatibility, right? It should probably have a
+>> comment because the order will matter then.
+>> 
+>> -michael
 > 
-> Right, I only document the effects of these parameters on memory
-> hot(un)plug.
-> 
-> What about:
-> 
-> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst
-> b/Documentation/admin-guide/mm/memory-hotplug.rst
-> index c20a2c0031cf..f8976ded0863 100644
-> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> @@ -402,6 +402,9 @@ command line parameters are relevant:
->                          contiguous.
->  ========================
-> =======================================================
-> 
-> +See Documentation/admin-guide/kernel-parameters.txt for a more generic
-> +description of these command line parameters.
-> +
+> Is it okay for multiple entries to use the same value for the "name"
+> field? In the existing definitions I couldn't find any example of
+> different ID matches mapping to the same name.
 
-Ok.
+You're right, thats probably not good. Ok, if there is no objection
+from Tudor, I'd say we change the entry of the mt25 variant to the
+longer one. If there is a flash chip out there which matched the
+shorter one, but not the longer one, thats probably not a mt25 anyway.
 
->  Module Parameters
->  ------------------
-> 
-> 
-> > 
-> > And, pardon my ignorance, how movable_node will play with auto-movable
-> > policy?
-> 
-> It's essentially ignored with the auto-movable policy for memory hotplugged
-> after boot (!MEMBLOCK_HOTPLUG). That's why only the description of
-> "contig-zones" below describes how it interacts with the ``movable_node``,
-> and we make it clear here that it's restricted to the "contig-zones" policy
-> as well.
-> 
-> <details>
-> Bare metal, where we care about reliably unplugging hotplugged memory
-> usually configures auto-onlining to "online_movable": for example, that's
-> the case on RHEL. auto-movable doesn't make too much sense for bare metal:
-> the nature of "movable_node" is to essentially online anything that might
-> get hotunplugged MOVABLE, especially after hotplugging memory and rebooting:
-> that is highly dangerous especially in virtualized environments.
-> 
-> "auto-movable" is valuable in virtualized environments, where we add memory
-> via:
-> * add_memory_driver_managed() like virtio-mem, whereby such memory is
->   never part of the firmware provided memory-map, so the policy is
->   always in control even after a reboot.
-> * Hotplugged virtual DIMMs, such as provided by x86-64/arm64, whereby we
->   don't include these DIMMs in the firmware-provided memory map, but
->   ACPI code adds them after early boot, making it behave similar to
->   add_memory_driver_managed() -- the policy is always in control even
->   after a reboot.
-> </details>
- 
-Do you want to put it somewhere in Documentation/ ?
-It's already written anyway ;-)
-
--- 
-Sincerely yours,
-Mike.
+-michael
