@@ -2,79 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC94425627
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6991242561F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhJGPLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242271AbhJGPLF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:11:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F8A861139;
-        Thu,  7 Oct 2021 15:09:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633619351;
-        bh=u8X3FagrdJhU7I1VIDV1L7v9LQDZx07lRfeM+3Fv7Ag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zfIUU3NHUqm/lFCfrqnSsG7ZoqbIELwCdSBULRqAYNU6uoZaaMYxeqXuhdGD4egg7
-         vtcM9dhf6XkTW4eFHiNn7+1MJuksq4+W4OtQOwlENmJJYge9ETpxq+C/MzxQFpfNGJ
-         nWN1vfVA49D9+7HSX3Jp1FuI32wzJAcerPerCbsI=
-Date:   Thu, 7 Oct 2021 17:09:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: Re: [PATCH v3 2/7] kernel.h: Split out container_of() and
- typeof_member() macros
-Message-ID: <YV8NlXMJpVRcH42I@kroah.com>
-References: <20211007150339.28910-1-andriy.shevchenko@linux.intel.com>
- <20211007150339.28910-3-andriy.shevchenko@linux.intel.com>
+        id S242356AbhJGPKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242302AbhJGPKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 11:10:00 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15584C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:08:07 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso1980955oot.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:08:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f2IEE2E4YHMVJEM5MQhvt3XmAUfnTsdYPx8v3MA4L2s=;
+        b=m4PzpRc+xMfv6d0tmbyjSiiE6f6chCnHuTBcaFnzvTdWfe5DKRBF2dUiSN6rFOXHnh
+         XRQTyab0VAr+zGfGlrBoV8oygk90Z87oqI8XmKNLMRXAqMGzZoL482PFlgnRaLs3dAXZ
+         CbY0kBoc7esmzMsfxNzyM+g8OgZ03e4HNWyHhxgcr6QfjHzV2P2nv0mDMe6sTMmFhWXo
+         AAiXwZR0OAu9Y8D8ZTuYfWZf4bhSK8Yj5d5R4VxRUituwyNAhVdCHK2YHo09ANJpITu2
+         KiuO8CXL/Dj/SNOY07hIvZ1rPdMabIWMQiQgAwogEIcDMBqZTaZOiWlbT1UvFKyp6oSD
+         5MwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f2IEE2E4YHMVJEM5MQhvt3XmAUfnTsdYPx8v3MA4L2s=;
+        b=gFiLij3+PwxZ0qyUokoFCPb6UNc3GGm96K2E0Wj8f0fIT1gNvY1biMC0h1IRfXwqIt
+         X3KdJYF/U2mjShecBxeKtx9osExKjd0iHAlUhgBXv2XvFkDF23Fp6pITlhwqtK2mKRt1
+         w/88n5N6hfPTsPI2I46YFUS3DgeF2Hv9UyGlZzx92FDHRTQfiO6oe/8IrmRYJNFl2bGL
+         bDOc5KjtFvpie4zUaG4DYvejgqKFzC9tiW+x3Z7TqlJ3O3bwcJ/Z+49rivlqBidkuz2T
+         mccpCclG2YTyZ6bUfLhkxVPFyK9j5M9oqZDarxluBnxaRbrmiBCsphHeYOnrLfiq/Svs
+         lMBQ==
+X-Gm-Message-State: AOAM530LbtP1rCoDrDdBhj6XFT2Qm6r8QQVorAR9AnfgmaYoSMnFjv61
+        SOIAMUfyDt4+ZCooYRT1cnjOTw==
+X-Google-Smtp-Source: ABdhPJyv4HAG1yrz2NFpdFEebej0KM8Fmqp1jTDYgGE4mHhwFS6GiaodYZLoQDgFhA462a2jXpWOPQ==
+X-Received: by 2002:a4a:d151:: with SMTP id o17mr3698904oor.63.1633619285911;
+        Thu, 07 Oct 2021 08:08:05 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id r4sm4638927oiw.36.2021.10.07.08.08.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 08:08:05 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 08:09:45 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-clk@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 3/8] clk: qcom: dispcc-sm8250: use runtime PM for the
+ clock controller
+Message-ID: <YV8NudkKvURyNqg7@ripper>
+References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
+ <20210829154757.784699-4-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211007150339.28910-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210829154757.784699-4-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 06:03:34PM +0300, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt cleaning it up by splitting out container_of() and
-> typeof_member() macros.
+On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
+
+> On sm8250 dispcc and videocc registers are powered up by the MMCX power
+> domain. Use runtime PM calls to make sure that required power domain is
+> powered on while we access clock controller's registers.
 > 
-> For time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
-> 
-> Note, there are _a lot_ of headers and modules that include kernel.h solely
-> for one of these macros and this allows to unburden compiler for the twisted
-> inclusion paths and to make new code cleaner in the future.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+As I said on previous iterations, the clock framework will ensure that
+the power domain is powered up around all calls back into the clock
+driver, so for clocks this isn't needed.
+
+But after digging some more, the gdsc registration needs this and I
+don't mind keeping it on for the duration of the registration, rather
+than having the clock framework turn it on and off.
+
+As far as I can see the reset_controller won't actually access the
+hardware during registration.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+
+
+That said, qcom_reset_{assert,deassert}() doesn't seem to be performed
+under a pm_runtime_get() section, so I believe that should be addressed
+as well.  I don't see that we have a problem with this in practice as of
+today, but it seems worthy to correct - unless I'm just missing
+something.
+
+Regards,
+Bjorn
+
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > ---
->  include/linux/container_of.h | 37 ++++++++++++++++++++++++++++++++++++
->  include/linux/kernel.h       | 31 +-----------------------------
->  include/linux/kobject.h      |  1 +
-
-Why did you touch kobject.h here?
-
-It shouldn't have been needed to change for this commit.
-
-Anyway, I really don't think this is all worth any more work at all, as
-I'm not going to be the one taking it...
-
-thanks,
-
-greg k-h
+>  drivers/clk/qcom/dispcc-sm8250.c | 27 +++++++++++++++++++++++++--
+>  1 file changed, 25 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
+> index 601c7c0ba483..108dd1249b6a 100644
+> --- a/drivers/clk/qcom/dispcc-sm8250.c
+> +++ b/drivers/clk/qcom/dispcc-sm8250.c
+> @@ -6,6 +6,7 @@
+>  #include <linux/clk-provider.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_runtime.h>
+>  #include <linux/regmap.h>
+>  #include <linux/reset-controller.h>
+>  
+> @@ -1226,13 +1227,31 @@ static const struct of_device_id disp_cc_sm8250_match_table[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, disp_cc_sm8250_match_table);
+>  
+> +static void disp_cc_sm8250_pm_runtime_disable(void *data)
+> +{
+> +	pm_runtime_disable(data);
+> +}
+> +
+>  static int disp_cc_sm8250_probe(struct platform_device *pdev)
+>  {
+>  	struct regmap *regmap;
+> +	int ret;
+> +
+> +	pm_runtime_enable(&pdev->dev);
+> +
+> +	ret = devm_add_action_or_reset(&pdev->dev, disp_cc_sm8250_pm_runtime_disable, &pdev->dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> +	if (ret)
+> +		return ret;
+>  
+>  	regmap = qcom_cc_map(pdev, &disp_cc_sm8250_desc);
+> -	if (IS_ERR(regmap))
+> +	if (IS_ERR(regmap)) {
+> +		pm_runtime_put(&pdev->dev);
+>  		return PTR_ERR(regmap);
+> +	}
+>  
+>  	/* note: trion == lucid, except for the prepare() op */
+>  	BUILD_BUG_ON(CLK_ALPHA_PLL_TYPE_TRION != CLK_ALPHA_PLL_TYPE_LUCID);
+> @@ -1257,7 +1276,11 @@ static int disp_cc_sm8250_probe(struct platform_device *pdev)
+>  	/* DISP_CC_XO_CLK always-on */
+>  	regmap_update_bits(regmap, 0x605c, BIT(0), BIT(0));
+>  
+> -	return qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
+> +	ret = qcom_cc_really_probe(pdev, &disp_cc_sm8250_desc, regmap);
+> +
+> +	pm_runtime_put(&pdev->dev);
+> +
+> +	return ret;
+>  }
+>  
+>  static struct platform_driver disp_cc_sm8250_driver = {
+> -- 
+> 2.33.0
+> 
