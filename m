@@ -2,194 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED3142502C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7771E425036
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240736AbhJGJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:37:13 -0400
-Received: from mail-bn8nam12on2040.outbound.protection.outlook.com ([40.107.237.40]:9697
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S240673AbhJGJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:40:14 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:52659 "EHLO mx1.molgen.mpg.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240541AbhJGJhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:37:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BnnbSECF3KRSQTazjk3aSmDnNvdGKriG75onF8ygDloW2SkzEuIE7hZ56q6l2dr6cs88L7avsx0wiXePxO3SjDPMWHpf00nTdBavZPt+LODS9gidpVdIeVWPMu71BW/EfubHLeHBKm6WfT0AyOD5RinoAeczyP7FUU+/iAkrrhqV7PDSRevwed2BXhX9/4FVvdY9OZs4lbncDNAy66gAqp0sCgfdPlvsJ+rZjaAbED3qP4PAHC8pNJOjQblLHsLjEqxKMkkZBEaf5+Wr3n67yqwZz1JEWVFbXe6mk47KPQ5zW07+s6Qu2l7zx0jAJ/TRW/9hr7uv1EJJJKsDrO+UoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5ARRECq5Ubls6yVVzUFu3l+hey7x8xQdAGH+iQ7LDGM=;
- b=gIKqwd+oCXUlzPye7X6f/m4+l9agdAEdZeQxAeuIfkyXxdAxLrqUECb+KlOWCntWwYHg0M+QqINAdaEzIWyrpgfKfNICeIxfwst93CYvdbDUXJHrJyW60MH0n1GLbjQ5ZxvjdO3t4r3eHoSuC+U+/lcR/wTS3VX4RbY+UH24Ph+SGlUK5SA4WZ3beBV5pacHb6uTuBVWigabnSELw9zAYX/Iqsj5GsEwy9oOb9coH+pu4C9JDDGX8QAC5HoxNsjMo64Ws0PluZ2Mfp3qFbw9AzvWeKD2UptRu3C0Xof/VRYjkUAKBaAUtTgCmw3pr6KJJVUPyP+5IMrzgiCNr36mTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ARRECq5Ubls6yVVzUFu3l+hey7x8xQdAGH+iQ7LDGM=;
- b=JU7JvuM1d9fkuzWWXSDzbq3mMwX9tTFtof8eyO/azoI7M7rRsXQwcGEmqLxylrB7lcUWBRHTWPZAGDZ2qm9xJ4N4W8QEn2P+lufjmtHXDHojEDlRrxG3dZHdqNOIco/TGrMGWUK2uQNPiufQbFct/BpkdVqzFfPKB+EIDqE2Kp8=
-Authentication-Results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=silabs.com;
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com (2603:10b6:510:ee::19)
- by PH0PR11MB5627.namprd11.prod.outlook.com (2603:10b6:510:e4::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Thu, 7 Oct
- 2021 09:35:15 +0000
-Received: from PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4]) by PH0PR11MB5657.namprd11.prod.outlook.com
- ([fe80::31cb:3b13:b0e8:d8f4%9]) with mapi id 15.20.4587.019; Thu, 7 Oct 2021
- 09:35:15 +0000
-From:   =?ISO-8859-1?Q?J=E9r=F4me?= Pouiller <jerome.pouiller@silabs.com>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-mmc@vger.kernel.org,
-        Pali =?ISO-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v7 10/24] wfx: add fwio.c/fwio.h
-Date:   Thu, 07 Oct 2021 11:35:06 +0200
-Message-ID: <6406115.Wd3412XU5f@pc-42>
-Organization: Silicon Labs
-In-Reply-To: <87tuhtcl4a.fsf@codeaurora.org>
-References: <20210920161136.2398632-1-Jerome.Pouiller@silabs.com> <2174509.SLDT7moDbM@pc-42> <87tuhtcl4a.fsf@codeaurora.org>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-ClientProxiedBy: PR0P264CA0199.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:1f::19) To PH0PR11MB5657.namprd11.prod.outlook.com
- (2603:10b6:510:ee::19)
+        id S232678AbhJGJkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 05:40:13 -0400
+Received: from [192.168.0.2] (ip5f5aef71.dynamic.kabel-deutschland.de [95.90.239.113])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id ECEA561E64784;
+        Thu,  7 Oct 2021 11:38:17 +0200 (CEST)
+Subject: Re: [smartpqi updates PATCH V2 09/11] smartpqi: fix duplicate device
+ nodes for tape changers
+To:     Don Brace <Don.Brace@microchip.com>
+Cc:     Kevin.Barnett@microchip.com, Scott.Teel@microchip.com,
+        Justin.Lindley@microchip.com, Scott.Benesh@microchip.com,
+        Gerry.Morong@microchip.com, Mahesh.Rajashekhara@microchip.com,
+        Mike.McGowen@microchip.com, Murthy.Bhat@microchip.com,
+        Balsundar.P@microchip.com, joseph.szczypek@hpe.com,
+        jeff@canonical.com, POSWALD@suse.com, john.p.donnelly@oracle.com,
+        mwilck@suse.com, linux-kernel@vger.kernel.org, hch@infradead.org,
+        martin.petersen@oracle.com, jejb@linux.vnet.ibm.com,
+        linux-scsi@vger.kernel.org
+References: <20210928235442.201875-1-don.brace@microchip.com>
+ <20210928235442.201875-10-don.brace@microchip.com>
+ <1351a25f-5310-cae3-ae47-01c842e0a185@molgen.mpg.de>
+ <SN6PR11MB2848E6A6F6824C55641FB6FEE1AF9@SN6PR11MB2848.namprd11.prod.outlook.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <3d4832bd-9781-9194-2b33-a0e20a9ff913@molgen.mpg.de>
+Date:   Thu, 7 Oct 2021 11:38:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: from pc-42.localnet (37.71.187.125) by PR0P264CA0199.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1f::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Thu, 7 Oct 2021 09:35:12 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 34fa7738-bc12-45ec-cb62-08d98975c46d
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5627:
-X-Microsoft-Antispam-PRVS: <PH0PR11MB5627AE6E443B5D4A54FE90F593B19@PH0PR11MB5627.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jabjXYVeP4X+/EQJCL49f1kGhWSkiRHOgCAiB+bYWscywjjoGaOr8Ax8NMRSAbzDzt8wYNKWlSU81LPrEqJfvoMD0ULzM9KRR1c+Xhv4naFISyaP7w4kVhScqLcBP1dKIOgXFiKQ+vw2fmu99Yl50WS9zd9JwECkdU8bSkLTACrFHRwUwmzkKO2FKLaDwhAHywnvAX6FJSxlU+UB/FVOe38DZFc00d/y+ERnGPEITIM4NyvX1tyTSLQt8cOXATDbuzGJYUZXN0OdpNAk4aiFqdIrwVYgEHBnj/NYM5ONbErX8ZusDaDH/OixvCEG/Gk493VMbOqQJZFP8uPe/TFOCXNjBmGVDm4a3FvJDJIlDix9NCahMG4bIIp6uCCgPE2U+KtSjMrmqC7M5Pil2iKPlMcLana01veKt6XtjlRKQGcbQ7hgidpooebTVkTX7eyS1gSy7Ukif85zBZV+1SXTBLNr8glZmlHhyRboslzSnItYhyo/KZQnscXrzc0zUb9eVNWkJPyB4eeDSybBSDP+HhcTNMjRdZ4gDirOvXSSnSj6jWB8p+QgE5YQS32i+AiyB0EcNRomQXGUTfKl+kHpwFiLfZH7mHml+ShEOLICv/LKUFm9tdTWjbRy0/Wz4id6yigEYApwRG/X6T31zihdKi5Tgyju9XauLoq/a7U3vEkGnAxA7SjXkZhBNp4rlWWNNAOfViGsKq4lJeEPSRJUBHuEFjMA/cWo1AtlXD3fYVH+x45Ta4KOTR63keYh0kzcJpTVuwJYVYqhSz99yLNmTF+bPczEs0L8yMY0d+TzKIg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6666004)(66574015)(8676002)(66476007)(2906002)(66946007)(508600001)(5660300002)(6486002)(66556008)(83380400001)(7416002)(86362001)(6512007)(9686003)(33716001)(36916002)(966005)(6506007)(6916009)(26005)(38350700002)(8936002)(316002)(54906003)(38100700002)(956004)(186003)(4326008)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?ChyTadVOQOVj7DhWOTJetE2r6z5pyyH9GhwcGLzLFyuQ8XV8mLUluhd6Kk?=
- =?iso-8859-1?Q?ZYNyKl9/bEqKPpGg3vJ5WN0vHX6iQrNgY1GIayvebfFSBT1s94W0QEDfkW?=
- =?iso-8859-1?Q?oHY1NV0kvR36WsriFJk+9xYWNtTKP1sD4KrO2z1ePAw0QSavXRwbXV3Yud?=
- =?iso-8859-1?Q?cQuUmVA8LSLbQ687tUzwuD906cwcbWe6tKQszyMoiFYbMH8dphcdAxyG+i?=
- =?iso-8859-1?Q?9cS5WIwxtfL0pUUImUacIV5J61c2aA0Va4e0jYkf/Wi41DT1vuMLQ2PDR/?=
- =?iso-8859-1?Q?m8mPrYjucxrT4vHEQNSjdfai6mk3SWR92RXuIeVxCxLkCwdwI7dLdobOhf?=
- =?iso-8859-1?Q?4Ow3SALzSBIl60otxtb55HQGFkUhfgp28vhgWG2PIdactLucejc910szrK?=
- =?iso-8859-1?Q?CTmgpXSDeqFMZGx2TdwTjD9F+HTc3E99Vn+m9CtyxDN12C4a9SZR5josp1?=
- =?iso-8859-1?Q?BGmHJf3X1IHwLPTSxNYysxiKaRCpXi2uShBl0jJg45wga7qhVTyrDR6Hkt?=
- =?iso-8859-1?Q?ykZBpHSZwhgLrd+oktxFtookzVeMiYPvcQgSZAHuEDVAwKa7XoVOFvJmWK?=
- =?iso-8859-1?Q?txHvpxgl0p9QVeN/eur4sT6XGDiEqz8N/YM0AQaxdH4VrLkVQEXubKJofL?=
- =?iso-8859-1?Q?3ATh6PVl0ineVgcpbbuHl8YzwaVoEoZd3fpbZPsINHfXWuoKQPN8bWetLw?=
- =?iso-8859-1?Q?twntmNb7OkYnnKcXYZOFnYP1USNhg/1Qp0Z7Ugx9M508TbOsmxEcOuUPEL?=
- =?iso-8859-1?Q?S5FnNfQyvZUvPhyx37+ukf1FDGoMCnnvTXhT0qbJO8GKmNackmA7X/EkQK?=
- =?iso-8859-1?Q?Z7nCxRObXJEHjlHo/MP1H2roDOYaCuX1FGpgSHpjVB0AJWavWrbakxu/H8?=
- =?iso-8859-1?Q?zvUR7c14xUgkGwosGDDzEl6WDj6UY3PupcSbIXjBKegoQKj5RrunvtcQfD?=
- =?iso-8859-1?Q?GI18AQR2c6XPcxGU/bsq0QDvwgqLgLKaOJXhBnHtgtGRM3md7ilhF90QCn?=
- =?iso-8859-1?Q?x36WzAqWrYv3esUYIneHYrQBP/GbGg/NsL/UWoh2C2sVi3G60EUg66Vh3C?=
- =?iso-8859-1?Q?W4nhmjAEo3UNeovmhP/jiqIvml62XzPbpVxeqO2/KiEG+GH4KC2NoYlUVC?=
- =?iso-8859-1?Q?+fFVNCoVVfGwWeLW94JxoLXUe+11kQBCbTr6DSEBJNBXYI/TzQLWQ3NURd?=
- =?iso-8859-1?Q?BkR8IUG2cioaxLrH67pt0zFZs+85uARG3AcQArGQbSk/dokSHqwWZewXIT?=
- =?iso-8859-1?Q?shMqNeLicfZiLwX9zqJLaDKg1pHQc/AsaM2v9HY0VtW74Y1zZ2U0DMy9Ki?=
- =?iso-8859-1?Q?GUHcSpX1XSg1ReFwxWpGClwRGKzFbDizftv8Q/2JhVi9EzARfDDbUuC5vn?=
- =?iso-8859-1?Q?kXXx5wCFzk?=
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34fa7738-bc12-45ec-cb62-08d98975c46d
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5657.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 09:35:15.0857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: c/Cuo0JcfCmbzAaRXBbXAKUolqM9ecZz8slrfWr8OnKZWaiSg23IF45fZejYZNel2WxkgM1rwYrx+ZvxBM3qqA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5627
+In-Reply-To: <SN6PR11MB2848E6A6F6824C55641FB6FEE1AF9@SN6PR11MB2848.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 7 October 2021 10:08:53 CEST Kalle Valo wrote:
-> J=E9r=F4me Pouiller <jerome.pouiller@silabs.com> writes:
-> > On Friday 1 October 2021 13:58:38 CEST Kalle Valo wrote:
-> >> Jerome Pouiller <Jerome.Pouiller@silabs.com> writes:
-> >>
-> >> > From: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> >> >
-> >> > Signed-off-by: J=E9r=F4me Pouiller <jerome.pouiller@silabs.com>
-> >>
-> >> [...]
-> >>
-> >> > +static int get_firmware(struct wfx_dev *wdev, u32 keyset_chip,
-> >> > +                     const struct firmware **fw, int *file_offset)
-> >> > +{
-> >> > +     int keyset_file;
-> >> > +     char filename[256];
-> >> > +     const char *data;
-> >> > +     int ret;
-> >> > +
-> >> > +     snprintf(filename, sizeof(filename), "%s_%02X.sec",
-> >> > +              wdev->pdata.file_fw, keyset_chip);
-> >> > +     ret =3D firmware_request_nowarn(fw, filename, wdev->dev);
-> >> > +     if (ret) {
-> >> > +             dev_info(wdev->dev, "can't load %s, falling back to %s=
-.sec\n",
-> >> > +                      filename, wdev->pdata.file_fw);
-> >> > +             snprintf(filename, sizeof(filename), "%s.sec",
-> >> > +                      wdev->pdata.file_fw);
-> >> > +             ret =3D request_firmware(fw, filename, wdev->dev);
-> >> > +             if (ret) {
-> >> > +                     dev_err(wdev->dev, "can't load %s\n", filename=
-);
-> >> > +                     *fw =3D NULL;
-> >> > +                     return ret;
-> >> > +             }
-> >> > +     }
-> >>
-> >> How is this firmware file loading supposed to work? If I'm reading the
-> >> code right, the driver tries to load file "wfm_wf200_??.sec" but in
-> >> linux-firmware the file is silabs/wfm_wf200_C0.sec:
-> >>
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmwar=
-e.git/tree/silabs
-> >>
-> >> That can't work automatically, unless I'm missing something of course.
-> >
-> > The firmware are signed. "C0" is the key used to sign this firmware. Th=
-is
-> > key must match with the key burned into the chip. Fortunately, the driv=
-er
-> > is able to read the key accepted by the chip and automatically choose t=
-he
-> > right firmware.
-> >
-> > We could imagine to add a attribute in the DT to choose the firmware to
-> > load. However, it would be a pity to have to specify it manually wherea=
-s
-> > the driver is able to detect it automatically.
-> >
-> > Currently, the only possible key is C0. However, it exists some interna=
-l
-> > parts with other keys. In addition, it is theoretically possible to ask
-> > to Silabs to burn parts with a specific key in order to improve securit=
-y
-> > of a product.
-> >
-> > Obviously, for now, this feature mainly exists for the Silabs firmware
-> > developers who have to work with other keys.
->=20
-> My point above was about the directory "silabs". If I read the code
-> correctly, wfx driver tries to load "foo.bin" but in the linux-firmware
-> file is "silabs/foo.bin". So the should also include directory name in
-> the request and use "silabs/foo.bin".
-
-Oh! Absolutely. I had never noticed my firmware was not in silabs/ on my
-test setup.
-
-[...]
---=20
-J=E9r=F4me Pouiller
+Dear Don,
 
 
+Am 05.10.21 um 22:23 schrieb Don.Brace@microchip.com:
+
+>> Our controller FW lists both LUNs in the RPL results.
+> 
+> Please document the firmware version (and controller) you tested with in the commit message.
+> 
+> DON: Done in V3, thanks for your review.
+
+When I understood Martin correctly, he already pulled the patches in. 
+It’d be great if you added it in an answer then.
+
+> Shortly describing the implementation (new struct member ignore_device) would be nice.
+> DON: Don in V3, thanks for your review.
+> 
+>>        u8      rescan : 1;
+>> +     u8      ignore_device : 1;
+> 
+> Why not type bool?
+> Don: They both take the same amount of memory and since the other members are also u8, the new member was also u8 for consistency.
+
+Well, the below struct members are declared as bool.
+
+         u8      volume_offline : 1;
+         u8      rescan : 1;
+         bool    aio_enabled;            /* only valid for physical disks */
+
+It’d be great, if you could clean that up in the future.
+
+>> -                     device->lun = sdev->lun;
+>> -                     device->target_lun_valid = true;
+> 
+> Off topic, with `u8 target_lun_valid : 1`, why is `true` used.
+> Don: Has the same behavior, and carried forward from other member fields.
+
+In my opinion, if bool is used, true/false should be used too.
+
+>> +                     if (device->target_lun_valid) {
+>> +                             device->ignore_device = true;
+>> +                     } else {
+>> +                             device->target = sdev_id(sdev);
+>> +                             device->lun = sdev->lun;
+>> +                             device->target_lun_valid = true;
+>> +                     }
+> 
+> If the LUN should be ignored, is it actually valid? Why not extend target_lun_valid and add a third option (enums?) to ignore it?
+> 
+> Don: The reason is that it takes advantage of the order the devices are added and how slave_alloc and slave_configure fit into this order.
+
+Ok. My answer should have also been to use a bitfield. Sorry about that. 
+It does not look nice to me to add new attributes to work around 
+firmware isuses.
+
+>> +     return device->devtype == TYPE_TAPE || device->devtype ==
+>> +TYPE_MEDIUM_CHANGER;
+> 
+> Why also check for TYPE_TAPE? The function name should be updated then?
+> Don: Because our tape changer consisted of the changer and one or more tape units and both were duplicated.
+
+Yes, I figured. But the function name is still incorrect/misleading then?
+
+>>    static int pqi_slave_configure(struct scsi_device *sdev)
+>> +     if (pqi_is_tape_changer_device(device) && device->ignore_device) {
+>> +             rc = -ENXIO;
+>> +             device->ignore_device = false;
+> 
+> I’d add a `return -ENXIO` here, and remove the variable.
+> Don: This works in conjunction with slave_alloc and is needed.
+
+Instead of
+
++	if (pqi_is_tape_changer_device(device) && device->ignore_device) {
++		rc = -ENXIO;
++		device->ignore_device = false;
++	}
++
++	return rc;
+
+I meant
+
++	if (pqi_is_tape_changer_device(device) && device->ignore_device) {
++		device->ignore_device = false;
++		return -ENXIO;
++	}
++
++	return 0;
+
+Lastly, some (debug) log messages would always be helpful in my opinion, 
+if stuff is worked around.
+
+
+Kind regards,
+
+Paul
