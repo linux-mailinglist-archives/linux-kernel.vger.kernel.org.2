@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEFC425782
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34AF54257E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 18:25:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242584AbhJGQSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 12:18:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242633AbhJGQSL (ORCPT
+        id S242634AbhJGQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 12:27:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241716AbhJGQ1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 12:18:11 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BECBC061746
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 09:16:17 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x27so26970100lfa.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 09:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JPnT4IpQsu6GWrhFYest0dabRyyCsorT5rlqIt2XyBk=;
-        b=tCO7+DXwMMUKzKawpnAckHOhMLHXBMexNKIJ71+XuvkEY6UqKTLBuoDOXeWkBtO9O7
-         JEQStB4pAh7Q4JJmlmuqtfMOLaf/ai8bozykRxRPSbbDtkNI8iP+NvWnJ83C5Zyovkov
-         NZC3DvM77HGpvnLFXQP9A95bAxrxP31Brdu+NnrRuUgvhziyD9/MWoLF4r3TPt8gAODm
-         KgMKksJW9MG087YskbBg30CzgsD6pIYS6OGvIHQ+7yeJg/JM24WR8avFDW3rxUWZVzsF
-         oZNVI8xFpWaEZ8dXV+zzF/+l01bBo3H1XG4Sm32rZJmSuyjgEGkb2TCWFw7fSRk3JTUm
-         DzIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JPnT4IpQsu6GWrhFYest0dabRyyCsorT5rlqIt2XyBk=;
-        b=eJCwaQ+pez7FOaEl5NeVS1+l+y91O7hwRH1YG0xGtouYRLLj+plQtFef6qPEbryed3
-         umYTPzQTRcDUuIzi4fg+CKnz677yVzBO6JUJ0CV6204NSiKZWRwVJXeYCUa/b4+bZT4w
-         r2gxdXvSAubNEMlcH2BsBPbG3Ir8iV7uC01L6pLGb/ojphVj9zDznaGzRznFaXmQLoRQ
-         jBlLHVNxGQ3/YxqFwV8JdfTdFBuPr4HkOUSqfFCVjMCS0cJTZQtthbQt5lcfzvaLEjYp
-         33z/k0MQ0NX9XmDlzVVunwBynSLwuC2eMhFSGsGpXhtQpiPdjy+9ZueYJNaZYlwiH9c9
-         IoDA==
-X-Gm-Message-State: AOAM533z6HJU2x3Ebc3gY2UI0z4VCAPCtOX4c0BrebzegV6Gtp8Gdt88
-        lttJu5Ur9ye/3xRyRnDsbUBGOeKeiym5Xw==
-X-Google-Smtp-Source: ABdhPJyWyNkSm3vUTGocVNe1vwyuX9qAZbEiipyo4qdoRtXwIb0mJnifjuLeaXBLQUipK9GTsK5YpQ==
-X-Received: by 2002:a2e:978a:: with SMTP id y10mr5411636lji.317.1633623374682;
-        Thu, 07 Oct 2021 09:16:14 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id p7sm434717lfr.275.2021.10.07.09.16.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 09:16:14 -0700 (PDT)
-Subject: Re: [PATCH v7 7/8] clk: qcom: dispcc-sm8250: stop using mmcx
- regulator
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20210829154757.784699-1-dmitry.baryshkov@linaro.org>
- <20210829154757.784699-8-dmitry.baryshkov@linaro.org>
- <YV8WsQb9H7+CaLjP@ripper>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <4614587c-b87a-4375-cb6a-6af6f5462c6b@linaro.org>
-Date:   Thu, 7 Oct 2021 19:16:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 7 Oct 2021 12:27:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633623922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1kbk2lcxg9O2Y1a76hO9mtdUGaa5nIQDze4u6D1O12E=;
+        b=PkHT6QrRFZHi8wg+5gLEvlzDKpgeuFejFwvg0IIjD0WDxGG/a/ec+JTboWjAq1iN7GHxfd
+        1awDTHsp5cjn8DdTnJm1ObPpb2lPpOqPteiVDqeNMVP5qlvklUP81jdcopuojVCzuJQfBo
+        hqp8xskq7MM+KJrbPjmVCXbgwqei6lg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-SUq8qOLJPw6XCB59yiXLGA-1; Thu, 07 Oct 2021 12:25:18 -0400
+X-MC-Unique: SUq8qOLJPw6XCB59yiXLGA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9546111EB683;
+        Thu,  7 Oct 2021 16:17:01 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6506671B90;
+        Thu,  7 Oct 2021 16:16:18 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, markver@us.ibm.com,
+        "Michael S. Tsirkin" <mst@redhat.com>, qemu-devel@nongnu.org,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
+In-Reply-To: <20211007175242.4b0155b8.pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20211006142533.2735019-1-pasic@linux.ibm.com>
+ <875yu9yruv.fsf@redhat.com> <20211007163255.61d95513.pasic@linux.ibm.com>
+ <8735pczwjj.fsf@redhat.com> <20211007175242.4b0155b8.pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Thu, 07 Oct 2021 18:16:16 +0200
+Message-ID: <87wnmoyfn3.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YV8WsQb9H7+CaLjP@ripper>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 18:48, Bjorn Andersson wrote:
-> On Sun 29 Aug 08:47 PDT 2021, Dmitry Baryshkov wrote:
-> 
->> Now as the common qcom clock controller code has been taught about power
->> domains, stop mentioning mmcx supply as a way to power up the clock
->> controller's gdsc.
->>
->> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> 
-> Once we merge these, I expect that the boards will start crashing if
-> the kernel is booted using an existing DTB?
-> 
-> Is it okay to just merge the first 6 patches in the series now and
-> postpone these two until we've had the dts change sitting for a while?
+On Thu, Oct 07 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-Sure it is.
+> On Thu, 07 Oct 2021 17:25:52 +0200
+> Cornelia Huck <cohuck@redhat.com> wrote:
+>
+>> On Thu, Oct 07 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+>> 
+>> > On Thu, 07 Oct 2021 13:52:24 +0200
+>> > Cornelia Huck <cohuck@redhat.com> wrote:
+>> >  
+>> >> On Wed, Oct 06 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
+>> >>   
+>> >> > The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+>> >> > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+>> >> > been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+>> >> > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+>> >> >
+>> >> > However, the specification also says: "... driver MAY read (but MUST NOT
+>> >> > write) the device-specific configuration fields to check that it can
+>> >> > support the device ..." before setting FEATURES_OK.    
+>> >> 
+>> >> Suggest to put the citations from the spec into quotes, so that they are
+>> >> distinguishable from the rest of the text.  
+>> >
+>> > For the record: I basically took Michael's description, the one which you
+>> > said you prefer, with some minor changes.  
+>> 
+>> Well I did look at what the text said, not the details in the formatting...
+>> 
+>> >
+>> > This is one of the changes, which renders this a paraphrase and not a
+>> > quote. Michael didn't use quotation marks so I was not sure it is was
+>> > a word by word quote anyway. It was. But the spec depends on "During this
+>> > step" which does not make any sense without the context. That is why I made
+>> > the end of step explicit.  
+>> 
+>> I still think that would be nicer while using some quotation marks, even
+>> if you are just doing a partial quote.
+>> 
+>> In the first paragraph, however, we really should mark the quote
+>> properly. It gave me a stop when I first read it.
+>
+> I've added in some quotation marks and ellipsis marks. Does that look
+> good for you?
 
-> 
-> Regards,
-> Bjorn
-> 
->> ---
->>   drivers/clk/qcom/dispcc-sm8250.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
->> index 108dd1249b6a..cf0bb12eb6e1 100644
->> --- a/drivers/clk/qcom/dispcc-sm8250.c
->> +++ b/drivers/clk/qcom/dispcc-sm8250.c
->> @@ -1129,7 +1129,6 @@ static struct gdsc mdss_gdsc = {
->>   	},
->>   	.pwrsts = PWRSTS_OFF_ON,
->>   	.flags = HW_CTRL,
->> -	.supply = "mmcx",
->>   };
->>   
->>   static struct clk_regmap *disp_cc_sm8250_clocks[] = {
->> -- 
->> 2.33.0
->>
+Yep, works for me.
 
-
--- 
-With best wishes
-Dmitry
