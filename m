@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5C74253FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044E9425400
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241450AbhJGN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:27:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S241532AbhJGN1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232869AbhJGN1a (ORCPT
+        with ESMTP id S241362AbhJGN1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:27:30 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8268C061570;
-        Thu,  7 Oct 2021 06:25:36 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id v18so23189841edc.11;
-        Thu, 07 Oct 2021 06:25:36 -0700 (PDT)
+        Thu, 7 Oct 2021 09:27:39 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93964C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 06:25:45 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id l13so6421709ilo.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:25:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZtaAQUcIMAxwmN/4pd2KyUfGo5ZqQSY8rbyvPPScUUo=;
-        b=Xm1SX2ysSVEfGgCINe/ENA/iSoFbIyj1gorUkdZtdfQ6DBiSFEsrtQQcTHU3/UxkQl
-         5jVFR9vi1SkN3Rfs6xYuBjv8Pte1xg/i6rBRyCUICzKH8tFYERvO8704Tn0xBNStoT1l
-         ZQ7iKoTTv3jNdWyVEdLftTo2v1GBHUKWRWStaI6PFov4qT1XMIx0Kgwba+pAjtt8Kfpd
-         KLcnToA794UC2J9tKJ0gr81XRj+iTMkEIp/RRxPcgJ4/Ojyttk24KI24T1/HTqEeybOo
-         oBBTOwNQZ87jrfAlCzDFWFhKlcTb/z+yvrazzlIhY5mZXty4OWNXeCJ5ervILn6emAMC
-         RpIQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=e8iggSHPchh2/syKEAwU5dTtVJBXfGJ7qwPY92Ln6nY=;
+        b=KSzaZHhfVJT+I/SyNiV2YhOMBC9O7C4QuqLHxsm8j+or/ha26PjQxI83X9JjMxhSuP
+         St9S20WU/VOoRkvrzMlRdOvHMrJLixEfbNUo92/cpW/1yy9Th/AJSPUnQPHdoZM9+saj
+         NuUiNuzfbxlWzP81F05SLxu3+uPWmD8EwUtBhNmZ9TihV1ggPWK+CpLWnOTekzWeL4tY
+         Ua20VoRvkIHwkTs59v7ua9fvTbRDI79mCyNHfUDm6Ml5g99n0LiuBuwlICluMZigxVlH
+         EKxpZtb9ObCsufDzBOqZ97IThmg0rD+rIgmsh6OZpFU1IuAqNl2M3xLVHeOlKPqbmhAq
+         C48A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZtaAQUcIMAxwmN/4pd2KyUfGo5ZqQSY8rbyvPPScUUo=;
-        b=7GH6zm+tZmL3sxHndVmJkWSDqZ7o9mDm9hutZQPyV6qMkKBZUOBvx3WY+RO1e302B7
-         7CdAjLU54xcTTAX7oxkyow3DzTgpQbiXwTNFwZ+itihoFuT7UBiOmVCMWEZsiDmdFB3C
-         UbIb0hYW5ZaCsvFF0Hlq/Df2955lbc+IbQMGB4vdKD8oU5zB8reGScItY+/n4ttP97AD
-         64YduWIEnqTn/QXPoq9X4Ur/A8oTunxRvhqeRwevWW0A185C7Z0/JQjGJUCcJSLvtNJF
-         5Pj2sQECxET1pQ8RMsL8GfydY/zy7CSdcGizf+E97ZglRgZqv88KnxJe1XUeKcTZ4NS0
-         YVYg==
-X-Gm-Message-State: AOAM5334e0uoL6RZPhyPoSzEVC4Qgyca4vgcZtVuw6cc7yd7EV2Fr5U0
-        0KqAnczvOn65BdXQi5Sex2Y=
-X-Google-Smtp-Source: ABdhPJxXUzW/7r/ROuBTG2S2BtbY3zXzRrX1UFoZrW7TMnMowtCxZmU6F5irOgPstO+ySO+UqFBYMg==
-X-Received: by 2002:a17:906:b254:: with SMTP id ce20mr5767002ejb.306.1633613135214;
-        Thu, 07 Oct 2021 06:25:35 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id ay19sm8572792edb.20.2021.10.07.06.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 06:25:34 -0700 (PDT)
-Date:   Thu, 7 Oct 2021 15:25:32 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH 06/13] Documentation: devicetree: net: dsa:
- qca8k: document rgmii_1_8v bindings
-Message-ID: <YV71TCksnbixsYI0@Ansuel-xps.localdomain>
-References: <20211006223603.18858-1-ansuelsmth@gmail.com>
- <20211006223603.18858-7-ansuelsmth@gmail.com>
- <YV46wJYlJZHAZLyD@lunn.ch>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=e8iggSHPchh2/syKEAwU5dTtVJBXfGJ7qwPY92Ln6nY=;
+        b=566OETpgARATCKWIucOoWh2GD8lhqNrnGuFz/9AK3y0oaxcUGU2cj7yo+2EdOnPQND
+         jDWf+baBhOUvH3+gM2JbGGEX7ffuzwf52/kEjm+lQlhcBiyJ0g5JXqgdcv0slTay3EZw
+         Sz8QXDusut5Mgks0qFjNdSehGvMoiKcmwZeHsd3bYhvanfiEBJQo2m5a16InE/eA2G71
+         LoCOQ6APavydWvkAfuCUlMv5TydsseVyLYXTOjSLTNTzVh0jkyWUwDMeNKrXWEAzrNh1
+         3rxPw6U2/df/vfgbK9tnuz2/NAgsYAkUYVDV2o5yt4YWkzAEd0qpwVSbj068a1UNjlmG
+         6dJA==
+X-Gm-Message-State: AOAM531rQL4q8dGrG8CTKE8ROzMC1iFd48WoXCwwdMbj6kNe0vxCLTEz
+        5AvMqD6yGVgKOyvpuAI6TopomTT9IAz3GggVjl0=
+X-Google-Smtp-Source: ABdhPJx0CrVIuPJFQGbfZDNR0hSnT6IpUKcpxaMdSlRzbg1aej3clMfbvsgp4b8iFmVdZccWfGVVxqx/r/EvCSQFfyY=
+X-Received: by 2002:a05:6e02:1baa:: with SMTP id n10mr3004341ili.215.1633613144845;
+ Thu, 07 Oct 2021 06:25:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV46wJYlJZHAZLyD@lunn.ch>
+Received: by 2002:a02:b399:0:0:0:0:0 with HTTP; Thu, 7 Oct 2021 06:25:44 -0700 (PDT)
+Reply-To: attsona389@gmail.com
+From:   sona attah <tomas46john@gmail.com>
+Date:   Thu, 7 Oct 2021 14:25:44 +0100
+Message-ID: <CABa4VuBaDLxxjCxSGmzZ=oUfJnv9v-MppkmTJuEhNaEGnCTWQA@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 02:09:36AM +0200, Andrew Lunn wrote:
-> On Thu, Oct 07, 2021 at 12:35:56AM +0200, Ansuel Smith wrote:
-> > Document new qca,rgmii0_1_8v and qca,rgmii56_1_8v needed to setup
-> > mac_pwr_sel register for ar8327 switch.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > index 8c73f67c43ca..1f6b7d2f609e 100644
-> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > @@ -13,6 +13,8 @@ Required properties:
-> >  Optional properties:
-> >  
-> >  - reset-gpios: GPIO to be used to reset the whole device
-> > +- qca,rgmii0-1-8v: Set the internal regulator to supply 1.8v for MAC0 port
-> > +- qca,rgmii56-1-8v: Set the internal regulator to supply 1.8v for MAC5/6 port
-> 
-> What is the consumer of these 1.8v? The MACs are normally internal,
-> the regulators are internal, so why is a DT property needed?
-> 
->     Andrew
-
-Only some device require this, with these bit at 0, the internal
-regulator provide 1.5v. It's not really a on/off but a toggle of the
-different operating voltage. Some device require this and some doesn't.
-
--- 
-	Ansuel
+0JTQvtGA0L7Qs9C+0Lkg0LTRgNGD0LMsDQoNCtCc0LXQvdGPINC30L7QstGD0YIg0LHQsNGA0YDQ
+uNGB0YLQtdGAINCh0L7QvdCwINCQ0YLRgtCwLCDQu9C40YfQvdGL0Lkg0L/QvtCy0LXRgNC10L3Q
+vdGL0Lkg0LzQvtC10LPQviDQv9C+0LrQvtC50L3QvtCz0L4NCtC60LvQuNC10L3RgtCwLCDRg9C8
+0LXRgNGI0LXQs9C+INC+0YIg0YHQtdGA0LTQtdGH0L3QvtCz0L4g0L/RgNC40YHRgtGD0L/QsCDQ
+siAyMDA5INCz0L7QtNGDLiDQntC9INC/0L7Qu9C+0LbQuNC7INC30LTQtdGB0YwNCjE1IDUwMCAw
+MDAg0LTQvtC70LvQsNGA0L7QsiDQsiDQsdCw0L3Qui4NCtCe0L0g0YPQvNC10YAsINC90LUg0LjQ
+vNC10Y8g0LfQsNGA0LXQs9C40YHRgtGA0LjRgNC+0LLQsNC90L3Ri9GFINCx0LvQuNC20LDQudGI
+0LjRhSDRgNC+0LTRgdGC0LLQtdC90L3QuNC60L7Qsiwg0YLQsNC6INC60LDQug0K0LHRi9C7INC0
+0LDQstC90L4g0LIg0YDQsNC30LLQvtC00LUg0Lgg0L3QtSDQuNC80LXQuyDQtNC10YLQtdC5Lg0K
+0JHQsNC90Log0YHQstGP0LfQsNC70YHRjyDRgdC+INC80L3QvtC5INC4INGB0LrQsNC30LDQuywg
+0YfRgtC+INC+0L3QuCDQutC+0L3RhNC40YHQutGD0Y7RgiDQtdCz0L4g0YHRh9C10YIg0Lgg0LTQ
+tdC90YzQs9C4LA0K0LXRgdC70Lgg0Y8g0L3QtSDQv9GA0LXQtNGB0YLQsNCy0LvRjiDQutC+0LPQ
+vi3Qu9C40LHQviDQuNC3INC10LPQviDRgNC+0LTRgdGC0LLQtdC90L3QuNC60L7Qsi4g0K8g0YHQ
+stGP0LfQsNC70YHRjyDRgQ0K0LLQsNC80LgsINC/0L7RgtC+0LzRgyDRh9GC0L4g0LLRiyDQvtGC
+0LvQuNGH0L3QviDRgdC/0YDQsNCy0LvRj9C10YLQtdGB0Ywg0YEg0Y3RgtC+0Lkg0YLRgNCw0L3Q
+t9Cw0LrRhtC40LXQuSDQuA0K0L/QvtC00YXQvtC00LjRgtC1INC60LDQuiDQtdCz0L4g0LHQu9C4
+0LbQsNC50YjQuNC1INGA0L7QtNGB0YLQstC10L3QvdC40LrQuCwg0LzRiyDQvNC+0LbQtdC8INGA
+0LDQsdC+0YLQsNGC0Ywg0LLQvNC10YHRgtC1LA0K0YfRgtC+0LHRiyDQv9C+0LvRg9GH0LjRgtGM
+INGN0YLQuCDQtNC10L3RjNCz0Lgg0Lgg0YDQsNC30LTQtdC70LjRgtGMINC40YUgNTAvNTAuINCf
+0L7QttCw0LvRg9C50YHRgtCwLCDQstC10YDQvdC40YLQtdGB0YwNCtC60L4g0LzQvdC1INC4INGB
+0L7QvtCx0YnQuNGC0LUg0YHQstC+0Y4g0LjQvdGE0L7RgNC80LDRhtC40Y4sINC60LDQuiDRg9C6
+0LDQt9Cw0L3QviDQvdC40LbQtSwg0LTQu9GPINC/0L7Qu9GD0YfQtdC90LjRjw0K0LHQvtC70LXQ
+tSDQv9C+0LTRgNC+0LHQvdC+0Lkg0LjQvdGE0L7RgNC80LDRhtC40LguDQoNCtCf0L7Qu9C90L7Q
+tSDQuNC80Y86DQrQmtC+0L3RgtCw0LrRgtC90YvQuSDQsNC00YDQtdGBOg0K0J3QvtC80LXRgCDQ
+vNC+0LHQuNC70YzQvdC+0LPQviDRgtC10LvQtdGE0L7QvdCwOg0KDQrQn9C+0LbQsNC70YPQudGB
+0YLQsCwg0L7RgtCy0LXRgtGM0YLQtSDQvNC90LUg0L3QsCDRjdGC0L7RgiDQsNC00YDQtdGBINGN
+0LvQtdC60YLRgNC+0L3QvdC+0Lkg0L/QvtGH0YLRiyDQtNC70Y8g0L/QvtC70YPRh9C10L3QuNGP
+DQrQsdC+0LvQtdC1INC/0L7QtNGA0L7QsdC90L7QuSDQuNC90YTQvtGA0LzQsNGG0LjQuC4NCmF0
+dHNvbmEzODlAZ21haWwuY29tDQoNCtCY0YHQutGA0LXQvdC90LUg0JLQsNGILA0K0JHQsNGA0YDQ
+uNGB0YLQtdGAINCh0L7QvdCwINCQ0YLRgtCwDQo=
