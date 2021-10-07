@@ -2,58 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E061425B8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3105E425B8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234732AbhJGTdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhJGTda (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:33:30 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C50C061570;
-        Thu,  7 Oct 2021 12:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5ov7Y3AdM9RNZqm8EP9Y9K5HZHbQg0Tk3kW4wZrNisU=; b=wIKTf0/Xx58Dcd+75FXYhO6TpO
-        wOvrjbzdXRPaGAIp1B1H3BfnXW/D/XaSolWgQH7tlfq4Jkqz+w13NdPhBwQa3QV/yChIvCwtXUxso
-        llNdNzLEvCd44R612N2acyNWet3H8LjMs4GXuI1A2tSElqgflZNgdsKHJ9XbDW2BOTjlqUTFANF/A
-        3vFjuUiA3Dau1FUjzThJ9z2w3yu8YuEnDod1RVht3dwOmgeVVFr7NLtIiP2prd4UiHnbjBwuMK6m+
-        udsyXpFpBz7v7cN55kp3uNmjx6cn+wVK4eXBw7osEDLtkQe3jsdQosqK70vT1MqP0CV/diU2dGLLh
-        qpAYb5kQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYZ5t-002MV4-KT; Thu, 07 Oct 2021 19:30:32 +0000
-Date:   Thu, 7 Oct 2021 20:30:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        viresh.kumar@linaro.org
-Subject: Re: [RFC PATCH] fs: proc: task_mmu: fix sparse warnings
-Message-ID: <YV9KyR/I76oODMFD@casper.infradead.org>
-References: <20211007191636.541041-1-anders.roxell@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007191636.541041-1-anders.roxell@linaro.org>
+        id S233192AbhJGTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:33:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232829AbhJGTdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 15:33:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2884B610A1;
+        Thu,  7 Oct 2021 19:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1633635070;
+        bh=HhBYKDk4QK9bVPwS4vHzeRTACL3GE5kSGSANE9D2jDI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=f/VRG6xnT6Dq+L4jU0SQ/soGHSTlTjZ//IS9sLzBRv7xdr0ozOPlFIBw9M/vZWbM+
+         pAhgoWYfnVvlAHsBV2jAgVgqygOx+u2pOsxO7bZ6k3wkVQf2EyH6ueGpmEg7DVcqCl
+         8OggsvvlADcMDGz51XHBamkZfn3Q2oEsOUCurqmI=
+Date:   Thu, 7 Oct 2021 12:31:09 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Optimise put_pages_list()
+Message-Id: <20211007123109.6a49c7c625e414acf7546c89@linux-foundation.org>
+In-Reply-To: <20211007192138.561673-1-willy@infradead.org>
+References: <20211007192138.561673-1-willy@infradead.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 09:16:36PM +0200, Anders Roxell wrote:
-> When building the kernel with sparse enabled 'C=1' the following
-> warnings can be seen:
-> 
-> fs/proc/task_mmu.c:587:17: warning: context imbalance in 'smaps_pte_range' - unexpected unlock
-> fs/proc/task_mmu.c:1145:28: warning: context imbalance in 'clear_refs_pte_range' - unexpected unlock
-> fs/proc/task_mmu.c:1473:28: warning: context imbalance in 'pagemap_pmd_range' - unexpected unlock
-> fs/proc/task_mmu.c:1811:28: warning: context imbalance in 'gather_pte_stats' - unexpected unlock
-> 
-> Rework to add __acquire() and __release() to tell sparse that it is all good.
+On Thu,  7 Oct 2021 20:21:37 +0100 "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 
-Surely the root problem here is that pmd_trans_huge_lock() isn't
-marked with __cond_lock() like, eg, get_locked_pte() is?
+> Instead of calling put_page() one page at a time, pop pages off
+> the list if their refcount was too high and pass the remainder to
+> put_unref_page_list().  This should be a speed improvement, but I have
+> no measurements to support that.  Current callers do not care about
+> performance, but I hope to add some which do.
+
+Don't you think it would actually be slower to take an additional pass
+across the list?  If the list is long enough to cause cache thrashing. 
+Maybe it's faster for small lists.
+
