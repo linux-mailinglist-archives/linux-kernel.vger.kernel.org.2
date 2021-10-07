@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD8E42522D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377EF425232
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241094AbhJGLmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241067AbhJGLmP (ORCPT
+        id S241071AbhJGLpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:45:17 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13704 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhJGLpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:42:15 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50795C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:40:22 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id e16so5780333qts.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t6zk3xfTxx+/7P9iF/K8HrCXbNIyzmGrI92g0qF/r8U=;
-        b=Z5BfJR12ZF73sqboFqV6Iftg9Fca9z5gXZZEXjYRHqQq4qghp9RcfRyFFD74hFJVbF
-         FNLutLPICI+kRSkp0Z/yFqmimbN9Ix8EcbdmC0wcW6HYgMzZJ9IIWTzsnMKZKBZoNhv9
-         zaexlFTVGrzQz2Ql0HdZgeURLnwPVZTWxTAHSKEEeFsa+vKjn/xx0eRp4/wVP1DzlqFE
-         ar+4ieCc7nQ6y3JoLjU0zomWckcMr9Zoag4Qfwzclr8meuO+iIDsNKzFr7jgwJ99Du0E
-         soapNjOR5PLotwgmP+WLBkjuhluBIgE9jOgZiReEmqHG6viISNvPtCsj7/VSuA1TZOC6
-         0mEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t6zk3xfTxx+/7P9iF/K8HrCXbNIyzmGrI92g0qF/r8U=;
-        b=PlwAB+cxyWClEsXASZSoRBApoigvBpAJv/8rHoYKVDxDoaUq2wkOU3CmiFDiamc1kT
-         aThcVPS0uwDgCUpfeDIp6Ix5n0Ssv2jzH/921bX65TAFDus+6R1p8kL4dHDiAQKUhRHm
-         TwDo1sOVgHc81Y3hHuq8SXycqxr5zMjBQcCHWvem/M8LGCYU8a8i4fS7QHwNQf/n5LnD
-         YOKagc8QB44Mv+NHpyRNNyhLl3nMsVe1AocP2F2bFLx6akL1K9L3f6bih/I+/NsO5pag
-         MxqBMXEY6tykjLLhluv/eYTKu/dWxOmqXw9C0TJrBFE9ZzMJmg+AaKbe2r7GPbfYq7Iv
-         GPVg==
-X-Gm-Message-State: AOAM530vxa9E/2P35GCXzdftFU9jUaNugpr9K95OyM8ZxUUO4A5IMiBf
-        yCf+Ztj5DJtMq0EDpWayx3czvw==
-X-Google-Smtp-Source: ABdhPJymysJt76mkPddOVzIeZPor2OGBI9wov7yUB7IjZKcEEdbzf/i3QALNpMKmZP+iJVKPXTtQ+g==
-X-Received: by 2002:ac8:57d0:: with SMTP id w16mr4342934qta.96.1633606820017;
-        Thu, 07 Oct 2021 04:40:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id v8sm17498391qta.21.2021.10.07.04.40.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 04:40:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mYRl4-00Br7G-Sw; Thu, 07 Oct 2021 08:40:18 -0300
-Date:   Thu, 7 Oct 2021 08:40:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Message-ID: <20211007114018.GD2688930@ziepe.ca>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
+        Thu, 7 Oct 2021 07:45:15 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQ8YT0PGdzWlbJ;
+        Thu,  7 Oct 2021 19:41:49 +0800 (CST)
+Received: from dggpemm100005.china.huawei.com (7.185.36.231) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 7 Oct 2021 19:43:18 +0800
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggpemm100005.china.huawei.com (7.185.36.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 7 Oct 2021 19:43:18 +0800
+Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
+ dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
+ Thu, 7 Oct 2021 19:43:18 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>
+Subject: RE: [PATCH v2 1/2] iommu/vt-d: convert the return type of
+ first_pte_in_page to bool
+Thread-Topic: [PATCH v2 1/2] iommu/vt-d: convert the return type of
+ first_pte_in_page to bool
+Thread-Index: AQHXufzwnJ0IkXVZ70aRussks8pnnKvGjCOAgADf3UA=
+Date:   Thu, 7 Oct 2021 11:43:18 +0000
+Message-ID: <046cdaae8b204c3da442ec44fcc6c25d@huawei.com>
+References: <20211005152308.1061-1-longpeng2@huawei.com>
+ <20211005152308.1061-2-longpeng2@huawei.com>
+ <62016e41-5d9d-2d42-e16f-59809f9f1f75@linux.intel.com>
+In-Reply-To: <62016e41-5d9d-2d42-e16f-59809f9f1f75@linux.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007104301.76693-3-galpress@amazon.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
-
-> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
->  	return 0;
->  }
->  
-> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
-> -			 u64 virt_addr, int access_flags,
-> -			 struct ib_udata *udata)
-> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-> +{
-> +	WARN_ON_ONCE(1,
-> +		     "Invalidate callback should not be called when memory is pinned\n");
-> +}
-> +
-> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
-> +	.allow_peer2peer = true,
-> +	.move_notify = efa_dmabuf_invalidate_cb,
-> +};
-
-Shouldn't move_notify really just be left as NULL? I mean fixing
-whatever is preventing that?
-
-> +struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
-> +				     u64 length, u64 virt_addr,
-> +				     int fd, int access_flags,
-> +				     struct ib_udata *udata)
-> +{
-> +	struct efa_dev *dev = to_edev(ibpd->device);
-> +	struct ib_umem_dmabuf *umem_dmabuf;
-> +	struct efa_mr *mr;
-> +	int err;
-> +
-> +	mr = efa_alloc_mr(ibpd, access_flags, udata);
-> +	if (IS_ERR(mr)) {
-> +		err = PTR_ERR(mr);
-> +		goto err_out;
-> +	}
-> +
-> +	umem_dmabuf = ib_umem_dmabuf_get(ibpd->device, start, length, fd,
-> +					 access_flags, &efa_dmabuf_attach_ops);
-> +	if (IS_ERR(umem_dmabuf)) {
-> +		ibdev_dbg(&dev->ibdev, "Failed to get dmabuf[%d]\n", err);
-> +		err = PTR_ERR(umem_dmabuf);
-> +		goto err_free;
-> +	}
-> +
-> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
-> +	err = dma_buf_pin(umem_dmabuf->attach);
-> +	if (err) {
-> +		ibdev_dbg(&dev->ibdev, "Failed to pin dmabuf memory\n");
-> +		goto err_release;
-> +	}
-> +
-> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
-> +	if (err) {
-> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
-> +		goto err_unpin;
-> +	}
-> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-
-If it is really this simple the core code should have this logic,
-'ib_umem_dmabuf_get_pinned()' or something
-
-Jason
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHUgQmFvbHUgW21haWx0
+bzpiYW9sdS5sdUBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6IFRodXJzZGF5LCBPY3RvYmVyIDcs
+IDIwMjEgMjoxOCBQTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENsb3VkIEluZnJhc3RydWN0dXJl
+IFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBodWF3ZWkuY29tPjsgZHdtdzJA
+aW5mcmFkZWFkLm9yZzsgd2lsbEBrZXJuZWwub3JnOw0KPiBqb3JvQDhieXRlcy5vcmcNCj4gQ2M6
+IGJhb2x1Lmx1QGxpbnV4LmludGVsLmNvbTsgaW9tbXVAbGlzdHMubGludXgtZm91bmRhdGlvbi5v
+cmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEdvbmdsZWkgKEFyZWkpIDxhcmVp
+LmdvbmdsZWlAaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAxLzJdIGlvbW11
+L3Z0LWQ6IGNvbnZlcnQgdGhlIHJldHVybiB0eXBlIG9mDQo+IGZpcnN0X3B0ZV9pbl9wYWdlIHRv
+IGJvb2wNCj4gDQo+IE9uIDIwMjEvMTAvNSAyMzoyMywgTG9uZ3BlbmcoTWlrZSkgd3JvdGU6DQo+
+ID4gZmlyc3RfcHRlX2luX3BhZ2UoKSByZXR1cm5zIGJvb2xlYW4gdmFsdWUsIHNvIGxldCdzIGNv
+bnZlcnQgaXRzDQo+ID4gcmV0dXJuIHR5cGUgdG8gYm9vbC4NCj4gPg0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IExvbmdwZW5nKE1pa2UpIDxsb25ncGVuZzJAaHVhd2VpLmNvbT4NCj4gPiAtLS0NCj4gPiAg
+IGluY2x1ZGUvbGludXgvaW50ZWwtaW9tbXUuaCB8IDIgKy0NCj4gPiAgIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvbGludXgvaW50ZWwtaW9tbXUuaCBiL2luY2x1ZGUvbGludXgvaW50ZWwtaW9tbXUuaA0K
+PiA+IGluZGV4IDA1YTY1ZWIuLmE1OTBiMDAgMTAwNjQ0DQo+ID4gLS0tIGEvaW5jbHVkZS9saW51
+eC9pbnRlbC1pb21tdS5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9pbnRlbC1pb21tdS5oDQo+
+ID4gQEAgLTcwOCw3ICs3MDgsNyBAQCBzdGF0aWMgaW5saW5lIGJvb2wgZG1hX3B0ZV9zdXBlcnBh
+Z2Uoc3RydWN0IGRtYV9wdGUgKnB0ZSkNCj4gPiAgIAlyZXR1cm4gKHB0ZS0+dmFsICYgRE1BX1BU
+RV9MQVJHRV9QQUdFKTsNCj4gPiAgIH0NCj4gPg0KPiA+IC1zdGF0aWMgaW5saW5lIGludCBmaXJz
+dF9wdGVfaW5fcGFnZShzdHJ1Y3QgZG1hX3B0ZSAqcHRlKQ0KPiA+ICtzdGF0aWMgaW5saW5lIGJv
+b2wgZmlyc3RfcHRlX2luX3BhZ2Uoc3RydWN0IGRtYV9wdGUgKnB0ZSkNCj4gPiAgIHsNCj4gPiAg
+IAlyZXR1cm4gISgodW5zaWduZWQgbG9uZylwdGUgJiB+VlREX1BBR0VfTUFTSyk7DQo+ID4gICB9
+DQo+ID4NCj4gDQo+IFByb2JhYmx5LA0KPiANCj4gCXJldHVybiBJU19BTElHTkVEKCh1bnNpZ25l
+ZCBsb25nKXB0ZSwgVlREX1BBR0VfU0laRSk7DQo+IA0KPiBsb29rcyBuZWF0ZXI/DQo+IA0KDQpM
+b29rcyBiZXR0ZXIhIEknbGwgaW5jbHVkZSB0aGlzIG9wdGltaXphdGlvbiBpbiB2My4NCg0KPiBC
+ZXN0IHJlZ2FyZHMsDQo+IGJhb2x1DQo=
