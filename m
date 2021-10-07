@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE35D425251
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0769C425256
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241147AbhJGLzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:55:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241137AbhJGLzI (ORCPT
+        id S241121AbhJGL5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230091AbhJGL46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:55:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633607594;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AZvF8lHSRTx5C1gxLkoYVX71Yos23PQLi8wLibZ0710=;
-        b=RRNO7UaWRln5krpU8DC7iMldqpMlM+58xdAVjMNZ0sx9YE6f+HKbYNIcM0XCkYPD1Cp0bK
-        /svtFwpTgnu3XI99rJvwgD9wssytxPW7Glh6IRtuK+ggh69ezreEwoZ7KAzmwyMGKcdN8/
-        gERj3+v88ez60x4M7ZRQ+EtOeE8MYsQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-f60KTsS4N0205Zinm8Nj0g-1; Thu, 07 Oct 2021 07:52:49 -0400
-X-MC-Unique: f60KTsS4N0205Zinm8Nj0g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 985AB100CC84;
-        Thu,  7 Oct 2021 11:52:47 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7F47D4EC7D;
-        Thu,  7 Oct 2021 11:52:26 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>, markver@us.ibm.com,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH 1/1] virtio: write back F_VERSION_1 before validate
-In-Reply-To: <20211006142533.2735019-1-pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20211006142533.2735019-1-pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Thu, 07 Oct 2021 13:52:24 +0200
-Message-ID: <875yu9yruv.fsf@redhat.com>
+        Thu, 7 Oct 2021 07:56:58 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449C0C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 04:55:05 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id z20so22000634edc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 04:55:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2Sc46Q9eMcwlaMy2IZJgD2QwpVCcYg9+SD8cXYZgbr4=;
+        b=RT9YmSKnUjHCEr3v6bar51e1fzGq7K8YE+IB7ejWFNs9jODGQtkmWkzq2hgZujJCUJ
+         mnennI/hqWHn0R1mtQCCEqvymetd/bl2VgplLcGb/U/N0sjVCoyKEwx/mkoc9MmETaWb
+         ceVbHfdd9xnvcaN9u+osChdyCUu9BQJsE2WJ1gkkcj9kLDP7jXmcIiWdLsxl9rKdDTIf
+         H3EuUUBia7VJlzi8PEgVftWKFBtcQ65f0EUzVoBGCFv1cdIyTgp1RMdXi/gD1rVfq7g4
+         IPgNqk9yxnkGrT6gy6s2iNHiSDmFQpfjA2B5eyN0gQHdihyPlscJUjXMjZzUJB7bbr1L
+         Wh+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2Sc46Q9eMcwlaMy2IZJgD2QwpVCcYg9+SD8cXYZgbr4=;
+        b=b+r0j8zgoGD/67gKWdA1IyWZM3UuWtSmfA/RPy/Kqy+1SD9+x0911naFckurk08tSf
+         K7f6DDdHlyg0FmIAAYG6CZt/oxXj4G8UPv5jKG7jY3aQC8n0QG90iXbdJdbKDObSr1Hd
+         5Y8I96uTOwcCmK4JULDohsTAmHNNYEbr6V9FaS0tVQTrjpEUCj7U4im0O04DGsHDLUCv
+         XSCEzXmIjM1eMPnOjhOJmG01lBZnL7rzUtzQpmZmOhLtojHlZuTk/4PyUEocgTYWXSzd
+         TlPIB9LNaj+s2LIcNZJon2S5tmcXmMDVK5r5E6MUoDL57Jix0AVKHHEhk9sh74vOTsrZ
+         plUA==
+X-Gm-Message-State: AOAM530eFI+IEdsB3lNxTEaSmQPspJvZT7Hy/ysZXIOqfQPlDuJ1Hq4u
+        CWCdTdIFunujNZF1jfme6sCfYWMElFgGiFI15BY=
+X-Google-Smtp-Source: ABdhPJyCXK/u3V2xMWIJIiVDE8gg9vaOTOj4ckAKIeY5EmY50zW1eFNxbthRtAZ1ldJbNFWWIlCpZCQBCqK/PKY06k8=
+X-Received: by 2002:a17:906:3383:: with SMTP id v3mr5173329eja.213.1633607703888;
+ Thu, 07 Oct 2021 04:55:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
+ <20211001123623.GM964074@nvidia.com> <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+ <20211004094003.527222e5@jacob-builder> <20211004182142.GM964074@nvidia.com>
+ <CAGsJ_4w+ed78cnJusM_enEZpdGghzvjgt0aYDPpfwk4z7PQqxQ@mail.gmail.com> <20211007113221.GF2744544@nvidia.com>
+In-Reply-To: <20211007113221.GF2744544@nvidia.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Fri, 8 Oct 2021 00:54:52 +1300
+Message-ID: <CAGsJ_4x2UEmNXCVhJAVRyB8568VMrTkOLeVCNp8CyP6xZJwCig@mail.gmail.com>
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
-
-> The virtio specification virtio-v1.1-cs01 states: Transitional devices
-> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-> been acknowledged by the driver.  This is exactly what QEMU as of 6.1
-> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+On Fri, Oct 8, 2021 at 12:32 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> However, the specification also says: driver MAY read (but MUST NOT
-> write) the device-specific configuration fields to check that it can
-> support the device before setting FEATURES_OK.
-
-Suggest to put the citations from the spec into quotes, so that they are
-distinguishable from the rest of the text.
-
+> On Thu, Oct 07, 2021 at 06:43:33PM +1300, Barry Song wrote:
 >
-> In that case, any transitional device relying solely on
-> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-> legacy format.  In particular, this implies that it is in big endian
-> format for big endian guests. This naturally confuses the driver which
-> expects little endian in the modern mode.
+> > So do we have a case where devices can directly access the kernel's data
+> > structure such as a list/graph/tree with pointers to a kernel virtual address?
+> > then devices don't need to translate the address of pointers in a structure.
+> > I assume this is one of the most useful features userspace SVA can provide.
 >
-> It is probably a good idea to amend the spec to clarify that
-> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-> is complete. However, we already have regression so let's try to address
+> AFIACT that is the only good case for KVA, but it is also completely
+> against the endianess, word size and DMA portability design of the
+> kernel.
+>
+> Going there requires some new set of portable APIs for gobally
+> coherent KVA dma.
 
-s/regression/a regression/
-
-> it.
-
-Maybe mention what the regression is?
-
-Also mention that we use this workaround for modern on BE only?
+yep. I agree. it would be very weird if accelerators/gpu are sharing
+kernel' data struct, but for each "DMA" operation - reading or writing
+the data struct, we have to call dma_map_single/sg or
+dma_sync_single_for_cpu/device etc. It seems once devices and cpus
+are sharing virtual address(SVA), code doesn't need to do explicit
+map/sync each time.
 
 >
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-> Reported-by: markver@us.ibm.com
-> ---
->  drivers/virtio/virtio.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index 0a5b54034d4b..494cfecd3376 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -239,6 +239,16 @@ static int virtio_dev_probe(struct device *_d)
->  		driver_features_legacy = driver_features;
->  	}
->  
-> +	/*
-> +	 * Some devices detect legacy solely via F_VERSION_1. Write
-> +	 * F_VERSION_1 to force LE for these when needed.
+> Jason
 
-"...to force LE config space accesses before FEATURES_OK for these when
-needed (BE)."
-
-?
-
-> +	 */
-> +	if (drv->validate && !virtio_legacy_is_little_endian()
-> +			  && BIT_ULL(VIRTIO_F_VERSION_1) & device_features) {
-
-Nit: putting device_features first would read more naturally to me.
-
-> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-> +		dev->config->finalize_features(dev);
-> +	}
-> +
->  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
->  		dev->features = driver_features & device_features;
->  	else
-
-Patch LGTM.
-
+Thanks
+barry
