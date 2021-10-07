@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6B542510A
+	by mail.lfdr.de (Postfix) with ESMTP id A30FF42510B
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:26:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240948AbhJGK2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:28:12 -0400
+        id S240965AbhJGK2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:28:14 -0400
 Received: from mga01.intel.com ([192.55.52.88]:3747 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240904AbhJGK2D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:28:03 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249532677"
+        id S240919AbhJGK2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:28:06 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10129"; a="249532681"
 X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="249532677"
+   d="scan'208";a="249532681"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 03:26:10 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 03:26:13 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,354,1624345200"; 
-   d="scan'208";a="657335536"
+   d="scan'208";a="657335544"
 Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
-  by orsmga005.jf.intel.com with ESMTP; 07 Oct 2021 03:26:07 -0700
+  by orsmga005.jf.intel.com with ESMTP; 07 Oct 2021 03:26:10 -0700
 From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
         Alexander Antonov <alexander.antonov@linux.intel.com>,
         Alexei Budankov <abudankov@huawei.com>,
         Riccardo Mancini <rickyman7@gmail.com>
-Subject: [PATCH v3 7/8] perf session: Introduce reader return codes
-Date:   Thu,  7 Oct 2021 13:25:42 +0300
-Message-Id: <73fff3497e39c90ae9c517d00782d99c842748db.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+Subject: [PATCH v3 8/8] perf session: Introduce reader EOF function
+Date:   Thu,  7 Oct 2021 13:25:43 +0300
+Message-Id: <80d22da1e90cb6da0d014087351d4cb95675fc4b.1633596227.git.alexey.v.bayduraev@linux.intel.com>
 X-Mailer: git-send-email 2.19.0
 In-Reply-To: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
 References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
@@ -45,59 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding reader READER_OK and READER_NODATA return codes to make
-the code more clear.
+Introducing a function to check end-of-file status.
 
-Suggested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Namhyung Kim <namhyung@gmail.com>
-Reviewed-by: Riccardo Mancini <rickyman7@gmail.com>
-Tested-by: Riccardo Mancini <rickyman7@gmail.com>
 Signed-off-by: Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
 ---
- tools/perf/util/session.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ tools/perf/util/session.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 6b255b0b23e0..7d88c651ffd7 100644
+index 7d88c651ffd7..f74e153231fa 100644
 --- a/tools/perf/util/session.c
 +++ b/tools/perf/util/session.c
-@@ -2258,12 +2258,17 @@ reader__mmap(struct reader *rd, struct perf_session *session)
- 	return 0;
+@@ -2311,6 +2311,12 @@ reader__read_event(struct reader *rd, struct perf_session *session,
+ 	return err;
  }
  
-+enum {
-+	READER_OK,
-+	READER_NODATA,
-+};
++static inline bool
++reader__eof(struct reader *rd)
++{
++	return (rd->file_pos >= rd->data_size + rd->data_offset);
++}
 +
  static int
- reader__read_event(struct reader *rd, struct perf_session *session,
- 		   struct ui_progress *prog)
- {
- 	u64 size;
--	int err = 0;
-+	int err = READER_OK;
- 	union perf_event *event;
- 	s64 skip;
- 
-@@ -2273,7 +2278,7 @@ reader__read_event(struct reader *rd, struct perf_session *session,
- 		return PTR_ERR(event);
- 
- 	if (!event)
--		return 1;
-+		return READER_NODATA;
- 
- 	session->active_decomp = &rd->decomp_data;
- 	size = event->header.size;
-@@ -2325,7 +2330,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
- 	err = reader__read_event(rd, session, prog);
- 	if (err < 0)
- 		goto out;
--	else if (err == 1)
-+	else if (err == READER_NODATA)
- 		goto remap;
- 
+ reader__process_events(struct reader *rd, struct perf_session *session,
+ 		       struct ui_progress *prog)
+@@ -2336,7 +2342,7 @@ reader__process_events(struct reader *rd, struct perf_session *session,
  	if (session_done())
+ 		goto out;
+ 
+-	if (rd->file_pos < rd->data_size + rd->data_offset)
++	if (!reader__eof(rd))
+ 		goto more;
+ 
+ out:
 -- 
 2.19.0
 
