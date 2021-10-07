@@ -2,83 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5160B425997
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54804259A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243295AbhJGRgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55790 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242002AbhJGRgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:36:18 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S243335AbhJGRlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:41:44 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35518
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242882AbhJGRlm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:41:42 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 502DA60E09;
-        Thu,  7 Oct 2021 17:34:23 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 18:38:26 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Kevin Tsai <ktsai@capellamicro.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] iio: light: noa1305: Make use of the helper
- function dev_err_probe()
-Message-ID: <20211007183826.67c0fed4@jic23-huawei>
-In-Reply-To: <20210928014156.1491-4-caihuoqing@baidu.com>
-References: <20210928014156.1491-1-caihuoqing@baidu.com>
-        <20210928014156.1491-4-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1FF973F22C;
+        Thu,  7 Oct 2021 17:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633628383;
+        bh=AGmPEyKfrMO2SB0GuUzpEOSqBSptCQbYUMRwx/G05Wg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=PDcBRlwNR0KSI7F21Iul29r+ViC10Ua6ZyXlsT5HvH0BLFL3fYopja0pAHYHDLUJQ
+         xRyMa2BIYSVpQaAhTDarxTrDS52rCHwaXvm0McpIsRmtHL3Y3ikyaqha1LvL8EapoG
+         O39oj+Vz3yGirhMoxJGHNKYuNJqll5uCAP5KdT9+vnqEjf4g/I/4xF9EH7NOmuLfIA
+         lgE0dUqEEmRptGkNTticRSB6UevJGsGJFp7VUiEUeNB7gHL/q8MxCvQ/5USooMNIL9
+         5gGs/1dZ7BzzU/FhS37koLmo17bUjBZ24QwyH202qgaxrXDfIIQnyQIBdopkZnvF62
+         JW2g8VM5MlZ5A==
+From:   Colin King <colin.king@canonical.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/iwpm: Remove redundant initialization of pointer err_str
+Date:   Thu,  7 Oct 2021 18:39:42 +0100
+Message-Id: <20211007173942.21933-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 09:41:55 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> When possible use dev_err_probe help to properly deal with the
-> PROBE_DEFER error, the benefit is that DEFER issue will be logged
-> in the devices_deferred debugfs file.
-> Using dev_err_probe() can reduce code size, and the error value
-> gets printed.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-Applied this patch to the togreg branch of iio.git and pushed out as
-testing for 0-day to try it out.
+The pointer err_str is being initialized with a value that is
+never read, it is being updated later on. The assignment is
+redundant and can be removed.
 
-Note I didn't pick up 1 and 3 from this series and will expect to see
-a v3 of those or reply to the relevant reviews.
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/infiniband/core/iwpm_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-
-Jonathan
-
-> ---
-> v1->v2: Remove the separate line of PTR_ERR().
-> 
->  drivers/iio/light/noa1305.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/iio/light/noa1305.c b/drivers/iio/light/noa1305.c
-> index a308fbc2fc7b..71a322227429 100644
-> --- a/drivers/iio/light/noa1305.c
-> +++ b/drivers/iio/light/noa1305.c
-> @@ -217,10 +217,9 @@ static int noa1305_probe(struct i2c_client *client,
->  	priv = iio_priv(indio_dev);
->  
->  	priv->vin_reg = devm_regulator_get(&client->dev, "vin");
-> -	if (IS_ERR(priv->vin_reg)) {
-> -		dev_err(&client->dev, "get regulator vin failed\n");
-> -		return PTR_ERR(priv->vin_reg);
-> -	}
-> +	if (IS_ERR(priv->vin_reg))
-> +		return dev_err_probe(&client->dev, PTR_ERR(priv->vin_reg),
-> +				     "get regulator vin failed\n");
->  
->  	ret = regulator_enable(priv->vin_reg);
->  	if (ret) {
+diff --git a/drivers/infiniband/core/iwpm_util.c b/drivers/infiniband/core/iwpm_util.c
+index 54f4feb604d8..358a2db38d23 100644
+--- a/drivers/infiniband/core/iwpm_util.c
++++ b/drivers/infiniband/core/iwpm_util.c
+@@ -762,7 +762,7 @@ int iwpm_send_hello(u8 nl_client, int iwpm_pid, u16 abi_version)
+ {
+ 	struct sk_buff *skb = NULL;
+ 	struct nlmsghdr *nlh;
+-	const char *err_str = "";
++	const char *err_str;
+ 	int ret = -EINVAL;
+ 
+ 	skb = iwpm_create_nlmsg(RDMA_NL_IWPM_HELLO, &nlh, nl_client);
+-- 
+2.32.0
 
