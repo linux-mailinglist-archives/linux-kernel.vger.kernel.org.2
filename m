@@ -2,146 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A9C424B61
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5683424B67
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240103AbhJGAwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:52:21 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:38584 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbhJGAwU (ORCPT
+        id S240079AbhJGAzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:55:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhJGAzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:52:20 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BC4A822595;
-        Thu,  7 Oct 2021 00:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633567826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FkN4LgNhKj4PxuOMK7Hfo8inuz6SvPxGt6pScV3hnp4=;
-        b=LXfORfH9wk5KIW+5fKfUkcT3af9vJ8rm2QMKXIy58BXB9UoeCcbfOX1fe16DI4ePLkL5i1
-        4XICBaDBqqzX7LrSAJoWg1iYXmL3J+AShuZCkFtq86Dy4nJk8VvkW7Qwzz3seYey0JutzC
-        XLJsWpXnVSxMkNy4QqiKlJfeKyfqmeo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633567826;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FkN4LgNhKj4PxuOMK7Hfo8inuz6SvPxGt6pScV3hnp4=;
-        b=IDgCl56VFg5B6d1bpOw01J6TMqXakyoJC4bz4c84eCcZw/qU6tuthfuBkIhbxn6CQH6zJA
-        4fl/2izlRwIvGTBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E368513A66;
-        Thu,  7 Oct 2021 00:50:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id TEIkKFBEXmGnAwAAMHmgww
-        (envelope-from <neilb@suse.de>); Thu, 07 Oct 2021 00:50:24 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Wed, 6 Oct 2021 20:55:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4497C061746
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Oct 2021 17:53:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=ObkHVuygR1MWUSVNqUghO5lJjpIVaNYJHto7C1tku98=; b=TZ2JYyRRjk1qjDDPT8KiRUOAvw
+        5qHZ94m3SEcov4PXCg1ekjNOx0CwjVMyJzPnXbh/9MbqpNpRWK7ZPhw/Tk0/Cik+1Y6cyVyIxg0CI
+        zVvScf7iQfFsn7bVufxomoszpo4evII6vbwRbHpmY5P7e6RGrmTrw4d1XPewDO76IPNhQw0yBrznX
+        WghCm4gUD3AofAkGWU71qHPIwVNx3d0D2RAykLq8/WGkP/mWr46zEUToV8ON/e4zBkQCz2bss7dWB
+        Vm5VEgJOkIZUtN+evNUfh9sEyUj3Q/b08fXSIWSVI7qbRrof7t2bwxxiQss5fpPNSQhmy/4H/lG6j
+        2v+kCEjg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYHek-00FwHH-OC; Thu, 07 Oct 2021 00:53:06 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Boris Brezillon <boris.brezillon@bootlin.com>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH -next] drm/connector: fix all kernel-doc warnings
+Date:   Wed,  6 Oct 2021 17:53:05 -0700
+Message-Id: <20211007005305.15171-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Wei Yang" <richard.weiyang@gmail.com>
-Cc:     kuba@kernel.org, gregkh@linuxfoundation.org, mojha@codeaurora.org,
-        jkosina@suse.cz, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hashtable: remove a redundant check in hash_for_each_xxx()
-In-reply-to: <20211007003058.uj35ekwibbrxqzku@master>
-References: <20211006152100.17795-1-richard.weiyang@gmail.com>,
- <163355497171.31063.8329134032738647570@noble.neil.brown.name>,
- <20211007003058.uj35ekwibbrxqzku@master>
-Date:   Thu, 07 Oct 2021 11:50:22 +1100
-Message-id: <163356782206.31063.3710696596883334978@noble.neil.brown.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021, Wei Yang wrote:
->=20
-> Here is a draft patch based on you comment:
->=20
-> diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-> index f6c666730b8c..2ff4cb5e6a22 100644
-> --- a/include/linux/hashtable.h
-> +++ b/include/linux/hashtable.h
-> @@ -116,6 +116,13 @@ static inline void hash_del_rcu(struct hlist_node *nod=
-e)
->  	hlist_del_init_rcu(node);
->  }
-> =20
-> +/**
-> + * Note: the following three hash_for_each[_xxx] helpers introduce a new l=
-oop
-> + * command that is constructed from 2 nested loops. It is safe to 'break' =
-out
-> + * of this loop even though it is a two nested loops.  The 'obj =3D=3D NUL=
-L' test
-> + * ensures that when the inner loop is broken, the outer loop will break t=
-oo.
-> + */
-> +
->  /**
->   * hash_for_each - iterate over a hashtable
->   * @name: hashtable to iterate
->=20
->=20
-> If you feel good, I would like to add=20
->=20
-> Sugguested-by: NeilBrown <neilb@suse.de>
+Clean up all of the kernel-doc issues in drm_connector.c:
 
-That's definitely an improvement.
+drivers/gpu/drm/drm_connector.c:2611: warning: Excess function parameter 'connector' description in 'drm_connector_oob_hotplug_event'
+drivers/gpu/drm/drm_connector.c:2611: warning: Function parameter or member 'connector_fwnode' not described in 'drm_connector_oob_hotplug_event'
 
-I'd probably put it in the kernel-doc comment for hash_for_each,
-then in the other two just put the "it is safe" bit.  Something like
-the following.  But I don't feel strongly about it.
-I'm happy to say
-  Reviewed-by: NeilBrown <neilb@suse.de>
+drm_connector.c:630: warning: No description found for return value of 'drm_get_connector_status_name'
+drm_connector.c:715: warning: No description found for return value of 'drm_connector_list_iter_next'
+drm_connector.c:785: warning: No description found for return value of 'drm_get_subpixel_order_name'
+drm_connector.c:816: warning: No description found for return value of 'drm_display_info_set_bus_formats'
+drm_connector.c:1331: warning: No description found for return value of 'drm_mode_create_dvi_i_properties'
+drm_connector.c:1412: warning: No description found for return value of 'drm_connector_attach_content_type_property'
+drm_connector.c:1492: warning: No description found for return value of 'drm_mode_create_tv_margin_properties'
+drm_connector.c:1534: warning: No description found for return value of 'drm_mode_create_tv_properties'
+drm_connector.c:1627: warning: No description found for return value of 'drm_mode_create_scaling_mode_property'
+drm_connector.c:1944: warning: No description found for return value of 'drm_mode_create_suggested_offset_properties'
 
-for your patch.
+drm_connector.c:2315: warning: missing initial short description on line:
+ * drm_connector_set_panel_orientation_with_quirk -
 
-Thanks,
-NeilBrown
+[The last warning listed is probably a quirk/bug in scripts/kernel-doc.]
 
+Fixes: 613051dac40d ("drm: locking&new iterators for connector_list")
+Fixes: 522171951761 ("drm: Extract drm_connector.[hc]")
+Fixes: b3c6c8bfe378 ("drm: document drm_display_info")
+Fixes: 50525c332b55 ("drm: content-type property for HDMI connector")
+Fixes: 6c4f52dca36f ("drm/connector: Allow creation of margin props alone")
+Fixes: 69654c632d80 ("drm/connector: Split out orientation quirk detection (v2)")
+Fixes: 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Derek Basehore <dbasehore@chromium.org>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+---
+72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
+  is only in linux-next. The others are in mainline.
 
-diff --git a/include/linux/hashtable.h b/include/linux/hashtable.h
-index f6c666730b8c..61db940c9501 100644
---- a/include/linux/hashtable.h
-+++ b/include/linux/hashtable.h
-@@ -122,6 +122,10 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @bkt: integer to use as bucket loop cursor
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
+ drivers/gpu/drm/drm_connector.c |   30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
+
+--- linux-next-20211006.orig/drivers/gpu/drm/drm_connector.c
++++ linux-next-20211006/drivers/gpu/drm/drm_connector.c
+@@ -625,6 +625,8 @@ int drm_connector_register_all(struct dr
+  *
+  * In contrast to the other drm_get_*_name functions this one here returns a
+  * const pointer and hence is threadsafe.
 + *
-+ * Note: It is safe to 'break' out of this loop even though it is a two
-+ * nested loops.  The 'obj =3D=3D NULL' test ensures that when the inner loop
-+ * is broken, the outer loop will break too.
++ * Returns: connector status string
   */
- #define hash_for_each(name, bkt, obj, member)				\
- 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
-@@ -134,6 +138,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @bkt: integer to use as bucket loop cursor
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
+ const char *drm_get_connector_status_name(enum drm_connector_status status)
+ {
+@@ -707,7 +709,7 @@ __drm_connector_put_safe(struct drm_conn
+  * drm_connector_list_iter_next - return next connector
+  * @iter: connector_list iterator
+  *
+- * Returns the next connector for @iter, or NULL when the list walk has
++ * Returns: the next connector for @iter, or NULL when the list walk has
+  * completed.
+  */
+ struct drm_connector *
+@@ -780,6 +782,8 @@ static const struct drm_prop_enum_list d
+  *
+  * Note you could abuse this and return something out of bounds, but that
+  * would be a caller error.  No unscrubbed user data should make it here.
 + *
-+ * It is safe to 'break' out of this loop.
++ * Returns: string describing an enumerated subpixel property
   */
- #define hash_for_each_rcu(name, bkt, obj, member)			\
- 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
-@@ -148,6 +154,8 @@ static inline void hash_del_rcu(struct hlist_node *node)
-  * @tmp: a &struct hlist_node used for temporary storage
-  * @obj: the type * to use as a loop cursor for each entry
-  * @member: the name of the hlist_node within the struct
+ const char *drm_get_subpixel_order_name(enum subpixel_order order)
+ {
+@@ -809,6 +813,9 @@ static const struct drm_prop_enum_list d
+  * Store the supported bus formats in display info structure.
+  * See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
+  * a full list of available formats.
 + *
-+ * It is safe to 'break' out of this loop.
++ * Returns:
++ * Zero on success, negative errno on failure.
   */
- #define hash_for_each_safe(name, bkt, tmp, obj, member)			\
- 	for ((bkt) =3D 0, obj =3D NULL; obj =3D=3D NULL && (bkt) < HASH_SIZE(name);\
-
+ int drm_display_info_set_bus_formats(struct drm_display_info *info,
+ 				     const u32 *formats,
+@@ -1326,6 +1333,8 @@ int drm_connector_create_standard_proper
+  * @dev: DRM device
+  *
+  * Called by a driver the first time a DVI-I connector is made.
++ *
++ * Returns: %0
+  */
+ int drm_mode_create_dvi_i_properties(struct drm_device *dev)
+ {
+@@ -1407,6 +1416,8 @@ EXPORT_SYMBOL(drm_connector_attach_dp_su
+  * @connector: connector to attach content type property on.
+  *
+  * Called by a driver the first time a HDMI connector is made.
++ *
++ * Returns: %0
+  */
+ int drm_connector_attach_content_type_property(struct drm_connector *connector)
+ {
+@@ -1487,6 +1498,9 @@ EXPORT_SYMBOL(drm_connector_attach_tv_ma
+  * creates the TV margin properties for a given device. No need to call this
+  * function for an SDTV connector, it's already called from
+  * drm_mode_create_tv_properties().
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
+  */
+ int drm_mode_create_tv_margin_properties(struct drm_device *dev)
+ {
+@@ -1527,6 +1541,9 @@ EXPORT_SYMBOL(drm_mode_create_tv_margin_
+  * the TV specific connector properties for a given device.  Caller is
+  * responsible for allocating a list of format names and passing them to
+  * this routine.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
+  */
+ int drm_mode_create_tv_properties(struct drm_device *dev,
+ 				  unsigned int num_modes,
+@@ -1622,6 +1639,8 @@ EXPORT_SYMBOL(drm_mode_create_tv_propert
+  * Atomic drivers should use drm_connector_attach_scaling_mode_property()
+  * instead to correctly assign &drm_connector_state.scaling_mode
+  * in the atomic state.
++ *
++ * Returns: %0
+  */
+ int drm_mode_create_scaling_mode_property(struct drm_device *dev)
+ {
+@@ -1939,6 +1958,9 @@ EXPORT_SYMBOL(drm_mode_create_content_ty
+  * @dev: DRM device
+  *
+  * Create the suggested x/y offset property for connectors.
++ *
++ * Returns:
++ * Zero on success, negative errno on failure.
+  */
+ int drm_mode_create_suggested_offset_properties(struct drm_device *dev)
+ {
+@@ -2312,8 +2334,8 @@ int drm_connector_set_panel_orientation(
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+ 
+ /**
+- * drm_connector_set_panel_orientation_with_quirk -
+- *	set the connector's panel_orientation after checking for quirks
++ * drm_connector_set_panel_orientation_with_quirk - set the
++ *	connector's panel_orientation after checking for quirks
+  * @connector: connector for which to init the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  * @width: width in pixels of the panel, used for panel quirk detection
+@@ -2597,7 +2619,7 @@ struct drm_connector *drm_connector_find
+ 
+ /**
+  * drm_connector_oob_hotplug_event - Report out-of-band hotplug event to connector
+- * @connector: connector to report the event on
++ * @connector_fwnode: fwnode_handle to report the event on
+  *
+  * On some hardware a hotplug event notification may come from outside the display
+  * driver / device. An example of this is some USB Type-C setups where the hardware
