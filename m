@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26429424AEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:10:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 694E3424AFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 02:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240062AbhJGAM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Oct 2021 20:12:28 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54686 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240020AbhJGAMN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Oct 2021 20:12:13 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C57DF9DC;
-        Thu,  7 Oct 2021 02:10:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633565415;
-        bh=larLyxcmn+saBabnWqrpHg3AhMf8NdDp0lI84lrL9DQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HxZZ5yYNOrCBDDjM02nPlHH+l+DodzLgVDAlus18uketUhMQdQJeTNaoyWqiTj3om
-         fQtp47GSSMTi11/KuNZ541TorgWraU4Vwhj90Ofnj16uNSWld1hFPcdlD8XrysXao5
-         rp81lulGGrDuJCfscVUD9xFNh1k2fr1lTUhPanMA=
-Date:   Thu, 7 Oct 2021 03:10:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Pratyush Yadav <p.yadav@ti.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Nikhil Devshatwar <nikhil.nd@ti.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
-Message-ID: <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
-References: <20210902185543.18875-1-p.yadav@ti.com>
- <20210902185543.18875-3-p.yadav@ti.com>
- <YUMa/ocoQ9l3JDe6@aptenodytes>
- <20210917172809.rjtf7ww7vjcfvey5@ti.com>
- <YVapVLnGfSBZCDTY@matsya>
+        id S239941AbhJGAQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Oct 2021 20:16:15 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53242 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232178AbhJGAQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Oct 2021 20:16:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=ziGfV3EhoyA+YqFQkMPP1+RYZyJ9AyQKelot5eKnRTQ=; b=tshFQK/ogBkCZfKvwqaut6Iu79
+        MBGadhIdnrw4lPjqoStzj4WrsBHTf73MmQrZm1r7nVajZ3WlzFgJ/dS5GME4I21Wsz4Apq4HcdiXT
+        uMAncGpdxrYv131NxZMyvd8U8VFnyh0l3Ujz9duivl1mt57irlby4AdDqkIyYqxWfkgU=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYH3C-009tDC-MD; Thu, 07 Oct 2021 02:14:18 +0200
+Date:   Thu, 7 Oct 2021 02:14:18 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Hagan <mnhagan88@gmail.com>
+Subject: Re: [net-next PATCH 07/13] net: dsa: qca8k: add support for
+ mac6_exchange, sgmii falling edge
+Message-ID: <YV472otG4JTeppou@lunn.ch>
+References: <20211006223603.18858-1-ansuelsmth@gmail.com>
+ <20211006223603.18858-8-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVapVLnGfSBZCDTY@matsya>
+In-Reply-To: <20211006223603.18858-8-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
-
-On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
-> On 17-09-21, 22:58, Pratyush Yadav wrote:
-> > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
-> > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
-> > > > The Cadence DPHY can be used to receive image data over the CSI-2
-> > > > protocol. Add support for Rx mode. The programming sequence differs from
-> > > > the Tx mode so it is added as a separate set of hooks to isolate the two
-> > > > paths. The mode in which the DPHY has to be used is selected based on
-> > > > the compatible.
-> > > 
-> > > I just realized that I didn't follow-up on a previous revision on the debate
-> > > about using the phy sub-mode to distinguish between rx/tx.
-> > > 
-> > > I see that you've been using a dedicated compatible, but I'm not sure this is a
-> > > good fit either. My understanding is that the compatible should describe a group
-> > > of register-compatible revisions of a hardware component, not how the hardware
-> > > is used specifically. I guess the distinction between rx/tx falls under
-> > > the latter rather than the former.
-> > 
-> > I am not sure if that is the case. For example, we use "ti,am654-ospi" 
-> > for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
-> > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
-> > supports Octal SPI (8 lines).
+On Thu, Oct 07, 2021 at 12:35:57AM +0200, Ansuel Smith wrote:
+> Some device set the switch to exchange the mac0 port with mac6 port. Add
+> support for this in the qca8k driver. Also add support for SGMII rx/tx
+> clock falling edge. This is only present for pad0, pad5 and pad6 have
+> these bit reserved from Documentation.
 > 
-> Those are hardware defaults right?
-> 
-> > In addition, I feel like the Rx DPHY is almost a different type of 
-> > device from a Tx DPHY. The programming sequence is completely different, 
-> 
-> Is that due to direction or something else..?
-> 
-> > the clocks required are different, etc. So I think using a different 
-> > compatible for Rx mode makes sense.
-> 
-> Is the underlaying IP not capable of both TX and RX and in the specific
-> situations you are using it as TX and RX.
-> 
-> I am okay that default being TX but you can use Paul's approach of
-> direction with this to make it better proposal
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
 
+Who wrote this patch? The person submitting it should be last. If
+Matthew actually wrote it, you want to play with git commit --author=
+to set the correct author.
 
-Given that the RX and TX implementations are very different (it's not a
-matter of selecting a mode at runtime), I'm actually tempted to
-recommend having two drivers, one for the RX PHY and one for the TX PHY.
-This can only be done with two different compatible strings, which I
-think would be a better approach.
-
-It's unfortunate that the original compatible string didn't contain
-"tx". We could rename it and keep the old one in the driver for backward
-compatibility, making things cleaner going forward.
-
--- 
-Regards,
-
-Laurent Pinchart
+   Andrew
