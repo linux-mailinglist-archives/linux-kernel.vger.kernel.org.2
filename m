@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29397424DFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEBE424DFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 09:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240355AbhJGHVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 03:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S240334AbhJGHVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 03:21:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240340AbhJGHVX (ORCPT
+        with ESMTP id S232512AbhJGHVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 03:21:23 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0187FC061746;
-        Thu,  7 Oct 2021 00:19:30 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id x7so18677872edd.6;
-        Thu, 07 Oct 2021 00:19:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=S6PW5fQZS6d4075owqkmplnQGMnVP81b2PiAGptmN6U=;
-        b=osbogCzjdSShZcIpnm0FcSSkmScvYv4ctjczNQpiNbPqN80mxmsttJzCeUcgLvSgbh
-         dqMG4JgD5NJVVPqbMZLz8OTSrOiWCiY8fkw+U1Qo+gmGU0gGFaQ8ElqQH0eFqugQF+Ms
-         30h9D5u2gNZQ/kCeKh6SnG948pvHjvYq73qfLn4hIlU8Ge17ki+GYe3yPxDdgrE9TzuG
-         2KFtqAL6jbYq6OZfOpaOp247drl3WoD1emL/Oe8lkfvtm8rGILg8aezUw1b/c8Xh2qBb
-         +z2mokAzue18FO+NfRPTGR1UnosluN+ZwRout4rCwF2tgiwtwzHVzYGBWYBtZkSqfyYO
-         iYMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=S6PW5fQZS6d4075owqkmplnQGMnVP81b2PiAGptmN6U=;
-        b=kpM/E1qvGGoRJShGXwmFOTgwUEsHeE03Qp7MeZcIW0DhmfUE48lzbb4lNWnuE7i8in
-         elSBEv7XjfrOWeQ3SGjjMo+Kn8V33vgkYYCS48EO81PaSmGOFktGtJU/yaCoQ3DN4w1S
-         cHU2CVIgj54TfdqIx29Krk4jGHI2armlzHJxwkKCoBBYIjOheBSREFH+pFmZEoaT3N8F
-         9UfcgZpHnrFiFbkoa1qMjAa8xbueosZcwiHbgjz94IBujylAOGFPX2hSIX5rjk9wm810
-         kM5Qe1yBLux2Lk/q2kHtIhVb8VAe56VQ34syV4oZuR00XMNjjLEv1k4onB8Ds5Z1/xOS
-         kzJQ==
-X-Gm-Message-State: AOAM531EBGFiiWr5IVR5C83WXco82HHxEcJfxpBE7VTq/JTJVolCWtAW
-        UzIFEuCVdo7p82e2AfRcC/4W2O7HpumhXtcyfBA=
-X-Google-Smtp-Source: ABdhPJxKOQk3/Mj7n3WwroXrqciMwty7VThQ0QiOEZ3kvboTK/bb8KS84oE9n1FuEkpRsSdm20X64eJL47k6dcMazjs=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3628884ejc.69.1633591168573;
- Thu, 07 Oct 2021 00:19:28 -0700 (PDT)
+        Thu, 7 Oct 2021 03:21:00 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA3C061746;
+        Thu,  7 Oct 2021 00:19:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2JHJIpAWgccBA6pQAUlpOyYTSFGIlpbAsVVUO6XyK3w=; b=METMHJ4Uwgejg7yLQ0FdhlSqDc
+        4RiF0XPAjwCu6Xr0VclcBmAeaY6XVFwAdTvn7RPokVchywNUZolBdvwzV1/nc6oYuiriVu/Ka2DeA
+        KiWilHlTFcsK0KkivmGPGjKA1jD86Rz9LRzmphAr37VejYH87iZ+wPXnfzzRnm8yx+1b4kntO+nHM
+        ld9gORc2HXAcPf9VdhhPNxHyDhY97n8btaLu7A1zqJjyVRb2vygP3c1O5ddEb9aa39iWt5HxDH6eg
+        Lsa+U5UAvf30UkdOy2pYK7O8AmzwvHs+xWvuIPgCDCpTGluf/tRlT4nO38ZGmhb3SdWvq2BsA47q8
+        ERRrMV3Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYNg9-008Qna-2g; Thu, 07 Oct 2021 07:18:57 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9FFC698623A; Thu,  7 Oct 2021 09:18:56 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 09:18:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <song@kernel.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>, bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Xu <peterx@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: [PATCH bpf-next] bpf: introduce helper bpf_raw_read_cpu_clock
+Message-ID: <20211007071856.GM174703@worktop.programming.kicks-ass.net>
+References: <20211006175106.GA295227@fuller.cnet>
+ <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211007060253.17049-1-digetx@gmail.com>
-In-Reply-To: <20211007060253.17049-1-digetx@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 7 Oct 2021 10:18:52 +0300
-Message-ID: <CAHp75VeHC5M-Rv+wvJQEvmtfX0k7fP6uremGHFMnd8kEqPnBpw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/6] Introduce power off call chain API
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW5Uq78wqK_waeLPpyY6PNgzgtCZkZ4-FFWcF00Pez6cmw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 9:05 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> Introduce power off call chain API that is inspired by the restart API.
-> It allows to have multiple power off handlers invoked along the chain
+On Wed, Oct 06, 2021 at 02:37:09PM -0700, Song Liu wrote:
+> On Wed, Oct 6, 2021 at 10:52 AM Marcelo Tosatti <mtosatti@redhat.com> wrote:
+> >
+> >
+> >
+> > Add bpf_raw_read_cpu_clock helper, to read architecture specific
+> > CPU clock. In x86's case, this is the TSC.
+> >
+> > This is necessary to synchronize bpf traces from host and guest bpf-programs
+> > (after subtracting guest tsc-offset from guest timestamps).
+> 
+> Trying to understand the use case. So in a host-guest scenario,
+> bpf_ktime_get_ns()
+> will return different values in host and guest, but rdtsc() will give
+> the same value.
+> Is this correct?
 
-allows multiple
+No, it will not. Also, please explain if any of this stands a chance of
+working for anything other than x86. Or even on x86 in the face of
+guest migration.
 
-> until system is powered off. For the starter this series converts couple
+Also, please explain, again, what's wrong with dumping snapshots of
+CLOCK_MONOTONIC{,_RAW} from host and guest and correlating time that
+way?
 
-the system
-a couple
-
-> NVIDIA Tegra drivers to the new API. Existing pm_power_off() method
-> stays around and may be removed once all users will adopt the new API.
-
-users adopt
-
->
-> There were couple attempts in the past to add power off API from
-
-a couple
-
-> Guenter Roeck and Thierry Reding, but they were never completed. This
-> is a somewhat simplified version which doesn't try to convert whole kernel
-> to the new API at once, but solves immediate practical problem that we
-
-problems
-
-> have on Nexus 7 Android tablet where device needs to chain power off
-
-tablets where the device
-
-> methods.
-
-Immediate question here is how do you see the plan of spreading this.
-I.o.w. can you put an explanation that you have checked, let's say
->80% current users, and they may be converted like [example
-placeholder] without any special tricks?
-
--- 
-With Best Regards,
-Andy Shevchenko
+And also explain why BPF needs to do this differently than all the other
+tracers.
