@@ -2,81 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEC9425EE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:27:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5F79425EE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 23:28:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241547AbhJGV2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 17:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242187AbhJGV2p (ORCPT
+        id S241336AbhJGVaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 17:30:22 -0400
+Received: from relay06.th.seeweb.it ([5.144.164.167]:55579 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241176AbhJGVaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 17:28:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D27C061760;
-        Thu,  7 Oct 2021 14:26:43 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Thu, 7 Oct 2021 17:30:21 -0400
+Received: from SoMainline.org (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQPXJ6ngLz4xb9;
-        Fri,  8 Oct 2021 08:26:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633642001;
-        bh=lJBSSC0ipR++BQDepp/kqzjaJPT17SlSby74jcw4HbQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=VKLV4nVrC46r2280vnB7AB2kNFo6v/3c+DncyNpQltj7waViGT1BijAXQug62JRy6
-         yYHhlGbofy7UuTLpMIxpdU1e8rT317j37wyg0Q6xvC8WmEMSt3Q52Ap6fqKBoeQLLm
-         uOBFbFeaxb1+V9LCFR792mZVp9J+EWR4JNodOCuBXVO92TEP07HnVyOzHt7vKgzhcU
-         G8QDqMApOJCna2HY3fBHa3/NSsWVQ8G4CJ/Ug7+SwDC5Pq0pLb/mx3mft23FaLSLGN
-         haXCWw1K2I6kwSWG6vN6hCYcLRJHBeZ6n/nJBzA0F9ubOK/Z3cvL/CAga4/k5Ha4l3
-         v4cQj3egL8+KA==
-Date:   Fri, 8 Oct 2021 08:26:37 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: contact/tree changes for the swiotlb tree
-Message-ID: <20211008082637.78598d36@canb.auug.org.au>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id F08043E7BE;
+        Thu,  7 Oct 2021 23:28:22 +0200 (CEST)
+Date:   Thu, 7 Oct 2021 23:28:21 +0200
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+Cc:     phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] backlight: qcom-wled: Fix off-by-one maximum with
+ default num_strings
+Message-ID: <20211007212821.57x2ndggugwfd725@SoMainline.org>
+Mail-Followup-To: Marijn Suijten <marijn.suijten@somainline.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>, Jingoo Han <jingoohan1@gmail.com>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Kiran Gunda <kgunda@codeaurora.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        Bryan Wu <cooloney@gmail.com>, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20211005091947.7msztp5l554c7cy4@maple.lan>
+ <20211005100606.faxra73mzkvjd4f6@SoMainline.org>
+ <20211005103843.heufyonycnudxnzd@maple.lan>
+ <20211005105312.kqiyzoqtzzjxayhg@maple.lan>
+ <20211005114435.phyq2jsbdyroa6kn@SoMainline.org>
+ <20211005140349.kefi26yev3gy3zhv@maple.lan>
+ <20211005152326.5k5cb53ajqnactrg@SoMainline.org>
+ <20211005162453.ozckxhm47jcarsza@maple.lan>
+ <20211005173400.lyu3gabbalv2l3uq@SoMainline.org>
+ <20211006144444.6q3qm3bzfrhzwa46@maple.lan>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iXFg3DT5UEbM/FGQnm4r2cy";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006144444.6q3qm3bzfrhzwa46@maple.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/iXFg3DT5UEbM/FGQnm4r2cy
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021-10-06 15:44:44, Daniel Thompson wrote:
+> On Tue, Oct 05, 2021 at 07:34:00PM +0200, Marijn Suijten wrote:
+> > On 2021-10-05 17:24:53, Daniel Thompson wrote:
+> > > On Tue, Oct 05, 2021 at 05:23:26PM +0200, Marijn Suijten wrote:
+> > > > Since there don't seem to be any substantial platforms/PMICs using this
+> > > > functionality in a working manner, can I talk you into agreeing with
+> > > > fixing the DT instead?
+> > > 
+> > > I've no objections to seeing the DT updated. However I don't really see
+> > > what benefit we get from breaking existing DTs in order to do so.
+> > > 
+> > > "Cleaning up annoying legacy" is seldom a good reason to break existing
+> > > DTs since, if we could break DTs whenever we choose, there would never
+> > > be any annoying legacy to worry about. When conflicting properties
+> > > result in uninterpretable DTs then a break may be justified but that is
+> > > not the case here.
+> > 
+> > As mentioned in my message and repeated by Konrad, the only "existing
+> > DT" that could possibly be broken is a platform that's brought up by us
+> > (SoMainline) and we're more than happy to improve the driver and leave
+> > legacy DT behind us, unless there's more DT in circulation that hasn't
+> > landed in Linux mainline but should be taken into account?
+> 
+> Devicetrees are supposed to be the domain of firmware (e.g. not part of
+> the kernel).
+> 
+> I'm therefore reluctant to adopt an "it only exists if it is upstream"
+> approach for documented DT bindings. Doubly so when it is our bugs that
+> causes DTs to be written in a manner which we then retrospectively
+> declare to be wrong.
 
-Hi all,
+I'm aware that DT is considered firmware and is ""intended"" to be
+shipped separately (and probably only once out of the factory) but it
+seems so far there's an advantage in updating DT in parallel with the
+kernel.  However this is the first time hearing that having dt-bindings
+documentation available contributes to considering the DT contract
+(more) stable.  Either way I'd expect these bindings to have been fixed
+much sooner if it was really actively used.
 
-I noticed commit
+> > Anyway the plan is to leave qcom,num-strings in place so that the
+> > default enabled_strings list in this driver actually serves a purpose.
+> > Then, if num-strings and enabled-strings is provided the former has
+> > precedence (assuming it doesn't exceed the size of the latter) but
+> > we'll print a warning about this (now unnecessary) ambiguity, and if
+> > possible at all - haven't found an example yet - make the properties
+> > mutually exclusive in dt-bindings.
+> > 
+> > Disallowing both cases would only simplify the code in the end but we
+> > can spend a few lines to support the desired legacy.
+> 
+> Yes, warning is OK for me.
 
-  c4800765c0ed ("MAINTAINERS: Update SWIOTLB maintainership")
+Great, sending v2 shortly.
 
-in the swiotlb tree today.  I assume that I should update the tree/branch
-I fetch and the contact information?
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/iXFg3DT5UEbM/FGQnm4r2cy
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFfZg0ACgkQAVBC80lX
-0GxkGggAoFIiDp9BI2Ut4dE/j0hfzOTBmGtmWAZYDPxVNczHOkJL2yAWsKLk5uHL
-ycpP59iu/sP6liLEN6h9s37B5FZtGtZIl6nxfEYtKujfOqs1NS04HbuLH/JlBzr6
-3a0HwG8/+4tz3QPUp25krjDCIfvl60yvG5pazdM/3a/ye9bf7Bfg5njqzjyoN2zg
-0M0XjBHhjElBZpvyPiH8FSjLDhD2meWwC+sEWZzIonv/o5Gps2W1fKJj/Zhda9W0
-HCDkxuAnFWYtyBkO5O8rQ+R2UAIZzADtL0SJ1DSqUf/BIWxzqXNacI7YZudfT9GK
-qmzjQslNNGtvrP5sEXbgtkSYofmRZA==
-=k1YM
------END PGP SIGNATURE-----
-
---Sig_/iXFg3DT5UEbM/FGQnm4r2cy--
+- Marijn
