@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB33425306
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94369425308
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 14:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241374AbhJGMaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:30:55 -0400
-Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25332 "EHLO
-        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241238AbhJGMay (ORCPT
+        id S241385AbhJGMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:30:58 -0400
+Received: from mailrelay2-3.pub.mailoutpod1-cph3.one.com ([46.30.212.11]:52874
+        "EHLO mailrelay2-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241377AbhJGMa5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:30:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1633609721; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=jO5VSUtVuj5ZGL2dXmaje7hUPuDK/78OSMPF4FCxZ6amM5k9kM6C9DEROgLRiKlfozuCbEyQKdldr8o/MJsIEWZij2UQH75NCHVuKwt3DYDZjceB2PlZSVZW+9LpAgGOmu2Avlu39IeUqoKBN/haBA4O8PjzZqaMCRSnY+tCyFU=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1633609721; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
-        bh=htGAHz9e59NjyVWexCSrR7QA0fzfw1Pu+KZNBe+k36w=; 
-        b=m2GFrY6JxAWE3fv3R5c+uGFKV2SEue2M0EWzK5d6x2/YG/6Os0KtqUKoqoRZ7aOd2bMZmG2+eO29XP7kSfqB88LW9ALxV5bT9sWABt2Hob6o2zWNn454r+KsJCHrhUsFZLX/s4INea8gfpseDYD3ABlY0fvrzRV0dsAS8fCimP0=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1633609721;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=htGAHz9e59NjyVWexCSrR7QA0fzfw1Pu+KZNBe+k36w=;
-        b=AF+FIu6pYZetGusYQYc3nyjtnE3RwSNZp7GODBT0IUQ9Vp8hEYob1VBjMDy5Bn0P
-        mnKWrqQ0sHDsoZyhX7D697UkWRahKaJwPlfMIFi0S8J4CDet20/pxF7dmhQg4Il1D4I
-        FteZuH1KZ5IaVYahQMUjNrrI5KpRDv3z9kGvZhp0=
-Received: from mail.baihui.com by mx.zoho.com.cn
-        with SMTP id 1633609719794520.3264862999721; Thu, 7 Oct 2021 20:28:39 +0800 (CST)
-Date:   Thu, 07 Oct 2021 20:28:39 +0800
-From:   Chengguang Xu <cgxu519@mykernel.net>
-Reply-To: cgxu519@mykernel.net
-To:     "Miklos Szeredi" <miklos@szeredi.hu>
-Cc:     "Jan Kara" <jack@suse.cz>, "Amir Goldstein" <amir73il@gmail.com>,
-        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
-        "overlayfs" <linux-unionfs@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Message-ID: <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
-In-Reply-To: <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
-References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net> <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
+        Thu, 7 Oct 2021 08:30:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mida.se; s=20191106;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=XFUZIvYUUSzvXFg3UTtTaUX58u2hmAWVTWHRchR63XM=;
+        b=Wq9ycX1o2L1kxKolvttKlXMfccIHzb+8QG96A7B6C1BpiQUivoDrbplBYEce7GRRqW3Z/ezF4yI6V
+         q+xWtGKt98nrPi70KWFWNO6i8kgz7FxIAO6npTcslm0DRXH0wd1INl3ZXaH3dLEJGh0RfuCw2In2y8
+         1jLGfgd6ot/btSAUw7H+IiJxlA8pl5K+H65VGev7flzmj15V7REB4EP8kU53ABaKN1B3pLsmQDUXc2
+         /QOAGlg3ju3YKLnwrkkaXwPvbMZW8gF4aeMdj2S+tg2kru4S7ZzsTSd+21PUANbFzaTBCtOwz74MaJ
+         Gq0svZahDVg275WNpPK7ealai+YxU/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mida.se; s=rsa1;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=XFUZIvYUUSzvXFg3UTtTaUX58u2hmAWVTWHRchR63XM=;
+        b=PFdaGnuZ9nB+A3DVbgseRL7xf2KnlS2waAvrrEhfmHsIuO6XUCAYmYrL6+1Xj6mFXwMkbNheDUrgg
+         LmjS/ilhSTF/wQaPF06c9RXF+XwJXABDRwrARTeUjjaMmrycGZhhu66vpEoNcYeOkfROi+09hNsmpz
+         0+B79nKMPKFe+80y4IORchKefsszRkEpak/myaT3Z8FYYkE1dY/yUqK5qHGhrqvYJW+deAzBHFBRcf
+         77xMPosMNZ+y/6SmgTmzYpmpzLjFbHShTbfUGpGOkm0o4HWsZCeauppcEKlC2ZZEQEL1Lp/Lf23imP
+         lb2+IxRdBya8TRG9iX9cgmgqVRNV59w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=mida.se; s=ed1;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:cc:to:
+         subject:from:from;
+        bh=XFUZIvYUUSzvXFg3UTtTaUX58u2hmAWVTWHRchR63XM=;
+        b=rQ3I1S8+M3z6sUPSIRi1zQ2f+hAAWLvFqBm4OUeenRUNj6M9ydGhHtnq1xQ5S02Xs0t68tK7hd95m
+         EGHcLRaAw==
+X-HalOne-Cookie: 337e692878d51df8326ce4c9460df03be9965480
+X-HalOne-ID: 269d6e5d-276a-11ec-bd57-d0431ea8a290
+Received: from [192.168.1.108] (2.67.139.77.mobile.tre.se [2.67.139.77])
+        by mailrelay2.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
+        id 269d6e5d-276a-11ec-bd57-d0431ea8a290;
+        Thu, 07 Oct 2021 12:29:01 +0000 (UTC)
+From:   rkardell <rkardell@mida.se>
+Subject: [PATCH] media: dvb: qt1010, change i2c read buffer from stack, to
+ kernel space
+To:     linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Message-ID: <ccc99e48-de4f-045e-0fe4-61e3118e3f74@mida.se>
+Date:   Thu, 7 Oct 2021 14:29:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-Importance: Medium
-User-Agent: ZohoCN Mail
-X-Mailer: ZohoCN Mail
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: sv-FI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 17:23:06 Miklos Sze=
-redi <miklos@szeredi.hu> =E6=92=B0=E5=86=99 ----
- > On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrot=
-e:
- > >
- > > Implement overlayfs' ->write_inode to sync dirty data
- > > and redirty overlayfs' inode if necessary.
- > >
- > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
- > > ---
- > >  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
- > >  1 file changed, 30 insertions(+)
- > >
- > > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
- > > index 2ab77adf7256..cddae3ca2fa5 100644
- > > --- a/fs/overlayfs/super.c
- > > +++ b/fs/overlayfs/super.c
- > > @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inode)
- > >         clear_inode(inode);
- > >  }
- > >
- > > +static int ovl_write_inode(struct inode *inode,
- > > +                          struct writeback_control *wbc)
- > > +{
- > > +       struct ovl_fs *ofs =3D inode->i_sb->s_fs_info;
- > > +       struct inode *upper =3D ovl_inode_upper(inode);
- > > +       unsigned long iflag =3D 0;
- > > +       int ret =3D 0;
- > > +
- > > +       if (!upper)
- > > +               return 0;
- > > +
- > > +       if (!ovl_should_sync(ofs))
- > > +               return 0;
- > > +
- > > +       if (upper->i_sb->s_op->write_inode)
- > > +               ret =3D upper->i_sb->s_op->write_inode(inode, wbc);
- >=20
- > Where is page writeback on upper inode triggered?
- >=20
+Solve problem with initialization of Mega Sky 580 USB DVB (and other 
+using mt352), error when reading i2c id.
 
-Should pass upper inode instead of overlay inode here.
 
-Thanks,
-Chengguang
+Signed-off-by: rkl099 <rkardell@mida.se>
+---
+  drivers/media/tuners/qt1010.c | 6 +++++-
+  1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/media/tuners/qt1010.c b/drivers/media/tuners/qt1010.c
+index 3853a3d43..1bc0756f7 100644
+--- a/drivers/media/tuners/qt1010.c
++++ b/drivers/media/tuners/qt1010.c
+@@ -11,18 +11,22 @@
+  /* read single register */
+  static int qt1010_readreg(struct qt1010_priv *priv, u8 reg, u8 *val)
+  {
++    u8 *b1=kmalloc(1,GFP_KERNEL);
+         struct i2c_msg msg[2] = {
+                 { .addr = priv->cfg->i2c_address,
+                   .flags = 0, .buf = &reg, .len = 1 },
+                 { .addr = priv->cfg->i2c_address,
+-                 .flags = I2C_M_RD, .buf = val, .len = 1 },
++                 .flags = I2C_M_RD, .buf = b1, .len = 1 },
+         };
+
+         if (i2c_transfer(priv->i2c, msg, 2) != 2) {
+                 dev_warn(&priv->i2c->dev, "%s: i2c rd failed reg=%02x\n",
+                                 KBUILD_MODNAME, reg);
++           kfree(b1);
+                 return -EREMOTEIO;
+         }
++       *val=b1[0];
++       kfree(b1);
+         return 0;
+  }
+
+-- 
+2.30.2
 
 
