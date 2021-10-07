@@ -2,142 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D82C425137
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFFD42513E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 12:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240916AbhJGKir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:38:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240366AbhJGKig (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:38:36 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C76C061746;
-        Thu,  7 Oct 2021 03:36:43 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id j21so4940213lfe.0;
-        Thu, 07 Oct 2021 03:36:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ykOpkcPay17tN46aJsTbBt/EvOAhIOt9Ph+3e4w9jz0=;
-        b=afTh3cKAR41VV1PzE4qeHfwMWxfp0/pcOp3Da/PudAOrW+6HBuKX/lfLd/NzTKwNma
-         ufMSpUrFcOojZcWaNgGv/bI92xdz4jP055eLah+Isfxcq9LZlZV+5o92WFw3nhfNIg8b
-         03bp6aqODY9zL3GDYaXmZzLqH18tsLd3UGA6I028Q9FYLwMrPtUMobVZldWX5ovYkl/B
-         oo9VaiP6FWirRUX6Y9X3ZVnPRAS6CDzQxIR2EGXUbTMdVa0/YNXVWMQ1SAgebOktiGWK
-         Pk8o3odzNbqyAuC2/RW72o9N5r/lduG7vF09Bj9DjozW/EkST+ugoVGToScUwpVWnDFo
-         Plkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ykOpkcPay17tN46aJsTbBt/EvOAhIOt9Ph+3e4w9jz0=;
-        b=RF/qB33SyFGxb2UX+jYTcBPnSnx6TsUko1qq4ST+pFkzD5UwLiDxepEvZGZ3nBzFxc
-         ywhLM/K2lfTdmROV8R3tKGcRZVbjhSMS/gJ/o8tK/yC3RxnCPMwwugNR0C2gZc9G1wgy
-         TojhRK3qACDt21isdkuvsAjpPPIuWnHEQmItD2617KCWYdrpKiFiUBhBg2ezDccOwqic
-         odvVDQYiLUvtlmeG+9ZGMNW4KKbzjfBekkoB6vFm/jv1b5wn+V9rar/MVna7bR5sMqRz
-         ouJBZdw5MWJLG6tMg8kYsBA+LxC8M30Ln9dyfN5FzIZesauBlongf23sbnmKRL7zN1y/
-         cGIw==
-X-Gm-Message-State: AOAM5328I5ncjCCzK/iFLcQkpbFfnSd7bfLY3H41/wE2Ckk8NSm7r0dp
-        TJ3uyXtL8HscrtKh9ycwM3k=
-X-Google-Smtp-Source: ABdhPJyE8Q56+BzF1am4IROAPlSkQQYH4pyokUqMf5GkrZE9wtSrOR5LeCuCqwdD3O56FQleQsf4qg==
-X-Received: by 2002:a05:6512:39d3:: with SMTP id k19mr1115363lfu.258.1633603001431;
-        Thu, 07 Oct 2021 03:36:41 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-163-57.dynamic.spd-mgts.ru. [79.139.163.57])
-        by smtp.googlemail.com with ESMTPSA id k10sm2601041ljj.24.2021.10.07.03.36.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 03:36:41 -0700 (PDT)
-Subject: Re: [PATCH v13 06/35] clk: tegra: Support runtime PM and power domain
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Peter Chen <peter.chen@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Nishanth Menon <nm@ti.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lucas Stach <dev@lynxeye.de>, Stefan Agner <stefan@agner.ch>,
+        id S240960AbhJGKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240868AbhJGKj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:39:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A49260C4C;
+        Thu,  7 Oct 2021 10:37:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633603053;
+        bh=xDMazokcPNABQ4Qk5ZpSLObojNMHpNQ7xmSlqlHdOXU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ddn/JHGpcuqFBIT5H+VDQ8CAR2wDHpesc/AofsrL8HwIWIX7Eo4zQIbcPI+6VqB0d
+         2eGvtZFHMt+pKKMzNkQtYLEiwgDvi+KwXJWXPpKNfaVAgowCFMP8kNYf3i9Fp8Pfc8
+         AXsRpvRKtzpEH4nzdOHT/d7L9b723qNH96RcgA6o=
+Date:   Thu, 7 Oct 2021 12:37:31 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
-        David Heidelberg <david@ixit.cz>
-References: <20210926224058.1252-1-digetx@gmail.com>
- <20210926224058.1252-7-digetx@gmail.com>
- <CAPDyKFq+LS4Jr1GyC-a-tGWPzGH0JxfJ9wKY=uQEBGYm952azw@mail.gmail.com>
- <24101cd6-d3f5-1e74-db39-145ecd30418b@gmail.com>
- <CAPDyKFreK7976PJL-1zySoza_yXM7rMQ64aODWUZ+U3L-uCa0w@mail.gmail.com>
- <4bdba8a2-4b9b-ed7d-e6ca-9218d8200a85@gmail.com>
- <74a47158-e2e4-5fd0-3f37-0b50d4ead4d9@gmail.com>
- <CAPDyKFr2-f1wM+6jF9vWJ-Nq80Zg1Z3qFP6saULOrBi1270HGw@mail.gmail.com>
- <b06bf794-b8b3-417b-58ef-4d815ca86c95@gmail.com>
- <4c7b1a4c-c136-3650-8f77-9f98caa506f7@gmail.com>
- <2dd6bffc-9817-f4b1-0b92-f82f22fcf79a@gmail.com>
- <CAPDyKFox6THcxDouW2T7F2W__ZcoJP5GeG+H_a4NQmSqAFZ_oQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <81ce6f35-acb0-fe34-1efc-537c058a2160@gmail.com>
-Date:   Thu, 7 Oct 2021 13:36:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 2/4] kernel.h: Split out container_of() and
+ typeof_member() macros
+Message-ID: <YV7N6/2+/oDv81Fq@kroah.com>
+References: <20211007095129.22037-1-andriy.shevchenko@linux.intel.com>
+ <20211007095129.22037-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFox6THcxDouW2T7F2W__ZcoJP5GeG+H_a4NQmSqAFZ_oQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007095129.22037-3-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.10.2021 12:18, Ulf Hansson пишет:
->> Please let me iterate once again. The problem we currently have is that
->> clock may be enabled during NOIRQ time. In order to enable clock, it
->> needs to be prepared. In order to prepare clock, the clock's device
->> needs to be runtime-resumed. The runtime PM is unavailable at the NOIRQ
->> time.
->>
->> To solve this problem we need to prepare clock beforehand.
->>
->> The clock will stay prepared during suspend, but this is not a problem
->> since all the clocks we care about don't require high voltage and
->> voltage is guaranteed to be bumped high during suspend by Tegra's
->> regulator-coupler driver anyways.
->>
->> So everything we need to do is to keep clocks prepared. There are two
->> options how to do that:
->>
->> [1] this patch which explicitly prepares clocks using clk API.
->>
->> [2] Use runtime PM API, like this:
->>
->> static const struct dev_pm_ops tegra_clock_pm = {
->>         SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_resume_and_get, pm_runtime_put)
->> };
->>
->> Ulf, are you now okay with the current variant [1] of the patch or you
->> prefer the second [2] option more?
-> I prefer option [2]. The clock_prepare|unprepare() thingy in option
-> [1], looks more like an odd workaround to me.
+On Thu, Oct 07, 2021 at 12:51:27PM +0300, Andy Shevchenko wrote:
+> kernel.h is being used as a dump for all kinds of stuff for a long time.
+> Here is the attempt cleaning it up by splitting out container_of() and
+> typeof_member() macros.
 > 
-> Does that make sense to you as well?
+> At the same time convert users in the header and other folders to use it.
+> Though for time being include new header back to kernel.h to avoid twisted
+> indirected includes for existing users.
+> 
+> Note, there are _a lot_ of headers and modules that include kernel.h solely
+> for one of these macros and this allows to unburden compiler for the twisted
+> inclusion paths and to make new code cleaner in the future.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/kunit/test.h         |  2 ++
+>  include/linux/container_of.h | 37 ++++++++++++++++++++++++++++++++++++
+>  include/linux/kernel.h       | 31 +-----------------------------
+>  include/linux/kobject.h      |  1 +
+>  include/linux/list.h         |  6 ++++--
+>  include/linux/llist.h        |  4 +++-
+>  include/linux/plist.h        |  5 ++++-
+>  include/media/media-entity.h |  3 ++-
+>  lib/radix-tree.c             |  6 +++++-
+>  lib/rhashtable.c             |  1 +
+>  10 files changed, 60 insertions(+), 36 deletions(-)
+>  create mode 100644 include/linux/container_of.h
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 24b40e5c160b..4d498f496790 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -11,6 +11,8 @@
+>  
+>  #include <kunit/assert.h>
+>  #include <kunit/try-catch.h>
+> +
+> +#include <linux/container_of.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/slab.h>
+> diff --git a/include/linux/container_of.h b/include/linux/container_of.h
+> new file mode 100644
+> index 000000000000..f6ee1be0e784
+> --- /dev/null
+> +++ b/include/linux/container_of.h
+> @@ -0,0 +1,37 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_CONTAINER_OF_H
+> +#define _LINUX_CONTAINER_OF_H
+> +
+> +#define typeof_member(T, m)	typeof(((T*)0)->m)
+> +
+> +/**
+> + * container_of - cast a member of a structure out to the containing structure
+> + * @ptr:	the pointer to the member.
+> + * @type:	the type of the container struct this is embedded in.
+> + * @member:	the name of the member within the struct.
+> + *
+> + */
+> +#define container_of(ptr, type, member) ({				\
+> +	void *__mptr = (void *)(ptr);					\
+> +	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> +			 !__same_type(*(ptr), void),			\
+> +			 "pointer type mismatch in container_of()");	\
+> +	((type *)(__mptr - offsetof(type, member))); })
+> +
+> +/**
+> + * container_of_safe - cast a member of a structure out to the containing structure
+> + * @ptr:	the pointer to the member.
+> + * @type:	the type of the container struct this is embedded in.
+> + * @member:	the name of the member within the struct.
+> + *
+> + * If IS_ERR_OR_NULL(ptr), ptr is returned unchanged.
+> + */
+> +#define container_of_safe(ptr, type, member) ({				\
+> +	void *__mptr = (void *)(ptr);					\
+> +	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> +			 !__same_type(*(ptr), void),			\
+> +			 "pointer type mismatch in container_of()");	\
+> +	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
+> +		((type *)(__mptr - offsetof(type, member))); })
+> +
+> +#endif	/* _LINUX_CONTAINER_OF_H */
+> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+> index d416fe3165cb..ad9fdcce9dcf 100644
+> --- a/include/linux/kernel.h
+> +++ b/include/linux/kernel.h
+> @@ -9,6 +9,7 @@
+>  #include <linux/stddef.h>
+>  #include <linux/types.h>
+>  #include <linux/compiler.h>
+> +#include <linux/container_of.h>
+>  #include <linux/bitops.h>
+>  #include <linux/kstrtox.h>
+>  #include <linux/log2.h>
+> @@ -482,36 +483,6 @@ static inline void ftrace_dump(enum ftrace_dump_mode oops_dump_mode) { }
+>  #define __CONCAT(a, b) a ## b
+>  #define CONCATENATE(a, b) __CONCAT(a, b)
+>  
+> -/**
+> - * container_of - cast a member of a structure out to the containing structure
+> - * @ptr:	the pointer to the member.
+> - * @type:	the type of the container struct this is embedded in.
+> - * @member:	the name of the member within the struct.
+> - *
+> - */
+> -#define container_of(ptr, type, member) ({				\
+> -	void *__mptr = (void *)(ptr);					\
+> -	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> -			 !__same_type(*(ptr), void),			\
+> -			 "pointer type mismatch in container_of()");	\
+> -	((type *)(__mptr - offsetof(type, member))); })
+> -
+> -/**
+> - * container_of_safe - cast a member of a structure out to the containing structure
+> - * @ptr:	the pointer to the member.
+> - * @type:	the type of the container struct this is embedded in.
+> - * @member:	the name of the member within the struct.
+> - *
+> - * If IS_ERR_OR_NULL(ptr), ptr is returned unchanged.
+> - */
+> -#define container_of_safe(ptr, type, member) ({				\
+> -	void *__mptr = (void *)(ptr);					\
+> -	BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) &&	\
+> -			 !__same_type(*(ptr), void),			\
+> -			 "pointer type mismatch in container_of()");	\
+> -	IS_ERR_OR_NULL(__mptr) ? ERR_CAST(__mptr) :			\
+> -		((type *)(__mptr - offsetof(type, member))); })
+> -
+>  /* Rebuild everything on CONFIG_FTRACE_MCOUNT_RECORD */
+>  #ifdef CONFIG_FTRACE_MCOUNT_RECORD
+>  # define REBUILD_DUE_TO_FTRACE_MCOUNT_RECORD
+> diff --git a/include/linux/kobject.h b/include/linux/kobject.h
+> index efd56f990a46..bf8371e58b17 100644
+> --- a/include/linux/kobject.h
+> +++ b/include/linux/kobject.h
+> @@ -15,6 +15,7 @@
+>  #ifndef _KOBJECT_H_
+>  #define _KOBJECT_H_
+>  
+> +#include <linux/container_of.h>
+>  #include <linux/types.h>
+>  #include <linux/list.h>
+>  #include <linux/sysfs.h>
+> diff --git a/include/linux/list.h b/include/linux/list.h
+> index f2af4b4aa4e9..5dc679b373da 100644
+> --- a/include/linux/list.h
+> +++ b/include/linux/list.h
+> @@ -2,11 +2,13 @@
+>  #ifndef _LINUX_LIST_H
+>  #define _LINUX_LIST_H
+>  
+> +#include <linux/container_of.h>
+> +#include <linux/const.h>
+>  #include <linux/types.h>
+>  #include <linux/stddef.h>
+>  #include <linux/poison.h>
+> -#include <linux/const.h>
+> -#include <linux/kernel.h>
+> +
+> +#include <asm/barrier.h>
+>  
+>  /*
+>   * Circular doubly linked list implementation.
 
-I don't have a strong preference since both variants give the same
-effect. I'll keep testing option [2] and will use it in the next version
-if no problem will be found. Thank you!
 
+This change looks odd.
+
+You already have kernel.h including container_of.h, so why not have a
+series that does:
+	- create container_of.h and have kernel.h include it
+	- multiple patches that remove kernel.h and use container_of.h
+	  instead only.
+	- multiple patches that remove kernel.h and use container_of.h
+	  and other .h files (like list.h seems to need here.)
+	- remove container_of.h from kernel.h
+
+Mushing them all together here makes this really hard to understand why
+this change is needed here.
+
+thanks,
+
+greg k-h
