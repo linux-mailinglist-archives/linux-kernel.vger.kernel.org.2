@@ -2,98 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB64E425260
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115DC425262
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241102AbhJGMAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 08:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232894AbhJGMAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 08:00:45 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA73C061746;
-        Thu,  7 Oct 2021 04:58:51 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id l7so22371445edq.3;
-        Thu, 07 Oct 2021 04:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jq3NsLxt4IRxGBWkVAMAXg2p190bOg5Ogw6QsBDoe+g=;
-        b=D/sMr8A49VTiRJyZYYK2qmNfoERG7aamiJDohjZriHdRiBcqYYxEV6q38cxzv6LE09
-         MJqPcXX1Pp/Yzk0Cedy/N/KmUu549D55/LhjiNGplZ082z54CMnGcU9uHwOuwJnXOXZN
-         jeygvS9Lzu1O6XUspnrsiJIEoqqfVvASibwaATzXWPuLsJmzDISQIB1lKL+CI/sysET2
-         s2O0gb4wF6lP1OVDa24fup7uD+dBUsh7exh7T4OZHdz/EcNkP1rSH63dtp5Z2y6jG3IG
-         gz5cihYT/y8xA1B+gtMpalT60/S2ifgpSLhMv9nbiW6u4mbl03VBW3nHAkrK/7wjO1mA
-         uNkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jq3NsLxt4IRxGBWkVAMAXg2p190bOg5Ogw6QsBDoe+g=;
-        b=BxdZ9cwX9+eoQAc16iRRWsE8NJj8kDOEbkRudP0GDJTOgYd5p+XpXctNVglGjNsTAY
-         1JlNJKNOD4BZGxnFhksETaexezcVc92Y/mxob7Fz2Oydv4CYEKoh4YBvkN7F2G1yQV5Z
-         2vDtLWDH9XIz0sj4ijAEkVBynD5iq73Uuo4+BzOg5xBa4jH/pASNwPK7wusIhiqeBVmY
-         xyf5i/dZ50IbFyl8P2WwplqY/R2eLQCccXa5erIhFGwv1P12H4/PQYBlFrzn2rpU5u5U
-         eIuugWlhN20YdbEdC5yd70Tui+e1EtYHBADB3EfNu5/msVKFs/P4O6lZpIqY1Tbf8UqP
-         SP0g==
-X-Gm-Message-State: AOAM533NCQpjQEvaL5A6FbN0E/6uXRMjzZRXwaenP3dJ/AgYsm3SlB/4
-        WJflHsRJf/oOlan3sLXbAUo=
-X-Google-Smtp-Source: ABdhPJxYuz0f0E9jm12DDwhkXsT3gr3wWDNLhTNgAoZWkU9YDw5melIEzMc2IGz6ka+zQae752PzFw==
-X-Received: by 2002:a17:906:2405:: with SMTP id z5mr5078334eja.170.1633607930328;
-        Thu, 07 Oct 2021 04:58:50 -0700 (PDT)
-Received: from fedora.. (dh207-98-202.xnet.hr. [88.207.98.202])
-        by smtp.googlemail.com with ESMTPSA id x14sm8805729edd.25.2021.10.07.04.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 04:58:49 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH] arm64: dts: qcom: ipq8074: add MDIO bus
-Date:   Thu,  7 Oct 2021 13:58:46 +0200
-Message-Id: <20211007115846.26255-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S241089AbhJGMBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 08:01:20 -0400
+Received: from mail-bn8nam12on2074.outbound.protection.outlook.com ([40.107.237.74]:25232
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232906AbhJGMBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 08:01:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pi2iarTM5j/+aG5woaTM7xD4LoMDj8FHmIc8fj1vaxbSQ4bpuvz2gLHgUBQt/SK+4Kuef7Yci1DLZeJQl7E4BWn1S0VdMnN4nPQuumH5bNgNvrCr2ohnKjSSzF2W/AA00mnbLhSTWqxxoIRB7CukC4e0sd8pyKM8uAFPqXXCl5m9QBXAMmiqSjhTwK7i2uRv4oaXfilpspNJnbK2tjQ0iksMsddlv4aVnjBm7BqqLR4T+lQfD/gFx8yPkbGHjwPsWP9yY+At9HDqJLfO7CccJdn0apWjcMGgY5groyxsvJobvLydUFjwLZ6cI6Zn+ajxOXvA03ugYjOI1352sZu/VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5V8yo7ZLFlO8VRpiR0js9rlccxdm0HxGmUrcfvYldfg=;
+ b=MV01CBDo8yY2qHUGu9cjL5HKv46J1oDqfOGU90qt87uock+/fwM8zNJB3oAGd1viGhOn6qq2gnovcPjy/6lJSVXFBMoqv0SsBPGm6YH5V6W9icjUldj1nLqI4VOqT/pk8r5e87MBZbyBzVV5whAUR7A0xovXoOWrF7qKdrIVZjQhB4q+0GhPsC53iA5Jv9uQwtGfCZwe4ckCgNHvutiGfotYY8u0Yz1z8ax6sPSLBTR6P0quj9QvzB6qTC8pQLXf9DWhiLCfVHyuj+QuY367qPFdFmT7jTxDh479gUm4hGUHvXexCl003GSIHrI64UqtZ6Ys3UmYRN/cOWA1KCWHhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5V8yo7ZLFlO8VRpiR0js9rlccxdm0HxGmUrcfvYldfg=;
+ b=NdohT6rZXCHv1jZCfXIb1iDL+e2JcDdcQR1ejrorvT8AeFff69zpwn/yZzDH9sv0Tk+YQ5b5wl1Lpo6QV/lgyYIFHqq8a9j2goVSZH35ku1bMgTvtRmHoNdl3i40/s8VjUbiIy9h7OrFroby+qk6N1gbxljoTuVo6/OS8h//x102HbJMNfEwRIxw00C0SPLZlKMRurHtR15wwx/ByL4EeJZGdPeHzWpN7+Rf7NVG8ry9YMYwQP/VtWl+YHjS7x71MERXlqX18ZJr+XCXpmQg7ZzQBNZS5m93Fe7Wl4b6lfXxXbNiOKkFkdVLG9JAIS0uovRJgRt0ICGzW3ueUjvvBQ==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5253.namprd12.prod.outlook.com (2603:10b6:208:30b::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Thu, 7 Oct
+ 2021 11:59:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%7]) with mapi id 15.20.4587.020; Thu, 7 Oct 2021
+ 11:59:19 +0000
+Date:   Thu, 7 Oct 2021 08:59:18 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Tony Luck <tony.luck@intel.com>, mike.campin@intel.com,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Subject: Re: [RFC 0/7] Support in-kernel DMA with PASID and SVA
+Message-ID: <20211007115918.GH2744544@nvidia.com>
+References: <1632256181-36071-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <CAGsJ_4z=2y2nVStXP-aAPnQrJJbMmv78mjaMwNc9P9Ec+gCtGw@mail.gmail.com>
+ <20211001123623.GM964074@nvidia.com>
+ <CAGsJ_4wfkrJp-eFKiXsLdiZCb3eS_zqZtJvXQTBafoTWY2yWKQ@mail.gmail.com>
+ <20211004094003.527222e5@jacob-builder>
+ <20211004182142.GM964074@nvidia.com>
+ <CAGsJ_4w+ed78cnJusM_enEZpdGghzvjgt0aYDPpfwk4z7PQqxQ@mail.gmail.com>
+ <20211007113221.GF2744544@nvidia.com>
+ <CAGsJ_4x2UEmNXCVhJAVRyB8568VMrTkOLeVCNp8CyP6xZJwCig@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4x2UEmNXCVhJAVRyB8568VMrTkOLeVCNp8CyP6xZJwCig@mail.gmail.com>
+X-ClientProxiedBy: BL1PR13CA0213.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::8) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0213.namprd13.prod.outlook.com (2603:10b6:208:2bf::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.4 via Frontend Transport; Thu, 7 Oct 2021 11:59:18 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mYS3S-00BsBf-1i; Thu, 07 Oct 2021 08:59:18 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1c0476ee-3ea6-45a8-7cc0-08d98989e4a4
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5253:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52536F12558FC451E6599C01C2B19@BL1PR12MB5253.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PyKmhnZsmDQZpMp763jd5ZPz7HkUQPkeoDaB3nFLCtqKorU8S13cNHaH1RtB8CM5NTxdekoH4oLYQBmxPA29+6MjI1UGK+n2HgGnjY/huPaGwLjcuJ6lLz/qSAD38XRKohqW/gP3U84i8YaYEZpE22FqakUxQih/CoXbZdByLMMETFHbUnQBVtPb2d4N7c3tRBaDd19Rbv0ufULpjc7u16yZggdlmjkyrubOgqX5J/SwM6n4PLPZQ96xiTKdsblytmMSfe1bkrVcaaeLeWAXcG4L7Esr1yeylAzinzZC3Sh3EHRVNHiHVzbeVDH5GH+eD73s93Tlc2wuU9iMIPJY1nYtbuSGSaX6tquvhTuPTlT0O4k+PW2o/Sejaw3uiZWx1yZbhAVS9fmzpEATAJUY3AeRgUUnDorwC62WE2gksVeVeAWKGcXVRU1BlaWp/xgkk5SDdGgYzWSGRlpgxJGW2RnX1OWJMRMKwR1qV+Ziij3wWMvqHYBxJMlIWHa00fLI655XeG+Qn/iYhl28YpwX+u0CBjDObPeotS6JgYld9FRSOB0n0dqQ8b9FtFjyFmxd4jK0xNcEgGJ3PpBUmhs3ADkstnwsJ7E8LJaKlzZefEoEpbWsC2QK7z1udBp5zDdnzUw2Tc4OURJ8RALlZ2C2XA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(66556008)(53546011)(66946007)(86362001)(1076003)(38100700002)(83380400001)(9746002)(9786002)(8676002)(8936002)(2616005)(4326008)(6916009)(186003)(26005)(508600001)(426003)(5660300002)(2906002)(54906003)(33656002)(316002)(7416002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UELDpzl30IqRfBwkgd/zvc4UhrFjIAE8JxHo0t2B98+8XgLmYd6pMQmPqODc?=
+ =?us-ascii?Q?1BLOJngBf3O9zYYJDqTeHucPzO+tkgcWy7Dblp6S5++mDBwji+hAF+bt7UgI?=
+ =?us-ascii?Q?nOTzpMw8lUCrf+il5Z5TcaFu7RX/C0lvyKBFTN9vaw0kYZvIRNV4XZTJh2Wm?=
+ =?us-ascii?Q?EmIh/1eBX8lR3B1DETouUi5+BPcFNVaGf/uQcBqHf6dX9x01qCZNzesQHlSe?=
+ =?us-ascii?Q?D9VDpTTPamaJ3NAGCGIVei6/KBXTJ0s86i2VUJtJZ4kObIrFleCfGdaUkb+e?=
+ =?us-ascii?Q?JbseTemkuSLjFWjb7T8G2UUTIo241bNztI+UXWadBrfFthRsnoGbz2T6OzzU?=
+ =?us-ascii?Q?UZ2RenrvUkDD2mNHCRskOsxot2fYkuwQp4XAjW13z/1lo5IE52CJzxSjl3u9?=
+ =?us-ascii?Q?2uuS25Klakkl6cBdKKQHN8BwWcvBUMXq5PhWRGsBgbvM+/8Yotq+Jsm0YTKp?=
+ =?us-ascii?Q?kLWvk/Et6Zos1VkwOzlMLIPADSsBEcSHe7P96T+AwhsafadEAW3nLFauDvrK?=
+ =?us-ascii?Q?oGRYRAmIYBI5mrF4l1Ufd55IqVOMg1bw5n4Z94OmvlZ0EMFrCzd/ugH0c4BV?=
+ =?us-ascii?Q?7DXo+7lRn4KJjTi7vedCbvmwc6ApmS0TuaE2QpUmzvmKzhpqkkVmJmVHagc0?=
+ =?us-ascii?Q?iX+n9HPBworVaLQBZU+/yBrb1ej9HYF2e9BetqrmoNmDS6rItTWo7cUDyMzp?=
+ =?us-ascii?Q?5d0Gnj5gCLiBmD/XJxt+jJ2FLuT57teXQGJqsl/av4SM695HiLjDZGe4q9tB?=
+ =?us-ascii?Q?0jiUFz2CLInvQo0Z/i3BAWLHW9aB72NRdlivsSalvF3SjWhYZPe44VkJWK0N?=
+ =?us-ascii?Q?Thwzgp2kya2OxYiN0oUzB8Rt5088CzO6grlz1tfjFA9D/dAldYo32e8KbWR7?=
+ =?us-ascii?Q?lmnRPjVfny6UtDTZNqTca479JGwzDWW1BLgkstFzUkfriQeKxTpsjGyZg5pU?=
+ =?us-ascii?Q?8rPqpRDONMSBsqG2LvAm08M/FyfuvjmRMGcasvRcOyB/4Nj16fxjHbhPfxJ8?=
+ =?us-ascii?Q?cMaOkxp+uP/weJ2hXskw3tWKA9s2SSrxJjVb9CfKpPXSBy5PQmVz1cLw701h?=
+ =?us-ascii?Q?cbot0iItaHydWlIBqMLiWheaojLBIov/tIFTeOkgGbOS0btEyfjCGSMtl1Ev?=
+ =?us-ascii?Q?b6tudkL8f+GD4yRxmDM8VC02JjX9yUMy3m8F0TEkEoWGqfY1ahf2juznuzup?=
+ =?us-ascii?Q?WI7TSpKJxfMkx0MqihuUhp6tw0TgtOsIHLLxwSVikWamUKll3HuiZOiWY4Ee?=
+ =?us-ascii?Q?ENFu/VEDKXu0RrVA8hzNK9CD3BEJSKdM6wYgs70lwM/NqVGc0Vs0Flz2+FuW?=
+ =?us-ascii?Q?IffW6n0lZkj2DrVgaD9uio0DLdl0mds6N0ACXdaWOjZq3g=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c0476ee-3ea6-45a8-7cc0-08d98989e4a4
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Oct 2021 11:59:19.0440
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tJG7hxOIKy16KXlbg+4ejjIEUHRCEnIV8LPPW6NU6N218eZsdR3RA3CaFNHjJh1r
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5253
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 uses an IPQ4019 compatible MDIO controller that is already
-supported in the kernel, so add the DT node in order to use it.
+On Fri, Oct 08, 2021 at 12:54:52AM +1300, Barry Song wrote:
+> On Fri, Oct 8, 2021 at 12:32 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >
+> > On Thu, Oct 07, 2021 at 06:43:33PM +1300, Barry Song wrote:
+> >
+> > > So do we have a case where devices can directly access the kernel's data
+> > > structure such as a list/graph/tree with pointers to a kernel virtual address?
+> > > then devices don't need to translate the address of pointers in a structure.
+> > > I assume this is one of the most useful features userspace SVA can provide.
+> >
+> > AFIACT that is the only good case for KVA, but it is also completely
+> > against the endianess, word size and DMA portability design of the
+> > kernel.
+> >
+> > Going there requires some new set of portable APIs for gobally
+> > coherent KVA dma.
+> 
+> yep. I agree. it would be very weird if accelerators/gpu are sharing
+> kernel' data struct, but for each "DMA" operation - reading or writing
+> the data struct, we have to call dma_map_single/sg or
+> dma_sync_single_for_cpu/device etc. It seems once devices and cpus
+> are sharing virtual address(SVA), code doesn't need to do explicit
+> map/sync each time.
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+No, it still need to do something to manage visibility from the
+current CPU to the DMA - it might not be flushing a cache, but it is
+probably a arch specific CPU barrier instruction.
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 3a56e38158a4..5f562444c838 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -267,6 +267,18 @@ pcie_phy1: phy@8e000 {
- 			status = "disabled";
- 		};
- 
-+		mdio: mdio@90000 {
-+			compatible = "qcom,ipq4019-mdio";
-+			reg = <0x00090000 0x64>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			clocks = <&gcc GCC_MDIO_AHB_CLK>;
-+			clock-names = "gcc_mdio_ahb_clk";
-+
-+			status = "disabled";
-+		};
-+
- 		prng: rng@e3000 {
- 			compatible = "qcom,prng-ee";
- 			reg = <0x000e3000 0x1000>;
--- 
-2.32.0
-
+Jason
