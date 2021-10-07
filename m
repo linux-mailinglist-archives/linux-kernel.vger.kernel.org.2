@@ -2,63 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8644259F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B3A4259FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243348AbhJGRw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:52:59 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54760 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242977AbhJGRwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:52:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=n+9Q0lnjSmnVTKyzJlqvdKH6GvqeAWthJKePHa0mVgA=; b=MnXdsji755W3XzL7MY71VZZOB+
-        cpExZgr7+iNjLuPxbNhz9K4ojOslf8jadeR99ptZMo4/4pwISAEEi2iu/7tJr0LobpUZNi6Hxl26F
-        KkpN0cT09aUV0NoOqUjA2sm6sh7xV4RSJBNFh11y3BQrmJA746FTcIVixFxbqxHXZK4k=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mYXXi-009yex-Dk; Thu, 07 Oct 2021 19:50:54 +0200
-Date:   Thu, 7 Oct 2021 19:50:54 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Francesco Dolcini <francesco.dolcini@toradex.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        philippe.schenker@toradex.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net: phy: micrel: ksz9131 led errata
- workaround
-Message-ID: <YV8zfj3UUyq2WRPF@lunn.ch>
-References: <20211007164535.657245-1-francesco.dolcini@toradex.com>
+        id S243388AbhJGRxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242934AbhJGRxi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:53:38 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E94AC061570;
+        Thu,  7 Oct 2021 10:51:44 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id u18so21606595wrg.5;
+        Thu, 07 Oct 2021 10:51:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qr9MDwBMzsyNipMpKSvmO1rGtnLhU3br6C9ogb2fBw8=;
+        b=l0gf8IrjazvORWdZh1xkbtoa0c0CKoUv4AKMehcFzvJQheuGcGirYhPyuyx7+hNTgI
+         s/7zGlnozqfQpeqd3vdzzNELUBwjwZVJwm23vLAT5AfQtTpys1t6Pu64Au9fq17Fvrds
+         +cr2luV22MzghTXwbPilEE2wvhdgWwNvPSRbKYOgjdnju/617H1R1SfDTg8zdTZjPkL6
+         zld5VpxrcX0+oY+gfbAStKRm/yjXp5GugPCK9xEAIggNMIaFuOOLlA99V1WvN7ibTnjB
+         FoNjYUaGaqApga+RajhPFk5VpnfDb7hOMiSLU8TCP255JHX/m+r1DwZGlBW8VKlj3LdZ
+         CTYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qr9MDwBMzsyNipMpKSvmO1rGtnLhU3br6C9ogb2fBw8=;
+        b=woyKso1HKShQTr/Le1DxEMvoUTSnra7Ai9bSYxMIsHWDmPiccqq0x5fud1XD7p5Yzp
+         a+XRTXSr7dG5uhkJvn3JQo2mpdFga0erN+4lxgVK8rF93X7AUujJokG4tEXZ2CoNykit
+         gH+9aapgwDk93vinGcUWMX3cHh3G/rUYArry7QiVWoc5OnuLKWlRqvgYlZBULkVk7uUq
+         mEAFRbs9+XK3rWHylZvNg2J7F7rGAOYBaqZX2H00pKhdi9mGytCizaEXYtttHMbDV87f
+         efw2Udc0J9ZBz5NFniXequqYcDD9ctoflXZX/VHk1zwPZXaeE/IPfHxuBK/t2aULAZm9
+         t8Aw==
+X-Gm-Message-State: AOAM530pWUJMeSDoxgt4BSjCBZ5zhq/NflHgveWvDHdmM7nmERpinlJ5
+        PiKxz2B4UFy+PzwNRhbpXnuFXT7v1Cw=
+X-Google-Smtp-Source: ABdhPJzGYc6hxjff2pYBQkacMQj+RBkk0ySzdS5FILQml6vO4E7nfSEeog+342kYjoBnnZFmyPmmRg==
+X-Received: by 2002:a1c:1b89:: with SMTP id b131mr17756682wmb.71.1633629102798;
+        Thu, 07 Oct 2021 10:51:42 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id b19sm7506386wmb.1.2021.10.07.10.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 10:51:41 -0700 (PDT)
+Date:   Thu, 7 Oct 2021 19:51:39 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-tegra@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v2] host1x: bus.c: drop excess kernel-doc entry @key
+Message-ID: <YV8zqwBiAhOFh9r0@orome.fritz.box>
+References: <20211005053726.14738-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kXhwAqbeq5nO1IC+"
 Content-Disposition: inline
-In-Reply-To: <20211007164535.657245-1-francesco.dolcini@toradex.com>
+In-Reply-To: <20211005053726.14738-1-rdunlap@infradead.org>
+User-Agent: Mutt/2.1.3 (987dde4c) (2021-09-10)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 06:45:35PM +0200, Francesco Dolcini wrote:
-> Micrel KSZ9131 PHY LED behavior is not correct when configured in
-> Individual Mode, LED1 (Activity LED) is in the ON state when there is
-> no-link.
-> 
-> Workaround this by setting bit 9 of register 0x1e after verifying that
-> the LED configuration is Individual Mode.
-> 
-> This issue is described in KSZ9131RNX Silicon Errata DS80000693B [*]
-> and according to that it will not be corrected in a future silicon
-> revision.
-> 
-> [*] https://ww1.microchip.com/downloads/en/DeviceDoc/KSZ9131RNX-Silicon-Errata-and-Data-Sheet-Clarification-80000863B.pdf
-> 
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+--kXhwAqbeq5nO1IC+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-    Andrew
+On Mon, Oct 04, 2021 at 10:37:26PM -0700, Randy Dunlap wrote:
+> Fix kernel-doc warning in host1x:
+>=20
+> ../drivers/gpu/host1x/bus.c:774: warning: Excess function parameter 'key'=
+ description in '__host1x_client_register'
+>=20
+> Fixes: 0cfe5a6e758f ("gpu: host1x: Split up client initalization and regi=
+stration")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-tegra@vger.kernel.org
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> ---
+> v2: rebase and resend
+>=20
+>  drivers/gpu/host1x/bus.c |    1 -
+>  1 file changed, 1 deletion(-)
+
+Applied, thanks.
+
+Thierry
+
+--kXhwAqbeq5nO1IC+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmFfM6kACgkQ3SOs138+
+s6FAVA//cxr3VWWOyxBD5qYYXmO+ZdMi5MeIZUI7hR7+Ure9SOXLlzZ7BOCU6vvh
+Mv2VxIUEExKVLlYrUEVlR4G/WfuQHCml/FQeR1PY9CE8uub2zNYorD/ct30hfTeK
+nmdxlK8SeQWldwfKxmuK0bL6sw/3riCFj5c2QruEjWDe3qNoeSS9+BHw/3h4PeNf
+bx9UdF8vdjnz6Vu4WfIHDTbEZYtpIPuFXvdVyqknGh7CA25yBHf4sdZANQnP45CU
+XMtJSvCDV75qTQNuJj5fpFxbuFAAhLCPoCWWrE2IvUluU3Q0wICrq7e5IuhzGBn9
+3+Ar6S46NL/VMfRUJuDLNYzNzqNr/APZqh1J9/D+oDvBP2HIkHTBN76nT0IwklKB
+j+pfdcFKD8qa4k1yelMznTSFlf9n4pYER3x4xezdl6jqsQtU0BAK88hy5tUP1M08
+fRlErL7N71P1KG2izQa8zbIH/slaYgNd4Rqm4pbLYvfel3rt0FHqPXv6JFQrACMY
+8Oub0cvReNN5YrVz1Qo2M0IkdPqHlhSTdvnXc4y3YdMkBsDhzLEULrp9cy7cqw4/
+olreNada5aP0ANRylBC5tidRK3wOoGFEhBxa7WNXfN8riW3TIcAC0jdoTlr0KYx2
+9rmf/oo/MvjnlKrXtb45xeVlVOLrqpwBO01xUZI7keSMbc7m5cA=
+=NJUt
+-----END PGP SIGNATURE-----
+
+--kXhwAqbeq5nO1IC+--
