@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69F54255D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E09A4255D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242211AbhJGOym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:54:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:64378 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242206AbhJGOyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:54:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633618364; h=Date: Message-ID: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=viYmgYRwFaqRM+Qbx3Egqzt8j0aj4mHAUmADofZbvKE=;
- b=EhYRne1BIByI7VwhbM9mYP1fn8vwhcq4SMR/9+pF13/8XLQDmw6IuEmrrKYYSJM81pC2hrGn
- rqs9qdIO58qwYYNy8ieRjTM2yGew5Y88sMUTfBFZ3oKdK9+R8GToJogBNK/h1iFIevESTDUD
- sSszqGZ7ARNfQdcafh2h8i/2ino=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 615f09b5ff0285fb0a08e9b4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 14:52:37
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8429CC43460; Thu,  7 Oct 2021 14:52:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 86014C4338F;
-        Thu,  7 Oct 2021 14:52:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 86014C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S242223AbhJGOzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:55:39 -0400
+Received: from sender2-pp-o92.zoho.com.cn ([163.53.93.251]:25328 "EHLO
+        sender2-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242165AbhJGOzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 10:55:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1633618384; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=DDDHZlDWo+5WO3B+uN7PiJMZPS3Ma7R8eSk3Xg4n+RImp0vrhVIH/lgMHgaBBXCbWfmeknC8tkvansvD/nIHZeo23Q5ZiFZhjaE3Li1G3D7WLJVT4lKy/TDANoXDPbp4cX2gW8NRbrOMyuh0y8hpkP4XOItYVyR8r4Jx6A23l/g=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1633618384; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To; 
+        bh=ALDuNPX38fhXXa+zXpsu/pg/N+jdzTq1/9LsmnJf8oE=; 
+        b=haXNF92PhlygjHFnDrGa6rVw41FF+NYWBVcGSIOj245/euJunAMDZ0FtCi8/xZR0q5WVeZ1jqPVxFzJzGVeunxSp2s/FlueHR9QDc3Huh97+PfdRf64864HsXSURh44MShece1Q3ox7SAdug+8CYVl1YSMTdOZnCP5dOPhjMVnw=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1633618384;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=ALDuNPX38fhXXa+zXpsu/pg/N+jdzTq1/9LsmnJf8oE=;
+        b=L+O1RDm1I3OpdzH0D6CTw2wyfU0dcaZteD/O29Fd2o5YjEBSNkNtABol0C1uMzkw
+        cN6FztZZ0n4UUz0GE8ioNGnhLjZInMABhE0MeHBypVJ5MiTqps70yMIZSYETjf3+X00
+        aT/mbHhLtTu1QzgX834N4qvEKiHtScX14z7z+UtI=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1633618382638215.82362575268553; Thu, 7 Oct 2021 22:53:02 +0800 (CST)
+Date:   Thu, 07 Oct 2021 22:53:02 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "Jan Kara" <jack@suse.cz>, "Miklos Szeredi" <miklos@szeredi.hu>
+Cc:     "Amir Goldstein" <amir73il@gmail.com>,
+        "linux-fsdevel" <linux-fsdevel@vger.kernel.org>,
+        "overlayfs" <linux-unionfs@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Message-ID: <17c5b3e4f2b.113dc38cd26071.2800661599712778589@mykernel.net>
+In-Reply-To: <20211007144646.GL12712@quack2.suse.cz>
+References: <20210923130814.140814-1-cgxu519@mykernel.net>
+ <20210923130814.140814-7-cgxu519@mykernel.net>
+ <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
+ <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
+ <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
+ <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
+ <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com> <20211007144646.GL12712@quack2.suse.cz>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
+ operation
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH][next] ath11k: Fix spelling mistake "incompaitiblity" ->
- "incompatibility"
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20211006083217.349596-1-colin.king@canonical.com>
-References: <20211006083217.349596-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
-Message-ID: <163361835071.17431.1471476207950050430.kvalo@codeaurora.org>
-Date:   Thu,  7 Oct 2021 14:52:37 +0000 (UTC)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Colin King <colin.king@canonical.com> wrote:
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E5=9B=9B, 2021-10-07 22:46:46 Jan Kara <=
+jack@suse.cz> =E6=92=B0=E5=86=99 ----
+ > On Thu 07-10-21 15:34:19, Miklos Szeredi wrote:
+ > > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrot=
+e:
+ > > >  > However that wasn't what I was asking about.  AFAICS ->write_inod=
+e()
+ > > >  > won't start write back for dirty pages.   Maybe I'm missing somet=
+hing,
+ > > >  > but there it looks as if nothing will actually trigger writeback =
+for
+ > > >  > dirty pages in upper inode.
+ > > >  >
+ > > >
+ > > > Actually, page writeback on upper inode will be triggered by overlay=
+fs ->writepages and
+ > > > overlayfs' ->writepages will be called by vfs writeback function (i.=
+e writeback_sb_inodes).
+ > >=20
+ > > Right.
+ > >=20
+ > > But wouldn't it be simpler to do this from ->write_inode()?
+ >=20
+ > You could but then you'd have to make sure you have I_DIRTY_SYNC always =
+set
+ > when I_DIRTY_PAGES is set on the upper inode so that your ->write_inode(=
+)
+ > callback gets called. Overall I agree the logic would be probably simple=
+r.
+ >=20
 
-> There is a spelling mistake in an ath11k_warn message. Fix it.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Hi Jan, Miklos
 
-Patch applied to ath-next branch of ath.git, thanks.
+Thnaks for your suggestions. Let me have a try in next version.
 
-567ec33a76c7 ath11k: Fix spelling mistake "incompaitiblity" -> "incompatibility"
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20211006083217.349596-1-colin.king@canonical.com/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
-
+Thanks,
+Chengguang
