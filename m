@@ -2,158 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED2142508B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEBD425092
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240782AbhJGKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 06:00:26 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28114 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240670AbhJGKAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 06:00:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633600696; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=ibfZuvwZjjI7SHbmLPlo8m5UuiT19PD99bxYQVwNKRo=; b=thP9h7d+TS3kfc3tk5iKw5CakbZc7nhBN2JSv266xr2eEr4acl8OWVOTVkEPXnkDbZ9ihQxA
- 6bmcITFAgY2p9p6IxAau3yY8nrzQWNS233/OUj/GlyeB2OqDx+RFZchrVCus/G6436CH6p1/
- ygBkuEksv09EmiDDv6QZvZ3ZNvs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 615ec4b84ccc4cf2c7e5fab2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Oct 2021 09:58:16
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id EF68BC4361B; Thu,  7 Oct 2021 09:58:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S240766AbhJGKAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 06:00:51 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:33488 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240638AbhJGKAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 06:00:35 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C5FD4C43460;
-        Thu,  7 Oct 2021 09:58:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C5FD4C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>, devicetree@vger.kernel.org
-Subject: [PATCH v11 5/5] arm64: dts: qcom: Enable RPM Sleep stats
-Date:   Thu,  7 Oct 2021 15:27:29 +0530
-Message-Id: <1633600649-7164-6-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
-References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8C94A2258F;
+        Thu,  7 Oct 2021 09:58:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633600721; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tE+KpJkG32exYjSKNVJFpDoJhh1mV3sWGv1DIr8+vbw=;
+        b=1CFhFZQT2lxY+4tVbG6YfssjQc7+ACM203mml/wbTXdZEVbvjJF7bzFdc02YARIaM5un0K
+        /LTH7BDr+nT/X4k8vTlEIiGZsQ7lKLM0gT1irQq4cjTuCYT20xR9m4+W9b+B8wZTtXzIWa
+        TN/9VjC1htx5ZOFd4MrPfs/6mNSSWD4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633600721;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=tE+KpJkG32exYjSKNVJFpDoJhh1mV3sWGv1DIr8+vbw=;
+        b=g3t4RufI65Bggx8DDJYFkbpIzsMch0AGBRHMvSOsfy5rMF/wTGYa2zPkkfCNysofGdfTD/
+        5hyTwjMOzvQfTwCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4540913B68;
+        Thu,  7 Oct 2021 09:58:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XuI1ENHEXmFWQwAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Thu, 07 Oct 2021 09:58:41 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        kasan-dev@googlegroups.com, Vlastimil Babka <vbabka@suse.cz>,
+        Marco Elver <elver@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Oliver Glitta <glittao@gmail.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+Subject: [PATCH] lib/stackdepot: allow optional init and stack_table allocation by kvmalloc()
+Date:   Thu,  7 Oct 2021 11:58:15 +0200
+Message-Id: <20211007095815.3563-1-vbabka@suse.cz>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9728; h=from:subject; bh=cmFU9IIwiMam4qL9IpFsBX7s20Xoak4Vs4wOahaA+jg=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhXsSo8XQVjAIb+/CD2HTqNplWygw85zfk9+3D7FyA J5fJh+qJATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYV7EqAAKCRDgIcpz8YmpEH+VB/ 9TUOnhw2poTAWn2t9D0vPkiEb9K2llRcbSi60L1GSS9VQztsRj0DpBBKJ7lLw3pMPyVEz/+TrJ3W+M iyFJ/1Uq06LY4UcwrGt+RDjgDQmRHQy7a7Neq7tctQQQ1Ar+q8MlWLoyNinz2YJKRfIdZRGq23Ypw5 /wFS1FOpLR3wnDr24rYRJPCrLa/i32fzB+ZfZSQd6JgYVMUSaXy+ye+cbLA+ptwz+QTygQFbKR/Kgl kQON0ZLgkBqapAeisWJ/RoXGJLtC3TNeyTDJmdjRCyYV9Za9AlxVO9j5ebOJFZI/91WeSWJkBIELBT SvTqiVCXL2x00tvF0XbO29TTkHJjTY
+X-Developer-Key: i=vbabka@suse.cz; a=openpgp; fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device node for Sleep stats driver which provides various
-low power mode stats on msm8996, msm8998, qcs404, sdm630 and
-sm6125.
+Currently, enabling CONFIG_STACKDEPOT means its stack_table will be allocated
+from memblock, even if stack depot ends up not actually used. The default size
+of stack_table is 4MB on 32-bit, 8MB on 64-bit.
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+This is fine for use-cases such as KASAN which is also a config option and
+has overhead on its own. But it's an issue for functionality that has to be
+actually enabled on boot (page_owner) or depends on hardware (GPU drivers)
+and thus the memory might be wasted. This was raised as an issue when trying
+to add stackdepot support for SLUB's debug object tracking functionality. It's
+common to build kernels with CONFIG_SLUB_DEBUG and enable slub_debug on boot
+only when needed, or create specific kmem caches with debugging for testing
+purposes.
+
+It would thus be more efficient if stackdepot's table was allocated only when
+actually going to be used. This patch thus makes the allocation (and whole
+stack_depot_init() call) optional:
+
+- Add a CONFIG_STACKDEPOT_ALWAYS_INIT flag to keep using the current
+  well-defined point of allocation as part of mem_init(). Make CONFIG_KASAN
+  select this flag.
+- Other users have to call stack_depot_init() as part of their own init when
+  it's determined that stack depot will actually be used. This may depend on
+  both config and runtime conditions. Convert current users which are
+  page_owner and several in the DRM subsystem. Same will be done for SLUB
+  later.
+- Because the init might now be called after the boot-time memblock allocation
+  has given all memory to the buddy allocator, change stack_depot_init() to
+  allocate stack_table with kvmalloc() when memblock is no longer available.
+  Also handle allocation failure by disabling stackdepot (could have
+  theoretically happened even with memblock allocation previously), and don't
+  unnecessarily align the memblock allocation to its own size anymore.
+
+[1] https://lore.kernel.org/all/CAMuHMdW=eoVzM1Re5FVoEN87nKfiLmM2+Ah7eNu2KXEhCvbZyA@mail.gmail.com/
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Marco Elver <elver@google.com>
+Cc: Vijayanand Jitta <vjitta@codeaurora.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Oliver Glitta <glittao@gmail.com>
+Cc: Imran Khan <imran.f.khan@oracle.com>
 ---
- arch/arm64/boot/dts/qcom/msm8996.dtsi | 5 +++++
- arch/arm64/boot/dts/qcom/msm8998.dtsi | 5 +++++
- arch/arm64/boot/dts/qcom/qcs404.dtsi  | 5 +++++
- arch/arm64/boot/dts/qcom/sdm630.dtsi  | 5 +++++
- arch/arm64/boot/dts/qcom/sm6125.dtsi  | 5 +++++
- 5 files changed, 25 insertions(+)
+Hi, I'd appreciate review of the DRM parts - namely that I've got correctly
+that stack_depot_init() is called from the proper init functions and iff
+stack_depot_save() is going to be used later. Thanks!
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index eb3ec5f..d647382 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1523,6 +1523,11 @@
- 			};
- 		};
+ drivers/gpu/drm/drm_dp_mst_topology.c   |  1 +
+ drivers/gpu/drm/drm_mm.c                |  4 ++++
+ drivers/gpu/drm/i915/intel_runtime_pm.c |  3 +++
+ include/linux/stackdepot.h              | 19 ++++++++-------
+ init/main.c                             |  3 ++-
+ lib/Kconfig                             |  3 +++
+ lib/Kconfig.kasan                       |  1 +
+ lib/stackdepot.c                        | 32 +++++++++++++++++++++----
+ mm/page_owner.c                         |  2 ++
+ 9 files changed, 53 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+index 2d1adab9e360..bbe972d59dae 100644
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -5490,6 +5490,7 @@ int drm_dp_mst_topology_mgr_init(struct drm_dp_mst_topology_mgr *mgr,
+ 	mutex_init(&mgr->probe_lock);
+ #if IS_ENABLED(CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS)
+ 	mutex_init(&mgr->topology_ref_history_lock);
++	stack_depot_init();
+ #endif
+ 	INIT_LIST_HEAD(&mgr->tx_msg_downq);
+ 	INIT_LIST_HEAD(&mgr->destroy_port_list);
+diff --git a/drivers/gpu/drm/drm_mm.c b/drivers/gpu/drm/drm_mm.c
+index 7d1c578388d3..8257f9d4f619 100644
+--- a/drivers/gpu/drm/drm_mm.c
++++ b/drivers/gpu/drm/drm_mm.c
+@@ -980,6 +980,10 @@ void drm_mm_init(struct drm_mm *mm, u64 start, u64 size)
+ 	add_hole(&mm->head_node);
  
-+		sram@290000 {
-+			compatible = "qcom,rpm-sleep-stats";
-+			reg = <0x00290000 0x400>;
-+		};
+ 	mm->scan_active = 0;
 +
- 		spmi_bus: qcom,spmi@400f000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg = <0x0400f000 0x1000>,
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index 3c1f133..895806e 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -2022,6 +2022,11 @@
- 			};
- 		};
++#ifdef CONFIG_DRM_DEBUG_MM
++	stack_depot_init();
++#endif
+ }
+ EXPORT_SYMBOL(drm_mm_init);
  
-+		sram@290000 {
-+			compatible = "qcom,rpm-sleep-stats";
-+			reg = <0x00290000 0x400>;
-+		};
+diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
+index 0d85f3c5c526..806c32ab410b 100644
+--- a/drivers/gpu/drm/i915/intel_runtime_pm.c
++++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
+@@ -68,6 +68,9 @@ static noinline depot_stack_handle_t __save_depot_stack(void)
+ static void init_intel_runtime_pm_wakeref(struct intel_runtime_pm *rpm)
+ {
+ 	spin_lock_init(&rpm->debug.lock);
 +
- 		spmi_bus: spmi@800f000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg =	<0x0800f000 0x1000>,
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 339790b..45e6eae 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -719,6 +719,11 @@
- 			reg = <0x01937000 0x25000>;
- 		};
++	if (rpm->available)
++		stack_depot_init();
+ }
  
-+		sram@290000 {
-+			compatible = "qcom,rpm-sleep-stats";
-+			reg = <0x00290000 0x400>;
-+		};
-+
- 		spmi_bus: spmi@200f000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg = <0x0200f000 0x001000>,
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index 9c7f87e..4044a5b 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -1176,6 +1176,11 @@
- 			status = "disabled";
- 		};
+ static noinline depot_stack_handle_t
+diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+index c34b55a6e554..60ba99a43745 100644
+--- a/include/linux/stackdepot.h
++++ b/include/linux/stackdepot.h
+@@ -15,6 +15,16 @@
  
-+		sram@290000 {
-+			compatible = "qcom,rpm-sleep-stats";
-+			reg = <0x00290000 0x400>;
-+		};
-+
- 		spmi_bus: spmi@800f000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg =	<0x0800f000 0x1000>,
-diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-index c2317dd..c90491a3 100644
---- a/arch/arm64/boot/dts/qcom/sm6125.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
-@@ -460,6 +460,11 @@
- 			};
- 		};
+ typedef u32 depot_stack_handle_t;
  
-+		sram@4690000 {
-+			compatible = "qcom,rpm-sleep-stats";
-+			reg = <0x04690000 0x400>;
-+		};
++/*
++ * Every user of stack depot has to call this during its own init when it's
++ * decided that it will be calling stack_depot_save() later.
++ *
++ * The alternative is to select STACKDEPOT_ALWAYS_INIT to have stack depot
++ * enabled as part of mm_init(), for subsystems where it's known at compile time
++ * that stack depot will be used.
++ */
++int stack_depot_init(void);
 +
- 		spmi_bus: spmi@1c40000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg = <0x01c40000 0x1100>,
+ depot_stack_handle_t __stack_depot_save(unsigned long *entries,
+ 					unsigned int nr_entries,
+ 					gfp_t gfp_flags, bool can_alloc);
+@@ -30,13 +40,4 @@ int stack_depot_snprint(depot_stack_handle_t handle, char *buf, size_t size,
+ 
+ void stack_depot_print(depot_stack_handle_t stack);
+ 
+-#ifdef CONFIG_STACKDEPOT
+-int stack_depot_init(void);
+-#else
+-static inline int stack_depot_init(void)
+-{
+-	return 0;
+-}
+-#endif	/* CONFIG_STACKDEPOT */
+-
+ #endif
+diff --git a/init/main.c b/init/main.c
+index ee4d3e1b3eb9..b6a5833d98f5 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -844,7 +844,8 @@ static void __init mm_init(void)
+ 	init_mem_debugging_and_hardening();
+ 	kfence_alloc_pool();
+ 	report_meminit();
+-	stack_depot_init();
++	if (IS_ENABLED(CONFIG_STACKDEPOT_ALWAYS_INIT))
++		stack_depot_init();
+ 	mem_init();
+ 	mem_init_print_info();
+ 	/* page_owner must be initialized after buddy is ready */
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 5e7165e6a346..df6bcf0a4cc3 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -671,6 +671,9 @@ config STACKDEPOT
+ 	bool
+ 	select STACKTRACE
+ 
++config STACKDEPOT_ALWAYS_INIT
++	bool
++
+ config STACK_HASH_ORDER
+ 	int "stack depot hash size (12 => 4KB, 20 => 1024KB)"
+ 	range 12 20
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index cdc842d090db..695deb603c66 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -39,6 +39,7 @@ menuconfig KASAN
+ 		   HAVE_ARCH_KASAN_HW_TAGS
+ 	depends on (SLUB && SYSFS) || (SLAB && !DEBUG_SLAB)
+ 	select STACKDEPOT
++	select STACKDEPOT_ALWAYS_INIT
+ 	help
+ 	  Enables KASAN (KernelAddressSANitizer) - runtime memory debugger,
+ 	  designed to find out-of-bounds accesses and use-after-free bugs.
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index b437ae79aca1..a4f449ccd0dc 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -23,6 +23,7 @@
+ #include <linux/jhash.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
++#include <linux/mutex.h>
+ #include <linux/percpu.h>
+ #include <linux/printk.h>
+ #include <linux/slab.h>
+@@ -145,6 +146,7 @@ depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ #define STACK_HASH_MASK (STACK_HASH_SIZE - 1)
+ #define STACK_HASH_SEED 0x9747b28c
+ 
++DEFINE_MUTEX(stack_depot_init_mutex);
+ static bool stack_depot_disable;
+ static struct stack_record **stack_table;
+ 
+@@ -161,18 +163,38 @@ static int __init is_stack_depot_disabled(char *str)
+ }
+ early_param("stack_depot_disable", is_stack_depot_disabled);
+ 
+-int __init stack_depot_init(void)
++/*
++ * __ref because of memblock_alloc(), which will not be actually called after
++ * the __init code is gone
++ */
++__ref int stack_depot_init(void)
+ {
+-	if (!stack_depot_disable) {
++	mutex_lock(&stack_depot_init_mutex);
++	if (!stack_depot_disable && stack_table == NULL) {
+ 		size_t size = (STACK_HASH_SIZE * sizeof(struct stack_record *));
+ 		int i;
+ 
+-		stack_table = memblock_alloc(size, size);
+-		for (i = 0; i < STACK_HASH_SIZE;  i++)
+-			stack_table[i] = NULL;
++		if (slab_is_available()) {
++			pr_info("Stack Depot allocating hash table with kvmalloc\n");
++			stack_table = kvmalloc(size, GFP_KERNEL);
++		} else {
++			pr_info("Stack Depot allocating hash table with memblock_alloc\n");
++			stack_table = memblock_alloc(size, SMP_CACHE_BYTES);
++		}
++		if (stack_table) {
++			for (i = 0; i < STACK_HASH_SIZE;  i++)
++				stack_table[i] = NULL;
++		} else {
++			pr_err("Stack Depot failed hash table allocationg, disabling\n");
++			stack_depot_disable = true;
++			mutex_unlock(&stack_depot_init_mutex);
++			return -ENOMEM;
++		}
+ 	}
++	mutex_unlock(&stack_depot_init_mutex);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(stack_depot_init);
+ 
+ /* Calculate hash for a stack */
+ static inline u32 hash_stack(unsigned long *entries, unsigned int size)
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index a83f546c06b5..a48607b51a97 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -80,6 +80,8 @@ static void init_page_owner(void)
+ 	if (!page_owner_enabled)
+ 		return;
+ 
++	stack_depot_init();
++
+ 	register_dummy_stack();
+ 	register_failure_stack();
+ 	register_early_stack();
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.33.0
 
