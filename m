@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C510B424CA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:02:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5A3424CA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 07:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232427AbhJGFEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 01:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52536 "EHLO mail.kernel.org"
+        id S239862AbhJGFFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 01:05:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229497AbhJGFEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 01:04:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EE6260EC0;
-        Thu,  7 Oct 2021 05:02:12 +0000 (UTC)
+        id S229497AbhJGFF2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 01:05:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D84861075;
+        Thu,  7 Oct 2021 05:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633582936;
-        bh=fqpCYlMJ5vOffHloKMNyIwj0/O+3cqJAO8Jfuz4mH6o=;
+        s=k20201202; t=1633583015;
+        bh=itI7gxLN9MnGJa45AohsuUrnIkIDmK2mxwLx4U+UAi8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T4yrbEo3nPKmtj6tCYmyhn7YiHDUr5tcI8R8SF1TKupxcCgdlb4YteeVjsG+tiodT
-         40ep+7QSmDwKvJsqFW1Og8P1xXZJeIMwwm69JuZofidv2urC0XgyWvamjJLzpS8zlk
-         bpx6lPqufaxiIYw/Bc59HDOWNfxjMF77ib1fwKK2o6xLWYvk3C2AG/kfox+NjsBp68
-         zn+29nI9hl998Hb7MWaqdrKZj9oHXagEWRSlC7ws+uEnW2gocHBQuL2b8wRIZAEFGe
-         A+TngLZBCJnNGXiHvJPJPSsUYWl6cj8rF/FkVdvFFj+UUe+mCIr92PlKBMKo1twv4a
-         K57KIfCmIwS3w==
-Date:   Thu, 7 Oct 2021 13:02:07 +0800
+        b=aSOF8FXV3oM+Mlq8Wk0dgFTmdplTHATk7mC4Pwl4sVarNskuubgIh2qcLZ4cTbI0A
+         RtW5A0I2hSdRLj0w4O/N0UTcwwRiOtzKYwJPBZpsWeD+c+MNXH8CxfhD1H+J18fOMx
+         NDCbvFiWg2ty8nBqRHjg2kucGtd660gKKdOP8cWGgno7sDzL2K+Ap4NBWAXqflYvGf
+         g1xT5Op/7C7TD2nEr8Y0cLh6NIjCYcQquyFwwRu9CZH2Oelx8nbiWEwUHCBTGiK3Bs
+         b3t1cG2l6ZlLSWN3m7DvohW0RNR0OHi6Mn15WQ5Hw7VwtoRC7lEDeMlB0eXR5bzmjd
+         sadrr0dum9k0g==
+Date:   Thu, 7 Oct 2021 13:03:22 +0800
 From:   Peter Chen <peter.chen@kernel.org>
 To:     Manish Narani <manish.narani@xilinx.com>
 Cc:     gregkh@linuxfoundation.org, michal.simek@xilinx.com,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
         git@xilinx.com, Piyush Mehta <piyush.mehta@xilinx.com>
 Subject: Re: [PATCH 6/6] usb: chipidea: udc: Add xilinx revision support
-Message-ID: <20211007050207.GE4653@Peter>
+Message-ID: <20211007050322.GF4653@Peter>
 References: <1629825378-8089-1-git-send-email-manish.narani@xilinx.com>
  <1629825378-8089-7-git-send-email-manish.narani@xilinx.com>
 MIME-Version: 1.0
@@ -82,9 +82,8 @@ On 21-08-24 22:46:18, Manish Narani wrote:
 > +			if (ci->rev == CI_REVISION_24 ||
 > +			    ci->rev == CI_REVISION_22)
 
-Add indent for it, otherwise:
-
-Acked-by: Peter Chen <peter.chen@kernel.org>
+Besides, please change subject a little, it is for specific IP version,
+but not related to SoC platforms.
 
 >  				if (!hw_read(ci, OP_ENDPTSTAT, BIT(n)))
 >  					reprime_dtd(ci, hwep, node);
