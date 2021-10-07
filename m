@@ -2,251 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0A7425FEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5EA425FF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 00:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241062AbhJGWcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 18:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S241527AbhJGWef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 18:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233370AbhJGWct (ORCPT
+        with ESMTP id S241362AbhJGWed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 18:32:49 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13647C061755
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:30:55 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id y201so11168243oie.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:30:55 -0700 (PDT)
+        Thu, 7 Oct 2021 18:34:33 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B13C061755
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 15:32:39 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id l13so7852080qtv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 15:32:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+SJoi0Snz/oq9JLZNnX6mqSWELZniZgWhRIMWDewmho=;
-        b=AVcnW+XSkKZ72eLY8MixRNioRH04dH52umImlb/oo36/V9316NGN1xJKaHVg9n4hqT
-         tCmBCM28VaXulLZBMaWUD344x2BOrxzh3wr6twwyXRuYS9hGzS6zBNaFK4JnbIVc09/y
-         P78JuNKFvPLVuTrZ5MzI6FNr+AaAIpuTyUDexmdqtMvlDlSSSgdCbpTZJk+2lqyN8q2x
-         HqA3swjceXCCM5B73YLIR6PuX3BeWuV226we53zX45jRIrQUPYVHbXJWgE9NGSJjS0sj
-         aPH0KZqUv7xS9uPwySqO9jo0qx3IuJhuVB6lxW9/m7uU2ap0F7rfZbpC+ZdQ/qO8VfGk
-         4rSA==
+        bh=bPosGXG6aj5fiHXiB91n2H+d3yhrMgyk6caA7rCYuVE=;
+        b=TyzCOLeOsNH+ATbCv+mObEZBqB2Q+42LxF3uXOIU4JqOxFv0Suf1hxARW3mECKJGbk
+         6W72juLLE8mx0B8j0TBIaZ70diDCJy7C1/EwOenCENtB5NKYV4Zt3tTGu6I9cXLJd6yw
+         tgDL6K6e0bH6GRVNl69irNRt4P+TW75No5eE0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+SJoi0Snz/oq9JLZNnX6mqSWELZniZgWhRIMWDewmho=;
-        b=Ff8HR/JI09eetu2HU6M8wTyKY8E+h51VkhNqMs2Mm7udRZaM7tM3Rdj8UAFTPcJI1D
-         2t6mZ3Redy7K8TPFtCCItgEyMvHlqPsj0WD8QNsUBbtO2uXSnHOuXmmJQwHdDH5ZQFIq
-         GhykNqLLf/AcR9jHaGVSpEkcuuudI69i6c6G+4yI8x5eR9TXP23yzYqNWYz2McMdUcI9
-         4gpxvGTjh1foAZP7eFM0++t5NYJzRAEeKjMBmZKmi0ASX29dVr0hDIuwGZsmfSLtOuJe
-         6i2UUGPpXR8mBPyt2RLQFeMKI5Tfdb4uosUXwCD2bH5KyZHuW7AKAEJVovAxu4D5xE8N
-         Qiew==
-X-Gm-Message-State: AOAM532exsIDTLOC2yJwE8b2qJkUBDJY7CuoldzmHexBegiT9+7ICLi9
-        64CoTAHTLNbiIgcYEdbglqidPbcMl6zQ4v1U6gfJyQ==
-X-Google-Smtp-Source: ABdhPJzD9AouEqEHxIcbYnUOPTHlfOXjH5VZQW/OzgCaxpM+6OOAokXt9bw+TAy+TP3wOS8pWmS8vaLoxF8Hu5vsLFg=
-X-Received: by 2002:a05:6808:60f:: with SMTP id y15mr5294386oih.15.1633645854179;
- Thu, 07 Oct 2021 15:30:54 -0700 (PDT)
+        bh=bPosGXG6aj5fiHXiB91n2H+d3yhrMgyk6caA7rCYuVE=;
+        b=MdI7J4V4LX1JYChb/HWD4154lIQC8ktYAE0p2i/f80QU4aJ4vEpxAz7BTk2hra7HhC
+         LNu1mHY3F4HG5r7z0Q00ZIy9cr3nCduL58syz1Gt+l+YoBOeW1SGA9Lx0jVKYvL7Ja0T
+         kzyL6+SZh4bawiqbIWsn1T3lFZgCUkhLvUB/GYU04McCCcuWv51QZOpQXidp+whVEqUV
+         fsgAkB2FJtaHde5v6Y+OM89SM+4mB651nB/7enB5cDeAjlXpCccomVVX6XvntKctcpJ9
+         CJ+2V7F0L0ILh/yAlN/CfkGRrr7ilXE5bhxkS4O+Nmq3cktuTG2OAFvcKlcYXvwyqDzs
+         2DEw==
+X-Gm-Message-State: AOAM532HVRXgtYYNqH8TbMX9GPpmMqDvc6Q8GEK1RUvIPaCviF2ls/7b
+        uUBmk1Q+34oJyUl7BjvzNOEuCeqZQLvzp7pf/mUmHQ==
+X-Google-Smtp-Source: ABdhPJxtMWrNq05xIwSXYzJOaS9tLcGh48Df1ypUB9oB6RjXV44VM0Ys6C+Vs5hx7Kz9jJbv7p9rXESJopZRntEsEdI=
+X-Received: by 2002:ac8:4347:: with SMTP id a7mr8044529qtn.169.1633645958484;
+ Thu, 07 Oct 2021 15:32:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211005195213.2905030-1-pgonda@google.com>
-In-Reply-To: <20211005195213.2905030-1-pgonda@google.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Thu, 7 Oct 2021 15:30:43 -0700
-Message-ID: <CAA03e5FpP2XbWB5T=aM7jE9FTHHwJ04Kqc0PAz07F2f2ux6RuA@mail.gmail.com>
-Subject: Re: [PATCH] crypto: ccp - Consolidate sev INIT logic
-To:     Peter Gonda <pgonda@google.com>
-Cc:     "Lendacky, Thomas" <thomas.lendacky@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        David Rientjes <rientjes@google.com>,
-        John Allen <john.allen@amd.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+References: <20210902213500.3795948-1-pmalani@chromium.org>
+ <20210902213500.3795948-3-pmalani@chromium.org> <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
+ <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUB16up3JDwi3HfI@kuha.fi.intel.com> <YULwz8NsoA3+vrhA@google.com>
+ <YUMbGp0aemx1HCHv@kuha.fi.intel.com> <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUm5sdbceMcDTvYj@kuha.fi.intel.com> <DB9PR10MB46524E3817FB4D836CDC13E180A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+In-Reply-To: <DB9PR10MB46524E3817FB4D836CDC13E180A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Thu, 7 Oct 2021 15:32:27 -0700
+Message-ID: <CACeCKaem93dbJ11qOG=a+MkJhSrp0Nx-UAPG00Q-5WwMriJD0A@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
+To:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        "badhri@google.com" <badhri@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 5, 2021 at 12:52 PM Peter Gonda <pgonda@google.com> wrote:
->
-> Adds new helper function sev_init_if_required() for use in sev_ioctl().
-> The function calls __sev_platform_init_locked() if the command requires
-> the PSP's internal state be at least SEV_STATE_INIT. This consolidates
-> many checks scattered through out the ioctl delegation functions.
->
-> Signed-off-by: Peter Gonda <pgonda@google.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Marc Orr <marcorr@google.com>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: John Allen <john.allen@amd.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: linux-crypto@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
->  drivers/crypto/ccp/sev-dev.c | 63 +++++++++++++++---------------------
->  1 file changed, 26 insertions(+), 37 deletions(-)
->
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index e09925d86bf3..071d57fec4c4 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -386,24 +386,14 @@ static int sev_ioctl_do_platform_status(struct sev_issue_cmd *argp)
->
->  static int sev_ioctl_do_pek_pdh_gen(int cmd, struct sev_issue_cmd *argp, bool writable)
->  {
-> -       struct sev_device *sev = psp_master->sev_data;
-> -       int rc;
-> -
->         if (!writable)
->                 return -EPERM;
+Hi folks,
 
-This check can be removed because it's is handled by
-`sev_init_if_required()`. Same is true for all the other commands.
+Thanks for the comments and discussion on this RFC series.
 
+On Fri, Sep 24, 2021 at 8:38 AM Adam Thomson
+<Adam.Thomson.Opensource@diasemi.com> wrote:
 >
-> -       if (sev->state == SEV_STATE_UNINIT) {
-> -               rc = __sev_platform_init_locked(&argp->error);
-> -               if (rc)
-> -                       return rc;
-> -       }
-> -
->         return __sev_do_cmd_locked(cmd, NULL, &argp->error);
->  }
+> On 21 September 2021 11:54, Heikki Krogerus wrote:
 >
->  static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
->  {
-> -       struct sev_device *sev = psp_master->sev_data;
->         struct sev_user_data_pek_csr input;
->         struct sev_data_pek_csr data;
->         void __user *input_address;
-> @@ -435,12 +425,6 @@ static int sev_ioctl_do_pek_csr(struct sev_issue_cmd *argp, bool writable)
->         data.len = input.length;
+> > If we can leave the decision about the selection to TCPM, that would
+> > be great! I'm not against that at all. As I said, I have not though
+> > through the control aspect. Right now I'm mostly concerned about how
+> > we expose the information to the user. The only reason why I have
+> > considered the control part at all is because how ever we decide to
+> > expose the information to the user, it has to work with control as
+> > well.
 >
->  cmd:
-> -       if (sev->state == SEV_STATE_UNINIT) {
-> -               ret = __sev_platform_init_locked(&argp->error);
-> -               if (ret)
-> -                       goto e_free_blob;
-> -       }
-> -
->         ret = __sev_do_cmd_locked(SEV_CMD_PEK_CSR, &data, &argp->error);
+> Well part of the discussion has to be about the role that the user plays in
+> the control. What does and doesn't need to be controlled further up the stack,
+> and what will be taken care of by, for example, TCPM? Surely that dictates to
+> some degree what and how we expose all of this? Right now we have a simple means
+> to read and control voltages and currents through a PSY class, without the need
+> for the user to know any details of what a PDO/APDO is. Do we continue with
+> abstracting away to the user or instead let the user decipher this itself and
+> decide? Am just trying to understand the needs going forward.
 >
->          /* If we query the CSR length, FW responded with expected data. */
-> @@ -586,7 +570,6 @@ static int sev_update_firmware(struct device *dev)
+> > The final PSYs and the supply chains they create as well as the
+> > individual properties I'm more than happy to talk about, but having a
+> > separate object for the smallest thing that we can see (PDO) is the
+> > right thing to do here IMO. Trying to concatenate things into single
+> > objects especially in sysfs, despite how nice it always would seem,
+> > has taken me to the brink of disaster in the past far too many times.
+> >
+> > In this case we don't need to take the risk of having to duplicated
+> > information or in worst case deprecate something that is also exposed
+> > to the sysfs in the future.
+> >
+> > So the question is not why should we registers every individual PDO
+> > separately. The question is, why shouldn't we do that? And saying that
+> > it's "heavyweight" I'm afraid is not good enough. :-)
 >
->  static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
->  {
-> -       struct sev_device *sev = psp_master->sev_data;
->         struct sev_user_data_pek_cert_import input;
->         struct sev_data_pek_cert_import data;
->         void *pek_blob, *oca_blob;
-> @@ -617,17 +600,10 @@ static int sev_ioctl_do_pek_import(struct sev_issue_cmd *argp, bool writable)
->         data.oca_cert_address = __psp_pa(oca_blob);
->         data.oca_cert_len = input.oca_cert_len;
->
-> -       /* If platform is not in INIT state then transition it to INIT */
-> -       if (sev->state != SEV_STATE_INIT) {
-> -               ret = __sev_platform_init_locked(&argp->error);
-> -               if (ret)
-> -                       goto e_free_oca;
-> -       }
-> -
->         ret = __sev_do_cmd_locked(SEV_CMD_PEK_CERT_IMPORT, &data, &argp->error);
->
-> -e_free_oca:
->         kfree(oca_blob);
-> +
->  e_free_pek:
->         kfree(pek_blob);
->         return ret;
-> @@ -730,7 +706,6 @@ static int sev_ioctl_do_get_id(struct sev_issue_cmd *argp)
->
->  static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
->  {
-> -       struct sev_device *sev = psp_master->sev_data;
->         struct sev_user_data_pdh_cert_export input;
->         void *pdh_blob = NULL, *cert_blob = NULL;
->         struct sev_data_pdh_cert_export data;
-> @@ -738,16 +713,6 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
->         void __user *input_pdh_cert_address;
->         int ret;
->
-> -       /* If platform is not in INIT state then transition it to INIT. */
-> -       if (sev->state != SEV_STATE_INIT) {
-> -               if (!writable)
-> -                       return -EPERM;
-> -
-> -               ret = __sev_platform_init_locked(&argp->error);
-> -               if (ret)
-> -                       return ret;
-> -       }
-> -
->         if (copy_from_user(&input, (void __user *)argp->data, sizeof(input)))
->                 return -EFAULT;
->
-> @@ -819,6 +784,26 @@ static int sev_ioctl_do_pdh_export(struct sev_issue_cmd *argp, bool writable)
->         return ret;
->  }
->
-> +static int sev_init_if_required(int cmd_id, bool writable,
-> +                               struct sev_issue_cmd *argp)
-> +{
-> +       struct sev_device *sev = psp_master->sev_data;
-> +
-> +       lockdep_assert_held(&sev_cmd_mutex);
-> +
-> +       if (!writable)
-> +               return -EPERM;
-> +
-> +       if (cmd_id == SEV_FACTORY_RESET || cmd_id == SEV_PLATFORM_STATUS ||
-> +           cmd_id == SEV_GET_ID || cmd_id == SEV_GET_ID2)
-> +               return 0;
+> That was my initial feeling on the suggestion based on the idea of a PSY per PDO
+> and I still don't feel that fits as your creating a whole class of resources
+> to expose something that's pretty small. To me the PSY represents the source as
+> whole, and the PDOs are simply options/configurations for that source. If we're
+> needing to expose PDOs then I don't disagree with separating them out
+> individually and I certainly wouldn't want that all concatenated as one
+> property. However I think something like dynamically generated properties
+> might be a nicer solution to expose each PDO, or even groups of properties if
+> you wanted to split PDOs even further into constituent parts to the user.
 
-I really like this patch and would like to see it get reviewed and
-merged. I've often thought of writing up a similar patch every time I
-look at the PSP code, but never took the initiative to do it myself.
-Overall, I wonder if it's trying too hard to reduce redundant code. In
-particular, we could avoid this awkward check if we put this helper
-inline, in the command helpers themselves. Perhaps we split this out
-into two helpers or instead add a parameter to this helper to control
-whether to check if `state` is `SEV_STATE_UNINIT`. What do you think?
+To downscope this issue for the time being, one of our immediate goals
+is to expose the PDOs
+to userspace for metrics reporting and potentially for some power
+policy control through other
+channels (like Chrome OS Embedded Controller).
 
-> +
-> +       if (sev->state == SEV_STATE_UNINIT)
-> +               return __sev_platform_init_locked(&argp->error);
-> +
-> +       return 0;
-> +}
-> +
->  static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->  {
->         void __user *argp = (void __user *)arg;
-> @@ -840,8 +825,11 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->
->         mutex_lock(&sev_cmd_mutex);
->
-> -       switch (input.cmd) {
-> +       ret = sev_init_if_required(input.cmd, writable, &input);
-> +       if (ret)
-> +               goto copy_out;
->
-> +       switch (input.cmd) {
+Would it be acceptable to revise this series to drop the power supply
+support for now (since I don't yet
+see a consensus on how to implement it for the partner), and just add
+sysfs nodes for each PDO ?
+This would be akin to how it's being done for identity VDOs right now.
 
-nit: Not sure what changed on this line. Was there an unintended
-whitespace change here?
+So we would have :
 
->         case SEV_FACTORY_RESET:
->                 ret = sev_ioctl_do_reset(&input, writable);
->                 break;
-> @@ -875,6 +863,7 @@ static long sev_ioctl(struct file *file, unsigned int ioctl, unsigned long arg)
->                 goto out;
->         }
->
-> +copy_out:
->         if (copy_to_user(argp, &input, sizeof(struct sev_issue_cmd)))
->                 ret = -EFAULT;
->  out:
-> --
-> 2.33.0.800.g4c38ced690-goog
->
+/sys/class/typec/<port>-partner/source_pdos/pdo{1-13}
+
+and
+
+/sys/class/typec/<port>-partner/sink_pdos/pdo{1-13}
+
+and similarly for the port device.
+
+If we want to add additional parsing of the  Fixed Supply PDO into
+individual properties for the partner/port,
+those can of course be added later.
+
+WDYT?
+
+Thanks,
