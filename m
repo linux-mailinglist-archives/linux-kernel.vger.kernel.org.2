@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C109142570D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFEE642570C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 17:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241878AbhJGPwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 11:52:33 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:25997 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241765AbhJGPwb (ORCPT
+        id S241798AbhJGPwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 11:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241686AbhJGPwH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 11:52:31 -0400
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 197FoM6r007339
-        for <linux-kernel@vger.kernel.org>; Fri, 8 Oct 2021 00:50:23 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 197FoM6r007339
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1633621823;
-        bh=2ictrqXAcs0/Jf+501IU2xn9Ag6+SYGQ2GB1JSMdfsk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XMZHChvUbi0/x64LrjBMjBDD8xRAZzR0gb9nQmJ4eBWHB+eJXeRdTWOM7lOGE2Pbk
-         o+ybVG6MvojCUYxmsOrO94dutpJ4TF5r27EIaAkutr5R3xWYp8zutrKW4eVr2BHbXe
-         mP5ktpD991UXujzbHoZ6Ra21/WrPvbgBxukVk2oyt8XoQSh9g2pKYyi0DJlsJzuGHt
-         0bxzEgLKc3uBh/UYnUCmgBcQm6nt585LAM+9mMvnvVTghIR6ziEIvqTz3mtKrKI0ZI
-         LW/ME6rITE8b9ySgQKetVBIGyjHa14nmpY4LAdpDrwxkCxPfJDynCs04O1B6pkhPsD
-         qxfwCnglWwjSQ==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id x8so4168318plv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:50:23 -0700 (PDT)
-X-Gm-Message-State: AOAM531RWrj1r7Za4oO2J4Yj35gzjM2xFjsJHKhh7dqAUVRuOsofI9Q4
-        HPtcieEp6ZhTpIwJl/XN0Flo4VHOfcKlOjgIFrc=
-X-Google-Smtp-Source: ABdhPJzGjr0g3OMZKs7rwCvM6PfYXgPw2KXHF9cvejM0rXE06zKWYrhO1bS2++snMAc8G6LVr00CozT0DNarzLxE4sk=
-X-Received: by 2002:a17:90a:4414:: with SMTP id s20mr5636167pjg.144.1633621822196;
- Thu, 07 Oct 2021 08:50:22 -0700 (PDT)
+        Thu, 7 Oct 2021 11:52:07 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE139C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 08:50:13 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id l20so6907603ilk.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 08:50:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RITICfm+7VYo1WW7xYDzpKcdCcOOA5uOvj4tCcim4Ak=;
+        b=gu0pT/qYUzONLbPr9vB0YiA85WJDIddbdUyoOKSuRDutS0uHTMYLpCREwZafMUO9f9
+         8X8mCDi3RtPheYuF4ZTB6EwolpOJIjc2Q9RpHmmEne0NfwgROQJ+OMwov65V58ueho0s
+         dG9i9lT4RlEMsUOIPdU4sWpI8T7uGRsM6FwOrBGfjEgDRIKgmypZFAXhbiLk+Hg09Iw5
+         wtBCwlEcqoPWGmWhcNiU4U4bvGXvTLY0g75h7jmYDy/TBosr3Rf4feYiNY+K74gVv+Lk
+         fjC60wmJ+/Xthm2ykWguRXKkjW9XJ3KzMO+eHvxdVRCqY203XVUnLenyG6F1P24sYFxG
+         oTMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RITICfm+7VYo1WW7xYDzpKcdCcOOA5uOvj4tCcim4Ak=;
+        b=RpzlQcZkVdDZ1ulkqsluntErlaCwL9PmkDo2RYuhTwSwKHep6xC1NPWfWaW269pBNP
+         kfdeE5AWLMFvNYLQMPxI8QA14HJ9O9EIqAVlvyI4QWyLzGbmp3Q/gLNQVHJraaLqf/JY
+         UAw/EXQiGlAnSuti3gI0lKSlqS9jnQQs9JddeYY5CIYANuVZotaH9PRycE/EocA3daBe
+         eMT5OThzAtyxlL8r/1QsounE5wEfgKgmtK25COFccuXEKkxCz7OKqmpLPgefBQsMvAkv
+         RKCAYdvlhpbAutcUe1y8HwUvJjhrssUFbY9squLp/eRo6VyGi4EUQ7wPWJuVvnF1bzpr
+         iVVA==
+X-Gm-Message-State: AOAM532ZD+j9JAAf3dmIta9h6Tug20xKFCo9Q7SCMuW74jdnvSe/8Iwq
+        5dB/lSK3Nbx2Zj6zbYABmjEpKA==
+X-Google-Smtp-Source: ABdhPJwb4fVsbpDwt+DFKerTQztEhR1azA6TWSbTZNML7iUF1Mv+Ztq3oyfJY/ksEuSSgTHhA/3SKQ==
+X-Received: by 2002:a05:6e02:1909:: with SMTP id w9mr4101515ilu.34.1633621813203;
+        Thu, 07 Oct 2021 08:50:13 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id r19sm13699259iot.0.2021.10.07.08.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 08:50:12 -0700 (PDT)
+Subject: Re: [PATCH] mm: don't call should_failslab() for !CONFIG_FAILSLAB
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Howard McLauchlan <hmclauchlan@fb.com>
+Cc:     bpf@vger.kernel.org
+References: <e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk>
+ <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <082f30c7-9a7c-b2de-6d30-99fa38150d48@kernel.dk>
+Date:   Thu, 7 Oct 2021 09:50:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20211005171728.3147094-1-lucas.demarchi@intel.com>
-In-Reply-To: <20211005171728.3147094-1-lucas.demarchi@intel.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 8 Oct 2021 00:49:44 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARbNQHPxHHp4=oLOsJLpaCv0c3NRHGSs6hAKnP3N4DHKQ@mail.gmail.com>
-Message-ID: <CAK7LNARbNQHPxHHp4=oLOsJLpaCv0c3NRHGSs6hAKnP3N4DHKQ@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/i915: remove IS_ACTIVE
-To:     Lucas De Marchi <lucas.demarchi@intel.com>
-Cc:     intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Steven Price <steven.price@arm.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Jani Nikula <jani.nikula@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2dfc6273-6cdd-f4f5-bed9-400873ac9152@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 2:21 AM Lucas De Marchi <lucas.demarchi@intel.com> wrote:
->
-> When trying to bring IS_ACTIVE to linux/kconfig.h I thought it wouldn't
-> provide much value just encapsulating it in a boolean context. So I also
-> added the support for handling undefined macros as the IS_ENABLED()
-> counterpart. However the feedback received from Masahiro Yamada was that
-> it is too ugly, not providing much value. And just wrapping in a boolean
-> context is too dumb - we could simply open code it.
->
-> As detailed in commit babaab2f4738 ("drm/i915: Encapsulate kconfig
-> constant values inside boolean predicates"), the IS_ACTIVE macro was
-> added to workaround a compilation warning. However after checking again
-> our current uses of IS_ACTIVE it turned out there is only
-> 1 case in which it triggers a warning in clang (due
-> -Wconstant-logical-operand) and 2 in smatch. All the others
-> can simply use the shorter version, without wrapping it in any macro.
->
-> So here I'm dialing all the way back to simply removing the macro. That
-> single case hit by clang can be changed to make the constant come first,
-> so it doesn't think it's mask:
->
->         -       if (context && CONFIG_DRM_I915_FENCE_TIMEOUT)
->         +       if (CONFIG_DRM_I915_FENCE_TIMEOUT && context)
->
-> As talked with Dan Carpenter, that logic will be added in smatch as
-> well, so it will also stop warning about it.
->
-> Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
-> Acked-by: Jani Nikula <jani.nikula@intel.com>
+On 10/7/21 9:32 AM, Vlastimil Babka wrote:
+> On 10/5/21 17:31, Jens Axboe wrote:
+>> Allocations can be a very hot path, and this out-of-line function
+>> call is noticeable.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> It used to be inline b4 (hi, Konstantin!) and then was converted to be like
+> this intentionally :/
+> 
+> See 4f6923fbb352 ("mm: make should_failslab always available for fault
+> injection")
+> 
+> And now also kernel/bpf/verifier.c contains:
+> BTF_ID(func, should_failslab)
+> 
+> I think either your or Andrew's version will break this BTF_ID thing, at the
+> very least.
+> 
+> But I do strongly agree that putting unconditionally a non-inline call into
+> slab allocator fastpath sucks. Can we make it so that bpf can only do these
+> overrides when CONFIG_FAILSLAB is enabled?
+> I don't know, perhaps putting this BTF_ID() in #ifdef as well, or providing
+> a dummy that is always available (so that nothing breaks), but doesn't
+> actually affect slab_pre_alloc_hook() unless CONFIG_FAILSLAB has been enabled?
 
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-
-
-
-
+That seems to be the right approach, limiting it on it actually being enabled
+and a function call.
 
 -- 
-Best Regards
-Masahiro Yamada
+Jens Axboe
+
