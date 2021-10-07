@@ -2,97 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D881B424FFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B16E8425000
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240614AbhJGJX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:23:26 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24174 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240562AbhJGJXR (ORCPT
+        id S240612AbhJGJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240518AbhJGJZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:23:17 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQ5Pf4n9xz1DHR5;
-        Thu,  7 Oct 2021 17:19:50 +0800 (CST)
-Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Thu, 7 Oct 2021 17:21:20 +0800
-Received: from [10.174.185.179] (10.174.185.179) by
- dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 7 Oct 2021 17:21:18 +0800
-Subject: Re: [PATCH] drm/i915: Free the returned object of acpi_evaluate_dsm()
-To:     <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <jani.nikula@linux.intel.com>, <joonas.lahtinen@linux.intel.com>,
-        <rodrigo.vivi@intel.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <ville.syrjala@linux.intel.com>, <tiwai@suse.de>,
-        <wanghaibin.wang@huawei.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        <linux-acpi@vger.kernel.org>
-References: <20210906033541.862-1-yuzenghui@huawei.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <3ae85963-beab-17d2-05f1-5a490cee1296@huawei.com>
-Date:   Thu, 7 Oct 2021 17:21:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Thu, 7 Oct 2021 05:25:12 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836C9C061746
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 02:23:18 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id x192so3799203vsx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 02:23:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rUWh8/nzui59AslYBGE2UZsOtVDOFLafNPVpXzsA5k0=;
+        b=LdQoTfuILlI4bUYn34I0nglU9SK7YTIYJZ8ovMH6IzZzlwbsBelfcMO6mz/t0TnDgD
+         9NPHc4AyQZxZvAwaiUbbANwYwj3v8nKg6Vwt4cJ/16oOLdhsHBKolnYGkem7Lnhbop1S
+         u5EvLLkgZIayXwvPzfuUYzNF+SENB3fb1JF74=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rUWh8/nzui59AslYBGE2UZsOtVDOFLafNPVpXzsA5k0=;
+        b=s3O7w569PZECHTHk1VhnU//Hhtb2pSu3c8CZhvhCHf5C5siyD3q8A9hrfSB8cZ4pmN
+         v2lfCdvX08Vd021/lcKDU4KRa6p5m9F2LDNPtNmIAoOWFniYDBz0VPeU1KGACOTUVid+
+         4QG617njI5gam/aGF5iWwS+T9fk8lHCwKcJEBNGjYns15+ZVcenUzvVuCDk+Ng4mfgYe
+         SsLMp/zt05j4sNV7nkNyy26EU7zBPVFosGc+fBdaPdYy0lEHD/Me+xJsuhhI1Bc9HI46
+         wNGy3T2nj7M0s7teGrWG4PzkpyQEFzEHumxwj/r1ggaZwkQTdCjhixR8hGCz05wVRM1d
+         lQkA==
+X-Gm-Message-State: AOAM533Bv3JbEJiBc8JJgek4Nm9B3EkqkhFPh9bF+FrpuyuasdSzcLPp
+        cbCHaHCIa1A/7g9sLLbAdGUcvPCNloQOuc+l7jEb7g==
+X-Google-Smtp-Source: ABdhPJwKmuyoUN96r/uOpk7uvGkP1btKzYR/lUkNsBES9CO8VlwM7PF9JuCilztl58w8Qi5nUUZHjepATMqzufo12s0=
+X-Received: by 2002:a67:ec94:: with SMTP id h20mr2591162vsp.59.1633598597621;
+ Thu, 07 Oct 2021 02:23:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210906033541.862-1-yuzenghui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.185.179]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema764-chm.china.huawei.com (10.1.198.206)
-X-CFilter-Loop: Reflected
+References: <20210923130814.140814-1-cgxu519@mykernel.net> <20210923130814.140814-7-cgxu519@mykernel.net>
+In-Reply-To: <20210923130814.140814-7-cgxu519@mykernel.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Thu, 7 Oct 2021 11:23:06 +0200
+Message-ID: <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode operation
+To:     Chengguang Xu <cgxu519@mykernel.net>
+Cc:     Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+linux-acpi]
-
-ping
-
-On 2021/9/6 11:35, Zenghui Yu wrote:
-> As per the comment on top of acpi_evaluate_dsm():
-> 
-> | * Evaluate device's _DSM method with specified GUID, revision id and
-> | * function number. Caller needs to free the returned object.
-> 
-> We should free the returned object of acpi_evaluate_dsm() to avoid memory
-> leakage. Otherwise the kmemleak splat will be triggered at boot time (if we
-> compile kernel with CONFIG_DEBUG_TEST_DRIVER_REMOVE=y).
-> 
-> Fixes: 8e55f99c510f ("drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops")
-> Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+On Thu, 23 Sept 2021 at 15:08, Chengguang Xu <cgxu519@mykernel.net> wrote:
+>
+> Implement overlayfs' ->write_inode to sync dirty data
+> and redirty overlayfs' inode if necessary.
+>
+> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 > ---
->  drivers/gpu/drm/i915/display/intel_acpi.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-> index 7cfe91fc05f2..68abeaf2d7d4 100644
-> --- a/drivers/gpu/drm/i915/display/intel_acpi.c
-> +++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-> @@ -186,13 +186,16 @@ void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
->  {
->  	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
->  	acpi_handle dhandle;
-> +	union acpi_object *obj;
->  
->  	dhandle = ACPI_HANDLE(&pdev->dev);
->  	if (!dhandle)
->  		return;
->  
-> -	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-> -			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
-> +	obj = acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-> +				INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
-> +	if (obj)
-> +		ACPI_FREE(obj);
+>  fs/overlayfs/super.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>
+> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+> index 2ab77adf7256..cddae3ca2fa5 100644
+> --- a/fs/overlayfs/super.c
+> +++ b/fs/overlayfs/super.c
+> @@ -412,12 +412,42 @@ static void ovl_evict_inode(struct inode *inode)
+>         clear_inode(inode);
 >  }
->  
->  /*
-> 
+>
+> +static int ovl_write_inode(struct inode *inode,
+> +                          struct writeback_control *wbc)
+> +{
+> +       struct ovl_fs *ofs = inode->i_sb->s_fs_info;
+> +       struct inode *upper = ovl_inode_upper(inode);
+> +       unsigned long iflag = 0;
+> +       int ret = 0;
+> +
+> +       if (!upper)
+> +               return 0;
+> +
+> +       if (!ovl_should_sync(ofs))
+> +               return 0;
+> +
+> +       if (upper->i_sb->s_op->write_inode)
+> +               ret = upper->i_sb->s_op->write_inode(inode, wbc);
+
+Where is page writeback on upper inode triggered?
+
+Thanks,
+Miklos
