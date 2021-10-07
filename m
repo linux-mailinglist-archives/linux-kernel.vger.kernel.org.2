@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A29E6425C55
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E9A425C5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 21:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244076AbhJGTlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 15:41:35 -0400
-Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:60795 "EHLO
-        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233419AbhJGTlW (ORCPT
+        id S233019AbhJGTnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 15:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232833AbhJGTnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 15:41:22 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 7D7F92B009FD;
-        Thu,  7 Oct 2021 15:39:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 07 Oct 2021 15:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=u92.eu; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm3; bh=q7lysNWY/y86+
-        dax3X8W9SkKV4HyuolKzTejQgSxgQI=; b=KrMq1lAAXXvmaAUAnfz7lwERtfWaC
-        1f2IWwAY+tHi+KdEXrpleIa9LNWT3eQXaGcn7sN63BYG9dF7qZGWzu0MiAosyDPb
-        ce1QaGb12shmJzg72jLm9WHUP5Ny88S4+ONXEw8VYt8SlyyIq93asngRmT08P5aE
-        aESn7yBinfKH5T58GU1fiIM1MAaxRWPHuQcgmk4EURXu7Td4JEf8+SywPK58l8Mr
-        yGVbMvOgcWQcd36HoU49Rd7U+o8dSUCYzB2+jKPDBoEGh3hRAz+uLtDOTntT+Ytf
-        gwvNhSWLto8+1ERwmf+sIef9XLA3AP9dFU/9QNXXKte69Q9Z2k0DGj6lQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=q7lysNWY/y86+dax3X8W9SkKV4HyuolKzTejQgSxgQI=; b=anyH8xrh
-        Cyy1FtBSxybtYyWFyaf1RqIyIKrKVFr4O59GjhxrGQP1mcJdtzT6q37scqcPWSxC
-        libH/eClVWliiWIlcPX80gPN8mWp3zc43USRzhN76J6OjBnt5A7P1iHA84uHblhA
-        v0kiPRmKK3Z0dnHk6vaXYmIp+63PVg3O8T25hILJ4DY3CwOXVyS0oE8QbcYqWi28
-        Pv1XKrTr5JXD65D9vJHg6toMT0uxSc6PBmRJN3IeIW+C08sUfisp8YwGzvvSTYBW
-        5K6qL6A7XpVBl+A4h9sRp6ZXzktcbdMRvSE7BJVsTBmjouq5dRMGJiV2agF96EBx
-        vBZMzx9jpgabLQ==
-X-ME-Sender: <xms:70xfYZV64G1o-RkvXO3g0BhYsRuHd_srNs4SD7YPG5VagRrX64Vj-Q>
-    <xme:70xfYZkrCPZodCFuDCLjJL6xLZ9UOUD3-0oNNJ134tUrvVsTsbIaGrfdhMVZQN81Z
-    DobPfRcIUgAw8OGxg>
-X-ME-Received: <xmr:70xfYVZeEu90nLkdjPndZOgTo3bwGwgzhboomOj38CIdzAijM_KAQGw3tghYqIEVtGp0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelkedgudefjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpefhvghrnhgrnhguohcutfgrmhhoshcuoehgrhgvvghnfhho
-    ohesuhelvddrvghuqeenucggtffrrghtthgvrhhnpeekleekjedtheejheekfefggeevvd
-    fgueegffeuveduhfehueegkeeijedvvdejfeenucevlhhushhtvghrufhiiigvpedunecu
-    rfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvvghnfhhoohesuhelvddrvghu
-X-ME-Proxy: <xmx:70xfYcXavhvLWXsnQXEfviLBZqM3OZ1GwXn3Ub8Qt10CVk_f1J9xYQ>
-    <xmx:70xfYTnorwh5JgS9s6uctCYzXURGXUA95iOrIUYuwN8lRa0O-n1PXg>
-    <xmx:70xfYZey-8CNFk0EC8h-mJ_IJItm193yKAcs_FlagY9CR8O0qQI6uA>
-    <xmx:70xfYcg2hKctP-_jFoEh1Jn3G_qywGHGiJmCkA86BU_M10X9dXJ-gwaqVlw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 7 Oct 2021 15:39:24 -0400 (EDT)
-From:   Fernando Ramos <greenfoo@u92.eu>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, sean@poorly.run,
-        linux-doc@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v3 20/20] drm: cleanup: remove acquire_ctx from drm_mode_config
-Date:   Thu,  7 Oct 2021 21:37:55 +0200
-Message-Id: <20211007193755.29579-21-greenfoo@u92.eu>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211007193755.29579-1-greenfoo@u92.eu>
-References: <20211007193755.29579-1-greenfoo@u92.eu>
+        Thu, 7 Oct 2021 15:43:11 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51268C061762
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 12:41:17 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id i24so27974392lfj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 12:41:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WZ5raaSJ3Kh1m3565MHsi6//vzYo4hkeevp5MNSOJt4=;
+        b=AbO00kxEwuBcmi49QesZN1giMt72iFySJuAC6O7CpoMTKLLnWY/Sm5SunfqzMIKY5/
+         C1SG32C3bS0r14x8qS4oc8JtpiMTvT9heLEvBMaxgEfvnbQHsHeE13t2MINGg+TV7fg6
+         xUdfOK4wwvvDRZ8HAlBsXczfALPPImI5rYrLlXVx2UnKjCHfF+6ibK65xcAMpJv0y8Yv
+         dnf6Oo6uPsYNpHAmGfVrtfYY//4eknVUUwg0ddRACIFXA7Wci6Mwtsp+uIp7YH2ULlBJ
+         tSfK9kTpDB95S/BRzc6kfCntUuG5GrB98Em6b+GZipoJlmLithRsUAtMMglT4qt/RPq7
+         1Ung==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WZ5raaSJ3Kh1m3565MHsi6//vzYo4hkeevp5MNSOJt4=;
+        b=gNKIAZqVMUiIuxy+/lFJWcLXnNKZETmIN9s53kxrPD6ooSAfF7z2uWjvh5ZqWNwZyf
+         Xj/keGty5in8uURM01Oj35mxqnsz8sDyyfyT/sz0KTpuPYI0sTzoh1CPkQQa866HYU0J
+         JjP7p1kEyv7JSvuWWZlz60QPGC6qQBrl12n/tzB2XwizXwIWrNFPs0pABDkUYFG6eHs6
+         TN4VvKQfzCIMJgYo0/aXtp0ipNP30nLNeI1NHAe2VaXHy3FsLVSQZKAEDvP1/rHGcUtZ
+         nw688Qh8L8Zx7wYSn9RZ9b52pxMnxJQEDddz8AmEU60IfW6O7TfBAH1FRNhZx9UuCfco
+         ex3A==
+X-Gm-Message-State: AOAM5336XKKb7V+w0SbDBOrsvY9Lng8k2vPi9e54kS7eN/5MDsDzomYE
+        rAPwUykGsZIL1CiOj9tLuhh9AA==
+X-Google-Smtp-Source: ABdhPJx72lBMBm4B023ZywQIdYifb6RLPIYCHYxT2sMbt3Qa4kMZYvce/V4Tfti1jFrhxzvQgWKFgA==
+X-Received: by 2002:a05:6512:13a5:: with SMTP id p37mr6066109lfa.403.1633635675174;
+        Thu, 07 Oct 2021 12:41:15 -0700 (PDT)
+Received: from localhost ([31.134.121.151])
+        by smtp.gmail.com with ESMTPSA id q8sm23879lfd.126.2021.10.07.12.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 12:41:14 -0700 (PDT)
+From:   Sam Protsenko <semen.protsenko@linaro.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v2 0/5] clk: samsung: Introduce Exynos850 SoC clock driver
+Date:   Thu,  7 Oct 2021 22:41:08 +0300
+Message-Id: <20211007194113.10507-1-semen.protsenko@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- include/drm/drm_mode_config.h | 10 ----------
- 1 file changed, 10 deletions(-)
+This patch series provides the implementation for Exynos850 clock
+driver, its documentation and corresponding changes for Samsung clock
+infrastructure (adds new PLL types used in Exynos850 SoC, following
+TRM).
 
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index 48b7de80daf5..b214b07157f2 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -383,16 +383,6 @@ struct drm_mode_config {
- 	 */
- 	struct drm_modeset_lock connection_mutex;
- 
--	/**
--	 * @acquire_ctx:
--	 *
--	 * Global implicit acquire context used by atomic drivers for legacy
--	 * IOCTLs. Deprecated, since implicit locking contexts make it
--	 * impossible to use driver-private &struct drm_modeset_lock. Users of
--	 * this must hold @mutex.
--	 */
--	struct drm_modeset_acquire_ctx *acquire_ctx;
--
- 	/**
- 	 * @idr_mutex:
- 	 *
+I tried to follow already established design for Samsung clock drivers
+(getting most insights from Exynos5433 clock driver), and integrate the
+driver into existing infrastructure. The whole driver was implemented
+from scratch, using mostly TRM and downstream kernel for clock
+dependencies/hierarchy info.
+
+For now only basic clocks are implemented, including next blocks:
+  - CMU_TOP
+  - CMU_PERI
+  - CMU_CORE
+  - CMU_HSI
+  - CMU_DPU
+
+Some CMUs are still not implemented, but that can be added in future,
+when the need arises. The driver also lacks CLKOUT support, PM ops and
+automatic clocks control (using Q-Channel protocol). All that can be
+added independently later.
+
+Implemented clock tree was tested via UART and MMC drivers, and using
+DebugFS clk support (e.g. using 'clk_summary' file). In order to keep
+all clocks running I added 'clk_ignore_unused' kernel param in my local
+tree, and defined CLOCK_ALLOW_WRITE_DEBUGFS in clk.c for actually
+testing the clocks via DebugFS.
+
+Changes in v2:
+  - Added CMU_DPU implementation
+  - Moved bus clock enablement to clk-exynos850.c
+  - See also "v2 changes" list in each particular patch
+
+Sam Protsenko (5):
+  clk: samsung: clk-pll: Implement pll0822x PLL type
+  clk: samsung: clk-pll: Implement pll0831x PLL type
+  dt-bindings: clock: Add bindings definitions for Exynos850 CMU
+  dt-bindings: clock: Document Exynos850 CMU bindings
+  clk: samsung: Introduce Exynos850 clock driver
+
+ .../clock/samsung,exynos850-clock.yaml        | 185 ++++
+ drivers/clk/samsung/Makefile                  |   1 +
+ drivers/clk/samsung/clk-exynos850.c           | 835 ++++++++++++++++++
+ drivers/clk/samsung/clk-pll.c                 | 196 ++++
+ drivers/clk/samsung/clk-pll.h                 |   2 +
+ include/dt-bindings/clock/exynos850.h         | 141 +++
+ 6 files changed, 1360 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+ create mode 100644 drivers/clk/samsung/clk-exynos850.c
+ create mode 100644 include/dt-bindings/clock/exynos850.h
+
 -- 
-2.33.0
+2.30.2
 
