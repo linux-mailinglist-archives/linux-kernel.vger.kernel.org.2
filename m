@@ -2,125 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 559A3424FA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F0C424FA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 11:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240326AbhJGJEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 05:04:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48562 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhJGJEK (ORCPT
+        id S240412AbhJGJF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 05:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231661AbhJGJFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 05:04:10 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 30EC22262B;
-        Thu,  7 Oct 2021 09:02:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633597335; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TvTy7OIFpMRsbso1NF1f6Ks+BgvmrJ6wkv3NW7NfJyY=;
-        b=GNTEZSz7kgdAFwe28alhJ/eP+02Z1EOihzX+n9vgBwes/WRv9pASKWGhtrUDxgfMG1b8bt
-        eD1XA2PxyYXX9LAPbMAWcHuixO0YxRCluf3P/ht02R7TKYo50KBLYUtBCNMgLJEKjh6WKV
-        20A4InA3XI2jHfLnQHnOad/06SY09Fg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633597335;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TvTy7OIFpMRsbso1NF1f6Ks+BgvmrJ6wkv3NW7NfJyY=;
-        b=LnmiiJ98gJZKCmXY5/iYk60e5PM03lAS4VN2Ge0taIvYAilG9n+pj9T7gNMBcMdDsc9obF
-        rnsZE5qa74+KAUCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 34A8B13B1B;
-        Thu,  7 Oct 2021 09:02:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id QJzlB5W3XmG6KAAAMHmgww
-        (envelope-from <osalvador@suse.de>); Thu, 07 Oct 2021 09:02:13 +0000
-Date:   Thu, 7 Oct 2021 11:02:11 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, Alex Shi <alexs@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v1 3/6] mm/memory_hotplug: restrict CONFIG_MEMORY_HOTPLUG
- to 64 bit
-Message-ID: <YV63kyvrxt0tx/Ru@localhost.localdomain>
-References: <20210929143600.49379-1-david@redhat.com>
- <20210929143600.49379-4-david@redhat.com>
+        Thu, 7 Oct 2021 05:05:53 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12835C061746;
+        Thu,  7 Oct 2021 02:04:00 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id t4so6265102oie.5;
+        Thu, 07 Oct 2021 02:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PAvueer9aMZMZvA0DKMfvJRj/glamcb5kqpTYRoRQhY=;
+        b=lKlD+hr2jcOq+xfOQL+fH4N6Vj8osuEH96ZjBU2A2Kp7fJ7UZ3v8O/r2eeUhQkbxuW
+         L0rg32EiIiAjO4rVIxjlpqlt6GKkq1d+szlwe5+cAEqI2w/zczgy9JzsCkXeBOlowsr7
+         +8ypz2VNgviy+g/rz8kH8GrRf3eiuxkYnVi+pgEFh+TupL7v0jfwoIpcFWgy0MZYKRN9
+         UA/GgRT/lE8se0E429zsIz1I+SAMp8ibWIOltL4tRg5hcBSZvohZK3o1XzuHQC0RogRQ
+         CMo6T6um/QxBRpaWkNetoxN6mTxbGdeEn/dyAJ+vsowiYg1FmAdgf7Vykvifx92JjKwY
+         Jruw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PAvueer9aMZMZvA0DKMfvJRj/glamcb5kqpTYRoRQhY=;
+        b=to7NV04iVabcbFoR89ngPcxdLpcOS1rJDYnFFzFJzJ9BF+l0WvmPEnHgDjQZXaOk4Z
+         7xm/N9wij8KwHXM9l1ZKuh0WrdxUnIdI96pLbmUAm91UYWsuh6X80PnCF0IwzNg2dkNU
+         J+XQUVJZBslYaJzCnz67PYcGZ7MIC18eKkNBrqE0f8z0Z87KmE/IKwb132xyN8ziLXQ6
+         61EU8X8lcBlZ6pLMRVChbc8BSYPcotV+pH1frsrZIjavSu0F2binNHkT6qA+1/gX47wn
+         0YDKcLLD85KHnivkWyRaf3U9+jnko8JyoTWsI4Koroev+ZOpRexoBTv6X9xw36fIhngU
+         cIpQ==
+X-Gm-Message-State: AOAM530TTbwczQYWZ0lHO3/2dGgnWMSsFXFD+MPDGlQXXj4ONe7u7A3k
+        kImJacW0SGEVkRTuiXnc7U4rZSPZGW5rOd1Ulek=
+X-Google-Smtp-Source: ABdhPJy2GrEsiJAKuVqIdJoO4A3ktMZrrc6cWXQ/zErXZkYIiF2eZA4ONUe7M1MJoqWmNIU8yzCFCf3lCmZX5W+8RvA=
+X-Received: by 2002:a05:6808:1211:: with SMTP id a17mr2142069oil.91.1633597439475;
+ Thu, 07 Oct 2021 02:03:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929143600.49379-4-david@redhat.com>
+References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
+ <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com> <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
+ <20211004163146.6b34936b.alex.williamson@redhat.com>
+In-Reply-To: <20211004163146.6b34936b.alex.williamson@redhat.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Thu, 7 Oct 2021 14:33:47 +0530
+Message-ID: <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
+Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
+ new-DMA-PTE is the same as old-DMA-PTE.
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:35:57PM +0200, David Hildenbrand wrote:
-> 32 bit support is broken in various ways: for example, we can online
-> memory that should actually go to ZONE_HIGHMEM to ZONE_MOVABLE or in
-> some cases even to one of the other kernel zones.
-> 
-> We marked it BROKEN in commit b59d02ed0869 ("mm/memory_hotplug: disable the
-> functionality for 32b") almost one year ago. According to that commit
-> it might be broken at least since 2017. Further, there is hardly a sane use
-> case nowadays.
-> 
-> Let's just depend completely on 64bit, dropping the "BROKEN" dependency to
-> make clear that we are not going to support it again. Next, we'll remove
-> some HIGHMEM leftovers from memory hotplug code to clean up.
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Thanks Alex for the reply.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-> ---
->  mm/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index ea8762cd8e1e..88273dd5c6d6 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -125,7 +125,7 @@ config MEMORY_HOTPLUG
->  	select MEMORY_ISOLATION
->  	depends on SPARSEMEM
->  	depends on ARCH_ENABLE_MEMORY_HOTPLUG
-> -	depends on 64BIT || BROKEN
-> +	depends on 64BIT
->  	select NUMA_KEEP_MEMINFO if NUMA
->  
->  config MEMORY_HOTPLUG_DEFAULT_ONLINE
-> -- 
-> 2.31.1
-> 
-> 
+Lu, Alex :
 
--- 
-Oscar Salvador
-SUSE Labs
+I got my diagnosis regarding the host-driver wrong, my apologies.
+There is no issue with the pci-device's host-driver (confirmed by
+preventing the loading of host-driver at host-bootup). Thus, nothing
+to be fixed at the host-driver side.
+
+Rather seems some dma mapping/unmapping inconsistency is happening,
+when kvm/qemu boots up with the pci-device attached to the guest.
+
+I put up debug-logs in "vfio_iommu_type1_ioctl" method in
+"vfio_iommu_type1.c" (on the host-machine).
+When the guest boots up, repeated DMA-mappings are observed for the
+same address as per the host-machine's logs (without a corresponding
+DMA-unmapping first) :
+
+##########################################################################################
+ajay@ajay-Latitude-E6320:~$ tail -f /var/log/syslog | grep "ajay: "
+Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.202297] ajay:
+_MAP_DMA for [0x7ffe724a8670] status [0]
+Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.583179] ajay:
+_MAP_DMA for [0x7ffe724a8670] status [0]
+Oct  7 14:12:32 ajay-Latitude-E6320 kernel: [  146.583253] ajay:
+_MAP_DMA for [0x7ffe724a8670] status [0]
+Oct  7 14:12:36 ajay-Latitude-E6320 kernel: [  150.105584] ajay:
+_MAP_DMA for [0x7ffe724a8670] status [0]
+Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986499] ajay:
+_UNMAP_DMA for [0x7ffe724a9840] status [0]
+Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986559] ajay:
+_MAP_DMA for [0x7ffe724a97d0] status [0]
+Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  180.986638] ajay:
+_MAP_DMA for [0x7ffe724a97d0] status [0]
+Oct  7 14:13:07 ajay-Latitude-E6320 kernel: [  181.087359] ajay:
+_MAP_DMA for [0x7ffe724a97d0] status [0]
+Oct  7 14:13:13 ajay-Latitude-E6320 kernel: [  187.271232] ajay:
+_UNMAP_DMA for [0x7fde7b7fcfa0] status [0]
+Oct  7 14:13:13 ajay-Latitude-E6320 kernel: [  187.271320] ajay:
+_UNMAP_DMA for [0x7fde7b7fcfa0] status [0]
+....
+##########################################################################################
+
+
+I'll try and backtrack to the userspace process that is sending these ioctls.
+
+
+Thanks and Regards,
+Ajay
+
+
+
+
+
+
+On Tue, Oct 5, 2021 at 4:01 AM Alex Williamson
+<alex.williamson@redhat.com> wrote:
+>
+> On Sat, 2 Oct 2021 22:48:24 +0530
+> Ajay Garg <ajaygargnsit@gmail.com> wrote:
+>
+> > Thanks Lu for the reply.
+> >
+> > >
+> > > Isn't the domain should be switched from a default domain to an
+> > > unmanaged domain when the device is assigned to the guest?
+> > >
+> > > Even you want to r-setup the same mappings, you need to un-map all
+> > > existing mappings, right?
+> > >
+> >
+> > Hmm, I guess that's a (design) decision the KVM/QEMU/VFIO communities
+> > need to take.
+> > May be the patch could suppress the flooding till then?
+>
+> No, this is wrong.  The pte values should not exist, it doesn't matter
+> that they're the same.  Is the host driver failing to remove mappings
+> and somehow they persist in the new vfio owned domain?  There's
+> definitely a bug beyond logging going on here.  Thanks,
+>
+> Alex
+>
