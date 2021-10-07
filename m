@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1368E4251B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50E24251B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 13:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240950AbhJGLIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 07:08:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:45896 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241038AbhJGLIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 07:08:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D2D1A6D;
-        Thu,  7 Oct 2021 04:06:16 -0700 (PDT)
-Received: from e121896.Emea.Arm.com (e121896.Emea.Arm.com [10.32.36.22])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0E2AA3F70D;
-        Thu,  7 Oct 2021 04:06:12 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, john.garry@huawei.com, ak@linux.intel.com,
-        linux-perf-users@vger.kernel.org
-Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
-        James Clark <james.clark@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] perf tools: Enable strict JSON parsing
-Date:   Thu,  7 Oct 2021 12:05:42 +0100
-Message-Id: <20211007110543.564963-4-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20211007110543.564963-1-james.clark@arm.com>
-References: <20211007110543.564963-1-james.clark@arm.com>
+        id S240800AbhJGLHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 07:07:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40382 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240692AbhJGLHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 07:07:49 -0400
+X-UUID: b521c54258e0406392bbf15f5c2c2d87-20211007
+X-UUID: b521c54258e0406392bbf15f5c2c2d87-20211007
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <rex-bc.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1591539044; Thu, 07 Oct 2021 19:05:50 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 7 Oct 2021 19:05:49 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 7 Oct 2021 19:05:49 +0800
+From:   Rex-BC Chen <rex-bc.chen@mediatek.com>
+To:     <thierry.reding@gmail.com>, <matthias.bgg@gmail.com>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Rex-BC Chen <rex-bc.chen@mediatek.com>
+Subject: [v2] drm/panel: panel-simple: Add delay for LG LP120UP1
+Date:   Thu, 7 Oct 2021 19:05:47 +0800
+Message-ID: <20211007110547.455-1-rex-bc.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is to ensure that the PMU event files can always be parsed by
-other tools.
+Add power sequence for LG LP120UP1.
 
-Testing
-=======
-
- * There are no errors when parsing files for all architectures:
-     # pmu-events/jevents nds32 pmu-events/arch/ test
-     # pmu-events/jevents s390 pmu-events/arch/ test
-     # pmu-events/jevents powerpc pmu-events/arch/ test
-     # pmu-events/jevents arm64 pmu-events/arch/ test
-     # pmu-events/jevents test pmu-events/arch/ test
-     # pmu-events/jevents x86 pmu-events/arch/ test
-
- * Trailing and leading commas now cause a parse error
-
- * Double commas now cause a parse error
-
- * Compilation and parsing works with strict mode disabled and enabled
-
- * A diff of the output files shows no changes
-
-Signed-off-by: James Clark <james.clark@arm.com>
+Signed-off-by: Rex-BC Chen <rex-bc.chen@mediatek.com>
 ---
- tools/perf/pmu-events/jsmn.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/panel/panel-simple.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
-index 8124d2d3ff0c..831dc44c4558 100644
---- a/tools/perf/pmu-events/jsmn.c
-+++ b/tools/perf/pmu-events/jsmn.c
-@@ -24,6 +24,7 @@
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index 9b6c4e6c38a1..9f6544450b56 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -3045,6 +3045,11 @@ static const struct panel_desc lg_lp120up1 = {
+ 		.width = 267,
+ 		.height = 183,
+ 	},
++	.delay = {
++		.prepare = 200,
++		.enable = 50,
++		.unprepare = 500,
++	},
+ 	.connector_type = DRM_MODE_CONNECTOR_eDP,
+ };
  
- #include <stdlib.h>
- #include "jsmn.h"
-+#define JSMN_STRICT
- 
- /*
-  * Allocates a fresh unused token from the token pool.
 -- 
-2.28.0
+2.18.0
 
