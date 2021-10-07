@@ -2,148 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527B8425988
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20E742598B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 19:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242746AbhJGRdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 13:33:22 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:34748 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242884AbhJGRdI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 13:33:08 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E1204200F9;
-        Thu,  7 Oct 2021 17:31:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633627873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/83RDrqHPpl87OGAurh8rfbtU/YEjkgyJAZ6Fte+y4Y=;
-        b=jiftm9rUlvRqDadj+/PG/GyTAHxCwqYmZQS//pQi+8kj7fDoqfsiM11hG0RoVgR0Su5Apc
-        OT329neI0OF04fxbNZlPIA5H1VbCG98tjWz9FTg6jr7BLrdU27CAUaJZS4cxJK46uq+7E6
-        Afam4a2bEi+IY8YdyR+kmBQG45W91F4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 2F184A3B85;
-        Thu,  7 Oct 2021 17:31:13 +0000 (UTC)
-Date:   Thu, 7 Oct 2021 19:31:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        id S242862AbhJGReU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 13:34:20 -0400
+Received: from mga05.intel.com ([192.55.52.43]:4228 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235301AbhJGReS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 13:34:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312511028"
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="312511028"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:32:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
+   d="scan'208";a="568716098"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 10:32:17 -0700
+Received: from andy by smile with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mYXFd-009cFj-35;
+        Thu, 07 Oct 2021 20:32:13 +0300
+Date:   Thu, 7 Oct 2021 20:32:13 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
-References: <6b15c682-72eb-724d-bc43-36ae6b79b91a@redhat.com>
- <CAJuCfpEPBM6ehQXgzp=g4SqtY6iaC8wuZ-CRE81oR1VOq7m4CA@mail.gmail.com>
- <20211006175821.GA1941@duo.ucw.cz>
- <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
- <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
- <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz>
- <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
- <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        jic23@kernel.org, linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: Re: [PATCH v4 6/7] plist: Replace kernel.h with the necessary
+ inclusions
+Message-ID: <YV8vHZg0Xcs0DbPV@smile.fi.intel.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+ <20211007154407.29746-7-andriy.shevchenko@linux.intel.com>
+ <1ec405c5a8fd24de9066277ce855d7e39f93e691.camel@perches.com>
+ <YV8sPjLn1jqLOm2H@smile.fi.intel.com>
+ <04ebb29ccb707bc37df2d3ddd684781114a1a62e.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
+In-Reply-To: <04ebb29ccb707bc37df2d3ddd684781114a1a62e.camel@perches.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-10-21 09:58:02, Suren Baghdasaryan wrote:
-> On Thu, Oct 7, 2021 at 9:40 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 07-10-21 09:04:09, Suren Baghdasaryan wrote:
-> > > On Thu, Oct 7, 2021 at 3:15 AM Pavel Machek <pavel@ucw.cz> wrote:
-> > > >
-> > > > Hi!
-> > > >
-> > > > > >> Hmm, so the suggestion is to have some directory which contains files
-> > > > > >> representing IDs, each containing the string name of the associated
-> > > > > >> vma? Then let's say we are creating a new VMA and want to name it. We
-> > > > > >> would have to scan that directory, check all files and see if any of
-> > > > > >> them contain the name we want to reuse the same ID.
-> > > > > >
-> > > > > > I believe Pavel meant something as simple as
-> > > > > > $ YOUR_FILE=$YOUR_IDS_DIR/my_string_name
-> > > > > > $ touch $YOUR_FILE
-> > > > > > $ stat -c %i $YOUR_FILE
-> > >
-> > > Ah, ok, now I understand the proposal. Thanks for the clarification!
-> > > So, this would use filesystem as a directory for inode->name mappings.
-> > > One rough edge for me is that the consumer would still need to parse
-> > > /proc/$pid/maps and convert [anon:inode] into [anon:name] instead of
-> > > just dumping the content for the user. Would it be acceptable if we
-> > > require the ID provided by prctl() to always be a valid inode and
-> > > show_map_vma() would do the inode-to-filename conversion when
-> > > generating maps/smaps files? I know that inode->dentry is not
-> > > one-to-one mapping but we can simply output the first dentry name.
-> > > WDYT?
-> >
-> > No. You do not want to dictate any particular way of the mapping. The
-> > above is just one way to do that without developing any actual mapping
-> > yourself. You just use a filesystem for that. Kernel doesn't and
-> > shouldn't understand the meaning of those numbers. It has no business in
-> > that.
-> >
-> > In a way this would be pushing policy into the kernel.
+On Thu, Oct 07, 2021 at 10:26:05AM -0700, Joe Perches wrote:
+> On Thu, 2021-10-07 at 20:19 +0300, Andy Shevchenko wrote:
+> > On Thu, Oct 07, 2021 at 10:12:56AM -0700, Joe Perches wrote:
+> > > On Thu, 2021-10-07 at 18:44 +0300, Andy Shevchenko wrote:
+> > > > When kernel.h is used in the headers it adds a lot into dependency hell,
+> > > > especially when there are circular dependencies are involved.
+> > > > 
+> > > > Replace kernel.h inclusion with the list of what is really being used.
+> > > []
+> > > > diff --git a/include/linux/plist.h b/include/linux/plist.h
+> > > []
+> > > > @@ -73,8 +73,11 @@
+> > > []
+> > > > +#include <asm/bug.h>
+> > > 
+> > > why asm/bug.h and not linux/bug.h ?
+> > 
+> > The direct inclusion is from that one. Why linux/bug?
 > 
-> I can see your point. Any other ideas on how to prevent tools from
-> doing this id-to-name conversion themselves?
+> A general guideline is to avoid asm includes.
 
-I really fail to understand why you really want to prevent them from that.
-Really, the whole thing is just a cookie that kernel maintains for memory
-mappings so that two parties can understand what the meaning of that
-mapping is from a higher level. They both have to agree on the naming
-but the kernel shouldn't dictate any specific convention because the
-kernel _doesn't_ _care_. These things are not really anything actionable
-for the kernel. It is just a metadata.
+It's fine when it has any useful background. Doing cargo cult is not always
+a good idea. I plead for common sense.
 
 -- 
-Michal Hocko
-SUSE Labs
+With Best Regards,
+Andy Shevchenko
+
+
