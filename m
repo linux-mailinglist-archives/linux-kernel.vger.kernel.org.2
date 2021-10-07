@@ -2,98 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3AC4253DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE7E4253DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 15:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240964AbhJGNQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 09:16:38 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:46653 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241423AbhJGNQd (ORCPT
+        id S240942AbhJGNQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 09:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232881AbhJGNQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 09:16:33 -0400
-Received: from mail-wr1-f54.google.com ([209.85.221.54]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1MAfQk-1mf2nO0dVA-00B6Ua for <linux-kernel@vger.kernel.org>; Thu, 07 Oct
- 2021 15:14:38 +0200
-Received: by mail-wr1-f54.google.com with SMTP id u18so19022744wrg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 06:14:38 -0700 (PDT)
-X-Gm-Message-State: AOAM532yO0zrvnz4qFMbB4UE5V5OukIwkxFk6VbzgQqPCQ8cva9fNrwD
-        A70TfvLMGyihWAw1yX7PuJEUNpbwjVQpWRfJMqs=
-X-Google-Smtp-Source: ABdhPJxlorxaf1Zgj5Rs+eFsSNCfJHstb4n53ThIOsns1KYcxF/bXpbsGzOdHOqKwYnWgIneWV4ZKX7ki2fMu7OD7KY=
-X-Received: by 2002:adf:b1c4:: with SMTP id r4mr5369225wra.428.1633612477750;
- Thu, 07 Oct 2021 06:14:37 -0700 (PDT)
+        Thu, 7 Oct 2021 09:16:25 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E527C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 06:14:31 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 468A31F451F3;
+        Thu,  7 Oct 2021 14:14:29 +0100 (BST)
+Date:   Thu, 7 Oct 2021 15:14:26 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211007151426.54db0764@collabora.com>
+In-Reply-To: <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
+References: <20211004085509.iikxtdvxpt6bri5c@skn-laptop>
+        <20211004115817.18739936@collabora.com>
+        <20211004101246.kagtezizympxupat@skn-laptop>
+        <20211004134700.26327f6f@collabora.com>
+        <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+        <20211005102300.5da6d480@collabora.com>
+        <20211005084938.jcbw24umhehoiirs@skn-laptop>
+        <20211005105836.6c300f25@collabora.com>
+        <20211007114351.3nafhtpefezxhanc@skn-laptop>
+        <20211007141858.314533f2@collabora.com>
+        <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <20210821030519.127-1-yuzenghui@huawei.com> <39c2b2f9-4de2-8e7d-2135-96f1dab750e0@canonical.com>
- <5991e347-18f0-30cd-58b9-9e3276bd98bd@huawei.com> <YV7HGniKSKe7nXp/@arm.com> <1ebc899f-b7d7-fff4-9204-a0edd2be4387@huawei.com>
-In-Reply-To: <1ebc899f-b7d7-fff4-9204-a0edd2be4387@huawei.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 7 Oct 2021 15:14:21 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a30pdkERK2CREDmpVDtL9+mVBU3iok8DkNoayOTSE9yFQ@mail.gmail.com>
-Message-ID: <CAK8P3a30pdkERK2CREDmpVDtL9+mVBU3iok8DkNoayOTSE9yFQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: drop obsolete ARCH_* configs
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        SoC Team <soc@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, wanghaibin.wang@huawei.com,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:owYkorfnfKwyyEY8o4vBxo58nirKiC3h5Qo28a4N/E2iWaf2GWk
- Sq+jpt9LXXuQBXjCP1OpIW8oAzMepApgkHBfaVOCBmZZxeWycuFaqepc8e3JAOEG1u7057M
- bSZA3w73qm/1I86JRpiHsTTvnxONv0FczKjMc2TTtfKXTApKZxxyV9/lA4GO8mj9vcET80c
- FvZ8k+qCgVf53K4Wrq4CQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nB2KQLBt0Tk=:UQYbVq+StdtuXQmng3+hy4
- kV08cl3Sfce5VSp+kC91tfvUWNtR687pTWDX3IZGN1UFdJaoHSLzxPPESZbkKf3zlwTT7sxm0
- k51X+b2Q0q9dJ4xn/m2YtOsD/o72lkg/gFZV/gjkuZbVad5XZc0UBZDzlUNY/SfbAXrG3uHLE
- oIEyhT7Aeh67Ka0skcMQm8fVB16dCfVsOecAU7QMTF8Ad4Vxv6OjpNdUy72ep9LUuSLNllqsP
- Gdr7nIN9jbrzZHxbMNbMo+ZGCt14kUsUzMuEtcNsgCO280kLXivTZYeVLe7izTgNAPnt69dHW
- K0rWYtOn+XNHGo5jKgUQDvQzQdtNUAR+kz0eP3cVON2hn2DTBeCjFPN8zHVrh4Bck3QDZrDfy
- 62WGFfxgZhkKPseA18W0mgvGOv+owmxq3LNJI6muAc8j5HZV11YV05lURHcBnhIEbv8kK+klB
- JoQMnNhdyO8pXn2XuMVQjKXj9dMrTkgEoOxJOFh00UKqWITId5nThwL+yQ0QjZPoeLcxD11JV
- SdXca6oKAwm+HHeLX51Ovx/U5u5Mc/HQK1QQ20o47LMr7w2u1Ychh1myJbxAd2dWzpbovWXV5
- 37UTA/VN6BvN6nNDhkxCe0tXAhCbBk457kbPnYr9ggVBL3O3iRqBytbHnFktQCm0UNF8xR1C1
- k8C4rdAEzox9V9l/MEk+wvl+cCK7LwvI03qAcpWyO8hMo/SJhx5OKebSEXJ2wwPH6685FB73m
- rGCgkl4PjIlHIFvsmK60ro3AIJ9ohChPf+zKi6x6qRkc0I7+BFqvnIB0s2Kr8gbrcmPHB/I64
- kdHIibpp2cpw3QiZmV5QOVt682jtzx49GraEpTkD4hZjEKpwmxfAqcTHUPBB53o6HoqCdVyVg
- OR1QsIQkFGeDd2v50AMQ==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 12:24 PM Zenghui Yu <yuzenghui@huawei.com> wrote:
->
-> On 2021/10/7 18:08, Catalin Marinas wrote:
-> > On Thu, Oct 07, 2021 at 05:42:46PM +0800, Zenghui Yu wrote:
-> >> On 2021/8/23 21:01, Krzysztof Kozlowski wrote:
-> >>> On 21/08/2021 05:05, Zenghui Yu wrote:
-> >>>> Per commit 4a9a1a5602d8 ("arm64: socfpga: merge Agilex and N5X into
-> >>>> ARCH_INTEL_SOCFPGA") and commit 89d4f98ae90d ("ARM: remove zte zx
-> >>>> platform"), they can be dropped from defconfig now.
-> >>>>
-> >>>> Cc: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>>> Cc: Arnd Bergmann <arnd@arndb.de>
-> >>>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> >>>> ---
-> >>>>  arch/arm64/configs/defconfig | 3 ---
-> >>>>  1 file changed, 3 deletions(-)
-> >>>
-> >>> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> >>
-> >> I have no idea about which tree should this patch go via, so a gentle
-> >> ping here. I've verified that this can still be applied cleanly on top
-> >> of today's -next.
-> >
-> > Usually defconfig changes go in via the arm-soc tree rather than the
-> > arm64 one.
->
-> Thanks for the pointer!
->
-> [+ soc@kernel.org]
+On Thu, 7 Oct 2021 14:39:16 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
-Applied to the arm/defconfig branch for 5.16, thanks!
+> > >         return 0;
+> > > 
+> > >  free_detect_allocation:
+> > > @@ -6264,6 +6272,8 @@ static int nand_scan_tail(struct nand_chip *chip)
+> > >         if (chip->options & NAND_SKIP_BBTSCAN)
+> > >                 return 0;
+> > > 
+> > > +       atomic_set(&chip->suspended, 0);
+> > > +
+> > >         /* Build bad block table */
+> > >         ret = nand_create_bbt(chip);
+> > >         if (ret)
+> > > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> > > index 88227044fc86..f7dcbc336170 100644
+> > > --- a/include/linux/mtd/mtd.h
+> > > +++ b/include/linux/mtd/mtd.h
+> > > @@ -360,6 +360,8 @@ struct mtd_info {
+> > >         int (*_get_device) (struct mtd_info *mtd);
+> > >         void (*_put_device) (struct mtd_info *mtd);
+> > > 
+> > > +       wait_queue_head_t wait_queue;
+> > > +  
+> > 
+> > wait_queue doesn't really describe what this waitqueue is used for
+> > (maybe resume_wq), and the suspended state should be here as well
+> > (actually, there's one already).  
+> 
+> I'll rename to something meaningful.
+> > 
+> > Actually, what we need is a way to prevent the device from being
+> > suspended while accesses are still in progress, and new accesses from
+> > being queued if a suspend is pending. So, I think you need a readwrite
+> > lock here:
+> > 
+> > * take the lock in read mode for all IO accesses, check the
+> >   mtd->suspended value
+> >   - if true, release the lock, and wait (retry on wakeup)
+> >   - if false, just do the IO
+> > 
+> > * take the lock in write mode when you want to suspend/resume the
+> >   device and update the suspended field. Call wake_up_all() in the
+> >   resume path  
+> 
+> Could we use the chip->lock mutex for this? It's does kinda what you
+> described above?
 
-        Arnd
+No you can't. Remember I suggested to move all of that logic to
+mtdcore.c, which doesn't know about the nand_chip struct.
+
+> If we introduce a new lock, do we really need to have the suspended as
+> an atomic?
+
+Nope, I thought we could do without a lock, but we actually need to
+track active IO requests, not just the suspended state.
+
+> 
+> I will test with some wait and retry added to nand_get_device().
+
+Again, I think there's a misunderstanding here: if you move it to the
+mtd layer, it can't be done in nand_get_device(). But once you've
+implemented it in mtdcore.c, you should be able to get rid of the
+nand_chip->suspended field.
