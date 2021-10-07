@@ -2,178 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84453425509
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C192642550B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Oct 2021 16:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241965AbhJGOLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 10:11:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240542AbhJGOLO (ORCPT
+        id S241977AbhJGOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 10:11:28 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49740 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241969AbhJGOL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 10:11:14 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04081C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 07:09:21 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so24270767lfk.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 07:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ddc+nwwGsdqLgmdcD/hKX3FxYNdymv0YTXOgmcVifRo=;
-        b=wBqQd5KAYGePtskjlEThq46KUmeWaOwadR0xaQwEv6TQqAbpu5n4IIv+RGQXu44+hq
-         rCwICzDehfhfBsegJX7YKUCliq9RV7J6oZDHiWnP37g5Tb73bpfHqsp4TKuhh4PkcqoD
-         E5Tc7ZTu2WZX2FAGuYPk36C9BlP3rt4k1SC25uUtmSeojjaXjvOtDhR6BVGZNOld8I++
-         NE2zYXU/a8++l04VnE8E2rPaGlySC5dg61hzLKtB/nkLvQ8+Uoe19VtadAVWEkNeY769
-         69CAussyY/EQX87bBqyeTZrszANo0nK7OIYH19FdT9KuDWs6QIkxARcP5yycXM+IkIHo
-         3Csg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ddc+nwwGsdqLgmdcD/hKX3FxYNdymv0YTXOgmcVifRo=;
-        b=a5e+MjoksCTabRPgMNGvEBvmW2mh3QMhDNhIkterddOqCMBIciuh1SS7K56mTC5AE+
-         Tad4iYTzDUhnuaxGZpNO2urjLPAlh6Z3jFX4TG0QYjN3/swWpsqSTR/NXoDHiY7+rNvY
-         VuLe6Uw6V9P+eVm+AT3uKXwHT/kHcAV+xCS6L9s/j1SZE+2EJruSmQMwsRyuJzQ+2t97
-         0mrrAGaGFQ1zzAnPgMEz+qV3Fi+AIBC2TLUimGCI+7jqFnHpzGwGnkZrELPldjDzlt/M
-         5Dd04zj+UYt1bJ8GzxjjK46p3cY8Yen7/5dcsnO8zLja+TGy7mijHPb+M+LjQAl+L2Gc
-         v3Ww==
-X-Gm-Message-State: AOAM5328nEHMubBPoCljTB4BGD9285WtI+N//iM6Gp95iiRFZlfcK58Z
-        BXjvd+Lu9+V7yiTCsmT3B9kPYQ==
-X-Google-Smtp-Source: ABdhPJyBGQcI7zWR5C7xj5L81py7OHb42ZN3knmXo3P1F6fFKGqu0cppFDPxTyuglLqzw8bQkCMryQ==
-X-Received: by 2002:a2e:b8d3:: with SMTP id s19mr4752838ljp.314.1633615745876;
-        Thu, 07 Oct 2021 07:09:05 -0700 (PDT)
-Received: from localhost ([31.134.121.151])
-        by smtp.gmail.com with ESMTPSA id f28sm255550lfk.62.2021.10.07.07.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 07:09:05 -0700 (PDT)
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mike Tipton <mdtipton@codeaurora.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andy Shevchenko <andy@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] clk: Add write operation for clk_parent debugfs node
-Date:   Thu,  7 Oct 2021 17:09:04 +0300
-Message-Id: <20211007140904.3085-1-semen.protsenko@linaro.org>
-X-Mailer: git-send-email 2.30.2
+        Thu, 7 Oct 2021 10:11:27 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id C7E031FE69;
+        Thu,  7 Oct 2021 14:09:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633615772; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WmZKoam4uBlUDsnpZKT/JNi5wCzxXcwmvOZK6uuOEFg=;
+        b=DX00fro/nO0M6nMJsbLq5A59Q930GGbaG5RXcV0COZ9djL12NCiWBy9iyVEHyrkJTosAO7
+        BpsNiM1nZ0wyW/3b0NgE9FcTgVDxjhXBMmG2Ix6e0OkQ5wAppcTI0pHu/sAzfpG8K0vGJN
+        +BZQY9ZHD0bSulDNGigFjQ4WZ8sZHL0=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 95E38A3B87;
+        Thu,  7 Oct 2021 14:09:32 +0000 (UTC)
+Date:   Thu, 7 Oct 2021 16:09:29 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel@openvz.org, Mel Gorman <mgorman@suse.de>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: memcg memory accounting in vmalloc is broken
+Message-ID: <YV7/mS8oIL4E5nmS@dhcp22.suse.cz>
+References: <b3c232ff-d9dc-4304-629f-22cc95df1e2e@virtuozzo.com>
+ <YV6sIz5UjfbhRyHN@dhcp22.suse.cz>
+ <YV6s+ze8LzuxfvOM@dhcp22.suse.cz>
+ <953ef8e2-1221-a12c-8f71-e34e477a52e8@virtuozzo.com>
+ <0668b6d8-6f8c-07c7-75e0-5448ea87cb54@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0668b6d8-6f8c-07c7-75e0-5448ea87cb54@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Useful for testing mux clocks. One can write the index of the parent to
-be set into clk_parent node, starting from 0. Example
+On Thu 07-10-21 16:00:21, Vlastimil Babka wrote:
+> On 10/7/21 10:50, Vasily Averin wrote:
+> > On 10/7/21 11:16 AM, Michal Hocko wrote:
+> >> Cc Mel and Uladzislau
+> >> 
+> >> On Thu 07-10-21 10:13:23, Michal Hocko wrote:
+> >>> On Thu 07-10-21 11:04:40, Vasily Averin wrote:
+> >>>> vmalloc was switched to __alloc_pages_bulk but it does not account the memory to memcg.
+> >>>>
+> >>>> Is it known issue perhaps?
+> >>>
+> >>> No, I think this was just overlooked. Definitely doesn't look
+> >>> intentional to me.
+> > 
+> > I use following patch as a quick fix,
+> > it helps though it is far from ideal and can be optimized.
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index b37435c274cf..e6abe2cac159 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -5290,6 +5290,12 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+> >  
+> >  		page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+> >  								pcp, pcp_list);
+> > +
+> > +		if (memcg_kmem_enabled() && (gfp & __GFP_ACCOUNT) && page &&
+> > +		    unlikely(__memcg_kmem_charge_page(page, gfp, 0) != 0)) {
+> > +			__free_pages(page, 0);
+> 
+> It's too early for this here, we didn't go through prep_new_page() yet,
+> minimally the post_alloc_hook() -> set_page_refcounted() part, required for
+> put_page_testzero() in __free_pages() to work properly, and probably other
+> stuff.
+> Either do the full prep+free or a minimal reversion of  __rmqueue_pcplist -
+> something to just put the page back to pcplist. Probably the former so we
+> don't introduce subtle errors.
 
-    # cd /sys/kernel/debug/clk/mout_peri_bus
-    # cat clk_possible_parrents
-      dout_shared0_div4 dout_shared1_div4
-    # cat clk_parent
-      dout_shared0_div4
-    # echo 1 > clk_parent
-    # cat clk_parent
-      dout_shared1_div4
-
-CLOCK_ALLOW_WRITE_DEBUGFS has to be defined in drivers/clk/clk.c in
-order to use this feature.
-
-Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
----
-Changes in v4:
-  - Fixed the commit title
-
-Changes in v3:
-  - Removed unwanted changes added by mistake
-
-Changes in v2:
-  - Merged write() function into existing 'clk_parent' file
-  - Removed 'if (val >= core->num_parents)' check
-  - Removed incorrect usage of IS_ERR_OR_NULL()
-
- drivers/clk/clk.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 52 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 806c55f0991b..f57e33efda9b 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -3224,6 +3224,46 @@ static int current_parent_show(struct seq_file *s, void *data)
- }
- DEFINE_SHOW_ATTRIBUTE(current_parent);
- 
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+static ssize_t current_parent_write(struct file *file, const char __user *ubuf,
-+				    size_t count, loff_t *ppos)
-+{
-+	struct seq_file *s = file->private_data;
-+	struct clk_core *core = s->private;
-+	struct clk_core *parent;
-+	char buf[4] = { 0 };
-+	u8 idx;
-+	int err;
-+
-+	if (copy_from_user(&buf, ubuf, min_t(size_t, sizeof(buf) - 1, count)))
-+		return -EFAULT;
-+
-+	err = kstrtou8(buf, 0, &idx);
-+	if (err)
-+		return err;
-+
-+	parent = clk_core_get_parent_by_index(core, idx);
-+	if (!parent)
-+		return -ENOENT;
-+
-+	clk_prepare_lock();
-+	err = clk_core_set_parent_nolock(core, parent);
-+	clk_prepare_unlock();
-+	if (err)
-+		return err;
-+
-+	return count;
-+}
-+
-+static const struct file_operations current_parent_rw_fops = {
-+	.open		= current_parent_open,
-+	.write		= current_parent_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+#endif
-+
- static int clk_duty_cycle_show(struct seq_file *s, void *data)
- {
- 	struct clk_core *core = s->private;
-@@ -3291,9 +3331,20 @@ static void clk_debug_create_one(struct clk_core *core, struct dentry *pdentry)
- 			    &clk_prepare_enable_fops);
- #endif
- 
--	if (core->num_parents > 0)
-+	if (core->num_parents > 0) {
-+#ifdef CLOCK_ALLOW_WRITE_DEBUGFS
-+		if (core->num_parents > 1) {
-+			debugfs_create_file("clk_parent", 0644, root, core,
-+					    &current_parent_rw_fops);
-+		} else {
-+			debugfs_create_file("clk_parent", 0444, root, core,
-+					    &current_parent_fops);
-+		}
-+#else
- 		debugfs_create_file("clk_parent", 0444, root, core,
- 				    &current_parent_fops);
-+#endif
-+	}
- 
- 	if (core->num_parents > 1)
- 		debugfs_create_file("clk_possible_parents", 0444, root, core,
+Very well spotted!
 -- 
-2.30.2
-
+Michal Hocko
+SUSE Labs
