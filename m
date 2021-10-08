@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF42427465
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4C7427468
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243928AbhJHXxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S243893AbhJHX4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243797AbhJHXxi (ORCPT
+        with ESMTP id S243797AbhJHX4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:53:38 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50ADC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:51:42 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id r134so1320390iod.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:51:42 -0700 (PDT)
+        Fri, 8 Oct 2021 19:56:33 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F57C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:54:37 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 187so9420586pfc.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ezETEItaR/J7gVYokGl5RwwQegihaa7iGOTvGlA0fCo=;
-        b=Aj5BCG0OeDtBjcw0y+N8PBCSsKH+ppd8XKj64hJe3IOQABTMfuQNw77uJ2FiX3CcGw
-         x3TFwr7vUhP8JM+FRTXTrtguDMEeWuBiPIuOsRJ9n8X5aPHNTX7WPWab9VNoAlWMK6kb
-         ucVW2Yf1ZL/FcRCwT4yMEcPkYazlI6vEd5JFHXQoJJolu0c0SyO2HZqCt1W2CkmkKD2b
-         3dmGEwQjUIes/LMgcd29Tbt69eVDSoaTebhmfILtX2IJUmXvJyI6HLEdVFWJgWl4BcHz
-         tft3xzxd2+mQ8CJFJYwmICjV1ljSsdZMmbcQ1M/6+Sv1i+5+GFQ+fulBMNKZEDBGkqaa
-         1Cag==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PmBMkf/9MZygw8Ouxh+j3hhE+5/43pTB38Kda0mWNWk=;
+        b=Q8+7oCfDRKyVdU+VWTY4DGVlelzEpUO576a488pAZuBDyvKQ2jt66NRvKJ2w/7C/OU
+         7eYMe4aQa6LzT+CJ5azuMdAf8HlGeJPYlZxe2cHRHvovOiqXGen5NBxB2UciexWuKAAM
+         7YzG8hOfoF5vttQ8N9pXyHBIOsrZVqrwMTO0Te3GQyWDTaDL5n7FuVufW1Zp6KDueQjD
+         kVXea3sEewOg6KkQVGQDiDImLphgkIkPJpKFqM6Dt6riFthcuPkxDfDdPBSGfR/j7dwj
+         hqL5Mwok31auNybg9V/xQ17BAMtG5322AUhMxs3ZE0l/JjgDqwbxGW/DDMS82YgE0g9L
+         0UWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ezETEItaR/J7gVYokGl5RwwQegihaa7iGOTvGlA0fCo=;
-        b=lZvYwjikEQe3vAjmqQZlv3LjoeRczaRU+g8BgBBUY8BDZgbMDr1EOCWrT7IlZCj5lr
-         PPC55XLuCuse3/F+v/F/oSL0560S7SFGjIpV+pu5hyoCP4e1OnxjJa9ccnmtm59fs5Jz
-         /Lv0k8YT8Hx6lEJ2VuhK9zbsM1bfhrYEUkzXCyLXhyKb8bF42DiOBVnTDDqLs/2cPEKF
-         hB09pjAz7izomMvjqc1WeFsN6IgKXq5/1e76unRQyBUBCJOGv1yP9oLHZtnEZmvzEleW
-         kAx22Bky+8ao5tbtyi2HSw/S8zSj+lcSOPyYUaIfZRSZGk1KS236VIms8yN40717BoAf
-         fo5g==
-X-Gm-Message-State: AOAM532vgB960ssFHcyUzFXtBoFgDACvhpy1M+tYyMUqWeMbd7SO9BY+
-        23jOglEgdBAb84ngft7jpttpuJ8RnmKB+ICm6Z0NEA==
-X-Google-Smtp-Source: ABdhPJxRZSFkhXw4g00xRunPY70k7kUJTWx8xMHPbfr89r83VdZ9Hvh5ToOMRnQk5ukyXaELkAir1AsbB/rEDzzpGr0=
-X-Received: by 2002:a6b:b5d8:: with SMTP id e207mr9302657iof.52.1633737100442;
- Fri, 08 Oct 2021 16:51:40 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PmBMkf/9MZygw8Ouxh+j3hhE+5/43pTB38Kda0mWNWk=;
+        b=PZ4DwSC3bGyg5/voKF9WjR086JxOwCkyv4dGT5rDoLq3psPv2UAS1gFDizJubNI5He
+         ANnMJYzjOjF5C0GAj29jS22GXhyqtJPFSQRezRJUUBsrr6tiilSimhHjwXIfonFxD3Lp
+         wvsVzSKW+LnXp5M2tPEHXEGQ2nToggpAvzr+7pGquHlFZIPQwKlxNH+utUp0Y+9uGeFu
+         TD78VHEIH0YlBG4QWxXMXFODwVqHeJlhxGZsBOVzaTFL/JmuiYQTdCozPp32vAaD0geZ
+         OMOuLDYgDAblBorzc3QU+YnSLczkYssJWFqTXm5W97fcEQYtnyAtzwIFvmiChX4YaSWf
+         MduQ==
+X-Gm-Message-State: AOAM531W3LoQZcvcXNFU2nMkyPA3ks+cX5picXPjxnKF0flV8DsSuzPD
+        hci9Ggi94DsZD6OOJVe0NFOWjw==
+X-Google-Smtp-Source: ABdhPJzTO5dzrqoKxYIAgLORXxVoCs/hswW5V+qdRbtzVa1AywA2Mc6hF2P8Y2NMkbNFKLtRna+ilw==
+X-Received: by 2002:a05:6a00:1a02:b0:446:d18c:8e7e with SMTP id g2-20020a056a001a0200b00446d18c8e7emr12873540pfv.46.1633737277253;
+        Fri, 08 Oct 2021 16:54:37 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p21sm12455665pjo.26.2021.10.08.16.54.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 16:54:36 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 23:54:33 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] KVM: nVMX: Track whether changes in L0 require
+ MSR bitmap for L2 to be rebuilt
+Message-ID: <YWDaOf/10znebx5S@google.com>
+References: <20211004161029.641155-1-vkuznets@redhat.com>
+ <20211004161029.641155-4-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20211008210752.1109785-1-dlatypov@google.com>
-In-Reply-To: <20211008210752.1109785-1-dlatypov@google.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 8 Oct 2021 16:51:29 -0700
-Message-ID: <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
-Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004161029.641155-4-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> kunit.py currently crashes and fails to parse kernel output if it's not
-> fully valid utf-8.
->
-> This can come from memory corruption or or just inadvertently printing
-> out binary data as strings.
->
-> E.g. adding this line into a kunit test
->   pr_info("\x80")
-> will cause this exception
->   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
->
-> We can tell Python how to handle errors, see
-> https://docs.python.org/3/library/codecs.html#error-handlers
->
-> Unfortunately, it doesn't seem like there's a way to specify this in
-> just one location, so we need to repeat ourselves quite a bit.
->
-> Specify `errors='backslashreplace'` so we instead:
-> * print out the offending byte as '\x80'
-> * try and continue parsing the output.
->   * as long as the TAP lines themselves are valid, we're fine.
->
-> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+On Mon, Oct 04, 2021, Vitaly Kuznetsov wrote:
+> Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
+> rebuilt due to changes in MSR bitmap for L1 or switching to a different
+> L2. This information will be used for Enlightened MSR Bitmap feature for
+> Hyper-V guests.
+> 
+> Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
+> not really needed for Enlightened MSR Bitmap as the feature can only
+> be used in conjunction with Enlightened VMCS but let's keep tracking
+> information complete, it's cheap and in the future similar PV feature can
+> easily be implemented for KVM on KVM too.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->  tools/testing/kunit/kunit.py        | 3 ++-
->  tools/testing/kunit/kunit_kernel.py | 4 ++--
->  2 files changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> index 9c9ed4071e9e..28ae096d4b53 100755
-> --- a/tools/testing/kunit/kunit.py
-> +++ b/tools/testing/kunit/kunit.py
-> @@ -457,9 +457,10 @@ def main(argv, linux=None):
->                         sys.exit(1)
->         elif cli_args.subcommand == 'parse':
->                 if cli_args.file == None:
-> +                       sys.stdin.reconfigure(errors='backslashreplace')
 
-Ugh, pytype doesn't like this even though it's valid.
-I can squash the error with
-  sys.stdin.reconfigure(errors='backslashreplace')  # pytype:
-disable=attribute-error
+...
 
-I had wanted us to avoid having anything specific to pytype in the code.
-But mypy (the more common typechecker iirc) hasn't been smart enough
-to typecheck our code since the QEMU support landed.
+>  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 592217fd7d92..eb7a1697bec2 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -148,6 +148,12 @@ struct nested_vmx {
+>  	bool need_vmcs12_to_shadow_sync;
+>  	bool dirty_vmcs12;
+>  
+> +	/*
+> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
+> +	 * changes in MSR bitmap for L1 or switching to a different L2.
+> +	 */
+> +	bool msr_bitmap_changed;
 
-If we don't add this directive, both typecheckers will report at least
-one spurious warning.
-Should I go ahead and add it, Brendan/David?
+This is misleading, and arguably wrong.  It's only accurate when used in conjuction
+with a paravirt L1 that states if a VMCS has a dirty MSR bitmap.  E.g. this flag
+will be wrong if L1 changes the address of the bitmap in the VMCS, and it's
+obviously wrong if L1 changes the MSR bitmap itself.
 
->                         kunit_output = sys.stdin
->                 else:
-> -                       with open(cli_args.file, 'r') as f:
-> +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
->                                 kunit_output = f.read().splitlines()
->                 request = KunitParseRequest(cli_args.raw_output,
->                                             None,
-> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> index faa6320e900e..f08c6c36a947 100644
-> --- a/tools/testing/kunit/kunit_kernel.py
-> +++ b/tools/testing/kunit/kunit_kernel.py
-> @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
->                                            stdin=subprocess.PIPE,
->                                            stdout=subprocess.PIPE,
->                                            stderr=subprocess.STDOUT,
-> -                                          text=True, shell=True)
-> +                                          text=True, shell=True, errors='backslashreplace')
->
->  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->         """An abstraction over command line operations performed on a source tree."""
-> @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
->                                            stdin=subprocess.PIPE,
->                                            stdout=subprocess.PIPE,
->                                            stderr=subprocess.STDOUT,
-> -                                          text=True)
-> +                                          text=True, errors='backslashreplace')
->
->  def get_kconfig_path(build_dir) -> str:
->         return get_file_path(build_dir, KCONFIG_PATH)
->
-> base-commit: a032094fc1ed17070df01de4a7883da7bb8d5741
-> --
-> 2.33.0.882.g93a45727a2-goog
->
+The changelog kind of covers that, but those details will be completely lost to
+readers of the code.
+
+Would it be illegal from KVM to simply clear the CLEAN bit in the eVMCS at the
+appropriate points?
+
+> +
+>  	/*
+>  	 * Indicates lazily loaded guest state has not yet been decached from
+>  	 * vmcs02.
+> -- 
+> 2.31.1
+> 
