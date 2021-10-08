@@ -2,75 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E88426F08
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F1D426F0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231205AbhJHQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:34:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:34696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230216AbhJHQeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:34:44 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 208381063;
-        Fri,  8 Oct 2021 09:32:49 -0700 (PDT)
-Received: from bogus (unknown [10.57.21.181])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAC583F66F;
-        Fri,  8 Oct 2021 09:32:46 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 17:32:00 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        op-tee@lists.trustedfirmware.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Marc Bonnici <marc.bonnici@arm.com>,
-        Jerome Forissier <jerome@forissier.org>,
-        sughosh.ganu@linaro.org
-Subject: Re: [PATCH v6 5/5] optee: add FF-A support
-Message-ID: <20211008163200.wgls7gijpsk556kl@bogus>
-References: <20211006070902.2531311-1-jens.wiklander@linaro.org>
- <20211006070902.2531311-6-jens.wiklander@linaro.org>
- <20211008132732.hbmkd3hftdydtrsc@bogus>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008132732.hbmkd3hftdydtrsc@bogus>
+        id S235546AbhJHQe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:34:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232000AbhJHQez (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 12:34:55 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B5FC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 09:32:59 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id oa6-20020a17090b1bc600b0019ffc4b9c51so9722376pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:32:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=j/UInhLXe5mlM7rteqwC/6s2Q/4eFtXSAyDdkf0O+60=;
+        b=LKcuYNXPdyw5ZE+YG4PyBWP0yMUlcInPZsgVGrp1+nAV1bnF9nYJIySBE40kMOQXCk
+         96b8IPDhKw3VZXqQIXIGIxSP+iFS2yamQa/nEhlYWz8nbvaMUI8zDh+D/tqn+ArBS6VF
+         eGYboqEF82M2BsV1yJab8yOoQ7IS8d15NPpQk26LGRJeMwbb90u60KEbtXsX9YkeSIr5
+         xUYFARBO8KghAkky0RR/jUjwSF1SKh4v3msD2vYJnjewS6u5PGTVsFPCzfvPXxdzTYZV
+         q/yz/2pN1f7tJBJI6Ig+tFmR+FQy94maCnxU1+emwDVwpXCaBK/zcNp0VoIu374OcteH
+         3oSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=j/UInhLXe5mlM7rteqwC/6s2Q/4eFtXSAyDdkf0O+60=;
+        b=mH39y6aJDuxIVlsmNp5H9nvBuUcNKBbi/LBoEbYeeuB/coVswhw/D8zkANQXwMuAKZ
+         ncyvFb1BF5//RPi/YkLTRrgIThLGlAURoTRefOlyWnRqRuGK6T297LKHEuP5nnDKkGHB
+         mzhvLPqVWhDcyjWvsNAUL8UJHzU18TE618p3cYe3TghorYqyqwXp2Ou7qWMuRjDx27bX
+         ZWDf3Nqvi5U/AXQVED+zfleQFtxQYqIWuhj9LOo5/kXm9MUf/BeY1tP8XORXSj4h1PsC
+         alsF0RGwxQxLPf8/h9ptkqhR5yOsILwQnrOkM93XdkamPgkQy/Kbz0ZASG/ry5RvJ1Bd
+         wECg==
+X-Gm-Message-State: AOAM530zixB467a/y1qBdQVwJLNrtkF0sy+NV1k1T4AweH3HOtrPUslL
+        r2ksi9qi5ntk1gvwIMIxUX/eMg==
+X-Google-Smtp-Source: ABdhPJxQDmvqcyL8uSDKq9Bj5xVKERTGbteUzbcVv5ha6IQ4H4v8O5xyKkLKpbl3mjTFmp/AeEwYtA==
+X-Received: by 2002:a17:90b:1642:: with SMTP id il2mr12733836pjb.167.1633710779148;
+        Fri, 08 Oct 2021 09:32:59 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x35sm3841084pfh.52.2021.10.08.09.32.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 09:32:58 -0700 (PDT)
+Date:   Fri, 08 Oct 2021 09:32:58 -0700 (PDT)
+X-Google-Original-Date: Fri, 08 Oct 2021 09:32:55 PDT (-0700)
+Subject:     Re: [PATCH] tools/memory-model: Provide extra ordering for unlock+lock pair on the same CPU
+In-Reply-To: <YV/rH0TeokccdbMD@boqun-archlinux>
+CC:     mpe@ellerman.id.au, linux-kernel@vger.kernel.org,
+        paulmck@kernel.org, Daniel Lustig <dlustig@nvidia.com>,
+        will@kernel.org, peterz@infradead.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        alexander.shishkin@linux.intel.com, hpa@zytor.com,
+        parri.andrea@gmail.com, mingo@kernel.org, vincent.weaver@maine.edu,
+        tglx@linutronix.de, jolsa@redhat.com, acme@redhat.com,
+        eranian@google.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        stern@rowland.harvard.edu, linux-arch@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     boqun.feng@gmail.com
+Message-ID: <mhng-9504267b-2dee-4c16-b7a5-4c4360066b5e@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 02:27:32PM +0100, Sudeep Holla wrote:
-> On Wed, Oct 06, 2021 at 09:09:02AM +0200, Jens Wiklander wrote:
-> > Adds support for using FF-A [1] as transport to the OP-TEE driver.
-> >
-> > Introduces struct optee_msg_param_fmem which carries all information
-> > needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
-> > memory reference mapped by the hypervisor in S-EL2. Register usage is
-> > also updated to include the information needed.
-> >
-> > The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
-> > enabled.
-> >
-> 
-> I am not sure if I missed this with earlier version but I see the below
-> warning the second time I insert the optee module. I am sure I tested it
-> with previous version when I was fixing issues with FF-A as a module.
-> 
-> Not sure if I am missing something in my steps.
->
+On Thu, 07 Oct 2021 23:54:23 PDT (-0700), boqun.feng@gmail.com wrote:
+> On Fri, Oct 08, 2021 at 04:30:37PM +1100, Michael Ellerman wrote:
+>> Boqun Feng <boqun.feng@gmail.com> writes:
+>> > (Add linux-arch in Cc list)
+>> >
+>> > Architecture maintainers, this patch is about strengthening our memory
+>> > model a little bit, your inputs (confirmation, ack/nack, etc.) are
+>> > appreciated.
+>>
+>> Hi Boqun,
+>>
+>> I don't feel like I'm really qualified to give an ack here, you and the
+>> other memory model folk know this stuff much better than me.
+>>
+>> But I have reviewed it and it matches my understanding of how our
+>> barriers work, so it looks OK to me.
+>>
+>> Reviewed-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 
-OK, more info, indeed I didn't observe this issue 2 weeks back with optee
-at commit 57e642f12085 ("core: enable system PTA upon user TA support").
-The UUID(d96a5b40-c3e5-21e3-8794-1002a5d5c61b) wasn't enumerated with above
-commit. Today I am testing the latest commit 2de2880065f3 ("core: update
-reference link to PrimeCell Cache Controller").
+I'm basically in the same spot.  I think I said something to that effect 
+somewhere in the thread, but I'm not sure if it got picked up so
 
-Though it looks like an issue with the driver, the latest optee changes
-triggered the driver to hit this issue in my setup. Hope this helps.
-IIUC we are not undoing optee_register_device executed via
-optee_enumerate_devices in the exit path.
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com> (RISC-V)
 
---
-Regards,
-Sudeep
+(I don't feel comfortable reviewing it so I'm acking it, not sure if I'm 
+just backwards about what all this means though ;)).
+
+IIUC this change will mean the RISC-V port is broken, but I'm happy to 
+fix it.  Were you guys trying to target this for 5.16?
