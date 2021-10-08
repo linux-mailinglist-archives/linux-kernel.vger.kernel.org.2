@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9852427461
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF42427465
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243917AbhJHXwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34978 "EHLO
+        id S243928AbhJHXxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:53:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243797AbhJHXwV (ORCPT
+        with ESMTP id S243797AbhJHXxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:52:21 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7BA1C061570;
-        Fri,  8 Oct 2021 16:50:25 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id d9so18130100edh.5;
-        Fri, 08 Oct 2021 16:50:25 -0700 (PDT)
+        Fri, 8 Oct 2021 19:53:38 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50ADC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:51:42 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id r134so1320390iod.11
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:51:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VBpOavYaePL/4OWp+PM6HaY879JvujZlFSqs4UGphdg=;
-        b=DgcV/aiPSdPqxzH43JmT6WliO2OYH8sMmoZmgYhXtN6igDNmSfv7gUkiyJIg/vgLDh
-         E62x+kM7hhLrPuuyWc3BnqWq+OOOXuYJlelJvbH8Q/W1Rqgs86lgo3LI3rfPn3zQ3qUR
-         8TJVe5hm0F4WPsva7Q/damnEc/PFodXfXPiU1ZCUCJsFZDCCluT8YvpjYfDqgrgRUq2W
-         sf48709IKReF/QjtKB6IFgD0qenpHhjCv6W4516u1FpejCqY+gPdZCPmTEYzX+J8AqDv
-         BpcU++yZ++LZOFbZrEX+9R54wJeH8QWrQv39wZuK4yYEDdbF8Vhz48NNgXfv1iT7Uoki
-         cZIA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ezETEItaR/J7gVYokGl5RwwQegihaa7iGOTvGlA0fCo=;
+        b=Aj5BCG0OeDtBjcw0y+N8PBCSsKH+ppd8XKj64hJe3IOQABTMfuQNw77uJ2FiX3CcGw
+         x3TFwr7vUhP8JM+FRTXTrtguDMEeWuBiPIuOsRJ9n8X5aPHNTX7WPWab9VNoAlWMK6kb
+         ucVW2Yf1ZL/FcRCwT4yMEcPkYazlI6vEd5JFHXQoJJolu0c0SyO2HZqCt1W2CkmkKD2b
+         3dmGEwQjUIes/LMgcd29Tbt69eVDSoaTebhmfILtX2IJUmXvJyI6HLEdVFWJgWl4BcHz
+         tft3xzxd2+mQ8CJFJYwmICjV1ljSsdZMmbcQ1M/6+Sv1i+5+GFQ+fulBMNKZEDBGkqaa
+         1Cag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VBpOavYaePL/4OWp+PM6HaY879JvujZlFSqs4UGphdg=;
-        b=QY8oTCRLRnosN0GxllD60Poq+xM3RUYuTXvj+hd7PV829r3KsKSfmGYdmOlejLS0Tv
-         Hq2rIFM8Bl+72rkhhy1g1EHgfXs2zk/Z1hqHvN41k5/AJl9PsG4s03t5mVl0T/J2TUlB
-         1IxBm8gJarqUBLKuQBLw53aON4IEFf/o/P3yFJsPvryBOf9RgcUU5o0yMD5MsAgUrEGL
-         WH3oLJ+PspMrbS8tc3997W2eMFrcqM6H/gVr5PEjbmES7fADfNudLZP48bYJXsvPEoKN
-         SPD0+3kSh9KLm/tktOnM0FFCYP9ib67n66Jb8YiMP3opN/h/5Xu8S3hOYacwXiwXV5fh
-         kADw==
-X-Gm-Message-State: AOAM530i/nMX3eC9fQoOHUriwmQDgeHoxSpm7QNnjWe9B8o8UAlaFclh
-        zvlPM9ovCLQ9dDrFJVRrBu0=
-X-Google-Smtp-Source: ABdhPJxIe3FvjJCwgr3Yv47xwFnQ8KU4M/hHs419Y4v2wMBgTnl4FbtUdEULBfvaWsqR0AcLJAM9zQ==
-X-Received: by 2002:a05:6402:270b:: with SMTP id y11mr12579922edd.387.1633737024120;
-        Fri, 08 Oct 2021 16:50:24 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id e15sm241234ejr.58.2021.10.08.16.50.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 16:50:23 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 01:50:21 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net PATCH 1/2] drivers: net: phy: at803x: fix resume for
- QCA8327 phy
-Message-ID: <YWDZPfWOe+C2abWz@Ansuel-xps.localdomain>
-References: <20211008233426.1088-1-ansuelsmth@gmail.com>
- <20211008164750.4007f2d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ezETEItaR/J7gVYokGl5RwwQegihaa7iGOTvGlA0fCo=;
+        b=lZvYwjikEQe3vAjmqQZlv3LjoeRczaRU+g8BgBBUY8BDZgbMDr1EOCWrT7IlZCj5lr
+         PPC55XLuCuse3/F+v/F/oSL0560S7SFGjIpV+pu5hyoCP4e1OnxjJa9ccnmtm59fs5Jz
+         /Lv0k8YT8Hx6lEJ2VuhK9zbsM1bfhrYEUkzXCyLXhyKb8bF42DiOBVnTDDqLs/2cPEKF
+         hB09pjAz7izomMvjqc1WeFsN6IgKXq5/1e76unRQyBUBCJOGv1yP9oLHZtnEZmvzEleW
+         kAx22Bky+8ao5tbtyi2HSw/S8zSj+lcSOPyYUaIfZRSZGk1KS236VIms8yN40717BoAf
+         fo5g==
+X-Gm-Message-State: AOAM532vgB960ssFHcyUzFXtBoFgDACvhpy1M+tYyMUqWeMbd7SO9BY+
+        23jOglEgdBAb84ngft7jpttpuJ8RnmKB+ICm6Z0NEA==
+X-Google-Smtp-Source: ABdhPJxRZSFkhXw4g00xRunPY70k7kUJTWx8xMHPbfr89r83VdZ9Hvh5ToOMRnQk5ukyXaELkAir1AsbB/rEDzzpGr0=
+X-Received: by 2002:a6b:b5d8:: with SMTP id e207mr9302657iof.52.1633737100442;
+ Fri, 08 Oct 2021 16:51:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008164750.4007f2d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20211008210752.1109785-1-dlatypov@google.com>
+In-Reply-To: <20211008210752.1109785-1-dlatypov@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 8 Oct 2021 16:51:29 -0700
+Message-ID: <CAGS_qxp0iF+7FLbgVyBHXONN8kKjcAr7B+q=kgF1c71pbgybPQ@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 04:47:50PM -0700, Jakub Kicinski wrote:
-> On Sat,  9 Oct 2021 01:34:25 +0200 Ansuel Smith wrote:
-> > From Documentation phy resume triggers phy reset and restart
-> > auto-negotiation. Add a dedicated function to wait reset to finish as
-> > it was notice a regression where port sometime are not reliable after a
-> > suspend/resume session. The reset wait logic is copied from phy_poll_reset.
-> > Add dedicated suspend function to use genphy_suspend only with QCA8337
-> > phy and set only additional debug settings for QCA8327. With more test
-> > it was reported that QCA8327 doesn't proprely support this mode and
-> > using this cause the unreliability of the switch ports, especially the
-> > malfunction of the port0.
-> > 
-> > Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
-> 
-> Hm, there's some confusion here. This commit does not exist in net,
-> and neither does the one from patch 2.
-> 
-> We should be fine with these going into net-next, right Andrew?
+On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> kunit.py currently crashes and fails to parse kernel output if it's not
+> fully valid utf-8.
+>
+> This can come from memory corruption or or just inadvertently printing
+> out binary data as strings.
+>
+> E.g. adding this line into a kunit test
+>   pr_info("\x80")
+> will cause this exception
+>   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
+>
+> We can tell Python how to handle errors, see
+> https://docs.python.org/3/library/codecs.html#error-handlers
+>
+> Unfortunately, it doesn't seem like there's a way to specify this in
+> just one location, so we need to repeat ourselves quite a bit.
+>
+> Specify `errors='backslashreplace'` so we instead:
+> * print out the offending byte as '\x80'
+> * try and continue parsing the output.
+>   * as long as the TAP lines themselves are valid, we're fine.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
+>  tools/testing/kunit/kunit.py        | 3 ++-
+>  tools/testing/kunit/kunit_kernel.py | 4 ++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 9c9ed4071e9e..28ae096d4b53 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -457,9 +457,10 @@ def main(argv, linux=None):
+>                         sys.exit(1)
+>         elif cli_args.subcommand == 'parse':
+>                 if cli_args.file == None:
+> +                       sys.stdin.reconfigure(errors='backslashreplace')
 
-Took the hash from linux-next. Think this is the reason they are not in
-net?
+Ugh, pytype doesn't like this even though it's valid.
+I can squash the error with
+  sys.stdin.reconfigure(errors='backslashreplace')  # pytype:
+disable=attribute-error
 
---
-	Ansuel
+I had wanted us to avoid having anything specific to pytype in the code.
+But mypy (the more common typechecker iirc) hasn't been smart enough
+to typecheck our code since the QEMU support landed.
+
+If we don't add this directive, both typecheckers will report at least
+one spurious warning.
+Should I go ahead and add it, Brendan/David?
+
+>                         kunit_output = sys.stdin
+>                 else:
+> -                       with open(cli_args.file, 'r') as f:
+> +                       with open(cli_args.file, 'r', errors='backslashreplace') as f:
+>                                 kunit_output = f.read().splitlines()
+>                 request = KunitParseRequest(cli_args.raw_output,
+>                                             None,
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index faa6320e900e..f08c6c36a947 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -135,7 +135,7 @@ class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
+>                                            stdin=subprocess.PIPE,
+>                                            stdout=subprocess.PIPE,
+>                                            stderr=subprocess.STDOUT,
+> -                                          text=True, shell=True)
+> +                                          text=True, shell=True, errors='backslashreplace')
+>
+>  class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+>         """An abstraction over command line operations performed on a source tree."""
+> @@ -172,7 +172,7 @@ class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
+>                                            stdin=subprocess.PIPE,
+>                                            stdout=subprocess.PIPE,
+>                                            stderr=subprocess.STDOUT,
+> -                                          text=True)
+> +                                          text=True, errors='backslashreplace')
+>
+>  def get_kconfig_path(build_dir) -> str:
+>         return get_file_path(build_dir, KCONFIG_PATH)
+>
+> base-commit: a032094fc1ed17070df01de4a7883da7bb8d5741
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
