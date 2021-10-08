@@ -2,137 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8E5427418
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283E7427427
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243759AbhJHXVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S243765AbhJHX0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhJHXVV (ORCPT
+        with ESMTP id S231946AbhJHX0Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:21:21 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DEA7C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:19:25 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so13473248otv.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:19:25 -0700 (PDT)
+        Fri, 8 Oct 2021 19:26:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37196C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:24:28 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id c65-20020a251c44000000b005ba81fe4944so4342757ybc.14
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:24:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x738ufZ26qwkomPQn+MfcJAOvsbxWorDBI+ovCJWAwQ=;
-        b=Q9QQAxS64wz/rk0hjJJp3RwiQQhf4XHpzAcJec/2dyG0OiD3EyShl6WQuS9Gj4WrXs
-         vLgfkhdQmchuR7yrGpntQrB+2ZPkof/7+DkIdy84Ny9kxgMZxdQPDw4o00YmDBYu4e7l
-         qKgst6bpVxYBnb/sDf7S/4xZFcCEzTGWgMk5IrLnKqnxzx9KTMH08xZY8FZIO0Gc+gTl
-         /qlYlv5Lvdrkq49dxuIdItdBzg4qTW7glw4U8FASrxAjLk8pijAONeL9u0mmBCqn3zxb
-         J8UfFnmpM84XTCCvBiik1XtBFydG8rwAERohf0dVsJKi7xsM9AvZHudi0Zt3hrr37Pvn
-         kbJw==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6R3nZNSzpk+caEZyXv3b16izwtA5CCBL4BbEmS/EszI=;
+        b=SCTcPq0XXQwfY2ZRR2HhNNEvr4Rj77o66Gr0YOZ7cigPM21i52ffLDz+yyORwDXwFz
+         whZroerQv6tq9hdPF6g9JW5aN1M1QtX+U7JPcge4syQAIN9kHx/AS9JdKhVQ56MPZkvd
+         4hojpOEAgSgZjwgDKeriC6phw8hWz1yznvbRfj9hm8/4ri9LlhheF3xhc4Jsa0PfjhxF
+         yZaj8yy85gCmOQs0KGqWEmw0X9UJJY/KFBW9eQAT0p8OLV+/Y6xLxXg4vaMpvyHuTA01
+         tbPw9KvLHIHNb6hdbaPY6fqOirlQWtwqVPsRuSHsiLq6bYfE7CV6XLz5c5UTa3e3PqRB
+         Os+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x738ufZ26qwkomPQn+MfcJAOvsbxWorDBI+ovCJWAwQ=;
-        b=JHFAuyDwfp2NV35MSx5hA/ofUW2Vo6/fK/h9IOEGu/zsr3I+uaNOnvWzM1/nyxXNax
-         xLTD8fCr3OvNwsznXoHmIM2IY64n5En1i5fjz7SDPsMKixdEqw3SMgSXcgp6xFyTxGuG
-         9Pk3qAFGZ4x/RuZa2FwHBgvQ7A0KuFTq9WZO3K4/dd61CUnNJYnvjLW7zUfNjvkppWlv
-         EaIWctAh5t43KbxBvZ8YAj7CNOv0kaaXDw76huCqdYo3mYsZ0ecRMyeGaxpke6eTRd0e
-         Sv1InQWnn/rgSk+cxeahb9oKK2hQFn33yKDucxLM67T1HDEKfd3Tv5hmGHZg+XQ/bMdu
-         zJXA==
-X-Gm-Message-State: AOAM531kz3nZWI/q+v6r8VYuxSFIuuXEgmtnnLiJYVyv4HOU/q0NK6LA
-        9VbSylqFyjTbqoEXtlJ+ySE1Jg==
-X-Google-Smtp-Source: ABdhPJxY3pRS9QcITX6jzHIIwjpjFrwSORH5JXMYWCXknB5wISu9iN0QhmvY3K1bSk/MpqHp/n6gpg==
-X-Received: by 2002:a05:6830:2a0c:: with SMTP id y12mr5549935otu.377.1633735164504;
-        Fri, 08 Oct 2021 16:19:24 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id h17sm140754oog.17.2021.10.08.16.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 16:19:24 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 16:21:02 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the
- control part.
-Message-ID: <YWDSXu/MDOwOLDg0@ripper>
-References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6R3nZNSzpk+caEZyXv3b16izwtA5CCBL4BbEmS/EszI=;
+        b=0DHH+GsPxn5tGBH5C0YE4F0LG88q0uSK/fLUkBj01pElDzJplezVXcTN1tAmkH1NZ2
+         YJ4kIQ8NvvDFGMH/AROMHEl8AU/RWKrhbCNjs1eiyljegw/7qGDS9Sm0z1ENuuau6J0n
+         zdq16h3Ijn+bzpGhTnB5C6R1XJ8ur//MlsOpovy68sFYwf5In9qAPDfYVX/qcR+I4RKU
+         d9EoXc/AqwMFsDPSY9915zznYXK1zgfHB/ZkNDGQpd6/ThQPXIlnb65qz9HqeVX1tWq1
+         KrXfQzFK7FTgha9JpR0w6gFvGiCWt5mIDNCxHIgJ71txALDJINbf3P6B0uYqzM9/jheK
+         GjwQ==
+X-Gm-Message-State: AOAM531iGDve+AQhKU6z+xZNgOw7X0Hw9uSKRvrNQSXCX/YGeqAVWAM4
+        1Vq+ZSKjcoR7EY+uE7GzENEOFgtkZIkeXg==
+X-Google-Smtp-Source: ABdhPJx558ftpmVpgs7LrNHJQStAlHS2y/Ayjhyy19ovy7sM65gJptOQivKYtiSYhLOwP16uYEwtgdCuCUFWCg==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:fc52:cec:3819:b41f])
+ (user=dlatypov job=sendgmr) by 2002:a25:6705:: with SMTP id
+ b5mr6502054ybc.116.1633735467458; Fri, 08 Oct 2021 16:24:27 -0700 (PDT)
+Date:   Fri,  8 Oct 2021 16:24:21 -0700
+Message-Id: <20211008232421.1264857-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH] kunit: tool: fix --json output for skipped tests
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+Currently, KUnit will report SKIPPED tests as having failed if one uses
+--json.
 
-> Main update from V4 [1] 
->  - complete commit messages with Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->  - rebased on kernel V.14-rc1.
-> 
-> This series can be applied and tested on "Linux 5.14-rc1"(e73f0f0ee754) branch
-> 
-> Series description:
-> This series is the second step in the division of the series [2]: 
-> "Introducing a Generic IOCTL Interface for RPMsg Channel Management".
-> 
-> The purpose of this patchset is to split the code related to the control
-> and the endpoint. The code related to the control part is moved in the rpmsg_ctrl.c.
+Add the missing if statement to set the appropriate status ("SKIP").
+See https://api.kernelci.org/schema-test-case.html:
+  "status": {
+      "type": "string",
+      "description": "The status of the execution of this test case",
+      "enum": ["PASS", "FAIL", "SKIP", "ERROR"],
+      "default": "PASS"
+  },
+with this, we now can properly produce all four of the statuses.
 
-I'm not convinced about the merits for this refactoring, you're creating
-yet another kernel module which is fairly tightly coupled with
-the rpmsg_char kernel module and the only case I can see where this
-would be useful is if you want to be able to create reach
-RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_EPT_IOCTL without having to
-include the rpmsg_char part in your kernel.
+Fixes: 5acaf6031f53 ("kunit: tool: Support skipped tests in kunit_tool")
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ tools/testing/kunit/kunit_json.py      | 2 ++
+ tools/testing/kunit/kunit_tool_test.py | 6 ++++++
+ 2 files changed, 8 insertions(+)
 
-> This split is an intermediate step to extend the controls to allow user applications to
-> instantiate rpmsg devices.
->     
+diff --git a/tools/testing/kunit/kunit_json.py b/tools/testing/kunit/kunit_json.py
+index 746bec72b9ac..b6e66c5d64d1 100644
+--- a/tools/testing/kunit/kunit_json.py
++++ b/tools/testing/kunit/kunit_json.py
+@@ -30,6 +30,8 @@ def _get_group_json(test: Test, def_config: str,
+ 			test_case = {"name": subtest.name, "status": "FAIL"}
+ 			if subtest.status == TestStatus.SUCCESS:
+ 				test_case["status"] = "PASS"
++			elif subtest.status == TestStatus.SKIPPED:
++				test_case["status"] = "SKIP"
+ 			elif subtest.status == TestStatus.TEST_CRASHED:
+ 				test_case["status"] = "ERROR"
+ 			test_cases.append(test_case)
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 77e61b0a40e8..b3cc0227843c 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -426,6 +426,12 @@ class KUnitJsonTest(unittest.TestCase):
+ 			{'name': 'example_simple_test', 'status': 'ERROR'},
+ 			result["sub_groups"][1]["test_cases"][0])
+ 
++	def test_skipped_test_json(self):
++		result = self._json_for('test_skip_tests.log')
++		self.assertEqual(
++			{'name': 'example_skip_test', 'status': 'SKIP'},
++			result["sub_groups"][1]["test_cases"][1])
++
+ 	def test_no_tests_json(self):
+ 		result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+ 		self.assertEqual(0, len(result['sub_groups']))
 
-Can you give a concrete example of when this would be used?
+base-commit: 4a86e2973c31902a2a72f4f25f99b2367188ec5d
+-- 
+2.33.0.882.g93a45727a2-goog
 
-Per our previous discussions I believe you intend to use this to bind
-your rpmsg_tty driver to arbitrary channels in runtime, which to me
-sounds like you're reinventing the bind/unbind sysfs attrs.
-
-Regards,
-Bjorn
-
-> Notice that this patchset does not modify the behavior for using the RPMSG_CREATE_EPT_IOCTL
-> and RPMSG_DESTROY_EPT_IOCTL controls.
->   
-> The next step should be to add the capability to:
-> - instantiate rpmsg_chrdev from the remote side (NS announcement),
-> - instantiate rpmsg_chrdev from local user application by introducing the
->   IOCTLs RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_DEV_IOCTL to instantiate the rpmsg devices,
-> - send a NS announcement to the remote side on rpmsg_chrdev local instantiation.
-> 
-> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
-> [2]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
-> 
-> Arnaud Pouliquen (4):
->   rpmsg: char: Remove useless include
->   rpmsg: char: Export eptdev create an destroy functions
->   rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
->   rpmsg: Update rpmsg_chrdev_register_device function
-> 
->  drivers/rpmsg/Kconfig             |   9 ++
->  drivers/rpmsg/Makefile            |   1 +
->  drivers/rpmsg/qcom_glink_native.c |   2 +-
->  drivers/rpmsg/qcom_smd.c          |   2 +-
->  drivers/rpmsg/rpmsg_char.c        | 184 ++-----------------------
->  drivers/rpmsg/rpmsg_char.h        |  51 +++++++
->  drivers/rpmsg/rpmsg_ctrl.c        | 215 ++++++++++++++++++++++++++++++
->  drivers/rpmsg/rpmsg_internal.h    |   8 +-
->  drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
->  9 files changed, 293 insertions(+), 181 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_char.h
->  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
-> 
-> -- 
-> 2.17.1
-> 
