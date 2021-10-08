@@ -2,123 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FEC42650B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFC942650E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhJHHMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:12:45 -0400
-Received: from mx1.tq-group.com ([93.104.207.81]:45391 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhJHHMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:12:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1633677048; x=1665213048;
-  h=subject:from:to:cc:date:mime-version:
-   content-transfer-encoding:message-id;
-  bh=jWRHRVPBFUVetVaD+ip2tzxDrpeioyY+OQf4Xmta5Mg=;
-  b=W0Ngx5S3OyohZ3200i0V1o+DyGtDIxN4JiQOC94qwiSXmjrg56yrVDMH
-   PZ+l7VgwfYq5dJ377RiKnCan1+M2lUGqbnpKLpniGwnhf/+gERjfw9Jyk
-   iMfslQhzTGxXBP0TEp9Rol7xEYGgD8UWy1ykmUpuKsMUz7vwcwebRR/+n
-   TEiqL0gPt+sQfB7JzcSgcxBDTALOIwrqkP95ix0UiyZGVkAi3O9Bv3ZKH
-   P1YSPMMgYUyym4P23v5XQAnYEmpCREoF5mt39zLe4J82vke4sUz/TZ0L4
-   RmvMugJ0hH/nlOKS59NDARUm9RadD/kLSl063Hw1QlLCUD8/BptbQSPZB
-   w==;
-X-IronPort-AV: E=Sophos;i="5.85,356,1624312800"; 
-   d="scan'208";a="19934038"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 08 Oct 2021 09:10:47 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 08 Oct 2021 09:10:47 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 08 Oct 2021 09:10:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1633677047; x=1665213047;
-  h=subject:from:to:cc:date:mime-version:
-   content-transfer-encoding:message-id;
-  bh=jWRHRVPBFUVetVaD+ip2tzxDrpeioyY+OQf4Xmta5Mg=;
-  b=TOZYn8l2TBErpX73ID7emRlGD4OrAv8fcevpHjHSgNu9yomgJDAwpjtF
-   7FBYuXswMe2prDoBalCQWy3GdfbCCbtaB4Nn3aaxpijgO41p2CIQP9sog
-   EZ8wZQkB4UNOtsmmPDeNqq1bY1tQNqMhIwTrSGiUTOPQs5iMmcOCgHuwM
-   BrZRFZ36NjOf+VQcj4+byOwfBlpL1rBldU0ECRahJHNKdEcUBZVthy51U
-   6dHUZ/YHH3280U/kOz2QHntapN/wkiRq/hgUK8VdO8JOk40Fj2dVDZdri
-   BnrAinhKHJ5DYKdccDEZ+7QAc9BFQaDoAb8ROFREAQ/E7U95KmeCYzfid
-   A==;
-X-IronPort-AV: E=Sophos;i="5.85,356,1624312800"; 
-   d="scan'208";a="19934037"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 08 Oct 2021 09:10:47 +0200
-Received: from vtuxmail01.tq-net.de (localhost [127.0.0.1])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTP id E992E280065;
-        Fri,  8 Oct 2021 09:10:46 +0200 (CEST)
-Received: by vtuxmail01 (kopano-spooler) with MAPI; Fri, 8 Oct 2021 09:10:46
- +0200
-Subject: AW: (EXT) Re: [PATCH 1/2] dt-bindings: mtd: spi-nor: Add
- output-driver-strength property
-From:   "Alexander Stein" <Alexander.Stein@ew.tq-group.com>
-To:     "Rob Herring" <robh@kernel.org>
-Cc:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>,
-        =?us-ascii?Q?linux-kernel=40vger=2Ekern?= =?us-ascii?Q?el=2Eorg?= 
-        <linux-kernel@vger.kernel.org>, "Michael Walle" <michael@walle.cc>,
-        =?us-ascii?Q?devicetree=40vger=2Ekernel=2Eorg?= 
-        <devicetree@vger.kernel.org>,
-        "Richard Weinberger" <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Rob Herring" <robh@kernel.org>,
-        =?us-ascii?Q?linux-mtd=40lists=2Einfradead=2Eorg?= 
-        <linux-mtd@lists.infradead.org>, "Pratyush Yadav" <p.yadav@ti.com>
-Date:   Fri, 8 Oct 2021 07:10:46 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Priority: 3 (Normal)
-X-Mailer: Kopano 8.7.82
-Message-Id: <kcEE.RpXtjvjwSXyzkQ19eSpGDg.AB9KnRO81wE@vtuxmail01.tq-net.de>
+        id S231354AbhJHHO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:14:29 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:37256 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230453AbhJHHOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 03:14:25 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowAD32O1D719hKcjVAg--.40575S2;
+        Fri, 08 Oct 2021 15:12:03 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com
+Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: Re: Re: [PATCH] x86/microcode/amd: Add __list_del_entry_valid() in front of __list_del() in free_cache()
+Date:   Fri,  8 Oct 2021 07:12:01 +0000
+Message-Id: <1633677121-81314-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowAD32O1D719hKcjVAg--.40575S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZryDCFy5uFWDCF1rKFW3KFg_yoWxArg_W3
+        WUC348WwsrCFZFga12vr4Fya97AFn8GFZ7tryftryxJw15KFZ8J3ZxuFW5ury5Wr1Yqrs3
+        Kr4rJryqgFySvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF
+        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
+        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
+        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
+        1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
+        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUrVyIUUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 05 Oct 2021 14:26:28 +0200, Rob Herring wrote:
-> From: Rob Herring <robh@kernel.org>
-> On Mon, 04 Oct 2021 13:15:28 +0200, Alexander Stein wrote:
-> > From: Alexander Stein <alexander.stein@ew.tq-group.com>
-> >
-> > This property is for optimizing output voltage impedance and is
-> > specific to each board.
-> >
-> > Signed-off-by: Alexander Stein <alexander.stein@ew.tq-group.com>
-> > ---
-> > I checked Micron and Macronix datasheets. Both have similar but not
-> > identical supported values. Also the register locations are different.
-> > For those reasons I decided to specify the Ohms value directly and let
-> > the device specfic driver figure out if it is supported where to write
-> > it to.
-> > BTW: Are the Ohm values and the corresponding register bits standardized
-> > somewhere=3F
-> >
-> >=C2=A0 Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml | 6 ++++++
-> >=C2=A0 1 file changed, 6 insertions(+)
-> >
->
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
->
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
->
-> Full log is available here: https://patchwork.ozlabs.org/patch/1536062
+On Tue, Sep 28, 2021 at 22:29:19PM +0000, Christoph Hellwig wrote:
+>On Tue, Sep 28, 2021 at 09:04:44AM +0000, Jiasheng Jiang wrote:
+>> Directly use __list_del() to remove 'p->plist' might be unsafe,
+>> as we can see from the __list_del_entry_valid() of 'lib/list_debug.c'
+>> that p->plist->prev or p->plist->next may be the LIST_POISON,
+>> or p->list is not a valid double list.
+>> In that case, __list_del() will be corruption.
+>> Therefore, we suggest that __list_del_entry_valid()
+>> should be added in front of the __list_del() in free_cache.
 
-Thanks for pointing that out. I checked the amount of error messages related to
-jedec,spi-nor.yaml before and after applying these patches using
-> ARCH=3Darm64 make -j12 dtbs_check DT_SCHEMA_FILES=3DDocumentation/devicetree/bindings/mtd/jedec,spi-nor.yaml 2>&1 > /dev/null | wc -l
+>No one should be using list_del directly anyway, so please fix that.
 
-with all arm64 platforms enabled. There wasn't a change in the line count,
-so I assume this new binding didn't cause them.
-
-Best regards,
-Alexander
+What the 'fix that' means?
 
