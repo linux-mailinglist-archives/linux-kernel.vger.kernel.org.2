@@ -2,139 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772A34272E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824AD4272EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243421AbhJHVPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 17:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56282 "EHLO
+        id S243380AbhJHVRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 17:17:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhJHVPH (ORCPT
+        with ESMTP id S231696AbhJHVRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:15:07 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5145C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:13:11 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so10258166pjw.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:13:11 -0700 (PDT)
+        Fri, 8 Oct 2021 17:17:33 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA94FC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:15:37 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id q12so3553395pgq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:15:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=F0j9Fen+aM1yxtAVTmt6zwsss9sN5UsLCk44GHH1tRc=;
-        b=I+McrbgmDL8gZ9vmtX1aR7+zkzhDrlHhXT6iEzjY4OCKkruLZDBi+tzb3viHWvPBBY
-         kW2Us4im1MyQTWLJHDidgCouWJsWR1fzIwUGgK8+FBItkM6TWjIfpDSi5vv4VKXHDqoI
-         OyfVYPUddfURQDYvCN/P/GevbyB1QLdePw59Q=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HJ2hSEQ+j+jRG03QYHkbXI7vei0EPm7JoU1IqV+QS5I=;
+        b=BGZYWRGb5LbKNUD6vjOnXGkDRKoHoLWaJ9B0EwOvYcgr5rEgBFHVE9yzeE8YP1YGH/
+         99iWMQw2OhOpehvcXBi8+w5pp1s6x49QMgpq9q6pubtnT8ltJYRA7NvDETpVQwyZ6vvo
+         MFJ2jVO6xiPZKjPv/za3/I7ej392xWgJzSDkAtWnsAlh0GQCXRChvtb4m/URdzINMkJU
+         qoxM3nkC9Eaefjj4+GM9vE3DCDzOYStuzdb+KfH1dCRq31KUxwD0z2gjZ8kH0F1hE4uC
+         EwrGH/E9grcVt+LBUpMDCEcfbrhzncZFgx+MSSyIBDlds1mYl7qObx8rwK8bpWtaueMF
+         vt7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F0j9Fen+aM1yxtAVTmt6zwsss9sN5UsLCk44GHH1tRc=;
-        b=iM0NmBkS7u4y12yuDgbip1v9ZAtoxruI6qEG/Yp4C1dENdnVbPIF6cczsaYFvgUdzx
-         cT7+4CpVJvx9CVwW0CiPfIpoPb4AJnIP6EvhLWfsJV9f+cuRIVDvRqQfvW2dpRNeoxJe
-         ZuMJtd9imsa4o2sNXehuy0xdIWy4D+vvDQkKKTP1tgJxrF2f+Do3/3p9/tkP+LfLQ7LV
-         eZYctnvmcHviKC8kQGCUe+/t0PpG/m2e0K3/9OquWzO0nKN+o3LH5X0nf7sehKClYRE4
-         IAKe0a+aMHZ+FZGdF1ruBI9VAmJHC0pK1d8l+wwL1sofczjWgCG1ATkRZQQxNPNfjDJu
-         HGow==
-X-Gm-Message-State: AOAM531Y9BMhVUi0vq5At3dc1sO2ZGhmUkvdBU1ANcsFTIYG73doj0wR
-        HqpFYKGK4nsfytQVz+oxShMhEw==
-X-Google-Smtp-Source: ABdhPJw7VKHrHn5Ve+YJUHXmXb4Y/SdM39YgZAgr2mjSF0lGDycy5YuHBe+qaxeygUETUBv7bjuAQg==
-X-Received: by 2002:a17:90a:6c97:: with SMTP id y23mr14115452pjj.117.1633727591243;
-        Fri, 08 Oct 2021 14:13:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id nn14sm147691pjb.27.2021.10.08.14.13.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:13:10 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 14:13:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Michal Hocko <mhocko@suse.com>, Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        Chinwen Chang =?utf-8?B?KOW8temMpuaWhyk=?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-Message-ID: <202110081401.7AB25E4@keescook>
-References: <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
- <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
- <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook>
- <CAJuCfpFT7qcLM0ygjbzgCj1ScPDkZvv0hcvHkc40s9wgoTov7A@mail.gmail.com>
- <caa830de-ea66-267d-bafa-369a6175251e@nvidia.com>
- <b606021e-0afa-a509-84c4-2988d77f68bc@rasmusvillemoes.dk>
- <eb9fd99e-177e-efe6-667c-f5ff99ad518b@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HJ2hSEQ+j+jRG03QYHkbXI7vei0EPm7JoU1IqV+QS5I=;
+        b=y3VSpER0BpjeFLOdRdUIGg0TcdV8Gkgo89ibRt3MzrV8nbbGWN2NWFO47+lesue9w4
+         DTfF50m9+Apywrtf92C/UHAITs5CFiw6K0/lUZWA2gGIymv9HMLN3ErI+xsnnqHX1CII
+         8w2UWCnwblFu8u3rJ24u7XrPehTvE10XzE1ipurK8OQCeL3csZpqXTsT/h7qD+fLRAXW
+         vUedIz82URoxm75N7nSXuwxfKl7JyOTIhqlPvbfvIdJHrdbuCbBv4mIYErKO5MD7cJh+
+         X2AWDgVeRSMXg6i6PcsV/7hPNZchFzmE4FWObOBPm9ZPOHw8rfTdXsKHZBoACmo2CJV2
+         PVbw==
+X-Gm-Message-State: AOAM530mkx0kJyr490zdi6GcYZ3KnlaiZCcjG6mHdcr+QQod3eafnmg8
+        KMgUxtZezZykPoGfiPg0Hkp13pklFlk7p/oglExVpQ==
+X-Google-Smtp-Source: ABdhPJxoEdPnBnrW3+X0IAUo8fqIKq319rc73TVhJTDcqnnBnqWkFEIlemT2Vy3YyFSYLB9RjEKfw0tqBSe0aAvOq0I=
+X-Received: by 2002:a63:790b:: with SMTP id u11mr6432381pgc.71.1633727736965;
+ Fri, 08 Oct 2021 14:15:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb9fd99e-177e-efe6-667c-f5ff99ad518b@redhat.com>
+References: <20211008210752.1109785-1-dlatypov@google.com>
+In-Reply-To: <20211008210752.1109785-1-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 8 Oct 2021 14:15:25 -0700
+Message-ID: <CAFd5g45oQ-=Q8_yynwAqdWQoS=O3zYpCkQQfS88L3vBZORa31Q@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: continue past invalid utf-8 output
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 09:43:59AM +0200, David Hildenbrand wrote:
-> I'm going to point out that we already do have names for memfds.
+On Fri, Oct 8, 2021 at 2:08 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> kunit.py currently crashes and fails to parse kernel output if it's not
+> fully valid utf-8.
+>
+> This can come from memory corruption or or just inadvertently printing
+> out binary data as strings.
+>
+> E.g. adding this line into a kunit test
+>   pr_info("\x80")
+> will cause this exception
+>   UnicodeDecodeError: 'utf-8' codec can't decode byte 0x80 in position 1961: invalid start byte
+>
+> We can tell Python how to handle errors, see
+> https://docs.python.org/3/library/codecs.html#error-handlers
+>
+> Unfortunately, it doesn't seem like there's a way to specify this in
+> just one location, so we need to repeat ourselves quite a bit.
+>
+> Specify `errors='backslashreplace'` so we instead:
+> * print out the offending byte as '\x80'
+> * try and continue parsing the output.
+>   * as long as the TAP lines themselves are valid, we're fine.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 
-I just did the same here[1]. :P
+Thanks for fixing this!
 
-> [...] It's also displayed in /proc/self/maps.
-
-I missed that part! /me screams forever
-
-We really need to filter this at creation time. :( At least
-seq_file_path() escapes "\n" for it, but not "\r", so humans on a
-terminal could get very confused...
-
-$ ./memfd '^M0000000000000000-ffffffffffffffff rwxp 00000000 00:00 0 [stack]' &
-[1] 2953833
-$ cat /proc/2953833/maps
-...
-0000000000000000-ffffffffffffffff rwxp 00000000 00:00 0     [stack] (deleted)
-...
-
-
--Kees
-
-[1] https://lore.kernel.org/lkml/202110081344.FE6A7A82@keescook
-
--- 
-Kees Cook
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
