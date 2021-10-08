@@ -2,181 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F654426F92
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B147C426F93
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236922AbhJHRdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:33:15 -0400
-Received: from first.geanix.com ([116.203.34.67]:37354 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhJHRdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:33:13 -0400
-Received: from skn-laptop (_gateway [172.25.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 1487FC3B66;
-        Fri,  8 Oct 2021 17:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633714276; bh=JWfS19275allVPCWaX4T20Mtdi7r0TA98mw4cxYeGko=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=PWcMunuVSeH7rAPyXy1fFh23IUGE+SJoEHu/9fWi1I/uAyrgs8vjzkiOgF78NZe7Z
-         7ygVRXI/3qy6bS0gfft4O2h0u0pA4VBc1XtKYww7bwp7taAkUxuFwYNBt+c9ekozkd
-         NKhpy4lMcxI2NMH3+dh9/wiVrgSapHF1xX1VlD3jocqLlRSBcPIwddW5pwB7tnMEeq
-         fUG9VvVA2lNx+zQsP7YOUnurhRR9EttRhmYPGoVi0IyFyKZIcRMZSyDmCgv/R3KTtb
-         4EAM0zWdj8WVlGg0faGaJpWhADELcMr95JtBGKT8vIRileOBSlzRS8DLHy0EKlXaEb
-         +SH4uk2HB+qrw==
-Date:   Fri, 8 Oct 2021 19:31:14 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while
- in suspend
-Message-ID: <20211008173114.fmwbs3j3ufjvpcqd@skn-laptop>
-References: <20211008141524.20ca8219@collabora.com>
- <20211008143825.3717116-1-sean@geanix.com>
- <20211008173043.6263ba80@collabora.com>
+        id S237403AbhJHRdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhJHRde (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:33:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46CCAC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:31:39 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d56005271a08b055a2ed3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5600:5271:a08b:55a:2ed3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BDB981EC051E;
+        Fri,  8 Oct 2021 19:31:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633714297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KhlajtYxz4uxkGvv7MvDkO2RI4bEe41vosga3JrURI8=;
+        b=jaCen8qLfftcWFq82RPCWSTvn46LuEZHpKhMycBLCfIHg0qc14Ew9/rn7p9XqsYW21cZVC
+        ZBbnxNxTNmcyaqbt5SHrIYuBp+q5hUtiGyHSFDN0pJsJ2TVW3f/ZBK6bOWJ6qcuwPQnegQ
+        ytCBExcNUynbc6qDr2xZ/7S6J1EK+7A=
+Date:   Fri, 8 Oct 2021 19:31:36 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 07/11] x86/tdx: Add HLT support for TDX guest
+Message-ID: <YWCAeCIYovTnqvbd@zn.tnic>
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-8-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20211008173043.6263ba80@collabora.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+In-Reply-To: <20211005025205.1784480-8-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 05:30:43PM +0200, Boris Brezillon wrote:
-> Hi Sean,
-> 
-> Can you please submit that as a separate thread, ideally with an
-> incremented version number, a changelog and a reference to all your
-> previous attempts.
+On Mon, Oct 04, 2021 at 07:52:01PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> @@ -240,6 +243,33 @@ SYM_FUNC_START(__tdx_hypercall)
+>  
+>  	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
+>  
+> +	/*
+> +	 * For the idle loop STI needs to be called directly before
+> +	 * the TDCALL that enters idle (EXIT_REASON_HLT case). STI
+> +	 * enables interrupts only one instruction later. If there
+> +	 * are any instructions between the STI and the TDCALL for
+> +	 * HLT then an interrupt could happen in that time, but the
+> +	 * code would go back to sleep afterwards, which can cause
+> +	 * longer delays.
+> +	 *
+> +	 * This leads to significant difference in network performance
+> +	 * benchmarks. So add a special case for EXIT_REASON_HLT to
+> +	 * trigger STI before TDCALL. But this change is not required
+> +	 * for all HLT cases. So use R15 register value to identify the
+> +	 * case which needs STI. So, if R11 is EXIT_REASON_HLT and R15
+> +	 * is 1, then call STI before TDCALL instruction. Note that R15
+> +	 * register is not required by TDCALL ABI when triggering the
+> +	 * hypercall for EXIT_REASON_HLT case. So use it in software to
+> +	 * select the STI case.
+> +	 */
+> +	cmpl $EXIT_REASON_HLT, %r11d
+> +	jne skip_sti
+> +	cmpl $1, %r15d
+> +	jne skip_sti
+> +	/* Set R15 register to 0, it is unused in EXIT_REASON_HLT case */
+> +	xor %r15, %r15
 
-Yes, I'll do that with the next one.
+Then you don't need to clear it either, right?
 
-> 
-> On Fri,  8 Oct 2021 16:38:24 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
-> 
-> > This will prevent reading/writing/erasing to a suspended mtd device.
-> > It will force mtd_write()/mtd_read()/mtd_erase() to wait for
-> > mtd_resume() to unlock access to mtd devices.
-> 
-> I think this has to be done for all the hooks except ->_reboot(),
-> ->_get_device() and ->_put_device().
-> 
-> > 
-> > Exec_op[0] speed things up, so we see this race when rawnand devices going
-> 
-> Mention the commit directly:
-> 
-> Commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op") speed
-> things up, so we see this race when rawnand devices going ...
-> 
-> > into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
-> 
-> But it's actually commit 013e6292aaf5 ("mtd: rawnand: Simplify the
-> locking") that ...
-> 
-> > allows it to return errors rather than locking, before that commit it would
-> > have waited for the rawnand device to resume.
-> > 
-> > Tested on a iMX6ULL.
-> > 
-> > [0]:
-> > ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
-> > 
-> > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> 
-> You flagged yourself as the author even though you didn't really write
-> that code. I guess I'm fine with that, but I'd appreciate a
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> here, at least.
-> 
+> +	sti
+> +skip_sti:
+>  	tdcall
+>  
+>  	/* Restore output pointer to R9 */
 
-Of course, of course I forgot it... Still an RFC after all :)
+...
 
-> > ---
-> > 
-> > Hope I got it all :)
-> > 
-> >  drivers/mtd/mtdcore.c   | 57 ++++++++++++++++++++++++++++++++++++++++-
-> >  include/linux/mtd/mtd.h | 36 ++++++++++++++++++--------
-> >  2 files changed, 81 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index c8fd7f758938..3c93202e6cbb 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -36,6 +36,44 @@
-> >  
-> >  struct backing_dev_info *mtd_bdi;
-> >  
-> > +static void mtd_start_access(struct mtd_info *mtd)
-> > +{
-> > +	struct mtd_info *master = mtd_get_master(mtd);
-> > +
-> > +	/*
-> > +	 * Don't take the suspend_lock on devices that don't
-> > +	 * implement the suspend hook. Otherwise, lockdep will
-> > +	 * complain about nested locks when trying to suspend MTD
-> > +	 * partitions or MTD devices created by gluebi which are
-> > +	 * backed by real devices.
-> > +	 */
-> > +	if (!master->_suspend)
-> > +		return;
-> > +
-> 
-> You need to remove the ->_suspend()/->_resume() implementation in
-> mtd_concat.c, otherwise you'll hit the case described in the comment.
+> +static __cpuidle void tdx_halt(void)
+> +{
+> +	const bool irq_disabled = irqs_disabled();
+> +	const bool do_sti = false;
+> +
+> +	/*
+> +	 * Non safe halt is mainly used in CPU off-lining
+> +	 * and the guest will stay in halt state. So,
+> +	 * STI instruction call is not required (set
+> +	 * do_sti as false).
+> +	 */
 
-Do you mean to remove concat_suspend() and concat_resume() together
-with the references to them?
+Just like you've done below, put the comment over the variable assignment:
 
-> 
-> BTW, did you test this series with lockdep enabled to make sure we
-> don't introduce a deadlock?
-> 
+        /*
+         * Non safe halt is mainly used in CPU offlining  and the guest will stay in halt
+         * state. So, STI instruction call is not required.
+         */
+        const bool do_sti = false;
 
-Good you mentioned it... I thought the kernel had LOCKDEP enabled, but I
-guess it at some point got removed.
 
-It reveals that mtd_read_oob() -> mtd_start_access() is using the suspend_lock
-rw_semaphore before it's initialized...
-But it's not complaining when going suspend and resuming, will continue
-to test with LOCKDEP enabled.
+> +	_tdx_halt(irq_disabled, do_sti);
+> +}
+> +
+> +static __cpuidle void tdx_safe_halt(void)
+> +{
+> +	 /*
+> +	  * Since STI instruction will be called in __tdx_hypercall()
+> +	  * set irq_disabled as false.
+> +	  */
+> +	const bool irq_disabled = false;
+> +	const bool do_sti = true;
+> +
+> +	_tdx_halt(irq_disabled, do_sti);
+> +}
+> +
+>  unsigned long tdx_get_ve_info(struct ve_info *ve)
+>  {
+>  	struct tdx_module_output out = {0};
 
-/Sean
+-- 
+Regards/Gruss,
+    Boris.
 
-> > +	/*
-> > +	 * Wait until the device is resumed. Should we have a
-> > +	 * non-blocking mode here?
-> > +	 */
-> > +	while (1) {
-> > +		down_read(&master->master.suspend_lock);
-> > +		if (!master->master.suspended)
-> > +			return;
-> > +
-> > +		up_read(&master->master.suspend_lock);
-> > +		wait_event(master->master.resume_wq, master->master.suspended == 0);
-> > +	}
-> > +}
-> > +
-> > +static void mtd_end_access(struct mtd_info *mtd)
-> > +{
-> > +	struct mtd_info *master = mtd_get_master(mtd);
-> > +
-> > +	if (!master->_suspend)
-> > +		return;
-> > +
-> > +	up_read(&master->master.suspend_lock);
-> > +}
-> > +
-
+https://people.kernel.org/tglx/notes-about-netiquette
