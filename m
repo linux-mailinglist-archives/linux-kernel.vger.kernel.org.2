@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E49B4270A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1F44270AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240082AbhJHSWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:22:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhJHSWI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:22:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64492C061570;
-        Fri,  8 Oct 2021 11:20:12 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d56005271a08b055a2ed3.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5600:5271:a08b:55a:2ed3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E4E151EC04BF;
-        Fri,  8 Oct 2021 20:20:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633717211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=WZ2vyr0bBr+0bKupnx3Iy+0X8ZvgkkgNmebhnhZ/6g8=;
-        b=Zs7KHzgscT85XNZEJxf7YDbb4ZZKjw8qP1ieDUC4ZZsFc0HQAhEU717wghNpamCsyi8Qhx
-        xs2ghinI+EYufAtxpxtj62fVN5A7WMsNFdkvvuLpqEDpcta0Ern3YchCXKMNHP/jnk+KXP
-        q/Y1t3MRmzFILb8mc5LIw3QmXB2ATu8=
-Date:   Fri, 8 Oct 2021 20:20:08 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Eric Whitney <enwlinux@gmail.com>
-Cc:     linux-ext4@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: kernel BUG at fs/ext4/inode.c:1721!
-Message-ID: <YWCL2OXaz8/OnBiF@zn.tnic>
-References: <YWANK0HchPv9m6hA@zn.tnic>
- <20211008173305.GA28198@localhost.localdomain>
+        id S231476AbhJHS1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:27:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhJHS1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:27:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F108460F9D;
+        Fri,  8 Oct 2021 18:25:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633717526;
+        bh=iC/h3aiUcytVYRe2zTb8f9AgkuyTJM44W4jRd7yPuRc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=kh7q9Pwn462xjsy9yADINxXHInbs8u5TxCOXxd2q9go69YSoL2FvxKaurnG/JN2L9
+         b9SY01g6Gmmi6ndy5Try/UGhFuDV6DHoQVIBEc0p5o93GVq5O0aOEnh34vXz2uySko
+         OBp+b3oYoSbBSFEzzjM8EtkgbuDiBIdAwXFk0qfRCwe6dGhX93qP1yFNm4dKeI1Voh
+         E4PnXRj7CPOHnH0DoHMU6UuFzb0TpPyP7u5Lm2/FmdcC8ZbWfKFC0ZnL3Ga6BwdS1H
+         swMdwZ0MohdJEt4zbwEDpkPC2kG+TftoCzYAhLjqLs0J8ZzTJ0x62FWvFkgzDIcdYE
+         QrmdDJqOgSH6Q==
+Date:   Fri, 8 Oct 2021 13:25:24 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Logan Gunthorpe <logang@deltatee.com>
+Cc:     kelvin.cao@microchip.com, kurt.schwemmer@microsemi.com,
+        bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kelvincao@outlook.com
+Subject: Re: [PATCH 0/5] Switchtec Fixes and Improvements
+Message-ID: <20211008182524.GA1361129@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008173305.GA28198@localhost.localdomain>
+In-Reply-To: <e60010f3-f803-e60b-3412-346ccc11a0fb@deltatee.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Fri, Oct 08, 2021 at 11:23:46AM -0600, Logan Gunthorpe wrote:
+> On 2021-10-08 11:05 a.m., Bjorn Helgaas wrote:
+> > On Fri, Sep 24, 2021 at 11:08:37AM +0000, kelvin.cao@microchip.com wrote:
+> >> From: Kelvin Cao <kelvin.cao@microchip.com>
+> >>
+> >> Hi,
+> >>
+> >> Please find a bunch of patches for the switchtec driver collected over the
+> >> last few months.
+> > 
+> > Question: Is there a reason this driver should be in drivers/pci/?
+> > 
+> > It doesn't use any internal PCI core interfaces, e.g., it doesn't
+> > include drivers/pci/pci.h, and AFAICT it's really just a driver for a
+> > PCI device that happens to be a switch.
+> > 
+> > I don't really *care* that it's in drivers/pci; I rely on Kurt and
+> > Logan to review changes.  The only problem it presents for me is that
+> > I have to write merge commit logs for the changes.  You'd think that
+> > would be trivial, but since I don't know much about the driver, it
+> > does end up being work for me.
+> 
+> We did discuss this when it was originally merged.
 
-On Fri, Oct 08, 2021 at 01:33:05PM -0400, Eric Whitney wrote:
-> Hi, Boris - thanks very much for your report.
+Thanks, I thought I remembered talking about it, but didn't bother to
+dig it up.
 
-sure, np.
+> The main reason we want it in the PCI tree is so that it's in a sensible
+> spot in the Kconfig hierarchy (under PCI support). Seeing it is still
+> PCI hardware. Dropping it into the miscellaneous devices mess (or
+> similar) is less than desirable. Moreover, it's not like the maintainers
+> for misc have any additional knowledge that would make them better
+> qualified to merge these changes. In fact, I'm sure they'd have less
+> knowledge and we wouldn't have gotten to the bottom of this last issue
+> if it had been a different maintainer.
+> 
+> In the future I'll try to be more careful in my reviews to ensure we
+> have a better understanding and clearer commit messages. If there's
+> anything else we can do to make your job easier, please let us know.
 
-> Was your kernel configured with the CONFIG_FS_ENCRYPTION option?
+Oh, please don't take this as me complaining about anybody's reviews!
+I honestly just look for your or Kurt's ack.  I think I just need to
+be a little less fixated on writing the merge commit logs :)
 
-$ grep CONFIG_FS_ENCRYPTION /boot/config-5.15.0-rc4+ 
-# CONFIG_FS_ENCRYPTION is not set
-
-> Could you please provide the output of the mount command for the affected
-> file system?
-
-Well, I can't figure out from dmesg - it's all I have from that run -
-which fs it was. So lemme give you all ext4 ones:
-
-$ mount | grep ext4
-/dev/nvme0n1p2 on / type ext4 (rw,relatime,errors=remount-ro)
-/dev/sdc1 on /home type ext4 (rw,noatime)
-/dev/sda1 on /mnt/oldhome type ext4 (rw,noatime)
-/dev/sdb1 on /mnt/smr type ext4 (rw,noatime)
-/dev/nvme1n1p1 on /mnt/kernel type ext4 (rw,nosuid,nodev,noatime,user)
-
-> Do you recall what sort of code might have been running on this system at
-> the time of failure (for example, kernel build, desktop apps, etc.)?
-
-Good question. I'm not sure. Kernel build is likely as I do those on
-that workstation constantly.
-
-Unfortunately, I don't have an exact reproducer. And I can't debug stuff
-on that box since it is my workstation and I've reverted it to 5.14.
-
-What I can do is, I can slap 5.15-rc4 or whichever version you'd want me
-to, on a test box and try running kernel builds or some other load to
-see whether it would fire. I have a similar box to my workstation.
-
-Or if you have a better idea...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Bjorn
