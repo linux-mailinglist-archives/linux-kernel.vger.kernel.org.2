@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D65D42661F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7FD426621
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233932AbhJHIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:44:40 -0400
-Received: from mga03.intel.com ([134.134.136.65]:29466 "EHLO mga03.intel.com"
+        id S235315AbhJHIpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:45:30 -0400
+Received: from mga06.intel.com ([134.134.136.31]:50073 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229877AbhJHIok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:44:40 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226416478"
+        id S234255AbhJHIpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:45:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="287346425"
 X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="226416478"
+   d="scan'208";a="287346425"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:42:45 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:43:27 -0700
 X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="489376509"
-Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.14]) ([10.249.227.14])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:42:41 -0700
-Subject: Re: [PATCH v3 6/8] perf session: Move event read code to separate
- function
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+   d="scan'208";a="489376744"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:43:24 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
- <6ab47325fa261deca4ca55ecacf1ca2437abcd78.1633596227.git.alexey.v.bayduraev@linux.intel.com>
- <YV/0ZZBu01V87A8e@krava>
-From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Organization: Intel Corporation
-Message-ID: <aa62d0ed-abca-2123-c8bf-cd6bced2fe9c@linux.intel.com>
-Date:   Fri, 8 Oct 2021 11:42:18 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
+        Wei Xu <weixugc@google.com>, osalvador <osalvador@suse.de>,
+        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -V9 0/6] NUMA balancing: optimize memory placement for
+ memory tiering system
+References: <20211008083938.1702663-1-ying.huang@intel.com>
+Date:   Fri, 08 Oct 2021 16:43:22 +0800
+In-Reply-To: <20211008083938.1702663-1-ying.huang@intel.com> (Huang Ying's
+        message of "Fri, 8 Oct 2021 16:39:32 +0800")
+Message-ID: <87ee8vrjo5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YV/0ZZBu01V87A8e@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Mel,
 
+Huang Ying <ying.huang@intel.com> writes:
 
-On 08.10.2021 10:33, Jiri Olsa wrote:
-> On Thu, Oct 07, 2021 at 01:25:41PM +0300, Alexey Bayduraev wrote:
-> 
-> SNIP
-> 
->>  static int
->> -reader__process_events(struct reader *rd, struct perf_session *session,
->> -		       struct ui_progress *prog)
->> +reader__read_event(struct reader *rd, struct perf_session *session,
->> +		   struct ui_progress *prog)
->>  {
->>  	u64 size;
->>  	int err = 0;
->>  	union perf_event *event;
->>  	s64 skip;
->>  
->> -	err = reader__init(rd, &session->one_mmap);
->> -	if (err)
->> -		goto out;
->> -
->> -remap:
->> -	err = reader__mmap(rd, session);
->> -	if (err)
->> -		goto out;
->> -
->> -more:
->>  	event = fetch_mmaped_event(rd->head, rd->mmap_size, rd->mmap_cur,
->>  				   session->header.needs_swap);
->>  	if (IS_ERR(event))
->>  		return PTR_ERR(event);
->>  
->>  	if (!event)
->> -		goto remap;
->> +		return 1;
->>  
->>  	session->active_decomp = &rd->decomp_data;
->>  	size = event->header.size;
->> @@ -2311,6 +2301,33 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->>  
->>  	ui_progress__update(prog, size);
->>  
->> +out:
->> +	session->active_decomp = &session->decomp_data;
->> +	return err;
->> +}
->> +
->> +static int
->> +reader__process_events(struct reader *rd, struct perf_session *session,
->> +		       struct ui_progress *prog)
->> +{
->> +	int err;
->> +
->> +	err = reader__init(rd, &session->one_mmap);
->> +	if (err)
->> +		goto out;
->> +
->> +remap:
->> +	err = reader__mmap(rd, session);
->> +	if (err)
->> +		goto out;
->> +
->> +more:
->> +	err = reader__read_event(rd, session, prog);
->> +	if (err < 0)
->> +		goto out;
->> +	else if (err == 1)
->> +		goto remap;
->> +
->>  	if (session_done())
->>  		goto out;
->>  
->> @@ -2318,7 +2335,6 @@ reader__process_events(struct reader *rd, struct perf_session *session,
->>  		goto more;
->>  
->>  out:
->> -	session->active_decomp = &session->decomp_data;
-> 
-> active_decomp should be set/unset within reader__process_events,
-> not just for single event read, right?
+> The changes since the last post are as follows,
+>
+> - Rebased on v5.15-rc4
+>
+> - Make "add promotion counter" the first patch per Yang's comments
+>
+> --
+>
+> With the advent of various new memory types, some machines will have
+> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
+> memory subsystem of these machines can be called memory tiering
+> system, because the performance of the different types of memory are
+> different.
+>
+> After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
+> for use like normal RAM"), the PMEM could be used as the
+> cost-effective volatile memory in separate NUMA nodes.  In a typical
+> memory tiering system, there are CPUs, DRAM and PMEM in each physical
+> NUMA node.  The CPUs and the DRAM will be put in one logical node,
+> while the PMEM will be put in another (faked) logical node.
+>
+> To optimize the system overall performance, the hot pages should be
+> placed in DRAM node.  To do that, we need to identify the hot pages in
+> the PMEM node and migrate them to DRAM node via NUMA migration.
+>
+> In the original NUMA balancing, there are already a set of existing
+> mechanisms to identify the pages recently accessed by the CPUs in a
+> node and migrate the pages to the node.  So we can reuse these
+> mechanisms to build the mechanisms to optimize the page placement in
+> the memory tiering system.  This is implemented in this patchset.
+>
+> At the other hand, the cold pages should be placed in PMEM node.  So,
+> we also need to identify the cold pages in the DRAM node and migrate
+> them to PMEM node.
+>
+> In commit 26aa2d199d6f ("mm/migrate: demote pages during reclaim"), a
+> mechanism to demote the cold DRAM pages to PMEM node under memory
+> pressure is implemented.  Based on that, the cold DRAM pages can be
+> demoted to PMEM node proactively to free some memory space on DRAM
+> node to accommodate the promoted hot PMEM pages.  This is implemented
+> in this patchset too.
+>
+> We have tested the solution with the pmbench memory accessing
+> benchmark with the 80:20 read/write ratio and the normal access
+> address distribution on a 2 socket Intel server with Optane DC
+> Persistent Memory Model.  The test results of the base kernel and step
+> by step optimizations are as follows,
+>
+>                 Throughput	Promotion      DRAM bandwidth
+> 		  access/s           MB/s                MB/s
+>                -----------     ----------      --------------
+> Base		69263986.8			       1830.2
+> Patch 2	       135691921.4	    385.6	      11315.9
+> Patch 3	       133239016.8	    384.7	      11065.2
+> Patch 4	       151310868.9          197.6	      11397.0
+> Patch 5	       142311252.8           99.3	       9580.8
+> Patch 6	       149044263.9	     65.5	       9922.8
+>
+> The whole patchset improves the benchmark score up to 115.2%.  The
+> basic NUMA balancing based optimization solution (patch 2), the hot
+> page selection algorithm (patch 4), and the threshold automatic
+> adjustment algorithms (patch 6) improves the performance or reduce the
+> overhead (promotion MB/s) greatly.
+>
+> Changelog:
+>
+> v9:
+>
+> - Rebased on v5.15-rc4
+>
+> - Make "add promotion counter" the first patch per Yang's comments
 
-No, it should be set before perf_session__process_event/process_decomp_events
-and unset after these calls. So active_decomp setting/unsetting is moved in
-this patch to the reader__read_event function. This is necessary for multiple
-trace reader because it could call reader__read_event in round-robin manner.
+In this new version, all dependencies have been merged by the latest
+upstream kernel.  So it is easier to be reviewed than the previous
+version you have reviewed part of them.  Do you have time to take a look
+at this new series now?
 
-Regards,
-Alexey
-
-> 
-> jirka
-> 
->>  	return err;
->>  }
->>  
->> -- 
->> 2.19.0
->>
-> 
+Best Regards,
+Huang, Ying
