@@ -2,185 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53567426444
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803B0426447
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhJHFy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:54:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:3436 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229511AbhJHFyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:54:25 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1985a7Z3019933;
-        Fri, 8 Oct 2021 01:52:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=TAcsxJRPpiYrjozIXbDvk1b9KKzBsjHcjGhZFne9UdE=;
- b=nGalOqodAJMVgyl38W4iBYbbw996ckrXElRSvF5e8qDHwy9KxLB1OjWoSogF4W/simSp
- P0gX5c+GBipFPxheJYmOR1cl4ChroTj6plLvxohPYj9Y0BY9VCrMFLV0soWXS482kV6/
- hQmn22qTq0AqSK2YDtoPFPahNt0ZutRwiEEQxVi0hxvrcjpC2LzZ7ym1hd0pXRdiQdOY
- 0pWKbVK3lw2QDmZQkLS9o00oo58oNn4WrdxZQ8MVnaJxP1FgRJ4Cn9J7jhsDv+TRNgQE
- ctwT0DfUVQMv2A4tKrYh3GTk8BnRbCXAMhsHFbaVu+0DMGLNJx8jDdJyGxqKDfajEDEf TQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bjffwrs9y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 01:52:04 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1985aGnQ020869;
-        Fri, 8 Oct 2021 01:52:04 -0400
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3bjffwrs9c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 01:52:04 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1985mBD6027979;
-        Fri, 8 Oct 2021 05:52:03 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma04dal.us.ibm.com with ESMTP id 3bef2ec3mp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 05:52:03 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1985q1HV26280594
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Oct 2021 05:52:01 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6A360C606E;
-        Fri,  8 Oct 2021 05:52:01 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A1EBAC6055;
-        Fri,  8 Oct 2021 05:51:56 +0000 (GMT)
-Received: from [9.65.95.104] (unknown [9.65.95.104])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Oct 2021 05:51:56 +0000 (GMT)
-Subject: Re: [PATCH v2 4/4] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     Dave Hansen <dave.hansen@intel.com>, linux-efi@vger.kernel.org
-Cc:     Borislav Petkov <bp@suse.de>, Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Scull <ascull@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Daniele Buono <dbuono@linux.vnet.ibm.com>,
-        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
-References: <20211007061838.1381129-1-dovmurik@linux.ibm.com>
- <20211007061838.1381129-5-dovmurik@linux.ibm.com>
- <290c21a8-a68f-0826-2754-1480f79a081d@intel.com>
-From:   Dov Murik <dovmurik@linux.ibm.com>
-Message-ID: <020a4e8b-20b6-15a0-13d3-66b232c221e3@linux.ibm.com>
-Date:   Fri, 8 Oct 2021 08:51:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <290c21a8-a68f-0826-2754-1480f79a081d@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QqC5e_7nOqg_HnKAu6a9Y45SPN8k26xu
-X-Proofpoint-GUID: RDaktTOK2A6KCR2x7gYcvjMBhzPdNWWI
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230452AbhJHFzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:55:06 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18330 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230477AbhJHFzF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 01:55:05 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633672391; h=Content-Type: MIME-Version: Message-ID: Date:
+ References: In-Reply-To: Subject: Cc: To: From: Sender;
+ bh=rmh6oHI66td0Mu4wXsLqqmfSbirKcTqHHCrPMIVl3o0=; b=mR3nkszQBQpQQ2ORX5hB0gjsIUnUdBbMzcEGdd51n7l0xY7n/TgJOhGf8u9a9k6qBP8j65zw
+ C+HJxPpkN/8yli2vDIddq6++GhowFMgmBMvoIQ69JqxbQxQ/mgTNtmYIoNWvzzZD0TZ6C3yG
+ Ht7QHzvwm15uEs5+O+Aa7P+NbAs=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 615fdcbcf1c6896061454a9b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 05:53:00
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4D02C43616; Fri,  8 Oct 2021 05:52:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C09DFC43460;
+        Fri,  8 Oct 2021 05:52:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org C09DFC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org
+Subject: Re: linux-next: build failure after merge of the net-next tree
+In-Reply-To: <20211008162103.1921a7a7@canb.auug.org.au> (Stephen Rothwell's
+        message of "Fri, 8 Oct 2021 16:21:03 +1100")
+References: <20211008162103.1921a7a7@canb.auug.org.au>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+Date:   Fri, 08 Oct 2021 08:52:51 +0300
+Message-ID: <87tuhs5ah8.fsf@codeaurora.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_05,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- clxscore=1015 impostorscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 suspectscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110080031
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Dave for reviewing this.
+Stephen Rothwell <sfr@canb.auug.org.au> writes:
 
-On 07/10/2021 16:48, Dave Hansen wrote:
-> On 10/6/21 11:18 PM, Dov Murik wrote:
->> +static void wipe_memory(void *addr, size_t size)
->> +{
->> +	memzero_explicit(addr, size);
->> +	clean_cache_range(addr, size);
->> +}
-> 
-> What's the purpose of the clean_cache_range()?  It's backed in a CLWB
-> instruction on x86 which seems like an odd choice.  I guess the point is
-> that the memzero_explicit() will overwrite the contents, but might have
-> dirty lines in the cache.  The CLWB will ensure that the lines are
-> actually written back to memory, clearing the secret out of memory.
-> Without the CLWB, the secret might live in memory until the dirtied
-> cachelines are written back.
+> After merging the net-next tree, today's linux-next build (xtensa,
+> m68k allmodconfig) failed like this:
+>
+> In file included from <command-line>:0:0:
+> In function 'ath11k_peer_assoc_h_smps',
+>     inlined from 'ath11k_peer_assoc_prepare' at drivers/net/wireless/ath/ath11k/mac.c:2362:2:
+> include/linux/compiler_types.h:317:38: error: call to '__compiletime_assert_650' declared with attribute error: FIELD_GET: type of reg too small for mask
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>                                       ^
+> include/linux/compiler_types.h:298:4: note: in definition of macro '__compiletime_assert'
+>     prefix ## suffix();    \
+>     ^
+> include/linux/compiler_types.h:317:2: note: in expansion of macro '_compiletime_assert'
+>   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>   ^
+> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+>  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>                                      ^
+> include/linux/bitfield.h:52:3: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+>    BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,  \
+>    ^
+> include/linux/bitfield.h:108:3: note: in expansion of macro '__BF_FIELD_CHECK'
+>    __BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: "); \
+>    ^
+> drivers/net/wireless/ath/ath11k/mac.c:2079:10: note: in expansion of macro 'FIELD_GET'
+>    smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
+>           ^
+>
+> Caused by commit
+>
+>   6f4d70308e5e ("ath11k: support SMPS configuration for 6 GHz")
 
-Yes, that's the reason; as suggested by Andrew Scull in [1].
+Thanks for the report, weird that I don't see it on x86. I can't look at
+this in detail now, maybe later today, but I wonder if the diff below
+fixes the issue?
 
-[1] https://lore.kernel.org/linux-coco/CADcWuH0mP+e6GxkUGN3ni_Yu0z8YTn-mo677obH+p-OFCL+wOQ@mail.gmail.com/
+At least it's cleaner than using FIELD_GET(), actually ath11k should be
+cleaned up to use xx_get_bits() all over.
 
-> 
-> Could you document this, please?  It would also be nice to include some
-> of this motivation in the patch that exports clean_cache_range() in the
-> first place.
-> 
+Kalle
 
-Yes, I'll add that.
+diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+index d897020dd52d..3e7e569f284b 100644
+--- a/drivers/net/wireless/ath/ath11k/mac.c
++++ b/drivers/net/wireless/ath/ath11k/mac.c
+@@ -2076,8 +2076,8 @@ static void ath11k_peer_assoc_h_smps(struct ieee80211_sta *sta,
+ 		smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
+ 		smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
+ 	} else {
+-		smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
+-				 le16_to_cpu(sta->he_6ghz_capa.capa));
++		smps = le16_get_bits(sta->he_6ghz_capa.capa,
++				     IEEE80211_HE_6GHZ_CAP_SM_PS);
+ 	}
+ 
+ 	switch (smps) {
 
-
-> I also think clean_cache_range() an odd choice.  If it were me, I
-> probably would have just used the already-exported
-> clflush_cache_range().  The practical difference between writing back
-> and flushing the cachelines is basically zero.  The lines will never be
-> reused.
-> 
-
-I agree that performance benefits of CLWB over CLFLUSH are negligible here
-(but I have no way of measuring it).  Andrew suggested [2] that the extra
-invalidation that CLFLUSH does it unnecessary.
-
-But if we all agree that the clflush_cache_range() is OK here, I'm OK
-with removing patch 1 and calling clflush_cache_range() in wipe_memory()
-here.
-
-Does anyone know of other locations in the kernel where memory is needed
-to be scrubbed (zeroed and flushed) - like my wipe_memory()? Maybe there's
-a standard way of doing this?
-
-
-[2] https://lore.kernel.org/linux-coco/CADcWuH05vbFtJ1WYSs3d+_=TGzh-MitvAXp1__d1kGJJkvkWpQ@mail.gmail.com/
-
-
-> *If* we export anything from x86 code, I think it should be something
-> which is specific to the task at hand, like arch_invalidate_pmem() is.
-> 
-> Also, when you are modifying x86 code, including exports, it would be
-> nice to include (all of) the x86 maintainers.  The relevant ones for
-> this series would probably be:
-> 
-> X86 ARCHITECTURE (32-BIT AND 64-BIT)
-> M:      Thomas Gleixner <tglx@linutronix.de>
-> M:      Ingo Molnar <mingo@redhat.com>
-> M:      Borislav Petkov <bp@alien8.de>
-> M:      x86@kernel.org
-> 
-> X86 MM
-> M:      Dave Hansen <dave.hansen@linux.intel.com>
-> M:      Andy Lutomirski <luto@kernel.org>
-> M:      Peter Zijlstra <peterz@infradead.org>
-> 
-> There's also the handy dandy scripts/get_maintainer.pl to help.
-> 
-
-You're right, sorry for missing it in this round.
-
-But even if I remove the x86 change, I'll keep you copied anyway...
-
-
--Dov
