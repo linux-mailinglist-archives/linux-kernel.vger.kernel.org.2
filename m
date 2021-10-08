@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E3C426715
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE48426717
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238685AbhJHJrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:47:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46942 "EHLO mail.kernel.org"
+        id S239058AbhJHJrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:47:49 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:41626 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238284AbhJHJrV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:47:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFD146103C;
-        Fri,  8 Oct 2021 09:45:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633686326;
-        bh=uC4W2jWbff4o+8j/4jlq8gabmGnb3ze9ixSc1qm46Ik=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ovmuYHnBibd0vBnkLzr8AdxGIe9UdvMWk7Z5F1lRlIYZyfrNf5GwfP/wt7IvnAgR1
-         ODumsHwxe5W1Imwm4HrV7iUwhJIhc9cPICAgASxRlhYcCF05MDWgHNcOjSOjvj4o6S
-         As343tN6Vjhi/LmLhQbyqd/bQS4gzK2bRiGTWL3BGLnTyP+4inKjDIS37B95LiBq2w
-         FefVAZjFLFl2Y2lufEvh45Tq/OyA6xlPm/n6TRinBq8cA03XNPaOELifeXEEE1AJzg
-         JZ6qE+8eWzu5x/HAzJmzcDg6mi56FDQzvHd1qoGRe8MFcMS7UMXmdxaoM0Oto8rP8j
-         blsphceiKOKOw==
-From:   SeongJae Park <sj@kernel.org>
-To:     akpm@linux-foundation.org
-Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
-        amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
-        david@redhat.com, dwmw@amazon.com, elver@google.com,
-        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
-        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] Docs/damon/usage: Update for the record feature
-Date:   Fri,  8 Oct 2021 09:45:09 +0000
-Message-Id: <20211008094509.16179-4-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211008094509.16179-1-sj@kernel.org>
-References: <20211008094509.16179-1-sj@kernel.org>
+        id S238284AbhJHJrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:47:42 -0400
+Received: from zn.tnic (p200300ec2f0d56001d1e8fcbbc7c59cf.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5600:1d1e:8fcb:bc7c:59cf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B7E8F1EC04F3;
+        Fri,  8 Oct 2021 11:45:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633686346;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HDvjXf2G2Fog17uEppnXMkbhqsHtzjJX73iNz52CSDg=;
+        b=PhxXR1gbnwtpqzn3+vgcIdufo54R1jpl4j6Q+vxVcZ7/GjKen7Ouvzx9malqusgUFjQXS3
+        CDZV+7uNgrY9s8PZmzeuCwELgCFGWA5yA+3bb+6qvd6Wqo2Tjxw0Uw1FX1QWfaQTSRiiV5
+        nzfaFayi+HzFSf7tFfk77Fro5G5pyY4=
+Date:   Fri, 8 Oct 2021 11:45:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Werner Sembach <wse@tuxedocomputers.com>, benoitg@coeus.ca,
+        bhelgaas@google.com, hpa@zytor.com, juhapekka.heikkila@gmail.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
+        x86@kernel.org
+Subject: Re: [PATCH RESEND] x86/resource: Do not exclude regions that are
+ marked as MMIO in EFI memmap
+Message-ID: <YWATQgGOFQIlLOlV@zn.tnic>
+References: <20200617164734.84845-1-mika.westerberg@linux.intel.com>
+ <1c225d72-44dc-1ddb-3284-a5d19e0db882@tuxedocomputers.com>
+ <YWAOE5yV9V0/HMET@lahna>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWAOE5yV9V0/HMET@lahna>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit updates the usage document for the record feature of DAMON.
+On Fri, Oct 08, 2021 at 12:23:31PM +0300, Mika Westerberg wrote:
+> Hi,
+> 
+> On Fri, Oct 08, 2021 at 10:55:49AM +0200, Werner Sembach wrote:
+> > Is there any update on this matter? Also happens on discrete Thunderbolt 4 chips:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=214259
+> 
+> AFAICT no updates.
+> 
+> @Bjorn, x86 maintainers,
+> 
+> If there are no alternatives can we get this patch merged so that people
+> don't need to carry out-of-tree patches to get their systems working?
 
-Signed-off-by: SeongJae Park <sj@kernel.org>
----
- Documentation/admin-guide/mm/damon/usage.rst | 22 ++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+Just my 2¢ from briefly skimming over this:
 
-diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index c0296c14babf..9973dac7101e 100644
---- a/Documentation/admin-guide/mm/damon/usage.rst
-+++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -34,8 +34,8 @@ the reason, this document describes only the debugfs interface
- debugfs Interface
- =================
- 
--DAMON exports four files, ``attrs``, ``target_ids``, ``schemes`` and
--``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
-+DAMON exports five files, ``attrs``, ``target_ids``, ``record``, ``schemes``
-+and ``monitor_on`` under its debugfs directory, ``<debugfs>/damon/``.
- 
- 
- Attributes
-@@ -74,6 +74,24 @@ check it again::
- Note that setting the target ids doesn't start the monitoring.
- 
- 
-+Record
-+------
-+
-+This debugfs file allows you to record monitored access patterns in a regular
-+binary file.  The recorded results are first written in an in-memory buffer and
-+flushed to a file in batch.  Users can get and set the size of the buffer and
-+the path to the result file by reading from and writing to the ``record`` file.
-+For example, below commands set the buffer to be 4 KiB and the result to be
-+saved in ``/damon.data``. ::
-+
-+    # cd <debugfs>/damon
-+    # echo "4096 /damon.data" > record
-+    # cat record
-+    4096 /damon.data
-+
-+The recording can be disabled by setting the buffer size zero.
-+
-+
- Schemes
- -------
- 
+So this reads yet again as BIOS is to blame but what else is new?
+
+"All in all, I think we can fix this by modifying
+arch_remove_reservations() to check the EFI type as well and if it is
+EFI_MEMORY_MAPPED_IO skip the clipping in that case."
+
+And this like we should trust EFI to mark those regions properly, which
+is more of the same but in different color.
+
+That original commit talks about windoze doing a different allocation
+scheme and thus not trusting the untrustworthy firmware anyway and that
+sounds like something we should do too. But WTH do I know?!
+
+So I'd prefer if Bjorn chimed in here.
+
+Thx.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
