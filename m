@@ -2,154 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0EB427445
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AEB7427446
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243854AbhJHXlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:41:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243832AbhJHXl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:41:29 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ACA3C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:39:33 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id n65so24374775ybb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:39:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nmFzS3AbTLHxdnncfbOvzzEVI7phr9NSLef8AoPLTjM=;
-        b=mqx3+t8D+JNOVWKdQ1Pga0ueYs2XLMy4d5Gy1AhlLlPXMz+5mtjl1gOKVWvmZ0RySb
-         hczOVymBc69zb54sud6Zaz2/2qQZcts2POEpeEYbjUk4DwgbeHmRPZQfnNWyYFeoX/yU
-         /KBWQPiqB2QEiJdiXI4Jb9o+u2fvkGLqWYeik=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nmFzS3AbTLHxdnncfbOvzzEVI7phr9NSLef8AoPLTjM=;
-        b=AmbU9A1N6eYy15S+1HK0bjnp8/NKlAVzRoBfwwibv7alBj6uc6JLf4biStv83W89w2
-         zo4NUTwzMLFmM/co3hOcg2KAR7oB/4qMbYzP18btUtH+LSFyVvPZAMze4dbvO7PHMwmr
-         qp4+HPJ+HJQmcpvKVUK0bHWykTDE2F6+gQMt6pP1ZO1arGLoXyedeExwrUbb2YkGj5LV
-         xokOu2IaFLTYd5ZWkCB+CIUOFjjevNzPDTGtNOZu7kNwksip8MXieylY+3LNa5tKebsi
-         5j5hWozuAZfsGKRhQ/njki81iF5sbNswyl/olx6/ynv8rwvhlDWlYr6xlyRWpYx8SPRt
-         kRWg==
-X-Gm-Message-State: AOAM533F34h1x3SVW9TdSpJVv3jE+5WdKB5k/jtRP2U3+SSE3ZQzYgmY
-        tOtWAPK5aukaeyKrnmB+k49lQI+Xzw6whiHWS96sDA==
-X-Google-Smtp-Source: ABdhPJwwucls5tMBedD7hFAv3uw/mJALkRLyU3e5okdsFA0sAW8kY+NrN9gaf2eWJXVfsdW9DZ1IsnmkSLu3PNPJx6c=
-X-Received: by 2002:a25:cf07:: with SMTP id f7mr6786613ybg.100.1633736372830;
- Fri, 08 Oct 2021 16:39:32 -0700 (PDT)
+        id S243859AbhJHXmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:42:19 -0400
+Received: from mga02.intel.com ([134.134.136.20]:35975 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243790AbhJHXmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:42:18 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="213752052"
+X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
+   d="scan'208";a="213752052"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 16:40:22 -0700
+X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
+   d="scan'208";a="590706688"
+Received: from dmsojoza-mobl3.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.135.62])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 16:40:20 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/11] Add TDX Guest Support (Initial support)
+Date:   Fri,  8 Oct 2021 16:39:58 -0700
+Message-Id: <20211008234009.1211215-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
- <20210929173343.v2.3.I630340a51130f4582dbe14e42f673b74e0531a2b@changeid>
- <CAE-0n53EBvKv-RdMwiiOsUkb+LOKAKwrpP7cDavx4meA2vbvcA@mail.gmail.com>
- <CAD=FV=XoOhSNP2EXurkA=G9iG2BnH9VzkvSEiNJ8W71s8N9bgg@mail.gmail.com>
- <CA+cxXhkM9Gzc+0EVapZVu=pJZ3WZawgucG5J2=bokYEJXFNKCQ@mail.gmail.com>
- <CA+cxXh=1D08O6EcC4Xq6+cCEthCtXfASOfGW38z=FhkmW3ce9g@mail.gmail.com> <CAD=FV=VfuxrrFbzZwCQr-6KYb2OXEPmrAH5y9UPr4V6Pud2h7g@mail.gmail.com>
-In-Reply-To: <CAD=FV=VfuxrrFbzZwCQr-6KYb2OXEPmrAH5y9UPr4V6Pud2h7g@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Fri, 8 Oct 2021 16:39:21 -0700
-Message-ID: <CA+cxXh=wfuZjhUWA2VmEs_5-GpK1Db_jtin2EeaWvBsSMpEzew@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: sc7180: Support Parade ps8640 edp bridge
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi All,
 
-On Fri, Oct 8, 2021 at 4:13 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Fri, Oct 8, 2021 at 11:46 AM Philip Chen <philipchen@chromium.org> wrote:
-> >
-> > Hi
-> >
-> > On Thu, Oct 7, 2021 at 11:15 AM Philip Chen <philipchen@chromium.org> wrote:
-> > >
-> > > Hi,
-> > >
-> > > On Thu, Sep 30, 2021 at 9:22 AM Doug Anderson <dianders@chromium.org> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > On Wed, Sep 29, 2021 at 9:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > > >
-> > > > > > +       pp3300_brij_ps8640: pp3300-brij-ps8640 {
-> > > > > > +               compatible = "regulator-fixed";
-> > > > > > +               status = "okay";
-> > > > > > +               regulator-name = "pp3300_brij_ps8640";
-> > > > > > +
-> > > > > > +               regulator-min-microvolt = <3300000>;
-> > > > > > +               regulator-max-microvolt = <3300000>;
-> > > > > > +
-> > > > > > +               gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
-> > > > >
-> > > > > Doesn't this need
-> > > > >
-> > > > >                 enable-active-high;
-> > > >
-> > > > Looks like it. Without that it looks like it assumes active low.
-> > > Thanks for catching this.
-> > > I'll fix it in v3.
-> > >
-> > > >
-> > > >
-> > > > > > +
-> > > > > > +               pinctrl-names = "default";
-> > > > > > +               pinctrl-0 = <&en_pp3300_edp_brij_ps8640>;
-> > > > > > +
-> > > > > > +               vin-supply = <&pp3300_a>;
-> > > > > > +       };
-> > > > > > +};
-> > > > > > +
-> > > > > > +&dsi0_out {
-> > > > > > +       remote-endpoint = <&ps8640_in>;
-> > > > >
-> > > > > Should this also have data-lanes to be "complete"?
-> > > >
-> > > > That's still back in the main trogdor.dtsi, isn't it?
-> > > Yes, I think so.
-> > > Plus, ti-sn65 dts doesn't define data-lanes for input either.
-> > Sorry, I was wrong.
-> > ti-sn65 dts actually defines data-lanes for input.
-> > However, since ps8640 driver doesn't parse input data-lanes for now,
-> > it's not useful to add data-lanes here anyway.
->
-> Ah, right. This one _isn't_ in the dtsi. Looking closer, I agree with
-> you that it's not useful. Specifically it should be noted that, unlike
-> ti-sn65dsi86, this bridge part looks to only support 2-lanes of DP
-> traffic. If both of these two lanes are routed to the panel then
-> there's really nothing to specify--that should be the default
-> assumption of the driver if/when it ever adds support for data-lanes.
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds the basic TDX guest
+infrastructure support (including #VE handler support, and #VE support
+for halt and CPUID). This is just a subset of patches in the bare minimum
+TDX support patch list which is required for supporting minimal
+functional TDX guest. Other basic feature features like #VE support for
+IO, MMIO, boot optimization fixes and shared-mm support will be submitted
+in a separate patch set. To make reviewing easier we split it into smaller
+series. This series alone is not necessarily fully functional.
 
-Actually, dsi0_out is the input to the bridge.
-So the data lanes here are "MIPI DSI lanes", which is hardcoded to 4,
-for both sn65 driver and ps8640 driver, right?
+Also, the host-side support patches, and support for advanced TD guest
+features like attestation or debug-mode will be submitted at a later time.
+Also, at this point it is not secure with some known holes in drivers, and
+also hasn’t been fully audited and fuzzed yet.
 
-What's different in sn65 driver and ps8640 driver is the output data
-lanes for DP:
-* sn65 supports 1, 2, or 4 DP lanes. The driver parses DP "data lanes"
-from DT and then configures the support accordingly.
-* ps8640 supports 1 or 2 DP lanes. As of now, the driver doesn't parse
-DP "data lanes" from DT.
+TDX has a lot of similarities to SEV. It enhances confidentiality and
+of guest memory and state (like registers) and includes a new exception
+(#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
+yet), TDX limits the host's ability to effect changes in the guest
+physical address space. With TDX the host cannot access the guest memory,
+so various functionality that would normally be done in KVM has moved
+into a (paravirtualized) guest. Partially this is done using the
+Virtualization Exception (#VE) and partially with direct paravirtual hooks.
 
-As a result:
-* Adding input "data lanes" for either sn65 or ps8640 DT is not useful.
-* Adding output "data lanes" for sn65 DT is useful, while adding
-output "data lanes" for ps8640 DT is not useful.
+The TDX architecture also includes a new CPU mode called
+Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
+mode arbitrates interactions between host and guest and implements many of
+the guarantees of the TDX architecture.
 
->
-> -Doug
+Some of the key differences between TD and regular VM is,
+
+1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
+2. A new #VE exception handler is added. The TDX module injects #VE exception
+   to the guest TD in cases of instructions that need to be emulated, disallowed
+   MSR accesses, etc.
+3. By default memory is marked as private, and TD will selectively share it with
+   VMM based on need.
+   
+Note that the kernel will also need to be hardened against low level inputs from
+the now untrusted hosts. This will be done in follow on patches.
+
+Please check the following info for more details about #VE on memory access:
+
+== #VE on Memory Accesses ==
+
+A TD guest is in control of whether its memory accesses are treated as
+private or shared.  It selects the behavior with a bit in its page table
+entries.
+
+=== #VE on Shared Pages ===
+
+Accesses to shared mappings can cause #VE's.  The hypervisor is in
+control of when a #VE might occur, so the guest must be careful to only
+reference shared pages when it is in a context that can safely handle a #VE.
+
+However, shared mapping content can not be trusted since shared page
+content is writable by the hypervisor.  This means that shared mappings
+are never used for sensitive memory contents like stacks or kernel text.
+ This means that the shared mapping property of inducing #VEs requires
+essentially no special kernel handling in sensitive contexts like
+syscall entry or NMIs.
+
+=== #VE on Private Pages ===
+
+Some accesses to private mappings may cause #VEs.  Before a mapping is
+accepted (aka. in the SEPT_PENDING state), a reference would cause
+a #VE.  But, after acceptance, references typically succeed.
+
+The hypervisor can cause a private page reference to fail if it chooses
+to move an accepted page to a "blocked" state.  However, if it does
+this, a page access will not generate a #VE.  It will, instead, cause a
+"TD Exit" where the hypervisor is required to handle the exception.
+
+You can find TDX related documents in the following link.
+
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+
+Changes since v8:
+ * * Change logs are include per patch.
+
+Changes since v7:
+ * Included #VE details on memory access in cover letter.
+ * Change log is include per patch.
+
+Changes since v6
+ * Fixed #ifdef format as per Boris comment in patch titled
+   "x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT".
+ * Fixed commit log of "x86/tdx: Handle CPUID via #VE" as per Dave
+   Hansen review comments.
+ * Removed TDX changes from "x86/tdx: Add protected guest support for
+   TDX guest" and created "x86/tdx: Add Intel version of
+   cc_platform_has()"
+ * Rebased on top of Tom Landecky's CC platform support patch series
+   https://lore.kernel.org/linux-iommu/f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com/T/
+ * Rebased on top of v5.15-rc1.
+
+Changes since v5:
+ * Moved patch titled "x86/tdx: Get TD execution environment
+   information via TDINFO" to the series which uses it.
+ * Rest of the change log is added per patch.
+
+Changes since v4:
+ * Added a patch that adds TDX guest exception for CSTAR MSR.
+ * Rebased on top of Tom Lendacky's protected guest changes.
+ * Rest of the change log is added per patch.
+
+Changes since v3:
+ * Moved generic protected guest changes from patch titled "x86:
+   Introduce generic protected guest abstraction" into seperate
+   patch outside this patchset. Also, TDX specific changes are
+   moved to patch titled "x86/tdx: Add protected guest support
+   for TDX guest"
+ * Rebased on top of v5.14-rc1.
+ * Rest of the change log is added per patch.
+
+Changes since v1 (v2 is partial set submission):
+ * Patch titled "x86/x86: Add early_is_tdx_guest() interface" is moved
+   out of this series.
+ * Rest of the change log is added per patch.
+
+Andi Kleen (1):
+  x86/tdx: Don't write CSTAR MSR on Intel
+
+Kirill A. Shutemov (6):
+  x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
+  x86/traps: Add #VE support for TDX guest
+  x86/tdx: Add HLT support for TDX guest
+  x86/tdx: Wire up KVM hypercalls
+  x86/tdx: Add MSR support for TDX guest
+  x86/tdx: Handle CPUID via #VE
+
+Kuppuswamy Sathyanarayanan (4):
+  x86/tdx: Introduce INTEL_TDX_GUEST config option
+  x86/cpufeatures: Add TDX Guest CPU feature
+  x86/tdx: Add TDX support to intel_cc_platform_has()
+  x86/tdx: Add __tdx_module_call() and __tdx_hypercall() helper
+    functions
+
+ arch/x86/Kconfig                      |  15 ++
+ arch/x86/include/asm/asm-prototypes.h |   1 +
+ arch/x86/include/asm/cpufeatures.h    |   1 +
+ arch/x86/include/asm/idtentry.h       |   4 +
+ arch/x86/include/asm/irqflags.h       |  44 ++--
+ arch/x86/include/asm/kvm_para.h       |  22 ++
+ arch/x86/include/asm/paravirt.h       |  20 +-
+ arch/x86/include/asm/paravirt_types.h |   3 +-
+ arch/x86/include/asm/tdx.h            | 109 +++++++++
+ arch/x86/kernel/Makefile              |   4 +
+ arch/x86/kernel/asm-offsets.c         |  23 ++
+ arch/x86/kernel/cc_platform.c         |  12 +-
+ arch/x86/kernel/cpu/common.c          |  11 +-
+ arch/x86/kernel/head64.c              |   9 +
+ arch/x86/kernel/idt.c                 |   3 +
+ arch/x86/kernel/paravirt.c            |   3 +-
+ arch/x86/kernel/tdcall.S              | 306 ++++++++++++++++++++++++++
+ arch/x86/kernel/tdx.c                 | 245 +++++++++++++++++++++
+ arch/x86/kernel/traps.c               |  77 +++++++
+ include/linux/cc_platform.h           |   9 +
+ 20 files changed, 884 insertions(+), 37 deletions(-)
+ create mode 100644 arch/x86/include/asm/tdx.h
+ create mode 100644 arch/x86/kernel/tdcall.S
+ create mode 100644 arch/x86/kernel/tdx.c
+
+-- 
+2.25.1
+
