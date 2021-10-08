@@ -2,244 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBD4427129
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8235442711D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239650AbhJHTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231245AbhJHTIO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:08:14 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2331C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:06:18 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id s24so14968212oij.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+PFG95vsWGuyHt4PcF9O/qQQtXb2/roNae5ZiPerc+I=;
-        b=Vg84jUhZ066KbwPCq09KSWKk5BMC/nESlSL+LvmOsd9WOTqV4fVqB6I1sVrBLn+BEY
-         Lr4BmXiMbxhqGcrcd6KQBJY9t78dmrCJ4nL4AtiEg6etmi8+yWMScE37Qar+/wVHsDAP
-         yB04phzc7eYq7KCmvPVMKkcgnl9G99lu63U74=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+PFG95vsWGuyHt4PcF9O/qQQtXb2/roNae5ZiPerc+I=;
-        b=rZ47Uq/Dya3AdgMd7dG3k1FY+9AVO6DEj1CahzjZJz54mEO9wvB8jA+sQyQqRMQqc6
-         8fovEzDWBdcJopEki3i5fNx1/imifUjp2ukGrgTsLdDtECNr6gnn31BsRhRwZ/hua1dY
-         Dxfvd6v5E9K/COjwu9tC+zbE57ohsEfgLbu+XHa5ZTUK61t8rHU0qj7c8bVel2Racldd
-         av3TwZ6kU+5lvi3kDePCPqwypc/0MMxPYxnlDPJFyFxDgl4Z6Flfl21dkZnRr5iRmfMU
-         ZSxJ7n6qoxEPTQ5ob8WO3wh59bveE+bhVh67/SKlvZ0UH1NzjTC/kSbKa9cllXAGrvHC
-         /fnA==
-X-Gm-Message-State: AOAM530nGXNExrdWXq2mqsiiiy0C6VKObT1kez+TgOnlbChNQbRRoDog
-        fbcNyzK3gyOt1NSd7cOFgg6OPoYZbxpZdg==
-X-Google-Smtp-Source: ABdhPJxtdcjmpSlcmiPoTKhX/+hpade2aIGMbwi5lgaFLi4KSDuAFuAIo6lZLda12ayoJNBS1oicug==
-X-Received: by 2002:aca:b5c3:: with SMTP id e186mr18017849oif.51.1633719977937;
-        Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
-        by smtp.gmail.com with ESMTPSA id w2sm24082oof.23.2021.10.08.12.06.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
-Received: by mail-ot1-f47.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so3837456otu.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
-X-Received: by 2002:a25:db91:: with SMTP id g139mr5128084ybf.391.1633719553275;
- Fri, 08 Oct 2021 11:59:13 -0700 (PDT)
+        id S231478AbhJHTCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:02:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231312AbhJHTC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:02:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BB5360FE8;
+        Fri,  8 Oct 2021 19:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633719632;
+        bh=X2+TA7D/QVQQ3sstjV8Bo85mIJKFkSjBOXOLiXSWzZE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BPbxW1Z+XZF5OG7GpRFqxh4JOAvuLoGL/hnbOpxZdQOkl5mHTKG6Ap5Zy3vrL9v3y
+         GbkoH52HrxXMi4XirU2usdotE4A659Xleq/rbGzXDjSzsg4sLdAoijy3KeD8RJphVQ
+         hOsqzKFmu5xJ8t13RPYPmLOptZ++kjibZ7FKPcfpOqtakaU3/B6n5J6PmXsNwIRy4H
+         8zlbWuCkPOUknhfTf8x6aIAG4+Hw2x+8qKa2/rmsZWKwKY3oHuv3PHQxvpoRiSW0mq
+         n2PSPPXOJrqkkT1kJ/KSmM1R4cZuXUJ5BonT2V2ITyXIFLcoviRnYoUjwbTJUOD2qI
+         mu+RGbSoawX4w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 12191410A1; Fri,  8 Oct 2021 16:00:30 -0300 (-03)
+Date:   Fri, 8 Oct 2021 16:00:30 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     kajoljain <kjain@linux.ibm.com>
+Cc:     James Clark <james.clark@arm.com>, john.garry@huawei.com,
+        ak@linux.intel.com, linux-perf-users@vger.kernel.org,
+        Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
+Message-ID: <YWCVTnOUM2P4FRPi@kernel.org>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
+ <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
+ <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
 MIME-Version: 1.0
-References: <20211008140735.3290892-1-pan@semihalf.com> <20211008140735.3290892-2-pan@semihalf.com>
-In-Reply-To: <20211008140735.3290892-2-pan@semihalf.com>
-From:   Alexandru M Stan <amstan@chromium.org>
-Date:   Fri, 8 Oct 2021 11:58:37 -0700
-X-Gmail-Original-Message-ID: <CAHNYxRxuj_p-+zHCO9iEK3H7QrBAPy1Cx0tCh3ufRqYnK124qQ@mail.gmail.com>
-Message-ID: <CAHNYxRxuj_p-+zHCO9iEK3H7QrBAPy1Cx0tCh3ufRqYnK124qQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] dts: socfpga: Add Mercury+ AA1 devicetree
-To:     =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
-Cc:     arnd@arndb.de, Olof Johansson <olof@lixom.net>, soc@kernel.org,
-        Rob Herring <robh+dt@kernel.org>, dinguyen@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        upstream@semihalf.com, Marcin Wojtas <mw@semihalf.com>,
-        Konrad Adamczyk <ka@semihalf.com>,
-        Tomasz Nowicki <tn@semihalf.com>,
-        Jacek Majkowski <jam@semihalf.com>,
-        Joanna Brozek <jbrozek@antmicro.com>,
-        Mariusz Glebocki <mglebocki@antmicro.com>,
-        Tomasz Gorochowik <tgorochowik@antmicro.com>,
-        Maciej Mikunda <mmikunda@antmicro.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 7:08 AM Pawe=C5=82 Anikiel <pan@semihalf.com> wrote:
->
-> Add support for the Mercury+ AA1 module for Arria 10 SoC FPGA.
->
-> Signed-off-by: Pawe=C5=82 Anikiel <pan@semihalf.com>
-> Signed-off-by: Joanna Brozek <jbrozek@antmicro.com>
-> Signed-off-by: Mariusz Glebocki <mglebocki@antmicro.com>
-> Signed-off-by: Tomasz Gorochowik <tgorochowik@antmicro.com>
-> Signed-off-by: Maciej Mikunda <mmikunda@antmicro.com>
-> ---
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/socfpga_arria10_mercury_aa1.dts  | 112 ++++++++++++++++++
->  2 files changed, 113 insertions(+)
->  create mode 100644 arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
->
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 7e0934180724..0a7809eb3795 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1078,6 +1078,7 @@ dtb-$(CONFIG_ARCH_INTEL_SOCFPGA) +=3D \
->         socfpga_arria10_socdk_nand.dtb \
->         socfpga_arria10_socdk_qspi.dtb \
->         socfpga_arria10_socdk_sdmmc.dtb \
-> +       socfpga_arria10_mercury_aa1.dtb \
->         socfpga_cyclone5_chameleon96.dtb \
->         socfpga_cyclone5_mcvevk.dtb \
->         socfpga_cyclone5_socdk.dtb \
-> diff --git a/arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts b/arch/arm=
-/boot/dts/socfpga_arria10_mercury_aa1.dts
-> new file mode 100644
-> index 000000000000..2a3364b26361
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
-> @@ -0,0 +1,112 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/dts-v1/;
-> +
-> +#include "socfpga_arria10.dtsi"
-> +
-> +/ {
-> +
-> +       model =3D "Enclustra Mercury AA1";
-> +       compatible =3D "altr,socfpga-arria10", "altr,socfpga";
-> +
-> +       aliases {
-> +               ethernet0 =3D &gmac0;
-> +               serial1 =3D &uart1;
-> +               i2c0 =3D &i2c0;
-> +               i2c1 =3D &i2c1;
+Em Fri, Oct 08, 2021 at 04:56:55PM +0530, kajoljain escreveu:
+> 
+> 
+> On 10/8/21 3:32 PM, James Clark wrote:
+> > 
+> > 
+> > On 08/10/2021 08:43, kajoljain wrote:
+> >>
+> >>
+> >> On 10/7/21 4:35 PM, James Clark wrote:
+> >>> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
+> >>> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
+> >>> remove the need to apply any future JSON comma fixup commits.
+> >>>
+> >>> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
+> >>> perf/core.
+> >>>
+> >>> Also available at:
+> >>>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
+> >>
+> >> Hi James,
+> >>    Do we have any dependency patches on top of this patch series. I am
+> >> reviewing and testing it, but in both powerpc and x86 system I am
+> >> getting build issue. Not sure if I am missing something> 
+> >> I am trying your changes on top of upstream perf.
+> >>
+> >> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
+> >> character inside JSON string
+> > 
+> > Hi Kajol,
+> > 
+> > A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
+> > confirm if you have updated to get this commit on perf core?
+> > 
+> > Alternately you could pull from my branch above which is up to date enough
+> > to include it.
+> 
+> Hi James,
+>    Thanks for pointing it. Not getting build issue now.
+> > 
+> > The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
+> > 
+> >> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
+> >> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
+> >> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
+> >> make[2]: *** Waiting for unfinished jobs....
+> >> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> >> make: *** [Makefile:70: all] Error 2
+> >>
+> >> Also, Is it possible to add line number along with file name while
+> >> showing this error `json error Invalid character inside JSON string`.
+> >> It might make it easy to fix.
+> > 
+> > I can add a character number with the following fix if you think that would
+> > be good enough? A line number might be a bigger change and involve keeping
+> > track of newline characters.
+> 
+> Sure. I think then we can skip this change. Not sure if character
+> number will be helpful.
+> 
+> Patch-set looks good to me.
+> 
+> Reviewed-by Kajol Jain<kjain@linux.ibm.com>
 
-Yeah, this is fine now. I still would have added this in
-"socfpga_arria10.dtsi" instead. I don't think there's ever a case
-where these aliases wouldn't be wanted for any user of this chip.
+Applied ok as-is to my perf/core branch, applied and added your
+Reviewed-by, thanks.
 
-> +       };
-> +
-> +       memory@0 {
-> +               name =3D "memory";
-> +               device_type =3D "memory";
-> +               reg =3D <0x0 0x80000000>; /* 2GB */
-> +       };
-> +
-> +       chosen {
-> +               stdout-path =3D "serial1:115200n8";
-> +       };
-> +};
-> +
-> +&eccmgr {
-> +       sdmmca-ecc@ff8c2c00 {
-> +               compatible =3D "altr,socfpga-sdmmc-ecc";
-> +               reg =3D <0xff8c2c00 0x400>;
-> +               altr,ecc-parent =3D <&mmc>;
-> +               interrupts =3D <15 IRQ_TYPE_LEVEL_HIGH>,
-> +                            <47 IRQ_TYPE_LEVEL_HIGH>,
-> +                            <16 IRQ_TYPE_LEVEL_HIGH>,
-> +                            <48 IRQ_TYPE_LEVEL_HIGH>;
-> +       };
-> +};
-> +
-> +&gmac0 {
-> +       phy-mode =3D "rgmii";
-> +       phy-addr =3D <0xffffffff>; /* probe for phy addr */
-> +
-> +       max-frame-size =3D <3800>;
-> +       status =3D "okay";
-> +
-> +       phy-handle =3D <&phy3>;
-> +
-> +       mdio {
-> +               #address-cells =3D <1>;
-> +               #size-cells =3D <0>;
-> +               compatible =3D "snps,dwmac-mdio";
-> +               phy3: ethernet-phy@3 {
-> +                       txd0-skew-ps =3D <0>; /* -420ps */
-> +                       txd1-skew-ps =3D <0>; /* -420ps */
-> +                       txd2-skew-ps =3D <0>; /* -420ps */
-> +                       txd3-skew-ps =3D <0>; /* -420ps */
-> +                       rxd0-skew-ps =3D <420>; /* 0ps */
-> +                       rxd1-skew-ps =3D <420>; /* 0ps */
-> +                       rxd2-skew-ps =3D <420>; /* 0ps */
-> +                       rxd3-skew-ps =3D <420>; /* 0ps */
-> +                       txen-skew-ps =3D <0>; /* -420ps */
-> +                       txc-skew-ps =3D <1860>; /* 960ps */
-> +                       rxdv-skew-ps =3D <420>; /* 0ps */
-> +                       rxc-skew-ps =3D <1680>; /* 780ps */
-> +                       reg =3D <3>;
-> +               };
-> +       };
-> +};
-> +
-> +&gpio0 {
-> +       status =3D "okay";
-> +};
-> +
-> +&gpio1 {
-> +       status =3D "okay";
-> +};
-> +
-> +&gpio2 {
-> +       status =3D "okay";
-> +};
-> +
-> +&i2c1 {
-> +       status =3D "okay";
-> +       isl12022: isl12022@6f {
-> +               status =3D "okay";
-> +               compatible =3D "isil,isl12022";
-> +               reg =3D <0x6f>;
-> +       };
-> +};
-> +
-> +/* Following mappings are taken from arria10 socdk dts */
-> +&mmc {
-> +       status =3D "okay";
-> +       cap-sd-highspeed;
-> +       broken-cd;
-> +       bus-width =3D <4>;
-> +};
-> +
-> +&osc1 {
-> +       clock-frequency =3D <33330000>;
-> +};
-> +
-> +&uart1 {
-> +       status =3D "okay";
-> +};
-> +
-> +&usb0 {
-> +       status =3D "okay";
-> +       dr_mode =3D "host";
-> +};
-> --
-> 2.25.1
->
+- Arnaldo
+ 
+> Thanks,
+> Kajol Jain
+> 
+> > 
+> > diff --git a/tools/perf/pmu-events/json.c b/tools/perf/pmu-events/json.c
+> > index 0544398d6e2d..41a14e1543bf 100644
+> > --- a/tools/perf/pmu-events/json.c
+> > +++ b/tools/perf/pmu-events/json.c
+> > @@ -99,7 +99,7 @@ jsmntok_t *parse_json(const char *fn, char **map, size_t *size, int *len)
+> >         res = jsmn_parse(&parser, *map, *size, tokens,
+> >                          sz / sizeof(jsmntok_t));
+> >         if (res != JSMN_SUCCESS) {
+> > -               pr_err("%s: json error %s\n", fn, jsmn_strerror(res));
+> > +               pr_err("%s: json error at character %u '%s'\n", fn, parser.pos, jsmn_strerror(res));
+> >                 goto error_free;
+> >         }
+> >         if (len)
+> > 
+> > 
+> > It prints this for the same error you have above>
+> > pmu-events/arch/test/test_soc/sys/uncore.json: json error at character 213 'Invalid character inside JSON string'
+> > 
+> > Although funnily enough after re-introducing that extra comma it doesn't fail the build for me,
+> > it just prints the error message. But I may have noticed some dependency tracking issues around
+> > the json files.
+> > 
+> > James
+> > 
 
-Hello Pawe=C5=82,
-Thank you for respinning.
+-- 
 
-This looks good as a base to make the boards be able to boot. I'd be
-happy if it lands (even the v3 patch).
-Just a small nit about the location of the aliases.
-
-Reviewed-by: Alexandru M Stan <amstan@chromium.org>
-
-Thanks,
-Alexandru Stan
+- Arnaldo
