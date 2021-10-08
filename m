@@ -2,156 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8866B426742
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AC8426745
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239521AbhJHKAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239500AbhJHKA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:00:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F1161027;
-        Fri,  8 Oct 2021 09:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633687114;
-        bh=Ge0KFntgmaorR+WsCHlz8rTezlNr2HAtrr8kJB7JuZ4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:From;
-        b=ZPlbLfHRXU2CF7Y6wMr+HxDCxiW/aG/52LfZaeCYGBMTmWvzjk22NzntDUhqIqCbX
-         7+8I3B+qPGXX6yq87cGoRepHSvjaOWF5+fB9qxp68CtioRUE9rU5ULFjyAW8t1H2Do
-         sXdgVw804HdoPITrsEU/LB392Ttt++4Mq+mIx79goo1DzQwbEmiiWGRiLb6Zmq1nYD
-         5vWGWB32RR0cWSDc00XRUG83uaWrTa3TVcHBYuCJpid7Zuys771mM9GCABx7wQTgiE
-         8xVMI9b01Zrso22jlrbI+AITxxR8Oe85SabmiaFXTVS9YEFgB96MPFWYfyWrkBQ3vz
-         c5Ytr/pf5+66A==
-From:   SeongJae Park <sj@kernel.org>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     shuah@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
-Subject: Re: [PATCH v2] selftests/kselftest/runner/run_one(): Allow running non-executable files
-Date:   Fri,  8 Oct 2021 09:58:28 +0000
-Message-Id: <20211008095828.1796-1-sj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210913112442.1659-1-sjpark@amazon.de>
+        id S239561AbhJHKA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238917AbhJHKAw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:00:52 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058F4C061570;
+        Fri,  8 Oct 2021 02:58:56 -0700 (PDT)
+Date:   Fri, 08 Oct 2021 09:58:53 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633687134;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HkaEHRILfubdoOT6X98a6xdXk/Gxl5tQm58DK03ukdo=;
+        b=34iVcs2Q3buVbs22dpGC1ml+Q+GFlSFBPT91GsSqD8UrbsX5Gd0qF3JyLU0MqunF911E58
+        Lkccj9NAqIKaRGZUUA2jhjjz42ASfRn+kmfDDVUq0DCDq/+XMYELo5jvmlPbu3wdZhrhh3
+        02dAu0kMtKMDi8KlSg646xcSLvsbP0IwiElnZfTKUOE8qWak2wxO3dCUD80IDBMUGd3Wwf
+        c6PC+KH9SJC+kT1vxg+K0KHCnNmkuxNZvGr8wbuQ6WC3Mmf0YBj29GZV29uFALsgx67wb+
+        Yd4RQSJM2ZzMAUbzyb7e9thc1onKawm4l0l02Q/9q+rGe+gd/45MqAEiBKj9rw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633687134;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HkaEHRILfubdoOT6X98a6xdXk/Gxl5tQm58DK03ukdo=;
+        b=LwsgU2FQs1eERt37rvaumQyrspKAVAmYYW9JomsKQGoZ+4PN9OvR0vqHQ2T/OJWj8bUBL9
+        Dic6Jas9It9XX2DA==
+From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/fpu: Restore the masking out of reserved MXCSR bits
+Cc:     Ser Olmy <ser.olmy@protonmail.com>, Borislav Petkov <bp@suse.de>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YVtA67jImg3KlBTw@zn.tnic>
+References: <YVtA67jImg3KlBTw@zn.tnic>
+MIME-Version: 1.0
+Message-ID: <163368713375.25758.3020127637765994658.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Shuah,
+The following commit has been merged into the x86/urgent branch of tip:
 
+Commit-ID:     d298b03506d3e161f7492c440babb0bfae35e650
+Gitweb:        https://git.kernel.org/tip/d298b03506d3e161f7492c440babb0bfae35e650
+Author:        Borislav Petkov <bp@suse.de>
+AuthorDate:    Wed, 06 Oct 2021 18:33:52 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 08 Oct 2021 11:12:17 +02:00
 
-I was wondering if you had a chance to read this patch.
+x86/fpu: Restore the masking out of reserved MXCSR bits
 
-Without this patch, DAMON selftest fails as below:
+Ser Olmy reported a boot failure:
 
-    $ make -C tools/testing/selftests/damon/ run_tests
-    make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
-    TAP version 13
-    1..1
-    # selftests: damon: debugfs_attrs.sh
-    # Warning: file debugfs_attrs.sh is not executable, correct this.
-    not ok 1 selftests: damon: debugfs_attrs.sh
-    make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
+  init[1] bad frame in sigreturn frame:(ptrval) ip:b7c9fbe6 sp:bf933310 orax:ffffffff \
+	  in libc-2.33.so[b7bed000+156000]
+  Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+  CPU: 0 PID: 1 Comm: init Tainted: G        W         5.14.9 #1
+  Hardware name: Hewlett-Packard HP PC/HP Board, BIOS  JD.00.06 12/06/2001
+  Call Trace:
+   dump_stack_lvl
+   dump_stack
+   panic
+   do_exit.cold
+   do_group_exit
+   get_signal
+   arch_do_signal_or_restart
+   ? force_sig_info_to_task
+   ? force_sig
+   exit_to_user_mode_prepare
+   syscall_exit_to_user_mode
+   do_int80_syscall_32
+   entry_INT80_32
 
-If you disagree in the approach, please also take a look in this one:
-https://lore.kernel.org/linux-kselftest/20210810112050.22225-1-sj38.park@gmail.com/
+on an old 32-bit Intel CPU:
 
+  vendor_id       : GenuineIntel
+  cpu family      : 6
+  model           : 6
+  model name      : Celeron (Mendocino)
+  stepping        : 5
+  microcode       : 0x3
 
-Thanks,
-SJ
+Ser bisected the problem to the commit in Fixes.
 
+tglx suggested reverting the rejection of invalid MXCSR values which
+this commit introduced and replacing it with what the old code did -
+simply masking them out to zero.
 
-On Mon, 13 Sep 2021 11:24:42 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+Further debugging confirmed his suggestion:
 
-> From: SeongJae Park <sjpark@amazon.de>
-> 
-> Hello Shuah,
-> 
-> 
-> Could you I ask your comment for this patch?
-> 
-> 
-> Thanks,
-> SJ
-> 
-> On Tue, 10 Aug 2021 16:45:34 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
-> 
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > When running a test program, 'run_one()' checks if the program has the
-> > execution permission and fails if it doesn't.  However, it's easy to
-> > mistakenly missing the permission, as some common tools like 'diff'
-> > don't support the permission change well[1].  Compared to that, making
-> > mistakes in the test program's path would only rare, as those are
-> > explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
-> > to resolve the situation on our own and run the program.
-> > 
-> > For the reason, this commit makes the test program runner function to
-> > still print the warning message but try parsing the interpreter of the
-> > program and explicitly run it with the interpreter, in the case.
-> > 
-> > [1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
-> > 
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > ---
-> > Changes from v1
-> > (https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/)
-> > - Parse and use the interpreter instead of changing the file
-> > 
-> >  tools/testing/selftests/kselftest/runner.sh | 28 +++++++++++++--------
-> >  1 file changed, 18 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
-> > index cc9c846585f0..a9ba782d8ca0 100644
-> > --- a/tools/testing/selftests/kselftest/runner.sh
-> > +++ b/tools/testing/selftests/kselftest/runner.sh
-> > @@ -33,9 +33,9 @@ tap_timeout()
-> >  {
-> >  	# Make sure tests will time out if utility is available.
-> >  	if [ -x /usr/bin/timeout ] ; then
-> > -		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
-> > +		/usr/bin/timeout --foreground "$kselftest_timeout" $1
-> >  	else
-> > -		"$1"
-> > +		$1
-> >  	fi
-> >  }
-> >  
-> > @@ -65,17 +65,25 @@ run_one()
-> >  
-> >  	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
-> >  	echo "# $TEST_HDR_MSG"
-> > -	if [ ! -x "$TEST" ]; then
-> > -		echo -n "# Warning: file $TEST is "
-> > -		if [ ! -e "$TEST" ]; then
-> > -			echo "missing!"
-> > -		else
-> > -			echo "not executable, correct this."
-> > -		fi
-> > +	if [ ! -e "$TEST" ]; then
-> > +		echo "# Warning: file $TEST is missing!"
-> >  		echo "not ok $test_num $TEST_HDR_MSG"
-> >  	else
-> > +		cmd="./$BASENAME_TEST"
-> > +		if [ ! -x "$TEST" ]; then
-> > +			echo "# Warning: file $TEST is not executable"
-> > +
-> > +			if [ $(head -n 1 "$TEST" | cut -c -2) = "#!" ]
-> > +			then
-> > +				interpreter=$(head -n 1 "$TEST" | cut -c 3-)
-> > +				cmd="$interpreter ./$BASENAME_TEST"
-> > +			else
-> > +				echo "not ok $test_num $TEST_HDR_MSG"
-> > +				return
-> > +			fi
-> > +		fi
-> >  		cd `dirname $TEST` > /dev/null
-> > -		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
-> > +		((((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
-> >  			tap_prefix >&4) 3>&1) |
-> >  			(read xs; exit $xs)) 4>>"$logfile" &&
-> >  		echo "ok $test_num $TEST_HDR_MSG") ||
-> > -- 
-> > 2.17.1
-> > 
+  fpu->state.fxsave.mxcsr: 0xb7be13b4, mxcsr_feature_mask: 0xffbf
+  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/fpu/signal.c:384 __fpu_restore_sig+0x51f/0x540
+
+so restore the original behavior only for 32-bit kernels where you have
+ancient machines with buggy hardware. For 32-bit programs on 64-bit
+kernels, user space which supplies wrong MXCSR values is considered
+malicious so fail the sigframe restoration there.
+
+Fixes: 6f9866a166cd ("x86/fpu/signal: Let xrstor handle the features to init")
+Reported-by: Ser Olmy <ser.olmy@protonmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Ser Olmy <ser.olmy@protonmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/YVtA67jImg3KlBTw@zn.tnic
+---
+ arch/x86/kernel/fpu/signal.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
+index 445c57c..fa17a27 100644
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -379,9 +379,14 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+ 				     sizeof(fpu->state.fxsave)))
+ 			return -EFAULT;
+ 
+-		/* Reject invalid MXCSR values. */
+-		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
+-			return -EINVAL;
++		if (IS_ENABLED(CONFIG_X86_64)) {
++			/* Reject invalid MXCSR values. */
++			if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
++				return -EINVAL;
++		} else {
++			/* Mask invalid bits out for historical reasons (broken hardware). */
++			fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
++		}
+ 
+ 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
+ 		if (use_xsave())
