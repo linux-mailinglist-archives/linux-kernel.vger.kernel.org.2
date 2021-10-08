@@ -2,152 +2,411 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA85B426CF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01143426CF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242587AbhJHOtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:49:22 -0400
-Received: from mail-bn8nam12on2042.outbound.protection.outlook.com ([40.107.237.42]:38753
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230511AbhJHOtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:49:19 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SX253S7fcLyFlaC7GySdc841WDfVYQm/465vHYdfIrpaGDgjEIFfTi/tB+9G5ZGmSVQrgjiGtXhqR3vdUs0+2XPa5LXzmVLmv4mavofiS9vfoDLzftAPeTBFEJ6KC9xShPJvqEIe1gSA3qOiYcT+9s5pkVFV0zpq7nP9bVh8g2xfRbg6pAcAyBPcgT5zmLaOntxzZYjtHoVOVM4Zb4PrHvFAa/WWgKEjnxEXeZOZxDxwcNCx8qQyW8lFI6ybDaWxZMmy1ykXfUIFepll1k8lAWwpDBqqGyr6FQIYQ3tgMuDATdO6Mgvwb7Nhyp1bZs/psiNH4Hbu4/Sb/spQ6aOcWg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xEtB7mq3hSIDYqJZSn6cq2Yw/pWJuIL4Lh9EyyJseOY=;
- b=N6HIDrgfsbA1/1iWbwdKU2RC1RVuVxq5Wu0Og0JTlxqlvBhK3OQnOhFVTPpUA0Epsrao9hFUMsjSB0Bs/IhiHvXwzNEb29BBqFaM4cj9uvkOymSltrExACvuZGnotvuvwMiqO+/kf0kTn7H4do0sqlk8OWGHTy0ZGbjzcxVgeuaTlVaYbEGiFj7FD5auPvUudofmEyAggXV1OnFQ+F72fcDQYUnHLN/PVk+LYKwJwpbBMkX+z36esas1EnIAjSaUk6SyMJ9L7VemwAn5+WKgFC+ufc+rewXVkZ3HCZFm0LthHqI4hpVUK8cQU3mK+UvRbsapitnOaGwOaXmvyhiGAg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xEtB7mq3hSIDYqJZSn6cq2Yw/pWJuIL4Lh9EyyJseOY=;
- b=qjQiL8HjOp1+CebFx93zwPqUO0HwsEb49SGUk0chMSxFCYMn1SUkE8pJhRb6IQU5LLleZM440VCiPgUCm7eyu/AlpbMZaRec6Nx+o2gdAMKEoMQs+aiNn5D6IW7SGsul5Hxh0FTVtsMnpoVHY/a/HhOlrHn5qxzEBwA9SVWAVg+e0eZUJ8g52As8q1JCuPfMFUTtYbnRQx78c9LZ17Uy0ZhI8qZ2ycUYSQ+Vn5ggNxC8LK6bcWuLpie/fSp7PA+zy+H0VqH/mgSKMVMgZF4rKtRpfC4TGufXxOkn8rn7Q1YnbukHVL4QROBngJ6eu7mz5TKwY7m87qRqjcrXEXSqXA==
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com (2603:10b6:610:2a::13)
- by CH2PR12MB4101.namprd12.prod.outlook.com (2603:10b6:610:a8::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
- 2021 14:47:22 +0000
-Received: from CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142]) by CH2PR12MB3895.namprd12.prod.outlook.com
- ([fe80::a46b:a8b7:59d:9142%5]) with mapi id 15.20.4566.026; Fri, 8 Oct 2021
- 14:47:22 +0000
-From:   Asmaa Mnebhi <asmaa@nvidia.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        David Thompson <davthompson@nvidia.com>
-Subject: RE: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Topic: [PATCH v3 1/2] gpio: mlxbf2: Introduce IRQ support
-Thread-Index: AQHXsLi5/ezHFM2t80qMnoiP1wWjOauzEi0AgADJmACABBI7EIAAAriAgAACbtCAAAsjgIABjviQgAHxZACADcUy8A==
-Date:   Fri, 8 Oct 2021 14:47:21 +0000
-Message-ID: <CH2PR12MB3895604241F78A6D368DAD6ED7B29@CH2PR12MB3895.namprd12.prod.outlook.com>
-References: <20210923202216.16091-1-asmaa@nvidia.com>
- <20210923202216.16091-2-asmaa@nvidia.com> <YU26lIUayYXU/x9l@lunn.ch>
- <CACRpkdbUJF6VUPk9kCMPBvjeL3frJAbHq+h0-z7P-a1pSU+fiw@mail.gmail.com>
- <CH2PR12MB38951F2326196AB5B573A73DD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YVHQQcv2M6soJR6u@lunn.ch>
- <CH2PR12MB389585F7D5EFE5E2453593DBD7A79@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YVHbo/cJcHzxUk+d@lunn.ch>
- <CH2PR12MB389530F4A65840FE04DC8628D7A89@CH2PR12MB3895.namprd12.prod.outlook.com>
- <YVTLjp1RSPGNZlUJ@lunn.ch>
-In-Reply-To: <YVTLjp1RSPGNZlUJ@lunn.ch>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a26349d3-673a-41ea-d665-08d98a6a891a
-x-ms-traffictypediagnostic: CH2PR12MB4101:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CH2PR12MB4101E0C9AD2EFDC6805F4439D7B29@CH2PR12MB4101.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d5JXHRkTTwfOLj4gp+IVi4UyBeSrbDNw2+A6aG4KpMmP90hdzxJ92UzL9G1mxfDnoqpidd9daPd6OyZxS7rEFMeqOeN+9AQ6mcguMMO20OFCFV13U5r+wy/WacQNM4F5w8eF/wP1fpGO6TLa+CuRsf2HKdDnhZMIeeyKuvwyM9mCP7xMl6bvIvL4D2TevUWzHoVw6UM29e1SPT+/e5BWo4ngFBkGedO/Ks7C1oIj7FXoQKtRFLMjt8tUBbqpCk9Vkk/JTYNzMjVlyYt0AWnxny/5Ox0fiYHluadg7HMArZzKrMWlIijWj666Z72mFMtF16AROaBHV3tUqu1LFulb21WOp2XqVIZuQ4vEcj5OEw2n3OLiyLvcr9t1ktWAuKYoWIN1Lj0FKGtDtKKhmlaAxCr1UuOz/VYTpt0PGyyXzsLGzcTrrQGwHrbQatRwrNYvQDQKupx8Jjd4T3hfITDMtzyTOrYjvGou0J+PDhWgbym8VMJfxZi1yzn6sqRqo93r/pNiC+L6M9kwsxvN7ee2JuH4EpTCcBAsmt8pBRtN35t+W8I9XaQawS6BXzaz0KCoVIXxScOqgPsuXQqma3qTW9VR6E7/Xrf8CiEzNcVU93O8CdgQRVf6R1pQNkA7c9sJGKPFRTFlo5ZXnfEVibNcWxgpuhz+onr6003SGMadqNOb2cGCnS61lyEf9/ZhhngEXFyyN37CYS/uXfzBGusIGg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB3895.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(38070700005)(52536014)(5660300002)(76116006)(66946007)(64756008)(55016002)(86362001)(66476007)(66556008)(4326008)(9686003)(107886003)(186003)(66446008)(508600001)(8676002)(7416002)(2906002)(38100700002)(54906003)(8936002)(316002)(71200400001)(122000001)(33656002)(6506007)(6916009)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Jw8B0p2WfKHSFZJaGi8uPZ505IAe3941ztDSqmNMI3GnVVmVnjGRcKSQ1AsV?=
- =?us-ascii?Q?tmy8UMM1k0PUnKFhsqpv/yXmY6v8KQQsmq23JCWwUTf8L0nfRFGssCMN8Yox?=
- =?us-ascii?Q?bmU9D707O6YzDM1hAKPRB8JcNlE8zT+pJUldjqn0jzmqcIS2f2bLqnGCkKEg?=
- =?us-ascii?Q?V1skLhDQKwi3LGfh8ZZRVAxTAdZ1HOh4S8Tb5o1RGgeIKXHP/l1YzgJHvhIc?=
- =?us-ascii?Q?buXVLmKzN5vOU6EsCA8oz/XUBOSLaBnzhxwGW6YKN74p2bzzaBbBQxafkbam?=
- =?us-ascii?Q?c5uG12m1gUVS4D3vyLdgRnKAT2fRoAIN5KbFhO9bUbR6NTnhGBL7wBg77Ckt?=
- =?us-ascii?Q?BDTgnTuGJVO8RQOeefVxfqbUSuO+Xv+msDZJ7hYXTqCZl+wQjmUDTb/GYmbk?=
- =?us-ascii?Q?aR54H+ikfFqLypS49ZexcSav7QgMSKkRZtKgH+NqQ9eAVrTa9r6EhsMYvrrM?=
- =?us-ascii?Q?E8sti/5FYG40Ia8ae0QfdZUCDeYrlBxxeu7OmuHl/y4pASkx6D+Fh4Z6JJcN?=
- =?us-ascii?Q?qzF0nqEy/o8C+fBCVdIWu0/TVWuFq7lrj2gyfn0/QP7pkgzBwAKD7I2pIc42?=
- =?us-ascii?Q?riP0Ka5DDaVeIxZucFshZ208HHsmKpoVYkTMgVP4UrE4WrGSyHcHfz4Nx6pE?=
- =?us-ascii?Q?cfb3nR8VBFvgSrB7R2wEkLRCocIomZ1MQ6w0oGJ/gZ758LaKYNM7ucrQiBAk?=
- =?us-ascii?Q?3RmL8etd0vlUwDJgL1IGPbcu07D6BPb+/q1PNvWKGmzoGTIyRiujh2xN4B/Y?=
- =?us-ascii?Q?YmI5JMlu2WNcVXFMn2ahm+r/paIctvVxa9HnhUMy9wsYBu7wHpba2KvrEBBW?=
- =?us-ascii?Q?/yLxr2djmLDz4wFOAIC4Qba59qeWhtUag6y3l3VDer1m1RaQt/DWTVmBH+pV?=
- =?us-ascii?Q?FYPN4Z0xV1emfH7M/0F0BrgokXxlz6T8eiaTT+QI3Yz56TA8Rm0rG7Mb6R+H?=
- =?us-ascii?Q?9zpeuSFR7qnMHSpt8M6BmJ8A1WOBEJvXclBnpkhJbdDEQ53zeKvOuosqDkRI?=
- =?us-ascii?Q?NpzlHlMTdypvo5kg61MitK4L5IsSSFCfSTSIaNS/WKSQKuepzq7+YQoEQDm+?=
- =?us-ascii?Q?Yc2ukP7cHxshZLn9YDJw1q8b97lUcdazZRSf8d6u9AePbqFrIEc3b3uzLJJ8?=
- =?us-ascii?Q?SuDwiPEbKN6V2fgINkW1ECC3A+3bQv8GIv+KwoUThbrzuGACPDv6I+9VtBAX?=
- =?us-ascii?Q?15c+/Ced8/z8WNvJsCCbvgwQlwzxCNkuqt9dPNM9n+U4ItBu9c5F2EP6QLeH?=
- =?us-ascii?Q?J5vgS4VZCDIM+M2HKflNXVOU5KBh9MegldqyyvrQ44Jej1yKO9IymvdZcYg2?=
- =?us-ascii?Q?OsisyN7+sRVOdBWXFwAeRsrU?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S242787AbhJHOvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:51:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242698AbhJHOvE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:51:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633704549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=esSNc2qnd5aPNAP91qJWefw1R8AxJUeu2dYjPboEMLA=;
+        b=hd05lTKSb2CDavBpYQ6cKMYihyrCdRAyyWZMdQZJNbnQ9Iewc5pMJZO5cxadmAWC51MhCi
+        EvMxRD5B4VMSQMeSycIOit2o0CGUmZ3NVlDIpNQGfjv3xZ1ulQMoru++HgDSYTpEH/gCbN
+        5uj/TqTYmTI/Dzjd9YN5LeNIT4dSXbQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-uP2Mk12LNniEcESnmQ68ow-1; Fri, 08 Oct 2021 10:49:08 -0400
+X-MC-Unique: uP2Mk12LNniEcESnmQ68ow-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D41F5802C8F;
+        Fri,  8 Oct 2021 14:49:06 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A36FD60BF1;
+        Fri,  8 Oct 2021 14:48:52 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 533EA42A51C8; Fri,  8 Oct 2021 11:48:19 -0300 (-03)
+Date:   Fri, 8 Oct 2021 11:48:19 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>
+Subject: [patch v4] util-linux: add chisol tool to configure task isolation
+Message-ID: <20211008144819.GA4045@fuller.cnet>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB3895.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a26349d3-673a-41ea-d665-08d98a6a891a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2021 14:47:22.0270
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OPzdXLWVBYNcOTDeJ1kSiuNO5VA7wUwHUivZ0p47gUc2irVJVfyLg2dDdhOqQzLBiPE+0Mjm4bMBSbTUSLwyUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4101
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> In KSZ9031, Register MII_KSZPHY_INTCS=3D0x1B reports all interrupt=20
-> events and clear on read. So if there are 4 different interrupts, once it=
- is read once, all 4 clear at once.
-> The micrel.c driver has defined ack_interrupt to read the above reg=20
-> and is called every time the interrupt handler phy_interrupt is called. S=
-o in this case, we should be good.
-> The code flow in our case would look like this:
-> - 2 interrupt sources (for example, link down followed by link up) set=20
-> in MII_KSZPHY_INTCS
-> - interrupt handler (phy_interrupt) reads MII_KSZPHY_INT which=20
-> automatically clears both interrupts
-> - another internal source triggers and sets the register.
-> - The second edge will be caught accordingly by the GPIO.
 
-> I still think there is a small race window. You product manager needs to =
-decide if that is acceptable, or if you should poll the PHY.
+Add chisol tool to configure task isolation. See chisol -h 
+for details.
 
-I talked to both our managers and the HW team and they said it is ok to use=
- the interrupt for our product.
+For example, to launch a version of oslat that activates 
+task isolation:
 
-> Anyway, it is clear the hardware only does level interrupts, so the GPIO =
-driver should only accept level interrupts. -EINVAL otherwise.
+chisol -q vmstat_sync -I conf ./oslat -f 1 -c 5 -D 5m
 
-There is an on going conversation with HW folks to address this for future =
-BlueField generations.
+-q vmstat_sync: enable quiescing of per-CPU vmstats 
+-I conf: inherit task isolation configuration.
 
-Thank you.
-Asmaa
+To launch an unmodified application:
+
+./chisol -q vmstat_sync -a -I active command args
+
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+diff -Nur util-linux.orig/configure.ac util-linux/configure.ac
+--- util-linux.orig/configure.ac	2021-10-07 14:15:15.334935842 -0300
++++ util-linux/configure.ac	2021-10-05 15:11:54.197269076 -0300
+@@ -2272,6 +2272,9 @@
+ 	[UL_CHECK_SYSCALL([sched_setattr])], [sched_setattr])
+ AM_CONDITIONAL([BUILD_UCLAMPSET], [test "x$build_uclampset" = xyes])
+ 
++UL_ENABLE_ALIAS([chisol], [chisol])
++UL_BUILD_INIT([chisol])
++AM_CONDITIONAL([BUILD_CHISOL], [test "x$build_chisol" = xyes])
+ 
+ AC_ARG_ENABLE([wall],
+   AS_HELP_STRING([--disable-wall], [do not build wall]),
+diff -Nur util-linux.orig/schedutils/chisol.c util-linux/schedutils/chisol.c
+--- util-linux.orig/schedutils/chisol.c	1969-12-31 21:00:00.000000000 -0300
++++ util-linux/schedutils/chisol.c	2021-10-07 14:17:38.710937831 -0300
+@@ -0,0 +1,304 @@
++/*
++ * chisol.c - change task isolation parameters
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License, version 2, as
++ * published by the Free Software Foundation
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Copyright (C) 2021 Marcelo Tosatti <mtosatti@redhat.com>
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <getopt.h>
++#include <errno.h>
++#include <sched.h>
++#include <stddef.h>
++#include <string.h>
++#include <sys/prctl.h>
++#include <linux/prctl.h>
++#include <errno.h>
++
++#include "nls.h"
++#include "strutils.h"
++#include "xalloc.h"
++#include "procutils.h"
++#include "c.h"
++#include "closestream.h"
++
++static void __attribute__((__noreturn__)) usage(void)
++{
++	FILE *out = stdout;
++	fprintf(out,
++		_("Usage: %s [options] cmd [args...]]\n\n"),
++		program_invocation_short_name);
++
++	fputs(USAGE_SEPARATOR, out);
++	fputs(_("Change task isolation parameters.\n"), out);
++	fputs(USAGE_SEPARATOR, out);
++
++	fprintf(out, _(
++		"Options:\n"
++		" -q, --quiesce      configure quiescing of particular activities\n"
++		"                    (to list supported activities see --info)\n"
++		" -i, --info         show supported task isolation features\n"
++		" -a, --activate     activate isolation before exec\n"
++		" -I, --inherit      set inheritance across fork/exec.\n"
++		" 		     Two modes are available: conf, where only task\n"
++		"		     isolation configuration is inherited, or active,\n"
++		"		     where configuration and activation are inherited.\n"
++		));
++	printf(USAGE_HELP_OPTIONS(20));
++
++	fputs(USAGE_SEPARATOR, out);
++	fprintf(out, _(
++		"Configure task isolation and run a new command:\n"
++		"    %1$s -q vmstat_sync cmd\n"
++		"Configure, activate task isolation and run a new command:\n"
++		"    %1$s -a -q vmstat_sync cmd\n"
++		"To query the supported task isolation features:\n"
++		"    %1$s -i\n"),
++		program_invocation_short_name);
++
++	printf(USAGE_MAN_TAIL("chisol(1)"));
++	exit(EXIT_SUCCESS);
++}
++
++struct isol_feat_name {
++	int val;
++	char *name;
++};
++
++struct isol_feat_name featnames[] = {
++	{ ISOL_F_QUIESCE, "quiesce" },
++};
++
++struct isol_feat_name qfeatnames[] = {
++	{ ISOL_F_QUIESCE_VMSTATS, "vmstat_sync" },
++};
++
++#define SSZ sizeof(struct isol_feat_name)
++
++static char *featname(int val, struct isol_feat_name *fnames,
++		      unsigned int nrentries)
++{
++	unsigned int i;
++	char *name;
++
++	for (i = 0; i < nrentries; i++) {
++		struct isol_feat_name *f = &fnames[i];
++
++		if (f->val == val)
++			return strdup(f->name);
++	}
++
++	name = malloc(100);
++	snprintf(name, 100, "0x%x\n", val);
++
++	return name;
++}
++
++static void __attribute__((__noreturn__)) task_isol_info(void)
++{
++	int ret;
++	unsigned int i, j;
++	unsigned long long feats = 0;
++
++	FILE *out = stdout;
++
++	/* Retrieve supported task isolation features */
++	ret = prctl(PR_ISOL_FEAT_GET, 0, &feats, 0, 0);
++	if (ret == -1) {
++		perror(_("prctl PR_ISOL_FEAT_GET"));
++		exit(EXIT_FAILURE);
++	}
++
++	for (i = 0; i < 16; i++) {
++		if (feats & (1<<i)) {
++			char *fn;
++			unsigned long long featmask;
++			struct task_isol_quiesce_extensions qext;
++
++			fn = featname(1<<i, featnames, sizeof(featnames)/SSZ);
++
++			fprintf(out, "%s: ", fn);
++			free(fn);
++
++			if (i != 0)
++				continue;
++
++			ret = prctl(PR_ISOL_FEAT_GET, (1<<i), &qext, 0, 0);
++			if (ret == -1) {
++				perror(_("prctl PR_ISOL_FEAT_GET"));
++				exit(EXIT_FAILURE);
++			}
++
++			featmask = qext.supported_quiesce_bits;
++			for (j = 0; j < 16; j++) {
++				if (featmask & (1<<j)) {
++					fn = featname(1<<j, qfeatnames,
++						      sizeof(qfeatnames)/SSZ);
++					fprintf(out, "%s ", fn);
++					free(fn);
++				}
++			}
++		}
++	}
++
++	fprintf(out, "\n");
++	exit(EXIT_SUCCESS);
++}
++
++int main(int argc, char **argv)
++{
++	int c, ret, activate = 0;
++	short int inherit_mask = 0;
++	unsigned long long quiesce_act_mask = 0;
++	char *subopts;
++	char *value;
++
++	static const struct option longopts[] = {
++		{ "quiesce",	required_argument, NULL, 'q' },
++		{ "info",	no_argument, 	   NULL, 'i' },
++		{ "inherit",	required_argument, NULL, 'I' },
++		{ "activate",	no_argument,	   NULL, 'a' },
++		{ "help",	no_argument,	   NULL, 'h' },
++		{ "version",	no_argument,	   NULL, 'V' },
++		{ NULL,		no_argument,       NULL,  0  }
++	};
++
++	enum {
++		VMSTAT_SYNC_OPT = 0,
++	};
++	char *const token[] = {
++		[VMSTAT_SYNC_OPT]   = "vmstat_sync",
++		NULL
++	};
++
++	enum {
++		INHERIT_CONF = 0,
++		INHERIT_ACTIVE,
++
++	};
++	char *const itoken[] = {
++		[INHERIT_CONF]   = "conf",
++		[INHERIT_ACTIVE] = "active",
++		NULL
++	};
++
++
++	setlocale(LC_ALL, "");
++	bindtextdomain(PACKAGE, LOCALEDIR);
++	textdomain(PACKAGE);
++	close_stdout_atexit();
++
++	while ((c = getopt_long(argc, argv, "+q:I:iahV", longopts, NULL)) != -1) {
++	switch (c) {
++		case 'q':
++			subopts = optarg;
++			while (*subopts != '\0') {
++				switch (getsubopt(&subopts, token, &value)) {
++					case VMSTAT_SYNC_OPT:
++						quiesce_act_mask |=
++							ISOL_F_QUIESCE_VMSTATS;
++						break;
++					default:
++						fprintf(stderr, "Unknown "
++							"quiesce activity "
++							"/%s/\n", value);
++						errtryhelp(EXIT_FAILURE);
++						break;
++				}
++			}
++			break;
++		case 'I':
++			subopts = optarg;
++			while (*subopts != '\0') {
++				switch (getsubopt(&subopts, itoken, &value)) {
++					case INHERIT_CONF:
++						inherit_mask |= ISOL_INHERIT_CONF;
++						break;
++					case INHERIT_ACTIVE:
++						inherit_mask |= ISOL_INHERIT_CONF;
++						inherit_mask |= ISOL_INHERIT_ACTIVE;
++						break;
++					default:
++						fprintf(stderr, "Unknown "
++							"inheritance "
++							"/%s/\n", value);
++						errtryhelp(EXIT_FAILURE);
++						break;
++				}
++			}
++			break;
++		case 'i':
++			task_isol_info();
++			break;
++		case 'a':
++			activate = 1;
++			break;
++		case 'V':
++			print_version(EXIT_SUCCESS);
++		case 'h':
++			usage();
++		default:
++			errtryhelp(EXIT_FAILURE);
++		}
++	}
++
++	if (argc - optind < 1) {
++		warnx(_("bad usage"));
++		errtryhelp(EXIT_FAILURE);
++	}
++
++	if (quiesce_act_mask) {
++		struct task_isol_quiesce_control qctrl;
++
++		qctrl.quiesce_mask = quiesce_act_mask;
++		ret = prctl(PR_ISOL_CFG_SET, I_CFG_FEAT, ISOL_F_QUIESCE, &qctrl, 0);
++		if (ret == -1) {
++			perror("prctl PR_ISOL_CFG_SET");
++			exit(EXIT_FAILURE);
++        	}
++	}
++
++	if (activate && quiesce_act_mask) {
++		unsigned long long activate_mask = ISOL_F_QUIESCE;
++
++		ret = prctl(PR_ISOL_ACTIVATE_SET, &activate_mask, 0, 0, 0);
++		if (ret == -1) {
++			perror("prctl PR_ISOL_ACTIVATE_SET (ISOL_F_QUIESCE)");
++			exit(EXIT_FAILURE);
++		}
++	}
++
++	if (inherit_mask != 0) {
++		struct task_isol_inherit_control i_ctrl;
++
++		memset(&i_ctrl, 0, sizeof(i_ctrl));
++		i_ctrl.inherit_mask = inherit_mask;
++
++		ret = prctl(PR_ISOL_CFG_SET, I_CFG_INHERIT, &i_ctrl, 0, 0);
++		if (ret == -1) {
++			perror("prctl PR_ISOL_CFG_SET (I_CFG_INHERIT)");
++			exit(EXIT_FAILURE);
++		}
++	}
++
++	argv += optind;
++	execvp(argv[0], argv);
++	errexec(argv[0]);
++
++	return EXIT_SUCCESS;
++}
++
+diff -Nur util-linux.orig/schedutils/Makemodule.am util-linux/schedutils/Makemodule.am
+--- util-linux.orig/schedutils/Makemodule.am	2021-10-07 14:15:15.334935842 -0300
++++ util-linux/schedutils/Makemodule.am	2021-10-05 15:11:54.199269088 -0300
+@@ -29,3 +29,11 @@
+ uclampset_SOURCES = schedutils/uclampset.c schedutils/sched_attr.h
+ uclampset_LDADD = $(LDADD) libcommon.la
+ endif
++
++if BUILD_CHISOL
++usrbin_exec_PROGRAMS += chisol
++#MANPAGES += schedutils/chisol.1
++#dist_noinst_DATA += schedutils/chisol.1.adoc
++chisol_SOURCES = schedutils/chisol.c
++chisol_LDADD = $(LDADD) libcommon.la
++endif
+
