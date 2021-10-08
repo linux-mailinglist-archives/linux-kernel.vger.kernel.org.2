@@ -2,109 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF6B4266A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB234266B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237435AbhJHJY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:24:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38590 "EHLO mail.kernel.org"
+        id S235467AbhJHJZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:25:38 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4224 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhJHJY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:24:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC73760F58;
-        Fri,  8 Oct 2021 09:23:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633684981;
-        bh=afJ64eNhnvavZ4I6YtLXQhV692BpYep7GRS5CsVwOKo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SwzOJlF8KULFjM4rprR6hovLxqKYQgZC6BmwmDtSRXvHaOSGaVj7wTAXv+fZKzRJb
-         gvVv9d1L7f5PMwiLpCgTzq06bB+lPy7hHd5L2w2vjM8LRa5nDVL5ZKoSvyFWe6NNFc
-         cFMEQimhPjwcqb9kiGpFz5VuoOu7Lz2DBUjFRQqOAemyUzOx3IGMl0jkF6NcmYlzYU
-         1D8MQkWNUifKB9/OTDXwaGXy3kV26NoJ6h0DwuAifzh9wTIpriY8Dwa9p/tLNwnVTw
-         AoTJepF0cGzbseB4GuMx2TM9U4wPMgRSX+0bj9lMr/Ig6nYnLEy/ZmOBCK4hssZZnS
-         Wsl/GHBSXvRDA==
-Date:   Fri, 8 Oct 2021 18:22:58 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Message-Id: <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
-In-Reply-To: <20211008000540.GA31220@kbox>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
-        <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
-        <20211006175611.GA2995@kbox>
-        <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
-        <20211007162204.GA30947@kbox>
-        <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
-        <20211008000540.GA31220@kbox>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235969AbhJHJZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:25:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226371404"
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="226371404"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 02:23:37 -0700
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="440583417"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 02:23:34 -0700
+Received: by lahna (sSMTP sendmail emulation); Fri, 08 Oct 2021 12:23:31 +0300
+Date:   Fri, 8 Oct 2021 12:23:31 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     benoitg@coeus.ca, bhelgaas@google.com, bp@alien8.de, hpa@zytor.com,
+        juhapekka.heikkila@gmail.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [PATCH RESEND] x86/resource: Do not exclude regions that are
+ marked as MMIO in EFI memmap
+Message-ID: <YWAOE5yV9V0/HMET@lahna>
+References: <20200617164734.84845-1-mika.westerberg@linux.intel.com>
+ <1c225d72-44dc-1ddb-3284-a5d19e0db882@tuxedocomputers.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1c225d72-44dc-1ddb-3284-a5d19e0db882@tuxedocomputers.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 17:05:40 -0700
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
+Hi,
 
-> > > > > The other thing is we need ref counting to know if the event is busy.
-> > > > > Having the ID in the packet avoids having a fd per-event, but it also
-> > > > > makes ref counting process lifetime of each event quite hard.
-> > > > 
-> > > > Hmm, I don't think so. You can use an array of the pointer to
-> > > > events on the private data of the struct file.
-> > > > When you add (or start using) an event (this is identified by ioctl),
-> > > > you can increment the event refcount and add it to the array.
-> > > > When the file is closed (in exiting process), it will loop on the
-> > > > array and decrement the refcount for each event.
-> > > > Then, after all tracers disabled the event, ftrace can remove the
-> > > > event in background (unless it is defined through 'dynamic_events' or
-> > > > 'user_events').
-> > > > 
-> > > Yes, I didn't say it's impossible :) It's quite hard and takes a lot
-> > > more management. I don't see a clear benefit to that approach, why is it
-> > > better than an fd lifetime? Not trying to be difficult, just trying to
-> > > be pragmatic about what approach is best.
-> > 
-> > I'm not sure this point, you mean 1 fd == 1 event model?
-> > 
-> Yeah, I like the idea of not having an fd per event.
+On Fri, Oct 08, 2021 at 10:55:49AM +0200, Werner Sembach wrote:
+> Is there any update on this matter? Also happens on discrete Thunderbolt 4 chips:
+> https://bugzilla.kernel.org/show_bug.cgi?id=214259
 
-Ah, OK. I misunderstood the idea.
-per-FD model sounds like having events/user-events/*/marker file.
+AFAICT no updates.
 
-> I want to make
-> sure the complexity is worth it. Is the overhead of an FD per event in
-> user space too much?
+@Bjorn, x86 maintainers,
 
-It depends on the use case, how much events you wants to use with
-the user-events. If there are hundreds of the evets, that will consume
-kernel resources and /proc/*/fd/ will be filled with the event's fds.
-But if there is a few events, I think no problem.
-
-> What happens to the first 4 bytes (ID)? Does it not
-> show up in the buffer?
-
-You can add the 'ID' field commonly in the user-event by default
-if you need it. Or, just skip the ID as it is a header of the packet.
-(since the ID is process local number, that will not important for
-the tracers who trace the events by name)
-
-> This would be fine as long as the rel_loc idea
-> gets into ftrace, etc.
-> 
-> This would require a global array as well as a local per-FD array. I'm
-> wondering if the per-FD array becoming large mitigates the gain by
-> simply having an FD per-event.
-
-OK, I got it. I hope no one adds hundreds of events at once for
-trace.
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+If there are no alternatives can we get this patch merged so that people
+don't need to carry out-of-tree patches to get their systems working?
