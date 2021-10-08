@@ -2,149 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE5D427372
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD4B427377
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243560AbhJHWNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:13:24 -0400
-Received: from mail-eopbgr50117.outbound.protection.outlook.com ([40.107.5.117]:51777
-        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231819AbhJHWNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:13:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BkWl+IVB4a6xqjqkxTyP71G7oUhAx3Pq6BjDkyV+tw1Y5FAkhTQ9jC+ahfkd3lKGkm+AJd5eW3262CX2TJtYMzD9KyiIUdgaRm0ZRApBKo40Bc7IDxvFbl0fyPwWU8scJEsv9M4IXxnnbpz5FzcWZSv99V8Q7RcdQ9u5QD15JleVkW5WZq0W2/2NIfZJgOzD9vRudA/+dRbtfHWAKCgV1XkPi9ymu9r2rt79yJjVRpFBwPNj/KjEPOmdEI9Xit2ltOiGrHsxEv5MHr/51qd6mTbkuKBBVPphpHEFG6sMHBo0nmXewtYZ+pRIi0BmA+So0ykDIC6xxQQMxzrCoEwx7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5SVLIiP85rEi7NwQZ2KUCmstoHY/WR6eE52aXba1XE0=;
- b=NhdEc9gUt5pc4gJl9u8mYiilyvzoY0FX1FZTF3KxvkncXuUZeRtPYeEd0dInaFGllj04Qx9peYkxcxeNHxWtaiJx/jt8qy30ACyXTBz9vWA3udOF3bCVP9PrssjVAOqIEDFKmjC8kdLQmpvYCaysXH7UVSzM3sHxDGtPVc0em604wrdShFPO0NsAkC1xxwJw6pQECk3tulLWBbPeWaumFdF/yQWgkNsM6e2hrPDQ0cR1lCXmw1ihU+0IlTtg3oSHk7VRKPZIE2XBMSGNzOHdlkk2qEczENIt7/2rXN4LQRr5S3cSAGIeoMkzd4vJSMr1f8jjRuBUXfnD1W7UYtDZIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5SVLIiP85rEi7NwQZ2KUCmstoHY/WR6eE52aXba1XE0=;
- b=afUFKcW5NP6+1XHihbuwBC51y7PpHoAZXLcKyIzgocUdvVGMYv+TItx2e/J4myx+nVfNK7toTQvGuZGEOQuF0EnWR9dm+sz+aWk8BCBe66v0vr8Kb/vplAQer7QvWKKZfvwmIIZZL5R9gmLrYk6GQVXTl7PZgKi8rFRzkiGTeW8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DB9PR02MB7354.eurprd02.prod.outlook.com (2603:10a6:10:25c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
- 2021 22:11:25 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::35c9:1008:f5af:55a%4]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
- 22:11:24 +0000
-Message-ID: <43e22ba4-0619-49bc-8062-b561cf19ca23@axentia.se>
-Date:   Sat, 9 Oct 2021 00:11:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: [PATCH 4/3] dt-bindings: iio: io-channel-mux: add optional
- #io-channel-cells
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>
-Cc:     kernel@axis.com, linux-iio@vger.kernel.org, robh+dt@kernel.org,
-        lars@metafoo.de, jic23@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
- <20211007134641.13417-3-vincent.whitchurch@axis.com>
- <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-In-Reply-To: <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: HE1PR0402CA0034.eurprd04.prod.outlook.com
- (2603:10a6:7:7c::23) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S231819AbhJHWN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:13:29 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:46782 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243563AbhJHWN0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:13:26 -0400
+Received: by mail-oi1-f174.google.com with SMTP id o204so7364624oih.13;
+        Fri, 08 Oct 2021 15:11:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d6BsMDMQTAtwuQOjR1Y00yw1JHyPYzJywrXEXvPOQvA=;
+        b=1b5SYFCWR9r2rGiHixzUmWsQEcxs4h42B0hpGl8q5rdj67hoqwYkBsJ9YlK2HG436i
+         0lLHJTmX5M6XiYvC5tileTO63sZh3csrn38Xfru+vdF5rsJ6wilKNigMCrBuZg2UMoE0
+         6eQxHqt5RZmWak7UHjdilwSoZJ2AVK0onUZytO1vCP48u7Zbb44EzK+3shagtX9vivDj
+         GntMwnahtWZ+qaJhZr7SPqwMHLdqgR5j8/2kjF5uY2dXtg3iTgb2qcnQTcfgBVe+ZqKo
+         emOcQFLlgM4p3YC4OJeasLUwBACGoIfwDOVh6qWy9Bef2CNxPMn6LgOg0UUiNmukq0EQ
+         88gg==
+X-Gm-Message-State: AOAM532d7fQsdd/Hgd5NWrJIAr69O/yneNoqiYwsT/M/V7liWJrf133d
+        Vfku6thU//VduGHcLxbp2wxBa82OHQ==
+X-Google-Smtp-Source: ABdhPJxjNWPKMwCnB1Pb/gbrjWGF++/KQD5XMV7P8tAq7lCIoW/WM5muuAKgrFcqqtYvPzM5tOIaTA==
+X-Received: by 2002:aca:1101:: with SMTP id 1mr18234970oir.85.1633731090390;
+        Fri, 08 Oct 2021 15:11:30 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e28sm143182oth.40.2021.10.08.15.11.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 15:11:29 -0700 (PDT)
+Received: (nullmailer pid 3407634 invoked by uid 1000);
+        Fri, 08 Oct 2021 22:11:28 -0000
+Date:   Fri, 8 Oct 2021 17:11:28 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dipen Patel <dipenp@nvidia.com>
+Cc:     thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, warthog618@gmail.com,
+        devicetree@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [RFC v2 04/11] dt-bindings: Add HTE bindings
+Message-ID: <YWDCEOuHu8vsRSPH@robh.at.kernel.org>
+References: <20210930232617.6396-1-dipenp@nvidia.com>
+ <20210930232617.6396-5-dipenp@nvidia.com>
 MIME-Version: 1.0
-Received: from [192.168.13.3] (185.178.140.238) by HE1PR0402CA0034.eurprd04.prod.outlook.com (2603:10a6:7:7c::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Fri, 8 Oct 2021 22:11:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f4276faa-1d5f-4fb4-3103-08d98aa8913f
-X-MS-TrafficTypeDiagnostic: DB9PR02MB7354:
-X-Microsoft-Antispam-PRVS: <DB9PR02MB735479297FF55FCBC42913CDBCB29@DB9PR02MB7354.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H4+2QtGe2CDXTNSrbvmxkYAzgXvYid9h+T1UMc0kxjRfCC/Z0Fb1PwNmCuafDKGRwhw9NPa2xN0HJMXxb5r9jb78Y5YcdR3kk/7RFBNmqVXvFnppBtAE1lIK9lZ8e6/c7Kya6im45RmoZPu/2DCym1pywyAvwf4AiE/pPZt7Y4HvAG8c/MiAYt+SrcOrfbtZq7vvcnQp0Ptz4DSlAi8DxzrYKfXv6+Q5tph2YIdxLQsqgYS4BHr5TqitMhvBEWq14fnQp2pARBQHU95IU+jQU1/QP+rZbQdXVKT9TCK6tyPC5uONc4+nMNtXxzxe3DIwQ3R04TXLI2horMiQL/rD3xhMfuAYu1K9pc6hcqC+oRgy70lCSMbQ7GfiptaG44WHiClGWDgT8K12tbDYnexiplj8jYqoNtW0VcRXPASKbFZ+DYvB9fbByK6EKOY/41pLEyLHdStUZhaBFcGCWnVor4EqfkrgpZdZmYHPe9YoyKhtkQdnIZx0A+L+9J4Dz8lix+GZJqZUcGZWsxQFeodKf09t4iohQTdaa+G2aSASaqajb//EWb0iHXfCMDUnYogRGjTavx4kg8WsZ851xONtE4yYc2dfQJyiy0MwfPz8IIMBKEaYGrul6RHlKL01tiNNqgAgwm4MsR3ZxXopKb10IhldsjkMf0ByFexEqdaFVXJldWRz8ya+7LV3riLgKsawuUlzHygT5xfWdgT4cFUG9P1lcqabV54M1/tWPxePvP4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(39840400004)(366004)(346002)(136003)(36916002)(508600001)(110136005)(36756003)(4744005)(4326008)(86362001)(31686004)(2906002)(16576012)(316002)(31696002)(5660300002)(186003)(26005)(66556008)(66476007)(8936002)(66946007)(6486002)(8676002)(2616005)(38100700002)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnRxVS8xaFZDb2Z0SC81NTVxODhGckxJL01jZ1FFL2p3NVNOYkQxNk1tNEVF?=
- =?utf-8?B?Y3dNSmRKTGRPbG5WL09EdkRhZnZjRUE2MFYxQnY3T2h5M1R5S09sYmFTemJ6?=
- =?utf-8?B?QlgzcXpjNC9wOGdFRHVLODVvZE1SSmZtNnF0WVdINURKWVp1QnY1U0JneFpB?=
- =?utf-8?B?NmxmVjJwbWc2N0VpbHRGcjhhcGdLZUU4QTl0SU5yanVxRDNoczJpMnkrTHho?=
- =?utf-8?B?bUlxdHJWSVlYN3RxSSs5M1RtaWhLUmVaWVNEUFdKZnFkVnJZUjVnT0w5b1ZB?=
- =?utf-8?B?U1Y3U1p6NnN3WkZCREVLVmhDazZTQ2Q0L1BwMXlrMDJVcXRtU2hnUnM3enZz?=
- =?utf-8?B?dFluWXVpeWFPTTY2djIzMEJYRFhUSlBWNUhtL1NNY0E4ekN4a0RXQkl3eFFC?=
- =?utf-8?B?K3FKTDVRTVA3Vlp4elZLRHZSUGwzdGhBNWxqS29FZkZaNDgxSTkrRFBpT2Y1?=
- =?utf-8?B?M2g0MHVpV1FOSmh0aWt0cWFUd1lveDZKZjFyc1ZsNFZ6TFMwY0FkZ0s2TzV6?=
- =?utf-8?B?dEJJM29PSU8wZXNYcmU2NzFVTnRUOGlraUpEaWFieHR6aWRoVTlDWlN3MWMw?=
- =?utf-8?B?eFpGOVpuWUNNMk1qTmtMTHJFL0wybHV5KzlVYldOUVNaZnVraEc1eVJiL3Vz?=
- =?utf-8?B?NTRKcXE0UkE2WWhBcll2aXQ5RkxraDEweUgrb0h5b3ZEWUgydlg5YW1jUTNl?=
- =?utf-8?B?QVEwbjlXamNuSDdLbG5YK0ZzcFcvNWtlVzdNUFB6SHUzamQvQytFV3gwZTZG?=
- =?utf-8?B?ZWorL01MOExCMzR0RWNxcUtVTlJnMWc2M1pqaDNqSHB3Q1lEbW03R25uZHI3?=
- =?utf-8?B?OVdpR2NQQUVaejBQRXBEWVM3Uy9xWG1FQS9Bd0NzOWFXSXRqTG1ZMUZNVGV5?=
- =?utf-8?B?R1lpNGJZNDNIMWd1eXJwRXdMV3NtL1ZJSDA0Z0RvclIwem9QM0JsWjFwNE5h?=
- =?utf-8?B?K3dNOTZPd0grbExRQm83WHFYZXA3eWpaN1VaVzA2dk1BRmUzV1RmSHlCdGdP?=
- =?utf-8?B?bjdHbE1KRHRVcGRvVk1QSndwY1l3Q2VIcGVSRTh1cHFyVStnOGF1OWJDci9j?=
- =?utf-8?B?Tml4NzFrTThQOWlnc3ViSGdHczcyZDlETWxxSGkveHY2czhYMFZuWTJkWldh?=
- =?utf-8?B?MldQMUFDRVVhZi82WUZjMWt2QStZY3F3djRuVEV0a0xvZldVdWphdFMyR2lR?=
- =?utf-8?B?ZytEc3lkL3JvazN4YkZ4cUtXSUtucmtPcENzcjRWOGxEeHhmYlhLT29rL2RC?=
- =?utf-8?B?ME9ONzFaRE9acE40QVhoZkh4ZmxVWWduK1NSbWI5SVpoMU9MWWs1YzhZRzZX?=
- =?utf-8?B?YlVGQWYzUXlwWWpqTUY4RCtMaVJVM2R4ODQ0a0dBVlVRL2k2NlpOWG9vUk9G?=
- =?utf-8?B?cmRidEI3TnlRcE9yc3RIdjdkV3dveWNob29pang4R24vdWJpQzJIWm9VT01S?=
- =?utf-8?B?Ly9TR0crdFBkbHNNWWZvYk5ON1VaL1JsSVdxR3NycEU1Wm0zZzFXSnkyZk1P?=
- =?utf-8?B?cGo5cWRxOUlpYVZlQjQ0dm0rUVpFVis3UUNMUTh5eEFtakNENDh5TTVsNVZ4?=
- =?utf-8?B?TlhiT0hMVU5jVXFUZXlkdTNBMk9mRWRZMGJFM0RpOU5ZS2Y3RWJmbTNTcDhh?=
- =?utf-8?B?NnMwdUJ6bm8xZGpZQmYzSEJDZW05KzRZeGRYYWV5TGFiczBlNmNGMHlrNWZF?=
- =?utf-8?B?OFR5cHY3NjVjbTR3U045WWxWMGtXdzZ0V1krc0J1REYvck9QdEU4R0NBaWdk?=
- =?utf-8?Q?wF/+Pvi63PcEtnIzblKcwUcdlPCCKwslpFgFj0Z?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4276faa-1d5f-4fb4-3103-08d98aa8913f
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 22:11:24.7701
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rOlmWqJ0RpPAadDULeigE3xn09JG8ZumnTCiJIgR6aMwgXiwTFsczM3rFcWFfTVd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR02MB7354
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210930232617.6396-5-dipenp@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Needed for in-kernel use of the child channels of the mux.
+On Thu, Sep 30, 2021 at 04:26:10PM -0700, Dipen Patel wrote:
+> Introduces HTE devicetree binding details for the HTE subsystem. It
+> includes examples for the consumers, binding details for the providers
+> and specific binding details for the Tegra194 based HTE providers.
+> 
 
-Fixes problems like this, reported by dtbs_check:
-adc0mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
+This pattern of binding isn't easily checked completely by schema. You 
+need a dtc check added too. Should be a 2 line change. (And dtc changes 
+go upstream first).
 
-Suggested-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Peter Rosin <peda@axentia.se>
----
- .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml    | 3 +++
- 1 file changed, 3 insertions(+)
+> Signed-off-by: Dipen Patel <dipenp@nvidia.com>
+> ---
+> Changes in v2:
+> - Replace hte with hardware-timestamp for property names
+> - Renamed file
+> - Removed example from the common dt binding file.
+> 
+>  .../hte/hardware-timestamps-common.yaml       | 29 +++++++
+>  .../devicetree/bindings/hte/hte-consumer.yaml | 48 +++++++++++
+>  .../bindings/hte/nvidia,tegra194-hte.yaml     | 79 +++++++++++++++++++
+>  3 files changed, 156 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hte/hardware-timestamps-common.yaml
+>  create mode 100644 Documentation/devicetree/bindings/hte/hte-consumer.yaml
+>  create mode 100644 Documentation/devicetree/bindings/hte/nvidia,tegra194-hte.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hte/hardware-timestamps-common.yaml b/Documentation/devicetree/bindings/hte/hardware-timestamps-common.yaml
+> new file mode 100644
+> index 000000000000..8b8db3bc4dcf
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hte/hardware-timestamps-common.yaml
+> @@ -0,0 +1,29 @@
+> +# SPDX-License-Identifier: GPL-2.0
 
-diff --git a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
-index 5a7328042c76..80b6229a6fad 100644
---- a/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
-+++ b/Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.yaml
-@@ -44,6 +44,9 @@ properties:
-     description:
-       Time required for analog signals to settle after muxing.
- 
-+  "#io-channel-cells":
-+    const: 1
-+
- required:
-   - compatible
-   - io-channels
--- 
-2.20.1
+Dual license new bindings.
 
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hte/hardware-timestamps-common.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hardware timestamp providers
+> +
+> +maintainers:
+> +  - Dipen Patel <dipenp@nvidia.com>
+> +
+> +description: |
+> +  Some devices/SoCs have hardware time stamping engines which can use hardware
+> +  means to timestamp entity in realtime. The entity could be anything from
+> +  GPIOs, IRQs, Bus and so on. The hardware timestamp engine (HTE) present
+> +  itself as a provider with the bindings described in this document.
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^hardware-timestamps(@.*|-[0-9a-f])*$"
+
+"^hardware-timestamp(@.*|-[0-9a-f])?$"
+
+> +
+> +  "#hardware-timestamps-cells":
+
+Double plural:
+
+#hardware-timestamp-cells
+
+Arguably, the same string everywhere would have been an easier design, 
+but let's keep consistency with (most) other flavors of this pattern.
+
+> +    description:
+> +      Number of cells in a HTE specifier.
+> +
+> +required:
+> +  - "#hardware-timestamps-cells"
+> +
+> +additionalProperties: true
+> diff --git a/Documentation/devicetree/bindings/hte/hte-consumer.yaml b/Documentation/devicetree/bindings/hte/hte-consumer.yaml
+> new file mode 100644
+> index 000000000000..cf65d1d44a18
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hte/hte-consumer.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hte/hte-consumer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: HTE Consumer Device Tree Bindings
+> +
+> +maintainers:
+> +  - Dipen Patel <dipenp@nvidia.com>
+> +
+> +description: |
+> +  HTE properties should be named "hardware-timestamps". The exact meaning of
+> +  each hardware-timestamps property must be documented in the device tree
+> +  binding for each device. An optional property "hardware-timestamps-names" may
+> +  contain a list of strings to label each of the HTE devices listed in the
+> +  "hardware-timestamps" property.
+> +
+> +  The "hardware-timestamps-names" property if specified is used to map the name
+> +  of the HTE device requested by the devm_of_hte_request_ts() or of_hte_request_ts
+> +  call to an index into the list given by the "hardware-timestamps" property.
+> +
+> +properties:
+> +  hardware-timestamps:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    description:
+> +      The list of HTE provider phandle. The provider must document the number
+> +      of cell that must be passed in this property along with phandle.
+> +
+> +  hardware-timestamps-names:
+
+hardware-timestamp-names
+
+
+> +    $ref: /schemas/types.yaml#/definitions/string-array
+> +    description:
+> +      An optional string property.
+> +
+> +required:
+> +  - "hardware-timestamps"
+
+Don't need quotes.
+
+> +
+> +dependencies:
+> +  hardware-timestamps-names: [ hardware-timestamps ]
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    hte_irq_consumer {
+> +              hardware-timestamps = <&tegra_hte_lic 0x19>;
+> +              hardware-timestamps-names = "hte-irq";
+> +    };
+> diff --git a/Documentation/devicetree/bindings/hte/nvidia,tegra194-hte.yaml b/Documentation/devicetree/bindings/hte/nvidia,tegra194-hte.yaml
+> new file mode 100644
+> index 000000000000..529926118f35
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hte/nvidia,tegra194-hte.yaml
+> @@ -0,0 +1,79 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hte/nvidia,tegra194-hte.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Tegra194 on chip generic hardware timestamping engine (HTE)
+> +
+> +maintainers:
+> +  - Dipen Patel <dipenp@nvidia.com>
+> +
+> +description: |
+> +  Tegra194 SoC has multiple generic hardware timestamping engines which can
+> +  monitor subset of GPIO and on chip IRQ lines for the state change, upon
+> +  detection it will record timestamp (taken from system counter) in its
+> +  internal hardware FIFO. It has bitmap array arranged in 32bit slices where
+
+has a bitmap
+
+> +  each bit represent signal/line to enable or disable for the hardware
+> +  timestamping.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nvidia,tegra194-gte-aon
+> +      - nvidia,tegra194-gte-lic
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  int-threshold:
+
+nvidia,int-threshold unless this is common for all hw timestamps?
+
+> +    description:
+> +      HTE device generates its interrupt based on this u32 FIFO threshold
+> +      value. The recommended value is 1.
+> +    minimum: 1
+> +    maximum: 256
+> +
+> +  slices:
+
+nvidia,slices
+
+Needs a type.
+
+> +    description:
+> +      HTE lines are arranged in 32 bit slice where each bit represents different
+> +      line/signal that it can enable/configure for the timestamp. It is u32
+> +      property and depends on the HTE instance in the chip.
+> +    enum: [3, 11]
+> +
+> +  '#hardware-timestamps-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - slices
+> +  - "#hardware-timestamps-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    tegra_hte_aon: hardware-timestamps@c1e0000 {
+> +              compatible = "nvidia,tegra194-gte-aon";
+> +              reg = <0xc1e0000 0x10000>;
+> +              interrupts = <0 13 0x4>;
+> +              int-threshold = <1>;
+> +              slices = <3>;
+> +              #hardware-timestamps-cells = <1>;
+> +    };
+> +
+> +  - |
+> +    tegra_hte_lic: hardware-timestamps@3aa0000 {
+> +              compatible = "nvidia,tegra194-gte-lic";
+> +              reg = <0x3aa0000 0x10000>;
+> +              interrupts = <0 11 0x4>;
+> +              int-threshold = <1>;
+> +              slices = <11>;
+> +              #hardware-timestamps-cells = <1>;
+> +    };
+> +
+> +...
+> -- 
+> 2.17.1
+> 
+> 
