@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CA8426C28
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:56:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 798F4426C2B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhJHN6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:58:09 -0400
-Received: from smtp2.axis.com ([195.60.68.18]:22061 "EHLO smtp2.axis.com"
+        id S233710AbhJHN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:58:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234049AbhJHN6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:58:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1633701372;
-  x=1665237372;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=me75zdxB12WIuwzb16S9PBlfZIdHjvMQdZm15J1RVJw=;
-  b=iewVfZwwi86xOSCxPH4qYYP2E0udq9O4CtjLZQV9ytrHXD5ER7x15mei
-   EJNzIGvZUzSybgx+R8q2lnXbP3rR815acRqAdi9CIZUrhQCkkmecl8wmm
-   hdEpzcXwb1M33wWEKRf6cuYord5tefqpWar2NFTVATvfw+gWZEXDV16nz
-   nhGmm2H2yL90RHxSRZRbCJDoylWLnzyE55T7DM01fAbXLJlx2WVgLcs0W
-   BTMV125CnGX9exsjwnjU8AfDWux5o3iljIsfIhEAz1HGPnfXqP3LhbnBV
-   abtblKotk7GbVe5IcqHfar9wV+Mp1NbBEgDdn48p2Uz0sjwWodWjufMx9
-   g==;
-Date:   Fri, 8 Oct 2021 15:56:10 +0200
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     kernel <kernel@axis.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "peda@axentia.se" <peda@axentia.se>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 2/3] dt-bindings: iio: io-channel-mux: Add property
- for settle time
-Message-ID: <20211008135610.GA16402@axis.com>
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
- <20211007134641.13417-3-vincent.whitchurch@axis.com>
- <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
+        id S229529AbhJHN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 09:58:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE56360F9C;
+        Fri,  8 Oct 2021 13:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633701417;
+        bh=E/nSecu6Pc/mRjr9vvflfiRySB+cFKjgQerSAfXXHqg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=n+Ok7ebiSA0k2knuTA0LnN+4f/lxSMOQa+QblG8QkqDJSXIpgy/4MGw8ClVgZfobh
+         y80316XrhB9VY+QxxdZiykEwbrCLdElV2BetoAMvl9VlYlNQtAmzVTZCdJRw2ZRdHo
+         pdmGtX+VeVw+M8/0H5OqQE+XXKOem+UEz2f6XlD+P/PerOZEjRKfVByA7zbfbS0sOR
+         I2NAPTO96+pnWn/gHmntaf640enjg8BORFJe8u21CYECF50SkWox6iCaIHbf8fHuoy
+         CUJjfnS8GVvPtBrxbINHh+FPOeiOO7AgzNsvmLVvw7zp9DNjVm4Ri4ZG1+m+GgLaka
+         DqagQXK4lqfkQ==
+Date:   Fri, 8 Oct 2021 08:56:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] [PATCH net-next v5 0/3] r8169: Implement dynamic ASPM
+ mechanism for recent 1.0/2.5Gbps Realtek NICs
+Message-ID: <20211008135655.GA1326714@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAAd53p409uhbor1ArZ=kfiMK2JRHVGVyYukDSSyDvFsVSs=ErQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 04:46:12AM +0200, Rob Herring wrote:
-> On Thu, 07 Oct 2021 15:46:40 +0200, Vincent Whitchurch wrote:
-> > Hardware may require some time for the muxed analog signals to settle
-> > after the muxing is changed.  Allow this time to be specified in the
-> > devicetree.
-> > 
-> > Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> > ---
-> >  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
+On Fri, Oct 01, 2021 at 12:17:26PM +0800, Kai-Heng Feng wrote:
+> On Sat, Sep 18, 2021 at 6:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Thu, Sep 16, 2021 at 11:44:14PM +0800, Kai-Heng Feng wrote:
+> > > The purpose of the series is to get comments and reviews so we can merge
+> > > and test the series in downstream kernel.
+> > >
+> > > The latest Realtek vendor driver and its Windows driver implements a
+> > > feature called "dynamic ASPM" which can improve performance on it's
+> > > ethernet NICs.
+> > >
+> > > Heiner Kallweit pointed out the potential root cause can be that the
+> > > buffer is too small for its ASPM exit latency.
+> >
+> > I looked at the lspci data in your bugzilla
+> > (https://bugzilla.kernel.org/show_bug.cgi?id=214307).
+> >
+> > L1.2 is enabled, which requires the Latency Tolerance Reporting
+> > capability, which helps determine when the Link will be put in L1.2.
+> > IIUC, these are analogous to the DevCap "Acceptable Latency" values.
+> > Zero latency values indicate the device will be impacted by any delay
+> > (PCIe r5.0, sec 6.18).
+> >
+> > Linux does not currently program those values, so the values there
+> > must have been set by the BIOS.  On the working AMD system, they're
+> > set to 1048576ns, while on the broken Intel system, they're set to
+> > 3145728ns.
+> >
+> > I don't really understand how these values should be computed, and I
+> > think they depend on some electrical characteristics of the Link, so
+> > I'm not sure it's *necessarily* a problem that they are different.
+> > But a 3X difference does seem pretty large.
+> >
+> > So I'm curious whether this is related to the problem.  Here are some
+> > things we could try on the broken Intel system:
 > 
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
-
-Yes, these are not new warnings.
-
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
+> Original network speed, tested via iperf3:
+> TX: ~255 Mbps
+> RX: ~490 Mbps
 > 
-> Full log is available here: https://patchwork.ozlabs.org/patch/1537724
+> >   - What happens if you disable ASPM L1.2 using
+> >     /sys/devices/pci*/.../link/l1_2_aspm?
 > 
-> 
-> adc0mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-> 	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
-> 
-> adc10mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-> 	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
-[...]
+> TX: ~670 Mbps
+> RX: ~670 Mbps
 
-I think the fix for these is to add a "#io-channel-cells": const 1 to
-the schema.
+Do you remember if there were any dropped packets here?  You mentioned
+at [1] that you have also seen reports of issues with L0s and L1.1.
+If you disable L1.2, L0s and L1.1 *should* still be enabled.
 
-> envelope-detector-mux: channels: ['', '', 'sync-1', 'in', 'out', 'sync-2', 'sys-reg', 'ana-reg'] has non-unique elements
-> 	arch/arm/boot/dts/at91-tse850-3.dt.yaml
-
-This one looks like an error in that particular devicetree.
+[1] https://lore.kernel.org/r/CAAd53p4v+CmupCu2+3vY5N64WKkxcNvpk1M7+hhNoposx+aYCg@mail.gmail.com
