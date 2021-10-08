@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE2B4426969
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF79C426980
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242167AbhJHLg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
+        id S242890AbhJHLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241274AbhJHLeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:34:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A197461283;
-        Fri,  8 Oct 2021 11:31:30 +0000 (UTC)
+        id S240936AbhJHLf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:35:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E31EC613A6;
+        Fri,  8 Oct 2021 11:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692691;
-        bh=1BDI3ZVdJ/s08tnw6uvuhb79UtVnXik7lPZ9T5LzB1M=;
+        s=korg; t=1633692719;
+        bh=2ZHYXxnTOKNAMt5haKytR59bQ5hztoQjFR7mj6iEIbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ROt3RofDPjiQjq8n71dRQZcGSDan/VDdBiagrVT2daBFuai1qm4ce+h5ADTvkFD/b
-         BVMiQg3N7zVazUCZXDM/2RNhtS/5GmTwdVRoh7sCPLI4Mv6x2YnJZnirLT7mV/m+O/
-         SXFVK5jh8Ja09M5awmlBP70V/TcGZsn+09bxRPUY=
+        b=mDSszzfzFSxwNEjAOmKQ2WZwHGx7PQiZqdh1F+nzxN7K6VCms9Pu60kM37c5iw1Uo
+         V7/wXOggbr3uaW98ToQBk7WGyTKsaNsS7RdUWs4uM9cdq42sFpDGUupWdlNuqnfUF0
+         IfpxiLiOpIlfunFUB60zLNMlfl/sAIiyqK7OKUUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        stable@vger.kernel.org, Philip Yang <Philip.Yang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 03/29] platform/x86: touchscreen_dmi: Update info for the Chuwi Hi10 Plus (CWI527) tablet
+Subject: [PATCH 5.14 14/48] drm/amdkfd: fix svm_migrate_fini warning
 Date:   Fri,  8 Oct 2021 13:27:50 +0200
-Message-Id: <20211008112717.040167258@linuxfoundation.org>
+Message-Id: <20211008112720.499928174@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Philip Yang <Philip.Yang@amd.com>
 
-[ Upstream commit 196159d278ae3b49e7bbb7c76822e6008fd89b97 ]
+[ Upstream commit 197ae17722e989942b36e33e044787877f158574 ]
 
-Add info for getting the firmware directly from the UEFI for the Chuwi Hi10
-Plus (CWI527), so that the user does not need to manually install the
-firmware in /lib/firmware/silead.
+Device manager releases device-specific resources when a driver
+disconnects from a device, devm_memunmap_pages and
+devm_release_mem_region calls in svm_migrate_fini are redundant.
 
-This change will make the touchscreen on these devices work OOTB,
-without requiring any manual setup.
+It causes below warning trace after patch "drm/amdgpu: Split
+amdgpu_device_fini into early and late", so remove function
+svm_migrate_fini.
 
-Also tweak the min and width/height values a bit for more accurate position
-reporting.
+BUG: https://gitlab.freedesktop.org/drm/amd/-/issues/1718
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210905130210.32810-2-hdegoede@redhat.com
+WARNING: CPU: 1 PID: 3646 at drivers/base/devres.c:795
+devm_release_action+0x51/0x60
+Call Trace:
+    ? memunmap_pages+0x360/0x360
+    svm_migrate_fini+0x2d/0x60 [amdgpu]
+    kgd2kfd_device_exit+0x23/0xa0 [amdgpu]
+    amdgpu_amdkfd_device_fini_sw+0x1d/0x30 [amdgpu]
+    amdgpu_device_fini_sw+0x45/0x290 [amdgpu]
+    amdgpu_driver_release_kms+0x12/0x30 [amdgpu]
+    drm_dev_release+0x20/0x40 [drm]
+    release_nodes+0x196/0x1e0
+    device_release_driver_internal+0x104/0x1d0
+    driver_detach+0x47/0x90
+    bus_remove_driver+0x7a/0xd0
+    pci_unregister_driver+0x3d/0x90
+    amdgpu_exit+0x11/0x20 [amdgpu]
+
+Signed-off-by: Philip Yang <Philip.Yang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/touchscreen_dmi.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdkfd/kfd_device.c  |  1 -
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.c | 13 ++++---------
+ drivers/gpu/drm/amd/amdkfd/kfd_migrate.h |  5 -----
+ 3 files changed, 4 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
-index 4f5d53b585db..59b7e90cd587 100644
---- a/drivers/platform/x86/touchscreen_dmi.c
-+++ b/drivers/platform/x86/touchscreen_dmi.c
-@@ -100,10 +100,10 @@ static const struct ts_dmi_data chuwi_hi10_air_data = {
- };
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device.c b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
+index 5a872adcfdb9..5ba8a4f35344 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
+@@ -922,7 +922,6 @@ out:
+ void kgd2kfd_device_exit(struct kfd_dev *kfd)
+ {
+ 	if (kfd->init_complete) {
+-		svm_migrate_fini((struct amdgpu_device *)kfd->kgd);
+ 		device_queue_manager_uninit(kfd->dqm);
+ 		kfd_interrupt_exit(kfd);
+ 		kfd_topology_remove_device(kfd);
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+index 165e0ebb619d..4a16e3c257b9 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.c
+@@ -891,6 +891,10 @@ int svm_migrate_init(struct amdgpu_device *adev)
+ 	pgmap->ops = &svm_migrate_pgmap_ops;
+ 	pgmap->owner = SVM_ADEV_PGMAP_OWNER(adev);
+ 	pgmap->flags = MIGRATE_VMA_SELECT_DEVICE_PRIVATE;
++
++	/* Device manager releases device-specific resources, memory region and
++	 * pgmap when driver disconnects from device.
++	 */
+ 	r = devm_memremap_pages(adev->dev, pgmap);
+ 	if (IS_ERR(r)) {
+ 		pr_err("failed to register HMM device memory\n");
+@@ -911,12 +915,3 @@ int svm_migrate_init(struct amdgpu_device *adev)
  
- static const struct property_entry chuwi_hi10_plus_props[] = {
--	PROPERTY_ENTRY_U32("touchscreen-min-x", 0),
--	PROPERTY_ENTRY_U32("touchscreen-min-y", 5),
--	PROPERTY_ENTRY_U32("touchscreen-size-x", 1914),
--	PROPERTY_ENTRY_U32("touchscreen-size-y", 1283),
-+	PROPERTY_ENTRY_U32("touchscreen-min-x", 12),
-+	PROPERTY_ENTRY_U32("touchscreen-min-y", 10),
-+	PROPERTY_ENTRY_U32("touchscreen-size-x", 1908),
-+	PROPERTY_ENTRY_U32("touchscreen-size-y", 1270),
- 	PROPERTY_ENTRY_STRING("firmware-name", "gsl1680-chuwi-hi10plus.fw"),
- 	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
- 	PROPERTY_ENTRY_BOOL("silead,home-button"),
-@@ -111,6 +111,15 @@ static const struct property_entry chuwi_hi10_plus_props[] = {
- };
+ 	return 0;
+ }
+-
+-void svm_migrate_fini(struct amdgpu_device *adev)
+-{
+-	struct dev_pagemap *pgmap = &adev->kfd.dev->pgmap;
+-
+-	devm_memunmap_pages(adev->dev, pgmap);
+-	devm_release_mem_region(adev->dev, pgmap->range.start,
+-				pgmap->range.end - pgmap->range.start + 1);
+-}
+diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.h b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.h
+index 0de76b5d4973..2f5b3394c9ed 100644
+--- a/drivers/gpu/drm/amd/amdkfd/kfd_migrate.h
++++ b/drivers/gpu/drm/amd/amdkfd/kfd_migrate.h
+@@ -47,7 +47,6 @@ unsigned long
+ svm_migrate_addr_to_pfn(struct amdgpu_device *adev, unsigned long addr);
  
- static const struct ts_dmi_data chuwi_hi10_plus_data = {
-+	.embedded_fw = {
-+		.name	= "silead/gsl1680-chuwi-hi10plus.fw",
-+		.prefix = { 0xf0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 },
-+		.length	= 34056,
-+		.sha256	= { 0xfd, 0x0a, 0x08, 0x08, 0x3c, 0xa6, 0x34, 0x4e,
-+			    0x2c, 0x49, 0x9c, 0xcd, 0x7d, 0x44, 0x9d, 0x38,
-+			    0x10, 0x68, 0xb5, 0xbd, 0xb7, 0x2a, 0x63, 0xb5,
-+			    0x67, 0x0b, 0x96, 0xbd, 0x89, 0x67, 0x85, 0x09 },
-+	},
- 	.acpi_name      = "MSSL0017:00",
- 	.properties     = chuwi_hi10_plus_props,
- };
+ int svm_migrate_init(struct amdgpu_device *adev);
+-void svm_migrate_fini(struct amdgpu_device *adev);
+ 
+ #else
+ 
+@@ -55,10 +54,6 @@ static inline int svm_migrate_init(struct amdgpu_device *adev)
+ {
+ 	return 0;
+ }
+-static inline void svm_migrate_fini(struct amdgpu_device *adev)
+-{
+-	/* empty */
+-}
+ 
+ #endif /* IS_ENABLED(CONFIG_HSA_AMD_SVM) */
+ 
 -- 
 2.33.0
 
