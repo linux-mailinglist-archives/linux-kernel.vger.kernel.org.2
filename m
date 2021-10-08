@@ -2,70 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A41426F45
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DDB5426F4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhJHQrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:47:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhJHQra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:47:30 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2053C061570;
-        Fri,  8 Oct 2021 09:45:33 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d5600b5f996c39c66b7a4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5600:b5f9:96c3:9c66:b7a4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A4A8C1EC04E4;
-        Fri,  8 Oct 2021 18:45:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633711531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=skxt32l6VMLc1SQegT7KPtFR1sOOv8n10kZQ1BLvDMA=;
-        b=Gohl9o8rgSUdCt7aiu2nEKmOqvpLNkSqLskxoA/cclKJswpRRPS/k++WmOiDXTUoM88jz+
-        Zr8ozvRchuxKlAKRCQbNMxzHpTzLNuUWpgI3BbERoftVd6E5xdHK/o3zBLOifY1F4wcUQ8
-        mGy24y8ac61Fxc6ESJVga6gFxxnZA8o=
-Date:   Fri, 8 Oct 2021 18:45:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Smita Koralahalli Channabasappa <skoralah@amd.com>
-Cc:     Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-edac@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Muralidhara M K <muralimk@amd.com>,
-        Akshay Gupta <Akshay.Gupta@amd.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
-Subject: Re: [PATCH 1/2] x86/mce: Define function to extract ErrorAddr from
- MCA_ADDR
-Message-ID: <YWB1qDzwUvdDkjFz@zn.tnic>
-References: <20210625013341.231442-1-Smita.KoralahalliChannabasappa@amd.com>
- <eb77b76f-742e-c9b5-982c-00f293a1620a@amd.com>
+        id S230377AbhJHRBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:01:14 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38355 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229606AbhJHRBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:01:13 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4HQvYJ1W05z9sSf;
+        Fri,  8 Oct 2021 18:59:16 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 7suNWJT6mezi; Fri,  8 Oct 2021 18:59:16 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4HQvYJ0N2gz9sST;
+        Fri,  8 Oct 2021 18:59:16 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E46BB8B780;
+        Fri,  8 Oct 2021 18:59:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id IiSHFEJI4zlE; Fri,  8 Oct 2021 18:59:15 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.202.75])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 996268B763;
+        Fri,  8 Oct 2021 18:59:15 +0200 (CEST)
+Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1) with ESMTPS id 198Gwtpf1171169
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+        Fri, 8 Oct 2021 18:58:55 +0200
+Received: (from chleroy@localhost)
+        by PO20335.IDSI0.si.c-s.fr (8.16.1/8.16.1/Submit) id 198Gws7t1171165;
+        Fri, 8 Oct 2021 18:58:54 +0200
+X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] lkdtm: Fix content of section containing lkdtm_rodata_do_nothing()
+Date:   Fri,  8 Oct 2021 18:58:40 +0200
+Message-Id: <8900731fbc05fb8b0de18af7133a8fc07c3c53a1.1633712176.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <eb77b76f-742e-c9b5-982c-00f293a1620a@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 02:19:33PM -0500, Smita Koralahalli Channabasappa wrote:
-> Hi all,
-> 
-> Do you have any other comments which I need to address on these set of patches?
+On a kernel without CONFIG_STRICT_KERNEL_RWX, running EXEC_RODATA
+test leads to "Illegal instruction" failure.
 
-You probably should rediff them against latest tip/master and send a new
-version.
+Looking at the content of rodata_objcopy.o, we see that the
+function content zeroes only:
 
-Thx.
+	Disassembly of section .rodata:
 
+	0000000000000000 <.lkdtm_rodata_do_nothing>:
+	   0:	00 00 00 00 	.long 0x0
+
+Add the contents flag in order to keep the content of the section
+while renaming it.
+
+	Disassembly of section .rodata:
+
+	0000000000000000 <.lkdtm_rodata_do_nothing>:
+	   0:	4e 80 00 20 	blr
+
+Fixes: e9e08a07385e ("lkdtm: support llvm-objcopy")
+Cc: stable@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/misc/lkdtm/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+index aa12097668d3..e2984ce51fe4 100644
+--- a/drivers/misc/lkdtm/Makefile
++++ b/drivers/misc/lkdtm/Makefile
+@@ -20,7 +20,7 @@ CFLAGS_REMOVE_rodata.o		+= $(CC_FLAGS_LTO)
+ 
+ OBJCOPYFLAGS :=
+ OBJCOPYFLAGS_rodata_objcopy.o	:= \
+-			--rename-section .noinstr.text=.rodata,alloc,readonly,load
++			--rename-section .noinstr.text=.rodata,alloc,readonly,load,contents
+ targets += rodata.o rodata_objcopy.o
+ $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
+ 	$(call if_changed,objcopy)
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
