@@ -2,190 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2992142688B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290642688E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240422AbhJHLUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59470 "EHLO
+        id S240151AbhJHLU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240222AbhJHLT0 (ORCPT
+        with ESMTP id S240328AbhJHLTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:19:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35037C061755;
-        Fri,  8 Oct 2021 04:17:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=umSfuLmNyx4dR8mDkBis1oRVsQNuMXaIh5WYIShus0o=; b=kyV7a5VCRDjg0lCxTwlu9BoLfA
-        j0FlmMCPFG1UizZ0ewTSHVjKcuv2XpbfoGf4ChD2nr0alhYJWtbCl/hhaL2E5HEECcqf+i3fLo8KY
-        hR69k8ZNf/NrwVCnlgLrNA3p4REQnE7mvSfJNf/Ntui5NkxQlJB5VpsQ8QD6SupueH5NJFlZUEwjI
-        f8r4AVLvc0NoPelOJaxHuIntff438VPrTbdXZWTCcZnTNxlKTyUU9kvXfcUtCvzWi+GpezSVoOIaO
-        Q7bNrKBgZuXqq6InRVW81DbNKdFDhFtDGFLEHc6BwfSVc8DZ4P/t8f5aR8ebv1QHpp9mZkUmut+4d
-        EagtDrSg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYnsE-008eLN-3c; Fri, 08 Oct 2021 11:17:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C305E302D45;
-        Fri,  8 Oct 2021 13:17:08 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id F0ABC2DB84A6C; Fri,  8 Oct 2021 13:17:07 +0200 (CEST)
-Message-ID: <20211008111626.455137084@infradead.org>
-User-Agent: quilt/0.66
-Date:   Fri, 08 Oct 2021 13:15:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     keescook@chromium.org, jannh@google.com
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com,
-        mark.rutland@arm.com, axboe@kernel.dk, metze@samba.org,
-        laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net
-Subject: [PATCH 7/7] arch: Fix STACKTRACE_SUPPORT
-References: <20211008111527.438276127@infradead.org>
+        Fri, 8 Oct 2021 07:19:49 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBA3C061766;
+        Fri,  8 Oct 2021 04:17:51 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id g15-20020a9d128f000000b0054e3d55dd81so6134586otg.12;
+        Fri, 08 Oct 2021 04:17:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z8wscnU7EJDz1becCX4OkjLIi0fpkDjdUjiqRD+Xmzo=;
+        b=RVOaWoJX6R3PfprVyoluu0LPH+X0sV+Hw50lNmpLI7p7M2Ufs+5nGaPyTt244Mh3in
+         Vb0dcAv33GuvfvdbgKXELCUZsworOGRxMnlB8KuHHanXTqtD8DqOL8RASfTnbUhmheIe
+         HFBdVR7ZVNbX0rVUAVCIneWdXUio6cDIycBFwKSshQo2wvGmywsGPY6xDQ0uKJZH/cDc
+         Axk23a5GB/+eUEnUz2S7L7CgMTf8CFC2BnnB1YReIrLlw+bS/8+SLPoEWm5xslFM1KOm
+         rsX+6P32dny+eUCGtmUqBq0sy9mgDoNM1AXkW6sWgYHL9AHkmbVAMXTStxrvabXAHuL2
+         lpVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z8wscnU7EJDz1becCX4OkjLIi0fpkDjdUjiqRD+Xmzo=;
+        b=Y5pWTamD9V4oZBexWZ3M3n7a5uGA0v06OIXQsKyk4HyeF1a9MOqDKf+dkgaAgQ+eAv
+         rvPkhN18mpvougT6ArI/Tn7JTcR7TKpnuKl0RLCKrcsahpGNgmyLYLFWPckBvFKOcMb4
+         Y13PaaUEbtp9CFxoNZDl40OHIhCHuYktW4l4ENd830x1VvXj5tWMDBoAY4eHY81lM2b2
+         JdL1pCDMIf/CHVk82pLu5p64epz3qzogIjztLLtp1GsHe9ofy8zNm+54RLhPx9Jh/sW0
+         NtzQgd+j6W0D/gU24MeIvxwnPjVop75m1O8G8QPRWWrcaL+PbwCpJaO5GPIbEWJK+YqV
+         2usw==
+X-Gm-Message-State: AOAM532nUPr+ZZU6xeJaNEBUv9X/DvY57tSR8h7rp5A5ZzShGwMqUBll
+        JvU1o2Sva5Lgrlfs/YA2gF2o9cWD4IXZEMkL+0o=
+X-Google-Smtp-Source: ABdhPJzQWDrlisPXjchk6Fi/EBqSZmjGWWdtVp4IBIyWMO6uj88/yoeUMogaKSDEVU0f6HJIRrE3GIAPZjK9WzuzNc0=
+X-Received: by 2002:a9d:4f12:: with SMTP id d18mr8322705otl.169.1633691870634;
+ Fri, 08 Oct 2021 04:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
+ <1633687054-18865-2-git-send-email-wanpengli@tencent.com> <58d59149-669f-7990-4f68-05b32ed693b5@gmail.com>
+In-Reply-To: <58d59149-669f-7990-4f68-05b32ed693b5@gmail.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 8 Oct 2021 19:17:39 +0800
+Message-ID: <CANRm+CwB79B3vQZF8Gu1qELAq9G-TDmi+KWnJmHQP6csx8Uo_A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] KVM: vPMU: Fill get_msr MSR_CORE_PERF_GLOBAL_OVF_CTRL
+ w/ 0
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A few archs got save_stack_trace_tsk() vs in_sched_functions() wrong.
+On Fri, 8 Oct 2021 at 19:02, Like Xu <like.xu.linux@gmail.com> wrote:
+>
+> cc Andi,
+>
+> On 8/10/2021 5:57 pm, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > SDM section 18.2.3 mentioned that:
+> >
+> >    "IA32_PERF_GLOBAL_OVF_CTL MSR allows software to clear overflow indicator(s) of
+> >     any general-purpose or fixed-function counters via a single WRMSR."
+> >
+> > It is R/W mentioned by SDM, we read this msr on bare-metal during perf testing,
+> > the value is always 0 for CLX/SKX boxes on hands. Let's fill get_msr
+> > MSR_CORE_PERF_GLOBAL_OVF_CTRL w/ 0 as hardware behavior.
+> >
+> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > ---
+> > Btw, xen also fills get_msr MSR_CORE_PERF_GLOBAL_OVF_CTRL 0.
+> >
+> >   arch/x86/kvm/vmx/pmu_intel.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> > index 10cc4f65c4ef..47260a8563f9 100644
+> > --- a/arch/x86/kvm/vmx/pmu_intel.c
+> > +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> > @@ -365,7 +365,7 @@ static int intel_pmu_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+> >               msr_info->data = pmu->global_ctrl;
+> >               return 0;
+> >       case MSR_CORE_PERF_GLOBAL_OVF_CTRL:
+> > -             msr_info->data = pmu->global_ovf_ctrl;
+> > +             msr_info->data = 0;
+>
+> Tested-by: Like Xu <likexu@tencent.com>
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/csky/kernel/stacktrace.c  |    7 ++++++-
- arch/mips/kernel/stacktrace.c  |   27 ++++++++++++++++-----------
- arch/nds32/kernel/stacktrace.c |   21 +++++++++++----------
- 3 files changed, 33 insertions(+), 22 deletions(-)
+Thanks.
 
---- a/arch/csky/kernel/stacktrace.c
-+++ b/arch/csky/kernel/stacktrace.c
-@@ -122,12 +122,17 @@ static bool save_trace(unsigned long pc,
- 	return __save_trace(pc, arg, false);
- }
- 
-+static bool save_trace_nosched(unsigned long pc, void *arg)
-+{
-+	return __save_trace(pc, arg, true);
-+}
-+
- /*
-  * Save stack-backtrace addresses into a stack_trace buffer.
-  */
- void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
- {
--	walk_stackframe(tsk, NULL, save_trace, trace);
-+	walk_stackframe(tsk, NULL, save_trace_nosched, trace);
- }
- EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
- 
---- a/arch/mips/kernel/stacktrace.c
-+++ b/arch/mips/kernel/stacktrace.c
-@@ -66,16 +66,7 @@ static void save_context_stack(struct st
- #endif
- }
- 
--/*
-- * Save stack-backtrace addresses into a stack_trace buffer.
-- */
--void save_stack_trace(struct stack_trace *trace)
--{
--	save_stack_trace_tsk(current, trace);
--}
--EXPORT_SYMBOL_GPL(save_stack_trace);
--
--void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-+static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
- {
- 	struct pt_regs dummyregs;
- 	struct pt_regs *regs = &dummyregs;
-@@ -88,6 +79,20 @@ void save_stack_trace_tsk(struct task_st
- 		regs->cp0_epc = tsk->thread.reg31;
- 	} else
- 		prepare_frametrace(regs);
--	save_context_stack(trace, tsk, regs, tsk == current);
-+	save_context_stack(trace, tsk, regs, savesched);
-+}
-+
-+/*
-+ * Save stack-backtrace addresses into a stack_trace buffer.
-+ */
-+void save_stack_trace(struct stack_trace *trace)
-+{
-+	__save_stack_trace_tsk(current, trace, true);
-+}
-+EXPORT_SYMBOL_GPL(save_stack_trace);
-+
-+void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-+{
-+	__save_stack_trace_tsk(tsk, trace, false);
- }
- EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
---- a/arch/nds32/kernel/stacktrace.c
-+++ b/arch/nds32/kernel/stacktrace.c
-@@ -6,25 +6,16 @@
- #include <linux/stacktrace.h>
- #include <linux/ftrace.h>
- 
--void save_stack_trace(struct stack_trace *trace)
--{
--	save_stack_trace_tsk(current, trace);
--}
--EXPORT_SYMBOL_GPL(save_stack_trace);
--
--void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-+static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
- {
- 	unsigned long *fpn;
- 	int skip = trace->skip;
--	int savesched;
- 	int graph_idx = 0;
- 
- 	if (tsk == current) {
- 		__asm__ __volatile__("\tori\t%0, $fp, #0\n":"=r"(fpn));
--		savesched = 1;
- 	} else {
- 		fpn = (unsigned long *)thread_saved_fp(tsk);
--		savesched = 0;
- 	}
- 
- 	while (!kstack_end(fpn) && !((unsigned long)fpn & 0x3)
-@@ -50,4 +41,14 @@ void save_stack_trace_tsk(struct task_st
- 		fpn = (unsigned long *)fpp;
- 	}
- }
-+void save_stack_trace(struct stack_trace *trace)
-+{
-+	__save_stack_trace_tsk(current, trace, true);
-+}
-+EXPORT_SYMBOL_GPL(save_stack_trace);
-+
-+void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-+{
-+	__save_stack_trace_tsk(tsk, trace, false);
-+}
- EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+> Further, better to drop 'u64 global_ovf_ctrl' directly.
 
+Good suggestion. :)
 
+    Wanpeng
