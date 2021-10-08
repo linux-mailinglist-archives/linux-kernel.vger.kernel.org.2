@@ -2,156 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE7F426BA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAF8426BA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241702AbhJHN1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhJHN1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:27:21 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD03AC061570;
-        Fri,  8 Oct 2021 06:25:26 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id o83so6292893oif.4;
-        Fri, 08 Oct 2021 06:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9cq3pyd6+P1KyVokp1RRBpzdAal1KEUlphIpxauekP0=;
-        b=qXUev3VazEI9TlAGHVK0h0WsqbUqu7Cj9spk7kfk7aP5jxpY6HHO/R/q/ixDYeduCa
-         iNdhDYMwAjUCgtm8zt3nGX6fc0c1fJiCuROH41r8xGKKWP6+HIUihTuppj9prYJ5q77o
-         KP5sdd+5AK4LY+1top4904cY7UDCE7ygp4VudHfxEKIm5cU9OFyndoUH4iOe8Gqh8BmU
-         0v6Af936HPUFZwJPdR7G6B2DExHZ7OTyhDRk6UbD9EScqZVxNfgczesxxzQHbe+VGjTB
-         dXDEZjSwAFMb53TLgArilVqgLhR+EDeTq6bzVIG5MFgRbdgPjZpKeNICGnK7VKAcOBqF
-         4IeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9cq3pyd6+P1KyVokp1RRBpzdAal1KEUlphIpxauekP0=;
-        b=8Ocq/HKumMhCKxE6WsRUloZXU/4USEdkyceEUGP10a8kPYBo5V/EBhjfSqxJxnkTNs
-         qeUE4SN73+LEojVuotV5ZIL0ClKHOEJFUoaJmQD0hFM8jb+afI8DDQqLEMr1W40Dr5Yz
-         gNYxGJvxcQpTN1wJlZ4k7tpqE+3dr/Giz5eawU0Pw/F5wvQKa5hzTKjnnG+9VlLGJk27
-         EsLRbScP+bb7TdAxAPXTO2zFCLX7pfGkqVFstdTw0A3lkQMyWdhG0+jSJVheJPSKBY9B
-         YiUCDneVtJYur2kHLPSXj7EgMVyMlDvX2nU+CezyCa8PfDC2yS4Nh43Bdw8wJeTMQrxs
-         lq0A==
-X-Gm-Message-State: AOAM532PDCh9dHXjPFKF3zd0NR08kEu/7p8NEJG64RV1WaLf30SPATYD
-        GAp9UQyC0KDfNqdt8uKpka8=
-X-Google-Smtp-Source: ABdhPJyLcBHzIpbsxUY14a+GCfox1I4n5HlkT8R3ZoDFLwei7IgaqFJ8YOalf1Gnw94YEBm5aT3Zyg==
-X-Received: by 2002:aca:4bc4:: with SMTP id y187mr4509447oia.174.1633699526077;
-        Fri, 08 Oct 2021 06:25:26 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i127sm603757oia.43.2021.10.08.06.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 06:25:25 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Oct 2021 06:25:24 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Oskar Senft <osk@google.com>
-Cc:     Rob Herring <robh@kernel.org>, Jean Delvare <jdelvare@suse.com>,
-        Linux HWMON List <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add nct7802 bindings
-Message-ID: <20211008132524.GA4171482@roeck-us.net>
-References: <20210921004627.2786132-1-osk@google.com>
- <YUzzjYMwNKwMFGSr@robh.at.kernel.org>
- <CABoTLcRpSuUUu-x-S8yTLUJCiN4RERi2kd8XATP_n3ZTRpAWDg@mail.gmail.com>
- <CAL_JsqJ+hqKfLDzbMpzPks+wJaNuwU6kodqnqWjkOb8aDf92ZQ@mail.gmail.com>
- <CABoTLcTTphA4Kpi-qbpUkX4f_V4NjhDv3_vVk8UNgvWfnKVOYw@mail.gmail.com>
+        id S240913AbhJHNaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:30:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:52154 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230282AbhJHNaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 09:30:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 484CE6D;
+        Fri,  8 Oct 2021 06:28:21 -0700 (PDT)
+Received: from bogus (unknown [10.57.25.198])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4FE883F66F;
+        Fri,  8 Oct 2021 06:28:19 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 14:27:32 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        sughosh.ganu@linaro.org
+Subject: Re: [PATCH v6 5/5] optee: add FF-A support
+Message-ID: <20211008132732.hbmkd3hftdydtrsc@bogus>
+References: <20211006070902.2531311-1-jens.wiklander@linaro.org>
+ <20211006070902.2531311-6-jens.wiklander@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABoTLcTTphA4Kpi-qbpUkX4f_V4NjhDv3_vVk8UNgvWfnKVOYw@mail.gmail.com>
+In-Reply-To: <20211006070902.2531311-6-jens.wiklander@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 09:07:47AM -0400, Oskar Senft wrote:
-> Hi Rob
-> 
-> > > > > +            temperature-sensors {
-> > > > > +                ltd {
-> > > > > +                  status = "disabled";
-> > > >
-> > > > Don't show status in examples.
-> > > Hmm, ok. I found it useful to make clear that a sensor can be
-> > > disabled, but maybe that's just always the case?
-> >
-> > Yeah, this case is a bit special. The node not being present also disables it.
-> Oh, I didn't realize that a missing node defaults to "disabled". What
-> I want to achieve is that if a node is not present, we don't configure
-> it. The reason behind this is that the HW provides a mechanism to
-> configure itself at power-up from a connected EEPROM. In that case
-> we'd still want the list the nct7802 in the DTS, but without
-> configuration. This effectively is the current behavior.
-> 
-> From what I understand from [1] and follow-ups, having the extra
-> "temperature-sensors" level is actually not what we want here and I
-> proposed a different solution in [2].
-> 
+On Wed, Oct 06, 2021 at 09:09:02AM +0200, Jens Wiklander wrote:
+> Adds support for using FF-A [1] as transport to the OP-TEE driver.
+>
+> Introduces struct optee_msg_param_fmem which carries all information
+> needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
+> memory reference mapped by the hypervisor in S-EL2. Register usage is
+> also updated to include the information needed.
+>
+> The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
+> enabled.
+>
 
-Turns out this chip has another level of complexity, where a channel
-can either be a temperature sensor or a voltage sensor. So, from dt
-perspective, we don't have separate scoped for the different sensor
-types.
+I am not sure if I missed this with earlier version but I see the below
+warning the second time I insert the optee module. I am sure I tested it
+with previous version when I was fixing issues with FF-A as a module.
 
-I don't really like [2] to indicate voltage vs. temperature using "mode"
-(it maps both sensor more and type into a single property),
-but I agree that two levels doesn't really make sense here either.
-That is where child naming may come in. We have "sensor" in your proposal,
-and "input" in the tmp421 proposal. My thought on that was that we could
-use the child name to distinguish sensor types.
+Not sure if I am missing something in my steps.
 
-    temperature-sensor@1 { /* RTD1 */
-         reg = <0x1>;
-         status = "okay";
-         mode = "thermistor"; /* Any of "thermistor", "thermal-diode" */
-    };
+Regards,
+Sudeep
 
-    voltage-sensor@3 { /* RTD3 */
-         reg = <0x3>;
-         status = "okay";
-    };
+-->8
 
-or maybe
-
-    sensor@1 { /* RTD1 */
-         reg = <0x1>;
-         status = "okay";
-	 type = "temperature-sensor";
-         mode = "thermistor"; /* Any of "thermistor", "thermal-diode" */
-    };
-
-    sensor@3 { /* RTD3 */
-         reg = <0x3>;
-         status = "okay";
-	 type = "voltage-sensor";
-    };
-
-> On that background, I'm wondering how we could have compatibility with
-> the previous behavior, where the individual sensors were not listed,
-> and just defaulted to whatever the HW came up with, whether that was
-> power-on defaults or loaded from an EEPROM.
-> 
-> What the code currently does is to check for the presence of
-> "temperature-sensors" and only attempt to configure any of them if
-> that top level node exists. This enables backwards-compatibility.
-> Going forward, I would have done the same for sensor@X and only
-> explicitly enable / disable the sensor if the node is present. If it's
-> not present, I'd use the power-on / EEPROM-provided defaults.
-> 
-
-Makes sense to me.
-
-Guenter
-
-> Thanks
-> Oskar.
-> 
-> [1] https://lore.kernel.org/linux-hwmon/20210924114636.GB2694238@roeck-us.net/
-> [2] https://lore.kernel.org/linux-hwmon/CABoTLcQYHZbsgzXN7XXKQdDn8S-YsuE+ks9WShAEKcBJojEfcQ@mail.gmail.com/
+ sysfs: cannot create duplicate filename '/devices/optee-ta-d96a5b40-c3e5-21e3-8794-1002a5d5c61b'
+ CPU: 7 PID: 181 Comm: modprobe Not tainted 5.15.0-rc4+ #6
+ Hardware name: FVP Base RevC (DT)
+ Call trace:
+  dump_backtrace+0x0/0x1d4
+  show_stack+0x18/0x64
+  dump_stack_lvl+0x64/0x7c
+  dump_stack+0x18/0x38
+  sysfs_create_dir_ns+0xe4/0x140
+  kobject_add_internal+0x170/0x354
+  kobject_add+0x94/0x100
+  device_add+0x178/0x5f0
+  device_register+0x20/0x30
+  optee_enumerate_devices+0x204/0x2fc [optee]
+  optee_ffa_probe+0x370/0x3bc [optee]
+  ffa_device_probe+0x1c/0x28 [ffa_module]
+  really_probe+0xc4/0x2f4
+  __driver_probe_device+0xb4/0xe0
+  driver_probe_device+0x40/0x134
+  __driver_attach+0xe0/0x180 
+  bus_for_each_dev+0x80/0xcc
+  driver_attach+0x24/0x30
+  bus_add_driver+0xfc/0x1dc
+  driver_register+0x78/0x110
+  ffa_driver_register+0x2c/0x40 [ffa_module]
+  optee_ffa_abi_register+0x28/0x34 [optee]
+  init_module+0x38/0x60 [optee]
+  do_one_initcall+0xbc/0x230
+  do_init_module+0x58/0x304
+  load_module+0x1cb8/0x1f78
