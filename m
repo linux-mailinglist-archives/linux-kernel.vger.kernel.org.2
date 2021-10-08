@@ -2,52 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F9942678A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F7D42677F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239850AbhJHKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:19:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239730AbhJHKTb (ORCPT
+        id S239660AbhJHKTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:19:22 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:54394 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239304AbhJHKTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:19:31 -0400
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429C5C061764;
-        Fri,  8 Oct 2021 03:17:34 -0700 (PDT)
-Received: from localhost (cpc147930-brnt3-2-0-cust60.4-2.cable.virginm.net [86.15.196.61])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id BF6E44FED5494;
-        Fri,  8 Oct 2021 03:17:30 -0700 (PDT)
-Date:   Fri, 08 Oct 2021 11:16:46 +0100 (BST)
-Message-Id: <20211008.111646.1874039740182175606.davem@davemloft.net>
-To:     krzysztof.kozlowski@canonical.com
-Cc:     k.opasiak@samsung.com, mgreer@animalcreek.com, kuba@kernel.org,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 0/7] nfc: minor printk cleanup
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20211007133021.32704-1-krzysztof.kozlowski@canonical.com>
-References: <20211007133021.32704-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: Mew version 6.8 on Emacs 27.2
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Fri, 08 Oct 2021 03:17:32 -0700 (PDT)
+        Fri, 8 Oct 2021 06:19:16 -0400
+Received: from ert768.prtnl (ert768.prtnl [192.168.224.11])
+        by sparta.prtnl (Postfix) with ESMTP id E2C9D44A024E;
+        Fri,  8 Oct 2021 12:17:16 +0200 (CEST)
+From:   Roan van Dijk <roan@protonic.nl>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, david@protonic.nl,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Roan van Dijk <roan@protonic.nl>
+Subject: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+Date:   Fri,  8 Oct 2021 12:17:02 +0200
+Message-Id: <20211008101706.755942-1-roan@protonic.nl>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Date: Thu,  7 Oct 2021 15:30:14 +0200
+This series adds support for the Sensirion SCD4x sensor.
 
-> Hi,
-> 
-> This is a rebase and resend of v2. No other changes.
-> 
-> Changes since v1:
-> 1. Remove unused variable in pn533 (reported by kbuild).
+The driver supports continuous reads of temperature, relative humdity and CO2
+concentration. There is an interval of 5 seconds between readings. During
+this interval the drivers checks if the sensor has new data available.
 
-Please CC: netdev for nfc patches otherwise they will not get tracked
-and applied.
+The driver is based on the scd30 driver. However, The scd4x has become too
+different to just expand the scd30 driver. I made a new driver instead of
+expanding the scd30 driver. I hope I made the right choice by doing so?
 
-Thank you.
+Changes since v5:
+scd4x.c:
+  - Fix bug in trigger_handler
+
+Changes since v4:
+scd4x.c:
+  - Minor fixes in documentation
+  - Reorder trigger_handler so memcpy is not needed anymore
+Documentation:
+  - Change information about the KernelVersion for the 
+    calibration_forced_value_available
+
+Changes since v3:
+scd4x.c
+  - Change read and write_and_fetch function parameter. CRC byte is now
+    hidden inside the function.
+  - Fix minor style issues
+  - Add calibration_forced_value_available attribute to the driver
+  - Remove including BUFFER_TRIGGERED
+  - Change calibbias to raw ADC readings rather than converting it to
+    milli degrees C.
+Documentation:
+  - Change description of driver attributes
+  - Add calibration_forced_value_available documentation
+
+Changes since v2:
+scd4x.c:
+  - Change boolean operations
+  - Document scope of lock
+  - Remove device *dev from struct
+  - Add goto block for errror handling
+  - Add function to read value per channel in read_raw
+  - Fix bug with lock in error paths
+  - Remove conversion of humidity and temperature values
+  - Add scale and offset to temperature channel
+  - Add scale to humidity channel
+  - Move memset out of locked section
+  - Remove unused irq functions
+  - Move device register at end of probe function
+Documentation:
+  - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
+  - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
+
+Changes since v1:
+dt-bindings:
+  - Separated compatible string for each sensor type
+scd4x.c:
+  - Changed probe, resume and suspend functions to static
+  - Added SIMPLE_DEV_PM_OPS function call for power management
+    operations.
+
+Roan van Dijk (4):
+  dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
+  MAINTAINERS: Add myself as maintainer of the scd4x driver
+  drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
+  iio: documentation: Document scd4x calibration use
+
+ Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
+ Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
+ .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
+ MAINTAINERS                                   |   6 +
+ drivers/iio/chemical/Kconfig                  |  13 +
+ drivers/iio/chemical/Makefile                 |   1 +
+ drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
+ 7 files changed, 796 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
+ create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+ create mode 100644 drivers/iio/chemical/scd4x.c
+
+-- 
+2.30.2
+
