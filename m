@@ -2,112 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664BB427457
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75D8442745A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243820AbhJHXrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbhJHXrK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:47:10 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B7BC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:45:14 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id u18so45172847lfd.12
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:45:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pP1WoEAAJ+vCb8OBFKknF0fFWhXHfTf1dyCM1yg832g=;
-        b=FJX0/9d+9/kpnygHrvLnZLoEUcFi9QeR+n8y7ETuFGcSeUX/GfSwAWiZYJt+KrK+16
-         o7aNcNa5SFwi07Bj8egMGz6yvecVTkbfebnSBL89tQA+uct6+oGUcGWaZDkl0NKm8CYl
-         jtOIwUAhQdluZknXm/0gWssbx948AUYIvrgh9S0rhFhVvixrH3dtGqpFtAc++Q96dlI2
-         xOhUTUGcvHUZ0bH1WCb14U5zszyNsgGrGSyXT9eUSr/a0ge/TJ5d0MbKyLrQsJidpmd/
-         nJtVdHZbnHrsTAIrBdRYf0eCt0Oxacv5SmhtJ5sswq9FweyGGnPPfRzGzVBUcSOf5898
-         jwCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pP1WoEAAJ+vCb8OBFKknF0fFWhXHfTf1dyCM1yg832g=;
-        b=x6MHrDH83LzfJY83U+ybOuc1sFwctZLr1QmRC77SaFdzJV7IUuqVsNClrN8IYJ57M2
-         27cOYL3LqOlKpCx0L9hcENamggT4czjjdjkV65eE+QNgxTJLZXu146xlcy2q97GUVUgb
-         XwjZS1kdr2lHyyIZi0D1Dh1GWUEvCVkZIrtO4pKfgx2LKo4I2r6XTj1VXDkhyz97M2ev
-         ZDiV3uNaAvRuQbKOV24IYj+yFCMdPxqismhuFGr4OXhZiNPBcx+wHY3GjEOEAmAC0Xnx
-         9aVe8bhBwCkhEpNu4RWDKUaNBwPYJqSNz7Kn3dINFOH0nFQa/EBnp7knlVkY8+GYOKHy
-         OZkA==
-X-Gm-Message-State: AOAM530yBIfVZ7cmjgQjuGPNHdCXNy7aG/mqViom4CK6UW5Qf0ZfPPLp
-        gBIqb0Np40qxGCa7Cf/VYWqkwnhjrBJDbKqq+B8e/g==
-X-Google-Smtp-Source: ABdhPJyKF71ntPduAPRrBUY2yf7ct8XpanrtaUF5zaJfcoC1pog8O+nh+aJgVBiglc1CaFbP5NncEhF7YjewQ3AED+U=
-X-Received: by 2002:a19:711d:: with SMTP id m29mr12215247lfc.36.1633736712722;
- Fri, 08 Oct 2021 16:45:12 -0700 (PDT)
+        id S243874AbhJHXts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:49:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243797AbhJHXtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:49:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8085360F94;
+        Fri,  8 Oct 2021 23:47:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633736871;
+        bh=UqtllO3PxHSjbiuQa9yuulVNPNzvIsSMdDgdTG8gkGQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g1j6luM6R0PQyiO9VJxu4/A1I01RsA7HOnJSFULsfITmDyartYOQMmBM2hW0Yjb1F
+         KFst/cjv/8TQj13vbJr5CkE+eqDcn/H+iNn9NwMMxbpGW6CHDjsrxVvN05nRo9Hw8P
+         WeWxj4fdJi0D6PJSiWpVD2YMpcGQut3i910kOTSRwxpFT3844ENfyZ2fAjL13GdlBb
+         MPRFM0ID2m7LmSJeOi8c7eC4UeC7U9V3K+Q0eVuSBVmarUPRmzw1CqSjrATsv8Ajqt
+         9879MtweL4oR42Ikzllje+Oh3r1G+Pjkkv3XP8cT1Wq/1DcjYlWPWU4AD/Ha4w0EBt
+         EfN9nMg3B9/gQ==
+Date:   Fri, 8 Oct 2021 16:47:50 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net PATCH 1/2] drivers: net: phy: at803x: fix resume for
+ QCA8327 phy
+Message-ID: <20211008164750.4007f2d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211008233426.1088-1-ansuelsmth@gmail.com>
+References: <20211008233426.1088-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20211008080305.13401-1-yanghui.def@bytedance.com>
-In-Reply-To: <20211008080305.13401-1-yanghui.def@bytedance.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 8 Oct 2021 16:45:01 -0700
-Message-ID: <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
-Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
-To:     yanghui <yanghui.def@bytedance.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
->
-> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
-> Timer. But sometimes system is very busy and the Timer cannot be
-> executed in 0.5sec. For example,if clocksource_watchdog be executed
-> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
-> be enlarged. Then the current clocksource will be misjudged as
-> unstable. So we add conditions to prevent the clocksource from
-> being misjudged.
->
-> Signed-off-by: yanghui <yanghui.def@bytedance.com>
-> ---
->  kernel/time/clocksource.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-> index b8a14d2fb5ba..d535beadcbc8 100644
-> --- a/kernel/time/clocksource.c
-> +++ b/kernel/time/clocksource.c
-> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
->
->  /*
->   * Interval: 0.5sec.
-> + * MaxInterval: 1s.
->   */
->  #define WATCHDOG_INTERVAL (HZ >> 1)
-> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
->
->  static void clocksource_watchdog_work(struct work_struct *work)
->  {
-> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
->
->                 /* Check the deviation from the watchdog clocksource. */
->                 md = cs->uncertainty_margin + watchdog->uncertainty_margin;
-> -               if (abs(cs_nsec - wd_nsec) > md) {
-> +               if ((abs(cs_nsec - wd_nsec) > md) &&
-> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
+On Sat,  9 Oct 2021 01:34:25 +0200 Ansuel Smith wrote:
+> From Documentation phy resume triggers phy reset and restart
+> auto-negotiation. Add a dedicated function to wait reset to finish as
+> it was notice a regression where port sometime are not reliable after a
+> suspend/resume session. The reset wait logic is copied from phy_poll_reset.
+> Add dedicated suspend function to use genphy_suspend only with QCA8337
+> phy and set only additional debug settings for QCA8327. With more test
+> it was reported that QCA8327 doesn't proprely support this mode and
+> using this cause the unreliability of the switch ports, especially the
+> malfunction of the port0.
+> 
+> Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
 
-Sorry, it's been awhile since I looked at this code, but why are you
-bounding the clocksource delta here?
-It seems like if the clocksource being watched was very wrong (with a
-delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
+Hm, there's some confusion here. This commit does not exist in net,
+and neither does the one from patch 2.
 
-> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
-
-Bounding the watchdog interval on the check does seem reasonable.
-Though one may want to keep track that if we are seeing too many of
-these delayed watchdog checks we provide some feedback via dmesg.
-
-thanks
--john
+We should be fine with these going into net-next, right Andrew?
