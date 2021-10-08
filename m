@@ -2,93 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24744272F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CA4F4272FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243411AbhJHVUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 17:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57556 "EHLO
+        id S243427AbhJHV01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 17:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242456AbhJHVUp (ORCPT
+        with ESMTP id S231696AbhJHV0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:20:45 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4B9C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:18:50 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id cs11-20020a17090af50b00b0019fe3df3dddso7800977pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:18:50 -0700 (PDT)
+        Fri, 8 Oct 2021 17:26:25 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CE89C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:24:29 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id y15so44322287lfk.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rHy4HvfxK920/DAzRQ2LEGB6EW308Wa/3xEBO3I3ZhE=;
-        b=BhVVj3vKt/JTppbgAK2mAsECRb50DXsS6r6M65L9zK/mN6kuIBXR6Buqs3rERRipGg
-         1fFkRryHhsSY6tHK3Na1GTCd6pXVcac06u0Oi8e9R8Y/sXRYy7YNOsnPYVgk2OqMOeIz
-         29j82p/ttntW9wToU6jvggtbtH4TaDHv5o6HA=
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k0EYZkuPR71XsiCTlWd0a9Iaorj/CJH5/iJemSUM6lY=;
+        b=CB+zFtRT+SWYOCVXvnjab2ZxnSTYp48pax/Ux3XcXjnV8nn/eX8c47eCIBGFvOo7YJ
+         LxYiLLqLvIk7YyvRCXudrtjCydUsaZBwoXMZUqvyCi3SjvyRroDokpfsZYmE406ekFGk
+         oPZGl9Ms5HlaeReDXl2OAUeYqbl+WJzHFUCtkbc/2HO1H5gqFmoH25Se8leqv8dIqNry
+         pP8rTyAHu8uL/ost4LkK9NY+iYjvaGMwoJptXdot/l8hD+EXybgSfdiHYplZ9XsL2lEs
+         B5oDl1xi6wDx4Pnpb0EKpXK8N/IbbbaJo8+VCTcktB1qiyZRDRZAD933g5cpGdZcx5pv
+         gsbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rHy4HvfxK920/DAzRQ2LEGB6EW308Wa/3xEBO3I3ZhE=;
-        b=5hKdwFxMU0/PjKnY/TctYAG07X6SzeAYRODAqZFgVaaTl/E13Dg24NGwFkpD9U0oSM
-         BKXDm/Z33GAG6nUODsmSwpMlGa0mG3VSxGcjyP/yTloR8lKWmkrKZdt2qZV4sR6iwvyU
-         8yUi9aAiKab/Jj6y4ZH2rfnhteL4ZQvxBKGw3QZRugGpi/Bp3UV6HPt6Y1d5FIqj4MgV
-         F/iYmEma9HhS+z/2S4BS69jda3ece3EbGAdx0vpTnIYdidoYUyLtCtqmaHIuM/FiosUV
-         I3IznQGr65gGtjs0eTimC/QyL7R/a+t9Qko2XIqaNVCpy6XUhCdOxx7v593UGhLiA00+
-         wtPg==
-X-Gm-Message-State: AOAM531tlqPtuiRK2Ec26YWHwNR/TYBaLlHJSA+LC75biYD+vp9orh7J
-        RhD2U3h3RK8+5+H4QzpPi55uGA==
-X-Google-Smtp-Source: ABdhPJyv4C5+P+SgYIf226CgVLrqAnPgnVXY5QUVMiim6AYeLnzTfC3cD84QYWdFL1q3lMAKjijtkw==
-X-Received: by 2002:a17:902:ea05:b0:13f:4b5:cda2 with SMTP id s5-20020a170902ea0500b0013f04b5cda2mr11620979plg.86.1633727928442;
-        Fri, 08 Oct 2021 14:18:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n1sm228706pfo.116.2021.10.08.14.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:18:47 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>, stable@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] lkdtm: Fix content of section containing lkdtm_rodata_do_nothing()
-Date:   Fri,  8 Oct 2021 14:17:49 -0700
-Message-Id: <163372786562.2954264.14524923434528443035.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <8900731fbc05fb8b0de18af7133a8fc07c3c53a1.1633712176.git.christophe.leroy@csgroup.eu>
-References: <8900731fbc05fb8b0de18af7133a8fc07c3c53a1.1633712176.git.christophe.leroy@csgroup.eu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k0EYZkuPR71XsiCTlWd0a9Iaorj/CJH5/iJemSUM6lY=;
+        b=f9hKTSKrtLUXNMK2ZIlypM8rnGGWz5SysYXEbR7hVlYU2OB+oUcrphNnBSblxt6xAy
+         aVFE9E/gSL9WLcYXbPpqT0xBoNNUHUtFsUk3W07OgAmHatUb8vzOvQBfnuiI6P98owSr
+         KRBJUmgGBXGH5lwBr1MvBJtIGmI7ls9Y9+L0QtPEY9OsjT0YL6LxhIYMu5DMagK+JpZF
+         JrGH7zNn24C7w8nMM8eRTuz3FLP2Fns4fBJbD90mXfWkQkEJgPdwk3e8pffd9WtzinbF
+         ZxjObZm2sBR2dLi1vJEXscZw/zLchdEOXGd8dzC2RSwlk/slj5ud8ljgrRagsvW+pFAM
+         v+Dg==
+X-Gm-Message-State: AOAM530+uW8k6Ksem193hlzE2qniayVFNF+Hg4jI2l2iKZYtCg9s1brG
+        qBPsPDU5olIwHGS8izn3tSrMqCmKWw7WLvw1YNxmLg==
+X-Google-Smtp-Source: ABdhPJw7QAvfd/PMBjVjoa/pBLk9iJwNrx/edGEOwARQnSyd73LqRwyNZlxISZX3d+E+YbInh0NqAq1innFWJxtJ4Cc=
+X-Received: by 2002:a2e:b6c8:: with SMTP id m8mr6256568ljo.238.1633728267669;
+ Fri, 08 Oct 2021 14:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-4-tkjos@google.com>
+ <CAHC9VhTRTcZW9eyXXvAN7T=ZCQ_zwH5iBz+d0h2ntf7=XHE-Vw@mail.gmail.com>
+In-Reply-To: <CAHC9VhTRTcZW9eyXXvAN7T=ZCQ_zwH5iBz+d0h2ntf7=XHE-Vw@mail.gmail.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Fri, 8 Oct 2021 14:24:15 -0700
+Message-ID: <CAHRSSEy=eC0rbHUzDmCo6Na7Ya=uCq7zJ6_cXysi0oWQB=19YQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/3] binder: use euid from cred instead of using task
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     casey@schaufler-ca.com, gregkh@linuxfoundation.org,
+        arve@android.com, tkjos@android.com, maco@android.com,
+        christian@brauner.io, James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 18:58:40 +0200, Christophe Leroy wrote:
-> On a kernel without CONFIG_STRICT_KERNEL_RWX, running EXEC_RODATA
-> test leads to "Illegal instruction" failure.
-> 
-> Looking at the content of rodata_objcopy.o, we see that the
-> function content zeroes only:
-> 
-> 	Disassembly of section .rodata:
-> 
-> [...]
+On Fri, Oct 8, 2021 at 2:12 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
+> >
+> > Set a transaction's sender_euid from the 'struct cred'
+> > saved at binder_open() instead of looking up the euid
+> > from the binder proc's 'struct task'. This ensures
+> > the euid is associated with the security context that
+> > of the task that opened binder.
+> >
+> > Fixes: 457b9a6f09f0 ("Staging: android: add binder driver")
+> > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> > Cc: stable@vger.kernel.org # 4.4+
+> > ---
+> > v3: added this patch to series
+> >
+> >  drivers/android/binder.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> This is an interesting ordering of the patches.  Unless I'm missing
+> something I would have expected patch 3/3 to come first, followed by
+> 2/3, with patch 1/3 at the end; basically the reverse of what was
+> posted here.
 
-Applied to for-next/lkdtm, thanks!
+2/3 and 3/3 both depend on 1/3 (add "cred" member of struct
+binder_proc). I kept that in 1/3 to keep that patch the same as what
+had already been reviewed. I didn't think much about the ordering
+between 2/3 and 3/3 -- but I agree that it would have been sensible to
+reverse their order.
 
-[1/1] lkdtm: Fix content of section containing lkdtm_rodata_do_nothing()
-      https://git.kernel.org/kees/c/19c3069c5f5f
+>
+> My reading of the previous thread was that Casey has made his peace
+> with these changes so unless anyone has any objections I'll plan on
+> merging 2/3 and 3/3 into selinux/stable-5.15 and merging 1/3 into
+> selinux/next.
 
-Also, can you take a moment and get "patatt" set up[1] for signing your
-patches? I would appreciate that since b4 yells at me when patches aren't
-signed. :)
+Thanks Paul. I'm not familiar with the branch structure, but you need
+1/3 in selinux/stable-5.15 to resolve the dependency on proc->cred.
 
--Kees
-
-[1] https://github.com/mricon/patatt
-
--- 
-Kees Cook
-
+>
+> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> > index 989afd0804ca..26382e982c5e 100644
+> > --- a/drivers/android/binder.c
+> > +++ b/drivers/android/binder.c
+> > @@ -2711,7 +2711,7 @@ static void binder_transaction(struct binder_proc *proc,
+> >                 t->from = thread;
+> >         else
+> >                 t->from = NULL;
+> > -       t->sender_euid = task_euid(proc->tsk);
+> > +       t->sender_euid = proc->cred->euid;
+> >         t->to_proc = target_proc;
+> >         t->to_thread = target_thread;
+> >         t->code = tr->code;
+> > --
+> > 2.33.0.800.g4c38ced690-goog
+>
+> --
+> paul moore
+> www.paul-moore.com
