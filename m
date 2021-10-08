@@ -2,147 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 140114267DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF4634267FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239935AbhJHKch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhJHKce (ORCPT
+        id S239801AbhJHKfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:35:33 -0400
+Received: from smtprelay0173.hostedemail.com ([216.40.44.173]:41382 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236118AbhJHKfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:32:34 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B01BC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:30:39 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id b20so37838800lfv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:30:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xAJV6rpYehfTK9nnciNhDpMqZQK02ZVmng3Ho9JExgo=;
-        b=WUFufoTxqA+JTTGukQW4lBGtCc6qPp3iXYEHJKCwXNRrYOf9uteuXRod7K/a5tl41d
-         TyytV5xNYgGRRU0zyrhr8aPQD6NAbmd8ax/ctLn3bTFIDRqmRLGFvIIwcsriB/9RNglW
-         l58ng7vWsERBcsUQ6nKAO/9d/vt1wUdtqb0MA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xAJV6rpYehfTK9nnciNhDpMqZQK02ZVmng3Ho9JExgo=;
-        b=bZlIUaoVta4ylIPhvH91FzdBOGurgc/nZFdt2B2A/Q+es2eTtYF3SOsQNsoTYQG0hu
-         cWDJSrky4KJK9BLYN6VU56Ar4LvMpDcI+Vdlw9CbRPp1mqs9VCey4xSNBDew5yUeA7Tw
-         XP7FYvTotDJJU+ySJly9xzK5o+WRb/kNo4GIGOY1CqtGnjba6M7jypv4vslIRoztthmf
-         BVCbx7tucf7X8d69wZhXTJkJocyR9TbykLA5RCLjGZzyItWL5FNgg2BgdQ3Vtbxqtt7q
-         vmrR6TadMFAJr0+AePhuLh3UjPKJwe1E79hXPHR/h1ZK//cizqCt4bX35/rthpKFc+Je
-         BAcw==
-X-Gm-Message-State: AOAM531JCNARyMViEExMx6KPeQT7Vg37GvFF6q08TwG5zYBprcLqNAsA
-        GFvM4hgnlKsGA4T6C17vijZIEroOWCZ6petEs4yNEA==
-X-Google-Smtp-Source: ABdhPJyNLLNnwHcH3PPTk54y5XMO2BahGGz++OdUH26GrfjhbgYTvnY0SqT1yb9T3vmlVy2LqM13V+w9DHH6Lm20TWI=
-X-Received: by 2002:a2e:9c4b:: with SMTP id t11mr2805530ljj.376.1633689037713;
- Fri, 08 Oct 2021 03:30:37 -0700 (PDT)
+        Fri, 8 Oct 2021 06:35:32 -0400
+Received: from omf11.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 82B7532071;
+        Fri,  8 Oct 2021 10:33:36 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf11.hostedemail.com (Postfix) with ESMTPA id 2CB9C20A29E;
+        Fri,  8 Oct 2021 10:33:35 +0000 (UTC)
+Message-ID: <34cc3eda06fa2e793c46b48ee734fd879e6f8ab1.camel@perches.com>
+Subject: Re: [RESEND PATCH v2 2/7] nfc: nci: replace GPLv2 boilerplate with
+ SPDX
+From:   Joe Perches <joe@perches.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Date:   Fri, 08 Oct 2021 03:33:34 -0700
+In-Reply-To: <20211007133021.32704-3-krzysztof.kozlowski@canonical.com>
+References: <20211007133021.32704-1-krzysztof.kozlowski@canonical.com>
+         <20211007133021.32704-3-krzysztof.kozlowski@canonical.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-References: <20210929160439.6601-1-andrzej.p@collabora.com> <20210929160439.6601-8-andrzej.p@collabora.com>
-In-Reply-To: <20210929160439.6601-8-andrzej.p@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri, 8 Oct 2021 18:30:26 +0800
-Message-ID: <CAGXv+5GU3f40BijQxazGVtJ0o9rZY_cux9mxRUEtXYHF2Oz-UQ@mail.gmail.com>
-Subject: Re: [PATCH v7 07/11] media: rkvdec: Add the VP9 backend
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-staging@lists.linux.dev,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>, kernel@collabora.com,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Adrian Ratiu <adrian.ratiu@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.10
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 2CB9C20A29E
+X-Stat-Signature: an5cja49j9hatjzfj5y5i9dbqs1fshrj
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19rWGlJCAT2yUGU+WhaXGKE7yZZjxHmsvk=
+X-HE-Tag: 1633689215-230328
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 2021-10-07 at 15:30 +0200, Krzysztof Kozlowski wrote:
+> Replace standard GPLv2 only license text with SPDX tag.
 
-On Thu, Sep 30, 2021 at 12:07 AM Andrzej Pietrasiewicz
-<andrzej.p@collabora.com> wrote:
->
-> From: Boris Brezillon <boris.brezillon@collabora.com>
->
-> The Rockchip VDEC supports VP9 profile 0 up to 4096x2304@30fps. Add
-> a backend for this new format.
->
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
-> Co-developed-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> ---
->  drivers/staging/media/rkvdec/Kconfig      |    1 +
->  drivers/staging/media/rkvdec/Makefile     |    2 +-
->  drivers/staging/media/rkvdec/rkvdec-vp9.c | 1078 +++++++++++++++++++++
->  drivers/staging/media/rkvdec/rkvdec.c     |   52 +-
->  drivers/staging/media/rkvdec/rkvdec.h     |   12 +-
->  5 files changed, 1137 insertions(+), 8 deletions(-)
->  create mode 100644 drivers/staging/media/rkvdec/rkvdec-vp9.c
->
+Nak
 
-[...]
+This is actually licenced with GPL-2.0-or-later
 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-> index 7131156c1f2c..6aa8aca66547 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> diff --git a/net/nfc/nci/uart.c b/net/nfc/nci/uart.c
+[]
+> @@ -1,20 +1,8 @@
+> +// SPDX-License-Identifier: GPL-2.0
+[]
+You may use, redistribute and/or modify this File in
+> - * accordance with the terms and conditions of the License, a copy of which
+> - * is available on the worldwide web at
+> - * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-[...]
+See the actual text at the old link which includes:
 
-> @@ -319,7 +354,7 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
->         struct v4l2_m2m_ctx *m2m_ctx = ctx->fh.m2m_ctx;
->         const struct rkvdec_coded_fmt_desc *desc;
->         struct v4l2_format *cap_fmt;
-> -       struct vb2_queue *peer_vq;
-> +       struct vb2_queue *peer_vq, *vq;
->         int ret;
->
->         /*
-> @@ -331,6 +366,15 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
->         if (vb2_is_busy(peer_vq))
->                 return -EBUSY;
->
-> +       /*
-> +        * Some codecs like VP9 can contain dynamic resolution changes which
-> +        * are currently not supported by the V4L2 API or driver, so return
-> +        * an error if userspace tries to reconfigure the output format.
-> +        */
-> +       vq = v4l2_m2m_get_vq(m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
-> +       if (vb2_is_busy(vq))
-> +               return -EINVAL;
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-This check is already done in rkvdec_s_fmt(), though it returns -EBUSY
-instead. And I don't see similar changes to Hantro, so maybe this isn't
-an API limitation as described in the comment? My recent patch [1] also
-loosens the restrictions on this.
 
-ChenYu
-
-[1] https://lore.kernel.org/linux-media/20211008100423.739462-3-wenst@chromium.org/
-
-> +
->         ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_output_fmt);
->         if (ret)
->                 return ret;
