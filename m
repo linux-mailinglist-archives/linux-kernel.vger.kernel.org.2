@@ -2,352 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6991F426F59
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E3E426F62
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233255AbhJHRJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:09:15 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:50074 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhJHRJO (ORCPT
+        id S234074AbhJHRLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:11:39 -0400
+Received: from relay-b01.edpnet.be ([212.71.1.221]:56876 "EHLO
+        relay-b01.edpnet.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhJHRLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:09:14 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 0022d0cc6dd07f2b; Fri, 8 Oct 2021 19:07:17 +0200
-Received: from kreacher.localnet (unknown [213.134.175.153])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 464E366A808;
-        Fri,  8 Oct 2021 19:07:15 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Subject: Re: [PATCH] PCI: Put power resources not tied to a physical node in D3cold
-Date:   Fri, 08 Oct 2021 19:07:14 +0200
-Message-ID: <5504370.DvuYhMxLoT@kreacher>
-In-Reply-To: <8c8df41d-265a-637d-bc26-cdaf0e4e93a8@amd.com>
-References: <20211007205126.11769-1-mario.limonciello@amd.com> <2211361.ElGaqSPkdT@kreacher> <8c8df41d-265a-637d-bc26-cdaf0e4e93a8@amd.com>
+        Fri, 8 Oct 2021 13:11:38 -0400
+X-ASG-Debug-ID: 1633712978-15c4341a8812a4040001-xx1T2L
+Received: from zotac.vandijck-laurijssen.be (94.105.120.149.dyn.edpnet.net [94.105.120.149]) by relay-b01.edpnet.be with ESMTP id 9YazIlV7jGF6uqr7; Fri, 08 Oct 2021 19:09:38 +0200 (CEST)
+X-Barracuda-Envelope-From: dev.kurt@vandijck-laurijssen.be
+X-Barracuda-Effective-Source-IP: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
+X-Barracuda-Apparent-Source-IP: 94.105.120.149
+Received: from x1.vandijck-laurijssen.be (x1.vandijck-laurijssen.be [IPv6:fd01::1a1d:eaff:fe02:d339])
+        by zotac.vandijck-laurijssen.be (Postfix) with ESMTPSA id 5ED651697A73;
+        Fri,  8 Oct 2021 19:09:38 +0200 (CEST)
+Date:   Fri, 8 Oct 2021 19:09:37 +0200
+From:   Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
+ if receive TP.DT with error length
+Message-ID: <20211008170937.GA12224@x1.vandijck-laurijssen.be>
+X-ASG-Orig-Subj: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
+ if receive TP.DT with error length
+Mail-Followup-To: Oleksij Rempel <o.rempel@pengutronix.de>,
+        Zhang Changzhong <zhangchangzhong@huawei.com>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
+ <20210930074206.GB7502@x1.vandijck-laurijssen.be>
+ <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
+ <20211008110007.GE29653@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.153
-X-CLIENT-HOSTNAME: 213.134.175.153
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddguddtiecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfduteeiueegtefgieetteffveehhefgieelkedujeekhfettdfgvdelveevkeegnecuffhomhgrihhnpehouhhtlhhoohhkrdgtohhmpdhkvghrnhgvlhdrohhrghenucfkphepvddufedrudefgedrudejhedrudehfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpedvudefrddufeegrddujeehrdduheefpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepmhgrrhhiohdrlhhimhhonhgtihgvlhhlohesrghmugdrtghomhdprhgtphhtthhopehlvghnsgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepsghhvghlghgrrghssehgohhoghhlvgdrtghomhdprhgtphhtthhopehrohgsvghrthdrmhhoohhrvgesihhnthgvlhdrtghomhdprhgt
- phhtthhopegvrhhikhdrkhgrnhgvuggrsehinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeguvghvvghlsegrtghpihgtrgdrohhrgh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=9 Fuz1=9 Fuz2=9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211008110007.GE29653@pengutronix.de>
+User-Agent: Mutt/1.5.22 (2013-10-16)
+X-Barracuda-Connect: 94.105.120.149.dyn.edpnet.net[94.105.120.149]
+X-Barracuda-Start-Time: 1633712978
+X-Barracuda-URL: https://212.71.1.221:443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at edpnet.be
+X-Barracuda-Scan-Msg-Size: 3123
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Spam-Score: 0.50
+X-Barracuda-Spam-Status: No, SCORE=0.50 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=7.0 tests=BSF_RULE7568M
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.93131
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+        0.50 BSF_RULE7568M          Custom Rule 7568M
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 8, 2021 5:47:53 PM CEST Limonciello, Mario wrote:
-> On 10/8/2021 09:05, Rafael J. Wysocki wrote:
-> > On Thursday, October 7, 2021 10:51:26 PM CEST Mario Limonciello wrote:
-> >> I found a case that a system that two physical SATA controllers share
-> >> the same ACPI Power Resource.  When a drive is connected to one of
-> >> the controllers then it will bind with PCI devices with the ahci driver
-> >> and form a relationship with the firmware node and physical node.  During
-> >> s2idle I see that the constraints are met for this device as it is
-> >> transitioned into the appropriate state. However the second ACPI node
-> >> doesn't have any relationship with a physical node and stays in "D0":
-> >>
-> >> ```
-> >> ACPI: \_SB_.PCI0.GP18.SATA: ACPI: PM: Power state change: D0 -> D3cold
-> >> ACPI: PM: Power resource [P0SA] still in use
-> >> acpi device:2a: Power state changed to D3cold
-> >> ```
-> >>
-> >> Due to the refcounting used on the shared power resource putting the
-> >> device with a physical node into D3 doesn't result in the _OFF method
-> >> being called.
-> >>
-> >> To help with this type of problem, make a new helper function that can
-> >> be used to check all the children of an ACPI device and put any firmware
-> >> nodes that don't have physical devices into D3cold to allow shared
-> >> resources to transition. Call this helper function after PCI devices have
-> >> been scanned and ACPI companions have had a chance to associate.
-> >>
-> >> After making this change, here is what the flow looks like:
-> >> ```
-> >> <snip:bootup>
-> >> ACPI: \_SB_.PCI0.GP18.SAT1: ACPI: PM: Power state change: D0 -> D3cold
-> >> ACPI: PM: Power resource [P0SA] still in use
-> >> acpi device:2c: Power state changed to D3cold
-> >> <snip:suspend>
-> >> ACPI: \_SB_.PCI0.GP18.SATA: ACPI: PM: Power state change: D0 -> D3cold
-> >> ACPI: PM: Power resource [P0SA] turned off
-> >> acpi device:2a: Power state changed to D3cold
-> >> ```
-> >>
-> >> Link: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flinux-acpi%2F0571292a-286b-18f2-70ad-12b125a61469%40amd.com%2FT%2F%23m042055c5ca1e49c2829655511f04b0311c142559&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Ce54614dae1624dfb240408d98a64b8da%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692988971446528%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=9fYSZ4d2cA2TnM453MQxqmOlGN%2FU6WNi7By7pVP2EV4%3D&amp;reserved=0
-> >> BugLink: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbugzilla.kernel.org%2Fshow_bug.cgi%3Fid%3D214091&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Ce54614dae1624dfb240408d98a64b8da%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692988971446528%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=vsjQOgqzadLYXTfRW2sui5Dp7%2B0EYf14rUCiIDNofoI%3D&amp;reserved=0
-> >> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> >> ---
-> >>   drivers/acpi/device_pm.c | 34 ++++++++++++++++++++++++++++++++++
-> >>   drivers/pci/probe.c      |  5 +++++
-> >>   include/acpi/acpi_bus.h  |  1 +
-> >>   3 files changed, 40 insertions(+)
-> >>
-> >> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> >> index 0028b6b51c87..0fb0bbeeae9e 100644
-> >> --- a/drivers/acpi/device_pm.c
-> >> +++ b/drivers/acpi/device_pm.c
-> >> @@ -149,6 +149,40 @@ static int acpi_dev_pm_explicit_set(struct acpi_device *adev, int state)
-> >>   	return 0;
-> >>   }
-> >>   
-> >> +/**
-> >> + * acpi_device_turn_off_absent_children - Turn off power resources for
-> >> + *					  children not physically present.
-> >> + * @parent: ACPI bridge device
-> >> + */
-> >> +int acpi_device_turn_off_absent_children(struct acpi_device *parent)
-> >> +{
-> >> +	struct acpi_device *adev;
-> >> +	int ret = 0;
-> >> +
-> >> +	if (!parent)
-> >> +		return -EINVAL;
-> >> +
-> >> +	list_for_each_entry(adev, &parent->children, node) {
+On Fri, 08 Oct 2021 13:00:07 +0200, Oleksij Rempel wrote:
+> On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
+> > Hi Kurt,
+> > Sorry for the late reply.
 > > 
-> > It is better to use device_for_each_child() for this, walking the children list
-> > without locking is questionable.
+> > On 2021/9/30 15:42, Kurt Van Dijck wrote:
+> > > On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
+> > >> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
+> > >> cancel session when receive unexpected TP.DT message.
+> > > 
+> > > SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
+> > > However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
+> > > If I remember well, they are even not 'reserved'.
 > > 
-> >> +		int state;
-> >> +
-> >> +		if (!adev->flags.power_manageable ||
+> > Agree, these bytes are meaningless for last TP.DT.
 > > 
-> > This need not be checked, acpi_device_set_power() checks it.
+> > >
+> > >>
+> > >> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> > >> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+> > >> ---
+> > >>  net/can/j1939/transport.c | 7 +++++--
+> > >>  1 file changed, 5 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> > >> index bb5c4b8..eedaeaf 100644
+> > >> --- a/net/can/j1939/transport.c
+> > >> +++ b/net/can/j1939/transport.c
+> > >> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
+> > >>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> > >>  				 struct sk_buff *skb)
+> > >>  {
+> > >> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
+> > >>  	struct j1939_priv *priv = session->priv;
+> > >>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
+> > >>  	struct sk_buff *se_skb = NULL;
+> > >> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+> > >>  
+> > >>  	skcb = j1939_skb_to_cb(skb);
+> > >>  	dat = skb->data;
+> > >> -	if (skb->len <= 1)
+> > >> +	if (skb->len != 8) {
+> > >>  		/* makes no sense */
+> > >> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
+> > >>  		goto out_session_cancel;
+> > > 
+> > > I think this is a situation of
+> > > "be strict on what you send, be tolerant on what you receive".
+> > > 
+> > > Did you find a technical reason to abort a session because the last frame didn't
+> > > bring overhead that you don't use?
 > > 
-> >> +		    !adev->power.flags.power_resources)
-> > 
-> > And I'm not sure about this too.  Even if there are no power resources, it
-> > would be still prudent to release PM resources referred to by unused device
-> > objects by calling _PS3 on them.
-> > 
-> >> +			continue;
-> >> +		if (acpi_get_first_physical_node(adev))
-> >> +			continue;
-> > 
-> > In addition to this, I would check if the device object has _ADR, because
-> > there are legitimate cases when device objects with a _HID have no physical
-> > nodes.
-> > 
-> >> +		ret = acpi_device_get_power(adev, &state);
-> >> +		if (ret)
-> >> +			return ret;
-> >> +		if (state == ACPI_STATE_D3_COLD)
-> >> +			continue;
-> > 
-> > The above is not necessary.
-> > 
-> >> +		ret = acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
-> >> +		if (ret)
-> >> +			return ret;
-> >> +	}
-> >> +	return ret;
-> >> +}
-> >> +EXPORT_SYMBOL_GPL(acpi_device_turn_off_absent_children);
-> > 
-> > And I would put this function into glue.c.
-> > 
-> >> +
-> >>   /**
-> >>    * acpi_device_set_power - Set power state of an ACPI device.
-> >>    * @device: Device to set the power state of.
-> >> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> >> index 79177ac37880..1a45182394d1 100644
-> >> --- a/drivers/pci/probe.c
-> >> +++ b/drivers/pci/probe.c
-> >> @@ -2939,6 +2939,11 @@ static unsigned int pci_scan_child_bus_extend(struct pci_bus *bus,
-> >>   		}
-> >>   	}
-> >>   
-> >> +	/* check for and turn off dangling power resources */
-> >> +	for_each_pci_bridge(dev, bus) {
-> >> +		acpi_device_turn_off_absent_children(ACPI_COMPANION(&dev->dev));
-> > 
-> > IMO it would be better to call this from inside of the ACPI subsystem and
-> > after scanning the entire bus.
-> > 
-> >> +	}
-> >> +
-> >>   	/*
-> >>   	 * We've scanned the bus and so we know all about what's on
-> >>   	 * the other side of any bridges that may be on this bus plus
-> >> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> >> index 13d93371790e..0eba08b60e13 100644
-> >> --- a/include/acpi/acpi_bus.h
-> >> +++ b/include/acpi/acpi_bus.h
-> >> @@ -510,6 +510,7 @@ int acpi_bus_get_status(struct acpi_device *device);
-> >>   
-> >>   int acpi_bus_set_power(acpi_handle handle, int state);
-> >>   const char *acpi_power_state_string(int state);
-> >> +int acpi_device_turn_off_absent_children(struct acpi_device *parent);
-> >>   int acpi_device_set_power(struct acpi_device *device, int state);
-> >>   int acpi_bus_init_power(struct acpi_device *device);
-> >>   int acpi_device_fix_up_power(struct acpi_device *device);
-> >>
-> > 
-> > Overall, something like the appended patch might work. >
-> > Note that on my test-bed machine it makes no difference, though.
+> > No technical reason. The only reason is that SAE-J1939-82 requires responder
+> > to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
+
+IMHO, this is some kind of laziness to make the exception for the last TP.DT.
+
+I attended an ISOBUS certification (back in 2013) where the transmitting
+node effectively stripped the trailing bytes, and this 'deviation' was
+not even noticed.
+
+This change applies to the receiving side. Would a sender that
+leaves the trailing bytes want you to discard the session bacause of this?
+So the spirit of the SAE-J1939-82 is, in this case, different from
+the strict literal interpretation.
+
 > 
-> Yes this helps the resources on the identified problematic machine.
-> 
-> > 
-> > ---
-> >   drivers/acpi/glue.c     |   28 ++++++++++++++++++++++++++++
-> >   drivers/acpi/internal.h |    2 ++
-> >   drivers/acpi/pci_root.c |    1 +
-> >   3 files changed, 31 insertions(+)
-> > 
-> > Index: linux-pm/drivers/acpi/glue.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/glue.c
-> > +++ linux-pm/drivers/acpi/glue.c
-> > @@ -350,3 +350,31 @@ void acpi_device_notify_remove(struct de
-> >   
-> >   	acpi_unbind_one(dev);
-> >   }
-> > +
-> > +static int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used)
-> > +{
-> > +	struct acpi_device *adev = to_acpi_device(dev);
-> > +
-> > +	acpi_dev_turn_off_unused_descendants(adev);
-> > +
-> > +	if (adev->pnp.type.bus_address && !acpi_get_first_physical_node(adev))
-> > +		acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * acpi_dev_turn_off_unused_descendants - Put unused descendants into D3cold.
-> > + * @adev: ACPI device object at the top of a branch of device hierarchy.
-> > + *
-> > + * Walk the branch of the hierarchy of ACPI device objects starting at @adev
-> > + * and put all of the objects in it that have _ADR and have no corresponding
-> > + * physical nodes into D3cold.
-> > + *
-> > + * This allows power resources that are only referred to by unused ACPI device
-> > + * objects to be turned off.
-> > + */
-> > +void acpi_dev_turn_off_unused_descendants(struct acpi_device *adev)
-> > +{
-> > +	device_for_each_child(&adev->dev, NULL, acpi_dev_turn_off_if_unused);
-> > +}
-> > Index: linux-pm/drivers/acpi/internal.h
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/internal.h
-> > +++ linux-pm/drivers/acpi/internal.h
-> > @@ -88,6 +88,8 @@ bool acpi_scan_is_offline(struct acpi_de
-> >   acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
-> >   void acpi_scan_table_notify(void);
-> >   
-> > +void acpi_dev_turn_off_unused_descendants(struct acpi_device *adev);
-> > +
-> >   /* --------------------------------------------------------------------------
-> >                        Device Node Initialization / Removal
-> >      -------------------------------------------------------------------------- */
-> > Index: linux-pm/drivers/acpi/pci_root.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/acpi/pci_root.c
-> > +++ linux-pm/drivers/acpi/pci_root.c
-> > @@ -630,6 +630,7 @@ static int acpi_pci_root_add(struct acpi
-> >   
-> >   	pci_lock_rescan_remove();
-> >   	pci_bus_add_devices(root->bus);
-> > +	acpi_dev_turn_off_unused_descendants(root->device);
-> >   	pci_unlock_rescan_remove();
-> >   	return 1;
-> >   
-> > 
-> > 
-> > 
-> 
-> When you submit this if no other changes, please include:
-> 
-> Tested-by: Mario Limonciello <mario.limonciello@amd.com>
+> Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
+> TP.DT data packets are not correct size" ... "Verify DUT discards the
+> BAM transport if any TP.DT data packet has less than 8 bytes"?
 
-Thanks, but we may do better in a couple of ways.
-
-First off, there's no particular reason to restrict the walk to the device
-objects below the host bridge one.
-
-Second, if the physical node appears while we're removing power from the
-device, whoever adds it may be confused, so it's better to avoid that.
-
-Please check if the appended one still works for you.
-
----
- drivers/acpi/glue.c     |   16 ++++++++++++++++
- drivers/acpi/internal.h |    1 +
- drivers/acpi/scan.c     |    6 ++++++
- 3 files changed, 23 insertions(+)
-
-Index: linux-pm/drivers/acpi/scan.c
-===================================================================
---- linux-pm.orig/drivers/acpi/scan.c
-+++ linux-pm/drivers/acpi/scan.c
-@@ -2559,6 +2559,12 @@ int __init acpi_scan_init(void)
- 		}
- 	}
- 
-+	/*
-+	 * Make sure that power management resources are not blocked by ACPI
-+	 * device objects with no users.
-+	 */
-+	bus_for_each_dev(&acpi_bus_type, NULL, NULL, acpi_dev_turn_off_if_unused);
-+
- 	acpi_turn_off_unused_power_resources();
- 
- 	acpi_scan_initialized = true;
-Index: linux-pm/drivers/acpi/glue.c
-===================================================================
---- linux-pm.orig/drivers/acpi/glue.c
-+++ linux-pm/drivers/acpi/glue.c
-@@ -350,3 +350,19 @@ void acpi_device_notify_remove(struct de
- 
- 	acpi_unbind_one(dev);
- }
-+
-+int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used)
-+{
-+	struct acpi_device *adev = to_acpi_device(dev);
-+
-+	if (adev->pnp.type.bus_address) {
-+		mutex_lock(&adev->physical_node_lock);
-+
-+		if (list_empty(&adev->physical_node_list))
-+			acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
-+
-+		mutex_unlock(&adev->physical_node_lock);
-+	}
-+
-+	return 0;
-+}
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -117,6 +117,7 @@ bool acpi_device_is_battery(struct acpi_
- bool acpi_device_is_first_physical_node(struct acpi_device *adev,
- 					const struct device *dev);
- int acpi_bus_register_early_device(int type);
-+int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used);
- 
- /* --------------------------------------------------------------------------
-                      Device Matching and Notification
-
-
-
+Kind regards,
+Kurt
