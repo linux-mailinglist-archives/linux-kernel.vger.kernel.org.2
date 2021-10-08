@@ -2,369 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E398426897
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED3CB42689A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240370AbhJHLVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:21:50 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:53572 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240126AbhJHLVq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:21:46 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1984fFPx019558;
-        Fri, 8 Oct 2021 06:19:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=p2mC168Nmq+RGJAWci6fjWJobSCzU2hErXu4tRaAm4I=;
- b=mAw/FoL1dt1K+cx4bieSb+LUrPN1jy5UjFuM5WD9kJUuuwBBNXO+6JXxWwDOJukz3UwM
- IEJ6tyDOgFB+b5N+o8IL3eZFLpel4BTTRkiGO9/HJ65I+pWa2547HFsW9Ac4ndubd+sr
- XgrUrarJmHqu7etkS9owNksmNTzf/dLJwmRrqNuY8x3y0os0qW/4W+wrOFKFmci0l5D7
- Q+pVRUKp+/kLtssFIMYWfKy4bJBZX5GqpqU9TGJw3KXo2tAhE8RHiknIcFMRz328ySQd
- mHfYeM05uKpJtG+j5Ln/iR8wkOjIKHl0SaOXiBXB67jvfkFSiGrl21rf5yyImvDUhrFU QQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 3bj86n0s44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 08 Oct 2021 06:19:06 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Fri, 8 Oct
- 2021 12:19:04 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.12 via Frontend
- Transport; Fri, 8 Oct 2021 12:19:04 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.64.75])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE205B16;
-        Fri,  8 Oct 2021 11:19:03 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Len Brown <lenb@kernel.org>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-CC:     <alsa-devel@alsa-project.org>, <linux-acpi@vger.kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [RFC] sound: cs35l41: Add support for Legion 7 16ACHg6 laptop
-Date:   Fri, 8 Oct 2021 12:19:02 +0100
-Message-ID: <20211008111902.103473-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.33.0
+        id S240401AbhJHLV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:21:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240374AbhJHLVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:21:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 973A760F5B;
+        Fri,  8 Oct 2021 11:19:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633691998;
+        bh=EsG1ef6GR6X+pt65HqJvECGs8yv4SUBeNoFGBIyukg8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fdm9Y4i3UiEqQ0q8vB8fFguL9tfo7jIFd2R3JL9ef76f/bnmEz0AsVpz6I40Y13TD
+         V6zD+blofHlgA5wxO6dsLiv7ZR26zJaFMjvLnLxA7Yfk6nHCuRJkiD/HkXf5zHkpTU
+         aCa3+wiVVRJfYjo9x+4ycP5iqdN7Z0Xhiw8z2sFw=
+Date:   Fri, 8 Oct 2021 13:19:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Long Li <longli@microsoft.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Siddharth Gupta <sidgup@codeaurora.org>,
+        Hannes Reinecke <hare@suse.de>
+Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
+ access to Microsoft Azure Blob for Azure VM
+Message-ID: <YWApWbYeGqutoDMG@kroah.com>
+References: <YQwvL2N6JpzI+hc8@kroah.com>
+ <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <YQ9oTBSRyHCffC2k@kroah.com>
+ <BY5PR21MB15065658FA902CC0BC162956CEF79@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <BY5PR21MB1506091AFED0EB62F081313ECEA29@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <DM6PR21MB15135923A4CB0E61786ABC22CEAA9@DM6PR21MB1513.namprd21.prod.outlook.com>
+ <YVa6dtvt/BaajmmK@kroah.com>
+ <BY5PR21MB15060E0A4AC1F6335A08EAB4CEB19@BY5PR21MB1506.namprd21.prod.outlook.com>
+ <YV/dMdcmADXH/+k2@kroah.com>
+ <87fstb3h6h.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: ken982eHloxDiQpnc9y5wBw9E1Ta-NDV
-X-Proofpoint-ORIG-GUID: ken982eHloxDiQpnc9y5wBw9E1Ta-NDV
-X-Proofpoint-Spam-Reason: safe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87fstb3h6h.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 08, 2021 at 01:11:02PM +0200, Vitaly Kuznetsov wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> 
+> ...
+> >
+> > Not to mention the whole crazy idea of "let's implement our REST api
+> > that used to go over a network connection over an ioctl instead!"
+> > That's the main problem that you need to push back on here.
+> >
+> > What is forcing you to put all of this into the kernel in the first
+> > place?  What's wrong with the userspace network connection/protocol that
+> > you have today?
+> >
+> > Does this mean that we now have to implement all REST apis that people
+> > dream up as ioctl interfaces over a hyperv transport?  That would be
+> > insane.
+> 
+> As far as I understand, the purpose of the driver is to replace a "slow"
+> network connection to API endpoint with a "fast" transport over
+> Vmbus.
 
-I would like to get some guidance about this solution to
-support the 16ACHg6 laptop.
+Given that the network connection is already over vmbus, how is this
+"slow" today?  I have yet to see any benchmark numbers anywhere :(
 
-Hardware:
- - The 16ACHg6 laptop has two CS35L41 amplifiers, connected
-to Realtek ALC287 by an I2S bus and by and direct I2C to the CPU.
- - The ALC287 codec is connected to the CPU by an HDA bus.
- - The CS35L41 has a DSP which will require firmware to be loaded.
+> So what if instead of implementing this new driver we just use
+> Hyper-V Vsock and move API endpoint to the host?
 
-Architecture:
- - To load the firmware for CS35L41, this solution will require
-the wm_adsp library, which requires regmap, header definitions and
-register tables.
- - To minimize the duplication of the code, the HDA functions will
-be placed inside the ASoC CS35L41 driver.
- - Finally, HDA patch_realtek will access exposed functions from
-ASoC CS35L41 driver to initialize the amplifiers, start and stop
-streams and load firmware.
+What is running on the host in the hypervisor that is supposed to be
+handling these requests?  Isn't that really on some other guest?
 
-Notes:
- - This is a work in progress, so the code is not functional, its
-only intent is to demonstrate the overall solution
- - If accepted, this will be split into a couple of patches for
-a new patch chain
+confused,
 
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
----
- drivers/acpi/scan.c                          |  1 +
- drivers/platform/x86/i2c-multi-instantiate.c |  7 ++
- include/sound/cs35l41.h                      |  4 ++
- sound/pci/hda/Kconfig                        |  1 +
- sound/pci/hda/patch_realtek.c                | 21 +++++-
- sound/soc/codecs/cs35l41.c                   | 75 ++++++++++++++++----
- 6 files changed, 95 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index 5b54c80b9d32..c1c27a408420 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -1703,6 +1703,7 @@ static bool acpi_device_enumeration_by_parent(struct acpi_device *device)
- 		{"BSG2150", },
- 		{"INT33FE", },
- 		{"INT3515", },
-+		{"CLSA0100", },
- 		{}
- 	};
- 
-diff --git a/drivers/platform/x86/i2c-multi-instantiate.c b/drivers/platform/x86/i2c-multi-instantiate.c
-index a50153ecd560..b61f7e30d42a 100644
---- a/drivers/platform/x86/i2c-multi-instantiate.c
-+++ b/drivers/platform/x86/i2c-multi-instantiate.c
-@@ -139,6 +139,12 @@ static const struct i2c_inst_data bsg2150_data[]  = {
- 	{}
- };
- 
-+static const struct i2c_inst_data clsa0100_data[]  = {
-+	{ "cs35l41", IRQ_RESOURCE_GPIO, 0 },
-+	{ "cs35l41", IRQ_RESOURCE_GPIO, 0 },
-+	{}
-+};
-+
- /*
-  * Device with _HID INT3515 (TI PD controllers) has some unresolved interrupt
-  * issues. The most common problem seen is interrupt flood.
-@@ -170,6 +176,7 @@ static const struct i2c_inst_data bsg2150_data[]  = {
- static const struct acpi_device_id i2c_multi_inst_acpi_ids[] = {
- 	{ "BSG1160", (unsigned long)bsg1160_data },
- 	{ "BSG2150", (unsigned long)bsg2150_data },
-+	{ "CLSA0100", (unsigned long)clsa0100_data },
- 	{ }
- };
- MODULE_DEVICE_TABLE(acpi, i2c_multi_inst_acpi_ids);
-diff --git a/include/sound/cs35l41.h b/include/sound/cs35l41.h
-index 1f1e3c6c9be1..4d665b7dbfdf 100644
---- a/include/sound/cs35l41.h
-+++ b/include/sound/cs35l41.h
-@@ -23,6 +23,8 @@ struct cs35l41_irq_cfg {
- };
- 
- struct cs35l41_platform_data {
-+	bool no_bst;
-+	bool hda;
- 	int bst_ind;
- 	int bst_ipk;
- 	int bst_cap;
-@@ -31,4 +33,6 @@ struct cs35l41_platform_data {
- 	struct cs35l41_irq_cfg irq_config2;
- };
- 
-+void cs35l41_hda_init(void);
-+
- #endif /* __CS35L41_H */
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index ab9d2746e804..37202466f033 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -95,6 +95,7 @@ config SND_HDA_CODEC_REALTEK
- 	tristate "Build Realtek HD-audio codec support"
- 	select SND_HDA_GENERIC
- 	select SND_HDA_GENERIC_LEDS
-+	select SND_SOC_CS35L41_I2C
- 	help
- 	  Say Y or M here to include Realtek HD-audio codec support in
- 	  snd-hda-intel driver, such as ALC880.
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 4407f7da57c4..2a0ac9a1b613 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -21,6 +21,7 @@
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/hda_codec.h>
-+#include <sound/cs35l41.h>
- #include "hda_local.h"
- #include "hda_auto_parser.h"
- #include "hda_jack.h"
-@@ -6443,6 +6444,18 @@ static void alc287_fixup_legion_15imhg05_speakers(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc287_fixup_lenovo_y760(struct hda_codec *cdc, const struct hda_fixup *fix, int action)
-+{
-+	if (action == HDA_FIXUP_ACT_PROBE) {
-+		codec_info(cdc, "HDA_FIXUP_ACT_PROBE\n");
-+		cs35l41_hda_init();
-+	} else if (action == HDA_FIXUP_ACT_INIT) {
-+		codec_info(cdc, "HDA_FIXUP_ACT_INIT\n");
-+	} else if (action == HDA_FIXUP_ACT_FREE) {
-+		codec_info(cdc, "HDA_FIXUP_ACT_FREE\n");
-+	}
-+}
-+
- /* for alc295_fixup_hp_top_speakers */
- #include "hp_x360_helper.c"
- 
-@@ -6663,7 +6676,8 @@ enum {
- 	ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS,
- 	ALC287_FIXUP_LEGION_15IMHG05_AUTOMUTE,
- 	ALC287_FIXUP_YOGA7_14ITL_SPEAKERS,
--	ALC287_FIXUP_13S_GEN2_SPEAKERS
-+	ALC287_FIXUP_13S_GEN2_SPEAKERS,
-+	ALC287_FIXUP_LENOVO_Y760
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -8361,6 +8375,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE,
- 	},
-+	[ALC287_FIXUP_LENOVO_Y760] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc287_fixup_lenovo_y760,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -8755,6 +8773,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
- 	SND_PCI_QUIRK(0x17aa, 0x3827, "Ideapad S740", ALC285_FIXUP_IDEAPAD_S740_COEF),
- 	SND_PCI_QUIRK(0x17aa, 0x3843, "Yoga 9i", ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP),
-+	SND_PCI_QUIRK(0x17aa, 0x3847, "Legion Y760", ALC287_FIXUP_LENOVO_Y760),
- 	SND_PCI_QUIRK(0x17aa, 0x3813, "Legion 7i 15IMHG05", ALC287_FIXUP_LEGION_15IMHG05_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3852, "Lenovo Yoga 7 14ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
- 	SND_PCI_QUIRK(0x17aa, 0x3853, "Lenovo Yoga 7 15ITL5", ALC287_FIXUP_YOGA7_14ITL_SPEAKERS),
-diff --git a/sound/soc/codecs/cs35l41.c b/sound/soc/codecs/cs35l41.c
-index b16eb6610c0e..f643ed1b48c0 100644
---- a/sound/soc/codecs/cs35l41.c
-+++ b/sound/soc/codecs/cs35l41.c
-@@ -21,9 +21,17 @@
- #include <sound/soc.h>
- #include <sound/soc-dapm.h>
- #include <sound/tlv.h>
-+#include <linux/acpi.h>
- 
- #include "cs35l41.h"
- 
-+static struct list_head *cs35l41_hda_lst;
-+
-+struct cs35l41_hda_node {
-+	struct list_head node;
-+	struct cs35l41_private *cs35l41;
-+};
-+
- static const char * const cs35l41_supplies[CS35L41_NUM_SUPPLIES] = {
- 	"VA",
- 	"VP",
-@@ -1039,9 +1047,7 @@ static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
- {
- 	int ret;
- 
--	/* Set Platform Data */
--	/* Required */
--	if (cs35l41->pdata.bst_ipk &&
-+	if (!cs35l41->pdata.no_bst && cs35l41->pdata.bst_ipk &&
- 	    cs35l41->pdata.bst_ind && cs35l41->pdata.bst_cap) {
- 		ret = cs35l41_boost_config(cs35l41, cs35l41->pdata.bst_ind,
- 					   cs35l41->pdata.bst_cap,
-@@ -1051,8 +1057,7 @@ static int cs35l41_set_pdata(struct cs35l41_private *cs35l41)
- 			return ret;
- 		}
- 	} else {
--		dev_err(cs35l41->dev, "Incomplete Boost component DT config\n");
--		return -EINVAL;
-+		dev_info(cs35l41->dev, "Boost disabled\n");
- 	}
- 
- 	/* Optional */
-@@ -1148,9 +1153,31 @@ static int cs35l41_handle_pdata(struct device *dev,
- {
- 	struct cs35l41_irq_cfg *irq_gpio1_config = &pdata->irq_config1;
- 	struct cs35l41_irq_cfg *irq_gpio2_config = &pdata->irq_config2;
-+	struct acpi_device *adev;
-+	struct device *phys_dev;
- 	unsigned int val;
- 	int ret;
- 
-+	if (memcmp(dev_name(cs35l41->dev), "i2c-CLSA0100", 12) == 0) {
-+		pdata->no_bst = true;
-+		pdata->hda = true;
-+		adev = acpi_dev_get_first_match_dev("CLSA0100", "1", -1);
-+		if (!adev) {
-+			dev_err(dev, "Failed to find an ACPI device\n");
-+			return -ENODEV;
-+		}
-+
-+		phys_dev = get_device(acpi_get_first_physical_node(adev));
-+		acpi_dev_put(adev);
-+
-+		if (!phys_dev) {
-+			dev_err(dev, "Failed to find a physical device\n");
-+			return -ENODEV;
-+		}
-+		cs35l41->reset_gpio = gpiod_get_index(phys_dev, NULL, 0, GPIOD_ASIS);
-+		return 0;
-+	}
-+
- 	ret = device_property_read_u32(dev, "cirrus,boost-peak-milliamp", &val);
- 	if (ret >= 0)
- 		pdata->bst_ipk = val;
-@@ -1237,10 +1264,22 @@ static const struct reg_sequence cs35l41_revb2_errata_patch[] = {
- 	{ 0x00000040,			 0x00003333 },
- };
- 
-+void cs35l41_hda_init(void)
-+{
-+	struct list_head *p;
-+	int i = 0;
-+
-+	list_for_each(p, cs35l41_hda_lst) {
-+		pr_info("%s %d\n", __func__, i++);
-+	}
-+}
-+EXPORT_SYMBOL_GPL(cs35l41_hda_init);
-+
- int cs35l41_probe(struct cs35l41_private *cs35l41,
- 		  struct cs35l41_platform_data *pdata)
- {
- 	u32 regid, reg_revid, i, mtl_revid, int_status, chipid_match;
-+	struct cs35l41_hda_node *cs35l41_hda;
- 	int irq_pol = 0;
- 	int ret;
- 
-@@ -1269,8 +1308,8 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 	}
- 
- 	/* returning NULL can be an option if in stereo mode */
--	cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset",
--						      GPIOD_OUT_LOW);
-+	if (!cs35l41->reset_gpio)
-+		cs35l41->reset_gpio = devm_gpiod_get_optional(cs35l41->dev, "reset", GPIOD_OUT_LOW);
- 	if (IS_ERR(cs35l41->reset_gpio)) {
- 		ret = PTR_ERR(cs35l41->reset_gpio);
- 		cs35l41->reset_gpio = NULL;
-@@ -1413,12 +1452,22 @@ int cs35l41_probe(struct cs35l41_private *cs35l41,
- 		goto err;
- 	}
- 
--	ret = devm_snd_soc_register_component(cs35l41->dev,
--					      &soc_component_dev_cs35l41,
--					      cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
--	if (ret < 0) {
--		dev_err(cs35l41->dev, "Register codec failed: %d\n", ret);
--		goto err;
-+	if (!cs35l41->pdata.hda) {
-+		ret = devm_snd_soc_register_component(cs35l41->dev,
-+						      &soc_component_dev_cs35l41,
-+						      cs35l41_dai, ARRAY_SIZE(cs35l41_dai));
-+		if (ret < 0) {
-+			dev_err(cs35l41->dev, "Register codec failed: %d\n", ret);
-+			goto err;
-+		}
-+	} else {
-+		if (!cs35l41_hda_lst) {
-+			cs35l41_hda_lst = devm_kzalloc(cs35l41->dev, sizeof(*cs35l41_hda_lst),
-+						       GFP_KERNEL);
-+			INIT_LIST_HEAD(cs35l41_hda_lst);
-+		}
-+		cs35l41_hda = devm_kzalloc(cs35l41->dev, sizeof(*cs35l41_hda), GFP_KERNEL);
-+		list_add(&cs35l41_hda->node, cs35l41_hda_lst);
- 	}
- 
- 	dev_info(cs35l41->dev, "Cirrus Logic CS35L41 (%x), Revision: %02X\n",
--- 
-2.33.0
-
+greg k-h
