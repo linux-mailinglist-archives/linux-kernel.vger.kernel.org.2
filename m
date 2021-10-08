@@ -2,114 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CA9426BB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13186426BC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242151AbhJHNfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:35:19 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28901 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230324AbhJHNfS (ORCPT
+        id S235301AbhJHNiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240366AbhJHNiO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:35:18 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQptb6nDpzbmq7;
-        Fri,  8 Oct 2021 21:28:55 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 21:33:20 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 21:33:19 +0800
-Message-ID: <25c6cc97-f436-8966-9052-a1841f68e81a@huawei.com>
-Date:   Fri, 8 Oct 2021 21:33:18 +0800
+        Fri, 8 Oct 2021 09:38:14 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E2BC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:36:19 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id k26so8287382pfi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lAa9I0nj7yA9YxZJQiDgv3qskMPgBaJlC94AloAQu6s=;
+        b=SH/zWictbgR+u23oYMfUZA3ANPrWTpNhSxXfQKUxGULjXHqWglu9B0FDgIId8kmoX2
+         O0saEhkGXtupWgHlW4k5hMXNWZJxQSQk8wSeuvFTzEPd01O6hMh1dTrqDj5q6A4oJH3o
+         GGlREyXWZMO8ZS5iXEfOn673L7wsBBHmlU8Mpgsqw7hdLnAATqf2G6uOZh/UhurllwCd
+         22d/RJ+vk8ibxJ1DC4uWl2QvtMb5LD8x1ua9EEmjEJ69XQa+FQ0sNsDKn2RgwE+GFSZL
+         I1EZlKBeYyN3rc8b39U2tkQ6jAh2UZhWpeD72QDbqoMqspc24tIIIONun+m6pkPQXSEH
+         wG5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lAa9I0nj7yA9YxZJQiDgv3qskMPgBaJlC94AloAQu6s=;
+        b=ExlFX65nex+hLLaXxnJ54j9yHXJ/3cWQUoPRekatDGy56TVcvg6MJ8lLd/Mp8N8i0r
+         NZ7uuuhPo8axro9Hse3jV1hY6UxOiEd74TUkHYU7dCktmikSVmZj4+lxnCTrF75kx5gz
+         t6Tb+WVabAZamImkg4TwOtsg4ysL82YT2r+D4ZQt3RGKjV1vSeVOzrdZhUYY01mCBUgN
+         utR5AI1xhr5LkLksaK71BHvt0nsthmfU8s87XrwHT0nqgv+KB6bjN3U4zOzlEur2ELWn
+         9JtO/pSo9tOHKDk8AJNSdfxK1SN7QPjOPdaR2D6jNQ8QhsHyy+rcTgC4hipgTAOgzOk7
+         qUQQ==
+X-Gm-Message-State: AOAM530uXmZeERoVYCB8tkweVSPPA7oHK0UTvySupNwzCmPFpUTIGe26
+        JWYZ3WA3xbgZ655DcdS61Ew=
+X-Google-Smtp-Source: ABdhPJwddVi2Idj4D1PKq2S3bOtrf8TL0aEdfBhVPeA8LLSxyTn/oxku4KZqxAE6LBgNmHbbKTZa1g==
+X-Received: by 2002:a05:6a00:181c:b0:44c:bf17:e8ad with SMTP id y28-20020a056a00181c00b0044cbf17e8admr9332555pfa.67.1633700178624;
+        Fri, 08 Oct 2021 06:36:18 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id x7sm2944985pfj.164.2021.10.08.06.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 06:36:17 -0700 (PDT)
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: [PATCH] mm, slub: Use prefetchw instead of prefetch
+Date:   Fri,  8 Oct 2021 13:36:02 +0000
+Message-Id: <20211008133602.4963-1-42.hyeyoo@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH v4 0/3] arm64: support page mapping percpu first chunk
- allocator
-Content-Language: en-US
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <will@kernel.org>, <catalin.marinas@arm.com>,
-        <ryabinin.a.a@gmail.com>, <andreyknvl@gmail.com>,
-        <dvyukov@google.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <elver@google.com>, <akpm@linux-foundation.org>,
-        <gregkh@linuxfoundation.org>
-CC:     <kasan-dev@googlegroups.com>
-References: <20210910053354.26721-1-wangkefeng.wang@huawei.com>
- <5cd6631f-0bac-bd74-3369-1fa4a744687f@huawei.com>
-In-Reply-To: <5cd6631f-0bac-bd74-3369-1fa4a744687f@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It's certain that an object will be not only read, but also
+written after allocation.
 
+Use prefetchw instead of prefetchw. On supported architecture
+like x86, it helps to invalidate cache line when the object exists
+in other processors' cache.
 
-On 2021/9/28 15:48, Kefeng Wang wrote:
-> Hi Catalin and Andrew, kindly ping again, any comments, thanks.
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ mm/slub.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Looks no more comments, Catalin and Andrew, ping again, any one of you
-could merge this patchset, many thanks.
+diff --git a/mm/slub.c b/mm/slub.c
+index 3d2025f7163b..2aca7523165e 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -352,9 +352,9 @@ static inline void *get_freepointer(struct kmem_cache *s, void *object)
+ 	return freelist_dereference(s, object + s->offset);
+ }
+ 
+-static void prefetch_freepointer(const struct kmem_cache *s, void *object)
++static void prefetchw_freepointer(const struct kmem_cache *s, void *object)
+ {
+-	prefetch(object + s->offset);
++	prefetchw(object + s->offset);
+ }
+ 
+ static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
+@@ -3195,10 +3195,9 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+ 			note_cmpxchg_failure("slab_alloc", s, tid);
+ 			goto redo;
+ 		}
+-		prefetch_freepointer(s, next_object);
++		prefetchw_freepointer(s, next_object);
+ 		stat(s, ALLOC_FASTPATH);
+ 	}
+-
+ 	maybe_wipe_obj_freeptr(s, object);
+ 	init = slab_want_init_on_alloc(gfpflags, s);
+ 
+-- 
+2.27.0
 
-> 
-> On 2021/9/10 13:33, Kefeng Wang wrote:
->> Percpu embedded first chunk allocator is the firstly option, but it
->> could fails on ARM64, eg,
->>    "percpu: max_distance=0x5fcfdc640000 too large for vmalloc space 
->> 0x781fefff0000"
->>    "percpu: max_distance=0x600000540000 too large for vmalloc space 
->> 0x7dffb7ff0000"
->>    "percpu: max_distance=0x5fff9adb0000 too large for vmalloc space 
->> 0x5dffb7ff0000"
->>
->> then we could meet "WARNING: CPU: 15 PID: 461 at vmalloc.c:3087 
->> pcpu_get_vm_areas+0x488/0x838",
->> even the system could not boot successfully.
->>
->> Let's implement page mapping percpu first chunk allocator as a fallback
->> to the embedding allocator to increase the robustness of the system.
->>
->> Also fix a crash when both NEED_PER_CPU_PAGE_FIRST_CHUNK and 
->> KASAN_VMALLOC enabled.
->>
->> Tested on ARM64 qemu with cmdline "percpu_alloc=page" based on v5.14.
->>
->> V4:
->> - add ACK/RB
->> - address comments about patch1 from Catalin
->> - add Greg and Andrew into list suggested by Catalin
->>
->> v3:
->> - search for a range that fits instead of always picking the end from
->>    vmalloc area suggested by Catalin.
->> - use NUMA_NO_NODE to avoid "virt_to_phys used for non-linear address:"
->>    issue in arm64 kasan_populate_early_vm_area_shadow().
->> - add Acked-by: Marco Elver <elver@google.com> to patch v3
->>
->> V2:
->> - fix build error when CONFIG_KASAN disabled, found by lkp@intel.com
->> - drop wrong __weak comment from kasan_populate_early_vm_area_shadow(),
->>    found by Marco Elver <elver@google.com>
->>
->> Kefeng Wang (3):
->>    vmalloc: Choose a better start address in vm_area_register_early()
->>    arm64: Support page mapping percpu first chunk allocator
->>    kasan: arm64: Fix pcpu_page_first_chunk crash with KASAN_VMALLOC
->>
->>   arch/arm64/Kconfig         |  4 ++
->>   arch/arm64/mm/kasan_init.c | 16 ++++++++
->>   drivers/base/arch_numa.c   | 82 +++++++++++++++++++++++++++++++++-----
->>   include/linux/kasan.h      |  6 +++
->>   mm/kasan/init.c            |  5 +++
->>   mm/vmalloc.c               | 19 ++++++---
->>   6 files changed, 116 insertions(+), 16 deletions(-)
->>
