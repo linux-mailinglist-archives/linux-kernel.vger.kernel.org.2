@@ -2,106 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D13B42651B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F01F42651D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhJHHTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:19:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32030 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229490AbhJHHTW (ORCPT
+        id S232093AbhJHHT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:19:26 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28899 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229693AbhJHHTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:19:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633677446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VBOxsLxxf+FVkHYJGJvqWe8yOt5UqmLKigzcG0fQrbU=;
-        b=a7Xdkw5ppRLGEz75uLxn+0pGuu2Y0eEhMylrCRvzFkb+Xa4NVlc+TF6cC9D78MFpq75ir8
-        amz05/9/G/WONe7H0jlk2ywNek9e70O8MnUCacMbJk/l4aQi3ZZ9jK7N+oi2Z6fGOjMujE
-        Ksj754mmRaPl8rR7vPOfT6wk77tfmKA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-516-cKBVxsOoMyS4LHbkS3fK7w-1; Fri, 08 Oct 2021 03:17:23 -0400
-X-MC-Unique: cKBVxsOoMyS4LHbkS3fK7w-1
-Received: by mail-wr1-f72.google.com with SMTP id 75-20020adf82d1000000b00160cbb0f800so5797218wrc.22
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 00:17:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VBOxsLxxf+FVkHYJGJvqWe8yOt5UqmLKigzcG0fQrbU=;
-        b=xNN+O1wf1vRm6acFbOY9eQZdOzIWWIQakTR9RMFZPlC0aKYednMBOlPmXEVWO9go0L
-         W2hpwTzisgnzr1SlxhoteZWc+/ZJgneRXC4HtMDCu67U08DWmiSMOFcdyjNTFsj12qYV
-         pjH9xG8+xvQAsDNEJVBORM8j4bf+tpBJx7ds5VHw0HfJQYzTn7/NJRxosomL0ayrhz0Y
-         wZol4eE5JLjcAMQp/fqS7WA2jDfyDDaWi9uj9z3FEv9BKx3kZZr/aWz8phJnnE26jtmm
-         ijtmpzZ39KhZ4+1TZhb5KfPJ1tnR2a/iXtPH5tSGKGTf4P/QA84VfC4Ju0aowzfRVBmz
-         AHhA==
-X-Gm-Message-State: AOAM530ogJP835u2hgiS04tPC6f0bZXWchDyFbK5WHnvEDq4n7W8Nl8D
-        L90u7JqoSpIE3UqFMl1S+MYCJ9Jj8Uzl9dUFHKwOXMHVjyt8rbTmTM/YxjkIOY/DEvW55Fah10P
-        0ffJyCgSDXoo4GlvW57kFsN6c15BoL2f36xHh0onktmgP3S5OgEBpqNITT9ljIuYi1v/nw+xPco
-        I=
-X-Received: by 2002:adf:fb50:: with SMTP id c16mr2025838wrs.120.1633677442367;
-        Fri, 08 Oct 2021 00:17:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJtAbe3TBB4Yd2wrlfMF2cS7QqC6SU2LfwWwP1pVuG2EFJZrMXS/ZlRQi0XgjK21R/xyX5xg==
-X-Received: by 2002:adf:fb50:: with SMTP id c16mr2025801wrs.120.1633677442066;
-        Fri, 08 Oct 2021 00:17:22 -0700 (PDT)
-Received: from minerva.redhat.com ([92.176.231.106])
-        by smtp.gmail.com with ESMTPSA id n14sm1573459wrm.78.2021.10.08.00.17.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 00:17:21 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Johannes Stezenbach <js@sig21.net>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH] Revert "drm/fb-helper: improve DRM fbdev emulation device names"
-Date:   Fri,  8 Oct 2021 09:17:08 +0200
-Message-Id: <20211008071708.1954041-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 8 Oct 2021 03:19:23 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQfXt4Kwvzbn8X;
+        Fri,  8 Oct 2021 15:13:02 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 15:17:26 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 15:17:25 +0800
+Subject: Re: [patch v8 0/7] handle unexpected message from server
+From:   "yukuai (C)" <yukuai3@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <ming.lei@redhat.com>,
+        <hch@infradead.org>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210916093350.1410403-1-yukuai3@huawei.com>
+ <f56cc608-ac55-0eee-f3d0-19ba1a8c22ef@huawei.com>
+ <37b222c1-d6b0-3e46-248a-2557db40ae92@huawei.com>
+Message-ID: <5effbc3a-e2f5-063f-6a20-985016d390c6@huawei.com>
+Date:   Fri, 8 Oct 2021 15:17:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <37b222c1-d6b0-3e46-248a-2557db40ae92@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b3484d2b03e4c940a9598aa841a52d69729c582a.
+On 2021/09/29 20:54, yukuai (C) wrote:
+> On 2021/09/23 21:33, yukuai (C) wrote:
+>> On 2021/09/16 17:33, Yu Kuai wrote:
+>>
+>> Hi, jens
+>>
+>> Any interest to apply this series?
+> 
+> friendly ping ...
 
-That change attempted to improve the DRM drivers fbdev emulation device
-names to avoid having confusing names like "simpledrmdrmfb" in /proc/fb.
+Hi, Jens
 
-But unfortunately there are user-space programs, such as pm-utils that
-query that information and so broke after the mentioned commit. Since
-the names in /proc/fb are used programs that consider it an ABI, let's
-restore the old names even when this lead to silly naming like the one
-mentioned above as an example.
-
-Reported-by: Johannes Stezenbach <js@sig21.net>
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
-
- drivers/gpu/drm/drm_fb_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
-index 3ab07832104..8993b02e783 100644
---- a/drivers/gpu/drm/drm_fb_helper.c
-+++ b/drivers/gpu/drm/drm_fb_helper.c
-@@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info,
- 			       sizes->fb_width, sizes->fb_height);
- 
- 	info->par = fb_helper;
--	snprintf(info->fix.id, sizeof(info->fix.id), "%s",
-+	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
- 		 fb_helper->dev->driver->name);
- 
- }
--- 
-2.31.1
-
+friendly ping again ...
+>>
+>> Thanks,
+>> Kuai
+>>> This patch set tries to fix that client might oops if nbd server send
+>>> unexpected message to client, for example, our syzkaller report a uaf
+>>> in nbd_read_stat():
+>>>
+>>> Call trace:
+>>>   dump_backtrace+0x0/0x310 arch/arm64/kernel/time.c:78
+>>>   show_stack+0x28/0x38 arch/arm64/kernel/traps.c:158
+>>>   __dump_stack lib/dump_stack.c:77 [inline]
+>>>   dump_stack+0x144/0x1b4 lib/dump_stack.c:118
+>>>   print_address_description+0x68/0x2d0 mm/kasan/report.c:253
+>>>   kasan_report_error mm/kasan/report.c:351 [inline]
+>>>   kasan_report+0x134/0x2f0 mm/kasan/report.c:409
+>>>   check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+>>>   __asan_load4+0x88/0xb0 mm/kasan/kasan.c:699
+>>>   __read_once_size include/linux/compiler.h:193 [inline]
+>>>   blk_mq_rq_state block/blk-mq.h:106 [inline]
+>>>   blk_mq_request_started+0x24/0x40 block/blk-mq.c:644
+>>>   nbd_read_stat drivers/block/nbd.c:670 [inline]
+>>>   recv_work+0x1bc/0x890 drivers/block/nbd.c:749
+>>>   process_one_work+0x3ec/0x9e0 kernel/workqueue.c:2147
+>>>   worker_thread+0x80/0x9d0 kernel/workqueue.c:2302
+>>>   kthread+0x1d8/0x1e0 kernel/kthread.c:255
+>>>   ret_from_fork+0x10/0x18 arch/arm64/kernel/entry.S:1174
+>>>
+>>> 1) At first, a normal io is submitted and completed with scheduler:
+>>>
+>>> internel_tag = blk_mq_get_tag -> get tag from sched_tags
+>>>   blk_mq_rq_ctx_init
+>>>    sched_tags->rq[internel_tag] = sched_tag->static_rq[internel_tag]
+>>> ...
+>>> blk_mq_get_driver_tag
+>>>   __blk_mq_get_driver_tag -> get tag from tags
+>>>   tags->rq[tag] = sched_tag->static_rq[internel_tag]
+>>>
+>>> So, both tags->rq[tag] and sched_tags->rq[internel_tag] are pointing
+>>> to the request: sched_tags->static_rq[internal_tag]. Even if the
+>>> io is finished.
+>>>
+>>> 2) nbd server send a reply with random tag directly:
+>>>
+>>> recv_work
+>>>   nbd_read_stat
+>>>    blk_mq_tag_to_rq(tags, tag)
+>>>     rq = tags->rq[tag]
+>>>
+>>> 3) if the sched_tags->static_rq is freed:
+>>>
+>>> blk_mq_sched_free_requests
+>>>   blk_mq_free_rqs(q->tag_set, hctx->sched_tags, i)
+>>>    -> step 2) access rq before clearing rq mapping
+>>>    blk_mq_clear_rq_mapping(set, tags, hctx_idx);
+>>>    __free_pages() -> rq is freed here
+>>>
+>>> 4) Then, nbd continue to use the freed request in nbd_read_stat()
+>>>
+>>> Changes in v8:
+>>>   - add patch 5 to this series.
+>>>   - modify some words.
+>>> Changes in v7:
+>>>   - instead of exposing blk_queue_exit(), using percpu_ref_put()
+>>>   directly.
+>>>   - drop the ref right after nbd_handle_reply().
+>>> Changes in v6:
+>>>   - don't set cmd->status to error if request is completed before
+>>>   nbd_clear_req().
+>>>   - get 'q_usage_counter' to prevent accessing freed request through
+>>>   blk_mq_tag_to_rq(), instead of using blk_mq_find_and_get_req().
+>>> Changes in v5:
+>>>   - move patch 1 & 2 in v4 (patch 4 & 5 in v5) behind
+>>>   - add some comment in patch 5
+>>> Changes in v4:
+>>>   - change the name of the patchset, since uaf is not the only problem
+>>>   if server send unexpected reply message.
+>>>   - instead of adding new interface, use blk_mq_find_and_get_req().
+>>>   - add patch 5 to this series
+>>> Changes in v3:
+>>>   - v2 can't fix the problem thoroughly, add patch 3-4 to this series.
+>>>   - modify descriptions.
+>>>   - patch 5 is just a cleanup
+>>> Changes in v2:
+>>>   - as Bart suggested, add a new helper function for drivers to get
+>>>   request by tag.
+>>>
+>>> Yu Kuai (7):
+>>>    nbd: don't handle response without a corresponding request message
+>>>    nbd: make sure request completion won't concurrent
+>>>    nbd: check sock index in nbd_read_stat()
+>>>    nbd: don't start request if nbd_queue_rq() failed
+>>>    nbd: clean up return value checking of sock_xmit()
+>>>    nbd: partition nbd_read_stat() into nbd_read_reply() and
+>>>      nbd_handle_reply()
+>>>    nbd: fix uaf in nbd_handle_reply()
+>>>
+>>>   drivers/block/nbd.c | 135 +++++++++++++++++++++++++++++++-------------
+>>>   1 file changed, 96 insertions(+), 39 deletions(-)
+>>>
