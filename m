@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A18E4268CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:29:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 165F24268C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240569AbhJHLb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:31:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58246 "EHLO mail.kernel.org"
+        id S240520AbhJHLbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240374AbhJHLar (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:30:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1CAD61029;
-        Fri,  8 Oct 2021 11:28:51 +0000 (UTC)
+        id S240180AbhJHLal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:30:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FF076103C;
+        Fri,  8 Oct 2021 11:28:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692532;
-        bh=DiC/iphoatt/a+XEjILF60jpiyxJAzAikHTj84ook+8=;
+        s=korg; t=1633692525;
+        bh=WKW1KA04Qea8MHu2U1L/YYp0sBKmvQ7+kwJfHbNnSPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JL7mbFTfq8fSGPu+qQaNGu6CEoY0f3itYP7ycp98jmDM/eoxpiVoRx7/If7Z5BbN7
-         bCDhmvKoeWm5CuIJynQYAOEMp+PiWPPrsuHdIcf3LNMHWli5+z/LIE5vUNlp99GUMR
-         B3PWGbSh2o6OF/eB3xUG+mOGlGyknuVbV40cNqPE=
+        b=pzK440GhMK0p4EHKfbpe9wkwQq9jeX7rsgMTcYgMpVEEYwbYnIcbgwvWv3B7PPCPP
+         B0Zbc8dv2Mwgr0OpNoIvH3k977BTPMi/UT+s43VgTDdRjbpM6GMbTNh/uz33UJ6K4j
+         iGBQkG6aOB8N6QRiyh7kG/je7gN7guwlc2UQtYno=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 4/7] ext2: fix sleeping in atomic bugs on error
-Date:   Fri,  8 Oct 2021 13:27:36 +0200
-Message-Id: <20211008112713.656328777@linuxfoundation.org>
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 5/7] scsi: sd: Free scsi_disk device via put_device()
+Date:   Fri,  8 Oct 2021 13:27:37 +0200
+Message-Id: <20211008112713.688148720@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008112713.515980393@linuxfoundation.org>
 References: <20211008112713.515980393@linuxfoundation.org>
@@ -39,60 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 372d1f3e1bfede719864d0d1fbf3146b1e638c88 ]
+[ Upstream commit 265dfe8ebbabae7959060bd1c3f75c2473b697ed ]
 
-The ext2_error() function syncs the filesystem so it sleeps.  The caller
-is holding a spinlock so it's not allowed to sleep.
+After a device is initialized via device_initialize() it should be freed
+via put_device(). sd_probe() currently gets this wrong, fix it up.
 
-   ext2_statfs() <- disables preempt
-   -> ext2_count_free_blocks()
-      -> ext2_get_group_desc()
-
-Fix this by using WARN() to print an error message and a stack trace
-instead of using ext2_error().
-
-Link: https://lore.kernel.org/r/20210921203233.GA16529@kili
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20210906090112.531442-1-ming.lei@redhat.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext2/balloc.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/scsi/sd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 9f9992b37924..2e4747e0aaf0 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -46,10 +46,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
- 	struct ext2_sb_info *sbi = EXT2_SB(sb);
- 
- 	if (block_group >= sbi->s_groups_count) {
--		ext2_error (sb, "ext2_get_group_desc",
--			    "block_group >= groups_count - "
--			    "block_group = %d, groups_count = %lu",
--			    block_group, sbi->s_groups_count);
-+		WARN(1, "block_group >= groups_count - "
-+		     "block_group = %d, groups_count = %lu",
-+		     block_group, sbi->s_groups_count);
- 
- 		return NULL;
- 	}
-@@ -57,10 +56,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
- 	group_desc = block_group >> EXT2_DESC_PER_BLOCK_BITS(sb);
- 	offset = block_group & (EXT2_DESC_PER_BLOCK(sb) - 1);
- 	if (!sbi->s_group_desc[group_desc]) {
--		ext2_error (sb, "ext2_get_group_desc",
--			    "Group descriptor not loaded - "
--			    "block_group = %d, group_desc = %lu, desc = %lu",
--			     block_group, group_desc, offset);
-+		WARN(1, "Group descriptor not loaded - "
-+		     "block_group = %d, group_desc = %lu, desc = %lu",
-+		      block_group, group_desc, offset);
- 		return NULL;
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 9176fb1b1615..935add4d6f83 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3146,15 +3146,16 @@ static int sd_probe(struct device *dev)
  	}
  
+ 	device_initialize(&sdkp->dev);
+-	sdkp->dev.parent = dev;
++	sdkp->dev.parent = get_device(dev);
+ 	sdkp->dev.class = &sd_disk_class;
+ 	dev_set_name(&sdkp->dev, "%s", dev_name(dev));
+ 
+ 	error = device_add(&sdkp->dev);
+-	if (error)
+-		goto out_free_index;
++	if (error) {
++		put_device(&sdkp->dev);
++		goto out;
++	}
+ 
+-	get_device(dev);
+ 	dev_set_drvdata(dev, sdkp);
+ 
+ 	get_device(&sdkp->dev);	/* prevent release before async_schedule */
 -- 
 2.33.0
 
