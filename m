@@ -2,171 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAEEE427100
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFB4427105
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhJHSzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42578 "EHLO mail.kernel.org"
+        id S231377AbhJHS4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43092 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239603AbhJHSzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:55:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A62360F93;
-        Fri,  8 Oct 2021 18:53:35 +0000 (UTC)
+        id S231245AbhJHS4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:56:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF77660FE8;
+        Fri,  8 Oct 2021 18:54:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633719215;
-        bh=gCDIyOLC55BdB0VojmsOaz6jn9SjfK7KSJKg2L3pwYA=;
+        s=k20201202; t=1633719292;
+        bh=OCjFcYtXV9VmvbrrMh6xIgEsO25gV+OonbNdf6SMcYg=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EaYWxKQY872FgAXTtAjaQYw567AO1H0lQIY/SrQ5HKkjCc2ed/UEEBt6ow9vXLDMc
-         W0xuuYdzzktw9e4Xs5nSQ/KdZjVoFHmfSqETXlRASNVuplLDQ6QktkCukieYicuJql
-         bTzyZebirMDkq7aoWkb6RqEUOQvIuot1AV+vao2zQ3JAye1uJWTLFlC1ZV2eWz5Ygo
-         oAirGlbyDdImGrldHM9qU46XU2kDWc2P3USJzHzG8ozPl/SbfzpbKTHYSsasnN7vAV
-         vO2jyoIvbJxNN4u6zRuJilLUprAJ6Ro9aHLRi4/c4fAQfmcwvUEZVLw/Poh9T01Cmj
-         EZ9LfWXY7ZBhA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6BBF5410A1; Fri,  8 Oct 2021 15:53:33 -0300 (-03)
-Date:   Fri, 8 Oct 2021 15:53:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] libperf tests: Fix test_stat_cpu
-Message-ID: <YWCTrY/5zQLJm6kd@kernel.org>
-References: <20211006094817.477494-1-nakamura.shun@fujitsu.com>
- <YV8o9nukzBTkWmlw@krava>
+        b=HYPkQcHNN89Ad8QiqnemDCln8WiGS+jcaEQSAKfLoZb9Ai8GAIpRGGv6usPZGyvVN
+         OzG8OL3V6XvzeO/+j/eiFB+Jyde4aWawYO8+7AXEskvqqM//E1Rfz/FhwRONqrogq9
+         jQshDvQ2072HEdXpc9j5dnlLi5jLU3M/1fDCupMElbYIMi/2XFrbcx6ovnG6RJbnby
+         Ks4NtFDIraJ8PbqhcWbuzfxqJtbYxLpw0Wf6oq4a1fWnP09KQN3SgzpkaFCQEJ4DLH
+         NGb+IhbcFoW00IgKg1VMOqUuchALTiIzNuctGalo1ebQ5ThFOqQGRrNwfWkLXRVRRk
+         sXEZ0nO2sm2tg==
+Date:   Fri, 8 Oct 2021 19:54:49 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Sam Protsenko <semen.protsenko@linaro.org>
+Subject: Re: [PATCH v4 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M
+ and S5M to dtschema
+Message-ID: <YWCT+YL/9qHbF9f0@sirena.org.uk>
+References: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="nQeE6YCzVS6ygCoV"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YV8o9nukzBTkWmlw@krava>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
+X-Cookie: When your memory goes, forget it!
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Oct 07, 2021 at 07:05:58PM +0200, Jiri Olsa escreveu:
-> On Wed, Oct 06, 2021 at 06:48:17PM +0900, Shunsuke Nakamura wrote:
-> > `cpu` of perf_evsel__read() must be specified the cpu index.
-> > perf_cpu_map__for_each_cpu is for iterating the cpu number (not index)
-> > and is not appropriate.
-> > So, if there is an offline CPU, the cpu number specified in the argument
-> > may point out of range because the cpu number and the cpu index are
-> > different.
-> 
-> nice catch
 
-Indeed, Nakamura-san, please address Jiri's comment and resubmit,
+--nQeE6YCzVS6ygCoV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
+On Fri, Oct 08, 2021 at 01:37:12PM +0200, Krzysztof Kozlowski wrote:
 
-- Arnaldo
- 
-> > 
-> > Fix test_stat_cpu.
-> > 
-> > Committer testing:
-> > 
-> >   # make tests -C tools/lib/perf/
-> >   make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
-> >   running static:
-> >   - running tests/test-cpumap.c...OK
-> >   - running tests/test-threadmap.c...OK
-> >   - running tests/test-evlist.c...OK
-> >   - running tests/test-evsel.c...OK
-> >   running dynamic:
-> >   - running tests/test-cpumap.c...OK
-> >   - running tests/test-threadmap.c...OK
-> >   - running tests/test-evlist.c...OK
-> >   - running tests/test-evsel.c...OK
-> >   make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
-> > 
-> > 
-> > Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
-> > ---
-> > Previous version at:
-> > https://lore.kernel.org/lkml/20211006080456.474273-1-nakamura.shun@fujitsu.com/
-> > 
-> > Changes in v2:
-> >  - Remove "2/2" from Patch Subject
-> > 
-> >  tools/lib/perf/tests/test-evlist.c | 6 +++---
-> >  tools/lib/perf/tests/test-evsel.c  | 6 +++---
-> >  2 files changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-> > index c67c83399170..47badd7eabf2 100644
-> > --- a/tools/lib/perf/tests/test-evlist.c
-> > +++ b/tools/lib/perf/tests/test-evlist.c
-> > @@ -40,7 +40,7 @@ static int test_stat_cpu(void)
-> >  		.type	= PERF_TYPE_SOFTWARE,
-> >  		.config	= PERF_COUNT_SW_TASK_CLOCK,
-> >  	};
-> > -	int err, cpu, tmp;
-> > +	int err, idx;
-> >  
-> >  	cpus = perf_cpu_map__new(NULL);
-> >  	__T("failed to create cpus", cpus);
-> > @@ -70,10 +70,10 @@ static int test_stat_cpu(void)
-> >  	perf_evlist__for_each_evsel(evlist, evsel) {
-> >  		cpus = perf_evsel__cpus(evsel);
-> >  
-> > -		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
-> > +		for (idx = 0, idx < perf_cpu_map__nr(cpus); idx++) {
-> 
-> s/,/;/                      ^
-> 
-> tests/test-evlist.c: In function ‘test_stat_cpu’:
-> tests/test-evlist.c:73:52: error: expected ‘;’ before ‘)’ token
->    73 |   for (idx = 0, idx < perf_cpu_map__nr(cpus); idx++) {
->       |                                                    ^
->       |                                                    ;
-> 
-> 
-> perf_cpu_map__for_each_cpu also returns the cpu index (tmp),
-> maybe we could use that instead?
-> 
-> thanks,
-> jirka
-> 
-> >  			struct perf_counts_values counts = { .val = 0 };
-> >  
-> > -			perf_evsel__read(evsel, cpu, 0, &counts);
-> > +			perf_evsel__read(evsel, idx, 0, &counts);
-> >  			__T("failed to read value for evsel", counts.val != 0);
-> >  		}
-> >  	}
-> > diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
-> > index 9abd4c0bf6db..33ae9334861a 100644
-> > --- a/tools/lib/perf/tests/test-evsel.c
-> > +++ b/tools/lib/perf/tests/test-evsel.c
-> > @@ -22,7 +22,7 @@ static int test_stat_cpu(void)
-> >  		.type	= PERF_TYPE_SOFTWARE,
-> >  		.config	= PERF_COUNT_SW_CPU_CLOCK,
-> >  	};
-> > -	int err, cpu, tmp;
-> > +	int err, idx;
-> >  
-> >  	cpus = perf_cpu_map__new(NULL);
-> >  	__T("failed to create cpus", cpus);
-> > @@ -33,10 +33,10 @@ static int test_stat_cpu(void)
-> >  	err = perf_evsel__open(evsel, cpus, NULL);
-> >  	__T("failed to open evsel", err == 0);
-> >  
-> > -	perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
-> > +	for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
-> >  		struct perf_counts_values counts = { .val = 0 };
-> >  
-> > -		perf_evsel__read(evsel, cpu, 0, &counts);
-> > +		perf_evsel__read(evsel, idx, 0, &counts);
-> >  		__T("failed to read value for evsel", counts.val != 0);
-> >  	}
-> >  
-> > -- 
-> > 2.25.1
-> > 
+> This patchset converts all devicetree bindings of Samsung S2M and S5M
+> PMIC devices from txt to dtschema.
 
--- 
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-- Arnaldo
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/s2m_s5m_dtschema
+
+for you to fetch changes up to fab58debc137f66cf97f60c8471ff2f1e3e1b44b:
+
+  regulator: dt-bindings: samsung,s5m8767: convert to dtschema (2021-10-08 17:24:37 +0100)
+
+----------------------------------------------------------------
+regulator/clock: Convert the s2m and s5m DT bindings to schema
+
+Tagged to allow further bindings to rely on these.
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (6):
+      regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS is disabled
+      regulator: dt-bindings: samsung,s5m8767: correct s5m8767,pmic-buck-default-dvs-idx property
+      dt-bindings: clock: samsung,s2mps11: convert to dtschema
+      regulator: dt-bindings: samsung,s2m: convert to dtschema
+      regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
+      regulator: dt-bindings: samsung,s5m8767: convert to dtschema
+
+ .../devicetree/bindings/clock/samsung,s2mps11.txt  |  49 -------
+ .../devicetree/bindings/clock/samsung,s2mps11.yaml |  45 +++++++
+ .../bindings/regulator/samsung,s2mpa01.txt         |  79 -----------
+ .../bindings/regulator/samsung,s2mpa01.yaml        |  62 +++++++++
+ .../bindings/regulator/samsung,s2mps11.txt         | 102 ---------------
+ .../bindings/regulator/samsung,s2mps11.yaml        |  44 +++++++
+ .../bindings/regulator/samsung,s2mps13.yaml        |  44 +++++++
+ .../bindings/regulator/samsung,s2mps14.yaml        |  44 +++++++
+ .../bindings/regulator/samsung,s2mps15.yaml        |  44 +++++++
+ .../bindings/regulator/samsung,s2mpu02.yaml        |  44 +++++++
+ .../bindings/regulator/samsung,s5m8767.txt         | 145 ---------------------
+ .../bindings/regulator/samsung,s5m8767.yaml        |  74 +++++++++++
+ MAINTAINERS                                        |   6 +-
+ drivers/regulator/s5m8767.c                        |  21 ++-
+ 14 files changed, 413 insertions(+), 390 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.txt
+ create mode 100644 Documentation/devicetree/bindings/clock/samsung,s2mps11.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpa01.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps11.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps13.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps14.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mps15.yaml
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s2mpu02.yaml
+ delete mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.txt
+ create mode 100644 Documentation/devicetree/bindings/regulator/samsung,s5m8767.yaml
+
+--nQeE6YCzVS6ygCoV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFgk/kACgkQJNaLcl1U
+h9ANlQf9F9iwyk/4j9qhMwgy2WTrD5ykcCwkbE3j5zbzlyGr+aP6AdHBHDP6iz+I
+OyJQlrNlf1e2qzev6SPdXpACZNHpuD2P6XGsAEyutYEPKHzzgU3ctlx5xz37TCIf
+axIOo0uUQG8ctHdEELumCZuu29IyU18V0taD89dOJX+ccAEzFNWKVjX6a8JBJvS8
+YGoKyGLb3Dk0ZbZeIm6clebYL3KclS3EQMzK3n8gP6+k2xkOjVgdisQzSDrO+Lma
+KotSMRN/3FixZvH76efC2pcTqjsAbPeeJAF0RJWLrHKth/HW0EiRXbkV+iLg5loO
+w6SQnPzY2IAKNMaMo2S9b4WvkUCG/g==
+=PWIk
+-----END PGP SIGNATURE-----
+
+--nQeE6YCzVS6ygCoV--
