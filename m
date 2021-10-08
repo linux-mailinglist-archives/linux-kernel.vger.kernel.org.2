@@ -2,249 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80B4426565
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D0942656C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhJHHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:50:41 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43608 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbhJHHuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:50:37 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 0BB751FD70;
-        Fri,  8 Oct 2021 07:48:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633679321; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZelD4w9CDZNOGwHQrpHZ9Ow+bu3ULaS3im3bY0kWS+Y=;
-        b=LOEmWf21Avco99a6kn/i9X+G9LI0yHaGGx7uXZgqQ0JWZ5cwogYhWkG1VS2c0mN/9U4m1v
-        BPuFaqnQvJSdwH5lxe0uHuZIqcXMd+ng0EfdoP/67WyjQs7UCqGqCesSj92C7alF7+wzZ+
-        0qEeyR1N9aO7eVwbG+9jtQO6mv2YyjE=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id AFD3DA3B89;
-        Fri,  8 Oct 2021 07:48:40 +0000 (UTC)
-Date:   Fri, 8 Oct 2021 09:48:39 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     NeilBrown <neilb@suse.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Jonathan Corbet <corbet@lwn.net>,
-        linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH 2/6] MM: improve documentation for __GFP_NOFAIL
-Message-ID: <YV/31+qXwqEgaxJL@dhcp22.suse.cz>
-References: <163184698512.29351.4735492251524335974.stgit@noble.brown>
- <163184741778.29351.16920832234899124642.stgit@noble.brown>
- <b680fb87-439b-0ba4-cf9f-33d729f27941@suse.cz>
- <YVwyhDnE/HEnoLAi@dhcp22.suse.cz>
- <eba04a07-99da-771a-ab6b-36de41f9f120@suse.cz>
- <20211006231452.GF54211@dread.disaster.area>
- <YV7G7gyfZkmw7/Ae@dhcp22.suse.cz>
- <163364854551.31063.4377741712039731672@noble.neil.brown.name>
+        id S232684AbhJHHwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:52:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229839AbhJHHwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 03:52:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36BFD61029;
+        Fri,  8 Oct 2021 07:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633679416;
+        bh=5Dnw1Sn92vfiwdKQwnNNnTDwu84Q7fYoJ44GzEToAbA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j+kPdrGm20cz+1Vp/TJ/jOwyJ5S0DWWrF6Xvw2vjv5AH5VPE+jGzT5kIOfW9FCu7p
+         1iMaMAC8xxLHk0vZfdjPDmyOqV4i43BgLm+Jz76UlO+TMl8JYKhIjGtCLuaV976TRQ
+         /3uLqYeOUUtUS1g0ekylMZYOq/oYgYQhYZsE3dYSfDgyAdJ/d4vi5N+Qdiv6A5sY+z
+         mOjGp6+NKWKO5dPqT0Nu0VjjeYc+Ry9juu+1c1PoNTAFlCDnkxHCpDG/ezkWavozKj
+         oGGnTun4HSl7MhKgwqj1LhA6Orf3mCgpeCLfTCNVHMLJ1eQ466akH9c9Vi3PtAfWFf
+         OEn3tmOhIm5iA==
+Received: by mail-pj1-f44.google.com with SMTP id q7-20020a17090a2e0700b001a01027dd88so5380245pjd.1;
+        Fri, 08 Oct 2021 00:50:16 -0700 (PDT)
+X-Gm-Message-State: AOAM5319p8Dh5mCN6dljT4BMy6hn7jiXnHBNlE9nN+qYqCtYvwRE0/Sz
+        GUJVQvWmBZJjurtgbRaP6142wy4vCZVcSkUyYAA=
+X-Google-Smtp-Source: ABdhPJwJJdHSMEVTR8H83olSVUxlwjiGbt5wjQLfT8kTPM/V6x19UEn+nSFiRarZ7i5SjGmfdmZxAa28ARGqAhsUBL8=
+X-Received: by 2002:a17:902:a3c1:b0:13a:47a:1c5a with SMTP id
+ q1-20020a170902a3c100b0013a047a1c5amr8199445plb.13.1633679415867; Fri, 08 Oct
+ 2021 00:50:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <163364854551.31063.4377741712039731672@noble.neil.brown.name>
+References: <20211005155923.173399-1-marcan@marcan.st> <20211005155923.173399-3-marcan@marcan.st>
+ <CAL_JsqJenHAOw4gApzGpuj-8nZjkYhmBg0qBj-DV+CEJ7zXuVw@mail.gmail.com>
+ <f95f6d61-8809-e668-0458-453a8dfbe641@marcan.st> <b5b25e17-d98b-d447-f917-4d728f52a6ff@marcan.st>
+In-Reply-To: <b5b25e17-d98b-d447-f917-4d728f52a6ff@marcan.st>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Fri, 8 Oct 2021 09:50:03 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPfp7oMJ+moizqgXyS7LbPajY-_vbXFX6+5PFrcpUFy2nA@mail.gmail.com>
+Message-ID: <CAJKOXPfp7oMJ+moizqgXyS7LbPajY-_vbXFX6+5PFrcpUFy2nA@mail.gmail.com>
+Subject: Re: [PATCH 2/7] dt-bindings: power: Add apple,pmgr-pwrstate binding
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08-10-21 10:15:45, Neil Brown wrote:
-> On Thu, 07 Oct 2021, Michal Hocko wrote:
-> > On Thu 07-10-21 10:14:52, Dave Chinner wrote:
-> > > On Tue, Oct 05, 2021 at 02:27:45PM +0200, Vlastimil Babka wrote:
-> > > > On 10/5/21 13:09, Michal Hocko wrote:
-> > > > > On Tue 05-10-21 11:20:51, Vlastimil Babka wrote:
-> > > > > [...]
-> > > > >> > --- a/include/linux/gfp.h
-> > > > >> > +++ b/include/linux/gfp.h
-> > > > >> > @@ -209,7 +209,11 @@ struct vm_area_struct;
-> > > > >> >   * used only when there is no reasonable failure policy) but it is
-> > > > >> >   * definitely preferable to use the flag rather than opencode endless
-> > > > >> >   * loop around allocator.
-> > > > >> > - * Using this flag for costly allocations is _highly_ discouraged.
-> > > > >> > + * Use of this flag may lead to deadlocks if locks are held which would
-> > > > >> > + * be needed for memory reclaim, write-back, or the timely exit of a
-> > > > >> > + * process killed by the OOM-killer.  Dropping any locks not absolutely
-> > > > >> > + * needed is advisable before requesting a %__GFP_NOFAIL allocate.
-> > > > >> > + * Using this flag for costly allocations (order>1) is _highly_ discouraged.
-> > > > >> 
-> > > > >> We define costly as 3, not 1. But sure it's best to avoid even order>0 for
-> > > > >> __GFP_NOFAIL. Advising order>1 seems arbitrary though?
-> > > > > 
-> > > > > This is not completely arbitrary. We have a warning for any higher order
-> > > > > allocation.
-> > > > > rmqueue:
-> > > > > 	WARN_ON_ONCE((gfp_flags & __GFP_NOFAIL) && (order > 1));
-> > > > 
-> > > > Oh, I missed that.
-> > > > 
-> > > > > I do agree that "Using this flag for higher order allocations is
-> > > > > _highly_ discouraged.
-> > > > 
-> > > > Well, with the warning in place this is effectively forbidden, not just
-> > > > discouraged.
-> > > 
-> > > Yup, especially as it doesn't obey __GFP_NOWARN.
-> > > 
-> > > See commit de2860f46362 ("mm: Add kvrealloc()") as a direct result
-> > > of unwittingly tripping over this warning when adding __GFP_NOFAIL
-> > > annotations to replace open coded high-order kmalloc loops that have
-> > > been in place for a couple of decades without issues.
-> > > 
-> > > Personally I think that the way __GFP_NOFAIL is first of all
-> > > recommended over open coded loops and then only later found to be
-> > > effectively forbidden and needing to be replaced with open coded
-> > > loops to be a complete mess.
-> > 
-> > Well, there are two things. Opencoding something that _can_ be replaced
-> > by __GFP_NOFAIL and those that cannot because the respective allocator
-> > doesn't really support that semantic. kvmalloc is explicit about that
-> > IIRC. If you have a better way to consolidate the documentation then I
-> > am all for it.
-> 
-> I think one thing that might help make the documentation better is to
-> explicitly state *why* __GFP_NOFAIL is better than a loop.
-> 
-> It occurs to me that
->   while (!(p = kmalloc(sizeof(*p), GFP_KERNEL));
-> 
-> would behave much the same as adding __GFP_NOFAIL and dropping the
-> 'while'.  So why not? I certainly cannot see the need to add any delay
-> to this loop as kmalloc does a fair bit of sleeping when permitted.
-> 
-> I understand that __GFP_NOFAIL allows page_alloc to dip into reserves,
-> but Mel holds that up as a reason *not* to use __GFP_NOFAIL as it can
-> impact on other subsystems.
+On Wed, 6 Oct 2021 at 17:56, Hector Martin <marcan@marcan.st> wrote:
+>
+> On 07/10/2021 00.52, Hector Martin wrote:
+> > I realize this is all kind of "not the way things are usually done", but
+> > I don't want to pass up on the opportunity to have one driver last us
+> > multiple SoCs if we have the chance, and it's looking like it should :-)
+>
+> Addendum: just found some prior art for this. See power/pd-samsung.yaml,
+> which is another single-PD binding (though in that case they put them in
+> the SoC node directly, not under a syscon).
 
-__GFP_NOFAIL usage is a risk on its own. It is a hard requirement that
-the allocator cannot back off. So it has to absolutely everything to
-suceed. Whether it cheats and dips into reserves or not is a mere
-implementation detail and a subject to the specific implementation.
+Maybe the design is actually similar. In the Exynos there is a entire
+subblock managing power - called Power Management Unit (PMU). It
+controls most of power-related parts, except clock gating. For example
+it covers registers related to entering deep-sleep modes or power
+domains. However we split this into two:
+1. Actual PMU driver which controls system-level power (and provides
+syscon for other drivers needing to poke its registers... eh, life).
+2. Power domain driver which binds multiple devices to a small address
+spaces (three registers) inside PMU address space.
 
-> Why not just let the caller decide if they
-> deserve the boost, but oring in __GFP_ATOMIC or __GFP_MEMALLOC as
-> appropriate.
+The address spaces above overlap, so the (1) PMU driver takes for
+example 1004_0000 - 1004_5000 and power domain devices bind to e.g.
+1004_4000, 1004_4020, 1004_4040.
 
-They can do that. Explicit access to memory reserves is allowed unless
-it is explicitly forbidden by NOMEMALLOC flag.
-
-> I assume there is a good reason.  I vaguely remember the conversation
-> that lead to __GFP_NOFAIL being introduced.  I just cannot remember or
-> deduce what the reason is.  So it would be great to have it documented.
-
-The basic reason is that if the allocator knows this is must suceed
-allocation request then it can prioritize it in some way. A dumb kmalloc
-loop as you pictured it is likely much less optimal in that sense, isn't
-it? Compare that to mempool allocator which is non failing as well but
-it has some involved handling and that is certainly not a good fit for
-__GFP_NOFAIL in the page allocator.
- 
-> > > Not to mention on the impossibility of using __GFP_NOFAIL with
-> > > kvmalloc() calls. Just what do we expect kmalloc_node(__GFP_NORETRY
-> > > | __GFP_NOFAIL) to do, exactly?
-> > 
-> > This combination doesn't make any sense. Like others. Do you want us to
-> > list all combinations that make sense?
-> 
-> I've been wondering about that.  There seem to be sets of flags that are
-> mutually exclusive.  It is as though gfp_t is a struct of a few enums.
-> 
-> 0, DMA32, DMA, HIGHMEM
-> 0, FS, IO
-> 0, ATOMIC, MEMALLOC, NOMEMALLOC, HIGH
-> NORETRY, RETRY_MAYFAIL, 0, NOFAIL
-> 0, KSWAPD_RECLAIM, DIRECT_RECLAIM
-> 0, THISNODE, HARDWALL
-> 
-> In a few cases there seem to be 3 bits where there are only 4 possibly
-> combinations, so 2 bits would be enough.  There is probably no real
-> value is squeezing these into 2 bits, but clearly documenting the groups
-> surely wouldn't hurt.  Particularly highlighting the difference between
-> related bits would help.
-
-Don't we have that already? We have them grouped by placement,
-watermarks, reclaim and action modifiers. Then we have useful
-combinations. I believe we can always improve on that and I am always
-ready to listen here.
-
-> The set with  'ATOMIC' is hard to wrap my mind around.
-> They relate to ALLOC_HIGH and ALLOC_HARDER, but also to WMARK_NIN,
-> WMARK_LOW, WMARK_HIGH ... I think.
-
-ALLOC* and WMARK* is an internal allocator concept and I believe users
-of gfp flags shouldn't really care or even know those exist.
-
-> I wonder if FS,IO is really in the same set as DIRECT_RECLAIM as they
-> all affect reclaim.  Maybe FS and IO are only relevan if DIRECT_RECLAIM
-> is set?
-
-yes, this indeed the case. Page allocator doesn't go outside of its
-proper without the direct reclaim.
-
-> I'd love to know that to expect if neither RETRY_MAYFAIL or NOFAIL is
-> set.  I guess it can fail, but it still tries harder than if
-> RETRY_MAYFAIL is set....
-> Ahhhh...  I found some documentation which mentions
-
-The reclaim behavior is described along with the respective modifiers. I
-believe we can thank you for this structure as you were the primary
-driving force to clarify the behavior.
-
-> that RETRY_MAYFAIL
-> doesn't trigger the oom killer.  Is that it? So RETRY_NOKILLOOM might be
-> a better name?
-
-Again the those are implementation details and I am not sure we really
-want to bother users with all of them. This wold quickly become hairy
-and likely even outdated after some time. The documentation tries to
-describe different levels of involvement. NOWAIT - no direct reclaim,
-NORETRY - only a light attempt to reclaim, RETRY_MAYFAIL - try as hard
-as feasible, NOFAIL - cannot really fail.
-
-If we can improve the wording I am all for it.
- 
-> > > So, effectively, we have to open-code around kvmalloc() in
-> > > situations where failure is not an option. Even if we pass
-> > > __GFP_NOFAIL to __vmalloc(), it isn't guaranteed to succeed because
-> > > of the "we won't honor gfp flags passed to __vmalloc" semantics it
-> > > has.
-> > 
-> > yes vmalloc doesn't support nofail semantic and it is not really trivial
-> > to craft it there.
-> > 
-> > > Even the API constaints of kvmalloc() w.r.t. only doing the vmalloc
-> > > fallback if the gfp context is GFP_KERNEL - we already do GFP_NOFS
-> > > kvmalloc via memalloc_nofs_save/restore(), so this behavioural
-> > > restriction w.r.t. gfp flags just makes no sense at all.
-> > 
-> > GFP_NOFS (without using the scope API) has the same problem as NOFAIL in
-> > the vmalloc. Hence it is not supported. If you use the scope API then
-> > you can GFP_KERNEL for kvmalloc. This is clumsy but I am not sure how to
-> > define these conditions in a more sensible way. Special case NOFS if the
-> > scope api is in use? Why do you want an explicit NOFS then?
-> 
-> It would seem to make sense for kvmalloc to WARN_ON if it is passed
-> flags that does not allow it to use vmalloc.
-
-vmalloc is certainly not the hottest path in the kernel so I wouldn't be
-opposed. One should be careful that WARN_ON is effectively BUG_ON in
-some configurations but we are sinners from that perspective all over
-the place...
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Best regards,
+Krzysztof
