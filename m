@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779834268EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93E0426949
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240714AbhJHLcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:32:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
+        id S241639AbhJHLf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59314 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240651AbhJHLbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:31:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E132361261;
-        Fri,  8 Oct 2021 11:29:28 +0000 (UTC)
+        id S241000AbhJHLdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:33:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C04F061040;
+        Fri,  8 Oct 2021 11:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692569;
-        bh=0X5Ea7nPNvK/wJmXAKq3SaM+LBzZhvucnf6K7T70JZA=;
+        s=korg; t=1633692667;
+        bh=IEaQOTNlA53Qt75QXvCLuqc1WsdcEa6N94zuXbDr9Po=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m6r15DScwUJvWM4SBMjeOg78ZimUp3k4S636TvfycZnPV4x1RLxsoyXrLkBcMsTQW
-         LQc8bla3dbN9N9ql+xQO0O2YPXZI8cgo0ucN7wq8KzfPwT4j1V/DeBpa9JcjZ5dLMV
-         y7qfrb7aikBe2XTtuBaAylNDQeTi4UJmESeLA63k=
+        b=PlKDoxOy95d/hNZxCzs811MKRYqJqr+T6BRhjPYnOHDjRNGmlsb35MzLsN3IF3zfs
+         w5KGjKFGk/+Jf4zcIUSj/1+Q8CGkwzziidEFzoHt/5M3HYHwKRT8HWv7OJeihzMuZQ
+         BhrvlHV0i+7nW183bLdDX3jRcCjY3bvkJcFYp1r4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Wen Xiong <wenxiong@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 08/10] scsi: ses: Retry failed Send/Receive Diagnostic commands
+Subject: [PATCH 5.10 02/29] platform/x86: touchscreen_dmi: Add info for the Chuwi HiBook (CWI514) tablet
 Date:   Fri,  8 Oct 2021 13:27:49 +0200
-Message-Id: <20211008112714.719380202@linuxfoundation.org>
+Message-Id: <20211008112717.003564438@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112714.445637990@linuxfoundation.org>
-References: <20211008112714.445637990@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,79 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Xiong <wenxiong@linux.ibm.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit fbdac19e642899455b4e64c63aafe2325df7aafa ]
+[ Upstream commit 3bf1669b0e033c885ebcb1ddc2334088dd125f2d ]
 
-Setting SCSI logging level with error=3, we saw some errors from enclosues:
+Add touchscreen info for the Chuwi HiBook (CWI514) tablet. This includes
+info for getting the firmware directly from the UEFI, so that the user does
+not need to manually install the firmware in /lib/firmware/silead.
 
-[108017.360833] ses 0:0:9:0: tag#641 Done: NEEDS_RETRY Result: hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
-[108017.360838] ses 0:0:9:0: tag#641 CDB: Receive Diagnostic 1c 01 01 00 20 00
-[108017.427778] ses 0:0:9:0: Power-on or device reset occurred
-[108017.427784] ses 0:0:9:0: tag#641 Done: SUCCESS Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
-[108017.427788] ses 0:0:9:0: tag#641 CDB: Receive Diagnostic 1c 01 01 00 20 00
-[108017.427791] ses 0:0:9:0: tag#641 Sense Key : Unit Attention [current]
-[108017.427793] ses 0:0:9:0: tag#641 Add. Sense: Bus device reset function occurred
-[108017.427801] ses 0:0:9:0: Failed to get diagnostic page 0x1
-[108017.427804] ses 0:0:9:0: Failed to bind enclosure -19
-[108017.427895] ses 0:0:10:0: Attached Enclosure device
-[108017.427942] ses 0:0:10:0: Attached scsi generic sg18 type 13
+This change will make the touchscreen on these devices work OOTB,
+without requiring any manual setup.
 
-Retry if the Send/Receive Diagnostic commands complete with a transient
-error status (NOT_READY or UNIT_ATTENTION with ASC 0x29).
-
-Link: https://lore.kernel.org/r/1631849061-10210-2-git-send-email-wenxiong@linux.ibm.com
-Reviewed-by: Brian King <brking@linux.ibm.com>
-Reviewed-by: James Bottomley <jejb@linux.ibm.com>
-Signed-off-by: Wen Xiong <wenxiong@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210905130210.32810-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ses.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/platform/x86/touchscreen_dmi.c | 37 ++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
-index 62f04c0511cf..4b993607887c 100644
---- a/drivers/scsi/ses.c
-+++ b/drivers/scsi/ses.c
-@@ -103,9 +103,16 @@ static int ses_recv_diag(struct scsi_device *sdev, int page_code,
- 		0
- 	};
- 	unsigned char recv_page_code;
-+	unsigned int retries = SES_RETRIES;
-+	struct scsi_sense_hdr sshdr;
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index 99260915122c..4f5d53b585db 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -141,6 +141,33 @@ static const struct ts_dmi_data chuwi_hi10_pro_data = {
+ 	.properties     = chuwi_hi10_pro_props,
+ };
+ 
++static const struct property_entry chuwi_hibook_props[] = {
++	PROPERTY_ENTRY_U32("touchscreen-min-x", 30),
++	PROPERTY_ENTRY_U32("touchscreen-min-y", 4),
++	PROPERTY_ENTRY_U32("touchscreen-size-x", 1892),
++	PROPERTY_ENTRY_U32("touchscreen-size-y", 1276),
++	PROPERTY_ENTRY_BOOL("touchscreen-inverted-y"),
++	PROPERTY_ENTRY_BOOL("touchscreen-swapped-x-y"),
++	PROPERTY_ENTRY_STRING("firmware-name", "gsl1680-chuwi-hibook.fw"),
++	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
++	PROPERTY_ENTRY_BOOL("silead,home-button"),
++	{ }
++};
 +
-+	do {
-+		ret = scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
-+				       &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (ret > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
- 
--	ret =  scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
--				NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (unlikely(ret))
- 		return ret;
- 
-@@ -137,9 +144,16 @@ static int ses_send_diag(struct scsi_device *sdev, int page_code,
- 		bufflen & 0xff,
- 		0
- 	};
-+	struct scsi_sense_hdr sshdr;
-+	unsigned int retries = SES_RETRIES;
++static const struct ts_dmi_data chuwi_hibook_data = {
++	.embedded_fw = {
++		.name	= "silead/gsl1680-chuwi-hibook.fw",
++		.prefix = { 0xf0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 },
++		.length	= 40392,
++		.sha256	= { 0xf7, 0xc0, 0xe8, 0x5a, 0x6c, 0xf2, 0xeb, 0x8d,
++			    0x12, 0xc4, 0x45, 0xbf, 0x55, 0x13, 0x4c, 0x1a,
++			    0x13, 0x04, 0x31, 0x08, 0x65, 0x73, 0xf7, 0xa8,
++			    0x1b, 0x7d, 0x59, 0xc9, 0xe6, 0x97, 0xf7, 0x38 },
++	},
++	.acpi_name      = "MSSL0017:00",
++	.properties     = chuwi_hibook_props,
++};
 +
-+	do {
-+		result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
-+					  &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (result > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
- 
--	result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
--				  NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (result)
- 		sdev_printk(KERN_ERR, sdev, "SEND DIAGNOSTIC result: %8x\n",
- 			    result);
+ static const struct property_entry chuwi_vi8_props[] = {
+ 	PROPERTY_ENTRY_U32("touchscreen-min-x", 4),
+ 	PROPERTY_ENTRY_U32("touchscreen-min-y", 6),
+@@ -936,6 +963,16 @@ const struct dmi_system_id touchscreen_dmi_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
+ 		},
+ 	},
++	{
++		/* Chuwi HiBook (CWI514) */
++		.driver_data = (void *)&chuwi_hibook_data,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
++			DMI_MATCH(DMI_BOARD_NAME, "Cherry Trail CR"),
++			/* Above matches are too generic, add bios-date match */
++			DMI_MATCH(DMI_BIOS_DATE, "05/07/2016"),
++		},
++	},
+ 	{
+ 		/* Chuwi Vi8 (CWI506) */
+ 		.driver_data = (void *)&chuwi_vi8_data,
 -- 
 2.33.0
 
