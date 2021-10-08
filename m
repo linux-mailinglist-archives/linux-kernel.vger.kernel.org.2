@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2FF426583
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5AC8426577
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhJHH7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:59:09 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:39694 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhJHH7D (ORCPT
+        id S233238AbhJHHz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:55:56 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:38718 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231749AbhJHHzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:59:03 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1984abmV020364;
-        Fri, 8 Oct 2021 09:57:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=c6EaOVGfb8Sa8HSlE1ms6Xot8j3nZXJs3bVkNF7A+D8=;
- b=P9RS1+4eRbSDQhkaKAaGifIzcOlHW5vPJLPNx2blBuLiEa+/h+V1Gmi/FKUDt4SoQPtX
- 8CnHd6bGEw5qmB0z94ZlGYgAwuzgQvWrCtLf7fRKUgQr5V6eVaObajTknxMoCQ2lYMHB
- e5NWg3zD6Gky/CYLFJTeKfxB1PwwP8/9oNQAWWojcPGfwU4KQGO5k/6ZpMUR/GRwTGe0
- 4P7ml7uBNk595PrSMRpIMpQMJnSZHn2YioDT9GkNbErnzS0+cnf4SbU0AAn71G0/VlCV
- 8LngPsIlJnrkIbN8TG9er7a1oAyvE0BaWEi9LEFSN4zBfOEV9D0pbjCB+4w56t7gz0q9 rQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bjdun9fxj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 09:57:04 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E42B100034;
-        Fri,  8 Oct 2021 09:57:04 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 63696218110;
-        Fri,  8 Oct 2021 09:57:04 +0200 (CEST)
-Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 8 Oct 2021 09:57:03
- +0200
-From:   Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-To:     <hminas@synopsys.com>, <gregkh@linuxfoundation.org>
-CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <amelie.delaunay@foss.st.com>, <alexandre.torgue@foss.st.com>,
-        <fabrice.gasnier@foss.st.com>
-Subject: [PATCH v2 2/2] usb: dwc2: stm32mp15: set otg_rev
-Date:   Fri, 8 Oct 2021 09:53:09 +0200
-Message-ID: <1633679589-16021-3-git-send-email-fabrice.gasnier@foss.st.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
-References: <1633679589-16021-1-git-send-email-fabrice.gasnier@foss.st.com>
+        Fri, 8 Oct 2021 03:55:52 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0FBAA22312;
+        Fri,  8 Oct 2021 07:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633679637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/owKRIBy8QtnuKnOdnRpPLlosxOa0SrXgN0hyqRt9xg=;
+        b=zMUTeLKyPWEoEkWqQXJdLOA/v+Aadj6rkC6ZqDR+YcEwVg5PfKkPofIkbv9IuGhkf9JSR+
+        zCMTnBltuTcX/aCAlLJjDdyjDYqltk801kr865zXewc+Y4brHpCkfTXzkUyWhO9KWX+rdc
+        6PO+u+QrELHslYcat8xV8AhdB4+BAok=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633679637;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/owKRIBy8QtnuKnOdnRpPLlosxOa0SrXgN0hyqRt9xg=;
+        b=3C0EexQ5YXKpYqHO2LwTUErROHz7vn8QKJe8+ZA8j/ilFhl/QFz01WLpeAkt4e+KN8I4V3
+        NPoKjHvgwg/v8CAw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3CC5113B56;
+        Fri,  8 Oct 2021 07:53:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 1eN/CxT5X2G7VQAAMHmgww
+        (envelope-from <osalvador@suse.de>); Fri, 08 Oct 2021 07:53:56 +0000
+Date:   Fri, 8 Oct 2021 09:53:54 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        Nghia Le <nghialm78@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4 2/5] mm/cma: add cma_pages_valid to determine if pages
+ are in CMA
+Message-ID: <YV/5EpBcte5i0hzT@localhost.localdomain>
+References: <20211007181918.136982-1-mike.kravetz@oracle.com>
+ <20211007181918.136982-3-mike.kravetz@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-08_02,2021-10-07_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007181918.136982-3-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-STM32MP15 complies with the OTG 2.0. Set OTG revision accordingly. It is
-useful for the of_usb_update_otg_caps() routine to check and update
-otg_rev to the lower value between DT and provided params.
+On Thu, Oct 07, 2021 at 11:19:15AM -0700, Mike Kravetz wrote:
+> Add new interface cma_pages_valid() which indicates if the specified
+> pages are part of a CMA region.  This interface will be used in a
+> subsequent patch by hugetlb code.
+> 
+> In order to keep the same amount of DEBUG information, a pr_debug() call
+> was added to cma_pages_valid().  In the case where the page passed to
+> cma_release is not in cma region, the debug message will be printed from
+> cma_pages_valid as opposed to cma_release.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Acked-by: David Hildenbrand <david@redhat.com>
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
----
-Changes in v2:
-- set otg_rev in otg_caps structure directly
----
- drivers/usb/dwc2/params.c | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: OScar Salvador <osalvador@suse.de>
 
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 99d3b62..d300ae3 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -176,6 +176,7 @@ static void dwc2_set_stm32mp15_fsotg_params(struct dwc2_hsotg *hsotg)
- 
- 	p->otg_caps.hnp_support = false;
- 	p->otg_caps.srp_support = false;
-+	p->otg_caps.otg_rev = 0x200;
- 	p->speed = DWC2_SPEED_PARAM_FULL;
- 	p->host_rx_fifo_size = 128;
- 	p->host_nperio_tx_fifo_size = 96;
-@@ -197,6 +198,7 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
- 
- 	p->otg_caps.hnp_support = false;
- 	p->otg_caps.srp_support = false;
-+	p->otg_caps.otg_rev = 0x200;
- 	p->activate_stm_id_vb_detection = !device_property_read_bool(hsotg->dev, "usb-role-switch");
- 	p->host_rx_fifo_size = 440;
- 	p->host_nperio_tx_fifo_size = 256;
+
 -- 
-2.7.4
-
+Oscar Salvador
+SUSE Labs
