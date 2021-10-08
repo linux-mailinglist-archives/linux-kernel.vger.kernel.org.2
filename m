@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB4F4269AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF26426924
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240722AbhJHLj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:39:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38706 "EHLO mail.kernel.org"
+        id S241847AbhJHLeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241861AbhJHLgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:36:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AC4761381;
-        Fri,  8 Oct 2021 11:32:26 +0000 (UTC)
+        id S240877AbhJHLcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BE94610E7;
+        Fri,  8 Oct 2021 11:30:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692747;
-        bh=Xaf80vQCf6Z2EysDRr0wcPFN4faFcp6DJPtAaB5DD8I=;
+        s=korg; t=1633692613;
+        bh=0C6W9SS6dd73z7EPUbhKn1NEfkcIH093yC9t/+PUAUg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cz5SJLjr6dbOwU+bje6ynD8SsOG2fKP+FpCXKu5szXAgXbyISpCPq9iMjW6QQn5hb
-         0V1syqPJjR1b/rJNcOYfWHJAbm1BeGFXes7y/KrbM9CbqAMC8nDTJRCfHvku2OSU+4
-         kXdUdyvtpGIHiD+X+UgBGGVMt2Cxzm6T+IS0F160=
+        b=umG0zKTx5e4i+OFEcI8rmJ6FXBu5WOZ5dRSXGBwqdONT6iZwQg3Qqp0pYfE9teIs6
+         SNGUf3lSfc5u9VI1wz1smYUVlObRlCO/IbGTjSv4bfBj3MQfEVMK5XjNIxDYpcsJlF
+         Xohe3wLWX42dLqfiSH1J0hADeejM/XDp3xew6mUw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 26/48] selftests: kvm: fix get_run_delay() ignoring fscanf() return warn
+Subject: [PATCH 5.4 12/16] KVM: do not shrink halt_poll_ns below grow_start
 Date:   Fri,  8 Oct 2021 13:28:02 +0200
-Message-Id: <20211008112720.885007445@linuxfoundation.org>
+Message-Id: <20211008112715.875188234@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
+References: <20211008112715.444305067@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,70 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-[ Upstream commit f5013d412a43662b63f3d5f3a804d63213acd471 ]
+[ Upstream commit ae232ea460888dc5a8b37e840c553b02521fbf18 ]
 
-Fix get_run_delay() to check fscanf() return value to get rid of the
-following warning. When fscanf() fails return MIN_RUN_DELAY_NS from
-get_run_delay(). Move MIN_RUN_DELAY_NS from steal_time.c to test_util.h
-so get_run_delay() and steal_time.c can use it.
+grow_halt_poll_ns() ignores values between 0 and
+halt_poll_ns_grow_start (10000 by default). However,
+when we shrink halt_poll_ns we may fall way below
+halt_poll_ns_grow_start and endup with halt_poll_ns
+values that don't make a lot of sense: like 1 or 9,
+or 19.
 
-lib/test_util.c: In function ‘get_run_delay’:
-lib/test_util.c:316:2: warning: ignoring return value of ‘fscanf’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
-  316 |  fscanf(fp, "%ld %ld ", &val[0], &val[1]);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+VCPU1 trace (halt_poll_ns_shrink equals 2):
 
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+VCPU1 grow 10000
+VCPU1 shrink 5000
+VCPU1 shrink 2500
+VCPU1 shrink 1250
+VCPU1 shrink 625
+VCPU1 shrink 312
+VCPU1 shrink 156
+VCPU1 shrink 78
+VCPU1 shrink 39
+VCPU1 shrink 19
+VCPU1 shrink 9
+VCPU1 shrink 4
+
+Mirror what grow_halt_poll_ns() does and set halt_poll_ns
+to 0 as soon as new shrink-ed halt_poll_ns value falls
+below halt_poll_ns_grow_start.
+
+Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Message-Id: <20210902031100.252080-1-senozhatsky@chromium.org>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/include/test_util.h | 2 ++
- tools/testing/selftests/kvm/lib/test_util.c     | 4 +++-
- tools/testing/selftests/kvm/steal_time.c        | 1 -
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ virt/kvm/kvm_main.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/include/test_util.h b/tools/testing/selftests/kvm/include/test_util.h
-index c7409b9b4e5b..451fed5ce8e7 100644
---- a/tools/testing/selftests/kvm/include/test_util.h
-+++ b/tools/testing/selftests/kvm/include/test_util.h
-@@ -95,6 +95,8 @@ struct vm_mem_backing_src_alias {
- 	uint32_t flag;
- };
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 77f84cbca740..f31976010622 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -2470,15 +2470,19 @@ out:
  
-+#define MIN_RUN_DELAY_NS	200000UL
+ static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
+ {
+-	unsigned int old, val, shrink;
++	unsigned int old, val, shrink, grow_start;
+ 
+ 	old = val = vcpu->halt_poll_ns;
+ 	shrink = READ_ONCE(halt_poll_ns_shrink);
++	grow_start = READ_ONCE(halt_poll_ns_grow_start);
+ 	if (shrink == 0)
+ 		val = 0;
+ 	else
+ 		val /= shrink;
+ 
++	if (val < grow_start)
++		val = 0;
 +
- bool thp_configured(void);
- size_t get_trans_hugepagesz(void);
- size_t get_def_hugetlb_pagesz(void);
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index f80dd38a38b2..a9107bfae402 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -313,7 +313,9 @@ long get_run_delay(void)
- 
- 	sprintf(path, "/proc/%ld/schedstat", syscall(SYS_gettid));
- 	fp = fopen(path, "r");
--	fscanf(fp, "%ld %ld ", &val[0], &val[1]);
-+	/* Return MIN_RUN_DELAY_NS upon failure just to be safe */
-+	if (fscanf(fp, "%ld %ld ", &val[0], &val[1]) < 2)
-+		val[1] = MIN_RUN_DELAY_NS;
- 	fclose(fp);
- 
- 	return val[1];
-diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
-index 51fe95a5c36a..2172d65b85e4 100644
---- a/tools/testing/selftests/kvm/steal_time.c
-+++ b/tools/testing/selftests/kvm/steal_time.c
-@@ -19,7 +19,6 @@
- 
- #define NR_VCPUS		4
- #define ST_GPA_BASE		(1 << 30)
--#define MIN_RUN_DELAY_NS	200000UL
- 
- static void *st_gva[NR_VCPUS];
- static uint64_t guest_stolen_time[NR_VCPUS];
+ 	vcpu->halt_poll_ns = val;
+ 	trace_kvm_halt_poll_ns_shrink(vcpu->vcpu_id, val, old);
+ }
 -- 
 2.33.0
 
