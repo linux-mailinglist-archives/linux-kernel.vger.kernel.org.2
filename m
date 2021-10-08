@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B874262CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C2E4262D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhJHDTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHDTr (ORCPT
+        id S232776AbhJHDWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:22:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229501AbhJHDWA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:19:47 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6825C061570;
-        Thu,  7 Oct 2021 20:17:52 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id a11so5304925plm.0;
-        Thu, 07 Oct 2021 20:17:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=ApOKKBCMuAZ4Vx/5ob40RCelwZhTvT67bmG3ANEluW8=;
-        b=Qfr5WIt0rkHg4KG3t1iY6J1y1yLDEgcbPf5SHUv1rIzqRBsz/5uzLcJUMZnSn74YL8
-         kRDVeCfxp8GigTyNHwoZ0dXS73QmhUds18a8OLJcmshBKJVJLe6dPwCPtGt1Pm425Lvf
-         Nl38h/rnebJWGEFPAjPhXZI4C6082a0v7n/5at9C7DIMPq1KY7RgPmh+MyINTBQEz9Kf
-         fAdfYxw9vzfPkZCGrmScZLnFVBB/toVTa6tTKyv9z6ZL86/N4zNYHsk9+3+DLh3TPZFp
-         pS/H/KM1lSxf7yVQzufzSNFL0cS7lg0i6H4kVt4nnJT8F1ACV5tpppKEn6vYpgoPTEYk
-         mJVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version;
-        bh=ApOKKBCMuAZ4Vx/5ob40RCelwZhTvT67bmG3ANEluW8=;
-        b=PzrhFa3b1p8tBpCaa/665/irUbFhUCnS+iHfUofrVh7taxKYvaiRCWZIotz9uBh3Xb
-         Vb+Dm5D/WPgBFqaYWEGQ2CdZzkw9U/FSSnpbCALBUW27Zk3E1QkYqBB/KvxEtYKkPa9U
-         QxEUWCV6NVRxhl/ozZ+SH+UySM9MEfYFFk6kHjxS1m2Cv9PBrWA5/4ifLblekEcpB2ag
-         9YvDWxTfrgIlXZvPJ8GOCTuEb30TVFYZvxFTCeCpSii8ug80n0tFgdLvZNQIriHUOTtU
-         fD0AvMiPQ9eq8os27NxrGO+cSxHS33wurWhN4W9MFGCFVsEnunka4psahR/7L3ucLcdp
-         N+mQ==
-X-Gm-Message-State: AOAM532D/os97iS1tk4CllEQ7ixCb4B3Kgb7X9ZcJ9E2pNLgTGvP0K4f
-        aOHRBZeynKkG2sj3pAs8D58=
-X-Google-Smtp-Source: ABdhPJyZsmxJ9hP5Kw+9bGwzN9Glcf1vHwpjV6UZVC8OiQmND7+AHtV3qdpWmvagZ5sP1eBuwNI/TQ==
-X-Received: by 2002:a17:902:a710:b029:12b:9b9f:c461 with SMTP id w16-20020a170902a710b029012b9b9fc461mr7406835plq.59.1633663071904;
-        Thu, 07 Oct 2021 20:17:51 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id w185sm737585pfd.113.2021.10.07.20.17.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 20:17:51 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     davem@davemloft.net, michael.riesch@wolfvision.net,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        p.zabel@pengutronix.de, lgirdwood@gmail.com,
-        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [BUG] Ethernet broken on rockpro64 by commit 2d26f6e39afb
- ("net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable warnings")
-References: <8e33c244-b786-18e8-79bc-407e27e4756b@arm.com>
-Date:   Fri, 08 Oct 2021 12:17:48 +0900
-In-Reply-To: <8e33c244-b786-18e8-79bc-407e27e4756b@arm.com> (Alexandru
-        Elisei's message of "Tue, 28 Sep 2021 10:25:59 +0100")
-Message-ID: <87zgrk19yb.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 7 Oct 2021 23:22:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633663205;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=HOxpgrZnYdSvGQKrZaYcau9KwEc1jKvSXQuLLBcGQBQ=;
+        b=DRaXGeIwdviheMyu49PWZg6qIx7V/lXHkbqQ5UEPWuc54QCtCOfO3pd4E7JdfyY/iON4f5
+        YYSMOkovDIIlycvrYG00C/VdGikmyBR/iCQjOvTLRTZ2Y+SVzXtdNv0+VLYvNNY2l+aGWY
+        zEyNMwj5KzASUbj97MVdO/P547MlQ+8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-595-xeDznztWNGyFLvxssR47RQ-1; Thu, 07 Oct 2021 23:20:01 -0400
+X-MC-Unique: xeDznztWNGyFLvxssR47RQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1A601084680;
+        Fri,  8 Oct 2021 03:19:59 +0000 (UTC)
+Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0044A5D6D5;
+        Fri,  8 Oct 2021 03:19:52 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 11:19:47 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     kys@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        haiyangz@microsoft.com, bvanassche@acm.org, john.garry@huawei.com,
+        linux-scsi@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        longli@microsoft.com, mikelley@microsoft.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] scsi: core: Fix shost->cmd_per_lun calculation in
+ scsi_add_host_with_dma()
+Message-ID: <YV+40/pHlLwseFw/@T590>
+References: <20211007174957.2080-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007174957.2080-1-decui@microsoft.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexandru Elisei <alexandru.elisei@arm.com> writes:
+On Thu, Oct 07, 2021 at 10:49:57AM -0700, Dexuan Cui wrote:
+> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
+> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
+> negative number (the below numbers may differ in different kernel versions):
+> in drivers/scsi/storvsc_drv.c, 	storvsc_drv_init() sets
+> 'max_outstanding_req_per_channel' to 352, and storvsc_probe() sets
+> 'max_sub_channels' to (416 - 1) / 4 = 103 and sets scsi_driver.can_queue to
+> 352 * (103 + 1) * (100 - 10) / 100 = 32947, which exceeds SHRT_MAX.
+> 
+> Use min_t(int, ...) to fix the issue.
+> 
+> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> ---
+> 
+> v1 tried to fix the issue by changing the storvsc driver:
+> https://lwn.net/ml/linux-kernel/BYAPR21MB1270BBC14D5F1AE69FC31A16BFB09@BYAPR21MB1270.namprd21.prod.outlook.com/
+> 
+> v2 directly fixes the scsi core change instead as Michael Kelley and
+> John Garry suggested (refer to the above link).
+> 
+>  drivers/scsi/hosts.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+> index 3f6f14f0cafb..24b72ee4246f 100644
+> --- a/drivers/scsi/hosts.c
+> +++ b/drivers/scsi/hosts.c
+> @@ -220,7 +220,8 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+>  		goto fail;
+>  	}
+>  
+> -	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
+> +	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
+> +	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
+>  				   shost->can_queue);
 
-> (Sorry I'm sending this to the wrong person, this is what I got
-> scripts/get_maintainer.pl for the file touched by the commit)
->
-> After commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
-> pm_runtime_enable warnings"), the network card on my rockpro64-v2 was left unable
-> to get a DHCP lease from the network. The offending commit was found by bisecting
-> the kernel; I tried reverting the commit from current master (commit 0513e464f900
-> ("Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux")) and the network card
-> was working as expected.
->
-> It goes without saying that I can help with testing the fix and
-> further diagnosing.
+Looks fine:
 
-A fix was recently merged for this (see aec3f415f724 ("net: stmmac:
-dwmac-rk: Fix ethernet on rk3399 based devices") and should show up in
-the next rc. Please shout out if that doesn't fix the broken ethernet
-for you.
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-Thanks,
-Punit
+-- 
+Ming
 
