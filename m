@@ -2,165 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159D6426BF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCB6F426B84
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhJHNyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:54:01 -0400
-Received: from mx08-001d1705.pphosted.com ([185.183.30.70]:33884 "EHLO
-        mx08-001d1705.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229487AbhJHNx5 (ORCPT
+        id S242429AbhJHNOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:14:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44003 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242410AbhJHNOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:53:57 -0400
-X-Greylist: delayed 2382 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Oct 2021 09:53:56 EDT
-Received: from pps.filterd (m0209323.ppops.net [127.0.0.1])
-        by mx08-001d1705.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197JORFn023310;
-        Fri, 8 Oct 2021 13:12:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sony.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=S1;
- bh=kx6DfamcvK4x5EzzwyGpb5bj+bXgU3ak9aYxdeR9Tu8=;
- b=G4zAbGga+bjA6+Aui8PuSMoFKNqUdU2gbHddbNaTnOp5Marh0LDolb14ug5vg/0vmCF5
- x5pM2R/GHDBCFOlDX8fj9cqPVPXQfRfet/0IP/h4f0v8Ao5XQQTepVL7HPkh2xq7trJ7
- eJIVTjIh7EYGDxi7sLsHMzS7B7lzLR7ZpHwM0maHnOFL06s+DD+W3vRPhN/z0228LJYY
- pxVpFoWkIgu8OpdMt9TP6IwoNYc9cp3SyzCD1szQn47evPADT3I1n7kwzbofGpayjAKE
- 16e+FIwwRtCL8U/h/XCscXQ4fqeX4blw/ZzsvlATN1OI9ZwbFDOZENkukNhD5oOyP4iN JQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx08-001d1705.pphosted.com with ESMTP id 3bhrm0jk0d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Oct 2021 13:12:01 +0000
-Received: from m0209323.ppops.net (m0209323.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 198DC1m6015659;
-        Fri, 8 Oct 2021 13:12:01 GMT
-Received: from eur01-ve1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2055.outbound.protection.outlook.com [104.47.1.55])
-        by mx08-001d1705.pphosted.com with ESMTP id 3bhrm0jk0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Oct 2021 13:12:01 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fQ9paMdz2EzjIL4JY8kyzsZZz133CB87KAtke/Hg+esyJPfDG51NkcBnh4vicYyx/EBme/mZpnqU80Mozyqq2O3MCGyYx1aoGhC623V61Zdl8l59efwqIt4Upo85AeFNRktbZMFhFW0+rq/T1/VCDLWqIJNVsStyMNurB9h0uLrxXFwAepcT2VECsjEk9VG1VLIu40maNbfFJADzRBiMpKSL6vtAm8/aSiZ/fBqB/ZXKhJvZrseDfGpS3E36dOUmUn2iijy8PvB8+GQarlBEKv4s6by5WDpwX0Ol3RM0Rj2fXPc5ldsZIBOSYVhJri1ONywAKi+JsCiVSldy0V5WPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kx6DfamcvK4x5EzzwyGpb5bj+bXgU3ak9aYxdeR9Tu8=;
- b=J3/X8No0i7N+RE2PmWaXpc+1OwLoVcPznoBs4xvyspMW+3lWnuLKeJinCreE5SuXR3LfCxoX7+dLW9W5amlLTnD1PScmgGU+rsvCZ91/+x1OdQaelIvMyJBBX1KWwm5o648JWSFJStjJ+GroeQB9xzYLR6b/wy9c+0gHEpKq3ms0/8Zw4ZY1jcxURB3tmgGctc4PJdeIuQH5dpmvjJKHRNbqTlLm+rvWbxRafQ8iwndDuKDG0AQ58ipnEc39GKkO8h3DsM0t0b6cqb6PHWu4L94E4SlcCb6/6apRzMRzOgUljz2D2ddFY+zlnmVb6EfLKXO1XCV8SmN0V5l5712a/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=sony.com; dmarc=pass action=none header.from=sony.com;
- dkim=pass header.d=sony.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Sony.onmicrosoft.com;
- s=selector2-Sony-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kx6DfamcvK4x5EzzwyGpb5bj+bXgU3ak9aYxdeR9Tu8=;
- b=Rf6RDDenqzHXG8Y5B2B1x+TYWB9S8A/9QPzv+p5iwxvzN+YA7M1VIn9jsw5iBO+s+zU2WOJnWO5Phgly5SaNm+DADOtWzuLH7E3lF/K5oX4O4hJw5fupFmZWg+V0Tnu05aIuzM22pAUxllrcaHERl6Esx8LlPoFUsBJf4iao2gw=
-Received: from AS8P193MB1687.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:3fb::21)
- by AS8P193MB1318.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:33c::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Fri, 8 Oct
- 2021 13:11:59 +0000
-Received: from AS8P193MB1687.EURP193.PROD.OUTLOOK.COM
- ([fe80::bd40:de33:7bfb:4771]) by AS8P193MB1687.EURP193.PROD.OUTLOOK.COM
- ([fe80::bd40:de33:7bfb:4771%8]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
- 13:11:59 +0000
-From:   <Peter.Enderborg@sony.com>
-To:     <beaub@linux.microsoft.com>, <rostedt@goodmis.org>,
-        <mhiramat@kernel.org>
-CC:     <linux-trace-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] user_events: Enable user processes to create and write to
- trace events
-Thread-Topic: [PATCH] user_events: Enable user processes to create and write
- to trace events
-Thread-Index: AQHXvEYTxX3HChgP5Uq+OCm0se4KWA==
-Date:   Fri, 8 Oct 2021 13:11:59 +0000
-Message-ID: <2a271ca6-1a01-25f5-1b32-9eb79e2d67ab@sony.com>
-References: <20211005224428.2551-1-beaub@linux.microsoft.com>
-In-Reply-To: <20211005224428.2551-1-beaub@linux.microsoft.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-authentication-results: linux.microsoft.com; dkim=none (message not signed)
- header.d=none;linux.microsoft.com; dmarc=none action=none
- header.from=sony.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cc177a53-05ef-4386-7734-08d98a5d3625
-x-ms-traffictypediagnostic: AS8P193MB1318:
-x-microsoft-antispam-prvs: <AS8P193MB13184E81CA5F2703DC19723686B29@AS8P193MB1318.EURP193.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:2958;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: W8adKCszvtxI1GUMKkAdJ5cfti9yxwYjZghVnxmud1jm6at1tEYgzkdcVsTLOdh3OMQS3NLnLsTlPYQviK8E/0ZH+zGYIAtUEC/Wis+8jx3hfO7xM9fZdopCCa2j3E174yy9NRJkOWSSnIOXNe3uFzgwttWZJ6Gr1yq7HC+FPKm59XZrKu3lH9hXYZmG0ts0HuM8/OawePVR4at+XqkJGRou/0oMI5Haoio+4Nded39TNXkiUZa7N7LGcPC1ZYq4zauyYcQpLXaoYD1xuwI73HlEg79jZI7/TjMxT+UQGLHv9r/4m6NuGYcRoSlJCei7ukSCatygp6x9QxIlVTrsxnmtyPHY5GhCPWJhuqsf4HLrU4k7Cg6sGFfZr5+l6ERnRrcI8Z3T0Uz8z36/6w6gq2xMevhgWia+nDGA7JSSGoW1cLg5ChvZeOXKLprNPkC38nHhFy8iKWsEyXW/QyeJ9XCeo6Ho9dFvk70xds732fJBObxkfOsmmYOpsrPui+ikon45vrsKHNi0OjJoyfzM0UJzWobfGr+/3Eycc3KHyv1CmfyHSetih5FCra6gMahJnx2F0Yo4z2TG9KWIKQaVjbL9g19cn84WiFxd2MQGo87x8FUq/qsJFbv2E1eMqFbhWrSkewV65xjcQzrMIG7jzRgqLt+ZPRObsK3t3o0EVe8li0CHY06+f4O0NxcarFGWWZynIiR6N9MbgBwDONVvI9hGliZlWezuhVQivjcWXYd34phQ+ATrcvipWi1/YOmteiZoKn01C+v/g62hipLAHQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8P193MB1687.EURP193.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(316002)(66446008)(64756008)(66556008)(66476007)(2616005)(66946007)(83380400001)(54906003)(110136005)(31686004)(76116006)(91956017)(38100700002)(5660300002)(53546011)(2906002)(186003)(6486002)(38070700005)(8936002)(8676002)(71200400001)(36756003)(6506007)(6512007)(86362001)(31696002)(4744005)(26005)(508600001)(4326008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cHFic2lubkJVQW5FWUgxKzFDR2M3YktBencyTUFQQjFzZmJZSWE0RmloNmht?=
- =?utf-8?B?bXRwV2ZaY2lUL3lkQzlvZEdEQmIvMnRBRE42Nk15aGxiblc1TktvbGhhblll?=
- =?utf-8?B?bEovaGRYQjg2a0JYUmdkbmR2a0h6RjZjZEFyeUlZZ29zbTdDWFBSQUwxVlEr?=
- =?utf-8?B?YTJsUkxueDkvWXdLQjAzaWJnUFRtZFdwVmF0Q2ZGdGNmaTB1bitURkZUSDR1?=
- =?utf-8?B?QTdncVNkRUFhK0dLeFVNNldTSmxRa0NPWjRWVm5BUkZ0YWRERmtBSndwS2lQ?=
- =?utf-8?B?WG5qUHJaTlN2SDFhNi8vU3h1ZG9KNkVkZUp2TWNZbjFtWlJlc0dIZktRdU1K?=
- =?utf-8?B?dC9xNUc5amMwLys2MTdIQTJYUkJ0OWY4Q3pCSVp3NkV0ZnQ3UFJHMGdYK3ZY?=
- =?utf-8?B?NUErbGhvZDVBZTN1NzdxblNDcG9SQTVrdFBlQWUzT3JwRmJoVEl3UWFWMkNj?=
- =?utf-8?B?S09ianNORTc4VGJqNkJnTjZwMzBRNVVkVVhCU3ZuYm0yaWswQnBNdEt1bmNy?=
- =?utf-8?B?U0p0WWtHbU9qenBETGV5N1pSTythajR4aVFqVHM1d21pSmZCbGJJbTlUMjVy?=
- =?utf-8?B?RTRFUnNTb1REME90MWdnOVN4NXJvWld4UThwYmI4OUhjTHV6bXFJcE96RzBK?=
- =?utf-8?B?aEorR3RQcUFmTUxOMTU3VWszRVNaREtWWkNzdkdRcUtXaVBPUVo5a08zeGNl?=
- =?utf-8?B?U3ZadE4xOXN3c0J2cHFEcnJQZ1liRFY3WjY0RGRZSG1zOW1uL0dUN3lRa29S?=
- =?utf-8?B?NmVhRExHYUhZOFRTU2hDTWpYbFhPR2xPeE9DNnd6Vy9uM2d2b1gya09OL1JN?=
- =?utf-8?B?S3U1MkhYNU5RMFJTWnNEbnBwQjhjVHAxek8zQWxxTnFQUlh6aGpVdlRZcVlh?=
- =?utf-8?B?a2NtTFhQYXMrZ1BRZEhXZnJSdVRRZzBrRjU5RmZCeDNiTmsxak5wank0QVhG?=
- =?utf-8?B?R1Y4RDhGMFlpL1lOc1F4MGxxL2xjclFiQWZJQUtHQ25Iem0xcUJFU1VqMjh6?=
- =?utf-8?B?ajQvckpEaFBsdzhaeExuTDZKTjZDUUF6RGdiZDluWmE3bTVnZDExbDI0RkMz?=
- =?utf-8?B?Q3d3alYvZjV5UzB0VEpRcE1SSHFtSzNNd1JkT0ViZ1hpak53N1B3VzZ5NThh?=
- =?utf-8?B?aVhqeTVBcUl6UGs5Vlk2QjhNZnJoa0FCL2xXd3kzbXV2WGJ0WGdIdHQyQndM?=
- =?utf-8?B?aThFRWxoRllnYWJKYnM4ZFdSbUJidlB4cHcxNGhWWDBaTExaV0FUdWlwd2hH?=
- =?utf-8?B?RHk4MGlnZFdWRld5VGtHRHV5Q2o3VlBvaHlITW0wLzhwWmdiL3p5K1dzRytw?=
- =?utf-8?B?N2ErVWlqU2tNZDBzazI0STVIWUJzUFZZSWFtcUdRMEhYRUhkRXVpQUM5aThn?=
- =?utf-8?B?K3E2MFhWcCt0TWpkekJNU1VNV21vbmVkRE1IUHc3SlVla2Y1Y0pwbDgzMCtk?=
- =?utf-8?B?K1UrSWNnS202aHFPbTNsenl5YjZPa2dVMVIzM3hjZ2NtalJGSmZXQ3hBYmdF?=
- =?utf-8?B?SSt3ZUxreG1LVUtjc1RXc3ZiSDNxY1hHQW1qL1k1c1h0NmJWYmFJRHNhc0N4?=
- =?utf-8?B?SWR4THJUczdCb0JwclJaSkR0UUdMQVpjdzQ2U1YrMlZ6a2lUYW5vbWkwWXFO?=
- =?utf-8?B?OWhhbjQ0OW05eDEyUU1mTExPQjduZEJYdDBJYjNRdGJlcFZXRW5vMTNocWZi?=
- =?utf-8?B?OHFwUVV0NGFhRU9YRDdpcHJuVWFxSm4yZVIrd2krMm9PbUhhQk41N1ZQWFNI?=
- =?utf-8?Q?OFYVuTSoKVnwGFPRiDjOrJNpyZqPCqEH0pQHe7Q?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D16847DEE9511149B449B4E48D5B5539@EURP193.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Fri, 8 Oct 2021 09:14:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633698738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WnYTeFX7lQqI8TAg+qtycd8pv7aRimkmtdXDeDpWrKI=;
+        b=BbEw1mGeR+dE0dUQJW6Cag+q9mOD1ybagtbRtY1NeUwRalN5UcFe6Z4L/5BY3qbv8740uQ
+        k6PLMfVJ30TgwwRI59FIufTjz3FhXKCt6LFMcwiDKVfeYlPd+KU8fUSxPL2KiorbkGWBYM
+        q5QRf7E3XDXDd1RUtXEtQF7zIMj/uyE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-9mElWLOiMAuF7SaWydwe4w-1; Fri, 08 Oct 2021 09:12:07 -0400
+X-MC-Unique: 9mElWLOiMAuF7SaWydwe4w-1
+Received: by mail-wr1-f71.google.com with SMTP id a10-20020a5d508a000000b00160723ce588so7284573wrt.23
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:12:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WnYTeFX7lQqI8TAg+qtycd8pv7aRimkmtdXDeDpWrKI=;
+        b=lO5NbRFrAl5ALxpx2xarc8KPriyxyRuhooyM7RRJgvli2Tj8MvVwWjTrRTFwUGua6M
+         VtYwYddMuAd2AivdLB1xifS1TZDXZc7GI9hHFzrEgAq2/nwZKuFOt95AhQR0QxidNOpA
+         7nAE1EAAAARamcOzqVhiABpUFP7nEhcCHvvR2IFTI2JNFwBwq5jKoEn/95eh4rJCyUTh
+         MYLix+Il7gGQN0mEUUJ7uJkRngL/5ywBTEuKaaEtKUJfqU4dmgeN4SKqWK6sUcp3ZQRA
+         KYtonEjSj5FHltOwv17lgGhEOtMsCc/28PANPVYOhp7FRt+mkmwMV0W2WWn3hxXuX7he
+         rKQg==
+X-Gm-Message-State: AOAM531oT8R/hYemMVV4NzmlVBkoxQ/3EnVTc+g1JxZwUddKh4/Rw8Uf
+        5SPlXLU/cI365Yb/anuD+vR+XsGEVtHQTZlqW9f06KU2FAvkjhGvUfcQWOQTVeK+tNKPYMzjp0a
+        zRDsJmZu4zi54OuACT8fX7249
+X-Received: by 2002:a05:600c:a49:: with SMTP id c9mr3367817wmq.159.1633698725747;
+        Fri, 08 Oct 2021 06:12:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCSO/Avnl4s1uQbwWoYbdYzpDTgr0ryONsaTkgBvKCfsjZ230gSR23hW1R7JgDYoCIz7QQig==
+X-Received: by 2002:a05:600c:a49:: with SMTP id c9mr3367782wmq.159.1633698725546;
+        Fri, 08 Oct 2021 06:12:05 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id k17sm2494501wrq.7.2021.10.08.06.12.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 06:12:05 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 15:12:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     acme@kernel.org, john.garry@huawei.com, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org, Nick.Forrington@arm.com,
+        Andrew.Kilroy@arm.com, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] perf tools: Make the JSON parser more conformant
+ when in strict mode
+Message-ID: <YWBDo5Ciq1hOIxLq@krava>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <20211007110543.564963-3-james.clark@arm.com>
+ <YV8z306sBJQsdNNR@krava>
+ <2e14963b-cb98-f508-7067-255fdbd36bdb@arm.com>
 MIME-Version: 1.0
-X-OriginatorOrg: sony.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8P193MB1687.EURP193.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc177a53-05ef-4386-7734-08d98a5d3625
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2021 13:11:59.3129
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 66c65d8a-9158-4521-a2d8-664963db48e4
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: kUXdTz8zkdEQ6SDCClyEzXy/eX+5wbLEe8drDOjO6b5+JwqkIlXEZmICVPrvMwjJq4EgvompUITInm4jRVTssALF+tPgvsYKdFsyOhWAs9E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1318
-X-Proofpoint-GUID: t732TsRe0DMrYHSHwlKBFtGOL-xDNQd_
-X-Proofpoint-ORIG-GUID: vMPVRunrOSyeBihbsoKA1GQZjEV7RTbE
-X-Sony-Outbound-GUID: t732TsRe0DMrYHSHwlKBFtGOL-xDNQd_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- malwarescore=0 suspectscore=0 priorityscore=1501 impostorscore=0
- phishscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0 mlxscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110080080
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e14963b-cb98-f508-7067-255fdbd36bdb@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTAvNi8yMSAxMjo0NCBBTSwgQmVhdSBCZWxncmF2ZSB3cm90ZToNCj4gVXNlciBtb2RlIHBy
-b2Nlc3NlcyB0aGF0IHdpc2ggdG8gdXNlIHRyYWNlIGV2ZW50cyB0byBnZXQgZGF0YSBpbnRvDQo+
-IGZ0cmFjZSwgcGVyZiwgZUJQRiwgZXRjIGFyZSBsaW1pdGVkIHRvIHVwcm9iZXMgdG9kYXkuIFRo
-ZSB1c2VyIGV2ZW50cw0KPiBmZWF0dXJlcyBlbmFibGVzIGFuIEFCSSBmb3IgdXNlciBtb2RlIHBy
-b2Nlc3NlcyB0byBjcmVhdGUgYW5kIHdyaXRlIHRvDQo+IHRyYWNlIGV2ZW50cyB0aGF0IGFyZSBp
-c29sYXRlZCBmcm9tIGtlcm5lbCBsZXZlbCB0cmFjZSBldmVudHMuIFRoaXMNCj4gZW5hYmxlcyBh
-IGZhc3RlciBwYXRoIGZvciB0cmFjaW5nIGZyb20gdXNlciBtb2RlIGRhdGEgYXMgd2VsbCBhcyBv
-cGVucw0KPiBtYW5hZ2VkIGNvZGUgdG8gcGFydGljaXBhdGUgaW4gdHJhY2UgZXZlbnRzLCB3aGVy
-ZSBzdHViIGxvY2F0aW9ucyBhcmUNCj4gZHluYW1pYy4NCg0KSXMgdGhpcyBub3QgdmVyeSBtdWNo
-IHdoYXQgdGhlIHRyYWNlX21hcmtlciBkbz8NCg0K
+On Fri, Oct 08, 2021 at 11:08:25AM +0100, James Clark wrote:
+> 
+> 
+> On 07/10/2021 18:52, Jiri Olsa wrote:
+> > On Thu, Oct 07, 2021 at 12:05:41PM +0100, James Clark wrote:
+> >> Return an error when a trailing comma is found or a new item is
+> >> encountered before a comma or an opening brace. This ensures that the
+> >> perf json files conform more closely to the spec at https://www.json.org
+> >>
+> >> Signed-off-by: James Clark <james.clark@arm.com>
+> >> ---
+> >>  tools/perf/pmu-events/jsmn.c | 42 ++++++++++++++++++++++++++++++++++--
+> >>  1 file changed, 40 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
+> >> index 11d1fa18bfa5..8124d2d3ff0c 100644
+> >> --- a/tools/perf/pmu-events/jsmn.c
+> >> +++ b/tools/perf/pmu-events/jsmn.c
+> >> @@ -176,6 +176,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  	jsmnerr_t r;
+> >>  	int i;
+> >>  	jsmntok_t *token;
+> >> +#ifdef JSMN_STRICT
+> > 
+> > I might have missed some discussion on this, but do we need the
+> > JSMN_STRICT define, if you enable it in the next patch?
+> > why can't we be more strict by default.. do you plan to disable
+> > it in future?
+> 
+> I didn't plan on disabling it, I was just trying to keep to the existing style of the
+> jsmn project.
+> 
+> I could have added the trailing comma detection by default and not inside any
+> #ifdef JSMN_STRICT blocks, but I would like to enable JSMN_STRICT anyway, because it
+> enables some additional built in checking that was already there. So I thought it
+> made sense to put my new strict stuff inside the existing strict option.
+> 
+> One option would be to remove all (including the existing) #ifdef JSMN_STRICT blocks
+> and have everything strict by default. But it would be a further deviation from jsmn.
+
+ok, I think it makes sense to have JSMN_STRICT then..
+thanks for explanation
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+jirka
+
+> 
+> Thanks
+> James
+> 
+> > 
+> > thanks,
+> > jirka
+> > 
+> >> +	/*
+> >> +	 * Keeps track of whether a new object/list/primitive is expected. New items are only
+> >> +	 * allowed after an opening brace, comma or colon. A closing brace after a comma is not
+> >> +	 * valid JSON.
+> >> +	 */
+> >> +	int expecting_item = 1;
+> >> +#endif
+> >>  
+> >>  	for (; parser->pos < len; parser->pos++) {
+> >>  		char c;
+> >> @@ -185,6 +193,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  		switch (c) {
+> >>  		case '{':
+> >>  		case '[':
+> >> +#ifdef JSMN_STRICT
+> >> +			if (!expecting_item)
+> >> +				return JSMN_ERROR_INVAL;
+> >> +#endif
+> >>  			token = jsmn_alloc_token(parser, tokens, num_tokens);
+> >>  			if (token == NULL)
+> >>  				return JSMN_ERROR_NOMEM;
+> >> @@ -196,6 +208,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  			break;
+> >>  		case '}':
+> >>  		case ']':
+> >> +#ifdef JSMN_STRICT
+> >> +			if (expecting_item)
+> >> +				return JSMN_ERROR_INVAL;
+> >> +#endif
+> >>  			type = (c == '}' ? JSMN_OBJECT : JSMN_ARRAY);
+> >>  			for (i = parser->toknext - 1; i >= 0; i--) {
+> >>  				token = &tokens[i];
+> >> @@ -219,6 +235,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  			}
+> >>  			break;
+> >>  		case '\"':
+> >> +#ifdef JSMN_STRICT
+> >> +			if (!expecting_item)
+> >> +				return JSMN_ERROR_INVAL;
+> >> +			expecting_item = 0;
+> >> +#endif
+> >>  			r = jsmn_parse_string(parser, js, len, tokens,
+> >>  					      num_tokens);
+> >>  			if (r < 0)
+> >> @@ -229,11 +250,15 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  		case '\t':
+> >>  		case '\r':
+> >>  		case '\n':
+> >> -		case ':':
+> >> -		case ',':
+> >>  		case ' ':
+> >>  			break;
+> >>  #ifdef JSMN_STRICT
+> >> +		case ':':
+> >> +		case ',':
+> >> +			if (expecting_item)
+> >> +				return JSMN_ERROR_INVAL;
+> >> +			expecting_item = 1;
+> >> +			break;
+> >>  			/*
+> >>  			 * In strict mode primitives are:
+> >>  			 * numbers and booleans.
+> >> @@ -253,6 +278,9 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  		case 'f':
+> >>  		case 'n':
+> >>  #else
+> >> +		case ':':
+> >> +		case ',':
+> >> +			break;
+> >>  			/*
+> >>  			 * In non-strict mode every unquoted value
+> >>  			 * is a primitive.
+> >> @@ -260,6 +288,12 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  			/*FALL THROUGH */
+> >>  		default:
+> >>  #endif
+> >> +
+> >> +#ifdef JSMN_STRICT
+> >> +			if (!expecting_item)
+> >> +				return JSMN_ERROR_INVAL;
+> >> +			expecting_item = 0;
+> >> +#endif
+> >>  			r = jsmn_parse_primitive(parser, js, len, tokens,
+> >>  						 num_tokens);
+> >>  			if (r < 0)
+> >> @@ -282,7 +316,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> >>  			return JSMN_ERROR_PART;
+> >>  	}
+> >>  
+> >> +#ifdef JSMN_STRICT
+> >> +	return expecting_item ? JSMN_ERROR_INVAL : JSMN_SUCCESS;
+> >> +#else
+> >>  	return JSMN_SUCCESS;
+> >> +#endif
+> >>  }
+> >>  
+> >>  /*
+> >> -- 
+> >> 2.28.0
+> >>
+> > 
+> 
+
