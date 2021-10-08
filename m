@@ -2,176 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57002426DFD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079BF426E05
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243247AbhJHPrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243073AbhJHPrS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:47:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 621C26101A;
-        Fri,  8 Oct 2021 15:45:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633707923;
-        bh=MKXFIqcB87xB3g54OhwzxzavC4tbqq259N9A9C5dUX4=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=q+3Oxjlo54UFrXeM7UGZCThf9cr76myGOK0EJj5LGxbH06P6gZLP7M75NVwZ8Z5HB
-         Rjg2L8lwb/y+lAZOYOQgsEYsw9zkG6B2vgRwvWN5q11EC/nu0PTA8YdZal4loZieGM
-         y3u4B0TE9wN+Y9wInT0uKTPSu0sbvxJQ+Z9iyaqWc1KPUWE7AFtdX81xn91TKXr2Ol
-         K8u5SJ7FlZ+O41Bqm3CD0yO0ePQ8Spm7RlPygKQfm33l12Kmw2JC/4xuK1ZXkjdkl7
-         Ba43LhMeZZdO8h/V58p69kRWkItssd19DOfChHZlx2fK3vM+leNLcNe02qjSSZif4L
-         UAoi+A/GBm/nA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 35E2C5C06B9; Fri,  8 Oct 2021 08:45:23 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 08:45:23 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <julien.thierry@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yuichi Ito <ito-yuichi@fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
-Message-ID: <20211008154523.GP880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210924132837.45994-1-kernelfans@gmail.com>
- <20210924132837.45994-2-kernelfans@gmail.com>
- <20210924175306.GB42068@C02TD0UTHF1T.local>
- <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
- <20210930133257.GB18258@lakrids.cambridge.arm.com>
- <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
+        id S243107AbhJHPsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243073AbhJHPsj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:48:39 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8785AC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:46:44 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id m21so3455945pgu.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5ctiMOgcKNZbwO+I+bqoe2efiKehJePIhv+cYstntJA=;
+        b=wV8L3vXA4wnMlHP7d3ZvnoXIXRXMZHy83oyPI01WT63WO4HeMg59TXqtqkMjJ8Cq5f
+         +ykidzi9ffxYunMNLRGqPC4miH6GYlkaGrEpgdF7V1RwvaxIjdOeCX+Qt1X7N1dKlBkg
+         uRrLa8DMbtQ4uiAGXXGqM4aEynitnk4bVHeZokSjKJg63i8W4t7OOGwvtwWMGRUPudbE
+         YfT+I3P9KPIZ2/rVaRgyhzwAB0M23xNbsaUzDbPcgHFlq0vWkZc01Db6SindT0urkgD6
+         GInkOuzUuLk5G2Lc7Mv9KRcsUKtSVQbtVKX3GUMQ8Hpyu4OYLSQsIu3bgjJ1+VdYH2hL
+         /4Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5ctiMOgcKNZbwO+I+bqoe2efiKehJePIhv+cYstntJA=;
+        b=ctBcRf6T2H5TdsYgcH5sVchvdyQYMkGP++axS1pzz2hUS4MNj9a2NXxPM9xa7SHUsP
+         zj17jF743T4aqxJJxZOdQ3AMWnzBYGtnOKIthviqDYOzpPI+sG8smOClDT0Y8tfsIB2O
+         Lc9THLNxzvCeDvEnJc2CFeU3h0mxxVG956rLYRUhgFtUujZ1R8k4t/pR1aK5JlYKXpT0
+         56o1frr7Rfx9OXP9qGK26WsJXAjJnhA4wWe4ESDfKTaeCKiuL9z9PUD6tSa/YPmOOBHR
+         aq9SooQ4VQnAMfaoQmjbwHnvGQSXiRD5nk9ufKaIdJpaRA0NY9nqCdhPmvh/WXjm8Hjb
+         /dcw==
+X-Gm-Message-State: AOAM532DeWYmIkS/YBCXcKUzi7/N1A2vTk5+esf7/pTnfekrItyaNlNQ
+        CtiLhT5bPG9U+nkMmmOhNBY8vFOUFbPsIspLx7aA3Q==
+X-Google-Smtp-Source: ABdhPJxCIs63N1AEVoE9JLiVqD8Rt3LAnvm0WoiU5xo+0y+SBYvO324mUTInFk7lVWtwvrA/Z8x2JuqxPbscKJasGn8=
+X-Received: by 2002:a63:3643:: with SMTP id d64mr5395570pga.110.1633708004080;
+ Fri, 08 Oct 2021 08:46:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
+References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
+ <20210930030557.1426-3-bjorn.andersson@linaro.org> <YV5vIyhy+m+Nx/gQ@ripper>
+In-Reply-To: <YV5vIyhy+m+Nx/gQ@ripper>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 8 Oct 2021 17:46:33 +0200
+Message-ID: <CAG3jFyuP_QDKP6iUZmte3u4s=HbxBPx2iDTR8uh=Sc=24hguVA@mail.gmail.com>
+Subject: Re: [PATCH v6 3/3] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Uwe Kleine-K?nig" <u.kleine-koenig@pengutronix.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org, MSM <linux-arm-msm@vger.kernel.org>,
+        Doug Anderson <dianders@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 12:01:25PM +0800, Pingfan Liu wrote:
-> Sorry that I missed this message and I am just back from a long
-> festival.
-> 
-> Adding Paul for RCU guidance.
+On Thu, 7 Oct 2021 at 05:51, Bjorn Andersson <bjorn.andersson@linaro.org> wrote:
+>
+> On Wed 29 Sep 20:05 PDT 2021, Bjorn Andersson wrote:
+>
+> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
+> > with the primary purpose of controlling the backlight of the attached
+> > panel. Add an implementation that exposes this using the standard PWM
+> > framework, to allow e.g. pwm-backlight to expose this to the user.
+> >
+> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> Any feedback on this?
 
-Didn't the recent patch series cover this, or is this a new problem?
+I think this series looks good, and passes all of the normal sanity
+checks. So I'd like to merge it.
 
-							Thanx, Paul
+Uwe: Can I have your ack on patch 1?
 
-> On Thu, Sep 30, 2021 at 02:32:57PM +0100, Mark Rutland wrote:
-> > On Sat, Sep 25, 2021 at 11:39:55PM +0800, Pingfan Liu wrote:
-> > > On Fri, Sep 24, 2021 at 06:53:06PM +0100, Mark Rutland wrote:
-> > > > On Fri, Sep 24, 2021 at 09:28:33PM +0800, Pingfan Liu wrote:
-> > > > > In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
-> > > > > irq, which makes the condition !interrupts_enabled(regs) fail to detect
-> > > > > the NMI. This will cause a mistaken account for irq.
-> > > > 
-> > > Sorry about the confusing word "account", it should be "lockdep/rcu/.."
-> > > 
-> > > > Can you please explain this in more detail? It's not clear which
-> > > > specific case you mean when you say "NMI interrupts an irq", as that
-> > > > could mean a number of distinct scenarios.
-> > > > 
-> > > > AFAICT, if we're in an IRQ handler (with NMIs unmasked), and an NMI
-> > > > causes a new exception we'll do the right thing. So either I'm missing a
-> > > > subtlety or you're describing a different scenario..
-> > > > 
-> > > > Note that the entry code is only trying to distinguish between:
-> > > > 
-> > > > a) This exception is *definitely* an NMI (because regular interrupts
-> > > >    were masked).
-> > > > 
-> > > > b) This exception is *either* and IRQ or an NMI (and this *cannot* be
-> > > >    distinguished until we acknowledge the interrupt), so we treat it as
-> > > >    an IRQ for now.
-> > > > 
-> > > b) is the aim.
-> > > 
-> > > At the entry, enter_el1_irq_or_nmi() -> enter_from_kernel_mode()->rcu_irq_enter()/rcu_irq_enter_check_tick() etc.
-> > > While at irqchip level, gic_handle_irq()->gic_handle_nmi()->nmi_enter(),
-> > > which does not call rcu_irq_enter_check_tick(). So it is not proper to
-> > > "treat it as an IRQ for now"
-> > 
-> > I'm struggling to understand the problem here. What is "not proper", and
-> > why?
-> > 
-> > Do you think there's a correctness problem, or that we're doing more
-> > work than necessary? 
-> > 
-> I had thought it just did redundant accounting. But after revisiting RCU
-> code, I think it confronts a real bug.
-> 
-> > If you could give a specific example of a problem, it would really help.
-> > 
-> Refer to rcu_nmi_enter(), which can be called by
-> enter_from_kernel_mode():
-> 
-> ||noinstr void rcu_nmi_enter(void)
-> ||{
-> ||        ...
-> ||        if (rcu_dynticks_curr_cpu_in_eqs()) {
-> ||
-> ||                if (!in_nmi())
-> ||                        rcu_dynticks_task_exit();
-> ||
-> ||                // RCU is not watching here ...
-> ||                rcu_dynticks_eqs_exit();
-> ||                // ... but is watching here.
-> ||
-> ||                if (!in_nmi()) {
-> ||                        instrumentation_begin();
-> ||                        rcu_cleanup_after_idle();
-> ||                        instrumentation_end();
-> ||                }
-> ||
-> ||                instrumentation_begin();
-> ||                // instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-> ||                instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-> ||                // instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> ||                instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-> ||
-> ||                incby = 1;
-> ||        } else if (!in_nmi()) {
-> ||                instrumentation_begin();
-> ||                rcu_irq_enter_check_tick();
-> ||        } else  {
-> ||                instrumentation_begin();
-> ||        }
-> ||        ...
-> ||}
-> 
-> There is 3 pieces of code put under the
-> protection of if (!in_nmi()). At least the last one
-> "rcu_irq_enter_check_tick()" can trigger a hard lock up bug. Because it
-> is supposed to hold a spin lock with irqoff by
-> "raw_spin_lock_rcu_node(rdp->mynode)", but pNMI can breach it. The same
-> scenario in rcu_nmi_exit()->rcu_prepare_for_idle().
-> 
-> As for the first two "if (!in_nmi())", I have no idea of why, except
-> breaching spin_lock_irq() by NMI. Hope Paul can give some guide.
-> 
-> 
-> Thanks,
-> 
-> 	Pingfan
-> 
-> 
-> > I'm aware that we do more work than strictly necessary when we take a
-> > pNMI from a context with IRQs enabled, but that's how we'd intended this
-> > to work, as it's vastly simpler to manage the state that way. Unless
-> > there's a real problem with that approach I'd prefer to leave it as-is.
-> > 
-> > Thanks,
-> > Mark.
-> > 
-> > _______________________________________________
-> > linux-arm-kernel mailing list
-> > linux-arm-kernel@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+Rob.
