@@ -2,72 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C563342736A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AD242739A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243549AbhJHWKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:10:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243506AbhJHWKm (ORCPT
+        id S243658AbhJHWWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:22:55 -0400
+Received: from mailgw01.mediatek.com ([216.200.240.184]:49937 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243610AbhJHWWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:10:42 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F03AC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 15:08:46 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so7627132otv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 15:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=eRM/GW7Nz2OFw2k17twQGnIo0wF+tOa2AlGFVMS86EM=;
-        b=F0dXedi0IAD47x8czJsAGMXrivcfwYxv4pkmpOdt840ykD/TvJNwmnRHgY3tYnVuAV
-         9rK2pF290E+2PCT6YQz0gOaYFRhycaDZZi3lAmei0A1L+wMl7EC9I9SmUT7P9iA1oLcA
-         sRYqEVqquRbwepfOiBt6WkbATF8yFjWaMxQ1s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=eRM/GW7Nz2OFw2k17twQGnIo0wF+tOa2AlGFVMS86EM=;
-        b=LKQy9my+nBB4xBKwq1mrkHU5x1lK476xiKmtj2tOuqSz5vufxdelmy7DlEV1e8L/LL
-         MVe8N8+sgV7/sEvwtEDCnIixa1HNlQjBCHs/MIqyfkp8vtNM+iElga3h0I/0DOYEZDwR
-         KIR9iNqowD7lThLsaGTVqEjhnndhr/Rv3N1Q5KUDPzR730p3vlKF2j4BHLDGw0MD9R6H
-         CA1Tn0KHfmeIuOPITfeZOtmXgsMPmHEKmF2uYGlkb+RxDMwnnFHZn5I5h6lp4fp83jW5
-         M9qhkKsC8dweYLN2fp1Z9JSzSflVzy3KzZGg6r1dEV+b56YFqgcikite14AWcrA2017+
-         YWKg==
-X-Gm-Message-State: AOAM530aU52icz35/C4lWaQkLNSkc9M4B1qRxjlyHULROxPhCz6Z5XcS
-        XWiPqdoc/qE1L84an+MKcuwJNZbMJ80DGtkjqUliVpPioP4=
-X-Google-Smtp-Source: ABdhPJz+XzsxfBUPNSFtRuDtmegWrFGX/Yeg7TOOT9hLgVYsP64+/r5mtnoQas58CTF5G3R7gSZlZ6JOVqs0ba2v9aE=
-X-Received: by 2002:a9d:12f4:: with SMTP id g107mr6848914otg.77.1633730925558;
- Fri, 08 Oct 2021 15:08:45 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 8 Oct 2021 18:08:44 -0400
+        Fri, 8 Oct 2021 18:22:51 -0400
+X-Greylist: delayed 305 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Oct 2021 18:22:48 EDT
+X-UUID: 2b5793be12d442638ea72d1a4bfc03c5-20211008
+X-UUID: 2b5793be12d442638ea72d1a4bfc03c5-20211008
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 883912663; Fri, 08 Oct 2021 15:15:41 -0700
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 Oct 2021 15:10:23 -0700
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 9 Oct 2021 06:10:23 +0800
+From:   <sean.wang@mediatek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
+CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
+        <Soul.Huang@mediatek.com>, <YN.Chen@mediatek.com>,
+        <Leon.Yen@mediatek.com>, <Eric-SY.Chang@mediatek.com>,
+        <Deren.Wu@mediatek.com>, <km.lin@mediatek.com>,
+        <robin.chiu@mediatek.com>, <Eddie.Chen@mediatek.com>,
+        <ch.yeh@mediatek.com>, <posh.sun@mediatek.com>,
+        <ted.huang@mediatek.com>, <Eric.Liang@mediatek.com>,
+        <Stella.Chang@mediatek.com>, <Tom.Chou@mediatek.com>,
+        <steve.lee@mediatek.com>, <jsiuda@google.com>,
+        <frankgor@google.com>, <jemele@google.com>,
+        <abhishekpandit@google.com>, <michaelfsun@google.com>,
+        <mcchou@chromium.org>, <shawnku@google.com>,
+        <linux-bluetooth@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Sean Wang <objelf@gmail.com>
+Subject: [PATCH v1 00/10] Add MT7921 SDIO Bluetooth support
+Date:   Sat, 9 Oct 2021 06:10:07 +0800
+Message-ID: <cover.1633728573.git.objelf@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-In-Reply-To: <20211008113839.v3.2.I187502fa747bc01a1c624ccf20d985fdffe9c320@changeid>
-References: <20211008113839.v3.1.Ibada67e75d2982157e64164f1d11715d46cdc42c@changeid>
- <20211008113839.v3.2.I187502fa747bc01a1c624ccf20d985fdffe9c320@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 8 Oct 2021 18:08:44 -0400
-Message-ID: <CAE-0n50UhQ75iDcdVDu6V6jv9tXLsyaW5NRJ6i=caf0uMNcueA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] arm64: dts: sc7180: Support Parade ps8640 edp bridge
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>
-Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-10-08 11:39:35)
-> Add a dts fragment file to support the sc7180 boards with the second
-> source edp bridge, Parade ps8640.
->
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+From: Sean Wang <objelf@gmail.com>
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+The patchset adds the MT7921 SDIO (MT7921s) Blutooth support to btmtksdio
+driver, which basically are made up of 3 parts.
+
+PART 1: patch 1-3 to create btmtk module to rely on
+
+These are preliminary patches for MT7921s driver to move the common
+firmware download procedure and the common functions from MT7921u to btmtk
+module to make MT7921u, MT7921s and other devices can share with to reduce
+the unnecessary duplicated code being created.
+
+PART 2: patch 4-8 to refactor btmtksdio prior to adding MT7921s
+
+These are preliminary patches for MT7921s driver to refactor the current
+btmtksdio to make MT7921S is able to coexist with the devices the current
+driver can support with the generic code and improve the performance on
+packet transmitting and receving process.
+
+PART 3: patch 9-10 to add specific MT7921s logic
+
+Add the specific logic regarding to MT7921s bluetooth.
+
+Mark-yw Chen (1):
+  Bluetooth: btmtksdio: transmit packet according to the status TX_EMPTY
+
+Sean Wang (9):
+  Bluetooth: mediatek: add BT_MTK module
+  Bluetooth: btmtksido: rely on BT_MTK module
+  Bluetooth: btmtksdio: add .set_bdaddr support
+  Bluetooth: btmtksdio: explicitly set WHISR as write-1-clear
+  Bluetooth: btmtksdio: move interrupt service to work
+  Bluetooth: btmtksdio: update register CSDIOCSR operation
+  Bluetooth: btmtksdio: use register CRPLR to read packet length
+  mmc: add MT7921 SDIO identifiers for MediaTek Bluetooth devices
+  Bluetooth: btmtksdio: add MT7921s Bluetooth support
+
+ drivers/bluetooth/Kconfig     |   6 +
+ drivers/bluetooth/Makefile    |   1 +
+ drivers/bluetooth/btmtk.c     | 288 ++++++++++++++++++++
+ drivers/bluetooth/btmtk.h     | 101 +++++++
+ drivers/bluetooth/btmtksdio.c | 496 +++++++++++++++++-----------------
+ drivers/bluetooth/btusb.c     | 331 +----------------------
+ include/linux/mmc/sdio_ids.h  |   1 +
+ 7 files changed, 647 insertions(+), 577 deletions(-)
+ create mode 100644 drivers/bluetooth/btmtk.c
+ create mode 100644 drivers/bluetooth/btmtk.h
+
+--
+2.25.1
+
