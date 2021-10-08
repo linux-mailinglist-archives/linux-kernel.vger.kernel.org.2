@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19189426EF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53296426EF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhJHQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:29:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34282 "EHLO
+        id S230116AbhJHQbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:31:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20886 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230118AbhJHQ3S (ORCPT
+        by vger.kernel.org with ESMTP id S229606AbhJHQbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:29:18 -0400
+        Fri, 8 Oct 2021 12:31:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633710442;
+        s=mimecast20190719; t=1633710544;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=pknefudsHGI016f0bFGfCECMYB0JCq/ZzGMi/undZ+0=;
-        b=YtX0+EXOV9ldWKZ6acWbDpEfZQ+q2m9WFwAmhADKp/40b4CW+SlmtHrPEREg+WkCIw4YRB
-        8YnR9yWDbRZiVpDN5SSEtMKUWXnCKShDByhU9QhMNMVfY3CjI2Skmnuxh2gNOhp9Pty28J
-        KxcnrWScUhz9UrTq9VFhg1xYyRzVju8=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-564-pgM3GM2cMvipS0aSq41bOw-1; Fri, 08 Oct 2021 12:27:11 -0400
-X-MC-Unique: pgM3GM2cMvipS0aSq41bOw-1
-Received: by mail-io1-f71.google.com with SMTP id t6-20020a6b0906000000b005d9a34ee5b9so7833361ioi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:27:11 -0700 (PDT)
+        bh=cktPHwlIBduk1qQVHtfl/KFOQmkbO6KNVrz0QKkt91g=;
+        b=SeddzSHOlXcy8jgLujPgODzbH2TA4O4rIHAdCyfi1CQpIGEyzN1sfTNYEbG4Lmh2nyEQy+
+        BeCimx3QlDoo285PpGwQ+Ld2UggmXbUlpw1OdnIuy1HdQZbQzjwemoucVv38PWAvHbZr/2
+        yUc0PRGRPAbPTcricMyMkdXzDmBDIjk=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-cA56lQxTM7WPFeczoVrfcg-1; Fri, 08 Oct 2021 12:28:29 -0400
+X-MC-Unique: cA56lQxTM7WPFeczoVrfcg-1
+Received: by mail-oi1-f200.google.com with SMTP id i1-20020aca2b01000000b0027684cd508cso5738516oik.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:28:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pknefudsHGI016f0bFGfCECMYB0JCq/ZzGMi/undZ+0=;
-        b=UJJ240vT90G2MrXyr9U/033FqS6PN7NcN5JPo66Jzo2ayUk/PxpJgZ3puLW4PEKUZO
-         DkKLPi7Lin+E0B16y55fczLThRiF4Y0nHw8cPoPLj4YQB+x5k/rd3lP48zzUU+cyxrt+
-         vlp3F0N2tGfsj3bKBf12VSZv6gbVH6Bm1uBjxHyREd8ZYZaMJCWTDj5NSuoejphQYTbc
-         VtrfvOdAX7Oe92TeB65CWBS33u3I+EuZozUf59Pqgg8jzuJF0naJbu+Qm2KSOZmfDXBs
-         /zccTkmg2vfNMmz23X88dc+WmXyW4wuK8iD8MJIPKpmO5+h0n4vQhNdsxpQcfpRvWDBJ
-         YIqg==
-X-Gm-Message-State: AOAM533gYTsXVLJ4omw5M7+MkHC7pyQw7ujTJAEt2W2LpukEeRlJaYyL
-        /ksiatnRlPMXE9hieyxyI3Rs2MGawUoz2m9G8C5gwQS/TCGSIKkILSiFOFyi2plZ+MXeeMcKa/L
-        bCz0n53EnAGN6KQmFLCPOhUEu
-X-Received: by 2002:a92:1a08:: with SMTP id a8mr8593524ila.67.1633710430709;
-        Fri, 08 Oct 2021 09:27:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw17lk0IORa40WoV1+wTR6qwC1nxW938ShtV1oqA8tMMFD6I5s2CsBSR2ZRMc15Q/NeYYNsNg==
-X-Received: by 2002:a92:1a08:: with SMTP id a8mr8593511ila.67.1633710430542;
-        Fri, 08 Oct 2021 09:27:10 -0700 (PDT)
-Received: from halaneylaptop (068-184-200-203.res.spectrum.com. [68.184.200.203])
-        by smtp.gmail.com with ESMTPSA id d1sm1141023ion.47.2021.10.08.09.27.08
+        bh=cktPHwlIBduk1qQVHtfl/KFOQmkbO6KNVrz0QKkt91g=;
+        b=wh8KXHOJhUGp4drlxIVwIlTtBp6QBKdjHI8C2Nff9A8sPeS1Y6KvremO57f5vUzjas
+         tQi1WlN9FL7wZBW7DzFUW9Y9qIM3eFKZH+E9UXR6jIaNBNoNXpQpoPdMh2UZLJ2igIES
+         au3kwaaZJbvmXX2mpqVJj4ve/gB+BbaxhfirjC0zGMeaOO0vRWyoj2A9BaHtEa0k3RVs
+         ZMJbVdzXQKYhrk7Bc3c7qKa3FI7dsiAoisq7prf40qUfop4SUh85j3eJBYoW4gogbgmt
+         v5u+EJMYJlZqqiczJVh72kcLyCwS+B1gcPPo8Clh3JuYbbcn/26q/SFPQyvLFlPJsUrv
+         XS9g==
+X-Gm-Message-State: AOAM531X3MAWNtMXNwRnfYZhfHHTt/G6mhEPns3xCfd7CBxRHTWL9799
+        QcbAEd+Bwjz9O1cSzn/1wDwv2oXJpSa7Xkd1CKYNsnV4dYk/djpSHwki1XfScwyWFT2c9LWagOd
+        2PGADIMIMO0ZBGiYj1NZLgBkz
+X-Received: by 2002:a54:4f8f:: with SMTP id g15mr8034484oiy.169.1633710508681;
+        Fri, 08 Oct 2021 09:28:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwkA5uy58Xhmtao8Geu63nTK1ydF+t8XY9oicv5BwA74nDAJhaBqK3GejSGZEKjXx0By48i5Q==
+X-Received: by 2002:a54:4f8f:: with SMTP id g15mr8034462oiy.169.1633710508428;
+        Fri, 08 Oct 2021 09:28:28 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::48])
+        by smtp.gmail.com with ESMTPSA id q39sm750898oiw.47.2021.10.08.09.28.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 09:27:09 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 11:27:07 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jason Baron <jbaron@akamai.com>, Jonathan Corbet <corbet@lwn.net>,
-        Jim Cromie <jim.cromie@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/3] Trivial dynamic debug fixups
-Message-ID: <20211008162707.nc6vr22srcmga5fp@halaneylaptop>
-References: <20210920205444.20068-1-ahalaney@redhat.com>
- <670b5afa-0d76-7e78-2b31-f1d4355dd026@akamai.com>
- <YWBrXZrqdoETlqWG@kroah.com>
+        Fri, 08 Oct 2021 09:28:28 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 09:28:25 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, mbenes@suse.cz
+Subject: Re: [PATCH 1/2] objtool: Optimize re-writing jump_label
+Message-ID: <20211008162825.7gdqriaxxbeyylwa@treble>
+References: <20211007212211.366874577@infradead.org>
+ <20211007212626.950220936@infradead.org>
+ <20211008065550.zge5zkbfrki5osv2@treble>
+ <YWAXc2bhu/iTI4pv@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YWBrXZrqdoETlqWG@kroah.com>
+In-Reply-To: <YWAXc2bhu/iTI4pv@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 06:01:33PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Oct 08, 2021 at 11:58:57AM -0400, Jason Baron wrote:
-> > Adding Greg to this (should have added him earlier)
+On Fri, Oct 08, 2021 at 12:03:31PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 07, 2021 at 11:55:50PM -0700, Josh Poimboeuf wrote:
+> > On Thu, Oct 07, 2021 at 11:22:12PM +0200, Peter Zijlstra wrote:
+> > > There's no point to re-write the jump_label NOP when it's already a NOP.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  tools/objtool/check.c |    2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > --- a/tools/objtool/check.c
+> > > +++ b/tools/objtool/check.c
+> > > @@ -1397,7 +1397,7 @@ static int handle_jump_alt(struct objtoo
+> > >  		return -1;
+> > >  	}
+> > >  
+> > > -	if (special_alt->key_addend & 2) {
+> > > +	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
+> > >  		struct reloc *reloc = insn_reloc(file, orig_insn);
+> > >  
+> > >  		if (reloc) {
 > > 
-> > Greg, if you are ok with this series, we'd like to have it added
-> > to -next.
+> > While you're at it, a comment would be very helpful for that whole
+> > clause.
 > 
-> What series?
+> Like so?
 > 
-> Have a pointer to it?  It would help if it was actually sent to me if
-> people want it applied...
+> --- a/tools/objtool/check.c
+> +++ b/tools/objtool/check.c
+> @@ -1397,7 +1397,16 @@ static int handle_jump_alt(struct objtoo
+>  		return -1;
+>  	}
+>  
+> -	if (special_alt->key_addend & 2) {
+> +	/*
+> +	 * When, for whatever reason, the jump-label site cannot emit a right
+> +	 * sized NOP, then it can use Bit-1 of the struct static_key pointer to
+> +	 * indicate this instruction should be NOP'ed by objtool.
+> +	 *
+> +	 * Also see arch/x86/include/asm/jump_label.h:arch_static_branch(),
+> +	 * where we leave the assembler to pick between jmp.d8 and jmp.d32
+> +	 * based on destination offset.
+> +	 */
+> +	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
+>  		struct reloc *reloc = insn_reloc(file, orig_insn);
+>  
+>  		if (reloc) {
 > 
-> thanks,
-> 
-> greg k-h
-> 
 
-Sorry Greg, that's probably my bad.. still getting used to the kernel's
-workflow.
+Much better!  Can you also mention why it's checking INSN_NOP?  The "run
+objtool twice" case is far from obvious.
 
-Here's the lore link: https://lore.kernel.org/all/20210920205444.20068-1-ahalaney@redhat.com/
-
-Did I do something silly when sending the patches? I basically
-just added everyone manually when using git send-email.
-
-I found who to add via:
-
-    ahalaney@halaneylaptop ~/git/linux (git)-[master] % ./scripts/get_maintainer.pl 0002-dyndbg-Remove-support-for-ddebug_query-param.patch                                     :(
-    Jonathan Corbet <corbet@lwn.net> (maintainer:DOCUMENTATION,commit_signer:1/2=50%)
-    Jason Baron <jbaron@akamai.com> (maintainer:DYNAMIC DEBUG)
-    Martin Kepplinger <martink@posteo.de> (commit_signer:1/2=50%,authored:1/2=50%,added_lines:1/3=33%,removed_lines:1/5=20%)
-    Andrew Halaney <ahalaney@redhat.com> (commit_signer:1/2=50%,authored:1/2=50%,added_lines:2/3=67%,removed_lines:4/5=80%)
-    "Paul E. McKenney" <paulmck@kernel.org> (commit_signer:14/89=16%,authored:7/89=8%,added_lines:44/527=8%)
-    Thomas Gleixner <tglx@linutronix.de> (commit_signer:11/89=12%)
-    Andrew Morton <akpm@linux-foundation.org> (commit_signer:11/89=12%)
-    Peter Zijlstra <peterz@infradead.org> (commit_signer:8/89=9%,removed_lines:13/137=9%)
-    Will Deacon <will@kernel.org> (commit_signer:7/89=8%)
-    "Maciej W. Rozycki" <macro@orcam.me.uk> (added_lines:90/527=17%)
-    Muchun Song <songmuchun@bytedance.com> (added_lines:28/527=5%)
-    Viresh Kumar <viresh.kumar@linaro.org> (removed_lines:14/137=10%)
-    Robin Murphy <robin.murphy@arm.com> (removed_lines:13/137=9%)
-    Randy Dunlap <rdunlap@infradead.org> (removed_lines:10/137=7%)
-    Lu Baolu <baolu.lu@linux.intel.com> (removed_lines:10/137=7%)
-    linux-doc@vger.kernel.org (open list:DOCUMENTATION)
-    linux-kernel@vger.kernel.org (open list)
-
-
-per patch, and I just hit the maintainers and the lists specified
-since I figured the commit_signers don't care. Did I goof up?
-
-Thanks,
-Andrew
+-- 
+Josh
 
