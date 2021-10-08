@@ -2,214 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69C54264F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA33C4264D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhJHG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 02:59:14 -0400
-Received: from m12-11.163.com ([220.181.12.11]:36042 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhJHG7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 02:59:13 -0400
-X-Greylist: delayed 976 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Oct 2021 02:59:12 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=13Ltm
-        HNKY0eCBew5yV8izaFB18GObiTDYAIbaPFtfkU=; b=nIdgUad/yvQs+LX3o4dha
-        JtXUxtUhblMYyuuVljrQR0TbfIHWQj9vj52pupIaVbLVJn8P9HWCVinaITY0pHpy
-        FmXCdFGZTL7hxGVchZmqzNMDfDdPo6eKaep7gzakzIU2RiS81sph6LXDT/ce6jVm
-        d2jFIlEwSFO3v3i44wZfw8=
-Received: from localhost.localdomain (unknown [81.71.100.192])
-        by smtp7 (Coremail) with SMTP id C8CowABXS5On519h3yP90g--.13673S4;
-        Fri, 08 Oct 2021 14:39:36 +0800 (CST)
-From:   ultrachin@163.com
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     brookxu.cn@gmail.com, chen xiaoguang <xiaoggchen@tencent.com>,
-        zeng jingxiang <linuszeng@tencent.com>,
-        lu yihui <yihuilu@tencent.com>
-Subject: [PATCH] mm: Free per cpu pages async to shorten program exit time
-Date:   Fri,  8 Oct 2021 14:39:33 +0800
-Message-Id: <20211008063933.331989-1-ultrachin@163.com>
-X-Mailer: git-send-email 2.27.0
+        id S230111AbhJHGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:47:39 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37138
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229828AbhJHGrh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 02:47:37 -0400
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id B755C3FFFA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633675541;
+        bh=K6iXGmH+Xr2/o1b+hKgXwSDn2IBjQQPNyuaqrgkHtGo=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=PT1NqoZzVjJyUPAMWHuwBpPsRVP70IS/83vS9DgwnUXfSSMrJGkQGPVOXzymbuSMa
+         6aG9hoH5DffhPZ6lMrGDK5nvw6LE44LJBgh374OEXA/JpXTmOrpM3gg5/9RZ0YgYxP
+         ZPJeJf040IzOzOs/GOeddNGds+slas7Y2RRzP85GGB3nGShUcpHb7jOvpuafMqkkIL
+         NhBQb7t6Iqv/8Za+NgXew3zMnNy9N4HDVzHV/WCBfQOhH3AKAA1cXD6uUXbPm8i4kE
+         Hd3sZPCpetsX5xF3wk+RqLyp07793NU0dIXk+ucUFJHR859a2940eJ4zAeetYvHlzS
+         K1rzKgOqVvjHw==
+Received: by mail-wr1-f72.google.com with SMTP id e12-20020a056000178c00b001606927de88so6488237wrg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 23:45:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K6iXGmH+Xr2/o1b+hKgXwSDn2IBjQQPNyuaqrgkHtGo=;
+        b=q0BUNNm5Khwhxw8BN24ahIicdOwRxQxpYV+02Te8QKOv6RjlxsOJwT6EiN/1Q+Bdv9
+         irMlPTQXPbUug8NISfdBadP6m75ugJVE/MXWLS9NYivPtbbMiDoEVQH0wXcAzIUQ4584
+         qQrtYgQVg4kSR4IDi1E6zcDevOVsvRQ68/lESxrnEaBbhJ1DD5ooKyM2KR785r+gAULB
+         d74u+wyzOMGq7G2Dr03fspJpYUd9/S6hotN9CrOl/Ofp3PXhvrEeeNRUA71NZtZp+Aqw
+         Kfw0GKXYWhkYZM7EP9zCu3SBBjnLCTOvFT/OYT/5YD28MDeUCvl7pbXDwAInCeo9mG50
+         h5JA==
+X-Gm-Message-State: AOAM532kIci/jWUXsSNTu95eHUvtN3BwFWYAdGblh8hFi3Saf+2bhoVy
+        JtF2vQZYyzQS/4gyjtGpaS+9uBQKdK0Ht1zNyBAhrOtAhGO8hnMtW7aZ9znw0w+mqjdVuEcaLLi
+        mWkgch3e/tyC/zmSJa8OypxnwNWCrKstKkYoT3ceGNw==
+X-Received: by 2002:a5d:5986:: with SMTP id n6mr1798224wri.75.1633675540602;
+        Thu, 07 Oct 2021 23:45:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOmryVllHENNzxlkya8eUdoqWDAGCtwrtq2AttxUID67l6XccGUczuhDVl0y/YrmmVswUgeg==
+X-Received: by 2002:a5d:5986:: with SMTP id n6mr1798196wri.75.1633675540394;
+        Thu, 07 Oct 2021 23:45:40 -0700 (PDT)
+Received: from [192.168.1.24] (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
+        by smtp.gmail.com with ESMTPSA id q12sm1467343wrp.75.2021.10.07.23.45.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 23:45:39 -0700 (PDT)
+Subject: Re: [PATCH v2 3/5] dt-bindings: clock: Add bindings definitions for
+ Exynos850 CMU
+To:     Sam Protsenko <semen.protsenko@linaro.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+References: <20211007194113.10507-1-semen.protsenko@linaro.org>
+ <20211007194113.10507-4-semen.protsenko@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <abe4bdeb-ee15-d8c8-54af-1cdf7282b004@canonical.com>
+Date:   Fri, 8 Oct 2021 08:45:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowABXS5On519h3yP90g--.13673S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXFWxAw13uF43XF17Gr43Awb_yoWrKF1rpa
-        yvkw1Utr4kArZ7WanxJr1kZr13Kw4kWa47K3y3G3yrt3W3Kr1Fvryvyry3Zr4FgrWkuF43
-        JFW3Kry7Ka1jvaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j4MKZUUUUU=
-X-Originating-IP: [81.71.100.192]
-X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbivwgmWFWBv6S4lQAAsr
+In-Reply-To: <20211007194113.10507-4-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chen xiaoguang <xiaoggchen@tencent.com>
+On 07/10/2021 21:41, Sam Protsenko wrote:
+> Clock controller driver is designed to have separate instances for each
+> particular CMU. So clock IDs in this bindings header also start from 1
+> for each CMU.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+> Changes in v2:
+>   - Added all clock ids
+>   - Added CLK_ prefix for all clock constants
+>   - Added R-b tag by Krzysztof Kozlowski
+>   - Added Ack tag by Rob Herring
+> 
+>  include/dt-bindings/clock/exynos850.h | 141 ++++++++++++++++++++++++++
+>  1 file changed, 141 insertions(+)
+>  create mode 100644 include/dt-bindings/clock/exynos850.h
+> 
+> diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
+> new file mode 100644
+> index 000000000000..a44c5f91d3c7
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/exynos850.h
+> @@ -0,0 +1,141 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
 
-The exit time is long when program allocated big memory and
-the most time consuming part is free memory which takes 99.9%
-of the total exit time. By using async free we can save 25% of
-exit time.
+The bindings are preferred to be under GPL-2.0+BSD. I don't know about
+such policy for the headers but it seems reasonable - allows re-usage in
+other systems. Do you mind licensing it under:
+GPL-2.0-only or BSD-2-Clause
+?
 
-Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
-Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
-Signed-off-by: lu yihui <yihuilu@tencent.com>
----
- include/linux/mm.h |  1 +
- kernel/exit.c      |  2 ++
- mm/page_alloc.c    | 89 +++++++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 87 insertions(+), 5 deletions(-)
+Best regards,
+Krzysztof
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 73a52aba448f..2add3b635eee 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -908,6 +908,7 @@ void put_pages_list(struct list_head *pages);
- 
- void split_page(struct page *page, unsigned int order);
- void copy_huge_page(struct page *dst, struct page *src);
-+void kfreepcp_set_run(unsigned int cpu);
- 
- /*
-  * Compound pages have a destructor function.  Provide a
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 91a43e57a32e..269eb81acbe9 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -167,10 +167,12 @@ static void __exit_signal(struct task_struct *tsk)
- static void delayed_put_task_struct(struct rcu_head *rhp)
- {
- 	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
-+	unsigned int cpu = tsk->cpu;
- 
- 	perf_event_delayed_put(tsk);
- 	trace_sched_process_free(tsk);
- 	put_task_struct(tsk);
-+	kfreepcp_set_run(cpu);
- }
- 
- void put_task_struct_rcu_user(struct task_struct *task)
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index b37435c274cf..8a748ea9156b 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -72,6 +72,7 @@
- #include <linux/padata.h>
- #include <linux/khugepaged.h>
- #include <linux/buffer_head.h>
-+#include <linux/smpboot.h>
- #include <asm/sections.h>
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -147,6 +148,12 @@ DEFINE_PER_CPU(int, _numa_mem_);		/* Kernel "local memory" node */
- EXPORT_PER_CPU_SYMBOL(_numa_mem_);
- #endif
- 
-+struct freepcp_stat {
-+	struct task_struct *thread;
-+	bool should_run;
-+};
-+DEFINE_PER_CPU(struct freepcp_stat, kfreepcp);
-+
- /* work_structs for global per-cpu drains */
- struct pcpu_drain {
- 	struct zone *zone;
-@@ -3361,6 +3368,81 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone)
- 	return min(READ_ONCE(pcp->batch) << 2, high);
- }
- 
-+void kfreepcp_set_run(unsigned int cpu)
-+{
-+	struct task_struct *tsk;
-+	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
-+
-+	tsk = stat->thread;
-+	per_cpu(kfreepcp.should_run, cpu) = true;
-+
-+	if (tsk && !task_is_running(tsk))
-+		wake_up_process(tsk);
-+}
-+EXPORT_SYMBOL_GPL(kfreepcp_set_run);
-+
-+static int kfreepcp_should_run(unsigned int cpu)
-+{
-+	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
-+
-+	return stat->should_run;
-+}
-+
-+static void run_kfreepcp(unsigned int cpu)
-+{
-+	struct zone *zone;
-+	struct per_cpu_pages *pcp;
-+	unsigned long flags;
-+	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
-+	bool need_free_more = false;
-+
-+
-+
-+again:
-+	need_free_more = false;
-+	for_each_populated_zone(zone) {
-+		pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
-+		if (pcp->count && pcp->high && pcp->count > pcp->high) {
-+			unsigned long batch = READ_ONCE(pcp->batch);
-+			int high;
-+
-+			high = nr_pcp_high(pcp, zone);
-+			local_irq_save(flags);
-+			free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch),
-+					pcp);
-+			local_irq_restore(flags);
-+			if (pcp->count > pcp->high)
-+				need_free_more = true;
-+		}
-+
-+		cond_resched();
-+	}
-+	if (need_free_more)
-+		goto again;
-+
-+	stat->should_run = false;
-+}
-+
-+static struct smp_hotplug_thread freepcp_threads = {
-+	.store                  = &kfreepcp.thread,
-+	.thread_should_run      = kfreepcp_should_run,
-+	.thread_fn              = run_kfreepcp,
-+	.thread_comm            = "kfreepcp/%u",
-+};
-+
-+static int __init freepcp_init(void)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		per_cpu(kfreepcp.should_run, cpu) = false;
-+
-+	BUG_ON(smpboot_register_percpu_thread(&freepcp_threads));
-+
-+	return 0;
-+}
-+late_initcall(freepcp_init);
-+
- static void free_unref_page_commit(struct page *page, unsigned long pfn,
- 				   int migratetype, unsigned int order)
- {
-@@ -3375,11 +3457,8 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn,
- 	list_add(&page->lru, &pcp->lists[pindex]);
- 	pcp->count += 1 << order;
- 	high = nr_pcp_high(pcp, zone);
--	if (pcp->count >= high) {
--		int batch = READ_ONCE(pcp->batch);
--
--		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch), pcp);
--	}
-+	if (pcp->count >= high)
-+		this_cpu_ptr(&kfreepcp)->should_run = false;
- }
- 
- /*
--- 
-2.27.0
-
+> +/*
+> + * Copyright (C) 2021 Linaro Ltd.
+> + * Author: Sam Protsenko <semen.protsenko@linaro.org>
+> + *
+> + * Device Tree binding constants for Exynos850 clock controller.
+> + */
+> +
+> +#ifndef _DT_BINDINGS_CLOCK_EXYNOS_850_H
+> +#define _DT_BINDINGS_CLOCK_EXYNOS_850_H
+> +
+> +/* CMU_TOP */
