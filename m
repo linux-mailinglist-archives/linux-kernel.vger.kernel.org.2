@@ -2,1336 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08485426CFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25294426D0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242795AbhJHOvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242701AbhJHOvR (ORCPT
+        id S242897AbhJHOwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:52:13 -0400
+Received: from mail-il-dmz.mellanox.com ([193.47.165.129]:47461 "EHLO
+        mellanox.co.il" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S242889AbhJHOvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:51:17 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71AFC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 07:49:21 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u69so1632592oie.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 07:49:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=u/9cXsP4OpYIkAh9RJVgvFxgYDkDa+7WSO22k5H/cZE=;
-        b=zdEAQolPT2UiWGFK8HRsadCDMA6NdgAtcRuGKVqBoSUQa4wXScDpwV5oGRF/HjAwoI
-         zZmD8z0o8N6/oIIzQSaXg/6jU1mHXUUzhp+RxP8iymv2/QxtzOFoRLgy/H6pMetuAnT4
-         gRQYwHxxNRXqZf1Ckksw2CcTw0TpnAJhrIkviwj98xduklejRgVpzQY83wUqrCKT3ZSI
-         fpPT0CgqBYgduOI64omv+K5vdd9SxnPR1b8nXkF+sDizJbMYXYcHrFYnswDOpA43JgMr
-         zCtPkjyyLSqrqRKni6uvsnNT1NxJlMtyxmiNyzrZcUSl8AAsTXJcXU2yuOt/qnhsElSl
-         WpLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=u/9cXsP4OpYIkAh9RJVgvFxgYDkDa+7WSO22k5H/cZE=;
-        b=xt5adRgVrfepFrCNVfd30Il26NTLBREIIwjM8PlAndFd+ziGrr07h8a6K8vQw/K+ES
-         Qf3rlNQlzbN0vqIz6ZzOyjRhW6t6mgSyZTybmJoiuJkbH/7JvU9btorcvzw/Iwi5hlTH
-         fr8X2lT4l2eveagtMkDfZalAS1N6kD8tfjwHztcZtwMBUBVSecRO+PTewU9/2vGK5YX7
-         6DmG+I5NdLcFK3xgETmENd9UShEFEVfPR03CXeENC5Rnm8E1nDE7xh6/PgwgSLacRtwf
-         mf/bnKRkcsVeBQOVZA48ZIh+SDUx58iQDlN9teyL2G8VU0Me/K10M7m2NxNJH3ohDtch
-         H6Ww==
-X-Gm-Message-State: AOAM5337k8FrqGxL3XHha3a2JnsN+ualqFxZZleNBoAaA2gYKOHG6fYI
-        upw7Hj2JIJeOvErf8rqHEpowKfEqt4MRIqSQ74WymQ==
-X-Google-Smtp-Source: ABdhPJxN6gBhngDFex6+PjUzGwOtHmaCPx5luIbFJTp3d9YqZXpDisnV7kiIYGPviqOwcCyOQ2uTdRwrkijdbPHqFRQ=
-X-Received: by 2002:a05:6808:187:: with SMTP id w7mr8144926oic.140.1633704560733;
- Fri, 08 Oct 2021 07:49:20 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 8 Oct 2021 07:49:19 -0700
+        Fri, 8 Oct 2021 10:51:46 -0400
+Received: from Internal Mail-Server by MTLPINE1 (envelope-from asmaa@mellanox.com)
+        with SMTP; 8 Oct 2021 17:49:29 +0300
+Received: from farm-0002.mtbu.labs.mlnx (farm-0002.mtbu.labs.mlnx [10.15.2.32])
+        by mtbu-labmailer.labs.mlnx (8.14.4/8.14.4) with ESMTP id 198EnSZZ017359;
+        Fri, 8 Oct 2021 10:49:28 -0400
+Received: (from asmaa@localhost)
+        by farm-0002.mtbu.labs.mlnx (8.14.7/8.13.8/Submit) id 198EnScI011025;
+        Fri, 8 Oct 2021 10:49:28 -0400
+From:   Asmaa Mnebhi <asmaa@nvidia.com>
+To:     andy.shevchenko@gmail.com, linux-gpio@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Cc:     Asmaa Mnebhi <asmaa@nvidia.com>, andrew@lunn.ch, kuba@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        davem@davemloft.net, rjw@rjwysocki.net, davthompson@nvidia.com
+Subject: [PATCH v4 2/2] net: mellanox: mlxbf_gige: Replace non-standard interrupt handling
+Date:   Fri,  8 Oct 2021 10:49:20 -0400
+Message-Id: <20211008144920.10975-3-asmaa@nvidia.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20211008144920.10975-1-asmaa@nvidia.com>
+References: <20211008144920.10975-1-asmaa@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAOTY_-NP4WC0Ne4FwxVYqXAwx6sq=48yC8Rby0SHvZpQ8Nt-Q@mail.gmail.com>
-References: <CABnWg9vqh2J6=Ku1bSTzAkJ=r1woRcYj7He=hecdZdefAvU4MA@mail.gmail.com>
- <CAAOTY_-NP4WC0Ne4FwxVYqXAwx6sq=48yC8Rby0SHvZpQ8Nt-Q@mail.gmail.com>
-From:   Guillaume Ranquet <granquet@baylibre.com>
-User-Agent: alot/0.10
-Date:   Fri, 8 Oct 2021 07:49:19 -0700
-Message-ID: <CABnWg9uX=e=14Mmm1Bn7MXM22Su9OysgKS_LeZnVUmvfaGq=gQ@mail.gmail.com>
-Subject: Re: [PATCH v1 4/4] drm/mediatek: add mt8195 hdmi TX support
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Chun-Kuang Hu (2021-10-08 16:37:11)
-> Hi, Guillaume:
->
-> Guillaume Ranquet <granquet@baylibre.com> =E6=96=BC 2021=E5=B9=B410=E6=9C=
-=888=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:30=E5=AF=AB=E9=81=93=
-=EF=BC=9A
-> >
-> > Quoting Guillaume Ranquet (2021-09-30 17:30:16)
-> > > Hi Chun-Kuang.
-> > >
-> > > Thank you for your input.
-> > > I have tried to find commonalities between the two drivers but I didn=
-'t
-> > > find enough shared code to warrant that architecture.
-> > > I'll have another look, especially now that I'm more familiar with th=
-e
-> > > driver.
-> > >
-> > > Regarding 2, I have removed as much functionalities as I could from t=
-he
-> > > original vendor tree (like hdcp, hdr, cec...) to keep only HDMI audio=
- and
-> > > video TX.
-> > >
-> > > There might be some more things to remove, but I'm no expert in the d=
-omain
-> > > and I'm working without access to mediatek datasheets and documentati=
-on.
-> > >
-> > > Though, at this stage I could split the patch in two with video first=
- and
-> > > then audio.
-> > >
-> > > I will try to work something out for a V2.
-> > >
-> > > Thx,
-> > > Guillaume.
-> > >
-> > > Quoting Chun-Kuang Hu (2021-09-30 15:36:42)
-> > > > Hi, Guillaume:
-> > > >
-> > > > This is a big patch, and I'm not familiar with this driver, so the
-> > > > review process would be long. So I tell you about how I review this
-> > > > patch, and if you could process according to my way, the process wo=
-uld
-> > > > be more short.
-> > > >
-> > > > 1. Find the common part of all hdmi driver.
-> > > > Even though mt8195 hdmi has many difference with other mediatek soc
-> > > > hdmi driver, I would like to find the common part and have just one
-> > > > copy of the common part. I expect there would three file finally:
-> > > >
-> > > > mtk_hdmi.c               (the common part)
-> > > > mtk_hdmi_mt8173.c (each soc special part)
-> > > > mtk_hdmi_mt8195.c (each soc special part)
-> > > >
-> > > > But this would be difficult in this stage, so you could temporarily
-> > > > have these three file:
-> > > >
-> > > > mtk_hdmi_common.c (the common part)
-> > > > mtk_hdmi.c                 (each soc special part)
-> > > > mtk_hdmi_mt8195.c   (each soc special part)
-> > > >
-> > > > When review is almost done, then change the file name as I wish.
-> > > >
-> > > > 2. The first patch has only basic function, separate advance functi=
-on
-> > > > to another patch.
-> > > > When comparing mt8195 hdmi driver with other hdmi driver, if mt8195
-> > > > hdmi driver has some function that other hdmi does not have, I woul=
-d
-> > > > think that function is advance function and should be separate to
-> > > > another patch.
-> > > >
-> > > > If you follow this way, I think the review process would be short.
-> > > > Because this patch is big, I would just review partial part each ti=
-me.
-> > > >
-> > > > Regards,
-> > > > Chun-Kuang.
-> > > >
-> > > >
-> > > > Guillaume Ranquet <granquet@baylibre.com> =EF=BF=BD=EF=BF=BD=EF=BF=
-=BD 2021=EF=BF=BD=EF=BF=BD=EF=BF=BD9=EF=BF=BD=EF=BF=BD=EF=BF=BD29=EF=BF=BD=
-=EF=BF=BD=EF=BF=BD =EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD =
-=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD5:47=EF=BF=BD=EF=BF=
-=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD
-> > > > >
-> > > > > Add basic hdmi TX support for the mediatek mt8195 SoCs
-> > > > >
-> > > > > Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
-> > > > > ---
-> > > > >  drivers/gpu/drm/mediatek/Kconfig              |   10 +
-> > > > >  drivers/gpu/drm/mediatek/Makefile             |    4 +-
-> > > > >  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c    | 2293 +++++++++++=
-++++++
-> > > > >  drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h    |  128 +
-> > > > >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.c    |  530 ++++
-> > > > >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.h    |   20 +
-> > > > >  .../gpu/drm/mediatek/mtk_mt8195_hdmi_regs.h   |  329 +++
-> > > > >  7 files changed, 3313 insertions(+), 1 deletion(-)
-> > > > >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > > > >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
-> > > > >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.=
-c
-> > > > >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_ddc.=
-h
-> > > > >  create mode 100644 drivers/gpu/drm/mediatek/mtk_mt8195_hdmi_regs=
-.h
-> > > > >
-> > > > > diff --git a/drivers/gpu/drm/mediatek/Kconfig b/drivers/gpu/drm/m=
-ediatek/Kconfig
-> > > > > index 2976d21e9a34a..517d065f0511b 100644
-> > > > > --- a/drivers/gpu/drm/mediatek/Kconfig
-> > > > > +++ b/drivers/gpu/drm/mediatek/Kconfig
-> > > > > @@ -28,3 +28,13 @@ config DRM_MEDIATEK_HDMI
-> > > > >         select PHY_MTK_HDMI
-> > > > >         help
-> > > > >           DRM/KMS HDMI driver for Mediatek SoCs
-> > > > > +
-> > > > > +config DRM_MEDIATEK_HDMI_MT8195_SUSPEND_LOW_POWER
-> > > > > +       tristate "DRM HDMI SUSPEND LOW POWER Support for Mediatek=
- mt8195 SoCs"
-> > > > > +       depends on DRM_MEDIATEK_HDMI
-> > > > > +       help
-> > > > > +         DRM/KMS HDMI SUSPEND_LOW_POWER for Mediatek SoCs.
-> > > > > +         Choose this option if you want to disable/enable
-> > > > > +         clock and power domain when platform enter suspend,
-> > > > > +         and this config depends on DRM_MEDIATEK_HDMI.
-> > > > > +
-> > > > > diff --git a/drivers/gpu/drm/mediatek/Makefile b/drivers/gpu/drm/=
-mediatek/Makefile
-> > > > > index 29098d7c8307c..736f0816083d0 100644
-> > > > > --- a/drivers/gpu/drm/mediatek/Makefile
-> > > > > +++ b/drivers/gpu/drm/mediatek/Makefile
-> > > > > @@ -18,6 +18,8 @@ obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek-drm.o
-> > > > >
-> > > > >  mediatek-drm-hdmi-objs :=3D mtk_cec.o \
-> > > > >                           mtk_hdmi.o \
-> > > > > -                         mtk_hdmi_ddc.o
-> > > > > +                         mtk_hdmi_ddc.o \
-> > > > > +                         mtk_mt8195_hdmi.o \
-> > > > > +                         mtk_mt8195_hdmi_ddc.o \
-> > > > >
-> > > > >  obj-$(CONFIG_DRM_MEDIATEK_HDMI) +=3D mediatek-drm-hdmi.o
-> > > > > diff --git a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c b/drivers=
-/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > > > > new file mode 100644
-> > > > > index 0000000000000..46c7c8af524ac
-> > > > > --- /dev/null
-> > > > >
-> >
-> > Hi Chun-Kuang.
-> >
-> > I have removed audio from mtk_mt8195_hdmi, which drops the line count
-> > by approximately a thousand lines.
-> > I couldn't find anything else to remove as _to me_, everything seems
-> > relevant... but I'm no drm/hdmi expert.
-> >
-> > I have also tried to find the commonalities between the mtk_hdmi
-> > "legacy" driver and the mt8195 driver.
-> > I have found around 200 lines of codes that could be shared between
-> > the two drivers with some tweaks here and there.
-> >
-> > I'm showing a rough draft of what the common code would be down below.
-> > Do you think it's worth the effort to pursue that goal?
->
-> 200 lines are a lot of codes, so it's worth to pursue that goal.
-> And the review is not finished, maybe there  would be more common code.
->
-> Regards,
-> Chun-Kuang.
->
+Since the GPIO driver (gpio-mlxbf2.c) supports interrupt
+handling, replace the custom routine with simple IRQ
+request.
 
-I will prepare a V2 following your advice then.
+Signed-off-by: Asmaa Mnebhi <asmaa@nvidia.com>
+---
+ .../net/ethernet/mellanox/mlxbf_gige/Makefile |   1 -
+ .../ethernet/mellanox/mlxbf_gige/mlxbf_gige.h |  12 -
+ .../mellanox/mlxbf_gige/mlxbf_gige_gpio.c     | 212 ------------------
+ .../mellanox/mlxbf_gige/mlxbf_gige_main.c     |  22 +-
+ 4 files changed, 9 insertions(+), 238 deletions(-)
+ delete mode 100644 drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
 
-Thx,
-Guillaume.
+diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
+index e57c1375f236..a97c2bef846b 100644
+--- a/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
++++ b/drivers/net/ethernet/mellanox/mlxbf_gige/Makefile
+@@ -3,7 +3,6 @@
+ obj-$(CONFIG_MLXBF_GIGE) += mlxbf_gige.o
+ 
+ mlxbf_gige-y := mlxbf_gige_ethtool.o \
+-		mlxbf_gige_gpio.o \
+ 		mlxbf_gige_intr.o \
+ 		mlxbf_gige_main.o \
+ 		mlxbf_gige_mdio.o \
+diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
+index e3509e69ed1c..86826a70f9dd 100644
+--- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
++++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige.h
+@@ -51,11 +51,6 @@
+ #define MLXBF_GIGE_ERROR_INTR_IDX       0
+ #define MLXBF_GIGE_RECEIVE_PKT_INTR_IDX 1
+ #define MLXBF_GIGE_LLU_PLU_INTR_IDX     2
+-#define MLXBF_GIGE_PHY_INT_N            3
+-
+-#define MLXBF_GIGE_MDIO_DEFAULT_PHY_ADDR 0x3
+-
+-#define MLXBF_GIGE_DEFAULT_PHY_INT_GPIO 12
+ 
+ struct mlxbf_gige_stats {
+ 	u64 hw_access_errors;
+@@ -81,11 +76,7 @@ struct mlxbf_gige {
+ 	struct platform_device *pdev;
+ 	void __iomem *mdio_io;
+ 	struct mii_bus *mdiobus;
+-	void __iomem *gpio_io;
+-	struct irq_domain *irqdomain;
+-	u32 phy_int_gpio_mask;
+ 	spinlock_t lock;      /* for packet processing indices */
+-	spinlock_t gpio_lock; /* for GPIO bus access */
+ 	u16 rx_q_entries;
+ 	u16 tx_q_entries;
+ 	u64 *tx_wqe_base;
+@@ -184,7 +175,4 @@ int mlxbf_gige_poll(struct napi_struct *napi, int budget);
+ extern const struct ethtool_ops mlxbf_gige_ethtool_ops;
+ void mlxbf_gige_update_tx_wqe_next(struct mlxbf_gige *priv);
+ 
+-int mlxbf_gige_gpio_init(struct platform_device *pdev, struct mlxbf_gige *priv);
+-void mlxbf_gige_gpio_free(struct mlxbf_gige *priv);
+-
+ #endif /* !defined(__MLXBF_GIGE_H__) */
+diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
+deleted file mode 100644
+index a8d966db5715..000000000000
+--- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_gpio.c
++++ /dev/null
+@@ -1,212 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0-only OR BSD-3-Clause
+-
+-/* Initialize and handle GPIO interrupt triggered by INT_N PHY signal.
+- * This GPIO interrupt triggers the PHY state machine to bring the link
+- * up/down.
+- *
+- * Copyright (C) 2021 NVIDIA CORPORATION & AFFILIATES
+- */
+-
+-#include <linux/acpi.h>
+-#include <linux/bitfield.h>
+-#include <linux/device.h>
+-#include <linux/err.h>
+-#include <linux/gpio/driver.h>
+-#include <linux/interrupt.h>
+-#include <linux/io.h>
+-#include <linux/irq.h>
+-#include <linux/irqdomain.h>
+-#include <linux/irqreturn.h>
+-#include <linux/platform_device.h>
+-#include <linux/property.h>
+-
+-#include "mlxbf_gige.h"
+-#include "mlxbf_gige_regs.h"
+-
+-#define MLXBF_GIGE_GPIO_CAUSE_FALL_EN		0x48
+-#define MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0	0x80
+-#define MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0		0x94
+-#define MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE	0x98
+-
+-static void mlxbf_gige_gpio_enable(struct mlxbf_gige *priv)
+-{
+-	unsigned long flags;
+-	u32 val;
+-
+-	spin_lock_irqsave(&priv->gpio_lock, flags);
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
+-	val |= priv->phy_int_gpio_mask;
+-	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
+-
+-	/* The INT_N interrupt level is active low.
+-	 * So enable cause fall bit to detect when GPIO
+-	 * state goes low.
+-	 */
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
+-	val |= priv->phy_int_gpio_mask;
+-	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_FALL_EN);
+-
+-	/* Enable PHY interrupt by setting the priority level */
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
+-	val |= priv->phy_int_gpio_mask;
+-	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
+-	spin_unlock_irqrestore(&priv->gpio_lock, flags);
+-}
+-
+-static void mlxbf_gige_gpio_disable(struct mlxbf_gige *priv)
+-{
+-	unsigned long flags;
+-	u32 val;
+-
+-	spin_lock_irqsave(&priv->gpio_lock, flags);
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
+-	val &= ~priv->phy_int_gpio_mask;
+-	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_EVTEN0);
+-	spin_unlock_irqrestore(&priv->gpio_lock, flags);
+-}
+-
+-static irqreturn_t mlxbf_gige_gpio_handler(int irq, void *ptr)
+-{
+-	struct mlxbf_gige *priv;
+-	u32 val;
+-
+-	priv = ptr;
+-
+-	/* Check if this interrupt is from PHY device.
+-	 * Return if it is not.
+-	 */
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CAUSE_EVTEN0);
+-	if (!(val & priv->phy_int_gpio_mask))
+-		return IRQ_NONE;
+-
+-	/* Clear interrupt when done, otherwise, no further interrupt
+-	 * will be triggered.
+-	 */
+-	val = readl(priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
+-	val |= priv->phy_int_gpio_mask;
+-	writel(val, priv->gpio_io + MLXBF_GIGE_GPIO_CAUSE_OR_CLRCAUSE);
+-
+-	generic_handle_irq(priv->phy_irq);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static void mlxbf_gige_gpio_mask(struct irq_data *irqd)
+-{
+-	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
+-
+-	mlxbf_gige_gpio_disable(priv);
+-}
+-
+-static void mlxbf_gige_gpio_unmask(struct irq_data *irqd)
+-{
+-	struct mlxbf_gige *priv = irq_data_get_irq_chip_data(irqd);
+-
+-	mlxbf_gige_gpio_enable(priv);
+-}
+-
+-static struct irq_chip mlxbf_gige_gpio_chip = {
+-	.name			= "mlxbf_gige_phy",
+-	.irq_mask		= mlxbf_gige_gpio_mask,
+-	.irq_unmask		= mlxbf_gige_gpio_unmask,
+-};
+-
+-static int mlxbf_gige_gpio_domain_map(struct irq_domain *d,
+-				      unsigned int irq,
+-				      irq_hw_number_t hwirq)
+-{
+-	irq_set_chip_data(irq, d->host_data);
+-	irq_set_chip_and_handler(irq, &mlxbf_gige_gpio_chip, handle_simple_irq);
+-	irq_set_noprobe(irq);
+-
+-	return 0;
+-}
+-
+-static const struct irq_domain_ops mlxbf_gige_gpio_domain_ops = {
+-	.map    = mlxbf_gige_gpio_domain_map,
+-	.xlate	= irq_domain_xlate_twocell,
+-};
+-
+-#ifdef CONFIG_ACPI
+-static int mlxbf_gige_gpio_resources(struct acpi_resource *ares,
+-				     void *data)
+-{
+-	struct acpi_resource_gpio *gpio;
+-	u32 *phy_int_gpio = data;
+-
+-	if (ares->type == ACPI_RESOURCE_TYPE_GPIO) {
+-		gpio = &ares->data.gpio;
+-		*phy_int_gpio = gpio->pin_table[0];
+-	}
+-
+-	return 1;
+-}
+-#endif
+-
+-void mlxbf_gige_gpio_free(struct mlxbf_gige *priv)
+-{
+-	irq_dispose_mapping(priv->phy_irq);
+-	irq_domain_remove(priv->irqdomain);
+-}
+-
+-int mlxbf_gige_gpio_init(struct platform_device *pdev,
+-			 struct mlxbf_gige *priv)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct resource *res;
+-	u32 phy_int_gpio = 0;
+-	int ret;
+-
+-	LIST_HEAD(resources);
+-
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, MLXBF_GIGE_RES_GPIO0);
+-	if (!res)
+-		return -ENODEV;
+-
+-	priv->gpio_io = devm_ioremap(dev, res->start, resource_size(res));
+-	if (!priv->gpio_io)
+-		return -ENOMEM;
+-
+-#ifdef CONFIG_ACPI
+-	ret = acpi_dev_get_resources(ACPI_COMPANION(dev),
+-				     &resources, mlxbf_gige_gpio_resources,
+-				     &phy_int_gpio);
+-	acpi_dev_free_resource_list(&resources);
+-	if (ret < 0 || !phy_int_gpio) {
+-		dev_err(dev, "Error retrieving the gpio phy pin");
+-		return -EINVAL;
+-	}
+-#endif
+-
+-	priv->phy_int_gpio_mask = BIT(phy_int_gpio);
+-
+-	mlxbf_gige_gpio_disable(priv);
+-
+-	priv->hw_phy_irq = platform_get_irq(pdev, MLXBF_GIGE_PHY_INT_N);
+-
+-	priv->irqdomain = irq_domain_add_simple(NULL, 1, 0,
+-						&mlxbf_gige_gpio_domain_ops,
+-						priv);
+-	if (!priv->irqdomain) {
+-		dev_err(dev, "Failed to add IRQ domain\n");
+-		return -ENOMEM;
+-	}
+-
+-	priv->phy_irq = irq_create_mapping(priv->irqdomain, 0);
+-	if (!priv->phy_irq) {
+-		irq_domain_remove(priv->irqdomain);
+-		priv->irqdomain = NULL;
+-		dev_err(dev, "Error mapping PHY IRQ\n");
+-		return -EINVAL;
+-	}
+-
+-	ret = devm_request_irq(dev, priv->hw_phy_irq, mlxbf_gige_gpio_handler,
+-			       IRQF_ONESHOT | IRQF_SHARED, "mlxbf_gige_phy", priv);
+-	if (ret) {
+-		dev_err(dev, "Failed to request PHY IRQ");
+-		mlxbf_gige_gpio_free(priv);
+-		return ret;
+-	}
+-
+-	return ret;
+-}
+diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
+index 3e85b17f5857..4382ec8f7d64 100644
+--- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
++++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
+@@ -273,8 +273,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
+ 	void __iomem *llu_base;
+ 	void __iomem *plu_base;
+ 	void __iomem *base;
++	int addr, phy_irq;
+ 	u64 control;
+-	int addr;
+ 	int err;
+ 
+ 	base = devm_platform_ioremap_resource(pdev, MLXBF_GIGE_RES_MAC);
+@@ -309,20 +309,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
+ 	priv->pdev = pdev;
+ 
+ 	spin_lock_init(&priv->lock);
+-	spin_lock_init(&priv->gpio_lock);
+ 
+ 	/* Attach MDIO device */
+ 	err = mlxbf_gige_mdio_probe(pdev, priv);
+ 	if (err)
+ 		return err;
+ 
+-	err = mlxbf_gige_gpio_init(pdev, priv);
+-	if (err) {
+-		dev_err(&pdev->dev, "PHY IRQ initialization failed\n");
+-		mlxbf_gige_mdio_remove(priv);
+-		return -ENODEV;
+-	}
+-
+ 	priv->base = base;
+ 	priv->llu_base = llu_base;
+ 	priv->plu_base = plu_base;
+@@ -343,6 +335,12 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
+ 	priv->rx_irq = platform_get_irq(pdev, MLXBF_GIGE_RECEIVE_PKT_INTR_IDX);
+ 	priv->llu_plu_irq = platform_get_irq(pdev, MLXBF_GIGE_LLU_PLU_INTR_IDX);
+ 
++	phy_irq = acpi_dev_gpio_irq_get_by(ACPI_COMPANION(&pdev->dev), "phy-gpios", 0);
++	if (phy_irq < 0) {
++		dev_err(&pdev->dev, "Error getting PHY irq. Use polling instead");
++		phy_irq = PHY_POLL;
++	}
++
+ 	phydev = phy_find_first(priv->mdiobus);
+ 	if (!phydev) {
+ 		err = -ENODEV;
+@@ -350,8 +348,8 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	addr = phydev->mdio.addr;
+-	priv->mdiobus->irq[addr] = priv->phy_irq;
+-	phydev->irq = priv->phy_irq;
++	priv->mdiobus->irq[addr] = phy_irq;
++	phydev->irq = phy_irq;
+ 
+ 	err = phy_connect_direct(netdev, phydev,
+ 				 mlxbf_gige_adjust_link,
+@@ -387,7 +385,6 @@ static int mlxbf_gige_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ out:
+-	mlxbf_gige_gpio_free(priv);
+ 	mlxbf_gige_mdio_remove(priv);
+ 	return err;
+ }
+@@ -398,7 +395,6 @@ static int mlxbf_gige_remove(struct platform_device *pdev)
+ 
+ 	unregister_netdev(priv->netdev);
+ 	phy_disconnect(priv->netdev->phydev);
+-	mlxbf_gige_gpio_free(priv);
+ 	mlxbf_gige_mdio_remove(priv);
+ 	platform_set_drvdata(pdev, NULL);
+ 
+-- 
+2.30.1
 
-> >
-> > Thx,
-> > Guillaume.
-> >
-> > Note that it won't apply as I'm not providing the audio removal patch
-> > and it is based on a 5.10 branch I'm testing on right now.
-> > This is just for discussion. I'll rebase and rework things if you
-> > think pursuing this idea is worth the effort.
-> >
-> > commit 715b7f7c058f987a583033c885be491e756d9357
-> > Author: Guillaume Ranquet <granquet@baylibre.com>
-> > Date:   Fri Oct 8 11:25:55 2021 +0200
-> >
-> >     Draft: HDMI: find common stuff betweem legacy and mt8195
-> >
-> >     Signed-off-by: Guillaume Ranquet <granquet@baylibre.com>
-> >     Change-Id: I8a2fb31ceecf467a560abc3201c97e66fb5e9602
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/Makefile
-> > b/drivers/gpu/drm/mediatek/Makefile
-> > index 87b3506981fd..477c0648643c 100644
-> > --- a/drivers/gpu/drm/mediatek/Makefile
-> > +++ b/drivers/gpu/drm/mediatek/Makefile
-> > @@ -25,6 +25,7 @@ obj-$(CONFIG_DRM_MEDIATEK) +=3D mediatek-drm.o
-> >  mediatek-drm-hdmi-objs :=3D mtk_cec.o \
-> >                           mtk_hdmi.o \
-> >                           mtk_hdmi_ddc.o \
-> > +                         mtk_hdmi_common.o \
-> >                           mtk_mt8195_hdmi.o \
-> >                           mtk_mt8195_hdmi_ddc.o \
-> >
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_common.c
-> > b/drivers/gpu/drm/mediatek/mtk_hdmi_common.c
-> > new file mode 100644
-> > index 000000000000..72ae33019415
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_common.c
-> > @@ -0,0 +1,265 @@
-> > +#include "mtk_hdmi_common.h"
-> > +
-> > +struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b)
-> > +{
-> > +       return container_of(b, struct mtk_hdmi, bridge);
-> > +}
-> > +
-> > +u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset)
-> > +{
-> > +       return readl(hdmi->regs + offset);
-> > +}
-> > +
-> > +void mtk_hdmi_write(struct mtk_hdmi *hdmi, u32 offset, u32 val)
-> > +{
-> > +       writel(val, hdmi->regs + offset);
-> > +}
-> > +
-> > +inline void mtk_hdmi_clear_bits(struct mtk_hdmi *hdmi, u32 offset,
-> > +                                      u32 bits)
-> > +{
-> > +       void __iomem *reg =3D hdmi->regs + offset;
-> > +       u32 tmp;
-> > +
-> > +       tmp =3D readl(reg);
-> > +       tmp &=3D ~bits;
-> > +       writel(tmp, reg);
-> > +}
-> > +
-> > +inline void mtk_hdmi_set_bits(struct mtk_hdmi *hdmi, u32 offset,
-> > +                                    u32 bits)
-> > +{
-> > +       void __iomem *reg =3D hdmi->regs + offset;
-> > +       u32 tmp;
-> > +
-> > +       tmp =3D readl(reg);
-> > +       tmp |=3D bits;
-> > +       writel(tmp, reg);
-> > +}
-> > +
-> > +void mtk_hdmi_mask(struct mtk_hdmi *hdmi, u32 offset, u32 val, u32 mas=
-k)
-> > +{
-> > +       void __iomem *reg =3D hdmi->regs + offset;
-> > +       u32 tmp;
-> > +
-> > +       tmp =3D readl(reg);
-> > +       tmp =3D (tmp & ~mask) | (val & mask);
-> > +       writel(tmp, reg);
-> > +}
-> > +
-> > +//TODO: ~common!
-> > +int mtk_hdmi_setup_spd_infoframe(struct mtk_hdmi *hdmi, u8 *buffer,
-> > size_t bufsz,
-> > +                                       const char *vendor, const char =
-*product)
-> > +{
-> > +       struct hdmi_spd_infoframe frame;
-> > +       ssize_t err;
-> > +
-> > +       err =3D hdmi_spd_infoframe_init(&frame, vendor, product);
-> > +       if (err < 0) {
-> > +               dev_err(hdmi->dev, "Failed to initialize SPD infoframe:=
- %zd\n",
-> > +                       err);
-> > +               return err;
-> > +       }
-> > +
-> > +       err =3D hdmi_spd_infoframe_pack(&frame, buffer, bufsz);
-> > +       if (err < 0) {
-> > +               dev_err(hdmi->dev, "Failed to pack SDP infoframe: %zd\n=
-", err);
-> > +               return err;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +//TODO: common
-> > +int mtk_hdmi_get_all_clk(struct mtk_hdmi *hdmi, struct device_node *np=
-,
-> > +       const char *const *mtk_hdmi_clk_names, size_t num_clocks)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i =3D 0; i < num_clocks; i++) {
-> > +               hdmi->clk[i] =3D of_clk_get_by_name(np, mtk_hdmi_clk_na=
-mes[i]);
-> > +
-> > +               if (IS_ERR(hdmi->clk[i]))
-> > +                       return PTR_ERR(hdmi->clk[i]);
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +//TODO: common
-> > +struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge,
-> > +                                            struct drm_connector *conn=
-ector)
-> > +{
-> > +       struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > +       struct edid *edid;
-> > +
-> > +       if (!hdmi->ddc_adpt)
-> > +               return NULL;
-> > +       edid =3D drm_get_edid(connector, hdmi->ddc_adpt);
-> > +       if (!edid)
-> > +               return NULL;
-> > +       return edid;
-> > +}
-> > +
-> > +//TODO: common with mt8183
-> > +bool mtk_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
-> > +                                      const struct drm_display_mode *m=
-ode,
-> > +                                      struct drm_display_mode *adjuste=
-d_mode)
-> > +{
-> > +       return true;
-> > +}
-> > +
-> > +//TODO: common
-> > +void
-> > +mtk_hdmi_bridge_mode_set(struct drm_bridge *bridge,
-> > +                        const struct drm_display_mode *mode,
-> > +                        const struct drm_display_mode *adjusted_mode)
-> > +{
-> > +       struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > +
-> > +       drm_mode_copy(&hdmi->mode, adjusted_mode);
-> > +}
-> > +
-> > +//TODO: partly common
-> > +int mtk_hdmi_setup_avi_infoframe(struct mtk_hdmi *hdmi, u8 *buffer,
-> > size_t bufsz,
-> > +                                       struct drm_display_mode *mode)
-> > +{
-> > +       struct hdmi_avi_infoframe frame;
-> > +       ssize_t err;
-> > +       bool is_hdmi2x_sink =3D false;
-> > +
-> > +       if (hdmi->conn.display_info.hdmi.scdc.supported)
-> > +               is_hdmi2x_sink =3D
-> > +                       true; //if support scdc, then the sink support =
-HDMI2.0
-> > +
-> > +       err =3D drm_hdmi_avi_infoframe_from_display_mode(&frame, &hdmi-=
->conn,
-> > +                                                      mode);
-> > +
-> > +       if (err < 0) {
-> > +               dev_err(hdmi->dev,
-> > +                       "Failed to get AVI infoframe from mode: %zd\n",=
- err);
-> > +               return err;
-> > +       }
-> > +
-> > +       frame.colorimetry =3D hdmi->colorimtery;
-> > +       //no need, since we cannot support other extended colorimetry?
-> > +       if (frame.colorimetry =3D=3D HDMI_COLORIMETRY_EXTENDED)
-> > +               frame.extended_colorimetry =3D hdmi->extended_colorimet=
-ry;
-> > +
-> > +       /* quantiation range:limited or full */
-> > +       if (frame.colorspace =3D=3D HDMI_COLORSPACE_RGB)
-> > +               frame.quantization_range =3D hdmi->quantization_range;
-> > +       else
-> > +               frame.ycc_quantization_range =3D hdmi->ycc_quantization=
-_range;
-> > +       err =3D hdmi_avi_infoframe_pack(&frame, buffer, bufsz);
-> > +
-> > +       if (err < 0) {
-> > +               dev_err(hdmi->dev, "Failed to pack AVI infoframe: %zd\n=
-", err);
-> > +               return err;
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +//TODO: partly common?
-> > +void mtk_hdmi_send_infoframe(struct mtk_hdmi *hdmi, u8 *buffer_spd,
-> > size_t bufsz_spd, u8 *buffer_avi, size_t bufsz_avi,
-> > +                                   struct drm_display_mode *mode)
-> > +{
-> > +       mtk_hdmi_setup_avi_infoframe(hdmi, buffer_avi, bufsz_avi, mode)=
-;
-> > +       mtk_hdmi_setup_spd_infoframe(hdmi, buffer_spd, bufsz_spd,
-> > "mediatek", "On-chip HDMI");
-> > +}
-> > +
-> > +static struct mtk_hdmi_ddc *hdmi_ddc_ctx_from_mtk_hdmi(struct mtk_hdmi=
- *hdmi)
-> > +{
-> > +       return container_of(hdmi->ddc_adpt, struct mtk_hdmi_ddc, adap);
-> > +}
-> > +
-> > +//TODO: mostly common, can work
-> > +int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
-> > +                                  struct platform_device *pdev, const =
-char *const *clk_names,
-> > size_t num_clocks)
-> > +{
-> > +       struct device *dev =3D &pdev->dev;
-> > +       struct device_node *np =3D dev->of_node;
-> > +       struct device_node *i2c_np;
-> > +       struct resource *mem;
-> > +       int ret;
-> > +       struct mtk_hdmi_ddc *ddc;
-> > +
-> > +       ret =3D mtk_hdmi_get_all_clk(hdmi, np, clk_names, num_clocks);
-> > +       if (ret) {
-> > +               dev_err(dev, "Failed to get all clks\n");
-> > +               return ret;
-> > +       }
-> > +
-> > +       mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +       if (!mem)
-> > +               return -ENOMEM;
-> > +
-> > +       hdmi->regs =3D devm_ioremap_resource(dev, mem);
-> > +       if (IS_ERR(hdmi->regs))
-> > +               return PTR_ERR(hdmi->regs);
-> > +
-> > +       i2c_np =3D of_parse_phandle(pdev->dev.of_node, "ddc-i2c-bus", 0=
-);
-> > +       if (!i2c_np) {
-> > +               of_node_put(pdev->dev.of_node);
-> > +               dev_err(dev, "Failed to find ddc-i2c-bus \n");
-> > +               return -EINVAL;
-> > +       }
-> > +
-> > +       hdmi->ddc_adpt =3D of_find_i2c_adapter_by_node(i2c_np);
-> > +       if (!hdmi->ddc_adpt)
-> > +               return -EPROBE_DEFER;
-> > +
-> > +       //TODO: rework this... this is ugly
-> > +       ddc =3D hdmi_ddc_ctx_from_mtk_hdmi(hdmi);
-> > +       ddc->regs =3D hdmi->regs;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +int mtk_drm_hdmi_probe(struct platform_device *pdev)
-> > +{
-> > +       struct mtk_hdmi *hdmi;
-> > +       struct device *dev =3D &pdev->dev;
-> > +       int ret;
-> > +
-> > +       hdmi =3D devm_kzalloc(dev, sizeof(*hdmi), GFP_KERNEL);
-> > +       if (!hdmi)
-> > +               return -ENOMEM;
-> > +
-> > +       hdmi->dev =3D dev;
-> > +
-> > +       hdmi->phy =3D devm_phy_get(dev, "hdmi");
-> > +       if (IS_ERR(hdmi->phy)) {
-> > +               ret =3D PTR_ERR(hdmi->phy);
-> > +               dev_err(dev, "Failed to get HDMI PHY: %d\n", ret);
-> > +               return ret;
-> > +       }
-> > +
-> > +       ret =3D mtk_hdmi_dt_parse_pdata(hdmi, pdev, mtk_hdmi_clk_names,
-> > ARRAY_SIZE(mtk_hdmi_clk_names));
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       platform_set_drvdata(pdev, hdmi);
-> > +
-> > +       //TODO
-> > +       mtk_hdmi_output_init(hdmi);
-> > +
-> > +       hdmi->bridge.funcs =3D &mtk_mt8195_hdmi_bridge_funcs;
-> > +       hdmi->bridge.of_node =3D pdev->dev.of_node;
-> > +       drm_bridge_add(&hdmi->bridge);
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +int mtk_drm_hdmi_remove(struct platform_device *pdev)
-> > +{
-> > +       struct mtk_hdmi *hdmi =3D platform_get_drvdata(pdev);
-> > +
-> > +       drm_bridge_remove(&hdmi->bridge);
-> > +//     TODO:
-> > +       mtk_hdmi_clk_disable(hdmi);
-> > +       i2c_put_adapter(hdmi->ddc_adpt);
-> > +
-> > +       return 0;
-> > +}
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi_common.h
-> > b/drivers/gpu/drm/mediatek/mtk_hdmi_common.h
-> > new file mode 100644
-> > index 000000000000..2e0b15d8abf4
-> > --- /dev/null
-> > +++ b/drivers/gpu/drm/mediatek/mtk_hdmi_common.h
-> > @@ -0,0 +1,107 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * Copyright (c) 2021 MediaTek Inc.
-> > + * Copyright (c) 2021 BayLibre, SAS
-> > + */
-> > +
-> > +#ifndef _MTK_HDMI_COMMON_H
-> > +#define _MTK_HDMI_COMMON_H
-> > +#include <linux/hdmi.h>
-> > +#include <drm/drm_bridge.h>
-> > +#include <drm/drm_atomic_helper.h>
-> > +#include <drm/drm_crtc.h>
-> > +#include <drm/drm_crtc_helper.h>
-> > +#include <drm/drm_edid.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/i2c.h>
-> > +#include <sound/hdmi-codec.h>
-> > +#include <linux/clk.h>
-> > +#include <linux/mutex.h>
-> > +#include <linux/phy/phy.h>
-> > +
-> > +#include "mtk_mt8195_hdmi_ddc.h"
-> > +
-> > +enum hdmi_color_depth { HDMI_8_BIT, HDMI_10_BIT, HDMI_12_BIT, HDMI_16_=
-BIT };
-> > +
-> > +enum mtk_hdmi_clk_id {
-> > +       MTK_HDMI_CLK_UNIVPLL_D6D4,
-> > +       MTK_HDMI_CLK_MSDCPLL_D2,
-> > +       MTK_HDMI_CLK_HDMI_APB_SEL,
-> > +       MTK_HDMI_UNIVPLL_D4D8,
-> > +       MTK_HDIM_HDCP_SEL,
-> > +       MTK_HDMI_HDCP_24M_SEL,
-> > +       MTK_HDMI_VPP_SPLIT_HDMI,
-> > +       MTK_HDMI_CLK_COUNT,
-> > +};
-> > +
-> > +enum hdmi_hpd_state {
-> > +       HDMI_PLUG_OUT =3D 0,
-> > +       HDMI_PLUG_IN_AND_SINK_POWER_ON,
-> > +       HDMI_PLUG_IN_ONLY,
-> > +};
-> > +
-> > +struct mtk_hdmi {
-> > +       struct drm_bridge bridge;
-> > +       struct drm_connector conn;
-> > +       struct device *dev;
-> > +       struct phy *phy;
-> > +       struct i2c_adapter *ddc_adpt;
-> > +       struct clk *clk[MTK_HDMI_CLK_COUNT];
-> > +       struct drm_display_mode mode;
-> > +       bool dvi_mode;
-> > +       void __iomem *regs;
-> > +       spinlock_t property_lock;
-> > +       struct drm_property *csp_depth_prop;
-> > +       u64 support_csp_depth;
-> > +       u64 set_csp_depth;
-> > +       enum hdmi_colorspace csp;
-> > +       enum hdmi_color_depth color_depth;
-> > +       enum hdmi_colorimetry colorimtery;
-> > +       enum hdmi_extended_colorimetry extended_colorimetry;
-> > +       enum hdmi_quantization_range quantization_range;
-> > +       enum hdmi_ycc_quantization_range ycc_quantization_range;
-> > +
-> > +       bool powered;
-> > +       bool enabled;
-> > +       unsigned int hdmi_irq;
-> > +       enum hdmi_hpd_state hpd;
-> > +
-> > +       bool hdmi_enabled;
-> > +       bool power_clk_enabled;
-> > +       bool irq_registered;
-> > +};
-> > +
-> > +struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge *b);
-> > +u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset);
-> > +void mtk_hdmi_write(struct mtk_hdmi *hdmi, u32 offset, u32 val);
-> > +inline void mtk_hdmi_clear_bits(struct mtk_hdmi *hdmi, u32 offset,
-> > +                                      u32 bits);
-> > +inline void mtk_hdmi_set_bits(struct mtk_hdmi *hdmi, u32 offset,
-> > +                                    u32 bits);
-> > +void mtk_hdmi_mask(struct mtk_hdmi *hdmi, u32 offset, u32 val, u32 mas=
-k);
-> > +int mtk_hdmi_setup_spd_infoframe(struct mtk_hdmi *hdmi, u8 *buffer,
-> > size_t bufsz,
-> > +                                       const char *vendor, const char =
-*product);
-> > +void mtk_hdmi_send_infoframe(struct mtk_hdmi *hdmi, u8 *buffer_spd,
-> > size_t bufsz_spd, u8 *buffer_avi, size_t bufsz_avi,
-> > +                                   struct drm_display_mode *mode);
-> > +int mtk_hdmi_get_all_clk(struct mtk_hdmi *hdmi, struct device_node *np=
-,
-> > +       const char *const *clk_names, size_t num_clocks);
-> > +struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge,
-> > +                                            struct drm_connector *conn=
-ector);
-> > +bool mtk_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
-> > +                                      const struct drm_display_mode *m=
-ode,
-> > +                                      struct drm_display_mode *adjuste=
-d_mode);
-> > +void
-> > +mtk_hdmi_bridge_mode_set(struct drm_bridge *bridge,
-> > +                        const struct drm_display_mode *mode,
-> > +                        const struct drm_display_mode *adjusted_mode);
-> > +int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
-> > +                                  struct platform_device *pdev, const =
-char *const *clk_names,
-> > size_t num_clocks);
-> > +int mtk_drm_hdmi_probe(struct platform_device *pdev);
-> > +int mtk_drm_hdmi_remove(struct platform_device *pdev);
-> > +
-> > +//TODO: do better than this
-> > +extern const struct drm_bridge_funcs mtk_mt8195_hdmi_bridge_funcs;
-> > +extern const char *const mtk_hdmi_clk_names[MTK_HDMI_CLK_COUNT];
-> > +extern void mtk_hdmi_output_init(struct mtk_hdmi *hdmi);
-> > +extern void mtk_hdmi_clk_disable(struct mtk_hdmi *hdmi);
-> > +#endif //_MTK_HDMI_COMMON_H
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > b/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > index f9bcef24c1d2..72840ef2b0a6 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > +++ b/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.c
-> > @@ -17,7 +17,6 @@
-> >  #include <linux/of_irq.h>
-> >  #include <linux/of_gpio.h>
-> >  #include <linux/of_graph.h>
-> > -#include <linux/phy/phy.h>
-> >  #include <linux/pm_wakeup.h>
-> >  #include <linux/timer.h>
-> >
-> > @@ -28,15 +27,37 @@
-> >  #include <drm/drm_scdc_helper.h>
-> >
-> >  #include "mtk_drm_crtc.h"
-> > -#include "mtk_mt8195_hdmi_ddc.h"
-> >  #include "mtk_mt8195_hdmi.h"
-> > +#include "mtk_hdmi_common.h"
-> > +#include "mtk_mt8195_hdmi_ddc.h"
-> >  #include "mtk_mt8195_hdmi_regs.h"
-> >
-> > +#define RGB444_8bit BIT(0)
-> > +#define RGB444_10bit BIT(1)
-> > +#define RGB444_12bit BIT(2)
-> > +#define RGB444_16bit BIT(3)
-> > +
-> > +#define YCBCR444_8bit BIT(4)
-> > +#define YCBCR444_10bit BIT(5)
-> > +#define YCBCR444_12bit BIT(6)
-> > +#define YCBCR444_16bit BIT(7)
-> > +
-> > +#define YCBCR422_8bit_NO_SUPPORT BIT(8)
-> > +#define YCBCR422_10bit_NO_SUPPORT BIT(9)
-> > +#define YCBCR422_12bit BIT(10)
-> > +#define YCBCR422_16bit_NO_SUPPORT BIT(11)
-> > +
-> > +#define YCBCR420_8bit BIT(12)
-> > +#define YCBCR420_10bit BIT(13)
-> > +#define YCBCR420_12bit BIT(14)
-> > +#define YCBCR420_16bit BIT(15)
-> > +
-> > +
-> >  #define BYTES_TO_UINT32(msb, b1, b2, lsb)
-> >          \
-> >         (((msb & 0xff) << 24) + ((b1 & 0xff) << 16) + ((b2 & 0xff) << 8=
-) +     \
-> >          ((lsb & 0xff)))
-> >
-> > -static const char *const mtk_hdmi_clk_names[MTK_HDMI_CLK_COUNT] =3D {
-> > +const char *const mtk_hdmi_clk_names[MTK_HDMI_CLK_COUNT] =3D {
-> >         [MTK_HDMI_CLK_UNIVPLL_D6D4] =3D "univpll_d6_d4",
-> >         [MTK_HDMI_CLK_MSDCPLL_D2] =3D "msdcpll_d2",
-> >         [MTK_HDMI_CLK_HDMI_APB_SEL] =3D "hdmi_apb_sel",
-> > @@ -46,63 +67,11 @@ static const char *const
-> > mtk_hdmi_clk_names[MTK_HDMI_CLK_COUNT] =3D {
-> >         [MTK_HDMI_VPP_SPLIT_HDMI] =3D "split_hdmi",
-> >  };
-> >
-> > -static inline struct mtk_hdmi *hdmi_ctx_from_bridge(struct drm_bridge =
-*b)
-> > -{
-> > -       return container_of(b, struct mtk_hdmi, bridge);
-> > -}
-> > -
-> >  static inline struct mtk_hdmi *hdmi_ctx_from_conn(struct drm_connector=
- *c)
-> >  {
-> >         return container_of(c, struct mtk_hdmi, conn);
-> >  }
-> >
-> > -static struct mtk_hdmi_ddc *hdmi_ddc_ctx_from_mtk_hdmi(struct mtk_hdmi=
- *hdmi)
-> > -{
-> > -       return container_of(hdmi->ddc_adpt, struct mtk_hdmi_ddc, adap);
-> > -}
-> > -
-> > -static u32 mtk_hdmi_read(struct mtk_hdmi *hdmi, u32 offset)
-> > -{
-> > -       return readl(hdmi->regs + offset);
-> > -}
-> > -
-> > -static void mtk_hdmi_write(struct mtk_hdmi *hdmi, u32 offset, u32 val)
-> > -{
-> > -       writel(val, hdmi->regs + offset);
-> > -}
-> > -
-> > -static inline void mtk_hdmi_clear_bits(struct mtk_hdmi *hdmi, u32 offs=
-et,
-> > -                                      u32 bits)
-> > -{
-> > -       void __iomem *reg =3D hdmi->regs + offset;
-> > -       u32 tmp;
-> > -
-> > -       tmp =3D readl(reg);
-> > -       tmp &=3D ~bits;
-> > -       writel(tmp, reg);
-> > -}
-> > -
-> > -static inline void mtk_hdmi_set_bits(struct mtk_hdmi *hdmi, u32 offset=
-,
-> > -                                    u32 bits)
-> > -{
-> > -       void __iomem *reg =3D hdmi->regs + offset;
-> > -       u32 tmp;
-> > -
-> > -       tmp =3D readl(reg);
-> > -       tmp |=3D bits;
-> > -       writel(tmp, reg);
-> > -}
-> > -
-> > -static void mtk_hdmi_mask(struct mtk_hdmi *hdmi, u32 offset, u32 val, =
-u32 mask)
-> > -{
-> > -       void __iomem *reg =3D hdmi->regs + offset;
-> > -       u32 tmp;
-> > -
-> > -       tmp =3D readl(reg);
-> > -       tmp =3D (tmp & ~mask) | (val & mask);
-> > -       writel(tmp, reg);
-> > -}
-> > -
-> >  static inline void mtk_hdmi_clr_all_int_status(struct mtk_hdmi *hdmi)
-> >  {
-> >         /*clear all tx irq*/
-> > @@ -251,6 +220,7 @@ static void mtk_hdmi_hw_vid_black(struct mtk_hdmi
-> > *hdmi, bool black)
-> >                 mtk_hdmi_mask(hdmi, TOP_VMUTE_CFG1, 0, REG_VMUTE_EN);
-> >  }
-> >
-> > +//TODO: not compatible
-> >  static void mtk_hdmi_hw_reset(struct mtk_hdmi *hdmi)
-> >  {
-> >         mtk_hdmi_mask(hdmi, HDMITX_CONFIG, 0x0 << HDMITX_SW_RSTB_SHIFT,
-> > @@ -276,6 +246,7 @@ static bool mtk_hdmi_sink_is_hdmi_device(struct
-> > mtk_hdmi *hdmi)
-> >                 return true;
-> >  }
-> >
-> > +//TODO: not compatible
-> >  static void mtk_hdmi_set_deep_color(struct mtk_hdmi *hdmi, bool is_hdm=
-i_sink)
-> >  {
-> >         unsigned int deep_color =3D 0;
-> > @@ -345,6 +316,7 @@ static void mtk_hdmi_hw_avi_infoframe(struct
-> > mtk_hdmi *hdmi, u8 *buffer, u8 len)
-> >                       AVI_EN_WR | AVI_EN);
-> >  }
-> >
-> > +//TODO: not common
-> >  static void mtk_hdmi_hw_spd_infoframe(struct mtk_hdmi *hdmi, u8
-> > *buffer, u8 len)
-> >  {
-> >         mtk_hdmi_mask(hdmi, TOP_INFO_EN, SPD_DIS_WR | SPD_DIS,
-> > @@ -387,6 +359,7 @@ static void mtk_hdmi_hw_spd_infoframe(struct
-> > mtk_hdmi *hdmi, u8 *buffer, u8 len)
-> >                       SPD_EN_WR | SPD_EN);
-> >  }
-> >
-> > +//TODO: not compatible
-> >  static inline void mtk_hdmi_hw_send_av_mute(struct mtk_hdmi *hdmi)
-> >  {
-> >         /*GCP packet */
-> > @@ -401,6 +374,7 @@ static inline void mtk_hdmi_hw_send_av_mute(struct
-> > mtk_hdmi *hdmi)
-> >         mtk_hdmi_mask(hdmi, TOP_INFO_EN, CP_EN | CP_EN_WR, CP_EN | CP_E=
-N_WR);
-> >  }
-> >
-> > +//TODO: not compatible
-> >  static inline void mtk_hdmi_hw_send_av_unmute(struct mtk_hdmi *hdmi)
-> >  {
-> >         /*GCP packet */
-> > @@ -415,73 +389,9 @@ static inline void
-> > mtk_hdmi_hw_send_av_unmute(struct mtk_hdmi *hdmi)
-> >         mtk_hdmi_mask(hdmi, TOP_INFO_EN, CP_EN | CP_EN_WR, CP_EN | CP_E=
-N_WR);
-> >  }
-> >
-> > -static int mtk_hdmi_setup_avi_infoframe(struct mtk_hdmi *hdmi,
-> > -                                       struct drm_display_mode *mode)
-> > -{
-> > -       struct hdmi_avi_infoframe frame;
-> > -       u8 buffer[17];
-> > -       ssize_t err;
-> > -       bool is_hdmi2x_sink =3D false;
-> > -
-> > -       if (hdmi->conn.display_info.hdmi.scdc.supported)
-> > -               is_hdmi2x_sink =3D
-> > -                       true; //if support scdc, then the sink support =
-HDMI2.0
-> > -
-> > -       err =3D drm_hdmi_avi_infoframe_from_display_mode(&frame, &hdmi-=
->conn,
-> > -                                                      mode);
-> > -
-> > -       if (err < 0) {
-> > -               dev_err(hdmi->dev,
-> > -                       "Failed to get AVI infoframe from mode: %zd\n",=
- err);
-> > -               return err;
-> > -       }
-> > -
-> > -       frame.colorimetry =3D hdmi->colorimtery;
-> > -       //no need, since we cannot support other extended colorimetry?
-> > -       if (frame.colorimetry =3D=3D HDMI_COLORIMETRY_EXTENDED)
-> > -               frame.extended_colorimetry =3D hdmi->extended_colorimet=
-ry;
-> > -
-> > -       /* quantiation range:limited or full */
-> > -       if (frame.colorspace =3D=3D HDMI_COLORSPACE_RGB)
-> > -               frame.quantization_range =3D hdmi->quantization_range;
-> > -       else
-> > -               frame.ycc_quantization_range =3D hdmi->ycc_quantization=
-_range;
-> > -       err =3D hdmi_avi_infoframe_pack(&frame, buffer, sizeof(buffer))=
-;
-> > -
-> > -       if (err < 0) {
-> > -               dev_err(hdmi->dev, "Failed to pack AVI infoframe: %zd\n=
-", err);
-> > -               return err;
-> > -       }
-> >
-> > -       mtk_hdmi_hw_avi_infoframe(hdmi, buffer, sizeof(buffer));
-> > -       return 0;
-> > -}
-> > -
-> > -static int mtk_hdmi_setup_spd_infoframe(struct mtk_hdmi *hdmi,
-> > -                                       const char *vendor, const char =
-*product)
-> > -{
-> > -       struct hdmi_spd_infoframe frame;
-> > -       u8 buffer[29];
-> > -       ssize_t err;
-> > -
-> > -       err =3D hdmi_spd_infoframe_init(&frame, vendor, product);
-> > -       if (err < 0) {
-> > -               dev_err(hdmi->dev, "Failed to initialize SPD infoframe:=
- %zd\n",
-> > -                       err);
-> > -               return err;
-> > -       }
-> > -
-> > -       err =3D hdmi_spd_infoframe_pack(&frame, buffer, sizeof(buffer))=
-;
-> > -       if (err < 0) {
-> > -               dev_err(hdmi->dev, "Failed to pack SDP infoframe: %zd\n=
-", err);
-> > -               return err;
-> > -       }
-> > -
-> > -       mtk_hdmi_hw_spd_infoframe(hdmi, buffer, sizeof(buffer));
-> > -       return 0;
-> > -}
-> > -
-> > -static void mtk_hdmi_output_init(struct mtk_hdmi *hdmi)
-> > +//TODO: not common
-> > +void mtk_hdmi_output_init(struct mtk_hdmi *hdmi)
-> >  {
-> >         hdmi->hpd =3D HDMI_PLUG_OUT;
-> >         hdmi->set_csp_depth =3D RGB444_8bit;
-> > @@ -538,26 +448,13 @@ static void
-> > mtk_hdmi_change_video_resolution(struct mtk_hdmi *hdmi)
-> >                 mtk_hdmi_yuv420_downsample(hdmi, false);
-> >  }
-> >
-> > +//TODO: not common
-> >  static void mtk_hdmi_output_set_display_mode(struct mtk_hdmi *hdmi,
-> >                                              struct drm_display_mode *m=
-ode)
-> >  {
-> >         mtk_hdmi_change_video_resolution(hdmi);
-> >  }
-> >
-> > -static int mtk_hdmi_get_all_clk(struct mtk_hdmi *hdmi, struct device_n=
-ode *np)
-> > -{
-> > -       int i;
-> > -
-> > -       for (i =3D 0; i < ARRAY_SIZE(mtk_hdmi_clk_names); i++) {
-> > -               hdmi->clk[i] =3D of_clk_get_by_name(np, mtk_hdmi_clk_na=
-mes[i]);
-> > -
-> > -               if (IS_ERR(hdmi->clk[i]))
-> > -                       return PTR_ERR(hdmi->clk[i]);
-> > -       }
-> > -
-> > -       return 0;
-> > -}
-> > -
-> >  static void mtk_hdmi_clk_enable(struct mtk_hdmi *hdmi)
-> >  {
-> >         int i;
-> > @@ -576,7 +473,7 @@ static void mtk_hdmi_clk_enable(struct mtk_hdmi *hd=
-mi)
-> >         }
-> >  }
-> >
-> > -static void mtk_hdmi_clk_disable(struct mtk_hdmi *hdmi)
-> > +void mtk_hdmi_clk_disable(struct mtk_hdmi *hdmi)
-> >  {
-> >         int i;
-> >
-> > @@ -844,8 +741,6 @@ static void mtk_hdmi_connetor_init_property(struct
-> > drm_device *drm_dev,
-> >         if (!prop)
-> >                 return;
-> >
-> > -       hdmi->hdmi_info_blob =3D prop;
-> > -       hdmi->hdmi_info_blob_ptr =3D NULL;
-> >         drm_object_attach_property(&conn->base, prop, 0);
-> >  }
-> >
-> > @@ -953,6 +848,7 @@ static struct drm_encoder
-> > *mtk_hdmi_conn_best_enc(struct drm_connector *conn)
-> >         return hdmi->bridge.encoder;
-> >  }
-> >
-> > +//TODO: no connector in orig driver
-> >  static const struct drm_connector_funcs mtk_hdmi_connector_funcs =3D {
-> >         .detect =3D hdmi_conn_detect,
-> >         .fill_modes =3D drm_helper_probe_single_connector_modes,
-> > @@ -974,6 +870,7 @@ static const struct drm_connector_helper_funcs
-> > mtk_hdmi_connector_helper_funcs =3D
-> >   * Bridge callbacks
-> >   */
-> >
-> > +//TODO: not common
-> >  static int mtk_hdmi_bridge_attach(struct drm_bridge *bridge,
-> >                                   enum drm_bridge_attach_flags flags)
-> >  {
-> > @@ -1005,27 +902,8 @@ static int mtk_hdmi_bridge_attach(struct
-> > drm_bridge *bridge,
-> >         return 0;
-> >  }
-> >
-> > -static struct edid *mtk_hdmi_bridge_get_edid(struct drm_bridge *bridge=
-,
-> > -                                            struct drm_connector *conn=
-ector)
-> > -{
-> > -       struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > -       struct edid *edid;
-> > -
-> > -       if (!hdmi->ddc_adpt)
-> > -               return NULL;
-> > -       edid =3D drm_get_edid(connector, hdmi->ddc_adpt);
-> > -       if (!edid)
-> > -               return NULL;
-> > -       return edid;
-> > -}
-> > -
-> > -static bool mtk_hdmi_bridge_mode_fixup(struct drm_bridge *bridge,
-> > -                                      const struct drm_display_mode *m=
-ode,
-> > -                                      struct drm_display_mode *adjuste=
-d_mode)
-> > -{
-> > -       return true;
-> > -}
-> >
-> > +//TODO: not common
-> >  static void mtk_hdmi_bridge_disable(struct drm_bridge *bridge)
-> >  {
-> >         struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > @@ -1042,6 +920,7 @@ static void mtk_hdmi_bridge_disable(struct
-> > drm_bridge *bridge)
-> >         hdmi->enabled =3D false;
-> >  }
-> >
-> > +//TODO: not common
-> >  static void mtk_hdmi_bridge_post_disable(struct drm_bridge *bridge)
-> >  {
-> >         struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > @@ -1056,26 +935,12 @@ static void mtk_hdmi_bridge_post_disable(struct
-> > drm_bridge *bridge)
-> >         mtk_hdmi_reset_colorspace_setting(hdmi);
-> >  }
-> >
-> > -static void
-> > -mtk_hdmi_bridge_mode_set(struct drm_bridge *bridge,
-> > -                        const struct drm_display_mode *mode,
-> > -                        const struct drm_display_mode *adjusted_mode)
-> > -{
-> > -       struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > -
-> > -       drm_mode_copy(&hdmi->mode, adjusted_mode);
-> > -}
-> > -
-> > -static void mtk_hdmi_send_infoframe(struct mtk_hdmi *hdmi,
-> > -                                   struct drm_display_mode *mode)
-> > -{
-> > -       mtk_hdmi_setup_avi_infoframe(hdmi, mode);
-> > -       mtk_hdmi_setup_spd_infoframe(hdmi, "mediatek", "On-chip HDMI");
-> > -}
-> > -
-> > +//TODO:not common
-> >  static void mtk_hdmi_bridge_pre_enable(struct drm_bridge *bridge)
-> >  {
-> >         struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > +       u8 buffer_spd[HDMI_INFOFRAME_HEADER_SIZE + HDMI_SPD_INFOFRAME_S=
-IZE];
-> > +       u8 buffer_avi[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AVI_INFOFRAME_S=
-IZE];
-> >         union phy_configure_opts opts =3D {
-> >                 .dp =3D { .link_rate =3D hdmi->mode.clock * 1000 }
-> >         };
-> > @@ -1084,11 +949,14 @@ static void mtk_hdmi_bridge_pre_enable(struct
-> > drm_bridge *bridge)
-> >         mtk_hdmi_output_set_display_mode(hdmi, &hdmi->mode);
-> >         phy_configure(hdmi->phy, &opts);
-> >         phy_power_on(hdmi->phy);
-> > -       mtk_hdmi_send_infoframe(hdmi, &hdmi->mode);
-> > +       mtk_hdmi_send_infoframe(hdmi, buffer_spd, sizeof(buffer_spd),
-> > buffer_avi, sizeof(buffer_avi), &hdmi->mode);
-> > +       mtk_hdmi_hw_spd_infoframe(hdmi, buffer_spd, sizeof(buffer_avi))=
-;
-> > +       mtk_hdmi_hw_avi_infoframe(hdmi, buffer_avi, sizeof(buffer_spd))=
-;
-> >
-> >         hdmi->powered =3D true;
-> >  }
-> >
-> > +//TODO:not common
-> >  static void mtk_hdmi_bridge_enable(struct drm_bridge *bridge)
-> >  {
-> >         struct mtk_hdmi *hdmi =3D hdmi_ctx_from_bridge(bridge);
-> > @@ -1099,7 +967,7 @@ static void mtk_hdmi_bridge_enable(struct
-> > drm_bridge *bridge)
-> >         hdmi->enabled =3D true;
-> >  }
-> >
-> > -static const struct drm_bridge_funcs mtk_hdmi_bridge_funcs =3D {
-> > +const struct drm_bridge_funcs mtk_mt8195_hdmi_bridge_funcs =3D {
-> >         .attach =3D mtk_hdmi_bridge_attach,
-> >         .mode_fixup =3D mtk_hdmi_bridge_mode_fixup,
-> >         .disable =3D mtk_hdmi_bridge_disable,
-> > @@ -1110,88 +978,6 @@ static const struct drm_bridge_funcs
-> > mtk_hdmi_bridge_funcs =3D {
-> >         .get_edid =3D mtk_hdmi_bridge_get_edid,
-> >  };
-> >
-> > -static int mtk_hdmi_dt_parse_pdata(struct mtk_hdmi *hdmi,
-> > -                                  struct platform_device *pdev)
-> > -{
-> > -       struct device *dev =3D &pdev->dev;
-> > -       struct device_node *np =3D dev->of_node;
-> > -       struct device_node *i2c_np;
-> > -       struct resource *mem;
-> > -       int ret;
-> > -       struct mtk_hdmi_ddc *ddc;
-> > -
-> > -       ret =3D mtk_hdmi_get_all_clk(hdmi, np);
-> > -       if (ret)
-> > -               return ret;
-> > -
-> > -       mem =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > -       if (!mem)
-> > -               return -ENOMEM;
-> > -
-> > -       hdmi->regs =3D devm_ioremap_resource(dev, mem);
-> > -       if (IS_ERR(hdmi->regs))
-> > -               return PTR_ERR(hdmi->regs);
-> > -
-> > -       i2c_np =3D of_parse_phandle(pdev->dev.of_node, "ddc-i2c-bus", 0=
-);
-> > -       if (!i2c_np) {
-> > -               of_node_put(pdev->dev.of_node);
-> > -               return -EINVAL;
-> > -       }
-> > -
-> > -       hdmi->ddc_adpt =3D of_find_i2c_adapter_by_node(i2c_np);
-> > -       if (!hdmi->ddc_adpt)
-> > -               return -EPROBE_DEFER;
-> > -
-> > -       ddc =3D hdmi_ddc_ctx_from_mtk_hdmi(hdmi);
-> > -       ddc->regs =3D hdmi->regs;
-> > -
-> > -       return 0;
-> > -}
-> > -
-> > -static int mtk_drm_hdmi_probe(struct platform_device *pdev)
-> > -{
-> > -       struct mtk_hdmi *hdmi;
-> > -       struct device *dev =3D &pdev->dev;
-> > -       int ret;
-> > -
-> > -       hdmi =3D devm_kzalloc(dev, sizeof(*hdmi), GFP_KERNEL);
-> > -       if (!hdmi)
-> > -               return -ENOMEM;
-> > -
-> > -       hdmi->dev =3D dev;
-> > -
-> > -       hdmi->phy =3D devm_phy_get(dev, "hdmi");
-> > -       if (IS_ERR(hdmi->phy)) {
-> > -               ret =3D PTR_ERR(hdmi->phy);
-> > -               return ret;
-> > -       }
-> > -
-> > -       ret =3D mtk_hdmi_dt_parse_pdata(hdmi, pdev);
-> > -       if (ret)
-> > -               return ret;
-> > -
-> > -       platform_set_drvdata(pdev, hdmi);
-> > -
-> > -       mtk_hdmi_output_init(hdmi);
-> > -
-> > -       hdmi->bridge.funcs =3D &mtk_hdmi_bridge_funcs;
-> > -       hdmi->bridge.of_node =3D pdev->dev.of_node;
-> > -       drm_bridge_add(&hdmi->bridge);
-> > -
-> > -       return 0;
-> > -}
-> > -
-> > -static int mtk_drm_hdmi_remove(struct platform_device *pdev)
-> > -{
-> > -       struct mtk_hdmi *hdmi =3D platform_get_drvdata(pdev);
-> > -
-> > -       drm_bridge_remove(&hdmi->bridge);
-> > -       mtk_hdmi_clk_disable(hdmi);
-> > -       i2c_put_adapter(hdmi->ddc_adpt);
-> > -
-> > -       return 0;
-> > -}
-> > -
-> >  #ifdef CONFIG_PM_SLEEP
-> >  static __maybe_unused int mtk_hdmi_suspend(struct device *dev)
-> >  {
-> > diff --git a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
-> > b/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
-> > index 5eaa1485cc0c..fbbfa6164292 100644
-> > --- a/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
-> > +++ b/drivers/gpu/drm/mediatek/mtk_mt8195_hdmi.h
-> > @@ -9,97 +9,6 @@
-> >
-> >  #include <linux/hdmi.h>
-> >  #include <drm/drm_bridge.h>
-> > -#include <drm/drm_atomic_helper.h>
-> > -#include <drm/drm_crtc.h>
-> > -#include <drm/drm_crtc_helper.h>
-> > -#include <drm/drm_edid.h>
-> > -#include <linux/platform_device.h>
-> > -#include <linux/i2c.h>
-> > -#include <sound/hdmi-codec.h>
-> > -#include <linux/clk.h>
-> > -#include <linux/mutex.h>
-> > -
-> > -//#include "../../../phy/mediatek/phy-mtk-hdmi-mt8195.h"
-> > -
-> > -#define RGB444_8bit BIT(0)
-> > -#define RGB444_10bit BIT(1)
-> > -#define RGB444_12bit BIT(2)
-> > -#define RGB444_16bit BIT(3)
-> > -
-> > -#define YCBCR444_8bit BIT(4)
-> > -#define YCBCR444_10bit BIT(5)
-> > -#define YCBCR444_12bit BIT(6)
-> > -#define YCBCR444_16bit BIT(7)
-> > -
-> > -#define YCBCR422_8bit_NO_SUPPORT BIT(8)
-> > -#define YCBCR422_10bit_NO_SUPPORT BIT(9)
-> > -#define YCBCR422_12bit BIT(10)
-> > -#define YCBCR422_16bit_NO_SUPPORT BIT(11)
-> > -
-> > -#define YCBCR420_8bit BIT(12)
-> > -#define YCBCR420_10bit BIT(13)
-> > -#define YCBCR420_12bit BIT(14)
-> > -#define YCBCR420_16bit BIT(15)
-> > -
-> > -enum hdmi_color_depth { HDMI_8_BIT, HDMI_10_BIT, HDMI_12_BIT, HDMI_16_=
-BIT };
-> > -
-> > -enum mtk_hdmi_clk_id {
-> > -       MTK_HDMI_CLK_UNIVPLL_D6D4,
-> > -       MTK_HDMI_CLK_MSDCPLL_D2,
-> > -       MTK_HDMI_CLK_HDMI_APB_SEL,
-> > -       MTK_HDMI_UNIVPLL_D4D8,
-> > -       MTK_HDIM_HDCP_SEL,
-> > -       MTK_HDMI_HDCP_24M_SEL,
-> > -       MTK_HDMI_VPP_SPLIT_HDMI,
-> > -       MTK_HDMI_CLK_COUNT,
-> > -};
-> > -
-> > -enum hdmi_hpd_state {
-> > -       HDMI_PLUG_OUT =3D 0,
-> > -       HDMI_PLUG_IN_AND_SINK_POWER_ON,
-> > -       HDMI_PLUG_IN_ONLY,
-> > -};
-> > -
-> > -struct mtk_hdmi {
-> > -       struct drm_bridge bridge;
-> > -       struct drm_connector conn;
-> > -       struct device *dev;
-> > -       struct phy *phy;
-> > -       struct cec_notifier *notifier;
-> > -       struct i2c_adapter *ddc_adpt;
-> > -       struct clk *clk[MTK_HDMI_CLK_COUNT];
-> > -       struct drm_display_mode mode;
-> > -       struct mtk_edid_params *edid_params;
-> > -       struct mtk_hdmi_sink_av_cap *sink_avcap;
-> > -       bool dvi_mode;
-> > -       u32 max_hdisplay;
-> > -       u32 max_vdisplay;
-> > -       void __iomem *regs;
-> > -       spinlock_t property_lock;
-> > -       struct drm_property *hdmi_info_blob;
-> > -       struct drm_property_blob *hdmi_info_blob_ptr;
-> > -       struct drm_property *csp_depth_prop;
-> > -       u64 support_csp_depth;
-> > -       u64 set_csp_depth;
-> > -       enum hdmi_colorspace csp;
-> > -       enum hdmi_color_depth color_depth;
-> > -       enum hdmi_colorimetry colorimtery;
-> > -       enum hdmi_extended_colorimetry extended_colorimetry;
-> > -       enum hdmi_quantization_range quantization_range;
-> > -       enum hdmi_ycc_quantization_range ycc_quantization_range;
-> > -
-> > -       struct device *codec_dev;
-> > -       hdmi_codec_plugged_cb plugged_cb;
-> > -
-> > -       bool powered;
-> > -       bool enabled;
-> > -       unsigned int hdmi_irq;
-> > -       enum hdmi_hpd_state hpd;
-> > -
-> > -       bool hdmi_enabled;
-> > -       bool power_clk_enabled;
-> > -       bool irq_registered;
-> > -};
-> >
-> >  #if defined(CONFIG_DRM_MEDIATEK_HDMI) ||
-> >          \
-> >         defined(CONFIG_DRM_MEDIATEK_HDMI_MODULE)
