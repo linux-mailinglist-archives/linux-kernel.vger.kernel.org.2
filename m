@@ -2,124 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59713426BE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F18426BE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232385AbhJHNsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        id S230346AbhJHNsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231303AbhJHNsf (ORCPT
+        with ESMTP id S229487AbhJHNsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:48:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F76CC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AeZfY9f2iurPW1q+xtFtNI1W2I5709CG4W+EJzRCAMU=; b=VTz07ORtCuf5oVvGPCxrXR3kYL
-        hwmjJl9K29frRONPa/BsiWpyaMYGbCj8lGBNv9ysywf1ucX6SrVnNGhrFg5RgVyv/jjMXTLyyxyzZ
-        kTkRxUFEC8uUfV6+Gf1mdGDbFyqtbcj5Ye3WQTSWYPtT3/KG75H2K1G1sWa4KD5dG75i/LmJn68A9
-        PVoR2JXECqp2Xs82wX3SO2vKHVGUJuXuQzLPhyHHKCT80ivuJ3ogjnSAE/Gk9ZwP/p0NzFK2uOzRv
-        CZvdYdIu9dBjij2sqTcNQiv+vIexJ37P+rivNIgKccf58rTbEg8az7N4FTexM+Nonna16vd1ZYVto
-        UOYsffRw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYqCF-003Ene-QB; Fri, 08 Oct 2021 13:46:11 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B20530077A;
-        Fri,  8 Oct 2021 15:45:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 64C3A2007A037; Fri,  8 Oct 2021 15:45:59 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 15:45:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     keescook@chromium.org, jannh@google.com,
-        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net
-Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
-Message-ID: <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
-References: <20211008111527.438276127@infradead.org>
- <20211008111626.392918519@infradead.org>
- <20211008124052.GA976@C02TD0UTHF1T.local>
+        Fri, 8 Oct 2021 09:48:17 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF10CC061570;
+        Fri,  8 Oct 2021 06:46:20 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id h11-20020a4aa74b000000b002a933d156cbso2942095oom.4;
+        Fri, 08 Oct 2021 06:46:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ScYT0P7tH1iM6DzLvWFrRk8ZzpflLzTKROgrb+A1KAU=;
+        b=ZfvWYWpzAMzlZoSzBi1v2hfJmvYl1m3b2KCE5vwI/wQzNMKp4OD6QQ9sMGHPFL5Y2N
+         x9P+mkZdUv75HWRAmoL0Ago71YGbqvFWZNohmZuUcm8j8WyzM9WjQ+QlH56cmAO8LWl8
+         bXX9m59ZMdInysyVTndfIz6DAzfI1vrcEBwzVQAiCu2JdfCbQUoxGVYDpO7yYG8iOR9x
+         gOqSLaKAOItrAQP0I3QarUfgUBn8pdt5CG3s2IZr73+MAyo+pkbwmbeW+bV/UlZ6K+OD
+         hQ+tNsvJUacsoTnfDa03UlNrtTosCcbiAkvlli2+X8ohPX6lUjL2t6cgpR0q7ZUe+gqB
+         E+xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ScYT0P7tH1iM6DzLvWFrRk8ZzpflLzTKROgrb+A1KAU=;
+        b=ukZdq5sor8tMf41HTpBtFUZvnR4eL/wUL/PILnD0vv756OAZpcx/3zi2Ck+fX2I57o
+         XsFhpHGlENC9CGAmLlc2UVHPYazYb+TEQx2RyCvtNFMopWxG90eCSgD1U9wkCzTtqYG5
+         uyiMKyLJ5Y+QqPXyQBROPkmvyizeo6mrk3tQYGfmUkewTCj/TdQgM0kJz0GmQ/fqbfiO
+         9VDkQabgovxzOOkGPSquF4dgI2Cmp4eXeIsyVgmYQ4uml0fmoEDxUF9w5x6zRFGqxa+3
+         pdZWy3KMRR8Nh3WU+nS3Y8T+qwr21pYGMvlYN6WvcVRjIQGZmDRswveXuq48UxDQK2jI
+         fULw==
+X-Gm-Message-State: AOAM532mPVB4rxxXnn2B7h41rNoXCffKke8dHHWB5jNYH9AvCTQGQzfi
+        ug6VoKcT6pwJ9G067jl2Vpt7l+DYvj8=
+X-Google-Smtp-Source: ABdhPJwc71MmX4WeKpI8WRR4aotxE0VRvMHAEEr3kjqJJDkpW5T2Nd9SjgEY54cBwMziCMxPBjX0SA==
+X-Received: by 2002:a4a:c292:: with SMTP id b18mr7946988ooq.64.1633700780326;
+        Fri, 08 Oct 2021 06:46:20 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id e2sm492731ooh.40.2021.10.08.06.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 06:46:19 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 8 Oct 2021 06:46:18 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] hwmon: (pmbus/lm25066) Adjust lm25066
+ PSC_CURRENT_IN_L mantissa
+Message-ID: <20211008134618.GA1190700@roeck-us.net>
+References: <20210928092242.30036-1-zev@bewilderbeest.net>
+ <20210928092242.30036-3-zev@bewilderbeest.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008124052.GA976@C02TD0UTHF1T.local>
+In-Reply-To: <20210928092242.30036-3-zev@bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:40:52PM +0100, Mark Rutland wrote:
-> [Adding Josh, since there might be a concern here from a livepatch pov]
+On Tue, Sep 28, 2021 at 02:22:36AM -0700, Zev Weiss wrote:
+> At least as of Revision J, the datasheet has a slightly different
+> value than what we'd had in the driver.
 > 
+Indeeed, it does.
 
-> > +static unsigned long __get_wchan(struct task_struct *p)
-> > +{
-> > +	unsigned long entry = 0;
-> > +
-> > +	stack_trace_save_tsk(p, &entry, 1, 0);
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+
+Applied.
+
+Thanks,
+Guenter
+
+> ---
+>  drivers/hwmon/pmbus/lm25066.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> This assumes stack_trace_save_tsk() will skip sched functions, but I
-> don't think that's ever been a requirement? It's certinaly not
-> documented anywhere that I could find, and arm64 doesn't do so today,
-> and this patch causes wchan to just log `__switch_to` for everything.
-
-Confused, arm64 has arch_stack_walk() and should thus use
-kernel/stacktrace.c's stack_trace_consume_entry_nosched.
-
-> I realise you "fix" that for some arches in the next patch, but it's not
-> clear to me that's the right thing to do -- I would expect that
-
-I only actually change the behaviour on csky, both mips and nds32 have
-this 'savesched = (task == current)' logic which ends up being a very
-confusing way to write things, but for wchan we never call on current,
-and hence don't save the __sched functions.
-
-> stack_trace_save_tsk() *shouldn't* skip anything unless we've explicitly
-> told it to via skipnr, because I'd expect that
-
-It's what most archs happen to do today and is what
-stack_trace_save_tsk() as implemented using arch_stack_walk() does.
-Which is I think the closest to canonical we have.
-
-> stack_trace_save_tsk_reliable() mustn't, in case we ever need to patch
-> anything in the scheduler (or arch ctxsw code) with a livepatch, or if
-> you ever *want* to have the sched functions in a trace.
-> 
-> So I have two big questions:
-> 
-> 1) Where precisely should stack_trace_save_tsk() and
->    stack_trace_save_tsk_reliable() start from?
-> 
-> 1) What should you do when you *do* want sched functions in a trace?
-> 
-> We could side-step the issue here by using arch_stack_walk(), which'd
-> make it easy to skip sched functions in the core code.
-
-arch_stack_walk() is the modern API and should be used going forward,
-and I've gone with the stack_trace_save*() implementation as per that.
+> diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
+> index 1a660c4cd19f..3616705aafde 100644
+> --- a/drivers/hwmon/pmbus/lm25066.c
+> +++ b/drivers/hwmon/pmbus/lm25066.c
+> @@ -101,7 +101,7 @@ static struct __coeff lm25066_coeff[6][PSC_NUM_CLASSES + 2] = {
+>  			.R = -2,
+>  		},
+>  		[PSC_CURRENT_IN_L] = {
+> -			.m = 6852,
+> +			.m = 6854,
+>  			.b = -3100,
+>  			.R = -2,
+>  		},
