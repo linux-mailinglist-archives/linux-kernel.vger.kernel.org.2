@@ -2,162 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 612EA426426
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F3B426428
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhJHFmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:42:36 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31376 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229511AbhJHFme (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:42:34 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1985695B023033;
-        Fri, 8 Oct 2021 01:40:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=vjRMRlRq+QbD9v0aID6Njw31X51jShwlBAEpOOPtaYw=;
- b=iwpQyoF8wA3RC9BTv6TAda6S5HvIexbC5ijP8NfGDN2IBqJoObxQpR5ygaAMUReV/dwy
- Zy54DlN1VuV5f/XuWj75TGykrEx7oL66xvQCVgewk5xSjS1fRHj/IoDN24E0q6h/fezT
- CuATNHpXUchc/nwnes55Fm3PijvqEvj05eY9VVJauIb6jDBwTXaA/pg29KUXx7vwfQtF
- Ud893WmgsywQu5Rse6nStugeLShDDC1OnvoUNL/KIvXypVayDDHrMBcIUL1pReqUBPlH
- uIS88U2PTkoro3Dmcv0XwDayu75Wxkr+/KqdaXuy6jXgGFoHgO99P6OFAhHiVpT7GoJ9 Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bjdqktqds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 01:40:26 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1985X6Qq007521;
-        Fri, 8 Oct 2021 01:40:25 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bjdqktqdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 01:40:25 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1985ak9p030097;
-        Fri, 8 Oct 2021 05:40:24 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02dal.us.ibm.com with ESMTP id 3bef2ebs27-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 05:40:24 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1985eK4k29426072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Oct 2021 05:40:20 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B5664C6065;
-        Fri,  8 Oct 2021 05:40:20 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3DF93C605D;
-        Fri,  8 Oct 2021 05:40:16 +0000 (GMT)
-Received: from [9.65.95.104] (unknown [9.65.95.104])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Oct 2021 05:40:15 +0000 (GMT)
-Subject: Re: [PATCH v2 4/4] virt: Add sev_secret module to expose confidential
- computing secrets
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Andrew Scull <ascull@google.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Daniele Buono <dbuono@linux.vnet.ibm.com>,
-        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
-References: <20211007061838.1381129-1-dovmurik@linux.ibm.com>
- <20211007061838.1381129-5-dovmurik@linux.ibm.com>
- <7e2a4595-3f9c-6d65-34e3-af7c1d6da196@intel.com> <YV8dsl+qgbIH6z8F@work-vm>
-From:   Dov Murik <dovmurik@linux.ibm.com>
-Message-ID: <fc31d2a9-ee56-f114-857e-310c4f4d7d4f@linux.ibm.com>
-Date:   Fri, 8 Oct 2021 08:40:14 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <YV8dsl+qgbIH6z8F@work-vm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 6tHLsQAncmQL0tmlDgxxxj9r6LHQlPwb
-X-Proofpoint-ORIG-GUID: CJ3FntA6G0k0HhAnOrDK5ko-QqVBgMYN
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230499AbhJHFnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229511AbhJHFnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 01:43:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EB27610D1;
+        Fri,  8 Oct 2021 05:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633671670;
+        bh=u1tbswDt7HqRI5RWUKHZPssdcim/XVVZjEx5pIG+CMg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ksRQKgThzV3LCCTp5IHVcx639wObkNnoaf02iTL0mh/4560DVjusfOxwSGu2chU5d
+         KnR9o7QfSZEhot2jH+D9Pa57VCxMr/+aI9PfucA1ODRM/KakFE3ivhPRmKGnmcrvut
+         /STTZLv7h/MJMH4hGJKiW1cI2d/UBrVMgYHGDhN4=
+Date:   Fri, 8 Oct 2021 07:41:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Zev Weiss <zev@bewilderbeest.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jeremy Kerr <jk@codeconstruct.com.au>,
+        Joel Stanley <joel@jms.id.au>,
+        devicetree <devicetree@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>
+Subject: Re: [PATCH 0/9] Dynamic DT device nodes
+Message-ID: <YV/Z8mSCxhk3rD8Z@kroah.com>
+References: <20211007000954.30621-1-zev@bewilderbeest.net>
+ <CAHp75VdYBB_FaMr-uKswdvDBdobTYZkiE6ncoALuG+YYVoMwyw@mail.gmail.com>
+ <YV64ZbcsHvBObH2j@hatter.bewilderbeest.net>
+ <YV7Miz9RMMx/17A0@kroah.com>
+ <YV8VGeMreR6NJad4@hatter.bewilderbeest.net>
+ <CAL_JsqLk-CqKVgWp3=XccHrCdQgdGoezB6=HAXMDe1Q5R4-0HA@mail.gmail.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_05,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0 mlxscore=0
- phishscore=0 bulkscore=0 suspectscore=0 clxscore=1011 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110080031
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqLk-CqKVgWp3=XccHrCdQgdGoezB6=HAXMDe1Q5R4-0HA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Dave and Dave for reviewing this.
-
-On 07/10/2021 19:17, Dr. David Alan Gilbert wrote:
-> * Dave Hansen (dave.hansen@intel.com) wrote:
->> On 10/6/21 11:18 PM, Dov Murik wrote:
->>> +static int sev_secret_map_area(void)
->>> +{
->>> +	struct sev_secret *s = sev_secret_get();
->>> +	struct linux_efi_coco_secret_area *secret_area;
->>> +	u32 secret_area_size;
->>> +
->>> +	if (efi.coco_secret == EFI_INVALID_TABLE_ADDR) {
->>> +		pr_err("Secret area address is not available\n");
->>> +		return -EINVAL;
->>> +	}
->>> +
->>> +	secret_area = memremap(efi.coco_secret, sizeof(*secret_area), MEMREMAP_WB);
->>> +	if (secret_area == NULL) {
->>> +		pr_err("Could not map secret area header\n");
->>> +		return -ENOMEM;
->>> +	}
->>
->> There doesn't seem to be anything truly SEV-specific in here at all.
->> Isn't this more accurately called "efi_secret" or something?  What's to
->> prevent Intel or an ARM vendor from implementing this?
+On Thu, Oct 07, 2021 at 03:03:43PM -0500, Rob Herring wrote:
+> On Thu, Oct 7, 2021 at 10:41 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+> >
+> > On Thu, Oct 07, 2021 at 03:31:39AM PDT, Greg Kroah-Hartman wrote:
+> > >On Thu, Oct 07, 2021 at 02:05:41AM -0700, Zev Weiss wrote:
+> > >> On Thu, Oct 07, 2021 at 12:04:41AM PDT, Andy Shevchenko wrote:
+> > >> > On Thu, Oct 7, 2021 at 3:10 AM Zev Weiss <zev@bewilderbeest.net> wrote:
+> > >> > > This patch series is in some ways kind of a v2 for the "Dynamic
+> > >> > > aspeed-smc flash chips via 'reserved' DT status" series I posted
+> > >> > > previously [0], but takes a fairly different approach suggested by Rob
+> > >> > > Herring [1] and doesn't actually touch the aspeed-smc driver or
+> > >> > > anything in the MTD subsystem, so I haven't marked it as such.
+> > >> > >
+> > >> > > To recap a bit of the context from that series, in OpenBMC there's a
+> > >> > > need for certain devices (described by device-tree nodes) to be able
+> > >> > > to be attached and detached at runtime (for example the SPI flash for
+> > >> > > the host's firmware, which is shared between the BMC and the host but
+> > >> > > can only be accessed by one or the other at a time).
+> > >> >
+> > >> > This seems quite dangerous. Why do you need that?
+> > >>
+> > >> Sometimes the host needs access to the flash (it's the host's firmware,
+> > >> after all), sometimes the BMC needs access to it (e.g. to perform an
+> > >> out-of-band update to the host's firmware).  To achieve the latter, the
+> > >> flash needs to be attached to the BMC, but that requires some careful
+> > >> coordination with the host to arbitrate which one actually has access to it
+> > >> (that coordination is handled by userspace, which then tells the kernel
+> > >> explicitly when the flash should be attached and detached).
+> > >>
+> > >> What seems dangerous?
+> > >>
+> > >> > Why can't device tree overlays be used?
+> > >>
+> > >> I'm hoping to stay closer to mainline.  The OpenBMC kernel has a documented
+> > >> policy strongly encouraging upstream-first development:
+> > >> https://github.com/openbmc/docs/blob/master/kernel-development.md
+> > >>
+> > >> I doubt Joel (the OpenBMC kernel maintainer) would be eager to start
+> > >> carrying the DT overlay patches; I'd likewise strongly prefer to avoid
+> > >> carrying them myself as additional downstream patches.  Hence the attempt at
+> > >> getting a solution to the problem upstream.
+> > >
+> > >Then why not work to get device tree overlays to be merged properly?
 > 
-> I don't think anything; although the last discussion I remember on list
-> with Intel was that Intel preferred some interface with an ioctl to read
-> the secrets and stuff.  I'm not quite sure if the attestation/secret
-> delivery order makes sense with TDX, but if it does, then if you could
-> persuade someone to standardise on this it would be great.
+> TBC, it's 'just' the general purpose userspace interface to apply
+> overlays that's missing.
 > 
+> I did suggest what's done here as overlays are kind of an overkill for
+> this usecase. Much easier to write to a sysfs file than write an
+> overlay, compile it with dtc, and provide it to the kernel all just to
+> enable a device.
+> 
+> Perhaps this could also be supported in the driver model directly.
+> Given the "what about ACPI question", that is probably what should be
+> done unless the answer is we don't care. I think we'd just need a flag
+> to create devices, but not bind automatically. Or maybe abusing
+> driver_override can accomplish that.
 
-I agree that this series doesn't have any SEV-specific stuff in it; in
-fact, I wrote in the cover letter:
+The driver model already allows devices to be bound/unbound from
+drivers, but no, it does not allow new devices to be "created" from
+userspace as that is a very bus-specific thing to have happen.
 
-+++
-This has been tested with AMD SEV and SEV-ES guests, but the kernel side
-of handling the secret area has no SEV-specific dependencies, and
-therefore might be usable (perhaps with minor changes) for any
-confidential computing hardware that can publish the secret area via the
-standard EFI config table entry.
-+++
+If this is "just" a platform device, perhaps add that logic to the
+platform bus code?
 
-However, in previous rounds Boris said [1] that if it's only
-hypothetical support for other platforms, I should add a
-"depends on AMD_MEM_ENCRYPT" clause.  Boris, can you please share your view?
+thanks,
 
-I'm indeed in favor of making this more generic (efi_secret sounds
-good), allowing for future support for other early-boot secret injection
-mechanisms.
-
-
-[1] https://lore.kernel.org/linux-coco/YNojYBIwk0xCHQ0v@zn.tnic/
-
-
--Dov
+greg k-h
