@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198D3426ACD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA993426ACE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241555AbhJHMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:30:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60164 "EHLO mail.kernel.org"
+        id S241563AbhJHMak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:30:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241713AbhJHMa3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:30:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E4D60FD8;
-        Fri,  8 Oct 2021 12:28:32 +0000 (UTC)
+        id S241357AbhJHMai (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:30:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DE7E60F48;
+        Fri,  8 Oct 2021 12:28:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633696114;
-        bh=niYdGlhnIOnlqO9uKbzVe3OozoWdJl8BUi/pR8B1qg4=;
+        s=k20201202; t=1633696123;
+        bh=GWqObyYz57gQD0h5e1G31uUpDZjmjLaxrlrmxBydL5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H5HBso0n1ZYY69ZmAdIkPKykUKt+UzOtNx9GdrYbo3BGpXQh9q7ORF+qEvmg0wmjz
-         ri4dWdBNnepF2U6EWT1eIT20guG4qYBLcoelEB5o0MxUbWH30AI5jjUU2DEXYSUz3q
-         gPkvtE17IsT+7q44819R1Z4PnQw99p6jEdrNXBZtFAQ+B6XH6vRI5Sn6qty7Rb1fmN
-         RhNKuYk2dp1NTIKCvSeDM9VqK9oyGds6CTYISqkBaQfGe8W/7wMwWB46vKYDBG0bOE
-         /MHL6Fph+bYcv4twxVFVevW2HhnKQWiY8fXdmv8j7UV9mfroSM4I+Im75cQHAKvJl3
-         mcob+sG1wFCKw==
+        b=r1NqNFoLXvsH3EDKidrpCSxq+y6IvMcALoGwjQcO0Irk+S5LKgAAZzTIROTAtgKqO
+         DK7RI+b4X2rBUsNUFUbX28wn3ajC2YqPUpL1EPCTrQ2+6jtuKdg8lkv3AYBKs+e/Di
+         dHwHhEaUUtdkwGj6MgggEewrNAn6s3wbBAEKkb2xPzRuEKlLX/T/bNi/2v+e4ru0/t
+         P5p1WZuZ7CPBDh+RPkRRnCyHLT52L17svMK1yQxLL1oXOas7VH33EEXOn9T1TGOi0E
+         GB7VzPKBnQFm4Hwiz0OvJ4FcbpAkktNKRO0g/vweonAByLYBnbxTfcUUPZR/S/N8Il
+         m3YKzlYYGbQCA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
@@ -35,9 +35,9 @@ Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
         Nathan Chancellor <nathan@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/8] kprobes: Add a test case for stacktrace from kretprobe handler
-Date:   Fri,  8 Oct 2021 21:28:31 +0900
-Message-Id: <163369611089.636038.9084325721723326465.stgit@devnote2>
+Subject: [PATCH 3/8] arm64: kprobes: Record frame pointer with kretprobe instance
+Date:   Fri,  8 Oct 2021 21:28:39 +0900
+Message-Id: <163369611948.636038.11552166777773804729.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163369609308.636038.15295764725220907794.stgit@devnote2>
 References: <163369609308.636038.15295764725220907794.stgit@devnote2>
@@ -49,268 +49,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test case for stacktrace from kretprobe handler and
-nested kretprobe handlers.
-
-This test checks both of stack trace inside kretprobe handler
-and stack trace from pt_regs. Those stack trace must include
-actual function return address instead of kretprobe trampoline.
-The nested kretprobe stacktrace test checks whether the unwinder
-can correctly unwind the call frame on the stack which has been
-modified by the kretprobe.
-
-Since the stacktrace on kretprobe is correctly fixed only on x86,
-this introduces a meta kconfig ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-which tells user that the stacktrace on kretprobe is correct or not.
-
-The test results will be shown like below;
-
- TAP version 14
- 1..1
-     # Subtest: kprobes_test
-     1..6
-     ok 1 - test_kprobe
-     ok 2 - test_kprobes
-     ok 3 - test_kretprobe
-     ok 4 - test_kretprobes
-     ok 5 - test_stacktrace_on_kretprobe
-     ok 6 - test_stacktrace_on_nested_kretprobe
- # kprobes_test: pass:6 fail:0 skip:0 total:6
- # Totals: pass:6 fail:0 skip:0 total:6
- ok 1 - kprobes_test
+Record the frame pointer instead of stack address with kretprobe
+instance as the identifier on the instance list.
+Since arm64 always enable CONFIG_FRAME_POINTER, we can use the
+actual frame pointer (x29).
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- arch/Kconfig          |    8 ++
- arch/x86/Kconfig      |    1 
- kernel/test_kprobes.c |  158 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 167 insertions(+)
+ arch/arm64/kernel/probes/kprobes.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8df1c7102643..8378f83b462c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -191,6 +191,14 @@ config HAVE_OPTPROBES
- config HAVE_KPROBES_ON_FTRACE
- 	bool
+diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
+index e7ad6da980e8..d9dfa82c1f18 100644
+--- a/arch/arm64/kernel/probes/kprobes.c
++++ b/arch/arm64/kernel/probes/kprobes.c
+@@ -401,14 +401,14 @@ int __init arch_populate_kprobe_blacklist(void)
  
-+config ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+	bool
-+	help
-+	  Since kretprobes modifies return address on the stack, the
-+	  stacktrace may see the kretprobe trampoline address instead
-+	  of correct one. If the architecture stacktrace code and
-+	  unwinder can adjust such entries, select this configuration.
-+
- config HAVE_FUNCTION_ERROR_INJECTION
- 	bool
- 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ab83c22d274e..2049364b3981 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -61,6 +61,7 @@ config X86
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
- 	select ARCH_32BIT_OFF_T			if X86_32
- 	select ARCH_CLOCKSOURCE_INIT
-+	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
- 	select ARCH_ENABLE_HUGEPAGE_MIGRATION if X86_64 && HUGETLB_PAGE && MIGRATION
- 	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
-diff --git a/kernel/test_kprobes.c b/kernel/test_kprobes.c
-index e78f18144145..a902be1f4a96 100644
---- a/kernel/test_kprobes.c
-+++ b/kernel/test_kprobes.c
-@@ -17,6 +17,11 @@ static u32 (*target)(u32 value);
- static u32 (*target2)(u32 value);
- static struct kunit *current_test;
- 
-+static unsigned long (*internal_target)(void);
-+static unsigned long (*stacktrace_target)(void);
-+static unsigned long (*stacktrace_driver)(void);
-+static unsigned long target_return_address[2];
-+
- static noinline u32 kprobe_target(u32 value)
+ void __kprobes __used *trampoline_probe_handler(struct pt_regs *regs)
  {
- 	return (value / div_factor);
-@@ -58,6 +63,33 @@ static noinline u32 kprobe_target2(u32 value)
- 	return (value / div_factor) + 1;
+-	return (void *)kretprobe_trampoline_handler(regs, (void *)kernel_stack_pointer(regs));
++	return (void *)kretprobe_trampoline_handler(regs, (void *)regs->regs[29]);
  }
  
-+static noinline unsigned long kprobe_stacktrace_internal_target(void)
-+{
-+	if (!target_return_address[0])
-+		target_return_address[0] = (unsigned long)__builtin_return_address(0);
-+	return target_return_address[0];
-+}
-+
-+static noinline unsigned long kprobe_stacktrace_target(void)
-+{
-+	if (!target_return_address[1])
-+		target_return_address[1] = (unsigned long)__builtin_return_address(0);
-+
-+	if (internal_target)
-+		internal_target();
-+
-+	return target_return_address[1];
-+}
-+
-+static noinline unsigned long kprobe_stacktrace_driver(void)
-+{
-+	if (stacktrace_target)
-+		stacktrace_target();
-+
-+	/* This is for preventing inlining the function */
-+	return (unsigned long)__builtin_return_address(0);
-+}
-+
- static int kp_pre_handler2(struct kprobe *p, struct pt_regs *regs)
+ void __kprobes arch_prepare_kretprobe(struct kretprobe_instance *ri,
+ 				      struct pt_regs *regs)
  {
- 	preh_val = (rand1 / div_factor) + 1;
-@@ -175,12 +207,134 @@ static void test_kretprobes(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, krph_val, rand1);
- 	unregister_kretprobes(rps, 2);
- }
-+
-+#ifdef CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+#define STACK_BUF_SIZE 16
-+static unsigned long stack_buf[STACK_BUF_SIZE];
-+
-+static int stacktrace_return_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
-+{
-+	unsigned long retval = regs_return_value(regs);
-+	int i, ret;
-+
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	KUNIT_EXPECT_EQ(current_test, retval, target_return_address[1]);
-+
-+	/*
-+	 * Test stacktrace inside the kretprobe handler, this will involves
-+	 * kretprobe trampoline, but must include correct return address
-+	 * of the target function.
-+	 */
-+	ret = stack_trace_save(stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+
-+	for (i = 0; i < ret; i++) {
-+		if (stack_buf[i] == target_return_address[1])
-+			break;
-+	}
-+	KUNIT_EXPECT_NE(current_test, i, ret);
-+
-+	/*
-+	 * Test stacktrace from pt_regs at the return address. Thus the stack
-+	 * trace must start from the target return address.
-+	 */
-+	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[1]);
-+
-+	return 0;
-+}
-+
-+static struct kretprobe rp3 = {
-+	.handler	= stacktrace_return_handler,
-+	.kp.symbol_name = "kprobe_stacktrace_target"
-+};
-+
-+static void test_stacktrace_on_kretprobe(struct kunit *test)
-+{
-+	unsigned long myretaddr = (unsigned long)__builtin_return_address(0);
-+
-+	current_test = test;
-+	rp3.kp.addr = NULL;
-+	rp3.kp.flags = 0;
-+
-+	/*
-+	 * Run the stacktrace_driver() to record correct return address in
-+	 * stacktrace_target() and ensure stacktrace_driver() call is not
-+	 * inlined by checking the return address of stacktrace_driver()
-+	 * and the return address of this function is different.
-+	 */
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+
-+	KUNIT_ASSERT_EQ(test, 0, register_kretprobe(&rp3));
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+	unregister_kretprobe(&rp3);
-+}
-+
-+static int stacktrace_internal_return_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
-+{
-+	unsigned long retval = regs_return_value(regs);
-+	int i, ret;
-+
-+	KUNIT_EXPECT_FALSE(current_test, preemptible());
-+	KUNIT_EXPECT_EQ(current_test, retval, target_return_address[0]);
-+
-+	/*
-+	 * Test stacktrace inside the kretprobe handler for nested case.
-+	 * The unwinder will find the kretprobe_trampoline address on the
-+	 * return address, and kretprobe must solve that.
-+	 */
-+	ret = stack_trace_save(stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+
-+	for (i = 0; i < ret - 1; i++) {
-+		if (stack_buf[i] == target_return_address[0]) {
-+			KUNIT_EXPECT_EQ(current_test, stack_buf[i + 1], target_return_address[1]);
-+			break;
-+		}
-+	}
-+	KUNIT_EXPECT_NE(current_test, i, ret);
-+
-+	/* Ditto for the regs version. */
-+	ret = stack_trace_save_regs(regs, stack_buf, STACK_BUF_SIZE, 0);
-+	KUNIT_EXPECT_NE(current_test, ret, 0);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[0], target_return_address[0]);
-+	KUNIT_EXPECT_EQ(current_test, stack_buf[1], target_return_address[1]);
-+
-+	return 0;
-+}
-+
-+static struct kretprobe rp4 = {
-+	.handler	= stacktrace_internal_return_handler,
-+	.kp.symbol_name = "kprobe_stacktrace_internal_target"
-+};
-+
-+static void test_stacktrace_on_nested_kretprobe(struct kunit *test)
-+{
-+	unsigned long myretaddr = (unsigned long)__builtin_return_address(0);
-+	struct kretprobe *rps[2] = {&rp3, &rp4};
-+
-+	current_test = test;
-+	rp3.kp.addr = NULL;
-+	rp3.kp.flags = 0;
-+
-+	//KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+
-+	KUNIT_ASSERT_EQ(test, 0, register_kretprobes(rps, 2));
-+	KUNIT_ASSERT_NE(test, myretaddr, stacktrace_driver());
-+	unregister_kretprobes(rps, 2);
-+}
-+#endif /* CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE */
-+
- #endif /* CONFIG_KRETPROBES */
+ 	ri->ret_addr = (kprobe_opcode_t *)regs->regs[30];
+-	ri->fp = (void *)kernel_stack_pointer(regs);
++	ri->fp = (void *)regs->regs[29];
  
- static int kprobes_test_init(struct kunit *test)
- {
- 	target = kprobe_target;
- 	target2 = kprobe_target2;
-+	stacktrace_target = kprobe_stacktrace_target;
-+	internal_target = kprobe_stacktrace_internal_target;
-+	stacktrace_driver = kprobe_stacktrace_driver;
- 
- 	do {
- 		rand1 = prandom_u32();
-@@ -194,6 +348,10 @@ static struct kunit_case kprobes_testcases[] = {
- #ifdef CONFIG_KRETPROBES
- 	KUNIT_CASE(test_kretprobe),
- 	KUNIT_CASE(test_kretprobes),
-+#ifdef CONFIG_ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-+	KUNIT_CASE(test_stacktrace_on_kretprobe),
-+	KUNIT_CASE(test_stacktrace_on_nested_kretprobe),
-+#endif
- #endif
- 	{}
- };
+ 	/* replace return addr (x30) with trampoline */
+ 	regs->regs[30] = (long)&__kretprobe_trampoline;
 
