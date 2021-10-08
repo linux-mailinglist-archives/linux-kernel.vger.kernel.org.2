@@ -2,222 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A039426615
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183E0426613
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236202AbhJHImb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:42:31 -0400
-Received: from mga04.intel.com ([192.55.52.120]:42236 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234523AbhJHImM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:42:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225240240"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="225240240"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:40:17 -0700
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="439860409"
-Received: from yhuang6-desk2.sh.intel.com ([10.239.159.119])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:40:13 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Wei Xu <weixugc@google.com>, osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org
-Subject: [PATCH -V9 6/6] memory tiering: adjust hot threshold automatically
-Date:   Fri,  8 Oct 2021 16:39:38 +0800
-Message-Id: <20211008083938.1702663-7-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211008083938.1702663-1-ying.huang@intel.com>
-References: <20211008083938.1702663-1-ying.huang@intel.com>
+        id S235627AbhJHImV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:42:21 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:55685 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234268AbhJHImK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:42:10 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UqzJNax_1633682412;
+Received: from localhost(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0UqzJNax_1633682412)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 08 Oct 2021 16:40:13 +0800
+Date:   Fri, 8 Oct 2021 16:40:12 +0800
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+To:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com
+Cc:     mark.rutland@arm.com, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, xuesong.chen@linux.alibaba.com
+Subject: [PATCH v2 1/2] PCI: MCFG: Consolidate the separate PCI MCFG table
+ entry list
+Message-ID: <YWAD7LRsTCcfTkgJ@Dennis-MBP.local>
+Reply-To: Xuesong Chen <xuesong.chen@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It isn't easy for the administrator to determine the hot threshold.
-So in this patch, a method to adjust the hot threshold automatically
-is implemented.  The basic idea is to control the number of the
-candidate promotion pages to match the promotion rate limit.  If the
-hint page fault latency of a page is less than the hot threshold, we
-will try to promote the page, and the page is called the candidate
-promotion page.
+The PCI MCFG entry list is discrete on x86 and other architectures like
+arm64 in current implementation, this list variable can be consolidated
+for unnecessary duplication and other purposes, for example, we can remove
+some of the 'arch' specific codes in the APEI/EINJ module and re-implement
+it in a more common arch-agnostic way.
 
-If the number of the candidate promotion pages in the statistics
-interval is much more than the promotion rate limit, the hot threshold
-will be decreased to reduce the number of the candidate promotion
-pages.  Otherwise, the hot threshold will be increased to increase the
-number of the candidate promotion pages.
-
-To make the above method works, in each statistics interval, the total
-number of the pages to check (on which the hint page faults occur) and
-the hot/cold distribution need to be stable.  Because the page tables
-are scanned linearly in NUMA balancing, but the hot/cold distribution
-isn't uniform along the address, the statistics interval should be
-larger than the NUMA balancing scan period.  So in the patch, the max
-scan period is used as statistics interval and it works well in our
-tests.
-
-The sysctl knob kernel.numa_balancing_hot_threshold_ms becomes the
-initial value and max value of the hot threshold.
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Yang Shi <shy828301@gmail.com>
-Cc: Zi Yan <ziy@nvidia.com>
-Cc: Wei Xu <weixugc@google.com>
-Cc: osalvador <osalvador@suse.de>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org
+Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
 ---
- include/linux/mmzone.h       |  3 ++
- include/linux/sched/sysctl.h |  2 ++
- kernel/sched/fair.c          | 59 +++++++++++++++++++++++++++++++++---
- kernel/sysctl.c              |  3 +-
- 4 files changed, 62 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/pci_x86.h | 17 +----------------
+ arch/x86/pci/mmconfig-shared.c |  2 --
+ drivers/acpi/pci_mcfg.c        | 34 +++++++++++++---------------------
+ drivers/pci/pci.c              |  2 ++
+ include/linux/pci.h            | 17 +++++++++++++++++
+ 5 files changed, 33 insertions(+), 39 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index d6a0efd387bd..69bb672ea743 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -891,6 +891,9 @@ typedef struct pglist_data {
- #ifdef CONFIG_NUMA_BALANCING
- 	unsigned long numa_ts;
- 	unsigned long numa_nr_candidate;
-+	unsigned long numa_threshold_ts;
-+	unsigned long numa_threshold_nr_candidate;
-+	unsigned long numa_threshold;
+diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
+index 490411d..1f4257c 100644
+--- a/arch/x86/include/asm/pci_x86.h
++++ b/arch/x86/include/asm/pci_x86.h
+@@ -146,20 +146,7 @@ static inline int  __init pci_acpi_init(void)
+ extern void pcibios_fixup_irqs(void);
+ 
+ /* pci-mmconfig.c */
+-
+-/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+-#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+-
+-struct pci_mmcfg_region {
+-	struct list_head list;
+-	struct resource res;
+-	u64 address;
+-	char __iomem *virt;
+-	u16 segment;
+-	u8 start_bus;
+-	u8 end_bus;
+-	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+-};
++struct pci_mmcfg_region;
+ 
+ extern int __init pci_mmcfg_arch_init(void);
+ extern void __init pci_mmcfg_arch_free(void);
+@@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
+ 
+ extern struct list_head pci_mmcfg_list;
+ 
+-#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
+-
+ /*
+  * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
+  * %eax.  No other source or target registers may be used.  The following
+diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+index 758cbfe..0b961fe6 100644
+--- a/arch/x86/pci/mmconfig-shared.c
++++ b/arch/x86/pci/mmconfig-shared.c
+@@ -31,8 +31,6 @@
+ static DEFINE_MUTEX(pci_mmcfg_lock);
+ #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+ 
+-LIST_HEAD(pci_mmcfg_list);
+-
+ static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
+ {
+ 	if (cfg->res.parent)
+diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+index 53cab97..d9506b0 100644
+--- a/drivers/acpi/pci_mcfg.c
++++ b/drivers/acpi/pci_mcfg.c
+@@ -13,14 +13,7 @@
+ #include <linux/pci-acpi.h>
+ #include <linux/pci-ecam.h>
+ 
+-/* Structure to hold entries from the MCFG table */
+-struct mcfg_entry {
+-	struct list_head	list;
+-	phys_addr_t		addr;
+-	u16			segment;
+-	u8			bus_start;
+-	u8			bus_end;
+-};
++extern struct list_head pci_mmcfg_list;
+ 
+ #ifdef CONFIG_PCI_QUIRKS
+ struct mcfg_fixup {
+@@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
  #endif
- 	/* Fields commonly accessed by the page reclaim scanner */
- 
-diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-index 7d937adaac0f..ff2c43e8ebac 100644
---- a/include/linux/sched/sysctl.h
-+++ b/include/linux/sched/sysctl.h
-@@ -84,6 +84,8 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
- 		void *buffer, size_t *lenp, loff_t *ppos);
- int sysctl_numa_balancing(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos);
-+int sysctl_numa_balancing_threshold(struct ctl_table *table, int write, void *buffer,
-+		size_t *lenp, loff_t *ppos);
- int sysctl_schedstats(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos);
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index c57baeacfc1a..ff57055aab23 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1465,6 +1465,54 @@ static bool numa_migration_check_rate_limit(struct pglist_data *pgdat,
- 	return true;
  }
  
-+int sysctl_numa_balancing_threshold(struct ctl_table *table, int write, void *buffer,
-+		size_t *lenp, loff_t *ppos)
-+{
-+	int err;
-+	struct pglist_data *pgdat;
-+
-+	if (write && !capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	err = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-+	if (err < 0 || !write)
-+		return err;
-+
-+	for_each_online_pgdat(pgdat)
-+		pgdat->numa_threshold = 0;
-+
-+	return err;
-+}
-+
-+#define NUMA_MIGRATION_ADJUST_STEPS	16
-+
-+static void numa_migration_adjust_threshold(struct pglist_data *pgdat,
-+					    unsigned long rate_limit,
-+					    unsigned long ref_th)
-+{
-+	unsigned long now = jiffies, last_th_ts, th_period;
-+	unsigned long unit_th, th;
-+	unsigned long nr_cand, ref_cand, diff_cand;
-+
-+	th_period = msecs_to_jiffies(sysctl_numa_balancing_scan_period_max);
-+	last_th_ts = pgdat->numa_threshold_ts;
-+	if (now > last_th_ts + th_period &&
-+	    cmpxchg(&pgdat->numa_threshold_ts, last_th_ts, now) == last_th_ts) {
-+		ref_cand = rate_limit *
-+			sysctl_numa_balancing_scan_period_max / 1000;
-+		nr_cand = node_page_state(pgdat, PGPROMOTE_CANDIDATE);
-+		diff_cand = nr_cand - pgdat->numa_threshold_nr_candidate;
-+		unit_th = ref_th / NUMA_MIGRATION_ADJUST_STEPS;
-+		th = pgdat->numa_threshold ? : ref_th;
-+		if (diff_cand > ref_cand * 11 / 10)
-+			th = max(th - unit_th, unit_th);
-+		else if (diff_cand < ref_cand * 9 / 10)
-+			th = min(th + unit_th, ref_th);
-+		pgdat->numa_threshold_nr_candidate = nr_cand;
-+		pgdat->numa_threshold = th;
-+	}
-+}
-+
- bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 				int src_nid, int dst_cpu)
+-/* List to save MCFG entries */
+-static LIST_HEAD(pci_mcfg_list);
+-
+ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+ 		    const struct pci_ecam_ops **ecam_ops)
  {
-@@ -1479,19 +1527,22 @@ bool should_numa_migrate_memory(struct task_struct *p, struct page * page,
- 	if (sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING &&
- 	    !node_is_toptier(src_nid)) {
- 		struct pglist_data *pgdat;
--		unsigned long rate_limit, latency, th;
-+		unsigned long rate_limit, latency, th, def_th;
+ 	const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
+ 	struct resource *bus_res = &root->secondary;
+ 	u16 seg = root->segment;
+-	struct mcfg_entry *e;
++	struct pci_mmcfg_region *e;
+ 	struct resource res;
  
- 		pgdat = NODE_DATA(dst_nid);
- 		if (pgdat_free_space_enough(pgdat))
- 			return true;
+ 	/* Use address from _CBA if present, otherwise lookup MCFG */
+@@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+ 	/*
+ 	 * We expect the range in bus_res in the coverage of MCFG bus range.
+ 	 */
+-	list_for_each_entry(e, &pci_mcfg_list, list) {
+-		if (e->segment == seg && e->bus_start <= bus_res->start &&
+-		    e->bus_end >= bus_res->end) {
+-			root->mcfg_addr = e->addr;
++	list_for_each_entry(e, &pci_mmcfg_list, list) {
++		if (e->segment == seg && e->start_bus <= bus_res->start &&
++		    e->end_bus >= bus_res->end) {
++			root->mcfg_addr = e->address;
+ 		}
  
--		th = sysctl_numa_balancing_hot_threshold;
-+		def_th = sysctl_numa_balancing_hot_threshold;
-+		rate_limit =
-+			sysctl_numa_balancing_rate_limit << (20 - PAGE_SHIFT);
-+		numa_migration_adjust_threshold(pgdat, rate_limit, def_th);
-+
-+		th = pgdat->numa_threshold ? : def_th;
- 		latency = numa_hint_fault_latency(page);
- 		if (latency > th)
- 			return false;
- 
--		rate_limit =
--			sysctl_numa_balancing_rate_limit << (20 - PAGE_SHIFT);
- 		return numa_migration_check_rate_limit(pgdat, rate_limit,
- 						       thp_nr_pages(page));
  	}
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 0d89021bd66a..0a87d5877718 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -1816,7 +1816,8 @@ static struct ctl_table kern_table[] = {
- 		.data		= &sysctl_numa_balancing_hot_threshold,
- 		.maxlen		= sizeof(unsigned int),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec,
-+		.proc_handler	= sysctl_numa_balancing_threshold,
-+		.extra1		= SYSCTL_ZERO,
- 	},
- 	{
- 		.procname	= "numa_balancing_rate_limit_mbps",
+@@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+ {
+ 	struct acpi_table_mcfg *mcfg;
+ 	struct acpi_mcfg_allocation *mptr;
+-	struct mcfg_entry *e, *arr;
++	struct pci_mmcfg_region *e, *arr;
+ 	int i, n;
+ 
+ 	if (header->length < sizeof(struct acpi_table_mcfg))
+@@ -285,10 +275,12 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+ 
+ 	for (i = 0, e = arr; i < n; i++, mptr++, e++) {
+ 		e->segment = mptr->pci_segment;
+-		e->addr =  mptr->address;
+-		e->bus_start = mptr->start_bus_number;
+-		e->bus_end = mptr->end_bus_number;
+-		list_add(&e->list, &pci_mcfg_list);
++		e->address =  mptr->address;
++		e->start_bus = mptr->start_bus_number;
++		e->end_bus = mptr->end_bus_number;
++		e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
++		e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
++		list_add(&e->list, &pci_mmcfg_list);
+ 	}
+ 
+ #ifdef CONFIG_PCI_QUIRKS
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index ce2ab62..899004e 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -47,6 +47,8 @@
+ int pci_pci_problems;
+ EXPORT_SYMBOL(pci_pci_problems);
+ 
++LIST_HEAD(pci_mmcfg_list);
++
+ unsigned int pci_pm_d3hot_delay;
+ 
+ static void pci_pme_list_scan(struct work_struct *work);
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index cd8aa6f..71e4c06 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -55,6 +55,23 @@
+ #define PCI_RESET_PROBE		true
+ #define PCI_RESET_DO_RESET	false
+ 
++#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
++
++/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
++#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
++
++/* pci mcfg region */
++struct pci_mmcfg_region {
++	struct list_head list;
++	struct resource res;
++	u64 address;
++	char __iomem *virt;
++	u16 segment;
++	u8 start_bus;
++	u8 end_bus;
++	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
++};
++
+ /*
+  * The PCI interface treats multi-function devices as independent
+  * devices.  The slot/function address of each device is encoded
 -- 
-2.30.2
+1.8.3.1
 
