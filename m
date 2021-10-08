@@ -2,195 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374584271AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEC94271C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242022AbhJHT70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:59:26 -0400
-Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:60001
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231589AbhJHT7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:59:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GGkMN4fLYUHqUKeh92ox0pR9MFTX8/0fU3xr30L/MD8B0HRHhoomCA941dN/ddciYXs1JoOTECIpu5gQQC1qRok3xPzskuHJ2Aqk22AjtkigMRtZYYXQlPXj09y9hQBihmg/lMiWj1N+Z883LrSu8vsg22M6VT6rdmb+qx/o09KxQV7X2i1Hn3YOZz4IpITiIdzuFr/GHtiXkABOXuFudNa/h08lQSeitMe/4Mn0gg2riZXgPYmvTc7z5/GBw4G85wIPa/OsxJegJHltdnp+E1pWev1Gwp40jMhF8CeJoi4S3mSwLYjgeEG6enySZB/qBWMEfp0h/BYF5BATf9Dd2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KtD4yeVxORps79WBpKA6F8idr/rtUXrchc6zspTP3KM=;
- b=hLO1NsvGJi7pvWnvSaLkA3GxzBLCtjd1Ujsqh/ymZqfBPDdnxagMNP9SEB9TqqpUH0K9CLtWHaBVTsiwXmH53T83hmbQ4sHNy4UeuEUTakGYLZgxMYai7WA/ELVCZGCw2kPlOB+rg5c5q9g1DV/SOH1FoAmmrgLCEXtAVNS6+uqjV31oNultmU9PCtxgoguOa5CXLjjj50sIoTMPULoow457MHV6QzHLJxRkTU4ggBQEfb+gjiTVbmFvLP85lTylCTvr2AVsM6j7NUnszKC0qeAWFVgehpMVW08TB+86t/mc3UMdAIaZoCNR0zJrRG+UHbPOvVxrVdhsr5aEn8UTCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KtD4yeVxORps79WBpKA6F8idr/rtUXrchc6zspTP3KM=;
- b=GQ3X3WYn/Ya04BZtDx9kRefhMsiP3dag/JM/b4zsLXIpFJyTdfw6nYVDMM15e3QFsceTrBZwPm1dsVQ3PG6tZrCNRftsx4teewNXfoWduYyLxyr31zoCGOWLjRFB7FiNZpDQ/lpLlHY68ImH1CWHYAX7uANULHxJnVsDtrIkHok=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com (2603:10b6:5:38b::19)
- by DM4PR12MB5357.namprd12.prod.outlook.com (2603:10b6:5:39b::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
- 2021 19:57:27 +0000
-Received: from DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::9c06:d113:293:f09b]) by DM4PR12MB5040.namprd12.prod.outlook.com
- ([fe80::9c06:d113:293:f09b%8]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
- 19:57:27 +0000
-Subject: Re: [PATCH 1/1] pinctrl: amd: disable and mask interrupts on probe
-To:     Sachi King <nakato@nakato.io>, linux-gpio@vger.kernel.org,
-        basavaraj.natikar@amd.com
-Cc:     linux-kernel@vger.kernel.org,
-        "Limonciello, Mario" <mario.limonciello@amd.com>,
-        Shyam-sundar S-k <Shyam-sundar.S-k@amd.com>,
-        "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>
-References: <20211001161714.2053597-1-nakato@nakato.io>
- <20211001161714.2053597-2-nakato@nakato.io>
-From:   Basavaraj Natikar <bnatikar@amd.com>
-Message-ID: <5d683882-257d-87b2-20aa-0871e2902090@amd.com>
-Date:   Sat, 9 Oct 2021 01:27:16 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <20211001161714.2053597-2-nakato@nakato.io>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: MA1PR01CA0167.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a01:d::15) To DM4PR12MB5040.namprd12.prod.outlook.com
- (2603:10b6:5:38b::19)
+        id S241790AbhJHUEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:04:47 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:39816 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241464AbhJHUEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 16:04:45 -0400
+Received: by mail-oi1-f174.google.com with SMTP id a3so15163391oid.6;
+        Fri, 08 Oct 2021 13:02:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9nQoap1ULuQK7iVLoWAeKBBSs/JkNcbSL7NwgshzBsI=;
+        b=76jz620uxpB74RJiWUA7QzzU3RJYvvjCjp9m44RDS4ZXi4jrTRzdQP0NvZSBq6DFRE
+         zIogCLLrRXZgy+SQJbl/APu3yWgXHzVBi2QrBO8/vA5mbHk7+SqrYUsKgMwd0vTjPctx
+         LJkV+N6pSMbpHPXtDPs5Ce/4bXJHTuqviCHyxyDfgL5ygY9KYZujnjXYFypzv0HRUCJC
+         2P+r4vAA6xFSdTqUqUgcFkanG6SzuJRzm2l1J68JY+Mdzd2iIOsJ/UnHBtYMOOwrL22X
+         tMslEHQ65WgIJO3TOy714SMSgFw8K6O74gxKSNrgamPcaUCqyYfIsfv1lJYQpNterky0
+         2Slw==
+X-Gm-Message-State: AOAM531nt4wWRwvkc8kIXhTr7y6MVKZeDln9+yMtm4hYSyFen0/VubGv
+        BzvIM3GfNz7XRI5Z03/XSQ==
+X-Google-Smtp-Source: ABdhPJzqK1YBt9O2Wf7HyQiPYRdY2MRV8ungwnGt9QUq/jioAb4R17CLgfe9r5Mc3Vqd8WKz58zv1A==
+X-Received: by 2002:a05:6808:14d6:: with SMTP id f22mr18407990oiw.132.1633723369981;
+        Fri, 08 Oct 2021 13:02:49 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l2sm81700otu.23.2021.10.08.13.02.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 13:02:49 -0700 (PDT)
+Received: (nullmailer pid 3230980 invoked by uid 1000);
+        Fri, 08 Oct 2021 20:02:48 -0000
+Date:   Fri, 8 Oct 2021 15:02:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>
+Subject: Re: [RFC PATCH v4 08/10] dt-bindings: timer: Add ACLINT MTIMER
+ bindings
+Message-ID: <YWCj6CcB29fEQkFI@robh.at.kernel.org>
+References: <20211007123632.697666-1-anup.patel@wdc.com>
+ <20211007123632.697666-9-anup.patel@wdc.com>
 MIME-Version: 1.0
-Received: from [IPv6:2405:201:d002:588b:e88c:d154:d7cb:86f4] (2405:201:d002:588b:e88c:d154:d7cb:86f4) by MA1PR01CA0167.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a01:d::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.21 via Frontend Transport; Fri, 8 Oct 2021 19:57:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 34c7a983-4bef-4c63-243d-08d98a95dad7
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5357:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM4PR12MB5357FB74A3B368687FF1A2AEE6B29@DM4PR12MB5357.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v8FqZibiNfIAQNSu7NiYzOSrQVSvmQje+TaL9EVwn+3ZSdhwvu44wt+zO3WU6yhH621oEDXC3+FtaBisWqGTSZEPavsaUuhMP36e9A/cZAQTcGkdcvk6D+11QV27iX/+mvalyEg3FKFy3u1mvF5w3oYx7EUQDLv2e937Xh+EJqtQjNtL8Izc/YRZ0kt8Lda4tvrqYwYC5qvPOJGeELOAW2zudjya5PdYLquXoyj3SsuEs/kcobxD76lNobAGEYAc0PXhXc6fIT4ADbZqLmICwEfxM0FSLSbfU7ek9OfeZIlpics/CUkM4AOHgp9RUFB/+uPKMQcWk6+CsR3lAWtu9NDZvgMq6gpDubodC6J8Rv00/xsqc/MKqG3KCz/PstCtbUlByD7JD7Qfa8hy/ELKaaa3hFMxyMj4Tmjz1qWjH9OOrYdCPxRoMWJ7ZZqqOTT68p7xLx8BTw4nflEgzDcqVb3XbR78o/Q3BEHf/JlFQjn7d4LYMNAxDx4IX6FVaMZxtQn5FhwUlt6iBTLaBSxUMgnezMQyjMuFtPLkShyvW2BPrFQis5M44oSv+Pv2ppMF6f9grtX4qjOlmp3tJdhf/ahFSNiJ54cnPSWX5To4PdDdS2fhMw92itsDVs0l+yVqZwFRs/Qak/3o9b/f1OMma47GcuS1Cgg/WqWK+09+VXpeVYxapRbJIv7qyk58+t7MQZpwfX3GKLzygNFenzEMqsiLbBWWfR1cXYvLz4wEzV4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5040.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(83380400001)(8936002)(2906002)(8676002)(6636002)(53546011)(38100700002)(54906003)(66556008)(66476007)(4326008)(316002)(45080400002)(66946007)(31686004)(6486002)(186003)(36756003)(31696002)(2616005)(6666004)(508600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TTBhY0NlQkw1aFFnSkdKNW1qTlBQbEJRejBkelphbkJhV2VlODZFTitWVzRs?=
- =?utf-8?B?RXZOeEV2QWQ1ckp1VGE2WU5NQjBRaFprajJKVzNuWXg2UXIwZEJldG9BUGJw?=
- =?utf-8?B?L3ZvSWNsRmFEa2k3eGdYVnBhcGl1SjZ6YnliaTljTnQ2aUVjV3cwNCs3Mmpl?=
- =?utf-8?B?TWZ2NUVZYmZLYW5aR3JqYmx4NlRDalIrZ2tEU0VuVTFoQUhaNXVjdVZKTCs1?=
- =?utf-8?B?R3VzK1psMVA3MjZsQjg3bjZPcDFQVnhUU3hGQWtib1VDYWt0YmlBaHdqdUhm?=
- =?utf-8?B?R3hYdUd2ZUMvSGc3cmhmZE4valBCTGN4bHVvbi8xVER2S2M3TW9uMC9WMXJK?=
- =?utf-8?B?NmZEbkt5UVBYVDcrS3ZkcFB6dUpkQTdvNUFiZnhDR1lncHlBdTlXbmt0TC8r?=
- =?utf-8?B?QXoxR3ZKTTJXSWpMUlRaVVpQYU5ZcmpXc2lwU3F5MHBWb0dkNUwxZzRqaWtG?=
- =?utf-8?B?Vnk0K2trZFRNOW1CbHpwT2RDdyttaWo0NlZFNVdSS0l2dFNiQW9XZmpnODBQ?=
- =?utf-8?B?R1g1S3dmUUsxQjdqZGtUVWM1ZzFqVHYxblo1WkRyZWd1YUtTNVBGMTRCVHpz?=
- =?utf-8?B?OWpxdjNOdmNnSTVIZGV3RjN2dmNwYVp2VWJGaHlpRHpvNFhFbHhkTUM3c2g2?=
- =?utf-8?B?SktqUFpBUXhhRGN0NGIzZ1pCaUU1R0ZvaGNZQXpjUlBQWUJldkxOTUFhMXp6?=
- =?utf-8?B?QXFDQ1pieTFFVWpSZjRvRmlWK1JEYndxZk5hU3hRY3c3SFBZdlBUV2tJNVVa?=
- =?utf-8?B?dEphdnNqWjF4eFgrcjhMWFBFSWxaQlR5TFg2MkFPdk5aaHdoY1RZRmlhbGZD?=
- =?utf-8?B?VW83U3l4eGcwaldDa1duN2h2RGlSWUFYcHZPVEtiMkhwT29oVW9kV0tSaE4y?=
- =?utf-8?B?WlROdGFBNFFtK1Vkd052ZVZDMGJyNUYxV1ZJU1lwWGlRQVVqR3lEVHJaOS9Y?=
- =?utf-8?B?dDJFTmVIZEw5MmtVSStWTGhRaVpJRzFmQ3RKOWVUL2RVN1dReDROaWh0NW1J?=
- =?utf-8?B?QWpQaHlRWExsbTlRYmdiWmx0ZjR3cnBKUkVXWjk0bG1SNTFUN3Byb2lKclBF?=
- =?utf-8?B?aTNRTE02QjJaY1lNbE9acXdmVW93SUY1S3JkMjlLTXVSWVZSejFZRk5SVzhx?=
- =?utf-8?B?YmNpWTVzeFpsMDh4OVh0MGZvOHI0WWVuZ3J6aWhlcU9pNDYyZXFqeThobFBo?=
- =?utf-8?B?Q3FVWEovUldGclQwMjQzeHovL0xLU1hjcFErd0tMeWVMb0sxdlBvNTNiVWl4?=
- =?utf-8?B?WTFrMTR5TjBlUTRNbjhVRHBVd3plbkUwc1VkeUpzVXZsam82VmNyaUlDVUpi?=
- =?utf-8?B?aGF3M2gzSDJWc0FVY0tRV2sxZllNOTNCT0ZvVWkwV0F1M3kyaTJQdFVXSjZF?=
- =?utf-8?B?SDQ3ME5VYUFZcEZycDQxaWloK3IyNW1Dc3d4cVNJQmRydXdWQTFrTG94b243?=
- =?utf-8?B?cGpqN0VOWTZVK212Z0JwRkNKM2V5VXFWVnZjRjBEbWRrd1NGQzJ0NThnbm1h?=
- =?utf-8?B?VFJ2cTlWalQ5ZndxTk1oUzVIcUo2SXYzNGswTmNiMWVyZmNpMERhTVZyWTBC?=
- =?utf-8?B?bWwvbVIySkl6TjBiaTJ4blFsODlPclNkeThHbEg5K0hkVmFrWDRrQWVaNjBs?=
- =?utf-8?B?NldadjZEOFlDZTFMUUtucHFpRHVyb1c2cWgvMHRNYjBKd29DMHdqOGNHSDNi?=
- =?utf-8?B?amg1RlpSNkpNU3pBN0IyMXFYTUszYlF6Sy9mT1VlcWNFZlBvZ2NxSkdqclVL?=
- =?utf-8?B?RHlkdUZ1M2E4Rm5GTS83N0lOWnhJTElWNVBjRTBoOGJ5em9GOUV3SmdEdTBW?=
- =?utf-8?B?d1liaDRQVU5QdjNMNE4wbjNaMGhrblc2UTJlYmFXZ253dHNOQjkwZVFIeGMz?=
- =?utf-8?Q?V7bg9k5K914RL?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34c7a983-4bef-4c63-243d-08d98a95dad7
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5040.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 19:57:27.7242
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6NfpNjUjjl13CgYp0jtyAJz1vH1VzpDL1mEkr2p0VLEBo7V8R81+PbqSsnSObyHWiuU/GjqFdCfiSdQ0ndklUw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5357
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211007123632.697666-9-anup.patel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 10/1/2021 9:47 PM, Sachi King wrote:
-> [CAUTION: External Email]
->
-> Some systems such as the Microsoft Surface Laptop 4 leave interrupts
-> enabled and configured for use in sleep states on boot, which cause
-> unexpected behaviour such as spurious wakes and failed resumes in
-> s2idle states.
->
-> As interrupts should not be enabled until they are claimed and
-> explicitly enabled, disabling any interrupts mistakenly left enabled by
-> firmware should be safe.
->
-> Signed-off-by: Sachi King <nakato@nakato.io>
+On Thu, Oct 07, 2021 at 06:06:30PM +0530, Anup Patel wrote:
+> We add DT bindings documentation for the ACLINT MTIMER device
+> found on RISC-V SOCs.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
 > ---
->  drivers/pinctrl/pinctrl-amd.c | 29 +++++++++++++++++++++++++++++
->  1 file changed, 29 insertions(+)
->
-> diff --git a/drivers/pinctrl/pinctrl-amd.c b/drivers/pinctrl/pinctrl-amd.c
-> index c001f2ed20f8..aa4136cd312d 100644
-> --- a/drivers/pinctrl/pinctrl-amd.c
-> +++ b/drivers/pinctrl/pinctrl-amd.c
-> @@ -830,6 +830,32 @@ static const struct pinconf_ops amd_pinconf_ops = {
->         .pin_config_group_set = amd_pinconf_group_set,
->  };
->
-> +static void amd_gpio_irq_init(struct amd_gpio *gpio_dev) {
-> +       struct pinctrl_desc *desc = gpio_dev->pctrl->desc;
-> +       unsigned long flags;
-> +       u32 pin_reg, mask;
-> +       int i;
+>  .../bindings/timer/riscv,aclint-mtimer.yaml   | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+> new file mode 100644
+> index 000000000000..ebb7e81a5a12
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/timer/riscv,aclint-mtimer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +       mask = BIT(WAKE_CNTRL_OFF_S0I3) | BIT(WAKE_CNTRL_OFF_S3)
-> +               | BIT(INTERRUPT_MASK_OFF) | BIT(INTERRUPT_ENABLE_OFF)
-> +               | BIT(INTERRUPT_MASK_OFF) | BIT(WAKE_CNTRL_OFF_S4);
+> +title: RISC-V ACLINT M-level Timer
+> +
+> +maintainers:
+> +  - Anup Patel <anup.patel@wdc.com>
+> +
+> +description:
 
-Could you please correct INTERRUPT_MASK_OFF , added twice.
+You need '|' if you want to maintain the paragraphs.
 
-Thanks,
-Basavaraj 
+> +  RISC-V SOCs include an implementation of the M-level timer (MTIMER) defined
+> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification. The
+> +  ACLINT MTIMER device is documented in the RISC-V ACLINT specification found
+> +  at https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
+> +
+> +  The ACLINT MTIMER device directly connects to the M-level timer interrupt
+> +  lines of various HARTs (or CPUs) so the RISC-V per-HART (or per-CPU) local
+> +  interrupt controller is the parent interrupt controller for the ACLINT
+> +  MTIMER device.
+> +
+> +  The clock frequency of ACLINT is specified via "timebase-frequency" DT
+> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
+> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +         - sifive,fu540-c000-aclint-mtimer
+> +      - const: riscv,aclint-mtimer
+> +
+> +    description:
+> +      Should be "<vendor>,<chip>-aclint-mtimer" and "riscv,aclint-mtimer".
+> +
+> +  reg:
+> +    description: |
+> +      Specifies base physical address(s) of the MTIME register and MTIMECMPx
+> +      registers. The 1st region is the MTIME register base and size. The 2nd
+> +      region is the MTIMECMPx registers base and size.
+> +    minItems: 2
+> +    maxItems: 2
+
+All this can be expressed as:
+
+items:
+  - description: The MTIME registers
+  - description: The MTIMECMPx registers
+
+'reg' is always the physical address and size, so no need to redefine 
+common properties.
+
 
 > +
-> +       for (i = 0; i < desc->npins; i++) {
-> +               int pin = desc->pins[i].number;
-> +               const struct pin_desc *pd = pin_desc_get(gpio_dev->pctrl, pin);
-> +               if (!pd)
-> +                       continue;
+> +  interrupts-extended:
+> +    minItems: 1
+> +    maxItems: 4095
 > +
-> +               raw_spin_lock_irqsave(&gpio_dev->lock, flags);
+> +additionalProperties: false
 > +
-> +               pin_reg = readl(gpio_dev->base + i * 4);
-> +               pin_reg &= ~mask;
-> +               writel(pin_reg, gpio_dev->base + i * 4);
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts-extended
 > +
-> +               raw_spin_unlock_irqrestore(&gpio_dev->lock, flags);
-> +       }
-> +}
-> +
->  #ifdef CONFIG_PM_SLEEP
->  static bool amd_gpio_should_save(struct amd_gpio *gpio_dev, unsigned int pin)
->  {
-> @@ -967,6 +993,9 @@ static int amd_gpio_probe(struct platform_device *pdev)
->                 return PTR_ERR(gpio_dev->pctrl);
->         }
->
-> +       /* Disable and mask interrupts */
-> +       amd_gpio_irq_init(gpio_dev);
-> +
->         girq = &gpio_dev->gc.irq;
->         girq->chip = &amd_gpio_irqchip;
->         /* This will let us handle the parent IRQ in the driver */
-> --
-> 2.33.0
->
-
+> +examples:
+> +  - |
+> +    timer@2004000 {
+> +      compatible = "sifive,fu540-c000-aclint-mtimer", "riscv,aclint-mtimer";
+> +      reg = <0x200bff8 0x8>,
+> +            <0x2004000 0x7ff8>;
+> +      interrupts-extended = <&cpu1intc 7>,
+> +                            <&cpu2intc 7>,
+> +                            <&cpu3intc 7>,
+> +                            <&cpu4intc 7>;
+> +    };
+> +...
+> -- 
+> 2.25.1
+> 
+> 
