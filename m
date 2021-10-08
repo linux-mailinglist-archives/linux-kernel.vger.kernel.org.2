@@ -2,97 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D9D42727A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D615D42727C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242961AbhJHUsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242800AbhJHUsV (ORCPT
+        id S242800AbhJHUsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:48:31 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:54170 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242650AbhJHUsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:48:21 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74975C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:46:25 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so13102590otq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:46:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vp3sMAl0sQBNBIIRJ2no6SoD60WmO9rLt8aANKXsIjc=;
-        b=AS87OZoQuVdZ1Hs1B3ow+P/Tfiyydt2jmFWvzcmPQIfEYXk7fK3c20kv07b831yBrg
-         cuTrRQwRPbatWrWEe29oj9Zzfqq9BZmNJS5cGBco5a67HAeUMQeyNx/CQi7zhcbV3BEd
-         QGzG5/+BzN/FLJDVso2KQxEHJKt1lFRBfK6eo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vp3sMAl0sQBNBIIRJ2no6SoD60WmO9rLt8aANKXsIjc=;
-        b=F2V2HmbDkxH2YtZ2TkVPXiKbxediul48Au/JSnHCV9/bNf8utEFOwXQQeTgwW6ISKD
-         T7vmXtF5ZOWTEoCxFJAK6ZAZ9/5iG6CZ2Cjci5/6+VzwKTQHcKwPRviRBXvnoeABHHH0
-         vRGoptXTP72aTdeh4gTaQqojk6NcWq8dKcYQDlvkp5R2uzs743lhWCHHsjy/r26ih/bb
-         hG9lgtJtdxuz63Soes35WPILxH8Ddlsg5I3fgyFqizjIHIB8EmF3Ufi4FH3lMjj37xcs
-         iisZB9wY291lLDOcn/N5WkLOPjkxDjLDIIbvjN+ycrBBcZjjEnmwYcn1XG0r1Ia7E2oh
-         SXoA==
-X-Gm-Message-State: AOAM531mXsSnJRsZx+h81BLUVpDjhx05VEubb/+Q1lTvkfq8HrufkTLc
-        ucSqwGco2hdeRlBxZpK7lgcBKA==
-X-Google-Smtp-Source: ABdhPJy1EInIbRPxCA2K3VeuHtjX6SZZRhAEDsezIKu5QWPuIFIR/6x5tWkdPxQBtiIs6mTNAYhK2g==
-X-Received: by 2002:a05:6830:30a4:: with SMTP id g4mr1073257ots.312.1633725984847;
-        Fri, 08 Oct 2021 13:46:24 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id a13sm109614oiy.9.2021.10.08.13.46.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 13:46:24 -0700 (PDT)
-Subject: Re: [PATCH 5.10 00/29] 5.10.72-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <002ecd06-0247-a7de-fe1a-ab6c5e779871@linuxfoundation.org>
-Date:   Fri, 8 Oct 2021 14:46:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 8 Oct 2021 16:48:30 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id A01B11C0B77; Fri,  8 Oct 2021 22:46:33 +0200 (CEST)
+Date:   Fri, 8 Oct 2021 22:46:33 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 0/7] 4.4.288-rc1 review
+Message-ID: <20211008204633.GA8372@duo.ucw.cz>
+References: <20211008112713.515980393@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="ZPt4rx8FFjLCG7dd"
+Content-Disposition: inline
+In-Reply-To: <20211008112713.515980393@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 5:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.72 release.
-> There are 29 patches in this series, all will be posted as a response
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> This is the start of the stable review cycle for the 4.4.288 release.
+> There are 7 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
-> 
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.72-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
 
-Compiled and booted on my test system. No dmesg regressions.
+CIP testing did not find any problems here:
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.4.y
 
-thanks,
--- Shuah
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--ZPt4rx8FFjLCG7dd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYWCuKQAKCRAw5/Bqldv6
+8roKAJ9w3chX3iolZmCbG0g+B/HeWN7XMgCdG0fqZC67G4gF0GojJL39jpa1ks8=
+=aaAI
+-----END PGP SIGNATURE-----
+
+--ZPt4rx8FFjLCG7dd--
