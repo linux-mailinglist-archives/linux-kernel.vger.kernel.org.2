@@ -2,144 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF18426B6E
+	by mail.lfdr.de (Postfix) with ESMTP id 57056426B6D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242266AbhJHNHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:07:14 -0400
-Received: from mail-oln040093003002.outbound.protection.outlook.com ([40.93.3.2]:15247
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230243AbhJHNHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S242155AbhJHNHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:07:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230262AbhJHNHK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Oct 2021 09:07:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eKDLZAYFKEIt8Pib+CaOoUYeawnFlsNyP9fvuBCCfsSsuLVMc2MDf+FeDKH8vYjfEJU10VPdsDAiLREGhcgGQesc28mJjM/FG+4ue+/uml7oaysn4mv9pc0pevVAz0zQH519vmh1xmczvo5g4ovoCEn1tQ0cWRHZkmefim+aIzfSMdB7Ldq6FrAPgw4rcVVZhe4czGHi4QEkl6rxg6VYqVPDGIF04QO2lfTvWlxlXttbHDp4/vkowf25vLIzuxzqfWeYo+r079gt6skkhrsctWUR6U70MoNikeqDHLacQV+S/qoADKNTgavQUpOGUeuTwUBmDrWJaLgQdKad8HEsLg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZuioxAJ6M4gekUGPAvB7FszSkCwD2LhzsTYePrPoWxA=;
- b=VqqaxhruGe6dwapHzK9yhAp6t3Gy5mHCdpTLiMHGRlyrYX55E8uDKN10JGwQ/Un9FEbe8LSSo9eKXQrPnzwP0WoZrmGuc78FioO3TKPfnsed7j+tMwIfna5PGtuvbZCKto1KbFZEaEZPaVatc7+73uEXwCbvVaBBU1ZfC4C4ErQXiGW5NhX29fqXH4flW8ooyaEGV9t4S4bGsbwQ3WYMI1ir9YDTDG7l83hOlXDiNmQlGQR+RFnhN099a8XwdITOctXM4/BlMDEi57rl3tmLHuJ8sb1TS1FI6WkfHB5v3mqm3OGzUcjGyw7T7JEUXnihsHI+wGIdhG9gqAvXUJIfvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZuioxAJ6M4gekUGPAvB7FszSkCwD2LhzsTYePrPoWxA=;
- b=FuFdiL2t5d+hIXE9xIGidGVmN1BL3QZqZ2yO/3rR+cQQn9ojAT1OrE4+8HXJ+JWw/N2mlmkXFfPp+YBkVyP3ngakp9XdCZi4cbv+1PILbUFrsMOs5YrN4mij0rndrCEZFjiZXoqGTR1zA8K/4cC47LUSvz17PqXboyjcy06iV/Q=
-Received: from BYAPR21MB1286.namprd21.prod.outlook.com (2603:10b6:a03:10a::23)
- by SJ0PR21MB2022.namprd21.prod.outlook.com (2603:10b6:a03:390::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.3; Fri, 8 Oct
- 2021 13:05:12 +0000
-Received: from BYAPR21MB1286.namprd21.prod.outlook.com
- ([fe80::d89e:383d:2e2c:d071]) by BYAPR21MB1286.namprd21.prod.outlook.com
- ([fe80::d89e:383d:2e2c:d071%5]) with mapi id 15.20.4608.005; Fri, 8 Oct 2021
- 13:05:12 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-CC:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net] net: mana: Fix error handling in mana_create_rxq()
-Thread-Topic: [PATCH net] net: mana: Fix error handling in mana_create_rxq()
-Thread-Index: AQHXu80x9hhDQvwXq0i2i4Ykwt7sMKvIYIaAgACx91A=
-Date:   Fri, 8 Oct 2021 13:05:12 +0000
-Message-ID: <BYAPR21MB1286890E901CBCA8AADA0AD8CAB29@BYAPR21MB1286.namprd21.prod.outlook.com>
-References: <1633646733-32720-1-git-send-email-haiyangz@microsoft.com>
- <20211007192739.59feaf52@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211007192739.59feaf52@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2433f5c0-3ead-49f4-9ee0-c86df83349ae;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-08T13:04:36Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 137cf9c5-bcb1-4879-bcd8-08d98a5c43b4
-x-ms-traffictypediagnostic: SJ0PR21MB2022:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <SJ0PR21MB202249E48CBE0A37CA5853CCCAB29@SJ0PR21MB2022.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2512;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UMHbQf+Ry9gukNFmjBGW5gJXqPAWn5IQ7zQ6SjlZZZ53q3amwHZx2nSRd8SComgn+VDvhQGpZTgyRX0iP3zrvaOitcAmjJFnKO/HPfXZyVWP5oP4K2S1dAOMiqKnxJ+H+HFBSwsgGDMJWsUM34SxTtE5bh+6C6KXe003dsdV99W3xQJvNaLP7RxZ3Jeo638ejMkki7dIpVka2CbOVIPuBQSlHInL/RCE0aptRfEdqckoS2jnEPC5knnYpuJvHQX4hAlZ2KIwio+yKjxjHO11BIF8oTL9BpOEV+4EVcQmhUl9L1uyybyAP/JQ271Ir+Jo3N6r0anAkyC32YQKPmSdGJaGeJtqOiHPnZKIg7JQjAxwKJIKzYCCmv2FWTx5hpNW55mu9WFTKJ8/8tR27atFAUwKO57WPofrUgcj3XChyXLuQU2chm/Or57g9+bp8YyHqFKLH22VyWgi2WYwDch2Tcn1HeXQ5mH8QGghjVhyC+8aPwbe/UIfqAxxK8KawOKHzBgG4p3PRY3ly6s7Nh498NBk680SY1BXgMU4Yzv3EPaonzu2P7u26xEmAj0aoD6LqCWoT08Bm8r7rw9LuXYP2FtEs5SQcUSOPD0EKXVcXn+f+Zpdk8ddY5yJpQVGMy96Awr6GiP/46lkV/MP3J1zPwGvEiGhg9ZZPG8LPFzpj+hTMnp9Rqn225liyp/pIR/aovwl27R04ATql7FbDyoFhw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1286.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(10290500003)(8990500004)(82950400001)(82960400001)(7696005)(76116006)(33656002)(8936002)(66446008)(122000001)(508600001)(9686003)(83380400001)(4744005)(38070700005)(38100700002)(54906003)(71200400001)(6506007)(53546011)(64756008)(2906002)(5660300002)(316002)(66556008)(52536014)(55016002)(26005)(4326008)(66946007)(8676002)(86362001)(6916009)(186003)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TweRQUSt+ETxGk69aNFnZ8YUIPp8TPDyOlIqGCqWykESWK0QM8qKTejMgsOp?=
- =?us-ascii?Q?c7CIpgjLlo/D4Ywl9trNsVFTbNiaLoz0BdDPhcEFZmnAc7UM5tuBawUiwFqU?=
- =?us-ascii?Q?gimyEULepcA9gbYrYhemGfbOLZkV4zzQoJ7XQ/8+1qUuhQ69cS+XfIcuOEJx?=
- =?us-ascii?Q?Dtv6N86NLyTWx0Og7tG7jMeInHq+De3HZh7TxhcMVOi15IyJ3aSLCympnSfu?=
- =?us-ascii?Q?nhIu0tYFBHCR5HSWD64Qh1vj7hCQsOlJEdovShbvdsUxHLi9iiIgkaUF0Mki?=
- =?us-ascii?Q?MZM6CToyBoSXjs2+DXUm8Dy8RANcZ4PZlYp1L9jlqySmP3tIh0mda5wjN4Hx?=
- =?us-ascii?Q?yF1+cF2mdsvaIi5R6HeW8UF8crfXGnjMvjkCs8YbFndMfBbEUoWFtyJ/v+uy?=
- =?us-ascii?Q?aaX4O97iZPpfzHeAutfLhVGmuW1xsZHMDj228Cflo6wdV3DXWaVFLUJlt7ft?=
- =?us-ascii?Q?lQ+TDWxfwuOpV3HHy0E9eBlVpq5QfvghGmB9lB2THa0zHZ2CMxtmzjqjlVoB?=
- =?us-ascii?Q?zFHiRT8gAEpMV/isRYmtcgxQt4lCHdeoD30q3oQSEeuy1tX0teEULZgL7sgZ?=
- =?us-ascii?Q?NN8oV2e09yntmQU6T/vakNl9+RJvy4pXNs9dTN9UpqBA2j4Opu9ogD+pkeIv?=
- =?us-ascii?Q?l8DthGv4T1Ztj4v0mu7VPBu4k7t/CDK30LV7xbd4bIzxhJc+zilsHL1R4J1q?=
- =?us-ascii?Q?noVncQePRq5DLLhYtxOwlZx+ZtDFWL47a9Iyny1XmErQp9pZvzsNuhmN7noM?=
- =?us-ascii?Q?PB8QIvQGmDESAcAU5Y8B+aF45nwxkpKGl4a5HQOSETJC/0efrkw1WcDf29ee?=
- =?us-ascii?Q?7IRC2AjAPIPQfRbVVcd/qBuIpcY/l6xghk+QIZqT03+sY8e4+YreMVr5+DrG?=
- =?us-ascii?Q?MSS3HMnRSJ+BqtdIFDm81t/63CatDSU+lZhE9yJTf/xN1U65Hp2qFvb1eLZs?=
- =?us-ascii?Q?ojYMsvArolTSmL6SgZ1UqBE0aHzA4aHmOInac5rlFzpBXzDfCApnM5VtGFXm?=
- =?us-ascii?Q?2o0y+UVcojq6eDr8CaTtgPCtuwvzYIX/SiZE7+xPP5rrrsgxjbNKcfNwh03V?=
- =?us-ascii?Q?NKCOAC6p13bq2NtZ3IZEgh29+6REpA20iwFu8Y3KWuB8YW18U8zIWb/JdsDl?=
- =?us-ascii?Q?q9lN6GHD7J6MgyWGNUgKijtSfNG2mzfNmNY+LP+o+vKVYsetcN8VoPOXdoWl?=
- =?us-ascii?Q?9bZpenWdThh8Hygmxcmj30e257pXQSA5rbDsXAdEsjKzoVdlPn2O9IL5wCx0?=
- =?us-ascii?Q?GPeexHhQw1+qNxdI+ghKreyyotlmKMR8T0X6FFmNQErEdGVfyPXuq9gvY5Qm?=
- =?us-ascii?Q?gNU2g3B3NRJfzE3rJak1tdyA?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA58C061570;
+        Fri,  8 Oct 2021 06:05:15 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id z11so13678708oih.1;
+        Fri, 08 Oct 2021 06:05:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NwsrAhEELdrD0yf4RSjEr+rJMAn0uIiuidWlamL/LOY=;
+        b=PXybhPRq+OocRcXM0uT95Rqd+6ho1ULptdg17EqaD9MOH284R2N2Jp61anXiO9EXNw
+         gcxYQJ4LKqL9nDCIkZP9o3MFX0FXe+ilzb99+XiDeOGQUmG5+lE6860016W/NEbAMrIQ
+         VAdEcSUBD1eJpDBMIh+2HNNkA0j6SqavnPaP82DDb9Cn363WOVo2jqZR+QS4ho1q1ZFk
+         cWYWSCeUD8n407i2uKMgq46DEzHpAPZYXwtn35SGQGLS/Igec17zBEsHnD5EqIbTTzd7
+         fZgW3AeGYbNB8ZLmPtNRFCH+iOgnaD8cMcDFxCnnZESImELw4MxJn0hSbP4dvxmHTRZE
+         xK+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NwsrAhEELdrD0yf4RSjEr+rJMAn0uIiuidWlamL/LOY=;
+        b=LQ1Dqe5GxS0plzfIcZze9NApLZUx8mXbSE9rbHz872BVXRFTDJnYAgW+6I7y92sLCw
+         JYgnu+q5hZ7PhyXZ0yeL5nn/Dj8/dOlG3ckXojhvBTuAtTn7g36jc7Pyu+Ug8HzIf9+n
+         3vZW3SHfWhZdVCu92jdgDGVMhpqWyfrmzJa3D160MW8fG63HKdXc59L+JjOqIQmSbEAe
+         3X2LgqCK6rNDgyZonGd2Hq5GgvRQ5bq/S9eUXCcYMK6se9gwwODCb3WhI8pjd4LZFvdm
+         75JCvCc9JQSLx+rJnH2kobkIAz2ZKpjog9SMHRNenwxvRkNqH9QDCu9mQz2ZrLsZEnh4
+         Wz3Q==
+X-Gm-Message-State: AOAM532RpQzIYlaLRcW5qrKadCmVOBrJIS8bIiCBfZWDWYWkgK/sNZBR
+        yEP5OKyc+jJ2QMH8ywlCe6IYeCDpLBU=
+X-Google-Smtp-Source: ABdhPJzAgwXcB0KHIplrVqdpfaS8VOmrwW848F9e71enp8VB33pR/GG9zLflWD7oktfsLxaZ3F2PDQ==
+X-Received: by 2002:a05:6808:118c:: with SMTP id j12mr7746018oil.65.1633698314656;
+        Fri, 08 Oct 2021 06:05:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 63sm343194oih.14.2021.10.08.06.05.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 06:05:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Mantas_Mikul=c4=97nas?= <grawity@gmail.com>,
+        "Javier S . Pedro" <debbugs@javispedro.com>
+References: <20211008003302.1461733-1-linux@roeck-us.net>
+ <9b9c797c-04f1-0ccf-b6fe-e9f1e4f5c17d@siemens.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Revert "watchdog: iTCO_wdt: Account for rebooting on
+ second timeout"
+Message-ID: <66dece5d-d2e2-c3e0-3d7a-565385fe5003@roeck-us.net>
+Date:   Fri, 8 Oct 2021 06:05:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1286.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 137cf9c5-bcb1-4879-bcd8-08d98a5c43b4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2021 13:05:12.6518
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: p0JFjdubCteLJBjvCw+igqByr+tvJb2EBoioFCgUhJK22hIyewrG1+xRwDz7MuR//pf//sqU+z7ARu2oJye5XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB2022
+In-Reply-To: <9b9c797c-04f1-0ccf-b6fe-e9f1e4f5c17d@siemens.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/8/21 12:52 AM, Jan Kiszka wrote:
+> On 08.10.21 02:33, Guenter Roeck wrote:
+>> This reverts commit cb011044e34c ("watchdog: iTCO_wdt: Account for
+>> rebooting on second timeout") and commit aec42642d91f ("watchdog: iTCO_wdt:
+>> Fix detection of SMI-off case") since those patches cause a regression
+>> on certain boards (https://bugzilla.kernel.org/show_bug.cgi?id=213809).
+>>
+>> While this revert may result in some boards to only reset after twice
+>> the configured timeout value, that is still better than a watchdog reset
+>> after half the configured value.
+>>
+>> Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
+>> Fixes: aec42642d91f ("watchdog: iTCO_wdt: Fix detection of SMI-off case")
+>> Cc: Jan Kiszka <jan.kiszka@siemens.com>
+>> Cc: Mantas Mikulėnas <grawity@gmail.com>
+>> Reported-by: Javier S. Pedro <debbugs@javispedro.com>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>   drivers/watchdog/iTCO_wdt.c | 12 +++---------
+>>   1 file changed, 3 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
+>> index 643c6c2d0b72..ced2fc0deb8c 100644
+>> --- a/drivers/watchdog/iTCO_wdt.c
+>> +++ b/drivers/watchdog/iTCO_wdt.c
+>> @@ -71,8 +71,6 @@
+>>   #define TCOBASE(p)	((p)->tco_res->start)
+>>   /* SMI Control and Enable Register */
+>>   #define SMI_EN(p)	((p)->smi_res->start)
+>> -#define TCO_EN		(1 << 13)
+>> -#define GBL_SMI_EN	(1 << 0)
+>>   
+>>   #define TCO_RLD(p)	(TCOBASE(p) + 0x00) /* TCO Timer Reload/Curr. Value */
+>>   #define TCOv1_TMR(p)	(TCOBASE(p) + 0x01) /* TCOv1 Timer Initial Value*/
+>> @@ -357,12 +355,8 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
+>>   
+>>   	tmrval = seconds_to_ticks(p, t);
+>>   
+>> -	/*
+>> -	 * If TCO SMIs are off, the timer counts down twice before rebooting.
+>> -	 * Otherwise, the BIOS generally reboots when the SMI triggers.
+>> -	 */
+>> -	if (p->smi_res &&
+>> -	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
+>> +	/* For TCO v1 the timer counts down twice before rebooting */
+>> +	if (p->iTCO_version == 1)
+>>   		tmrval /= 2;
+>>   
+>>   	/* from the specs: */
+>> @@ -527,7 +521,7 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
+>>   		 * Disables TCO logic generating an SMI#
+>>   		 */
+>>   		val32 = inl(SMI_EN(p));
+>> -		val32 &= ~TCO_EN;	/* Turn off SMI clearing watchdog */
+>> +		val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
+>>   		outl(val32, SMI_EN(p));
+>>   	}
+>>   
+>>
+> 
+> Sigh, how broken is this architecture of the iTCO? Agreed, this leaves
+> no option then.
+> 
+> BTW, the fact that we saw an inconsistency in read-back timeout
+> indicates that there is still an issue for the remaining /= 2 case
+> (means v1), but I'm loosing interest in fixing those issues, given how
+> hard it is to test broadly without breaking users first.
+> 
 
-
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Thursday, October 7, 2021 10:28 PM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; KY Srinivasan
-> <kys@microsoft.com>; Stephen Hemminger <sthemmin@microsoft.com>; Paul
-> Rosswurm <paulros@microsoft.com>; Shachar Raindel
-> <shacharr@microsoft.com>; olaf@aepfle.de; vkuznets <vkuznets@redhat.com>;
-> davem@davemloft.net; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH net] net: mana: Fix error handling in
-> mana_create_rxq()
->=20
-> On Thu,  7 Oct 2021 15:45:33 -0700 Haiyang Zhang wrote:
-> > Fix error handling in mana_create_rxq() when
-> > cq->gdma_id >=3D gc->max_num_cqs.
-> >
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
->=20
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure
-> Network Adapter (MANA)")
-
-I will add "Fixes" line.
+Agreed. This is because the /=2 handling is only implemented in
+iTCO_wdt_set_timeout() without matching code in iTCO_wdt_get_timeleft().
+I don't have hardware to test, so I am not going to touch that code
+myself. We can address that if/when someone reports the actual problem
+and has the ability to test a fix.
 
 Thanks,
-- Haiyang
+Guenter
+
+
