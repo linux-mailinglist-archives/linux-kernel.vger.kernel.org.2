@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0098E426329
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F8642632A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242303AbhJHDkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:40:23 -0400
-Received: from mga01.intel.com ([192.55.52.88]:51328 "EHLO mga01.intel.com"
+        id S241994AbhJHDkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:40:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:5613 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240622AbhJHDkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229714AbhJHDkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Oct 2021 23:40:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249784154"
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="213374891"
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="249784154"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:38:26 -0700
+   d="scan'208";a="213374891"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:38:26 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="590406655"
+   d="scan'208";a="561139477"
 Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 07 Oct 2021 20:38:25 -0700
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Oct 2021 20:38:25 -0700
 Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mYgiG-0007ua-H4; Fri, 08 Oct 2021 03:38:24 +0000
-Date:   Fri, 08 Oct 2021 11:37:25 +0800
+        id 1mYgiG-0007uX-Gj; Fri, 08 Oct 2021 03:38:24 +0000
+Date:   Fri, 08 Oct 2021 11:37:50 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- 83d40a61046f73103b4e5d8f1310261487ff63b0
-Message-ID: <615fbcf5.iP5Ymq0JtvBlVkBO%lkp@intel.com>
+Subject: [tip:x86/cc] BUILD SUCCESS
+ e9d1d2bb75b2d5d4b426769c5aae0ce8cef3558f
+Message-ID: <615fbd0e.75lvgusYgY16YlXW%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
-branch HEAD: 83d40a61046f73103b4e5d8f1310261487ff63b0  sched: Always inline is_percpu_thread()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git x86/cc
+branch HEAD: e9d1d2bb75b2d5d4b426769c5aae0ce8cef3558f  treewide: Replace the use of mem_encrypt_active() with cc_platform_has()
 
 elapsed time: 1331m
 
