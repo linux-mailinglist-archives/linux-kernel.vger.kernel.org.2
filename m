@@ -2,465 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC22426A8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:18:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F81426A94
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241194AbhJHMUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:20:06 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:38242 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240457AbhJHMUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:20:05 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxJOb6NmBhR5MWAA--.43565S2;
-        Fri, 08 Oct 2021 20:18:03 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Subject: [PATCH bpf-next v3] test_bpf: Add module parameter test_suite
-Date:   Fri,  8 Oct 2021 20:18:02 +0800
-Message-Id: <1633695482-10528-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxJOb6NmBhR5MWAA--.43565S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr47Cw4xZr4kJr4xKr1ftFb_yoWkAr1kpr
-        W7Krn0yF18XF97XF18XF17Aa4rtF4vy3yrtrWfJryqyrs5CryUtF48K34Iqrn3Jr40vw15
-        Z3WIvF45G3W7AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr1l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6wZcUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S241110AbhJHMVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:21:44 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:58981 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230187AbhJHMVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:21:38 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8683C580FB0;
+        Fri,  8 Oct 2021 08:19:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Fri, 08 Oct 2021 08:19:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nakato.io; h=
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=fm2; bh=
+        kEPRSs946GBYPNBXQ5nqgrpY4kO95b8VBBcDedB+Mag=; b=I2RwBtRCMc71GdIp
+        5/QJdsZU60npx5a7DFlJRfScoDxc5PbcSCik25SSNOtQv4/sSS9BhiWWmB8AXktz
+        4QanmQE7j6OroUXBMPenknx6WSNFb2x3TDUSbk10gRKkzmfKAvHbAzQAhpQGWEiG
+        AX751tV1W8zhwV7Q6fPWFNluqpsZ/Slz/x2a+nlMGiLUskj4rcnlWTsj8QxxXgl2
+        EqIPIrK+k5IPB2HF8/VuTsfbECC9b9yT6Y9x3Gim6+SWMPNnXZdR+wx6Za/Ei284
+        Uja7rH9mGw7dypWytxZJTXK/oU5yVBfIH+TDcaESZi1pjCEzlZNAxLy2uUGLdgCQ
+        6FQHaA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=kEPRSs946GBYPNBXQ5nqgrpY4kO95b8VBBcDedB+M
+        ag=; b=U1EOUiW4tKuUxv39qT+xBw0W4eT7L1VykUTO2O4XnBe29+DQIHaE+GWU0
+        Y3qFOCdDKgyqzwvTEZKa/qusKwOtCd4p8iTyBKFLvX54nhN/rPlgbEmuPcaZJJgv
+        b2ZFMw81F/9Dx05Cn2M9wpX2+3RyUvyIojj/9cb2YQTzzzSbij7R38/D0WjWUsFc
+        u3FCpyU8/pe0Q8FsB6EUmH40VlvBDAjyi7/6s7BWavajCCDf/FZ5X7ELnQYAX0CG
+        YkHI4sGNxa9tGTRZYEO+7eVB60nGwJxLjfp1/p5Y6kxg0rTz/8hmpNJj8qjvikCV
+        jPWxQ26G9LDJLMAelEDMlJa+cvz0w==
+X-ME-Sender: <xms:XjdgYV9w-A-LbUZxIHeoYjD7QyeGsZzkkO7rdVgAe1nW89oizGLgLA>
+    <xme:XjdgYZtOR0OKK19Ik0d9MYFPBySk4r9FNLOMP-yXvq_K79cNj6snYw4NQYFj9ster
+    Adoomfo839XkwAYUQ>
+X-ME-Received: <xmr:XjdgYTASQI7mrOduBKIUIcJrDG_hQm7_4KpXMXV2nnNCdGjfNqEbb0v111jz72p-wm25TqaqBrkNXUoc94frtWLFk-c3ujkyjl2dpEQ0Nrvqa-A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddggeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkfgjfhgggfgtsehtufertddttddvnecuhfhrohhmpefurggthhhi
+    ucfmihhnghcuoehnrghkrghtohesnhgrkhgrthhordhioheqnecuggftrfgrthhtvghrnh
+    epvefhudehvdeigeegvedtteevueegudfhjeevueetfeefveetieevfeffheeuleeknecu
+    ffhomhgrihhnpehgihhthhhusgdrtghomhdpkhgvrhhnvghlrdhorhhgpdhnohhtrdgtrg
+    htnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgr
+    khgrthhosehnrghkrghtohdrihho
+X-ME-Proxy: <xmx:XjdgYZdKwsoS9u81MJhva0OxX4g4DjJcoBbKmXGyCIIuPhEOsHIGAQ>
+    <xmx:XjdgYaMwNdW0GY-Xf2n7q_NWcvnh1GN5b6OlfgRNEUMEDurz8EWiKw>
+    <xmx:XjdgYbnDgkINrHGPnNytzbvPTBycKMSaWMs0V3lKOQPNm3VAE49yfw>
+    <xmx:XjdgYRo_a4lt65_k3Yk5-LzSCmx_LrFXncigvoCjvSbom8s6xJFw6w>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Oct 2021 08:19:38 -0400 (EDT)
+From:   Sachi King <nakato@nakato.io>
+To:     "Limonciello, Mario" <mario.limonciello@amd.com>,
+        hdegoede@redhat.com, mgross@linux.intel.com, rafael@kernel.org,
+        lenb@kernel.org, Sanket.Goswami@amd.com,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] platform/x86: amd-pmc: Add alternative acpi id for PMC controller
+Date:   Fri, 08 Oct 2021 23:19:35 +1100
+Message-ID: <1837953.FDaK0lLtFO@youmu>
+In-Reply-To: <609f5254-4527-38b8-3d1d-5cb06791e103@amd.com>
+References: <20211002041840.2058647-1-nakato@nakato.io> <909f28e9-245a-df90-52f1-98b0f63a2b3a@amd.com> <609f5254-4527-38b8-3d1d-5cb06791e103@amd.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-there exists segment fault due to the following reason:
+On Friday, 8 October 2021 21:27:15 AEDT Shyam Sundar S K wrote:
+> 
+> On 10/8/2021 1:30 AM, Limonciello, Mario wrote:
+> > 
+> > On 10/5/2021 00:16, Shyam Sundar S K wrote:
+> >>
+> >> On 10/2/2021 9:48 AM, Sachi King wrote:
+> >>> The Surface Laptop 4 AMD has used the AMD0005 to identify this
+> >>> controller instead of using the appropriate ACPI ID AMDI0005.  Include
+> >>> AMD0005 in the acpi id list.
+> >>
+> >> Can you provide an ACPI dump and output of 'cat /sys/power/mem_sleep'
+> > 
+> > I had a look through the acpidump listed there and it seems like the PEP
+> > device is filled with a lot of NO-OP type of code.  This means the LPS0
+> > patch really isn't "needed", but still may be a good idea to include for
+> > completeness in case there ends up being a design based upon this that
+> > does need it.
+> > 
+> > As for this one (the amd-pmc patch) how are things working with it? Have
+> > you checked power consumption
 
-ALU64_MOV_X: all register value magnitudes jited:1
-Break instruction in kernel code[#1]
+Using my rather limited plug-in power meter I measure 1w with this patch,
+and I've never seen the meter go below this reading, so this may be over
+reporting.  Without this patch however the device bounces around 2.2-2.5w.
+The device consumes 6w with the display off.
 
-It seems that the related jit implementations of some test cases
-in test_bpf() have problems. At this moment, I do not care about
-the segment fault while I just want to verify the test cases of
-tail calls.
+I have not left the device for long periods of time to see what the battery
+consumption is over a period of time, however this patch is being carried
+in linux-surface in advance and one users suspend power consumption is
+looking good.  They have reported 2 hours of suspend without a noticable
+power drop from the battery indicator.
+https://github.com/linux-surface/linux-surface/issues/591#issuecomment-936891479
 
-Based on the above background and motivation, add the following
-module parameter test_suite to the test_bpf.ko:
-test_suite=<string>: only the specified type will be run, the string
-can be "test_bpf", "test_tail_calls" or "test_skb_segment".
 
-If test_suite is not specified, but test_id, test_name or test_range
-is specified, set 'test_bpf' as the default test suite.
+> > and verified that the amd_pmc debugfs
+> > statistics are increasing?
 
-This is useful to only test the corresponding test suite when specify
-the valid test_suite string.
+s0ix_stats included following smu_fw_info below.
 
-Any invalid test suite will result in -EINVAL being returned and no
-tests being run. If the test_suite is not specified or specified as
-empty string, it does not change the current logic, all of the test
-cases will be run.
+> > Is the system able to resume from s2idle?
 
-Here are some test results:
- # dmesg -c
- # modprobe test_bpf
- # dmesg
- # dmesg | grep Summary
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+It does, however additional patches are required to do so without an external
+device such as a keyboard.  The power button, lid, and power plug trigger
+events via pinctrl-amd.  Keyboard and trackpad go via the Surface EC and
+require the surface_* drivers, which do not have wakeup support.
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf
- # dmesg | tail -1
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+1. The AMDI0031 pinctrl-amd device is setup on Interrupt 7, however the APIC
+table does not define an interrupt source override.  Right now I'm not sure
+how approach producing a quirk for this.  linux-surface is carrying the hack
+described in
+https://lore.kernel.org/lkml/87lf8ddjqx.ffs@nanos.tec.linutronix.de/
+Also available here:
+https://github.com/linux-surface/kernel/commit/25baf27d6d76f068ab8e7cb7a5be33218ac9bd6b
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg
- test_bpf: #0 Tail call leaf jited:0 21 PASS
- [...]
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+2. pinctrl: amd: Handle wake-up interrupt
+https://git.kernel.org/torvalds/c/acd47b9f28e5
+Without this patch the device would suspend, but any interrupt via
+pinctrl-amd would result in a failed resume, which is every wakeup
+souce I know of on this device.
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment
- # dmesg
- test_bpf: #0 gso_with_rx_frags PASS
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+3. pinctrl: amd: disable and mask interrupts on probe
+Once I worked out that I needed the patch in 2 above the device gets a lot
+of spurious wakeups, largely because Surface devices have a second embedded
+controller that wants to wake the device on all sorts of events.  We don't
+have support for that, and there were a number of interrupts not configured
+by linux that were set enabled, unmasked, and wake in s0i3 on boot.
+https://lore.kernel.org/linux-gpio/20211001161714.2053597-1-nakato@nakato.io/T/#t
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_id=1
- # dmesg
- test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
- test_bpf: #1 TXA jited:0 54 51 50 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+These three are enough to be able to wake the device via a lid event, or by
+changing the state of the power cable.
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf test_name=TXA
- # dmesg
- test_bpf: #1 TXA jited:0 54 50 51 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+4. The power button requires another pair of patches.  These are only in the
+linux-surface kernel as qzed would like to run them there for a couple of
+releases before we propose them upstream.  These patches change the method
+used to determine if we should load surfacepro3-button or soc-button-array.
+The AMD variant Surface Laptops were loading surfacepro3-button instead
+soc-button-array.  They can be seen:
+https://github.com/linux-surface/kernel/commit/1927c0b30e5cd95a566a23b6926472bc2be54f42
+https://github.com/linux-surface/kernel/commit/ac1a977392880456f61e830a95e368cad7a0fa3f
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
- # dmesg
- test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
 
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment test_id=1
- # dmesg
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+> Echo-ing to what Mario said, I am also equally interested in knowing the
+> the surface devices are able to reach S2Idle.
+> 
+> Spefically can you check if your tree has this commit?
+> https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=9cfe02023cf67a36c2dfb05d1ea3eb79811a8720
 
-By the way, the above segment fault has been fixed in the latest bpf-next
-tree.
+My tree currently does not have that one.  I've applied it.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+> this would tell the last s0i3 status, whether it was successful or not.
+> 
+> cat /sys/kernel/debug/amd_pmc/smu_fw_info
 
-v3:
-  -- Use test_suite instead of test_type as module parameter
-  -- Make test_id, test_name and test_range selection applied to each test suite
 
-v2:
-  -- Fix typo in the commit message
-  -- Use my private email to send
+=== SMU Statistics ===
+Table Version: 3
+Hint Count: 1
+Last S0i3 Status: Success
+Time (in us) to S0i3: 102543
+Time (in us) in S0i3: 10790466
 
- lib/test_bpf.c | 263 ++++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 187 insertions(+), 76 deletions(-)
+=== Active time (in us) ===
+DISPLAY  : 0
+CPU      : 39737
+GFX      : 0
+VDD      : 39732
+ACP      : 0
+VCN      : 0
+DF       : 18854
+USB0     : 3790
+USB1     : 2647
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index e5b10fd..dfa9db8 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
- static int test_id = -1;
- module_param(test_id, int, 0);
- 
--static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
-+static int test_range[2] = { -1, -1 };
- module_param_array(test_range, int, NULL, 0);
- 
--static __init int find_test_index(const char *test_name)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (!strcmp(tests[i].descr, test_name))
--			return i;
--	}
--	return -1;
--}
--
--static __init int prepare_bpf_tests(void)
--{
--	if (test_id >= 0) {
--		/*
--		 * if a test_id was specified, use test_range to
--		 * cover only that test.
--		 */
--		if (test_id >= ARRAY_SIZE(tests)) {
--			pr_err("test_bpf: invalid test_id specified.\n");
--			return -EINVAL;
--		}
--
--		test_range[0] = test_id;
--		test_range[1] = test_id;
--	} else if (*test_name) {
--		/*
--		 * if a test_name was specified, find it and setup
--		 * test_range to cover only that test.
--		 */
--		int idx = find_test_index(test_name);
--
--		if (idx < 0) {
--			pr_err("test_bpf: no test named '%s' found.\n",
--			       test_name);
--			return -EINVAL;
--		}
--		test_range[0] = idx;
--		test_range[1] = idx;
--	} else {
--		/*
--		 * check that the supplied test_range is valid.
--		 */
--		if (test_range[0] >= ARRAY_SIZE(tests) ||
--		    test_range[1] >= ARRAY_SIZE(tests) ||
--		    test_range[0] < 0 || test_range[1] < 0) {
--			pr_err("test_bpf: test_range is out of bound.\n");
--			return -EINVAL;
--		}
--
--		if (test_range[1] < test_range[0]) {
--			pr_err("test_bpf: test_range is ending before it starts.\n");
--			return -EINVAL;
--		}
--	}
--
--	return 0;
--}
--
--static __init void destroy_bpf_tests(void)
--{
--}
--
- static bool exclude_test(int test_id)
- {
- 	return test_id < test_range[0] || test_id > test_range[1];
-@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
- 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
- 		const struct skb_segment_test *test = &skb_segment_tests[i];
- 
-+		cond_resched();
-+		if (exclude_test(i))
-+			continue;
-+
- 		pr_info("#%d %s ", i, test->descr);
- 
- 		if (test_skb_segment_single(test)) {
-@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 		int ret;
- 
- 		cond_resched();
-+		if (exclude_test(i))
-+			continue;
- 
- 		pr_info("#%d %s ", i, test->descr);
- 		if (!fp) {
-@@ -14966,29 +14909,197 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+static char test_suite[32];
-+module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
-+
-+static __init int find_test_index(const char *test_name)
-+{
-+	int i;
-+
-+	if (!strcmp(test_suite, "test_bpf")) {
-+		for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+			if (!strcmp(tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_tail_calls")) {
-+		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+			if (!strcmp(tail_call_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_skb_segment")) {
-+		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
-+			if (!strcmp(skb_segment_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static __init int prepare_bpf_tests(void)
-+{
-+	if (test_id >= 0) {
-+		/*
-+		 * if a test_id was specified, use test_range to
-+		 * cover only that test.
-+		 */
-+		if (!strcmp(test_suite, "test_bpf") &&
-+		     test_id >= ARRAY_SIZE(tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+				test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_tail_calls") &&
-+		    test_id >= ARRAY_SIZE(tail_call_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+				test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_skb_segment") &&
-+		    test_id >= ARRAY_SIZE(skb_segment_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+				test_suite);
-+			return -EINVAL;
-+		}
-+
-+		test_range[0] = test_id;
-+		test_range[1] = test_id;
-+	} else if (*test_name) {
-+		/*
-+		 * if a test_name was specified, find it and setup
-+		 * test_range to cover only that test.
-+		 */
-+		int idx = find_test_index(test_name);
-+
-+		if (idx < 0) {
-+			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
-+			       test_name, test_suite);
-+			return -EINVAL;
-+		}
-+		test_range[0] = idx;
-+		test_range[1] = idx;
-+	} else {
-+		/*
-+		 * check that the supplied test_range is valid.
-+		 */
-+		if (!strcmp(test_suite, "test_bpf")) {
-+			if (test_range[0] >= ARRAY_SIZE(tests) ||
-+			    test_range[1] >= ARRAY_SIZE(tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+					test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (!strcmp(test_suite, "test_tail_calls")) {
-+			if (test_range[0] >= ARRAY_SIZE(tail_call_tests) ||
-+			    test_range[1] >= ARRAY_SIZE(tail_call_tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+					test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (!strcmp(test_suite, "test_skb_segment")) {
-+			if (test_range[0] >= ARRAY_SIZE(skb_segment_tests) ||
-+			    test_range[1] >= ARRAY_SIZE(skb_segment_tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+					test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (test_range[1] < test_range[0]) {
-+			pr_err("test_bpf: test_range is ending before it starts.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static __init void destroy_bpf_tests(void)
-+{
-+}
-+
- static int __init test_bpf_init(void)
- {
- 	struct bpf_array *progs = NULL;
- 	int ret;
- 
-+	if (strlen(test_suite) &&
-+	    strcmp(test_suite, "test_bpf") &&
-+	    strcmp(test_suite, "test_tail_calls") &&
-+	    strcmp(test_suite, "test_skb_segment")) {
-+		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * if test_suite is not specified, but test_id, test_name or test_range
-+	 * is specified, set 'test_bpf' as the default test suite.
-+	 */
-+	if (!strlen(test_suite) &&
-+	    (test_id != -1 || strlen(test_name) ||
-+	    (test_range[0] != -1 || test_range[1] != -1))) {
-+		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
-+		strcpy(test_suite, "test_bpf");
-+	}
-+
-+
-+	/* if test_range is not specified, set the limit of test_range */
-+	if (test_range[0] == -1 && test_range[1] == -1) {
-+		/* if test_suite is not specified, set the possible max upper limit */
-+		if (!strlen(test_suite)) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tests) - 1;
-+		/* otherwise, set the limit of each test_suite */
-+		} else if (!strcmp(test_suite, "test_bpf")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tests) - 1;
-+		} else if (!strcmp(test_suite, "test_tail_calls")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
-+		} else if (!strcmp(test_suite, "test_skb_segment")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
-+		}
-+	}
-+
- 	ret = prepare_bpf_tests();
- 	if (ret < 0)
- 		return ret;
- 
--	ret = test_bpf();
--	destroy_bpf_tests();
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
-+		ret = test_bpf();
-+		destroy_bpf_tests();
-+		if (ret)
-+			return ret;
-+	}
- 
--	ret = prepare_tail_call_tests(&progs);
--	if (ret)
--		return ret;
--	ret = test_tail_calls(progs);
--	destroy_tail_call_tests(progs);
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
-+		ret = prepare_tail_call_tests(&progs);
-+		if (ret)
-+			return ret;
-+		ret = test_tail_calls(progs);
-+		destroy_tail_call_tests(progs);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return test_skb_segment();
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
-+		return test_skb_segment();
-+
-+	return 0;
- }
- 
- static void __exit test_bpf_exit(void)
--- 
-2.1.0
+> > /sys/kernel/debug/amd_pmc/s0ix_stats
+
+After two seperate suspends:
+
+=== S0ix statistics ===
+S0ix Entry Time: 19022953504
+S0ix Exit Time: 19485830941
+Residency Time: 9643279
+
+=== S0ix statistics ===
+S0ix Entry Time: 21091709805
+S0ix Exit Time: 21586928064
+Residency Time: 10317047
+
+
+> > Does pinctrl-amd load on this system? It seems to me that the power
+> > button GPIO doesn't get used like normally on "regular" UEFI based AMD
+> > systems.  I do see MSHW0040 so this is probably supported by
+> > surfacepro3-button and that will probably service all the important events.
+
+We require the first patch listed above to get pinctrl-amd to load on this
+system, and the two patches mentioned in 4 so we correctly choose
+soc-button-array which is used by all recent Surface devices.
+
+
+
 
