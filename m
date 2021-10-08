@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1071A426CB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E302426CBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242236AbhJHOX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:23:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240647AbhJHOXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:23:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 480BB604D2;
-        Fri,  8 Oct 2021 14:21:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633702885;
-        bh=6q2yTJ+TQhPACP+8wkdHIGOXx3v45IfrWME5TRHKZCM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CUedJ3rEZmLn+ZSl4qm2rvZiBQH88ClU/l1nKBmZnOd89oBJIrdRL/KTxp3gnFZ6C
-         ecwyke9EGEs0rJk3qfJkWjpFG47rTeaJjngnl3pgm7EQL1M9copq0EiKA6H8VQYgX0
-         IdtYshoIr/YpsBnVXgpv5VfEyJeFctFuUI1jpIgqnzPa9TCrND8JtPSjJcUIyCJBCv
-         0SCCCYLJwUtnFjzLT3rAGiacsyykey4w9CIa3dY9y3pNNv0iJfc+4eAcJ1QnG37rbc
-         fv+zonvJJrY4uDqPMbxq5pRMcBkz7GxseXbEfhqyojwEDmicRbKmNpbZzaUDHraiKd
-         0h7Rwd2xiDVEQ==
-Date:   Fri, 8 Oct 2021 07:21:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net PATCH v2 01/15] drivers: net: phy: at803x: fix resume for
- QCA8327 phy
-Message-ID: <20211008072124.58d9885b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YWAFP/Uf4LPK2oe6@Ansuel-xps.localdomain>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
-        <20211008002225.2426-2-ansuelsmth@gmail.com>
-        <20211007192304.7a9acabe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YWAFP/Uf4LPK2oe6@Ansuel-xps.localdomain>
+        id S232248AbhJHO2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:28:41 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:51023 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230434AbhJHO2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:28:36 -0400
+Received: (qmail 721833 invoked by uid 1000); 8 Oct 2021 10:26:39 -0400
+Date:   Fri, 8 Oct 2021 10:26:39 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Patchwork Bot <patchwork-bot@kernel.org>
+Subject: Re: [PATCH v3] usb: ohci: add check for host controller functional
+ states
+Message-ID: <20211008142639.GA721194@rowland.harvard.edu>
+References: <1633677970-10619-1-git-send-email-zhuyinbo@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1633677970-10619-1-git-send-email-zhuyinbo@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 10:45:51 +0200 Ansuel Smith wrote:
-> On Thu, Oct 07, 2021 at 07:23:04PM -0700, Jakub Kicinski wrote:
-> > On Fri,  8 Oct 2021 02:22:11 +0200 Ansuel Smith wrote:  
-> > > From Documentation phy resume triggers phy reset and restart
-> > > auto-negotiation. Add a dedicated function to wait reset to finish as
-> > > it was notice a regression where port sometime are not reliable after a
-> > > suspend/resume session. The reset wait logic is copied from phy_poll_reset.
-> > > Add dedicated suspend function to use genphy_suspend only with QCA8337
-> > > phy and set only additional debug settings for QCA8327. With more test
-> > > it was reported that QCA8327 doesn't proprely support this mode and
-> > > using this cause the unreliability of the switch ports, especially the
-> > > malfunction of the port0.
-> > > 
-> > > Fixes: 52a6cdbe43a3 ("net: phy: at803x: add resume/suspend function to qca83xx phy")  
-> > 
-> > Strange, checkpatch catches the wrong hash being used, but the
-> > verify_fixes script doesn't. Did you mean:
-> > 
-> > Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
-> > 
-> > Or is 52a6cdbe43a3 the correct commit hash? Same question for patch 2.
-> > 
-> > 
-> > The fixes have to be a _separate_ series.  
+On Fri, Oct 08, 2021 at 03:26:10PM +0800, Yinbo Zhu wrote:
+> The usb states of ohci controller include UsbOperational, UsbReset,
+> UsbSuspend and UsbResume. Among them, only the UsbOperational state
+> supports launching the start of frame for host controller according
+> the ohci protocol spec, but in S3/S4 press test procedure, it may
+
+Nobody reading this will know what "S3/S4 press test procedure" means.  
+You have to explain it, or use a different name that people will 
+understand.
+
+> happen that the start of frame was launched in other usb states and
+> cause ohci works abnormally then kernel will allways report rcu
+> call trace. This patch was to add check for host controller
+> functional states and if it is not UsbOperational state that need
+> set INTR_SF in intrdisable register to ensure SOF Token generation
+> was been disabled.
+
+This doesn't make sense.  You already mentioned that only the 
+UsbOperational state supports sending start-of-frame packets.  So if the 
+controller is in a different state then it won't send these packets, 
+whether INTR_SF is enabled or not.
+
+What problem are you really trying to solve?
+
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+> Change in v3:
+> 		Rework the commit information.
+> 		Move the patch code change to lower down position in ohci_irq.
 > 
-> this series contains changes that depends on the fixes. (the 4th patch
-> that rename the define is based on this 2 patch) How to handle that?
-> I know it was wrong to put net and net-next patch in the same series but
-> I don't know how to handle this strange situation. Any hint about that?
+> 
+>  drivers/usb/host/ohci-hcd.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+> index 1f5e693..87aa9bb 100644
+> --- a/drivers/usb/host/ohci-hcd.c
+> +++ b/drivers/usb/host/ohci-hcd.c
+> @@ -879,7 +879,8 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>  {
+>  	struct ohci_hcd		*ohci = hcd_to_ohci (hcd);
+>  	struct ohci_regs __iomem *regs = ohci->regs;
+> -	int			ints;
+> +	int			ints, ctl;
+> +
 
-If there is a functional dependency you'll need to send the net changes
-first and then wait until the trees are merged before sending net-next
-changes. Merge usually happens Thursday afternoon (pacific). You can
-post the net-next changes as RFC before the trees get merged to make
-sure they are reviewed and ready to go in.
+Extra blank line not needed.
 
-> About the wrong hash, yes I wrongly took the hash from my local branch.
+>  
+>  	/* Read interrupt status (and flush pending writes).  We ignore the
+>  	 * optimization of checking the LSB of hcca->done_head; it doesn't
+> @@ -969,9 +970,15 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>  	 * when there's still unlinking to be done (next frame).
+>  	 */
+>  	ohci_work(ohci);
+> -	if ((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
+> -			&& ohci->rh_state == OHCI_RH_RUNNING)
+> +
+> +	ctl = ohci_readl(ohci, &regs->control);
+> +
 
-Indeed, looks like our checker got broken hence my confusion.
+Blank lines not needed.
+
+> +	if (((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
+> +			&& ohci->rh_state == OHCI_RH_RUNNING) ||
+> +			((ctl & OHCI_CTRL_HCFS) != OHCI_USB_OPER)) {
+>  		ohci_writel (ohci, OHCI_INTR_SF, &regs->intrdisable);
+> +		(void)ohci_readl(ohci, &regs->intrdisable);
+> +	}
+
+This is definitely wrong.  You must not turn off SF interrupts when 
+ed_rm_list is non-NULL.  If you do, the driver will not be able to 
+finish unlinking URBs.
+
+Alan Stern
