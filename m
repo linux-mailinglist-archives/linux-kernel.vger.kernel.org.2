@@ -2,593 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CDA426A6E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6813426A71
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240818AbhJHMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230155AbhJHMKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0D460F4A;
-        Fri,  8 Oct 2021 12:08:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633694938;
-        bh=QxM0S+KMLM0874KUDm6NZfuXosnbpzSmNDTDHKigkto=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SIOCFCFINjt6Ja1/l9CeP3BJLxEHxALUmzA2jnqB9ASDyIQUc32BWaiIggXTlGUMi
-         egi64odlew3WZM116AjcpDcWEvMnYBWQ82uMEKoqC3DQDLpps60wkbP12ec18ijScm
-         /CjiDbZU7nm9BvSmOrD6GzKg4GIgqHK8BiV208OAD9xkoRrV1tL/zHTmBT8H4SvTJk
-         jS1yA0ZQdQRz62n/KMc/k+3IunFvFkpPjrEzp4qcCoTZJlfbsYpGRSe/gSA3k5yiJQ
-         YGIzKSn7jXckpFwa8Gdl6+Ua/PHvrSFQ3NtwPzikdlGq2p8wagLV4CevVS3kWXHHZ6
-         een814zzHmo+Q==
-Received: by pali.im (Postfix)
-        id 4D531760; Fri,  8 Oct 2021 14:08:55 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 14:08:55 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Cc:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5] arm64: dts: marvell: add Globalscale MOCHAbin
-Message-ID: <20211008120855.46zbo2fl5edwf7ja@pali>
-References: <20211008114343.57920-1-robert.marko@sartura.hr>
+        id S240908AbhJHMLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:11:23 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34880
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240457AbhJHMLS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:11:18 -0400
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AE9D54000F
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:09:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633694958;
+        bh=XIAA2IQLT0N1oUC3FDWSicvndgmt0HcmrgFfR+RcWIM=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=Ol1pksDYJQuR6DTH/CkRDeTabu8B5E77TkyX5VH+WSmLtZUL1aTtZwZrJwH+DwI2M
+         7J4blcJ0mGL8/uq5sEdYWpteNjSwlNb4PoP+aXAcCg18fFxOGrDOu/rwo3pedk+ACJ
+         oMddJ9O/8y1HZm5+Ke1sqRrN6SxF3MASop804lw2mjXVex0RsqgLzL/g1+OIojtQ6i
+         NIgN687io+glbGRy6dbL0QWsJKpWjDqNf4OofqOfGViMomUaOVJCTmQOqPi79ItUNY
+         jGuWLGce0TUM4ETowbF94k69ExR9gNDdp7VG1oIcHxKecp8WyVwBlTJSA5RvFETyhx
+         r3mSgHMSZffWQ==
+Received: by mail-wr1-f71.google.com with SMTP id k16-20020a5d6290000000b00160753b430fso7190827wru.11
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:09:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XIAA2IQLT0N1oUC3FDWSicvndgmt0HcmrgFfR+RcWIM=;
+        b=Rm6jvyVW/Ns8OM+/AFi2LZ63AZEkeIxoTrwAZ9T6kk3zw6To61Q+oRH8ZIV3X4iAaB
+         TXn3uM4JaH282E8VWixFYm7IjhZYGCH4hCNjV+lDXZqWJNRRk0xIIn4vsX6AUQPGo1V0
+         VI23tO46PSKxj0qZ+C7jTcEt2nOyq3YBlMrfhTDt1+H43cQ/gA0MU72ROhj9Z3L8yw1N
+         WDyUCyEp0VluR5EaW1dF6X5yWEmDVpCjJU0UiPOmvcEW7aAOS4ZUGzdX1U6MoqCHRy7n
+         g26Stqt+R1whyimKwJACI1z31JDupmLfO/ohvteXu/q8bl0aEUiLjJb3tmNEixbGRpWN
+         6siw==
+X-Gm-Message-State: AOAM531Q0kYdwRIYe8jfpVElxdy8vKXQzUrIOnl6SIQLVBftld+8ZeWC
+        03h/X2MPTCa/Z8RjlbldMGQZHu2lk/a3CkK5eyREvkjio4DrlQ/uyGTZhsFjlbASM8mUOKsowmu
+        tqG+cXs07dZriF077fn7AhILU/gIDu2BeAQO3z90U0w==
+X-Received: by 2002:a1c:7917:: with SMTP id l23mr3056293wme.36.1633694956953;
+        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxKO6BSd4+5NrGm89y7Pu0/2WXHHncmaUf3+YEmUR9vLFhhCgY6KDqbn18iu9zuaEBSEBKobQ==
+X-Received: by 2002:a1c:7917:: with SMTP id l23mr3056245wme.36.1633694956625;
+        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
+Received: from [192.168.1.24] (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
+        by smtp.gmail.com with ESMTPSA id c18sm2334770wmb.27.2021.10.08.05.09.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
+Subject: Re: [PATCH 1/2] regulator: dt-bindings: maxim,max77686: convert to
+ dtschema
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
+ <20210928141353.112619-2-krzysztof.kozlowski@canonical.com>
+ <YVsYrLPx0trUI17D@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <a0b2f5ce-6c6b-643b-e7a6-7331437e2217@canonical.com>
+Date:   Fri, 8 Oct 2021 14:09:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <YVsYrLPx0trUI17D@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008114343.57920-1-robert.marko@sartura.hr>
-User-Agent: NeoMutt/20180716
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello! See some notes below.
-
-On Friday 08 October 2021 13:43:43 Robert Marko wrote:
-> Globalscale MOCHAbin is a Armada 7040 based development board.
+On 04/10/2021 17:07, Rob Herring wrote:
+> On Tue, Sep 28, 2021 at 04:13:52PM +0200, Krzysztof Kozlowski wrote:
+>> Convert the regulators of Maxim MAX77686 PMIC to DT schema format.
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>  .../bindings/regulator/max77686.txt           | 71 --------------
+>>  .../bindings/regulator/maxim,max77686.yaml    | 92 +++++++++++++++++++
+>>  MAINTAINERS                                   |  1 +
+>>  3 files changed, 93 insertions(+), 71 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
+>>  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/regulator/max77686.txt b/Documentation/devicetree/bindings/regulator/max77686.txt
+>> deleted file mode 100644
+>> index e9f7578ca09a..000000000000
+>> --- a/Documentation/devicetree/bindings/regulator/max77686.txt
+>> +++ /dev/null
+>> @@ -1,71 +0,0 @@
+>> -Binding for Maxim MAX77686 regulators
+>> -
+>> -This is a part of the device tree bindings of MAX77686 multi-function device.
+>> -More information can be found in ../mfd/max77686.txt file.
+>> -
+>> -The MAX77686 PMIC has 9 high-efficiency Buck and 26 Low-DropOut (LDO)
+>> -regulators that can be controlled over I2C.
+>> -
+>> -Following properties should be present in main device node of the MFD chip.
+>> -
+>> -Optional node:
+>> -- voltage-regulators : The regulators of max77686 have to be instantiated
+>> -  under subnode named "voltage-regulators" using the following format.
+>> -
+>> -	regulator_name {
+>> -		regulator-compatible = LDOn/BUCKn
+>> -		standard regulator constraints....
+>> -	};
+>> -	refer Documentation/devicetree/bindings/regulator/regulator.txt
+>> -
+>> -  The regulator node's name should be initialized with a string
+>> -to get matched with their hardware counterparts as follow:
+>> -
+>> -	-LDOn 	:	for LDOs, where n can lie in range 1 to 26.
+>> -			example: LDO1, LDO2, LDO26.
+>> -	-BUCKn 	:	for BUCKs, where n can lie in range 1 to 9.
+>> -			example: BUCK1, BUCK5, BUCK9.
+>> -
+>> -  Regulators which can be turned off during system suspend:
+>> -	-LDOn	:	2, 6-8, 10-12, 14-16,
+>> -	-BUCKn	:	1-4.
+>> -  Use standard regulator bindings for it ('regulator-off-in-suspend').
+>> -
+>> -  LDO20, LDO21, LDO22, BUCK8 and BUCK9 can be configured to GPIO enable
+>> -  control. To turn this feature on this property must be added to the regulator
+>> -  sub-node:
+>> -	- maxim,ena-gpios :	one GPIO specifier enable control (the gpio
+>> -				flags are actually ignored and always
+>> -				ACTIVE_HIGH is used)
+>> -
+>> -Example:
+>> -
+>> -	max77686: pmic@9 {
+>> -		compatible = "maxim,max77686";
+>> -		interrupt-parent = <&wakeup_eint>;
+>> -		interrupts = <26 IRQ_TYPE_NONE>;
+>> -		reg = <0x09>;
+>> -
+>> -		voltage-regulators {
+>> -			ldo11_reg: LDO11 {
+>> -				regulator-name = "vdd_ldo11";
+>> -				regulator-min-microvolt = <1900000>;
+>> -				regulator-max-microvolt = <1900000>;
+>> -				regulator-always-on;
+>> -			};
+>> -
+>> -			buck1_reg: BUCK1 {
+>> -				regulator-name = "vdd_mif";
+>> -				regulator-min-microvolt = <950000>;
+>> -				regulator-max-microvolt = <1300000>;
+>> -				regulator-always-on;
+>> -				regulator-boot-on;
+>> -			};
+>> -
+>> -			buck9_reg: BUCK9 {
+>> -				regulator-name = "CAM_ISP_CORE_1.2V";
+>> -				regulator-min-microvolt = <1000000>;
+>> -				regulator-max-microvolt = <1200000>;
+>> -				maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
+>> -			};
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+>> new file mode 100644
+>> index 000000000000..33a80a8caf26
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+>> @@ -0,0 +1,92 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/regulator/maxim,max77686.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Maxim MAX77686 Power Management IC regulators
+>> +
+>> +maintainers:
+>> +  - Chanwoo Choi <cw00.choi@samsung.com>
+>> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> +
+>> +description: |
+>> +  This is a part of device tree bindings for Maxim MAX77686 Power Management
+>> +  Integrated Circuit (PMIC).
+>> +
+>> +  The Maxim MAX77686 provides high-efficiency Buck and 26 Low-DropOut (LDO)
+>> +  regulators.
+>> +
+>> +  See also Documentation/devicetree/bindings/mfd/maxim,max77686.yaml for
+>> +  additional information and example.
+>> +
+>> +patternProperties:
+>> +  # 26 LDOs
+>> +  "^LDO([1-9]|1[0-9]|2[0-6])$":
+>> +    type: object
+>> +    $ref: regulator.yaml#
+>> +    description: |
+>> +      Properties for single LDO regulator.
+>> +      Regulators which can be turned off during system suspend:
+>> +        LDO2, LDO6-8, LDO10-12, LDO14-16
+>> +
+>> +    properties:
+>> +      regulator-name: true
+>> +
+>> +      maxim,ena-gpios:
+>> +        maxItems: 1
+>> +        description: |
+>> +          GPIO specifier to enable the GPIO control (on/off) for regulator.
+>> +
+>> +    required:
+>> +      - regulator-name
+>> +
+>> +    unevaluatedProperties: false
+>> +
+>> +    allOf:
+>> +      - if:
+>> +          properties:
+>> +            $nodename:
 > 
-> Specifications:
-> * Armada 7040 Quad core ARMv8 Cortex A-72 @ 1.4GHz
-> * 2 / 4 / 8 GB of DDR4 DRAM
-> * 16 GB eMMC
-> * 4MB SPI-NOR (Bootloader)
-> * 1x M.2-2280 B-key socket (for SSD expansion, SATA3 only)
-> * 1x M.2-2250 B-key socket (for modems, USB2.0 and I2C only)
-> * 1x Mini-PCIe 3.0 (x1, USB2.0 and I2C)
-> * 1x SATA 7+15 socket (SATA3)
-> * 1x 16-pin (2×8) MikroBus Connector
-> * 1x SIM card slot (Connected to the mini-PCIe and both M.2 slots)
-> * 2x USB3.0 Type-A ports via SMSC USB5434B hub
-> * Cortex 2x5 JTAG
-> * microUSB port for UART (PL2303GL/PL2303SA onboard)
-> * 1x 10G SFP+
-> * 1x 1G SFP (Connected to 88E1512 PHY)
-> * 1x 1G RJ45 with PoE PD (Connected to 88E1512 PHY)
-> * 4x 1G RJ45 ports via Topaz 88E6141 switch
-> * RTC with battery holder (SoC provided, requires CR2032 battery)
-> * 1x 12V DC IN
-> * 1x Power switch
-> * 1x 12V fan header (3-pin, power only)
-> * 1x mini-PCIe LED header (2x0.1" pins)
-> * 1x M.2-2280 LED header (2x0.1" pins)
-> * 6x Bootstrap jumpers
-> * 1x Power LED (Green)
-> * 3x Tri-color RGB LEDs (Controllable)
-> * 1x Microchip ATECC608B secure element
+> I'm not sure this actually works with $nodename in child nodes.
 > 
-> Note that 1G SFP and 1G WAN cannot be used at the same time as they are in
-> parallel connected to the same PHY.
-
-+ Marek
-
-Robert, how it works? Is there some detection which source port (SFP or
-WAN) should be activated? And what happens if you plug SFP module and
-also 1G WAN at the same time?
-
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> ---
-> Changes in v5:
-> * Change LED labels to use the common "color:name" format instead
+> I think I would just split out the 2 cases to 2 separate 
+> patternProperties entries.
 > 
-> Changes in v4:
-> * Rename the "u-boot" partition to "firmware" which is more appropriate
-> as it a concatenation of mv-ddr + TF-A + U-boot
-> 
-> Changes in v3:
-> * Use IRQ_TYPE_LEVEL_LOW instead of IRQ_TYPE_EDGE_FALLING as both the
-> PCA9554 and Topaz switch have an active LOW IRQ signal.
-> 
-> Changes in v2:
-> * Use "10gbase-r" instead of "10gbase-kr"
-> ---
->  arch/arm64/boot/dts/marvell/Makefile          |   1 +
->  .../boot/dts/marvell/armada-7040-mochabin.dts | 452 ++++++++++++++++++
->  2 files changed, 453 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-> 
-> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-> index 34efe0fb6f37..4d3a2ae9adbd 100644
-> --- a/arch/arm64/boot/dts/marvell/Makefile
-> +++ b/arch/arm64/boot/dts/marvell/Makefile
-> @@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-uDPU.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-db.dtb
-> +dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-mochabin.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
->  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
-> diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-> new file mode 100644
-> index 000000000000..61f3104a18cf
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-> @@ -0,0 +1,452 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-> +/*
-> + * Device Tree file for Globalscale MOCHAbin
-> + * Copyright (C) 2019 Globalscale technologies, Inc.
-> + * Copyright (C) 2021 Sartura Ltd.
-> + *
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include "armada-7040.dtsi"
-> +
-> +/ {
-> +	model = "Globalscale MOCHAbin";
-> +	compatible = "globalscale,mochabin", "marvell,armada7040",
-> +		     "marvell,armada-ap806-quad", "marvell,armada-ap806";
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	aliases {
-> +		ethernet0 = &cp0_eth0;
-> +		ethernet1 = &cp0_eth1;
-> +		ethernet2 = &cp0_eth2;
-> +		ethernet3 = &swport1;
-> +		ethernet4 = &swport2;
-> +		ethernet5 = &swport3;
-> +		ethernet6 = &swport4;
-> +	};
-> +
-> +	/* SFP+ 10G */
-> +	sfp_eth0: sfp-eth0 {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&cp0_i2c1>;
-> +		los-gpio = <&sfp_gpio 3 GPIO_ACTIVE_HIGH>;
-> +		mod-def0-gpio = <&sfp_gpio 2 GPIO_ACTIVE_LOW>;
-> +		tx-disable-gpio = <&sfp_gpio 1 GPIO_ACTIVE_HIGH>;
-> +		tx-fault-gpio  = <&sfp_gpio 0 GPIO_ACTIVE_HIGH>;
-> +	};
-> +
-> +	/* SFP 1G */
-> +	sfp_eth2: sfp-eth2 {
-> +		compatible = "sff,sfp";
-> +		i2c-bus = <&cp0_i2c0>;
-> +		los-gpio = <&sfp_gpio 7 GPIO_ACTIVE_HIGH>;
-> +		mod-def0-gpio = <&sfp_gpio 6 GPIO_ACTIVE_LOW>;
-> +		tx-disable-gpio = <&sfp_gpio 5 GPIO_ACTIVE_HIGH>;
-> +		tx-fault-gpio  = <&sfp_gpio 4 GPIO_ACTIVE_HIGH>;
-> +	};
-> +};
-> +
-> +/* microUSB UART console */
-> +&uart0 {
-> +	status = "okay";
-> +
-> +	pinctrl-0 = <&uart0_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +/* eMMC */
-> +&ap_sdhci0 {
-> +	status = "okay";
-> +
-> +	bus-width = <4>;
-> +	non-removable;
-> +	/delete-property/ marvell,xenon-phy-slow-mode;
-> +	no-1-8-v;
-> +};
-> +
-> +&cp0_pinctrl {
-> +	cp0_uart0_pins: cp0-uart0-pins {
-> +		marvell,pins = "mpp6", "mpp7";
-> +		marvell,function = "uart0";
-> +	};
-> +
-> +	cp0_spi0_pins: cp0-spi0-pins {
-> +		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59";
-> +		marvell,function = "spi0";
-> +	};
-> +
-> +	cp0_spi1_pins: cp0-spi1-pins {
-> +		marvell,pins = "mpp13", "mpp14", "mpp15", "mpp16";
-> +		marvell,function = "spi1";
-> +	};
-> +
-> +	cp0_i2c0_pins: cp0-i2c0-pins {
-> +		marvell,pins = "mpp37", "mpp38";
-> +		marvell,function = "i2c0";
-> +	};
-> +
-> +	cp0_i2c1_pins: cp0-i2c1-pins {
-> +		marvell,pins = "mpp2", "mpp3";
-> +		marvell,function = "i2c1";
-> +	};
-> +
-> +	pca9554_int_pins: pca9554-int-pins {
-> +		marvell,pins = "mpp27";
-> +		marvell,function = "gpio";
-> +	};
-> +
-> +	cp0_rgmii1_pins: cp0-rgmii1-pins {
-> +		marvell,pins = "mpp44", "mpp45", "mpp46", "mpp47", "mpp48", "mpp49",
-> +			       "mpp50", "mpp51", "mpp52", "mpp53", "mpp54", "mpp55";
-> +		marvell,function = "ge1";
-> +	};
-> +
-> +	is31_sdb_pins: is31-sdb-pins {
-> +		marvell,pins = "mpp30";
-> +		marvell,function = "gpio";
-> +	};
-> +
-> +	cp0_pcie_reset_pins: cp0-pcie-reset-pins {
-> +		marvell,pins = "mpp9";
-> +		marvell,function = "gpio";
 
-Now I spotted this. Why is PERST# pin configured into gpio mode? Is
-there some issue that this pin in pcie mode is not working properly,
-that PCIe controller cannot handle it correctly? Or something else?
+I split the entries, slightly more code but it's actually easier to read.
 
-> +	};
-> +
-> +	cp0_switch_pins: cp0-switch-pins {
-> +		marvell,pins = "mpp0", "mpp1";
-> +		marvell,function = "gpio";
-> +	};
-> +
-> +	cp0_phy_pins: cp0-phy-pins {
-> +		marvell,pins = "mpp12";
-> +		marvell,function = "gpio";
-> +	};
-> +};
-> +
-> +/* mikroBUS UART */
-> +&cp0_uart0 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_uart0_pins>;
-> +};
-> +
-> +/* mikroBUS SPI */
-> +&cp0_spi0 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_spi0_pins>;
-> +};
-> +
-> +/* SPI-NOR */
-> +&cp0_spi1{
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_spi1_pins>;
-> +
-> +	spi-flash@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
-> +		compatible = "jedec,spi-nor";
-> +		reg = <0>;
-> +		spi-max-frequency = <20000000>;
-> +
-> +		partitions {
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			partition@0 {
-> +				label = "firmware";
-> +				reg = <0x0 0x3e0000>;
-> +				read-only;
-> +			};
-> +
-> +			partition@3e0000 {
-> +				label = "hw-info";
-> +				reg = <0x3e0000 0x10000>;
-> +				read-only;
-> +			};
-> +
-> +			partition@3f0000 {
-> +				label = "u-boot-env";
-> +				reg = <0x3f0000 0x10000>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +/* mikroBUS, 1G SFP and GPIO expander */
-> +&cp0_i2c0 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_i2c0_pins>;
-> +	clock-frequency = <100000>;
-> +
-> +	sfp_gpio: pca9554@39 {
-> +		compatible = "nxp,pca9554";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pca9554_int_pins>;
-> +		reg = <0x39>;
-> +
-> +		interrupt-parent = <&cp0_gpio1>;
-> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-> +		interrupt-controller;
-> +		#interrupt-cells = <2>;
-> +
-> +		gpio-controller;
-> +		#gpio-cells = <2>;
-> +
-> +		/*
-> +		 * IO0_0: SFP+_TX_FAULT
-> +		 * IO0_1: SFP+_TX_DISABLE
-> +		 * IO0_2: SFP+_PRSNT
-> +		 * IO0_3: SFP+_LOSS
-> +		 * IO0_4: SFP_TX_FAULT
-> +		 * IO0_5: SFP_TX_DISABLE
-> +		 * IO0_6: SFP_PRSNT
-> +		 * IO0_7: SFP_LOSS
-> +		 */
-> +	};
-> +};
-> +
-> +/* IS31FL3199, mini-PCIe and 10G SFP+ */
-> +&cp0_i2c1 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_i2c1_pins>;
-> +	clock-frequency = <100000>;
-> +
-> +	leds@64 {
-> +		compatible = "issi,is31fl3199";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&is31_sdb_pins>;
-> +		shutdown-gpios = <&cp0_gpio1 30 GPIO_ACTIVE_HIGH>;
-> +		reg = <0x64>;
-> +
-> +		led1_red: led@1 {
-> +			label = "red:led1";
-> +			reg = <1>;
-> +			led-max-microamp = <20000>;
-> +		};
-> +
-> +		led1_green: led@2 {
-> +			label = "green:led1";
-> +			reg = <2>;
-> +		};
-> +
-> +		led1_blue: led@3 {
-> +			label = "blue:led1";
-> +			reg = <3>;
-> +		};
-> +
-> +		led2_red: led@4 {
-> +			label = "red:led2";
-> +			reg = <4>;
-> +		};
-> +
-> +		led2_green: led@5 {
-> +			label = "green:led2";
-> +			reg = <5>;
-> +		};
-> +
-> +		led2_blue: led@6 {
-> +			label = "blue:led2";
-> +			reg = <6>;
-> +		};
-> +
-> +		led3_red: led@7 {
-> +			label = "red:led3";
-> +			reg = <7>;
-> +		};
-> +
-> +		led3_green: led@8 {
-> +			label = "green:led3";
-> +			reg = <8>;
-> +		};
-> +
-> +		led3_blue: led@9 {
-> +			label = "blue:led3";
-> +			reg = <9>;
-> +		};
-> +	};
-> +};
-> +
-> +&cp0_mdio {
-> +	status = "okay";
-> +
-> +	/* 88E1512 PHY */
-> +	eth2phy: ethernet-phy@1 {
-> +		reg = <1>;
-> +		sfp = <&sfp_eth2>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&cp0_phy_pins>;
-> +		reset-gpios = <&cp0_gpio1 12 GPIO_ACTIVE_LOW>;
-> +	};
-> +
-> +	/* 88E6141 Topaz switch */
-> +	switch: switch@3 {
-> +		compatible = "marvell,mv88e6085";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		reg = <3>;
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&cp0_switch_pins>;
-> +		reset-gpios = <&cp0_gpio1 0 GPIO_ACTIVE_LOW>;
-> +
-> +		interrupt-parent = <&cp0_gpio1>;
-> +		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			swport1: port@1 {
-> +				reg = <1>;
-> +				label = "lan0";
-> +				phy-handle = <&swphy1>;
-> +			};
-> +
-> +			swport2: port@2 {
-> +				reg = <2>;
-> +				label = "lan1";
-> +				phy-handle = <&swphy2>;
-> +			};
-> +
-> +			swport3: port@3 {
-> +				reg = <3>;
-> +				label = "lan2";
-> +				phy-handle = <&swphy3>;
-> +			};
-> +
-> +			swport4: port@4 {
-> +				reg = <4>;
-> +				label = "lan3";
-> +				phy-handle = <&swphy4>;
-> +			};
-> +
-> +			port@5 {
-> +				reg = <5>;
-> +				label = "cpu";
-> +				ethernet = <&cp0_eth1>;
-> +				phy-mode = "2500base-x";
-> +				managed = "in-band-status";
-> +			};
-> +		};
-> +
-> +		mdio {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			swphy1: swphy1@17 {
-> +				reg = <17>;
-> +			};
-> +
-> +			swphy2: swphy2@18 {
-> +				reg = <18>;
-> +			};
-> +
-> +			swphy3: swphy3@19 {
-> +				reg = <19>;
-> +			};
-> +
-> +			swphy4: swphy4@20 {
-> +				reg = <20>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&cp0_ethernet {
-> +	status = "okay";
-> +};
-> +
-> +/* 10G SFP+ */
-> +&cp0_eth0 {
-> +	status = "okay";
-> +
-> +	phy-mode = "10gbase-r";
-> +	phys = <&cp0_comphy4 0>;
-> +	managed = "in-band-status";
-> +	sfp = <&sfp_eth0>;
-> +};
-> +
-> +/* Topaz switch uplink */
-> +&cp0_eth1 {
-> +	status = "okay";
-> +
-> +	phy-mode = "2500base-x";
-> +	phys = <&cp0_comphy0 1>;
-> +
-> +	fixed-link {
-> +		speed = <2500>;
-> +		full-duplex;
-> +	};
-> +};
-> +
-> +/* 1G SFP or 1G RJ45 */
-> +&cp0_eth2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_rgmii1_pins>;
-> +
-> +	phy = <&eth2phy>;
-> +	phy-mode = "rgmii-id";
-> +};
-> +
-> +&cp0_utmi {
-> +	status = "okay";
-> +};
-> +
-> +/* SMSC USB5434B hub */
-> +&cp0_usb3_0 {
-> +	status = "okay";
-> +
-> +	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
-> +	phy-names = "cp0-usb3h0-comphy", "utmi";
-> +};
-> +
-> +/* miniPCI-E USB */
-> +&cp0_usb3_1 {
-> +	status = "okay";
-> +};
-> +
-> +&cp0_sata0 {
-> +	status = "okay";
-> +
-> +	/* 7 + 12 SATA connector (J24) */
-> +	sata-port@0 {
-> +		phys = <&cp0_comphy2 0>;
-> +		phy-names = "cp0-sata0-0-phy";
-> +	};
-> +
-> +	/* M.2-2250 B-key (J39) */
-> +	sata-port@1 {
-> +		phys = <&cp0_comphy3 1>;
-> +		phy-names = "cp0-sata0-1-phy";
-> +	};
-> +};
-> +
-> +/* miniPCI-E (J5) */
-> +&cp0_pcie2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&cp0_pcie_reset_pins>;
-> +	phys = <&cp0_comphy5 2>;
-> +	phy-names = "cp0-pcie2-x1-phy";
-> +	reset-gpio = <&cp0_gpio1 9 GPIO_ACTIVE_LOW>;
 
-Per snps,dw-pcie.yaml file is 'reset-gpio' property deprecated. There
-is 'reset-gpios' property which should be used according pci.txt file.
-
-> +};
-> -- 
-> 2.33.0
-> 
+Best regards,
+Krzysztof
