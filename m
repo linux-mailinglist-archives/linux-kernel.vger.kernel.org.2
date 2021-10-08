@@ -2,150 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AC8426745
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248A942674A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239561AbhJHKA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:00:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238917AbhJHKAw (ORCPT
+        id S239272AbhJHKDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:03:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:43702 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237434AbhJHKDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:00:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058F4C061570;
-        Fri,  8 Oct 2021 02:58:56 -0700 (PDT)
-Date:   Fri, 08 Oct 2021 09:58:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633687134;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HkaEHRILfubdoOT6X98a6xdXk/Gxl5tQm58DK03ukdo=;
-        b=34iVcs2Q3buVbs22dpGC1ml+Q+GFlSFBPT91GsSqD8UrbsX5Gd0qF3JyLU0MqunF911E58
-        Lkccj9NAqIKaRGZUUA2jhjjz42ASfRn+kmfDDVUq0DCDq/+XMYELo5jvmlPbu3wdZhrhh3
-        02dAu0kMtKMDi8KlSg646xcSLvsbP0IwiElnZfTKUOE8qWak2wxO3dCUD80IDBMUGd3Wwf
-        c6PC+KH9SJC+kT1vxg+K0KHCnNmkuxNZvGr8wbuQ6WC3Mmf0YBj29GZV29uFALsgx67wb+
-        Yd4RQSJM2ZzMAUbzyb7e9thc1onKawm4l0l02Q/9q+rGe+gd/45MqAEiBKj9rw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633687134;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HkaEHRILfubdoOT6X98a6xdXk/Gxl5tQm58DK03ukdo=;
-        b=LwsgU2FQs1eERt37rvaumQyrspKAVAmYYW9JomsKQGoZ+4PN9OvR0vqHQ2T/OJWj8bUBL9
-        Dic6Jas9It9XX2DA==
-From:   "tip-bot2 for Borislav Petkov" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/fpu: Restore the masking out of reserved MXCSR bits
-Cc:     Ser Olmy <ser.olmy@protonmail.com>, Borislav Petkov <bp@suse.de>,
-        <stable@vger.kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YVtA67jImg3KlBTw@zn.tnic>
-References: <YVtA67jImg3KlBTw@zn.tnic>
+        Fri, 8 Oct 2021 06:03:02 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 7147F1FD74;
+        Fri,  8 Oct 2021 10:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633687265; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=qyzeG39RQY90nbn8hALcZZOVE1eV05QuvB+1SDRXg+A=;
+        b=gxlj+y0cSpwIdqrtPZCMb0/ldd+6guidWOonDdIq1raVlTCC18eojoWlPUhTixbuUcrNI/
+        pL1ctPyVtHydC7YiDtP6R6nHKLfeLgrIoTyvKgvxX7UdSBTq9EyXs0lfDpPKsCIuuEsvvm
+        4UL3pd+htBujnsLyg6/yRX9M5ORybnI=
+Received: from g78.suse.de (unknown [10.163.24.38])
+        by relay2.suse.de (Postfix) with ESMTP id 41CC0A3B81;
+        Fri,  8 Oct 2021 10:01:04 +0000 (UTC)
+From:   Richard Palethorpe <rpalethorpe@suse.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Jakub Kicinski <kuba@kernel.org>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Palethorpe <rpalethorpe@richiejp.com>
+Subject: [PATCH v3 1/2] vsock: Refactor vsock_*_getsockopt to resemble sock_getsockopt
+Date:   Fri,  8 Oct 2021 11:00:52 +0100
+Message-Id: <20211008100053.29806-1-rpalethorpe@suse.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Message-ID: <163368713375.25758.3020127637765994658.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+In preparation for sharing the implementation of sock_get_timeout.
 
-Commit-ID:     d298b03506d3e161f7492c440babb0bfae35e650
-Gitweb:        https://git.kernel.org/tip/d298b03506d3e161f7492c440babb0bfae35e650
-Author:        Borislav Petkov <bp@suse.de>
-AuthorDate:    Wed, 06 Oct 2021 18:33:52 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 08 Oct 2021 11:12:17 +02:00
-
-x86/fpu: Restore the masking out of reserved MXCSR bits
-
-Ser Olmy reported a boot failure:
-
-  init[1] bad frame in sigreturn frame:(ptrval) ip:b7c9fbe6 sp:bf933310 orax:ffffffff \
-	  in libc-2.33.so[b7bed000+156000]
-  Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-  CPU: 0 PID: 1 Comm: init Tainted: G        W         5.14.9 #1
-  Hardware name: Hewlett-Packard HP PC/HP Board, BIOS  JD.00.06 12/06/2001
-  Call Trace:
-   dump_stack_lvl
-   dump_stack
-   panic
-   do_exit.cold
-   do_group_exit
-   get_signal
-   arch_do_signal_or_restart
-   ? force_sig_info_to_task
-   ? force_sig
-   exit_to_user_mode_prepare
-   syscall_exit_to_user_mode
-   do_int80_syscall_32
-   entry_INT80_32
-
-on an old 32-bit Intel CPU:
-
-  vendor_id       : GenuineIntel
-  cpu family      : 6
-  model           : 6
-  model name      : Celeron (Mendocino)
-  stepping        : 5
-  microcode       : 0x3
-
-Ser bisected the problem to the commit in Fixes.
-
-tglx suggested reverting the rejection of invalid MXCSR values which
-this commit introduced and replacing it with what the old code did -
-simply masking them out to zero.
-
-Further debugging confirmed his suggestion:
-
-  fpu->state.fxsave.mxcsr: 0xb7be13b4, mxcsr_feature_mask: 0xffbf
-  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/fpu/signal.c:384 __fpu_restore_sig+0x51f/0x540
-
-so restore the original behavior only for 32-bit kernels where you have
-ancient machines with buggy hardware. For 32-bit programs on 64-bit
-kernels, user space which supplies wrong MXCSR values is considered
-malicious so fail the sigframe restoration there.
-
-Fixes: 6f9866a166cd ("x86/fpu/signal: Let xrstor handle the features to init")
-Reported-by: Ser Olmy <ser.olmy@protonmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Ser Olmy <ser.olmy@protonmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/YVtA67jImg3KlBTw@zn.tnic
+Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Cc: Richard Palethorpe <rpalethorpe@richiejp.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/kernel/fpu/signal.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ net/vmw_vsock/af_vsock.c | 65 +++++++++++++++++-----------------------
+ 1 file changed, 28 insertions(+), 37 deletions(-)
 
-diff --git a/arch/x86/kernel/fpu/signal.c b/arch/x86/kernel/fpu/signal.c
-index 445c57c..fa17a27 100644
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -379,9 +379,14 @@ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
- 				     sizeof(fpu->state.fxsave)))
- 			return -EFAULT;
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index 3e02cc3b24f8..97d56f6a4480 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1648,68 +1648,59 @@ static int vsock_connectible_getsockopt(struct socket *sock,
+ 					char __user *optval,
+ 					int __user *optlen)
+ {
+-	int err;
++	struct sock *sk = sock->sk;
++	struct vsock_sock *vsk = vsock_sk(sk);
++
++	union {
++		u64 val64;
++		struct __kernel_old_timeval tm;
++	} v;
++
++	int lv = sizeof(v.val64);
+ 	int len;
+-	struct sock *sk;
+-	struct vsock_sock *vsk;
+-	u64 val;
  
--		/* Reject invalid MXCSR values. */
--		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
--			return -EINVAL;
-+		if (IS_ENABLED(CONFIG_X86_64)) {
-+			/* Reject invalid MXCSR values. */
-+			if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
-+				return -EINVAL;
-+		} else {
-+			/* Mask invalid bits out for historical reasons (broken hardware). */
-+			fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
-+		}
+ 	if (level != AF_VSOCK)
+ 		return -ENOPROTOOPT;
  
- 		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
- 		if (use_xsave())
+-	err = get_user(len, optlen);
+-	if (err != 0)
+-		return err;
+-
+-#define COPY_OUT(_v)                            \
+-	do {					\
+-		if (len < sizeof(_v))		\
+-			return -EINVAL;		\
+-						\
+-		len = sizeof(_v);		\
+-		if (copy_to_user(optval, &_v, len) != 0)	\
+-			return -EFAULT;				\
+-								\
+-	} while (0)
++	if (get_user(len, optlen))
++		return -EFAULT;
+ 
+-	err = 0;
+-	sk = sock->sk;
+-	vsk = vsock_sk(sk);
++	memset(&v, 0, sizeof(v));
+ 
+ 	switch (optname) {
+ 	case SO_VM_SOCKETS_BUFFER_SIZE:
+-		val = vsk->buffer_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_size;
+ 		break;
+ 
+ 	case SO_VM_SOCKETS_BUFFER_MAX_SIZE:
+-		val = vsk->buffer_max_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_max_size;
+ 		break;
+ 
+ 	case SO_VM_SOCKETS_BUFFER_MIN_SIZE:
+-		val = vsk->buffer_min_size;
+-		COPY_OUT(val);
++		v.val64 = vsk->buffer_min_size;
+ 		break;
+ 
+-	case SO_VM_SOCKETS_CONNECT_TIMEOUT: {
+-		struct __kernel_old_timeval tv;
+-		tv.tv_sec = vsk->connect_timeout / HZ;
+-		tv.tv_usec =
++	case SO_VM_SOCKETS_CONNECT_TIMEOUT:
++		lv = sizeof(v.tm);
++		v.tm.tv_sec = vsk->connect_timeout / HZ;
++		v.tm.tv_usec =
+ 		    (vsk->connect_timeout -
+-		     tv.tv_sec * HZ) * (1000000 / HZ);
+-		COPY_OUT(tv);
++		     v.tm.tv_sec * HZ) * (1000000 / HZ);
+ 		break;
+-	}
++
+ 	default:
+ 		return -ENOPROTOOPT;
+ 	}
+ 
+-	err = put_user(len, optlen);
+-	if (err != 0)
++	if (len < lv)
++		return -EINVAL;
++	if (len > lv)
++		len = lv;
++	if (copy_to_user(optval, &v, len))
+ 		return -EFAULT;
+ 
+-#undef COPY_OUT
++	if (put_user(len, optlen))
++		return -EFAULT;
+ 
+ 	return 0;
+ }
+-- 
+2.33.0
+
