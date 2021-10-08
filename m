@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65560427158
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:19:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAE6E42715C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241042AbhJHTVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:21:13 -0400
-Received: from www381.your-server.de ([78.46.137.84]:50304 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhJHTVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:21:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=YjtHyAj7iC/zXvwf7dwb8EvZ+U32EBe0Uy2PwZ5sxmw=; b=YNSvfQdgv8lZHpq8AMs/ck+7z6
-        RkINaq5qHzA76UTEP0cE/Wyx9VnVRRDo6lEq6Xtz/2BXXs5HbBf7wcixK6TSUtU8NRnqrA4PG+MJX
-        dqEeatkflxihdgzcq5V2uwi5M+SbNc5LMGDDx/DjyBgVdZu6cqlfku74AlEN2bKElE0/C7XrUyO9u
-        QErsw+UVZN53QPwnrO+GpUm8l7Oymh62RrJ650L9l/RmRbT/0TuQwqA38Z3us5GzCKnBzJb8/cwNJ
-        bv48CrN01avtybQskjM4c9sCUX0yAdEU+LbneRhEe4Mo1YYO0bOKIW7i6I0l0oxc07+6vW5Lk5wno
-        jH9G+wcA==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mYvOi-0002jO-GU; Fri, 08 Oct 2021 21:19:12 +0200
-Received: from [82.135.83.71] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mYvOi-000R4d-AM; Fri, 08 Oct 2021 21:19:12 +0200
-Subject: Re: [PATCH v2 0/3] Add settle time support to iio-mux
-To:     Vincent Whitchurch <vincent.whitchurch@axis.com>, peda@axentia.se,
-        jic23@kernel.org, devicetree@vger.kernel.org
-Cc:     kernel@axis.com, linux-iio@vger.kernel.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <16fab3ba-5dd9-50b3-aeae-acd68b22dfae@metafoo.de>
-Date:   Fri, 8 Oct 2021 21:19:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240700AbhJHTXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhJHTW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:22:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F20261168;
+        Fri,  8 Oct 2021 19:21:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633720862;
+        bh=J3eo4Tu7qrOc2MiIoucmmx1WpNLGsUtlgBPNto2aiUs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aMgdTZipDf/D9JrNtQ1hae/jIFbuVzrHOHObvkCzN0PwN+MUX7wX4b7y5RYryzZNb
+         k7R9VKUyNPE9KsFDyCCSr2oUlWcnSmXAxnpG20J2RVSM6Fouk1/VFHupXpnRjZrIy3
+         5JrDaRemtKNzcf6Db4fApIKyePuqWYXlDtzFjefd6OSvz/DmYUjpNwTr0btuHDrNle
+         eIovcmW/7ab9LvyCocUjL7r8J3PbWc9oNX2DCOESIgyB1FceTnabR6bXlTbS7efQ/p
+         Lw87suge/FKKtJcNvhl2UOUY5a6A0ENS77hje9aLYncDTfp0+7MOC20HzX+F6wrGO5
+         iWJsr4VitJT/w==
+Received: by mail-ed1-f49.google.com with SMTP id g10so39333737edj.1;
+        Fri, 08 Oct 2021 12:21:02 -0700 (PDT)
+X-Gm-Message-State: AOAM531+AaJ+rp7zz7OE5sZ6o7fCzkw4QQDbohX9bT2KDkYwHHGYxriD
+        ijFmtjHFqmcL80JqhY587Zc//TgPb5JovtIHeA==
+X-Google-Smtp-Source: ABdhPJwsjP40w5LS3Pe0FI+JbwaB1t8n80TdqFlA4RgJ+smCkKocJH5RCRmN8VKIUMTL96V/wG4XUpUzCKI4Hk9FSP8=
+X-Received: by 2002:a50:da06:: with SMTP id z6mr17576606edj.355.1633720860729;
+ Fri, 08 Oct 2021 12:21:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211007134641.13417-1-vincent.whitchurch@axis.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26316/Fri Oct  8 10:18:46 2021)
+References: <1633518555-8195-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1633518555-8195-5-git-send-email-hayashi.kunihiko@socionext.com>
+ <YV395BTH/gqcuDJH@robh.at.kernel.org> <f2138a98-9740-d1de-5dc9-e14a68fa509b@socionext.com>
+In-Reply-To: <f2138a98-9740-d1de-5dc9-e14a68fa509b@socionext.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 8 Oct 2021 14:20:48 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL8N+h7bciDt=4fMHyAP=DL=YikpaTh2v4q383XVXH2AA@mail.gmail.com>
+Message-ID: <CAL_JsqL8N+h7bciDt=4fMHyAP=DL=YikpaTh2v4q383XVXH2AA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] dt-bindings: clock: uniphier: Add clock binding
+ for SoC-glue
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 3:46 PM, Vincent Whitchurch wrote:
-> On one of our boards we use gpio-mux with iio-mux to read voltages using an ADC
-> from a few different channels, and on this board the input voltage needs some
-> time to stabilize after a switch of the mux.
+On Thu, Oct 7, 2021 at 3:50 AM Kunihiko Hayashi
+<hayashi.kunihiko@socionext.com> wrote:
 >
-> This series add devicetree and driver support for this kind of hardware which
-> requries a settle time after muxing.
-
-I have a board with the very same problem. And a similar solution, but 
-you beat me with upstreaming. I've switched to your patchset.
-
-Whole series
-
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
-
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-
-
+> Hi Rob,
 >
-> v1 -> v2:
-> - Move property support to iio-mux and delay handling to mux core as suggested
->    by Peter.
+> On 2021/10/07 4:49, Rob Herring wrote:
+> > On Wed, Oct 06, 2021 at 08:09:14PM +0900, Kunihiko Hayashi wrote:
+> >> Update binding document for clocks implemented in SoC-glue.
+> >>
+> >> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> >> ---
+> >>   .../bindings/clock/socionext,uniphier-clock.yaml         | 16
+> > ++++++++++++++++
+> >>   1 file changed, 16 insertions(+)
+> >>
+> >> diff --git
+> > a/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+> > b/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+> >> index ee8d16a8019e..05a9d1f89756 100644
+> >> ---
+> > a/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+> >> +++
+> > b/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+> >> @@ -46,6 +46,9 @@ properties:
+> >>             - socionext,uniphier-ld20-peri-clock
+> >>             - socionext,uniphier-pxs3-peri-clock
+> >>             - socionext,uniphier-nx1-peri-clock
+> >> +      - description: SoC-glue clock
+> >> +        enum:
+> >> +          - socionext,uniphier-pro4-sg-clock
+> >>
+> >>     "#clock-cells":
+> >>       const: 1
+> >> @@ -95,3 +98,16 @@ examples:
+> >>
+> >>           // other nodes ...
+> >>       };
+> >> +
+> >> +  - |
+> >> +    soc-glue@5f800000 {
+> >> +        compatible = "socionext,uniphier-sysctrl", "simple-mfd",
+> > "syscon";
+> >> +        reg = <0x5f800000 0x2000>;
+> >> +
+> >> +        clock {
+> >> +            compatible = "socionext,uniphier-pro4-sg-clock";
+> >> +            #clock-cells = <1>;
+> >> +        };
+> >> +
+> >> +        // other nodes ...
+> >> +    };
+> >
+> > What's the value of this 2nd example? It's just a different compatible
+> > string.
+> Following the previous three examples in the document, it describes the
+> difference between the parent nodes that place the clock.
 >
-> v1: https://lore.kernel.org/all/20211004153640.20650-1-vincent.whitchurch@axis.com/
->
-> Vincent Whitchurch (3):
->    mux: add support for delay after muxing
->    dt-bindings: iio: io-channel-mux: Add property for settle time
->    iio: multiplexer: iio-mux: Support settle-time-us property
->
->   .../iio/multiplexer/io-channel-mux.yaml       |  5 +++
->   drivers/iio/multiplexer/iio-mux.c             |  7 +++-
->   drivers/mux/core.c                            | 36 ++++++++++++++++---
->   include/linux/mux/consumer.h                  | 23 +++++++++---
->   include/linux/mux/driver.h                    |  4 +++
->   5 files changed, 65 insertions(+), 10 deletions(-)
->
+> They are common to be child nodes of "syscon", and the definition of the
+> parent node is not in this document.
+> Should I put them together in a common example?
 
+I'd just drop the example.
+
+Rob
