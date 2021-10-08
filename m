@@ -2,83 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9E6426496
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662A54264AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhJHG0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 02:26:03 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24177 "EHLO
+        id S230011AbhJHGgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:36:15 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24178 "EHLO
         szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbhJHG0B (ORCPT
+        with ESMTP id S229585AbhJHGgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 02:26:01 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQdQd684cz1DHfX;
-        Fri,  8 Oct 2021 14:22:33 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 14:24:04 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 8 Oct 2021
- 14:24:03 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>
-CC:     <sre@kernel.org>, <iskren.chernev@gmail.com>
-Subject: [PATCH] power: supply: max17040: fix null-ptr-deref in max17040_probe()
-Date:   Fri, 8 Oct 2021 14:31:50 +0800
-Message-ID: <20211008063150.822066-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 8 Oct 2021 02:36:11 -0400
+Received: from dggeme713-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQdfN4LdJz1DHfM;
+        Fri,  8 Oct 2021 14:32:44 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggeme713-chm.china.huawei.com (10.1.199.109) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 14:34:14 +0800
+Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
+ dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
+ Fri, 8 Oct 2021 14:34:14 +0800
+From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
+        <longpeng2@huawei.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
+        "Liujunjie (Jack, Cloud Infrastructure Service Product Dept.)" 
+        <liujunjie23@huawei.com>
+Subject: RE: [PATCH v3 2/2] iommu/vt-d: avoid duplicated removing in
+ __domain_mapping
+Thread-Topic: [PATCH v3 2/2] iommu/vt-d: avoid duplicated removing in
+ __domain_mapping
+Thread-Index: AQHXu9gdk8b89stVCk2Mwyelczw816vH1KOAgAAKN4CAAMI5UA==
+Date:   Fri, 8 Oct 2021 06:34:14 +0000
+Message-ID: <83c10788b872489299a54175fe3baafd@huawei.com>
+References: <20211008000433.1115-1-longpeng2@huawei.com>
+ <20211008000433.1115-3-longpeng2@huawei.com>
+ <54cf3663-85e0-3e63-9112-385e9d6eeceb@linux.intel.com>
+ <1e83751f-5731-5786-c7d7-899542d7c2b7@linux.intel.com>
+In-Reply-To: <1e83751f-5731-5786-c7d7-899542d7c2b7@linux.intel.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.174.148.223]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add check the return value of devm_regmap_init_i2c(), otherwise
-later access may cause null-ptr-deref as follows:
-
-KASAN: null-ptr-deref in range [0x0000000000000360-0x0000000000000367]
-RIP: 0010:regmap_read+0x33/0x170
-Call Trace:
-  max17040_probe+0x61b/0xff0 [max17040_battery]
- ? write_comp_data+0x2a/0x90
- ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
- ? tracer_hardirqs_on+0x33/0x520
- ? __sanitizer_cov_trace_pc+0x1d/0x50
- ? _raw_spin_unlock_irqrestore+0x4b/0x60
- ? trace_hardirqs_on+0x63/0x2d0
- ? write_comp_data+0x2a/0x90
- ? __sanitizer_cov_trace_pc+0x1d/0x50
- ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
- i2c_device_probe+0xa31/0xbe0
-
-Fixes: 6455a8a84bdf ("power: supply: max17040: Use regmap i2c")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/power/supply/max17040_battery.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index 3cea92e28dc3..a9aef1e8b186 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -449,6 +449,8 @@ static int max17040_probe(struct i2c_client *client,
- 
- 	chip->client = client;
- 	chip->regmap = devm_regmap_init_i2c(client, &max17040_regmap);
-+	if (IS_ERR(chip->regmap))
-+		return PTR_ERR(chip->regmap);
- 	chip_id = (enum chip_id) id->driver_data;
- 	if (client->dev.of_node) {
- 		ret = max17040_get_of_data(chip);
--- 
-2.25.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHUgQmFvbHUgW21haWx0
+bzpiYW9sdS5sdUBsaW51eC5pbnRlbC5jb21dDQo+IFNlbnQ6IEZyaWRheSwgT2N0b2JlciA4LCAy
+MDIxIDEwOjQ0IEFNDQo+IFRvOiBMb25ncGVuZyAoTWlrZSwgQ2xvdWQgSW5mcmFzdHJ1Y3R1cmUg
+U2VydmljZSBQcm9kdWN0IERlcHQuKQ0KPiA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+OyBkd213MkBp
+bmZyYWRlYWQub3JnOyB3aWxsQGtlcm5lbC5vcmc7DQo+IGpvcm9AOGJ5dGVzLm9yZw0KPiBDYzog
+YmFvbHUubHVAbGludXguaW50ZWwuY29tOyBpb21tdUBsaXN0cy5saW51eC1mb3VuZGF0aW9uLm9y
+ZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgR29uZ2xlaSAoQXJlaSkgPGFyZWku
+Z29uZ2xlaUBodWF3ZWkuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHYzIDIvMl0gaW9tbXUv
+dnQtZDogYXZvaWQgZHVwbGljYXRlZCByZW1vdmluZyBpbg0KPiBfX2RvbWFpbl9tYXBwaW5nDQo+
+IA0KPiBPbiAxMC84LzIxIDEwOjA3IEFNLCBMdSBCYW9sdSB3cm90ZToNCj4gPiBPbiAxMC84LzIx
+IDg6MDQgQU0sIExvbmdwZW5nKE1pa2UpIHdyb3RlOg0KPiA+PiBfX2RvbWFpbl9tYXBwaW5nKCkg
+YWx3YXlzIHJlbW92ZXMgdGhlIHBhZ2VzIGluIHRoZSByYW5nZSBmcm9tDQo+ID4+ICdpb3ZfcGZu
+JyB0byAnZW5kX3BmbicsIGJ1dCB0aGUgJ2VuZF9wZm4nIGlzIGFsd2F5cyB0aGUgbGFzdCBwZm4N
+Cj4gPj4gb2YgdGhlIHJhbmdlIHRoYXQgdGhlIGNhbGxlciB3YW50cyB0byBtYXAuDQo+ID4+DQo+
+ID4+IFRoaXMgd291bGQgaW50cm9kdWNlIHRvbyBtYW55IGR1cGxpY2F0ZWQgcmVtb3ZpbmcgYW5k
+IGxlYWRzIHRoZQ0KPiA+PiBtYXAgb3BlcmF0aW9uIHRha2UgdG9vIGxvbmcsIGZvciBleGFtcGxl
+Og0KPiA+Pg0KPiA+PiDCoMKgIE1hcCBpb3ZhPTB4MTAwMDAwLG5yX3BhZ2VzPTB4N2Q2MTgwMA0K
+PiA+PiDCoMKgwqDCoCBpb3ZfcGZuOiAweDEwMDAwMCwgZW5kX3BmbjogMHg3ZTYxN2ZmDQo+ID4+
+IMKgwqDCoMKgIGlvdl9wZm46IDB4MTQwMDAwLCBlbmRfcGZuOiAweDdlNjE3ZmYNCj4gPj4gwqDC
+oMKgwqAgaW92X3BmbjogMHgxODAwMDAsIGVuZF9wZm46IDB4N2U2MTdmZg0KPiA+PiDCoMKgwqDC
+oCBpb3ZfcGZuOiAweDFjMDAwMCwgZW5kX3BmbjogMHg3ZTYxN2ZmDQo+ID4+IMKgwqDCoMKgIGlv
+dl9wZm46IDB4MjAwMDAwLCBlbmRfcGZuOiAweDdlNjE3ZmYNCj4gPj4gwqDCoMKgwqAgLi4uDQo+
+ID4+IMKgwqAgaXQgdGFrZXMgYWJvdXQgNTBtcyBpbiB0b3RhbC4NCj4gPj4NCj4gPj4gV2UgY2Fu
+IHJlZHVjZSB0aGUgY29zdCBieSByZWNhbGN1bGF0ZSB0aGUgJ2VuZF9wZm4nIGFuZCBsaW1pdCBp
+dA0KPiA+PiB0byB0aGUgYm91bmRhcnkgb2YgdGhlIGVuZCBvZiB0aGlzIHB0ZSBwYWdlLg0KPiA+
+Pg0KPiA+PiDCoMKgIE1hcCBpb3ZhPTB4MTAwMDAwLG5yX3BhZ2VzPTB4N2Q2MTgwMA0KPiA+PiDC
+oMKgwqDCoCBpb3ZfcGZuOiAweDEwMDAwMCwgZW5kX3BmbjogMHgxM2ZmZmYNCj4gPj4gwqDCoMKg
+wqAgaW92X3BmbjogMHgxNDAwMDAsIGVuZF9wZm46IDB4MTdmZmZmDQo+ID4+IMKgwqDCoMKgIGlv
+dl9wZm46IDB4MTgwMDAwLCBlbmRfcGZuOiAweDFiZmZmZg0KPiA+PiDCoMKgwqDCoCBpb3ZfcGZu
+OiAweDFjMDAwMCwgZW5kX3BmbjogMHgxZmZmZmYNCj4gPj4gwqDCoMKgwqAgaW92X3BmbjogMHgy
+MDAwMDAsIGVuZF9wZm46IDB4MjNmZmZmDQo+ID4+IMKgwqDCoMKgIC4uLg0KPiA+PiDCoMKgIGl0
+IG9ubHkgbmVlZCA5bXMgbm93Lg0KPiA+Pg0KPiA+PiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyhN
+aWtlKSA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4+IC0tLQ0KPiA+PiDCoCBkcml2ZXJzL2lv
+bW11L2ludGVsL2lvbW11LmMgfCAxMSArKysrKystLS0tLQ0KPiA+PiDCoCBpbmNsdWRlL2xpbnV4
+L2ludGVsLWlvbW11LmggfMKgIDYgKysrKysrDQo+ID4+IMKgIDIgZmlsZXMgY2hhbmdlZCwgMTIg
+aW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYw0K
+PiA+PiBpbmRleCBkNzVmNTlhLi40NmVkYWU2IDEwMDY0NA0KPiA+PiAtLS0gYS9kcml2ZXJzL2lv
+bW11L2ludGVsL2lvbW11LmMNCj4gPj4gKysrIGIvZHJpdmVycy9pb21tdS9pbnRlbC9pb21tdS5j
+DQo+ID4+IEBAIC0yMzU0LDEyICsyMzU0LDE3IEBAIHN0YXRpYyB2b2lkIHN3aXRjaF90b19zdXBl
+cl9wYWdlKHN0cnVjdA0KPiA+PiBkbWFyX2RvbWFpbiAqZG9tYWluLA0KPiA+PiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiAtRU5PTUVNOw0KPiA+PiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBmaXJzdF9wdGUgPSBwdGU7DQo+ID4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGx2bF9wYWdlcyA9IGx2bF90b19ucl9wYWdlcyhsYXJnZXBhZ2VfbHZsKTsNCj4gPj4g
+Kw0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBJdCBpcyBsYXJnZSBwYWdlKi8N
+Cj4gPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWYgKGxhcmdlcGFnZV9sdmwgPiAxKSB7
+DQo+ID4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdW5zaWduZWQgbG9uZyBl
+bmRfcGZuOw0KPiA+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHVuc2lnbmVkIGxv
+bmcgcGFnZXNfdG9fcmVtb3ZlOw0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHB0ZXZhbCB8PSBETUFfUFRFX0xBUkdFX1BBR0U7DQo+ID4+IC3CoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgZW5kX3BmbiA9ICgoaW92X3BmbiArIG5yX3BhZ2VzKSAmDQo+ID4+IGxl
+dmVsX21hc2sobGFyZ2VwYWdlX2x2bCkpIC0gMTsNCj4gPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBwYWdlc190b19yZW1vdmUgPSBtaW5fdCh1bnNpZ25lZCBsb25nLCBucl9wYWdl
+cywNCj4gPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBucl9wdGVfdG9fbmV4dF9wYWdlKHB0ZSkgKiBsdmxfcGFnZXMpOw0KPiA+PiArwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGVuZF9wZm4gPSBpb3ZfcGZuICsgcGFnZXNfdG9f
+cmVtb3ZlIC0gMTsNCj4gPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzd2l0
+Y2hfdG9fc3VwZXJfcGFnZShkb21haW4sIGlvdl9wZm4sIGVuZF9wZm4sDQo+ID4+IGxhcmdlcGFn
+ZV9sdmwpOw0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9IGVsc2Ugew0KPiA+PiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHB0ZXZhbCAmPSB+KHVpbnQ2NF90KURN
+QV9QVEVfTEFSR0VfUEFHRTsNCj4gPj4gQEAgLTIzODEsMTAgKzIzODYsNiBAQCBzdGF0aWMgdm9p
+ZCBzd2l0Y2hfdG9fc3VwZXJfcGFnZShzdHJ1Y3QNCj4gPj4gZG1hcl9kb21haW4gKmRvbWFpbiwN
+Cj4gPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgV0FSTl9PTigxKTsNCj4gPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgIH0NCj4gPj4gLcKgwqDCoMKgwqDCoMKgIGx2bF9wYWdlcyA9IGx2bF90b19u
+cl9wYWdlcyhsYXJnZXBhZ2VfbHZsKTsNCj4gPj4gLQ0KPiA+PiAtwqDCoMKgwqDCoMKgwqAgQlVH
+X09OKG5yX3BhZ2VzIDwgbHZsX3BhZ2VzKTsNCj4gPj4gLQ0KPiA+PiDCoMKgwqDCoMKgwqDCoMKg
+wqAgbnJfcGFnZXMgLT0gbHZsX3BhZ2VzOw0KPiA+PiDCoMKgwqDCoMKgwqDCoMKgwqAgaW92X3Bm
+biArPSBsdmxfcGFnZXM7DQo+ID4+IMKgwqDCoMKgwqDCoMKgwqDCoCBwaHlzX3BmbiArPSBsdmxf
+cGFnZXM7DQo+ID4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2ludGVsLWlvbW11LmggYi9p
+bmNsdWRlL2xpbnV4L2ludGVsLWlvbW11LmgNCj4gPj4gaW5kZXggOWJjYWJjNy4uYjI5YjJhMyAx
+MDA2NDQNCj4gPj4gLS0tIGEvaW5jbHVkZS9saW51eC9pbnRlbC1pb21tdS5oDQo+ID4+ICsrKyBi
+L2luY2x1ZGUvbGludXgvaW50ZWwtaW9tbXUuaA0KPiA+PiBAQCAtNzEzLDYgKzcxMywxMiBAQCBz
+dGF0aWMgaW5saW5lIGJvb2wgZmlyc3RfcHRlX2luX3BhZ2Uoc3RydWN0DQo+ID4+IGRtYV9wdGUg
+KnB0ZSkNCj4gPj4gwqDCoMKgwqDCoCByZXR1cm4gSVNfQUxJR05FRCgodW5zaWduZWQgbG9uZylw
+dGUsIFZURF9QQUdFX1NJWkUpOw0KPiA+PiDCoCB9DQo+ID4+ICtzdGF0aWMgaW5saW5lIGludCBu
+cl9wdGVfdG9fbmV4dF9wYWdlKHN0cnVjdCBkbWFfcHRlICpwdGUpDQo+ID4+ICt7DQo+ID4+ICvC
+oMKgwqAgcmV0dXJuIGZpcnN0X3B0ZV9pbl9wYWdlKHB0ZSkgPyBCSVRfVUxMKFZURF9TVFJJREVf
+U0hJRlQpIDoNCj4gPj4gK8KgwqDCoMKgwqDCoMKgIChzdHJ1Y3QgZG1hX3B0ZSAqKUFMSUdOKCh1
+bnNpZ25lZCBsb25nKXB0ZSwgVlREX1BBR0VfU0laRSkgLQ0KPiA+PiBwdGU7DQo+ID4NCj4gPiBX
+ZSBzaG91bGQgbWFrZSBpdCBsaWtlIHRoaXMgdG8gYXZvaWQgdGhlIDBkYXkgd2FybmluZzoNCj4g
+Pg0KPiA+ICDCoMKgwqDCoChzdHJ1Y3QgZG1hX3B0ZSAqKSh1aW50cHRyX3QpVlREX1BBR0VfQUxJ
+R04oKHVuc2lnbmVkIGxvbmcpcHRlKSAtIHB0ZTsNCj4gPg0KPiA+IENhbiB5b3UgcGxlYXNlIHRl
+c3QgdGhpcyBsaW5lIG9mIGNoYW5nZT8gTm8gbmVlZCB0byBzZW5kIGEgbmV3IHZlcnNpb24uDQo+
+ID4gSSB3aWxsIGhhbmRsZSBpdCBpZiBpdCBwYXNzZXMgeW91ciB0ZXN0Lg0KPiANCj4gSnVzdCBy
+ZWFsaXplZCB0aGF0IEFMSUdOKCkgaGFzIGFscmVhZHkgZG9uZSB0aGUgdHlwZSBjYXN0LiBQbGVh
+c2UgaWdub3JlDQo+IGFib3ZlIGNvbW1lbnQuIFNvcnJ5IGZvciB0aGUgbm9pc2UuDQo+IA0KDQpI
+aSBCYW9sdSwNCg0KT3VyIHRlc3RpbmcgaXMgY29tcGxldGVkLCBubyBjb21waWxlIHdhcm5pbmcg
+b24gYm90aCBYODYgNjRiaXQgYW5kIDMyYml0IGFyY2gsDQphbmQgdGhlIHN5c3RlbSBpcyB3b3Jr
+aW5nIGFzIGV4cGVjdGVkLg0KDQpQbGVhc2UgYWRkOg0KDQpUZXN0ZWQtYnk6IExpdWp1bmppZSA8
+bGl1anVuamllMjNAaHVhd2VpLmNvbT4NCg0KPiBCZXN0IHJlZ2FyZHMsDQo+IGJhb2x1DQo=
