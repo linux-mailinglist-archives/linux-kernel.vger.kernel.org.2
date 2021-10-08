@@ -2,239 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6813426A71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FFC426A76
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240908AbhJHMLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:11:23 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:34880
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240457AbhJHMLS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:11:18 -0400
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com [209.85.221.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id AE9D54000F
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:09:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633694958;
-        bh=XIAA2IQLT0N1oUC3FDWSicvndgmt0HcmrgFfR+RcWIM=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Ol1pksDYJQuR6DTH/CkRDeTabu8B5E77TkyX5VH+WSmLtZUL1aTtZwZrJwH+DwI2M
-         7J4blcJ0mGL8/uq5sEdYWpteNjSwlNb4PoP+aXAcCg18fFxOGrDOu/rwo3pedk+ACJ
-         oMddJ9O/8y1HZm5+Ke1sqRrN6SxF3MASop804lw2mjXVex0RsqgLzL/g1+OIojtQ6i
-         NIgN687io+glbGRy6dbL0QWsJKpWjDqNf4OofqOfGViMomUaOVJCTmQOqPi79ItUNY
-         jGuWLGce0TUM4ETowbF94k69ExR9gNDdp7VG1oIcHxKecp8WyVwBlTJSA5RvFETyhx
-         r3mSgHMSZffWQ==
-Received: by mail-wr1-f71.google.com with SMTP id k16-20020a5d6290000000b00160753b430fso7190827wru.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:09:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XIAA2IQLT0N1oUC3FDWSicvndgmt0HcmrgFfR+RcWIM=;
-        b=Rm6jvyVW/Ns8OM+/AFi2LZ63AZEkeIxoTrwAZ9T6kk3zw6To61Q+oRH8ZIV3X4iAaB
-         TXn3uM4JaH282E8VWixFYm7IjhZYGCH4hCNjV+lDXZqWJNRRk0xIIn4vsX6AUQPGo1V0
-         VI23tO46PSKxj0qZ+C7jTcEt2nOyq3YBlMrfhTDt1+H43cQ/gA0MU72ROhj9Z3L8yw1N
-         WDyUCyEp0VluR5EaW1dF6X5yWEmDVpCjJU0UiPOmvcEW7aAOS4ZUGzdX1U6MoqCHRy7n
-         g26Stqt+R1whyimKwJACI1z31JDupmLfO/ohvteXu/q8bl0aEUiLjJb3tmNEixbGRpWN
-         6siw==
-X-Gm-Message-State: AOAM531Q0kYdwRIYe8jfpVElxdy8vKXQzUrIOnl6SIQLVBftld+8ZeWC
-        03h/X2MPTCa/Z8RjlbldMGQZHu2lk/a3CkK5eyREvkjio4DrlQ/uyGTZhsFjlbASM8mUOKsowmu
-        tqG+cXs07dZriF077fn7AhILU/gIDu2BeAQO3z90U0w==
-X-Received: by 2002:a1c:7917:: with SMTP id l23mr3056293wme.36.1633694956953;
-        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxKO6BSd4+5NrGm89y7Pu0/2WXHHncmaUf3+YEmUR9vLFhhCgY6KDqbn18iu9zuaEBSEBKobQ==
-X-Received: by 2002:a1c:7917:: with SMTP id l23mr3056245wme.36.1633694956625;
-        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
-Received: from [192.168.1.24] (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
-        by smtp.gmail.com with ESMTPSA id c18sm2334770wmb.27.2021.10.08.05.09.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 05:09:16 -0700 (PDT)
-Subject: Re: [PATCH 1/2] regulator: dt-bindings: maxim,max77686: convert to
- dtschema
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210928141353.112619-1-krzysztof.kozlowski@canonical.com>
- <20210928141353.112619-2-krzysztof.kozlowski@canonical.com>
- <YVsYrLPx0trUI17D@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <a0b2f5ce-6c6b-643b-e7a6-7331437e2217@canonical.com>
-Date:   Fri, 8 Oct 2021 14:09:15 +0200
+        id S241002AbhJHMLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:11:50 -0400
+Received: from mail-bn7nam10on2057.outbound.protection.outlook.com ([40.107.92.57]:64704
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240715AbhJHMLr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:11:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MnOEDJJxg5fEe4C3c9ke/EabfS2vQTJyQINxo03LFq2Pw1tqPkkBYiP6oJnXOiP3CwOIgEoCY2ZVXIZLgUx34O/JAre9HvWEOkVoGKPhOkRt7yGeCZbyC3ox9TX560cFcSZgCtRrgfdbU4oJ5Lvxnz4tBsCv7QcTxs1v39Y3SZ803Wa27zXNitMLUouRCEPVSI7ccx5Y+GYJ70ibKy7i5589tbhlJpQhX1W/hzlzyAV110JvN2b+QI1PB1AeIDrYYckuzhs28+HKwrHXj4yGOGI6VgYvQgq1bC9EgAC1mZp8kjqTEU/95a5xtylxLi7o57pfFgMPab6vcWG27zIT7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sQ0KpMwk1JliJS0/bq96FOQZWZ/ub7h2PvPqj8HQxAo=;
+ b=FKNduYc0hoIOax/8sWhR0E8fq/9om3PFoV19PKzO6OAGGsHbmTQywZ/BG2B9jxtW3mO6k38Lk7HoEojXdrYZP0rZL4FdNIaZMjdWXiSNFNLkYBLVeVo7O2oW4H7dL0BG3EvsitfmJ02dCAmtqk+irJAhl1JGxFX+2N3SdTh79pi/p0+g2YAiSDaY8jpNFrbO3naMzBy8wmb26DB8eG/bldJnYL85OFCo7f5JtwShWIpK9H120uKEO+/q7nrpWSp1PDnChEWOIfk1S6LrhE0tNUrHs2tGAx/UaJ3YF5pvGO5zgBp/XxaXnvfMIMgkQGOhFkSVwvOHSXn2rWa+fShIrA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sQ0KpMwk1JliJS0/bq96FOQZWZ/ub7h2PvPqj8HQxAo=;
+ b=bjdmV7NrW5NTfYG9cQjaRqfck196ufHaHoF8vTMwlRVGK8Aw29VttSWS9F0gDR2mNI56KJKii+H42pt+sTtLOBXsiak4nhtu7d4cI8XWEwvCRyJLAqOdZ9BhA039njdqMcXdUgyfO+tD6cbz6Ce47IS/V6aXn77veYEw5Qs9Aag=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14) by MWHPR12MB1213.namprd12.prod.outlook.com
+ (2603:10b6:300:f::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
+ 2021 12:09:49 +0000
+Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
+ ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
+ 12:09:49 +0000
+Subject: Re: [PATCH] dma-buf: Update obsoluted comments on
+ dma_buf_vmap/vunmap()
+To:     Shunsuke Mie <mie@igel.co.jp>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+References: <20211008112009.118996-1-mie@igel.co.jp>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <5ae41c5a-0ff4-5a82-2100-56bc415b5638@amd.com>
+Date:   Fri, 8 Oct 2021 14:09:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <YVsYrLPx0trUI17D@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211008112009.118996-1-mie@igel.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM6PR0202CA0053.eurprd02.prod.outlook.com
+ (2603:10a6:20b:3a::30) To MWHPR1201MB0192.namprd12.prod.outlook.com
+ (2603:10b6:301:5a::14)
+MIME-Version: 1.0
+Received: from [IPv6:2a02:908:1252:fb60:efac:61bc:bb73:d6b5] (2a02:908:1252:fb60:efac:61bc:bb73:d6b5) by AM6PR0202CA0053.eurprd02.prod.outlook.com (2603:10a6:20b:3a::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.15 via Frontend Transport; Fri, 8 Oct 2021 12:09:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 11843768-652c-4cae-003b-08d98a548634
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1213:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB12134B00704D0EB38EF373F783B29@MWHPR12MB1213.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kNKvwlQD/hA0cHX295SWTM5nFZ0T1HVKv4AZcT+M73Bq9cs4HhIRLoJ1mY9QebXctk7UTQddFSjacZlxnZyV+U9ZfMKBtjnbBxvIucOhHADDPejA4mtkWL/0DQpWBMGP5egggh3Us6gs0tYs0Pteft86M9GY0Rbi9L7VvWKt8H6FTDC4ksXVfgtn3HWPDWIolVpm4Q1y54v43Rl5PGFiVi3uPKH3MG3TVtApo8lHobGkYaKsw9uNcQXMIjlOAv//2tf8lQW/7Da+v2uzJ1FrtpwpsGHJW2KVndW37gOpr1QmsZbUBGNELnPG0CchgqN8OrQmy+PkwfxkMr7wxcfxwuR77AhcAIm3H6FcZ9CpeEw3Dk6jN26TEg0IiD06S9adPQLY7VEdmJv3Xmn5ZWQASLzQErIsrILxbpLZppgs6gGHUZ8836NXqsvsgGsvTfUYnsx66NwW/iJCyXxCB6Qbx/7FzPhf5h9H622tsujECAgsVss9otL/7/e+wWiBjjM1bxSwyVyXCIUx5EGw6heABSL3WTmRMT0lyAlAPs8DOK6Pxc1DEfD0AlfP5pT9KvfQxPz3nOsKWEtAv+4K6KZs2CoqU8ZEhiqLrApZ031LsvbgwsvugKrbWaxAVtitTqb4YtWhlJ7zUM742Y2q9QwTF9hPIRab1bH6mnjkfZ/sWsF2/2uVrabpfmynQO06HoTL20UA2G+o2H2cIHuXEIdRfvJmGpwsw2yLfGaELAZrXqjqGKgPuJrYtA9ZOPPR6eQM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(31686004)(186003)(6666004)(508600001)(83380400001)(31696002)(38100700002)(8676002)(5660300002)(2906002)(110136005)(36756003)(66946007)(8936002)(6486002)(86362001)(66556008)(66476007)(4326008)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MUZ2YThLOVNBVjIyanE5MFk3SndKRTVRdWo0SC9WWE5yZmY5OG5LZXlmUWhy?=
+ =?utf-8?B?US92WDd2Z0U4Z3p6eHdrbU1zQkZCZXoxcmFLTUlDS1FJVVVORE9LZXplejhi?=
+ =?utf-8?B?bHMzK3lMSnJkc1ZKNFUzRy9STXVyeXNoays1MnlEUzVxSy95YnJPV2pBcXc3?=
+ =?utf-8?B?NU1oTEhmNDU5dHFRdjJpWWtaYVcwRHpLSCtxdzBlMU9rSnUxWmtaNUhGSnQv?=
+ =?utf-8?B?T0dSZVhVL3FidW1iZnNkMU9ENlRqeGN0WmdnbUlqYlhRUmUvVytPam4wQlYw?=
+ =?utf-8?B?V2pMN0JiNi93cWFRNGN0dStpSzRsbW83cG94elhRQ2RKY1BkV2xleFk1dUZD?=
+ =?utf-8?B?L1N3Vm1ZbzlzdmEwbXM1eHFDVXFpanBBekY3N0w1WVFhWDhDU2pSNmZZVkk4?=
+ =?utf-8?B?a1paekkxU3pzQjhPTWF2V0FNWEpIRDkrcEZPSGs0Q2NaVFhUeWJMMGhleG9i?=
+ =?utf-8?B?UEt5Mk15OURUb2xTekFqaGhyZGZVWktoR0F0dFE2YUZvWmRxdjdCUll1SitC?=
+ =?utf-8?B?YmMvN1VoUUxjTWp4ZllsZHUxMTM2b2M2cHBDUEM2d2tFdW9PUWhoYzRyTVVh?=
+ =?utf-8?B?V21yVjNXVWVBN1FMZW1ickRPbFRKTkhvSzBud25GZVQxRitGVEcrbHBJNDhn?=
+ =?utf-8?B?WmNUWXZmejZ4TGY3N0NmV0MzSS9iNVZvdmhpRGlpbndPZUZnVS83M2k1WEV3?=
+ =?utf-8?B?Ty9tb1FseXFkTzhCcmxUK1gvWm5ZVGxCSmpIbkZNd2E4dGM1bE9mREZTSFMw?=
+ =?utf-8?B?MVV3Wmd4c29lajZWcWRUL0FhVTcyMHpTRlBsalBEK1N1Y1RwZ3p0Q2NrRjBD?=
+ =?utf-8?B?NmtleU1WMnkrRGdLcTZzaUl5RzJjckV3MmRjZlg3OEtmc0NTYUxzL1ZFRkRJ?=
+ =?utf-8?B?L3VCNkZXNlRPWHh3OFU4Q2RHaHhubkx5R1Z5VndxbmtmR2x2Tm1EcjlqSWhy?=
+ =?utf-8?B?Zk1uM0RLWW15aUs4WU5IdWE2ampFZytIb0ZrU3VKOEo3cHNyL0JjV0hVZU4x?=
+ =?utf-8?B?WUpVZWtPVk9IVDVrY0FadXVBOHd1amF6eUVhV1BmcEs4ZVg4K3NucVNJTEhC?=
+ =?utf-8?B?WDNEQTR2Q3J0dEw4eG5xaVFzeDE3NFB0aFpwclFMMkloaDhaZFBXSU1CaUxt?=
+ =?utf-8?B?d1NxeXZlTE5rK09NVFJTQ0xFdExIUlVzM3ZWb2FFaVlBRVJRc20vUVpRRjFQ?=
+ =?utf-8?B?K2dYZkZaLzB1aktmNWVaZXE0Wk5Ebm5md3B1NURKelBVVUJ2YnVjOVFtL1FJ?=
+ =?utf-8?B?MGtpOS9nRnd5amRvZU9aQm84dkg3TW5sVFpPRzAyNCsvdC83VWhTampXR3hq?=
+ =?utf-8?B?VktuQ3NxSWVDMCt6Mm1QT3RSd1NjQ1RtUkptWFQydzVzVnJBRFlGaVp4Vno2?=
+ =?utf-8?B?S0xpb0JqeHdiY1IrTkVXazF5NkEyK0k0d09XQ2pEVi9jSnZVZHVNcnN2Vnda?=
+ =?utf-8?B?WTduQ2l2VnRIRExzM0NYaXVTWmdybGU3SHdOQksrRlBEbzdaUkcxd1gvNUtk?=
+ =?utf-8?B?WHBmUVZseGsrOFZIelB2MVB4Y0VUcFBleDZXY1Fndi9YSVBXT3dMd0tpSEVl?=
+ =?utf-8?B?TWlldXJraDdwL0RoeWVKOVRPQVZtbEdRY1l3Yzc4R0VSalhEUXUwL2VVV292?=
+ =?utf-8?B?T2JVb3lWTUpJSGtnanpja1FIRXJwM1pPazhWSnhEdG92LzA1MzZyNU10Skdo?=
+ =?utf-8?B?NTVuZUdPd3lia1lzaWlGL09ZN1R4WStaM3E1WWQ0TWV5OWhrY0VQWVRtU0Vv?=
+ =?utf-8?B?amdqdXdKSTZwekFRWmtYR01hS0RNVTlTa1UxVGFZUFBoWGNLYmwvcHEweXhQ?=
+ =?utf-8?B?ZUhDVzdzbFliS3JXTVVUam0rWU1JdW5SWHlTYklwQWRKOG92UmxXUWNMSVV5?=
+ =?utf-8?Q?gwit8Wz1uuuA4?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11843768-652c-4cae-003b-08d98a548634
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 12:09:48.8914
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /7mgNAUYQqxKCRCziuguPzz2SDv7heVJw6NkhmtpdhELhx0Y+03DFlS0ZkyXruyP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1213
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/10/2021 17:07, Rob Herring wrote:
-> On Tue, Sep 28, 2021 at 04:13:52PM +0200, Krzysztof Kozlowski wrote:
->> Convert the regulators of Maxim MAX77686 PMIC to DT schema format.
->>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> ---
->>  .../bindings/regulator/max77686.txt           | 71 --------------
->>  .../bindings/regulator/maxim,max77686.yaml    | 92 +++++++++++++++++++
->>  MAINTAINERS                                   |  1 +
->>  3 files changed, 93 insertions(+), 71 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
->>  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/regulator/max77686.txt b/Documentation/devicetree/bindings/regulator/max77686.txt
->> deleted file mode 100644
->> index e9f7578ca09a..000000000000
->> --- a/Documentation/devicetree/bindings/regulator/max77686.txt
->> +++ /dev/null
->> @@ -1,71 +0,0 @@
->> -Binding for Maxim MAX77686 regulators
->> -
->> -This is a part of the device tree bindings of MAX77686 multi-function device.
->> -More information can be found in ../mfd/max77686.txt file.
->> -
->> -The MAX77686 PMIC has 9 high-efficiency Buck and 26 Low-DropOut (LDO)
->> -regulators that can be controlled over I2C.
->> -
->> -Following properties should be present in main device node of the MFD chip.
->> -
->> -Optional node:
->> -- voltage-regulators : The regulators of max77686 have to be instantiated
->> -  under subnode named "voltage-regulators" using the following format.
->> -
->> -	regulator_name {
->> -		regulator-compatible = LDOn/BUCKn
->> -		standard regulator constraints....
->> -	};
->> -	refer Documentation/devicetree/bindings/regulator/regulator.txt
->> -
->> -  The regulator node's name should be initialized with a string
->> -to get matched with their hardware counterparts as follow:
->> -
->> -	-LDOn 	:	for LDOs, where n can lie in range 1 to 26.
->> -			example: LDO1, LDO2, LDO26.
->> -	-BUCKn 	:	for BUCKs, where n can lie in range 1 to 9.
->> -			example: BUCK1, BUCK5, BUCK9.
->> -
->> -  Regulators which can be turned off during system suspend:
->> -	-LDOn	:	2, 6-8, 10-12, 14-16,
->> -	-BUCKn	:	1-4.
->> -  Use standard regulator bindings for it ('regulator-off-in-suspend').
->> -
->> -  LDO20, LDO21, LDO22, BUCK8 and BUCK9 can be configured to GPIO enable
->> -  control. To turn this feature on this property must be added to the regulator
->> -  sub-node:
->> -	- maxim,ena-gpios :	one GPIO specifier enable control (the gpio
->> -				flags are actually ignored and always
->> -				ACTIVE_HIGH is used)
->> -
->> -Example:
->> -
->> -	max77686: pmic@9 {
->> -		compatible = "maxim,max77686";
->> -		interrupt-parent = <&wakeup_eint>;
->> -		interrupts = <26 IRQ_TYPE_NONE>;
->> -		reg = <0x09>;
->> -
->> -		voltage-regulators {
->> -			ldo11_reg: LDO11 {
->> -				regulator-name = "vdd_ldo11";
->> -				regulator-min-microvolt = <1900000>;
->> -				regulator-max-microvolt = <1900000>;
->> -				regulator-always-on;
->> -			};
->> -
->> -			buck1_reg: BUCK1 {
->> -				regulator-name = "vdd_mif";
->> -				regulator-min-microvolt = <950000>;
->> -				regulator-max-microvolt = <1300000>;
->> -				regulator-always-on;
->> -				regulator-boot-on;
->> -			};
->> -
->> -			buck9_reg: BUCK9 {
->> -				regulator-name = "CAM_ISP_CORE_1.2V";
->> -				regulator-min-microvolt = <1000000>;
->> -				regulator-max-microvolt = <1200000>;
->> -				maxim,ena-gpios = <&gpm0 3 GPIO_ACTIVE_HIGH>;
->> -			};
->> -	};
->> diff --git a/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
->> new file mode 100644
->> index 000000000000..33a80a8caf26
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
->> @@ -0,0 +1,92 @@
->> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/regulator/maxim,max77686.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Maxim MAX77686 Power Management IC regulators
->> +
->> +maintainers:
->> +  - Chanwoo Choi <cw00.choi@samsung.com>
->> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
->> +
->> +description: |
->> +  This is a part of device tree bindings for Maxim MAX77686 Power Management
->> +  Integrated Circuit (PMIC).
->> +
->> +  The Maxim MAX77686 provides high-efficiency Buck and 26 Low-DropOut (LDO)
->> +  regulators.
->> +
->> +  See also Documentation/devicetree/bindings/mfd/maxim,max77686.yaml for
->> +  additional information and example.
->> +
->> +patternProperties:
->> +  # 26 LDOs
->> +  "^LDO([1-9]|1[0-9]|2[0-6])$":
->> +    type: object
->> +    $ref: regulator.yaml#
->> +    description: |
->> +      Properties for single LDO regulator.
->> +      Regulators which can be turned off during system suspend:
->> +        LDO2, LDO6-8, LDO10-12, LDO14-16
->> +
->> +    properties:
->> +      regulator-name: true
->> +
->> +      maxim,ena-gpios:
->> +        maxItems: 1
->> +        description: |
->> +          GPIO specifier to enable the GPIO control (on/off) for regulator.
->> +
->> +    required:
->> +      - regulator-name
->> +
->> +    unevaluatedProperties: false
->> +
->> +    allOf:
->> +      - if:
->> +          properties:
->> +            $nodename:
-> 
-> I'm not sure this actually works with $nodename in child nodes.
-> 
-> I think I would just split out the 2 cases to 2 separate 
-> patternProperties entries.
-> 
+Am 08.10.21 um 13:20 schrieb Shunsuke Mie:
+> A comment for the dma_buf_vmap/vunmap() is not catching up a
+> corresponding implementation.
+>
+> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
 
-I split the entries, slightly more code but it's actually easier to read.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
+> ---
+>   drivers/dma-buf/dma-buf.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index beb504a92d60..7b619998f03a 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -1052,8 +1052,8 @@ EXPORT_SYMBOL_GPL(dma_buf_move_notify);
+>    *
+>    *   Interfaces::
+>    *
+> - *      void \*dma_buf_vmap(struct dma_buf \*dmabuf)
+> - *      void dma_buf_vunmap(struct dma_buf \*dmabuf, void \*vaddr)
+> + *      void \*dma_buf_vmap(struct dma_buf \*dmabuf, struct dma_buf_map \*map)
+> + *      void dma_buf_vunmap(struct dma_buf \*dmabuf, struct dma_buf_map \*map)
+>    *
+>    *   The vmap call can fail if there is no vmap support in the exporter, or if
+>    *   it runs out of vmalloc space. Note that the dma-buf layer keeps a reference
 
-Best regards,
-Krzysztof
