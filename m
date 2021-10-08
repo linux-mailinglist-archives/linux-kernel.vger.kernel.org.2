@@ -2,122 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4C7427468
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD2E42746F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243893AbhJHX4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
+        id S243934AbhJHX5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243797AbhJHX4d (ORCPT
+        with ESMTP id S243923AbhJHX5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:56:33 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8F57C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:54:37 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id 187so9420586pfc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:54:37 -0700 (PDT)
+        Fri, 8 Oct 2021 19:57:05 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD81C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:55:09 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kk10so8744562pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PmBMkf/9MZygw8Ouxh+j3hhE+5/43pTB38Kda0mWNWk=;
-        b=Q8+7oCfDRKyVdU+VWTY4DGVlelzEpUO576a488pAZuBDyvKQ2jt66NRvKJ2w/7C/OU
-         7eYMe4aQa6LzT+CJ5azuMdAf8HlGeJPYlZxe2cHRHvovOiqXGen5NBxB2UciexWuKAAM
-         7YzG8hOfoF5vttQ8N9pXyHBIOsrZVqrwMTO0Te3GQyWDTaDL5n7FuVufW1Zp6KDueQjD
-         kVXea3sEewOg6KkQVGQDiDImLphgkIkPJpKFqM6Dt6riFthcuPkxDfDdPBSGfR/j7dwj
-         hqL5Mwok31auNybg9V/xQ17BAMtG5322AUhMxs3ZE0l/JjgDqwbxGW/DDMS82YgE0g9L
-         0UWg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NTgT6QanWfRduDXfALgprcIXPoYmwJMRISipF8hOgn0=;
+        b=UvrNsbuHOolQTlQBXEtvY7PhQ4e4HGX7cruVovKzRM26iiB57Q92NDOkOvdFsX9KBd
+         9WQXT1UMFWJsbCYpXTLLlQQyIlz2otEFClCRNRWAE1mWhdllnhjYqjC+fcpXest6HeZ2
+         wypm984zf7l3YgA/7h3zdE6+DYAIADuYfU6fU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PmBMkf/9MZygw8Ouxh+j3hhE+5/43pTB38Kda0mWNWk=;
-        b=PZ4DwSC3bGyg5/voKF9WjR086JxOwCkyv4dGT5rDoLq3psPv2UAS1gFDizJubNI5He
-         ANnMJYzjOjF5C0GAj29jS22GXhyqtJPFSQRezRJUUBsrr6tiilSimhHjwXIfonFxD3Lp
-         wvsVzSKW+LnXp5M2tPEHXEGQ2nToggpAvzr+7pGquHlFZIPQwKlxNH+utUp0Y+9uGeFu
-         TD78VHEIH0YlBG4QWxXMXFODwVqHeJlhxGZsBOVzaTFL/JmuiYQTdCozPp32vAaD0geZ
-         OMOuLDYgDAblBorzc3QU+YnSLczkYssJWFqTXm5W97fcEQYtnyAtzwIFvmiChX4YaSWf
-         MduQ==
-X-Gm-Message-State: AOAM531W3LoQZcvcXNFU2nMkyPA3ks+cX5picXPjxnKF0flV8DsSuzPD
-        hci9Ggi94DsZD6OOJVe0NFOWjw==
-X-Google-Smtp-Source: ABdhPJzTO5dzrqoKxYIAgLORXxVoCs/hswW5V+qdRbtzVa1AywA2Mc6hF2P8Y2NMkbNFKLtRna+ilw==
-X-Received: by 2002:a05:6a00:1a02:b0:446:d18c:8e7e with SMTP id g2-20020a056a001a0200b00446d18c8e7emr12873540pfv.46.1633737277253;
-        Fri, 08 Oct 2021 16:54:37 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p21sm12455665pjo.26.2021.10.08.16.54.36
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NTgT6QanWfRduDXfALgprcIXPoYmwJMRISipF8hOgn0=;
+        b=QnqWKjxbKQeuXyQF04fdowbGK7sBqD66aK/WEZfM/3b1jiLg6oxOz3ru6xzhDLAfek
+         BRBcNRPHh4JLFl3611crIdH/CaMlxxsc2nOtUE/rVD7IMjSRTRCN9eTIwDaT3i89TvC4
+         x/MPYeDFTfmcvlpzRSO0KZAi4FjJ88Xwb6WBBkSJYYyMfr4awnauxGxIMrPExpe4RJ1U
+         nVCZkh79NTM4soNpGNg9XdGWS9cGRMURbLjLiT9ZbfpnIxKE5qeJvAuVCQbLSdV10N4T
+         htE/c+vK9TUOLkTT8KNFJJX5/L3YQQXXXltAAw/ngYLFCJwXX4fp5aMZZn/ArjC1O7sM
+         SA6w==
+X-Gm-Message-State: AOAM531jRhZAsqQoYpnOAWWsE9/SwEO2usXbZON0vGqmjaOt0hCPGOtJ
+        59xTXnlIW2la4xVH/gUoIBIkplwdSp17lA==
+X-Google-Smtp-Source: ABdhPJxVP3N4yhiAQdhQSX2YP8sb7Lm448c8O2UVd19pFUeo4nh/fLA29BP3BsuiH+I1rOT0b4n0kQ==
+X-Received: by 2002:a17:90b:224e:: with SMTP id hk14mr14867208pjb.224.1633737308774;
+        Fri, 08 Oct 2021 16:55:08 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b13sm13196981pjl.15.2021.10.08.16.55.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 16:54:36 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 23:54:33 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] KVM: nVMX: Track whether changes in L0 require
- MSR bitmap for L2 to be rebuilt
-Message-ID: <YWDaOf/10znebx5S@google.com>
-References: <20211004161029.641155-1-vkuznets@redhat.com>
- <20211004161029.641155-4-vkuznets@redhat.com>
+        Fri, 08 Oct 2021 16:55:08 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>, jannh@google.com,
+        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, christian.brauner@ubuntu.com,
+        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
+        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
+        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
+        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
+        chris@zankel.net, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] selftests: proc: Make sure wchan works when it exists
+Date:   Fri,  8 Oct 2021 16:55:04 -0700
+Message-Id: <20211008235504.2957528-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004161029.641155-4-vkuznets@redhat.com>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3546; h=from:subject; bh=rB8jOOGIdiP/iyWBGWq3AhwcsSSZTX18wRYEg/FXYmE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhYNpXPkUEdGrIu4y1HLLDxNMb+n9ox77AOSdFvFSD bfhAXb+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYWDaVwAKCRCJcvTf3G3AJn0CD/ 4qW+e9mYMV4ZcwM0iBRmJhmZQxAWr33QtMkLwAO/EaIltsDgim6Ni+pKchA7nIQjf3oFoqZjbhP1Cp C5Y7Qq4W1DR1cD046gu5TzATKoxsbcwcSzBS5mrAPaUKY+vIyciYsqgw2myydRz4vBdNOKy9UcpVLm paa85vPMPsppqd8cQv/Wf1V6J7sjIXORRYYMokEGmQO/aXSShOol1KMtbgLiVh5ws4/KbOjtT0Z3XU R/kBl05TmhX1U0qXJiDMTeHa3PfSHFgxLTbqNUQQzsosY7JSG4IWl4KLpVpC6WRSvnSlYdf1tw65M0 FnCVLSWYGZ1wLsSMcsPhhU+5Vviwlrr4QUtFNXsFxLXOXn/JrgN3XtJWWlfuepZyKeGWOqNX3DzKNw 1BepILhh0xVogfv0fIoee3O/i1+8FjgQUZSO2cCC1fjVW+P5CMAKJwOqhJzlJ3aphOFwcJYTs4SJ5v SRBo1aFbAxpB5Z8dkUeM2EtS5bbjiIj2oau4wVSmQ4wkLIhXT14qIEA70r6JONKZtfnIBmBLESvybZ /eMvMPyvwOaV6N3NiZ1pNMmC8mOJXV4CjQ70UB44ZvfWOg+aMru+++l1uCPrJumAAPedlRsnt08d1J w8+mDwVkblkD5MbHnVgz3Odw5e5YJoCoKR7LNNX10D3EKvOIl/PDTirCZQ0w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021, Vitaly Kuznetsov wrote:
-> Introduce a flag to keep track of whether MSR bitmap for L2 needs to be
-> rebuilt due to changes in MSR bitmap for L1 or switching to a different
-> L2. This information will be used for Enlightened MSR Bitmap feature for
-> Hyper-V guests.
-> 
-> Note, setting msr_bitmap_changed to 'true' from set_current_vmptr() is
-> not really needed for Enlightened MSR Bitmap as the feature can only
-> be used in conjunction with Enlightened VMCS but let's keep tracking
-> information complete, it's cheap and in the future similar PV feature can
-> easily be implemented for KVM on KVM too.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
+This makes sure that wchan contains a sensible symbol when a process is
+blocked. Specifically this calls the sleep() syscall, and expects the
+architecture to have called schedule() from a function that has "sleep"
+somewhere in its name. For example, on the architectures I tested
+(x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
 
-...
+$ tools/testing/selftests/proc/proc-pid-wchan
+ok: found 'sleep' in wchan 'hrtimer_nanosleep'
 
->  void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 592217fd7d92..eb7a1697bec2 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -148,6 +148,12 @@ struct nested_vmx {
->  	bool need_vmcs12_to_shadow_sync;
->  	bool dirty_vmcs12;
->  
-> +	/*
-> +	 * Indicates whether MSR bitmap for L2 needs to be rebuilt due to
-> +	 * changes in MSR bitmap for L1 or switching to a different L2.
-> +	 */
-> +	bool msr_bitmap_changed;
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: linux-kselftest@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Hi Peter,
 
-This is misleading, and arguably wrong.  It's only accurate when used in conjuction
-with a paravirt L1 that states if a VMCS has a dirty MSR bitmap.  E.g. this flag
-will be wrong if L1 changes the address of the bitmap in the VMCS, and it's
-obviously wrong if L1 changes the MSR bitmap itself.
+Can you add this to the wchan series, please? This should help wchan from
+regressing in the future, and allow us to notice if the depth accidentally
+changes, like Mark saw.
+---
+ tools/testing/selftests/proc/Makefile         |  1 +
+ tools/testing/selftests/proc/proc-pid-wchan.c | 69 +++++++++++++++++++
+ 2 files changed, 70 insertions(+)
+ create mode 100644 tools/testing/selftests/proc/proc-pid-wchan.c
 
-The changelog kind of covers that, but those details will be completely lost to
-readers of the code.
+diff --git a/tools/testing/selftests/proc/Makefile b/tools/testing/selftests/proc/Makefile
+index 1054e40a499a..45cf35703ece 100644
+--- a/tools/testing/selftests/proc/Makefile
++++ b/tools/testing/selftests/proc/Makefile
+@@ -8,6 +8,7 @@ TEST_GEN_PROGS += fd-002-posix-eq
+ TEST_GEN_PROGS += fd-003-kthread
+ TEST_GEN_PROGS += proc-loadavg-001
+ TEST_GEN_PROGS += proc-pid-vm
++TEST_GEN_PROGS += proc-pid-wchan
+ TEST_GEN_PROGS += proc-self-map-files-001
+ TEST_GEN_PROGS += proc-self-map-files-002
+ TEST_GEN_PROGS += proc-self-syscall
+diff --git a/tools/testing/selftests/proc/proc-pid-wchan.c b/tools/testing/selftests/proc/proc-pid-wchan.c
+new file mode 100644
+index 000000000000..7d7870c31cef
+--- /dev/null
++++ b/tools/testing/selftests/proc/proc-pid-wchan.c
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Make sure that wchan returns a reasonable symbol when blocked.
++ */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <errno.h>
++#include <fcntl.h>
++#include <signal.h>
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/wait.h>
++
++#define perror_exit(str) do { perror(str); _exit(1); } while (0)
++
++int main(void)
++{
++	char buf[64];
++	pid_t child;
++	int sync[2], fd;
++
++	if (pipe(sync) < 0)
++		perror_exit("pipe");
++
++	child = fork();
++	if (child < 0)
++		perror_exit("fork");
++	if (child == 0) {
++		/* Child */
++		if (close(sync[0]) < 0)
++			perror_exit("child close sync[0]");
++		if (close(sync[1]) < 0)
++			perror_exit("child close sync[1]");
++		sleep(10);
++		_exit(0);
++	}
++	/* Parent */
++	if (close(sync[1]) < 0)
++		perror_exit("parent close sync[1]");
++	if (read(sync[0], buf, 1) != 0)
++		perror_exit("parent read sync[0]");
++
++	snprintf(buf, sizeof(buf), "/proc/%d/wchan", child);
++	fd = open(buf, O_RDONLY);
++	if (fd < 0) {
++		if (errno == ENOENT)
++			return 4;
++		perror_exit(buf);
++	}
++
++	memset(buf, 0, sizeof(buf));
++	if (read(fd, buf, sizeof(buf) - 1) < 1)
++		perror_exit(buf);
++	if (strstr(buf, "sleep") == NULL) {
++		fprintf(stderr, "FAIL: did not find 'sleep' in wchan '%s'\n", buf);
++		return 1;
++	}
++	printf("ok: found 'sleep' in wchan '%s'\n", buf);
++
++	if (kill(child, SIGKILL) < 0)
++		perror_exit("kill");
++	if (waitpid(child, NULL, 0) != child) {
++		fprintf(stderr, "waitpid: got the wrong child!?\n");
++		return 1;
++	}
++
++	return 0;
++}
+-- 
+2.30.2
 
-Would it be illegal from KVM to simply clear the CLEAN bit in the eVMCS at the
-appropriate points?
-
-> +
->  	/*
->  	 * Indicates lazily loaded guest state has not yet been decached from
->  	 * vmcs02.
-> -- 
-> 2.31.1
-> 
