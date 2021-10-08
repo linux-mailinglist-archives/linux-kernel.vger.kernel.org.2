@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D364269AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35BB426937
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241304AbhJHLj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:39:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
+        id S241468AbhJHLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240934AbhJHLgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:36:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B041861183;
-        Fri,  8 Oct 2021 11:32:09 +0000 (UTC)
+        id S241254AbhJHLcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD15361177;
+        Fri,  8 Oct 2021 11:30:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692730;
-        bh=6Ax/kxMoUUwKjmT5bIwfNhAeU8X6vvnp0Cpm0l6vz30=;
+        s=korg; t=1633692630;
+        bh=HR1lGb5HW8Ckm6LELbAuOkrobH/dC4epYWw6Rdlo7Jw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=at/YXHpd9QFo4hr9KK3h40W9QFhvHSxD3kVUE/dPsBa8KjC7a37C7PisZruEVjVp1
-         xs3QyY9E2ylboYgFZN5/SKCr8LTuULV3bGqQZAuKN5baJglA71fmJYC0lUFi+hxtX7
-         m6VJCCAmxRpOgBgbbWgko4ATGzS7BR9qTHFqD1Pw=
+        b=NjSXTbYE0jY39ZRW+hFA4R8aOeGWU9prSVQZSSBmb/K7e8DB0pIjAu4s6WCspCqt/
+         pfm1kzSwmg9j7HfOsWnpM5LAaqSxg46EAuJtUsXEcom4IcoSjZZyQxHG1WyU7etNEA
+         TLkxHwoHbVXOIWgMvXRb/Vb069RMT478FMIjqQig=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Omer Shpigelman <oshpigelman@habana.ai>,
-        Oded Gabbay <ogabbay@kernel.org>,
+        stable@vger.kernel.org, Faizel K B <faizel.kb@dicortech.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 19/48] habanalabs/gaudi: use direct MSI in single mode
-Date:   Fri,  8 Oct 2021 13:27:55 +0200
-Message-Id: <20211008112720.658942876@linuxfoundation.org>
+Subject: [PATCH 5.4 06/16] usb: testusb: Fix for showing the connection speed
+Date:   Fri,  8 Oct 2021 13:27:56 +0200
+Message-Id: <20211008112715.668441458@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
+References: <20211008112715.444305067@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +39,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+From: Faizel K B <faizel.kb@dicortech.com>
 
-[ Upstream commit 3e08f157c2587fc7ada93abed41aae19bcbf8a6b ]
+[ Upstream commit f81c08f897adafd2ed43f86f00207ff929f0b2eb ]
 
-Due to FLR scenario when running inside a VM, we must not use indirect
-MSI because it might cause some issues on VM destroy.
-In a VM we use single MSI mode in contrary to multi MSI mode which is
-used in bare-metal.
-Hence direct MSI should be used in single MSI mode only.
+testusb' application which uses 'usbtest' driver reports 'unknown speed'
+from the function 'find_testdev'. The variable 'entry->speed' was not
+updated from  the application. The IOCTL mentioned in the FIXME comment can
+only report whether the connection is low speed or not. Speed is read using
+the IOCTL USBDEVFS_GET_SPEED which reports the proper speed grade.  The
+call is implemented in the function 'handle_testdev' where the file
+descriptor was availble locally. Sample output is given below where 'high
+speed' is printed as the connected speed.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+sudo ./testusb -a
+high speed      /dev/bus/usb/001/011    0
+/dev/bus/usb/001/011 test 0,    0.000015 secs
+/dev/bus/usb/001/011 test 1,    0.194208 secs
+/dev/bus/usb/001/011 test 2,    0.077289 secs
+/dev/bus/usb/001/011 test 3,    0.170604 secs
+/dev/bus/usb/001/011 test 4,    0.108335 secs
+/dev/bus/usb/001/011 test 5,    2.788076 secs
+/dev/bus/usb/001/011 test 6,    2.594610 secs
+/dev/bus/usb/001/011 test 7,    2.905459 secs
+/dev/bus/usb/001/011 test 8,    2.795193 secs
+/dev/bus/usb/001/011 test 9,    8.372651 secs
+/dev/bus/usb/001/011 test 10,    6.919731 secs
+/dev/bus/usb/001/011 test 11,   16.372687 secs
+/dev/bus/usb/001/011 test 12,   16.375233 secs
+/dev/bus/usb/001/011 test 13,    2.977457 secs
+/dev/bus/usb/001/011 test 14 --> 22 (Invalid argument)
+/dev/bus/usb/001/011 test 17,    0.148826 secs
+/dev/bus/usb/001/011 test 18,    0.068718 secs
+/dev/bus/usb/001/011 test 19,    0.125992 secs
+/dev/bus/usb/001/011 test 20,    0.127477 secs
+/dev/bus/usb/001/011 test 21 --> 22 (Invalid argument)
+/dev/bus/usb/001/011 test 24,    4.133763 secs
+/dev/bus/usb/001/011 test 27,    2.140066 secs
+/dev/bus/usb/001/011 test 28,    2.120713 secs
+/dev/bus/usb/001/011 test 29,    0.507762 secs
+
+Signed-off-by: Faizel K B <faizel.kb@dicortech.com>
+Link: https://lore.kernel.org/r/20210902114444.15106-1-faizel.kb@dicortech.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c                    | 9 ++++++---
- .../misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h  | 2 ++
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ tools/usb/testusb.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 409f05c962f2..8a9c4f0f37f9 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -5620,6 +5620,7 @@ static void gaudi_add_end_of_cb_packets(struct hl_device *hdev,
- {
- 	struct gaudi_device *gaudi = hdev->asic_specific;
- 	struct packet_msg_prot *cq_pkt;
-+	u64 msi_addr;
- 	u32 tmp;
+diff --git a/tools/usb/testusb.c b/tools/usb/testusb.c
+index ee8208b2f946..69c3ead25313 100644
+--- a/tools/usb/testusb.c
++++ b/tools/usb/testusb.c
+@@ -265,12 +265,6 @@ nomem:
+ 	}
  
- 	cq_pkt = kernel_address + len - (sizeof(struct packet_msg_prot) * 2);
-@@ -5641,10 +5642,12 @@ static void gaudi_add_end_of_cb_packets(struct hl_device *hdev,
- 	cq_pkt->ctl = cpu_to_le32(tmp);
- 	cq_pkt->value = cpu_to_le32(1);
+ 	entry->ifnum = ifnum;
+-
+-	/* FIXME update USBDEVFS_CONNECTINFO so it tells about high speed etc */
+-
+-	fprintf(stderr, "%s speed\t%s\t%u\n",
+-		speed(entry->speed), entry->name, entry->ifnum);
+-
+ 	entry->next = testdevs;
+ 	testdevs = entry;
+ 	return 0;
+@@ -299,6 +293,14 @@ static void *handle_testdev (void *arg)
+ 		return 0;
+ 	}
  
--	if (!gaudi->multi_msi_mode)
--		msi_vec = 0;
-+	if (gaudi->multi_msi_mode)
-+		msi_addr = mmPCIE_MSI_INTR_0 + msi_vec * 4;
++	status  =  ioctl(fd, USBDEVFS_GET_SPEED, NULL);
++	if (status < 0)
++		fprintf(stderr, "USBDEVFS_GET_SPEED failed %d\n", status);
 +	else
-+		msi_addr = mmPCIE_CORE_MSI_REQ;
- 
--	cq_pkt->addr = cpu_to_le64(CFG_BASE + mmPCIE_MSI_INTR_0 + msi_vec * 4);
-+	cq_pkt->addr = cpu_to_le64(CFG_BASE + msi_addr);
- }
- 
- static void gaudi_update_eq_ci(struct hl_device *hdev, u32 val)
-diff --git a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-index 5bb54b34a8ae..907644202b0c 100644
---- a/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-+++ b/drivers/misc/habanalabs/include/gaudi/asic_reg/gaudi_regs.h
-@@ -305,6 +305,8 @@
- #define mmPCIE_AUX_FLR_CTRL                                          0xC07394
- #define mmPCIE_AUX_DBI                                               0xC07490
- 
-+#define mmPCIE_CORE_MSI_REQ                                          0xC04100
++		dev->speed = status;
++	fprintf(stderr, "%s speed\t%s\t%u\n",
++			speed(dev->speed), dev->name, dev->ifnum);
 +
- #define mmPSOC_PCI_PLL_NR                                            0xC72100
- #define mmSRAM_W_PLL_NR                                              0x4C8100
- #define mmPSOC_HBM_PLL_NR                                            0xC74100
+ restart:
+ 	for (i = 0; i < TEST_CASES; i++) {
+ 		if (dev->test != -1 && dev->test != i)
 -- 
 2.33.0
 
