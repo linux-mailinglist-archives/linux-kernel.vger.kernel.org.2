@@ -2,166 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B53426E6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0590C426E75
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhJHQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJHQMW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:12:22 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7B2C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 09:10:26 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id w10so22210149ybt.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:10:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G33pHw0ueNt5fMw+IeGu7bQcs55JybN6lDQyIbd7GiQ=;
-        b=Bv7ZpFLyYPApZxpHNAgAUvso133HjrOBFL6hqMdB+IrVyL/rHGAOU/y+005qkEd0nu
-         ZA5PlXGDWJ2Oy1ZLhPo2KEUzS+ThRbdjQdMeRAA9WpFraOCBVrlry8zMBToM1RUBboE3
-         oFia/EYFHpnczvwhehgCq2Sry06QgR/xMNSmDGcjYnj6SRqQjyqqIrHj+cKXq871uvd1
-         GbC91qH7oND33Xt1APC2G4qAdHiZb1fgN7SnJgNXjtbZMyZTbybzZtPoc/PK13IDvWmZ
-         FkAucL5pN+akLtMwvcAkApQv0AUabZqXSsvJl2QYJeLcTOSME8Ak4XCwwK7RUdavPe+E
-         a8Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G33pHw0ueNt5fMw+IeGu7bQcs55JybN6lDQyIbd7GiQ=;
-        b=VTL4+gxxew/EDfdVvhH3I68gM/VoPAWoFrKEP9UTgJ2XGydh97mzNKh2uHL7lzhqEx
-         /ejanEC+SEcscq8VCZwZXTDpfmYaIq9fdncpMsg8ZId53M9SiCJKoQxvaBH5DdqP/O1l
-         RajH8cU4tiwtQ4YAcwDe65F3POE8qtPELCQ3bXm0dkMhcflwdskm4Vyo8lIe2fpmspCM
-         SgirhxNu2vRqLmX8ANddzUcth5ZCQxiveNNosa8k2E2PHkhUaJTy5wVeWYC5SZw8Xj0k
-         K0j5kjvvXBRbd5W1962WaC+kT6cCz2z1utYz5vC7hoC5Vpf0FC4q8qPrj8OCicgBBEYA
-         b/8g==
-X-Gm-Message-State: AOAM5322MOQKSiOQlSC2yEby6qmflrTpZp2sq3XRQXInAKK9uCM1t6Zw
-        2+TGmm1n9Q5/+3dgKx/VoRZj3R1erwrC78pM2+TkOQ==
-X-Google-Smtp-Source: ABdhPJxCL/oJpeRH39HJsnbtpduvh2CejVR6+QmWEnNfuUXcZUpgiTakWbEdOxd31P0xMuAIf32tWZVuGngf1ObyV/M=
-X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr4989108ybu.161.1633709425599;
- Fri, 08 Oct 2021 09:10:25 -0700 (PDT)
+        id S230014AbhJHQO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:14:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229534AbhJHQOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 12:14:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5842261038;
+        Fri,  8 Oct 2021 16:12:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633709548;
+        bh=l9NKonv+O2PXkvQdUpXNKXFolGTbnrr6j94U8d7AgSM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=AEN+wYdH7DUCcS+PkPU3rle/AaRcvd0hw0VSsE/tZXmyPGkGyFjLAFw54AiU4bQ8s
+         /JHO1EyBDoHzNsepgBludb5GbL++SZluKNAI2rNPGt24K9MStvL4m9YS1+lLYszxXX
+         QOHSkmrJuOIlwn82npWG2yCmGGYdd7iQ82a48Syw=
+Date:   Fri, 8 Oct 2021 18:12:26 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB fixes for 5.15-rc5
+Message-ID: <YWBt6v3kWkjcJcp0@kroah.com>
 MIME-Version: 1.0
-References: <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz> <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz> <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz> <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
- <4a1dd04f-eda3-5c71-4772-726fd6fa2a38@intel.com> <YWBcXPZh9pYr0AHm@dhcp22.suse.cz>
-In-Reply-To: <YWBcXPZh9pYr0AHm@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 8 Oct 2021 09:10:14 -0700
-Message-ID: <CAJuCfpFdZeirEERAvM6X26qcoC5runpWQhmPrQ97RYk-HawwJg@mail.gmail.com>
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>, timmurray@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 7:57 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 08-10-21 07:14:58, Dave Hansen wrote:
-> > On 10/7/21 11:34 PM, Michal Hocko wrote:
-> > >> Yes, please. It really seems like the folks that are interested in this
-> > >> feature want strings. (I certainly do.)
-> > > I am sorry but there were no strong arguments mentioned for strings so
-> > > far.
-> >
-> > The folks who want this have maintained an out-of-tree patch using
-> > strings.  They've maintained it for the better part of a decade.  I
-> > don't know how widely this shipped in the Android ecosystem, but I
-> > suspect we're talking about billions of devices.  Right?
+The following changes since commit 5816b3e6577eaa676ceb00a848f0fd65fe2adc29:
 
-Correct.
+  Linux 5.15-rc3 (2021-09-26 14:08:19 -0700)
 
-> >
-> > This is a feature that, if accepted into mainline, will get enabled and
-> > used on billions of devices.  If we dumb this down to integers, it's not
-> > 100% clear that it _will_ get used.
+are available in the Git repository at:
 
-Not as is and not with some major changes in the userspace, which
-relied on a simple interface: set a name to a vma, observe that name
-in the /proc/$pid/maps.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.15-rc5
 
-> >
-> > That's a pretty strong argument in my book, even if the contributors
-> > have difficulty articulating exactly why they want strings.
->
-> I would agree that if integers would make this unusable then this would
-> be a strong argument. But I haven't really heard any arguments like that
-> so far. I have heard about IPC overhead and other speculations that do
-> not seem really convincing. We shouldn't hand wave concerns regarding
-> the implementation complexity and resource handling just by "somebody
-> has been using this for decates", right?
->
-> Do not get me wrong. This is going to become a user interface and we
-> will have to maintain it for ever. As such an extra scrutiny has to be
-> applied.
+for you to fetch changes up to 58fc1daa4d2e9789b9ffc880907c961ea7c062cc:
 
-I don't know how to better articulate this. IPC transactions on
-Android cannot be scheduled efficiently. We're going to have to stall
-after mmap, make binder transaction, schedule a new process, get the
-ID, make binder reply, schedule back to the original thread, resume.
-Doing this potentially for every mmap is a non-starter. Deferring this
-job is possible but we still have to do all this work, so it still
-requires cpu cycles and power, not mentioning the additional
-complexity in the userspace. I'm adding a rep from the performance
-team, maybe Tim can explain this better.
+  USB: cdc-acm: fix break reporting (2021-10-05 13:50:52 +0200)
 
-There were a couple suggestions on using filesystem/memfd for naming
-purposes which I need to explore but if that works the approach will
-likely not involve any IDs. We want human-readable names in the maps
-file, not a number.
+----------------------------------------------------------------
+USB fixes for 5.15-rc5
 
-Thanks for all the feedback and ideas!
+Here are some small USB fixes for 5.15-rc5 that resolve a number of
+reported issues:
+	- gadget driver fixes
+	- xhci build warning fixes
+	- build configuration fix
+	- cdc-acm tty handling fixes
+	- cdc-wdm fix
+	- typec fixes
 
-> --
-> Michal Hocko
-> SUSE Labs
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      usb: dwc3: gadget: Revert "set gadgets parent to the right controller"
+
+Arnd Bergmann (1):
+      usb: xhci: tegra: mark PM functions as __maybe_unused
+
+Ben Hutchings (1):
+      Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
+
+Fabio Estevam (1):
+      usb: chipidea: ci_hdrc_imx: Also search for 'phys' phandle
+
+Heikki Krogerus (1):
+      usb: typec: tipd: Remove dependency on "connector" child fwnode
+
+Johan Hovold (2):
+      USB: cdc-acm: fix racy tty buffer accesses
+      USB: cdc-acm: fix break reporting
+
+Pavel Hofman (1):
+      usb: gadget: f_uac2: fixed EP-IN wMaxPacketSize
+
+Rikard Falkeborn (1):
+      usb: cdc-wdm: Fix check for WWAN
+
+Xu Yang (2):
+      usb: typec: tcpci: don't handle vSafe0V event if it's not enabled
+      usb: typec: tcpm: handle SRC_STARTUP state if cc changes
+
+ drivers/usb/chipidea/ci_hdrc_imx.c   | 15 ++++++++++-----
+ drivers/usb/class/cdc-acm.c          |  8 ++++++++
+ drivers/usb/class/cdc-wdm.c          |  6 +++---
+ drivers/usb/common/Kconfig           |  3 +--
+ drivers/usb/dwc3/gadget.c            |  2 +-
+ drivers/usb/gadget/function/f_uac2.c | 14 ++++++++++----
+ drivers/usb/host/xhci-tegra.c        | 12 ++++--------
+ drivers/usb/typec/tcpm/tcpci.c       |  2 +-
+ drivers/usb/typec/tcpm/tcpm.c        |  1 +
+ drivers/usb/typec/tipd/core.c        |  8 +++-----
+ 10 files changed, 42 insertions(+), 29 deletions(-)
