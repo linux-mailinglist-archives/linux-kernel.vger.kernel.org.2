@@ -2,65 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08EF42674E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 038C4426752
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239588AbhJHKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:03:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54344 "EHLO mail.kernel.org"
+        id S239562AbhJHKEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:04:08 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:56816 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239562AbhJHKDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:03:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C98261027;
-        Fri,  8 Oct 2021 10:01:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633687280;
-        bh=Ytq4PQkSijuKbkv6j8ipOla0HKtwwWeiLQ9TknDWZ3w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HRZwV7YrVjH6N+Rki5pemLt1o0zDjj7Ot0u8Pm2Uo8bodpCE+kTJzutj1bb3CORyv
-         tRQ/B5jO65vkY0r5IxZS3IMjYCgIEY0GfjlgUoOiUIcPn4ZQDsDpz7sxTO+wPzbank
-         CtAgT9XJNKIm82a1Cs+Ig70Q1fIah3Ajx6ca/2r5ckrJqnLyFuarvXJnls8ZjF6/XM
-         tzUv1P80DwVFYY77ShgR2Mt6CW9LN/ZGG8PKVau6xSpllT2k6kbZE7hKgmiQCJZsNq
-         9wTj9MvPIOT1X5NjtFKLO+epP2hx0UlBjIQn5eCvKux7fc+c6xmFOEiPHLn1ZbgbFG
-         rJUidhfiH7UPA==
-Date:   Fri, 8 Oct 2021 12:01:16 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ian Pilcher <arequipeno@gmail.com>
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        hch@infradead.org
-Subject: Re: [RESEND PATCH v5 2/2] leds: trigger: Add block device LED
- trigger
-Message-ID: <20211008120116.65aec469@thinkpad>
-In-Reply-To: <749c46a3-5d02-08ef-2a45-e785d65999c7@gmail.com>
-References: <20211004155546.1120869-1-arequipeno@gmail.com>
-        <20211004155546.1120869-3-arequipeno@gmail.com>
-        <20211005232738.371df6b8@thinkpad>
-        <749c46a3-5d02-08ef-2a45-e785d65999c7@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S236118AbhJHKEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:04:06 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mYmhb-0008SB-JP; Fri, 08 Oct 2021 12:02:07 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     krzysztof.kozlowski@canonical.com, robh@kernel.org,
+        linux-riscv@lists.infradead.org
+Cc:     krzysztof.kozlowski@canonical.com, zong.li@sifive.com,
+        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-clk@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        mturquette@baylibre.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        sboyd@kernel.org, Palmer Dabbelt <palmer@dabbelt.com>
+Subject: Re: [PATCH] dt-bindings: clock: fu740-prci: add reset-cells
+Date:   Fri, 08 Oct 2021 12:02:06 +0200
+Message-ID: <24526929.Pe8KFHSfS2@diego>
+In-Reply-To: <mhng-b9e6d8f9-b9be-4651-9649-3378d227eae1@palmerdabbelt-glaptop>
+References: <mhng-b9e6d8f9-b9be-4651-9649-3378d227eae1@palmerdabbelt-glaptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Oct 2021 11:07:06 -0500
-Ian Pilcher <arequipeno@gmail.com> wrote:
+Am Freitag, 8. Oktober 2021, 03:29:17 CEST schrieb Palmer Dabbelt:
+> On Thu, 23 Sep 2021 09:59:32 PDT (-0700), robh@kernel.org wrote:
+> > On Mon, 20 Sep 2021 16:49:44 +0200, Krzysztof Kozlowski wrote:
+> >> The SiFive FU740 Power Reset Clock Interrupt Controller is a reset line
+> >> provider so add respective reset-cells property to fix:
+> >>
+> >>   arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dt.yaml: clock-controller@10000000:
+> >>     '#reset-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+> >>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >> ---
+> >>  .../devicetree/bindings/clock/sifive/fu740-prci.yaml          | 4 ++++
+> >>  1 file changed, 4 insertions(+)
+> >>
+> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> 
+> Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+> 
+> For some reason I thought these went through your tree, LMK if you were 
+> planning on having me take it through mine.
 
-> I have feeling that per-LED work items are likely to cause contention
-> for the mutex, since they will probably all have the same (default)
-> interval and they will usually be set up at about the same time (i.e.
-> at system boot).  Instead, I would propose to have a single work item
-> that is simply scheduled for the next time work is "needed" and then
-> checks all LEDs that are due at that time.
+Normally both driver + binding patches go through the driver-tree
+and actual dts changes through the tree carrying the dts files.
 
-What about creating one work struct for all different interval values?
+So for a clock-patch this should be the clock-tree aka Mike Turquette
+and Stephen Boyd - already in Cc of original patch, so I'd assume they'll
+pick it up.
 
-That way if the user never changes the interval, there will be only one
-work struct.
 
-I wonder if this can be done in a sensible (i.e. not overcomplicated
-code) way.
+Heiko
 
-Marek
+
