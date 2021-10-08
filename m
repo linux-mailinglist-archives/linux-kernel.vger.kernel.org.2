@@ -2,205 +2,409 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAA842670D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5F842670F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237483AbhJHJod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:44:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:46325 "EHLO mga04.intel.com"
+        id S238091AbhJHJrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:47:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229906AbhJHJob (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:44:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225249714"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="225249714"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 02:42:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="524977436"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Oct 2021 02:42:34 -0700
-Subject: Re: [PATCH v1 4/6] mmc: sdhci-pci: Remove dead code (struct
- sdhci_pci_data et al)
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Eric Biggers <ebiggers@google.com>,
-        Raul E Rangel <rrangel@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-References: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
- <20211005102430.63716-5-andriy.shevchenko@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3eca050f-25e4-f516-f621-cd589e05d233@intel.com>
-Date:   Fri, 8 Oct 2021 12:42:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211005102430.63716-5-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S229918AbhJHJrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:47:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFD1860F93;
+        Fri,  8 Oct 2021 09:45:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633686315;
+        bh=72IOpelzvD4VWWoJ/OdoEENNH7zEZGX25e8klEHpHkA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PGdPJSdFhWF4+uM7u00Kigj0dmwFw5JK0CtteTgn/eYvKghVdKPoFQTOX1xotjpIf
+         tF1GfON0pDaY/frS/rtEGBZJV1z5KUaGN76MGY7bvYMnB6FDjqYnrPR/KfiDpIqnWw
+         aZEXOJT0UpDMz7hHSB7Oy9HBEiCKgDxiCWxfGKCqZ6p+YLSuPGjQNCSWkW5f/ECvMA
+         ArFlgGe3DFXH573ABRQzzoBxo8hmiL0o/3+jehA45nAYPNuWovsCxZ1dVq0z7A751Q
+         wG3VioFW2C/lPIipgDHhjJwkh4C4944XTRvuCpC+y3J+BflBpdC7XnyDQrlDPR9ehq
+         2mpy+Mx9YAb6g==
+From:   SeongJae Park <sj@kernel.org>
+To:     akpm@linux-foundation.org
+Cc:     SeongJae Park <sj@kernel.org>, Jonathan.Cameron@Huawei.com,
+        amit@kernel.org, benh@kernel.crashing.org, corbet@lwn.net,
+        david@redhat.com, dwmw@amazon.com, elver@google.com,
+        foersleo@amazon.de, gthelen@google.com, markubo@amazon.de,
+        rientjes@google.com, shakeelb@google.com, shuah@kernel.org,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] mm/damon/dbgfs: Implement recording feature
+Date:   Fri,  8 Oct 2021 09:45:06 +0000
+Message-Id: <20211008094509.16179-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/10/2021 13:24, Andy Shevchenko wrote:
-> The last user of this struct gone couple of releases ago. Besides that
-> there were not so many users of this API for 10+ years: one is
-> implied above Intel Merrifield (added 2016-08-31, removed 2021-02-11),
-> and another is Intel Sunrisepoint (added 2015-02-06, removed 2017-03-20).
+The user space can get the monitoring results via the 'damon_aggregated'
+tracepoint event.  For simplicity and brevity, the tracepoint events
+have some duplicated information such as 'target_id' and 'nr_regions',
+though.  As a result, its size is greater than really needed.  Also,
+dealing with the tracepoint could be complex for some simple use cases.
+To provide a way for getting more efficient and simple monitoring
+results to user space, this commit implements 'recording' feature in
+'damon-dbgfs'.
 
-Wouldn't hurt to identify the commits here if it is not too much trouble.
+The feature is exported to the user space via a new debugfs file named
+'record', which is located in '<debugfs>/damon/' directory.  The file
+allows users to record monitored access patterns in a regular binary
+file in a simple format.  The recorded results are first written in an
+in-memory buffer and flushed to a file in batch.  Users can get and set
+the size of the buffer and the path to the result file by reading from
+and writing to the 'record' file.  For example, below commands set the
+buffer to be 4 KiB and the result to be saved in '/damon.data'.
 
-> 
-> Effectively this is a revert of the commit 52c506f0bc72 ("mmc: sdhci-pci:
-> add platform data").
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/mmc/host/Makefile          |  1 -
->  drivers/mmc/host/sdhci-pci-core.c  | 31 ++++--------------------------
->  drivers/mmc/host/sdhci-pci-data.c  |  6 ------
->  drivers/mmc/host/sdhci-pci.h       |  1 -
->  include/linux/mmc/sdhci-pci-data.h | 18 -----------------
->  5 files changed, 4 insertions(+), 53 deletions(-)
->  delete mode 100644 drivers/mmc/host/sdhci-pci-data.c
->  delete mode 100644 include/linux/mmc/sdhci-pci-data.h
-> 
-> diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-> index 14004cc09aaa..ea36d379bd3c 100644
-> --- a/drivers/mmc/host/Makefile
-> +++ b/drivers/mmc/host/Makefile
-> @@ -14,7 +14,6 @@ obj-$(CONFIG_MMC_SDHCI)		+= sdhci.o
->  obj-$(CONFIG_MMC_SDHCI_PCI)	+= sdhci-pci.o
->  sdhci-pci-y			+= sdhci-pci-core.o sdhci-pci-o2micro.o sdhci-pci-arasan.o \
->  				   sdhci-pci-dwc-mshc.o sdhci-pci-gli.o
-> -obj-$(subst m,y,$(CONFIG_MMC_SDHCI_PCI))	+= sdhci-pci-data.o
->  obj-$(CONFIG_MMC_SDHCI_ACPI)	+= sdhci-acpi.o
->  obj-$(CONFIG_MMC_SDHCI_PXAV3)	+= sdhci-pxav3.o
->  obj-$(CONFIG_MMC_SDHCI_PXAV2)	+= sdhci-pxav2.o
-> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-> index 30caa0b325de..8d01285e1b32 100644
-> --- a/drivers/mmc/host/sdhci-pci-core.c
-> +++ b/drivers/mmc/host/sdhci-pci-core.c
-> @@ -17,8 +17,6 @@
->  #include <linux/dma-mapping.h>
->  #include <linux/slab.h>
->  #include <linux/device.h>
-> -#include <linux/mmc/host.h>
-> -#include <linux/mmc/mmc.h>
->  #include <linux/scatterlist.h>
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
-> @@ -26,11 +24,13 @@
->  #include <linux/pm_runtime.h>
->  #include <linux/pm_qos.h>
->  #include <linux/debugfs.h>
-> -#include <linux/mmc/slot-gpio.h>
-> -#include <linux/mmc/sdhci-pci-data.h>
->  #include <linux/acpi.h>
->  #include <linux/dmi.h>
->  
-> +#include <linux/mmc/host.h>
-> +#include <linux/mmc/mmc.h>
-> +#include <linux/mmc/slot-gpio.h>
-> +
->  #ifdef CONFIG_X86
->  #include <asm/iosf_mbi.h>
->  #endif
-> @@ -2116,22 +2116,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
->  	slot->cd_gpio = -EINVAL;
->  	slot->cd_idx = -1;
->  
-> -	/* Retrieve platform data if there is any */
-> -	if (*sdhci_pci_get_data)
-> -		slot->data = sdhci_pci_get_data(pdev, slotno);
-> -
-> -	if (slot->data) {
-> -		if (slot->data->setup) {
-> -			ret = slot->data->setup(slot->data);
-> -			if (ret) {
-> -				dev_err(&pdev->dev, "platform setup failed\n");
-> -				goto free;
-> -			}
-> -		}
-> -		slot->rst_n_gpio = slot->data->rst_n_gpio;
-> -		slot->cd_gpio = slot->data->cd_gpio;
-> -	}
-> -
->  	host->hw_name = "PCI";
->  	host->ops = chip->fixes && chip->fixes->ops ?
->  		    chip->fixes->ops :
-> @@ -2218,10 +2202,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
->  		chip->fixes->remove_slot(slot, 0);
->  
->  cleanup:
-> -	if (slot->data && slot->data->cleanup)
-> -		slot->data->cleanup(slot->data);
-> -
-> -free:
->  	sdhci_free_host(host);
->  
->  	return ERR_PTR(ret);
-> @@ -2244,9 +2224,6 @@ static void sdhci_pci_remove_slot(struct sdhci_pci_slot *slot)
->  	if (slot->chip->fixes && slot->chip->fixes->remove_slot)
->  		slot->chip->fixes->remove_slot(slot, dead);
->  
-> -	if (slot->data && slot->data->cleanup)
-> -		slot->data->cleanup(slot->data);
-> -
->  	sdhci_free_host(slot->host);
->  }
->  
-> diff --git a/drivers/mmc/host/sdhci-pci-data.c b/drivers/mmc/host/sdhci-pci-data.c
-> deleted file mode 100644
-> index 18638fb363d8..000000000000
-> --- a/drivers/mmc/host/sdhci-pci-data.c
-> +++ /dev/null
-> @@ -1,6 +0,0 @@
-> -// SPDX-License-Identifier: GPL-2.0-only
-> -#include <linux/module.h>
-> -#include <linux/mmc/sdhci-pci-data.h>
-> -
-> -struct sdhci_pci_data *(*sdhci_pci_get_data)(struct pci_dev *pdev, int slotno);
-> -EXPORT_SYMBOL_GPL(sdhci_pci_get_data);
-> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
-> index 8f90c4163bb5..15b36cd47860 100644
-> --- a/drivers/mmc/host/sdhci-pci.h
-> +++ b/drivers/mmc/host/sdhci-pci.h
-> @@ -156,7 +156,6 @@ struct sdhci_pci_fixes {
->  struct sdhci_pci_slot {
->  	struct sdhci_pci_chip	*chip;
->  	struct sdhci_host	*host;
-> -	struct sdhci_pci_data	*data;
->  
->  	int			rst_n_gpio;
->  	int			cd_gpio;
-> diff --git a/include/linux/mmc/sdhci-pci-data.h b/include/linux/mmc/sdhci-pci-data.h
-> deleted file mode 100644
-> index 1d42872d22f3..000000000000
-> --- a/include/linux/mmc/sdhci-pci-data.h
-> +++ /dev/null
-> @@ -1,18 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef LINUX_MMC_SDHCI_PCI_DATA_H
-> -#define LINUX_MMC_SDHCI_PCI_DATA_H
-> -
-> -struct pci_dev;
-> -
-> -struct sdhci_pci_data {
-> -	struct pci_dev	*pdev;
-> -	int		slotno;
-> -	int		rst_n_gpio; /* Set to -EINVAL if unused */
-> -	int		cd_gpio;    /* Set to -EINVAL if unused */
-> -	int		(*setup)(struct sdhci_pci_data *data);
-> -	void		(*cleanup)(struct sdhci_pci_data *data);
-> -};
-> -
-> -extern struct sdhci_pci_data *(*sdhci_pci_get_data)(struct pci_dev *pdev,
-> -				int slotno);
-> -#endif
-> 
+    # cd <debugfs>/damon
+    # echo "4096 /damon.data" > record
+    # cat record
+    4096 /damon.data
+
+The recording can be disabled by setting the buffer size zero.
+
+Evaluation
+----------
+
+With a simple test workload[1], recording the tracepoint event using
+'perf-record' results in 1.7 MiB 'perf.data' file.  When the access
+pattern is recorded via this feature, the size is reduced to 264 KiB.
+Also, the resulting record file is simple enough to be manipulated by a
+small (100 lines of code) python script which will be introduced by a
+following commit ("selftests/damon: Test recording feature").
+
+[1] https://github.com/sjp38/masim/blob/master/configs/zigzag.cfg
+
+Signed-off-by: SeongJae Park <sj@kernel.org>
+---
+ mm/damon/dbgfs.c | 267 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 263 insertions(+), 4 deletions(-)
+
+diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
+index 28d6abf27763..45584f54c2b5 100644
+--- a/mm/damon/dbgfs.c
++++ b/mm/damon/dbgfs.c
+@@ -15,6 +15,17 @@
+ #include <linux/page_idle.h>
+ #include <linux/slab.h>
+ 
++#define MIN_RECORD_BUFFER_LEN	1024
++#define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
++#define MAX_RFILE_PATH_LEN	256
++
++struct dbgfs_recorder {
++	unsigned char *rbuf;
++	unsigned int rbuf_len;
++	unsigned int rbuf_offset;
++	char *rfile_path;
++};
++
+ static struct damon_ctx **dbgfs_ctxs;
+ static int dbgfs_nr_ctxs;
+ static struct dentry **dbgfs_dirs;
+@@ -98,6 +109,116 @@ static ssize_t dbgfs_attrs_write(struct file *file,
+ 	return ret;
+ }
+ 
++static ssize_t dbgfs_record_read(struct file *file,
++		char __user *buf, size_t count, loff_t *ppos)
++{
++	struct damon_ctx *ctx = file->private_data;
++	struct dbgfs_recorder *rec = ctx->callback.private;
++	char record_buf[20 + MAX_RFILE_PATH_LEN];
++	int ret;
++
++	mutex_lock(&ctx->kdamond_lock);
++	ret = scnprintf(record_buf, ARRAY_SIZE(record_buf), "%u %s\n",
++			rec->rbuf_len, rec->rfile_path);
++	mutex_unlock(&ctx->kdamond_lock);
++	return simple_read_from_buffer(buf, count, ppos, record_buf, ret);
++}
++
++/*
++ * dbgfs_set_recording() - Set attributes for the recording.
++ * @ctx:	target kdamond context
++ * @rbuf_len:	length of the result buffer
++ * @rfile_path:	path to the monitor result files
++ *
++ * Setting 'rbuf_len' 0 disables recording.
++ *
++ * This function should not be called while the kdamond is running.
++ *
++ * Return: 0 on success, negative error code otherwise.
++ */
++static int dbgfs_set_recording(struct damon_ctx *ctx,
++			unsigned int rbuf_len, char *rfile_path)
++{
++	struct dbgfs_recorder *recorder;
++	size_t rfile_path_len;
++
++	if (rbuf_len && (rbuf_len > MAX_RECORD_BUFFER_LEN ||
++			rbuf_len < MIN_RECORD_BUFFER_LEN)) {
++		pr_err("result buffer size (%u) is out of [%d,%d]\n",
++				rbuf_len, MIN_RECORD_BUFFER_LEN,
++				MAX_RECORD_BUFFER_LEN);
++		return -EINVAL;
++	}
++	rfile_path_len = strnlen(rfile_path, MAX_RFILE_PATH_LEN);
++	if (rfile_path_len >= MAX_RFILE_PATH_LEN) {
++		pr_err("too long (>%d) result file path %s\n",
++				MAX_RFILE_PATH_LEN, rfile_path);
++		return -EINVAL;
++	}
++
++	recorder = ctx->callback.private;
++	if (!recorder) {
++		recorder = kzalloc(sizeof(*recorder), GFP_KERNEL);
++		if (!recorder)
++			return -ENOMEM;
++		ctx->callback.private = recorder;
++	}
++
++	recorder->rbuf_len = rbuf_len;
++	kfree(recorder->rbuf);
++	recorder->rbuf = NULL;
++	kfree(recorder->rfile_path);
++	recorder->rfile_path = NULL;
++
++	if (rbuf_len) {
++		recorder->rbuf = kvmalloc(rbuf_len, GFP_KERNEL);
++		if (!recorder->rbuf)
++			return -ENOMEM;
++	}
++	recorder->rfile_path = kmalloc(rfile_path_len + 1, GFP_KERNEL);
++	if (!recorder->rfile_path)
++		return -ENOMEM;
++	strncpy(recorder->rfile_path, rfile_path, rfile_path_len + 1);
++
++	return 0;
++}
++
++static ssize_t dbgfs_record_write(struct file *file,
++		const char __user *buf, size_t count, loff_t *ppos)
++{
++	struct damon_ctx *ctx = file->private_data;
++	char *kbuf;
++	unsigned int rbuf_len;
++	char rfile_path[MAX_RFILE_PATH_LEN];
++	ssize_t ret = count;
++	int err;
++
++	kbuf = user_input_str(buf, count, ppos);
++	if (IS_ERR(kbuf))
++		return PTR_ERR(kbuf);
++
++	if (sscanf(kbuf, "%u %s",
++				&rbuf_len, rfile_path) != 2) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	mutex_lock(&ctx->kdamond_lock);
++	if (ctx->kdamond) {
++		ret = -EBUSY;
++		goto unlock_out;
++	}
++
++	err = dbgfs_set_recording(ctx, rbuf_len, rfile_path);
++	if (err)
++		ret = err;
++unlock_out:
++	mutex_unlock(&ctx->kdamond_lock);
++out:
++	kfree(kbuf);
++	return ret;
++}
++
+ static ssize_t sprint_schemes(struct damon_ctx *c, char *buf, ssize_t len)
+ {
+ 	struct damos *s;
+@@ -433,6 +554,12 @@ static const struct file_operations attrs_fops = {
+ 	.write = dbgfs_attrs_write,
+ };
+ 
++static const struct file_operations record_fops = {
++	.open = damon_dbgfs_open,
++	.read = dbgfs_record_read,
++	.write = dbgfs_record_write,
++};
++
+ static const struct file_operations schemes_fops = {
+ 	.open = damon_dbgfs_open,
+ 	.read = dbgfs_schemes_read,
+@@ -452,20 +579,144 @@ static const struct file_operations kdamond_pid_fops = {
+ 
+ static void dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
+ {
+-	const char * const file_names[] = {"attrs", "schemes", "target_ids",
+-		"kdamond_pid"};
+-	const struct file_operations *fops[] = {&attrs_fops, &schemes_fops,
+-		&target_ids_fops, &kdamond_pid_fops};
++	const char * const file_names[] = {"attrs", "record", "schemes",
++		"target_ids", "kdamond_pid"};
++	const struct file_operations *fops[] = {&attrs_fops,
++		&record_fops, &schemes_fops, &target_ids_fops,
++		&kdamond_pid_fops};
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(file_names); i++)
+ 		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
+ }
+ 
++/*
++ * Flush the content in the result buffer to the result file
++ */
++static void dbgfs_flush_rbuffer(struct dbgfs_recorder *rec)
++{
++	ssize_t sz;
++	loff_t pos = 0;
++	struct file *rfile;
++
++	if (!rec->rbuf_offset)
++		return;
++
++	rfile = filp_open(rec->rfile_path,
++			O_CREAT | O_RDWR | O_APPEND | O_LARGEFILE, 0600);
++	if (IS_ERR(rfile)) {
++		pr_err("Cannot open the result file %s\n",
++				rec->rfile_path);
++		return;
++	}
++
++	while (rec->rbuf_offset) {
++		sz = kernel_write(rfile, rec->rbuf, rec->rbuf_offset, &pos);
++		if (sz < 0)
++			break;
++		rec->rbuf_offset -= sz;
++	}
++	filp_close(rfile, NULL);
++}
++
++/*
++ * Write a data into the result buffer
++ */
++static void dbgfs_write_rbuf(struct damon_ctx *ctx, void *data, ssize_t size)
++{
++	struct dbgfs_recorder *rec = ctx->callback.private;
++
++	if (!rec->rbuf_len || !rec->rbuf || !rec->rfile_path)
++		return;
++	if (rec->rbuf_offset + size > rec->rbuf_len)
++		dbgfs_flush_rbuffer(ctx->callback.private);
++	if (rec->rbuf_offset + size > rec->rbuf_len) {
++		pr_warn("%s: flush failed, or wrong size given(%u, %zu)\n",
++				__func__, rec->rbuf_offset, size);
++		return;
++	}
++
++	memcpy(&rec->rbuf[rec->rbuf_offset], data, size);
++	rec->rbuf_offset += size;
++}
++
++static void dbgfs_write_record_header(struct damon_ctx *ctx)
++{
++	int recfmt_ver = 2;
++
++	dbgfs_write_rbuf(ctx, "damon_recfmt_ver", 16);
++	dbgfs_write_rbuf(ctx, &recfmt_ver, sizeof(recfmt_ver));
++}
++
++static void dbgfs_free_recorder(struct dbgfs_recorder *recorder)
++{
++	kfree(recorder->rbuf);
++	kfree(recorder->rfile_path);
++	kfree(recorder);
++}
++
++static unsigned int nr_damon_targets(struct damon_ctx *ctx)
++{
++	struct damon_target *t;
++	unsigned int nr_targets = 0;
++
++	damon_for_each_target(t, ctx)
++		nr_targets++;
++
++	return nr_targets;
++}
++
++static int dbgfs_before_start(struct damon_ctx *ctx)
++{
++	dbgfs_write_record_header(ctx);
++	return 0;
++}
++
++/*
++ * Store the aggregated monitoring results to the result buffer
++ *
++ * The format for the result buffer is as below:
++ *
++ *   <time> <number of targets> <array of target infos>
++ *
++ *   target info: <id> <number of regions> <array of region infos>
++ *   region info: <start address> <end address> <nr_accesses>
++ */
++static int dbgfs_after_aggregation(struct damon_ctx *c)
++{
++	struct damon_target *t;
++	struct timespec64 now;
++	unsigned int nr;
++
++	ktime_get_coarse_ts64(&now);
++
++	dbgfs_write_rbuf(c, &now, sizeof(now));
++	nr = nr_damon_targets(c);
++	dbgfs_write_rbuf(c, &nr, sizeof(nr));
++
++	damon_for_each_target(t, c) {
++		struct damon_region *r;
++
++		dbgfs_write_rbuf(c, &t->id, sizeof(t->id));
++		nr = damon_nr_regions(t);
++		dbgfs_write_rbuf(c, &nr, sizeof(nr));
++		damon_for_each_region(r, t) {
++			dbgfs_write_rbuf(c, &r->ar.start, sizeof(r->ar.start));
++			dbgfs_write_rbuf(c, &r->ar.end, sizeof(r->ar.end));
++			dbgfs_write_rbuf(c, &r->nr_accesses,
++					sizeof(r->nr_accesses));
++		}
++	}
++
++	return 0;
++}
++
+ static int dbgfs_before_terminate(struct damon_ctx *ctx)
+ {
+ 	struct damon_target *t, *next;
+ 
++	dbgfs_flush_rbuffer(ctx->callback.private);
++
+ 	if (!targetid_is_pid(ctx))
+ 		return 0;
+ 
+@@ -484,13 +735,21 @@ static struct damon_ctx *dbgfs_new_ctx(void)
+ 	if (!ctx)
+ 		return NULL;
+ 
++	if (dbgfs_set_recording(ctx, 0, "none")) {
++		damon_destroy_ctx(ctx);
++		return NULL;
++	}
++
+ 	damon_va_set_primitives(ctx);
++	ctx->callback.before_start = dbgfs_before_start;
++	ctx->callback.after_aggregation = dbgfs_after_aggregation;
+ 	ctx->callback.before_terminate = dbgfs_before_terminate;
+ 	return ctx;
+ }
+ 
+ static void dbgfs_destroy_ctx(struct damon_ctx *ctx)
+ {
++	dbgfs_free_recorder(ctx->callback.private);
+ 	damon_destroy_ctx(ctx);
+ }
+ 
+-- 
+2.17.1
 
