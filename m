@@ -2,205 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3601B426F86
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18E7426F88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhJHR1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:27:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:37642 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhJHR1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:27:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0151C1063;
-        Fri,  8 Oct 2021 10:25:25 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.27.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80B7F3F766;
-        Fri,  8 Oct 2021 10:25:20 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 18:25:13 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Pingfan Liu <kernelfans@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <julien.thierry@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yuichi Ito <ito-yuichi@fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
-Message-ID: <20211008172513.GD976@C02TD0UTHF1T.local>
-References: <20210924132837.45994-1-kernelfans@gmail.com>
- <20210924132837.45994-2-kernelfans@gmail.com>
- <20210924175306.GB42068@C02TD0UTHF1T.local>
- <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
- <20210930133257.GB18258@lakrids.cambridge.arm.com>
- <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
- <YWBbyPJPpt5zgj+b@piliu.users.ipa.redhat.com>
+        id S233734AbhJHR20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhJHR2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:28:25 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B30EC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:26:30 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id m22so32043836wrb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 10:26:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fah6fMg3qj46qR+RN20MjI9vCGiqxDv/9mCcKXLHlzU=;
+        b=qEBIWBGsMqbjtO+6chLcT7CNx4AIvrqniID3DIg4cZqWDsqvVU/rZuFNc7Z1bjYwsz
+         GtNJtOx7k7JUhDgAKz5bRnGdHSZr2Io4h09AhVCw7ZZjDR7zZVje6gi0j9qLaBSYAd4T
+         AcQa0UZjetlmWQkjIQtZY88fUjWi0UjcVzVnf1EVZIutuuNi20pCoQRNyRnJy3k0MhJH
+         T+iQUvp8CNVhI4BM8dMg0tHf6clkrLY81CtpMH8jqZgJygvyD3ub33L30M05u32ZidG0
+         +XMyWi8chHA2Dw2sa43U9ipk6rgd5IVHSix4vnPVUk10Hmn9bXeLn4d+xLIPN/qZPOA2
+         j/zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fah6fMg3qj46qR+RN20MjI9vCGiqxDv/9mCcKXLHlzU=;
+        b=kATjd98t8vqlE6/YQNEH0aoHlb1JKW8AVMPj5xps3Mfw8HiHcvvuHcxuwVuctkbt+9
+         yAG8+zsuuz8sWDXZKBqYH4/qZA/qL6DxN0BxWlMTJbe3OxUw1xGocnYEMupuxF2r+9PN
+         AOdaj8xJpxdiYdlWfUzKhqNtqvQRINDVnUMwAZXbvWbKlHK+LHdYb5y9wi4AWy82pe/7
+         sMS+sLUJSeisaJXbQ6Wnbx4Vc1mO5lMY5V0qrF72+Njkx1FfMUxAeP6DCribjtMD6wz7
+         Vy8qy5Imd0ycXGVRM4VwH5jdfaDXJVClMcAW0p5intFcPPA3jga+f7GaY69C36sSa71R
+         BJGg==
+X-Gm-Message-State: AOAM531VvRuV5v1M+fVQt2e9znzVvqL6c5kyJvK8Dde6UVuw2VneQWKS
+        5zoYPldSYhBusUxuci7cqpU=
+X-Google-Smtp-Source: ABdhPJwL/0AmBXev2xD93BuHSliY7tqUR4qWFZvht8EafV6HhK29M/t7wRT82QC30LmkHgh8vnOCOA==
+X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr4849133wmq.26.1633713988669;
+        Fri, 08 Oct 2021 10:26:28 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::5d0b])
+        by smtp.gmail.com with ESMTPSA id 61sm3212780wrl.94.2021.10.08.10.26.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 10:26:28 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: r8188eu: remove some dead code
+Date:   Fri,  8 Oct 2021 19:26:21 +0200
+Message-Id: <20211008172621.8721-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWBbyPJPpt5zgj+b@piliu.users.ipa.redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 10:55:04PM +0800, Pingfan Liu wrote:
-> On Fri, Oct 08, 2021 at 12:01:25PM +0800, Pingfan Liu wrote:
-> > Sorry that I missed this message and I am just back from a long
-> > festival.
-> > 
-> > Adding Paul for RCU guidance.
-> > 
-> > On Thu, Sep 30, 2021 at 02:32:57PM +0100, Mark Rutland wrote:
-> > > On Sat, Sep 25, 2021 at 11:39:55PM +0800, Pingfan Liu wrote:
-> > > > On Fri, Sep 24, 2021 at 06:53:06PM +0100, Mark Rutland wrote:
-> > > > > On Fri, Sep 24, 2021 at 09:28:33PM +0800, Pingfan Liu wrote:
-> > > > > > In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
-> > > > > > irq, which makes the condition !interrupts_enabled(regs) fail to detect
-> > > > > > the NMI. This will cause a mistaken account for irq.
-> > > > > 
-> > > > Sorry about the confusing word "account", it should be "lockdep/rcu/.."
-> > > > 
-> > > > > Can you please explain this in more detail? It's not clear which
-> > > > > specific case you mean when you say "NMI interrupts an irq", as that
-> > > > > could mean a number of distinct scenarios.
-> > > > > 
-> > > > > AFAICT, if we're in an IRQ handler (with NMIs unmasked), and an NMI
-> > > > > causes a new exception we'll do the right thing. So either I'm missing a
-> > > > > subtlety or you're describing a different scenario..
-> > > > > 
-> > > > > Note that the entry code is only trying to distinguish between:
-> > > > > 
-> > > > > a) This exception is *definitely* an NMI (because regular interrupts
-> > > > >    were masked).
-> > > > > 
-> > > > > b) This exception is *either* and IRQ or an NMI (and this *cannot* be
-> > > > >    distinguished until we acknowledge the interrupt), so we treat it as
-> > > > >    an IRQ for now.
-> > > > > 
-> > > > b) is the aim.
-> > > > 
-> > > > At the entry, enter_el1_irq_or_nmi() -> enter_from_kernel_mode()->rcu_irq_enter()/rcu_irq_enter_check_tick() etc.
-> > > > While at irqchip level, gic_handle_irq()->gic_handle_nmi()->nmi_enter(),
-> > > > which does not call rcu_irq_enter_check_tick(). So it is not proper to
-> > > > "treat it as an IRQ for now"
-> > > 
-> > > I'm struggling to understand the problem here. What is "not proper", and
-> > > why?
-> > > 
-> > > Do you think there's a correctness problem, or that we're doing more
-> > > work than necessary? 
-> > > 
-> > I had thought it just did redundant accounting. But after revisiting RCU
-> > code, I think it confronts a real bug.
-> > 
-> > > If you could give a specific example of a problem, it would really help.
-> > > 
-> > Refer to rcu_nmi_enter(), which can be called by
-> > enter_from_kernel_mode():
-> > 
-> > ||noinstr void rcu_nmi_enter(void)
-> > ||{
-> > ||        ...
-> > ||        if (rcu_dynticks_curr_cpu_in_eqs()) {
-> > ||
-> > ||                if (!in_nmi())
-> > ||                        rcu_dynticks_task_exit();
-> > ||
-> > ||                // RCU is not watching here ...
-> > ||                rcu_dynticks_eqs_exit();
-> > ||                // ... but is watching here.
-> > ||
-> > ||                if (!in_nmi()) {
-> > ||                        instrumentation_begin();
-> > ||                        rcu_cleanup_after_idle();
-> > ||                        instrumentation_end();
-> > ||                }
-> > ||
-> > ||                instrumentation_begin();
-> > ||                // instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-> > ||                instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-> > ||                // instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> > ||                instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-> > ||
-> > ||                incby = 1;
-> > ||        } else if (!in_nmi()) {
-> > ||                instrumentation_begin();
-> > ||                rcu_irq_enter_check_tick();
-> > ||        } else  {
-> > ||                instrumentation_begin();
-> > ||        }
-> > ||        ...
-> > ||}
-> > 
-> 
-> Forget to supplement the context for understanding the case:
->   On arm64, at present, a pNMI (akin to NMI) may call rcu_nmi_enter()
->   without calling "__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);".
->   As a result it can be mistaken as an normal interrupt in
->   rcu_nmi_enter().
+In this driver SupportICType is ODM_RTL8188E and SupportInterface is
+ODM_ITRF_USB. Remove an if statement that is never true and remove
+function odm_DIGbyRSSI_LPS() which is used only in this dead if block.
 
-I appreciate that there's a window where we treat the pNMI like an IRQ,
-but that's by design, and we account for this in gic_handle_irq() and
-gic_handle_nmi() where we "upgrade" to NMI context with
-nmi_enter()..nmi_exit().
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+Tested on x86_64 with Inter-Tech DMG-02.
 
-The idea is that we have two cases: 
+ drivers/staging/r8188eu/hal/odm.c     | 59 +--------------------------
+ drivers/staging/r8188eu/include/odm.h | 14 -------
+ 2 files changed, 1 insertion(+), 72 deletions(-)
 
-1) If we take a pNMI from a context where IRQs were masked, we know it
-   must be a pNMI, and perform the NMI entry immediately to avoid
-   reentrancy problems. 
+diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
+index bc49dc856a60..d3f8c7442daf 100644
+--- a/drivers/staging/r8188eu/hal/odm.c
++++ b/drivers/staging/r8188eu/hal/odm.c
+@@ -186,17 +186,7 @@ void ODM_DMWatchdog(struct odm_dm_struct *pDM_Odm)
+ 	odm_FalseAlarmCounterStatistics(pDM_Odm);
+ 	odm_RSSIMonitorCheck(pDM_Odm);
+ 
+-	/* For CE Platform(SPRD or Tablet) */
+-	/* 8723A or 8189ES platform */
+-	/* NeilChen--2012--08--24-- */
+-	/* Fix Leave LPS issue */
+-	if ((pDM_Odm->Adapter->pwrctrlpriv.pwr_mode != PS_MODE_ACTIVE) &&/*  in LPS mode */
+-	    ((pDM_Odm->SupportICType & (ODM_RTL8723A)) ||
+-	    (pDM_Odm->SupportICType & (ODM_RTL8188E) &&
+-	    ((pDM_Odm->SupportInterface  == ODM_ITRF_SDIO)))))
+-		odm_DIGbyRSSI_LPS(pDM_Odm);
+-	else
+-		odm_DIG(pDM_Odm);
++	odm_DIG(pDM_Odm);
+ 	odm_CCKPacketDetectionThresh(pDM_Odm);
+ 
+ 	if (*pDM_Odm->pbPowerSaving)
+@@ -456,53 +446,6 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
+ 	}
+ }
+ 
+-/* Need LPS mode for CE platform --2012--08--24--- */
+-/* 8723AS/8189ES */
+-void odm_DIGbyRSSI_LPS(struct odm_dm_struct *pDM_Odm)
+-{
+-	struct adapter *pAdapter = pDM_Odm->Adapter;
+-	struct false_alarm_stats *pFalseAlmCnt = &pDM_Odm->FalseAlmCnt;
+-
+-	u8 RSSI_Lower = DM_DIG_MIN_NIC;   /* 0x1E or 0x1C */
+-	u8 bFwCurrentInPSMode = false;
+-	u8 CurrentIGI = pDM_Odm->RSSI_Min;
+-
+-	if (!(pDM_Odm->SupportICType & (ODM_RTL8723A | ODM_RTL8188E)))
+-		return;
+-
+-	CurrentIGI = CurrentIGI + RSSI_OFFSET_DIG;
+-	bFwCurrentInPSMode = pAdapter->pwrctrlpriv.bFwCurrentInPSMode;
+-
+-	/*  Using FW PS mode to make IGI */
+-	if (bFwCurrentInPSMode) {
+-		/* Adjust by  FA in LPS MODE */
+-		if (pFalseAlmCnt->Cnt_all > DM_DIG_FA_TH2_LPS)
+-			CurrentIGI = CurrentIGI + 2;
+-		else if (pFalseAlmCnt->Cnt_all > DM_DIG_FA_TH1_LPS)
+-			CurrentIGI = CurrentIGI + 1;
+-		else if (pFalseAlmCnt->Cnt_all < DM_DIG_FA_TH0_LPS)
+-			CurrentIGI = CurrentIGI - 1;
+-	} else {
+-		CurrentIGI = RSSI_Lower;
+-	}
+-
+-	/* Lower bound checking */
+-
+-	/* RSSI Lower bound check */
+-	if ((pDM_Odm->RSSI_Min - 10) > DM_DIG_MIN_NIC)
+-		RSSI_Lower = (pDM_Odm->RSSI_Min - 10);
+-	else
+-		RSSI_Lower = DM_DIG_MIN_NIC;
+-
+-	/* Upper and Lower Bound checking */
+-	if (CurrentIGI > DM_DIG_MAX_NIC)
+-		CurrentIGI = DM_DIG_MAX_NIC;
+-	else if (CurrentIGI < RSSI_Lower)
+-		CurrentIGI = RSSI_Lower;
+-
+-	ODM_Write_DIG(pDM_Odm, CurrentIGI);/* ODM_Write_DIG(pDM_Odm, pDM_DigTable->CurIGValue); */
+-}
+-
+ void odm_DIGInit(struct odm_dm_struct *pDM_Odm)
+ {
+ 	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
+diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
+index 48d383f91c16..ac053312d817 100644
+--- a/drivers/staging/r8188eu/include/odm.h
++++ b/drivers/staging/r8188eu/include/odm.h
+@@ -4,18 +4,6 @@
+ #ifndef	__HALDMOUTSRC_H__
+ #define __HALDMOUTSRC_H__
+ 
+-/*  */
+-/* 3 PSD Handler */
+-/* 3============================================================ */
+-
+-/*  LPS define */
+-#define DM_DIG_FA_TH0_LPS		4 /*  4 in lps */
+-#define DM_DIG_FA_TH1_LPS		15 /*  15 lps */
+-#define DM_DIG_FA_TH2_LPS		30 /*  30 lps */
+-#define RSSI_OFFSET_DIG			0x05;
+-
+-/*  structure and define */
+-
+ /*  Add for AP/ADSLpseudo DM structuer requirement. */
+ /*  We need to remove to other position??? */
+ struct rtl8192cd_priv {
+@@ -972,8 +960,6 @@ u32 ConvertTo_dB(u32 Value);
+ u32 GetPSDData(struct odm_dm_struct *pDM_Odm, unsigned int point,
+ 	       u8 initial_gain_psd);
+ 
+-void odm_DIGbyRSSI_LPS(struct odm_dm_struct *pDM_Odm);
+-
+ u32 ODM_Get_Rate_Bitmap(struct odm_dm_struct *pDM_Odm, u32 macid,
+ 			u32 ra_mask, u8 rssi_level);
+ 
+-- 
+2.33.0
 
-   I think we're all happy with this case.
-
-2) If we take a pNMI from a context where IRQs were unmasked, we don't know
-   whether the trigger was a pNMI/IRQ until we read from the GIC, and
-   since we *could* have taken an IRQ, this is equivalent to taking a
-   spurious IRQ, and while handling that, taking the NMI, e.g.
-   
-   < run with IRQs unmasked >
-     ~~~ take IRQ ~~~
-     < enter IRQ >
-       ~~~ take NMI exception ~~~
-       < enter NMI >
-       < handle NMI >
-       < exit NMI > 
-       ~~~ return from NMI exception ~~~
-     < handle IRQ / spurious / do-nothing >
-     < exit IRQ >
-     ~~~ return from IRQ exception ~~~
-   < continue running with IRQs unmasked >
-
-   ... except that we don't do the HW NMI exception entry/exit, just all
-   the necessary SW accounting.
-
-
-Note that case (2) can *never* nest within itself or within case (1).
-
-Do you have a specific example of something that goes wrong with the
-above? e.g. something that's inconsistent with that rationale?
-
-> And this may cause the following issue:
-> > There is 3 pieces of code put under the
-> > protection of if (!in_nmi()). At least the last one
-> > "rcu_irq_enter_check_tick()" can trigger a hard lock up bug. Because it
-> > is supposed to hold a spin lock with irqoff by
-> > "raw_spin_lock_rcu_node(rdp->mynode)", but pNMI can breach it. The same
-> > scenario in rcu_nmi_exit()->rcu_prepare_for_idle().
-> > 
-> > As for the first two "if (!in_nmi())", I have no idea of why, except
-> > breaching spin_lock_irq() by NMI. Hope Paul can give some guide.
-
-That code (in enter_from_kernel_mode()) only runs in case 2, where it
-cannot be nested within a pNMI, so I struggle to see how this can
-deadlock. It it can, then I would expect the general case of a pNMI
-nesting within and IRQ would be broken?
-
-Can you give a concrete example of a sequence that would lockup?
-Currently I can't see how that's possible.
-
-Thanks,
-Mark.
