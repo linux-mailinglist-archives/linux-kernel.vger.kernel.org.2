@@ -2,149 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A8C42652B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDF0426471
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhJHHYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhJHHYA (ORCPT
+        id S229738AbhJHGGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:06:19 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:37677 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhJHGGS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:24:00 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C08DC061755;
-        Fri,  8 Oct 2021 00:22:06 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id x8so5562097plv.8;
-        Fri, 08 Oct 2021 00:22:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QgZDXufZT6HKl/lBj8C0d09aIeUA5f6RLZG86dMpu7k=;
-        b=M63ZBGUdgFZB/d9TMgxemztWqBUSTyQpUmePUT/8Ns0SQM4XHJkluWs7JRzLIfZRn1
-         iyMJ/dtNf/Kfq9DmK62cvwSMbbKAKyjEOADLu5AYLuRQfZoZRRFdUUsxWrTjbpvSgWfq
-         c595/TZ3wVyRQ2od4m7qnXMBxkVjm0HQ3gRVZ+eA8O29V6FDDBoDfiBXCgPpyNw0070s
-         vTGgIiLIsBb9cFtSVQXTgE5fkqpwW4N3W+xYvYfdTyFVzHtUlelFQ9BtojGbCtu98MlE
-         RDK8iiVPMJCJl+Aa5wl24BXz+VaRuxlKYNf6qn5pLFvmfnFAtdaJsgEQTfZTkZs/E1nS
-         1xlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QgZDXufZT6HKl/lBj8C0d09aIeUA5f6RLZG86dMpu7k=;
-        b=lpmw0wPbLOvR/oCkABvlywNgH7Ct92PPy4sGRGxIybkj2wt2VTvXJ9xCep+LpeI3hJ
-         3nguc+a1fqEUZXY8xK5tQVOscaNN0eBQwNcoOMzOz/zgGN21CkJf1PAGbu6q57mrtPOA
-         xfGPJbJcLUzR58NW9rJ/L4u566hH5uH60EqMACvI83JpXQmXYQaQR2hdVtyXO6l26QMN
-         2cjOTq8Bq9CEJpjKNHblW2L7WPExLLH73UQsORfctt8hbubBpMdePU6g3Ys+nG1oXdtW
-         bV37s5Db0QPxk6IX/xJLXVXjcyopoDoxe6bCU+788UvTIZbEh6jtsKB2S58lRmJKvX/G
-         hxxA==
-X-Gm-Message-State: AOAM533rOKYSSavavy85DIOaoYLCibImUkNh4tQC+hzgjSk5RRWNhIiS
-        FNYgQH6698zAyHAotlqOYn4=
-X-Google-Smtp-Source: ABdhPJzGcX/FpZZkyYgmMcL7AezXWg7k6v+xPhh0/XrE/fVqF0dI+yWdSplZlcFoI8NvQgqrTzuHCA==
-X-Received: by 2002:a17:903:1112:b0:13d:ce49:e275 with SMTP id n18-20020a170903111200b0013dce49e275mr8280504plh.5.1633677725365;
-        Fri, 08 Oct 2021 00:22:05 -0700 (PDT)
-Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id f84sm1565319pfa.25.2021.10.08.00.22.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 00:22:04 -0700 (PDT)
-From:   Nadav Amit <nadav.amit@gmail.com>
-X-Google-Original-From: Nadav Amit
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Jan Kara <jack@suse.cz>,
-        stable@vger.kernel.org
-Subject: [PATCH] mm/userfaultfd: provide unmasked address on page-fault
-Date:   Thu,  7 Oct 2021 16:50:55 -0700
-Message-Id: <20211007235055.469587-1-namit@vmware.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 8 Oct 2021 02:06:18 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQd1d4j70z4xbR;
+        Fri,  8 Oct 2021 17:04:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633673062;
+        bh=txlKVDLj/XD+UcB3cbPrKt3zjMD93waqfthegP9yFKg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WzUz6esBb7qbJRwJCn4VxrVRyZaSwqHFh58J5IDVhNGYTyugPFnhTzoTfIVB9l2bJ
+         jz29Qs0FVNPWBBF3gfXwdO667fFqlMCTlc1vXJ1FKC5f5kKggs/yWCKZV0e+ucXU7e
+         e1zUxkjeG4hoFYdTKsl9T3wh/nCOJCfUnTKw7SBXRQ/5fQ8rha6+qvjYQj2STC+JnY
+         55xw42T5OuMMbE2sQuSuqxG0fCVI1lH/15DPyWSybHItb4d0VAmK5QiIXspwxTI9Q9
+         DAt7heM6POksaHDhAYsN7HLhvhJxzuYeMSwyfVlNPLdzh4jEqgBBgDzEIs5mgKYPRw
+         0HJRBuBpKJLVA==
+Date:   Fri, 8 Oct 2021 17:04:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: linux-next: manual merge of the akpm-current tree with the arm64
+ tree
+Message-ID: <20211008170420.4044df3a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/4MYs/j8RX/bD13_O+5LfhuC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nadav Amit <namit@vmware.com>
+--Sig_/4MYs/j8RX/bD13_O+5LfhuC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Userfaultfd is supposed to provide the full address (i.e., unmasked) of
-the faulting access back to userspace. However, that is not the case for
-quite some time.
+Hi all,
 
-Even running "userfaultfd_demo" from the userfaultfd man page provides
-the wrong output (and contradicts the man page). Notice that
-"UFFD_EVENT_PAGEFAULT event" shows the masked address.
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-	Address returned by mmap() = 0x7fc5e30b3000
+  arch/arm64/kernel/mte.c
+  mm/kasan/kasan.h
+  mm/kasan/hw_tags.c
 
-	fault_handler_thread():
-	    poll() returns: nready = 1; POLLIN = 1; POLLERR = 0
-	    UFFD_EVENT_PAGEFAULT event: flags = 0; address = 7fc5e30b3000
-		(uffdio_copy.copy returned 4096)
-	Read address 0x7fc5e30b300f in main(): A
-	Read address 0x7fc5e30b340f in main(): A
-	Read address 0x7fc5e30b380f in main(): A
-	Read address 0x7fc5e30b3c0f in main(): A
+between commit:
 
-Add a new "real_address" field to vmf to hold the unmasked address. It
-is possible to keep the unmasked address in the existing address field
-(and mask whenever necessary) instead, but this is likely to cause
-backporting problems of this patch.
+  ec0288369f0c ("arm64: mte: Add asymmetric mode support")
 
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-Cc: Peter Xu <peterx@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: stable@vger.kernel.org
-Fixes: 1a29d85eb0f19 ("mm: use vmf->address instead of of vmf->virtual_address")
-Signed-off-by: Nadav Amit <namit@vmware.com>
----
- fs/userfaultfd.c   | 2 +-
- include/linux/mm.h | 3 ++-
- mm/memory.c        | 1 +
- 3 files changed, 4 insertions(+), 2 deletions(-)
+from the arm64 tree and commit:
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 003f0d31743e..1dfc0fcd83c1 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -481,7 +481,7 @@ vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason)
- 
- 	init_waitqueue_func_entry(&uwq.wq, userfaultfd_wake_function);
- 	uwq.wq.private = current;
--	uwq.msg = userfault_msg(vmf->address, vmf->flags, reason,
-+	uwq.msg = userfault_msg(vmf->real_address, vmf->flags, reason,
- 			ctx->features);
- 	uwq.ctx = ctx;
- 	uwq.waken = false;
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 00bb2d938df4..f3f324e3f2bf 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -523,7 +523,8 @@ struct vm_fault {
- 		struct vm_area_struct *vma;	/* Target VMA */
- 		gfp_t gfp_mask;			/* gfp mask to be used for allocations */
- 		pgoff_t pgoff;			/* Logical page offset based on vma */
--		unsigned long address;		/* Faulting virtual address */
-+		unsigned long address;		/* Faulting virtual address - masked */
-+		unsigned long real_address;	/* Faulting virtual address - unmaked */
- 	};
- 	enum fault_flag flags;		/* FAULT_FLAG_xxx flags
- 					 * XXX: should really be 'const' */
-diff --git a/mm/memory.c b/mm/memory.c
-index 12a7b2094434..3d2d7fdbb7dc 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4594,6 +4594,7 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
- 	struct vm_fault vmf = {
- 		.vma = vma,
- 		.address = address & PAGE_MASK,
-+		.real_address = address,
- 		.flags = flags,
- 		.pgoff = linear_page_index(vma, address),
- 		.gfp_mask = __get_fault_gfp_mask(vma),
--- 
-2.25.1
+  7f3c6cb1e524 ("arm64: mte: add asymmetric mode support")
 
+from the akpm-current tree.
+
+I am assuming that the arm64 tree commit (and surrounding commits) is
+a newer version of the same change in the akpm-current tree, so I have
+dropped the following patches from the akpm-current tree.
+
+2cff25205689 kasan: extend KASAN mode kernel parameter
+7f3c6cb1e524 arm64: mte: add asymmetric mode support
+a0449eb025b2 arm64: mte: CPU feature detection for Asymm MTE
+b7b8a32980f3 arm64: mte: bitfield definitions for Asymm MTE
+89a5adeb4891 kasan: remove duplicate of kasan_flag_async
+
+I fixed it up (see above) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/4MYs/j8RX/bD13_O+5LfhuC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFf32QACgkQAVBC80lX
+0Gy4mgf/WUChD2MISA6liZ41M0zCb8D1Hzcu4Ne4prszM5BDoG2jK41LIpbd/Bex
+mKNi046/Idjpf1/ShrKgPR0nYGk5mKWhtIYfcMPKR/ENUfXWE4SuOKs1TpUurA9w
+cmpO22AUyeT1CiV+O/3XriOytTds3HV33T+gyFwzmYRJAfQ3iow0e9naMQ3N/FP1
+CwYXjodcqsztRo0/Mxd7Asr3nyZTru7rdeIB7xFtd4sZgi9p1F6FoDV1l3+DVe+n
+gBL7Vk4Xzc1GuIwgjW5iLTvfYFdrU6g0HBAZY19oQqt4a8U0LIuaFhilNoeVVnDK
+c0UOkDlu34NadGLo6O/LDKA/n23xgg==
+=mMcd
+-----END PGP SIGNATURE-----
+
+--Sig_/4MYs/j8RX/bD13_O+5LfhuC--
