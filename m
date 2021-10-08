@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18DE842662C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A40BF42662D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhJHIrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhJHIrE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:47:04 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB9CDC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 01:45:01 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x27so36107824lfa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kt2zeS8aw7UOEZ6UIIHWzjYYnKYswwjSSwV1Raxj+m8=;
-        b=fTfPNAJ5Cgq1rDMNmAMyd5mDbrysDz/ytlWtUV45dO3zjXDMHMp90D5WNdtSMFyek7
-         JoXip2UNiYzW6vU9UEoYArzBXBTu8Idi0B19hue3jzH5Ii8rkR8QJkvDrH0auuIDhqTm
-         +QsHn2+DDmuMlWEsrcmZz22zIj1/sgIVSroD8RzRE2JjvPWoLOa0hvSDLQz0mL2og7Zq
-         eKId3iiMm+kql6bK6BLyM/XH25r4zzpK1ibfffX3K04w4kvlJnGj14BFkoj0bneeKngQ
-         e/tRPYS4i+4pAa67dBMvB8Km+CUk+FZVewgAgXfnkbY1A3YTG+SFhkLpFbsAIlgd3Y4J
-         h/xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Kt2zeS8aw7UOEZ6UIIHWzjYYnKYswwjSSwV1Raxj+m8=;
-        b=mmYCgNtHP9eV114fDF4k2mK0yroN0HEY5wmsGxd/vy8atPyraQViLauxPwptW7CI+J
-         sLJhUIeGyTEn4tmP+4KjCPoaKWqstxTsy/xh5o5MktTF9/Z2Vm47WRFHZsU68XOcv4X8
-         uOc0G6bmUzT8RIltxD2SZEKP3OAFAVmWsqUY38lk6oTampfjh0zXMbOSUglTUiiDml5U
-         nTZZ7sutEh+qWAxMSmBrBjANiDK16nSt6IWtGVYM96k/nLYMp11YBJXeUJPmm8YFMv1s
-         1b5JTkG0Fb1GEyk4+4BiM9QB9iGxfzGinFJQTVnixz6Q+xFpCUg1mTy2orvtFyR+T8CC
-         RIOQ==
-X-Gm-Message-State: AOAM532APPIG2Le44fvTIy0MhO3yWMne24XBxf4gN+IItCylJS+Yy7E1
-        yzKPQceqWrKOJl2qdP1aZcZ50N/ak1EkHA==
-X-Google-Smtp-Source: ABdhPJwrtpQdAJ79EajjX9Yv8er2FlDFohRG70iBpVkmrPgMcTjYV9LLJ/a3T2xsfVopSXy3NUB6iw==
-X-Received: by 2002:a05:651c:1110:: with SMTP id d16mr2205874ljo.326.1633682700097;
-        Fri, 08 Oct 2021 01:45:00 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id h2sm186649lfe.134.2021.10.08.01.44.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 01:44:58 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [GIT PULL] MMC fixes for v5.15-rc5
-Date:   Fri,  8 Oct 2021 10:44:58 +0200
-Message-Id: <20211008084458.30104-1-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S233834AbhJHIrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:47:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229987AbhJHIrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:47:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3BE661056;
+        Fri,  8 Oct 2021 08:45:21 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 09:45:18 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ke Wang <ke.wang@unisoc.com>, ping.zhou1@unisoc.com
+Subject: Re: [RFC PATCH] arch: ARM64: add isb before enable pan
+Message-ID: <YWAFHgUseH2t/FUf@arm.com>
+References: <1633673269-15048-1-git-send-email-huangzhaoyang@gmail.com>
+ <20211008080113.GA441@willie-the-truck>
+ <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Oct 08, 2021 at 04:34:12PM +0800, Zhaoyang Huang wrote:
+> On Fri, Oct 8, 2021 at 4:01 PM Will Deacon <will@kernel.org> wrote:
+> > On Fri, Oct 08, 2021 at 02:07:49PM +0800, Huangzhaoyang wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > >
+> > > set_pstate_pan failure is observed in an ARM64 system occasionaly on a reboot
+> > > test, which can be work around by a msleep on the sw context. We assume
+> > > suspicious on disorder of previous instr of disabling SW_PAN and add an isb here.
+> > >
+> > > PS:
+> > > The bootup test failed with a invalid TTBR1_EL1 that equals 0x34000000, which is
+> > > alike racing between on chip PAN and SW_PAN.
+> >
+> > Sorry, but I'm struggling to understand the problem here. Please could you
+> > explain it in more detail?
+> >
+> >   - Why does a TTBR1_EL1 value of `0x34000000` indicate a race?
+> >   - Can you explain the race that you think might be occurring?
+> >   - Why does an ISB prevent the race?
+> Please find panic logs[1], related codes[2], sample of debug patch[3]
+> below. TTBR1_EL1 equals 0x34000000 when panic and can NOT be captured
+> by the debug patch during retest (all entrances that msr ttbr1_el1 are
+> under watch) which should work. Adding ISB here to prevent race on
+> TTBR1 from previous access of sysregs which can affect the msr
+> result(the test is still ongoing). Could the race be
+> ARM64_HAS_PAN(automated by core) and SW_PAN.
 
-Here's a PR with a couple of MMC fixes intended for v5.15-rc5. Details about the
-highlights are as usual found in the signed tag.
+Can you please change the ARM64_HAS_PAN type to
+ARM64_CPUCAP_STRICT_BOOT_CPU_FEATURE? I wonder whether
+system_uses_ttbr0_pan() changes its output when all CPUs had been
+brought up and system_uses_hw_pan() returns true.
 
-Please pull this in!
-
-Kind regards
-Ulf Hansson
-
-
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
-
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-rc4
-
-for you to fetch changes up to 8a38a4d51c5055d0201542e5ea3c0cb287f6e223:
-
-  mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk (2021-10-06 17:23:28 +0200)
-
-----------------------------------------------------------------
-MMC host:
- - meson-gx: Fix read/write access for dram-access-quirk
- - sdhci-of-at91: Fix calibration sequence
-
-----------------------------------------------------------------
-Claudiu Beznea (2):
-      mmc: sdhci-of-at91: wait for calibration done before proceed
-      mmc: sdhci-of-at91: replace while loop with read_poll_timeout
-
-Neil Armstrong (1):
-      mmc: meson-gx: do not use memcpy_to/fromio for dram-access-quirk
-
- drivers/mmc/host/meson-gx-mmc.c  | 73 ++++++++++++++++++++++++++++++++--------
- drivers/mmc/host/sdhci-of-at91.c | 22 ++++++------
- 2 files changed, 70 insertions(+), 25 deletions(-)
+-- 
+Catalin
