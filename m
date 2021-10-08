@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD886426754
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4107D426759
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239616AbhJHKEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:04:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:39688 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239606AbhJHKES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:04:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5431FD6E;
-        Fri,  8 Oct 2021 03:02:22 -0700 (PDT)
-Received: from [10.57.25.67] (unknown [10.57.25.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DD373F70D;
-        Fri,  8 Oct 2021 03:02:20 -0700 (PDT)
-Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
-To:     kajoljain <kjain@linux.ibm.com>, acme@kernel.org,
-        john.garry@huawei.com, ak@linux.intel.com,
-        linux-perf-users@vger.kernel.org
-Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211007110543.564963-1-james.clark@arm.com>
- <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
-Date:   Fri, 8 Oct 2021 11:02:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238983AbhJHKGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238471AbhJHKGC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:06:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D778C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iMx07sxMhcPwXYjQoP0WkUCRraloIW2C9/p6HTD4Uco=; b=kX+PwXRCRCJjrA9HJ7DimYvXV7
+        f+rHZ9IUuGSEQIiN55vscPNTdEkdozs9qJji1GUdWzmjp+mA/ZBmGZMdWcLkDdV9V1Nqq3IXki1RB
+        I7jzC4TMhhbrOLNX3EuZTkBsQnGzC0Vem3qVdeg9TAs/3FbgstTnuwandrEjTWkaJ8RmSJzGzAGrX
+        0abWrEaN3/Wq2CXI3U3JSKUBhXvLIMIZX1oA+C65mOpyBF1nxJ6BrvxUCkuk0q04I8CvcXGgkRgAv
+        wdGauWeh0oXorfP3vMXx1R7FzkirHIUfQBLITHrPuELrBI65lrhhCEKSIo2lucLtLvzDEO2Kkx0GC
+        8OPSc7jQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYmiy-002yae-GI; Fri, 08 Oct 2021 10:03:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0479F300347;
+        Fri,  8 Oct 2021 12:03:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DD5B42CFD3AED; Fri,  8 Oct 2021 12:03:31 +0200 (CEST)
+Date:   Fri, 8 Oct 2021 12:03:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, mbenes@suse.cz
+Subject: Re: [PATCH 1/2] objtool: Optimize re-writing jump_label
+Message-ID: <YWAXc2bhu/iTI4pv@hirez.programming.kicks-ass.net>
+References: <20211007212211.366874577@infradead.org>
+ <20211007212626.950220936@infradead.org>
+ <20211008065550.zge5zkbfrki5osv2@treble>
 MIME-Version: 1.0
-In-Reply-To: <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008065550.zge5zkbfrki5osv2@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 08/10/2021 08:43, kajoljain wrote:
+On Thu, Oct 07, 2021 at 11:55:50PM -0700, Josh Poimboeuf wrote:
+> On Thu, Oct 07, 2021 at 11:22:12PM +0200, Peter Zijlstra wrote:
+> > There's no point to re-write the jump_label NOP when it's already a NOP.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  tools/objtool/check.c |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > --- a/tools/objtool/check.c
+> > +++ b/tools/objtool/check.c
+> > @@ -1397,7 +1397,7 @@ static int handle_jump_alt(struct objtoo
+> >  		return -1;
+> >  	}
+> >  
+> > -	if (special_alt->key_addend & 2) {
+> > +	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
+> >  		struct reloc *reloc = insn_reloc(file, orig_insn);
+> >  
+> >  		if (reloc) {
 > 
-> 
-> On 10/7/21 4:35 PM, James Clark wrote:
->> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
->> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
->> remove the need to apply any future JSON comma fixup commits.
->>
->> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
->> perf/core.
->>
->> Also available at:
->>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
-> 
-> Hi James,
->    Do we have any dependency patches on top of this patch series. I am
-> reviewing and testing it, but in both powerpc and x86 system I am
-> getting build issue. Not sure if I am missing something> 
-> I am trying your changes on top of upstream perf.
-> 
-> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
-> character inside JSON string
+> While you're at it, a comment would be very helpful for that whole
+> clause.
 
-Hi Kajol,
+Like so?
 
-A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
-confirm if you have updated to get this commit on perf core?
-
-Alternately you could pull from my branch above which is up to date enough
-to include it.
-
-The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
-
-> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
-> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
-> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [Makefile.perf:238: sub-make] Error 2
-> make: *** [Makefile:70: all] Error 2
-> 
-> Also, Is it possible to add line number along with file name while
-> showing this error `json error Invalid character inside JSON string`.
-> It might make it easy to fix.
-
-I can add a character number with the following fix if you think that would
-be good enough? A line number might be a bigger change and involve keeping
-track of newline characters.
-
-diff --git a/tools/perf/pmu-events/json.c b/tools/perf/pmu-events/json.c
-index 0544398d6e2d..41a14e1543bf 100644
---- a/tools/perf/pmu-events/json.c
-+++ b/tools/perf/pmu-events/json.c
-@@ -99,7 +99,7 @@ jsmntok_t *parse_json(const char *fn, char **map, size_t *size, int *len)
-        res = jsmn_parse(&parser, *map, *size, tokens,
-                         sz / sizeof(jsmntok_t));
-        if (res != JSMN_SUCCESS) {
--               pr_err("%s: json error %s\n", fn, jsmn_strerror(res));
-+               pr_err("%s: json error at character %u '%s'\n", fn, parser.pos, jsmn_strerror(res));
-                goto error_free;
-        }
-        if (len)
-
-
-It prints this for the same error you have above:
-
-pmu-events/arch/test/test_soc/sys/uncore.json: json error at character 213 'Invalid character inside JSON string'
-
-Although funnily enough after re-introducing that extra comma it doesn't fail the build for me,
-it just prints the error message. But I may have noticed some dependency tracking issues around
-the json files.
-
-James
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -1397,7 +1397,16 @@ static int handle_jump_alt(struct objtoo
+ 		return -1;
+ 	}
+ 
+-	if (special_alt->key_addend & 2) {
++	/*
++	 * When, for whatever reason, the jump-label site cannot emit a right
++	 * sized NOP, then it can use Bit-1 of the struct static_key pointer to
++	 * indicate this instruction should be NOP'ed by objtool.
++	 *
++	 * Also see arch/x86/include/asm/jump_label.h:arch_static_branch(),
++	 * where we leave the assembler to pick between jmp.d8 and jmp.d32
++	 * based on destination offset.
++	 */
++	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
+ 		struct reloc *reloc = insn_reloc(file, orig_insn);
+ 
+ 		if (reloc) {
