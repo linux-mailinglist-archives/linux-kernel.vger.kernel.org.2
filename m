@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91604262B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4154262B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235444AbhJHDEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60340 "EHLO
+        id S229999AbhJHDHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHDEU (ORCPT
+        with ESMTP id S229501AbhJHDHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:04:20 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CEDC061570;
-        Thu,  7 Oct 2021 20:02:25 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id a73so1800559pge.0;
-        Thu, 07 Oct 2021 20:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6Q3V7EH8l2IpZO4Ot7Mt4f30fT3Ph8j8fckQ39xjaXY=;
-        b=mSWMMcLC5jgE+PhXrVd2rC8EkaVaENg3bR+KriFfud7ZTRMZqvXtJOC56n50KpGt6w
-         oRjHaSUzwv3zubHBroFY5nrbJ+8ziFCv9BteANN5fMjF5n26gokkuiImQ8GledBS9fKD
-         049WSa1jnOxgiEHtQSuvuUg3yXZ4DtChjoM0j6Vfr0sASjbtE1KNeXyJ3Hb+n2vQ3TzQ
-         QqVFmBnk7dsJd37AwexdpajwP80UyqOqH9JBsJp4HG7IICUVghEt3OuSsvgJI53EKN53
-         BGUVDV8HbW7gdNmyTyhEl1H5n3FGwJzuQHLeMqtTU3G5Y5APelCQH9C0ouNWTn3L8cqq
-         dITA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6Q3V7EH8l2IpZO4Ot7Mt4f30fT3Ph8j8fckQ39xjaXY=;
-        b=OHc1a92JpgyT4sm/bFBfC8UvYbm9GgMTr+wEFcSpmcx4mDHPm1MA3z9x9WlEI55n0e
-         TFSDGNIiet5YHjh8gctMBgcx2VKm6jbRRb3euk1aqarFMUvUmYL6+HHujIdwZ/Kojdt+
-         kVy7KAZtrNwFzSn7wI4ga8uASFl75JSE8qKYU8h5LpDFLZ1IztTSt9qQTtmARzypHkiS
-         +srSKhyoLdPDbK8yXV+7dCI9ofp8CVBmnNjXq0i/02Ty8erMumljff78OijcMJnotjqv
-         21KafAnF8pvIaLDVR0iz++AGnT/jbBmFG21MnF43yTdjFjIqpqHcEUvMTqhRtN3Mh73e
-         CQSg==
-X-Gm-Message-State: AOAM532ErUCYpQOogYLGGi0d+rDMnzDURRS/p7FTRPVMnVLZ4oleid2z
-        0Jp1SrTHd1mGMfiPKrEQesGSbnn8LxNZcLChGQ==
-X-Google-Smtp-Source: ABdhPJyeZNOAn4GzIquroW5XcC4zBgwRbLpCZmkeCyRxRPzKEf6sjn8CTqryyTC1m+RbqWms3v02/9Fm/oo+/N/B1QY=
-X-Received: by 2002:a63:2c02:: with SMTP id s2mr2585381pgs.205.1633662145285;
- Thu, 07 Oct 2021 20:02:25 -0700 (PDT)
+        Thu, 7 Oct 2021 23:07:35 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 708FBC061570;
+        Thu,  7 Oct 2021 20:05:41 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 45EAA1F4190F
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     rjw@rjwysocki.net, lenb@kernel.org, linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
+        krisman@collabora.com, sebastian.reichel@collabora.com,
+        pgriffais@valvesoftware.com, hdegoede@redhat.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH 0/1] acpi: battery: Accept charges over the design capacity as full
+Date:   Fri,  8 Oct 2021 00:05:28 -0300
+Message-Id: <20211008030529.223682-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
- <CACkBjsb0Hxam_e5+vOOanF_BfGAcf5UY+=Cc-pyphQftETTe8Q@mail.gmail.com> <YV8B+VGQ7TZoeJ8W@casper.infradead.org>
-In-Reply-To: <YV8B+VGQ7TZoeJ8W@casper.infradead.org>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Fri, 8 Oct 2021 11:02:14 +0800
-Message-ID: <CACkBjsZ8vxzSAnhVqnkJwQi1a5oCddGRZrK5bmvUQYzDKBDsjw@mail.gmail.com>
-Subject: Re: kernel BUG in block_invalidatepage
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=887=E6=
-=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:20=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Oct 07, 2021 at 02:40:29PM +0800, Hao Sun wrote:
-> > Hello,
-> >
-> > This crash can still be triggered repeatedly on the latest kernel.
->
-> I asked you three days ago to try a patch and report the results:
->
-> https://lore.kernel.org/linux-mm/YVtWhVNFhLbA9+Tl@casper.infradead.org/
+Hi,
 
-Sorry, I missed that.
+We have come across a battery that, when brand new, can go above the
+reported maximum charge, leading to reports like this:
 
-Here are the results.
-Used reproducer: https://paste.ubuntu.com/p/yrYsn4zpcn/
-Kernel log *before* applying the patch: https://paste.ubuntu.com/p/WtkFKB6V=
-y9/
-Kernel log *after* applying the patch: https://paste.ubuntu.com/p/S2VrtDdgg=
-p/
-Symbolized log: https://paste.ubuntu.com/p/RwXjCXDxB8/
+$ cat /sys/class/power_supply/BAT1/uevent
 
-In summary, the reproducer can crash the kernel with the same
-backtrace before applying the patch.
-After applying the patch, the reproducer program took about 3 minutes
-to crash the kernel and the backtrace seems different (RIP points to
-create_empty_buffers now).
-All the above tests were done on commit 60a9483534ed (Merge tag
-'warning-fixes-20211005').
+POWER_SUPPLY_NAME=BAT1
+POWER_SUPPLY_TYPE=Battery
+POWER_SUPPLY_STATUS=Unknown
+POWER_SUPPLY_PRESENT=1
+POWER_SUPPLY_CHARGE_FULL_DESIGN=4160000
+POWER_SUPPLY_CHARGE_FULL=4538000
+POWER_SUPPLY_CHARGE_NOW=4539000
+POWER_SUPPLY_CAPACITY=100
+POWER_SUPPLY_CAPACITY_LEVEL=Full
+[...]
 
-Regards
-Hao
+And then userspace get confused by Unknown and some programs even say
+"Charging: 100%". After applying this patch, kernel reports "Full",
+which for practical reasons is true, even if the battery will charge a
+bit more. After some time, the battery health degrades and the maximum
+charge meets the design expectation. Ideally this would be fixed in the
+battery firmware, but it's not always possible to do that.
+
+André Almeida (1):
+  acpi: battery: Accept charges over the design capacity as full
+
+ drivers/acpi/battery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+-- 
+2.33.0
+
