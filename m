@@ -2,130 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199AF426DC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25B2426DC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243315AbhJHPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243285AbhJHPoA (ORCPT
+        id S243356AbhJHPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:44:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22730 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243206AbhJHPoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:44:00 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B778EC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:42:04 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id k19so944048qvm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=rjs4mCGafYlXNdybb9ZGxlAk2gqqUMvwHU2DzJJHvqI=;
-        b=7hgF0Eq+zGYzt7/FS7OTsVJovpU37Wp0bpbTmPwuIhctC10L3AQ1I+TLhrRYa2HzI6
-         wGOBbx4x+92vcDIM5BUHEI7xTaaSL+gKuUXnFwW1YdC8+iV0maARKJFNVOvctPEgX9fN
-         D9aM4rEiFi6glR1z2u7bGKV+/dd1QVJ+qhRUcesiCwPF7ArKtNX4FZCiu8kdkiMvpqtJ
-         IaRE2+pT31G3AZG/bw1QOUFapj6GeolHcSX21KlLmNSh/m6Kw5NaVFwnJvULRJkcUw7M
-         DTAitj3SenGQeuIKVivF6cVlBuKi3EC4zjf/dV2R0TCsTVfcVaEOh9NcZPvkz4bcRaq3
-         +ZGg==
+        Fri, 8 Oct 2021 11:44:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633707730;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qMC5Klotg1aJNEk7elIqSRCi23Sna03uJX/agMDIgxg=;
+        b=hfG3zom7+tWBYTRUDnC3e7/50qouLfw3ciRb2G5ZG0Kn38JGdJz5/rc9MTxIgLHoBcb8mo
+        oRDpLvVzxVl4W+8LJ9OexglyqZc9n7xXkcb7b4HtmCOa0rcb6oDUKdGLCaBitA8KaTFizC
+        e4rTYcqPJv4F8jp7yNFVg7+x8gk1w40=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-Kj1CEkLlPiuS_FnAQ8WhuA-1; Fri, 08 Oct 2021 11:42:09 -0400
+X-MC-Unique: Kj1CEkLlPiuS_FnAQ8WhuA-1
+Received: by mail-ed1-f72.google.com with SMTP id v9-20020a50d849000000b003db459aa3f5so6978358edj.15
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:42:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rjs4mCGafYlXNdybb9ZGxlAk2gqqUMvwHU2DzJJHvqI=;
-        b=OgnH4Bn9XN3e3FwCK5qdaF7HGgUb96k/bmEQRUTLUHVnCq+ByqQBmQHps/F+1fSCrL
-         TVW82FlmzBppcIr+XQSFQaBLWavnsG4q7E0hBvLH36ZhparjL/yGJUYtY9M0dVjrqMpd
-         180zWnbW6ckixQQmt87mtDyRXZLhEt8HJ7H2cnqOwyALzCoOVOoLffSKcEL/kUKDnYIX
-         UyIRPUQFxlO76ZzlrbvnWPF5ootHwzbWf0w80jxR6Mp/RnFyj8aPc3eJdMd67YkptW+H
-         mGEzjw0iI26jxurvo57iti8dewDP88+x+/IiIAu0LaEaAzHK7eLDf3D3q5NI27+aA/Lx
-         T7og==
-X-Gm-Message-State: AOAM530zPSTgTc9X3SFdVGEoEEbzq/zzHiV0H0Pb608H3jy8el+D02LS
-        ayU2R4AsOqtA8jvt3Mmh4gXAbA==
-X-Google-Smtp-Source: ABdhPJztze8fJcBoJDAyfAaXu2xI3rtosIxtZNyE1oYjwGkcC0IZe06b8/R0c5Q21brKykmtBw4TKg==
-X-Received: by 2002:a05:6214:118f:: with SMTP id t15mr8761837qvv.28.1633707723890;
-        Fri, 08 Oct 2021 08:42:03 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id 6sm2265371qkc.123.2021.10.08.08.42.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qMC5Klotg1aJNEk7elIqSRCi23Sna03uJX/agMDIgxg=;
+        b=JaBhnUyetCuUwTW4wCEYF1G7Y63akNZwMTH5KUJ0yL48Uxz624FShtOI0sHZmKA7XJ
+         0KOuI6+a0OOENvyG6jUhrBkEmUgJoMcp2yFqTYJhZCHitLQpFC2ZZk1o33Gef91eCo0t
+         sUfRV1iYN/WiZN0GnAylc+jYg0bww8cOSn5ha7JPAfC+AJuiCaAtLGdmt9/1q42CH/dt
+         aF2kS4mGdzenejfDbKHAiZHplZnnG8doN5H8C3YuIb6RZBCUGjtO1ZpvlOjY9LtfZQQF
+         QiVwklHKdueObivXYzEIrZjMSL0xWLj9YtNu2rzaMlcfmQj8kUKHnu391n3rN/OLkGMi
+         q/Pw==
+X-Gm-Message-State: AOAM531kYss2g3NH24tk/hVD+z41l9E3fyumB9HHmI+vJQXLUZrnra6Z
+        2H2lFEKaDgnWDYpe8N/A90QpXd/Cmags2CfLt9ZFlquVZJgm/+Prcw9TdsBE4xfQtKxlIjl0dBH
+        AvNa5mRgbjTomlcKvBo4zMMRL
+X-Received: by 2002:a50:da04:: with SMTP id z4mr15752283edj.52.1633707728428;
+        Fri, 08 Oct 2021 08:42:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHLSNoBYozNsq5483RYGKOQ6xoIu8y6Sysra7Dpoor+71RjKofWVLel+TDlQXhZNhKirsgbQ==
+X-Received: by 2002:a50:da04:: with SMTP id z4mr15752226edj.52.1633707728015;
+        Fri, 08 Oct 2021 08:42:08 -0700 (PDT)
+Received: from redhat.com ([2.55.132.170])
+        by smtp.gmail.com with ESMTPSA id m9sm1193458edl.66.2021.10.08.08.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 08:42:03 -0700 (PDT)
-Message-ID: <f108f23dadc846222c63c88af826dae9c5082d83.camel@ndufresne.ca>
-Subject: Re: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro
- and Cedrus
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Date:   Fri, 08 Oct 2021 11:42:01 -0400
-In-Reply-To: <20211008100423.739462-1-wenst@chromium.org>
-References: <20211008100423.739462-1-wenst@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        Fri, 08 Oct 2021 08:42:07 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 11:42:02 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH v2 1/1] virtio: write back F_VERSION_1 before validate
+Message-ID: <20211008113904-mutt-send-email-mst@kernel.org>
+References: <20211008123422.1415577-1-pasic@linux.ibm.com>
+ <20211008085839-mutt-send-email-mst@kernel.org>
+ <20211008155156.626e78b5.pasic@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008155156.626e78b5.pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen-Yu,
+On Fri, Oct 08, 2021 at 03:51:56PM +0200, Halil Pasic wrote:
+> On Fri, 8 Oct 2021 09:05:03 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> 
+> > On Fri, Oct 08, 2021 at 02:34:22PM +0200, Halil Pasic wrote:
+> > > The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+> > > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+> > > been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+> > > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+> > > 
+> > > However, the specification also says: "... the driver MAY read (but MUST
+> > > NOT write) the device-specific configuration fields to check that it can
+> > > support the device ..." before setting FEATURES_OK.
+> > > 
+> > > In that case, any transitional device relying solely on
+> > > VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+> > > legacy format.  In particular, this implies that it is in big endian
+> > > format for big endian guests. This naturally confuses the driver which
+> > > expects little endian in the modern mode.
+> > > 
+> > > It is probably a good idea to amend the spec to clarify that
+> > > VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> > > is complete. However, we already have a regression so let's try to address  
+> > 
+> > actually, regressions. and we can add 
+> > "since originally before validate callback existed
+> > config space was only read after
+> > FEATURES_OK. See Fixes tags for relevant commits"
+> > 
+> > > it.
+> 
+> How about replacing the paragraph above with the following?
+> 
+> "It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. Before validate callback existed, config space was only
+> read after FEATURES_OK. However, we already have two regression,
 
-thanks for looking into this.
+two regressions
 
-Le vendredi 08 octobre 2021 à 18:04 +0800, Chen-Yu Tsai a écrit :
-> Hi everyone,
+> so
+> let's address this here as well."
+> > > 
+> > > The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
+> > > the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
+> > > virtio 1.0 is used on both sides. The latter renders virtio-blk
+> > > unusable with DASD backing, because things simply don't work with
+> > > the default.  
 > 
-> While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
-> behavioral differences compared to Hantro and Cedrus:
+> and add 
+> "See Fixes tags for relevant commits."
+> here.
+> > 
+> > Let's add a work around description now:
+> > 
+> > 
+> > For QEMU, we can work around the issue by writing out the features
+> > register with VIRTIO_F_VERSION_1 bit set.  We (ab) use the
+> s/features register/feature bits/
+> rationale: ccw does not have a features register, and qemu does not
+> really act as if its behavior was controlled by the values in a features
+> register. I.e. when we read the register we see VIRTIO_F_VERSION_!
+> because the feature is offered. In QEMU we basically read host_featues
+> but write the guest_features. And what drives device behavior is mostly
+> guest_features. 
 > 
-> 1. The driver always overrides the sizeimage setting given by userspace
->    for the output format. This results in insufficient buffer space when
->    running the ChromeOS video_decode_accelerator_tests test program,
->    likely due to a small initial resolution followed by dynamic
->    resolution change.
+> s/(ab) use/(ab)use/
 > 
-> 2. Doesn't support dynamic resolution change.
+> > finalize_features config op for this. It's not enough to address vhost
 > 
-> This small series fixes both and aligns the behavior with the other two
-> stateless decoder drivers. This was tested on the downstream ChromeOS
-> 5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
-> have any other RK3399 devices set up to test video stuff, so testing
-> would be very much appreciated.
+> s/It's/This is/
 > 
-> Also, I'm not sure if user applications are required to check the value
-> of sizeimage upon S_FMT return. If the value is different or too small,
-> what can the application do besides fail? AFAICT it can't split the
-> data of one frame (or slice) between different buffers.
+> > user and vhost block devices since these do not get the features until
+> 
+> s/vhost user and vhost block/some vhost-user and vhost-vdpa/ ?
 
-While most software out there just assumes that driver will do it right and
-crash when it's not the case, application that do map the buffer to CPU must
-read back the fmt structure as the drivers are all fail-safe and will modify
-that structure to a set of valid value s for the context.
+Let's just say "not enough to address vhost devices since some
+of these etc" 
 
-As for opposite direction (output vs capture) format being changed, this should
-be documented in the spec, if you find it too unclear or missing for sateless
-codec (I know it's there for stateful but can't remember, would have to re-read,
-for stateless) let us know.
+> Ratioale: I think vhost block is just a vhost-user device. On the other
+> hand vhost-user-fs works like charm because the config space is
+> implemented in qemu and not in the vhost-user device. I
+> didn't check vhost_net. I'm not even sure qemu offers a vhost_net
+> implementation.
 
-regards,
-Nicolas
+it does
 
-> 
-> Andrzej, I believe the second patch would conflict with your VP9 series.
-> 
-> 
-> Regards
-> ChenYu
-> 
-> Chen-Yu Tsai (2):
->   media: rkvdec: Do not override sizeimage for output format
->   media: rkvdec: Support dynamic resolution changes
-> 
->  drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
->  drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
->  2 files changed, 23 insertions(+), 22 deletions(-)
-> 
+> Anyway I wouldn't like to make any false statements here.
 
+ok
+
+> > FEATURES_OK, however it looks like these two actually never handled the
+> > endian-ness for legacy mode correctly, so at least that's not a
+> > regression.
+> > 
+> > No devices except virtio net and virtio blk seem to be affected.
+> > 
+> > Long term the right thing to do is to fix the hypervisors.
+> > 
+> 
+> Sounds good. Thanks! Are you OK with my changes proposed to your changes?
+> 
+> Regards,
+> Halil
+
+yes.
+
+> > 
+> > > 
+> > > Cc: <stable@vger.kernel.org> #v4.11
+> > > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> > > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in
+> > > config space") Fixes: fe36cbe0671e ("virtio_net: clear MTU when out
+> > > of range") Reported-by: markver@us.ibm.com
+> > > ---
+> > >  drivers/virtio/virtio.c | 11 +++++++++++
+> > >  1 file changed, 11 insertions(+)
+> > > 
+> > > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> > > index 0a5b54034d4b..236081afe9a2 100644
+> > > --- a/drivers/virtio/virtio.c
+> > > +++ b/drivers/virtio/virtio.c
+> > > @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
+> > >  		driver_features_legacy = driver_features;
+> > >  	}
+> > >  
+> > > +	/*
+> > > +	 * Some devices detect legacy solely via F_VERSION_1. Write
+> > > +	 * F_VERSION_1 to force LE config space accesses before
+> > > FEATURES_OK for
+> > > +	 * these when needed.
+> > > +	 */
+> > > +	if (drv->validate && !virtio_legacy_is_little_endian()
+> > > +			  && device_features &
+> > > BIT_ULL(VIRTIO_F_VERSION_1)) {
+> > > +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+> > > +		dev->config->finalize_features(dev);
+> > > +	}
+> > > +
+> > >  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+> > >  		dev->features = driver_features & device_features;
+> > >  	else
+> > > 
+> > > base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
+> > > -- 
+> > > 2.25.1  
+> > 
 
