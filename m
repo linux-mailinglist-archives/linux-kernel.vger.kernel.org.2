@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AE6426A55
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEB8426A53
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240691AbhJHMBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:01:25 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33463 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230167AbhJHMBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:01:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226392004"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="226392004"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 04:59:29 -0700
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="489436095"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.215.185]) ([10.254.215.185])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 04:59:27 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <jroedel@suse.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
- <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
- <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <6cb6f2eb-700a-fbc9-2b3f-cca95c8db64d@linux.intel.com>
-Date:   Fri, 8 Oct 2021 19:59:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240625AbhJHL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:59:55 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3949 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230167AbhJHL7y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:59:54 -0400
+Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HQmnS37cSz6H6jV;
+        Fri,  8 Oct 2021 19:54:20 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 13:57:56 +0200
+Received: from [10.47.80.141] (10.47.80.141) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 8 Oct 2021
+ 12:57:55 +0100
+Subject: Re: [PATCH v3] scsi: core: Fix shost->cmd_per_lun calculation in
+ scsi_add_host_with_dma()
+To:     Dexuan Cui <decui@microsoft.com>, <kys@microsoft.com>,
+        <sthemmin@microsoft.com>, <wei.liu@kernel.org>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <haiyangz@microsoft.com>, <ming.lei@redhat.com>,
+        <bvanassche@acm.org>, <linux-scsi@vger.kernel.org>,
+        <linux-hyperv@vger.kernel.org>, <longli@microsoft.com>,
+        <mikelley@microsoft.com>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20211008043546.6006-1-decui@microsoft.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <8c87879b-ad28-e7bd-71ec-0c8a2ee99e7c@huawei.com>
+Date:   Fri, 8 Oct 2021 13:00:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-In-Reply-To: <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20211008043546.6006-1-decui@microsoft.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.141]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-On 2021/10/7 0:14, Andy Shevchenko wrote:
-> On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
->> Hi Andy,
->>
->> On 7/30/21 12:35 AM, Andy Shevchenko wrote:
->>> Compiler is not happy about hidden declaration of intel_iommu_ops.
->>>
->>> .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
->>>
->>> Move declaration to header file to make compiler happy.
->>
->> Thanks for the cleanup. Sharing data structures between different files
->> doesn't seem to be a good design. How about adding a helper so that the
->> intel_iommu_ops could be a static one?
+On 08/10/2021 05:35, Dexuan Cui wrote:
+> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
+> boot because the hv_storvsc driver sets scsi_driver.can_queue to an "int"
+> value that exceeds SHRT_MAX, and hence scsi_add_host_with_dma() sets
+> shost->cmd_per_lun to a negative "short" value.
 > 
-> I don't see any change in the upstream. What's the plan?
-> Can we take my patch as a quick fix?
+> Use min_t(int, ...) to fix the issue.
 > 
+> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
+> Cc:stable@vger.kernel.org
+> Signed-off-by: Dexuan Cui<decui@microsoft.com>
+> Reviewed-by: Haiyang Zhang<haiyangz@microsoft.com>
+> Reviewed-by: Ming Lei<ming.lei@redhat.com>
 
-This patch will cause below build error:
+Reviewed-by: John Garry <john.garry@huawei.com>
 
-drivers/iommu/intel/dmar.c: In function ‘alloc_iommu’:
-drivers/iommu/intel/dmar.c:1140:47: error: ‘intel_iommu_ops’ undeclared 
-(first use in this function); did you mean ‘intel_iommu_groups’?
-  1140 |   err = iommu_device_register(&iommu->iommu, &intel_iommu_ops, 
-NULL);
-       |                                               ^~~~~~~~~~~~~~~
-       |                                               intel_iommu_groups
-drivers/iommu/intel/dmar.c:1140:47: note: each undeclared identifier is 
-reported only once for each function it appears in
-make[3]: *** [scripts/Makefile.build:277: drivers/iommu/intel/dmar.o] Error
-
-if
-
-# CONFIG_INTEL_IOMMU is not set
-CONFIG_IRQ_REMAP=y
-
-Best regards,
-baolu
+thanks
