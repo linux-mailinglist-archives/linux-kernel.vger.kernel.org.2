@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C99426E97
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2D7426E9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhJHQYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:24:33 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:50037 "EHLO
+        id S231276AbhJHQYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:24:36 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:59123 "EHLO
         relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhJHQYb (ORCPT
+        with ESMTP id S230391AbhJHQYc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:24:31 -0400
+        Fri, 8 Oct 2021 12:24:32 -0400
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 6B314240003;
-        Fri,  8 Oct 2021 16:22:29 +0000 (UTC)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id CFF2024000B;
+        Fri,  8 Oct 2021 16:22:32 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
@@ -28,10 +28,12 @@ Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
         juliensu@mxic.com.tw,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [RFC PATCH 00/10] Macronix ECC engine
-Date:   Fri,  8 Oct 2021 18:22:18 +0200
-Message-Id: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 01/10] mtd: spinand: Fix comment
+Date:   Fri,  8 Oct 2021 18:22:19 +0200
+Message-Id: <20211008162228.1753083-2-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,60 +41,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+This is a copy paste error, checking the ECC status finishes a page read
+here, not a page write.
 
-This series is not 100% stable yet but I believe it should be
-sent out in order to help other people trying to use the ECC framework
-with a SPI controller. Basically, Macronix ECC engine can be used as an
-external engine (takes the data, proceeds to the calculations, writes
-back the ECC bytes) or as a pipelined engine doing on-the-fly
-calculations (which is very common in the raw NAND world).
+Fixes: 945845b54c9c ("mtd: spinand: Instantiate a SPI-NAND on-die ECC engine")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/spi/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-In the device tree, the ECC engine should be described as a separated DT
-node. Then:
-* external case: the flash node should provide a nand-ecc-engine
-  property pointing to the ECC engine node.
-* pipelined case: the flash node should provide a nand-ecc-engine
-  property pointing to the SPI controller, itself with another
-  nand-ecc-engine property pointing at the ECC engine node.
-
-I will resubmit this later when I will be done validating the hardware
-and the driver.
-
-Cheers,
-Miquèl
-
-Mason Yang (1):
-  mtd: spinand: macronix: Use random program load
-
-Miquel Raynal (9):
-  mtd: spinand: Fix comment
-  dt-bindings: vendor-prefixes: Update Macronix prefix
-  dt-bindings: mtd: Describe Macronix NAND ECC engine
-  mtd: nand: ecc: Add infrastructure to support hardware engines
-  mtd: nand: mxic-ecc: Add Macronix external ECC engine support
-  mtd: nand: mxic-ecc: Support SPI pipelined mode
-  spi: mxic: Fix the transmit path
-  spi: mxic: Add support for direct mapping
-  spi: mxic: Add support for pipelined ECC operations
-
- .../bindings/mtd/mxic,nand-ecc-engine.yaml    |  78 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |   3 +
- drivers/mtd/nand/Kconfig                      |   6 +
- drivers/mtd/nand/Makefile                     |   1 +
- drivers/mtd/nand/core.c                       |  10 +-
- drivers/mtd/nand/ecc-mxic.c                   | 797 ++++++++++++++++++
- drivers/mtd/nand/ecc.c                        |  89 ++
- drivers/mtd/nand/spi/core.c                   |   2 +-
- drivers/mtd/nand/spi/macronix.c               |   2 +-
- drivers/spi/spi-mxic.c                        | 309 ++++++-
- include/linux/mtd/nand-ecc-mxic.h             |  36 +
- include/linux/mtd/nand.h                      |  11 +
- 12 files changed, 1296 insertions(+), 48 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/mxic,nand-ecc-engine.yaml
- create mode 100644 drivers/mtd/nand/ecc-mxic.c
- create mode 100644 include/linux/mtd/nand-ecc-mxic.h
-
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index dd903d61c7c0..9655b3ef7cc2 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -307,7 +307,7 @@ static int spinand_ondie_ecc_finish_io_req(struct nand_device *nand,
+ 	if (req->type == NAND_PAGE_WRITE)
+ 		return 0;
+ 
+-	/* Finish a page write: check the status, report errors/bitflips */
++	/* Finish a page read: check the status, report errors/bitflips */
+ 	ret = spinand_check_ecc_status(spinand, engine_conf->status);
+ 	if (ret == -EBADMSG)
+ 		mtd->ecc_stats.failed++;
 -- 
 2.27.0
 
