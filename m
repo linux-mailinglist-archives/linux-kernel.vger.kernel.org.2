@@ -2,90 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CFC74263EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A5F4263EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230134AbhJHEwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 00:52:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        id S234530AbhJHEw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 00:52:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhJHEwT (ORCPT
+        with ESMTP id S230471AbhJHEw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 00:52:19 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9C8C061570;
-        Thu,  7 Oct 2021 21:50:25 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id ls18so6622492pjb.3;
-        Thu, 07 Oct 2021 21:50:25 -0700 (PDT)
+        Fri, 8 Oct 2021 00:52:26 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25592C061570;
+        Thu,  7 Oct 2021 21:50:32 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id s75so1958388pgs.5;
+        Thu, 07 Oct 2021 21:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=dQvWqpd/3Ixk1BH86MpPJQ+yUHdjySlHvST/lPNe1C4=;
-        b=Ovb1m3ooLxAOlI2LIrwDmKVAwwXTG6aBjZAiOM+hiYh4fqDEycaymEZckvxCWQuHkN
-         TnIK6ZbmLZ29EsbQtZuyfMOuNymobir8U6J+kNpyqQs+mJnr8km9Csn5eLcs/rjlRfpm
-         qlWEw4nyPi0JacVXycf0T+MWz/rONcs3OXCy1jjSUcQSY4E9lAbDZYs0RjnsUnb7Q4d6
-         kxtwNT1KQDDIIDwxZwDgngKYCVE3n6faSBbvlG3jwf9cg+SmZQFh32WKhDrnwdox3F04
-         PL6ptx+Hq/iuPKrIWE03IGjBHr7QxYU5fZOA51qGLXtfZfdwv9s6ZWC9FPf88SI525bt
-         xPtQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=6Zj8iHIqH+Xnz2r7eN2MsdU1Zj8zoSo9u4Ea2uh5oVk=;
+        b=en6IZ72ujMNigCYqRMhZdH6nb4v3yyY8kdx5ZLcvXf8/bilr2/+JsFl5DOgXpJcbu8
+         7WYstew6waA92pE48bfaF3fQpLlhpTWh0GTRErluITfVaXfB5NUfDEOnjm3TRu3e8ofH
+         FwV/nOC4k/PkgemQ5SQDsH7ssy5Y/DHevIAAq0N7h8zJVr4xrgQuZHTC9exras6X7/O+
+         WYvOWsHRqH7nT2q2AO2SfwA8c+Y6n1YWYxIizv9qlV00dUt0DIA8n61LbGpLimM9K9rX
+         tfBXUCt2UhAAa6fZmuXPtJknFAbtw2PLzF9t79u0vAamFfmFzSYxouaQUp0kSF7GCOCA
+         Z+sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dQvWqpd/3Ixk1BH86MpPJQ+yUHdjySlHvST/lPNe1C4=;
-        b=UoHeAT5w0slGEJqxU+j9sk9w3uDDOqOLDh7XhhmiOit5YmruOBfpkYHDKcVknfY+A9
-         tsAJCOJZHuIPisTYxQPQvbuQ14VdoEVEIES/4kqbHDpsfDxYc8H7qP3yD+fHuxX2qAW/
-         ydJI3olJJdVD5ekrMtP2emQ3+nWh5iBr44+IhxNnL7rNsOL+lSmEb99+1U10WB95IWLf
-         4AFwI+9CLaOBGgvpMa6o2rU+ULEY8rANhLyN0GxSAn53TT43HnmUjnzDaa61IzG4SPYk
-         3XYX2Zm3ShmeILGCg68Vr46G4qAWpAQufh4/pQ4xkqaiabpiMRAaqelsFcxISSK9s2es
-         gH9A==
-X-Gm-Message-State: AOAM530elIKIRzTquPA3Bqod8rbSgKNjHvJQ9TXF/UckXVae1ameMEov
-        WC0m9sRtG6VV6xD2+sb3WSpxQ4JmV9Y=
-X-Google-Smtp-Source: ABdhPJwycbw3qKJr4+vydLE2ml1mi+Dz7Kz6aNk7DU0X0uJ1eTEIvOZGy26o6/zBY3MpcJLLRx8YOA==
-X-Received: by 2002:a17:90a:19d2:: with SMTP id 18mr9715941pjj.62.1633668624447;
-        Thu, 07 Oct 2021 21:50:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=6Zj8iHIqH+Xnz2r7eN2MsdU1Zj8zoSo9u4Ea2uh5oVk=;
+        b=jS3FrweVRCh+0MCFDixUGua9ZlG/kC2bt/dgkzBaFmuAgso+VsbRtEFldYaTJEGv3G
+         t/F7wwFJve7CW1rnwIDBaCxtD9S5EqahSc408He/feWrQ1r6V7VoSxwSMNbQJQlO9Y0A
+         Qt9qprNUbZneIublDaZv8gvkkseKatKRchd5mbBpAMJtom5Wpq8/jggUpMC0sBiKD4uf
+         jS3tP2BGWefDX+OiyWoIPh7M8gyRdacswlWjQ1opQ0svvCTLcWe1pZaOt2LdfITTnF12
+         Svfivhkq1Uqu0ZMOhv4pJ3uo5AvwWgaSksCU3H2bIYeLFWm6rkfALumTXVNaXdPlIOhC
+         48uQ==
+X-Gm-Message-State: AOAM531w0RdgyCeL7WuWkgTe/UNk+aZLBr2i4bMwPuR0Bmkm0NjgbY2B
+        sGG2VzQ44mml5FeXEKXpOdQ=
+X-Google-Smtp-Source: ABdhPJxWHPrCQ6OID5EzaLKAXNJdBWsWeUhT+WOHgDk3rI1uR/j5O49qxztLx/KwoLcVHUL4tQHXCg==
+X-Received: by 2002:a62:7a4f:0:b0:448:6a41:14bb with SMTP id v76-20020a627a4f000000b004486a4114bbmr8269668pfc.31.1633668631638;
+        Thu, 07 Oct 2021 21:50:31 -0700 (PDT)
 Received: from localhost.localdomain ([2402:7500:479:5014:1d07:e136:b921:8d67])
-        by smtp.gmail.com with ESMTPSA id f4sm885182pgn.93.2021.10.07.21.50.17
+        by smtp.gmail.com with ESMTPSA id f4sm885182pgn.93.2021.10.07.21.50.24
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Oct 2021 21:50:23 -0700 (PDT)
+        Thu, 07 Oct 2021 21:50:31 -0700 (PDT)
 From:   cy_huang <u0084500@gmail.com>
 To:     oder_chiou@realtek.com, broonie@kernel.org, perex@perex.cz,
         tiwai@suse.com, robh+dt@kernel.org
 Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, cy_huang@richtek.com,
         devicetree@vger.kernel.org, allen_lin@richtek.com
-Subject: [PATCH v3 0/2] ASoC: rt9120: Add Richtek RT9120 supprot
-Date:   Fri,  8 Oct 2021 12:50:10 +0800
-Message-Id: <1633668612-25524-1-git-send-email-u0084500@gmail.com>
+Subject: [PATCH v3 1/2] ASoC: dt-bindings: rt9120: Add initial bindings
+Date:   Fri,  8 Oct 2021 12:50:11 +0800
+Message-Id: <1633668612-25524-2-git-send-email-u0084500@gmail.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1633668612-25524-1-git-send-email-u0084500@gmail.com>
+References: <1633668612-25524-1-git-send-email-u0084500@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: ChiYuan Huang <cy_huang@richtek.com>
 
-This patch series Add the Richtek RT9120 support.
+Add initial bindings for Richtek rt9120 audio amplifier.
 
-In v3:
-- Add dvdd regulator binding to check the dvdd voltage domain.
-- Refine sdo_select_text.
-- Use switch case in 'internal_power_event' function.
-- Remove the volume and mute initially write in component probe.
-- Remove the mute API. It's no need by HW design.
-
-In v2:
-- Add missing #sound-dai-cells property.
-
-ChiYuan Huang (2):
-  ASoC: dt-bindings: rt9120: Add initial bindings
-  ASoC: rt9120: Add rt9210 audio amplifier support
-
- .../devicetree/bindings/sound/richtek,rt9120.yaml  |  59 +++
- sound/soc/codecs/Kconfig                           |  10 +
- sound/soc/codecs/Makefile                          |   2 +
- sound/soc/codecs/rt9120.c                          | 489 +++++++++++++++++++++
- 4 files changed, 560 insertions(+)
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+---
+ .../devicetree/bindings/sound/richtek,rt9120.yaml  | 59 ++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
- create mode 100644 sound/soc/codecs/rt9120.c
 
+diff --git a/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+new file mode 100644
+index 00000000..5655ca5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/richtek,rt9120.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/richtek,rt9120.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Richtek RT9120 Class-D audio amplifier
++
++maintainers:
++  - ChiYuan Huang <cy_huang@richtek.com>
++
++description: |
++  The RT9120 is a high efficiency, I2S-input, stereo audio power amplifier
++  delivering 2*20W into 8 Ohm BTL speaker loads. It supports the wide input
++  voltage  range from 4.5V to 26.4V to meet the need on most common
++  applications like as TV, monitors. home entertainment, electronic music
++  equipment.
++
++properties:
++  compatible:
++    enum:
++      - richtek,rt9120
++
++  reg:
++    description: I2C device address
++    maxItems: 1
++
++  pwdnn-gpios:
++    description: GPIO used for power down, low active
++    maxItems: 1
++
++  dvdd-supply:
++    description: |
++      Supply for the default on DVDD power, voltage domain must be 3P3V or 1P8V
++
++  '#sound-dai-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - dvdd-supply
++  - '#sound-dai-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      rt9120@1a {
++        compatible = "richtek,rt9120";
++        reg = <0x1a>;
++        pwdnn-gpios = <&gpio26 2 0>;
++        dvdd-supply = <&vdd_io_reg>;
++        #sound-dai-cells = <0>;
++      };
++    };
 -- 
 2.7.4
 
