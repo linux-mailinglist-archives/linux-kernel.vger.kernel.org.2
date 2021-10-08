@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B25142718B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15890427190
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241530AbhJHTvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:51:00 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:47043 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhJHTuy (ORCPT
+        id S241796AbhJHTvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:51:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231408AbhJHTvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:50:54 -0400
-Received: by mail-oi1-f173.google.com with SMTP id o204so6952129oih.13;
-        Fri, 08 Oct 2021 12:48:58 -0700 (PDT)
+        Fri, 8 Oct 2021 15:51:35 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F5DBC061570;
+        Fri,  8 Oct 2021 12:49:39 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id m26so9072749pff.3;
+        Fri, 08 Oct 2021 12:49:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0tKzt9N3xvFa5iJIR1QUieKHhNP4G1ot+Kb/UJKzTgo=;
+        b=RWzOAjGY8rzho53IoomGAnc0QBvpyNjUmVm4qXb1CSXfct8JjTJQ6mvfpG5O9Yvvdw
+         2NA6VO6u4ThTO7LQ0YKkTVp8iQYa/AgnsYw7T16m6tQD5hKTsiHMENs5VQjo5CTAwZkm
+         e0jqt0UITpYS93AZiUTeBjjCuLRCwMntNqnr8SIiyRlf+2tKynQt5GvY4Srme1B9gTPY
+         bSuAyr4MtSKjqta5sjnDhXqhMh0XqZqK4TOU8TaYG7kwBNL6mE3kdjtC5kHUFeTnTimb
+         ujfLnkU73MfhCkJs89vGnn2jz3LpWMFpvhagYfPTijbY540xIK6Uz/3ylrPwhHYFy3CZ
+         NZkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=vQlwE9ycn9wLh/6pag8Ne3NJKLGdbIkxyQ1wTi2MfwE=;
-        b=3OWP8dDHGetaQHKmbnAv8Xh0tFmQnfPb2hV/JU62HYa/9pl5Xmx1s/ka0P3XtfFPpJ
-         OZLZYwrU8E/5pdU+EDDpqFGEebpM5CMA7gs7HhUOM5jlOcFHfqIfZMss/Czn91B5HaBS
-         5mhK5DLWPOBBrHwQZuDXMTjvCd5kGEwtD6O+3YYSREWCgBqJL2IcYzP1adTl8fmDGXUt
-         hkkskrMQtFJGBPL1ut6yN3NQ6IzacZb73bIp07QnJXUYCzBfkUl31uHyf0Ji75tNgcbF
-         5dL15T4HCezIsd1sDy9rqyE3oNXnvjLIJUo0SG/fDory2VL1PpDEcOBfGFATOq1ntrk6
-         desw==
-X-Gm-Message-State: AOAM531hfxMqCsPC2+noIND35dVG0U0YwkB95EIs+17JP4XrPZ73972W
-        o0zg6b7pOiIINLbF2eXfFuWJTTaAVw==
-X-Google-Smtp-Source: ABdhPJykVd0pO8jMCYkraX/blrSwyBjg5xWKqQLyCfun6KEtBi0dqxVIC5Wxa2tF9WgIpDDv5LjRjg==
-X-Received: by 2002:aca:5886:: with SMTP id m128mr17803586oib.63.1633722538467;
-        Fri, 08 Oct 2021 12:48:58 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id n18sm84569oig.16.2021.10.08.12.48.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 12:48:57 -0700 (PDT)
-Received: (nullmailer pid 3211950 invoked by uid 1000);
-        Fri, 08 Oct 2021 19:48:56 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     andrei.drimbarean@analog.com
-Cc:     linux-kernel@vger.kernel.org, Michael.Hennerich@analog.com,
-        devicetree@vger.kernel.org, fazilyildiran@gmail.com,
-        lars@metafoo.de, robh+dt@kernel.org, linux-iio@vger.kernel.org,
-        jic23@kernel.org
-In-Reply-To: <20211008112747.79969-2-andrei.drimbarean@analog.com>
-References: <20211008112747.79969-1-andrei.drimbarean@analog.com> <20211008112747.79969-2-andrei.drimbarean@analog.com>
-Subject: Re: [PATCH 1/2] dt-bindings: add adpd188 schema
-Date:   Fri, 08 Oct 2021 14:48:56 -0500
-Message-Id: <1633722536.852421.3211949.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0tKzt9N3xvFa5iJIR1QUieKHhNP4G1ot+Kb/UJKzTgo=;
+        b=v85fhWOmW7yC2BVD7xHKXxgmvau7DhgWGB8nb/UzsVNDRxe010sOwRz6831EbIWtHd
+         GY5KPSzwY6gmyX6j7KcYa3hU2LiSJldHQvgOY+cqmfSEHKMMitYATUndatEbC+47WUDC
+         nvzcJvVeXFxZm9GhlEzOpOpeq+c4wjKXz/S4KYXWX0Xgl8YM7lKFESPRcuYyb0tRFMo2
+         Xxq6Z16ckTcSm1txRNmaBbeLUCZs4cHiiu3BHcqZZ8QCg9a48zRtodhEpxP2HFf+krMm
+         56siek8hjGKG3O4f5BCjuyXnxT4B/Lcez8HRWf5fH9lyivI30LTD9I2dMTHf2jZ3hdo6
+         aa6g==
+X-Gm-Message-State: AOAM532/9NoGsEo8GjTNZ0fydH2L0mOjNBQYL4y7A9qFImneeWa0pDrA
+        rlZZF74N+WVdABwB/YZ44KwfSZPsCrg=
+X-Google-Smtp-Source: ABdhPJxbcnvmAXYaJsGITKnx6tL/jFWvsrp7BBZHH2RwwTToxZYNkzNtXHBzu7dldQDDs9cvmtPyAw==
+X-Received: by 2002:a62:5209:0:b0:44c:68a7:3a61 with SMTP id g9-20020a625209000000b0044c68a73a61mr11815886pfb.83.1633722574663;
+        Fri, 08 Oct 2021 12:49:34 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c3sm141430pgn.76.2021.10.08.12.49.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 12:49:30 -0700 (PDT)
+Subject: Re: [PATCH 5.14 00/48] 5.14.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211008112720.008415452@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <e1e59aee-662d-30a0-c00b-911c7b3f3503@gmail.com>
+Date:   Fri, 8 Oct 2021 12:49:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021 14:27:46 +0300, andrei.drimbarean@analog.com wrote:
-> From: Andrei Drimbarean <andrei.drimbarean@analog.com>
+On 10/8/21 4:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.11 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Andrei Drimbarean <andrei.drimbarean@analog.com>
-> ---
->  .../bindings/iio/light/adi,adpd188.yaml       | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/light/adi,adpd188.example.dt.yaml: adpd188@64: adi,no-of-devices: missing size tag in [[8]]
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/patch/1538303
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
