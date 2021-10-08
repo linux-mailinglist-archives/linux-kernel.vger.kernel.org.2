@@ -2,172 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9554273B0
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3434273B3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243648AbhJHWZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:25:45 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:43532 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243643AbhJHWZj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:25:39 -0400
-Received: by mail-oi1-f171.google.com with SMTP id o4so15529251oia.10;
-        Fri, 08 Oct 2021 15:23:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QM5aQoLjMON9vUj5/950puKSpv86HsWUic3m5pIT+Q4=;
-        b=L/SYXCKhboQiC6in7eCjvmUOFHWrYu1v0HzWGzEmWvaZklEL+wt1xN9FngGUKIqLRD
-         knf0f2+BMnUtdGQkS5YWNxxyw+dH5wD6c7hCgQ247lsV4Hhn4/y6V37Vcm8JDN44tIvx
-         LsGQQU4nBpiVKMVU/5HKI4DkP341CM00rezArGxSUOgbgRfbE2cVC0nVlELCT7fZmRuh
-         L+22X5ywasXokodyyVsXz8j4SWMGKYpVro4MigJLZUDeErn5+0GbPi/3GVajvudA7qas
-         VQpmBD2tUpPdzmwzuTQkYjr4kD53kc+GgIraDh4sQD+3ZBOO8cMa+c4jupI83fnHLsAZ
-         wzpw==
-X-Gm-Message-State: AOAM530QSKB+8U0gbcs7dgyjDPv7RWuTRhLvlb64qz4FjyFCKa+Wi1FI
-        mdmEHc/e15G2FJvaUi75/g==
-X-Google-Smtp-Source: ABdhPJwkgy/xy5obkA8eXwuJcSXnu6uvohGDw1jDVEACBLgns6g5AigK/d5AQ+oVoc2Lb3CwlHxwMw==
-X-Received: by 2002:aca:4bc4:: with SMTP id y187mr6512011oia.174.1633731818563;
-        Fri, 08 Oct 2021 15:23:38 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e16sm207808oiw.2.2021.10.08.15.23.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 15:23:37 -0700 (PDT)
-Received: (nullmailer pid 3424008 invoked by uid 1000);
-        Fri, 08 Oct 2021 22:23:36 -0000
-Date:   Fri, 8 Oct 2021 17:23:36 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Satya Priya <skakit@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Das Srinagesh <gurus@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mka@chromium.org,
-        swboyd@chromium.org, collinsd@codeurora.org,
-        subbaram@codeaurora.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 1/4] regulator: dt-bindings: Add pm8008 regulator
- bindings
-Message-ID: <YWDE6Nu5Z3sAKGv4@robh.at.kernel.org>
-References: <1633060859-22969-1-git-send-email-skakit@codeaurora.org>
- <1633060859-22969-2-git-send-email-skakit@codeaurora.org>
+        id S243640AbhJHW1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:27:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231830AbhJHW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:27:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B8060F6B;
+        Fri,  8 Oct 2021 22:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633731952;
+        bh=9acV1R8jlnvHbQ0xOKG84jeP85uyj+piXHo63LmDFeU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=UcEbanUDRRlTgVgqusRAff5Aid25qBwNaAMy8om1Ytk4ef9iH4QLgJYQ1oslv5VL3
+         jClswfAZ5Lv4kzY3xtMM+wxtig92ccvKgejCQOjp9GB2noGXMDKgZ2pbfNXaxyV+EM
+         4PDVhJjBKzFTsW9paXPFkaiGpYdGE3FGh1qEieW0HNxZ4dpYUYcxbbB4QeulqIzNew
+         IueeeuIb2J8LF7XY37NJ0wlo4SA5i/QGF3UnrnnaUYAKVCzADzqlQTMlC/w71uHBW5
+         fJSG+D/hixP8YyW/Ii+UWiDZVd6zAzPhO0LKENF2NMX5UNXBOr0sC50ThSFhQqmYkj
+         B0R19onrHTMHA==
+Date:   Fri, 8 Oct 2021 17:25:50 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, stefanha@redhat.com, oren@nvidia.com,
+        kw@linux.com
+Subject: Re: [PATCH v3 2/2] PCI/sysfs: use NUMA_NO_NODE macro
+Message-ID: <20211008222550.GA1385680@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1633060859-22969-2-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211004133453.18881-2-mgurtovoy@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 09:30:56AM +0530, Satya Priya wrote:
-> Add bindings for pm8008 pmic regulators.
+On Mon, Oct 04, 2021 at 04:34:53PM +0300, Max Gurtovoy wrote:
+> Use the proper macro instead of hard-coded (-1) value.
 > 
-> Signed-off-by: Satya Priya <skakit@codeaurora.org>
+> Suggested-by: Krzysztof Wilczyński <kw@linux.com>
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+
+These two patches are independent, so I applied this patch only to
+pci/sysfs for v5.16, thanks!
+
+I assume Greg will take the drivers/base patch.
+
 > ---
-> Changes in V2:
->  - Moved this patch before "mfd: pm8008: Add pm8008 regulator node" to
->    resolve dtschema errors. Removed regulator-min-microvolt and 
->    regulator-max-microvolt properties.
+>  drivers/pci/pci-sysfs.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
->  .../bindings/regulator/qcom,pm8008-regulator.yaml  | 72 ++++++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
-> new file mode 100644
-> index 0000000..31ac1eb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/regulator/qcom,pm8008-regulator.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/regulator/qcom,pm8008-regulator.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Technologies, Inc. PM8008 Regulator bindings
-> +
-> +maintainers:
-> +  - Satya Priya <skakit@codeaurora.org>
-> +
-> +description:
-> +  Qualcomm Technologies, Inc. PM8008 is an I2C controlled PMIC
-> +  containing 7 LDO regulators.
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,pm8008-regulator
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  vdd_l1_l2-supply:
-> +    description: Input supply phandle of ldo1 and ldo2 regulators.
-> +
-> +  vdd_l3_l4-supply:
-> +    description: Input supply phandle of ldo3 and ldo4 regulators.
-> +
-> +  vdd_l5-supply:
-> +    description: Input supply phandle of ldo5 regulator.
-> +
-> +  vdd_l6-supply:
-> +    description: Input supply phandle of ldo6 regulator.
-> +
-> +  vdd_l7-supply:
-> +    description: Input supply phandle of ldo7 regulator.
-> +
-> +patternProperties:
-> +  "^regulator@[0-9a-f]+$":
-> +    type: object
-> +
-> +    $ref: "regulator.yaml#"
-> +
-> +    description: PM8008 regulator peripherals of PM8008 regulator device
-> +
-> +    properties:
-> +      reg:
-> +        maxItems: 1
-
-blank line here
-
-What do the reg values represent here? You need to define that since it 
-specific to this devices. Some constraints on the values would be nice 
-too.
-
-> +      regulator-name: true
-
-blank line.
-
-> +      qcom,min-dropout-voltage:
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        description:
-> +          Specifies the minimum voltage in microvolts that the parent
-
-Use a standard unit suffix and you can drop the type ref.
-
-> +          supply regulator must output, above the output of this
-> +          regulator.
-> +
-> +    required:
-> +      - reg
-> +      - regulator-name
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +...
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 7fb5cd17cc98..f807b92afa6c 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -81,8 +81,10 @@ static ssize_t pci_dev_show_local_cpu(struct device *dev, bool list,
+>  	const struct cpumask *mask;
+>  
+>  #ifdef CONFIG_NUMA
+> -	mask = (dev_to_node(dev) == -1) ? cpu_online_mask :
+> -					  cpumask_of_node(dev_to_node(dev));
+> +	if (dev_to_node(dev) == NUMA_NO_NODE)
+> +		mask = cpu_online_mask;
+> +	else
+> +		mask = cpumask_of_node(dev_to_node(dev));
+>  #else
+>  	mask = cpumask_of_pcibus(to_pci_dev(dev)->bus);
+>  #endif
 > -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+> 2.18.1
 > 
