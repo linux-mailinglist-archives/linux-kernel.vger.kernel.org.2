@@ -2,120 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BDC426423
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612EA426426
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbhJHFmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhJHFmF (ORCPT
+        id S230292AbhJHFmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:42:36 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31376 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229511AbhJHFme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:42:05 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D421C061570;
-        Thu,  7 Oct 2021 22:40:10 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t8so26122349wri.1;
-        Thu, 07 Oct 2021 22:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c2QUI9TYy6QLpttg1evSF5Z552Y1SnXO8l+S/s47Hro=;
-        b=KTV6bGO6ZIzTcs8S+lfDc/Z++xPkXJQSP2d+1Eg/Mx1Jr7Nv4kgS81RPh3mDuMR9mg
-         I0tFYsewbjQgbs6erHzJvZTVVdWrB5DC5rdxGrNRq5QdUAWnPVhYDhpU0e+QmgdMzlYE
-         CTG36UxIC5qE7hJafvwz42v4SvydVyR08rHDsoEwL8iHMJ66j6/R3vjrpafFDP6Qnj3o
-         tDfQM3fZXbNA9ufvHsBinqXmM1FEyhYse8NkIhd/BVYs0rZmB00tW9fThpTkk63MRscd
-         xj+imTkg5vkJumtCfii4i7I3vkjkGMH8mBXUwzNw9b+VCWCnxiDZH08FnlYf3AlcfF/c
-         4/+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c2QUI9TYy6QLpttg1evSF5Z552Y1SnXO8l+S/s47Hro=;
-        b=vMLIwbXPwm7J/N82q5o+QYNS+PnqGIQyYFgulap1Ky0CBzZs8IegNsBAH6xstJ+6Bd
-         cPZPKzp4mL1M2fr7ORXZSqH6GO+RvfI0pyWPZKZjG0icDntOcvjh+QlAHvxk47tqGPkn
-         gQv/BDrg8a6yU0FEMxFKwFMzNvF+jWynY4yXRwOOUo4094wr3SYuHOVirheymfQImb0U
-         AcForQ3gYvpwV4aCKiP0f42aWyJnoRjYe6/u65edxyKB15HpB8tLpIWPaCDn/ipfhb2q
-         iBp9klGQ+hxLNW7VyNM+mIE3tqIt5sM5b+KEOgAYMUUpID3fCBEzIyglLTPOTBNdvzBf
-         OOcw==
-X-Gm-Message-State: AOAM531jbr2T/3DfifeFro3mJqC0kpFZCGpTxFv1Ro9+cr4RNAaeBF8b
-        Ebu3O83XqeoKBqIgGlvs3Zf8wQmX+MdSdVlQTAxCN/VMdZA=
-X-Google-Smtp-Source: ABdhPJyMiQ/ZGhNjm9J9QB/3671bpRzCA29LquGl8paqVfA0pcGnQdMsCU/88s7/AdWZRIk3CtYY83cB14EMXwYfxsI=
-X-Received: by 2002:adf:f610:: with SMTP id t16mr1478945wrp.309.1633671608705;
- Thu, 07 Oct 2021 22:40:08 -0700 (PDT)
+        Fri, 8 Oct 2021 01:42:34 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1985695B023033;
+        Fri, 8 Oct 2021 01:40:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=vjRMRlRq+QbD9v0aID6Njw31X51jShwlBAEpOOPtaYw=;
+ b=iwpQyoF8wA3RC9BTv6TAda6S5HvIexbC5ijP8NfGDN2IBqJoObxQpR5ygaAMUReV/dwy
+ Zy54DlN1VuV5f/XuWj75TGykrEx7oL66xvQCVgewk5xSjS1fRHj/IoDN24E0q6h/fezT
+ CuATNHpXUchc/nwnes55Fm3PijvqEvj05eY9VVJauIb6jDBwTXaA/pg29KUXx7vwfQtF
+ Ud893WmgsywQu5Rse6nStugeLShDDC1OnvoUNL/KIvXypVayDDHrMBcIUL1pReqUBPlH
+ uIS88U2PTkoro3Dmcv0XwDayu75Wxkr+/KqdaXuy6jXgGFoHgO99P6OFAhHiVpT7GoJ9 Nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bjdqktqds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 01:40:26 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1985X6Qq007521;
+        Fri, 8 Oct 2021 01:40:25 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bjdqktqdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 01:40:25 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1985ak9p030097;
+        Fri, 8 Oct 2021 05:40:24 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma02dal.us.ibm.com with ESMTP id 3bef2ebs27-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 05:40:24 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1985eK4k29426072
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Oct 2021 05:40:20 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B5664C6065;
+        Fri,  8 Oct 2021 05:40:20 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3DF93C605D;
+        Fri,  8 Oct 2021 05:40:16 +0000 (GMT)
+Received: from [9.65.95.104] (unknown [9.65.95.104])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  8 Oct 2021 05:40:15 +0000 (GMT)
+Subject: Re: [PATCH v2 4/4] virt: Add sev_secret module to expose confidential
+ computing secrets
+To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Scull <ascull@google.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Daniele Buono <dbuono@linux.vnet.ibm.com>,
+        linux-coco@lists.linux.dev, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Dov Murik <dovmurik@linux.ibm.com>
+References: <20211007061838.1381129-1-dovmurik@linux.ibm.com>
+ <20211007061838.1381129-5-dovmurik@linux.ibm.com>
+ <7e2a4595-3f9c-6d65-34e3-af7c1d6da196@intel.com> <YV8dsl+qgbIH6z8F@work-vm>
+From:   Dov Murik <dovmurik@linux.ibm.com>
+Message-ID: <fc31d2a9-ee56-f114-857e-310c4f4d7d4f@linux.ibm.com>
+Date:   Fri, 8 Oct 2021 08:40:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+In-Reply-To: <YV8dsl+qgbIH6z8F@work-vm>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 6tHLsQAncmQL0tmlDgxxxj9r6LHQlPwb
+X-Proofpoint-ORIG-GUID: CJ3FntA6G0k0HhAnOrDK5ko-QqVBgMYN
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20211008151511.5a7c6e56@canb.auug.org.au>
-In-Reply-To: <20211008151511.5a7c6e56@canb.auug.org.au>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Fri, 8 Oct 2021 07:39:57 +0200
-Message-ID: <CAMhs-H_Gg+iLVJ43h5Boa5H1W6LieA_atiYYo+tRtw22bQZSLg@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the staging tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <greg@kroah.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-07_05,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 adultscore=0 impostorscore=0 mlxscore=0
+ phishscore=0 bulkscore=0 suspectscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110080031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+Thanks Dave and Dave for reviewing this.
 
-[+cc Thomas Bogendoerfer as mips maintainer]
+On 07/10/2021 19:17, Dr. David Alan Gilbert wrote:
+> * Dave Hansen (dave.hansen@intel.com) wrote:
+>> On 10/6/21 11:18 PM, Dov Murik wrote:
+>>> +static int sev_secret_map_area(void)
+>>> +{
+>>> +	struct sev_secret *s = sev_secret_get();
+>>> +	struct linux_efi_coco_secret_area *secret_area;
+>>> +	u32 secret_area_size;
+>>> +
+>>> +	if (efi.coco_secret == EFI_INVALID_TABLE_ADDR) {
+>>> +		pr_err("Secret area address is not available\n");
+>>> +		return -EINVAL;
+>>> +	}
+>>> +
+>>> +	secret_area = memremap(efi.coco_secret, sizeof(*secret_area), MEMREMAP_WB);
+>>> +	if (secret_area == NULL) {
+>>> +		pr_err("Could not map secret area header\n");
+>>> +		return -ENOMEM;
+>>> +	}
+>>
+>> There doesn't seem to be anything truly SEV-specific in here at all.
+>> Isn't this more accurately called "efi_secret" or something?  What's to
+>> prevent Intel or an ARM vendor from implementing this?
+> 
+> I don't think anything; although the last discussion I remember on list
+> with Intel was that Intel preferred some interface with an ioctl to read
+> the secrets and stuff.  I'm not quite sure if the attestation/secret
+> delivery order makes sense with TDX, but if it does, then if you could
+> persuade someone to standardise on this it would be great.
+> 
 
-On Fri, Oct 8, 2021 at 6:15 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the staging tree, today's linux-next build (mips
-> nlm_xlp_defconfig) failed like this:
->
-> drivers/pci/pci.c:4210: undefined reference to `pci_remap_iospace'
->
-> Caused by commit
->
->   9f76779f2418 ("MIPS: implement architecture-specific 'pci_remap_iospace()'")
->
-> CONFIG_PCI_DRIVERS_GENERIC is not set for this build, so
-> arch/mips/pci/pci-generic.c is not built.
+I agree that this series doesn't have any SEV-specific stuff in it; in
+fact, I wrote in the cover letter:
 
-I don't know what should be the correct fix for this.
-'pci_remap_iospace' for mips is added in 'pci-generic.c' which in only
-compiled when 'CONFIG_PCI_DRIVERS_GENERIC' is selected. In mips there
-is also 'CONFIG_PCI_DRIVERS_LEGACY' option that include 'pci-legacy.c'
-and drivers in 'arch/mips/pci' are normally defining this
-'CONFIG_PCI_DRIVERS_LEGACY'. For the failing build
-mips_nlm_xlp_defconfig, none of them are defined and code (I guess
-./arch/mips/pci/pci-xlp.c) is just initializing PCI calling
-'pcibios_init' and not using PCI core apis and 'pci_remap_iospace' at
-all like other drivers inside 'arch/mips/pci'. So I think the correct
-thing to do would be just move this mips architecture dependent define
-to be dependant of CONFIG_PCI_DRIVERS_GENERIC. The following patch
-would be enough:
++++
+This has been tested with AMD SEV and SEV-ES guests, but the kernel side
+of handling the secret area has no SEV-specific dependencies, and
+therefore might be usable (perhaps with minor changes) for any
+confidential computing hardware that can publish the secret area via the
+standard EFI config table entry.
++++
 
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 35270984a5f0..421231f55935 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -20,7 +20,9 @@
- #include <linux/list.h>
- #include <linux/of.h>
+However, in previous rounds Boris said [1] that if it's only
+hypothetical support for other platforms, I should add a
+"depends on AMD_MEM_ENCRYPT" clause.  Boris, can you please share your view?
 
-+#ifdef CONFIG_PCI_DRIVERS_GENERIC
- #define pci_remap_iospace pci_remap_iospace
-+#endif
+I'm indeed in favor of making this more generic (efi_secret sounds
+good), allowing for future support for other early-boot secret injection
+mechanisms.
 
- #ifdef CONFIG_PCI_DRIVERS_LEGACY
 
-Thomas, if you are ok with this, let me know and I'll send this patch
-to be added to staging tree for fixing this issue.
+[1] https://lore.kernel.org/linux-coco/YNojYBIwk0xCHQ0v@zn.tnic/
 
-Best regards,
-    Sergio Paracuellos
 
->
-> --
-> Cheers,
-> Stephen Rothwell
+-Dov
