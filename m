@@ -2,178 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639154262ED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C054262EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbhJHDZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHDZd (ORCPT
+        id S236213AbhJHD0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:26:54 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47414 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229501AbhJHD0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:25:33 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363AEC061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 20:23:39 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id u66so3642984vku.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 20:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YH7hWGnKeMLgME7ZCIPQSyX99DlhWg8uLLxzZysdl6c=;
-        b=xgmstvbjJLGF1lTZbyBTuNi5sVdmLkUuqSqjwmctdcKkGPx4U8PqmN1hnHImv1lKzr
-         OOONo1S/PEcXIZNyaIaWd3pZPLnGslMUukZihzinq2Q/ksQvdQPQV4bZPnnz7lmlYyDw
-         FOnXrT4hkEivmurDrwJ3k56fYsN60DRZwmUdRhobKaJvd4wYqlfMraH60uRCptnYx8Gw
-         FOj7OZl3WkiuXB+I+HDvXpILdP4LpPyA7tGlE7PEbBTHjKXEkpSpqBjmhmubEVNOMcV5
-         l1kdNxw3IUr1ErTV6H1/6R5P1e1zSdQpUU5sZtvd6Q3z7e9Tuim7g2WGG7vkARtqRoyA
-         Q05g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YH7hWGnKeMLgME7ZCIPQSyX99DlhWg8uLLxzZysdl6c=;
-        b=Ij82jt/OQwBrZQf5Hi5speanIs2IApMFsewme9COpY3sLZiYDf/s6rztSDD3CPyMrt
-         db3Yh3NnPnoPCt7XTWdfrAzoeIuxR3Cvw8nd/CfBIhvbMMxS073MueGmNdsx+7V4ErMY
-         ndVjqqQoIbUiezWBOurmZBFGq8J9KtpuVLNcaGlb2LS2+zSUwEKi3gY3KgswPoHnDtzH
-         +FgKgYlelh8oVcLpi6m2prEmY5moCflCn6J/WbBm/dde33aGv7xdyKRTXhJI9h++2cGP
-         DXliDFoo5yPjrVSDzpBmTlFXDhZ5Emt9Dqv55MMPm+V+D+mwS2+iTQgI31meXx3f1DPk
-         LPug==
-X-Gm-Message-State: AOAM530N4hARdcANpSyWrswUudDmjNGSL+6IReMH+B9FMDqh1A0CUNsS
-        hE6q/ikOTRYhp20d4CbwJw3MqigvfwRP6I49+bWHqVh5ScR7jw==
-X-Google-Smtp-Source: ABdhPJwqfz2mGqpRet+PozKsM933EUcZeBoNJ9o/urpvJvtSLhpa/iufwSAh2JhaCWf3z7kg+I4Y/RGaJtwQTQP1pv4=
-X-Received: by 2002:a1f:2603:: with SMTP id m3mr7759371vkm.2.1633663418390;
- Thu, 07 Oct 2021 20:23:38 -0700 (PDT)
+        Thu, 7 Oct 2021 23:26:52 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UqteNtB_1633663495;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UqteNtB_1633663495)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 08 Oct 2021 11:24:56 +0800
+Subject: Re: [PATCH] net/tls: support SM4 CCM algorithm
+To:     Vadim Fedorenko <vfedorenko@novek.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Boris Pismenny <borisp@nvidia.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210928062843.75283-1-tianjia.zhang@linux.alibaba.com>
+ <1761d06d-0958-7872-04de-cde6ddf8a948@novek.ru>
+ <1195374a-a9d4-0431-015b-60d986e29881@linux.alibaba.com>
+ <16a76d3e-910f-4fdf-5b2d-9f3355cce4ca@novek.ru>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <939f33ed-7d43-06a6-1860-26157eeaec7c@linux.alibaba.com>
+Date:   Fri, 8 Oct 2021 11:24:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
- <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
- <CAHckoCwk1i7_vV=oweLTNYkCjMi4ReyXed2NOvZ10z2J32xGBg@mail.gmail.com> <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
-In-Reply-To: <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Fri, 8 Oct 2021 11:23:27 +0800
-Message-ID: <CAHckoCyMvAw8ux2mNdM6Keo+LeHY=1DNVOoEVNKkOi+cFds+CA@mail.gmail.com>
-Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
-To:     Song Liu <song@kernel.org>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <16a76d3e-910f-4fdf-5b2d-9f3355cce4ca@novek.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Done, thanks for responding.
 
-Thanks,
-Feng Li
 
-Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=887=E6=97=A5=E5=
-=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:59=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Oct 7, 2021 at 12:00 AM Li Feng <fengli@smartx.com> wrote:
-> >
-> > Continue ping...
-> >
-> > Thanks,
-> > Feng Li
->
-> Hmm.. this is weird. I didn't see previous emails in this thread.
-> Could you please
-> send it again?
->
-> Thanks,
-> Song
->
-> >
-> > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8827=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:24=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > Hi Song,
-> > >
-> > > What about this feature?
-> > >
-> > > Thanks,
-> > > Feng Li
-> > >
-> > > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=
-=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > ping ...
-> > > >
-> > > > Thanks,
-> > > > Feng Li
-> > > >
-> > > > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=
-=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
-> > > > >
-> > > > > When the running RAID1/RAID10 need to be set with the fail_fast f=
-lag,
-> > > > > we have to remove each device from RAID and re-add it again with =
-the
-> > > > > --fail_fast flag.
-> > > > >
-> > > > > Export the fail_fast flag to the userspace to support the read an=
-d
-> > > > > write.
-> > > > >
-> > > > > Signed-off-by: Li Feng <fengli@smartx.com>
-> > > > > ---
-> > > > >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
-> > > > >  1 file changed, 30 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/md/md.c b/drivers/md/md.c
-> > > > > index ae8fe54ea358..ce63972a4555 100644
-> > > > > --- a/drivers/md/md.c
-> > > > > +++ b/drivers/md/md.c
-> > > > > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const=
- char *buf, size_t len)
-> > > > >  static struct rdev_sysfs_entry rdev_ppl_size =3D
-> > > > >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store)=
-;
-> > > > >
-> > > > > +static ssize_t
-> > > > > +fail_fast_show(struct md_rdev *rdev, char *page)
-> > > > > +{
-> > > > > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->fl=
-ags));
-> > > > > +}
-> > > > > +
-> > > > > +static ssize_t
-> > > > > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t le=
-n)
-> > > > > +{
-> > > > > +       int ret;
-> > > > > +       bool bit;
-> > > > > +
-> > > > > +       ret =3D kstrtobool(buf, &bit);
-> > > > > +       if (ret)
-> > > > > +               return ret;
-> > > > > +
-> > > > > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
-> > > > > +               clear_bit(FailFast, &rdev->flags);
-> > > > > +               md_update_sb(rdev->mddev, 1);
-> > > > > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
-> > > > > +               set_bit(FailFast, &rdev->flags);
-> > > > > +               md_update_sb(rdev->mddev, 1);
-> > > > > +       }
-> > > > > +       return len;
-> > > > > +}
-> > > > > +
-> > > > > +static struct rdev_sysfs_entry rdev_fail_fast =3D
-> > > > > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-> > > > > +
-> > > > >  static struct attribute *rdev_default_attrs[] =3D {
-> > > > >         &rdev_state.attr,
-> > > > >         &rdev_errors.attr,
-> > > > > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs=
-[] =3D {
-> > > > >         &rdev_unack_bad_blocks.attr,
-> > > > >         &rdev_ppl_sector.attr,
-> > > > >         &rdev_ppl_size.attr,
-> > > > > +       &rdev_fail_fast.attr,
-> > > > >         NULL,
-> > > > >  };
-> > > > >  static ssize_t
-> > > > > --
-> > > > > 2.31.1
-> > > > >
+On 10/1/21 6:56 AM, Vadim Fedorenko wrote:
+> On 30.09.2021 04:34, Tianjia Zhang wrote:
+>> Hi Vadim,
+>>
+>> On 9/29/21 5:24 AM, Vadim Fedorenko wrote:
+>>> On 28.09.2021 07:28, Tianjia Zhang wrote:
+>>>> The IV of CCM mode has special requirements, this patch supports CCM
+>>>> mode of SM4 algorithm.
+>>>>
+>>> Have you tried to connect this implementation to application with
+>>> user-space implementation of CCM mode? I wonder just because I have an
+>>> issue with AES-CCM Kernel TLS implementation when it's connected to
+>>> OpenSSL-driven server, but still have no time to fix it correctly.
+>>
+>> I did not encounter any issue when using KTLS with AES-CCM algorithm, 
+>> but the KTLS RX mode on the OpenSSL side does not seem to be supported.
+>>
+>> I encountered some problems when using the SM4-CCM algorithm of KTLS. 
+>> Follow the RFC8998 specification, the handshake has been successful, 
+>> and the first data transmission can be successful. After that, I will 
+>> encounter the problem of MAC verification failure, but this is issue 
+>> on the OpenSSL side. because the problem is still being investigated, 
+>> I have not opened the code for the time being.
+>>
+> Are you sure that this is an issue on the OpenSSL side? Because 
+> absolutely the same problem is reported for AES-CCM algo and only when 
+> it's offloaded to kernel. Looks like encryption of CCM could be broken 
+> somehow.
+> 
+> I will try to investigate it a bit later from the AES-CCM side.
+
+Yes, but I only used openssl s_server/s_client to do the test. In 
+theory, this is not guaranteed to be fully covered. Can you tell us 
+about the scenario where your issue occurred? I will try to see if it 
+can replay.
+
+Best regards,
+Tianjia
