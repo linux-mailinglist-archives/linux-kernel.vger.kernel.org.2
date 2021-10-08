@@ -2,259 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756B34262F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BE14262F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234131AbhJHDaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:30:12 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41957 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229501AbhJHDaJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:30:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UqtpnV8_1633663691;
-Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UqtpnV8_1633663691)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 08 Oct 2021 11:28:13 +0800
-Date:   Fri, 8 Oct 2021 11:28:11 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
-        Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] erofs: get compression algorithms directly on mapping
-Message-ID: <YV+6ywZIenMBOYDs@B-P7TQMD6M-0146.local>
-References: <20211007170605.7062-1-xiang@kernel.org>
- <20211007170605.7062-2-xiang@kernel.org>
- <20211008110029.0000181f.zbestahu@gmail.com>
+        id S229783AbhJHDdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:33:03 -0400
+Received: from mail-eopbgr1310094.outbound.protection.outlook.com ([40.107.131.94]:12856
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229501AbhJHDc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:32:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F9tyIX3W4rsnsu7iLSSCr2sxR0ZDFhlxMncM2UxSOuccjeX6/Pt7RxVoc8ygW2Zd3TrUvkKadnKs6dVwqP2vVmqd193F3Tj/PUvkFTIC3awUww0ziGxenp2PcHKjv/10T4ANU5CPaYzD2rBk3ZG5eneqsX95rDVOPjR4OwK1R9jMZD4qQnRp12WdU5LvOUI9GUGclYjMDRnH+mS8Yv9DWv6jNZAV8+iZOpNgNQF5uQP2xjwZZRcHWvUAuklbhC/Y9OlD9uSZR6UMvWUMxFwrxHaY45uT85j3anjD/Z2UalZuc9JqO9Ss4qqFJ28Oj5nsj/p72EvIMKzGArV5wdck3Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q1w/C5+Pj0azalLvyR0t9to/H0dVxUYIuNKLdDFSyRw=;
+ b=cL2Gd3jzT6B0aAm914rXIwKj8zT1rU4KsyQHZpUJ1wZDdE889zoE8kcC2Qx/VoWBvuHBZ5qDSfACehNEibkcvtoE+R+CLwZ486eBlWUmfspgm1X5K1yrGMcTVluNJJtRJh9JI7rKaAYiyGUkDYrLVHbqnFURxtOiIVFLcqI0jrtON0noZOmsqg5xB4rk3Y2VIOJ+tdh9A/cKLYDddWeC7S52N1UNCwhDfRn9D4eAy58sGUYYmCLfaxbfV5KI0n2U5Vtze0QDiazfCmF36qX4n7rU1ZQhF1s/JEFox+S1rtKdaTWGOnlcH3/uv3q8sglCV0oOBo7Q9hxnaMwqUoACIA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q1w/C5+Pj0azalLvyR0t9to/H0dVxUYIuNKLdDFSyRw=;
+ b=PgDNoRlPPa2i/Bluf5tSpQbRIoEcyBQ1KkcVhxyw8toadCw973vxi2NKUWulUgoDGJPLaISA5IyL+5J8MPJr+GBYkMZBkSvOQUGevOzA7FxOizJ6SaJ0MUiyLk8w6yLjWr05aYlYjdZvT0wIIj1Aoz79vw1u4HlQmGMtJqCD7mE=
+Authentication-Results: synopsys.com; dkim=none (message not signed)
+ header.d=none;synopsys.com; dmarc=none action=none header.from=vivo.com;
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com (2603:1096:100:37::17)
+ by SL2PR06MB3385.apcprd06.prod.outlook.com (2603:1096:100:3f::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
+ 2021 03:30:58 +0000
+Received: from SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414]) by SL2PR06MB3082.apcprd06.prod.outlook.com
+ ([fe80::4c9b:b71f:fb67:6414%6]) with mapi id 15.20.4587.019; Fri, 8 Oct 2021
+ 03:30:58 +0000
+From:   Qing Wang <wangqing@vivo.com>
+To:     Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, MPT-FusionLinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org
+Cc:     Qing Wang <wangqing@vivo.com>
+Subject: [PATCH V3 0/7] switch from 'pci_' to 'dma_' API
+Date:   Thu,  7 Oct 2021 20:28:26 -0700
+Message-Id: <1633663733-47199-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0209.apcprd02.prod.outlook.com
+ (2603:1096:201:20::21) To SL2PR06MB3082.apcprd06.prod.outlook.com
+ (2603:1096:100:37::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211008110029.0000181f.zbestahu@gmail.com>
+Received: from ubuntu.localdomain (103.220.76.181) by HK2PR02CA0209.apcprd02.prod.outlook.com (2603:1096:201:20::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4587.18 via Frontend Transport; Fri, 8 Oct 2021 03:30:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 11b823cb-7dc5-41c0-ce20-08d98a0c0b4d
+X-MS-TrafficTypeDiagnostic: SL2PR06MB3385:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SL2PR06MB3385DE6FA6F892B123416195BDB29@SL2PR06MB3385.apcprd06.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nOcDNUQUfus1Ha5jwG+418ewEZ6afoFl4FAQbqbz6G1NpehHGRZ+TSyaa6zFlufrSQz3CNeidWdhmr0tMmv79qD3u0HCFM1w7NbRdnP36tpQc8g693XIR/RhxHzYN33Am1hDrmXsyOswLLSJ1EyDy4tOjz6aULyG/UIBqJJKale+TEwOGP07wPaERBXGPbIXtBY5vMKd7d+h/5FVb7kMWwErO6NYhE4SXnLHMW7t6RneRo54SQb1NhE43E/kqB6aHCFjAL8C2HhWCQf+Y9QKOVAae9k675K+neJ0DyU9Rpz1SAG/ffaXcCTAcMFS9Bowx9T7mJm6fCZ0M5uO9gUrkxma3TpG58g1W0bGOOyRQ8q6Iww0gAKLU1END0sAzf9Y04spX1HDE0IRf/ISkYDk5b1WQ+bluhW8tfKviPmUxPAtaMxv7vIPFMWANha+L1xLKzxbnE61pQsfJlJV1D3lP04rO6Er5sKUtesBRUw7iHpFe5eguD6DnLPtAQz66LAR2fdR3wGznVBhtaEOR+hBmmpYU3cZjGNcMu28G19bwXKv4HRXJZ1K2HTi9QaRHWAOC/FJAx/5Ad6wzxVmSyTkFOkWkXIxzjq0Cv7mWBiUYs1k+yl3VPzln3lxDXmbllUIKentEhAqf9zj3J3IdnTZLP2IOLK/HULpbUxxoPUGTgb0l99GuqRC8Om/VQ3gFfdxYJwm2ZfhPaMxGQFxCE2C3f36XVTfACO1z1AvOm5M/QT0ShX09jDxe1OvzRMK3F69EczsBC+r+CmCJ6/NHnOacVtgTCXoTgBoxknlc0YKwBQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2PR06MB3082.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(7416002)(2906002)(4326008)(38100700002)(52116002)(36756003)(38350700002)(66946007)(66476007)(66556008)(6506007)(8676002)(186003)(508600001)(86362001)(966005)(6486002)(110136005)(107886003)(2616005)(8936002)(83380400001)(956004)(316002)(921005)(5660300002)(6512007)(26005)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O+s2mpqE1Jv7NhgVEvU/D7Dx64kmKcCJTHvpRv+rjL98a3qs+DkLVNP7wcT0?=
+ =?us-ascii?Q?sy+9N9R9AhxPPDbMOkcEKQUkA0h6hay4DCUlNMBd/PEkYX1maDBmE/DCxoG8?=
+ =?us-ascii?Q?DUlX1u2bmUCiklDcupbEwCTnyb1SBIPTAgG8h8PGSrXGXeXeq9v+cJS45q92?=
+ =?us-ascii?Q?ThqHwKp8LSIY6az9gUFIk0UKlfwEwjrAxWvMZ651l6cGn5y945EoEhzSN/wM?=
+ =?us-ascii?Q?TXYz+lAdexkU0KxqCTthYKsAQBbLhpOZGWEyRprYiIm5LUbcoxpInp/y3YLt?=
+ =?us-ascii?Q?JCamNc3802KLmf3pajfxIryoWMQs6IDee4B1th/idojdTi+phgmqLIK8Qj9Q?=
+ =?us-ascii?Q?20AqEjgw3nclRfS1ymlkz/AgXoxT5kW36nx51teXA2B1gLQDkK5P+xgPxz40?=
+ =?us-ascii?Q?Q1NQ7ZwRB7AA7h9YkhgMn051PoFSrCfvx/TGc77dpN82fmGjgQx0XBbUirid?=
+ =?us-ascii?Q?khMf+3HY94mA1wV8I0/qIc8phnp+JlVylFym9HjrPv9A4Ph1UB/zdeloAlQL?=
+ =?us-ascii?Q?/jLUGPeVU014+h9bBuKSP0dAPdNLB8JxZZjW9DMetAH8sG5+dZQKQzmswnSO?=
+ =?us-ascii?Q?xhk2/n4867I73gUkt22fSXkgatgI7He8sL3mhRt5xk1ytj2ubL0Lisb4b+/T?=
+ =?us-ascii?Q?nNuXncpK4up0YR/ngHsJDZHXgStPq1/pfF/nHLtKnuN2LIiPZTKq+169RP9Q?=
+ =?us-ascii?Q?7bEJIfMgZYi6jc/ELgAKSiDCSOnTdcsV+5v4CWePaHGcQA/Ltc6brhvaqFjQ?=
+ =?us-ascii?Q?x78bRc5OpAcJpyksuCGumqVA8vXNA5TIdgE+l0a+AIIXQk3QIf/cASPMhtB8?=
+ =?us-ascii?Q?o3/I8fLND95rq0FIud795+MbyqdJc/Bs8GPkSv/78sq9o6vQvLZ+Gnkax5QN?=
+ =?us-ascii?Q?oGnvHAmdXAAHbEMeG2wsPng2D8YBRX7MUOOtH81BiaQYcfvk68Qi3FFma+14?=
+ =?us-ascii?Q?Dfm6VTkiQNPoK1FXD4H+BTHt6vTQ9sregdK97Ubh/Z5KrO1nRQI3fCIaeQdl?=
+ =?us-ascii?Q?3cJu+LX+IG3t6BSyx5D195V6xbpjzwpIqHFiePbo+IQridq1hum81kqwoMdj?=
+ =?us-ascii?Q?2P6T35w84gTvg3QFvJJERFcIC1hiYRIUVl+Bx1y62Dh4DLWE5pUvPV2XlKMn?=
+ =?us-ascii?Q?X/CrsvsfWyHd55PYfAjt9GYzfq+lhpRaMfE2kYfsYeT+3/UB8o7cktaMDTHZ?=
+ =?us-ascii?Q?BCM/F0Uy4fi7hCLn+TfOSlTDjw4+5ckFU2puODjiCc5ljrawPdbDKqPjNybw?=
+ =?us-ascii?Q?iISd+2S86Mzw+O0Kaz9UmxGslHqaG/FVL3cgl+pdDfyQ8RlBfjNJfucGcKQS?=
+ =?us-ascii?Q?xutBJkCSMJdb6zv5uR7v5zd2?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11b823cb-7dc5-41c0-ce20-08d98a0c0b4d
+X-MS-Exchange-CrossTenant-AuthSource: SL2PR06MB3082.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 03:30:58.5453
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Q7N373P75+V7NXrEMLpWyZLkvbkMPCoy2rpByF/qtYU6aYxvAC5YaaBKDmtCAZzbGCNIWZHmOiPUz9x+ySjBEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SL2PR06MB3385
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yue,
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-On Fri, Oct 08, 2021 at 11:00:29AM +0800, Yue Hu wrote:
-> On Fri,  8 Oct 2021 01:06:03 +0800
-> Gao Xiang <xiang@kernel.org> wrote:
-> 
-> > From: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > 
-> > Currently, z_erofs_map_blocks returns whether extents are compressed
-> 
-> Mapping function is z_erofs_map_blocks_iter()?
+The patch has been generated with the coccinelle script below.
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
 
-I just meant the compression mapping... I'm fine with the update..
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
 
-> 
-> > or not, and the decompression frontend gets the specific algorithms
-> > then.
-> > 
-> > It works but not quite well in many aspests, for example:
-> >  - The decompression frontend has to deal with whether extents are
-> >    compressed or not again and lookup the algorithms if compressed.
-> >    It's duplicated and too detailed about the on-disk mapping.
-> > 
-> >  - A new secondary compression head will be introduced later so that
-> >    each file can have 2 compression algorithms at most for different
-> >    type of data. It could increase the complexity of the decompression
-> >    frontend if still handled in this way;
-> > 
-> >  - A new readmore decompression strategy will be introduced to get
-> >    better performance for much bigger pcluster and lzma, which needs
-> >    the specific algorithm in advance as well.
-> > 
-> > Let's look up compression algorithms directly in z_erofs_map_blocks()
-> 
-> Same mapping function name mistake?
+While at it, some 'dma_set_mask()/dma_set_coherent_mask()' have been
+updated to a much less verbose 'dma_set_mask_and_coherent()'.
 
-Ok, will update as well.
+This type of patches has been going on for a long time, I plan to 
+clean it up in the near future. If needed, see post from 
+Christoph Hellwig on the kernel-janitors ML:
+https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
 
-> 
-> > instead.
-> > 
-> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> > ---
-> >  fs/erofs/compress.h          |  5 -----
-> >  fs/erofs/internal.h          | 12 +++++++++---
-> >  fs/erofs/zdata.c             | 12 ++++++------
-> >  fs/erofs/zmap.c              | 19 ++++++++++---------
-> >  include/trace/events/erofs.h |  2 +-
-> >  5 files changed, 26 insertions(+), 24 deletions(-)
-> > 
-> > diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-> > index 3701c72bacb2..ad62d1b4d371 100644
-> > --- a/fs/erofs/compress.h
-> > +++ b/fs/erofs/compress.h
-> > @@ -8,11 +8,6 @@
-> >  
-> >  #include "internal.h"
-> >  
-> > -enum {
-> > -	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
-> > -	Z_EROFS_COMPRESSION_RUNTIME_MAX
-> > -};
-> > -
-> >  struct z_erofs_decompress_req {
-> >  	struct super_block *sb;
-> >  	struct page **in, **out;
-> > diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> > index 9524e155b38f..48bfc6eb2b02 100644
-> > --- a/fs/erofs/internal.h
-> > +++ b/fs/erofs/internal.h
-> > @@ -338,7 +338,7 @@ extern const struct address_space_operations z_erofs_aops;
-> >   * of the corresponding uncompressed data in the file.
-> >   */
-> >  enum {
-> > -	BH_Zipped = BH_PrivateStart,
-> > +	BH_Encoded = BH_PrivateStart,
-> >  	BH_FullMapped,
-> >  };
-> >  
-> > @@ -346,8 +346,8 @@ enum {
-> >  #define EROFS_MAP_MAPPED	(1 << BH_Mapped)
-> >  /* Located in metadata (could be copied from bd_inode) */
-> >  #define EROFS_MAP_META		(1 << BH_Meta)
-> > -/* The extent has been compressed */
-> > -#define EROFS_MAP_ZIPPED	(1 << BH_Zipped)
-> > +/* The extent is encoded */
-> > +#define EROFS_MAP_ENCODED	(1 << BH_Encoded)
-> >  /* The length of extent is full */
-> >  #define EROFS_MAP_FULL_MAPPED	(1 << BH_FullMapped)
-> >  
-> > @@ -355,6 +355,7 @@ struct erofs_map_blocks {
-> >  	erofs_off_t m_pa, m_la;
-> >  	u64 m_plen, m_llen;
-> >  
-> > +	char m_algorithmformat;
-> >  	unsigned int m_flags;
-> >  
-> >  	struct page *mpage;
-> > @@ -368,6 +369,11 @@ struct erofs_map_blocks {
-> >   */
-> >  #define EROFS_GET_BLOCKS_FIEMAP	0x0002
-> >  
-> > +enum {
-> > +	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
-> > +	Z_EROFS_COMPRESSION_RUNTIME_MAX
-> > +};
-> > +
-> >  /* zmap.c */
-> >  extern const struct iomap_ops z_erofs_iomap_report_ops;
-> >  
-> > diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-> > index 11c7a1aaebad..5c34ef66677f 100644
-> > --- a/fs/erofs/zdata.c
-> > +++ b/fs/erofs/zdata.c
-> > @@ -476,6 +476,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
-> >  	struct erofs_workgroup *grp;
-> >  	int err;
-> >  
-> > +	if (!(map->m_flags & EROFS_MAP_ENCODED)) {
-> > +		DBG_BUGON(1);
-> > +		return -EFSCORRUPTED;
-> > +	}
-> > +
-> >  	/* no available pcluster, let's allocate one */
-> >  	pcl = z_erofs_alloc_pcluster(map->m_plen >> PAGE_SHIFT);
-> >  	if (IS_ERR(pcl))
-> > @@ -483,16 +488,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
-> >  
-> >  	atomic_set(&pcl->obj.refcount, 1);
-> >  	pcl->obj.index = map->m_pa >> PAGE_SHIFT;
-> > -
-> > +	pcl->algorithmformat = map->m_algorithmformat;
-> >  	pcl->length = (map->m_llen << Z_EROFS_PCLUSTER_LENGTH_BIT) |
-> >  		(map->m_flags & EROFS_MAP_FULL_MAPPED ?
-> >  			Z_EROFS_PCLUSTER_FULL_LENGTH : 0);
-> >  
-> > -	if (map->m_flags & EROFS_MAP_ZIPPED)
-> > -		pcl->algorithmformat = Z_EROFS_COMPRESSION_LZ4;
-> > -	else
-> > -		pcl->algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
-> > -
-> >  	/* new pclusters should be claimed as type 1, primary and followed */
-> >  	pcl->next = clt->owned_head;
-> >  	clt->mode = COLLECT_PRIMARY_FOLLOWED;
-> > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-> > index 7a6df35fdc91..9d9c26343dab 100644
-> > --- a/fs/erofs/zmap.c
-> > +++ b/fs/erofs/zmap.c
-> > @@ -111,7 +111,7 @@ struct z_erofs_maprecorder {
-> >  
-> >  	unsigned long lcn;
-> >  	/* compression extent information gathered */
-> > -	u8  type;
-> > +	u8  type, headtype;
-> >  	u16 clusterofs;
-> >  	u16 delta[2];
-> >  	erofs_blk_t pblk, compressedlcs;
-> > @@ -446,9 +446,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
-> >  		}
-> >  		return z_erofs_extent_lookback(m, m->delta[0]);
-> >  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
-> > -		map->m_flags &= ~EROFS_MAP_ZIPPED;
-> > -		fallthrough;
-> >  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-> > +		m->headtype = m->type;
-> >  		map->m_la = (lcn << lclusterbits) | m->clusterofs;
-> >  		break;
-> >  	default:
-> > @@ -472,7 +471,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
-> >  
-> >  	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
-> >  		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
-> > -	if (!(map->m_flags & EROFS_MAP_ZIPPED) ||
-> > +	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
-> >  	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
-> >  		map->m_plen = 1 << lclusterbits;
-> >  		return 0;
-> > @@ -609,16 +608,13 @@ int z_erofs_map_blocks_iter(struct inode *inode,
-> >  	if (err)
-> >  		goto unmap_out;
-> >  
-> > -	map->m_flags = EROFS_MAP_ZIPPED;	/* by default, compressed */
-> >  	end = (m.lcn + 1ULL) << lclusterbits;
-> >  
-> >  	switch (m.type) {
-> >  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
-> > -		if (endoff >= m.clusterofs)
-> > -			map->m_flags &= ~EROFS_MAP_ZIPPED;
-> > -		fallthrough;
-> >  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-> >  		if (endoff >= m.clusterofs) {
-> > +			m.headtype = m.type;
-> >  			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
-> >  			break;
-> >  		}
-> > @@ -650,12 +646,17 @@ int z_erofs_map_blocks_iter(struct inode *inode,
-> >  
-> >  	map->m_llen = end - map->m_la;
-> >  	map->m_pa = blknr_to_addr(m.pblk);
-> > -	map->m_flags |= EROFS_MAP_MAPPED;
-> > +	map->m_flags = EROFS_MAP_MAPPED | EROFS_MAP_ENCODED;
-> 
-> Seems the new flag EROFS_MAP_ENCODED may be a little redundant?
-> 
-> It is used only for checking whether the file system is corrupted or not when
-> entering z_erofs_register_collection(). 
-> 
-> And before collection begins, we will check whether the EROFS_MAP_MAPPED is set
-> or not. We will do the collection only if EROFS_MAP_MAPPED is set. That's to say,
-> the above checking to EROFS_MAP_ENCODED should be not possible?
+Qing Wang (7):
+  dma: dw-edma-pcie: switch from 'pci_' to 'dma_' API
+  dma: dw: switch from 'pci_' to 'dma_' API
+  dma: hisi_dma: switch from 'pci_' to 'dma_' API
+  dma: hsu: switch from 'pci_' to 'dma_' API
+  dma: ioat: switch from 'pci_' to 'dma_' API
+  dma: dmaengine: switch from 'pci_' to 'dma_' API
+  message: fusion: switch from 'pci_' to 'dma_' API
 
-I think it's useful to mark such data isn't a plain data (cannot read
-directly, plus m_llen != m_plen). For example, t's useful for fiemap
-(actually there is an improvement / a fix for iomap fiemap report code
- to identify/mark the encode flag.)
+ drivers/dma/dw-edma/dw-edma-pcie.c | 17 ++++-------------
+ drivers/dma/dw/pci.c               |  6 +-----
+ drivers/dma/hisi_dma.c             |  6 +-----
+ drivers/dma/hsu/pci.c              |  6 +-----
+ drivers/dma/ioat/init.c            | 10 ++--------
+ drivers/dma/plx_dma.c              | 10 ++--------
+ drivers/message/fusion/mptbase.c   | 31 +++++++++----------------------
+ 7 files changed, 20 insertions(+), 66 deletions(-)
 
-BTW, I found that this patchset was still buggy, I'd suggest to ignore
-this patchset. I need to revise them later.
+-- 
+2.7.4
 
-Thanks,
-Gao Xiang
-
-> 
-> Thanks.
