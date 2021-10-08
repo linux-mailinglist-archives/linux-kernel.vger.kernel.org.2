@@ -2,131 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A49B4266F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DCD426700
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238143AbhJHJh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36046 "EHLO
+        id S238194AbhJHJkB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Oct 2021 05:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhJHJh1 (ORCPT
+        with ESMTP id S229863AbhJHJkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:37:27 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD652C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 02:35:32 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id x27so36865889lfu.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 02:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CAh8hwek0Nfg/c4XJ7agugoBthkVWd2136o2c/3om9k=;
-        b=XG4XQgVjSvBsGjnPeBnoIafycROzklPNLhZyuYEQ8wcIqoaCgaGUi2IgVwwrrOaTWn
-         Vt7a3T3QMV6JtwTb0FXwJZTnlIX0w3BUfVK7/K/HZR1cFpin8z/sXIzAVIw5ucRhiiOS
-         xrNB0A8EPyYDuXyu82mkQ8954QbXXS4cjGApCE11Gk2InR0QAPbRe618E9kvQtRZMRJg
-         hcQXzEF1i6qHo3urVnF5kgKSItR0CMXvdgHComAS3TIjkdsn5npdKqfnrvGcaGrk0V5W
-         C38cKrrkGqpmJOubZuXfSr/jUrWZVtaX7ZdnPtha9mUSlhLmQvwGoWBtfRLsvkWZxZUa
-         CWMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CAh8hwek0Nfg/c4XJ7agugoBthkVWd2136o2c/3om9k=;
-        b=d9L12adF1e19DEbhLzy3u1Bx5CTKjQG4iUMVN6mBbFiiV5dZV59KSB05zSB0sTpl3A
-         bJ6eM09s7xsfCDrl/pW9bGXG1r7FDmkeB0bHFHZUx2M5h1pr1OGheAzBQPVt1Fa9UdZT
-         jVqV6qePU6Psm2i+dw0Gcg7u1N1aaf47CQH9P6jM1iBySwQ+ECCjWaf5AfTwphk7M4z9
-         MrHkneMLSsLvQsWR2+DLsWP2IRxHOBi1ihfK5WoLMfPTnzWsnK+NtPgo1ZPTTiKutDvM
-         FkWTTQBMzA58QeH52AoGSKMyWtETyBr+N7Ze9UQq7QIxFMNUuDbLZzqDZ+EhhdCORq9I
-         k3dA==
-X-Gm-Message-State: AOAM530cNtKxcGdYvOr5L8FA60zT7aG8MbYCYBmg0IEr7UfjSgpErK9+
-        BWrjpVXtPeotGbRTy0cu0zO1+A==
-X-Google-Smtp-Source: ABdhPJwLGW8HXwRiYAQ+xuUjNu/jgdX5nEDrRJfqm2RowJ0ATycMGwZzWVZQomTc/2Iw6KRYCEZhNg==
-X-Received: by 2002:a05:6512:31c1:: with SMTP id j1mr9838363lfe.442.1633685731071;
-        Fri, 08 Oct 2021 02:35:31 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s18sm195895lfs.294.2021.10.08.02.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 02:35:30 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id A0B051030F5; Fri,  8 Oct 2021 12:35:29 +0300 (+03)
-Date:   Fri, 8 Oct 2021 12:35:29 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <20211008093529.sb54gnlbhuiy6klr@box.shutemov.name>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-3-shy828301@gmail.com>
- <20211004140637.qejvenbkmrulqdno@box.shutemov.name>
- <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
- <20211004194130.6hdzanjl2e2np4we@box.shutemov.name>
- <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
- <YV3+6K3uupLit3aH@t490s>
+        Fri, 8 Oct 2021 05:40:00 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1D4C061570;
+        Fri,  8 Oct 2021 02:38:05 -0700 (PDT)
+Received: from ip4d14bdef.dynamic.kabel-deutschland.de ([77.20.189.239] helo=t14s); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1mYmKF-0005yC-HL; Fri, 08 Oct 2021 11:37:59 +0200
+Date:   Fri, 8 Oct 2021 11:37:58 +0200
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v2 0/4] kernel.h further split
+Message-ID: <20211008113758.6cbee642@t14s>
+In-Reply-To: <CAHp75VfoQ-rFEEFu2FnaPuPDwyiTHpA_dCwqfA1SYSkFPM2uMA@mail.gmail.com>
+References: <20211007095129.22037-1-andriy.shevchenko@linux.intel.com>
+        <YV7NEze2IvUgHusJ@kroah.com>
+        <CAHp75VfoQ-rFEEFu2FnaPuPDwyiTHpA_dCwqfA1SYSkFPM2uMA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YV3+6K3uupLit3aH@t490s>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1633685885;3cd5ec8d;
+X-HE-SMSGID: 1mYmKF-0005yC-HL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 06, 2021 at 03:54:16PM -0400, Peter Xu wrote:
-> On Mon, Oct 04, 2021 at 01:13:07PM -0700, Yang Shi wrote:
-> > On Mon, Oct 4, 2021 at 12:41 PM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+(sorry, sending it a second time with a different mail client, as vger
+rejected my earlier mail with the "Content-Policy reject msg: Wrong
+MIME labeling on 8-bit character texts." – and as of now I'm unable to
+figure out what's wrong :-/ )
+
+On Thu, 7 Oct 2021 14:51:15 +0300
+Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+
+> On Thu, Oct 7, 2021 at 1:34 PM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> > On Thu, Oct 07, 2021 at 12:51:25PM +0300, Andy Shevchenko wrote:  
+> > > The kernel.h is a set of something which is not related to each
+> > > other and often used in non-crossed compilation units, especially
+> > > when drivers need only one or two macro definitions from it.
 > > >
-> > > On Mon, Oct 04, 2021 at 11:17:29AM -0700, Yang Shi wrote:
-> > > > On Mon, Oct 4, 2021 at 7:06 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
-> > > > >
-> > > > > On Thu, Sep 30, 2021 at 02:53:08PM -0700, Yang Shi wrote:
-> > > > > > diff --git a/mm/filemap.c b/mm/filemap.c
-> > > > > > index dae481293b5d..2acc2b977f66 100644
-> > > > > > --- a/mm/filemap.c
-> > > > > > +++ b/mm/filemap.c
-> > > > > > @@ -3195,12 +3195,12 @@ static bool filemap_map_pmd(struct vm_fault *vmf, struct page *page)
-> > > > > >       }
-> > > > > >
-> > > > > >       if (pmd_none(*vmf->pmd) && PageTransHuge(page)) {
-> > > > > > -         vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > > -         if (!ret) {
-> > > > > > -                 /* The page is mapped successfully, reference consumed. */
-> > > > > > -                 unlock_page(page);
-> > > > > > -                 return true;
-> > > > > > -         }
-> > > > > > +             vm_fault_t ret = do_set_pmd(vmf, page);
-> > > > > > +             if (!ret) {
-> > > > > > +                     /* The page is mapped successfully, reference consumed. */
-> > > > > > +                     unlock_page(page);
-> > > > > > +                     return true;
-> > > > > > +             }
-> > > > > >       }
-> > > > > >
-> > > > > >       if (pmd_none(*vmf->pmd)) {
-> > > > >
-> > > > > Hm. Is it unrelated whitespace fix?
-> > > >
-> > > > It is a coding style clean up. I thought it may be overkilling to have
-> > > > a separate patch. Do you prefer separate one?
+> > > Here is the split of container_of(). The goals are the following:
+> > > - untwist the dependency hell a bit
+> > > - drop kernel.h inclusion where it's only used for container_of()
+> > > - speed up C preprocessing.
 > > >
-> > > Maybe. I tried to find what changed here. It's confusing.
-> > 
-> > Yeah, maybe. Anyway I will separate the real big fix and the cleanup
-> > into two patches. This may be helpful for backporting too.
+> > > People, like Greg KH and Miguel Ojeda, were asking about the
+> > > latter. Read below the methodology and test setup with outcome
+> > > numbers.
+> > >
+> > > The methodology
+> > > ===============
+> > > The question here is how to measure in the more or less clean way
+> > > the C preprocessing time when building a project like Linux
+> > > kernel. To answer it, let's look around and see what tools do we
+> > > have that may help. Aha, here is ccache tool that seems quite
+> > > plausible to be used. Its core idea is to preprocess C file,
+> > > count hash (MD4) and compare to ones that are in the cache. If
+> > > found, return the object file, avoiding compilation stage.
+> > >
+> > > Taking into account the property of the ccache, configure and use
+> > > it in the below steps:
+> > >
+> > > 1. Configure kernel with allyesconfig
+> > >
+> > > 2. Make it with `make` to be sure that the cache is filled with
+> > >    the latest data. I.o.w. warm up the cache.
+> > >
+> > > 3. Run `make -s` (silent mode to reduce the influence of
+> > >    the unrelated things, like console output) 10 times and
+> > >    measure 'real' time spent.
+> > >
+> > > 4. Repeat 1-3 for each patch or patch set to get data sets before
+> > >    and after.
+> > >
+> > > When we get the raw data, calculating median will show us the
+> > > number. Comparing them before and after we will see the
+> > > difference.
+> > >
+> > > The setup
+> > > =========
+> > > I have used the Intel x86_64 server platform (see partial output
+> > > of `lscpu` below):
+> > >
+> > > $ lscpu
+> > > Architecture:            x86_64
+> > >   CPU op-mode(s):        32-bit, 64-bit
+> > >   Address sizes:         46 bits physical, 48 bits virtual
+> > >   Byte Order:            Little Endian
+> > > CPU(s):                  88
+> > >   On-line CPU(s) list:   0-87
+> > > Vendor ID:               GenuineIntel
+> > >   Model name:            Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz
+> > >     CPU family:          6
+> > >     Model:               79
+> > >     Thread(s) per core:  2
+> > >     Core(s) per socket:  22
+> > >     Socket(s):           2
+> > >     Stepping:            1
+> > >     CPU max MHz:         3600.0000
+> > >     CPU min MHz:         1200.0000
+> > > ...
+> > > Caches (sum of all):
+> > >   L1d:                   1.4 MiB (44 instances)
+> > >   L1i:                   1.4 MiB (44 instances)
+> > >   L2:                    11 MiB (44 instances)
+> > >   L3:                    110 MiB (2 instances)
+> > > NUMA:
+> > >   NUMA node(s):          2
+> > >   NUMA node0 CPU(s):     0-21,44-65
+> > >   NUMA node1 CPU(s):     22-43,66-87
+> > > Vulnerabilities:
+> > >   Itlb multihit:         KVM: Mitigation: Split huge pages
+> > >   L1tf:                  Mitigation; PTE Inversion; VMX
+> > > conditional cache flushes, SMT vulnerable Mds:
+> > > Mitigation; Clear CPU buffers; SMT vulnerable Meltdown:
+> > >    Mitigation; PTI Spec store bypass:     Mitigation; Speculative
+> > > Store Bypass disabled via prctl and seccomp Spectre v1:
+> > >  Mitigation; usercopy/swapgs barriers and __user pointer
+> > > sanitization Spectre v2:            Mitigation; Full generic
+> > > retpoline, IBPB conditional, IBRS_FW, STIBP conditional, RSB
+> > > filling Tsx async abort:       Mitigation; Clear CPU buffers; SMT
+> > > vulnerable
+> > >
+> > > With the following GCC:
+> > >
+> > > $ gcc --version
+> > > gcc (Debian 10.3.0-11) 10.3.0
+> > >
+> > > The commands I have run during the measurement were:
+> > >
+> > >       rm -rf $O
+> > >       make O=$O allyesconfig
+> > >       time make O=$O -s -j64  # this step has been measured
+
+BTW, what kcbench does in the end is not that different, but it only
+builds the config once and that uses it for all further testing. 
+
+> > > The raw data and median
+> > > =======================
+> > > Before patch 2 (yes, I have measured the only patch 2 effect) in
+> > > the series (the data is sorted by time):
+> > >
+> > > real    2m8.794s
+> > > real    2m11.183s
+> > > real    2m11.235s
+> > > real    2m11.639s
+> > > real    2m11.960s
+> > > real    2m12.014s
+> > > real    2m12.609s
+> > > real    2m13.177s
+> > > real    2m13.462s
+> > > real    2m19.132s
+> > >
+> > > After patch 2 has been applied:
+> > >
+> > > real    2m8.536s
+> > > real    2m8.776s
+> > > real    2m9.071s
+> > > real    2m9.459s
+> > > real    2m9.531s
+> > > real    2m9.610s
+> > > real    2m10.356s
+> > > real    2m10.430s
+> > > real    2m11.117s
+> > > real    2m11.885s
+> > >
+> > > Median values are:
+> > >       131.987s before
+> > >       129.571s after
+> > >
+> > > We see the steady speedup as of 1.83%.  
+> >
+> > You do know about kcbench:
+> >         https://gitlab.com/knurd42/kcbench.git
+> >
+> > Try running that to make it such that we know how it was tested :)  
 > 
-> Or maybe we just don't touch it until there's need for a functional change?  I
-> feel it a pity to lose the git blame info for reindent-only patches,
+> I'll try it.
+> 
+> Meanwhile, Thorsten, can you have a look at my approach and tell if it
+> makes sense?
 
-JFYI, git blame -w ignores whitespace changes :P
+I'm not the right person to ask here, I don't know enough about the
+inner working of ccache and C preprocessing. Reminder: I'm not a real
+kernel/C developer, but more kind of a parasite that lives on the
+fringes of kernel development. ;-) Kcbench in fact originated as a
+benchmark magazine for the computer magazine I used to work for – where
+I also did quite a few benchmarks. But that knowledge might be helpful
+here:
 
--- 
- Kirill A. Shutemov
+The measurements before and after patch 2 was applied get slower over
+time. That is a hint that something is interfering. Is the disk filling
+up and making the fs do more work? Or is the machine getting to hot? It
+IMHO would be worth investigating and ruling out, as the differences
+you are looking out are likely quite small
+
+Also: the last run of the first measurement cycle is off by quite a
+bit, so I wouldn't even include the result, as there like was something
+that disturbed the benchmark.
+
+And I might be missing something, but why were you using "-j 64" on a
+machine with 44 cores/88 threads? I wonder if that might lead do
+interesting effects due to SMT (some core will run two threads, other
+only one). Using either "-j 44" or "-j 88" might be better. But I
+suggest you run kcbench once without specifying "-j", as that will
+check which setting is the fastest on this system – and then use that
+for all further tests.
+
+HTH, Ciao, Thorsten 
+
