@@ -2,96 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC7B426A49
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FC6426A4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241144AbhJHL4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:56:46 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55910 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240776AbhJHL4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:56:33 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mYoSS-00039z-4U; Fri, 08 Oct 2021 19:54:36 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mYoSO-000705-6v; Fri, 08 Oct 2021 19:54:32 +0800
-Date:   Fri, 8 Oct 2021 19:54:32 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Nicolai Stange <nstange@suse.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>,
-        Torsten Duwe <duwe@suse.de>
-Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize
- non-larvals
-Message-ID: <20211008115432.GC26495@gondor.apana.org.au>
-References: <20211003181413.12465-1-nstange@suse.de>
- <20211003181413.12465-9-nstange@suse.de>
+        id S241136AbhJHL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:57:24 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:54210 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241135AbhJHL5X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:57:23 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 2C0DC21987;
+        Fri,  8 Oct 2021 11:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633694127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZQJ68UJF1UZJy1bavpd29rgK/K1ZJathwtfYweveOqM=;
+        b=Z6t2/6psmMNzgiKhQKcUfE8OReafFdlssMrUFTy5W23oQMGG/J33ny0iJvBefQVz/tVk8I
+        RYmoWZ+8M2Aiz0kyave7HeKVnHAdjhfR/0U0uxXq6VPhZnCsYnvZ1OhkJqARe8Bql7cA4S
+        ID5vNM8Qhzta/3XrAzC8capcBahVN8k=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 106DEA3B84;
+        Fri,  8 Oct 2021 11:55:26 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 13:55:23 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Support hugetlb charge moving at task migration
+Message-ID: <YWAxqxvXBvjZrWsO@dhcp22.suse.cz>
+References: <cover.1632843268.git.baolin.wang@linux.alibaba.com>
+ <YVWVk559nm2xZ98R@dhcp22.suse.cz>
+ <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
+ <YV/vUIzx6RBPZJ1I@dhcp22.suse.cz>
+ <d20cbaa5-d510-2039-4a3c-1f1cc8acd2d1@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211003181413.12465-9-nstange@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <d20cbaa5-d510-2039-4a3c-1f1cc8acd2d1@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 03, 2021 at 08:14:13PM +0200, Nicolai Stange wrote:
-> crypto_alg_mod_lookup() invokes the crypto_larval_lookup() helper
-> to run the actual search for matching crypto_alg implementation and
-> larval entries. The latter is currently considering only the individual
-> entries' relative ->cra_priority for determining which one out of multiple
-> matches to return. This means that it would potentially dismiss a matching
-> crypto_alg implementation in working state in favor of some pending
-> testing larval of higher ->cra_priority. Now, if the testmgr instance
-> invoked asynchronously on that testing larval came to the conclusion that
-> it should mark the tests as failed, any pending crypto_alg_mod_lookup()
-> waiting for it would be made to fail as well with -EAGAIN.
+On Fri 08-10-21 17:17:12, Baolin Wang wrote:
 > 
-> In summary, crypto_alg_mod_lookup() can fail spuriously with -EAGAIN even
-> though an implementation in working state would have been available, namely
-> if the testmgr asynchronously marked another, competing implementation of
-> higher ->cra_priority as failed.
 > 
-> This is normally not a problem at all with upstream, because the situation
-> where one algorithm passed its tests, but another competing one failed to
-> do so, would indicate a bug anyway.
+> On 2021/10/8 15:12, Michal Hocko wrote:
+> > On Thu 07-10-21 23:39:15, Baolin Wang wrote:
+> > > Hi Michal,
+> > > 
+> > > (Sorry for late reply due to my holidays)
+> > > On 2021/9/30 18:46, Michal Hocko wrote:
+> > > > On Wed 29-09-21 18:19:26, Baolin Wang wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > Now in the hugetlb cgroup, charges associated with a task aren't moved
+> > > > > to the new hugetlb cgroup at task migration, which is odd for hugetlb
+> > > > > cgroup usage.
+> > > > 
+> > > > Could you elaborate some more about the usecase and/or problems you see
+> > > > with the existing semantic?
+> > > 
+> > > The problems is that, it did not check if the tasks can move to the new
+> > > hugetlb cgroup if the new hugetlb cgroup has a limitation, and the hugetlb
+> > > cgroup usage is incorrect when moving tasks among hugetlb cgroups.
+> > 
+> > Could you be more specific please? What do you mean by cgroup usage is
+> > incorrect? Ideally could you describe your usecase?
 > 
-> However, for downstream distributions seeking FIPS certification, simply
-> amending the list in crypto/testmgr.c with ->fips_allowed = 0 entries
-> matching on ->cra_driver_name would provide a convenient way of
-> selectively blacklisting implementations from drivers/crypto in fips
-> mode. Note that in this scenario failure of competing crypto_alg
-> implementations would become more common, in particular during device
-> enumeration. If the algorithm in question happened to be needed for e.g.
-> module signature verification, module loading could spuriously fail during
-> bootup, which is certainly not desired.
-> 
-> For transparency: this has not actually been observed, I merely came to
-> the conclusion that it would be possible by reading the code.
-> 
-> Make crypto_alg_lookup() run an additional search for non-larval matches
-> upfront in the common case that the request has been made for
-> CRYPTO_ALG_TESTED instances.
-> 
-> Signed-off-by: Nicolai Stange <nstange@suse.de>
-> ---
->  crypto/api.c | 21 ++++++++++++++++++++-
->  1 file changed, 20 insertions(+), 1 deletion(-)
+> Sorry for confusing, what I mean is, when tasks from one hugetlb cgroup are
+> migrated to a new hugetlb cgroup, the new hugetlb cgroup's hugetlb page
+> usage is not increased accordingly.
 
-It's not clear that this new behaviour is desirable.  For example,
-when we construct certain complex algorithms, they may depend on a
-generic version of that same algorithm as a fallback.  We do not
-want users to get the generic version while the better version is
-being tested.
+Which is a perferctly reasonable behavior as the memory has been
+consumed from the original cgroup and it will be freed there as well.
+Migrating to a new cgroup doesn't imply all the resources to be migrated
+as well.
 
-Can you please explain what your failure scenario and perhaps we
-can come up with another way of resolving your problem?
+> The issue I found is just from my
+> testing for the hugetlb cgroup, and I think this is not resonable if we've
+> already set a hugetlb limitation for a cgroup, but we always ignore it when
+> tasks migration among hugetlb cgroups.
 
-Thanks,
+I would like to learn more about why you consider this unreasonable.
+This will likely depend on the reason why you want/need to migrate task.
+If you want to move a task to completely new resource domain (read a
+completely different cgroup subtree) then I can imagine you want to
+leave all the resources but this will have problems with other resource
+controllers - e.g. memory cgroup v2 which doesn't allow charge migration
+either.
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Michal Hocko
+SUSE Labs
