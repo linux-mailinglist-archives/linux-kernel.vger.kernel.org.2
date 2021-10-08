@@ -2,193 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E40426768
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EA9426775
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239517AbhJHKK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:10:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:40064 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229989AbhJHKKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:10:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA1B2D6E;
-        Fri,  8 Oct 2021 03:08:29 -0700 (PDT)
-Received: from [10.57.25.67] (unknown [10.57.25.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 928193F70D;
-        Fri,  8 Oct 2021 03:08:26 -0700 (PDT)
-Subject: Re: [PATCH 2/3] perf tools: Make the JSON parser more conformant when
- in strict mode
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, john.garry@huawei.com, ak@linux.intel.com,
-        linux-perf-users@vger.kernel.org, Nick.Forrington@arm.com,
-        Andrew.Kilroy@arm.com, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211007110543.564963-1-james.clark@arm.com>
- <20211007110543.564963-3-james.clark@arm.com> <YV8z306sBJQsdNNR@krava>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <2e14963b-cb98-f508-7067-255fdbd36bdb@arm.com>
-Date:   Fri, 8 Oct 2021 11:08:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239488AbhJHKRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:17:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239538AbhJHKRl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:17:41 -0400
+Received: from smtp-190b.mail.infomaniak.ch (smtp-190b.mail.infomaniak.ch [IPv6:2001:1600:3:17::190b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24D7C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:15:46 -0700 (PDT)
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HQkbj1pTMzMqD8t;
+        Fri,  8 Oct 2021 12:15:45 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4HQkbd2lkGzlh8Tv;
+        Fri,  8 Oct 2021 12:15:41 +0200 (CEST)
+Subject: Re: [PATCH v13 1/3] fs: Add trusted_for(2) syscall implementation and
+ related sysctl
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
+References: <20211007182321.872075-1-mic@digikod.net>
+ <20211007182321.872075-2-mic@digikod.net> <202110071217.16C7208F@keescook>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <92b01e4f-2bc3-8ba2-997b-5757058fe184@digikod.net>
+Date:   Fri, 8 Oct 2021 12:16:17 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <YV8z306sBJQsdNNR@krava>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <202110071217.16C7208F@keescook>
+Content-Type: text/plain; charset=iso-8859-15
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-
-On 07/10/2021 18:52, Jiri Olsa wrote:
-> On Thu, Oct 07, 2021 at 12:05:41PM +0100, James Clark wrote:
->> Return an error when a trailing comma is found or a new item is
->> encountered before a comma or an opening brace. This ensures that the
->> perf json files conform more closely to the spec at https://www.json.org
+On 07/10/2021 21:25, Kees Cook wrote:
+> On Thu, Oct 07, 2021 at 08:23:18PM +0200, Mickaël Salaün wrote:
+>> From: Mickaël Salaün <mic@linux.microsoft.com>
 >>
->> Signed-off-by: James Clark <james.clark@arm.com>
->> ---
->>  tools/perf/pmu-events/jsmn.c | 42 ++++++++++++++++++++++++++++++++++--
->>  1 file changed, 40 insertions(+), 2 deletions(-)
->>
->> diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
->> index 11d1fa18bfa5..8124d2d3ff0c 100644
->> --- a/tools/perf/pmu-events/jsmn.c
->> +++ b/tools/perf/pmu-events/jsmn.c
->> @@ -176,6 +176,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  	jsmnerr_t r;
->>  	int i;
->>  	jsmntok_t *token;
->> +#ifdef JSMN_STRICT
-> 
-> I might have missed some discussion on this, but do we need the
-> JSMN_STRICT define, if you enable it in the next patch?
-> why can't we be more strict by default.. do you plan to disable
-> it in future?
-
-I didn't plan on disabling it, I was just trying to keep to the existing style of the
-jsmn project.
-
-I could have added the trailing comma detection by default and not inside any
-#ifdef JSMN_STRICT blocks, but I would like to enable JSMN_STRICT anyway, because it
-enables some additional built in checking that was already there. So I thought it
-made sense to put my new strict stuff inside the existing strict option.
-
-One option would be to remove all (including the existing) #ifdef JSMN_STRICT blocks
-and have everything strict by default. But it would be a further deviation from jsmn.
-
-Thanks
-James
-
-> 
-> thanks,
-> jirka
-> 
->> +	/*
->> +	 * Keeps track of whether a new object/list/primitive is expected. New items are only
->> +	 * allowed after an opening brace, comma or colon. A closing brace after a comma is not
->> +	 * valid JSON.
->> +	 */
->> +	int expecting_item = 1;
->> +#endif
->>  
->>  	for (; parser->pos < len; parser->pos++) {
->>  		char c;
->> @@ -185,6 +193,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  		switch (c) {
->>  		case '{':
->>  		case '[':
->> +#ifdef JSMN_STRICT
->> +			if (!expecting_item)
->> +				return JSMN_ERROR_INVAL;
->> +#endif
->>  			token = jsmn_alloc_token(parser, tokens, num_tokens);
->>  			if (token == NULL)
->>  				return JSMN_ERROR_NOMEM;
->> @@ -196,6 +208,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  			break;
->>  		case '}':
->>  		case ']':
->> +#ifdef JSMN_STRICT
->> +			if (expecting_item)
->> +				return JSMN_ERROR_INVAL;
->> +#endif
->>  			type = (c == '}' ? JSMN_OBJECT : JSMN_ARRAY);
->>  			for (i = parser->toknext - 1; i >= 0; i--) {
->>  				token = &tokens[i];
->> @@ -219,6 +235,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  			}
->>  			break;
->>  		case '\"':
->> +#ifdef JSMN_STRICT
->> +			if (!expecting_item)
->> +				return JSMN_ERROR_INVAL;
->> +			expecting_item = 0;
->> +#endif
->>  			r = jsmn_parse_string(parser, js, len, tokens,
->>  					      num_tokens);
->>  			if (r < 0)
->> @@ -229,11 +250,15 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  		case '\t':
->>  		case '\r':
->>  		case '\n':
->> -		case ':':
->> -		case ',':
->>  		case ' ':
->>  			break;
->>  #ifdef JSMN_STRICT
->> +		case ':':
->> +		case ',':
->> +			if (expecting_item)
->> +				return JSMN_ERROR_INVAL;
->> +			expecting_item = 1;
->> +			break;
->>  			/*
->>  			 * In strict mode primitives are:
->>  			 * numbers and booleans.
->> @@ -253,6 +278,9 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  		case 'f':
->>  		case 'n':
->>  #else
->> +		case ':':
->> +		case ',':
->> +			break;
->>  			/*
->>  			 * In non-strict mode every unquoted value
->>  			 * is a primitive.
->> @@ -260,6 +288,12 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  			/*FALL THROUGH */
->>  		default:
->>  #endif
+>> The trusted_for() syscall enables user space tasks to check that files
+>> are trusted to be executed or interpreted by user space.  This may allow
+>> script interpreters to check execution permission before reading
+>> commands from a file, or dynamic linkers to allow shared object loading.
+>> This may be seen as a way for a trusted task (e.g. interpreter) to check
+>> the trustworthiness of files (e.g. scripts) before extending its control
+>> flow graph with new ones originating from these files.
+>> [...]
+>>  aio-nr & aio-max-nr
+>> @@ -382,3 +383,52 @@ Each "watch" costs roughly 90 bytes on a 32bit kernel, and roughly 160 bytes
+>>  on a 64bit one.
+>>  The current default value for  max_user_watches  is the 1/25 (4%) of the
+>>  available low memory, divided for the "watch" cost in bytes.
 >> +
->> +#ifdef JSMN_STRICT
->> +			if (!expecting_item)
->> +				return JSMN_ERROR_INVAL;
->> +			expecting_item = 0;
->> +#endif
->>  			r = jsmn_parse_primitive(parser, js, len, tokens,
->>  						 num_tokens);
->>  			if (r < 0)
->> @@ -282,7 +316,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
->>  			return JSMN_ERROR_PART;
->>  	}
->>  
->> +#ifdef JSMN_STRICT
->> +	return expecting_item ? JSMN_ERROR_INVAL : JSMN_SUCCESS;
->> +#else
->>  	return JSMN_SUCCESS;
->> +#endif
->>  }
->>  
->>  /*
->> -- 
->> 2.28.0
->>
+>> +
+>> +trust_policy
+>> +------------
+> 
+> bikeshed: can we name this "trusted_for_policy"? Both "trust" and
+> "policy" are very general words, but "trusted_for" (after this series)
+> will have a distinct meaning, so "trusted_for_policy" becomes more
+> specific/searchable.
+
+Ok, I'll rename this sysctl.
+
+> 
+> With that renamed, I think it looks good! I'm looking forward to
+> interpreters using this. :)
+> 
+> Acked-by: Kees Cook <keescook@chromium.org>
 > 
