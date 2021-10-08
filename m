@@ -2,159 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F871426B66
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E017426B72
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242124AbhJHNFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55318 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJHNE6 (ORCPT
+        id S242368AbhJHNH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:07:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:37462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242400AbhJHNHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:04:58 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6572FC061570;
-        Fri,  8 Oct 2021 06:03:03 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id v10so13604599oic.12;
-        Fri, 08 Oct 2021 06:03:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RnDy90zGkmnNy7TioUKWbmT3Tf/BHpUr+QhKrUdfflA=;
-        b=dq8GilYwFgJEM5sErjmvQ/srEaFhxezwXDhufioUjD8SZ5HCGQgNyVto8N+ivuzCzw
-         Ah5sL34GPO9KqBMOPDPwDOXyaGDwyT5FpGfI3hTeSc9oZTMsin6OWz1Hc5iqLSKyO4fx
-         n1EngoufJMtjUQbSzdE9OLSkTASeeRUvbMcKLPH6IFd6eQCiFQkqVZGXky0F1AOI2tWt
-         6bhXJVztJEksY+RXBgjhdOxr67Bjmc/94C6vL1qF9auwWwmccb2lVWimwYW8V4zAv0qs
-         OwnYB8SAx10X3FuJK3/qd0A3Cjpz65Y1eSjR3x1x8xlKYAc/GdPR9jUqLq6DMd/mZqL0
-         yJqw==
+        Fri, 8 Oct 2021 09:07:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633698324;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uVQFfb3vAI1ijnE0WV4b+1ZIo0UnTqYUbSmbQDcQl2M=;
+        b=FUYCXp8hVa7g2rVhBToq6abVu04FuZ44PlRkGb7rL5k79rMhM6+PMTVas3l/k7YmZuEIxm
+        EgEH7Ettnr25pl8xRH8J3S2KHp5Sdk9UmgI0kt8YWTsWcPK7T2nD2YkqyDr/fx/za+rbhD
+        GrsEZ81pK1PVjZZ+zpsKIUB7jAlhBTs=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-CIsZpmqWNQ-7WDEpcA4Qnw-1; Fri, 08 Oct 2021 09:05:10 -0400
+X-MC-Unique: CIsZpmqWNQ-7WDEpcA4Qnw-1
+Received: by mail-ed1-f69.google.com with SMTP id x5-20020a50f185000000b003db0f796903so9109948edl.18
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:05:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=RnDy90zGkmnNy7TioUKWbmT3Tf/BHpUr+QhKrUdfflA=;
-        b=tp5XvmtO9NGOtyZ8h2Kcrj2U/r4/mo4asslyGCwQmCJtxvSB0ra3pNCChd3dFMAaNb
-         0rWUS1VgtpFAy+TihIPQfVPdcT4XEIG4kencFSckE0Yy09y4nUaxGK5FtKO5pkk9mFTi
-         BblRBtWntKtVSBX6Sw3WDZqjRn13Wp4+/4hKYqtqdRh5kKAShyGWgz64Bzes9THkCZ5L
-         SrPTYyRnim+p+cBieQA2Zhv8pFJX5PPWLOFxsO2OjaQZ/wrnE6KJdjXbLnyXqMmA3k5Z
-         r5LUQi3DC5iv+L/KD8Y3jB/KZROlM0Uu28IEZ6uZXvZZc+GRgkUBHsSp4Nrf63dS0RuN
-         Ddtg==
-X-Gm-Message-State: AOAM532HqrlMfebnzvT6nlvexmfjvvjjvGWgzfwAmfntTb//0BDkwtrj
-        om8V9gPnv3nJNDEnG96Qvsc=
-X-Google-Smtp-Source: ABdhPJwk/DJFQJlB7Tte3OVChyyKTA7n4DzI7j0A2+ZiLIaTz8L/W6Mfk4C9V163xcRGsuQ0qfoZ6A==
-X-Received: by 2002:a05:6808:cf:: with SMTP id t15mr7255602oic.93.1633698182633;
-        Fri, 08 Oct 2021 06:03:02 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r25sm472982ooq.43.2021.10.08.06.03.01
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uVQFfb3vAI1ijnE0WV4b+1ZIo0UnTqYUbSmbQDcQl2M=;
+        b=ISXgTSYJ4mCnaQ+fIxAduwOR8oGw9KfXUHuWu2KAO21vmk6o+KRl7xdk+aI6+7LhLj
+         m8XCccQIVIXI+fmS4oNC2wF3uZUZUw/lGdyUzz2I83/Ikhg5tBlk0dHmAWhrRxtTiIxy
+         bE+t1wJ74NLWYx3Q/Xn5rZxtVNDerkumEGz0Z9IoLLGuGfFMnjCEt1hJ2bFRWkdfdUe9
+         h2is0dtMtgBgU+XY85irb8v/lCnb4GyqGzkMnC31fmGq9xDRhEChwMRbfA5l9myCC/eF
+         6kJj53eyJp7fdfZmwU1n3uXeNkCjnxt24qxBX0qajiqNx32oe8E+HJS8z+dcANABeF4S
+         3u6Q==
+X-Gm-Message-State: AOAM5314+6ecjD6lqwVn7/VUB0WXC7sw9m/iTUUtK32xzoYXKz0+m/Jh
+        C7vcgiyLYP86rMnnckiaqf9/AYR0JPzfiHLwQR3FdFgfpyCEJxPLcbdJegGZBAOUqo5Z2nKx+08
+        A/V2FOBXpc9lTV/5VTr0SYlZm
+X-Received: by 2002:a17:906:368c:: with SMTP id a12mr4208926ejc.143.1633698308454;
+        Fri, 08 Oct 2021 06:05:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwlxA2f9rNxTHQq8IKY2BJh4lL9hMx84StuoKNUlOgnyNlZwYvMbH6zVdMCXYXCN5WHfEx88w==
+X-Received: by 2002:a17:906:368c:: with SMTP id a12mr4208897ejc.143.1633698308147;
+        Fri, 08 Oct 2021 06:05:08 -0700 (PDT)
+Received: from redhat.com ([2.55.132.170])
+        by smtp.gmail.com with ESMTPSA id c10sm898413eje.37.2021.10.08.06.05.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 06:03:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Oct 2021 06:03:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        Jiri Kosina <trivial@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] dt-bindings: hwmon: ibm,cffps: move to trivial
- devices
-Message-ID: <20211008130300.GA3670503@roeck-us.net>
-References: <20210921102832.143352-1-krzysztof.kozlowski@canonical.com>
- <20210921102832.143352-3-krzysztof.kozlowski@canonical.com>
+        Fri, 08 Oct 2021 06:05:07 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 09:05:03 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH v2 1/1] virtio: write back F_VERSION_1 before validate
+Message-ID: <20211008085839-mutt-send-email-mst@kernel.org>
+References: <20211008123422.1415577-1-pasic@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921102832.143352-3-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211008123422.1415577-1-pasic@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 12:28:29PM +0200, Krzysztof Kozlowski wrote:
-> The IBM Common Form Factor Power Supply Versions 1 and 2 bindings are
-> trivial, so they can be integrated into trivial devices bindings.
+On Fri, Oct 08, 2021 at 02:34:22PM +0200, Halil Pasic wrote:
+> The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+> been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> However, the specification also says: "... the driver MAY read (but MUST
+> NOT write) the device-specific configuration fields to check that it can
+> support the device ..." before setting FEATURES_OK.
+> 
+> In that case, any transitional device relying solely on
+> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+> legacy format.  In particular, this implies that it is in big endian
+> format for big endian guests. This naturally confuses the driver which
+> expects little endian in the modern mode.
+> 
+> It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. However, we already have a regression so let's try to address
 
-Following Rob's suggestion:
+actually, regressions. and we can add 
+"since originally before validate callback existed
+config space was only read after
+FEATURES_OK. See Fixes tags for relevant commits"
 
-"... I'd much rather have a schema for these than wait on 
-someone to decide to convert them. That could mean a device.txt -> 
-trivial-devices.yaml -> device.yaml trip, but that doesn't seem that 
-terrible to me. Then we at least are running schema checks on the 
-devices and know if actual users have more undocumented properties."
+> it.
+> 
+> The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
+> the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
+> virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
+> with DASD backing, because things simply don't work with the default.
 
-Applied.
+Let's add a work around description now:
 
-Thanks,
-Guenter
 
+For QEMU, we can work around the issue by writing out the features
+register with VIRTIO_F_VERSION_1 bit set.  We (ab) use the
+finalize_features config op for this. It's not enough to address vhost
+user and vhost block devices since these do not get the features until
+FEATURES_OK, however it looks like these two actually never handled the
+endian-ness for legacy mode correctly, so at least that's not a
+regression.
+
+No devices except virtio net and virtio blk seem to be affected.
+
+Long term the right thing to do is to fix the hypervisors.
+
+
+> 
+> Cc: <stable@vger.kernel.org> #v4.11
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
+> Reported-by: markver@us.ibm.com
 > ---
->  .../devicetree/bindings/hwmon/ibm,cffps1.txt  | 26 -------------------
->  .../devicetree/bindings/trivial-devices.yaml  |  6 +++++
->  MAINTAINERS                                   |  1 -
->  3 files changed, 6 insertions(+), 27 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
+>  drivers/virtio/virtio.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt b/Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
-> deleted file mode 100644
-> index d9a2719f9243..000000000000
-> --- a/Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
-> +++ /dev/null
-> @@ -1,26 +0,0 @@
-> -Device-tree bindings for IBM Common Form Factor Power Supply Versions 1 and 2
-> ------------------------------------------------------------------------------
-> -
-> -Required properties:
-> - - compatible				: Must be one of the following:
-> -						"ibm,cffps1"
-> -						"ibm,cffps2"
-> -						or "ibm,cffps" if the system
-> -						must support any version of the
-> -						power supply
-> - - reg = < I2C bus address >;		: Address of the power supply on the
-> -					  I2C bus.
-> -
-> -Example:
-> -
-> -    i2c-bus@100 {
-> -        #address-cells = <1>;
-> -        #size-cells = <0>;
-> -        #interrupt-cells = <1>;
-> -        < more properties >
-> -
-> -        power-supply@68 {
-> -            compatible = "ibm,cffps1";
-> -            reg = <0x68>;
-> -        };
-> -    };
-> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
-> index 6ad0628741cf..791079021f1b 100644
-> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
-> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
-> @@ -113,6 +113,12 @@ properties:
->            - mps,mp2975
->              # Honeywell Humidicon HIH-6130 humidity/temperature sensor
->            - honeywell,hi6130
-> +            # IBM Common Form Factor Power Supply Versions (all versions)
-> +          - ibm,cffps
-> +            # IBM Common Form Factor Power Supply Versions 1
-> +          - ibm,cffps1
-> +            # IBM Common Form Factor Power Supply Versions 2
-> +          - ibm,cffps2
->              # Infineon IR36021 digital POL buck controller
->            - infineon,ir36021
->              # Infineon IR38064 Voltage Regulator
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 15c4d3c809e8..cc5df54bdc51 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14956,7 +14956,6 @@ S:	Maintained
->  W:	http://hwmon.wiki.kernel.org/
->  W:	http://www.roeck-us.net/linux/drivers/
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git
-> -F:	Documentation/devicetree/bindings/hwmon/ibm,cffps1.txt
->  F:	Documentation/devicetree/bindings/hwmon/ltc2978.txt
->  F:	Documentation/devicetree/bindings/hwmon/max31785.txt
->  F:	Documentation/hwmon/adm1275.rst
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 0a5b54034d4b..236081afe9a2 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
+>  		driver_features_legacy = driver_features;
+>  	}
+>  
+> +	/*
+> +	 * Some devices detect legacy solely via F_VERSION_1. Write
+> +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
+> +	 * these when needed.
+> +	 */
+> +	if (drv->validate && !virtio_legacy_is_little_endian()
+> +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
+> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+> +		dev->config->finalize_features(dev);
+> +	}
+> +
+>  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>  		dev->features = driver_features & device_features;
+>  	else
+> 
+> base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
+> -- 
+> 2.25.1
+
