@@ -2,87 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE48426717
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7817426718
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239058AbhJHJrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:47:49 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41626 "EHLO mail.skyhub.de"
+        id S238865AbhJHJrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:47:53 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40097 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238284AbhJHJrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:47:42 -0400
-Received: from zn.tnic (p200300ec2f0d56001d1e8fcbbc7c59cf.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5600:1d1e:8fcb:bc7c:59cf])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B7E8F1EC04F3;
-        Fri,  8 Oct 2021 11:45:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633686346;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HDvjXf2G2Fog17uEppnXMkbhqsHtzjJX73iNz52CSDg=;
-        b=PhxXR1gbnwtpqzn3+vgcIdufo54R1jpl4j6Q+vxVcZ7/GjKen7Ouvzx9malqusgUFjQXS3
-        CDZV+7uNgrY9s8PZmzeuCwELgCFGWA5yA+3bb+6qvd6Wqo2Tjxw0Uw1FX1QWfaQTSRiiV5
-        nzfaFayi+HzFSf7tFfk77Fro5G5pyY4=
-Date:   Fri, 8 Oct 2021 11:45:38 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     Werner Sembach <wse@tuxedocomputers.com>, benoitg@coeus.ca,
-        bhelgaas@google.com, hpa@zytor.com, juhapekka.heikkila@gmail.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Subject: Re: [PATCH RESEND] x86/resource: Do not exclude regions that are
- marked as MMIO in EFI memmap
-Message-ID: <YWATQgGOFQIlLOlV@zn.tnic>
-References: <20200617164734.84845-1-mika.westerberg@linux.intel.com>
- <1c225d72-44dc-1ddb-3284-a5d19e0db882@tuxedocomputers.com>
- <YWAOE5yV9V0/HMET@lahna>
+        id S238853AbhJHJrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:47:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="287355769"
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="287355769"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 02:45:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="524978001"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.76]) ([10.237.72.76])
+  by fmsmga008.fm.intel.com with ESMTP; 08 Oct 2021 02:45:48 -0700
+Subject: Re: [PATCH v1 6/6] mmc: sdhci-pci: Remove dead code (rst_n_gpio et
+ al)
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Eric Biggers <ebiggers@google.com>,
+        Raul E Rangel <rrangel@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
+References: <20211005102430.63716-1-andriy.shevchenko@linux.intel.com>
+ <20211005102430.63716-7-andriy.shevchenko@linux.intel.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <892a121b-dbfe-fdbc-f58d-08b9789ccaf8@intel.com>
+Date:   Fri, 8 Oct 2021 12:45:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211005102430.63716-7-andriy.shevchenko@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YWAOE5yV9V0/HMET@lahna>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 12:23:31PM +0300, Mika Westerberg wrote:
-> Hi,
+On 05/10/2021 13:24, Andy Shevchenko wrote:
+> There is no user of this member. Remove the dead code for good.
+
+So this is dependent on patch 5 i.e. that patch removed the
+references to the code being removed in this patch.  Please
+make a note of that in the commit message.
+
+
 > 
-> On Fri, Oct 08, 2021 at 10:55:49AM +0200, Werner Sembach wrote:
-> > Is there any update on this matter? Also happens on discrete Thunderbolt 4 chips:
-> > https://bugzilla.kernel.org/show_bug.cgi?id=214259
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/mmc/host/sdhci-pci-core.c | 27 ---------------------------
+>  drivers/mmc/host/sdhci-pci.h      |  2 --
+>  2 files changed, 29 deletions(-)
 > 
-> AFAICT no updates.
+> diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
+> index a4279437bb5f..6c284e07675e 100644
+> --- a/drivers/mmc/host/sdhci-pci-core.c
+> +++ b/drivers/mmc/host/sdhci-pci-core.c
+> @@ -1900,21 +1900,6 @@ int sdhci_pci_enable_dma(struct sdhci_host *host)
+>  	return 0;
+>  }
+>  
+> -static void sdhci_pci_gpio_hw_reset(struct sdhci_host *host)
+> -{
+> -	struct sdhci_pci_slot *slot = sdhci_priv(host);
+> -	int rst_n_gpio = slot->rst_n_gpio;
+> -
+> -	if (!gpio_is_valid(rst_n_gpio))
+> -		return;
+> -	gpio_set_value_cansleep(rst_n_gpio, 0);
+> -	/* For eMMC, minimum is 1us but give it 10us for good measure */
+> -	udelay(10);
+> -	gpio_set_value_cansleep(rst_n_gpio, 1);
+> -	/* For eMMC, minimum is 200us but give it 300us for good measure */
+> -	usleep_range(300, 1000);
+> -}
+> -
+>  static void sdhci_pci_hw_reset(struct sdhci_host *host)
+>  {
+>  	struct sdhci_pci_slot *slot = sdhci_priv(host);
+> @@ -2045,7 +2030,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
+>  
+>  	slot->chip = chip;
+>  	slot->host = host;
+> -	slot->rst_n_gpio = -EINVAL;
+>  	slot->cd_idx = -1;
+>  
+>  	host->hw_name = "PCI";
+> @@ -2071,17 +2055,6 @@ static struct sdhci_pci_slot *sdhci_pci_probe_slot(
+>  			goto cleanup;
+>  	}
+>  
+> -	if (gpio_is_valid(slot->rst_n_gpio)) {
+> -		if (!devm_gpio_request(&pdev->dev, slot->rst_n_gpio, "eMMC_reset")) {
+> -			gpio_direction_output(slot->rst_n_gpio, 1);
+> -			slot->host->mmc->caps |= MMC_CAP_HW_RESET;
+> -			slot->hw_reset = sdhci_pci_gpio_hw_reset;
+> -		} else {
+> -			dev_warn(&pdev->dev, "failed to request rst_n_gpio\n");
+> -			slot->rst_n_gpio = -EINVAL;
+> -		}
+> -	}
+> -
+>  	host->mmc->pm_caps = MMC_PM_KEEP_POWER;
+>  	host->mmc->slotno = slotno;
+>  	host->mmc->caps2 |= MMC_CAP2_NO_PRESCAN_POWERUP;
+> diff --git a/drivers/mmc/host/sdhci-pci.h b/drivers/mmc/host/sdhci-pci.h
+> index 8bb3b9c78589..5e3193278ff9 100644
+> --- a/drivers/mmc/host/sdhci-pci.h
+> +++ b/drivers/mmc/host/sdhci-pci.h
+> @@ -157,8 +157,6 @@ struct sdhci_pci_slot {
+>  	struct sdhci_pci_chip	*chip;
+>  	struct sdhci_host	*host;
+>  
+> -	int			rst_n_gpio;
+> -
+>  	int			cd_idx;
+>  	bool			cd_override_level;
+>  
 > 
-> @Bjorn, x86 maintainers,
-> 
-> If there are no alternatives can we get this patch merged so that people
-> don't need to carry out-of-tree patches to get their systems working?
 
-Just my 2¢ from briefly skimming over this:
-
-So this reads yet again as BIOS is to blame but what else is new?
-
-"All in all, I think we can fix this by modifying
-arch_remove_reservations() to check the EFI type as well and if it is
-EFI_MEMORY_MAPPED_IO skip the clipping in that case."
-
-And this like we should trust EFI to mark those regions properly, which
-is more of the same but in different color.
-
-That original commit talks about windoze doing a different allocation
-scheme and thus not trusting the untrustworthy firmware anyway and that
-sounds like something we should do too. But WTH do I know?!
-
-So I'd prefer if Bjorn chimed in here.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
