@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEEF4273A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D7E4273A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243740AbhJHWXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:23:37 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:36675 "EHLO
+        id S243785AbhJHWXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:23:45 -0400
+Received: from mailgw01.mediatek.com ([216.200.240.184]:39949 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243610AbhJHWXP (ORCPT
+        with ESMTP id S243761AbhJHWXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:23:15 -0400
-X-UUID: 39e8449bbf0c4831bb95660803be2337-20211008
-X-UUID: 39e8449bbf0c4831bb95660803be2337-20211008
+        Fri, 8 Oct 2021 18:23:33 -0400
+X-UUID: 5ccfa8a55bb44a518e97b3160e05ce27-20211008
+X-UUID: 5ccfa8a55bb44a518e97b3160e05ce27-20211008
 Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
         (envelope-from <sean.wang@mediatek.com>)
         (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 523008174; Fri, 08 Oct 2021 15:20:06 -0700
+        with ESMTP id 1717558128; Fri, 08 Oct 2021 15:20:32 -0700
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Oct 2021 15:10:47 -0700
+ MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 Oct 2021 15:10:50 -0700
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 9 Oct 2021 06:10:46 +0800
+ Transport; Sat, 9 Oct 2021 06:10:50 +0800
 From:   <sean.wang@mediatek.com>
 To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
 CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
@@ -42,9 +42,9 @@ CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Mark-yw Chen <mark-yw.chen@mediatek.com>
-Subject: [PATCH v1 06/10] Bluetooth: btmtksdio: update register CSDIOCSR operation
-Date:   Sat, 9 Oct 2021 06:10:13 +0800
-Message-ID: <629e6a12a0f1698fb78934d36b2c1ff65573957d.1633728573.git.objelf@gmail.com>
+Subject: [PATCH v1 07/10] Bluetooth: btmtksdio: use register CRPLR to read packet length
+Date:   Sat, 9 Oct 2021 06:10:14 +0800
+Message-ID: <5a42eeb8f2f5122b4da2585ac90a9c7fcc115a98.1633728573.git.objelf@gmail.com>
 X-Mailer: git-send-email 1.7.9.5
 In-Reply-To: <cover.1633728573.git.objelf@gmail.com>
 References: <cover.1633728573.git.objelf@gmail.com>
@@ -59,35 +59,54 @@ From: Sean Wang <sean.wang@mediatek.com>
 
 That is a preliminary patch to introduce mt7921s support.
 
-Update register CSDIOCSR operation that is suggested from the vendor
-driver and is compatible to the all devices.
+Use the register CRPLR to read packet length to make all the devices
+share the common logic.
 
 Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
 Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
 Signed-off-by: Sean Wang <sean.wang@mediatek.com>
 ---
- drivers/bluetooth/btmtksdio.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/bluetooth/btmtksdio.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index f712b52e5797..3381c8844902 100644
+index 3381c8844902..f816a7cb0a74 100644
 --- a/drivers/bluetooth/btmtksdio.c
 +++ b/drivers/bluetooth/btmtksdio.c
-@@ -520,8 +520,12 @@ static int btmtksdio_open(struct hci_dev *hdev)
- 	/* SDIO CMD 5 allows the SDIO device back to idle state an
- 	 * synchronous interrupt is supported in SDIO 4-bit mode
- 	 */
--	sdio_writel(bdev->func, SDIO_INT_CTL | SDIO_RE_INIT_EN,
--		    MTK_REG_CSDIOCSR, &err);
-+	val = sdio_readl(bdev->func, MTK_REG_CSDIOCSR, &err);
-+	if (err < 0)
-+		goto err_release_irq;
-+
-+	val |= SDIO_INT_CTL;
-+	sdio_writel(bdev->func, val, MTK_REG_CSDIOCSR, &err);
- 	if (err < 0)
- 		goto err_release_irq;
+@@ -83,6 +83,8 @@ MODULE_DEVICE_TABLE(sdio, btmtksdio_table);
  
+ #define MTK_REG_CRDR		0x1c
+ 
++#define MTK_REG_CRPLR		0x24
++
+ #define MTK_SDIO_BLOCK_SIZE	256
+ 
+ #define BTMTKSDIO_TX_WAIT_VND_EVT	1
+@@ -404,9 +406,8 @@ static void btmtksdio_txrx_work(struct work_struct *work)
+ 	struct btmtksdio_dev *bdev = container_of(work, struct btmtksdio_dev,
+ 						  txrx_work);
+ 	unsigned long txrx_timeout;
++	u32 int_status, rx_size;
+ 	struct sk_buff *skb;
+-	u32 int_status;
+-	u16 rx_size;
+ 	int err;
+ 
+ 	pm_runtime_get_sync(bdev->dev);
+@@ -450,11 +451,11 @@ static void btmtksdio_txrx_work(struct work_struct *work)
+ 			bt_dev_warn(bdev->hdev, "Tx fifo overflow");
+ 
+ 		if (int_status & RX_DONE_INT) {
+-			rx_size = (int_status & RX_PKT_LEN) >> 16;
++			rx_size = sdio_readl(bdev->func, MTK_REG_CRPLR, NULL);
++			rx_size = (rx_size & RX_PKT_LEN) >> 16;
+ 			if (btmtksdio_rx_packet(bdev, rx_size) < 0)
+ 				bdev->hdev->stat.err_rx++;
+ 		}
+-
+ 	} while (int_status || time_is_before_jiffies(txrx_timeout));
+ 
+ 	/* Enable interrupt */
 -- 
 2.25.1
 
