@@ -2,98 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE8E42640F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2C9426411
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhJHF3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
+        id S229932AbhJHFaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhJHF3f (ORCPT
+        with ESMTP id S229534AbhJHFao (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:29:35 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591B8C061570;
-        Thu,  7 Oct 2021 22:27:40 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id k7so25741724wrd.13;
-        Thu, 07 Oct 2021 22:27:40 -0700 (PDT)
+        Fri, 8 Oct 2021 01:30:44 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551DFC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 22:28:50 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id g184so2033016pgc.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 22:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WzM1iYqWC83TqgteofpYEJWEho+MBqR0p/pEBHUFvzo=;
-        b=JqIte8NakKnc09OiKx+/S3I1bPYMMmfVSZFLHwc3+Rr3FpSu3gUbng1tdAe6R92zxK
-         NMMeNig252Lnj87nCmfuvUW9KVq6wYJTP9MmPxZG1KEe4q59eXY+Yk/Bj3Osc30MmtbC
-         twyt2TrTe9/xm42SqkZwfxAKpzMVc7CuXe3KOwxy+YMoMak53hjDHeWhPmMRxKvTy0hF
-         4jZelGeaO0Tn+guheF/9x3QRaHTeg6WnXdVo556ereaaekLTiZzfymTUAJO7OpIvuMW7
-         Onp3Tso4QLF7lIckq1cWNyOzDmKmso5iuT6KOD/Un8gXTqfSmuJsZ3s770NJCpH2EhbE
-         Hugg==
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=fRVqtB6tjc3sxvXUb6FPScwW0I2W4WcKV6lwQWDcLCc=;
+        b=DmZ3bBlJOasNrb5KADrKm87TITN3NDKvTs+ZM+h0mGXkGv8yuRH2ITtU6l5wtXhJjg
+         FfXvz1XmlILKnNdcoQHrztrjUkxDw9bI/71PS/u7zk6yXUGxC9JyEnUgqvMXsL1R6UVP
+         W0gU+aQx7Ag7ey4mpODEmfcC+xaMjYqzxZ81E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WzM1iYqWC83TqgteofpYEJWEho+MBqR0p/pEBHUFvzo=;
-        b=gKlKG1I2gPtxRVduFY5sq5/qxEutoJi/dsngbxsqUyCzKtk1ML7gcq9zfTBD0jPw6D
-         TcIpupIJbkR6csiyAAf6cS2tyMthHiESv5cfKZLHHuCbEVTVDofvzqtLxTYaHYcw78zN
-         NSkhL8KJsgRfUhv8FpXSWdBDnwyPH4g9ZK1C1017kFVuKHQUW/E4dM76RlkTm17yAe/y
-         om/cNG7RqWXu4KFqXgUN5vyuJl1lsUlGcsTJwIrNU+G1Ae9CJI0SzWI/SL/fNh1+AoWM
-         /9ryHwhBFRjkQYP0ZD8CAzcpVkzcDjvzOVX7z6ksRFr0o/iluM12Mzcl0xd8VHcDXii/
-         wGSA==
-X-Gm-Message-State: AOAM531sJkcAqwIx4ApGOEc1cYCjeoPdK9VDtaDOw/sUsAAF+pg4UPM5
-        bwGY28EbTLvl+ckrdkm/J2g=
-X-Google-Smtp-Source: ABdhPJyAD+ueReOjPg+2+7LH24FyZ+oQR+wR2rnUh+z2ATY/waUhl5QXGHZokTEmlty3XMMuesMWXQ==
-X-Received: by 2002:a5d:6ad2:: with SMTP id u18mr1445570wrw.47.1633670858969;
-        Thu, 07 Oct 2021 22:27:38 -0700 (PDT)
-Received: from localhost.localdomain ([197.49.35.129])
-        by smtp.gmail.com with ESMTPSA id c204sm11030436wme.11.2021.10.07.22.27.37
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=fRVqtB6tjc3sxvXUb6FPScwW0I2W4WcKV6lwQWDcLCc=;
+        b=r9YNwd8pN/4Q6Why8o7sZaKZ49BzXfigk99FYn+MOeZ49nUFI4XjUe6ckqitxoMnop
+         qH7t3b+QyMhT0Sr6PamELcEVNm1dzYluQxlVfLa720qR5JgM9gIiR/g8ILUfh7n2UFbV
+         CFywd4n4+cKCnQ8e/+f8b/P08xEoybWGxw19K3qHF8apUOHbL+dzflzXQ/UNBroOgutb
+         coxas9xuQNUNqO8ky35ydYurQXpSAn77t8FcDZ2rXVHi7JFcb+Rm9GUp2+CCwJJOCM0O
+         nqIZ2SQEL79vrtM4hO5iesE8hIRgSLTJru4nfGenSSMOQPH/S+q234HKMld7xh4nkQZB
+         llkw==
+X-Gm-Message-State: AOAM5312P4pKGaa00fvbNX09W1C4hMoIo9rRo4Z4nZT8o00HehM0fopr
+        beQFHValXLTuqR7k/+7nMcOASg==
+X-Google-Smtp-Source: ABdhPJxuoOzh1q8JULgfQ5PGm/uIRI18M05Ij8xii/s2kVbwq4ah888VH5topVgKX2VkoUWDB325lw==
+X-Received: by 2002:aa7:8294:0:b0:44c:c0b:d94c with SMTP id s20-20020aa78294000000b0044c0c0bd94cmr8323003pfm.24.1633670929752;
+        Thu, 07 Oct 2021 22:28:49 -0700 (PDT)
+Received: from localhost ([2001:4479:e300:600:b4a4:1577:dca8:77b9])
+        by smtp.gmail.com with ESMTPSA id l18sm1130657pfu.202.2021.10.07.22.28.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 22:27:38 -0700 (PDT)
-From:   Sohaib Mohamed <sohaib.amhmd@gmail.com>
-To:     sohaib.amhmd@gmail.com
-Cc:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] tpm/st33zp24: Fix typo in st33zp24.c
-Date:   Fri,  8 Oct 2021 07:27:35 +0200
-Message-Id: <20211008052736.629562-1-sohaib.amhmd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 07 Oct 2021 22:28:49 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Kai Song <songkai01@inspur.com>, linuxppc-dev@lists.ozlabs.org
+Cc:     oohall@gmail.com, paulus@samba.org, linux-kernel@vger.kernel.org,
+        Kai Song <songkai01@inspur.com>
+Subject: Re: [PATCH] powerpc/eeh:Fix docstrings in eeh
+In-Reply-To: <20211004085842.255813-1-songkai01@inspur.com>
+References: <20211004085842.255813-1-songkai01@inspur.com>
+Date:   Fri, 08 Oct 2021 16:28:46 +1100
+Message-ID: <87czog9jap.fsf@linkitivity.dja.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove repeated world "device"
-"datas" -> "data"
+Hi Kai,
 
-Signed-off-by: Sohaib Mohamed <sohaib.amhmd@gmail.com>
----
- drivers/char/tpm/st33zp24/st33zp24.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for your patch! I have 3 very minor tweaks and I am otherwise
+very happy with it.
 
-diff --git a/drivers/char/tpm/st33zp24/st33zp24.c b/drivers/char/tpm/st33zp24/st33zp24.c
-index 4ec10ab5e576..f888624c1ae7 100644
---- a/drivers/char/tpm/st33zp24/st33zp24.c
-+++ b/drivers/char/tpm/st33zp24/st33zp24.c
-@@ -62,7 +62,7 @@ enum tis_defaults {
+Firstly, in your commit name, there should be a space between
+"powerpc/eeh:" and "Fix docstrings". You might also want to say "in
+eeh.c" rather than "in eeh" because there is eeh code in a number of
+other files too.
 
- /*
-  * clear_interruption clear the pending interrupt.
-- * @param: tpm_dev, the tpm device device.
-+ * @param: tpm_dev, the tpm device.
-  * @return: the interrupt status value.
-  */
- static u8 clear_interruption(struct st33zp24_dev *tpm_dev)
-@@ -434,7 +434,7 @@ static int st33zp24_send(struct tpm_chip *chip, unsigned char *buf,
- /*
-  * st33zp24_recv received TPM response through TPM phy.
-  * @param: chip, the tpm_chip description as specified in driver/char/tpm/tpm.h.
-- * @param: buf,	the buffer to store datas.
-+ * @param: buf,	the buffer to store data.
-  * @param: count, the number of bytes to send.
-  * @return: In case of success the number of bytes received.
-  *	    In other case, a < 0 value describing the issue.
---
-2.25.1
+> We fix the following warnings when building kernel with W=1:
+> arch/powerpc/kernel/eeh.c:598: warning: Function parameter or member 'function' not described in 'eeh_pci_enable'
+> arch/powerpc/kernel/eeh.c:774: warning: Function parameter or member 'edev' not described in 'eeh_set_dev_freset'
+> arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
+> arch/powerpc/kernel/eeh.c:814: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset_full'
+> arch/powerpc/kernel/eeh.c:944: warning: Function parameter or member 'ops' not described in 'eeh_init'
+> arch/powerpc/kernel/eeh.c:1451: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset'
+> arch/powerpc/kernel/eeh.c:1526: warning: Function parameter or member 'func' not described in 'eeh_pe_inject_err'
+> arch/powerpc/kernel/eeh.c:1526: warning: Excess function parameter 'function' described in 'eeh_pe_inject_err'
+>
+> Signed-off-by: Kai Song <songkai01@inspur.com>
+> ---
+>  arch/powerpc/kernel/eeh.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
+> index e9b597ed423c..57a6868a41ab 100644
+> --- a/arch/powerpc/kernel/eeh.c
+> +++ b/arch/powerpc/kernel/eeh.c
+> @@ -589,6 +589,7 @@ EXPORT_SYMBOL(eeh_check_failure);
+>  /**
+>   * eeh_pci_enable - Enable MMIO or DMA transfers for this slot
+>   * @pe: EEH PE
+> + * @function : EEH function
+I don't think there should be a space between '@function' and ':'.
 
+I know the parameter is called 'function' and I think "EEH function" was
+a good guess for the docstring. However, if we look at the way
+'function' is used, it is compared with EEH_OPT_xxx constants, and then
+it's passed to eeh_ops->set_option(), eeh_pci_enable() is also called in
+eeh_pe_set_option() with a parameter called 'option'. So I think maybe
+'function' should be described as the "EEH option"?
+
+This is still very unsatisfactory but it's not the fault of your patch -
+the EEH codebase is very messy and it's worth fixing the W=1 warnings
+even if we don't fully clean up the EEH codebase.
+
+> - * eeh_set_pe_freset - Check the required reset for the indicated device
+> - * @data: EEH device
+> + * eeh_set_dev_freset - Check the required reset for the indicated device
+> + * @edev: EEH device
+>   * @flag: return value
+>   *
+
+This is good.
+
+>  /**
+>   * eeh_pe_reset_full - Complete a full reset process on the indicated PE
+>   * @pe: EEH PE
+> + * @include_passed: include passed-through devices?
+>   *
+>   * This function executes a full reset procedure on a PE, including setting
+>   * the appropriate flags, performing a fundamental or hot reset, and then
+> @@ -937,6 +939,7 @@ static struct notifier_block eeh_device_nb = {
+
+This is OK.
+
+ 
+>  /**
+>   * eeh_init - System wide EEH initialization
+> + * @ops: struct to trace EEH operation callback functions
+
+I think "@ops: platform-specific functions for EEH operations" is
+probably clearer?
+
+>   *
+>   * It's the platform's job to call this from an arch_initcall().
+>   */
+> @@ -1442,6 +1445,7 @@ static int eeh_pe_reenable_devices(struct eeh_pe *pe, bool include_passed)
+>   * eeh_pe_reset - Issue PE reset according to specified type
+>   * @pe: EEH PE
+>   * @option: reset type
+> + * @include_passed: include passed-through devices?
+>   *
+
+This is OK.
+
+>   * The routine is called to reset the specified PE with the
+>   * indicated type, either fundamental reset or hot reset.
+> @@ -1513,12 +1517,12 @@ EXPORT_SYMBOL_GPL(eeh_pe_configure);
+>   * eeh_pe_inject_err - Injecting the specified PCI error to the indicated PE
+>   * @pe: the indicated PE
+>   * @type: error type
+> - * @function: error function
+> + * @func: error function
+
+This is good.
+
+>   * @addr: address
+>   * @mask: address mask
+>   *
+>   * The routine is called to inject the specified PCI error, which
+> - * is determined by @type and @function, to the indicated PE for
+> + * is determined by @type and @func, to the indicated PE for
+
+This is good.
+
+When you resend, you can include:
+ Reviewed-by: Daniel Axtens <dja@axtens.net>
+
+Kind regards,
+Daniel
