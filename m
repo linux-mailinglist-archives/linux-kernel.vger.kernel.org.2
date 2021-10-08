@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D8A42632B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A7F42632C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242345AbhJHDlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:41:22 -0400
+        id S242419AbhJHDl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:41:27 -0400
 Received: from mga05.intel.com ([192.55.52.43]:35959 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229714AbhJHDlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:41:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312623162"
+        id S242363AbhJHDlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:41:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="312623165"
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="312623162"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:39:26 -0700
+   d="scan'208";a="312623165"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:39:28 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="489289962"
+   d="scan'208";a="459031544"
 Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 07 Oct 2021 20:39:25 -0700
+  by orsmga002.jf.intel.com with ESMTP; 07 Oct 2021 20:39:25 -0700
 Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mYgjE-0007v6-Id; Fri, 08 Oct 2021 03:39:24 +0000
-Date:   Fri, 08 Oct 2021 11:38:46 +0800
+        id 1mYgjE-0007vH-NY; Fri, 08 Oct 2021 03:39:24 +0000
+Date:   Fri, 08 Oct 2021 11:39:04 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/core] BUILD SUCCESS
- 541ac97186d9ea88491961a46284de3603c914fd
-Message-ID: <615fbd46.83qkC1jfHqKaehdm%lkp@intel.com>
+Subject: [tip:perf/urgent] BUILD SUCCESS
+ f792565326825ed806626da50c6f9a928f1079c1
+Message-ID: <615fbd58.t7jIWjlLSo7XLK2K%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,13 +39,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
-branch HEAD: 541ac97186d9ea88491961a46284de3603c914fd  x86/sev: Make the #VC exception stacks part of the default stacks storage
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git perf/urgent
+branch HEAD: f792565326825ed806626da50c6f9a928f1079c1  perf/core: fix userpage->time_enabled of inactive events
 
-elapsed time: 1214m
+elapsed time: 1314m
 
-configs tested: 150
-configs skipped: 3
+configs tested: 151
+configs skipped: 4
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -59,6 +59,7 @@ arm                              allyesconfig
 m68k                       m5475evb_defconfig
 powerpc                     tqm5200_defconfig
 m68k                       m5249evb_defconfig
+ia64                             allyesconfig
 powerpc                     skiroot_defconfig
 powerpc                   motionpro_defconfig
 arc                 nsimosci_hs_smp_defconfig
@@ -102,10 +103,13 @@ powerpc                         ps3_defconfig
 h8300                            allyesconfig
 powerpc                      pasemi_defconfig
 powerpc64                           defconfig
+mips                     loongson1b_defconfig
+ia64                            zx1_defconfig
 arm                          moxart_defconfig
 arm                           sama5_defconfig
 arc                     nsimosci_hs_defconfig
 m68k                        stmark2_defconfig
+nios2                               defconfig
 arm                       omap2plus_defconfig
 mips                           ip27_defconfig
 mips                      malta_kvm_defconfig
@@ -124,35 +128,33 @@ i386                 randconfig-c001-20211004
 arm                  randconfig-c002-20211004
 ia64                             allmodconfig
 ia64                                defconfig
-ia64                             allyesconfig
 m68k                                defconfig
 m68k                             allmodconfig
 m68k                             allyesconfig
-nios2                               defconfig
 arc                              allyesconfig
 nds32                             allnoconfig
 nds32                               defconfig
+nios2                            allyesconfig
 csky                                defconfig
 alpha                               defconfig
 alpha                            allyesconfig
-nios2                            allyesconfig
 arc                                 defconfig
 sh                               allmodconfig
 xtensa                           allyesconfig
 parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-s390                             allyesconfig
 s390                             allmodconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
 i386                             allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
+powerpc                          allyesconfig
 powerpc                          allmodconfig
 powerpc                           allnoconfig
-powerpc                          allyesconfig
 x86_64               randconfig-a015-20211004
 x86_64               randconfig-a012-20211004
 x86_64               randconfig-a016-20211004
@@ -165,7 +167,6 @@ i386                 randconfig-a014-20211004
 i386                 randconfig-a011-20211004
 i386                 randconfig-a012-20211004
 i386                 randconfig-a015-20211004
-arc                  randconfig-r043-20211007
 riscv                    nommu_k210_defconfig
 riscv                            allyesconfig
 riscv                    nommu_virt_defconfig
