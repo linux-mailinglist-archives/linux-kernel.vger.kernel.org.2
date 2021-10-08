@@ -2,132 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9791A42641D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BDC426423
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230308AbhJHFgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:36:11 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:11484 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbhJHFgK (ORCPT
+        id S229727AbhJHFmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhJHFmF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:36:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633671256; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=+2/lFg6lZ/VKWGc8lCK4zQfyJWPRKZdJr0qg4DMQqJY=; b=Q7JgeId3Hm2WZ47KiTPZSFiB+H1q9zuOw6d/zaJAYPtCD1SlAdGh3GpfPD1cqv4BgoptopT2
- gpdwVs0xxeheK/y4/UVtVVQHFh6i7nb4XXabexikJVuQPbdJ35eMuLIRPZllayp062hmW3Ct
- N2c1nDEvSrHZUFm1AF+zZ4LLGWw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 615fd853446c6db0cb041be6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 05:34:11
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AF17AC4361A; Fri,  8 Oct 2021 05:34:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69734C4338F;
-        Fri,  8 Oct 2021 05:34:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 69734C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: [PATCH v3] ASoC: qcom: soundwire: Enable soundwire bus clock for version 1.6
-Date:   Fri,  8 Oct 2021 11:03:52 +0530
-Message-Id: <1633671232-30310-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 8 Oct 2021 01:42:05 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D421C061570;
+        Thu,  7 Oct 2021 22:40:10 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id t8so26122349wri.1;
+        Thu, 07 Oct 2021 22:40:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c2QUI9TYy6QLpttg1evSF5Z552Y1SnXO8l+S/s47Hro=;
+        b=KTV6bGO6ZIzTcs8S+lfDc/Z++xPkXJQSP2d+1Eg/Mx1Jr7Nv4kgS81RPh3mDuMR9mg
+         I0tFYsewbjQgbs6erHzJvZTVVdWrB5DC5rdxGrNRq5QdUAWnPVhYDhpU0e+QmgdMzlYE
+         CTG36UxIC5qE7hJafvwz42v4SvydVyR08rHDsoEwL8iHMJ66j6/R3vjrpafFDP6Qnj3o
+         tDfQM3fZXbNA9ufvHsBinqXmM1FEyhYse8NkIhd/BVYs0rZmB00tW9fThpTkk63MRscd
+         xj+imTkg5vkJumtCfii4i7I3vkjkGMH8mBXUwzNw9b+VCWCnxiDZH08FnlYf3AlcfF/c
+         4/+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c2QUI9TYy6QLpttg1evSF5Z552Y1SnXO8l+S/s47Hro=;
+        b=vMLIwbXPwm7J/N82q5o+QYNS+PnqGIQyYFgulap1Ky0CBzZs8IegNsBAH6xstJ+6Bd
+         cPZPKzp4mL1M2fr7ORXZSqH6GO+RvfI0pyWPZKZjG0icDntOcvjh+QlAHvxk47tqGPkn
+         gQv/BDrg8a6yU0FEMxFKwFMzNvF+jWynY4yXRwOOUo4094wr3SYuHOVirheymfQImb0U
+         AcForQ3gYvpwV4aCKiP0f42aWyJnoRjYe6/u65edxyKB15HpB8tLpIWPaCDn/ipfhb2q
+         iBp9klGQ+hxLNW7VyNM+mIE3tqIt5sM5b+KEOgAYMUUpID3fCBEzIyglLTPOTBNdvzBf
+         OOcw==
+X-Gm-Message-State: AOAM531jbr2T/3DfifeFro3mJqC0kpFZCGpTxFv1Ro9+cr4RNAaeBF8b
+        Ebu3O83XqeoKBqIgGlvs3Zf8wQmX+MdSdVlQTAxCN/VMdZA=
+X-Google-Smtp-Source: ABdhPJyMiQ/ZGhNjm9J9QB/3671bpRzCA29LquGl8paqVfA0pcGnQdMsCU/88s7/AdWZRIk3CtYY83cB14EMXwYfxsI=
+X-Received: by 2002:adf:f610:: with SMTP id t16mr1478945wrp.309.1633671608705;
+ Thu, 07 Oct 2021 22:40:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211008151511.5a7c6e56@canb.auug.org.au>
+In-Reply-To: <20211008151511.5a7c6e56@canb.auug.org.au>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 8 Oct 2021 07:39:57 +0200
+Message-ID: <CAMhs-H_Gg+iLVJ43h5Boa5H1W6LieA_atiYYo+tRtw22bQZSLg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the staging tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for soundwire 1.6 version to gate RX/TX bus clock.
+Hi Stephen,
 
-Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes since v2:
-    -- Update error check after ioremap.
-Changes since v1:
-    -- Add const name to mask value.
+[+cc Thomas Bogendoerfer as mips maintainer]
 
- drivers/soundwire/qcom.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+On Fri, Oct 8, 2021 at 6:15 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the staging tree, today's linux-next build (mips
+> nlm_xlp_defconfig) failed like this:
+>
+> drivers/pci/pci.c:4210: undefined reference to `pci_remap_iospace'
+>
+> Caused by commit
+>
+>   9f76779f2418 ("MIPS: implement architecture-specific 'pci_remap_iospace()'")
+>
+> CONFIG_PCI_DRIVERS_GENERIC is not set for this build, so
+> arch/mips/pci/pci-generic.c is not built.
 
-diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-index 0ef79d6..bd6fabd 100644
---- a/drivers/soundwire/qcom.c
-+++ b/drivers/soundwire/qcom.c
-@@ -109,6 +109,7 @@
- #define SWR_MAX_CMD_ID	14
- #define MAX_FIFO_RD_RETRY 3
- #define SWR_OVERFLOW_RETRY_COUNT 30
-+#define SWRM_HCTL_REG_MASK ~BIT(1)
- 
- struct qcom_swrm_port_config {
- 	u8 si;
-@@ -127,6 +128,7 @@ struct qcom_swrm_ctrl {
- 	struct device *dev;
- 	struct regmap *regmap;
- 	void __iomem *mmio;
-+	char __iomem *swrm_hctl_reg;
- 	struct completion broadcast;
- 	struct completion enumeration;
- 	struct work_struct slave_work;
-@@ -610,6 +612,12 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
- 	val = FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_ROW_CTRL_BMSK, ctrl->rows_index);
- 	val |= FIELD_PREP(SWRM_MCP_FRAME_CTRL_BANK_COL_CTRL_BMSK, ctrl->cols_index);
- 
-+	if (ctrl->swrm_hctl_reg) {
-+		val = ioread32(ctrl->swrm_hctl_reg);
-+		val &= SWRM_HCTL_REG_MASK;
-+		iowrite32(val, ctrl->swrm_hctl_reg);
-+	}
-+
- 	ctrl->reg_write(ctrl, SWRM_MCP_FRAME_CTRL_BANK_ADDR(0), val);
- 
- 	/* Enable Auto enumeration */
-@@ -1200,7 +1208,7 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	struct qcom_swrm_ctrl *ctrl;
- 	const struct qcom_swrm_data *data;
- 	int ret;
--	u32 val;
-+	int val, swrm_hctl_reg = 0;
- 
- 	ctrl = devm_kzalloc(dev, sizeof(*ctrl), GFP_KERNEL);
- 	if (!ctrl)
-@@ -1251,6 +1259,11 @@ static int qcom_swrm_probe(struct platform_device *pdev)
- 	ctrl->bus.port_ops = &qcom_swrm_port_ops;
- 	ctrl->bus.compute_params = &qcom_swrm_compute_params;
- 
-+	if (!of_property_read_u32(dev->of_node, "qcom,swrm-hctl-reg", &swrm_hctl_reg)) {
-+		ctrl->swrm_hctl_reg = devm_ioremap(&pdev->dev, swrm_hctl_reg, 0x4);
-+		if (!ctrl->swrm_hctl_reg)
-+			return -ENODEV;
-+	}
- 	ret = qcom_swrm_get_port_config(ctrl);
- 	if (ret)
- 		goto err_clk;
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+I don't know what should be the correct fix for this.
+'pci_remap_iospace' for mips is added in 'pci-generic.c' which in only
+compiled when 'CONFIG_PCI_DRIVERS_GENERIC' is selected. In mips there
+is also 'CONFIG_PCI_DRIVERS_LEGACY' option that include 'pci-legacy.c'
+and drivers in 'arch/mips/pci' are normally defining this
+'CONFIG_PCI_DRIVERS_LEGACY'. For the failing build
+mips_nlm_xlp_defconfig, none of them are defined and code (I guess
+./arch/mips/pci/pci-xlp.c) is just initializing PCI calling
+'pcibios_init' and not using PCI core apis and 'pci_remap_iospace' at
+all like other drivers inside 'arch/mips/pci'. So I think the correct
+thing to do would be just move this mips architecture dependent define
+to be dependant of CONFIG_PCI_DRIVERS_GENERIC. The following patch
+would be enough:
 
+diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
+index 35270984a5f0..421231f55935 100644
+--- a/arch/mips/include/asm/pci.h
++++ b/arch/mips/include/asm/pci.h
+@@ -20,7 +20,9 @@
+ #include <linux/list.h>
+ #include <linux/of.h>
+
++#ifdef CONFIG_PCI_DRIVERS_GENERIC
+ #define pci_remap_iospace pci_remap_iospace
++#endif
+
+ #ifdef CONFIG_PCI_DRIVERS_LEGACY
+
+Thomas, if you are ok with this, let me know and I'll send this patch
+to be added to staging tree for fixing this issue.
+
+Best regards,
+    Sergio Paracuellos
+
+>
+> --
+> Cheers,
+> Stephen Rothwell
