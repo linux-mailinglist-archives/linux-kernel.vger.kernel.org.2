@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 930634269C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E734142693E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241474AbhJHLlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:41:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        id S241165AbhJHLf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241301AbhJHLgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCB5261353;
-        Fri,  8 Oct 2021 11:32:22 +0000 (UTC)
+        id S241293AbhJHLc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E10E6137F;
+        Fri,  8 Oct 2021 11:30:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692743;
-        bh=+x5DM1+xm3njE8PIoyCw1m19Ri0dQg1tG4CzgXS8NxM=;
+        s=korg; t=1633692652;
+        bh=CQOKEx4OOhdguTMSrfdFeCZg+pUPHXjZ7+YAlyYSt80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2l/euGH59RswWdHNT4yPmEPRNQGaH4DHWEADCIpGkAlmgPtc+J9vPxvkh8hiMiOAX
-         qnszLBn4xQtasW8oN4/rs73brHAWYOj7r2Y7rIp9+yeJN4f+Jejfh792aZ4k79gCHv
-         0dOaYppEMtFerKFrSGj//eXcWnW7PbXBokF8x3Ys=
+        b=IXOiawvalU6qP/ecAO2k+eize4E7eii2OEJjQucwq4w+VEQqs+mx0GhU3UwlyOt3Y
+         GJm3/vdRv7ArkGU8CuOKifu56bLowdAuCyJypCSJWoNiPS5Q2u2QlPIS1oXV+I1LwO
+         dEmeeU9jwAblbU12CoEJ7zm+TyvQE7wX5CFFtwO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Yang Yingliang <yangyingliang@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 24/48] selftests:kvm: fix get_trans_hugepagesz() ignoring fscanf() return warn
+Subject: [PATCH 5.10 13/29] usb: dwc2: check return value after calling platform_get_resource()
 Date:   Fri,  8 Oct 2021 13:28:00 +0200
-Message-Id: <20211008112720.822788168@linuxfoundation.org>
+Message-Id: <20211008112717.388452329@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,48 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 3a4f0cc693cd3d80e66a255f0bff0e2c0461eef1 ]
+[ Upstream commit 856e6e8e0f9300befa87dde09edb578555c99a82 ]
 
-Fix get_trans_hugepagesz() to check fscanf() return value to get rid
-of the following warning:
+It will cause null-ptr-deref if platform_get_resource() returns NULL,
+we need check the return value.
 
-lib/test_util.c: In function ‘get_trans_hugepagesz’:
-lib/test_util.c:138:2: warning: ignoring return value of ‘fscanf’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
-  138 |  fscanf(f, "%ld", &size);
-      |  ^~~~~~~~~~~~~~~~~~~~~~~
-
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Link: https://lore.kernel.org/r/20210831084236.1359677-1-yangyingliang@huawei.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/kvm/lib/test_util.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/usb/dwc2/hcd.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
-index af1031fed97f..938cd423643e 100644
---- a/tools/testing/selftests/kvm/lib/test_util.c
-+++ b/tools/testing/selftests/kvm/lib/test_util.c
-@@ -129,13 +129,16 @@ size_t get_trans_hugepagesz(void)
- {
- 	size_t size;
- 	FILE *f;
-+	int ret;
+diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
+index 6af1dcbc3656..30919f741b7f 100644
+--- a/drivers/usb/dwc2/hcd.c
++++ b/drivers/usb/dwc2/hcd.c
+@@ -5074,6 +5074,10 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
+ 	hcd->has_tt = 1;
  
- 	TEST_ASSERT(thp_configured(), "THP is not configured in host kernel");
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		retval = -EINVAL;
++		goto error1;
++	}
+ 	hcd->rsrc_start = res->start;
+ 	hcd->rsrc_len = resource_size(res);
  
- 	f = fopen("/sys/kernel/mm/transparent_hugepage/hpage_pmd_size", "r");
- 	TEST_ASSERT(f != NULL, "Error in opening transparent_hugepage/hpage_pmd_size");
- 
--	fscanf(f, "%ld", &size);
-+	ret = fscanf(f, "%ld", &size);
-+	ret = fscanf(f, "%ld", &size);
-+	TEST_ASSERT(ret < 1, "Error reading transparent_hugepage/hpage_pmd_size");
- 	fclose(f);
- 
- 	return size;
 -- 
 2.33.0
 
