@@ -2,127 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C166B426861
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAC8426866
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhJHLC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:02:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240117AbhJHLCZ (ORCPT
+        id S240178AbhJHLD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:03:27 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:34297 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240117AbhJHLDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:02:25 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F6FBC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 04:00:29 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mYnbl-0003cn-Hz; Fri, 08 Oct 2021 13:00:09 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mYnbj-0002EF-Ku; Fri, 08 Oct 2021 13:00:07 +0200
-Date:   Fri, 8 Oct 2021 13:00:07 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Zhang Changzhong <zhangchangzhong@huawei.com>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session
- if receive TP.DT with error length
-Message-ID: <20211008110007.GE29653@pengutronix.de>
-References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
- <20210930074206.GB7502@x1.vandijck-laurijssen.be>
- <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
+        Fri, 8 Oct 2021 07:03:24 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQlcH5cyHz4xbV;
+        Fri,  8 Oct 2021 22:01:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1633690887;
+        bh=B4qzHAigKKJHhzM+dPDATq6BWHA36ShynfcFOX354Uw=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ecgb6jGX08YbAx5B1reNn4h/kU3Gen7kievibOO69w+92xKGfimzG9blAbi2wPVuT
+         bzRQvpw1Gsq6L5OISVmfgRGEMrtpfffTD3SxPCSAMjCA7BaSe9z1Uwt8UhxvwagCXt
+         RG8jZ9yVbHmz/oZlWgdyytG8dpN+zilnWPdwvHzOrKK+z9cUFtnbh9EiaF6DvYThDq
+         y+nA3s2Jr7OnqG1H9G2arDaiYJ9T+Ocn4v009hMVegWkEyhfV3tBa+fnPnVWJ1bKT9
+         NTxKKbhG9DIb5b2JYg+QufFs7CUHZN2G28KnkHe3XTX54qxanjx0qe1ihehNmLNt3p
+         OX9W1GxfbYAzQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, openrisc@lists.librecores.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 07/12] powerpc: Use of_get_cpu_hwid()
+In-Reply-To: <20211006164332.1981454-8-robh@kernel.org>
+References: <20211006164332.1981454-1-robh@kernel.org>
+ <20211006164332.1981454-8-robh@kernel.org>
+Date:   Fri, 08 Oct 2021 22:01:15 +1100
+Message-ID: <8735pbok5g.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:47:01 up 232 days, 14:10, 145 users,  load average: 0.04, 0.14,
- 0.16
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
-> Hi Kurt,
-> Sorry for the late reply.
-> 
-> On 2021/9/30 15:42, Kurt Van Dijck wrote:
-> > On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
-> >> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
-> >> cancel session when receive unexpected TP.DT message.
-> > 
-> > SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
-> > However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
-> > If I remember well, they are even not 'reserved'.
-> 
-> Agree, these bytes are meaningless for last TP.DT.
-> 
-> >
-> >>
-> >> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> >> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
-> >> ---
-> >>  net/can/j1939/transport.c | 7 +++++--
-> >>  1 file changed, 5 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> >> index bb5c4b8..eedaeaf 100644
-> >> --- a/net/can/j1939/transport.c
-> >> +++ b/net/can/j1939/transport.c
-> >> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
-> >>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
-> >>  				 struct sk_buff *skb)
-> >>  {
-> >> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
-> >>  	struct j1939_priv *priv = session->priv;
-> >>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
-> >>  	struct sk_buff *se_skb = NULL;
-> >> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
-> >>  
-> >>  	skcb = j1939_skb_to_cb(skb);
-> >>  	dat = skb->data;
-> >> -	if (skb->len <= 1)
-> >> +	if (skb->len != 8) {
-> >>  		/* makes no sense */
-> >> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
-> >>  		goto out_session_cancel;
-> > 
-> > I think this is a situation of
-> > "be strict on what you send, be tolerant on what you receive".
-> > 
-> > Did you find a technical reason to abort a session because the last frame didn't
-> > bring overhead that you don't use?
-> 
-> No technical reason. The only reason is that SAE-J1939-82 requires responder
-> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
+Rob Herring <robh@kernel.org> writes:
+> Replace open coded parsing of CPU nodes' 'reg' property with
+> of_get_cpu_hwid().
+>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  arch/powerpc/kernel/smp.c | 7 +------
+>  1 file changed, 1 insertion(+), 6 deletions(-)
+>
+> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
+> index 9cc7d3dbf439..d96b0e361a73 100644
+> --- a/arch/powerpc/kernel/smp.c
+> +++ b/arch/powerpc/kernel/smp.c
+> @@ -1313,18 +1313,13 @@ int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+>  int cpu_to_core_id(int cpu)
+>  {
+>  	struct device_node *np;
+> -	const __be32 *reg;
+>  	int id = -1;
+>  
+>  	np = of_get_cpu_node(cpu, NULL);
+>  	if (!np)
+>  		goto out;
+>  
+> -	reg = of_get_property(np, "reg", NULL);
+> -	if (!reg)
+> -		goto out;
+> -
+> -	id = be32_to_cpup(reg);
+> +	id = of_get_cpu_hwid(np, 0);
+>  out:
+>  	of_node_put(np);
+>  	return id;
 
-Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
-TP.DT data packets are not correct size" ... "Verify DUT discards the
-BAM transport if any TP.DT data packet has less than 8 bytes"?
+This looks OK to me.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+All the systems I can find have a /cpus/#address-cells of 1, so the
+change to use of_n_addr_cells() in of_get_cpu_hwid() should be fine.
+
+I booted it on a bunch of systems with no issues.
+
+Acked-by: Michael Ellerman <mpe@ellerman.id.au>
+
+cheers
