@@ -2,129 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7697426201
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A90426203
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhJHB2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 21:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229955AbhJHB2k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:28:40 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE10C061570
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 18:26:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id w14so5142143pll.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 18:26:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pJpdSjWQ9J57N/lwk0QG5s7Kp9DIqFcdVWHLvvYpJjI=;
-        b=s+MMrKGNGrHx6bfFOUqPVOd5XD+gv5OM/LYiNgY6bbTSNhbQnxrQxAtjMVMo4yOXLk
-         xcm1nQK4WnIakev01IJ3xAi3TfIiJhXioq85IKrwOraUw/MRHLJAwvPLS+tJsnwtPoii
-         2lzDV8nfm69rq+LDi7d6jbmo+qWmqZ6efgIm7b23ZDi7BnOQJIJdJHURPLUtNd++IefB
-         jk5Ix9vRfUWwQr6kEJuJuFlqHiQvrQQE+jjCjZS96nPCR/lLSTIzEzdRZ+/UYyLkrQ5P
-         0pi81mRSl+pbqNRn/5xupNOcKOUEktMaNvJGzFGDb7oo7BnWam5kDsiwkoSguzvtSmoq
-         zbJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=pJpdSjWQ9J57N/lwk0QG5s7Kp9DIqFcdVWHLvvYpJjI=;
-        b=CniIyCeb/qX0VhHhu735RgCbQkv4yqpMxmCgcxMFSwCfgH2cjtASNLtH31Y4xOUbjV
-         qVuCdI2j4fk94oROMXJxKUG6K7VLFnI0/ZxlFIjTzuZR3V/lO9tpox3sxQfbbssBf/GB
-         6XC2C4w9YZ/6NHbAcWLODlQ/fQwsdbl9V5DwVse1beh1Pc3p01Nt84i5Gj5MD6SU03eG
-         gHgyiDjGJL1JZ1F/s4M+tUh+z7/OKgYoaTju66U8BNVhUWRjkvUVLlOerXCGiBzT1trh
-         OiIG7c4UGifmxCu4wSgvqHC+A6Cvsm/T0YuQbwBUwmXpQBH9UJRXfHT+OOjBMVN5r1Zu
-         SVyw==
-X-Gm-Message-State: AOAM532miz5JFvJN4IpV+81etNFums7AYmZbP4dRJHmLZKc8rNqFr/Zu
-        M3hPWr+gc7J+pR0qe0xmhYguH5Z1G6mymg==
-X-Google-Smtp-Source: ABdhPJzZ9dgVXzRUrfgOj4y/IRYM+8rBocqvbuvdJzKL3LpgbfM2wLjbp9eqPdRWxci8d3kehbgMWA==
-X-Received: by 2002:a17:90a:62ca:: with SMTP id k10mr8475031pjs.38.1633656405198;
-        Thu, 07 Oct 2021 18:26:45 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x9sm9478349pjp.50.2021.10.07.18.26.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 18:26:44 -0700 (PDT)
-Date:   Thu, 07 Oct 2021 18:26:44 -0700 (PDT)
-X-Google-Original-Date: Thu, 07 Oct 2021 18:26:33 PDT (-0700)
-Subject:     Re: [PATCH v4 0/3] riscv: optimized mem* functions
-In-Reply-To: <20210919192104.98592-1-mcroce@linux.microsoft.com>
-CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, Atish Patra <Atish.Patra@wdc.com>,
-        kernel@esmil.dk, akira.tsukamoto@gmail.com, drew@beagleboard.org,
-        bmeng.cn@gmail.com, David.Laight@aculab.com, guoren@kernel.org,
-        Christoph Hellwig <hch@lst.de>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mcroce@linux.microsoft.com
-Message-ID: <mhng-1ef62a9c-06e5-43cf-a4ec-8c18111e79d3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
+        id S231373AbhJHBaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 21:30:15 -0400
+Received: from mga09.intel.com ([134.134.136.24]:37803 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhJHBaO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 21:30:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226311061"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="226311061"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 18:28:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="439750605"
+Received: from rongch2-mobl.ccr.corp.intel.com (HELO [10.249.172.35]) ([10.249.172.35])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 18:27:59 -0700
+Subject: Re: [kbuild-all] Re: [peterz-queue:sched/cleanup 38/40]
+ kernel/irq_work.c:44:6: warning: no previous prototype for function
+ 'irq_work_single'
+To:     Peter Zijlstra <peterz@infradead.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, yujie.liu@intel.com
+References: <202110071515.2ivww4qz-lkp@intel.com>
+ <20211007074843.GO174703@worktop.programming.kicks-ass.net>
+From:   "Chen, Rong A" <rong.a.chen@intel.com>
+Message-ID: <aa767320-ef44-3d04-e7b2-dd7bf5620595@intel.com>
+Date:   Fri, 8 Oct 2021 09:27:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20211007074843.GO174703@worktop.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 19 Sep 2021 12:21:01 PDT (-0700), mcroce@linux.microsoft.com wrote:
-> From: Matteo Croce <mcroce@microsoft.com>
->
-> Replace the assembly mem{cpy,move,set} with C equivalent.
->
-> Try to access RAM with the largest bit width possible, but without
-> doing unaligned accesses.
->
-> A further improvement could be to use multiple read and writes as the
-> assembly version was trying to do.
->
-> Tested on a BeagleV Starlight with a SiFive U74 core, where the
-> improvement is noticeable.
->
-> v3 -> v4:
-> - incorporate changes from proposed generic version:
->   https://lore.kernel.org/lkml/20210617152754.17960-1-mcroce@linux.microsoft.com/
->
-> v2 -> v3:
-> - alias mem* to __mem* and not viceversa
-> - use __alias instead of a tail call
->
-> v1 -> v2:
-> - reduce the threshold from 64 to 16 bytes
-> - fix KASAN build
-> - optimize memset
->
-> Matteo Croce (3):
->   riscv: optimized memcpy
->   riscv: optimized memmove
->   riscv: optimized memset
->
->  arch/riscv/include/asm/string.h |  18 ++--
->  arch/riscv/kernel/Makefile      |   1 -
->  arch/riscv/kernel/riscv_ksyms.c |  17 ----
->  arch/riscv/lib/Makefile         |   4 +-
->  arch/riscv/lib/memcpy.S         | 108 ----------------------
->  arch/riscv/lib/memmove.S        |  64 -------------
->  arch/riscv/lib/memset.S         | 113 -----------------------
->  arch/riscv/lib/string.c         | 154 ++++++++++++++++++++++++++++++++
->  8 files changed, 164 insertions(+), 315 deletions(-)
->  delete mode 100644 arch/riscv/kernel/riscv_ksyms.c
->  delete mode 100644 arch/riscv/lib/memcpy.S
->  delete mode 100644 arch/riscv/lib/memmove.S
->  delete mode 100644 arch/riscv/lib/memset.S
->  create mode 100644 arch/riscv/lib/string.c
 
-Thanks.  These generally look good, but they're failing to build for me.  
-I'm getting errors along the lines of
 
-    arch/riscv/lib/string.c:89:7: error: inlining failed in call to ‘always_inline’ ‘memcpy’: function body can be overwritten at link time
-       89 | void *memcpy(void *dest, const void *src, size_t count) __weak __alias(__memcpy);      |       ^~~~~~
-    arch/riscv/lib/string.c:99:10: note: called from here
-       99 |   return memcpy(dest, src, count);
-          |          ^~~~~~~~~~~~~~~~~~~~~~~~
+On 10/7/2021 3:48 PM, Peter Zijlstra wrote:
+> 
+> This mail has dodgy headers:
+> 
+> To: unlisted-recipients: no To-header on input <;
+> 
+> Is the robot sick?
 
-I'm still a bit behind on email so I'm going to keep going through 
-patches, but if there's no v5 by the time I get back here then I'll take 
-a look.
+Hi Peterz,
+
+This warning is from W=1 option, so the bot didn't send this report to
+your mail address which looks like there's a wrong "To:", we'll stop
+sending such reports next time.
+
+Best Regards,
+Rong Chen
