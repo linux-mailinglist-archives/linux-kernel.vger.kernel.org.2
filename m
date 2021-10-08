@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D69426356
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60CC0426358
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242815AbhJHDxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:53:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhJHDxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:53:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6889A60462;
-        Fri,  8 Oct 2021 03:51:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633665097;
-        bh=pKR3YtBNKGES2/NNydGS0iU1J2x9MVTJs7GYv4ymaF8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=mkgm32nmpaVyGhvTW9KHxNHXqLf9KO5cN9OsiRZRAbt36Vp9Na9xuJW3qnNQUfPbV
-         n+g/cx+5vBrarRhHlYqso6bCxRCVnR1NRTBXvJJazXUHuU1hdzvFZK15Zr6kGiJbDQ
-         iPVeGjQhbDtMKGIgV9L6FVQ58Lc84hXkhjN5Yik6hlhlS9/S3BBihDsapZPFzvD+I3
-         VuEH9ZjAj6RWuTYfVNzh01ZbAxnsvUsiFhhcCrzD483WvnLiygwnuS4X4A2sZQ1c2j
-         o+FPguVAa0WoB+vBm0IOG19r8C3JwxR/OZNC4WyrRUhJYzobQ3DDPwNjRoiPzHT37I
-         DXz6dexfYFe+g==
-Content-Type: text/plain; charset="utf-8"
+        id S242832AbhJHDyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:54:45 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:24176 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229717AbhJHDyn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:54:43 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQZ442HyFz1DHXS;
+        Fri,  8 Oct 2021 11:51:16 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 11:52:46 +0800
+Subject: Re: [PATCH -next v2 4/6] ext4: avoid to re-read mmp check data get
+ from page cache
+To:     Jan Kara <jack@suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-5-yebin10@huawei.com>
+ <20211007124422.GI12712@quack2.suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <615FC08E.3060301@huawei.com>
+Date:   Fri, 8 Oct 2021 11:52:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210923132046.1860549-3-claudiu.beznea@microchip.com>
-References: <20210923132046.1860549-1-claudiu.beznea@microchip.com> <20210923132046.1860549-3-claudiu.beznea@microchip.com>
-Subject: Re: [PATCH v4 02/17] clk: at91: pmc: execute suspend/resume only for backup mode
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
-        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
-        mturquette@baylibre.com, nicolas.ferre@microchip.com
-Date:   Thu, 07 Oct 2021 20:51:36 -0700
-Message-ID: <163366509609.2041162.16407625879723979586@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <20211007124422.GI12712@quack2.suse.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Claudiu Beznea (2021-09-23 06:20:31)
-> Before going to backup mode architecture specific PM code sets the first
-> word in securam (file arch/arm/mach-at91/pm.c, function at91_pm_begin()).
-> Thus take this into account when suspending/resuming clocks. This will
-> avoid executing unnecessary instructions when suspending to non backup
-> modes. Also this commit changed the postcore_initcall() with
-> subsys_initcall() to be able to execute of_find_compatible_node() since
-> this was not available at the moment of postcore_initcall(). This should
-> not alter the tcb_clksrc since the changes are related to clocks
-> suspend/resume procedure that will be executed at the user space request,
-> thus long ago after subsys_initcall().
 
-Is the comment still relevant though?
 
->=20
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> ---
-> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-> index b2806946a77a..58e9c088cb22 100644
-> --- a/drivers/clk/at91/pmc.c
-> +++ b/drivers/clk/at91/pmc.c
-> @@ -110,13 +112,35 @@ struct pmc_data *pmc_data_allocate(unsigned int nco=
-re, unsigned int nsystem,
->  }
-> =20
->  #ifdef CONFIG_PM
-> +
-> +/* Address in SECURAM that say if we suspend to backup mode. */
-> +static void __iomem *at91_pmc_backup_suspend;
-> +
->  static int at91_pmc_suspend(void)
->  {
-> +       unsigned int backup;
-> +
-> +       if (!at91_pmc_backup_suspend)
-> +               return 0;
-> +
-> +       backup =3D *(unsigned int *)at91_pmc_backup_suspend;
+On 2021/10/7 20:44, Jan Kara wrote:
+> On Sat 11-09-21 17:00:57, Ye Bin wrote:
+>> As call read_mmp_block pass bh_check which value is NULL, then call
+>> sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
+>>   which also is uptodate. Lead to compare the same data.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> This looks good, except that read_mmp_block() also releases bh it is passed
+> in case of error. So it can free buffer head which is still referenced from
+> EXT4_SB(sb)->s_mmp_bh and cause use-after-free issues.
+>
+> I guess I would just get rid of sb_getblk() in read_mmp_block() and always
+> expect valid bh passed. The only place that passes NULL bh after this
+> patch is one case in ext4_multi_mount_protect() and that can call
+> sb_getblk() on its own. That way we can also simplify read_mmp_block()
+> prototype to:
+>
+> static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
+>
+> 								Honza
+> Yeah, I will refactor 'read_mmp_block'.
+>> ---
+>>   fs/ext4/mmp.c | 17 ++++++-----------
+>>   1 file changed, 6 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+>> index 4433fe7e9e86..007bde3c12b8 100644
+>> --- a/fs/ext4/mmp.c
+>> +++ b/fs/ext4/mmp.c
+>> @@ -213,10 +213,7 @@ static int kmmpd(void *data)
+>>   		 * we need to check if the MMP block is as we write it.
+>>   		 */
+>>   		if (jiffies - last_check_time > mmp_check_interval * HZ) {
+>> -			struct buffer_head *bh_check = NULL;
+>> -			struct mmp_struct *mmp_check;
+>> -
+>> -			retval = read_mmp_block(sb, &bh_check, mmp_block);
+>> +			retval = read_mmp_block(sb, &bh, mmp_block);
+>>   			if (retval) {
+>>   				ext4_error_err(sb, -retval,
+>>   					       "error reading MMP data: %d",
+>> @@ -224,20 +221,18 @@ static int kmmpd(void *data)
+>>   				goto wait_to_exit;
+>>   			}
+>>   
+>> -			mmp_check = (struct mmp_struct *)(bh_check->b_data);
+>> -			if (seq != mmp_check->mmp_seq ||
+>> -			    memcmp(nodename, mmp_check->mmp_nodename,
+>> -				   sizeof(mmp->mmp_nodename))) {
+>> -				dump_mmp_msg(sb, mmp_check,
+>> +			mmp = (struct mmp_struct *)(bh->b_data);
+>> +			if (seq != le32_to_cpu(mmp->mmp_seq) ||
+>> +			    memcmp(nodename, mmp->mmp_nodename,
+>> +				    sizeof(nodename))) {
+>> +				dump_mmp_msg(sb, mmp,
+>>   					     "Error while updating MMP info. "
+>>   					     "The filesystem seems to have been"
+>>   					     " multiply mounted.");
+>>   				ext4_error_err(sb, EBUSY, "abort");
+>> -				put_bh(bh_check);
+>>   				retval = -EBUSY;
+>>   				goto wait_to_exit;
+>>   			}
+>> -			put_bh(bh_check);
+>>   			last_check_time = jiffies;
+>>   		}
+>>   
+>> -- 
+>> 2.31.1
+>>
 
-This will fail sparse. Why are we reading iomem without using iomem
-reading wrapper?
-
-> +       if (!backup)
