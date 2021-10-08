@@ -2,114 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8917426353
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D69426356
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbhJHDvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:51:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28897 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231658AbhJHDvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:51:08 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQYwb3nyHzbmlD;
-        Fri,  8 Oct 2021 11:44:47 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 8 Oct 2021 11:49:11 +0800
-Subject: Re: [PATCH -next v2 6/6] ext4: fix possible store wrong check
- interval value in disk when umount
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-7-yebin10@huawei.com>
- <20211007131207.GJ12712@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <615FBFB6.9030208@huawei.com>
-Date:   Fri, 8 Oct 2021 11:49:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S242815AbhJHDxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33832 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhJHDxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:53:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6889A60462;
+        Fri,  8 Oct 2021 03:51:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633665097;
+        bh=pKR3YtBNKGES2/NNydGS0iU1J2x9MVTJs7GYv4ymaF8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=mkgm32nmpaVyGhvTW9KHxNHXqLf9KO5cN9OsiRZRAbt36Vp9Na9xuJW3qnNQUfPbV
+         n+g/cx+5vBrarRhHlYqso6bCxRCVnR1NRTBXvJJazXUHuU1hdzvFZK15Zr6kGiJbDQ
+         iPVeGjQhbDtMKGIgV9L6FVQ58Lc84hXkhjN5Yik6hlhlS9/S3BBihDsapZPFzvD+I3
+         VuEH9ZjAj6RWuTYfVNzh01ZbAxnsvUsiFhhcCrzD483WvnLiygwnuS4X4A2sZQ1c2j
+         o+FPguVAa0WoB+vBm0IOG19r8C3JwxR/OZNC4WyrRUhJYzobQ3DDPwNjRoiPzHT37I
+         DXz6dexfYFe+g==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211007131207.GJ12712@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210923132046.1860549-3-claudiu.beznea@microchip.com>
+References: <20210923132046.1860549-1-claudiu.beznea@microchip.com> <20210923132046.1860549-3-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v4 02/17] clk: at91: pmc: execute suspend/resume only for backup mode
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        mturquette@baylibre.com, nicolas.ferre@microchip.com
+Date:   Thu, 07 Oct 2021 20:51:36 -0700
+Message-ID: <163366509609.2041162.16407625879723979586@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Claudiu Beznea (2021-09-23 06:20:31)
+> Before going to backup mode architecture specific PM code sets the first
+> word in securam (file arch/arm/mach-at91/pm.c, function at91_pm_begin()).
+> Thus take this into account when suspending/resuming clocks. This will
+> avoid executing unnecessary instructions when suspending to non backup
+> modes. Also this commit changed the postcore_initcall() with
+> subsys_initcall() to be able to execute of_find_compatible_node() since
+> this was not available at the moment of postcore_initcall(). This should
+> not alter the tcb_clksrc since the changes are related to clocks
+> suspend/resume procedure that will be executed at the user space request,
+> thus long ago after subsys_initcall().
 
+Is the comment still relevant though?
 
-On 2021/10/7 21:12, Jan Kara wrote:
-> On Sat 11-09-21 17:00:59, Ye Bin wrote:
->> Test follow steps:
->> 1. mkfs.ext4 /dev/sda -O mmp
->> 2. mount /dev/sda  /mnt
->> 3. wait for about 1 minute
->> 4. umount mnt
->> 5. debugfs /dev/sda
->> 6. dump_mmp
->> 7. fsck.ext4 /dev/sda
->>
->> I found 'check_interval' is range in [5, 10]. And sometime run fsck
->> print "MMP interval is 10 seconds and total wait time is 42 seconds.
->> Please wait...".
->> kmmpd:
->> ...
->> 	if (diff < mmp_update_interval * HZ)
->> 		schedule_timeout_interruptible(mmp_update_interval * HZ - diff);
->> 	 diff = jiffies - last_update_time;
->> ...
->> 	mmp_check_interval = max(min(EXT4_MMP_CHECK_MULT * diff / HZ,
->> 				EXT4_MMP_MAX_CHECK_INTERVAL),
->> 			        EXT4_MMP_MIN_CHECK_INTERVAL);
->> 	mmp->mmp_check_interval = cpu_to_le16(mmp_check_interval);
->> ...
->> We will call ext4_stop_mmpd to stop kmmpd kthread when umount, and
->> schedule_timeout_interruptible will be interrupted, so 'diff' maybe
->> little than mmp_update_interval. Then mmp_check_interval will range
->> in [EXT4_MMP_MAX_CHECK_INTERVAL, EXT4_MMP_CHECK_MULT * diff / HZ].
->> To solve this issue, if 'diff' little then mmp_update_interval * HZ
->> just break loop, don't update check interval.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/ext4/mmp.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->> index a0d47a906faa..f39e1fa0c6db 100644
->> --- a/fs/ext4/mmp.c
->> +++ b/fs/ext4/mmp.c
->> @@ -205,6 +205,14 @@ static int kmmpd(void *data)
->>   			schedule_timeout_interruptible(mmp_update_interval *
->>   						       HZ - diff);
->>   			diff = jiffies - last_update_time;
->> +			/* If 'diff' little 'than mmp_update_interval * HZ', it
->> +			 * means someone call ext4_stop_mmpd to stop kmmpd
->> +			 * kthread. We don't need to update mmp_check_interval
->> +			 * any more, as 'diff' is not exact value.
->> +			 */
->> +			if (unlikely(diff < mmp_update_interval * HZ &&
->> +			    kthread_should_stop()))
->> +				break;
->>   		}
-> So in this case, mmp_check_interval would be EXT4_MMP_MIN_CHECK_INTERVAL. I
-> don't quite understand what the practical problem is - the fsck message?
-> That will happen anytime mmp_check_interval is >= 10 AFAICT and I don't
-> quite see how that is connected to this condition... Can you explain a bit
-> more please?
->
-> 								Honza
-I just think 'mmp_check_interval' is not reflect real check interval, 
-and also sometime run fsck
-print "MMP interval is 10 seconds and total wait time is 42 seconds. 
-Please wait...", but
-sometime not.
+>=20
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
+> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
+> index b2806946a77a..58e9c088cb22 100644
+> --- a/drivers/clk/at91/pmc.c
+> +++ b/drivers/clk/at91/pmc.c
+> @@ -110,13 +112,35 @@ struct pmc_data *pmc_data_allocate(unsigned int nco=
+re, unsigned int nsystem,
+>  }
+> =20
+>  #ifdef CONFIG_PM
+> +
+> +/* Address in SECURAM that say if we suspend to backup mode. */
+> +static void __iomem *at91_pmc_backup_suspend;
+> +
+>  static int at91_pmc_suspend(void)
+>  {
+> +       unsigned int backup;
+> +
+> +       if (!at91_pmc_backup_suspend)
+> +               return 0;
+> +
+> +       backup =3D *(unsigned int *)at91_pmc_backup_suspend;
 
+This will fail sparse. Why are we reading iomem without using iomem
+reading wrapper?
+
+> +       if (!backup)
