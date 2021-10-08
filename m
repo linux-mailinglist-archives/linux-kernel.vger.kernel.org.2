@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A9F426631
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2FA426634
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234538AbhJHIrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229987AbhJHIru (ORCPT
+        id S233155AbhJHItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:49:08 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33464 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229606AbhJHItH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:47:50 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6499C061570;
-        Fri,  8 Oct 2021 01:45:55 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so33551500edv.12;
-        Fri, 08 Oct 2021 01:45:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qbtc42tdcLddddPk4Nl/b0hjJZcICwZrpNrFhchyl3A=;
-        b=VNU1+gt1YxzOTUPAJ/W0KbL8ooIsnJBlW/2qXPFiMmnbWof7EMgjH+aB4lWTgUP3LR
-         28CoAJIgthXfOMx97mZ2OYc5JJzSTq11EscOcp6JZ0t6DFEBcJjG5jSeL53v0b9iXoFk
-         oEY/5JPpAJPWgbGoWIGurqsNgK7XKjtjtuqfKdmeUxNmnZlXv8K8qhFrRIuSD6b939wX
-         YX5CcgYpLx4B6FFUFdKnfNL5ewB+ciUZxCb10EBqQAmKyVC42YXXwNYY0QCTeoZcwhsl
-         HVa8GxIaNwsRULrLhf1WE6wRGaGU+cZrBfuKsFTKTBT8WHzFbae9wC42xxP5SvaTBdL+
-         J96A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qbtc42tdcLddddPk4Nl/b0hjJZcICwZrpNrFhchyl3A=;
-        b=bwnOm8vt6uqROi5N4jQlKjrL8HphxtcEGvedwVIPm6hpzgiCZ+YtZDv5adudCysJYu
-         /6au92u/UFKbcuzAAYKHrJ6cWN0tCRM8n3ROYV8kVQ20o9bf136zbqnTfj6hhoyO0+rs
-         wuiSesBxKLCB6/MYRn7LfxXEI6ed3WNKQ+hJXo+CbCa5fugYpo5S+VW5CyrwzwajtZS+
-         P5pjZGiccsF5FJifL73Sikx6qXnPlt2nAuwn3onV8phxnf1EeBqblMbWWFN4hzIkkwmX
-         1Sodvps9MZBn7hoVO1BSOIvgdDAXxEM9p8PQ3T4DSsHjvG+19u8+YWuFIPvSOkRJRgV5
-         ALag==
-X-Gm-Message-State: AOAM530rDFo0QjO+Yt5yYbkoLje4Woj/E9SFQOYxXDYP45mi9uYh3WMd
-        I3l9MUq6p5E61mKvwXrDiiI=
-X-Google-Smtp-Source: ABdhPJypgP4ryswRLVF5ukX7LG9Tu9NMaJutQfu1nojnjmTqsHUPd8w9OfgRlsfjD2BN4raRqI5lYQ==
-X-Received: by 2002:a17:906:66d5:: with SMTP id k21mr2435901ejp.487.1633682754052;
-        Fri, 08 Oct 2021 01:45:54 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id z19sm662331ejp.97.2021.10.08.01.45.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 01:45:53 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 10:45:51 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net PATCH v2 01/15] drivers: net: phy: at803x: fix resume for
- QCA8327 phy
-Message-ID: <YWAFP/Uf4LPK2oe6@Ansuel-xps.localdomain>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
- <20211008002225.2426-2-ansuelsmth@gmail.com>
- <20211007192304.7a9acabe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 8 Oct 2021 04:49:07 -0400
+X-UUID: 4ce23daccf624484b8db0d0c7f58abee-20211008
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pUWaCMKNXz356vlGNAhNLBmgPI/6yLDLRRv6SApHeKk=;
+        b=SSvR4da6L97hLsH633+rp84rPoV2cy9M97Oqe7lZeVhGoie9GRXamONxE/XVyryGAx68CITjjqYRvk5qykJQZqMFthfGGQhNPTBlYvaUh2XZoqK2kax/n0yswdfNgMRp5o6L9iIleR0OFyj80DJOdHHkjDTihG/PVcUncu9x67E=;
+X-UUID: 4ce23daccf624484b8db0d0c7f58abee-20211008
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 295826952; Fri, 08 Oct 2021 16:47:09 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Fri, 8 Oct 2021 16:47:09 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Oct 2021 16:47:08 +0800
+Message-ID: <1891acec7f5c417f62081a8b10249b265df7ea62.camel@mediatek.com>
+Subject: Re: [PATCH v7 6/7] i2c: mediatek: Isolate speed setting via dts for
+ special devices
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
+        <caiyu.chen@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
+        <yuhan.wei@mediatek.com>
+Date:   Fri, 8 Oct 2021 16:47:11 +0800
+In-Reply-To: <YVf+83LdUEPjoLdI@kunai>
+References: <20210917101416.20760-1-kewei.xu@mediatek.com>
+         <20210917101416.20760-7-kewei.xu@mediatek.com> <YVf+83LdUEPjoLdI@kunai>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007192304.7a9acabe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 07:23:04PM -0700, Jakub Kicinski wrote:
-> On Fri,  8 Oct 2021 02:22:11 +0200 Ansuel Smith wrote:
-> > From Documentation phy resume triggers phy reset and restart
-> > auto-negotiation. Add a dedicated function to wait reset to finish as
-> > it was notice a regression where port sometime are not reliable after a
-> > suspend/resume session. The reset wait logic is copied from phy_poll_reset.
-> > Add dedicated suspend function to use genphy_suspend only with QCA8337
-> > phy and set only additional debug settings for QCA8327. With more test
-> > it was reported that QCA8327 doesn't proprely support this mode and
-> > using this cause the unreliability of the switch ports, especially the
-> > malfunction of the port0.
-> > 
-> > Fixes: 52a6cdbe43a3 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
-> 
-> Strange, checkpatch catches the wrong hash being used, but the
-> verify_fixes script doesn't. Did you mean:
-> 
-> Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
-> 
-> Or is 52a6cdbe43a3 the correct commit hash? Same question for patch 2.
-> 
-> 
-> The fixes have to be a _separate_ series.
+T24gU2F0LCAyMDIxLTEwLTAyIGF0IDA4OjQwICswMjAwLCBXb2xmcmFtIFNhbmcgd3JvdGU6DQo+
+IE9uIEZyaSwgU2VwIDE3LCAyMDIxIGF0IDA2OjE0OjE1UE0gKzA4MDAsIEtld2VpIFh1IHdyb3Rl
+Og0KPiA+IEluIHRoZSBjb21taXQgYmU1Y2UwZTk3Y2M3ICgiaTJjOiBtZWRpYXRlazogQWRkIGky
+YyBhYy10aW1pbmcNCj4gPiBhZGp1c3QNCj4gPiBzdXBwb3J0IiksIHRoZSBJMkMgdGltaW5nIGNh
+bGN1bGF0aW9uIGhhcyBiZWVuIHJldmlzZWQgdG8gc3VwcG9ydA0KPiA+IGFjLXRpbWluZyBhZGp1
+c3RtZW50LCBob3dldmVyIHRoYXQgd2lsbCBicmVhayBvbiBzb21lIEkyQw0KPiA+IGNvbXBvbmVu
+dHMuDQo+ID4gQXMgYSByZXN1bHQgd2Ugd2FudCB0byBpbnRyb2R1Y2UgYSBuZXcgc2V0dGluZyAi
+ZGVmYXVsdC1hZGp1c3QtDQo+ID4gdGltaW5nIg0KPiA+IHNvIHRob3NlIGNvbXBvbmVudHMgY2Fu
+IGNob29zZSB0byB1c2UgdGhlIG9sZCAoZGVmYXVsdCkgdGltaW5nDQo+ID4gYWxnb3JpdGhtLg0K
+PiANCj4gV2h5IGNhbid0IHRoZSBuZXcgY2FsY3VsYXRpb24gYmUgdXBkYXRlZCBpbiBhIHdheSB0
+aGF0IGl0IHdvcmtzIGZvcg0KPiBhbGwNCj4gSTJDIGNvbXBvbmVudHM/DQo+IA0KSGksIEluIHRo
+ZSBjb21taXQgYmU1Y2UwZTk3Y2M3ICgiaTJjOiBtZWRpYXRlazogQWRkIGkyYyBhYy10aW1pbmcN
+CmFkanVzdCBzdXBwb3J0IiksIHRoZSBJMkMgdGltaW5nIGNhbGN1bGF0aW9uIGhhcyBiZWVuIHJl
+dmlzZWQgdG8NCnN1cHBvcnQgYWMtdGltaW5nIGFkanVzdG1lbnQuQnV0IGluIG91ciBkZXNpZ24s
+IGl0IHdpbGwgbWFrZQ0KdFNVLFNUQS90SEQsU1RBL3RTVSxTVE8gc2hvcnRlciB3aGVuIHRoZSBz
+bGF2ZSBkZXZpY2UgaGF2ZSBjbG9jay0NCnN0cmV0Y2hpbmcgZmVhdHVyZS4gVGhlbiB3ZSB1cGxv
+YWQgdGhlIGNvbW1pdCBhODBmMjQ5NDVmY2YgKCJpMmM6DQptZWRpYXRlazogVXNlIHNjbF9pbnRf
+ZGVsYXlfbnMgdG8gY29tcGVuc2F0ZSBjbG9jay1zdHJldGNoaW5nIikgdG8NCnN1cHBvcnQgYWRq
+dXN0aW5nIHRTVSxTVEEvdEhELFNUQS90U1UsU1RPIHdoZW4gdGhlIHNsYXZlIGRldmljZSBjbG9j
+ay0NCnN0cmV0Y2hpbmcuIEJ1dCBpZiB0aGUgc2xhdmUgZGV2aWNlIHN0cmV0Y2ggdGhlIFNDTCBs
+aW5lIGZvciB0b28gbG9uZw0KdGltZSwgb3VyIGRlc2lnbiBzdGlsbCBjYW5ub3QgbWFrZSB0U1Us
+U1RBL3RIRCxTVEEvdFNVLFNUTyBtZWV0IHNwZWMuDQpIb3dldmVyIGluIHRoZSBvbGQgKGRlZmF1
+bHQpIHRpbWluZyBhbGdvcml0aG0gYmVmb3JlIHRoZSBjb21taXQNCmJlNWNlMGU5N2NjNyAoImky
+YzogbWVkaWF0ZWs6IEFkZCBpMmMgYWMtdGltaW5nIGFkanVzdCBzdXBwb3J0IiksDQp0U1UsU1RB
+L3RIRCxTVEEvdFNVLFNUTyBjYW4gbWVldCBzcGVjLiBTbyB3ZSB3YW50IHRvIGRlZmluZSBhIG5l
+dw0Kc2V0dGluZyAiZGVmYXVsdC1hZGp1c3QtdGltaW5nIiBmb3IgdXNpbmcgdGhlIG9sZCAoZGVm
+YXVsdCkgdGltaW5nDQphbGdvcml0aG0uIFRoYW5rc34NCg==
 
-Hi,
-this series contains changes that depends on the fixes. (the 4th patch
-that rename the define is based on this 2 patch) How to handle that?
-I know it was wrong to put net and net-next patch in the same series but
-I don't know how to handle this strange situation. Any hint about that?
-
-About the wrong hash, yes I wrongly took the hash from my local branch.
-
--- 
-	Ansuel
