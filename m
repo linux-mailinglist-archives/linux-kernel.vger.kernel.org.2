@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E624D42694F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0ED34269B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241731AbhJHLgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59312 "EHLO mail.kernel.org"
+        id S240558AbhJHLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:40:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241617AbhJHLdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:33:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9961B6103C;
-        Fri,  8 Oct 2021 11:31:04 +0000 (UTC)
+        id S240716AbhJHLhy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:37:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1DEE6613E6;
+        Fri,  8 Oct 2021 11:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692665;
-        bh=Hv6zhBgHG460Lq2ZwpA4zetkrNeCBkz0ebL3kw8dHp4=;
+        s=korg; t=1633692760;
+        bh=9tzfcVt12E3AJYpIaInQ2Tfai7WKL1gsFLA5d12jAmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nX70TfAbNxD2UIDVHwwc2vAcY9GJrN96DZeje8ns8b0a0ejmb1lG7slMShHKTUey1
-         Or/YM/JwV01LpxK+XckPlTlKpq6vqKU+J1k/vvI791eGKRMtqdmssezr+MEhxf1NOq
-         e05s89dmZIWWd7/rvHAjBQsyJL3if5YHo91ANj5I=
+        b=NWTt6sXR7rKhrCQvB5AGcTk4CfFtnmUy2YgqLU+YururtlMRyfNfueoG5m0vQfU72
+         uU4RjYruibqDIYAID/lnWBcDdievlnW0F5NdVsU25GsZxZz+7cS5Vv9ljIfEFIc/Fa
+         LLwQe75liMbuF5rwNrhKwPcLSFjjXXnAc+sSFRBI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/29] thermal/drivers/tsens: Fix wrong check for tzd in irq handlers
-Date:   Fri,  8 Oct 2021 13:28:06 +0200
-Message-Id: <20211008112717.600045003@linuxfoundation.org>
+Subject: [PATCH 5.14 31/48] thermal/drivers/tsens: Fix wrong check for tzd in irq handlers
+Date:   Fri,  8 Oct 2021 13:28:07 +0200
+Message-Id: <20211008112721.059846819@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,10 +61,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-index 3c4c0516e58a..cb4f4b522446 100644
+index 4c7ebd1d3f9c..b1162e566a70 100644
 --- a/drivers/thermal/qcom/tsens.c
 +++ b/drivers/thermal/qcom/tsens.c
-@@ -415,7 +415,7 @@ static irqreturn_t tsens_critical_irq_thread(int irq, void *data)
+@@ -417,7 +417,7 @@ static irqreturn_t tsens_critical_irq_thread(int irq, void *data)
  		const struct tsens_sensor *s = &priv->sensor[i];
  		u32 hw_id = s->hw_id;
  
@@ -73,7 +73,7 @@ index 3c4c0516e58a..cb4f4b522446 100644
  			continue;
  		if (!tsens_threshold_violated(priv, hw_id, &d))
  			continue;
-@@ -465,7 +465,7 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
+@@ -467,7 +467,7 @@ static irqreturn_t tsens_irq_thread(int irq, void *data)
  		const struct tsens_sensor *s = &priv->sensor[i];
  		u32 hw_id = s->hw_id;
  
