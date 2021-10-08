@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5594F426733
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D45CB426736
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238784AbhJHJzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhJHJzK (ORCPT
+        id S239083AbhJHJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:56:32 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:51076
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238329AbhJHJ4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:55:10 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD30C061570;
-        Fri,  8 Oct 2021 02:53:14 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id r18so28018991wrg.6;
-        Fri, 08 Oct 2021 02:53:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uj9+OxfyZUIYBVS3coN0oP8CwB3d5MCS18cjbvWyJdY=;
-        b=GBeqpTAjEQSxGx0TjU9ypgASF+ct1wnX9YFTj/N5nOPvBogbGRd4P0Zxf+NSRk6+DU
-         LTIJxpp3+oQ2y2i8lah9hUuieF6SLyVnxFVEqRCxNCKVmOH9+BRFv85qj5KlvJ3Bw2iV
-         edk251OprIdUsJpx1g25RMyW73W7TB8IQUwoxRdqtnCdE/JR4WJIasfvBQ/VJRN1QdIU
-         bHFJ9vcc/r7BtgyzTLOeu4dNM49WVpJ8G/J+gHr+tI2hV952iXteEviE1koke2d79N6Z
-         nAhb5ILnQ1gbjKwNhGD7CseaaO58MPplf1yh/eNrSrpAqe89D227MchZj7t1AJDeB17W
-         GHAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uj9+OxfyZUIYBVS3coN0oP8CwB3d5MCS18cjbvWyJdY=;
-        b=xmuvkXtxI3O4g5hL30nGai6kejxpzKQV8GjoPAIsp5oAu/E2oavHnwovAgiUDvCl8q
-         +MdyIuGSa3ORYx/D4sb0i6z9Y4slXx9AcoCZiEsaKUlzeJy2YVqkP2QuBl9ZsBh2clm6
-         YPW2T5iRS8bF2FJqG5Xgqa38+1LoB4Z6IuqfqyKJLRrdRtZzMbFp0B9g4wDsYlsRGe16
-         6AoU8N7VX3CdnQlSfsEZVTjmFMvRw9J+G23uGy/wzrR+TVHBHhPiDZ5TJ7gLw/K7hj5j
-         FpCtqRMz10ZM/x3X4xQP+kCsGwGQGo15mVthBSI2UyuLQGkjIXAZTvydyCJpS+9etPtm
-         4ePA==
-X-Gm-Message-State: AOAM531KuBTswsh67o27Gk8kQnNPWUfM4O8Gmlf0i3Tr3p09cb2wfRvt
-        /HEksievedmjbZa27BRui2OgycXdVtE=
-X-Google-Smtp-Source: ABdhPJzUv/jKssKsIvUOnoogDe7MYO7BM/G2x1Se2RLTCu7pekj+1ysr+08gp7EhM5qQNRMCyyHrEg==
-X-Received: by 2002:a1c:a401:: with SMTP id n1mr2357130wme.162.1633686793204;
-        Fri, 08 Oct 2021 02:53:13 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id z8sm707670wrq.16.2021.10.08.02.53.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Oct 2021 02:53:12 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] MIPS: asm: pci: define arch-specific 'pci_remap_iospace()' dependent on 'CONFIG_PCI_DRIVERS_GENERIC'
-Date:   Fri,  8 Oct 2021 11:53:11 +0200
-Message-Id: <20211008095311.26475-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Fri, 8 Oct 2021 05:56:31 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id DC8C940007;
+        Fri,  8 Oct 2021 09:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633686870;
+        bh=tqDPxyLPKVPs4yYbJQLMZF/t1CIh6U8zbhA/lGXkiCY=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=kgsLUxAqCevBQM563UQkgq9iuUw3Cw40WCLce7KhIz3s2zgWPuTXia2G0HKjchrWM
+         42Mjy9/1QZPAzQWzzqs+Qgv/UGEbyDxhD1IaqWZbg+SKsE3WLWQU2CxE1mOxbiqu90
+         SRUC3vFiOR8uY+bQAJbKoIyqJOLy5m8bn/hTXBOHYTITfVVqiBt430xWFvQHuDZCGG
+         o9pqGu/X4cVHU1XqHNb9WouSEeAXLntit7xd2vIWlIjA8Dgr6E62KPf1757EmdEW8Z
+         5dFpVpSPxVpOlvXvoC65mRjAj00MgHQ4cQY53ZiQ+Waf7QxiWIkzQAsa8r+su63cPC
+         hoWf58UOE1IOQ==
+From:   Colin King <colin.king@canonical.com>
+To:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2][next] ASoC: rockchip: i2s-tdm: Remove call to rockchip_i2s_ch_to_io
+Date:   Fri,  8 Oct 2021 10:54:29 +0100
+Message-Id: <20211008095430.62680-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some MIPS defconfigs that don't define 'CONFIG_PCI_DRIVERS_GENERIC' but
-define 'CONFIG_PCI_DRIVERS_LEGACY' or none of them, can fail when they are
-built since definition for 'pci_remap_iospace' is being done in include
-file 'arch/mips/include/asm/pci.h' and the specific function implemented
-in 'arch/mips/pci/pci-generic.c'. MIPS PCI drivers that don't use generic
-PCI core APIs don't really need 'pci_remap_iospace' to be defined at all.
-Hence, change definition for 'pci_remap_iospace' to be dependent on the
-preprocessor 'CONFIG_PCI_DRIVERS_GENERIC' definition to avoid possible
-build problems.
+From: Colin Ian King <colin.king@canonical.com>
 
-CC: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Fixes: 9f76779f2418 ("MIPS: implement architecture-specific 'pci_remap_iospace()'")
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+The call to rockchip_i2s_ch_to_io is only useful for its return
+value which is not being used. The function call also has no
+side effects, the call is effectively useless and can be removed.
+
+Addresses-Coverity: ("Useless call")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-Hi Greg, Thomas, Stephen,
+ sound/soc/rockchip/rockchip_i2s_tdm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-I guess this should also go through the staging-tree.
-
-Thanks in advance for your time.
-
-Best regards,
-    Sergio Paracuellos
-
- arch/mips/include/asm/pci.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 35270984a5f0..421231f55935 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -20,7 +20,9 @@
- #include <linux/list.h>
- #include <linux/of.h>
+diff --git a/sound/soc/rockchip/rockchip_i2s_tdm.c b/sound/soc/rockchip/rockchip_i2s_tdm.c
+index b08b15071993..cc5a2f9d3948 100644
+--- a/sound/soc/rockchip/rockchip_i2s_tdm.c
++++ b/sound/soc/rockchip/rockchip_i2s_tdm.c
+@@ -848,8 +848,6 @@ static int rockchip_i2s_io_multiplex(struct snd_pcm_substream *substream,
+ 				to_ch_num(val), usable_chs);
+ 			return -EINVAL;
+ 		}
+-
+-		rockchip_i2s_ch_to_io(val, false);
+ 	}
  
-+#ifdef CONFIG_PCI_DRIVERS_GENERIC
- #define pci_remap_iospace pci_remap_iospace
-+#endif
- 
- #ifdef CONFIG_PCI_DRIVERS_LEGACY
- 
+ 	val <<= i2s_tdm->soc_data->grf_shift;
 -- 
-2.33.0
+2.32.0
 
