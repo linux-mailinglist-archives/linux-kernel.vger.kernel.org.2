@@ -2,104 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B01426E85
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08821426E88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhJHQTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:19:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29973 "EHLO
+        id S229756AbhJHQVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:21:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41315 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229606AbhJHQTV (ORCPT
+        by vger.kernel.org with ESMTP id S229534AbhJHQVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:19:21 -0400
+        Fri, 8 Oct 2021 12:21:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633709845;
+        s=mimecast20190719; t=1633709975;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=F8CaDxS3ZxSSQU+iGhFbf89kwNPmHoSD1YG/GilwFS8=;
-        b=MPJCIuBfRJFxdEeSKix14lm8blSJ1fkUKXjPbImU3zJQ/LOSzh4PkcXMmTrbEfLdvKMPm5
-        ZeCZQV4k76CBZG6vXAZmw+JrDj039m9TDvAlKJ9rau0rqWSeUxTlgfX933R+Qyn4wi2bsg
-        c1dTUUX789bt86HuspIGIpYD5a3Ln3c=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-mfVdrCHMMbCg9ui-ovEBxg-1; Fri, 08 Oct 2021 12:17:14 -0400
-X-MC-Unique: mfVdrCHMMbCg9ui-ovEBxg-1
-Received: by mail-qk1-f198.google.com with SMTP id i16-20020a05620a249000b004558dcb5663so8622050qkn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:17:14 -0700 (PDT)
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=3cEPXatX2ZSJNov0QZ84u3WSw59F+CiwA/vBLiu9m6E=;
+        b=hOxHtK1dCqRFThV4wDE5SWvTn3+3ID2aaS2RnY0IBxxMMBHZcSR/Q902tGaorHDXy9X47k
+        lWUDbc7AUv1LtTWalBsSS4DDMXDMOIwIvk+dM3oMOKy1Nk+zrOt/UbmA3L8jqSQm5KtjeH
+        CHtOou1Miq91L3/s4/A6W3HX2tP2Sbc=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-09GfxOdEPAOLZFsmALdGQA-1; Fri, 08 Oct 2021 12:19:34 -0400
+X-MC-Unique: 09GfxOdEPAOLZFsmALdGQA-1
+Received: by mail-wr1-f70.google.com with SMTP id o2-20020a5d4a82000000b00160c6b7622aso7632088wrq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:19:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=F8CaDxS3ZxSSQU+iGhFbf89kwNPmHoSD1YG/GilwFS8=;
-        b=b9KGrPNggQ4WkbrX2+/zXQnrcG7T9eoF+9HQok3Y033QBkW0bEa6lAJS76WITksJk6
-         1evBddnigjFGWK+qSiIaxoMIkRwj+UvXdgoRyv5bqXIg5hv5AwYT5QT73WyqNmMjW9ZQ
-         Vsl7IckAmryQiXbTvxEBJltq39p92L7gBlyYeUh73dBmiZMiQp1s+hnDw+2IOB17uO/j
-         /n3RmOGowL8Mwq6gN6EPqf65vIKYEsBBSyaVtJaspSjQpExrL9TitT0xCyUOCG+pvZmF
-         AazsigM8XAcwO6PmU64n6qwUkmnG2RAxOabWW4PyfEKfR/t/OALfV+8XRyzff/U2VnY8
-         2ugA==
-X-Gm-Message-State: AOAM532fC9s5FcxTeFa92UPapBYI9fDELRr/j196W1PfAnCDEsK7iGgm
-        x0lcDkYZ5gii36MCOoqVmm7rb0+aVa3Y1020WdLvxvBLan5YLj9RPeUEBMvwoYu1Yq4d5noBshr
-        4TnULMLY2txkfXWJ8XNIBDQYJ
-X-Received: by 2002:a05:6214:294:: with SMTP id l20mr9523303qvv.30.1633709834203;
-        Fri, 08 Oct 2021 09:17:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw6ExCuEMbasm/gLwW//wQY0/4UCLYUOl4ssvLqUvFOcMjFiAJy1vmJaiafPCJcjnPk3KtghQ==
-X-Received: by 2002:a05:6214:294:: with SMTP id l20mr9523255qvv.30.1633709834017;
-        Fri, 08 Oct 2021 09:17:14 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::48])
-        by smtp.gmail.com with ESMTPSA id p19sm2730266qtk.20.2021.10.08.09.17.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cEPXatX2ZSJNov0QZ84u3WSw59F+CiwA/vBLiu9m6E=;
+        b=FrZHyRCNm5i/595rmxjF+k+/bouStBS/6uQyz1ytU922n1dk1gmjI7kzQ0Igqxcx86
+         C67IgdLiS8vhx3yJTVur+jBOHk6WAE3GSgDLL4XVQl9hoAokq7nNsb8na6IKehXsQ18a
+         C99T650fHnjoW3QS1v/bNDI2BdNNzV38332qQcmd8gb1nFWexuWnjBAy6XpREC2ATD/g
+         zZl8gWUa6pc2bLe2rC7hfDDWCc2VkP3ql1nvIrgMQgQ4aW+AgKYaKXSmd631oMfZ/+NM
+         x6p9lfDhzBgn/AxvRz6UsMDBGHYvU0ndt7LZz1ZJH+ZpC259/WtygCEvSUzMIuiuoobG
+         QViA==
+X-Gm-Message-State: AOAM531XTbkxZhQDv/pDsKUjAexLkX0JL+DiXie1UCHUOp/Lub/dVb6Z
+        rjSY9tXtA33KoEtqZGcO3owy2gbrrthxGQAirRgScM8crD6oKkrFM0jEZUxHa34v4iqDKssBRa7
+        mPGPMweRbC1oGpJwFXIFtz3tK
+X-Received: by 2002:a1c:7d91:: with SMTP id y139mr4493831wmc.57.1633709973136;
+        Fri, 08 Oct 2021 09:19:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKKijO+74izv+qNkXyDuYFKonDBhllUKwll6+hoH5cpRMPBMvTIj5SMLDKxABYXEH63mxR+A==
+X-Received: by 2002:a1c:7d91:: with SMTP id y139mr4493808wmc.57.1633709972941;
+        Fri, 08 Oct 2021 09:19:32 -0700 (PDT)
+Received: from vian.redhat.com ([2a0c:5a80:1d03:b900:c3d1:5974:ce92:3123])
+        by smtp.gmail.com with ESMTPSA id f184sm2901753wmf.22.2021.10.08.09.19.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 09:17:13 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 09:17:07 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, keescook@chromium.org,
-        jannh@google.com, linux-kernel@vger.kernel.org,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, akpm@linux-foundation.org,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org, vgupta@kernel.org,
-        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
-        bcain@codeaurora.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
-        nickhu@andestech.com, jonas@southpole.se, mpe@ellerman.id.au,
-        paul.walmsley@sifive.com, hca@linux.ibm.com,
-        ysato@users.sourceforge.jp, davem@davemloft.net, chris@zankel.net
-Subject: Re: [PATCH 6/7] arch: __get_wchan || STACKTRACE_SUPPORT
-Message-ID: <20211008161707.i3cwz6qukgcf4frj@treble>
-References: <20211008111527.438276127@infradead.org>
- <20211008111626.392918519@infradead.org>
- <20211008124052.GA976@C02TD0UTHF1T.local>
- <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
+        Fri, 08 Oct 2021 09:19:32 -0700 (PDT)
+From:   Nicolas Saenz Julienne <nsaenzju@redhat.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        frederic@kernel.org, tglx@linutronix.de, peterz@infradead.org,
+        mtosatti@redhat.com, nilal@redhat.com, mgorman@suse.de,
+        linux-rt-users@vger.kernel.org, vbabka@suse.cz, cl@linux.com,
+        paulmck@kernel.org, ppandit@redhat.com,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Subject: [RFC 0/3] mm/page_alloc: Remote per-cpu lists drain support
+Date:   Fri,  8 Oct 2021 18:19:19 +0200
+Message-Id: <20211008161922.942459-1-nsaenzju@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YWBLl0mMTGPE/7hM@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 03:45:59PM +0200, Peter Zijlstra wrote:
-> > stack_trace_save_tsk() *shouldn't* skip anything unless we've explicitly
-> > told it to via skipnr, because I'd expect that
-> 
-> It's what most archs happen to do today and is what
-> stack_trace_save_tsk() as implemented using arch_stack_walk() does.
-> Which is I think the closest to canonical we have.
+This series replaces mm/page_alloc's per-cpu lists drain mechanism in order for
+it to be able to be run remotely. Currently, only a local CPU is permitted to
+change its per-cpu lists, and it's expected to do so, on-demand, whenever a
+process demands it (by means of queueing a drain task on the local CPU). Most
+systems will handle this promptly, but it'll cause problems for NOHZ_FULL CPUs
+that can't take any sort of interruption without breaking their functional
+guarantees (latency, bandwidth, etc...). Having a way for these processes to
+remotely drain the lists themselves will make co-existing with isolated CPUs
+possible, and comes with minimal performance[1]/memory cost to other users.
 
-It *is* confusing though.  Even if 'nosched' may be the normally
-desired behavior, stack_trace_save_tsk() should probably be named
-stack_trace_save_tsk_nosched().
+The new algorithm will atomically switch the pointer to the per-cpu lists and
+use RCU to make sure it's not being used before draining them. 
+
+I'm interested in an sort of feedback, but especially validating that the
+approach is acceptable, and any tests/benchmarks you'd like to see run against
+it. For now, I've been testing this successfully on both arm64 and x86_64
+systems while forcing high memory pressure (i.e. forcing the
+page_alloc's slow path).
+
+Patches 1-2 serve as cleanups/preparation to make patch 3 easier to follow.
+
+Here's my previous attempt at fixing this:
+https://lkml.org/lkml/2021/9/21/599
+
+[1] Proper performance numbers will be provided if the approach is deemed
+    acceptable. That said, mm/page_alloc.c's fast paths only grow by an extra
+    pointer indirection and a compiler barrier, which I think is unlikely to be
+    measurable.
+
+---
+
+Nicolas Saenz Julienne (3):
+  mm/page_alloc: Simplify __rmqueue_pcplist()'s arguments
+  mm/page_alloc: Access lists in 'struct per_cpu_pages' indirectly
+  mm/page_alloc: Add remote draining support to per-cpu lists
+
+ include/linux/mmzone.h |  24 +++++-
+ mm/page_alloc.c        | 173 +++++++++++++++++++++--------------------
+ mm/vmstat.c            |   6 +-
+ 3 files changed, 114 insertions(+), 89 deletions(-)
 
 -- 
-Josh
+2.31.1
 
