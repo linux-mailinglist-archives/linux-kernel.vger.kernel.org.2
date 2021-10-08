@@ -2,102 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE995426E5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA73426E62
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhJHQIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhJHQIB (ORCPT
+        id S230009AbhJHQJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:09:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34866 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229508AbhJHQJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:08:01 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E922C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 09:06:06 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id 5so11265981iov.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:06:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5P+eTwdfekkeReRVz2WZGhFiOpyoDubpLpaAhZ1wNFc=;
-        b=Ld4ZeEB8gVpPyAstB5fAg87eWun+AgTxIDH4savKgqCkTpN/Ll5hC1AAtzLorvz+xM
-         JzROyW1jr221i/oFbINO9fYZA4cJTFkr9Hj1/AjiKACTE5a1l6mHtTj+2R8KG5c8LRTI
-         mfnVcXpyAYwly4q3B7qK0vlvcIFToDqH7b08CvF9/ACKGeXv+SNfqXTzgxWav8f0w36I
-         Glx+IcAKK0A09M9g6f0fuVMsFP/oa+GjG0/G+y/riA/Iq06kxrhDPh5zIokuyXqc7/AA
-         dxFOXjwhdefQqe6gUNgJCE3WrCykChlUyHKEINb3Brafj1Oi/fQedSB5mXJQvcngUreV
-         uC5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5P+eTwdfekkeReRVz2WZGhFiOpyoDubpLpaAhZ1wNFc=;
-        b=SZePLTkAerFeU2D1YTx3FT5VnKoM/EVSeF3oQFP6UjP2ctslPUhwqqv1nD747Id41o
-         K5di10Ak/fp6Icq6dBLDrwmFNhVnEetYWnoWtlZDHWUKsPw9sWANgBeD1HWn4OBFmYCa
-         B85leJXF+hivrfH4ZDQHC0e1bx61LHvmPqtcZ9nARBgtY+M62mt9xkH6LhypXN6CQdRz
-         zq08+eQ2tIV//WVZvYqjYZ9rxhQeHYuAIJ1SPHBqPF6SIaLf67rJ6CLD9aUwFALkZSf6
-         114iR7jpgY7DrFEi19xr8/t3Y22SqVh4Az2zhCWQaLYQLUp9q6NO9Vzri7LRt0quhDre
-         6Xhw==
-X-Gm-Message-State: AOAM533/RCM8pPf8yvdfBlBdmjJB5Ridaql0aStxT3iASrCRKaNAsgZE
-        9EebVLvjVzjLDwYuZ8scXMLI6+6EKiuq2m5VkdHc6g==
-X-Google-Smtp-Source: ABdhPJzg66NLOSTrK9+C20AgUwE+bQJwbbgJ4wysctn88/0k7VsJeigJC8QgZnAFTYYSqkrYNsghsJQIB3j9axFmIPQ=
-X-Received: by 2002:a05:6602:2e01:: with SMTP id o1mr6066414iow.31.1633709165895;
- Fri, 08 Oct 2021 09:06:05 -0700 (PDT)
+        Fri, 8 Oct 2021 12:09:24 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633709248; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WWYFZpVbN+UDhmUq348fXOxNMLuJp3FwlkZtRfjA498=;
+ b=XlDNl8MtQnP7rqKDkkI4wpEnmCLJWqYQfO381KFYAMZTaopoRTQFg43rPFt6IszbCAKHfMRt
+ bj44eRGqgat3gwbL+POh8U8tWQuahL9u1rEyi271RPG72W21AdUFNMJGDIAqzBcWxpEA1MIg
+ 6jwThJ4SdOnBURJ/yNBIJBeK8Bs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 61606cc022fe3a98e569d946 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 16:07:28
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 571C6C43617; Fri,  8 Oct 2021 16:07:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C0AACC43618;
+        Fri,  8 Oct 2021 16:07:25 +0000 (UTC)
 MIME-Version: 1.0
-References: <20211008114343.57920-1-robert.marko@sartura.hr>
- <20211008120855.46zbo2fl5edwf7ja@pali> <CA+HBbNGvFtws2GF7RLbznAbXfvjKx4rOJ=eMeuHOJ6s7iANtzw@mail.gmail.com>
- <20211008134347.lskm5pzt73pkf7oc@pali> <CA+HBbNEDxBDvNZPSWnBYJOUhqdwonBhFwD9P0xhSGccdvQJx3Q@mail.gmail.com>
- <20211008180427.68be1d3f@thinkpad>
-In-Reply-To: <20211008180427.68be1d3f@thinkpad>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 8 Oct 2021 18:05:55 +0200
-Message-ID: <CA+HBbNEwrjMzawrA3xscAs0ogZm_nXTQ-46J-Yt7zHcgFbu_6g@mail.gmail.com>
-Subject: Re: [PATCH v5] arm64: dts: marvell: add Globalscale MOCHAbin
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 08 Oct 2021 09:07:25 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sankeerth Billakanti <sbillaka@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
+In-Reply-To: <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
+References: <20211005023750.2037631-1-bjorn.andersson@linaro.org>
+ <YVzGVmJXEDH0HfIL@ripper>
+ <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
+ <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org> <YV0FlTyMEzlyNsN9@ripper>
+ <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org> <YV3dddt/GOidTmlN@ripper>
+ <9dc50145fb3e9b189fd38857b20f326a@codeaurora.org> <YV9TQEKPh4SXYFF/@ripper>
+ <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
+ <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
+Message-ID: <ad244133bdba4570b0b45871fd136350@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 6:04 PM Marek Beh=C3=BAn <kabel@kernel.org> wrote:
->
-> On Fri, 8 Oct 2021 17:52:40 +0200
-> Robert Marko <robert.marko@sartura.hr> wrote:
->
-> > I have to agree, so I did some digging.
-> > I don't think that the Armada 8k PCI driver actually supports HW level =
-PERST#.
-> > I then looked at the functional specs and the only thing that looks
-> > related to PERST#
-> > is PCIe Software Reset Register which has a SoftWarePERst bit.
-> >
-> > Can you maybe look at it?
-> >
-> > Removed the reset-gpios and set the PERST pinmux to PCIe, and the
-> > QCA9377 card will
-> > show up, but I have no idea whether PERST# actually ever gets toggled.
->
-> You can check with voltmeter, toggle the bit via mw command in u-boot.
+On 2021-10-07 15:34, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-10-07 13:28:12)
+>> On 2021-10-07 13:06, Bjorn Andersson wrote:
+>> > On Thu 07 Oct 12:51 PDT 2021, khsieh@codeaurora.org wrote:
+>> >
+>> >> On 2021-10-06 10:31, Bjorn Andersson wrote:
+>> >> > On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
+>> >> >
+>> >> > > On 2021-10-05 19:10, Bjorn Andersson wrote:
+>> >> > > > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
+>> >> > > >
+>> >> > > > > On 2021-10-05 15:36, Stephen Boyd wrote:
+>> >> > > > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
+>> >> > > > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
+>> >> > > > > > >
+>> >> > > > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
+>> >> > > > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
+>> >> > > > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
+>> >> > > > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
+>> >> > > > > > > > > eDP this reduction improves the user experience dramatically - i.e.
+>> >> > > > > > > > > removes 9.9s of bland screen time at boot.
+>> >> > > > > > > > >
+>> >> > > > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+>> >> > > > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> >> > > > > > > > > ---
+>> >> > > > > > > >
+>> >> > > > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
+>> >> > > > > > > > re-read the code a couple times to understand that it's waiting 100ms
+>> >> > > > > > > > times the 'delay' number. Whaaaaat?
+>> >> > > > > > > >
+>> >> > > > > > >
+>> >> > > > > > > I assume you're happy with the current 10s delay on the current
+>> >> > > > > > > devices, so I don't think we should push for this to be backported.
+>> >> > > > > > > I have no need for it to be backported on my side at least.
+>> >> > > > > > >
+>> >> > > > > >
+>> >> > > > > > Sure. Fixes tag != backported to stable trees but it is close.
+>> >> > > > > >
+>> >> > > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> >> > > > > > >
+>> >> > > > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
+>> >> > > > >
+>> >> > > > > This patch will prevent usb3 from working due to dp driver
+>> >> > > > > initialize phy
+>> >> > > > > earlier than usb3 which cause timeout error at power up usb3 phy
+>> >> > > > > when both
+>> >> > > > > edp and dp are enabled.
+>> >> > > >
+>> >> > > > Can you please help me understand what you mean here, I use this on my
+>> >> > > > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
+>> >> > > > work? Or am I just lucky in some race condition?
+>> >> > > >
+>> >> > > > Thanks,
+>> >> > > > Bjorn
+>> >> > > >
+>> >> > > The problem is seen at sc7280.
+>> >> > > Apple dongle have both  hdmi and usb port.
+>> >> > > plug Apple dongle into type-c, then plug DP into apple's hdmi port
+>> >> > > and usb
+>> >> > > mouse into apple's usb port.
+>> >> > > If edp enabled at this time, then usb mouse will not work due to
+>> >> > > timeout at
+>> >> > > phy power up.
+>> >> > >
+>> >> >
+>> >> > Okay, so you're saying that if the DP driver invokes phy_power_on()
+>> >> > before the USB driver does, USB initialization fails (or at least USB
+>> >> > doesn't work)?
+>> >>
+>> >> if dp driver call qcom_qmp_phy_init() before usb3 call
+>> >> qcom_qmp_phy_init(),
+>> >> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+>> >> mask) ==
+>> >> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
+>> >
+>> > Thanks, I will try to reproduce this on my side. So the 10 seconds here
+>> > is strictly to give good enough time for the dwc3 driver to probe...
+>> >
+>> > Any idea why you're saying that this is specific to sc7280, what
+>> > changed
+>> > from sc7180?
+>> 
+>> I did not have sc7180 with edp before so that i am not sure it will
+>> happen on sc7180 or not.
+>> The usb3 does not work when both edp and dp enabled I just seen at
+>> sc7280.
+>> Current at sc7280 EC is not boot up correctly when system power up.
+>> I have to manual reboot EC from linux kernel shell before DP/usb3 can
+>> work.
+>> I am not sure this contribute to this problem or not.
+>> 
+> 
+> Can you make the usb driver into a module and only load that module
+> later in boot after the DP driver calls qcom_qmp_phy_init()? That would
+> be an easy way to move usb probe after DP probe and expose this 
+> problem.
 
-Yeah, I was planning to do that but I cant actually read the register
-as using md
-or devmem causes it to lock up and then panic and reset.
-
-Regards,
-Robert
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+we need usb calls qcom_qmp_phy_init() before dp.
