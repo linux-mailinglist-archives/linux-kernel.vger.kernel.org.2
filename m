@@ -2,99 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C19F42649C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F00344264A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhJHG3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 02:29:21 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:33968 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229664AbhJHG3S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 02:29:18 -0400
-X-UUID: 7b259ceebea74b16a99be15b1f92cd6c-20211008
-X-UUID: 7b259ceebea74b16a99be15b1f92cd6c-20211008
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 291282554; Fri, 08 Oct 2021 14:27:20 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 8 Oct 2021 14:27:19 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Fri, 8 Oct 2021 14:27:18 +0800
-From:   <guangming.cao@mediatek.com>
-To:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-CC:     <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH] dma-buf: acquire name lock before read/write dma_buf.name
-Date:   Fri, 8 Oct 2021 14:29:03 +0800
-Message-ID: <20211008062903.39731-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        id S231183AbhJHGcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:32:01 -0400
+Received: from smtp25.cstnet.cn ([159.226.251.25]:46192 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229585AbhJHGb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 02:31:58 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-05 (Coremail) with SMTP id zQCowAD32O1P5V9hnsjUAg--.39531S2;
+        Fri, 08 Oct 2021 14:29:35 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     jbhayana@google.com, jic23@kernel.org, lars@metafoo.de
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] iio/scmi: check if dev is null pointer
+Date:   Fri,  8 Oct 2021 06:29:33 +0000
+Message-Id: <1633674573-81211-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: zQCowAD32O1P5V9hnsjUAg--.39531S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFy5try5Ary3uF1DCFykZrb_yoWftFc_Aw
+        12qFn3Gr18CFs5ZrnrGrWfXrnxKa4vvFW8Wr1rK3yS9343XFsFqF4DJrW8Ar4xXryUAry3
+        Wws3tr1vya13CjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r47
+        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
+        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
+        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
+        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
+        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU8xR6UUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+The parameter 'dev' of scmi_iio_dev_probe() isn't been
+checked before used, including when scmi_iio_dev_probe() is called.
+Therefore, it might be better to check, just in case.
 
-Because dma-buf.name can be freed in func: "dma_buf_set_name",
-so, we need to acquire lock first before we read/write dma_buf.name
-to prevent Use After Free(UAF) issue.
-
-Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+Fixes: 25cbdd4 ("iio/scmi: Port driver to the new scmi_sensor_proto_ops interface")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 ---
- drivers/dma-buf/dma-buf.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 511fe0d217a0..aebb51b3ff52 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -80,7 +80,9 @@ static void dma_buf_release(struct dentry *dentry)
- 		dma_resv_fini(dmabuf->resv);
+diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+index 141e8aa..d3ff985 100644
+--- a/drivers/iio/common/scmi_sensors/scmi_iio.c
++++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+@@ -592,6 +592,9 @@ static int scmi_iio_dev_probe(struct scmi_device *sdev)
  
- 	module_put(dmabuf->owner);
-+	spin_lock(&dmabuf->name_lock);
- 	kfree(dmabuf->name);
-+	spin_unlock(&dmabuf->name_lock);
- 	kfree(dmabuf);
- }
- 
-@@ -1372,6 +1374,8 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
- 		if (ret)
- 			goto error_unlock;
- 
+ 	if (!handle)
+ 		return -ENODEV;
 +
-+		spin_lock(&dmabuf->name_lock);
- 		seq_printf(s, "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
- 				buf_obj->size,
- 				buf_obj->file->f_flags, buf_obj->file->f_mode,
-@@ -1379,6 +1383,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
- 				buf_obj->exp_name,
- 				file_inode(buf_obj->file)->i_ino,
- 				buf_obj->name ?: "");
-+		spin_unlock(&dmabuf->name_lock);
++	if (!dev)
++		return -ENODEV;
  
- 		robj = buf_obj->resv;
- 		fence = dma_resv_excl_fence(robj);
+ 	sensor_ops = handle->devm_protocol_get(sdev, SCMI_PROTOCOL_SENSOR, &ph);
+ 	if (IS_ERR(sensor_ops)) {
 -- 
-2.17.1
+2.7.4
 
