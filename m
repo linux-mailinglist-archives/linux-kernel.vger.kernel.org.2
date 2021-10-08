@@ -2,99 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 398F542650D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:12:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F919426513
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230305AbhJHHOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:14:15 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56402 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhJHHOM (ORCPT
+        id S232129AbhJHHPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:15:19 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35830 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229693AbhJHHPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:14:12 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id ECFAC223D5;
-        Fri,  8 Oct 2021 07:12:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633677136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9JkoUZpACyUfQpOqubca79HEaq3VBgN30ug9B5nuPpY=;
-        b=NXd7i7CU+nz4qyVPFPKYz5t696OgTmGX9aCZsWZAX/9WpZQe3qtTbwkjr72JDLPBkxpVo1
-        2sc8ArtAiEM6F8uMI5MwqrIiV6j78/xaxaR7ZR5p3/OJmkt32Ow6EItlWMsXamCrA8k90e
-        cuwA9/KRcP6TNcmmp/2yggBTEet8rOA=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id CC92BA3B81;
-        Fri,  8 Oct 2021 07:12:16 +0000 (UTC)
-Date:   Fri, 8 Oct 2021 09:12:16 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Support hugetlb charge moving at task migration
-Message-ID: <YV/vUIzx6RBPZJ1I@dhcp22.suse.cz>
-References: <cover.1632843268.git.baolin.wang@linux.alibaba.com>
- <YVWVk559nm2xZ98R@dhcp22.suse.cz>
- <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
+        Fri, 8 Oct 2021 03:15:17 -0400
+X-UUID: 82172bf867174dd08af19ca7eea86e21-20211008
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qWjr+AiJvYo10hf1cS6L6W6bO/DtrFRJjsgwpRlO+3k=;
+        b=rjLsj8+2NCkKY6qFoWiVjATBm9mrR/P/OnNoYMfPcJgOrPC+nkFCCJnFsCrKByACRiiG64Zahm9qw1AkGPl/6+H5LiXBfoC/xaYUXscmxXInOrLtTkvovnFGdzR+kCOhfLxr5PdQPeojBqE4JrRyQWNFvqlW2VdolCN6AqqOSgU=;
+X-UUID: 82172bf867174dd08af19ca7eea86e21-20211008
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <kewei.xu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 440280912; Fri, 08 Oct 2021 15:13:20 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 8 Oct 2021 15:13:19 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Oct 2021 15:13:18 +0800
+Message-ID: <461ed34baaf49acda8a3287635f0b4670240cd35.camel@mediatek.com>
+Subject: Re: [PATCH v7 3/7] i2c: mediatek: Dump i2c/dma register when a
+ timeout occurs
+From:   Kewei Xu <kewei.xu@mediatek.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+CC:     <matthias.bgg@gmail.com>, <robh+dt@kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
+        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
+        <caiyu.chen@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
+        <yuhan.wei@mediatek.com>
+Date:   Fri, 8 Oct 2021 15:13:21 +0800
+In-Reply-To: <YVf+KCztQI9XrdEq@kunai>
+References: <20210917101416.20760-1-kewei.xu@mediatek.com>
+         <20210917101416.20760-4-kewei.xu@mediatek.com> <YVf+KCztQI9XrdEq@kunai>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-10-21 23:39:15, Baolin Wang wrote:
-> Hi Michal,
-> 
-> (Sorry for late reply due to my holidays)
-> On 2021/9/30 18:46, Michal Hocko wrote:
-> > On Wed 29-09-21 18:19:26, Baolin Wang wrote:
-> > > Hi,
-> > > 
-> > > Now in the hugetlb cgroup, charges associated with a task aren't moved
-> > > to the new hugetlb cgroup at task migration, which is odd for hugetlb
-> > > cgroup usage.
-> > 
-> > Could you elaborate some more about the usecase and/or problems you see
-> > with the existing semantic?
-> 
-> The problems is that, it did not check if the tasks can move to the new
-> hugetlb cgroup if the new hugetlb cgroup has a limitation, and the hugetlb
-> cgroup usage is incorrect when moving tasks among hugetlb cgroups.
+T24gU2F0LCAyMDIxLTEwLTAyIGF0IDA4OjM3ICswMjAwLCBXb2xmcmFtIFNhbmcgd3JvdGU6DQo+
+ID4gQEAgLTgzNyw2ICs4MzksNTcgQEAgc3RhdGljIGludCBtdGtfaTJjX3NldF9zcGVlZChzdHJ1
+Y3QgbXRrX2kyYw0KPiA+ICppMmMsIHVuc2lnbmVkIGludCBwYXJlbnRfY2xrKQ0KPiA+ICAJcmV0
+dXJuIDA7DQo+ID4gIH0NCj4gPiArc3RhdGljIHZvaWQgaTJjX2R1bXBfcmVnaXN0ZXIoc3RydWN0
+IG10a19pMmMgKmkyYykNCj4gPiArew0KPiA+ICsJZGV2X2VycihpMmMtPmRldiwgIlNMQVZFX0FE
+RFI6IDB4JXgsIElOVFJfTUFTSzogMHgleFxuIiwNCj4gPiArCQltdGtfaTJjX3JlYWR3KGkyYywg
+T0ZGU0VUX1NMQVZFX0FERFIpLA0KPiA+ICsJCW10a19pMmNfcmVhZHcoaTJjLCBPRkZTRVRfSU5U
+Ul9NQVNLKSk7DQo+IA0KPiBJIHRoaW5rIHRoaXMgaXMgdG9vIHZlcmJvc2UgYW5kIHNob3VsZCBi
+ZSBhIGRlYnVnZ2luZyBvbmx5IHBhdGNoIG5vdA0KPiByZWFsbHkgc3VpdGVkIGZvciB1cHN0cmVh
+bS4gQnV0IGlmIHlvdSBsaWtlIGl0IHRoaXMgd2F5LCB0aGVuIGtlZXANCj4gdGhlIHZlcmJvc2l0
+eS4gSG93ZXZlciwgZGV2X2VyciBpcyB0b28gc3Ryb25nLCB0aGlzIHJlYWxseSBuZWVkcyB0bw0K
+PiBiZQ0KPiBkZXZfZGJnLiBUaW1lb3V0cyBjYW4gaGFwcGVuIG9uIGFuIEkyQyBidXMsIHRoaW5r
+IGFib3V0IGFuIEVFUFJPTSBpbg0KPiBhDQo+IGxvbmcgZXJhc2UgY3ljbGUgd2hpbGUgeW91IHdh
+bnQgdG8gcmVhZCBpdC4gUGVyZmVjdGx5IG5vcm1hbC4NCj4gDQo+IA0KPiA+ICAJaWYgKHJldCA9
+PSAwKSB7DQo+ID4gLQkJZGV2X2RiZyhpMmMtPmRldiwgImFkZHI6ICV4LCB0cmFuc2ZlciB0aW1l
+b3V0XG4iLCBtc2dzLQ0KPiA+ID5hZGRyKTsNCj4gPiArCQlkZXZfZXJyKGkyYy0+ZGV2LCAiYWRk
+cjogJXgsIHRyYW5zZmVyIHRpbWVvdXRcbiIsIG1zZ3MtDQo+ID4gPmFkZHIpOw0KPiA+ICsJCWky
+Y19kdW1wX3JlZ2lzdGVyKGkyYyk7DQo+IA0KPiBOZWVkcyB0byBzdGF5IGRldl9kYmcgYXMgd2Vs
+bC4NCj4gDQo+IFllcywgSXQgaXMgdXNlZCBmb3IgZGVidWdnaW5nLGJ1dCBkdW1wIHRoZSB2YWx1
+ZSBvZiB2YWx1ZSBvZiB0aGUNCj4gcmVnaXN0ZXIgaXMgdmVyeSBpbXBvcnRhbnQgZm9yIGRlYnVn
+Z2luZyxzbyB3ZSB0aGluayBpdCBpcw0KPiBuZWNlc3NhcnkuIFdlIHdpbGwgdXNlIGRldl9kYmcg
+dG8gcmVwbGFjZSBkZXZfZXJyIGluIFY4LiBUaGFua3N+DQo=
 
-Could you be more specific please? What do you mean by cgroup usage is
-incorrect? Ideally could you describe your usecase?
- 
-> > > This patch set adds hugetlb cgroup charge moving when
-> > > migrate tasks among cgroups, which are based on the memcg charge moving.
-> > 
-> > Memcg charge moving has shown some problems over time and hence this is
-> > not part of cgroup v2 interface anymore. Even for cgroup v1 this has
-> 
-> Sorry, I missed this part, could you elaborate on the issues? I can have a
-> close look about the problems of memcg charge moving.
-
-The operation is quite expensive. Synchronization with charging is not
-trivial. I do not have the full list handy but you can search the
-mm mailing list archives for more information.
-
-> > been an opt-in. I do not see anything like that in this patch series.
-> > Why should all existing workloads follow a different semantic during
-> > task migration now?
-> 
-> But I think it is reasonable for some cases moving the old charging to the
-> new cgroup when task migration. Maybe I can add a new hugetlb cgroup file to
-> control if need this or not?
-
-It would be good to describe those use cases and why they really need
-this. Because as things stand now, the charge migration is not supported
-in cgroup v2 for memory cgroup controller and there are no plans to add
-the support so it would be quite unexpected that hugetlb controller
-would behave differently. And cgroup v1 is considered legacy and new
-features are ususally not added as there is a hope to move users to v2.
--- 
-Michal Hocko
-SUSE Labs
