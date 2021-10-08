@@ -2,143 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A85427139
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1014E42713A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241116AbhJHTNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:13:33 -0400
-Received: from mail-oln040093003008.outbound.protection.outlook.com ([40.93.3.8]:25078
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231342AbhJHTN1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:13:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NZxxr0Zg6HcWdIe+TDO2lWza9wis6JR+zznmBUwNKiPB2ALxKB8HipMQ0bOyj9SveNoNywJXDmIZNRMqov8sRIXlRfvqfSBw0k1ln9DgCuhX5vazRbg7QwoXSmVDgESZFbtPkFn8694wnmjwQuZrN+vPgAbs3KInSwLpOTV/cQjVvymqAHbrF5skxefyilMftQg/oqftUsfHKaUjHQxa4Ui8gN4WS1ovBBm0EYkbn8JZXZGlkfUilMMhR+t/EQ42qsquLIbRPYUnYr2gR9Uze7PT92QKtDs7XKbk7v9UrDRTEfYfcuDWC4qxPTWKBL7/5DnH9mcVk7wzlo8ZZFKp7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L7b7Hy9qv7vhx9YqwWZuAq9LhRU9L1emvVhB7t5yuqU=;
- b=JsTtoD9rG/6WNvJf0ZfYiaACtNBnY+xfH8cLXamv4BM4KqiEPguHNoatX0EwyDm8stbafp4UT7PSGQWIARjTy8FcEvDzZVIxR56Q+NDdkZTJfIq1sHXsFREZ0UTWzs9YE+vCjot1ndwTYxJm4n8JmFCsC9NevSjCe0+u3+AUULHy1X0FKDHlTdgQbhfWRCT7BD79okAPva6cNt8M3ufN0CtFSO5jdPfmKmYubezHjGfLIbUYG4r7kizJLqKyWv27FOo8J/3GR/UVOphytllVSbmJIw1KuS+FKXuuEkqIRgmBLePOwro0G8tU5mxLcUneGx+PGKXIYxX7INnKVuUIhg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L7b7Hy9qv7vhx9YqwWZuAq9LhRU9L1emvVhB7t5yuqU=;
- b=A5Myc+DvBQfgTB1EesQC3HzeIKFe8biuG+aKZdnN/QtqJ0nxinBlXZZNcTv23vD6AZcEL+KppZZzidT/jvFuxvLAWOpAfjddy7G5rrccsw9rS57fMZyMpCUWXmZYaYw7cTyLrGlRPGeVywf6tEiDya7O/hWHC2YXwGZnkSVJ9rQ=
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com (2603:10b6:303:68::18)
- by MW2PR2101MB1851.namprd21.prod.outlook.com (2603:10b6:302:c::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.1; Fri, 8 Oct
- 2021 19:11:27 +0000
-Received: from MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::89fe:5bf:5eb2:4c55]) by MW4PR21MB2002.namprd21.prod.outlook.com
- ([fe80::89fe:5bf:5eb2:4c55%4]) with mapi id 15.20.4608.008; Fri, 8 Oct 2021
- 19:11:27 +0000
-From:   Sunil Muthuswamy <sunilmut@microsoft.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     Marc Zyngier <maz@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?iso-8859-2?Q?=22Krzysztof_Wilczy=F1ski=22?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "\"H. Peter Anvin\"" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v2 0/2] PCI: hv: Hyper-V vPCI for ARM64
-Thread-Topic: [EXTERNAL] Re: [PATCH v2 0/2] PCI: hv: Hyper-V vPCI for ARM64
-Thread-Index: Ade8Z9t+jRUuLsS9S2C/sb8+Gj5obwADb06AAACWIGA=
-Date:   Fri, 8 Oct 2021 19:11:24 +0000
-Message-ID: <MW4PR21MB20029E72816E8559053B0E4BC0B29@MW4PR21MB2002.namprd21.prod.outlook.com>
-References: <MW4PR21MB200217CCFBC351FD12D68DF0C0B29@MW4PR21MB2002.namprd21.prod.outlook.com>
- <20211008185209.GA1362885@bhelgaas>
-In-Reply-To: <20211008185209.GA1362885@bhelgaas>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5d997d76-5a0c-40f0-b68d-e5aba94ba3d8;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-10-08T19:08:56Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dad0b2f5-d38b-4113-ed97-08d98a8f6df2
-x-ms-traffictypediagnostic: MW2PR2101MB1851:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW2PR2101MB1851F7EA2FD0D0A9415C8C56C0B29@MW2PR2101MB1851.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3513;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +L1wIwn5W8tCTbI3c05fCXpMDYWxJBgm2KTarOVFJR7Yo1sTnadStFaNTEG6n7micKyy6kl14nW73eZkZzt4UX6HUeiEvXmg1VyQhZyhyBpQcAqvBUKyoPIJfyYZvEqoC/+ujacRj0clAQWOOBDK3iNnmGRrD5e3BHTGrpirzBdV1rdG/rINFQquFcow2TV9r2w1gQ/M3RQO9J8P4ePGFAhPBoUrS1kH3sd7VRIelqi5QoCsA1vBHqsXD2yarzESkgSpL3eVlZrCo4He2ABQQki5cofhK1EaozfEp2zpRzYZOeFKc1cHYPN5DE2iznjBJaPnB3EGFgUaOLih8xmJjZlV7bjWLKEWbDcyJWTecSV4ScX4aR1mIpMXtfgb/NwHCVu5V5P3jB0W2bwLs5hEHhucNG+5FILYme45ER4Lw/uEWQJ6mCofZJTA67vos7AZ2P3GUz5ipNqRpo4wTG2vlxRw3sH9bh6+q5lo+e8ImjWcDuzEnceMRL1ArHz0fYboTNbDjClnSfiDIGxPdgJLSSCgnHD8XFOAJwPm4gdZ8EOay4X5gTPjB87cCF4orqIlLQIpYezy8fAYVfSKjoAVlBvM3PoG3jkum+3qkh6KONa0X2XQvwCjtIgF1qMHMOqlOXYDgTS1Q56hWbyHhThw0fF4dXK/MUB7NlyeEa9IGMWtMqClzGEYN/f8WFLLXGDCYxqEyQILClg9BPMX2lCkpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR21MB2002.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66476007)(64756008)(66446008)(2906002)(8676002)(66556008)(66946007)(82960400001)(4744005)(71200400001)(33656002)(52536014)(55016002)(122000001)(38100700002)(6916009)(86362001)(6666004)(186003)(9686003)(82950400001)(76116006)(5660300002)(4326008)(8990500004)(38070700005)(316002)(83380400001)(8936002)(53546011)(54906003)(10290500003)(508600001)(7696005)(6506007)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-2?Q?YOd5nTAXTivPQopJkYfHNZGuUIc/uTXWYMXFWTmUEBtPC93Idyp/TncVu/?=
- =?iso-8859-2?Q?zY5Yz7/j7MVlCIRnbt1r9UElSwdXd7eAMLV1Owr4aqi95UuZkkca4HSenE?=
- =?iso-8859-2?Q?MiL4E8egf7vYX0RicMEqYfwZK7r/SnzmwDkkbpiac5MjuI8AtH/8TL/JOO?=
- =?iso-8859-2?Q?rRaxRH5Ex0Pz0qT0slgQ7MA7J+srWQw4volbMd5qhqx8tB9J8GNnT5wQqq?=
- =?iso-8859-2?Q?g58GbmRxWiArBiTwBLJd6h5SIXErZctdgP9vLQUVlYUCYaBeEBIe9HOdI2?=
- =?iso-8859-2?Q?+ajOLlbF/MIBa8G0/ekEOd23q62Ct2SBjcBQ84RvbbMSsOoVqF3mmkhKX/?=
- =?iso-8859-2?Q?EMSGYtZ6KKUjQFLdxwPRz0C23wrrlNWtd/lkE20iedqQMpqq8O/AyDh9GO?=
- =?iso-8859-2?Q?4jvAtwodMNJ1+OUd9t0RYAvS2Zkthsk3cDLiF9rhDKAlhAE74rzZxXGO1j?=
- =?iso-8859-2?Q?fEodr49h0bWici/YY/0qkaRGMQFZCl37btHkVGkPcqrhogc/Um513FIm+B?=
- =?iso-8859-2?Q?GdDbLinQodgvMmiTusuxRgR8xxpmm1S8wfyhmIw2GySnQFIgttsBwUCgWj?=
- =?iso-8859-2?Q?8ehJwle9CaEfp1iA3VUNbIjjGW+QFmFH9VJmc42WAuPo0+qvngVhj1Wmbr?=
- =?iso-8859-2?Q?fK8w9Vwwva20gXKLjIZe681gDT1UD816beTriL0Jbz/MbKsEYk7K1JhY7u?=
- =?iso-8859-2?Q?WkaAu3A7yS268wuqJT2xqMXYcCBGz0wL/7QHNnlNveQQVyUenO1SLyu0li?=
- =?iso-8859-2?Q?uTTWJiUsy2ocoZ8zqr09nLztzKRjksv4ldNF+XDQJPi5/D1UHryw3zmIOD?=
- =?iso-8859-2?Q?WB7Dvpzh6NhR2eDN8zfwT29nyFtpAqUS8bOMUGL0fyJkCkquWaaRKEyJyZ?=
- =?iso-8859-2?Q?jzHmDz0XnguEyVdETGGoAiY2wyvO1GisY7ur0kmamQpC8ovYhhRrdg9Bpo?=
- =?iso-8859-2?Q?mh6ryb7745xVPLSj18zp13wzAf6CjhfEvNjpZvmPsPc1dIu2IEE3eDe+Er?=
- =?iso-8859-2?Q?R5U3FlSTfwCTi6tTQpESc6aJQhYGJpspyUBlCwEn5ldVb0nzFTVgeKLLuS?=
- =?iso-8859-2?Q?/xX+jw781iirpseDqGaXCX7Y44wYvW7OVCFda12mkoRG3W377TEFNeACjG?=
- =?iso-8859-2?Q?Bo9IVaq6Wykbr4YNxSQDm0I1cl6uM7rF6bXerfSgg5MNMSBeMQt3NJ0bia?=
- =?iso-8859-2?Q?w1npJRBfmJ7C+LvmYXgSW2TWn/ckHeBaZqVZbUQr5OIixHa9US5fVUEcJG?=
- =?iso-8859-2?Q?ItAo3Q8HYAr5REa6V2Zcbt6xjQEiURbQPRJU3sisN6sgxmzgYlTGGp5WEC?=
- =?iso-8859-2?Q?XgVgfmF1+8gCtucq8657BFtWFofkFGSkSIjJ/yZIiy6xODXvUnaZuOPVf9?=
- =?iso-8859-2?Q?bB1fLSW1KmTUbDM3nS0oRe/ev7rdfMLAcwDDTaMgOKU2AUwr7zFH+wMK8W?=
- =?iso-8859-2?Q?HZNBNN+YuMsOVALZ?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        id S241277AbhJHTN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:13:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231342AbhJHTNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:13:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6ECDD60F4F;
+        Fri,  8 Oct 2021 19:11:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633720319;
+        bh=7mZMBOTiR9t6hATvGff5yzuCPWoz+H/q3mYoiQ5Cj+g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EYJZNWZsl4SPabnCRBKQywUhLz6FyLBnSmBpTTUYkVuwo7e2cHSsAJzwfm4HwEc2z
+         ZXDJh1wq5wzwl+lQ88/DpPqmh0OF3H6JfWCQrl40GE38sJ6LpttnmTNZaKqp3V6XMH
+         Vd953amFZRlR8e6NKnxbHy/TXeUlqMSr8oqPHZseeCcHOMsvr8bXrdV4cMMU6d0rrv
+         cYd1tDgzKCcS690gp7xZjtQhDFX5Tt+O257HgCuAkwZZbV99f+FpgB60YXD+HpiAMW
+         7pRx64VubnjW595jTJAKTlY6x16MBPnSxANM6M7rBSTBT2mOxIxYDANwA9r+ZIAfVZ
+         6wqfUuJJDsXPQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id CC96E410A1; Fri,  8 Oct 2021 16:11:56 -0300 (-03)
+Date:   Fri, 8 Oct 2021 16:11:56 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+Cc:     Rob Herring <robh@kernel.org>, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] libperf tests: Add test_stat_multiplexing test
+Message-ID: <YWCX/D31ZiqGmLjE@kernel.org>
+References: <20210922101627.3396398-1-nakamura.shun@fujitsu.com>
+ <20210922101627.3396398-3-nakamura.shun@fujitsu.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR21MB2002.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dad0b2f5-d38b-4113-ed97-08d98a8f6df2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2021 19:11:27.8203
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: A3VhaYwk2xWSym5++RCQup6tCqDEozZk7iIuPTi7Vt9SJDQQIvejYPAb5TFCtApC6HDp09Z+mSrz0uKFFVRsQQeXox4yHB+tyfhNO4ZtNuI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1851
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210922101627.3396398-3-nakamura.shun@fujitsu.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 8, 2021 11:52 AM
-Bjorn Helgaas <helgaas@kernel.org> wrote:
+Em Wed, Sep 22, 2021 at 07:16:27PM +0900, Shunsuke Nakamura escreveu:
+> From: nakamura shunsuke <nakamura.shun@fujitsu.com>
+> 
+> Adds a test for a counter obtained using read() system call during multiplexing
 
-> If you have occasion to post a v3, note that this is not correctly
-> threaded with patches as responses to the cover letter.  Thereore,
-> "b4 am
-> MW4PR21MB200217CCFBC351FD12D68DF0C0B29@MW4PR21MB2002.nampr
-> d21.prod.outlook.com"
-> does not work to download this series.  See
->=20
-Yes, thanks for the heads up. Appears to me that Outlook doesn't work well =
-with
-patch series. I will setup the 'git send-email' and make sure that v3 is th=
-readed
-properly.
+You forgot to add Rob to the CC list, can I have Acked-by or
+Reviewed-by?
+
+Thanks,
+
+- Arnaldo
+ 
+> Committer testing:
+> 
+>   $ sudo make tests -C tools/lib/perf/ V=1
+>   make: Entering directory '/home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/perf'
+>   make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=. obj=libperf
+>   make -C /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/api/ O= libapi.a
+>   make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./fd obj=libapi
+>   make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./fs obj=libapi
+>   make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=. obj=tests
+>   make -f /home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/build/Makefile.build dir=./tests obj=tests
+>   running static:
+>   - running tests/test-cpumap.c...OK
+>   - running tests/test-threadmap.c...OK
+>   - running tests/test-evlist.c...
+>   	count = 502273264, run = 264105562, enable = 444092845
+>   	count = 501850699, run = 264100505, enable = 444088400
+>   	count = 499613780, run = 264096660, enable = 444085073
+>   	count = 499569398, run = 264501528, enable = 444081268
+>   	count = 500717228, run = 265495387, enable = 444077029
+>   	count = 501260539, run = 266488226, enable = 444071569
+>   	count = 501023910, run = 267469613, enable = 444065303
+>   	count = 501188267, run = 268461294, enable = 444058413
+>   	count = 503096683, run = 269450511, enable = 444050567
+>   	count = 503141904, run = 269587790, enable = 444041735
+>   	count = 503454490, run = 268590361, enable = 444030544
+>   	count = 504838207, run = 267592624, enable = 444021005
+>   	count = 505458594, run = 266594648, enable = 444001280
+>   	count = 504269433, run = 265595795, enable = 443991377
+>   	count = 502625858, run = 264599374, enable = 443982141
+>      Expected: 502065774
+>      High: 505458594   Low:  499569398   Average:  502292150
+>      Average Error = 0.05%
+>   	count = 26129, run = 134550, enable = 134550
+>   	count = 34035, run = 140540, enable = 140540
+>   	count = 40189, run = 141126, enable = 141126
+>   	count = 45263, run = 138290, enable = 138290
+>   	count = 51381, run = 136966, enable = 136966
+>   	count = 57499, run = 134993, enable = 134993
+>   	count = 63617, run = 132320, enable = 132320
+>   	count = 71714, run = 132047, enable = 132047
+>   	count = 77832, run = 128157, enable = 128157
+>   	count = 0, run = 0, enable = 123662
+>   	count = 0, run = 0, enable = 116753
+>   	count = 0, run = 0, enable = 110304
+>   	count = 0, run = 0, enable = 103834
+>   	count = 0, run = 0, enable = 97465
+>   	count = 0, run = 0, enable = 91110
+>   OK
+>   - running tests/test-evsel.c...
+>   	loop = 65536, count = 334303
+>   	loop = 131072, count = 656954
+>   	loop = 262144, count = 1321090
+>   	loop = 524288, count = 2652616
+>   	loop = 1048576, count = 5262140
+>   	loop = 65536, count = 393726
+>   	loop = 131072, count = 989345
+>   	loop = 262144, count = 1986206
+>   	loop = 524288, count = 3831652
+>   	loop = 1048576, count = 7747957
+>   OK
+>   running dynamic:
+>   - running tests/test-cpumap.c...OK
+>   - running tests/test-threadmap.c...OK
+>   - running tests/test-evlist.c...
+>   	count = 501975838, run = 247092568, enable = 415093723
+>   	count = 502491858, run = 247087145, enable = 415088830
+>   	count = 502571026, run = 247083574, enable = 415085139
+>   	count = 502743767, run = 247080183, enable = 415081197
+>   	count = 503259008, run = 247779561, enable = 415076990
+>   	count = 503169622, run = 248773141, enable = 415072091
+>   	count = 503430373, run = 249816445, enable = 415066529
+>   	count = 502597951, run = 250808797, enable = 415059863
+>   	count = 502211776, run = 251799199, enable = 415051831
+>   	count = 501921896, run = 252000721, enable = 415042717
+>   	count = 501441904, run = 251309399, enable = 415031152
+>   	count = 501224474, run = 250311107, enable = 415021479
+>   	count = 500502827, run = 249260579, enable = 415012168
+>   	count = 500775622, run = 248259621, enable = 415002830
+>   	count = 501377375, run = 247261134, enable = 414993890
+>      Expected: 501953755
+>      High: 503430373   Low:  500502827   Average:  502113021
+>      Average Error = 0.03%
+>   	count = 26098, run = 131826, enable = 131826
+>   	count = 33689, run = 138284, enable = 138284
+>   	count = 39808, run = 139152, enable = 139152
+>   	count = 45927, run = 138880, enable = 138880
+>   	count = 51049, run = 135405, enable = 135405
+>   	count = 57168, run = 133406, enable = 133406
+>   	count = 63287, run = 130736, enable = 130736
+>   	count = 71392, run = 130474, enable = 130474
+>   	count = 77794, run = 127203, enable = 127203
+>   	count = 0, run = 0, enable = 123172
+>   	count = 0, run = 0, enable = 116856
+>   	count = 0, run = 0, enable = 110557
+>   	count = 0, run = 0, enable = 104282
+>   	count = 0, run = 0, enable = 97929
+>   	count = 0, run = 0, enable = 91792
+>   OK
+>   - running tests/test-evsel.c...
+>   	loop = 65536, count = 334400
+>   	loop = 131072, count = 656908
+>   	loop = 262144, count = 1315441
+>   	loop = 524288, count = 2657481
+>   	loop = 1048576, count = 5258193
+>   	loop = 65536, count = 491938
+>   	loop = 131072, count = 965755
+>   	loop = 262144, count = 1666277
+>   	loop = 524288, count = 3516123
+>   	loop = 1048576, count = 6759204
+>   OK
+>   make: Leaving directory '/home/nakamura/build_work/build_kernel/linux_kernel/linux/tools/lib/perf'
+> 
+> 
+> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+> ---
+>  tools/lib/perf/tests/test-evlist.c | 183 +++++++++++++++++++++++++++++
+>  1 file changed, 183 insertions(+)
+> 
+> diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+> index c67c83399170..ca7a9542f40e 100644
+> --- a/tools/lib/perf/tests/test-evlist.c
+> +++ b/tools/lib/perf/tests/test-evlist.c
+> @@ -21,6 +21,10 @@
+>  #include "tests.h"
+>  #include <internal/evsel.h>
+>  
+> +#define EVENT_NUM 15
+> +#define WAIT_COUNT 100000000UL
+> +
+> +
+>  static int libperf_print(enum libperf_print_level level,
+>  			 const char *fmt, va_list ap)
+>  {
+> @@ -413,6 +417,184 @@ static int test_mmap_cpus(void)
+>  	return 0;
+>  }
+>  
+> +static double display_error(long long average,
+> +		     long long high,
+> +		     long long low,
+> +		     long long expected) {
+> +
+> +	double error;
+> +
+> +	error = (((double)average - expected) / expected) * 100.0;
+> +
+> +	__T_VERBOSE("   Expected: %lld\n", expected);
+> +	__T_VERBOSE("   High: %lld   Low:  %lld   Average:  %lld\n",
+> +			high, low, average);
+> +
+> +	__T_VERBOSE("   Average Error = %.2f%%\n",error);
+> +
+> +	return error;
+> +
+> +}
+> +
+> +static int test_stat_multiplexing(void)
+> +{
+> +	struct perf_counts_values expected_counts = { .val = 0 };
+> +	struct perf_counts_values multiplexing_counts[EVENT_NUM] = {{ .val = 0 },};
+> +	struct perf_thread_map *threads;
+> +	struct perf_evlist *evlist;
+> +	struct perf_evsel *evsel;
+> +	struct perf_event_attr attr = {
+> +		.type	     = PERF_TYPE_HARDWARE,
+> +		.config	     = PERF_COUNT_HW_INSTRUCTIONS,
+> +		.read_format = PERF_FORMAT_TOTAL_TIME_ENABLED |
+> +			       PERF_FORMAT_TOTAL_TIME_RUNNING,
+> +		.disabled    = 1,
+> +	};
+> +	int err, i, nonzero=0;
+> +	unsigned long count;
+> +	long long max = 0, min = 0, avg = 0;
+> +	double error = 0.0;
+> +
+> +
+> +	/* read for non-multiplexing event count */
+> +	threads = perf_thread_map__new_dummy();
+> +	__T("failed to create threads", threads);
+> +
+> +	perf_thread_map__set_pid(threads, 0, 0);
+> +
+> +	evsel = perf_evsel__new(&attr);
+> +	__T("failed to create evsel", evsel);
+> +
+> +	err = perf_evsel__open(evsel, NULL, threads);
+> +	__T("failed to open evsel", err == 0);
+> +
+> +	err = perf_evsel__enable(evsel);
+> +	__T("failed to enable evsel", err == 0);
+> +
+> +	/* wait loop */
+> +	count = WAIT_COUNT;
+> +	while(count--);
+> +
+> +	perf_evsel__read(evsel, 0, 0, &expected_counts);
+> +	__T("failed to read value for evsel", expected_counts.val != 0);
+> +	__T("failed to read non-multiplexing event count",
+> +	    expected_counts.ena == expected_counts.run);
+> +
+> +	err = perf_evsel__disable(evsel);
+> +	__T("failed to enable evsel", err == 0);
+> +
+> +	perf_evsel__close(evsel);
+> +	perf_evsel__delete(evsel);
+> +
+> +	perf_thread_map__put(threads);
+> +
+> +
+> +	/* read for multiplexing event count */
+> +	threads = perf_thread_map__new_dummy();
+> +	__T("failed to create threads", threads);
+> +
+> +	perf_thread_map__set_pid(threads, 0, 0);
+> +
+> +	evlist = perf_evlist__new();
+> +	__T("failed to create evlist", evlist);
+> +
+> +	for (i = 0; i < EVENT_NUM; i++) {
+> +		evsel = perf_evsel__new(&attr);
+> +		__T("failed to create evsel1", evsel);
+> +
+> +		perf_evlist__add(evlist, evsel);
+> +	}
+> +	perf_evlist__set_maps(evlist, NULL, threads);
+> +
+> +	err = perf_evlist__open(evlist);
+> +	__T("failed to open evsel", err == 0);
+> +
+> +	perf_evlist__enable(evlist);
+> +
+> +	/* wait loop */
+> +	count = WAIT_COUNT;
+> +	while(count--);
+> +
+> +	i = 0;
+> +	perf_evlist__for_each_evsel(evlist, evsel) {
+> +		perf_evsel__read(evsel, 0, 0, &multiplexing_counts[i]);
+> +		__T("failed to read value for evsel", multiplexing_counts[i].val != 0);
+> +		i++;
+> +	}
+> +
+> +	perf_evlist__disable(evlist);
+> +
+> +
+> +	min = multiplexing_counts[0].val;
+> +	for (i = 0; i < EVENT_NUM; i++) {
+> +		__T_VERBOSE("\tcount = %lu, run = %lu, enable = %lu\n",
+> +			    multiplexing_counts[i].val, multiplexing_counts[i].run,
+> +			    multiplexing_counts[i].ena);
+> +
+> +		if (multiplexing_counts[i].val > max)
+> +			max = multiplexing_counts[i].val;
+> +
+> +		if (multiplexing_counts[i].val < min)
+> +			min = multiplexing_counts[i].val;
+> +
+> +		avg += multiplexing_counts[i].val;
+> +
+> +		if (multiplexing_counts[i].val != 0)
+> +			nonzero++;
+> +	}
+> +
+> +	avg = avg / nonzero;
+> +
+> +	error = display_error(avg, max, min, expected_counts.val);
+> +
+> +	__T("Error out of range!", ((error <= 1.0) && (error >= -1.0)));
+> +
+> +	perf_evlist__close(evlist);
+> +	perf_evlist__delete(evlist);
+> +
+> +	perf_thread_map__put(threads);
+> +
+> +
+> +	/* Verify that no division by zero occurs */
+> +	threads = perf_thread_map__new_dummy();
+> +	__T("failed to create threads", threads);
+> +
+> +	perf_thread_map__set_pid(threads, 0, 0);
+> +
+> +	evlist = perf_evlist__new();
+> +	__T("failed to create evlist", evlist);
+> +
+> +	for (i = 0; i < EVENT_NUM; i++) {
+> +		evsel = perf_evsel__new(&attr);
+> +		__T("failed to create evsel1", evsel);
+> +
+> +		perf_evlist__add(evlist, evsel);
+> +	}
+> +	perf_evlist__set_maps(evlist, NULL, threads);
+> +
+> +	err = perf_evlist__open(evlist);
+> +	__T("failed to open evsel", err == 0);
+> +
+> +	perf_evlist__enable(evlist);
+> +
+> +	/* Reproduce run=0 by not executing wait loop. */
+> +
+> +	i = 0;
+> +	perf_evlist__for_each_evsel(evlist, evsel) {
+> +		perf_evsel__read(evsel, 0, 0, &multiplexing_counts[i]);
+> +		__T_VERBOSE("\tcount = %lu, run = %lu, enable = %lu\n",
+> +			    multiplexing_counts[i].val, multiplexing_counts[i].run,
+> +			    multiplexing_counts[i].ena);
+> +		i++;
+> +	}
+> +
+> +	perf_evlist__close(evlist);
+> +	perf_evlist__delete(evlist);
+> +
+> +	perf_thread_map__put(threads);
+> +	return 0;
+> +}
+> +
+>  int test_evlist(int argc, char **argv)
+>  {
+>  	__T_START;
+> @@ -424,6 +606,7 @@ int test_evlist(int argc, char **argv)
+>  	test_stat_thread_enable();
+>  	test_mmap_thread();
+>  	test_mmap_cpus();
+> +	test_stat_multiplexing();
+>  
+>  	__T_END;
+>  	return tests_failed == 0 ? 0 : -1;
+> -- 
+> 2.27.0
+
+-- 
+
+- Arnaldo
