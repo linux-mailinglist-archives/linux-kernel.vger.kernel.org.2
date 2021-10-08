@@ -2,77 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C7F426B36
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54043426B51
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242111AbhJHMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49968 "EHLO mail.kernel.org"
+        id S242191AbhJHMyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:54:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:50188 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241844AbhJHMxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:53:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E190C60FC2;
-        Fri,  8 Oct 2021 12:51:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633697487;
-        bh=yN6jNyqY0tdmECHxR1wtroW8A8lILV+Zejp7DTxpLgA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/1sMv63+8hQRt+O4kGRixzo+6wh7EcvWsWC/P+Su88x09542URplEQbblqIKy14H
-         ohLwCXe19nsPPwS08M9VoPUYcOhxvyiBAt/mbgq7HnWVGrYB/v/HB33Punj8Re+n4z
-         40Nukq94SbgsBfxJeUb2MJF34Dm6pVrm4+qM3Gp//b+68yS7qBoIDDXvk33wSh8Jht
-         KS+mE6GpTp8VWblR4fM3OVa0VyOEe50JzGey99xCzcLxCabgvo2SCNHFoR1rDTa0Wi
-         Yr2kT46+UtEHbu84uiAwghJ2v6B3O6DV/kXmmIFccUauFbo+vgGhLkhCsoOYyVn3H1
-         WCj4T62ZErGcA==
-Date:   Fri, 8 Oct 2021 13:51:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     cy_huang <u0084500@gmail.com>
-Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        robh+dt@kernel.org, lgirdwood@gmail.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        cy_huang@richtek.com, devicetree@vger.kernel.org,
-        allen_lin@richtek.com
-Subject: Re: [PATCH v3 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
-Message-ID: <YWA+ykStTEyzRbEy@sirena.org.uk>
-References: <1633668612-25524-1-git-send-email-u0084500@gmail.com>
- <1633668612-25524-3-git-send-email-u0084500@gmail.com>
+        id S241963AbhJHMyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:54:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3F616D;
+        Fri,  8 Oct 2021 05:52:58 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.27.111])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 138C33F66F;
+        Fri,  8 Oct 2021 05:52:41 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 13:52:38 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     keescook@chromium.org, jannh@google.com,
+        linux-kernel@vger.kernel.org, vcaputo@pengaru.com,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, akpm@linux-foundation.org,
+        christian.brauner@ubuntu.com, amistry@google.com,
+        Kenta.Tada@sony.com, legion@kernel.org,
+        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
+        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
+        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
+        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, ebiederm@xmission.com,
+        ohoono.kwon@samsung.com, kaleshsingh@google.com,
+        yifeifz2@illinois.edu, jpoimboe@redhat.com,
+        linux-hardening@vger.kernel.org, linux-arch@vger.kernel.org,
+        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
+        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
+        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
+        chris@zankel.net
+Subject: Re: [PATCH 7/7] arch: Fix STACKTRACE_SUPPORT
+Message-ID: <20211008125238.GC976@C02TD0UTHF1T.local>
+References: <20211008111527.438276127@infradead.org>
+ <20211008111626.455137084@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="msEr/jdBSU575gqS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1633668612-25524-3-git-send-email-u0084500@gmail.com>
-X-Cookie: When your memory goes, forget it!
+In-Reply-To: <20211008111626.455137084@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 08, 2021 at 01:15:34PM +0200, Peter Zijlstra wrote:
+> A few archs got save_stack_trace_tsk() vs in_sched_functions() wrong.
 
---msEr/jdBSU575gqS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+As mentioned on the last patch, it's not clear to me what the intended
+semantic of save_stack_trace_tsk() is w.r.t. sched functions, as the
+naive reading is that it should report *everything* a task may return
+to.
 
-On Fri, Oct 08, 2021 at 12:50:12PM +0800, cy_huang wrote:
+If it's meant to skip sched functions, I think we need some explicit
+documentation/commentary to that effect. In that case, there are other
+architectures that need a fixup (e.g. arm64).
 
-> +static const struct snd_kcontrol_new rt9120_snd_controls[] = {
-> +	SOC_SINGLE_TLV("MS Volume", RT9120_REG_MSVOL, 0, 2047, 1, digital_gain),
-> +	SOC_SINGLE("SPK Gain", RT9120_REG_SPKGAIN, 0, 7, 0),
+TBH, I don't think it *should* skip sched functions, and we should
+filter out sched functions as required at a higher level, or deprecate
+this interface in favour of arch_stack_walk() where it's easier to have
+common filter functions invoked during the walk....
 
-Volume controls should end in Volume even if they don't have TLV
-information so applications know how to render them.  I'll fix
-this up as I apply.
+Thanks,
+Mark.
 
---msEr/jdBSU575gqS
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFgPskACgkQJNaLcl1U
-h9DbbAf/ViOSI75UvPC1A+pp7ykPb2CF0lo+AsflYDs6bPHdCBnzsKecBpQB3A8K
-gLHD6jFdEEKhAwhvLpzQqLU5ytwDkPrY81ebrgwOrIzCHR0jk9dq1ZYEyim8k0UZ
-TBmFmIgQ+PEQ/JjkQKCPu20jzZBVFI5sEZ/Q6Ar1mWVO/GnVuxWF3Kw9fCxbxh2Y
-Dan9EeLRo0PHBT6DXjh3fV1kexTV30npTLgff3XGcAoXKjgLHLfZTEgPQuxqfDLX
-NlRK0djS7ZwXEEGFwcWE+w7UBfZC/I/wxeeGS1VsCVTwMHTPIVYe+Ip4Dj+8hbBL
-xfDreeXlMm4P8GvDPbY4dFVNylrM5w==
-=+qxg
------END PGP SIGNATURE-----
-
---msEr/jdBSU575gqS--
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>  arch/csky/kernel/stacktrace.c  |    7 ++++++-
+>  arch/mips/kernel/stacktrace.c  |   27 ++++++++++++++++-----------
+>  arch/nds32/kernel/stacktrace.c |   21 +++++++++++----------
+>  3 files changed, 33 insertions(+), 22 deletions(-)
+> 
+> --- a/arch/csky/kernel/stacktrace.c
+> +++ b/arch/csky/kernel/stacktrace.c
+> @@ -122,12 +122,17 @@ static bool save_trace(unsigned long pc,
+>  	return __save_trace(pc, arg, false);
+>  }
+>  
+> +static bool save_trace_nosched(unsigned long pc, void *arg)
+> +{
+> +	return __save_trace(pc, arg, true);
+> +}
+> +
+>  /*
+>   * Save stack-backtrace addresses into a stack_trace buffer.
+>   */
+>  void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+>  {
+> -	walk_stackframe(tsk, NULL, save_trace, trace);
+> +	walk_stackframe(tsk, NULL, save_trace_nosched, trace);
+>  }
+>  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+>  
+> --- a/arch/mips/kernel/stacktrace.c
+> +++ b/arch/mips/kernel/stacktrace.c
+> @@ -66,16 +66,7 @@ static void save_context_stack(struct st
+>  #endif
+>  }
+>  
+> -/*
+> - * Save stack-backtrace addresses into a stack_trace buffer.
+> - */
+> -void save_stack_trace(struct stack_trace *trace)
+> -{
+> -	save_stack_trace_tsk(current, trace);
+> -}
+> -EXPORT_SYMBOL_GPL(save_stack_trace);
+> -
+> -void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+> +static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
+>  {
+>  	struct pt_regs dummyregs;
+>  	struct pt_regs *regs = &dummyregs;
+> @@ -88,6 +79,20 @@ void save_stack_trace_tsk(struct task_st
+>  		regs->cp0_epc = tsk->thread.reg31;
+>  	} else
+>  		prepare_frametrace(regs);
+> -	save_context_stack(trace, tsk, regs, tsk == current);
+> +	save_context_stack(trace, tsk, regs, savesched);
+> +}
+> +
+> +/*
+> + * Save stack-backtrace addresses into a stack_trace buffer.
+> + */
+> +void save_stack_trace(struct stack_trace *trace)
+> +{
+> +	__save_stack_trace_tsk(current, trace, true);
+> +}
+> +EXPORT_SYMBOL_GPL(save_stack_trace);
+> +
+> +void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+> +{
+> +	__save_stack_trace_tsk(tsk, trace, false);
+>  }
+>  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+> --- a/arch/nds32/kernel/stacktrace.c
+> +++ b/arch/nds32/kernel/stacktrace.c
+> @@ -6,25 +6,16 @@
+>  #include <linux/stacktrace.h>
+>  #include <linux/ftrace.h>
+>  
+> -void save_stack_trace(struct stack_trace *trace)
+> -{
+> -	save_stack_trace_tsk(current, trace);
+> -}
+> -EXPORT_SYMBOL_GPL(save_stack_trace);
+> -
+> -void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+> +static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
+>  {
+>  	unsigned long *fpn;
+>  	int skip = trace->skip;
+> -	int savesched;
+>  	int graph_idx = 0;
+>  
+>  	if (tsk == current) {
+>  		__asm__ __volatile__("\tori\t%0, $fp, #0\n":"=r"(fpn));
+> -		savesched = 1;
+>  	} else {
+>  		fpn = (unsigned long *)thread_saved_fp(tsk);
+> -		savesched = 0;
+>  	}
+>  
+>  	while (!kstack_end(fpn) && !((unsigned long)fpn & 0x3)
+> @@ -50,4 +41,14 @@ void save_stack_trace_tsk(struct task_st
+>  		fpn = (unsigned long *)fpp;
+>  	}
+>  }
+> +void save_stack_trace(struct stack_trace *trace)
+> +{
+> +	__save_stack_trace_tsk(current, trace, true);
+> +}
+> +EXPORT_SYMBOL_GPL(save_stack_trace);
+> +
+> +void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
+> +{
+> +	__save_stack_trace_tsk(tsk, trace, false);
+> +}
+>  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
+> 
+> 
