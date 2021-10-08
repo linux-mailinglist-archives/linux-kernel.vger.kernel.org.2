@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABE8427358
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA4342735A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243522AbhJHWAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:00:14 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:35368 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhJHWAL (ORCPT
+        id S243542AbhJHWBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231774AbhJHWBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:00:11 -0400
-Received: by mail-oi1-f170.google.com with SMTP id n64so15562778oih.2;
-        Fri, 08 Oct 2021 14:58:15 -0700 (PDT)
+        Fri, 8 Oct 2021 18:01:46 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C67C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:59:48 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id k26so9284325pfi.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:59:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=37QohPvu5nxduVScyuuc1g40BjSdo1039ajksqcN9ds=;
+        b=DHqd/Jjp5ezOy5swGeDNqrw79op/otO2UwW027Kxroza1uWcW5DIVbMHQAGojlQ5D6
+         bVegpv70K42eP/J5lqXzwZ0Rivufe/kPgbyoePUE3p4CbxUj4RjdOQjVmvIOf7WK4Xd0
+         +EUAKmYhUsQ7N9lFs/WzS3sI+nQ1ofmcgDmp8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J+PB1GhDEx5QjCPzMUbl+MUlC9KDbTpIS4i7gs7AJxk=;
-        b=WEpqOwVb6ngRBTjKo40dkiEIb1Ft3DuWUy8tVBfXpKr2uevMR/QhaS48xEkmhFvPvP
-         10H7KEV3+WHJjYbqOH9TAnc9LQj0PRg/dncQbOCPlSv47K1a8DCFzZPTQUPdHV6gpaej
-         kyeF1fnrE4QnZm3EdX7GMm/zBg9+gdfj4ASyXgFMjhUkGiDpQ8dJO1pa4FpzZv0EhQK+
-         4MqTPIGuS5jHi8Xw4KG+qa0oJvHHu7o7vf49RlwTmwBNuZaSRfNld89LomKe5rn+NFzb
-         d7xh8kE7FavD/UdeqrPnwIeTxZjMIa8Q3ri3qlxgsD0M0LYvfn/WGiZOZClRA1yH0QtU
-         LKpw==
-X-Gm-Message-State: AOAM531gaLiTyukCoRe6B2kpPAw8BVWAsDCFKL/kEKjxtPP8yvIU/iTe
-        Jr+DSHd2anUkbmYw2OXUXg==
-X-Google-Smtp-Source: ABdhPJwJXLGgMO3pWGsrCW8mdAxa0PsY9A5IlolFsjx2OCeIr+FJ1Tl1xWw/2AZ+gYpjjrSfvCRY2w==
-X-Received: by 2002:aca:4303:: with SMTP id q3mr11391664oia.9.1633730295280;
-        Fri, 08 Oct 2021 14:58:15 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i24sm134566oie.42.2021.10.08.14.58.14
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=37QohPvu5nxduVScyuuc1g40BjSdo1039ajksqcN9ds=;
+        b=Qf6uYFh1L6tncYQs40MGXSIVoMxHfL5At2515IsuFslW9LXy48tv3DfVRl/XwPK4Ak
+         rjXG+GIU1S0E2xPTYgm4r7GR+I1xmQJLaFnIDfSl9UtwAM1qangfAaLGNwQ8pvkUuT8l
+         c1wq1Ohdhz442TGCtwaOuPh3i1lzQ5+sWwjpw4ip1tcn1wtu8nL9dd3qbFMHMDhlbdA7
+         JWkJsWE37Xq0QPjMz2lWIjbGMH9T0iQtb80x9bj0Z2yt7ATYnXEE/MF7cXlzZ8BEp5QG
+         2aBG1E5x+Kz/EWDMWqByX8T2I0/HAfo9vjSDkgoURvPgj2TiBx5aVQsZFRvlCduBCMX+
+         qu3w==
+X-Gm-Message-State: AOAM533jl8CDa1TIxSmF3/s0L9MVWxZ8laY7cXpyUaOhO+9lFsDW0pJs
+        y7RbV8wIAv1PX6OmZ4ZK3t0U3g==
+X-Google-Smtp-Source: ABdhPJxhojz153cZhADfd21xUjR93mbEb0SjlWllpC1kbQ33IDVo1usYmUAthMH0YvAohG9l7myRrQ==
+X-Received: by 2002:a63:7d42:: with SMTP id m2mr6708955pgn.349.1633730387828;
+        Fri, 08 Oct 2021 14:59:47 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:60ee:fc0b:3092:ca2b])
+        by smtp.gmail.com with ESMTPSA id y22sm12277335pjj.33.2021.10.08.14.59.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:58:14 -0700 (PDT)
-Received: (nullmailer pid 3389719 invoked by uid 1000);
-        Fri, 08 Oct 2021 21:58:13 -0000
-Date:   Fri, 8 Oct 2021 16:58:13 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     srinivas.kandagatla@linaro.org, plai@codeaurora.org,
-        robh+dt@kernel.org, lgirdwood@gmail.com, judyhsiao@chromium.org,
-        broonie@kernel.org, tiwai@suse.com, rohitkr@codeaurora.org,
-        devicetree@vger.kernel.org, agross@kernel.org,
-        bgoswami@codeaurora.org, perex@perex.cz,
-        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org,
-        swboyd@chromium.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: Re: [PATCH v3 2/5] ASoC: qcom: dt-bindings: Add compatible names for
- lpass sc7280 digital codecs
-Message-ID: <YWC+9TjkadLfJcV0@robh.at.kernel.org>
-References: <1633702144-19017-1-git-send-email-srivasam@codeaurora.org>
- <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
+        Fri, 08 Oct 2021 14:59:47 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Jiang Wang <jiang.wang@bytedance.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: [PATCH] af_unix: Rename UNIX-DGRAM to UNIX to maintain backwards compatability
+Date:   Fri,  8 Oct 2021 14:59:45 -0700
+Message-Id: <20211008215946.3961353-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1633702144-19017-3-git-send-email-srivasam@codeaurora.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021 19:39:01 +0530, Srinivasa Rao Mandadapu wrote:
-> Update compatible names in va, wsa, rx and tx macro codes for lpass sc7280
-> 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
->  Documentation/devicetree/bindings/sound/qcom,lpass-rx-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-tx-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml  | 4 +++-
->  Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml | 4 +++-
->  4 files changed, 12 insertions(+), 4 deletions(-)
-> 
+Then name of this protocol changed in commit 94531cfcbe79 ("af_unix: Add
+unix_stream_proto for sockmap") because that commit added stream support
+to the af_unix protocol. Renaming the existing protocol makes a ChromeOS
+protocol test[1] fail now that the name has changed in
+/proc/net/protocols from "UNIX" to "UNIX-DGRAM".
 
+Let's put the name back to how it was while keeping the stream protocol
+as "UNIX-STREAM" so that the procfs interface doesn't change. This fixes
+the test and maintains backwards compatibility in proc.
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+Cc: Jiang Wang <jiang.wang@bytedance.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Cong Wang <cong.wang@bytedance.com>
+Cc: Jakub Sitnicki <jakub@cloudflare.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: Dmitry Osipenko <digetx@gmail.com>
+Link: https://source.chromium.org/chromiumos/chromiumos/codesearch/+/main:src/platform/tast-tests/src/chromiumos/tast/local/bundles/cros/network/supported_protocols.go;l=50;drc=e8b1c3f94cb40a054f4aa1ef1aff61e75dc38f18 [1]
+Fixes: 94531cfcbe79 ("af_unix: Add unix_stream_proto for sockmap")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ net/unix/af_unix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If a tag was not added on purpose, please state why and what changed.
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index efac5989edb5..26f92325d94b 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -828,7 +828,7 @@ static void unix_unhash(struct sock *sk)
+ }
+ 
+ struct proto unix_dgram_proto = {
+-	.name			= "UNIX-DGRAM",
++	.name			= "UNIX",
+ 	.owner			= THIS_MODULE,
+ 	.obj_size		= sizeof(struct unix_sock),
+ 	.close			= unix_close,
+
+base-commit: 9e1ff307c779ce1f0f810c7ecce3d95bbae40896
+-- 
+https://chromeos.dev
 
