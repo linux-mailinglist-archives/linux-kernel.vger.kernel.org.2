@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C1F426928
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADBC9426943
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241875AbhJHLeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:34:17 -0400
+        id S242592AbhJHLfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:50 -0400
 Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240374AbhJHLcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0905610E5;
-        Fri,  8 Oct 2021 11:30:16 +0000 (UTC)
+        id S240857AbhJHLdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:33:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CAC16101A;
+        Fri,  8 Oct 2021 11:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692617;
-        bh=W8rmTQR7iCo5PXnSQzhXVzl0KtSj4kOgG2OnmvjnvpY=;
+        s=korg; t=1633692660;
+        bh=QzJLtmy/dBqYkwtm+nx3JK5csRcCgkF9+xbvX4U8p8A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wAVKl02y5DCds78/fKYNA22yvyRf+LGVlh4NYuEBeHql04NlJsmnz5eXe/63Hajb1
-         M8c4Go4HZ5QmylDI7iNYL1U5uxFs7xbGmuqGvvlQ0A8kFCq7CE5Lj5MFQZVpTlWShT
-         zVA9Isml1BWOXcECzObyPwTPvAcpzWLi7mqJ/nIU=
+        b=xdbFExX5jJM1UwiOl8IKo38oiydVyA390q/yNA0Vv4AfGBO6STv0Hplsu9qeGo+0n
+         JiZskc0nni+x2WIzlCFBfp1sO+yJpxROR0eK4y1Ad42JcYha0WPfpbz3FuzAL3VX0R
+         vXKTE6Z5KO6HhNxQX9IPMBJ2xrw+2Ar34vv7NZXI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anand K Mistry <amistry@google.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.4 14/16] perf/x86: Reset destroy callback on event init failure
+        stable@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
+        Ming Lei <ming.lei@redhat.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Hannes Reinecke <hare@suse.de>,
+        James Smart <jsmart2021@gmail.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 17/29] nvme-fc: update hardware queues before using them
 Date:   Fri,  8 Oct 2021 13:28:04 +0200
-Message-Id: <20211008112715.945574360@linuxfoundation.org>
+Message-Id: <20211008112717.531254194@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-References: <20211008112715.444305067@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,49 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anand K Mistry <amistry@google.com>
+From: Daniel Wagner <dwagner@suse.de>
 
-commit 02d029a41dc986e2d5a77ecca45803857b346829 upstream.
+[ Upstream commit 555f66d0f8a38537456acc77043d0e4469fcbe8e ]
 
-perf_init_event tries multiple init callbacks and does not reset the
-event state between tries. When x86_pmu_event_init runs, it
-unconditionally sets the destroy callback to hw_perf_event_destroy. On
-the next init attempt after x86_pmu_event_init, in perf_try_init_event,
-if the pmu's capabilities includes PERF_PMU_CAP_NO_EXCLUDE, the destroy
-callback will be run. However, if the next init didn't set the destroy
-callback, hw_perf_event_destroy will be run (since the callback wasn't
-reset).
+In case the number of hardware queues changes, we need to update the
+tagset and the mapping of ctx to hctx first.
 
-Looking at other pmu init functions, the common pattern is to only set
-the destroy callback on a successful init. Resetting the callback on
-failure tries to replicate that pattern.
+If we try to create and connect the I/O queues first, this operation
+will fail (target will reject the connect call due to the wrong number
+of queues) and hence we bail out of the recreate function. Then we
+will to try the very same operation again, thus we don't make any
+progress.
 
-This was discovered after commit f11dd0d80555 ("perf/x86/amd/ibs: Extend
-PERF_PMU_CAP_NO_EXCLUDE to IBS Op") when the second (and only second)
-run of the perf tool after a reboot results in 0 samples being
-generated. The extra run of hw_perf_event_destroy results in
-active_events having an extra decrement on each perf run. The second run
-has active_events == 0 and every subsequent run has active_events < 0.
-When active_events == 0, the NMI handler will early-out and not record
-any samples.
-
-Signed-off-by: Anand K Mistry <amistry@google.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210929170405.1.I078b98ee7727f9ae9d6df8262bad7e325e40faf0@changeid
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/core.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/host/fc.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -2108,6 +2108,7 @@ static int x86_pmu_event_init(struct per
- 	if (err) {
- 		if (event->destroy)
- 			event->destroy(event);
-+		event->destroy = NULL;
+diff --git a/drivers/nvme/host/fc.c b/drivers/nvme/host/fc.c
+index a0bcec33b020..86c6862e71a1 100644
+--- a/drivers/nvme/host/fc.c
++++ b/drivers/nvme/host/fc.c
+@@ -2952,14 +2952,6 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+ 	if (ctrl->ctrl.queue_count == 1)
+ 		return 0;
+ 
+-	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+-	if (ret)
+-		goto out_free_io_queues;
+-
+-	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
+-	if (ret)
+-		goto out_delete_hw_queues;
+-
+ 	if (prior_ioq_cnt != nr_io_queues) {
+ 		dev_info(ctrl->ctrl.device,
+ 			"reconnect: revising io queue count from %d to %d\n",
+@@ -2969,6 +2961,14 @@ nvme_fc_recreate_io_queues(struct nvme_fc_ctrl *ctrl)
+ 		nvme_unfreeze(&ctrl->ctrl);
  	}
  
- 	if (READ_ONCE(x86_pmu.attr_rdpmc) &&
++	ret = nvme_fc_create_hw_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
++	if (ret)
++		goto out_free_io_queues;
++
++	ret = nvme_fc_connect_io_queues(ctrl, ctrl->ctrl.sqsize + 1);
++	if (ret)
++		goto out_delete_hw_queues;
++
+ 	return 0;
+ 
+ out_delete_hw_queues:
+-- 
+2.33.0
+
 
 
