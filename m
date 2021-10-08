@@ -2,140 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5C042742E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12CDB427438
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243784AbhJHX33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58018 "EHLO
+        id S243823AbhJHXgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhJHX32 (ORCPT
+        with ESMTP id S243777AbhJHXgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:29:28 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EAEC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:27:32 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so7790076otv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:27:32 -0700 (PDT)
+        Fri, 8 Oct 2021 19:36:40 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1310C061570;
+        Fri,  8 Oct 2021 16:34:44 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id p13so42573334edw.0;
+        Fri, 08 Oct 2021 16:34:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UcoB+5fCYF52we3qe/RiFWGs8jkkNhY5tHgymk6y40o=;
-        b=NLD/D3P5mqq3fW68lN15+KWSAZeFqaGF+aJuxw9CoGyup0gCHTxodQpE6VivP1j1xp
-         5aQX9A9E5vENxJWzhc/KnpOEfQf4yVBXtkQ1jV68tKH2Xc6W5i1zzZH4zwrERc4fEikS
-         YjQs8tmh3d/u/5mjwciWLPIuWjtmNbaXjo9DNw6T2JbVxPABfoSIMLHv6K/wdb9LC3Ce
-         Uz4OUoaTKfxJtcwA9kbHN9khRTkegkU0scHi0jdo0bhV9Zr+eWqeR2cfOylIy3HBlpNG
-         +87OL0YMB3eoEKtagaw+n9hLPPuVYOpuZGqBS+RhcXe5gY6GgvMTXbMsDrce66xKl9wG
-         Xy4w==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BbqqoyYUIZZYbznL3kKosmLxfC3pf231vxrIrzT+TdU=;
+        b=N6juvDIt1jwZL+1At7QVhifWJofDBtVu9O1zB0NR/EG1MMmZo8EzIcay+pIB/ukUaB
+         4pza5E8/Mygmf7FtRQc6HwvdffkSbUuveoVlzX3Az7YiICU21HZnDKRr9A96xCycVNWn
+         I9gbgNevDDzh+BQxGP57DexSzxIOaCmuoAJdGT0iv5UIgkPS5V5CwwxaUOahFiuva+lZ
+         JaadQpSSNilDuFa3rYe7jzEzko/DK3BDE3ZtbC/RblLt+wXigkqTeJiuk3M4jjb5I3F5
+         5G/xzb/vj9xST9lVogOmPnhzBg7x2Yijf3ZirWi/bPwhEUOQOtUN9U+xHZlDrCDsF1mu
+         C5bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UcoB+5fCYF52we3qe/RiFWGs8jkkNhY5tHgymk6y40o=;
-        b=5Rp301M9eab78M4sy44J/OG89HoBSdmeJJqtpBRPwDRDtgiKSSa9SnvmOzwuJtNux1
-         BOluuwIoZT3r+uT0g5REIsxZ17GCsUYiXO4poTL8yHxqlkposOhRvjZaZMrPAC1W+bv9
-         ytKmlfn29igkjC92LK/UhiPO6APbteT8lED5pVf+n7FPjKovkJfAoCIYzn6KdB90Yb82
-         dn4GADw/QKnnRw2lXL6ronQPnu/5up1IrJiM/QhxRv9SmXCmmERJ2qm1+ELhEx2xTKry
-         j7fQi7aUWKx4lnRL2mw/0TxVxogSZIlvN8mup6cEUcAq0Kew9E39GkpQlrFD7zcFqN3v
-         V42w==
-X-Gm-Message-State: AOAM531W2qFHcHNGqUN8QEVb3CtltIo65TkVNm24dIqPHRPDdxRtO8To
-        paQsJX8NDf9fnVUhBay2Tc6g35ofhUAZZA==
-X-Google-Smtp-Source: ABdhPJxJ6Y5o8Ma3y0qrOQzeuoTAxD9GmIPjDyw5Vh2WcihB6FL1lmd9w2RqDM0YuWzvO8wZn8Nu2w==
-X-Received: by 2002:a05:6830:60c:: with SMTP id w12mr11030494oti.370.1633735651730;
-        Fri, 08 Oct 2021 16:27:31 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id h11sm165108otu.49.2021.10.08.16.27.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BbqqoyYUIZZYbznL3kKosmLxfC3pf231vxrIrzT+TdU=;
+        b=u2HoYZySMddKJJXQVjaI2swVVZ145hZb0un7F9yD9GV6D6VPDk6H8IUt46G+3NaJvc
+         I0l1RGc2Llq4x3gVAd816HIFtpapHZVeAX74RnhxqeIf4fhULmJ7shu0lItERrfpRv/J
+         ccMy2Ui0wFaaDq0b4ZNjQjmLlk2mCVCM5d5v2bx4zoqWom9gVf88YSzcHjOHk+z+VbR5
+         fa45ihNV6L1Cx6URNS+AcK9oK/CCGDwOJzKgI/zLntkiIs0ktuxzdRo15wBWrz+WufTY
+         AoEwqeSCPJ0kEdhWKqG7M5qYWWvQBZ7qlDgSdc66mWfLQ+xONtKyf9sdEZol4l9Dj3Gc
+         l2pQ==
+X-Gm-Message-State: AOAM5325IGg7U6PFTwx0Vsiwz6RuK01w4LaZHKeYfXehKFyuMQYQKvK3
+        ATcVyfCRqObVz2UqGW5GQPw=
+X-Google-Smtp-Source: ABdhPJwBGDFoRBplaNNL0bDGBfrzAAVZdu8hhunyEBJU+r8aI/SZXNp/+tWHHLxcaEFnA6cRVhWNdA==
+X-Received: by 2002:a17:906:1fc1:: with SMTP id e1mr7723208ejt.515.1633736083011;
+        Fri, 08 Oct 2021 16:34:43 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id b2sm300211edv.73.2021.10.08.16.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 16:27:31 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 16:29:09 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v5 2/4] rpmsg: char: Export eptdev create an destroy
- functions
-Message-ID: <YWDURVTg1PpxRDEu@ripper>
-References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
- <20210712123752.10449-3-arnaud.pouliquen@foss.st.com>
+        Fri, 08 Oct 2021 16:34:42 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [net PATCH 1/2] drivers: net: phy: at803x: fix resume for QCA8327 phy
+Date:   Sat,  9 Oct 2021 01:34:25 +0200
+Message-Id: <20211008233426.1088-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712123752.10449-3-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
-[..]
-> diff --git a/drivers/rpmsg/rpmsg_char.h b/drivers/rpmsg/rpmsg_char.h
-> new file mode 100644
-> index 000000000000..22573b60e008
-> --- /dev/null
-> +++ b/drivers/rpmsg/rpmsg_char.h
-> @@ -0,0 +1,49 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Copyright (C) STMicroelectronics 2021.
-> + */
-> +
-> +#ifndef __RPMSG_CHRDEV_H__
-> +#define __RPMSG_CHRDEV_H__
-> +
-> +#if IS_REACHABLE(CONFIG_RPMSG_CHAR)
+From Documentation phy resume triggers phy reset and restart
+auto-negotiation. Add a dedicated function to wait reset to finish as
+it was notice a regression where port sometime are not reliable after a
+suspend/resume session. The reset wait logic is copied from phy_poll_reset.
+Add dedicated suspend function to use genphy_suspend only with QCA8337
+phy and set only additional debug settings for QCA8327. With more test
+it was reported that QCA8327 doesn't proprely support this mode and
+using this cause the unreliability of the switch ports, especially the
+malfunction of the port0.
 
-This does allow you to build a kernel with RPMSG_CHAR=m and RPMSG_CTRL=y
-without link failures. Any modules in the system will be able to call
-rpmsg_chrdev_eptdev_create(), but the rpmsg_ctrl driver will only end up
-in the stub.
+Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/net/phy/at803x.c | 69 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 63 insertions(+), 6 deletions(-)
 
-This sounds like a recipe for a terrible debugging session...
+diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+index 3feee4d59030..c6c87b82c95c 100644
+--- a/drivers/net/phy/at803x.c
++++ b/drivers/net/phy/at803x.c
+@@ -92,9 +92,14 @@
+ #define AT803X_DEBUG_REG_5			0x05
+ #define AT803X_DEBUG_TX_CLK_DLY_EN		BIT(8)
+ 
++#define AT803X_DEBUG_REG_HIB_CTRL		0x0b
++#define   AT803X_DEBUG_HIB_CTRL_SEL_RST_80U	BIT(10)
++#define   AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE	BIT(13)
++
+ #define AT803X_DEBUG_REG_3C			0x3C
+ 
+ #define AT803X_DEBUG_REG_3D			0x3D
++#define   AT803X_DEBUG_GATE_CLK_IN1000		BIT(6)
+ 
+ #define AT803X_DEBUG_REG_1F			0x1F
+ #define AT803X_DEBUG_PLL_ON			BIT(2)
+@@ -1312,6 +1317,58 @@ static int qca83xx_config_init(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
++static int qca83xx_resume(struct phy_device *phydev)
++{
++	int ret, val;
++
++	/* Skip reset if not suspended */
++	if (!phydev->suspended)
++		return 0;
++
++	/* Reinit the port, reset values set by suspend */
++	qca83xx_config_init(phydev);
++
++	/* Reset the port on port resume */
++	phy_set_bits(phydev, MII_BMCR, BMCR_RESET | BMCR_ANENABLE);
++
++	/* On resume from suspend the switch execute a reset and
++	 * restart auto-negotiation. Wait for reset to complete.
++	 */
++	ret = phy_read_poll_timeout(phydev, MII_BMCR, val, !(val & BMCR_RESET),
++				    50000, 600000, true);
++	if (ret)
++		return ret;
++
++	msleep(1);
++
++	return 0;
++}
++
++static int qca83xx_suspend(struct phy_device *phydev)
++{
++	u16 mask = 0;
++
++	/* Only QCA8337 support actual suspend.
++	 * QCA8327 cause port unreliability when phy suspend
++	 * is set.
++	 */
++	if (phydev->drv->phy_id == QCA8337_PHY_ID) {
++		genphy_suspend(phydev);
++	} else {
++		mask |= ~(BMCR_SPEED1000 | BMCR_FULLDPLX);
++		phy_modify(phydev, MII_BMCR, mask, 0);
++	}
++
++	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_3D,
++			      AT803X_DEBUG_GATE_CLK_IN1000, 0);
++
++	at803x_debug_reg_mask(phydev, AT803X_DEBUG_REG_HIB_CTRL,
++			      AT803X_DEBUG_HIB_CTRL_EN_ANY_CHANGE |
++			      AT803X_DEBUG_HIB_CTRL_SEL_RST_80U, 0);
++
++	return 0;
++}
++
+ static struct phy_driver at803x_driver[] = {
+ {
+ 	/* Qualcomm Atheros AR8035 */
+@@ -1421,8 +1478,8 @@ static struct phy_driver at803x_driver[] = {
+ 	.get_sset_count		= at803x_get_sset_count,
+ 	.get_strings		= at803x_get_strings,
+ 	.get_stats		= at803x_get_stats,
+-	.suspend		= genphy_suspend,
+-	.resume			= genphy_resume,
++	.suspend		= qca83xx_suspend,
++	.resume			= qca83xx_resume,
+ }, {
+ 	/* QCA8327-A from switch QCA8327-AL1A */
+ 	.phy_id			= QCA8327_A_PHY_ID,
+@@ -1436,8 +1493,8 @@ static struct phy_driver at803x_driver[] = {
+ 	.get_sset_count		= at803x_get_sset_count,
+ 	.get_strings		= at803x_get_strings,
+ 	.get_stats		= at803x_get_stats,
+-	.suspend		= genphy_suspend,
+-	.resume			= genphy_resume,
++	.suspend		= qca83xx_suspend,
++	.resume			= qca83xx_resume,
+ }, {
+ 	/* QCA8327-B from switch QCA8327-BL1A */
+ 	.phy_id			= QCA8327_B_PHY_ID,
+@@ -1451,8 +1508,8 @@ static struct phy_driver at803x_driver[] = {
+ 	.get_sset_count		= at803x_get_sset_count,
+ 	.get_strings		= at803x_get_strings,
+ 	.get_stats		= at803x_get_stats,
+-	.suspend		= genphy_suspend,
+-	.resume			= genphy_resume,
++	.suspend		= qca83xx_suspend,
++	.resume			= qca83xx_resume,
+ }, };
+ 
+ module_phy_driver(at803x_driver);
+-- 
+2.32.0
 
-Regards,
-Bjorn
-
-> +/**
-> + * rpmsg_chrdev_eptdev_create() - register char device based on an endpoint
-> + * @rpdev:  prepared rpdev to be used for creating endpoints
-> + * @parent: parent device
-> + * @chinfo: associated endpoint channel information.
-> + *
-> + * This function create a new rpmsg char endpoint device to instantiate a new
-> + * endpoint based on chinfo information.
-> + */
-> +int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
-> +			       struct rpmsg_channel_info chinfo);
-> +
-> +/**
-> + * rpmsg_chrdev_eptdev_destroy() - destroy created char device endpoint.
-> + * @data: private data associated to the endpoint device
-> + *
-> + * This function destroys a rpmsg char endpoint device created by the RPMSG_DESTROY_EPT_IOCTL
-> + * control.
-> + */
-> +int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data);
-> +
-> +#else  /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
-> +
-> +static inline int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent,
-> +					     struct rpmsg_channel_info chinfo)
-> +{
-> +	return -EINVAL;
-> +}
-> +
-> +static inline int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +
-> +	return 0;
-> +}
-> +
-> +#endif /*IS_REACHABLE(CONFIG_RPMSG_CHAR) */
-> +
-> +#endif /*__RPMSG_CHRDEV_H__ */
-> -- 
-> 2.17.1
-> 
