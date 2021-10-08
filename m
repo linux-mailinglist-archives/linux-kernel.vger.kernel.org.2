@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CA342697E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C6242693B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242578AbhJHLiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:38:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59392 "EHLO mail.kernel.org"
+        id S242332AbhJHLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241501AbhJHLf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:35:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1624861505;
-        Fri,  8 Oct 2021 11:32:00 +0000 (UTC)
+        id S240452AbhJHLcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB4B86120C;
+        Fri,  8 Oct 2021 11:30:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692721;
-        bh=i0ZX03M/4AJvVgj9jzQFNICM8I7YZ7H8d2FqLXzyEas=;
+        s=korg; t=1633692641;
+        bh=fvfh8yN3DDXYJ+M12dUjOYlWYBVTtwZpl4APIYlurcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hWhXDIDcgMMlGC/L0KzIBHvS++RmwzrMFqwEWcJxoClR6tAud8HzGtXs1rxP39luz
-         1fb/25DHTtTN6Wmh/woHsKosQhO+KiVxcfhiON8Pt44uADOlQvpX9Yzmxst9wBQy9K
-         rRRma/0kuUGHyc/+tupruu7RZglk3DauZzxqqNPY=
+        b=mpkjm8NbnGMH6LzxORhWgwgeQcqZpiRU3g1yV28cVk+HPx04AEbNzSqJCGaAS+sxM
+         JFfE7PNfBeCcfn0P8TI4paYnzZ4YZ0R1Aq8iHm9L6yY864x2/3jyaQHl0r/LlblEFq
+         FxxDe3x7vtRpBVc1kgTkqMmJRplCkBD+0JelONVs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 15/48] scsi: sd: Free scsi_disk device via put_device()
+Subject: [PATCH 5.4 01/16] net: mdio: introduce a shutdown method to mdio device drivers
 Date:   Fri,  8 Oct 2021 13:27:51 +0200
-Message-Id: <20211008112720.530059641@linuxfoundation.org>
+Message-Id: <20211008112715.495475328@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
+References: <20211008112715.444305067@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,48 +44,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ming Lei <ming.lei@redhat.com>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit 265dfe8ebbabae7959060bd1c3f75c2473b697ed ]
+[ Upstream commit cf9579976f724ad517cc15b7caadea728c7e245c ]
 
-After a device is initialized via device_initialize() it should be freed
-via put_device(). sd_probe() currently gets this wrong, fix it up.
+MDIO-attached devices might have interrupts and other things that might
+need quiesced when we kexec into a new kernel. Things are even more
+creepy when those interrupt lines are shared, and in that case it is
+absolutely mandatory to disable all interrupt sources.
 
-Link: https://lore.kernel.org/r/20210906090112.531442-1-ming.lei@redhat.com
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Moreover, MDIO devices might be DSA switches, and DSA needs its own
+shutdown method to unlink from the DSA master, which is a new
+requirement that appeared after commit 2f1e8ea726e9 ("net: dsa: link
+interfaces with the DSA master to get rid of lockdep warnings").
+
+So introduce a ->shutdown method in the MDIO device driver structure.
+
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sd.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/net/phy/mdio_device.c | 11 +++++++++++
+ include/linux/mdio.h          |  3 +++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index b8d55af763f9..134c7a8145ef 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3441,15 +3441,16 @@ static int sd_probe(struct device *dev)
- 	}
+diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
+index c1d345c3cab3..b2dd293fc87e 100644
+--- a/drivers/net/phy/mdio_device.c
++++ b/drivers/net/phy/mdio_device.c
+@@ -180,6 +180,16 @@ static int mdio_remove(struct device *dev)
+ 	return 0;
+ }
  
- 	device_initialize(&sdkp->dev);
--	sdkp->dev.parent = dev;
-+	sdkp->dev.parent = get_device(dev);
- 	sdkp->dev.class = &sd_disk_class;
- 	dev_set_name(&sdkp->dev, "%s", dev_name(dev));
++static void mdio_shutdown(struct device *dev)
++{
++	struct mdio_device *mdiodev = to_mdio_device(dev);
++	struct device_driver *drv = mdiodev->dev.driver;
++	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
++
++	if (mdiodrv->shutdown)
++		mdiodrv->shutdown(mdiodev);
++}
++
+ /**
+  * mdio_driver_register - register an mdio_driver with the MDIO layer
+  * @new_driver: new mdio_driver to register
+@@ -194,6 +204,7 @@ int mdio_driver_register(struct mdio_driver *drv)
+ 	mdiodrv->driver.bus = &mdio_bus_type;
+ 	mdiodrv->driver.probe = mdio_probe;
+ 	mdiodrv->driver.remove = mdio_remove;
++	mdiodrv->driver.shutdown = mdio_shutdown;
  
- 	error = device_add(&sdkp->dev);
--	if (error)
--		goto out_free_index;
-+	if (error) {
-+		put_device(&sdkp->dev);
-+		goto out;
-+	}
+ 	retval = driver_register(&mdiodrv->driver);
+ 	if (retval) {
+diff --git a/include/linux/mdio.h b/include/linux/mdio.h
+index a7604248777b..0f1f784de80e 100644
+--- a/include/linux/mdio.h
++++ b/include/linux/mdio.h
+@@ -64,6 +64,9 @@ struct mdio_driver {
  
--	get_device(dev);
- 	dev_set_drvdata(dev, sdkp);
- 
- 	gd->major = sd_major((index & 0xf0) >> 4);
+ 	/* Clears up any memory if needed */
+ 	void (*remove)(struct mdio_device *mdiodev);
++
++	/* Quiesces the device on system shutdown, turns off interrupts etc */
++	void (*shutdown)(struct mdio_device *mdiodev);
+ };
+ #define to_mdio_driver(d)						\
+ 	container_of(to_mdio_common_driver(d), struct mdio_driver, mdiodrv)
 -- 
 2.33.0
 
