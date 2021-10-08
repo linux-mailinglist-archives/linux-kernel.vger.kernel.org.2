@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74D4426384
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 722B7426386
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:03:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233302AbhJHEEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 00:04:50 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:1608 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230158AbhJHEEq (ORCPT
+        id S234597AbhJHEFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 00:05:45 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:44241 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233620AbhJHEFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 00:04:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1633665772; x=1665201772;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=bpgFCoDtwqdBtzv8bSN4Dwrl9eosbsbMAkSRZSwTkbo=;
-  b=khLbrJMGgjmFMe7r+Dm1moMaWYq1k4vdwcMJBOhbofZEOCRCOdiupdjh
-   2yLdK4hhRkQM2lnmgYA5+hqzD9iNR6IZ2S9hTdO+ypcQ+wYrgCoahsQSW
-   g2IWae7UgDXstj06CDNajJSPX5U+YHTYyXQsGz4UgCvEfXkUxo8qrxtPx
-   c=;
-Received: from ironmsg07-lv.qualcomm.com ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 07 Oct 2021 21:02:50 -0700
-X-QCInternal: smtphost
-Received: from nalasex01a.na.qualcomm.com ([10.47.209.196])
-  by ironmsg07-lv.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 21:02:49 -0700
-Received: from [10.50.59.212] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7; Thu, 7 Oct 2021
- 21:02:46 -0700
-Message-ID: <7c34bb83-ac0a-3676-a2b5-f4397bf5e910@quicinc.com>
-Date:   Fri, 8 Oct 2021 09:32:42 +0530
+        Fri, 8 Oct 2021 00:05:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQZLX1R5pz4xbZ;
+        Fri,  8 Oct 2021 15:03:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633665828;
+        bh=7GfZ3oR8Hg3rqnjlGuP/hPSt8H5/JA8z6SNwXIPVgqA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=SbphkXQ3cUeWF7q7C97SS7VpngaTtKfnt/L6AOCwfn4wiyqfPyEw50Cm0efw5XrvC
+         ii3cfTT8SOYLigtUTHYpvzCXzkm6TxTFQNfd2BnYQI/+XV36kOMzYyjW8jwGT+BaoY
+         Jl4OYNaG8Y8hyjX0TKpLMm2aZVpQ8ECAENNm7W4bcgLMXf7JE6AAWipFxkF5ZN9QDh
+         O9WXnnm8hWZFxzLdWkD0KD1nocOxKI8MQvvQVIienWoiD63e7zAf15db8g4jGY2pBz
+         bgqzPq0Yi42Onut5qfDg6+pY93OvrOf21HUDoOimdjxbYbx65Kloi+NqRXnD/CMudC
+         BCJhpKrNaGzQA==
+Date:   Fri, 8 Oct 2021 15:03:46 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the btrfs tree
+Message-ID: <20211008150346.557cf8aa@canb.auug.org.au>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] arm64: defconfig: Enable QTI SC7280 pinctrl, gcc and
- interconnect
-Content-Language: en-US
-To:     Stephen Boyd <swboyd@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Matthias Kaehlcke <mka@chromium.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-References: <20211007052812.3717-1-quic_saipraka@quicinc.com>
- <CAE-0n51EBGqOZ7D+sn5=M-ig=6p_NUb+8veaaXXQJo+UrLoQfA@mail.gmail.com>
-From:   Sai Prakash Ranjan <quic_saipraka@quicinc.com>
-In-Reply-To: <CAE-0n51EBGqOZ7D+sn5=M-ig=6p_NUb+8veaaXXQJo+UrLoQfA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
+Content-Type: multipart/signed; boundary="Sig_/KyrCuPJdHBa/x7PBCivpPLZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/2021 11:36 PM, Stephen Boyd wrote:
-> Quoting Sai Prakash Ranjan (2021-10-06 22:28:12)
->> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->> index 156d96afbbfc..87584769cf71 100644
->> --- a/arch/arm64/configs/defconfig
->> +++ b/arch/arm64/configs/defconfig
->> @@ -984,6 +985,7 @@ CONFIG_MSM_MMCC_8996=y
->>   CONFIG_MSM_GCC_8998=y
->>   CONFIG_QCS_GCC_404=y
->>   CONFIG_SC_GCC_7180=y
->> +CONFIG_SC_GCC_7280=y
-> Any reason to not enable DISPCC or GPUCC which selects the GCC config? 
-> Same goes for sc7180. 
+--Sig_/KyrCuPJdHBa/x7PBCivpPLZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-These are the minimal configs required to boot to shell with an 
-initramfs, I wasn't trying to get display nor gpu up on either of them.
+Hi all,
 
-Thanks,
-Sai
->>   CONFIG_SDM_CAMCC_845=m
->>   CONFIG_SDM_GCC_845=y
->>   CONFIG_SDM_GPUCC_845=y
+After merging the btrfs tree, today's linux-next build (nds32 allyesconfig
+nds32le-gcc8) failed like this:
 
+nds32le-linux-ld: fs/btrfs/lzo.o: in function `lzo_compress_pages':
+(.text+0x226): undefined reference to `__umoddi3'
+nds32le-linux-ld: (.text+0x22a): undefined reference to `__umoddi3'
+nds32le-linux-ld: (.text+0x660): undefined reference to `__umoddi3'
+nds32le-linux-ld: (.text+0x664): undefined reference to `__umoddi3'
 
+Probably Caused by commit
+
+  0078783c7089 ("btrfs: rework lzo_compress_pages() to make it subpage comp=
+atible")
+
+This caused build failures in several other 32 bit architecture builds.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/KyrCuPJdHBa/x7PBCivpPLZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFfwyIACgkQAVBC80lX
+0Gy5fgf+N29+AHmTBqzdBoFda8ntpVskw/LWyUq0QsjmPYjDe3hNn7Jyojs0+REp
+RoDq4MjrrJ4WhnQxjCMh1nXuk3Yqq24SDsAvQ+3hMKNImRqIfH1hScmk5GRpMK9W
+KhN/y4Q7MNXrTKfAIV8DJE54Nnp8lZUgfUP4NtY1eGRhxJ4rXXG3+TF7p0g+SYTk
+XWrT+mPQy4VeRnQs03/6VzZmlBg9Rh80AbyY4nqXSlfg7dI7RXx6nK02Qk+WwkwS
+SsYMr9ZwCzTiAZjN8Bi2eipBe8yv/fwgWtX0qcHhRn2CQJP7734OPCogN1SaU2sy
++wLfZKSM8mBHO9BAl/nDzhsRdkgU7Q==
+=+mF9
+-----END PGP SIGNATURE-----
+
+--Sig_/KyrCuPJdHBa/x7PBCivpPLZ--
