@@ -2,85 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1F44270AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2744270B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhJHS1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:27:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59394 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhJHS1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:27:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F108460F9D;
-        Fri,  8 Oct 2021 18:25:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633717526;
-        bh=iC/h3aiUcytVYRe2zTb8f9AgkuyTJM44W4jRd7yPuRc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=kh7q9Pwn462xjsy9yADINxXHInbs8u5TxCOXxd2q9go69YSoL2FvxKaurnG/JN2L9
-         b9SY01g6Gmmi6ndy5Try/UGhFuDV6DHoQVIBEc0p5o93GVq5O0aOEnh34vXz2uySko
-         OBp+b3oYoSbBSFEzzjM8EtkgbuDiBIdAwXFk0qfRCwe6dGhX93qP1yFNm4dKeI1Voh
-         E4PnXRj7CPOHnH0DoHMU6UuFzb0TpPyP7u5Lm2/FmdcC8ZbWfKFC0ZnL3Ga6BwdS1H
-         swMdwZ0MohdJEt4zbwEDpkPC2kG+TftoCzYAhLjqLs0J8ZzTJ0x62FWvFkgzDIcdYE
-         QrmdDJqOgSH6Q==
-Date:   Fri, 8 Oct 2021 13:25:24 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Logan Gunthorpe <logang@deltatee.com>
-Cc:     kelvin.cao@microchip.com, kurt.schwemmer@microsemi.com,
-        bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kelvincao@outlook.com
-Subject: Re: [PATCH 0/5] Switchtec Fixes and Improvements
-Message-ID: <20211008182524.GA1361129@bhelgaas>
+        id S231405AbhJHSah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:30:37 -0400
+Received: from mail-eopbgr80127.outbound.protection.outlook.com ([40.107.8.127]:44192
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231328AbhJHSag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:30:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A7sIBKqNggKfnZXXn5JrTffL94QELYHYsZSG8qT6PQ8bvfY5kFQ/dl7cR9oc+vvUM9bZD3seeMcnFI2q4Q4yfxWOFfmFDj0ydh/L8VWhxqBm+QSeAIjrHfQiAj3Kpem0Ja1oMt04je41ffbLEV4r6x6vPBMVRKDnYwfEgUQVQQAFaoQopI6i6Cd8byOGqQ3jzX4Q76O3RJpBCnCGC2w1fIbTbn2mX9qHlolP6TPNG+xJ9OmizeVa8cHMikLWzZEL6c6jwUZNZ2fK2nTtM2td7DFmUqjhIHhJK/WiT6pU3o8iT//GqlnTaZyAfEGYUyH14DAhovc4GU5j1ovDcOnCIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KcmSjnT944HJWI88HxJsYZoaM2wrZyO5bdwmEcztSQs=;
+ b=JIaPA9QqGsNs7xysKO0kmrw40t8QGlshTz8tDT9xJcSOJ/PAKRdGFxHef7ddmBJzoW3oleR9CPK4WT6eOjyMHdjL5Qn2Y4BcypnB1GHhSY5GG90oaVSTXslvYlabCluOj+Spz3QOuTA3t7aMoU493paaxUDug0RlQ5nvp19BAFb43gLoDFBI3Y9rCCvEhJzjRy8UPRTANxnWpyFsn4wJCMnOfxSwy+yxHB26XDSqJWIY8QDejghjopoMPM0t/IuGjJOqjWOTPdTZkOhICCeOXIzuK5eH2OVwmbSFDl9rg0ZudirmUkR1KeD/+CwbW8TZIEHB9s51pBw5Rx0KqbzVPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=opensynergy.com; dmarc=pass action=none
+ header.from=opensynergy.com; dkim=pass header.d=opensynergy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KcmSjnT944HJWI88HxJsYZoaM2wrZyO5bdwmEcztSQs=;
+ b=bt7lX66SxnVa+AG6cBmZWo9JBc2e4e8z5oYUMfLG+uuhyjJ0JamfINTm6mmnxM0FhuQCOcSjdlgITdSuYPh/QOjwKtKkaaXqMTI76qOMacvp2m8UQIGatUShRrc6ND+Hg1ZkUVCbjC0NEJVqnnzimA9tM3sXNeyvl7pI6GC+4mM=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=opensynergy.com;
+From:   Andriy Tryshnivskyy <andriy.tryshnivskyy@opensynergy.com>
+To:     jbhayana@google.com, jic23@kernel.org
+Cc:     lars@metafoo.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasyl.Vavrychuk@opensynergy.com,
+        andriy.tryshnivskyy@opensynergy.com
+Subject: [PATCH v5 0/1] iio/scmi: Add reading "raw" attribute.
+Date:   Fri,  8 Oct 2021 21:28:25 +0300
+Message-Id: <20211008182826.24412-1-andriy.tryshnivskyy@opensynergy.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AS9PR06CA0280.eurprd06.prod.outlook.com
+ (2603:10a6:20b:45a::17) To AM6PR04MB6359.eurprd04.prod.outlook.com
+ (2603:10a6:20b:fc::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e60010f3-f803-e60b-3412-346ccc11a0fb@deltatee.com>
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff9811f6-b301-40e6-83f9-08d98a89728a
+X-MS-TrafficTypeDiagnostic: AM6PR04MB6005:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB6005CF6172DE3B2CFD72CA53E6B29@AM6PR04MB6005.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:497;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /V5/blANX+or5RfFGD0p2u7gJaB8aVi4dtou/aAJc31AW6VW9Tlot5bm95c9rGlf6ndCo67R9Y1E04Tena5s0T9L03D1HBW1d5jCunSULWdMqgSGx8klWJmf58Wx6QHwfPVHilD2myIJ6PL7YwuLFf2WNU+84Ubmneb6nUfQ1ZfYiJKXlkTEWWduR6XPIB9/+nwggvQtHGEsNvv7viJVL53e1XBEbojZYy5jHH06kcJvcxhnwVb5TNkB8y2gcKeKjMkGPaeAFKJH9suWQhTvKU24aj3hZf9z7uixMAs3oqo+ZLxDfGfLXlMJ9/0BKpFfI+/5qO4yyQD8DEOFBJrUtF36EJXjOr3U4yatcaiIxRjYUci8PWo2cOrFnxTeUmb9Yo0/mYMx5jdrHW3E7duTNrok1ojTTiBlYkD08vg6I5mTtNMjsbbk1AmMYxK5ogSoXSAhitzBEt/Ww/l+0BGxCNjKxOjtH7UP2nijSKjYOrmoEyP4qzjJ8B18BNsZs498Siv03RBH1cK/RgxBXTs0D3l5JRtS3qQG4EDchSTv7MSku4T+0t+WO1YqubrNu1ZwROHn15exSq3jL26YN5KwVMlHFbdBjLM1hhvq81+6CVgtPOxzq9wHtrnh4v9KDpYqqtLUjCV38k7rZUPtfvKhDdUvs4pKhlVpLSJLRWROmEORz+nQ2AqD6q19X8CxkcwyFVKgzCbUu7uPgg+MKKAToA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB6359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39840400004)(136003)(376002)(346002)(1076003)(4744005)(2616005)(66476007)(5660300002)(66946007)(66556008)(2906002)(52116002)(186003)(316002)(26005)(4326008)(508600001)(44832011)(107886003)(38100700002)(86362001)(38350700002)(8936002)(42186006)(8676002)(36756003)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9l+cYr6qJ4FpS6L48jlnJEaA4VGLtcVf5wSDdepIplJMVuQ9nOla/BA3hd3F?=
+ =?us-ascii?Q?eNMiA0+Tz1RM1lA+hIRK5EskC0o6QrMrUk5T4G3IA5fZ+P3BuQajORiSDocs?=
+ =?us-ascii?Q?mpNNub0A6PGZUXFrVsrDIY1Ve8E1MWH32juP0tCRYTp19eHcGRDse2YBsQi+?=
+ =?us-ascii?Q?/EbmXpZGAVah0WAjhCDhLfbRFiGTb5iDHrIXjzTPml1dT6ZfFPz5tjCwsngg?=
+ =?us-ascii?Q?2vv7B4AQ50YKEhlreMuKN9OO0xN5wn/UPDjoVgFwvi1eJVaAc6myaHNQf7qT?=
+ =?us-ascii?Q?BIG7enFKDGd3ILnRTmHfLOMp4hUVhJMN7kbOEKDbo+w520mcF5WQKVslrzLm?=
+ =?us-ascii?Q?DXdBVLNUAoD4YlTjYSMZNRNbBJ9vrfTcGb0V/0RlPHRPicJxIsZez2+0Ci2g?=
+ =?us-ascii?Q?IwPcjIcHNzzy9tphdlUndfMfdn36PJYUfx+REqpkGDXLfEnX9Oi6BsCAwHCD?=
+ =?us-ascii?Q?VIQSvnbA3SsNDXpCAeuYdbwvea4OW1mk8e/XsMrAMdFucBSe2L7+TqXwl7l6?=
+ =?us-ascii?Q?laQB5vpyUH23E9ivY387ZKUcEbIQTu0AF/DqhzxUv7woZFm3QOcckVpBu73N?=
+ =?us-ascii?Q?yHEmd6l+v/xqZEuzBYilWYXV46sfmtFE+qt4BU1JN1iSMC6QInX4dk22KGiF?=
+ =?us-ascii?Q?iwuf69PuX6GobbSmWn+uVdF2YJRP7hvaCsqF3hsW3ckRxA8XM3lL5DQAM/dh?=
+ =?us-ascii?Q?RnKYh+1bjuxcI6IgbSKcP78xoUvEKhU6UHzMT80s6I3A/j2tO2xsU9U0wJ1U?=
+ =?us-ascii?Q?sb85i6gdhez1IaGoAS4YrmP8c6X2o+JSmGfeHfkgQS4C8PB/LSODR3G4Tgfc?=
+ =?us-ascii?Q?z+QT0f4c1mqMC5sxrJT495fRU3+2sxMjoa+kQDBoAFgK4R2loCKFcBcl4IoP?=
+ =?us-ascii?Q?Uj9Ux5cZhlfVb9zPjDG3EoXVfI4K/ZXwyod850sqdHx16PUVQzEV9aZscw69?=
+ =?us-ascii?Q?JBGw5sSZqPluBJ30AjjqlbgMtD0qG+8oFPUDXYrg/LiFX4a5CJ46/E1/AQyF?=
+ =?us-ascii?Q?uKFouKz+laixFXQlfRVnvqrbYpoEBOhIrr6/IdCxVEB5rj8O0MB4LHjKtO4O?=
+ =?us-ascii?Q?sYmRrS9cR8mxFObUJWcJ/1YQ6dsrzwnGViKXOPyry9SSoSBevghrf1FpzgTH?=
+ =?us-ascii?Q?0MwUwb29mHXCWbztmAzDjGBciL8ZPoMtyZ8Mhwq77KKeyKkpFSVh2G9dQbYX?=
+ =?us-ascii?Q?E7YefjCahEpWbFJGds9P0pYVeOj+77kG7l1BuTbTGaXS2K8XpC/166BxjuUq?=
+ =?us-ascii?Q?RhMcSsOiCLsBAwqp/CJOI+uoaBxh2wrvuCN+gVzfZ6tvbH3LNzv20QVHlGHj?=
+ =?us-ascii?Q?J4BA3CofQ1fLLhA9YFyp3TXo?=
+X-OriginatorOrg: opensynergy.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff9811f6-b301-40e6-83f9-08d98a89728a
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB6359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 18:28:38.8347
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 800fae25-9b1b-4edc-993d-c939c4e84a64
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MXpBSBLk0Jf14tKq3zxgHNcMbGbVxVqGw5jWE2u/qC/h2Gp96BdnEVG6keDb/wB/YoBft5dGQEKlLEnL9o3FWg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6005
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 11:23:46AM -0600, Logan Gunthorpe wrote:
-> On 2021-10-08 11:05 a.m., Bjorn Helgaas wrote:
-> > On Fri, Sep 24, 2021 at 11:08:37AM +0000, kelvin.cao@microchip.com wrote:
-> >> From: Kelvin Cao <kelvin.cao@microchip.com>
-> >>
-> >> Hi,
-> >>
-> >> Please find a bunch of patches for the switchtec driver collected over the
-> >> last few months.
-> > 
-> > Question: Is there a reason this driver should be in drivers/pci/?
-> > 
-> > It doesn't use any internal PCI core interfaces, e.g., it doesn't
-> > include drivers/pci/pci.h, and AFAICT it's really just a driver for a
-> > PCI device that happens to be a switch.
-> > 
-> > I don't really *care* that it's in drivers/pci; I rely on Kurt and
-> > Logan to review changes.  The only problem it presents for me is that
-> > I have to write merge commit logs for the changes.  You'd think that
-> > would be trivial, but since I don't know much about the driver, it
-> > does end up being work for me.
-> 
-> We did discuss this when it was originally merged.
+This patch implements reading "raw" attribute.
 
-Thanks, I thought I remembered talking about it, but didn't bother to
-dig it up.
+The patch is based on v5.14.
 
-> The main reason we want it in the PCI tree is so that it's in a sensible
-> spot in the Kconfig hierarchy (under PCI support). Seeing it is still
-> PCI hardware. Dropping it into the miscellaneous devices mess (or
-> similar) is less than desirable. Moreover, it's not like the maintainers
-> for misc have any additional knowledge that would make them better
-> qualified to merge these changes. In fact, I'm sure they'd have less
-> knowledge and we wouldn't have gotten to the bottom of this last issue
-> if it had been a different maintainer.
-> 
-> In the future I'll try to be more careful in my reviews to ensure we
-> have a better understanding and clearer commit messages. If there's
-> anything else we can do to make your job easier, please let us know.
+Changes comparing v4 -> v5:
+* call iio_device_release_direct_mode() on error
+* code cleanup, fix typo
 
-Oh, please don't take this as me complaining about anybody's reviews!
-I honestly just look for your or Kurt's ack.  I think I just need to
-be a little less fixated on writing the merge commit logs :)
+Changes comparing v3 -> v4:
+* do not use scmi_iio_get_raw() for reading raw attribute due to 32bit
+  return value limitation (actually I reverted the previous v3)
+* introduce scmi_iio_read_raw to scmi_iio_ext_info[] which can return 64 bit
+  value
+* enabling/disabling and reading raw attribute is done in direct mode
 
-Bjorn
+Any comments are very welcome.
+
+Thanks,
+Andriy.
+
+Andriy Tryshnivskyy (1):
+  iio/scmi: Add reading "raw" attribute.
+
+ drivers/iio/common/scmi_sensors/scmi_iio.c | 61 ++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
+
+
+base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
+-- 
+2.17.1
+
