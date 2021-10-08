@@ -2,145 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFA1426390
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 285D0426393
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234625AbhJHENk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 00:13:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53640 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232118AbhJHENj (ORCPT
+        id S234643AbhJHEOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 00:14:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhJHEOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 00:13:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633666303;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Osq7yHITSy77g/Lrd5YqQ5+z91i4cbWQpNrrgt8Jybc=;
-        b=MRvjwAt7Lc8uTWglJqzwoPvWaAVwrKfZYVVNR5nU6rP7DPyeUN0k3V05fXEtXkBOYx9XsU
-        Cc2A9A0/0cwLxfLzGg9vAWlulVKrCokyNw7FbHBWOiYSXvA3eiebdoLXBplKfEARGK+s4P
-        tw2OqeXye5wjgl55U4h1I1EFjyIG52U=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-m1KOfDvHNJ60G1otsXrsww-1; Fri, 08 Oct 2021 00:11:42 -0400
-X-MC-Unique: m1KOfDvHNJ60G1otsXrsww-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 088EB362FA;
-        Fri,  8 Oct 2021 04:11:41 +0000 (UTC)
-Received: from piliu.users.ipa.redhat.com (ovpn-8-26.pek2.redhat.com [10.72.8.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 09E9210013D7;
-        Fri,  8 Oct 2021 04:11:36 +0000 (UTC)
-Date:   Fri, 8 Oct 2021 12:11:32 +0800
-From:   Pingfan Liu <piliu@redhat.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wang Qing <wangqing@vivo.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] kernel/watchdog_hld: clarify the condition in
- hardlockup_detector_event_create()
-Message-ID: <YV/E9BvUrgECI8Hw@piliu.users.ipa.redhat.com>
-References: <20210923140951.35902-1-kernelfans@gmail.com>
- <20210923140951.35902-3-kernelfans@gmail.com>
- <YVr0bwfDZQFbBCFG@alley>
+        Fri, 8 Oct 2021 00:14:12 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E384DC061570;
+        Thu,  7 Oct 2021 21:12:17 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id r1so8374773qta.12;
+        Thu, 07 Oct 2021 21:12:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kpVveClApwG0f1MnOqx8Bs+gZiIua6pFcbtmAW5z2vE=;
+        b=HFR4Iurmu8llLf9/t436kyERqMxFzX0S9BXVmQphHY+eC094l2FixYiSO/6IyRNrzg
+         aGnSn1JLegb+klcmlL9c1FHA6kv8ooUumw8gQ/zUrSEVix7JDROjy1ggNEtJ5OPfIKAE
+         DubkE0HzXEtoETInYz7iIkiFfSQcsa4UsOs6OumtJY+ohNxSwbSF3OxjqFAGOzJJ8Q75
+         zraUH9qJ/pgTZXCCXZj605AfcXXwEqvIf0LSSOmIvjgDCjW1EfRmaibzdvqNIpR+HJFp
+         LuKOKTNDsKsjt5X0SjEDa/dxID3ceTSPG9OgLZlioueIvqUmCwSxrW1ydmNwRjkabnca
+         Hzqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kpVveClApwG0f1MnOqx8Bs+gZiIua6pFcbtmAW5z2vE=;
+        b=HLoI2Hlz4FSXG/MSelvtfuVPLZOW0SJcPzQ3Q00eaggOMkDB+FT2WAQr2RrUUSjZfc
+         UJWr+zvPSPnBiDingvTYXtZrLoNp1WBn8n3Dk2QFkDSlSxdR3YqNR5uGFDs6e+652rF+
+         c/dba00KFXs5RywOgn2iuazz7PxYpmwEADAGuViCMPRPYSqPu+L1lFZiiX8PzATNW9HP
+         AP/+UGPGGzWFFORNvEVAQQFXKQ3auh+VDJNpirFprK4Ff71EZSfhtK6578DhmWIM7RoH
+         7YMzDv1C15Dy9/c3JxR9ulEHwKXS8xQ9etAvYG1gDShexWw1Rd0JSlrSSUVmVWg3PZj4
+         PpAw==
+X-Gm-Message-State: AOAM530I/lMuNaaLXGCSyfS+Lry15A3ews6dlWRfPRvKzYB9W/VGAce6
+        R/wP4md+RUELvHZlkg4e9aQf2sH7zQkBU0s1K10=
+X-Google-Smtp-Source: ABdhPJzb94QCdtXn2IloaHOWQOje6kwaxFQI1o2Yjku+KrGOvzD0W8w4bJY53EmcCjFfEfO5v9EsOb93TC2vxJ2i4kM=
+X-Received: by 2002:ac8:1e06:: with SMTP id n6mr9069200qtl.365.1633666337060;
+ Thu, 07 Oct 2021 21:12:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVr0bwfDZQFbBCFG@alley>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
+ <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com> <YVTrbPC4/ir974xs@robh.at.kernel.org>
+ <CAA+D8ANdQQFuPh_F8DZka+Y6hVDGuT8BvRfWdUFJxHd5JTQPNA@mail.gmail.com> <CAL_JsqK2KHfDisDXsuyWX0P99uY+nmEG72AsNUmqGRjJKHmg_Q@mail.gmail.com>
+In-Reply-To: <CAL_JsqK2KHfDisDXsuyWX0P99uY+nmEG72AsNUmqGRjJKHmg_Q@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 8 Oct 2021 12:12:06 +0800
+Message-ID: <CAA+D8ANDP0ZPFKbRaYCwD+8zE3qvckKo9JjXwNBFUPrJ66=idw@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] dt-bindings: dsp: fsl: update binding document for
+ remote proc driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 02:32:47PM +0200, Petr Mladek wrote:
-> On Thu 2021-09-23 22:09:49, Pingfan Liu wrote:
-> > As for the context, there are two arguments to change
-> > debug_smp_processor_id() to is_percpu_thread().
-> > 
-> >   -1. watchdog_ev is percpu, and migration will frustrate the attempt
-> > which try to bind a watchdog_ev to a cpu by protecting this func inside
-> > the pair of preempt_disable()/preempt_enable().
-> > 
-> >   -2. hardlockup_detector_event_create() indirectly calls
-> > kmem_cache_alloc_node(), which is blockable.
-> > 
-> > So here, spelling out the really planned context "is_percpu_thread()".
-> 
-> The description is pretty hard to understand. I would suggest
-> something like:
-> 
-> Subject: kernel/watchdog_hld: Ensure CPU-bound context when creating
-> hardlockup detector event
-> 
-> hardlockup_detector_event_create() should create perf_event on the
-> current CPU. Preemption could not get disabled because
-> perf_event_create_kernel_counter() allocates memory. Instead,
-> the CPU locality is achieved by processing the code in a per-CPU
-> bound kthread.
-> 
-> Add a check to prevent mistakes when calling the code in another
-> code path.
-> 
-Appreciate for that. I will use it.
+Hi Rob
 
-> > Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Wang Qing <wangqing@vivo.com>
-> > Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
-> > Cc: Santosh Sivaraj <santosh@fossix.org>
-> > Cc: linux-arm-kernel@lists.infradead.org
-> > To: linux-kernel@vger.kernel.org
-> > ---
-> >  kernel/watchdog_hld.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/watchdog_hld.c b/kernel/watchdog_hld.c
-> > index 247bf0b1582c..df010df76576 100644
-> > --- a/kernel/watchdog_hld.c
-> > +++ b/kernel/watchdog_hld.c
-> > @@ -165,10 +165,13 @@ static void watchdog_overflow_callback(struct perf_event *event,
-> >  
-> >  static int hardlockup_detector_event_create(void)
-> >  {
-> > -	unsigned int cpu = smp_processor_id();
-> > +	unsigned int cpu;
-> >  	struct perf_event_attr *wd_attr;
-> >  	struct perf_event *evt;
-> >  
-> > +	/* This function plans to execute in cpu bound kthread */
-> 
-> This does not explain why it is needed. I suggest something like:
-> 
-> 	/*
-> 	 * Preemption is not disabled because memory will be allocated.
-> 	 * Ensure CPU-locality by calling this in per-CPU kthread.
-> 	 */
-> 
-It sounds good. I will use it.
+On Sat, Oct 2, 2021 at 12:40 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Sep 29, 2021 at 9:34 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> >
+> > Hi Rob
+> >
+> > On Thu, Sep 30, 2021 at 6:40 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Sun, Sep 26, 2021 at 11:07:10AM +0800, Shengjiu Wang wrote:
+> > > > As there are two drivers for DSP on i.MX, one is for sound open
+> > > > firmware, another is for remote processor framework. In order to
+> > > > distinguish two kinds of driver, defining different compatible strings.
+> > > >
+> > > > For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
+> > > > are needed and the mailbox channel is different with SOF.
+> > > >
+> > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > > > ---
+> > > >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
+> > > >  1 file changed, 75 insertions(+), 6 deletions(-)
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > index 7afc9f2be13a..51ea657f6d42 100644
+> > > > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
+> > > >
+> > > >  maintainers:
+> > > >    - Daniel Baluta <daniel.baluta@nxp.com>
+> > > > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > >
+> > > >  description: |
+> > > >    Some boards from i.MX8 family contain a DSP core used for
+> > > > @@ -19,6 +20,10 @@ properties:
+> > > >        - fsl,imx8qxp-dsp
+> > > >        - fsl,imx8qm-dsp
+> > > >        - fsl,imx8mp-dsp
+> > > > +      - fsl,imx8qxp-hifi4
+> > > > +      - fsl,imx8qm-hifi4
+> > > > +      - fsl,imx8mp-hifi4
+> > > > +      - fsl,imx8ulp-hifi4
+> > > >
+> > > >    reg:
+> > > >      maxItems: 1
+> > > > @@ -28,37 +33,63 @@ properties:
+> > > >        - description: ipg clock
+> > > >        - description: ocram clock
+> > > >        - description: core clock
+> > > > +      - description: debug interface clock
+> > > > +      - description: message unit clock
+> > > > +    minItems: 3
+> > > > +    maxItems: 5
+> > >
+> > > Don't need maxItems.
+> >
+> > Ok, I will update it.
+> >
+> > >
+> > > >
+> > > >    clock-names:
+> > > >      items:
+> > > >        - const: ipg
+> > > >        - const: ocram
+> > > >        - const: core
+> > > > +      - const: debug
+> > > > +      - const: mu
+> > > > +    minItems: 3
+> > > > +    maxItems: 5
+> > >
+> > > ditto
+> >
+> > Ok, I will update it.
+> >
+> > >
+> > > >
+> > > >    power-domains:
+> > > >      description:
+> > > >        List of phandle and PM domain specifier as documented in
+> > > >        Documentation/devicetree/bindings/power/power_domain.txt
+> > > > +    minItems: 1
+> > >
+> > > This is curious. The h/w sometimes has fewer power domains?
+> >
+> > On i.MX8QM/8QXP,  there are independent power domains for DSP core,
+> > DSP's RAM and DSP's MU.
+> > But on i.MX8MP, all these DSP components are in same audio subsystem
+> > There is only one power domain for whole audio subsystem,  when
+> > power on audio subsystem, the DSP's components are powered on also.
+> >
+> > So the number of power domain depends on how the DSP component
+> > integrated in SoC.
+>
+> Sounds like you can write an if/then schema for this difference.
+>
 
-> 
-> > +	WARN_ON(!is_percpu_thread());
-> > +	cpu = raw_smp_processor_id();
-> >  	wd_attr = &wd_hw_attr;
-> >  	wd_attr->sample_period = hw_nmi_get_sample_period(watchdog_thresh);
-> >  
-> 
-> Othrewise the change looks good to me.
-> 
-Thank for your help.
+I try this:
 
-Regards,
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            enum:
+              - fsl,imx8mp-hifi4
+              - fsl,imx8mp-dsp
 
-	Pingfan
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+    then:
+      properties:
+        power-domains:
+          maxItems: 1
 
+    else:
+      properties:
+        power-domains:
+          maxItems: 4
+
+
+But the dt_binding_check report error:
+  DTEX    Documentation/devicetree/bindings/dsp/fsl,dsp.example.dts
+  DTC     Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml
+  CHECK   Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml
+/opt/alsa/sound/Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml:
+dsp@3b6e8000: power-domains: [[4294967295]] is too short
+        From schema:
+/opt/alsa/sound/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+
+I don't know the reason, could you please help to have a look what
+is wrong?
+
+Best regards
+Wang Shengjiu
