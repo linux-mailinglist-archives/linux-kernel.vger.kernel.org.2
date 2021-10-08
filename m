@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C2E4262D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140C34262D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232776AbhJHDWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:22:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49949 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229501AbhJHDWA (ORCPT
+        id S235345AbhJHDWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhJHDWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:22:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633663205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HOxpgrZnYdSvGQKrZaYcau9KwEc1jKvSXQuLLBcGQBQ=;
-        b=DRaXGeIwdviheMyu49PWZg6qIx7V/lXHkbqQ5UEPWuc54QCtCOfO3pd4E7JdfyY/iON4f5
-        YYSMOkovDIIlycvrYG00C/VdGikmyBR/iCQjOvTLRTZ2Y+SVzXtdNv0+VLYvNNY2l+aGWY
-        zEyNMwj5KzASUbj97MVdO/P547MlQ+8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-595-xeDznztWNGyFLvxssR47RQ-1; Thu, 07 Oct 2021 23:20:01 -0400
-X-MC-Unique: xeDznztWNGyFLvxssR47RQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1A601084680;
-        Fri,  8 Oct 2021 03:19:59 +0000 (UTC)
-Received: from T590 (ovpn-8-29.pek2.redhat.com [10.72.8.29])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0044A5D6D5;
-        Fri,  8 Oct 2021 03:19:52 +0000 (UTC)
-Date:   Fri, 8 Oct 2021 11:19:47 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     kys@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        haiyangz@microsoft.com, bvanassche@acm.org, john.garry@huawei.com,
-        linux-scsi@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        longli@microsoft.com, mikelley@microsoft.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: core: Fix shost->cmd_per_lun calculation in
- scsi_add_host_with_dma()
-Message-ID: <YV+40/pHlLwseFw/@T590>
-References: <20211007174957.2080-1-decui@microsoft.com>
+        Thu, 7 Oct 2021 23:22:05 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C8CC061570;
+        Thu,  7 Oct 2021 20:20:10 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id ls18so6491304pjb.3;
+        Thu, 07 Oct 2021 20:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVTSAl6LZtzKmggtyfDtdu7T8Rzv0p9J9tbrf+mG8Kc=;
+        b=BKlPbYXJaCs/xFNopSiyb+ee96SGWK7ykvOVihDcVUGMZTTvdiATq9R5BwJv/zfqBo
+         /4zRMccDziBKvDxbWuWgMsWFdgjmgOWxHtrrCydpa5n7bt3GADjVXtwPVOqC+ZVcSH5g
+         CjtDc1TOLkq7SA4/KGdDKDuReQpyUabL6+E1ZR1Zxk/egazoUSQjdTZJiATfxxAnt96P
+         3ri8Deq1yprqsNFIjp0IIrKCsq8x9Mtx8KWvbGngSre+ejBXRua+o/GpCWEswrtExc9w
+         X3UBvtTA+YTUIDI1dzqYEYwNWNKHO7D/3MlNmoVVW+H1kt5mQnxfUZBAA5/adZOQGe9R
+         /o0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zVTSAl6LZtzKmggtyfDtdu7T8Rzv0p9J9tbrf+mG8Kc=;
+        b=cbQ+yX+5nNX83klGkEU7IA1oL1hR7BA7UcNkD2zaSPqiWe0ORIP1w5VMGd2mk3ZIcd
+         WvfgkI3ZFI5YyjM6FfqiV4gX29k3u9xIosVB+atJhzjzCnbsItxsrvDEBI82CJpo/oc4
+         sLStvCQrtWbb8mUPEN0f83vorA89OPcPEYUcmvnEHPXj360FWFL55Nav1I/576u0nZZO
+         p5g3BQQD34v/DWK7luo+sZfWsjlt4hTx1xTp2mxVu67BPiNI0/0rI5vKl2KXUijd2YlN
+         ZfP5rpefUz0yltEyiiBdosjvDfLsRz02n/P/RYaHZpERE3nEqwWzBPNlNElgJhEvRoen
+         LbyA==
+X-Gm-Message-State: AOAM531gNT8ZIEAxzNo934L9s8il8coK9XwMM2m1GBLBUr8xx5g1YjQo
+        sJP4num7Zg+2RQ5YZlsQtxQ=
+X-Google-Smtp-Source: ABdhPJz5Q1rQEGAiHqo/yCyOB1rtEECuMA0ka2Ln8ZWdaSIsbSmiiPUGvr0H0jrg2CmEf8BZV/V0hw==
+X-Received: by 2002:a17:90a:345:: with SMTP id 5mr9442835pjf.189.1633663210526;
+        Thu, 07 Oct 2021 20:20:10 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id j198sm713943pgc.4.2021.10.07.20.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 20:20:09 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/2] Add Unisoc's SC2730 regulator support
+Date:   Fri,  8 Oct 2021 11:19:51 +0800
+Message-Id: <20211008031953.339461-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007174957.2080-1-decui@microsoft.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 10:49:57AM -0700, Dexuan Cui wrote:
-> After commit ea2f0f77538c, a 416-CPU VM running on Hyper-V hangs during
-> boot because scsi_add_host_with_dma() sets shost->cmd_per_lun to a
-> negative number (the below numbers may differ in different kernel versions):
-> in drivers/scsi/storvsc_drv.c, 	storvsc_drv_init() sets
-> 'max_outstanding_req_per_channel' to 352, and storvsc_probe() sets
-> 'max_sub_channels' to (416 - 1) / 4 = 103 and sets scsi_driver.can_queue to
-> 352 * (103 + 1) * (100 - 10) / 100 = 32947, which exceeds SHRT_MAX.
-> 
-> Use min_t(int, ...) to fix the issue.
-> 
-> Fixes: ea2f0f77538c ("scsi: core: Cap scsi_host cmd_per_lun at can_queue")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Dexuan Cui <decui@microsoft.com>
-> ---
-> 
-> v1 tried to fix the issue by changing the storvsc driver:
-> https://lwn.net/ml/linux-kernel/BYAPR21MB1270BBC14D5F1AE69FC31A16BFB09@BYAPR21MB1270.namprd21.prod.outlook.com/
-> 
-> v2 directly fixes the scsi core change instead as Michael Kelley and
-> John Garry suggested (refer to the above link).
-> 
->  drivers/scsi/hosts.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
-> index 3f6f14f0cafb..24b72ee4246f 100644
-> --- a/drivers/scsi/hosts.c
-> +++ b/drivers/scsi/hosts.c
-> @@ -220,7 +220,8 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
->  		goto fail;
->  	}
->  
-> -	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
-> +	/* Use min_t(int, ...) in case shost->can_queue exceeds SHRT_MAX */
-> +	shost->cmd_per_lun = min_t(int, shost->cmd_per_lun,
->  				   shost->can_queue);
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-Looks fine:
+Changes since v1:
+* Addressed Mark's comments:
+- Removed debugfs things from SC2730 driver and deleted sc2730_regulator_remove() which deal with debugfs only;
+- Changed to use C++ style comments on the head of driver.
+* Added Rob's Reviewed-by for bindings changes.
 
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Chunyan Zhang (1):
+  dt-bindings: regulator: Add bindings for Unisoc's SC2730 regulator
+
+Zhongfa Wang (1):
+  regulator: Add Unisoc's SC2730 regulator driver
+
+ .../regulator/sprd,sc2730-regulator.yaml      |  61 +++
+ drivers/regulator/Kconfig                     |  10 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/sc2730-regulator.c          | 404 ++++++++++++++++++
+ 4 files changed, 476 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/sprd,sc2730-regulator.yaml
+ create mode 100644 drivers/regulator/sc2730-regulator.c
 
 -- 
-Ming
+2.25.1
 
