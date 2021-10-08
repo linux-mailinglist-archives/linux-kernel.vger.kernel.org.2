@@ -2,130 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD638426C89
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB11426C8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229788AbhJHOMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
+        id S234546AbhJHONm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242624AbhJHOMY (ORCPT
+        with ESMTP id S229756AbhJHONk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:12:24 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A58F7C06176A;
-        Fri,  8 Oct 2021 07:10:29 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id y207so10759702oia.11;
-        Fri, 08 Oct 2021 07:10:29 -0700 (PDT)
+        Fri, 8 Oct 2021 10:13:40 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5179C061570;
+        Fri,  8 Oct 2021 07:11:44 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id y16-20020a4ade10000000b002b5dd6f4c8dso2940158oot.12;
+        Fri, 08 Oct 2021 07:11:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=IiXYxUUmxX5fc/N+2AGbIuVJDEoKxiawErZ9srHj0jo=;
-        b=c7i9TclqOXC9NQVa/0QKM57Q5QT8fIu2Uv6j4jzQtqYYYbXGO5S2+Mi2nhcO2FrGFz
-         a0J77gQXvctEdjS9lqpR1Je3tH+8RCIQvEGk7/QX7qwu9flkFoBepGIbW41dwUO8QV4v
-         b1RsXy7mUJOhtan+juYoPJcgW9cvyrktgGHgL3Unx/KE9I4wlHW4JzQOyaRkkbvKBIDE
-         GN2x2Cto3WauKEYvajTIvmhXinClt2A5hRoFM1WsOrsNrHhuqYy+K61FpUhKZmvpEl88
-         oAoo/KmKydPub5dJNYlaD+WhNG6nDsBhswNmKCtpbPbqNxG3G1W66Xb9GXxHzwUZ6C32
-         k4ew==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MbGs/6x4pN4s6g/EDyFQWl+AmouMo20lgCsXdHhqXbI=;
+        b=CYlQUjWN7bHcAi6jliv4m4PdnbRKujP760zw7djhMLhe92lpS0Eo7QJHgRnuCVoiMB
+         umvqWwHyO+dGKgnVKJ6pNM4ppmM5zxEj9a437Ysr8OPkghAJVtI9nR/GqL6bbX0QYkZa
+         OcAUYlfGQK2M23mfZsUFWQhcSBbvN4GMZxUU1cJm9dMf1RbAZJrDWzSevROtoMni5WzL
+         sE+wqqBD/vY0f1GVwSliqxvGQvIfRhar5x76tyAwO2FrMbZhztGUFe0wjqONBy+ay2GE
+         c/a4WIgdBvnmA7D+h+39cI5n7UQ5POrXb/nK/uAbRJq30bJT5nvt0RtTBfP5Y3RUAHPq
+         xuwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=IiXYxUUmxX5fc/N+2AGbIuVJDEoKxiawErZ9srHj0jo=;
-        b=hj23Gdbzcx1UKFntZtIAhKrzNoJHcDMYobpec0gC9hpxzJ8cUHzipE+xBjaKyxtxo+
-         wS2tr6K2nmCdEaJVFBlrssHHBGcYe7vfbSP/OtgifNmTGiMwSPRvXwCreJxAV3KnYzUE
-         N6+f25B2uxlEm8/Lhr3xqRm7Twj0jjeU9TNMkbRdqvZuDi3VJG6VCPWoTTRXYaSNPJpV
-         gzBpdKqAdrp5/uGpqjFKzpPPZiWoGMUnq1TBLH0j/iRKdtJbTmx0GNOF2AoYajbxLz/6
-         QH+eqcNLsMXoUgKc1VZOE+fopnvf4BHwYnyRXdXd9I8LEHruI8jFWiRu17jbrxvWaXX0
-         McIQ==
-X-Gm-Message-State: AOAM531Scflw5e1/tb2gMmqg0KCiZP8aUHhE8okvWVb8GbY3kwwyz60l
-        K2bIPhaA/Cj5SyuOFszgF4FDfxlh3cw=
-X-Google-Smtp-Source: ABdhPJxhdHlSP1WurrhCIJ8tM/5LxgwSdz5d+pKk7TVEe5llpRNDBiWgwKyHSppItIe/qE9kJftKiw==
-X-Received: by 2002:a54:410b:: with SMTP id l11mr16346473oic.74.1633702229084;
-        Fri, 08 Oct 2021 07:10:29 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id bg16sm688219oib.30.2021.10.08.07.10.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 07:10:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Oct 2021 07:10:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Brandon Wyman <bjwyman@gmail.com>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Eddie James <eajames@linux.ibm.com>
-Subject: Re: [PATCH 1/2] hwmon: (pmbus/ibm-cffps) Add mfg_id debugfs entry
-Message-ID: <20211008141027.GA1987825@roeck-us.net>
-References: <20211004144339.2634330-1-bjwyman@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MbGs/6x4pN4s6g/EDyFQWl+AmouMo20lgCsXdHhqXbI=;
+        b=Q0cK8MNIsMcq2zLl3nMrJn9bW+xDEtrVWZpaaFOoevkhMNrCwUXIIYWW7wX/CX8+My
+         t5b5SaL8yVDk+czoI33G22QixRh1QK2c0uCgJgXPbm/SFECTOMjODe0lFYloTgmAnVHz
+         NeSeCLDajsJknS27TgwY80UFfpA5cNkjeaOYXSQ7S0nXaG/PoUSlEZiMffZ8dgGto1zE
+         PcCNharwJZ+iGjc+dH+O6l6M9S+UgmdIGr10nhOYB7WyNdB/Zqzl326fnbSygR5/0fXL
+         TIYACkBEvvt457G+HDaGJGRB4yvKvGhdqUBNvCQu4ULc5Fy6XzwlwznDu2ldLG30WgPh
+         Ymjg==
+X-Gm-Message-State: AOAM530eQ3sDKzPLQwfZoQm9cnqdREVNJuhJtY1NlfGuJEBI1u2sGXjI
+        eQ56PDjZPHGkSFmTRhEDEpINY4L3PDAghcaFcFa87Xzs5It2Ww==
+X-Google-Smtp-Source: ABdhPJyuzJhYJX1W0W2grPoVqrm/kc4OHoRdDoWqTvxU16y8o9/g+xwk/94jq0VboLjiC07sPgOqwvAv7cNk7vbd41s=
+X-Received: by 2002:a4a:e899:: with SMTP id g25mr8372784ooe.68.1633702304000;
+ Fri, 08 Oct 2021 07:11:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004144339.2634330-1-bjwyman@gmail.com>
+References: <20211008113116.4bdd7b6c@canb.auug.org.au> <jXLIcCYkgHdIQna5SW6W4GGHVG5By4-GXiaosbXyyaYXFNTH60nmH6twdxMYgM2X63FhEOyxU7Qh_vbKFywBKmUwp7l4DYXe_hTt86AS-ZM=@emersion.fr>
+ <20211008192910.600a188d@canb.auug.org.au> <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr>
+In-Reply-To: <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 8 Oct 2021 10:11:33 -0400
+Message-ID: <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 02:43:38PM +0000, Brandon Wyman wrote:
-> Add support for the manufacturer ID to the debugfs entries.
-> 
-> Signed-off-by: Brandon Wyman <bjwyman@gmail.com>
+On Fri, Oct 8, 2021 at 5:22 AM Simon Ser <contact@emersion.fr> wrote:
+>
+> On Friday, October 8th, 2021 at 10:29, Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> > That symbol (get_mm_exe_file) is not exported to modules.
+>
+> I see this:
+>
+>     EXPORT_SYMBOL(get_mm_exe_file);
+>
+> in kernel/fork.c
 
-Applied.
+Was recently removed:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/fork.c?id=05da8113c9ba63a8913e6c73dc06ed01cae55f68
+I guess we need to rethink that patch.
 
-Thanks,
-Guenter
-
-> ---
->  drivers/hwmon/pmbus/ibm-cffps.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-> index df712ce4b164..2ee47cbbb665 100644
-> --- a/drivers/hwmon/pmbus/ibm-cffps.c
-> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-> @@ -18,6 +18,7 @@
->  
->  #include "pmbus.h"
->  
-> +#define CFFPS_MFG_ID_CMD                        0x99
->  #define CFFPS_FRU_CMD				0x9A
->  #define CFFPS_PN_CMD				0x9B
->  #define CFFPS_HEADER_CMD			0x9C
-> @@ -34,7 +35,7 @@
->  #define CFFPS_INPUT_HISTORY_SIZE		100
->  
->  #define CFFPS_CCIN_REVISION			GENMASK(7, 0)
-> -#define  CFFPS_CCIN_REVISION_LEGACY		 0xde
-> +#define CFFPS_CCIN_REVISION_LEGACY		 0xde
->  #define CFFPS_CCIN_VERSION			GENMASK(15, 8)
->  #define CFFPS_CCIN_VERSION_1			 0x2b
->  #define CFFPS_CCIN_VERSION_2			 0x2e
-> @@ -57,6 +58,7 @@
->  
->  enum {
->  	CFFPS_DEBUGFS_INPUT_HISTORY = 0,
-> +	CFFPS_DEBUGFS_MFG_ID,
->  	CFFPS_DEBUGFS_FRU,
->  	CFFPS_DEBUGFS_PN,
->  	CFFPS_DEBUGFS_HEADER,
-> @@ -158,6 +160,9 @@ static ssize_t ibm_cffps_debugfs_read(struct file *file, char __user *buf,
->  	switch (idx) {
->  	case CFFPS_DEBUGFS_INPUT_HISTORY:
->  		return ibm_cffps_read_input_history(psu, buf, count, ppos);
-> +	case CFFPS_DEBUGFS_MFG_ID:
-> +		cmd = CFFPS_MFG_ID_CMD;
-> +		break;
->  	case CFFPS_DEBUGFS_FRU:
->  		cmd = CFFPS_FRU_CMD;
->  		break;
-> @@ -558,6 +563,9 @@ static int ibm_cffps_probe(struct i2c_client *client)
->  	debugfs_create_file("input_history", 0444, ibm_cffps_dir,
->  			    &psu->debugfs_entries[CFFPS_DEBUGFS_INPUT_HISTORY],
->  			    &ibm_cffps_fops);
-> +	debugfs_create_file("mfg_id", 0444, ibm_cffps_dir,
-> +			    &psu->debugfs_entries[CFFPS_DEBUGFS_MFG_ID],
-> +			    &ibm_cffps_fops);
->  	debugfs_create_file("fru", 0444, ibm_cffps_dir,
->  			    &psu->debugfs_entries[CFFPS_DEBUGFS_FRU],
->  			    &ibm_cffps_fops);
+Alex
