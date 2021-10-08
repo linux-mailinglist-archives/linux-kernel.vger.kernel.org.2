@@ -2,114 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD8F4267AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0FB64267B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239891AbhJHKX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:23:28 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:46284 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239592AbhJHKXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:23:21 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id 7DD6D1F4575F
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, stanimir.varbanov@linaro.org,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH 3/3] arm64: dts: qcom: sdm630: Add disabled Venus support
-Date:   Fri,  8 Oct 2021 12:21:19 +0200
-Message-Id: <20211008102119.268869-3-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008102119.268869-1-angelogioacchino.delregno@collabora.com>
-References: <20211008102119.268869-1-angelogioacchino.delregno@collabora.com>
+        id S239595AbhJHKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:25:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:40904 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236118AbhJHKZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:25:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 27AECD6E;
+        Fri,  8 Oct 2021 03:23:46 -0700 (PDT)
+Received: from [10.57.25.67] (unknown [10.57.25.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BA103F70D;
+        Fri,  8 Oct 2021 03:23:44 -0700 (PDT)
+Subject: Re: [PATCH] perf vendor events power10: Add metric events json file
+ for power10 platform
+To:     Kajol Jain <kjain@linux.ibm.com>
+Cc:     atrajeev@linux.vnet.ibm.com, rnsastry@linux.ibm.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, maddy@linux.vnet.ibm.com,
+        jolsa@redhat.com, "acme@kernel.org" <acme@kernel.org>
+References: <20211006073119.276340-1-kjain@linux.ibm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <4cd80a52-3938-a708-9272-99e9ed86be00@arm.com>
+Date:   Fri, 8 Oct 2021 11:23:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211006073119.276340-1-kjain@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the Venus video decoder/encoder but leave it disabled
-by default; it is expected to eventually get enabled in each machine
-specific DT, where required.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/qcom/sdm630.dtsi | 51 ++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630.dtsi b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-index 9c7f87e42fcc..deb0be8fdee2 100644
---- a/arch/arm64/boot/dts/qcom/sdm630.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630.dtsi
-@@ -2020,6 +2020,57 @@ cci_i2c1: i2c-bus@1 {
- 			};
- 		};
- 
-+		venus: video-codec@cc00000 {
-+			compatible = "qcom,sdm660-venus";
-+			reg = <0x0cc00000 0xff000>;
-+			clocks = <&mmcc VIDEO_CORE_CLK>,
-+				 <&mmcc VIDEO_AHB_CLK>,
-+				 <&mmcc VIDEO_AXI_CLK>,
-+				 <&mmcc THROTTLE_VIDEO_AXI_CLK>;
-+			clock-names = "core", "iface", "bus", "bus_throttle";
-+			interconnects = <&gnoc 0 &mnoc 13>,
-+					<&mnoc 4 &bimc 5>;
-+			interconnect-names = "cpu-cfg", "video-mem";
-+			interrupts = <GIC_SPI 287 IRQ_TYPE_LEVEL_HIGH>;
-+			iommus = <&mmss_smmu 0x400>,
-+				 <&mmss_smmu 0x401>,
-+				 <&mmss_smmu 0x40a>,
-+				 <&mmss_smmu 0x407>,
-+				 <&mmss_smmu 0x40e>,
-+				 <&mmss_smmu 0x40f>,
-+				 <&mmss_smmu 0x408>,
-+				 <&mmss_smmu 0x409>,
-+				 <&mmss_smmu 0x40b>,
-+				 <&mmss_smmu 0x40c>,
-+				 <&mmss_smmu 0x40d>,
-+				 <&mmss_smmu 0x410>,
-+				 <&mmss_smmu 0x421>,
-+				 <&mmss_smmu 0x428>,
-+				 <&mmss_smmu 0x429>,
-+				 <&mmss_smmu 0x42b>,
-+				 <&mmss_smmu 0x42c>,
-+				 <&mmss_smmu 0x42d>,
-+				 <&mmss_smmu 0x411>,
-+				 <&mmss_smmu 0x431>;
-+			memory-region = <&venus_region>;
-+			power-domains = <&mmcc VENUS_GDSC>;
-+			status = "disabled";
-+
-+			video-decoder {
-+				compatible = "venus-decoder";
-+				clocks = <&mmcc VIDEO_SUBCORE0_CLK>;
-+				clock-names = "vcodec0_core";
-+				power-domains = <&mmcc VENUS_CORE0_GDSC>;
-+			};
-+
-+			video-encoder {
-+				compatible = "venus-encoder";
-+				clocks = <&mmcc VIDEO_SUBCORE0_CLK>;
-+				clock-names = "vcodec0_core";
-+				power-domains = <&mmcc VENUS_CORE0_GDSC>;
-+			};
-+		};
-+
- 		mmss_smmu: iommu@cd00000 {
- 			compatible = "qcom,sdm630-smmu-v2", "qcom,smmu-v2";
- 			reg = <0x0cd00000 0x40000>;
--- 
-2.33.0
+On 06/10/2021 08:31, Kajol Jain wrote:
+> Add pmu metric json file for power10 platform.
+> 
+> Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
+> ---
+>  .../arch/powerpc/power10/metrics.json         | 772 ++++++++++++++++++
 
+I checked this with the new strict JSON parser from "[PATCH 0/3] perf tools: Enable strict JSON parsing"
+and it seemed fine from that point of view.
+
+James
