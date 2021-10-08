@@ -2,127 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCFA42651E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C352426520
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhJHHUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhJHHUF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:20:05 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFB1C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 00:18:10 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id w11so5543071plz.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 00:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=pcW2s0FOsfe5B+vyDmP4HCEBN2LXsRBrs8aoN2qtEas=;
-        b=cnHlYLjkuJBOqAMrXnD9aq74+xX02yAK8SW2UD1dNoE57BpxUYAGhHGueDbCzMYcHY
-         c1TDt8adHByBqGeZumrljRfSDcrLfZIQOx3Qp7KP6oQdrewIgqmJGHy6KQn5AF9kp5h2
-         MD+77Eyxz/QF54XD0LiaxOTBNU5BUDFBTGPhcIXDZbo9iJjNbfiJROn8FFcUjCKc1agr
-         c0k9WtQfdz6Ngj7BAneGHkxfVPGFnDehVAOo7UMJieOYe+2TgBSJL2EcFB3PA0/MXxNc
-         C9cN2G2sKG5BN5jMm/qZFW3jdx5/DE4hGQB44QPv8hD3CWXhIDbwvjVNu+mcoROhQ3ek
-         iNDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=pcW2s0FOsfe5B+vyDmP4HCEBN2LXsRBrs8aoN2qtEas=;
-        b=ZsGBgZQnum/7oG2h0I3itXrMYSbccOJPsMArbYOsfC4xa5jTxibuYPo/aKnTCQHTuq
-         +VLjC40AaEpmAVxWOhirXY5ie4tdbHa+YRfqUM7Dp9b3ygROayhoFoFGu+zvts5BkOmp
-         IW9G6UKmzbCbw4U/Z9J2TZy/fi4kS8pkVKKEZ1DzlG2xVmoBM9yAXJMTJgiXI/DE+053
-         OHBZfSEG9uJSvSCSO0xnM2N5SQ8F5eIv44pUcQlIGnbeGxdMSpcnHUKuRHx7GMYN540j
-         JOvQaMkAFKAE67fx5bCaWJ18XJK71hL7Y5vRYwUCDjvJ29gPSxA0PsZBhgdNbiBYhIta
-         KyCg==
-X-Gm-Message-State: AOAM531PZayxYw2g0V54RTTzELr7SvV3lqtfwR70JdpLAaGTaUa3VcpL
-        ogdTemIpmmJvqQXmu7kdWGk=
-X-Google-Smtp-Source: ABdhPJzeKfGCEUMfwyiP1Ixm7ZttM0FX/hx+FKuzpSfAbLMEN2VSxn1IKpUE7C/BAU1zygUXcQFBEA==
-X-Received: by 2002:a17:902:b691:b029:12d:2b6:d116 with SMTP id c17-20020a170902b691b029012d02b6d116mr7944935pls.71.1633677490187;
-        Fri, 08 Oct 2021 00:18:10 -0700 (PDT)
-Received: from cosmos ([103.105.225.252])
-        by smtp.gmail.com with ESMTPSA id u1sm10205563pju.2.2021.10.08.00.18.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Oct 2021 00:18:09 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 12:48:06 +0530
-From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH resend] tracing: fix memory leak in eprobe_register()
-Message-ID: <20211008071802.GA2098@cosmos>
+        id S232348AbhJHHUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:20:19 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60326 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231979AbhJHHUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 03:20:18 -0400
+Received: from [10.180.13.128] (unknown [10.180.13.128])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT2ux8F9h3nAWAA--.33883S2;
+        Fri, 08 Oct 2021 15:18:15 +0800 (CST)
+Subject: Re: [PATCH v2] usb: ohci: add check for start frame in host
+ controller functional states
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Patchwork Bot <patchwork-bot@kernel.org>
+References: <1632910167-23554-1-git-send-email-zhuyinbo@loongson.cn>
+ <20210929145905.GA428239@rowland.harvard.edu>
+From:   zhuyinbo <zhuyinbo@loongson.cn>
+Message-ID: <0cbc2fc2-4e33-5529-a07a-8c0ee41c800e@loongson.cn>
+Date:   Fri, 8 Oct 2021 15:18:09 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210929145905.GA428239@rowland.harvard.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf9DxT2ux8F9h3nAWAA--.33883S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF1UZFW7XF4fuw47Ar1DKFg_yoWrAr1kpr
+        4Iyr4YkrWDJw18Xr1xJrn7JFyrKw48J3y7G34xGa47Jr4Yqryjqry0grWFgF1kWr4fJw12
+        vF4jqrW5u3W7AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487
+        MxkIecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+        xUcDDGUUUUU
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmemleak report:
-unreferenced object 0xffff900a70ec7ec0 (size 32):
-  comm "ftracetest", pid 2770, jiffies 4295042510 (age 311.464s)
-  hex dump (first 32 bytes):
-    c8 31 23 45 0a 90 ff ff 40 85 c7 6e 0a 90 ff ff  .1#E....@..n....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<000000009d3751fd>] kmem_cache_alloc_trace+0x2a2/0x440
-    [<0000000088b8124b>] eprobe_register+0x1e3/0x350
-    [<000000002a9a0517>] __ftrace_event_enable_disable+0x7c/0x240
-    [<0000000019109321>] event_enable_write+0x93/0xe0
-    [<000000007d85b320>] vfs_write+0xb9/0x260
-    [<00000000b94c5e41>] ksys_write+0x67/0xe0
-    [<000000005a08c81d>] __x64_sys_write+0x1a/0x20
-    [<00000000240bf576>] do_syscall_64+0x3b/0xc0
-    [<0000000043d5d9f6>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-unreferenced object 0xffff900a56bbf280 (size 128):
-  comm "ftracetest", pid 2770, jiffies 4295042510 (age 311.464s)
-  hex dump (first 32 bytes):
-    ff ff ff ff ff ff ff ff 00 00 00 00 01 00 00 00  ................
-    80 69 3b b2 ff ff ff ff 20 69 3b b2 ff ff ff ff  .i;..... i;.....
-  backtrace:
-    [<000000009d3751fd>] kmem_cache_alloc_trace+0x2a2/0x440
-    [<00000000c4e90fad>] eprobe_register+0x1fc/0x350
-    [<000000002a9a0517>] __ftrace_event_enable_disable+0x7c/0x240
-    [<0000000019109321>] event_enable_write+0x93/0xe0
-    [<000000007d85b320>] vfs_write+0xb9/0x260
-    [<00000000b94c5e41>] ksys_write+0x67/0xe0
-    [<000000005a08c81d>] __x64_sys_write+0x1a/0x20
-    [<00000000240bf576>] do_syscall_64+0x3b/0xc0
-    [<0000000043d5d9f6>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+在 2021/9/29 下午10:59, Alan Stern 写道:
+> On Wed, Sep 29, 2021 at 06:09:27PM +0800, Yinbo Zhu wrote:
+>> The pm states of ohci controller include UsbOperational, UsbReset, UsbSuspend
+> > Those aren't really PM states.  The specification calls them "USB 
+> > states".
+I had replace "PM states" with "USB states" in v3 version patch
+>
+>> , and UsbResume. Among them, only the UsbOperational state supports launching
+> --^
+>
+> > This comma should come directly after the word "launching", with no 
+> > space in between.
+> okay, I got it.
+>> the start frame for host controller according the ohci protocol spec, but in
+>> S3/S4 press test procedure, it may happen that the start frame was launched
+> > What is the S3/S4 press test?  I don't recall hearing of it before.
+S3 test is that suspend to memory, S4 test is that system suspend to disk.
+>
+>> in other pm states and cause ohci works abnormally then kernel will allways
+>> report rcu CallTrace. This patch was to add check for start frame in host
+>> controller functional states for fixing above issue.
+> > The patch doesn't check for start of frames, that is, it doesn't check 
+> > the INTR_SF bit in the intrstatus register.  Instead it checks whether 
+> > controller is in the UsbOperational state.  And the patch also sets 
+> > INTR_SF in the intrdisable register -- you do not mention this in the 
+> > description.
+> okay, I got it, and I had made a appropriate commit changes that according to what you advice in v3 version patch.
+>> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+>> ---
+>> Change in v2:
+>> 		Revise the punctuation.	
+>>
+>>   drivers/usb/host/ohci-hcd.c | 7 +++++++
+>>   1 file changed, 7 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/ohci-hcd.c b/drivers/usb/host/ohci-hcd.c
+>> index 1f5e693..f0aeae5 100644
+>> --- a/drivers/usb/host/ohci-hcd.c
+>> +++ b/drivers/usb/host/ohci-hcd.c
+>> @@ -881,6 +881,13 @@ static irqreturn_t ohci_irq (struct usb_hcd *hcd)
+>>   	struct ohci_regs __iomem *regs = ohci->regs;
+>>   	int			ints;
+>>   
+>> +	ints = ohci_readl(ohci, &regs->control);
+>> +
+>> +	if ((ints & OHCI_CTRL_HCFS) != OHCI_USB_OPER) {
+>> +		ohci_writel(ohci, OHCI_INTR_SF, &regs->intrdisable);
+>> +		(void)ohci_readl(ohci, &regs->intrdisable);
+>> +	}
+> > The driver is already supposed to prevent this problem by writing the 
+> > OHCI_INTR_SF flag to the intrdisable register when start-of-frame 
+> > interrupts aren't needed.  Maybe what you should do is change this code 
+> > lower down in ohci_irq():
+>
+> >	if ((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
+> >			&& ohci->rh_state == OHCI_RH_RUNNING)
+> >		ohci_writel (ohci, OHCI_INTR_SF, &regs->intrdisable);
+>
+> > by getting rid of the test for OHCI_RH_RUNNING.
+>
+> > Alan Stern
 
-In new_eprobe_trigger(), allocated edata and trigger variables are
-never freed.
+Hi Alan Stern,
 
-To fix, free memory in disable_eprobe().
+       Above code condition that the key point is ohci->ed_rm_list is 
+NULL, but my target of my patch is to disable SoF interrupt when hc isn't
 
-Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
----
- kernel/trace/trace_eprobe.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+UsbOperation state and it doesn't matter with that ohci->ed_rm_list 
+whether is NULL. In addition the ohci->rh_state is to describe root hub
 
-diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-index 3044b762cbd7..570d081929fb 100644
---- a/kernel/trace/trace_eprobe.c
-+++ b/kernel/trace/trace_eprobe.c
-@@ -632,6 +632,13 @@ static int disable_eprobe(struct trace_eprobe *ep,
- 
- 	trace_event_trigger_enable_disable(file, 0);
- 	update_cond_flag(file);
+state that include halt, suspend,run and  it isn't exactly the same as 
+hc state.
+
+      following code is the v3 version patch,  please you check.
+
+         ohci_work(ohci);
+-       if ((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
+-                       && ohci->rh_state == OHCI_RH_RUNNING)
 +
-+	/* Make sure nothing is using the edata or trigger */
-+	tracepoint_synchronize_unregister();
++       ctl = ohci_readl(ohci, &regs->control);
 +
-+	kfree(edata);
-+	kfree(trigger);
-+
- 	return 0;
- }
- 
--- 
-2.17.1
++       if (((ints & OHCI_INTR_SF) != 0 && !ohci->ed_rm_list
++                       && ohci->rh_state == OHCI_RH_RUNNING) ||
++                       ((ctl & OHCI_CTRL_HCFS) != OHCI_USB_OPER)) {
+                 ohci_writel (ohci, OHCI_INTR_SF, &regs->intrdisable);
++               (void)ohci_readl(ohci, &regs->intrdisable);
++       }
+
+>
+>> +
+>>   	/* Read interrupt status (and flush pending writes).  We ignore the
+>>   	 * optimization of checking the LSB of hcca->done_head; it doesn't
+>>   	 * work on all systems (edge triggering for OHCI can be a factor).
+>> -- 
+>> 1.8.3.1
+>>
 
