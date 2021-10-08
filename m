@@ -2,159 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63E242711B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBD4427129
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240543AbhJHTAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
+        id S239650AbhJHTIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhJHTAS (ORCPT
+        with ESMTP id S231245AbhJHTIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:00:18 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E948C061570;
-        Fri,  8 Oct 2021 11:58:22 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D9296146F;
-        Fri,  8 Oct 2021 20:58:17 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633719498;
-        bh=MHBiXZNJbPeFPmG29rwaw6VIy+Lb+40kRf3KLozS164=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ve3QkZ0wRysKeFMaDqFGb7JwEWPU6UDRYkfd9QJlUR3hVcOODY0lniKciKC/SfJwP
-         TxFtjnKge5JGGkfFnZsYFg5BuHVHCB9uPDurNaNq//dm/2yAasRcvXOHPSDVgxxDJs
-         z6rvYPs6sxCeKyCqmJz9lhhn0AE6ZTAAKlFlINGY=
-Date:   Fri, 8 Oct 2021 21:58:07 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 02/12] media: i2c: ov8865: Add an has_unmet_acpi_deps()
- check
-Message-ID: <YWCUv+gEnfWnpRS6@pendragon.ideasonboard.com>
-References: <20211008162121.6628-1-hdegoede@redhat.com>
- <20211008162121.6628-3-hdegoede@redhat.com>
- <YWCQ6/AMzP5Nfcyk@pendragon.ideasonboard.com>
- <39a85265-017e-f86d-619b-c1aa6a771a26@redhat.com>
+        Fri, 8 Oct 2021 15:08:14 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2331C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:06:18 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id s24so14968212oij.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:06:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+PFG95vsWGuyHt4PcF9O/qQQtXb2/roNae5ZiPerc+I=;
+        b=Vg84jUhZ066KbwPCq09KSWKk5BMC/nESlSL+LvmOsd9WOTqV4fVqB6I1sVrBLn+BEY
+         Lr4BmXiMbxhqGcrcd6KQBJY9t78dmrCJ4nL4AtiEg6etmi8+yWMScE37Qar+/wVHsDAP
+         yB04phzc7eYq7KCmvPVMKkcgnl9G99lu63U74=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+PFG95vsWGuyHt4PcF9O/qQQtXb2/roNae5ZiPerc+I=;
+        b=rZ47Uq/Dya3AdgMd7dG3k1FY+9AVO6DEj1CahzjZJz54mEO9wvB8jA+sQyQqRMQqc6
+         8fovEzDWBdcJopEki3i5fNx1/imifUjp2ukGrgTsLdDtECNr6gnn31BsRhRwZ/hua1dY
+         Dxfvd6v5E9K/COjwu9tC+zbE57ohsEfgLbu+XHa5ZTUK61t8rHU0qj7c8bVel2Racldd
+         av3TwZ6kU+5lvi3kDePCPqwypc/0MMxPYxnlDPJFyFxDgl4Z6Flfl21dkZnRr5iRmfMU
+         ZSxJ7n6qoxEPTQ5ob8WO3wh59bveE+bhVh67/SKlvZ0UH1NzjTC/kSbKa9cllXAGrvHC
+         /fnA==
+X-Gm-Message-State: AOAM530nGXNExrdWXq2mqsiiiy0C6VKObT1kez+TgOnlbChNQbRRoDog
+        fbcNyzK3gyOt1NSd7cOFgg6OPoYZbxpZdg==
+X-Google-Smtp-Source: ABdhPJxtdcjmpSlcmiPoTKhX/+hpade2aIGMbwi5lgaFLi4KSDuAFuAIo6lZLda12ayoJNBS1oicug==
+X-Received: by 2002:aca:b5c3:: with SMTP id e186mr18017849oif.51.1633719977937;
+        Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com. [209.85.210.47])
+        by smtp.gmail.com with ESMTPSA id w2sm24082oof.23.2021.10.08.12.06.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so3837456otu.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:06:17 -0700 (PDT)
+X-Received: by 2002:a25:db91:: with SMTP id g139mr5128084ybf.391.1633719553275;
+ Fri, 08 Oct 2021 11:59:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <39a85265-017e-f86d-619b-c1aa6a771a26@redhat.com>
+References: <20211008140735.3290892-1-pan@semihalf.com> <20211008140735.3290892-2-pan@semihalf.com>
+In-Reply-To: <20211008140735.3290892-2-pan@semihalf.com>
+From:   Alexandru M Stan <amstan@chromium.org>
+Date:   Fri, 8 Oct 2021 11:58:37 -0700
+X-Gmail-Original-Message-ID: <CAHNYxRxuj_p-+zHCO9iEK3H7QrBAPy1Cx0tCh3ufRqYnK124qQ@mail.gmail.com>
+Message-ID: <CAHNYxRxuj_p-+zHCO9iEK3H7QrBAPy1Cx0tCh3ufRqYnK124qQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] dts: socfpga: Add Mercury+ AA1 devicetree
+To:     =?UTF-8?Q?Pawe=C5=82_Anikiel?= <pan@semihalf.com>
+Cc:     arnd@arndb.de, Olof Johansson <olof@lixom.net>, soc@kernel.org,
+        Rob Herring <robh+dt@kernel.org>, dinguyen@kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        upstream@semihalf.com, Marcin Wojtas <mw@semihalf.com>,
+        Konrad Adamczyk <ka@semihalf.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        Jacek Majkowski <jam@semihalf.com>,
+        Joanna Brozek <jbrozek@antmicro.com>,
+        Mariusz Glebocki <mglebocki@antmicro.com>,
+        Tomasz Gorochowik <tgorochowik@antmicro.com>,
+        Maciej Mikunda <mmikunda@antmicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On Fri, Oct 8, 2021 at 7:08 AM Pawe=C5=82 Anikiel <pan@semihalf.com> wrote:
+>
+> Add support for the Mercury+ AA1 module for Arria 10 SoC FPGA.
+>
+> Signed-off-by: Pawe=C5=82 Anikiel <pan@semihalf.com>
+> Signed-off-by: Joanna Brozek <jbrozek@antmicro.com>
+> Signed-off-by: Mariusz Glebocki <mglebocki@antmicro.com>
+> Signed-off-by: Tomasz Gorochowik <tgorochowik@antmicro.com>
+> Signed-off-by: Maciej Mikunda <mmikunda@antmicro.com>
+> ---
+>  arch/arm/boot/dts/Makefile                    |   1 +
+>  .../boot/dts/socfpga_arria10_mercury_aa1.dts  | 112 ++++++++++++++++++
+>  2 files changed, 113 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
+>
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 7e0934180724..0a7809eb3795 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1078,6 +1078,7 @@ dtb-$(CONFIG_ARCH_INTEL_SOCFPGA) +=3D \
+>         socfpga_arria10_socdk_nand.dtb \
+>         socfpga_arria10_socdk_qspi.dtb \
+>         socfpga_arria10_socdk_sdmmc.dtb \
+> +       socfpga_arria10_mercury_aa1.dtb \
+>         socfpga_cyclone5_chameleon96.dtb \
+>         socfpga_cyclone5_mcvevk.dtb \
+>         socfpga_cyclone5_socdk.dtb \
+> diff --git a/arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts b/arch/arm=
+/boot/dts/socfpga_arria10_mercury_aa1.dts
+> new file mode 100644
+> index 000000000000..2a3364b26361
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/socfpga_arria10_mercury_aa1.dts
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/dts-v1/;
+> +
+> +#include "socfpga_arria10.dtsi"
+> +
+> +/ {
+> +
+> +       model =3D "Enclustra Mercury AA1";
+> +       compatible =3D "altr,socfpga-arria10", "altr,socfpga";
+> +
+> +       aliases {
+> +               ethernet0 =3D &gmac0;
+> +               serial1 =3D &uart1;
+> +               i2c0 =3D &i2c0;
+> +               i2c1 =3D &i2c1;
 
-On Fri, Oct 08, 2021 at 08:48:18PM +0200, Hans de Goede wrote:
-> On 10/8/21 8:41 PM, Laurent Pinchart wrote:
-> > On Fri, Oct 08, 2021 at 06:21:11PM +0200, Hans de Goede wrote:
-> >> The clk and regulator frameworks expect clk/regulator consumer-devices
-> >> to have info about the consumed clks/regulators described in the device's
-> >> fw_node.
-> >>
-> >> To work around cases where this info is not present in the firmware tables,
-> >> which is often the case on x86/ACPI devices, both frameworks allow the
-> >> provider-driver to attach info about consumers to the clks/regulators
-> >> when registering these.
-> >>
-> >> This causes problems with the probe ordering of the ov8865 driver vs the
-> >> drivers for these clks/regulators. Since the lookups are only registered
-> >> when the provider-driver binds, trying to get these clks/regulators before
-> >> then results in a -ENOENT error for clks and a dummy regulator for regs.
-> >>
-> >> On ACPI/x86 where this is a problem, the ov8865 ACPI fw-nodes have a _DEP
-> >> dependency on the INT3472 ACPI fw-node which describes the hardware which
-> >> provides the clks/regulators.
-> >>
-> >> The drivers/platform/x86/intel/int3472/ code dealing with these ACPI
-> >> fw-nodes will call acpi_dev_clear_dependencies() to indicate that this
-> >> _DEP has been "met" when all the clks/regulators have been setup.
-> >>
-> >> Call the has_unmet_acpi_deps() helper to check for unmet _DEPs
-> >> and return -EPROBE_DEFER if this returns true, so that we wait for
-> >> the clk/regulator setup to be done before continuing with probing.
-> >>
-> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> >> ---
-> >>  drivers/media/i2c/ov8865.c | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
-> >> index ce4e0ae2c4d3..fd18d1256f78 100644
-> >> --- a/drivers/media/i2c/ov8865.c
-> >> +++ b/drivers/media/i2c/ov8865.c
-> >> @@ -2978,6 +2978,9 @@ static int ov8865_probe(struct i2c_client *client)
-> >>  	unsigned int i;
-> >>  	int ret;
-> >>  
-> >> +	if (has_unmet_acpi_deps(dev))
-> >> +		return -EPROBE_DEFER;
-> >> +
-> > 
-> > We've worked hard to avoid adding ACPI-specific code such as this in
-> > sensor drivers, as it would then spread like crazy, and also open the
-> > door to more ACPI-specific support. I don't want to open this pandora's
-> > box, I'd like to see this handled in another layer (the I2C core could
-> > be a condidate for instance, but bonus points if it can be handled in
-> > the ACPI subsystem itself).
-> 
-> The problem is that we do NOT want this check for all i2c devices,
+Yeah, this is fine now. I still would have added this in
+"socfpga_arria10.dtsi" instead. I don't think there's ever a case
+where these aliases wouldn't be wanted for any user of this chip.
 
-Any of these sensors can be used on non-ACPI-based platforms, or on
-ACPI-based platforms where integration has been done right. If it causes
-an issue to call this function on those platforms, then this driver
-won't work. If it causes no issue, why can't we call it in the I2C core
-(or somewhere else) ?
+> +       };
+> +
+> +       memory@0 {
+> +               name =3D "memory";
+> +               device_type =3D "memory";
+> +               reg =3D <0x0 0x80000000>; /* 2GB */
+> +       };
+> +
+> +       chosen {
+> +               stdout-path =3D "serial1:115200n8";
+> +       };
+> +};
+> +
+> +&eccmgr {
+> +       sdmmca-ecc@ff8c2c00 {
+> +               compatible =3D "altr,socfpga-sdmmc-ecc";
+> +               reg =3D <0xff8c2c00 0x400>;
+> +               altr,ecc-parent =3D <&mmc>;
+> +               interrupts =3D <15 IRQ_TYPE_LEVEL_HIGH>,
+> +                            <47 IRQ_TYPE_LEVEL_HIGH>,
+> +                            <16 IRQ_TYPE_LEVEL_HIGH>,
+> +                            <48 IRQ_TYPE_LEVEL_HIGH>;
+> +       };
+> +};
+> +
+> +&gmac0 {
+> +       phy-mode =3D "rgmii";
+> +       phy-addr =3D <0xffffffff>; /* probe for phy addr */
+> +
+> +       max-frame-size =3D <3800>;
+> +       status =3D "okay";
+> +
+> +       phy-handle =3D <&phy3>;
+> +
+> +       mdio {
+> +               #address-cells =3D <1>;
+> +               #size-cells =3D <0>;
+> +               compatible =3D "snps,dwmac-mdio";
+> +               phy3: ethernet-phy@3 {
+> +                       txd0-skew-ps =3D <0>; /* -420ps */
+> +                       txd1-skew-ps =3D <0>; /* -420ps */
+> +                       txd2-skew-ps =3D <0>; /* -420ps */
+> +                       txd3-skew-ps =3D <0>; /* -420ps */
+> +                       rxd0-skew-ps =3D <420>; /* 0ps */
+> +                       rxd1-skew-ps =3D <420>; /* 0ps */
+> +                       rxd2-skew-ps =3D <420>; /* 0ps */
+> +                       rxd3-skew-ps =3D <420>; /* 0ps */
+> +                       txen-skew-ps =3D <0>; /* -420ps */
+> +                       txc-skew-ps =3D <1860>; /* 960ps */
+> +                       rxdv-skew-ps =3D <420>; /* 0ps */
+> +                       rxc-skew-ps =3D <1680>; /* 780ps */
+> +                       reg =3D <3>;
+> +               };
+> +       };
+> +};
+> +
+> +&gpio0 {
+> +       status =3D "okay";
+> +};
+> +
+> +&gpio1 {
+> +       status =3D "okay";
+> +};
+> +
+> +&gpio2 {
+> +       status =3D "okay";
+> +};
+> +
+> +&i2c1 {
+> +       status =3D "okay";
+> +       isl12022: isl12022@6f {
+> +               status =3D "okay";
+> +               compatible =3D "isil,isl12022";
+> +               reg =3D <0x6f>;
+> +       };
+> +};
+> +
+> +/* Following mappings are taken from arria10 socdk dts */
+> +&mmc {
+> +       status =3D "okay";
+> +       cap-sd-highspeed;
+> +       broken-cd;
+> +       bus-width =3D <4>;
+> +};
+> +
+> +&osc1 {
+> +       clock-frequency =3D <33330000>;
+> +};
+> +
+> +&uart1 {
+> +       status =3D "okay";
+> +};
+> +
+> +&usb0 {
+> +       status =3D "okay";
+> +       dr_mode =3D "host";
+> +};
+> --
+> 2.25.1
+>
 
-> so doing
-> it in any place other then the drivers means having some list of APCI-ids
-> to which to apply this someplace else. And then for every sensor driver
-> which needs this we need to update this list.
-> 
-> This is wht I've chosen to just put this check directly in the sensor
-> drivers. It is only 2 lines, it is a no-op on kernels where ACPI
-> is not enabled (without need a #ifdef) and it is a no-op if the
-> sensor i2c-client is not instantiated through APCI even when ACPI
-> support is enabled in the kernel.
-> 
-> I understand that you don't want a lot of ACPI specific code inside
-> the drivers, which is why I've come up with this fix which consists
-> of only 2 lines.  My previous attempts (which I never posted)
-> where much worse then this.
+Hello Pawe=C5=82,
+Thank you for respinning.
 
-So we only need to take one more step to remove just two lines :-)
+This looks good as a base to make the boards be able to boot. I'd be
+happy if it lands (even the v3 patch).
+Just a small nit about the location of the aliases.
 
-This is all caused by Intel messing up their ACPI design badly. It's too
-late to point and shame, it won't fix the problem, but I don't want this
-to spread through drivers, neither for just those two lines (there are
-dozens of sensors that would need the same treatment), nor for what the
-next steps would be when someone else will want to add ACPI-specific
-code and use this as a precedent. That's why we tried hard with Dan
-Scally to isolate all the necessary quirks in a single place instead of
-spreading them through drivers, which would have been easier to
-implement.
+Reviewed-by: Alexandru M Stan <amstan@chromium.org>
 
-I'd like to hear what Sakari thinks about this.
-
-> >>  	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
-> >>  	if (!sensor)
-> >>  		return -ENOMEM;
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks,
+Alexandru Stan
