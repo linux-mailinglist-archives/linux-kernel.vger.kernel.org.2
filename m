@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E585742728D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFD3427294
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243269AbhJHUu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50384 "EHLO
+        id S243294AbhJHUuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243042AbhJHUu2 (ORCPT
+        with ESMTP id S243069AbhJHUun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:50:28 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6193C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:48:32 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id i13so11230559ilm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:48:32 -0700 (PDT)
+        Fri, 8 Oct 2021 16:50:43 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF06C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:48:48 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id r9so11254046ile.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:48:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iaFaYIXZwVD0yRZ/mCXCYmqaGexrEn8W5uhU7fneeVk=;
-        b=QbiScSuEuo1bfeAl0LdzPw3vaAmMP83C0WIakyzzJKiiko8EiCxmZ42y7KiJRy95NW
-         j9gWJ4hM2eOcSKl9HdzIRhMuHMFzidDHV3sT1sIbFgYRm23OA8e17FwELn8kcHlHkp7q
-         UPJh3N9J+1xDB1LjN9gm5G7tNsvqiP7OaAB30dSyyv0YWFXM+GVsu1hap3JLrJscqucT
-         XVgVl+p8upHWoa0NwcyFPRK+M2ZFQQTNl3fKCgIWtP2OWueP+pqa84bUHd6EzjVqMyNW
-         QA1/Bi8n0yI9TY+D+oOVvyTOyg5VEkjDYOOgUtD2RlDu/C9VqpOfu/XmIaFlzjrMGtXa
-         M52g==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lCL9jSct4nyfW//yULffOegzEzj9w/CKx/mnCG/UyTw=;
+        b=YcydB3lP5aSnSJPEAG4Lvz+hoHU//f6BwHWKnQFgEGtADpqreToiEdtWOkIHQnghql
+         cwiC8FV2P5aBPijUW2MVEC+y1EmN2+n5Qu0zZZJQMbqx3W0TbTUP9EfXSr0RK3AWxqIG
+         CnZ2QAJZZR2W2GGPO9vZFGYJybOIHeo7yEHAk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iaFaYIXZwVD0yRZ/mCXCYmqaGexrEn8W5uhU7fneeVk=;
-        b=TdYn0GzMcZfm0MIfZJJPN0GN3OGA3wWiJqGsfw5c/BHeri2A1TDfbVMUotNcu69+Xt
-         A1MoCXaVqaIpjzpvpVw8tj/rXQzHLbqtwobLcHhV3PV/esKxLbGmoMLNNzdqgtbbZvIK
-         H51GU/Si5eWt82L7N2pCetQFjjcPvMF0W9wQ5UJil+TjB0Lwdigc1G9KfaJVbJJg/Ak6
-         ad3ta2jeWDe7SasFbAFJn54kWZnVhO+6Y2NHGhw2zU+QTIPMX/OQCziBnkBnz+SJmuLI
-         ToaYRdoJmev1dZMTh7SLArncb4qOuL+mbHYFXeMeBJZzOCYdyQ+WtOF/J7FCnh8FsbRs
-         qEAg==
-X-Gm-Message-State: AOAM532ickgLksX5rIqMp4hlFwDmVXVKMdvWTCSH4GsAbsBs6fgE9/eH
-        TOU+3cctXz/eEYMSzVZfsLZvAuvHrhvFyF4JhaNbqxXJll+WXQ==
-X-Google-Smtp-Source: ABdhPJyzQI+ydTQHhLGpW7tyL8HzlARvMHpg2upjXRqbpsb7EXsx9zXOsNSUT6gDYnP20RcY4v71JqBb3Ii9IgxkCxM=
-X-Received: by 2002:a05:6e02:1b07:: with SMTP id i7mr9842231ilv.63.1633726112024;
- Fri, 08 Oct 2021 13:48:32 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lCL9jSct4nyfW//yULffOegzEzj9w/CKx/mnCG/UyTw=;
+        b=Djso60EzYvMQEtuc+sZCGmE3yrFgqJRPLTOAbGjLUhfUGyySud1jdJudQZuxdshF2A
+         I4t9BpczZIKkI8PyNlxN9EoWO+nEbKieZQ6AIvmyKd3gGO5q8UbOwkkCiVQI8sBbX3f6
+         A5Bq4rudLWxLX09KYa10vnehS///9hj8f7rDjqA+odh9JwezK4xaSkuNrB/Z9WWDo5J0
+         WfdXNRcbum2t8p9XqRVJ9vNW1qxCU1yxDa+LV0GfWjhUok1wirG41Riw3vvjAP267Nc2
+         9o/37KGGIeWEJ6agLqveIP3iLhpYShVAXrlp0wlQC1nNJxYvC1cQcNc7gv1WsjfjChv4
+         1P2Q==
+X-Gm-Message-State: AOAM530ECbvIK+XvXZMHCb2NlhG4jCX649lKOb82/t+J0NT+YJEzdkh7
+        rHj4HEeyVBPY9oQgXQlGL3ivxQ==
+X-Google-Smtp-Source: ABdhPJyZ/jm6uxkz9yes6Os3Qu4WgsDdFzQUFl/1fT5Rfv50To7N59cStQNB8Z8tqitmoP7jnGdz6w==
+X-Received: by 2002:a05:6e02:102d:: with SMTP id o13mr9623287ilj.239.1633726127536;
+        Fri, 08 Oct 2021 13:48:47 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i18sm164412ila.32.2021.10.08.13.48.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 13:48:47 -0700 (PDT)
+Subject: Re: [PATCH 4.9 0/8] 4.9.286-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211008112713.941269121@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <13cc7eaf-d34b-409c-dfe7-43c53815f6d1@linuxfoundation.org>
+Date:   Fri, 8 Oct 2021 14:48:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20211008152930.03787395@canb.auug.org.au> <ba01fb13-e1a1-299e-9a7b-ccdeaeef267a@linuxfoundation.org>
- <CAFd5g45g91ZadTJrU3oE+VHxZ_2kgDnZm0uyTiaxR+bP=qg9fA@mail.gmail.com>
-In-Reply-To: <CAFd5g45g91ZadTJrU3oE+VHxZ_2kgDnZm0uyTiaxR+bP=qg9fA@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 8 Oct 2021 13:48:20 -0700
-Message-ID: <CAGS_qxpfx_OS8t1NGVojkkgbR-Dof6VfJxag1OXDyrjcjxVZYQ@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the kunit-next tree with the
- kunit-fixes tree
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211008112713.941269121@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:03 PM Brendan Higgins
-<brendanhiggins@google.com> wrote:
->
-> On Fri, Oct 8, 2021 at 9:31 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >
-> > On 10/7/21 10:29 PM, Stephen Rothwell wrote:
-> > > Hi all,
-> > >
-> > > Today's linux-next merge of the kunit-next tree got a conflict in:
-> > >
-> > >    tools/testing/kunit/kunit.py
-> > >
-> > > between commit:
-> > >
-> > >    d8c23ead708b ("kunit: tool: better handling of quasi-bool args (--json, --raw_output)")
-> > >
-> > > from the kunit-fixes tree and commit:
-> > >
-> > >    6710951ee039 ("kunit: tool: support running each suite/test separately")
-> > >
-> > > from the kunit-next tree.
-> > >
-> > > I fixed it up (see below) and can carry the fix as necessary. This
-> > > is now fixed as far as linux-next is concerned, but any non trivial
-> > > conflicts should be mentioned to your upstream maintainer when your tree
-> > > is submitted for merging.  You may also want to consider cooperating
-> > > with the maintainer of the conflicting tree to minimise any particularly
-> > > complex conflicts.
-> > >
-> >
-> > Thank you for the fixing it up. I will fix this up in the kunit-next once
-> > the kunit-fixes pull request goes out.
->
-> Thanks for taking care of this everyone.
->
-> Daniel, can you double check the merge conflict to make sure it is
-> done correctly?
+On 10/8/21 5:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.286 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.286-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Looks good to me.
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/tools/testing/kunit/kunit.py
+Compiled and booted on my test system. No dmesg regressions.
 
-Not sure if I'm parsing the 3-way diff properly, but it looks like
-it's just the typing import and the fact we added some code right
-below run_tests(), which got changed.
-So yeah, the combined Typing import and telling git it's being
-paranoid about run_tests and massage_argv seems fine.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
+
