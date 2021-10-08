@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E0F426C53
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C5F426C56
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhJHOGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:06:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41270 "EHLO
+        id S237488AbhJHOHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:07:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhJHOGo (ORCPT
+        with ESMTP id S229607AbhJHOHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:06:44 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC85C061570;
-        Fri,  8 Oct 2021 07:04:49 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so11823312otx.3;
-        Fri, 08 Oct 2021 07:04:49 -0700 (PDT)
+        Fri, 8 Oct 2021 10:07:32 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169DCC061570;
+        Fri,  8 Oct 2021 07:05:37 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id g15-20020a9d128f000000b0054e3d55dd81so6687229otg.12;
+        Fri, 08 Oct 2021 07:05:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=bnuVqqxOBt79qU5yMi3m5uMYBT207yIq6iyAndMFY4o=;
-        b=iwRII4SdYezkjcECKUQnVi0sY5AW4/m+Da7UKOjg0jGvskAs9YTTqfQXjgoXYIvk0b
-         45/3RJg2X+FW3gg5opoh+MXUom4175HV3BUI4bX/0fNZTrWoodvOHpiiIPnQ1sKcW1ml
-         j9aGHqZQqKNruCDFFtZl3oVsB89Em+SlAo8rcEzSb/MQl9OuqjAaIuaTDFNOAHXETU4E
-         XTQJ3EeiPWJovFFIqz6Q2p0gF+K9N9ZR41cCuRJKMnyrLBYjJduZxJgyXnOsXRnOhlGq
-         BXGrw8PA65uJ1JduzVlTnxQgnCrtq2RnVBRGnq/aI8jkE1/zlQ4+swktxIlPOe+TsEoj
-         DGUA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+8cmniGBVN2PezeljEbDSbJUvW2F5mbVKylcUXP/x7w=;
+        b=iG7tVZn2+bYvwKFyxomcWVADB9zRlDQjYaGD9UzpSpCMqCuK7+wYzy+dEiOQDtV0a8
+         1RrVilgcTat4Z911VWl3O0tJRfpWvF7xHwmuwhHZoqWJncqnTfjDskC3wtKSObeZ3PYA
+         Y8/DgSEyQHyWcp74LeqPnvSUv+bN69j3G+odLM8vPmg5KdDu3uTnICWgqDdaGnV2ECxI
+         RRdHymYHs5XTs4ptFhfVMdmgm1YGkSuLRM055x/dL3+YNqsoHltvnsagrBh1Gb2b3a5T
+         6lyGpG2fcbOa/v8psniFp1+DTRl7Jb8hPUf0/9BopdPI3y7vD/NCQoGO/qThsK/orpOu
+         83sQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=bnuVqqxOBt79qU5yMi3m5uMYBT207yIq6iyAndMFY4o=;
-        b=PC296LcmuLhNZLmA3NeVibY68epMnquvjuTl2SbFeS6aGVd0a+vT4WJA3Or1FwNOyX
-         v8YHxDVFFIazv4OMFolCngWKIO2hcKiybE1/UtlT2x0QOoTm6WewkRht26Ge9zsMkK1s
-         bThusPBXv3mOvKyd1Eo3CbcPKSXJ6DViDpsbRRlN09PzH6+pE+/18xjTR4d2g9V1E1Wg
-         Mh/Eok7Dq6+1GHd0pLQ2bayDIPyi8tkZ1wx0YLvCri/WsdP/SUbk+h5Q5Snop8Jqex21
-         ng70e9UsN1/79Xsvf1oZuyZDl7WJqkUiVZRbGP9IVb5eMptqL15S7CUkxA4iy5+i4hjl
-         Fhzw==
-X-Gm-Message-State: AOAM530kOFjwm7sUH1t5Sj5yLd2WcfChiMGsnXZwIXZuWeUQ/F1vwxT9
-        42HvCpWu55Prd4RBYnrFDZQ=
-X-Google-Smtp-Source: ABdhPJxG5N4hJ/XdoVm3eRhbnB3taI4dkVTJfRD3NYfj0EbZcA7GPq0E1hpIYkFjbU49dyXAvQJntA==
-X-Received: by 2002:a9d:1ab:: with SMTP id e40mr9196139ote.64.1633701888636;
-        Fri, 08 Oct 2021 07:04:48 -0700 (PDT)
-Received: from [172.31.250.1] ([47.184.51.90])
-        by smtp.gmail.com with ESMTPSA id c9sm599279ots.30.2021.10.08.07.04.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 07:04:48 -0700 (PDT)
-Message-ID: <857be92d-1f7b-dee6-56cb-6138e07c2717@gmail.com>
-Date:   Fri, 8 Oct 2021 09:04:46 -0500
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=+8cmniGBVN2PezeljEbDSbJUvW2F5mbVKylcUXP/x7w=;
+        b=cpjzUjejxoyk1B4/eWcSjxiHxg4pNScXgjLgReFs9p6f9MK6zkLfBiI8xrur+H9xQ/
+         nmk9bA0Kf9i4DwFCLjOyxrlv7gXOyxPH5k9JFFDCpAAFX0vJ/t6PvggQkgxLNBSgr6BH
+         F9Kp91cjTlLFUuE2VkkOrsEcRvIMWTLWKO1z5RQtydQ09SkPlp5GmPPlLlqSQnvSgBZQ
+         /K37H/YOOTGkJCuT6bDI7WEyts294Diw43NStyc1NmqQp4Ti6tDDld2jNBrShM/SVm+S
+         7/i9VSDEhNy5WYHZ7pS906Df2WvrltZPxioADJAY8F6Msq1156eyASyxCLSHV9jvJ0h5
+         ErlQ==
+X-Gm-Message-State: AOAM532nha+C6eyoaf74uoKI+JhaovJbiKqDVyQpztQLpAkQlBGfL9M1
+        eEKUOeRPQSx+JvbqZqm3VFQ=
+X-Google-Smtp-Source: ABdhPJyc4aEce/oZYp2+1eG/MuQb/NZigkdhWbVH6kMKwDM9WHMi7k6KDBmo7i0NLZvSMAyLDp9SfA==
+X-Received: by 2002:a9d:19c1:: with SMTP id k59mr8631537otk.348.1633701936488;
+        Fri, 08 Oct 2021 07:05:36 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z83sm642787oiz.41.2021.10.08.07.05.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 07:05:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 8 Oct 2021 07:05:34 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Zev Weiss <zev@bewilderbeest.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 8/8] dt-bindings: hwmon/pmbus: Add ti,lm25066
+ power-management IC
+Message-ID: <20211008140534.GA1806215@roeck-us.net>
+References: <20210928092242.30036-1-zev@bewilderbeest.net>
+ <20210928092242.30036-9-zev@bewilderbeest.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [RESEND PATCH v5 2/2] leds: trigger: Add block device LED trigger
-Content-Language: en-US
-To:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>
-Cc:     pavel@ucw.cz, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        hch@infradead.org
-References: <20211004155546.1120869-1-arequipeno@gmail.com>
- <20211004155546.1120869-3-arequipeno@gmail.com>
- <20211005232738.371df6b8@thinkpad>
- <749c46a3-5d02-08ef-2a45-e785d65999c7@gmail.com>
- <20211008120116.65aec469@thinkpad>
-From:   Ian Pilcher <arequipeno@gmail.com>
-In-Reply-To: <20211008120116.65aec469@thinkpad>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210928092242.30036-9-zev@bewilderbeest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 05:01, Marek Behún wrote:
-> On Wed, 6 Oct 2021 11:07:06 -0500
-> Ian Pilcher <arequipeno@gmail.com> wrote:
-> 
->> I have feeling that per-LED work items are likely to cause contention
->> for the mutex, since they will probably all have the same (default)
->> interval and they will usually be set up at about the same time (i.e.
->> at system boot).  Instead, I would propose to have a single work item
->> that is simply scheduled for the next time work is "needed" and then
->> checks all LEDs that are due at that time.
-> 
-> What about creating one work struct for all different interval values?
-> 
-> That way if the user never changes the interval, there will be only one
-> work struct.
-> 
-> I wonder if this can be done in a sensible (i.e. not overcomplicated
-> code) way.
+On Tue, Sep 28, 2021 at 02:22:42AM -0700, Zev Weiss wrote:
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-I've been working on this (along with the other changes), and it's about
-ready to go.  I'll send it out later today, once I've had a chance to
-write up the changelog.
+Applied.
 
-Thanks!
+Thanks,
+Guenter
 
--- 
-========================================================================
-                  In Soviet Russia, Google searches you!
-========================================================================
+> ---
+>  .../bindings/hwmon/pmbus/ti,lm25066.yaml      | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
+> new file mode 100644
+> index 000000000000..da8292bc32f5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/ti,lm25066.yaml
+> @@ -0,0 +1,54 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/pmbus/ti,lm25066.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: National Semiconductor/Texas Instruments LM250x6/LM506x power-management ICs
+> +
+> +maintainers:
+> +  - Zev Weiss <zev@bewilderbeest.net>
+> +
+> +description: |
+> +  The LM25066 family of power-management ICs (a.k.a. hot-swap
+> +  controllers or eFuses in various contexts) are PMBus devices that
+> +  offer temperature, current, voltage, and power monitoring.
+> +
+> +  Datasheet: https://www.ti.com/lit/ds/symlink/lm25066.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - ti,lm25056
+> +      - ti,lm25066
+> +      - ti,lm5064
+> +      - ti,lm5066
+> +      - ti,lm5066i
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  shunt-resistor-micro-ohms:
+> +    description:
+> +      Shunt (sense) resistor value in micro-Ohms
+> +    default: 1000
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pmic@40 {
+> +            compatible = "ti,lm25066";
+> +            reg = <0x40>;
+> +            shunt-resistor-micro-ohms = <675>;
+> +        };
+> +    };
