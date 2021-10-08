@@ -2,134 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D164265AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD024265B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhJHIQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:16:34 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:34723 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233072AbhJHIQc (ORCPT
+        id S233463AbhJHITn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229670AbhJHITk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:16:32 -0400
-Received: by mail-ua1-f45.google.com with SMTP id h4so6198069uaw.1;
-        Fri, 08 Oct 2021 01:14:37 -0700 (PDT)
+        Fri, 8 Oct 2021 04:19:40 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB3AC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 01:17:45 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id t2so27118916wrb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wV5tzEBoEpJiROWZNDlMHWq7o/gFVwN1yAAzvwxNr1Q=;
+        b=QffYaqLN5pcF6wV26X/8H7ENBQ+Q779k5YnOHpbdwam4p1qkctgJ+H0PfL0MXSKR7m
+         WWJrGdOh1/1Ylaw4pAVZF+KI7E2z5U8Wt/Mbibyq4RswUKdmVP+Qgb0dt9+9MYOJHpYK
+         ikiPci9kwmkAPg+Lpm6sa/Lg59TZyux6GFxCmyg8s9Bnx0nnGQmHC5cOao9TcMrSPMr9
+         /usF7nH+up1j2+2UOsXC40HxGFTE8/+U6253cNdTZx6dkMRUUy19Go7FlGX/XkSWJRaW
+         fhAb3ZoDQM4TCz2J8YhR3TVg5vf+Yn1KfRMIKPdkpim40Dng6JK6ijXluToJ5+VTJOMK
+         I5bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7wO+xcQh6vNN08iok37rOCPRwho9ClVLbVfs6DvZcoU=;
-        b=1V+mwmje0bbAVYIweZ9k+xoyyotUOqd0jO9GkvoXdg6/lVr/Bvc6/ykGQFLBE/BEm2
-         LdDqqh1LbwB8g5uDQkB8vTOOVvNMBKfqKyWhZkp9mpqIniq/jNlrp1sufYnkyyy7GGS3
-         jBvk+7QCLD2+oEKKAaOql3OEDuRpqrJAKpIKPNXNHlIVnFZva2qpJtKeu/84TVgFoMsq
-         Xq9PehJrJvSWAjnjLKjvLWk17nmu7oMfM3LJWMVaeu2n9Oc78YS8cfiAd6QF8xgwVg90
-         S5jMmhiiFhajs3ZBuHe3c62PV9Y3uPXEmywRwzK8makrR81SV4ENCI6LPgKUyEQ1Sfa1
-         Nvxw==
-X-Gm-Message-State: AOAM530UZyevZG0l6HMETNPC7NcScgs/sMbTv/b//XEycgYjweX09j9W
-        S+mqOcRkkyX1hXlj5g419Pip0EorYDALjJrX/MJHImVBioo=
-X-Google-Smtp-Source: ABdhPJxD3cm5x6NWNfsGlyqVJout9BqXENj3uvqqT6UeA6jfU03wynvPPBTZw2mQph2TScrcb7ByvBjOn/L2fjppPQ4=
-X-Received: by 2002:ab0:16d4:: with SMTP id g20mr1204838uaf.114.1633680876846;
- Fri, 08 Oct 2021 01:14:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wV5tzEBoEpJiROWZNDlMHWq7o/gFVwN1yAAzvwxNr1Q=;
+        b=fVuCyB06lKlPvIht4eaO9AEusI665GJWFverrLc1xt0JfillukfmvScVexhRqXiANq
+         9g/QJ3xMhCWG5AHmw7OoKPABPjIieEtYGOwYA1d83HeK752UTBcyDaPCEKzDUNO4JZin
+         HbYX356l14bxJpMvYswcYAFHu0aaSCccGjpJKRzhf3wy5cl3uUGUOHJGlMEfb3MH07xt
+         rqBoRPWKBSRaFxEJgcSII8Oq+AlUcuKPM+/u4S7gYPajm1g85f28+XngiJBkba4FsDXZ
+         xzMILQwJyp5B6K1+lHptUd1OOxiriLjp3UYT+MWUqHIB7qdEfFVTUQw3Ii1N6eAtgR67
+         ldcg==
+X-Gm-Message-State: AOAM531eE7h7Oj7j9f7xzjTngSzpAgRwirFbf+xxlWyBQWh0FlarbnAY
+        0iscODo4dhwA0frEh/w0Ze/xiA==
+X-Google-Smtp-Source: ABdhPJwi5T09ANf4gkWA5lH3QB1o6sZsKhTRn+CGKhh8YHF5nmc77SZZw/pT3ta2GkdsKtU06CK9nw==
+X-Received: by 2002:adf:fe0b:: with SMTP id n11mr2226363wrr.371.1633681063682;
+        Fri, 08 Oct 2021 01:17:43 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id i3sm1759530wrn.34.2021.10.08.01.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 01:17:43 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>,
+        Shuah Khan <shuah@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jack Winch <sunt.un.morcov@gmail.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH v7 0/8] gpio: implement the configfs testing module
+Date:   Fri,  8 Oct 2021 10:17:31 +0200
+Message-Id: <20211008081739.26807-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20211008162103.1921a7a7@canb.auug.org.au> <87tuhs5ah8.fsf@codeaurora.org>
-In-Reply-To: <87tuhs5ah8.fsf@codeaurora.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Oct 2021 10:14:25 +0200
-Message-ID: <CAMuHMdUZa9o15_fGJ7Si_-bOQVcFOxtWgo_MOiKsV0FjoPeX6Q@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the net-next tree
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jouni Malinen <jouni@codeaurora.org>,
-        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        ath11k@lists.infradead.org,
-        linux-wireless <linux-wireless@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kalle,
+I'm respinning this series now because I noticed that I need to start writing
+tests for my work on the new libgpiod v2 code to make sense (it's just becoming
+too complicated to make even remotely functional without test coverage). At the
+same time I don't want to rewrite the tests using gpio-mockup if the goal is to
+replace it with gpio-sim anyway.
 
-On Fri, Oct 8, 2021 at 7:55 AM Kalle Valo <kvalo@codeaurora.org> wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
->
-> > After merging the net-next tree, today's linux-next build (xtensa,
-> > m68k allmodconfig) failed like this:
-> >
-> > In file included from <command-line>:0:0:
-> > In function 'ath11k_peer_assoc_h_smps',
-> >     inlined from 'ath11k_peer_assoc_prepare' at drivers/net/wireless/ath/ath11k/mac.c:2362:2:
-> > include/linux/compiler_types.h:317:38: error: call to '__compiletime_assert_650' declared with attribute error: FIELD_GET: type of reg too small for mask
-> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> >                                       ^
-> > include/linux/compiler_types.h:298:4: note: in definition of macro '__compiletime_assert'
-> >     prefix ## suffix();    \
-> >     ^
-> > include/linux/compiler_types.h:317:2: note: in expansion of macro '_compiletime_assert'
-> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-> >   ^
-> > include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-> >  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-> >                                      ^
-> > include/linux/bitfield.h:52:3: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-> >    BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,  \
-> >    ^
-> > include/linux/bitfield.h:108:3: note: in expansion of macro '__BF_FIELD_CHECK'
-> >    __BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: "); \
-> >    ^
-> > drivers/net/wireless/ath/ath11k/mac.c:2079:10: note: in expansion of macro 'FIELD_GET'
-> >    smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
-> >           ^
-> >
-> > Caused by commit
-> >
-> >   6f4d70308e5e ("ath11k: support SMPS configuration for 6 GHz")
->
-> Thanks for the report, weird that I don't see it on x86. I can't look at
-> this in detail now, maybe later today, but I wonder if the diff below
-> fixes the issue?
+I fixed issues pointed out by Al Viro and made sure that references are
+correctly counted (including error paths) and that memory allocated for the
+pending and live groups gets freed.
 
-It seems to be related to passing "le16_to_cpu(sta->he_6ghz_capa.capa)".
-Probably typeof(le16_to_cpu(sta->he_6ghz_capa.capa)) goes berserk.
-le16_to_cpu() is a complex macro on big-endian. I had expected to see
-a similar issue on powerpc, but I don't.
-Using an intermediate "u16 capa = le16_to_cpu(sta->he_6ghz_capa.capa)"
-fixes the problem.
+===
 
-> At least it's cleaner than using FIELD_GET(), actually ath11k should be
-> cleaned up to use xx_get_bits() all over.
->
-> Kalle
->
-> diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
-> index d897020dd52d..3e7e569f284b 100644
-> --- a/drivers/net/wireless/ath/ath11k/mac.c
-> +++ b/drivers/net/wireless/ath/ath11k/mac.c
-> @@ -2076,8 +2076,8 @@ static void ath11k_peer_assoc_h_smps(struct ieee80211_sta *sta,
->                 smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
->                 smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
->         } else {
-> -               smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
-> -                                le16_to_cpu(sta->he_6ghz_capa.capa));
-> +               smps = le16_get_bits(sta->he_6ghz_capa.capa,
-> +                                    IEEE80211_HE_6GHZ_CAP_SM_PS);
->         }
+Cc'ing Viresh too.
 
-Thanks, that works, too, so (compile)
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Viresh: while there's still a long way to go before the libgpio v2.0 release,
+in order to merge the Rust bindings, we'll need a test-suite similar to what
+we have now for C++ and Python bindings, except that it will have to be based
+on the gpio-sim module when it makes its way into mainline.
 
-Gr{oetje,eeting}s,
+===
 
-                        Geert
+This series adds a new GPIO testing module based on configfs committable items
+and sysfs. The goal is to provide a testing driver that will be configurable
+at runtime (won't need module reload) and easily extensible. The control over
+the attributes is also much more fine-grained than in gpio-mockup.
 
+This series also contains a respin of the patches I sent separately to the
+configfs maintainers - these patches implement the concept of committable
+items that was well defined for a long time but never actually completed.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Apart from the new driver itself, its selftests and the configfs patches, this
+series contains some changes to the bitmap API - most importantly: it adds
+devres managed variants of bitmap_alloc() and bitmap_zalloc().
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+v1 -> v2:
+- add selftests for gpio-sim
+- add helper programs for selftests
+- update the configfs rename callback to work with the new API introduced in
+  v5.11
+- fix a missing quote in the documentation
+- use !! whenever using bits operation that are required to return 0 or 1
+- use provided bitmap API instead of reimplementing copy or fill operations
+- fix a deadlock in gpio_sim_direction_output()
+- add new read-only configfs attributes for mapping of configfs items to GPIO
+  device names
+- and address other minor issues pointed out in reviews of v1
+
+v2 -> v3:
+- use devm_bitmap_alloc() instead of the zalloc variant if we're initializing
+  the bitmap with 1s
+- drop the patch exporting device_is_bound()
+- don't return -ENODEV from dev_nam and chip_name configfs attributes, return
+  a string indicating that the device is not available yet ('n/a')
+- fix indentation where it makes sense
+- don't protect IDA functions which use their own locking and where it's not
+  needed
+- use kmemdup() instead of kzalloc() + memcpy()
+- collected review tags
+- minor coding style fixes
+
+v3 -> v4:
+- return 'none' instead of 'n/a' from dev_name and chip_name before the device
+  is registered
+- use sysfs_emit() instead of s*printf()
+- drop GPIO_SIM_MAX_PROP as it's only used in an array's definition where it's
+  fine to hardcode the value
+
+v4 -> v5:
+- drop lib patches that are already upstream
+- use BIT() instead of (1UL << bit) for flags
+- fix refcounting for the configfs_dirent in rename()
+- drop d_move() from the rename() callback
+- free memory allocated for the live and pending groups in configfs_d_iput()
+  and not in detach_groups()
+- make sure that if a group of some name is in the live directory, a new group
+  with the same name cannot be created in the pending directory
+
+v5 -> v6:
+- go back to using (1UL << bit) instead of BIT()
+- if the live group dentry doesn't exist for whatever reason at the time when
+  mkdir() in the pending group is called (would be a BUG()), return -ENOENT
+  instead of -EEXIST which should only be returned if given subsystem already
+  exists in either live or pending group
+
+v6 -> v7:
+- as detailed by Andy in commit 6fda593f3082 ("gpio: mockup: Convert to use
+  software nodes") removing device properties after the platform device is
+  removed but before the GPIO device gets dropped can lead to a use-after-free
+  bug - use software nodes to manually control the freeing of the properties
+
+Bartosz Golaszewski (8):
+  configfs: increase the item name length
+  configfs: use (1UL << bit) for internal flags
+  configfs: implement committable items
+  samples: configfs: add a committable group
+  gpio: sim: new testing module
+  selftests: gpio: provide a helper for reading chip info
+  selftests: gpio: add a helper for reading GPIO line names
+  selftests: gpio: add test cases for gpio-sim
+
+ Documentation/admin-guide/gpio/gpio-sim.rst   |  72 ++
+ Documentation/filesystems/configfs.rst        |   6 +-
+ drivers/gpio/Kconfig                          |   8 +
+ drivers/gpio/Makefile                         |   1 +
+ drivers/gpio/gpio-sim.c                       | 886 ++++++++++++++++++
+ fs/configfs/configfs_internal.h               |  22 +-
+ fs/configfs/dir.c                             | 276 +++++-
+ include/linux/configfs.h                      |   3 +-
+ samples/configfs/configfs_sample.c            | 153 +++
+ tools/testing/selftests/gpio/.gitignore       |   2 +
+ tools/testing/selftests/gpio/Makefile         |   4 +-
+ tools/testing/selftests/gpio/config           |   1 +
+ tools/testing/selftests/gpio/gpio-chip-info.c |  57 ++
+ tools/testing/selftests/gpio/gpio-line-name.c |  55 ++
+ tools/testing/selftests/gpio/gpio-sim.sh      | 229 +++++
+ 15 files changed, 1752 insertions(+), 23 deletions(-)
+ create mode 100644 Documentation/admin-guide/gpio/gpio-sim.rst
+ create mode 100644 drivers/gpio/gpio-sim.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-chip-info.c
+ create mode 100644 tools/testing/selftests/gpio/gpio-line-name.c
+ create mode 100755 tools/testing/selftests/gpio/gpio-sim.sh
+
+-- 
+2.30.1
+
