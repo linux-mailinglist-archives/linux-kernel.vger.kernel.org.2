@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3183042695D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34804269C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:39:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241868AbhJHLgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
+        id S241845AbhJHLld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:41:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240551AbhJHLd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:33:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FCB161056;
-        Fri,  8 Oct 2021 11:31:10 +0000 (UTC)
+        id S242508AbhJHLiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:38:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D8B261390;
+        Fri,  8 Oct 2021 11:32:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692671;
-        bh=dT/0ijY4wMft8N/PMs/O8z766eKLlFc43XEtjuJfa2A=;
+        s=korg; t=1633692777;
+        bh=Vyp65lF8I7F1LMg011ze4pcDp+F4AJwyEL3Les0tYUQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OHTwNxiLGi3hM/MuaCRdAbNjZHhrhVPYLSwgApdflFcj7UPKRykYqhJGOoC3x/mwA
-         y6KDncf324PGW6PFjtwo3KV7EWIP5vyWaDMDkGzhbaHzmI+Ybw2HgWBR28AfByRfkZ
-         ITmk8jO8uW02MOrqaFqc+vi9OCBkFJKjNnpfKw0c=
+        b=oJ85PzR7rrl6rpXl5ZG37+MRrO0pdQjJcoyjeO3y2CDL4LgKrSLrnA05VPlw4u8eH
+         NdXPTe7mJVAHOBHHoI5NiPGKFgU+FSsLi6kqEyRrx4QyNlgR0vRuAUgX75hj2ZOt6A
+         S8BqGAosQAlQHx1vMxDQetDOg8rKNEF2wrqFO6NE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>,
         Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 21/29] irqchip/gic: Work around broken Renesas integration
-Date:   Fri,  8 Oct 2021 13:28:08 +0200
-Message-Id: <20211008112717.676510687@linuxfoundation.org>
+Subject: [PATCH 5.14 33/48] irqchip/gic: Work around broken Renesas integration
+Date:   Fri,  8 Oct 2021 13:28:09 +0200
+Message-Id: <20211008112721.126445979@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -64,7 +64,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 51 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 6053245a4754..176f5f06432d 100644
+index d329ec3d64d8..5f22c9d65e57 100644
 --- a/drivers/irqchip/irq-gic.c
 +++ b/drivers/irqchip/irq-gic.c
 @@ -107,6 +107,8 @@ static DEFINE_RAW_SPINLOCK(cpu_map_lock);
@@ -76,7 +76,7 @@ index 6053245a4754..176f5f06432d 100644
  /*
   * The GIC mapping of CPU interfaces does not necessarily match
   * the logical CPU numbering.  Let's use a mapping as returned
-@@ -777,6 +779,25 @@ static int gic_pm_init(struct gic_chip_data *gic)
+@@ -774,6 +776,25 @@ static int gic_pm_init(struct gic_chip_data *gic)
  #endif
  
  #ifdef CONFIG_SMP
@@ -102,7 +102,7 @@ index 6053245a4754..176f5f06432d 100644
  static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
  			    bool force)
  {
-@@ -791,7 +812,10 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
+@@ -788,7 +809,10 @@ static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
  	if (cpu >= NR_GIC_CPU_IF || cpu >= nr_cpu_ids)
  		return -EINVAL;
  
@@ -114,7 +114,7 @@ index 6053245a4754..176f5f06432d 100644
  	irq_data_update_effective_affinity(d, cpumask_of(cpu));
  
  	return IRQ_SET_MASK_OK_DONE;
-@@ -1384,6 +1408,30 @@ static bool gic_check_eoimode(struct device_node *node, void __iomem **base)
+@@ -1375,6 +1399,30 @@ static bool gic_check_eoimode(struct device_node *node, void __iomem **base)
  	return true;
  }
  
@@ -145,7 +145,7 @@ index 6053245a4754..176f5f06432d 100644
  static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
  {
  	if (!gic || !node)
-@@ -1400,6 +1448,8 @@ static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
+@@ -1391,6 +1439,8 @@ static int gic_of_setup(struct gic_chip_data *gic, struct device_node *node)
  	if (of_property_read_u32(node, "cpu-offset", &gic->percpu_offset))
  		gic->percpu_offset = 0;
  
