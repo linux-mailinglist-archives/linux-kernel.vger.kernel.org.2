@@ -2,159 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E58AB4268EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58442426930
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240408AbhJHLcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58592 "EHLO mail.kernel.org"
+        id S240332AbhJHLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:34:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240660AbhJHLbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:31:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 152EC61029;
-        Fri,  8 Oct 2021 11:29:30 +0000 (UTC)
+        id S241143AbhJHLcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A7D6135E;
+        Fri,  8 Oct 2021 11:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692571;
-        bh=pTt47VhSMgHL4Y6wUmlqptZk0U9hVMgQBIyORmmJ0I0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ebblc5fP8t9PQ9zzyYBAM1lqsIJ5GfD8zTcoT/rEUU7glqzVKfbCOMNZerAdb5msU
-         L/ZwY81B2JRSG5vYX+yagsjksNMZyxMWcJcgvaneLeWQXMWRRIRcjeMEXMmvBTOMKM
-         XXcGD/VUFoaD6odBHr/rm9Ml9JqqcBpfJtd0qXos=
+        s=korg; t=1633692606;
+        bh=buiXg9GNRc7ZXE9kCnZhoVux+sYWboArSWolJbhn0tM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HbIiWqeBF1t4i55C4SS4l+08cwbzVnfg+A0kOrXUEpLZzun2gPHaGckiHAuEgNdZa
+         fF4HrIrvtDYYsqsQaHF0ZKQiMQrBlOXGGK3fqwlFA7+XQU4EMmSwERmuNdWMP0kssK
+         xHZTGqMIb/53C5D+rS8quc6PqIBwO7nvWe/FpO8M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        =?UTF-8?q?Krzysztof=20Ol=C4=99dzki?= <ole@ans.pl>
-Subject: [PATCH 4.14 09/10] libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.4 00/16] 5.4.152-rc1 review
 Date:   Fri,  8 Oct 2021 13:27:50 +0200
-Message-Id: <20211008112714.751595881@linuxfoundation.org>
+Message-Id: <20211008112715.444305067@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112714.445637990@linuxfoundation.org>
-References: <20211008112714.445637990@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.152-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.4.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.4.152-rc1
+X-KernelTest-Deadline: 2021-10-10T11:27+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kate Hsuan <hpa@redhat.com>
+This is the start of the stable review cycle for the 5.4.152 release.
+There are 16 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 7a8526a5cd51cf5f070310c6c37dd7293334ac49 upstream.
+Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+Anything received after that time might be too late.
 
-Many users are reporting that the Samsung 860 and 870 SSD are having
-various issues when combined with AMD/ATI (vendor ID 0x1002)  SATA
-controllers and only completely disabling NCQ helps to avoid these
-issues.
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.152-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+and the diffstat can be found below.
 
-Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
-SATA adapter vendor will cause I/O performance degradation with well
-behaved adapters. To limit the performance impact to ATI adapters,
-introduce the ATA_HORKAGE_NO_NCQ_ON_ATI flag to force disable NCQ
-only for these adapters.
+thanks,
 
-Also, two libata.force parameters (noncqati and ncqati) are introduced
-to disable and enable the NCQ for the system which equipped with ATI
-SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
-function to be enabled or disabled according to the demand.
+greg k-h
 
-After verifying the chipset from the user reports, the issue appears
-on AMD/ATI SB7x0/SB8x0/SB9x0 SATA Controllers and does not appear on
-recent AMD SATA adapters. The vendor ID of ATI should be 0x1002.
-Therefore, ATA_HORKAGE_NO_NCQ_ON_AMD was modified to
-ATA_HORKAGE_NO_NCQ_ON_ATI.
+-------------
+Pseudo-Shortlog of commits:
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
-Signed-off-by: Kate Hsuan <hpa@redhat.com>
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210903094411.58749-1-hpa@redhat.com
-Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Cc: Krzysztof Olędzki <ole@ans.pl>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/ata/libata-core.c |   34 ++++++++++++++++++++++++++++++++--
- include/linux/libata.h    |    1 +
- 2 files changed, 33 insertions(+), 2 deletions(-)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.4.152-rc1
 
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -2276,6 +2276,25 @@ static void ata_dev_config_ncq_prio(stru
- 
- }
- 
-+static bool ata_dev_check_adapter(struct ata_device *dev,
-+				  unsigned short vendor_id)
-+{
-+	struct pci_dev *pcidev = NULL;
-+	struct device *parent_dev = NULL;
-+
-+	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
-+	     parent_dev = parent_dev->parent) {
-+		if (dev_is_pci(parent_dev)) {
-+			pcidev = to_pci_dev(parent_dev);
-+			if (pcidev->vendor == vendor_id)
-+				return true;
-+			break;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- static int ata_dev_config_ncq(struct ata_device *dev,
- 			       char *desc, size_t desc_sz)
- {
-@@ -2292,6 +2311,13 @@ static int ata_dev_config_ncq(struct ata
- 		snprintf(desc, desc_sz, "NCQ (not used)");
- 		return 0;
- 	}
-+
-+	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_ATI &&
-+	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_ATI)) {
-+		snprintf(desc, desc_sz, "NCQ (not used)");
-+		return 0;
-+	}
-+
- 	if (ap->flags & ATA_FLAG_NCQ) {
- 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE - 1);
- 		dev->flags |= ATA_DFLAG_NCQ;
-@@ -4565,9 +4591,11 @@ static const struct ata_blacklist_entry
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_ATI, },
- 	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_ATI, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 
-@@ -6860,6 +6888,8 @@ static int __init ata_parse_force_one(ch
- 		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
- 		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
- 		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
-+		{ "noncqati",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_ATI },
-+		{ "ncqati",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_ATI },
- 		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
- 		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
- 		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -441,6 +441,7 @@ enum {
- 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
- 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
- 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
-+	ATA_HORKAGE_NO_NCQ_ON_ATI = (1 << 27),	/* Disable NCQ on ATI chipset */
- 
- 	 /* DMA mask for user DMA control: User visible values; DO NOT
- 	    renumber */
+Kate Hsuan <hpa@redhat.com>
+    libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
+
+Rik van Riel <riel@surriel.com>
+    silence nfscache allocation warnings with kvzalloc
+
+Anand K Mistry <amistry@google.com>
+    perf/x86: Reset destroy callback on event init failure
+
+Fares Mehanna <faresx@amazon.de>
+    kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
+
+Sergey Senozhatsky <senozhatsky@chromium.org>
+    KVM: do not shrink halt_poll_ns below grow_start
+
+Changbin Du <changbin.du@intel.com>
+    tools/vm/page-types: remove dependency on opt_file for idle page tracking
+
+Wen Xiong <wenxiong@linux.ibm.com>
+    scsi: ses: Retry failed Send/Receive Diagnostic commands
+
+Shuah Khan <skhan@linuxfoundation.org>
+    selftests:kvm: fix get_warnings_count() ignoring fscanf() return warn
+
+Li Zhijian <lizhijian@cn.fujitsu.com>
+    selftests: be sure to make khdr before other targets
+
+Yang Yingliang <yangyingliang@huawei.com>
+    usb: dwc2: check return value after calling platform_get_resource()
+
+Faizel K B <faizel.kb@dicortech.com>
+    usb: testusb: Fix for showing the connection speed
+
+Ming Lei <ming.lei@redhat.com>
+    scsi: sd: Free scsi_disk device via put_device()
+
+Dan Carpenter <dan.carpenter@oracle.com>
+    ext2: fix sleeping in atomic bugs on error
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    sparc64: fix pci_iounmap() when CONFIG_PCI is not set
+
+Jan Beulich <jbeulich@suse.com>
+    xen-netback: correct success/error reporting for the SKB-with-fraglist case
+
+Vladimir Oltean <vladimir.oltean@nxp.com>
+    net: mdio: introduce a shutdown method to mdio device drivers
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |  4 +--
+ arch/sparc/lib/iomap.c                             |  2 ++
+ arch/x86/events/core.c                             |  1 +
+ arch/x86/kvm/x86.c                                 |  7 +++++
+ drivers/ata/libata-core.c                          | 34 ++++++++++++++++++++--
+ drivers/net/phy/mdio_device.c                      | 11 +++++++
+ drivers/net/xen-netback/netback.c                  |  2 +-
+ drivers/scsi/sd.c                                  |  9 +++---
+ drivers/scsi/ses.c                                 | 22 +++++++++++---
+ drivers/usb/dwc2/hcd.c                             |  4 +++
+ fs/ext2/balloc.c                                   | 14 ++++-----
+ fs/nfsd/nfscache.c                                 | 12 +++-----
+ include/linux/libata.h                             |  1 +
+ include/linux/mdio.h                               |  3 ++
+ .../selftests/kvm/x86_64/mmio_warning_test.c       |  3 +-
+ tools/testing/selftests/lib.mk                     |  1 +
+ tools/usb/testusb.c                                | 14 +++++----
+ tools/vm/page-types.c                              |  2 +-
+ virt/kvm/kvm_main.c                                |  6 +++-
+ 19 files changed, 114 insertions(+), 38 deletions(-)
 
 
