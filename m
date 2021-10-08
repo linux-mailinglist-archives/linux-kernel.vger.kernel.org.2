@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEC94271C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D5C4271CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241790AbhJHUEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:04:47 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:39816 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241464AbhJHUEp (ORCPT
+        id S242093AbhJHUFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:05:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231589AbhJHUFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:04:45 -0400
-Received: by mail-oi1-f174.google.com with SMTP id a3so15163391oid.6;
-        Fri, 08 Oct 2021 13:02:50 -0700 (PDT)
+        Fri, 8 Oct 2021 16:05:36 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584DEC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:03:41 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id h3so4111208pgb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+S9WDoHB2ctsz8gJt0x5mA2ZJmsZ+eXZU78CjrUXBMo=;
+        b=RVsXQbTV9pwVKNdOocVZrneAFAQRQBRzzkwCm7c0DFFnVR19u3z7rBJhHu8hASsGRe
+         9bi6stVBMQCxs6aX+4+BM+y/FclkQ+AtRlok3aEaozwQ3sh+pXfa3yXrk6V9hT7zgsbD
+         qsTYIMJurK3aPaGwBha3Xa7XkBgrLfH4Qm1HbxZG3IUWOv4Vdt5/pyPUMj6hAtlS1qVP
+         bUDLhCi85Gplzne1WtvBKJEU8qM3Dw5fNDYKLsvZa9H8bYPFq0qzTvO15yWi5zNzW9+j
+         I93N6JM8fALbhrcamBJJgA02oTBHIUXqA/mFA0kA0ON/3Eumtn9/wEtrQRqa/dkGcCBY
+         9L3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9nQoap1ULuQK7iVLoWAeKBBSs/JkNcbSL7NwgshzBsI=;
-        b=76jz620uxpB74RJiWUA7QzzU3RJYvvjCjp9m44RDS4ZXi4jrTRzdQP0NvZSBq6DFRE
-         zIogCLLrRXZgy+SQJbl/APu3yWgXHzVBi2QrBO8/vA5mbHk7+SqrYUsKgMwd0vTjPctx
-         LJkV+N6pSMbpHPXtDPs5Ce/4bXJHTuqviCHyxyDfgL5ygY9KYZujnjXYFypzv0HRUCJC
-         2P+r4vAA6xFSdTqUqUgcFkanG6SzuJRzm2l1J68JY+Mdzd2iIOsJ/UnHBtYMOOwrL22X
-         tMslEHQ65WgIJO3TOy714SMSgFw8K6O74gxKSNrgamPcaUCqyYfIsfv1lJYQpNterky0
-         2Slw==
-X-Gm-Message-State: AOAM531nt4wWRwvkc8kIXhTr7y6MVKZeDln9+yMtm4hYSyFen0/VubGv
-        BzvIM3GfNz7XRI5Z03/XSQ==
-X-Google-Smtp-Source: ABdhPJzqK1YBt9O2Wf7HyQiPYRdY2MRV8ungwnGt9QUq/jioAb4R17CLgfe9r5Mc3Vqd8WKz58zv1A==
-X-Received: by 2002:a05:6808:14d6:: with SMTP id f22mr18407990oiw.132.1633723369981;
-        Fri, 08 Oct 2021 13:02:49 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l2sm81700otu.23.2021.10.08.13.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 13:02:49 -0700 (PDT)
-Received: (nullmailer pid 3230980 invoked by uid 1000);
-        Fri, 08 Oct 2021 20:02:48 -0000
-Date:   Fri, 8 Oct 2021 15:02:48 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bin Meng <bmeng.cn@gmail.com>
-Subject: Re: [RFC PATCH v4 08/10] dt-bindings: timer: Add ACLINT MTIMER
- bindings
-Message-ID: <YWCj6CcB29fEQkFI@robh.at.kernel.org>
-References: <20211007123632.697666-1-anup.patel@wdc.com>
- <20211007123632.697666-9-anup.patel@wdc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+S9WDoHB2ctsz8gJt0x5mA2ZJmsZ+eXZU78CjrUXBMo=;
+        b=WlKr/g5bZJK5Rc8sqrFuTDWlPxUsOfXhmStSiE5nB2tivyld9EwRZsfeWeD5JXRzkH
+         538Gl6YDELmsizhSsPsGlIpakj9WrGBe9UCV1Tu//eXIHZoJ7jdXIxnzvy0bUq04Ax/q
+         lg05n+qpdg+FiT6JxKtil0jnM3XZGumFMCP8B11loIwAovKeB5gDrHDHw2SDB2B/g+G2
+         ayaNsHIWjKS1/aR87qMDZ05b3ZeUN0gt7nBALK9AeLz+ff9DzT17zkgnrYz/PAiHaYzI
+         PDq1J7Blejfa93Bai1VkK9SOzQm/PTGNoHcG0pHHJBfs40HGo+ykJ4ZJixPvZdiU+Z57
+         SpIA==
+X-Gm-Message-State: AOAM5323fFEQitC5qHrcOHoLqS2PNNDHnQ/vbqTC4XjwfcZKW3RPPDOR
+        haS7UWNBldZC5KNgdTTgii1Jim5ogQIHf6hIPGXVBg==
+X-Google-Smtp-Source: ABdhPJzXkcaP9PLLmBjsn9tqqkyO3G/0oDwaUxOwFj7quPcPcrA9UpECQPVco+koRgT/SeIjcKwliFYe26XoKyTpcDw=
+X-Received: by 2002:aa7:9517:0:b0:44c:7b4a:8073 with SMTP id
+ b23-20020aa79517000000b0044c7b4a8073mr12069614pfp.24.1633723420416; Fri, 08
+ Oct 2021 13:03:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007123632.697666-9-anup.patel@wdc.com>
+References: <20211008152930.03787395@canb.auug.org.au> <ba01fb13-e1a1-299e-9a7b-ccdeaeef267a@linuxfoundation.org>
+In-Reply-To: <ba01fb13-e1a1-299e-9a7b-ccdeaeef267a@linuxfoundation.org>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 8 Oct 2021 13:03:29 -0700
+Message-ID: <CAFd5g45g91ZadTJrU3oE+VHxZ_2kgDnZm0uyTiaxR+bP=qg9fA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the kunit-next tree with the
+ kunit-fixes tree
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 06:06:30PM +0530, Anup Patel wrote:
-> We add DT bindings documentation for the ACLINT MTIMER device
-> found on RISC-V SOCs.
-> 
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> ---
->  .../bindings/timer/riscv,aclint-mtimer.yaml   | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
-> new file mode 100644
-> index 000000000000..ebb7e81a5a12
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/timer/riscv,aclint-mtimer.yaml
-> @@ -0,0 +1,67 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/timer/riscv,aclint-mtimer.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: RISC-V ACLINT M-level Timer
-> +
-> +maintainers:
-> +  - Anup Patel <anup.patel@wdc.com>
-> +
-> +description:
+On Fri, Oct 8, 2021 at 9:31 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>
+> On 10/7/21 10:29 PM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Today's linux-next merge of the kunit-next tree got a conflict in:
+> >
+> >    tools/testing/kunit/kunit.py
+> >
+> > between commit:
+> >
+> >    d8c23ead708b ("kunit: tool: better handling of quasi-bool args (--json, --raw_output)")
+> >
+> > from the kunit-fixes tree and commit:
+> >
+> >    6710951ee039 ("kunit: tool: support running each suite/test separately")
+> >
+> > from the kunit-next tree.
+> >
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >
+>
+> Thank you for the fixing it up. I will fix this up in the kunit-next once
+> the kunit-fixes pull request goes out.
 
-You need '|' if you want to maintain the paragraphs.
+Thanks for taking care of this everyone.
 
-> +  RISC-V SOCs include an implementation of the M-level timer (MTIMER) defined
-> +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification. The
-> +  ACLINT MTIMER device is documented in the RISC-V ACLINT specification found
-> +  at https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
-> +
-> +  The ACLINT MTIMER device directly connects to the M-level timer interrupt
-> +  lines of various HARTs (or CPUs) so the RISC-V per-HART (or per-CPU) local
-> +  interrupt controller is the parent interrupt controller for the ACLINT
-> +  MTIMER device.
-> +
-> +  The clock frequency of ACLINT is specified via "timebase-frequency" DT
-> +  property of "/cpus" DT node. The "timebase-frequency" DT property is
-> +  described in Documentation/devicetree/bindings/riscv/cpus.yaml
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +         - sifive,fu540-c000-aclint-mtimer
-> +      - const: riscv,aclint-mtimer
-> +
-> +    description:
-> +      Should be "<vendor>,<chip>-aclint-mtimer" and "riscv,aclint-mtimer".
-> +
-> +  reg:
-> +    description: |
-> +      Specifies base physical address(s) of the MTIME register and MTIMECMPx
-> +      registers. The 1st region is the MTIME register base and size. The 2nd
-> +      region is the MTIMECMPx registers base and size.
-> +    minItems: 2
-> +    maxItems: 2
-
-All this can be expressed as:
-
-items:
-  - description: The MTIME registers
-  - description: The MTIMECMPx registers
-
-'reg' is always the physical address and size, so no need to redefine 
-common properties.
-
-
-> +
-> +  interrupts-extended:
-> +    minItems: 1
-> +    maxItems: 4095
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts-extended
-> +
-> +examples:
-> +  - |
-> +    timer@2004000 {
-> +      compatible = "sifive,fu540-c000-aclint-mtimer", "riscv,aclint-mtimer";
-> +      reg = <0x200bff8 0x8>,
-> +            <0x2004000 0x7ff8>;
-> +      interrupts-extended = <&cpu1intc 7>,
-> +                            <&cpu2intc 7>,
-> +                            <&cpu3intc 7>,
-> +                            <&cpu4intc 7>;
-> +    };
-> +...
-> -- 
-> 2.25.1
-> 
-> 
+Daniel, can you double check the merge conflict to make sure it is
+done correctly?
