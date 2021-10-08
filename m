@@ -2,71 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 628C54262E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94EE84262EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242579AbhJHDXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:23:36 -0400
-Received: from smtp23.cstnet.cn ([159.226.251.23]:43508 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240622AbhJHDXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:23:16 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-03 (Coremail) with SMTP id rQCowAAXHKgduV9hWRC9Ag--.55152S2;
-        Fri, 08 Oct 2021 11:21:01 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     lorenzo.bianconi83@gmail.com, jic23@kernel.org, lars@metafoo.de
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: [PATCH] io: imu: st_lsm6dsx: check if dev is null pointer
-Date:   Fri,  8 Oct 2021 03:21:00 +0000
-Message-Id: <1633663260-71997-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: rQCowAAXHKgduV9hWRC9Ag--.55152S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr4kGr1xtF43ArW7GFWUtwb_yoWfAFX_Cw
-        n7XanrWryUZr1kCrnFvw1avr92y3yUZrn2qr1S93W3Ka4UAwsrAr1kJrWkJrn0gFWUJr1D
-        ury8trn7ua17KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r48
-        MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr
-        0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0E
-        wIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJV
-        W8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU2FALUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S235079AbhJHDYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229883AbhJHDYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:24:47 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9963EC061714
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 20:22:52 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id g14so7024974pfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 20:22:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartx-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
+        b=0Wlfqkaji3y2OPBLxrydvegpu3NwJX3BH3aUX+HUK/cK90BRk93mKOGJhxiGNde20p
+         hxl2iTMhB27qIDm0rENxNkUZ3D6oF6aU2yRimGwqr2lscapGuHS9MSTvnCeD/U4Ob9ZD
+         P3wvU9OisBPOX6O+Bbjh3hOttqkVJ3tUk+wne9i340hgYWgWcH1xvsxNPibVTBs6rnpL
+         HbSus7OM6YBBd+as51wiT9dk0kLB+1h29bN01AI6wjkp8EbVLaZIzYheTUFsUWzbB/J5
+         LRyh3YGW4xS8kFbJjFZ1kr5B7JSnrSuuiw6q+agnBy3BJB1x1ncxjz+REorjEYudYenn
+         +jfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
+        b=6LsW1KvWdnln/i8vivYYrJ47ktJrk3JSvVIIA83img85PXSEBO1t8yPVHDdslZWlT0
+         uNHR/7uKKfbaMHQmCRHPRcq41RZcsgX+OKoUF9x2uvlcXD9tdQgQZBlcok1wQ3WIXzmX
+         ITDr5Vy0332/pXsltIxoc/wNC9APBWlyV3tWNyE44QTVEk0zRAaEVzjc9hO90XhdN6tI
+         UHMuWp3A+6iBBafuZOtiH1gCGlBsJrgfFVqsXRDDmokyYYw5u3XzwSGZp/q6eu3OgPVZ
+         add6QfS0P6Rznpdz2nuLNgcK6Zzd+HH9FtyKVqcgrF5HmDO2seWkVNrwtjAep92BgsbM
+         V1PQ==
+X-Gm-Message-State: AOAM533H9OaiaFTxVjbhC077RIsOoWe6p3taVovRgduojbxsETa4Ljm1
+        +Cqh+WPcedyLPOue+JiTcrnfCw==
+X-Google-Smtp-Source: ABdhPJxW1l429AsznSMTeokTvAn5jNPgEq0MifH/oiCpZXWRnoTfWE2wVNTbl49syfKFdWJVCfJC0w==
+X-Received: by 2002:a62:dd0a:0:b0:44b:bd85:9387 with SMTP id w10-20020a62dd0a000000b0044bbd859387mr7982758pff.49.1633663372090;
+        Thu, 07 Oct 2021 20:22:52 -0700 (PDT)
+Received: from 64-217.. ([103.97.201.33])
+        by smtp.gmail.com with ESMTPSA id h74sm729528pfe.196.2021.10.07.20.22.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 20:22:51 -0700 (PDT)
+From:   Li Feng <fengli@smartx.com>
+To:     Song Liu <song@kernel.org>,
+        linux-raid@vger.kernel.org (open list:SOFTWARE RAID (Multiple Disks)
+        SUPPORT), linux-kernel@vger.kernel.org (open list)
+Cc:     Li Feng <fengli@smartx.com>
+Subject: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+Date:   Fri,  8 Oct 2021 11:22:30 +0800
+Message-Id: <20211008032231.1143467-1-fengli@smartx.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameter 'dev' of st_lsm6dsx_probe() isn't been
-checked before used, including when st_lsm6dsx_probe() is called.
-Therefore, it might be better to check, just in case.
+When the running RAID1/RAID10 need to be set with the fail_fast flag,
+we have to remove each device from RAID and re-add it again with the
+--fail_fast flag.
 
-Fixes: 290a6ce ("iio: imu: add support to lsm6dsx driver")
-Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Export the fail_fast flag to the userspace to support the read and
+write.
+
+Signed-off-by: Li Feng <fengli@smartx.com>
 ---
- drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-index 7cedaab..7b4754d 100644
---- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-+++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-@@ -2199,6 +2199,8 @@ int st_lsm6dsx_probe(struct device *dev, int irq, int hw_id,
- 	const char *name = NULL;
- 	int i, err;
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index ae8fe54ea358..ce63972a4555 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char *buf, size_t len)
+ static struct rdev_sysfs_entry rdev_ppl_size =
+ __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
  
-+	if (!dev)
-+		return -ENOMEM;
- 	hw = devm_kzalloc(dev, sizeof(*hw), GFP_KERNEL);
- 	if (!hw)
- 		return -ENOMEM;
++static ssize_t
++fail_fast_show(struct md_rdev *rdev, char *page)
++{
++	return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
++}
++
++static ssize_t
++fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
++{
++	int ret;
++	bool bit;
++
++	ret = kstrtobool(buf, &bit);
++	if (ret)
++		return ret;
++
++	if (test_bit(FailFast, &rdev->flags) && !bit) {
++		clear_bit(FailFast, &rdev->flags);
++		md_update_sb(rdev->mddev, 1);
++	} else if (!test_bit(FailFast, &rdev->flags) && bit) {
++		set_bit(FailFast, &rdev->flags);
++		md_update_sb(rdev->mddev, 1);
++	}
++	return len;
++}
++
++static struct rdev_sysfs_entry rdev_fail_fast =
++__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
++
+ static struct attribute *rdev_default_attrs[] = {
+ 	&rdev_state.attr,
+ 	&rdev_errors.attr,
+@@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] = {
+ 	&rdev_unack_bad_blocks.attr,
+ 	&rdev_ppl_sector.attr,
+ 	&rdev_ppl_size.attr,
++	&rdev_fail_fast.attr,
+ 	NULL,
+ };
+ static ssize_t
 -- 
-2.7.4
+2.31.1
 
