@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282E2427272
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44987427275
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242741AbhJHUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:42:47 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:44976 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhJHUmq (ORCPT
+        id S242508AbhJHUrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231587AbhJHUra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:42:46 -0400
-Received: by mail-oi1-f174.google.com with SMTP id y207so12127207oia.11;
-        Fri, 08 Oct 2021 13:40:51 -0700 (PDT)
+        Fri, 8 Oct 2021 16:47:30 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7651C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:45:34 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id a3so15292965oid.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:45:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kExSLxFCzGRNQT0A8GUDahEcKucmfYYxMh1vk9rQ3Eg=;
+        b=FzNYbXbGfibE4o+SyCtHXlB0Kzl+lRGE+7RTBdNUAc1wsdG5kVFnBrEvns1smX4GPv
+         3/XgJiWB5d9hhwHToycmkj+rM6sZK9XD9CrFUJKp9cwXceWtOQZL4sDoTUsyFFSGd17Y
+         BsYACqQ8JGD3bcEf/iAQaw3D7OkZ4bQCOI2og=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sJzsstFMEERhrGlERXPhJO68F8mqf34Jpfz/P1SCtNo=;
-        b=iw2R1GmegoXsWxEaTU9yRFKS1zFXFg9oQoZW+PO6qGDhwN8w8RfxNUmm9E2gpk1Z3+
-         qauCGaLGUCOvgUkWQgd2rsXgJe3LNOyiKsO9NlPyZD5z8Y+3uUbSQygANczIi5xnN7y6
-         LSxc3Ms/TZ90fOAQ4ad1Z8qSEAd+5v5+2uh233HhMJwiFna4MCCgoUsT2JKAyHWP9ohE
-         61Mh1YNc7wavd7fT0u/91T3sv+Z/7MkptoNyoW7V1zPGx7ecnrc3IcsIQEAllv/Gb0Vv
-         DCC0b1A6HEE4YWdW8R3eI6cGjVel8J1DUD0XaxTd3Xf8FGwaCtNS1mAkSoHPIkUMs9vS
-         ZUZw==
-X-Gm-Message-State: AOAM530wZqpYI6fcaa32yxJRrdV0sfV1UnQEb+rMsKkJzTco7Yk2y1d2
-        CDQ083FvbcahsWiAdNUTlQ==
-X-Google-Smtp-Source: ABdhPJxFSo4/P7aevnhos/zTLz1XBpMJUQLj8h2Z8dVI2TARtfUN+nDtk93MxkzcUn0EmGPQdx+K3A==
-X-Received: by 2002:a54:489a:: with SMTP id r26mr9613388oic.158.1633725650761;
-        Fri, 08 Oct 2021 13:40:50 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id bh39sm130431oib.37.2021.10.08.13.40.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 13:40:50 -0700 (PDT)
-Received: (nullmailer pid 3282312 invoked by uid 1000);
-        Fri, 08 Oct 2021 20:40:49 -0000
-Date:   Fri, 8 Oct 2021 15:40:49 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 1/2] regulator: dt-bindings: maxim,max77686: convert
- to dtschema
-Message-ID: <YWCs0Zil/hZ3uL6F@robh.at.kernel.org>
-References: <20211008123552.191384-1-krzysztof.kozlowski@canonical.com>
- <20211008123552.191384-2-krzysztof.kozlowski@canonical.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kExSLxFCzGRNQT0A8GUDahEcKucmfYYxMh1vk9rQ3Eg=;
+        b=zo6vp/EZMAcNaTvOL1j2W9iGkj9c4YD9vORH3SkBqp6v/FXOcwnY5Dfi88knIMyZIC
+         3cjU0QW1g0P5WuVUA3ROP31EAaZQdfVfr5tpbc7j+6c/OeXLFRCrzwzS8Uqy6bTOrEUC
+         hs5Lisnsw7K/diieEtCFU9wOFJLFgtevyaKa9LB74LICP3whvuq2RgfLMsY0hoCUH+vc
+         6xVI3RVLotReH0XVDnmpWN+S9d7fod52sg3HruZBoju3ZFateatYyAksyXB920GmJ/Bi
+         iYjLU9XsXq5b7tOm9gImv87xF3Ytyrxw9TcJ3TsWxoxax/LfIcFoL1s3X6do/oOpleli
+         ankw==
+X-Gm-Message-State: AOAM533z3tOK5Le35H3Sem3+94ByKV8mNpgjf/oTuNoRQJDWoknbUN96
+        GMZfxRU5shFKocxPb5PJ8JLXKg==
+X-Google-Smtp-Source: ABdhPJx+vERtutZ2HAWH36HX0c6r9TCGotwvWB/6KVAaLC2CYakDOeo2/AhvMRqoMW82jLUymU/m1w==
+X-Received: by 2002:aca:b3c3:: with SMTP id c186mr14623719oif.100.1633725934018;
+        Fri, 08 Oct 2021 13:45:34 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a13sm109080oiy.9.2021.10.08.13.45.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 13:45:33 -0700 (PDT)
+Subject: Re: [PATCH 5.14 00/48] 5.14.11-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <26a66ea7-89e7-9734-773a-b53a6dcccafe@linuxfoundation.org>
+Date:   Fri, 8 Oct 2021 14:45:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008123552.191384-2-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Oct 2021 14:35:51 +0200, Krzysztof Kozlowski wrote:
-> Convert the regulators of Maxim MAX77686 PMIC to DT schema format.
+On 10/8/21 5:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.11 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Acked-by: Mark Brown <broonie@kernel.org>
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
 > 
-> ---
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.11-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
 > 
-> Changes since v1:
-> 1. Split regulator nodes pattern on those supporting ena-gpios and those
->    don't.
-> 2. Drop regulator-name from properties.
-> 3. Add tag.
-> ---
->  .../bindings/regulator/max77686.txt           | 71 ----------------
->  .../bindings/regulator/maxim,max77686.yaml    | 83 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  3 files changed, 84 insertions(+), 71 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/regulator/max77686.txt
->  create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max77686.yaml
+> thanks,
+> 
+> greg k-h
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
+
