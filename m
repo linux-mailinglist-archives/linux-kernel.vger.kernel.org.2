@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CAD426967
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAC2426938
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241448AbhJHLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
+        id S241483AbhJHLfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241332AbhJHLeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:34:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57D1E60F3A;
-        Fri,  8 Oct 2021 11:31:39 +0000 (UTC)
+        id S240423AbhJHLcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9942C6113E;
+        Fri,  8 Oct 2021 11:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692699;
-        bh=CjBckuTPQmZwyfynoGj+MiRCVivspQcr7cvOvZNRb+0=;
+        s=korg; t=1633692626;
+        bh=9uwE3HwSUBKFUSbsl4cLB2VQrqGgpAGYyb2rlPk6aaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HZrs8XfeMsBRD+wPe+Q9A8aKbMquyUw0RQEA38IhTKSAUj8v8gj+wTFeuq5UTqRLk
-         3Wlu/nwfjnxIOSuz+ZZQK1ImeugS/htluupdoKbGLSOZcP7qFYZlUNm6Cy9n6/xquE
-         NeLVguqiyyzmepr+4MTfZIRLxQ95frToaFYjTlt0=
+        b=P5R3lgjgXT4/5ARDqIZ9z6VISbhC8+1uBdgglBNOsUoDRLey76mID3jG2lvv7iYzG
+         citob/OGnzZY5cJgfsuKQ8gGcKavNJl5kMOqQb+Lt+9z0DwwzA0xaC9Y/VbR2gBhda
+         U9d1EvE1eFpLdTSe0eJQCADhepNjWT3XTY2pX/mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 07/29] net: mdio: introduce a shutdown method to mdio device drivers
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 04/16] ext2: fix sleeping in atomic bugs on error
 Date:   Fri,  8 Oct 2021 13:27:54 +0200
-Message-Id: <20211008112717.178523331@linuxfoundation.org>
+Message-Id: <20211008112715.596710465@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
+References: <20211008112715.444305067@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit cf9579976f724ad517cc15b7caadea728c7e245c ]
+[ Upstream commit 372d1f3e1bfede719864d0d1fbf3146b1e638c88 ]
 
-MDIO-attached devices might have interrupts and other things that might
-need quiesced when we kexec into a new kernel. Things are even more
-creepy when those interrupt lines are shared, and in that case it is
-absolutely mandatory to disable all interrupt sources.
+The ext2_error() function syncs the filesystem so it sleeps.  The caller
+is holding a spinlock so it's not allowed to sleep.
 
-Moreover, MDIO devices might be DSA switches, and DSA needs its own
-shutdown method to unlink from the DSA master, which is a new
-requirement that appeared after commit 2f1e8ea726e9 ("net: dsa: link
-interfaces with the DSA master to get rid of lockdep warnings").
+   ext2_statfs() <- disables preempt
+   -> ext2_count_free_blocks()
+      -> ext2_get_group_desc()
 
-So introduce a ->shutdown method in the MDIO device driver structure.
+Fix this by using WARN() to print an error message and a stack trace
+instead of using ext2_error().
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210921203233.GA16529@kili
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/mdio_device.c | 11 +++++++++++
- include/linux/mdio.h          |  3 +++
- 2 files changed, 14 insertions(+)
+ fs/ext2/balloc.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index 0837319a52d7..797c41f5590e 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -179,6 +179,16 @@ static int mdio_remove(struct device *dev)
- 	return 0;
- }
+diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
+index e0cc55164505..abac81a2e694 100644
+--- a/fs/ext2/balloc.c
++++ b/fs/ext2/balloc.c
+@@ -48,10 +48,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 	struct ext2_sb_info *sbi = EXT2_SB(sb);
  
-+static void mdio_shutdown(struct device *dev)
-+{
-+	struct mdio_device *mdiodev = to_mdio_device(dev);
-+	struct device_driver *drv = mdiodev->dev.driver;
-+	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
-+
-+	if (mdiodrv->shutdown)
-+		mdiodrv->shutdown(mdiodev);
-+}
-+
- /**
-  * mdio_driver_register - register an mdio_driver with the MDIO layer
-  * @drv: new mdio_driver to register
-@@ -193,6 +203,7 @@ int mdio_driver_register(struct mdio_driver *drv)
- 	mdiodrv->driver.bus = &mdio_bus_type;
- 	mdiodrv->driver.probe = mdio_probe;
- 	mdiodrv->driver.remove = mdio_remove;
-+	mdiodrv->driver.shutdown = mdio_shutdown;
+ 	if (block_group >= sbi->s_groups_count) {
+-		ext2_error (sb, "ext2_get_group_desc",
+-			    "block_group >= groups_count - "
+-			    "block_group = %d, groups_count = %lu",
+-			    block_group, sbi->s_groups_count);
++		WARN(1, "block_group >= groups_count - "
++		     "block_group = %d, groups_count = %lu",
++		     block_group, sbi->s_groups_count);
  
- 	retval = driver_register(&mdiodrv->driver);
- 	if (retval) {
-diff --git a/include/linux/mdio.h b/include/linux/mdio.h
-index dbd69b3d170b..de5fb4b333ce 100644
---- a/include/linux/mdio.h
-+++ b/include/linux/mdio.h
-@@ -72,6 +72,9 @@ struct mdio_driver {
+ 		return NULL;
+ 	}
+@@ -59,10 +58,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
+ 	group_desc = block_group >> EXT2_DESC_PER_BLOCK_BITS(sb);
+ 	offset = block_group & (EXT2_DESC_PER_BLOCK(sb) - 1);
+ 	if (!sbi->s_group_desc[group_desc]) {
+-		ext2_error (sb, "ext2_get_group_desc",
+-			    "Group descriptor not loaded - "
+-			    "block_group = %d, group_desc = %lu, desc = %lu",
+-			     block_group, group_desc, offset);
++		WARN(1, "Group descriptor not loaded - "
++		     "block_group = %d, group_desc = %lu, desc = %lu",
++		      block_group, group_desc, offset);
+ 		return NULL;
+ 	}
  
- 	/* Clears up any memory if needed */
- 	void (*remove)(struct mdio_device *mdiodev);
-+
-+	/* Quiesces the device on system shutdown, turns off interrupts etc */
-+	void (*shutdown)(struct mdio_device *mdiodev);
- };
- #define to_mdio_driver(d)						\
- 	container_of(to_mdio_common_driver(d), struct mdio_driver, mdiodrv)
 -- 
 2.33.0
 
