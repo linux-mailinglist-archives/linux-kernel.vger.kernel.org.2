@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324BA427392
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7283E4273AD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243622AbhJHWWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:22:04 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:38511 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231830AbhJHWWB (ORCPT
+        id S243619AbhJHWZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231830AbhJHWZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:22:01 -0400
-Received: by mail-oi1-f177.google.com with SMTP id t4so13753807oie.5;
-        Fri, 08 Oct 2021 15:20:05 -0700 (PDT)
+        Fri, 8 Oct 2021 18:25:28 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A79EC061570;
+        Fri,  8 Oct 2021 15:23:32 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id p4so10989418qki.3;
+        Fri, 08 Oct 2021 15:23:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v7BcxdZb9CxJZFbXbFYn0KgwWSM58NcabgiQg/ZHqYg=;
+        b=hkld7NCh26YcK52IWI9WVPSu5jz7Gu8JOZ5vBnTbmDfCGZMSMpB+PnmHLEBBtwVysV
+         dobgRfdTFk79E47Qh2bIQWLYRiXcqGF18Eo74g8xKCU0Qus9L8YzRPCOMPasB50/Ym7g
+         kv9sDFJOZShqR0d5B5e6FFFsE0DihvTsTy3KryU+ik3ATA1yiNzZAh4Rmfe1eE2GYWXA
+         hRLeTD3s6xEtLeZBLucGyGOag8Y0MZunDAm8/XY2TeSlrpOUHnEfTjM2gNtMuSx1AK3u
+         hN3Nk4AUxoyZvo0jnZa1+0hDyEcPA++PQKDn5xTcpuppd2mXFNsZKDMpJ0wRkZJn5JkO
+         4F0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UU6kbMIJ6P0+5LUEJL0eEAN6Y3jPevBlPgH2FjrwHnA=;
-        b=6m7l58ZqzCgBjCZUu6prLMLynijDqQh6An/+WJgR8By9uGRpyMwt+k91NWovCLMoZr
-         E+a5MLXRoIx10N1Fwlf9sVcaujEUIAGc7JIXVnHa89VC1pbtQ+Pmy7WFKuHX3sSCGtjO
-         a7DEz1k1Bvqfo3mtv99Y5KXpxJn97612riizPVLHShjtpHmrOR06GFaZ3voKvbfjGPQI
-         BLlLxBQPBhXWIs9m9OCb0fQe4Oh3wMJpn3626srOmzdpBowwUXE64P2jsm7vflrz25Y/
-         aVu8yI+YtKqS4UpaMosYDi5GRist2LpsI9rXqFmU77XDS7IuZIC4wpVUTF1xdhavu/0e
-         0DJw==
-X-Gm-Message-State: AOAM5316Yq2g5i7cWBqNSsHysvCLbzLwvrcCsR4K3qMeudfHjdXDPPUw
-        jlJaq/7zkBx2K0EWZnji3NuSkvU/Kg==
-X-Google-Smtp-Source: ABdhPJzy7BWI36byfDiSz/sSJ/LcU68rMB1Z+VoTQBSiuLbVB1C7jFa2dQsUtAsjty74pAZ7+8mnig==
-X-Received: by 2002:a05:6808:292:: with SMTP id z18mr9290273oic.61.1633731604863;
-        Fri, 08 Oct 2021 15:20:04 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id a13sm159169oiy.9.2021.10.08.15.20.01
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v7BcxdZb9CxJZFbXbFYn0KgwWSM58NcabgiQg/ZHqYg=;
+        b=vZE3e9WARX59Z6u++7VCd4Hm9OEtcamaeRdyPptILP+BNmC6W3LZkt79/uEzjGUEFV
+         hc3DsApWGkjlc5+LN1UdUGRjvabXvMt+lrnbPvPikYjOQFt47HidrZiIB3a6N4tclBrQ
+         S7YuyDp+wBiks9WUQlUyMKIl2ZaLavyCSO0eOeZVdoxscf/GL7LgdCc7mqvSypAOcwQB
+         3vzJze3LAYd9Qrrepwu1M7NJIn6p0he4TqsAneZmVJ080Viu6y2sg9E0E0puT5joKoPN
+         TDRhCirT+5zobrjRroWx/DfvxbK6fQxXEKu13MHSPQjHHNrEYM39s+g/EpaJy3Mw/g1h
+         AjRQ==
+X-Gm-Message-State: AOAM531yg+gwovE/Ps8E4ezR7ux6ZxfTcfhdAGKHDYrsci0wLEDif3Q2
+        qHzcUeYHlgiOrtsoT+xY1Vmslm2VqUKwPQ==
+X-Google-Smtp-Source: ABdhPJyW5nPHEX5hAH2Dk1Q5vmit7eL1kgU/bhWzYzcJoWKg1QeNQxLIJ1TTZitIoeSBj+B/bIB6Rg==
+X-Received: by 2002:a37:a48d:: with SMTP id n135mr2958033qke.296.1633731811660;
+        Fri, 08 Oct 2021 15:23:31 -0700 (PDT)
+Received: from fedora.. ([201.46.20.96])
+        by smtp.gmail.com with ESMTPSA id d14sm551249qkg.49.2021.10.08.15.23.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 15:20:02 -0700 (PDT)
-Received: (nullmailer pid 3419237 invoked by uid 1000);
-        Fri, 08 Oct 2021 22:20:01 -0000
-Date:   Fri, 8 Oct 2021 17:20:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Li Yang <leoyang.li@nxp.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 02/16] dt-bindings: i2c: imx: update schema to align
- with original txt binding
-Message-ID: <YWDEESYAuQSIfOSQ@robh.at.kernel.org>
-References: <20211001000417.15334-1-leoyang.li@nxp.com>
- <20211001000417.15334-3-leoyang.li@nxp.com>
- <CAL_JsqJShTL4zf2Bh=fYHfsujKu1rtuduxp7EKYsRqEXdkLCEA@mail.gmail.com>
- <CADRPPNRhVuHTxTpU8RCBMMTVe2V23pjqt8Z5vV=5efepWk6yPg@mail.gmail.com>
+        Fri, 08 Oct 2021 15:23:31 -0700 (PDT)
+From:   "=?UTF-8?q?Vin=C3=ADcius=20Angiolucci=20Reis?=" 
+        <itsme.vreis@gmail.com>
+X-Google-Original-From: =?UTF-8?q?Vin=C3=ADcius=20Angiolucci=20Reis?= <angiolucci@gmail.com>
+To:     jikos@kernel.org
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        angiolucci@gmail.com
+Subject: [PATCH] HID: hid-asus.c: Maps key 0x35 (display off) to KEY_SCREENLOCK
+Date:   Fri,  8 Oct 2021 19:23:27 -0300
+Message-Id: <20211008222327.9324-1-angiolucci@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADRPPNRhVuHTxTpU8RCBMMTVe2V23pjqt8Z5vV=5efepWk6yPg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 12:37:54PM -0500, Li Yang wrote:
-> On Fri, Oct 1, 2021 at 8:24 AM Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 7:04 PM Li Yang <leoyang.li@nxp.com> wrote:
-> > >
-> > > When the binding was converted from txt to yaml, it actually added more
-> > > constrains than the original txt binding which was already used in many
-> > > in-tree DTSes.  Some of the newly added constrains are either not valid
-> > > or not neccessary.
-> >
-> > IMO, both of these should be fixed in the dts files.
-> >
-> > > Not all SoCs use ipg as the clock name for i2c.  There is no point in
-> > > having SoC integration information defined in i2c binding.  Remove the
-> > > clock name requirement in the schema.
-> >
-> > Any name you want is not fine. Your choices are remove clock-names,
-> > add all the names used, or change everyone to use 'ipg'.
-> 
-> I understand that the name should be important as clocks are
-> referenced by name.  But since the i2c controller only has one clock ,
-> the name is never referenced in the driver.
+On Windows systems, ASUS laptops uses the "turn display off" key
+(usually fn+f6) to turn both display and keyboard backlit off. On Linux
+systems, this key has no effect at all since most desktop enviroments
+don't deal with KEY_DISPLAY_OFF. By mapping it to KEY_SCREENLOCK
+instead, would enable desktop environments to handle this key as a
+screen lock intent from the user, out of the box.
 
-Then just remove 'clock-names' from the dts file.
+Signed-off-by: Vinícius Angiolucci Reis <angiolucci@gmail.com>
+---
+ drivers/hid/hid-asus.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> If we really want to define the name, IMO, it should be from the
-> perspective of the i2c controller like "clkin" or "i2c" instead of the
-> "ipg" from the perspective of SoC integration which could be changing
-> with a different integration.  I can list both "i2c" and "ipg" for now
-> as a workaround though.
+diff --git a/drivers/hid/hid-asus.c b/drivers/hid/hid-asus.c
+index f3ecddc519ee..5d57214d8dee 100644
+--- a/drivers/hid/hid-asus.c
++++ b/drivers/hid/hid-asus.c
+@@ -854,7 +854,7 @@ static int asus_input_mapping(struct hid_device *hdev,
+ 		switch (usage->hid & HID_USAGE) {
+ 		case 0x10: asus_map_key_clear(KEY_BRIGHTNESSDOWN);	break;
+ 		case 0x20: asus_map_key_clear(KEY_BRIGHTNESSUP);		break;
+-		case 0x35: asus_map_key_clear(KEY_DISPLAY_OFF);		break;
++		case 0x35: asus_map_key_clear(KEY_SCREENLOCK);		break;
+ 		case 0x6c: asus_map_key_clear(KEY_SLEEP);		break;
+ 		case 0x7c: asus_map_key_clear(KEY_MICMUTE);		break;
+ 		case 0x82: asus_map_key_clear(KEY_CAMERA);		break;
+-- 
+2.33.0
 
-$modulename for $foo-names always looks made up and pointless to me.
-
-> 
-> >
-> > > The original txt binding didn't require the order of tx and rx for
-> > > dmas/dma-names.  Many in tree DTSes are already using the other order.
-> > > Both orders should just work fine.  Update the schema to allow both.
-> >
-> > Doesn't sound like a case where defining the order is challenging.
-> 
-> No, it is not challenging.  But as dma channel is only referenced by
-> name instead of index.  I don't see too much benefit in enforcing the
-> order other than easier to create the schema.
-
-Easier is nice, and that's the 'DT way' is the other reason.
-
-Rob
