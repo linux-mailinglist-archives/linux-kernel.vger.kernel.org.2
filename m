@@ -2,301 +2,465 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F16426A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC22426A8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:18:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241171AbhJHMR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:17:27 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:47644 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240615AbhJHMRY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:17:24 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 219831F458C3;
-        Fri,  8 Oct 2021 13:15:28 +0100 (BST)
-Date:   Fri, 8 Oct 2021 14:15:24 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211008141524.20ca8219@collabora.com>
-In-Reply-To: <20211008115413.cbkdxv3mpmmkyvjx@skn-laptop>
-References: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
-        <20211005102300.5da6d480@collabora.com>
-        <20211005084938.jcbw24umhehoiirs@skn-laptop>
-        <20211005105836.6c300f25@collabora.com>
-        <20211007114351.3nafhtpefezxhanc@skn-laptop>
-        <20211007141858.314533f2@collabora.com>
-        <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
-        <20211007151426.54db0764@collabora.com>
-        <20211008100425.uudzlda2n5ojqjzc@skn-laptop>
-        <20211008132038.77231e2a@collabora.com>
-        <20211008115413.cbkdxv3mpmmkyvjx@skn-laptop>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S241194AbhJHMUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:20:06 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:38242 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240457AbhJHMUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:20:05 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxJOb6NmBhR5MWAA--.43565S2;
+        Fri, 08 Oct 2021 20:18:03 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Subject: [PATCH bpf-next v3] test_bpf: Add module parameter test_suite
+Date:   Fri,  8 Oct 2021 20:18:02 +0800
+Message-Id: <1633695482-10528-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxJOb6NmBhR5MWAA--.43565S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Cr47Cw4xZr4kJr4xKr1ftFb_yoWkAr1kpr
+        W7Krn0yF18XF97XF18XF17Aa4rtF4vy3yrtrWfJryqyrs5CryUtF48K34Iqrn3Jr40vw15
+        Z3WIvF45G3W7AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU6wZcUUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 13:54:13 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
+operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
+there exists segment fault due to the following reason:
 
-> On Fri, Oct 08, 2021 at 01:20:38PM +0200, Boris Brezillon wrote:
-> > Hi Sean,
-> > 
-> > On Fri, 8 Oct 2021 12:04:25 +0200
-> > Sean Nyekjaer <sean@geanix.com> wrote:
-> >   
-> > > On Thu, Oct 07, 2021 at 03:14:26PM +0200, Boris Brezillon wrote:  
-> > > > On Thu, 7 Oct 2021 14:39:16 +0200
-> > > > Sean Nyekjaer <sean@geanix.com> wrote:
-> > > >     
-> > > > > > 
-> > > > > > wait_queue doesn't really describe what this waitqueue is used for
-> > > > > > (maybe resume_wq), and the suspended state should be here as well
-> > > > > > (actually, there's one already).      
-> > > > > 
-> > > > > I'll rename to something meaningful.    
-> > > > > > 
-> > > > > > Actually, what we need is a way to prevent the device from being
-> > > > > > suspended while accesses are still in progress, and new accesses from
-> > > > > > being queued if a suspend is pending. So, I think you need a readwrite
-> > > > > > lock here:
-> > > > > > 
-> > > > > > * take the lock in read mode for all IO accesses, check the
-> > > > > >   mtd->suspended value
-> > > > > >   - if true, release the lock, and wait (retry on wakeup)
-> > > > > >   - if false, just do the IO
-> > > > > > 
-> > > > > > * take the lock in write mode when you want to suspend/resume the
-> > > > > >   device and update the suspended field. Call wake_up_all() in the
-> > > > > >   resume path      
-> > > > > 
-> > > > > Could we use the chip->lock mutex for this? It's does kinda what you
-> > > > > described above?    
-> > > > 
-> > > > No you can't. Remember I suggested to move all of that logic to
-> > > > mtdcore.c, which doesn't know about the nand_chip struct.
-> > > >     
-> > > > > If we introduce a new lock, do we really need to have the suspended as
-> > > > > an atomic?    
-> > > > 
-> > > > Nope, I thought we could do without a lock, but we actually need to
-> > > > track active IO requests, not just the suspended state.    
-> > > 
-> > > I have only added wait_queue to read and write operations.  
-> > 
-> > It's still racy (see below).
-> >   
-> > > I'll have a look into where we should add further checks.
-> > >   
-> > > >     
-> > > > > 
-> > > > > I will test with some wait and retry added to nand_get_device().    
-> > > > 
-> > > > Again, I think there's a misunderstanding here: if you move it to the
-> > > > mtd layer, it can't be done in nand_get_device(). But once you've
-> > > > implemented it in mtdcore.c, you should be able to get rid of the
-> > > > nand_chip->suspended field.    
-> > > 
-> > > I have moved the suspended atomic and wake_queue to mtdcore.c.  
-> > 
-> > That doesn't work (see below).
-> >   
-> > > And kept
-> > > the suspended variable in nand_base as is fine for chip level suspend
-> > > status.  
-> > 
-> > Why? If you handle that at the MTD level you shouldn't need it at the
-> > NAND level? BTW, would you please care to detail your reasoning when
-> > you say you did or didn't do something. It's a bit hard to guess what
-> > led you to this conclusion...
-> >   
-> > > 
-> > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > > index c8fd7f758938..6492071eb4da 100644
-> > > --- a/drivers/mtd/mtdcore.c
-> > > +++ b/drivers/mtd/mtdcore.c
-> > > @@ -42,15 +42,24 @@ static int mtd_cls_suspend(struct device *dev)
-> > >  {
-> > >         struct mtd_info *mtd = dev_get_drvdata(dev);
-> > > 
-> > > -       return mtd ? mtd_suspend(mtd) : 0;
-> > > +       if (mtd) {
-> > > +               atomic_inc(&mtd->suspended);
-> > > +               return mtd_suspend(mtd);
-> > > +       }
-> > > +                                                                                                                                                                                                                                                                                                                                                                                             +       return 0;
-> > >  }
-> > > 
-> > >  static int mtd_cls_resume(struct device *dev)
-> > >  {
-> > >         struct mtd_info *mtd = dev_get_drvdata(dev);
-> > > 
-> > > -       if (mtd)
-> > > +       if (mtd) {
-> > >                 mtd_resume(mtd);
-> > > +               atomic_dec(&mtd->suspended);
-> > > +               wake_up_all(&mtd->resume_wq);
-> > > +       }
-> > > +
-> > >         return 0;
-> > >  }
-> > > @@ -678,6 +687,10 @@ int add_mtd_device(struct mtd_info *mtd)
-> > >         if (error)
-> > >                 goto fail_nvmem_add;
-> > > 
-> > > +       init_waitqueue_head(&mtd->resume_wq);
-> > > +
-> > > +       atomic_set(&mtd->suspended, 0);
-> > > +
-> > >         mtd_debugfs_populate(mtd);
-> > > 
-> > >         device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
-> > > @@ -1558,6 +1571,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
-> > >         struct mtd_ecc_stats old_stats = master->ecc_stats;
-> > >         int ret_code;
-> > > 
-> > > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);  
-> > 
-> > That's racy:
-> > 
-> > thread A			thread B
-> > 			   |
-> > enters mtd_read()	   |
-> > passes the !suspended test |
-> > 			   |	enters mtd_suspend()
-> > 			   |	sets suspended to 1
-> > 			   |
-> > starts the IO		   |
-> > 			   |	suspends the device
-> > tries to finish the IO	   |
-> > on a suspended device	   |
-> > 
-> > 			 BOOM!
-> > 
-> > 
-> > Using an atomic doesn't solve any of that, you really need to make sure
-> > nothing tries to communicate with the device while you're suspending
-> > it, hence the suggestion to use a rw_semaphore to protect against that.
-> >   
-> > > +
-> > >         ops->retlen = ops->oobretlen = 0;
-> > > 
-> > >         ret_code = mtd_check_oob_ops(mtd, from, ops);
-> > > @@ -1597,6 +1612,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
-> > >         struct mtd_info *master = mtd_get_master(mtd);
-> > >         int ret;
-> > > 
-> > > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
-> > > +  
-> > 
-> > Please don't open-code this in every IO path, add helpers hiding all the
-> > complexity.
-> > 
-> > To sum-up, that's more or less what I add in mind:
-> > 
-> > static void mtd_start_access(struct mtd_info *mtd)
-> > {
-> > 	/*
-> > 	 * Don't take the suspend_lock on devices that don't
-> > 	 * implement the suspend hook. Otherwise, lockdep will
-> > 	 * complain about nested locks when trying to suspend MTD
-> > 	 * partitions or MTD devices created by gluebi which are
-> > 	 * backed by real devices.
-> > 	 */
-> > 	if (!mtd->_suspend)
-> > 		return;
-> > 
-> > 	/*
-> > 	 * Wait until the device is resumed. Should we have a
-> > 	 * non-blocking mode here?
-> > 	 */
-> > 	while (1) {
-> > 		down_read(&mtd->suspend_lock);
-> > 		if (!mtd->suspended)
-> > 			return;
-> > 
-> > 		up_read(&mtd->suspend_lock);
-> > 		wait_event(mtd->resume_wq, mtd->suspended == false);
-> > 	}
-> > }
-> > 
-> > static void mtd_end_access(struct mtd_info *mtd)
-> > {
-> > 	if (!mtd->_suspend)
-> > 		return;
-> > 
-> > 	up_read(&mtd->suspend_lock);
-> > }
-> > 
-> > static void mtd_suspend(struct mtd_info *mtd)
-> > {
-> > 	int ret;
-> > 
-> > 	if (!mtd->_suspend)
-> > 		return;
-> > 
-> > 	down_write(&mtd->suspend_lock);
-> > 	if (mtd->suspended == false) {
-> > 		ret = mtd->_suspend(mtd);
-> > 		if (!ret)
-> > 			mtd->suspended = true;
-> > 	}
-> > 	up_write(&mtd->suspend_lock);
-> > }
-> > 
-> > static void mtd_resume(struct mtd_info *mtd)
-> > {
-> > 	if (!mtd->_suspend)
-> > 		return;
-> > 
-> > 	down_write(&mtd->suspend_lock);
-> > 	if (mtd->suspended) {
-> > 		if (mtd->_resume)
-> > 			mtd->_resume(mtd);
-> > 
-> > 		mtd->suspended = false;
-> > 
-> > 		/* The MTD dev has been resumed, wake up all waiters. */
-> > 		wake_up_all(&mtd->resume_wq)
-> > 	}
-> > 	up_write(&mtd->suspend_lock);
-> > }
-> > 
-> > You then need to call mtd_{start,end}_access() in all MTD IO path
-> > (read/write/erase and maybe others too).  
-> 
-> Looks cool.
-> 
-> But you are introducing a new lock that basically does the
-> same as chip->lock in nand_base.c one level above ;)
+ALU64_MOV_X: all register value magnitudes jited:1
+Break instruction in kernel code[#1]
 
-It doesn't serve the same purpose, no. This one is making sure suspend
-can't happen while IOs are in-flight, and IOs can't happen while the
-device is being suspended. The nand_chip->lock serializes all IO going
-through a chip (the new mtd->suspend_lock doesn't guarantee that). This
-being said, once you have this, you should be able to get rid of the
-nand_chip->suspended field.
+It seems that the related jit implementations of some test cases
+in test_bpf() have problems. At this moment, I do not care about
+the segment fault while I just want to verify the test cases of
+tail calls.
 
-> You wrote that we didn't want to introduce a new lock :)
+Based on the above background and motivation, add the following
+module parameter test_suite to the test_bpf.ko:
+test_suite=<string>: only the specified type will be run, the string
+can be "test_bpf", "test_tail_calls" or "test_skb_segment".
 
-Again, that's not what I said. I said using a lock to wait on devices
-going out of suspend was a bad idea, because then the lock is held when
-you enter suspend, and only released when the device gets resumed.
-That's quite a big/unbounded critical section, and we try to
-avoid that in general (ideally locks should be taken/released in the
-same function). What I do here is quite different, see how the
-mtd->suspend_lock is released before calling wait_event().
+If test_suite is not specified, but test_id, test_name or test_range
+is specified, set 'test_bpf' as the default test suite.
+
+This is useful to only test the corresponding test suite when specify
+the valid test_suite string.
+
+Any invalid test suite will result in -EINVAL being returned and no
+tests being run. If the test_suite is not specified or specified as
+empty string, it does not change the current logic, all of the test
+cases will be run.
+
+Here are some test results:
+ # dmesg -c
+ # modprobe test_bpf
+ # dmesg
+ # dmesg | grep Summary
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf
+ # dmesg | tail -1
+ test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls
+ # dmesg
+ test_bpf: #0 Tail call leaf jited:0 21 PASS
+ [...]
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment
+ # dmesg
+ test_bpf: #0 gso_with_rx_frags PASS
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_id=1
+ # dmesg
+ test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
+ test_bpf: #1 TXA jited:0 54 51 50 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_bpf test_name=TXA
+ # dmesg
+ test_bpf: #1 TXA jited:0 54 50 51 PASS
+ test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
+ # dmesg
+ test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
+ test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
+ test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
+
+ # rmmod test_bpf
+ # dmesg -c
+ # modprobe test_bpf test_suite=test_skb_segment test_id=1
+ # dmesg
+ test_bpf: #1 gso_linear_no_head_frag PASS
+ test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
+
+By the way, the above segment fault has been fixed in the latest bpf-next
+tree.
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+
+v3:
+  -- Use test_suite instead of test_type as module parameter
+  -- Make test_id, test_name and test_range selection applied to each test suite
+
+v2:
+  -- Fix typo in the commit message
+  -- Use my private email to send
+
+ lib/test_bpf.c | 263 ++++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 187 insertions(+), 76 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index e5b10fd..dfa9db8 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
+ static int test_id = -1;
+ module_param(test_id, int, 0);
+ 
+-static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
++static int test_range[2] = { -1, -1 };
+ module_param_array(test_range, int, NULL, 0);
+ 
+-static __init int find_test_index(const char *test_name)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+-		if (!strcmp(tests[i].descr, test_name))
+-			return i;
+-	}
+-	return -1;
+-}
+-
+-static __init int prepare_bpf_tests(void)
+-{
+-	if (test_id >= 0) {
+-		/*
+-		 * if a test_id was specified, use test_range to
+-		 * cover only that test.
+-		 */
+-		if (test_id >= ARRAY_SIZE(tests)) {
+-			pr_err("test_bpf: invalid test_id specified.\n");
+-			return -EINVAL;
+-		}
+-
+-		test_range[0] = test_id;
+-		test_range[1] = test_id;
+-	} else if (*test_name) {
+-		/*
+-		 * if a test_name was specified, find it and setup
+-		 * test_range to cover only that test.
+-		 */
+-		int idx = find_test_index(test_name);
+-
+-		if (idx < 0) {
+-			pr_err("test_bpf: no test named '%s' found.\n",
+-			       test_name);
+-			return -EINVAL;
+-		}
+-		test_range[0] = idx;
+-		test_range[1] = idx;
+-	} else {
+-		/*
+-		 * check that the supplied test_range is valid.
+-		 */
+-		if (test_range[0] >= ARRAY_SIZE(tests) ||
+-		    test_range[1] >= ARRAY_SIZE(tests) ||
+-		    test_range[0] < 0 || test_range[1] < 0) {
+-			pr_err("test_bpf: test_range is out of bound.\n");
+-			return -EINVAL;
+-		}
+-
+-		if (test_range[1] < test_range[0]) {
+-			pr_err("test_bpf: test_range is ending before it starts.\n");
+-			return -EINVAL;
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+-static __init void destroy_bpf_tests(void)
+-{
+-}
+-
+ static bool exclude_test(int test_id)
+ {
+ 	return test_id < test_range[0] || test_id > test_range[1];
+@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
+ 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
+ 		const struct skb_segment_test *test = &skb_segment_tests[i];
+ 
++		cond_resched();
++		if (exclude_test(i))
++			continue;
++
+ 		pr_info("#%d %s ", i, test->descr);
+ 
+ 		if (test_skb_segment_single(test)) {
+@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 		int ret;
+ 
+ 		cond_resched();
++		if (exclude_test(i))
++			continue;
+ 
+ 		pr_info("#%d %s ", i, test->descr);
+ 		if (!fp) {
+@@ -14966,29 +14909,197 @@ static __init int test_tail_calls(struct bpf_array *progs)
+ 	return err_cnt ? -EINVAL : 0;
+ }
+ 
++static char test_suite[32];
++module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
++
++static __init int find_test_index(const char *test_name)
++{
++	int i;
++
++	if (!strcmp(test_suite, "test_bpf")) {
++		for (i = 0; i < ARRAY_SIZE(tests); i++) {
++			if (!strcmp(tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_tail_calls")) {
++		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
++			if (!strcmp(tail_call_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	if (!strcmp(test_suite, "test_skb_segment")) {
++		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
++			if (!strcmp(skb_segment_tests[i].descr, test_name))
++				return i;
++		}
++	}
++
++	return -1;
++}
++
++static __init int prepare_bpf_tests(void)
++{
++	if (test_id >= 0) {
++		/*
++		 * if a test_id was specified, use test_range to
++		 * cover only that test.
++		 */
++		if (!strcmp(test_suite, "test_bpf") &&
++		     test_id >= ARRAY_SIZE(tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
++
++		if (!strcmp(test_suite, "test_tail_calls") &&
++		    test_id >= ARRAY_SIZE(tail_call_tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
++
++		if (!strcmp(test_suite, "test_skb_segment") &&
++		    test_id >= ARRAY_SIZE(skb_segment_tests)) {
++			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
++				test_suite);
++			return -EINVAL;
++		}
++
++		test_range[0] = test_id;
++		test_range[1] = test_id;
++	} else if (*test_name) {
++		/*
++		 * if a test_name was specified, find it and setup
++		 * test_range to cover only that test.
++		 */
++		int idx = find_test_index(test_name);
++
++		if (idx < 0) {
++			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
++			       test_name, test_suite);
++			return -EINVAL;
++		}
++		test_range[0] = idx;
++		test_range[1] = idx;
++	} else {
++		/*
++		 * check that the supplied test_range is valid.
++		 */
++		if (!strcmp(test_suite, "test_bpf")) {
++			if (test_range[0] >= ARRAY_SIZE(tests) ||
++			    test_range[1] >= ARRAY_SIZE(tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (!strcmp(test_suite, "test_tail_calls")) {
++			if (test_range[0] >= ARRAY_SIZE(tail_call_tests) ||
++			    test_range[1] >= ARRAY_SIZE(tail_call_tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (!strcmp(test_suite, "test_skb_segment")) {
++			if (test_range[0] >= ARRAY_SIZE(skb_segment_tests) ||
++			    test_range[1] >= ARRAY_SIZE(skb_segment_tests) ||
++			    test_range[0] < 0 || test_range[1] < 0) {
++				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
++					test_suite);
++				return -EINVAL;
++			}
++		}
++
++		if (test_range[1] < test_range[0]) {
++			pr_err("test_bpf: test_range is ending before it starts.\n");
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static __init void destroy_bpf_tests(void)
++{
++}
++
+ static int __init test_bpf_init(void)
+ {
+ 	struct bpf_array *progs = NULL;
+ 	int ret;
+ 
++	if (strlen(test_suite) &&
++	    strcmp(test_suite, "test_bpf") &&
++	    strcmp(test_suite, "test_tail_calls") &&
++	    strcmp(test_suite, "test_skb_segment")) {
++		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
++		return -EINVAL;
++	}
++
++	/*
++	 * if test_suite is not specified, but test_id, test_name or test_range
++	 * is specified, set 'test_bpf' as the default test suite.
++	 */
++	if (!strlen(test_suite) &&
++	    (test_id != -1 || strlen(test_name) ||
++	    (test_range[0] != -1 || test_range[1] != -1))) {
++		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
++		strcpy(test_suite, "test_bpf");
++	}
++
++
++	/* if test_range is not specified, set the limit of test_range */
++	if (test_range[0] == -1 && test_range[1] == -1) {
++		/* if test_suite is not specified, set the possible max upper limit */
++		if (!strlen(test_suite)) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tests) - 1;
++		/* otherwise, set the limit of each test_suite */
++		} else if (!strcmp(test_suite, "test_bpf")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tests) - 1;
++		} else if (!strcmp(test_suite, "test_tail_calls")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
++		} else if (!strcmp(test_suite, "test_skb_segment")) {
++			test_range[0] = 0;
++			test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
++		}
++	}
++
+ 	ret = prepare_bpf_tests();
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = test_bpf();
+-	destroy_bpf_tests();
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
++		ret = test_bpf();
++		destroy_bpf_tests();
++		if (ret)
++			return ret;
++	}
+ 
+-	ret = prepare_tail_call_tests(&progs);
+-	if (ret)
+-		return ret;
+-	ret = test_tail_calls(progs);
+-	destroy_tail_call_tests(progs);
+-	if (ret)
+-		return ret;
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
++		ret = prepare_tail_call_tests(&progs);
++		if (ret)
++			return ret;
++		ret = test_tail_calls(progs);
++		destroy_tail_call_tests(progs);
++		if (ret)
++			return ret;
++	}
+ 
+-	return test_skb_segment();
++	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
++		return test_skb_segment();
++
++	return 0;
+ }
+ 
+ static void __exit test_bpf_exit(void)
+-- 
+2.1.0
+
