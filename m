@@ -2,100 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B83426A84
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1E3426A88
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240980AbhJHMPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:15:31 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:57597 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240457AbhJHMP3 (ORCPT
+        id S241074AbhJHMQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240615AbhJHMQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:15:29 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MA7b8-1mSkCd1O7W-00BbkH for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021
- 14:13:33 +0200
-Received: by mail-wr1-f51.google.com with SMTP id k7so29043609wrd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:13:33 -0700 (PDT)
-X-Gm-Message-State: AOAM530O2RGMey1ZbHJd5Z3H7frpNvPg016Ps2U3Srp2UOs3CJiwWtnD
-        ThR10rAYhgnc/iLDsjUTTtZAz5EqeiPyPAFdzBw=
-X-Google-Smtp-Source: ABdhPJx1A2D3uT0vzkwBBgcqCmigtym207jBkyjcfjbAUCVSC7jvNZMRoRn37wH1p1cCJbv0expgQMHr7/L53iVVxso=
-X-Received: by 2002:adf:a3da:: with SMTP id m26mr3519436wrb.336.1633695212568;
- Fri, 08 Oct 2021 05:13:32 -0700 (PDT)
+        Fri, 8 Oct 2021 08:16:53 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0945DC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 05:14:58 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id 134so10407883iou.12
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s7RegfCL6tH5xSc5mxPpRRtzBps25gyk/r/PHLPNIRI=;
+        b=qfd5lSqN8VBkxT53NtRve3pCi+plrXhIjPrXRHmFD9lIzJmXldDE+i/ZsTKJ+IFq/h
+         8/WuVfcpqHaCWNP/5UEY50mAqI97dxdwVucEK7kLF96OHlteQKbt+SapG8cuYy4Cp4tz
+         02SkFpEeSBffhsfSQoAT1Pb70855JKggCOJd7GwDScWU8bxEUiFJzTafaW6UcUFLRS6A
+         ahsTxc1HChkio+3cla20TjboSMvHbT9mY5OVvKEGrZXX3QRZfa2NlrBctwTnbco1wR34
+         NPJr6Aa6XKHi+8M4QRhiDQYRbdtlZC9kbjXiVsLdpHzNNreZDuvmtmgMFxDMK4Nh0HVO
+         5uCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s7RegfCL6tH5xSc5mxPpRRtzBps25gyk/r/PHLPNIRI=;
+        b=hcdAn7HXtocXzarNA+cIEs+jELnHy/ANKtNodA3GRGCbhrLsRQKAqh6YApU3zwKTGH
+         PuAQIhuUFGV2g17GGBP6cboT/jyRwfXho2iGTkcoY677zIKj3o027Yt3M+RjfNeScVL9
+         JlWXB2dc+XKLtKG7DKJUPOe0d6JVIOcRn1iUStw6+0mCMy7xoHzo1jLZtUGXyrRGyMP1
+         ryHKAcyUn1OKw4pqxOuRSpFsfH112rgAdgtJVzeGhGB/XkvJ4lZpZgSOt3v51JMfGfiJ
+         qPnXXnY/RkpN5hO7ZX6H0icv2pRWXX1XdeErp1Yud+gwpBcCeNDrvKI3QyNuhhjxvO7F
+         bEpw==
+X-Gm-Message-State: AOAM531lMeLmmqApzH0Ej1k+RDCtO/OfAQqhK4I/vPz+w+9T3y6gb9LV
+        LbMx5gLLACshmX5YF93fJO/jWzd7T5eMtY/SFzE=
+X-Google-Smtp-Source: ABdhPJzsLdKASK3N3O0kNsCSmJYITrdZlfuJijmyp+jwf2M2Ow8ueNQwaCIvBj3oK4TyE92atYZVOr0HYoCxzHD2uEc=
+X-Received: by 2002:a05:6638:d0e:: with SMTP id q14mr7207579jaj.139.1633695297388;
+ Fri, 08 Oct 2021 05:14:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20191211212025.1981822-1-arnd@arndb.de> <20191211212025.1981822-9-arnd@arndb.de>
- <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org> <s5hpmsh9kdx.wl-tiwai@suse.de>
- <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
- <s5hee8x9f92.wl-tiwai@suse.de> <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
- <s5hy27497eo.wl-tiwai@suse.de> <20211007160634.GB7074@brightrain.aerifal.cx>
- <s5hr1cw95ar.wl-tiwai@suse.de> <20211007165158.GC7074@brightrain.aerifal.cx>
- <s5h5yu79aab.wl-tiwai@suse.de> <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
- <s5hv9277oux.wl-tiwai@suse.de> <CAK8P3a2DUvQSkUaDzwiRjg9d3w7pXxrw8q_oSawJKY7kEw1qtg@mail.gmail.com>
- <s5ho87z7mxg.wl-tiwai@suse.de>
-In-Reply-To: <s5ho87z7mxg.wl-tiwai@suse.de>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 8 Oct 2021 14:13:16 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0kg0NQoxC7_cUJfFZkoheAE2A_fQLTGKqgz0wq3L0rvw@mail.gmail.com>
-Message-ID: <CAK8P3a0kg0NQoxC7_cUJfFZkoheAE2A_fQLTGKqgz0wq3L0rvw@mail.gmail.com>
-Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
- layout for snd_pcm_mmap_status/control
-To:     musl@lists.openwall.com
-Cc:     Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
-        Michael Forney <mforney@mforney.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
+References: <20211007120752.5195-1-laoar.shao@gmail.com> <20211007120752.5195-5-laoar.shao@gmail.com>
+ <20211007134103.4da8a8ab@gandalf.local.home>
+In-Reply-To: <20211007134103.4da8a8ab@gandalf.local.home>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 8 Oct 2021 20:14:21 +0800
+Message-ID: <CALOAHbDW4KnHndEXFVs-teQy6EQWuSi7thjkp7Ye8kboUGgvKg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] kernel/kthread: show a warning if kthread's comm
+ is truncated
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Petr Mladek <pmladek@suse.com>, Kees Cook <keescook@chromium.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:hwyJ6E22069yP3B4NLtvn2lZc27/4kzl2uzEjPsHsTqtvGOmHCx
- C2vK3QD3oEDlk9GF0vmrvK7bKX8pY8GzmoCuINS6KwQwP9KE9PHr8OvHaOmxiBvI8L75wuX
- xcvZJBuMbR2ClqhNxf596Ri1gjbkw1qzYkZBQxprSwBB13XRgxcxD6hKb0ZQJWrEJsa0cHv
- e6Spty48eKlPJ6ZomZu8Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:i2JsnFMQv78=:niKsq1gVME5ufzfeTocewG
- 3oA/TOm6vJZ59kgrRCgjOQFtuW0kOJ/PDYH3NF6dO9nrpSJbd08ieVpEPdZ7TSBqIwldxNjQZ
- NCyg06b+utIYDe7UR3ajrbSWn0cBUz7ZuhxCokoQF4prn3swSJ92Aw6AOgsSElPg40a6D062w
- u4dxYel7HMpcvdGMC2Bu3JKCxr059+l4mVBdM5pLTN3GYcAMFALZ46tosHn0GGAwhFpTvMjjc
- DLkrTiSTGOrG1Flx/1wOudf/6Cex6pIHrKJr6EmM5PLpxjDgS7a/O7eIc9H2mYVBpCzgXLtMb
- cyhrYRAGCk2TTjPD7aa05afGrqOd0M54vHgQcbfOKph3mxwSlmUZCbjhHVXHQKCTLHcaiGTvs
- Zf7d7F75m5eHQuRJHLQCtKQVlZQBL8Brthrv14ITuZlMqs/GUdgvNuV6cW/QVJD5pvtfL2rDw
- IXTtHSQ+AvIKXb7uP7zKPjYHK4XMMecGK/zKmn7+/4jUiZAotMbjZmC2yvj+1ccdtUybZzeVV
- XVhDlp6Z/1jH9ROct7sNTujkDAeDSAu509nm7OF1aM609gH1Ag6jDq8YLkcLbOmN6So5oGKwj
- FIwpZVBYE/9TnoIkcYuM915Q1VRIj8o02Jy/osnXWpopdLWb5ALbfYSueasj0tun878xOVA/s
- d3tLn1QvbCg6cxBSEQk6FYxGJFAmBtnZ3F0rIyt0f7ksbNcuPmg+SaaVm/uMwPRgrTvJAAaBm
- k5aDzCwWipcfVYQY0GoyH5xXXYgnOi0yocneK8a2nf+Galure/2zpNCBe/C/1guHmwgHv7z/h
- dRLjEBf4CD8aW9UnF39FjoJY50vPxXto0Dx/OaQZDPyhWluGwtvXlGE2Pgn44CulWU2/N1deh
- q94+VuTMb1elCi+tICSA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:53 PM Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 08 Oct 2021 13:45:45 +0200, Arnd Bergmann wrote:
-> > On Fri, Oct 8, 2021 at 1:11 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Fri, 08 Oct 2021 11:24:39 +0200, Arnd Bergmann wrote:
-> > > The below is a revised kernel patch (again untested), just correcting
-> > > the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
-> > > fine as is, as well as 64bit apps on 64bit kernel.
-> >
-> > Right, this should cover all cases of the ioctl itself misbehaving.
-> > In addition, we still need to disallow the mmap() interface on compat
-> > kernels then. Strictly speaking, we could allow the snd_pcm_mmap_status
-> > but not snd_pcm_mmap_control to be mapped, but I'm not sure if
-> > that's better than disallowing both.
+On Fri, Oct 8, 2021 at 1:41 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> IIRC, the compat mmap is already disallowed even for the
-> SNDRV_PCM_MMAP_OFFSET_CONTROL_NEW (in pcm_control_mmap_allowed()), so
-> no need to change around that.
+> On Thu,  7 Oct 2021 12:07:52 +0000
+> Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> > -             vsnprintf(name, sizeof(name), namefmt, args);
+> > +             len = vsnprintf(name, sizeof(name), namefmt, args);
+> > +             if (len >= TASK_COMM_LEN) {
+> > +                     pr_warn("truncated kthread comm:%s, pid:%d by %d characters\n",
+> > +                             name, task->pid, len - TASK_COMM_LEN + 1);
+>
+> Instead of saying how many characters it is truncated to, what about just
+> showing what it was truncated to?
+>
+>                         pr_warn("truncated kthread comm from:%s to:%.*s for pid:%d\n",
+>                                 name, TASK_COMM_LEN - 1, name, task->pid);
+>
+> ?
+>
 
-Ah, right. I think it was meant to become allowed as part of commit
-80fe7430c708 ("ALSA: add new 32-bit layout for snd_pcm_mmap_status/control"),
-which did allow the snd_pcm_mmap_status to be mmap()ed, but it appears
-to be the rare case where two mistakes cancel out and we don't have to
-change the mmap code.
+The 'name' is the truncated one. So it will be printed like,
+[    0.222126] truncated kthread comm from:rcu_tasks_kthre
+to:rcu_tasks_kthre for pid:10
 
-         Arnd
+If we want to show the full name, we have to use the namefmt,  which
+is not suggested to use by Petr.
+See also https://lore.kernel.org/lkml/YVXVBXSZ1m4ScvbX@alley/
+
+Or we can do it as follows,
+
+-               char name[TASK_COMM_LEN];
++                /* To show the full name if it will be truncated. */
++               char name[TASK_COMM_LEN + 8];
+
+Then the full name will be printed:
+[    0.222587] truncated kthread comm from:rcu_tasks_kthread
+to:rcu_tasks_kthre for pid:10
+
+But that seems a little overkill ?
+
+-- 
+Thanks
+Yafang
