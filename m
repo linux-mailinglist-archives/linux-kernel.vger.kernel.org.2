@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0564265D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A264265D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhJHIXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:23:09 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:41506 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhJHIXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:23:07 -0400
-Received: by mail-vs1-f46.google.com with SMTP id g10so9645641vsb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:21:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZIU2hEBrWy04O/6quAlEqQ6iWBtsadQriVwbmeAJBtA=;
-        b=zEQb8NUTnmkvrrMunBvEsHhNKw49e4u3g9qMHzSrHny/mGl6bd314ejKrjALHM4z4W
-         egIp3b2OJxppDdkdhPsabUnsC3wRAHAPkAInOSuQ73lvUMKPZvUwLu50dXUT6JafPfWK
-         hY33lIvRyeRtwvk9Fb4oU25S1tRD0C1vnBlJFvIShLkXLgXe4GyEtzDznpWDw5Rrw1p1
-         rRsjgLUNVcjKAsUkbZT0+wwmlSbhY53O2aE6q1Ywg6DI8NWl8fG5HNShgBNQCDi6rUBE
-         AuVE0LPrI2aK4RGMi5oyXbBjeqPdtPhIuaQvLDn+CZQprrnatdpKejXbgiG9MmF+Y+3q
-         UMzw==
-X-Gm-Message-State: AOAM532ABYo9AMAxkFrRsM/2vtsEtzqz84mP6B4ApRN8CMVZHMgdx9ex
-        h4UpZgbY/367SdrlAwaWYqBKzEWoEA9kdGfas7I=
-X-Google-Smtp-Source: ABdhPJzDL/QWKRtPp3CyYzPJ8qtOafqR2yCXNGdBjWTg61pglR75eGfmgCJFvJ6P1GLFYI22DeMthm9Y3I8Y+9/A4qY=
-X-Received: by 2002:a67:d111:: with SMTP id u17mr8113141vsi.37.1633681272542;
- Fri, 08 Oct 2021 01:21:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211007214448.6282-1-michael.christie@oracle.com> <20211007214448.6282-3-michael.christie@oracle.com>
-In-Reply-To: <20211007214448.6282-3-michael.christie@oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Oct 2021 10:21:01 +0200
-Message-ID: <CAMuHMdXy1-jCSTNw8A7ZyvNja5P31kXp=uV2cN-CHrKaaQgCag@mail.gmail.com>
-Subject: Re: [PATCH V4 2/8] fork: move PF_IO_WORKER's kernel frame setup to
- new flag
-To:     Mike Christie <michael.christie@oracle.com>
-Cc:     vverma@digitalocean.com, hdanton@sina.com,
-        Christoph Hellwig <hch@infradead.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S233869AbhJHIXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229853AbhJHIXo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:23:44 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F389C60F4A;
+        Fri,  8 Oct 2021 08:21:49 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mYl8V-00FUTk-Uh; Fri, 08 Oct 2021 09:21:48 +0100
+Date:   Fri, 08 Oct 2021 09:21:47 +0100
+Message-ID: <8735pcq63o.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Ehsan Aghapour <aghapour.ehsan17@gmail.com>
+Cc:     linux-amlogic@lists.infradead.org, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Enable "PMU" counters for Khadas VIM3 in the Google AOSP kernel
+In-Reply-To: <CAHjmVnpUof2Nvbuuw6uQ31w5LNoCrYjV0Z+Eya0FLiQ29drKmA@mail.gmail.com>
+References: <CAHjmVnpUof2Nvbuuw6uQ31w5LNoCrYjV0Z+Eya0FLiQ29drKmA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: aghapour.ehsan17@gmail.com, linux-amlogic@lists.infradead.org, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 11:45 PM Mike Christie
-<michael.christie@oracle.com> wrote:
-> The vhost worker threads need the same frame setup as io_uring's worker
-> threads, but handle signals differently and do not need the same
-> scheduling behavior. This patch separate's the frame setup parts of
-> PF_IO_WORKER into a new PF flag PF_USER_WORKER.
->
-> Signed-off-by: Mike Christie <michael.christie@oracle.com>
+On Thu, 07 Oct 2021 23:13:30 +0100,
+Ehsan Aghapour <aghapour.ehsan17@gmail.com> wrote:
+> 
+> I am working on Google AOSP kernel and require to enable PMU. PMU is
+> working well in Khadas kernel for both A53 and A73 cores but it is not
+> enabled in Google AOSP kernel 5.4. I try adding arm_pmu definition in
+> device tree at /arch/arm64/boot/dts/amlogic/meson-g12b.dtsi as follow:
+> arm_pmu {
+>                 compatible = "arm,armv8-pmuv3";
+>                 clusterb-enabled;
+>                 interrupts = <GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
+>                         <GIC_SPI 171 IRQ_TYPE_LEVEL_HIGH>;
+>                 reg = <0x0 0xff634680 0x0 0x4>,
+>                         <0x0 0xff6347c0 0x0 0x04>;
+>                 cpumasks = <0x3 0x3C>;
+>                 /* default 10ms */
+>                 relax-timer-ns = <10000000>;
+>                 /* default 10000us */
+>                 max-wait-cnt = <10000>;
 
->  arch/m68k/kernel/process.c       | 2 +-
+Most of these properties don't exist in the binding, and are thus
+ignored by the driver.
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>         };
+> 
+> However in this case I only see A53 performance counters in DS5 Streamline
+> and performance counters of A73 cores are zero yet.
+> 
+> Would you please help me solve the problem? (If device tree need change or
+> kernel config to enable pmu counters for both CPUs).
 
-Gr{oetje,eeting}s,
+The problem is that all the Amlogic SoCs have a totally broken PMU
+integration. They OR'd all the PMU interrupts from the CPUs inside a
+cluster, which is why you end-up with only two interrupts in a system
+that should have 6.
 
-                        Geert
+There is no good workaround for this. The downstream kernel may have
+all sort of hacks to cope with the brokenness, but upstream will
+simply not work. I have my own set of hacks to deal with the PMU on
+the A55-based version of that SoC[1], but there is no way this is
+going upstream.
+
+Thanks,
+
+	M.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms.git/commit/?h=hack/vim3l-crap&id=6bde69695241344ddf7f74880314a0c6cbdaf963
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
