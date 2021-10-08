@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D386E426284
+	by mail.lfdr.de (Postfix) with ESMTP id 5B05D426281
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbhJHCsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 22:48:16 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:35727 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhJHCsN (ORCPT
+        id S234691AbhJHCsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 22:48:14 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:42679 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhJHCsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 22:48:13 -0400
-Received: by mail-ot1-f46.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so10053490otj.2;
-        Thu, 07 Oct 2021 19:46:18 -0700 (PDT)
+        Thu, 7 Oct 2021 22:48:11 -0400
+Received: by mail-ot1-f51.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso9944514otu.9;
+        Thu, 07 Oct 2021 19:46:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=+ZfkYND9mkqvpRdZR/wr5agCqOn0wi+sKDUIWLp3qNc=;
-        b=gjLXjESNa67CiBVtiMUJ10TASXoyLsy5T/XAoTiRk/SryUomIEgPmE2s/pbn5jQQ+y
-         HW3WcC14B7Q1rf0KXTG7E67aJ8uLPLjYoD7rA7keEU+WQk4kYVrc7v+WhKaYgQgbbJip
-         BEoyKku1quyUhKnvdgKUXY32v/pTaYG8DhxAbqU/3MrQolCC4BpC7BFlN1LKUdCBzFpW
-         hkjkrqKakR23mW+H38kvLurfxr83gnjbfTRjD660oGAWe5dzzzbH/GmHZb52JCSBY21R
-         riXbda4vAut5rFJZK0/TVhPPWi3Oo5Ktp/QG5D6Q1kX95fEuOHy9tm5HCnYy1HQ6ukEl
-         xh9g==
-X-Gm-Message-State: AOAM533YrBCQrdGuQSmpcw7NKRx17fpvGuAAkHx0jMGRL7fXFY+VQ+Hi
-        Of630yDhtSIFSBjtUloIIQ==
-X-Google-Smtp-Source: ABdhPJwZc/YodnC4tiG0MfEqh9/9OaH0sUM1UbNJHC7VMjv7SKhumSL5j9KfvEJ11mtKlvtIk3nMhA==
-X-Received: by 2002:a05:6830:4411:: with SMTP id q17mr6360383otv.67.1633661178183;
-        Thu, 07 Oct 2021 19:46:18 -0700 (PDT)
+        bh=WCH/ZvRJ095r2piVpiKap3cip9CDgRowlgzYoYtODk4=;
+        b=77jS+fI1VaA16kMEJLcg6k44CjRGkXayFA5yQq869kdn98ACyLX0pdiL6RFi9Nne9I
+         2Qzo+J4xgaiGBuj/6rfBx5QMM/9lK0peE7sohdDNgNktw6U341JR+2v+Wriv3E9PT+99
+         9XOQBeRNkehFp0Urne/DYvXRER6ITY2vC+MfmsAlrVRNm4EOlubc3FURX4/QmSETROPW
+         xre53S0HhBMHJ4ypw9XEmtazQN3m2i0ambhawe5vOfAy8zeohky2wiWFAZ3x9Ym/5QuX
+         sqLblLDjV5SHCQg1MCKPVPHnYs4o3TLtToVtQXEzvMM3i3+5wlL5FdCzLT55JYJhWZX9
+         jZIg==
+X-Gm-Message-State: AOAM530a8+x84DnCvJdjlhz/o8p6efo97HfhfD4uq17KuRNiIptBtIky
+        igIvtlXIGj6T8OQYhoDdXw==
+X-Google-Smtp-Source: ABdhPJw8aJTGTodhqaaRkMnbiMqq4zA5AnxSIR1dPlLXmJWPLZqAbAhjdJcXjZcWpq2dhcYcnx7A1w==
+X-Received: by 2002:a05:6830:2781:: with SMTP id x1mr6391596otu.349.1633661176215;
+        Thu, 07 Oct 2021 19:46:16 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 21sm307434oix.1.2021.10.07.19.46.16
+        by smtp.gmail.com with ESMTPSA id h91sm261506otb.38.2021.10.07.19.46.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 19:46:17 -0700 (PDT)
-Received: (nullmailer pid 1409602 invoked by uid 1000);
+        Thu, 07 Oct 2021 19:46:15 -0700 (PDT)
+Received: (nullmailer pid 1409598 invoked by uid 1000);
         Fri, 08 Oct 2021 02:46:12 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, bgoswami@codeaurora.org,
-        perex@perex.cz, judyhsiao@chromium.org, plai@codeaurora.org,
-        agross@kernel.org, broonie@kernel.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, tiwai@suse.com, srinivas.kandagatla@linaro.org,
-        rohitkr@codeaurora.org, bjorn.andersson@linaro.org,
-        lgirdwood@gmail.com
-In-Reply-To: <1633614519-26680-3-git-send-email-srivasam@codeaurora.org>
-References: <1633614519-26680-1-git-send-email-srivasam@codeaurora.org> <1633614519-26680-3-git-send-email-srivasam@codeaurora.org>
-Subject: Re: [PATCH 2/3] dt-bindings: pinctrl: qcom: Add sc7280 lpass lpi pinctrl compatible
+To:     Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+In-Reply-To: <20211007130641.3589-1-Allen-KH.Cheng@mediatek.com>
+References: <20211007130641.3589-1-Allen-KH.Cheng@mediatek.com>
+Subject: Re: [PATCH] dt-bindings: mediatek: add adsp-mbox document
 Date:   Thu, 07 Oct 2021 21:46:12 -0500
-Message-Id: <1633661172.649691.1409601.nullmailer@robh.at.kernel.org>
+Message-Id: <1633661172.621831.1409597.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 07 Oct 2021 19:18:38 +0530, Srinivasa Rao Mandadapu wrote:
-> Add device tree binding compatible name for Qualcomm SC7280 LPASS LPI pinctrl driver.
+On Thu, 07 Oct 2021 21:06:41 +0800, Allen-KH Cheng wrote:
+> This patch adds document for mediatek adsp mbox
 > 
-> Signed-off-by: Venkata Prasad Potturu <potturu@codeaurora.org>
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Signed-off-by: Allen-KH Cheng <Allen-KH.Cheng@mediatek.com>
 > ---
->  Documentation/devicetree/bindings/pinctrl/qcom,lpass-lpi-pinctrl.yaml | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  .../bindings/mailbox/mtk,adsp-mbox.yaml       | 71 +++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.yaml
 > 
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+yamllint warnings/errors:
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1537726
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.example.dts:22.44-31.11: ERROR (node_name_format): /example-0/adsp_mailbox@adsp_mailbox@10816000: multiple '@' characters in node name
+ERROR: Input tree has errors, aborting (use -f to force output)
+make[1]: *** [scripts/Makefile.lib:385: Documentation/devicetree/bindings/mailbox/mtk,adsp-mbox.example.dt.yaml] Error 2
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1441: dt_binding_check] Error 2
 
+doc reference errors (make refcheckdocs):
 
-pinctrl@33c0000: dmic01-active-pins: 'clk', 'data' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+See https://patchwork.ozlabs.org/patch/1537694
 
-pinctrl@33c0000: dmic01-active-pins: 'function' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
-pinctrl@33c0000: dmic01-active-pins: 'pins' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-pinctrl@33c0000: dmic01-sleep-pins: 'clk', 'data' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+pip3 install dtschema --upgrade
 
-pinctrl@33c0000: dmic01-sleep-pins: 'function' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: dmic01-sleep-pins: 'pins' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-active-pins: 'clk', 'data' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-active-pins: 'function' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-active-pins: 'pins' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-sleep-pins: 'clk', 'data' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-sleep-pins: 'function' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
-
-pinctrl@33c0000: wsa-swr-sleep-pins: 'pins' is a required property
-	arch/arm64/boot/dts/qcom/qrb5165-rb5.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-hdk.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-mtp.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+Please check and re-submit.
 
