@@ -2,222 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AFA426602
+	by mail.lfdr.de (Postfix) with ESMTP id 04FF7426601
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhJHIgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:36:31 -0400
-Received: from mail-sn1anam02on2052.outbound.protection.outlook.com ([40.107.96.52]:16452
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229873AbhJHIg3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233532AbhJHIga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:36:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231618AbhJHIg3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Oct 2021 04:36:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bOJ8r/2s7shvVteW4Ef9bDWfy7UJVarodcEF+5qfNUPbpcNr6D6Il+NNddPVeIJbWySl1GjruOm7BCrRDqr2n+lrWkqidW67NSejYsk2XWKBc60wWUeZECNwEjWLK+KizcEqgH7dtADtZanLTy63nAbZHYqtuRf+F3RvfMBsKcZE4IKBUcWweZhAmSi882/ZARgEAJmeA+Y7F2Mr8xjGwqWaIsntiqu6fvBYQON9Q6nqZnaQNXedTChJn/PdI39pQxnYmP7JoWqw2bjPcvVzFHPHCFrEFR/JByiSNTNb3Xgylz5m4ApQ1WH2IsBkG0w6nvFKbUz5RpSENm+dXH/KUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sVgtFpRgbrSBIy2pBz4yQCQhjFZ5sI3qV7ogF809N7c=;
- b=JGiXxm2GLDEEqN7y/fGQt5H3TFtwUV+n2AMmILRck2P6aoOg1jphgBCuxw+KIVpk7doB0cRVaVFtQUZ0nidEzU2t6xpg0l9bLgHnOWyWH6o6J1JAZcnl0A/0Z5YIi/KmH08MAWisWJHRkFZ3RMRUy5XQLUDO99TnuyAHMpVmk5rNxfFLnYkAzBGbsRZICRA9xrjrgpCmtQeoPvceaSOxVt0iP8e5latrq3PAk0+FOKZl/rs3H+mRI/B1KwrwUeXHLUbJUiKd5tDfEgshwkMAVHQq75s+1sooycTSx143+Bej2RXw7aVjUUHoiCDOmayJCCHpYafhFV4jg62Sil7eaA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sVgtFpRgbrSBIy2pBz4yQCQhjFZ5sI3qV7ogF809N7c=;
- b=MCJfcu7asvTLOZepbJ48x0+TeqbBdkP/kwSskDjRbeyPsgu8tp8Zcehtb6Zom47+JxSBwl14AdkdCRU0t39erFP9CbHMhCOgyiGJ2iz1SbVhGnOtOLkybTXL1mhUeUzyBDNTh70/1QwwPRF+6WXFjc5sXXOoEFyehJIB3tH/tnc=
-Received: from DM6PR02CA0061.namprd02.prod.outlook.com (2603:10b6:5:177::38)
- by SN6PR12MB4752.namprd12.prod.outlook.com (2603:10b6:805:e9::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Fri, 8 Oct
- 2021 08:34:32 +0000
-Received: from DM6NAM11FT035.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:177:cafe::c) by DM6PR02CA0061.outlook.office365.com
- (2603:10b6:5:177::38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Fri, 8 Oct 2021 08:34:32 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT035.mail.protection.outlook.com (10.13.172.100) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Fri, 8 Oct 2021 08:34:31 +0000
-Received: from amd-Mandolin-PCO.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 8 Oct 2021
- 03:34:28 -0500
-From:   Sanket Goswami <Sanket.Goswami@amd.com>
-To:     <Shyam-sundar.S-k@amd.com>, <hdegoede@redhat.com>,
-        <mgross@linux.intel.com>
-CC:     <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Sanket Goswami <Sanket.Goswami@amd.com>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] platform/x86: amd-pmc: Fix the build error when CONFIG_DEBUG_FS is disable
-Date:   Fri, 8 Oct 2021 14:04:08 +0530
-Message-ID: <20211008083408.8497-1-Sanket.Goswami@amd.com>
-X-Mailer: git-send-email 2.25.1
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAB7C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 01:34:34 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id m26so8836911qtn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YBAw7lZ94tPRxfH2x9IGL0hHeL3gAMxN0L+YoR8O/cw=;
+        b=cQxBsyudUjObMyMwCEB+MCHxkOQHkbiaSmD5xFuFYNkgMklVR6njI73Y8LXg9agSQn
+         /LffCYe5gOnFZko3I6LMRmCDs3fBqzTs3ENw7FeoKbBgZFFZeJRkF1gdWFbaxDtMTZbv
+         rG0TbEKGCyqpNbvPeMoXnjxqE1/+xBbMo881OLlY68jlzD4fG03RlcNb3cNBpKfKhxed
+         nUmgnsPi1yVqmkzHOrcnEOOKm8dKckPpAwwvPfIPAQevw1HtC1w9qbVh/eFcD/NTM+ef
+         k9ohIMBhyfFIoaBN2fO+xJNfEQ/mS6H8er2UmneO1eSWRMjAwgRUBhHhKFBYN7JLtC/Z
+         eplw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YBAw7lZ94tPRxfH2x9IGL0hHeL3gAMxN0L+YoR8O/cw=;
+        b=YJn+GKSk1ZZEYESQUQ7MG6o0jRhHOEBmlxhiCf0/LggRg+YiXTZlg2rfIz4nh/00+y
+         pzpYkcI1Wq1/55qeaAlkzN0CshttLnN91vV/58IZwlSh9rZqxlg5XgANTQ651J//x/K8
+         D0Wze62FHu/8/rDIFEEtN+1alQpGhWnPjW9SeOeds/A3DNLojGNu7OEe/CB2a16HY5vx
+         EtydioUjPQggqXrGmRCgvKK35otvUuAuQKzEPoeGSXBgSF7b8Nvd9FIUD+wslNFbqt/g
+         3f0Pl7VIo9fVtL+pwMshYUkzOGP2r+SF+aTLMc3x70T7ELNGaWriAvbbTMwbjOSwqlP7
+         D0ug==
+X-Gm-Message-State: AOAM53199a06spKu9b3CaIHFbKOCsFpsWIPl1gbetOJQ4wT8/qePA50c
+        eMFpQdBnotA12KM4rM/9CBE7pTqrE1VvYZFU16M=
+X-Google-Smtp-Source: ABdhPJyL0LdcVsPb/8zGbDDHZOC1MIL0nZvt18z0mwQ5nvq/k4ABEPylnHMg4LxZSc0xrISHj5x+H7VFN1RStHwyaxk=
+X-Received: by 2002:ac8:6a0a:: with SMTP id t10mr7679619qtr.299.1633682073502;
+ Fri, 08 Oct 2021 01:34:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e8b203a1-2cc2-4c43-4c23-08d98a36736a
-X-MS-TrafficTypeDiagnostic: SN6PR12MB4752:
-X-Microsoft-Antispam-PRVS: <SN6PR12MB4752F97AEC4970BE5549A2169CB29@SN6PR12MB4752.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:338;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Oncct717FrLbn++btY3q13TaOSk8uerCFiSOJQAxSUXTbqnOa5Q/yTrSntTAmKYVFG6DsXIKbZopu1b9SOcXZbWWUhqCeXUrQW3DBPH4r1K9Ht2WYV+alwiI4uC9+dKgIGzt909OcthFP2diyxrxdSjeXWwjaDwZ+3Mg/S12hpx0rBZEANDlLwQBe3+RAcY9iCZfpEKiVBcPtcw8WUFTt5QvfGdIao64C/HrcV4sGbmZhXap5RL0vwhBWIbiJXs3FgYioYNmkWuHPfxCyhGUZ4TFeOww9EcivBYmp1a7XCiS1E0FC+Y8Bi+4xFzzkBYE/yAzUdCJYuL5RGNL543uB7UPE6tlMESwgwJ/Uj6w2+NJEHEKNRR459W/nKMLVsf0TLNijngb2UuQqWcRgBhItdzXGg757TsHrabmQv1JPuLfbzGzOQkHZAxS3gp0ki5YBGIBeBJREDbLhVfc+Cl9WW98AIkFQGuiN+1BjO5mVT/kQDXvtU7GeCu/trfl1hCMSt0BEQmJVmuiVCbM6tYqMmlN2eDf+oQ4H5qg1lUkqqzC6jA0nP/jbAB5FjUx5bbAJ8jp6oe9NLyWlPPVP4aGu6IicKgEyDqYxl0FCRLEPkXyxHiIMdd7kTZaO3Ue4AHrkzMChkb+fg5VrJyQ1ADoH4Zu6+J1JWy/TppgKXqAxGKgW+7SPi1F2wvBM/TcnW5m5b0ZEFx+iTMACPk3vLVOjKpcL2fofcIMP7CuJfjS88o=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8936002)(316002)(2906002)(86362001)(54906003)(1076003)(36756003)(356005)(36860700001)(7696005)(508600001)(110136005)(2616005)(83380400001)(70206006)(426003)(70586007)(6666004)(186003)(5660300002)(81166007)(82310400003)(8676002)(16526019)(336012)(4326008)(47076005)(26005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 08:34:31.7329
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8b203a1-2cc2-4c43-4c23-08d98a36736a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT035.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB4752
+References: <1633673269-15048-1-git-send-email-huangzhaoyang@gmail.com> <20211008080113.GA441@willie-the-truck>
+In-Reply-To: <20211008080113.GA441@willie-the-truck>
+From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date:   Fri, 8 Oct 2021 16:34:12 +0800
+Message-ID: <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] arch: ARM64: add isb before enable pan
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ke Wang <ke.wang@unisoc.com>, ping.zhou1@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was reported that when CONFIG_DEBUG_FS is disabled, amd-pmc driver
-ended up in build failure.
+On Fri, Oct 8, 2021 at 4:01 PM Will Deacon <will@kernel.org> wrote:
+>
+> Hi,
+>
+> On Fri, Oct 08, 2021 at 02:07:49PM +0800, Huangzhaoyang wrote:
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> >
+> > set_pstate_pan failure is observed in an ARM64 system occasionaly on a reboot
+> > test, which can be work around by a msleep on the sw context. We assume
+> > suspicious on disorder of previous instr of disabling SW_PAN and add an isb here.
+> >
+> > PS:
+> > The bootup test failed with a invalid TTBR1_EL1 that equals 0x34000000, which is
+> > alike racing between on chip PAN and SW_PAN.
+>
+> Sorry, but I'm struggling to understand the problem here. Please could you
+> explain it in more detail?
+>
+>   - Why does a TTBR1_EL1 value of `0x34000000` indicate a race?
+>   - Can you explain the race that you think might be occurring?
+>   - Why does an ISB prevent the race?
+Please find panic logs[1], related codes[2], sample of debug patch[3]
+below. TTBR1_EL1 equals 0x34000000 when panic and can NOT be captured
+by the debug patch during retest (all entrances that msr ttbr1_el1 are
+under watch) which should work. Adding ISB here to prevent race on
+TTBR1 from previous access of sysregs which can affect the msr
+result(the test is still ongoing). Could the race be
+ARM64_HAS_PAN(automated by core) and SW_PAN.
 
-Re-order the routine to solve the problem.
+[1]
+[    0.348000]  [0:    migration/0:   11] Synchronous External Abort:
+level 1 (translation table walk) (0x96000055) at 0xffffffc000e06004
+[    0.352000]  [0:    migration/0:   11] Internal error: : 96000055
+[#1] PREEMPT SMP
+[    0.352000]  [0:    migration/0:   11] Modules linked in:
+[    0.352000]  [0:    migration/0:   11] Process migration/0 (pid:
+11, stack limit = 0x        (ptrval))
+[    0.352000]  [0:    migration/0:   11] CPU: 0 PID: 11 Comm:
+migration/0 Tainted: G S
+4.14.199-22631304-abA035FXXU0AUJ4_T4 #2
+[    0.352000]  [0:    migration/0:   11] Hardware name: Spreadtrum
+UMS9230 1H10 SoC (DT)
+[    0.352000]  [0:    migration/0:   11] task:         (ptrval)
+task.stack:         (ptrval)
+[    0.352000]  [0:    migration/0:   11] pc : patch_alternative+0x68/0x27c
+[    0.352000]  [0:    migration/0:   11] lr :
+__apply_alternatives.llvm.7450387295891320208+0x60/0x160
 
-Fixes: b4a53d6f61eb ("platform/x86: amd-pmc: Export Idlemask values
-based on the APU")
+[2]
+__apply_alternatives
+   for()
+       patch_alternative    <----panic here in the 2nd round of loop
+after invoking flush_icache_range
+       flush_icache_range
 
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
----
- drivers/platform/x86/amd-pmc.c | 86 +++++++++++++++++-----------------
- 1 file changed, 43 insertions(+), 43 deletions(-)
+[3]
+sub \tmp1, \tmp1, #SWAPPER_DIR_SIZE
++ tst     \tmp1, #0xffff80000000 // check ttbr1_el1 valid
++    b.le    .
+msr ttbr1_el1, \tmp1 // set reserved ASID
 
-diff --git a/drivers/platform/x86/amd-pmc.c b/drivers/platform/x86/amd-pmc.c
-index 91c1f1c6c929..88cded2fe680 100644
---- a/drivers/platform/x86/amd-pmc.c
-+++ b/drivers/platform/x86/amd-pmc.c
-@@ -155,6 +155,31 @@ struct smu_metrics {
- 	u64 timecondition_notmet_totaltime[SOC_SUBSYSTEM_IP_MAX];
- } __packed;
- 
-+static int amd_pmc_idlemask_read(struct amd_pmc_dev *pdev, struct device *dev,
-+				 struct seq_file *s)
-+{
-+	u32 val;
-+
-+	switch (pdev->cpu_id) {
-+	case AMD_CPU_ID_CZN:
-+		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_CZN);
-+		break;
-+	case AMD_CPU_ID_YC:
-+		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_YC);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (dev)
-+		dev_dbg(pdev->dev, "SMU idlemask s0i3: 0x%x\n", val);
-+
-+	if (s)
-+		seq_printf(s, "SMU idlemask : 0x%x\n", val);
-+
-+	return 0;
-+}
-+
- #ifdef CONFIG_DEBUG_FS
- static int smu_fw_info_show(struct seq_file *s, void *unused)
- {
-@@ -210,49 +235,6 @@ static int s0ix_stats_show(struct seq_file *s, void *unused)
- }
- DEFINE_SHOW_ATTRIBUTE(s0ix_stats);
- 
--static int amd_pmc_get_smu_version(struct amd_pmc_dev *dev)
--{
--	int rc;
--	u32 val;
--
--	rc = amd_pmc_send_cmd(dev, 0, &val, SMU_MSG_GETSMUVERSION, 1);
--	if (rc)
--		return rc;
--
--	dev->major = (val >> 16) & GENMASK(15, 0);
--	dev->minor = (val >> 8) & GENMASK(7, 0);
--	dev->rev = (val >> 0) & GENMASK(7, 0);
--
--	dev_dbg(dev->dev, "SMU version is %u.%u.%u\n", dev->major, dev->minor, dev->rev);
--
--	return 0;
--}
--
--static int amd_pmc_idlemask_read(struct amd_pmc_dev *pdev, struct device *dev,
--				 struct seq_file *s)
--{
--	u32 val;
--
--	switch (pdev->cpu_id) {
--	case AMD_CPU_ID_CZN:
--		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_CZN);
--		break;
--	case AMD_CPU_ID_YC:
--		val = amd_pmc_reg_read(pdev, AMD_PMC_SCRATCH_REG_YC);
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	if (dev)
--		dev_dbg(pdev->dev, "SMU idlemask s0i3: 0x%x\n", val);
--
--	if (s)
--		seq_printf(s, "SMU idlemask : 0x%x\n", val);
--
--	return 0;
--}
--
- static int amd_pmc_idlemask_show(struct seq_file *s, void *unused)
- {
- 	struct amd_pmc_dev *dev = s->private;
-@@ -295,6 +277,24 @@ static inline void amd_pmc_dbgfs_unregister(struct amd_pmc_dev *dev)
- }
- #endif /* CONFIG_DEBUG_FS */
- 
-+static int amd_pmc_get_smu_version(struct amd_pmc_dev *dev)
-+{
-+	int rc;
-+	u32 val;
-+
-+	rc = amd_pmc_send_cmd(dev, 0, &val, SMU_MSG_GETSMUVERSION, 1);
-+	if (rc)
-+		return rc;
-+
-+	dev->major = (val >> 16) & GENMASK(15, 0);
-+	dev->minor = (val >> 8) & GENMASK(7, 0);
-+	dev->rev = (val >> 0) & GENMASK(7, 0);
-+
-+	dev_dbg(dev->dev, "SMU version is %u.%u.%u\n", dev->major, dev->minor, dev->rev);
-+
-+	return 0;
-+}
-+
- static int amd_pmc_setup_smu_logging(struct amd_pmc_dev *dev)
- {
- 	u32 phys_addr_low, phys_addr_hi;
--- 
-2.25.1
-
+>
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > ---
+> >  arch/arm64/kernel/cpufeature.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> > index efed283..3c0de0d 100644
+> > --- a/arch/arm64/kernel/cpufeature.c
+> > +++ b/arch/arm64/kernel/cpufeature.c
+> > @@ -1663,6 +1663,7 @@ static void cpu_enable_pan(const struct arm64_cpu_capabilities *__unused)
+> >       WARN_ON_ONCE(in_interrupt());
+> >
+> >       sysreg_clear_set(sctlr_el1, SCTLR_EL1_SPAN, 0);
+> > +     isb();
+> >       set_pstate_pan(1);
+>
+> SCTLR_EL1.SPAN only affects the PAN behaviour on taking an exception, which
+> is itself a context-synchronizing event, so I can't see why the ISB makes
+> any difference here (at least, for the purposes of PAN).
+>
+> Thanks,
+>
+> Will
