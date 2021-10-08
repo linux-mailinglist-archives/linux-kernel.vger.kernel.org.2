@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01475426337
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56194426336
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:41:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242736AbhJHDnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:43:32 -0400
-Received: from mga03.intel.com ([134.134.136.65]:32030 "EHLO mga03.intel.com"
+        id S242637AbhJHDn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:43:28 -0400
+Received: from mga14.intel.com ([192.55.52.115]:41018 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241740AbhJHDnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240523AbhJHDnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Oct 2021 23:43:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226377926"
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226714164"
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="226377926"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:41:27 -0700
+   d="scan'208";a="226714164"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:41:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="568870325"
+   d="scan'208";a="715391338"
 Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Oct 2021 20:41:25 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 07 Oct 2021 20:41:25 -0700
 Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mYglB-0007ww-64; Fri, 08 Oct 2021 03:41:25 +0000
-Date:   Fri, 08 Oct 2021 11:40:53 +0800
+        id 1mYglB-0007wo-2H; Fri, 08 Oct 2021 03:41:25 +0000
+Date:   Fri, 08 Oct 2021 11:40:57 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:objtool/core] BUILD SUCCESS
- b08cadbd3b8721db738d9a00ef3ce3ed667e6d9c
-Message-ID: <615fbdc5.hz1rJ1iw2mH+XqzW%lkp@intel.com>
+Subject: [tip:objtool/urgent] BUILD SUCCESS
+ fe255fe6ad97685e5a4be0d871f43288dbc10ad6
+Message-ID: <615fbdc9.z8riNlv5es0r4NyM%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,10 +39,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git objtool/core
-branch HEAD: b08cadbd3b8721db738d9a00ef3ce3ed667e6d9c  Merge branch 'objtool/urgent'
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git objtool/urgent
+branch HEAD: fe255fe6ad97685e5a4be0d871f43288dbc10ad6  objtool: Remove redundant 'len' field from struct section
 
-elapsed time: 1219m
+elapsed time: 1218m
 
 configs tested: 150
 configs skipped: 3
@@ -144,10 +144,10 @@ parisc                           allyesconfig
 s390                                defconfig
 s390                             allyesconfig
 s390                             allmodconfig
-i386                             allyesconfig
 sparc                            allyesconfig
 sparc                               defconfig
 i386                                defconfig
+i386                             allyesconfig
 mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allmodconfig
