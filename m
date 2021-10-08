@@ -2,235 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9EBD4271DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DD44271F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242278AbhJHULK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:11:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46882 "EHLO mail.kernel.org"
+        id S231808AbhJHUU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:20:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:57166 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242435AbhJHULI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:11:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DCB9610E5;
-        Fri,  8 Oct 2021 20:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633723752;
-        bh=3EEz07j9Wg5laxUjMiCKDXqTS3+pALCR0ncatip9pvI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NmgXkcyVKj/XiN7Xj6Gg45zhI81YxxBCRKtaiCFTpdIjeZE1g83D5AUdr8GqbtX0k
-         yLFK6Yalwrfe3YRHaPbbXQztyVkWqA2OfTkhat3nSvyAmMA/RRK2nruBb9OHlPJKjD
-         Qk2lEpPeUbsa1zWjfwqv6dp1DZuHRHiPa90+ZqIR5GSiB9uWQQgd2ITcte46e3L3II
-         HcwgNQRsPZa/nPx9bVUJBHHobz5ZjU+wUjHP/z5KVVfsugxci/QlVkNxExCiIyeEph
-         qsGcLZckzQIzT77R+5Crimx/D16EpN7/uRgh9V/eZnYyovgsHkrzyvHbcLj0zZoxfK
-         fHdX3/23w9O6Q==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Yue Hu <zbestahu@gmail.com>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>
-Subject: [PATCH v2 3/3] erofs: introduce readmore decompression strategy
-Date:   Sat,  9 Oct 2021 04:08:39 +0800
-Message-Id: <20211008200839.24541-4-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211008200839.24541-1-xiang@kernel.org>
-References: <20211008200839.24541-1-xiang@kernel.org>
+        id S230091AbhJHUU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 16:20:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=nbEL2f9U72GlI7AKCPstfB4LethwKKgejTASqHX6Tho=; b=R2JejGfzJNcn6v52uEmXg2gfLX
+        mB6DxBI2GX2cRa4vGah0xsv1g7h9Idl2UFT5nm/elBx8linAyOkMotppfYEGSZE8R1PaB+Us/txTd
+        Gzoxk0fCVfI3YYx8qpiWV8Jd/+flg46sYi4q0XtAeXKwhLsePCB4jXSabHNvXVnKLCKE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYwK0-00A5dN-Pr; Fri, 08 Oct 2021 22:18:24 +0200
+Date:   Fri, 8 Oct 2021 22:18:24 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     p.zabel@pengutronix.de, robh+dt@kernel.org,
+        lars.povlsen@microchip.com, Steen.Hegelund@microchip.com,
+        UNGLinuxDriver@microchip.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/2] reset: mchp: sparx5: Extend support for lan966x
+Message-ID: <YWCnkPjgqCKTTI/S@lunn.ch>
+References: <20211008114330.1328713-1-horatiu.vultur@microchip.com>
+ <20211008114330.1328713-3-horatiu.vultur@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008114330.1328713-3-horatiu.vultur@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
+On Fri, Oct 08, 2021 at 01:43:30PM +0200, Horatiu Vultur wrote:
+> This patch extends sparx5 driver to support also the lan966x. The
+> process to reset the switch is the same only it has different offsets.
+> Therefore make the driver more generic and add support for lan966x.
+> 
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-Previously, the readahead window was strictly followed by EROFS
-decompression strategy in order to minimize extra memory footprint.
-However, it could become inefficient if just reading the partial
-requested data for much big LZ4 pclusters and the upcoming LZMA
-implementation.
+Thanks for making it generic.
 
-Let's try to request the leading data in a pcluster without
-triggering memory reclaiming instead for the LZ4 approach first
-to boost up 100% randread of large big pclusters, and it has no real
-impact on low memory scenarios.
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-It also introduces a way to expand read lengths in order to decompress
-the whole pcluster, which is useful for LZMA since the algorithm
-itself is relatively slow and causes CPU bound, but LZ4 is not.
-
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
- fs/erofs/internal.h | 13 ++++++
- fs/erofs/zdata.c    | 99 ++++++++++++++++++++++++++++++++++++---------
- 2 files changed, 93 insertions(+), 19 deletions(-)
-
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 48bfc6eb2b02..7f96265ccbdb 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -307,6 +307,19 @@ static inline unsigned int erofs_inode_datalayout(unsigned int value)
- 			      EROFS_I_DATALAYOUT_BITS);
- }
- 
-+/*
-+ * Different from grab_cache_page_nowait(), reclaiming is never triggered
-+ * when allocating new pages.
-+ */
-+static inline
-+struct page *erofs_grab_cache_page_nowait(struct address_space *mapping,
-+					  pgoff_t index)
-+{
-+	return pagecache_get_page(mapping, index,
-+			FGP_LOCK|FGP_CREAT|FGP_NOFS|FGP_NOWAIT,
-+			readahead_gfp_mask(mapping) & ~__GFP_RECLAIM);
-+}
-+
- extern const struct super_operations erofs_sops;
- 
- extern const struct address_space_operations erofs_raw_access_aops;
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index 5c34ef66677f..febb018e10a7 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -1377,6 +1377,72 @@ static void z_erofs_runqueue(struct super_block *sb,
- 	z_erofs_decompress_queue(&io[JQ_SUBMIT], pagepool);
- }
- 
-+/*
-+ * Since partial uptodate is still unimplemented for now, we have to use
-+ * approximate readmore strategies as a start.
-+ */
-+static void z_erofs_pcluster_readmore(struct z_erofs_decompress_frontend *f,
-+				      struct readahead_control *rac,
-+				      erofs_off_t end,
-+				      struct list_head *pagepool,
-+				      bool backmost)
-+{
-+	struct inode *inode = f->inode;
-+	struct erofs_map_blocks *map = &f->map;
-+	erofs_off_t cur;
-+	int err;
-+
-+	if (backmost) {
-+		map->m_la = end;
-+		/* TODO: pass in EROFS_GET_BLOCKS_READMORE for LZMA later */
-+		err = z_erofs_map_blocks_iter(inode, map, 0);
-+		if (err)
-+			return;
-+
-+		/* expend ra for the trailing edge if readahead */
-+		if (rac) {
-+			loff_t newstart = readahead_pos(rac);
-+
-+			cur = round_up(map->m_la + map->m_llen, PAGE_SIZE);
-+			readahead_expand(rac, newstart, cur - newstart);
-+			return;
-+		}
-+		end = round_up(end, PAGE_SIZE);
-+	} else {
-+		end = round_up(map->m_la, PAGE_SIZE);
-+
-+		if (!map->m_llen)
-+			return;
-+	}
-+
-+	cur = map->m_la + map->m_llen - 1;
-+	while (cur >= end) {
-+		pgoff_t index = cur >> PAGE_SHIFT;
-+		struct page *page;
-+
-+		page = erofs_grab_cache_page_nowait(inode->i_mapping, index);
-+		if (!page)
-+			goto skip;
-+
-+		if (PageUptodate(page)) {
-+			unlock_page(page);
-+			put_page(page);
-+			goto skip;
-+		}
-+
-+		err = z_erofs_do_read_page(f, page, pagepool);
-+		if (err)
-+			erofs_err(inode->i_sb,
-+				  "readmore error at page %lu @ nid %llu",
-+				  index, EROFS_I(inode)->nid);
-+		put_page(page);
-+skip:
-+		if (cur < PAGE_SIZE)
-+			break;
-+		cur = (index << PAGE_SHIFT) - 1;
-+	}
-+}
-+
- static int z_erofs_readpage(struct file *file, struct page *page)
- {
- 	struct inode *const inode = page->mapping->host;
-@@ -1385,10 +1451,13 @@ static int z_erofs_readpage(struct file *file, struct page *page)
- 	LIST_HEAD(pagepool);
- 
- 	trace_erofs_readpage(page, false);
--
- 	f.headoffset = (erofs_off_t)page->index << PAGE_SHIFT;
- 
-+	z_erofs_pcluster_readmore(&f, NULL, f.headoffset + PAGE_SIZE - 1,
-+				  &pagepool, true);
- 	err = z_erofs_do_read_page(&f, page, &pagepool);
-+	z_erofs_pcluster_readmore(&f, NULL, 0, &pagepool, false);
-+
- 	(void)z_erofs_collector_end(&f.clt);
- 
- 	/* if some compressed cluster ready, need submit them anyway */
-@@ -1409,29 +1478,20 @@ static void z_erofs_readahead(struct readahead_control *rac)
- {
- 	struct inode *const inode = rac->mapping->host;
- 	struct erofs_sb_info *const sbi = EROFS_I_SB(inode);
--
--	unsigned int nr_pages = readahead_count(rac);
--	bool sync = (sbi->ctx.readahead_sync_decompress &&
--			nr_pages <= sbi->ctx.max_sync_decompress_pages);
- 	struct z_erofs_decompress_frontend f = DECOMPRESS_FRONTEND_INIT(inode);
- 	struct page *page, *head = NULL;
-+	unsigned int nr_pages;
- 	LIST_HEAD(pagepool);
- 
--	trace_erofs_readpages(inode, readahead_index(rac), nr_pages, false);
--
- 	f.readahead = true;
- 	f.headoffset = readahead_pos(rac);
- 
--	while ((page = readahead_page(rac))) {
--		prefetchw(&page->flags);
--
--		/*
--		 * A pure asynchronous readahead is indicated if
--		 * a PG_readahead marked page is hitted at first.
--		 * Let's also do asynchronous decompression for this case.
--		 */
--		sync &= !(PageReadahead(page) && !head);
-+	z_erofs_pcluster_readmore(&f, rac, f.headoffset +
-+				  readahead_length(rac) - 1, &pagepool, true);
-+	nr_pages = readahead_count(rac);
-+	trace_erofs_readpages(inode, readahead_index(rac), nr_pages, false);
- 
-+	while ((page = readahead_page(rac))) {
- 		set_page_private(page, (unsigned long)head);
- 		head = page;
- 	}
-@@ -1450,11 +1510,12 @@ static void z_erofs_readahead(struct readahead_control *rac)
- 				  page->index, EROFS_I(inode)->nid);
- 		put_page(page);
- 	}
--
-+	z_erofs_pcluster_readmore(&f, rac, 0, &pagepool, false);
- 	(void)z_erofs_collector_end(&f.clt);
- 
--	z_erofs_runqueue(inode->i_sb, &f, &pagepool, sync);
--
-+	z_erofs_runqueue(inode->i_sb, &f, &pagepool,
-+			 sbi->ctx.readahead_sync_decompress &&
-+			 nr_pages <= sbi->ctx.max_sync_decompress_pages);
- 	if (f.map.mpage)
- 		put_page(f.map.mpage);
- 
--- 
-2.20.1
-
+    Andrew
