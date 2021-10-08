@@ -2,272 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B99426C5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB981426C5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237559AbhJHOHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:07:42 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63372 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231576AbhJHOHj (ORCPT
+        id S232815AbhJHOJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:09:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:10135 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhJHOJR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:07:39 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 21634131c65fd7fb; Fri, 8 Oct 2021 16:05:42 +0200
-Received: from kreacher.localnet (unknown [213.134.175.153])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 8 Oct 2021 10:09:17 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633702042; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=z5HFXO447DX2xV076VYmLHupBfI2lHWsPlxwcYyE54k=; b=orIMt68A4TqaGjfp4hf5XOjjwv6q8+kD5qIFlRioPsE/meUbmRcmmpGZR4LUuEbvNu2krkXl
+ E+ByNOcqlW9YS0y+8WgwjCilPda8lv1mbHpbZ3EJq7hfBM4NoSoBnn128FNRhIzr9q7BvYou
+ LuL+821TbEosiNl2wD7tJP3qEB4=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 61605092ff0285fb0a44ba26 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 14:07:14
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 37D14C43618; Fri,  8 Oct 2021 14:07:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id C102966A805;
-        Fri,  8 Oct 2021 16:05:41 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     mario.limonciello@amd.com,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Len Brown <lenb@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>
-Subject: Re: [PATCH] PCI: Put power resources not tied to a physical node in D3cold
-Date:   Fri, 08 Oct 2021 16:05:40 +0200
-Message-ID: <2211361.ElGaqSPkdT@kreacher>
-In-Reply-To: <20211007205126.11769-1-mario.limonciello@amd.com>
-References: <20211007205126.11769-1-mario.limonciello@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 213.134.175.153
-X-CLIENT-HOSTNAME: 213.134.175.153
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddgieelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpeetgefgleetgeduheeugeeikeevudelueelvdeufeejfeffgeefjedugfetfeehhfenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppedvudefrddufeegrddujeehrdduheefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepvddufedrudefgedrudejhedrudehfedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehmrghrihhordhlihhmohhntghivghllhhosegrmhgurdgtohhmpdhrtghpthhtoheplhgvnhgssehkvghrnhgvlhdrohhrghdprhgtphhtthhopegshhgvlhhgrggrshesghhoohhglhgvrdgtohhmpdhrtghpthhtoheprhhosggvrhhtrdhmohhorhgvsehinhhtvghlrdgtohhmpdhrtghpthhtohepvghrihhkrdhkrghn
- vggurgesihhnthgvlhdrtghomhdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhptghisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggvvhgvlhesrggtphhitggrrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=10 Fuz1=10 Fuz2=10
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3F340C43460;
+        Fri,  8 Oct 2021 14:07:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3F340C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     hughd@google.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        rientjes@google.com, david@redhat.com, mhocko@suse.com,
+        linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH] mm: shmem: implement POSIX_FADV_[WILL|DONT]NEED for shmem
+Date:   Fri,  8 Oct 2021 19:36:22 +0530
+Message-Id: <1633701982-22302-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 7, 2021 10:51:26 PM CEST Mario Limonciello wrote:
-> I found a case that a system that two physical SATA controllers share
-> the same ACPI Power Resource.  When a drive is connected to one of
-> the controllers then it will bind with PCI devices with the ahci driver
-> and form a relationship with the firmware node and physical node.  During
-> s2idle I see that the constraints are met for this device as it is
-> transitioned into the appropriate state. However the second ACPI node
-> doesn't have any relationship with a physical node and stays in "D0":
-> 
-> ```
-> ACPI: \_SB_.PCI0.GP18.SATA: ACPI: PM: Power state change: D0 -> D3cold
-> ACPI: PM: Power resource [P0SA] still in use
-> acpi device:2a: Power state changed to D3cold
-> ```
-> 
-> Due to the refcounting used on the shared power resource putting the
-> device with a physical node into D3 doesn't result in the _OFF method
-> being called.
-> 
-> To help with this type of problem, make a new helper function that can
-> be used to check all the children of an ACPI device and put any firmware
-> nodes that don't have physical devices into D3cold to allow shared
-> resources to transition. Call this helper function after PCI devices have
-> been scanned and ACPI companions have had a chance to associate.
-> 
-> After making this change, here is what the flow looks like:
-> ```
-> <snip:bootup>
-> ACPI: \_SB_.PCI0.GP18.SAT1: ACPI: PM: Power state change: D0 -> D3cold
-> ACPI: PM: Power resource [P0SA] still in use
-> acpi device:2c: Power state changed to D3cold
-> <snip:suspend>
-> ACPI: \_SB_.PCI0.GP18.SATA: ACPI: PM: Power state change: D0 -> D3cold
-> ACPI: PM: Power resource [P0SA] turned off
-> acpi device:2a: Power state changed to D3cold
-> ```
-> 
-> Link: https://lore.kernel.org/linux-acpi/0571292a-286b-18f2-70ad-12b125a61469@amd.com/T/#m042055c5ca1e49c2829655511f04b0311c142559
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214091
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
->  drivers/acpi/device_pm.c | 34 ++++++++++++++++++++++++++++++++++
->  drivers/pci/probe.c      |  5 +++++
->  include/acpi/acpi_bus.h  |  1 +
->  3 files changed, 40 insertions(+)
-> 
-> diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-> index 0028b6b51c87..0fb0bbeeae9e 100644
-> --- a/drivers/acpi/device_pm.c
-> +++ b/drivers/acpi/device_pm.c
-> @@ -149,6 +149,40 @@ static int acpi_dev_pm_explicit_set(struct acpi_device *adev, int state)
->  	return 0;
->  }
->  
-> +/**
-> + * acpi_device_turn_off_absent_children - Turn off power resources for
-> + *					  children not physically present.
-> + * @parent: ACPI bridge device
-> + */
-> +int acpi_device_turn_off_absent_children(struct acpi_device *parent)
-> +{
-> +	struct acpi_device *adev;
-> +	int ret = 0;
-> +
-> +	if (!parent)
-> +		return -EINVAL;
-> +
-> +	list_for_each_entry(adev, &parent->children, node) {
+Currently fadvise(2) is supported only for the files that doesn't
+associated with noop_backing_dev_info thus for the files, like shmem,
+fadvise results into NOP. But then there is file_operations->fadvise()
+that lets the file systems to implement their own fadvise
+implementation. Use this support to implement some of the POSIX_FADV_XXX
+functionality for shmem files.
 
-It is better to use device_for_each_child() for this, walking the children list
-without locking is questionable.
+This patch aims to implement POSIX_FADV_WILLNEED and POSIX_FADV_DONTNEED
+advices to shmem files which can be helpful for the drivers who may want
+to manage the shmem pages of the files that are created through
+shmem_file_setup[_with_mnt]().  An example usecase may be like, driver
+can create the shmem file of the size equal to its requirements and
+map the pages for DMA and then pass the fd to user. The user who knows
+well about the usage of these pages can now decide when these pages are
+not required push them to swap through DONTNEED thus free up memory well
+in advance rather than relying on the reclaim and use WILLNEED when it
+decide that they are useful in the near future. IOW, it lets the clients
+to free up/read the memory when it wants to. Another usecase is that GEM
+objets which are currenlty allocated and managed through shmem files can
+use vfs_fadvise(DONT|WILLNEED) on shmem fd when the driver comes to
+know(like through some hints from user space) that GEM objects are not
+going to use/will need in the near future.
 
-> +		int state;
-> +
-> +		if (!adev->flags.power_manageable ||
-
-This need not be checked, acpi_device_set_power() checks it.
-
-> +		    !adev->power.flags.power_resources)
-
-And I'm not sure about this too.  Even if there are no power resources, it
-would be still prudent to release PM resources referred to by unused device
-objects by calling _PS3 on them.
-
-> +			continue;
-> +		if (acpi_get_first_physical_node(adev))
-> +			continue;
-
-In addition to this, I would check if the device object has _ADR, because
-there are legitimate cases when device objects with a _HID have no physical
-nodes.
-
-> +		ret = acpi_device_get_power(adev, &state);
-> +		if (ret)
-> +			return ret;
-> +		if (state == ACPI_STATE_D3_COLD)
-> +			continue;
-
-The above is not necessary.
-
-> +		ret = acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_device_turn_off_absent_children);
-
-And I would put this function into glue.c.
-
-> +
->  /**
->   * acpi_device_set_power - Set power state of an ACPI device.
->   * @device: Device to set the power state of.
-> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-> index 79177ac37880..1a45182394d1 100644
-> --- a/drivers/pci/probe.c
-> +++ b/drivers/pci/probe.c
-> @@ -2939,6 +2939,11 @@ static unsigned int pci_scan_child_bus_extend(struct pci_bus *bus,
->  		}
->  	}
->  
-> +	/* check for and turn off dangling power resources */
-> +	for_each_pci_bridge(dev, bus) {
-> +		acpi_device_turn_off_absent_children(ACPI_COMPANION(&dev->dev));
-
-IMO it would be better to call this from inside of the ACPI subsystem and
-after scanning the entire bus.
-
-> +	}
-> +
->  	/*
->  	 * We've scanned the bus and so we know all about what's on
->  	 * the other side of any bridges that may be on this bus plus
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 13d93371790e..0eba08b60e13 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -510,6 +510,7 @@ int acpi_bus_get_status(struct acpi_device *device);
->  
->  int acpi_bus_set_power(acpi_handle handle, int state);
->  const char *acpi_power_state_string(int state);
-> +int acpi_device_turn_off_absent_children(struct acpi_device *parent);
->  int acpi_device_set_power(struct acpi_device *device, int state);
->  int acpi_bus_init_power(struct acpi_device *device);
->  int acpi_device_fix_up_power(struct acpi_device *device);
-> 
-
-Overall, something like the appended patch might work.
-
-Note that on my test-bed machine it makes no difference, though.
-
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
 ---
- drivers/acpi/glue.c     |   28 ++++++++++++++++++++++++++++
- drivers/acpi/internal.h |    2 ++
- drivers/acpi/pci_root.c |    1 +
- 3 files changed, 31 insertions(+)
+ mm/shmem.c | 139 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 139 insertions(+)
 
-Index: linux-pm/drivers/acpi/glue.c
-===================================================================
---- linux-pm.orig/drivers/acpi/glue.c
-+++ linux-pm/drivers/acpi/glue.c
-@@ -350,3 +350,31 @@ void acpi_device_notify_remove(struct de
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 70d9ce2..ab7ea33 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -38,6 +38,8 @@
+ #include <linux/hugetlb.h>
+ #include <linux/frontswap.h>
+ #include <linux/fs_parser.h>
++#include <linux/mm_inline.h>
++#include <linux/fadvise.h>
  
- 	acpi_unbind_one(dev);
+ #include <asm/tlbflush.h> /* for arch/microblaze update_mmu_cache() */
+ 
+@@ -2792,6 +2794,142 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 	return error;
  }
-+
-+static int acpi_dev_turn_off_if_unused(struct device *dev, void *not_used)
+ 
++static int shmem_fadvise_dontneed(struct address_space *mapping, loff_t start,
++				loff_t end)
 +{
-+	struct acpi_device *adev = to_acpi_device(dev);
++	int ret;
++	struct writeback_control wbc = {
++		.sync_mode = WB_SYNC_NONE,
++		.nr_to_write = LONG_MAX,
++		.range_start = 0,
++		.range_end = LLONG_MAX,
++		.for_reclaim = 1,
++	};
++	struct page *page;
 +
-+	acpi_dev_turn_off_unused_descendants(adev);
++	XA_STATE(xas, &mapping->i_pages, start);
++	if (!shmem_mapping(mapping))
++		return -EINVAL;
 +
-+	if (adev->pnp.type.bus_address && !acpi_get_first_physical_node(adev))
-+		acpi_device_set_power(adev, ACPI_STATE_D3_COLD);
++	if (!total_swap_pages)
++		return 0;
++
++	lru_add_drain();
++
++	rcu_read_lock();
++	xas_for_each(&xas, page, end) {
++		if (xas_retry(&xas, page))
++			continue;
++		if (xa_is_value(page))
++			continue;
++		if (isolate_lru_page(page))
++			continue;
++
++		inc_node_page_state(page, NR_ISOLATED_ANON +
++						page_is_file_lru(page));
++		lock_page(page);
++		ClearPageDirty(page);
++		SetPageReclaim(page);
++		ret = shmem_writepage(page, &wbc);
++		if (!PageWriteback(page))
++			ClearPageReclaim(page);
++		if (ret) {
++			unlock_page(page);
++			putback_lru_page(page);
++			dec_node_page_state(page, NR_ISOLATED_ANON +
++						page_is_file_lru(page));
++			continue;
++		}
++
++		/*
++		 * shmem_writepage() place the page in the swapcache.
++		 * Delete the page from the swapcache and release the
++		 * page.
++		 */
++		lock_page(page);
++		delete_from_swap_cache(page);
++		unlock_page(page);
++		dec_node_page_state(page, NR_ISOLATED_ANON +
++						page_is_file_lru(page));
++		put_page(page);
++		if (need_resched()) {
++			xas_pause(&xas);
++			cond_resched_rcu();
++		}
++	}
++	rcu_read_unlock();
 +
 +	return 0;
 +}
 +
-+/**
-+ * acpi_dev_turn_off_unused_descendants - Put unused descendants into D3cold.
-+ * @adev: ACPI device object at the top of a branch of device hierarchy.
-+ *
-+ * Walk the branch of the hierarchy of ACPI device objects starting at @adev
-+ * and put all of the objects in it that have _ADR and have no corresponding
-+ * physical nodes into D3cold.
-+ *
-+ * This allows power resources that are only referred to by unused ACPI device
-+ * objects to be turned off.
-+ */
-+void acpi_dev_turn_off_unused_descendants(struct acpi_device *adev)
++static int shmem_fadvise_willneed(struct address_space *mapping,
++				 pgoff_t start, pgoff_t long end)
 +{
-+	device_for_each_child(&adev->dev, NULL, acpi_dev_turn_off_if_unused);
-+}
-Index: linux-pm/drivers/acpi/internal.h
-===================================================================
---- linux-pm.orig/drivers/acpi/internal.h
-+++ linux-pm/drivers/acpi/internal.h
-@@ -88,6 +88,8 @@ bool acpi_scan_is_offline(struct acpi_de
- acpi_status acpi_sysfs_table_handler(u32 event, void *table, void *context);
- void acpi_scan_table_notify(void);
- 
-+void acpi_dev_turn_off_unused_descendants(struct acpi_device *adev);
++	struct page *page;
 +
- /* --------------------------------------------------------------------------
-                      Device Node Initialization / Removal
-    -------------------------------------------------------------------------- */
-Index: linux-pm/drivers/acpi/pci_root.c
-===================================================================
---- linux-pm.orig/drivers/acpi/pci_root.c
-+++ linux-pm/drivers/acpi/pci_root.c
-@@ -630,6 +630,7 @@ static int acpi_pci_root_add(struct acpi
++	XA_STATE(xas, &mapping->i_pages, start);
++	rcu_read_lock();
++	xas_for_each(&xas, page, end) {
++		if (!xa_is_value(page))
++			continue;
++		page = shmem_read_mapping_page(mapping, xas.xa_index);
++		if (!IS_ERR(page))
++			put_page(page);
++
++		if (need_resched()) {
++			xas_pause(&xas);
++			cond_resched_rcu();
++		}
++	}
++	rcu_read_unlock();
++
++	return 0;
++}
++
++static int shmem_fadvise(struct file *file, loff_t offset, loff_t len, int advice)
++{
++	loff_t endbyte;
++	pgoff_t start_index;
++	pgoff_t end_index;
++	struct address_space *mapping;
++	int ret = 0;
++
++	mapping = file->f_mapping;
++	if (!mapping || len < 0)
++		return -EINVAL;
++
++	endbyte = (u64)offset + (u64)len;
++	if (!len || endbyte < len)
++		endbyte = -1;
++	else
++		endbyte--;
++
++
++	start_index = offset >> PAGE_SHIFT;
++	end_index   = endbyte >> PAGE_SHIFT;
++	switch (advice) {
++	case POSIX_FADV_DONTNEED:
++		ret = shmem_fadvise_dontneed(mapping, start_index, end_index);
++		break;
++	case POSIX_FADV_WILLNEED:
++		ret = shmem_fadvise_willneed(mapping, start_index, end_index);
++		break;
++	case POSIX_FADV_NORMAL:
++	case POSIX_FADV_RANDOM:
++	case POSIX_FADV_SEQUENTIAL:
++	case POSIX_FADV_NOREUSE:
++		/*
++		 * No bad return value, but ignore advice. May have to
++		 * implement in future.
++		 */
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return ret;
++}
++
+ static int shmem_statfs(struct dentry *dentry, struct kstatfs *buf)
+ {
+ 	struct shmem_sb_info *sbinfo = SHMEM_SB(dentry->d_sb);
+@@ -3799,6 +3937,7 @@ static const struct file_operations shmem_file_operations = {
+ 	.splice_write	= iter_file_splice_write,
+ 	.fallocate	= shmem_fallocate,
+ #endif
++	.fadvise	= shmem_fadvise,
+ };
  
- 	pci_lock_rescan_remove();
- 	pci_bus_add_devices(root->bus);
-+	acpi_dev_turn_off_unused_descendants(root->device);
- 	pci_unlock_rescan_remove();
- 	return 1;
- 
-
-
+ static const struct inode_operations shmem_inode_operations = {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
