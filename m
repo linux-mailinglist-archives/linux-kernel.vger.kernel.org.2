@@ -2,29 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211BD427396
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794E142739C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243636AbhJHWWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:22:50 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:49937 "EHLO
+        id S243690AbhJHWXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:23:21 -0400
+Received: from mailgw01.mediatek.com ([216.200.240.184]:36675 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231859AbhJHWWs (ORCPT
+        with ESMTP id S243642AbhJHWXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:22:48 -0400
-X-Greylist: delayed 305 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Oct 2021 18:22:48 EDT
-X-UUID: 5a3e3fc19dda4dbe9ad46d2af6bddfde-20211008
-X-UUID: 5a3e3fc19dda4dbe9ad46d2af6bddfde-20211008
+        Fri, 8 Oct 2021 18:23:08 -0400
+X-UUID: 431fb91993654d2b814cf9bbe0a2a408-20211008
+X-UUID: 431fb91993654d2b814cf9bbe0a2a408-20211008
 Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
         (envelope-from <sean.wang@mediatek.com>)
         (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2027970551; Fri, 08 Oct 2021 15:15:41 -0700
+        with ESMTP id 1638295555; Fri, 08 Oct 2021 15:20:06 -0700
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Oct 2021 15:10:33 -0700
+ MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 Oct 2021 15:10:37 -0700
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 9 Oct 2021 06:10:32 +0800
+ Transport; Sat, 9 Oct 2021 06:10:36 +0800
 From:   <sean.wang@mediatek.com>
 To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
 CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
@@ -41,10 +40,11 @@ CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
         <mcchou@chromium.org>, <shawnku@google.com>,
         <linux-bluetooth@vger.kernel.org>,
         <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 03/10] Bluetooth: btmtksdio: add .set_bdaddr support
-Date:   Sat, 9 Oct 2021 06:10:10 +0800
-Message-ID: <25dbae25981183da4dee40487e01c2201a1f1990.1633728573.git.objelf@gmail.com>
+        <linux-kernel@vger.kernel.org>,
+        Mark-yw Chen <mark-yw.chen@mediatek.com>
+Subject: [PATCH v1 04/10] Bluetooth: btmtksdio: explicitly set WHISR as write-1-clear
+Date:   Sat, 9 Oct 2021 06:10:11 +0800
+Message-ID: <e03f16855e0a2ed5eefdde99d8f4b91452d8d848.1633728573.git.objelf@gmail.com>
 X-Mailer: git-send-email 1.7.9.5
 In-Reply-To: <cover.1633728573.git.objelf@gmail.com>
 References: <cover.1633728573.git.objelf@gmail.com>
@@ -57,26 +57,48 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sean Wang <sean.wang@mediatek.com>
 
-add .set_bdaddr support
+That is a preliminary patch to introduce mt7921s support.
 
+Explicitly set WHISR as write-1-clear method to all devices that is
+the expected behavior the driver rely on.
+
+Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
 Signed-off-by: Sean Wang <sean.wang@mediatek.com>
 ---
- drivers/bluetooth/btmtksdio.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/bluetooth/btmtksdio.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index 53682a4c2ced..77d1c4ac582d 100644
+index 77d1c4ac582d..57126a95e292 100644
 --- a/drivers/bluetooth/btmtksdio.c
 +++ b/drivers/bluetooth/btmtksdio.c
-@@ -834,6 +834,8 @@ static int btmtksdio_probe(struct sdio_func *func,
- 	hdev->setup    = btmtksdio_setup;
- 	hdev->shutdown = btmtksdio_shutdown;
- 	hdev->send     = btmtksdio_send_frame;
-+	hdev->set_bdaddr = btmtk_set_bdaddr;
-+
- 	SET_HCIDEV_DEV(hdev, &func->dev);
+@@ -487,8 +487,8 @@ static void btmtksdio_interrupt(struct sdio_func *func)
+ static int btmtksdio_open(struct hci_dev *hdev)
+ {
+ 	struct btmtksdio_dev *bdev = hci_get_drvdata(hdev);
++	u32 status, val;
+ 	int err;
+-	u32 status;
  
- 	hdev->manufacturer = 70;
+ 	sdio_claim_host(bdev->func);
+ 
+@@ -533,8 +533,13 @@ static int btmtksdio_open(struct hci_dev *hdev)
+ 	if (err < 0)
+ 		goto err_release_irq;
+ 
+-	/* Setup write-1-clear for CHISR register */
+-	sdio_writel(bdev->func, C_INT_CLR_CTRL, MTK_REG_CHCR, &err);
++	/* Explitly set write-1-clear method */
++	val = sdio_readl(bdev->func, MTK_REG_CHCR, &err);
++	if (err < 0)
++		goto err_release_irq;
++
++	val |= C_INT_CLR_CTRL;
++	sdio_writel(bdev->func, val, MTK_REG_CHCR, &err);
+ 	if (err < 0)
+ 		goto err_release_irq;
+ 
 -- 
 2.25.1
 
