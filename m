@@ -2,296 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C6D426A1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9BE426A24
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240724AbhJHLum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:50:42 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:47992
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240753AbhJHLub (ORCPT
+        id S243376AbhJHLvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:51:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243261AbhJHLvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:50:31 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id C56733FFEC
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 11:48:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633693715;
-        bh=aMpIbneKp1ll8xSOoJ7jULjqBupmytQpdhdfxAY1CPM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=tR/CxXJr/Y/morNr4JOxMwBiUNx9Sv63RJHQSRbaZU+5Ke0EkjWru0Shg0OtwYZsC
-         io1DO2uOBjVtEmGuxT5LGazpzXwd5A3SBSshvJ1puM/VjYwr01y54OUda+2z9WpZ6g
-         A5jWHRae+IJtJcvPwDXVqMl2h7oObmYSgIm9Wt3/+4ip0Hpr6w8LX5EsoWtiqKrM9f
-         A7yjx/0Ozoh9y1vNfY4UO77LJMJvpv2xxfvuD4kJXW+sv78ukcC5Y8On5ER3jB7P2S
-         HbXV3FsXwHZ8HoI+E0ikHVg3hEygSby7Gy2rfCV4NV/YHAFsGYEPkPQavv21auLsdc
-         Fh449/jhvoHZA==
-Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso8960551edn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 04:48:35 -0700 (PDT)
+        Fri, 8 Oct 2021 07:51:43 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4661C061772;
+        Fri,  8 Oct 2021 04:49:28 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v17so28944022wrv.9;
+        Fri, 08 Oct 2021 04:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=i1USBJq9F3A9TOJZg6Wun0mkV6fuM/zyzzq0ur+ZWkM=;
+        b=TrHWFpZk1hBg4BNeXKvJbfJJ6DVgKu9vSyROmzcutuCtBP92iFon9Hc1IwCieShoQS
+         P8bm62d+2+YpgbV0vEr6jKoElMLYWATbfJJJy4Me3gj3kTU2aZyKrY1dnFMetszxksfN
+         y+mJJqVCUGGI6ZcO4AFrStPUlOHviZQyzLBnreYPS9hlZ9ZSWCU57gU7DA/s9tnwz+cD
+         2ueenDzipjfvutsEc1ucvvwRsFSlh0aTG31vhnThuAaoUIE5bHfP8WjNoSijfObZwcJc
+         u5Fm5XOe3OfhoXavxGGVujBqPU2Tzpf0erk8uuVL+1dvUizbvf+eOwziXnI0iv0joknT
+         RVww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=aMpIbneKp1ll8xSOoJ7jULjqBupmytQpdhdfxAY1CPM=;
-        b=ctnafbRCABYbXYCmTGKUwXSIwd45zRCMyDWdP+hg7AP3pyxQWpdcjXTuuaKHZkNei9
-         6N7pwF2KPO88F9uiek6mafvYqReHxABhg5ge6JvxmjwP4OB8C/a7KwrUSj0lPQArwGfp
-         l/XW35h+Isy9yFdV60NgKvZvL9CoAeK2CQaBNvpzfd04HKk9Uq772wCPgMeziQHWrPss
-         pFcM5CNbuORW7XKuKBD2t/Tdi0/8XE5IxqoFssLbTpyFjVtJ/V5cRJEFru/sZW3bibrL
-         TY9GAovosVFCOVI5liEOEneHGgAV5yCSYuwmhmSP99GGsNv3gewHiekgCTKwDUdnMpdJ
-         meOA==
-X-Gm-Message-State: AOAM5336bHomwgOXs2ftWJCCKR3IoX22KVM31BAqee4iCobDaJERGokU
-        hb41IQtEavLk/b5X7oFf9Zm1pw8g0V3/ZJ3qM5ELsjpjAN9SNbh9HskRkCGaU5ZQRXZ2magTJDN
-        hJ9hIck3XoE3wZURfRBBgbkhFyq2F84nYeZl0bgQ5IA==
-X-Received: by 2002:a17:907:9602:: with SMTP id gb2mr3444672ejc.354.1633693715176;
-        Fri, 08 Oct 2021 04:48:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCOGvqt9Nu8rCES2Gv3QEPZZ3fBfohSJr1fyJPI431kJ8HJF4tA9XhmpW/nJSETBujAAvYGw==
-X-Received: by 2002:a17:907:9602:: with SMTP id gb2mr3444646ejc.354.1633693714949;
-        Fri, 08 Oct 2021 04:48:34 -0700 (PDT)
-Received: from localhost.localdomain (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
-        by smtp.gmail.com with ESMTPSA id se12sm814250ejb.88.2021.10.08.04.48.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 04:48:34 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Rob Herring <robh@kernel.org>
-Subject: [PATCH v2] regulator: dt-bindings: maxim,max8973: convert to dtschema
-Date:   Fri,  8 Oct 2021 13:47:55 +0200
-Message-Id: <20211008114755.148279-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        bh=i1USBJq9F3A9TOJZg6Wun0mkV6fuM/zyzzq0ur+ZWkM=;
+        b=ejQv1TiGAP9FYazuDmT/8x5adXKsJLdXdjoOofOUbOrmXAz8h5DjPbcJ0fQZXOVSXX
+         1M61D03pJWRQJLhmnPBljj40Kwg3aA1YxuXpM0CMhhTsd+nM5bzl18D4wtzrbnd0Cs50
+         vQeukuZNnXtQiAfRzUaea1pmLxu1t3XqXjpbx6YSN6uXBXan1hJRW2pDhDA8oaYhjU5g
+         cymX+gaZXUtKjdmAovZpelLDIjJvqfUnASoUXp51XY0smUazbCyphlui+n8nnelXL0gg
+         HifZc1dFOrZ3gC/pXSQJQRx3u1xhB1ZeX2rppzhQrXEMUGpMhHMWoFCclBPaazREVXrl
+         GkxA==
+X-Gm-Message-State: AOAM533LJDk6QBqBeboAPqoZHUYu265TSa6yrGTYFHAiMO8p1KseL5qc
+        GEhjD2cWC7m0v7h+f6jSZQs=
+X-Google-Smtp-Source: ABdhPJwEb1M1xAqD7t+bZHRlFTnnVa7+ol3EKhZKsTwrkNUouAJXScKLX+w24KKdd+gB+6dDenYqSA==
+X-Received: by 2002:a5d:64c3:: with SMTP id f3mr3501505wri.73.1633693767284;
+        Fri, 08 Oct 2021 04:49:27 -0700 (PDT)
+Received: from [192.168.2.177] ([206.204.146.29])
+        by smtp.gmail.com with ESMTPSA id a81sm2342283wmd.30.2021.10.08.04.49.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 04:49:26 -0700 (PDT)
+Message-ID: <686404ce-2e0b-5470-b095-1c1fd7c18250@gmail.com>
+Date:   Fri, 8 Oct 2021 13:49:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 2/2] arm: dts: mt6589: Add device tree for Fairphone 1
+Content-Language: en-US
+To:     Luca Weiss <luca@z3ntu.xyz>, linux-mediatek@lists.infradead.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Arnd Bergmann <arnd@arndb.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org
+References: <20211005202833.96526-1-luca@z3ntu.xyz>
+ <20211005202833.96526-2-luca@z3ntu.xyz>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211005202833.96526-2-luca@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Maxim MAX8973 regulator to DT schema format.  Extend the
-examples with more advanced one for MAX77621 copied from kernel's
-nvidia/tegra210-smaug.dts, licensed under GPL-2.0.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 
----
+On 05/10/2021 22:28, Luca Weiss wrote:
+> Add rudimentary support for the Fairphone 1, based on MT6589 to boot to
+> UART console.
+> 
+> The recently added SMP support needs to be disabled for this board as
+> the kernel panics executing /init with it, even though the CPUs seem to
+> start up fine - maybe a stability issue.
+> 
+> [    0.072010] smp: Bringing up secondary CPUs ...
+> [    0.131888] CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
+> [    0.191889] CPU2: thread -1, cpu 2, socket 0, mpidr 80000002
+> [    0.251890] CPU3: thread -1, cpu 3, socket 0, mpidr 80000003
+> [    0.251982] smp: Brought up 1 node, 4 CPUs
+> [    0.254745] SMP: Total of 4 processors activated (7982.28 BogoMIPS).
+> [    0.255582] CPU: All CPU(s) started in SVC mode.
+> 
+> [    0.472039] Run /init as init process
+> [    0.473317] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+> 
 
-Changes since v1:
-1. Drop unneeded ref from milicelsius field.
-2. Add Rob's tag.
----
- .../bindings/regulator/max8973-regulator.txt  |  52 -------
- .../bindings/regulator/maxim,max8973.yaml     | 139 ++++++++++++++++++
- 2 files changed, 139 insertions(+), 52 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/regulator/max8973-regulator.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
+Would be nice to find out why. Did you tried to boot the system with 
+enable-method set but with bringing up just one or two cpus?
 
-diff --git a/Documentation/devicetree/bindings/regulator/max8973-regulator.txt b/Documentation/devicetree/bindings/regulator/max8973-regulator.txt
-deleted file mode 100644
-index c2c68fcc1b41..000000000000
---- a/Documentation/devicetree/bindings/regulator/max8973-regulator.txt
-+++ /dev/null
-@@ -1,52 +0,0 @@
--* Maxim MAX8973 Voltage Regulator
--
--Required properties:
--
--- compatible:	must be one of following:
--			"maxim,max8973"
--			"maxim,max77621".
--- reg:		the i2c slave address of the regulator. It should be 0x1b.
--
--Any standard regulator properties can be used to configure the single max8973
--DCDC.
--
--Optional properties:
--
---maxim,externally-enable: boolean, externally control the regulator output
--		enable/disable.
---maxim,enable-gpio: GPIO for enable control. If the valid GPIO is provided
--		then externally enable control will be considered.
---maxim,dvs-gpio: GPIO which is connected to DVS pin of device.
---maxim,dvs-default-state: Default state of GPIO during initialisation.
--		1 for HIGH and 0 for LOW.
---maxim,enable-remote-sense: boolean, enable reote sense.
---maxim,enable-falling-slew-rate: boolean, enable falling slew rate.
---maxim,enable-active-discharge: boolean: enable active discharge.
---maxim,enable-frequency-shift: boolean, enable 9% frequency shift.
---maxim,enable-bias-control: boolean, enable bias control. By enabling this
--		startup delay can be reduce to 20us from 220us.
---maxim,enable-etr: boolean, enable Enhanced Transient Response.
---maxim,enable-high-etr-sensitivity: boolean, Enhanced transient response
--		circuit is enabled and set for high sensitivity. If this
--		property is available then etr will be enable default.
--
--Enhanced transient response (ETR) will affect the configuration of CKADV.
--
---junction-warn-millicelsius: u32, junction warning temperature threshold
--		in millicelsius. If die temperature crosses this level then
--		device generates the warning interrupts.
--
--Please note that thermal functionality is only supported on MAX77621. The
--supported threshold warning temperature for MAX77621 are 120 degC and 140 degC.
--
--Example:
--
--	max8973@1b {
--		compatible = "maxim,max8973";
--		reg = <0x1b>;
--
--		regulator-min-microvolt = <935000>;
--		regulator-max-microvolt = <1200000>;
--		regulator-boot-on;
--		regulator-always-on;
--	};
-diff --git a/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml b/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
-new file mode 100644
-index 000000000000..54522827265b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/maxim,max8973.yaml
-@@ -0,0 +1,139 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/maxim,max8973.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Maxim MAX8973/MAX77621 voltage regulator
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+allOf:
-+  - $ref: regulator.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - maxim,max8973
-+      - maxim,max77621
-+
-+  junction-warn-millicelsius:
-+    description: |
-+      Junction warning temperature threshold in millicelsius. If die
-+      temperature crosses this level then device generates the warning
-+      interrupts.
-+      Please note that thermal functionality is only supported on MAX77621. The
-+      supported threshold warning temperature for MAX77621 are 120 degC and 140
-+      degC.
-+
-+  maxim,dvs-gpio:
-+    maxItems: 1
-+    description: |
-+      GPIO which is connected to DVS pin of device.
-+
-+  maxim,dvs-default-state:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [0, 1]
-+    description: |
-+      Default state of GPIO during initialisation.
-+      1 for HIGH and 0 for LOW.
-+
-+  maxim,externally-enable:
-+    type: boolean
-+    description: |
-+      Externally control the regulator output enable/disable.
-+
-+  maxim,enable-gpio:
-+    maxItems: 1
-+    description: |
-+      GPIO for enable control. If the valid GPIO is provided then externally
-+      enable control will be considered.
-+
-+  maxim,enable-remote-sense:
-+    type: boolean
-+    description: Enable remote sense.
-+
-+  maxim,enable-falling-slew-rate:
-+    type: boolean
-+    description: Enable falling slew rate.
-+
-+  maxim,enable-active-discharge:
-+    type: boolean
-+    description: Eable active discharge.
-+
-+  maxim,enable-frequency-shift:
-+    type: boolean
-+    description: Enable 9% frequency shift.
-+
-+  maxim,enable-bias-control:
-+    type: boolean
-+    description: |
-+      Enable bias control which can reduce the startup delay to 20us from 220us.
-+
-+  maxim,enable-etr:
-+    type: boolean
-+    description: Enable Enhanced Transient Response.
-+
-+  maxim,enable-high-etr-sensitivity:
-+    type: boolean
-+    description: |
-+      Enhanced transient response circuit is enabled and set for high
-+      sensitivity. If this property is available then etr will be enable
-+      default.
-+      Enhanced transient response (ETR) will affect the configuration of CKADV.
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        regulator@1b {
-+            compatible = "maxim,max8973";
-+            reg = <0x1b>;
-+
-+            regulator-min-microvolt = <935000>;
-+            regulator-max-microvolt = <1200000>;
-+            regulator-boot-on;
-+            regulator-always-on;
-+        };
-+    };
-+
-+  - |
-+    #include <dt-bindings/gpio/tegra-gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        regulator@1b {
-+            compatible = "maxim,max77621";
-+            reg = <0x1b>;
-+            interrupt-parent = <&gpio>;
-+            interrupts = <TEGRA_GPIO(Y, 1) IRQ_TYPE_LEVEL_LOW>;
-+
-+            regulator-always-on;
-+            regulator-boot-on;
-+            regulator-min-microvolt = <800000>;
-+            regulator-max-microvolt = <1231250>;
-+            regulator-name = "PPVAR_CPU";
-+            regulator-ramp-delay = <12500>;
-+            maxim,dvs-default-state = <1>;
-+            maxim,enable-active-discharge;
-+            maxim,enable-bias-control;
-+            maxim,enable-etr;
-+            maxim,enable-gpio = <&pmic 5 GPIO_ACTIVE_HIGH>;
-+            maxim,externally-enable;
-+        };
-+    };
--- 
-2.30.2
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+>   arch/arm/boot/dts/Makefile                 |  1 +
+>   arch/arm/boot/dts/mt6589-fairphone-fp1.dts | 30 ++++++++++++++++++++++
+>   2 files changed, 31 insertions(+)
+>   create mode 100644 arch/arm/boot/dts/mt6589-fairphone-fp1.dts
+> 
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 7e0934180724..24f402db2613 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -1437,6 +1437,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += \
+>   	mt2701-evb.dtb \
+>   	mt6580-evbp1.dtb \
+>   	mt6589-aquaris5.dtb \
+> +	mt6589-fairphone-fp1.dtb \
+>   	mt6592-evb.dtb \
+>   	mt7623a-rfb-emmc.dtb \
+>   	mt7623a-rfb-nand.dtb \
+> diff --git a/arch/arm/boot/dts/mt6589-fairphone-fp1.dts b/arch/arm/boot/dts/mt6589-fairphone-fp1.dts
+> new file mode 100644
+> index 000000000000..32c14ecf2244
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/mt6589-fairphone-fp1.dts
+> @@ -0,0 +1,30 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2021, Luca Weiss <luca@z3ntu.xyz>
+> + */
+> +
+> +/dts-v1/;
+> +#include "mt6589.dtsi"
+> +
+> +/ {
+> +	model = "Fairphone 1";
+> +	compatible = "fairphone,fp1", "mediatek,mt6589";
+> +
+> +	chosen {
+> +		stdout-path = &uart3;
+> +	};
+> +
+> +	cpus {
 
+I'd expected "&cpus" why can we overwrite delete the node property like this here?
+
+> +		/* SMP is not stable on this board, makes the kernel panic */
+> +		/delete-property/ enable-method;
+> +	};
+> +
+> +	memory {
+> +		device_type = "memory";
+> +		reg = <0x80000000 0x40000000>;
+> +	};
+> +};
+> +
+> +&uart3 {
+> +	status = "okay";
+> +};
+> 
