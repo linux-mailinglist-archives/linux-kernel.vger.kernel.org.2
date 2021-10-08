@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFF942693A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930634269C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242322AbhJHLfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59428 "EHLO mail.kernel.org"
+        id S241474AbhJHLlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:41:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240449AbhJHLcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 928356121F;
-        Fri,  8 Oct 2021 11:30:38 +0000 (UTC)
+        id S241301AbhJHLgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:36:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCB5261353;
+        Fri,  8 Oct 2021 11:32:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692639;
-        bh=Qlnfsy33Fa5GLT82aBUq02M+g7d+tQhUIXd/wlt7r+0=;
+        s=korg; t=1633692743;
+        bh=+x5DM1+xm3njE8PIoyCw1m19Ri0dQg1tG4CzgXS8NxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=07D1hPlJhRgE6Grp+obrJfDw4ZIXmKcLU+LmJ8769cs3jnge4jocQd6uvXj06nZCt
-         dYIw6HG3xbC7J3RDrT2dfcPRN1+M+1uLMgPgTll6kAgMLP2raLAvJlINvSoKiLK0Vh
-         oBvhG0FwfCmWSllUnZijpRE1hob2iszdFpW/xPs0=
+        b=2l/euGH59RswWdHNT4yPmEPRNQGaH4DHWEADCIpGkAlmgPtc+J9vPxvkh8hiMiOAX
+         qnszLBn4xQtasW8oN4/rs73brHAWYOj7r2Y7rIp9+yeJN4f+Jejfh792aZ4k79gCHv
+         0dOaYppEMtFerKFrSGj//eXcWnW7PbXBokF8x3Ys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Wen Xiong <wenxiong@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 10/16] scsi: ses: Retry failed Send/Receive Diagnostic commands
+Subject: [PATCH 5.14 24/48] selftests:kvm: fix get_trans_hugepagesz() ignoring fscanf() return warn
 Date:   Fri,  8 Oct 2021 13:28:00 +0200
-Message-Id: <20211008112715.803347541@linuxfoundation.org>
+Message-Id: <20211008112720.822788168@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-References: <20211008112715.444305067@linuxfoundation.org>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,79 +40,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wen Xiong <wenxiong@linux.ibm.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-[ Upstream commit fbdac19e642899455b4e64c63aafe2325df7aafa ]
+[ Upstream commit 3a4f0cc693cd3d80e66a255f0bff0e2c0461eef1 ]
 
-Setting SCSI logging level with error=3, we saw some errors from enclosues:
+Fix get_trans_hugepagesz() to check fscanf() return value to get rid
+of the following warning:
 
-[108017.360833] ses 0:0:9:0: tag#641 Done: NEEDS_RETRY Result: hostbyte=DID_ERROR driverbyte=DRIVER_OK cmd_age=0s
-[108017.360838] ses 0:0:9:0: tag#641 CDB: Receive Diagnostic 1c 01 01 00 20 00
-[108017.427778] ses 0:0:9:0: Power-on or device reset occurred
-[108017.427784] ses 0:0:9:0: tag#641 Done: SUCCESS Result: hostbyte=DID_OK driverbyte=DRIVER_OK cmd_age=0s
-[108017.427788] ses 0:0:9:0: tag#641 CDB: Receive Diagnostic 1c 01 01 00 20 00
-[108017.427791] ses 0:0:9:0: tag#641 Sense Key : Unit Attention [current]
-[108017.427793] ses 0:0:9:0: tag#641 Add. Sense: Bus device reset function occurred
-[108017.427801] ses 0:0:9:0: Failed to get diagnostic page 0x1
-[108017.427804] ses 0:0:9:0: Failed to bind enclosure -19
-[108017.427895] ses 0:0:10:0: Attached Enclosure device
-[108017.427942] ses 0:0:10:0: Attached scsi generic sg18 type 13
+lib/test_util.c: In function ‘get_trans_hugepagesz’:
+lib/test_util.c:138:2: warning: ignoring return value of ‘fscanf’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  138 |  fscanf(f, "%ld", &size);
+      |  ^~~~~~~~~~~~~~~~~~~~~~~
 
-Retry if the Send/Receive Diagnostic commands complete with a transient
-error status (NOT_READY or UNIT_ATTENTION with ASC 0x29).
-
-Link: https://lore.kernel.org/r/1631849061-10210-2-git-send-email-wenxiong@linux.ibm.com
-Reviewed-by: Brian King <brking@linux.ibm.com>
-Reviewed-by: James Bottomley <jejb@linux.ibm.com>
-Signed-off-by: Wen Xiong <wenxiong@linux.ibm.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ses.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ tools/testing/selftests/kvm/lib/test_util.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
-index c2afba2a5414..43e682297fd5 100644
---- a/drivers/scsi/ses.c
-+++ b/drivers/scsi/ses.c
-@@ -87,9 +87,16 @@ static int ses_recv_diag(struct scsi_device *sdev, int page_code,
- 		0
- 	};
- 	unsigned char recv_page_code;
-+	unsigned int retries = SES_RETRIES;
-+	struct scsi_sense_hdr sshdr;
-+
-+	do {
-+		ret = scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
-+				       &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (ret > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
+diff --git a/tools/testing/selftests/kvm/lib/test_util.c b/tools/testing/selftests/kvm/lib/test_util.c
+index af1031fed97f..938cd423643e 100644
+--- a/tools/testing/selftests/kvm/lib/test_util.c
++++ b/tools/testing/selftests/kvm/lib/test_util.c
+@@ -129,13 +129,16 @@ size_t get_trans_hugepagesz(void)
+ {
+ 	size_t size;
+ 	FILE *f;
++	int ret;
  
--	ret =  scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
--				NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (unlikely(ret))
- 		return ret;
+ 	TEST_ASSERT(thp_configured(), "THP is not configured in host kernel");
  
-@@ -121,9 +128,16 @@ static int ses_send_diag(struct scsi_device *sdev, int page_code,
- 		bufflen & 0xff,
- 		0
- 	};
-+	struct scsi_sense_hdr sshdr;
-+	unsigned int retries = SES_RETRIES;
-+
-+	do {
-+		result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
-+					  &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (result > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
+ 	f = fopen("/sys/kernel/mm/transparent_hugepage/hpage_pmd_size", "r");
+ 	TEST_ASSERT(f != NULL, "Error in opening transparent_hugepage/hpage_pmd_size");
  
--	result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
--				  NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (result)
- 		sdev_printk(KERN_ERR, sdev, "SEND DIAGNOSTIC result: %8x\n",
- 			    result);
+-	fscanf(f, "%ld", &size);
++	ret = fscanf(f, "%ld", &size);
++	ret = fscanf(f, "%ld", &size);
++	TEST_ASSERT(ret < 1, "Error reading transparent_hugepage/hpage_pmd_size");
+ 	fclose(f);
+ 
+ 	return size;
 -- 
 2.33.0
 
