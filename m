@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F227426764
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5A0426765
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239653AbhJHKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43136 "EHLO
+        id S239749AbhJHKIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239608AbhJHKII (ORCPT
+        with ESMTP id S239692AbhJHKIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:08:08 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F28C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:06:12 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id i189so2331973ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:06:12 -0700 (PDT)
+        Fri, 8 Oct 2021 06:08:10 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A84CC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:06:15 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id s17so4888778ioa.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QuVYyB9vkCMtVNgFTjrACAcYH/UvfKeX4gFCZxEVm+U=;
-        b=Z1tGC5DQH7fQHaYzJDeydcdUmbdfb5IXnvuMOI1Ci/y04WJr88m0P5Fi+Xye8zXg4C
-         PwQOt1YXE2589zcxSG0zi+qkCS4ctKoxtL8zcFDYZS4LioJpFD4j+0lZpfUf+MV0Exfv
-         F5pZ4kzWoyldp+VZ7VgQxmwe9Og16HAIjYgjsNy44FOnV4WuZF2hSYHVpq0p6RQ1+m5S
-         MnXd236Gu/O+B/zDcBM8Wpkbxa7y61FPXysjhS8Zz444SghY+xPXk4RSf9lzeTaiHdGZ
-         KETz5JBmtRwVie1OWNI9Pi40XHLH6sH7Sy5ZMY6i8Oo7LCqtPF3vA3XABYZsLTdRLt9W
-         MtvA==
+        bh=X1xe7HVmwnAm2hY4m4BiIkGINzGUhNv9G0AmFY+7sdk=;
+        b=gUfPViGAbhbk3pdt8KL592Lt6ClO0cTh0yyS3O8LnjcrhhnCae99bbNcIuCqRDvHfM
+         7dbsD4iibYpsFNqam6Amqi9IEgiDe5yf5dwd23I6NhjwxCg6U/vfW2YHArSxFN9sKqo/
+         nZEE7OgTMt+ttEzcIh9yj7gCNtyvhxXNFkyQuzgxufZ+dPGzhtK+PUVh/AukWSrThxLH
+         z65hJv2xowWXBBOr8+QgKYdX9Ko4hKV0sWUnziw23Xj2u2XwTpAg+Kkx8s9XwuNNkou5
+         75I5BY1sk1oyNQSmz6vdqL9B0SmD9dxeOrDjDPpLvBzTZfnhgHGksCBC+Bk5T3bvzR/o
+         iWXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QuVYyB9vkCMtVNgFTjrACAcYH/UvfKeX4gFCZxEVm+U=;
-        b=0nOTiVPh+NtZrxn/udON07Luyd6t32yxkhy+EnpqUDKyf5vMj97V+3sr6KpTgitEOs
-         tXRc7bJh+Xx43EfZ0F6MupGAWty/8ggkv65Q2kDtF5bvdEFlwZ27VO2iIY1152DsXwGo
-         GhAHAJcNKHdrPd3vGPnRloytuR10KgVE6zj8Hw7+8hToM1+NuPAB/6kZZMStnEKoQfL3
-         nY+qpI+WadhGu1I30qBFUpJstYkFl63lDvrIzhzaGpDccgTMb6XST+DJcJlEhIEyAood
-         Czidf1uy5eazHS0UjxDTCfnI1ixwpYM4Xv0blX6aRkXmEfOqCsm2zk2XwA9b2LI+rzI6
-         xwSA==
-X-Gm-Message-State: AOAM532L0GKN7jaMZf1t257x6qnBbe189U+es5TQIUH9ky6qAm4+c53l
-        kVB5rOePyklrRwBXrOR2aWw=
-X-Google-Smtp-Source: ABdhPJx3C8rof9iqeYfYJFZq8iUpNBYpcxZX5evLgm19NaIO14RkF1C5FNOH5VV2/uqP0EQWbgMMnQ==
-X-Received: by 2002:a6b:7415:: with SMTP id s21mr6861315iog.168.1633687571991;
-        Fri, 08 Oct 2021 03:06:11 -0700 (PDT)
+        bh=X1xe7HVmwnAm2hY4m4BiIkGINzGUhNv9G0AmFY+7sdk=;
+        b=O5xI7VFBBp+VeXUN+jV4g3VUk1YJpjj3fAAw7OUDEZttdtsWfRGNSPkHQnIpTM0AOO
+         Qcd3zPQYXLcvvm9FRd2jW/O/A/OoYB0IKlrZrEMCS36h/u6I0Zumwc4nZ8eCE+fBgolr
+         xq3Z/LKd12hTF3PvYk63eV+yaDsKdRQGTYwFW5ahZxAVKkJJQOt7Yj551a0W08MdSF5w
+         oT8dn0zoloaxU3yqbEnKncWxvZLavbJPYB2IhreFFD1LC5huW30NHWsymlaEWqLQANuI
+         Lt+cjpvZ+kA5xYATdjEfDCsZK70xIBKNQAXYOuV6+LrimUftQ3kaqLk8ErAOxGHJP/Rj
+         giYQ==
+X-Gm-Message-State: AOAM530ih8/eZv4lKaca5xhSOaBioZyJbYzkMbB/3Mfz5XGxiAW+jeCv
+        5MTKvbefG0bx5RRLARj1n90=
+X-Google-Smtp-Source: ABdhPJyl1mGS2rwKZJRwm/wjcD2IPss6EFpSvzNkGu52+dvH70f4eIZ0molZZqSQmcYRlLhOyqJE4w==
+X-Received: by 2002:a05:6602:3417:: with SMTP id n23mr6836333ioz.205.1633687574967;
+        Fri, 08 Oct 2021 03:06:14 -0700 (PDT)
 Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id z5sm851122ilh.9.2021.10.08.03.06.09
+        by smtp.gmail.com with ESMTPSA id w23sm779577iow.10.2021.10.08.03.06.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 03:06:10 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9BA6027C005A;
-        Fri,  8 Oct 2021 06:06:09 -0400 (EDT)
+        Fri, 08 Oct 2021 03:06:12 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id C410F27C0054;
+        Fri,  8 Oct 2021 06:06:10 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 08 Oct 2021 06:06:09 -0400
-X-ME-Sender: <xms:ERhgYV_lwN7NJS_JK4FCTz74ufVTjdscb7Q1FZ-IrLtiXoemd2dfKw>
-    <xme:ERhgYZsfv0NENFu4Tm05te0DWDugrLCMMyGdjiPpP1b3RB1rd1CA6FlwQPQMIpEg7
-    fSeb2hEBrkOYa652Q>
-X-ME-Received: <xmr:ERhgYTAPChPP-n-1l9mOt2MjOxO3rCITBuoR0YF2HFsP1SonUIY3SW3KWta94A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddgvddvucetufdoteggodetrfdotf
+  by compute3.internal (MEProxy); Fri, 08 Oct 2021 06:06:10 -0400
+X-ME-Sender: <xms:EhhgYSgMJ6U73VlcVkoU8FOXRtcBDPig6P7etp9zPx9H2R6dCnYcIg>
+    <xme:EhhgYTA5YpNP3nNmLz64HMGz2OSt9tREOlq69G8IEoSBQxiXr8v2xuO7RPDbXCtR1
+    R2r1feDVykLQLAK2w>
+X-ME-Received: <xmr:EhhgYaHR008VN_pFMcbRFHHK4zMFSgCGVXqBLOskTaH6FZe_-GPYpxZq0XkROg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddgvdduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
@@ -67,12 +67,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddgvddvucetufdoteggod
     hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
     qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
     hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:ERhgYZcDEQodkiUaeUb7iF70BOAVYEhXNVnz_1Cc2YE__XL1hp6PrQ>
-    <xmx:ERhgYaP17w9maje-kkUWUpeW6bpLlrioyP1E6aAN2HxzwJewCoBdaw>
-    <xmx:ERhgYbmkBq1W4kGq6OpG1Mpq-z95G4m1mIutGJTVH65qAZF6NaU6rw>
-    <xmx:ERhgYWBgPkuRunm0sq-Ya_HlGsdkhKubdmm3czhZBQDqOqjG7k7DSw>
+X-ME-Proxy: <xmx:EhhgYbRT1m6eqIWWeVuzS_Yd-lIrtsxbS9v4T8HLbGr8pgxS-0YRKQ>
+    <xmx:EhhgYfwfqT66rDh3LDV8MC_cIB0BWDlYEkesu4IPba4Q38T09w1GqA>
+    <xmx:EhhgYZ6i9SU0NzBGnMcM5SaLYkJGVpDwL4uRA8fwi43UQtGZe1Mkfw>
+    <xmx:EhhgYWnLj2rCzyh848Q6gEIWLj_UK9DckyZnKajkXcMVEM0ULG8m4Q>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 8 Oct 2021 06:06:09 -0400 (EDT)
+ 8 Oct 2021 06:06:10 -0400 (EDT)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
@@ -81,9 +81,9 @@ Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Frederic Weisbecker <frederic@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>
-Subject: [RFC 1/2] NOT FOR MERGE: A selftest shows that re-entrance can happen
-Date:   Fri,  8 Oct 2021 18:04:53 +0800
-Message-Id: <20211008100454.2802393-2-boqun.feng@gmail.com>
+Subject: [RFC 2/2] workqueue: Fix work re-entrance when requeue to a different workqueue
+Date:   Fri,  8 Oct 2021 18:04:54 +0800
+Message-Id: <20211008100454.2802393-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20211008100454.2802393-1-boqun.feng@gmail.com>
 References: <20211008100454.2802393-1-boqun.feng@gmail.com>
@@ -93,66 +93,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Re-entrance can be confirmed when PREEMPT=y as the racy output below:
+When requeuing a work to a different workqueue while it's still getting
+processed, re-entrace as the follow can happen:
 
-[    1.498285] second queue succeeds
-[    1.500679] result of i is 1031665
-[    1.501069] result of i is 1221348
+	{ both WQ1 and WQ2 are bounded workqueue, and a work W has been
+	  queued on CPU0 for WQ1}
+
+	CPU 0			CPU 1
+	=====			====
+	<In worker on CPU 0>
+	process_one_work():
+	  ...
+	  // pick up W
+	  worker->current_work = W;
+	  worker->current_func = W->func;
+	  ...
+	  set_work_pool_and_clear_pending(...);
+	  // W can be requeued afterwards
+				queue_work_on(1, WQ2, W):
+				  if (!test_and_set_bit(...)) {
+				    // this branch is taken, as CPU 0
+				    // just clears pending bit.
+				    __queue_work(...):
+				      pwq = <pool for CPU1 of WQ2>;
+				      last_pool = <pool for CPU 0 of WQ1>;
+				      if (last_pool != pwq->pool) { // true
+				        if (.. && worker->current_pwq->wq == wq) {
+					  // false, since @worker is a
+					  // a worker of @last_pool (for
+					  // WQ1), and @wq is WQ2.
+					}
+					...
+					insert_work(pwq, W, ...);
+				      }
+				// W queued.
+				<schedule to worker on CPU 1>
+				process_one_work():
+				  collision = find_worker_executing_work(..);
+				  // NULL, because we're searching the
+				  // worker pool of CPU 1, while W is
+				  // the current work on worker pool of
+				  // CPU 0.
+				  worker->current_work = W;
+				  worker->current_func = W->func;
+	  worker->current_func(...);
+	  			  ...
+	  			  worker->current_func(...); // Re-entrance
+
+This issue is already partially fixed because in queue_work_on(),
+last_pool can be used to queue the work, as a result the requeued work
+processing will find the collision and wait for the existing one to
+finish. However, currently the last_pool is only used when two
+workqueues are the same one, which causes the issue. Therefore extend
+the behavior to allow last_pool to requeue the work W even if the
+workqueues are different. It's safe to do this since the work W has been
+proved safe to queue and run on the last_pool.
 
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/workqueue.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 33a6b4a2443d..1418710bffcd 100644
+index 1418710bffcd..410141cc5f88 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -6099,3 +6099,44 @@ void __init workqueue_init(void)
- 	wq_online = true;
- 	wq_watchdog_init();
- }
-+
-+struct temp_work {
-+	struct work_struct work;
-+	int i;
-+};
-+
-+#include <linux/delay.h>
-+static void __init work_func(struct work_struct *work)
-+{
-+	struct temp_work *tmp = (struct temp_work *)work;
-+	int p = 0;
-+	int q;
-+
-+	for (p = 0; p < 1000000; p++) {
-+		q = READ_ONCE(tmp->i);
-+		WRITE_ONCE(tmp->i, q + 1);
-+	}
-+
-+	printk("result of i is %d\n", tmp->i);
-+}
-+
-+static int __init work_reentry(void)
-+{
-+	struct temp_work tmp;
-+
-+	tmp.i = 0;
-+
-+	INIT_WORK_ONSTACK(&tmp.work, work_func);
-+
-+	queue_work_on(1, system_wq, &tmp.work);
-+
-+	while (!queue_work_on(2, system_unbound_wq, &tmp.work)) { }
-+
-+	printk("second queue succeeds\n");
-+
-+	flush_work(&tmp.work);
-+
-+	return 0;
-+}
-+
-+late_initcall(work_reentry);
+@@ -1465,7 +1465,7 @@ static void __queue_work(int cpu, struct workqueue_struct *wq,
+ 
+ 		worker = find_worker_executing_work(last_pool, work);
+ 
+-		if (worker && worker->current_pwq->wq == wq) {
++		if (worker) {
+ 			pwq = worker->current_pwq;
+ 		} else {
+ 			/* meh... not running there, queue here */
 -- 
 2.32.0
 
