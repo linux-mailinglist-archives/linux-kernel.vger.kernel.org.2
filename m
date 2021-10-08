@@ -2,127 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94EE84262EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:23:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639154262ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235079AbhJHDYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36708 "EHLO
+        id S235451AbhJHDZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhJHDYr (ORCPT
+        with ESMTP id S229501AbhJHDZd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:24:47 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9963EC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 20:22:52 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id g14so7024974pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 20:22:52 -0700 (PDT)
+        Thu, 7 Oct 2021 23:25:33 -0400
+Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363AEC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 20:23:39 -0700 (PDT)
+Received: by mail-vk1-xa2e.google.com with SMTP id u66so3642984vku.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 20:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
-        b=0Wlfqkaji3y2OPBLxrydvegpu3NwJX3BH3aUX+HUK/cK90BRk93mKOGJhxiGNde20p
-         hxl2iTMhB27qIDm0rENxNkUZ3D6oF6aU2yRimGwqr2lscapGuHS9MSTvnCeD/U4Ob9ZD
-         P3wvU9OisBPOX6O+Bbjh3hOttqkVJ3tUk+wne9i340hgYWgWcH1xvsxNPibVTBs6rnpL
-         HbSus7OM6YBBd+as51wiT9dk0kLB+1h29bN01AI6wjkp8EbVLaZIzYheTUFsUWzbB/J5
-         LRyh3YGW4xS8kFbJjFZ1kr5B7JSnrSuuiw6q+agnBy3BJB1x1ncxjz+REorjEYudYenn
-         +jfQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YH7hWGnKeMLgME7ZCIPQSyX99DlhWg8uLLxzZysdl6c=;
+        b=xgmstvbjJLGF1lTZbyBTuNi5sVdmLkUuqSqjwmctdcKkGPx4U8PqmN1hnHImv1lKzr
+         OOONo1S/PEcXIZNyaIaWd3pZPLnGslMUukZihzinq2Q/ksQvdQPQV4bZPnnz7lmlYyDw
+         FOnXrT4hkEivmurDrwJ3k56fYsN60DRZwmUdRhobKaJvd4wYqlfMraH60uRCptnYx8Gw
+         FOj7OZl3WkiuXB+I+HDvXpILdP4LpPyA7tGlE7PEbBTHjKXEkpSpqBjmhmubEVNOMcV5
+         l1kdNxw3IUr1ErTV6H1/6R5P1e1zSdQpUU5sZtvd6Q3z7e9Tuim7g2WGG7vkARtqRoyA
+         Q05g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NJfd+Dl6LyVyy7WHaPVunJ2WQBOC5w96NLDZ1F2YTMU=;
-        b=6LsW1KvWdnln/i8vivYYrJ47ktJrk3JSvVIIA83img85PXSEBO1t8yPVHDdslZWlT0
-         uNHR/7uKKfbaMHQmCRHPRcq41RZcsgX+OKoUF9x2uvlcXD9tdQgQZBlcok1wQ3WIXzmX
-         ITDr5Vy0332/pXsltIxoc/wNC9APBWlyV3tWNyE44QTVEk0zRAaEVzjc9hO90XhdN6tI
-         UHMuWp3A+6iBBafuZOtiH1gCGlBsJrgfFVqsXRDDmokyYYw5u3XzwSGZp/q6eu3OgPVZ
-         add6QfS0P6Rznpdz2nuLNgcK6Zzd+HH9FtyKVqcgrF5HmDO2seWkVNrwtjAep92BgsbM
-         V1PQ==
-X-Gm-Message-State: AOAM533H9OaiaFTxVjbhC077RIsOoWe6p3taVovRgduojbxsETa4Ljm1
-        +Cqh+WPcedyLPOue+JiTcrnfCw==
-X-Google-Smtp-Source: ABdhPJxW1l429AsznSMTeokTvAn5jNPgEq0MifH/oiCpZXWRnoTfWE2wVNTbl49syfKFdWJVCfJC0w==
-X-Received: by 2002:a62:dd0a:0:b0:44b:bd85:9387 with SMTP id w10-20020a62dd0a000000b0044bbd859387mr7982758pff.49.1633663372090;
-        Thu, 07 Oct 2021 20:22:52 -0700 (PDT)
-Received: from 64-217.. ([103.97.201.33])
-        by smtp.gmail.com with ESMTPSA id h74sm729528pfe.196.2021.10.07.20.22.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 20:22:51 -0700 (PDT)
-From:   Li Feng <fengli@smartx.com>
-To:     Song Liu <song@kernel.org>,
-        linux-raid@vger.kernel.org (open list:SOFTWARE RAID (Multiple Disks)
-        SUPPORT), linux-kernel@vger.kernel.org (open list)
-Cc:     Li Feng <fengli@smartx.com>
-Subject: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-Date:   Fri,  8 Oct 2021 11:22:30 +0800
-Message-Id: <20211008032231.1143467-1-fengli@smartx.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YH7hWGnKeMLgME7ZCIPQSyX99DlhWg8uLLxzZysdl6c=;
+        b=Ij82jt/OQwBrZQf5Hi5speanIs2IApMFsewme9COpY3sLZiYDf/s6rztSDD3CPyMrt
+         db3Yh3NnPnoPCt7XTWdfrAzoeIuxR3Cvw8nd/CfBIhvbMMxS073MueGmNdsx+7V4ErMY
+         ndVjqqQoIbUiezWBOurmZBFGq8J9KtpuVLNcaGlb2LS2+zSUwEKi3gY3KgswPoHnDtzH
+         +FgKgYlelh8oVcLpi6m2prEmY5moCflCn6J/WbBm/dde33aGv7xdyKRTXhJI9h++2cGP
+         DXliDFoo5yPjrVSDzpBmTlFXDhZ5Emt9Dqv55MMPm+V+D+mwS2+iTQgI31meXx3f1DPk
+         LPug==
+X-Gm-Message-State: AOAM530N4hARdcANpSyWrswUudDmjNGSL+6IReMH+B9FMDqh1A0CUNsS
+        hE6q/ikOTRYhp20d4CbwJw3MqigvfwRP6I49+bWHqVh5ScR7jw==
+X-Google-Smtp-Source: ABdhPJwqfz2mGqpRet+PozKsM933EUcZeBoNJ9o/urpvJvtSLhpa/iufwSAh2JhaCWf3z7kg+I4Y/RGaJtwQTQP1pv4=
+X-Received: by 2002:a1f:2603:: with SMTP id m3mr7759371vkm.2.1633663418390;
+ Thu, 07 Oct 2021 20:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210913032003.2836583-1-fengli@smartx.com> <CAHckoCyDULok_QLLh5Nmbx4qLCxKL43TgtFgCSAwuaPpRy1BFw@mail.gmail.com>
+ <CAHckoCwOgpH8E9UgkRkyZitPb6X5Jp-PVKoN6QFHJMt_4h+V6g@mail.gmail.com>
+ <CAHckoCwk1i7_vV=oweLTNYkCjMi4ReyXed2NOvZ10z2J32xGBg@mail.gmail.com> <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
+In-Reply-To: <CAPhsuW5Txh_FSKCRNA8PPAwm2LesYAX5+k_bde87OsDvYpTi=Q@mail.gmail.com>
+From:   Li Feng <fengli@smartx.com>
+Date:   Fri, 8 Oct 2021 11:23:27 +0800
+Message-ID: <CAHckoCyMvAw8ux2mNdM6Keo+LeHY=1DNVOoEVNKkOi+cFds+CA@mail.gmail.com>
+Subject: Re: [PATCH] md: allow to set the fail_fast on RAID1/RAID10
+To:     Song Liu <song@kernel.org>
+Cc:     linux-raid <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the running RAID1/RAID10 need to be set with the fail_fast flag,
-we have to remove each device from RAID and re-add it again with the
---fail_fast flag.
+Done, thanks for responding.
 
-Export the fail_fast flag to the userspace to support the read and
-write.
+Thanks,
+Feng Li
 
-Signed-off-by: Li Feng <fengli@smartx.com>
----
- drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index ae8fe54ea358..ce63972a4555 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const char *buf, size_t len)
- static struct rdev_sysfs_entry rdev_ppl_size =
- __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store);
- 
-+static ssize_t
-+fail_fast_show(struct md_rdev *rdev, char *page)
-+{
-+	return sprintf(page, "%d\n", test_bit(FailFast, &rdev->flags));
-+}
-+
-+static ssize_t
-+fail_fast_store(struct md_rdev *rdev, const char *buf, size_t len)
-+{
-+	int ret;
-+	bool bit;
-+
-+	ret = kstrtobool(buf, &bit);
-+	if (ret)
-+		return ret;
-+
-+	if (test_bit(FailFast, &rdev->flags) && !bit) {
-+		clear_bit(FailFast, &rdev->flags);
-+		md_update_sb(rdev->mddev, 1);
-+	} else if (!test_bit(FailFast, &rdev->flags) && bit) {
-+		set_bit(FailFast, &rdev->flags);
-+		md_update_sb(rdev->mddev, 1);
-+	}
-+	return len;
-+}
-+
-+static struct rdev_sysfs_entry rdev_fail_fast =
-+__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
-+
- static struct attribute *rdev_default_attrs[] = {
- 	&rdev_state.attr,
- 	&rdev_errors.attr,
-@@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs[] = {
- 	&rdev_unack_bad_blocks.attr,
- 	&rdev_ppl_sector.attr,
- 	&rdev_ppl_size.attr,
-+	&rdev_fail_fast.attr,
- 	NULL,
- };
- static ssize_t
--- 
-2.31.1
-
+Song Liu <song@kernel.org> =E4=BA=8E2021=E5=B9=B410=E6=9C=887=E6=97=A5=E5=
+=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:59=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Thu, Oct 7, 2021 at 12:00 AM Li Feng <fengli@smartx.com> wrote:
+> >
+> > Continue ping...
+> >
+> > Thanks,
+> > Feng Li
+>
+> Hmm.. this is weird. I didn't see previous emails in this thread.
+> Could you please
+> send it again?
+>
+> Thanks,
+> Song
+>
+> >
+> > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8827=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:24=E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > Hi Song,
+> > >
+> > > What about this feature?
+> > >
+> > > Thanks,
+> > > Feng Li
+> > >
+> > > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8815=E6=97=
+=A5=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=8811:08=E5=86=99=E9=81=93=EF=BC=9A
+> > > >
+> > > > ping ...
+> > > >
+> > > > Thanks,
+> > > > Feng Li
+> > > >
+> > > > Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8813=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8811:22=E5=86=99=E9=81=93=EF=BC=9A
+> > > > >
+> > > > > When the running RAID1/RAID10 need to be set with the fail_fast f=
+lag,
+> > > > > we have to remove each device from RAID and re-add it again with =
+the
+> > > > > --fail_fast flag.
+> > > > >
+> > > > > Export the fail_fast flag to the userspace to support the read an=
+d
+> > > > > write.
+> > > > >
+> > > > > Signed-off-by: Li Feng <fengli@smartx.com>
+> > > > > ---
+> > > > >  drivers/md/md.c | 30 ++++++++++++++++++++++++++++++
+> > > > >  1 file changed, 30 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/md/md.c b/drivers/md/md.c
+> > > > > index ae8fe54ea358..ce63972a4555 100644
+> > > > > --- a/drivers/md/md.c
+> > > > > +++ b/drivers/md/md.c
+> > > > > @@ -3583,6 +3583,35 @@ ppl_size_store(struct md_rdev *rdev, const=
+ char *buf, size_t len)
+> > > > >  static struct rdev_sysfs_entry rdev_ppl_size =3D
+> > > > >  __ATTR(ppl_size, S_IRUGO|S_IWUSR, ppl_size_show, ppl_size_store)=
+;
+> > > > >
+> > > > > +static ssize_t
+> > > > > +fail_fast_show(struct md_rdev *rdev, char *page)
+> > > > > +{
+> > > > > +       return sprintf(page, "%d\n", test_bit(FailFast, &rdev->fl=
+ags));
+> > > > > +}
+> > > > > +
+> > > > > +static ssize_t
+> > > > > +fail_fast_store(struct md_rdev *rdev, const char *buf, size_t le=
+n)
+> > > > > +{
+> > > > > +       int ret;
+> > > > > +       bool bit;
+> > > > > +
+> > > > > +       ret =3D kstrtobool(buf, &bit);
+> > > > > +       if (ret)
+> > > > > +               return ret;
+> > > > > +
+> > > > > +       if (test_bit(FailFast, &rdev->flags) && !bit) {
+> > > > > +               clear_bit(FailFast, &rdev->flags);
+> > > > > +               md_update_sb(rdev->mddev, 1);
+> > > > > +       } else if (!test_bit(FailFast, &rdev->flags) && bit) {
+> > > > > +               set_bit(FailFast, &rdev->flags);
+> > > > > +               md_update_sb(rdev->mddev, 1);
+> > > > > +       }
+> > > > > +       return len;
+> > > > > +}
+> > > > > +
+> > > > > +static struct rdev_sysfs_entry rdev_fail_fast =3D
+> > > > > +__ATTR(fail_fast, 0644, fail_fast_show, fail_fast_store);
+> > > > > +
+> > > > >  static struct attribute *rdev_default_attrs[] =3D {
+> > > > >         &rdev_state.attr,
+> > > > >         &rdev_errors.attr,
+> > > > > @@ -3595,6 +3624,7 @@ static struct attribute *rdev_default_attrs=
+[] =3D {
+> > > > >         &rdev_unack_bad_blocks.attr,
+> > > > >         &rdev_ppl_sector.attr,
+> > > > >         &rdev_ppl_size.attr,
+> > > > > +       &rdev_fail_fast.attr,
+> > > > >         NULL,
+> > > > >  };
+> > > > >  static ssize_t
+> > > > > --
+> > > > > 2.31.1
+> > > > >
