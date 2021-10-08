@@ -2,149 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E647A426BFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9F5E426C0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230203AbhJHNyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38272 "EHLO
+        id S234235AbhJHNzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:55:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhJHNyX (ORCPT
+        with ESMTP id S232599AbhJHNzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:54:23 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94FB2C061570;
-        Fri,  8 Oct 2021 06:52:28 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so11851162otb.1;
-        Fri, 08 Oct 2021 06:52:28 -0700 (PDT)
+        Fri, 8 Oct 2021 09:55:20 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF714C061570;
+        Fri,  8 Oct 2021 06:53:24 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id m22so30224458wrb.0;
+        Fri, 08 Oct 2021 06:53:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+i4BnWwioMXqufQiZh2zuVnG+g9/2NgvXRETnHtcmTQ=;
-        b=eaBQ4tyXliwaoPiOnTCH+g9OK5zg68yY2536ktnyZPqaidaPjKzJvpyjQxwRcBl0A8
-         DlfOPjip2D2vdpCD7RGkSGilsKwjR5XVmYL6EH9qf2SZ1XKd57rZY29aHCpctO/JV8vJ
-         j4neB7ZKpPzLMPr2MLie2hThEXGYNyE/OGvxMhS9g4kKzIrPHncgv0o/u6sFx0IqJJ/T
-         1+CMGx+IDECPDGHcp2zsDb3XIPtOlBgZvvgzDH3vXS/vlP0xAk+Lo+e0fkPVX5nRkx79
-         3G1hhbRZpWZxAdKd9HqL+pDta6+NW+KR6AK/0oelV6mGlG88fxUthtmrxcJIS7dxwvGV
-         i3Sg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=yYWsu0Rg4yRualNrYxMIo7dnaqfU/YPo4u7hxec75RQ=;
+        b=bbohXNY2pN0tG0VfoSJkDk8zsi8ByEGKv47t0+GqCwHguogMWEq0doeEkGAiHLue74
+         tzC3QRTIA9xm3y4nVI7dd05PRfn/yIDLwRTgiUoOH6BzZkknS0tAZpy9gypIagpgixoK
+         0jw3ZjfgZnlMoA7m3VVroeT/TyFmLDmwP7qB32TkscZoDHF5+tUc97n0B582epeuiHVA
+         XEkdmZHdrlEVSr9tym+Wl60MDNgwCWOGQLuFAD7q9V07eDrrdtaETK75mBUjkBvfL78/
+         n4No8br5zx7Wed0F30CPolSvsbqHq7Fc6UQ1F+Pp/FqnvTnAiiWCxJWEEb18deIuqviO
+         vRfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+i4BnWwioMXqufQiZh2zuVnG+g9/2NgvXRETnHtcmTQ=;
-        b=XE7Jxqcy+F2VA5xXlHY5LQHnj0VyZmvY18rEnu5KyDOcUHd3OM3OE2Ew7HmSNxDSzR
-         p5wEtoWCZ+zkgGFtTavgXfcvKddtZ0U+z5IefHh09U4jaQ6VuyD14Dk6lC4289c1Ct+Y
-         j3JRvYw0qM7uWE7WVl6XVOTu6Yhvjfu0fgsztyOaDTmHIfFT8Au7FqrpayMRVElvBr1r
-         3abxRXiXnDndsBP71koD63voqYA2tdPhU5gIBS4iUGX+7Dk1kwGD8sXQiD2QSzIZ33tY
-         d3dzCuy9bHFh8mUY0Pc3DdMEjOyKPkze/7UwZbboFEVYMTLGZWT831UEuYBRFI0P7Wz2
-         HjQA==
-X-Gm-Message-State: AOAM5319ov9wJQcb2qcMcSmMLb0u2ZEaHRrN3tK8295xt6Ov3TkIcHbP
-        hQ9dSC5mExdjvmnUSrjyD+k=
-X-Google-Smtp-Source: ABdhPJyX1g5WIFgiFMAAG5OCUYF8HFUYpdaJ53EUERXJqxtMq5b7ctNVA4GCcByYcek7Ze/bcvDj7Q==
-X-Received: by 2002:a9d:4049:: with SMTP id o9mr9057064oti.161.1633701147944;
-        Fri, 08 Oct 2021 06:52:27 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l25sm513275oot.36.2021.10.08.06.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 06:52:27 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Oct 2021 06:52:26 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/8] hwmon: (pmbus/lm25066) Add OF device ID table
-Message-ID: <20211008135226.GA1366565@roeck-us.net>
-References: <20210928092242.30036-1-zev@bewilderbeest.net>
- <20210928092242.30036-7-zev@bewilderbeest.net>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=yYWsu0Rg4yRualNrYxMIo7dnaqfU/YPo4u7hxec75RQ=;
+        b=wP3gN/+XWRsYbvnNMJsYtYfIvInb1ty+E70LgnRGe7VgMcYVPfCnEB2gsJ4x1+l3k9
+         BEQaAFSelT5mW+TDTm9q2M2glN6zEH/Vd/7uMmHPK5yBlzlsV4YB3KpkoMhEBtgc6vF6
+         wNcK8xnbRmOUnw7pTVUegmVjwZyfDhcqMJ0P3fztYV4LpiBbltgDmWV9TpGOyfYVCjOA
+         Sq1UkB+deen7n8KFAtfxrfmlXALjOZGch4EGdQVCtK56jIC0zRbq8LcZE1+HKPC7wGoi
+         pCkkgeiUkBcmmtUnVTNDUeogkFXNEzk+th5C9taqwegHt14IeC514gWr77GvsVCDKRaw
+         V0VQ==
+X-Gm-Message-State: AOAM5316C85u+dWnkqIhR0R9pnzXdZWhceBMwzwcAWdq/qneNx3Mc1bO
+        GQ/LZWJW58eChqcZHKnnYTA=
+X-Google-Smtp-Source: ABdhPJwCCsh7mGFTBgvB/ol1kIoTWolzftm8yGGomZgw7NW71Awlwc9f6CNm1UOrwC/9jfT/DR6yCQ==
+X-Received: by 2002:a1c:7c02:: with SMTP id x2mr3427289wmc.165.1633701203204;
+        Fri, 08 Oct 2021 06:53:23 -0700 (PDT)
+Received: from [192.168.2.177] ([206.204.146.29])
+        by smtp.gmail.com with ESMTPSA id c7sm3794235wmq.13.2021.10.08.06.53.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 06:53:19 -0700 (PDT)
+Message-ID: <bc29d5bc-9ce7-6147-a708-e6304249b600@gmail.com>
+Date:   Fri, 8 Oct 2021 15:53:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928092242.30036-7-zev@bewilderbeest.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [v3,7/9] dt-bindings: arm64: dts: mediatek: Add mt7986 series
+Content-Language: en-US
+To:     Sam Shih <sam.shih@mediatek.com>
+Cc:     Ryder.Lee@mediatek.com, devicetree@vger.kernel.org,
+        enric.balletbo@collabora.com, fparent@baylibre.com,
+        gregkh@linuxfoundation.org, herbert@gondor.apana.org.au,
+        hsinyi@chromium.org, john@phrozen.org, linus.walleij@linaro.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-serial@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux@roeck-us.net, mpm@selenic.com, mturquette@baylibre.com,
+        robh+dt@kernel.org, sboyd@kernel.org, sean.wang@kernel.org,
+        seiya.wang@mediatek.com, wim@linux-watchdog.org
+References: <9552b0dc-337f-7edc-2997-50603dfe8bcd@gmail.com>
+ <20210924114046.26070-1-sam.shih@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20210924114046.26070-1-sam.shih@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 02:22:40AM -0700, Zev Weiss wrote:
-> See commit 8881a19187e4 ("hwmon: (ucd9000) Add OF device ID table")
-> for reasoning.
+Hi Sam,
+
+I'd advise to split this series in parts for:
+- basic device support via dts.
+- pinctrl driver + dts
+- clk driver + dts
+
+I would also advise to not send new versions of patches as new threads and don't 
+respond in the same thread. At least for me that breaks my workflow as I use b4.
+
+Regards,
+Matthias
+
+
+On 24/09/2021 13:40, Sam Shih wrote:
+> MT7986 series is Mediatek's new 4-core SoC, which is mainly for
+> wifi-router application. The difference between mt7986a and mt7986b
+> is that some pins do not exist on mt7986b.
 > 
-The actual reasoning should be provided here, not a reference to another
-commit. Never mind, I did that.
-
-> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
-
-Applied.
-
-Thanks,
-Guenter
-
+> Signed-off-by: Sam Shih <sam.shih@mediatek.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> 
 > ---
->  drivers/hwmon/pmbus/lm25066.c | 26 ++++++++++++++++++++++++--
->  1 file changed, 24 insertions(+), 2 deletions(-)
+> v3: changed 'MT7986' to 'MT7986 series' in the commit message
+> v2: added an Acked-by tag
+> ---
+>   Documentation/devicetree/bindings/arm/mediatek.yaml | 8 ++++++++
+>   1 file changed, 8 insertions(+)
 > 
-> diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
-> index dbbf8571c437..18d5a76f346d 100644
-> --- a/drivers/hwmon/pmbus/lm25066.c
-> +++ b/drivers/hwmon/pmbus/lm25066.c
-> @@ -14,6 +14,7 @@
->  #include <linux/slab.h>
->  #include <linux/i2c.h>
->  #include <linux/log2.h>
-> +#include <linux/of_device.h>
->  #include "pmbus.h"
->  
->  enum chips { lm25056, lm25066, lm5064, lm5066, lm5066i };
-> @@ -444,12 +445,24 @@ static const struct i2c_device_id lm25066_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, lm25066_id);
->  
-> +static const struct of_device_id __maybe_unused lm25066_of_match[] = {
-> +	{ .compatible = "ti,lm25056", .data = (void*)lm25056, },
-> +	{ .compatible = "ti,lm25066", .data = (void*)lm25066, },
-> +	{ .compatible = "ti,lm5064",  .data = (void*)lm5064,  },
-> +	{ .compatible = "ti,lm5066",  .data = (void*)lm5066,  },
-> +	{ .compatible = "ti,lm5066i", .data = (void*)lm5066i, },
-> +	{ },
-> +};
-> +MODULE_DEVICE_TABLE(of, lm25066_of_match);
-> +
->  static int lm25066_probe(struct i2c_client *client)
->  {
->  	int config;
->  	struct lm25066_data *data;
->  	struct pmbus_driver_info *info;
->  	const struct __coeff *coeff;
-> +	const struct of_device_id *of_id;
-> +	const struct i2c_device_id *i2c_id;
->  
->  	if (!i2c_check_functionality(client->adapter,
->  				     I2C_FUNC_SMBUS_READ_BYTE_DATA))
-> @@ -464,7 +477,15 @@ static int lm25066_probe(struct i2c_client *client)
->  	if (config < 0)
->  		return config;
->  
-> -	data->id = i2c_match_id(lm25066_id, client)->driver_data;
-> +	i2c_id = i2c_match_id(lm25066_id, client);
-> +
-> +	of_id = of_match_device(lm25066_of_match, &client->dev);
-> +	if (of_id && (enum chips)of_id->data != i2c_id->driver_data)
-> +		dev_notice(&client->dev,
-> +		           "Device mismatch: %s in device tree, %s detected\n",
-> +		           of_id->name, i2c_id->name);
-> +
-> +	data->id = i2c_id->driver_data;
->  	info = &data->info;
->  
->  	info->pages = 1;
-> @@ -521,7 +542,8 @@ static int lm25066_probe(struct i2c_client *client)
->  static struct i2c_driver lm25066_driver = {
->  	.driver = {
->  		   .name = "lm25066",
-> -		   },
-> +		   .of_match_table = of_match_ptr(lm25066_of_match),
-> +	},
->  	.probe_new = lm25066_probe,
->  	.id_table = lm25066_id,
->  };
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 80a05f6fee85..a9a778269684 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -76,6 +76,14 @@ properties:
+>             - enum:
+>                 - mediatek,mt7629-rfb
+>             - const: mediatek,mt7629
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7986a-rfb
+> +          - const: mediatek,mt7986a
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7986b-rfb
+> +          - const: mediatek,mt7986b
+>         - items:
+>             - enum:
+>                 - mediatek,mt8127-moose
+> 
