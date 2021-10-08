@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFD3427294
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9078A427298
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243294AbhJHUuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:50:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50452 "EHLO
+        id S243301AbhJHUvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243069AbhJHUun (ORCPT
+        with ESMTP id S242708AbhJHUvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:50:43 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF06C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:48:48 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id r9so11254046ile.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:48:48 -0700 (PDT)
+        Fri, 8 Oct 2021 16:51:14 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2C2C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:49:18 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso6219060pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:49:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lCL9jSct4nyfW//yULffOegzEzj9w/CKx/mnCG/UyTw=;
-        b=YcydB3lP5aSnSJPEAG4Lvz+hoHU//f6BwHWKnQFgEGtADpqreToiEdtWOkIHQnghql
-         cwiC8FV2P5aBPijUW2MVEC+y1EmN2+n5Qu0zZZJQMbqx3W0TbTUP9EfXSr0RK3AWxqIG
-         CnZ2QAJZZR2W2GGPO9vZFGYJybOIHeo7yEHAk=
+        d=lixom-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a9TiIjRscGsypMhkU3F5Luwnaj1KEJJFH5jSCl+q5Ag=;
+        b=5aYWkO1/pER1U5USV1nEzyfxkbQO2mlcDkvrtX6sMaZlASzY45T8jVHT1yvAxYPWEB
+         EwS3cXT17cKvL/uUwqyF5aUu0nfLax8wNDE7eBZ1rXm/Z87sWBH2V0kjJG4aw5PDVdku
+         sywmFFwo7yQ2Eej3VeweCP5KSbkvcmYtqVKxeRp2tW5oAEsBnQPvQn/5th4E+7rEAjaJ
+         RZBbWZ1DuY+xf3V5rQiwoftIG2wSM0u4ay+xVYcPNg1KcFEbh2rIDAX3NpgdCVqtxD4V
+         HclRMV4uqx91lL3UL88OlDgphWkDFbWhPzQiRA5PeyDWYAlQH8Zu1AxxfW7BWLe0oO6R
+         pLIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lCL9jSct4nyfW//yULffOegzEzj9w/CKx/mnCG/UyTw=;
-        b=Djso60EzYvMQEtuc+sZCGmE3yrFgqJRPLTOAbGjLUhfUGyySud1jdJudQZuxdshF2A
-         I4t9BpczZIKkI8PyNlxN9EoWO+nEbKieZQ6AIvmyKd3gGO5q8UbOwkkCiVQI8sBbX3f6
-         A5Bq4rudLWxLX09KYa10vnehS///9hj8f7rDjqA+odh9JwezK4xaSkuNrB/Z9WWDo5J0
-         WfdXNRcbum2t8p9XqRVJ9vNW1qxCU1yxDa+LV0GfWjhUok1wirG41Riw3vvjAP267Nc2
-         9o/37KGGIeWEJ6agLqveIP3iLhpYShVAXrlp0wlQC1nNJxYvC1cQcNc7gv1WsjfjChv4
-         1P2Q==
-X-Gm-Message-State: AOAM530ECbvIK+XvXZMHCb2NlhG4jCX649lKOb82/t+J0NT+YJEzdkh7
-        rHj4HEeyVBPY9oQgXQlGL3ivxQ==
-X-Google-Smtp-Source: ABdhPJyZ/jm6uxkz9yes6Os3Qu4WgsDdFzQUFl/1fT5Rfv50To7N59cStQNB8Z8tqitmoP7jnGdz6w==
-X-Received: by 2002:a05:6e02:102d:: with SMTP id o13mr9623287ilj.239.1633726127536;
-        Fri, 08 Oct 2021 13:48:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i18sm164412ila.32.2021.10.08.13.48.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 13:48:47 -0700 (PDT)
-Subject: Re: [PATCH 4.9 0/8] 4.9.286-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211008112713.941269121@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <13cc7eaf-d34b-409c-dfe7-43c53815f6d1@linuxfoundation.org>
-Date:   Fri, 8 Oct 2021 14:48:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a9TiIjRscGsypMhkU3F5Luwnaj1KEJJFH5jSCl+q5Ag=;
+        b=5KFvlod1pjIrtPSu0Ch+0pL/UeeQ4c0eJYCxN5J8P6ByO6+x8r5TOK4MSAPzR+Q/uX
+         FJorTIUMhZPWxkkm4r8JCZtPFaRiqmtXMa7Ag37Z/dvMnFN9VQ98pLNQBi/7G8f6rM7F
+         n0+CoxZHgbbToStMqeS0wxhwR5VLDw/Vo6SdhqQA17izoYsTDkGroBDImTVFMMj34Ubv
+         XiAN6xg2ej0iENXvkcOl5dgoELtbjx5hJfFxbDI/gbApIuWMGb8rQwx1+TJrQ6D7a2vC
+         c3OLDRh6WoU3qhfIQPMT/WQ/zoimWd1txz4dm2wwGHK5CYjjoRPn1Cn6TySl/QRtarPA
+         mBxw==
+X-Gm-Message-State: AOAM5313ISy2qO/DazJ3ohcRar/etCdkVRDzWHe+3xibp4pP2lE32BbK
+        g0FAo4w0Ms/3SFl8TSWbfHpmSGox6dxoq5u2+edbQXUu6Sk=
+X-Google-Smtp-Source: ABdhPJxMnEH2xoi24RNEnru2y/0LaOJW4Sqmk5pa8/ErFS/VB9m9afA2AKxUjRr9u00R1TH2nvvEVqnmYTqcMO6JgUs=
+X-Received: by 2002:a17:90a:7301:: with SMTP id m1mr14090869pjk.34.1633726157928;
+ Fri, 08 Oct 2021 13:49:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211008112713.941269121@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211008163532.75569-1-sven@svenpeter.dev>
+In-Reply-To: <20211008163532.75569-1-sven@svenpeter.dev>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Fri, 8 Oct 2021 13:49:06 -0700
+Message-ID: <CAOesGMgm-8c9ADbFSGRascCEE+ADEsK0v04tVCdd+wC_=GieCw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 5:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.286 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.286-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Compiled and booted on my test system. No dmesg regressions.
+On Fri, Oct 8, 2021 at 9:36 AM Sven Peter <sven@svenpeter.dev> wrote:
+>
+> Hi,
+>
+> v1: https://lore.kernel.org/linux-i2c/20210926095847.38261-1-sven@svenpeter.dev/
+>
+> Changes for v2:
+>  - Added reviewed-by/acks
+>  - Switched from ioport_map to pci_iomap as suggested by Arnd Bergmann
+>  - Renamed i2c-pasemi-apple.c to i2c-pasemi-platform.c as suggested by
+>    Wolfram Sang
+>  - Replaced the ioport number in the adapter name with dev_name to be
+>    able to identify separate busses in e.g. i2cdetect.
+>
+> I still don't have access to any old PASemi hardware but the changes from
+> v1 are pretty small and I expect them to still work. Would still be nice
+> if someone with access to such hardware could give this a quick test.
+>
+>
+> And for those who didn't see v1 the (almost) unchanged original cover letter:
+>
+> This series adds support for the I2C controller found on Apple Silicon Macs
+> which has quite a bit of history:
+>
+> Apple bought P.A. Semi in 2008 and it looks like a part of its legacy continues
+> to live on in the M1. This controller has actually been used since at least the
+> iPhone 4S and hasn't changed much since then.
+> Essentially, there are only a few differences that matter:
+>
+>         - The controller no longer is a PCI device
+>         - Starting at some iPhone an additional bit in one register
+>           must be set in order to start transmissions.
+>         - The reference clock and hence the clock dividers are different
+>
+> In order to add support for a platform device I first replaced PCI-specific
+> bits and split out the PCI driver to its own file. Then I added support
+> to make the clock divider configurable and converted the driver to use
+> managed device resources to make it a bit simpler.
+>
+> The Apple and PASemi driver will never be compiled in the same kernel
+> since the Apple one will run on arm64 while the original PASemi driver
+> will only be useful on powerpc.
+> I've thus followed the octeon (mips)/thunderx(arm64) approach to do the
+> split: I created a -core.c file which contains the shared logic and just
+> compile that one for both the PASemi and the new Apple driver.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+Series:
 
-thanks,
--- Shuah
+Acked-by: Olof Johansson <olof@lixom.net>
 
+
+-Olof
