@@ -2,182 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF5ED42675A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D62426762
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239625AbhJHKG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:06:28 -0400
-Received: from first.geanix.com ([116.203.34.67]:37346 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239040AbhJHKGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:06:25 -0400
-Received: from skn-laptop (_gateway [172.25.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id CFB13C3B02;
-        Fri,  8 Oct 2021 10:04:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633687467; bh=t790EvsXc4ZoZ8yOdtaYuNWz3V452fkzKiJzSLy8OPQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MK/kBQmKD5UuS+JEqqB8wJT+zDf5JDNfPkysg6ZTi3WIH1zfchoAHZnjc3/euVdyL
-         x8EbPu4tsc98+6HOG6eD+BrD+D/8H/Pl250UofhpHZJYnEB/UWbTJ/TDjBjsdubrgd
-         2KtDPUDUq6ZlEd+HotNU5hX7x7zN2L92TcfT51yMzVGCHD3kmHgnz1JKZfLJevfvU4
-         7clsycAUcBMM/eOTIaakYW4yC5LB50mnvrdqIS88Z9YtgmICCx+pQz5oHl+IUTusyc
-         8QCbKAGJxKlXb5fzoyVryjWFFOEGkyGwmoYmhxVmaEvRV040WYsoU5VvQpnvp/X5qk
-         MKHvg4oiu4TLQ==
-Date:   Fri, 8 Oct 2021 12:04:25 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
- suspend
-Message-ID: <20211008100425.uudzlda2n5ojqjzc@skn-laptop>
-References: <20211004101246.kagtezizympxupat@skn-laptop>
- <20211004134700.26327f6f@collabora.com>
- <20211005070930.epgxb5qzumk4awxq@skn-laptop>
- <20211005102300.5da6d480@collabora.com>
- <20211005084938.jcbw24umhehoiirs@skn-laptop>
- <20211005105836.6c300f25@collabora.com>
- <20211007114351.3nafhtpefezxhanc@skn-laptop>
- <20211007141858.314533f2@collabora.com>
- <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
- <20211007151426.54db0764@collabora.com>
+        id S239654AbhJHKIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238955AbhJHKIG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:08:06 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB30C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:06:11 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id 5so10047515iov.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:06:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DhkGQxymSGNx/5KpVXzR9zkQ3CERpYjuzQVc8kX22kE=;
+        b=fC2wpY3mAtWUVqPIwY+pKa4s4ZFzHyKkDAm++cp/5IF3ozL26lMUH4RFsLuesbkAiV
+         p9gtHPh/c0kzycpF3OaGzvlao0Jc20fenzWGPYYGCw8P/QAslMV3xtJp9cAdaDzCkkKd
+         hCwH9k+614DTTnpA1cbqQIoFN3ggfS6HkxZVSpZ3A5r4VfrpargKe+NYPXUUsWb+YJ8u
+         QMB/wNIwGSWwgunrpBnSEACjUfPM3qT2jsS0lHyXGZRBlriFoyqRDKJKuCzkiQpg6H6D
+         Hn2wIeT7AU+LiV4m30ZNgdZpkmS88ga6kfipLYHZfpRj3Gh6x60k0FKPdRBE5Iuif/Fs
+         6eLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DhkGQxymSGNx/5KpVXzR9zkQ3CERpYjuzQVc8kX22kE=;
+        b=hO9lORZkCPCMa/ksyrE3jW8RFAPsEfI6dZxAdfQzi92WN0v0yk1ojr1noPDBB/zlwv
+         ukwQbj1E/UoxCHdwORpnQFGaYG5R4pR4nE9D9SsTvnLGLc3Wzb/ys42xTjqktIfbHCjS
+         ouxsBLUHlRA5xswQ7l/Pb0MH063j051DGwJjUydvi1QxjRkzqgSq92pWYio0yhRqtsG5
+         buK1Yv3fF1AkCnVsEwJdvkEoqkSTihocurep2qQLmCjTfG1WHhFxVdmwGSBXmJimCx8p
+         YtqS+XdupyJVSLXv8tFmBa51isqfPX0HPoKYlRxIE3rTLwLx6UybsTgoMXixfKhBewty
+         F4Lw==
+X-Gm-Message-State: AOAM532wy7EcOZgLJJ6ltD8kQHgTIvu4iyISdy3aaquu1+k3dnjV8Z3K
+        N5JNKd5iWpNIntasTOjRNUnU4Flsp5r7Pw==
+X-Google-Smtp-Source: ABdhPJwo0fOQsQ/EvHsq5YUbPmrhCr9/J8oAESlPMRgo53U2UrMZogZnHMRDfXJ36uIXzmy/LLFX/Q==
+X-Received: by 2002:a05:6638:3052:: with SMTP id u18mr6852229jak.148.1633687570690;
+        Fri, 08 Oct 2021 03:06:10 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id d1sm864506ils.25.2021.10.08.03.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 03:06:09 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 714A627C0054;
+        Fri,  8 Oct 2021 06:06:08 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 08 Oct 2021 06:06:08 -0400
+X-ME-Sender: <xms:EBhgYaD-e-iT2W2NfcYp3blVpB9QGH1qgjsCkgUvNBIyfCh4xqO3Ew>
+    <xme:EBhgYUhGBScsaSMW424cZ90a2Nm-5mdiAmuufx3hhk3UjZnYpdCtsV9IAxLyyFg1s
+    WHVPfSx8dCdZDNysQ>
+X-ME-Received: <xmr:EBhgYdn0I4zy8s9nD76l21NA3gDxE0Hnh9qeGll_vSuZdjX2hN7nLaT94ggnOw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddttddgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhnucfh
+    vghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrthhtvg
+    hrnhepieejhfelvddtgeduhfffueegteevleeugfekvefhueduuedugfevvefhtedvuedv
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqh
+    hunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddu
+    jeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvg
+    drnhgrmhgv
+X-ME-Proxy: <xmx:EBhgYYyiOSQKt-2Zlgx02JWL2CdhcybfX6nyINjH4Q_NvkPSBiacyQ>
+    <xmx:EBhgYfTB57GCFZRcQ8utIFlX6c1RDdrj6b5YQEoI-A3fzNZ21Zi-Ew>
+    <xmx:EBhgYTZpxd3dfp1u1do0FYLGNYtHTf7AqGxJ25GVxWJSZZnjmEdeuw>
+    <xmx:EBhgYeFLZgvkLHCuje6cTrXwnYRbZ3qVOkN0HY8ebvJIL01HbvLdvQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Oct 2021 06:06:07 -0400 (EDT)
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: [RFC 0/2] Re-entrace of a work when requeued to a different workqueue
+Date:   Fri,  8 Oct 2021 18:04:52 +0800
+Message-Id: <20211008100454.2802393-1-boqun.feng@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211007151426.54db0764@collabora.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 03:14:26PM +0200, Boris Brezillon wrote:
-> On Thu, 7 Oct 2021 14:39:16 +0200
-> Sean Nyekjaer <sean@geanix.com> wrote:
-> 
-> > > 
-> > > wait_queue doesn't really describe what this waitqueue is used for
-> > > (maybe resume_wq), and the suspended state should be here as well
-> > > (actually, there's one already).  
-> > 
-> > I'll rename to something meaningful.
-> > > 
-> > > Actually, what we need is a way to prevent the device from being
-> > > suspended while accesses are still in progress, and new accesses from
-> > > being queued if a suspend is pending. So, I think you need a readwrite
-> > > lock here:
-> > > 
-> > > * take the lock in read mode for all IO accesses, check the
-> > >   mtd->suspended value
-> > >   - if true, release the lock, and wait (retry on wakeup)
-> > >   - if false, just do the IO
-> > > 
-> > > * take the lock in write mode when you want to suspend/resume the
-> > >   device and update the suspended field. Call wake_up_all() in the
-> > >   resume path  
-> > 
-> > Could we use the chip->lock mutex for this? It's does kinda what you
-> > described above?
-> 
-> No you can't. Remember I suggested to move all of that logic to
-> mtdcore.c, which doesn't know about the nand_chip struct.
-> 
-> > If we introduce a new lock, do we really need to have the suspended as
-> > an atomic?
-> 
-> Nope, I thought we could do without a lock, but we actually need to
-> track active IO requests, not just the suspended state.
+Hi Tejun,
 
-I have only added wait_queue to read and write operations.
-I'll have a look into where we should add further checks.
+I found out a possible re-entrace case of a work item:
 
-> 
-> > 
-> > I will test with some wait and retry added to nand_get_device().
-> 
-> Again, I think there's a misunderstanding here: if you move it to the
-> mtd layer, it can't be done in nand_get_device(). But once you've
-> implemented it in mtdcore.c, you should be able to get rid of the
-> nand_chip->suspended field.
+	queue_work_on(0, WQ1, W);
+	// after a worker picks up W and clear the pending bit
+	queue_work_on(1, WQ2, W);
+	// workers on CPU0 and CPU1 will execute W in the same time.
 
-I have moved the suspended atomic and wake_queue to mtdcore.c. And kept
-the suspended variable in nand_base as is fine for chip level suspend
-status.
+To make this happen, work W must be queued to different workqueues (WQ1
+& WQ2), which may look weird, but IIUC, we don't disallow it?
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index c8fd7f758938..6492071eb4da 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -42,15 +42,24 @@ static int mtd_cls_suspend(struct device *dev)
- {
-        struct mtd_info *mtd = dev_get_drvdata(dev);
+I'm sending this patchset out to see whether 1) this is by design (sane
+users of workqueues should guarantee no concurrent queuing one work on
+two workqueues) or 2) this is a real problem that we should fix. If it's
+2), then I have a straight-forward fix in patch #2, which needs some
+discussion because I changes the queue_work_on() semantics a little bit:
+if WQ1 is a unbound workqueue and WQ2 is a bound one, my change makes
+the second queue_work_on() in the above case effectively queue W on WQ1,
+which I'm not sure is a desired change.
 
--       return mtd ? mtd_suspend(mtd) : 0;
-+       if (mtd) {
-+               atomic_inc(&mtd->suspended);
-+               return mtd_suspend(mtd);
-+       }
-+                                                                                                                                                                                                                                                                                                                                                                                             +       return 0;
- }
+Patch #1 contains a simple reproduce of the re-entrance case, which is
+of course not for merge.
 
- static int mtd_cls_resume(struct device *dev)
- {
-        struct mtd_info *mtd = dev_get_drvdata(dev);
+Regards,
+Boqun
 
--       if (mtd)
-+       if (mtd) {
-                mtd_resume(mtd);
-+               atomic_dec(&mtd->suspended);
-+               wake_up_all(&mtd->resume_wq);
-+       }
-+
-        return 0;
- }
-@@ -678,6 +687,10 @@ int add_mtd_device(struct mtd_info *mtd)
-        if (error)
-                goto fail_nvmem_add;
+Boqun Feng (2):
+  NOT FOR MERGE: A selftest shows that re-entrance can happen
+  workqueue: Fix work re-entrance when requeue to a different workqueue
 
-+       init_waitqueue_head(&mtd->resume_wq);
-+
-+       atomic_set(&mtd->suspended, 0);
-+
-        mtd_debugfs_populate(mtd);
+ kernel/workqueue.c | 43 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
 
-        device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
-@@ -1558,6 +1571,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
-        struct mtd_ecc_stats old_stats = master->ecc_stats;
-        int ret_code;
+-- 
+2.32.0
 
-+       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
-+
-        ops->retlen = ops->oobretlen = 0;
-
-        ret_code = mtd_check_oob_ops(mtd, from, ops);
-@@ -1597,6 +1612,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
-        struct mtd_info *master = mtd_get_master(mtd);
-        int ret;
-
-+       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
-+
-        ops->retlen = ops->oobretlen = 0;
-
-        if (!(mtd->flags & MTD_WRITEABLE))
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 88227044fc86..70ede36092a9 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -360,6 +360,9 @@ struct mtd_info {
-        int (*_get_device) (struct mtd_info *mtd);
-        void (*_put_device) (struct mtd_info *mtd);
-
-+       atomic_t suspended;
-+       wait_queue_head_t resume_wq;
-+
-        /*
-         * flag indicates a panic write, low level drivers can take appropriate
-         * action if required to ensure writes go through
