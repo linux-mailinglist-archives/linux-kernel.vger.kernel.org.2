@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67326426B77
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F688426B79
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241727AbhJHNKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbhJHNKC (ORCPT
+        id S242285AbhJHNLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:11:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230258AbhJHNLE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:10:02 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753DCC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:08:06 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id i24so37527820lfj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LZ0YuII6022XmWR2aBHQEp9O8Cr/uOmN35lBiBjTAw8=;
-        b=dK/SCa/aTRq38+aKyRi5kh3z9ROGnCnNdz3PgQDSv3X3O+n1oKs5Jo41UMeWAV9mc8
-         iPzUj+kl9S3vz42QCyPJr6+m4uXpmb6ucup4mF1r+gWOGXBLKAFKRA5G17GY9v+ZruSg
-         LUQobfv4fZS+YtnY2x7QQEo/IWVSPzlRtrCV084kyJKgCGERCS+arRragIVhGWwHL1Wl
-         deZ3PVY3KPqJHygEszy1+svbHa7XRyeDjBCsDXM80aqgfhDGpoYVLC22FrEmx9f9Jfjr
-         Qq848LfHXuFr6l4Wt4O5YvojGTkCgpvTObjM/deiRP3HgAfA+6+KegPc0yov7XqmdiDD
-         yt3w==
+        Fri, 8 Oct 2021 09:11:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633698549;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mkeWK1ymkll3fv7JRhxHQKgb62ps++tnFdlpvzfnQY0=;
+        b=iXpsqqizLDOpZ+aP6ijfflNq/K+aIFsXCWV+NRsXwgROkHBa9HscgZlZ7W05HYpO2WXYNV
+        xNmrJS9kFJkpImuH30Jx3WuFvStwDvEqzQpKI7M6vUEOV1+r296Gw4hUXc3FXmnkTn+ZwV
+        Bu+lw4fSPhmdGUQjLRDmUOjYC69+yiA=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-JijDohCZPbipDhY_PdyvEw-1; Fri, 08 Oct 2021 09:09:07 -0400
+X-MC-Unique: JijDohCZPbipDhY_PdyvEw-1
+Received: by mail-wr1-f70.google.com with SMTP id l6-20020adfa386000000b00160c4c1866eso7284820wrb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:09:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LZ0YuII6022XmWR2aBHQEp9O8Cr/uOmN35lBiBjTAw8=;
-        b=O1keywyaPrXM/SfYCbT6mVnq09QvwOk25eH8Yt+C8rGs2Qu89yM6GjDUC4Rc/b7ZvJ
-         IP9OPZk/HfE7PqP8RvedLV/9PgOSBpPLJTQ/OFA8yfUySQZYjYlBDpSNilZp8ZJA2OKQ
-         LRQo8kd/E3K9MjbcRt4DlGHGehkcHBb3n9wdZdN+SnnPpAE3WWiVSvNbBgUjinqLaIaU
-         1sF5bIUINKF7Rr/XuvueWtyAG0e4OVzJcdP3Rh2VLUP2DsYCSo09LhFdbWC+pr/MkXkT
-         gWVGEJaMjc+EWFjUrFd9NSwnhTJqPdWK9g8uJFWUXvxwZxu/satEvh81StG8FWaW4+tc
-         XfGQ==
-X-Gm-Message-State: AOAM532Cy4GRRoeny6IQNAkX/P9myo4sygGqVZPrvpkx4P/oWnz+gcC/
-        1KfPbREJU/peAURDHUpgdXomqmOpzHBiC8Cf2BsL6w==
-X-Google-Smtp-Source: ABdhPJx6fOBDOYeFN7nAZx26g7NM5ePjbl3SxlqSp+KL4I60dXzEcNDUaeVHuPI/S3dsvMBTo3Xeaf8EQ47u7op584s=
-X-Received: by 2002:a05:651c:1792:: with SMTP id bn18mr3627038ljb.521.1633698483612;
- Fri, 08 Oct 2021 06:08:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mkeWK1ymkll3fv7JRhxHQKgb62ps++tnFdlpvzfnQY0=;
+        b=xxsgaYVwVQXw4UCRMzfuOJkDLpkMgua7f/0jUjy3d42+TypuO9cGXTDIG+n9TCYH/4
+         fVEit4IVUP57tYmHO0AljsoR+Mp72w4diAY10tED4augYaPIv7ECXn8aGQw/DSfU47mj
+         3h4uAx8HeA7Eo6x2bRy3CIAsLOUYghWf7GBGlRabLep2NgUhLgQ0boKX8HqdbGh1EfnT
+         UqNHWJKw0FVdOaCQ2VZIlyEiDKaLhQbyIP8i+TUudGvFRqrk61E5RUF2OteyrqnV6u4a
+         aaJFCE4XK6dMz4l1fK53RpYEP7V4fX7eVtJ00b9LJSsqzPykW7c9CHwU9X0Tv1BYy1WV
+         OLUQ==
+X-Gm-Message-State: AOAM531NF1M27EPsX8VYz1nrFWwbv2mYvjpsGsdP2yzH42+tQhGEnWgF
+        ojrFU6B3oz66bWNdaS6+ovFnaLlW8/2CAaJSMzXddOtAQyLRFA1nt49/5p3qgeuqwpAaVwTd4CJ
+        o33uDW66tUMm9gBAX0sBFL1cI
+X-Received: by 2002:a1c:35c7:: with SMTP id c190mr3413661wma.57.1633698546495;
+        Fri, 08 Oct 2021 06:09:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6Irh/RgDB4eREIn5qEs9TrdRzyzO0wePSCvFXOLItst3Y02wjnCRA/4hUwEofgOFQ19FxaA==
+X-Received: by 2002:a1c:35c7:: with SMTP id c190mr3413605wma.57.1633698545980;
+        Fri, 08 Oct 2021 06:09:05 -0700 (PDT)
+Received: from krava (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id k8sm2631133wmr.32.2021.10.08.06.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 06:09:05 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 15:09:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] libperf test: Fix build error
+Message-ID: <YWBC72+8/CaG7vB5@krava>
+References: <20211006095703.477826-1-nakamura.shun@fujitsu.com>
 MIME-Version: 1.0
-References: <20210921004627.2786132-1-osk@google.com> <YUzzjYMwNKwMFGSr@robh.at.kernel.org>
- <CABoTLcRpSuUUu-x-S8yTLUJCiN4RERi2kd8XATP_n3ZTRpAWDg@mail.gmail.com> <CAL_JsqJ+hqKfLDzbMpzPks+wJaNuwU6kodqnqWjkOb8aDf92ZQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqJ+hqKfLDzbMpzPks+wJaNuwU6kodqnqWjkOb8aDf92ZQ@mail.gmail.com>
-From:   Oskar Senft <osk@google.com>
-Date:   Fri, 8 Oct 2021 09:07:47 -0400
-Message-ID: <CABoTLcTTphA4Kpi-qbpUkX4f_V4NjhDv3_vVk8UNgvWfnKVOYw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: Add nct7802 bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Linux HWMON List <linux-hwmon@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211006095703.477826-1-nakamura.shun@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob
+On Wed, Oct 06, 2021 at 06:57:03PM +0900, Shunsuke Nakamura wrote:
+> In test_stat_user_read, following build error occurs except i386 and 
+> x86_64 architectures:
+> 
+> tests/test-evsel.c:129:31: error: variable 'pc' set but not used [-Werror=unused-but-set-variable]
+>   struct perf_event_mmap_page *pc;
+> 
+> Fix build error.
+> 
+> Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 
-> > > > +            temperature-sensors {
-> > > > +                ltd {
-> > > > +                  status = "disabled";
-> > >
-> > > Don't show status in examples.
-> > Hmm, ok. I found it useful to make clear that a sensor can be
-> > disabled, but maybe that's just always the case?
->
-> Yeah, this case is a bit special. The node not being present also disables it.
-Oh, I didn't realize that a missing node defaults to "disabled". What
-I want to achieve is that if a node is not present, we don't configure
-it. The reason behind this is that the HW provides a mechanism to
-configure itself at power-up from a connected EEPROM. In that case
-we'd still want the list the nct7802 in the DTS, but without
-configuration. This effectively is the current behavior.
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-From what I understand from [1] and follow-ups, having the extra
-"temperature-sensors" level is actually not what we want here and I
-proposed a different solution in [2].
+thanks,
+jirka
 
-On that background, I'm wondering how we could have compatibility with
-the previous behavior, where the individual sensors were not listed,
-and just defaulted to whatever the HW came up with, whether that was
-power-on defaults or loaded from an EEPROM.
+> ---
+>  tools/lib/perf/tests/test-evsel.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+> index a184e4861627..9abd4c0bf6db 100644
+> --- a/tools/lib/perf/tests/test-evsel.c
+> +++ b/tools/lib/perf/tests/test-evsel.c
+> @@ -148,6 +148,7 @@ static int test_stat_user_read(int event)
+>  	__T("failed to mmap evsel", err == 0);
+>  
+>  	pc = perf_evsel__mmap_base(evsel, 0, 0);
+> +	__T("failed to get mmapped address", pc);
+>  
+>  #if defined(__i386__) || defined(__x86_64__)
+>  	__T("userspace counter access not supported", pc->cap_user_rdpmc);
+> -- 
+> 2.25.1
+> 
 
-What the code currently does is to check for the presence of
-"temperature-sensors" and only attempt to configure any of them if
-that top level node exists. This enables backwards-compatibility.
-Going forward, I would have done the same for sensor@X and only
-explicitly enable / disable the sensor if the node is present. If it's
-not present, I'd use the power-on / EEPROM-provided defaults.
-
-Thanks
-Oskar.
-
-[1] https://lore.kernel.org/linux-hwmon/20210924114636.GB2694238@roeck-us.net/
-[2] https://lore.kernel.org/linux-hwmon/CABoTLcQYHZbsgzXN7XXKQdDn8S-YsuE+ks9WShAEKcBJojEfcQ@mail.gmail.com/
