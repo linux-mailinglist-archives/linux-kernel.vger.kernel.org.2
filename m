@@ -2,128 +2,593 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B20426A67
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CDA426A6E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240744AbhJHMJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:09:36 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:43014 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbhJHMJf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:09:35 -0400
-Date:   Fri, 8 Oct 2021 08:07:39 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>, musl@lists.openwall.com,
-        Michael Forney <mforney@mforney.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
- layout for snd_pcm_mmap_status/control
-Message-ID: <20211008120736.GF7074@brightrain.aerifal.cx>
-References: <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
- <s5hee8x9f92.wl-tiwai@suse.de>
- <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
- <s5hy27497eo.wl-tiwai@suse.de>
- <20211007160634.GB7074@brightrain.aerifal.cx>
- <s5hr1cw95ar.wl-tiwai@suse.de>
- <20211007165158.GC7074@brightrain.aerifal.cx>
- <s5h5yu79aab.wl-tiwai@suse.de>
- <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
- <s5hv9277oux.wl-tiwai@suse.de>
+        id S240818AbhJHMKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:10:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230155AbhJHMKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:10:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB0D460F4A;
+        Fri,  8 Oct 2021 12:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633694938;
+        bh=QxM0S+KMLM0874KUDm6NZfuXosnbpzSmNDTDHKigkto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SIOCFCFINjt6Ja1/l9CeP3BJLxEHxALUmzA2jnqB9ASDyIQUc32BWaiIggXTlGUMi
+         egi64odlew3WZM116AjcpDcWEvMnYBWQ82uMEKoqC3DQDLpps60wkbP12ec18ijScm
+         /CjiDbZU7nm9BvSmOrD6GzKg4GIgqHK8BiV208OAD9xkoRrV1tL/zHTmBT8H4SvTJk
+         jS1yA0ZQdQRz62n/KMc/k+3IunFvFkpPjrEzp4qcCoTZJlfbsYpGRSe/gSA3k5yiJQ
+         YGIzKSn7jXckpFwa8Gdl6+Ua/PHvrSFQ3NtwPzikdlGq2p8wagLV4CevVS3kWXHHZ6
+         een814zzHmo+Q==
+Received: by pali.im (Postfix)
+        id 4D531760; Fri,  8 Oct 2021 14:08:55 +0200 (CEST)
+Date:   Fri, 8 Oct 2021 14:08:55 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Robert Marko <robert.marko@sartura.hr>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
+Cc:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
+        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5] arm64: dts: marvell: add Globalscale MOCHAbin
+Message-ID: <20211008120855.46zbo2fl5edwf7ja@pali>
+References: <20211008114343.57920-1-robert.marko@sartura.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <s5hv9277oux.wl-tiwai@suse.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211008114343.57920-1-robert.marko@sartura.hr>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:11:34PM +0200, Takashi Iwai wrote:
-> On Fri, 08 Oct 2021 11:24:39 +0200,
-> Arnd Bergmann wrote:
-> > 
-> > On Fri, Oct 8, 2021 at 10:43 AM Takashi Iwai <tiwai@suse.de> wrote:
-> > > On Thu, 07 Oct 2021 18:51:58 +0200, Rich Felker wrote:
-> > > > On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
-> > >
-> > > @@ -557,11 +558,15 @@ struct __snd_pcm_sync_ptr {
-> > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
-> > >  typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
-> > >  typedef char __pad_after_uframe[0];
-> > > +typedef char __pad_before_u32[4];
-> > > +typedef char __pad_after_u32[0];
-> > >  #endif
-> > >
-> > >  #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
-> > >  typedef char __pad_before_uframe[0];
-> > >  typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
-> > > +typedef char __pad_before_u32[0];
-> > > +typedef char __pad_after_u32[4];
-> > >  #endif
-> > 
-> > I think these should remain unchanged, the complex expression was intentionally
-> > done so the structures are laid out the same way on 64-bit
-> > architectures, so that
-> > the kernel can use the __SND_STRUCT_TIME64 path internally on both 32-bit
-> > and 64-bit architectures.
-> 
-> That was explicitly defined, but OK, this isn't necessarily defined
-> here.
-> 
-> > > @@ -2970,8 +2981,17 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
-> > >         memset(&sync_ptr, 0, sizeof(sync_ptr));
-> > >         if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
-> > >                 return -EFAULT;
-> > > -       if (copy_from_user(&sync_ptr.c.control, &(_sync_ptr->c.control), sizeof(struct snd_pcm_mmap_control)))
-> > > -               return -EFAULT;
-> > > +       if (buggy_control) {
-> > > +               if (copy_from_user(&sync_ptr.c.control_api_2_0_15,
-> > > +                                  &(_sync_ptr->c.control_api_2_0_15),
-> > > +                                  sizeof(sync_ptr.c.control_api_2_0_15)))
-> > > +                       return -EFAULT;
-> > > +       } else {
-> > > +               if (copy_from_user(&sync_ptr.c.control,
-> > > +                                  &(_sync_ptr->c.control),
-> > > +                                  sizeof(sync_ptr.c.control)))
-> > > +                       return -EFAULT;
-> > > +       }
-> > 
-> > The problem I see with this is that it might break musl's ability to
-> > emulate the new
-> > interface on top of the old (time32) one for linux-4.x and older
-> > kernels, as the conversion
-> > function is no longer stateless but has to know the negotiated
-> > interface version.
-> > 
-> > It's probably fine as long as we can be sure that the 2.0.16+ API
-> > version only gets
-> > negotiated if both the kernel and user sides support it, and musl only emulates
-> > the 2.0.15 API version from the current kernels.
-> > 
-> > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
-> > can't figure out whether it does the conversion based the on the layout that
-> > is currently used in the kernel, or based on the layout we should have been
-> > using, and would use with the above fix. Rich, can you help me here?
-> 
-> So, at this moment, I'm not sure whether we should correct the struct
-> at all.  This will lead to yet more breakage, and basically the struct
-> itself *works* -- the only bug is in 32bit compat handling in the
-> kernel (again).
-> 
-> The below is a revised kernel patch (again untested), just correcting
-> the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
-> fine as is, as well as 64bit apps on 64bit kernel.
+Hello! See some notes below.
 
-I'm perfectly okay with this if Arnd is! It's probably the least
-invasive and has the least long-term maintenance cost and fallout on
-other projects.
+On Friday 08 October 2021 13:43:43 Robert Marko wrote:
+> Globalscale MOCHAbin is a Armada 7040 based development board.
+> 
+> Specifications:
+> * Armada 7040 Quad core ARMv8 Cortex A-72 @ 1.4GHz
+> * 2 / 4 / 8 GB of DDR4 DRAM
+> * 16 GB eMMC
+> * 4MB SPI-NOR (Bootloader)
+> * 1x M.2-2280 B-key socket (for SSD expansion, SATA3 only)
+> * 1x M.2-2250 B-key socket (for modems, USB2.0 and I2C only)
+> * 1x Mini-PCIe 3.0 (x1, USB2.0 and I2C)
+> * 1x SATA 7+15 socket (SATA3)
+> * 1x 16-pin (2×8) MikroBus Connector
+> * 1x SIM card slot (Connected to the mini-PCIe and both M.2 slots)
+> * 2x USB3.0 Type-A ports via SMSC USB5434B hub
+> * Cortex 2x5 JTAG
+> * microUSB port for UART (PL2303GL/PL2303SA onboard)
+> * 1x 10G SFP+
+> * 1x 1G SFP (Connected to 88E1512 PHY)
+> * 1x 1G RJ45 with PoE PD (Connected to 88E1512 PHY)
+> * 4x 1G RJ45 ports via Topaz 88E6141 switch
+> * RTC with battery holder (SoC provided, requires CR2032 battery)
+> * 1x 12V DC IN
+> * 1x Power switch
+> * 1x 12V fan header (3-pin, power only)
+> * 1x mini-PCIe LED header (2x0.1" pins)
+> * 1x M.2-2280 LED header (2x0.1" pins)
+> * 6x Bootstrap jumpers
+> * 1x Power LED (Green)
+> * 3x Tri-color RGB LEDs (Controllable)
+> * 1x Microchip ATECC608B secure element
+> 
+> Note that 1G SFP and 1G WAN cannot be used at the same time as they are in
+> parallel connected to the same PHY.
 
-Rich
++ Marek
+
+Robert, how it works? Is there some detection which source port (SFP or
+WAN) should be activated? And what happens if you plug SFP module and
+also 1G WAN at the same time?
+
+> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
+> Changes in v5:
+> * Change LED labels to use the common "color:name" format instead
+> 
+> Changes in v4:
+> * Rename the "u-boot" partition to "firmware" which is more appropriate
+> as it a concatenation of mv-ddr + TF-A + U-boot
+> 
+> Changes in v3:
+> * Use IRQ_TYPE_LEVEL_LOW instead of IRQ_TYPE_EDGE_FALLING as both the
+> PCA9554 and Topaz switch have an active LOW IRQ signal.
+> 
+> Changes in v2:
+> * Use "10gbase-r" instead of "10gbase-kr"
+> ---
+>  arch/arm64/boot/dts/marvell/Makefile          |   1 +
+>  .../boot/dts/marvell/armada-7040-mochabin.dts | 452 ++++++++++++++++++
+>  2 files changed, 453 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+> 
+> diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
+> index 34efe0fb6f37..4d3a2ae9adbd 100644
+> --- a/arch/arm64/boot/dts/marvell/Makefile
+> +++ b/arch/arm64/boot/dts/marvell/Makefile
+> @@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-uDPU.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-db.dtb
+> +dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-mochabin.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
+>  dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
+> diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+> new file mode 100644
+> index 000000000000..61f3104a18cf
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
+> @@ -0,0 +1,452 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
+> +/*
+> + * Device Tree file for Globalscale MOCHAbin
+> + * Copyright (C) 2019 Globalscale technologies, Inc.
+> + * Copyright (C) 2021 Sartura Ltd.
+> + *
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include "armada-7040.dtsi"
+> +
+> +/ {
+> +	model = "Globalscale MOCHAbin";
+> +	compatible = "globalscale,mochabin", "marvell,armada7040",
+> +		     "marvell,armada-ap806-quad", "marvell,armada-ap806";
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	aliases {
+> +		ethernet0 = &cp0_eth0;
+> +		ethernet1 = &cp0_eth1;
+> +		ethernet2 = &cp0_eth2;
+> +		ethernet3 = &swport1;
+> +		ethernet4 = &swport2;
+> +		ethernet5 = &swport3;
+> +		ethernet6 = &swport4;
+> +	};
+> +
+> +	/* SFP+ 10G */
+> +	sfp_eth0: sfp-eth0 {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&cp0_i2c1>;
+> +		los-gpio = <&sfp_gpio 3 GPIO_ACTIVE_HIGH>;
+> +		mod-def0-gpio = <&sfp_gpio 2 GPIO_ACTIVE_LOW>;
+> +		tx-disable-gpio = <&sfp_gpio 1 GPIO_ACTIVE_HIGH>;
+> +		tx-fault-gpio  = <&sfp_gpio 0 GPIO_ACTIVE_HIGH>;
+> +	};
+> +
+> +	/* SFP 1G */
+> +	sfp_eth2: sfp-eth2 {
+> +		compatible = "sff,sfp";
+> +		i2c-bus = <&cp0_i2c0>;
+> +		los-gpio = <&sfp_gpio 7 GPIO_ACTIVE_HIGH>;
+> +		mod-def0-gpio = <&sfp_gpio 6 GPIO_ACTIVE_LOW>;
+> +		tx-disable-gpio = <&sfp_gpio 5 GPIO_ACTIVE_HIGH>;
+> +		tx-fault-gpio  = <&sfp_gpio 4 GPIO_ACTIVE_HIGH>;
+> +	};
+> +};
+> +
+> +/* microUSB UART console */
+> +&uart0 {
+> +	status = "okay";
+> +
+> +	pinctrl-0 = <&uart0_pins>;
+> +	pinctrl-names = "default";
+> +};
+> +
+> +/* eMMC */
+> +&ap_sdhci0 {
+> +	status = "okay";
+> +
+> +	bus-width = <4>;
+> +	non-removable;
+> +	/delete-property/ marvell,xenon-phy-slow-mode;
+> +	no-1-8-v;
+> +};
+> +
+> +&cp0_pinctrl {
+> +	cp0_uart0_pins: cp0-uart0-pins {
+> +		marvell,pins = "mpp6", "mpp7";
+> +		marvell,function = "uart0";
+> +	};
+> +
+> +	cp0_spi0_pins: cp0-spi0-pins {
+> +		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59";
+> +		marvell,function = "spi0";
+> +	};
+> +
+> +	cp0_spi1_pins: cp0-spi1-pins {
+> +		marvell,pins = "mpp13", "mpp14", "mpp15", "mpp16";
+> +		marvell,function = "spi1";
+> +	};
+> +
+> +	cp0_i2c0_pins: cp0-i2c0-pins {
+> +		marvell,pins = "mpp37", "mpp38";
+> +		marvell,function = "i2c0";
+> +	};
+> +
+> +	cp0_i2c1_pins: cp0-i2c1-pins {
+> +		marvell,pins = "mpp2", "mpp3";
+> +		marvell,function = "i2c1";
+> +	};
+> +
+> +	pca9554_int_pins: pca9554-int-pins {
+> +		marvell,pins = "mpp27";
+> +		marvell,function = "gpio";
+> +	};
+> +
+> +	cp0_rgmii1_pins: cp0-rgmii1-pins {
+> +		marvell,pins = "mpp44", "mpp45", "mpp46", "mpp47", "mpp48", "mpp49",
+> +			       "mpp50", "mpp51", "mpp52", "mpp53", "mpp54", "mpp55";
+> +		marvell,function = "ge1";
+> +	};
+> +
+> +	is31_sdb_pins: is31-sdb-pins {
+> +		marvell,pins = "mpp30";
+> +		marvell,function = "gpio";
+> +	};
+> +
+> +	cp0_pcie_reset_pins: cp0-pcie-reset-pins {
+> +		marvell,pins = "mpp9";
+> +		marvell,function = "gpio";
+
+Now I spotted this. Why is PERST# pin configured into gpio mode? Is
+there some issue that this pin in pcie mode is not working properly,
+that PCIe controller cannot handle it correctly? Or something else?
+
+> +	};
+> +
+> +	cp0_switch_pins: cp0-switch-pins {
+> +		marvell,pins = "mpp0", "mpp1";
+> +		marvell,function = "gpio";
+> +	};
+> +
+> +	cp0_phy_pins: cp0-phy-pins {
+> +		marvell,pins = "mpp12";
+> +		marvell,function = "gpio";
+> +	};
+> +};
+> +
+> +/* mikroBUS UART */
+> +&cp0_uart0 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_uart0_pins>;
+> +};
+> +
+> +/* mikroBUS SPI */
+> +&cp0_spi0 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_spi0_pins>;
+> +};
+> +
+> +/* SPI-NOR */
+> +&cp0_spi1{
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_spi1_pins>;
+> +
+> +	spi-flash@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +		spi-max-frequency = <20000000>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "firmware";
+> +				reg = <0x0 0x3e0000>;
+> +				read-only;
+> +			};
+> +
+> +			partition@3e0000 {
+> +				label = "hw-info";
+> +				reg = <0x3e0000 0x10000>;
+> +				read-only;
+> +			};
+> +
+> +			partition@3f0000 {
+> +				label = "u-boot-env";
+> +				reg = <0x3f0000 0x10000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +/* mikroBUS, 1G SFP and GPIO expander */
+> +&cp0_i2c0 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_i2c0_pins>;
+> +	clock-frequency = <100000>;
+> +
+> +	sfp_gpio: pca9554@39 {
+> +		compatible = "nxp,pca9554";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pca9554_int_pins>;
+> +		reg = <0x39>;
+> +
+> +		interrupt-parent = <&cp0_gpio1>;
+> +		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
+> +		interrupt-controller;
+> +		#interrupt-cells = <2>;
+> +
+> +		gpio-controller;
+> +		#gpio-cells = <2>;
+> +
+> +		/*
+> +		 * IO0_0: SFP+_TX_FAULT
+> +		 * IO0_1: SFP+_TX_DISABLE
+> +		 * IO0_2: SFP+_PRSNT
+> +		 * IO0_3: SFP+_LOSS
+> +		 * IO0_4: SFP_TX_FAULT
+> +		 * IO0_5: SFP_TX_DISABLE
+> +		 * IO0_6: SFP_PRSNT
+> +		 * IO0_7: SFP_LOSS
+> +		 */
+> +	};
+> +};
+> +
+> +/* IS31FL3199, mini-PCIe and 10G SFP+ */
+> +&cp0_i2c1 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_i2c1_pins>;
+> +	clock-frequency = <100000>;
+> +
+> +	leds@64 {
+> +		compatible = "issi,is31fl3199";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&is31_sdb_pins>;
+> +		shutdown-gpios = <&cp0_gpio1 30 GPIO_ACTIVE_HIGH>;
+> +		reg = <0x64>;
+> +
+> +		led1_red: led@1 {
+> +			label = "red:led1";
+> +			reg = <1>;
+> +			led-max-microamp = <20000>;
+> +		};
+> +
+> +		led1_green: led@2 {
+> +			label = "green:led1";
+> +			reg = <2>;
+> +		};
+> +
+> +		led1_blue: led@3 {
+> +			label = "blue:led1";
+> +			reg = <3>;
+> +		};
+> +
+> +		led2_red: led@4 {
+> +			label = "red:led2";
+> +			reg = <4>;
+> +		};
+> +
+> +		led2_green: led@5 {
+> +			label = "green:led2";
+> +			reg = <5>;
+> +		};
+> +
+> +		led2_blue: led@6 {
+> +			label = "blue:led2";
+> +			reg = <6>;
+> +		};
+> +
+> +		led3_red: led@7 {
+> +			label = "red:led3";
+> +			reg = <7>;
+> +		};
+> +
+> +		led3_green: led@8 {
+> +			label = "green:led3";
+> +			reg = <8>;
+> +		};
+> +
+> +		led3_blue: led@9 {
+> +			label = "blue:led3";
+> +			reg = <9>;
+> +		};
+> +	};
+> +};
+> +
+> +&cp0_mdio {
+> +	status = "okay";
+> +
+> +	/* 88E1512 PHY */
+> +	eth2phy: ethernet-phy@1 {
+> +		reg = <1>;
+> +		sfp = <&sfp_eth2>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&cp0_phy_pins>;
+> +		reset-gpios = <&cp0_gpio1 12 GPIO_ACTIVE_LOW>;
+> +	};
+> +
+> +	/* 88E6141 Topaz switch */
+> +	switch: switch@3 {
+> +		compatible = "marvell,mv88e6085";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		reg = <3>;
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&cp0_switch_pins>;
+> +		reset-gpios = <&cp0_gpio1 0 GPIO_ACTIVE_LOW>;
+> +
+> +		interrupt-parent = <&cp0_gpio1>;
+> +		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			swport1: port@1 {
+> +				reg = <1>;
+> +				label = "lan0";
+> +				phy-handle = <&swphy1>;
+> +			};
+> +
+> +			swport2: port@2 {
+> +				reg = <2>;
+> +				label = "lan1";
+> +				phy-handle = <&swphy2>;
+> +			};
+> +
+> +			swport3: port@3 {
+> +				reg = <3>;
+> +				label = "lan2";
+> +				phy-handle = <&swphy3>;
+> +			};
+> +
+> +			swport4: port@4 {
+> +				reg = <4>;
+> +				label = "lan3";
+> +				phy-handle = <&swphy4>;
+> +			};
+> +
+> +			port@5 {
+> +				reg = <5>;
+> +				label = "cpu";
+> +				ethernet = <&cp0_eth1>;
+> +				phy-mode = "2500base-x";
+> +				managed = "in-band-status";
+> +			};
+> +		};
+> +
+> +		mdio {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			swphy1: swphy1@17 {
+> +				reg = <17>;
+> +			};
+> +
+> +			swphy2: swphy2@18 {
+> +				reg = <18>;
+> +			};
+> +
+> +			swphy3: swphy3@19 {
+> +				reg = <19>;
+> +			};
+> +
+> +			swphy4: swphy4@20 {
+> +				reg = <20>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&cp0_ethernet {
+> +	status = "okay";
+> +};
+> +
+> +/* 10G SFP+ */
+> +&cp0_eth0 {
+> +	status = "okay";
+> +
+> +	phy-mode = "10gbase-r";
+> +	phys = <&cp0_comphy4 0>;
+> +	managed = "in-band-status";
+> +	sfp = <&sfp_eth0>;
+> +};
+> +
+> +/* Topaz switch uplink */
+> +&cp0_eth1 {
+> +	status = "okay";
+> +
+> +	phy-mode = "2500base-x";
+> +	phys = <&cp0_comphy0 1>;
+> +
+> +	fixed-link {
+> +		speed = <2500>;
+> +		full-duplex;
+> +	};
+> +};
+> +
+> +/* 1G SFP or 1G RJ45 */
+> +&cp0_eth2 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_rgmii1_pins>;
+> +
+> +	phy = <&eth2phy>;
+> +	phy-mode = "rgmii-id";
+> +};
+> +
+> +&cp0_utmi {
+> +	status = "okay";
+> +};
+> +
+> +/* SMSC USB5434B hub */
+> +&cp0_usb3_0 {
+> +	status = "okay";
+> +
+> +	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
+> +	phy-names = "cp0-usb3h0-comphy", "utmi";
+> +};
+> +
+> +/* miniPCI-E USB */
+> +&cp0_usb3_1 {
+> +	status = "okay";
+> +};
+> +
+> +&cp0_sata0 {
+> +	status = "okay";
+> +
+> +	/* 7 + 12 SATA connector (J24) */
+> +	sata-port@0 {
+> +		phys = <&cp0_comphy2 0>;
+> +		phy-names = "cp0-sata0-0-phy";
+> +	};
+> +
+> +	/* M.2-2250 B-key (J39) */
+> +	sata-port@1 {
+> +		phys = <&cp0_comphy3 1>;
+> +		phy-names = "cp0-sata0-1-phy";
+> +	};
+> +};
+> +
+> +/* miniPCI-E (J5) */
+> +&cp0_pcie2 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&cp0_pcie_reset_pins>;
+> +	phys = <&cp0_comphy5 2>;
+> +	phy-names = "cp0-pcie2-x1-phy";
+> +	reset-gpio = <&cp0_gpio1 9 GPIO_ACTIVE_LOW>;
+
+Per snps,dw-pcie.yaml file is 'reset-gpio' property deprecated. There
+is 'reset-gpios' property which should be used according pci.txt file.
+
+> +};
+> -- 
+> 2.33.0
+> 
