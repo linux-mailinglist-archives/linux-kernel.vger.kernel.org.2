@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C29B4269D6
+	by mail.lfdr.de (Postfix) with ESMTP id 672734269D7
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240417AbhJHLma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:42:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39484 "EHLO mail.kernel.org"
+        id S243067AbhJHLme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:42:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39486 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243247AbhJHLjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S243255AbhJHLjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Oct 2021 07:39:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABBF1615A7;
-        Fri,  8 Oct 2021 11:33:14 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFE71615E0;
+        Fri,  8 Oct 2021 11:33:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692795;
-        bh=crqvBOsxyoY5DzoUVWd4iR+3mgG1KyOOOtX4Z+Mn0zY=;
+        s=korg; t=1633692797;
+        bh=CEQN41l6ZcHJHjaCHHfGMtXSoAkYU/pYnEf/L9HH98w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A0w+4MKM8kXiuPG5p+EZ7aqFpsbk6K6CAwDjmEZaj0+jrhkkLEFKiWJERc9q/5wj6
-         30erpuK54UH41LvL3x1GmeaqF8r0xMGCbrB+BFBi2BE1dpSMcN6hIINoZEafka35s4
-         /MtS81+sCOHTiZitWkanmVaNkFur6P+KEC27xJeg=
+        b=U/MbRydj3M2mTrCYHQovtNBpdmPRI77IWj+PUEnZhk20IouWej/pUR9kqYLS4O4Jb
+         pB1nT5RN4EO6INQ+DnULrFTP88ZD/BCSjwgQ+78KCqTN3S2pdiaJ7hjqXfXIhLq59H
+         aLDPAKxyuAWaRYqhVXnDC2Mds2K9HaJj5Y7IOgyY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Numfor Mbiziwo-Tiapo <nums@google.com>,
+        Ian Rogers <irogers@google.com>, Borislav Petkov <bp@suse.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 34/48] smb3: correct smb3 ACL security descriptor
-Date:   Fri,  8 Oct 2021 13:28:10 +0200
-Message-Id: <20211008112721.157308399@linuxfoundation.org>
+Subject: [PATCH 5.14 35/48] x86/insn, tools/x86: Fix undefined behavior due to potential unaligned accesses
+Date:   Fri,  8 Oct 2021 13:28:11 +0200
+Message-Id: <20211008112721.194413986@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
 References: <20211008112720.008415452@linuxfoundation.org>
@@ -41,47 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Numfor Mbiziwo-Tiapo <nums@google.com>
 
-[ Upstream commit b06d893ef2492245d0319b4136edb4c346b687a3 ]
+[ Upstream commit 5ba1071f7554c4027bdbd712a146111de57918de ]
 
-Address warning:
+Don't perform unaligned loads in __get_next() and __peek_nbyte_next() as
+these are forms of undefined behavior:
 
-        fs/smbfs_client/smb2pdu.c:2425 create_sd_buf()
-        warn: struct type mismatch 'smb3_acl vs cifs_acl'
+"A pointer to an object or incomplete type may be converted to a pointer
+to a different object or incomplete type. If the resulting pointer
+is not correctly aligned for the pointed-to type, the behavior is
+undefined."
 
-Pointed out by Dan Carpenter via smatch code analysis tool
+(from http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+These problems were identified using the undefined behavior sanitizer
+(ubsan) with the tools version of the code and perf test.
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Numfor Mbiziwo-Tiapo <nums@google.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lkml.kernel.org/r/20210923161843.751834-1-irogers@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/lib/insn.c       | 4 ++--
+ tools/arch/x86/lib/insn.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index b6d2e3591927..e1739d0135b4 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -2398,7 +2398,7 @@ create_sd_buf(umode_t mode, bool set_owner, unsigned int *len)
- 	buf->sd.OffsetDacl = cpu_to_le32(ptr - (__u8 *)&buf->sd);
- 	/* Ship the ACL for now. we will copy it into buf later. */
- 	aclptr = ptr;
--	ptr += sizeof(struct cifs_acl);
-+	ptr += sizeof(struct smb3_acl);
+diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+index 058f19b20465..c565def611e2 100644
+--- a/arch/x86/lib/insn.c
++++ b/arch/x86/lib/insn.c
+@@ -37,10 +37,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
  
- 	/* create one ACE to hold the mode embedded in reserved special SID */
- 	acelen = setup_special_mode_ACE((struct cifs_ace *)ptr, (__u64)mode);
-@@ -2423,7 +2423,7 @@ create_sd_buf(umode_t mode, bool set_owner, unsigned int *len)
- 	acl.AclRevision = ACL_REVISION; /* See 2.4.4.1 of MS-DTYP */
- 	acl.AclSize = cpu_to_le16(acl_size);
- 	acl.AceCount = cpu_to_le16(ace_count);
--	memcpy(aclptr, &acl, sizeof(struct cifs_acl));
-+	memcpy(aclptr, &acl, sizeof(struct smb3_acl));
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
  
- 	buf->ccontext.DataLength = cpu_to_le32(ptr - (__u8 *)&buf->sd);
- 	*len = roundup(ptr - (__u8 *)buf, 8);
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
+diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+index c41f95815480..797699462cd8 100644
+--- a/tools/arch/x86/lib/insn.c
++++ b/tools/arch/x86/lib/insn.c
+@@ -37,10 +37,10 @@
+ 	((insn)->next_byte + sizeof(t) + n <= (insn)->end_kaddr)
+ 
+ #define __get_next(t, insn)	\
+-	({ t r = *(t*)insn->next_byte; insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, insn->next_byte, sizeof(t)); insn->next_byte += sizeof(t); leXX_to_cpu(t, r); })
+ 
+ #define __peek_nbyte_next(t, insn, n)	\
+-	({ t r = *(t*)((insn)->next_byte + n); leXX_to_cpu(t, r); })
++	({ t r; memcpy(&r, (insn)->next_byte + n, sizeof(t)); leXX_to_cpu(t, r); })
+ 
+ #define get_next(t, insn)	\
+ 	({ if (unlikely(!validate_next(t, insn, 0))) goto err_out; __get_next(t, insn); })
 -- 
 2.33.0
 
