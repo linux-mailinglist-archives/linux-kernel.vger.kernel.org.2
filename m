@@ -2,99 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 960EE426F84
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3601B426F86
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231256AbhJHRZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:25:48 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:42234 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhJHRZq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:25:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
-        Message-ID:From:References:Cc:To:content-disposition;
-        bh=1yHLeRHO8pkno4brtqUYK5yg4ds6TZrbo20YZ5aS0ts=; b=TiRMQpU8VcTQ+j/z/VlnzBKt8r
-        I4P+pAqbpS7QlVGx0LPZkdEEUTh2H3NcPSPxEHdyHSyEnGkdhF9AO6GCJ+teRQHod/BhGVNZIn5vE
-        wpR+ax+BY69tQGrutRzEXaUkmcGBoccCrhQt3MuPt7s1az4Rraycv1wQJZF1Jew38sxBu/M4c04Yh
-        dUchnTuyiN3gkPkdyF0VdkP+MFPyVbHOtB88Y2ONV1KQKD+etd9zMYnDz9hEuhbOJfFR1AArZGO0l
-        myptODJ5ZbVg6eA4hMV6PrL2Q3TAlEHGa2CGLA8nlwBKOiB6hF4CCsNrQmfytyzdFsKzq4mKt7cFl
-        2VVIHRWw==;
-Received: from s0106a84e3fe8c3f3.cg.shawcable.net ([24.64.144.200] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1mYtb1-0005vv-Hb; Fri, 08 Oct 2021 11:23:48 -0600
-To:     Bjorn Helgaas <helgaas@kernel.org>, kelvin.cao@microchip.com
-Cc:     kurt.schwemmer@microsemi.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kelvincao@outlook.com
-References: <20211008170550.GA1352932@bhelgaas>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <e60010f3-f803-e60b-3412-346ccc11a0fb@deltatee.com>
-Date:   Fri, 8 Oct 2021 11:23:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232659AbhJHR1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:27:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:37642 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229606AbhJHR1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:27:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0151C1063;
+        Fri,  8 Oct 2021 10:25:25 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.27.111])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 80B7F3F766;
+        Fri,  8 Oct 2021 10:25:20 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 18:25:13 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
+Message-ID: <20211008172513.GD976@C02TD0UTHF1T.local>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924132837.45994-2-kernelfans@gmail.com>
+ <20210924175306.GB42068@C02TD0UTHF1T.local>
+ <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
+ <20210930133257.GB18258@lakrids.cambridge.arm.com>
+ <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
+ <YWBbyPJPpt5zgj+b@piliu.users.ipa.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20211008170550.GA1352932@bhelgaas>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.144.200
-X-SA-Exim-Rcpt-To: kelvincao@outlook.com, linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org, bhelgaas@google.com, kurt.schwemmer@microsemi.com, kelvin.cao@microchip.com, helgaas@kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-8.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.2
-Subject: Re: [PATCH 0/5] Switchtec Fixes and Improvements
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWBbyPJPpt5zgj+b@piliu.users.ipa.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-
-On 2021-10-08 11:05 a.m., Bjorn Helgaas wrote:
-> On Fri, Sep 24, 2021 at 11:08:37AM +0000, kelvin.cao@microchip.com wrote:
->> From: Kelvin Cao <kelvin.cao@microchip.com>
->>
->> Hi,
->>
->> Please find a bunch of patches for the switchtec driver collected over the
->> last few months.
+On Fri, Oct 08, 2021 at 10:55:04PM +0800, Pingfan Liu wrote:
+> On Fri, Oct 08, 2021 at 12:01:25PM +0800, Pingfan Liu wrote:
+> > Sorry that I missed this message and I am just back from a long
+> > festival.
+> > 
+> > Adding Paul for RCU guidance.
+> > 
+> > On Thu, Sep 30, 2021 at 02:32:57PM +0100, Mark Rutland wrote:
+> > > On Sat, Sep 25, 2021 at 11:39:55PM +0800, Pingfan Liu wrote:
+> > > > On Fri, Sep 24, 2021 at 06:53:06PM +0100, Mark Rutland wrote:
+> > > > > On Fri, Sep 24, 2021 at 09:28:33PM +0800, Pingfan Liu wrote:
+> > > > > > In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
+> > > > > > irq, which makes the condition !interrupts_enabled(regs) fail to detect
+> > > > > > the NMI. This will cause a mistaken account for irq.
+> > > > > 
+> > > > Sorry about the confusing word "account", it should be "lockdep/rcu/.."
+> > > > 
+> > > > > Can you please explain this in more detail? It's not clear which
+> > > > > specific case you mean when you say "NMI interrupts an irq", as that
+> > > > > could mean a number of distinct scenarios.
+> > > > > 
+> > > > > AFAICT, if we're in an IRQ handler (with NMIs unmasked), and an NMI
+> > > > > causes a new exception we'll do the right thing. So either I'm missing a
+> > > > > subtlety or you're describing a different scenario..
+> > > > > 
+> > > > > Note that the entry code is only trying to distinguish between:
+> > > > > 
+> > > > > a) This exception is *definitely* an NMI (because regular interrupts
+> > > > >    were masked).
+> > > > > 
+> > > > > b) This exception is *either* and IRQ or an NMI (and this *cannot* be
+> > > > >    distinguished until we acknowledge the interrupt), so we treat it as
+> > > > >    an IRQ for now.
+> > > > > 
+> > > > b) is the aim.
+> > > > 
+> > > > At the entry, enter_el1_irq_or_nmi() -> enter_from_kernel_mode()->rcu_irq_enter()/rcu_irq_enter_check_tick() etc.
+> > > > While at irqchip level, gic_handle_irq()->gic_handle_nmi()->nmi_enter(),
+> > > > which does not call rcu_irq_enter_check_tick(). So it is not proper to
+> > > > "treat it as an IRQ for now"
+> > > 
+> > > I'm struggling to understand the problem here. What is "not proper", and
+> > > why?
+> > > 
+> > > Do you think there's a correctness problem, or that we're doing more
+> > > work than necessary? 
+> > > 
+> > I had thought it just did redundant accounting. But after revisiting RCU
+> > code, I think it confronts a real bug.
+> > 
+> > > If you could give a specific example of a problem, it would really help.
+> > > 
+> > Refer to rcu_nmi_enter(), which can be called by
+> > enter_from_kernel_mode():
+> > 
+> > ||noinstr void rcu_nmi_enter(void)
+> > ||{
+> > ||        ...
+> > ||        if (rcu_dynticks_curr_cpu_in_eqs()) {
+> > ||
+> > ||                if (!in_nmi())
+> > ||                        rcu_dynticks_task_exit();
+> > ||
+> > ||                // RCU is not watching here ...
+> > ||                rcu_dynticks_eqs_exit();
+> > ||                // ... but is watching here.
+> > ||
+> > ||                if (!in_nmi()) {
+> > ||                        instrumentation_begin();
+> > ||                        rcu_cleanup_after_idle();
+> > ||                        instrumentation_end();
+> > ||                }
+> > ||
+> > ||                instrumentation_begin();
+> > ||                // instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
+> > ||                instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
+> > ||                // instrumentation for the noinstr rcu_dynticks_eqs_exit()
+> > ||                instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+> > ||
+> > ||                incby = 1;
+> > ||        } else if (!in_nmi()) {
+> > ||                instrumentation_begin();
+> > ||                rcu_irq_enter_check_tick();
+> > ||        } else  {
+> > ||                instrumentation_begin();
+> > ||        }
+> > ||        ...
+> > ||}
+> > 
 > 
-> Question: Is there a reason this driver should be in drivers/pci/?
-> 
-> It doesn't use any internal PCI core interfaces, e.g., it doesn't
-> include drivers/pci/pci.h, and AFAICT it's really just a driver for a
-> PCI device that happens to be a switch.
-> 
-> I don't really *care* that it's in drivers/pci; I rely on Kurt and
-> Logan to review changes.  The only problem it presents for me is that
-> I have to write merge commit logs for the changes.  You'd think that
-> would be trivial, but since I don't know much about the driver, it
-> does end up being work for me.
+> Forget to supplement the context for understanding the case:
+>   On arm64, at present, a pNMI (akin to NMI) may call rcu_nmi_enter()
+>   without calling "__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);".
+>   As a result it can be mistaken as an normal interrupt in
+>   rcu_nmi_enter().
 
-We did discuss this when it was originally merged.
+I appreciate that there's a window where we treat the pNMI like an IRQ,
+but that's by design, and we account for this in gic_handle_irq() and
+gic_handle_nmi() where we "upgrade" to NMI context with
+nmi_enter()..nmi_exit().
 
-The main reason we want it in the PCI tree is so that it's in a sensible
-spot in the Kconfig hierarchy (under PCI support). Seeing it is still
-PCI hardware. Dropping it into the miscellaneous devices mess (or
-similar) is less than desirable. Moreover, it's not like the maintainers
-for misc have any additional knowledge that would make them better
-qualified to merge these changes. In fact, I'm sure they'd have less
-knowledge and we wouldn't have gotten to the bottom of this last issue
-if it had been a different maintainer.
+The idea is that we have two cases: 
 
-In the future I'll try to be more careful in my reviews to ensure we
-have a better understanding and clearer commit messages. If there's
-anything else we can do to make your job easier, please let us know.
+1) If we take a pNMI from a context where IRQs were masked, we know it
+   must be a pNMI, and perform the NMI entry immediately to avoid
+   reentrancy problems. 
+
+   I think we're all happy with this case.
+
+2) If we take a pNMI from a context where IRQs were unmasked, we don't know
+   whether the trigger was a pNMI/IRQ until we read from the GIC, and
+   since we *could* have taken an IRQ, this is equivalent to taking a
+   spurious IRQ, and while handling that, taking the NMI, e.g.
+   
+   < run with IRQs unmasked >
+     ~~~ take IRQ ~~~
+     < enter IRQ >
+       ~~~ take NMI exception ~~~
+       < enter NMI >
+       < handle NMI >
+       < exit NMI > 
+       ~~~ return from NMI exception ~~~
+     < handle IRQ / spurious / do-nothing >
+     < exit IRQ >
+     ~~~ return from IRQ exception ~~~
+   < continue running with IRQs unmasked >
+
+   ... except that we don't do the HW NMI exception entry/exit, just all
+   the necessary SW accounting.
+
+
+Note that case (2) can *never* nest within itself or within case (1).
+
+Do you have a specific example of something that goes wrong with the
+above? e.g. something that's inconsistent with that rationale?
+
+> And this may cause the following issue:
+> > There is 3 pieces of code put under the
+> > protection of if (!in_nmi()). At least the last one
+> > "rcu_irq_enter_check_tick()" can trigger a hard lock up bug. Because it
+> > is supposed to hold a spin lock with irqoff by
+> > "raw_spin_lock_rcu_node(rdp->mynode)", but pNMI can breach it. The same
+> > scenario in rcu_nmi_exit()->rcu_prepare_for_idle().
+> > 
+> > As for the first two "if (!in_nmi())", I have no idea of why, except
+> > breaching spin_lock_irq() by NMI. Hope Paul can give some guide.
+
+That code (in enter_from_kernel_mode()) only runs in case 2, where it
+cannot be nested within a pNMI, so I struggle to see how this can
+deadlock. It it can, then I would expect the general case of a pNMI
+nesting within and IRQ would be broken?
+
+Can you give a concrete example of a sequence that would lockup?
+Currently I can't see how that's possible.
 
 Thanks,
-
-Logan
+Mark.
