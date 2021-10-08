@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116BE426895
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D6F426888
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240365AbhJHLVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        id S240209AbhJHLTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240238AbhJHLT3 (ORCPT
+        with ESMTP id S240084AbhJHLTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:19:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0449C061570;
-        Fri,  8 Oct 2021 04:17:33 -0700 (PDT)
+        Fri, 8 Oct 2021 07:19:10 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A64DBC061570;
+        Fri,  8 Oct 2021 04:17:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=yKKSjQPEnCfcZmt5gUs0/OGmQc6HpFW+TX3lGOKtFIA=; b=k+IHGVPAZOqkcmZukn/zWFMXoM
-        ZsHwklLO0eb9YmTp01zAApO+oBahjAfNKIU0CZLwIC6/FO3hAj0BnhJ/TfRLSHyqcenNgte4mqfec
-        yU6uhUkPeQFTaJrkjYYAys2ay9C+yaxEjdOWlVYSZuEZY4Vi73F6mZLlDg5RkutOH8p4eW2cxKZkM
-        JQfP2TQIE0NDBdAQeDXiSFUN84Gwjvnn+dg2n5Y5JNLzrjgq3YHPk7jkCN9Elu1hT0GtvjwPumNfr
-        3odHdRZfcSHYbVEZcBq2Cj5889IAyLJcMuWLOzcR2JwijoywebOohtOYny5+RenAJuwX8bx99OuHR
-        4/3N+GJA==;
+        bh=Wpos95iylg095UsnNd0rlORwCu4Pilf9lSCl83VJs5E=; b=D5gn/w+kAJPRW9syBZ6bNLF5jH
+        TihRX03GgyxgNzl+IwjDIV5wSjEiKKF3sVGg3I89GlGxXeb3qS+b5clklyCbFOW3VOMc8JIrpLNw0
+        Kedl++F7FhITDTvd8Ycsam6Xip+7Nog8MZ7VGvSTN+raC5xQ3WYEgnCP2XFgX9xuBQ2zwDpr/j0fg
+        OwatR0nCMo18uKPaA5Eb9+jY0NsUubllEyo3a1mdCN6gm3kzd1vw05cbSXqXHNQ1NprLCl40lncS2
+        vxP5kEnMb5SJmzxtYZHA61gWgRoaaS/68hioT5a17e8YgAEHz+8ZyAwsHZAfPSE3mlIJIPbcOIo4P
+        khD6vjtg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYnsC-0032fe-D9; Fri, 08 Oct 2021 11:17:17 +0000
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mYnsD-008eLB-AA; Fri, 08 Oct 2021 11:17:09 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 93CFE302A1F;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99013302A2C;
         Fri,  8 Oct 2021 13:17:08 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D699F2DB84A66; Fri,  8 Oct 2021 13:17:07 +0200 (CEST)
-Message-ID: <20211008111626.151570317@infradead.org>
+        id DAF102DB84A68; Fri,  8 Oct 2021 13:17:07 +0200 (CEST)
+Message-ID: <20211008111626.211281780@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 08 Oct 2021 13:15:29 +0200
+Date:   Fri, 08 Oct 2021 13:15:30 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     keescook@chromium.org, jannh@google.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
@@ -63,7 +63,7 @@ Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
         hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
         chris@zankel.net
-Subject: [PATCH 2/7] leaking_addresses: Always print a trailing newline
+Subject: [PATCH 3/7] proc: Use task_is_running() for wchan in /proc/$pid/stat
 References: <20211008111527.438276127@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -73,33 +73,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kees Cook <keescook@chromium.org>
 
-For files that lack trailing newlines and match a leaking address (e.g.
-wchan[1]), the leaking_addresses.pl report would run together with the
-next line, making things look corrupted.
-
-Unconditionally remove the newline on input, and write it back out on
-output.
-
-[1] https://lore.kernel.org/all/20210103142726.GC30643@xsang-OptiPlex-9020/
+The implementations of get_wchan() can be expensive. The only information
+imparted here is whether or not a process is currently blocked in the
+scheduler (and even this doesn't need to be exact). Avoid doing the
+heavy lifting of stack walking and just report that information by using
+task_is_running().
 
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- scripts/leaking_addresses.pl |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/proc/array.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---- a/scripts/leaking_addresses.pl
-+++ b/scripts/leaking_addresses.pl
-@@ -455,8 +455,9 @@ sub parse_file
- 
- 	open my $fh, "<", $file or return;
- 	while ( <$fh> ) {
-+		chomp;
- 		if (may_leak_address($_)) {
--			print $file . ': ' . $_;
-+			printf("$file: $_\n");
- 		}
+--- a/fs/proc/array.c
++++ b/fs/proc/array.c
+@@ -541,7 +541,7 @@ static int do_task_stat(struct seq_file
  	}
- 	close $fh;
+ 
+ 	if (permitted && (!whole || num_threads < 2))
+-		wchan = get_wchan(task);
++		wchan = !task_is_running(task);
+ 	if (!whole) {
+ 		min_flt = task->min_flt;
+ 		maj_flt = task->maj_flt;
+@@ -606,10 +606,7 @@ static int do_task_stat(struct seq_file
+ 	 *
+ 	 * This works with older implementations of procps as well.
+ 	 */
+-	if (wchan)
+-		seq_puts(m, " 1");
+-	else
+-		seq_puts(m, " 0");
++	seq_put_decimal_ull(m, " ", wchan);
+ 
+ 	seq_put_decimal_ull(m, " ", 0);
+ 	seq_put_decimal_ull(m, " ", 0);
 
 
