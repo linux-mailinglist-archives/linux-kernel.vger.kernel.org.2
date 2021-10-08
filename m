@@ -2,160 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A32E42712E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECFF427131
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240328AbhJHTIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:08:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhJHTIo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:08:44 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6403C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:06:48 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id g125so8261747oif.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LrmfX34GObvirBK4Iq8eQUnGcvQ0wY+TvxWBiA97kls=;
-        b=G2GT+K3lGKazwMmL6lbYFr4VtJsTOMVA2fV1wnnPCedS+C2rSUmMi2e9P4z6yfPUXq
-         yis176soBf1pdDcxpoxRWMVEX/DLMNc+xbFAR9iDk2s73MxinxOaU/yLP+jHYAISts4Q
-         n2TziaGC7+ybL47H/l9BWf9zrgKMUOGHWQ7MBMoLRddiKBGmgdeBHDkQ9vXxnwgq6uAF
-         iOWseFM4mIk/IL+rNRVZPqEpMF3u590Syw/vkaP4dZFeU1Y8DnnCwXKSBBHzsQX5+iIE
-         YJx+RKzKNgJvDT6mMqvPd8Aw6OKcDUJ/VqnxXOamDBr6oKy0saOhZmnHTBFgEZwv6xra
-         T8gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LrmfX34GObvirBK4Iq8eQUnGcvQ0wY+TvxWBiA97kls=;
-        b=jNzprYlPl7DjAgdthcpH95aUJ/G0E38AGNhegHbfUQPWxlL3p2vZaBChBJxjvNihQa
-         GWSKpAn8DxrkrEhlTvvxgGBXuFFHiyNBCDJ2lW9at40c+oq2UAGvudvmcZtVb7eXc+Us
-         5rMiLEVhSNPvsqzt6xEz0NMhziJEKH1H/QIaTEuqvBndQtkzCkObHuC3k3W6Q7k5WH93
-         zwC7tZ87U0mYdhdG4gCaoN3g3PTaRX6Sa3oq9o9MFmgdGvllBkw4LclD+ucmGMtolERg
-         BUoy6WvLMWYAJtIn7NPj0W0Q+XMk7sxf/SoMjaN/ZNoTaDiOc/MEiJPHP8/OJht4ehpk
-         r9ng==
-X-Gm-Message-State: AOAM531sljUz9rNBHs41UcVeZdu+Iw2pjlBFPkoFeMAXYuKdpLVIqC3U
-        LWM53JGj/L1FjoMWWQ3tKkKXnw==
-X-Google-Smtp-Source: ABdhPJzVSQg8dziDkJydMZ6Kb5vkX9g4Lyp0OAZsBdvJIKINGRiNPzQHWR7UWwOiY1gowTV1UakbjA==
-X-Received: by 2002:aca:e009:: with SMTP id x9mr18290787oig.156.1633720007878;
-        Fri, 08 Oct 2021 12:06:47 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id i127sm52577oia.43.2021.10.08.12.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 12:06:47 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 12:08:25 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Krzysztof Wilczy??ski <kw@linux.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vidyas@nvidia.com
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
- msi
-Message-ID: <YWCXKevPYiSkqapt@ripper>
-References: <YSVTdedrDSgSYgwm@ripper>
- <20210824202925.GA3491441@bjorn-Precision-5520>
- <YSVjQgDmatkkCxtn@ripper>
- <20211008174803.GA32277@lpieralisi>
+        id S240835AbhJHTLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:11:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240509AbhJHTKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:10:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D55C60F4F;
+        Fri,  8 Oct 2021 19:08:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633720134;
+        bh=ahdb9UU3Apu1h/RZvmWWRbT4Xsp0brpHZdLDcNzmF44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WxrBksDjkKXZhnIkrST+vv9VALtQkvfzjJPRC7fUte7oROd0KtfVnH6GuEl3YNjeb
+         2HKU+F7IEIXpdKH4FqwdzWYbkT5Gq9i09ZuAqHCmUy54FcZHXHxq64cBQ3gotUp4wc
+         FK9cO9kVV555PqGPBKX+7zzj22OfL7vQDkefft8Ia1x4Ym1XNzcl+MSNuKmY2gyLWS
+         YLNcCv2Ps579fqrH+VakoxPpQtwjS6/v5eWWg6EQobrqGGRU5jsZm+U/ycgggCiARv
+         41jBLQIJswPYRVFo0a7/x0ls26ortbgHvIr5WR8zJuVfXe210yGuUzpB3GH+//rmqg
+         Vkt0Tuvzz1O3w==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id DCA44410A1; Fri,  8 Oct 2021 16:08:51 -0300 (-03)
+Date:   Fri, 8 Oct 2021 16:08:51 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Jiri Olsa <jolsa@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        David Gow <davidgow@google.com>, eranian@google.com
+Subject: Re: [RFC PATCH 0/5] Start aligning perf test with kunit style
+Message-ID: <YWCXQ5xw3Nc2NGIt@kernel.org>
+References: <20210922081959.390059-1-irogers@google.com>
+ <YUumPj7Oa1HvVGW/@krava>
+ <CAP-5=fVd8zU-uHMg1KjyNPDv-_y-Q562PvPpoWSi1rS-KD0ezw@mail.gmail.com>
+ <YVDlL28JgxaRwMJs@krava>
+ <CAP-5=fXkfMW9jHYz8X9p==gsRRzRCsx5WrGdmzE5YWe+idBeQw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008174803.GA32277@lpieralisi>
+In-Reply-To: <CAP-5=fXkfMW9jHYz8X9p==gsRRzRCsx5WrGdmzE5YWe+idBeQw@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08 Oct 10:48 PDT 2021, Lorenzo Pieralisi wrote:
-
-> [+Vidya]
+Em Mon, Sep 27, 2021 at 09:09:43AM -0700, Ian Rogers escreveu:
+> On Sun, Sep 26, 2021 at 2:25 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Wed, Sep 22, 2021 at 04:36:05PM -0700, Ian Rogers wrote:
+> > > On Wed, Sep 22, 2021 at 2:55 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> > > >
+> > > > On Wed, Sep 22, 2021 at 01:19:53AM -0700, Ian Rogers wrote:
+> > > > > Perf test uses its own structs and code layout that differs from kunit
+> > > > > that was more recently introduced to the kernel. Besides consistency,
+> > > > > it is hoped that moving in the direction of kunit style will enable
+> > > > > reuse of infrastructure like test output formatting for continuous
+> > > > > testing systems. For example:
+> > > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> > > > >
+> > > > > The motivation for this restructuring comes from wanting to be able to
+> > > > > tag tests with a size:
+> > > > > https://lore.kernel.org/linux-perf-users/CAP-5=fWmGyuqFKc-EMP3rbmTkjZ3MS+YSajGZfeRMc38HS82gw@mail.gmail.com/
+> > > > > To have more exhaustive and slower running tests.  This isn't
+> > > > > something kunit currently supports, nor is the execution of python and
+> > > > > shell tests, but it seems sensible to work on an approach with kunit
+> > > > > rather to invent a new wheel inside of perf.
+> > > > >
+> > > > > These initial patches are just refactoring the main test suite
+> > > > > definitions to be in a more kunit style. Kunit isn't depended upon, it
+> > > > > is hoped that this can be done in later patches for the sake of
+> > > > > consistency.
+> > > >
+> > > > seems good.. how far away from kunit is the code now?
+> > >
+> > > Thanks Jiri, It is a ways away from complete. I was thinking to follow up with:
+> > > * Migrate the current sub-test approach to use kunit style test cases
+> > > within a suite.
+> > > * Combine what are currently independent test suites into one test
+> > > suite with different test cases, for example stat.c contains stat,
+> > > stat_config and stat_round tests.
+> > >
+> > > Once this is done then to unify with kunit we need to work out a
+> > > common pattern for skipping a test, etc. There's already a lot here
+> > > and so I wanted to get an opinion before pushing along further.
+> > >
+> > > > >
+> > > > > v1. Built/tested on x86.
+> > > > >
+> > > > > Ian Rogers (5):
+> > > > >   perf test: Use macro for "suite" declarations
+> > > > >   perf test: Use macro for "suite" definitions
+> > > > >   perf test: Make each test/suite its own struct.
+> > > > >   perf test: Move each test suite struct to its test
+> > > > >   perf test: Rename struct test to test_suite
+> > > > >
+> > > > >  tools/perf/arch/arm/include/arch-tests.h      |   2 +-
+> > > > >  tools/perf/arch/arm/tests/arch-tests.c        |  21 +-
+> > > > >  tools/perf/arch/arm/tests/vectors-page.c      |   2 +-
+> > > > >  tools/perf/arch/arm64/include/arch-tests.h    |   2 +-
+> > > > >  tools/perf/arch/arm64/tests/arch-tests.c      |  15 +-
+> > > > >  tools/perf/arch/powerpc/include/arch-tests.h  |   2 +-
+> > > > >  tools/perf/arch/powerpc/tests/arch-tests.c    |  15 +-
+> > > >
+> > > > I can run/test this on ppc/arm if you don't have any
+> > >
+> > > I have pretty easy access to ARM but lost access to PowerPC. If we're
+> > > happy with the direction then I can test ARM and ask for help on
+> > > PowerPC.
+> >
+> > it compiles fine on powerpc and failed tests seem reasonable,
+> > before/after perf test output is same apart from this:
+> >
+> > [root@ibm-p9z-06-lp7 perf]# diff -puw out.old out.new
+> > --- out.old     2021-09-26 17:15:57.947807813 -0400
+> > +++ out.new     2021-09-26 17:20:51.789918644 -0400
+> > @@ -81,7 +81,7 @@
+> >  69: PE file support                                                 : Ok
+> >  70: Event expansion for cgroups                                     : Ok
+> >  72: dlfilter C API                                                  : Ok
+> > -73: Test dwarf unwind                                               : Ok
+> > +73: DWARF unwind                                                    : Ok
+> >  74: build id cache operations                                       : Ok
+> >  75: daemon operations                                               : Ok
+> >  76: perf pipe recording and injection test                          : Ok
+> >
+> > not sure there's somebody out there parsing this output,
+> > maybe we can find out ;-)
 > 
-> On Tue, Aug 24, 2021 at 02:23:14PM -0700, Bjorn Andersson wrote:
-> > On Tue 24 Aug 13:29 PDT 2021, Bjorn Helgaas wrote:
-> > 
-> > > On Tue, Aug 24, 2021 at 01:15:49PM -0700, Bjorn Andersson wrote:
-> > > > On Tue 24 Aug 12:05 PDT 2021, Bjorn Helgaas wrote:
-> > > > 
-> > > > > On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
-> > > > > > On the Qualcomm sc8180x platform the bootloader does something related
-> > > > > > to PCI that leaves a pending "msi" interrupt, which with the current
-> > > > > > ordering often fires before init has a chance to enable the clocks that
-> > > > > > are necessary for the interrupt handler to access the hardware.
-> > > > > > 
-> > > > > > Move the host_init() call before the registration of the "msi" interrupt
-> > > > > > handler to ensure the host driver has a chance to enable the clocks.
-> > > > > 
-> > > > > Did you audit other drivers for similar issues?  If they do, we should
-> > > > > fix them all at once.
-> > > > 
-> > > > I only looked at the DesignWware drivers, in an attempt to find any
-> > > > issues the proposed reordering.
-> > > > 
-> > > > The set of bugs causes by drivers registering interrupts before critical
-> > > > resources tends to be rather visible and I don't know if there's much
-> > > > value in speculatively "fixing" drivers.
-> > > > 
-> > > > E.g. a quick look through the drivers I see a similar pattern in
-> > > > pci-tegra.c, but it's unlikely that they have the similar problem in
-> > > > practice and I have no way to validate that a change to the order would
-> > > > have a positive effect - or any side effects.
-> > > > 
-> > > > Or am I misunderstanding your request?
-> > > 
-> > > That is exactly my request.
-> > 
-> > Okay.
-> > 
-> > > I'm not sure if the potential issue you
-> > > noticed in pci-tegra.c is similar to the one I mentioned here:
-> > > 
-> > >   https://lore.kernel.org/linux-pci/20210624224040.GA3567297@bjorn-Precision-5520/
-> > > 
-> > 
-> > As I still have the tegra driver open, I share your concern about the
-> > use of potentially uninitialized variables.
-> > 
-> > The problem I was concerned about was however the same as in my patch
-> > and the rockchip one, that if the tegra hardware isn't clocked the
-> > pm_runtime_get_sync() (which would turn on power and clock) happens
-> > after setting up the msi chain handler...
-> > 
-> > > but I am actually in favor of speculatively fixing drivers even though
-> > > they're hard to test.  Code like this tends to get copied to other
-> > > places, and fixing several drivers sometimes exposes opportunities for
-> > > refactoring and sharing code.
-> > > 
-> > 
-> > Looking through the other cases mentioned in your reply above certainly
-> > gives a feeling that this problem has been inherited from driver to
-> > driver...
-> > 
-> > I've added a ticket to my backlog to take a deeper look at this.
-> 
-> Vidya, can you look into this please ? In the meantime I would merge
-> this series.
-> 
+> Thanks, actually we have a parser on this output :-) I will correct the issue.
 
-I would greatly appreciate that, as it unlocks 5G connectivity and NVME
-support on my laptop. I still intend to review the items Bjorn pointed
-out, but I haven't gotten there yet.
+Seems like the right direction, people are ok with it, v2 time?
 
-Thanks,
-Bjorn
-
-> Thanks,
-> Lorenzo
+- Arnaldo
+ 
+> Ian
 > 
-> > 
-> > Regards,
-> > Bjorn
+> > jirka
+> >
+> > >
+> > > Thanks,
+> > > Ian
+> > >
+> > > > jirka
+> > > >
+> > > > >  tools/perf/arch/x86/include/arch-tests.h      |  14 +-
+> > > > >  tools/perf/arch/x86/tests/arch-tests.c        |  47 +-
+> > > > >  tools/perf/arch/x86/tests/bp-modify.c         |   2 +-
+> > > > >  tools/perf/arch/x86/tests/insn-x86.c          |   2 +-
+> > > > >  tools/perf/arch/x86/tests/intel-cqm.c         |   2 +-
+> > > > >  .../x86/tests/intel-pt-pkt-decoder-test.c     |   2 +-
+> > > > >  tools/perf/arch/x86/tests/rdpmc.c             |   2 +-
+> > > > >  tools/perf/arch/x86/tests/sample-parsing.c    |   2 +-
+> > > > >  tools/perf/tests/api-io.c                     |   6 +-
+> > > > >  tools/perf/tests/attr.c                       |   4 +-
+> > > > >  tools/perf/tests/backward-ring-buffer.c       |   4 +-
+> > > > >  tools/perf/tests/bitmap.c                     |   4 +-
+> > > > >  tools/perf/tests/bp_account.c                 |  10 +-
+> > > > >  tools/perf/tests/bp_signal.c                  |   8 +-
+> > > > >  tools/perf/tests/bp_signal_overflow.c         |   8 +-
+> > > > >  tools/perf/tests/bpf.c                        |  22 +-
+> > > > >  tools/perf/tests/builtin-test.c               | 441 ++++--------------
+> > > > >  tools/perf/tests/clang.c                      |  18 +-
+> > > > >  tools/perf/tests/code-reading.c               |   4 +-
+> > > > >  tools/perf/tests/cpumap.c                     |  10 +-
+> > > > >  tools/perf/tests/demangle-java-test.c         |   4 +-
+> > > > >  tools/perf/tests/demangle-ocaml-test.c        |   4 +-
+> > > > >  tools/perf/tests/dlfilter-test.c              |   4 +-
+> > > > >  tools/perf/tests/dso-data.c                   |  10 +-
+> > > > >  tools/perf/tests/dwarf-unwind.c               |   2 +-
+> > > > >  tools/perf/tests/event-times.c                |   4 +-
+> > > > >  tools/perf/tests/event_update.c               |   4 +-
+> > > > >  tools/perf/tests/evsel-roundtrip-name.c       |   4 +-
+> > > > >  tools/perf/tests/evsel-tp-sched.c             |   4 +-
+> > > > >  tools/perf/tests/expand-cgroup.c              |   6 +-
+> > > > >  tools/perf/tests/expr.c                       |   4 +-
+> > > > >  tools/perf/tests/fdarray.c                    |   7 +-
+> > > > >  tools/perf/tests/genelf.c                     |   6 +-
+> > > > >  tools/perf/tests/hists_cumulate.c             |   4 +-
+> > > > >  tools/perf/tests/hists_filter.c               |   4 +-
+> > > > >  tools/perf/tests/hists_link.c                 |   4 +-
+> > > > >  tools/perf/tests/hists_output.c               |   4 +-
+> > > > >  tools/perf/tests/is_printable_array.c         |   4 +-
+> > > > >  tools/perf/tests/keep-tracking.c              |   4 +-
+> > > > >  tools/perf/tests/kmod-path.c                  |   4 +-
+> > > > >  tools/perf/tests/llvm.c                       |  22 +-
+> > > > >  tools/perf/tests/maps.c                       |   4 +-
+> > > > >  tools/perf/tests/mem.c                        |   4 +-
+> > > > >  tools/perf/tests/mem2node.c                   |   4 +-
+> > > > >  tools/perf/tests/mmap-basic.c                 |   4 +-
+> > > > >  tools/perf/tests/mmap-thread-lookup.c         |   4 +-
+> > > > >  tools/perf/tests/openat-syscall-all-cpus.c    |   5 +-
+> > > > >  tools/perf/tests/openat-syscall-tp-fields.c   |   4 +-
+> > > > >  tools/perf/tests/openat-syscall.c             |   5 +-
+> > > > >  tools/perf/tests/parse-events.c               |   4 +-
+> > > > >  tools/perf/tests/parse-metric.c               |   4 +-
+> > > > >  tools/perf/tests/parse-no-sample-id-all.c     |   4 +-
+> > > > >  tools/perf/tests/pe-file-parsing.c            |   6 +-
+> > > > >  tools/perf/tests/perf-hooks.c                 |   4 +-
+> > > > >  tools/perf/tests/perf-record.c                |   4 +-
+> > > > >  tools/perf/tests/perf-time-to-tsc.c           |  10 +-
+> > > > >  tools/perf/tests/pfm.c                        |  16 +-
+> > > > >  tools/perf/tests/pmu-events.c                 |  19 +-
+> > > > >  tools/perf/tests/pmu.c                        |   4 +-
+> > > > >  tools/perf/tests/python-use.c                 |   4 +-
+> > > > >  tools/perf/tests/sample-parsing.c             |   4 +-
+> > > > >  tools/perf/tests/sdt.c                        |   6 +-
+> > > > >  tools/perf/tests/stat.c                       |  10 +-
+> > > > >  tools/perf/tests/sw-clock.c                   |   4 +-
+> > > > >  tools/perf/tests/switch-tracking.c            |   4 +-
+> > > > >  tools/perf/tests/task-exit.c                  |   4 +-
+> > > > >  tools/perf/tests/tests.h                      | 179 ++++---
+> > > > >  tools/perf/tests/thread-map.c                 |  10 +-
+> > > > >  tools/perf/tests/thread-maps-share.c          |   4 +-
+> > > > >  tools/perf/tests/time-utils-test.c            |   4 +-
+> > > > >  tools/perf/tests/topology.c                   |   4 +-
+> > > > >  tools/perf/tests/unit_number__scnprintf.c     |   4 +-
+> > > > >  tools/perf/tests/vmlinux-kallsyms.c           |   5 +-
+> > > > >  tools/perf/tests/wp.c                         |  22 +-
+> > > > >  81 files changed, 543 insertions(+), 618 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.33.0.464.g1972c5931b-goog
+> > > > >
+> > > >
+> > >
+> >
+
+-- 
+
+- Arnaldo
