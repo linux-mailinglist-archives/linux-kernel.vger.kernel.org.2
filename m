@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F52426F6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DD8426F75
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhJHRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:22:08 -0400
-Received: from brightrain.aerifal.cx ([216.12.86.13]:43190 "EHLO
-        brightrain.aerifal.cx" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbhJHRWH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:22:07 -0400
-Date:   Fri, 8 Oct 2021 13:20:10 -0400
-From:   Rich Felker <dalias@libc.org>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     musl@lists.openwall.com, Michael Forney <mforney@mforney.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        y2038 Mailman List <y2038@lists.linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
- layout for snd_pcm_mmap_status/control
-Message-ID: <20211008172010.GG7074@brightrain.aerifal.cx>
-References: <s5hee8x9f92.wl-tiwai@suse.de>
- <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
- <s5hy27497eo.wl-tiwai@suse.de>
- <20211007160634.GB7074@brightrain.aerifal.cx>
- <s5hr1cw95ar.wl-tiwai@suse.de>
- <20211007165158.GC7074@brightrain.aerifal.cx>
- <s5h5yu79aab.wl-tiwai@suse.de>
- <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
- <20211008120609.GE7074@brightrain.aerifal.cx>
- <CAK8P3a2=X5tPppmcV4x9=pyodiPfoq=tA5jVKuMwA1nKJe=_bA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2=X5tPppmcV4x9=pyodiPfoq=tA5jVKuMwA1nKJe=_bA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        id S235561AbhJHRWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:22:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233600AbhJHRWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DDA7F60FA0;
+        Fri,  8 Oct 2021 17:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633713625;
+        bh=F7KYL0gGrl9IhTuyfazM+S2URCm30NR8DVxxDwJlB3o=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=HdUg1q/0vLpP8l9YFRwwRbAQ0TjToCkGL7Kdoe4o6pMb0YBQEzG0pBN0leHvIRsaO
+         LSkLF1IvT81h5zT3UrF+2QDng57Nq9rihpgXa6MLPjldfc5QGEYRiTwW4y55zU0Xrh
+         oxh/Um8ZaYCmrYW8/vatg4ooSlD44cTxOma4tUD1uS40iIK4OfQe3z+BbxIjj6AtZw
+         eI7GslJ53EWyXloGYYzrcjPI0y8CUwWMLXXgifLu1eV7cAyRigjgFGhw44ACFdiBye
+         a5LbKdcNygET+7tIyRRRRPphnXKsaj7wixCx7fiDyczJcPMrp3VAHwIBuMkZ2ePJUZ
+         CEcwE0ltbMsHw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D3C706094F;
+        Fri,  8 Oct 2021 17:20:25 +0000 (UTC)
+Subject: Re: [GIT PULL] MMC fixes for v5.15-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20211008084458.30104-1-ulf.hansson@linaro.org>
+References: <20211008084458.30104-1-ulf.hansson@linaro.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20211008084458.30104-1-ulf.hansson@linaro.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-rc4
+X-PR-Tracked-Commit-Id: 8a38a4d51c5055d0201542e5ea3c0cb287f6e223
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9c7e7050f876904e632cc57f7e842ae3874121df
+Message-Id: <163371362586.20952.16548054462521378399.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Oct 2021 17:20:25 +0000
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Linus <torvalds@linux-foundation.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 02:37:12PM +0200, Arnd Bergmann wrote:
-> On Fri, Oct 8, 2021 at 2:06 PM Rich Felker <dalias@libc.org> wrote:
-> > On Fri, Oct 08, 2021 at 11:24:39AM +0200, Arnd Bergmann wrote:
-> > >
-> > > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
-> > > can't figure out whether it does the conversion based the on the layout that
-> > > is currently used in the kernel, or based on the layout we should have been
-> > > using, and would use with the above fix. Rich, can you help me here?
-> >
-> > If the attempted 64-bit ioctl is missing (ENOTTY), it does the
-> > conversion to the legacy 32-bit one and retries with that, then
-> > converts the results back to the 64-bit form.
-> 
-> I understand that it tries to do that.
-> 
-> The part that I'm not sure about is which of the two possible
-> 64-bit forms it's using -- the broken one we have defined in the
-> kernel headers, or the one we were trying to define but failed.
+The pull request you sent on Fri,  8 Oct 2021 10:44:58 +0200:
 
-It's attempting to convert the intended format, not the one that the
-uapi headers defined. That is, it's taking padded-to-64-bit values at
-offsets 0 and 8 in __snd_pcm_mmap_control64, putting them at offsets 0
-and 4 in the 32-bit struct, and padding them back to 64-bit in the
-result.
+> git://git.kernel.org/pub/scm/linux/kernel/git/ulfh/mmc.git tags/mmc-v5.15-rc4
 
-Since applications would have been compiled with the buggy
-(unintended) version of the uapi headers, this will not match the
-application's layout of the struct. I haven't worked through what all
-the consequences of that are, but I think some fix is needed here in
-musl regardless of what happens on the kernel side.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9c7e7050f876904e632cc57f7e842ae3874121df
 
-Rich
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
