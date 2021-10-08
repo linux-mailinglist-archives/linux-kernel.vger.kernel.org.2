@@ -2,87 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3DA426975
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7BE4268BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241242AbhJHLh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240744AbhJHLfz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:35:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3888960FC2;
-        Fri,  8 Oct 2021 11:31:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692710;
-        bh=tXM17ftZo6zb9iZvoXX/Qu2JrcVS4VAYlpj1pqVIu9g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yzj5LDEkypHKxU7yFKpYGeitmgUrSSnl+TWulBaMYhX40Qot6z3hQp5MEcS56yWVC
-         kKDr3Gcey8gxXEVexp+iFK0zkTfv9EaxWLCdkdb3rbpjs072cHHMli7tgf577NFg9c
-         gytZQvWuPnRiKb0nZRGd6plNP6sQ/lPyOflezHe0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        David Miller <davem@davemloft.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 10/48] sparc64: fix pci_iounmap() when CONFIG_PCI is not set
-Date:   Fri,  8 Oct 2021 13:27:46 +0200
-Message-Id: <20211008112720.372365887@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S240349AbhJHLal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:30:41 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:65194 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240341AbhJHLah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:30:37 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1987MxiH001667;
+        Fri, 8 Oct 2021 07:28:28 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3bjhj1124f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 07:28:28 -0400
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 198BSRnl028817
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 Oct 2021 07:28:27 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Fri, 8 Oct 2021
+ 07:28:26 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Fri, 8 Oct 2021 07:28:26 -0400
+Received: from andrei-VirtualBox.ad.analog.com (ADRIMBAR-L02.ad.analog.com [10.48.65.112])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 198BSMC5022852;
+        Fri, 8 Oct 2021 07:28:24 -0400
+From:   <andrei.drimbarean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <devicetree@vger.kernel.org>, <fazilyildiran@gmail.com>,
+        <andrei.drimbarean@analog.com>, <robh+dt@kernel.org>,
+        <jic23@kernel.org>, <Michael.Hennerich@analog.com>,
+        <lars@metafoo.de>
+Subject: [PATCH 1/2] dt-bindings: add adpd188 schema
+Date:   Fri, 8 Oct 2021 14:27:46 +0300
+Message-ID: <20211008112747.79969-2-andrei.drimbarean@analog.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211008112747.79969-1-andrei.drimbarean@analog.com>
+References: <20211008112747.79969-1-andrei.drimbarean@analog.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: -1L1rDgwpPma3Y6g-JKj-aTTL3-djjph
+X-Proofpoint-GUID: -1L1rDgwpPma3Y6g-JKj-aTTL3-djjph
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 spamscore=0 suspectscore=0 malwarescore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110080067
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Andrei Drimbarean <andrei.drimbarean@analog.com>
 
-[ Upstream commit d8b1e10a2b8efaf71d151aa756052fbf2f3b6d57 ]
-
-Guenter reported [1] that the pci_iounmap() changes remain problematic,
-with sparc64 allnoconfig and tinyconfig still not building due to the
-header file changes and confusion with the arch-specific pci_iounmap()
-implementation.
-
-I'm pretty convinced that sparc should just use GENERIC_IOMAP instead of
-doing its own thing, since it turns out that the sparc64 version of
-pci_iounmap() is somewhat buggy (see [2]).  But in the meantime, this
-just fixes the build by avoiding the trivial re-definition of the empty
-case.
-
-Link: https://lore.kernel.org/lkml/20210920134424.GA346531@roeck-us.net/ [1]
-Link: https://lore.kernel.org/lkml/CAHk-=wgheheFx9myQyy5osh79BAazvmvYURAtub2gQtMvLrhqQ@mail.gmail.com/ [2]
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Cc: David Miller <davem@davemloft.net>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Andrei Drimbarean <andrei.drimbarean@analog.com>
 ---
- arch/sparc/lib/iomap.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/iio/light/adi,adpd188.yaml       | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml
 
-diff --git a/arch/sparc/lib/iomap.c b/arch/sparc/lib/iomap.c
-index c9da9f139694..f3a8cd491ce0 100644
---- a/arch/sparc/lib/iomap.c
-+++ b/arch/sparc/lib/iomap.c
-@@ -19,8 +19,10 @@ void ioport_unmap(void __iomem *addr)
- EXPORT_SYMBOL(ioport_map);
- EXPORT_SYMBOL(ioport_unmap);
- 
-+#ifdef CONFIG_PCI
- void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
- {
- 	/* nothing to do */
- }
- EXPORT_SYMBOL(pci_iounmap);
-+#endif
+diff --git a/Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml b/Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml
+new file mode 100644
+index 000000000000..3c08b0904803
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/light/adi,adpd188.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2019 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/light/adi,adpd188.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Analog Devices ADPD188 device driver
++
++maintainers:
++  - Andrei Drimbarean <andrei.drimbarean@analog.com>
++
++description: |
++  Bindings for the Analog Devices ADPD188 device. The device support both SPI and I2C
++  interfaces. Datasheet can be found here:
++    https://www.analog.com/media/en/technical-documentation/data-sheets/adpd188bi.pdf
++properties:
++  compatible:
++    enum:
++      - adi,adpd188
++
++  reg:
++    description: SPI chip select number or I2C slave address
++    maxItems: 1
++
++  interrupts:
++    description: IRQ line for the device or device chain
++    maxItems: 1
++
++  spi-cpol: true
++
++  spi-cpha: true
++
++  spi-max-frequency:
++    maximum: 10000000
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  status:
++    const: 'okay'
++
++  adi,no-of-devices:
++    description: Number of daisy-chained devices on an I2C bus
++      string
++    $ref: "http://devicetree.org/schemas/types.yaml#/definitions/uint8"
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++      status = "okay";
++
++      adpd188@64 {
++        compatible = "adi,adpd188";
++        reg = <0x64>;
++        interrupts = <9 1>;
++        interrupt-parent = <&gpio>;
++        adi,no-of-devices = <8>;
++      };
++    };
++
++additionalProperties: false
 -- 
-2.33.0
-
-
+2.25.1
 
