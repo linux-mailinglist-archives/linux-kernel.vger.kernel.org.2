@@ -2,86 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237DC426D81
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C946F426D82
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242948AbhJHPci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:32:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231129AbhJHPcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99BB860FD7;
-        Fri,  8 Oct 2021 15:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633707038;
-        bh=8+7ImSJ4m3PvpXuUfyLFMGEhzENQrTkj1pOv+1Kg52I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dyxiipKlHhyZPn5jRpNP9wWXumvxzgjOzQMfGY3mYHIMn7r8cca3a8Ra/wYUMXJuR
-         4jzbjtWhVz9I+evoy6pDRsjLBpHbq3n/CuCI0AjMCuId56uJZnuNqBGqzgPqRKKiuJ
-         Azl7WFQgrvdT4yoNnZ4JDbQujjUbnW+T9CmUtoNtVTY8QDv4BE7cww4xNgT1wvdv52
-         8ng+XHoxOXPSq548p697OdRdEEKOBB4xSnAqob/AuWJzJ3JtV9I6GuN+LOYDUx22co
-         eXAiuvrfFtj4Z8Hi82eIZssIyiNs7hLKDyapT644nOB4s6jGCcBZHnwyPwFlxyj/C0
-         LXRrBsBtbWs6A==
-Date:   Fri, 8 Oct 2021 16:30:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, plai@codeaurora.org, bgoswami@codeaurora.org,
-        perex@perex.cz, tiwai@suse.com, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org,
-        Venkata Prasad Potturu <potturu@codeaurora.org>
-Subject: Re: [PATCH v2 4/5] ASoC: codecs: tx-macro: Update tx default values
-Message-ID: <YWBkGzwiOeiIdr9F@sirena.org.uk>
-References: <agross@kernel.org;bjorn.andersson@linaro.org;lgirdwood@gmail.com;broonie@kernel.org;robh+dt@kernel.org;plai@codeaurora.org;bgoswami@codeaurora.org;perex@perex.cz;tiwai@suse.com;srinivas.kandagatla@linaro.org;rohitkr@codeaurora.org;linux-arm-msm@vger.kernel.org;alsa-devel@alsa-project.org;devicetree@vger.kernel.org;linux-kernel@vger.kernel.org;swboyd@chromium.org;judyhsiao@chromium.org;>
- <1632313878-12089-1-git-send-email-srivasam@codeaurora.org>
- <1632313878-12089-5-git-send-email-srivasam@codeaurora.org>
- <e65c77f4-766c-a5ce-9cbd-f1697c1be28c@linaro.org>
- <20ddc4ea-e99c-5492-1931-be1999655563@codeaurora.org>
- <da23bfce-23cd-0869-d752-b0713136072a@linaro.org>
- <5748236d-7db2-9d19-a113-6e66b3dee81f@codeaurora.org>
+        id S243001AbhJHPcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242978AbhJHPct (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:32:49 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DECC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:30:54 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 879331F45B04;
+        Fri,  8 Oct 2021 16:30:52 +0100 (BST)
+Date:   Fri, 8 Oct 2021 17:30:43 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while
+ in suspend
+Message-ID: <20211008173043.6263ba80@collabora.com>
+In-Reply-To: <20211008143825.3717116-1-sean@geanix.com>
+References: <20211008141524.20ca8219@collabora.com>
+        <20211008143825.3717116-1-sean@geanix.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eXI7rXJOJnv0Yxnj"
-Content-Disposition: inline
-In-Reply-To: <5748236d-7db2-9d19-a113-6e66b3dee81f@codeaurora.org>
-X-Cookie: When your memory goes, forget it!
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Sean,
 
---eXI7rXJOJnv0Yxnj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Can you please submit that as a separate thread, ideally with an
+incremented version number, a changelog and a reference to all your
+previous attempts.
 
-On Fri, Oct 08, 2021 at 07:37:12PM +0530, Srinivasa Rao Mandadapu wrote:
-> On 9/28/2021 2:01 PM, Srinivas Kandagatla wrote:
+On Fri,  8 Oct 2021 16:38:24 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
 
-> > In that case you should probably consider using regmap_register_patch()
-> > for corrections to the default registers in sm8250 case.
+> This will prevent reading/writing/erasing to a suspended mtd device.
+> It will force mtd_write()/mtd_read()/mtd_erase() to wait for
+> mtd_resume() to unlock access to mtd devices.
 
-> As regmap_register_patch() not working in this use case, updating defaults
-> in probe for sc7280 specific differences.
+I think this has to be done for all the hooks except ->_reboot(),
+->_get_device() and ->_put_device().
 
-In what way is regmap_register_patch() not working?
+> 
+> Exec_op[0] speed things up, so we see this race when rawnand devices going
 
---eXI7rXJOJnv0Yxnj
-Content-Type: application/pgp-signature; name="signature.asc"
+Mention the commit directly:
 
------BEGIN PGP SIGNATURE-----
+Commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op") speed
+things up, so we see this race when rawnand devices going ...
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFgZBoACgkQJNaLcl1U
-h9C7eAf/XNE/8gWTD1il/H3m6CvBtA6i9ZKiAEK7auQN6RRstOai7B6solohK+n7
-+cAuDDJXZhZicTfYD7kb4fxPLPB/qV4c/sdNw1JEBGdbqDDamSwh9ZCfIvzMF24U
-pyvxSMqKqhC+sopzP4Nkd2eJ7Wfs5nmoQQmg4USw18bqPXCyYG/0EnFgsUEUGpC1
-+9U5zWuOUaN44RZhRsLK5Zc3jkit7XlSON1K4cnFPxadBXaF+uWF3Xo9JayG4Xfy
-AQQdTel0p0ed3zbsYkoU7knG6EZXMAC8Td5Dfds//hd7hbf+cD6geeVbmO4LLHUT
-MuanBlwPHQ2n6rbj+o4nWyL4jo5+KA==
-=do89
------END PGP SIGNATURE-----
+> into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
 
---eXI7rXJOJnv0Yxnj--
+But it's actually commit 013e6292aaf5 ("mtd: rawnand: Simplify the
+locking") that ...
+
+> allows it to return errors rather than locking, before that commit it would
+> have waited for the rawnand device to resume.
+> 
+> Tested on a iMX6ULL.
+> 
+> [0]:
+> ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+> 
+> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+
+You flagged yourself as the author even though you didn't really write
+that code. I guess I'm fine with that, but I'd appreciate a
+
+Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+here, at least.
+
+> ---
+> 
+> Hope I got it all :)
+> 
+>  drivers/mtd/mtdcore.c   | 57 ++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/mtd.h | 36 ++++++++++++++++++--------
+>  2 files changed, 81 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index c8fd7f758938..3c93202e6cbb 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -36,6 +36,44 @@
+>  
+>  struct backing_dev_info *mtd_bdi;
+>  
+> +static void mtd_start_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	/*
+> +	 * Don't take the suspend_lock on devices that don't
+> +	 * implement the suspend hook. Otherwise, lockdep will
+> +	 * complain about nested locks when trying to suspend MTD
+> +	 * partitions or MTD devices created by gluebi which are
+> +	 * backed by real devices.
+> +	 */
+> +	if (!master->_suspend)
+> +		return;
+> +
+
+You need to remove the ->_suspend()/->_resume() implementation in
+mtd_concat.c, otherwise you'll hit the case described in the comment.
+
+BTW, did you test this series with lockdep enabled to make sure we
+don't introduce a deadlock?
+
+> +	/*
+> +	 * Wait until the device is resumed. Should we have a
+> +	 * non-blocking mode here?
+> +	 */
+> +	while (1) {
+> +		down_read(&master->master.suspend_lock);
+> +		if (!master->master.suspended)
+> +			return;
+> +
+> +		up_read(&master->master.suspend_lock);
+> +		wait_event(master->master.resume_wq, master->master.suspended == 0);
+> +	}
+> +}
+> +
+> +static void mtd_end_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	if (!master->_suspend)
+> +		return;
+> +
+> +	up_read(&master->master.suspend_lock);
+> +}
+> +
