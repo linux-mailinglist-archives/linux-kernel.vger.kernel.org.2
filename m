@@ -2,113 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6C6427148
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDE5427150
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240771AbhJHTP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53152 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231407AbhJHTPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:15:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C21D61038;
-        Fri,  8 Oct 2021 19:13:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633720420;
-        bh=AC8mlvl5rpF4l6tOqjjPamQgwiRioSA2m1qyyv95PCQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dk6yvwYY35lLQNJOG6jJoBC18AUEpzfo7iIUP9XGBBjLELZYLKT6Jm9RnH05rrPnY
-         Ft1jaVk8qJ3cmjAuI9NUEwSJH3FMjclwv667zC09NslNOQMdbVpZI753XwRKYdGtqn
-         prNNDc9CE9a3Lf5m3gokvzKKS3fxwtEeP+/RV0Dh4R89CIvw63OH689QO6NIbe0cxI
-         HAfth3XHvI75Vzd2beCbPov9yVPhPGEliZwp37faJkA38ng9zeiw06BTWpId87rUvU
-         AuUWOwEE/76FBPnjxHV5Z3BSHW91aE3rfGgKiUDvAmXf9zrmODwYO/gblboRVK7cin
-         9EjDnI1PLv+dw==
-Received: by mail-ed1-f48.google.com with SMTP id x7so38184871edd.6;
-        Fri, 08 Oct 2021 12:13:39 -0700 (PDT)
-X-Gm-Message-State: AOAM531sbuBKiV0yi+7/aHHeTm1kNz7WgkFaDDn5trp1kuNHQHm3Sphg
-        w7ir88Eh4NczedmPizGKWM93Zd4zUx1wjpgu9Q==
-X-Google-Smtp-Source: ABdhPJzQEW4du5+j1cLnAV3kaaQAC/63eZPYU9De08b8WapQk+yA6t4Vce3DmKIB2uMz/mCtM0KTzCGtvMz+GzFQzfg=
-X-Received: by 2002:a05:6402:27d2:: with SMTP id c18mr8693395ede.271.1633720418392;
- Fri, 08 Oct 2021 12:13:38 -0700 (PDT)
+        id S240235AbhJHTTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:19:23 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:27314 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231342AbhJHTTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:19:20 -0400
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 198IZcKE001315;
+        Fri, 8 Oct 2021 19:16:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=lxvLKyFw2c5cr7vCvNx4noLzzLLaZBTaYPhtk0CGnz0=;
+ b=bQBgZb2I1vEn9EHv06ORAQfKNGLY2h+EjAVoOw8Wu/ax02ncW2ahhIRbMc+TgVb0EYZ3
+ P/v2srJWTj2bUZnXLp1rNuiNx0k/s7wMWGnhlFqIvEZUzdHTONg85v2Xo4ONJce/Ijaj
+ OhkCLl2Bwq1bSjBcMAYngJaUNen4+hdtGqf2sD0Vhc1g+P3GdE+GD8g8YHvT4w2Q9iJ5
+ 91PnJkSa3XiXh6Q730YjlFBwXBuKDS8FVJpx93LJUvtEPO8tN1y/cuD53NivC10ykwzv
+ cYyR8HKrIGEbyFRR/7Too8AbgL3OWZZyzJX468Beb71kNkMUvARfNC40Cl/D0Q7mVXtV 5Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bj1ecss18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Oct 2021 19:16:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 198JGAJw164855;
+        Fri, 8 Oct 2021 19:16:50 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
+        by aserp3030.oracle.com with ESMTP id 3bev7ydh2y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Oct 2021 19:16:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PTw5s9Hk4oM//QFPQiG+xduKvzMiUnjs4WU/IYU+Wqh74y/HQLbB1C7Vgxc87QRU3GzUlST1xYvSVJe9fefSrMFb3lgRyC8tw+RH26xkqy39qCX7evCMSCfwJIr6zxjZuJLI1Ibib+6Vwhep+skM+qzSFOOmtyWKSs1KDyosKTF/2qfyNOCPTqFE72d4OC3PWfUsOtrNxBe7XCRbVuHm0TuRZ/RJksKuPobxYSmQhwiTY74TL2FlHdCS2rwRzOPtczSIPNDDJXbZu7SlqJyhHtxcdrzGiodJUPXqj5qY2KabCzN3o0nH7+k21UxG/cW8t/8PuQtcNUK1X8ufCvxB+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lxvLKyFw2c5cr7vCvNx4noLzzLLaZBTaYPhtk0CGnz0=;
+ b=VHkAObKNBC2fql+eQfshiaViDvbZausssL+qqbgptfzDPfuJ/5zklG8MNyH0rkJTF57pXIvL6QxGHqI6y1y/EKVkti2XzDzp41tsDlpESewGIjYlVS4ebqySgo4bkNaXdaYI26nXg+woxN6AzEXNkXEifYtx0WSq0YCuN1Pub6RFFxL/k1geSlOPZyG7o2PyFOuZTroD/Xu3y5YfPPOn3XYCrrTH3E36N2+nqIWXjbdT64fiQn9AT8BlAUh9nK6gV2TRpfpNikMwTDfBlnlqsnhofY6sYf2F+cvBwbde1Vg2Ciw2tTAbXhg8z4GByRxn9bBMsEkWuniXO+jNsRRYmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lxvLKyFw2c5cr7vCvNx4noLzzLLaZBTaYPhtk0CGnz0=;
+ b=DyJx+GjteBFm2SNoP3+RkzDXmWqIRv2YIRejmTfq0UQ/OqKef+gJADs4YXAobntWnPLMOn/NqO9Y+pv7LTYfF3EPNtGfyt5IzkAd4JEXihNtGOFEwpj+jFWN7eBosAwA06m5irdnK8EMueBGkexjPxPBSZAuHivv6foN1949PXw=
+Authentication-Results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BYAPR10MB2856.namprd10.prod.outlook.com (2603:10b6:a03:89::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
+ 2021 19:16:48 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::dc3a:e374:2d22:9bd9]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::dc3a:e374:2d22:9bd9%4]) with mapi id 15.20.4566.026; Fri, 8 Oct 2021
+ 19:16:48 +0000
+Date:   Fri, 8 Oct 2021 15:16:44 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: contact/tree changes for the swiotlb tree
+Message-ID: <YWCZHIk+QpsDb7Y8@0xbeefdead.lan>
+References: <20211008082637.78598d36@canb.auug.org.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008082637.78598d36@canb.auug.org.au>
+X-ClientProxiedBy: BL1PR13CA0092.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::7) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
- <20211007134641.13417-3-vincent.whitchurch@axis.com> <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
- <20211008135610.GA16402@axis.com> <d794e44d-e67a-e51e-93b0-9b23edba2e21@axentia.se>
-In-Reply-To: <d794e44d-e67a-e51e-93b0-9b23edba2e21@axentia.se>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 8 Oct 2021 14:13:25 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKPFnNsX6g2GWFaF3ntb7mfCt4+YxFtv_JfMt2mp1s+mg@mail.gmail.com>
-Message-ID: <CAL_JsqKPFnNsX6g2GWFaF3ntb7mfCt4+YxFtv_JfMt2mp1s+mg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: iio: io-channel-mux: Add property for
- settle time
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        kernel <kernel@axis.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from 0xbeefdead.lan (130.44.160.152) by BL1PR13CA0092.namprd13.prod.outlook.com (2603:10b6:208:2b9::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.4 via Frontend Transport; Fri, 8 Oct 2021 19:16:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 42ed21c9-7df4-40b6-2e94-08d98a902cdb
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2856:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB28560BB2024053488AFBF16089B29@BYAPR10MB2856.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: awPgHMUZgbGJu8hOlap0zh2VuZP+NRZgrox+98lH9wQmSZ0azFIHKwSey7qM1ou5Szf/r/kgUntWEvuYKchrLil5vhiX1xmcOkm5Paqc2Not5Wyr6rwc84K7SF5an8XnHpANBTwj593pDJ9kZ4bxERadKtg415PBatJmB+IgFVM3XZmeXMnWf2gDsjKGYErVIDw0SDD7SbHyiNeDlu48c0rFYWbZSgWJ19KoYPTWAmMi/vcyh/amyNT9eEjO9mi/lyJfkpkNCefURsFjWcDhZtKdQu5MYbA4HdrFLQPVx6LlghDMmuaL3OpOwBom9LfJaJe/N/JmOZJYC6WtO+RFnsQtQWLdEiSF09Vn3sarU6kuzj+55GIuABCnn8dlkYXGhuGR/+gVlHfd6MpEcVF3KT3Id2rDaUT3og3EEfti430+5jpYyaD9VHTyf87BcS31X3xHIi24n8lb55AnYvdSDQ7TxSCURbx3Ogn6UstTgDbMTD3BlB6m9ehoRhszjYbJ9i1u5eGB0cTXJ0pacQTHDkPQD6nLGWKYerx8z0IN+M4uTIPiZAza4nypir39ygKLXKT0ovHPcQsyZknyTE+a+VkHR8Ha5glaSGxAcTUKLdZjHdNgVC3Y1DMGtfBI5m7GJXU+SAJHAN/bIp9/V4SebW23b/dxzOcqtU/rFa7Fo5lMQEKRh8BxOMNCzydCUKV7oeZ3NGgPkZd+tKP5qaLsX1FSGJVX5wrTEujT8qwWPzs=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(6506007)(66476007)(26005)(186003)(8676002)(66556008)(2906002)(54906003)(6666004)(8936002)(66946007)(508600001)(7696005)(52116002)(36756003)(38350700002)(38100700002)(8886007)(956004)(83380400001)(6916009)(55016002)(4326008)(4744005)(86362001)(316002)(9686003)(5660300002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SkhzjkjiH3qsNU6eoJx/aBGXoO3UTgLCLbVk7Kfh35cSfNySrM+6zgh2BRlP?=
+ =?us-ascii?Q?YF9sMXgG1Wo6WPSdC4bDnSBmcZPiISjuUrQnoiyXs5z4v+VLNox/xD4g4XFJ?=
+ =?us-ascii?Q?JxifDeWMVtbpfIsqDrlMLaSsi+SeWplh0pEEM+va14n23PZZ5v/6N/Ocrsys?=
+ =?us-ascii?Q?8CO9RD4nM6XNjsjD7oqo+c1WTQfKzwtGfEHKvBgQbMoSuw9lKdpN7U9Glr76?=
+ =?us-ascii?Q?+SV7PzfJyf1KRa9iAQ4EJ144asT9k19LvgHJTOLdAMB5lovTw7sKGQq+mgRs?=
+ =?us-ascii?Q?eKXqcLTdVWGH5LNsUNdHt5xjGSlkdAevbYq2MXsCdM1492N/S3iWdCnbhM3t?=
+ =?us-ascii?Q?70ncJ9LsXXaGjHXAtegyr7Ng6k6kwLrk/Dkg8XcsqhjeOuOiNaReoOUBCIYX?=
+ =?us-ascii?Q?A49EJVZr5Wih0HCHOmGdH103QT3b6nbSgqcgvzUQwapUlGQAyY4uvjEUBGff?=
+ =?us-ascii?Q?TG3M1UdFi8dSmaC4TEMQjoKYnhKogrCaBCAHNnC+qqtj8RTGfMRBEKeXQGng?=
+ =?us-ascii?Q?Mvvybs1uG49bhng8LRMcv8UTD3AI8zgMqLgbpqn4+K7vgdYESG6qL7JL+JGR?=
+ =?us-ascii?Q?N4q5U/gJhPAeoj/pP19MyX3thfRBFWzK25O/a1qdGNUEYZu1gb/Lsxe5v2+Z?=
+ =?us-ascii?Q?pJCPUZOPJ+oQAgW0z0VFogoRbhWG/M9rVcDYE3eYoBk7B/RKy+i4gMOtPvYp?=
+ =?us-ascii?Q?ZqooU9R5Z45fBjNoEVFCR5v0+IenNu0DM9IgrOHfwQb/x4A41M97/byMaYpW?=
+ =?us-ascii?Q?4+V6laE/x8sjRVBKdNJ+DPC80YqtpCEmT+9azx6YoRmA1asnSMob1FiJg4f7?=
+ =?us-ascii?Q?D98u4XvmEimTKsIsRtPXUQGrzJB6HT7yuMNza6FfIVsSm2WR5dmk4+HpNxtN?=
+ =?us-ascii?Q?u8fh+BNeIY80qSC7n7yM0tBpXe3IGQD5bau0rqW8Z0zDUIPdXl83gTlVqzHU?=
+ =?us-ascii?Q?GJFaLUFJngbxrifswr0cLxScls3wNNGRL0KCcjnL+/qjyoPd0yt08OtLEtAl?=
+ =?us-ascii?Q?4cy0lOuBCq6VxdrlY6gWLSop2XLt+w6e9mESbECzrLcx1KZEv/DApq8bMcID?=
+ =?us-ascii?Q?n9/bWWheVP1gO0ysrmDuGnDfKGltjR/9ueii0t8Fqz8t6WK+/0TNfulp1zXI?=
+ =?us-ascii?Q?aKctC5w8wpnAhgOM6dcYjYlIFy6d6O/FTWCgIZHkJyaEeoQijvOF4qHMLlM2?=
+ =?us-ascii?Q?ZegQps7CGKIOgZ8SZiTJWUw4aS4T834Ad+tgDuSBOaOXMq/og9cJr6FaYa2v?=
+ =?us-ascii?Q?hV7bRaLYT7eIyKm409ygHL+T/iiKaK608YIm8iu0kt9NnQYUYjVXbIT2zHsx?=
+ =?us-ascii?Q?f/gDpey4ZDxN/uWeda2jdDHc?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 42ed21c9-7df4-40b6-2e94-08d98a902cdb
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 19:16:48.3760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Gw11egNEETcN9A7z8IQsPj7lgQJfvCdRt9PhfeFHtZVbniPg+VykPbToAMaPeDsP8O3gpRuA8RfHS2pg4o+6lQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2856
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10131 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110080108
+X-Proofpoint-GUID: JxFXw5nbov3OdwOtvik2YwfJ7Sab5C-9
+X-Proofpoint-ORIG-GUID: JxFXw5nbov3OdwOtvik2YwfJ7Sab5C-9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 10:27 AM Peter Rosin <peda@axentia.se> wrote:
->
-> On 2021-10-08 15:56, Vincent Whitchurch wrote:
-> > On Fri, Oct 08, 2021 at 04:46:12AM +0200, Rob Herring wrote:
-> >> On Thu, 07 Oct 2021 15:46:40 +0200, Vincent Whitchurch wrote:
-> >>> Hardware may require some time for the muxed analog signals to settle
-> >>> after the muxing is changed.  Allow this time to be specified in the
-> >>> devicetree.
-> >>>
-> >>> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
-> >>> ---
-> >>>  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++++
-> >>>  1 file changed, 5 insertions(+)
-> >>>
-> >>
-> >> Running 'make dtbs_check' with the schema in this patch gives the
-> >> following warnings. Consider if they are expected or the schema is
-> >> incorrect. These may not be new warnings.
-> >
-> > Yes, these are not new warnings.
-> >
-> >> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> >> This will change in the future.
-> >>
-> >> Full log is available here: https://patchwork.ozlabs.org/patch/1537724
-> >>
-> >>
-> >> adc0mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-> >>      arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
-> >>
-> >> adc10mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
-> >>      arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
-> > [...]
-> >
-> > I think the fix for these is to add a "#io-channel-cells": const 1 to
-> > the schema.
->
-> Agreed.
->
-> >> envelope-detector-mux: channels: ['', '', 'sync-1', 'in', 'out', 'sync-2', 'sys-reg', 'ana-reg'] has non-unique elements
-> >>      arch/arm/boot/dts/at91-tse850-3.dt.yaml
-> >
-> > This one looks like an error in that particular devicetree.
-> >
-> The double '' is intentional; this mux is 8-way but only 6 legs are
-> connected, with the first two unused. I don't know how or where to make
-> changes to dodge the warning. I don't want to put names on things that
-> do not exist, and the iio-mux driver is using empty names as a hint to
-> not configure any child channel for those indices that have empty names.
-> If e.g. channels 0-5 are in use, then this is not a problem since you
-> can just end early with 6 names instead of 8, but alas, channels 2-7
-> was what the hw-crowd fancied in this case.
+On Fri, Oct 08, 2021 at 08:26:37AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> I noticed commit
+> 
+>   c4800765c0ed ("MAINTAINERS: Update SWIOTLB maintainership")
+> 
+> in the swiotlb tree today.  I assume that I should update the tree/branch
+> I fetch and the contact information?
 
-There's a specific string type for this: non-unique-string-array
+Hey Stephen,
 
-Unfortunately, no way to say unique or empty strings.
+Yes please go ahead and drop the swiotlb.git tree from your excellent
+system.
 
-Rob
+Thank you!
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
