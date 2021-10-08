@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 926AF426CC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 756E7426CCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhJHOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47318 "EHLO
+        id S230026AbhJHOfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242175AbhJHOc3 (ORCPT
+        with ESMTP id S240224AbhJHOfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:32:29 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11228C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 07:30:34 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id n64so14053504oih.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 07:30:34 -0700 (PDT)
+        Fri, 8 Oct 2021 10:35:40 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EEEBC061570;
+        Fri,  8 Oct 2021 07:33:45 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id v25so30435644wra.2;
+        Fri, 08 Oct 2021 07:33:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RZe90QXqDSFc/e+9Obt5XingpU4tenpe4hJC8C/MZXE=;
-        b=XIEe7TAd8yXZAI+Z+DNdd1G3duNavJKSO56H2nfVZ/hXRzvhY6u0Dm4RdUhV0Y2WOz
-         b0Fiq752el8Cu2mbWT57S9+VRwimBSdLfFbzpwyHlxG3hj6NpLnQVj3lZMBJuvhplPIN
-         c3FHtGnuJdIYxy2oL+MQcdFD7ljOqXSFUGDs3eYRwIIFI9dzC9hIMU51tDtqzw0mXfP/
-         WrNOPd8mAPvfIRd60Moxi57KkbRfFiqpuvjv51dK+TLDeWOA8w+ZecSKWZmNOx4VDD3n
-         +o+Bq2HXjEyORIrhxi+zQsqC+Gjtsysrd2Chji3qTAAGm3sFFyCntKWI2onerzNgSnhN
-         GLiQ==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=TShzTngLZi6o8lnvb+j8av9MVCWHAWUlT4LrbexAp60=;
+        b=pmchaDdegR3myZdKHZV3r9+KFJhoet23YZP2QFSc+6jYCKT3uv7L6TBBAi6uWLmT5m
+         XXKwRYEKBe8lA4O9pgTrItK1ChPJOsJzJE9Fo17lX6XSsYgo2qTYslmOcw1vKSz7ALoj
+         p6ETP6Z+kTmh5ILTnqOVUPuAm0yvHqjSZxaFZHllo1L87bHlZGQNpi5lHX2Zr+I5DqgS
+         /RsSS8/ghniGNVvYwacrxnIsEQG8Glh9YOd0JDZ+hSp+trU0gm26dfXUEITblhX5Fb7O
+         lHkgiCCP+YuzzL9iXkF+TAjdvB1/fy59kkFBHvNAZrmRKJcK2Cp6r5kbUMj+JRYQ601Z
+         m+Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RZe90QXqDSFc/e+9Obt5XingpU4tenpe4hJC8C/MZXE=;
-        b=of+qoXpCF/JPwFFFCzJYNW/9jQQPIiRSI2sVH6759yWlO4H8IyDFrGbta0GN/Ur8b3
-         YVcwZegJQMBfPKexdaAZCahbRTdg0vPRC0tH0IJ9anVpsSi2rS9MAQqW66BBi/oT0h9q
-         HmbuvA/E3IjbCLKFQfzj9xLIrpQIib4rw5/Zqh7Rb35cyx+U3DuzP+2j4gUBWo+okKrF
-         YohU3Jl/R+4ORj6ijsuOdR5u9YMHROSOHK6CDIINmYq5pD53awgpDNTO3Gy1vJFJBW0g
-         Syf3j0zN8+wj3o5qPbj30U7GHkrU19O0S7cQeQ7mm+cFFlLBzYNQ1aRviylQexx1xwjI
-         2ZmQ==
-X-Gm-Message-State: AOAM533ACnxmBty7o1/Wo8AJn3uDAAjYqanDK5iNsLtHFYQgqpw+f554
-        ACWFMBjShXz8QGlNQIwxWj84BG7q93IPD6w6X/Y=
-X-Google-Smtp-Source: ABdhPJxRVxScYicBlo3GRM/GBeUy2slKeQT2zz4Bf0PO2HPDEFeddeFpIPldubvCAZnlMOKuQsrShsQJxeieGL7FOJg=
-X-Received: by 2002:aca:4587:: with SMTP id s129mr16219447oia.5.1633703433313;
- Fri, 08 Oct 2021 07:30:33 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=TShzTngLZi6o8lnvb+j8av9MVCWHAWUlT4LrbexAp60=;
+        b=QmBYjLpEbb5tSvqznGH8eujKxxrnrcVUaqyE6A4Bu4h2LXzeeULzRQfLG3kwsUFt51
+         u6Mno4TbDoJsZLB1eAjvnNFexAGeHKYWbi6Y6eD5hBzdMzID/dQs+p2XRXcfxTmGY/Ek
+         El0fv/dtel+0cl7Pk5IKZ4jcemngB9NStxbpmuSxqxMOH3if2ir81rOh31nZow3+U7WK
+         aVLw6TF2A5MhaGGm5WspWHTnBBXE97NQXUf/LKIrfIU3W6KVLFJJCVZw2PZfJHU7roFJ
+         TXU8jJNRKjCTqw2CW8sUBxSymbZtQzMlXSAV60uM6AcLXWCQljM+Rf+Lb3WVrVvomXfQ
+         oTgg==
+X-Gm-Message-State: AOAM533vyaOW9xEu/iCEgCll03tJDOyFcebEIRRgeMOoQpxsyhr6gU+S
+        kxYmB97zrc+dTvFiDquz0yU=
+X-Google-Smtp-Source: ABdhPJwAtIQy4fNzxj7d0iRIf29L54prs1Xgk5dkVhacrkjXhk4lwBP2+waVCVUbE0adQC7vmnygoA==
+X-Received: by 2002:adf:bb88:: with SMTP id q8mr4512891wrg.390.1633703623613;
+        Fri, 08 Oct 2021 07:33:43 -0700 (PDT)
+Received: from [192.168.2.177] ([206.204.146.29])
+        by smtp.gmail.com with ESMTPSA id y191sm13532166wmc.36.2021.10.08.07.33.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 07:33:43 -0700 (PDT)
+Message-ID: <0623e9d8-8b79-d163-0204-745809b0d0ba@gmail.com>
+Date:   Fri, 8 Oct 2021 16:33:41 +0200
 MIME-Version: 1.0
-References: <20211008084019.502758-1-lv.ruyi@zte.com.cn>
-In-Reply-To: <20211008084019.502758-1-lv.ruyi@zte.com.cn>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Oct 2021 10:30:22 -0400
-Message-ID: <CADnq5_M14NOOm3cQt8BV_CvRaortNzDz803kE9RdTK5RE+AK-Q@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: remove duplicate include in dcn201_clk_mgr.c
-To:     CGEL <cgel.zte@gmail.com>
-Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
-        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Charlene Liu <charlene.liu@amd.com>,
-        Zhan Liu <zhan.liu@amd.com>, lv.ruyi@zte.com.cn,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Zeal Robot <zealci@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH 1/2] dt-bindings: arm: Add MT6589 Fairphone 1
+Content-Language: en-US
+To:     Luca Weiss <luca@z3ntu.xyz>, linux-mediatek@lists.infradead.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Arnd Bergmann <arnd@arndb.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Olof Johansson <olof@lixom.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, soc@kernel.org
+References: <20211005202833.96526-1-luca@z3ntu.xyz>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20211005202833.96526-1-luca@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
 
-Alex
 
-On Fri, Oct 8, 2021 at 4:40 AM <cgel.zte@gmail.com> wrote:
->
-> From: Lv Ruyi <lv.ruyi@zte.com.cn>
->
-> Remove all but the first include of reg_helper.h and core_types.h
-> from dcn201_clk_mgr.c.
->
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+On 05/10/2021 22:28, Luca Weiss wrote:
+> Add the compatible for Fairphone 1 smartphone with MT6589 SoC.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 > ---
->  .../gpu/drm/amd/display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c    | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c
-> index 46e7efe9a78a..db9950244c7b 100644
-> --- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c
-> +++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn201/dcn201_clk_mgr.c
-> @@ -26,8 +26,6 @@
->  #include "reg_helper.h"
->  #include "core_types.h"
->  #include "dccg.h"
->  #include "clk_mgr_internal.h"
->  #include "dcn201_clk_mgr.h"
->  #include "dcn20/dcn20_clk_mgr.h"
->  #include "dce100/dce_clk_mgr.h"
-> -#include "reg_helper.h"
-> -#include "core_types.h"
->  #include "dm_helpers.h"
->  #include "dm_services.h"
->
-> --
-> 2.25.1
->
+
+This patch is now applied to v5.15-next/dts32
+
+Thanks!
+
+>   Documentation/devicetree/bindings/arm/mediatek.yaml | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 80a05f6fee85..0fa55497b96f 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -32,6 +32,7 @@ properties:
+>             - const: mediatek,mt6580
+>         - items:
+>             - enum:
+> +              - fairphone,fp1
+>                 - mundoreader,bq-aquaris5
+>             - const: mediatek,mt6589
+>         - items:
+> 
