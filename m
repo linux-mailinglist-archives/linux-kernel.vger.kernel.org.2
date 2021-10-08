@@ -2,77 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7EC42708B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA62427092
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242599AbhJHSLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:11:32 -0400
-Received: from mail-4018.proton.ch ([185.70.40.18]:28901 "EHLO
-        mail-4018.proton.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243741AbhJHSJg (ORCPT
+        id S239912AbhJHSOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:14:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239731AbhJHSOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:09:36 -0400
-Date:   Fri, 08 Oct 2021 18:07:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail; t=1633716457;
-        bh=00Ll+BiOoS4RM6Cs8JN4sseiemsZm3PpdaSamdVe79o=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=A0/HM2NWHe4JdW99+1KuqedkPbPrRyjleSFJTMYg7iWEqDxHFE3EkCH+tr2kFMpta
-         RYCmdUyQV+EvmABKjD2amiR8UNyH81bOWPD+mnAHxHPuGhQ2kFIeKiJARNEuPWLsSp
-         lq/xf9oRyTDfDCIluSg4hRcx3OM82Dhl8Z4YukZRjDkKnzuT/WNas3jZPGTAMMlB64
-         Y7XIBWAajQJAAeTcvhp+AwNAVi4bvOkNEh3MHLMADwHircYkN+hg08/63f/Sqw6Z1J
-         UL7HGcrHpeZjS6u2uBaVVMGKhXGyvOpgp9EuJ99Z3hqmVumqUyb5ENVBVXJo15Kh9U
-         c8PrbErGNd6IA==
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Christoph Hellwig <hch@lst.de>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <_POw9ikafXoqSFqiOb8SZb_uvRZ4okgD4qrl4EtJ0UBiQTV7pwV3pJIM20eIzmpuFWDeBF9NPD00r72ttX0mZZ0bNeH_J44MoaB-jfjrQSU=@emersion.fr>
-In-Reply-To: <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com>
-References: <20211008113116.4bdd7b6c@canb.auug.org.au> <jXLIcCYkgHdIQna5SW6W4GGHVG5By4-GXiaosbXyyaYXFNTH60nmH6twdxMYgM2X63FhEOyxU7Qh_vbKFywBKmUwp7l4DYXe_hTt86AS-ZM=@emersion.fr> <20211008192910.600a188d@canb.auug.org.au> <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr> <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com>
+        Fri, 8 Oct 2021 14:14:50 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A249C035446
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 11:10:01 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id x27so42470026lfa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 11:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P8+FegxBRVxRrgPWVVGMtq1wKrHppaacPkxALtOQRBY=;
+        b=YOrwrfRfPyQO1ZBAi+3+DQkNbgBhBy6EKwbXvINEkq/aTPFW1og7L/fs9NpqbzN6z1
+         5X6oQf/+B/Silb9FbQqmO3xRnDgCgkcvoNMUDxQJyhwX4y78gLOZALuLdIxQP01PPnv9
+         PZE8oA0Tmwdh4ZQejjLfIe2InvfCi6/bINLzFjNKmly6EB5gGP2dARkT8c7Aw4e3y2jT
+         fW7hTrVOq/PyN7QaFU3UIe7patsW97p6Kbw+79ue8O7EB0qh2Tkraw11fKO7Z55kqPLh
+         YABx3ZHNFqLZ+vzYtrhA474WGAvNz2DkBJuL+Hb0SESrhgHIcjelLPzINb9gYfRYcC4B
+         20BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P8+FegxBRVxRrgPWVVGMtq1wKrHppaacPkxALtOQRBY=;
+        b=cYpCoCKlrrvIpziPNsxH+cGz9p2m1K+k6QhOT7kn+AEbDZP5hHgtQg39/L9ul8TO+I
+         u3rLIXg74yI8hxaVrGT8GDgboR661C7f+OBW1sQCuUQoY/tgDVdF5xFff2DV9Mg8UYj9
+         sLUnkUlgG6CP6KIrFPx358hpvVHX/GXeRqA8DeQXYTQc2EqcQg5rZ3LPEj9x2nyHFY29
+         d2w5eILyt96O02t/ZERJ0SnYjY3JimZaoH5yfIOWVWCD7+oBk7EwubL5PC1QV8wZzyLO
+         HMwXg/j8G7vhuybgqO+ZpwvizZ24WIb8RgrbZehNKwyBK4MjazPNpu7C3HeCIKVrijdK
+         Fb4A==
+X-Gm-Message-State: AOAM532+bwg7R3Pq7blT6YvfQ/RHa2xLUT+43TDp4AQA6YZg8krGJESs
+        aFRgt5gTy/XlLmrCuG0UQg3u2RcpFpd28k1CmollUQ==
+X-Google-Smtp-Source: ABdhPJwu1Rpl3tvnFDgCiaoWQ3gS12YFEfzTq97WXsi7NA4DKXpDqKrjR0tv9fwX/2tcJ2jyOo6K+IRTwTdICIjJACw=
+X-Received: by 2002:a05:6512:110a:: with SMTP id l10mr11921727lfg.550.1633716599116;
+ Fri, 08 Oct 2021 11:09:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <8900731fbc05fb8b0de18af7133a8fc07c3c53a1.1633712176.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <8900731fbc05fb8b0de18af7133a8fc07c3c53a1.1633712176.git.christophe.leroy@csgroup.eu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 8 Oct 2021 11:09:47 -0700
+Message-ID: <CAKwvOdnWbKdBuSGtmu2DURy5dtVGUYWJ_mwxSL6N5OfbmjU3EA@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm: Fix content of section containing lkdtm_rodata_do_nothing()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, October 8th, 2021 at 16:11, Alex Deucher <alexdeucher@gmail.com>=
- wrote:
-
-> On Fri, Oct 8, 2021 at 5:22 AM Simon Ser contact@emersion.fr wrote:
+On Fri, Oct 8, 2021 at 9:59 AM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 >
-> > On Friday, October 8th, 2021 at 10:29, Stephen Rothwell sfr@canb.auug.o=
-rg.au wrote:
-> >
-> > > That symbol (get_mm_exe_file) is not exported to modules.
-> >
-> > I see this:
-> >
-> >     EXPORT_SYMBOL(get_mm_exe_file);
-> >
-> >
-> > in kernel/fork.c
+> On a kernel without CONFIG_STRICT_KERNEL_RWX, running EXEC_RODATA
+> test leads to "Illegal instruction" failure.
 >
-> Was recently removed:
+> Looking at the content of rodata_objcopy.o, we see that the
+> function content zeroes only:
 >
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
-/kernel/fork.c?id=3D05da8113c9ba63a8913e6c73dc06ed01cae55f68
+>         Disassembly of section .rodata:
 >
-> I guess we need to rethink that patch.
+>         0000000000000000 <.lkdtm_rodata_do_nothing>:
+>            0:   00 00 00 00     .long 0x0
+>
+> Add the contents flag in order to keep the content of the section
+> while renaming it.
+>
+>         Disassembly of section .rodata:
+>
+>         0000000000000000 <.lkdtm_rodata_do_nothing>:
+>            0:   4e 80 00 20     blr
+>
+> Fixes: e9e08a07385e ("lkdtm: support llvm-objcopy")
 
-CC Christoph
+Thanks for the patch; sorry I broke this.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Would it be reasonable to re-export get_mm_exe_file? amdgpu uses it here:
+> Cc: stable@vger.kernel.org
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  drivers/misc/lkdtm/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/misc/lkdtm/Makefile b/drivers/misc/lkdtm/Makefile
+> index aa12097668d3..e2984ce51fe4 100644
+> --- a/drivers/misc/lkdtm/Makefile
+> +++ b/drivers/misc/lkdtm/Makefile
+> @@ -20,7 +20,7 @@ CFLAGS_REMOVE_rodata.o                += $(CC_FLAGS_LTO)
+>
+>  OBJCOPYFLAGS :=
+>  OBJCOPYFLAGS_rodata_objcopy.o  := \
+> -                       --rename-section .noinstr.text=.rodata,alloc,readonly,load
+> +                       --rename-section .noinstr.text=.rodata,alloc,readonly,load,contents
+>  targets += rodata.o rodata_objcopy.o
+>  $(obj)/rodata_objcopy.o: $(obj)/rodata.o FORCE
+>         $(call if_changed,objcopy)
+> --
+> 2.31.1
+>
 
-https://gitlab.freedesktop.org/agd5f/linux/-/commit/0d4da915c7098eca2aa6f55=
-9f42e33b5e9c7c5e8
+
+-- 
+Thanks,
+~Nick Desaulniers
