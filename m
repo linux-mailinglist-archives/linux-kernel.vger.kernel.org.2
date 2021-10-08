@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18ED6426CC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D72426CC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236679AbhJHOaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229756AbhJHOau (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:30:50 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA07AC061570;
-        Fri,  8 Oct 2021 07:28:55 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so9541448pjb.1;
-        Fri, 08 Oct 2021 07:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=9m//ScOjc2+foBtqzngu6sUkQumvQWbj21pUrbR6Er8=;
-        b=q6CUAt0JDFYaVJg7KC0gXgX5EmO5El1avZ/uKy1ZenwMUG3o+G7/oMNcAz7IyW/GZp
-         VTaWBH7OlQDqYsiCXFBlUBP3R3SCmQnrlGY1ihhB9vY/7rJmVnm+CqjzcNMloDNovkgY
-         FHmQN3wipQU167nZFe9QxptvO/yWMs1bcYcqva8qcpbnOghHNfQzNGFKsJKem3Qgo321
-         lNBaQD1OqdNvi7N8dZ6qOi4MgEM8HSYZE4yqyg04k4sAQeY6IHVAqeYoJ1Gyjsh/ba07
-         2kQCYKDDhrVQywwZYJyGBMtRL1KHK88WmnHHy8w+v6zxNGqXijO+UaSKF/Cb/vSgoj2R
-         JbgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=9m//ScOjc2+foBtqzngu6sUkQumvQWbj21pUrbR6Er8=;
-        b=YSEiKzf6XRXTHnDkF+S6ZNATD6F0hHc58J4IBjmpXAVwyObhyRpIZVsaFI1yQ/9Wn2
-         cTHzSWM6CL9kc0OEgRH2F6s3wjU5iBnhB64lvx8f89cY+Kwz5ShWXKqj7PFHCa4rniBJ
-         dZygr2rbeg+WJQIBxHvx6OR8jEEOvlTaSlMmYtpXhmfD/RMgjCBKloW1Zb9KOFgZqkok
-         XiGWAHn0p1COBMC2cKUSpIBFawei9DcT/KZsmbFv79tv2ZVYa0lUYMQet7wFFYzQODHP
-         1SZGoX/aodesVhUhi5c7BFTWo1OF6GAndn2FkQnOCXm9AJgCIZUycwRSZ6zWgp8sT3C4
-         sctw==
-X-Gm-Message-State: AOAM5318i3uv8SX7INC6zeyzkR88QSI93oVA9UN6CWbQs2+F/8N443Nc
-        3mf0JXdrEfadpah7pYV5i7lqWnIIQ6xs5Gw/lYE=
-X-Google-Smtp-Source: ABdhPJxhwTSPJsqkXGicBNnSLU8g3R02UsXrqwv84ITVFyPOrnLwSILzFsI0pBtwT3WTGHvFG+NKvA==
-X-Received: by 2002:a17:902:8b83:b029:12c:cbce:a52f with SMTP id ay3-20020a1709028b83b029012ccbcea52fmr9849047plb.9.1633703334741;
-        Fri, 08 Oct 2021 07:28:54 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id y23sm11663726pje.34.2021.10.08.07.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 07:28:54 -0700 (PDT)
-Message-ID: <616055a6.1c69fb81.2d36b.1609@mx.google.com>
-Date:   Fri, 08 Oct 2021 07:28:54 -0700 (PDT)
-X-Google-Original-Date: Fri, 08 Oct 2021 14:28:52 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/29] 5.10.72-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S240647AbhJHObP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:31:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42936 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229756AbhJHObJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:31:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 143D460EB6;
+        Fri,  8 Oct 2021 14:29:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633703354;
+        bh=8okn7WP++OasUoqVVEB1PJg6oI3Q18MMY20pDXxku2M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XelR3LJXFLSXs7lgpCH8wyXJ/sZ7T24II38jHjkrAi3W37jkBXIK0VhPJ9BtWtRge
+         bxBW3lHLheFQckuVxTfmnQYkoY9UFrZ51cXbofV7E5vEAXUOnaOzPeU5+1oOqvBLOU
+         r82S7JJJ3JNSDoR/5zI9u+nPGk7Lvlh5P1tQCfqJCXGAgj6VtH4gDd8VrLVavFqT2W
+         NjYuvC/eq4LpwX09kMHqjd/RSoGkogbetKJPd1DJbAHvwybn2CjxUd/2+higVD4xQ1
+         MBHKUnYKvpwnRv69AjzrSevsvU1aWUgeQ28Gp0ZsewP5dz/gOqOaFD77hllbFyLbnL
+         /uXsDmbLr+9pA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D994A410A1; Fri,  8 Oct 2021 11:29:10 -0300 (-03)
+Date:   Fri, 8 Oct 2021 11:29:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 01/37] libperf cpumap: improve idx function
+Message-ID: <YWBVtjS4qdnWKpK4@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <f1543c15797169c21e8b205a4a6751159180580d.1629490974.git.rickyman7@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1543c15797169c21e8b205a4a6751159180580d.1629490974.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Oct 2021 13:27:47 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.72 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Em Sat, Aug 21, 2021 at 11:19:07AM +0200, Riccardo Mancini escreveu:
+> >From commit 7074674e7338863e ("perf cpumap: Maintain cpumaps ordered
+> and without dups"), perf_cpu_map elements are sorted in ascending order.
 > 
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.72-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> This patch improves the perf_cpu_map__idx function by using a binary
+> search.
 
-5.10.72-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Thanks, applied.
 
+- Arnaldo
+
+ 
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/lib/perf/cpumap.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index ca0215047c326af4..fb633272be3aaed9 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -265,11 +265,18 @@ bool perf_cpu_map__empty(const struct perf_cpu_map *map)
+>  
+>  int perf_cpu_map__idx(struct perf_cpu_map *cpus, int cpu)
+>  {
+> -	int i;
+> +	int low = 0, high = cpus->nr, idx, cpu_at_idx;
+>  
+> -	for (i = 0; i < cpus->nr; ++i) {
+> -		if (cpus->map[i] == cpu)
+> -			return i;
+> +	while (low < high) {
+> +		idx = (low + high) / 2;
+> +		cpu_at_idx = cpus->map[idx];
+> +
+> +		if (cpu_at_idx == cpu)
+> +			return idx;
+> +		else if (cpu_at_idx > cpu)
+> +			high = idx;
+> +		else
+> +			low = idx+1;
+>  	}
+>  
+>  	return -1;
+> -- 
+> 2.31.1
+
+-- 
+
+- Arnaldo
