@@ -2,100 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4107D426759
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EE342675C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238983AbhJHKGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        id S239435AbhJHKID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238471AbhJHKGC (ORCPT
+        with ESMTP id S238955AbhJHKIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:06:02 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D778C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iMx07sxMhcPwXYjQoP0WkUCRraloIW2C9/p6HTD4Uco=; b=kX+PwXRCRCJjrA9HJ7DimYvXV7
-        f+rHZ9IUuGSEQIiN55vscPNTdEkdozs9qJji1GUdWzmjp+mA/ZBmGZMdWcLkDdV9V1Nqq3IXki1RB
-        I7jzC4TMhhbrOLNX3EuZTkBsQnGzC0Vem3qVdeg9TAs/3FbgstTnuwandrEjTWkaJ8RmSJzGzAGrX
-        0abWrEaN3/Wq2CXI3U3JSKUBhXvLIMIZX1oA+C65mOpyBF1nxJ6BrvxUCkuk0q04I8CvcXGgkRgAv
-        wdGauWeh0oXorfP3vMXx1R7FzkirHIUfQBLITHrPuELrBI65lrhhCEKSIo2lucLtLvzDEO2Kkx0GC
-        8OPSc7jQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mYmiy-002yae-GI; Fri, 08 Oct 2021 10:03:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0479F300347;
-        Fri,  8 Oct 2021 12:03:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DD5B42CFD3AED; Fri,  8 Oct 2021 12:03:31 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 12:03:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, mbenes@suse.cz
-Subject: Re: [PATCH 1/2] objtool: Optimize re-writing jump_label
-Message-ID: <YWAXc2bhu/iTI4pv@hirez.programming.kicks-ass.net>
-References: <20211007212211.366874577@infradead.org>
- <20211007212626.950220936@infradead.org>
- <20211008065550.zge5zkbfrki5osv2@treble>
+        Fri, 8 Oct 2021 06:08:02 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C05DCC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:06:07 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id oa12-20020a17090b1bcc00b0019f715462a8so7400285pjb.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OzoTpc5FXnHcSloTlGi/7AXCgf7dBEC1jkxAe77KXeE=;
+        b=LpauymSNX9w1tBNgyes0/5NF8kSaIGg2a8v9QUXm3LfmX6BZi2lrszHYLztN3+N9IQ
+         Y6qkh4YrIAzDiF4g9Tr8AKSLLK/UP94QF5qqqZWmTKRwS60+cdl4GdvAzoWSNlScmDbg
+         gK9gsL5va9SYEExcIy1UcpTF84Ay4Kx0pzZrg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OzoTpc5FXnHcSloTlGi/7AXCgf7dBEC1jkxAe77KXeE=;
+        b=5rCnJt52k4ecm+0m08eQJMVn2dM/BwyrB1MEJHYplCESMS1tPQYXzxOQ2ujXqnHHqm
+         3uYVqOvjb1v6Dz31EpRP5ecY7yaqniRFe+PcNy0YlpZZw7YoNHmdhPfU3/wKq7pH8A58
+         +4STjO+fIKvNbDtF5DleiUdzaFT8qHbKMJ3AugJL1YQWQ0Y+U0MBPMOuVtig5JRwXDOC
+         WUSws6eTMEO2qiEIVVyBw15a53hklhjOAiOzA+p3n1R6HhNHpFJ/jMlUJgSGB+40Cdw4
+         IpKA20sTrspW75egslFTjOMYe33O97yCXHthicJsN6maKmbPDQ3c+NKL4NQsLQ40Zj9v
+         /tyw==
+X-Gm-Message-State: AOAM531K/G7lOhyc9sywmnwnXWrnHKyCjePGFIiI9zMvxlxrRQENIL5P
+        a6gEqqQUZO09fYj6syYHVow14g==
+X-Google-Smtp-Source: ABdhPJzJVsYPcjlZMl4UGYSd/jIzybZRW4K3X481JHpKP8/MszRBdV0Jexrh0L7avTtIStwZrTWy8A==
+X-Received: by 2002:a17:902:7ec8:b0:13b:9d7a:6396 with SMTP id p8-20020a1709027ec800b0013b9d7a6396mr8603898plb.86.1633687567030;
+        Fri, 08 Oct 2021 03:06:07 -0700 (PDT)
+Received: from wenstp920.tpe.corp.google.com ([2401:fa00:1:10:ad8d:f936:2048:d735])
+        by smtp.gmail.com with ESMTPSA id a7sm2082255pfn.150.2021.10.08.03.06.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 03:06:06 -0700 (PDT)
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Chen-Yu Tsai <wenst@chromium.org>, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+Subject: [PATCH 0/2] media: rkvdec: Align decoder behavior with Hantro and Cedrus
+Date:   Fri,  8 Oct 2021 18:04:21 +0800
+Message-Id: <20211008100423.739462-1-wenst@chromium.org>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008065550.zge5zkbfrki5osv2@treble>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 11:55:50PM -0700, Josh Poimboeuf wrote:
-> On Thu, Oct 07, 2021 at 11:22:12PM +0200, Peter Zijlstra wrote:
-> > There's no point to re-write the jump_label NOP when it's already a NOP.
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > ---
-> >  tools/objtool/check.c |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- a/tools/objtool/check.c
-> > +++ b/tools/objtool/check.c
-> > @@ -1397,7 +1397,7 @@ static int handle_jump_alt(struct objtoo
-> >  		return -1;
-> >  	}
-> >  
-> > -	if (special_alt->key_addend & 2) {
-> > +	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
-> >  		struct reloc *reloc = insn_reloc(file, orig_insn);
-> >  
-> >  		if (reloc) {
-> 
-> While you're at it, a comment would be very helpful for that whole
-> clause.
+Hi everyone,
 
-Like so?
+While working on the rkvdec H.264 decoder for ChromeOS, I noticed some
+behavioral differences compared to Hantro and Cedrus:
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1397,7 +1397,16 @@ static int handle_jump_alt(struct objtoo
- 		return -1;
- 	}
- 
--	if (special_alt->key_addend & 2) {
-+	/*
-+	 * When, for whatever reason, the jump-label site cannot emit a right
-+	 * sized NOP, then it can use Bit-1 of the struct static_key pointer to
-+	 * indicate this instruction should be NOP'ed by objtool.
-+	 *
-+	 * Also see arch/x86/include/asm/jump_label.h:arch_static_branch(),
-+	 * where we leave the assembler to pick between jmp.d8 and jmp.d32
-+	 * based on destination offset.
-+	 */
-+	if ((special_alt->key_addend & 2) && orig_insn->type != INSN_NOP) {
- 		struct reloc *reloc = insn_reloc(file, orig_insn);
- 
- 		if (reloc) {
+1. The driver always overrides the sizeimage setting given by userspace
+   for the output format. This results in insufficient buffer space when
+   running the ChromeOS video_decode_accelerator_tests test program,
+   likely due to a small initial resolution followed by dynamic
+   resolution change.
+
+2. Doesn't support dynamic resolution change.
+
+This small series fixes both and aligns the behavior with the other two
+stateless decoder drivers. This was tested on the downstream ChromeOS
+5.10 kernel with ChromeOS. Also compiled tested on mainline but I don't
+have any other RK3399 devices set up to test video stuff, so testing
+would be very much appreciated.
+
+Also, I'm not sure if user applications are required to check the value
+of sizeimage upon S_FMT return. If the value is different or too small,
+what can the application do besides fail? AFAICT it can't split the
+data of one frame (or slice) between different buffers.
+
+Andrzej, I believe the second patch would conflict with your VP9 series.
+
+
+Regards
+ChenYu
+
+Chen-Yu Tsai (2):
+  media: rkvdec: Do not override sizeimage for output format
+  media: rkvdec: Support dynamic resolution changes
+
+ drivers/staging/media/rkvdec/rkvdec-h264.c |  5 +--
+ drivers/staging/media/rkvdec/rkvdec.c      | 40 +++++++++++-----------
+ 2 files changed, 23 insertions(+), 22 deletions(-)
+
+-- 
+2.33.0.882.g93a45727a2-goog
+
