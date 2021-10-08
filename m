@@ -2,72 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AB2427284
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3944A427287
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 22:48:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243161AbhJHUtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 16:49:31 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:54284 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243129AbhJHUta (ORCPT
+        id S243183AbhJHUtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 16:49:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243129AbhJHUtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 16:49:30 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B4C3B1C0B77; Fri,  8 Oct 2021 22:47:33 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 22:47:33 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/29] 5.10.72-rc1 review
-Message-ID: <20211008204733.GC8372@duo.ucw.cz>
-References: <20211008112716.914501436@linuxfoundation.org>
+        Fri, 8 Oct 2021 16:49:45 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7ADDC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 13:47:49 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso6216944pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 13:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lixom-net.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t4CIiQ2IZifzfO1S6EOd33trwTzZFffSiflj15uAAVE=;
+        b=YpMxZY3n9gbkNSH+7be2/NK2ysrVgRJ8X8FMlaJg168WjJa8hpTuGZPN8JEBqtGdhW
+         jjAfsQoPR3v8K7A3ONibX8xI4xsU7Cg/CUe8QhkTGyeDldsKoVuOTQAfDU4rCzQjv5Na
+         jXnqNU892IDOQzHQifmM7xQVZkY6/EngaHOK2N2rCgsZrJjVaEkfi/VyVO6DCDYhTQwY
+         dNm9TcxNk9h5QI49D79AqEXvnKURtxTqxwkmBRQsONF5keSVCBRCt5bRBiK/kMbxYmud
+         Pw19qkeVImsYGAyFkiAQHB9qchmdWGLOSvN9JP/6yqxLkpIDQ3uAVV5YENuXpJ6OIIYy
+         c0oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t4CIiQ2IZifzfO1S6EOd33trwTzZFffSiflj15uAAVE=;
+        b=osmJalcAr4iPR2gECvokh9E99PkR+4ULVYd+pE5UGs+hXOyKS3VVa7oxLB4d8p22ug
+         mg6gaH8uviludNKi94WI4RyKhQfkFqweWpOUeIius3LW8fhzjUyN53ATH/bPY73xxiQo
+         NtyWEuR3S8RIjUQYRcp+S9V+0PzwtZeWZCHvCyBnGeZWchU310JpgLOEPaQBikfLI9/C
+         VKnGan1wTPvkaqV///ZYYx0YpuNLTN5xY8UQfHk1VairCk2Jm4C3kQ1PNqQxiFowePnv
+         GWOGp51Uym83wBttvFVLObyjZCchmksPIQnRLDlytixCqpYeiVUIoePdRAAruulruYTV
+         iePw==
+X-Gm-Message-State: AOAM530Z/DB8f0sOadioBiN0SbJX3CZw2E8Iv48a/1puKJZqkWZLFT7w
+        9QZfSNnVzlvlXkCPn5q7EL42A2alUbU2bCgyJll9Dw==
+X-Google-Smtp-Source: ABdhPJypmgQv4T/Wc0DMrpjvau3LVuaOQpfECvvN1A8H1c3ueU3qLgzA0GwZV2Gz0N76bWvLD1vh8OO8lH4cQgfdsaU=
+X-Received: by 2002:a17:90a:ec17:: with SMTP id l23mr2487525pjy.184.1633726069175;
+ Fri, 08 Oct 2021 13:47:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="mvpLiMfbWzRoNl4x"
-Content-Disposition: inline
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <87mtnylaam.fsf@mpe.ellerman.id.au> <B2915AF7-A603-43CC-9ED4-9F8A869CBCC5@xenosoft.de>
+In-Reply-To: <B2915AF7-A603-43CC-9ED4-9F8A869CBCC5@xenosoft.de>
+From:   Olof Johansson <olof@lixom.net>
+Date:   Fri, 8 Oct 2021 13:47:37 -0700
+Message-ID: <CAOesGMgnx6P=J--bygw=vcL1b4mQbdACBX+Mwc7BtmEmMtP7KA@mail.gmail.com>
+Subject: Re: Add Apple M1 support to PASemi i2c driver
+To:     Christian Zigotzky <chzigotzky@xenosoft.de>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Darren Stevens <darren@stevens-zone.net>,
+        Arnd Bergmann <arnd@arndb.de>, Sven Peter <sven@svenpeter.dev>,
+        Hector Martin <marcan@marcan.st>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-i2c@vger.kernel.org, Wolfram Sang <wsa@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        "R.T.Dickinson" <rtd2@xtra.co.nz>, mohamed.mediouni@caramail.com,
+        Matthew Leaman <matthew@a-eon.biz>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "R.T.Dickinson" <rtd@a-eon.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Stan Skowronek <stan@corellium.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Christian,
 
---mvpLiMfbWzRoNl4x
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Self-service available on lore:
+https://lore.kernel.org/all/20211008163532.75569-1-sven@svenpeter.dev/
 
-Hi!
+There are links on there to download a whole thread as an mbox if needed.
 
-> This is the start of the stable review cycle for the 5.10.72 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
 
-CIP testing did not find any problems here:
+-Olof
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
-
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---mvpLiMfbWzRoNl4x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYWCuZQAKCRAw5/Bqldv6
-8qBrAJ9nHb6aEVZtm/v53akaTaeAhDyuSQCfQX1Q7FlxfSGSYMA3qVlJopuVyAo=
-=zP4F
------END PGP SIGNATURE-----
-
---mvpLiMfbWzRoNl4x--
+On Fri, Oct 8, 2021 at 1:20 PM Christian Zigotzky
+<chzigotzky@xenosoft.de> wrote:
+>
+> Hi Michael,
+>
+> Do you have a mbox link for the v2 changes?
+>
+> I would like to test them on my AmigaOne X1000.
+>
+> Thanks,
+> Christian
+>
+> On 27. Sep 2021, at 09:58, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> =EF=BB=BFChristian, the whole series is downloadable as a single mbox her=
+e:
+>
+> https://patchwork.ozlabs.org/series/264134/mbox/
+>
+> Save that to a file and apply with `git am`.
+>
+> eg:
+>
+> $ wget -O mbox https://patchwork.ozlabs.org/series/264134/mbox/
+> $ git am mbox
+>
+> It applies cleanly on v5.15-rc3.
+>
+> cheers
