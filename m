@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3A942692F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9FC426942
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241005AbhJHLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:34:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59492 "EHLO mail.kernel.org"
+        id S241535AbhJHLfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:35:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241144AbhJHLcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 690BD61350;
-        Fri,  8 Oct 2021 11:30:10 +0000 (UTC)
+        id S240573AbhJHLdC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:33:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E868061390;
+        Fri,  8 Oct 2021 11:30:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692610;
-        bh=jxfqHxqQwEtOlyX/LI/jnQF+Sx6R2yAlljBmVdzjwks=;
+        s=korg; t=1633692656;
+        bh=ngnFhTU/JETqR764UoXSOx79JXyoqcpvWMouzvqyaTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c46dSjFJeEvWg7jVCKINlMYL+dcVQD+IHcG6AY6CFk9RHpviZOZEDyL34q33wPh6b
-         5C2NUFzSrgRm/33Tns+D4I10uemiJVVTa1zYBOqK67L/M/i5DrHg1agGEddCCrsOKx
-         CZOEzGMLvE1UxJkj6weqvO1zuHkB1YM1E9ouAibg=
+        b=wicJl/onATIiKN0nFXPi4+Ya+rRWoyeYjZPiGb5QpTlag+5FA7xOUkkQc4BHLnRS/
+         cyMrtMjV0EKM+53LKs49g29o+7e7bDXlNdmUqVLuze0OgOBV9yD+a4S9gpNyqOceit
+         p6Ga2N6HkmxR8sQmsizP7pKl9H9raggjGZcUUc90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Changbin Du <changbin.du@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 11/16] tools/vm/page-types: remove dependency on opt_file for idle page tracking
-Date:   Fri,  8 Oct 2021 13:28:01 +0200
-Message-Id: <20211008112715.835219022@linuxfoundation.org>
+Subject: [PATCH 5.10 15/29] selftests: be sure to make khdr before other targets
+Date:   Fri,  8 Oct 2021 13:28:02 +0200
+Message-Id: <20211008112717.457749755@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-References: <20211008112715.444305067@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +42,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Changbin Du <changbin.du@gmail.com>
+From: Li Zhijian <lizhijian@cn.fujitsu.com>
 
-[ Upstream commit ebaeab2fe87987cef28eb5ab174c42cd28594387 ]
+[ Upstream commit 8914a7a247e065438a0ec86a58c1c359223d2c9e ]
 
-Idle page tracking can also be used for process address space, not only
-file mappings.
+LKP/0Day reported some building errors about kvm, and errors message
+are not always same:
+- lib/x86_64/processor.c:1083:31: error: ‘KVM_CAP_NESTED_STATE’ undeclared
+(first use in this function); did you mean ‘KVM_CAP_PIT_STATE2’?
+- lib/test_util.c:189:30: error: ‘MAP_HUGE_16KB’ undeclared (first use
+in this function); did you mean ‘MAP_HUGE_16GB’?
 
-Without this change, using with '-i' option for process address space
-encounters below errors reported.
+Although kvm relies on the khdr, they still be built in parallel when -j
+is specified. In this case, it will cause compiling errors.
 
-  $ sudo ./page-types -p $(pidof bash) -i
-  mark page idle: Bad file descriptor
-  mark page idle: Bad file descriptor
-  mark page idle: Bad file descriptor
-  mark page idle: Bad file descriptor
-  ...
+Here we mark target khdr as NOTPARALLEL to make it be always built
+first.
 
-Link: https://lkml.kernel.org/r/20210917032826.10669-1-changbin.du@gmail.com
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+CC: Philip Li <philip.li@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/vm/page-types.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/lib.mk | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/vm/page-types.c b/tools/vm/page-types.c
-index 58c0eab71bca..d2e836b2d16b 100644
---- a/tools/vm/page-types.c
-+++ b/tools/vm/page-types.c
-@@ -1329,7 +1329,7 @@ int main(int argc, char *argv[])
- 	if (opt_list && opt_list_mapcnt)
- 		kpagecount_fd = checked_open(PROC_KPAGECOUNT, O_RDONLY);
- 
--	if (opt_mark_idle && opt_file)
-+	if (opt_mark_idle)
- 		page_idle_fd = checked_open(SYS_KERNEL_MM_PAGE_IDLE, O_RDWR);
- 
- 	if (opt_list && opt_pid)
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index 0af84ad48aa7..b7217b5251f5 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -48,6 +48,7 @@ ARCH		?= $(SUBARCH)
+ # When local build is done, headers are installed in the default
+ # INSTALL_HDR_PATH usr/include.
+ .PHONY: khdr
++.NOTPARALLEL:
+ khdr:
+ ifndef KSFT_KHDR_INSTALL_DONE
+ ifeq (1,$(DEFAULT_INSTALL_HDR_PATH))
 -- 
 2.33.0
 
