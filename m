@@ -2,433 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5381A426D74
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B22426D7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242938AbhJHP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242662AbhJHP2g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:28:36 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EC0C061570;
-        Fri,  8 Oct 2021 08:26:40 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so12130235otx.3;
-        Fri, 08 Oct 2021 08:26:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=rvz43kIUDx2A/KQ/yd0MvjWPXZHEOVXQfe4FngXFlq8=;
-        b=X0ldjGNKnezUXNARMpk6TRcMW7NFmpqVCL/GWgpNxFbIo2JKPcwtp8oNh57J9He9CU
-         LtnxH2cxRbifffpfc4Z6qVuGcoFU7y2WTs4jJoEgL3iYTtx+EB/Z66l13OxYJCIURi2b
-         CZdQbjMGEpOglZPG74jlzKv/u7ELC0bu0s6qWXEZvfQ8WlTpEunSIdDyAPMKdSbCMssR
-         9HiyNugCalgvas8rCGkyIvZJcoPyq4yg+REGDmMlY96PYGoeLbdcBkzJ5cj/vKltV35y
-         Lc4lBjIcC8YVUNvM9O17S+/6ofz3kby/cVYsCiBa3lM8EaFuBCxzmvswu+2OW4d/r0PZ
-         uL6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=rvz43kIUDx2A/KQ/yd0MvjWPXZHEOVXQfe4FngXFlq8=;
-        b=Koq/1ofwqK5keJWHAEFfbX4QZmQ0FuqiwG+rVjYCw+qwajvUE7viLlg/L9zPYZDUSk
-         Mh75aVHBt42utwc7GJwrWKIcEiAOPDI3Hxp/5skikAvmvUicKkOacy3BsFOsQxb1KYV7
-         IZ0n089lupYHfKsu2SuNFWkj8Jx+RHvxDU4UL7MdAMhBNO8mY8qIuuGPQufOMExAF5WW
-         Cxfna/RzYYaEawqY781Qdmxv7kQpcn1GVgyBNo4Rs0q76vCMlovLTiGW+Rpud3C+QYdw
-         G3SbC1j8e8uCj34uVAgCLlrD7NP25aiAqkeMsptMZFNUDNDQB7PTp/iNCEVi/oT56EFK
-         SIHw==
-X-Gm-Message-State: AOAM530de9TC+BHlqQCU6/+r+6BBXDJh1kvWxSWXigQgrZyBmLeoHKlM
-        izRJX+T3jkVRN2qeCXlFjQo=
-X-Google-Smtp-Source: ABdhPJw+EvQ4XzcqKqv+C3eDJNaUDeC9Zt8rH791fXa4t4L8/Rdpb5n7rOUKU64MTQ/HplhXWR1abg==
-X-Received: by 2002:a9d:6158:: with SMTP id c24mr8966242otk.197.1633706800165;
-        Fri, 08 Oct 2021 08:26:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r4sm732540oiw.36.2021.10.08.08.26.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 08:26:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH] watchdog: iTCO: Drop vendor support
-Date:   Fri,  8 Oct 2021 08:26:37 -0700
-Message-Id: <20211008152637.141673-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.33.0
+        id S242997AbhJHP3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:29:38 -0400
+Received: from mail-eopbgr50123.outbound.protection.outlook.com ([40.107.5.123]:56422
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242956AbhJHP3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:29:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KGaQ61SH4BsPCYS2LSgxztjO/KykJEMxlRVywnLCh/oc1CU93fX31TAjlGIzqv5lFLhlICcsI/T83tnV8PxBt79F8cy0me424NFJdNUuNRWRXlNLuDRxtFnuTpMjBNIrVSYO/9q6WuMP01cy4DKkGaxOB6tP+RebJ1m0WRjvQcLbnLjCkUZ//dL0vXlnfSjj7ziOyNm1Gz/lNDXtG7m9YdBYx9clGGSPb2E9bVBDlj0XOeEPgP9FIv5AnMG4zQZwTnVZo7+HzJw5xWdR+ARcNjqmC/DCpt4yBoPoC95JZLvD5TC+t14XgzXN7TmhsfNUdsd8kl1ff9U55+PBJXIboA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pH22kTuSl6pCmkVwCuNC16O3qfcfUzqfYA//NRIigXA=;
+ b=P5WMMhd6cgGHsFiCuKUkahdeYh6rwn4O+jnmKo8jS2uh6LFjx0wBhyz+weQYLj564GUuGYn9TlzJO4FIWDdoDKGPcFJFCHA6f6Q6U1OYZCtoyji/oX6BgyHVto6cn/bGXX1DB7DI+KMINw3bqXioUheuz2MRUUWkMpBfOY7RPYuoaefawV7pyrE5PLOWtLNBJqU1oiXjyFgoYZ228Od+w3QIqAuARAa+AM6JjM59qz4sjC1usmOksGbxXJdllFTRCN6nbEJfW5LcbTQcvMuVlHNbmL9ybM0JEKh7v3HBrxAbdtBEvzuKs7/6LTFH2s68INv3syBnPk7dKFgqJKy6Hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pH22kTuSl6pCmkVwCuNC16O3qfcfUzqfYA//NRIigXA=;
+ b=aGYC1jKqiq7jt1JVzDk2Bw6k0tq2mp8Y57gwy1QYQg6BOhLP0HzxgM5PmJQ7wJCLYImhoh6g0z2lgBcD7+KJ4S9Sdmqvi0HMy0PHN7+RJ6GTEMoKrwnnzLjPpMMT0g327x1QFBpB/ejWgJ9rPqzYcYcSx+UkSQCrdeW6s9Gq5ok=
+Authentication-Results: axis.com; dkim=none (message not signed)
+ header.d=none;axis.com; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB6PR02MB3064.eurprd02.prod.outlook.com (2603:10a6:6:17::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.22; Fri, 8 Oct
+ 2021 15:27:37 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::35c9:1008:f5af:55a]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::35c9:1008:f5af:55a%4]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
+ 15:27:37 +0000
+Message-ID: <d794e44d-e67a-e51e-93b0-9b23edba2e21@axentia.se>
+Date:   Fri, 8 Oct 2021 17:27:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v2 2/3] dt-bindings: iio: io-channel-mux: Add property for
+ settle time
+Content-Language: en-US
+To:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     kernel <kernel@axis.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+References: <20211007134641.13417-1-vincent.whitchurch@axis.com>
+ <20211007134641.13417-3-vincent.whitchurch@axis.com>
+ <1633661172.633248.1409599.nullmailer@robh.at.kernel.org>
+ <20211008135610.GA16402@axis.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+In-Reply-To: <20211008135610.GA16402@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: GV3P280CA0043.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:9::7)
+ To DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from [192.168.13.3] (185.178.140.238) by GV3P280CA0043.SWEP280.PROD.OUTLOOK.COM (2603:10a6:150:9::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Fri, 8 Oct 2021 15:27:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ea69a555-2635-420e-b797-08d98a7028c9
+X-MS-TrafficTypeDiagnostic: DB6PR02MB3064:
+X-Microsoft-Antispam-PRVS: <DB6PR02MB306457CD1AA0F44845A86105BCB29@DB6PR02MB3064.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UP1yYMTeBgOh81nxoJFr+ELA9Eqab2GeLX7U+DMEjwzj2QBuNtV62LrDUKwBUGcwF4d2RTPz0G8QoSwVyCJr1JD3Vz3KIL6TaNLUiQmejZP4S+FCkbISBj35Hb4sY6mNhqCFRD2HMSDUTZBjBSkEHh/ORT+Wp3kPCQOPP56dHq1gTUAXgi5wQfFkLJ5b8WbHyEc7QDrr4KLWLD9SQ3suPZBWvFRKZ5Su1z0wLyHX3EdXCoBxB6IvlnQeqjGvIn3bR4bCGcFfvSOH0YbEppUH8t8byaEsvT47EKVtB+T/WlTHc1L2g/h1Qu7SkuXd/+R9UN0a8q6gvUfi3jyGrFeABaKJqCCpl9hEYSxJ7QaEQj2pPuZGGmJ9SUSnhQz4kEzfH5eyK23z5p4cVhEAaSzJ0LqctCX2bPPQb5ID9J8VP2MBAVGuxqm4go8TOHrAE6zgaQai+pS5AzojYMu2N2mybAiPJmQ2JA3mf5s2Jz1pf2iW25C6XggrEForkis5Vy/OnZvCYCbZmuqKmIm8fVdrxaABpBM4bdR7l53Eu2g7uJHerWXWSak6aFMNU6XqQeIbmyk3wcg1796gesUgf0OA+pSnFJmgH41dtDTYNQNcs/V/gEuzBodKoaSer+Pcb5PplNgfEQ/lByTPrg8PzZdQSZ7GCv0z0np2PIaYFlyQw49IhvxpwYD7esvt3agq5svt5GIwovJbsz9LcxMI9c0XBsy915v80QaKtsXjnVWoIBlyP8D02XlXXVaLl7vgsuksOla7vzS79wfgHIY9rlWFVha7wbbzPjDzra858MSYGOB9eotiEsUwi/SBLiYwsST4
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(39830400003)(376002)(346002)(956004)(508600001)(66476007)(36756003)(316002)(54906003)(16576012)(8936002)(110136005)(31696002)(2616005)(31686004)(8676002)(4326008)(5660300002)(26005)(66556008)(2906002)(6486002)(186003)(86362001)(966005)(36916002)(38100700002)(66946007)(53546011)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y2V2a3IzUVdOVkRlK0FtRFd6OGg0VW5HTGpDR0NhenA4SHdiNHJuZkw3S2RZ?=
+ =?utf-8?B?NFk4elFNb3pJYVhYR2c3eThxVmhON2xlUWR2TEMyR0dOZlk2R1M5NXBWWGox?=
+ =?utf-8?B?c3h2ZkFiZTM4OXQwa2Z0U0s3dmVvd1Q5REhLWUZBMjVQT0ZGYUxPdHhpaWZu?=
+ =?utf-8?B?TnhqNEZOZ0dQQk1JUzE0TWlLL3JoUWpPS25XcWR0N3JXV2orUEhnQnRIZ2ly?=
+ =?utf-8?B?allHbmFobWZ0b0FDZHpOcTVGWitYSmdTZHFsbytLM3dCRUZndjNmdUFuTDNG?=
+ =?utf-8?B?SExzeHhhcUFObjBxRTlaMHJTT1gvK0pJcENrREJ5aU8wbGR2SGFwQzErTS9O?=
+ =?utf-8?B?S3FYZ28vd3hNN1BnRGthajJnSWd4Mk1OaXR2ODhSNUU3Qnd4UXBpTENQVm5u?=
+ =?utf-8?B?eHVRWDN1bU5MTjBTWVJkZ2hiejBZck5na2JXWGQ2NUdnYmQ0dndTNVljUzE1?=
+ =?utf-8?B?ZzdmK0VhRHczamRWL2xpYWhNbkZ4Zzk3WTY5V21nTE92WEx4aEZwdm4ySmVD?=
+ =?utf-8?B?ODlrZjNwSHRUQ2tsZ0QybW1ld283Rjh1aGRCY1VoUUtaRVZkRmxwSGRoMWc4?=
+ =?utf-8?B?TzBQZnlCMmxFL0lXQzFSYUlEVHJUZ1kvcGFhczZOM1dQb2Q3Lzg1T2tkNk1r?=
+ =?utf-8?B?Q0gyRnl4dm95bnpTaElEL3ErNkNlbVdKNnAyWmdrbEdLTDVWY3cyRG9tSkwz?=
+ =?utf-8?B?ZVpqYWFLdmR1aVZDVXdRblcwTUhISnEyQ3NjSFoyaktZRi9XeEZDQ1hUUjVN?=
+ =?utf-8?B?ejJSOGZMOVRjb3ZDcm5DR0hMSncrY3BYVGpSM3dPVVp4NjluWHFZRWtPWVEx?=
+ =?utf-8?B?TklCeWxTaDFNNHdCcmZSZzZIYXZyNHdueUJiTXZpTm9pSFNQZmF4Q3dJZ0Mx?=
+ =?utf-8?B?MkVpQmR5NGkzMnB3c3M1Y0I1N3kyZjVpYnYyVjRibTloTStPbk01VVdONFlH?=
+ =?utf-8?B?bE4xN2pWT0RxMkRhNUZpclEvN2hId2ZaUEh3NlJBZlpyUkdTWVVRQ2sveXUr?=
+ =?utf-8?B?aUNyN0YzanMrOWVlRGJCVGM4MmZ2dmhjeFFoZUtmOHNQQVlGWU1ULzArOWZL?=
+ =?utf-8?B?bkVHaUJ0L0dVeWhHcVJscjUyK3B3OUlLbzJzY1kyYmo1L2t5dmpZbTdwVmdQ?=
+ =?utf-8?B?NXVRYjNuaS80dzlTYmU5R2V0TlA3TmxSb3FXOUZRU3BMK0ZIcnZjZ2JhVGU1?=
+ =?utf-8?B?T1UxalhiVnh3WHdYVVdvaUVyRUk5WTVRcUlDdG5SNkpERzhOUDZuWVE0cWdu?=
+ =?utf-8?B?eWYvSndnRmtvVnJmLzFPVFhRWUVITUJDQjJiQ1NuM1lvTWpPZGFhaFN0Umhu?=
+ =?utf-8?B?MXNFd052aWxRc1h4MlN1eW8yU3lUaVRYZUc1S05ZbE5EUlhybXE2VGNCWlFT?=
+ =?utf-8?B?b25XLzZ4cjRSUGM5UVhScGdnY1Z2VVZXYzFnZjhqbnhBTXczVkVhalRHMjNZ?=
+ =?utf-8?B?RlBiNGdkVUlUTWo1dkJKZldpYU9ZUTRMZFhUNW9ndFYzOTVybGg3ZkM0NWtE?=
+ =?utf-8?B?MUdYTjJMTGpBd1kwbUQ1WDlBTG9sRUVWUzBGNlkwZU9mZVZMaVc5OXl0TUdM?=
+ =?utf-8?B?aW1FS0Irb2VCSUdENkdsRWtiem1BVmd4OXI3TTd4MG12UXVPRXJDV0NSQk5I?=
+ =?utf-8?B?eFNHcUpSNDdJcGR0blpJa2QwcForQmhsUUduRXpiRlFJQURZekxyeklsVkw5?=
+ =?utf-8?B?YWZvVHMxRlZYK0xWc095akFBeEEwM2VndXJUOGdPMmpxTXJBWG9HZjVkZGJr?=
+ =?utf-8?Q?bl5YNmZqlTEDageifK5vpJ5wqC+bw8IPe+8uzYy?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea69a555-2635-420e-b797-08d98a7028c9
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 15:27:37.6293
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NsmsgYVyBv6MHAJGaD8G3PyFXBJl15+UGxNd50eitscU70ZUiZhAEr68GiuMg56d
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR02MB3064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iTCO vendor support was introduced in 2006 to support SuperMicro boards
-with Pentium 3 CPUs. It was extended in 2009 to support motherbords
-with broken BIOS (specifically Intel DG33TL). The code is long since
-obsolete, so let's drop support for it.
+On 2021-10-08 15:56, Vincent Whitchurch wrote:
+> On Fri, Oct 08, 2021 at 04:46:12AM +0200, Rob Herring wrote:
+>> On Thu, 07 Oct 2021 15:46:40 +0200, Vincent Whitchurch wrote:
+>>> Hardware may require some time for the muxed analog signals to settle
+>>> after the muxing is changed.  Allow this time to be specified in the
+>>> devicetree.
+>>>
+>>> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+>>> ---
+>>>  .../devicetree/bindings/iio/multiplexer/io-channel-mux.yaml  | 5 +++++
+>>>  1 file changed, 5 insertions(+)
+>>>
+>>
+>> Running 'make dtbs_check' with the schema in this patch gives the
+>> following warnings. Consider if they are expected or the schema is
+>> incorrect. These may not be new warnings.
+> 
+> Yes, these are not new warnings.
+> 
+>> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+>> This will change in the future.
+>>
+>> Full log is available here: https://patchwork.ozlabs.org/patch/1537724
+>>
+>>
+>> adc0mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+>> 	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
+>>
+>> adc10mux: '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+>> 	arch/arm/boot/dts/aspeed-bmc-ampere-mtjade.dt.yaml
+> [...]
+> 
+> I think the fix for these is to add a "#io-channel-cells": const 1 to
+> the schema.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- .../watchdog/watchdog-parameters.rst          |   7 -
- drivers/watchdog/Kconfig                      |   8 -
- drivers/watchdog/Makefile                     |   3 -
- drivers/watchdog/iTCO_vendor.h                |  14 --
- drivers/watchdog/iTCO_vendor_support.c        | 216 ------------------
- drivers/watchdog/iTCO_wdt.c                   |  17 --
- 6 files changed, 265 deletions(-)
- delete mode 100644 drivers/watchdog/iTCO_vendor.h
- delete mode 100644 drivers/watchdog/iTCO_vendor_support.c
+Agreed.
 
-diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
-index 223c99361a30..60ecbd53e6aa 100644
---- a/Documentation/watchdog/watchdog-parameters.rst
-+++ b/Documentation/watchdog/watchdog-parameters.rst
-@@ -219,13 +219,6 @@ iTCO_wdt:
- 
- -------------------------------------------------
- 
--iTCO_vendor_support:
--    vendorsupport:
--	iTCO vendor specific support mode, default=0 (none),
--	1=SuperMicro Pent3, 2=SuperMicro Pent4+, 911=Broken SMI BIOS
--
---------------------------------------------------
--
- ib700wdt:
-     timeout:
- 	Watchdog timeout in seconds. 0<= timeout <=30, default=30.
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index bf59faeb3de1..3fae89be0e27 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1233,14 +1233,6 @@ config ITCO_WDT
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called iTCO_wdt.
- 
--config ITCO_VENDOR_SUPPORT
--	bool "Intel TCO Timer/Watchdog Specific Vendor Support"
--	depends on ITCO_WDT
--	help
--	  Add vendor specific support to the intel TCO timer based watchdog
--	  devices. At this moment we only have additional support for some
--	  SuperMicro Inc. motherboards.
--
- config IT8712F_WDT
- 	tristate "IT8712F (Smart Guardian) Watchdog Timer"
- 	depends on X86
-diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
-index 1bd2d6f37c53..b05a7e611308 100644
---- a/drivers/watchdog/Makefile
-+++ b/drivers/watchdog/Makefile
-@@ -113,9 +113,6 @@ obj-$(CONFIG_WAFER_WDT) += wafer5823wdt.o
- obj-$(CONFIG_I6300ESB_WDT) += i6300esb.o
- obj-$(CONFIG_IE6XX_WDT) += ie6xx_wdt.o
- obj-$(CONFIG_ITCO_WDT) += iTCO_wdt.o
--ifeq ($(CONFIG_ITCO_VENDOR_SUPPORT),y)
--obj-$(CONFIG_ITCO_WDT) += iTCO_vendor_support.o
--endif
- obj-$(CONFIG_IT8712F_WDT) += it8712f_wdt.o
- obj-$(CONFIG_IT87_WDT) += it87_wdt.o
- obj-$(CONFIG_HP_WATCHDOG) += hpwdt.o
-diff --git a/drivers/watchdog/iTCO_vendor.h b/drivers/watchdog/iTCO_vendor.h
-deleted file mode 100644
-index 69e92e692ae0..000000000000
---- a/drivers/watchdog/iTCO_vendor.h
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/* iTCO Vendor Specific Support hooks */
--#ifdef CONFIG_ITCO_VENDOR_SUPPORT
--extern int iTCO_vendorsupport;
--extern void iTCO_vendor_pre_start(struct resource *, unsigned int);
--extern void iTCO_vendor_pre_stop(struct resource *);
--extern int iTCO_vendor_check_noreboot_on(void);
--#else
--#define iTCO_vendorsupport				0
--#define iTCO_vendor_pre_start(acpibase, heartbeat)	{}
--#define iTCO_vendor_pre_stop(acpibase)			{}
--#define iTCO_vendor_check_noreboot_on()			1
--				/* 1=check noreboot; 0=don't check */
--#endif
-diff --git a/drivers/watchdog/iTCO_vendor_support.c b/drivers/watchdog/iTCO_vendor_support.c
-deleted file mode 100644
-index cf0eaa04b064..000000000000
---- a/drivers/watchdog/iTCO_vendor_support.c
-+++ /dev/null
-@@ -1,216 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0+
--/*
-- *	intel TCO vendor specific watchdog driver support
-- *
-- *	(c) Copyright 2006-2009 Wim Van Sebroeck <wim@iguana.be>.
-- *
-- *	Neither Wim Van Sebroeck nor Iguana vzw. admit liability nor
-- *	provide warranty for any of this software. This material is
-- *	provided "AS-IS" and at no charge.
-- */
--
--/*
-- *	Includes, defines, variables, module parameters, ...
-- */
--
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
--
--/* Module and version information */
--#define DRV_NAME	"iTCO_vendor_support"
--#define DRV_VERSION	"1.04"
--
--/* Includes */
--#include <linux/module.h>		/* For module specific items */
--#include <linux/moduleparam.h>		/* For new moduleparam's */
--#include <linux/types.h>		/* For standard types (like size_t) */
--#include <linux/errno.h>		/* For the -ENODEV/... values */
--#include <linux/kernel.h>		/* For printk/panic/... */
--#include <linux/init.h>			/* For __init/__exit/... */
--#include <linux/ioport.h>		/* For io-port access */
--#include <linux/io.h>			/* For inb/outb/... */
--
--#include "iTCO_vendor.h"
--
--/* List of vendor support modes */
--/* SuperMicro Pentium 3 Era 370SSE+-OEM1/P3TSSE */
--#define SUPERMICRO_OLD_BOARD	1
--/* SuperMicro Pentium 4 / Xeon 4 / EMT64T Era Systems - no longer supported */
--#define SUPERMICRO_NEW_BOARD	2
--/* Broken BIOS */
--#define BROKEN_BIOS		911
--
--int iTCO_vendorsupport;
--EXPORT_SYMBOL(iTCO_vendorsupport);
--
--module_param_named(vendorsupport, iTCO_vendorsupport, int, 0);
--MODULE_PARM_DESC(vendorsupport, "iTCO vendor specific support mode, default="
--			"0 (none), 1=SuperMicro Pent3, 911=Broken SMI BIOS");
--
--/*
-- *	Vendor Specific Support
-- */
--
--/*
-- *	Vendor Support: 1
-- *	Board: Super Micro Computer Inc. 370SSE+-OEM1/P3TSSE
-- *	iTCO chipset: ICH2
-- *
-- *	Code contributed by: R. Seretny <lkpatches@paypc.com>
-- *	Documentation obtained by R. Seretny from SuperMicro Technical Support
-- *
-- *	To enable Watchdog function:
-- *	    BIOS setup -> Power -> TCO Logic SMI Enable -> Within5Minutes
-- *	    This setting enables SMI to clear the watchdog expired flag.
-- *	    If BIOS or CPU fail which may cause SMI hang, then system will
-- *	    reboot. When application starts to use watchdog function,
-- *	    application has to take over the control from SMI.
-- *
-- *	    For P3TSSE, J36 jumper needs to be removed to enable the Watchdog
-- *	    function.
-- *
-- *	    Note: The system will reboot when Expire Flag is set TWICE.
-- *	    So, if the watchdog timer is 20 seconds, then the maximum hang
-- *	    time is about 40 seconds, and the minimum hang time is about
-- *	    20.6 seconds.
-- */
--
--static void supermicro_old_pre_start(struct resource *smires)
--{
--	unsigned long val32;
--
--	/* Bit 13: TCO_EN -> 0 = Disables TCO logic generating an SMI# */
--	val32 = inl(smires->start);
--	val32 &= 0xffffdfff;	/* Turn off SMI clearing watchdog */
--	outl(val32, smires->start);	/* Needed to activate watchdog */
--}
--
--static void supermicro_old_pre_stop(struct resource *smires)
--{
--	unsigned long val32;
--
--	/* Bit 13: TCO_EN -> 1 = Enables the TCO logic to generate SMI# */
--	val32 = inl(smires->start);
--	val32 |= 0x00002000;	/* Turn on SMI clearing watchdog */
--	outl(val32, smires->start);	/* Needed to deactivate watchdog */
--}
--
--/*
-- *	Vendor Support: 911
-- *	Board: Some Intel ICHx based motherboards
-- *	iTCO chipset: ICH7+
-- *
-- *	Some Intel motherboards have a broken BIOS implementation: i.e.
-- *	the SMI handler clear's the TIMEOUT bit in the TC01_STS register
-- *	and does not reload the time. Thus the TCO watchdog does not reboot
-- *	the system.
-- *
-- *	These are the conclusions of Andriy Gapon <avg@icyb.net.ua> after
-- *	debugging: the SMI handler is quite simple - it tests value in
-- *	TCO1_CNT against 0x800, i.e. checks TCO_TMR_HLT. If the bit is set
-- *	the handler goes into an infinite loop, apparently to allow the
-- *	second timeout and reboot. Otherwise it simply clears TIMEOUT bit
-- *	in TCO1_STS and that's it.
-- *	So the logic seems to be reversed, because it is hard to see how
-- *	TIMEOUT can get set to 1 and SMI generated when TCO_TMR_HLT is set
-- *	(other than a transitional effect).
-- *
-- *	The only fix found to get the motherboard(s) to reboot is to put
-- *	the glb_smi_en bit to 0. This is a dirty hack that bypasses the
-- *	broken code by disabling Global SMI.
-- *
-- *	WARNING: globally disabling SMI could possibly lead to dramatic
-- *	problems, especially on laptops! I.e. various ACPI things where
-- *	SMI is used for communication between OS and firmware.
-- *
-- *	Don't use this fix if you don't need to!!!
-- */
--
--static void broken_bios_start(struct resource *smires)
--{
--	unsigned long val32;
--
--	val32 = inl(smires->start);
--	/* Bit 13: TCO_EN     -> 0 = Disables TCO logic generating an SMI#
--	   Bit  0: GBL_SMI_EN -> 0 = No SMI# will be generated by ICH. */
--	val32 &= 0xffffdffe;
--	outl(val32, smires->start);
--}
--
--static void broken_bios_stop(struct resource *smires)
--{
--	unsigned long val32;
--
--	val32 = inl(smires->start);
--	/* Bit 13: TCO_EN     -> 1 = Enables TCO logic generating an SMI#
--	   Bit  0: GBL_SMI_EN -> 1 = Turn global SMI on again. */
--	val32 |= 0x00002001;
--	outl(val32, smires->start);
--}
--
--/*
-- *	Generic Support Functions
-- */
--
--void iTCO_vendor_pre_start(struct resource *smires,
--			   unsigned int heartbeat)
--{
--	switch (iTCO_vendorsupport) {
--	case SUPERMICRO_OLD_BOARD:
--		supermicro_old_pre_start(smires);
--		break;
--	case BROKEN_BIOS:
--		broken_bios_start(smires);
--		break;
--	}
--}
--EXPORT_SYMBOL(iTCO_vendor_pre_start);
--
--void iTCO_vendor_pre_stop(struct resource *smires)
--{
--	switch (iTCO_vendorsupport) {
--	case SUPERMICRO_OLD_BOARD:
--		supermicro_old_pre_stop(smires);
--		break;
--	case BROKEN_BIOS:
--		broken_bios_stop(smires);
--		break;
--	}
--}
--EXPORT_SYMBOL(iTCO_vendor_pre_stop);
--
--int iTCO_vendor_check_noreboot_on(void)
--{
--	switch (iTCO_vendorsupport) {
--	case SUPERMICRO_OLD_BOARD:
--		return 0;
--	default:
--		return 1;
--	}
--}
--EXPORT_SYMBOL(iTCO_vendor_check_noreboot_on);
--
--static int __init iTCO_vendor_init_module(void)
--{
--	if (iTCO_vendorsupport == SUPERMICRO_NEW_BOARD) {
--		pr_warn("Option vendorsupport=%d is no longer supported, "
--			"please use the w83627hf_wdt driver instead\n",
--			SUPERMICRO_NEW_BOARD);
--		return -EINVAL;
--	}
--	pr_info("vendor-support=%d\n", iTCO_vendorsupport);
--	return 0;
--}
--
--static void __exit iTCO_vendor_exit_module(void)
--{
--	pr_info("Module Unloaded\n");
--}
--
--module_init(iTCO_vendor_init_module);
--module_exit(iTCO_vendor_exit_module);
--
--MODULE_AUTHOR("Wim Van Sebroeck <wim@iguana.be>, "
--		"R. Seretny <lkpatches@paypc.com>");
--MODULE_DESCRIPTION("Intel TCO Vendor Specific WatchDog Timer Driver Support");
--MODULE_VERSION(DRV_VERSION);
--MODULE_LICENSE("GPL");
-diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-index ced2fc0deb8c..fc0ed665f7db 100644
---- a/drivers/watchdog/iTCO_wdt.c
-+++ b/drivers/watchdog/iTCO_wdt.c
-@@ -64,8 +64,6 @@
- #include <linux/platform_data/itco_wdt.h>
- #include <linux/mfd/intel_pmc_bxt.h>
- 
--#include "iTCO_vendor.h"
--
- /* Address definitions for the TCO */
- /* TCO base address */
- #define TCOBASE(p)	((p)->tco_res->start)
-@@ -272,8 +270,6 @@ static int iTCO_wdt_start(struct watchdog_device *wd_dev)
- 
- 	spin_lock(&p->io_lock);
- 
--	iTCO_vendor_pre_start(p->smi_res, wd_dev->timeout);
--
- 	/* disable chipset's NO_REBOOT bit */
- 	if (p->update_no_reboot_bit(p->no_reboot_priv, false)) {
- 		spin_unlock(&p->io_lock);
-@@ -307,8 +303,6 @@ static int iTCO_wdt_stop(struct watchdog_device *wd_dev)
- 
- 	spin_lock(&p->io_lock);
- 
--	iTCO_vendor_pre_stop(p->smi_res);
--
- 	/* Bit 11: TCO Timer Halt -> 1 = The TCO timer is disabled */
- 	val = inw(TCO1_CNT(p));
- 	val |= 0x0800;
-@@ -483,10 +477,6 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
- 			       (u64)SMI_EN(p));
- 			return -EBUSY;
- 		}
--	} else if (iTCO_vendorsupport ||
--		   turn_SMI_watchdog_clear_off >= p->iTCO_version) {
--		dev_err(dev, "SMI I/O resource is missing\n");
--		return -ENODEV;
- 	}
- 
- 	iTCO_wdt_no_reboot_bit_setup(p, pdev, pdata);
-@@ -505,13 +495,6 @@ static int iTCO_wdt_probe(struct platform_device *pdev)
- 			return PTR_ERR(p->gcs_pmc);
- 	}
- 
--	/* Check chipset's NO_REBOOT bit */
--	if (p->update_no_reboot_bit(p->no_reboot_priv, false) &&
--	    iTCO_vendor_check_noreboot_on()) {
--		dev_info(dev, "unable to reset NO_REBOOT flag, device disabled by hardware/BIOS\n");
--		return -ENODEV;	/* Cannot reset NO_REBOOT bit */
--	}
--
- 	/* Set the NO_REBOOT bit to prevent later reboots, just for sure */
- 	p->update_no_reboot_bit(p->no_reboot_priv, true);
- 
--- 
-2.33.0
+>> envelope-detector-mux: channels: ['', '', 'sync-1', 'in', 'out', 'sync-2', 'sys-reg', 'ana-reg'] has non-unique elements
+>> 	arch/arm/boot/dts/at91-tse850-3.dt.yaml
+> 
+> This one looks like an error in that particular devicetree.
+> 
+The double '' is intentional; this mux is 8-way but only 6 legs are
+connected, with the first two unused. I don't know how or where to make
+changes to dodge the warning. I don't want to put names on things that
+do not exist, and the iio-mux driver is using empty names as a hint to
+not configure any child channel for those indices that have empty names.
+If e.g. channels 0-5 are in use, then this is not a problem since you
+can just end early with 6 names instead of 8, but alas, channels 2-7
+was what the hw-crowd fancied in this case.
 
+Cheers,
+Peter
