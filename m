@@ -2,134 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F4C426230
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62F4426232
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhJHB6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 21:58:41 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:23353 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJHB6k (ORCPT
+        id S232658AbhJHCAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 22:00:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhJHCAl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:58:40 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HQWQr3xRvzbcxj;
-        Fri,  8 Oct 2021 09:52:20 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 8 Oct 2021 09:56:44 +0800
-Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
- previous check time
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-3-yebin10@huawei.com>
- <20211007123100.GG12712@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <615FA55B.5070404@huawei.com>
-Date:   Fri, 8 Oct 2021 09:56:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Thu, 7 Oct 2021 22:00:41 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81ADC061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 18:58:46 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id i12so12096267wrb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 18:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:from:mime-version:content-transfer-encoding
+         :content-description:subject:to:date:reply-to;
+        bh=aPHEGdz3QAcPg0XK1bMEMg05jQ0bniQYakU4xAi+dDQ=;
+        b=WDZj8uaIK5ztFRz8qtlK4nLnnqBaPda8V3uF7o3j/drxclqFrFI0e0pIAVhaYHQLme
+         ZLCe8iumoDYaaXckDkV0SLfRjkI57/VpozKChI928tAPJolmOmBFfmfm7wffykIXJMf0
+         XgU9xNmbxpkfLy33+Xd1t5O0dU9b06r+/Etvq6eQ0KPM/5JBOlig8sINcMz/dp56oFvH
+         fKSTRpIXYdm1e1Z71mbLzDHFOCXru+HFzu2dZzF7xBmtzBC6VMPGFT68IK1HyYHbH5vD
+         noQxbzzET9Mpm2ah+10oQ2DUJCfKw4kkaJDZMYEjQhdTAtA76sInbpmZ6eoOr3RUaPq3
+         /6Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:from:mime-version
+         :content-transfer-encoding:content-description:subject:to:date
+         :reply-to;
+        bh=aPHEGdz3QAcPg0XK1bMEMg05jQ0bniQYakU4xAi+dDQ=;
+        b=fIJjTW4cw5BiAONFdzTm00EjmV2huLLFADRcDRMOgHhAaGU0r9dZ43zLr3eORiGgV9
+         Kk0Gzs71GBBrImxV6bET+jVK1hivZ2+fRA7wLXmArJ2T0AJf1KdrSyaF8hKrAg7ccWOt
+         Aixr36cQtix7k8RIV3R1Ft0UwMQFTf1kUFy5pvI6B9zkrEEDor0zMVAhQLoTD/tINopy
+         HXsBnaCAKM6k+mzHPDCvzXLedE2gHpeDCcz6EGUPYMwOXatnJ3yXBGkEzv20JYsZ/iBk
+         AAc/g9YVA0HbpSZjRFjaQDkLzvjx/efIeoqQ78RB6D6HfHNQknNxVbImyPyo1svLbmqE
+         JVZQ==
+X-Gm-Message-State: AOAM533btBHGChBMo4BtrW2r0RAcszrwkovJCM9+ipSdjnDdIM0mxJ/9
+        zA0k7smDKTetpyFHeW4nkQ==
+X-Google-Smtp-Source: ABdhPJx0uMbi9I7PLFPxbHwyebCr4oCmtvUAmCcFcxT1MFz3ge+DgtM+66znMYwzgRVs31kYY7TdBQ==
+X-Received: by 2002:a5d:4344:: with SMTP id u4mr609509wrr.106.1633658325395;
+        Thu, 07 Oct 2021 18:58:45 -0700 (PDT)
+Received: from [10.10.10.68] ([102.64.142.105])
+        by smtp.gmail.com with ESMTPSA id i92sm893456wri.28.2021.10.07.18.58.42
+        (version=TLS1 cipher=AES128-SHA bits=128/128);
+        Thu, 07 Oct 2021 18:58:45 -0700 (PDT)
+Message-ID: <615fa5d5.1c69fb81.73d2.4e20@mx.google.com>
+From:   Michel Desbiens <alianomahmed@gmail.com>
+X-Google-Original-From: Michel Desbiens
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20211007123100.GG12712@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hi
+To:     Recipients <Michel@vger.kernel.org>
+Date:   Fri, 08 Oct 2021 01:58:35 +0000
+Reply-To: michedesbiens@outlook.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/10/7 20:31, Jan Kara wrote:
-> On Sat 11-09-21 17:00:55, Ye Bin wrote:
->> kmmpd:
->> ...
->>      diff = jiffies - last_update_time;
->>      if (diff > mmp_check_interval * HZ) {
->> ...
->> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
->> than 'mmp_update_interval', so there will never trigger detection.
->> Introduce last_check_time record previous check time.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> I think the check is there only for the case where write_mmp_block() +
-> sleep took longer than mmp_check_interval. I agree that should rarely
-> happen but on a really busy system it is possible and in that case we would
-> miss updating mmp block for too long and so another node could have started
-> using the filesystem. I actually don't see a reason why kmmpd should be
-> checking the block each mmp_check_interval as you do - mmp_check_interval
-> is just for ext4_multi_mount_protect() to know how long it should wait
-> before considering mmp block stale... Am I missing something?
->
-> 								Honza
-I'm sorry, I didn't understand the detection mechanism here before. Now 
-I understand
-the detection mechanism here.
-As you said, it's just an abnormal protection. There's really no problem.
-
->> ---
->>   fs/ext4/mmp.c | 14 +++++++++-----
->>   1 file changed, 9 insertions(+), 5 deletions(-)
->>
->> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->> index 12af6dc8457b..c781b09a78c9 100644
->> --- a/fs/ext4/mmp.c
->> +++ b/fs/ext4/mmp.c
->> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
->>   	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
->>   	unsigned mmp_check_interval;
->>   	unsigned long last_update_time;
->> +	unsigned long last_check_time;
->>   	unsigned long diff;
->>   	int retval = 0;
->>   
->> @@ -170,6 +171,7 @@ static int kmmpd(void *data)
->>   
->>   	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
->>   	       sizeof(mmp->mmp_nodename));
->> +	last_check_time = jiffies;
->>   
->>   	while (!kthread_should_stop() && !sb_rdonly(sb)) {
->>   		if (!ext4_has_feature_mmp(sb)) {
->> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
->>   		}
->>   
->>   		diff = jiffies - last_update_time;
->> -		if (diff < mmp_update_interval * HZ)
->> +		if (diff < mmp_update_interval * HZ) {
->>   			schedule_timeout_interruptible(mmp_update_interval *
->>   						       HZ - diff);
->> +			diff = jiffies - last_update_time;
->> +		}
->>   
->>   		/*
->>   		 * We need to make sure that more than mmp_check_interval
->> -		 * seconds have not passed since writing. If that has happened
->> -		 * we need to check if the MMP block is as we left it.
->> +		 * seconds have not passed since check. If that has happened
->> +		 * we need to check if the MMP block is as we write it.
->>   		 */
->> -		diff = jiffies - last_update_time;
->> -		if (diff > mmp_check_interval * HZ) {
->> +		if (jiffies - last_check_time > mmp_check_interval * HZ) {
->>   			struct buffer_head *bh_check = NULL;
->>   			struct mmp_struct *mmp_check;
->>   
->> @@ -234,6 +237,7 @@ static int kmmpd(void *data)
->>   				goto wait_to_exit;
->>   			}
->>   			put_bh(bh_check);
->> +			last_check_time = jiffies;
->>   		}
->>   
->>   		 /*
->> -- 
->> 2.31.1
->>
-
+Did you receive my projects inquiry,
+Best Wishes,
+Michel Desbiens
