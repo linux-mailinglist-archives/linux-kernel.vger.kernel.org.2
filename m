@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798F4426C2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCAE5426C2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233710AbhJHN6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:58:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55622 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229529AbhJHN6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE56360F9C;
-        Fri,  8 Oct 2021 13:56:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633701417;
-        bh=E/nSecu6Pc/mRjr9vvflfiRySB+cFKjgQerSAfXXHqg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=n+Ok7ebiSA0k2knuTA0LnN+4f/lxSMOQa+QblG8QkqDJSXIpgy/4MGw8ClVgZfobh
-         y80316XrhB9VY+QxxdZiykEwbrCLdElV2BetoAMvl9VlYlNQtAmzVTZCdJRw2ZRdHo
-         pdmGtX+VeVw+M8/0H5OqQE+XXKOem+UEz2f6XlD+P/PerOZEjRKfVByA7zbfbS0sOR
-         I2NAPTO96+pnWn/gHmntaf640enjg8BORFJe8u21CYECF50SkWox6iCaIHbf8fHuoy
-         CUJjfnS8GVvPtBrxbINHh+FPOeiOO7AgzNsvmLVvw7zp9DNjVm4Ri4ZG1+m+GgLaka
-         DqagQXK4lqfkQ==
-Date:   Fri, 8 Oct 2021 08:56:55 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        nic_swsd <nic_swsd@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Anthony Wong <anthony.wong@canonical.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] [PATCH net-next v5 0/3] r8169: Implement dynamic ASPM
- mechanism for recent 1.0/2.5Gbps Realtek NICs
-Message-ID: <20211008135655.GA1326714@bhelgaas>
+        id S234113AbhJHN7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:59:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229529AbhJHN7o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 09:59:44 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790B5C061570;
+        Fri,  8 Oct 2021 06:57:49 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0E506581;
+        Fri,  8 Oct 2021 15:57:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633701467;
+        bh=rrj5/OHbxLCwvJLUfefaA4aV2n9ZiuZogKvLc2ZlskU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lDr+P/H+qzXpb621M3VAoo5Ufz7gBVIHJxiUUxZr7zYwHIwPidevXqUpoYSUbnKCF
+         9qNgcyBZK1/O9ogvSqsotvpMD6YL+B5URZcgCkQsx9ppQJ+Dni7y4A9fvR+WK+o6Oh
+         u4zh2GhdaV2Hx977r1j5ApCytqOR7y0OCkmbRRJs=
+Date:   Fri, 8 Oct 2021 16:57:36 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] media: uvcvideo: Fix memory leak of object map on
+ error exit path
+Message-ID: <YWBOUP98s0K3yVbc@pendragon.ideasonboard.com>
+References: <20210917114930.47261-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAAd53p409uhbor1ArZ=kfiMK2JRHVGVyYukDSSyDvFsVSs=ErQ@mail.gmail.com>
+In-Reply-To: <20210917114930.47261-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 12:17:26PM +0800, Kai-Heng Feng wrote:
-> On Sat, Sep 18, 2021 at 6:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Thu, Sep 16, 2021 at 11:44:14PM +0800, Kai-Heng Feng wrote:
-> > > The purpose of the series is to get comments and reviews so we can merge
-> > > and test the series in downstream kernel.
-> > >
-> > > The latest Realtek vendor driver and its Windows driver implements a
-> > > feature called "dynamic ASPM" which can improve performance on it's
-> > > ethernet NICs.
-> > >
-> > > Heiner Kallweit pointed out the potential root cause can be that the
-> > > buffer is too small for its ASPM exit latency.
-> >
-> > I looked at the lspci data in your bugzilla
-> > (https://bugzilla.kernel.org/show_bug.cgi?id=214307).
-> >
-> > L1.2 is enabled, which requires the Latency Tolerance Reporting
-> > capability, which helps determine when the Link will be put in L1.2.
-> > IIUC, these are analogous to the DevCap "Acceptable Latency" values.
-> > Zero latency values indicate the device will be impacted by any delay
-> > (PCIe r5.0, sec 6.18).
-> >
-> > Linux does not currently program those values, so the values there
-> > must have been set by the BIOS.  On the working AMD system, they're
-> > set to 1048576ns, while on the broken Intel system, they're set to
-> > 3145728ns.
-> >
-> > I don't really understand how these values should be computed, and I
-> > think they depend on some electrical characteristics of the Link, so
-> > I'm not sure it's *necessarily* a problem that they are different.
-> > But a 3X difference does seem pretty large.
-> >
-> > So I'm curious whether this is related to the problem.  Here are some
-> > things we could try on the broken Intel system:
-> 
-> Original network speed, tested via iperf3:
-> TX: ~255 Mbps
-> RX: ~490 Mbps
-> 
-> >   - What happens if you disable ASPM L1.2 using
-> >     /sys/devices/pci*/.../link/l1_2_aspm?
-> 
-> TX: ~670 Mbps
-> RX: ~670 Mbps
+Hi Colin,
 
-Do you remember if there were any dropped packets here?  You mentioned
-at [1] that you have also seen reports of issues with L0s and L1.1.
-If you disable L1.2, L0s and L1.1 *should* still be enabled.
+Thank you for the patch.
 
-[1] https://lore.kernel.org/r/CAAd53p4v+CmupCu2+3vY5N64WKkxcNvpk1M7+hhNoposx+aYCg@mail.gmail.com
+On Fri, Sep 17, 2021 at 12:49:30PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> Currently when the allocation of map->name fails the error exit path
+> does not kfree the previously allocated object map. Fix this by
+> setting ret to -ENOMEM and taking the free_map exit error path to
+> ensure map is kfree'd.
+> 
+> Addresses-Coverity: ("Resource leak")
+> Fixes: 07adedb5c606 ("media: uvcvideo: Use control names from framework")
+
+That's not the right commit ID, it should be 70fa906d6fce.
+
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+Mauro, could you add this in your tree for v5.16 ?
+
+> ---
+>  drivers/media/usb/uvc/uvc_v4l2.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index f4e4aff8ddf7..711556d13d03 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -44,8 +44,10 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
+>  	if (v4l2_ctrl_get_name(map->id) == NULL) {
+>  		map->name = kmemdup(xmap->name, sizeof(xmap->name),
+>  				    GFP_KERNEL);
+> -		if (!map->name)
+> -			return -ENOMEM;
+> +		if (!map->name) {
+> +			ret = -ENOMEM;
+> +			goto free_map;
+> +		}
+>  	}
+>  	memcpy(map->entity, xmap->entity, sizeof(map->entity));
+>  	map->selector = xmap->selector;
+
+-- 
+Regards,
+
+Laurent Pinchart
