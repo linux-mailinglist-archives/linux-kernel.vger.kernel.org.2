@@ -2,173 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638C2426635
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6D4F426637
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhJHIth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:49:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229534AbhJHItg (ORCPT
+        id S234089AbhJHIvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:51:19 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45372 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhJHIvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:49:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633682860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Fri, 8 Oct 2021 04:51:13 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C959522407;
+        Fri,  8 Oct 2021 08:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633682957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9WYUCm3uu3x5VEZX6tiSMSzUMl8aPSDJKTcW8O5kKkk=;
-        b=LcroS770xHIxfMbs5ldtIDHHdUX+oZwlAXA+0bUOKODj/jW1kQkm0wFcUixjikmb4HTD+m
-        5aV5UFhc7G8Pb7YnlZkVjSJ4AOV7k/W6ZUlfQvCRtINsgt/BxfzKXGGQMmxyzfw89j4Ylm
-        vDuIjEX7zJe86LYfdLe9nTE7EzCEn48=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-P7qBgBEpOGqIFH8N5tL7xQ-1; Fri, 08 Oct 2021 04:47:39 -0400
-X-MC-Unique: P7qBgBEpOGqIFH8N5tL7xQ-1
-Received: by mail-wr1-f71.google.com with SMTP id 41-20020adf812c000000b00160dfbfe1a2so3072695wrm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:47:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=9WYUCm3uu3x5VEZX6tiSMSzUMl8aPSDJKTcW8O5kKkk=;
-        b=x5cZEZMfpZrXaszFsWEbkHxru2faufOyuvopUW9+sOaPoxqLJmiBWLftP2p4c8RA61
-         6FmSTOqzfklhMiK5oaF6T3YVsECd5YiiTJZP3DbwQGRO5d9VNEJgmVDG4ghvKEbSItqk
-         dff6h7/CliDn/Tc/MsJpZlXTTlTwPokAuOE+0azIKU1XSMO1vHi6NKd8K8zjwuc/Av1g
-         vBriIbZoQvPXSwl4k6e0eBikzym0MXxVocjVkXMBNKeH1OR/ZeHocDoyw/dlTG8kEG9w
-         iGznAUdBkH1yJd+GGsbWIXtCR16dNvVq3+k+UZoqoCSWiBDdASTFN1VHRyu7r64iXN3d
-         XkEA==
-X-Gm-Message-State: AOAM530VE0CNsn84Nl6JoYOgq7IrY13J2mLU4nqXHhMTclY2yqjzvXt9
-        80fJhTh450dDSEwL5EXUv2xa0Lyjyj9amdll7HdYhgOq6W47C/gyjzUMJom+UGVTB5QFm/aazpQ
-        IXkbPHhRwQ/sXc8krvV/4t6zE
-X-Received: by 2002:adf:9f05:: with SMTP id l5mr2392656wrf.181.1633682858162;
-        Fri, 08 Oct 2021 01:47:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwgaKyK69rtKZVDZp9AMMm8t6YHzrkIn4jdU6PRUqG5dwT3K0RrdkSd6xu+7TKAN98/K8kEaQ==
-X-Received: by 2002:adf:9f05:: with SMTP id l5mr2392638wrf.181.1633682858006;
-        Fri, 08 Oct 2021 01:47:38 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
-        by smtp.gmail.com with ESMTPSA id p3sm11313861wmp.43.2021.10.08.01.47.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 01:47:37 -0700 (PDT)
-Subject: Re: [PATCH 1/2] pid: add pidfd_get_task() helper
-To:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>
-References: <20211004125050.1153693-1-christian.brauner@ubuntu.com>
- <20211004125050.1153693-2-christian.brauner@ubuntu.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <be830537-18e4-d49b-720a-ca40785c4610@redhat.com>
-Date:   Fri, 8 Oct 2021 10:47:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        bh=uFjGpYRopr6d5ZmehI/8g6HLiJzjtm6I0H2tC2wXkME=;
+        b=KyW/Gy7kDobPYuKBiHBxpgGhwgfsAk/1O68Z2iiB3dS4v2oN/cygM8eHbFZ9Qk8oXy5vFe
+        2S8QlJOQYj2GlLXxxxE3DHSBrkcHL4kMZ93mNQxlBVfQG0f3xPi99Y8/D9i6q7HAMZpY1Q
+        2PK8OtkRNn0ECpJCBOOv/KVR3WPe/5U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633682957;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uFjGpYRopr6d5ZmehI/8g6HLiJzjtm6I0H2tC2wXkME=;
+        b=l1/dYR2iMiP61vmAVd4pdF6qQgveeKEB6WHDEt8TJvSkslfNQYOrL4s6qSS6Zq/MEjvcFx
+        1BXxmeJpS7N8d+Ag==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A8F0613D13;
+        Fri,  8 Oct 2021 08:49:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id BncUKA0GYGE0cAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 08 Oct 2021 08:49:17 +0000
+Message-ID: <8f577b6a-3217-5b87-7dc2-eeefafef2f72@suse.de>
+Date:   Fri, 8 Oct 2021 10:49:17 +0200
 MIME-Version: 1.0
-In-Reply-To: <20211004125050.1153693-2-christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: 572994bf18ff prevents system boot
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ainux Wang <ainux.wang@gmail.com>
+References: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
+ <eeaf6170-0aca-4466-c79c-b422cdf29179@suse.de>
+ <1FA5E09F-BE25-4FF6-9958-7D7B0BE9256B@oracle.com>
+ <aaefdfe4-084b-7abd-5e5b-47481e20f4bd@suse.de>
+ <BAE78984-959D-480E-A0F7-71CF12FCE831@oracle.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <BAE78984-959D-480E-A0F7-71CF12FCE831@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------6p3rmjVOR40gR0CfCKdKcpMc"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.10.21 14:50, Christian Brauner wrote:
-> The number of system calls making use of pidfds is constantly
-> increasing. Some of those new system calls duplicate the code to turn a
-> pidfd into task_struct it refers to. Give them a simple helper for this.
-> 
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Suren Baghdasaryan <surenb@google.com>
-> Cc: Matthew Bobrowski <repnop@google.com>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
->   include/linux/pid.h |  1 +
->   kernel/pid.c        | 34 ++++++++++++++++++++++++++++++++++
->   2 files changed, 35 insertions(+)
-> 
-> diff --git a/include/linux/pid.h b/include/linux/pid.h
-> index af308e15f174..343abf22092e 100644
-> --- a/include/linux/pid.h
-> +++ b/include/linux/pid.h
-> @@ -78,6 +78,7 @@ struct file;
->   
->   extern struct pid *pidfd_pid(const struct file *file);
->   struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
-> +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
->   int pidfd_create(struct pid *pid, unsigned int flags);
->   
->   static inline struct pid *get_pid(struct pid *pid)
-> diff --git a/kernel/pid.c b/kernel/pid.c
-> index efe87db44683..2ffbb87b2ce8 100644
-> --- a/kernel/pid.c
-> +++ b/kernel/pid.c
-> @@ -539,6 +539,40 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
->   	return pid;
->   }
->   
-> +/**
-> + * pidfd_get_task() - Get the task associated with a pidfd
-> + *
-> + * @pidfd: pidfd for which to get the task
-> + * @flags: flags associated with this pidfd
-> + *
-> + * Return the task associated with the given pidfd.
-> + * Currently, the process identified by @pidfd is always a thread-group leader.
-> + * This restriction currently exists for all aspects of pidfds including pidfd
-> + * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
-> + * (only supports thread group leaders).
-> + *
-> + * Return: On success, the task_struct associated with the pidfd.
-> + *	   On error, a negative errno number will be returned.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------6p3rmjVOR40gR0CfCKdKcpMc
+Content-Type: multipart/mixed; boundary="------------tV70NhFRoAT3iMNtVO7fbEbx";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Ainux Wang <ainux.wang@gmail.com>
+Message-ID: <8f577b6a-3217-5b87-7dc2-eeefafef2f72@suse.de>
+Subject: Re: 572994bf18ff prevents system boot
+References: <A194B6CE-AF77-422D-A92F-292ABD83BCCE@oracle.com>
+ <eeaf6170-0aca-4466-c79c-b422cdf29179@suse.de>
+ <1FA5E09F-BE25-4FF6-9958-7D7B0BE9256B@oracle.com>
+ <aaefdfe4-084b-7abd-5e5b-47481e20f4bd@suse.de>
+ <BAE78984-959D-480E-A0F7-71CF12FCE831@oracle.com>
+In-Reply-To: <BAE78984-959D-480E-A0F7-71CF12FCE831@oracle.com>
 
-Nice doc.
+--------------tV70NhFRoAT3iMNtVO7fbEbx
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-You might want to document what callers of this function are expected to 
-do to clean up.
+SGkNCg0KQW0gMDQuMTAuMjEgdW0gMTY6MTEgc2NocmllYiBDaHVjayBMZXZlciBJSUk6DQo+
+IA0KPiANCj4+IE9uIE9jdCA0LCAyMDIxLCBhdCAxMDowNyBBTSwgVGhvbWFzIFppbW1lcm1h
+bm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3RlOg0KPj4NCj4+IEhpDQo+Pg0KPj4gQW0g
+MDQuMTAuMjEgdW0gMTU6MzQgc2NocmllYiBDaHVjayBMZXZlciBJSUk6DQo+Pj4+IE9uIE9j
+dCA0LCAyMDIxLCBhdCAzOjA3IEFNLCBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5A
+c3VzZS5kZT4gd3JvdGU6DQo+Pj4+DQo+Pj4+IChjYzogYWludXgud2FuZ0BnbWFpbC5jb20p
+DQo+Pj4+DQo+Pj4+IEhpDQo+Pj4+DQo+Pj4+IEFtIDAzLjEwLjIxIHVtIDIwOjA5IHNjaHJp
+ZWIgQ2h1Y2sgTGV2ZXIgSUlJOg0KPj4+Pj4gSGktDQo+Pj4+PiBBZnRlciB1cGRhdGluZyBv
+bmUgb2YgbXkgdGVzdCBzeXN0ZW1zIHRvIHY1LjE1LXJjLCBJIGZvdW5kIHRoYXQgaXQNCj4+
+Pj4+IGJlY29tZXMgdW5yZXNwb25zaXZlIGR1cmluZyB0aGUgbGF0ZXIgcGFydCBvZiB0aGUg
+Ym9vdCBwcm9jZXNzLiBBDQo+Pj4+PiBwb3dlci1vbiByZXNldCBpcyBuZWNlc3NhcnkgdG8g
+cmVjb3Zlci4NCj4+Pj4+IEkgYmlzZWN0ZWQgdG8gdGhpcyBjb21taXQ6DQo+Pj4+PiA1NzI5
+OTRiZjE4ZmYgKCJkcm0vYXN0OiBaZXJvIGlzIG1pc3NpbmcgaW4gZGV0ZWN0IGZ1bmN0aW9u
+IikNCj4+Pj4NCj4+Pj4gWW91IGRvbid0IGhhdmUgYSBtb25pdG9yIGNvbm5lY3RlZCwgSSBn
+dWVzcz8NCj4+PiBDb3JyZWN0LCBteSBsYWIgc3lzdGVtcyB1c2UgSVBNSSBhbmQgYSBicm93
+c2VyLWF0dGFjaGVkIGNvbnNvbGUuDQo+Pj4+IEluIHRoYXQgY2FzZSwgd2Ugbm93IHRyaWdn
+ZXIgdGhlIGhlbHBlcnMgdGhhdCBwb2xsIGZvciBjb25uZWN0ZWQgbW9uaXRvcnMuIEhvd2V2
+ZXIsIHRoZSBvdmVyaGVhZCBzZWVtcyByYXRoZXIgZXh0cmVtZS4NCj4+Pj4NCj4+Pj4gSSds
+bCBoYXZlIHRvIHRyeSB0byByZXByb2R1Y2UgdGhpcywgb3Igb3RoZXJ3aXNlIHdlIGNhbiBy
+ZXZlcnQgdGhlIGNvbW1pdC4NCj4+PiBJdCdzIHN0cmFuZ2UsIG9ubHkgdGhhdCBzeXN0ZW0g
+aW4gbXkgbGFiIHNlZW1zIHRvIGhhdmUgYSBwcm9ibGVtLg0KPj4+IFRoZSBvdGhlcnMgd29y
+ayBmaW5lLg0KPj4+IFRoYW5rcyBmb3IgaGF2aW5nIGEgbG9vayENCj4+DQo+PiBJcyBpdCBh
+IEhXIG9yIEZXIHByb2JsZW0/IE1heWJlIGEgZGlmZmVyZW50IHJldmlzaW9uPw0KPiANCj4g
+SXQncyBwb3NzaWJsZS4gSSBkb24ndCBrbm93IGhvdyB0byBmdXJ0aGVyIGRpYWdub3NlIHRo
+ZSBpc3N1ZSwNCj4gdGhvdWdoLiBBbnkgZ3VpZGFuY2UgYXBwcmVjaWF0ZWQhDQoNCnY1LjE1
+LXJjMyB3b3JrcyB3ZWxsIG9uIG15IHRlc3QgbWFjaGluZS4NCg0KRm9yIGdldHRpbmcgdGhl
+IGZpcm13YXJlIHJldmlzaW9ucywgcnVuDQoNCiAgIHN1ZG8gZG1pZGVjb2RlDQoNCm9uIHRo
+ZSBtYWNoaW5lLiBJdCB3aWxsIHByaW50IGEgbG9uZyBsaXN0IG9mIGRldmljZXMgd2l0aCBy
+ZWxhdGVkIA0KaW5mb3JtYXRpb24uIFJ1bm5pbmcNCg0KICAgc3VkbyBsc3BjaSAtdg0KDQp3
+aWxsIGdpdmUgaW5mb3JtYXRpb24gYWJvdXQgdGhlIFBDSSBkZXZpY2VzLiBUaGVyZSdzIGFu
+IGVudHJ5IGZvciB0aGUgDQpWR0EgZGV2aWNlIHNvbWV3aGVyZS4gTWF5YmUgeW91IGNhbiBm
+aW5kIHNvbWUgZGlmZmVyZW5jZSBiZXR3ZWVuIHRoZSANCmRpZmZlcmVudCBzeXN0ZW1zDQoN
+CklmIHlvdSB0aGluayB0aGUgbWFjaGluZSBnb3Qgc3R1Y2ssIHRyeSB0byBwbHVnLWluIHRo
+ZSBWR0EgY2FibGUgZHVyaW5nIA0KdGhlIGJvb3QgYW5kIHNlZSBpZiBpdCBtYWtlcyB0aGUg
+bWFjaGluZSBjb21lIHVwLg0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0KPiANCj4+
+IEknbSBhc2tpbmcgYmVjYXVzZSB0aGUgcHJvYmxlbWF0aWMgY29tbWl0IGRvZXMgdGhlIGNv
+cnJlY3QgdGhpbmcuIElmIHRoZXJlIGlzIG5vIFZHQSBjYWJsZSBjb25uZWN0ZWQsIHRoZSBk
+cml2ZXIgc2hvdWxkIHBvbGwgdW50aWwgaXQgZGV0ZWN0cyBvbmUuIFRoZSBvdmVyaGVhZCBz
+aG91bGQgYmUgbWluaW1hbC4NCj4+DQo+PiBCdXQgSSdsbCB0cnkgdG8gcmVwcm9kdWNlIGFu
+eXdheS4NCj4+DQo+PiBCZXN0IHJlZ2FyZHMNCj4+IFRob21hcw0KPj4NCj4+Pj4gQmVzdCBy
+ZWdhcmRzDQo+Pj4+IFRob21hcw0KPj4+Pg0KPj4+Pj4gQ2hlY2tpbmcgb3V0IHY1LjE1LXJj
+MyBhbmQgcmV2ZXJ0aW5nIHRoaXMgY29tbWl0IGVuYWJsZXMgdGhlIHN5c3RlbQ0KPj4+Pj4g
+dG8gYm9vdCBhZ2Fpbi4NCj4+Pj4+IDBiOjAwLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxl
+cjogQVNQRUVEIFRlY2hub2xvZ3ksIEluYy4gQVNQRUVEIEdyYXBoaWNzIEZhbWlseSAocmV2
+IDMwKSAocHJvZy1pZiAwMCBbVkdBIGNvbnRyb2xsZXJdKQ0KPj4+Pj4gICAgICAgICAgRGV2
+aWNlTmFtZTogIEFTUEVFRCBWaWRlbyBBU1QyNDAwDQo+Pj4+PiAgICAgICAgICBTdWJzeXN0
+ZW06IFN1cGVyIE1pY3JvIENvbXB1dGVyIEluYyBYMTBTUkwtRg0KPj4+Pj4gICAgICAgICAg
+Q29udHJvbDogSS9PKyBNZW0rIEJ1c01hc3Rlci0gU3BlY0N5Y2xlLSBNZW1XSU5WLSBWR0FT
+bm9vcC0gUGFyRXJyLSBTdGVwcGluZy0gU0VSUi0gRmFzdEIyQi0gRGlzSU5UeC0NCj4+Pj4+
+ICAgICAgICAgIFN0YXR1czogQ2FwKyA2Nk1Iei0gVURGLSBGYXN0QjJCLSBQYXJFcnItIERF
+VlNFTD1tZWRpdW0gPlRBYm9ydC0gPFRBYm9ydC0gPE1BYm9ydC0gPlNFUlItIDxQRVJSLSBJ
+TlR4LQ0KPj4+Pj4gICAgICAgICAgSW50ZXJydXB0OiBwaW4gQSByb3V0ZWQgdG8gSVJRIDE4
+DQo+Pj4+PiAgICAgICAgICBSZWdpb24gMDogTWVtb3J5IGF0IGZhMDAwMDAwICgzMi1iaXQs
+IG5vbi1wcmVmZXRjaGFibGUpIFtzaXplPTE2TV0NCj4+Pj4+ICAgICAgICAgIFJlZ2lvbiAx
+OiBNZW1vcnkgYXQgZmIwMDAwMDAgKDMyLWJpdCwgbm9uLXByZWZldGNoYWJsZSkgW3NpemU9
+MTI4S10NCj4+Pj4+ICAgICAgICAgIFJlZ2lvbiAyOiBJL08gcG9ydHMgYXQgYzAwMCBbc2l6
+ZT0xMjhdDQo+Pj4+PiAgICAgICAgICBFeHBhbnNpb24gUk9NIGF0IDAwMGMwMDAwIFt2aXJ0
+dWFsXSBbZGlzYWJsZWRdIFtzaXplPTEyOEtdDQo+Pj4+PiAgICAgICAgICBDYXBhYmlsaXRp
+ZXM6IFs0MF0gUG93ZXIgTWFuYWdlbWVudCB2ZXJzaW9uIDMNCj4+Pj4+ICAgICAgICAgICAg
+ICAgICAgRmxhZ3M6IFBNRUNsay0gRFNJLSBEMSsgRDIrIEF1eEN1cnJlbnQ9Mzc1bUEgUE1F
+KEQwKyxEMSssRDIrLEQzaG90KyxEM2NvbGQrKQ0KPj4+Pj4gICAgICAgICAgICAgICAgICBT
+dGF0dXM6IEQwIE5vU29mdFJzdC0gUE1FLUVuYWJsZS0gRFNlbD0wIERTY2FsZT0wIFBNRS0N
+Cj4+Pj4+ICAgICAgICAgIENhcGFiaWxpdGllczogWzUwXSBNU0k6IEVuYWJsZS0gQ291bnQ9
+MS80IE1hc2thYmxlLSA2NGJpdCsNCj4+Pj4+ICAgICAgICAgICAgICAgICAgQWRkcmVzczog
+MDAwMDAwMDAwMDAwMDAwMCAgRGF0YTogMDAwMA0KPj4+Pj4gICAgICAgICAgS2VybmVsIGRy
+aXZlciBpbiB1c2U6IGFzdA0KPj4+Pj4gICAgICAgICAgS2VybmVsIG1vZHVsZXM6IGFzdA0K
+Pj4+Pj4gLS0NCj4+Pj4+IENodWNrIExldmVyDQo+Pj4+DQo+Pj4+IC0tIA0KPj4+PiBUaG9t
+YXMgWmltbWVybWFubg0KPj4+PiBHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQo+Pj4+IFNV
+U0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KPj4+PiBNYXhmZWxkc3RyLiA1
+LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCj4+Pj4gKEhSQiAzNjgwOSwgQUcgTsO8cm5i
+ZXJnKQ0KPj4+PiBHZXNjaMOkZnRzZsO8aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo+Pj4g
+LS0NCj4+PiBDaHVjayBMZXZlcg0KPj4NCj4+IC0tIA0KPj4gVGhvbWFzIFppbW1lcm1hbm4N
+Cj4+IEdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINCj4+IFNVU0UgU29mdHdhcmUgU29sdXRp
+b25zIEdlcm1hbnkgR21iSA0KPj4gTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5iZXJnLCBH
+ZXJtYW55DQo+PiAoSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQo+PiBHZXNjaMOkZnRzZsO8
+aHJlcjogRmVsaXggSW1lbmTDtnJmZmVyDQo+IA0KPiAtLQ0KPiBDaHVjayBMZXZlcg0KPiAN
+Cj4gDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2
+ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRz
+dHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5i
+ZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEZlbGl4IEltZW5kw7ZyZmZlcg0K
 
+--------------tV70NhFRoAT3iMNtVO7fbEbx--
 
-> + */
-> +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags)
-> +{
-> +	unsigned int f_flags;
-> +	struct pid *pid;
-> +	struct task_struct *task;
-> +
-> +	pid = pidfd_get_pid(pidfd, &f_flags);
-> +	if (IS_ERR(pid))
-> +		return ERR_CAST(pid);
-> +
-> +	task = get_pid_task(pid, PIDTYPE_TGID);
-> +	put_pid(pid);
+--------------6p3rmjVOR40gR0CfCKdKcpMc
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-The code to be replaced always does the put_pid() after the 
-put_task_struct(). Is this new ordering safe? (didn't check)
+-----BEGIN PGP SIGNATURE-----
 
-> +	if (!task)
-> +		return ERR_PTR(-ESRCH);
-> +
-> +	*flags = f_flags;
-> +	return task;
-> +}
-> +
->   /**
->    * pidfd_create() - Create a new pid file descriptor.
->    *
-> 
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmFgBg0FAwAAAAAACgkQlh/E3EQov+DA
+2g//YuK6f+RoKcqXykPQ5UeD0Gk+Pcm73VPjknpcuDrtV43HGJOJERiV05IgXSSY2hZIA8CxBCUa
+xMqOyBw0NVzEeTC2uQNwZu60itbvudrZJk/tWfHIVaYaObGHg82h8myhJ7e94WiDoeOwKnYDx5Kd
+CvNzgWHaf/RAc4C8HKXDdtQ+MR+09Uh7kGAbkz7grKO/ZZOJJvtjG5/NuqsRekLoQDQNsMgy7+lE
+XBXTZTv+iAmf9Tk9vD1vWYbK6MjU21h6UFHsktudqBNS3wBHxsR4TzScvupm/Y5so48gO3qZB9EY
+atAz+2El8aEw4Wa2tOhx4qzuzhi/Y+3C2VAs7debgJwD4MNBcN5OAHb4IUOKnRhYxaEoVGp7RRds
+tHO6xzqWGtVFxXyQLj/LBZcuVF1Q/2trkci59KWzWDGFbrIz6S1wT69gLkx2W9ZHgII3S5cyWPsu
+HQAk2CTY0RdXGSxfRjj+nritz6LLTzHA6k9EPMAydWULYPNN0MBBpaneldO60WPGaFdEAG+31E4r
+oHNwPKrgbL1BQzPcdjtpxmGZ9PdNhFP8j9NR1ImBY+ZsnSdFmt9gY9LQRQtpnJQSINBX6fqAHgvu
+N6XkwnE8cCsucAceUUAK3lviby5qcv/tmyzIIT4wrC14yQIIbY+88ar34wEmPlTkszAHJUCn86Rd
+4ks=
+=b0YC
+-----END PGP SIGNATURE-----
 
-I'd have squashed this into the second patch, makes it a lot easier to 
-review and it's only a MM cleanup at this point.
-
--- 
-Thanks,
-
-David / dhildenb
-
+--------------6p3rmjVOR40gR0CfCKdKcpMc--
