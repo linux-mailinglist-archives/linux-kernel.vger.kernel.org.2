@@ -2,96 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E05427163
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:23:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F204427168
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:27:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241089AbhJHTZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhJHTZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:25:05 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914D5C061570;
-        Fri,  8 Oct 2021 12:23:09 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id s11so4006282pgr.11;
-        Fri, 08 Oct 2021 12:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=043THLPv8UOPgKhXnr0xoz3+6YR3rwqfvnfA7k2NPic=;
-        b=ZhzWitbGTWOV1AavCMHtw6rAMmHkudUuM8S8mv/wSoue2sPpGbb104kJ9J/wimKIvL
-         2LswtlzZ7TAfRplEX3ykN2v/2+1HJ/A6Pe8pGsfg6yk6uMibzAv76cZaeV0woCVUKzDv
-         teutejTeQYLRX61DeEjd8yQ38vQ6CQwD49AUi3qrgroFIYDkmMa/FdYWos29F4mn5M6p
-         Jiffe2e93WL6UBYRaadEHi0v8NNbzFX8Y451GtVSoEVfqmYyJPtPahRerUKCWQ80qMM+
-         8glWsGsWbOY2DpR9Rw/GIH5gOXugfz4Be/x+B0LxScwJx6ndduLWc6MiE4gUKsJ0VNpD
-         cIeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=043THLPv8UOPgKhXnr0xoz3+6YR3rwqfvnfA7k2NPic=;
-        b=Mpz/KVMQIl+0iM60IhtR6jgBslbhrjkuJwDGLbGcdUCy0SNOTgOCFKZqnZex7xaTvS
-         b+8r7ze2VJvEJSe2pZYVeLP3hGcmPU5mKhOBblB587pyFDhhlRUcAB/8p4BqYs1gHfvD
-         bSv3DxMNUGfd6eFM39/R2WbHdwn0t75O1YRc/lOlCCgOlo+wGVpTaScgyG/iYZAjPFr8
-         QxVEmClhz4lth10xEkqXiSRI3qjak2YQUpk6AbJ2dlr5hLqePdhgXDnP82wA2wd0o7P/
-         J3S9l9ZStj0nGGtDTHT5JQhd26Y5wf4mN1q/KjH93TXBwxupL3D95sMYRF5CQU/bZLJl
-         y7JA==
-X-Gm-Message-State: AOAM530AfDKzG9wgPQ14p6TWrrxNGdRBgRu/HOHPTBXpZ8VgMq7t3Lc2
-        +73mJac7LSPhh2OZTb3vqdYDiw7VZec=
-X-Google-Smtp-Source: ABdhPJwPG51FERBiF6Ayafem88hZQzuCD5NtaByciu/LaQoyuQlVTLVkYZBnoKaUbGb7yJzdXYGGTA==
-X-Received: by 2002:a05:6a00:c88:b0:44c:27d4:5cd4 with SMTP id a8-20020a056a000c8800b0044c27d45cd4mr11897364pfv.32.1633720988602;
-        Fri, 08 Oct 2021 12:23:08 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id nl18sm55599pjb.3.2021.10.08.12.23.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 12:23:07 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/16] 5.4.152-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20211008112715.444305067@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a8ea9c24-77e3-8681-3b43-9110d07e065d@gmail.com>
-Date:   Fri, 8 Oct 2021 12:23:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231539AbhJHT26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:28:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhJHT2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:28:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 243BE61073;
+        Fri,  8 Oct 2021 19:27:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633721220;
+        bh=QnbMDhIm9HL7pJkR672kGyuF+7MeVCbdnt2qg7XEDQs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=S2irSZZb9tAfaQp/1hWnVHqEgXPHPRSFy3Jo9wgAjYJVOBJqcvE8qAWuH5FWtfihQ
+         7HZaRqR3/zgL7coZpXpoVoEUAzz+N4cIlzYUCs6mwhSnQLph/3iYzNVqDnw9mebWq+
+         9Xfb4IJCP2a3J+iXGjQoA7cbq1KyS89E802O2sJhBU6L5ypR3U8QagieZa9jN8Apzc
+         OpBTBnGaY4bPjvus9a5DgsFnR23lWuUYab1E2l7L5cW8S3iSezbWe3nfAA3OHP9NfX
+         /n7OvAOeMxwskm1yR0pn1X8hJpDV5PATi3ti0cPqbWBU/ZqKi+wf98w/Vz9ZiZu1xc
+         YMn6clcnlPzMQ==
+Received: by mail-ed1-f48.google.com with SMTP id b8so40123741edk.2;
+        Fri, 08 Oct 2021 12:27:00 -0700 (PDT)
+X-Gm-Message-State: AOAM5329Jp6QCnA5JVDQsibVFHTJ/bPehWwneOGrcP2lIy1O+ZPb1494
+        QhrfpdPrb45YttNlhldOupDK3qCPKG+NUlBwNw==
+X-Google-Smtp-Source: ABdhPJz+IaG9foJegj3syUX1Q/KhZ5o+aDRniyboqmQtQ+omUebDWUdPCNHXTCAG+ENu05ulqk/trTBuMHOfiThknVM=
+X-Received: by 2002:a05:6402:44c:: with SMTP id p12mr17558796edw.145.1633721218518;
+ Fri, 08 Oct 2021 12:26:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
+ <1632625630-784-5-git-send-email-shengjiu.wang@nxp.com> <YVTrbPC4/ir974xs@robh.at.kernel.org>
+ <CAA+D8ANdQQFuPh_F8DZka+Y6hVDGuT8BvRfWdUFJxHd5JTQPNA@mail.gmail.com>
+ <CAL_JsqK2KHfDisDXsuyWX0P99uY+nmEG72AsNUmqGRjJKHmg_Q@mail.gmail.com>
+ <CAA+D8ANDP0ZPFKbRaYCwD+8zE3qvckKo9JjXwNBFUPrJ66=idw@mail.gmail.com> <CAA+D8AMLn6Hn4P9U38dPKFO1z4k5x1Nf43X2ej6ohNY9O8Z+tQ@mail.gmail.com>
+In-Reply-To: <CAA+D8AMLn6Hn4P9U38dPKFO1z4k5x1Nf43X2ej6ohNY9O8Z+tQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 8 Oct 2021 14:26:47 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJOZBPNZBv=Q32myz5SvvZ4Nifv88zWecu=6zxNqynAEA@mail.gmail.com>
+Message-ID: <CAL_JsqJOZBPNZBv=Q32myz5SvvZ4Nifv88zWecu=6zxNqynAEA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/4] dt-bindings: dsp: fsl: update binding document for
+ remote proc driver
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 4:27 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.152 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.152-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Fri, Oct 8, 2021 at 2:19 AM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+>
+> On Fri, Oct 8, 2021 at 12:12 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> >
+> > Hi Rob
+> >
+> > On Sat, Oct 2, 2021 at 12:40 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, Sep 29, 2021 at 9:34 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
+> > > >
+> > > > Hi Rob
+> > > >
+> > > > On Thu, Sep 30, 2021 at 6:40 AM Rob Herring <robh@kernel.org> wrote:
+> > > > >
+> > > > > On Sun, Sep 26, 2021 at 11:07:10AM +0800, Shengjiu Wang wrote:
+> > > > > > As there are two drivers for DSP on i.MX, one is for sound open
+> > > > > > firmware, another is for remote processor framework. In order to
+> > > > > > distinguish two kinds of driver, defining different compatible strings.
+> > > > > >
+> > > > > > For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
+> > > > > > are needed and the mailbox channel is different with SOF.
+> > > > > >
+> > > > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > > > Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > > > > > ---
+> > > > > >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 81 +++++++++++++++++--
+> > > > > >  1 file changed, 75 insertions(+), 6 deletions(-)
+> > > > > >
+> > > > > > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > > > index 7afc9f2be13a..51ea657f6d42 100644
+> > > > > > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > > > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > > > > @@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
+> > > > > >
+> > > > > >  maintainers:
+> > > > > >    - Daniel Baluta <daniel.baluta@nxp.com>
+> > > > > > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > > >
+> > > > > >  description: |
+> > > > > >    Some boards from i.MX8 family contain a DSP core used for
+> > > > > > @@ -19,6 +20,10 @@ properties:
+> > > > > >        - fsl,imx8qxp-dsp
+> > > > > >        - fsl,imx8qm-dsp
+> > > > > >        - fsl,imx8mp-dsp
+> > > > > > +      - fsl,imx8qxp-hifi4
+> > > > > > +      - fsl,imx8qm-hifi4
+> > > > > > +      - fsl,imx8mp-hifi4
+> > > > > > +      - fsl,imx8ulp-hifi4
+> > > > > >
+> > > > > >    reg:
+> > > > > >      maxItems: 1
+> > > > > > @@ -28,37 +33,63 @@ properties:
+> > > > > >        - description: ipg clock
+> > > > > >        - description: ocram clock
+> > > > > >        - description: core clock
+> > > > > > +      - description: debug interface clock
+> > > > > > +      - description: message unit clock
+> > > > > > +    minItems: 3
+> > > > > > +    maxItems: 5
+> > > > >
+> > > > > Don't need maxItems.
+> > > >
+> > > > Ok, I will update it.
+> > > >
+> > > > >
+> > > > > >
+> > > > > >    clock-names:
+> > > > > >      items:
+> > > > > >        - const: ipg
+> > > > > >        - const: ocram
+> > > > > >        - const: core
+> > > > > > +      - const: debug
+> > > > > > +      - const: mu
+> > > > > > +    minItems: 3
+> > > > > > +    maxItems: 5
+> > > > >
+> > > > > ditto
+> > > >
+> > > > Ok, I will update it.
+> > > >
+> > > > >
+> > > > > >
+> > > > > >    power-domains:
+> > > > > >      description:
+> > > > > >        List of phandle and PM domain specifier as documented in
+> > > > > >        Documentation/devicetree/bindings/power/power_domain.txt
+> > > > > > +    minItems: 1
+> > > > >
+> > > > > This is curious. The h/w sometimes has fewer power domains?
+> > > >
+> > > > On i.MX8QM/8QXP,  there are independent power domains for DSP core,
+> > > > DSP's RAM and DSP's MU.
+> > > > But on i.MX8MP, all these DSP components are in same audio subsystem
+> > > > There is only one power domain for whole audio subsystem,  when
+> > > > power on audio subsystem, the DSP's components are powered on also.
+> > > >
+> > > > So the number of power domain depends on how the DSP component
+> > > > integrated in SoC.
+> > >
+> > > Sounds like you can write an if/then schema for this difference.
+> > >
+> >
+> > I try this:
+> >
+> > allOf:
+> >   - if:
+> >       properties:
+> >         compatible:
+> >           contains:
+> >             enum:
+> >               - fsl,imx8mp-hifi4
+> >               - fsl,imx8mp-dsp
+> >
+> >     then:
+> >       properties:
+> >         power-domains:
+> >           maxItems: 1
+> >
+> >     else:
+> >       properties:
+> >         power-domains:
+> >           maxItems: 4
+> >
+> >
+> > But the dt_binding_check report error:
+> >   DTEX    Documentation/devicetree/bindings/dsp/fsl,dsp.example.dts
+> >   DTC     Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml
+> >   CHECK   Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml
+> > /opt/alsa/sound/Documentation/devicetree/bindings/dsp/fsl,dsp.example.dt.yaml:
+> > dsp@3b6e8000: power-domains: [[4294967295]] is too short
+> >         From schema:
+> > /opt/alsa/sound/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> >
+> > I don't know the reason, could you please help to have a look what
+> > is wrong?
+>
+> Seems still need to add "minItems" in original power-domains besides
+> if/then schema. otherwise the dt_binding_check report above
+> error.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+Yes, that's right. The main section has to pass for all cases, so you
+need the maximum range (1-4 items).
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Rob
