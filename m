@@ -2,106 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752B8426644
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0322426645
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:55:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbhJHI51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhJHI5X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:57:23 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C10C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 01:55:28 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id r15so544944qkp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 01:55:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XxU7p1t2vpoUkds+Z7mgCZaRnwUz2A7ihwGXZAdD+IU=;
-        b=fc2FLpKZzIJDjstSp6GLjBw4e2ZHSCTlZFd6xstLnhAeSppM99wXCw+PRxq3YGwR5n
-         p9SICUYAyHFaqr7QefI3Dazg0WgTUPtFe0KFb1Yc62WXiaJVXyrEoiIJSCirlEakXFuG
-         HmNxEkE4a8O+inntrNIAYvLc+uUHXfOLEi4OPqatsNIIr0Psf50d85RlP1Rws1f9mq8W
-         mXyUgNFlelO1rwxcnIjqSjO+jlDlH4sFSh9owjhDlb2XHQo7SQL0glJVTjyInkJz0bzN
-         TX1LySmuRFGkSCS1VkGY40lmCqcBQQsU63xs0EfwdZ4wT8olf+6nsxJNZtfHHYJ7flv+
-         CCfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XxU7p1t2vpoUkds+Z7mgCZaRnwUz2A7ihwGXZAdD+IU=;
-        b=pD+JRrW5RgpBd+486s4pLcmbv566yYwpHKV1EWyrhNKgWI9HMQ/7LtOPqZXrHMGkv5
-         QXuMTwZyIUIANf96rYLdZ2qR+ibswoGF3EWH4KHHs0EoUVEKvtXEJEtQ59mv2XsRQbeh
-         KbTr+Kf29UEubPKe72lqe00+/eZhlAmpOeEipdErJ/2eMwO4VD+kQkkpSWumKdYZPrwy
-         VagqSHOFBp43asW5Cm8zST7h+27grcp5XGf6FvO4IBCDYhbbsNOXKL84wjBWT2qk6EK2
-         tBVbZMqaZ6PpFnfonTmF+pENRc7VQVBZSHSt3LqWakhOxpuiKXsecexwg2VPWGWF78yY
-         zjOA==
-X-Gm-Message-State: AOAM530WU1dW1Y4pzrwNFlGsgnbml9IqDA4A/Oc3U3JdmCjWSwZyAFFz
-        DmaQPev8MfUjP6HijkFw0LVYO3Y9QiDZY9ZDhLY=
-X-Google-Smtp-Source: ABdhPJykIT4TxDpHeer8ri66LEX6RxKFj1evY2wqwVhceMmeHl4IjOSJQgGyaLWNZ/11nnjKceZMz8ZvZxkse00r9Lc=
-X-Received: by 2002:ae9:d607:: with SMTP id r7mr1849084qkk.142.1633683327420;
- Fri, 08 Oct 2021 01:55:27 -0700 (PDT)
+        id S230107AbhJHI5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:57:48 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:37710 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229853AbhJHI5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:57:47 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id CBB21C8008E;
+        Fri,  8 Oct 2021 10:55:50 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 7OLv8TX-x2nF; Fri,  8 Oct 2021 10:55:50 +0200 (CEST)
+Received: from [192.168.178.82] (host-212-18-30-247.customer.m-online.net [212.18.30.247])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 19924C80082;
+        Fri,  8 Oct 2021 10:55:50 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH RESEND] x86/resource: Do not exclude regions that are
+ marked as MMIO in EFI memmap
+To:     mika.westerberg@linux.intel.com
+Cc:     benoitg@coeus.ca, bhelgaas@google.com, bp@alien8.de, hpa@zytor.com,
+        juhapekka.heikkila@gmail.com, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
+References: <20200617164734.84845-1-mika.westerberg@linux.intel.com>
+Message-ID: <1c225d72-44dc-1ddb-3284-a5d19e0db882@tuxedocomputers.com>
+Date:   Fri, 8 Oct 2021 10:55:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <1633673269-15048-1-git-send-email-huangzhaoyang@gmail.com>
- <20211008080113.GA441@willie-the-truck> <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
- <YWAFHgUseH2t/FUf@arm.com>
-In-Reply-To: <YWAFHgUseH2t/FUf@arm.com>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Fri, 8 Oct 2021 16:55:05 +0800
-Message-ID: <CAGWkznHeCfxx_S4nFqWEZzSRxdGRkdMQmv4p7fbPi+3o+WYE2w@mail.gmail.com>
-Subject: Re: [RFC PATCH] arch: ARM64: add isb before enable pan
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ke Wang <ke.wang@unisoc.com>, ping.zhou1@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200617164734.84845-1-mika.westerberg@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 4:45 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> Commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
+> space") made the resource allocation code to avoid all regions that are
+> in E820 table. This prevents the kernel to assign MMIO resources to
+> regions that may be real RAM for example.
 >
-> On Fri, Oct 08, 2021 at 04:34:12PM +0800, Zhaoyang Huang wrote:
-> > On Fri, Oct 8, 2021 at 4:01 PM Will Deacon <will@kernel.org> wrote:
-> > > On Fri, Oct 08, 2021 at 02:07:49PM +0800, Huangzhaoyang wrote:
-> > > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > >
-> > > > set_pstate_pan failure is observed in an ARM64 system occasionaly on a reboot
-> > > > test, which can be work around by a msleep on the sw context. We assume
-> > > > suspicious on disorder of previous instr of disabling SW_PAN and add an isb here.
-> > > >
-> > > > PS:
-> > > > The bootup test failed with a invalid TTBR1_EL1 that equals 0x34000000, which is
-> > > > alike racing between on chip PAN and SW_PAN.
-> > >
-> > > Sorry, but I'm struggling to understand the problem here. Please could you
-> > > explain it in more detail?
-> > >
-> > >   - Why does a TTBR1_EL1 value of `0x34000000` indicate a race?
-> > >   - Can you explain the race that you think might be occurring?
-> > >   - Why does an ISB prevent the race?
-> > Please find panic logs[1], related codes[2], sample of debug patch[3]
-> > below. TTBR1_EL1 equals 0x34000000 when panic and can NOT be captured
-> > by the debug patch during retest (all entrances that msr ttbr1_el1 are
-> > under watch) which should work. Adding ISB here to prevent race on
-> > TTBR1 from previous access of sysregs which can affect the msr
-> > result(the test is still ongoing). Could the race be
-> > ARM64_HAS_PAN(automated by core) and SW_PAN.
+> However, at least with Lenovo Yoca C940 and S740 this causes problems
+> when allocating resources for PCIe devices behind Thunderbolt port(s).
 >
-> Can you please change the ARM64_HAS_PAN type to
-> ARM64_CPUCAP_STRICT_BOOT_CPU_FEATURE? I wonder whether
-> system_uses_ttbr0_pan() changes its output when all CPUs had been
-> brought up and system_uses_hw_pan() returns true.
-ok, thanks. We will try. Is it a workaround for known defect?
+> On Yoga S740 the E820 table contains an entry like this:
 >
-> --
-> Catalin
+>   BIOS-e820: [mem 0x000000002bc50000-0x00000000cfffffff] reserved
+>
+> and ACPI _CRS method for the host bridge returns these windows:
+>
+>   pci_bus 0000:00: root bus resource [io  0x0000-0x0cf7 window]
+>   pci_bus 0000:00: root bus resource [io  0x0d00-0xffff window]
+>   pci_bus 0000:00: root bus resource [mem 0x000a0000-0x000bffff window]
+>   pci_bus 0000:00: root bus resource [mem 0x45400000-0xbfffffff window]
+>   pci_bus 0000:00: root bus resource [mem 0x4000000000-0x7fffffffff window]
+>
+> Note that the 0x45400000-0xbfffffff entry is also included in the E820
+> table and marked as "reserved".
+>
+> When Thunderbolt device is connected and the PCIe gets tunneled PCI core
+> tries to allocate memory for the new devices but it fails because all
+> the resources are inside this reserved region so arch_remove_reservations()
+> clips them which makes the resource assignment fail as in below log:
+>
+>   pci 0000:00:07.0: PCI bridge to [bus 01-2a]
+>   pci 0000:00:07.0:   bridge window [mem 0x46000000-0x521fffff]
+>   pci 0000:00:07.0:   bridge window [mem 0x6000000000-0x601bffffff 64bit pref]
+>   ...
+>   pci 0000:02:04.0: bridge window [mem 0x00100000-0x001fffff 64bit pref] to [bus 07-2a] add_size 100000 add_align 100000
+>   pci 0000:02:04.0: bridge window [mem 0x00100000-0x001fffff] to [bus 07-2a] add_size 100000 add_align 100000
+>   pci 0000:01:00.0: bridge window [mem 0x00100000-0x005fffff 64bit pref] to [bus 02-2a] add_size 100000 add_align 100000
+>   pci 0000:01:00.0: bridge window [mem 0x00100000-0x005fffff] to [bus 02-2a] add_size 100000 add_align 100000
+>   pci 0000:01:00.0: bridge window [io  0x1000-0x5fff] shrunken by 0x0000000000004000
+>   pci 0000:01:00.0: bridge window [mem 0x00100000-0x005fffff] extended by 0x000000000bd00000
+>   pci 0000:01:00.0: bridge window [mem 0x00100000-0x005fffff 64bit pref] extended by 0x000000001bb00000
+>   pci 0000:02:04.0: bridge window [mem 0x00100000-0x001fffff] extended by 0x000000000bd00000
+>   pci 0000:02:04.0: bridge window [mem 0x00100000-0x001fffff 64bit pref] extended by 0x000000001bb00000
+>   pci 0000:01:00.0: BAR 8: no space for [mem size 0x0c200000]
+>   pci 0000:01:00.0: BAR 8: failed to assign [mem size 0x0c200000]
+>   pci 0000:01:00.0: BAR 9: assigned [mem 0x6000000000-0x601bffffff 64bit pref]
+>   pci 0000:01:00.0: BAR 7: assigned [io  0x4000-0x4fff]
+>
+> The 01:00.0 is the upstream port of the PCIe switch that is connected to
+> the PCIe root port (00:07.1) over Thunderbolt link.
+>
+> If I add "efi=debug" to the command line I can see that the EFI memory
+> map actually contains several entries:
+>
+>   [Reserved           |   |  |  |  |  |  |  | |   |WB|WT|WC|UC] range=[0x000000002bc50000-0x000000003fffffff] (323MB)
+>   [Reserved           |   |  |  |  |  |  |  | |   |WB|  |  |UC] range=[0x0000000040000000-0x0000000040ffffff] (16MB)
+>   [Reserved           |   |  |  |  |  |  |  | |   |  |  |  |  ] range=[0x0000000041000000-0x00000000453fffff] (68MB)
+>   [Memory Mapped I/O  |RUN|  |  |  |  |  |  | |   |  |  |  |UC] range=[0x0000000045400000-0x00000000cfffffff] (2220MB)
+>
+> I think the EFI stub merges these consecutive entries into that single
+> E820 entry showed above. The last region marked as EFI_MEMORY_MAPPED_IO
+> actually covers the PCI host bridge window entirely. However, since
+> there is corresponding E820 type for this it is simply marked as
+> E820_TYPE_RESERVED.
+>
+> All in all, I think we can fix this by modifying arch_remove_reservations()
+> to check the EFI type as well and if it is EFI_MEMORY_MAPPED_IO skip the
+> clipping in that case.
+>
+> Reported-by: Benoit Grégoire <benoitg@coeus.ca>
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=206459 <https://bugzilla.kernel.org/show_bug.cgi?id=206459>
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> ---
+>  arch/x86/kernel/resource.c <https://lore.kernel.org/lkml/20200617164734.84845-1-mika.westerberg@linux.intel.com/#Z31arch:x86:kernel:resource.c> | 34 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+>
+> diff
+> <https://lore.kernel.org/lkml/20200617164734.84845-1-mika.westerberg@linux.intel.com/#iZ31arch:x86:kernel:resource.c>
+> --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c index 9b9fb7882c20..c0bc9117dd7d 100644 ---
+> a/arch/x86/kernel/resource.c +++ b/arch/x86/kernel/resource.c @@ -1,4 +1,5 @@  // SPDX-License-Identifier: GPL-2.0
+> +#include <linux/efi.h>  #include <linux/ioport.h>
+>  #include <asm/e820/api.h>
+>  
+> @@ -36,6 +37,36 @@ static void remove_e820_regions(struct resource *avail)  	}
+>  }
+>  
+> +#ifdef CONFIG_EFI +static bool efi_mmio_mem(const struct resource *avail) +{ + resource_size_t start, end; +
+> efi_memory_desc_t desc; + + if (!efi_enabled(EFI_MEMMAP) || + efi_mem_desc_lookup(avail->start, &desc)) + return
+> false; + + start = desc.phys_addr; + end = desc.phys_addr + (desc.num_pages << EFI_PAGE_SHIFT) - 1; + + /* + * No need
+> to clip the resource if it is fully contained in an + * EFI memory mapped region. + */ + if (avail->start >= start &&
+> avail->end <= end && + desc.type == EFI_MEMORY_MAPPED_IO) + return true; + + return false; +} +#else +static inline
+> bool efi_mmio_mem(const struct resource *avail) +{ + return false; +} +#endif +  void arch_remove_reservations(struct resource *avail)
+>  {
+>  	/*
+> @@ -46,6 +77,7 @@ void arch_remove_reservations(struct resource *avail)  	if (avail->flags & IORESOURCE_MEM) {
+>  		resource_clip(avail, BIOS_ROM_BASE, BIOS_ROM_END);
+>  
+> - remove_e820_regions(avail); + if (!efi_mmio_mem(avail)) + remove_e820_regions(avail);  	}
+>  }
+> -- 
+> 2.27.0.rc2
+Greetings,
+
+Is there any update on this matter? Also happens on discrete Thunderbolt 4 chips:
+https://bugzilla.kernel.org/show_bug.cgi?id=214259
+
+Kind Regards,
+
+Werner Sembach
+
