@@ -2,147 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76CFC427127
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A22427130
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 21:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240575AbhJHTFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
+        id S240611AbhJHTJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231459AbhJHTFU (ORCPT
+        with ESMTP id S240452AbhJHTJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:05:20 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F05C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 12:03:23 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id k26so8972899pfi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 12:03:23 -0700 (PDT)
+        Fri, 8 Oct 2021 15:09:14 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5126C061570;
+        Fri,  8 Oct 2021 12:07:18 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id s75so3988303pgs.5;
+        Fri, 08 Oct 2021 12:07:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oNdarxBooEw49lOrQDkWJsFHINdfUOwPGFjoZVjB6JY=;
-        b=pQhiuqG89VNlkxT+bp9+XkUj5SluTR0+dU5Tlv/iOpIybqiv8V8QlMI1pDRCQShvCq
-         G9ElIfSbhg3lI1aYL+P0EnfXW7RQURDWe7xnFZh1MKB1i4Wlg1a3AozYscpHyMSl5VwR
-         /IWtHCq/nU+jqunOf/uLQxwosX+Dso6VQMvkgYPf0c3Njy1NZOK2s/dDo+xvqnJDOLhM
-         9MPhHHVKvxQxn1f8pDHK94wp3ZF1xN4jKOraQ0wGsENrZfy3Q/PKCKuQRhqyi/2YHEej
-         owVO7hTd9YkzgB/ZC6Oj1ZidJuKwIxX4QQth2tOh5uz9gq7A8LE7v5Tme86rj0/Ygcwl
-         d9Uw==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Eb0VmP8uBk0htYY3QkgDPPUn6vRuKHOLfbwBh76+ghw=;
+        b=S0SplhS7x6ANzlRfG3bkUKrUWajKc68cNGzPe/cZwix7XjkItXxAnuyF7oIoShGu2l
+         O4ZjwQIr0RD4L5rLbug5DUsxV7QUXxdQTh845e1GdeRdAx0+H/2xLvGn+WG10KqyrD7Z
+         5L/NyevIN3khH/6fQXMsxvus7Q9enk0jNSbvebFcIvlt6na3dvNF7JwrmgZEy8G9Uhc6
+         qGqmYKo/RWinxgULPi/TEMyTNgkEinRk1e6WkuGBS9eGmxMBZjwv+ZAI4A3CUyWZJ0gD
+         rJb0c+GDYpFtrAtJh1ZXcpytrO7mtMhqniN2NdH5pPlaf2H/bE5SCxhuaOvIlpxTx0WC
+         SN3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oNdarxBooEw49lOrQDkWJsFHINdfUOwPGFjoZVjB6JY=;
-        b=MJ4GFSoEr3FoJB+hmKIVJFRYzfVyqR/VmFmsxQ5KojV5fK0ApTMeuF5XKh5eg74g1W
-         5FIIloBCQyYlm1bw5yUfDKKIDHe7XG7vPSM6DbmNdeLxoXWHA2eZ+xgGEP0YitIKhkBw
-         kmr54V9nEOAI9rFqReoI9EGf6SMNNRVGnx5/i7lBNDRwem54gYDwg458vA4NwPtV6Jtd
-         hmdCw6wdVWBL4QKBPbYhinFa+VCsScz5Li4jvwLIdyvIQczqV2RgQzPDATyEeYbnp6n1
-         mv4uk4u0otfylbagJiIj9w5b6BiITeuB8KJjpf+d0Y55FvH5rG2sQfDZA22VzqgVtlfm
-         OCWQ==
-X-Gm-Message-State: AOAM532tEo/r5gO352HTzEDbD1frvqPRhY7f2OcL05RKuDc2EV8M75DB
-        tqteq6CpPV5k8IJoXqk60bR3JdGDwEUb/AzVgvzkhw==
-X-Google-Smtp-Source: ABdhPJyuf8H30MNhst+1XUSSr6oT+IFsy1XY5RoBYommFm/Ep8eGVuIKC5U90xi2YVmbf9YmaKH0m9RTObE/yDJpkHI=
-X-Received: by 2002:a05:6a00:1586:b0:447:b30c:4a65 with SMTP id
- u6-20020a056a00158600b00447b30c4a65mr11858150pfk.0.1633719803151; Fri, 08 Oct
- 2021 12:03:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Eb0VmP8uBk0htYY3QkgDPPUn6vRuKHOLfbwBh76+ghw=;
+        b=46pZv2TGJQ0S5GyozUZIxfEeWCrtSHnx4QIWbESgflM5d0GA+K3r5hETk4qVFUOqGa
+         pyP8vYfbG/JDvaFXcqm+e9G4haadAxnkK5iIO7wy4QUsBjkI6uXItcfmsw+ZidEPChYU
+         19tWyQVIhLm9Uf5gkCjx40Njq847iCwq5P+31dmNtnnqNTdiHfc8EZIkeWa2iVQ9wUQ6
+         wa66JkqF4DcSg/C6IXyM2c5PbeHIN8r4zkLXQ1Y3b324DlQlmPlrkEJS8QqMx/UvXnKa
+         YfYpDTMHEJpYywgr6DBdA2Pg+Lpi9jJQtDMst+yCbIQGPCUjAbS7mkpM+Dl2eMeLAip7
+         MMKw==
+X-Gm-Message-State: AOAM533dFSsZYwyYi6QaomLpCeYKK+x3KFyk1YFBUN62mg7iFmAg3Ove
+        0PY31qQrc2CUcv51TjuEmngqRf1QB/A=
+X-Google-Smtp-Source: ABdhPJxdMWsEV6/++L31MEB6pk1+UNVLPdk5oCipc/XR8HlKoyMosS4ejzDSUhlr9JX0Cavxsc3vFw==
+X-Received: by 2002:a62:148f:0:b0:44c:dfb5:4b82 with SMTP id 137-20020a62148f000000b0044cdfb54b82mr4817981pfu.55.1633720037655;
+        Fri, 08 Oct 2021 12:07:17 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id t28sm102642pfq.158.2021.10.08.12.07.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 12:07:16 -0700 (PDT)
+Subject: Re: [PATCH 4.9 0/8] 4.9.286-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20211008112713.941269121@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <7c2be482-5cb8-4864-5e92-d90a5d1cc83b@gmail.com>
+Date:   Fri, 8 Oct 2021 12:07:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211005234459.430873-1-michael.roth@amd.com> <20211006203617.13045-1-michael.roth@amd.com>
-In-Reply-To: <20211006203617.13045-1-michael.roth@amd.com>
-From:   Nathan Tempelman <natet@google.com>
-Date:   Fri, 8 Oct 2021 12:03:12 -0700
-Message-ID: <CAKiEG5rPhDgsVPcZV=DrjJNPk6qy9yVC1ZDdxo6VajnUgp3iRg@mail.gmail.com>
-Subject: Re: [RFC 04/16] KVM: selftests: set CPUID before setting sregs in
- vcpu creation
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     linux-kselftest@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Marc Orr <marcorr@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211008112713.941269121@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:39 PM Michael Roth <michael.roth@amd.com> wrote:
->
-> Recent kernels have checks to ensure the GPA values in special-purpose
-> registers like CR3 are within the maximum physical address range and
-> don't overlap with anything in the upper/reserved range. In the case of
-> SEV kselftest guests booting directly into 64-bit mode, CR3 needs to be
-> initialized to the GPA of the page table root, with the encryption bit
-> set. The kernel accounts for this encryption bit by removing it from
-> reserved bit range when the guest advertises the bit position via
-> KVM_SET_CPUID*, but kselftests currently call KVM_SET_SREGS as part of
-> vm_vcpu_add_default(), *prior* to vCPU creation, so there's no
-> opportunity to call KVM_SET_CPUID* in advance. As a result,
-> KVM_SET_SREGS will return an error in these cases.
->
-> Address this by moving vcpu_set_cpuid() (which calls KVM_SET_CPUID*)
-> ahead of vcpu_setup() (which calls KVM_SET_SREGS).
->
-> While there, address a typo in the assertion that triggers when
-> KVM_SET_SREGS fails.
->
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  tools/testing/selftests/kvm/lib/kvm_util.c         | 2 +-
->  tools/testing/selftests/kvm/lib/x86_64/processor.c | 4 +---
->  2 files changed, 2 insertions(+), 4 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index ef88fdc7e46b..646cffd86d09 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -1906,7 +1906,7 @@ void vcpu_sregs_get(struct kvm_vm *vm, uint32_t vcpuid, struct kvm_sregs *sregs)
->  void vcpu_sregs_set(struct kvm_vm *vm, uint32_t vcpuid, struct kvm_sregs *sregs)
->  {
->         int ret = _vcpu_sregs_set(vm, vcpuid, sregs);
-> -       TEST_ASSERT(ret == 0, "KVM_RUN IOCTL failed, "
-> +       TEST_ASSERT(ret == 0, "KVM_SET_SREGS IOCTL failed, "
->                 "rc: %i errno: %i", ret, errno);
->  }
->
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/processor.c b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> index 0bbd88fe1127..1ab4c20f5d12 100644
-> --- a/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/processor.c
-> @@ -660,6 +660,7 @@ void vm_vcpu_add_default(struct kvm_vm *vm, uint32_t vcpuid, void *guest_code)
->
->         /* Create VCPU */
->         vm_vcpu_add(vm, vcpuid);
-> +       vcpu_set_cpuid(vm, vcpuid, kvm_get_supported_cpuid());
->         vcpu_setup(vm, vcpuid);
->
->         /* Setup guest general purpose registers */
-> @@ -672,9 +673,6 @@ void vm_vcpu_add_default(struct kvm_vm *vm, uint32_t vcpuid, void *guest_code)
->         /* Setup the MP state */
->         mp_state.mp_state = 0;
->         vcpu_set_mp_state(vm, vcpuid, &mp_state);
-> -
-> -       /* Setup supported CPUIDs */
-> -       vcpu_set_cpuid(vm, vcpuid, kvm_get_supported_cpuid());
->  }
->
->  /*
-> --
-> 2.25.1
->
+On 10/8/21 4:27 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.9.286 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.286-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Good catch.
-Reviewed-by: Nathan Tempelman <natet@google.com>
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
