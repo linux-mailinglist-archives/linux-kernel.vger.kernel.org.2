@@ -2,151 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3FE4270EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F424270EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231502AbhJHSsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:48:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50186 "EHLO
+        id S239741AbhJHSs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhJHSsW (ORCPT
+        with ESMTP id S231316AbhJHSsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:48:22 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8429C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 11:46:26 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id u32so23088439ybd.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 11:46:26 -0700 (PDT)
+        Fri, 8 Oct 2021 14:48:52 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978B7C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 11:46:56 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id s16so8989935pfk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 11:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7cPY3v1LzlioKfdhDOw7Hm3RkTquyHY7MkNmossNAIo=;
-        b=Nlof5WbhDqBjYqgMvc96/D8WqHy+mHAz4nkyQ5wCmn1lCOfLCq6DllC+M78UmTy9Gg
-         nx43NobVwOd7zEmzGHpvZhu2KzQBW/yHkXpzskzWAG/T1dvfcjaSWO53aEqE2ox1a40Q
-         XmzDxVx6kSdmOWqXaEmXjq2Op4AqzjgHwfr7k=
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=quuSqZ0dONVuv9mo4TeP3YIzWz+O416I07kQnnw7STA=;
+        b=VP3FxMvbz5TL9ETbQUQchYZN5L4JzqpHPf5RtFeE3ZfDwplk+2AwbE5NYJyD1Dwm64
+         OURJONO70AuDhhUUMsC6mqZ0G6vpAdpP88r9Vat/ksn3WojuY1MZE2iby4R/hU8ULX1g
+         D5tF5tPYrB+h8S+lezt7+hxCysnobBIbL9yDUtqZ6s/E4NZYhAJIyuqj/yk3upT3mVoC
+         D2B84lQfOuy11lNLZbdj5WLptstGzspyTbtIPgniNYtZfX4pE78j+I5Yb8Sb09PlYEF1
+         QGrIKY+xG+/pJIw5Oxli7c2qFSNLq7bwRSQYjwaNYbsqfW4hfmsh66cpOKPD89L8UKOW
+         HgYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7cPY3v1LzlioKfdhDOw7Hm3RkTquyHY7MkNmossNAIo=;
-        b=OKupfP0Rt2aRgwZu65ctkgG4zOhAw5Fb6+1wnHzGLefyBknh4dNhOo8MAV3zm1Pb+S
-         uII9uMw28smMot0WTYukuOsLxEmFckb7u5U19qg/OtRqdksmRaTPqjmdpaGXAWrMQBJE
-         hn+Kn8kPW51xhYudUHE9PxFxmHldALcwrcuTxEXk/BPJY7xC+507CjSQ/l1Ta62N624V
-         Kwn3/RE6rcltfc1We1kCw4+s3jg81yEdrWEJi1h3Bk9FwxfAWQkmAZHXIQeGFjIgH36N
-         4CajKsjpkMjKk1YWUeJi634aTeqSt/0A6suBmY0e9Xenb7fLA8x11AbvjqIjBgXKC9+S
-         7myQ==
-X-Gm-Message-State: AOAM533hxYETkpyx9rKPNVzUgA0DFXOAOoLEB+5PquTHeDnXrZ/COskW
-        PNOJAleeZbAjUz5fII4PjE1mxhrQH3HLJd0schbz/w==
-X-Google-Smtp-Source: ABdhPJyZUwO5Ug3lqnQigymhQvAaymbLFwuwZq10/tTMgr15nkxW87dHUuBkdt8PbeVpF2+LXnrOXo3L7SKHl9dnIBI=
-X-Received: by 2002:a25:7c07:: with SMTP id x7mr5469298ybc.217.1633718786049;
- Fri, 08 Oct 2021 11:46:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
- <20210929173343.v2.3.I630340a51130f4582dbe14e42f673b74e0531a2b@changeid>
- <CAE-0n53EBvKv-RdMwiiOsUkb+LOKAKwrpP7cDavx4meA2vbvcA@mail.gmail.com>
- <CAD=FV=XoOhSNP2EXurkA=G9iG2BnH9VzkvSEiNJ8W71s8N9bgg@mail.gmail.com> <CA+cxXhkM9Gzc+0EVapZVu=pJZ3WZawgucG5J2=bokYEJXFNKCQ@mail.gmail.com>
-In-Reply-To: <CA+cxXhkM9Gzc+0EVapZVu=pJZ3WZawgucG5J2=bokYEJXFNKCQ@mail.gmail.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Fri, 8 Oct 2021 11:46:15 -0700
-Message-ID: <CA+cxXh=1D08O6EcC4Xq6+cCEthCtXfASOfGW38z=FhkmW3ce9g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: sc7180: Support Parade ps8640 edp bridge
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=quuSqZ0dONVuv9mo4TeP3YIzWz+O416I07kQnnw7STA=;
+        b=hXHBp/3XEea5CVpfvHJYpk6jy3lLx6MQRC73o4HQgNnFY0D5NbC4s2w/7zfKX+wpDH
+         +VIzyvWNyGTCYW8O5+yhXdm0+scNh+06r0sBlFl0n0jLCO1X0DKtzkIceDGO++OlU18A
+         y5/v9bsz6BtVvQJAZrSI2tT8BruM+t/SRpVxbfkqOLjN6USYUCdcVfhL2mz8qtifyWK2
+         5Zougo14hNr306Qhc19eukRujGEO271KmrWvwnAVPg0TenbfYl/VUBal7GxswPsOJy+v
+         aWW8ZAzV4MueeYtFgx0+dJwakYiFS4fjM1isCLgNccz564kOzkZMBbMyIarPZc7agMba
+         DWZQ==
+X-Gm-Message-State: AOAM532wLMu9cR6PLX30U3yOC+HXMeXLZrWCNG8q7Rgza66ep2YPOtyG
+        FMNRChapgkn7/WQD6/aS4cftwQ==
+X-Google-Smtp-Source: ABdhPJxAT5BQrmJ3JUtPZaaQj9/pOPmAgQLcheO9hTXDYLo9/eegEa4BrfVFO430mNlT7+7pI3Tbjw==
+X-Received: by 2002:a63:b214:: with SMTP id x20mr6037587pge.460.1633718816009;
+        Fri, 08 Oct 2021 11:46:56 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id k17sm73056pff.214.2021.10.08.11.46.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 11:46:55 -0700 (PDT)
+Date:   Fri, 08 Oct 2021 11:46:55 -0700 (PDT)
+X-Google-Original-Date: Fri, 08 Oct 2021 10:00:34 PDT (-0700)
+Subject:     Re: [PATCH] kasan: Always respect CONFIG_KASAN_STACK
+In-Reply-To: <YUyWYpDl2Dmegz0a@archlinux-ax161>
+CC:     elver@google.com, akpm@linux-foundation.org,
+        ryabinin.a.a@gmail.com, glider@google.com, andreyknvl@gmail.com,
+        dvyukov@google.com, ndesaulniers@google.com,
+        Arnd Bergmann <arnd@arndb.de>, kasan-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-mm@kvack.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     nathan@kernel.org
+Message-ID: <mhng-b5f8a6a0-c3e8-4d25-9daa-346fdc8a2e5e@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu, 23 Sep 2021 07:59:46 PDT (-0700), nathan@kernel.org wrote:
+> On Thu, Sep 23, 2021 at 12:07:17PM +0200, Marco Elver wrote:
+>> On Wed, 22 Sept 2021 at 22:55, Nathan Chancellor <nathan@kernel.org> wrote:
+>> > Currently, the asan-stack parameter is only passed along if
+>> > CFLAGS_KASAN_SHADOW is not empty, which requires KASAN_SHADOW_OFFSET to
+>> > be defined in Kconfig so that the value can be checked. In RISC-V's
+>> > case, KASAN_SHADOW_OFFSET is not defined in Kconfig, which means that
+>> > asan-stack does not get disabled with clang even when CONFIG_KASAN_STACK
+>> > is disabled, resulting in large stack warnings with allmodconfig:
+>> >
+>> > drivers/video/fbdev/omap2/omapfb/displays/panel-lgphilips-lb035q02.c:117:12:
+>> > error: stack frame size (14400) exceeds limit (2048) in function
+>> > 'lb035q02_connect' [-Werror,-Wframe-larger-than]
+>> > static int lb035q02_connect(struct omap_dss_device *dssdev)
+>> >            ^
+>> > 1 error generated.
+>> >
+>> > Ensure that the value of CONFIG_KASAN_STACK is always passed along to
+>> > the compiler so that these warnings do not happen when
+>> > CONFIG_KASAN_STACK is disabled.
+>> >
+>> > Link: https://github.com/ClangBuiltLinux/linux/issues/1453
+>> > References: 6baec880d7a5 ("kasan: turn off asan-stack for clang-8 and earlier")
+>> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+>>
+>> Reviewed-by: Marco Elver <elver@google.com>
+>
+> Thanks!
+>
+>> [ Which tree are you planning to take it through? ]
+>
+> Gah, I was intending for it to go through -mm, then I cc'd neither
+> Andrew nor linux-mm... :/ Andrew, do you want me to resend or can you
+> grab it from LKML?
 
-On Thu, Oct 7, 2021 at 11:15 AM Philip Chen <philipchen@chromium.org> wrote:
+Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+
+(assuming you still want it through somewhere else)
+
+>> Note, arch/riscv/include/asm/kasan.h mentions KASAN_SHADOW_OFFSET in
+>> comment (copied from arm64). Did RISC-V just forget to copy over the
+>> Kconfig option?
 >
-> Hi,
->
-> On Thu, Sep 30, 2021 at 9:22 AM Doug Anderson <dianders@chromium.org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Sep 29, 2021 at 9:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > >
-> > > > +       pp3300_brij_ps8640: pp3300-brij-ps8640 {
-> > > > +               compatible = "regulator-fixed";
-> > > > +               status = "okay";
-> > > > +               regulator-name = "pp3300_brij_ps8640";
-> > > > +
-> > > > +               regulator-min-microvolt = <3300000>;
-> > > > +               regulator-max-microvolt = <3300000>;
-> > > > +
-> > > > +               gpio = <&tlmm 32 GPIO_ACTIVE_HIGH>;
-> > >
-> > > Doesn't this need
-> > >
-> > >                 enable-active-high;
-> >
-> > Looks like it. Without that it looks like it assumes active low.
-> Thanks for catching this.
-> I'll fix it in v3.
->
-> >
-> >
-> > > > +
-> > > > +               pinctrl-names = "default";
-> > > > +               pinctrl-0 = <&en_pp3300_edp_brij_ps8640>;
-> > > > +
-> > > > +               vin-supply = <&pp3300_a>;
-> > > > +       };
-> > > > +};
-> > > > +
-> > > > +&dsi0_out {
-> > > > +       remote-endpoint = <&ps8640_in>;
-> > >
-> > > Should this also have data-lanes to be "complete"?
-> >
-> > That's still back in the main trogdor.dtsi, isn't it?
-> Yes, I think so.
-> Plus, ti-sn65 dts doesn't define data-lanes for input either.
-Sorry, I was wrong.
-ti-sn65 dts actually defines data-lanes for input.
-However, since ps8640 driver doesn't parse input data-lanes for now,
-it's not useful to add data-lanes here anyway.
+> I do see it defined in that file as well but you are right that they did
+> not copy the Kconfig logic, even though it was present in the tree when
+> RISC-V KASAN was implemented. Perhaps they should so that they get
+> access to the other flags in the "else" branch?
+
+Ya, looks like we just screwed this up.  I'm seeing some warnings like
+
+    cc1: warning: ‘-fsanitize=kernel-address’ with stack protection is not supported without ‘-fasan-shadow-offset=’ for this target
+
+which is how I ended up here, I'm assuming that's what you're talking 
+about here?  LMK if you were planning on sending along a fix or if you 
+want me to go figure it out.
 
 >
-> >
-> >
-> > > > +edp_brij_i2c: &i2c2 {
-> > > > +       status = "okay";
-> > > > +       clock-frequency = <400000>;
-> > > > +
-> > > > +       ps8640_bridge: edp-bridge@8 {
-> > >
-> > > Just bridge@8 to match ti bridge? Also, is the label used? If not
-> > > please drop it.
-> >
-> > I agree with Stephen about it being "bridge@8". Personally I don't
-> > mind labels like this even if they're not used since they don't hurt
-> > and it creates less churn to add them now, but I won't fight hard to
-> > keep them.
-> I will make it "bridge@8" to match ti-sn65 dts.
-> Meanwhile, can we keep "ps8640_bridge" label to match ti-sn65 dts?
->
-> >
-> >
-> > > > +               aux_bus: aux-bus {
-> > >
-> > > Is this label used either?
-> >
-> > Yeah, I'd get rid of this one since there you didn't add it in the
-> > sn65dsi86 dtsi file and it seems exceedingly unlikely we'd need it for
-> > any reason.
-> Sure, I will remove "aux_bus" label in v3.
->
-> >
-> > -Doug
+>> > ---
+>> >  scripts/Makefile.kasan | 3 ++-
+>> >  1 file changed, 2 insertions(+), 1 deletion(-)
+>> >
+>> > diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+>> > index 801c415bac59..b9e94c5e7097 100644
+>> > --- a/scripts/Makefile.kasan
+>> > +++ b/scripts/Makefile.kasan
+>> > @@ -33,10 +33,11 @@ else
+>> >         CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
+>> >          $(call cc-param,asan-globals=1) \
+>> >          $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
+>> > -        $(call cc-param,asan-stack=$(stack_enable)) \
+>> >          $(call cc-param,asan-instrument-allocas=1)
+>> >  endif
+>> >
+>> > +CFLAGS_KASAN += $(call cc-param,asan-stack=$(stack_enable))
+>> > +
+>> >  endif # CONFIG_KASAN_GENERIC
+>> >
+>> >  ifdef CONFIG_KASAN_SW_TAGS
+>> >
+>> > base-commit: 4057525736b159bd456732d11270af2cc49ec21f
+>> > --
+>> > 2.33.0.514.g99c99ed825
+>> >
+>> >
