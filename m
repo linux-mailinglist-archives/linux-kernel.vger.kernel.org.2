@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB33042652F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB74B426534
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232317AbhJHHZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:25:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30969 "EHLO
+        id S232480AbhJHH1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:27:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44342 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229693AbhJHHZg (ORCPT
+        by vger.kernel.org with ESMTP id S232458AbhJHH1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:25:36 -0400
+        Fri, 8 Oct 2021 03:27:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633677821;
+        s=mimecast20190719; t=1633677936;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YgEXZX5OxqWOsGwlpu4TMu4s2vcLohvhH6SrOFN2mIc=;
-        b=BraYmuMeO/aJwcAFAPl/UpnMj2aZw6WZoVNg6/MiLhbrt6UJkf29LNKk22RAc+L67vXsul
-        3BRj4qK/NJ3sTGFCn9wIhsnmYFz0aqXVykEYfMKfUHYQI5Cs4aJePqoeHwbCUQoDvBIOVf
-        oZcYwbHA2IeCBd1PFTjqo+E5HTUrLYM=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-556-oFiUNTbTOj-ihgG7MYPqxA-1; Fri, 08 Oct 2021 03:23:29 -0400
-X-MC-Unique: oFiUNTbTOj-ihgG7MYPqxA-1
-Received: by mail-qt1-f199.google.com with SMTP id x6-20020ac81206000000b002a6e46bbd0eso6993099qti.12
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 00:23:29 -0700 (PDT)
+        bh=wrRRjHrMBPuEyYQ9nABVBskOpOCiCccfhJMKB+/G8Zw=;
+        b=Rbrg2MAE8Gh56SqG7CgVbecWbILF3t7z4PuCCz/buxH+zunqtVEVAZgoUy26B6JxTsXuMg
+        5K7bab8TXx8pvb4Vlc3m9TrgVn6m7BtG+YixDCVIvQ4ulspse97pXTqiY/9bsAU95O+tQw
+        SCNe3UVjyftDEogKPaeMlKSpfMb1s8w=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-JGhutHXONcyaMOgo_dKP4A-1; Fri, 08 Oct 2021 03:25:35 -0400
+X-MC-Unique: JGhutHXONcyaMOgo_dKP4A-1
+Received: by mail-wr1-f72.google.com with SMTP id r25-20020adfab59000000b001609ddd5579so6567736wrc.21
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 00:25:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YgEXZX5OxqWOsGwlpu4TMu4s2vcLohvhH6SrOFN2mIc=;
-        b=u0iy5U1q2UQQ08x7qAtV62bJQWt3a09vT7UEneBZYOnw6gjWE3Mu+hopQpDBJHmd56
-         4fXV64XhBD03J3dQm3nPkuxz1YVo+kUhVrQBb3XgHJW0+Ne8crVpWpbJN7u7nq3xBYG6
-         E0fwLn11LOlJOx1RAEgzvCAqHllLFXY/soxC+o7GtPnzx2Ygz6WCPzHQlBrgCp89q7z3
-         clYaLu2hNh75ryBwaRN34DnBogyYDZAArx6QTf38die8h7dDM3tg1EyjA251pQcJ8+Ux
-         AYaRXnyQBegT47tN0AUj2JHegl2oLyMkzvfxyjaZECjE8Npg8ElIifIVqxuZrmvMPsIB
-         Q1Bg==
-X-Gm-Message-State: AOAM531BDfrSHH9I0wy0Kh7E8573BkPqrNoUddeSjsq9T50Za1qNqvQD
-        QCcVdiAisLTdk4+VYREjjZjgKMuiPGgDm2XeG+BPuvO6RPWi5jBDDF1sFMTiLb7PSJ8k67PkJY3
-        DEJSZUSZ/3lCKdxxCG8BcrPwg
-X-Received: by 2002:ac8:6158:: with SMTP id d24mr10240507qtm.115.1633677809240;
-        Fri, 08 Oct 2021 00:23:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyq0DRDD526ahsmTrMLCChsSLkDiBeEuyd9fLN3A18iXx15Y/BzARdhD3VHPuugMn0sTZQjUA==
-X-Received: by 2002:ac8:6158:: with SMTP id d24mr10240489qtm.115.1633677808998;
-        Fri, 08 Oct 2021 00:23:28 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::49])
-        by smtp.gmail.com with ESMTPSA id s18sm1710546qta.10.2021.10.08.00.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 00:23:28 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 00:23:25 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, mbenes@suse.cz
-Subject: Re: [PATCH 2/2] objtool: Optimize/fix retpoline alternative
- generation
-Message-ID: <20211008072325.4qujedsjtjqbvzrd@treble>
-References: <20211007212211.366874577@infradead.org>
- <20211007212627.008917519@infradead.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=wrRRjHrMBPuEyYQ9nABVBskOpOCiCccfhJMKB+/G8Zw=;
+        b=LbpGiiZzOgAMquaGwwgNOzbRjgTiMcIUUjRx90lUxQexNQJ2seTgADsrPEBvm21w5n
+         zjtSa9x3+H0eZQZ5iQWjDd9wJqtqjbbqglv5q5hIR4DgXnmgulP5FFqYEB5AEdlCyw2R
+         m7HcDsgUdadqp/2VwJFdc4ptiEh9b0XogW/RpDEKBYknSU/AnKREp8rdtOqbc9e6Slb4
+         YS7gOZF2VV/PXq/3jQVsRgMfMDIVV9essEN91fs5oqJnjxhc1gdhfNkUYd7iHynL16ju
+         HMrALHLvroqG+MUbLVByOdzau6NWF9OMJll66l1yObZhvRKwQozAI3Ehg/5aXFAzx5wa
+         65jA==
+X-Gm-Message-State: AOAM532ewg2+jeQvaByNoDzdOEopth8OOlYd4JtoW7tRTRdLeX4L6Ov9
+        unTKKAqP5fZ8VceBYvFQ3TDZAoSWxThytIBg9m+lfGY7sAMiCqIWTCaLfoEipkmS9jEljPDiHZA
+        ReVi8ttc/3rH8jgz+xB1k1gfd
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr1623945wmq.151.1633677934627;
+        Fri, 08 Oct 2021 00:25:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx459d2wlytshtk9NfSLWJYxGFmOB+upXoDoldpSkMwornUH6TcLSGnAaLaf9rS4XzkmXVfxw==
+X-Received: by 2002:a05:600c:4f42:: with SMTP id m2mr1623928wmq.151.1633677934392;
+        Fri, 08 Oct 2021 00:25:34 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id k9sm1554498wrz.22.2021.10.08.00.25.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 00:25:33 -0700 (PDT)
+Message-ID: <1616f9d2-5530-1266-6734-b5d64cb20658@redhat.com>
+Date:   Fri, 8 Oct 2021 09:24:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211007212627.008917519@infradead.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v3 1/5] RISC-V: Mark the existing SBI v0.1 implementation
+ as legacy
+Content-Language: en-US
+To:     Atish Patra <atish.patra@wdc.com>, linux-kernel@vger.kernel.org
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>
+References: <20211008032036.2201971-1-atish.patra@wdc.com>
+ <20211008032036.2201971-2-atish.patra@wdc.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <20211008032036.2201971-2-atish.patra@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 11:22:13PM +0200, Peter Zijlstra wrote:
-> When re-running objtool it will generate alterantives for all
-
-"alternatives"
-
-> retpoline hunks, even if they are already present.
+On 08/10/21 05:20, Atish Patra wrote:
+> The existing SBI specification impelementation follows v0.1 or legacy
+> specification. The latest specification known as v0.2 allows more
+> scalability and performance improvements.
 > 
-> Discard the retpoline alternatives later so we can mark the
+> Rename the existing implementation as legacy and provide a way to allow
+> future extensions.
+> 
+> Signed-off-by: Atish Patra<atish.patra@wdc.com>
+> ---
+>   arch/riscv/include/asm/kvm_vcpu_sbi.h |  29 +++++
+>   arch/riscv/kvm/vcpu_sbi.c             | 149 ++++++++++++++++++++------
+>   2 files changed, 148 insertions(+), 30 deletions(-)
+>   create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi.h
 
-Discard? or mark as ignored?
+It's bikeshedding I know, but still: every time somebody calls something 
+"legacy", a kitten dies.  Please use kvm_sbi_ext_0_1_handler and 
+vcpu_sbi_ext_0_1.
 
-> +++ b/tools/objtool/check.c
-> @@ -1468,6 +1468,14 @@ static int add_special_section_alts(stru
->  				ret = -1;
->  				goto out;
->  			}
-> +			/*
-> +			 * Skip (but mark) the retpoline alternatives so that we
-> +			 * don't generate them again.
-> +			 */
-
-I'm having a lot of trouble following this comment.  In my half-sleeping
-state I'm theorizing this serves two purposes:
-
-  1) skip validating the alt (because why?)
-
-     and
-
-  2) if re-running objtool on the object, don't generate a duplicate
-     alternative?  or maybe it also avoids duplicates for retpoline
-     alternatives which were created in asm code?
-
-Not sure if I'm right but either way the comment needs more content.
-
-Also not sure about $SUBJECT, maybe it can be more specific.
-
-BTW, this "re-running objtool" thing is probably a bigger problem that
-can be handled more broadly.  When writing an object, we could write a
-dummy discard section ".discard.objtool_wuz_here" which tells it not to
-touch it a second time as weird things could happen.
-
--- 
-Josh
+Paolo
 
