@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3122E4269D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E74268ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240986AbhJHLmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39716 "EHLO mail.kernel.org"
+        id S241210AbhJHLco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:32:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242505AbhJHLiH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:38:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28811614C8;
-        Fri,  8 Oct 2021 11:32:53 +0000 (UTC)
+        id S240917AbhJHLba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:31:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61AFD61183;
+        Fri,  8 Oct 2021 11:29:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692773;
-        bh=oLqGbEu+WoUC+QdQHcbv7bxyB1piSgC6JS6B7+r0nrE=;
+        s=korg; t=1633692562;
+        bh=/00Lf3urktfw45fyj76HWnSij/aE1/Aq36a6JKc3F5M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1jpw4ausvaqVSfXdH3irFbuOIFQmZbzRl8nTPzKojgG825to2+TNRVQQbHXZkqAOw
-         BCsClLbXDUro28H+gTloXUzfdEXqBWr7QuRNKmWD2za//sPa4s+anG5LgYI61LVJ9/
-         WdTlP58dn4GKViYwaoC10nemI7AW+wSXKWg0uS78=
+        b=RR9IYYCWgdaHbZI1TrEi9NWyqRbF6oAAhLFD1ofsnSIjvUhyM6OSZ270I3xYJ+mF1
+         /gHNuDYrF1YA0reuAGi7Os/jkjxPcyUOD1oOUjC3nFgttEv3s+sS/FPdax6E9OHyEe
+         abeatvFEOAJpSenO5RCAE4zc9umueEJFu9bOTeiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Bart Van Assche <bvanassche@acm.org>,
+        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 09/48] xen-netback: correct success/error reporting for the SKB-with-fraglist case
-Date:   Fri,  8 Oct 2021 13:27:45 +0200
-Message-Id: <20211008112720.341922633@linuxfoundation.org>
+Subject: [PATCH 4.14 05/10] scsi: sd: Free scsi_disk device via put_device()
+Date:   Fri,  8 Oct 2021 13:27:46 +0200
+Message-Id: <20211008112714.623522379@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-References: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20211008112714.445637990@linuxfoundation.org>
+References: <20211008112714.445637990@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Ming Lei <ming.lei@redhat.com>
 
-[ Upstream commit 3ede7f84c7c21f93c5eac611d60eba3f2c765e0f ]
+[ Upstream commit 265dfe8ebbabae7959060bd1c3f75c2473b697ed ]
 
-When re-entering the main loop of xenvif_tx_check_gop() a 2nd time, the
-special considerations for the head of the SKB no longer apply. Don't
-mistakenly report ERROR to the frontend for the first entry in the list,
-even if - from all I can tell - this shouldn't matter much as the overall
-transmit will need to be considered failed anyway.
+After a device is initialized via device_initialize() it should be freed
+via put_device(). sd_probe() currently gets this wrong, fix it up.
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Paul Durrant <paul@xen.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210906090112.531442-1-ming.lei@redhat.com
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ming Lei <ming.lei@redhat.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/netback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/sd.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index 39a01c2a3058..32d5bc4919d8 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -499,7 +499,7 @@ check_frags:
- 				 * the header's copy failed, and they are
- 				 * sharing a slot, send an error
- 				 */
--				if (i == 0 && sharedslot)
-+				if (i == 0 && !first_shinfo && sharedslot)
- 					xenvif_idx_release(queue, pending_idx,
- 							   XEN_NETIF_RSP_ERROR);
- 				else
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 49d0720a0b7d..e490cbdaad9b 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3454,15 +3454,16 @@ static int sd_probe(struct device *dev)
+ 	}
+ 
+ 	device_initialize(&sdkp->dev);
+-	sdkp->dev.parent = dev;
++	sdkp->dev.parent = get_device(dev);
+ 	sdkp->dev.class = &sd_disk_class;
+ 	dev_set_name(&sdkp->dev, "%s", dev_name(dev));
+ 
+ 	error = device_add(&sdkp->dev);
+-	if (error)
+-		goto out_free_index;
++	if (error) {
++		put_device(&sdkp->dev);
++		goto out;
++	}
+ 
+-	get_device(dev);
+ 	dev_set_drvdata(dev, sdkp);
+ 
+ 	get_device(&sdkp->dev);	/* prevent release before async_schedule */
 -- 
 2.33.0
 
