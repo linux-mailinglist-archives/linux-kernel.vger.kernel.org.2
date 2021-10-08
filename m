@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C325142673A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F220142673D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238638AbhJHJ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:59:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:39386 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236118AbhJHJ7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:59:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E40B5D6E;
-        Fri,  8 Oct 2021 02:57:11 -0700 (PDT)
-Received: from [10.57.73.246] (unknown [10.57.73.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E0B513F70D;
-        Fri,  8 Oct 2021 02:57:09 -0700 (PDT)
-Subject: Re: [PATCH v2 00/17] arm64: Self-hosted trace related errata
- workarounds
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        lcherian@marvell.com, coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20211008073229.GB32625@willie-the-truck>
- <b2527493-d4ca-2c42-eb22-7e8ddbe50279@arm.com>
- <20211008095255.GA790@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <45486d40-3a9d-8011-8fed-6f54eaca9b0b@arm.com>
-Date:   Fri, 8 Oct 2021 10:57:08 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211008095255.GA790@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S239129AbhJHKAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236118AbhJHKAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:00:20 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DC6C061570;
+        Fri,  8 Oct 2021 02:58:25 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id kk10so7172516pjb.1;
+        Fri, 08 Oct 2021 02:58:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=r9j8e1y3uJ+lIEwImYYJrXBxHGgDtZ3NYM0TMNrxFbA=;
+        b=cyry4K/KEs9uirUsUkL7wug+KwTpCxYMrGecNeCt0QxlVLui5NkKDInhO0dmkCpDfB
+         Zwb0ngiWguJBxDaCDaWY/rtKykXbbx+gLQuHRaA/g6HG0POEvdqZ7hDP2T0mMeq6Ewhb
+         eZehx1ZpKnkJXLrZBbNEGWmuN/cCFbALCgtvp9dDW63JO1oVOjb81poC1BRM2L9jSgtl
+         6eT3TJo5PX8njvXWlNAUjx2ob91Ogt/TgUWmexzyVd+D8R1gdSiz59Ues3X8y2kiN0BS
+         ZRMRCNaNCLzFimg6jADZwK1hQpDnX64jXHPMJ6/6TwcEig8U7eDEjrkWzYXBsE5Fwl00
+         mAcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=r9j8e1y3uJ+lIEwImYYJrXBxHGgDtZ3NYM0TMNrxFbA=;
+        b=QIXxljvnACf79+VfreT5bIE2M+FQQEBpAfQ8M+EHzDPPqBNbE35Xx3EbLACTT7tNfZ
+         bNOw0xSEEJ+7imBPxJwtQrP8DF28p48LlCy50usg6ifwhO3O44zvY08AZWnR4SVDQeC8
+         BS/dhxv4KiAWvQnk+odLZuUzO9IIMXWym6pcxYNHDgkAJmr/2p8R1bvV04YzqEKyhzR2
+         y7HuTbSkVhm8DgssM61lzFM8CgVUrOlud6IpB/zxKUaHvA+3pNFS8O8vryt7R2buovmG
+         zXu5AcBGj7VMOzG22eBVn3yE6QfnyRMqxx3NGU6E/wOVnzibGe3hXPLxRjgWpcFFkoV2
+         8E7g==
+X-Gm-Message-State: AOAM5303shKk8voTi0AeqEWo9g9rfQIpYqGwR0+hkukD9TFWduJmjdRd
+        zwA2AkN2lDq1Xft1YuLpHEApdvjT+c5Epw==
+X-Google-Smtp-Source: ABdhPJx5ahU8H2UL3OF3xIRqooBLoO1q2olQTEE6gsxXVx7kLAac3xJ5LyoD4zr5xFbXT7tyFH6LPg==
+X-Received: by 2002:a17:902:bd45:b0:13d:b4d1:eb39 with SMTP id b5-20020a170902bd4500b0013db4d1eb39mr8450908plx.53.1633687104832;
+        Fri, 08 Oct 2021 02:58:24 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.117])
+        by smtp.googlemail.com with ESMTPSA id mu7sm2121148pjb.12.2021.10.08.02.58.22
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Oct 2021 02:58:24 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH 1/3] KVM: emulate: #GP when emulating rdpmc if CR0.PE is 1
+Date:   Fri,  8 Oct 2021 02:57:32 -0700
+Message-Id: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2021 10:52, Will Deacon wrote:
-> On Fri, Oct 08, 2021 at 10:25:03AM +0100, Suzuki K Poulose wrote:
->> Hi Will
->>
->> On 08/10/2021 08:32, Will Deacon wrote:
->>> Hi Suzuki,
->>>
->>> On Tue, Sep 21, 2021 at 02:41:04PM +0100, Suzuki K Poulose wrote:
->>>> This series adds CPU erratum work arounds related to the self-hosted
->>>> tracing. The list of affected errata handled in this series are :
->>>>
->>>>    * TRBE may overwrite trace in FILL mode
->>>>      - Arm Neoverse-N2	#2139208
->>>>      - Cortex-A710	#211985
->>>>
->>>>    * A TSB instruction may not flush the trace completely when executed
->>>>      in trace prohibited region.
->>>>
->>>>      - Arm Neoverse-N2	#2067961
->>>>      - Cortex-A710	#2054223
->>>>
->>>>    * TRBE may write to out-of-range address
->>>>      - Arm Neoverse-N2	#2253138
->>>>      - Cortex-A710	#2224489
->>>>
->>>> The series applies on the self-hosted/trbe fixes posted here [0].
->>>> A tree containing both the series is available here [1]
->>>
->>> Any chance you could put the arch/arm64/ bits at the start of the series,
->>> please? That way, I can queue them on their own branch which can be shared
->>> with the coresight tree.
->>
->> I could move the bits around. I have a question though.
->>
->> Will, Catalin, Mathieu,
->>
->> The workaround for these errata, at least two of them are
->> in the TRBE driver patches. Are we happy with enabling the Kconfig
->> entry in the kernel, without the CoreSight patches to implement the work
->> around ?
-> 
-> I suppose you could move all the Kconfig changes into their own patch and
-> stick it right at the end in the Coresight tree.
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Cool, I will do that then. Thanks. I will send the updated series.
+SDM mentioned that, RDPMC: 
 
-Suzuki
+  IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter)) 
+      THEN
+          EAX := counter[31:0];
+          EDX := ZeroExtend(counter[MSCB:32]);
+      ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
+          #GP(0); 
+  FI;
+
+Let's add the CR0.PE is 1 checking to rdpmc emulate.
+
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/emulate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 9a144ca8e146..ab7ec569e8c9 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -4213,6 +4213,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
+ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
+ {
+ 	u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
++	u64 cr0 = ctxt->ops->get_cr(ctxt, 0);
+ 	u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
+ 
+ 	/*
+@@ -4222,7 +4223,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
+ 	if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
+ 		return X86EMUL_CONTINUE;
+ 
+-	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
++	if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt) && (cr0 & X86_CR0_PE)) ||
+ 	    ctxt->ops->check_pmc(ctxt, rcx))
+ 		return emulate_gp(ctxt, 0);
+ 
+-- 
+2.25.1
 
