@@ -2,125 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6024442625A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D7442626C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235289AbhJHCOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 22:14:52 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:41774 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHCOu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 22:14:50 -0400
-Received: from notapiano (unknown [IPv6:2806:105e:7:9ede::6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nfraprado)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 027D21F45416;
-        Fri,  8 Oct 2021 03:12:49 +0100 (BST)
-Date:   Thu, 7 Oct 2021 21:12:45 -0500
-From:   =?utf-8?B?TsOtY29sYXMgRi4gUi4gQS4=?= Prado 
-        <nfraprado@collabora.com>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
+        id S235901AbhJHCX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 22:23:26 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:29836 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229501AbhJHCXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 22:23:25 -0400
+Received: (wp-smtpd smtp.wp.pl 29449 invoked from network); 8 Oct 2021 04:14:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1633659288; bh=4+iA2jWt06Zj7Wf7mNNn1ZAYUuFTYUHAxtblldAFv6U=;
+          h=From:To:Cc:Subject;
+          b=EEuFNsE2kS9t5ssacWgxkwcwiivkoloSjdhsPjt1dK96noh1LYbU75w1SFhfAAX1h
+           IlQnzMt3pKTmtpEz/Oi0AFtnxNmqLkdY5TtmT7To+zRlei3NYPn9725uCeoRxxgErF
+           Z6IQUKhAq5+7XggJE6Uhlm7w58GE37JYhxQhr5a4=
+Received: from unknown (HELO kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com) (kubakici@wp.pl@[163.114.132.5])
+          (envelope-sender <kubakici@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <colin.king@canonical.com>; 8 Oct 2021 04:14:48 +0200
+Date:   Thu, 7 Oct 2021 19:14:42 -0700
+From:   Jakub Kicinski <kubakici@wp.pl>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, ~lkcamp/patches@lists.sr.ht,
-        =?utf-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        kernel@collabora.com
-Subject: Re: [PATCH v3 2/5] leds: Add driver for QCOM SPMI Flash LEDs
-Message-ID: <20211008021245.barkpi4fd4lakt36@notapiano>
-References: <20210803162641.1525980-1-nfraprado@collabora.com>
- <20210803162641.1525980-3-nfraprado@collabora.com>
- <b1060e9a-f78e-fbe9-bde3-2b4d89cbc73e@gmail.com>
- <20210824214515.ekjpvaymkgxltlzp@notapiano>
- <278ea1e8-8b21-457d-78d7-fbb32544fe0a@gmail.com>
+        linux-mediatek@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt7601u: Remove redundant initialization of variable
+ ret
+Message-ID: <20211007191442.2da691df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211007234153.31222-1-colin.king@canonical.com>
+References: <20211007234153.31222-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <278ea1e8-8b21-457d-78d7-fbb32544fe0a@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-WP-MailID: 97d23a12387b9de539baf411b446f3b8
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000003 [YVDm]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacek,
-
-> > > > +static int qcom_flash_flcdev_strobe_set(struct led_classdev_flash *fled_cdev,
-> > > > +					bool state)
-> > > > +{
-> > > > +	struct qcom_flash_led *led = flcdev_to_led(fled_cdev);
-> > > > +	struct qcom_flash_device *leds_dev = led_to_leds_dev(led);
-> > > > +	unsigned int bright;
-> > > > +	unsigned int i;
-> > > > +	int rc;
-> > > > +
-> > > > +	/* Can't operate on flash if torch is on */
-> > > > +	if (leds_dev->torch_enabled)
-> > > > +		return -EBUSY;
-> > > > +
-> > > > +	mutex_lock(&leds_dev->lock);
-> > > > +	if (!state) {
-> > > > +		rc = qcom_flash_fled_off(led);
-> > > > +	} else {
-> > > > +		/*
-> > > > +		 * Turn off flash LEDs from previous strobe
-> > > > +		 */
-> > > > +		rc = qcom_flash_check_timedout(leds_dev);
-> > > > +		if (rc > 0) {
-> > > > +			for (i = 0; i < leds_dev->num_leds; i++) {
-> > > > +				rc = qcom_flash_fled_off(&leds_dev->leds[i]);
-> > > > +				if (rc)
-> > > > +					goto unlock;
-> > > > +			}
-> > > > +		} else if (rc < 0) {
-> > > > +			goto unlock;
-> > > > +		}
-> > > 
-> > > What if flash gets timed out after this check here? Why do you need to
-> > > call qcom_flash_fled_off() if it has already timed out?
-> > 
-> > The issue is that after the flash times out, the hardware is not ready for
-> > another strobe.
-> > 
-> > When I strobe LED0 for example, the STATUS register, 0x10, gets set to 0x08
-> > indicating the LED0 is on. After the timeout, it changes to 0x04. At that point
-> > if I try to strobe LED0 again, it doesn't work. When I turn the LED0 off (write
-> > 0x00 to either the ENABLE or STROBE register), the STATUS is reset to 0x00. Now
-> > I'm able to strobe the LED0 again.
-> > 
-> > I'm not sure if this is the normal behavior on other flash LED controllers, and
-> > maybe there's even some configuration of this PMIC that resets the LED status
-> > automatically after the strobe timeout, but I have not been able to do that. So
-> > that's why I reset the status manually everytime it's needed.
+On Fri,  8 Oct 2021 00:41:53 +0100 Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> My point was that the flash may time out after reading STATUS register
-> and before writing QCOM_FLASH_ADDR_LED_STROBE_CTRL.
-> You can't be 100% sure that you know the exact STATUS state just
-> a moment before strobing.
-
-That's true, but that scenario only happens if there's an ongoing flash strobe
-happening and userspace triggers another strobe. Is that a scenario that really
-needs to be taken care of, and if so, what would be the correct behavior? Does
-the timeout need to be reset for this new strobe, possibly using updated
-brightness and timeout values? (Currently none of this happens)
-
-The purpose of this check is not to know if an ongoing flash strobe has
-timed out, but rather to differentiate if the previous time the LED was strobed
-was as a flash (with timeout) or torch (no timeout), because the flash
-case needs an extra reset step that can be ommited in the torch case. For this
-purpose there's no race condition.
-
+> The variable ret is being initialized with a value that is never read,
+> it is assigned later on with a different value. The initialization is
+> redundant and can be removed.
 > 
-> To alleviate that I propose to avoid checking the status and always
-> calling qcom_flash_fled_off() before initiating a new strobe.
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Thanks,
-Nicolas
+Acked-by: Jakub Kicinski <kubakici@wp.pl>
