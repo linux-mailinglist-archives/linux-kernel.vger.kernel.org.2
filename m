@@ -2,129 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7FD426621
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F89426620
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbhJHIpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:45:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:50073 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234255AbhJHIpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:45:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="287346425"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="287346425"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:43:27 -0700
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="489376744"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:43:24 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Rik van Riel <riel@surriel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Wei Xu <weixugc@google.com>, osalvador <osalvador@suse.de>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -V9 0/6] NUMA balancing: optimize memory placement for
- memory tiering system
-References: <20211008083938.1702663-1-ying.huang@intel.com>
-Date:   Fri, 08 Oct 2021 16:43:22 +0800
-In-Reply-To: <20211008083938.1702663-1-ying.huang@intel.com> (Huang Ying's
-        message of "Fri, 8 Oct 2021 16:39:32 +0800")
-Message-ID: <87ee8vrjo5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+        id S234214AbhJHIpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:45:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:52742 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229931AbhJHIpU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:45:20 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 96AC42010D;
+        Fri,  8 Oct 2021 08:43:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633682604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUpMK+PXWGG3eAd6hBIMDQIDwM9jYeIZnWLc4xSt+NM=;
+        b=MjXkGM9H8qKlQZM2WlltN0vAOcRcW4WbjmOTpDP+A1hpKiyh9KyvvVC3WlP9Iq0uiEa9Ze
+        0oD++uIXIykB9ECsAnVSnkwzE0C5zuYNHTPibyMC1GC/IWdB1yqhSWZI8kKSLMdT019swX
+        BOEdNsBX3epEM5GyI9ZFgpuJscDOViY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633682604;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GUpMK+PXWGG3eAd6hBIMDQIDwM9jYeIZnWLc4xSt+NM=;
+        b=jnO3UZRfpOOx+ZRoUHYdn5YkbBTpM4bQ8NeD/Qgm9s7dSXdYtMWrx7N3FACupqWxM4nhvt
+        VUq0Mqoh0sDUZ7Dw==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id 68A00A3B83;
+        Fri,  8 Oct 2021 08:43:24 +0000 (UTC)
+Date:   Fri, 08 Oct 2021 10:43:24 +0200
+Message-ID: <s5h5yu79aab.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Rich Felker <dalias@libc.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>, musl@lists.openwall.com
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+In-Reply-To: <20211007165158.GC7074@brightrain.aerifal.cx>
+References: <20191211212025.1981822-1-arnd@arndb.de>
+        <20191211212025.1981822-9-arnd@arndb.de>
+        <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org>
+        <s5hpmsh9kdx.wl-tiwai@suse.de>
+        <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+        <s5hee8x9f92.wl-tiwai@suse.de>
+        <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+        <s5hy27497eo.wl-tiwai@suse.de>
+        <20211007160634.GB7074@brightrain.aerifal.cx>
+        <s5hr1cw95ar.wl-tiwai@suse.de>
+        <20211007165158.GC7074@brightrain.aerifal.cx>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Mel,
+On Thu, 07 Oct 2021 18:51:58 +0200,
+Rich Felker wrote:
+> 
+> On Thu, Oct 07, 2021 at 06:18:52PM +0200, Takashi Iwai wrote:
+> > On Thu, 07 Oct 2021 18:06:36 +0200,
+> > Rich Felker wrote:
+> > > 
+> > > On Thu, Oct 07, 2021 at 05:33:19PM +0200, Takashi Iwai wrote:
+> > > > On Thu, 07 Oct 2021 15:11:00 +0200,
+> > > > Arnd Bergmann wrote:
+> > > > > 
+> > > > >  On Thu, Oct 7, 2021 at 2:43 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > On Thu, 07 Oct 2021 13:48:44 +0200, Arnd Bergmann wrote:
+> > > > > > > On Thu, Oct 7, 2021 at 12:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > > > > On Wed, 06 Oct 2021 19:49:17 +0200, Michael Forney wrote:
+> > > > > > >
+> > > > > > > As far as I can tell, the broken interface will always result in
+> > > > > > > user space seeing a zero value for "avail_min". Can you
+> > > > > > > make a prediction what that would mean for actual
+> > > > > > > applications? Will they have no audio output, run into
+> > > > > > > a crash, or be able to use recover and appear to work normally
+> > > > > > > here?
+> > > > > >
+> > > > > > No, fortunately it's only about control->avail_min, and fiddling this
+> > > > > > value can't break severely (otherwise it'd be a security problem ;)
+> > > > > >
+> > > > > > In the buggy condition, it's always zero, and the kernel treated as if
+> > > > > > 1, i.e. wake up as soon as data is available, which is OK-ish for most
+> > > > > > applications.   Apps usually don't care about the wake-up condition so
+> > > > > > much.  There are subtle difference and may influence on the stability
+> > > > > > of stream processing, but the stability usually depends more strongly
+> > > > > > on the hardware and software configurations.
+> > > > > >
+> > > > > > That being said, the impact by this bug (from the application behavior
+> > > > > > POV) is likely quite small, but the contamination is large; as you
+> > > > > > pointed out, it's much larger than I thought.
+> > > > > 
+> > > > > Ok, got it.
+> > > > > 
+> > > > > > The definition in uapi/sound/asound.h is a bit cryptic, but IIUC,
+> > > > > > __snd_pcm_mmap_control64 is used for 64bit archs, right?  If so, the
+> > > > > > problem rather hits more widely on 64bit archs silently.  Then, the
+> > > > > > influence by this bug must be almost negligible, as we've had no bug
+> > > > > > report about the behavior change.
+> > > > > 
+> > > > > While __snd_pcm_mmap_control64 is only used on 32-bit
+> > > > > architectures when 64-bit time_t is used. At the moment, this
+> > > > > means all users of musl-1.2.x libc, but not glibc.
+> > > > > 
+> > > > > On 64-bit architectures, __snd_pcm_mmap_control and
+> > > > > __snd_pcm_mmap_control64 are meant to be identical,
+> > > > > and this is actually true regardless of the bug, since
+> > > > > __pad_before_uframe and __pad_after_uframe both
+> > > > > end up as zero-length arrays here.
+> > > > > 
+> > > > > > We may just fix it in kernel and for new library with hoping that no
+> > > > > > one sees the actual problem.  Or, we may provide a complete new set of
+> > > > > > mmap offsets and ioctl to cover both broken and fixed interfaces...
+> > > > > > The decision depends on how perfectly we'd like to address the bug.
+> > > > > > As of now, I'm inclined to go for the former, but I'm open for more
+> > > > > > opinions.
+> > > > > 
+> > > > > Adding the musl list to Cc for additional testers, anyone interested
+> > > > > please see [1] for the original report.
+> > > > > 
+> > > > > It would be good to hear from musl users that are already using
+> > > > > audio support with 32-bit applications on 64-bit kernels, which
+> > > > > is the case that has the problem today. Have you noticed any
+> > > > > problems with audio support here? If not, we can probably
+> > > > > "fix" the kernel here and make the existing binaries behave
+> > > > > the same way on 32-bit kernels. If there are applications that
+> > > > > don't work in that environment today, I think we need to instead
+> > > > > change the kernel to accept the currently broken format on
+> > > > > both 32-bit and 64-bit kernels, possibly introducing yet another
+> > > > > format that works as originally intended but requires a newly
+> > > > > built kernel.
+> > > > 
+> > > > Thanks!
+> > > > 
+> > > > And now, looking more deeply, I feel more desperate.
+> > > > 
+> > > > This bug makes the expected padding gone on little-endian.
+> > > > On LE 32bit, the buggy definition is:
+> > > > 
+> > > > 	char __pad1[0];
+> > > > 	u32 appl_ptr;
+> > > > 	char __pad2[0]; // this should have been [4]
+> > > > 	char __pad3[0];
+> > > > 	u32 avail_min;
+> > > > 	char __pad4[4];
+> > > > 	
+> > > > When an application issues SYNC_PTR64 ioctl to submit appl_ptr and
+> > > > avail_min updates, 64bit kernel (in compat mode) reads directly as:
+> > > > 
+> > > > 	u64 appl_ptr;
+> > > > 	u64 avail_min;
+> > > > 
+> > > > Hence a bogus appl_ptr would be passed if avail_min != 0.
+> > > > And usually application sets non-zero avail_min.
+> > > > That is, the bug must hit more severely if the new API were really
+> > > > used.  It wouldn't crash, but some weird streaming behavior can
+> > > > happen like noise, jumping or underruns.
+> > > > 
+> > > > (Reading back avail_min=0 to user-space is rather harmless.  Ditto for
+> > > >  the case of BE, then at least there is no appl_ptr corruption.)
+> > > > 
+> > > > This made me wonder which way to go:
+> > > > it's certainly possible to fix the new kernel to treat both buggy and
+> > > > sane formats (disabling compat mmap and re-define ioctls, having the
+> > > > code for old APIs).  The problem is, however, in the case where the
+> > > > application needs to run on the older kernel that expects the buggy
+> > > > format.  Then apps would still have to send in the old buggy format --
+> > > > or maybe better in the older 32bit format that won't hit the bug
+> > > > above.  It makes situation more complicated.
+> > > 
+> > > Can't an ioctl number just be redefined so that, on old kernels with
+> > > the buggy one, newly built applications get told that mmap is not
+> > > available and use the unaffected non-mmap fallback?
+> > 
+> > The problem is that the SYNC_PTR64 ioctl itself for non-mmap fallback
+> > is equally buggy due to this bug, too.  So disabling mmap doesn't help
+> > alone.
+> > 
+> > And, yes, we can redefine ioctl numbers.  But, then, application would
+> > have to be bilingual, as well as the kernel; it'll have to switch back
+> > to old API when running on older kernel, while the same binary would
+> > need to run in a new API for a newer kernel.
+> > 
+> > Maybe we can implement it in alsa-lib, if it really worth for it.
+> 
+> In musl we already have ioctl struct conversion for running on
+> time32-only kernels. So it may be practical to convert this too if
+> needed.
 
-Huang Ying <ying.huang@intel.com> writes:
+I guess we can work around without ioctl renumbering.  The PCM API has
+a protocol version handshaking, and user-space is supposed to tell its
+API version to kernel.  So the kernel can know in what version
+user-space is talking with.
 
-> The changes since the last post are as follows,
->
-> - Rebased on v5.15-rc4
->
-> - Make "add promotion counter" the first patch per Yang's comments
->
-> --
->
-> With the advent of various new memory types, some machines will have
-> multiple types of memory, e.g. DRAM and PMEM (persistent memory).  The
-> memory subsystem of these machines can be called memory tiering
-> system, because the performance of the different types of memory are
-> different.
->
-> After commit c221c0b0308f ("device-dax: "Hotplug" persistent memory
-> for use like normal RAM"), the PMEM could be used as the
-> cost-effective volatile memory in separate NUMA nodes.  In a typical
-> memory tiering system, there are CPUs, DRAM and PMEM in each physical
-> NUMA node.  The CPUs and the DRAM will be put in one logical node,
-> while the PMEM will be put in another (faked) logical node.
->
-> To optimize the system overall performance, the hot pages should be
-> placed in DRAM node.  To do that, we need to identify the hot pages in
-> the PMEM node and migrate them to DRAM node via NUMA migration.
->
-> In the original NUMA balancing, there are already a set of existing
-> mechanisms to identify the pages recently accessed by the CPUs in a
-> node and migrate the pages to the node.  So we can reuse these
-> mechanisms to build the mechanisms to optimize the page placement in
-> the memory tiering system.  This is implemented in this patchset.
->
-> At the other hand, the cold pages should be placed in PMEM node.  So,
-> we also need to identify the cold pages in the DRAM node and migrate
-> them to PMEM node.
->
-> In commit 26aa2d199d6f ("mm/migrate: demote pages during reclaim"), a
-> mechanism to demote the cold DRAM pages to PMEM node under memory
-> pressure is implemented.  Based on that, the cold DRAM pages can be
-> demoted to PMEM node proactively to free some memory space on DRAM
-> node to accommodate the promoted hot PMEM pages.  This is implemented
-> in this patchset too.
->
-> We have tested the solution with the pmbench memory accessing
-> benchmark with the 80:20 read/write ratio and the normal access
-> address distribution on a 2 socket Intel server with Optane DC
-> Persistent Memory Model.  The test results of the base kernel and step
-> by step optimizations are as follows,
->
->                 Throughput	Promotion      DRAM bandwidth
-> 		  access/s           MB/s                MB/s
->                -----------     ----------      --------------
-> Base		69263986.8			       1830.2
-> Patch 2	       135691921.4	    385.6	      11315.9
-> Patch 3	       133239016.8	    384.7	      11065.2
-> Patch 4	       151310868.9          197.6	      11397.0
-> Patch 5	       142311252.8           99.3	       9580.8
-> Patch 6	       149044263.9	     65.5	       9922.8
->
-> The whole patchset improves the benchmark score up to 115.2%.  The
-> basic NUMA balancing based optimization solution (patch 2), the hot
-> page selection algorithm (patch 4), and the threshold automatic
-> adjustment algorithms (patch 6) improves the performance or reduce the
-> overhead (promotion MB/s) greatly.
->
-> Changelog:
->
-> v9:
->
-> - Rebased on v5.15-rc4
->
-> - Make "add promotion counter" the first patch per Yang's comments
+Below is the PoC fix in the kernel side (totally untested).
+The fix for alsa-lib will follow.
 
-In this new version, all dependencies have been merged by the latest
-upstream kernel.  So it is easier to be reviewed than the previous
-version you have reviewed part of them.  Do you have time to take a look
-at this new series now?
 
-Best Regards,
-Huang, Ying
+thanks,
+
+Takashi
+
+---
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 5859ca0a1439..dbdbf0c794d8 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -156,7 +156,7 @@ struct snd_hwdep_dsp_image {
+  *                                                                           *
+  *****************************************************************************/
+ 
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 15)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 16)
+ 
+ typedef unsigned long snd_pcm_uframes_t;
+ typedef signed long snd_pcm_sframes_t;
+@@ -550,6 +550,7 @@ struct __snd_pcm_sync_ptr {
+ 	} s;
+ 	union {
+ 		struct __snd_pcm_mmap_control control;
++		struct __snd_pcm_mmap_control control_api_2_0_15; /* no bug in 32bit mode */
+ 		unsigned char reserved[64];
+ 	} c;
+ };
+@@ -557,11 +558,15 @@ struct __snd_pcm_sync_ptr {
+ #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+ typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+ typedef char __pad_after_uframe[0];
++typedef char __pad_before_u32[4];
++typedef char __pad_after_u32[0];
+ #endif
+ 
+ #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+ typedef char __pad_before_uframe[0];
+ typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
++typedef char __pad_before_u32[0];
++typedef char __pad_after_u32[4];
+ #endif
+ 
+ struct __snd_pcm_mmap_status64 {
+@@ -579,13 +584,23 @@ struct __snd_pcm_mmap_status64 {
+ struct __snd_pcm_mmap_control64 {
+ 	__pad_before_uframe __pad1;
+ 	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
+-	__pad_before_uframe __pad2;
++	__pad_after_uframe __pad2;
+ 
+ 	__pad_before_uframe __pad3;
+ 	snd_pcm_uframes_t  avail_min;	 /* RW: min available frames for wakeup */
+ 	__pad_after_uframe __pad4;
+ };
+ 
++/* buggy mmap control definition for 2.0.15 PCM API on 32bit mode */
++struct __snd_pcm_mmap_control64_api_2_0_15 {
++	__pad_before_u32 __pad1;
++	__u32 appl_ptr;
++	__pad_before_u32 __pad2;	/* SiC! here is the bug */
++	__pad_before_u32 __pad3;
++	__u32 avail_min;
++	__pad_after_uframe __pad4;
++};
++
+ struct __snd_pcm_sync_ptr64 {
+ 	__u32 flags;
+ 	__u32 pad1;
+@@ -595,6 +610,7 @@ struct __snd_pcm_sync_ptr64 {
+ 	} s;
+ 	union {
+ 		struct __snd_pcm_mmap_control64 control;
++		struct __snd_pcm_mmap_control64_api_2_0_15 control_api_2_0_15;
+ 		unsigned char reserved[64];
+ 	} c;
+ };
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 46c643db18eb..1f26dd2a2525 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2958,8 +2958,19 @@ static int snd_pcm_delay(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 		
++/* PCM 2.0.15 API definition had a bug in mmap control; it puts the avail_min
++ * at the wrong offset due to a typo in padding type.
++ * The bug hits only on 32bit, either on 32bit arch or in 32bit compat mode.
++ */
++static bool is_buggy_control(struct snd_pcm_file *pcm_file)
++{
++	return pcm_file->user_pversion == SNDRV_PROTOCOL_VERSION(2, 0, 15) &&
++		(in_compat_syscall() || !IS_ENABLED(CONFIG_64BIT));
++}
++
+ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+-			    struct snd_pcm_sync_ptr __user *_sync_ptr)
++			    struct snd_pcm_sync_ptr __user *_sync_ptr,
++			    bool buggy_control)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_sync_ptr sync_ptr;
+@@ -2970,8 +2981,17 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 	memset(&sync_ptr, 0, sizeof(sync_ptr));
+ 	if (get_user(sync_ptr.flags, (unsigned __user *)&(_sync_ptr->flags)))
+ 		return -EFAULT;
+-	if (copy_from_user(&sync_ptr.c.control, &(_sync_ptr->c.control), sizeof(struct snd_pcm_mmap_control)))
+-		return -EFAULT;	
++	if (buggy_control) {
++		if (copy_from_user(&sync_ptr.c.control_api_2_0_15,
++				   &(_sync_ptr->c.control_api_2_0_15),
++				   sizeof(sync_ptr.c.control_api_2_0_15)))
++			return -EFAULT;
++	} else {
++		if (copy_from_user(&sync_ptr.c.control,
++				   &(_sync_ptr->c.control),
++				   sizeof(sync_ptr.c.control)))
++			return -EFAULT;
++	}
+ 	status = runtime->status;
+ 	control = runtime->control;
+ 	if (sync_ptr.flags & SNDRV_PCM_SYNC_PTR_HWSYNC) {
+@@ -2981,19 +3001,34 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 	}
+ 	snd_pcm_stream_lock_irq(substream);
+ 	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
+-		err = pcm_lib_apply_appl_ptr(substream,
+-					     sync_ptr.c.control.appl_ptr);
++		if (buggy_control) {
++			err = pcm_lib_apply_appl_ptr(substream,
++						     sync_ptr.c.control_api_2_0_15.appl_ptr);
++		} else {
++			err = pcm_lib_apply_appl_ptr(substream,
++						     sync_ptr.c.control.appl_ptr);
++		}
+ 		if (err < 0) {
+ 			snd_pcm_stream_unlock_irq(substream);
+ 			return err;
+ 		}
+ 	} else {
+-		sync_ptr.c.control.appl_ptr = control->appl_ptr;
++		if (buggy_control)
++			sync_ptr.c.control_api_2_0_15.appl_ptr = control->appl_ptr;
++		else
++			sync_ptr.c.control.appl_ptr = control->appl_ptr;
++	}
++	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN)) {
++		if (buggy_control)
++			control->avail_min = sync_ptr.c.control_api_2_0_15.avail_min;
++		else
++			control->avail_min = sync_ptr.c.control.avail_min;
++	} else {
++		if (buggy_control)
++			sync_ptr.c.control_api_2_0_15.avail_min = control->avail_min;
++		else
++			sync_ptr.c.control.avail_min = control->avail_min;
+ 	}
+-	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
+-		control->avail_min = sync_ptr.c.control.avail_min;
+-	else
+-		sync_ptr.c.control.avail_min = control->avail_min;
+ 	sync_ptr.s.status.state = status->state;
+ 	sync_ptr.s.status.hw_ptr = status->hw_ptr;
+ 	sync_ptr.s.status.tstamp = status->tstamp;
+@@ -3289,7 +3324,8 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 	case __SNDRV_PCM_IOCTL_SYNC_PTR32:
+ 		return snd_pcm_ioctl_sync_ptr_compat(substream, arg);
+ 	case __SNDRV_PCM_IOCTL_SYNC_PTR64:
+-		return snd_pcm_sync_ptr(substream, arg);
++		return snd_pcm_sync_ptr(substream, arg,
++					is_buggy_control(pcm_file));
+ #ifdef CONFIG_SND_SUPPORT_OLD_API
+ 	case SNDRV_PCM_IOCTL_HW_REFINE_OLD:
+ 		return snd_pcm_hw_refine_old_user(substream, arg);
+@@ -3851,6 +3887,8 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
+ 			return -ENXIO;
+ 		fallthrough;
+ 	case SNDRV_PCM_MMAP_OFFSET_CONTROL_NEW:
++		if (is_buggy_control(pcm_file))
++			return -ENXIO;
+ 		if (!pcm_control_mmap_allowed(pcm_file))
+ 			return -ENXIO;
+ 		return snd_pcm_mmap_control(substream, file, area);
