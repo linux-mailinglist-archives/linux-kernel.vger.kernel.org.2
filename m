@@ -2,209 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EED5426CD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE917426CD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242478AbhJHOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:40:54 -0400
-Received: from first.geanix.com ([116.203.34.67]:37352 "EHLO first.geanix.com"
+        id S241560AbhJHOk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242084AbhJHOku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:40:50 -0400
-Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id 2F2A1C3B5E;
-        Fri,  8 Oct 2021 14:38:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633703933; bh=vjjcfVjWx7Ob+Sq25WOnNjK0E6WF3cckWINU+c59prs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=gw2E9/HJrreFjsFKMC6Zhdz2o42lTnhAfJe9S2caISKRvQwy5JutzBgXXCaFnniVP
-         hq/diGaEbXywBLdMHfr6U3g4En6PIrATV5PnxSG8UpPOTlAE84YjEZTobdH7d2HDpm
-         TQiYJ6MfZ4+2mmf8sIfsRUZT7lspLhMZSi8y3yfdzvHJ9TPd0DS9i5lU8buWKuXs+A
-         G26oPsZLPHr9wCf7IW1Mw/MiVyTDBM4jebaK+NUWx5T8mr4rNtIzxYVpUBKgcvUuYo
-         DJtSXTgHOAmLSBy/Hv11nWnSC//TVjoZCobBPwKHeOAdef9DlpHzKhtz+5zL1QsQh1
-         PQ5wZfC1eW+Fg==
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Sean Nyekjaer <sean@geanix.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 2/2] mtd: rawnand: remove suspended check
-Date:   Fri,  8 Oct 2021 16:38:25 +0200
-Message-Id: <20211008143825.3717116-2-sean@geanix.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008141524.20ca8219@collabora.com>
-References: <20211008143825.3717116-1-sean@geanix.com>
+        id S229756AbhJHOkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:40:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0585F60EB6;
+        Fri,  8 Oct 2021 14:38:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633703909;
+        bh=sWrfbFTY7cx1134BJRPVHEJpmaXkRzVNn6Kio4zNSUo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=L3PIfTAh2sLIVyWs1OvWeV68fHTS8b1OS59f5xXLGU1APEhkZyhcK/g0BfkkYdxAq
+         E1UCre2ZayXXeQ0QYt4kJeG1aYuTJMa4uE1oGuxgOEcOonPxjd+RC2mrXChMv9Ina6
+         XoU9hDg9KouiHTp0o5Sq7Lpas/eFusWYL7bAQmxZFuqZJ4a0IGzOF5JwbyCmtiDMoU
+         sYi+2dYThtF/8o3X4j6IFydHtZ4mxtWytk5JBZzlVq+CkGgYuz/sYV0PBa2xoLHTPT
+         fSsHnPM5Vct/OD9wYj5RLKerHZvZ5scFtOdpcwZ6/AGYB44CCv9Oq/inKCziF7LjiN
+         ZXr7jC5Hhmapw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6FBAF410A1; Fri,  8 Oct 2021 11:38:26 -0300 (-03)
+Date:   Fri, 8 Oct 2021 11:38:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Riccardo Mancini <rickyman7@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [RFC PATCH v1 03/37] perf evlist: replace evsel__cpu_iter*
+ functions with evsel__find_cpu()
+Message-ID: <YWBX4slh2U7yNahE@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+ <5bfe13dd0985611285bb697987816ddc36e93e76.1629490974.git.rickyman7@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5bfe13dd0985611285bb697987816ddc36e93e76.1629490974.git.rickyman7@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rawnand access is protected in upper mtd layer when mtd devices are
-suspended. So remove this obsolute check/lock
+Em Sat, Aug 21, 2021 at 11:19:09AM +0200, Riccardo Mancini escreveu:
+> Commit a8cbe40fe9f4ba49 ("perf evsel: Add iterator to iterate over events
+> ordered by CPU") introduced an iterator for evsel.core.cpus inside evsel
+> which is used to iterate over evlist one CPU at a time.
+> 
+> However, this solution is hacky since it involves a mutable state in the
+> evsel which is supposed to be unmodified during iteration.
+> Sice checking that a CPU is within the evsel can be done quickly in
+> O(logn) time, this patch replaces the aforementioned iterator with a
+> simple check.
 
-Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-Signed-off-by: Sean Nyekjaer <sean@geanix.com>
----
+Andi, can you take a look at this and provide your Reviewed-by, please?
 
-Hmm what to do in nand_sync()? Fine as is?
+- Arnaldo
+ 
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> ---
+>  tools/perf/builtin-stat.c | 24 +++++++++--------
+>  tools/perf/util/evlist.c  | 54 +++++++++++----------------------------
+>  tools/perf/util/evlist.h  |  5 +---
+>  tools/perf/util/evsel.h   |  1 -
+>  4 files changed, 30 insertions(+), 54 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
+> index 84de61795e67bbb9..62dcc001c8f0a78b 100644
+> --- a/tools/perf/builtin-stat.c
+> +++ b/tools/perf/builtin-stat.c
+> @@ -407,7 +407,7 @@ static int read_affinity_counters(struct timespec *rs)
+>  {
+>  	struct evsel *counter;
+>  	struct affinity affinity;
+> -	int i, ncpus, cpu;
+> +	int i, ncpus, cpu, cpu_idx;
+>  
+>  	if (all_counters_use_bpf)
+>  		return 0;
+> @@ -424,13 +424,14 @@ static int read_affinity_counters(struct timespec *rs)
+>  		affinity__set(&affinity, cpu);
+>  
+>  		evlist__for_each_entry(evsel_list, counter) {
+> -			if (evsel__cpu_iter_skip(counter, cpu))
+> +			cpu_idx = evsel__find_cpu(counter, cpu);
+> +			if (cpu_idx < 0)
+>  				continue;
+>  			if (evsel__is_bpf(counter))
+>  				continue;
+>  			if (!counter->err) {
+>  				counter->err = read_counter_cpu(counter, rs,
+> -								counter->cpu_iter - 1);
+> +								cpu_idx);
+>  			}
+>  		}
+>  	}
+> @@ -789,7 +790,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  	const bool forks = (argc > 0);
+>  	bool is_pipe = STAT_RECORD ? perf_stat.data.is_pipe : false;
+>  	struct affinity affinity;
+> -	int i, cpu, err;
+> +	int i, cpu, cpu_idx, err;
+>  	bool second_pass = false;
+>  
+>  	if (forks) {
+> @@ -823,7 +824,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  		affinity__set(&affinity, cpu);
+>  
+>  		evlist__for_each_entry(evsel_list, counter) {
+> -			if (evsel__cpu_iter_skip(counter, cpu))
+> +			cpu_idx = evsel__find_cpu(counter, cpu);
+> +			if (cpu_idx < 0)
+>  				continue;
+>  			if (counter->reset_group || counter->errored)
+>  				continue;
+> @@ -831,7 +833,7 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  				continue;
+>  try_again:
+>  			if (create_perf_stat_counter(counter, &stat_config, &target,
+> -						     counter->cpu_iter - 1) < 0) {
+> +						     cpu_idx) < 0) {
+>  
+>  				/*
+>  				 * Weak group failed. We cannot just undo this here
+> @@ -877,22 +879,24 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
+>  			evlist__for_each_entry(evsel_list, counter) {
+>  				if (!counter->reset_group && !counter->errored)
+>  					continue;
+> -				if (evsel__cpu_iter_skip_no_inc(counter, cpu))
+> +				cpu_idx = evsel__find_cpu(counter, cpu);
+> +				if (cpu_idx < 0)
+>  					continue;
+> -				perf_evsel__close_cpu(&counter->core, counter->cpu_iter);
+> +				perf_evsel__close_cpu(&counter->core, cpu_idx);
+>  			}
+>  			/* Now reopen weak */
+>  			evlist__for_each_entry(evsel_list, counter) {
+>  				if (!counter->reset_group && !counter->errored)
+>  					continue;
+> -				if (evsel__cpu_iter_skip(counter, cpu))
+> +				cpu_idx = evsel__find_cpu(counter, cpu);
+> +				if (cpu_idx < 0)
+>  					continue;
+>  				if (!counter->reset_group)
+>  					continue;
+>  try_again_reset:
+>  				pr_debug2("reopening weak %s\n", evsel__name(counter));
+>  				if (create_perf_stat_counter(counter, &stat_config, &target,
+> -							     counter->cpu_iter - 1) < 0) {
+> +							     cpu_idx) < 0) {
+>  
+>  					switch (stat_handle_error(counter)) {
+>  					case COUNTER_FATAL:
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 47581a237c7a7848..3d55d9a53b9f4875 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -341,36 +341,9 @@ static int evlist__nr_threads(struct evlist *evlist, struct evsel *evsel)
+>  		return perf_thread_map__nr(evlist->core.threads);
+>  }
+>  
+> -void evlist__cpu_iter_start(struct evlist *evlist)
+> +int evsel__find_cpu(struct evsel *ev, int cpu)
+>  {
+> -	struct evsel *pos;
+> -
+> -	/*
+> -	 * Reset the per evsel cpu_iter. This is needed because
+> -	 * each evsel's cpumap may have a different index space,
+> -	 * and some operations need the index to modify
+> -	 * the FD xyarray (e.g. open, close)
+> -	 */
+> -	evlist__for_each_entry(evlist, pos)
+> -		pos->cpu_iter = 0;
+> -}
+> -
+> -bool evsel__cpu_iter_skip_no_inc(struct evsel *ev, int cpu)
+> -{
+> -	if (ev->cpu_iter >= ev->core.cpus->nr)
+> -		return true;
+> -	if (cpu >= 0 && ev->core.cpus->map[ev->cpu_iter] != cpu)
+> -		return true;
+> -	return false;
+> -}
+> -
+> -bool evsel__cpu_iter_skip(struct evsel *ev, int cpu)
+> -{
+> -	if (!evsel__cpu_iter_skip_no_inc(ev, cpu)) {
+> -		ev->cpu_iter++;
+> -		return false;
+> -	}
+> -	return true;
+> +	return perf_cpu_map__idx(ev->core.cpus, cpu);
+>  }
+>  
+>  static int evsel__strcmp(struct evsel *pos, char *evsel_name)
+> @@ -400,7 +373,7 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+>  {
+>  	struct evsel *pos;
+>  	struct affinity affinity;
+> -	int cpu, i, imm = 0;
+> +	int cpu, i, imm = 0, cpu_idx;
+>  	bool has_imm = false;
+>  
+>  	if (affinity__setup(&affinity) < 0)
+> @@ -414,7 +387,8 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+>  			evlist__for_each_entry(evlist, pos) {
+>  				if (evsel__strcmp(pos, evsel_name))
+>  					continue;
+> -				if (evsel__cpu_iter_skip(pos, cpu))
+> +				cpu_idx = evsel__find_cpu(pos, cpu);
+> +				if (cpu_idx < 0)
+>  					continue;
+>  				if (pos->disabled || !evsel__is_group_leader(pos) || !pos->core.fd)
+>  					continue;
+> @@ -422,7 +396,7 @@ static void __evlist__disable(struct evlist *evlist, char *evsel_name)
+>  					has_imm = true;
+>  				if (pos->immediate != imm)
+>  					continue;
+> -				evsel__disable_cpu(pos, pos->cpu_iter - 1);
+> +				evsel__disable_cpu(pos, cpu_idx);
+>  			}
+>  		}
+>  		if (!has_imm)
+> @@ -462,7 +436,7 @@ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+>  {
+>  	struct evsel *pos;
+>  	struct affinity affinity;
+> -	int cpu, i;
+> +	int cpu, i, cpu_idx;
+>  
+>  	if (affinity__setup(&affinity) < 0)
+>  		return;
+> @@ -473,11 +447,12 @@ static void __evlist__enable(struct evlist *evlist, char *evsel_name)
+>  		evlist__for_each_entry(evlist, pos) {
+>  			if (evsel__strcmp(pos, evsel_name))
+>  				continue;
+> -			if (evsel__cpu_iter_skip(pos, cpu))
+> +			cpu_idx = evsel__find_cpu(pos, cpu);
+> +			if (cpu_idx < 0)
+>  				continue;
+>  			if (!evsel__is_group_leader(pos) || !pos->core.fd)
+>  				continue;
+> -			evsel__enable_cpu(pos, pos->cpu_iter - 1);
+> +			evsel__enable_cpu(pos, cpu_idx);
+>  		}
+>  	}
+>  	affinity__cleanup(&affinity);
+> @@ -1264,7 +1239,7 @@ void evlist__close(struct evlist *evlist)
+>  {
+>  	struct evsel *evsel;
+>  	struct affinity affinity;
+> -	int cpu, i;
+> +	int cpu, i, cpu_idx;
+>  
+>  	/*
+>  	 * With perf record core.cpus is usually NULL.
+> @@ -1282,9 +1257,10 @@ void evlist__close(struct evlist *evlist)
+>  		affinity__set(&affinity, cpu);
+>  
+>  		evlist__for_each_entry_reverse(evlist, evsel) {
+> -			if (evsel__cpu_iter_skip(evsel, cpu))
+> -			    continue;
+> -			perf_evsel__close_cpu(&evsel->core, evsel->cpu_iter - 1);
+> +			cpu_idx = evsel__find_cpu(evsel, cpu);
+> +			if (cpu_idx < 0)
+> +				continue;
+> +			perf_evsel__close_cpu(&evsel->core, cpu_idx);
+>  		}
+>  	}
+>  	affinity__cleanup(&affinity);
+> diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+> index 5c22383489ae4905..fde893170c7ba6d2 100644
+> --- a/tools/perf/util/evlist.h
+> +++ b/tools/perf/util/evlist.h
+> @@ -310,15 +310,12 @@ void evlist__to_front(struct evlist *evlist, struct evsel *move_evsel);
+>  	__evlist__for_each_entry_safe(&(evlist)->core.entries, tmp, evsel)
+>  
+>  #define evlist__for_each_cpu(evlist, index, cpu)	\
+> -	evlist__cpu_iter_start(evlist);			\
+>  	perf_cpu_map__for_each_cpu (cpu, index, (evlist)->core.all_cpus)
+>  
+>  struct evsel *evlist__get_tracking_event(struct evlist *evlist);
+>  void evlist__set_tracking_event(struct evlist *evlist, struct evsel *tracking_evsel);
+>  
+> -void evlist__cpu_iter_start(struct evlist *evlist);
+> -bool evsel__cpu_iter_skip(struct evsel *ev, int cpu);
+> -bool evsel__cpu_iter_skip_no_inc(struct evsel *ev, int cpu);
+> +int evsel__find_cpu(struct evsel *ev, int cpu);
+>  
+>  struct evsel *evlist__find_evsel_by_str(struct evlist *evlist, const char *str);
+>  
+> diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> index 80383096d51c5f00..eabccce406886320 100644
+> --- a/tools/perf/util/evsel.h
+> +++ b/tools/perf/util/evsel.h
+> @@ -119,7 +119,6 @@ struct evsel {
+>  	bool			errored;
+>  	struct hashmap		*per_pkg_mask;
+>  	int			err;
+> -	int			cpu_iter;
+>  	struct {
+>  		evsel__sb_cb_t	*cb;
+>  		void		*data;
+> -- 
+> 2.31.1
 
- drivers/mtd/nand/raw/nand_base.c | 50 ++++++++------------------------
- include/linux/mtd/rawnand.h      |  5 +---
- 2 files changed, 13 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d6c6e880520..f1f85866c87a 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
-  * @chip: NAND chip structure
-  *
-  * Lock the device and its controller for exclusive access
-- *
-- * Return: -EBUSY if the chip has been suspended, 0 otherwise
-  */
--static int nand_get_device(struct nand_chip *chip)
-+static void nand_get_device(struct nand_chip *chip)
- {
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		mutex_unlock(&chip->lock);
--		return -EBUSY;
--	}
- 	mutex_lock(&chip->controller->lock);
--
--	return 0;
- }
- 
- /**
-@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
- 		nand_erase_nand(chip, &einfo, 0);
- 
- 		/* Write bad block marker to OOB */
--		ret = nand_get_device(chip);
--		if (ret)
--			return ret;
--
-+		nand_get_device(chip);
- 		ret = nand_markbad_bbm(chip, ofs);
- 		nand_release_device(chip);
- 	}
-@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
- 	    ops->mode != MTD_OPS_RAW)
- 		return -ENOTSUPP;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	if (!ops->datbuf)
- 		ret = nand_do_read_oob(chip, from, ops);
-@@ -4349,9 +4336,7 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
- 
- 	ops->retlen = 0;
- 
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	switch (ops->mode) {
- 	case MTD_OPS_PLACE_OOB:
-@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
- 	if (nand_region_is_secured(chip, instr->addr, instr->len))
- 		return -EIO;
- 
--	/* Grab the lock and see if the device is available */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 
- 	/* Shift to get first page */
- 	page = (int)(instr->addr >> chip->page_shift);
-@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
- 
- 	pr_debug("%s: called\n", __func__);
- 
--	/* Grab the lock and see if the device is available */
--	WARN_ON(nand_get_device(chip));
-+	/* Grab the lock */
-+	nand_get_device(chip);
- 	/* Release it and go back */
- 	nand_release_device(chip);
- }
-@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- 	int ret;
- 
- 	/* Select the NAND device */
--	ret = nand_get_device(chip);
--	if (ret)
--		return ret;
-+	nand_get_device(chip);
- 
- 	nand_select_target(chip, chipnr);
- 
-@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
- 	mutex_lock(&chip->lock);
- 	if (chip->ops.suspend)
- 		ret = chip->ops.suspend(chip);
--	if (!ret)
--		chip->suspended = 1;
- 	mutex_unlock(&chip->lock);
- 
- 	return ret;
-@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
-+
- 	mutex_lock(&chip->lock);
--	if (chip->suspended) {
--		if (chip->ops.resume)
--			chip->ops.resume(chip);
--		chip->suspended = 0;
--	} else {
--		pr_err("%s called for a chip which is not in suspended state\n",
--			__func__);
--	}
-+	if (chip->ops.resume)
-+		chip->ops.resume(chip);
- 	mutex_unlock(&chip->lock);
- }
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b2f9dd3cbd69..1198a6548912 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1237,9 +1237,7 @@ struct nand_secure_region {
-  * @pagecache.page: Page number currently in the cache. -1 means no page is
-  *                  currently cached
-  * @buf_align: Minimum buffer alignment required by a platform
-- * @lock: Lock protecting the suspended field. Also used to serialize accesses
-- *        to the NAND device
-- * @suspended: Set to 1 when the device is suspended, 0 when it's not
-+ * @lock: Lock to serialize accesses to the NAND device
-  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
-  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
-  *          NAND Controller drivers should not modify this value, but they're
-@@ -1293,7 +1291,6 @@ struct nand_chip {
- 
- 	/* Internals */
- 	struct mutex lock;
--	unsigned int suspended : 1;
- 	int cur_cs;
- 	int read_retries;
- 	struct nand_secure_region *secure_regions;
 -- 
-2.33.0
 
+- Arnaldo
