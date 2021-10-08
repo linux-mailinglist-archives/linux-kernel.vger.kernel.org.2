@@ -2,159 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F569426E8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3DB426E94
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhJHQWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhJHQWw (ORCPT
+        id S230233AbhJHQY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:24:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58262 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229953AbhJHQYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:22:52 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BC9C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 09:20:55 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id h2so22142329ybi.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WbpqBG1YQa7jgZ7Xg/LUvMqcMj/e4xUqlnDR3VFNVxQ=;
-        b=UIkASagcUJKOLIsR4xgyAUUqbC8307RLetJG+kurS2qk8UIUG8qxAj/RqBj5x/lUGy
-         EBwiBFOu3R0gLdWerUPc00zraXwvnv1/pR/2pgXvs/A7yjJ1y/qDMdxE06yqNlFYnf0d
-         5hL8CAd/Sjc7uj61Ea+CE1w4VxqluoMiz1y3BiCH0Il+yVBHxbjpqHxDMxpI2ItFRepu
-         GYgN7gjA3WbkA0WdI1Gd3RP5c59+MuRFfDD1jUl0DLZz/3SX79EcU9ig0mI/x7m5lKe0
-         w0NqhcOQIi5KBbHBE/mamGc9dP0Gc75NOpKZAA/KEXly6XyLNeRqW1GRrX2XlwJ1sKz2
-         DD4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WbpqBG1YQa7jgZ7Xg/LUvMqcMj/e4xUqlnDR3VFNVxQ=;
-        b=3qVRVdIaYnA+n8L8I2pJv00/cKR2lfbvs+hwuux0MdZS1fPeiJurNf3zpdv67CNtcA
-         ZbJ+H2zuAdKJrAmFxpmBZpVgDdAh25guf2lledtZm7eIW9bRd7h+2HH1Bw2Flq53IPkK
-         6QXeTLPH+PVCXhUy35FgXNoUwzpuhw7PU8+4K1YLkpLl5Eexe+vajLhuLN1/1AiJTbYW
-         q3KQEUMrkEsgMgcRw3wTHyQYMGN4mRS8WbSmsqVk+5ULlfFW7zE7t29DsDblLxAjFWWO
-         5v8YDXbr2J2GOiipyQjDOhNc9lPHuPctvREq5VNy99h8ll9CpZeoZNjt2Pl8vdi3P+N3
-         3zcQ==
-X-Gm-Message-State: AOAM530njUvYJmsrnwqMF9nJVbnmcF7DWrK5FJ/UU6siMRAbPWwOyaKw
-        9dIeo4SkWwoXcFvjIq5o9QHHCVPQ55uYIcQO21NHdA==
-X-Google-Smtp-Source: ABdhPJznc865GfL2wZPpFhMF0eUz9hIq2Bz5wGehdboZMEWXlw8O+EI2ITp2goIZnicRuwIRBsS5iolIcrrkyz/QxQ0=
-X-Received: by 2002:a25:7415:: with SMTP id p21mr4531647ybc.78.1633710054416;
- Fri, 08 Oct 2021 09:20:54 -0700 (PDT)
+        Fri, 8 Oct 2021 12:24:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633710148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LcIF1ATa5pMxZWD7XVYsx964hvOu7/ZW7mOWWqM4Eac=;
+        b=DWd2rW55WSPmNaG59tH7uF1/fv+1iCc2wAduNLZcNNoDQhnLmcufaLoGh6IH8Dpf+Nxw4Y
+        bKDZWbcobn9T6q5E2aRqw+wOveOtMb4VJVlJiPxSORvf0brSVGaBvxPBjrD60fpfq6npEQ
+        kQrAhz/q1LbIiauD2F6epmBrWg4tq3Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-254-Js1_vogPMRiS5BUD58g9-w-1; Fri, 08 Oct 2021 12:22:25 -0400
+X-MC-Unique: Js1_vogPMRiS5BUD58g9-w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A2E9117D670;
+        Fri,  8 Oct 2021 16:21:59 +0000 (UTC)
+Received: from x1.localdomain (unknown [10.39.192.26])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3985061140;
+        Fri,  8 Oct 2021 16:21:23 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: [PATCH 00/12] Add support for X86/ACPI camera sensor/PMIC setup with clk and regulator platform data
+Date:   Fri,  8 Oct 2021 18:21:09 +0200
+Message-Id: <20211008162121.6628-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-References: <20211001174947.135123-1-eric.dumazet@gmail.com> <CAD-N9QVtBrWrtAFQkyd=zRwnA4AjnBBeqhD_P-QFXz-QtUOzog@mail.gmail.com>
-In-Reply-To: <CAD-N9QVtBrWrtAFQkyd=zRwnA4AjnBBeqhD_P-QFXz-QtUOzog@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 8 Oct 2021 09:20:43 -0700
-Message-ID: <CANn89iL2qqVNFVUjSOnq52Aw+k5=Hcv1dSO-PSjgGKt0yxB0FQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/mempolicy: do not allow illegal MPOL_F_NUMA_BALANCING
- | MPOL_LOCAL in mbind()
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        syzbot <syzkaller@googlegroups.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Mel Gorman <mgorman@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 10:26 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> On Sat, Oct 2, 2021 at 1:49 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> >
-> > From: Eric Dumazet <edumazet@google.com>
-> >
-> > syzbot reported access to unitialized memory in mbind() [1]
-> >
-> > Issue came with commit bda420b98505 ("numa balancing: migrate on
-> > fault among multiple bound nodes")
-> >
-> > This commit added a new bit in MPOL_MODE_FLAGS, but only checked
-> > valid combination (MPOL_F_NUMA_BALANCING can only be used with MPOL_BIND)
-> > in do_set_mempolicy()
-> >
-> > This patch moves the check in sanitize_mpol_flags() so that it
-> > is also used by mbind()
-> >
-> > [1]
-> > BUG: KMSAN: uninit-value in __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
-> >  __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
-> >  mpol_equal include/linux/mempolicy.h:105 [inline]
-> >  vma_merge+0x4a1/0x1e60 mm/mmap.c:1190
-> >  mbind_range+0xcc8/0x1e80 mm/mempolicy.c:811
-> >  do_mbind+0xf42/0x15f0 mm/mempolicy.c:1333
-> >  kernel_mbind mm/mempolicy.c:1483 [inline]
-> >  __do_sys_mbind mm/mempolicy.c:1490 [inline]
-> >  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
-> >  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
-> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-> >  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >
-> > Uninit was created at:
-> >  slab_alloc_node mm/slub.c:3221 [inline]
-> >  slab_alloc mm/slub.c:3230 [inline]
-> >  kmem_cache_alloc+0x751/0xff0 mm/slub.c:3235
-> >  mpol_new mm/mempolicy.c:293 [inline]
-> >  do_mbind+0x912/0x15f0 mm/mempolicy.c:1289
-> >  kernel_mbind mm/mempolicy.c:1483 [inline]
-> >  __do_sys_mbind mm/mempolicy.c:1490 [inline]
-> >  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
-> >  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
-> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-> >  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > =====================================================
-> > Kernel panic - not syncing: panic_on_kmsan set ...
-> > CPU: 0 PID: 15049 Comm: syz-executor.0 Tainted: G    B             5.15.0-rc2-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x1ff/0x28e lib/dump_stack.c:106
-> >  dump_stack+0x25/0x28 lib/dump_stack.c:113
-> >  panic+0x44f/0xdeb kernel/panic.c:232
-> >  kmsan_report+0x2ee/0x300 mm/kmsan/report.c:186
-> >  __msan_warning+0xd7/0x150 mm/kmsan/instrumentation.c:208
-> >  __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
-> >  mpol_equal include/linux/mempolicy.h:105 [inline]
-> >  vma_merge+0x4a1/0x1e60 mm/mmap.c:1190
-> >  mbind_range+0xcc8/0x1e80 mm/mempolicy.c:811
-> >  do_mbind+0xf42/0x15f0 mm/mempolicy.c:1333
-> >  kernel_mbind mm/mempolicy.c:1483 [inline]
-> >  __do_sys_mbind mm/mempolicy.c:1490 [inline]
-> >  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
-> >  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
-> >  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-> >  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
-> >  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> > RIP: 0033:0x7f4a41b2c709
-> > Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> > RSP: 002b:00007f4a3f0a3188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
-> > RAX: ffffffffffffffda RBX: 00007f4a41c30f60 RCX: 00007f4a41b2c709
-> > RDX: 0000000000002001 RSI: 0000000000c00007 RDI: 0000000020012000
-> > RBP: 00007f4a41b86cb4 R08: 0000000000000000 R09: 0000010000000002
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > R13: 00007f4a42164b2f R14: 00007f4a3f0a3300 R15: 0000000000022000
-> >
->
-> Hi Eric,
->
-> this crash seems like the bug report [1] on Syzbot dashboard.
->
-> [1] https://syzkaller.appspot.com/bug?id=028833194204bb15c2c43d822b8f7401360d57f5
->
-> If yes, maybe you can push a patch testing request.
->
+Hi All,
 
-No, it was a different syzbot report, currently held in our queue.
+This patch series is a rework/rewrite of Daniel Scally's earlier
+attempts at adding support for camera sensor connected to a
+TPS68470 PMIC on x86/ACPI devices.
 
-(Andrew Morton has access to our internal bug, I CC him (b/201266830))
+The clk and regulator frameworks expect clk/regulator consumer-devices
+to have info about the consumed clks/regulators described in the device's
+fw_node, but on ACPI this info is missing.
 
-I can release it, at the expense of more noise to various mailing
-lists, but really the bug is trivial.
+This series worksaround this by providing platform_data with the info to
+the TPS68470 clk/regulator MFD cells.
+
+Patches 1 - 3 deal with a probe-ordering problem this introduces, since the
+lookups are only registered when the provider-driver binds, trying to get
+these clks/regulators before then results in a -ENOENT error for clks and
+a dummy regulator for regulators. See the patches for more details.
+
+Patch 4 adds a header file which adds tps68470_clk_platform_data and
+tps68470_regulator_platform_data structs. The futher patches depend on
+this new header file.
+
+Patch 5 + 6 add the TPS68470 clk and regulator drivers
+
+Patches 7 - 12 Modify the INT3472 driver which instantiates the MFD cells to
+provide the necessary platform-data.
+
+Assuming this series is acceptable to everyone, we need to talk about how
+to merge this.
+
+Rafael, can you provide an immutable branch with
+"[PATCH 01/12] ACPI: Add has_unmet_acpi_deps() helper function"
+on there? Then the media subsys-maintaines can merge that and then
+merge patch 2 + 3 on top.
+
+For "[PATCH 04/12] platform_data: Add linux/platform_data/tps68470.h file",
+which all further patches depend on I plan to provide an immutable branch
+myself (once it has been reviewed), which the clk / regulator maintainers
+can then merge before merging the clk / regulator driver which depends on
+this.
+
+Regards,
+
+Hans
+
+
+Daniel Scally (1):
+  platform/x86: int3472: Enable I2c daisy chain
+
+Hans de Goede (11):
+  ACPI: Add has_unmet_acpi_deps() helper function
+  media: i2c: ov8865: Add an has_unmet_acpi_deps() check
+  media: i2c: ov5693: Add an has_unmet_acpi_deps() check
+  platform_data: Add linux/platform_data/tps68470.h file
+  regulator: Introduce tps68470-regulator driver
+  clk: Introduce clk-tps68470 driver
+  platform/x86: int3472: Split into 2 drivers
+  platform/x86: int3472: Add get_sensor_adev_and_name() helper
+  platform/x86: int3472: Pass tps68470_clk_platform_data to the
+    tps68470-regulator MFD-cell
+  platform/x86: int3472: Pass tps68470_regulator_platform_data to the
+    tps68470-regulator MFD-cell
+  platform/x86: int3472: Call acpi_dev_clear_dependencies() on
+    successful probe
+
+ drivers/clk/Kconfig                           |   6 +
+ drivers/clk/Makefile                          |   1 +
+ drivers/clk/clk-tps68470.c                    | 257 ++++++++++++++++++
+ drivers/media/i2c/ov5693.c                    |   3 +
+ drivers/media/i2c/ov8865.c                    |   3 +
+ drivers/platform/x86/intel/int3472/Makefile   |   9 +-
+ ...lk_and_regulator.c => clk_and_regulator.c} |   2 +-
+ drivers/platform/x86/intel/int3472/common.c   |  82 ++++++
+ .../{intel_skl_int3472_common.h => common.h}  |   6 +-
+ ...ntel_skl_int3472_discrete.c => discrete.c} |  51 ++--
+ .../intel/int3472/intel_skl_int3472_common.c  | 106 --------
+ ...ntel_skl_int3472_tps68470.c => tps68470.c} |  88 +++++-
+ drivers/platform/x86/intel/int3472/tps68470.h |  25 ++
+ .../x86/intel/int3472/tps68470_board_data.c   | 118 ++++++++
+ drivers/regulator/Kconfig                     |   9 +
+ drivers/regulator/Makefile                    |   1 +
+ drivers/regulator/tps68470-regulator.c        | 194 +++++++++++++
+ include/linux/acpi.h                          |  12 +
+ include/linux/mfd/tps68470.h                  |  11 +
+ include/linux/platform_data/tps68470.h        |  35 +++
+ 20 files changed, 873 insertions(+), 146 deletions(-)
+ create mode 100644 drivers/clk/clk-tps68470.c
+ rename drivers/platform/x86/intel/int3472/{intel_skl_int3472_clk_and_regulator.c => clk_and_regulator.c} (99%)
+ create mode 100644 drivers/platform/x86/intel/int3472/common.c
+ rename drivers/platform/x86/intel/int3472/{intel_skl_int3472_common.h => common.h} (94%)
+ rename drivers/platform/x86/intel/int3472/{intel_skl_int3472_discrete.c => discrete.c} (91%)
+ delete mode 100644 drivers/platform/x86/intel/int3472/intel_skl_int3472_common.c
+ rename drivers/platform/x86/intel/int3472/{intel_skl_int3472_tps68470.c => tps68470.c} (58%)
+ create mode 100644 drivers/platform/x86/intel/int3472/tps68470.h
+ create mode 100644 drivers/platform/x86/intel/int3472/tps68470_board_data.c
+ create mode 100644 drivers/regulator/tps68470-regulator.c
+ create mode 100644 include/linux/platform_data/tps68470.h
+
+-- 
+2.31.1
+
