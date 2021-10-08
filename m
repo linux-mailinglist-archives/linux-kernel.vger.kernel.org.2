@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84F6A426EED
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C99426E97
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbhJHQ1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:27:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39656 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238070AbhJHQ1Y (ORCPT
+        id S230262AbhJHQYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:24:33 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:50037 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhJHQYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:27:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633710328;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8EjygOpFJynKm91W3p2Pl14fbKVwnx9xc1tF3Y/Nqb4=;
-        b=jV8BTrHIVTtcO9ZEyrVNqkbKFTKjT4syMR89xRgqbb2ps9hjz0V4FjccNgp/Zm+ZzZPaUZ
-        FWZKfjQJw3/AkPQLxadlenCq+/7rkFsmItQ9q+i4v5sVv/6LByGGzUfd1CuoDcZjOudyJU
-        U+ijuFHa37XtdZ3HHdjoOfK3GdvA9iE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-4_mLf8_LOIuEkyHvW7xDHg-1; Fri, 08 Oct 2021 12:25:24 -0400
-X-MC-Unique: 4_mLf8_LOIuEkyHvW7xDHg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF7D68464D4;
-        Fri,  8 Oct 2021 16:23:27 +0000 (UTC)
-Received: from x1.localdomain (unknown [10.39.192.26])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6018C60BF1;
-        Fri,  8 Oct 2021 16:23:23 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH 12/12] platform/x86: int3472: Call acpi_dev_clear_dependencies() on successful probe
-Date:   Fri,  8 Oct 2021 18:21:21 +0200
-Message-Id: <20211008162121.6628-13-hdegoede@redhat.com>
-In-Reply-To: <20211008162121.6628-1-hdegoede@redhat.com>
-References: <20211008162121.6628-1-hdegoede@redhat.com>
+        Fri, 8 Oct 2021 12:24:31 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 6B314240003;
+        Fri,  8 Oct 2021 16:22:29 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        <linux-mtd@lists.infradead.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jaimeliao@mxic.com.tw,
+        juliensu@mxic.com.tw,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 00/10] Macronix ECC engine
+Date:   Fri,  8 Oct 2021 18:22:18 +0200
+Message-Id: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clk and regulator frameworks expect clk/regulator consumer-devices
-to have info about the consumed clks/regulators described in the device's
-fw_node.
+Hello all,
 
-To work around this info missing from the ACPI tables on devices where
-the int3472 driver is used, the int3472 MFD-cell drivers attach info about
-consumers to the clks/regulators when registering these.
+This series is not 100% stable yet but I believe it should be
+sent out in order to help other people trying to use the ECC framework
+with a SPI controller. Basically, Macronix ECC engine can be used as an
+external engine (takes the data, proceeds to the calculations, writes
+back the ECC bytes) or as a pipelined engine doing on-the-fly
+calculations (which is very common in the raw NAND world).
 
-This causes problems with the probe ordering wrt drivers for consumers
-of these clks/regulators. Since the lookups are only registered when the
-provider-driver binds, trying to get these clks/regulators before then
-results in a -ENOENT error for clks and a dummy regulator for regulators.
+In the device tree, the ECC engine should be described as a separated DT
+node. Then:
+* external case: the flash node should provide a nand-ecc-engine
+  property pointing to the ECC engine node.
+* pipelined case: the flash node should provide a nand-ecc-engine
+  property pointing to the SPI controller, itself with another
+  nand-ecc-engine property pointing at the ECC engine node.
 
-All the sensor ACPI fw-nodes have a _DEP dependency on the INT3472 ACPI
-fw-node, so to work around these probe ordering issues the sensor drivers
-call the has_unmet_acpi_deps() helper and return -EPROBE_DEFER if this
-returns true.
+I will resubmit this later when I will be done validating the hardware
+and the driver.
 
-Add MODULE_SOFTDEP dependencies for the gpio/clk/regulator drivers for
-the instantiated MFD-cells so that these are loaded before us and so
-that they bind immediately when the platform-devs are instantiated;
-and call acpi_dev_clear_dependencies() on successful probe.
+Cheers,
+Miquèl
 
-This way we ensure that the gpio/clk/regulators are registered before
-we call acpi_dev_clear_dependencies() and the sensor drivers can then
-use has_unmet_acpi_deps() helper to wait for this.
+Mason Yang (1):
+  mtd: spinand: macronix: Use random program load
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/platform/x86/intel/int3472/discrete.c | 1 +
- drivers/platform/x86/intel/int3472/tps68470.c | 4 ++++
- 2 files changed, 5 insertions(+)
+Miquel Raynal (9):
+  mtd: spinand: Fix comment
+  dt-bindings: vendor-prefixes: Update Macronix prefix
+  dt-bindings: mtd: Describe Macronix NAND ECC engine
+  mtd: nand: ecc: Add infrastructure to support hardware engines
+  mtd: nand: mxic-ecc: Add Macronix external ECC engine support
+  mtd: nand: mxic-ecc: Support SPI pipelined mode
+  spi: mxic: Fix the transmit path
+  spi: mxic: Add support for direct mapping
+  spi: mxic: Add support for pipelined ECC operations
 
-diff --git a/drivers/platform/x86/intel/int3472/discrete.c b/drivers/platform/x86/intel/int3472/discrete.c
-index fefe12850777..e23a45b985dc 100644
---- a/drivers/platform/x86/intel/int3472/discrete.c
-+++ b/drivers/platform/x86/intel/int3472/discrete.c
-@@ -380,6 +380,7 @@ static int skl_int3472_discrete_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	acpi_dev_clear_dependencies(adev);
- 	return 0;
- }
- 
-diff --git a/drivers/platform/x86/intel/int3472/tps68470.c b/drivers/platform/x86/intel/int3472/tps68470.c
-index 36b657888fe2..781ce6ead720 100644
---- a/drivers/platform/x86/intel/int3472/tps68470.c
-+++ b/drivers/platform/x86/intel/int3472/tps68470.c
-@@ -166,6 +166,9 @@ static int skl_int3472_tps68470_probe(struct i2c_client *client)
- 		return device_type;
- 	}
- 
-+	if (ret == 0)
-+		acpi_dev_clear_dependencies(adev);
-+
- 	return ret;
- }
- 
-@@ -199,3 +202,4 @@ module_i2c_driver(int3472_tps68470);
- MODULE_DESCRIPTION("Intel SkyLake INT3472 ACPI TPS68470 Device Driver");
- MODULE_AUTHOR("Daniel Scally <djrscally@gmail.com>");
- MODULE_LICENSE("GPL v2");
-+MODULE_SOFTDEP("pre: gpio-tps68470 clk-tps68470 tps68470-regulator");
+ .../bindings/mtd/mxic,nand-ecc-engine.yaml    |  78 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   3 +
+ drivers/mtd/nand/Kconfig                      |   6 +
+ drivers/mtd/nand/Makefile                     |   1 +
+ drivers/mtd/nand/core.c                       |  10 +-
+ drivers/mtd/nand/ecc-mxic.c                   | 797 ++++++++++++++++++
+ drivers/mtd/nand/ecc.c                        |  89 ++
+ drivers/mtd/nand/spi/core.c                   |   2 +-
+ drivers/mtd/nand/spi/macronix.c               |   2 +-
+ drivers/spi/spi-mxic.c                        | 309 ++++++-
+ include/linux/mtd/nand-ecc-mxic.h             |  36 +
+ include/linux/mtd/nand.h                      |  11 +
+ 12 files changed, 1296 insertions(+), 48 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/mxic,nand-ecc-engine.yaml
+ create mode 100644 drivers/mtd/nand/ecc-mxic.c
+ create mode 100644 include/linux/mtd/nand-ecc-mxic.h
+
 -- 
-2.31.1
+2.27.0
 
