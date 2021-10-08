@@ -2,118 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CC0426358
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BF942635A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242832AbhJHDyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:54:45 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:24176 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhJHDyn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:54:43 -0400
-Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HQZ442HyFz1DHXS;
-        Fri,  8 Oct 2021 11:51:16 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 8 Oct 2021 11:52:46 +0800
-Subject: Re: [PATCH -next v2 4/6] ext4: avoid to re-read mmp check data get
- from page cache
-To:     Jan Kara <jack@suse.cz>
-References: <20210911090059.1876456-1-yebin10@huawei.com>
- <20210911090059.1876456-5-yebin10@huawei.com>
- <20211007124422.GI12712@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <615FC08E.3060301@huawei.com>
-Date:   Fri, 8 Oct 2021 11:52:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        id S242887AbhJHD4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34750 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhJHD4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:56:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BAF1961029;
+        Fri,  8 Oct 2021 03:54:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633665249;
+        bh=9bjgKQfarun4QyA/2O9VymBK1JLbrL/msj0uW007cKs=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=cwGcrCMhexhwlM0vcO8sDVstbRoiQfjjT2aQ/sdYuk7aoVSoslGL/Dmpy6knxQJHa
+         LVJQ5nymL9tF2fsggPfgM/1nD9LArmb4uKYz89ggf4H1nH3L6yYPt2h9ytwdjEYhjy
+         qzYwLibMRwB+L7lVXhB75eYVX63FXDy8lvpLclkfes6V3tmHrvruTcBhsyPeCQgHKn
+         ps2C51AUnOvxcmf2HGDwxHDP5yQd4QdHzp6gjMkdwCuFM3IW8rUq8FB35ZAhHgO8G5
+         qSB57WUb/aogqlnZDrJZl5l0KwfODjrXgyG6vPPPV/K4kRm2Pm+LipQ+UpJpIJV0QA
+         fcLe+43eZ01WA==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211007124422.GI12712@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme754-chm.china.huawei.com (10.3.19.100)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210923132046.1860549-17-claudiu.beznea@microchip.com>
+References: <20210923132046.1860549-1-claudiu.beznea@microchip.com> <20210923132046.1860549-17-claudiu.beznea@microchip.com>
+Subject: Re: [PATCH v4 16/17] clk: remove extra empty line
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        alexandre.belloni@bootlin.com, ludovic.desroches@microchip.com,
+        mturquette@baylibre.com, nicolas.ferre@microchip.com
+Date:   Thu, 07 Oct 2021 20:54:08 -0700
+Message-ID: <163366524853.2041162.8478038065477963434@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Quoting Claudiu Beznea (2021-09-23 06:20:45)
+> Remove extra empty line.
+>=20
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> ---
 
+Please drop this patch. It's not relevant to the series.
 
-On 2021/10/7 20:44, Jan Kara wrote:
-> On Sat 11-09-21 17:00:57, Ye Bin wrote:
->> As call read_mmp_block pass bh_check which value is NULL, then call
->> sb_getblk to get buffer_head. But mmp_block's buffer_head is already exist
->>   which also is uptodate. Lead to compare the same data.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> This looks good, except that read_mmp_block() also releases bh it is passed
-> in case of error. So it can free buffer head which is still referenced from
-> EXT4_SB(sb)->s_mmp_bh and cause use-after-free issues.
+>  drivers/clk/clk.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+> index 64838754cdef..815fe5f6651e 100644
+> --- a/drivers/clk/clk.c
+> +++ b/drivers/clk/clk.c
+> @@ -3574,7 +3574,6 @@ static int __clk_core_init(struct clk_core *core)
+> =20
+>         clk_core_reparent_orphans_nolock();
+> =20
+> -
+>         kref_init(&core->ref);
+>  out:
+>         clk_pm_runtime_put(core);
+> --=20
+> 2.25.1
 >
-> I guess I would just get rid of sb_getblk() in read_mmp_block() and always
-> expect valid bh passed. The only place that passes NULL bh after this
-> patch is one case in ext4_multi_mount_protect() and that can call
-> sb_getblk() on its own. That way we can also simplify read_mmp_block()
-> prototype to:
->
-> static int read_mmp_block(struct super_block *sb, struct buffer_head *bh);
->
-> 								Honza
-> Yeah, I will refactor 'read_mmp_block'.
->> ---
->>   fs/ext4/mmp.c | 17 ++++++-----------
->>   1 file changed, 6 insertions(+), 11 deletions(-)
->>
->> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
->> index 4433fe7e9e86..007bde3c12b8 100644
->> --- a/fs/ext4/mmp.c
->> +++ b/fs/ext4/mmp.c
->> @@ -213,10 +213,7 @@ static int kmmpd(void *data)
->>   		 * we need to check if the MMP block is as we write it.
->>   		 */
->>   		if (jiffies - last_check_time > mmp_check_interval * HZ) {
->> -			struct buffer_head *bh_check = NULL;
->> -			struct mmp_struct *mmp_check;
->> -
->> -			retval = read_mmp_block(sb, &bh_check, mmp_block);
->> +			retval = read_mmp_block(sb, &bh, mmp_block);
->>   			if (retval) {
->>   				ext4_error_err(sb, -retval,
->>   					       "error reading MMP data: %d",
->> @@ -224,20 +221,18 @@ static int kmmpd(void *data)
->>   				goto wait_to_exit;
->>   			}
->>   
->> -			mmp_check = (struct mmp_struct *)(bh_check->b_data);
->> -			if (seq != mmp_check->mmp_seq ||
->> -			    memcmp(nodename, mmp_check->mmp_nodename,
->> -				   sizeof(mmp->mmp_nodename))) {
->> -				dump_mmp_msg(sb, mmp_check,
->> +			mmp = (struct mmp_struct *)(bh->b_data);
->> +			if (seq != le32_to_cpu(mmp->mmp_seq) ||
->> +			    memcmp(nodename, mmp->mmp_nodename,
->> +				    sizeof(nodename))) {
->> +				dump_mmp_msg(sb, mmp,
->>   					     "Error while updating MMP info. "
->>   					     "The filesystem seems to have been"
->>   					     " multiply mounted.");
->>   				ext4_error_err(sb, EBUSY, "abort");
->> -				put_bh(bh_check);
->>   				retval = -EBUSY;
->>   				goto wait_to_exit;
->>   			}
->> -			put_bh(bh_check);
->>   			last_check_time = jiffies;
->>   		}
->>   
->> -- 
->> 2.31.1
->>
-
