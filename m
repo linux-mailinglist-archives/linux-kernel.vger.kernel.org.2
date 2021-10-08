@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F71426921
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B56426981
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240619AbhJHLeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:34:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59490 "EHLO mail.kernel.org"
+        id S242924AbhJHLiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:38:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240433AbhJHLcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44DE261371;
-        Fri,  8 Oct 2021 11:30:08 +0000 (UTC)
+        id S241608AbhJHLf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:35:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B85C61029;
+        Fri,  8 Oct 2021 11:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692608;
-        bh=GP3Rc4HCGGYb9cwmnUCsDUzd+fZDxBlDJBSUGIZJDDQ=;
+        s=korg; t=1633692723;
+        bh=TlcQa+mkWgFKVPC9ORlPmHis2ze76S+cYuEFyfM1WR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lpdvUthR8FyRhVWJmf/30Zk9GZfcwHe9Ova6SBDEbILdUBuWXgqvjS+2QWlB9Jfwa
-         v7tqo+DkQFFqdDFX+9vbTn9o8qe45H926PGgK8z8TUj/r5gmso+PBwJP/j/f97sID4
-         xvhZ092PUTib+rFZUWLgSR7fn/PjTR8MuFphOFh8=
+        b=J3fVxrVXJguZfawXWJFQtxYdNn0srwjg7h8XDmQCLGJeTf64r0oEQFe3dDm4R5lB8
+         bhsnLeYKY5H24W5RHfkeum8h4PcYICq0xsC0vuDY8U7TFEAFhx92GIJf2AnXRdbHsU
+         nD7nHE95yxOqdhuG4QiR00rJimxkKfEdhRBMSv0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Ram Vegesna <ram.vegesna@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 02/16] xen-netback: correct success/error reporting for the SKB-with-fraglist case
+Subject: [PATCH 5.14 16/48] scsi: elx: efct: Do not hold lock while calling fc_vport_terminate()
 Date:   Fri,  8 Oct 2021 13:27:52 +0200
-Message-Id: <20211008112715.534960804@linuxfoundation.org>
+Message-Id: <20211008112720.560078449@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-References: <20211008112715.444305067@linuxfoundation.org>
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 3ede7f84c7c21f93c5eac611d60eba3f2c765e0f ]
+[ Upstream commit 450907424d9ebcc28fab42a065c3cddce49ee97d ]
 
-When re-entering the main loop of xenvif_tx_check_gop() a 2nd time, the
-special considerations for the head of the SKB no longer apply. Don't
-mistakenly report ERROR to the frontend for the first entry in the list,
-even if - from all I can tell - this shouldn't matter much as the overall
-transmit will need to be considered failed anyway.
+Smatch checker reported the following error:
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Reviewed-by: Paul Durrant <paul@xen.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  drivers/base/power/sysfs.c:833 dpm_sysfs_remove()
+  warn: sleeping in atomic context
+
+With a calling sequence of:
+
+  efct_lio_npiv_drop_nport() <- disables preempt
+  -> fc_vport_terminate()
+     -> device_del()
+        -> dpm_sysfs_remove()
+
+Issue is efct_lio_npiv_drop_nport() is making the fc_vport_terminate() call
+while holding a lock w/ ipl raised.
+
+It is unnecessary to hold the lock over this call, shift where the lock is
+taken.
+
+Link: https://lore.kernel.org/r/20210907165225.10821-1-jsmart2021@gmail.com
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Co-developed-by: Ram Vegesna <ram.vegesna@broadcom.com>
+Signed-off-by: Ram Vegesna <ram.vegesna@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/xen-netback/netback.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/elx/efct/efct_lio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index c213f2b81269..995566a2785f 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -492,7 +492,7 @@ check_frags:
- 				 * the header's copy failed, and they are
- 				 * sharing a slot, send an error
- 				 */
--				if (i == 0 && sharedslot)
-+				if (i == 0 && !first_shinfo && sharedslot)
- 					xenvif_idx_release(queue, pending_idx,
- 							   XEN_NETIF_RSP_ERROR);
- 				else
+diff --git a/drivers/scsi/elx/efct/efct_lio.c b/drivers/scsi/elx/efct/efct_lio.c
+index e0d798d6baee..f1d6fcfe12f0 100644
+--- a/drivers/scsi/elx/efct/efct_lio.c
++++ b/drivers/scsi/elx/efct/efct_lio.c
+@@ -880,11 +880,11 @@ efct_lio_npiv_drop_nport(struct se_wwn *wwn)
+ 	struct efct *efct = lio_vport->efct;
+ 	unsigned long flags = 0;
+ 
+-	spin_lock_irqsave(&efct->tgt_efct.efct_lio_lock, flags);
+-
+ 	if (lio_vport->fc_vport)
+ 		fc_vport_terminate(lio_vport->fc_vport);
+ 
++	spin_lock_irqsave(&efct->tgt_efct.efct_lio_lock, flags);
++
+ 	list_for_each_entry_safe(vport, next_vport, &efct->tgt_efct.vport_list,
+ 				 list_entry) {
+ 		if (vport->lio_vport == lio_vport) {
 -- 
 2.33.0
 
