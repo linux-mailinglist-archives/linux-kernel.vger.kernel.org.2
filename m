@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C3942709D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133424270A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbhJHSSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:18:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240433AbhJHSSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:18:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89E8860F9D;
-        Fri,  8 Oct 2021 18:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633716986;
-        bh=RBdgHRPobT+q/p6q5rP1sGlm6ImbduyR3N9DAmiw4zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I5oD1z3uANS36vuHpUyTLWe/ZKbVJT7AFsa/Em8DGDufs7xvtRoTLLfl2Q74YeNP9
-         mA7ZkqfQnhhLU+Wt5bIV7nRSp1/9TTjUGLYRVdjPWW5CjAtn4npsyrFn2DQ1sw8gDv
-         EGVcqvV2ViEG5tFITgtDTQxlgUslVnjxAGc3MOcdZYNjxzEyM158xy4MQAk8/3oLvu
-         efVooiYD6DkacWlDNir9izZtT9Z+axk2EwyYNhqFm9ESCErwx98Cr46joIURpIBYH0
-         eH3UncvxP1rpHp0vDoT/ClI4QvFwF4Ao/0TpytwaLBEKy9HIc3UEtrioQK331+ERU5
-         TsBLZexq7IgzQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0FAF3410A1; Fri,  8 Oct 2021 15:16:23 -0300 (-03)
-Date:   Fri, 8 Oct 2021 15:16:22 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Guo Zhengkui <guozhengkui@vivo.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-kernel@vger.kernel.org>, kernel@vivo.com
-Subject: Re: [PATCH] perf daemon: Remove a duplicate #include
-Message-ID: <YWCK9mHs9vTwynfo@kernel.org>
-References: <20211006062235.6364-1-guozhengkui@vivo.com>
+        id S239930AbhJHST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:19:28 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:17949 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231305AbhJHST0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:19:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633717051; x=1665253051;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=q9/ahXNq/PgdATbzGy+xoEIbgIaM2veRvp5PDNlmIoY=;
+  b=P9ThCOEAGY/5l8kHq9ikCU1C32OWESpyx7Ba/HnHkmpoGj7WZuYK6Fo9
+   bnS6KrFEDpAn9BPT6IdcTTyKRnuTIOKbJ2uSl7oSJDPMgS7TAoe3nVaSm
+   rQvjrtfxjJHN8ENxUSYh1nVuknsGAbgOh/E4q9XGR/tnO+xN6/xZ/Bhru
+   EIp2BIiEXTt0sYw8gK0v/vRpgLiIWkPTxr0JfRtIY6Zwh2aC2n0S+Eg5X
+   N4M+x+rXe+m/BZqhudjFIVO63Gmd7PMBOraxXkzTmxu1aj/EKvzVJeOeU
+   ZdFhBlhq4RY2qhEheSOSpz/FuPJ+4+qyFz69Bxx4TB8O4Cj3IG+XATG/R
+   g==;
+IronPort-SDR: NddQFQ0MBAWdspcSQkJTNxp/19E1+KDc3U9xW3VC4JvNB03MwbtPhd3mhY/deI3EwWNboEKMS/
+ 4R49vL5BH4EiIaoOveMCuTohg9+/raHrliS1y+wFl14LAAfB4P5n91nwYssFnD44hhjFzrOATB
+ Xdg/YgqHDNxDXfif1h/4D5fXhC+yUa+CDunvXyFsXA8II2JQa1hF4QwUPb7XjIbzax0Mmx7g6t
+ PM9cSsekrHzxJSetEUoxhBq8gPiv51aXnEtwxTIig47H+SNggTZ/cpLO3p/709yy1wpBNAgvCn
+ GnDlRE5qGgP0avH1uiQmA2s8
+X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
+   d="scan'208";a="139568962"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Oct 2021 11:17:29 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Fri, 8 Oct 2021 11:17:29 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Fri, 8 Oct 2021 11:17:24 -0700
+Message-ID: <0c4264ca6f859b6ce53e59f1565563f8dc29a2c6.camel@microchip.com>
+Subject: Re: [PATCH v4 net-next 05/10] net: dsa: microchip: add DSA support
+ for microchip lan937x
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Date:   Fri, 8 Oct 2021 23:47:23 +0530
+In-Reply-To: <20211007200005.3ze43py7ma4omn7r@skbuf>
+References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+         <20211007151200.748944-6-prasanna.vengateshan@microchip.com>
+         <20211007200005.3ze43py7ma4omn7r@skbuf>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006062235.6364-1-guozhengkui@vivo.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Oct 06, 2021 at 02:22:34PM +0800, Guo Zhengkui escreveu:
-> There is a "#include <sys/file.h>" in line 10, so remove a duplicate
-> one in line 1124.
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
-> ---
->  tools/perf/builtin-daemon.c | 2 --
->  1 file changed, 2 deletions(-)
+On Thu, 2021-10-07 at 23:00 +0300, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
 > 
-> diff --git a/tools/perf/builtin-daemon.c b/tools/perf/builtin-daemon.c
-> index c13201fb09c3..6cb3f6cc36d0 100644
-> --- a/tools/perf/builtin-daemon.c
-> +++ b/tools/perf/builtin-daemon.c
-> @@ -1121,8 +1121,6 @@ static int setup_config(struct daemon *daemon)
->  #ifndef F_TLOCK
->  #define F_TLOCK 2
->  
-> -#include <sys/file.h>
-> -
->  static int lockf(int fd, int cmd, off_t len)
->  {
->  	if (cmd != F_TLOCK || len != 0)
-> -- 
-> 2.20.1
+> On Thu, Oct 07, 2021 at 08:41:55PM +0530, Prasanna Vengateshan wrote:
+> > +static int lan937x_mdio_register(struct dsa_switch *ds)
+> > 
+> > +
+> > +     ret = of_mdiobus_register(ds->slave_mii_bus, mdio_np);
+> 
+> Please use devm_of_mdiobus_register if you're going to use
+> devm_mdiobus_alloc, or no devres at all.
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210920214209.1733768-3-vladimir.oltean@nxp.com/
 
--- 
+Sure, Will change it to devm_of_mdiobus_register.
 
-- Arnaldo
+> > 
+> > +
+> > +                     /* Check if the device tree have specific interface
+> > +                      * setting otherwise read & assign from XMII register
+> > +                      * for host port interface
+> > +                      */
+> > +                     interface = lan937x_get_interface(dev, i);
+> 
+> What does the CPU port have so special that you override it here?
+> Again some compatibility with out-of-tree DT bindings?
+> > 
+> 
+Device strapping method cannot be used since the phy-mode is expected
+to be present in the DT. So above assignment have to be removed along
+with lan937x_get_interface function.
+
+
+> > +
+> > +     /* maximum delay is 4ns */
+> > +     if (val > 4000)
+> > +             val = 4000;
+> 
+> These bindings are new. Given that you also document their min and max
+> values, why don't you just error out on out-of-range values instead of
+> silently doing what you think is going to be fine?
+
+Sure, i think the driver can also notify rx/tx internal delay applied
+message using dev_info.
+
+
