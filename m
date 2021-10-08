@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622AD426B90
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8463426B93
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242646AbhJHNPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:15:54 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:35764 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242558AbhJHNPv (ORCPT
+        id S242011AbhJHNSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230258AbhJHNSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:15:51 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D0CFE2012E;
-        Fri,  8 Oct 2021 13:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1633698834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ugDtUlYWNamC1wVk99SJQfcQCo8cBWNlkB8aWdjRG/Q=;
-        b=MwaLbrnDI9nPWKefsT9kREclrK/WRJ269jjuYM4JWcuknUEehSkSQblsyg2WBrPK4TpDW9
-        5rOX7rd0a2RsqGAEEcFhIr+K6DDARnlDsNjHdLvSxfzWzt43ChVc3WJL/0FAZrRZa0hUBj
-        +wFAzKldEBYkS/9ufr6nbYwmvPgkPZU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1633698834;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ugDtUlYWNamC1wVk99SJQfcQCo8cBWNlkB8aWdjRG/Q=;
-        b=svewaWRaCt5qQyLUDqoU4/tFzQy7sdFsCCeQMawmWISUqMWFYVfFLOPHUQi8foAljygp9p
-        T81e9w++i7jdiSCg==
-Received: from quack2.suse.cz (unknown [10.100.224.230])
-        by relay2.suse.de (Postfix) with ESMTP id 7452BA3B83;
-        Fri,  8 Oct 2021 13:13:54 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E10321F2C8D; Fri,  8 Oct 2021 15:13:51 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 15:13:51 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Chengguang Xu <cgxu519@mykernel.net>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v5 06/10] ovl: implement overlayfs' ->write_inode
- operation
-Message-ID: <20211008131351.GA15930@quack2.suse.cz>
-References: <20210923130814.140814-1-cgxu519@mykernel.net>
- <20210923130814.140814-7-cgxu519@mykernel.net>
- <CAJfpeguqj2vst4Zj5EovSktJkXiDSCSWY=X12X0Yrz4M8gPRmQ@mail.gmail.com>
- <17c5aba1fef.c5c03d5825886.6577730832510234905@mykernel.net>
- <CAJfpegtr1NkOiY9YWd1meU1yiD-LFX-aB55UVJs94FrX0VNEJQ@mail.gmail.com>
- <17c5adfe5ea.12f1be94625921.4478415437452327206@mykernel.net>
- <CAJfpegt4jZpSCXGFk2ieqUXVm3m=ng7QtSzZp2bXVs07bfrbXg@mail.gmail.com>
- <20211007144646.GL12712@quack2.suse.cz>
- <17c5b3e4f2b.113dc38cd26071.2800661599712778589@mykernel.net>
- <CAJfpegvek6=+Xk+jLNYnH0piQKRqb9CWst_aNHWExZeq+7jOQw@mail.gmail.com>
+        Fri, 8 Oct 2021 09:18:43 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED41C061570;
+        Fri,  8 Oct 2021 06:16:48 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id r18so29835032wrg.6;
+        Fri, 08 Oct 2021 06:16:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=Gr1byabWHn1PUa1m+Lt+dKzXId3ni3LSSa9lwDSa3gk=;
+        b=TJwvim7w+eQFFfurbsl40FGMPwvnfLNLF3mqkVbNUxpugKorDKYZpgJ6ppC/PTEfU/
+         zOILl/qFEGzOdn6zfkCqtCzngeViZPdhvYzMHbM3IFZjQGHrra/zDS/6TMIKgTnVc55t
+         FcMxubz12x29/ajr4yg/4IapyvyKUFNo3xqRhsRdQeIVc4OPAXyzrkZY81y6rOdHomht
+         hqzwPEcVHx/WmerpaSHDHB18z/kd2XNccqlNpJydYkZY9xgv9A3ahUCBrPFCZeng3Ptm
+         jP6ttiHbfEf7muJb0bTHpjXuPa4qjwlq/IFgZ8831A1pXDw+R+PUitOMme4fSBTH9oWk
+         WxPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Gr1byabWHn1PUa1m+Lt+dKzXId3ni3LSSa9lwDSa3gk=;
+        b=iFs4jdEOVja953VOS/7c6Nmef6OKoxLGerjQlvVaYtTnnCbFxerO+qAedYx9EU/YZD
+         b2Y2fTlT/kvv+SVYlS+j1W92y6wup2HixbFe4BMuJ5nbNMUT6pLN5slTpUp1wds2FiEY
+         tMr4xRmVEEkSE/DyV5L9gBP8JnsRM0QNnJ952EC+HqwwOjcQFwXZoMwIEIpm/1bShNFk
+         2WtX23Sb28V1V39vyr9FEoV7F619dWR4Ybv/4jkTzYsmS2ODOEo0wNFsEoiu/ivgdziR
+         ECGeayWmzSVdX9EifSXPnKe0z8g2Co6KEkoWgbWvfUi2aXGE4l9oUAG5LV1Udqbq1WTR
+         YSrg==
+X-Gm-Message-State: AOAM530bkpknxGv0vP6iIos2jPh5VxIhkVMEki+ucWW1lj6EzutPD+53
+        An4blNrZbdu1GOr7t1CkhCE=
+X-Google-Smtp-Source: ABdhPJwchweLQBjxy6TkxOtLDsNz1AODqVJ3fWsbZRISUfWyoArhAgv4Go21sBR80xsRmqCQwndA7w==
+X-Received: by 2002:a5d:6245:: with SMTP id m5mr4099639wrv.148.1633699006563;
+        Fri, 08 Oct 2021 06:16:46 -0700 (PDT)
+Received: from [192.168.2.177] ([206.204.146.29])
+        by smtp.gmail.com with ESMTPSA id g2sm2642909wrb.20.2021.10.08.06.16.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 06:16:45 -0700 (PDT)
+Message-ID: <266143bd-6135-adf6-8a80-537f9d6ea3ff@gmail.com>
+Date:   Fri, 8 Oct 2021 15:16:43 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJfpegvek6=+Xk+jLNYnH0piQKRqb9CWst_aNHWExZeq+7jOQw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v4 0/7] Add support to the mmsys driver to be a reset
+ controller
+Content-Language: en-US
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-kernel@vger.kernel.org
+Cc:     linux-mediatek@lists.infradead.org, eizan@chromium.org,
+        kernel@collabora.com, drinkcat@chromium.org,
+        jitao.shi@mediatek.com, chunkuang.hu@kernel.org,
+        hsinyi@chromium.org, Crystal Guo <crystal.guo@mediatek.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Fabien Parent <fparent@baylibre.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org
+References: <20210930083150.3317003-1-enric.balletbo@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20210930083150.3317003-1-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-10-21 20:51:47, Miklos Szeredi wrote:
-> On Thu, 7 Oct 2021 at 16:53, Chengguang Xu <cgxu519@mykernel.net> wrote:
-> >
-> >  ---- 在 星期四, 2021-10-07 22:46:46 Jan Kara <jack@suse.cz> 撰写 ----
-> >  > On Thu 07-10-21 15:34:19, Miklos Szeredi wrote:
-> >  > > On Thu, 7 Oct 2021 at 15:10, Chengguang Xu <cgxu519@mykernel.net> wrote:
-> >  > > >  > However that wasn't what I was asking about.  AFAICS ->write_inode()
-> >  > > >  > won't start write back for dirty pages.   Maybe I'm missing something,
-> >  > > >  > but there it looks as if nothing will actually trigger writeback for
-> >  > > >  > dirty pages in upper inode.
-> >  > > >  >
-> >  > > >
-> >  > > > Actually, page writeback on upper inode will be triggered by overlayfs ->writepages and
-> >  > > > overlayfs' ->writepages will be called by vfs writeback function (i.e writeback_sb_inodes).
-> >  > >
-> >  > > Right.
-> >  > >
-> >  > > But wouldn't it be simpler to do this from ->write_inode()?
-> >  >
-> >  > You could but then you'd have to make sure you have I_DIRTY_SYNC always set
-> >  > when I_DIRTY_PAGES is set on the upper inode so that your ->write_inode()
-> >  > callback gets called. Overall I agree the logic would be probably simpler.
-> >  >
-> >
+
+
+On 30/09/2021 10:31, Enric Balletbo i Serra wrote:
+> Dear all,
 > 
-> And it's not just for simplicity.  The I_SYNC logic in
-> writeback_single_inode() is actually necessary to prevent races
-> between instances on a specific inode.  I.e. if inode writeback is
-> started by background wb then syncfs needs to synchronize with that
-> otherwise it will miss the inode, or worse, mess things up by calling
-> ->write_inode() multiple times in parallel.  So going throught
-> writeback_single_inode() is actually a must AFAICS.
+> The following patchset is a reimplementation of the patch sent by Jitao
+> Shi [1] some time ago. As suggested by Chun-Kuang Hu, this time the
+> reset is done using the reset API, where the mmsys driver is the reset
+> controller and the mtk_dsi driver is the reset consumer.
+> 
+> Note that the first patch is kind of unrelated change, it's just a
+> cleanup but is needed if you want to apply all the following patches
+> cleanly.
+> 
+> This patchset is important in order to have the DSI panel working on some
+> kukui MT8183 Chromebooks (i.e Lenovo IdeaPad Duet). Without it, you just
+> get a black screen.
+> 
 
-Yes, you are correct.
+Patch 1-5 pushed to v5.15-next/dts64
+Patch 6-7 pushed to v5.15-next/soc
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks!
+Matthias
+
+> Best regards,
+>    Enric
+> 
+> [1] https://lore.kernel.org/linux-arm-kernel/20210420132614.150242-4-jitao.shi@mediatek.com/
+> 
+> 
+> Changes in v4:
+> - Remove unnused variable as pointed by Hsin-Yi
+> 
+> Changes in v3:
+> - Based on top of the patch that converts mmsys to schema
+> - Fix typo in the commit description
+> 
+> Changes in v2:
+> - Fix build test ERROR Reported-by: kernel test robot <lkp@intel.com>
+> - Added a new patch to describe the dsi reset optional property.
+> 
+> Enric Balletbo i Serra (7):
+>    arm64: dts: mediatek: Move reset controller constants into common
+>      location
+>    dt-bindings: mediatek: Add #reset-cells to mmsys system controller
+>    dt-bindings: display: mediatek: add dsi reset optional property
+>    arm64: dts: mt8173: Add the mmsys reset bit to reset the dsi0
+>    arm64: dts: mt8183: Add the mmsys reset bit to reset the dsi0
+>    soc: mediatek: mmsys: Add reset controller support
+>    drm/mediatek: mtk_dsi: Reset the dsi0 hardware
+> 
+>   .../bindings/arm/mediatek/mediatek,mmsys.yaml |  4 ++
+>   .../display/mediatek/mediatek,dsi.txt         |  6 ++
+>   arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  2 +
+>   arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  5 +-
+>   drivers/gpu/drm/mediatek/mtk_dsi.c            |  5 +-
+>   drivers/soc/mediatek/mtk-mmsys.c              | 68 +++++++++++++++++++
+>   drivers/soc/mediatek/mtk-mmsys.h              |  2 +
+>   drivers/watchdog/mtk_wdt.c                    |  6 +-
+>   .../mt2712-resets.h                           |  0
+>   include/dt-bindings/reset/mt8173-resets.h     |  2 +
+>   .../mt8183-resets.h                           |  3 +
+>   .../mt8192-resets.h                           |  0
+>   12 files changed, 97 insertions(+), 6 deletions(-)
+>   rename include/dt-bindings/{reset-controller => reset}/mt2712-resets.h (100%)
+>   rename include/dt-bindings/{reset-controller => reset}/mt8183-resets.h (98%)
+>   rename include/dt-bindings/{reset-controller => reset}/mt8192-resets.h (100%)
+> 
