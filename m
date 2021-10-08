@@ -2,595 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C31426A21
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD003426A15
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243216AbhJHLv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242934AbhJHLvS (ORCPT
+        id S242982AbhJHLtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:49:23 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:51239 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242880AbhJHLr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:51:18 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DF3C0619CE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 04:43:51 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id g8so35284517edt.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 04:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h0DZQPHGQ3E2XgKglqi9jIFKSmXIRzKqK0eSxtt+arQ=;
-        b=DQxzf+9/fSerOic/T2KOIuXwjZlJSDjsSdTWQcMJw1S/smAed0uQkSw8qRPuRk781R
-         hbrmho2Ru/g/1bkAqxjq/P+JR08IZxTuhplvFULJ1hdmhr5i9mSn2GBMXyMreWtLpSHj
-         /SWmE843s+HhUtR6Rvy+6JClMD7npTR3pMBy6PsCT/ul5TDJoKtuKAmAOswxUmYA4rtR
-         IQudCJY7KDN/7bjhAB+gfx1zvyqhdMYtLSQgWUGjqLV+dClUtRjM0s8eX/PRFI+eus3O
-         epYypXPYCDpogHRt4/ei6ke5Hc+MpE7AFWIu56/ClA7b/Ib46nCihHs+naook54R1YB1
-         /UGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=h0DZQPHGQ3E2XgKglqi9jIFKSmXIRzKqK0eSxtt+arQ=;
-        b=LQ8kG1mgY+eWlC9mGE2vVzpmKfYkBUklzoHOvr8RZQq9WwONep//tcIGilg88E60L8
-         dXgqetAhSvEP1M2SOqPbaoT2nmQ1Z6Sr29k5fi0hRorSMu25osmiOJUgWUPELeoY51n9
-         H4RNcdDMpolJwFFiyI8/iCbwRvtU2O45q2tmMMEkinn5PnFLkBd+ACDt1C38h3mtBNVN
-         VhaedYd7rzApkthCPPJDFlDaW7P5YrdJRzXslQ4jgmC0GBUuiyumTUEEQtXVnATRrv2x
-         uAZfnzY2K6W1bLS1RT4mjxFKhRbC/Kebht4cq0MiLSfNioP65q/432go5RhEPxNHQUY+
-         pzzw==
-X-Gm-Message-State: AOAM532JrIYVfNbzeTBfSSiBc+VStbHeLv/LmhVQMZBRM45W8ysNmgqE
-        cMcMW4F0o19ZP1G5LD6nDRq/yA==
-X-Google-Smtp-Source: ABdhPJy6fGomTYjC7C4SWXsYaJLJdXLBZjHIBM5OqvoeCdCAhknH+2OTyYBDRcojcdNXdsO6tEuAyQ==
-X-Received: by 2002:a17:906:3a84:: with SMTP id y4mr3585827ejd.340.1633693429105;
-        Fri, 08 Oct 2021 04:43:49 -0700 (PDT)
-Received: from fedora.. (dh207-98-202.xnet.hr. [88.207.98.202])
-        by smtp.googlemail.com with ESMTPSA id w2sm925331edj.44.2021.10.08.04.43.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 04:43:48 -0700 (PDT)
-From:   Robert Marko <robert.marko@sartura.hr>
-To:     robh+dt@kernel.org, andrew@lunn.ch, gregory.clement@bootlin.com,
-        sebastian.hesselbarth@gmail.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        pali@kernel.org
-Cc:     Robert Marko <robert.marko@sartura.hr>
-Subject: [PATCH v5] arm64: dts: marvell: add Globalscale MOCHAbin
-Date:   Fri,  8 Oct 2021 13:43:43 +0200
-Message-Id: <20211008114343.57920-1-robert.marko@sartura.hr>
-X-Mailer: git-send-email 2.33.0
+        Fri, 8 Oct 2021 07:47:58 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]) by
+ mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1N7AEs-1mpUBR464C-017Tsv for <linux-kernel@vger.kernel.org>; Fri, 08 Oct
+ 2021 13:46:02 +0200
+Received: by mail-wr1-f50.google.com with SMTP id t8so29118571wri.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 04:46:01 -0700 (PDT)
+X-Gm-Message-State: AOAM5325/qBWdybYF81mMoVJQxIkXJHfvZWj1/b00DQdrDupZij9/Ynv
+        sYBRDjleArPqQtMtHSQO76AFrGdykxeaZx5DTJ8=
+X-Google-Smtp-Source: ABdhPJyHo72NGMxQuQyxjtT+5nQCpXx6NLGzNhCQiYTfEj1ygK3qKqvFSanv94vqY7Xo8TEpIVxc2neyx1BN+BCLKCI=
+X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr3318468wrz.369.1633693561692;
+ Fri, 08 Oct 2021 04:46:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20191211212025.1981822-1-arnd@arndb.de> <20191211212025.1981822-9-arnd@arndb.de>
+ <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org> <s5hpmsh9kdx.wl-tiwai@suse.de>
+ <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+ <s5hee8x9f92.wl-tiwai@suse.de> <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+ <s5hy27497eo.wl-tiwai@suse.de> <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de> <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de> <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de>
+In-Reply-To: <s5hv9277oux.wl-tiwai@suse.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 8 Oct 2021 13:45:45 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2DUvQSkUaDzwiRjg9d3w7pXxrw8q_oSawJKY7kEw1qtg@mail.gmail.com>
+Message-ID: <CAK8P3a2DUvQSkUaDzwiRjg9d3w7pXxrw8q_oSawJKY7kEw1qtg@mail.gmail.com>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+To:     musl@lists.openwall.com
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:+hFh6TMhzooG835U1FXgefHtJnVouZBVAOuU5np591EBrvwkVqB
+ /Ja6iPzKmnOLDf1JNrA0yLTl5aUkhJsA19gwecRxwo3LDCTIC3112jhUO4n7yajGETc+wIK
+ P4BalAzAcc6gAUNemrDeOsBAT2e+5nnt3Jo2J+Ykyc2FP+tJDI7GxbQCZRR9Pk/7dHLyA8t
+ KJmxmnbOx4l4KqmgNRqrA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r9wJz8rfA4s=:FS5F5UyAlXWqzHTC2rHBIh
+ zFJMXOQqk5WXTvOW22svwUArEdTib/yrnP+ROgDCsP1j1T9gqnoeKF0qRU/zImMv1937oayTr
+ 5RSZgWwOpH0Lnr7r+TN9tiVkMsP7kLyZ8n3TeZj5Bf2zRAaUps2qS2m+kw02trybQ83wetl7X
+ RGbcKsu64yOhJotfspnZOW+DPfsn6shH2phb5xjCe8god73QWvOTmPaa4pCNxlguQljLUTDUY
+ 9U1BaHyN059r4r32UHREPLygaN9+Drfe4rZqvqRkOdecdyfPXps6Nhq4EWNgKsr4m0VUGpfoA
+ X1Dbc4T88gjs6U3OwXOeFJs6PvlCy4VxILsB1OQNbetZcDZ9qdHgfKxEwlHYms2c0mnTyPrOz
+ 2xVrPPcQjLfTchM0XCU5BdrblT5vBlTjAu8tINGzMqASG9hCWQMgxfm8QWRUE5M+ctrjXto0x
+ vnLpNRpDsSJB1w89jY4ba94C8js1YlRawof/tdzo6UMNT3ixFMk9SBHt96QoeJahxQWSZEHtA
+ OQfboLzQiwfjmdBBMgmITPmmZMMSOzi/mMaPM1GckHPdNcUqZBzqVTDQlg2bY1y9osutcd5Qn
+ oozmSa435UmJsykZWcDVt8FYmAxpFRyHZMbRDGnHH7CkNS7kT+PdsJsr00RJwI7qG2yN7XODn
+ QlzTujy7dyWhbZ3uJWlINK4eilSfGOjqlCnVUlaPBWvdpUeEx6BRJdawWGRS8MT7ZmaUrNshO
+ MkM/WQdYA1UbNo+igC4dPachrWAimyufKMHj8g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Globalscale MOCHAbin is a Armada 7040 based development board.
+On Fri, Oct 8, 2021 at 1:11 PM Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 08 Oct 2021 11:24:39 +0200, Arnd Bergmann wrote:
 
-Specifications:
-* Armada 7040 Quad core ARMv8 Cortex A-72 @ 1.4GHz
-* 2 / 4 / 8 GB of DDR4 DRAM
-* 16 GB eMMC
-* 4MB SPI-NOR (Bootloader)
-* 1x M.2-2280 B-key socket (for SSD expansion, SATA3 only)
-* 1x M.2-2250 B-key socket (for modems, USB2.0 and I2C only)
-* 1x Mini-PCIe 3.0 (x1, USB2.0 and I2C)
-* 1x SATA 7+15 socket (SATA3)
-* 1x 16-pin (2×8) MikroBus Connector
-* 1x SIM card slot (Connected to the mini-PCIe and both M.2 slots)
-* 2x USB3.0 Type-A ports via SMSC USB5434B hub
-* Cortex 2x5 JTAG
-* microUSB port for UART (PL2303GL/PL2303SA onboard)
-* 1x 10G SFP+
-* 1x 1G SFP (Connected to 88E1512 PHY)
-* 1x 1G RJ45 with PoE PD (Connected to 88E1512 PHY)
-* 4x 1G RJ45 ports via Topaz 88E6141 switch
-* RTC with battery holder (SoC provided, requires CR2032 battery)
-* 1x 12V DC IN
-* 1x Power switch
-* 1x 12V fan header (3-pin, power only)
-* 1x mini-PCIe LED header (2x0.1" pins)
-* 1x M.2-2280 LED header (2x0.1" pins)
-* 6x Bootstrap jumpers
-* 1x Power LED (Green)
-* 3x Tri-color RGB LEDs (Controllable)
-* 1x Microchip ATECC608B secure element
+> >
+> > I've tried to understand this part of musl's convert_ioctl_struct(), but I just
+> > can't figure out whether it does the conversion based the on the layout that
+> > is currently used in the kernel, or based on the layout we should have been
+> > using, and would use with the above fix. Rich, can you help me here?
+>
+> So, at this moment, I'm not sure whether we should correct the struct
+> at all.  This will lead to yet more breakage, and basically the struct
+> itself *works* -- the only bug is in 32bit compat handling in the
+> kernel (again).
 
-Note that 1G SFP and 1G WAN cannot be used at the same time as they are in
-parallel connected to the same PHY.
+I'm still unsure if the musl fallback code is correct or not.
 
-Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
----
-Changes in v5:
-* Change LED labels to use the common "color:name" format instead
+> The below is a revised kernel patch (again untested), just correcting
+> the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
+> fine as is, as well as 64bit apps on 64bit kernel.
 
-Changes in v4:
-* Rename the "u-boot" partition to "firmware" which is more appropriate
-as it a concatenation of mv-ddr + TF-A + U-boot
+Right, this should cover all cases of the ioctl itself misbehaving.
+In addition, we still need to disallow the mmap() interface on compat
+kernels then. Strictly speaking, we could allow the snd_pcm_mmap_status
+but not snd_pcm_mmap_control to be mapped, but I'm not sure if
+that's better than disallowing both.
 
-Changes in v3:
-* Use IRQ_TYPE_LEVEL_LOW instead of IRQ_TYPE_EDGE_FALLING as both the
-PCA9554 and Topaz switch have an active LOW IRQ signal.
-
-Changes in v2:
-* Use "10gbase-r" instead of "10gbase-kr"
----
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../boot/dts/marvell/armada-7040-mochabin.dts | 452 ++++++++++++++++++
- 2 files changed, 453 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 34efe0fb6f37..4d3a2ae9adbd 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-espressobin-v7-emmc.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-turris-mox.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-3720-uDPU.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-db.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += armada-7040-mochabin.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
-diff --git a/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-new file mode 100644
-index 000000000000..61f3104a18cf
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/armada-7040-mochabin.dts
-@@ -0,0 +1,452 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Device Tree file for Globalscale MOCHAbin
-+ * Copyright (C) 2019 Globalscale technologies, Inc.
-+ * Copyright (C) 2021 Sartura Ltd.
-+ *
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include "armada-7040.dtsi"
-+
-+/ {
-+	model = "Globalscale MOCHAbin";
-+	compatible = "globalscale,mochabin", "marvell,armada7040",
-+		     "marvell,armada-ap806-quad", "marvell,armada-ap806";
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	aliases {
-+		ethernet0 = &cp0_eth0;
-+		ethernet1 = &cp0_eth1;
-+		ethernet2 = &cp0_eth2;
-+		ethernet3 = &swport1;
-+		ethernet4 = &swport2;
-+		ethernet5 = &swport3;
-+		ethernet6 = &swport4;
-+	};
-+
-+	/* SFP+ 10G */
-+	sfp_eth0: sfp-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&cp0_i2c1>;
-+		los-gpio = <&sfp_gpio 3 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfp_gpio 2 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfp_gpio 1 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfp_gpio 0 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	/* SFP 1G */
-+	sfp_eth2: sfp-eth2 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&cp0_i2c0>;
-+		los-gpio = <&sfp_gpio 7 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfp_gpio 6 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfp_gpio 5 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfp_gpio 4 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+/* microUSB UART console */
-+&uart0 {
-+	status = "okay";
-+
-+	pinctrl-0 = <&uart0_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* eMMC */
-+&ap_sdhci0 {
-+	status = "okay";
-+
-+	bus-width = <4>;
-+	non-removable;
-+	/delete-property/ marvell,xenon-phy-slow-mode;
-+	no-1-8-v;
-+};
-+
-+&cp0_pinctrl {
-+	cp0_uart0_pins: cp0-uart0-pins {
-+		marvell,pins = "mpp6", "mpp7";
-+		marvell,function = "uart0";
-+	};
-+
-+	cp0_spi0_pins: cp0-spi0-pins {
-+		marvell,pins = "mpp56", "mpp57", "mpp58", "mpp59";
-+		marvell,function = "spi0";
-+	};
-+
-+	cp0_spi1_pins: cp0-spi1-pins {
-+		marvell,pins = "mpp13", "mpp14", "mpp15", "mpp16";
-+		marvell,function = "spi1";
-+	};
-+
-+	cp0_i2c0_pins: cp0-i2c0-pins {
-+		marvell,pins = "mpp37", "mpp38";
-+		marvell,function = "i2c0";
-+	};
-+
-+	cp0_i2c1_pins: cp0-i2c1-pins {
-+		marvell,pins = "mpp2", "mpp3";
-+		marvell,function = "i2c1";
-+	};
-+
-+	pca9554_int_pins: pca9554-int-pins {
-+		marvell,pins = "mpp27";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_rgmii1_pins: cp0-rgmii1-pins {
-+		marvell,pins = "mpp44", "mpp45", "mpp46", "mpp47", "mpp48", "mpp49",
-+			       "mpp50", "mpp51", "mpp52", "mpp53", "mpp54", "mpp55";
-+		marvell,function = "ge1";
-+	};
-+
-+	is31_sdb_pins: is31-sdb-pins {
-+		marvell,pins = "mpp30";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_pcie_reset_pins: cp0-pcie-reset-pins {
-+		marvell,pins = "mpp9";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_switch_pins: cp0-switch-pins {
-+		marvell,pins = "mpp0", "mpp1";
-+		marvell,function = "gpio";
-+	};
-+
-+	cp0_phy_pins: cp0-phy-pins {
-+		marvell,pins = "mpp12";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+/* mikroBUS UART */
-+&cp0_uart0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_uart0_pins>;
-+};
-+
-+/* mikroBUS SPI */
-+&cp0_spi0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_spi0_pins>;
-+};
-+
-+/* SPI-NOR */
-+&cp0_spi1{
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_spi1_pins>;
-+
-+	spi-flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "firmware";
-+				reg = <0x0 0x3e0000>;
-+				read-only;
-+			};
-+
-+			partition@3e0000 {
-+				label = "hw-info";
-+				reg = <0x3e0000 0x10000>;
-+				read-only;
-+			};
-+
-+			partition@3f0000 {
-+				label = "u-boot-env";
-+				reg = <0x3f0000 0x10000>;
-+			};
-+		};
-+	};
-+};
-+
-+/* mikroBUS, 1G SFP and GPIO expander */
-+&cp0_i2c0 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c0_pins>;
-+	clock-frequency = <100000>;
-+
-+	sfp_gpio: pca9554@39 {
-+		compatible = "nxp,pca9554";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pca9554_int_pins>;
-+		reg = <0x39>;
-+
-+		interrupt-parent = <&cp0_gpio1>;
-+		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
-+		interrupt-controller;
-+		#interrupt-cells = <2>;
-+
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+
-+		/*
-+		 * IO0_0: SFP+_TX_FAULT
-+		 * IO0_1: SFP+_TX_DISABLE
-+		 * IO0_2: SFP+_PRSNT
-+		 * IO0_3: SFP+_LOSS
-+		 * IO0_4: SFP_TX_FAULT
-+		 * IO0_5: SFP_TX_DISABLE
-+		 * IO0_6: SFP_PRSNT
-+		 * IO0_7: SFP_LOSS
-+		 */
-+	};
-+};
-+
-+/* IS31FL3199, mini-PCIe and 10G SFP+ */
-+&cp0_i2c1 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c1_pins>;
-+	clock-frequency = <100000>;
-+
-+	leds@64 {
-+		compatible = "issi,is31fl3199";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&is31_sdb_pins>;
-+		shutdown-gpios = <&cp0_gpio1 30 GPIO_ACTIVE_HIGH>;
-+		reg = <0x64>;
-+
-+		led1_red: led@1 {
-+			label = "red:led1";
-+			reg = <1>;
-+			led-max-microamp = <20000>;
-+		};
-+
-+		led1_green: led@2 {
-+			label = "green:led1";
-+			reg = <2>;
-+		};
-+
-+		led1_blue: led@3 {
-+			label = "blue:led1";
-+			reg = <3>;
-+		};
-+
-+		led2_red: led@4 {
-+			label = "red:led2";
-+			reg = <4>;
-+		};
-+
-+		led2_green: led@5 {
-+			label = "green:led2";
-+			reg = <5>;
-+		};
-+
-+		led2_blue: led@6 {
-+			label = "blue:led2";
-+			reg = <6>;
-+		};
-+
-+		led3_red: led@7 {
-+			label = "red:led3";
-+			reg = <7>;
-+		};
-+
-+		led3_green: led@8 {
-+			label = "green:led3";
-+			reg = <8>;
-+		};
-+
-+		led3_blue: led@9 {
-+			label = "blue:led3";
-+			reg = <9>;
-+		};
-+	};
-+};
-+
-+&cp0_mdio {
-+	status = "okay";
-+
-+	/* 88E1512 PHY */
-+	eth2phy: ethernet-phy@1 {
-+		reg = <1>;
-+		sfp = <&sfp_eth2>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_phy_pins>;
-+		reset-gpios = <&cp0_gpio1 12 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	/* 88E6141 Topaz switch */
-+	switch: switch@3 {
-+		compatible = "marvell,mv88e6085";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <3>;
-+
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_switch_pins>;
-+		reset-gpios = <&cp0_gpio1 0 GPIO_ACTIVE_LOW>;
-+
-+		interrupt-parent = <&cp0_gpio1>;
-+		interrupts = <1 IRQ_TYPE_LEVEL_LOW>;
-+
-+		ports {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			swport1: port@1 {
-+				reg = <1>;
-+				label = "lan0";
-+				phy-handle = <&swphy1>;
-+			};
-+
-+			swport2: port@2 {
-+				reg = <2>;
-+				label = "lan1";
-+				phy-handle = <&swphy2>;
-+			};
-+
-+			swport3: port@3 {
-+				reg = <3>;
-+				label = "lan2";
-+				phy-handle = <&swphy3>;
-+			};
-+
-+			swport4: port@4 {
-+				reg = <4>;
-+				label = "lan3";
-+				phy-handle = <&swphy4>;
-+			};
-+
-+			port@5 {
-+				reg = <5>;
-+				label = "cpu";
-+				ethernet = <&cp0_eth1>;
-+				phy-mode = "2500base-x";
-+				managed = "in-band-status";
-+			};
-+		};
-+
-+		mdio {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			swphy1: swphy1@17 {
-+				reg = <17>;
-+			};
-+
-+			swphy2: swphy2@18 {
-+				reg = <18>;
-+			};
-+
-+			swphy3: swphy3@19 {
-+				reg = <19>;
-+			};
-+
-+			swphy4: swphy4@20 {
-+				reg = <20>;
-+			};
-+		};
-+	};
-+};
-+
-+&cp0_ethernet {
-+	status = "okay";
-+};
-+
-+/* 10G SFP+ */
-+&cp0_eth0 {
-+	status = "okay";
-+
-+	phy-mode = "10gbase-r";
-+	phys = <&cp0_comphy4 0>;
-+	managed = "in-band-status";
-+	sfp = <&sfp_eth0>;
-+};
-+
-+/* Topaz switch uplink */
-+&cp0_eth1 {
-+	status = "okay";
-+
-+	phy-mode = "2500base-x";
-+	phys = <&cp0_comphy0 1>;
-+
-+	fixed-link {
-+		speed = <2500>;
-+		full-duplex;
-+	};
-+};
-+
-+/* 1G SFP or 1G RJ45 */
-+&cp0_eth2 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_rgmii1_pins>;
-+
-+	phy = <&eth2phy>;
-+	phy-mode = "rgmii-id";
-+};
-+
-+&cp0_utmi {
-+	status = "okay";
-+};
-+
-+/* SMSC USB5434B hub */
-+&cp0_usb3_0 {
-+	status = "okay";
-+
-+	phys = <&cp0_comphy1 0>, <&cp0_utmi0>;
-+	phy-names = "cp0-usb3h0-comphy", "utmi";
-+};
-+
-+/* miniPCI-E USB */
-+&cp0_usb3_1 {
-+	status = "okay";
-+};
-+
-+&cp0_sata0 {
-+	status = "okay";
-+
-+	/* 7 + 12 SATA connector (J24) */
-+	sata-port@0 {
-+		phys = <&cp0_comphy2 0>;
-+		phy-names = "cp0-sata0-0-phy";
-+	};
-+
-+	/* M.2-2250 B-key (J39) */
-+	sata-port@1 {
-+		phys = <&cp0_comphy3 1>;
-+		phy-names = "cp0-sata0-1-phy";
-+	};
-+};
-+
-+/* miniPCI-E (J5) */
-+&cp0_pcie2 {
-+	status = "okay";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_pcie_reset_pins>;
-+	phys = <&cp0_comphy5 2>;
-+	phy-names = "cp0-pcie2-x1-phy";
-+	reset-gpio = <&cp0_gpio1 9 GPIO_ACTIVE_LOW>;
-+};
--- 
-2.33.0
-
+       Arnd
