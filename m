@@ -2,194 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C36427454
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE6342746B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 01:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243858AbhJHXnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 19:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244016AbhJHXnN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 19:43:13 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70E0C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 16:41:17 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so13534706otx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 16:41:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E2HRXF4ISVU2+cymW013Lc9bdY2GyNOKabizpiOqGQY=;
-        b=nZGBkZgqbaOZWKC81X/38uDT/zKLALPhkwxZIS/ruJkI+DpGMOkOJYJbU4QEJue47Q
-         WKXE+3iF+oyuMn7De5rw+x4XGSjsIV4eEm5WDXTd+lwnUCyyNKHD77lhBjxDHcEgfA70
-         s/GEj7NCSJw/bcZPaVcqjfgeaM07NOIGUUdbsQ1eSB+OGwgqX031BwWFdX7AYovBfhUf
-         VxohewkMyZjaVQ0NZf8QIQjTESt8c2SeeUfcRp/Q1yxxqMHzSY6YbLC53b7rZRc05Onb
-         FMiYxCKyC7PLT8onmNnClHi6MUnamkUNAfETl4rqFJLPhAaCGonmSVh4wVdygxtM3GH9
-         zBEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E2HRXF4ISVU2+cymW013Lc9bdY2GyNOKabizpiOqGQY=;
-        b=kQ7Z5qKXybZ1HqeVmDhM9d9GtLqqs20iSwsI4IyhG4Er3hH8rM6ECxRMIoJ4Qelf1E
-         MDrr+X6KGq75St53MS8SQ1JMpdYG8O6HBqF6dlqE/gk6tYrf6EBRFGA5lcsC5ilML0uP
-         aRSKTTTZWfe1hSJaYT18lkWuGiV8kfFNdyfFylyXWIQEozIFMYkHG9E5UE5tuE+CodMD
-         lN7/zBYqb37IklmhqPYYcFbYj6N0fHpSMQs7IYTszFGZNl3TaCWOP7m1LIoa2aoLiKmL
-         L2KQ7aIasCwihvf7KAEI3a064bjt0yFSzJ+L4eMeQKyQQG5fcu8t4T1b1BaEnlHOTESV
-         2Okw==
-X-Gm-Message-State: AOAM532083Yv6IRzweYqqYkgSb3c1C2GjIXPdffze+QOEGYxnpdVJBwu
-        jWbyOaeE0DX4cUM02G1obYs9zA==
-X-Google-Smtp-Source: ABdhPJw1fJpx6ds2gCEuhqVhet8I9m53n9mue5tu41mUvYXtKQBkxf84KQuRooQD3XAXRAZX9Q0puA==
-X-Received: by 2002:a9d:64c:: with SMTP id 70mr10690738otn.59.1633736475832;
-        Fri, 08 Oct 2021 16:41:15 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id l25sm145046oot.36.2021.10.08.16.41.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 16:41:15 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 16:42:53 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH v4 3/4] rpmsg: char: Add possibility to use default
- endpoint of the rpmsg device.
-Message-ID: <YWDXfeR79u5QQvk3@ripper>
-References: <20210712131900.24752-1-arnaud.pouliquen@foss.st.com>
- <20210712131900.24752-4-arnaud.pouliquen@foss.st.com>
+        id S243912AbhJHX4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 19:56:44 -0400
+Received: from ixit.cz ([94.230.151.217]:54570 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243797AbhJHX4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 19:56:43 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id E98F223B26;
+        Sat,  9 Oct 2021 01:54:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633737285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Jjj+dkLqcm62HXFhe382RlEs6G3aC/Y2l1+WVv+UoqA=;
+        b=b7TQs3ZQsaGwmjrwgHMxr6Q1+A4FeewOid4w0kWt61k3Di5KF7t9lro8atCfMRDRvYSNU5
+        FgyDc38pNJhVL0JvYr01JQE8UAu0RaJw24+v43UWeeUJd1j9wneP+yPd6mAh5cfPsJWqbt
+        8AeLM+4PdZP7Q76tmVwd0/2KXc7bdaE=
+From:   David Heidelberg <david@ixit.cz>
+To:     robh+dt@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: serial: uartlite: drop $ref for -bits property
+Date:   Sat,  9 Oct 2021 01:43:12 +0200
+Message-Id: <20211008234312.61688-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712131900.24752-4-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Jul 06:18 PDT 2021, Arnaud Pouliquen wrote:
+Fixes warning:
+Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml: properties:xlnx,data-bits: {'const': '$ref'} is not allowed for '$ref'
+	hint: Standard unit suffix properties don't need a type $ref
+	from schema $id: http://devicetree.org/meta-schemas/core.yaml#
 
-> Current implementation create/destroy a new endpoint on each
-> rpmsg_eptdev_open/rpmsg_eptdev_release calls.
-> 
-> For a rpmsg device created by the NS announcement mechanism we need to
-> use a unique static endpoint that is the default rpmsg device endpoint
-> associated to the channel.
-> 
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-Why do you need this endpoint associated with the channel? Afaict the
-read/write operations still operate on eptdev->ept, so who does use the
-default endpoint for the device?
+diff --git a/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml b/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml
+index b8a2bfe14bed..f7617b88c7c3 100644
+--- a/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml
++++ b/Documentation/devicetree/bindings/serial/xlnx,opb-uartlite.yaml
+@@ -38,7 +38,6 @@ properties:
+       The fixed baud rate that the device was configured for.
+ 
+   xlnx,data-bits:
+-    $ref: /schemas/types.yaml#/definitions/uint32
+     enum: [5, 6, 7, 8]
+     description:
+       The fixed number of data bits that the device was configured for.
+-- 
+2.33.0
 
-> This patch prepares the introduction of a rpmsg channel device for the
-> char device. The rpmsg channel device will require a default endpoint to
-> communicate to the remote processor.
-> 
-> Add the static_ept field in rpmsg_eptdev structure. This boolean
-> determines the behavior on rpmsg_eptdev_open and rpmsg_eptdev_release call.
-> 
-> - If static_ept == false:
->   Use the legacy behavior by creating a new endpoint each time
->   rpmsg_eptdev_open is called and release it when rpmsg_eptdev_release
->   is called on /dev/rpmsgX device open/close.
-> 
-> - If static_ept == true:
->   use the rpmsg device default endpoint for the communication.
-> - Address the update of _rpmsg_chrdev_eptdev_create in e separate patch for readability.
-> 
-> Add protection in rpmsg_eptdev_ioctl to prevent to destroy a default endpoint.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Tested-by: Julien Massot <julien.massot@iot.bzh>
-> ---
->  drivers/rpmsg/rpmsg_char.c | 21 +++++++++++++++++++--
->  1 file changed, 19 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 50b7d4b00175..bd728d90ba4c 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -45,6 +45,8 @@ static DEFINE_IDA(rpmsg_minor_ida);
->   * @queue_lock:	synchronization of @queue operations
->   * @queue:	incoming message queue
->   * @readq:	wait object for incoming queue
-> + * @static_ept: specify if the endpoint has to be created at each device opening or
-> + *              if the default endpoint should be used.
->   */
->  struct rpmsg_eptdev {
->  	struct device dev;
-> @@ -59,6 +61,8 @@ struct rpmsg_eptdev {
->  	spinlock_t queue_lock;
->  	struct sk_buff_head queue;
->  	wait_queue_head_t readq;
-> +
-> +	bool static_ept;
-
-I think you can skip rpmsg_create_default_ept() if you just make this
-struct rpmsg_endpoint *.
-
->  };
->  
->  int rpmsg_chrdev_eptdev_destroy(struct device *dev, void *data)
-> @@ -116,7 +120,15 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->  
->  	get_device(dev);
->  
-> -	ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> +	/*
-> +	 * If the static_ept is set to true, the rpmsg device default endpoint is used.
-> +	 * Else a new endpoint is created on open that will be destroyed on release.
-> +	 */
-> +	if (eptdev->static_ept)
-> +		ept = rpdev->ept;
-
-This would be:
-	if (eptdev->static_ept)
-		ept = eptdev->static_ept;
-
-> +	else
-> +		ept = rpmsg_create_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-> +
->  	if (!ept) {
->  		dev_err(dev, "failed to open %s\n", eptdev->chinfo.name);
->  		put_device(dev);
-> @@ -137,7 +149,8 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
->  	/* Close the endpoint, if it's not already destroyed by the parent */
->  	mutex_lock(&eptdev->ept_lock);
->  	if (eptdev->ept) {
-> -		rpmsg_destroy_ept(eptdev->ept);
-> +		if (!eptdev->static_ept)
-> +			rpmsg_destroy_ept(eptdev->ept);
->  		eptdev->ept = NULL;
->  	}
->  	mutex_unlock(&eptdev->ept_lock);
-> @@ -264,6 +277,10 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->  		return -EINVAL;
->  
-> +	/* Don't allow to destroy a default endpoint. */
-> +	if (eptdev->ept == eptdev->rpdev->ept)
-
-And this would be if:
-	if (eptdev->static_ept)
-		return -EPERM;
-
-Wouldn't -EINVAL or something be better than -EPERM when you try to
-destroy one of these endpoints?
-
-It's not that we don't have permission, it's that it's not a valid
-operation on this object.
-
-Regards,
-Bjorn
-
-> +		return -EPERM;
-> +
->  	return rpmsg_chrdev_eptdev_destroy(&eptdev->dev, NULL);
->  }
->  
-> -- 
-> 2.17.1
-> 
