@@ -2,188 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18E7426F88
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0EE8426F8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhJHR20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59782 "EHLO
+        id S235233AbhJHR2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhJHR2Z (ORCPT
+        with ESMTP id S231164AbhJHR2j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:28:25 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B30EC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:26:30 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id m22so32043836wrb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 10:26:30 -0700 (PDT)
+        Fri, 8 Oct 2021 13:28:39 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B45D1C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:26:43 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id x27so42027993lfa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 10:26:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fah6fMg3qj46qR+RN20MjI9vCGiqxDv/9mCcKXLHlzU=;
-        b=qEBIWBGsMqbjtO+6chLcT7CNx4AIvrqniID3DIg4cZqWDsqvVU/rZuFNc7Z1bjYwsz
-         GtNJtOx7k7JUhDgAKz5bRnGdHSZr2Io4h09AhVCw7ZZjDR7zZVje6gi0j9qLaBSYAd4T
-         AcQa0UZjetlmWQkjIQtZY88fUjWi0UjcVzVnf1EVZIutuuNi20pCoQRNyRnJy3k0MhJH
-         T+iQUvp8CNVhI4BM8dMg0tHf6clkrLY81CtpMH8jqZgJygvyD3ub33L30M05u32ZidG0
-         +XMyWi8chHA2Dw2sa43U9ipk6rgd5IVHSix4vnPVUk10Hmn9bXeLn4d+xLIPN/qZPOA2
-         j/zQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B3qeR7tBKVxf2LGhI0YPmlW51b6P4/1lbrG+pCI+eQ4=;
+        b=kdm78ZXnSxyTXIBZ2EJpULCfPYA/DtBVz2wySJ3jGAYfavL1IikRd8VrZrncaWHgN3
+         c7bQGt8rlZhOFLh5ShBwbAtK5haMah27Cg3ChsPvEBRvtJJXrUsB0b172wB/zHl53WXC
+         JEpofiXx6k8FnGlT8Xi7vyaw9Oy/ciEFPvEutPg9h0uv6l1iDMt7/6ACDXwOcIPGP+yM
+         2wkjqL+VNZ6B2XOHeVIz72nqfAhbHxQw7jvU829pOpsry1+7eM4YMtSR5OMtztjWEPOA
+         FqnCbMTXupfPmWCXEsIeBwA6saTIRUpuFZfhIZ4x1AGaE6vr9DSyKqKBpE6ENRYZmLsX
+         Cyhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fah6fMg3qj46qR+RN20MjI9vCGiqxDv/9mCcKXLHlzU=;
-        b=kATjd98t8vqlE6/YQNEH0aoHlb1JKW8AVMPj5xps3Mfw8HiHcvvuHcxuwVuctkbt+9
-         yAG8+zsuuz8sWDXZKBqYH4/qZA/qL6DxN0BxWlMTJbe3OxUw1xGocnYEMupuxF2r+9PN
-         AOdaj8xJpxdiYdlWfUzKhqNtqvQRINDVnUMwAZXbvWbKlHK+LHdYb5y9wi4AWy82pe/7
-         sMS+sLUJSeisaJXbQ6Wnbx4Vc1mO5lMY5V0qrF72+Njkx1FfMUxAeP6DCribjtMD6wz7
-         Vy8qy5Imd0ycXGVRM4VwH5jdfaDXJVClMcAW0p5intFcPPA3jga+f7GaY69C36sSa71R
-         BJGg==
-X-Gm-Message-State: AOAM531VvRuV5v1M+fVQt2e9znzVvqL6c5kyJvK8Dde6UVuw2VneQWKS
-        5zoYPldSYhBusUxuci7cqpU=
-X-Google-Smtp-Source: ABdhPJwL/0AmBXev2xD93BuHSliY7tqUR4qWFZvht8EafV6HhK29M/t7wRT82QC30LmkHgh8vnOCOA==
-X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr4849133wmq.26.1633713988669;
-        Fri, 08 Oct 2021 10:26:28 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::5d0b])
-        by smtp.gmail.com with ESMTPSA id 61sm3212780wrl.94.2021.10.08.10.26.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 10:26:28 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove some dead code
-Date:   Fri,  8 Oct 2021 19:26:21 +0200
-Message-Id: <20211008172621.8721-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B3qeR7tBKVxf2LGhI0YPmlW51b6P4/1lbrG+pCI+eQ4=;
+        b=plelAK4bpHivkS7DZ76wvIw3Y1txrabxD1/ukJimQVf8Zj4ELS5bF82UPDAKToBbzR
+         r5ptH5nRKHWefYzyf7cVnbH99SKbv+hzvNDOAw0yuxgwuh2Aw31ZwWDHQX7XhYs0D18Q
+         LZ5bgS9OLBubAWuIKu3A+jW0lhuJLmcQDx7ZqzUDcsYzOTSmeT8lY0asybfxqog35eiG
+         SFQaSgGrMWy/3KIRm1feKBamAHDQ9fqNM3ag6lUWNbXAtvHBazJclY8A4wN68aq7WSus
+         r7RF6vRw6mdOjXtckQ7Jjg7c9LsSL1cz/l22fUZkTdBnW/BUu/pMrSS+Yke5L7baYpFA
+         ET4g==
+X-Gm-Message-State: AOAM533MVe5MduIKqs50WGQfPUUnTntvnXrjDxr6cU2K/9PYzDO81XcF
+        SKSztF5VJK+jTQMdkmiqX0DjE3oFiTLJ/mIM7RZ0ZQ==
+X-Google-Smtp-Source: ABdhPJwlscVCQ4hK24IV6RgfA6KVeV48ZBgyD/EJCRnyKIr6FE62evaK5bG1B0gtY7iET1k0rNiGz1MpxV+bAbRFe8o=
+X-Received: by 2002:a05:6512:c18:: with SMTP id z24mr10423419lfu.193.1633714001796;
+ Fri, 08 Oct 2021 10:26:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211005141357.2393627-1-pgonda@google.com> <20211005141357.2393627-3-pgonda@google.com>
+ <5f6e6f61-0d34-e640-caea-ff71ac1563d8@amd.com>
+In-Reply-To: <5f6e6f61-0d34-e640-caea-ff71ac1563d8@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Fri, 8 Oct 2021 11:26:30 -0600
+Message-ID: <CAMkAt6oF52BDB4UX7DhVxQygYANfietT=gqJMQOvKJifHpivTQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4 V9] KVM: SEV: Add support for SEV-ES intra host migration
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     kvm list <kvm@vger.kernel.org>, Marc Orr <marcorr@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In this driver SupportICType is ODM_RTL8188E and SupportInterface is
-ODM_ITRF_USB. Remove an if statement that is never true and remove
-function odm_DIGbyRSSI_LPS() which is used only in this dead if block.
+On Fri, Oct 8, 2021 at 9:38 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>
+> On 10/5/21 9:13 AM, Peter Gonda wrote:
+> > For SEV-ES to work with intra host migration the VMSAs, GHCB metadata,
+> > and other SEV-ES info needs to be preserved along with the guest's
+> > memory.
+> >
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Reviewed-by: Marc Orr <marcorr@google.com>
+> > Cc: Marc Orr <marcorr@google.com>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
+> > Cc: Brijesh Singh <brijesh.singh@amd.com>
+> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> > Cc: Wanpeng Li <wanpengli@tencent.com>
+> > Cc: Jim Mattson <jmattson@google.com>
+> > Cc: Joerg Roedel <joro@8bytes.org>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> >   arch/x86/kvm/svm/sev.c | 53 +++++++++++++++++++++++++++++++++++++++++-
+> >   1 file changed, 52 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> > index 6fc1935b52ea..321b55654f36 100644
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > @@ -1576,6 +1576,51 @@ static void sev_migrate_from(struct kvm_sev_info *dst,
+> >       list_replace_init(&src->regions_list, &dst->regions_list);
+> >   }
+> >
+> > +static int sev_es_migrate_from(struct kvm *dst, struct kvm *src)
+> > +{
+> > +     int i;
+> > +     struct kvm_vcpu *dst_vcpu, *src_vcpu;
+> > +     struct vcpu_svm *dst_svm, *src_svm;
+> > +
+> > +     if (atomic_read(&src->online_vcpus) != atomic_read(&dst->online_vcpus))
+> > +             return -EINVAL;
+> > +
+> > +     kvm_for_each_vcpu(i, src_vcpu, src) {
+> > +             if (!src_vcpu->arch.guest_state_protected)
+> > +                     return -EINVAL;
+> > +     }
+> > +
+> > +     kvm_for_each_vcpu(i, src_vcpu, src) {
+> > +             src_svm = to_svm(src_vcpu);
+> > +             dst_vcpu = dst->vcpus[i];
+> > +             dst_vcpu = kvm_get_vcpu(dst, i);
+>
+> One of these assignments of dst_vcpu can be deleted.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
-Tested on x86_64 with Inter-Tech DMG-02.
+Good catch I'll remove the `dst_vcpu = dst->vcpus[i];` line.
 
- drivers/staging/r8188eu/hal/odm.c     | 59 +--------------------------
- drivers/staging/r8188eu/include/odm.h | 14 -------
- 2 files changed, 1 insertion(+), 72 deletions(-)
+>
+> > +             dst_svm = to_svm(dst_vcpu);
+> > +
+> > +             /*
+> > +              * Transfer VMSA and GHCB state to the destination.  Nullify and
+> > +              * clear source fields as appropriate, the state now belongs to
+> > +              * the destination.
+> > +              */
+> > +             dst_vcpu->vcpu_id = src_vcpu->vcpu_id;
+> > +             dst_svm->vmsa = src_svm->vmsa;
+> > +             src_svm->vmsa = NULL;
+> > +             dst_svm->ghcb = src_svm->ghcb;
+> > +             src_svm->ghcb = NULL;
+> > +             dst_svm->vmcb->control.ghcb_gpa = src_svm->vmcb->control.ghcb_gpa;
+> > +             dst_svm->ghcb_sa = src_svm->ghcb_sa;
+> > +             src_svm->ghcb_sa = NULL;
+> > +             dst_svm->ghcb_sa_len = src_svm->ghcb_sa_len;
+> > +             src_svm->ghcb_sa_len = 0;
+> > +             dst_svm->ghcb_sa_sync = src_svm->ghcb_sa_sync;
+> > +             src_svm->ghcb_sa_sync = false;
+> > +             dst_svm->ghcb_sa_free = src_svm->ghcb_sa_free;
+> > +             src_svm->ghcb_sa_free = false;
+>
+> Would it make sense to have a pre-patch that puts these fields into a
+> struct? Then you can just copy the struct and zero it after. If anything
+> is ever added for any reason, then it could/should be added to the struct
+> and this code wouldn't have to change. It might be more churn than it's
+> worth, just a thought.
+>
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index bc49dc856a60..d3f8c7442daf 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -186,17 +186,7 @@ void ODM_DMWatchdog(struct odm_dm_struct *pDM_Odm)
- 	odm_FalseAlarmCounterStatistics(pDM_Odm);
- 	odm_RSSIMonitorCheck(pDM_Odm);
- 
--	/* For CE Platform(SPRD or Tablet) */
--	/* 8723A or 8189ES platform */
--	/* NeilChen--2012--08--24-- */
--	/* Fix Leave LPS issue */
--	if ((pDM_Odm->Adapter->pwrctrlpriv.pwr_mode != PS_MODE_ACTIVE) &&/*  in LPS mode */
--	    ((pDM_Odm->SupportICType & (ODM_RTL8723A)) ||
--	    (pDM_Odm->SupportICType & (ODM_RTL8188E) &&
--	    ((pDM_Odm->SupportInterface  == ODM_ITRF_SDIO)))))
--		odm_DIGbyRSSI_LPS(pDM_Odm);
--	else
--		odm_DIG(pDM_Odm);
-+	odm_DIG(pDM_Odm);
- 	odm_CCKPacketDetectionThresh(pDM_Odm);
- 
- 	if (*pDM_Odm->pbPowerSaving)
-@@ -456,53 +446,6 @@ void ODM_Write_DIG(struct odm_dm_struct *pDM_Odm, u8 CurrentIGI)
- 	}
- }
- 
--/* Need LPS mode for CE platform --2012--08--24--- */
--/* 8723AS/8189ES */
--void odm_DIGbyRSSI_LPS(struct odm_dm_struct *pDM_Odm)
--{
--	struct adapter *pAdapter = pDM_Odm->Adapter;
--	struct false_alarm_stats *pFalseAlmCnt = &pDM_Odm->FalseAlmCnt;
--
--	u8 RSSI_Lower = DM_DIG_MIN_NIC;   /* 0x1E or 0x1C */
--	u8 bFwCurrentInPSMode = false;
--	u8 CurrentIGI = pDM_Odm->RSSI_Min;
--
--	if (!(pDM_Odm->SupportICType & (ODM_RTL8723A | ODM_RTL8188E)))
--		return;
--
--	CurrentIGI = CurrentIGI + RSSI_OFFSET_DIG;
--	bFwCurrentInPSMode = pAdapter->pwrctrlpriv.bFwCurrentInPSMode;
--
--	/*  Using FW PS mode to make IGI */
--	if (bFwCurrentInPSMode) {
--		/* Adjust by  FA in LPS MODE */
--		if (pFalseAlmCnt->Cnt_all > DM_DIG_FA_TH2_LPS)
--			CurrentIGI = CurrentIGI + 2;
--		else if (pFalseAlmCnt->Cnt_all > DM_DIG_FA_TH1_LPS)
--			CurrentIGI = CurrentIGI + 1;
--		else if (pFalseAlmCnt->Cnt_all < DM_DIG_FA_TH0_LPS)
--			CurrentIGI = CurrentIGI - 1;
--	} else {
--		CurrentIGI = RSSI_Lower;
--	}
--
--	/* Lower bound checking */
--
--	/* RSSI Lower bound check */
--	if ((pDM_Odm->RSSI_Min - 10) > DM_DIG_MIN_NIC)
--		RSSI_Lower = (pDM_Odm->RSSI_Min - 10);
--	else
--		RSSI_Lower = DM_DIG_MIN_NIC;
--
--	/* Upper and Lower Bound checking */
--	if (CurrentIGI > DM_DIG_MAX_NIC)
--		CurrentIGI = DM_DIG_MAX_NIC;
--	else if (CurrentIGI < RSSI_Lower)
--		CurrentIGI = RSSI_Lower;
--
--	ODM_Write_DIG(pDM_Odm, CurrentIGI);/* ODM_Write_DIG(pDM_Odm, pDM_DigTable->CurIGValue); */
--}
--
- void odm_DIGInit(struct odm_dm_struct *pDM_Odm)
- {
- 	struct rtw_dig *pDM_DigTable = &pDM_Odm->DM_DigTable;
-diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-index 48d383f91c16..ac053312d817 100644
---- a/drivers/staging/r8188eu/include/odm.h
-+++ b/drivers/staging/r8188eu/include/odm.h
-@@ -4,18 +4,6 @@
- #ifndef	__HALDMOUTSRC_H__
- #define __HALDMOUTSRC_H__
- 
--/*  */
--/* 3 PSD Handler */
--/* 3============================================================ */
--
--/*  LPS define */
--#define DM_DIG_FA_TH0_LPS		4 /*  4 in lps */
--#define DM_DIG_FA_TH1_LPS		15 /*  15 lps */
--#define DM_DIG_FA_TH2_LPS		30 /*  30 lps */
--#define RSSI_OFFSET_DIG			0x05;
--
--/*  structure and define */
--
- /*  Add for AP/ADSLpseudo DM structuer requirement. */
- /*  We need to remove to other position??? */
- struct rtl8192cd_priv {
-@@ -972,8 +960,6 @@ u32 ConvertTo_dB(u32 Value);
- u32 GetPSDData(struct odm_dm_struct *pDM_Odm, unsigned int point,
- 	       u8 initial_gain_psd);
- 
--void odm_DIGbyRSSI_LPS(struct odm_dm_struct *pDM_Odm);
--
- u32 ODM_Get_Rate_Bitmap(struct odm_dm_struct *pDM_Odm, u32 macid,
- 			u32 ra_mask, u8 rssi_level);
- 
--- 
-2.33.0
+That sounds like a good idea to me. I'll add a new patch to the start
+of the series which adds in something like:
 
+struct vcpu_sev_es_state {
+  /* SEV-ES support */
+  struct vmcb_save_area *vmsa;
+  struct ghcb *ghcb;
+  struct kvm_host_map ghcb_map;
+  bool received_first_sipi;
+  /* SEV-ES scratch area support */
+  void *ghcb_sa;
+  u64 ghcb_sa_len;
+  bool ghcb_sa_sync;
+  bool ghcb_sa_free;
+};
+
+struct vcpu_svm {
+...
+struct vcpu_sev_es_state sev_es_state;
+...
+};
+
+I think that will make this less tedious / error prone code. Names
+sound OK or better suggestion?
