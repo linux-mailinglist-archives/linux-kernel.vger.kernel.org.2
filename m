@@ -2,89 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3016C426753
+	by mail.lfdr.de (Postfix) with ESMTP id BD886426754
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhJHKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239608AbhJHKEN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:04:13 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB6EC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:02:17 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id i12so15430170wrb.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 03:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uKJo8PQ8qCZ+w5l5NjxKVTa4Y5qVORlljgfVPolx7L0=;
-        b=RM3zE3hhW+l1SbxfWPHkQ2Lh+ybH6D74fTeSry17W7mQLFy/X/KptWvzEBvuqQMdUT
-         ZCJ7j+y3OHSd/E3XBmQA/SWDHWEwiqitv9U9QshyGG/uvgiyljJjqo6zmHdAvLTotOQO
-         F65UFtWqbrD+GSXUIi8bkjFfCeaEjIS21E9VaDf9Ge/Pr1JS8JExMnruX7jzIamVSFo9
-         Ao11pXwc73uFV/alESBLQutMjaeYhUkYNTmwneYdT2Kaj7mRutu1RSwkkfHW68DFH3DB
-         c5lk5TaB9c2hyTbiW8TmzSKuOpSS0RKZV9jbqt+5DvjDesxWZxt5OgbSUjr2wd43+e+x
-         jPcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uKJo8PQ8qCZ+w5l5NjxKVTa4Y5qVORlljgfVPolx7L0=;
-        b=1r/GwC+9Oo27oioVOyd23Xdc/FzpN5VOX9eOwZfj1njXBtcuKM71U/cx+3P5Rja72r
-         gpB0kvjZtoMGEGiKY6QD1r3RWiBHyom0JBQsJks3L0Ekng2o7m51EMmo60YKcE3mP/Lr
-         e6Lysj2SIZD4fMswBtii2bRDZcLj8mUTIJejILTmDtLKh1CV3A/5ne5D/4ddIT9wN9Bc
-         ZI0plxghrevWypFrRWrWUZP6tT55BEeZcTjhpJLDpdz4ZFYUePOY4vCoTtPJFghiLJb4
-         BU9nQeFoRjL/XgJNhsY9cbppwGG3TuEiU0Pvkiq/E7zmM4wsz1oiGz90SMRfJWBWETAn
-         0pzg==
-X-Gm-Message-State: AOAM532ghh96IiuFfmF//XMOOiW9zjPxwRKryNAl7Ye8yC1TrPBYdHd2
-        ovrPf08bL8l6nNs4AqI/i2k=
-X-Google-Smtp-Source: ABdhPJxj0gUM5/SprLYHHOJcPozOmnsMYc59x50iLkKK9ukRj2QwRj8koLY8IDCHvlLM6iHqc9roHA==
-X-Received: by 2002:a1c:4484:: with SMTP id r126mr2413166wma.150.1633687335920;
-        Fri, 08 Oct 2021 03:02:15 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::40c9])
-        by smtp.gmail.com with ESMTPSA id k10sm1998249wrh.64.2021.10.08.03.02.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 03:02:15 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove unused defines from rtw_sreset.h
-Date:   Fri,  8 Oct 2021 12:02:09 +0200
-Message-Id: <20211008100209.28801-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        id S239616AbhJHKEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:04:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:39688 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239606AbhJHKES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:04:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5431FD6E;
+        Fri,  8 Oct 2021 03:02:22 -0700 (PDT)
+Received: from [10.57.25.67] (unknown [10.57.25.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DD373F70D;
+        Fri,  8 Oct 2021 03:02:20 -0700 (PDT)
+Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
+To:     kajoljain <kjain@linux.ibm.com>, acme@kernel.org,
+        john.garry@huawei.com, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org
+Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
+Date:   Fri, 8 Oct 2021 11:02:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused defines from rtw_sreset.h.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/include/rtw_sreset.h | 4 ----
- 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/rtw_sreset.h b/drivers/staging/r8188eu/include/rtw_sreset.h
-index 47ad185c755f..45bc227d088a 100644
---- a/drivers/staging/r8188eu/include/rtw_sreset.h
-+++ b/drivers/staging/r8188eu/include/rtw_sreset.h
-@@ -21,10 +21,6 @@ struct sreset_priv {
- #define	USB_VEN_REQ_CMD_FAIL	BIT(0)
- #define	USB_READ_PORT_FAIL		BIT(1)
- #define	USB_WRITE_PORT_FAIL		BIT(2)
--#define	WIFI_MAC_TXDMA_ERROR	BIT(3)
--#define   WIFI_TX_HANG				BIT(4)
--#define	WIFI_RX_HANG				BIT(5)
--#define		WIFI_IF_NOT_EXIST			BIT(6)
- 
- void sreset_init_value(struct adapter *padapter);
- void sreset_reset_value(struct adapter *padapter);
--- 
-2.33.0
+On 08/10/2021 08:43, kajoljain wrote:
+> 
+> 
+> On 10/7/21 4:35 PM, James Clark wrote:
+>> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
+>> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
+>> remove the need to apply any future JSON comma fixup commits.
+>>
+>> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
+>> perf/core.
+>>
+>> Also available at:
+>>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
+> 
+> Hi James,
+>    Do we have any dependency patches on top of this patch series. I am
+> reviewing and testing it, but in both powerpc and x86 system I am
+> getting build issue. Not sure if I am missing something> 
+> I am trying your changes on top of upstream perf.
+> 
+> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
+> character inside JSON string
 
+Hi Kajol,
+
+A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
+confirm if you have updated to get this commit on perf core?
+
+Alternately you could pull from my branch above which is up to date enough
+to include it.
+
+The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
+
+> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
+> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
+> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+> make: *** [Makefile:70: all] Error 2
+> 
+> Also, Is it possible to add line number along with file name while
+> showing this error `json error Invalid character inside JSON string`.
+> It might make it easy to fix.
+
+I can add a character number with the following fix if you think that would
+be good enough? A line number might be a bigger change and involve keeping
+track of newline characters.
+
+diff --git a/tools/perf/pmu-events/json.c b/tools/perf/pmu-events/json.c
+index 0544398d6e2d..41a14e1543bf 100644
+--- a/tools/perf/pmu-events/json.c
++++ b/tools/perf/pmu-events/json.c
+@@ -99,7 +99,7 @@ jsmntok_t *parse_json(const char *fn, char **map, size_t *size, int *len)
+        res = jsmn_parse(&parser, *map, *size, tokens,
+                         sz / sizeof(jsmntok_t));
+        if (res != JSMN_SUCCESS) {
+-               pr_err("%s: json error %s\n", fn, jsmn_strerror(res));
++               pr_err("%s: json error at character %u '%s'\n", fn, parser.pos, jsmn_strerror(res));
+                goto error_free;
+        }
+        if (len)
+
+
+It prints this for the same error you have above:
+
+pmu-events/arch/test/test_soc/sys/uncore.json: json error at character 213 'Invalid character inside JSON string'
+
+Although funnily enough after re-introducing that extra comma it doesn't fail the build for me,
+it just prints the error message. But I may have noticed some dependency tracking issues around
+the json files.
+
+James
