@@ -2,156 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B154262FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B874262CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236804AbhJHDdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:33:43 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:45815 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHDdl (ORCPT
+        id S231277AbhJHDTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:19:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhJHDTr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:33:41 -0400
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20211008033144epoutp0183c1b065b33aab16cb43238591152f77~r8Kp0mO_00302003020epoutp01l
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:31:44 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20211008033144epoutp0183c1b065b33aab16cb43238591152f77~r8Kp0mO_00302003020epoutp01l
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1633663904;
-        bh=FudOjlJ6D5/jgTmPY1C0mRqJku+8iiIy7TKFbhuwvBU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=Tr4vZq+zNOIrpucjVaFOaHXdBdAwUdHArIzACoscc2BJ60ws/x1uTkrwecBZja4iS
-         r0H+AL+q58ujYasBZwbvfvFZ58K8bQxk7o3bLzWwVhFa2fUgvu1hQB/Y4skgC+c+N8
-         +B4n6Vl1hJ4uIaazNTNTv/KY8jKT0PnVkySikSj8=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20211008033144epcas2p19ddeaebee39c621b595b9390350189ff~r8KpMTLt52405824058epcas2p1k;
-        Fri,  8 Oct 2021 03:31:44 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.91]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4HQYdS4Pq5z4x9Q0; Fri,  8 Oct
-        2021 03:31:40 +0000 (GMT)
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        28.22.09717.A9BBF516; Fri,  8 Oct 2021 12:31:38 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20211008033133epcas2p27e537eb6140c01dadcf8f75785a238de~r8Ke5UU7K0569305693epcas2p2L;
-        Fri,  8 Oct 2021 03:31:33 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20211008033133epsmtrp2a8d2a4b7035012b7829bb17aa9ca62ae~r8Ke8zC1t0420904209epsmtrp2J;
-        Fri,  8 Oct 2021 03:31:33 +0000 (GMT)
-X-AuditID: b6c32a45-a3131a80000025f5-e3-615fbb9ac33f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        38.99.08750.59BBF516; Fri,  8 Oct 2021 12:31:33 +0900 (KST)
-Received: from ubuntu.dsn.sec.samsung.com (unknown [12.36.155.120]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20211008033132epsmtip159db4b2633c17bf5d800ab754826f2e4~r8KeqTpWs0568105681epsmtip1W;
-        Fri,  8 Oct 2021 03:31:32 +0000 (GMT)
-From:   Kiwoong Kim <kwmad.kim@samsung.com>
-To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com,
-        cang@codeaurora.org, adrian.hunter@intel.com, sc.suh@samsung.com,
-        hy50.seo@samsung.com, sh425.lee@samsung.com,
-        bhoon95.kim@samsung.com, vkumar.1997@samsung.com
-Cc:     Kiwoong Kim <kwmad.kim@samsung.com>
-Subject: [PATCH v2] scsi: ufs: clear doorbell for hibern8 errors when using
- ah8
-Date:   Fri,  8 Oct 2021 12:15:08 +0900
-Message-Id: <1633662908-20941-1-git-send-email-kwmad.kim@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdljTQnfW7vhEgzuP+SxOPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxdekzVotP65exWqxe/IDFYtGNbUwWN7ccZbG4vGsOm0X39R1sFsuP/2Oy
-        6Lp7g9Fi6b+3LBZ37n9kceD3uNzXy+SxeM9LJo8Jiw4wenxf38Hm8fHpLRaPvi2rGD0+b5Lz
-        aD/QzRTAEZVtk5GamJJapJCal5yfkpmXbqvkHRzvHG9qZmCoa2hpYa6kkJeYm2qr5OIToOuW
-        mQN0vZJCWWJOKVAoILG4WEnfzqYov7QkVSEjv7jEVim1ICWnwLxArzgxt7g0L10vL7XEytDA
-        wMgUqDAhO2PViUssBc95KhrXHWFqYDzE1cXIySEhYCKx48xvti5GLg4hgR2MEt0Hl7JCOJ8Y
-        Jc4ePs4I4XxmlDg2+zE7TMuKrh4miMQuRokPzf+ZIZwfQC0npzOCVLEJaEo8vTmVCcQWEbjO
-        JDFvewaIzSygLrFrwgmwuLBAoMTF/5vB6lkEVCX61k8Ai/MKuEqcaLrDBrFNTuLmuU6wBRIC
-        f9kl5u/9zASRcJH4d/MIM4QtLPHq+Bao86QkPr/bC9VcL7FvagMrRHMPo8TTff8YIRLGErOe
-        tQPZHEAXaUqs36UPYkoIKEscucUCcSefRMfhv+wQYV6JjjYhiEZliV+TJkMNkZSYefMO1FYP
-        iZlvboJdJiQQK7HpzCy2CYyysxDmL2BkXMUollpQnJueWmxUYAiPpeT83E2M4BSp5bqDcfLb
-        D3qHGJk4GA8xSnAwK4nw5tvHJgrxpiRWVqUW5ccXleakFh9iNAWG10RmKdHkfGCSziuJNzSx
-        NDAxMzM0NzI1MFcS5537zylRSCA9sSQ1OzW1ILUIpo+Jg1OqgSk9YpL6HeU0T6mVitMqq1XW
-        5su2Cy/ZvGWF2THvwAepa/Oz52s5/OernvrnwzUWxzeWJVcX7xbaGnZsvbawu4Slwuq5msJP
-        jzA6rEwNundBNjlqwYXzE+tzW0tNLn/9Zp4zX0yfR9621cOOX66mzULZa6sYc9fV4hNBATef
-        lOVFxn0v22zCe67z1cJF4rP2W8kG/skp1N3/oCL74OYFHZ/cQ7zddFwOOeb77vjAYJpy0Ej2
-        gt5clSNvnxQlPeroXJqz8nKW6bMP83gCZt3NFTe/e7f4evir2RasHp9NC/rSklj+pValHNSQ
-        N1r27Gjs+qvbJ+lV6XRs7Y/r36l4/OYrpbWLWtj+v0m3dt7Aq8RSnJFoqMVcVJwIAOCRNk0a
-        BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLMWRmVeSWpSXmKPExsWy7bCSnO7U3fGJBqva9CxOPlnDZvFg3jY2
-        i5c/r7JZHHzYyWLxdekzVotP65exWqxe/IDFYtGNbUwWN7ccZbG4vGsOm0X39R1sFsuP/2Oy
-        6Lp7g9Fi6b+3LBZ37n9kceD3uNzXy+SxeM9LJo8Jiw4wenxf38Hm8fHpLRaPvi2rGD0+b5Lz
-        aD/QzRTAEcVlk5Kak1mWWqRvl8CVserEJZaC5zwVjeuOMDUwHuLqYuTkkBAwkVjR1cPUxcjF
-        ISSwg1Fi2vRvTBAJSYkTO58zQtjCEvdbjrBCFH1jlDi5dRVYgk1AU+Lpzalg3SICL5kkXsxZ
-        wwaSYBZQl9g14QTYJGEBf4ktH/vBGlgEVCX61k8Ai/MKuEqcaLrDBrFBTuLmuU7mCYw8CxgZ
-        VjFKphYU56bnFhsWGOWllusVJ+YWl+al6yXn525iBIetltYOxj2rPugdYmTiYDzEKMHBrCTC
-        m28fmyjEm5JYWZValB9fVJqTWnyIUZqDRUmc90LXyXghgfTEktTs1NSC1CKYLBMHp1QDk2qw
-        //yee0ZlR0R3PXULdz3/o/CErrF1UGAoz47fKsw/v3TsrUxevZqz3rVfuOpQzo6+/Tf//dkr
-        FaMjfiD8+d7JnoW1PO/Nj0beO7Xms3q5+zRjte5rHzYaFohsctvWEbHvzL+Xy/niL5zJSPra
-        nu9dwpl/xf2p2FEBxtQTi84pKs1aeUFD+Ddza0BYPOvrnX8Ckmqz9RZWHHI0uHfQzuHWola2
-        B4sCD8541vp176bbZktenbdrXzN98bKdZr9ndMWeXWjYbNalbLA2NuDKw65YLu2mf7PDzn99
-        ndI4+zC/myOD3K7Yk2uun3lXJ698Ot0qTf+k/UW3GM6vrTH2S5JSb/D17/u6+vKXf52LhJRY
-        ijMSDbWYi4oTAYb2divKAgAA
-X-CMS-MailID: 20211008033133epcas2p27e537eb6140c01dadcf8f75785a238de
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20211008033133epcas2p27e537eb6140c01dadcf8f75785a238de
-References: <CGME20211008033133epcas2p27e537eb6140c01dadcf8f75785a238de@epcas2p2.samsung.com>
+        Thu, 7 Oct 2021 23:19:47 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6825C061570;
+        Thu,  7 Oct 2021 20:17:52 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id a11so5304925plm.0;
+        Thu, 07 Oct 2021 20:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=ApOKKBCMuAZ4Vx/5ob40RCelwZhTvT67bmG3ANEluW8=;
+        b=Qfr5WIt0rkHg4KG3t1iY6J1y1yLDEgcbPf5SHUv1rIzqRBsz/5uzLcJUMZnSn74YL8
+         kRDVeCfxp8GigTyNHwoZ0dXS73QmhUds18a8OLJcmshBKJVJLe6dPwCPtGt1Pm425Lvf
+         Nl38h/rnebJWGEFPAjPhXZI4C6082a0v7n/5at9C7DIMPq1KY7RgPmh+MyINTBQEz9Kf
+         fAdfYxw9vzfPkZCGrmScZLnFVBB/toVTa6tTKyv9z6ZL86/N4zNYHsk9+3+DLh3TPZFp
+         pS/H/KM1lSxf7yVQzufzSNFL0cS7lg0i6H4kVt4nnJT8F1ACV5tpppKEn6vYpgoPTEYk
+         mJVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=ApOKKBCMuAZ4Vx/5ob40RCelwZhTvT67bmG3ANEluW8=;
+        b=PzrhFa3b1p8tBpCaa/665/irUbFhUCnS+iHfUofrVh7taxKYvaiRCWZIotz9uBh3Xb
+         Vb+Dm5D/WPgBFqaYWEGQ2CdZzkw9U/FSSnpbCALBUW27Zk3E1QkYqBB/KvxEtYKkPa9U
+         QxEUWCV6NVRxhl/ozZ+SH+UySM9MEfYFFk6kHjxS1m2Cv9PBrWA5/4ifLblekEcpB2ag
+         9YvDWxTfrgIlXZvPJ8GOCTuEb30TVFYZvxFTCeCpSii8ug80n0tFgdLvZNQIriHUOTtU
+         fD0AvMiPQ9eq8os27NxrGO+cSxHS33wurWhN4W9MFGCFVsEnunka4psahR/7L3ucLcdp
+         N+mQ==
+X-Gm-Message-State: AOAM532D/os97iS1tk4CllEQ7ixCb4B3Kgb7X9ZcJ9E2pNLgTGvP0K4f
+        aOHRBZeynKkG2sj3pAs8D58=
+X-Google-Smtp-Source: ABdhPJyZsmxJ9hP5Kw+9bGwzN9Glcf1vHwpjV6UZVC8OiQmND7+AHtV3qdpWmvagZ5sP1eBuwNI/TQ==
+X-Received: by 2002:a17:902:a710:b029:12b:9b9f:c461 with SMTP id w16-20020a170902a710b029012b9b9fc461mr7406835plq.59.1633663071904;
+        Thu, 07 Oct 2021 20:17:51 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id w185sm737585pfd.113.2021.10.07.20.17.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 20:17:51 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     davem@davemloft.net, michael.riesch@wolfvision.net,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        p.zabel@pengutronix.de, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [BUG] Ethernet broken on rockpro64 by commit 2d26f6e39afb
+ ("net: stmmac: dwmac-rk: fix unbalanced pm_runtime_enable warnings")
+References: <8e33c244-b786-18e8-79bc-407e27e4756b@arm.com>
+Date:   Fri, 08 Oct 2021 12:17:48 +0900
+In-Reply-To: <8e33c244-b786-18e8-79bc-407e27e4756b@arm.com> (Alexandru
+        Elisei's message of "Tue, 28 Sep 2021 10:25:59 +0100")
+Message-ID: <87zgrk19yb.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes from v1:
-* Change the time to requeue pended commands
+Alexandru Elisei <alexandru.elisei@arm.com> writes:
 
-When an scsi command is dispatched right after host complete
-all the pended requests and ufs driver tries to ring a doorbell,
-host might be still during entering into hibern8.
-If the hibern8 error occurrs during that period, the doorbell
-might not be zero and clearing it should have done.
-But, current ufshcd_err_handler goes directly to reset
-w/o clearing the doorbell when the driver's link state is broken.
-This patch is to requeue pended commands after host reset.
+> (Sorry I'm sending this to the wrong person, this is what I got
+> scripts/get_maintainer.pl for the file touched by the commit)
+>
+> After commit 2d26f6e39afb ("net: stmmac: dwmac-rk: fix unbalanced
+> pm_runtime_enable warnings"), the network card on my rockpro64-v2 was left unable
+> to get a DHCP lease from the network. The offending commit was found by bisecting
+> the kernel; I tried reverting the commit from current master (commit 0513e464f900
+> ("Merge tag 'perf-tools-fixes-for-v5.15-2021-09-27' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux")) and the network card
+> was working as expected.
+>
+> It goes without saying that I can help with testing the fix and
+> further diagnosing.
 
-Here's an actual symptom that I've faced. At the time, tag #17
-is still pended even after host reset. And then the block timer
-is expired.
+A fix was recently merged for this (see aec3f415f724 ("net: stmmac:
+dwmac-rk: Fix ethernet on rk3399 based devices") and should show up in
+the next rc. Please shout out if that doesn't fix the broken ethernet
+for you.
 
-exynos-ufs 11100000.ufs: ufshcd_check_errors: Auto Hibern8
-Enter failed - status: 0x00000040, upmcrs: 0x00000001
-..
-host_regs: 00000050: b8671000 00000008 00020000 00000000
-..
-exynos-ufs 11100000.ufs: ufshcd_abort: Device abort task at tag 17
-
-Signed-off-by: Kiwoong Kim <kwmad.kim@samsung.com>
----
- drivers/scsi/ufs/ufshcd.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 9faf02c..e5d4ef7 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -7136,8 +7136,10 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
- 	err = ufshcd_hba_enable(hba);
- 
- 	/* Establish the link again and restore the device */
--	if (!err)
-+	if (!err) {
-+		ufshcd_retry_aborted_requests(hba);
- 		err = ufshcd_probe_hba(hba, false);
-+	}
- 
- 	if (err)
- 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
--- 
-2.7.4
+Thanks,
+Punit
 
