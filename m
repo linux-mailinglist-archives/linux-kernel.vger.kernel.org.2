@@ -2,130 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95574426D86
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9B6426D96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243011AbhJHPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242978AbhJHPdi (ORCPT
+        id S243036AbhJHPh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:37:57 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37166 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231129AbhJHPhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:33:38 -0400
-Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E44DC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:31:43 -0700 (PDT)
-Received: by mail-vs1-xe2c.google.com with SMTP id v4so10940190vsg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wfDWQNp2UL5+jS6p6MxQkSeoBswEyDZEW6ZvRWiqAYE=;
-        b=FG4nizPJKDttHDSuuLn3c6p8Myl+TE1ZajoLc02DiK82T5KiV2nzbAt9Lv37fLIA8x
-         jKWygR3yU4GfALjLvhn9RMbmj/MaEHuxJgQEoSfc5lYuqIkrvBvRubGjJHE63lSnPr1B
-         QTFecQ9I+HD1MPhI5wHPc4d0fh3EkJfZl/pqaQT9QiF3n1eJoI8wIO0hbET6LovqlLUG
-         idSGGFCcJz6UCgWODWsu5YjmH08T+PLc0TXKMwKEPjR5fsPatYxvLH8cm6U75QRAx9xo
-         x0+OJbzzXys4T0ZoXT5HVbErDYC6s1LvqGnsBCkjOLwX9Ue7hn4MVNOPWPtT9ip/m4Ds
-         EZSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wfDWQNp2UL5+jS6p6MxQkSeoBswEyDZEW6ZvRWiqAYE=;
-        b=7Z2i8NvTGo80MhM/lmBE67LifaDF3MSNQ3FMsnZUg65/NQFE+2xJkSZf2+BowEyNxt
-         9M6aOkPk1b8ySeDl5GGFrnI+fcu5nTUFLpnBg2m/yN52uykGrAmLHUwuqngKpJ/Z7BNg
-         eCT0Cf/yZXM81mYvAu9ihGITkWfo1h/W1FoX1BBCccnw+jCKyOkVDYwiJYag0+JPS4ox
-         vpDbT/hzkIWc7kNUM9Mi7Mwa5UpPUtbvTYdAKJRa/o5FMUEWODj6hg402YyrYIPjDh/8
-         3dDkFAvPxWyY8MsKTfexnfnoFxDox0Or8aagjR3e9adicVKXf/IKE/uQvKjCVjgV5TBy
-         OXng==
-X-Gm-Message-State: AOAM530+31+gI3GIFHyHGf4tEFykG7YvwCl1EQ9r2KZqWurW2ThRsmEf
-        GxMw/QF7c7GdKu7hwfc5B/LyKpynaiVJLHk9NlZ9DQ==
-X-Google-Smtp-Source: ABdhPJyvkGFu2hMnsDq29OMlmBSQiVg7L1kDuYFftacecAIHtbfGGV1GkOkzVRQpb7mW2uyOr4/ZNuPmO90t1XUAn1k=
-X-Received: by 2002:a67:d91b:: with SMTP id t27mr11899992vsj.55.1633707102322;
- Fri, 08 Oct 2021 08:31:42 -0700 (PDT)
+        Fri, 8 Oct 2021 11:37:54 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1989fqnV023368;
+        Fri, 8 Oct 2021 17:35:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=QmQxNQufiV2GsuHqMFZOe4B4PMKFaz6wLa6CZ7V7C+s=;
+ b=hSODOskKfdFbXZ8C0dDucIejQii9ipzIXg/DOTtsuS/il3p54JqBsND9ntlJRZ3DKdca
+ uqx3zVfc9LyvzfzwHf09n+Rr4u5r7xwlFXqlraqGVv/mOE1X3VnwA0KYHJ/h3NnNmg5F
+ /Uoi3OlZ6KU8XV52YgFYocUASDO1+9BCDgEP2om9l7eS/9lHq4K27vvkDpEF5myVDGmg
+ bBEQOhor6UeJRxCxSNc6EciGAwWSmFbdybMQ5qj5zkMSgUbIFQxlH+qh29dq/PdoyCoM
+ u7nuETV4CMQ8otVgfUsOhv/IF3xmP034cg6tikO1rcHPzDu/6kZnXrtp9NblbsliDo1o +Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bjkk79wja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 17:35:45 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 05B5410002A;
+        Fri,  8 Oct 2021 17:35:44 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EC5AD237D9A;
+        Fri,  8 Oct 2021 17:35:43 +0200 (CEST)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 8 Oct 2021 17:35:43
+ +0200
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        <arnaud.pouliquen@foss.st.com>, Suman Anna <s-anna@ti.com>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>
+Subject: [PATCH v9 0/2] Add rpmsg tty driver
+Date:   Fri, 8 Oct 2021 17:34:44 +0200
+Message-ID: <20211008153446.23188-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20211007194113.10507-1-semen.protsenko@linaro.org>
- <20211007194113.10507-4-semen.protsenko@linaro.org> <abe4bdeb-ee15-d8c8-54af-1cdf7282b004@canonical.com>
-In-Reply-To: <abe4bdeb-ee15-d8c8-54af-1cdf7282b004@canonical.com>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Fri, 8 Oct 2021 18:31:30 +0300
-Message-ID: <CAPLW+4mM978QS8ce9ipnhAPc0ge2H8+ZZ5bsc=7Ryq4-yL8NQw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] dt-bindings: clock: Add bindings definitions for
- Exynos850 CMU
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-08_04,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 09:45, Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 07/10/2021 21:41, Sam Protsenko wrote:
-> > Clock controller driver is designed to have separate instances for each
-> > particular CMU. So clock IDs in this bindings header also start from 1
-> > for each CMU.
-> >
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> > Acked-by: Rob Herring <robh@kernel.org>
-> > ---
-> > Changes in v2:
-> >   - Added all clock ids
-> >   - Added CLK_ prefix for all clock constants
-> >   - Added R-b tag by Krzysztof Kozlowski
-> >   - Added Ack tag by Rob Herring
-> >
-> >  include/dt-bindings/clock/exynos850.h | 141 ++++++++++++++++++++++++++
-> >  1 file changed, 141 insertions(+)
-> >  create mode 100644 include/dt-bindings/clock/exynos850.h
-> >
-> > diff --git a/include/dt-bindings/clock/exynos850.h b/include/dt-bindings/clock/exynos850.h
-> > new file mode 100644
-> > index 000000000000..a44c5f91d3c7
-> > --- /dev/null
-> > +++ b/include/dt-bindings/clock/exynos850.h
-> > @@ -0,0 +1,141 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
->
-> The bindings are preferred to be under GPL-2.0+BSD. I don't know about
-> such policy for the headers but it seems reasonable - allows re-usage in
-> other systems. Do you mind licensing it under:
-> GPL-2.0-only or BSD-2-Clause
-> ?
->
+This new revision reopens subject started a long time ago. Previous revision discussions
+available here [1]. 
 
-Sure, will do in v3.
+This patchset introduces a TTY console on top of the RPMsg framework which
+enables the following use cases:
+- Provide a console to communicate easily with the remote processor application.
+- Provide an interface to get the remote processor log traces without ring
+  buffer limitation.
+- Ease the migration from MPU + MCU processors to multi core processors
+  (MPU and MCU integrated in one processor) by offering a virtual serial link.
 
-> Best regards,
-> Krzysztof
->
-> > +/*
-> > + * Copyright (C) 2021 Linaro Ltd.
-> > + * Author: Sam Protsenko <semen.protsenko@linaro.org>
-> > + *
-> > + * Device Tree binding constants for Exynos850 clock controller.
-> > + */
-> > +
-> > +#ifndef _DT_BINDINGS_CLOCK_EXYNOS_850_H
-> > +#define _DT_BINDINGS_CLOCK_EXYNOS_850_H
-> > +
-> > +/* CMU_TOP */
+An alternative of this proposed solution would consist in using the virtio
+console:
+The drawback with that solution is that it requires a specific virtio buffer
+(in addition to the one already used for RPMsg) which does not fit with remote
+processors with little memory. The proposed solution allows to multiplex the
+console with the other rpmsg services, optimizing the memory.
+
+The first patch adds an API to the rpmsg framework ('get max transmission unit')
+and the second one is the rpmsg tty driver itself.
+
+Update previous revision [1] based on Bjorn Andersson and Greg Kroah-Hartman comments.
+
+Applied and tested on kernel V5.15-rc1
+
+[1] https://lkml.org/lkml/2021/9/30/792 
+
+Arnaud Pouliquen (2):
+  rpmsg: core: add API to get MTU
+  tty: add rpmsg driver
+
+ drivers/rpmsg/rpmsg_core.c       |  21 +++
+ drivers/rpmsg/rpmsg_internal.h   |   2 +
+ drivers/rpmsg/virtio_rpmsg_bus.c |  10 ++
+ drivers/tty/Kconfig              |  12 ++
+ drivers/tty/Makefile             |   1 +
+ drivers/tty/rpmsg_tty.c          | 275 +++++++++++++++++++++++++++++++
+ include/linux/rpmsg.h            |  10 ++
+ 7 files changed, 331 insertions(+)
+ create mode 100644 drivers/tty/rpmsg_tty.c
+
+-- 
+2.17.1
+
