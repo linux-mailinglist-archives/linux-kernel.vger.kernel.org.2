@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EC44273C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:30:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EED54273CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243694AbhJHWcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S243709AbhJHWdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:33:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243682AbhJHWco (ORCPT
+        with ESMTP id S243682AbhJHWdH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:32:44 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D853C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 15:30:49 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id y1so7003778plk.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 15:30:49 -0700 (PDT)
+        Fri, 8 Oct 2021 18:33:07 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FADC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 15:31:12 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id c4so7054155pls.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 15:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QPKX4399w87EXmhlXJlVL2A5oJDbJGbtRWqBg3+A5Ac=;
-        b=DQD6hB5Y9t22iWbef1SQFHv9G5obUCp0YHAXuiAZ/PKNlYH1Zj/5/d5ycuw0uocY46
-         YF+6iVrcDdPjyusNSSI4G2OVXvH90834VN+ntK3Y/8nGNR2LLrkTp3llpmzIeaw/dVd2
-         Z00/RBhJ0O8Y26m0YVDLT4EcCyF09fir8s6TfxTm218TQZgI+dBGW+t6R0uSUrLGiC37
-         1yRcH41Hx6LUVE4wp9e9QE2pDKmxa152OPAbgRbXJ4icP9zZ2ZgRXkv4UqTtDVvPDrSv
-         O0DI93GtcbciqbxEiWB/Av+9e50GrubnKlNi5nYaz6urE+7jMHGUwsj2agh2m5iYNuE7
-         ivBA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x2SslUtgREFqZPZutv1E1PPwo3SH8tGLrCooYjOSvSU=;
+        b=ZzZ/oSyVvoCxGioRJePesqRhkD8P2jQXTVcAX0CSI1G9R8HExP9FXtY+XQlKn5YwJQ
+         qjt7JjgwliSD9ml2KeVlqUGfztZlit9CnKKQ3SqdIAiUEZRePGUnB/vct3RXKVd5dau0
+         gcCGc4KcFgDBUvgeLus8NKt+CpGuNnJGCnc7s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=QPKX4399w87EXmhlXJlVL2A5oJDbJGbtRWqBg3+A5Ac=;
-        b=k+t97ZYneyuZNLgh5J2DCjvO3++lQYko9pGKrA94a9UpJ4gquMYrY6x/vtu6QzdufB
-         PBkXTxU91dz7MB0JWu+it+YiS9w3Fg6QRiHVEw9TtT8ay+SCOvm/8PBMjD9g2uskN3OZ
-         iKWaBSRAzxpN2su+Sw/y+g45xzbHq9BBhwA57IBOdoXQ7vUCND1GS1Aid8ujMYwaHu13
-         jHSQ1pfj9CPEhZCtoptQ+Xep/BCR++HmO3SWMjXoamTWswQqrtO0RQkVVlBZDUE1AuFs
-         Y5xvq6xEpQkG3eSFsKPmzksIyhnSl0J+kLAvx20Nhp4UKeWfpF4joL4UB7ZaBaZromW4
-         vcrQ==
-X-Gm-Message-State: AOAM530EKaE/uKsjjjpHbpF3qIQVmHbstKAGARuU8dZOXn3JVAqUQmOd
-        h1LHaQXZyYniuyK4ydbrXHc=
-X-Google-Smtp-Source: ABdhPJzn9nvG7iuePfhVEuRcZsqQ/r+XKk18QnPYEgv5U0Abn0AF1zWXmyIpmsFIDaEaG6gMCYKp+w==
-X-Received: by 2002:a17:90a:8c84:: with SMTP id b4mr15037682pjo.240.1633732248754;
-        Fri, 08 Oct 2021 15:30:48 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id n9sm10181736pjk.3.2021.10.08.15.30.47
+        bh=x2SslUtgREFqZPZutv1E1PPwo3SH8tGLrCooYjOSvSU=;
+        b=sEA//4OXSsatruyU2ALU0AvS0qPjq4t0Pgil+ibaO1GIFZKIUBCLZOePaTZ+Ag9PdY
+         Jr6/66T/JM1fNrem5PrKerW/64dR1qLZ8zcS2+G/nlo6qMCupCIoT3KVOIxacK/lIUrN
+         5fg47U7Nf4BIaWKndDRiSx4Ow0TeMCHiizkdzhYqsN8/df1MiAqb2Yqv/b/3mZf7gy0T
+         0Sf+XmqZ9CxuxCmrulLTd/mSMcqPBppLWgY4ddawYBQQgiE6a9nmVuOWGFJfC5oOignK
+         e1PAHvB0VuFn8/5Ml/qYZduXkns8Gt+e9WIvSZT4HgvbVOpF1zGe7zFKGYf4KXeliJPc
+         OKdw==
+X-Gm-Message-State: AOAM5307w0i0AjhS+EQuJsqrFJkNAQPkRmoc7ChoKAR6bY1WT0nE0+fn
+        01K0+BsOj4aJQ45VC7hPsWgKfw==
+X-Google-Smtp-Source: ABdhPJxUwsepBnEFFQTQHNh7+2nFo7S8tcOEzslFztnMxkYzwYSLSUB/2QlZPi9UFdSP/NdTQY+cSg==
+X-Received: by 2002:a17:90a:e547:: with SMTP id ei7mr8195089pjb.169.1633732271765;
+        Fri, 08 Oct 2021 15:31:11 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:2a6d:84fa:761e:91e4])
+        by smtp.gmail.com with UTF8SMTPSA id e20sm312867pfc.11.2021.10.08.15.31.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 15:30:48 -0700 (PDT)
-Subject: Re: [GIT PULL 2/2] bcm2835-dt-fixes-2021-10-06
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20211006081849.1434867-1-nsaenzju@redhat.com>
- <20211006081849.1434867-2-nsaenzju@redhat.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7391b8b9-178c-7183-cb06-380950a6414f@gmail.com>
-Date:   Fri, 8 Oct 2021 15:30:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 08 Oct 2021 15:31:11 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        Sandy Huang <hjc@rock-chips.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: [PATCH] drm/rockchip: vop: Add timeout for DSP hold
+Date:   Fri,  8 Oct 2021 15:31:04 -0700
+Message-Id: <20211008153102.1.I2a5dbaaada35023a9703a8db7af501528fbb6e31@changeid>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-In-Reply-To: <20211006081849.1434867-2-nsaenzju@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/6/21 1:18 AM, Nicolas Saenz Julienne wrote:
-> Hi Florian,
-> 
-> The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
-> 
->   Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
-> 
-> are available in the Git repository at:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-fixes-2021-10-06
-> 
-> for you to fetch changes up to 75fcbda959b059d47c38c43f19658527eff4a470:
-> 
->   ARM: dts: bcm2711-rpi-4-b: Fix usb's unit address (2021-10-06 09:50:37 +0200)
-> 
-> ----------------------------------------------------------------
+If hardware is malfunctioning (e.g., misconfigured clocks?), we can get
+stuck here forever, holding various DRM locks and eventually locking up
+the entire system. It's better to complain loudly and move on, than to
+lock up the system.
 
-Merged into devicetree/fixes, thanks Nicolas!
+In local tests, this operation takes less than 20ms.
+
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index ba9e14da41b4..b28ea5d6a3e2 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -726,7 +726,9 @@ static void vop_crtc_atomic_disable(struct drm_crtc *crtc,
+ 
+ 	spin_unlock(&vop->reg_lock);
+ 
+-	wait_for_completion(&vop->dsp_hold_completion);
++	if (!wait_for_completion_timeout(&vop->dsp_hold_completion,
++					 msecs_to_jiffies(200)))
++		WARN(1, "%s: timed out waiting for DSP hold", crtc->name);
+ 
+ 	vop_dsp_hold_valid_irq_disable(vop);
+ 
 -- 
-Florian
+2.33.0.882.g93a45727a2-goog
+
