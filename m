@@ -2,122 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F014C426A2D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37CD4426A37
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240551AbhJHLzu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Oct 2021 07:55:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbhJHLzn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:55:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F268BC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 04:53:47 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mYoRa-0001Fw-GR; Fri, 08 Oct 2021 13:53:42 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1mYoRZ-00063g-Kv; Fri, 08 Oct 2021 13:53:41 +0200
-Message-ID: <c3d2e56b83b8b78b867089a5c815e30248c4f2e1.camel@pengutronix.de>
-Subject: Re: [PATCH] i.MX6: Support 16-bit BT.1120 video input
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Krzysztof =?UTF-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     Steve Longerbeam <slongerbeam@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Date:   Fri, 08 Oct 2021 13:53:41 +0200
-In-Reply-To: <m37deqmnli.fsf@t19.piap.pl>
-References: <m3o882n0ir.fsf@t19.piap.pl>
-         <568f79774cc148c58b9045da7b94b4e9e500810b.camel@pengutronix.de>
-         <m37deqmnli.fsf@t19.piap.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S230129AbhJHL43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:56:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:46280 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240334AbhJHL4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:56:25 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 672C4ED1;
+        Fri,  8 Oct 2021 04:54:29 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.196.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B0B9C3F766;
+        Fri,  8 Oct 2021 04:54:21 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>, aubrey.li@linux.intel.com,
+        song.bao.hua@hisilicon.com, tim.c.chen@linux.intel.com,
+        jonathan.cameron@huawei.com, Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Sergei Trofimovich <slyfox@gentoo.org>,
+        David Hildenbrand <david@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Vipin Sharma <vipinsh@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH 0/2] sched: cleanup CONFIG_SCHED_MC & friends
+Date:   Fri,  8 Oct 2021 12:53:45 +0100
+Message-Id: <20211008115347.425234-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi folks,
 
-On Wed, 2021-10-06 at 12:52 +0200, Krzysztof Hałasa wrote:
-> Hi Philipp,
-> 
-> Philipp Zabel <p.zabel@pengutronix.de> writes:
-> 
-> > > + * - BT.656 and BT.1120 (8/10-bit YUV422) data can always be processed
-> > > + *   on-the-fly (converted to YUV420)
-> > 
-> > This comment seems misleading. The CSI converts to YUV 4:4:4 internally.
-> 
-> Well... this is surprising. You mean "on the internal bus", don't you?
+This stems from Barry introducing a new CONFIG_SCHED_CLUSTER which highlighted
+the current state of similar Kconfigs isn't great:
+  http://lore.kernel.org/r/CAGsJ_4xZD0sG0Df666f0bvHOzuPMjnw0dN_mArER5k1pJ6LPLw@mail.gmail.com
 
-Yes, anything apart from the bayer/generic data modes, internally
-everything is converted into 32-bit YUVA/RGBA pixels (according to the
-Reference Manual, 37.4.2.3 FCW & FCR). That is represented by the
-MEDIA_BUS_FMT_AYUV8_1X32 media bus format at the CSI source pads.
+The changes happen all in one big patch; the alternative would be to have one
+patch per arch that adds the ARCH_SUPPORTS_SCHED_* selection, then a final patch
+that adds the generic definitions and removes the arch ones (which I can do if
+that's a preferred approach).
 
-> Please correct me if the following is wrong:
-> 
-> I always though that the "on-the-fly processing", in case of YUV422,
-> means in practice I can get YUV420 out of the IPU, without a need to do
-> e.g. NEON conversion.
+Briefly tested by setting ARCH=foo and playing around with menuconfig.
 
-That is done in the IDMAC, which can write any supported YUV format from
-the internal YUV pixels (if not in bayer/generic data mode).
+Based on top of Peter's queue:
+  git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git -b sched/next
 
-> I know I can get the original YUV422 as well,
-> using the "generic data" mode, but it's incompatible with the CODA H.264
-> encoder.
+Patches are also available at:
+  https://git.gitlab.arm.com/linux-arm/linux-vs.git -b mainline/sched/topo_kconfig_cleanup
 
-You should also be able to store the YUV formatted pixels as NV12, NV16,
-YUYV, etc.
+Cheers,
+Valentin
 
-> Ok, the DQRM (37.4.3.2.1) states that for parallel YUV the output from
-> CSI is always YUV444.
+Valentin Schneider (2):
+  sched: Move Kconfig.preempt to sched/Kconfig
+  sched: Centralize SCHED_{SMT, MC, CLUSTER} definitions
 
-Ack.
+ arch/arm/Kconfig                          | 18 ++--------
+ arch/arm64/Kconfig                        | 26 ++------------
+ arch/ia64/Kconfig                         |  9 +----
+ arch/mips/Kconfig                         | 10 +-----
+ arch/parisc/Kconfig                       |  9 +----
+ arch/powerpc/Kconfig                      |  9 +----
+ arch/s390/Kconfig                         |  8 ++---
+ arch/sh/Kconfig                           |  1 +
+ arch/sh/mm/Kconfig                        |  9 -----
+ arch/sparc/Kconfig                        | 20 ++---------
+ arch/x86/Kconfig                          | 26 ++------------
+ init/Kconfig                              |  2 +-
+ kernel/{Kconfig.preempt => sched/Kconfig} | 41 +++++++++++++++++++++++
+ 13 files changed, 59 insertions(+), 129 deletions(-)
+ rename kernel/{Kconfig.preempt => sched/Kconfig} (79%)
 
-> Then 37.4.3.9 says that the only YUV422 way is to use 16-bit "generic
-> data". This doesn't seem to be very true, however I'm not exactly sure
-> about the "on-the-fly" thing.
+--
+2.25.1
 
-I think that statement is limited to the parallel 16-bit interface in
-hsync/vsync mode, whereas in bt.656 / bt.1120 mode the interface
-operates as if the two components were clocked in as two separate 8-bit
-(or 10-bit) values.
-
-> The fact is the patch works.
-> Also, the CSIx_SENS_DATA_FORMAT field in IPUx_CSIx_SENS_CONF register
-> shows YUV422 YUYV and UYVY input data formats, clearly separate from
-> "Bayer of Generic data".
-> 
-> DQIEC, 4.12.10.1, isn't very clear either:
-> 8) YCbCr 20-bit (10-bit Y + 10-bit U/V) is supported with BT.1120 only
-> 7) YCbCr 16-bit is supported under the same conditions as 8)
-> 6) YCbCr 16-bit (= YUV422) is also supported as "generic-data"
->    (no on-the-fly processing). This seems to imply 8) and 7) are
->    supported WITH o-t-f-p (and obviously I have tested it, 16-bit only).
->
-> I think I will just remove the comment :-)
-
-That sounds good to me.
-
-regards
-Philipp
