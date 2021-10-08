@@ -2,179 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB19E4264BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69C54264F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhJHGkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 02:40:35 -0400
-Received: from mail-dm6nam12on2041.outbound.protection.outlook.com ([40.107.243.41]:60128
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229664AbhJHGkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 02:40:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=caUDA+d98zkWVC1ZMAzFvq9MTYaKBmNwEY3xt2AxaMQGyv9nO+dDRd0bcg6IWEOQiutDGiBEGaCYYwmMwoITAB1VnwxYdYYItZRV2uLEcl1TwCSPu78MdKdXjerlK3MqUV/sODE3L0FJZ63kb27vaD11ezptbdakh7Y84wTZwLEwQY9ct/yp2FSb4aVT9RR4Yv4qKaWnqel89A0XVRUh/LfTO7ZEjUR60iR15JC/x4ApD067d24TovsMm0uF+CFlJjNoDj6t8moZxzmiLGmX422zDpoECWtGeuhZfWM+FepdQG78wGIaM+JdmJQ7va9GzCZD9fEW1B1sw+gYInT6cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nfntloW1/8jqQt5frkYyu7KmltIQEdgNm/0O8thuSeQ=;
- b=KIu0WedbtXtLseX+OXfOBgH+Uf/u4b/CVYgUf/Z13LiCl91b67qTOlJqLaimzW5PUmHfXzFan8u37yLNL6MC9MT3GzCXroJqng6dQOX+gDvVsuXjGas/wW5bPWB78l2NIbMCExWAljWD8U/lahp+pHMXc7gsvZMZrDrQ/9wMFSyGQHmynsnh+KgODJY7GBmuPAivRrFX/7tIW30EZN0ULykkwWKQO2+Uy6dzJu+ThouiF6o0Od0sRexP9vIE5+JpwFehWKKNYphxmDJesL85F+C3jBcuEAwsxg1tCqvL6AgoqFWVywlbPX6kE2/X22mTqfWG70Dcx62+aBqmJxMCYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nfntloW1/8jqQt5frkYyu7KmltIQEdgNm/0O8thuSeQ=;
- b=JFkB8NYuFEetsYEjsc49+fh7Q9WgOEQCW4HAY6PURk9X5tXoCtrGB2O4Z9ndoGugHywva8cUoHsc5gN40H7zL+zcQdJt/cVvZ8FIaQ95oGRwv//tfKt6v/7VYIlQy7G50E3XSBYrYf1o09hg+QrfITp2oa+NOp80pxOg2H9GuT4=
-Authentication-Results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14) by MW2PR12MB2363.namprd12.prod.outlook.com
- (2603:10b6:907:f::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Fri, 8 Oct
- 2021 06:38:36 +0000
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a]) by MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::55c7:6fc9:b2b1:1e6a%10]) with mapi id 15.20.4587.022; Fri, 8 Oct 2021
- 06:38:36 +0000
-Subject: Re: [PATCH] dma-buf: acquire name lock before read/write dma_buf.name
-To:     guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Cc:     wsd_upstream@mediatek.com
-References: <20211008062903.39731-1-guangming.cao@mediatek.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <5b7cdb6c-45f2-6b31-bfdd-5cc68a2fda5e@amd.com>
-Date:   Fri, 8 Oct 2021 08:38:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20211008062903.39731-1-guangming.cao@mediatek.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: AS9PR05CA0054.eurprd05.prod.outlook.com
- (2603:10a6:20b:489::13) To MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14)
+        id S232046AbhJHG7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:59:14 -0400
+Received: from m12-11.163.com ([220.181.12.11]:36042 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhJHG7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 02:59:13 -0400
+X-Greylist: delayed 976 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Oct 2021 02:59:12 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=13Ltm
+        HNKY0eCBew5yV8izaFB18GObiTDYAIbaPFtfkU=; b=nIdgUad/yvQs+LX3o4dha
+        JtXUxtUhblMYyuuVljrQR0TbfIHWQj9vj52pupIaVbLVJn8P9HWCVinaITY0pHpy
+        FmXCdFGZTL7hxGVchZmqzNMDfDdPo6eKaep7gzakzIU2RiS81sph6LXDT/ce6jVm
+        d2jFIlEwSFO3v3i44wZfw8=
+Received: from localhost.localdomain (unknown [81.71.100.192])
+        by smtp7 (Coremail) with SMTP id C8CowABXS5On519h3yP90g--.13673S4;
+        Fri, 08 Oct 2021 14:39:36 +0800 (CST)
+From:   ultrachin@163.com
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     brookxu.cn@gmail.com, chen xiaoguang <xiaoggchen@tencent.com>,
+        zeng jingxiang <linuszeng@tencent.com>,
+        lu yihui <yihuilu@tencent.com>
+Subject: [PATCH] mm: Free per cpu pages async to shorten program exit time
+Date:   Fri,  8 Oct 2021 14:39:33 +0800
+Message-Id: <20211008063933.331989-1-ultrachin@163.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Received: from [IPv6:2a02:908:1252:fb60:efac:61bc:bb73:d6b5] (2a02:908:1252:fb60:efac:61bc:bb73:d6b5) by AS9PR05CA0054.eurprd05.prod.outlook.com (2603:10a6:20b:489::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend Transport; Fri, 8 Oct 2021 06:38:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 97a6ea0c-4cbd-43fd-f48c-08d98a264128
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2363:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB2363B05B47C78BF4C4406A2083B29@MW2PR12MB2363.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:785;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wzqws2rV79CaFv56fzgYsWPumi3zaU51mJkmQHeSojxRZHO5FK/NnbeRQWVeKWL4hxcaRXNMUtUG7I72Ni/yJKy+uq6GHXCdIMYToy6o/xaFWkrcGrFeFjbj38fPLzNdGhDbKzHwdVDNOpS5evqcuSxoCBhewhivgPimUexTVCg0HHmMM6LDpHt1ObfdqwW3kuKrwWid7TkspYhLFgRYXZmkXutHgU2sLNbsGLkTNgvTF+DMESiOnIGRELs7DL5mEINwt5mlxl7Q6ub0BJm4ZLX/pAG2L663TtC69Run2ceBLVLxQNDqHMEpcKMKlgWj8b7ahI9k7gD/U/Tf8O/El1ykeS9GVrpHyI8OJqYBzfJ2L+QgRMg0hb6FcKGYCYDxgi2eSGRlKZufCTATZpgf2cNySBHZue6kThbhVhtt2CPRypVD6QO1KxKjoT7H6aLKAv6T2rHAY364sg/jI0DYKI2PykDgBeD/e1g5e5tJa4m5Eks5cGUJlivxhbQHMFPrrJQdALKj0ak36lWyhwzeYtD9PU2Rw0AC22diPGfmha2fmul2AnMHODSxpMqxjDagsC/e4gy7eHFdue0rxr60P9f40kEe/jsRnRmE+g9OPiZS5Gg0WvsNRHVY1i8yr1kgahTNTz1P4Rutk/VRja1WBKxqPshSmAcsvXzUyInZgvxA4eBoSUzUh6JUC0uYemD5iqIPvop+Nfff10iBwGGswlzdQsKZmBAx4rVryhEvgbuDoDL4j7TJREXiADSuG3oH
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6666004)(186003)(83380400001)(7416002)(86362001)(38100700002)(2616005)(8676002)(36756003)(31696002)(508600001)(8936002)(316002)(4326008)(66946007)(6486002)(2906002)(5660300002)(66476007)(31686004)(66556008)(110136005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGZhWkNGbmRVNlJ3alZYVWVVWGVWL05PdUVUSVNuT2UxMll0U09hWFp6KzVF?=
- =?utf-8?B?UXVGZklJOVY5UWJOeVBrY3ZxcTVHRWZKSURvKzNGanNDSVZhekZxc1RDeG5i?=
- =?utf-8?B?eXZlaW5RdnZaZ0d0dlNTR1EyRitRQ1ZocHBpMk1xcnFBYkhvOUFKcjRQUkpS?=
- =?utf-8?B?S3FrdTkxWEdLb1pVTHVac3U0enVaeEhVUHBXR0pJa283Rm4xTXBjdmw5TDFK?=
- =?utf-8?B?YnYyU28rVUVvQk5zQko1R242VEQ5QjMwSER0MDNnMFRrMzF4TTYwM1l5UmNt?=
- =?utf-8?B?VjdKT3FOVklxd3RqMU52dy9OTUhKbHI0L1dLQjRXTFlwVFJrblM5TlhVVHRF?=
- =?utf-8?B?bEJLdzcvRGlZb1ZKT0RqSWZ5TWJQTDRYUFFidnFLeTFOTldBV0liNTBvR2hr?=
- =?utf-8?B?L1NUczc4QjR5US9WdnVqTkZraTQvY3l3ZUtOeXVVNnZvd2swTExzdm1aTUhU?=
- =?utf-8?B?cHF5OTFESlhDM2Vaek1nYTBZYllzVEVqWHNPZkdOeTUvaFpJRDIvazd1RVVN?=
- =?utf-8?B?Y1M0Y1BFN3p0MHZ0Q3pDdUZpY1VWVnBtUjIyMTNNZmJobHFqY1hmdmtBTzBO?=
- =?utf-8?B?cis2K1U2SW5SWWhIeGNnYUxQVWNBc0xWQTFGVUFTVEtVT3JuWERuck5IQkd6?=
- =?utf-8?B?YWNCbUk1WHBqNVIybXFSQndtWkF4eW9WZVpWUGFTN2pZR0JPTWVqaTBGRm1l?=
- =?utf-8?B?NGM4ZExWZUppVzlobStQS1d4blUxRWNHQ01heXhDZUNDRG5TN0hlZjhzTkJJ?=
- =?utf-8?B?aW1UemcxQzg1bHdMT3ArdTdKUCtRRUVDT29Pa1ZxSDZ5NHd4UllTOGFBaUc4?=
- =?utf-8?B?R0V6bXNyWG0wNXRHUWNkTU80RXhyOEtyaWVhNnpNNkVRK1hjelpWeXg5ZVFG?=
- =?utf-8?B?VEdlb2JNaUlpMmhUNkZ6RURxSHhrcXMyWExrSGNaQ3NKVGtwVXZZWnVkeXFL?=
- =?utf-8?B?YjkyU0hINkNJZURvY21DOUpHdVF3ZTcvTzV1SWdBZU1WK2FqTkpKTjJuZGl4?=
- =?utf-8?B?bGxaVGRPa2pFQW5BcjBtWHoxbGVtVkduUEYwYkxYT0NJSFRzTFE5WXByMWxi?=
- =?utf-8?B?ZkNock5tNlNBVUZmZ0FCdGdJaTBUM3ROd1o5VXR2WjJjOWRZZjZGRE4xdDl3?=
- =?utf-8?B?aWxTWndaQ2ExaitvQ3poSXg1aHhDY3k5Ni9Ma29mLzU1a0N4RHhpWmppdVBv?=
- =?utf-8?B?bmFzMGdJb081TzJEdmc5RUE0R1VzOGNiNUJ1VXNqQnpzaFBIYWNVdVlrWXhR?=
- =?utf-8?B?N0MrSDgvb0pQeFluRlFGTktER2k4T2pGMGhoVEErZ29JSCtTcXNUZW96cWxs?=
- =?utf-8?B?ZjRoZDJTYytmUmlOVDRVcCtUU0g3M3VEbFB0SFNPYmxYQzNIUGFvN0dURVRj?=
- =?utf-8?B?MGpmUDhUZE1la25ncmhjRUV0d0ZUaG9GUTcxcHQvZSt5OEhMWGNHMHdPcVM0?=
- =?utf-8?B?R3paZXpLd2J6eGZ1WGM5VEZHOHhqSEFYWWhyaisrRzZwNFBJUDRTL24zTGZm?=
- =?utf-8?B?dElSKzdhWUU3WWVRbFFMcStJdk1jODBNQXZqcWYwMVhYaE9wV0FHWllsWmVw?=
- =?utf-8?B?TzBxOXpPaXB0aFVjL1RNUFVCZHVPMHRuWW4rcnNKVFFJK3R4a2NjMTBJdjF2?=
- =?utf-8?B?ZkN6Zm0wYjYvY0NqNHFBWXNhWFFOTHFtTDY5NTdSNDZ2azVvOWN3MlN3Nkc3?=
- =?utf-8?B?bldnRTd0NTA3Z3U0TGRhcmRKNWFiYnp0Nml3bGdTSFVZYXhYWEpwcTBwcC82?=
- =?utf-8?B?UytRRlNRR3JOQ21ZVkdIVVFhdW9lK2E3TkRBYjBlZVFZREpHUGtyZWZiN29B?=
- =?utf-8?B?TDZLTkd1a0NYRG4zbW9JZ1ZMY3pKNVY3MDNQQTZSMk8rdjR6MDMveGRuRkVs?=
- =?utf-8?Q?vBANA6SFkUTmD?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 97a6ea0c-4cbd-43fd-f48c-08d98a264128
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 06:38:35.9008
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +9tnrYRi2lsFiOcfrrfrBajuVx+ZIuCcDukfW112Rf8zSY9aedAA1A7xsZu52sz5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2363
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowABXS5On519h3yP90g--.13673S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXFWxAw13uF43XF17Gr43Awb_yoWrKF1rpa
+        yvkw1Utr4kArZ7WanxJr1kZr13Kw4kWa47K3y3G3yrt3W3Kr1Fvryvyry3Zr4FgrWkuF43
+        JFW3Kry7Ka1jvaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j4MKZUUUUU=
+X-Originating-IP: [81.71.100.192]
+X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbivwgmWFWBv6S4lQAAsr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 08.10.21 um 08:29 schrieb guangming.cao@mediatek.com:
-> From: Guangming Cao <Guangming.Cao@mediatek.com>
->
-> Because dma-buf.name can be freed in func: "dma_buf_set_name",
-> so, we need to acquire lock first before we read/write dma_buf.name
-> to prevent Use After Free(UAF) issue.
->
-> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
-> ---
->   drivers/dma-buf/dma-buf.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-> index 511fe0d217a0..aebb51b3ff52 100644
-> --- a/drivers/dma-buf/dma-buf.c
-> +++ b/drivers/dma-buf/dma-buf.c
-> @@ -80,7 +80,9 @@ static void dma_buf_release(struct dentry *dentry)
->   		dma_resv_fini(dmabuf->resv);
->   
->   	module_put(dmabuf->owner);
-> +	spin_lock(&dmabuf->name_lock);
->   	kfree(dmabuf->name);
-> +	spin_unlock(&dmabuf->name_lock);
+From: chen xiaoguang <xiaoggchen@tencent.com>
 
-That here is certainly a NAK. This is the release function if somebody 
-is changing the name on a released DMA-buf we have much bigger problems.
+The exit time is long when program allocated big memory and
+the most time consuming part is free memory which takes 99.9%
+of the total exit time. By using async free we can save 25% of
+exit time.
 
->   	kfree(dmabuf);
->   }
->   
-> @@ -1372,6 +1374,8 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
->   		if (ret)
->   			goto error_unlock;
->   
-> +
-> +		spin_lock(&dmabuf->name_lock);
->   		seq_printf(s, "%08zu\t%08x\t%08x\t%08ld\t%s\t%08lu\t%s\n",
->   				buf_obj->size,
->   				buf_obj->file->f_flags, buf_obj->file->f_mode,
-> @@ -1379,6 +1383,7 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
->   				buf_obj->exp_name,
->   				file_inode(buf_obj->file)->i_ino,
->   				buf_obj->name ?: "");
-> +		spin_unlock(&dmabuf->name_lock);
+Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
+Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
+Signed-off-by: lu yihui <yihuilu@tencent.com>
+---
+ include/linux/mm.h |  1 +
+ kernel/exit.c      |  2 ++
+ mm/page_alloc.c    | 89 +++++++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 87 insertions(+), 5 deletions(-)
 
-Yeah, that part looks like a good idea to me as well.
-
-Christian.
-
->   
->   		robj = buf_obj->resv;
->   		fence = dma_resv_excl_fence(robj);
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 73a52aba448f..2add3b635eee 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -908,6 +908,7 @@ void put_pages_list(struct list_head *pages);
+ 
+ void split_page(struct page *page, unsigned int order);
+ void copy_huge_page(struct page *dst, struct page *src);
++void kfreepcp_set_run(unsigned int cpu);
+ 
+ /*
+  * Compound pages have a destructor function.  Provide a
+diff --git a/kernel/exit.c b/kernel/exit.c
+index 91a43e57a32e..269eb81acbe9 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -167,10 +167,12 @@ static void __exit_signal(struct task_struct *tsk)
+ static void delayed_put_task_struct(struct rcu_head *rhp)
+ {
+ 	struct task_struct *tsk = container_of(rhp, struct task_struct, rcu);
++	unsigned int cpu = tsk->cpu;
+ 
+ 	perf_event_delayed_put(tsk);
+ 	trace_sched_process_free(tsk);
+ 	put_task_struct(tsk);
++	kfreepcp_set_run(cpu);
+ }
+ 
+ void put_task_struct_rcu_user(struct task_struct *task)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..8a748ea9156b 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -72,6 +72,7 @@
+ #include <linux/padata.h>
+ #include <linux/khugepaged.h>
+ #include <linux/buffer_head.h>
++#include <linux/smpboot.h>
+ #include <asm/sections.h>
+ #include <asm/tlbflush.h>
+ #include <asm/div64.h>
+@@ -147,6 +148,12 @@ DEFINE_PER_CPU(int, _numa_mem_);		/* Kernel "local memory" node */
+ EXPORT_PER_CPU_SYMBOL(_numa_mem_);
+ #endif
+ 
++struct freepcp_stat {
++	struct task_struct *thread;
++	bool should_run;
++};
++DEFINE_PER_CPU(struct freepcp_stat, kfreepcp);
++
+ /* work_structs for global per-cpu drains */
+ struct pcpu_drain {
+ 	struct zone *zone;
+@@ -3361,6 +3368,81 @@ static int nr_pcp_high(struct per_cpu_pages *pcp, struct zone *zone)
+ 	return min(READ_ONCE(pcp->batch) << 2, high);
+ }
+ 
++void kfreepcp_set_run(unsigned int cpu)
++{
++	struct task_struct *tsk;
++	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
++
++	tsk = stat->thread;
++	per_cpu(kfreepcp.should_run, cpu) = true;
++
++	if (tsk && !task_is_running(tsk))
++		wake_up_process(tsk);
++}
++EXPORT_SYMBOL_GPL(kfreepcp_set_run);
++
++static int kfreepcp_should_run(unsigned int cpu)
++{
++	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
++
++	return stat->should_run;
++}
++
++static void run_kfreepcp(unsigned int cpu)
++{
++	struct zone *zone;
++	struct per_cpu_pages *pcp;
++	unsigned long flags;
++	struct freepcp_stat *stat = this_cpu_ptr(&kfreepcp);
++	bool need_free_more = false;
++
++
++
++again:
++	need_free_more = false;
++	for_each_populated_zone(zone) {
++		pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
++		if (pcp->count && pcp->high && pcp->count > pcp->high) {
++			unsigned long batch = READ_ONCE(pcp->batch);
++			int high;
++
++			high = nr_pcp_high(pcp, zone);
++			local_irq_save(flags);
++			free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch),
++					pcp);
++			local_irq_restore(flags);
++			if (pcp->count > pcp->high)
++				need_free_more = true;
++		}
++
++		cond_resched();
++	}
++	if (need_free_more)
++		goto again;
++
++	stat->should_run = false;
++}
++
++static struct smp_hotplug_thread freepcp_threads = {
++	.store                  = &kfreepcp.thread,
++	.thread_should_run      = kfreepcp_should_run,
++	.thread_fn              = run_kfreepcp,
++	.thread_comm            = "kfreepcp/%u",
++};
++
++static int __init freepcp_init(void)
++{
++	int cpu;
++
++	for_each_possible_cpu(cpu)
++		per_cpu(kfreepcp.should_run, cpu) = false;
++
++	BUG_ON(smpboot_register_percpu_thread(&freepcp_threads));
++
++	return 0;
++}
++late_initcall(freepcp_init);
++
+ static void free_unref_page_commit(struct page *page, unsigned long pfn,
+ 				   int migratetype, unsigned int order)
+ {
+@@ -3375,11 +3457,8 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn,
+ 	list_add(&page->lru, &pcp->lists[pindex]);
+ 	pcp->count += 1 << order;
+ 	high = nr_pcp_high(pcp, zone);
+-	if (pcp->count >= high) {
+-		int batch = READ_ONCE(pcp->batch);
+-
+-		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch), pcp);
+-	}
++	if (pcp->count >= high)
++		this_cpu_ptr(&kfreepcp)->should_run = false;
+ }
+ 
+ /*
+-- 
+2.27.0
 
