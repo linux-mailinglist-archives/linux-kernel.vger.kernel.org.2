@@ -2,133 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9D2426CE2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AE0426CE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242324AbhJHOpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48710 "EHLO mail.kernel.org"
+        id S242533AbhJHOp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:45:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:55334 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230350AbhJHOpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:45:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF5AE61038;
-        Fri,  8 Oct 2021 14:43:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633704201;
-        bh=ydkNMFwowHjqi1EPLN1rd87HIVXYxcPIVVc2jN+WelI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sNI4J222L/76hrc8WAU6OX1WLX/H6iuW6mqHU1udywVP+VunfaO+qQwTE/sax4OK9
-         Kay4ysKaZqyM40I45Seut3Q1wWWv8RDq3+rwuvpe7N4OaiHJ7M6FK7WSycslQ0YGfi
-         QpG3oC71ovrShU0JNu/EQ+Sivy6gKBXncIzOrG43AJVLAIajmiIaJBabDPlu2xLe3r
-         8IVC5vy3/rEL4R1iGjFBox+D12RXAOoKJku0CVRrwI1DqAGts+Y1nk0e59bEYuwUXY
-         vGfpjqB4yUwMGgo6/lEV4Qq/J/fhqG5Sj2Fmzgi3HFiVswd4DHWy9vyaDPmi2eSCH9
-         dhJYgvoqpWSmA==
-Received: by mail-wr1-f54.google.com with SMTP id e12so30574328wra.4;
-        Fri, 08 Oct 2021 07:43:21 -0700 (PDT)
-X-Gm-Message-State: AOAM53222Z3F3DUWSr6TqzpZqDx9z9CjNbf3cjE5Oq0GcpXcM8jhK8hZ
-        Fl+0bCBySj+d3LAb9gxEGY/wgW3KiT/qlsHSvo4=
-X-Google-Smtp-Source: ABdhPJz1vUdU73k6INDWOLvIDoXTjyqdbXvtukzvyrFTaw7jdT5bcmej8noCbVc0zE+ywr4rL97mQG2c+gmZH/oJGDA=
-X-Received: by 2002:adf:ab46:: with SMTP id r6mr4601118wrc.71.1633704200233;
- Fri, 08 Oct 2021 07:43:20 -0700 (PDT)
+        id S241341AbhJHOpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:45:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633704239; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=9zDcaEkAkspustVVY2KAKAYV6I1Sut33Nhr4VG24NAw=; b=NuyZlUipnUKXlBal2dsmQ/fudUPqfun3KrjaCxHt4sAes0nnQACTVMi7WRO8EwJeeU3hFlXS
+ jm3B6pI+1KlCNgChu5cpMrNS3zCsP55tibNHrcdYoYsuZs8Z/GXpnwE1xy91pHjMNLLIP7fx
+ 1FC24ZfDxpLTqLy5p0zp1CmKvmQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 61605920f3e5b80f1f062149 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 14:43:44
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 934CFC4360C; Fri,  8 Oct 2021 14:43:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51711C4338F;
+        Fri,  8 Oct 2021 14:43:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 51711C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        ath11k@lists.infradead.org,
+        linux-wireless <linux-wireless@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+References: <20211008162103.1921a7a7@canb.auug.org.au>
+        <87tuhs5ah8.fsf@codeaurora.org>
+        <CAMuHMdUZa9o15_fGJ7Si_-bOQVcFOxtWgo_MOiKsV0FjoPeX6Q@mail.gmail.com>
+Date:   Fri, 08 Oct 2021 17:43:39 +0300
+In-Reply-To: <CAMuHMdUZa9o15_fGJ7Si_-bOQVcFOxtWgo_MOiKsV0FjoPeX6Q@mail.gmail.com>
+        (Geert Uytterhoeven's message of "Fri, 8 Oct 2021 10:14:25 +0200")
+Message-ID: <87pmsf60h0.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210927124148.1415359-1-arnd@kernel.org> <YV84OJWGqd3zGSfJ@orome.fritz.box>
-In-Reply-To: <YV84OJWGqd3zGSfJ@orome.fritz.box>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 8 Oct 2021 16:43:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1x3SCk-dY42oNjzv+dVEiYvq4k=BiiM30Q_GiWMFr3iA@mail.gmail.com>
-Message-ID: <CAK8P3a1x3SCk-dY42oNjzv+dVEiYvq4k=BiiM30Q_GiWMFr3iA@mail.gmail.com>
-Subject: Re: [PATCH] [RESEND] firmware: tegra: reduce stack usage
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 8:11 PM Thierry Reding <thierry.reding@gmail.com> wrote:
->
-> On Mon, Sep 27, 2021 at 02:41:40PM +0200, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Building the bpmp-debugfs driver for Arm results in a warning for stack usage:
-> >
-> > drivers/firmware/tegra/bpmp-debugfs.c:321:16: error: stack frame size of 1224 bytes in function 'bpmp_debug_store' [-Werror,-Wframe-larger-than=]
-> > static ssize_t bpmp_debug_store(struct file *file, const char __user *buf,
-> >
-> > It should be possible to rearrange the code to not require two separate
-> > buffers for the file name, but the easiest workaround is to use dynamic
-> > allocation.
-> >
-> > Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
-> > Link: https://lore.kernel.org/all/20201204193714.3134651-1-arnd@kernel.org/
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> > I sent this one in 2020 but got no reply. It still appears to be
-> > required, please have a look.
-> > ---
-> >  drivers/firmware/tegra/bpmp-debugfs.c | 16 +++++++++++-----
-> >  1 file changed, 11 insertions(+), 5 deletions(-)
->
-> If this is not a problem on 64-bit ARM, then perhaps we should add that
-> as a dependency. BPMP is only available in Tegra210 and later, all of
-> which are 64-bit.
->
-> But dynamic allocation also doesn't sound that bad. This is debugfs
-> support, after all, so shouldn't be in any fast path.
+Hi Geert,
 
-Right, it stays below the warning threshold on 64-bit kernels, but using this
-much stack is still a bad idea, so fixing it in the driver seems better than
-hiding it in Kconfig.
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-> > diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
-> > index 3e9fa4b54358..f6888cee83ee 100644
-> > --- a/drivers/firmware/tegra/bpmp-debugfs.c
-> > +++ b/drivers/firmware/tegra/bpmp-debugfs.c
-> > @@ -74,28 +74,34 @@ static void seqbuf_seek(struct seqbuf *seqbuf, ssize_t offset)
-> >  static const char *get_filename(struct tegra_bpmp *bpmp,
-> >                               const struct file *file, char *buf, int size)
-> >  {
-> > -     char root_path_buf[512];
-> > +     char *root_path_buf;
-> >       const char *root_path;
-> > -     const char *filename;
-> > +     const char *filename = NULL;
-> >       size_t root_len;
-> >
-> > +     root_path_buf = kzalloc(512, GFP_KERNEL);
-> > +     if (!root_path_buf)
-> > +             goto out;
-> > +
-> >       root_path = dentry_path(bpmp->debugfs_mirror, root_path_buf,
-> >                               sizeof(root_path_buf));
-> >       if (IS_ERR(root_path))
-> > -             return NULL;
-> > +             goto out;
-> >
-> >       root_len = strlen(root_path);
-> >
-> >       filename = dentry_path(file->f_path.dentry, buf, size);
-> >       if (IS_ERR(filename))
-> > -             return NULL;
-> > +             goto out;
+> On Fri, Oct 8, 2021 at 7:55 AM Kalle Valo <kvalo@codeaurora.org> wrote:
+>> Stephen Rothwell <sfr@canb.auug.org.au> writes:
+>>
+>> > After merging the net-next tree, today's linux-next build (xtensa,
+>> > m68k allmodconfig) failed like this:
+>> >
+>> > In file included from <command-line>:0:0:
+>> > In function 'ath11k_peer_assoc_h_smps',
+>> >     inlined from 'ath11k_peer_assoc_prepare' at drivers/net/wireless/ath/ath11k/mac.c:2362:2:
+>> > include/linux/compiler_types.h:317:38: error: call to '__compiletime_assert_650' declared with attribute error: FIELD_GET: type of reg too small for mask
+>> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>> >                                       ^
+>> > include/linux/compiler_types.h:298:4: note: in definition of macro '__compiletime_assert'
+>> >     prefix ## suffix();    \
+>> >     ^
+>> > include/linux/compiler_types.h:317:2: note: in expansion of macro '_compiletime_assert'
+>> >   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+>> >   ^
+>> > include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+>> >  #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+>> >                                      ^
+>> > include/linux/bitfield.h:52:3: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+>> >    BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,  \
+>> >    ^
+>> > include/linux/bitfield.h:108:3: note: in expansion of macro '__BF_FIELD_CHECK'
+>> >    __BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: "); \
+>> >    ^
+>> > drivers/net/wireless/ath/ath11k/mac.c:2079:10: note: in expansion of macro 'FIELD_GET'
+>> >    smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
+>> >           ^
+>> >
+>> > Caused by commit
+>> >
+>> >   6f4d70308e5e ("ath11k: support SMPS configuration for 6 GHz")
+>>
+>> Thanks for the report, weird that I don't see it on x86. I can't look at
+>> this in detail now, maybe later today, but I wonder if the diff below
+>> fixes the issue?
 >
-> Shouldn't this and...
+> It seems to be related to passing "le16_to_cpu(sta->he_6ghz_capa.capa)".
+> Probably typeof(le16_to_cpu(sta->he_6ghz_capa.capa)) goes berserk.
+> le16_to_cpu() is a complex macro on big-endian. I had expected to see
+> a similar issue on powerpc, but I don't.
+> Using an intermediate "u16 capa = le16_to_cpu(sta->he_6ghz_capa.capa)"
+> fixes the problem.
 >
-> >       if (strlen(filename) < root_len ||
-> >                       strncmp(filename, root_path, root_len))
-> > -             return NULL;
-> > +             goto out;
+>> At least it's cleaner than using FIELD_GET(), actually ath11k should be
+>> cleaned up to use xx_get_bits() all over.
+>>
+>> Kalle
+>>
+>> diff --git a/drivers/net/wireless/ath/ath11k/mac.c b/drivers/net/wireless/ath/ath11k/mac.c
+>> index d897020dd52d..3e7e569f284b 100644
+>> --- a/drivers/net/wireless/ath/ath11k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath11k/mac.c
+>> @@ -2076,8 +2076,8 @@ static void ath11k_peer_assoc_h_smps(struct ieee80211_sta *sta,
+>>                 smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
+>>                 smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
+>>         } else {
+>> -               smps = FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
+>> -                                le16_to_cpu(sta->he_6ghz_capa.capa));
+>> +               smps = le16_get_bits(sta->he_6ghz_capa.capa,
+>> +                                    IEEE80211_HE_6GHZ_CAP_SM_PS);
+>>         }
 >
-> this reset filename to NULL? All callers check for !filename as their
-> error condition.
->
-> I can fix that up as I apply this, but perhaps shout if you did this on
-> purpose and it needs to stay this way.
+> Thanks, that works, too, so (compile)
+> Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Indeed, you are absolutely correct. Thanks for finding the bug
-and offering to fix it.
+Thanks Geert, you helped a lot! I now submitted a patch to netdev:
 
-     Arnd
+https://patchwork.kernel.org/project/netdevbpf/patch/20211008143932.23884-1-kvalo@codeaurora.org/
+
+Dave & Jakub, if you can please take the patch directly to net-next.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
