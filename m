@@ -2,147 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43EC54263FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79515426406
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhJHFPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:15:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57040 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhJHFPc (ORCPT
+        id S229763AbhJHFXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:23:02 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:56787 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229511AbhJHFXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:15:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633670017; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=M3oSCWJ7aQEJa+w9EA0EHaehA9KHiO9jYl3HRs7dc/I=; b=nBSiCHBsJZiUlCoO5EK2hu9rdfvDpD1cW334l0RzgYcZZ9xGlG6m308ty5LVhVYfqo4ZmjkC
- 3uRWOdxj2pA3K+r6Vu+ffvhvCz1kzQJGyMqe9iw225z/4o0278FvzmqUfQzJdwSX5m440l+9
- YIS23c4CBVBhW+gnzr65IyXN6C0=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 615fd370de4c4ed385156484 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 05:13:20
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E2820C43616; Fri,  8 Oct 2021 05:13:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.100] (unknown [157.48.163.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Fri, 8 Oct 2021 01:23:01 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 871DCC4338F;
-        Fri,  8 Oct 2021 05:13:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 871DCC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH v2] ASoC: dt-bindings: lpass: add binding headers for
- digital codecs
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <1631109831-1360-1-git-send-email-srivasam@codeaurora.org>
- <04210158-e999-a3a3-ee53-ac9024ab9120@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <155b8dbf-8b2a-0484-ac38-1ec6e0a68537@codeaurora.org>
-Date:   Fri, 8 Oct 2021 10:43:10 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HQc3h4ytdz4xbc;
+        Fri,  8 Oct 2021 16:21:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633670465;
+        bh=fO46+zE2G2W+f4Yn3/vP4Zgexf2v7j+Wy7IxhBJwVa8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Y3UOlASfMJ911Ajsw4HHvQVsRa73GSRtLOq0eKqKmW62uPplVF6nGFGcHnVMdJJJ5
+         wOs2oak8osIcbyJWm2RgYggGm4pE7MmIXyeaSzybOKoX+a7xIUlKpgtNTARb92Is+Y
+         cdIyt2M+ZSeH/ShUypfRBklraL80DIzl19BMjqjHkZi2zlaPNt/gZgd4ovBKJ3Opyq
+         YRxUCCMtHUhUt8MEb3+KR2qtiRH8ZgGIMqPrLdKX6et1edJ38W//Dzd74dmuTeyNJr
+         xSOIrCjpp/ReRH+kdRLLbDCJMpMSYSXwBnDrPUpQ6BahekQOVrwLUCeOLsYvDq+EYW
+         yhQ+PMoI5chKg==
+Date:   Fri, 8 Oct 2021 16:21:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Jouni Malinen <jouni@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the net-next tree
+Message-ID: <20211008162103.1921a7a7@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <04210158-e999-a3a3-ee53-ac9024ab9120@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="Sig_/OWkET=COPDXOIyb7J.sAON7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for notification Srini!!!
+--Sig_/OWkET=COPDXOIyb7J.sAON7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 10/7/2021 4:14 PM, Srinivas Kandagatla wrote:
-> Hi Srinivasa,
->
->
-> On 08/09/2021 15:03, Srinivasa Rao Mandadapu wrote:
->> Add header defining for lpass internal digital codecs rx,tx and va
->> dai node id's.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->> Changes since v1:
->>      -- Add missing dai node ID's
->>
->>   include/dt-bindings/sound/qcom,lpass.h | 31 
->> +++++++++++++++++++++++++++++++
->>   1 file changed, 31 insertions(+)
->>
->
->
-> Mark has already applied v1, 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/include/dt-bindings/sound/qcom,lpass.h?id=bfad37c53ae6168d03ab06868ea44e77995c43d5
->
-> Can you please rebase on top of sound-next so that we endup with 
-> correct defines.
-Sure. will post v3 patch after rebase.
->
-> --srini
->
->> diff --git a/include/dt-bindings/sound/qcom,lpass.h 
->> b/include/dt-bindings/sound/qcom,lpass.h
->> index 7b0b80b..a9404c3 100644
->> --- a/include/dt-bindings/sound/qcom,lpass.h
->> +++ b/include/dt-bindings/sound/qcom,lpass.h
->> @@ -10,6 +10,37 @@
->>     #define LPASS_DP_RX    5
->>   +#define LPASS_CDC_DMA_RX0 6
->> +#define LPASS_CDC_DMA_RX1 7
->> +#define LPASS_CDC_DMA_RX2 8
->> +#define LPASS_CDC_DMA_RX3 9
->> +#define LPASS_CDC_DMA_RX4 10
->> +#define LPASS_CDC_DMA_RX5 11
->> +#define LPASS_CDC_DMA_RX6 12
->> +#define LPASS_CDC_DMA_RX7 13
->> +#define LPASS_CDC_DMA_RX8 14
->> +#define LPASS_CDC_DMA_RX9 15
->> +
->> +#define LPASS_CDC_DMA_TX0 16
->> +#define LPASS_CDC_DMA_TX1 17
->> +#define LPASS_CDC_DMA_TX2 18
->> +#define LPASS_CDC_DMA_TX3 19
->> +#define LPASS_CDC_DMA_TX4 20
->> +#define LPASS_CDC_DMA_TX5 21
->> +#define LPASS_CDC_DMA_TX6 22
->> +#define LPASS_CDC_DMA_TX7 23
->> +#define LPASS_CDC_DMA_TX8 24
->> +
->> +#define LPASS_CDC_DMA_VA_TX0 25
->> +#define LPASS_CDC_DMA_VA_TX1 26
->> +#define LPASS_CDC_DMA_VA_TX2 27
->> +#define LPASS_CDC_DMA_VA_TX3 28
->> +#define LPASS_CDC_DMA_VA_TX4 29
->> +#define LPASS_CDC_DMA_VA_TX5 30
->> +#define LPASS_CDC_DMA_VA_TX6 31
->> +#define LPASS_CDC_DMA_VA_TX7 32
->> +#define LPASS_CDC_DMA_VA_TX8 33
->> +
->>   #define LPASS_MCLK0    0
->>     #endif /* __DT_QCOM_LPASS_H */
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Hi all,
 
+After merging the net-next tree, today's linux-next build (xtensa,
+m68k allmodconfig) failed like this:
+
+In file included from <command-line>:0:0:
+In function 'ath11k_peer_assoc_h_smps',
+    inlined from 'ath11k_peer_assoc_prepare' at drivers/net/wireless/ath/at=
+h11k/mac.c:2362:2:
+include/linux/compiler_types.h:317:38: error: call to '__compiletime_assert=
+_650' declared with attribute error: FIELD_GET: type of reg too small for m=
+ask
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+                                      ^
+include/linux/compiler_types.h:298:4: note: in definition of macro '__compi=
+letime_assert'
+    prefix ## suffix();    \
+    ^
+include/linux/compiler_types.h:317:2: note: in expansion of macro '_compile=
+time_assert'
+  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+  ^
+include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_a=
+ssert'
+ #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+                                     ^
+include/linux/bitfield.h:52:3: note: in expansion of macro 'BUILD_BUG_ON_MS=
+G'
+   BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,  \
+   ^
+include/linux/bitfield.h:108:3: note: in expansion of macro '__BF_FIELD_CHE=
+CK'
+   __BF_FIELD_CHECK(_mask, _reg, 0U, "FIELD_GET: "); \
+   ^
+drivers/net/wireless/ath/ath11k/mac.c:2079:10: note: in expansion of macro =
+'FIELD_GET'
+   smps =3D FIELD_GET(IEEE80211_HE_6GHZ_CAP_SM_PS,
+          ^
+
+Caused by commit
+
+  6f4d70308e5e ("ath11k: support SMPS configuration for 6 GHz")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/OWkET=COPDXOIyb7J.sAON7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFf1T8ACgkQAVBC80lX
+0GxN4gf/XbvnPj4onsQ0DSCEd/9Xm7lJxN/nxwMngxwhgMoHk+1XYT8jMH+pybyW
+vcOOqFUJ3Bmvw8baM5KSBp0lvykxqvNsIuYLfTa282R10gn5+gZ3zRpBH7TBlveG
+7/xqiH8y6GVTO3IZVcc9Z14FNOGd4zb1VV8trqbPITu1Rt2qowoFilyPlQQL6nha
+RbWDJfe8Ve06pN5vLEX0v6DX6obZoF6ibUEuzB9XnXXVup+AkoTxehXbEr4U1Jle
+TCLk8SQ6g39T5iirdxj2k+r94I5JeyYw5G1iCl7hS3kTfZhKSRqZBMBteLc219DV
+tWCTJxgMTKf9ENfTu/MXTnA7xg7gpQ==
+=Zz2x
+-----END PGP SIGNATURE-----
+
+--Sig_/OWkET=COPDXOIyb7J.sAON7--
