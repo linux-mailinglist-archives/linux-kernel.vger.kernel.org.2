@@ -2,106 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73234260DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C43A74260E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236920AbhJHAF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 20:05:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:57364 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233133AbhJHAFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 20:05:20 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225174146"
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="225174146"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 17:03:26 -0700
-X-IronPort-AV: E=Sophos;i="5.85,355,1624345200"; 
-   d="scan'208";a="440455701"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.19.60]) ([10.209.19.60])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 17:03:25 -0700
-Message-ID: <b24041af-1c92-3855-9659-133e73a0c241@linux.intel.com>
-Date:   Thu, 7 Oct 2021 17:03:25 -0700
+        id S237169AbhJHAGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 20:06:40 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13705 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232682AbhJHAGh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 20:06:37 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQT0v5Qt3zWjPG;
+        Fri,  8 Oct 2021 08:03:11 +0800 (CST)
+Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 08:04:39 +0800
+Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
+ dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 08:04:38 +0800
+From:   "Longpeng(Mike)" <longpeng2@huawei.com>
+To:     <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
+        <will@kernel.org>, <joro@8bytes.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <arei.gonglei@huawei.com>, "Longpeng(Mike)" <longpeng2@huawei.com>
+Subject: [PATCH v3 0/2] iommu/vt-d: boost the mapping process
+Date:   Fri, 8 Oct 2021 08:04:31 +0800
+Message-ID: <20211008000433.1115-1-longpeng2@huawei.com>
+X-Mailer: git-send-email 2.25.0.windows.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1
- json
-Content-Language: en-US
-To:     John Garry <john.garry@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <b7a4a1b3-3d22-7a52-75b1-66c04b57a50c@huawei.com>
- <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
- <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.148.223]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml100016.china.huawei.com (7.185.36.216)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi guys,
 
-On 10/6/2021 9:26 AM, John Garry wrote:
-> On 06/10/2021 09:43, James Clark wrote:
->
-> + Andi
->
->>
->>
->> On 05/10/2021 11:10, John Garry wrote:
->>> On 04/10/2021 17:00, Andrew Kilroy wrote:
->>>> There are some syntactical mistakes in the json files for the 
->>>> Cortex A76
->>>> N1 (Neoverse N1).  This was obstructing parsing from an external tool.
->>>
->>> If the trailing comma is not allowed by standard, then maybe we 
->>> should fix our parsing tool to not allow it also. However maybe 
->>> there is a good reason why we allow it..
->>
->> It would be nice to do, because I have also made similar fixes 
->> before. We looked at the STRICT option
->> in the parser (https://github.com/zserge/jsmn), but even then it 
->> seems to allow trailing commas.
->>
->> Trailing commas are not allowed in the json standard, but there is a 
->> split between parsers
->> where some allow it and others don't. Specifically the Python parser 
->> doesn't allow it, and Python
->> can easily be involved in some workflow that parses these files.
->>
->> The only way forwards I can think of is either getting a change 
->> accepted upstream to the parser
->> and then updating it in perf, switching to a different parser, or 
->> doing some hack to add an extra
->> step in perf to look for commas. None of which sound ideal.
->>
->
-> Looking at the license in jsmn.c, we seem to be ok to modify it (to 
-> error on non-standard trailing ',') - that parser has already 
-> apparently been modified in mainline.
->
-> If we do that then I hope that there are not to many violations in out 
-> JSONs, including downstream.
+We found that the __domain_mapping() would take too long when
+the memory region is too large, we try to make it faster in this
+patchset. The performance number can be found in PATCH 2, please
+review when you free, thanks.
 
+Changes v2 -> v3:
+ - make first_pte_in_page() neater  [Baolu]
+ - remove meaningless BUG_ON() in __domain_mapping()  [Baolu]
 
-Sure we can modify the file. I already did some minor changes when I 
-submitted it originally.
+Changes v1 -> v2:
+ - Fix compile warning on i386  [Baolu]
 
--Andi
+Longpeng(Mike) (2):
+  iommu/vt-d: convert the return type of first_pte_in_page to bool
+  iommu/vt-d: avoid duplicated removing in __domain_mapping
 
+ drivers/iommu/intel/iommu.c | 11 ++++++-----
+ include/linux/intel-iommu.h | 10 ++++++++--
+ 2 files changed, 14 insertions(+), 7 deletions(-)
+
+-- 
+1.8.3.1
 
