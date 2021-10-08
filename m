@@ -2,152 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABBC4262D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729C24262DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238136AbhJHDWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236399AbhJHDWP (ORCPT
+        id S237130AbhJHDWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:22:42 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:10087 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236409AbhJHDWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:22:15 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6D6C061570;
-        Thu,  7 Oct 2021 20:20:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id l6so5226101plh.9;
-        Thu, 07 Oct 2021 20:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gNTFuoOTdTSriuFlhN2E9CYCWTvD0eqA/1pjGS9porc=;
-        b=mrJ0ulCn1T90TLE6C099uJQOb9Z1VTAStcnbSzZMwyp9XoLeHMZQrB4kjyeIAobUN1
-         VC99hdl3aJcKwYu7Zc//mqL5tjZR52Hbn1aCn69SVXeSNweaKdwL7tmC1hPMyMNQRaCP
-         kcTKt9dyQ4f8CexVwG9t8wsHj9AvZHT/NxLDznRnKhJM3aIkg1Gg520P9tCe+HN7MNgd
-         5IyFxnMC+L8N2ym34nRwy5kpyESzJSNurRVwFwQvl9nXlC1oJRX7GlQ8cYer9rqY2irr
-         ex9WLmGskEzrZ4M22yGLyZ633wHnD2ZNj1/j2onEyCtOKurUQzgjxZe57vEtL5uq4mNI
-         Z3og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gNTFuoOTdTSriuFlhN2E9CYCWTvD0eqA/1pjGS9porc=;
-        b=PZG83gd4Xkkdzn5gzWQEdmO+hpHS3i8/J6nOPRnFjOZZ3WHWgw4D0JTm4vutEe3VjI
-         rKL2iUuwoTy5AllUY0vIu318/54yA1LkuMus6l7ZqhiG9JrTh+2QYHM/owabp6Kzq1l5
-         QtlujLmpc+8fFW0ekjG2SjmwV8y999Wohwf5KrErNkUUAQeKUvyt/sEhUg4v8AXBe2sJ
-         4sR+8I2SX94A6zXym+vEQ52JVlXPFwgQodxrlchuV26oasEpAQM9ruk6HCGyAPw9OBIw
-         uhINnmqznRwQ+3OI32mvQMChW1EO3ixjB4K9xHcp+Da7i9WKli5VRXZqIOWWtWFFoLOf
-         ocsQ==
-X-Gm-Message-State: AOAM531jHbOFHqoW0HNx+2JqoV/W+dasmjFjnUSPnJBjtCXcpfZGcS0s
-        ym1ph5cRdyNBoVfxh9jcn10=
-X-Google-Smtp-Source: ABdhPJzzctrr+0nAVGBgbgXWxWxftvSElXLxR2E8XtZjfXZoLWUMLO1OU12olUur085zUGpE94TO2Q==
-X-Received: by 2002:a17:90a:c982:: with SMTP id w2mr8901415pjt.30.1633663220359;
-        Thu, 07 Oct 2021 20:20:20 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id j198sm713943pgc.4.2021.10.07.20.20.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Oct 2021 20:20:20 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] dt-bindings: regulator: Add bindings for Unisoc's SC2730 regulator
-Date:   Fri,  8 Oct 2021 11:19:53 +0800
-Message-Id: <20211008031953.339461-3-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211008031953.339461-1-zhang.lyra@gmail.com>
-References: <20211008031953.339461-1-zhang.lyra@gmail.com>
+        Thu, 7 Oct 2021 23:22:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1633663241; x=1665199241;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=r5rxc6zMPQ2DYaQEjqFn2bycJ2e7Cu+Jo2WU4mJ233A=;
+  b=i1ztuj4YI5wTZgazNluIMWqzOzmEz/IxMgMwxTfuBtpTHhZR6y/PeyM/
+   nt3jw1CDUvipc00zc7EBhGlWfltcOl7SJjWvpH5+T4zIYRU6SvlF7zlaL
+   JApV2FnXSYeEEJ2qN2dQQw4DLNA12RwOMvuo5v3uNByukDgmE9KdWqDA9
+   Zz6OWfL2ScJli+8D6lu71WA/F7zCUIDq3bUip8ut0CYnqpw8DsRQ9l7pp
+   YeztF5/Pr3v7XeBZiuAeFcsdtaB37wmAgGpUOahoqKS2thjlyMZbo9dkp
+   1x1qFvYJo2125xoOgL0GZvYOlx2oinnUs4LqLm/MvR9xf2bAu/XMWuVTJ
+   A==;
+X-IronPort-AV: E=Sophos;i="5.85,356,1624291200"; 
+   d="scan'208";a="182972378"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 08 Oct 2021 11:20:39 +0800
+IronPort-SDR: CAcdaqfH0E9b3ipvcn/E4lg7PuDpbfiI5XNZ9KRxe+YJ+xFiYcKglhKsNjN5Wx6vpOqS24WT8j
+ HR+JBaqI0OzZnxdu9YeW8Ln0U8EIIUfKB6qnJbb6PLEWcynOsDYRosffxk9r1MKya6L0enYxlp
+ 1jCMY2rplN24LA0QsCcv1ZQ1V35IJ8kWZb0KU/dGMm3ceBTMTk8CTfdbjyQ2X96Rjbrjk5QT+w
+ q4QhcA2Bw36l9bVl0Bn7YKJxmiYLn5MY0iHA0iaFMCPZVUVjhEqNaIgutOgbHRtT9rvozyKxWM
+ 1ngt22FXBGFKujOsbhlTNG0B
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 19:56:32 -0700
+IronPort-SDR: ZtCQf6or+fC78Z8QZyBs2K0CO7y3mLxtVHF9x5BnCMI3DlUT1RwacAAl+r7LdltpsHJ5znnwtm
+ FfzQYGfAj314iIzIKa8g/A+mV5TquECZkTe5UzqpjpLEvLdoVmGCcMP65Dlb4q8Rm6WNRI6dRm
+ /TOCGV80jcIKPRHKpvjDzIJxTLUSugb4jrFMGOuul/0NXcVN5Zebmlyhwqzi55s9tbouyOPEdT
+ i/nNtgHEJUNa6jIiOA3SoC/CSfkExJc5XI6wHbQP54nWqbSrt0VZbR3nJS0G8N/Fi8YYS6XzY5
+ 7yY=
+WDCIronportException: Internal
+Received: from unknown (HELO hulk.wdc.com) ([10.225.167.125])
+  by uls-op-cesaip02.wdc.com with ESMTP; 07 Oct 2021 20:20:39 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Vincent Chen <vincent.chen@sifive.com>
+Subject: [PATCH v3 0/5] Add SBI v0.2 support for KVM
+Date:   Thu,  7 Oct 2021 20:20:31 -0700
+Message-Id: <20211008032036.2201971-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+The Supervisor Binary Interface(SBI) specification[1] now defines a
+base extension that provides extendability to add future extensions
+while maintaining backward compatibility with previous versions.
+The new version is defined as 0.2 and older version is marked as 0.1.
 
-SC2730 is used on Unisoc's UMS512 SoC, it integrates low-voltage and low
-quiescent current DCDC/LDO.
+This series adds following features to RISC-V Linux KVM.
+1. Adds support for SBI v0.2 in KVM
+2. SBI Hart state management extension (HSM) in KVM
+3. Ordered booting of guest vcpus in guest Linux
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
----
- .../regulator/sprd,sc2730-regulator.yaml      | 61 +++++++++++++++++++
- 1 file changed, 61 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/sprd,sc2730-regulator.yaml
+This series is based on base KVM series which is already part of the kvm-next[2]. 
 
-diff --git a/Documentation/devicetree/bindings/regulator/sprd,sc2730-regulator.yaml b/Documentation/devicetree/bindings/regulator/sprd,sc2730-regulator.yaml
-new file mode 100644
-index 000000000000..6d1bec03eb52
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/sprd,sc2730-regulator.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# Copyright 2019-2021 Unisoc Inc.
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/regulator/sprd,sc2730-regulator.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Unisoc SC2730 Voltage Regulators Device Tree Bindings
-+
-+maintainers:
-+  - Orson Zhai <orsonzhai@gmail.com>
-+  - Baolin Wang <baolin.wang7@gmail.com>
-+  - Chunyan Zhang <zhang.lyra@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: sprd,sc2730-regulator
-+
-+  reg:
-+    maxItems: 1
-+
-+patternProperties:
-+  "^(DCDC|BUCK|LDO)_.+":
-+    # Child node
-+    type: object
-+    description: dcdc/buck/ldo regulator nodes(s).
-+    $ref: "regulator.yaml#"
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pmic {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      regulators@1800 {
-+        compatible = "sprd,sc2730-regulator";
-+        reg = <0x1800>;
-+
-+        DCDC_CPU {
-+          regulator-name = "vddcpu";
-+          regulator-min-microvolt = <200000>;
-+          regulator-max-microvolt = <1596875>;
-+          regulator-ramp-delay = <25000>;
-+          regulator-always-on;
-+        };
-+
-+        LDO_VDDWCN {
-+          regulator-name = "vddwcn";
-+          regulator-min-microvolt = <900000>;
-+          regulator-max-microvolt = <1845000>;
-+          regulator-ramp-delay = <25000>;
-+        };
-+      };
-+    };
-+...
--- 
-2.25.1
+Guest kernel needs to also support SBI v0.2 and HSM extension in Kernel
+to boot multiple vcpus. Linux kernel supports both starting v5.7.
+In absense of that, guest can only boot 1 vcpu.
+
+Changes from v2->v3:
+1. Rebased on the latest merged kvm series.
+2. Dropped the reset extension patch because reset extension is not merged in kernel. 
+However, my tree[3] still contains it in case anybody wants to test it.
+
+Changes from v1->v2:
+1. Sent the patch 1 separately as it can merged independently.
+2. Added Reset extension functionality.
+
+Tested on Qemu and Rocket core FPGA.
+
+[1] https://github.com/riscv/riscv-sbi-doc/blob/master/riscv-sbi.adoc
+[2] https://git.kernel.org/pub/scm/virt/kvm/kvm.git/log/?h=next
+[3] https://github.com/atishp04/linux/tree/kvm_next_sbi_v02_reset
+[4] https://github.com/atishp04/linux/tree/kvm_next_sbi_v02
+
+Atish Patra (5):
+RISC-V: Mark the existing SBI v0.1 implementation as legacy
+RISC-V: Reorganize SBI code by moving legacy SBI to its own file
+RISC-V: Add SBI v0.2 base extension
+RISC-V: Add v0.1 replacement SBI extensions defined in v02
+RISC-V: Add SBI HSM extension in KVM
+
+arch/riscv/include/asm/kvm_vcpu_sbi.h |  33 ++++
+arch/riscv/include/asm/sbi.h          |   9 ++
+arch/riscv/kvm/Makefile               |   4 +
+arch/riscv/kvm/vcpu.c                 |  19 +++
+arch/riscv/kvm/vcpu_sbi.c             | 208 ++++++++++++--------------
+arch/riscv/kvm/vcpu_sbi_base.c        |  73 +++++++++
+arch/riscv/kvm/vcpu_sbi_hsm.c         | 109 ++++++++++++++
+arch/riscv/kvm/vcpu_sbi_legacy.c      | 129 ++++++++++++++++
+arch/riscv/kvm/vcpu_sbi_replace.c     | 136 +++++++++++++++++
+9 files changed, 608 insertions(+), 112 deletions(-)
+create mode 100644 arch/riscv/include/asm/kvm_vcpu_sbi.h
+create mode 100644 arch/riscv/kvm/vcpu_sbi_base.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_hsm.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_legacy.c
+create mode 100644 arch/riscv/kvm/vcpu_sbi_replace.c
+
+--
+2.31.1
 
