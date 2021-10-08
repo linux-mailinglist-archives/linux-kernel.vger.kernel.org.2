@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C744427333
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDCF427331
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243527AbhJHVuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 17:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhJHVuU (ORCPT
+        id S243513AbhJHVt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 17:49:57 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:40786 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243487AbhJHVt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:50:20 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7887C061570;
-        Fri,  8 Oct 2021 14:48:24 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id p1so9247450pfh.8;
-        Fri, 08 Oct 2021 14:48:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FTfSae2Ub/GRhG0hDDbJoYdWWu5F/iD25Fu+zHz1GTA=;
-        b=Tho5yDa3ZRTBaBfmf3Th7zv+AUlPqAgtGaJw3LDmI9HkVPAsYdO4CPviPeaL+u62rm
-         nDmXNUz+IZhnkM2UMiULXlffeNmguj1ciUuOe/iFBJZ9NT1zJcA8VW8wTKI25GfU7UQf
-         HwkYe6d/93+s2M+VPZHFSK3dNMgCp+zYkF0GE0lXCmYybELtmByBQv3BS11EITkUhtqz
-         o17jISBIBCpqJpdYAyEwsiO0B/LN57RPaVHHFQazMlXwh/sBt1L8A422NspuYssRWlME
-         2FwGTiVJ4Yt5mvBMjQBK7JEsXfDHLJzrN9P3RAp8rE8L+uYFtI+cAMXkb4uqei/Wqrma
-         d9OQ==
+        Fri, 8 Oct 2021 17:49:56 -0400
+Received: by mail-oi1-f175.google.com with SMTP id n63so15456961oif.7;
+        Fri, 08 Oct 2021 14:48:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FTfSae2Ub/GRhG0hDDbJoYdWWu5F/iD25Fu+zHz1GTA=;
-        b=13i83pBy7q+PKxhR9IxgsfoLsNbunY/ZFntTaAVitX1DEFInmbBJ4MyOjUJuTrjoN/
-         DWNcKBomdK5QZHsaj8YOTBfp5cF5J5SCVKQdh8jmBNPWn328BCSbj8iD6aHT8tupwsRj
-         Wwy6WlA6FlJMVT2LQgklYP8tfXI0z8S4fsO5L2FLUPmpotuPT1bTP5AKt3SIs3MskivG
-         lf425gXL90F7Ofq7eK9jEowRJ9IEEv9pV/q3u44ZzzE2UDdPKAzDY8/UmYzwclWcoNHO
-         nSO3AwdxEwa0fEouu+WoRUzE8OQhx71RLRh4V/w5WrC3H+Hd/6M0vhv8zc6TP9x3j5v5
-         1qgQ==
-X-Gm-Message-State: AOAM531fX4g30s9nocLbtmlAnWg+z4dyQ9F2LVsSvIL0ODyimLCnAXIa
-        xADTNXO7g9DSoWga5ZCe0ajU6/e+AK0=
-X-Google-Smtp-Source: ABdhPJzBiG612UtRe48w7tz5q9NvYDbT2fM+V6xij3Uoiy9XR98SWQCLuMXWDHId5PcLEX8tKyE/gw==
-X-Received: by 2002:a63:2261:: with SMTP id t33mr6699895pgm.274.1633729703893;
-        Fri, 08 Oct 2021 14:48:23 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id z124sm259923pfb.108.2021.10.08.14.48.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z6zpljNARaGHtMTY8U/C/Gg2k98fznp34I6cu4S6oKY=;
+        b=fa5pgzT6MimRwjW0ngUewAKXLq9/49Tfls4rVy+ZKLUxBeN3BypiSsgDQ8DzefFemT
+         WLKkzYdg/YREWlMzImMnPg8qGzN0IpIMeQLhwLzXFCgC0rlW51AjV/wygCrZWJVqch8M
+         DIF7j08MSAsC3ncdCMeFgYu2Txyo3l1xYXr1lieWpkVheJ317NS1yzpGAjgfnrrbNGIi
+         zyAuCwtdoWG323C8LHw+6u19vlCDqVSGmKSOjGOFU7I0EtY5PG9lPGNRD/b0FAm1El+z
+         ipZPX7ab18ip3hIpD/04SJbThFe2vxXU0J9/o0lCjVZIMkIUEcQJ836xilPKUHUwPVVX
+         MOSA==
+X-Gm-Message-State: AOAM532wmMgWtcUtopE1sYf1O63djBATt/oqPku+R0adKgvJ/DPQqgYF
+        sta7H46GGbv6Q31PYcz/mQ==
+X-Google-Smtp-Source: ABdhPJwN6oUmR44GNmTiOfpQO6Lr/nsoWADh8JwxBTNvETEEo6KpwBwFga3dvo/t5qqpV60sNu7g0A==
+X-Received: by 2002:a05:6808:bc5:: with SMTP id o5mr7019964oik.129.1633729679930;
+        Fri, 08 Oct 2021 14:47:59 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id a13sm141625oiy.9.2021.10.08.14.47.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:48:22 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net] net: phy: Do not shutdown PHYs in READY state
-Date:   Fri,  8 Oct 2021 14:42:52 -0700
-Message-Id: <20211008214252.3644175-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 08 Oct 2021 14:47:59 -0700 (PDT)
+Received: (nullmailer pid 3372749 invoked by uid 1000);
+        Fri, 08 Oct 2021 21:47:58 -0000
+Date:   Fri, 8 Oct 2021 16:47:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+        Xiangsheng Hou <Xiangsheng.Hou@mediatek.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jaimeliao@mxic.com.tw,
+        juliensu@mxic.com.tw,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [RFC PATCH 03/10] dt-bindings: vendor-prefixes: Update Macronix
+ prefix
+Message-ID: <YWC8jgI74FgTudSD@robh.at.kernel.org>
+References: <20211008162228.1753083-1-miquel.raynal@bootlin.com>
+ <20211008162228.1753083-4-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008162228.1753083-4-miquel.raynal@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case a PHY device was probed thus in the PHY_READY state, but not
-configured and with no network device attached yet, we should not be
-trying to shut it down because it has been brought back into reset by
-phy_device_reset() towards the end of phy_probe() and anyway we have not
-configured the PHY yet.
+On Fri, Oct 08, 2021 at 06:22:21PM +0200, Miquel Raynal wrote:
+> When looking at compatible prefixes, Macronix is sometimes referred as
+> mxicy:
+> - mxicy,mx25r1635f
+> - mxicy,mx25u6435f
+> - mxicy,mx25v8035f
+> - mxicy,mx25f0a-spi
+> and sometimes as mxic:
+> - mxic,multi-itfc-v009-nand-controller
+> - mxic,enable-randomizer-otp
+> 
+> It looks like the more up-to-date way is mxic so declare this prefix and
+> mark the other one as deprecated.
 
-Fixes: e2f016cf7751 ("net: phy: add a shutdown procedure")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/phy/phy_device.c | 3 +++
- 1 file changed, 3 insertions(+)
+mxicy is more widely used with flash parts. There's not a single dts 
+file with 'mxic' which only seems to be some nand controller.
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index ba5ad86ec826..4f9990b47a37 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -3125,6 +3125,9 @@ static void phy_shutdown(struct device *dev)
- {
- 	struct phy_device *phydev = to_phy_device(dev);
- 
-+	if (phydev->state == PHY_READY || !phydev->attached_dev)
-+		return;
-+
- 	phy_disable_interrupts(phydev);
- }
- 
--- 
-2.25.1
-
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index b868cefc7c55..013a87850cd5 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -758,8 +758,11 @@ patternProperties:
+>      description: Mundo Reader S.L.
+>    "^murata,.*":
+>      description: Murata Manufacturing Co., Ltd.
+> +  "^mxic,.*":
+> +    description: Macronix International Co., Ltd.
+>    "^mxicy,.*":
+>      description: Macronix International Co., Ltd.
+> +    deprecated: true
+>    "^myir,.*":
+>      description: MYIR Tech Limited
+>    "^national,.*":
+> -- 
+> 2.27.0
+> 
+> 
