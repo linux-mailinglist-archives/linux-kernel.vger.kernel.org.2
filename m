@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1064262BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276F24262C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 05:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhJHDMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 23:12:31 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28896 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhJHDMa (ORCPT
+        id S230493AbhJHDNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 23:13:07 -0400
+Received: from mail-pf1-f169.google.com ([209.85.210.169]:35590 "EHLO
+        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhJHDNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:12:30 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQY425yG3zbn0G;
-        Fri,  8 Oct 2021 11:06:10 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 11:10:34 +0800
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 11:10:34 +0800
-Received: from dggpeml100016.china.huawei.com ([7.185.36.216]) by
- dggpeml100016.china.huawei.com ([7.185.36.216]) with mapi id 15.01.2308.008;
- Fri, 8 Oct 2021 11:10:34 +0800
-From:   "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-CC:     "peterz@infradead.org" <peterz@infradead.org>,
-        "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>
-Subject: RE: [RFC] cpu/hotplug: allow the cpu in UP_PREPARE state to bringup
- again
-Thread-Topic: [RFC] cpu/hotplug: allow the cpu in UP_PREPARE state to bringup
- again
-Thread-Index: AQHXtgOraFU9tinyd0CEjjIpTs+60KvIby1w
-Date:   Fri, 8 Oct 2021 03:10:34 +0000
-Message-ID: <dae48783927d4c8f916bfe0776a4a341@huawei.com>
-References: <20210901051143.2752-1-longpeng2@huawei.com>
- <20210930140118.z352cj3uzjscctcb@linutronix.de>
-In-Reply-To: <20210930140118.z352cj3uzjscctcb@linutronix.de>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.148.223]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 7 Oct 2021 23:13:05 -0400
+Received: by mail-pf1-f169.google.com with SMTP id c29so7010061pfp.2;
+        Thu, 07 Oct 2021 20:11:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=rLOkTDNXQRue7DStz70VlFnLnX3t0szG1FNVtaPMlsg=;
+        b=zMJi0si6WhTch7SM4n3OJ8numdd2xW1ThpJXfj5yOARN2CMm+PFNcf3K1vWJjtzsbF
+         p6Ik7MFeBPU2Y4jFX1G+zhOsgflqyNUNIa373mZidKTSQsGQTR4QaaVZRJD8SWntPilu
+         PrVBH9XjqG3TjmworPYKmZrYd1I6wXm2qOGM/CaNtk+HBSkaMF3mWRYfBA6g7FOxMiPX
+         D3IJq0J3mUmNLcCUOvH2CL9ecu8BxRQXb0FfxFKOWf4FmNtql5/CF8EvmxLHXlavRaY3
+         UQZwRSB5Rr4BiNALdcg64NSMk+SyIz64QuXFoG9NDc9y77jpEap/LN3CEFR/BtvKBHiM
+         aDGw==
+X-Gm-Message-State: AOAM532bJ5EP+7gB86y0OCCTXR7tY823ybk5/HbuWRZ1gbBFHeHv8vuX
+        kFnwzPgns1Vrkkc5pe0ITtk=
+X-Google-Smtp-Source: ABdhPJx51wt6jP3tgXED0xnjgBGnPzOmyEzNtu0+eW1vyBuVUs42LmsYFErRQ+kLdJU4zGJaPCBlkQ==
+X-Received: by 2002:a63:530e:: with SMTP id h14mr2648011pgb.279.1633662670722;
+        Thu, 07 Oct 2021 20:11:10 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:9fa9:27d:6339:b8ef? ([2601:647:4000:d7:9fa9:27d:6339:b8ef])
+        by smtp.gmail.com with ESMTPSA id g22sm784609pfj.15.2021.10.07.20.11.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Oct 2021 20:11:10 -0700 (PDT)
+Message-ID: <597c4cbe-ca6c-53e5-1139-be2ca0fbb677@acm.org>
+Date:   Thu, 7 Oct 2021 20:11:08 -0700
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.1
+Subject: Re: [PATCH v5 00/14] blk-mq: Reduce static requests memory footprint
+ for shared sbitmap
+Content-Language: en-US
+To:     Kashyap Desai <kashyap.desai@broadcom.com>,
+        John Garry <john.garry@huawei.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, hare@suse.de, linux-scsi@vger.kernel.org
+References: <1633429419-228500-1-git-send-email-john.garry@huawei.com>
+ <ae33dde8-96e8-2978-5f32-c7e0a6136e8e@kernel.dk>
+ <81d9e019-b730-221e-a8c0-f72a8422a2ec@huawei.com>
+ <e4e92abbe9d52bcba6b8cc6c91c442cc@mail.gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <e4e92abbe9d52bcba6b8cc6c91c442cc@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogU2ViYXN0aWFuIEFuZHJ6
-ZWogU2lld2lvciBbbWFpbHRvOmJpZ2Vhc3lAbGludXRyb25peC5kZV0NCj4gU2VudDogVGh1cnNk
-YXksIFNlcHRlbWJlciAzMCwgMjAyMSAxMDowMSBQTQ0KPiBUbzogTG9uZ3BlbmcgKE1pa2UsIENs
-b3VkIEluZnJhc3RydWN0dXJlIFNlcnZpY2UgUHJvZHVjdCBEZXB0LikNCj4gPGxvbmdwZW5nMkBo
-dWF3ZWkuY29tPg0KPiBDYzogcGV0ZXJ6QGluZnJhZGVhZC5vcmc7IHZhbGVudGluLnNjaG5laWRl
-ckBhcm0uY29tOyBtaW5nb0BrZXJuZWwub3JnOw0KPiB0Z2x4QGxpbnV0cm9uaXguZGU7IGxpbnV4
-LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IEdvbmdsZWkgKEFyZWkpDQo+IDxhcmVpLmdvbmdsZWlA
-aHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtSRkNdIGNwdS9ob3RwbHVnOiBhbGxvdyB0aGUg
-Y3B1IGluIFVQX1BSRVBBUkUgc3RhdGUgdG8gYnJpbmd1cA0KPiBhZ2Fpbg0KPiANCj4gT24gMjAy
-MS0wOS0wMSAxMzoxMTo0MyBbKzA4MDBdLCBMb25ncGVuZyhNaWtlKSB3cm90ZToNCj4gPiBUaGUg
-Y3B1J3MgY3B1X2hvdHBsdWdfc3RhdGUgd2lsbCBiZSBzZXQgdG8gQ1BVX1VQX1BSRVBBUkUgYmVm
-b3JlDQo+ID4gdGhlIGNwdSBpcyB3YWtlbiB1cCwgYnV0IGl0IHdvbid0IGJlIHJlc2V0IHdoZW4g
-dGhlIGZhaWx1cmUgb2NjdXJzLg0KPiA+IFRoZW4gdGhlIHVzZXIgY2Fubm90IHRvIG1ha2UgdGhl
-IGNwdSBvbmxpbmUgYW55bW9yZSwgYmVjYXVzZSB0aGUNCj4gPiBDUFVfVVBfUFJFUEFSRSBzdGF0
-ZSBtYWtlcyBjcHVfY2hlY2tfdXBfcHJlcGFyZSgpIHVuaGFwcHkuDQo+ID4NCj4gPiBXZSBzaG91
-bGQgYWxsb3cgdGhlIHVzZXIgdG8gdHJ5IGFnYWluIGluIHRoaXMgY2FzZS4NCj4gDQo+IENhbiB5
-b3UgcGxlYXNlIGRlc2NyaWJlIHdoZXJlIGl0IGZhaWxlZCAvIHdoYXQgZGlkIHlvdSByZWFjaCB0
-aGF0IHN0YXRlPw0KPiANCg0KbmF0aXZlX2NwdV91cA0KICBjcHVfY2hlY2tfdXBfcHJlcGFyZQ0K
-ICBkb19ib290X2NwdQ0KICAgIC8qIFdhaXQgMTBzIHRvdGFsIGZvciBmaXJzdCBzaWduIG9mIGxp
-ZmUgZnJvbSBBUCAqLw0KDQpJdCB3aWxsIGZhaWwgaWYgdGhlIEFQIGRvZXNuJ3QgcmVzcG9uc2Ug
-aW4gMTBzIGFuZCB0aGVuIGNwdV9ob3RwbHVnX3N0YXRlDQp3aWxsIHN0YXkgaW4gQ1BVX1VQX1BS
-RVBBUkUgc3RhdGUuDQoNClRoaXMgY291bGQgaGFwcGVuIG9uIGEgdmlydHVhbGl6ZWQgc3lzdGVt
-LCBlc3BlY2lhbGx5IGluIHNvbWUgc3BlY2lhbCB1c2FnZXMsDQplLmcuIFNvZnR3YXJlIEVuY2xh
-dmVzIFsxXVsyXQ0KDQpbMV0gaHR0cHM6Ly9kb2NzLmF3cy5hbWF6b24uY29tL2VuY2xhdmVzL2xh
-dGVzdC91c2VyL25pdHJvLWVuY2xhdmUuaHRtbA0KWzJdIGh0dHBzOi8vd3d3LmFsaWJhYmFjbG91
-ZC5jb20vaGVscC9kb2MtZGV0YWlsLzIwMzQzMy5odG0/c3BtPWEzYzBpLjIzOTg2NzQyLjY5ODE3
-NjE1MjAuMS43ZTMwNzE1ZVpDUlhtaw0KDQoNCj4gPiBTaWduZWQtb2ZmLWJ5OiBMb25ncGVuZyhN
-aWtlKSA8bG9uZ3BlbmcyQGh1YXdlaS5jb20+DQo+ID4gLS0tDQo+ID4gIGtlcm5lbC9zbXBib290
-LmMgfCA3ICsrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQ0KPiA+
-DQo+ID4gZGlmZiAtLWdpdCBhL2tlcm5lbC9zbXBib290LmMgYi9rZXJuZWwvc21wYm9vdC5jDQo+
-ID4gaW5kZXggZjZiYzBiYy4uZDE4ZjhmZiAxMDA2NDQNCj4gPiAtLS0gYS9rZXJuZWwvc21wYm9v
-dC5jDQo+ID4gKysrIGIva2VybmVsL3NtcGJvb3QuYw0KPiA+IEBAIC0zOTIsNiArMzkyLDEzIEBA
-IGludCBjcHVfY2hlY2tfdXBfcHJlcGFyZShpbnQgY3B1KQ0KPiA+ICAJCSAqLw0KPiA+ICAJCXJl
-dHVybiAtRUFHQUlOOw0KPiA+DQo+ID4gKwljYXNlIENQVV9VUF9QUkVQQVJFOg0KPiA+ICsJCS8q
-DQo+ID4gKwkJICogVGhlIENQVSBmYWlsZWQgdG8gYnJpbmd1cCBsYXN0IHRpbWUsIGFsbG93IHRo
-ZSB1c2VyDQo+ID4gKwkJICogY29udGludWUgdG8gdHJ5IHRvIHN0YXJ0IGl0IHVwLg0KPiA+ICsJ
-CSAqLw0KPiA+ICsJCXJldHVybiAwOw0KPiA+ICsNCj4gPiAgCWRlZmF1bHQ6DQo+ID4NCj4gPiAg
-CQkvKiBTaG91bGQgbm90IGhhcHBlbi4gIEZhbW91cyBsYXN0IHdvcmRzLiAqLw0KPiA+IC0tDQo+
-ID4gMS44LjMuMQ0KPiANCj4gU2ViYXN0aWFuDQo=
+On 10/7/21 13:31, Kashyap Desai wrote:
+> I tested this patchset on 5.15-rc4 (master) -
+> https://github.com/torvalds/linux.git
+> 
+> #1 I noticed some performance regression @mq-deadline scheduler which is not
+> related to this series. I will bisect and get more detail about this issue
+> separately.
+
+Please test this patch series on top of Jens' for-next branch 
+(git://git.kernel.dk/linux-block). The mq-deadline performance on Jens' 
+for-next branch should match that of kernel v5.13.
+
+Thanks,
+
+Bart.
