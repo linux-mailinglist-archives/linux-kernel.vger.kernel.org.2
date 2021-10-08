@@ -2,77 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0580427108
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA7B442710A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240360AbhJHS46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:56:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43122 "EHLO mail.kernel.org"
+        id S239556AbhJHS62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239678AbhJHS4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:56:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 574C860FF2;
-        Fri,  8 Oct 2021 18:54:53 +0000 (UTC)
-From:   Mark Brown <broonie@sirena.org.uk>
-To:     Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Sam Protsenko <semen.protsenko@linaro.org>
-Subject: Re: (subset) [PATCH v4 00/10] regulator/mfd/clock: dt-bindings: Samsung S2M and S5M to dtschema
-Date:   Fri,  8 Oct 2021 19:54:51 +0100
-Message-Id: <163371908503.2740027.18353767025813556778.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
-References: <20211008113723.134648-1-krzysztof.kozlowski@canonical.com>
+        id S231308AbhJHS6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:58:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B18360FE8;
+        Fri,  8 Oct 2021 18:56:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633719389;
+        bh=hoAj05YuCRBBNrVjKODoIaxA5Jw6r/qy0A5fr49luFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FTedW6HxC0PQ40Ac5yGvKfkbP3O0QVCmM7/uLPjf3kz7pPvtu3Tn0JzbD5y8bhzyL
+         OpVn2YKBHxIAK/43QAmCq3xdT85kXHHV+G3xQjBsux4Rsj3CJ+wNFXlaurQTHLp5KI
+         5BvpJqU0pwmisE0QhnjIRE1ClWiwQVLmsvJ0AFMRJvFzQRsCmuh7TstTC7u7xZ+mMX
+         fHAYZsS7MsWiKifDBjBnMGBwXegLSl/g+FiIX8s5S1gd8fELcKv6j30aXbRaBfYvwl
+         JLI6J6/pzmBssxupn6ZHssyJPL2UPt9i8c8S2UPRAWY12SjX0w6WPbit4I+8f2Fcfp
+         JbmYaR8uTTNJA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D609B410A1; Fri,  8 Oct 2021 15:56:26 -0300 (-03)
+Date:   Fri, 8 Oct 2021 15:56:26 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     James Clark <james.clark@arm.com>, john.garry@huawei.com,
+        ak@linux.intel.com, linux-perf-users@vger.kernel.org,
+        Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] perf tools: Make the JSON parser more conformant
+ when in strict mode
+Message-ID: <YWCUWo6pMns6p05o@kernel.org>
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <20211007110543.564963-3-james.clark@arm.com>
+ <YV8z306sBJQsdNNR@krava>
+ <2e14963b-cb98-f508-7067-255fdbd36bdb@arm.com>
+ <YWBDo5Ciq1hOIxLq@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWBDo5Ciq1hOIxLq@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Brown <broonie@kernel.org>
-
-On Fri, 8 Oct 2021 13:37:12 +0200, Krzysztof Kozlowski wrote:
-> Changes since v2
-> ================
-> 1. Add Stephen's and Rob's tags.
-> 2. Correct inb-supply description in patch 10/10.
+Em Fri, Oct 08, 2021 at 03:12:03PM +0200, Jiri Olsa escreveu:
+> On Fri, Oct 08, 2021 at 11:08:25AM +0100, James Clark wrote:
+> > 
+> > 
+> > On 07/10/2021 18:52, Jiri Olsa wrote:
+> > > On Thu, Oct 07, 2021 at 12:05:41PM +0100, James Clark wrote:
+> > >> Return an error when a trailing comma is found or a new item is
+> > >> encountered before a comma or an opening brace. This ensures that the
+> > >> perf json files conform more closely to the spec at https://www.json.org
+> > >>
+> > >> Signed-off-by: James Clark <james.clark@arm.com>
+> > >> ---
+> > >>  tools/perf/pmu-events/jsmn.c | 42 ++++++++++++++++++++++++++++++++++--
+> > >>  1 file changed, 40 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
+> > >> index 11d1fa18bfa5..8124d2d3ff0c 100644
+> > >> --- a/tools/perf/pmu-events/jsmn.c
+> > >> +++ b/tools/perf/pmu-events/jsmn.c
+> > >> @@ -176,6 +176,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  	jsmnerr_t r;
+> > >>  	int i;
+> > >>  	jsmntok_t *token;
+> > >> +#ifdef JSMN_STRICT
+> > > 
+> > > I might have missed some discussion on this, but do we need the
+> > > JSMN_STRICT define, if you enable it in the next patch?
+> > > why can't we be more strict by default.. do you plan to disable
+> > > it in future?
+> > 
+> > I didn't plan on disabling it, I was just trying to keep to the existing style of the
+> > jsmn project.
+> > 
+> > I could have added the trailing comma detection by default and not inside any
+> > #ifdef JSMN_STRICT blocks, but I would like to enable JSMN_STRICT anyway, because it
+> > enables some additional built in checking that was already there. So I thought it
+> > made sense to put my new strict stuff inside the existing strict option.
+> > 
+> > One option would be to remove all (including the existing) #ifdef JSMN_STRICT blocks
+> > and have everything strict by default. But it would be a further deviation from jsmn.
 > 
-> Changes since v2
-> ================
-> 1. Add Rob's tags.
-> 2. Remove "regulator-name" from properties (all regulator dtschema).
-> 3. Move "unevaluatedProperties" higher to make code easier to read (all regulator dtschema).
-> 4. Add ref-type to op-mode property (patch 6: s5m8767 regulators).
+> ok, I think it makes sense to have JSMN_STRICT then..
+> thanks for explanation
 > 
-> [...]
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Applied, thanks!
+So, is this for the whole patchset? b4 picked it just for this message.
 
-[01/10] regulator: s5m8767: do not use reset value as DVS voltage if GPIO DVS is disabled
-        commit: b16bef60a9112b1e6daf3afd16484eb06e7ce792
-[02/10] regulator: dt-bindings: samsung,s5m8767: correct s5m8767,pmic-buck-default-dvs-idx property
-        commit: a7fda04bc9b6ad9da8e19c9e6e3b1dab773d068a
-[03/10] dt-bindings: clock: samsung,s2mps11: convert to dtschema
-        commit: 1790cd3510cbd1f3f6217e5d9315f6dee369a690
-[04/10] regulator: dt-bindings: samsung,s2m: convert to dtschema
-        commit: ea98b9eba05ca01f9f6ef6f1ff74ec530884148a
-[05/10] regulator: dt-bindings: samsung,s2mpa01: convert to dtschema
-        commit: a52afb0f54faae0366575d47cbd85165ce34deda
-[06/10] regulator: dt-bindings: samsung,s5m8767: convert to dtschema
-        commit: fab58debc137f66cf97f60c8471ff2f1e3e1b44b
+- Arnaldo
+ 
+> jirka
+> 
+> > 
+> > Thanks
+> > James
+> > 
+> > > 
+> > > thanks,
+> > > jirka
+> > > 
+> > >> +	/*
+> > >> +	 * Keeps track of whether a new object/list/primitive is expected. New items are only
+> > >> +	 * allowed after an opening brace, comma or colon. A closing brace after a comma is not
+> > >> +	 * valid JSON.
+> > >> +	 */
+> > >> +	int expecting_item = 1;
+> > >> +#endif
+> > >>  
+> > >>  	for (; parser->pos < len; parser->pos++) {
+> > >>  		char c;
+> > >> @@ -185,6 +193,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  		switch (c) {
+> > >>  		case '{':
+> > >>  		case '[':
+> > >> +#ifdef JSMN_STRICT
+> > >> +			if (!expecting_item)
+> > >> +				return JSMN_ERROR_INVAL;
+> > >> +#endif
+> > >>  			token = jsmn_alloc_token(parser, tokens, num_tokens);
+> > >>  			if (token == NULL)
+> > >>  				return JSMN_ERROR_NOMEM;
+> > >> @@ -196,6 +208,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  			break;
+> > >>  		case '}':
+> > >>  		case ']':
+> > >> +#ifdef JSMN_STRICT
+> > >> +			if (expecting_item)
+> > >> +				return JSMN_ERROR_INVAL;
+> > >> +#endif
+> > >>  			type = (c == '}' ? JSMN_OBJECT : JSMN_ARRAY);
+> > >>  			for (i = parser->toknext - 1; i >= 0; i--) {
+> > >>  				token = &tokens[i];
+> > >> @@ -219,6 +235,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  			}
+> > >>  			break;
+> > >>  		case '\"':
+> > >> +#ifdef JSMN_STRICT
+> > >> +			if (!expecting_item)
+> > >> +				return JSMN_ERROR_INVAL;
+> > >> +			expecting_item = 0;
+> > >> +#endif
+> > >>  			r = jsmn_parse_string(parser, js, len, tokens,
+> > >>  					      num_tokens);
+> > >>  			if (r < 0)
+> > >> @@ -229,11 +250,15 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  		case '\t':
+> > >>  		case '\r':
+> > >>  		case '\n':
+> > >> -		case ':':
+> > >> -		case ',':
+> > >>  		case ' ':
+> > >>  			break;
+> > >>  #ifdef JSMN_STRICT
+> > >> +		case ':':
+> > >> +		case ',':
+> > >> +			if (expecting_item)
+> > >> +				return JSMN_ERROR_INVAL;
+> > >> +			expecting_item = 1;
+> > >> +			break;
+> > >>  			/*
+> > >>  			 * In strict mode primitives are:
+> > >>  			 * numbers and booleans.
+> > >> @@ -253,6 +278,9 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  		case 'f':
+> > >>  		case 'n':
+> > >>  #else
+> > >> +		case ':':
+> > >> +		case ',':
+> > >> +			break;
+> > >>  			/*
+> > >>  			 * In non-strict mode every unquoted value
+> > >>  			 * is a primitive.
+> > >> @@ -260,6 +288,12 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  			/*FALL THROUGH */
+> > >>  		default:
+> > >>  #endif
+> > >> +
+> > >> +#ifdef JSMN_STRICT
+> > >> +			if (!expecting_item)
+> > >> +				return JSMN_ERROR_INVAL;
+> > >> +			expecting_item = 0;
+> > >> +#endif
+> > >>  			r = jsmn_parse_primitive(parser, js, len, tokens,
+> > >>  						 num_tokens);
+> > >>  			if (r < 0)
+> > >> @@ -282,7 +316,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+> > >>  			return JSMN_ERROR_PART;
+> > >>  	}
+> > >>  
+> > >> +#ifdef JSMN_STRICT
+> > >> +	return expecting_item ? JSMN_ERROR_INVAL : JSMN_SUCCESS;
+> > >> +#else
+> > >>  	return JSMN_SUCCESS;
+> > >> +#endif
+> > >>  }
+> > >>  
+> > >>  /*
+> > >> -- 
+> > >> 2.28.0
+> > >>
+> > > 
+> > 
 
-Best regards,
 -- 
-Mark Brown,,, <broonie@kernel.org>
+
+- Arnaldo
