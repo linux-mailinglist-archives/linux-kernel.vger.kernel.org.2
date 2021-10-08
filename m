@@ -2,73 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C334263DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9844263D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231851AbhJHEkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 00:40:43 -0400
-Received: from mga14.intel.com ([192.55.52.115]:51469 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhJHEkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 00:40:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226720127"
-X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="226720127"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 21:38:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="478834275"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2021 21:38:45 -0700
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <jroedel@suse.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
- <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
- <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <82f7dc54-2f34-7f69-add6-fca929d1acd1@linux.intel.com>
-Date:   Fri, 8 Oct 2021 12:34:57 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S231621AbhJHEhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 00:37:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhJHEhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 00:37:38 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3DEC061570;
+        Thu,  7 Oct 2021 21:35:43 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id b12so382720qtq.3;
+        Thu, 07 Oct 2021 21:35:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2ZuW84FCUeNefVYpl7AXF9/6C9HEWosikSwgMkrYqEo=;
+        b=XDBDrBRCGDfMhmfBsfE4sYKoyPV6PDJ6GFvDUZJKpWtPB1mLpgU0cYQm5X5YNh3mnD
+         3p8FNTlquaHZ8+ppbR8E612WozKfh7KLFuGh+mqvFBHcySVnfIAmS8PDOcpVBxleTeRT
+         zl7Yg1iEbVGFlmHnqu04v7jeaskKs2aT0PvDQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2ZuW84FCUeNefVYpl7AXF9/6C9HEWosikSwgMkrYqEo=;
+        b=lckDwYVC6uIp9HUSsgMVlJ9JaeRCxCjq9hQEKPtFV6/Sjhf3Jz5+HV/0kQkzTQQ32s
+         gxcufiuo649ryRmYhI3iS2inpEkWzk3+hvJeJ6gaQlGZz/+PNQjj0QFvay5c9sS0iyIC
+         EyhRUPTtSypVF1g9K6mYSRD+nON3S5WqjevGg0x82lxWUTXGX18dJkGJMNdEBZ3rJO6N
+         acl7SNUn45Lp6+3I5pCwjkutTtUkQEF72J8f/cCn9YHcpPx/NqMz7np+EYl6yMOFV8OM
+         Anr6NpvPoNVbsOmrHwjxNFSDa30v3X36xuHTpZY85YDIL1BzfeofIWM5dHX8nzqVh7V5
+         wQpg==
+X-Gm-Message-State: AOAM530Zrt2wZO0Z2gGddD0ruko3vlcwidzMoAPdcsdLnEK3UMA5fRLC
+        ApVxLYQUcCS2ameimOIOBqU9RpKd2qEGXGv/UYE=
+X-Google-Smtp-Source: ABdhPJx23WvHqotWOkfOASvG4ZJEedhf8Z22sYYHd357XdyP13GG/0PdPRGQ7t/sI6n+IBEYzZwvvHjHMJCb9sipnQY=
+X-Received: by 2002:a05:622a:1345:: with SMTP id w5mr9462603qtk.259.1633667743064;
+ Thu, 07 Oct 2021 21:35:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210927023053.6728-1-chiawei_wang@aspeedtech.com> <20210927023053.6728-2-chiawei_wang@aspeedtech.com>
+In-Reply-To: <20210927023053.6728-2-chiawei_wang@aspeedtech.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 8 Oct 2021 04:35:31 +0000
+Message-ID: <CACPK8Xc+9yFJn_pO1sAVQJu_FWkA1U9XnbB+TLYgfdbHi1TyaQ@mail.gmail.com>
+Subject: Re: [PATCH v7 1/5] ARM: dts: aspeed: Drop reg-io-width from LPC nodes
+To:     Chia-Wei Wang <chiawei_wang@aspeedtech.com>,
+        Andrew Jeffery <andrew@aj.id.au>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Oskar Senft <osk@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Mon, 27 Sept 2021 at 02:31, Chia-Wei Wang
+<chiawei_wang@aspeedtech.com> wrote:
+>
+> The 'reg-io-width' properties are not used by LPC drivers
+> nor documented as part of bindings. Therefore drop them.
 
-On 10/7/21 12:14 AM, Andy Shevchenko wrote:
-> On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
->> Hi Andy,
->>
->> On 7/30/21 12:35 AM, Andy Shevchenko wrote:
->>> Compiler is not happy about hidden declaration of intel_iommu_ops.
->>>
->>> .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
->>>
->>> Move declaration to header file to make compiler happy.
->>
->> Thanks for the cleanup. Sharing data structures between different files
->> doesn't seem to be a good design. How about adding a helper so that the
->> intel_iommu_ops could be a static one?
-> 
-> I don't see any change in the upstream. What's the plan?
-> Can we take my patch as a quick fix?
-> 
+I assume they are there due to the lpc having a 'syscon' compatible.
+THey are documented in the syscon bindings:
 
-Thanks for the reminding.
+Documentation/devicetree/bindings/mfd/syscon.yaml
 
-Can you please tell in which kernel configuration could above warning
-be triggered?
+Andrew, do you have any comments?
 
-Best regards,
-baolu
+>
+> This is in preparation to move aspeed-lpc.txt to YAML schema.
+>
+> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> ---
+>  arch/arm/boot/dts/aspeed-g4.dtsi | 1 -
+>  arch/arm/boot/dts/aspeed-g5.dtsi | 1 -
+>  arch/arm/boot/dts/aspeed-g6.dtsi | 1 -
+>  3 files changed, 3 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/aspeed-g4.dtsi b/arch/arm/boot/dts/aspeed-g4.dtsi
+> index c5aeb3cf3a09..45a25eb4baa4 100644
+> --- a/arch/arm/boot/dts/aspeed-g4.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g4.dtsi
+> @@ -345,7 +345,6 @@
+>                         lpc: lpc@1e789000 {
+>                                 compatible = "aspeed,ast2400-lpc-v2", "simple-mfd", "syscon";
+>                                 reg = <0x1e789000 0x1000>;
+> -                               reg-io-width = <4>;
+>
+>                                 #address-cells = <1>;
+>                                 #size-cells = <1>;
+> diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
+> index 73ca1ec6fc24..8e1d00d8445e 100644
+> --- a/arch/arm/boot/dts/aspeed-g5.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g5.dtsi
+> @@ -436,7 +436,6 @@
+>                         lpc: lpc@1e789000 {
+>                                 compatible = "aspeed,ast2500-lpc-v2", "simple-mfd", "syscon";
+>                                 reg = <0x1e789000 0x1000>;
+> -                               reg-io-width = <4>;
+>
+>                                 #address-cells = <1>;
+>                                 #size-cells = <1>;
+> diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
+> index 1b47be1704f8..0d1aae6887cd 100644
+> --- a/arch/arm/boot/dts/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed-g6.dtsi
+> @@ -490,7 +490,6 @@
+>                         lpc: lpc@1e789000 {
+>                                 compatible = "aspeed,ast2600-lpc-v2", "simple-mfd", "syscon";
+>                                 reg = <0x1e789000 0x1000>;
+> -                               reg-io-width = <4>;
+>
+>                                 #address-cells = <1>;
+>                                 #size-cells = <1>;
+> --
+> 2.17.1
+>
