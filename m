@@ -2,84 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A6C426E15
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C799426E1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhJHPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:51:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243027AbhJHPvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:51:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 245AE60F6F;
-        Fri,  8 Oct 2021 15:49:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633708190;
-        bh=JwrcRjJJdJytp6KMBRFuWFHxkJ4MwWSom/YHngd3OBo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=IFXz+969ie11cbjyEQYnqRoCI8vZB/T5rQENTrueNOX+L46rJI6D9kCsSnUITLjfH
-         LUFitPKSHsDKmeRhjJP5zL4IKR74BIbCgeUrQWwFj4BIci156QEc/5tZdG309HjsZq
-         0ve/rhAMNIBia1Tlx042zc0CZIEVIGERPAUJlXJXhvBZ5rei/8xhBsunATAdWnqitW
-         evoGVK5IKGk/zQQo/QdUaUpa23cYpFtRzMIDBPpTnBFEybriiBBYbPeYRc5vljQkTO
-         4+cSbDOVTCajPR65W03Elavd0QshP9nATDEo9/LX0BmCK61W3a3uhDaLYBZ2rdhL0l
-         RYmsBJWK+GWZQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DE5CC5C0887; Fri,  8 Oct 2021 08:49:49 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 08:49:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB
- + a few other fixes
-Message-ID: <20211008154949.GQ880162@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210929221012.228270-1-frederic@kernel.org>
- <87fstkmybc.mognet@arm.com>
- <87ee8vlill.mognet@arm.com>
+        id S243200AbhJHPyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:54:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhJHPx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:53:58 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D21C061570;
+        Fri,  8 Oct 2021 08:52:02 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id i20so21825989edj.10;
+        Fri, 08 Oct 2021 08:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=IVEyw9lhSKPQ7nk9zbyzY3MrQrMoG1UtQeH4s0obVK4=;
+        b=BM5xU+bdXxzonaku12ZWanDBg3J5jwMF5mf7bW7HLlYzVf8k0HQqHvPbcVNKlsSPwQ
+         o9gQFaatbEyCzZhB0kNZe5pBZrXldMpFWwrokdwduTGDKwTH6kPL8+EsiICKEi7lNhhR
+         Gzwvb/wJxLO7WShx1Os1Tuj7k1dbMhtBn9JFKJrii8aYBtL5cQ8Qd3IRcENHFRc+bPL2
+         fSWjOtDODq5ob2bOtdN0dHpktB2oxne3oO1EIAlu4EP339BQYswftr6cUvAgA/OoJhhf
+         lClv/s3iNghPEoWOeY0V0uQ2YtoTySzugNh9bgY9G+5M4rrWlZiS4OS0FcFAgtUtsO+r
+         JSVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IVEyw9lhSKPQ7nk9zbyzY3MrQrMoG1UtQeH4s0obVK4=;
+        b=gb6WSmjKUGyY62xbZMwEDhwkUz+Y4bpxCnQiMAeRqkGhlNuVz+gPEgDm4Na5sOyiTd
+         bUOKtb02/V0PSBe7LdHWO43iNAVyERPovOOUDIqMGcC0XNBvV4Ax3n7dqe5KSrHSkfB+
+         SPJiIfCKcaq+5j6SqMn5HMSg0AwFWUbBWEhdbVukECdCWJJG5VBG+QVecvTRLTi2/rIN
+         lOs8Zi7bxyibD1vD6YnR2KNdkcijYWXSDN3l7exbe6t4dT7WxjlxXGBQsDaI2hu60Vn4
+         m7IRtsHlIc21190bcndmlWKzkYLp/eRWSuc+mN9jQgt0CYpfVIs65bhiB6/vMl3TVJCP
+         PueA==
+X-Gm-Message-State: AOAM530q7y0CsIt+ol42nvhi6KIXSqH9vGYPHUSVBs4mLaLDwqYaRmQJ
+        iRMqJRaTn8kr5GJFpLUzXLP8SMQ5jWJ/ODXO2Fg=
+X-Google-Smtp-Source: ABdhPJy3TaFBLqNXb8BVZCGZUNm9ZMgFaGVCu+met/21chfsLQ16DtBDc+JGLDhMZrDGWzUIuK2OXw==
+X-Received: by 2002:a17:907:774d:: with SMTP id kx13mr5382310ejc.239.1633708319854;
+        Fri, 08 Oct 2021 08:51:59 -0700 (PDT)
+Received: from ?IPv6:2a04:241e:501:3870::d1c? ([2a04:241e:501:3870::d1c])
+        by smtp.gmail.com with ESMTPSA id g2sm827697edq.81.2021.10.08.08.51.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 08:51:59 -0700 (PDT)
+Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
+To:     David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
+ <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
+ <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
+ <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
+From:   Leonard Crestez <cdleonard@gmail.com>
+Message-ID: <3b52d69d-c39f-c662-7211-4b9130c8b527@gmail.com>
+Date:   Fri, 8 Oct 2021 18:51:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ee8vlill.mognet@arm.com>
+In-Reply-To: <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 03:03:02PM +0100, Valentin Schneider wrote:
-> On 01/10/21 18:47, Valentin Schneider wrote:
-> > On 30/09/21 00:10, Frederic Weisbecker wrote:
-> >> PREEMPT_RT has made rcu_core() preemptible, making it unsafe against
-> >> concurrent NOCB (de-)offloading.
-> >>
-> >> Thomas suggested to drop the local_lock() based solution and simply
-> >> check the offloaded state while context looks safe but that's not
-> >> enough. Here is a bit of rework.
-> >>
-> >> git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
-> >>       rcu/rt
-> >>
-> >> HEAD: aac1c58961446c731f2e989bd822ca1fd2659bad
-> >>
-> >> Thanks,
-> >>       Frederic
-> >
-> > FWIW I've had RCU torture with NOCB toggling running for half a day on my
-> > Arm Juno and nothing to report. I still need to rebase this on an -rt tree
-> > and give it a spin with CONFIG_PREEMPT_RT.
+On 07.10.2021 21:27, David Ahern wrote:
+> On 10/7/21 12:41 AM, Leonard Crestez wrote:
+>> On 07.10.2021 04:14, David Ahern wrote:
+>>> On 10/6/21 11:48 AM, Leonard Crestez wrote:
+>>>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key
+>>>> *tcp_md5_do_lookup_exact(const struct sock *sk,
+>>>>    #endif
+>>>>        hlist_for_each_entry_rcu(key, &md5sig->head, node,
+>>>>                     lockdep_sock_is_held(sk)) {
+>>>>            if (key->family != family)
+>>>>                continue;
+>>>> -        if (key->l3index && key->l3index != l3index)
+>>>> +        if (key->l3index != l3index)
+>>>
+>>> That seems like the bug fix there. The L3 reference needs to match for
+>>> new key and existing key. I think the same change is needed in
+>>> __tcp_md5_do_lookup.
+>>
+>> Current behavior is that keys added without tcpm_ifindex will match
+>> connections both inside and outside VRFs. Changing this might break real
+>> applications, is it really OK to claim that this behavior was a bug all
+>> along?
 > 
-> Rebased on top of v5.15-rc4-rt7-rebase with Thomas' patch reverted and ran
-> the same thing under CONFIG_PREEMPT_RT, nothing seems to catch on fire, so:
+> no.
 > 
-> Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+> It's been a few years. I need to refresh on the logic and that is not
+> going to happen before this weekend.
 
-Thank you!!!
+It seems that always doing a strict key->l3index != l3index condition 
+inside of __tcp_md5_do_lookup breaks the usecase of binding one listener 
+to each VRF and not specifying the ifindex for each key.
 
-							Thanx, Paul
+This is a very valid usecase, maybe the most common way to use md5 with vrf.
+
+Ways to fix this:
+* Make this comparison only take effect if TCP_MD5SIG_FLAG_IFINDEX is set.
+* Make this comparison only take effect if tcp_l3mdev_accept=1
+* Add a new flag?
+
+Right now passing TCP_MD5SIG_FLAG_IFINDEX and ifindex == 0 results in an 
+error but maybe it should be accepted to mean "key applies only for 
+default VRF".
+
+--
+Regards,
+Leonard
