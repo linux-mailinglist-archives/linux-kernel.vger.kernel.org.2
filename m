@@ -2,121 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CFF426B57
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBA64426B58
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242046AbhJHM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:57:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22475 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230240AbhJHM5o (ORCPT
+        id S242102AbhJHM5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:57:54 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:38493 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241537AbhJHM5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:57:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633697749;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FMmWc8lP0mifWAbwIJadUVhVPm7Gb5Eb+P29xKmImcg=;
-        b=K61i7Sk2Op42cS/TTlauxXClXnyjfXaEy3+bdpnctNVFvQpAmHk+tAa5wjjd/G/f4XMpnb
-        KKRvbBHanJfI9xHwD9CnWCmt1W1gIVdkSxfTbUu8uMllEQ8SuxLNyKsZ4TG3teec/vf7Hz
-        80W3+SHaecI50Jxn2XytK8D7REub1EQ=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-WaxKNU8HNn6PBt5GudJClw-1; Fri, 08 Oct 2021 08:55:48 -0400
-X-MC-Unique: WaxKNU8HNn6PBt5GudJClw-1
-Received: by mail-wr1-f72.google.com with SMTP id p12-20020adfc38c000000b00160d6a7e293so4767523wrf.18
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:55:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FMmWc8lP0mifWAbwIJadUVhVPm7Gb5Eb+P29xKmImcg=;
-        b=PW0JV/reO+td8KBWp7nSLm1Rj3zZkeyUGTPW/dZ9xx8zlD2398E+oOZHyYhCji1ivr
-         cmk5JGQb2mvg8v51dUeBQzqXSFOEgt9wT9hanvw5wM5wr1Awv8eJA4hSomZorixxTbue
-         WOjrIc2Il3dTYUueAmcTHvKbhGwuTzk4kl6I0nbLCwQaclZtAGeR163h/5aopyU+6jP4
-         yiwqdhJmN7dvbbysUS9GfKFX3yu6j2QE85Ql7Ya8Bf5zXCuzhJrAMv2rbEWrvY7lWfHz
-         29/bCgA6muw5JsSVDBAdp0LWVB7ham5iBNtagEyDVBDiY4qr/GbVbdFbGQ72VbQ4ZnZf
-         9Fbg==
-X-Gm-Message-State: AOAM532E0k5l3Q5MBygX+wO3zo5UVL3O5kRwleqUxdDomMDCt+z7z9Dj
-        psmWhB7PUyYgB2JJO7K3Chl80Dcufs3iiGyA0zX/+cVq6jo32Y3chkZgRMpcqkTTjsojDL3TekT
-        4PkPp+o5NmQKi2/nAyRVPCCXe
-X-Received: by 2002:a1c:4e12:: with SMTP id g18mr1822927wmh.63.1633697747235;
-        Fri, 08 Oct 2021 05:55:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHJmLzWnslN0Z+MPScYs/aX2KbjkWc8epVby1UyfSSPzG/6fOO7PspP4jDvg5IMfhCG+zbzg==
-X-Received: by 2002:a1c:4e12:: with SMTP id g18mr1822896wmh.63.1633697746991;
-        Fri, 08 Oct 2021 05:55:46 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
-        by smtp.gmail.com with ESMTPSA id k17sm2458539wrq.7.2021.10.08.05.55.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 05:55:46 -0700 (PDT)
-To:     Vlastimil Babka <vbabka@suse.cz>, ultrachin@163.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     brookxu.cn@gmail.com, chen xiaoguang <xiaoggchen@tencent.com>,
-        zeng jingxiang <linuszeng@tencent.com>,
-        lu yihui <yihuilu@tencent.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-References: <20211008063933.331989-1-ultrachin@163.com>
- <d71e6021-777b-3ca9-b08f-64fe7ff51e08@redhat.com>
- <8f30837b-5186-e836-21bc-9964456400c1@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH] mm: Free per cpu pages async to shorten program exit time
-Message-ID: <0ab1dd42-8869-5b41-3af5-e16a49335df2@redhat.com>
-Date:   Fri, 8 Oct 2021 14:55:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 8 Oct 2021 08:57:52 -0400
+Received: (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 11D2D20000F;
+        Fri,  8 Oct 2021 12:55:54 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 14:55:54 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Pratyush Yadav <p.yadav@ti.com>, Vinod Koul <vkoul@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <YWA/2o/Df34VDcpp@aptenodytes>
+References: <20210902185543.18875-1-p.yadav@ti.com>
+ <20210902185543.18875-3-p.yadav@ti.com>
+ <YUMa/ocoQ9l3JDe6@aptenodytes>
+ <20210917172809.rjtf7ww7vjcfvey5@ti.com>
+ <YVapVLnGfSBZCDTY@matsya>
+ <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
+ <20211007121436.jkck2cue5zd3rys4@ti.com>
+ <YWAdKTvYzF58oyU/@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <8f30837b-5186-e836-21bc-9964456400c1@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="L5dYWIzivIAnCCEH"
+Content-Disposition: inline
+In-Reply-To: <YWAdKTvYzF58oyU/@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.10.21 14:38, Vlastimil Babka wrote:
-> On 10/8/21 10:17, David Hildenbrand wrote:
->> On 08.10.21 08:39, ultrachin@163.com wrote:
->>> From: chen xiaoguang <xiaoggchen@tencent.com>
->>>
->>> The exit time is long when program allocated big memory and
->>> the most time consuming part is free memory which takes 99.9%
->>> of the total exit time. By using async free we can save 25% of
->>> exit time.
->>>
->>> Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
->>> Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
->>> Signed-off-by: lu yihui <yihuilu@tencent.com>
->>
->> I recently discussed with Claudio if it would be possible to tear down the
->> process MM deferred, because for some use cases (secure/encrypted
->> virtualization, very large mmaps) tearing down the page tables is already
->> the much more expensive operation.
-> 
-> OK, but what exactly is the benefit here? The cpu time will have to be spent
-> in any case, but we move it to a context that's not accounted to the exiting
-> process. Is that good? Also if it's a large process and restarts
-> immediately, allocating all the memory back again, it might not be available
-> as it's still being freed in the background, leading to a risk of OOM?
 
-One use case I was told is that if you have a large (secure/encrypted) 
-VM and shut it down, it might take quite a long time until you can 
-actually start that very VM again, because tooling assumes that the VM 
-isn't shut down until the process is gone (closed all files, sockets, etc.).
+--L5dYWIzivIAnCCEH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I also discussed the risk of OOM with Claudio. In some cases, we don't 
-care, for example, we could start the VM on a different node in the 
-cluster, or there is sufficient memory available to start it on the same 
-node. But there was the idea to stop the OOM killer from firing as long 
-as there is still some MM getting cleaned up, which would also make 
-sense to some degree.
+Hi,
 
--- 
-Thanks,
+On Fri 08 Oct 21, 13:27, Laurent Pinchart wrote:
+> Hi Pratyush,
+>=20
+> On Thu, Oct 07, 2021 at 05:44:38PM +0530, Pratyush Yadav wrote:
+> > On 07/10/21 03:10AM, Laurent Pinchart wrote:
+> > > On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
+> > > > On 17-09-21, 22:58, Pratyush Yadav wrote:
+> > > > > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
+> > > > > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
+> > > > > > > The Cadence DPHY can be used to receive image data over the C=
+SI-2
+> > > > > > > protocol. Add support for Rx mode. The programming sequence d=
+iffers from
+> > > > > > > the Tx mode so it is added as a separate set of hooks to isol=
+ate the two
+> > > > > > > paths. The mode in which the DPHY has to be used is selected =
+based on
+> > > > > > > the compatible.
+> > > > > >=20
+> > > > > > I just realized that I didn't follow-up on a previous revision =
+on the debate
+> > > > > > about using the phy sub-mode to distinguish between rx/tx.
+> > > > > >=20
+> > > > > > I see that you've been using a dedicated compatible, but I'm no=
+t sure this is a
+> > > > > > good fit either. My understanding is that the compatible should=
+ describe a group
+> > > > > > of register-compatible revisions of a hardware component, not h=
+ow the hardware
+> > > > > > is used specifically. I guess the distinction between rx/tx fal=
+ls under
+> > > > > > the latter rather than the former.
+> > > > >=20
+> > > > > I am not sure if that is the case. For example, we use "ti,am654-=
+ospi"=20
+> > > > > for Cadence Quadspi controller. The default compatible, "cdns,qsp=
+i-nor",=20
+> > > > > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible =
+also=20
+> > > > > supports Octal SPI (8 lines).
+> > > >=20
+> > > > Those are hardware defaults right?
+> > > >=20
+> > > > > In addition, I feel like the Rx DPHY is almost a different type o=
+f=20
+> > > > > device from a Tx DPHY. The programming sequence is completely dif=
+ferent,=20
+> > > >=20
+> > > > Is that due to direction or something else..?
+> > > >=20
+> > > > > the clocks required are different, etc. So I think using a differ=
+ent=20
+> > > > > compatible for Rx mode makes sense.
+> > > >=20
+> > > > Is the underlaying IP not capable of both TX and RX and in the spec=
+ific
+> > > > situations you are using it as TX and RX.
+> > > >=20
+> > > > I am okay that default being TX but you can use Paul's approach of
+> > > > direction with this to make it better proposal
+> > >=20
+> > >=20
+> > > Given that the RX and TX implementations are very different (it's not=
+ a
+> > > matter of selecting a mode at runtime), I'm actually tempted to
+> > > recommend having two drivers, one for the RX PHY and one for the TX P=
+HY.
+> > > This can only be done with two different compatible strings, which I
+> > > think would be a better approach.
+> >=20
+> > FWIW, I think having different drivers would certainly make things=20
+> > easier to maintain.
+>=20
+> I'm sorry for not having recommended this in the first place.
+>=20
+> Any objection from anyone against going in this direction ?
 
-David / dhildenb
+So apparently there is not a single register that is shared between rx and =
+tx
+and clocks are not the same either so it feels to me like a separate driver
+would be legit. This looks like two distinct IPs sharing the same base addr=
+ess.
 
+Cheers,
+
+Paul
+
+> > > It's unfortunate that the original compatible string didn't contain
+> > > "tx". We could rename it and keep the old one in the driver for backw=
+ard
+> > > compatibility, making things cleaner going forward.
+>=20
+> --=20
+> Regards,
+>=20
+> Laurent Pinchart
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--L5dYWIzivIAnCCEH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmFgP9oACgkQ3cLmz3+f
+v9Hxvwf/e/A29WlDAhrBrskZq6ow7NWWzWAoCdjdGQl/QDZmIe7f2+93Q97rjSLn
+eiXMvHxgnuvkm4KWlGM7MBEczcwbSfnZKyu48UWYsdGwfkNAvLJEka522u7nhsxY
+j68hda1nI6BpV7tmX4zsQH/kySF/z1Z787q/CoYl7Yq/dYxtNW8L0EDval4kbYQI
+vHu4CXsmFw0ToPPJd0d4wBrD8WEU8wQX6CkNhDIw92RCzMMJu7jy9FRD5/ekF93P
+Bty3NYcL3a9jcNoX82BeFcBbRE+xyJxeCHR8KpBAmgTaVefI3E6aoPQL1L55bN1v
+SuwC4/l8Bq3f03IyIv222HfPQ6rURw==
+=ceu9
+-----END PGP SIGNATURE-----
+
+--L5dYWIzivIAnCCEH--
