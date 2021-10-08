@@ -2,138 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474B1426BAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D53D426BAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242400AbhJHNbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:31:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54921 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242369AbhJHNbW (ORCPT
+        id S242496AbhJHNcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 09:32:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240366AbhJHNcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:31:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633699767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=W+20OtyOzoxeqzG//DN6kXf3yJzCYJkrDPENdiVWnik=;
-        b=gVOfPl2CJ0uZglf3PUYDFwf3cju14SHcMOYpWUchvY+pMQuBQMYrpVaPctZtia+dyWmtT3
-        nnJKaA1kMkOC+Y0YYuYUrTPYfr6udpfZTGoV/Kv6h9d8XTsyw/LCZtA2Gy/5/tMDd1nscP
-        LrLzQxKaK1AAno3lwvB+CUs7lCttXAA=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-2p-B0ayQP1Wosehh6LitUA-1; Fri, 08 Oct 2021 09:29:02 -0400
-X-MC-Unique: 2p-B0ayQP1Wosehh6LitUA-1
-Received: by mail-wr1-f69.google.com with SMTP id l9-20020adfc789000000b00160111fd4e8so7359587wrg.17
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:29:01 -0700 (PDT)
+        Fri, 8 Oct 2021 09:32:11 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6273CC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:30:16 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id v17so29877544wrv.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 06:30:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eWnofJKTw3p+IAgBaEr8PkiopgGt7liFG5ipUcC8kn0=;
+        b=XCP8wRM6WC6kWj4jqeiaBCPCZSYH6Y5FZpO45POxcDTWC6P0OQ3mnNDnxwDmwDGeEk
+         qGKo5+NoJBzO6LZZhguLhDRWmr2N9J3pb1LvGC8IafUaNZsYhB4HCvZXedPni4KxuduP
+         vz1DtCN4xeSjS72cO5w1dNp5NBc3WporCMrUjYqOP/x/4p1fTH6q7CHJ6sx95To914FQ
+         koeINiwhOTAIAh6GfqJN21qeMUdXODvz+FRNW4mgBpwni3ATu5K/0Sbai430GgVhSY94
+         YfQG0wqsmgsf4dZnDxec2KSNp8tkabS6NFaX3lf0nYyct4OuCJsH5/oZBFkUygxJP3se
+         1E7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=W+20OtyOzoxeqzG//DN6kXf3yJzCYJkrDPENdiVWnik=;
-        b=YwHTkejsOrTb/0YxbhEED7qlrboskyGi8BAEyhyiXeqpZFwN3N9LJQ/RCHT4rMz6AR
-         0Ulz/hA2MxKBAY215VcEvcW9foVtOchz0xXKtkWH6L96rx0ulR7UUW2WP7S5pk9NkToq
-         25TgRGWRG9zYm/zi+sK+KLJXSIitAuv69N5no6nhaFRnNAmBOk9HN/71HtBTW6WR1SDt
-         XxNN07XqF46WZOHAQEMmkyrH0x07dKHkwlnD89aHwirxjrIempxXXZc3uBFfgrcH+fK+
-         JrbCpf0jaJkArwZBz8FQMK0Nmt9X2x9aytUslaHIzxlJhJ38oHlYE+b8v4bMH9YWInZD
-         xeHw==
-X-Gm-Message-State: AOAM5316Nu5fa4gUjIBOW4ZsKKYDVDqCMiF2tWsSNmMKeZ+UFXMaI2wK
-        JGkbTDHM6Xml3F1idY7vctBvzKtYRXNFw43K6NP/h+Kn4izv1fZn89UfR7gjAdDiojX01fyPj/K
-        w58FufE1/h7uQeY9iJn1lISdR
-X-Received: by 2002:a7b:c341:: with SMTP id l1mr3467555wmj.142.1633699740959;
-        Fri, 08 Oct 2021 06:29:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3LlFeRzehp5jW/HXHcTYHvdvbDvy0R7E26tnAaFh6ZsgXTWn2Mhn+npR6fWXOMyfVrJ15AA==
-X-Received: by 2002:a7b:c341:: with SMTP id l1mr3467528wmj.142.1633699740777;
-        Fri, 08 Oct 2021 06:29:00 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id y4sm3451927wry.95.2021.10.08.06.28.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 06:29:00 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Long Li <longli@microsoft.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob for Azure VM
-In-Reply-To: <YWApWbYeGqutoDMG@kroah.com>
-References: <YQwvL2N6JpzI+hc8@kroah.com>
- <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YQ9oTBSRyHCffC2k@kroah.com>
- <BY5PR21MB15065658FA902CC0BC162956CEF79@BY5PR21MB1506.namprd21.prod.outlook.com>
- <BY5PR21MB1506091AFED0EB62F081313ECEA29@BY5PR21MB1506.namprd21.prod.outlook.com>
- <DM6PR21MB15135923A4CB0E61786ABC22CEAA9@DM6PR21MB1513.namprd21.prod.outlook.com>
- <YVa6dtvt/BaajmmK@kroah.com>
- <BY5PR21MB15060E0A4AC1F6335A08EAB4CEB19@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YV/dMdcmADXH/+k2@kroah.com> <87fstb3h6h.fsf@vitty.brq.redhat.com>
- <YWApWbYeGqutoDMG@kroah.com>
-Date:   Fri, 08 Oct 2021 15:28:58 +0200
-Message-ID: <87a6jj3asl.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=eWnofJKTw3p+IAgBaEr8PkiopgGt7liFG5ipUcC8kn0=;
+        b=Phhu9dxcToKF27BnAGorOjyY/jQK/dhEm5q6UbSsMYfqilADWxmXXBkFlI14gcUnBn
+         rQOoIHKWYf7+/7RLvCK4yooTqvMhe4VUDpb8jv6lBHyuIEljEgZlE8H4FaM6MgTbwR0p
+         7Dx7377Q33JGFGP2iq/VeokzyEWH0/PzwxAVc1e7Apbm28jjy4f3iCMcb07eFaKDTVjY
+         akEYUiEXjOglmfj/NzivOX3Bgsn35OGk8Zm+d/9TPLIoI05WQS8Wuuz3YktFUdxNrqWt
+         JiHy11Ak9DGdMKC3x7ab+bRdonLKxjBIZ5PxgunYz0LztDczDgPdP2TYVlPajY1Bdmpx
+         LVeA==
+X-Gm-Message-State: AOAM5314EQA06RX4ozvGTaiM6fwWBcxrUwBcYJgOb1yYrdyMGQ8ByHxI
+        lUdxZxHThIDOh1yQVt5tm6MkOM5d0dmzkw==
+X-Google-Smtp-Source: ABdhPJzIjKNZ1rSMhSEcxRkODlks31QNmegAmTud3n4Eu4NCeT3rFGTI37iSKmKut3kHkHoDEmtfvQ==
+X-Received: by 2002:a5d:5250:: with SMTP id k16mr4231026wrc.82.1633699814521;
+        Fri, 08 Oct 2021 06:30:14 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:a3ab:352d:6c22:15bc? ([2001:861:44c0:66c0:a3ab:352d:6c22:15bc])
+        by smtp.gmail.com with ESMTPSA id 143sm12479484wma.37.2021.10.08.06.30.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 06:30:14 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson-sm1-odroid: add cec nodes
+To:     Dmitry Shmidt <dimitrysh@google.com>, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211007180130.805401-1-dimitrysh@google.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <34f1111e-a5f0-b04e-f8cf-f015d729d236@baylibre.com>
+Date:   Fri, 8 Oct 2021 15:30:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20211007180130.805401-1-dimitrysh@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+Hi,
 
-> On Fri, Oct 08, 2021 at 01:11:02PM +0200, Vitaly Kuznetsov wrote:
->> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
->> 
->> ...
->> >
->> > Not to mention the whole crazy idea of "let's implement our REST api
->> > that used to go over a network connection over an ioctl instead!"
->> > That's the main problem that you need to push back on here.
->> >
->> > What is forcing you to put all of this into the kernel in the first
->> > place?  What's wrong with the userspace network connection/protocol that
->> > you have today?
->> >
->> > Does this mean that we now have to implement all REST apis that people
->> > dream up as ioctl interfaces over a hyperv transport?  That would be
->> > insane.
->> 
->> As far as I understand, the purpose of the driver is to replace a "slow"
->> network connection to API endpoint with a "fast" transport over
->> Vmbus.
->
-> Given that the network connection is already over vmbus, how is this
-> "slow" today?  I have yet to see any benchmark numbers anywhere :(
->
->> So what if instead of implementing this new driver we just use
->> Hyper-V Vsock and move API endpoint to the host?
->
-> What is running on the host in the hypervisor that is supposed to be
-> handling these requests?  Isn't that really on some other guest?
->
+On 07/10/2021 20:01, Dmitry Shmidt wrote:
+> Enable CEC in same way it is done for other meson odroid devices
+> 
+> Signed-off-by: Dmitry Shmidt <dimitrysh@google.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+> index fd0ad85c165b..7eed4849233d 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+> @@ -225,6 +225,20 @@ &arb {
+>  	status = "okay";
+>  };
+>  
+> +&cec_AO {
+> +	pinctrl-0 = <&cec_ao_a_h_pins>;
+> +	pinctrl-names = "default";
+> +	status = "disabled";
+> +	hdmi-phandle = <&hdmi_tx>;
+> +};
+> +
+> +&cecb_AO {
+> +	pinctrl-0 = <&cec_ao_b_h_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +	hdmi-phandle = <&hdmi_tx>;
+> +};
+> +
+>  &clkc_audio {
+>  	status = "okay";
+>  };
+> 
 
-Long,
+Thanks,
 
-would it be possible to draw a simple picture for us describing the
-backend flow of the feature, both with network connection and with this
-new driver? We're struggling to understand which particular bottleneck
-the driver is trying to eliminate.
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
 
--- 
-Vitaly
-
+Neil
