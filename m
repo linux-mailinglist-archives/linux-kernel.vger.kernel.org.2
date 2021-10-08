@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9C7426B21
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C7F426B36
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241463AbhJHMuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:50:24 -0400
-Received: from mail-vk1-f179.google.com ([209.85.221.179]:33391 "EHLO
-        mail-vk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbhJHMuS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:50:18 -0400
-Received: by mail-vk1-f179.google.com with SMTP id t200so4177257vkt.0;
-        Fri, 08 Oct 2021 05:48:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2CZA5owzP75Fk3OUthJZqkUZwf9bToqDOhS3PDP9ylg=;
-        b=0xiwhAHaIYXS6I4PlmgO0CR3a2nNgtpZwOrMdtqjf0sZG9eTCxFqE3zdFBNmLrFxGu
-         +4GPGtR73+W31UAmqS+a7DqiYU1uMbcSRVpqFasXse6ethYaPQYoZrYE2EfpM7Fh17CB
-         Wm+OG2ENJvX7hCiqlcaQXO1MhakXdLLTWwNqTonbjJMKyZ7/du3wrjyVQ5nPMPPMgJg7
-         L5t3JcGdvbI301W5/ZgumlgTyYzaw1ewm2C+Xd6NkmnRAeFpYfxY1DncQpI0M9co6PQ9
-         3LvRulKVS5JOBzS58qfVhMNfxfxzcNx09XklkQFEOUZX7M/YWeg4CtEoIlvvF1IXcAFb
-         8Hgw==
-X-Gm-Message-State: AOAM531mFOV3pNaJTs4LadrO+vRtBsvX0sarDTtlZswYZhOlBW/hZXYe
-        FW1j6VGijRDVxrH1+LsLAsm7N9767mRQcWrKbkE=
-X-Google-Smtp-Source: ABdhPJzhaludNGFd2M+jSs3csgSWFGRxQKaQ5CFdeS+FIxZB4w/RVLybb15Btky/2gRCvdqiCLIczqmpmRi0rz61IR4=
-X-Received: by 2002:a1f:5e84:: with SMTP id s126mr9100625vkb.7.1633697303106;
- Fri, 08 Oct 2021 05:48:23 -0700 (PDT)
+        id S242111AbhJHMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241844AbhJHMxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:53:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E190C60FC2;
+        Fri,  8 Oct 2021 12:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633697487;
+        bh=yN6jNyqY0tdmECHxR1wtroW8A8lILV+Zejp7DTxpLgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/1sMv63+8hQRt+O4kGRixzo+6wh7EcvWsWC/P+Su88x09542URplEQbblqIKy14H
+         ohLwCXe19nsPPwS08M9VoPUYcOhxvyiBAt/mbgq7HnWVGrYB/v/HB33Punj8Re+n4z
+         40Nukq94SbgsBfxJeUb2MJF34Dm6pVrm4+qM3Gp//b+68yS7qBoIDDXvk33wSh8Jht
+         KS+mE6GpTp8VWblR4fM3OVa0VyOEe50JzGey99xCzcLxCabgvo2SCNHFoR1rDTa0Wi
+         Yr2kT46+UtEHbu84uiAwghJ2v6B3O6DV/kXmmIFccUauFbo+vgGhLkhCsoOYyVn3H1
+         WCj4T62ZErGcA==
+Date:   Fri, 8 Oct 2021 13:51:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     cy_huang <u0084500@gmail.com>
+Cc:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        robh+dt@kernel.org, lgirdwood@gmail.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        cy_huang@richtek.com, devicetree@vger.kernel.org,
+        allen_lin@richtek.com
+Subject: Re: [PATCH v3 2/2] ASoC: rt9120: Add rt9210 audio amplifier support
+Message-ID: <YWA+ykStTEyzRbEy@sirena.org.uk>
+References: <1633668612-25524-1-git-send-email-u0084500@gmail.com>
+ <1633668612-25524-3-git-send-email-u0084500@gmail.com>
 MIME-Version: 1.0
-References: <CAMuHMdUvNM8Tu-+Ed0vjB2-_JUQe7ojUPbzJM=Vy1m_j31sNSg@mail.gmail.com>
- <20211007200250.20661-1-nikita.yoush@cogentembedded.com>
-In-Reply-To: <20211007200250.20661-1-nikita.yoush@cogentembedded.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Oct 2021 14:48:11 +0200
-Message-ID: <CAMuHMdU2Nr1V035Ntz-XNrc10t7femUFt_WV+Q3EHiWZD5HmkQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: renesas: r8a779[56]x: add MediaLB pins
-To:     Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrey Gusakov <andrey.gusakov@cogentembedded.com>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        LUU HOAI <hoai.luu.ub@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="msEr/jdBSU575gqS"
+Content-Disposition: inline
+In-Reply-To: <1633668612-25524-3-git-send-email-u0084500@gmail.com>
+X-Cookie: When your memory goes, forget it!
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
 
-On Thu, Oct 7, 2021 at 10:03 PM Nikita Yushchenko
-<nikita.yoush@cogentembedded.com> wrote:
-> From: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
->
-> This adds pins, groups, and functions for MediaLB device on Renesas
-> H3 and M3.
->
-> Signed-off-by: Andrey Gusakov <andrey.gusakov@cogentembedded.com>
-> Signed-off-by: Vladimir Barinov <vladimir.barinov@cogentembedded.com>
-> Signed-off-by: LUU HOAI <hoai.luu.ub@renesas.com>
-> Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-> ---
-> Changes from v1:
-> - move mlb_3pin from common[] to automotive[] arrays
-> - fix missed array size update in pfc-r8a7796.c
+--msEr/jdBSU575gqS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for the update!
+On Fri, Oct 08, 2021 at 12:50:12PM +0800, cy_huang wrote:
 
-Obviously not only the mlb_3pin groups, but also the functions have to
-be moved to the automotive[] arrays ;-)
+> +static const struct snd_kcontrol_new rt9120_snd_controls[] = {
+> +	SOC_SINGLE_TLV("MS Volume", RT9120_REG_MSVOL, 0, 2047, 1, digital_gain),
+> +	SOC_SINGLE("SPK Gain", RT9120_REG_SPKGAIN, 0, 7, 0),
 
-I'll fix these up while applying, so no need to resend.
+Volume controls should end in Volume even if they don't have TLV
+information so applications know how to render them.  I'll fix
+this up as I apply.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl-for-v5.16.
+--msEr/jdBSU575gqS
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Gr{oetje,eeting}s,
+-----BEGIN PGP SIGNATURE-----
 
-                        Geert
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFgPskACgkQJNaLcl1U
+h9DbbAf/ViOSI75UvPC1A+pp7ykPb2CF0lo+AsflYDs6bPHdCBnzsKecBpQB3A8K
+gLHD6jFdEEKhAwhvLpzQqLU5ytwDkPrY81ebrgwOrIzCHR0jk9dq1ZYEyim8k0UZ
+TBmFmIgQ+PEQ/JjkQKCPu20jzZBVFI5sEZ/Q6Ar1mWVO/GnVuxWF3Kw9fCxbxh2Y
+Dan9EeLRo0PHBT6DXjh3fV1kexTV30npTLgff3XGcAoXKjgLHLfZTEgPQuxqfDLX
+NlRK0djS7ZwXEEGFwcWE+w7UBfZC/I/wxeeGS1VsCVTwMHTPIVYe+Ip4Dj+8hbBL
+xfDreeXlMm4P8GvDPbY4dFVNylrM5w==
+=+qxg
+-----END PGP SIGNATURE-----
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--msEr/jdBSU575gqS--
