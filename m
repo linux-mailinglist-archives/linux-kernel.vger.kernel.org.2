@@ -2,162 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E501426B05
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:38:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E602426B0C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:39:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241945AbhJHMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:40:28 -0400
-Received: from mga14.intel.com ([192.55.52.115]:6120 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhJHMkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:40:23 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226785209"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="diff'?scan'208";a="226785209"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 05:38:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="diff'?scan'208";a="624724638"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Oct 2021 05:38:21 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Oct 2021 15:38:21 +0300
-Date:   Fri, 8 Oct 2021 15:38:21 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Vara Reddy <varar@codeaurora.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>
-Subject: Re: [RFC] drm/msm/dp: Allow attaching a drm_panel
-Message-ID: <YWA7vXp+4QbKWU1S@kuha.fi.intel.com>
-References: <CAD=FV=U=xVLuKOYHbGPTkLjGa8_U+F1ZtEvJt4LGaRuR5SsKFw@mail.gmail.com>
- <YVumL1lHLqtb/HKS@ripper>
- <CAD=FV=W9uKq00wXn4H1ax0u2D=R8Wn3J-Je43uxcPyDtk7AK7Q@mail.gmail.com>
- <YVyMwsvLl6XalJxB@ripper>
- <CAD=FV=WY+g38p7--QKZCaQnSqx7VvdwC36jH-VKnrEWoxK=XHQ@mail.gmail.com>
- <YV0KBWxVtKgOp2Cj@ripper>
- <CAD=FV=X5JFE3u9BtxxocaUrYNSpYXJN90UJ8HOvXZE6oYiVsDQ@mail.gmail.com>
- <CACeCKac4b_ej87cQD692TNwpsoFsmBwDcSeLy5fp+pvLX1si7g@mail.gmail.com>
- <YV7JNH9QvI4cBz5s@kuha.fi.intel.com>
- <YV8dEKMhNKKl20j6@ripper>
+        id S241839AbhJHMlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:41:39 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:12540 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241191AbhJHMlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:41:36 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1981GEhW003102;
+        Fri, 8 Oct 2021 08:39:28 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3bhtt1pwur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 08:39:27 -0400
+Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 198CdPnP033746
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 Oct 2021 08:39:26 -0400
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQMBX11.ad.analog.com (10.77.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5;
+ Fri, 8 Oct 2021 05:39:24 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.2.858.5 via Frontend
+ Transport; Fri, 8 Oct 2021 05:39:24 -0700
+Received: from ubuntuservermchindri.ad.analog.com ([10.32.225.109])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 198CdLda026676;
+        Fri, 8 Oct 2021 08:39:22 -0400
+From:   Mihail Chindris <mihail.chindris@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>, <alexandru.ardelean@analog.com>,
+        Mihail Chindris <mihail.chindris@analog.com>
+Subject: [PATCH v2 0/2] Add ad3552r and ad3542r driver support
+Date:   Fri, 8 Oct 2021 12:39:07 +0000
+Message-ID: <20211008123909.1901-1-mihail.chindris@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="d5CDzt0vLc4LIaGn"
-Content-Disposition: inline
-In-Reply-To: <YV8dEKMhNKKl20j6@ripper>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-ORIG-GUID: Moc7Mqd6dzxCx5YKXDGe3kE5LoDSX4ZL
+X-Proofpoint-GUID: Moc7Mqd6dzxCx5YKXDGe3kE5LoDSX4ZL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 adultscore=0 malwarescore=0 clxscore=1015
+ phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110080075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Changelog v0 -> v1:
+  - Split https://lore.kernel.org/all/20210820165927.4524-1-mihail.chindris@analog.com
+    and move ad3552r driver to this serie.
+  - Remove precision_mode abi
+  - Remove adi,synch_channels dt property
+  - Use vref-supply instead of adi,vref-select
+  - Remove unimplemented spi modes
+  - Change output-range format and use enums
+  - Update description for custom-output-range-config to be more clear
+  - Add datasheet tag
+  - Use GENMASK for defines
+  - Remove tomicro define
+  - Use get_unaligned_be16 and put_unaligned_be16
+  - Remove unnecessary checks
+  - Add comment for AD3552R_CH_DAC_PAGE channel
+  - Fix indent
+  - Remove irq trigger
+  - Remove irelevant checks
+  - Rename ad3552r_read_reg_pool to ad3552r_read_reg_wrapper.
+  - Add support for ad3542r
 
---d5CDzt0vLc4LIaGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+V0:
+  * Add ad3552r example to https://lore.kernel.org/linux-iio/20210219124012.92897-1-alexandru.ardelean@analog.com
 
-Hi,
+Mihail Chindris (2):
+  dt-bindings: iio: dac: Add adi,ad3552r.yaml
+  drivers:iio:dac: Add AD3552R driver support
 
-On Thu, Oct 07, 2021 at 09:15:12AM -0700, Bjorn Andersson wrote:
-> The one thing that I still don't understand though is, if the typec_mux
-> is used by the typec controller to inform _the_ mux about the function
-> to be used, what's up with the complexity in typec_mux_match()? This is
-> what lead me to believe that typec_mux was enabling/disabling individual
-> altmodes, rather just flipping the physical switch at the bottom.
-
-Ah, typec_mux_match() is a mess. I'm sorry about that. I think most of
-the code in that function is not used by anybody. If I remember
-correctly, all that complexity is attempting to solve some
-hypothetical corner case(s). Probable a case where we have multiple
-muxes per port to deal with.
-
-I think it would probable be best to clean the function to the bare
-minimum by keeping only the parts that are actually used today
-(attached).
-
-thanks,
+ .../bindings/iio/dac/adi,ad3552r.yaml         |  199 +++
+ drivers/iio/dac/Kconfig                       |   10 +
+ drivers/iio/dac/Makefile                      |    1 +
+ drivers/iio/dac/ad3552r.c                     | 1396 +++++++++++++++++
+ 4 files changed, 1606 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+ create mode 100644 drivers/iio/dac/ad3552r.c
 
 -- 
-heikki
+2.27.0
 
---d5CDzt0vLc4LIaGn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="mux.diff"
-
-diff --git a/drivers/usb/typec/mux.c b/drivers/usb/typec/mux.c
-index c8340de0ed495..44f168c9bd9bf 100644
---- a/drivers/usb/typec/mux.c
-+++ b/drivers/usb/typec/mux.c
-@@ -193,56 +193,15 @@ static int mux_fwnode_match(struct device *dev, const void *fwnode)
- static void *typec_mux_match(struct fwnode_handle *fwnode, const char *id,
- 			     void *data)
- {
--	const struct typec_altmode_desc *desc = data;
- 	struct device *dev;
--	bool match;
--	int nval;
--	u16 *val;
--	int ret;
--	int i;
- 
- 	/*
--	 * Check has the identifier already been "consumed". If it
--	 * has, no need to do any extra connection identification.
-+	 * The connection identifier will be needed with device graph (OF graph).
-+	 * Device graph is not supported by this code yet, so bailing out.
- 	 */
--	match = !id;
--	if (match)
--		goto find_mux;
--
--	/* Accessory Mode muxes */
--	if (!desc) {
--		match = fwnode_property_present(fwnode, "accessory");
--		if (match)
--			goto find_mux;
--		return NULL;
--	}
--
--	/* Alternate Mode muxes */
--	nval = fwnode_property_count_u16(fwnode, "svid");
--	if (nval <= 0)
--		return NULL;
--
--	val = kcalloc(nval, sizeof(*val), GFP_KERNEL);
--	if (!val)
--		return ERR_PTR(-ENOMEM);
--
--	ret = fwnode_property_read_u16_array(fwnode, "svid", val, nval);
--	if (ret < 0) {
--		kfree(val);
--		return ERR_PTR(ret);
--	}
--
--	for (i = 0; i < nval; i++) {
--		match = val[i] == desc->svid;
--		if (match) {
--			kfree(val);
--			goto find_mux;
--		}
--	}
--	kfree(val);
--	return NULL;
-+	if (id)
-+		return ERR_PTR(-ENOTSUPP);
- 
--find_mux:
- 	dev = class_find_device(&typec_mux_class, NULL, fwnode,
- 				mux_fwnode_match);
- 
-
---d5CDzt0vLc4LIaGn--
