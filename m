@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA66426953
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790F2426963
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242694AbhJHLgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60680 "EHLO mail.kernel.org"
+        id S241373AbhJHLg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241678AbhJHLd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:33:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1635610E7;
-        Fri,  8 Oct 2021 11:31:19 +0000 (UTC)
+        id S241753AbhJHLeG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:34:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B3B611BD;
+        Fri,  8 Oct 2021 11:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692680;
-        bh=1oXpKnqvw9gWBfBIN8fnCTR5iUd2qYf4fAUArxYTFNg=;
+        s=korg; t=1633692682;
+        bh=UTIksFZ/MVVulgMzv7PvbTx6m1WaAdVQ2Bym5ITvEpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gnoCpeprdPOPeIa3ODEUf7MQD6Vnz7Tos4TK5+3hUyLg7rZISk07+RK54zKPxdQse
-         GU2JhfsyREqF6mCMFtcwlNhnfDxLBUopBaBXSydOmdbu9Dp+ogV3ILn5szJiIFbF5D
-         CmdMEoNA6UL7hMnVOjulOhW1ZH6ME18lHv/5Ri2M=
+        b=oN++Ivr//lPUTnNOdYwudVfxIQx6JkqgeOZ5t5qSsunNsFQNadJQWojdjUnL8dJqg
+         0I9u7wGoJVFYPdBMHt9UlON49jCxJfinoJe2SRz2giBigXZMPaPM+N6U8M85BCwGup
+         TUYLM4uLiGOQA1D7t3RkXa2zOM3EWxqJITTC6lXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        stable@vger.kernel.org, Fares Mehanna <faresx@amazon.de>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 25/29] KVM: do not shrink halt_poll_ns below grow_start
-Date:   Fri,  8 Oct 2021 13:28:12 +0200
-Message-Id: <20211008112717.806335574@linuxfoundation.org>
+Subject: [PATCH 5.10 26/29] kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
+Date:   Fri,  8 Oct 2021 13:28:13 +0200
+Message-Id: <20211008112717.844426362@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
 References: <20211008112716.914501436@linuxfoundation.org>
@@ -41,70 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Senozhatsky <senozhatsky@chromium.org>
+From: Fares Mehanna <faresx@amazon.de>
 
-[ Upstream commit ae232ea460888dc5a8b37e840c553b02521fbf18 ]
+[ Upstream commit e1fc1553cd78292ab3521c94c9dd6e3e70e606a1 ]
 
-grow_halt_poll_ns() ignores values between 0 and
-halt_poll_ns_grow_start (10000 by default). However,
-when we shrink halt_poll_ns we may fall way below
-halt_poll_ns_grow_start and endup with halt_poll_ns
-values that don't make a lot of sense: like 1 or 9,
-or 19.
+Intel PMU MSRs is in msrs_to_save_all[], so add AMD PMU MSRs to have a
+consistent behavior between Intel and AMD when using KVM_GET_MSRS,
+KVM_SET_MSRS or KVM_GET_MSR_INDEX_LIST.
 
-VCPU1 trace (halt_poll_ns_shrink equals 2):
+We have to add legacy and new MSRs to handle guests running without
+X86_FEATURE_PERFCTR_CORE.
 
-VCPU1 grow 10000
-VCPU1 shrink 5000
-VCPU1 shrink 2500
-VCPU1 shrink 1250
-VCPU1 shrink 625
-VCPU1 shrink 312
-VCPU1 shrink 156
-VCPU1 shrink 78
-VCPU1 shrink 39
-VCPU1 shrink 19
-VCPU1 shrink 9
-VCPU1 shrink 4
-
-Mirror what grow_halt_poll_ns() does and set halt_poll_ns
-to 0 as soon as new shrink-ed halt_poll_ns value falls
-below halt_poll_ns_grow_start.
-
-Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Message-Id: <20210902031100.252080-1-senozhatsky@chromium.org>
+Signed-off-by: Fares Mehanna <faresx@amazon.de>
+Message-Id: <20210915133951.22389-1-faresx@amazon.de>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- virt/kvm/kvm_main.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/x86/kvm/x86.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 0e4310c415a8..57c0c3b18bde 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2756,15 +2756,19 @@ out:
- 
- static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
- {
--	unsigned int old, val, shrink;
-+	unsigned int old, val, shrink, grow_start;
- 
- 	old = val = vcpu->halt_poll_ns;
- 	shrink = READ_ONCE(halt_poll_ns_shrink);
-+	grow_start = READ_ONCE(halt_poll_ns_grow_start);
- 	if (shrink == 0)
- 		val = 0;
- 	else
- 		val /= shrink;
- 
-+	if (val < grow_start)
-+		val = 0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9c031d256028..997e32729919 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1250,6 +1250,13 @@ static const u32 msrs_to_save_all[] = {
+ 	MSR_ARCH_PERFMON_EVENTSEL0 + 12, MSR_ARCH_PERFMON_EVENTSEL0 + 13,
+ 	MSR_ARCH_PERFMON_EVENTSEL0 + 14, MSR_ARCH_PERFMON_EVENTSEL0 + 15,
+ 	MSR_ARCH_PERFMON_EVENTSEL0 + 16, MSR_ARCH_PERFMON_EVENTSEL0 + 17,
 +
- 	vcpu->halt_poll_ns = val;
- 	trace_kvm_halt_poll_ns_shrink(vcpu->vcpu_id, val, old);
- }
++	MSR_K7_EVNTSEL0, MSR_K7_EVNTSEL1, MSR_K7_EVNTSEL2, MSR_K7_EVNTSEL3,
++	MSR_K7_PERFCTR0, MSR_K7_PERFCTR1, MSR_K7_PERFCTR2, MSR_K7_PERFCTR3,
++	MSR_F15H_PERF_CTL0, MSR_F15H_PERF_CTL1, MSR_F15H_PERF_CTL2,
++	MSR_F15H_PERF_CTL3, MSR_F15H_PERF_CTL4, MSR_F15H_PERF_CTL5,
++	MSR_F15H_PERF_CTR0, MSR_F15H_PERF_CTR1, MSR_F15H_PERF_CTR2,
++	MSR_F15H_PERF_CTR3, MSR_F15H_PERF_CTR4, MSR_F15H_PERF_CTR5,
+ };
+ 
+ static u32 msrs_to_save[ARRAY_SIZE(msrs_to_save_all)];
 -- 
 2.33.0
 
