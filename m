@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CF0426CD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EED5426CD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242406AbhJHOkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:40:52 -0400
-Received: from first.geanix.com ([116.203.34.67]:37350 "EHLO first.geanix.com"
+        id S242478AbhJHOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:40:54 -0400
+Received: from first.geanix.com ([116.203.34.67]:37352 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229756AbhJHOkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:40:49 -0400
+        id S242084AbhJHOku (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:40:50 -0400
 Received: from zen.. (unknown [185.17.218.86])
-        by first.geanix.com (Postfix) with ESMTPSA id A046CC3B5C;
-        Fri,  8 Oct 2021 14:38:51 +0000 (UTC)
+        by first.geanix.com (Postfix) with ESMTPSA id 2F2A1C3B5E;
+        Fri,  8 Oct 2021 14:38:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633703931; bh=c1SgJ9T6g8A+11+EuJzpHcBIGdJS0HhtpmvKb6agfcM=;
+        t=1633703933; bh=vjjcfVjWx7Ob+Sq25WOnNjK0E6WF3cckWINU+c59prs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=D1dC5wY3Uj3FTyXO+CXAFip2Knr+6pqvJdvXq1AayN7nXZK6ExL0QuFI+57uSf9Qk
-         3vMYSQa0lFvcN9e3wP/dq+YZUrF42i2JIifY8g1kKPjXuHvoyT3/svqoTx1c+ny0Nu
-         SRyhEwT5E82SSJmfbYC9eV728pwpYCnViwZhAh9zzJfeus09lMTM/BGOqGsgNtkX+5
-         /bluvwsYb9TsjZzYJtX8yP3IDw7hsIbWudnlVXF6eQUh1vtPDHtjNTc6Srdg1FKSi4
-         5ohB/7RhMbTXZKV2CtDosztH7q27mrExFRw6FWI9X/Kxja8Gy3mUb71ab0qnYst/qw
-         YLFCVeZUR9ocA==
+        b=gw2E9/HJrreFjsFKMC6Zhdz2o42lTnhAfJe9S2caISKRvQwy5JutzBgXXCaFnniVP
+         hq/diGaEbXywBLdMHfr6U3g4En6PIrATV5PnxSG8UpPOTlAE84YjEZTobdH7d2HDpm
+         TQiYJ6MfZ4+2mmf8sIfsRUZT7lspLhMZSi8y3yfdzvHJ9TPd0DS9i5lU8buWKuXs+A
+         G26oPsZLPHr9wCf7IW1Mw/MiVyTDBM4jebaK+NUWx5T8mr4rNtIzxYVpUBKgcvUuYo
+         DJtSXTgHOAmLSBy/Hv11nWnSC//TVjoZCobBPwKHeOAdef9DlpHzKhtz+5zL1QsQh1
+         PQ5wZfC1eW+Fg==
 From:   Sean Nyekjaer <sean@geanix.com>
 To:     Boris Brezillon <boris.brezillon@collabora.com>
 Cc:     Sean Nyekjaer <sean@geanix.com>,
@@ -31,12 +31,12 @@ Cc:     Sean Nyekjaer <sean@geanix.com>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         Boris Brezillon <bbrezillon@kernel.org>,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while in suspend
-Date:   Fri,  8 Oct 2021 16:38:24 +0200
-Message-Id: <20211008143825.3717116-1-sean@geanix.com>
+Subject: [RFC PATCH 2/2] mtd: rawnand: remove suspended check
+Date:   Fri,  8 Oct 2021 16:38:25 +0200
+Message-Id: <20211008143825.3717116-2-sean@geanix.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008141524.20ca8219@collabora.com>
-References: 
+References: <20211008143825.3717116-1-sean@geanix.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
@@ -47,214 +47,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will prevent reading/writing/erasing to a suspended mtd device.
-It will force mtd_write()/mtd_read()/mtd_erase() to wait for
-mtd_resume() to unlock access to mtd devices.
-
-Exec_op[0] speed things up, so we see this race when rawnand devices going
-into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
-allows it to return errors rather than locking, before that commit it would
-have waited for the rawnand device to resume.
-
-Tested on a iMX6ULL.
-
-[0]:
-ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+Rawnand access is protected in upper mtd layer when mtd devices are
+suspended. So remove this obsolute check/lock
 
 Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
 Signed-off-by: Sean Nyekjaer <sean@geanix.com>
 ---
 
-Hope I got it all :)
+Hmm what to do in nand_sync()? Fine as is?
 
- drivers/mtd/mtdcore.c   | 57 ++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/mtd.h | 36 ++++++++++++++++++--------
- 2 files changed, 81 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 50 ++++++++------------------------
+ include/linux/mtd/rawnand.h      |  5 +---
+ 2 files changed, 13 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index c8fd7f758938..3c93202e6cbb 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -36,6 +36,44 @@
- 
- struct backing_dev_info *mtd_bdi;
- 
-+static void mtd_start_access(struct mtd_info *mtd)
-+{
-+	struct mtd_info *master = mtd_get_master(mtd);
-+
-+	/*
-+	 * Don't take the suspend_lock on devices that don't
-+	 * implement the suspend hook. Otherwise, lockdep will
-+	 * complain about nested locks when trying to suspend MTD
-+	 * partitions or MTD devices created by gluebi which are
-+	 * backed by real devices.
-+	 */
-+	if (!master->_suspend)
-+		return;
-+
-+	/*
-+	 * Wait until the device is resumed. Should we have a
-+	 * non-blocking mode here?
-+	 */
-+	while (1) {
-+		down_read(&master->master.suspend_lock);
-+		if (!master->master.suspended)
-+			return;
-+
-+		up_read(&master->master.suspend_lock);
-+		wait_event(master->master.resume_wq, master->master.suspended == 0);
-+	}
-+}
-+
-+static void mtd_end_access(struct mtd_info *mtd)
-+{
-+	struct mtd_info *master = mtd_get_master(mtd);
-+
-+	if (!master->_suspend)
-+		return;
-+
-+	up_read(&master->master.suspend_lock);
-+}
-+
- #ifdef CONFIG_PM_SLEEP
- 
- static int mtd_cls_suspend(struct device *dev)
-@@ -1000,6 +1038,9 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
- 
- 	ret = mtd_otp_nvmem_add(mtd);
- 
-+	init_waitqueue_head(&mtd->master.resume_wq);
-+	init_rwsem(&mtd->master.suspend_lock);
-+
- out:
- 	if (ret && device_is_registered(&mtd->dev))
- 		del_mtd_device(mtd);
-@@ -1241,6 +1282,8 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	struct erase_info adjinstr;
- 	int ret;
- 
-+	mtd_start_access(mtd);
-+
- 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
- 	adjinstr = *instr;
- 
-@@ -1278,6 +1321,8 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		}
- 	}
- 
-+	mtd_end_access(mtd);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_erase);
-@@ -1558,6 +1603,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
- 	struct mtd_ecc_stats old_stats = master->ecc_stats;
- 	int ret_code;
- 
-+	mtd_start_access(mtd);
-+
- 	ops->retlen = ops->oobretlen = 0;
- 
- 	ret_code = mtd_check_oob_ops(mtd, from, ops);
-@@ -1577,6 +1624,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
- 
- 	mtd_update_ecc_stats(mtd, master, &old_stats);
- 
-+	mtd_end_access(mtd);
-+
- 	/*
- 	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
- 	 * similar to mtd->_read(), returning a non-negative integer
-@@ -1597,6 +1646,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 	struct mtd_info *master = mtd_get_master(mtd);
- 	int ret;
- 
-+	mtd_start_access(mtd);
-+
- 	ops->retlen = ops->oobretlen = 0;
- 
- 	if (!(mtd->flags & MTD_WRITEABLE))
-@@ -1615,7 +1666,11 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
- 		return mtd_io_emulated_slc(mtd, to, false, ops);
- 
--	return mtd_write_oob_std(mtd, to, ops);
-+	ret = mtd_write_oob_std(mtd, to, ops);
-+
-+	mtd_end_access(mtd);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(mtd_write_oob);
- 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 88227044fc86..cfab07b02dc9 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -231,6 +231,8 @@ struct mtd_master {
- 	struct mutex partitions_lock;
- 	struct mutex chrdev_lock;
- 	unsigned int suspended : 1;
-+	wait_queue_head_t resume_wq;
-+	struct rw_semaphore suspend_lock;
- };
- 
- struct mtd_info {
-@@ -546,30 +548,42 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
- static inline int mtd_suspend(struct mtd_info *mtd)
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 3d6c6e880520..f1f85866c87a 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -332,19 +332,11 @@ static int nand_isbad_bbm(struct nand_chip *chip, loff_t ofs)
+  * @chip: NAND chip structure
+  *
+  * Lock the device and its controller for exclusive access
+- *
+- * Return: -EBUSY if the chip has been suspended, 0 otherwise
+  */
+-static int nand_get_device(struct nand_chip *chip)
++static void nand_get_device(struct nand_chip *chip)
  {
- 	struct mtd_info *master = mtd_get_master(mtd);
--	int ret;
-+	int ret = 0;
- 
--	if (master->master.suspended)
--		return 0;
- 
--	ret = master->_suspend ? master->_suspend(master) : 0;
--	if (ret)
-+	if (!master->_suspend)
- 		return ret;
- 
--	master->master.suspended = 1;
+ 	mutex_lock(&chip->lock);
+-	if (chip->suspended) {
+-		mutex_unlock(&chip->lock);
+-		return -EBUSY;
+-	}
+ 	mutex_lock(&chip->controller->lock);
+-
 -	return 0;
-+	down_write(&master->master.suspend_lock);
-+	if (!master->master.suspended) {
-+		ret = master->_suspend(master);
-+		if (!ret)
-+			master->master.suspended = 1;
-+	}
-+	up_write(&master->master.suspend_lock);
-+
-+	return ret;
  }
  
- static inline void mtd_resume(struct mtd_info *mtd)
+ /**
+@@ -573,10 +565,7 @@ static int nand_block_markbad_lowlevel(struct nand_chip *chip, loff_t ofs)
+ 		nand_erase_nand(chip, &einfo, 0);
+ 
+ 		/* Write bad block marker to OOB */
+-		ret = nand_get_device(chip);
+-		if (ret)
+-			return ret;
+-
++		nand_get_device(chip);
+ 		ret = nand_markbad_bbm(chip, ofs);
+ 		nand_release_device(chip);
+ 	}
+@@ -3756,9 +3745,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 	    ops->mode != MTD_OPS_RAW)
+ 		return -ENOTSUPP;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	if (!ops->datbuf)
+ 		ret = nand_do_read_oob(chip, from, ops);
+@@ -4349,9 +4336,7 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+ 
+ 	ops->retlen = 0;
+ 
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	switch (ops->mode) {
+ 	case MTD_OPS_PLACE_OOB:
+@@ -4410,10 +4395,8 @@ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+ 	if (nand_region_is_secured(chip, instr->addr, instr->len))
+ 		return -EIO;
+ 
+-	/* Grab the lock and see if the device is available */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	/* Grab the lock */
++	nand_get_device(chip);
+ 
+ 	/* Shift to get first page */
+ 	page = (int)(instr->addr >> chip->page_shift);
+@@ -4499,8 +4482,8 @@ static void nand_sync(struct mtd_info *mtd)
+ 
+ 	pr_debug("%s: called\n", __func__);
+ 
+-	/* Grab the lock and see if the device is available */
+-	WARN_ON(nand_get_device(chip));
++	/* Grab the lock */
++	nand_get_device(chip);
+ 	/* Release it and go back */
+ 	nand_release_device(chip);
+ }
+@@ -4517,9 +4500,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ 	int ret;
+ 
+ 	/* Select the NAND device */
+-	ret = nand_get_device(chip);
+-	if (ret)
+-		return ret;
++	nand_get_device(chip);
+ 
+ 	nand_select_target(chip, chipnr);
+ 
+@@ -4565,8 +4546,6 @@ static int nand_suspend(struct mtd_info *mtd)
+ 	mutex_lock(&chip->lock);
+ 	if (chip->ops.suspend)
+ 		ret = chip->ops.suspend(chip);
+-	if (!ret)
+-		chip->suspended = 1;
+ 	mutex_unlock(&chip->lock);
+ 
+ 	return ret;
+@@ -4580,15 +4559,10 @@ static void nand_resume(struct mtd_info *mtd)
  {
- 	struct mtd_info *master = mtd_get_master(mtd);
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
  
--	if (!master->master.suspended)
-+	if (!master->_suspend)
- 		return;
- 
--	if (master->_resume)
--		master->_resume(master);
- 
--	master->master.suspended = 0;
-+	down_write(&master->master.suspend_lock);
-+	if (master->master.suspended) {
-+		if (master->_resume)
-+			master->_resume(master);
 +
-+		master->master.suspended = 0;
-+
-+		/* The MTD dev has been resumed, wake up all waiters. */
-+		wake_up_all(&master->master.resume_wq);
-+	}
-+	up_write(&master->master.suspend_lock);
+ 	mutex_lock(&chip->lock);
+-	if (chip->suspended) {
+-		if (chip->ops.resume)
+-			chip->ops.resume(chip);
+-		chip->suspended = 0;
+-	} else {
+-		pr_err("%s called for a chip which is not in suspended state\n",
+-			__func__);
+-	}
++	if (chip->ops.resume)
++		chip->ops.resume(chip);
+ 	mutex_unlock(&chip->lock);
  }
  
- static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index b2f9dd3cbd69..1198a6548912 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1237,9 +1237,7 @@ struct nand_secure_region {
+  * @pagecache.page: Page number currently in the cache. -1 means no page is
+  *                  currently cached
+  * @buf_align: Minimum buffer alignment required by a platform
+- * @lock: Lock protecting the suspended field. Also used to serialize accesses
+- *        to the NAND device
+- * @suspended: Set to 1 when the device is suspended, 0 when it's not
++ * @lock: Lock to serialize accesses to the NAND device
+  * @cur_cs: Currently selected target. -1 means no target selected, otherwise we
+  *          should always have cur_cs >= 0 && cur_cs < nanddev_ntargets().
+  *          NAND Controller drivers should not modify this value, but they're
+@@ -1293,7 +1291,6 @@ struct nand_chip {
+ 
+ 	/* Internals */
+ 	struct mutex lock;
+-	unsigned int suspended : 1;
+ 	int cur_cs;
+ 	int read_retries;
+ 	struct nand_secure_region *secure_regions;
 -- 
 2.33.0
 
