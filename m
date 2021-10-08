@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCAE5426C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7378426C31
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 15:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhJHN7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 09:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbhJHN7o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 09:59:44 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790B5C061570;
-        Fri,  8 Oct 2021 06:57:49 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0E506581;
-        Fri,  8 Oct 2021 15:57:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633701467;
-        bh=rrj5/OHbxLCwvJLUfefaA4aV2n9ZiuZogKvLc2ZlskU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lDr+P/H+qzXpb621M3VAoo5Ufz7gBVIHJxiUUxZr7zYwHIwPidevXqUpoYSUbnKCF
-         9qNgcyBZK1/O9ogvSqsotvpMD6YL+B5URZcgCkQsx9ppQJ+Dni7y4A9fvR+WK+o6Oh
-         u4zh2GhdaV2Hx977r1j5ApCytqOR7y0OCkmbRRJs=
-Date:   Fri, 8 Oct 2021 16:57:36 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] media: uvcvideo: Fix memory leak of object map on
- error exit path
-Message-ID: <YWBOUP98s0K3yVbc@pendragon.ideasonboard.com>
-References: <20210917114930.47261-1-colin.king@canonical.com>
+        id S236718AbhJHOAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:00:18 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56600 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229529AbhJHOAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:00:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=M6hWnj+uhcpajBrcSjCeOIuPqgZh5B6D6Y/tykCXlnQ=; b=updv8nC8I8VkyVi9weeHWWNjRX
+        RvHsdtPel08EtfKe3pHrZ8Vztr6SwN2J3Y1hXvanndW6zi+O5uMQUQmpjCp6qUY9pikxzV/7yAh74
+        nhzXVcqgpmJTfP8Rq3vMhKjNj9k8hVruE86uNxTBCsKW6DA7/N4C6IfkubnEhIDxUNcM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mYqO8-00A3tO-Op; Fri, 08 Oct 2021 15:58:16 +0200
+Date:   Fri, 8 Oct 2021 15:58:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Arun Ramadoss <arun.ramadoss@microchip.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        George McCollister <george.mccollister@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        UNGLinuxDriver@microchip.com,
+        Woojung Huh <woojung.huh@microchip.com>
+Subject: Re: [PATCH net] net: dsa: microchip: Added the condition for
+ scheduling ksz_mib_read_work
+Message-ID: <YWBOeP3dHFbEdg8w@lunn.ch>
+References: <20211008084348.7306-1-arun.ramadoss@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210917114930.47261-1-colin.king@canonical.com>
+In-Reply-To: <20211008084348.7306-1-arun.ramadoss@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
-
-Thank you for the patch.
-
-On Fri, Sep 17, 2021 at 12:49:30PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, Oct 08, 2021 at 02:13:48PM +0530, Arun Ramadoss wrote:
+> When the ksz module is installed and removed using rmmod, kernel crashes
+> with null pointer dereferrence error. During rmmod, ksz_switch_remove
+> function tries to cancel the mib_read_workqueue using
+> cancel_delayed_work_sync routine.
 > 
-> Currently when the allocation of map->name fails the error exit path
-> does not kfree the previously allocated object map. Fix this by
-> setting ret to -ENOMEM and taking the free_map exit error path to
-> ensure map is kfree'd.
-> 
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 07adedb5c606 ("media: uvcvideo: Use control names from framework")
+> At the end of  mib_read_workqueue execution, it again reschedule the
+> workqueue unconditionally. Due to which queue rescheduled after
+> mib_interval, during this execution it tries to access dp->slave. But
+> the slave is unregistered in the ksz_switch_remove function. Hence
+> kernel crashes.
 
-That's not the right commit ID, it should be 70fa906d6fce.
+Something not correct here.
 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+https://www.kernel.org/doc/html/latest/core-api/workqueue.html?highlight=delayed_work#c.cancel_delayed_work_sync
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+This is cancel_work_sync() for delayed works.
 
-Mauro, could you add this in your tree for v5.16 ?
+and
 
-> ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index f4e4aff8ddf7..711556d13d03 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -44,8 +44,10 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
->  	if (v4l2_ctrl_get_name(map->id) == NULL) {
->  		map->name = kmemdup(xmap->name, sizeof(xmap->name),
->  				    GFP_KERNEL);
-> -		if (!map->name)
-> -			return -ENOMEM;
-> +		if (!map->name) {
-> +			ret = -ENOMEM;
-> +			goto free_map;
-> +		}
->  	}
->  	memcpy(map->entity, xmap->entity, sizeof(map->entity));
->  	map->selector = xmap->selector;
+https://www.kernel.org/doc/html/latest/core-api/workqueue.html?highlight=delayed_work#c.cancel_work_sync
 
--- 
-Regards,
+This function can be used even if the work re-queues itself or
+migrates to another workqueue.
 
-Laurent Pinchart
+Maybe the real problem is a missing call to destroy_worker()?
+
+      Andrew
