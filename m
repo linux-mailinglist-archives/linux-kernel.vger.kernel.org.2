@@ -2,146 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58442426930
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE2B4426969
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240332AbhJHLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:34:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
+        id S242167AbhJHLg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241143AbhJHLcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A7D6135E;
-        Fri,  8 Oct 2021 11:30:06 +0000 (UTC)
+        id S241274AbhJHLeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:34:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A197461283;
+        Fri,  8 Oct 2021 11:31:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692606;
-        bh=buiXg9GNRc7ZXE9kCnZhoVux+sYWboArSWolJbhn0tM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HbIiWqeBF1t4i55C4SS4l+08cwbzVnfg+A0kOrXUEpLZzun2gPHaGckiHAuEgNdZa
-         fF4HrIrvtDYYsqsQaHF0ZKQiMQrBlOXGGK3fqwlFA7+XQU4EMmSwERmuNdWMP0kssK
-         xHZTGqMIb/53C5D+rS8quc6PqIBwO7nvWe/FpO8M=
+        s=korg; t=1633692691;
+        bh=1BDI3ZVdJ/s08tnw6uvuhb79UtVnXik7lPZ9T5LzB1M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ROt3RofDPjiQjq8n71dRQZcGSDan/VDdBiagrVT2daBFuai1qm4ce+h5ADTvkFD/b
+         BVMiQg3N7zVazUCZXDM/2RNhtS/5GmTwdVRoh7sCPLI4Mv6x2YnJZnirLT7mV/m+O/
+         SXFVK5jh8Ja09M5awmlBP70V/TcGZsn+09bxRPUY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.4 00/16] 5.4.152-rc1 review
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 03/29] platform/x86: touchscreen_dmi: Update info for the Chuwi Hi10 Plus (CWI527) tablet
 Date:   Fri,  8 Oct 2021 13:27:50 +0200
-Message-Id: <20211008112715.444305067@linuxfoundation.org>
+Message-Id: <20211008112717.040167258@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.152-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.152-rc1
-X-KernelTest-Deadline: 2021-10-10T11:27+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.152 release.
-There are 16 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Hans de Goede <hdegoede@redhat.com>
 
-Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 196159d278ae3b49e7bbb7c76822e6008fd89b97 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.152-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+Add info for getting the firmware directly from the UEFI for the Chuwi Hi10
+Plus (CWI527), so that the user does not need to manually install the
+firmware in /lib/firmware/silead.
 
-thanks,
+This change will make the touchscreen on these devices work OOTB,
+without requiring any manual setup.
 
-greg k-h
+Also tweak the min and width/height values a bit for more accurate position
+reporting.
 
--------------
-Pseudo-Shortlog of commits:
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210905130210.32810-2-hdegoede@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/platform/x86/touchscreen_dmi.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.152-rc1
+diff --git a/drivers/platform/x86/touchscreen_dmi.c b/drivers/platform/x86/touchscreen_dmi.c
+index 4f5d53b585db..59b7e90cd587 100644
+--- a/drivers/platform/x86/touchscreen_dmi.c
++++ b/drivers/platform/x86/touchscreen_dmi.c
+@@ -100,10 +100,10 @@ static const struct ts_dmi_data chuwi_hi10_air_data = {
+ };
+ 
+ static const struct property_entry chuwi_hi10_plus_props[] = {
+-	PROPERTY_ENTRY_U32("touchscreen-min-x", 0),
+-	PROPERTY_ENTRY_U32("touchscreen-min-y", 5),
+-	PROPERTY_ENTRY_U32("touchscreen-size-x", 1914),
+-	PROPERTY_ENTRY_U32("touchscreen-size-y", 1283),
++	PROPERTY_ENTRY_U32("touchscreen-min-x", 12),
++	PROPERTY_ENTRY_U32("touchscreen-min-y", 10),
++	PROPERTY_ENTRY_U32("touchscreen-size-x", 1908),
++	PROPERTY_ENTRY_U32("touchscreen-size-y", 1270),
+ 	PROPERTY_ENTRY_STRING("firmware-name", "gsl1680-chuwi-hi10plus.fw"),
+ 	PROPERTY_ENTRY_U32("silead,max-fingers", 10),
+ 	PROPERTY_ENTRY_BOOL("silead,home-button"),
+@@ -111,6 +111,15 @@ static const struct property_entry chuwi_hi10_plus_props[] = {
+ };
+ 
+ static const struct ts_dmi_data chuwi_hi10_plus_data = {
++	.embedded_fw = {
++		.name	= "silead/gsl1680-chuwi-hi10plus.fw",
++		.prefix = { 0xf0, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00 },
++		.length	= 34056,
++		.sha256	= { 0xfd, 0x0a, 0x08, 0x08, 0x3c, 0xa6, 0x34, 0x4e,
++			    0x2c, 0x49, 0x9c, 0xcd, 0x7d, 0x44, 0x9d, 0x38,
++			    0x10, 0x68, 0xb5, 0xbd, 0xb7, 0x2a, 0x63, 0xb5,
++			    0x67, 0x0b, 0x96, 0xbd, 0x89, 0x67, 0x85, 0x09 },
++	},
+ 	.acpi_name      = "MSSL0017:00",
+ 	.properties     = chuwi_hi10_plus_props,
+ };
+-- 
+2.33.0
 
-Kate Hsuan <hpa@redhat.com>
-    libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
-
-Rik van Riel <riel@surriel.com>
-    silence nfscache allocation warnings with kvzalloc
-
-Anand K Mistry <amistry@google.com>
-    perf/x86: Reset destroy callback on event init failure
-
-Fares Mehanna <faresx@amazon.de>
-    kvm: x86: Add AMD PMU MSRs to msrs_to_save_all[]
-
-Sergey Senozhatsky <senozhatsky@chromium.org>
-    KVM: do not shrink halt_poll_ns below grow_start
-
-Changbin Du <changbin.du@intel.com>
-    tools/vm/page-types: remove dependency on opt_file for idle page tracking
-
-Wen Xiong <wenxiong@linux.ibm.com>
-    scsi: ses: Retry failed Send/Receive Diagnostic commands
-
-Shuah Khan <skhan@linuxfoundation.org>
-    selftests:kvm: fix get_warnings_count() ignoring fscanf() return warn
-
-Li Zhijian <lizhijian@cn.fujitsu.com>
-    selftests: be sure to make khdr before other targets
-
-Yang Yingliang <yangyingliang@huawei.com>
-    usb: dwc2: check return value after calling platform_get_resource()
-
-Faizel K B <faizel.kb@dicortech.com>
-    usb: testusb: Fix for showing the connection speed
-
-Ming Lei <ming.lei@redhat.com>
-    scsi: sd: Free scsi_disk device via put_device()
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    ext2: fix sleeping in atomic bugs on error
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    sparc64: fix pci_iounmap() when CONFIG_PCI is not set
-
-Jan Beulich <jbeulich@suse.com>
-    xen-netback: correct success/error reporting for the SKB-with-fraglist case
-
-Vladimir Oltean <vladimir.oltean@nxp.com>
-    net: mdio: introduce a shutdown method to mdio device drivers
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 +--
- arch/sparc/lib/iomap.c                             |  2 ++
- arch/x86/events/core.c                             |  1 +
- arch/x86/kvm/x86.c                                 |  7 +++++
- drivers/ata/libata-core.c                          | 34 ++++++++++++++++++++--
- drivers/net/phy/mdio_device.c                      | 11 +++++++
- drivers/net/xen-netback/netback.c                  |  2 +-
- drivers/scsi/sd.c                                  |  9 +++---
- drivers/scsi/ses.c                                 | 22 +++++++++++---
- drivers/usb/dwc2/hcd.c                             |  4 +++
- fs/ext2/balloc.c                                   | 14 ++++-----
- fs/nfsd/nfscache.c                                 | 12 +++-----
- include/linux/libata.h                             |  1 +
- include/linux/mdio.h                               |  3 ++
- .../selftests/kvm/x86_64/mmio_warning_test.c       |  3 +-
- tools/testing/selftests/lib.mk                     |  1 +
- tools/usb/testusb.c                                | 14 +++++----
- tools/vm/page-types.c                              |  2 +-
- virt/kvm/kvm_main.c                                |  6 +++-
- 19 files changed, 114 insertions(+), 38 deletions(-)
 
 
