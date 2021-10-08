@@ -2,112 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46624268AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539E84268B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240244AbhJHL2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:28:33 -0400
-Received: from mail-ua1-f50.google.com ([209.85.222.50]:42557 "EHLO
-        mail-ua1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbhJHL2b (ORCPT
+        id S240274AbhJHL3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:29:19 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31126 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240181AbhJHL3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:28:31 -0400
-Received: by mail-ua1-f50.google.com with SMTP id c33so6483503uae.9;
-        Fri, 08 Oct 2021 04:26:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0PjIYnfhy9JPfwuH1borR6uzGu121ZxVTnsPHIR1D60=;
-        b=0VCoAG3iBRkON5TbAPG2geJUxQ6xJsJ+mT64KWyBxV9Y+k71/hYDE+cy6JqK/UmL90
-         Hi2n+iI3pqaTPx0kP5Jxyg5mNdyBSO69c4qYD1wDrX38RKcrMtH8LI8oGUtQyw+YPsFN
-         ZGIgGMujFmlyQDvneRs4Is0GABZUfPtfFiXkOPsh/fE27u3OWRCF3OJHXWjpCJ6ItCIE
-         zxMHrvXzuJDZMeR26UAvbGjVAJ5GJuYK0DEm6tqb5HPywApXSo3zzuMoT/DaBZGbqfF0
-         c2r8C335h2TH1I9QN9fK9ob5mYJr+n3SKWi1L9NWYIwaIJodB1SB2wmjiLMVX30ZxcNx
-         EGig==
-X-Gm-Message-State: AOAM530EhvxMg1UpOGmZiEPCI0/Et1Y+tj27dPDyCqkYke+qilwtcJM3
-        5/C3GGYOLP/x73n24JnxoCV6cf6Vmd68xaPzK5k=
-X-Google-Smtp-Source: ABdhPJyteRFr5h/MW+daRXU5YNDBMWkgDET9u4GPaMKgL5YkWc1aPkv1aZJdPd3DoNASP2tz/NiY7+7luWZgA8L+pQk=
-X-Received: by 2002:ab0:58c1:: with SMTP id r1mr1876640uac.89.1633692395608;
- Fri, 08 Oct 2021 04:26:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008111527.438276127@infradead.org> <20211008111626.332092234@infradead.org>
-In-Reply-To: <20211008111626.332092234@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Oct 2021 13:26:24 +0200
-Message-ID: <CAMuHMdUzQXPtfYDzytFeXNig7dQo+16+wRqud1AeF8GoLJMgNA@mail.gmail.com>
-Subject: Re: [PATCH 5/7] sched: Add wrapper for get_wchan() to keep task blocked
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        vcaputo@pengaru.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, Michal Hocko <mhocko@suse.com>,
-        Helge Deller <deller@gmx.de>, zhengqi.arch@bytedance.com,
-        "Tobin C. Harding" <me@tobin.cc>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Fri, 8 Oct 2021 07:29:17 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 198Aujvc004440;
+        Fri, 8 Oct 2021 07:27:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Z6iNOBuN2FiL+wPDKSDlFrt+6ZdK+ASaynt4w5R0G5Y=;
+ b=XqAhLniD0RFUrcb9AWMzeuun0yzD0V3wnvMwkf1qSuudC7xN6ZuQ19A0f8GcgqcKIBiO
+ ExwgpaPIIwc1Se6GDOMSi+RRK4mDSy+mH2xGZ5xrTTH7U63R3ZQdsoKItUkX3dQQK2Mf
+ 0L2zp3NFVGDZ+OmwU/sjloxH0iuR9N03qrlSLIwBtizwCRzs/o2k92xsMM4fOLm00YGv
+ oLleqZTy3hkDRM3qIjkTf8HTtmGbEmwKRyMqZ3XPFgJVDDEhHAHIxjl3kTljkEJH2W5V
+ w1w95KTrOXcp296mNAzqeCCmYJ4ySrynbzc2g8SHSzAuaHiO8HXv1gqShmds3zNj/ed/ Cw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bja72ek72-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 07:27:08 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 198BJ3hu025751;
+        Fri, 8 Oct 2021 07:27:08 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bja72ek6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 07:27:07 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 198BIExR005006;
+        Fri, 8 Oct 2021 11:27:05 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bhepdate7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 11:27:05 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 198BLaKJ50987410
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 8 Oct 2021 11:21:36 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7710211C06F;
+        Fri,  8 Oct 2021 11:27:02 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CFD811C052;
+        Fri,  8 Oct 2021 11:26:57 +0000 (GMT)
+Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.64.167])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  8 Oct 2021 11:26:56 +0000 (GMT)
+Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
+To:     James Clark <james.clark@arm.com>, acme@kernel.org,
+        john.garry@huawei.com, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org
+Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Jens Axboe <axboe@kernel.dk>, metze@samba.org,
-        laijs@linux.alibaba.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-hardening@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>
-Content-Type: text/plain; charset="UTF-8"
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
+ <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
+Date:   Fri, 8 Oct 2021 16:56:55 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lOyymgxK9TpeCR6DU1tsiTS3sJOTLMp1
+X-Proofpoint-ORIG-GUID: 8XX2XOnAHR5CiyG80ROVwRoe4lak9Nb6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110080065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 1:20 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> From: Kees Cook <keescook@chromium.org>
->
-> Having a stable wchan means the process must be blocked and for it to
-> stay that way while performing stack unwinding.
->
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
->  arch/m68k/include/asm/processor.h       |    2 +-
->  arch/m68k/kernel/process.c              |    4 +---
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+On 10/8/21 3:32 PM, James Clark wrote:
+> 
+> 
+> On 08/10/2021 08:43, kajoljain wrote:
+>>
+>>
+>> On 10/7/21 4:35 PM, James Clark wrote:
+>>> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
+>>> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
+>>> remove the need to apply any future JSON comma fixup commits.
+>>>
+>>> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
+>>> perf/core.
+>>>
+>>> Also available at:
+>>>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
+>>
+>> Hi James,
+>>    Do we have any dependency patches on top of this patch series. I am
+>> reviewing and testing it, but in both powerpc and x86 system I am
+>> getting build issue. Not sure if I am missing something> 
+>> I am trying your changes on top of upstream perf.
+>>
+>> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
+>> character inside JSON string
+> 
+> Hi Kajol,
+> 
+> A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
+> confirm if you have updated to get this commit on perf core?
+> 
+> Alternately you could pull from my branch above which is up to date enough
+> to include it.
 
-Gr{oetje,eeting}s,
+Hi James,
+   Thanks for pointing it. Not getting build issue now.
+> 
+> The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
+> 
+>> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
+>> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
+>> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
+>> make[2]: *** Waiting for unfinished jobs....
+>> make[1]: *** [Makefile.perf:238: sub-make] Error 2
+>> make: *** [Makefile:70: all] Error 2
+>>
+>> Also, Is it possible to add line number along with file name while
+>> showing this error `json error Invalid character inside JSON string`.
+>> It might make it easy to fix.
+> 
+> I can add a character number with the following fix if you think that would
+> be good enough? A line number might be a bigger change and involve keeping
+> track of newline characters.
 
-                        Geert
+Sure. I think then we can skip this change. Not sure if character
+number will be helpful.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Patch-set looks good to me.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Reviewed-by Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+
+> 
+> diff --git a/tools/perf/pmu-events/json.c b/tools/perf/pmu-events/json.c
+> index 0544398d6e2d..41a14e1543bf 100644
+> --- a/tools/perf/pmu-events/json.c
+> +++ b/tools/perf/pmu-events/json.c
+> @@ -99,7 +99,7 @@ jsmntok_t *parse_json(const char *fn, char **map, size_t *size, int *len)
+>         res = jsmn_parse(&parser, *map, *size, tokens,
+>                          sz / sizeof(jsmntok_t));
+>         if (res != JSMN_SUCCESS) {
+> -               pr_err("%s: json error %s\n", fn, jsmn_strerror(res));
+> +               pr_err("%s: json error at character %u '%s'\n", fn, parser.pos, jsmn_strerror(res));
+>                 goto error_free;
+>         }
+>         if (len)
+> 
+> 
+> It prints this for the same error you have above>
+> pmu-events/arch/test/test_soc/sys/uncore.json: json error at character 213 'Invalid character inside JSON string'
+> 
+> Although funnily enough after re-introducing that extra comma it doesn't fail the build for me,
+> it just prints the error message. But I may have noticed some dependency tracking issues around
+> the json files.
+> 
+> James
+> 
