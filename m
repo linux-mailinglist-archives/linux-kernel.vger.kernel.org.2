@@ -2,162 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E6A426679
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:15:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F82242667A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236658AbhJHJRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:17:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37572 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235969AbhJHJRe (ORCPT
+        id S236810AbhJHJSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:18:32 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:44325 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236335AbhJHJS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:17:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633684539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=h0m6F+5zadgowouPrrExZ1kaPYuwRnHxBe9uh7+Mk/A=;
-        b=Fge/KvtxQ3SGwXJ7wu7ULr8vnNxqM50cT1x+uxSwAkr0fPCBxHmchJ45mYAjJPoJxwt/av
-        m9eh7xv5Eb8hKn4Z5J51XDyfTIPtW7RmCtrx79I4BpA9yrbV6eryl7/+ohCzUs8JU5cIq4
-        wPToolH4eSNUbXvmNDgaIQE1wWRMfYo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-gKTym5KnOc2z5bhd9tmYRw-1; Fri, 08 Oct 2021 05:15:28 -0400
-X-MC-Unique: gKTym5KnOc2z5bhd9tmYRw-1
-Received: by mail-wr1-f69.google.com with SMTP id a10-20020a5d508a000000b00160723ce588so6799136wrt.23
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 02:15:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=h0m6F+5zadgowouPrrExZ1kaPYuwRnHxBe9uh7+Mk/A=;
-        b=Hxh4qJW7+QRO2TNbTImAJOLLMy3GQxdj0tR5iWxyRH2nklHumx/e/N0/L2VQliNZT9
-         45OQvvL+4e0BckaJyQYEJa+RzHjP2b0QKGXk/dbU9I2/F4oXvp+fKXYOVln3iGVM31cA
-         JdbTSf2A7RX2CPBcPhUSRWDdwQz7GQUrLp7F8r0Y5cHeJMpt+ssC+AlqKZjeD7laNTXU
-         WoBSYXYeY589hacI/cwhVbqpRx8iImV0Lu+ULSGnJjml2Tk8l+S8tslbD1vY9nh/aEmS
-         KJasTY0O4zv4dWbxbbC/CoJf2IV9/Q5w84IkT5z454rJoOCXjSNZDlodlolDuQvD2i8e
-         dc1A==
-X-Gm-Message-State: AOAM532+EKTrJODoe6i7D6msJ6lHE4w0tRBAviGL8B7KOQ5+uLr4RB4B
-        7vFEVfXoED94AGKcx59qsMr5aqfp1YSqm+Aq2M/EOsJjiC9hR1CoABiT1/iseNa2FidPDwLDBRI
-        +l0Dcs2SiQxUVcJEnFpGxdBuk
-X-Received: by 2002:adf:bb49:: with SMTP id x9mr2494945wrg.413.1633684527150;
-        Fri, 08 Oct 2021 02:15:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhjA72Z1ecXLKtLAZyfPsXgHBVALcs7blHK+2or3JE8vZJ+3NQO1m7NUe/Dr5DdGK+hGCqCQ==
-X-Received: by 2002:adf:bb49:: with SMTP id x9mr2494918wrg.413.1633684526901;
-        Fri, 08 Oct 2021 02:15:26 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c676e.dip0.t-ipconnect.de. [91.12.103.110])
-        by smtp.gmail.com with ESMTPSA id u24sm10586859wmj.48.2021.10.08.02.15.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 02:15:26 -0700 (PDT)
-Subject: Re: [PATCH] mm: Free per cpu pages async to shorten program exit time
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
-Cc:     ultrachin@163.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, brookxu.cn@gmail.com,
-        chen xiaoguang <xiaoggchen@tencent.com>,
-        zeng jingxiang <linuszeng@tencent.com>,
-        lu yihui <yihuilu@tencent.com>
-References: <20211008063933.331989-1-ultrachin@163.com>
- <d71e6021-777b-3ca9-b08f-64fe7ff51e08@redhat.com>
- <20211008105205.07d2f205@p-imbrenda>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1db11d75-d2d8-ef71-471a-ddad5c90a733@redhat.com>
-Date:   Fri, 8 Oct 2021 11:15:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 8 Oct 2021 05:18:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0Ur-5elq_1633684590;
+Received: from 30.21.164.80(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Ur-5elq_1633684590)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 08 Oct 2021 17:16:30 +0800
+Subject: Re: [PATCH 0/2] Support hugetlb charge moving at task migration
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1632843268.git.baolin.wang@linux.alibaba.com>
+ <YVWVk559nm2xZ98R@dhcp22.suse.cz>
+ <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
+ <YV/vUIzx6RBPZJ1I@dhcp22.suse.cz>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+Message-ID: <d20cbaa5-d510-2039-4a3c-1f1cc8acd2d1@linux.alibaba.com>
+Date:   Fri, 8 Oct 2021 17:17:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211008105205.07d2f205@p-imbrenda>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <YV/vUIzx6RBPZJ1I@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.10.21 10:52, Claudio Imbrenda wrote:
-> On Fri, 8 Oct 2021 10:17:50 +0200
-> David Hildenbrand <david@redhat.com> wrote:
-> 
->> On 08.10.21 08:39, ultrachin@163.com wrote:
->>> From: chen xiaoguang <xiaoggchen@tencent.com>
->>>
->>> The exit time is long when program allocated big memory and
->>> the most time consuming part is free memory which takes 99.9%
->>> of the total exit time. By using async free we can save 25% of
->>> exit time.
->>>
->>> Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
->>> Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
->>> Signed-off-by: lu yihui <yihuilu@tencent.com>
+
+
+On 2021/10/8 15:12, Michal Hocko wrote:
+> On Thu 07-10-21 23:39:15, Baolin Wang wrote:
+>> Hi Michal,
 >>
->> I recently discussed with Claudio if it would be possible to tear down
->> the process MM deferred, because for some use cases (secure/encrypted
->> virtualization, very large mmaps) tearing down the page tables is
->> already the much more expensive operation.
+>> (Sorry for late reply due to my holidays)
+>> On 2021/9/30 18:46, Michal Hocko wrote:
+>>> On Wed 29-09-21 18:19:26, Baolin Wang wrote:
+>>>> Hi,
+>>>>
+>>>> Now in the hugetlb cgroup, charges associated with a task aren't moved
+>>>> to the new hugetlb cgroup at task migration, which is odd for hugetlb
+>>>> cgroup usage.
+>>>
+>>> Could you elaborate some more about the usecase and/or problems you see
+>>> with the existing semantic?
 >>
->> There is mmdrop_async(), and I wondered if one could reuse that concept
->> when tearing down a process -- I didn't look into feasibility, however,
->> so it's just some very rough idea.
+>> The problems is that, it did not check if the tasks can move to the new
+>> hugetlb cgroup if the new hugetlb cgroup has a limitation, and the hugetlb
+>> cgroup usage is incorrect when moving tasks among hugetlb cgroups.
 > 
-> I have done some experiments by unconditionally replacing mmdrop with
-> mmdrop_async in exit.c and nothing broke, and exit time of large
-> processes was almost instant (with the actual cleanup being performed in
-> background)
+> Could you be more specific please? What do you mean by cgroup usage is
+> incorrect? Ideally could you describe your usecase?
+
+Sorry for confusing, what I mean is, when tasks from one hugetlb cgroup 
+are migrated to a new hugetlb cgroup, the new hugetlb cgroup's hugetlb 
+page usage is not increased accordingly. The issue I found is just from 
+my testing for the hugetlb cgroup, and I think this is not resonable if 
+we've already set a hugetlb limitation for a cgroup, but we always 
+ignore it when tasks migration among hugetlb cgroups.
+
+>>>> This patch set adds hugetlb cgroup charge moving when
+>>>> migrate tasks among cgroups, which are based on the memcg charge moving.
+>>>
+>>> Memcg charge moving has shown some problems over time and hence this is
+>>> not part of cgroup v2 interface anymore. Even for cgroup v1 this has
+>>
+>> Sorry, I missed this part, could you elaborate on the issues? I can have a
+>> close look about the problems of memcg charge moving.
 > 
-> my approach is probably simpler/cleaner:
+> The operation is quite expensive. Synchronization with charging is not
+> trivial. I do not have the full list handy but you can search the
+> mm mailing list archives for more information.
+
+Sure, thanks.
+
 > 
-> diff --git a/include/asm-generic/mmu_context.h b/include/asm-generic/mmu_context.h
-> index 91727065bacb..900931a6a105 100644
-> --- a/include/asm-generic/mmu_context.h
-> +++ b/include/asm-generic/mmu_context.h
-> @@ -73,4 +73,8 @@ static inline void deactivate_mm(struct task_struct *tsk,
->   }
->   #endif
->   
-> +#ifndef arch_exit_mm_mmput
-> +#define arch_exit_mm_mmput mmput
-> +#endif
-> +
->   #endif /* __ASM_GENERIC_MMU_CONTEXT_H */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 9a89e7f36acb..604cb9c740fa 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -498,7 +498,7 @@ static void exit_mm(void)
->          task_unlock(current);
->          mmap_read_unlock(mm);
->          mm_update_next_owner(mm);
-> -       mmput(mm);
-> +       arch_exit_mm_mmput(mm);
->          if (test_thread_flag(TIF_MEMDIE))
->                  exit_oom_victim();
->   }
+>>> been an opt-in. I do not see anything like that in this patch series.
+>>> Why should all existing workloads follow a different semantic during
+>>> task migration now?
+>>
+>> But I think it is reasonable for some cases moving the old charging to the
+>> new cgroup when task migration. Maybe I can add a new hugetlb cgroup file to
+>> control if need this or not?
 > 
-> these are the minimal changes to common code, then each architecture can
-> define their own arch_exit_mm_mmput as they see fit (for example, to free
-> asynchronously only for certain classes of mm, like big ones, VMs, or so).
-> 
-> Another option is to simply always replace mmput with mmput_async, which I
-> expect will raise more eyebrows.
+> It would be good to describe those use cases and why they really need
+> this. Because as things stand now, the charge migration is not supported
+> in cgroup v2 for memory cgroup controller and there are no plans to add
+> the support so it would be quite unexpected that hugetlb controller
+> would behave differently. And cgroup v1 is considered legacy and new
+> features are ususally not added as there is a hope to move users to v2.
 
-Thanks Claudio.
-
-I guess we'd use some heuristic to keep the eyebrows down. Having 
-something like
-
-if (should_mput_async_on_exit(mm))
-	mmput_async(mm);
-else
-	mmput(mm);
-
-whereby the heuristic can optionally consult the arch/config-knobs/... 
-doesn't sound too wrong to me if it works.
-
--- 
-Thanks,
-
-David / dhildenb
-
+OK, understood. Seems you have a strong opinion that it is unnecessary 
+to introduce this feature for cgroup v1 now, then I will drop this patch 
+set. Thanks for your input.
