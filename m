@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21AFE426EFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9A9426EFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:30:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhJHQcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:32:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40434 "EHLO mail.kernel.org"
+        id S233907AbhJHQcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:32:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229606AbhJHQcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:32:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9AEFB60F6C;
-        Fri,  8 Oct 2021 16:30:07 +0000 (UTC)
+        id S230365AbhJHQcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 12:32:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 572EB6112D;
+        Fri,  8 Oct 2021 16:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633710607;
-        bh=IZz+szGKCj/zy4i8JrJzAkbouT1+2IFxqeFS+LG0plo=;
+        s=k20201202; t=1633710609;
+        bh=FTxRlTntu5K5YNVIbQ3cAkXegy71z12iSwE95SNoEQQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=m8DTCoEX5Hy0qEyjgEuzrv0jf9+ULQcFTSbJ/lninZ9bhJbghbG7kA2eBd/QkYeNB
-         bKs34TZfATy/ppfidL+aGTXLi86U77Cs6TSlQhaKW+A/Zy9/B7PzF8LK0KKTEoZ5if
-         GJcOidQCZwYPcnL9q7MfdeErRfcSI46Zhq6EJwhUFg28rl6P63XEpFmTqQBDWhSHJC
-         UvonwoMefLHzZn3veEj93ZVX3wdROtvrwUlY2fjSDbh4dREJdmUreBMDPhTlrhEoIL
-         VWyjLBWqVdLw+3EjoVpRiGyZakhsCqTqGA/pGwaf6LZ6M3b36JO9zv9k6aDQvz+2ZI
-         TgfvS+Fvbd9JA==
+        b=l+eRfJFlfHw47ATA2n1fNdzV8GAb9M3Xy3HS5wywoaMHmS1TtptPL7HFwMigFasrI
+         kS7SPgiP+1/x/ge3a02quwmv00BNRRKb96w+vPJ9UhgzmBvYFE+K10A52lMuMsO0hQ
+         bKGFlYqVIxOi3Zhzcv+tBCTgZlBk6d0BHSbwUVJCmTDh2UDiDzaiA29sy4KeNIvkkN
+         CKVrNT4Lt5i1tnjHNk+qIKAnb0DxXCjnKIW633G2BaTdBpTDqWKgOu6PYzqDAUee6z
+         pAwTWC2Sbe+lMdCFHtYa9evjWR7j9dLFXXZGw7twDJH5949ojXZTIGH3BMIsst/52w
+         XH8brTA6AFUmw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8711D60A44;
-        Fri,  8 Oct 2021 16:30:07 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4CCEA60985;
+        Fri,  8 Oct 2021 16:30:09 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] nfc: nci: fix the UAF of rf_conn_info object
+Subject: Re: [PATCH net-next v2] net: phy: micrel: ksz9131 led errata workaround
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163371060754.30754.13208229686280226764.git-patchwork-notify@kernel.org>
-Date:   Fri, 08 Oct 2021 16:30:07 +0000
-References: <20211007174430.62558-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20211007174430.62558-1-krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linma@zju.edu.cn,
-        linux-nfc@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, greg@kroah.com, will@kernel.org
+Message-Id: <163371060930.30754.174261751564488049.git-patchwork-notify@kernel.org>
+Date:   Fri, 08 Oct 2021 16:30:09 +0000
+References: <20211007164535.657245-1-francesco.dolcini@toradex.com>
+In-Reply-To: <20211007164535.657245-1-francesco.dolcini@toradex.com>
+To:     Francesco Dolcini <francesco.dolcini@toradex.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, kuba@kernel.org,
+        philippe.schenker@toradex.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
+This patch was applied to netdev/net-next.git (master)
 by David S. Miller <davem@davemloft.net>:
 
-On Thu,  7 Oct 2021 19:44:30 +0200 you wrote:
-> From: Lin Ma <linma@zju.edu.cn>
+On Thu,  7 Oct 2021 18:45:35 +0200 you wrote:
+> Micrel KSZ9131 PHY LED behavior is not correct when configured in
+> Individual Mode, LED1 (Activity LED) is in the ON state when there is
+> no-link.
 > 
-> The nci_core_conn_close_rsp_packet() function will release the conn_info
-> with given conn_id. However, it needs to set the rf_conn_info to NULL to
-> prevent other routines like nci_rf_intf_activated_ntf_packet() to trigger
-> the UAF.
+> Workaround this by setting bit 9 of register 0x1e after verifying that
+> the LED configuration is Individual Mode.
 > 
 > [...]
 
 Here is the summary with links:
-  - nfc: nci: fix the UAF of rf_conn_info object
-    https://git.kernel.org/netdev/net/c/1b1499a817c9
+  - [net-next,v2] net: phy: micrel: ksz9131 led errata workaround
+    https://git.kernel.org/netdev/net-next/c/0316c7e66bbd
 
 You are awesome, thank you!
 --
