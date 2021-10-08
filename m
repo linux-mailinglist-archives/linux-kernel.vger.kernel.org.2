@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD60426AA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4C3426AA9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241311AbhJHMZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:25:53 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55914 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230187AbhJHMZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:25:49 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1mYouc-0003bC-UL; Fri, 08 Oct 2021 20:23:42 +0800
-Received: from herbert by gondobar with local (Exim 4.92)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1mYouW-00085i-Da; Fri, 08 Oct 2021 20:23:36 +0800
-Date:   Fri, 8 Oct 2021 20:23:36 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        YueHaibing <yuehaibing@huawei.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] crypto: ccree - avoid out-of-range warnings from clang
-Message-ID: <20211008122336.GB31060@gondor.apana.org.au>
-References: <20210927121811.940899-1-arnd@kernel.org>
+        id S241351AbhJHM1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:27:14 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:38622 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S240457AbhJHM1N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 08:27:13 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1989g3K9023582;
+        Fri, 8 Oct 2021 14:25:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=o5dnBVGOI0j0+u6Bn/o8WUIi3ZFLpUM04QJe3Cs6AOU=;
+ b=CcP90rnzgOfMswdXew1Gty1D3hFwatW0LQWG+5gCTjZ/m3O0ZhKnsOIEJpheJqIjzAQ5
+ M7nR4HZK2hLbP3dBitNKsCjPr2XwnPgUkFCptyw4zf0OoktWVbFlWEaCzuus0raBRCEk
+ AoouUv04z5CBISwMizuVIWshx1y0t7jksrcfvpozpEINdMQeuucatnhGsJCfms+HeVmB
+ TGTX26htQbJO3RFnr4GJzUEU4sQ4IMkGtxBlQMEhpYntKk0X6tCAU16Mgh4ptII2Lr9t
+ 62OVerJBsf0MMUoSsICXYgO8LwJi5i73kxxex73JiQ06+sn9qv0gCxmVqBnnqZxo7Zbd DQ== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bjkk78vnk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Oct 2021 14:25:07 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CDE2F10002A;
+        Fri,  8 Oct 2021 14:25:04 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C1527229A85;
+        Fri,  8 Oct 2021 14:25:04 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 8 Oct 2021 14:25:02
+ +0200
+From:   Fabien Dessenne <fabien.dessenne@foss.st.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-gpio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fabien Dessenne <fabien.dessenne@foss.st.com>
+Subject: [PATCH] pinctrl: stm32: do not warn when 'st,package' is absent
+Date:   Fri, 8 Oct 2021 14:24:54 +0200
+Message-ID: <20211008122454.617556-1-fabien.dessenne@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210927121811.940899-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:18:03PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang points out inconsistencies in the FIELD_PREP() invocation in
-> this driver that result from the 'mask' being a 32-bit value:
-> 
-> drivers/crypto/ccree/cc_driver.c:117:18: error: result of comparison of constant 18446744073709551615 with expression of type 'u32' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
->         cache_params |= FIELD_PREP(mask, val);
->                         ^~~~~~~~~~~~~~~~~~~~~
-> include/linux/bitfield.h:94:3: note: expanded from macro 'FIELD_PREP'
->                 __BF_FIELD_CHECK(_mask, 0ULL, _val, "FIELD_PREP: ");    \
->                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> include/linux/bitfield.h:52:28: note: expanded from macro '__BF_FIELD_CHECK'
->                 BUILD_BUG_ON_MSG((_mask) > (typeof(_reg))~0ull,         \
->                 ~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> This does not happen in other places that just pass a constant here.
-> 
-> Work around the warnings by widening the type of the temporary variable.
-> 
-> Fixes: 05c2a705917b ("crypto: ccree - rework cache parameters handling")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/crypto/ccree/cc_driver.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Since the 'st,package' property is optional, outputting the "No package
+detected" warning-level log when the property is absent is unsuitable.
+Remove that log.
 
-Patch applied.  Thanks.
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+---
+ drivers/pinctrl/stm32/pinctrl-stm32.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/pinctrl/stm32/pinctrl-stm32.c b/drivers/pinctrl/stm32/pinctrl-stm32.c
+index 68b3886f9f0f..ac82570e46be 100644
+--- a/drivers/pinctrl/stm32/pinctrl-stm32.c
++++ b/drivers/pinctrl/stm32/pinctrl-stm32.c
+@@ -1415,17 +1415,6 @@ static int stm32_pctrl_create_pins_tab(struct stm32_pinctrl *pctl,
+ 	return 0;
+ }
+ 
+-static void stm32_pctl_get_package(struct device_node *np,
+-				   struct stm32_pinctrl *pctl)
+-{
+-	if (of_property_read_u32(np, "st,package", &pctl->pkg)) {
+-		pctl->pkg = 0;
+-		dev_warn(pctl->dev, "No package detected, use default one\n");
+-	} else {
+-		dev_dbg(pctl->dev, "package detected: %x\n", pctl->pkg);
+-	}
+-}
+-
+ int stm32_pctl_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+@@ -1473,8 +1462,9 @@ int stm32_pctl_probe(struct platform_device *pdev)
+ 	pctl->dev = dev;
+ 	pctl->match_data = match->data;
+ 
+-	/*  get package information */
+-	stm32_pctl_get_package(np, pctl);
++	/*  get optional package information */
++	if (!of_property_read_u32(np, "st,package", &pctl->pkg))
++		dev_dbg(pctl->dev, "package detected: %x\n", pctl->pkg);
+ 
+ 	pctl->pins = devm_kcalloc(pctl->dev, pctl->match_data->npins,
+ 				  sizeof(*pctl->pins), GFP_KERNEL);
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
