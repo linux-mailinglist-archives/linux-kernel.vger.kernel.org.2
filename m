@@ -2,129 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D127426767
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E40426768
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239500AbhJHKKP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Oct 2021 06:10:15 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:38817 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhJHKKM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:10:12 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 198A83Go8013446, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36503.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 198A83Go8013446
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 8 Oct 2021 18:08:03 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36503.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 8 Oct 2021 18:08:02 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 8 Oct 2021 18:08:01 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098]) by
- RTEXMBS04.realtek.com.tw ([fe80::cdd5:82a3:e854:7098%5]) with mapi id
- 15.01.2106.013; Fri, 8 Oct 2021 18:08:01 +0800
-From:   Hilda Wu <hildawu@realtek.com>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kai.heng.feng@canonical.com" <kai.heng.feng@canonical.com>,
-        "apusaka@chromium.org" <apusaka@chromium.org>,
-        Max Chou <max.chou@realtek.com>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        KidmanLee <kidman@realtek.com>
-Subject: RE: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
-Thread-Topic: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
-Thread-Index: AQHXtecNs2ZfObp2A0STG/YXQiKUp6u9X0sAgACLa3CACUs1gIABnF5w
-Date:   Fri, 8 Oct 2021 10:08:01 +0000
-Message-ID: <8fc481a872474919b2a53fc2c7072166@realtek.com>
-References: <20210930103634.1710-1-hildawu@realtek.com>
- <D5B18E08-AE60-4B8B-960B-694D62E067B5@holtmann.org>
- <912f4b6441b54a1d89df6ffe4a0511ab@realtek.com>
- <065AC802-1C20-42F0-9B2F-24F2B2698B90@holtmann.org>
-In-Reply-To: <065AC802-1C20-42F0-9B2F-24F2B2698B90@holtmann.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.132.191]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-attachmentfiltering-interceptor-info: no applicable attachment filtering
- rules found
-x-kse-antivirus-interceptor-info: scan successful
-x-kse-antivirus-info: =?us-ascii?Q?Clean,_bases:_2021/10/8_=3F=3F_09:12:00?=
-x-kse-bulkmessagesfiltering-scan-result: protection disabled
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S239517AbhJHKK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:10:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:40064 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229989AbhJHKKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:10:24 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA1B2D6E;
+        Fri,  8 Oct 2021 03:08:29 -0700 (PDT)
+Received: from [10.57.25.67] (unknown [10.57.25.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 928193F70D;
+        Fri,  8 Oct 2021 03:08:26 -0700 (PDT)
+Subject: Re: [PATCH 2/3] perf tools: Make the JSON parser more conformant when
+ in strict mode
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, john.garry@huawei.com, ak@linux.intel.com,
+        linux-perf-users@vger.kernel.org, Nick.Forrington@arm.com,
+        Andrew.Kilroy@arm.com, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20211007110543.564963-1-james.clark@arm.com>
+ <20211007110543.564963-3-james.clark@arm.com> <YV8z306sBJQsdNNR@krava>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <2e14963b-cb98-f508-7067-255fdbd36bdb@arm.com>
+Date:   Fri, 8 Oct 2021 11:08:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-X-KSE-ServerInfo: RTEXH36503.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 10/08/2021 09:46:24
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 166594 [Oct 08 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hildawu@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 463 463 5854868460de3f0d8e8c0a4df98aeb05fb764a09
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: source.android.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;realtek.com:7.1.1;docs.microsoft.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/08/2021 09:50:00
+In-Reply-To: <YV8z306sBJQsdNNR@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcel,
 
-I'm a little confused about this.
-Did you mean that if use existing MSFT/AOSP extensions vendor cmd/event to check device has this feature.
-This way is not meeting your conception, a simple way to tell which RTL device supports the MSFT or AOSP extensions?
 
-Thanks.
+On 07/10/2021 18:52, Jiri Olsa wrote:
+> On Thu, Oct 07, 2021 at 12:05:41PM +0100, James Clark wrote:
+>> Return an error when a trailing comma is found or a new item is
+>> encountered before a comma or an opening brace. This ensures that the
+>> perf json files conform more closely to the spec at https://www.json.org
+>>
+>> Signed-off-by: James Clark <james.clark@arm.com>
+>> ---
+>>  tools/perf/pmu-events/jsmn.c | 42 ++++++++++++++++++++++++++++++++++--
+>>  1 file changed, 40 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/tools/perf/pmu-events/jsmn.c b/tools/perf/pmu-events/jsmn.c
+>> index 11d1fa18bfa5..8124d2d3ff0c 100644
+>> --- a/tools/perf/pmu-events/jsmn.c
+>> +++ b/tools/perf/pmu-events/jsmn.c
+>> @@ -176,6 +176,14 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  	jsmnerr_t r;
+>>  	int i;
+>>  	jsmntok_t *token;
+>> +#ifdef JSMN_STRICT
+> 
+> I might have missed some discussion on this, but do we need the
+> JSMN_STRICT define, if you enable it in the next patch?
+> why can't we be more strict by default.. do you plan to disable
+> it in future?
 
-Regards,
-Hilda
+I didn't plan on disabling it, I was just trying to keep to the existing style of the
+jsmn project.
 
------Original Message-----
-From: Marcel Holtmann <marcel@holtmann.org> 
-Sent: Thursday, October 7, 2021 11:57 PM
-To: Hilda Wu <hildawu@realtek.com>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>; Luiz Augusto von Dentz <luiz.dentz@gmail.com>; linux-bluetooth@vger.kernel.org; linux-kernel@vger.kernel.org; kai.heng.feng@canonical.com; apusaka@chromium.org; Max Chou <max.chou@realtek.com>; alex_lu@realsil.com.cn; KidmanLee <kidman@realtek.com>
-Subject: Re: [PATCH] Bluetooth: btrtl: Ask ic_info to drop firmware
+I could have added the trailing comma detection by default and not inside any
+#ifdef JSMN_STRICT blocks, but I would like to enable JSMN_STRICT anyway, because it
+enables some additional built in checking that was already there. So I thought it
+made sense to put my new strict stuff inside the existing strict option.
 
-Hi Hilda,
+One option would be to remove all (including the existing) #ifdef JSMN_STRICT blocks
+and have everything strict by default. But it would be a further deviation from jsmn.
 
-> The MSFT extension has a HCI_VS_MSFT_Read_Supported_Features command. The AOSP extension has a read capability cmd too.
-> https://docs.microsoft.com/en-us/windows-hardware/drivers/bluetooth/mi
-> crosoft-defined-bluetooth-hci-commands-and-events#hci_vs_msft_read_sup
-> ported_features 
-> https://source.android.com/devices/bluetooth/hci_requirements#vendor-s
-> pecific-capabilities If commands did not support, the controller 
-> should feedback event status as Unknown HCI Command (0x01).
-> We can go on this way.
+Thanks
+James
 
-I am not doing trial-and-error programming here. I rather better disable any extensions for Realtek devices altogether.
-
-Regards
-
-Marcel
-
-------Please consider the environment before printing this e-mail.
+> 
+> thanks,
+> jirka
+> 
+>> +	/*
+>> +	 * Keeps track of whether a new object/list/primitive is expected. New items are only
+>> +	 * allowed after an opening brace, comma or colon. A closing brace after a comma is not
+>> +	 * valid JSON.
+>> +	 */
+>> +	int expecting_item = 1;
+>> +#endif
+>>  
+>>  	for (; parser->pos < len; parser->pos++) {
+>>  		char c;
+>> @@ -185,6 +193,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  		switch (c) {
+>>  		case '{':
+>>  		case '[':
+>> +#ifdef JSMN_STRICT
+>> +			if (!expecting_item)
+>> +				return JSMN_ERROR_INVAL;
+>> +#endif
+>>  			token = jsmn_alloc_token(parser, tokens, num_tokens);
+>>  			if (token == NULL)
+>>  				return JSMN_ERROR_NOMEM;
+>> @@ -196,6 +208,10 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  			break;
+>>  		case '}':
+>>  		case ']':
+>> +#ifdef JSMN_STRICT
+>> +			if (expecting_item)
+>> +				return JSMN_ERROR_INVAL;
+>> +#endif
+>>  			type = (c == '}' ? JSMN_OBJECT : JSMN_ARRAY);
+>>  			for (i = parser->toknext - 1; i >= 0; i--) {
+>>  				token = &tokens[i];
+>> @@ -219,6 +235,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  			}
+>>  			break;
+>>  		case '\"':
+>> +#ifdef JSMN_STRICT
+>> +			if (!expecting_item)
+>> +				return JSMN_ERROR_INVAL;
+>> +			expecting_item = 0;
+>> +#endif
+>>  			r = jsmn_parse_string(parser, js, len, tokens,
+>>  					      num_tokens);
+>>  			if (r < 0)
+>> @@ -229,11 +250,15 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  		case '\t':
+>>  		case '\r':
+>>  		case '\n':
+>> -		case ':':
+>> -		case ',':
+>>  		case ' ':
+>>  			break;
+>>  #ifdef JSMN_STRICT
+>> +		case ':':
+>> +		case ',':
+>> +			if (expecting_item)
+>> +				return JSMN_ERROR_INVAL;
+>> +			expecting_item = 1;
+>> +			break;
+>>  			/*
+>>  			 * In strict mode primitives are:
+>>  			 * numbers and booleans.
+>> @@ -253,6 +278,9 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  		case 'f':
+>>  		case 'n':
+>>  #else
+>> +		case ':':
+>> +		case ',':
+>> +			break;
+>>  			/*
+>>  			 * In non-strict mode every unquoted value
+>>  			 * is a primitive.
+>> @@ -260,6 +288,12 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  			/*FALL THROUGH */
+>>  		default:
+>>  #endif
+>> +
+>> +#ifdef JSMN_STRICT
+>> +			if (!expecting_item)
+>> +				return JSMN_ERROR_INVAL;
+>> +			expecting_item = 0;
+>> +#endif
+>>  			r = jsmn_parse_primitive(parser, js, len, tokens,
+>>  						 num_tokens);
+>>  			if (r < 0)
+>> @@ -282,7 +316,11 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len,
+>>  			return JSMN_ERROR_PART;
+>>  	}
+>>  
+>> +#ifdef JSMN_STRICT
+>> +	return expecting_item ? JSMN_ERROR_INVAL : JSMN_SUCCESS;
+>> +#else
+>>  	return JSMN_SUCCESS;
+>> +#endif
+>>  }
+>>  
+>>  /*
+>> -- 
+>> 2.28.0
+>>
+> 
