@@ -2,97 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3D9E426502
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DF6426504
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231874AbhJHHEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:04:31 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:38899 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhJHHE1 (ORCPT
+        id S231895AbhJHHG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:06:29 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:48034 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229490AbhJHHGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:04:27 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1Mv3Ds-1mq8IA3ljs-00r2Py; Fri, 08 Oct 2021 09:02:30 +0200
-Received: by mail-wr1-f48.google.com with SMTP id t2so26509411wrb.8;
-        Fri, 08 Oct 2021 00:02:30 -0700 (PDT)
-X-Gm-Message-State: AOAM5339ETJ42LZs6PD5RXIIla3JjpJDPqYfM20sjsZnsCtTKxPMJhpE
-        k/uqSVhX5QIj+CnoQxMUefkTwkCi2zWPVcio0kI=
-X-Google-Smtp-Source: ABdhPJyM2fHIHpG1ztPQk+gfGEycOmvArSTFBqD5k6RBOlxiuU3e39HwAgUyLiRvXQxzL6kw5BAl+wnnMB4qsoy8z+U=
-X-Received: by 2002:adf:ab46:: with SMTP id r6mr1846830wrc.71.1633676550526;
- Fri, 08 Oct 2021 00:02:30 -0700 (PDT)
+        Fri, 8 Oct 2021 03:06:25 -0400
+X-UUID: 35e8212a111746229f88443a7cd511f9-20211008
+X-UUID: 35e8212a111746229f88443a7cd511f9-20211008
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 471568908; Fri, 08 Oct 2021 15:04:27 +0800
+Received: from mtkexhb02.mediatek.inc (172.21.101.103) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.2.792.15; Fri, 8 Oct 2021 15:04:26 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by mtkexhb02.mediatek.inc
+ (172.21.101.103) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 8 Oct
+ 2021 15:04:26 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Oct 2021 15:04:26 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <chun-jie.chen@mediatek.com>
+Subject: [PATCH] ASoC: mediatek: mt8195: update audsys clock parent name
+Date:   Fri, 8 Oct 2021 15:04:24 +0800
+Message-ID: <20211008070424.14347-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20211008065830.305057-1-butterflyhuangxx@gmail.com>
-In-Reply-To: <20211008065830.305057-1-butterflyhuangxx@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 8 Oct 2021 09:02:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3A+CxJVt79ogxQn3NuRB01TsFchr-zu30E57xBut_=NQ@mail.gmail.com>
-Message-ID: <CAK8P3a3A+CxJVt79ogxQn3NuRB01TsFchr-zu30E57xBut_=NQ@mail.gmail.com>
-Subject: Re: [PATCH] isdn: cpai: check ctr->cnr to avoid array index out of bound
-To:     Xiaolong Huang <butterflyhuangxx@gmail.com>
-Cc:     Karsten Keil <isdn@linux-pingi.de>,
-        David Miller <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:O4SpnvId+WiElrx6ZPayE+YW0q/jCN8F+kBopqsnKMYL+KQprke
- hFHSlmSzSlFQIB8O9/ZlracNVjHNLPEH4/spiEJijH8rI3qJ9i0Ae8BHaLDoXb6zFXgliXh
- ajftn9l5bDR/hs/kSGHce8+CKY6FRQh/KdEj9LRt6o5+UfC6B0bWnVn+mITDh+L1+/Thmjn
- ET9Fw92YYBtb9Wpzo8DhQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JmEQNOjTfA8=:wE19sg8+/3SafTs9404BmO
- WiQQlVnwhblOptOuQHGE/ZewDc9JLa9N4Iwe2zRwMe5m0v4ftfAHclORq2EwCHxV140wO477G
- K54NVk8McY8K11LKN2IEn3dTrRK/8pcPvgdJXK0ZtYaUV0aPGl3OGPRp2/Dc6bPmDzu31K71l
- yyaxn2m1DrxwgVaEr99tdVWBkK0cLegRlcEE5UU+whWdw1OT5wt6VXNBGB/MrHPeftsVDpJTc
- m3FkY6D21bN5VdSX03wjJEgbgJ81ewatSAH7Qmde74oXL7cW4MRObDst/8zrJVwBG+vF8pFG4
- rzd6dUa/P0MfHHVr5WrIlNFXutGA+VXLdgoFUMMK0XPW7iXYcZiy5pjoSQjqRQzpprjD1okK6
- k7DvIwf/CjGSDMmr7deOBLLGgDLOIOfQesRxedVR1ncZWACKpBRchSSf3jc2mrC3bUEwqycjF
- AlSsAcLWmx19lz9HuqAvc6NZqxxQtYBKQvOH/jgN6JcxuJ1iTonKrHKhUEIa00tuXp758UniT
- 3Qxgjiz+2jPzp21NF7l684QHS9CQ5XCw3I5x9N7GtvH2eT2aVdXEj4SrMCUv2i5OMB45AxkaW
- 9onMu/itLoW3+42dmhTcDlsr7IT7rePFAdli3nLhJ+uR2XLjyL3Xaw/FYPm+/f8pW/czV/2i0
- 5TVD3DMHCDomPBMtoL5axB53Xo7egQx0C9hdS6ZHdY9/rOPtEsqrXIxi5ldEDAs7HrLX6BvnF
- gtRvVcag6dMyI3xCmI3K3q7vFlso8b+HQioaRA==
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 8:58 AM Xiaolong Huang
-<butterflyhuangxx@gmail.com> wrote:
->
-> The cmtp_add_connection() would add a cmtp session to a controller
-> and run a kernel thread to process cmtp.
->
->         __module_get(THIS_MODULE);
->         session->task = kthread_run(cmtp_session, session, "kcmtpd_ctr_%d",
->                                                                 session->num);
->
-> During this process, the kernel thread would call detach_capi_ctr()
-> to detach a register controller. if the controller
-> was not attached yet, detach_capi_ctr() would
-> trigger an array-index-out-bounds bug.
->
-> [   46.866069][ T6479] UBSAN: array-index-out-of-bounds in
-> drivers/isdn/capi/kcapi.c:483:21
-> [   46.867196][ T6479] index -1 is out of range for type 'capi_ctr *[32]'
-> [   46.867982][ T6479] CPU: 1 PID: 6479 Comm: kcmtpd_ctr_0 Not tainted
-> 5.15.0-rc2+ #8
-> [   46.869002][ T6479] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> 1996), BIOS 1.14.0-2 04/01/2014
-> [   46.870107][ T6479] Call Trace:
-> [   46.870473][ T6479]  dump_stack_lvl+0x57/0x7d
-> [   46.870974][ T6479]  ubsan_epilogue+0x5/0x40
-> [   46.871458][ T6479]  __ubsan_handle_out_of_bounds.cold+0x43/0x48
-> [   46.872135][ T6479]  detach_capi_ctr+0x64/0xc0
-> [   46.872639][ T6479]  cmtp_session+0x5c8/0x5d0
-> [   46.873131][ T6479]  ? __init_waitqueue_head+0x60/0x60
-> [   46.873712][ T6479]  ? cmtp_add_msgpart+0x120/0x120
-> [   46.874256][ T6479]  kthread+0x147/0x170
-> [   46.874709][ T6479]  ? set_kthread_struct+0x40/0x40
-> [   46.875248][ T6479]  ret_from_fork+0x1f/0x30
-> [   46.875773][ T6479]
->
-> Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Because clock names are modified in mediatek CCF driver, sync the updated
+clock names to audsys driver.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+---
+The clock patch is accepted in clk-next branch.
+
+clk: mediatek: Add MT8195 topckgen clock support
+https://patchwork.kernel.org/project/linux-mediatek/patch/20210914021633.26377-8-chun-jie.chen@mediatek.com/
+---
+ sound/soc/mediatek/mt8195/mt8195-audsys-clk.c | 152 +++++++++---------
+ 1 file changed, 76 insertions(+), 76 deletions(-)
+
+diff --git a/sound/soc/mediatek/mt8195/mt8195-audsys-clk.c b/sound/soc/mediatek/mt8195/mt8195-audsys-clk.c
+index 740aa6ddda0e..e0670e0dbd5b 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-audsys-clk.c
++++ b/sound/soc/mediatek/mt8195/mt8195-audsys-clk.c
+@@ -59,93 +59,93 @@ struct afe_gate {
+ 
+ static const struct afe_gate aud_clks[CLK_AUD_NR_CLK] = {
+ 	/* AUD0 */
+-	GATE_AUD0(CLK_AUD_AFE, "aud_afe", "a1sys_hp_sel", 2),
+-	GATE_AUD0(CLK_AUD_LRCK_CNT, "aud_lrck_cnt", "a1sys_hp_sel", 4),
+-	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_APLL, "aud_spdifin_tuner_apll", "apll4_sel", 10),
+-	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_DBG, "aud_spdifin_tuner_dbg", "apll4_sel", 11),
+-	GATE_AUD0(CLK_AUD_UL_TML, "aud_ul_tml", "a1sys_hp_sel", 18),
+-	GATE_AUD0(CLK_AUD_APLL1_TUNER, "aud_apll1_tuner", "apll1_sel", 19),
+-	GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner", "apll2_sel", 20),
+-	GATE_AUD0(CLK_AUD_TOP0_SPDF, "aud_top0_spdf", "aud_iec_sel", 21),
+-	GATE_AUD0(CLK_AUD_APLL, "aud_apll", "apll1_sel", 23),
+-	GATE_AUD0(CLK_AUD_APLL2, "aud_apll2", "apll2_sel", 24),
+-	GATE_AUD0(CLK_AUD_DAC, "aud_dac", "a1sys_hp_sel", 25),
+-	GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis", "a1sys_hp_sel", 26),
+-	GATE_AUD0(CLK_AUD_TML, "aud_tml", "a1sys_hp_sel", 27),
+-	GATE_AUD0(CLK_AUD_ADC, "aud_adc", "a1sys_hp_sel", 28),
+-	GATE_AUD0(CLK_AUD_DAC_HIRES, "aud_dac_hires", "audio_h_sel", 31),
++	GATE_AUD0(CLK_AUD_AFE, "aud_afe", "top_a1sys_hp", 2),
++	GATE_AUD0(CLK_AUD_LRCK_CNT, "aud_lrck_cnt", "top_a1sys_hp", 4),
++	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_APLL, "aud_spdifin_tuner_apll", "top_apll4", 10),
++	GATE_AUD0(CLK_AUD_SPDIFIN_TUNER_DBG, "aud_spdifin_tuner_dbg", "top_apll4", 11),
++	GATE_AUD0(CLK_AUD_UL_TML, "aud_ul_tml", "top_a1sys_hp", 18),
++	GATE_AUD0(CLK_AUD_APLL1_TUNER, "aud_apll1_tuner", "top_apll1", 19),
++	GATE_AUD0(CLK_AUD_APLL2_TUNER, "aud_apll2_tuner", "top_apll2", 20),
++	GATE_AUD0(CLK_AUD_TOP0_SPDF, "aud_top0_spdf", "top_aud_iec_clk", 21),
++	GATE_AUD0(CLK_AUD_APLL, "aud_apll", "top_apll1", 23),
++	GATE_AUD0(CLK_AUD_APLL2, "aud_apll2", "top_apll2", 24),
++	GATE_AUD0(CLK_AUD_DAC, "aud_dac", "top_a1sys_hp", 25),
++	GATE_AUD0(CLK_AUD_DAC_PREDIS, "aud_dac_predis", "top_a1sys_hp", 26),
++	GATE_AUD0(CLK_AUD_TML, "aud_tml", "top_a1sys_hp", 27),
++	GATE_AUD0(CLK_AUD_ADC, "aud_adc", "top_a1sys_hp", 28),
++	GATE_AUD0(CLK_AUD_DAC_HIRES, "aud_dac_hires", "top_audio_h", 31),
+ 
+ 	/* AUD1 */
+-	GATE_AUD1(CLK_AUD_A1SYS_HP, "aud_a1sys_hp", "a1sys_hp_sel", 2),
+-	GATE_AUD1(CLK_AUD_AFE_DMIC1, "aud_afe_dmic1", "a1sys_hp_sel", 10),
+-	GATE_AUD1(CLK_AUD_AFE_DMIC2, "aud_afe_dmic2", "a1sys_hp_sel", 11),
+-	GATE_AUD1(CLK_AUD_AFE_DMIC3, "aud_afe_dmic3", "a1sys_hp_sel", 12),
+-	GATE_AUD1(CLK_AUD_AFE_DMIC4, "aud_afe_dmic4", "a1sys_hp_sel", 13),
+-	GATE_AUD1(CLK_AUD_AFE_26M_DMIC_TM, "aud_afe_26m_dmic_tm", "a1sys_hp_sel", 14),
+-	GATE_AUD1(CLK_AUD_UL_TML_HIRES, "aud_ul_tml_hires", "audio_h_sel", 16),
+-	GATE_AUD1(CLK_AUD_ADC_HIRES, "aud_adc_hires", "audio_h_sel", 17),
+-	GATE_AUD1(CLK_AUD_ADDA6_ADC, "aud_adda6_adc", "a1sys_hp_sel", 18),
+-	GATE_AUD1(CLK_AUD_ADDA6_ADC_HIRES, "aud_adda6_adc_hires", "audio_h_sel", 19),
++	GATE_AUD1(CLK_AUD_A1SYS_HP, "aud_a1sys_hp", "top_a1sys_hp", 2),
++	GATE_AUD1(CLK_AUD_AFE_DMIC1, "aud_afe_dmic1", "top_a1sys_hp", 10),
++	GATE_AUD1(CLK_AUD_AFE_DMIC2, "aud_afe_dmic2", "top_a1sys_hp", 11),
++	GATE_AUD1(CLK_AUD_AFE_DMIC3, "aud_afe_dmic3", "top_a1sys_hp", 12),
++	GATE_AUD1(CLK_AUD_AFE_DMIC4, "aud_afe_dmic4", "top_a1sys_hp", 13),
++	GATE_AUD1(CLK_AUD_AFE_26M_DMIC_TM, "aud_afe_26m_dmic_tm", "top_a1sys_hp", 14),
++	GATE_AUD1(CLK_AUD_UL_TML_HIRES, "aud_ul_tml_hires", "top_audio_h", 16),
++	GATE_AUD1(CLK_AUD_ADC_HIRES, "aud_adc_hires", "top_audio_h", 17),
++	GATE_AUD1(CLK_AUD_ADDA6_ADC, "aud_adda6_adc", "top_a1sys_hp", 18),
++	GATE_AUD1(CLK_AUD_ADDA6_ADC_HIRES, "aud_adda6_adc_hires", "top_audio_h", 19),
+ 
+ 	/* AUD3 */
+-	GATE_AUD3(CLK_AUD_LINEIN_TUNER, "aud_linein_tuner", "apll5_sel", 5),
+-	GATE_AUD3(CLK_AUD_EARC_TUNER, "aud_earc_tuner", "apll3_sel", 7),
++	GATE_AUD3(CLK_AUD_LINEIN_TUNER, "aud_linein_tuner", "top_apll5", 5),
++	GATE_AUD3(CLK_AUD_EARC_TUNER, "aud_earc_tuner", "top_apll3", 7),
+ 
+ 	/* AUD4 */
+-	GATE_AUD4(CLK_AUD_I2SIN, "aud_i2sin", "a1sys_hp_sel", 0),
+-	GATE_AUD4(CLK_AUD_TDM_IN, "aud_tdm_in", "a1sys_hp_sel", 1),
+-	GATE_AUD4(CLK_AUD_I2S_OUT, "aud_i2s_out", "a1sys_hp_sel", 6),
+-	GATE_AUD4(CLK_AUD_TDM_OUT, "aud_tdm_out", "a1sys_hp_sel", 7),
+-	GATE_AUD4(CLK_AUD_HDMI_OUT, "aud_hdmi_out", "a1sys_hp_sel", 8),
+-	GATE_AUD4(CLK_AUD_ASRC11, "aud_asrc11", "a1sys_hp_sel", 16),
+-	GATE_AUD4(CLK_AUD_ASRC12, "aud_asrc12", "a1sys_hp_sel", 17),
++	GATE_AUD4(CLK_AUD_I2SIN, "aud_i2sin", "top_a1sys_hp", 0),
++	GATE_AUD4(CLK_AUD_TDM_IN, "aud_tdm_in", "top_a1sys_hp", 1),
++	GATE_AUD4(CLK_AUD_I2S_OUT, "aud_i2s_out", "top_a1sys_hp", 6),
++	GATE_AUD4(CLK_AUD_TDM_OUT, "aud_tdm_out", "top_a1sys_hp", 7),
++	GATE_AUD4(CLK_AUD_HDMI_OUT, "aud_hdmi_out", "top_a1sys_hp", 8),
++	GATE_AUD4(CLK_AUD_ASRC11, "aud_asrc11", "top_a1sys_hp", 16),
++	GATE_AUD4(CLK_AUD_ASRC12, "aud_asrc12", "top_a1sys_hp", 17),
+ 	GATE_AUD4(CLK_AUD_MULTI_IN, "aud_multi_in", "mphone_slave_b", 19),
+-	GATE_AUD4(CLK_AUD_INTDIR, "aud_intdir", "intdir_sel", 20),
+-	GATE_AUD4(CLK_AUD_A1SYS, "aud_a1sys", "a1sys_hp_sel", 21),
+-	GATE_AUD4(CLK_AUD_A2SYS, "aud_a2sys", "a2sys_sel", 22),
+-	GATE_AUD4(CLK_AUD_PCMIF, "aud_pcmif", "a1sys_hp_sel", 24),
+-	GATE_AUD4(CLK_AUD_A3SYS, "aud_a3sys", "a3sys_sel", 30),
+-	GATE_AUD4(CLK_AUD_A4SYS, "aud_a4sys", "a4sys_sel", 31),
++	GATE_AUD4(CLK_AUD_INTDIR, "aud_intdir", "top_intdir", 20),
++	GATE_AUD4(CLK_AUD_A1SYS, "aud_a1sys", "top_a1sys_hp", 21),
++	GATE_AUD4(CLK_AUD_A2SYS, "aud_a2sys", "top_a2sys_hf", 22),
++	GATE_AUD4(CLK_AUD_PCMIF, "aud_pcmif", "top_a1sys_hp", 24),
++	GATE_AUD4(CLK_AUD_A3SYS, "aud_a3sys", "top_a3sys_hf", 30),
++	GATE_AUD4(CLK_AUD_A4SYS, "aud_a4sys", "top_a4sys_hf", 31),
+ 
+ 	/* AUD5 */
+-	GATE_AUD5(CLK_AUD_MEMIF_UL1, "aud_memif_ul1", "a1sys_hp_sel", 0),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL2, "aud_memif_ul2", "a1sys_hp_sel", 1),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL3, "aud_memif_ul3", "a1sys_hp_sel", 2),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL4, "aud_memif_ul4", "a1sys_hp_sel", 3),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL5, "aud_memif_ul5", "a1sys_hp_sel", 4),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL6, "aud_memif_ul6", "a1sys_hp_sel", 5),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL8, "aud_memif_ul8", "a1sys_hp_sel", 7),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL9, "aud_memif_ul9", "a1sys_hp_sel", 8),
+-	GATE_AUD5(CLK_AUD_MEMIF_UL10, "aud_memif_ul10", "a1sys_hp_sel", 9),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL2, "aud_memif_dl2", "a1sys_hp_sel", 18),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL3, "aud_memif_dl3", "a1sys_hp_sel", 19),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL6, "aud_memif_dl6", "a1sys_hp_sel", 22),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL7, "aud_memif_dl7", "a1sys_hp_sel", 23),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL8, "aud_memif_dl8", "a1sys_hp_sel", 24),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL10, "aud_memif_dl10", "a1sys_hp_sel", 26),
+-	GATE_AUD5(CLK_AUD_MEMIF_DL11, "aud_memif_dl11", "a1sys_hp_sel", 27),
++	GATE_AUD5(CLK_AUD_MEMIF_UL1, "aud_memif_ul1", "top_a1sys_hp", 0),
++	GATE_AUD5(CLK_AUD_MEMIF_UL2, "aud_memif_ul2", "top_a1sys_hp", 1),
++	GATE_AUD5(CLK_AUD_MEMIF_UL3, "aud_memif_ul3", "top_a1sys_hp", 2),
++	GATE_AUD5(CLK_AUD_MEMIF_UL4, "aud_memif_ul4", "top_a1sys_hp", 3),
++	GATE_AUD5(CLK_AUD_MEMIF_UL5, "aud_memif_ul5", "top_a1sys_hp", 4),
++	GATE_AUD5(CLK_AUD_MEMIF_UL6, "aud_memif_ul6", "top_a1sys_hp", 5),
++	GATE_AUD5(CLK_AUD_MEMIF_UL8, "aud_memif_ul8", "top_a1sys_hp", 7),
++	GATE_AUD5(CLK_AUD_MEMIF_UL9, "aud_memif_ul9", "top_a1sys_hp", 8),
++	GATE_AUD5(CLK_AUD_MEMIF_UL10, "aud_memif_ul10", "top_a1sys_hp", 9),
++	GATE_AUD5(CLK_AUD_MEMIF_DL2, "aud_memif_dl2", "top_a1sys_hp", 18),
++	GATE_AUD5(CLK_AUD_MEMIF_DL3, "aud_memif_dl3", "top_a1sys_hp", 19),
++	GATE_AUD5(CLK_AUD_MEMIF_DL6, "aud_memif_dl6", "top_a1sys_hp", 22),
++	GATE_AUD5(CLK_AUD_MEMIF_DL7, "aud_memif_dl7", "top_a1sys_hp", 23),
++	GATE_AUD5(CLK_AUD_MEMIF_DL8, "aud_memif_dl8", "top_a1sys_hp", 24),
++	GATE_AUD5(CLK_AUD_MEMIF_DL10, "aud_memif_dl10", "top_a1sys_hp", 26),
++	GATE_AUD5(CLK_AUD_MEMIF_DL11, "aud_memif_dl11", "top_a1sys_hp", 27),
+ 
+ 	/* AUD6 */
+-	GATE_AUD6(CLK_AUD_GASRC0, "aud_gasrc0", "asm_h_sel", 0),
+-	GATE_AUD6(CLK_AUD_GASRC1, "aud_gasrc1", "asm_h_sel", 1),
+-	GATE_AUD6(CLK_AUD_GASRC2, "aud_gasrc2", "asm_h_sel", 2),
+-	GATE_AUD6(CLK_AUD_GASRC3, "aud_gasrc3", "asm_h_sel", 3),
+-	GATE_AUD6(CLK_AUD_GASRC4, "aud_gasrc4", "asm_h_sel", 4),
+-	GATE_AUD6(CLK_AUD_GASRC5, "aud_gasrc5", "asm_h_sel", 5),
+-	GATE_AUD6(CLK_AUD_GASRC6, "aud_gasrc6", "asm_h_sel", 6),
+-	GATE_AUD6(CLK_AUD_GASRC7, "aud_gasrc7", "asm_h_sel", 7),
+-	GATE_AUD6(CLK_AUD_GASRC8, "aud_gasrc8", "asm_h_sel", 8),
+-	GATE_AUD6(CLK_AUD_GASRC9, "aud_gasrc9", "asm_h_sel", 9),
+-	GATE_AUD6(CLK_AUD_GASRC10, "aud_gasrc10", "asm_h_sel", 10),
+-	GATE_AUD6(CLK_AUD_GASRC11, "aud_gasrc11", "asm_h_sel", 11),
+-	GATE_AUD6(CLK_AUD_GASRC12, "aud_gasrc12", "asm_h_sel", 12),
+-	GATE_AUD6(CLK_AUD_GASRC13, "aud_gasrc13", "asm_h_sel", 13),
+-	GATE_AUD6(CLK_AUD_GASRC14, "aud_gasrc14", "asm_h_sel", 14),
+-	GATE_AUD6(CLK_AUD_GASRC15, "aud_gasrc15", "asm_h_sel", 15),
+-	GATE_AUD6(CLK_AUD_GASRC16, "aud_gasrc16", "asm_h_sel", 16),
+-	GATE_AUD6(CLK_AUD_GASRC17, "aud_gasrc17", "asm_h_sel", 17),
+-	GATE_AUD6(CLK_AUD_GASRC18, "aud_gasrc18", "asm_h_sel", 18),
+-	GATE_AUD6(CLK_AUD_GASRC19, "aud_gasrc19", "asm_h_sel", 19),
++	GATE_AUD6(CLK_AUD_GASRC0, "aud_gasrc0", "top_asm_h", 0),
++	GATE_AUD6(CLK_AUD_GASRC1, "aud_gasrc1", "top_asm_h", 1),
++	GATE_AUD6(CLK_AUD_GASRC2, "aud_gasrc2", "top_asm_h", 2),
++	GATE_AUD6(CLK_AUD_GASRC3, "aud_gasrc3", "top_asm_h", 3),
++	GATE_AUD6(CLK_AUD_GASRC4, "aud_gasrc4", "top_asm_h", 4),
++	GATE_AUD6(CLK_AUD_GASRC5, "aud_gasrc5", "top_asm_h", 5),
++	GATE_AUD6(CLK_AUD_GASRC6, "aud_gasrc6", "top_asm_h", 6),
++	GATE_AUD6(CLK_AUD_GASRC7, "aud_gasrc7", "top_asm_h", 7),
++	GATE_AUD6(CLK_AUD_GASRC8, "aud_gasrc8", "top_asm_h", 8),
++	GATE_AUD6(CLK_AUD_GASRC9, "aud_gasrc9", "top_asm_h", 9),
++	GATE_AUD6(CLK_AUD_GASRC10, "aud_gasrc10", "top_asm_h", 10),
++	GATE_AUD6(CLK_AUD_GASRC11, "aud_gasrc11", "top_asm_h", 11),
++	GATE_AUD6(CLK_AUD_GASRC12, "aud_gasrc12", "top_asm_h", 12),
++	GATE_AUD6(CLK_AUD_GASRC13, "aud_gasrc13", "top_asm_h", 13),
++	GATE_AUD6(CLK_AUD_GASRC14, "aud_gasrc14", "top_asm_h", 14),
++	GATE_AUD6(CLK_AUD_GASRC15, "aud_gasrc15", "top_asm_h", 15),
++	GATE_AUD6(CLK_AUD_GASRC16, "aud_gasrc16", "top_asm_h", 16),
++	GATE_AUD6(CLK_AUD_GASRC17, "aud_gasrc17", "top_asm_h", 17),
++	GATE_AUD6(CLK_AUD_GASRC18, "aud_gasrc18", "top_asm_h", 18),
++	GATE_AUD6(CLK_AUD_GASRC19, "aud_gasrc19", "top_asm_h", 19),
+ };
+ 
+ int mt8195_audsys_clk_register(struct mtk_base_afe *afe)
+-- 
+2.18.0
+
