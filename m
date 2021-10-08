@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E74DB4263D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C334263DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 06:38:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhJHEdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 00:33:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57910 "EHLO mail.kernel.org"
+        id S231851AbhJHEkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 00:40:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51469 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhJHEdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 00:33:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 033DA60F3A;
-        Fri,  8 Oct 2021 04:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633667503;
-        bh=utkmbRIJp7j/rfAwWkG5g17O9iieLqyGctrPZuR07oU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=qAUKYUF8o2QxOtUmCJZ48ELFKpXhVoh0lmGpW/9Yrizk/L0xmbw2xWVeRq2FEcHFt
-         v2CF9AVbbmsDs6U8M4mOosI6yO5gGQTNAnacbBueWdQErGMgBFJCxh+hobHhc3yP0Y
-         e6bmdQi72UHTMnXyeRBAwxG0mqrluG5ekjkebg9Y2SNybbxxjg1NrcyQgz9UA4vg9T
-         OTaE5JZDQO+ydlV8oOQLsM1prBeI3J/Sen6ncqrRGHWkoEpX2WogMj4zo23wl3gzzT
-         RCpMBsLyR/rAOB+W0pwOG3yR9kMeKB7cqDEqP5rimbX4exKM1wSpm+9dMf4kvsk//i
-         +kLtlDYUDQNFQ==
-Content-Type: text/plain; charset="utf-8"
+        id S229501AbhJHEkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 00:40:42 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226720127"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="226720127"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 21:38:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="478834275"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2021 21:38:45 -0700
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <jroedel@suse.de>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v1 1/2] iommu/vt-d: Move intel_iommu_ops to header file
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+References: <20210729163538.40101-1-andriy.shevchenko@linux.intel.com>
+ <3c7663db-5b1e-3e00-3ff1-381c7a107ac9@linux.intel.com>
+ <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <82f7dc54-2f34-7f69-add6-fca929d1acd1@linux.intel.com>
+Date:   Fri, 8 Oct 2021 12:34:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210928235635.1348330-6-willmcvicker@google.com>
-References: <20210928235635.1348330-1-willmcvicker@google.com> <20210928235635.1348330-6-willmcvicker@google.com>
-Subject: Re: [PATCH v2 05/12] clk: export __clk_lookup
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Will McVicker <willmcvicker@google.com>,
-        kernel-team@android.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Will McVicker <willmcvicker@google.com>
-Date:   Thu, 07 Oct 2021 21:31:41 -0700
-Message-ID: <163366750168.2041162.10913803047304286656@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <YV3LYqmsijqVAa5Y@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Will McVicker (2021-09-28 16:56:22)
-> This symbol is needed to modularize the samsung clk drivers. It's used
-> to get the clock using the clock name.
->=20
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
-> ---
->  drivers/clk/clk.c | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 65508eb89ec9..f2aa4b49adfc 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -612,6 +612,7 @@ struct clk *__clk_lookup(const char *name)
-> =20
->         return !core ? NULL : core->hw->clk;
->  }
-> +EXPORT_SYMBOL_GPL(__clk_lookup);
+Hi Andy,
 
-I'd prefer we deleted this API. Can you make the samsung clk driver stop
-using it instead?
+On 10/7/21 12:14 AM, Andy Shevchenko wrote:
+> On Fri, Jul 30, 2021 at 10:20:08AM +0800, Lu Baolu wrote:
+>> Hi Andy,
+>>
+>> On 7/30/21 12:35 AM, Andy Shevchenko wrote:
+>>> Compiler is not happy about hidden declaration of intel_iommu_ops.
+>>>
+>>> .../drivers/iommu/intel/iommu.c:414:24: warning: symbol 'intel_iommu_ops' was not declared. Should it be static?
+>>>
+>>> Move declaration to header file to make compiler happy.
+>>
+>> Thanks for the cleanup. Sharing data structures between different files
+>> doesn't seem to be a good design. How about adding a helper so that the
+>> intel_iommu_ops could be a static one?
+> 
+> I don't see any change in the upstream. What's the plan?
+> Can we take my patch as a quick fix?
+> 
+
+Thanks for the reminding.
+
+Can you please tell in which kernel configuration could above warning
+be triggered?
+
+Best regards,
+baolu
