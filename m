@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6242693F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E77D42691A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242424AbhJHLf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:35:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59462 "EHLO mail.kernel.org"
+        id S240437AbhJHLeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240587AbhJHLc7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66ECB61381;
-        Fri,  8 Oct 2021 11:30:49 +0000 (UTC)
+        id S240780AbhJHLcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:32:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 029E06103C;
+        Fri,  8 Oct 2021 11:29:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692649;
-        bh=HR1lGb5HW8Ckm6LELbAuOkrobH/dC4epYWw6Rdlo7Jw=;
+        s=korg; t=1633692582;
+        bh=ZdqVEIJ2YVAVjvoOLKa8zLstxZnRqBA6xoOymTyfPPA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AFKGosoPHXU06xPW7UieaCqpC+GO0pWLRUZlFPnrAnZPEXsoFrAWNcV3pVy9p87eI
-         JlAOH4UGh9o82wMIJ6F9VQy51ZnwuoVET8sRLJ9YvIWcqyWdQXGCERTNqX+mxMTMo7
-         qWG4I9jkUo5fjgdW0XyEta4fDfEMRJb88xZW2eqM=
+        b=tYx39rfCYyPsxelYqCbqaVhIPIYq1clvo4OMGR2SOTMGBiSK8kcz6lOCYGVyCN8M9
+         FPw3feucuLD5lauMKmjwPOyEXbp4UYz89msMbPpq7PsjAXVAbZqtD5jRvW71NrzMty
+         LG7vnQlH/7GH13gfHF8sYhJNevR73Yyc4ZK9tW60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Faizel K B <faizel.kb@dicortech.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/29] usb: testusb: Fix for showing the connection speed
+        stable@vger.kernel.org, Kate Hsuan <hpa@redhat.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        =?UTF-8?q?Krzysztof=20Ol=C4=99dzki?= <ole@ans.pl>
+Subject: [PATCH 4.19 11/12] libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
 Date:   Fri,  8 Oct 2021 13:27:59 +0200
-Message-Id: <20211008112717.357344171@linuxfoundation.org>
+Message-Id: <20211008112714.957481303@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
-References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112714.601107695@linuxfoundation.org>
+References: <20211008112714.601107695@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,88 +42,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faizel K B <faizel.kb@dicortech.com>
+From: Kate Hsuan <hpa@redhat.com>
 
-[ Upstream commit f81c08f897adafd2ed43f86f00207ff929f0b2eb ]
+commit 7a8526a5cd51cf5f070310c6c37dd7293334ac49 upstream.
 
-testusb' application which uses 'usbtest' driver reports 'unknown speed'
-from the function 'find_testdev'. The variable 'entry->speed' was not
-updated from  the application. The IOCTL mentioned in the FIXME comment can
-only report whether the connection is low speed or not. Speed is read using
-the IOCTL USBDEVFS_GET_SPEED which reports the proper speed grade.  The
-call is implemented in the function 'handle_testdev' where the file
-descriptor was availble locally. Sample output is given below where 'high
-speed' is printed as the connected speed.
+Many users are reporting that the Samsung 860 and 870 SSD are having
+various issues when combined with AMD/ATI (vendor ID 0x1002)  SATA
+controllers and only completely disabling NCQ helps to avoid these
+issues.
 
-sudo ./testusb -a
-high speed      /dev/bus/usb/001/011    0
-/dev/bus/usb/001/011 test 0,    0.000015 secs
-/dev/bus/usb/001/011 test 1,    0.194208 secs
-/dev/bus/usb/001/011 test 2,    0.077289 secs
-/dev/bus/usb/001/011 test 3,    0.170604 secs
-/dev/bus/usb/001/011 test 4,    0.108335 secs
-/dev/bus/usb/001/011 test 5,    2.788076 secs
-/dev/bus/usb/001/011 test 6,    2.594610 secs
-/dev/bus/usb/001/011 test 7,    2.905459 secs
-/dev/bus/usb/001/011 test 8,    2.795193 secs
-/dev/bus/usb/001/011 test 9,    8.372651 secs
-/dev/bus/usb/001/011 test 10,    6.919731 secs
-/dev/bus/usb/001/011 test 11,   16.372687 secs
-/dev/bus/usb/001/011 test 12,   16.375233 secs
-/dev/bus/usb/001/011 test 13,    2.977457 secs
-/dev/bus/usb/001/011 test 14 --> 22 (Invalid argument)
-/dev/bus/usb/001/011 test 17,    0.148826 secs
-/dev/bus/usb/001/011 test 18,    0.068718 secs
-/dev/bus/usb/001/011 test 19,    0.125992 secs
-/dev/bus/usb/001/011 test 20,    0.127477 secs
-/dev/bus/usb/001/011 test 21 --> 22 (Invalid argument)
-/dev/bus/usb/001/011 test 24,    4.133763 secs
-/dev/bus/usb/001/011 test 27,    2.140066 secs
-/dev/bus/usb/001/011 test 28,    2.120713 secs
-/dev/bus/usb/001/011 test 29,    0.507762 secs
+Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
+SATA adapter vendor will cause I/O performance degradation with well
+behaved adapters. To limit the performance impact to ATI adapters,
+introduce the ATA_HORKAGE_NO_NCQ_ON_ATI flag to force disable NCQ
+only for these adapters.
 
-Signed-off-by: Faizel K B <faizel.kb@dicortech.com>
-Link: https://lore.kernel.org/r/20210902114444.15106-1-faizel.kb@dicortech.com
+Also, two libata.force parameters (noncqati and ncqati) are introduced
+to disable and enable the NCQ for the system which equipped with ATI
+SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
+function to be enabled or disabled according to the demand.
+
+After verifying the chipset from the user reports, the issue appears
+on AMD/ATI SB7x0/SB8x0/SB9x0 SATA Controllers and does not appear on
+recent AMD SATA adapters. The vendor ID of ATI should be 0x1002.
+Therefore, ATA_HORKAGE_NO_NCQ_ON_AMD was modified to
+ATA_HORKAGE_NO_NCQ_ON_ATI.
+
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
+Signed-off-by: Kate Hsuan <hpa@redhat.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210903094411.58749-1-hpa@redhat.com
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Cc: Krzysztof Olędzki <ole@ans.pl>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/usb/testusb.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/ata/libata-core.c |   34 ++++++++++++++++++++++++++++++++--
+ include/linux/libata.h    |    1 +
+ 2 files changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/tools/usb/testusb.c b/tools/usb/testusb.c
-index ee8208b2f946..69c3ead25313 100644
---- a/tools/usb/testusb.c
-+++ b/tools/usb/testusb.c
-@@ -265,12 +265,6 @@ nomem:
- 	}
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -2268,6 +2268,25 @@ static void ata_dev_config_ncq_prio(stru
  
- 	entry->ifnum = ifnum;
--
--	/* FIXME update USBDEVFS_CONNECTINFO so it tells about high speed etc */
--
--	fprintf(stderr, "%s speed\t%s\t%u\n",
--		speed(entry->speed), entry->name, entry->ifnum);
--
- 	entry->next = testdevs;
- 	testdevs = entry;
- 	return 0;
-@@ -299,6 +293,14 @@ static void *handle_testdev (void *arg)
+ }
+ 
++static bool ata_dev_check_adapter(struct ata_device *dev,
++				  unsigned short vendor_id)
++{
++	struct pci_dev *pcidev = NULL;
++	struct device *parent_dev = NULL;
++
++	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
++	     parent_dev = parent_dev->parent) {
++		if (dev_is_pci(parent_dev)) {
++			pcidev = to_pci_dev(parent_dev);
++			if (pcidev->vendor == vendor_id)
++				return true;
++			break;
++		}
++	}
++
++	return false;
++}
++
+ static int ata_dev_config_ncq(struct ata_device *dev,
+ 			       char *desc, size_t desc_sz)
+ {
+@@ -2284,6 +2303,13 @@ static int ata_dev_config_ncq(struct ata
+ 		snprintf(desc, desc_sz, "NCQ (not used)");
  		return 0;
  	}
- 
-+	status  =  ioctl(fd, USBDEVFS_GET_SPEED, NULL);
-+	if (status < 0)
-+		fprintf(stderr, "USBDEVFS_GET_SPEED failed %d\n", status);
-+	else
-+		dev->speed = status;
-+	fprintf(stderr, "%s speed\t%s\t%u\n",
-+			speed(dev->speed), dev->name, dev->ifnum);
 +
- restart:
- 	for (i = 0; i < TEST_CASES; i++) {
- 		if (dev->test != -1 && dev->test != i)
--- 
-2.33.0
-
++	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_ATI &&
++	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_ATI)) {
++		snprintf(desc, desc_sz, "NCQ (not used)");
++		return 0;
++	}
++
+ 	if (ap->flags & ATA_FLAG_NCQ) {
+ 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
+ 		dev->flags |= ATA_DFLAG_NCQ;
+@@ -4575,9 +4601,11 @@ static const struct ata_blacklist_entry
+ 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_ATI, },
+ 	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+-						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++						ATA_HORKAGE_ZERO_AFTER_TRIM |
++						ATA_HORKAGE_NO_NCQ_ON_ATI, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 
+@@ -6934,6 +6962,8 @@ static int __init ata_parse_force_one(ch
+ 		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
+ 		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
+ 		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
++		{ "noncqati",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_ATI },
++		{ "ncqati",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_ATI },
+ 		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
+ 		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
+ 		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
+--- a/include/linux/libata.h
++++ b/include/linux/libata.h
+@@ -440,6 +440,7 @@ enum {
+ 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
+ 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
+ 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
++	ATA_HORKAGE_NO_NCQ_ON_ATI = (1 << 27),	/* Disable NCQ on ATI chipset */
+ 
+ 	 /* DMA mask for user DMA control: User visible values; DO NOT
+ 	    renumber */
 
 
