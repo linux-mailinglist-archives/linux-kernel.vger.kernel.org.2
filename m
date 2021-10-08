@@ -2,131 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2E2426D71
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179FE426D72
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242965AbhJHPYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:24:36 -0400
-Received: from foss.arm.com ([217.140.110.172]:58598 "EHLO foss.arm.com"
+        id S242979AbhJHPY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:24:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:58712 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242780AbhJHPYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:24:33 -0400
+        id S242780AbhJHPY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:24:56 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF3811063;
-        Fri,  8 Oct 2021 08:22:37 -0700 (PDT)
-Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9B44F3F66F;
-        Fri,  8 Oct 2021 08:22:29 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        LAK <linux-arm-kernel@lists.infradead.org>,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86 <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        David Hildenbrand <david@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH 2/2] sched: Centralize SCHED_{SMT, MC, CLUSTER} definitions
-In-Reply-To: <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
-References: <20211008115347.425234-1-valentin.schneider@arm.com> <20211008115347.425234-3-valentin.schneider@arm.com> <CAGsJ_4wqtcOdsFDzR98PFbjxRyTqzf7P3p3erup84SXESYonYw@mail.gmail.com>
-Date:   Fri, 08 Oct 2021 16:22:27 +0100
-Message-ID: <87bl3zlex8.mognet@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C30131063;
+        Fri,  8 Oct 2021 08:23:00 -0700 (PDT)
+Received: from [10.1.25.132] (e124483.cambridge.arm.com [10.1.25.132])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F00613F66F;
+        Fri,  8 Oct 2021 08:22:52 -0700 (PDT)
+Message-ID: <90460425-a987-2f18-ba9c-f064af5fb941@arm.com>
+Date:   Fri, 8 Oct 2021 16:22:36 +0100
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 02/21] perf pmu: Add const to pmu_events_map.
+Content-Language: en-US
+To:     John Garry <john.garry@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>, Jiri Olsa <jolsa@redhat.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>, Fabian Hemmer <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Cc:     Stephane Eranian <eranian@google.com>
+References: <20211007165647.3514803-1-irogers@google.com>
+ <20211007165647.3514803-3-irogers@google.com>
+ <cee9bbe0-d19a-60ab-68c9-4632bd759274@huawei.com>
+From:   Andrew Kilroy <andrew.kilroy@arm.com>
+In-Reply-To: <cee9bbe0-d19a-60ab-68c9-4632bd759274@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/21 01:37, Barry Song wrote:
-> On Sat, Oct 9, 2021 at 12:54 AM Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->>
->> Barry recently introduced a new CONFIG_SCHED_CLUSTER, and discussions
->> around that highlighted that every architecture redefines its own help text
->> and dependencies for CONFIG_SCHED_SMT and CONFIG_SCHED_MC.
->>
->> Move the definition of those to scheduler's Kconfig to centralize help text
->> and generic dependencies (i.e. SMP). Make them depend on a matching
->> ARCH_SUPPORTS_SCHED_* which the architectures can select with the relevant
->> architecture-specific dependency.
->>
->> s390 uses its own topology table (set_sched_topology()) and doesn't seem to
->> cope without SCHED_MC or SCHED_SMT, so those remain untogglable.
->>
->
-> Hi Valentin,
-> Thanks!
-> I believe this is a cleaner way for Kconfig itself. But I am not quite sure this
-> is always beneficial of all platforms. It would be perfect if the patch has no
-> side effects and doesn't change the existing behaviour. But it has side effects
-> by changing the default N to Y on a couple of platforms.
->
 
-So x86 has it default yes, and a lot of others (e.g. arm64) have it default
-no.
 
-IMO you don't gain much by disabling them. SCHED_MC and SCHED_CLUSTER only
-control the presence of a sched_domain_topology_level - if it's useless it
-gets degenerated at domain build time. Some valid reasons for not using
-them is if the architecture defines its own topology table (e.g. powerpc
-has CACHE and MC levels which are not gated behind any CONFIG).
+On 08/10/2021 12:01, John Garry wrote:
+> On 07/10/2021 17:56, Ian Rogers wrote:
+>> The pmu_events_map is generated at compile time and used for lookup. For
+>> testing purposes we need to swap the map being used. Having the
+>> pmu_events_map be non-const is misleading as it may be an out argument.
+>> Make it const and update uses so they work on const too.
+>>
+>> Signed-off-by: Ian Rogers<irogers@google.com>
+> 
+> Reviewed-by: John Garry <john.garry@huawei.com>
 
-SCHED_SMT has an impact on code generated in sched/core.c, but that is also
-gated by a static key.
+Got a compile error for this on arm64 when basing these patches on 
+acme/perf/core (be8ecc57f180415e8a7c1cc5620c5236be2a7e56):
 
-So I'd say having them default yes is sensible. I'd even say we should
-change the "If unsure say N here." to "Y".
+$ make DEBUG=1 O=output
+...<snipped>...
+arch/arm64/util/pmu.c:6:24: error: conflicting types for 
+‘pmu_events_map__find’
+  struct pmu_events_map *pmu_events_map__find(void)
+                         ^~~~~~~~~~~~~~~~~~~~
+In file included from arch/arm64/util/pmu.c:4:0:
+arch/arm64/util/../../../util/pmu.h:126:30: note: previous declaration 
+of ‘pmu_events_map__find’ was here
+  const struct pmu_events_map *pmu_events_map__find(void);
+                               ^~~~~~~~~~~~~~~~~~~~
+arch/arm64/util/pmu.c: In function ‘pmu_events_map__find’:
+arch/arm64/util/pmu.c:21:10: error: return discards ‘const’ qualifier 
+from pointer target type [-Werror=discarded-qualifiers]
+    return perf_pmu__find_map(pmu);
+           ^~~~~~~~~~~~~~~~~~~~~~~
+cc1: all warnings being treated as errors
+/home/andkil01/linux/tools/build/Makefile.build:96: recipe for target 
+'/home/andkil01/linux/tools/perf/output/arch/arm64/util/pmu.o' failed
+make[6]: *** 
+[/home/andkil01/linux/tools/perf/output/arch/arm64/util/pmu.o] Error 1
+/home/andkil01/linux/tools/build/Makefile.build:139: recipe for target 
+'util' failed
+make[5]: *** [util] Error 2
+/home/andkil01/linux/tools/build/Makefile.build:139: recipe for target 
+'arm64' failed
+make[4]: *** [arm64] Error 2
+/home/andkil01/linux/tools/build/Makefile.build:139: recipe for target 
+'arch' failed
+make[3]: *** [arch] Error 2
+make[3]: *** Waiting for unfinished jobs....
+
+
+Andrew
