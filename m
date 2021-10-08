@@ -2,116 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 129A24270E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C964270E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233472AbhJHSn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 14:43:57 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:55780 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhJHSnz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 14:43:55 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 30482146F;
-        Fri,  8 Oct 2021 20:41:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1633718518;
-        bh=X6pK5WZ7QQHsePVXVcQyefpC0KmEQLZeMJIq+1gqhqw=;
+        id S231400AbhJHSq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 14:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231246AbhJHSq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 14:46:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 294CC60EC0;
+        Fri,  8 Oct 2021 18:44:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633718670;
+        bh=T9vYy8/rMW8C3rqZXvvVB66NGiOQRGjwwFqoZmuTpIo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q3c+eR8HxDUKULXnjiyDdmt4OqVKzMIWw2kS2Ex95FG8QYMn/vSim/fJQcYzMtroH
-         jRjguikOO2MQn9KC0SbQpJ40GCLNJc3xagSXQjuW/23JnjBqDb6kPN/11n0UUaGcN3
-         MgQimbv+Q2ggaZTAoh0TaGULWHQDYcJnypymQQAA=
-Date:   Fri, 8 Oct 2021 21:41:47 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH 02/12] media: i2c: ov8865: Add an has_unmet_acpi_deps()
- check
-Message-ID: <YWCQ6/AMzP5Nfcyk@pendragon.ideasonboard.com>
-References: <20211008162121.6628-1-hdegoede@redhat.com>
- <20211008162121.6628-3-hdegoede@redhat.com>
+        b=r78uVLqzk6HXG5uAitlw2jZ87gdnh+35aDSTQnkxIRrvVgDcpR3SM/l2zbLu6N93g
+         WYYDK+/eFB0cmaI6OAlrkwlWZ0XZBaRN+iNWHEsDfPdJRX2PeuvFXs2oHTSLjekT/i
+         S51QHsqPGfEpxv+m/mpoKkjYGE91XnnXK00evGJVHDVp5jTouNm25tM1wZdRP6t6PC
+         MqBdAFM57W7Kpg+moGSZjp888eJdUZ+k4crQpR9z4m0WCqvU/az0QFJ5Ric/i8ur39
+         njyQuTxHLzCBGJ1YaBvvwRlanEwZP29tPUOdb3a9dNhEXw8VjEvYmr+NzT0iBYQdlY
+         3kQ7zXCa6IMyg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 88D24410A1; Fri,  8 Oct 2021 15:44:27 -0300 (-03)
+Date:   Fri, 8 Oct 2021 15:44:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+Subject: Re: [PATCH] perf report: Output non-zero offset for decompressed
+ records
+Message-ID: <YWCRi5Rb9sdQ1AV1@kernel.org>
+References: <20210929091445.18274-1-alexey.v.bayduraev@linux.intel.com>
+ <YVqiS0lzxuVlblrN@krava>
+ <6ab9dd72-ccac-4ce1-6456-ef7786911639@linux.intel.com>
+ <YVqn/FZ544RAV6Mq@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008162121.6628-3-hdegoede@redhat.com>
+In-Reply-To: <YVqn/FZ544RAV6Mq@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+Em Mon, Oct 04, 2021 at 09:06:36AM +0200, Jiri Olsa escreveu:
+> On Mon, Oct 04, 2021 at 10:00:52AM +0300, Bayduraev, Alexey V wrote:
+> > On 04.10.2021 9:42, Jiri Olsa wrote:
+> > > On Wed, Sep 29, 2021 at 12:14:45PM +0300, Alexey Bayduraev wrote:
+> > >> Print offset of PERF_RECORD_COMPRESSED record instead of zero for
+> > >> decompressed records in raw trace dump (-D option of perf-report):
 
-Thank you for the patch.
+> > >> 0x17cf08 [0x28]: event: 9
 
-On Fri, Oct 08, 2021 at 06:21:11PM +0200, Hans de Goede wrote:
-> The clk and regulator frameworks expect clk/regulator consumer-devices
-> to have info about the consumed clks/regulators described in the device's
-> fw_node.
-> 
-> To work around cases where this info is not present in the firmware tables,
-> which is often the case on x86/ACPI devices, both frameworks allow the
-> provider-driver to attach info about consumers to the clks/regulators
-> when registering these.
-> 
-> This causes problems with the probe ordering of the ov8865 driver vs the
-> drivers for these clks/regulators. Since the lookups are only registered
-> when the provider-driver binds, trying to get these clks/regulators before
-> then results in a -ENOENT error for clks and a dummy regulator for regs.
-> 
-> On ACPI/x86 where this is a problem, the ov8865 ACPI fw-nodes have a _DEP
-> dependency on the INT3472 ACPI fw-node which describes the hardware which
-> provides the clks/regulators.
-> 
-> The drivers/platform/x86/intel/int3472/ code dealing with these ACPI
-> fw-nodes will call acpi_dev_clear_dependencies() to indicate that this
-> _DEP has been "met" when all the clks/regulators have been setup.
-> 
-> Call the has_unmet_acpi_deps() helper to check for unmet _DEPs
-> and return -EPROBE_DEFER if this returns true, so that we wait for
-> the clk/regulator setup to be done before continuing with probing.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->  drivers/media/i2c/ov8865.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
-> index ce4e0ae2c4d3..fd18d1256f78 100644
-> --- a/drivers/media/i2c/ov8865.c
-> +++ b/drivers/media/i2c/ov8865.c
-> @@ -2978,6 +2978,9 @@ static int ov8865_probe(struct i2c_client *client)
->  	unsigned int i;
->  	int ret;
->  
-> +	if (has_unmet_acpi_deps(dev))
-> +		return -EPROBE_DEFER;
-> +
+> > >> instead of:
 
-We've worked hard to avoid adding ACPI-specific code such as this in
-sensor drivers, as it would then spread like crazy, and also open the
-door to more ACPI-specific support. I don't want to open this pandora's
-box, I'd like to see this handled in another layer (the I2C core could
-be a condidate for instance, but bonus points if it can be handled in
-the ACPI subsystem itself).
+> > >> 0 [0x28]: event: 9
 
->  	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
->  	if (!sensor)
->  		return -ENOMEM;
+> > >> The fix is not critical, because currently file_pos for compressed
+> > >> events is used in perf_session__process_event only to show offsets
+> > >> in the raw dump.
 
--- 
-Regards,
+> > > I don't mind the change just curious, because I see also:
+> > > 
+> > >   perf_session__process_event
+> > >     perf_session__process_user_event
+> > >       lseek(fd, file_offset, ...
 
-Laurent Pinchart
+> > > which is not raw dump as the comment suggests
+
+> > Yes, but this "lseek" only works for user events, whereas the 
+> > PERF_RECORD_COMPRESSED record shouln't contain such events.
+> > Currently, the PERF_RECORD_COMPRESSED container can only pack
+> > kernel events. 
+ 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+Thanks, applied.
+
+- Arnaldo
+
