@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88657426FBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:48:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29682426FBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236195AbhJHRuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:50:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:38918 "EHLO foss.arm.com"
+        id S238106AbhJHRw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:52:28 -0400
+Received: from first.geanix.com ([116.203.34.67]:37356 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231217AbhJHRuH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:50:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8332B1063;
-        Fri,  8 Oct 2021 10:48:11 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D6FFC3F766;
-        Fri,  8 Oct 2021 10:48:09 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 18:48:03 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Krzysztof Wilczy??ski <kw@linux.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        vidyas@nvidia.com
-Subject: Re: [PATCH v2 1/2] PCI: dwc: Perform host_init() before registering
- msi
-Message-ID: <20211008174803.GA32277@lpieralisi>
-References: <YSVTdedrDSgSYgwm@ripper>
- <20210824202925.GA3491441@bjorn-Precision-5520>
- <YSVjQgDmatkkCxtn@ripper>
+        id S231217AbhJHRw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:52:26 -0400
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id AA81DC3B66;
+        Fri,  8 Oct 2021 17:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633715429; bh=EawVE9wODTtRpHeuB7Eov1BPNVWZvN+3ycWO3+Qq5Ik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=BTDhV3GPGw27VB/2hapBnyYk1chXXjVdCVirjFEFDGtRf0W8pO1UD36H32kmq+Bj4
+         haVBHrq57ONgAl0nr/4wpe4geGBg3TohmcMJodCHTvFID594CEORDtPbORAdmDfjUp
+         GvdZNgFTC41UhOMQpqsSGUcPmnbvqg2GkTVk4JBZ+uNtCvUymMi2BHrV2FQnRIMEWG
+         hddjjO5EqzQHjZaYTHktlRnKp53Y6VpPz4+pnRE91ZszIUNJG6aNgBo0FAaaoEgYax
+         QytNexE71RwdkhjewxvuzPkgdjFVrD8PL+gNT01h/68M15z53OHYzBiORvkA/SZ9W5
+         u/S2BnFVFsOSg==
+Date:   Fri, 8 Oct 2021 19:50:27 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while
+ in suspend
+Message-ID: <20211008175027.4eg4qsrcu7nxwplv@skn-laptop>
+References: <20211008141524.20ca8219@collabora.com>
+ <20211008143825.3717116-1-sean@geanix.com>
+ <20211008173526.19745a10@xps13>
+ <20211008180811.36c371f5@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YSVjQgDmatkkCxtn@ripper>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20211008180811.36c371f5@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Vidya]
-
-On Tue, Aug 24, 2021 at 02:23:14PM -0700, Bjorn Andersson wrote:
-> On Tue 24 Aug 13:29 PDT 2021, Bjorn Helgaas wrote:
+On Fri, Oct 08, 2021 at 06:08:11PM +0200, Boris Brezillon wrote:
+> On Fri, 8 Oct 2021 17:35:26 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> > On Tue, Aug 24, 2021 at 01:15:49PM -0700, Bjorn Andersson wrote:
-> > > On Tue 24 Aug 12:05 PDT 2021, Bjorn Helgaas wrote:
-> > > 
-> > > > On Mon, Aug 23, 2021 at 08:49:57AM -0700, Bjorn Andersson wrote:
-> > > > > On the Qualcomm sc8180x platform the bootloader does something related
-> > > > > to PCI that leaves a pending "msi" interrupt, which with the current
-> > > > > ordering often fires before init has a chance to enable the clocks that
-> > > > > are necessary for the interrupt handler to access the hardware.
-> > > > > 
-> > > > > Move the host_init() call before the registration of the "msi" interrupt
-> > > > > handler to ensure the host driver has a chance to enable the clocks.
-> > > > 
-> > > > Did you audit other drivers for similar issues?  If they do, we should
-> > > > fix them all at once.
-> > > 
-> > > I only looked at the DesignWware drivers, in an attempt to find any
-> > > issues the proposed reordering.
-> > > 
-> > > The set of bugs causes by drivers registering interrupts before critical
-> > > resources tends to be rather visible and I don't know if there's much
-> > > value in speculatively "fixing" drivers.
-> > > 
-> > > E.g. a quick look through the drivers I see a similar pattern in
-> > > pci-tegra.c, but it's unlikely that they have the similar problem in
-> > > practice and I have no way to validate that a change to the order would
-> > > have a positive effect - or any side effects.
-> > > 
-> > > Or am I misunderstanding your request?
+> > > into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
+> > > allows it to return errors rather than locking, before that commit it would
+> > > have waited for the rawnand device to resume.  
 > > 
-> > That is exactly my request.
+> > I don't think so, I believe it was broken in the same way but was just
+> > not returning errors.
 > 
-> Okay.
-> 
-> > I'm not sure if the potential issue you
-> > noticed in pci-tegra.c is similar to the one I mentioned here:
-> > 
-> >   https://lore.kernel.org/linux-pci/20210624224040.GA3567297@bjorn-Precision-5520/
-> > 
-> 
-> As I still have the tegra driver open, I share your concern about the
-> use of potentially uninitialized variables.
-> 
-> The problem I was concerned about was however the same as in my patch
-> and the rockchip one, that if the tegra hardware isn't clocked the
-> pm_runtime_get_sync() (which would turn on power and clock) happens
-> after setting up the msi chain handler...
-> 
-> > but I am actually in favor of speculatively fixing drivers even though
-> > they're hard to test.  Code like this tends to get copied to other
-> > places, and fixing several drivers sometimes exposes opportunities for
-> > refactoring and sharing code.
-> > 
-> 
-> Looking through the other cases mentioned in your reply above certainly
-> gives a feeling that this problem has been inherited from driver to
-> driver...
-> 
-> I've added a ticket to my backlog to take a deeper look at this.
+> Actually I was wrong, 013e6292aaf5 ("mtd: rawnand: Simplify the
+> locking") removed the blocking wait (returning -EBUSY when the device
+> is suspended instead of putting the thread on a waitqueue). At that
+> time, I assumed all threads would be paused when the device is
+> suspended, which appeared to be incorrect. So I guess the Fixes tag
+> should remain, and we might want to consider backporting a less
+> invasive patch to stable releases (one touching only the raw NAND
+> layer).
 
-Vidya, can you look into this please ? In the meantime I would merge
-this series.
+Thanks Miquel add Reviewed-By you on the second patch.
 
-Thanks,
-Lorenzo
+I'll remove the mentioning of commit ef347c0cfd61
+("mtd: rawnand: gpmi: Implement exec_op") in this commit msg.
 
-> 
-> Regards,
-> Bjorn
+Is it possible to backport another(less invasive) patch to stable
+releases? I thought only upstream commits could be backported.
+
+/Sean
