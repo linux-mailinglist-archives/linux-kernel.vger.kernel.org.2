@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19B1A426875
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90501426871
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240034AbhJHLIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:08:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231841AbhJHLIm (ORCPT
+        id S232026AbhJHLHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:07:12 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3948 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231841AbhJHLHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:08:42 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1FBC061570;
-        Fri,  8 Oct 2021 04:06:47 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so11179762otb.10;
-        Fri, 08 Oct 2021 04:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SEkz4ZOw2MRo2rGqF0mpjib4aQPW8paURZ/TdkwthmA=;
-        b=NKaIzCWY041PjfWtF60lyzX7TLZJF+nRK4ZfM0QdCgAD4C4IpoOOLfpKQhaq9MPaoA
-         +7dEqqydbnMitfo/ztUdodTUWd6dbVV777D3ygogOGGq/gBh11RpnQRlucwqNxpYiEiM
-         7ngODPtRqXD7snqgmPm5pNsVUbrG7WwSJqGyWmbrc5raj+xUaRTk7gtBArjG+XWlTJDZ
-         ocgpem0ZFjin9uSwReNaqVcGCVaDGra4txS8fCE7yxG2xyc0FyOD845JNTxLqlqc5QPE
-         JGmNdqDSiUspiX/MEikDc4EEw30lsIDv/Xd6oyS3ok/Rn7vF8nuTWLNVXEtA7a1+WB6u
-         1DcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SEkz4ZOw2MRo2rGqF0mpjib4aQPW8paURZ/TdkwthmA=;
-        b=QbPOiEhtwbagRJSmnEcChJYig5aT1e4QJ8fK520/8P9TUYJVSnZQtnE9do6pdokgaF
-         2/PhaNrwpSajqdPg6TGoVYUDcGuUar30tZOJGcRxdWA4YoEIGxD1g+aULjFqRA/0BMt4
-         u46jfRc1ej23o20G2OWPqNQUcGKJj63gKiXb/n6Ur21VlX+cEUm8vw8/+AF7a9dZSUWf
-         HH1wwOTBgbg+d21Bu4rzKIOBoBhrTscB+/ml8RkWWzWYcym6fg1sRDpoxn1HIMLQDPJq
-         GV4i2vra2bJ9Qglqnfyfktz2ItP2XTWKd2019ElFai0btJfPTdpPHC5kxciiVz00WGMI
-         kvDA==
-X-Gm-Message-State: AOAM532cO/HEmvhoNPGCGtRRLNrqmtPfMKM3ab2w2e13xWWFrlmcbcP5
-        qUWliGXQWaQG84cygMQzrPPItEA6cCohcEil7ff5ulB29oU=
-X-Google-Smtp-Source: ABdhPJw6tG1RdLQIcWZTmkHLRfJS1I3MQ9Zv2GAWFPOqMDwzw5il5UhhmEChutFTiMqi4nSLrtpiVZ8b4Vsnx/AwmW0=
-X-Received: by 2002:a05:6830:40b0:: with SMTP id x48mr8136182ott.246.1633691205672;
- Fri, 08 Oct 2021 04:06:45 -0700 (PDT)
+        Fri, 8 Oct 2021 07:07:09 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HQld04Q2qz67T5g;
+        Fri,  8 Oct 2021 19:01:56 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 13:05:12 +0200
+Received: from [10.47.80.141] (10.47.80.141) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Fri, 8 Oct 2021
+ 12:05:10 +0100
+Subject: Re: [PATCH 04/21] perf pmu: Make pmu_event tables const.
+To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>,
+        "Jiri Olsa" <jolsa@redhat.com>, Jin Yao <yao.jin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        "Paul A . Clarke" <pc@us.ibm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Sami Tolvanen" <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Jacob Keller" <jacob.e.keller@intel.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        ToastC <mrtoastcheng@gmail.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Song Liu <songliubraving@fb.com>,
+        "Fabian Hemmer" <copy@copy.sh>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Denys Zagorui <dzagorui@cisco.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        "Sumanth Korikkar" <sumanthk@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+CC:     Stephane Eranian <eranian@google.com>
+References: <20211007165647.3514803-1-irogers@google.com>
+ <20211007165647.3514803-5-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <eb0fdeea-147b-0c02-f598-0f60b724d409@huawei.com>
+Date:   Fri, 8 Oct 2021 12:07:41 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
- <1633687054-18865-3-git-send-email-wanpengli@tencent.com> <87ily73i0x.fsf@vitty.brq.redhat.com>
-In-Reply-To: <87ily73i0x.fsf@vitty.brq.redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Fri, 8 Oct 2021 19:06:34 +0800
-Message-ID: <CANRm+Cy=bb_iap6JKsux7ekmo6Td0FXqwpuVdgPSC8u8b2wFNA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] KVM: LAPIC: Optimize PMI delivering overhead
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211007165647.3514803-5-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.80.141]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 18:52, Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
->
-> Wanpeng Li <kernellwp@gmail.com> writes:
->
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > The overhead of kvm_vcpu_kick() is huge since expensive rcu/memory
-> > barrier etc operations in rcuwait_wake_up(). It is worse when local
-> > delivery since the vCPU is scheduled and we still suffer from this.
-> > We can observe 12us+ for kvm_vcpu_kick() in kvm_pmu_deliver_pmi()
-> > path by ftrace before the patch and 6us+ after the optimization.
-> >
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > ---
-> >  arch/x86/kvm/lapic.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > index 76fb00921203..ec6997187c6d 100644
-> > --- a/arch/x86/kvm/lapic.c
-> > +++ b/arch/x86/kvm/lapic.c
-> > @@ -1120,7 +1120,8 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
-> >       case APIC_DM_NMI:
-> >               result = 1;
-> >               kvm_inject_nmi(vcpu);
-> > -             kvm_vcpu_kick(vcpu);
-> > +             if (vcpu != kvm_get_running_vcpu())
-> > +                     kvm_vcpu_kick(vcpu);
->
-> Out of curiosity,
->
-> can this be converted into a generic optimization for kvm_vcpu_kick()
-> instead? I.e. if kvm_vcpu_kick() is called for the currently running
-> vCPU, there's almost nothing to do, especially when we already have a
-> request pending, right? (I didn't put too much though to it)
+On 07/10/2021 17:56, Ian Rogers wrote:
+>   
 
-I thought about it before, I will do it in the next version since you
-also vote for it. :)
+- bouncing changbin du address
 
-    Wanpeng
+> -int arch_get_runtimeparam(struct pmu_event *pe)
+> +int arch_get_runtimeparam(const struct pmu_event *pe)
+>   {
+>   	int count;
+>   	char path[PATH_MAX] = "/devices/hv_24x7/interface/";
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index a31de0f77097..b3431c11c9cb 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -362,7 +362,7 @@ static int close_table;
+>   
+>   static void print_events_table_prefix(FILE *fp, const char *tblname)
+>   {
+> -	fprintf(fp, "struct pmu_event %s[] = {\n", tblname);
+> +	fprintf(fp, "const struct pmu_event %s[] = {\n", tblname);
+
+can these be static as well?
+
+>   	close_table = 1;
+>   }
+
