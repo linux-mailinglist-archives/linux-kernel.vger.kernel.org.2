@@ -2,119 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217B142640A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F34442640D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 07:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhJHFXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 01:23:51 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61873 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhJHFXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 01:23:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1633670516; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=G/q7apvmEsZYM5+PuMRPf8KoeiS4gg1z/ifPbeMc0E0=; b=PPaZSHPcheOgPXy5aHOVq8L3Uw5q0oNRsF0DoFV5qi4FmyTjggGi3tiskco2lL1PDAixIO1C
- PL9EMVD91+jDCHgiQ0lgtPf7tzQodXYKjntwHCLbP7eyl/6sHJAQPsee0USurM5FYx2dqyqn
- fEski9B5gYZXoXmDWlNS/Le6t+k=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 615fd56e446c6db0cbfe5419 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Oct 2021 05:21:50
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33435C4338F; Fri,  8 Oct 2021 05:21:48 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-srivasam-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 660C9C4338F;
-        Fri,  8 Oct 2021 05:21:42 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 660C9C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org, judyhsiao@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH v3] ASoC: dt-bindings: lpass: add binding headers for digital codecs
-Date:   Fri,  8 Oct 2021 10:51:31 +0530
-Message-Id: <1633670491-27432-1-git-send-email-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229730AbhJHF2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 01:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhJHF2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 01:28:00 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52712C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 22:26:05 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id y12so18468056eda.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 22:26:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=looF01hX1KIHTw6RXU9MnOlgNqM3cRFB1AmcaiSRvII=;
+        b=W0TleFp1S63lTX9NagfTDYT5kLi6djiDVKmhvDvB+xmFYrl+3br7RSyjJb0XZ8Uc0Q
+         af4fqF4SFsByHGqvMlrhfuU/ALEGx21AUngvR5qslsQ4/yJqJ9A/p3rWMWyMpsQX5o8I
+         T6cZJYdAiSWAhSKrKNBVj+zWLpP9EElmAKuDJxwOSP6DmdTx8LltWl5oQCatBzDsQ3eU
+         zhCObSAGUrlcN+eK7oHjIQ3uEngTQkQk+/a32cbdmYOgDV3FFtaqIwszUic+AIyBi/VS
+         tIsdbFmtuvpWedBzvdO4QAnu+yCFVP7oAKcl93fOCl1e2bm9vmNzEsecE0Fmzmzm1T//
+         029A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=looF01hX1KIHTw6RXU9MnOlgNqM3cRFB1AmcaiSRvII=;
+        b=KDGOosREiw4rPLxQoJN5PCzD4KzliRm+DvQvvcjauIClmly/DCO8ho9ZblIR5LSUD7
+         K7aMTgFZjPYJky5TuvObQ9kf2NTY7TC6hsg8Wc1S21pSqkhvdfcmTaAmnUhm+22yfqeK
+         q8eIto7+l8W0Dyffc8Y7h9n+/oz7pGFbA/0LWK7bW491o5Y1KOLpfevvVY3TxUzw0Efu
+         3d24gTrR3MqevJFhWFtWpjn4KWcOf0ybxC8CmTSfqYqMgJLkZkmhTPpkCY9muilAkAt6
+         61w1t2dWXtHqWQhhbdeDNLWDgMPsqPmV2uAgkJEoX5ERU95BhGDv+ScTQulJ1NCqi0ZI
+         Kizw==
+X-Gm-Message-State: AOAM533q0eCXbfu34urD1wIK3gaoYKoiAQVpOTU0VAi7syZn/I5rS0xE
+        JLmjqBZ+Sd1zTiy5GndwTzOxL8lyrSsqG/O3edg=
+X-Google-Smtp-Source: ABdhPJwz4FJvFqQ0Mqs0twnX8nmeRTmAo64UswdbcuZWcwZcEWbF3hrOjA7p/KJ0Q8NiIzHHU/Z0dSVg7FkZGyr0O9w=
+X-Received: by 2002:a17:907:76e1:: with SMTP id kg1mr1548900ejc.329.1633670763767;
+ Thu, 07 Oct 2021 22:26:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211001174947.135123-1-eric.dumazet@gmail.com>
+In-Reply-To: <20211001174947.135123-1-eric.dumazet@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 8 Oct 2021 13:25:37 +0800
+Message-ID: <CAD-N9QVtBrWrtAFQkyd=zRwnA4AjnBBeqhD_P-QFXz-QtUOzog@mail.gmail.com>
+Subject: Re: [PATCH] mm/mempolicy: do not allow illegal MPOL_F_NUMA_BALANCING
+ | MPOL_LOCAL in mbind()
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Mel Gorman <mgorman@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add header defining for lpass internal digital codecs rx,tx and va
-dai node id's.
+On Sat, Oct 2, 2021 at 1:49 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+> From: Eric Dumazet <edumazet@google.com>
+>
+> syzbot reported access to unitialized memory in mbind() [1]
+>
+> Issue came with commit bda420b98505 ("numa balancing: migrate on
+> fault among multiple bound nodes")
+>
+> This commit added a new bit in MPOL_MODE_FLAGS, but only checked
+> valid combination (MPOL_F_NUMA_BALANCING can only be used with MPOL_BIND)
+> in do_set_mempolicy()
+>
+> This patch moves the check in sanitize_mpol_flags() so that it
+> is also used by mbind()
+>
+> [1]
+> BUG: KMSAN: uninit-value in __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
+>  __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
+>  mpol_equal include/linux/mempolicy.h:105 [inline]
+>  vma_merge+0x4a1/0x1e60 mm/mmap.c:1190
+>  mbind_range+0xcc8/0x1e80 mm/mempolicy.c:811
+>  do_mbind+0xf42/0x15f0 mm/mempolicy.c:1333
+>  kernel_mbind mm/mempolicy.c:1483 [inline]
+>  __do_sys_mbind mm/mempolicy.c:1490 [inline]
+>  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
+>  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Uninit was created at:
+>  slab_alloc_node mm/slub.c:3221 [inline]
+>  slab_alloc mm/slub.c:3230 [inline]
+>  kmem_cache_alloc+0x751/0xff0 mm/slub.c:3235
+>  mpol_new mm/mempolicy.c:293 [inline]
+>  do_mbind+0x912/0x15f0 mm/mempolicy.c:1289
+>  kernel_mbind mm/mempolicy.c:1483 [inline]
+>  __do_sys_mbind mm/mempolicy.c:1490 [inline]
+>  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
+>  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> =====================================================
+> Kernel panic - not syncing: panic_on_kmsan set ...
+> CPU: 0 PID: 15049 Comm: syz-executor.0 Tainted: G    B             5.15.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x1ff/0x28e lib/dump_stack.c:106
+>  dump_stack+0x25/0x28 lib/dump_stack.c:113
+>  panic+0x44f/0xdeb kernel/panic.c:232
+>  kmsan_report+0x2ee/0x300 mm/kmsan/report.c:186
+>  __msan_warning+0xd7/0x150 mm/kmsan/instrumentation.c:208
+>  __mpol_equal+0x567/0x590 mm/mempolicy.c:2260
+>  mpol_equal include/linux/mempolicy.h:105 [inline]
+>  vma_merge+0x4a1/0x1e60 mm/mmap.c:1190
+>  mbind_range+0xcc8/0x1e80 mm/mempolicy.c:811
+>  do_mbind+0xf42/0x15f0 mm/mempolicy.c:1333
+>  kernel_mbind mm/mempolicy.c:1483 [inline]
+>  __do_sys_mbind mm/mempolicy.c:1490 [inline]
+>  __se_sys_mbind+0x437/0xb80 mm/mempolicy.c:1486
+>  __x64_sys_mbind+0x19d/0x200 mm/mempolicy.c:1486
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f4a41b2c709
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f4a3f0a3188 EFLAGS: 00000246 ORIG_RAX: 00000000000000ed
+> RAX: ffffffffffffffda RBX: 00007f4a41c30f60 RCX: 00007f4a41b2c709
+> RDX: 0000000000002001 RSI: 0000000000c00007 RDI: 0000000020012000
+> RBP: 00007f4a41b86cb4 R08: 0000000000000000 R09: 0000010000000002
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 00007f4a42164b2f R14: 00007f4a3f0a3300 R15: 0000000000022000
+>
 
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
-Changes since v2:
-    -- Rebased to latest sound next and created new patch.
-Changes since v1:
-    -- Add missing dai node ID's
+Hi Eric,
 
- include/dt-bindings/sound/qcom,lpass.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+this crash seems like the bug report [1] on Syzbot dashboard.
 
-diff --git a/include/dt-bindings/sound/qcom,lpass.h b/include/dt-bindings/sound/qcom,lpass.h
-index 187af45..a9404c3 100644
---- a/include/dt-bindings/sound/qcom,lpass.h
-+++ b/include/dt-bindings/sound/qcom,lpass.h
-@@ -11,9 +11,35 @@
- #define LPASS_DP_RX	5
- 
- #define LPASS_CDC_DMA_RX0 6
--#define LPASS_CDC_DMA_TX3 7
--#define LPASS_CDC_DMA_VA0 8
--#define LPASS_MAX_PORTS 9
-+#define LPASS_CDC_DMA_RX1 7
-+#define LPASS_CDC_DMA_RX2 8
-+#define LPASS_CDC_DMA_RX3 9
-+#define LPASS_CDC_DMA_RX4 10
-+#define LPASS_CDC_DMA_RX5 11
-+#define LPASS_CDC_DMA_RX6 12
-+#define LPASS_CDC_DMA_RX7 13
-+#define LPASS_CDC_DMA_RX8 14
-+#define LPASS_CDC_DMA_RX9 15
-+
-+#define LPASS_CDC_DMA_TX0 16
-+#define LPASS_CDC_DMA_TX1 17
-+#define LPASS_CDC_DMA_TX2 18
-+#define LPASS_CDC_DMA_TX3 19
-+#define LPASS_CDC_DMA_TX4 20
-+#define LPASS_CDC_DMA_TX5 21
-+#define LPASS_CDC_DMA_TX6 22
-+#define LPASS_CDC_DMA_TX7 23
-+#define LPASS_CDC_DMA_TX8 24
-+
-+#define LPASS_CDC_DMA_VA_TX0 25
-+#define LPASS_CDC_DMA_VA_TX1 26
-+#define LPASS_CDC_DMA_VA_TX2 27
-+#define LPASS_CDC_DMA_VA_TX3 28
-+#define LPASS_CDC_DMA_VA_TX4 29
-+#define LPASS_CDC_DMA_VA_TX5 30
-+#define LPASS_CDC_DMA_VA_TX6 31
-+#define LPASS_CDC_DMA_VA_TX7 32
-+#define LPASS_CDC_DMA_VA_TX8 33
- 
- #define LPASS_MCLK0	0
- 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+[1] https://syzkaller.appspot.com/bug?id=028833194204bb15c2c43d822b8f7401360d57f5
 
+If yes, maybe you can push a patch testing request.
+
+> Fixes: bda420b98505 ("numa balancing: migrate on fault among multiple bound nodes")
+> Signed-off-by: Eric Dumazet <edumazet@google.com>
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Cc: "Huang, Ying" <ying.huang@intel.com>
+> Cc: Mel Gorman <mgorman@suse.de>
+> ---
+>  mm/mempolicy.c | 16 +++++-----------
+>  1 file changed, 5 insertions(+), 11 deletions(-)
+>
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 1592b081c58ef6dd63c6f075ad24722f2be7cb5d..7a7abdbec7af66f88bb68cb4f47e9722d56bfd5b 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -856,16 +856,6 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+>                 goto out;
+>         }
+>
+> -       if (flags & MPOL_F_NUMA_BALANCING) {
+> -               if (new && new->mode == MPOL_BIND) {
+> -                       new->flags |= (MPOL_F_MOF | MPOL_F_MORON);
+> -               } else {
+> -                       ret = -EINVAL;
+> -                       mpol_put(new);
+> -                       goto out;
+> -               }
+> -       }
+> -
+>         ret = mpol_set_nodemask(new, nodes, scratch);
+>         if (ret) {
+>                 mpol_put(new);
+> @@ -1458,7 +1448,11 @@ static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
+>                 return -EINVAL;
+>         if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
+>                 return -EINVAL;
+> -
+> +       if (*flags & MPOL_F_NUMA_BALANCING) {
+> +               if (mode != MPOL_BIND)
+> +                       return -EINVAL;
+> +               *flags |= (MPOL_F_MOF | MPOL_F_MORON);
+> +       }
+>         return 0;
+>  }
+>
+> --
+> 2.33.0.800.g4c38ced690-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller/20211001174947.135123-1-eric.dumazet%40gmail.com.
