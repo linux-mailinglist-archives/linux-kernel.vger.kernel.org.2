@@ -2,140 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D7042619A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B13B4261A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhJHBM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 21:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35662 "EHLO
+        id S232813AbhJHBRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 21:17:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhJHBMz (ORCPT
+        with ESMTP id S230514AbhJHBRl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:12:55 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442BDC061714
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 18:11:01 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id d131so17500125ybd.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 18:11:01 -0700 (PDT)
+        Thu, 7 Oct 2021 21:17:41 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C25F3C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 18:15:46 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id s16so6851719pfk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 18:15:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fu1qbb9TIftGGLiopDIHJNKJDVey9e03m26BW4nVQKw=;
-        b=Po56gcNdg4y0ShSFya7iIGBaaYp8lJIgoWK2sKkC2odnhSdrhLke32eYYchYWX3zz+
-         Nm+/wq0ok2Zr5dKDvEpdJYix/07lkxeuSx0249JyESbN5Xlr5CvvlEpFo9YwzyBq4Zq4
-         1PQnUlPIfYnZ2LBNy7px4RtIpECNMUR89AfE/U1pJLC6OaPFz9abQjsmmjE/j997mdbB
-         lGGZXG8PwWP30MjktBdRJYtUrcKJafkHtsB/3XYpV5m82PgtMgNDuMRTMqnqWUCe9t3U
-         54SSiScQ9DFOj6TFDreDNUcuEGJS1Lbudtab9yqFIoMbpb/qDs2KFo0pJm+ezMpmEAkN
-         nFoQ==
+        d=gmail.com; s=20210112;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Q5qcFsX/507ZfWeOd0zCJMBIYkqAMWpOwqpuf9YHF8Y=;
+        b=B7FNos2STpdpmBn/v4n1nigAXB8wqwlQcCF8LEMm+UrVSqdVA/sPfUgaZE0pU4PwVM
+         4bK3W3XaNLNlrycVAFCCoE/8Vo2Pz2Rt8Sxgjp+F4dxSakPWvg91/tdbTKcA77R5AQPt
+         eShoQLZKtTzOPYSfqp6AYwUEsQ178iHNBdRh88iINwgqFN/KdVgNlhj/a/tpavfyyCDJ
+         Emypv6iXFkGF/xx34Dink1DWo/Nay+TSM/E4qhBSk6hUs38wKjB1tdohc9s7GCWEGY1+
+         J/A5maxWolIqiKIE8BTfAaJ4jYqpgLir08LsSM1nMLTX6gXbA6zDBOS6YokSTxseh0NN
+         oJxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fu1qbb9TIftGGLiopDIHJNKJDVey9e03m26BW4nVQKw=;
-        b=KNDV5m1ICt8drpXtWpqrsc31s7levLsUiONiqnY1ny+ViSZ5Qua5mqDFLkdLcx/75i
-         DHTPr7Qohq6qvEfSNPNYZLkL1kg2IyLIcO4f33HKD1AqDWBYiQ/rCtcfeFItfIHQl4n6
-         6BMG8CE6qDOi5pZ8GnzYAjsru8+hqu7uzd/ADJJJ9Lytf7hq63VgQoia2nbGMi7rPwih
-         nrZTBdbpRIkU5iM4lNhQmcf3rOSjQdBSs/aHeFJwPDxQOXuJjCwj1NG8q4dBnEzsi6IG
-         vzkEKo+NB2owIAyXN2a6V2RJwDzMe/4fHZW7+rqnJ6HyHv/nN2JGeuuTiKly7nYECj/P
-         9brg==
-X-Gm-Message-State: AOAM530/X5IGMeEUHr1V2BPnRIokP+jhc27yMkz1sEB35NS6OVUcuKUz
-        ypD086C3qk9Cq7eIWND0Dn6brk2TWrFZI1gwp4xR6w==
-X-Google-Smtp-Source: ABdhPJzRqmpc7ZCLtvfPCPlOJuwh7NKrbymtx/f5NZk8E50MzwzoBQeCzV16ElGWYbGopGOusWI0XFQieBWdHv96j04=
-X-Received: by 2002:a25:bd93:: with SMTP id f19mr285693ybh.23.1633655460310;
- Thu, 07 Oct 2021 18:11:00 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q5qcFsX/507ZfWeOd0zCJMBIYkqAMWpOwqpuf9YHF8Y=;
+        b=UEtjAmzmj7LcCI3FaunvaJUDxtCVyoXwmirLnV4mSMQ16I3SgjeCVpm1qxpTp+ga3X
+         qDbJYsVwsmwDsWx4OV1LcbUClk3km3CYIRGeTP2syTvJd7U+SKSGxe+uI/H81qhWz69j
+         9lpezDPypVrgvto/GhQ+O6N+2L42YwYcpClzZ92LZD4SQ7Y5mDdLoOoeQ3BMvRpl1zre
+         44lo2Ne4eLb11uYjHxk1XU7vPPxs3/RQYQQmYbaXJvjetRjaAso+W0D/UNglZQVwYq4c
+         X+cE8IgSLgcUlR1vSTM95Hco10kxmshMmjCayb9O3rjjLbwzMSWRsts7MQRdmvfE3jVC
+         yybA==
+X-Gm-Message-State: AOAM532Xelm6I4fcMpr0jptzlbHK9KSUvXghTTC9BfRuW+EOZQoY/aQW
+        6ZYcQlshB9oTK7qlyBKesyU=
+X-Google-Smtp-Source: ABdhPJyhLnzHX4HmOi193muw8/podPYTgbGYvY0nSztGhKGzCBkJivo83KSITCWdNvbmIVlfc/6KRQ==
+X-Received: by 2002:a63:df05:: with SMTP id u5mr2266398pgg.323.1633655745932;
+        Thu, 07 Oct 2021 18:15:45 -0700 (PDT)
+Received: from localhost ([240e:473:4f20:9f4:f021:c1d4:a827:22ec])
+        by smtp.gmail.com with ESMTPSA id e10sm509750pgr.85.2021.10.07.18.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 18:15:45 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 8 Oct 2021 09:11:52 +0800
+To:     Dave Young <dyoung@redhat.com>
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        Coiby Xu <coxu@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] kexec, KEYS: make the code in bzImage64_verify_sig
+ public
+Message-ID: <20211008011152.6rcdmn2aiojjfagu@localhost.localdomain>
+References: <20210927005004.36367-1-coiby.xu@gmail.com>
+ <20210927005004.36367-2-coiby.xu@gmail.com>
+ <YVWyPu3pDvnEfATe@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-References: <20211006193819.2654854-1-swboyd@chromium.org> <20211006193819.2654854-3-swboyd@chromium.org>
- <CAGETcx9T59dHXodt9MW=tTV_hYhtNOZzYFT=35D--VN7WJ0GqQ@mail.gmail.com>
- <CAE-0n50YqKr1nKy-4WaxsfuwPiJ5kZcf46t-U_4i-TpfXzOX1g@mail.gmail.com> <CAE-0n532XYgT=dTTCyLcwikvxgUyGi=TcybDh=v3wQTNb=wqyw@mail.gmail.com>
-In-Reply-To: <CAE-0n532XYgT=dTTCyLcwikvxgUyGi=TcybDh=v3wQTNb=wqyw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 7 Oct 2021 18:10:24 -0700
-Message-ID: <CAGETcx_0GRg7u3dAxP9u0qO-hfJ0N3V44CGLwFFX1kVxZ00g+w@mail.gmail.com>
-Subject: Re: [PATCH v2 02/34] component: Introduce the aggregate bus_type
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YVWyPu3pDvnEfATe@dhcp-128-65.nay.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 1:11 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Stephen Boyd (2021-10-07 11:40:07)
-> > Quoting Saravana Kannan (2021-10-06 20:07:11)
-> > > On Wed, Oct 6, 2021 at 12:38 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > > diff --git a/drivers/base/component.c b/drivers/base/component.c
-> > > > index 0a41bbe14981..d99e99cabb99 100644
-> > > > --- a/drivers/base/component.c
-> > > > +++ b/drivers/base/component.c
-> > [...]
-> > > > +                       continue;
-> > > > +
-> > > > +               /* Matches put in component_del() */
-> > > > +               get_device(&adev->dev);
-> > > > +               c->link = device_link_add(&adev->dev, c->dev,
-> > > > +                                         DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME);
-> > >
-> > > Remove the STATELESS flag and you'll get a bunch of other stuff done for free:
-> >
-> > I tried that and it didn't work for me. The aggregate device never
-> > probed and I was left with no display. Let me see if I can reproduce it
-> > with logging to provide more details.
->
-> This patch fixes it (whitespace damaged sorry).
+Hi Dave,
 
-Not sure why you have to trigger an explicit rescan, but instead of
-this patch below, you could also try setting this flag instead?
-DL_FLAG_AUTOPROBE_CONSUMER
+On Thu, Sep 30, 2021 at 08:49:02PM +0800, Dave Young wrote:
+>Hi Coiby,
+>On 09/27/21 at 08:50am, Coiby Xu wrote:
+>> From: Coiby Xu <coxu@redhat.com>
+>>
+>> The code in bzImage64_verify_sig could make use of system keyrings including
+>> .buitin_trusted_keys, .secondary_trusted_keys and .platform keyring to verify
+>> signed kernel image as PE file. Move it to a public function.
+>>
+>> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+>> ---
+>>  arch/x86/kernel/kexec-bzimage64.c | 13 +------------
+>>  include/linux/kexec.h             |  3 +++
+>>  kernel/kexec_file.c               | 15 +++++++++++++++
+>>  3 files changed, 19 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+>> index 170d0fd68b1f..4136dd3be5a9 100644
+>> --- a/arch/x86/kernel/kexec-bzimage64.c
+>> +++ b/arch/x86/kernel/kexec-bzimage64.c
+>> @@ -17,7 +17,6 @@
+>>  #include <linux/kernel.h>
+>>  #include <linux/mm.h>
+>>  #include <linux/efi.h>
+>> -#include <linux/verification.h>
+>>
+>>  #include <asm/bootparam.h>
+>>  #include <asm/setup.h>
+>> @@ -531,17 +530,7 @@ static int bzImage64_cleanup(void *loader_data)
+>>  #ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
+>>  static int bzImage64_verify_sig(const char *kernel, unsigned long kernel_len)
+>>  {
+>> -	int ret;
+>> -
+>> -	ret = verify_pefile_signature(kernel, kernel_len,
+>> -				      VERIFY_USE_SECONDARY_KEYRING,
+>> -				      VERIFYING_KEXEC_PE_SIGNATURE);
+>> -	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+>> -		ret = verify_pefile_signature(kernel, kernel_len,
+>> -					      VERIFY_USE_PLATFORM_KEYRING,
+>> -					      VERIFYING_KEXEC_PE_SIGNATURE);
+>> -	}
+>> -	return ret;
+>> +	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
+>>  }
+>>  #endif
+>>
+>> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+>> index 0c994ae37729..d45f32336dbe 100644
+>> --- a/include/linux/kexec.h
+>> +++ b/include/linux/kexec.h
+>> @@ -19,6 +19,7 @@
+>>  #include <asm/io.h>
+>>
+>>  #include <uapi/linux/kexec.h>
+>> +#include <linux/verification.h>
+>>
+>>  #ifdef CONFIG_KEXEC_CORE
+>>  #include <linux/list.h>
+>> @@ -199,6 +200,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
+>>  #ifdef CONFIG_KEXEC_SIG
+>>  int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>>  				 unsigned long buf_len);
+>> +int arch_kexec_kernel_verify_pe_sig(const char *kernel,
+>> +				    unsigned long kernel_len);
+>>  #endif
+>>  int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
+>>
+>> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+>> index 33400ff051a8..85ed6984ad8f 100644
+>> --- a/kernel/kexec_file.c
+>> +++ b/kernel/kexec_file.c
+>> @@ -106,6 +106,21 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>>  {
+>>  	return kexec_image_verify_sig_default(image, buf, buf_len);
+>>  }
+>> +
+>> +int arch_kexec_kernel_verify_pe_sig(const char *kernel, unsigned long kernel_len)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = verify_pefile_signature(kernel, kernel_len,
+>> +				      VERIFY_USE_SECONDARY_KEYRING,
+>> +				      VERIFYING_KEXEC_PE_SIGNATURE);
+>> +	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+>> +		ret = verify_pefile_signature(kernel, kernel_len,
+>> +					      VERIFY_USE_PLATFORM_KEYRING,
+>> +					      VERIFYING_KEXEC_PE_SIGNATURE);
+>> +	}
+>> +	return ret;
+>> +}
+>
+>Since the function is moved as generic code, the kconfig option
+>CONFIG_KEXEC_BZIMAGE_VERIFY_SIG can be removed.
 
--Saravana
+>
+>Instead a CONFIG_KEXEC_PEFILE_VERIFY_SIG can be added so that it does
+>not need to be compiled for only platform which support UEFI pefile
+>signature verification.  And the related arch kexec_file kconfig can
+>just select it.
+
+
+Thanks for the suggestion! I notice KEXEC_BZIMAGE_VERIFY_SIG depends 
+on SIGNED_PE_FILE_VERIFICATION and selects SYSTEM_TRUSTED_KEYRING. So 
+maybe SIGNED_PE_FILE_VERIFICATION could do the job of 
+CONFIG_KEXEC_PEFILE_VERIFY_SIG. And arch/arm64/Kconfig also have 
+KEXEC_IMAGE_VERIFY_SIG. So maybe it's better we don't keep
+CONFIG_KEXEC_BZIMAGE_VERIFY_SIG.
 
 >
-> ----8<----
-> diff --git a/drivers/base/component.c b/drivers/base/component.c
-> index 65042c9f8a42..43cac9ed70b7 100644
-> --- a/drivers/base/component.c
-> +++ b/drivers/base/component.c
-> @@ -202,7 +202,7 @@ static int find_components(struct aggregate_device *adev)
->                 /* Matches put in component_del() */
->                 get_device(&adev->dev);
->                 c->link = device_link_add(&adev->dev, c->dev,
-> -                                         DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME);
-> +                                         DL_FLAG_PM_RUNTIME);
->                 c->adev = adev;
->         }
+>Coiby, can you try above?
 >
-> @@ -749,7 +749,9 @@ static int __component_add(struct device *dev,
-> const struct component_ops *ops,
->         mutex_unlock(&component_mutex);
+>>  #endif
+>>
+>>  /*
+>> --
+>> 2.33.0
+>>
+>>
+>> _______________________________________________
+>> kexec mailing list
+>> kexec@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/kexec
+>>
+>>
 >
->         /* Try to bind */
-> -       return bus_rescan_devices(&aggregate_bus_type);
-> +       bus_rescan_devices(&aggregate_bus_type);
-> +
-> +       return 0;
->  }
+>Thanks
+>Dave
 >
->  /**
->
->
-> The important part is ignoring the return value of bus_rescan_devices().
-> It's a cycle problem. The last component is probing and calling
-> component_add() in its probe function. The call to component_add() is
-> trying to probe the aggregate device now that all components are added.
-> But when it tries to probe the aggregate device it sees that a supplier,
-> which is this component calling compnent_add(), hasn't been probed yet,
-> so it returns -EPROBE_DEFER. That is passed up to the component and it
-> defers probe.
->
-> I don't think the component device cares at all about the aggregate
-> device being able to probe or not. We should be able to ignore the
-> return value of bus_rescan_devices() in component_add(). I'll add a
-> comment to the code here so it's more obvious.
+
+-- 
+Best regards,
+Coiby
