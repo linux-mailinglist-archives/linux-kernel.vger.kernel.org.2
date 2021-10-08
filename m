@@ -2,118 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B692842622B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA02C42622E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhJHBzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 21:55:07 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24221 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJHBzG (ORCPT
+        id S232222AbhJHBz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 21:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhJHBzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:55:06 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HQWQd05zTzPjsQ;
-        Fri,  8 Oct 2021 09:52:09 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 09:53:10 +0800
-Received: from [10.174.178.174] (10.174.178.174) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 09:53:09 +0800
-Subject: Re: [PATCH] driver core: Fix possible memory leak in
- device_link_add()
-To:     Saravana Kannan <saravanak@google.com>
-CC:     <linux-kernel@vger.kernel.org>, <rafael@kernel.org>,
-        <gregkh@linuxfoundation.org>
-References: <20210930085714.2057460-1-yangyingliang@huawei.com>
- <CAGETcx_5bheQH_702zNawkHKW=5_aAmFckck0D6HfuHFY2oo9g@mail.gmail.com>
-From:   Yang Yingliang <yangyingliang@huawei.com>
-Message-ID: <e07a2238-7aab-385e-26b4-7ca236df378d@huawei.com>
-Date:   Fri, 8 Oct 2021 09:53:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 7 Oct 2021 21:55:24 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31121C061570;
+        Thu,  7 Oct 2021 18:53:30 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id p4so8031652qki.3;
+        Thu, 07 Oct 2021 18:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7todBHdUdrk6e6UQ0gc/p1j76bLvlAp/nPJIsH1ZwrU=;
+        b=pYnevWap+Nr7RyAO44CZlMPTpYR5EQmDloM6Oxm/wRKX1hYpweH+gBE4gQcMVfrbmQ
+         K1/A21aj+3oJSnOuO3k3MkrlFKZCgHjIkn0ZrCBlXaOtt7r4L56575GtYEA4jqvBxsee
+         m5cKizWctwS9lPtGra1C1CxemYkXhJEYYf2Xg/eBr7i3lTzJoslhdC2SnSyVuQdle0sC
+         IxecV14wttzHpdidvAmBJpAerxuInifYORccHbTQvGsbmuPnig+TiPLMbE58/MIzWDUa
+         gYC4M0+JxpYZPyjaqCmlvPZE11tt7CpFhgtIk9xPtPiYoiYwg/I2xEd8PUC8OemV1V8/
+         DdAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7todBHdUdrk6e6UQ0gc/p1j76bLvlAp/nPJIsH1ZwrU=;
+        b=Q9EmrozJgTR7T18o7QCPT0Acu4GHkfqQEzJ192Hv0w4ipz5mHO2lg6kvDgR+hEsv8P
+         FQwvB1dnnHiffaFtA7JG39JIxjDrlaxy/kYi5V+wIK9jtY/8x0iY25YKW0nPZj+n3HVa
+         qgCBxAvYrMJNQE9rJTq88O2AcL8UtdCiMRK0anYP3v8r6hC8MDRhCfgrDuxVucKYDfUq
+         fFiHh3+k0bdwDmdGdioe+OS0UeWxZhnitKofdcYIVg3CBah+SewDVz/FDVmMU6zPIP29
+         YCx5QXJgNri3zDdTDwB/liUk7HEXJaTKlirE+TD5IN282PzBAgLeN6E174hOMIyb19xT
+         qYoA==
+X-Gm-Message-State: AOAM530q7Eo8W5AvrjbMTUESMBfOPpLqBOfExRmWEu5SnhcIud7e7JYq
+        O+viPNvsLOlPga6VInSlcferu87fYc3AINPRaYg=
+X-Google-Smtp-Source: ABdhPJyub/QHvISEi0k5mdUs2wnnkzAP+wB09A+dNspF4cZL5duX0GGffeUg7FUrIvC5sukpkWeX0AAH4FOnxhM9WBI=
+X-Received: by 2002:a37:8ce:: with SMTP id 197mr663603qki.492.1633658009360;
+ Thu, 07 Oct 2021 18:53:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx_5bheQH_702zNawkHKW=5_aAmFckck0D6HfuHFY2oo9g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.178.174]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
+ <1632625630-784-4-git-send-email-shengjiu.wang@nxp.com> <20211006162511.GA3370862@p14s>
+In-Reply-To: <20211006162511.GA3370862@p14s>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 8 Oct 2021 09:53:18 +0800
+Message-ID: <CAA+D8AOmnZ6wWBzJe5imMcyoVE0fSiOyLpWb83bYPwadJ5O-Mg@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
+ for DSP on i.MX
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mathieu
 
-On 2021/10/2 4:47, Saravana Kannan wrote:
-> On Thu, Sep 30, 2021 at 1:52 AM Yang Yingliang <yangyingliang@huawei.com> wrote:
->> I got memory leak as follows:
->>
->> unreferenced object 0xffff88801f0b2200 (size 64):
->>    comm "i2c-lis2hh12-21", pid 5455, jiffies 4294944606 (age 15.224s)
->>    hex dump (first 32 bytes):
->>      72 65 67 75 6c 61 74 6f 72 3a 72 65 67 75 6c 61  regulator:regula
->>      74 6f 72 2e 30 2d 2d 69 32 63 3a 31 2d 30 30 31  tor.0--i2c:1-001
->>    backtrace:
->>      [<00000000bf5b0c3b>] __kmalloc_track_caller+0x19f/0x3a0
->>      [<0000000050da42d9>] kvasprintf+0xb5/0x150
->>      [<000000004bbbed13>] kvasprintf_const+0x60/0x190
->>      [<00000000cdac7480>] kobject_set_name_vargs+0x56/0x150
->>      [<00000000bf83f8e8>] dev_set_name+0xc0/0x100
->>      [<00000000cc1cf7e3>] device_link_add+0x6b4/0x17c0
->>      [<000000009db9faed>] _regulator_get+0x297/0x680
->>      [<00000000845e7f2b>] _devm_regulator_get+0x5b/0xe0
->>      [<000000003958ee25>] st_sensors_power_enable+0x71/0x1b0 [st_sensors]
->>      [<000000005f450f52>] st_accel_i2c_probe+0xd9/0x150 [st_accel_i2c]
->>      [<00000000b5f2ab33>] i2c_device_probe+0x4d8/0xbe0
->>      [<0000000070fb977b>] really_probe+0x299/0xc30
->>      [<0000000088e226ce>] __driver_probe_device+0x357/0x500
->>      [<00000000c21dda32>] driver_probe_device+0x4e/0x140
->>      [<000000004e650441>] __device_attach_driver+0x257/0x340
->>      [<00000000cf1891b8>] bus_for_each_drv+0x166/0x1e0
->>
->> When device_register() returns an error, the name allocated in dev_set_name()
->> will be leaked, the put_device() should be used instead of kfree() to give up
->> the device reference, then the name will be freed in kobject_cleanup() and the
->> references of consumer and supplier will be decreased in device_link_release_fn().
->>
->> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
->> ---
->>   drivers/base/core.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/base/core.c b/drivers/base/core.c
->> index e65dd803a453..4a123e58711f 100644
->> --- a/drivers/base/core.c
->> +++ b/drivers/base/core.c
->> @@ -809,9 +809,7 @@ struct device_link *device_link_add(struct device *consumer,
->>                       dev_bus_name(supplier), dev_name(supplier),
->>                       dev_bus_name(consumer), dev_name(consumer));
->>          if (device_register(&link->link_dev)) {
->> -               put_device(consumer);
->> -               put_device(supplier);
->> -               kfree(link);
->> +               put_device(&link->link_dev);
->>                  link = NULL;
->>                  goto out;
->>          }
->> --
->> 2.25.1
->>
-> Thanks for the fix!
+On Thu, Oct 7, 2021 at 12:25 AM Mathieu Poirier
+<mathieu.poirier@linaro.org> wrote:
 >
-> Reviewed-by: Saravana Kannan <saravanak@google.com>
+> Hi Shengjiu,
 >
-> Btw, can you also let us know why the device_register() is failing? It
-> really shouldn't be failing.
-I inject fault in device_add().
+> This pachset doesn't apply to rproc-next, which is now located here[1].  The
+> change is in linux-next but not in mainline yet.
 >
-> -Saravana
-> .
+> https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git/log/?h=rproc-next
+
+Ok, I will double check it and fix it.
+
+>
+> On Sun, Sep 26, 2021 at 11:07:09AM +0800, Shengjiu Wang wrote:
+> > Provide a basic driver to control DSP processor found on NXP i.MX8QM,
+> > i.MX8QXP, i.MX8MP and i.MX8ULP.
+> >
+> > Currently it is able to resolve addresses between DSP and main CPU,
+> > start and stop the processor, suspend and resume.
+> >
+> > The communication between DSP and main CPU is based on mailbox, there
+> > are three mailbox channels (tx, rx, rxdb).
+> >
+> > This driver was tested on NXP i.MX8QM, i.MX8QXP, i.MX8MP and i.MX8ULP.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  drivers/remoteproc/Kconfig         |   11 +
+> >  drivers/remoteproc/Makefile        |    1 +
+> >  drivers/remoteproc/imx_dsp_rproc.c | 1206 ++++++++++++++++++++++++++++
+> >  3 files changed, 1218 insertions(+)
+> >  create mode 100644 drivers/remoteproc/imx_dsp_rproc.c
+> >
+>
+> [...]
+>
+> > +
+> > +/**
+> > + * imx_dsp_attach_pm_domains() - attach the power domains
+> > + * @priv: private data pointer
+> > + *
+> > + * On i.MX8QM and i.MX8QXP there is multiple power domains
+> > + * required, so need to link them.
+> > + */
+> > +static int imx_dsp_attach_pm_domains(struct imx_dsp_rproc *priv)
+> > +{
+> > +     struct device *dev = priv->rproc->dev.parent;
+> > +     int ret, i;
+> > +
+> > +     priv->num_domains = of_count_phandle_with_args(dev->of_node,
+> > +                                                    "power-domains",
+> > +                                                    "#power-domain-cells");
+> > +
+> > +     /* If only one domain, then no need to link the device */
+> > +     if (priv->num_domains <= 1)
+> > +             return 0;
+> > +
+> > +     priv->pd_dev = devm_kmalloc_array(dev, priv->num_domains,
+> > +                                       sizeof(*priv->pd_dev),
+> > +                                       GFP_KERNEL);
+> > +     if (!priv->pd_dev)
+> > +             return -ENOMEM;
+> > +
+> > +     priv->pd_dev_link = devm_kmalloc_array(dev, priv->num_domains,
+> > +                                            sizeof(*priv->pd_dev_link),
+> > +                                            GFP_KERNEL);
+> > +     if (!priv->pd_dev_link)
+> > +             return -ENOMEM;
+> > +
+> > +     for (i = 0; i < priv->num_domains; i++) {
+> > +             priv->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
+> > +             if (IS_ERR(priv->pd_dev[i])) {
+> > +                     ret = PTR_ERR(priv->pd_dev[i]);
+> > +                     goto detach_pm;
+> > +             }
+>
+> I have pointed a problem with the error handling in the above during the
+> previous review and it was not addressed.
+
+I have considered your comments.  Actually when
+dev_pm_domain_attach_by_id() return NULL, the device_link_add()
+will break, I have added comments below, so above error handling
+for dev_pm_domain_attach_by_id() is enough.
+
+Best regards
+Wang Shengjiu
+>
+> > +
+> > +             /*
+> > +              * device_link_add will check priv->pd_dev[i], if it is
+> > +              * NULL, then will break.
+> > +              */
+> > +             priv->pd_dev_link[i] = device_link_add(dev,
+> > +                                                    priv->pd_dev[i],
+> > +                                                    DL_FLAG_STATELESS |
+> > +                                                    DL_FLAG_PM_RUNTIME);
+> > +             if (!priv->pd_dev_link[i]) {
+> > +                     dev_pm_domain_detach(priv->pd_dev[i], false);
+> > +                     ret = -EINVAL;
+> > +                     goto detach_pm;
+> > +             }
+> > +     }
+> > +
+> > +     return 0;
+> > +
+> > +detach_pm:
+> > +     while (--i >= 0) {
+> > +             device_link_del(priv->pd_dev_link[i]);
+> > +             dev_pm_domain_detach(priv->pd_dev[i], false);
+> > +     }
+> > +
+> > +     return ret;
+> > +}
+> > +
