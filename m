@@ -2,206 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 839194260EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B8A4260F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241345AbhJHAIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 20:08:18 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:34887 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhJHAIR (ORCPT
+        id S238829AbhJHAKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 20:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhJHAKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 20:08:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633651583; x=1665187583;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=g+vbBIPCtPAyFmO9Ej4KRe/T63zLslMEa6aRiKsUzcE=;
-  b=JHL4XTeSAz/kiQS4/TWNwAjZmsJOHbZVRMRl7WUnxmvyBsyNgZlmUKbR
-   IfbX9EKiYPk9kM2ugCQC1QAGKXTndrTp+q/cfUkbteGDlau0KiLlwdH5k
-   C62cubpG3hnPKgF8qBze+Rc6yT+DmvbW7z9bVAWRYWLXy6lrI7ueRhiXp
-   q9F2bRf/bdZCUTFaXrZp5Bfc5qETptUTOZBszIeokhNdog3xySftRlsfS
-   DReaUlC0ScNnzVD+6c7S7byFX6IPSmP0SNCxzB1d+CGX1L81LE7helWEw
-   5pJRk95hBzl0VR6Rj20ND35IicqzlNABg2qS8rfX0i31Qsi2czsW35O7+
-   Q==;
-IronPort-SDR: zIKdCYoq3uTlciDhoNq+TJKGwy2b/m5BihBW1Fi377Cdo9fpS7NU7JWL0MDzSnNwQepsI4Tn81
- RhiqWhrBf38z10HLxN3NC/aH8WAwe6EkLs5aGoMOcJXlsb6/VxswgRrqX+eCk1QNfZWiPz19tc
- zeiWfuhggzzE9IPWTAEG79JcNKfaTXMs3+Tuo9MvYJSuUQrDUXIZQmEIaPpl6IXH5h3NRolJg+
- 3lF7l1iI2EjuKmGlPxRlQc1ZKj/oSjtgepxLOYrvFwaa0Ksq0BfdjLXGMygKgBHpfqD0j6r5c9
- aJ+Ub4dakCcHpjTbsfpZtV0r
-X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="139468658"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Oct 2021 17:06:22 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Thu, 7 Oct 2021 17:06:22 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (10.10.215.89) by
- email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14 via Frontend
- Transport; Thu, 7 Oct 2021 17:06:21 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UlgWUKjyab2rsKf9Y93GWf6jBzxzI5sHIxeIJgHXxrY+akP3PpTFRcfUWRBTje0twFbfLsDTTchwLxjXMTJpLnFRWpaoPKRxcf0tm03K/JfdgF+eIcB1nnhww6/+YeIXHFKOV5BuOvJ3CAv1Uo5ooDLav+3PYaKp9Q+GauuQsOtno95GS8ttHdjQ2xfQbWvfsqyPB+oGovVxPMzSrvc76Joku3D00X0bfkRnGHMosPC8dfobkPL+uat43kL8//5JUm0DlAKb6qME/MwW+u7FaM5HvTBNqCdujFYIzLdlGLJW0feYfi0sHZ+OtpmCBiMs+5MJsi6HJwypCEyP7FY6fQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=g+vbBIPCtPAyFmO9Ej4KRe/T63zLslMEa6aRiKsUzcE=;
- b=TplfhvWVWUHPAYgbCzJOpTQvvPbUdmBL6/nyTXJHBSajUHmgj9kIyKxOAJjaiaOAn3ovNuTF0DNTJrxAClmpr5rL0LVZuAyBm5ktzhQlWcUarzMQPGN2SamUFZ+dhce0BIfKMQftVUO1CEPRuWcL49NNvOwSX0BEypgExc6xI87IyhuFHJ+wQj8+cc0CLgzb9FKbH0+iBg0xmhlJpn7P2O815qo8M//k5tki76Oi7cdUpd4d81djOpU+aQb3MzK/vZDz7Lx9bbSIrAkeGVRannBluSBUU4ICchWwv0fxGAVMwSnfY1aj7ZxAwkqo8/AaHwu0MGufi16g19zaEtGfNQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+        Thu, 7 Oct 2021 20:10:42 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B85C061570
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Oct 2021 17:08:48 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id z10-20020ac83e0a000000b002a732692afaso6514525qtf.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 17:08:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=microchiptechnology.onmicrosoft.com;
- s=selector2-microchiptechnology-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=g+vbBIPCtPAyFmO9Ej4KRe/T63zLslMEa6aRiKsUzcE=;
- b=GylNnsHzJI2XcM+GtvIghIn2/ijwC8YbR9e4eaVjfCGdfkb4kfjxtn5WoRArVtrI6ka4j3O7PDl90QLpJGWoD+S/n/naYBTHbkVqNRSRdyYFPI5MPUFHqQZBngSeU64VCxMAaGPHLWYFR2nnBON55LaC0kP/5KjagOyw1wHSv3s=
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com (2603:10b6:303:13f::24)
- by CO6PR11MB5651.namprd11.prod.outlook.com (2603:10b6:5:356::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Fri, 8 Oct
- 2021 00:06:19 +0000
-Received: from CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::9166:4e26:f15:6d14]) by CO6PR11MB5618.namprd11.prod.outlook.com
- ([fe80::9166:4e26:f15:6d14%4]) with mapi id 15.20.4587.020; Fri, 8 Oct 2021
- 00:06:18 +0000
-From:   <Kelvin.Cao@microchip.com>
-To:     <helgaas@kernel.org>
-CC:     <kurt.schwemmer@microsemi.com>, <bhelgaas@google.com>,
-        <linux-pci@vger.kernel.org>, <kelvincao@outlook.com>,
-        <logang@deltatee.com>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Thread-Topic: [PATCH 1/5] PCI/switchtec: Error out MRPC execution when no GAS
- access
-Thread-Index: AQHXsPrc5TKXfpZvzECl3XIr0t7wG6u+oQAAgAADAgCAADeugIABAgSAgAODLoCAAYeKgIAASeuAgAAgtACAADaYAIAAjs8AgABOUICAABZuAIAAEp2AgAGRU4CAAC1IgA==
-Date:   Fri, 8 Oct 2021 00:06:18 +0000
-Message-ID: <37d0615c8a9a5e7c55527f4d478a0e707292c1ec.camel@microchip.com>
-References: <20211007212317.GA1268429@bhelgaas>
-In-Reply-To: <20211007212317.GA1268429@bhelgaas>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.36.5-0ubuntu1 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 6acb6c2b-f2c1-430b-74f4-08d989ef743d
-x-ms-traffictypediagnostic: CO6PR11MB5651:
-x-microsoft-antispam-prvs: <CO6PR11MB5651B6759F05E086D9EE6AAC8DB29@CO6PR11MB5651.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oPaELFEEvMjHVudHV3xs/jxB+L3bxb5+bjMbE2bUzyFpIuthvgmqD9W+AcKdiPPLjUD6OUSgbMKA62ypgjr59BPlJ+VOjywJTuOTFYmUoTTT7cLBYHCIQSd25mAXot3pOv+ofE/NOW0gDWU4nccA4flj3o9fjSjeW6luUrtib5pmTalj0xPA++lyeGfPfnLuT7lGZhl9JChR52rd9S9XFb3LDgSxjjYHJEzQXmWLo8FFK8GjuzEVOKBI5dzVQ9TnVeSKv6jK7k5iZMNZ19rTdJvPnyHKIy5APcjvahUwbGvRkZjLcboVZnBLr9ksm3Cyk1AQrtqv1n1buRcVEjf5haueaZCEBIq50J1Hd4NvR2fbf4VuljCqAi7rfKrRc7yt+aK5veye0yssGZd0B5x2kAusbnI/9V8kC1N8vEoHJtDMHdaV/uPyOQKEJgfUoQ4xO6+HygkddQcPwAGuVdqd9sAhlyTkUZ2Wrli+khBy0wH3uLiqjoNZqtxYP0G2ZuOELfqphHOfxHtiUz1kgNykcNWdZdkxiR8jzJrjcYSexobj5lXhBdkxwaitsfsGXNtpXVZOn9709Fifq8903u4FgOkhSX561iXcpWOt9F097RRqXiczxOJD9SbmdmGTz2x6uPiH21FMkTiTtkMsRRUoQjvNxiBSr4+Zcly5lPD2rVakYeIjFBUuamrpFNdT8/3JG6Y1Tr+1QHn0QQfAieCWmw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR11MB5618.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(186003)(26005)(508600001)(6512007)(316002)(66556008)(54906003)(38100700002)(66946007)(66476007)(66446008)(64756008)(76116006)(6486002)(2906002)(6916009)(8676002)(6506007)(122000001)(8936002)(83380400001)(2616005)(4326008)(36756003)(86362001)(71200400001)(5660300002)(38070700005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Zi9xSytvZTN2ZU1NNXFsRlY2REFHWXdDVVBSRUFnbklCMXdqSnBORGIrWDNy?=
- =?utf-8?B?bWxjNC83enRnRitnWmtBYmtSNVNiaUV1T1FDUzBYeXJ1TTVXbG1WaEV2c2R1?=
- =?utf-8?B?Q3VrRU9EaDkrQStqaHRxaHBnc1dUVzd6YWJOaS95Q3FKZUN4SUVVYmhBWmJU?=
- =?utf-8?B?a1ZUeXFZSkRha3RhNHJ6RXJQTFZ5TVhsOHZOS2JOWWVFYno1OTNqTmZXZEdB?=
- =?utf-8?B?L0hOM2hoT0ZCdGtEbzZhZnF5Z2w5b3FsT2hPdXpkVGJwYWJ3YitXZWV3Qk8w?=
- =?utf-8?B?ZUVqbW9aYi9DRmtOTER1NGM2NlNaMjFPUmg5NzBseGl3dzFRMU5JYnNISHVU?=
- =?utf-8?B?M1pYZm1nVGpuUTdROHgzSmJRY0R4eXp4WUFhRnp1cGY2MDE1R3BTUUZEbVBj?=
- =?utf-8?B?dnhTc0J3OVdYVkdDWDJOODVzTkk2d3ZNQkdheTNnWUhTTzlyYVkrTVJoc0JK?=
- =?utf-8?B?M2dkK0NaZElZdnVnT2NsMW9UVjVORUloTWQweVlJZnpUQlNuR2JGWk1scWYr?=
- =?utf-8?B?ZzJNU05PTTVHMlBabUVPU1dRNklwaHBxMzA3UnhQckFGYkF2NnMyZE1vRVJS?=
- =?utf-8?B?cUhscWtBeVM0K3M3ZVpmWWxMa25mTWtzNlQ4UGowWEhmRU0rYzRMWUwrT0hx?=
- =?utf-8?B?V0w3YXE0b2xOalVDR3M5aExIMXA3YWZhN0YrY01JZU83MjdpdElVY2xQZ1VY?=
- =?utf-8?B?bkhWa0RGY29TSEc2dHQydmQ2V2x4eXp3dTZWSFRwUkpMdGQ0bGhrQjhlWnpm?=
- =?utf-8?B?ZUVjTGJxZWl5OTVpSGJTamRyQ0tDUHZVeEVKa0VyVEw0czZjU0Z2NlZ1NVJD?=
- =?utf-8?B?SWxRWEtzZFIwQnBpQzZMY2Y5Mlhmd3UraHVsVVZ4MUlmUDZtVEp2UWsxOC9Q?=
- =?utf-8?B?RlQ5ekVhYjR4QTdiSEE0Tjh2aDNTSDQrY1VtWHM3R1R0M0NFYUpSaDZTYzVB?=
- =?utf-8?B?ajFxclE5MHpXanJiMUVaMG5rQ3djK3E4Tnd2UVVySVZURmxmTnRJM252Tk5R?=
- =?utf-8?B?Qm5IbEJuWWIySmhYc3NONDFCeXJQbDFWUXYrNGNaWFBucjNLdlcycE9WR3lr?=
- =?utf-8?B?MHRqSGJnYlJ5citQNit6UTNpcUxQdHJTV2ptNjFxaHE1c3daR1hJRmQ3Vy9t?=
- =?utf-8?B?ejRHZkYzWHA0Z2hLNm9pSUVib3p2MVBxTUFhSkZadHoyczdyRXcvanVBRVNZ?=
- =?utf-8?B?U1B4NmtJK1V5ejliTGM0WWhCdjNvRThzcWdrK1NlM2JNUU9aWG5oN1FJd1lV?=
- =?utf-8?B?RlpJWlh1cUFqWHFwL2VPVlQ3b1ZnUkc0Rk5ONzZqTytjL3hnK3IrOTYyUVJw?=
- =?utf-8?B?UW4rM0VuL1VmdldqVk82eFUzeHAvTzIraktGV3g2Q2MvTlRnRFd1Y2lKcXZo?=
- =?utf-8?B?NDQwdVZjSGVoenFMWjVJekJMQlNCSGREODRvWGR4dmZGTWp3VUJ1WU4xQXFV?=
- =?utf-8?B?b2lRZ2crRHdYSi9WbTBORG9ibk5NUnd1NVIwNGJPcTc0TEgxSjh2UkUyS2dZ?=
- =?utf-8?B?TUhHUWxHMkgzZ1ltdWpvbzFoRzBxSG5pTUVjNkFPelk0TDhFWitRd2MweENR?=
- =?utf-8?B?Zi9pcFRGNGYrdVRrSDd4KzlJTkpMcWR0czI2ci8wTDltVnRSMDJOcUFQZmhk?=
- =?utf-8?B?bEhVVUZ1dGVsTWVDdzR2b2IzaG1kTXNTY1pDQnNNc1I0ZjRqanNzU21GK1ZQ?=
- =?utf-8?B?YmNzenZEZ0lsR1BMMnJ2OTlpbmRUallRWS9lK25kejlCZTN2VGlJdDRwc3BQ?=
- =?utf-8?B?bWs1NE9ueEJEMzQzb3o3YitTUHFrTFdjWFRxNm1uNHJncGpVVlZubFZFT0t6?=
- =?utf-8?B?d3FIM0duWkltUHVWU2UvZz09?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <ED79ACCB47CA1842990B9CA3C5F2FDB5@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR11MB5618.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6acb6c2b-f2c1-430b-74f4-08d989ef743d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2021 00:06:18.8555
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aQ20PEcZrJ6PElKHlbLVb5ZvHL2ZWBVy3dtDhKPmVYI/S+HqEO+BiCoLvd60ifO81wcDaA/qtbCnFpCdipYuWVBO12ttK87XJrG+l2WOOtQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR11MB5651
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=UITQT8TF1r4H9nymqxx6K0UTFdHue2SpI8VTwCIPYRo=;
+        b=EomG6JX9zOIGoq3702neUSbKG70mkijAGb53DtVNrkDt0fhgq5VSScjqIoPUn3CMPx
+         Lhq2sx7xSQRwDC7a993gsPA0oKrbb1zUEM7o2kjtBlpB54c5XXEoAXO7hZCQeb6p83eW
+         q0UlSwiHJc6ayBEvMhy1I3Qq+2AO7zEIZvIHNNVYfboIB6fgVQQt/X8yNWMNGoa3jyzB
+         0Gw176F+VKDhlDKNudBlDrZPImDq733N5zq/YJ0Gr+Hf9951nbK3mizCjmq+1yzYTtos
+         zBJI8C+3OGkTrx8YGBiylwXCwBKRzA1Vd/4qml80t0vqh7RrOsT2nM3YMpMfHSuaa1T2
+         4umA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=UITQT8TF1r4H9nymqxx6K0UTFdHue2SpI8VTwCIPYRo=;
+        b=OnlHg5Dya6OM4Wz2R8Qlu/XBv74ReeujcWRn8xghVsS2tlBHYlZlml5RCoRB7UAnqO
+         4pwL5pfYX45IbngggZg6qZiPnvJS3xo4dwLEwIP+YVSwAPzK9K3zOz1FdVZQxoUFzRq3
+         /6njs9WBCd/WLgEGzbaUCxJo1jCGbVcRnkHIMqt0yMZdSIu0+CPEUd/aFabrjofxx81e
+         hU9y4mMUtVgR0nAhP4HsXqjkT81HM6Cpcv6w9tGGRP6bo4yLd40u8YB+6hwNhwaiyPpf
+         7zwbrx1Gt/NNwFf5AWiuxOweVxGZ3qDeYcvb2u/8QnByCc6ptofBftKXgbV3k2z6S9t0
+         IqrA==
+X-Gm-Message-State: AOAM532WWSYz0d7RjGRi5urpcGDPLNTaU1Ns0E+ImbtDPtcJQAn+/YFS
+        8Ef/H9T6yF/EBH0fG2/z/jAeu8a4klze
+X-Google-Smtp-Source: ABdhPJxPbMFQUOoqvL1oLa7DcKS6WwWYlLyfvTxxvbo5C85ZM0uVnUPAIJV6udtThJQXkd9mzu8W0HXGintl
+X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:d93e:5864:88af:1c02])
+ (user=joshdon job=sendgmr) by 2002:ac8:5392:: with SMTP id
+ x18mr8578350qtp.180.1633651727183; Thu, 07 Oct 2021 17:08:47 -0700 (PDT)
+Date:   Thu,  7 Oct 2021 17:08:25 -0700
+Message-Id: <20211008000825.1364224-1-joshdon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH] sched/core: forced idle accounting
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineethrp@gmail.com>,
+        Hao Luo <haoluo@google.com>, linux-kernel@vger.kernel.org,
+        Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTEwLTA3IGF0IDE2OjIzIC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBPbiBXZWQsIE9jdCAwNiwgMjAyMSBhdCAwOToyNzo0OVBNICswMDAwLCBLZWx2aW4uQ2FvQG1p
-Y3JvY2hpcC5jb20NCj4gd3JvdGU6DQo+ID4gT24gV2VkLCAyMDIxLTEwLTA2IGF0IDE1OjIwIC0w
-NTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0KPiA+ID4gT24gV2VkLCBPY3QgMDYsIDIwMjEgYXQg
-MDc6MDA6NTVQTSArMDAwMCwgDQo+ID4gPiBLZWx2aW4uQ2FvQG1pY3JvY2hpcC5jb20NCj4gPiA+
-IHdyb3RlOg0KPiA+ID4gU28gd2FpdCwgeW91IG1lYW4geW91IGp1c3QgaW50ZW50aW9uYWxseSBh
-c2sgdGhlIGZpcm13YXJlIHRvDQo+ID4gPiByZXNldCwga25vd2luZyB0aGF0IHRoZSBkZXZpY2Ug
-d2lsbCBiZSB1bnVzYWJsZSB1bnRpbCB0aGUgdXNlcg0KPiA+ID4gcmVib290cyBvciBkb2VzIGEg
-bWFudWFsIHJlc2Nhbj8gIEFuZCB0aGUgd2F5IHRvIGltcHJvdmUgdGhpcyBpcw0KPiA+ID4gZm9y
-IHRoZSBkcml2ZXIgdG8gcmVwb3J0IGFuIGVycm9yIHRvIHRoZSB1c2VyIGluc3RlYWQgb2YgaGFu
-Z2luZz8NCj4gPiA+IEkgKmd1ZXNzKiB0aGF0IG1pZ2h0IGJlIHNvbWUgc29ydCBvZiBpbXByb3Zl
-bWVudCwgYnV0IHNlZW1zIGxpa2UNCj4gPiA+IGENCj4gPiA+IHByZXR0eSBzbWFsbCBvbmUuDQo+
-ID4gDQo+ID4gWWVzLCBob3dldmVyLCBJIGJlbGlldmUgaXQncyBzb21ldGhpbmcgb3VyIHVzZXJz
-IHJlYWxseSBsaWtlIHRvDQo+ID4gaGF2ZS4uLiAgV2l0aCB0aGlzLCB0aGV5IGNhbiBkbyB0aGVp
-ciB1c2VyIHNwYWNlDQo+ID4gcHJvZ3JhbW1pbmcvc2NyaXB0aW5nIG1vcmUgZWFzaWx5IGluIGEg
-c3luY2hyb25vdXMgZmFzaGlvbi4NCj4gPiANCj4gPiA+ID4gICAtIFRoZSBmaXJ3bWFyZSBjcmFz
-aGVzIGFuZCBkb2Vzbid0IHJlc3BvbmQsIHdoaWNoIG5vcm1hbGx5IGlzDQo+ID4gPiA+ICAgdGhl
-IHJlYXNvbiBmb3IgdXNlcnMgdG8gaXNzdWUgYSBmaXJtd2FyZSByZXNldCBjb21tYW5kIHRvIHRy
-eQ0KPiA+ID4gPiAgIHRvIHJlY292ZXIgaXQgdmlhIGVpdGhlciB0aGUgZHJpdmVyIG9yIGEgc2lk
-ZWJhbmQgaW50ZXJmYWNlLg0KPiA+ID4gPiAgIFRoZSBmaXJtd2FyZSBtYXkgbm90IGJlIGFibGUg
-dG8gcmVjb3ZlciBieSBhIHJlc2V0IGluIHNvbWUNCj4gPiA+ID4gICBleHRyZWFtIHNpdHVhdGlv
-bnMgbGlrZSBoYXJkd2FyZSBlcnJvcnMsIHNvIHRoYXQgYW4gZXJyb3INCj4gPiA+ID4gICByZXR1
-cm4gaXMgcHJvYmFibHkgYWxsIHRoZSB1c2VycyBjYW4gZ2V0IGJlZm9yZSBhbm90aGVyIGxldmVs
-DQo+ID4gPiA+ICAgb2YgcmVjb3ZlcnkgaGFwcGVucy4NCj4gPiA+ID4gDQo+ID4gPiA+IFNvIEkn
-ZCB0aGluayB0aGlzIHBhdGNoIGlzIHN0aWxsIG1ha2luZyB0aGUgZHJpdmVyIGJldHRlciBpbg0K
-PiA+ID4gPiBzb21lIHdheS4NCj4gDQo+IE9LLiAgSSBzdGlsbCB0aGluayB0aGUgZmFjdCB0aGF0
-IGFsbCB0aGVzZSBkaWZmZXJlbnQgbWVjaGFuaXNtcyBjYW4NCj4gcmVzZXQgdGhlIGRldmljZSBi
-ZWhpbmQgeW91ciBiYWNrIGFuZCBtYWtlIHRoZSBzd2l0Y2ggYW5kIGFueXRoaW5nIG9uDQo+IHRo
-ZSBvdGhlciBzaWRlIG9mIGl0IGp1c3Qgc3RvcCB3b3JraW5nIGlzIC4uLiwgd2VsbCwgbGV0J3Mg
-anVzdCBzYXkNCj4gaXQncyBxdWl0ZSBzdXJwcmlzaW5nIHRvIG1lLg0KDQpBY3R1YWxseSB0aGVy
-ZSdyZSBtZWNoYW5pc21zIGxpa2UgcGVybWlzc2lvbiBjb250cm9sIHRvIGxpbWl0IHdoYXQNCnBl
-b3BsZSBjYW4gZG8gaW4gdGhlIGZpcm13YXJlLCBzbyBJIGd1ZXNzIGl0J3Mgbm90IGFzIGJhZCBh
-cyBpdCBzb3VuZHMNCmxpa2UuIA0KPiANCj4gV2VsbCwgYXQgbGVhc3QgdGhpcyBpc24ndCBxdWl0
-ZSBzbyBtdWNoIGEgbXlzdGVyeSBhbnltb3JlIGFuZCBtYXliZQ0KPiB3ZQ0KPiBjYW4gaW1wcm92
-ZSB0aGUgY29tbWl0IGxvZy4gIEUuZy4sIG1heWJlIHNvbWV0aGluZyBsaWtlIHRoaXM6DQo+IA0K
-PiAgIEEgZmlybXdhcmUgaGFyZCByZXNldCBtYXkgYmUgaW5pdGlhdGVkIGJ5IHZhcmlvdXMgbWVj
-aGFuaXNtcw0KPiAgIGluY2x1ZGluZyBhIFVBUlQgaW50ZXJmYWNlLCBUV0kgc2lkZWJhbmQgaW50
-ZXJmYWNlIGZyb20gQk1DLCBNUlBDDQo+ICAgY29tbWFuZCBmcm9tIHVzZXJzcGFjZSwgZXRjLiAg
-VGhlIHN3aXRjaHRlYyBtYW5hZ2VtZW50IGRyaXZlciBpcw0KPiAgIHVuYXdhcmUgb2YgdGhlc2Ug
-cmVzZXRzLg0KPiANCj4gICBUaGUgcmVzZXQgY2xlYXJzIFBDSSBzdGF0ZSBpbmNsdWRpbmcgdGhl
-IEJBUnMgYW5kIE1lbW9yeSBTcGFjZQ0KPiAgIEVuYWJsZSBiaXRzLCBzbyB0aGUgZGV2aWNlIG5v
-IGxvbmdlciByZXNwb25kcyB0byB0aGUgTU1JTyBhY2Nlc3Nlcw0KPiAgIHRoZSBkcml2ZXIgdXNl
-cyB0byBvcGVyYXRlIGl0Lg0KPiANCj4gICBNTUlPIHJlYWRzIHRvIHRoZSBkZXZpY2Ugd2lsbCBm
-YWlsIHdpdGggYSBQQ0llIGVycm9yLiAgV2hlbiB0aGUNCj4gcm9vdA0KPiAgIGNvbXBsZXggaGFu
-ZGxlcyB0aGF0IGVycm9yLCBpdCB0eXBpY2FsbHkgZmFicmljYXRlcyB+MCBkYXRhIHRvDQo+ICAg
-Y29tcGxldGUgdGhlIENQVSByZWFkLg0KPiANCj4gICBDaGVjayBmb3IgdGhpcyBzb3J0IG9mIGVy
-cm9yIGJ5IHJlYWRpbmcgdGhlIGRldmljZSBJRCBmcm9tIE1NSU8NCj4gICBzcGFjZS4gIFRoaXMg
-SUQgY2FuIG5ldmVyIGJlIH4wLCBzbyBpZiB3ZSBzZWUgdGhhdCB2YWx1ZSwgaXQNCj4gICBwcm9i
-YWJseSBtZWFucyB0aGUgUENJZSBNZW1vcnkgUmVhZCBmYWlsZWQgYW5kIHdlIHNob3VsZCByZXR1
-cm4gYW4NCj4gICBlcnJvciBpbmRpY2F0aW9uIHRvIHRoZSBhcHBsaWNhdGlvbiB1c2luZyB0aGUg
-c3dpdGNodGVjIGRyaXZlci4NCg0KSXQgbG9va3MgZ29vZCB0byBtZSwgdGhlIGNvbW1pdCBsb2cg
-cmVtb3ZlcyB0aGUgYW1iaWd1aXR5LiBMZXQgbWUga25vdw0KaWYgeW91IHByZWZlciBhIHYyIHBh
-dGNoc2V0IHdpdGggdGhlIHVwZGF0ZWQgY29tbWl0IGxvZyBhbmQgbmFtaW5nDQppc3N1ZSBmaXgu
-DQoNClRoYW5rIHlvdSBCam9ybiBmb3IgeW91ciBwYXRpZW5jZSBhbmQgdGltZSEgDQoNCktlbHZp
-bg0K
+Adds accounting for "forced idle" time, which is time where a cookie'd
+task forces its SMT sibling to idle, despite the presence of runnable
+tasks.
+
+Forced idle time is one means to measure the cost of enabling core
+scheduling (ie. the capacity lost due to the need to force idle).
+
+Signed-off-by: Josh Don <joshdon@google.com>
+---
+ include/linux/sched.h     |  1 +
+ kernel/sched/core.c       | 46 ++++++++++++++++-----
+ kernel/sched/core_sched.c | 85 ++++++++++++++++++++++++++++++++++++++-
+ kernel/sched/debug.c      |  3 ++
+ kernel/sched/sched.h      | 11 ++++-
+ 5 files changed, 135 insertions(+), 11 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 2aa30e8e1440..d114ba350802 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -784,6 +784,7 @@ struct task_struct {
+ 	struct rb_node			core_node;
+ 	unsigned long			core_cookie;
+ 	unsigned int			core_occupation;
++	u64				core_forceidle_sum;
+ #endif
+ 
+ #ifdef CONFIG_CGROUP_SCHED
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index ada028e579b0..baa4f48cacff 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -181,15 +181,23 @@ void sched_core_enqueue(struct rq *rq, struct task_struct *p)
+ 	rb_add(&p->core_node, &rq->core_tree, rb_sched_core_less);
+ }
+ 
+-void sched_core_dequeue(struct rq *rq, struct task_struct *p)
++void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	rq->core->core_task_seq++;
+ 
+-	if (!sched_core_enqueued(p))
+-		return;
++	if (sched_core_enqueued(p)) {
++		rb_erase(&p->core_node, &rq->core_tree);
++		RB_CLEAR_NODE(&p->core_node);
++	}
+ 
+-	rb_erase(&p->core_node, &rq->core_tree);
+-	RB_CLEAR_NODE(&p->core_node);
++	/*
++	 * Migrating the last task off the cpu, with the cpu in forced idle
++	 * state. Reschedule to create an accounting edge for forced idle,
++	 * and re-examine whether the core is still in forced idle state.
++	 */
++	if (!(flags & DEQUEUE_SAVE) && rq->nr_running == 1 &&
++	    rq->core->core_forceidle && rq->curr == rq->idle)
++		resched_curr(rq);
+ }
+ 
+ /*
+@@ -364,7 +372,8 @@ void sched_core_put(void)
+ #else /* !CONFIG_SCHED_CORE */
+ 
+ static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
+-static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
++static inline void
++sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags) { }
+ 
+ #endif /* CONFIG_SCHED_CORE */
+ 
+@@ -2020,7 +2029,7 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+ static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
+ {
+ 	if (sched_core_enabled(rq))
+-		sched_core_dequeue(rq, p);
++		sched_core_dequeue(rq, p, flags);
+ 
+ 	if (!(flags & DEQUEUE_NOCLOCK))
+ 		update_rq_clock(rq);
+@@ -5256,6 +5265,7 @@ void scheduler_tick(void)
+ 	if (sched_feat(LATENCY_WARN))
+ 		resched_latency = cpu_resched_latency(rq);
+ 	calc_global_load_tick(rq);
++	sched_core_tick(rq);
+ 
+ 	rq_unlock(rq, &rf);
+ 
+@@ -5668,6 +5678,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	struct task_struct *next, *p, *max = NULL;
+ 	const struct cpumask *smt_mask;
+ 	bool fi_before = false;
++	bool core_clock_updated = (rq == rq->core);
+ 	unsigned long cookie;
+ 	int i, cpu, occ = 0;
+ 	struct rq *rq_i;
+@@ -5721,9 +5732,15 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	/* reset state */
+ 	rq->core->core_cookie = 0UL;
+ 	if (rq->core->core_forceidle) {
++		if (!core_clock_updated) {
++			update_rq_clock(rq->core);
++			core_clock_updated = true;
++		}
++		sched_core_account_forceidle(rq);
++		rq->core->core_forceidle = false;
++		rq->core->core_forceidle_start = 0;
+ 		need_sync = true;
+ 		fi_before = true;
+-		rq->core->core_forceidle = false;
+ 	}
+ 
+ 	/*
+@@ -5765,7 +5782,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 	for_each_cpu_wrap(i, smt_mask, cpu) {
+ 		rq_i = cpu_rq(i);
+ 
+-		if (i != cpu)
++		if (i != cpu && (rq_i != rq->core || !core_clock_updated))
+ 			update_rq_clock(rq_i);
+ 
+ 		p = rq_i->core_pick = pick_task(rq_i);
+@@ -5804,6 +5821,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		}
+ 	}
+ 
++	if (rq->core->core_forceidle && cookie)
++		rq->core->core_forceidle_start = rq_clock(rq->core);
++
+ 	rq->core->core_pick_seq = rq->core->core_task_seq;
+ 	next = rq->core_pick;
+ 	rq->core_sched_seq = rq->core->core_pick_seq;
+@@ -6051,6 +6071,13 @@ static void sched_core_cpu_deactivate(unsigned int cpu)
+ 	core_rq->core_forceidle     = rq->core_forceidle;
+ 	core_rq->core_forceidle_seq = rq->core_forceidle_seq;
+ 
++	/*
++	 * Accounting edge for forced idle is handled in pick_next_task().
++	 * Don't need another one here, since the hotplug thread shouldn't
++	 * have a cookie.
++	 */
++	core_rq->core_forceidle_start = 0;
++
+ 	/* install new leader */
+ 	for_each_cpu(t, smt_mask) {
+ 		rq = cpu_rq(t);
+@@ -9424,6 +9451,7 @@ void __init sched_init(void)
+ 		rq->core_enabled = 0;
+ 		rq->core_tree = RB_ROOT;
+ 		rq->core_forceidle = false;
++		rq->core_forceidle_start = 0;
+ 
+ 		rq->core_cookie = 0UL;
+ #endif
+diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
+index 48ac72696012..aae4ac2ac7ec 100644
+--- a/kernel/sched/core_sched.c
++++ b/kernel/sched/core_sched.c
+@@ -73,7 +73,7 @@ static unsigned long sched_core_update_cookie(struct task_struct *p,
+ 
+ 	enqueued = sched_core_enqueued(p);
+ 	if (enqueued)
+-		sched_core_dequeue(rq, p);
++		sched_core_dequeue(rq, p, DEQUEUE_SAVE);
+ 
+ 	old_cookie = p->core_cookie;
+ 	p->core_cookie = cookie;
+@@ -85,6 +85,10 @@ static unsigned long sched_core_update_cookie(struct task_struct *p,
+ 	 * If task is currently running, it may not be compatible anymore after
+ 	 * the cookie change, so enter the scheduler on its CPU to schedule it
+ 	 * away.
++	 *
++	 * Note that it is possible that as a result of this cookie change, the
++	 * core has now entered/left forced idle state. Defer accounting to the
++	 * next scheduling edge, rather than always forcing a reschedule here.
+ 	 */
+ 	if (task_running(rq, p))
+ 		resched_curr(rq);
+@@ -109,6 +113,7 @@ void sched_core_fork(struct task_struct *p)
+ {
+ 	RB_CLEAR_NODE(&p->core_node);
+ 	p->core_cookie = sched_core_clone_cookie(current);
++	p->core_forceidle_sum = 0;
+ }
+ 
+ void sched_core_free(struct task_struct *p)
+@@ -228,3 +233,81 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
+ 	return err;
+ }
+ 
++/* REQUIRES: rq->core's clock recently updated. */
++void sched_core_account_forceidle(struct rq *rq)
++{
++	const struct cpumask *smt_mask = cpu_smt_mask(cpu_of(rq));
++	unsigned int smt_count;
++	u64 delta, now = rq_clock(rq->core);
++	struct rq *rq_i;
++	struct task_struct *p;
++	int i;
++
++	lockdep_assert_rq_held(rq);
++
++	WARN_ON_ONCE(!rq->core->core_forceidle);
++
++	if (rq->core->core_forceidle_start == 0)
++		return;
++
++	delta = now - rq->core->core_forceidle_start;
++	if (unlikely((s64)delta <= 0))
++		return;
++
++	rq->core->core_forceidle_start = now;
++
++	/*
++	 * For larger SMT configurations, we need to scale the charged
++	 * forced idle amount since there can be more than one forced idle
++	 * sibling and more than one running cookied task.
++	 */
++	smt_count = cpumask_weight(smt_mask);
++	if (smt_count > 2) {
++		unsigned int nr_forced_idle = 0, nr_running = 0;
++
++		for_each_cpu(i, smt_mask) {
++			rq_i = cpu_rq(i);
++			p = rq_i->core_pick ?: rq_i->curr;
++
++			if (p != rq_i->idle)
++				nr_running++;
++			else if (rq_i->nr_running)
++				nr_forced_idle++;
++		}
++
++		if (WARN_ON_ONCE(!nr_running)) {
++			/* can't be forced idle without a running task */
++		} else {
++			delta *= nr_forced_idle;
++			delta /= nr_running;
++		}
++	}
++
++	for_each_cpu(i, smt_mask) {
++		rq_i = cpu_rq(i);
++		p = rq_i->core_pick ?: rq_i->curr;
++
++		if (!p->core_cookie)
++			continue;
++
++		p->core_forceidle_sum += delta;
++
++		/* Optimize for common case. */
++		if (smt_count == 2)
++			break;
++	}
++}
++
++void sched_core_tick(struct rq *rq)
++{
++	if (!sched_core_enabled(rq))
++		return;
++
++	if (!rq->core->core_forceidle)
++		return;
++
++	if (rq != rq->core)
++		update_rq_clock(rq->core);
++	sched_core_account_forceidle(rq);
++}
++
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 26fac5e28bc0..0fe6a1bb8b60 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -1045,6 +1045,9 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
+ 	__PS("uclamp.max", p->uclamp_req[UCLAMP_MAX].value);
+ 	__PS("effective uclamp.min", uclamp_eff_value(p, UCLAMP_MIN));
+ 	__PS("effective uclamp.max", uclamp_eff_value(p, UCLAMP_MAX));
++#endif
++#ifdef CONFIG_SCHED_CORE
++	PN(core_forceidle_sum);
+ #endif
+ 	P(policy);
+ 	P(prio);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a00fc7057d97..4678b85754f2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1113,6 +1113,7 @@ struct rq {
+ 	unsigned long		core_cookie;
+ 	unsigned char		core_forceidle;
+ 	unsigned int		core_forceidle_seq;
++	u64			core_forceidle_start;
+ #endif
+ };
+ 
+@@ -1253,11 +1254,15 @@ static inline bool sched_core_enqueued(struct task_struct *p)
+ }
+ 
+ extern void sched_core_enqueue(struct rq *rq, struct task_struct *p);
+-extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
++extern void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags);
+ 
+ extern void sched_core_get(void);
+ extern void sched_core_put(void);
+ 
++extern void sched_core_account_forceidle(struct rq *rq);
++
++extern void sched_core_tick(struct rq *rq);
++
+ #else /* !CONFIG_SCHED_CORE */
+ 
+ static inline bool sched_core_enabled(struct rq *rq)
+@@ -1300,6 +1305,10 @@ static inline bool sched_group_cookie_match(struct rq *rq,
+ {
+ 	return true;
+ }
++
++static inline void sched_core_account_forceidle(struct rq *rq) {}
++
++static inline void sched_core_tick(struct rq *rq) {}
+ #endif /* CONFIG_SCHED_CORE */
+ 
+ static inline void lockdep_assert_rq_held(struct rq *rq)
+-- 
+2.33.0.882.g93a45727a2-goog
+
