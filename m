@@ -2,97 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4B6426740
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8866B426742
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239423AbhJHKA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:00:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238917AbhJHKAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:00:25 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB339C061570;
-        Fri,  8 Oct 2021 02:58:30 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id g5so2785323plg.1;
-        Fri, 08 Oct 2021 02:58:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=j2q5akxrmJ1uW+0AGmi44yh3ldXa7zUiHWRb/q4x2xg=;
-        b=CUp0kbyb2DbyBRFmtl7ELnbt9XV1afFor5Db3z7mz42DwseAUsjls2ZQnKAgmDqOpX
-         iAlmoptFfSBYTeFYl5n3aBUy/EHAV43DiR4W8xxflMJ2OdAYHWIV7Tx7Fc5mTGtf4wG4
-         29JvTILaDTjM8anolQHloTyjdYNeTRZjdUekx1HtHxV682eslYu0kMVF1xR9iNthFECA
-         uYE1jtHBFodVrKG4uG/vkSsKyqiacLwWFgrxI6w1xbwBr6y07tKnRQXIVeOv2d1+Eq1k
-         haqZ2a6SfvQ9RGMDxIJ9XID156ZCPRhe/liz4vyUZ78hTh/NyT4TX1aMhhJuJjR+QPDs
-         kN8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=j2q5akxrmJ1uW+0AGmi44yh3ldXa7zUiHWRb/q4x2xg=;
-        b=UeRd0iIvEtMmxwwO5GG6pyy4q+j36eys6X/OmOGm4hPClzsHCn/drD2rzF/IqeHK2s
-         PUBQ3SFuTi2X14iXd6DJNut2btUZuXl977RAxq83O8qD2CInYOOibj9n9N4/3IkzH1Vl
-         yeW/rvrKCYXt68O0M9ltbjhuSLwQgGcjAUreGKI6UFY/nEqWOOurKKo8zfsUIOOu38tg
-         ystZSDysMgMGWfFCupWCqxTPnIVoovKzNWJKMVo+YJKtz05Ak7t70ruIm+lZrcKLd+CG
-         +iWjyI7CalzQEItvreoZf/O2KvZPcYWFvuJPsLdItMk+N74A8fPSe8SVBqvw1DhVPRly
-         +WkA==
-X-Gm-Message-State: AOAM531ykjoQvDvaiuVkFpbSC75Kfdasm7dlEVEfgM2+DGGdglPP2uhT
-        v5zk23ctnrUDlkk21iWebHMg0Gcj3r6GdA==
-X-Google-Smtp-Source: ABdhPJwhQQWgKsMw2vJaY3bOAzQPsJaoztggPFtM32i4WbyVXZeAeGaxa6uLCny4XD+JtTebXTrYZQ==
-X-Received: by 2002:a17:902:7b98:b0:138:c171:c1af with SMTP id w24-20020a1709027b9800b00138c171c1afmr8589936pll.70.1633687110221;
-        Fri, 08 Oct 2021 02:58:30 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.117])
-        by smtp.googlemail.com with ESMTPSA id mu7sm2121148pjb.12.2021.10.08.02.58.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Oct 2021 02:58:29 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH 3/3] KVM: LAPIC: Optimize PMI delivering overhead
-Date:   Fri,  8 Oct 2021 02:57:34 -0700
-Message-Id: <1633687054-18865-3-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
-References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
+        id S239521AbhJHKAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:00:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239500AbhJHKA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:00:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F1161027;
+        Fri,  8 Oct 2021 09:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633687114;
+        bh=Ge0KFntgmaorR+WsCHlz8rTezlNr2HAtrr8kJB7JuZ4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:From;
+        b=ZPlbLfHRXU2CF7Y6wMr+HxDCxiW/aG/52LfZaeCYGBMTmWvzjk22NzntDUhqIqCbX
+         7+8I3B+qPGXX6yq87cGoRepHSvjaOWF5+fB9qxp68CtioRUE9rU5ULFjyAW8t1H2Do
+         sXdgVw804HdoPITrsEU/LB392Ttt++4Mq+mIx79goo1DzQwbEmiiWGRiLb6Zmq1nYD
+         5vWGWB32RR0cWSDc00XRUG83uaWrTa3TVcHBYuCJpid7Zuys771mM9GCABx7wQTgiE
+         8xVMI9b01Zrso22jlrbI+AITxxR8Oe85SabmiaFXTVS9YEFgB96MPFWYfyWrkBQ3vz
+         c5Ytr/pf5+66A==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     shuah@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Subject: Re: [PATCH v2] selftests/kselftest/runner/run_one(): Allow running non-executable files
+Date:   Fri,  8 Oct 2021 09:58:28 +0000
+Message-Id: <20211008095828.1796-1-sj@kernel.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210913112442.1659-1-sjpark@amazon.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+Hello Shuah,
 
-The overhead of kvm_vcpu_kick() is huge since expensive rcu/memory
-barrier etc operations in rcuwait_wake_up(). It is worse when local 
-delivery since the vCPU is scheduled and we still suffer from this. 
-We can observe 12us+ for kvm_vcpu_kick() in kvm_pmu_deliver_pmi() 
-path by ftrace before the patch and 6us+ after the optimization. 
 
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/lapic.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I was wondering if you had a chance to read this patch.
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 76fb00921203..ec6997187c6d 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1120,7 +1120,8 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
- 	case APIC_DM_NMI:
- 		result = 1;
- 		kvm_inject_nmi(vcpu);
--		kvm_vcpu_kick(vcpu);
-+		if (vcpu != kvm_get_running_vcpu())
-+			kvm_vcpu_kick(vcpu);
- 		break;
- 
- 	case APIC_DM_INIT:
--- 
-2.25.1
+Without this patch, DAMON selftest fails as below:
 
+    $ make -C tools/testing/selftests/damon/ run_tests
+    make: Entering directory '/home/sjpark/linux/tools/testing/selftests/damon'
+    TAP version 13
+    1..1
+    # selftests: damon: debugfs_attrs.sh
+    # Warning: file debugfs_attrs.sh is not executable, correct this.
+    not ok 1 selftests: damon: debugfs_attrs.sh
+    make: Leaving directory '/home/sjpark/linux/tools/testing/selftests/damon'
+
+If you disagree in the approach, please also take a look in this one:
+https://lore.kernel.org/linux-kselftest/20210810112050.22225-1-sj38.park@gmail.com/
+
+
+Thanks,
+SJ
+
+
+On Mon, 13 Sep 2021 11:24:42 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+
+> From: SeongJae Park <sjpark@amazon.de>
+> 
+> Hello Shuah,
+> 
+> 
+> Could you I ask your comment for this patch?
+> 
+> 
+> Thanks,
+> SJ
+> 
+> On Tue, 10 Aug 2021 16:45:34 +0000 SeongJae Park <sj38.park@gmail.com> wrote:
+> 
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > When running a test program, 'run_one()' checks if the program has the
+> > execution permission and fails if it doesn't.  However, it's easy to
+> > mistakenly missing the permission, as some common tools like 'diff'
+> > don't support the permission change well[1].  Compared to that, making
+> > mistakes in the test program's path would only rare, as those are
+> > explicitly listed in 'TEST_PROGS'.  Therefore, it might make more sense
+> > to resolve the situation on our own and run the program.
+> > 
+> > For the reason, this commit makes the test program runner function to
+> > still print the warning message but try parsing the interpreter of the
+> > program and explicitly run it with the interpreter, in the case.
+> > 
+> > [1] https://lore.kernel.org/mm-commits/YRJisBs9AunccCD4@kroah.com/
+> > 
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > ---
+> > Changes from v1
+> > (https://lore.kernel.org/linux-kselftest/20210810140459.23990-1-sj38.park@gmail.com/)
+> > - Parse and use the interpreter instead of changing the file
+> > 
+> >  tools/testing/selftests/kselftest/runner.sh | 28 +++++++++++++--------
+> >  1 file changed, 18 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/tools/testing/selftests/kselftest/runner.sh b/tools/testing/selftests/kselftest/runner.sh
+> > index cc9c846585f0..a9ba782d8ca0 100644
+> > --- a/tools/testing/selftests/kselftest/runner.sh
+> > +++ b/tools/testing/selftests/kselftest/runner.sh
+> > @@ -33,9 +33,9 @@ tap_timeout()
+> >  {
+> >  	# Make sure tests will time out if utility is available.
+> >  	if [ -x /usr/bin/timeout ] ; then
+> > -		/usr/bin/timeout --foreground "$kselftest_timeout" "$1"
+> > +		/usr/bin/timeout --foreground "$kselftest_timeout" $1
+> >  	else
+> > -		"$1"
+> > +		$1
+> >  	fi
+> >  }
+> >  
+> > @@ -65,17 +65,25 @@ run_one()
+> >  
+> >  	TEST_HDR_MSG="selftests: $DIR: $BASENAME_TEST"
+> >  	echo "# $TEST_HDR_MSG"
+> > -	if [ ! -x "$TEST" ]; then
+> > -		echo -n "# Warning: file $TEST is "
+> > -		if [ ! -e "$TEST" ]; then
+> > -			echo "missing!"
+> > -		else
+> > -			echo "not executable, correct this."
+> > -		fi
+> > +	if [ ! -e "$TEST" ]; then
+> > +		echo "# Warning: file $TEST is missing!"
+> >  		echo "not ok $test_num $TEST_HDR_MSG"
+> >  	else
+> > +		cmd="./$BASENAME_TEST"
+> > +		if [ ! -x "$TEST" ]; then
+> > +			echo "# Warning: file $TEST is not executable"
+> > +
+> > +			if [ $(head -n 1 "$TEST" | cut -c -2) = "#!" ]
+> > +			then
+> > +				interpreter=$(head -n 1 "$TEST" | cut -c 3-)
+> > +				cmd="$interpreter ./$BASENAME_TEST"
+> > +			else
+> > +				echo "not ok $test_num $TEST_HDR_MSG"
+> > +				return
+> > +			fi
+> > +		fi
+> >  		cd `dirname $TEST` > /dev/null
+> > -		((((( tap_timeout ./$BASENAME_TEST 2>&1; echo $? >&3) |
+> > +		((((( tap_timeout "$cmd" 2>&1; echo $? >&3) |
+> >  			tap_prefix >&4) 3>&1) |
+> >  			(read xs; exit $xs)) 4>>"$logfile" &&
+> >  		echo "ok $test_num $TEST_HDR_MSG") ||
+> > -- 
+> > 2.17.1
+> > 
