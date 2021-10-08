@@ -2,191 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E657842661D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D65D42661F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 10:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234918AbhJHInC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 04:43:02 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:46157 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236277AbhJHIm5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 04:42:57 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UqywhPf_1633682459;
-Received: from localhost(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0UqywhPf_1633682459)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 08 Oct 2021 16:41:00 +0800
-Date:   Fri, 8 Oct 2021 16:40:59 +0800
-From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
-To:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
-        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
-        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
-        bhelgaas@google.com
-Cc:     mark.rutland@arm.com, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, xuesong.chen@linux.alibaba.com
-Subject: [PATCH v2 2/2] ACPI: APEI: Filter the PCI MCFG address with an
- arch-agnostic method
-Message-ID: <YWAEG7fyFC+lhwd+@Dennis-MBP.local>
-Reply-To: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+        id S233932AbhJHIok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 04:44:40 -0400
+Received: from mga03.intel.com ([134.134.136.65]:29466 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229877AbhJHIok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 04:44:40 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226416478"
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="226416478"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:42:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="489376509"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.227.14]) ([10.249.227.14])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 01:42:41 -0700
+Subject: Re: [PATCH v3 6/8] perf session: Move event read code to separate
+ function
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+ <6ab47325fa261deca4ca55ecacf1ca2437abcd78.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+ <YV/0ZZBu01V87A8e@krava>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <aa62d0ed-abca-2123-c8bf-cd6bced2fe9c@linux.intel.com>
+Date:   Fri, 8 Oct 2021 11:42:18 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YV/0ZZBu01V87A8e@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit d91525eb8ee6 ("ACPI, EINJ: Enhance error injection tolerance
-level") fixes the issue that the ACPI/APEI can not access the PCI MCFG
-address on x86 platform, but this issue can also happen on other
-architectures, for instance, we got below error message on arm64 platform:
-...
-APEI: Can not request [mem 0x50100000-0x50100003] for APEI EINJ Trigger registers
-...
 
-This patch will try to handle this case in a more common way instead of the
-original 'arch' specific solution, which will be beneficial to all the
-APEI-dependent platforms after that.
 
-Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
-Reported-by: kernel test robot <lkp@intel.com>
----
- arch/x86/pci/mmconfig-shared.c | 28 -------------------------
- drivers/acpi/apei/apei-base.c  | 46 +++++++++++++++++++++++++++---------------
- 2 files changed, 30 insertions(+), 44 deletions(-)
+On 08.10.2021 10:33, Jiri Olsa wrote:
+> On Thu, Oct 07, 2021 at 01:25:41PM +0300, Alexey Bayduraev wrote:
+> 
+> SNIP
+> 
+>>  static int
+>> -reader__process_events(struct reader *rd, struct perf_session *session,
+>> -		       struct ui_progress *prog)
+>> +reader__read_event(struct reader *rd, struct perf_session *session,
+>> +		   struct ui_progress *prog)
+>>  {
+>>  	u64 size;
+>>  	int err = 0;
+>>  	union perf_event *event;
+>>  	s64 skip;
+>>  
+>> -	err = reader__init(rd, &session->one_mmap);
+>> -	if (err)
+>> -		goto out;
+>> -
+>> -remap:
+>> -	err = reader__mmap(rd, session);
+>> -	if (err)
+>> -		goto out;
+>> -
+>> -more:
+>>  	event = fetch_mmaped_event(rd->head, rd->mmap_size, rd->mmap_cur,
+>>  				   session->header.needs_swap);
+>>  	if (IS_ERR(event))
+>>  		return PTR_ERR(event);
+>>  
+>>  	if (!event)
+>> -		goto remap;
+>> +		return 1;
+>>  
+>>  	session->active_decomp = &rd->decomp_data;
+>>  	size = event->header.size;
+>> @@ -2311,6 +2301,33 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>>  
+>>  	ui_progress__update(prog, size);
+>>  
+>> +out:
+>> +	session->active_decomp = &session->decomp_data;
+>> +	return err;
+>> +}
+>> +
+>> +static int
+>> +reader__process_events(struct reader *rd, struct perf_session *session,
+>> +		       struct ui_progress *prog)
+>> +{
+>> +	int err;
+>> +
+>> +	err = reader__init(rd, &session->one_mmap);
+>> +	if (err)
+>> +		goto out;
+>> +
+>> +remap:
+>> +	err = reader__mmap(rd, session);
+>> +	if (err)
+>> +		goto out;
+>> +
+>> +more:
+>> +	err = reader__read_event(rd, session, prog);
+>> +	if (err < 0)
+>> +		goto out;
+>> +	else if (err == 1)
+>> +		goto remap;
+>> +
+>>  	if (session_done())
+>>  		goto out;
+>>  
+>> @@ -2318,7 +2335,6 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>>  		goto more;
+>>  
+>>  out:
+>> -	session->active_decomp = &session->decomp_data;
+> 
+> active_decomp should be set/unset within reader__process_events,
+> not just for single event read, right?
 
-diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
-index 0b961fe6..12f7d96 100644
---- a/arch/x86/pci/mmconfig-shared.c
-+++ b/arch/x86/pci/mmconfig-shared.c
-@@ -605,32 +605,6 @@ static int __init pci_parse_mcfg(struct acpi_table_header *header)
- 	return 0;
- }
- 
--#ifdef CONFIG_ACPI_APEI
--extern int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
--				     void *data), void *data);
--
--static int pci_mmcfg_for_each_region(int (*func)(__u64 start, __u64 size,
--				     void *data), void *data)
--{
--	struct pci_mmcfg_region *cfg;
--	int rc;
--
--	if (list_empty(&pci_mmcfg_list))
--		return 0;
--
--	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
--		rc = func(cfg->res.start, resource_size(&cfg->res), data);
--		if (rc)
--			return rc;
--	}
--
--	return 0;
--}
--#define set_apei_filter() (arch_apei_filter_addr = pci_mmcfg_for_each_region)
--#else
--#define set_apei_filter()
--#endif
--
- static void __init __pci_mmcfg_init(int early)
- {
- 	pci_mmcfg_reject_broken(early);
-@@ -665,8 +639,6 @@ void __init pci_mmcfg_early_init(void)
- 		else
- 			acpi_table_parse(ACPI_SIG_MCFG, pci_parse_mcfg);
- 		__pci_mmcfg_init(1);
--
--		set_apei_filter();
- 	}
- }
- 
-diff --git a/drivers/acpi/apei/apei-base.c b/drivers/acpi/apei/apei-base.c
-index c7fdb12..7cca6ba 100644
---- a/drivers/acpi/apei/apei-base.c
-+++ b/drivers/acpi/apei/apei-base.c
-@@ -21,6 +21,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/init.h>
-+#include <linux/pci.h>
- #include <linux/acpi.h>
- #include <linux/slab.h>
- #include <linux/io.h>
-@@ -34,6 +35,12 @@
- 
- #define APEI_PFX "APEI: "
- 
-+#ifdef CONFIG_PCI
-+extern struct list_head pci_mmcfg_list;
-+#else
-+static LIST_HEAD(pci_mmcfg_list);
-+#endif
-+
- /*
-  * APEI ERST (Error Record Serialization Table) and EINJ (Error
-  * INJection) interpreter framework.
-@@ -448,12 +455,26 @@ static int apei_get_nvs_resources(struct apei_resources *resources)
- 	return acpi_nvs_for_each_region(apei_get_res_callback, resources);
- }
- 
--int (*arch_apei_filter_addr)(int (*func)(__u64 start, __u64 size,
--				     void *data), void *data);
--static int apei_get_arch_resources(struct apei_resources *resources)
--
-+static int apei_filter_mcfg_addr(struct apei_resources *res,
-+			struct apei_resources *mcfg_res)
- {
--	return arch_apei_filter_addr(apei_get_res_callback, resources);
-+	int rc = 0;
-+	struct pci_mmcfg_region *cfg;
-+
-+	if (list_empty(&pci_mmcfg_list))
-+		return 0;
-+
-+	apei_resources_init(mcfg_res);
-+	list_for_each_entry(cfg, &pci_mmcfg_list, list) {
-+		rc = apei_res_add(&mcfg_res->iomem, cfg->res.start, resource_size(&cfg->res));
-+		if (rc)
-+			return rc;
-+	}
-+
-+	/* filter the mcfg resource from current APEI's */
-+	rc = apei_resources_sub(res, mcfg_res);
-+
-+	return rc;
- }
- 
- /*
-@@ -486,15 +507,9 @@ int apei_resources_request(struct apei_resources *resources,
- 	if (rc)
- 		goto nvs_res_fini;
- 
--	if (arch_apei_filter_addr) {
--		apei_resources_init(&arch_res);
--		rc = apei_get_arch_resources(&arch_res);
--		if (rc)
--			goto arch_res_fini;
--		rc = apei_resources_sub(resources, &arch_res);
--		if (rc)
--			goto arch_res_fini;
--	}
-+	rc = apei_filter_mcfg_addr(resources, &arch_res);
-+	if (rc)
-+		goto arch_res_fini;
- 
- 	rc = -EINVAL;
- 	list_for_each_entry(res, &resources->iomem, list) {
-@@ -544,8 +559,7 @@ int apei_resources_request(struct apei_resources *resources,
- 		release_mem_region(res->start, res->end - res->start);
- 	}
- arch_res_fini:
--	if (arch_apei_filter_addr)
--		apei_resources_fini(&arch_res);
-+	apei_resources_fini(&arch_res);
- nvs_res_fini:
- 	apei_resources_fini(&nvs_resources);
- 	return rc;
--- 
-1.8.3.1
+No, it should be set before perf_session__process_event/process_decomp_events
+and unset after these calls. So active_decomp setting/unsetting is moved in
+this patch to the reader__read_event function. This is necessary for multiple
+trace reader because it could call reader__read_event in round-robin manner.
 
+Regards,
+Alexey
+
+> 
+> jirka
+> 
+>>  	return err;
+>>  }
+>>  
+>> -- 
+>> 2.19.0
+>>
+> 
