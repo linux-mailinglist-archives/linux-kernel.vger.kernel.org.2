@@ -2,167 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C33A426FA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:35:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7BF426FA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237056AbhJHRg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:36:57 -0400
-Received: from foss.arm.com ([217.140.110.172]:38150 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234255AbhJHRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:36:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 838C51063;
-        Fri,  8 Oct 2021 10:34:59 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1FC83F766;
-        Fri,  8 Oct 2021 10:34:57 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 18:34:51 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-phy@lists.infradead.org
-Subject: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
-Message-ID: <20211008173451.GA32193@lpieralisi>
-References: <20211005112448.2c40dc10@coco.lan>
- <20211005182321.GA1106986@bhelgaas>
- <20211007144103.GA23778@lpieralisi>
- <20211008125521.0aa31beb@coco.lan>
+        id S238060AbhJHRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231234AbhJHRha (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:37:30 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226DFC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:35:35 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x27so42122954lfa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 10:35:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
+        b=FP13VZlniV+IoAFJLmoJcHDk8TtBwY9o9QaWTcNjuF8LFUXGyt1e/yMPp3IoW8c2gR
+         h2tWPVg9GWcbfFqHlFtA/6vMWP722nIhlOQQsfcKCkHlOVBYGfHb7KCX2OvGmygbbPA6
+         F2OmrLBLWpZx4Z6RLVeQuQmUDaUduMxFGdKKqAXBlegzGQ+WiQqNONZf8JCekyjfyQpG
+         739Ax5rs3sQkenq+RyBXTG78iNV/QEP71fwJtzKfR7BS5CtcFUjreZrNjOGRj2HtvebZ
+         9z4sTg9p9sZXq/V3B16Gt/puPG+04xXdXW66RHRfeZf2+aik86F6qhonX2ZN10Qyo3H8
+         ugUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
+        b=G4MgsiLHXV494gv7jOpWUFNN5j32adRmEIcU/tepVfFE3L0dBIugszkELLD7xrkDp1
+         2H+dHKwCYYmJ97F0cY2DkFDFolnjdetml8Uv1fClEMPNx1Bp0UxA1Rc1bPLIgTUynQXk
+         XsddX0MHOG7nccqNaA2zfsCMKZAice2qFeKq+8naCOQnVN0RNB2P1zrYEXFcX55af0Bc
+         VTj3nZnkRFXV8dEnfSlzhmvoTZJJkpB2uj61ddQhNYOCM/HguXSTY1D+0V3ucWjPxm7u
+         9shNJGLhmRBiUjOmR0S9Ptv/wvKmN4OZaoBcVfxiEVPbDvBZuywPLHF4KiPMfX7vfIco
+         ZIuA==
+X-Gm-Message-State: AOAM533MyKcXXRcLnPLeKMS2HNHqS5GYNHabpgS5aZEwJ3bCxLUPTIZ0
+        n3FL93z6BP5qMXgI47zaXXPVizxY7jRMT2eR6v8o/g==
+X-Google-Smtp-Source: ABdhPJxTtyAXfkAipUU4ESl6gqg/Ep1F4KNHDSMcJQ8tpbjaqzt14nLv+k4NrYKPJyLs75yL8bFgsN8pHG51/LwsIow=
+X-Received: by 2002:a05:651c:1793:: with SMTP id bn19mr4749093ljb.475.1633714533204;
+ Fri, 08 Oct 2021 10:35:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211008125521.0aa31beb@coco.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <6411d3f7-b3a4-23a8-14fc-fcf6b9c5b73a@virtuozzo.com> <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
+In-Reply-To: <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 8 Oct 2021 10:35:22 -0700
+Message-ID: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
+Subject: Re: [PATCH memcg] memcg: enable memory accounting in __alloc_pages_bulk
+To:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 12:55:21PM +0200, Mauro Carvalho Chehab wrote:
-> Hi Lorenzo,
-> 
-> Em Thu, 7 Oct 2021 15:41:03 +0100
-> Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> escreveu:
-> 
-> > On Tue, Oct 05, 2021 at 01:23:21PM -0500, Bjorn Helgaas wrote:
-> > > [+cc Lorenzo]
-> > > 
-> > > On Tue, Oct 05, 2021 at 11:24:48AM +0200, Mauro Carvalho Chehab wrote:  
-> > > > Hi Bjorn,
-> > > > 
-> > > > Em Tue, 28 Sep 2021 09:34:10 +0200
-> > > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:  
-> > >   
-> > > > >   PCI: kirin: Reorganize the PHY logic inside the driver
-> > > > >   PCI: kirin: Add support for a PHY layer
-> > > > >   PCI: kirin: Use regmap for APB registers
-> > > > >   PCI: kirin: Add support for bridge slot DT schema
-> > > > >   PCI: kirin: Add Kirin 970 compatible
-> > > > >   PCI: kirin: Add MODULE_* macros
-> > > > >   PCI: kirin: Allow building it as a module
-> > > > >   PCI: kirin: Add power_off support for Kirin 960 PHY
-> > > > >   PCI: kirin: fix poweroff sequence
-> > > > >   PCI: kirin: Allow removing the driver  
-> > > > 
-> > > > I guess everything is already satisfying the review feedbacks.
-> > > > If so, could you please merge the PCI ones?  
-> > > 
-> > > Lorenzo takes care of the native host bridge drivers, so I'm sure this
-> > > is on his list.  I added him to cc: in case not.  
-> > 
-> > Ideally I'd like to see these patches ACKed/Review-ed by the kirin
-> > maintainers - that's what I was waiting for and that's what they
-> > are there for.
-> > 
-> > Having said that, I will keep an eye on this series so that we
-> > can hopefully queue it for v5.16.
-> 
-> Not sure if you received the e-mail from Xiaowei with his ack.
++Roman
 
-I have not (and it did not make it to linux-pci either).
+On Fri, Oct 8, 2021 at 2:23 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>
+> Enable memory accounting for bulk page allocator.
+>
+> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+>  mm/page_alloc.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 62 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index b37435c274cf..602819a232e5 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5172,6 +5172,55 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+>         return true;
+>  }
+>
 
-> At least here, I only received on my internal e-mail (perhaps because
-> the original e-mail was base64-encoded with gb2312 charset). 
-> 
-> So, let me forward his answer to you, c/c the mailing lists.
+Please move the following memcg functions to memcontrol.[h|c] files.
 
-Patches should be acked with tags that tooling recognize, this
-would help me.
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +                                       unsigned int nr_pages)
+> +{
+> +       struct obj_cgroup *objcg = NULL;
+> +
+> +       if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
+> +               return true;
+> +
+> +       objcg = get_obj_cgroup_from_current();
+> +
+> +       if (objcg && obj_cgroup_charge(objcg, gfp, nr_pages << PAGE_SHIFT)) {
 
-> Thanks,
-> Mauro
-> 
-> -------- Forwarded Message --------
-> From: Songxiaowei (Kirin_DRV) <songxiaowei@hisilicon.com>
-> To: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>, Bjorn Helgaas <helgaas@kernel.org>
-> CC: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Linuxarm <linuxarm@huawei.com>, Mauro Carvalho Chehab <mauro.chehab@huawei.com>, Krzysztof Wilczyński <kw@linux.com>, Wangbinghui (Biggio, Kirin_DRV) <wangbinghui@hisilicon.com>, Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org <linux-pci@vger.kernel.org>, linux-phy@lists.infradead.org <linux-phy@lists.infradead.org>, Kongfei <kongfei@hisilicon.com>
-> Subject: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
-> Date: Fri, 8 Oct 2021 11:45:06 +0100
-> Message-ID: <e718dc06633e4f87a6b6e1626e8c098e@hisilicon.com>
-> 
-> Hi Bjorn,
-> 
-> ACKed, it seems ok to me and Binghui.
+Please use obj_cgroup_charge_pages() when you move this code to memcontrol.c
 
-For Xiaowei:
+> +               obj_cgroup_put(objcg);
+> +               return false;
+> +       }
+> +       obj_cgroup_get_many(objcg, nr_pages);
+> +       *objcgp = objcg;
+> +       return true;
+> +}
+> +
+> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcg,
+> +                                       struct page *page)
+> +{
+> +       page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
+> +}
+> +
+> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +                                       unsigned int nr_pages)
+> +{
+> +       obj_cgroup_uncharge(objcg, nr_pages << PAGE_SHIFT);
+> +       percpu_ref_put_many(&objcg->refcnt, nr_pages + 1);
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+Introduce the obj_cgroup_put_many() and you don't need to keep the
+extra ref from the pre hook i.e. put the ref in the pre hook.
 
-and your email must make it to the mailing list; if it does not
-it does not exist as far as I am concerned. I will apply the
-ACK manually for this time but let's keep this in mind please.
+> +}
+> +#else
+> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
+> +                                       unsigned int nr_pages)
+> +{
+> +       return true;
+> +}
+> +
+> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcgp,
+> +                                       struct page *page)
+> +{
+> +}
+> +
+> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
+> +                                       unsigned int nr_pages)
+> +{
+> +}
+> +#endif
+>  /*
+>   * __alloc_pages_bulk - Allocate a number of order-0 pages to a list or array
+>   * @gfp: GFP flags for the allocation
+> @@ -5207,6 +5256,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>         gfp_t alloc_gfp;
+>         unsigned int alloc_flags = ALLOC_WMARK_LOW;
+>         int nr_populated = 0, nr_account = 0;
+> +       unsigned int nr_pre_charge = 0;
+> +       struct obj_cgroup *objcg = NULL;
+>
+>         /*
+>          * Skip populated array elements to determine if any pages need
+> @@ -5275,6 +5326,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>         if (unlikely(!zone))
+>                 goto failed;
+>
+> +       nr_pre_charge = nr_pages - nr_populated;
+> +       if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
+> +               goto failed;
+> +
+>         /* Attempt the batch allocation */
+>         local_lock_irqsave(&pagesets.lock, flags);
+>         pcp = this_cpu_ptr(zone->per_cpu_pageset);
+> @@ -5287,9 +5342,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>                         nr_populated++;
+>                         continue;
+>                 }
+> -
+>                 page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
+>                                                                 pcp, pcp_list);
+> +
+>                 if (unlikely(!page)) {
+>                         /* Try and get at least one page */
+>                         if (!nr_populated)
+> @@ -5297,6 +5352,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>                         break;
+>                 }
+>                 nr_account++;
+> +               if (objcg)
+> +                       memcg_bulk_charge_hook(objcg, page);
 
-Thanks,
-Lorenzo
-> 
-> Thanks a lot.
-> 
-> B. R.
-> 
-> -----邮件原件-----
-> 发件人: Lorenzo Pieralisi [mailto:lorenzo.pieralisi@arm.com]
-> 发送时间: 2021年10月7日 22:41
-> 收件人: Bjorn Helgaas <helgaas@kernel.org>
-> 抄送: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>; Bjorn Helgaas <bhelgaas@google.com>; Linuxarm <linuxarm@huawei.com>; Mauro Carvalho Chehab <mauro.chehab@huawei.com>; Krzysztof Wilczyński <kw@linux.com>; Wangbinghui (Biggio, Kirin_DRV) <wangbinghui@hisilicon.com>; Rob Herring <robh@kernel.org>; Songxiaowei (Kirin_DRV) <songxiaowei@hisilicon.com>; linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org; linux-phy@lists.infradead.org
-> 主题: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
-> 
-> On Tue, Oct 05, 2021 at 01:23:21PM -0500, Bjorn Helgaas wrote:
-> > [+cc Lorenzo]
-> > 
-> > On Tue, Oct 05, 2021 at 11:24:48AM +0200, Mauro Carvalho Chehab wrote:  
-> > > Hi Bjorn,
-> > > 
-> > > Em Tue, 28 Sep 2021 09:34:10 +0200
-> > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:  
-> >   
-> > > >   PCI: kirin: Reorganize the PHY logic inside the driver
-> > > >   PCI: kirin: Add support for a PHY layer
-> > > >   PCI: kirin: Use regmap for APB registers
-> > > >   PCI: kirin: Add support for bridge slot DT schema
-> > > >   PCI: kirin: Add Kirin 970 compatible
-> > > >   PCI: kirin: Add MODULE_* macros
-> > > >   PCI: kirin: Allow building it as a module
-> > > >   PCI: kirin: Add power_off support for Kirin 960 PHY
-> > > >   PCI: kirin: fix poweroff sequence
-> > > >   PCI: kirin: Allow removing the driver  
-> > > 
-> > > I guess everything is already satisfying the review feedbacks.
-> > > If so, could you please merge the PCI ones?  
-> > 
-> > Lorenzo takes care of the native host bridge drivers, so I'm sure this 
-> > is on his list.  I added him to cc: in case not.  
-> 
-> Ideally I'd like to see these patches ACKed/Review-ed by the kirin maintainers - that's what I was waiting for and that's what they are there for.
-> 
-> Having said that, I will keep an eye on this series so that we can hopefully queue it for v5.16.
-> 
-> Lorenzo
-> 
-> 
+Logically this above should be after prep_new_page().
+
+>
+>                 prep_new_page(page, 0, gfp, 0);
+>                 if (page_list)
+> @@ -5310,13 +5367,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
+>
+>         __count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
+>         zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
+> +       if (objcg)
+> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
+>
+>  out:
+>         return nr_populated;
+>
+>  failed_irq:
+>         local_unlock_irqrestore(&pagesets.lock, flags);
+> -
+> +       if (objcg)
+> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
+>  failed:
+>         page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+>         if (page) {
+> --
+> 2.31.1
+>
