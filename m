@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD11A4266CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784934266CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238498AbhJHJ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:29:13 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:35306 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238154AbhJHJ3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:29:09 -0400
-Received: from BJHW-Mail-Ex02.internal.baidu.com (unknown [10.127.64.12])
-        by Forcepoint Email with ESMTPS id 86D43B5C25AFA2FEFE3D;
-        Fri,  8 Oct 2021 17:27:13 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex02.internal.baidu.com (10.127.64.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 8 Oct 2021 17:27:13 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 8 Oct 2021 17:27:12 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Kevin Tsai <ktsai@capellamicro.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 4/4] iio: light: noa1305: Make use of the helper function dev_err_probe()
-Date:   Fri, 8 Oct 2021 17:26:55 +0800
-Message-ID: <20211008092656.421-4-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211008092656.421-1-caihuoqing@baidu.com>
-References: <20211008092656.421-1-caihuoqing@baidu.com>
+        id S238683AbhJHJ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:29:17 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:40810 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238620AbhJHJ3K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:29:10 -0400
+Received: by mail-vs1-f44.google.com with SMTP id p18so9731692vsu.7;
+        Fri, 08 Oct 2021 02:27:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vIxqZ8vYkfX7BBcbiKGGKsrdng7+H+Cq45sUTEZMSXg=;
+        b=f+9fIB6QxOnpz8coOql3lefpsTc1NKKkxlocop+DeBN7eoGt1P45RRnZFtvnU5Mh18
+         /XK4H7DMZuHNtXQYV3HY3hFxvx8EAgE4cPtDFB7YNI6sotLGi2TC3M/wv0KAjQFr+Sg2
+         JCB4uiG47LCLfln1qkDGiE32BdXGsvPyd4MnOi034PsabXisoDHrBC9JB9Oj6bYXvGxb
+         ix5nwlVJp0Tw5kF275vOuJB6jwECvxIqO589q5hyA7y/0T41tz4j/jxk1U0MJGoHKifr
+         6lojJ6BFQBh4BMRmWkvEnGimEZlIQlQvAF3tSN4rUzPH6guGntU+9A/5hoDfoGv2gyiK
+         yXCQ==
+X-Gm-Message-State: AOAM532Hy9TSTNXi/sScdxKcbfyRHdaZY1ELSASMzSM6WdaSfKAqaqNU
+        yU2YCtuZLvjLAVVIeVIpSppPXMvqOOAj6m4UCWg=
+X-Google-Smtp-Source: ABdhPJzo2GMDwS4XL8GaqtAxYSHO5tU8oRsCkFAUO5XMKVVRxBe8G5avT2hGBR+Rk6tHcw+u6K58Nb/PFfsDHGycMak=
+X-Received: by 2002:a05:6102:d8c:: with SMTP id d12mr2395147vst.35.1633685234262;
+ Fri, 08 Oct 2021 02:27:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex14.internal.baidu.com (172.31.51.54) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+References: <20210928140721.8805-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210928140721.8805-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210928140721.8805-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Oct 2021 11:27:03 +0200
+Message-ID: <CAMuHMdW_X+ji9316DkKP20zgwjn+AzXTXKKJ4nox5XkeiwQQ8w@mail.gmail.com>
+Subject: Re: [PATCH 4/6] mtd: hyperbus: rpc-if: Check return value of rpcif_sw_init()
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Mark Brown <broonie@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When possible use dev_err_probe help to properly deal with the
-PROBE_DEFER error, the benefit is that DEFER issue will be logged
-in the devices_deferred debugfs file.
-Using dev_err_probe() can reduce code size, and the error value
-gets printed.
+On Tue, Sep 28, 2021 at 4:07 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> rpcif_sw_init() can fail so make sure we check the return value
+> of it and on error exit rpcif_hb_probe() callback with error code.
+>
+> Fixes: 5de15b610f78 ("mtd: hyperbus: add Renesas RPC-IF driver")
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2: Remove the separate line of PTR_ERR().
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-v2 is applied to the togreg branch of iio.git
+Gr{oetje,eeting}s,
 
- drivers/iio/light/noa1305.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+                        Geert
 
-diff --git a/drivers/iio/light/noa1305.c b/drivers/iio/light/noa1305.c
-index a308fbc2fc7b..ee81fe083e4c 100644
---- a/drivers/iio/light/noa1305.c
-+++ b/drivers/iio/light/noa1305.c
-@@ -217,10 +217,9 @@ static int noa1305_probe(struct i2c_client *client,
- 	priv = iio_priv(indio_dev);
- 
- 	priv->vin_reg = devm_regulator_get(&client->dev, "vin");
--	if (IS_ERR(priv->vin_reg)) {
--		dev_err(&client->dev, "get regulator vin failed\n");
--		return PTR_ERR(priv->vin_reg);
--	}
-+	if (IS_ERR(priv->vin_reg))
-+		return dev_err_probe(&client->dev, PTR_ERR(priv->vin_reg),
-+				     "get regulator vin failed\n");
- 
- 	ret = regulator_enable(priv->vin_reg);
- 	if (ret) {
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
