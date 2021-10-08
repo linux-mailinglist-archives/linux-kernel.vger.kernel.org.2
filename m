@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027C34267FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9F0426801
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239793AbhJHKgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:36:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:41512 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhJHKgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:36:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D390EED1;
-        Fri,  8 Oct 2021 03:34:20 -0700 (PDT)
-Received: from [10.57.25.67] (unknown [10.57.25.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63FB13F70D;
-        Fri,  8 Oct 2021 03:34:18 -0700 (PDT)
-Subject: Re: [PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1
- json
-To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>
-Cc:     John Garry <john.garry@huawei.com>,
-        Andrew Kilroy <andrew.kilroy@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>, Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211004160008.21645-1-andrew.kilroy@arm.com>
- <b7a4a1b3-3d22-7a52-75b1-66c04b57a50c@huawei.com>
- <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
- <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
- <b24041af-1c92-3855-9659-133e73a0c241@linux.intel.com>
- <CAP-5=fXuzH9Gh8=CP9E=vb7sDSL5TO-8_pPvfQz4p61jUQEPmQ@mail.gmail.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <18ef658a-48d3-0038-f988-f39f9498d31e@arm.com>
-Date:   Fri, 8 Oct 2021 11:34:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239926AbhJHKhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:37:07 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:33579 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhJHKhF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:37:05 -0400
+Received: (Authenticated sender: herve.codina@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPA id 2C3CF240009;
+        Fri,  8 Oct 2021 10:35:07 +0000 (UTC)
+From:   Herve Codina <herve.codina@bootlin.com>
+Cc:     Herve Codina <herve.codina@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH 0/4] net: stmmac: fix regression on SPEAr3xx SOC
+Date:   Fri,  8 Oct 2021 12:34:36 +0200
+Message-Id: <20211008103440.3929006-1-herve.codina@bootlin.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fXuzH9Gh8=CP9E=vb7sDSL5TO-8_pPvfQz4p61jUQEPmQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ethernet driver used on old SPEAr3xx soc was previously supported on old
+kernel. Some regressions were introduced during the different updates leading
+to a broken driver for this soc.
 
+This series fixes these regressions and brings back ethernet on SPEAr3xx.
+Tested on a SPEAr320 board.
 
-On 08/10/2021 03:59, Ian Rogers wrote:
-> On Thu, Oct 7, 2021 at 5:03 PM Andi Kleen <ak@linux.intel.com> wrote:
->>
->>
->> On 10/6/2021 9:26 AM, John Garry wrote:
->>> On 06/10/2021 09:43, James Clark wrote:
->>>
->>> + Andi
->>>
->>>>
->>>>
->>>> On 05/10/2021 11:10, John Garry wrote:
->>>>> On 04/10/2021 17:00, Andrew Kilroy wrote:
->>>>>> There are some syntactical mistakes in the json files for the
->>>>>> Cortex A76
->>>>>> N1 (Neoverse N1).  This was obstructing parsing from an external tool.
->>>>>
->>>>> If the trailing comma is not allowed by standard, then maybe we
->>>>> should fix our parsing tool to not allow it also. However maybe
->>>>> there is a good reason why we allow it..
->>>>
->>>> It would be nice to do, because I have also made similar fixes
->>>> before. We looked at the STRICT option
->>>> in the parser (https://github.com/zserge/jsmn), but even then it
->>>> seems to allow trailing commas.
->>>>
->>>> Trailing commas are not allowed in the json standard, but there is a
->>>> split between parsers
->>>> where some allow it and others don't. Specifically the Python parser
->>>> doesn't allow it, and Python
->>>> can easily be involved in some workflow that parses these files.
->>>>
->>>> The only way forwards I can think of is either getting a change
->>>> accepted upstream to the parser
->>>> and then updating it in perf, switching to a different parser, or
->>>> doing some hack to add an extra
->>>> step in perf to look for commas. None of which sound ideal.
->>>>
->>>
->>> Looking at the license in jsmn.c, we seem to be ok to modify it (to
->>> error on non-standard trailing ',') - that parser has already
->>> apparently been modified in mainline.
->>>
->>> If we do that then I hope that there are not to many violations in out
->>> JSONs, including downstream.
->>
->>
->> Sure we can modify the file. I already did some minor changes when I
->> submitted it originally.
->>
->> -Andi
-> 
-> jsmn is a somewhat frustrating way to work on json code and working on
-> a forked version of jsmn was frustrating in [1]. Could we assume
-> python on build systems and rewrite jevents in python?
+Herve Codina (4):
+  net: stmmac: fix get_hw_feature() on old hardware
+  dt-bindings: net: snps,dwmac: add dwmac 3.40a IP version
+  net: stmmac: add support for dwmac 3.40a
+  ARM: dts: spear3xx: Fix gmac node
 
-Seems reasonable to me, although maybe a big job. I suppose there could be
-an empty generated pmu file for systems that don't have Python and only the
-ones listed in pmu-events/arch/ would need it.
+ .../devicetree/bindings/net/snps,dwmac.yaml         |  2 ++
+ arch/arm/boot/dts/spear3xx.dtsi                     |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/dwmac-generic.c |  1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_dma.c | 13 +++++++++++--
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c    |  6 ++++--
+ drivers/net/ethernet/stmicro/stmmac/dwxgmac2_dma.c  |  6 ++++--
+ drivers/net/ethernet/stmicro/stmmac/hwif.h          |  6 +++---
+ .../net/ethernet/stmicro/stmmac/stmmac_platform.c   |  8 ++++++++
+ 8 files changed, 34 insertions(+), 10 deletions(-)
 
-James
-> 
-> Thanks,
-> Ian
-> 
-> [1] https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
-> 
+-- 
+2.31.1
+
