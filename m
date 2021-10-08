@@ -2,134 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A8F4260EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06A84260EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 02:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240445AbhJHAGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 20:06:54 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13706 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbhJHAGx (ORCPT
+        id S241125AbhJHAHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 20:07:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58452 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhJHAHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 20:06:53 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQT1C2hm6zWlV2;
-        Fri,  8 Oct 2021 08:03:27 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 08:04:50 +0800
-Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 8 Oct 2021 08:04:50 +0800
-From:   "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <baolu.lu@linux.intel.com>, <dwmw2@infradead.org>,
-        <will@kernel.org>, <joro@8bytes.org>
-CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <arei.gonglei@huawei.com>, "Longpeng(Mike)" <longpeng2@huawei.com>
-Subject: [PATCH v3 2/2] iommu/vt-d: avoid duplicated removing in __domain_mapping
-Date:   Fri, 8 Oct 2021 08:04:33 +0800
-Message-ID: <20211008000433.1115-3-longpeng2@huawei.com>
-X-Mailer: git-send-email 2.25.0.windows.1
-In-Reply-To: <20211008000433.1115-1-longpeng2@huawei.com>
-References: <20211008000433.1115-1-longpeng2@huawei.com>
+        Thu, 7 Oct 2021 20:07:39 -0400
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id B3F4120B8008;
+        Thu,  7 Oct 2021 17:05:44 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B3F4120B8008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1633651544;
+        bh=RmI9Lx22hJ2UVt+L74c3JdmPt+EdeZuq3lpibVLBeaY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I4Sh7OBDXSJGGgoTnXq5wc3XMwByKT5uBNThYv46TDiiw9/tWia4wZgWClcf3eevU
+         at6F7vyr4SamuXh/fpMnyECKM/rVRTwxOKeaoS6SiVLkqxj4VkCK1PBMfbgyd94uwx
+         /SDWHzDTRP/lpDk2jST95DFp+n3FvF5aQ98EI8F4=
+Date:   Thu, 7 Oct 2021 17:05:40 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211008000540.GA31220@kbox>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+ <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
+ <20211006175611.GA2995@kbox>
+ <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+ <20211007162204.GA30947@kbox>
+ <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml100016.china.huawei.com (7.185.36.216)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__domain_mapping() always removes the pages in the range from
-'iov_pfn' to 'end_pfn', but the 'end_pfn' is always the last pfn
-of the range that the caller wants to map.
+On Fri, Oct 08, 2021 at 08:12:49AM +0900, Masami Hiramatsu wrote:
+> > Please see v2 patch, I do this pattern except it's '(Used by ftrace)'
+> > instead of '# Used by ftrace'.
+> > 
+> > Format is id:name status
+> 
+> Hm, why I suggested to use "# status" is that the comment will be
+> removed when writing it. So you can do
+> 
+> cat user_events > ~/saved_events
+> (reboot)
+> cat ~/saved_events > user_events
+> 
+> to restore events :)
+> 
+Nice, good idea.
 
-This would introduce too many duplicated removing and leads the
-map operation take too long, for example:
+> > 
+> > > > The other thing is we need ref counting to know if the event is busy.
+> > > > Having the ID in the packet avoids having a fd per-event, but it also
+> > > > makes ref counting process lifetime of each event quite hard.
+> > > 
+> > > Hmm, I don't think so. You can use an array of the pointer to
+> > > events on the private data of the struct file.
+> > > When you add (or start using) an event (this is identified by ioctl),
+> > > you can increment the event refcount and add it to the array.
+> > > When the file is closed (in exiting process), it will loop on the
+> > > array and decrement the refcount for each event.
+> > > Then, after all tracers disabled the event, ftrace can remove the
+> > > event in background (unless it is defined through 'dynamic_events' or
+> > > 'user_events').
+> > > 
+> > Yes, I didn't say it's impossible :) It's quite hard and takes a lot
+> > more management. I don't see a clear benefit to that approach, why is it
+> > better than an fd lifetime? Not trying to be difficult, just trying to
+> > be pragmatic about what approach is best.
+> 
+> I'm not sure this point, you mean 1 fd == 1 event model?
+> 
+Yeah, I like the idea of not having an fd per event. I want to make
+sure the complexity is worth it. Is the overhead of an FD per event in
+user space too much? What happens to the first 4 bytes (ID)? Does it not
+show up in the buffer? This would be fine as long as the rel_loc idea
+gets into ftrace, etc.
 
-  Map iova=0x100000,nr_pages=0x7d61800
-    iov_pfn: 0x100000, end_pfn: 0x7e617ff
-    iov_pfn: 0x140000, end_pfn: 0x7e617ff
-    iov_pfn: 0x180000, end_pfn: 0x7e617ff
-    iov_pfn: 0x1c0000, end_pfn: 0x7e617ff
-    iov_pfn: 0x200000, end_pfn: 0x7e617ff
-    ...
-  it takes about 50ms in total.
+This would require a global array as well as a local per-FD array. I'm
+wondering if the per-FD array becoming large mitigates the gain by
+simply having an FD per-event.
 
-We can reduce the cost by recalculate the 'end_pfn' and limit it
-to the boundary of the end of this pte page.
+> > > > We also want
+> > > > predicate filtering to work as cheap as possible. I would really like to
+> > > > keep offset manipulation entirely in the user space to avoid confusion
+> > > > across the various tracing mechanisms and avoid probing the user data
+> > > > upon each call (eBPF programs only selectively probe in data).
+> > > 
+> > > OK, so let's add __rel_loc__ attribute. The rel_loc type will be
+> > > 
+> > > struct rel_loc {
+> > > 	uint16_t len;	/* The data size (including '\0' if string )*/
+> > > 	uint16_t offs;	/* The offset of actual data from this field */
+> > > } __packed;
+> > > 
+> > > Hmm, btw, this will be good for probe events... I don't need to pass
+> > > the base address with this attribute.
+> > > 
+> > What's the difference between __rel_loc__ and __data_loc? Seems like
+> > instead of just offset it's length + offset?
+> 
+> In my idea, rel_loc is similar to the data_loc. It has the offset, but
+> the offset is the data offset from the rel_loc, not from the entry of
+> the recorded data. So kernel doesn't need to adjust it.
+> 
+Got it, makes sense and would eliminate the need for the IOCTL for
+offsets. I like it.
 
-  Map iova=0x100000,nr_pages=0x7d61800
-    iov_pfn: 0x100000, end_pfn: 0x13ffff
-    iov_pfn: 0x140000, end_pfn: 0x17ffff
-    iov_pfn: 0x180000, end_pfn: 0x1bffff
-    iov_pfn: 0x1c0000, end_pfn: 0x1fffff
-    iov_pfn: 0x200000, end_pfn: 0x23ffff
-    ...
-  it only need 9ms now.
-
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
----
- drivers/iommu/intel/iommu.c | 11 ++++++-----
- include/linux/intel-iommu.h |  6 ++++++
- 2 files changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d75f59a..46edae6 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2354,12 +2354,17 @@ static void switch_to_super_page(struct dmar_domain *domain,
- 				return -ENOMEM;
- 			first_pte = pte;
- 
-+			lvl_pages = lvl_to_nr_pages(largepage_lvl);
-+
- 			/* It is large page*/
- 			if (largepage_lvl > 1) {
- 				unsigned long end_pfn;
-+				unsigned long pages_to_remove;
- 
- 				pteval |= DMA_PTE_LARGE_PAGE;
--				end_pfn = ((iov_pfn + nr_pages) & level_mask(largepage_lvl)) - 1;
-+				pages_to_remove = min_t(unsigned long, nr_pages,
-+							nr_pte_to_next_page(pte) * lvl_pages);
-+				end_pfn = iov_pfn + pages_to_remove - 1;
- 				switch_to_super_page(domain, iov_pfn, end_pfn, largepage_lvl);
- 			} else {
- 				pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
-@@ -2381,10 +2386,6 @@ static void switch_to_super_page(struct dmar_domain *domain,
- 			WARN_ON(1);
- 		}
- 
--		lvl_pages = lvl_to_nr_pages(largepage_lvl);
--
--		BUG_ON(nr_pages < lvl_pages);
--
- 		nr_pages -= lvl_pages;
- 		iov_pfn += lvl_pages;
- 		phys_pfn += lvl_pages;
-diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
-index 9bcabc7..b29b2a3 100644
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -713,6 +713,12 @@ static inline bool first_pte_in_page(struct dma_pte *pte)
- 	return IS_ALIGNED((unsigned long)pte, VTD_PAGE_SIZE);
- }
- 
-+static inline int nr_pte_to_next_page(struct dma_pte *pte)
-+{
-+	return first_pte_in_page(pte) ? BIT_ULL(VTD_STRIDE_SHIFT) :
-+		(struct dma_pte *)ALIGN((unsigned long)pte, VTD_PAGE_SIZE) - pte;
-+}
-+
- extern struct dmar_drhd_unit * dmar_find_matched_drhd_unit(struct pci_dev *dev);
- extern int dmar_find_matched_atsr_unit(struct pci_dev *dev);
- 
--- 
-1.8.3.1
-
+Thanks,
+-Beau
+> Thank you,
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
