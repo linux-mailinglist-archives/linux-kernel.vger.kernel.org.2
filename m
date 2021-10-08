@@ -2,408 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D727426D9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332EB426D8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242986AbhJHPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:38:04 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35348 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243027AbhJHPh5 (ORCPT
+        id S242937AbhJHPhk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Oct 2021 11:37:40 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:20683 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231129AbhJHPhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:37:57 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 198CdJ4g003414;
-        Fri, 8 Oct 2021 17:35:46 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=MW55PNnEHfHMNlTJ7jpt7opiRUj3903WhXboh+DEtkA=;
- b=acxplldesds//x6/MOPfuG2Rii9fzmLxhVEbc3zfAHagcZvc4U82eV3c5qlSBpVfm/GR
- 8qTr42RxkfQED5YP9tYJ8yMA6TG+0pR9aOM/cOttUiag59x8z0LXmr9d/QWN8WibGWL1
- EypBlUQpJroDUNdisPYjQT4Romo/oq2QtjnWzxVqntvls3E+RFaKznLO8SRScPNdrgNt
- QIey3T4gCpihSAqXpQVfQsCrlfrM0FSWlv3a8ZuFcM8fAPbMLg9oTIbv3NADi8syz4t+
- uuq56B8Fy3SSzmoHffe+/r8FvZHRxc0Cku/To19xULVNsRGoAVWykeWa5ioiYIkK7UeZ 8w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bjp620v8x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 17:35:46 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8EBEC100038;
-        Fri,  8 Oct 2021 17:35:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 85149237D9A;
-        Fri,  8 Oct 2021 17:35:45 +0200 (CEST)
-Received: from localhost (10.75.127.51) by SFHDAG2NODE2.st.com (10.75.127.5)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 8 Oct 2021 17:35:44
- +0200
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        <arnaud.pouliquen@foss.st.com>, Suman Anna <s-anna@ti.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>
-Subject: [PATCH v9 2/2] tty: add rpmsg driver
-Date:   Fri, 8 Oct 2021 17:34:46 +0200
-Message-ID: <20211008153446.23188-3-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211008153446.23188-1-arnaud.pouliquen@foss.st.com>
-References: <20211008153446.23188-1-arnaud.pouliquen@foss.st.com>
+        Fri, 8 Oct 2021 11:37:38 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id A38AF24000B;
+        Fri,  8 Oct 2021 15:35:27 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 17:35:26 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Boris Brezillon <boris.brezillon@collabora.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] mtd: core: protect access to mtd devices while
+ in suspend
+Message-ID: <20211008173526.19745a10@xps13>
+In-Reply-To: <20211008143825.3717116-1-sean@geanix.com>
+References: <20211008141524.20ca8219@collabora.com>
+        <20211008143825.3717116-1-sean@geanix.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-08_04,2021-10-07_02,2020-04-07_01
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver exposes a standard TTY interface on top of the rpmsg
-framework through a rpmsg service.
+Hi Sean,
 
-This driver supports multi-instances, offering a /dev/ttyRPMSGx entry
-per rpmsg endpoint.
+sean@geanix.com wrote on Fri,  8 Oct 2021 16:38:24 +0200:
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> This will prevent reading/writing/erasing to a suspended mtd device.
+> It will force mtd_write()/mtd_read()/mtd_erase() to wait for
+> mtd_resume() to unlock access to mtd devices.
 
----
-Update from V8
-=> Update based on Greg Greg Kroah-Hartman comments:
- - add module name in kconfig
- - remove the tty_rpmsg.rst documentation file and add description in
-   rpmsg_tty.c.
- - rpmsg_tty.c remove of useless check and logs.
- - print err log instead of debug log on truncated RX buffer.
----
- drivers/tty/Kconfig     |  12 ++
- drivers/tty/Makefile    |   1 +
- drivers/tty/rpmsg_tty.c | 275 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 288 insertions(+)
- create mode 100644 drivers/tty/rpmsg_tty.c
+Maybe you can use the present tense, as in:
+Prevent reading/...
 
-diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
-index 23cc988c68a4..cc30ff93e2e4 100644
---- a/drivers/tty/Kconfig
-+++ b/drivers/tty/Kconfig
-@@ -368,6 +368,18 @@ config VCC
- 
- source "drivers/tty/hvc/Kconfig"
- 
-+config RPMSG_TTY
-+	tristate "RPMSG tty driver"
-+	depends on RPMSG
-+	help
-+	  Say y here to export rpmsg endpoints as tty devices, usually found
-+	  in /dev/ttyRPMSGx.
-+	  This makes it possible for user-space programs to send and receive
-+	  rpmsg messages as a standard tty protocol.
-+
-+	  To compile this driver as a module, choose M here: the module will be
-+	  called rpmsg_tty.
-+
- endif # TTY
- 
- source "drivers/tty/serdev/Kconfig"
-diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
-index a2bd75fbaaa4..07aca5184a55 100644
---- a/drivers/tty/Makefile
-+++ b/drivers/tty/Makefile
-@@ -26,5 +26,6 @@ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
- obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
- obj-$(CONFIG_MIPS_EJTAG_FDC_TTY) += mips_ejtag_fdc.o
- obj-$(CONFIG_VCC)		+= vcc.o
-+obj-$(CONFIG_RPMSG_TTY)		+= rpmsg_tty.o
- 
- obj-y += ipwireless/
-diff --git a/drivers/tty/rpmsg_tty.c b/drivers/tty/rpmsg_tty.c
-new file mode 100644
-index 000000000000..226a13f6ef94
---- /dev/null
-+++ b/drivers/tty/rpmsg_tty.c
-@@ -0,0 +1,275 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 STMicroelectronics - All Rights Reserved
-+ *
-+ * The rpmsg tty driver implements serial communication on the RPMsg bus to makes
-+ * possible for user-space programs to send and receive rpmsg messages as a standard
-+ * tty protocol.
-+ *
-+ * The remote processor can instantiate a new tty by requesting a "rpmsg-tty" RPMsg service.
-+ * The "rpmsg-tty" service is directly used for data exchange. No flow control is implemented yet.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/rpmsg.h>
-+#include <linux/slab.h>
-+#include <linux/tty.h>
-+#include <linux/tty_flip.h>
-+
-+#define MAX_TTY_RPMSG	32
-+
-+static DEFINE_IDR(tty_idr);	/* tty instance id */
-+static DEFINE_MUTEX(idr_lock);	/* protects tty_idr */
-+
-+static struct tty_driver *rpmsg_tty_driver;
-+
-+struct rpmsg_tty_port {
-+	struct tty_port		port;	 /* TTY port data */
-+	int			id;	 /* TTY rpmsg index */
-+	struct rpmsg_device	*rpdev;	 /* rpmsg device */
-+};
-+
-+static int rpmsg_tty_cb(struct rpmsg_device *rpdev, void *data, int len, void *priv, u32 src)
-+{
-+	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
-+	int copied;
-+
-+	if (!len)
-+		return -EINVAL;
-+	copied = tty_insert_flip_string(&cport->port, data, len);
-+	if (copied != len)
-+		dev_err(&rpdev->dev, "Trunc buffer: available space is %d\n",
-+			copied);
-+	tty_flip_buffer_push(&cport->port);
-+
-+	return 0;
-+}
-+
-+static int rpmsg_tty_install(struct tty_driver *driver, struct tty_struct *tty)
-+{
-+	struct rpmsg_tty_port *cport = idr_find(&tty_idr, tty->index);
-+
-+	tty->driver_data = cport;
-+
-+	return tty_port_install(&cport->port, driver, tty);
-+}
-+
-+static int rpmsg_tty_open(struct tty_struct *tty, struct file *filp)
-+{
-+	return tty_port_open(tty->port, tty, filp);
-+}
-+
-+static void rpmsg_tty_close(struct tty_struct *tty, struct file *filp)
-+{
-+	return tty_port_close(tty->port, tty, filp);
-+}
-+
-+static int rpmsg_tty_write(struct tty_struct *tty, const u8 *buf, int len)
-+{
-+	struct rpmsg_tty_port *cport = tty->driver_data;
-+	struct rpmsg_device *rpdev;
-+	int msg_max_size, msg_size;
-+	int ret;
-+
-+	rpdev = cport->rpdev;
-+
-+	msg_max_size = rpmsg_get_mtu(rpdev->ept);
-+	if (msg_max_size < 0)
-+		return msg_max_size;
-+
-+	msg_size = min(len, msg_max_size);
-+
-+	/*
-+	 * Use rpmsg_trysend instead of rpmsg_send to send the message so the caller is not
-+	 * hung until a rpmsg buffer is available. In such case rpmsg_trysend returns -ENOMEM.
-+	 */
-+	ret = rpmsg_trysend(rpdev->ept, (void *)buf, msg_size);
-+	if (ret) {
-+		dev_dbg(&rpdev->dev, "rpmsg_send failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return msg_size;
-+}
-+
-+static unsigned int rpmsg_tty_write_room(struct tty_struct *tty)
-+{
-+	struct rpmsg_tty_port *cport = tty->driver_data;
-+	int size;
-+
-+	size = rpmsg_get_mtu(cport->rpdev->ept);
-+	if (size < 0)
-+		return 0;
-+
-+	return size;
-+}
-+
-+static const struct tty_operations rpmsg_tty_ops = {
-+	.install	= rpmsg_tty_install,
-+	.open		= rpmsg_tty_open,
-+	.close		= rpmsg_tty_close,
-+	.write		= rpmsg_tty_write,
-+	.write_room	= rpmsg_tty_write_room,
-+};
-+
-+static struct rpmsg_tty_port *rpmsg_tty_alloc_cport(void)
-+{
-+	struct rpmsg_tty_port *cport;
-+	int err;
-+
-+	cport = kzalloc(sizeof(*cport), GFP_KERNEL);
-+	if (!cport)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mutex_lock(&idr_lock);
-+	cport->id = idr_alloc(&tty_idr, cport, 0, MAX_TTY_RPMSG, GFP_KERNEL);
-+	mutex_unlock(&idr_lock);
-+
-+	if (cport->id < 0) {
-+		err = cport->id;
-+		kfree(cport);
-+		return ERR_PTR(err);
-+	}
-+
-+	return cport;
-+}
-+
-+static void rpmsg_tty_release_cport(struct rpmsg_tty_port *cport)
-+{
-+	mutex_lock(&idr_lock);
-+	idr_remove(&tty_idr, cport->id);
-+	mutex_unlock(&idr_lock);
-+
-+	kfree(cport);
-+}
-+
-+static const struct tty_port_operations rpmsg_tty_port_ops = { };
-+
-+static int rpmsg_tty_probe(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_tty_port *cport;
-+	struct device *dev = &rpdev->dev;
-+	struct device *tty_dev;
-+	int ret;
-+
-+	cport = rpmsg_tty_alloc_cport();
-+	if (IS_ERR(cport)) {
-+		dev_err(dev, "Failed to alloc tty port\n");
-+		return PTR_ERR(cport);
-+	}
-+
-+	tty_port_init(&cport->port);
-+	cport->port.ops = &rpmsg_tty_port_ops;
-+
-+	tty_dev = tty_port_register_device(&cport->port, rpmsg_tty_driver,
-+					   cport->id, dev);
-+	if (IS_ERR(tty_dev)) {
-+		dev_err(dev, "Failed to register tty port\n");
-+		ret = PTR_ERR(tty_dev);
-+		goto  err_destroy;
-+	}
-+
-+	cport->rpdev = rpdev;
-+
-+	dev_set_drvdata(dev, cport);
-+
-+	dev_dbg(dev, "New channel: 0x%x -> 0x%x : ttyRPMSG%d\n",
-+		rpdev->src, rpdev->dst, cport->id);
-+
-+	return 0;
-+
-+err_destroy:
-+	tty_port_destroy(&cport->port);
-+	rpmsg_tty_release_cport(cport);
-+
-+	return ret;
-+}
-+
-+static void rpmsg_tty_remove(struct rpmsg_device *rpdev)
-+{
-+	struct rpmsg_tty_port *cport = dev_get_drvdata(&rpdev->dev);
-+
-+	dev_dbg(&rpdev->dev, "Removing rpmsg tty device %d\n", cport->id);
-+
-+	/* User hang up to release the tty */
-+	if (tty_port_initialized(&cport->port))
-+		tty_port_tty_hangup(&cport->port, false);
-+
-+	tty_unregister_device(rpmsg_tty_driver, cport->id);
-+
-+	tty_port_destroy(&cport->port);
-+	rpmsg_tty_release_cport(cport);
-+}
-+
-+static struct rpmsg_device_id rpmsg_driver_tty_id_table[] = {
-+	{ .name	= "rpmsg-tty" },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(rpmsg, rpmsg_driver_tty_id_table);
-+
-+static struct rpmsg_driver rpmsg_tty_rpmsg_drv = {
-+	.drv.name	= KBUILD_MODNAME,
-+	.id_table	= rpmsg_driver_tty_id_table,
-+	.probe		= rpmsg_tty_probe,
-+	.callback	= rpmsg_tty_cb,
-+	.remove		= rpmsg_tty_remove,
-+};
-+
-+static int __init rpmsg_tty_init(void)
-+{
-+	int err;
-+
-+	rpmsg_tty_driver = tty_alloc_driver(MAX_TTY_RPMSG, TTY_DRIVER_REAL_RAW |
-+					    TTY_DRIVER_DYNAMIC_DEV);
-+	if (IS_ERR(rpmsg_tty_driver))
-+		return PTR_ERR(rpmsg_tty_driver);
-+
-+	rpmsg_tty_driver->driver_name = "rpmsg_tty";
-+	rpmsg_tty_driver->name = "ttyRPMSG";
-+	rpmsg_tty_driver->major = 0;
-+	rpmsg_tty_driver->type = TTY_DRIVER_TYPE_CONSOLE;
-+
-+	/* Disable unused mode by default */
-+	rpmsg_tty_driver->init_termios = tty_std_termios;
-+	rpmsg_tty_driver->init_termios.c_lflag &= ~(ECHO | ICANON);
-+	rpmsg_tty_driver->init_termios.c_oflag &= ~(OPOST | ONLCR);
-+
-+	tty_set_operations(rpmsg_tty_driver, &rpmsg_tty_ops);
-+
-+	err = tty_register_driver(rpmsg_tty_driver);
-+	if (err < 0) {
-+		pr_err("Couldn't install rpmsg tty driver: err %d\n", err);
-+		goto error_put;
-+	}
-+
-+	err = register_rpmsg_driver(&rpmsg_tty_rpmsg_drv);
-+	if (err < 0) {
-+		pr_err("Couldn't register rpmsg tty driver: err %d\n", err);
-+		goto error_unregister;
-+	}
-+
-+	return 0;
-+
-+error_unregister:
-+	tty_unregister_driver(rpmsg_tty_driver);
-+
-+error_put:
-+	tty_driver_kref_put(rpmsg_tty_driver);
-+
-+	return err;
-+}
-+
-+static void __exit rpmsg_tty_exit(void)
-+{
-+	unregister_rpmsg_driver(&rpmsg_tty_rpmsg_drv);
-+	tty_unregister_driver(rpmsg_tty_driver);
-+	tty_driver_kref_put(rpmsg_tty_driver);
-+	idr_destroy(&tty_idr);
-+}
-+
-+module_init(rpmsg_tty_init);
-+module_exit(rpmsg_tty_exit);
-+
-+MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>");
-+MODULE_DESCRIPTION("remote processor messaging tty driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.17.1
+s/mtd/MTD/
 
+Force mtd_write/...
+
+I would suggest something like:
+
+	Prevent accessing the devices while in a suspended state. Also
+	prevent suspending a device which is still currently in use.
+
+
+> Exec_op[0] speed things up, so we see this race when rawnand devices going
+
+I believe you can quote the commit inline, like below (please use the
+12-digit hash below as well).
+
+I am not sure ->exec_op() is to be blamed here, maybe this change
+revealed the issue but I doubt it is because of its efficiency. The
+problem was just laying silently IMHO.
+
+> into suspend. But it's actually "mtd: rawnand: Simplify the locking" that
+> allows it to return errors rather than locking, before that commit it would
+> have waited for the rawnand device to resume.
+
+I don't think so, I believe it was broken in the same way but was just
+not returning errors.
+> 
+> Tested on a iMX6ULL.
+> 
+> [0]:
+> ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+> 
+
+	Suggested-by: Boris... 
+
+would be nice.
+
+
+> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+> 
+> Hope I got it all :)
+> 
+>  drivers/mtd/mtdcore.c   | 57 ++++++++++++++++++++++++++++++++++++++++-
+>  include/linux/mtd/mtd.h | 36 ++++++++++++++++++--------
+>  2 files changed, 81 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index c8fd7f758938..3c93202e6cbb 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -36,6 +36,44 @@
+>  
+>  struct backing_dev_info *mtd_bdi;
+>  
+> +static void mtd_start_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	/*
+> +	 * Don't take the suspend_lock on devices that don't
+> +	 * implement the suspend hook. Otherwise, lockdep will
+> +	 * complain about nested locks when trying to suspend MTD
+> +	 * partitions or MTD devices created by gluebi which are
+> +	 * backed by real devices.
+> +	 */
+> +	if (!master->_suspend)
+> +		return;
+> +
+> +	/*
+> +	 * Wait until the device is resumed. Should we have a
+> +	 * non-blocking mode here?
+> +	 */
+> +	while (1) {
+> +		down_read(&master->master.suspend_lock);
+> +		if (!master->master.suspended)
+> +			return;
+> +
+> +		up_read(&master->master.suspend_lock);
+> +		wait_event(master->master.resume_wq, master->master.suspended == 0);
+
+"var == 0" translates well to "!var"
+
+> +	}
+> +}
+> +
+> +static void mtd_end_access(struct mtd_info *mtd)
+> +{
+> +	struct mtd_info *master = mtd_get_master(mtd);
+> +
+> +	if (!master->_suspend)
+> +		return;
+> +
+> +	up_read(&master->master.suspend_lock);
+> +}
+> +
+>  #ifdef CONFIG_PM_SLEEP
+>  
+>  static int mtd_cls_suspend(struct device *dev)
+> @@ -1000,6 +1038,9 @@ int mtd_device_parse_register(struct mtd_info *mtd, const char * const *types,
+>  
+>  	ret = mtd_otp_nvmem_add(mtd);
+>  
+> +	init_waitqueue_head(&mtd->master.resume_wq);
+> +	init_rwsem(&mtd->master.suspend_lock);
+
+what about setting this in mtd_set_dev_defaults()?
+
+> +
+>  out:
+>  	if (ret && device_is_registered(&mtd->dev))
+>  		del_mtd_device(mtd);
+> @@ -1241,6 +1282,8 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	struct erase_info adjinstr;
+>  	int ret;
+>  
+> +	mtd_start_access(mtd);
+
+I believe we should cover all the ioctls, even if they are not
+accessing the device. I don't think it's a problem to stop
+interacting when the devices are suspended?
+
+> +
+>  	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>  	adjinstr = *instr;
+>  
+> @@ -1278,6 +1321,8 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  		}
+>  	}
+>  
+> +	mtd_end_access(mtd);
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_erase);
+> @@ -1558,6 +1603,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+>  	struct mtd_ecc_stats old_stats = master->ecc_stats;
+>  	int ret_code;
+>  
+> +	mtd_start_access(mtd);
+> +
+>  	ops->retlen = ops->oobretlen = 0;
+>  
+>  	ret_code = mtd_check_oob_ops(mtd, from, ops);
+> @@ -1577,6 +1624,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+>  
+>  	mtd_update_ecc_stats(mtd, master, &old_stats);
+>  
+> +	mtd_end_access(mtd);
+> +
+>  	/*
+>  	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
+>  	 * similar to mtd->_read(), returning a non-negative integer
+> @@ -1597,6 +1646,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+>  	struct mtd_info *master = mtd_get_master(mtd);
+>  	int ret;
+>  
+> +	mtd_start_access(mtd);
+> +
+>  	ops->retlen = ops->oobretlen = 0;
+>  
+>  	if (!(mtd->flags & MTD_WRITEABLE))
+> @@ -1615,7 +1666,11 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+>  	if (mtd->flags & MTD_SLC_ON_MLC_EMULATION)
+>  		return mtd_io_emulated_slc(mtd, to, false, ops);
+>  
+> -	return mtd_write_oob_std(mtd, to, ops);
+> +	ret = mtd_write_oob_std(mtd, to, ops);
+> +
+> +	mtd_end_access(mtd);
+> +
+> +	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(mtd_write_oob);
+>  
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 88227044fc86..cfab07b02dc9 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -231,6 +231,8 @@ struct mtd_master {
+>  	struct mutex partitions_lock;
+>  	struct mutex chrdev_lock;
+>  	unsigned int suspended : 1;
+> +	wait_queue_head_t resume_wq;
+> +	struct rw_semaphore suspend_lock;
+>  };
+>  
+>  struct mtd_info {
+> @@ -546,30 +548,42 @@ int mtd_block_markbad(struct mtd_info *mtd, loff_t ofs);
+>  static inline int mtd_suspend(struct mtd_info *mtd)
+>  {
+>  	struct mtd_info *master = mtd_get_master(mtd);
+> -	int ret;
+> +	int ret = 0;
+>  
+> -	if (master->master.suspended)
+> -		return 0;
+>  
+> -	ret = master->_suspend ? master->_suspend(master) : 0;
+> -	if (ret)
+> +	if (!master->_suspend)
+>  		return ret;
+>  
+> -	master->master.suspended = 1;
+> -	return 0;
+> +	down_write(&master->master.suspend_lock);
+> +	if (!master->master.suspended) {
+> +		ret = master->_suspend(master);
+> +		if (!ret)
+> +			master->master.suspended = 1;
+> +	}
+> +	up_write(&master->master.suspend_lock);
+> +
+> +	return ret;
+>  }
+>  
+>  static inline void mtd_resume(struct mtd_info *mtd)
+>  {
+>  	struct mtd_info *master = mtd_get_master(mtd);
+>  
+> -	if (!master->master.suspended)
+> +	if (!master->_suspend)
+>  		return;
+>  
+> -	if (master->_resume)
+> -		master->_resume(master);
+>  
+> -	master->master.suspended = 0;
+> +	down_write(&master->master.suspend_lock);
+> +	if (master->master.suspended) {
+> +		if (master->_resume)
+> +			master->_resume(master);
+> +
+> +		master->master.suspended = 0;
+> +
+> +		/* The MTD dev has been resumed, wake up all waiters. */
+> +		wake_up_all(&master->master.resume_wq);
+> +	}
+> +	up_write(&master->master.suspend_lock);
+>  }
+>  
+>  static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
+
+The other patch lgtm.
+
+Thanks,
+Miquèl
