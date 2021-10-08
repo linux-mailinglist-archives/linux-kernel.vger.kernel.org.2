@@ -2,100 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27312426F05
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E88426F08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 18:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhJHQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 12:33:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhJHQdt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 12:33:49 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3230C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 09:31:53 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id i189so3645204ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 09:31:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pznMwXxaNj5LbKCr9JpGSjNvFHuWrktXzE7YnpIRhnM=;
-        b=EVYPt+6mjWERED7l2ADeX5CBgIgFEPb2OMc+7wQeMA17hdXQzGU0toaXJvvrjhJR+b
-         +MBCDqV/W17M3lbb4O7tAur359mC29Jsvz4Q1x2FgXpMRyWlTQWPfbJuZfC4BdlNOpf2
-         FbqACbxxZi9n0osrmqyLEW1fmPqlPwgaBNsaw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pznMwXxaNj5LbKCr9JpGSjNvFHuWrktXzE7YnpIRhnM=;
-        b=sXreP4FdxaPcKjeu9ebT8C1OsxnCEgTipv3txTa+7ABxmYSx1G3LwV/taVG2FrRUty
-         ItD7ugzAfNH1Oqx36dW/ZxVuGCEDIAk6aA31UAmBaoYTq68C+MBFrBwlrbbaqGRcOGZA
-         So4xzacCvZDteJWT2enSpvwHfZ3Ma/pCuQKvpk9lYYwGlxlpiEZNe0kUexzcmE6CC4KP
-         7DNZaUNKeQyQWO6cb5ABeR06zqbrlGCOcyLMzQCnCUHbxEG7/d1XxmaSBZDyGX3l/Yfv
-         xtJdaajZz+e43VgALuR9w4KxPsYT30KzSZtuEYTfPgZ/cYvzEUAEbCmNJ5lnP7LlM3k1
-         XKJA==
-X-Gm-Message-State: AOAM533tsxVYUxQgXUEr0eN/AYSJZynwmjAmKrWGwCgEvzqQ1oq5l69K
-        Pk9gihdKezVHvBbAyQtAxqaVmg==
-X-Google-Smtp-Source: ABdhPJzhHhHPD+EzyzIgN7W3x9fZgGYQAO4TRpVF5y64WjCzXsZILPbYSg6Af3clJCut/HXIAUcPeg==
-X-Received: by 2002:a05:6638:148b:: with SMTP id j11mr8632436jak.79.1633710711995;
-        Fri, 08 Oct 2021 09:31:51 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d25sm1173766iod.41.2021.10.08.09.31.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 09:31:51 -0700 (PDT)
-Subject: Re: linux-next: manual merge of the kunit-next tree with the
- kunit-fixes tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20211008152930.03787395@canb.auug.org.au>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <ba01fb13-e1a1-299e-9a7b-ccdeaeef267a@linuxfoundation.org>
-Date:   Fri, 8 Oct 2021 10:31:50 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231205AbhJHQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 12:34:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:34696 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230216AbhJHQeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 12:34:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 208381063;
+        Fri,  8 Oct 2021 09:32:49 -0700 (PDT)
+Received: from bogus (unknown [10.57.21.181])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DAC583F66F;
+        Fri,  8 Oct 2021 09:32:46 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 17:32:00 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Marc Bonnici <marc.bonnici@arm.com>,
+        Jerome Forissier <jerome@forissier.org>,
+        sughosh.ganu@linaro.org
+Subject: Re: [PATCH v6 5/5] optee: add FF-A support
+Message-ID: <20211008163200.wgls7gijpsk556kl@bogus>
+References: <20211006070902.2531311-1-jens.wiklander@linaro.org>
+ <20211006070902.2531311-6-jens.wiklander@linaro.org>
+ <20211008132732.hbmkd3hftdydtrsc@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20211008152930.03787395@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008132732.hbmkd3hftdydtrsc@bogus>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 10:29 PM, Stephen Rothwell wrote:
-> Hi all,
+On Fri, Oct 08, 2021 at 02:27:32PM +0100, Sudeep Holla wrote:
+> On Wed, Oct 06, 2021 at 09:09:02AM +0200, Jens Wiklander wrote:
+> > Adds support for using FF-A [1] as transport to the OP-TEE driver.
+> >
+> > Introduces struct optee_msg_param_fmem which carries all information
+> > needed when OP-TEE is calling FFA_MEM_RETRIEVE_REQ to get the shared
+> > memory reference mapped by the hypervisor in S-EL2. Register usage is
+> > also updated to include the information needed.
+> >
+> > The FF-A part of this driver is enabled if CONFIG_ARM_FFA_TRANSPORT is
+> > enabled.
+> >
 > 
-> Today's linux-next merge of the kunit-next tree got a conflict in:
+> I am not sure if I missed this with earlier version but I see the below
+> warning the second time I insert the optee module. I am sure I tested it
+> with previous version when I was fixing issues with FF-A as a module.
 > 
->    tools/testing/kunit/kunit.py
-> 
-> between commit:
-> 
->    d8c23ead708b ("kunit: tool: better handling of quasi-bool args (--json, --raw_output)")
-> 
-> from the kunit-fixes tree and commit:
-> 
->    6710951ee039 ("kunit: tool: support running each suite/test separately")
-> 
-> from the kunit-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
+> Not sure if I am missing something in my steps.
+>
 
-Thank you for the fixing it up. I will fix this up in the kunit-next once
-the kunit-fixes pull request goes out.
+OK, more info, indeed I didn't observe this issue 2 weeks back with optee
+at commit 57e642f12085 ("core: enable system PTA upon user TA support").
+The UUID(d96a5b40-c3e5-21e3-8794-1002a5d5c61b) wasn't enumerated with above
+commit. Today I am testing the latest commit 2de2880065f3 ("core: update
+reference link to PrimeCell Cache Controller").
 
-thanks,
--- Shuah
+Though it looks like an issue with the driver, the latest optee changes
+triggered the driver to hit this issue in my setup. Hope this helps.
+IIUC we are not undoing optee_register_device executed via
+optee_enumerate_devices in the exit path.
+
+--
+Regards,
+Sudeep
