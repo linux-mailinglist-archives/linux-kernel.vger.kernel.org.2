@@ -2,122 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EDC427116
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63E242711B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 20:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239603AbhJHTAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 15:00:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231459AbhJHTAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 15:00:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E551D60FF2;
-        Fri,  8 Oct 2021 18:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633719490;
-        bh=vJva/HpoeUn+4gPZyR4WLzqjqQsUwQtyF3rf7Q6S3T4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CgXaABOb9gNGAOqRfRfFgwTItuF6RLY77H3NnriIqYe0Y3fyo8GYxxC9df98OFaYW
-         Jb14pYa7EVnXQSU9egbiOzjVbThsZK6povp/ugOQyUC9m6ZJJO5MN6eHFzLUzMRtrr
-         whX9r+3s8HoBewDftCu4lNRX4V382LoIQcB+V9/qJ9yyPlDaea6yRr0AeYGHW869Q3
-         h6UesZupaY86jn+QKVTYJvjDayKQdn23mMhV+OBQgk9pmv640aoHIE8fs2spitLgEn
-         wmAtveTJ3By2OG3Ku4Xlr04l3nWNx2wVGfhXQjDxtafjlQOaZnFbu4arBzJ9m7367n
-         ardhDAoiNsdsw==
-Received: by mail-ed1-f50.google.com with SMTP id d9so15993192edh.5;
-        Fri, 08 Oct 2021 11:58:10 -0700 (PDT)
-X-Gm-Message-State: AOAM533XkHzUX3Jm6evTo1xCP6RGO/ndpZXWDVyDFicpAZwFYKfPkwoj
-        B0m2xX2/VzbopI6jjacodqSjJ26ECWql/qAwCQ==
-X-Google-Smtp-Source: ABdhPJzBttaP056QfvNAp0LGKfTv4Wu68h8vKSUgvj7d/nrVSCz93oZHkNGlo6sQGYTgKEc0qcv31neoUntcj2P7MSM=
-X-Received: by 2002:a17:906:71d4:: with SMTP id i20mr6499269ejk.390.1633719489276;
- Fri, 08 Oct 2021 11:58:09 -0700 (PDT)
+        id S240543AbhJHTAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 15:00:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhJHTAS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 15:00:18 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E948C061570;
+        Fri,  8 Oct 2021 11:58:22 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D9296146F;
+        Fri,  8 Oct 2021 20:58:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633719498;
+        bh=MHBiXZNJbPeFPmG29rwaw6VIy+Lb+40kRf3KLozS164=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ve3QkZ0wRysKeFMaDqFGb7JwEWPU6UDRYkfd9QJlUR3hVcOODY0lniKciKC/SfJwP
+         TxFtjnKge5JGGkfFnZsYFg5BuHVHCB9uPDurNaNq//dm/2yAasRcvXOHPSDVgxxDJs
+         z6rvYPs6sxCeKyCqmJz9lhhn0AE6ZTAAKlFlINGY=
+Date:   Fri, 8 Oct 2021 21:58:07 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH 02/12] media: i2c: ov8865: Add an has_unmet_acpi_deps()
+ check
+Message-ID: <YWCUv+gEnfWnpRS6@pendragon.ideasonboard.com>
+References: <20211008162121.6628-1-hdegoede@redhat.com>
+ <20211008162121.6628-3-hdegoede@redhat.com>
+ <YWCQ6/AMzP5Nfcyk@pendragon.ideasonboard.com>
+ <39a85265-017e-f86d-619b-c1aa6a771a26@redhat.com>
 MIME-Version: 1.0
-References: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
- <20210920182114.339419-6-krzysztof.kozlowski@canonical.com>
- <YUzuyG3e7sHlMHAJ@robh.at.kernel.org> <8871dd77-f9f1-bf25-78ad-48f97efcf7d9@canonical.com>
-In-Reply-To: <8871dd77-f9f1-bf25-78ad-48f97efcf7d9@canonical.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 8 Oct 2021 13:57:57 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqK4cku0XPgEL=xot67FjfApxLHUDAvbwV6-MvpG_M0aKg@mail.gmail.com>
-Message-ID: <CAL_JsqK4cku0XPgEL=xot67FjfApxLHUDAvbwV6-MvpG_M0aKg@mail.gmail.com>
-Subject: Re: [PATCH 6/6] dt-bindings: hwmon: jedec,jc42: add nxp,se97b
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jiri Kosina <trivial@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Linux HWMON List <linux-hwmon@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <39a85265-017e-f86d-619b-c1aa6a771a26@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 1:57 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 23/09/2021 23:16, Rob Herring wrote:
-> > On Mon, Sep 20, 2021 at 08:21:14PM +0200, Krzysztof Kozlowski wrote:
-> >> Document bindings for NXP SE97B, a DDR memory module temperature sensor
-> >> with integrated SPD and EEPROM via Atmel's AT24 interface.
+Hi Hans,
+
+On Fri, Oct 08, 2021 at 08:48:18PM +0200, Hans de Goede wrote:
+> On 10/8/21 8:41 PM, Laurent Pinchart wrote:
+> > On Fri, Oct 08, 2021 at 06:21:11PM +0200, Hans de Goede wrote:
+> >> The clk and regulator frameworks expect clk/regulator consumer-devices
+> >> to have info about the consumed clks/regulators described in the device's
+> >> fw_node.
 > >>
-> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> >> To work around cases where this info is not present in the firmware tables,
+> >> which is often the case on x86/ACPI devices, both frameworks allow the
+> >> provider-driver to attach info about consumers to the clks/regulators
+> >> when registering these.
+> >>
+> >> This causes problems with the probe ordering of the ov8865 driver vs the
+> >> drivers for these clks/regulators. Since the lookups are only registered
+> >> when the provider-driver binds, trying to get these clks/regulators before
+> >> then results in a -ENOENT error for clks and a dummy regulator for regs.
+> >>
+> >> On ACPI/x86 where this is a problem, the ov8865 ACPI fw-nodes have a _DEP
+> >> dependency on the INT3472 ACPI fw-node which describes the hardware which
+> >> provides the clks/regulators.
+> >>
+> >> The drivers/platform/x86/intel/int3472/ code dealing with these ACPI
+> >> fw-nodes will call acpi_dev_clear_dependencies() to indicate that this
+> >> _DEP has been "met" when all the clks/regulators have been setup.
+> >>
+> >> Call the has_unmet_acpi_deps() helper to check for unmet _DEPs
+> >> and return -EPROBE_DEFER if this returns true, so that we wait for
+> >> the clk/regulator setup to be done before continuing with probing.
+> >>
+> >> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > >> ---
-> >>  Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml | 9 +++++++++
-> >>  1 file changed, 9 insertions(+)
+> >>  drivers/media/i2c/ov8865.c | 3 +++
+> >>  1 file changed, 3 insertions(+)
 > >>
-> >> diff --git a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
-> >> index a7bb4e3a1c46..0e49b3901161 100644
-> >> --- a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
-> >> +++ b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
-> >> @@ -10,6 +10,14 @@ maintainers:
-> >>    - Jean Delvare <jdelvare@suse.com>
-> >>    - Guenter Roeck <linux@roeck-us.net>
-> >>
-> >> +select:
-> >> +  properties:
-> >> +    compatible:
-> >> +      const: jedec,jc-42.4-temp
+> >> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
+> >> index ce4e0ae2c4d3..fd18d1256f78 100644
+> >> --- a/drivers/media/i2c/ov8865.c
+> >> +++ b/drivers/media/i2c/ov8865.c
+> >> @@ -2978,6 +2978,9 @@ static int ov8865_probe(struct i2c_client *client)
+> >>  	unsigned int i;
+> >>  	int ret;
+> >>  
+> >> +	if (has_unmet_acpi_deps(dev))
+> >> +		return -EPROBE_DEFER;
 > >> +
-> >> +  required:
-> >> +    - compatible
-> >> +
-> >
-> > Is this supposed to be in the last patch? And why is it needed?
->
-> Yes, this is here on purpose because of nxp,se97b which is sensor with
-> at24-compatible EEPROM.
->
-> arch/arm/boot/dts/at91-nattis-2-natte-2.dts:
-> 169         temp@18 {
-> 170                 compatible = "nxp,se97b", "jedec,jc-42.4-temp";
->
-> 171                 reg = <0x18>;
-> 172                 smbus-timeout-disable;
-> 173         };
-> 174
-> 175         eeprom@50 {
-> 176                 compatible = "nxp,se97b", "atmel,24c02";
-> 177                 reg = <0x50>;
-> 178                 pagesize = <16>;
->
-> Without the select, dtbs_check was complaining about the second node:
->
-> eeprom@50: compatible: 'oneOf' conditional failed, one must be fixed:
->         ['nxp,se97b', 'atmel,24c02'] is too long
->         Additional items are not allowed ('atmel,24c02' was unexpected)
->         'jedec,jc-42.4-temp' was expected
->         From schema:
-> /home/dev/linux/linux/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
->
-> eeprom@50: 'pagesize' does not match any of the regexes: 'pinctrl-[0-9]+'
->         From schema:
-> /home/dev/linux/linux/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> > 
+> > We've worked hard to avoid adding ACPI-specific code such as this in
+> > sensor drivers, as it would then spread like crazy, and also open the
+> > door to more ACPI-specific support. I don't want to open this pandora's
+> > box, I'd like to see this handled in another layer (the I2C core could
+> > be a condidate for instance, but bonus points if it can be handled in
+> > the ACPI subsystem itself).
+> 
+> The problem is that we do NOT want this check for all i2c devices,
 
-If a dt only lists one of the vendor specific compatibles, it is going
-to pass as this schema won't be applied with this change. We won't get
-an undocumented compatible either because it is documented. I don't
-have a better suggestion other than listing everything but
-'nxp,se97b'. I don't think it is really worth do that, so:
+Any of these sensors can be used on non-ACPI-based platforms, or on
+ACPI-based platforms where integration has been done right. If it causes
+an issue to call this function on those platforms, then this driver
+won't work. If it causes no issue, why can't we call it in the I2C core
+(or somewhere else) ?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> so doing
+> it in any place other then the drivers means having some list of APCI-ids
+> to which to apply this someplace else. And then for every sensor driver
+> which needs this we need to update this list.
+> 
+> This is wht I've chosen to just put this check directly in the sensor
+> drivers. It is only 2 lines, it is a no-op on kernels where ACPI
+> is not enabled (without need a #ifdef) and it is a no-op if the
+> sensor i2c-client is not instantiated through APCI even when ACPI
+> support is enabled in the kernel.
+> 
+> I understand that you don't want a lot of ACPI specific code inside
+> the drivers, which is why I've come up with this fix which consists
+> of only 2 lines.  My previous attempts (which I never posted)
+> where much worse then this.
+
+So we only need to take one more step to remove just two lines :-)
+
+This is all caused by Intel messing up their ACPI design badly. It's too
+late to point and shame, it won't fix the problem, but I don't want this
+to spread through drivers, neither for just those two lines (there are
+dozens of sensors that would need the same treatment), nor for what the
+next steps would be when someone else will want to add ACPI-specific
+code and use this as a precedent. That's why we tried hard with Dan
+Scally to isolate all the necessary quirks in a single place instead of
+spreading them through drivers, which would have been easier to
+implement.
+
+I'd like to hear what Sakari thinks about this.
+
+> >>  	sensor = devm_kzalloc(dev, sizeof(*sensor), GFP_KERNEL);
+> >>  	if (!sensor)
+> >>  		return -ENOMEM;
+
+-- 
+Regards,
+
+Laurent Pinchart
