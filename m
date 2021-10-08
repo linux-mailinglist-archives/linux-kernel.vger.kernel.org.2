@@ -2,498 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96019426A4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB62426A30
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:54:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241215AbhJHL4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:56:52 -0400
-Received: from foss.arm.com ([217.140.110.172]:46464 "EHLO foss.arm.com"
+        id S240644AbhJHL4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:56:15 -0400
+Received: from first.geanix.com ([116.203.34.67]:37348 "EHLO first.geanix.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240989AbhJHL4l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:56:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B21B11FB;
-        Fri,  8 Oct 2021 04:54:45 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.196.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 848163F766;
-        Fri,  8 Oct 2021 04:54:37 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Cc:     Barry Song <21cnbao@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        aubrey.li@linux.intel.com, song.bao.hua@hisilicon.com,
-        tim.c.chen@linux.intel.com, jonathan.cameron@huawei.com,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Sergei Trofimovich <slyfox@gentoo.org>,
-        David Hildenbrand <david@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Vipin Sharma <vipinsh@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: [PATCH 2/2] sched: Centralize SCHED_{SMT, MC, CLUSTER} definitions
-Date:   Fri,  8 Oct 2021 12:53:47 +0100
-Message-Id: <20211008115347.425234-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211008115347.425234-1-valentin.schneider@arm.com>
-References: <20211008115347.425234-1-valentin.schneider@arm.com>
+        id S230129AbhJHL4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:56:13 -0400
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id 1FB80C3B0B;
+        Fri,  8 Oct 2021 11:54:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633694055; bh=V4H8MpbgmJT8YmELdRmWupxRXDsKpUaAKyaiUa6BdYA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=SBDgrqR1lAV4msJ24MW2iP+dU6cyqdARS3cN8MZrLHCp7hqN33zlAcLAZCAQjrUNn
+         67IcMtWqvjHrcGjaRFXBdl5+DRLADKY8ruzXAAu7BSvPOCWJjBolj4Ztthxq4XY83d
+         ipeUgo8U+149rvWytVFBqctqnQ6G0xSBom3YjovspnCvKzOksawSat0exmCim46Xrs
+         9yYx0j1N7qmDogLR0ZcPrhybl5IVzHQi2NRipvclr8RQIC0ZpkSf/FhHpsZ3cRLGhC
+         0N6BFwRSpvUNVz0g+d55fkFxcAw6B5XfjqI/MykSbtbGmLqfUY3Wc7xTE5Abfkg1NM
+         Iyki2SdNuQVHQ==
+Date:   Fri, 8 Oct 2021 13:54:13 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: use mutex to protect access while in
+ suspend
+Message-ID: <20211008115413.cbkdxv3mpmmkyvjx@skn-laptop>
+References: <20211005070930.epgxb5qzumk4awxq@skn-laptop>
+ <20211005102300.5da6d480@collabora.com>
+ <20211005084938.jcbw24umhehoiirs@skn-laptop>
+ <20211005105836.6c300f25@collabora.com>
+ <20211007114351.3nafhtpefezxhanc@skn-laptop>
+ <20211007141858.314533f2@collabora.com>
+ <20211007123916.w4oaooxfbawe6yw3@skn-laptop>
+ <20211007151426.54db0764@collabora.com>
+ <20211008100425.uudzlda2n5ojqjzc@skn-laptop>
+ <20211008132038.77231e2a@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211008132038.77231e2a@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Barry recently introduced a new CONFIG_SCHED_CLUSTER, and discussions
-around that highlighted that every architecture redefines its own help text
-and dependencies for CONFIG_SCHED_SMT and CONFIG_SCHED_MC.
+On Fri, Oct 08, 2021 at 01:20:38PM +0200, Boris Brezillon wrote:
+> Hi Sean,
+> 
+> On Fri, 8 Oct 2021 12:04:25 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > On Thu, Oct 07, 2021 at 03:14:26PM +0200, Boris Brezillon wrote:
+> > > On Thu, 7 Oct 2021 14:39:16 +0200
+> > > Sean Nyekjaer <sean@geanix.com> wrote:
+> > >   
+> > > > > 
+> > > > > wait_queue doesn't really describe what this waitqueue is used for
+> > > > > (maybe resume_wq), and the suspended state should be here as well
+> > > > > (actually, there's one already).    
+> > > > 
+> > > > I'll rename to something meaningful.  
+> > > > > 
+> > > > > Actually, what we need is a way to prevent the device from being
+> > > > > suspended while accesses are still in progress, and new accesses from
+> > > > > being queued if a suspend is pending. So, I think you need a readwrite
+> > > > > lock here:
+> > > > > 
+> > > > > * take the lock in read mode for all IO accesses, check the
+> > > > >   mtd->suspended value
+> > > > >   - if true, release the lock, and wait (retry on wakeup)
+> > > > >   - if false, just do the IO
+> > > > > 
+> > > > > * take the lock in write mode when you want to suspend/resume the
+> > > > >   device and update the suspended field. Call wake_up_all() in the
+> > > > >   resume path    
+> > > > 
+> > > > Could we use the chip->lock mutex for this? It's does kinda what you
+> > > > described above?  
+> > > 
+> > > No you can't. Remember I suggested to move all of that logic to
+> > > mtdcore.c, which doesn't know about the nand_chip struct.
+> > >   
+> > > > If we introduce a new lock, do we really need to have the suspended as
+> > > > an atomic?  
+> > > 
+> > > Nope, I thought we could do without a lock, but we actually need to
+> > > track active IO requests, not just the suspended state.  
+> > 
+> > I have only added wait_queue to read and write operations.
+> 
+> It's still racy (see below).
+> 
+> > I'll have a look into where we should add further checks.
+> > 
+> > >   
+> > > > 
+> > > > I will test with some wait and retry added to nand_get_device().  
+> > > 
+> > > Again, I think there's a misunderstanding here: if you move it to the
+> > > mtd layer, it can't be done in nand_get_device(). But once you've
+> > > implemented it in mtdcore.c, you should be able to get rid of the
+> > > nand_chip->suspended field.  
+> > 
+> > I have moved the suspended atomic and wake_queue to mtdcore.c.
+> 
+> That doesn't work (see below).
+> 
+> > And kept
+> > the suspended variable in nand_base as is fine for chip level suspend
+> > status.
+> 
+> Why? If you handle that at the MTD level you shouldn't need it at the
+> NAND level? BTW, would you please care to detail your reasoning when
+> you say you did or didn't do something. It's a bit hard to guess what
+> led you to this conclusion...
+> 
+> > 
+> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > index c8fd7f758938..6492071eb4da 100644
+> > --- a/drivers/mtd/mtdcore.c
+> > +++ b/drivers/mtd/mtdcore.c
+> > @@ -42,15 +42,24 @@ static int mtd_cls_suspend(struct device *dev)
+> >  {
+> >         struct mtd_info *mtd = dev_get_drvdata(dev);
+> > 
+> > -       return mtd ? mtd_suspend(mtd) : 0;
+> > +       if (mtd) {
+> > +               atomic_inc(&mtd->suspended);
+> > +               return mtd_suspend(mtd);
+> > +       }
+> > +                                                                                                                                                                                                                                                                                                                                                                                             +       return 0;
+> >  }
+> > 
+> >  static int mtd_cls_resume(struct device *dev)
+> >  {
+> >         struct mtd_info *mtd = dev_get_drvdata(dev);
+> > 
+> > -       if (mtd)
+> > +       if (mtd) {
+> >                 mtd_resume(mtd);
+> > +               atomic_dec(&mtd->suspended);
+> > +               wake_up_all(&mtd->resume_wq);
+> > +       }
+> > +
+> >         return 0;
+> >  }
+> > @@ -678,6 +687,10 @@ int add_mtd_device(struct mtd_info *mtd)
+> >         if (error)
+> >                 goto fail_nvmem_add;
+> > 
+> > +       init_waitqueue_head(&mtd->resume_wq);
+> > +
+> > +       atomic_set(&mtd->suspended, 0);
+> > +
+> >         mtd_debugfs_populate(mtd);
+> > 
+> >         device_create(&mtd_class, mtd->dev.parent, MTD_DEVT(i) + 1, NULL,
+> > @@ -1558,6 +1571,8 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
+> >         struct mtd_ecc_stats old_stats = master->ecc_stats;
+> >         int ret_code;
+> > 
+> > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
+> 
+> That's racy:
+> 
+> thread A			thread B
+> 			   |
+> enters mtd_read()	   |
+> passes the !suspended test |
+> 			   |	enters mtd_suspend()
+> 			   |	sets suspended to 1
+> 			   |
+> starts the IO		   |
+> 			   |	suspends the device
+> tries to finish the IO	   |
+> on a suspended device	   |
+> 
+> 			 BOOM!
+> 
+> 
+> Using an atomic doesn't solve any of that, you really need to make sure
+> nothing tries to communicate with the device while you're suspending
+> it, hence the suggestion to use a rw_semaphore to protect against that.
+> 
+> > +
+> >         ops->retlen = ops->oobretlen = 0;
+> > 
+> >         ret_code = mtd_check_oob_ops(mtd, from, ops);
+> > @@ -1597,6 +1612,8 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+> >         struct mtd_info *master = mtd_get_master(mtd);
+> >         int ret;
+> > 
+> > +       wait_event(mtd->resume_wq, atomic_read(&mtd->suspended) == 0);
+> > +
+> 
+> Please don't open-code this in every IO path, add helpers hiding all the
+> complexity.
+> 
+> To sum-up, that's more or less what I add in mind:
+> 
+> static void mtd_start_access(struct mtd_info *mtd)
+> {
+> 	/*
+> 	 * Don't take the suspend_lock on devices that don't
+> 	 * implement the suspend hook. Otherwise, lockdep will
+> 	 * complain about nested locks when trying to suspend MTD
+> 	 * partitions or MTD devices created by gluebi which are
+> 	 * backed by real devices.
+> 	 */
+> 	if (!mtd->_suspend)
+> 		return;
+> 
+> 	/*
+> 	 * Wait until the device is resumed. Should we have a
+> 	 * non-blocking mode here?
+> 	 */
+> 	while (1) {
+> 		down_read(&mtd->suspend_lock);
+> 		if (!mtd->suspended)
+> 			return;
+> 
+> 		up_read(&mtd->suspend_lock);
+> 		wait_event(mtd->resume_wq, mtd->suspended == false);
+> 	}
+> }
+> 
+> static void mtd_end_access(struct mtd_info *mtd)
+> {
+> 	if (!mtd->_suspend)
+> 		return;
+> 
+> 	up_read(&mtd->suspend_lock);
+> }
+> 
+> static void mtd_suspend(struct mtd_info *mtd)
+> {
+> 	int ret;
+> 
+> 	if (!mtd->_suspend)
+> 		return;
+> 
+> 	down_write(&mtd->suspend_lock);
+> 	if (mtd->suspended == false) {
+> 		ret = mtd->_suspend(mtd);
+> 		if (!ret)
+> 			mtd->suspended = true;
+> 	}
+> 	up_write(&mtd->suspend_lock);
+> }
+> 
+> static void mtd_resume(struct mtd_info *mtd)
+> {
+> 	if (!mtd->_suspend)
+> 		return;
+> 
+> 	down_write(&mtd->suspend_lock);
+> 	if (mtd->suspended) {
+> 		if (mtd->_resume)
+> 			mtd->_resume(mtd);
+> 
+> 		mtd->suspended = false;
+> 
+> 		/* The MTD dev has been resumed, wake up all waiters. */
+> 		wake_up_all(&mtd->resume_wq)
+> 	}
+> 	up_write(&mtd->suspend_lock);
+> }
+> 
+> You then need to call mtd_{start,end}_access() in all MTD IO path
+> (read/write/erase and maybe others too).
 
-Move the definition of those to scheduler's Kconfig to centralize help text
-and generic dependencies (i.e. SMP). Make them depend on a matching
-ARCH_SUPPORTS_SCHED_* which the architectures can select with the relevant
-architecture-specific dependency.
+Looks cool.
 
-s390 uses its own topology table (set_sched_topology()) and doesn't seem to
-cope without SCHED_MC or SCHED_SMT, so those remain untogglable.
+But you are introducing a new lock that basically does the
+same as chip->lock in nand_base.c one level above ;)
+You wrote that we didn't want to introduce a new lock :)
 
-Suggested-by: Barry Song <21cnbao@gmail.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- arch/arm/Kconfig     | 18 ++----------------
- arch/arm64/Kconfig   | 26 +++-----------------------
- arch/ia64/Kconfig    |  9 +--------
- arch/mips/Kconfig    | 10 +---------
- arch/parisc/Kconfig  |  9 +--------
- arch/powerpc/Kconfig |  9 +--------
- arch/s390/Kconfig    |  8 ++------
- arch/sh/Kconfig      |  1 +
- arch/sh/mm/Kconfig   |  9 ---------
- arch/sparc/Kconfig   | 20 ++------------------
- arch/x86/Kconfig     | 26 +++-----------------------
- kernel/sched/Kconfig | 43 +++++++++++++++++++++++++++++++++++++++++++
- 12 files changed, 60 insertions(+), 128 deletions(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fc196421b2ce..13aac98edf06 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -32,6 +32,8 @@ config ARM
- 	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT if CPU_V7
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_HUGETLBFS if ARM_LPAE
-+	select ARCH_SUPPORTS_SCHED_SMT if ARM_CPU_TOPOLOGY
-+	select ARCH_SUPPORTS_SCHED_MC if ARM_CPU_TOPOLOGY
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF
- 	select ARCH_USE_MEMTEST
-@@ -1166,22 +1168,6 @@ config ARM_CPU_TOPOLOGY
- 	  affinity between processors which is then used to describe the cpu
- 	  topology of an ARM System.
- 
--config SCHED_MC
--	bool "Multi-core scheduler support"
--	depends on ARM_CPU_TOPOLOGY
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
--config SCHED_SMT
--	bool "SMT scheduler support"
--	depends on ARM_CPU_TOPOLOGY
--	help
--	  Improves the CPU scheduler's decision making when dealing with
--	  MultiThreading at a cost of slightly increased overhead in some
--	  places. If unsure say N here.
--
- config HAVE_ARM_SCU
- 	bool
- 	help
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index d13677f4731d..8a49dd33f5e3 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -88,6 +88,9 @@ config ARM64
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
- 	select ARCH_SUPPORTS_NUMA_BALANCING
-+	select ARCH_SUPPORTS_SCHED_SMT
-+	select ARCH_SUPPORTS_SCHED_MC
-+	select ARCH_SUPPORTS_SCHED_CLUSTER
- 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION if COMPAT
- 	select ARCH_WANT_DEFAULT_BPF_JIT
- 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-@@ -982,29 +985,6 @@ config CPU_LITTLE_ENDIAN
- 
- endchoice
- 
--config SCHED_MC
--	bool "Multi-core scheduler support"
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
--config SCHED_CLUSTER
--	bool "Cluster scheduler support"
--	help
--	  Cluster scheduler support improves the CPU scheduler's decision
--	  making when dealing with machines that have clusters of CPUs.
--	  Cluster usually means a couple of CPUs which are placed closely
--	  by sharing mid-level caches, last-level cache tags or internal
--	  busses.
--
--config SCHED_SMT
--	bool "SMT scheduler support"
--	help
--	  Improves the CPU scheduler's decision making when dealing with
--	  MultiThreading at a cost of slightly increased overhead in some
--	  places. If unsure say N here.
--
- config NR_CPUS
- 	int "Maximum number of CPUs (2-4096)"
- 	range 2 4096
-diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 045792cde481..67f3d84242ae 100644
---- a/arch/ia64/Kconfig
-+++ b/arch/ia64/Kconfig
-@@ -18,6 +18,7 @@ config IA64
- 	select ARCH_ENABLE_MEMORY_HOTPLUG
- 	select ARCH_ENABLE_MEMORY_HOTREMOVE
- 	select ARCH_SUPPORTS_ACPI
-+	select ARCH_SUPPORTS_SCHED_SMT
- 	select ACPI_SYSTEM_POWER_STATES_SUPPORT if ACPI
- 	select ARCH_MIGHT_HAVE_ACPI_PDC if ACPI
- 	select FORCE_PCI
-@@ -247,14 +248,6 @@ config HOTPLUG_CPU
- 	  can be controlled through /sys/devices/system/cpu/cpu#.
- 	  Say N if you want to disable CPU hotplug.
- 
--config SCHED_SMT
--	bool "SMT scheduler support"
--	depends on SMP
--	help
--	  Improves the CPU scheduler's decision making when dealing with
--	  Intel IA64 chips with MultiThreading at a cost of slightly increased
--	  overhead in some places. If unsure say N here.
--
- config PERMIT_BSP_REMOVE
- 	bool "Support removal of Bootstrap Processor"
- 	depends on HOTPLUG_CPU
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 771ca53af06d..cc60d440b097 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -2373,17 +2373,9 @@ config MIPS_MT_SMP
- config MIPS_MT
- 	bool
- 
--config SCHED_SMT
--	bool "SMT (multithreading) scheduler support"
--	depends on SYS_SUPPORTS_SCHED_SMT
--	default n
--	help
--	  SMT scheduler support improves the CPU scheduler's decision making
--	  when dealing with MIPS MT enabled cores at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
- config SYS_SUPPORTS_SCHED_SMT
- 	bool
-+	select ARCH_SUPPORTS_SCHED_SMT
- 
- config SYS_SUPPORTS_MULTITHREADING
- 	bool
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 4742b6f169b7..6aaa962ec2f4 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -13,6 +13,7 @@ config PARISC
- 	select ARCH_NO_SG_CHAIN
- 	select ARCH_SUPPORTS_HUGETLBFS if PA20
- 	select ARCH_SUPPORTS_MEMORY_FAILURE
-+	select ARCH_SUPPORTS_SCHED_MC if PARISC_CPU_TOPOLOGY && PA8X00
- 	select DMA_OPS
- 	select RTC_CLASS
- 	select RTC_DRV_GENERIC
-@@ -295,14 +296,6 @@ config PARISC_CPU_TOPOLOGY
- 	help
- 	  Support PARISC cpu topology definition.
- 
--config SCHED_MC
--	bool "Multi-core scheduler support"
--	depends on PARISC_CPU_TOPOLOGY && PA8X00
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
- config IRQSTACKS
- 	bool "Use separate kernel stacks when processing interrupts"
- 	default y
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index ba5b66189358..9f45b92ccac1 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -151,6 +151,7 @@ config PPC
- 	select ARCH_STACKWALK
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC	if PPC32 || PPC_BOOK3S_64
-+	select ARCH_SUPPORTS_SCHED_SMT          if PPC64
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_CMPXCHG_LOCKREF		if PPC64
- 	select ARCH_USE_MEMTEST
-@@ -861,14 +862,6 @@ config PPC_PROT_SAO_LPAR
- config PPC_COPRO_BASE
- 	bool
- 
--config SCHED_SMT
--	bool "SMT (Hyperthreading) scheduler support"
--	depends on PPC64 && SMP
--	help
--	  SMT scheduler support improves the CPU scheduler's decision making
--	  when dealing with POWER5 cpus at a cost of slightly increased
--	  overhead in some places. If unsure say N here.
--
- config PPC_DENORMALISATION
- 	bool "PowerPC denormalisation exception handling"
- 	depends on PPC_BOOK3S_64
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b86de61b8caa..a0b4117cb1fa 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -483,12 +483,6 @@ config NODES_SHIFT
- 	depends on NUMA
- 	default "1"
- 
--config SCHED_SMT
--	def_bool n
--
--config SCHED_MC
--	def_bool n
--
- config SCHED_BOOK
- 	def_bool n
- 
-@@ -498,6 +492,8 @@ config SCHED_DRAWER
- config SCHED_TOPOLOGY
- 	def_bool y
- 	prompt "Topology scheduler support"
-+	select ARCH_SUPPORTS_SCHED_SMT
-+	select ARCH_SUPPORTS_SCHED_MC
- 	select SCHED_SMT
- 	select SCHED_MC
- 	select SCHED_BOOK
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 6904f4bdbf00..7380ee27d252 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -13,6 +13,7 @@ config SUPERH
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
- 	select ARCH_HIBERNATION_POSSIBLE if MMU
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
-+	select ARCH_SUPPORTS_SCHED_MC
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select CPU_NO_EFFICIENT_FFS
- 	select DMA_DECLARE_COHERENT
-diff --git a/arch/sh/mm/Kconfig b/arch/sh/mm/Kconfig
-index ba569cfb4368..1d9f7006a72a 100644
---- a/arch/sh/mm/Kconfig
-+++ b/arch/sh/mm/Kconfig
-@@ -208,15 +208,6 @@ config HUGETLB_PAGE_SIZE_64MB
- 
- endchoice
- 
--config SCHED_MC
--	bool "Multi-core scheduler support"
--	depends on SMP
--	default y
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
- endmenu
- 
- menu "Cache configuration"
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index b120ed947f50..a6cf30d37725 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -86,6 +86,8 @@ config SPARC64
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select ARCH_SUPPORTS_ATOMIC_RMW
- 	select ARCH_SUPPORTS_DEBUG_PAGEALLOC
-+	select ARCH_SUPPORTS_SCHED_SMT
-+	select ARCH_SUPPORTS_SCHED_MC
- 	select HAVE_NMI
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select ARCH_USE_QUEUED_RWLOCKS
-@@ -290,24 +292,6 @@ if SPARC64
- source "kernel/power/Kconfig"
- endif
- 
--config SCHED_SMT
--	bool "SMT (Hyperthreading) scheduler support"
--	depends on SPARC64 && SMP
--	default y
--	help
--	  SMT scheduler support improves the CPU scheduler's decision making
--	  when dealing with SPARC cpus at a cost of slightly increased overhead
--	  in some places. If unsure say N here.
--
--config SCHED_MC
--	bool "Multi-core scheduler support"
--	depends on SPARC64 && SMP
--	default y
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
- config CMDLINE_BOOL
- 	bool "Default bootloader kernel arguments"
- 	depends on SPARC64
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 349e59b2f0e3..87a91fd33d85 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -107,6 +107,9 @@ config X86
- 	select ARCH_SUPPORTS_KMAP_LOCAL_FORCE_MAP	if NR_CPUS <= 4096
- 	select ARCH_SUPPORTS_LTO_CLANG
- 	select ARCH_SUPPORTS_LTO_CLANG_THIN
-+	select ARCH_SUPPORTS_SCHED_SMT
-+	select ARCH_SUPPORTS_SCHED_MC
-+	select ARCH_SUPPORTS_SCHED_CLUSTER
- 	select ARCH_USE_BUILTIN_BSWAP
- 	select ARCH_USE_MEMTEST
- 	select ARCH_USE_QUEUED_RWLOCKS
-@@ -1001,29 +1004,6 @@ config NR_CPUS
- 	  This is purely to save memory: each supported CPU adds about 8KB
- 	  to the kernel image.
- 
--config SCHED_CLUSTER
--	bool "Cluster scheduler support"
--	depends on SMP
--	default y
--	help
--	  Cluster scheduler support improves the CPU scheduler's decision
--	  making when dealing with machines that have clusters of CPUs.
--	  Cluster usually means a couple of CPUs which are placed closely
--	  by sharing mid-level caches, last-level cache tags or internal
--	  busses.
--
--config SCHED_SMT
--	def_bool y if SMP
--
--config SCHED_MC
--	def_bool y
--	prompt "Multi-core scheduler support"
--	depends on SMP
--	help
--	  Multi-core scheduler support improves the CPU scheduler's decision
--	  making when dealing with multi-core CPU chips at a cost of slightly
--	  increased overhead in some places. If unsure say N here.
--
- config SCHED_MC_PRIO
- 	bool "CPU core priorities scheduler support"
- 	depends on SCHED_MC && CPU_SUP_INTEL
-diff --git a/kernel/sched/Kconfig b/kernel/sched/Kconfig
-index c8b8e12c9c9c..9ceb08f42aeb 100644
---- a/kernel/sched/Kconfig
-+++ b/kernel/sched/Kconfig
-@@ -131,3 +131,46 @@ config SCHED_CORE
- 	  SCHED_CORE is default disabled. When it is enabled and unused,
- 	  which is the likely usage by Linux distributions, there should
- 	  be no measurable impact on performance.
-+
-+
-+#
-+# For architectuers that want to enable generic scheduler handling of
-+# different topology levels:
-+#
-+config ARCH_SUPPORTS_SCHED_SMT
-+       bool
-+
-+config ARCH_SUPPORTS_SCHED_MC
-+       bool
-+
-+config ARCH_SUPPORTS_SCHED_CLUSTER
-+       bool
-+
-+config SCHED_SMT
-+	bool "SMT scheduler support"
-+	depends on ARCH_SUPPORTS_SCHED_SMT && SMP
-+	default y
-+	help
-+	  Improves the CPU scheduler's decision making when dealing with
-+	  MultiThreading at a cost of slightly increased overhead in some
-+	  places. If unsure say N here.
-+
-+config SCHED_MC
-+	bool "Multi-core scheduler support"
-+	depends on ARCH_SUPPORTS_SCHED_MC && SMP
-+	default y
-+	help
-+	  Multi-core scheduler support improves the CPU scheduler's decision
-+	  making when dealing with multi-core CPU chips at a cost of slightly
-+	  increased overhead in some places. If unsure say N here.
-+
-+config SCHED_CLUSTER
-+	bool "Cluster scheduler support"
-+	depends on ARCH_SUPPORTS_SCHED_CLUSTER && SMP
-+	default y
-+	help
-+	  Cluster scheduler support improves the CPU scheduler's decision
-+	  making when dealing with machines that have clusters of CPUs.
-+	  Cluster usually means a couple of CPUs which are placed closely
-+	  by sharing mid-level caches, last-level cache tags or internal
-+	  busses.
--- 
-2.25.1
-
+I will this code...
