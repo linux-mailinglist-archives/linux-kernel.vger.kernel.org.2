@@ -2,71 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE3742626F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B814E426271
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:25:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236131AbhJHCZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 22:25:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44948 "EHLO mail.kernel.org"
+        id S235910AbhJHC1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 22:27:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19306 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229501AbhJHCZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 22:25:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EFDD6103C;
-        Fri,  8 Oct 2021 02:23:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633659785;
-        bh=vv1BjdqYFGtWCazSG8NawFHuPDrSlMXWmYEnP/7By6w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=W2F3NAL2PNL4YfcB+pCHgbHTe0iP1tVFeDtvsB/Qn7kwC5aDjFqzJFXUUg8EiNBqu
-         62h60wb7G6UG05e84hJxcE6x3tcRDAW85PtWo9ELjXf6zSBUkT1toU5CtHx+hRI6j7
-         GgD+oYjYorJK6bLrEErM4o6H2iKOp0u928v5xyyyQXSkjmjJOENuumDOuWQTI7zTuR
-         ZJ+I1MNj7s3Gs4g+PHBFr/0FZcBIxoeZicM/geGgOnaW/D4zhIexJugXYDtSEu6eP+
-         qtQbvd/qFU5SqaMLqVwjBpe0Uyv88JUELURqe9YtMJRb4OEXKhGg/aFITA+Gzb2sKn
-         ZD8kr14Ny9VyQ==
-Date:   Thu, 7 Oct 2021 19:23:04 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net PATCH v2 01/15] drivers: net: phy: at803x: fix resume for
- QCA8327 phy
-Message-ID: <20211007192304.7a9acabe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20211008002225.2426-2-ansuelsmth@gmail.com>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
-        <20211008002225.2426-2-ansuelsmth@gmail.com>
+        id S229501AbhJHC1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 22:27:43 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="225194662"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="225194662"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 19:25:48 -0700
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="624554949"
+Received: from mlazarux-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.19.27])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 19:25:47 -0700
+Subject: Re: [PATCH v8 11/11] x86/tdx: Handle CPUID via #VE
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211005025205.1784480-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211006202630.chblrhdqepsbtdaa@treble>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <02e4f583-39dd-cac9-5b51-5fa9ba81b996@linux.intel.com>
+Date:   Thu, 7 Oct 2021 19:25:44 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20211006202630.chblrhdqepsbtdaa@treble>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Oct 2021 02:22:11 +0200 Ansuel Smith wrote:
-> From Documentation phy resume triggers phy reset and restart
-> auto-negotiation. Add a dedicated function to wait reset to finish as
-> it was notice a regression where port sometime are not reliable after a
-> suspend/resume session. The reset wait logic is copied from phy_poll_reset.
-> Add dedicated suspend function to use genphy_suspend only with QCA8337
-> phy and set only additional debug settings for QCA8327. With more test
-> it was reported that QCA8327 doesn't proprely support this mode and
-> using this cause the unreliability of the switch ports, especially the
-> malfunction of the port0.
+
+
+On 10/6/21 1:26 PM, Josh Poimboeuf wrote:
+> On Mon, Oct 04, 2021 at 07:52:05PM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> +static u64 tdx_handle_cpuid(struct pt_regs *regs)
+>> +{
+>> +	struct tdx_hypercall_output out = {0};
+>> +	u64 ret;
+>> +
+>> +	/*
+>> +	 * Emulate CPUID instruction via hypercall. More info about
+>> +	 * ABI can be found in TDX Guest-Host-Communication Interface
+>> +	 * (GHCI), section titled "VP.VMCALL<Instruction.CPUID>".
+>> +	 */
+>> +	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
+>> +
+>> +	/*
+>> +	 * As per TDX GHCI CPUID ABI, r12-r15 registers contains contents of
+>> +	 * EAX, EBX, ECX, EDX registers after CPUID instruction execution.
+>> +	 * So copy the register contents back to pt_regs.
+>> +	 */
+>> +	regs->ax = out.r12;
+>> +	regs->bx = out.r13;
+>> +	regs->cx = out.r14;
+>> +	regs->dx = out.r15;
 > 
-> Fixes: 52a6cdbe43a3 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
+> Does it still make sense to save the regs if _tdx_hypercall() returns an
+> error?
 
-Strange, checkpatch catches the wrong hash being used, but the
-verify_fixes script doesn't. Did you mean:
+We don't need to save it in failure case. I will add check for error
+case in next version.
 
-Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")
+> 
+>> +
+>> +	return ret;
+> 
+> Also I'm wondering about error handling for all these _tdx_hypercall()
+> wrapper functions which are called by the #VE handler. >
+> First, there are some inconsistencies in whether and how they return the
+> r10 error.
 
-Or is 52a6cdbe43a3 the correct commit hash? Same question for patch 2.
+Since we have only cared about zero/non-zero return value, we did not
+check for consistency. May be I can convert all handler return values
+to bool.
 
+> 
+> - _tdx_halt() warns and doesn't return anything.
 
-The fixes have to be a _separate_ series.
+Since tdx_halt handler is shared with pv_ops, we can't return anything
+back (so we use WARN_ON to report the error).
+
+> 
+> - tdx_read_msr_safe() and tdx_write_msr_safe() convert all errors to -EIO.
+
+Return value does not matter. we only check for zero/non-zero value in
+tdx_handle_virtualization_exception(). we have used -EIO to convey that it is
+an IO error.
+
+> 
+> - tdx_handle_cpuid() returns the raw vmcall error.
+> 
+> Second, as far as I can tell, the #VE handler doesn't check the actual
+> return code value, other than checking for non-zero.  Should it at least
+> be printed in a warning?
+
+I don't think this is required. We can use trace to check the error code
+or argument details in failure case. Since we don't really use the error
+value, I am planning to change the #VE handler return type to bool.
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
