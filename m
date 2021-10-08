@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3434273B3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5E64273C7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243640AbhJHW1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:27:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34040 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231830AbhJHW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:27:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7B8060F6B;
-        Fri,  8 Oct 2021 22:25:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633731952;
-        bh=9acV1R8jlnvHbQ0xOKG84jeP85uyj+piXHo63LmDFeU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=UcEbanUDRRlTgVgqusRAff5Aid25qBwNaAMy8om1Ytk4ef9iH4QLgJYQ1oslv5VL3
-         jClswfAZ5Lv4kzY3xtMM+wxtig92ccvKgejCQOjp9GB2noGXMDKgZ2pbfNXaxyV+EM
-         4PDVhJjBKzFTsW9paXPFkaiGpYdGE3FGh1qEieW0HNxZ4dpYUYcxbbB4QeulqIzNew
-         IueeeuIb2J8LF7XY37NJ0wlo4SA5i/QGF3UnrnnaUYAKVCzADzqlQTMlC/w71uHBW5
-         fJSG+D/hixP8YyW/Ii+UWiDZVd6zAzPhO0LKENF2NMX5UNXBOr0sC50ThSFhQqmYkj
-         B0R19onrHTMHA==
-Date:   Fri, 8 Oct 2021 17:25:50 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     hch@infradead.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, stefanha@redhat.com, oren@nvidia.com,
-        kw@linux.com
-Subject: Re: [PATCH v3 2/2] PCI/sysfs: use NUMA_NO_NODE macro
-Message-ID: <20211008222550.GA1385680@bhelgaas>
+        id S243668AbhJHWcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:32:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243610AbhJHWcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:32:19 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E006DC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 15:30:23 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id s11so4397307pgr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 15:30:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5lX4WmVdA9s3zOOpVFvz6WSAhGtDP8pyzJp9HvydbOI=;
+        b=P6tbI4GRMv5cxI2aSwa0R8ys9H6kQdPqaiB5eCCUh3wQpm+DaakG5FkGgAhYMihbeA
+         Tb3KDDs1VxLmzD1sPDlCTDKPTAWU2gnVaLBL71VSThVAKefzJXtp3I1Bz4vyslMerQgg
+         3aLV2VF/GNO9hehONdQgh4GPPW9F3y0oT6gAreyLZM/3E+OrBjAurxjZqDbIeH44I+ym
+         xzekeAM6SgWTqmoas++ZigLXMdQPZIU6MnvoEDTWYXsCcqSSMLBzSA91eDcKbiGPliq5
+         oiM9j3qQrShb+d0w/5SxtGM63anlKX45sT3/9aB0+dsjOfgTSeSSuthwEoQy6f6MRJpZ
+         kDrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5lX4WmVdA9s3zOOpVFvz6WSAhGtDP8pyzJp9HvydbOI=;
+        b=6Kj1ix0MU7OACL27gHd9QdHi9Upy9sY1J0oS2ZdEbIhQ7djlOhvvQrHaBYlsEDQGDJ
+         P2POWUQpuBIo8KWgroOOF+3cNtM59WR7/rZn0qmCsN9Zr8rQY45PH0b0bme10kCyDhYi
+         cS1ahS7iJyxf1Um8jyVJDGC2rZrs6dUC4m55TXGhAVq5SmFzM4w+bZD0V7xUyHTWVvyv
+         iO4NpIdfz7xYgaSs5SzvOXWnVetsyLXbL2Je6eRyr7Mm2kPfJLfGxKbTnriFlETwohfi
+         AClX3Ov1r4XMxKGya8/skwkFdDYKizg0c4NRAtkB+qAT60UvOABnRU+g3tyAm5cDVikL
+         MdJw==
+X-Gm-Message-State: AOAM5309Z0cYseGNixFrZlCDZuqgq7kSAONAkUz/hOjeZqG2QSJ0C+S8
+        +MsD+QON9H1NbWcwQm+WGUA=
+X-Google-Smtp-Source: ABdhPJyM/XguqoXhYk/dTJstav/W4lJqXfPQC33PDz3PwV5yh4tPlZIOzSCu377jhSui7Bl20V9F4g==
+X-Received: by 2002:a05:6a00:198a:b0:44c:ae90:85fc with SMTP id d10-20020a056a00198a00b0044cae9085fcmr12747026pfl.1.1633732223304;
+        Fri, 08 Oct 2021 15:30:23 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id s17sm303480pfs.91.2021.10.08.15.30.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 15:30:22 -0700 (PDT)
+Subject: Re: [GIT PULL 1/2] bcm2835-dt-next-2021-10-06
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20211006081849.1434867-1-nsaenzju@redhat.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <57bb52c1-8ab8-da43-637b-523d2304609f@gmail.com>
+Date:   Fri, 8 Oct 2021 15:30:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20211006081849.1434867-1-nsaenzju@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211004133453.18881-2-mgurtovoy@nvidia.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 04:34:53PM +0300, Max Gurtovoy wrote:
-> Use the proper macro instead of hard-coded (-1) value.
+On 10/6/21 1:18 AM, Nicolas Saenz Julienne wrote:
+> Hi Florian,
 > 
-> Suggested-by: Krzysztof Wilczyński <kw@linux.com>
-> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-> Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-
-These two patches are independent, so I applied this patch only to
-pci/sysfs for v5.16, thanks!
-
-I assume Greg will take the drivers/base patch.
-
-> ---
->  drivers/pci/pci-sysfs.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 > 
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 7fb5cd17cc98..f807b92afa6c 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -81,8 +81,10 @@ static ssize_t pci_dev_show_local_cpu(struct device *dev, bool list,
->  	const struct cpumask *mask;
->  
->  #ifdef CONFIG_NUMA
-> -	mask = (dev_to_node(dev) == -1) ? cpu_online_mask :
-> -					  cpumask_of_node(dev_to_node(dev));
-> +	if (dev_to_node(dev) == NUMA_NO_NODE)
-> +		mask = cpu_online_mask;
-> +	else
-> +		mask = cpumask_of_node(dev_to_node(dev));
->  #else
->  	mask = cpumask_of_pcibus(to_pci_dev(dev)->bus);
->  #endif
-> -- 
-> 2.18.1
+>   Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 > 
+> are available in the Git repository at:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/nsaenz/linux-rpi.git tags/bcm2835-dt-next-2021-10-06
+> 
+> for you to fetch changes up to 1d71d543469cebed0c278b9b31c7a88306142121:
+> 
+>   arm64: dts: broadcom: Add reference to RPi CM4 IO Board (2021-10-06 09:53:36 +0200)
+> 
+> ----------------------------------------------------------------
+> Stefan Wahren adds devicetree support for the Raspbery Pi Compute Module
+> 4 and its IO board
+> 
+> ----------------------------------------------------------------
+
+Merged into devicetree/next, thanks Nicolas!
+-- 
+Florian
