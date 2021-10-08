@@ -2,121 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5050426E23
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46759426E27
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243197AbhJHPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:54:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
+        id S243226AbhJHP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:56:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243077AbhJHPyr (ORCPT
+        with ESMTP id S243046AbhJHP4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:54:47 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B10C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:52:52 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id w11so7198955ilv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:52:52 -0700 (PDT)
+        Fri, 8 Oct 2021 11:56:14 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23128C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:54:19 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id a14so6633893qvb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:54:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ac00s+PRxBmgu3lFPELG1EG9EqpXm9N50GQn2NdGX80=;
-        b=Tw8EtKcNyxCSI8Oav/rTOA2zpFi3rNCHInhlVMCcFX2vY1AefU8OyiMin18iKfOKRL
-         okgNXLaHez2T61cy9WirxUvZ2ZPkBPEKoMOG5LrVCxbBOWr/soQkDNbLnCMTLEPT5iHY
-         jrh+7Yp2J5dbcURs3oxaJMEsVXF6qLbobZODQp/Hz+SLnk1qVFKsCagmIx0OL4tvFr8Y
-         zf9KG1ZdUGJLqS737vGsp3K45LXZaQVGrLeCWtIZ3O4+wFebtaHIaZfsXZzP3GMW8+Vk
-         2qtfbIgXZ3tuZL+RDcUeA/WhV/LrobOsuoQjYpFrSi/1Yj0bD3KM+4V0vEKOMiWKehp0
-         lyLA==
+        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=JHQQ/ZPuMNBwfivK9zPtMYjZexbN/EgHfRTfb4X4FQM=;
+        b=WilbUexRA01zQ0bMJZW4pqq0QhYgb4cjNMoYFpt/WN/kAwF2xzUpyfU1vmmjKkQnvx
+         uOROisI1Hd25EaL/aZ4K1rDMkV4aT4ZtcAM3mAqwnnE1WvfK99MCJ6feMHFjtHQT7SjE
+         VV5YT5M4Qo+Uu8Zd5HJaQM4LtKuMVcqpMf0JX9jpDrbdtZmOJ6dnujH4Db/u7CovMjCq
+         DeFsPhEgFBltMLYOMkvGKaUwP0faoEj5P91nNZRBOTdRlQi3FSJBsTKOWNk8jci6DPXN
+         KlDu1ZdeqcrMoQRYjtv8GcVZ1Ky8gx91c3Y4UgfFucJr5iRXsPSkEbZsLiWaNvZKPlf1
+         vRMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ac00s+PRxBmgu3lFPELG1EG9EqpXm9N50GQn2NdGX80=;
-        b=clohPut+dELdM8lJ6nTIP1w3X2CaKFYkVaThlfmIbqIO7U+9/0bLlBQuV/47+KU1UB
-         udKPhdpbhDwkGZpNiNqJ/3tBt/YTd2R1LFPu73y53T8Kynp7hwal5x5vVItwghDDkPj/
-         5anwVZFV58XlPEFg+lkPAQHGEuVzhFPZMkhiqRFnWtDDT3/1/wVWjsk7GTfP//L1EqzH
-         Fdc1ojpMbNvBzU/EurAXNvqza0/3N/D4Cxd+WPKVIiGagPVxJM9bbSA4ZoEOrGrr357v
-         m+R8rJt5zzYXQDObt8dCGIaRJNMlWI6bcKzMR6+6iRij46g949zckhnRcxXhu6MKZwA/
-         ZhNw==
-X-Gm-Message-State: AOAM533vOwE7UwEr6aDELXh/dYI1uhMbgciyy8cRDopFAz1DqEIH69y5
-        o8v2oPx+M4N+0jT3cUR+JFdrKb77xJEFjFMay+395Q==
-X-Google-Smtp-Source: ABdhPJxlL991Sm7cGy5p23FjZmGBQYOjZwg0XmCfEwsR87F/DK2SMzgr9qaPwm0W60l/bxW/tTI1QByy6W/Za3r1Pfw=
-X-Received: by 2002:a05:6e02:1023:: with SMTP id o3mr8254592ilj.27.1633708371331;
- Fri, 08 Oct 2021 08:52:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008114343.57920-1-robert.marko@sartura.hr>
- <20211008120855.46zbo2fl5edwf7ja@pali> <CA+HBbNGvFtws2GF7RLbznAbXfvjKx4rOJ=eMeuHOJ6s7iANtzw@mail.gmail.com>
- <20211008134347.lskm5pzt73pkf7oc@pali>
-In-Reply-To: <20211008134347.lskm5pzt73pkf7oc@pali>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 8 Oct 2021 17:52:40 +0200
-Message-ID: <CA+HBbNEDxBDvNZPSWnBYJOUhqdwonBhFwD9P0xhSGccdvQJx3Q@mail.gmail.com>
-Subject: Re: [PATCH v5] arm64: dts: marvell: add Globalscale MOCHAbin
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-Cc:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        gregory.clement@bootlin.com, sebastian.hesselbarth@gmail.com,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=JHQQ/ZPuMNBwfivK9zPtMYjZexbN/EgHfRTfb4X4FQM=;
+        b=YUDc9FzpKYxta0kNBH7tXMPJoNicYSwuYIj7j/q38j3Vtq6ZvYt6BoiixYy/LItKVh
+         fPNp1vBnBqzzQItbvG9gRGslzpgAdlHuK+Qp2v2OVMnsMaJW/1H1e5unAC4V3AU/VfxJ
+         jxjpqihPEQe1UZ6gNR95VHfvV6G2LBzpLMnRyjlMJTnlujyHdtYkODmFeZgW/BzKzaHl
+         bdtzz+Te7aMHQO+DAk8OjLUkWIbCWQOGoEH0xDr6+BGMlZKTGMbc++padnwUzNFY8iQn
+         8O/+JKq0nqm8rOB+/KNpLHfS45kzyQx2DFgkGxUVH4di5ijXQ0q2SJMtGOF1BsagUryA
+         VJgw==
+X-Gm-Message-State: AOAM531bIn2meEF7zMvSC1PC1MHib8ujeq8ZOSaoNsILkfaCdX+0xi+G
+        gghdReCfsMXZrbtZcgUvmSqnBg==
+X-Google-Smtp-Source: ABdhPJzVAQ4pK19I9ktgZs5SQ2HXyEEnpkAMWqKmsXbgQremDteXueDeFV7UIfAnw16lGzesZAT+CA==
+X-Received: by 2002:a05:6214:1267:: with SMTP id r7mr10933942qvv.16.1633708458308;
+        Fri, 08 Oct 2021 08:54:18 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id 207sm2261102qkd.56.2021.10.08.08.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 08:54:18 -0700 (PDT)
+Message-ID: <a2759c8f5ec47bf6a96f69e103994dc20198c39b.camel@ndufresne.ca>
+Subject: Re: [PATCH 2/2] media: rkvdec: Support dynamic resolution changes
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Chen-Yu Tsai <wenst@chromium.org>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        stable@vger.kernel.org
+Date:   Fri, 08 Oct 2021 11:54:16 -0400
+In-Reply-To: <20211008100423.739462-3-wenst@chromium.org>
+References: <20211008100423.739462-1-wenst@chromium.org>
+         <20211008100423.739462-3-wenst@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 8, 2021 at 3:43 PM Pali Roh=C3=A1r <pali@kernel.org> wrote:
->
-> On Friday 08 October 2021 15:28:38 Robert Marko wrote:
-> > > > +     cp0_pcie_reset_pins: cp0-pcie-reset-pins {
-> > > > +             marvell,pins =3D "mpp9";
-> > > > +             marvell,function =3D "gpio";
-> > >
-> > > Now I spotted this. Why is PERST# pin configured into gpio mode? Is
-> > > there some issue that this pin in pcie mode is not working properly,
-> > > that PCIe controller cannot handle it correctly? Or something else?
-> >
-> > Its because I have seen way too many broken controllers when it comes
-> > to PERST and
-> > other Armada 7k/8k devices are using it in GPIO mode as well.
-> > Just look at the number of conversions back to GPIO for other
-> > platforms as there is always some bug.
->
-> I know that A3720 has broken PERST# control in PCIe block... or at least
-> I was not able to figure out how A3720 PCIe block can control PERST#. So
-> configuring it in gpio mode and let PERST# to be controlled manually via
-> gpio by the software is the workaround.
->
-> I just wanted to know if A7k/A8k/CN913x is also broken in the same way
-> as A3720.
->
-> Or it it just a configuration workaround for missing driver or missing
-> proper software setup.
->
-> HW bugs like this should be properly documented and not hidden behind
-> some configuration in DTS file. And reported to HW vendors.
+Le vendredi 08 octobre 2021 à 18:04 +0800, Chen-Yu Tsai a écrit :
+> The mem-to-mem stateless decoder API specifies support for dynamic
+> resolution changes. In particular, the decoder should accept format
+> changes on the OUTPUT queue even when buffers have been allocated,
+> as long as it is not streaming.
 
-I have to agree, so I did some digging.
-I don't think that the Armada 8k PCI driver actually supports HW level PERS=
-T#.
-I then looked at the functional specs and the only thing that looks
-related to PERST#
-is PCIe Software Reset Register which has a SoftWarePERst bit.
+As commented in the code, it also requires the CAPTURE side not to be busy, not
+sure if its worth clarifying, I don't really mind.
 
-Can you maybe look at it?
+> 
+> Relax restrictions for S_FMT as described in the previous paragraph,
+> and as long as the codec format remains the same. This aligns it with
+> the Hantro and Cedrus decoders. This change was mostly based on commit
+> ae02d49493b5 ("media: hantro: Fix s_fmt for dynamic resolution changes").
+> 
+> Since rkvdec_s_fmt() is now just a wrapper around the output/capture
+> variants without any additional shared functionality, drop the wrapper
+> and call the respective functions directly.
+> 
+> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
 
-Removed the reset-gpios and set the PERST pinmux to PCIe, and the
-QCA9377 card will
-show up, but I have no idea whether PERST# actually ever gets toggled.
+Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
 
-Regards,
-Robert
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 40 +++++++++++++--------------
+>  1 file changed, 20 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index 7131156c1f2c..3f3f96488d74 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -280,31 +280,20 @@ static int rkvdec_try_output_fmt(struct file *file, void *priv,
+>  	return 0;
+>  }
+>  
+> -static int rkvdec_s_fmt(struct file *file, void *priv,
+> -			struct v4l2_format *f,
+> -			int (*try_fmt)(struct file *, void *,
+> -				       struct v4l2_format *))
+> +static int rkvdec_s_capture_fmt(struct file *file, void *priv,
+> +				struct v4l2_format *f)
+>  {
+>  	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
+>  	struct vb2_queue *vq;
+> +	int ret;
+>  
+> -	if (!try_fmt)
+> -		return -EINVAL;
+> -
+> -	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, f->type);
+> +	/* Change not allowed if queue is busy */
+> +	vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx,
+> +			     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE);
+>  	if (vb2_is_busy(vq))
+>  		return -EBUSY;
+>  
+> -	return try_fmt(file, priv, f);
+> -}
+> -
+> -static int rkvdec_s_capture_fmt(struct file *file, void *priv,
+> -				struct v4l2_format *f)
+> -{
+> -	struct rkvdec_ctx *ctx = fh_to_rkvdec_ctx(priv);
+> -	int ret;
+> -
+> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_capture_fmt);
+> +	ret = rkvdec_try_capture_fmt(file, priv, f);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -319,9 +308,20 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
+>  	struct v4l2_m2m_ctx *m2m_ctx = ctx->fh.m2m_ctx;
+>  	const struct rkvdec_coded_fmt_desc *desc;
+>  	struct v4l2_format *cap_fmt;
+> -	struct vb2_queue *peer_vq;
+> +	struct vb2_queue *peer_vq, *vq;
+>  	int ret;
+>  
+> +	/*
+> +	 * In order to support dynamic resolution change, the decoder admits
+> +	 * a resolution change, as long as the pixelformat remains. Can't be
+> +	 * done if streaming.
+> +	 */
+> +	vq = v4l2_m2m_get_vq(m2m_ctx, V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE);
+> +	if (vb2_is_streaming(vq) ||
+> +	    (vb2_is_busy(vq) &&
+> +	     f->fmt.pix_mp.pixelformat != ctx->coded_fmt.fmt.pix_mp.pixelformat))
+> +		return -EBUSY;
+> +
+>  	/*
+>  	 * Since format change on the OUTPUT queue will reset the CAPTURE
+>  	 * queue, we can't allow doing so when the CAPTURE queue has buffers
+> @@ -331,7 +331,7 @@ static int rkvdec_s_output_fmt(struct file *file, void *priv,
+>  	if (vb2_is_busy(peer_vq))
+>  		return -EBUSY;
+>  
+> -	ret = rkvdec_s_fmt(file, priv, f, rkvdec_try_output_fmt);
+> +	ret = rkvdec_try_output_fmt(file, priv, f);
+>  	if (ret)
+>  		return ret;
+>  
+
+
