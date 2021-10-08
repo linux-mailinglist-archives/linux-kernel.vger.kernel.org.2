@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5E9426E12
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007B0426E13
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243179AbhJHPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243094AbhJHPuj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:50:39 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D571C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:48:44 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id w14so9863842qkf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20210112.gappssmtp.com; s=20210112;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=l3PEMMPfXxjXjuD/So1WBTTo0/C4bwAxd2b6X1tJZs8=;
-        b=hz44myI2e9hT99CcaOMwcPVlnQnJbFO3h/0o8xHijXj70TxjuCcD0tZhUCfCk+yqXz
-         XwpMs5vk04TCBD7HIVSnK8kf3Oq8Lmo//xOzsYbLjIV3YvvJwK0a5EYvw7JnNvIsemUF
-         yDUx2KPPhAHJ3l79xy2cohXDh3ykEIB4//OacdN6yUQgHVibPtocf3xiesR7r9zVkIpC
-         G0DrmWqg+8xfpT8bFTI4MAurT4OTdlvhgjgmEwBmiDJ+Mw3vj7pkV0gHORF2lySeWuzp
-         qSQmEAdEjCrR4XwB8MBDrKlKJz1OPqYArGJX4gtPSMnz/lzMutKV583HPAYyaYvlbRi6
-         VSzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=l3PEMMPfXxjXjuD/So1WBTTo0/C4bwAxd2b6X1tJZs8=;
-        b=qpToCKKKaEzEt0vLzvNSwjPezg1kAUIcZDSadKC4mAcRw7UNUiSeC3vuaEjKpoPGmE
-         2WNk+bJVSMzHjz38hgdjgCXQ224bWY+jcIGMT3s6e6fjo3ZsFONbxzzxCuktU00k4lx+
-         hylpF6rsyCERqZGmH+KipXgxhZi3xKaOLVl1jHFpeXnBUgYpFjvnqb6oe31t58uOkaPW
-         tf/J+8NWdfwKxHL+RxyKxZOIzcAJTw+kKqX5+68xxJ00qf+MdDfuD9zVXIxSYEedYhss
-         RBjFm//jMe0qk9MBCiVdjBy3zXXVE6QFq62rd2nffamJcLO0ObEUzrIUiYgwN/xhyp9o
-         3DLg==
-X-Gm-Message-State: AOAM531CqUQ4WsQOu1RtpKAOOW63TA/qKhwsD3bMi9QisLoT1C/4Yb1V
-        ZrKYEXNWY5obR3XPOWikImbiMA==
-X-Google-Smtp-Source: ABdhPJzY04tEl4nAarIutljMkJuT3pDnLioval4mb3+ZBoihi3Uh3E7RjIRdP27pTSBVzuYrLOLRfA==
-X-Received: by 2002:a05:620a:4548:: with SMTP id u8mr3616083qkp.253.1633708123733;
-        Fri, 08 Oct 2021 08:48:43 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id y6sm2312972qkj.26.2021.10.08.08.48.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 08:48:43 -0700 (PDT)
-Message-ID: <44b1a16754d9b44f98da5a02ae1b06bd7adcdcd3.camel@ndufresne.ca>
-Subject: Re: [PATCH 1/2] media: rkvdec: Do not override sizeimage for output
- format
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Chen-Yu Tsai <wenst@chromium.org>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        stable@vger.kernel.org
-Date:   Fri, 08 Oct 2021 11:48:42 -0400
-In-Reply-To: <20211008100423.739462-2-wenst@chromium.org>
-References: <20211008100423.739462-1-wenst@chromium.org>
-         <20211008100423.739462-2-wenst@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+        id S243158AbhJHPvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231139AbhJHPvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 11:51:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCE7760FD7;
+        Fri,  8 Oct 2021 15:49:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633708150;
+        bh=/BWvwFJBk02IyYT4262J5SuP0J4qDObIlYIfzXpw7wg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y2rf9sncPPkWVFgqI0XksyVPXiOpu1Cvv/mtxkYfXKDSxuCP6X/mVinFwoir5dzhj
+         6EBoD2ERe6yn2O0A7wMwWxRfme26f02xbHjeqg/BFOCCJHUTkxxfnoIYjNQU+xOruT
+         +u+kUE7A4HwQSbRT0qsKZleSqv7/Y4q7uPwkn4OqtlNospI4TTqa6+C0bw38i76Mvx
+         QxImAtBSi/7EawGLC3Xhd3KGDTW5k++8gifRFKf1yGSpQV0c1rxYTFyXaaXBiFxp2+
+         z+RZzAWCSo2g8VOeJKLeosJTwB/if2LXf0rZwM8lJ1EXFHvhCBfL/mvDustGk4iA4D
+         7o2HmKRXnvBYg==
+Date:   Fri, 8 Oct 2021 16:49:07 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
+Cc:     alsa-devel@alsa-project.org, Vijendar.Mukunda@amd.com,
+        Basavaraj.Hiregoudar@amd.com, Sunil-kumar.Dommati@amd.com,
+        Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/8] ASoC: amd: acp: Add generic machine driver support
+ for ACP cards
+Message-ID: <YWBoc4LJPUS733ee@sirena.org.uk>
+References: <20210930132418.14077-1-AjitKumar.Pandey@amd.com>
+ <20210930132418.14077-5-AjitKumar.Pandey@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4nUCpXPQrhPMEzCJ"
+Content-Disposition: inline
+In-Reply-To: <20210930132418.14077-5-AjitKumar.Pandey@amd.com>
+X-Cookie: When your memory goes, forget it!
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 08 octobre 2021 à 18:04 +0800, Chen-Yu Tsai a écrit :
-> The rkvdec H.264 decoder currently overrides sizeimage for the output
-> format. This causes issues when userspace requires and requests a larger
-> buffer, but ends up with one of insufficient size.
-> 
-> Instead, only provide a default size if none was requested. This fixes
-> the video_decode_accelerator_tests from Chromium failing on the first
-> frame due to insufficient buffer space. It also aligns the behavior
-> of the rkvdec driver with the Hantro and Cedrus drivers.
-> 
-> Fixes: cd33c830448b ("media: rkvdec: Add the rkvdec driver")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
-> ---
->  drivers/staging/media/rkvdec/rkvdec-h264.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec-h264.c b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> index 76e97cbe2512..951e19231da2 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec-h264.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec-h264.c
-> @@ -1015,8 +1015,9 @@ static int rkvdec_h264_adjust_fmt(struct rkvdec_ctx *ctx,
->  	struct v4l2_pix_format_mplane *fmt = &f->fmt.pix_mp;
->  
->  	fmt->num_planes = 1;
-> -	fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
-> -				      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
-> +	if (!fmt->plane_fmt[0].sizeimage)
-> +		fmt->plane_fmt[0].sizeimage = fmt->width * fmt->height *
-> +					      RKVDEC_H264_MAX_DEPTH_IN_BYTES;
 
-Note that the test is more strict then the spec, since this behaviour is within
-spec. But in general, the application may have more information about the
-incoming stream, the maximum encoded frame size would even be encoded in the
-container (which is parsed in userspace). So I agree it will be more flexible to
-accept userspace desired size. If that size is too small, userspace will fail at
-filling it in the first place, and decoding won't be possible, that's all.
+--4nUCpXPQrhPMEzCJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Perhaps we could make a recommendation in that sense in the spec ?
+On Thu, Sep 30, 2021 at 06:54:14PM +0530, Ajit Kumar Pandey wrote:
 
-Reviewed-by: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+A couple of things here, most of these are probably fine for now
+other than the EXPORT_SYMBOL but I think you're likely to run
+into issues going forward and need to refactor.
 
->  	return 0;
->  }
->  
+> +	switch (drvdata->hs_codec_id) {
+> +	case RT5682:
+> +		pll_id = RT5682_PLL2;
+> +		pll_src = RT5682_PLL2_S_MCLK;
+> +		freq_in = PCO_PLAT_CLK;
+> +		freq_out = RT5682_PLL_FREQ;
+> +		clk_id = RT5682_SCLK_S_PLL2;
+> +		clk_freq = RT5682_PLL_FREQ;
+> +		wclk_name = "rt5682-dai-wclk";
+> +		bclk_name = "rt5682-dai-bclk";
+> +		drvdata->dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+> +				   | SND_SOC_DAIFMT_CBP_CFP;
+> +		snd_soc_dapm_add_routes(&rtd->card->dapm, rt5682_map, ARRAY_SIZE(rt5682_map));
+> +		break;
 
+It feels like this is going to run into scaling issues going
+forward and you're likely to need separate operations for
+different CODECs rather than just different IDs.  Similar issues
+apply for the amps, it feels like you want to be passing separate
+ops in rather than having these switch statements.
 
+> +	/* Do nothing for dummy codec */
+> +	if (!drvdata->hs_codec_id && drvdata->amp_codec_id)
+> +		return;
+
+Wha the test seems to say is do nothing if there's no CODEC but
+there is an amp...
+
+> +
+> +	clk_disable_unprepare(drvdata->wclk);
+> +}
+
+...though I'd expect that given that the clock API accepts NULL
+clocks you could just remove these checks and unconditionally use
+the clocks.
+
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_NS(acp_legacy_dai_links_create, SND_SOC_AMD_MACH);
+
+EXPORT_SYMBOL_GPL_NS() - ASoC is all EXPORT_SYMBOL_GPL.
+
+--4nUCpXPQrhPMEzCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFgaHIACgkQJNaLcl1U
+h9DvhQf+IOm3hXd04jlzfQK2KY/bL8yi9esENe/eVjl0zZg4Re4CVTsYhPByNqOs
+qQbYRy8TyP5bMkWAQqWC0nKu5tGvL09xMR+BqL84sDILqbbw8tBCu4s7Zmzh2uiw
+09tsecfH3hFdh7yM+pJ0RkUasiOI1bZff3itFq3dge6/vGqd9ouywOpgkkNdgERl
+WXBxAQrnBV57V8NZkS4s7kDhfGvML4+Sl2JbSMfgSFXp3XbZ5DwXqAOGxxcXS4UJ
+VcrFq73m/QR/Qz1oKgOWu5x3Sx0jcTD87QGxXfiKYNyUEaX8FNOin+Z1c2pqf9BG
+dJsvXR0OTldnefxpDBLOZkjXSnKXXA==
+=4/jO
+-----END PGP SIGNATURE-----
+
+--4nUCpXPQrhPMEzCJ--
