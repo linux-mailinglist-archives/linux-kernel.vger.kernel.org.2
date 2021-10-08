@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598314272D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B155E4272D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243328AbhJHVHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 17:07:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S243371AbhJHVI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 17:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243192AbhJHVHJ (ORCPT
+        with ESMTP id S231696AbhJHVIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:07:09 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D67C061570;
-        Fri,  8 Oct 2021 14:05:13 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id e6-20020a9d7306000000b0054e6119fc16so1268869otk.11;
-        Fri, 08 Oct 2021 14:05:13 -0700 (PDT)
+        Fri, 8 Oct 2021 17:08:25 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E549EC061570;
+        Fri,  8 Oct 2021 14:06:29 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id t4so13548738oie.5;
+        Fri, 08 Oct 2021 14:06:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wRESRpKwYfyF6v2fW0H8DmskM2ckPoZ+tp5kUYqODDI=;
-        b=Uj7/9JNq7wX9VyyIzwB65uYKqhbt1Ou5P4ov2X9mwSMU0oNWmg/jnkIaxnUPsrn8DX
-         wb4aem3LZJ+W5FFJ57ZrdIGYbqjsXYjFmv1SvVW6TdZ4ys+iMOA8ZVCYR4dUhsm1pbpm
-         LLnh6Tq4vx7quty0Sv60RfvpC5/2YOWOQ7Sixnff66rOMxJ4QWB2U+0Z7bsb1SJQrqwZ
-         0rxIecq7YfE2mAXPTTxL0v8N9clpJ0tAPKpv3CaMTc+WOfnEkKXm1bdqQ8nv+p2pt4b0
-         z9JBAqLZ7EuN/0I0KQ+tmoUClbIsNxT3MUJW6+0jvcRhc+RXTf1A0hoOfgZXhA7TLj+t
-         CASw==
+        bh=qPmTBexJ6pfCTZz94LBqYt7PnBRueakfJWUtT0QCH4g=;
+        b=aqfjG35zBT9iRNrfwWJnVrHed+sCfYP+Crgbl8yVAlcoR4a3jzPvEc8OZBKG632LbP
+         Qc1/F5rLQjR20yK7/ptQGGhW/Iez4YJB7R4yvGQ2QJo8e5SU21Tf/vxXd+QTITpUnl+E
+         VVJUx9z3Beu83RjguktHGWNDfD8RycX8hlsh58FX78qDyg+YjYjXdsqnKpLyZzgIb2FN
+         usj2PxmkuVzwpCauHmwkm+nyKoMdLtW1aRlFgOxoyGwSfBjyNtHivPZa81tBHIb+QiO3
+         +1AMan6ap0M9/0Dli6HQlB5ee7j1Wrhdtjj1uoh1Gq1P5iZ6CMbLGmFmwAbRnZ/zojxd
+         6SOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=wRESRpKwYfyF6v2fW0H8DmskM2ckPoZ+tp5kUYqODDI=;
-        b=bbz/jVgWn6/cBnpn15cOKX4Vy02DvpzZaotdda9gArqs5dS+/6M2BR9mLGDKpnfwei
-         uhD/BXoQtftLF4F9j93pUVpX3Ps7K/dtR3AeCECXIryCCVtVdcf+dZO4jrnWKbNZSdQh
-         kjlZ81MfdtXBYKNZg4gjoG+1Jy9mORrR9UYLxSjES1aHVoIFp1Z07tbpq3ZwFc9ue96i
-         RnywSTtJjaBA41CevfVvqW5MzRFuIvBvX2U0QKNjQPGyyhGiPN3Yg5o/8f8XyyFNzzau
-         tcYzmTYI3kJbzceuMfsqxQOtwQuHW6VTwKAFcadYMbtApyzCrDq5cUBDrmK9XPNTYfEk
-         3QfA==
-X-Gm-Message-State: AOAM531Cuu2pMff/CNU4xiMu6Ro9IiqcvrJuEw5UXkA2lFsGcpCHW5n5
-        cCmsagrvEFz7XLmb/u+EEiM=
-X-Google-Smtp-Source: ABdhPJznqx1wm8M1UYw5ov6tA6KAvKkDZUh09mZK7/8b8TMruLV6avwOY83nHlH4iKMv+uUgroqrhA==
-X-Received: by 2002:a9d:4705:: with SMTP id a5mr10544283otf.237.1633727112850;
-        Fri, 08 Oct 2021 14:05:12 -0700 (PDT)
+        bh=qPmTBexJ6pfCTZz94LBqYt7PnBRueakfJWUtT0QCH4g=;
+        b=CA9NUol/BYzJD0VESBCM8M8kUZzIAExvL636yr2VjDnnbOHPKTDF9eOSZiZzKZJNAO
+         XniEpPDMpMBITFnYYdePrqFrGMxyVraKHx9Vg2ZYtGAFNngQgLEfth3GOY9QU80/jOsj
+         FuUF8mzOgRLyiqsz9bVdIj5VanKYcOuxLXwyzw9Yd63CkK8VfrCMlwHIHjGgrjFMkfuN
+         R2GsLG8p5+ChVe62wNPQPjdwG4n4t2dos/nukrZ1ghXBZBExXdteOMwD+dZkaV2SgpRW
+         bhrHDjZ/HBe9LwZg0H25Jz/rUpJkr1O0dvr2CSY/aSOS05QEmUiA+nGZROvbGB2z44bp
+         dQNw==
+X-Gm-Message-State: AOAM530K1R6bpfLAS+5KKUL4xgJUQ7W2N3cE61M40l3dffoHZE+VdWtU
+        I7IGHsgdmO340SOiETs0ur4=
+X-Google-Smtp-Source: ABdhPJwX80AfO8/LZudx3BdT413rflaUSp+dkWAMwpRi9u92TuRSovmr2n3E8/gpJDaqitET4wdffQ==
+X-Received: by 2002:a05:6808:13c3:: with SMTP id d3mr9250250oiw.83.1633727189365;
+        Fri, 08 Oct 2021 14:06:29 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p18sm108486otk.7.2021.10.08.14.05.11
+        by smtp.gmail.com with ESMTPSA id e11sm114112oii.0.2021.10.08.14.06.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 14:05:12 -0700 (PDT)
+        Fri, 08 Oct 2021 14:06:28 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Oct 2021 14:05:10 -0700
+Date:   Fri, 8 Oct 2021 14:06:27 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.14 00/48] 5.14.11-rc1 review
-Message-ID: <20211008210510.GG3473085@roeck-us.net>
-References: <20211008112720.008415452@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Jiri Kosina <trivial@kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] dt-bindings: hwmon: jedec,jc42: add nxp,se97b
+Message-ID: <20211008210627.GA3473720@roeck-us.net>
+References: <20210920182114.339419-1-krzysztof.kozlowski@canonical.com>
+ <20210920182114.339419-6-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+In-Reply-To: <20210920182114.339419-6-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 01:27:36PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.14.11 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Sep 20, 2021 at 08:21:14PM +0200, Krzysztof Kozlowski wrote:
+> Document bindings for NXP SE97B, a DDR memory module temperature sensor
+> with integrated SPD and EEPROM via Atmel's AT24 interface.
 > 
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
-> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 480 pass: 480 fail: 0
+Applied.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
+Thanks,
 Guenter
+
+> ---
+>  Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> index a7bb4e3a1c46..0e49b3901161 100644
+> --- a/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> +++ b/Documentation/devicetree/bindings/hwmon/jedec,jc42.yaml
+> @@ -10,6 +10,14 @@ maintainers:
+>    - Jean Delvare <jdelvare@suse.com>
+>    - Guenter Roeck <linux@roeck-us.net>
+>  
+> +select:
+> +  properties:
+> +    compatible:
+> +      const: jedec,jc-42.4-temp
+> +
+> +  required:
+> +    - compatible
+> +
+>  properties:
+>    compatible:
+>      oneOf:
+> @@ -31,6 +39,7 @@ properties:
+>                - microchip,mcp98244
+>                - microchip,mcp9843
+>                - nxp,se97
+> +              - nxp,se97b
+>                - nxp,se98
+>                - onnn,cat6095
+>                - onnn,cat34ts02
