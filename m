@@ -2,164 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0664267C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDAA4267C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239727AbhJHK3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:29:30 -0400
-Received: from mail-dm6nam10on2070.outbound.protection.outlook.com ([40.107.93.70]:19777
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236118AbhJHK32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:29:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=admCth41dEBS4mkqaxdDQdwb/MPL1xzjLqD4PG2eh1vp47EcKNK8IuevcXANzsxapm/sTI3SCM/GXfuH16chxo+h4im2zP6GAqO9vlzvOqIcwMH93DnMTbup8ShVmA2mUk8ttjWBvreG/JfFzed+jglZ/jBMg5i+gDQRkeg/xelxbOE0ge/s4pNFfk5AFsugXS3GwkcEyZOESMFoGye3WtvlfutxuKETTTTYAboMVe7GpPPPaFlRUi0aFTmqQ03r1/9vwr2UBYsJKa10StB6VnrvirHjtDlUfAkHejorzvZXaOUX7QJOF+ItztJ4zcJ9tX49/VYD8La/CGVKBZpUnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jkqp3Vt4YfNwM9s7ORqAUE+wiq+EuQfCiWKyJLxJ1HM=;
- b=nGau9lWF19EkN9fcMy5IPBhEbOJkYPP3Gi20/d1WmHQ2wVgJCy7PF6U5iU3DmJU0epwbQbehQC2twnWaz9CHe8jJePkpvmoJ4rRq39oGU34QBklXQGSO53evE7jhz9UaqfqXeAVMh0XhUxD0ohYdR7prPois7qXCdIvTQRWsZxkqmu/CTdQbVzvdynPMlNahCVzJt3QzhZSsxoPlGjzg/FzcRYBpuCWKuFJN8kqHlcNI76P+ocCyY03u2sbPXkzjmkDcQaqokWXFYx31ZTue77K2ZfOpt4tboyJrnQcTgPDUxsyHMAl9q/k6Rd5p6GxQ8U/aDVyn/ZpZG/CRH28BYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jkqp3Vt4YfNwM9s7ORqAUE+wiq+EuQfCiWKyJLxJ1HM=;
- b=D+IxGQjDSKCc+tz6hS4MzYbM2jM2zFUvy3xUII6yhRA2cG/zyDxrSqL8pgQI0jeaUiZJR4cqlYtstqL+uf+zoZVK/Mhim9bp5StsmrroBtV68XSNcYaaQnVsIhinxebpnFHEOaWAfVWBqCZnfWIx4CadAWdyIhgKF7Cv78U9lK0=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5176.namprd12.prod.outlook.com (2603:10b6:208:311::19)
- by BL1PR12MB5109.namprd12.prod.outlook.com (2603:10b6:208:309::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Fri, 8 Oct
- 2021 10:27:29 +0000
-Received: from BL1PR12MB5176.namprd12.prod.outlook.com
- ([fe80::f849:56fa:4eaf:85dc]) by BL1PR12MB5176.namprd12.prod.outlook.com
- ([fe80::f849:56fa:4eaf:85dc%7]) with mapi id 15.20.4587.023; Fri, 8 Oct 2021
- 10:27:29 +0000
-Subject: Re: [PATCH 1/2] platform/x86: amd-pmc: Add alternative acpi id for
- PMC controller
-To:     "Limonciello, Mario" <mario.limonciello@amd.com>,
-        Sachi King <nakato@nakato.io>, hdegoede@redhat.com,
-        mgross@linux.intel.com, rafael@kernel.org, lenb@kernel.org,
-        Sanket.Goswami@amd.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, stable@vger.kernel.org
-References: <20211002041840.2058647-1-nakato@nakato.io>
- <3ecd9046-ad0c-9c9a-9b09-bbab2f94b9f2@amd.com>
- <909f28e9-245a-df90-52f1-98b0f63a2b3a@amd.com>
-From:   Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
-Message-ID: <609f5254-4527-38b8-3d1d-5cb06791e103@amd.com>
-Date:   Fri, 8 Oct 2021 15:57:15 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <909f28e9-245a-df90-52f1-98b0f63a2b3a@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: KL1PR02CA0029.apcprd02.prod.outlook.com
- (2603:1096:820:d::16) To BL1PR12MB5176.namprd12.prod.outlook.com
- (2603:10b6:208:311::19)
+        id S239720AbhJHKaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhJHKaA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:30:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2896C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 03:28:05 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3D187581;
+        Fri,  8 Oct 2021 12:28:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633688883;
+        bh=O/OYayj1ukIAB3FdcOduo8Ue4fDcLxGu5RhxJwuFdC4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wFFVrO633mz76kUAGqZCu/F3OOKQS1ZNBkMG4QklxdKxXoI2j65I6mFVOgx5/NiyR
+         yWtoKRuj7zhS/PfJUby+szUoAgr2WgdEQEQFAIR7/15njlT9H7Fw+M2vQXzhGPBO4o
+         PG8VnU6KuG+nqmsri3fyHRxPJCp9Uh0FFLV98gU0=
+Date:   Fri, 8 Oct 2021 13:27:53 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Nikhil Devshatwar <nikhil.nd@ti.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH v5 2/6] phy: cdns-dphy: Add Rx support
+Message-ID: <YWAdKTvYzF58oyU/@pendragon.ideasonboard.com>
+References: <20210902185543.18875-1-p.yadav@ti.com>
+ <20210902185543.18875-3-p.yadav@ti.com>
+ <YUMa/ocoQ9l3JDe6@aptenodytes>
+ <20210917172809.rjtf7ww7vjcfvey5@ti.com>
+ <YVapVLnGfSBZCDTY@matsya>
+ <YV463gUvYauhDP/l@pendragon.ideasonboard.com>
+ <20211007121436.jkck2cue5zd3rys4@ti.com>
 MIME-Version: 1.0
-Received: from [10.252.77.6] (165.204.80.7) by KL1PR02CA0029.apcprd02.prod.outlook.com (2603:1096:820:d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18 via Frontend Transport; Fri, 8 Oct 2021 10:27:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1025beba-57ee-4ca7-3713-08d98a463aed
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5109:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB510942E9FC050E80368646C79AB29@BL1PR12MB5109.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GwlZUjUXR+X2gHW1UMXrJp8S3n4KuDwsmIVFmrE7BMMH7v7EWZXessds0Ewiz9PJbdcpcHmIAN+r0KSzPz59sUJgYuTWyvmsXxmlcbhBG7dwJAwrl4r53iCrRdwhacJW+jJWP4e1NIVRISqE3S8d4o5NiLGEidNvtYXYXt0Cru7zvMn/HwCbADpWb9ySq14pGuHoi0dVDD//8Zq27z2tw0gcdwylcFTO1TLby06llBwUcR7NyKy9uiWvhMRlS30h+ccgRnQQvjECeLKANK7Oaw5kBh5zMgR7tGjU3bSW7LYyR1p2lan1BaLCTMdI1ogKhtv9VlLHvHkWsbccln3TJQXpdAoWho1HDPd5qxZBl3128xszlHFWFXJrN7cfqcSIfVB/1KHGdJZA8p5txKfYLLAoQY+OM1hxsTKPxtvIGNboPjVwCnKYNVtfzNOdiEJvYNLEjV9oEt+9v0fJP2SmKIDvI+lCpWmvqWrAqAenekz840nBBepARZ5UJztwQA9unGgkOvL880iRY23+ms62yp/bC0qfOADy8Bvlll51/vReAqi1ANBKbijIUY9lP5H8wDjFzZ6RmY29korpj3VhTJ/pOnnh0oEDneEg5reByHqc8qacXnGnvybD0xCzjcoN+W/JhCz0wrH3WFYfWxd6lV8aiDQ4TzfXEy4JC1aR8+dydaP+uAIrU6elkwpgMrb5bmY/RjGbMu9G4V9mT2/dUwh4jT8nySDDlmeJuMHf+XtA4iA/R6S16YufKdJH7YESznq2avkUEh1uF72my1+UQqkt7LIUhLkKpexfrBUHD7sqXxgsG2+LGD4+nL8sOfgX
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5176.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(26005)(956004)(186003)(8676002)(53546011)(2616005)(66476007)(36756003)(8936002)(966005)(83380400001)(31686004)(38100700002)(4326008)(66556008)(86362001)(2906002)(6666004)(66946007)(508600001)(316002)(5660300002)(110136005)(16576012)(6486002)(31696002)(6636002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?STBUaGdhNHdXYkdSeWZ4d2pVVDhxL2lWais5SmJPUjJwc0xnc3g5QlUzSFNx?=
- =?utf-8?B?blozK1VMS1Q5RmpETTFwVHRLZk0zODVZcmxaOHY2cS9CcGQzTWV1ZXZGTDJx?=
- =?utf-8?B?NW9QeDJmcmJ2QVNlTXA1ZEpKNnFqT1V1S3ZXS3BTNG1lbTFiSlVHeUFVZDV4?=
- =?utf-8?B?Um10NEpvcUZFSHQraDh5Qmo0Vm1mbFFRSXhtZjNWVm8yYTZNNDBybFk4U2Zs?=
- =?utf-8?B?akJwZGo3MXpONlVaQXFGZml4NDVCWGlnekJFeXA1Q2c4STlIcTdJdkRpT05W?=
- =?utf-8?B?dlFDWkdvaWZwamhzZ25ENE4xTGphVzBuY1ZhelhBVFQvZDdCMWswblB3c3cw?=
- =?utf-8?B?b2NwMzNUVUlvNDNXU3NMWHh6bldxTklyUzM5QXZSamdBWmVYM0djaVN3WDNr?=
- =?utf-8?B?ZmVlR21Qek1CNjNLTGdqenZjRlhMV1pFdEpYbGVIaVRZZjRpcDhQanlxUHJK?=
- =?utf-8?B?bU5xMUJGSllGYmhKdjJ5WTYzaEMzSWtmbVh5WTZuN2czd1Q4Q001Z1haRUU0?=
- =?utf-8?B?L2NHNmsyTENWZGRqN25xdllvcFNLNkllTU1DNTh6eXZwMWZ6ZHhIN2dlWEJv?=
- =?utf-8?B?YzIrSFhvRkNyWlRjYlE1azgvakhyTm4zN2YzejBwZHFqVGdONW1hM0VnVDJ5?=
- =?utf-8?B?Qm1TMEZ4OHQ5bWprQkdYZ3NQNVVRc1Rob3NNWWZIMjdxT3BHT3hEZHF3NVNE?=
- =?utf-8?B?ZFJuOTh2SVhiTzc3SkRGTTJ0Rmxyd0E2cnlmaHJJdG4yN2lJZzkwclNqMkZt?=
- =?utf-8?B?YWkvTnB0Q1l2SjAwWXVQaG1ycWVsZnM3TUZqSk53dHVnVkx4dFFIU3hBbXpL?=
- =?utf-8?B?RVd6NTJ3TlFqVU95Y2ptMTZhMEdJN09hc2lVMTlicVVjQjhTQUZRTmQ3Lytq?=
- =?utf-8?B?QUozRGk4TjQ3STlPM09ITjdGKzJrWTk1aEVmaHdEQldySXV2OTNhRldrL1Jm?=
- =?utf-8?B?Z3o5MTkzbzQ1bnYza3JSbDVkM2Nmek8yTms0UEhTZENEL1owbHJ1ZnVRZGtl?=
- =?utf-8?B?REZlZW1vT3h6Nms0R0xWWlpzcXdjMGlITWttNUdHUW1XajNWUTRldHhkRGI1?=
- =?utf-8?B?elpMT0J1K0ZTTjFFSG5lOExVVUJXbkQxejYwV1o3MS95Y3pXR3lRTi9ub2t5?=
- =?utf-8?B?RFY3VGdLV21jTkM3MUdPQTZlRGUyRmpXWU40WWVPMDdGeE51cnJzdW9BbXFT?=
- =?utf-8?B?M00wcEtCaUIvc2lycGFaUzd4bjArZUsxZDdrRURsMjFWek8wSGxkT2wyVnVu?=
- =?utf-8?B?dTNYZ1k3UlpCLzhBU2VVQldyS01LcWFuVDJualROR3RQUExwamFDS0N6alVO?=
- =?utf-8?B?bDdQbFF3R09kVkRsSlJRV1RaamhhRHhLTEhJR29QUHJFWmlwUExlYjdjVjNu?=
- =?utf-8?B?Vk5qQnFmMEdUcm9EcjVncFBJYm44K0xDTi94N0VtRklvaTFuWGl3VmFhenJv?=
- =?utf-8?B?Z2M5YitZYzBLelFvNWQxTnZ4ZHl2SmsyVHcwZ1JvMnBQcURuZGU1azAyRnZ1?=
- =?utf-8?B?NFR5eklHMEFHbWhydEl4UzR4MWtFNzlGMDBmUWl0SVphRUZZSEJGbjIweXND?=
- =?utf-8?B?M0xqeEpJRTc4RDhHMDlSNVk1WG51NTdnVTVKd2RLeFNmZ0hRSGc0Y2dHb21O?=
- =?utf-8?B?UDdhb2YwWjlCaWw5NzRUbjcrVk96WjlVRERsRzlFSDllV3FDMm80TjFhandH?=
- =?utf-8?B?eHd6OHNwSC8zamdidTJnT2RmU1pibi9FU2VlaVhvbWZPZVNQZXlMNSsyS3A0?=
- =?utf-8?Q?869SPjzBWRcwWpPH8Gp3aAjuKXmnbBDL4dRBIR9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1025beba-57ee-4ca7-3713-08d98a463aed
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5176.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 10:27:29.2306
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NwQ9RcKaCr/K2ISOzf1ZOGlE95dvri8xVMqmeE7sppP8AT13d1TAvJKGp0Uc762m/MlUE6HFqkkT9IwXoedhHw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5109
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211007121436.jkck2cue5zd3rys4@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pratyush,
 
-
-On 10/8/2021 1:30 AM, Limonciello, Mario wrote:
-> +Sanket Goswami
+On Thu, Oct 07, 2021 at 05:44:38PM +0530, Pratyush Yadav wrote:
+> On 07/10/21 03:10AM, Laurent Pinchart wrote:
+> > On Fri, Oct 01, 2021 at 11:53:16AM +0530, Vinod Koul wrote:
+> > > On 17-09-21, 22:58, Pratyush Yadav wrote:
+> > > > On 16/09/21 12:22PM, Paul Kocialkowski wrote:
+> > > > > On Fri 03 Sep 21, 00:25, Pratyush Yadav wrote:
+> > > > > > The Cadence DPHY can be used to receive image data over the CSI-2
+> > > > > > protocol. Add support for Rx mode. The programming sequence differs from
+> > > > > > the Tx mode so it is added as a separate set of hooks to isolate the two
+> > > > > > paths. The mode in which the DPHY has to be used is selected based on
+> > > > > > the compatible.
+> > > > > 
+> > > > > I just realized that I didn't follow-up on a previous revision on the debate
+> > > > > about using the phy sub-mode to distinguish between rx/tx.
+> > > > > 
+> > > > > I see that you've been using a dedicated compatible, but I'm not sure this is a
+> > > > > good fit either. My understanding is that the compatible should describe a group
+> > > > > of register-compatible revisions of a hardware component, not how the hardware
+> > > > > is used specifically. I guess the distinction between rx/tx falls under
+> > > > > the latter rather than the former.
+> > > > 
+> > > > I am not sure if that is the case. For example, we use "ti,am654-ospi" 
+> > > > for Cadence Quadspi controller. The default compatible, "cdns,qspi-nor", 
+> > > > only supports Quad SPI (4 lines). The "ti,am654-ospi" compatible also 
+> > > > supports Octal SPI (8 lines).
+> > > 
+> > > Those are hardware defaults right?
+> > > 
+> > > > In addition, I feel like the Rx DPHY is almost a different type of 
+> > > > device from a Tx DPHY. The programming sequence is completely different, 
+> > > 
+> > > Is that due to direction or something else..?
+> > > 
+> > > > the clocks required are different, etc. So I think using a different 
+> > > > compatible for Rx mode makes sense.
+> > > 
+> > > Is the underlaying IP not capable of both TX and RX and in the specific
+> > > situations you are using it as TX and RX.
+> > > 
+> > > I am okay that default being TX but you can use Paul's approach of
+> > > direction with this to make it better proposal
+> > 
+> > 
+> > Given that the RX and TX implementations are very different (it's not a
+> > matter of selecting a mode at runtime), I'm actually tempted to
+> > recommend having two drivers, one for the RX PHY and one for the TX PHY.
+> > This can only be done with two different compatible strings, which I
+> > think would be a better approach.
 > 
-> On 10/5/2021 00:16, Shyam Sundar S K wrote:
->>
->>
->> On 10/2/2021 9:48 AM, Sachi King wrote:
->>> The Surface Laptop 4 AMD has used the AMD0005 to identify this
->>> controller instead of using the appropriate ACPI ID AMDI0005.  Include
->>> AMD0005 in the acpi id list.
->>
->> Can you provide an ACPI dump and output of 'cat /sys/power/mem_sleep'
->>
->> Thanks,
->> Shyam
->>
-> 
-> I had a look through the acpidump listed there and it seems like the PEP
-> device is filled with a lot of NO-OP type of code.  This means the LPS0
-> patch really isn't "needed", but still may be a good idea to include for
-> completeness in case there ends up being a design based upon this that
-> does need it.
-> 
-> As for this one (the amd-pmc patch) how are things working with it? Have
-> you checked power consumption and verified that the amd_pmc debugfs
-> statistics are increasing?  Is the system able to resume from s2idle?
+> FWIW, I think having different drivers would certainly make things 
+> easier to maintain.
 
-Echo-ing to what Mario said, I am also equally interested in knowing the
-the surface devices are able to reach S2Idle.
+I'm sorry for not having recommended this in the first place.
 
-Spefically can you check if your tree has this commit?
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/commit/?h=for-next&id=9cfe02023cf67a36c2dfb05d1ea3eb79811a8720
+Any objection from anyone against going in this direction ?
 
-this would tell the last s0i3 status, whether it was successful or not.
+> > It's unfortunate that the original compatible string didn't contain
+> > "tx". We could rename it and keep the old one in the driver for backward
+> > compatibility, making things cleaner going forward.
 
-cat /sys/kernel/debug/amd_pmc/smu_fw_info
+-- 
+Regards,
 
-> 
-> Does pinctrl-amd load on this system?  It seems to me that the power
-> button GPIO doesn't get used like normally on "regular" UEFI based AMD
-> systems.  I do see MSHW0040 so this is probably supported by
-> surfacepro3-button and that will probably service all the important events.
+Laurent Pinchart
