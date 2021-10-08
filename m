@@ -2,188 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539E84268B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:27:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166084268AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:27:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240274AbhJHL3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:29:19 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:31126 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240181AbhJHL3R (ORCPT
+        id S240261AbhJHL3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:29:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240181AbhJHL3H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:29:17 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 198Aujvc004440;
-        Fri, 8 Oct 2021 07:27:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Z6iNOBuN2FiL+wPDKSDlFrt+6ZdK+ASaynt4w5R0G5Y=;
- b=XqAhLniD0RFUrcb9AWMzeuun0yzD0V3wnvMwkf1qSuudC7xN6ZuQ19A0f8GcgqcKIBiO
- ExwgpaPIIwc1Se6GDOMSi+RRK4mDSy+mH2xGZ5xrTTH7U63R3ZQdsoKItUkX3dQQK2Mf
- 0L2zp3NFVGDZ+OmwU/sjloxH0iuR9N03qrlSLIwBtizwCRzs/o2k92xsMM4fOLm00YGv
- oLleqZTy3hkDRM3qIjkTf8HTtmGbEmwKRyMqZ3XPFgJVDDEhHAHIxjl3kTljkEJH2W5V
- w1w95KTrOXcp296mNAzqeCCmYJ4ySrynbzc2g8SHSzAuaHiO8HXv1gqShmds3zNj/ed/ Cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bja72ek72-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 07:27:08 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 198BJ3hu025751;
-        Fri, 8 Oct 2021 07:27:08 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bja72ek6b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 07:27:07 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 198BIExR005006;
-        Fri, 8 Oct 2021 11:27:05 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bhepdate7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Oct 2021 11:27:05 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 198BLaKJ50987410
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 8 Oct 2021 11:21:36 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7710211C06F;
-        Fri,  8 Oct 2021 11:27:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CFD811C052;
-        Fri,  8 Oct 2021 11:26:57 +0000 (GMT)
-Received: from li-e8dccbcc-2adc-11b2-a85c-bc1f33b9b810.ibm.com (unknown [9.43.64.167])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  8 Oct 2021 11:26:56 +0000 (GMT)
-Subject: Re: [PATCH 0/3] perf tools: Enable strict JSON parsing
-To:     James Clark <james.clark@arm.com>, acme@kernel.org,
-        john.garry@huawei.com, ak@linux.intel.com,
-        linux-perf-users@vger.kernel.org
-Cc:     Nick.Forrington@arm.com, Andrew.Kilroy@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211007110543.564963-1-james.clark@arm.com>
- <c15fd2bf-104e-6ab0-6496-7e5cf77a218f@linux.ibm.com>
- <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <5947c093-cff9-f70e-af20-75bc053edf5f@linux.ibm.com>
-Date:   Fri, 8 Oct 2021 16:56:55 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Fri, 8 Oct 2021 07:29:07 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82D1C061755;
+        Fri,  8 Oct 2021 04:27:09 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id i12so16165818wrb.7;
+        Fri, 08 Oct 2021 04:27:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=tLi89EnDPjR+G+5RZAaz/qdjvJ+j6uhtWnhwzVW71cE=;
+        b=PIgIYvyiO7MafYMnWpo0WxprZr99rhBFPMNQhs5AwDzC/wCtL50WyZfh6AEc+c2izj
+         KiU+/Yubs9ACeyRpTzAMT11XsHVu/KvttB5RIzycwJCslNgUri5qWLir7euF+CmtrQQz
+         ioU9yChMm+sAq/xSkb7Su0cIFBLHEmdJl9tGp7xtoq6lHlN7k8Em4ibapqXwmtt5M7g5
+         V4Tm6q276qEMZHaZKofTss89/+ytxexejyHWlc+psoaBUiTzh30/ahft8QqnIcHzSsJ0
+         vSvQa1sGGDUh6Zi8gmSREgJy/QO5hnxQbVeXQAAiNhatQKXI37wYxa12wER1C7W5dCh0
+         034A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=tLi89EnDPjR+G+5RZAaz/qdjvJ+j6uhtWnhwzVW71cE=;
+        b=tqWbti3F6X1WPSevbIzNRxR33VAUlDJCv1jkVTuYfwfdlDvmB3Wg1KDSFXGPw5UglP
+         BHX9isZkcNVVkC3Y1nrRmHZmk006qk1+aWgdMeB149bGB1HaZI/MMTousmmtBZ5zjcbl
+         Uf6qRMmRcqnu4k7EOK+I0b62IWtHPRV02WqJJz7GtZEvd7XdJPVABRB2dxSLf+7mpJZr
+         IP7qT4Ao19UMT2J9eV/Zk2HMx8IajuNiwgLKzDa6dXuQWLHEeuNjAKVAfDOWOZnKC6/8
+         Bg3OWHOlYkNCwM0G+Q41CGhaX7LVYo5L0Ek5fbXAi4ykiDx6zO0Qzu1TG6rp1B3f4nh8
+         o2dw==
+X-Gm-Message-State: AOAM533wQ6u+1KEWEcO2s7t5eowMIC8Ev7eyKRVz5dsM3pI8yOt7gDGB
+        9bDuzBouDdUTmolrSosiF84=
+X-Google-Smtp-Source: ABdhPJwrkjde/Z6e4X54arkfrAdFRWNfEIUqRoReDcJ36V+ZMZwqv/l72Kt5Mb9TWy2qNeQR5oHLEQ==
+X-Received: by 2002:a5d:59a4:: with SMTP id p4mr3151969wrr.332.1633692428046;
+        Fri, 08 Oct 2021 04:27:08 -0700 (PDT)
+Received: from [192.168.2.177] ([206.204.146.29])
+        by smtp.gmail.com with ESMTPSA id t15sm2222520wru.6.2021.10.08.04.27.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Oct 2021 04:27:06 -0700 (PDT)
+Message-ID: <1ec3cefb-12cd-86e8-fff2-1ab0d10034b6@gmail.com>
+Date:   Fri, 8 Oct 2021 13:27:05 +0200
 MIME-Version: 1.0
-In-Reply-To: <e8752b2d-65a7-1ed8-3c68-30d9006261ba@arm.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v10, 4/5] soc: mediatek: add mtk mutex support for MT8192
 Content-Language: en-US
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>
+References: <20210930155222.5861-1-yongqiang.niu@mediatek.com>
+ <20210930155222.5861-5-yongqiang.niu@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20210930155222.5861-5-yongqiang.niu@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lOyymgxK9TpeCR6DU1tsiTS3sJOTLMp1
-X-Proofpoint-ORIG-GUID: 8XX2XOnAHR5CiyG80ROVwRoe4lak9Nb6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-08_03,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 impostorscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110080065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/8/21 3:32 PM, James Clark wrote:
+On 30/09/2021 17:52, Yongqiang Niu wrote:
+> Add mtk mutex support for MT8192 SoC.
 > 
-> 
-> On 08/10/2021 08:43, kajoljain wrote:
->>
->>
->> On 10/7/21 4:35 PM, James Clark wrote:
->>> After a discussion on "[PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1 json",
->>> John Garry suggested that we can just modify the parser to make it more strict. Hopefully this will
->>> remove the need to apply any future JSON comma fixup commits.
->>>
->>> Applies on top of "[PATCH v2 1/3] perf vendor events: Syntax corrections in Neoverse N1 json" on
->>> perf/core.
->>>
->>> Also available at:
->>>   git clone --branch james-json-parse-fix git@git.gitlab.arm.com:linux-arm/linux-jc.git
->>
->> Hi James,
->>    Do we have any dependency patches on top of this patch series. I am
->> reviewing and testing it, but in both powerpc and x86 system I am
->> getting build issue. Not sure if I am missing something> 
->> I am trying your changes on top of upstream perf.
->>
->> pmu-events/arch/test/test_soc/sys/uncore.json: json error Invalid
->> character inside JSON string
-> 
-> Hi Kajol,
-> 
-> A trailing comma was fixed in this file 3 weeks ago at b8b350a. Can you
-> confirm if you have updated to get this commit on perf core?
-> 
-> Alternately you could pull from my branch above which is up to date enough
-> to include it.
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Reviewed-by: CK Hu <ck.hu@mediatek.com>
 
-Hi James,
-   Thanks for pointing it. Not getting build issue now.
-> 
-> The file is in pmu-events/arch/test/ so I would expect it to fail on all platforms.
-> 
->> make[3]: *** [pmu-events/Build:18: pmu-events/pmu-events.c] Error 1
->> make[3]: *** Deleting file 'pmu-events/pmu-events.c'
->> make[2]: *** [Makefile.perf:667: pmu-events/pmu-events-in.o] Error 2
->> make[2]: *** Waiting for unfinished jobs....
->> make[1]: *** [Makefile.perf:238: sub-make] Error 2
->> make: *** [Makefile:70: all] Error 2
->>
->> Also, Is it possible to add line number along with file name while
->> showing this error `json error Invalid character inside JSON string`.
->> It might make it easy to fix.
-> 
-> I can add a character number with the following fix if you think that would
-> be good enough? A line number might be a bigger change and involve keeping
-> track of newline characters.
+Applied to v5.15-next/soc
 
-Sure. I think then we can skip this change. Not sure if character
-number will be helpful.
+Thanks!
 
-Patch-set looks good to me.
-
-Reviewed-by Kajol Jain<kjain@linux.ibm.com>
-
-Thanks,
-Kajol Jain
-
+> ---
+>   drivers/soc/mediatek/mtk-mutex.c | 35 ++++++++++++++++++++++++++++++++
+>   1 file changed, 35 insertions(+)
 > 
-> diff --git a/tools/perf/pmu-events/json.c b/tools/perf/pmu-events/json.c
-> index 0544398d6e2d..41a14e1543bf 100644
-> --- a/tools/perf/pmu-events/json.c
-> +++ b/tools/perf/pmu-events/json.c
-> @@ -99,7 +99,7 @@ jsmntok_t *parse_json(const char *fn, char **map, size_t *size, int *len)
->         res = jsmn_parse(&parser, *map, *size, tokens,
->                          sz / sizeof(jsmntok_t));
->         if (res != JSMN_SUCCESS) {
-> -               pr_err("%s: json error %s\n", fn, jsmn_strerror(res));
-> +               pr_err("%s: json error at character %u '%s'\n", fn, parser.pos, jsmn_strerror(res));
->                 goto error_free;
->         }
->         if (len)
-> 
-> 
-> It prints this for the same error you have above>
-> pmu-events/arch/test/test_soc/sys/uncore.json: json error at character 213 'Invalid character inside JSON string'
-> 
-> Although funnily enough after re-introducing that extra comma it doesn't fail the build for me,
-> it just prints the error message. But I may have noticed some dependency tracking issues around
-> the json files.
-> 
-> James
+> diff --git a/drivers/soc/mediatek/mtk-mutex.c b/drivers/soc/mediatek/mtk-mutex.c
+> index 2e4bcc300576..2ca55bb5a8be 100644
+> --- a/drivers/soc/mediatek/mtk-mutex.c
+> +++ b/drivers/soc/mediatek/mtk-mutex.c
+> @@ -39,6 +39,18 @@
+>   #define MT8167_MUTEX_MOD_DISP_DITHER		15
+>   #define MT8167_MUTEX_MOD_DISP_UFOE		16
+>   
+> +#define MT8192_MUTEX_MOD_DISP_OVL0		0
+> +#define MT8192_MUTEX_MOD_DISP_OVL0_2L		1
+> +#define MT8192_MUTEX_MOD_DISP_RDMA0		2
+> +#define MT8192_MUTEX_MOD_DISP_COLOR0		4
+> +#define MT8192_MUTEX_MOD_DISP_CCORR0		5
+> +#define MT8192_MUTEX_MOD_DISP_AAL0		6
+> +#define MT8192_MUTEX_MOD_DISP_GAMMA0		7
+> +#define MT8192_MUTEX_MOD_DISP_POSTMASK0		8
+> +#define MT8192_MUTEX_MOD_DISP_DITHER0		9
+> +#define MT8192_MUTEX_MOD_DISP_OVL2_2L		16
+> +#define MT8192_MUTEX_MOD_DISP_RDMA4		17
+> +
+>   #define MT8183_MUTEX_MOD_DISP_RDMA0		0
+>   #define MT8183_MUTEX_MOD_DISP_RDMA1		1
+>   #define MT8183_MUTEX_MOD_DISP_OVL0		9
+> @@ -214,6 +226,20 @@ static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+>   	[DDP_COMPONENT_WDMA0] = MT8183_MUTEX_MOD_DISP_WDMA0,
+>   };
+>   
+> +static const unsigned int mt8192_mutex_mod[DDP_COMPONENT_ID_MAX] = {
+> +	[DDP_COMPONENT_AAL0] = MT8192_MUTEX_MOD_DISP_AAL0,
+> +	[DDP_COMPONENT_CCORR] = MT8192_MUTEX_MOD_DISP_CCORR0,
+> +	[DDP_COMPONENT_COLOR0] = MT8192_MUTEX_MOD_DISP_COLOR0,
+> +	[DDP_COMPONENT_DITHER] = MT8192_MUTEX_MOD_DISP_DITHER0,
+> +	[DDP_COMPONENT_GAMMA] = MT8192_MUTEX_MOD_DISP_GAMMA0,
+> +	[DDP_COMPONENT_POSTMASK0] = MT8192_MUTEX_MOD_DISP_POSTMASK0,
+> +	[DDP_COMPONENT_OVL0] = MT8192_MUTEX_MOD_DISP_OVL0,
+> +	[DDP_COMPONENT_OVL_2L0] = MT8192_MUTEX_MOD_DISP_OVL0_2L,
+> +	[DDP_COMPONENT_OVL_2L2] = MT8192_MUTEX_MOD_DISP_OVL2_2L,
+> +	[DDP_COMPONENT_RDMA0] = MT8192_MUTEX_MOD_DISP_RDMA0,
+> +	[DDP_COMPONENT_RDMA4] = MT8192_MUTEX_MOD_DISP_RDMA4,
+> +};
+> +
+>   static const unsigned int mt2712_mutex_sof[MUTEX_SOF_DSI3 + 1] = {
+>   	[MUTEX_SOF_SINGLE_MODE] = MUTEX_SOF_SINGLE_MODE,
+>   	[MUTEX_SOF_DSI0] = MUTEX_SOF_DSI0,
+> @@ -275,6 +301,13 @@ static const struct mtk_mutex_data mt8183_mutex_driver_data = {
+>   	.no_clk = true,
+>   };
+>   
+> +static const struct mtk_mutex_data mt8192_mutex_driver_data = {
+> +	.mutex_mod = mt8192_mutex_mod,
+> +	.mutex_sof = mt8183_mutex_sof,
+> +	.mutex_mod_reg = MT8183_MUTEX0_MOD0,
+> +	.mutex_sof_reg = MT8183_MUTEX0_SOF0,
+> +};
+> +
+>   struct mtk_mutex *mtk_mutex_get(struct device *dev)
+>   {
+>   	struct mtk_mutex_ctx *mtx = dev_get_drvdata(dev);
+> @@ -507,6 +540,8 @@ static const struct of_device_id mutex_driver_dt_match[] = {
+>   	  .data = &mt8173_mutex_driver_data},
+>   	{ .compatible = "mediatek,mt8183-disp-mutex",
+>   	  .data = &mt8183_mutex_driver_data},
+> +	{ .compatible = "mediatek,mt8192-disp-mutex",
+> +	  .data = &mt8192_mutex_driver_data},
+>   	{},
+>   };
+>   MODULE_DEVICE_TABLE(of, mutex_driver_dt_match);
 > 
