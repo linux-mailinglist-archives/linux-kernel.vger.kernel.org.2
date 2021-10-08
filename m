@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F591426956
+	by mail.lfdr.de (Postfix) with ESMTP id D8F65426957
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241134AbhJHLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59392 "EHLO mail.kernel.org"
+        id S241322AbhJHLgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241661AbhJHLd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241664AbhJHLd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Oct 2021 07:33:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DB7C610E5;
-        Fri,  8 Oct 2021 11:31:13 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B3BC611C3;
+        Fri,  8 Oct 2021 11:31:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692673;
-        bh=3ji6Muwf1LO3vqFgZ4Q+xM0r25/pBU9QOfCfBP+acHA=;
+        s=korg; t=1633692675;
+        bh=URTIX7csHgSfr/PXlRPi6sf11mamz8TaxWjqo7QXMAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CoRs2sYjo9co6sdRJ+DuKRtUOvsmPAcQOrwE+iNCMSZjIWqtMuffal/7cZd7KkjiW
-         XK7d17tLNFnlTQ+KpYPHM65EBZXd3llVP/DiWOj4Brlnt//GXuJuJZDGyPbuXDRjD6
-         vDBLQOfUbode9Note6VXR7NURqoFt+j+eD55l324=
+        b=vMKpm5jl7NX+N+gAIlbOqNP2GheCfjR1XGD6qD8D+P5oMqVlcjX9ku6ldaAqNwY5i
+         P0GgmL8eDQL9ntpH7VKOJgyE3TntgS2Q/QKppzjEznHflKBY1yk0VWO3kGzUNq7zNk
+         JMdV48elawLPFF0nI04i+hbmgW5Xty/37JVYfiek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>,
+        stable@vger.kernel.org, Changbin Du <changbin.du@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 22/29] smb3: correct smb3 ACL security descriptor
-Date:   Fri,  8 Oct 2021 13:28:09 +0200
-Message-Id: <20211008112717.707679145@linuxfoundation.org>
+Subject: [PATCH 5.10 23/29] tools/vm/page-types: remove dependency on opt_file for idle page tracking
+Date:   Fri,  8 Oct 2021 13:28:10 +0200
+Message-Id: <20211008112717.744370355@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
 References: <20211008112716.914501436@linuxfoundation.org>
@@ -41,47 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steve French <stfrench@microsoft.com>
+From: Changbin Du <changbin.du@gmail.com>
 
-[ Upstream commit b06d893ef2492245d0319b4136edb4c346b687a3 ]
+[ Upstream commit ebaeab2fe87987cef28eb5ab174c42cd28594387 ]
 
-Address warning:
+Idle page tracking can also be used for process address space, not only
+file mappings.
 
-        fs/smbfs_client/smb2pdu.c:2425 create_sd_buf()
-        warn: struct type mismatch 'smb3_acl vs cifs_acl'
+Without this change, using with '-i' option for process address space
+encounters below errors reported.
 
-Pointed out by Dan Carpenter via smatch code analysis tool
+  $ sudo ./page-types -p $(pidof bash) -i
+  mark page idle: Bad file descriptor
+  mark page idle: Bad file descriptor
+  mark page idle: Bad file descriptor
+  mark page idle: Bad file descriptor
+  ...
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+Link: https://lkml.kernel.org/r/20210917032826.10669-1-changbin.du@gmail.com
+Signed-off-by: Changbin Du <changbin.du@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/cifs/smb2pdu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/vm/page-types.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/cifs/smb2pdu.c b/fs/cifs/smb2pdu.c
-index ca5102773b72..88554b640b0d 100644
---- a/fs/cifs/smb2pdu.c
-+++ b/fs/cifs/smb2pdu.c
-@@ -2339,7 +2339,7 @@ create_sd_buf(umode_t mode, bool set_owner, unsigned int *len)
- 	buf->sd.OffsetDacl = cpu_to_le32(ptr - (__u8 *)&buf->sd);
- 	/* Ship the ACL for now. we will copy it into buf later. */
- 	aclptr = ptr;
--	ptr += sizeof(struct cifs_acl);
-+	ptr += sizeof(struct smb3_acl);
+diff --git a/tools/vm/page-types.c b/tools/vm/page-types.c
+index 0517c744b04e..f62f10c988db 100644
+--- a/tools/vm/page-types.c
++++ b/tools/vm/page-types.c
+@@ -1331,7 +1331,7 @@ int main(int argc, char *argv[])
+ 	if (opt_list && opt_list_mapcnt)
+ 		kpagecount_fd = checked_open(PROC_KPAGECOUNT, O_RDONLY);
  
- 	/* create one ACE to hold the mode embedded in reserved special SID */
- 	acelen = setup_special_mode_ACE((struct cifs_ace *)ptr, (__u64)mode);
-@@ -2364,7 +2364,7 @@ create_sd_buf(umode_t mode, bool set_owner, unsigned int *len)
- 	acl.AclRevision = ACL_REVISION; /* See 2.4.4.1 of MS-DTYP */
- 	acl.AclSize = cpu_to_le16(acl_size);
- 	acl.AceCount = cpu_to_le16(ace_count);
--	memcpy(aclptr, &acl, sizeof(struct cifs_acl));
-+	memcpy(aclptr, &acl, sizeof(struct smb3_acl));
+-	if (opt_mark_idle && opt_file)
++	if (opt_mark_idle)
+ 		page_idle_fd = checked_open(SYS_KERNEL_MM_PAGE_IDLE, O_RDWR);
  
- 	buf->ccontext.DataLength = cpu_to_le32(ptr - (__u8 *)&buf->sd);
- 	*len = roundup(ptr - (__u8 *)buf, 8);
+ 	if (opt_list && opt_pid)
 -- 
 2.33.0
 
