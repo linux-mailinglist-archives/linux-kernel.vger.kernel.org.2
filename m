@@ -2,181 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4874E426878
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C46942687C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240095AbhJHLJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:09:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:43480 "EHLO foss.arm.com"
+        id S240118AbhJHLMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:12:01 -0400
+Received: from mga14.intel.com ([192.55.52.115]:64772 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231841AbhJHLJz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:09:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF645D6E;
-        Fri,  8 Oct 2021 04:07:59 -0700 (PDT)
-Received: from [10.57.25.192] (unknown [10.57.25.192])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92D7E3F70D;
-        Fri,  8 Oct 2021 04:07:57 -0700 (PDT)
-Subject: Re: [RFC] perf arm-spe: Track task context switch for cpu-mode events
-To:     Namhyung Kim <namhyung@kernel.org>, Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20210916001748.1525291-1-namhyung@kernel.org>
- <20210916135418.GA383600@leoy-ThinkPad-X240s>
- <CAM9d7chQjzEm7=UpjtTBbsob7kT+=9v16P30hWxnna7mbHu=2g@mail.gmail.com>
- <20210923142305.GA603008@leoy-ThinkPad-X240s>
- <363c4107-fc6f-51d0-94d8-a3f579c8f5a2@arm.com>
- <20211004062638.GB174271@leoy-ThinkPad-X240s>
- <f877cfa6-9b25-6445-3806-ca44a4042eaf@arm.com>
- <20211006093620.GA14400@leoy-ThinkPad-X240s>
- <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <be937a2e-311b-2a8b-1094-39c203c6d9f3@arm.com>
-Date:   Fri, 8 Oct 2021 12:07:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232629AbhJHLL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:11:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226772890"
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="226772890"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 04:09:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
+   d="scan'208";a="624701232"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 08 Oct 2021 04:09:55 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 08 Oct 2021 14:09:55 +0300
+Date:   Fri, 8 Oct 2021 14:09:55 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Benson Leung <bleung@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "bleung@chromium.org" <bleung@chromium.org>,
+        "badhri@google.com" <badhri@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [RFC PATCH 2/3] power: supply: Add support for PDOs props
+Message-ID: <YWAnA1mc5CrlEs7H@kuha.fi.intel.com>
+References: <20210902213500.3795948-3-pmalani@chromium.org>
+ <YT9SYMAnOCTWGi5P@kuha.fi.intel.com>
+ <DB9PR10MB4652B4A6A2A2157018307AE380D99@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUB16up3JDwi3HfI@kuha.fi.intel.com>
+ <YULwz8NsoA3+vrhA@google.com>
+ <YUMbGp0aemx1HCHv@kuha.fi.intel.com>
+ <DB9PR10MB46525E6CA4C6BB101059D93C80DC9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <YUm5sdbceMcDTvYj@kuha.fi.intel.com>
+ <DB9PR10MB46524E3817FB4D836CDC13E180A49@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+ <CACeCKaem93dbJ11qOG=a+MkJhSrp0Nx-UAPG00Q-5WwMriJD0A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAM9d7cghXgUbAqUUJjyKAea+9=jxei7RDScgV5Fd_i9bXyXkKA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACeCKaem93dbJ11qOG=a+MkJhSrp0Nx-UAPG00Q-5WwMriJD0A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo, Namhyung,
+On Thu, Oct 07, 2021 at 03:32:27PM -0700, Prashant Malani wrote:
+> Hi folks,
+> 
+> Thanks for the comments and discussion on this RFC series.
+> 
+> On Fri, Sep 24, 2021 at 8:38 AM Adam Thomson
+> <Adam.Thomson.Opensource@diasemi.com> wrote:
+> >
+> > On 21 September 2021 11:54, Heikki Krogerus wrote:
+> >
+> > > If we can leave the decision about the selection to TCPM, that would
+> > > be great! I'm not against that at all. As I said, I have not though
+> > > through the control aspect. Right now I'm mostly concerned about how
+> > > we expose the information to the user. The only reason why I have
+> > > considered the control part at all is because how ever we decide to
+> > > expose the information to the user, it has to work with control as
+> > > well.
+> >
+> > Well part of the discussion has to be about the role that the user plays in
+> > the control. What does and doesn't need to be controlled further up the stack,
+> > and what will be taken care of by, for example, TCPM? Surely that dictates to
+> > some degree what and how we expose all of this? Right now we have a simple means
+> > to read and control voltages and currents through a PSY class, without the need
+> > for the user to know any details of what a PDO/APDO is. Do we continue with
+> > abstracting away to the user or instead let the user decipher this itself and
+> > decide? Am just trying to understand the needs going forward.
+> >
+> > > The final PSYs and the supply chains they create as well as the
+> > > individual properties I'm more than happy to talk about, but having a
+> > > separate object for the smallest thing that we can see (PDO) is the
+> > > right thing to do here IMO. Trying to concatenate things into single
+> > > objects especially in sysfs, despite how nice it always would seem,
+> > > has taken me to the brink of disaster in the past far too many times.
+> > >
+> > > In this case we don't need to take the risk of having to duplicated
+> > > information or in worst case deprecate something that is also exposed
+> > > to the sysfs in the future.
+> > >
+> > > So the question is not why should we registers every individual PDO
+> > > separately. The question is, why shouldn't we do that? And saying that
+> > > it's "heavyweight" I'm afraid is not good enough. :-)
+> >
+> > That was my initial feeling on the suggestion based on the idea of a PSY per PDO
+> > and I still don't feel that fits as your creating a whole class of resources
+> > to expose something that's pretty small. To me the PSY represents the source as
+> > whole, and the PDOs are simply options/configurations for that source. If we're
+> > needing to expose PDOs then I don't disagree with separating them out
+> > individually and I certainly wouldn't want that all concatenated as one
+> > property. However I think something like dynamically generated properties
+> > might be a nicer solution to expose each PDO, or even groups of properties if
+> > you wanted to split PDOs even further into constituent parts to the user.
+> 
+> To downscope this issue for the time being, one of our immediate goals
+> is to expose the PDOs
+> to userspace for metrics reporting and potentially for some power
+> policy control through other
+> channels (like Chrome OS Embedded Controller).
+> 
+> Would it be acceptable to revise this series to drop the power supply
+> support for now (since I don't yet
+> see a consensus on how to implement it for the partner), and just add
+> sysfs nodes for each PDO ?
+> This would be akin to how it's being done for identity VDOs right now.
+> 
+> So we would have :
+> 
+> /sys/class/typec/<port>-partner/source_pdos/pdo{1-13}
+> 
+> and
+> 
+> /sys/class/typec/<port>-partner/sink_pdos/pdo{1-13}
+> 
+> and similarly for the port device.
+> 
+> If we want to add additional parsing of the  Fixed Supply PDO into
+> individual properties for the partner/port,
+> those can of course be added later.
+> 
+> WDYT?
 
-On 06/10/2021 17:09, Namhyung Kim wrote:
-> Hi Leo and German,
->
-> [...]
->
-> I think it'd be better to check it in perf record and not set
-> evsel->core.attr.context_switch if possible.
->
-> Or it can ignore the context switch once it sees a context packet.
->
->> Here should note one thing is the perf tool needs to have knowledge to
->> decide if the bit 3 'CX' (macro 'SYS_PMSCR_EL1_CX_SHIFT' in kernel) has
->> been set in register PMSCR or not.  AFAIK, Arm SPE driver doesn't
->> expose any interface (or config) to userspace for the context tracing,
->> so one method is to add an extra config in Arm SPE driver for this
->> bit, e.g. 'ATTR_CFG_FLD_cx_enable_CFG' can be added in Arm SPE driver.
->>
->> Alternatively, rather than adding new config, I am just wandering we
->> simply use two flags in perf's decoding: 'use_switch_event_for_pid' and
->> 'use_ctx_packet_for_pid', the first variable will be set if detects
->> the tracing is userspace only, the second varaible will be set when
->> detects the hardware tracing containing context packet.  So if the
->> variable 'use_ctx_packet_for_pid' has been set, then the decoder will
->> always use context packet for sample's PID, otherwise, it falls back
->> to check 'use_switch_event_for_pid' and set sample PID based on switch
->> events.
->>
->> If have any other idea, please feel free bring up.
-> If it's just kernel config, we can check /proc/config.gz or
-> /boot/config-$(uname -r).  When it knows for sure it can just use
-> the context packet, otherwise it needs the context switch.
->
-> Thanks,
-> Namhyung
+I don't think we should use sysfs to expose and control any of these
+objects. It does not really matter under which subsystem we are
+working. Sysfs is just the wrong interface for this kind of data.
 
-Please correct me if I'm wrong, after disabling the PID_IN_CONTEXTIDR
-feature in the kernel, I don't see any context packets in the auxtraces.
-I think after applying the patch from [1], it should be sufficient to
-determine if pid tracing should fall back to use --switch-events when
-context_id from that patch has a value of -1.
+I'm now preparing a proof-of-concept patches where I create character
+device for every USB PD capable device (port, plug and partner). The
+idea is that we could use those char devices to tap into the USB PD
+protocol directly. Right now I'm thinking the nodes would look like
+this (with the first Type-C port):
 
-If the patch at the end of this message is applied on top of Namhyuna's
-and [1], I think it can work. Also, if the pmu driver is patched to
-disable the 'CX' bit when the pid is not in the root namespace [2]
-(unfortunately I haven't been able to set up an environment to properly
-test Leo's patch yet) tracing could also fall back to context-switch for
-userspace tracing. What do you think?
+        /dev/pd0/port
+        /dev/pd0/plug0 - you only get this node with full featured cables
+        /dev/pd0/plug1 - ditto
+        /dev/pd0/partner - and this is here only if you are connected
 
-Thanks,
-German
+So in this case you would use those char devices to send the actual
+Get_Source_Cap and Get_Sink_Cap messages to get the PDOs.
 
-[1] https://www.spinics.net/lists/linux-perf-users/msg12543.html
-[2] https://lore.kernel.org/lkml/20210916135418.GA383600@leoy-ThinkPad-X240s/
+The problem is that it's not going to be possible to always support
+every type of command. For example with UCSI we are pretty much
+limited to the capability control messages. But I still think this is
+the right way to do this.
 
-diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index 708323d..e224665 100644
---- a/tools/perf/util/arm-spe.c
-+++ b/tools/perf/util/arm-spe.c
-@@ -71,6 +71,12 @@
-     u64                kernel_start;
- 
-     unsigned long            num_events;
-+
-+    /*
-+     * Used for PID tracing.
-+     */
-+    u8                use_context_id_pkt;
-+    u8                use_context_switch_event;
- };
- 
- struct arm_spe_queue {
-@@ -586,13 +592,30 @@
-     return timeless_decoding;
- }
- 
-+static bool arm_spe__is_exclude_kernel(struct arm_spe *spe) {
-+    struct evsel *evsel;
-+    struct evlist *evlist = spe->session->evlist;
-+
-+    evlist__for_each_entry(evlist, evsel) {
-+        if (evsel->core.attr.type == spe->pmu_type && evsel->core.attr.exclude_kernel)
-+            return true;
-+    }
-+
-+    return false;
-+}
-+
- static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
-                     struct auxtrace_queue *queue)
- {
-     struct arm_spe_queue *speq = queue->priv;
--    pid_t tid;
-+    pid_t tid = -1;
- 
--    tid = machine__get_current_tid(spe->machine, speq->cpu);
-+    if (spe->use_context_id_pkt)
-+        tid = speq->decoder->record.context_id;
-+
-+    if (tid == -1 && spe->use_context_switch_event)
-+        tid = machine__get_current_tid(spe->machine, speq->cpu);
-+
-     if (tid != -1) {
-         speq->tid = tid;
-         thread__zput(speq->thread);
-@@ -1084,6 +1107,15 @@
-     spe->timeless_decoding = arm_spe__is_timeless_decoding(spe);
- 
-     /*
-+     * Always try to use context packet by default for pid tracing.
-+     *
-+     * If it's not enabled in the pmu driver, it will always have a value of -1 and we can try
-+     * to fall back to using context-switch events instead.
-+     */
-+    spe->use_context_id_pkt = true;
-+    spe->use_context_switch_event = arm_spe__is_exclude_kernel(spe);
-+
-+    /*
-      * The synthesized event PERF_RECORD_TIME_CONV has been handled ahead
-      * and the parameters for hardware clock are stored in the session
-      * context.  Passes these parameters to the struct perf_tsc_conversion
-@@ -1141,4 +1173,4 @@
- err_free:
-     free(spe);
-     return err;
--}
-+}
-\ No newline at end of file
+Let me know what you think.
+
+thanks,
+
+-- 
+heikki
