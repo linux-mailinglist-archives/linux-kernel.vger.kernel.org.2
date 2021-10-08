@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60D6426A81
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B83426A84
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 14:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240936AbhJHMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 08:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240731AbhJHMOo (ORCPT
+        id S240980AbhJHMPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 08:15:31 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:57597 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240457AbhJHMP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 08:14:44 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDF4C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 05:12:49 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id r19so36604410lfe.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:12:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=unTpf7x1Zh6JRpmWN02YBcJMyEDfP5RqTCFbqPM8fdM=;
-        b=fLHObyHwvExZ2uwtIURuHTokmgPMLOoI13yXgx7J2tO4djlc/TRcIOGWD2AkkStj1R
-         kidKUiPwAWCHaHUq20y5+gpwFYknlcdxNmRi0vpts9ewZxGw0iCuV5J3WJK94tCQoyCw
-         fIusWF7VSQ7fHLBaEou0EfT080Y+6nncMMLvoHRX5qyfCtcmxxP+AAsJJz5ZXccL4z6r
-         YX30n2a8ry6i39tzQXiSqGmoSe05IOWcOdup60gsUKum0WVr8VFdfvdUcM1m5GCO/Qqj
-         c7yZprUqDRYcRRhLcI06TxKeHJAEczWJDSLq7sqt/tsH0JvKno+lKxRG2TlviBjomxho
-         dy2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=unTpf7x1Zh6JRpmWN02YBcJMyEDfP5RqTCFbqPM8fdM=;
-        b=d723FQBYKEGh6r3v7OkxoEYSf2ShcZwEF9KBGnmo4bIZq8RtYvJFsOD2J2Da2w2pdv
-         UwUNX7I3/S0JJpxeutqCnrexFGrSZ072tlqNjMFxCmDfVy1EP8LbH7uBobpF6EDL1bOo
-         8R2EpXhp0gUWPCIljmKjgYspZ6PniMK0zFXMk12b46OOI6NXEYfdVw0UHtjJRM/6DI46
-         OJhunNCPKe1dpfy7705jijraZ8jzrn/ufEdVTnx/w8aAY9PowkqyQBBSmek8i2xEf024
-         twoMccuHo2lZmJg79iNuSSzzDh7zReupr1+mpp4+CpKEi6nmN7LQZ7dvr9+QTvEcgojc
-         Sn9g==
-X-Gm-Message-State: AOAM532g/BBQg1Rs2JJmLKN9Q6aWdOM6SYOaWh4eHJWCJNcUiRjwt0pE
-        YFan83cl7rUWfK0VzBoNbfaBYyiptuOQ+Iy1c/pBFg==
-X-Google-Smtp-Source: ABdhPJxf19NU+QPvfRT/N467g3ccGQlt314KORg+0xxNxgDfSfY7SuyLB1ZmTmPxF4MrWRNgXgPbZVRhZQtJoZbOAtc=
-X-Received: by 2002:a05:651c:4c9:: with SMTP id e9mr3216170lji.229.1633695166786;
- Fri, 08 Oct 2021 05:12:46 -0700 (PDT)
+        Fri, 8 Oct 2021 08:15:29 -0400
+Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MA7b8-1mSkCd1O7W-00BbkH for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021
+ 14:13:33 +0200
+Received: by mail-wr1-f51.google.com with SMTP id k7so29043609wrd.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 05:13:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530O2RGMey1ZbHJd5Z3H7frpNvPg016Ps2U3Srp2UOs3CJiwWtnD
+        ThR10rAYhgnc/iLDsjUTTtZAz5EqeiPyPAFdzBw=
+X-Google-Smtp-Source: ABdhPJx1A2D3uT0vzkwBBgcqCmigtym207jBkyjcfjbAUCVSC7jvNZMRoRn37wH1p1cCJbv0expgQMHr7/L53iVVxso=
+X-Received: by 2002:adf:a3da:: with SMTP id m26mr3519436wrb.336.1633695212568;
+ Fri, 08 Oct 2021 05:13:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211004024935.15326-1-shawn.guo@linaro.org>
-In-Reply-To: <20211004024935.15326-1-shawn.guo@linaro.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 8 Oct 2021 14:12:10 +0200
-Message-ID: <CAPDyKFrNq4J9TsyqXhXnQuxCotUPQE=4qjUQWk2bpNGvS7Rm4Q@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Map more voltage level to SDHCI_POWER_330
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20191211212025.1981822-1-arnd@arndb.de> <20191211212025.1981822-9-arnd@arndb.de>
+ <29QBMJU8DE71E.2YZSH8IHT5HMH@mforney.org> <s5hpmsh9kdx.wl-tiwai@suse.de>
+ <CAK8P3a0K3XtjiszC3XWgG0L8+AgO+xUGr_KEAnb9a5GmyecoUQ@mail.gmail.com>
+ <s5hee8x9f92.wl-tiwai@suse.de> <CAK8P3a0pSZxqfk-bn+idrDYDwANSfiP9L6U1O5jLQvK+3vwyVQ@mail.gmail.com>
+ <s5hy27497eo.wl-tiwai@suse.de> <20211007160634.GB7074@brightrain.aerifal.cx>
+ <s5hr1cw95ar.wl-tiwai@suse.de> <20211007165158.GC7074@brightrain.aerifal.cx>
+ <s5h5yu79aab.wl-tiwai@suse.de> <CAK8P3a0qxNLv3_RcR5COcRGPcTnYMcfbOjdWKiT2hKdcof9WUg@mail.gmail.com>
+ <s5hv9277oux.wl-tiwai@suse.de> <CAK8P3a2DUvQSkUaDzwiRjg9d3w7pXxrw8q_oSawJKY7kEw1qtg@mail.gmail.com>
+ <s5ho87z7mxg.wl-tiwai@suse.de>
+In-Reply-To: <s5ho87z7mxg.wl-tiwai@suse.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 8 Oct 2021 14:13:16 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0kg0NQoxC7_cUJfFZkoheAE2A_fQLTGKqgz0wq3L0rvw@mail.gmail.com>
+Message-ID: <CAK8P3a0kg0NQoxC7_cUJfFZkoheAE2A_fQLTGKqgz0wq3L0rvw@mail.gmail.com>
+Subject: Re: [musl] Re: [alsa-devel] [PATCH v7 8/9] ALSA: add new 32-bit
+ layout for snd_pcm_mmap_status/control
+To:     musl@lists.openwall.com
+Cc:     Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>,
+        Michael Forney <mforney@mforney.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        y2038 Mailman List <y2038@lists.linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:hwyJ6E22069yP3B4NLtvn2lZc27/4kzl2uzEjPsHsTqtvGOmHCx
+ C2vK3QD3oEDlk9GF0vmrvK7bKX8pY8GzmoCuINS6KwQwP9KE9PHr8OvHaOmxiBvI8L75wuX
+ xcvZJBuMbR2ClqhNxf596Ri1gjbkw1qzYkZBQxprSwBB13XRgxcxD6hKb0ZQJWrEJsa0cHv
+ e6Spty48eKlPJ6ZomZu8Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:i2JsnFMQv78=:niKsq1gVME5ufzfeTocewG
+ 3oA/TOm6vJZ59kgrRCgjOQFtuW0kOJ/PDYH3NF6dO9nrpSJbd08ieVpEPdZ7TSBqIwldxNjQZ
+ NCyg06b+utIYDe7UR3ajrbSWn0cBUz7ZuhxCokoQF4prn3swSJ92Aw6AOgsSElPg40a6D062w
+ u4dxYel7HMpcvdGMC2Bu3JKCxr059+l4mVBdM5pLTN3GYcAMFALZ46tosHn0GGAwhFpTvMjjc
+ DLkrTiSTGOrG1Flx/1wOudf/6Cex6pIHrKJr6EmM5PLpxjDgS7a/O7eIc9H2mYVBpCzgXLtMb
+ cyhrYRAGCk2TTjPD7aa05afGrqOd0M54vHgQcbfOKph3mxwSlmUZCbjhHVXHQKCTLHcaiGTvs
+ Zf7d7F75m5eHQuRJHLQCtKQVlZQBL8Brthrv14ITuZlMqs/GUdgvNuV6cW/QVJD5pvtfL2rDw
+ IXTtHSQ+AvIKXb7uP7zKPjYHK4XMMecGK/zKmn7+/4jUiZAotMbjZmC2yvj+1ccdtUybZzeVV
+ XVhDlp6Z/1jH9ROct7sNTujkDAeDSAu509nm7OF1aM609gH1Ag6jDq8YLkcLbOmN6So5oGKwj
+ FIwpZVBYE/9TnoIkcYuM915Q1VRIj8o02Jy/osnXWpopdLWb5ALbfYSueasj0tun878xOVA/s
+ d3tLn1QvbCg6cxBSEQk6FYxGJFAmBtnZ3F0rIyt0f7ksbNcuPmg+SaaVm/uMwPRgrTvJAAaBm
+ k5aDzCwWipcfVYQY0GoyH5xXXYgnOi0yocneK8a2nf+Galure/2zpNCBe/C/1guHmwgHv7z/h
+ dRLjEBf4CD8aW9UnF39FjoJY50vPxXto0Dx/OaQZDPyhWluGwtvXlGE2Pgn44CulWU2/N1deh
+ q94+VuTMb1elCi+tICSA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Oct 2021 at 04:49, Shawn Guo <shawn.guo@linaro.org> wrote:
+On Fri, Oct 8, 2021 at 1:53 PM Takashi Iwai <tiwai@suse.de> wrote:
+> On Fri, 08 Oct 2021 13:45:45 +0200, Arnd Bergmann wrote:
+> > On Fri, Oct 8, 2021 at 1:11 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > On Fri, 08 Oct 2021 11:24:39 +0200, Arnd Bergmann wrote:
+> > > The below is a revised kernel patch (again untested), just correcting
+> > > the behavior of 32bit compat mode.  32bit apps on 32bit kernel work
+> > > fine as is, as well as 64bit apps on 64bit kernel.
+> >
+> > Right, this should cover all cases of the ioctl itself misbehaving.
+> > In addition, we still need to disallow the mmap() interface on compat
+> > kernels then. Strictly speaking, we could allow the snd_pcm_mmap_status
+> > but not snd_pcm_mmap_control to be mapped, but I'm not sure if
+> > that's better than disallowing both.
 >
-> On Thundercomm TurboX CM2290, the eMMC OCR reports vdd = 23 (3.5 ~ 3.6 V),
-> which is being treated as an invalid value by sdhci_set_power_noreg().
-> And thus eMMC is totally broken on the platform.
->
-> [    1.436599] ------------[ cut here ]------------
-> [    1.436606] mmc0: Invalid vdd 0x17
-> [    1.436640] WARNING: CPU: 2 PID: 69 at drivers/mmc/host/sdhci.c:2048 sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436655] Modules linked in:
-> [    1.436662] CPU: 2 PID: 69 Comm: kworker/u8:1 Tainted: G        W         5.15.0-rc1+ #137
-> [    1.436669] Hardware name: Thundercomm TurboX CM2290 (DT)
-> [    1.436674] Workqueue: events_unbound async_run_entry_fn
-> [    1.436685] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    1.436692] pc : sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436698] lr : sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436703] sp : ffff800010803a60
-> [    1.436705] x29: ffff800010803a60 x28: ffff6a9102465f00 x27: ffff6a9101720a70
-> [    1.436715] x26: ffff6a91014de1c0 x25: ffff6a91014de010 x24: ffff6a91016af280
-> [    1.436724] x23: ffffaf7b1b276640 x22: 0000000000000000 x21: ffff6a9101720000
-> [    1.436733] x20: ffff6a9101720370 x19: ffff6a9101720580 x18: 0000000000000020
-> [    1.436743] x17: 0000000000000000 x16: 0000000000000004 x15: ffffffffffffffff
-> [    1.436751] x14: 0000000000000000 x13: 00000000fffffffd x12: ffffaf7b1b84b0bc
-> [    1.436760] x11: ffffaf7b1b720d10 x10: 000000000000000a x9 : ffff800010803a60
-> [    1.436769] x8 : 000000000000000a x7 : 000000000000000f x6 : 00000000fffff159
-> [    1.436778] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-> [    1.436787] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff6a9101718d80
-> [    1.436797] Call trace:
-> [    1.436800]  sdhci_set_power_noreg+0x168/0x2b4
-> [    1.436805]  sdhci_set_ios+0xa0/0x7fc
-> [    1.436811]  mmc_power_up.part.0+0xc4/0x164
-> [    1.436818]  mmc_start_host+0xa0/0xb0
-> [    1.436824]  mmc_add_host+0x60/0x90
-> [    1.436830]  __sdhci_add_host+0x174/0x330
-> [    1.436836]  sdhci_msm_probe+0x7c0/0x920
-> [    1.436842]  platform_probe+0x68/0xe0
-> [    1.436850]  really_probe.part.0+0x9c/0x31c
-> [    1.436857]  __driver_probe_device+0x98/0x144
-> [    1.436863]  driver_probe_device+0xc8/0x15c
-> [    1.436869]  __device_attach_driver+0xb4/0x120
-> [    1.436875]  bus_for_each_drv+0x78/0xd0
-> [    1.436881]  __device_attach_async_helper+0xac/0xd0
-> [    1.436888]  async_run_entry_fn+0x34/0x110
-> [    1.436895]  process_one_work+0x1d0/0x354
-> [    1.436903]  worker_thread+0x13c/0x470
-> [    1.436910]  kthread+0x150/0x160
-> [    1.436915]  ret_from_fork+0x10/0x20
-> [    1.436923] ---[ end trace fcfac44cb045c3a8 ]---
->
-> Fix the issue by mapping MMC_VDD_35_36 (and MMC_VDD_34_35) to
-> SDHCI_POWER_330 as well.
->
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> IIRC, the compat mmap is already disallowed even for the
+> SNDRV_PCM_MMAP_OFFSET_CONTROL_NEW (in pcm_control_mmap_allowed()), so
+> no need to change around that.
 
-Applied for fixes and by adding a stable tag, thanks!
+Ah, right. I think it was meant to become allowed as part of commit
+80fe7430c708 ("ALSA: add new 32-bit layout for snd_pcm_mmap_status/control"),
+which did allow the snd_pcm_mmap_status to be mmap()ed, but it appears
+to be the rare case where two mistakes cancel out and we don't have to
+change the mmap code.
 
-Kind regards
-Uffe
-
-
-> ---
-> Changes since RFC:
-> - Add a comment for 3.4 ~ 3.6V voltage range.
->
->  drivers/mmc/host/sdhci.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 8eefa7d5fe85..2d80a04e11d8 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -2042,6 +2042,12 @@ void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
->                         break;
->                 case MMC_VDD_32_33:
->                 case MMC_VDD_33_34:
-> +               /*
-> +                * 3.4 ~ 3.6V are valid only for those platforms where it's
-> +                * known that the voltage range is supported by hardware.
-> +                */
-> +               case MMC_VDD_34_35:
-> +               case MMC_VDD_35_36:
->                         pwr = SDHCI_POWER_330;
->                         break;
->                 default:
-> --
-> 2.17.1
->
+         Arnd
