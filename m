@@ -2,192 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA02C42622E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:53:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F4C426230
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 03:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbhJHBz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 21:55:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhJHBzY (ORCPT
+        id S232249AbhJHB6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 21:58:41 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:23353 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhJHB6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 21:55:24 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31121C061570;
-        Thu,  7 Oct 2021 18:53:30 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id p4so8031652qki.3;
-        Thu, 07 Oct 2021 18:53:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7todBHdUdrk6e6UQ0gc/p1j76bLvlAp/nPJIsH1ZwrU=;
-        b=pYnevWap+Nr7RyAO44CZlMPTpYR5EQmDloM6Oxm/wRKX1hYpweH+gBE4gQcMVfrbmQ
-         K1/A21aj+3oJSnOuO3k3MkrlFKZCgHjIkn0ZrCBlXaOtt7r4L56575GtYEA4jqvBxsee
-         m5cKizWctwS9lPtGra1C1CxemYkXhJEYYf2Xg/eBr7i3lTzJoslhdC2SnSyVuQdle0sC
-         IxecV14wttzHpdidvAmBJpAerxuInifYORccHbTQvGsbmuPnig+TiPLMbE58/MIzWDUa
-         gYC4M0+JxpYZPyjaqCmlvPZE11tt7CpFhgtIk9xPtPiYoiYwg/I2xEd8PUC8OemV1V8/
-         DdAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7todBHdUdrk6e6UQ0gc/p1j76bLvlAp/nPJIsH1ZwrU=;
-        b=Q9EmrozJgTR7T18o7QCPT0Acu4GHkfqQEzJ192Hv0w4ipz5mHO2lg6kvDgR+hEsv8P
-         FQwvB1dnnHiffaFtA7JG39JIxjDrlaxy/kYi5V+wIK9jtY/8x0iY25YKW0nPZj+n3HVa
-         qgCBxAvYrMJNQE9rJTq88O2AcL8UtdCiMRK0anYP3v8r6hC8MDRhCfgrDuxVucKYDfUq
-         fFiHh3+k0bdwDmdGdioe+OS0UeWxZhnitKofdcYIVg3CBah+SewDVz/FDVmMU6zPIP29
-         YCx5QXJgNri3zDdTDwB/liUk7HEXJaTKlirE+TD5IN282PzBAgLeN6E174hOMIyb19xT
-         qYoA==
-X-Gm-Message-State: AOAM530q7Eo8W5AvrjbMTUESMBfOPpLqBOfExRmWEu5SnhcIud7e7JYq
-        O+viPNvsLOlPga6VInSlcferu87fYc3AINPRaYg=
-X-Google-Smtp-Source: ABdhPJyub/QHvISEi0k5mdUs2wnnkzAP+wB09A+dNspF4cZL5duX0GGffeUg7FUrIvC5sukpkWeX0AAH4FOnxhM9WBI=
-X-Received: by 2002:a37:8ce:: with SMTP id 197mr663603qki.492.1633658009360;
- Thu, 07 Oct 2021 18:53:29 -0700 (PDT)
+        Thu, 7 Oct 2021 21:58:40 -0400
+Received: from dggeme754-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HQWQr3xRvzbcxj;
+        Fri,  8 Oct 2021 09:52:20 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ dggeme754-chm.china.huawei.com (10.3.19.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 09:56:44 +0800
+Subject: Re: [PATCH -next v2 2/6] ext4: introduce last_check_time record
+ previous check time
+To:     Jan Kara <jack@suse.cz>
+References: <20210911090059.1876456-1-yebin10@huawei.com>
+ <20210911090059.1876456-3-yebin10@huawei.com>
+ <20211007123100.GG12712@quack2.suse.cz>
+CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   yebin <yebin10@huawei.com>
+Message-ID: <615FA55B.5070404@huawei.com>
+Date:   Fri, 8 Oct 2021 09:56:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-References: <1632625630-784-1-git-send-email-shengjiu.wang@nxp.com>
- <1632625630-784-4-git-send-email-shengjiu.wang@nxp.com> <20211006162511.GA3370862@p14s>
-In-Reply-To: <20211006162511.GA3370862@p14s>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Fri, 8 Oct 2021 09:53:18 +0800
-Message-ID: <CAA+D8AOmnZ6wWBzJe5imMcyoVE0fSiOyLpWb83bYPwadJ5O-Mg@mail.gmail.com>
-Subject: Re: [PATCH v5 3/4] remoteproc: imx_dsp_rproc: Add remoteproc driver
- for DSP on i.MX
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Ohad Ben Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211007123100.GG12712@quack2.suse.cz>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.185]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeme754-chm.china.huawei.com (10.3.19.100)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu
 
-On Thu, Oct 7, 2021 at 12:25 AM Mathieu Poirier
-<mathieu.poirier@linaro.org> wrote:
->
-> Hi Shengjiu,
->
-> This pachset doesn't apply to rproc-next, which is now located here[1].  The
-> change is in linux-next but not in mainline yet.
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git/log/?h=rproc-next
 
-Ok, I will double check it and fix it.
+On 2021/10/7 20:31, Jan Kara wrote:
+> On Sat 11-09-21 17:00:55, Ye Bin wrote:
+>> kmmpd:
+>> ...
+>>      diff = jiffies - last_update_time;
+>>      if (diff > mmp_check_interval * HZ) {
+>> ...
+>> As "mmp_check_interval = 2 * mmp_update_interval", 'diff' always little
+>> than 'mmp_update_interval', so there will never trigger detection.
+>> Introduce last_check_time record previous check time.
+>>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> I think the check is there only for the case where write_mmp_block() +
+> sleep took longer than mmp_check_interval. I agree that should rarely
+> happen but on a really busy system it is possible and in that case we would
+> miss updating mmp block for too long and so another node could have started
+> using the filesystem. I actually don't see a reason why kmmpd should be
+> checking the block each mmp_check_interval as you do - mmp_check_interval
+> is just for ext4_multi_mount_protect() to know how long it should wait
+> before considering mmp block stale... Am I missing something?
+>
+> 								Honza
+I'm sorry, I didn't understand the detection mechanism here before. Now 
+I understand
+the detection mechanism here.
+As you said, it's just an abnormal protection. There's really no problem.
 
->
-> On Sun, Sep 26, 2021 at 11:07:09AM +0800, Shengjiu Wang wrote:
-> > Provide a basic driver to control DSP processor found on NXP i.MX8QM,
-> > i.MX8QXP, i.MX8MP and i.MX8ULP.
-> >
-> > Currently it is able to resolve addresses between DSP and main CPU,
-> > start and stop the processor, suspend and resume.
-> >
-> > The communication between DSP and main CPU is based on mailbox, there
-> > are three mailbox channels (tx, rx, rxdb).
-> >
-> > This driver was tested on NXP i.MX8QM, i.MX8QXP, i.MX8MP and i.MX8ULP.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  drivers/remoteproc/Kconfig         |   11 +
-> >  drivers/remoteproc/Makefile        |    1 +
-> >  drivers/remoteproc/imx_dsp_rproc.c | 1206 ++++++++++++++++++++++++++++
-> >  3 files changed, 1218 insertions(+)
-> >  create mode 100644 drivers/remoteproc/imx_dsp_rproc.c
-> >
->
-> [...]
->
-> > +
-> > +/**
-> > + * imx_dsp_attach_pm_domains() - attach the power domains
-> > + * @priv: private data pointer
-> > + *
-> > + * On i.MX8QM and i.MX8QXP there is multiple power domains
-> > + * required, so need to link them.
-> > + */
-> > +static int imx_dsp_attach_pm_domains(struct imx_dsp_rproc *priv)
-> > +{
-> > +     struct device *dev = priv->rproc->dev.parent;
-> > +     int ret, i;
-> > +
-> > +     priv->num_domains = of_count_phandle_with_args(dev->of_node,
-> > +                                                    "power-domains",
-> > +                                                    "#power-domain-cells");
-> > +
-> > +     /* If only one domain, then no need to link the device */
-> > +     if (priv->num_domains <= 1)
-> > +             return 0;
-> > +
-> > +     priv->pd_dev = devm_kmalloc_array(dev, priv->num_domains,
-> > +                                       sizeof(*priv->pd_dev),
-> > +                                       GFP_KERNEL);
-> > +     if (!priv->pd_dev)
-> > +             return -ENOMEM;
-> > +
-> > +     priv->pd_dev_link = devm_kmalloc_array(dev, priv->num_domains,
-> > +                                            sizeof(*priv->pd_dev_link),
-> > +                                            GFP_KERNEL);
-> > +     if (!priv->pd_dev_link)
-> > +             return -ENOMEM;
-> > +
-> > +     for (i = 0; i < priv->num_domains; i++) {
-> > +             priv->pd_dev[i] = dev_pm_domain_attach_by_id(dev, i);
-> > +             if (IS_ERR(priv->pd_dev[i])) {
-> > +                     ret = PTR_ERR(priv->pd_dev[i]);
-> > +                     goto detach_pm;
-> > +             }
->
-> I have pointed a problem with the error handling in the above during the
-> previous review and it was not addressed.
+>> ---
+>>   fs/ext4/mmp.c | 14 +++++++++-----
+>>   1 file changed, 9 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+>> index 12af6dc8457b..c781b09a78c9 100644
+>> --- a/fs/ext4/mmp.c
+>> +++ b/fs/ext4/mmp.c
+>> @@ -152,6 +152,7 @@ static int kmmpd(void *data)
+>>   	int mmp_update_interval = le16_to_cpu(es->s_mmp_update_interval);
+>>   	unsigned mmp_check_interval;
+>>   	unsigned long last_update_time;
+>> +	unsigned long last_check_time;
+>>   	unsigned long diff;
+>>   	int retval = 0;
+>>   
+>> @@ -170,6 +171,7 @@ static int kmmpd(void *data)
+>>   
+>>   	memcpy(mmp->mmp_nodename, init_utsname()->nodename,
+>>   	       sizeof(mmp->mmp_nodename));
+>> +	last_check_time = jiffies;
+>>   
+>>   	while (!kthread_should_stop() && !sb_rdonly(sb)) {
+>>   		if (!ext4_has_feature_mmp(sb)) {
+>> @@ -198,17 +200,18 @@ static int kmmpd(void *data)
+>>   		}
+>>   
+>>   		diff = jiffies - last_update_time;
+>> -		if (diff < mmp_update_interval * HZ)
+>> +		if (diff < mmp_update_interval * HZ) {
+>>   			schedule_timeout_interruptible(mmp_update_interval *
+>>   						       HZ - diff);
+>> +			diff = jiffies - last_update_time;
+>> +		}
+>>   
+>>   		/*
+>>   		 * We need to make sure that more than mmp_check_interval
+>> -		 * seconds have not passed since writing. If that has happened
+>> -		 * we need to check if the MMP block is as we left it.
+>> +		 * seconds have not passed since check. If that has happened
+>> +		 * we need to check if the MMP block is as we write it.
+>>   		 */
+>> -		diff = jiffies - last_update_time;
+>> -		if (diff > mmp_check_interval * HZ) {
+>> +		if (jiffies - last_check_time > mmp_check_interval * HZ) {
+>>   			struct buffer_head *bh_check = NULL;
+>>   			struct mmp_struct *mmp_check;
+>>   
+>> @@ -234,6 +237,7 @@ static int kmmpd(void *data)
+>>   				goto wait_to_exit;
+>>   			}
+>>   			put_bh(bh_check);
+>> +			last_check_time = jiffies;
+>>   		}
+>>   
+>>   		 /*
+>> -- 
+>> 2.31.1
+>>
 
-I have considered your comments.  Actually when
-dev_pm_domain_attach_by_id() return NULL, the device_link_add()
-will break, I have added comments below, so above error handling
-for dev_pm_domain_attach_by_id() is enough.
-
-Best regards
-Wang Shengjiu
->
-> > +
-> > +             /*
-> > +              * device_link_add will check priv->pd_dev[i], if it is
-> > +              * NULL, then will break.
-> > +              */
-> > +             priv->pd_dev_link[i] = device_link_add(dev,
-> > +                                                    priv->pd_dev[i],
-> > +                                                    DL_FLAG_STATELESS |
-> > +                                                    DL_FLAG_PM_RUNTIME);
-> > +             if (!priv->pd_dev_link[i]) {
-> > +                     dev_pm_domain_detach(priv->pd_dev[i], false);
-> > +                     ret = -EINVAL;
-> > +                     goto detach_pm;
-> > +             }
-> > +     }
-> > +
-> > +     return 0;
-> > +
-> > +detach_pm:
-> > +     while (--i >= 0) {
-> > +             device_link_del(priv->pd_dev_link[i]);
-> > +             dev_pm_domain_detach(priv->pd_dev[i], false);
-> > +     }
-> > +
-> > +     return ret;
-> > +}
-> > +
