@@ -2,197 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A341D4267FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027C34267FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 12:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239901AbhJHKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 06:36:30 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:33856 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230032AbhJHKg3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 06:36:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633689254;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=8D4gANPVn5NGKBKvljhYf71e+GYWJVAgFAZk0nSaJrw=;
-    b=hxtvzktlZBbshcZss6tJNSMF5N5RiHvt8EG9A/fxsw32A/ev9MIqXHalR6eYYrq3Jo
-    cHETEvf0VdWs7T1HOFZk/VTLBBgA2pgqlTsqPFbtT7fboSRPMPLGc1jwsEcM0BF9aAHg
-    d0q58+tzftJohp1RBbwgxooJQALV1o334S64DFDnMNNF753p4YjaSdHHAtst1jt47j9m
-    iadAJdudeVBrnKqb/sGqRpgTQXtqztXfHGZyosnLlK449Kf8zje3L0gwoRjUHvzVIn/J
-    KBX5j8NtR73kca8tei17jU0vY8gtSKewiieWgJAMGoEOhCQl7142A+wG0na6eVkNTiJz
-    y3cw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8p2M1A=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id 301038x98AYDhUg
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 8 Oct 2021 12:34:13 +0200 (CEST)
-Date:   Fri, 8 Oct 2021 12:34:08 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        dianders@chromium.org, linux@roeck-us.net, rnayak@codeaurora.org,
-        lsrao@codeaurora.org,
-        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH v11 2/5] soc: qcom: Add Sleep stats driver
-Message-ID: <YWAeoIu3ndsg5erY@gerhold.net>
-References: <1633600649-7164-1-git-send-email-mkshah@codeaurora.org>
- <1633600649-7164-3-git-send-email-mkshah@codeaurora.org>
- <YV88fNYF0i1Wkr73@gerhold.net>
- <acaf7b6e-c5b7-ae27-c4ba-37f375f05f19@codeaurora.org>
+        id S239793AbhJHKgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 06:36:17 -0400
+Received: from foss.arm.com ([217.140.110.172]:41512 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230032AbhJHKgQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 06:36:16 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D390EED1;
+        Fri,  8 Oct 2021 03:34:20 -0700 (PDT)
+Received: from [10.57.25.67] (unknown [10.57.25.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63FB13F70D;
+        Fri,  8 Oct 2021 03:34:18 -0700 (PDT)
+Subject: Re: [PATCH 1/4] perf vendor events: Syntax corrections in Neoverse N1
+ json
+To:     Ian Rogers <irogers@google.com>, Andi Kleen <ak@linux.intel.com>
+Cc:     John Garry <john.garry@huawei.com>,
+        Andrew Kilroy <andrew.kilroy@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>, Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20211004160008.21645-1-andrew.kilroy@arm.com>
+ <b7a4a1b3-3d22-7a52-75b1-66c04b57a50c@huawei.com>
+ <0743bf83-2e5d-8830-61bc-ed0731db108d@arm.com>
+ <83767166-e379-a352-d920-ad8b6e923800@huawei.com>
+ <b24041af-1c92-3855-9659-133e73a0c241@linux.intel.com>
+ <CAP-5=fXuzH9Gh8=CP9E=vb7sDSL5TO-8_pPvfQz4p61jUQEPmQ@mail.gmail.com>
+From:   James Clark <james.clark@arm.com>
+Message-ID: <18ef658a-48d3-0038-f988-f39f9498d31e@arm.com>
+Date:   Fri, 8 Oct 2021 11:34:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <acaf7b6e-c5b7-ae27-c4ba-37f375f05f19@codeaurora.org>
+In-Reply-To: <CAP-5=fXuzH9Gh8=CP9E=vb7sDSL5TO-8_pPvfQz4p61jUQEPmQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 02:45:20PM +0530, Maulik Shah wrote:
-> On 10/7/2021 11:59 PM, Stephan Gerhold wrote:
-> > On Thu, Oct 07, 2021 at 03:27:26PM +0530, Maulik Shah wrote:
-> > > From: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> > > 
-> > > Let's add a driver to read the stats from remote processor and
-> > > export to debugfs.
-> > > 
-> > > The driver creates "qcom_sleep_stats" directory in debugfs and
-> > > adds files for various low power mode available. Below is sample
-> > > output with command
-> > > 
-> > > cat /sys/kernel/debug/qcom_sleep_stats/ddr
-> > > count = 0
-> > > Last Entered At = 0
-> > > Last Exited At = 0
-> > > Accumulated Duration = 0
-> > > 
-> > > Signed-off-by: Mahesh Sivasubramanian <msivasub@codeaurora.org>
-> > > Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> > > [mkshah: add subsystem sleep stats, create one file for each stat]
-> > > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> > > ---
-> > >   drivers/soc/qcom/Kconfig            |  10 ++
-> > >   drivers/soc/qcom/Makefile           |   1 +
-> > >   drivers/soc/qcom/qcom_sleep_stats.c | 259 ++++++++++++++++++++++++++++++++++++
-> > >   3 files changed, 270 insertions(+)
-> > >   create mode 100644 drivers/soc/qcom/qcom_sleep_stats.c
-> > > 
-> > > [...]
-> > > +
-> > > +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
-> > > +{
-> > > +	struct subsystem_data *subsystem = s->private;
-> > > +	struct sleep_stats *stat;
-> > > +
-> > > +	/* Items are allocated lazily, so lookup pointer each time */
-> > > +	stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
-> > > +	if (IS_ERR(stat))
-> > > +		return -EIO;
-> > > +
-> > > [...]
-> > > +
-> > > +static void qcom_create_subsystem_stat_files(struct dentry *root)
-> > > +{
-> > > +	const struct sleep_stats *stat;
-> > > +	int i;
-> > > +
-> > > +	for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
-> > > +		stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
-> > > +		if (IS_ERR(stat))
-> > > +			continue;
-> > > +
-> > > +		debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
-> > > +				    &qcom_subsystem_sleep_stats_fops);
-> > 
-> > This causes WARNINGs on MSM8996 and MSM8916:
-> > 
-> > [    0.503054] ------------[ cut here ]------------
-> > [    0.503100] WARNING: CPU: 1 PID: 1 at drivers/soc/qcom/smem.c:587 qcom_smem_get+0x184/0x1b0
-> > [    0.503184] CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc4+ #378
-> > [    0.503218] Hardware name: Xiaomi Mi Note 2 (DT)
-> > [    0.503278] pc : qcom_smem_get+0x184/0x1b0
-> > [    0.503307] lr : qcom_sleep_stats_probe+0xfc/0x20
-> > [    0.503875] Call trace:
-> > [    0.503896]  qcom_smem_get+0x184/0x1b0
-> > [    0.503925]  qcom_sleep_stats_probe+0xfc/0x270
-> > 
-> > AFAICT from downstream the smem subsystem information is only read in
-> > the rpmh_master_stat.c driver, should this be specific to RPMh?
-> 
-> Thanks for checking this on MSM8996. Probably it doesnot have SMEM items
-> allocated so causes WARNINGs.
-> 
-> Keeping subsystem stats info in SMEM is not limited to only RPMH targets.
-> Downstream has some RPM targets which also uses SMEM to store
-> subsystem stats so the driver is kept generic.
-> 
 
-Thanks for clarifying. To be honest, I'm not sure if the WARN_ON() in
-smem is very useful since this isn't really fundamentally different as
-if the entry is not allocated. But at the end all that matters is that
-there are no warnings when loading this driver on older targets.
 
-> > 
-> > There is a rpm_master_stat.c too but that looks quite different,
-> > so I guess the approach is different with RPM?
+On 08/10/2021 03:59, Ian Rogers wrote:
+> On Thu, Oct 7, 2021 at 5:03 PM Andi Kleen <ak@linux.intel.com> wrote:
+>>
+>>
+>> On 10/6/2021 9:26 AM, John Garry wrote:
+>>> On 06/10/2021 09:43, James Clark wrote:
+>>>
+>>> + Andi
+>>>
+>>>>
+>>>>
+>>>> On 05/10/2021 11:10, John Garry wrote:
+>>>>> On 04/10/2021 17:00, Andrew Kilroy wrote:
+>>>>>> There are some syntactical mistakes in the json files for the
+>>>>>> Cortex A76
+>>>>>> N1 (Neoverse N1).  This was obstructing parsing from an external tool.
+>>>>>
+>>>>> If the trailing comma is not allowed by standard, then maybe we
+>>>>> should fix our parsing tool to not allow it also. However maybe
+>>>>> there is a good reason why we allow it..
+>>>>
+>>>> It would be nice to do, because I have also made similar fixes
+>>>> before. We looked at the STRICT option
+>>>> in the parser (https://github.com/zserge/jsmn), but even then it
+>>>> seems to allow trailing commas.
+>>>>
+>>>> Trailing commas are not allowed in the json standard, but there is a
+>>>> split between parsers
+>>>> where some allow it and others don't. Specifically the Python parser
+>>>> doesn't allow it, and Python
+>>>> can easily be involved in some workflow that parses these files.
+>>>>
+>>>> The only way forwards I can think of is either getting a change
+>>>> accepted upstream to the parser
+>>>> and then updating it in perf, switching to a different parser, or
+>>>> doing some hack to add an extra
+>>>> step in perf to look for commas. None of which sound ideal.
+>>>>
+>>>
+>>> Looking at the license in jsmn.c, we seem to be ok to modify it (to
+>>> error on non-standard trailing ',') - that parser has already
+>>> apparently been modified in mainline.
+>>>
+>>> If we do that then I hope that there are not to many violations in out
+>>> JSONs, including downstream.
+>>
+>>
+>> Sure we can modify the file. I already did some minor changes when I
+>> submitted it originally.
+>>
+>> -Andi
 > 
-> Right. on existing upstream RPM targets i can skip to create/get SMEM items
-> since
-> they are not guranteed to be present and one should continue to use
-> rpm_master_stats.c to get subsystem stats. (this uses entirely different
-> data structure for sleep stats and are not part of RPM data ram/SMEM and are
-> deprecated in downstream).
-> 
-> > 
-> > Two more (unrelated) issues here:
-> > 
-> >    1. This will silently not register anything if SMEM probes after the
-> >       qcom-sleep-stats driver (qcom_smem_get() will return -EPROBE_DEFER)
-> >       and you will just skip registering the debugfs files.
-> 
-> I think module loading internally takes care of this.
-> we're making a direct function call into the qcom_smem driver, so we
-> already have a hard dependency on qcom_smem.ko being loaded.
-> 
+> jsmn is a somewhat frustrating way to work on json code and working on
+> a forked version of jsmn was frustrating in [1]. Could we assume
+> python on build systems and rewrite jevents in python?
 
-The driver can also be built-in and in this case this is not guaranteed.
-This actually happened to me when I tried this on MSM8916: I did not get
-the WARNINGs because all the qcom_smem_get() just returned -EPROBE_DEFER.
-qcom_smem was then probed after qcom_sleep_stats. Of course, the smem
-items are not present there anyway so it did not matter.
+Seems reasonable to me, although maybe a big job. I suppose there could be
+an empty generated pmu file for systems that don't have Python and only the
+ones listed in pmu-events/arch/ would need it.
 
-> > 
-> >    2. In qcom_subsystem_sleep_stats_show() you say
-> >       /* Items are allocated lazily, so lookup pointer each time */
-> > 
-> >       But, if the lookup fails here you don't register the debugfs file
-> >       at all. Does this work if the subsystem is started after this driver?
+James
 > 
-> Good catch. if the subsystem starts after this driver is loaded, the look up
-> fails during probe and we don't create debugfs file for the subsystem.
+> Thanks,
+> Ian
 > 
-> one need to unload/load the driver again after sometime in bootup so by that
-> time all the subsytems (modem, adsp, cdsp, etc) are up and we create debugfs
-> file for them.
+> [1] https://lore.kernel.org/lkml/20201110100346.2527031-1-irogers@google.com/
 > 
-> we have downstream fix for this to create the debugfs files irrespective of
-> look up fails or not. i have plan to add it once the base driver gets
-> merged.
-> 
-
-OK, I don't seem to have any recent Qualcomm platform that actually has
-subsystem stats in SMEM so it doesn't bother me. I just wanted to
-mention it for reference. :)
-
-Thanks!
-Stephan
