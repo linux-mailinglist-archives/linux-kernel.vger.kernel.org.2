@@ -2,189 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A9842624C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC91426253
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 04:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhJHCHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Oct 2021 22:07:08 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50702 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234468AbhJHCHF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Oct 2021 22:07:05 -0400
-X-UUID: 76c63b06c6f04e6cac66398d8265fb89-20211008
-X-UUID: 76c63b06c6f04e6cac66398d8265fb89-20211008
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 376056038; Fri, 08 Oct 2021 10:05:07 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 8 Oct 2021 10:05:06 +0800
-Received: from localhost.localdomain (10.17.3.154) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Oct 2021 10:05:05 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Subject: [PATCH v11, 2/2] soc: mediatek: mmsys: Add mt8192 mmsys routing table
-Date:   Fri, 8 Oct 2021 10:05:04 +0800
-Message-ID: <20211008020504.1678-3-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211008020504.1678-1-yongqiang.niu@mediatek.com>
-References: <20211008020504.1678-1-yongqiang.niu@mediatek.com>
+        id S234766AbhJHCNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Oct 2021 22:13:04 -0400
+Received: from mga06.intel.com ([134.134.136.31]:37004 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229501AbhJHCNC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Oct 2021 22:13:02 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="287298679"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="287298679"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 19:11:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="478804301"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by orsmga007.jf.intel.com with ESMTP; 07 Oct 2021 19:11:05 -0700
+Cc:     baolu.lu@linux.intel.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, arei.gonglei@huawei.com
+Subject: Re: [PATCH v3 2/2] iommu/vt-d: avoid duplicated removing in
+ __domain_mapping
+To:     "Longpeng(Mike)" <longpeng2@huawei.com>, dwmw2@infradead.org,
+        will@kernel.org, joro@8bytes.org
+References: <20211008000433.1115-1-longpeng2@huawei.com>
+ <20211008000433.1115-3-longpeng2@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <54cf3663-85e0-3e63-9112-385e9d6eeceb@linux.intel.com>
+Date:   Fri, 8 Oct 2021 10:07:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-MTK:  N
+In-Reply-To: <20211008000433.1115-3-longpeng2@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mt8192 has different routing registers than mt8183
+On 10/8/21 8:04 AM, Longpeng(Mike) wrote:
+> __domain_mapping() always removes the pages in the range from
+> 'iov_pfn' to 'end_pfn', but the 'end_pfn' is always the last pfn
+> of the range that the caller wants to map.
+> 
+> This would introduce too many duplicated removing and leads the
+> map operation take too long, for example:
+> 
+>    Map iova=0x100000,nr_pages=0x7d61800
+>      iov_pfn: 0x100000, end_pfn: 0x7e617ff
+>      iov_pfn: 0x140000, end_pfn: 0x7e617ff
+>      iov_pfn: 0x180000, end_pfn: 0x7e617ff
+>      iov_pfn: 0x1c0000, end_pfn: 0x7e617ff
+>      iov_pfn: 0x200000, end_pfn: 0x7e617ff
+>      ...
+>    it takes about 50ms in total.
+> 
+> We can reduce the cost by recalculate the 'end_pfn' and limit it
+> to the boundary of the end of this pte page.
+> 
+>    Map iova=0x100000,nr_pages=0x7d61800
+>      iov_pfn: 0x100000, end_pfn: 0x13ffff
+>      iov_pfn: 0x140000, end_pfn: 0x17ffff
+>      iov_pfn: 0x180000, end_pfn: 0x1bffff
+>      iov_pfn: 0x1c0000, end_pfn: 0x1fffff
+>      iov_pfn: 0x200000, end_pfn: 0x23ffff
+>      ...
+>    it only need 9ms now.
+> 
+> Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+> ---
+>   drivers/iommu/intel/iommu.c | 11 ++++++-----
+>   include/linux/intel-iommu.h |  6 ++++++
+>   2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index d75f59a..46edae6 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -2354,12 +2354,17 @@ static void switch_to_super_page(struct dmar_domain *domain,
+>   				return -ENOMEM;
+>   			first_pte = pte;
+>   
+> +			lvl_pages = lvl_to_nr_pages(largepage_lvl);
+> +
+>   			/* It is large page*/
+>   			if (largepage_lvl > 1) {
+>   				unsigned long end_pfn;
+> +				unsigned long pages_to_remove;
+>   
+>   				pteval |= DMA_PTE_LARGE_PAGE;
+> -				end_pfn = ((iov_pfn + nr_pages) & level_mask(largepage_lvl)) - 1;
+> +				pages_to_remove = min_t(unsigned long, nr_pages,
+> +							nr_pte_to_next_page(pte) * lvl_pages);
+> +				end_pfn = iov_pfn + pages_to_remove - 1;
+>   				switch_to_super_page(domain, iov_pfn, end_pfn, largepage_lvl);
+>   			} else {
+>   				pteval &= ~(uint64_t)DMA_PTE_LARGE_PAGE;
+> @@ -2381,10 +2386,6 @@ static void switch_to_super_page(struct dmar_domain *domain,
+>   			WARN_ON(1);
+>   		}
+>   
+> -		lvl_pages = lvl_to_nr_pages(largepage_lvl);
+> -
+> -		BUG_ON(nr_pages < lvl_pages);
+> -
+>   		nr_pages -= lvl_pages;
+>   		iov_pfn += lvl_pages;
+>   		phys_pfn += lvl_pages;
+> diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> index 9bcabc7..b29b2a3 100644
+> --- a/include/linux/intel-iommu.h
+> +++ b/include/linux/intel-iommu.h
+> @@ -713,6 +713,12 @@ static inline bool first_pte_in_page(struct dma_pte *pte)
+>   	return IS_ALIGNED((unsigned long)pte, VTD_PAGE_SIZE);
+>   }
+>   
+> +static inline int nr_pte_to_next_page(struct dma_pte *pte)
+> +{
+> +	return first_pte_in_page(pte) ? BIT_ULL(VTD_STRIDE_SHIFT) :
+> +		(struct dma_pte *)ALIGN((unsigned long)pte, VTD_PAGE_SIZE) - pte;
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
----
- drivers/soc/mediatek/mt8192-mmsys.h | 77 +++++++++++++++++++++++++++++
- drivers/soc/mediatek/mtk-mmsys.c    | 11 +++++
- 2 files changed, 88 insertions(+)
- create mode 100644 drivers/soc/mediatek/mt8192-mmsys.h
+We should make it like this to avoid the 0day warning:
 
-diff --git a/drivers/soc/mediatek/mt8192-mmsys.h b/drivers/soc/mediatek/mt8192-mmsys.h
-new file mode 100644
-index 000000000000..7ea1531ee8af
---- /dev/null
-+++ b/drivers/soc/mediatek/mt8192-mmsys.h
-@@ -0,0 +1,77 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+
-+#ifndef __SOC_MEDIATEK_MT8192_MMSYS_H
-+#define __SOC_MEDIATEK_MT8192_MMSYS_H
-+
-+#define MT8192_MMSYS_OVL_MOUT_EN		0xf04
-+#define MT8192_DISP_OVL1_2L_MOUT_EN		0xf08
-+#define MT8192_DISP_OVL0_2L_MOUT_EN		0xf18
-+#define MT8192_DISP_OVL0_MOUT_EN		0xf1c
-+#define MT8192_DISP_RDMA0_SEL_IN		0xf2c
-+#define MT8192_DISP_RDMA0_SOUT_SEL		0xf30
-+#define MT8192_DISP_CCORR0_SOUT_SEL		0xf34
-+#define MT8192_DISP_AAL0_SEL_IN			0xf38
-+#define MT8192_DISP_DITHER0_MOUT_EN		0xf3c
-+#define MT8192_DISP_DSI0_SEL_IN			0xf40
-+#define MT8192_DISP_OVL2_2L_MOUT_EN		0xf4c
-+
-+#define MT8192_DISP_OVL0_GO_BLEND			BIT(0)
-+#define MT8192_DITHER0_MOUT_IN_DSI0			BIT(0)
-+#define MT8192_OVL0_MOUT_EN_DISP_RDMA0			BIT(0)
-+#define MT8192_OVL2_2L_MOUT_EN_RDMA4			BIT(0)
-+#define MT8192_DISP_OVL0_GO_BG				BIT(1)
-+#define MT8192_DISP_OVL0_2L_GO_BLEND			BIT(2)
-+#define MT8192_DISP_OVL0_2L_GO_BG			BIT(3)
-+#define MT8192_OVL1_2L_MOUT_EN_RDMA1			BIT(4)
-+#define MT8192_OVL0_MOUT_EN_OVL0_2L			BIT(4)
-+#define MT8192_RDMA0_SEL_IN_OVL0_2L			0x3
-+#define MT8192_RDMA0_SOUT_COLOR0			0x1
-+#define MT8192_CCORR0_SOUT_AAL0				0x1
-+#define MT8192_AAL0_SEL_IN_CCORR0			0x1
-+#define MT8192_DSI0_SEL_IN_DITHER0			0x1
-+
-+static const struct mtk_mmsys_routes mmsys_mt8192_routing_table[] = {
-+	{
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_DISP_OVL0_2L_MOUT_EN, MT8192_OVL0_MOUT_EN_DISP_RDMA0,
-+		MT8192_OVL0_MOUT_EN_DISP_RDMA0
-+	}, {
-+		DDP_COMPONENT_OVL_2L2, DDP_COMPONENT_RDMA4,
-+		MT8192_DISP_OVL2_2L_MOUT_EN, MT8192_OVL2_2L_MOUT_EN_RDMA4,
-+		MT8192_OVL2_2L_MOUT_EN_RDMA4
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8192_DISP_DITHER0_MOUT_EN, MT8192_DITHER0_MOUT_IN_DSI0,
-+		MT8192_DITHER0_MOUT_IN_DSI0
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_DISP_RDMA0_SEL_IN, MT8192_RDMA0_SEL_IN_OVL0_2L,
-+		MT8192_RDMA0_SEL_IN_OVL0_2L
-+	}, {
-+		DDP_COMPONENT_CCORR, DDP_COMPONENT_AAL0,
-+		MT8192_DISP_AAL0_SEL_IN, MT8192_AAL0_SEL_IN_CCORR0,
-+		MT8192_AAL0_SEL_IN_CCORR0
-+	}, {
-+		DDP_COMPONENT_DITHER, DDP_COMPONENT_DSI0,
-+		MT8192_DISP_DSI0_SEL_IN, MT8192_DSI0_SEL_IN_DITHER0,
-+		MT8192_DSI0_SEL_IN_DITHER0
-+	}, {
-+		DDP_COMPONENT_RDMA0, DDP_COMPONENT_COLOR0,
-+		MT8192_DISP_RDMA0_SOUT_SEL, MT8192_RDMA0_SOUT_COLOR0,
-+		MT8192_RDMA0_SOUT_COLOR0
-+	}, {
-+		DDP_COMPONENT_CCORR, DDP_COMPONENT_AAL0,
-+		MT8192_DISP_CCORR0_SOUT_SEL, MT8192_CCORR0_SOUT_AAL0,
-+		MT8192_CCORR0_SOUT_AAL0
-+	}, {
-+		DDP_COMPONENT_OVL0, DDP_COMPONENT_OVL_2L0,
-+		MT8192_MMSYS_OVL_MOUT_EN, MT8192_DISP_OVL0_GO_BG,
-+		MT8192_DISP_OVL0_GO_BG,
-+	}, {
-+		DDP_COMPONENT_OVL_2L0, DDP_COMPONENT_RDMA0,
-+		MT8192_MMSYS_OVL_MOUT_EN, MT8192_DISP_OVL0_2L_GO_BLEND,
-+		MT8192_DISP_OVL0_2L_GO_BLEND,
-+	}
-+};
-+
-+#endif /* __SOC_MEDIATEK_MT8192_MMSYS_H */
-diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
-index a78e88f27b62..5ecfe09a5751 100644
---- a/drivers/soc/mediatek/mtk-mmsys.c
-+++ b/drivers/soc/mediatek/mtk-mmsys.c
-@@ -13,6 +13,7 @@
- #include "mtk-mmsys.h"
- #include "mt8167-mmsys.h"
- #include "mt8183-mmsys.h"
-+#include "mt8192-mmsys.h"
- #include "mt8365-mmsys.h"
- 
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
-@@ -53,6 +54,12 @@ static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
- 	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-+	.clk_driver = "clk-mt8192-mm",
-+	.routes = mmsys_mt8192_routing_table,
-+	.num_routes = ARRAY_SIZE(mmsys_mt8192_routing_table),
-+};
-+
- static const struct mtk_mmsys_driver_data mt8365_mmsys_driver_data = {
- 	.clk_driver = "clk-mt8365-mm",
- 	.routes = mt8365_mmsys_routing_table,
-@@ -167,6 +174,10 @@ static const struct of_device_id of_match_mtk_mmsys[] = {
- 		.compatible = "mediatek,mt8183-mmsys",
- 		.data = &mt8183_mmsys_driver_data,
- 	},
-+	{
-+		.compatible = "mediatek,mt8192-mmsys",
-+		.data = &mt8192_mmsys_driver_data,
-+	},
- 	{
- 		.compatible = "mediatek,mt8365-mmsys",
- 		.data = &mt8365_mmsys_driver_data,
--- 
-2.25.1
+	(struct dma_pte *)(uintptr_t)VTD_PAGE_ALIGN((unsigned long)pte) - pte;
 
+Can you please test this line of change? No need to send a new version.
+I will handle it if it passes your test.
+
+> +}
+> +
+>   extern struct dmar_drhd_unit * dmar_find_matched_drhd_unit(struct pci_dev *dev);
+>   extern int dmar_find_matched_atsr_unit(struct pci_dev *dev);
+>   
+> 
+
+Best regards,
+baolu
