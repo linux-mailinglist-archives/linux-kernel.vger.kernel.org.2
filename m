@@ -2,123 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C384268F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2894269C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241263AbhJHLcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:32:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59712 "EHLO mail.kernel.org"
+        id S241969AbhJHLlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:41:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240946AbhJHLbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:31:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E78A6120C;
-        Fri,  8 Oct 2021 11:29:33 +0000 (UTC)
+        id S240463AbhJHLh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:37:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F0F1613A7;
+        Fri,  8 Oct 2021 11:32:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692573;
-        bh=yQ8uQrfIoW4oGG8ACTtjnTx7C/9vE+fOg8e9k2on/kg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=2cl8YC1j5NDzOk50ChWhARM9lVarR3XcfDaV0k2sWA4LvluuHJ6qSaRoGQ+BxnoxR
-         9DM25SP0IC4FT091rvHmjtrm91CjVLeTPNO2EITdBKMYIsvJC8TKkkus0/Gw43MdWN
-         +/Yalx85YmdGyAnLodTmJuiyB3QEL+dXpwVLv2wI=
+        s=korg; t=1633692764;
+        bh=8hgJn1Ih+9Ernuswh+NV/WK81g7IXRnOXBF10QK3Gsg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=xTTNdCso78M/LwQG2KZH+AHBV/5ljaLwNuKIM0235McXR8J+kkAtykSeOdADW2uPJ
+         Tcya+o33Tgk+d1t3g3f4oeb/GMC1dvhc9OXmBce+D626yFeZWF6+X63QaUsdoujTah
+         zjOLvegL4uim+z1AeMIcXFZt5LrZqtyzvJLZ7Ga8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/10] 4.14.250-rc1 review
+        stable@vger.kernel.org, Dai Ngo <dai.ngo@oracle.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 05/48] nfsd: back channel stuck in SEQ4_STATUS_CB_PATH_DOWN
 Date:   Fri,  8 Oct 2021 13:27:41 +0200
-Message-Id: <20211008112714.445637990@linuxfoundation.org>
+Message-Id: <20211008112720.196748309@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
+In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
+References: <20211008112720.008415452@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.250-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.250-rc1
-X-KernelTest-Deadline: 2021-10-10T11:27+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.250 release.
-There are 10 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Dai Ngo <dai.ngo@oracle.com>
 
-Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 02579b2ff8b0becfb51d85a975908ac4ab15fba8 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.250-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+When the back channel enters SEQ4_STATUS_CB_PATH_DOWN state, the client
+recovers by sending BIND_CONN_TO_SESSION but the server fails to recover
+the back channel and leaves it as NFSD4_CB_DOWN.
 
-thanks,
+Fix by enhancing nfsd4_bind_conn_to_session to probe the back channel
+by calling nfsd4_probe_callback.
 
-greg k-h
+Signed-off-by: Dai Ngo <dai.ngo@oracle.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/nfsd/nfs4state.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
--------------
-Pseudo-Shortlog of commits:
+diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+index 3d805f5b1f5d..1c33a5255893 100644
+--- a/fs/nfsd/nfs4state.c
++++ b/fs/nfsd/nfs4state.c
+@@ -3570,7 +3570,7 @@ static struct nfsd4_conn *__nfsd4_find_conn(struct svc_xprt *xpt, struct nfsd4_s
+ }
+ 
+ static __be32 nfsd4_match_existing_connection(struct svc_rqst *rqst,
+-				struct nfsd4_session *session, u32 req)
++		struct nfsd4_session *session, u32 req, struct nfsd4_conn **conn)
+ {
+ 	struct nfs4_client *clp = session->se_client;
+ 	struct svc_xprt *xpt = rqst->rq_xprt;
+@@ -3593,6 +3593,8 @@ static __be32 nfsd4_match_existing_connection(struct svc_rqst *rqst,
+ 	else
+ 		status = nfserr_inval;
+ 	spin_unlock(&clp->cl_lock);
++	if (status == nfs_ok && conn)
++		*conn = c;
+ 	return status;
+ }
+ 
+@@ -3617,8 +3619,16 @@ __be32 nfsd4_bind_conn_to_session(struct svc_rqst *rqstp,
+ 	status = nfserr_wrong_cred;
+ 	if (!nfsd4_mach_creds_match(session->se_client, rqstp))
+ 		goto out;
+-	status = nfsd4_match_existing_connection(rqstp, session, bcts->dir);
+-	if (status == nfs_ok || status == nfserr_inval)
++	status = nfsd4_match_existing_connection(rqstp, session,
++			bcts->dir, &conn);
++	if (status == nfs_ok) {
++		if (bcts->dir == NFS4_CDFC4_FORE_OR_BOTH ||
++				bcts->dir == NFS4_CDFC4_BACK)
++			conn->cn_flags |= NFS4_CDFC4_BACK;
++		nfsd4_probe_callback(session->se_client);
++		goto out;
++	}
++	if (status == nfserr_inval)
+ 		goto out;
+ 	status = nfsd4_map_bcts_dir(&bcts->dir);
+ 	if (status)
+-- 
+2.33.0
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.250-rc1
-
-Davidlohr Bueso <dave@stgolabs.net>
-    lib/timerqueue: Rely on rbtree semantics for next timer
-
-Kate Hsuan <hpa@redhat.com>
-    libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860 and 870 SSD.
-
-Wen Xiong <wenxiong@linux.ibm.com>
-    scsi: ses: Retry failed Send/Receive Diagnostic commands
-
-Yang Yingliang <yangyingliang@huawei.com>
-    usb: dwc2: check return value after calling platform_get_resource()
-
-Faizel K B <faizel.kb@dicortech.com>
-    usb: testusb: Fix for showing the connection speed
-
-Ming Lei <ming.lei@redhat.com>
-    scsi: sd: Free scsi_disk device via put_device()
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    ext2: fix sleeping in atomic bugs on error
-
-Linus Torvalds <torvalds@linux-foundation.org>
-    sparc64: fix pci_iounmap() when CONFIG_PCI is not set
-
-Jan Beulich <jbeulich@suse.com>
-    xen-netback: correct success/error reporting for the SKB-with-fraglist case
-
-Vladimir Oltean <vladimir.oltean@nxp.com>
-    net: mdio: introduce a shutdown method to mdio device drivers
-
-
--------------
-
-Diffstat:
-
- Makefile                          |  4 ++--
- arch/sparc/lib/iomap.c            |  2 ++
- drivers/ata/libata-core.c         | 34 ++++++++++++++++++++++++++++++++--
- drivers/net/phy/mdio_device.c     | 11 +++++++++++
- drivers/net/xen-netback/netback.c |  2 +-
- drivers/scsi/sd.c                 |  9 +++++----
- drivers/scsi/ses.c                | 22 ++++++++++++++++++----
- drivers/usb/dwc2/hcd.c            |  4 ++++
- fs/ext2/balloc.c                  | 14 ++++++--------
- include/linux/libata.h            |  1 +
- include/linux/mdio.h              |  3 +++
- include/linux/timerqueue.h        | 13 ++++++-------
- lib/timerqueue.c                  | 30 ++++++++++++------------------
- tools/usb/testusb.c               | 14 ++++++++------
- 14 files changed, 111 insertions(+), 52 deletions(-)
 
 
