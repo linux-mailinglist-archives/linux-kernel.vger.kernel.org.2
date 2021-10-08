@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66AA4426910
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D2F842696D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 13:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241245AbhJHLdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 07:33:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59432 "EHLO mail.kernel.org"
+        id S242811AbhJHLhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 07:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240550AbhJHLcK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 07:32:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F47E61139;
-        Fri,  8 Oct 2021 11:29:59 +0000 (UTC)
+        id S241171AbhJHLeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 07:34:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6EA360F35;
+        Fri,  8 Oct 2021 11:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633692599;
-        bh=e6yFJVoIJ96XBkS7+SSJkBO8zHdUj/CN3HzDX2Y/KWs=;
+        s=korg; t=1633692704;
+        bh=tXM17ftZo6zb9iZvoXX/Qu2JrcVS4VAYlpj1pqVIu9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZtK2Qeby1BNTmAPVUzQ4tu8wWUM70r8JFBbPfZfg3tel1W1pwGkbo+mRepxzYWCQY
-         pOjUYVsX2fxepE1suSb1Joh2DG/V4Smf7EiCwLU7OBxtsSThP31T7+EjOV/AtcfZuw
-         lqG+m/SUpCwTXZ5EnGM4V/3L+ZynQTyY9FYjAFsU=
+        b=n4cBvzb9WLwm/TpWpsagOrGpY3rQmvj3orXfYeOLP3566KpCBX9vHaPcCpTPViF3N
+         BeOij+yXp2tI6Vn9edEyDfv/N+7KTJt1rOdTVcH4LAEnR+XZz9eOlwOSDCS1gZQT6U
+         s44F5JJOCHAGZ6K9D8uug3+1L9fFQWdVgr0OGuhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        David Miller <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/12] selftests: be sure to make khdr before other targets
+Subject: [PATCH 5.10 09/29] sparc64: fix pci_iounmap() when CONFIG_PCI is not set
 Date:   Fri,  8 Oct 2021 13:27:56 +0200
-Message-Id: <20211008112714.866585898@linuxfoundation.org>
+Message-Id: <20211008112717.253387748@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211008112714.601107695@linuxfoundation.org>
-References: <20211008112714.601107695@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+References: <20211008112716.914501436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,44 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Zhijian <lizhijian@cn.fujitsu.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 8914a7a247e065438a0ec86a58c1c359223d2c9e ]
+[ Upstream commit d8b1e10a2b8efaf71d151aa756052fbf2f3b6d57 ]
 
-LKP/0Day reported some building errors about kvm, and errors message
-are not always same:
-- lib/x86_64/processor.c:1083:31: error: ‘KVM_CAP_NESTED_STATE’ undeclared
-(first use in this function); did you mean ‘KVM_CAP_PIT_STATE2’?
-- lib/test_util.c:189:30: error: ‘MAP_HUGE_16KB’ undeclared (first use
-in this function); did you mean ‘MAP_HUGE_16GB’?
+Guenter reported [1] that the pci_iounmap() changes remain problematic,
+with sparc64 allnoconfig and tinyconfig still not building due to the
+header file changes and confusion with the arch-specific pci_iounmap()
+implementation.
 
-Although kvm relies on the khdr, they still be built in parallel when -j
-is specified. In this case, it will cause compiling errors.
+I'm pretty convinced that sparc should just use GENERIC_IOMAP instead of
+doing its own thing, since it turns out that the sparc64 version of
+pci_iounmap() is somewhat buggy (see [2]).  But in the meantime, this
+just fixes the build by avoiding the trivial re-definition of the empty
+case.
 
-Here we mark target khdr as NOTPARALLEL to make it be always built
-first.
-
-CC: Philip Li <philip.li@intel.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/lkml/20210920134424.GA346531@roeck-us.net/ [1]
+Link: https://lore.kernel.org/lkml/CAHk-=wgheheFx9myQyy5osh79BAazvmvYURAtub2gQtMvLrhqQ@mail.gmail.com/ [2]
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Cc: David Miller <davem@davemloft.net>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/lib.mk | 1 +
- 1 file changed, 1 insertion(+)
+ arch/sparc/lib/iomap.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index a5d40653a921..9700281bee4c 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -26,6 +26,7 @@ include $(top_srcdir)/scripts/subarch.include
- ARCH		?= $(SUBARCH)
+diff --git a/arch/sparc/lib/iomap.c b/arch/sparc/lib/iomap.c
+index c9da9f139694..f3a8cd491ce0 100644
+--- a/arch/sparc/lib/iomap.c
++++ b/arch/sparc/lib/iomap.c
+@@ -19,8 +19,10 @@ void ioport_unmap(void __iomem *addr)
+ EXPORT_SYMBOL(ioport_map);
+ EXPORT_SYMBOL(ioport_unmap);
  
- .PHONY: khdr
-+.NOTPARALLEL:
- khdr:
- 	make ARCH=$(ARCH) -C $(top_srcdir) headers_install
- 
++#ifdef CONFIG_PCI
+ void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
+ {
+ 	/* nothing to do */
+ }
+ EXPORT_SYMBOL(pci_iounmap);
++#endif
 -- 
 2.33.0
 
