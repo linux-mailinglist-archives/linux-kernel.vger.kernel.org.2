@@ -2,214 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7BF426FA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7419426FA8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 19:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238060AbhJHRhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 13:37:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231234AbhJHRha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 13:37:30 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226DFC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 10:35:35 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x27so42122954lfa.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 10:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
-        b=FP13VZlniV+IoAFJLmoJcHDk8TtBwY9o9QaWTcNjuF8LFUXGyt1e/yMPp3IoW8c2gR
-         h2tWPVg9GWcbfFqHlFtA/6vMWP722nIhlOQQsfcKCkHlOVBYGfHb7KCX2OvGmygbbPA6
-         F2OmrLBLWpZx4Z6RLVeQuQmUDaUduMxFGdKKqAXBlegzGQ+WiQqNONZf8JCekyjfyQpG
-         739Ax5rs3sQkenq+RyBXTG78iNV/QEP71fwJtzKfR7BS5CtcFUjreZrNjOGRj2HtvebZ
-         9z4sTg9p9sZXq/V3B16Gt/puPG+04xXdXW66RHRfeZf2+aik86F6qhonX2ZN10Qyo3H8
-         ugUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9VPAeexfeOB6o98JRDi1ACJzyuQXs5JhkfM02uJqTm0=;
-        b=G4MgsiLHXV494gv7jOpWUFNN5j32adRmEIcU/tepVfFE3L0dBIugszkELLD7xrkDp1
-         2H+dHKwCYYmJ97F0cY2DkFDFolnjdetml8Uv1fClEMPNx1Bp0UxA1Rc1bPLIgTUynQXk
-         XsddX0MHOG7nccqNaA2zfsCMKZAice2qFeKq+8naCOQnVN0RNB2P1zrYEXFcX55af0Bc
-         VTj3nZnkRFXV8dEnfSlzhmvoTZJJkpB2uj61ddQhNYOCM/HguXSTY1D+0V3ucWjPxm7u
-         9shNJGLhmRBiUjOmR0S9Ptv/wvKmN4OZaoBcVfxiEVPbDvBZuywPLHF4KiPMfX7vfIco
-         ZIuA==
-X-Gm-Message-State: AOAM533MyKcXXRcLnPLeKMS2HNHqS5GYNHabpgS5aZEwJ3bCxLUPTIZ0
-        n3FL93z6BP5qMXgI47zaXXPVizxY7jRMT2eR6v8o/g==
-X-Google-Smtp-Source: ABdhPJxTtyAXfkAipUU4ESl6gqg/Ep1F4KNHDSMcJQ8tpbjaqzt14nLv+k4NrYKPJyLs75yL8bFgsN8pHG51/LwsIow=
-X-Received: by 2002:a05:651c:1793:: with SMTP id bn19mr4749093ljb.475.1633714533204;
- Fri, 08 Oct 2021 10:35:33 -0700 (PDT)
+        id S238605AbhJHRiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 13:38:02 -0400
+Received: from mail-vi1eur05on2136.outbound.protection.outlook.com ([40.107.21.136]:58709
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231234AbhJHRh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 13:37:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WelYzfUrwbAKcgKimHwhRbJ88c6piRZn53gX5j+C6MdnQ6H5sAAP+bslEaFnjfpJWhBTDx1UBUzZeF7lDRx5jWu+25tnB0un9MC6T5hWsfDRs1akZHoew0yLcsvA/0FNw+mlymfCnbiyHXxY4k2UYrx05ojuvPHNnMopFW/2Fp0hUm83eMi8oAuQa1x8GbNQCwN/h27sI+6afTGEwF1/C0e9sh9zS1KedtJJv01MYAw5NhKjfpoXCmWc5X7BGiSY9WMn6+B0GTrE3pUFnuLmGK2BdyxVvjyVjoNjmI413knDOOjaQQuIfbbxdnJr2FQ8a0ZNO95eUa/0Q3I+/fKa1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=galv+I47unVH4pSp8/LAGBkYnGfmUN0jXOmAXO8Z5rU=;
+ b=EigYJZmomc7A5QJ3LP/NS9CwdpXrNgF0fmhCs8O3dDtia0OZYNq/mJKR/l0eSHm8VzTV/KTTjGDEdpcI7QMiYyJZ6B/c1sSNmXPHp+m+LHPpCRaIeSfJGS2WlYfRu9dJwEbAZU+RX9m8XH6JQVta9PNoS5aqYOAspD4aOI51BPEZGbXF2YzAmo94JNH280lwa5wIFikXM8dBfCTLgaCAn7nEXO++LaJ8PNJLuYZ6UlkRpx4J0HlC5OHa0P3Qj5QzEOyjcKV0ieUYxi/Iw1gRVpUMsM4daRJBfINvJr00g4ZP/uRSP6jEgcV52iZY2YYj4y8tjoZilSZ+UL3HjULjeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=galv+I47unVH4pSp8/LAGBkYnGfmUN0jXOmAXO8Z5rU=;
+ b=rKHNhGR8cD1B3/9o1wld61cCd8QEBlUn1B17QvdzDz3IAijvEHaNrE5XurxFNuKmAd3hDGbTrPBAdjTduesMW9pE6Qa0h4n5AudySAbAHQofyFMuHySFDVWzSS5feGvV0JlpxLqA8244is04xZL1CsNNMCd+2zu4umdWdbCeu60=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=plvision.eu;
+Received: from AM0P190MB0721.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:1a0::24)
+ by AM0P190MB0578.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:1a1::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Fri, 8 Oct
+ 2021 17:36:01 +0000
+Received: from AM0P190MB0721.EURP190.PROD.OUTLOOK.COM
+ ([fe80::e0ef:543e:4a22:7639]) by AM0P190MB0721.EURP190.PROD.OUTLOOK.COM
+ ([fe80::e0ef:543e:4a22:7639%9]) with mapi id 15.20.4587.024; Fri, 8 Oct 2021
+ 17:36:01 +0000
+From:   Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>
+To:     netdev@vger.kernel.org
+Cc:     Volodymyr Mytnyk <vmytnyk@marvell.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] netfilter: fix conntrack flows stack issue on cleanup.
+Date:   Fri,  8 Oct 2021 20:35:26 +0300
+Message-Id: <1633714526-31678-1-git-send-email-volodymyr.mytnyk@plvision.eu>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-ClientProxiedBy: HE1PR05CA0338.eurprd05.prod.outlook.com
+ (2603:10a6:7:92::33) To AM0P190MB0721.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:1a0::24)
 MIME-Version: 1.0
-References: <6411d3f7-b3a4-23a8-14fc-fcf6b9c5b73a@virtuozzo.com> <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
-In-Reply-To: <bf3b1364-2c48-533f-9dae-22470074a037@virtuozzo.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 8 Oct 2021 10:35:22 -0700
-Message-ID: <CALvZod7_fhgV39HXmmMApubW-39CjJ5t+WjmkyA_DNGF7b5O+w@mail.gmail.com>
-Subject: Re: [PATCH memcg] memcg: enable memory accounting in __alloc_pages_bulk
-To:     Vasily Averin <vvs@virtuozzo.com>, Roman Gushchin <guro@fb.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Received: from vmytnykub.x.ow.s (217.20.186.93) by HE1PR05CA0338.eurprd05.prod.outlook.com (2603:10a6:7:92::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4566.16 via Frontend Transport; Fri, 8 Oct 2021 17:36:00 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 24436cee-304e-4422-ac32-08d98a8218b0
+X-MS-TrafficTypeDiagnostic: AM0P190MB0578:
+X-Microsoft-Antispam-PRVS: <AM0P190MB0578A81F7780C4BF7E19EB5D8FB29@AM0P190MB0578.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MsWdFpTagVr8cWzCR27zPdBOfQFXuRf3rGpdpgzvMfXhe8660w975M5h58MWBwf4okuJPfnfrB0pMFtziZ8R31A4Zy7BQLG/vUuhlFkm4dYJh5uqOpnnYgN5hr45pNGnJyghl4M1D+lAAHaTywdFRR0CoxdApQIc6bcWODdKa8lEifMDUf6ZWNJXTTwtGI7LvenYG6bsl9fBwjBUZGUAEfS/JWx60CYElUegXpPHoFjB6b6jj+ja/oPNKuRmkZdb+YR/zDyfeoc1OAOOEtqNCk1Kmu8t1KrlXDC5YWHQ/jonkT2lDyYiMPHolN9NeSbzM0MMOWBmNbOQfMzDbvz5H3h68dSF/vRVoWhgkAkmyhJ/KXM6ms4iVOna9amTDsAno600AgW3hmzrwU++v2Sk68dMpvg8SMG6UcAK3qVo86yQt1DltTK9JMDU6c7/0evJ1RABwBvG11Zl1Mj3oBpAupBURPjObLZKNOSuzzU7NGqnB+N/pUZsjx6Wyc9c0TipoYHaRwqC4Ivcuqm9bvMZEGda+jGWqZxmaArD4xxvVQWS1n3b6E8pfGXth5a+jokZoa5AG8k0QbZUu1IKL9ZOTijv8s0myDDz3Fs3HvHzcunbR8PKK7lcbhmLT189+hkLdCLkpTsNkEulYGVlcjBiTmCCzICOxt3/dzklyvs8Sp/+FJYCIFEd7bsMXtvN9sLL4/J+n4fOrkvnoCbBT+ci1g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0P190MB0721.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(366004)(396003)(376002)(39830400003)(136003)(6512007)(38350700002)(38100700002)(7416002)(6666004)(186003)(52116002)(44832011)(956004)(2616005)(6506007)(26005)(2906002)(508600001)(83380400001)(4326008)(6916009)(316002)(36756003)(8936002)(54906003)(86362001)(8676002)(6486002)(5660300002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sQlNBgGnBwbkaUIbuGzCs1wh/utOcusON5N2sDPAEEMW6vjFKADkcUiP2tfw?=
+ =?us-ascii?Q?FWeyZwrWHDwhbZXYtMzXygz74+3GUDgbGdxKbnp9sH9YSZi+CVlfMMrLIiRn?=
+ =?us-ascii?Q?J1f8fQnodldyxVNolAqPsov6ZIs732mjwTQJcDJP7N7dnjRdl3n7Wv8uFA3d?=
+ =?us-ascii?Q?/A7G1OVMz3CBY/bTXLPYOSPA7NOmMWTFjUJEr4uG/cBqYjonNfgUG2uWeElA?=
+ =?us-ascii?Q?g8RhSFsHs8fu50tY24IsIR3ilejjwByqrmjDTJ+fIKWiDP//iET2nAmumb5m?=
+ =?us-ascii?Q?WbUCOM7nqzaCpZ38wrE+e2iErYanoqnbSEkk79cX2StXcSBp/sF3m6qWJKMn?=
+ =?us-ascii?Q?S22OhsgcXIxdDoi76hAkxJbohjTgMpp2CBP2/6q68moHwMHAhycyokSFXSrL?=
+ =?us-ascii?Q?IEM/CPmzLZZ25p/GtTnxWNmE1WXo7vfu1NhLJYpWWymI/7iMpv+hKf/0R4GN?=
+ =?us-ascii?Q?hmrmn6privUHI7eK2YUNZ9XhHtLlOVqjH76OuNs0sYAb+jyuogPI62pI0KjE?=
+ =?us-ascii?Q?YrcxEjkaTl1KwcYNoXbGWIvKGKQEiDbu4ue6NH8Bi7R1jFWt9nBHxuOaxt1B?=
+ =?us-ascii?Q?3p2CyPsVevOHpVKC1wyV9OV14UFrjaauzI3XGU5piLzDyUqah/Q/mLD03XBu?=
+ =?us-ascii?Q?bW4TjZRXYAfz/rx+EKa9x1oinqT+c0FGEewjTbvOnrAz8HKTEwEI0vhNTAxH?=
+ =?us-ascii?Q?1iNs7NpDnUQhe6fqabtzkTwKZOym2e3FZYO1wTsMHGHbBGKZZkaVWiHdCuNl?=
+ =?us-ascii?Q?1+1uNiuGr8F05C2MF6x9NW07jBLMwkEJhLcRFLoCGwO37i6RV7wMjpbKpWGC?=
+ =?us-ascii?Q?nfOQGQitvO5IOhGaN/qmrGcwJO6DuuZUMOjjm270Wt6ksu1FpkiCJQo2+eMi?=
+ =?us-ascii?Q?89TMlNHToA+Sk9Zu30uF+BKtJbFC0inbYgns3PX7Kngso+NHBpI8QYlt0eSV?=
+ =?us-ascii?Q?LLE6pOKDKWNW8DOJ9L09jsKx7Ucu2+8IoHFZEe+ZnWhhXmtH7EWFjCQpJIQL?=
+ =?us-ascii?Q?PT4CbBUObJCwX02UuFukl96GJ5IzThVIfiUYCx2NOZNzV2zwvzYEXShYgV9X?=
+ =?us-ascii?Q?4uXu7e2vzzgULnoihPcpev1HpsmlhDfLFz47RofMLLqLs3XdPueIBPKriMOS?=
+ =?us-ascii?Q?3lx2ZDGebzgKaSV/gn6Srb+q1alzHzoRkHjxZlkZu6psEn4uUGTszOPNQT7O?=
+ =?us-ascii?Q?7bEBr0sFpKJ3WHT8KfZomMpPpE/HawpyZN8ck8I5CAnv6t8FQXT60xikplpT?=
+ =?us-ascii?Q?udXCGm4HbBIBrZNg3Em6Kr13/0ONO4yztpa66y0RU/oeMdsOrxJwCjJsJB1M?=
+ =?us-ascii?Q?7LohRiqGjfrlfNbnyS9MwrkJ?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 24436cee-304e-4422-ac32-08d98a8218b0
+X-MS-Exchange-CrossTenant-AuthSource: AM0P190MB0721.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Oct 2021 17:36:01.6290
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xRifkCAogefSyQDr1GT1jz7VZ9tRU4Vvj1w0YOTpWHq+TBuOzAA45/P3vbLb04j99NMWgUh7W1kErDm4lwc/YdMm9SBMtNUPyCT7J9/0l7U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0P190MB0578
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Roman
+From: Volodymyr Mytnyk <vmytnyk@marvell.com>
 
-On Fri, Oct 8, 2021 at 2:23 AM Vasily Averin <vvs@virtuozzo.com> wrote:
->
-> Enable memory accounting for bulk page allocator.
->
-> Fixes: 387ba26fb1cb ("mm/page_alloc: add a bulk page allocator")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-> ---
->  mm/page_alloc.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 62 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index b37435c274cf..602819a232e5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5172,6 +5172,55 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->         return true;
->  }
->
+On busy system with big number (few thousands) of HW offloaded flows, it
+is possible to hit the situation, where some of the conntack flows are
+stuck in conntrack table (as offloaded) and cannot be removed by user.
 
-Please move the following memcg functions to memcontrol.[h|c] files.
+This behaviour happens if user has configured conntack using tc sub-system,
+offloaded those flows for HW and then deleted tc configuration from Linux
+system by deleting the tc qdiscs.
 
-> +#ifdef CONFIG_MEMCG_KMEM
-> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
-> +                                       unsigned int nr_pages)
-> +{
-> +       struct obj_cgroup *objcg = NULL;
-> +
-> +       if (!memcg_kmem_enabled() || !(gfp & __GFP_ACCOUNT))
-> +               return true;
-> +
-> +       objcg = get_obj_cgroup_from_current();
-> +
-> +       if (objcg && obj_cgroup_charge(objcg, gfp, nr_pages << PAGE_SHIFT)) {
+When qdiscs are removed, the nf_flow_table_free() is called to do the
+cleanup of HW offloaded flows in conntrack table.
 
-Please use obj_cgroup_charge_pages() when you move this code to memcontrol.c
+...
+process_one_work
+  tcf_ct_flow_table_cleanup_work()
+    nf_flow_table_free()
 
-> +               obj_cgroup_put(objcg);
-> +               return false;
-> +       }
-> +       obj_cgroup_get_many(objcg, nr_pages);
-> +       *objcgp = objcg;
-> +       return true;
-> +}
-> +
-> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcg,
-> +                                       struct page *page)
-> +{
-> +       page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
-> +}
-> +
-> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
-> +                                       unsigned int nr_pages)
-> +{
-> +       obj_cgroup_uncharge(objcg, nr_pages << PAGE_SHIFT);
-> +       percpu_ref_put_many(&objcg->refcnt, nr_pages + 1);
+The nf_flow_table_free() does the following things:
 
-Introduce the obj_cgroup_put_many() and you don't need to keep the
-extra ref from the pre hook i.e. put the ref in the pre hook.
+  1. cancels gc workqueue
+  2. marks all flows as teardown
+  3. executes nf_flow_offload_gc_step() once for each flow to
+     trigger correct teardown flow procedure (e.g., allocate
+     work to delete the HW flow and marks the flow as "dying").
+  4. waits for all scheduled flow offload works to be finished.
+  5. executes nf_flow_offload_gc_step() once for each flow to
+     trigger the deleting of flows.
 
-> +}
-> +#else
-> +static bool memcg_bulk_pre_charge_hook(struct obj_cgroup **objcgp, gfp_t gfp,
-> +                                       unsigned int nr_pages)
-> +{
-> +       return true;
-> +}
-> +
-> +static void memcg_bulk_charge_hook(struct obj_cgroup *objcgp,
-> +                                       struct page *page)
-> +{
-> +}
-> +
-> +static void memcg_bulk_post_charge_hook(struct obj_cgroup *objcg,
-> +                                       unsigned int nr_pages)
-> +{
-> +}
-> +#endif
->  /*
->   * __alloc_pages_bulk - Allocate a number of order-0 pages to a list or array
->   * @gfp: GFP flags for the allocation
-> @@ -5207,6 +5256,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->         gfp_t alloc_gfp;
->         unsigned int alloc_flags = ALLOC_WMARK_LOW;
->         int nr_populated = 0, nr_account = 0;
-> +       unsigned int nr_pre_charge = 0;
-> +       struct obj_cgroup *objcg = NULL;
->
->         /*
->          * Skip populated array elements to determine if any pages need
-> @@ -5275,6 +5326,10 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->         if (unlikely(!zone))
->                 goto failed;
->
-> +       nr_pre_charge = nr_pages - nr_populated;
-> +       if (!memcg_bulk_pre_charge_hook(&objcg, gfp, nr_pre_charge))
-> +               goto failed;
-> +
->         /* Attempt the batch allocation */
->         local_lock_irqsave(&pagesets.lock, flags);
->         pcp = this_cpu_ptr(zone->per_cpu_pageset);
-> @@ -5287,9 +5342,9 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->                         nr_populated++;
->                         continue;
->                 }
-> -
->                 page = __rmqueue_pcplist(zone, 0, ac.migratetype, alloc_flags,
->                                                                 pcp, pcp_list);
-> +
->                 if (unlikely(!page)) {
->                         /* Try and get at least one page */
->                         if (!nr_populated)
-> @@ -5297,6 +5352,8 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->                         break;
->                 }
->                 nr_account++;
-> +               if (objcg)
-> +                       memcg_bulk_charge_hook(objcg, page);
+Root cause:
 
-Logically this above should be after prep_new_page().
+In step 3, nf_flow_offload_gc_step() expects to move flow to "dying"
+state by using nf_flow_offload_del() and deletes the flow in next
+nf_flow_offload_gc_step() iteration. But, if flow is in "pending" state
+for some reason (e.g., reading HW stats), it will not be moved to
+"dying" state as expected by nf_flow_offload_gc_step() and will not
+be marked as "dead" for delition.
 
->
->                 prep_new_page(page, 0, gfp, 0);
->                 if (page_list)
-> @@ -5310,13 +5367,16 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
->
->         __count_zid_vm_events(PGALLOC, zone_idx(zone), nr_account);
->         zone_statistics(ac.preferred_zoneref->zone, zone, nr_account);
-> +       if (objcg)
-> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge - nr_account);
->
->  out:
->         return nr_populated;
->
->  failed_irq:
->         local_unlock_irqrestore(&pagesets.lock, flags);
-> -
-> +       if (objcg)
-> +               memcg_bulk_post_charge_hook(objcg, nr_pre_charge);
->  failed:
->         page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
->         if (page) {
-> --
-> 2.31.1
->
+In step 5, nf_flow_offload_gc_step() assumes that all flows marked
+as "dead" and will be deleted by this call, but this is not true since
+the state was not set diring previous nf_flow_offload_gc_step()
+call.
+
+It issue causes some of the flows to get stuck in connection tracking
+system or not release properly.
+
+To fix this problem, add nf_flow_table_offload_flush() call between 2 & 3
+step, to make sure no other flow offload works will be in "pending" state
+during step 3.
+
+Signed-off-by: Volodymyr Mytnyk <vmytnyk@marvell.com>
+---
+ net/netfilter/nf_flow_table_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/netfilter/nf_flow_table_core.c b/net/netfilter/nf_flow_table_core.c
+index 1e50908b1b7e..0de79835f628 100644
+--- a/net/netfilter/nf_flow_table_core.c
++++ b/net/netfilter/nf_flow_table_core.c
+@@ -638,6 +638,8 @@ void nf_flow_table_free(struct nf_flowtable *flow_table)
+ 
+ 	cancel_delayed_work_sync(&flow_table->gc_work);
+ 	nf_flow_table_iterate(flow_table, nf_flow_table_do_cleanup, NULL);
++	/* wait to finish */
++	nf_flow_table_offload_flush(flow_table);
+ 	nf_flow_table_iterate(flow_table, nf_flow_offload_gc_step, flow_table);
+ 	nf_flow_table_offload_flush(flow_table);
+ 	if (nf_flowtable_hw_offload(flow_table))
+-- 
+2.7.4
+
