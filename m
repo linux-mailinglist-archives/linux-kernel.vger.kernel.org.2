@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024AD427321
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C744427333
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 23:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243457AbhJHVkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 17:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        id S243527AbhJHVuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 17:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbhJHVkC (ORCPT
+        with ESMTP id S231774AbhJHVuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 17:40:02 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40563C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:38:06 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id 5so12200300iov.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 14:38:06 -0700 (PDT)
+        Fri, 8 Oct 2021 17:50:20 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7887C061570;
+        Fri,  8 Oct 2021 14:48:24 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id p1so9247450pfh.8;
+        Fri, 08 Oct 2021 14:48:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b/00gewG7UHvLp0h/Ly/IXeN+qoVZwxiCoqxtVebbaI=;
-        b=dQ0efTIPLYgHkP9U3dBEnvmvLY8za0lfnn/jylE/ulZ7zzSc1RBgqjCPWTJbCywGq6
-         cpcZej1RcJAyZQ/UhxVaE7tvdYg7DQI/2Els9a0Xjzo6Si3dcWw3ltdvGFRVsCniX3+0
-         LABaOfhs3fvNty6v0UECd4B4StXBRl+6QmoiwtXAfBPgIvUqenZJEs+NqDqIM9rGE9Rf
-         QhXCblG3djveSWk5T98TPMRXSDvDnmaNIOsPKPZyXJKg4hjzaw+Cv1z4APTMPb1YMLy4
-         A3X643heB80Rhlfhmo6o2AFNOf4UfJEKkndgWAky5btmvpHG/9hVh1G1AJGX9Cjolc2i
-         WkpQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FTfSae2Ub/GRhG0hDDbJoYdWWu5F/iD25Fu+zHz1GTA=;
+        b=Tho5yDa3ZRTBaBfmf3Th7zv+AUlPqAgtGaJw3LDmI9HkVPAsYdO4CPviPeaL+u62rm
+         nDmXNUz+IZhnkM2UMiULXlffeNmguj1ciUuOe/iFBJZ9NT1zJcA8VW8wTKI25GfU7UQf
+         HwkYe6d/93+s2M+VPZHFSK3dNMgCp+zYkF0GE0lXCmYybELtmByBQv3BS11EITkUhtqz
+         o17jISBIBCpqJpdYAyEwsiO0B/LN57RPaVHHFQazMlXwh/sBt1L8A422NspuYssRWlME
+         2FwGTiVJ4Yt5mvBMjQBK7JEsXfDHLJzrN9P3RAp8rE8L+uYFtI+cAMXkb4uqei/Wqrma
+         d9OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b/00gewG7UHvLp0h/Ly/IXeN+qoVZwxiCoqxtVebbaI=;
-        b=2ldaCLGlj+UqNex6izRoKHi1dydB0TGw3DD+0eG/Wxtmkjk4HA2eRys+HSIxsscv8P
-         i2Y9TzWp373srYqlBOZLy6s7PbY8QG5rx3tMioIHr+FBzEp9pZJRjIqKJNHfSQWVdhRy
-         CBwAqIu/SSU0R67AXTju/4XYfm4qy+xRxKkGfsJ3WLrtnF59tlceVpOF/i8gnHjJmv4B
-         yIWtKssMSzPb54+yFCjre+dvk5TdhFu0uHvXoja0W/ew0wtJ2d6J/dXtJXfB9AdbJi42
-         syHwrvKL7iup7bHCahaze4ErPLuYBct1ds0x4JkPPY8eYqru5z4qDdk46hquSsKEtDg5
-         bS+w==
-X-Gm-Message-State: AOAM532fH/CoQUVQL4gNlSag1X5Z/IJiMcYah3gddJXkUdxPlsSm4F8V
-        +ycHooGhOgIMAuDHEdipbmBKrraBH4SJRUDE+Nax/Q==
-X-Google-Smtp-Source: ABdhPJyTKjP0ROPI3lwiR64pOofPrdgty82JjDrOFyBtUPNFTt7D9ijmUlMj5dyBjrcq0P+6VIjSXFzDNz2EEnEXtzw=
-X-Received: by 2002:a6b:f915:: with SMTP id j21mr9273745iog.98.1633729085509;
- Fri, 08 Oct 2021 14:38:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FTfSae2Ub/GRhG0hDDbJoYdWWu5F/iD25Fu+zHz1GTA=;
+        b=13i83pBy7q+PKxhR9IxgsfoLsNbunY/ZFntTaAVitX1DEFInmbBJ4MyOjUJuTrjoN/
+         DWNcKBomdK5QZHsaj8YOTBfp5cF5J5SCVKQdh8jmBNPWn328BCSbj8iD6aHT8tupwsRj
+         Wwy6WlA6FlJMVT2LQgklYP8tfXI0z8S4fsO5L2FLUPmpotuPT1bTP5AKt3SIs3MskivG
+         lf425gXL90F7Ofq7eK9jEowRJ9IEEv9pV/q3u44ZzzE2UDdPKAzDY8/UmYzwclWcoNHO
+         nSO3AwdxEwa0fEouu+WoRUzE8OQhx71RLRh4V/w5WrC3H+Hd/6M0vhv8zc6TP9x3j5v5
+         1qgQ==
+X-Gm-Message-State: AOAM531fX4g30s9nocLbtmlAnWg+z4dyQ9F2LVsSvIL0ODyimLCnAXIa
+        xADTNXO7g9DSoWga5ZCe0ajU6/e+AK0=
+X-Google-Smtp-Source: ABdhPJzBiG612UtRe48w7tz5q9NvYDbT2fM+V6xij3Uoiy9XR98SWQCLuMXWDHId5PcLEX8tKyE/gw==
+X-Received: by 2002:a63:2261:: with SMTP id t33mr6699895pgm.274.1633729703893;
+        Fri, 08 Oct 2021 14:48:23 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id z124sm259923pfb.108.2021.10.08.14.48.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 14:48:22 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net] net: phy: Do not shutdown PHYs in READY state
+Date:   Fri,  8 Oct 2021 14:42:52 -0700
+Message-Id: <20211008214252.3644175-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210930030557.1426-1-bjorn.andersson@linaro.org>
- <20210930030557.1426-3-bjorn.andersson@linaro.org> <YV5vIyhy+m+Nx/gQ@ripper>
-In-Reply-To: <YV5vIyhy+m+Nx/gQ@ripper>
-From:   Doug Anderson <dianders@google.com>
-Date:   Fri, 8 Oct 2021 14:37:52 -0700
-Message-ID: <CAD=FV=UZoZ6amH9KfJOMWy9AHfGOuEpCPJYDy5YCtks6WqVkLw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/3] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "Uwe Kleine-K?nig" <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-pwm <linux-pwm@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In case a PHY device was probed thus in the PHY_READY state, but not
+configured and with no network device attached yet, we should not be
+trying to shut it down because it has been brought back into reset by
+phy_device_reset() towards the end of phy_probe() and anyway we have not
+configured the PHY yet.
 
-On Wed, Oct 6, 2021 at 8:51 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
->
-> On Wed 29 Sep 20:05 PDT 2021, Bjorn Andersson wrote:
->
-> > The SN65DSI86 provides the ability to supply a PWM signal on GPIO 4,
-> > with the primary purpose of controlling the backlight of the attached
-> > panel. Add an implementation that exposes this using the standard PWM
-> > framework, to allow e.g. pwm-backlight to expose this to the user.
-> >
-> > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->
-> Any feedback on this?
+Fixes: e2f016cf7751 ("net: phy: add a shutdown procedure")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/phy/phy_device.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I feel like Uwe and you have spent enough time on all the math and it
-is clearly working well for you, so I continued to not dive deep into
-it. However, in general I think this has been spun enough and it's
-ready / beneficial to land.
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index ba5ad86ec826..4f9990b47a37 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -3125,6 +3125,9 @@ static void phy_shutdown(struct device *dev)
+ {
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 
++	if (phydev->state == PHY_READY || !phydev->attached_dev)
++		return;
++
+ 	phy_disable_interrupts(phydev);
+ }
+ 
+-- 
+2.25.1
 
-It sounds like Robert has agreed to do the honors (assuming Uwe acks
-patch #1) and that suits me fine.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
