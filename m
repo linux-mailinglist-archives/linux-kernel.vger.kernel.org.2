@@ -2,150 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550E7426C9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5E0426C9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 16:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhJHORD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 10:17:03 -0400
-Received: from mga12.intel.com ([192.55.52.136]:46263 "EHLO mga12.intel.com"
+        id S233385AbhJHOSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 10:18:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229607AbhJHORB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 10:17:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="206633129"
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="206633129"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 07:15:05 -0700
-X-IronPort-AV: E=Sophos;i="5.85,357,1624345200"; 
-   d="scan'208";a="546213132"
-Received: from gjunker-mobl.amr.corp.intel.com (HELO [10.212.192.245]) ([10.212.192.245])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 07:15:01 -0700
-Subject: Re: [PATCH v10 3/3] mm: add anonymous vma name refcounting
-To:     Michal Hocko <mhocko@suse.com>, Kees Cook <keescook@chromium.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-References: <CAJuCfpGuuXOpdYbt3AsNn+WNbavwuEsDfRMYunh+gajp6hOMAg@mail.gmail.com>
- <YV6rksRHr2iSWR3S@dhcp22.suse.cz>
- <92cbfe3b-f3d1-a8e1-7eb9-bab735e782f6@rasmusvillemoes.dk>
- <20211007101527.GA26288@duo.ucw.cz>
- <CAJuCfpGp0D9p3KhOWhcxMO1wEbo-J_b2Anc-oNwdycx4NTRqoA@mail.gmail.com>
- <YV8jB+kwU95hLqTq@dhcp22.suse.cz>
- <CAJuCfpG-Nza3YnpzvHaS_i1mHds3nJ+PV22xTAfgwvj+42WQNA@mail.gmail.com>
- <YV8u4B8Y9AP9xZIJ@dhcp22.suse.cz>
- <CAJuCfpHAG_C5vE-Xkkrm2kynTFF-Jd06tQoCWehHATL0W2mY_g@mail.gmail.com>
- <202110071111.DF87B4EE3@keescook> <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4a1dd04f-eda3-5c71-4772-726fd6fa2a38@intel.com>
-Date:   Fri, 8 Oct 2021 07:14:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229789AbhJHOSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 10:18:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7F1961039
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 14:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633702569;
+        bh=gfnYmiYx+3dkf2QkxY+VQ8BWqcH+BG2yBzByLC0yQFQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SmAbaTP49xnbbJwvMEkONUKVqObtjfRfY4b2SYkUBQ5vTgXDpMb3PGhpQt3W5eSk1
+         mp8IohvNPiPK5jMzq83lgDsmoLnO8OqkzHU+sZU8xkd0Uw4yOVq88mYuJ/bfe8DoDf
+         ZRXk6SyP1WzCx4TDisbU9PFgMLe2A/mzv5k1bplEkzX+qf2WMeXOXEMLGsvfX1r/qv
+         0iWyTJdDYdkXwqBj60/BcoYFtRWHzyjSXLmBvm1MiCkdfjVlRLCpWcIieHGUGyPsWH
+         UFP23LUNAr6tA4Rno/a8pQaxnIFOOH3NARZK3bM3Cp3B4WcwAEydHTOpPs8OxhmzOf
+         GR18fC/1FkIVA==
+Received: by mail-ed1-f52.google.com with SMTP id z20so36785134edc.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 07:16:09 -0700 (PDT)
+X-Gm-Message-State: AOAM5312a3DMxOBKQrkBTaL8r3fLpTNmDRiCXpGF0G5NKnLcNdPOfTnt
+        F4Sq/7Axan1+KVlzcsn8T43YIOpya7a5rWUQ4A==
+X-Google-Smtp-Source: ABdhPJwdhKOutSaYK+RNrD+9iDbGHmKNrnmA/aPTFJPid4OWVGl9MH0bIy7Jr3s/kHMiLiPvTEE5f6q+Xnn20xQaVBc=
+X-Received: by 2002:a17:906:c7c1:: with SMTP id dc1mr4791596ejb.6.1633702568065;
+ Fri, 08 Oct 2021 07:16:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YV/mhyWH1ZwWazdE@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210915232722.10031-1-chunkuang.hu@kernel.org>
+In-Reply-To: <20210915232722.10031-1-chunkuang.hu@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Fri, 8 Oct 2021 22:15:57 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8BZ9BgWeQVsD_01ioP8H16c1_QUb_+yniU_4Wp91Nc7A@mail.gmail.com>
+Message-ID: <CAAOTY_8BZ9BgWeQVsD_01ioP8H16c1_QUb_+yniU_4Wp91Nc7A@mail.gmail.com>
+Subject: Re: [PATCH] soc: mediatek: cmdq: Use mailbox rx_callback instead of cmdq_task_cb
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/7/21 11:34 PM, Michal Hocko wrote:
->> Yes, please. It really seems like the folks that are interested in this
->> feature want strings. (I certainly do.)
-> I am sorry but there were no strong arguments mentioned for strings so
-> far.
+Hi, Matthias:
 
-The folks who want this have maintained an out-of-tree patch using
-strings.  They've maintained it for the better part of a decade.  I
-don't know how widely this shipped in the Android ecosystem, but I
-suspect we're talking about billions of devices.  Right?
+Please ignore this patch because this patch depend on [1] which would
+cause numerous warning message. So I would revert that patch in [2].
 
-This is a feature that, if accepted into mainline, will get enabled and
-used on billions of devices.  If we dumb this down to integers, it's not
-100% clear that it _will_ get used.
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/drivers/gpu/drm/mediatek?h=3Dv5.15-rc4&id=3Dc1ec54b7b5af25c779192253f5a9=
+f05e95cb43d7
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/2021100723531=
+0.14626-6-chunkuang.hu@kernel.org/
 
-That's a pretty strong argument in my book, even if the contributors
-have difficulty articulating exactly why they want strings.
+Regards,
+Chun-Kuang.
+
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B49=E6=9C=8816=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=887:27=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> rx_callback is a standard mailbox callback mechanism and could cover the
+> function of proprietary cmdq_task_cb, so use the standard one instead of
+> the proprietary one. Client has changed to use the standard callback
+> machanism and sync dma buffer in client driver, so remove the proprietary
+> callback in cmdq helper.
+>
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+>  drivers/soc/mediatek/mtk-cmdq-helper.c | 25 +------------------------
+>  include/linux/soc/mediatek/mtk-cmdq.h  |  5 +----
+>  2 files changed, 2 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediate=
+k/mtk-cmdq-helper.c
+> index 3c8e4212d941..c1837a468267 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -425,34 +425,11 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt)
+>  }
+>  EXPORT_SYMBOL(cmdq_pkt_finalize);
+>
+> -static void cmdq_pkt_flush_async_cb(struct cmdq_cb_data data)
+> -{
+> -       struct cmdq_pkt *pkt =3D (struct cmdq_pkt *)data.data;
+> -       struct cmdq_task_cb *cb =3D &pkt->cb;
+> -       struct cmdq_client *client =3D (struct cmdq_client *)pkt->cl;
+> -
+> -       dma_sync_single_for_cpu(client->chan->mbox->dev, pkt->pa_base,
+> -                               pkt->cmd_buf_size, DMA_TO_DEVICE);
+> -       if (cb->cb) {
+> -               data.data =3D cb->data;
+> -               cb->cb(data);
+> -       }
+> -}
+> -
+> -int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmdq_async_flush_cb cb,
+> -                        void *data)
+> +int cmdq_pkt_flush_async(struct cmdq_pkt *pkt)
+>  {
+>         int err;
+>         struct cmdq_client *client =3D (struct cmdq_client *)pkt->cl;
+>
+> -       pkt->cb.cb =3D cb;
+> -       pkt->cb.data =3D data;
+> -       pkt->async_cb.cb =3D cmdq_pkt_flush_async_cb;
+> -       pkt->async_cb.data =3D pkt;
+> -
+> -       dma_sync_single_for_device(client->chan->mbox->dev, pkt->pa_base,
+> -                                  pkt->cmd_buf_size, DMA_TO_DEVICE);
+> -
+>         err =3D mbox_send_message(client->chan, pkt);
+>         if (err < 0)
+>                 return err;
+> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/me=
+diatek/mtk-cmdq.h
+> index ac6b5f3cba95..2b498f4f3946 100644
+> --- a/include/linux/soc/mediatek/mtk-cmdq.h
+> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
+> @@ -268,8 +268,6 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
+>   * cmdq_pkt_flush_async() - trigger CMDQ to asynchronously execute the C=
+MDQ
+>   *                          packet and call back at the end of done pack=
+et
+>   * @pkt:       the CMDQ packet
+> - * @cb:                called at the end of done packet
+> - * @data:      this data will pass back to cb
+>   *
+>   * Return: 0 for success; else the error code is returned
+>   *
+> @@ -277,7 +275,6 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
+>   * at the end of done packet. Note that this is an ASYNC function. When =
+the
+>   * function returned, it may or may not be finished.
+>   */
+> -int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmdq_async_flush_cb cb,
+> -                        void *data);
+> +int cmdq_pkt_flush_async(struct cmdq_pkt *pkt);
+>
+>  #endif /* __MTK_CMDQ_H__ */
+> --
+> 2.25.1
+>
