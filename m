@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3670B4264EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748914264F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 08:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231301AbhJHG4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 02:56:09 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:37374
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229490AbhJHG4D (ORCPT
+        id S231775AbhJHG5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 02:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhJHG5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 02:56:03 -0400
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 44F973FFEF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 06:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633676048;
-        bh=GzAsfw+44Z5vzhTZ3GQSMcWRLagf3VBGwBS3+Mbp+44=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=C3gM/GnLFi07klZyllII5/doGa5QnsWQUgK+8xRO4dysD4rk6+RGGJJHY3/ZbIe1c
-         5reJ0/qJ+KdLYVePEQ0Lwtv4xprg7ramY//q04PeGNBK4RdSehlDeOhWB8eMIUrUN4
-         gS5xqtNyplBeifDqOQOVLECkXlJTfofRU4J4Me0K/Q+fapPhpWzAHzdGCUz3SdlIxf
-         D0++mGHukEnvZECzASJ7RdHaNaQeXU6z7QPes/EBU4SWS9ZwR63akgt0Ts0OweENBD
-         EO7Y+EqOqaYTa7r1/EJVyYDFkEYdVaXSgwxShN/+MLMzwwkbxYC89bPamLkQhkKLzg
-         JTYq/2pJpy+oQ==
-Received: by mail-wr1-f70.google.com with SMTP id f11-20020adfc98b000000b0015fedc2a8d4so6542716wrh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Oct 2021 23:54:08 -0700 (PDT)
+        Fri, 8 Oct 2021 02:57:32 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC49C061570;
+        Thu,  7 Oct 2021 23:55:38 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id h10so1935421ilq.3;
+        Thu, 07 Oct 2021 23:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hKGevevwONOfIKEa+OiDyyhkmEnPcm0iFc2htm5Lyqo=;
+        b=KY7t4NxXJ7OR5s4ckAMJVIk+YHAkgxTX+aS9RgzyIlZd+Nzo/K5k9ht8INPm5qPzoc
+         bsQ/GdczcZjT/MYvVx3xAi2tMtkc2kHzMHi6g84s+psg6550HrfrdDaLJIYq7FruMVER
+         0iAg523ho1kqqdfZPnb46XuWS8zrJXUY8iAMVBFl9jFZNpR5HPfnp7OhzM2ln8AzwXCl
+         W0MMS8qM5aSlKiGi6pu5kvE0tIlAF7jHYMXr0cYFss9K0IF5o82B6DTTrR6wgdKZqa3x
+         4R/dyhIi+C/MB486nhMpbN85lvgUfT3ctGu6MJais+xieiPhfu5L0nkmIWsYrpb1adlv
+         9CQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GzAsfw+44Z5vzhTZ3GQSMcWRLagf3VBGwBS3+Mbp+44=;
-        b=pcNlEp9Y1yUVubp/hdiYa7/XKovyTfwHh1Vz4FU7t5CVf733AAJnYQLAA19rZixWSG
-         o5XfGZLuuySeusV8G3XI+i62yeHw1qdK4J7zlWfQTCHD8BCUuzKHPbn3ApdM712J2YgL
-         YudjSO4wI6I5CcpjBeFmp/A+fUyWCTooMvjfHtMSBqshMIYS3attUFZtgWoqTP6F8o6Z
-         TaPIlNLOmpSc33X0GugBwGvtDVWe7eA2z0RYzjUQclr9MhNSvQc8mGiKgaU07AizlQxg
-         2tUpg314ndY2r7DNcbNEwyS827eqBrUQUDhWDGFBrl+Kd5J5F2zYiOlnd5inRi+OPLJi
-         pGMg==
-X-Gm-Message-State: AOAM533o0cIaubvyDMNsZf/td5CX6Q/FjgbbZeTCCTXV+XC02hV6HTvW
-        wXvPKB2v01oIC9touQnnVhIRVjOHIL72T9dRcXwwTX1U+KQA3AS7f8/24+h3fIk3G8eYDiZqNVG
-        GJTq97e6mRwQQwzrFzeXKIlYEp99YhvyrNcS6qtp7eg==
-X-Received: by 2002:a05:600c:2dc1:: with SMTP id e1mr1477054wmh.135.1633676047828;
-        Thu, 07 Oct 2021 23:54:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxqeeNc6w4Ue4OtgS7IDAUtZN0lHS8tIs9VLPRGW4CO4SeHQocJELma3rw9dEEcK1afpOxqJQ==
-X-Received: by 2002:a05:600c:2dc1:: with SMTP id e1mr1477033wmh.135.1633676047668;
-        Thu, 07 Oct 2021 23:54:07 -0700 (PDT)
-Received: from [192.168.1.24] (xdsl-188-155-186-13.adslplus.ch. [188.155.186.13])
-        by smtp.gmail.com with ESMTPSA id z6sm2166012wmp.1.2021.10.07.23.54.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Oct 2021 23:54:07 -0700 (PDT)
-Subject: Re: [PATCH v2 5/5] clk: samsung: Introduce Exynos850 clock driver
-To:     Sam Protsenko <semen.protsenko@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>
-Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org
-References: <20211007194113.10507-1-semen.protsenko@linaro.org>
- <20211007194113.10507-6-semen.protsenko@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <7e255da8-cb4c-6960-a68e-3d9c0399f51c@canonical.com>
-Date:   Fri, 8 Oct 2021 08:54:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hKGevevwONOfIKEa+OiDyyhkmEnPcm0iFc2htm5Lyqo=;
+        b=NycZHj25pP9vdr8fQqxUqYFMKzC2WTQT3+m1zsfnmxaPaXs/ZgLK9sST1HN6Z8trlp
+         wTd9tXvoG0QgdMLY9xWDmXk6iX9/xGBSM0VM5/ENUMegB/EtU3fR907LCE+7usJq9vWJ
+         MseMqWtrnnwZlYDYq8dh/RMv5FToom79m3CFkptIfWeHvQLdOEM/sPVN2YP59ewXZUs3
+         WgNX9mAjPUijw3CRVXDGiYnwtvNMWVJ84Ra6s5VaoX2l+heVkDp34/9zYg4lZDIcELgm
+         wTAuLixNRG7zwy8QWxWKHbDbxDNnzQNar8ndBC5ojpr7z5Behwb02Ma2tMvKP8X4hL/2
+         f9lA==
+X-Gm-Message-State: AOAM5327RxWRBXZubIavCKXXimjGwadmSHlzKVTwiS3r7Z7nM7I5dK2z
+        ARuhHKTybLgYPDwMNyV0ruI=
+X-Google-Smtp-Source: ABdhPJxmdQ8XgFiTrMR+NfTVlVHnwmn+qpQEgA9QKSfK0VT6t2OfxD5oxisPAZvNb9Kd6/u+h15mMw==
+X-Received: by 2002:a05:6e02:1b07:: with SMTP id i7mr6893330ilv.63.1633676137691;
+        Thu, 07 Oct 2021 23:55:37 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id k5sm606991ioc.7.2021.10.07.23.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Oct 2021 23:55:36 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 24F1927C0054;
+        Fri,  8 Oct 2021 02:55:35 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 08 Oct 2021 02:55:35 -0400
+X-ME-Sender: <xms:Y-tfYRepBgxCNnShVcPP4z2sYcFQPlnAGuG8i9jtqNkRQJxGJ9BMmA>
+    <xme:Y-tfYfPE6jVZN-YQHQXBjcD-mujAJUol53lOf__IZmtcRVJSMyrelhS1V8jxoAhxE
+    pI_whhAaXFgjnyKSw>
+X-ME-Received: <xmr:Y-tfYaiFTCO7O4AprFZLgIoG6qOyi3_rhhVv-ayxofUMDq8xxl_WcEfSBg0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudelledguddtjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfeg
+    vdegjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:Y-tfYa9EbfPTE0rKYAcDhFOkxmucqYL4OInoKEK1gfy2bduiu-WDfg>
+    <xmx:Y-tfYds80yAMfGf42B_F-gWHC3bkWinWA4StVeKGwsEb7xWUG6GE_g>
+    <xmx:Y-tfYZFHaEcHhAMygQy41DLfXjoDHoZy2I-IKThAhkd497IAdrPrNw>
+    <xmx:ZutfYRRTB6Xgps-nWi10Ozy_Mwxsi1ZhqEOUh5NloA9LsPMUT_MCKjob6QI>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 8 Oct 2021 02:55:31 -0400 (EDT)
+Date:   Fri, 8 Oct 2021 14:54:23 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Dan Lustig <dlustig@nvidia.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Anvin <hpa@zytor.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vince Weaver <vincent.weaver@maine.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Stephane Eranian <eranian@google.com>, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, Alan Stern <stern@rowland.harvard.edu>,
+        linux-arch@vger.kernel.org
+Subject: Re: [PATCH] tools/memory-model: Provide extra ordering for
+ unlock+lock pair on the same CPU
+Message-ID: <YV/rH0TeokccdbMD@boqun-archlinux>
+References: <20210930130823.2103688-1-boqun.feng@gmail.com>
+ <YVZiGdWXfbsHs2xa@boqun-archlinux>
+ <878rz4nkw2.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20211007194113.10507-6-semen.protsenko@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878rz4nkw2.fsf@mpe.ellerman.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 21:41, Sam Protsenko wrote:
-> This is the initial implementation adding only basic clocks like UART,
-> MMC, I2C and corresponding parent clocks. Design is influenced by
-> Exynos5433 clock driver.
+On Fri, Oct 08, 2021 at 04:30:37PM +1100, Michael Ellerman wrote:
+> Boqun Feng <boqun.feng@gmail.com> writes:
+> > (Add linux-arch in Cc list)
+> >
+> > Architecture maintainers, this patch is about strengthening our memory
+> > model a little bit, your inputs (confirmation, ack/nack, etc.) are
+> > appreciated.
 > 
-> Bus clock is enabled by default (in probe function) for all CMUs except
-> CMU_TOP, the reasoning is as follows. By default if bus clock has no
-> users its "enable count" value is 0. It might be actually running if
-> it's already enabled in bootloader, but then in some cases it can be
-> disabled by mistake. For example, such case was observed when
-> dw_mci_probe() enabled the bus clock, then failed to do something and
-> disabled that bus clock on error path. After that, even the attempt to
-> read the 'clk_summary' file in DebugFS freezed forever, as CMU bus clock
-> ended up being disabled and it wasn't possible to access CMU registers
-> anymore.
+> Hi Boqun,
 > 
-> To avoid such cases, CMU driver must increment the ref count for that
-> bus clock by running clk_prepare_enable(). There is already existing
-> '.clk_name' field in struct samsung_cmu_info, exactly for that reason.
-> It was added in commit 523d3de41f02 ("clk: samsung: exynos5433: Add
-> support for runtime PM"), with next mentioning in commit message:
+> I don't feel like I'm really qualified to give an ack here, you and the
+> other memory model folk know this stuff much better than me.
 > 
->   > Also for each CMU there is one special parent clock, which has to be
->   > enabled all the time when any access to CMU registers is being done.
+> But I have reviewed it and it matches my understanding of how our
+> barriers work, so it looks OK to me.
 > 
-> But that clock is actually only enabled in Exynos5433 clock driver right
-> now. So the same code is added to exynos850_cmu_probe() function,
-> As was described above, it might be helpful not only for PM reasons, but
-> also to prevent possible erroneous clock gating on error paths.
-> 
-> Another way to workaround that issue would be to use CLOCK_IS_CRITICAL
-> flag for corresponding gate clocks. But that might be not very good
-> design decision, as we might still want to disable that bus clock, e.g.
-> on PM suspend.
-> 
-> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> ---
-> Changes in v2:
->   - Used of_iomap() for the whole CMU range instead of ioremap() in
->     exynos850_init_clocks()
->   - Used readl/writel functions in exynos850_init_clocks() for consistency
->     with other drivers
->   - Added all clock ids
->   - Added CMU_DPU
->   - Implemented platform_driver for all Power Domain capable CMUs
->   - Moved bus clock enablement code here to probe function
->   - Used clk_get() instead of __clk_lookup()
-> 
->  drivers/clk/samsung/Makefile        |   1 +
->  drivers/clk/samsung/clk-exynos850.c | 835 ++++++++++++++++++++++++++++
->  2 files changed, 836 insertions(+)
->  create mode 100644 drivers/clk/samsung/clk-exynos850.c
+> Reviewed-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
 > 
 
-Thanks for the changes, awesome work, I appreciate it.
+Thanks!
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Regards,
+Boqun
 
-Best regards,
-Krzysztof
+> cheers
