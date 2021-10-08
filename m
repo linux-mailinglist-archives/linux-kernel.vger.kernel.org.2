@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074C3427399
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4BB4273A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243650AbhJHWWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:22:53 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:17418 "EHLO
+        id S243696AbhJHWXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:23:22 -0400
+Received: from mailgw01.mediatek.com ([216.200.240.184]:7947 "EHLO
         mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243625AbhJHWWu (ORCPT
+        with ESMTP id S243643AbhJHWXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:22:50 -0400
-X-UUID: 94fefff4d9df494ab8c3ac5ebead086a-20211008
-X-UUID: 94fefff4d9df494ab8c3ac5ebead086a-20211008
+        Fri, 8 Oct 2021 18:23:12 -0400
+X-UUID: 58e988c1d3bd4a87aa57caca9863d642-20211008
+X-UUID: 58e988c1d3bd4a87aa57caca9863d642-20211008
 Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw01.mediatek.com
         (envelope-from <sean.wang@mediatek.com>)
         (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 100845730; Fri, 08 Oct 2021 15:15:41 -0700
+        with ESMTP id 384963223; Fri, 08 Oct 2021 15:20:06 -0700
 Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS62DR.mediatek.inc (172.29.94.18) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Oct 2021 15:10:53 -0700
+ MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 Oct 2021 15:11:03 -0700
 Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas10.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 9 Oct 2021 06:10:53 +0800
+ Transport; Sat, 9 Oct 2021 06:10:56 +0800
 From:   <sean.wang@mediatek.com>
 To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
 CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
@@ -42,9 +42,9 @@ CC:     <Mark-YW.Chen@mediatek.com>, <sean.wang@mediatek.com>,
         <linux-mediatek@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Mark-yw Chen <mark-yw.chen@mediatek.com>
-Subject: [PATCH v1 08/10] Bluetooth: btmtksdio: transmit packet according to the status TX_EMPTY
-Date:   Sat, 9 Oct 2021 06:10:15 +0800
-Message-ID: <0f16a1070b325660fed4584ca4cc7480326538a7.1633728573.git.objelf@gmail.com>
+Subject: [PATCH v1 09/10] mmc: add MT7921 SDIO identifiers for MediaTek Bluetooth devices
+Date:   Sat, 9 Oct 2021 06:10:16 +0800
+Message-ID: <a0bd32adb91c248964eced07392baae6f20116da.1633728573.git.objelf@gmail.com>
 X-Mailer: git-send-email 1.7.9.5
 In-Reply-To: <cover.1633728573.git.objelf@gmail.com>
 References: <cover.1633728573.git.objelf@gmail.com>
@@ -55,86 +55,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark-yw Chen <mark-yw.chen@mediatek.com>
+From: Sean Wang <sean.wang@mediatek.com>
 
-Each packet should be sent out until the device emits the TX_EMPTY signal
-to the host, that is firmware people suggested to add to meet the actual
-firmware behavior and that is compatible among all the devices.
+The MT7961 SDIO identifier for MediaTek Bluetooth devices were being
+referred in the MediaTek Bluetooth driver.
 
-Co-developed-by: Sean Wang <sean.wang@mediatek.com>
-Signed-off-by: Sean Wang <sean.wang@mediatek.com>
+Co-developed-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
 Signed-off-by: Mark-yw Chen <mark-yw.chen@mediatek.com>
+Signed-off-by: Sean Wang <sean.wang@mediatek.com>
 ---
- drivers/bluetooth/btmtksdio.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ include/linux/mmc/sdio_ids.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/bluetooth/btmtksdio.c b/drivers/bluetooth/btmtksdio.c
-index f816a7cb0a74..3266c5d83cae 100644
---- a/drivers/bluetooth/btmtksdio.c
-+++ b/drivers/bluetooth/btmtksdio.c
-@@ -103,6 +103,7 @@ struct btmtksdio_dev {
- 	struct work_struct txrx_work;
- 	unsigned long tx_state;
- 	struct sk_buff_head txq;
-+	bool hw_tx_ready;
+diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
+index a85c9f0bd470..53f0efa0bccf 100644
+--- a/include/linux/mmc/sdio_ids.h
++++ b/include/linux/mmc/sdio_ids.h
+@@ -105,6 +105,7 @@
+ #define SDIO_VENDOR_ID_MEDIATEK			0x037a
+ #define SDIO_DEVICE_ID_MEDIATEK_MT7663		0x7663
+ #define SDIO_DEVICE_ID_MEDIATEK_MT7668		0x7668
++#define SDIO_DEVICE_ID_MEDIATEK_MT7961		0x7961
  
- 	struct sk_buff *evt_skb;
- 
-@@ -229,6 +230,7 @@ static int btmtksdio_tx_packet(struct btmtksdio_dev *bdev,
- 	sdio_hdr->reserved = cpu_to_le16(0);
- 	sdio_hdr->bt_type = hci_skb_pkt_type(skb);
- 
-+	bdev->hw_tx_ready = false;
- 	err = sdio_writesb(bdev->func, MTK_REG_CTDR, skb->data,
- 			   round_up(skb->len, MTK_SDIO_BLOCK_SIZE));
- 	if (err < 0)
-@@ -417,15 +419,6 @@ static void btmtksdio_txrx_work(struct work_struct *work)
- 	/* Disable interrupt */
- 	sdio_writel(bdev->func, C_INT_EN_CLR, MTK_REG_CHLPCR, 0);
- 
--	while ((skb = skb_dequeue(&bdev->txq))) {
--		err = btmtksdio_tx_packet(bdev, skb);
--		if (err < 0) {
--			bdev->hdev->stat.err_tx++;
--			skb_queue_head(&bdev->txq, skb);
--			break;
--		}
--	}
--
- 	txrx_timeout = jiffies + 5 * HZ;
- 
- 	do {
-@@ -446,10 +439,21 @@ static void btmtksdio_txrx_work(struct work_struct *work)
- 			bt_dev_dbg(bdev->hdev, "Get fw own back");
- 
- 		if (int_status & TX_EMPTY)
--			schedule_work(&bdev->txrx_work);
-+			bdev->hw_tx_ready = true;
- 		else if (unlikely(int_status & TX_FIFO_OVERFLOW))
- 			bt_dev_warn(bdev->hdev, "Tx fifo overflow");
- 
-+		if (bdev->hw_tx_ready) {
-+			skb = skb_dequeue(&bdev->txq);
-+			if (skb) {
-+				err = btmtksdio_tx_packet(bdev, skb);
-+				if (err < 0) {
-+					bdev->hdev->stat.err_tx++;
-+					skb_queue_head(&bdev->txq, skb);
-+				}
-+			}
-+		}
-+
- 		if (int_status & RX_DONE_INT) {
- 			rx_size = sdio_readl(bdev->func, MTK_REG_CRPLR, NULL);
- 			rx_size = (rx_size & RX_PKT_LEN) >> 16;
-@@ -642,6 +646,7 @@ static int btmtksdio_setup(struct hci_dev *hdev)
- 	u8 param = 0x1;
- 
- 	calltime = ktime_get();
-+	bdev->hw_tx_ready = true;
- 
- 	/* Query whether the firmware is already download */
- 	wmt_params.op = BTMTK_WMT_SEMAPHORE;
+ #define SDIO_VENDOR_ID_MICROCHIP_WILC		0x0296
+ #define SDIO_DEVICE_ID_MICROCHIP_WILC1000	0x5347
 -- 
 2.25.1
 
