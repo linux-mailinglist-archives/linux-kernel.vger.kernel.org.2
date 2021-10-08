@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9121E427362
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:05:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C563342736A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 00:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243544AbhJHWHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 18:07:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231774AbhJHWHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 18:07:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F0FB60FC1;
-        Fri,  8 Oct 2021 22:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633730719;
-        bh=n293mMyacwXGRir18U0iXhtIXFN5a2t9ZMDrVeqgMKo=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=uliAzaexfXE7N3oVzLssqW3d0M+Et1m28YwF5jmEst60Lk2thlaGWYYbwz5GJvr0F
-         kaFZZyIIRdAnDLp49AQ3Xi+KpVq4g9C4bS17jDxWfAmMzFeVElDB8ZCSbPn+Quv2fv
-         KEap/9OZRMS6WZb3RPfQzJVQL24BcSS+5VDlCO7b/a9AZEuz8t2e30S+EznCtCAYnG
-         CQJfKGvKedp8DvC5NBTCleI7qqd51umn6rIkc1YrjM9bfEukHohyQ00TA7Hz0m7WG7
-         lGeJNfzTNTE/0hCewXGUmAlx4ZCN470irhXHIuaNOHvuq3qPqREwbH2df5s85lQ4Cp
-         Iww0KQoQ8yGYw==
-Content-Type: text/plain; charset="utf-8"
+        id S243549AbhJHWKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 18:10:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243506AbhJHWKm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 18:10:42 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F03AC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 15:08:46 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so7627132otv.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 15:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=eRM/GW7Nz2OFw2k17twQGnIo0wF+tOa2AlGFVMS86EM=;
+        b=F0dXedi0IAD47x8czJsAGMXrivcfwYxv4pkmpOdt840ykD/TvJNwmnRHgY3tYnVuAV
+         9rK2pF290E+2PCT6YQz0gOaYFRhycaDZZi3lAmei0A1L+wMl7EC9I9SmUT7P9iA1oLcA
+         sRYqEVqquRbwepfOiBt6WkbATF8yFjWaMxQ1s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=eRM/GW7Nz2OFw2k17twQGnIo0wF+tOa2AlGFVMS86EM=;
+        b=LKQy9my+nBB4xBKwq1mrkHU5x1lK476xiKmtj2tOuqSz5vufxdelmy7DlEV1e8L/LL
+         MVe8N8+sgV7/sEvwtEDCnIixa1HNlQjBCHs/MIqyfkp8vtNM+iElga3h0I/0DOYEZDwR
+         KIR9iNqowD7lThLsaGTVqEjhnndhr/Rv3N1Q5KUDPzR730p3vlKF2j4BHLDGw0MD9R6H
+         CA1Tn0KHfmeIuOPITfeZOtmXgsMPmHEKmF2uYGlkb+RxDMwnnFHZn5I5h6lp4fp83jW5
+         M9qhkKsC8dweYLN2fp1Z9JSzSflVzy3KzZGg6r1dEV+b56YFqgcikite14AWcrA2017+
+         YWKg==
+X-Gm-Message-State: AOAM530aU52icz35/C4lWaQkLNSkc9M4B1qRxjlyHULROxPhCz6Z5XcS
+        XWiPqdoc/qE1L84an+MKcuwJNZbMJ80DGtkjqUliVpPioP4=
+X-Google-Smtp-Source: ABdhPJz+XzsxfBUPNSFtRuDtmegWrFGX/Yeg7TOOT9hLgVYsP64+/r5mtnoQas58CTF5G3R7gSZlZ6JOVqs0ba2v9aE=
+X-Received: by 2002:a9d:12f4:: with SMTP id g107mr6848914otg.77.1633730925558;
+ Fri, 08 Oct 2021 15:08:45 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 8 Oct 2021 18:08:44 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <3ac4d209-58a7-60f3-a3c1-7a44407bac03@microchip.com>
-References: <20210923132046.1860549-1-claudiu.beznea@microchip.com> <20210923132046.1860549-3-claudiu.beznea@microchip.com> <163366509609.2041162.16407625879723979586@swboyd.mtv.corp.google.com> <3ac4d209-58a7-60f3-a3c1-7a44407bac03@microchip.com>
-Subject: Re: [PATCH v4 02/17] clk: at91: pmc: execute suspend/resume only for backup mode
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-To:     Claudiu.Beznea@microchip.com, Ludovic.Desroches@microchip.com,
-        Nicolas.Ferre@microchip.com, alexandre.belloni@bootlin.com,
-        mturquette@baylibre.com
-Date:   Fri, 08 Oct 2021 15:05:17 -0700
-Message-ID: <163373071796.2041162.6436046910579417724@swboyd.mtv.corp.google.com>
+In-Reply-To: <20211008113839.v3.2.I187502fa747bc01a1c624ccf20d985fdffe9c320@changeid>
+References: <20211008113839.v3.1.Ibada67e75d2982157e64164f1d11715d46cdc42c@changeid>
+ <20211008113839.v3.2.I187502fa747bc01a1c624ccf20d985fdffe9c320@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
+Date:   Fri, 8 Oct 2021 18:08:44 -0400
+Message-ID: <CAE-0n50UhQ75iDcdVDu6V6jv9tXLsyaW5NRJ6i=caf0uMNcueA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] arm64: dts: sc7180: Support Parade ps8640 edp bridge
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Philip Chen <philipchen@chromium.org>
+Cc:     dianders@chromium.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Claudiu.Beznea@microchip.com (2021-10-07 23:47:14)
-> On 08.10.2021 06:51, Stephen Boyd wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know =
-the content is safe
-> >=20
-> > Quoting Claudiu Beznea (2021-09-23 06:20:31)
-> >> Before going to backup mode architecture specific PM code sets the fir=
-st
-> >> word in securam (file arch/arm/mach-at91/pm.c, function at91_pm_begin(=
-)).
-> >> Thus take this into account when suspending/resuming clocks. This will
-> >> avoid executing unnecessary instructions when suspending to non backup
-> >> modes. Also this commit changed the postcore_initcall() with
-> >> subsys_initcall() to be able to execute of_find_compatible_node() since
-> >> this was not available at the moment of postcore_initcall(). This shou=
-ld
-> >> not alter the tcb_clksrc since the changes are related to clocks
-> >> suspend/resume procedure that will be executed at the user space reque=
-st,
-> >> thus long ago after subsys_initcall().
-> >=20
-> > Is the comment still relevant though?
->=20
-> For architecture PM code yes, the securam is set in [1].
->=20
-> Related to replacing postcore_init() with subsys_initcall() to be able to
-> have the proper result of of_find_compatible_node() I have to re-check
-> (don't know if something has been changed in this area since January). If
-> you know something please let me know.
+Quoting Philip Chen (2021-10-08 11:39:35)
+> Add a dts fragment file to support the sc7180 boards with the second
+> source edp bridge, Parade ps8640.
+>
+> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> ---
 
-I mostly don't want to lose the comment if it is still useful.
-
->=20
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/a=
-rch/arm/mach-at91/pm.c#n290
->=20
-> >=20
-> >>
-> >> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> >> ---
-> >> diff --git a/drivers/clk/at91/pmc.c b/drivers/clk/at91/pmc.c
-> >> index b2806946a77a..58e9c088cb22 100644
-> >> --- a/drivers/clk/at91/pmc.c
-> >> +++ b/drivers/clk/at91/pmc.c
-> >> @@ -110,13 +112,35 @@ struct pmc_data *pmc_data_allocate(unsigned int =
-ncore, unsigned int nsystem,
-> >>  }
-> >>
-> >>  #ifdef CONFIG_PM
-> >> +
-> >> +/* Address in SECURAM that say if we suspend to backup mode. */
-> >> +static void __iomem *at91_pmc_backup_suspend;
-> >> +
-> >>  static int at91_pmc_suspend(void)
-> >>  {
-> >> +       unsigned int backup;
-> >> +
-> >> +       if (!at91_pmc_backup_suspend)
-> >> +               return 0;
-> >> +
-> >> +       backup =3D *(unsigned int *)at91_pmc_backup_suspend;
-> >=20
-> > This will fail sparse. Why are we reading iomem without using iomem
-> > reading wrapper?
->=20
-> By mistake. I'll switch to iomem reading wrapper.
->=20
-> Is it OK to send soon a new version with these adjustments or do you have
-> other patches in this series to review?
->=20
-
-Feel free to resend.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
