@@ -2,59 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BFC942650E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398F542650D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 09:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhJHHO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 03:14:29 -0400
-Received: from smtp25.cstnet.cn ([159.226.251.25]:37256 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230453AbhJHHOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 03:14:25 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-05 (Coremail) with SMTP id zQCowAD32O1D719hKcjVAg--.40575S2;
-        Fri, 08 Oct 2021 15:12:03 +0800 (CST)
-From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
-To:     bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com
-Cc:     linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Subject: Re: Re: [PATCH] x86/microcode/amd: Add __list_del_entry_valid() in front of __list_del() in free_cache()
-Date:   Fri,  8 Oct 2021 07:12:01 +0000
-Message-Id: <1633677121-81314-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: zQCowAD32O1D719hKcjVAg--.40575S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZryDCFy5uFWDCF1rKFW3KFg_yoWxArg_W3
-        WUC348WwsrCFZFga12vr4Fya97AFn8GFZ7tryftryxJw15KFZ8J3ZxuFW5ury5Wr1Yqrs3
-        Kr4rJryqgFySvjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF
-        04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUrVyIUUUUU
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S230305AbhJHHOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 03:14:15 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:56402 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhJHHOM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 03:14:12 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id ECFAC223D5;
+        Fri,  8 Oct 2021 07:12:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633677136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9JkoUZpACyUfQpOqubca79HEaq3VBgN30ug9B5nuPpY=;
+        b=NXd7i7CU+nz4qyVPFPKYz5t696OgTmGX9aCZsWZAX/9WpZQe3qtTbwkjr72JDLPBkxpVo1
+        2sc8ArtAiEM6F8uMI5MwqrIiV6j78/xaxaR7ZR5p3/OJmkt32Ow6EItlWMsXamCrA8k90e
+        cuwA9/KRcP6TNcmmp/2yggBTEet8rOA=
+Received: from suse.cz (unknown [10.100.201.86])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id CC92BA3B81;
+        Fri,  8 Oct 2021 07:12:16 +0000 (UTC)
+Date:   Fri, 8 Oct 2021 09:12:16 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Support hugetlb charge moving at task migration
+Message-ID: <YV/vUIzx6RBPZJ1I@dhcp22.suse.cz>
+References: <cover.1632843268.git.baolin.wang@linux.alibaba.com>
+ <YVWVk559nm2xZ98R@dhcp22.suse.cz>
+ <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e52a85c4-e4b4-b91a-b5b4-4da6c44c5959@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 22:29:19PM +0000, Christoph Hellwig wrote:
->On Tue, Sep 28, 2021 at 09:04:44AM +0000, Jiasheng Jiang wrote:
->> Directly use __list_del() to remove 'p->plist' might be unsafe,
->> as we can see from the __list_del_entry_valid() of 'lib/list_debug.c'
->> that p->plist->prev or p->plist->next may be the LIST_POISON,
->> or p->list is not a valid double list.
->> In that case, __list_del() will be corruption.
->> Therefore, we suggest that __list_del_entry_valid()
->> should be added in front of the __list_del() in free_cache.
+On Thu 07-10-21 23:39:15, Baolin Wang wrote:
+> Hi Michal,
+> 
+> (Sorry for late reply due to my holidays)
+> On 2021/9/30 18:46, Michal Hocko wrote:
+> > On Wed 29-09-21 18:19:26, Baolin Wang wrote:
+> > > Hi,
+> > > 
+> > > Now in the hugetlb cgroup, charges associated with a task aren't moved
+> > > to the new hugetlb cgroup at task migration, which is odd for hugetlb
+> > > cgroup usage.
+> > 
+> > Could you elaborate some more about the usecase and/or problems you see
+> > with the existing semantic?
+> 
+> The problems is that, it did not check if the tasks can move to the new
+> hugetlb cgroup if the new hugetlb cgroup has a limitation, and the hugetlb
+> cgroup usage is incorrect when moving tasks among hugetlb cgroups.
 
->No one should be using list_del directly anyway, so please fix that.
+Could you be more specific please? What do you mean by cgroup usage is
+incorrect? Ideally could you describe your usecase?
+ 
+> > > This patch set adds hugetlb cgroup charge moving when
+> > > migrate tasks among cgroups, which are based on the memcg charge moving.
+> > 
+> > Memcg charge moving has shown some problems over time and hence this is
+> > not part of cgroup v2 interface anymore. Even for cgroup v1 this has
+> 
+> Sorry, I missed this part, could you elaborate on the issues? I can have a
+> close look about the problems of memcg charge moving.
 
-What the 'fix that' means?
+The operation is quite expensive. Synchronization with charging is not
+trivial. I do not have the full list handy but you can search the
+mm mailing list archives for more information.
 
+> > been an opt-in. I do not see anything like that in this patch series.
+> > Why should all existing workloads follow a different semantic during
+> > task migration now?
+> 
+> But I think it is reasonable for some cases moving the old charging to the
+> new cgroup when task migration. Maybe I can add a new hugetlb cgroup file to
+> control if need this or not?
+
+It would be good to describe those use cases and why they really need
+this. Because as things stand now, the charge migration is not supported
+in cgroup v2 for memory cgroup controller and there are no plans to add
+the support so it would be quite unexpected that hugetlb controller
+would behave differently. And cgroup v1 is considered legacy and new
+features are ususally not added as there is a hope to move users to v2.
+-- 
+Michal Hocko
+SUSE Labs
