@@ -2,82 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8BF4266B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD78E4266C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 11:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238226AbhJHJ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 05:27:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:37466 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238186AbhJHJ1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 05:27:02 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC2B2D6E;
-        Fri,  8 Oct 2021 02:25:06 -0700 (PDT)
-Received: from [10.57.73.246] (unknown [10.57.73.246])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DA8393F70D;
-        Fri,  8 Oct 2021 02:25:04 -0700 (PDT)
-Subject: Re: [PATCH v2 00/17] arm64: Self-hosted trace related errata
- workarounds
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        maz@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        james.morse@arm.com, anshuman.khandual@arm.com, leo.yan@linaro.org,
-        mike.leach@linaro.org, mathieu.poirier@linaro.org,
-        lcherian@marvell.com, coresight@lists.linaro.org
-References: <20210921134121.2423546-1-suzuki.poulose@arm.com>
- <20211008073229.GB32625@willie-the-truck>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <b2527493-d4ca-2c42-eb22-7e8ddbe50279@arm.com>
-Date:   Fri, 8 Oct 2021 10:25:03 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S238224AbhJHJ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 05:28:46 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13710 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhJHJ2h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 05:28:37 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HQjTK4lPszWZvY;
+        Fri,  8 Oct 2021 17:25:09 +0800 (CST)
+Received: from dggema757-chm.china.huawei.com (10.1.198.199) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 17:26:40 +0800
+Received: from [10.67.102.185] (10.67.102.185) by
+ dggema757-chm.china.huawei.com (10.1.198.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Fri, 8 Oct 2021 17:26:39 +0800
+Subject: Re: [PATCH v1] MAINTAINERS: Change maintainer for gpio-hisi driver
+To:     Luo Jiaxing <luojiaxing@huawei.com>, <linus.walleij@linaro.org>,
+        <andy.shevchenko@gmail.com>, <andriy.shevchenko@linux.intel.com>
+CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210930075807.333-1-luojiaxing@huawei.com>
+From:   "liuqi (BA)" <liuqi115@huawei.com>
+Message-ID: <29eace32-346c-446a-f709-db76bdae00d2@huawei.com>
+Date:   Fri, 8 Oct 2021 17:26:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <20211008073229.GB32625@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210930075807.333-1-luojiaxing@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.185]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema757-chm.china.huawei.com (10.1.198.199)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will
 
-On 08/10/2021 08:32, Will Deacon wrote:
-> Hi Suzuki,
+
+On 2021/9/30 15:58, Luo Jiaxing wrote:
+> Qi Liu take over the maintenance of HISILICON GPIO driver next, change
+> the maintainer information.
 > 
-> On Tue, Sep 21, 2021 at 02:41:04PM +0100, Suzuki K Poulose wrote:
->> This series adds CPU erratum work arounds related to the self-hosted
->> tracing. The list of affected errata handled in this series are :
->>
->>   * TRBE may overwrite trace in FILL mode
->>     - Arm Neoverse-N2	#2139208
->>     - Cortex-A710	#211985
->>
->>   * A TSB instruction may not flush the trace completely when executed
->>     in trace prohibited region.
->>
->>     - Arm Neoverse-N2	#2067961
->>     - Cortex-A710	#2054223
->>
->>   * TRBE may write to out-of-range address
->>     - Arm Neoverse-N2	#2253138
->>     - Cortex-A710	#2224489
->>
->> The series applies on the self-hosted/trbe fixes posted here [0].
->> A tree containing both the series is available here [1]
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+> ---
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Any chance you could put the arch/arm64/ bits at the start of the series,
-> please? That way, I can queue them on their own branch which can be shared
-> with the coresight tree.
 
-I could move the bits around. I have a question though.
-
-Will, Catalin, Mathieu,
-
-The workaround for these errata, at least two of them are
-in the TRBE driver patches. Are we happy with enabling the Kconfig
-entry in the kernel, without the CoreSight patches to implement the work
-around ?
-
-Suzuki
+Acked-by: Qi Liu <liuqi115@huawei.com>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index eeb4c70b3d5b..b7ee5ddaf820 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8400,7 +8400,7 @@ S:	Maintained
+>   F:	drivers/dma/hisi_dma.c
+>   
+>   HISILICON GPIO DRIVER
+> -M:	Luo Jiaxing <luojiaxing@huawei.com>
+> +M:	Qi Liu <liuqi115@huawei.com>
+>   L:	linux-gpio@vger.kernel.org
+>   S:	Maintained
+>   F:	drivers/gpio/gpio-hisi.c
+> 
