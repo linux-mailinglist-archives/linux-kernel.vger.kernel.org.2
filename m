@@ -2,106 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58BE9426D37
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3B0426D44
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Oct 2021 17:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242870AbhJHPIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 11:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhJHPIN (ORCPT
+        id S242905AbhJHPKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 11:10:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24151 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232200AbhJHPKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 11:08:13 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC645C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 08:06:17 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id q205so11068867iod.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Nq/azJeEGbD1WnrPK14hpQApbcUJf/IRdz5vFG4BSxE=;
-        b=J43F8mclugqMy9/dsjCSgtUqxG19MCEw1ACvISp4/ifSlkXNM+YeHzXrOtRwX9cs7D
-         wokVxxqJ9zM0NKA9G0kis3NrUTvjgIEvRtmQ8kjKvkXBFhqw10ZV9B9jg/PCuRWb1mxN
-         /BwNDPH8isKyUOTmZYz4NCf1JzIOzYcesPy4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Nq/azJeEGbD1WnrPK14hpQApbcUJf/IRdz5vFG4BSxE=;
-        b=q3C2o2TOki+vGclEDs5vPNPPpSwoY6ESei75735NUSmEyOw8plHcleXYt31Ph1P1ja
-         s4J5Kuk7SNo0RoUF1oA0nFlTlz/8BpBmEjUOeEUPLICGHTg89xSV11nPd+icMc0kXwFw
-         GBb/EULkWhkTRJQR2cau+5UZJE46dN2YlHV2v0t+Ar69U5mHrsy4W3Ug+mwqnfiyzrDG
-         dYnJFIBHUDZzHFDd5WQOwwoXemgjrTmZNFmwjbXHhw13ucvpuDDNMXvTZww+nRciIK2N
-         AVekMyYiS6dBWBJ+LQ5PM5Wyqq0P1m7CYQ3wteshHvzkKzyhY5VwYZLqDj9GFHqXbsU9
-         oLjw==
-X-Gm-Message-State: AOAM533IbXqjPHkZYUAAlDo2mnBhOv9uV8q/LjPXwm9oV1XkhNvAsmUf
-        dCCCMzoa+YAK0ZAS4T19D0cE6O0Syke5Lg==
-X-Google-Smtp-Source: ABdhPJz2DYUeH+ICGadLQmoOqEWu8zqOASmizhTX5/n0S5aK2ujSESlU0tXTb8om35of9gp3pcptPg==
-X-Received: by 2002:a5d:8242:: with SMTP id n2mr8041096ioo.170.1633705576545;
-        Fri, 08 Oct 2021 08:06:16 -0700 (PDT)
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
-        by smtp.gmail.com with ESMTPSA id f13sm1105942ioz.48.2021.10.08.08.06.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 08:06:15 -0700 (PDT)
-Received: by mail-io1-f43.google.com with SMTP id b78so11099541iof.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 08:06:14 -0700 (PDT)
-X-Received: by 2002:a6b:6a0c:: with SMTP id x12mr7755781iog.177.1633705574549;
- Fri, 08 Oct 2021 08:06:14 -0700 (PDT)
+        Fri, 8 Oct 2021 11:10:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633705738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PUCyJf0CD/kcfrq7C8GdCqWYBNHc0A3utB2YFlkZ+S0=;
+        b=Hh1OP51YG+xNE9zOiM3rOIET3ORgo8OhiDhuTYmbNGFDuxDP6LOB3vqeoBfbLKcZ1ETHQA
+        RO0sSEyA/pUfYQqP962UaJ1HtIps+jz5wwaSHRSPX9Vpd8WKOV1Szax3N8wYKfMwSogLJ2
+        kehq5K8FD0XzYEYQWZ5BT/xD4ILH4wA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-Q5UmhENRNISgc1ByGcD4Ig-1; Fri, 08 Oct 2021 11:08:45 -0400
+X-MC-Unique: Q5UmhENRNISgc1ByGcD4Ig-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48617814615;
+        Fri,  8 Oct 2021 15:08:37 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.51])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9CBE65BAF4;
+        Fri,  8 Oct 2021 15:08:13 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        markver@us.ibm.com, Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [PATCH v2 1/1] virtio: write back F_VERSION_1 before validate
+In-Reply-To: <20211008155156.626e78b5.pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20211008123422.1415577-1-pasic@linux.ibm.com>
+ <20211008085839-mutt-send-email-mst@kernel.org>
+ <20211008155156.626e78b5.pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Fri, 08 Oct 2021 17:08:11 +0200
+Message-ID: <87ily7y2p0.fsf@redhat.com>
 MIME-Version: 1.0
-References: <20210929173343.v2.1.Ib7e63ae17e827ce0636a09d5dec9796043e4f80a@changeid>
- <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
-In-Reply-To: <20210929173343.v2.2.I6050ba184b24d887e92692a72ee3054d643d6091@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 8 Oct 2021 08:06:01 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=WkyYc7VGEuhafMFfTtc+kjYb2kO_R70bbss4kur6Dwbw@mail.gmail.com>
-Message-ID: <CAD=FV=WkyYc7VGEuhafMFfTtc+kjYb2kO_R70bbss4kur6Dwbw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: drm/bridge: ps8640: Add aux-bus child
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Balletbo i Serra <enric.balletbo@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Oct 08 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-On Wed, Sep 29, 2021 at 5:35 PM Philip Chen <philipchen@chromium.org> wrote:
+> On Fri, 8 Oct 2021 09:05:03 -0400
+> "Michael S. Tsirkin" <mst@redhat.com> wrote:
 >
-> dp-aux-bus.yaml says we can list an eDP panel as a child of
-> an eDP controller node to represent the fact that the panel
-> is connected to the controller's DP AUX bus.
+>> On Fri, Oct 08, 2021 at 02:34:22PM +0200, Halil Pasic wrote:
+>> > The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+>> > MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+>> > been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+>> > has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+>> > 
+>> > However, the specification also says: "... the driver MAY read (but MUST
+>> > NOT write) the device-specific configuration fields to check that it can
+>> > support the device ..." before setting FEATURES_OK.
+>> > 
+>> > In that case, any transitional device relying solely on
+>> > VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+>> > legacy format.  In particular, this implies that it is in big endian
+>> > format for big endian guests. This naturally confuses the driver which
+>> > expects little endian in the modern mode.
+>> > 
+>> > It is probably a good idea to amend the spec to clarify that
+>> > VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+>> > is complete. However, we already have a regression so let's try to address  
+>> 
+>> actually, regressions. and we can add 
+>> "since originally before validate callback existed
+>> config space was only read after
+>> FEATURES_OK. See Fixes tags for relevant commits"
+>> 
+>> > it.
 >
-> Let's add it to the ps8640 bindings.
+> How about replacing the paragraph above with the following?
 >
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
+> "It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. Before validate callback existed, config space was only
+> read after FEATURES_OK. However, we already have two regression, so
+> let's address this here as well."
+>> > 
+>> > The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
+>> > the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
+>> > virtio 1.0 is used on both sides. The latter renders virtio-blk
+>> > unusable with DASD backing, because things simply don't work with
+>> > the default.  
 >
-> (no changes since v1)
+> and add 
+> "See Fixes tags for relevant commits."
+> here.
+>> 
+>> Let's add a work around description now:
+>> 
+>> 
+>> For QEMU, we can work around the issue by writing out the features
+>> register with VIRTIO_F_VERSION_1 bit set.  We (ab) use the
+> s/features register/feature bits/
+> rationale: ccw does not have a features register, and qemu does not
+> really act as if its behavior was controlled by the values in a features
+> register. I.e. when we read the register we see VIRTIO_F_VERSION_!
+> because the feature is offered. In QEMU we basically read host_featues
+> but write the guest_features. And what drives device behavior is mostly
+> guest_features. 
 >
->  .../bindings/display/bridge/ps8640.yaml       | 19 ++++++++++++++++++-
->  1 file changed, 18 insertions(+), 1 deletion(-)
+> s/(ab) use/(ab)use/
+>
+>> finalize_features config op for this. It's not enough to address vhost
+>
+> s/It's/This is/
+>
+>> user and vhost block devices since these do not get the features until
+>
+> s/vhost user and vhost block/some vhost-user and vhost-vdpa/ ?
+>
+> Ratioale: I think vhost block is just a vhost-user device. On the other
+> hand vhost-user-fs works like charm because the config space is
+> implemented in qemu and not in the vhost-user device. I
+> didn't check vhost_net. I'm not even sure qemu offers a vhost_net
+> implementation. Anyway I wouldn't like to make any false statements here.
+>
+>> FEATURES_OK, however it looks like these two actually never handled the
+>> endian-ness for legacy mode correctly, so at least that's not a
+>> regression.
+>> 
+>> No devices except virtio net and virtio blk seem to be affected.
+>> 
+>> Long term the right thing to do is to fix the hypervisors.
+>> 
+>
+> Sounds good. Thanks! Are you OK with my changes proposed to your changes?
+>
+> Regards,
+> Halil
+>> 
+>> > 
+>> > Cc: <stable@vger.kernel.org> #v4.11
+>> > Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+>> > Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in
+>> > config space") Fixes: fe36cbe0671e ("virtio_net: clear MTU when out
+>> > of range") Reported-by: markver@us.ibm.com
+>> > ---
+>> >  drivers/virtio/virtio.c | 11 +++++++++++
+>> >  1 file changed, 11 insertions(+)
+>> > 
+>> > diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+>> > index 0a5b54034d4b..236081afe9a2 100644
+>> > --- a/drivers/virtio/virtio.c
+>> > +++ b/drivers/virtio/virtio.c
+>> > @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
+>> >  		driver_features_legacy = driver_features;
+>> >  	}
+>> >  
+>> > +	/*
+>> > +	 * Some devices detect legacy solely via F_VERSION_1. Write
+>> > +	 * F_VERSION_1 to force LE config space accesses before
+>> > FEATURES_OK for
+>> > +	 * these when needed.
+>> > +	 */
+>> > +	if (drv->validate && !virtio_legacy_is_little_endian()
+>> > +			  && device_features &
+>> > BIT_ULL(VIRTIO_F_VERSION_1)) {
+>> > +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+>> > +		dev->config->finalize_features(dev);
+>> > +	}
+>> > +
+>> >  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>> >  		dev->features = driver_features & device_features;
+>> >  	else
+>> > 
+>> > base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
 
-Landed on drm-misc-next:
+FWIW, with the amends:
 
-e539a77e44c7 dt-bindings: drm/bridge: ps8640: Add aux-bus child
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
 
-Then v3 can contain just the dts bits which will eventually land in
-the Qualcomm tree.
-
--Doug
