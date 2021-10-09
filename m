@@ -2,187 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B3F427C92
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DF1427C96
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhJISTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
+        id S230036AbhJIST2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhJISTC (ORCPT
+        with ESMTP id S229518AbhJISTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:19:02 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0ABC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 11:17:05 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id v20so1241163plo.7
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:17:05 -0700 (PDT)
+        Sat, 9 Oct 2021 14:19:21 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6DCC061570;
+        Sat,  9 Oct 2021 11:17:24 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id i20so32938890edj.10;
+        Sat, 09 Oct 2021 11:17:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:cc:subject:content-language
-         :to:references:from:in-reply-to:content-transfer-encoding;
-        bh=007I3r/K6V+qYxnE5VmcGCIC1RlYnIaC4Ivz6Ke0WkI=;
-        b=QpKpSVYoRRYXZ6KuyGcVBossh3kIvBTZm92Bn98cYu5WxY7vQbPwRdlRte264B3F/C
-         u/8+o/UucxDJEX5sSqgh+zDhiTv/fAdZgMdQVdcx2Q9NLf83MPhkVnicJ/qMgKyKXjq8
-         FqMZVbD2s6jpMjiSfVnX0U+It/av/AhM7964eej7VjkGI8XLSzA+NkejMOBPNmRDU0us
-         UAlPi5TwwT6JRmDjYnEt8jNqoIMlO5h5lAXkEQxa0mZe6bHzniVVu4wTH2MbejhIe4EY
-         Hyh2vWB8lOSZJ7/IKGjkYV4qXG1CXprmtic62VJK7oCLUH4w8RuXt/sXoI23ldrf7eHZ
-         7THQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fuBuwonIJ/RYFG6qboWBn9V7FEmG4HhkblayeVkZims=;
+        b=ZNED6jBa7yKU3y0a4qmmg0m4NOHYArHGUNDJsaeJXyAv2CTC9NJc7+yM6ML2OTr761
+         2RE+wNLxTOQmG7QAwsyOp71L5v7TdgXeKwIAHYV4zr4FbzzhPEBxW2WZJieydPUWzGFw
+         qUgVr1/x1B1JCXpP4AwB2bLCVqjPEaNhQHgEi0qoQHjmoQuF2fry3h4Sx9jT0nDrZBWU
+         ITVq6gMl96sNOS36X5GomkudDfkwaYTskPOauoOUagcH02z0NOKMnpuFMbRsabWNo69+
+         c86nIMQscoPtM3R3peCO+eJxs7Spk4lYRIi3z6ibc1kPjJaGtHVGfr5bpgXohuh5YgXA
+         YNBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=007I3r/K6V+qYxnE5VmcGCIC1RlYnIaC4Ivz6Ke0WkI=;
-        b=AtlNAZJoS7xQK4CrDolfulZldDjPjRRkgld+GuWDm/1+WHBMZIa8rNldV+e813z2h2
-         MF8C8P3oR5hbXUdlacGv7ceCA5TiIivKjB22elqXgiSNUcox10cFvP0NbAnXzX6VItlt
-         7cuSIbyolMWhBQ+HgSp8meVjzwjtrNV0scCpJdSX9T2x2vD5W2EUMoOra4OMO9sr2npm
-         tXHTo6CIDz9I3DuiScNwkLK2f6aGpd1mpZ71vBXRRfSmH2STmURlYkT/pW9bPSnCxAls
-         4/k9zi0xcfxuse06HUU2fSTk7Pg5A/pb1BIMCnQTFVWQwYWggFo4UJxIGpvxQjePjYFE
-         1YBQ==
-X-Gm-Message-State: AOAM533aDjNlTUlqeEoo3kbWMDotYwoJ0wHObdn/1NZcHJdrOjuV4h76
-        qS2Bk9lj/ADITmDguvrYVKfWoI0/7zwslg==
-X-Google-Smtp-Source: ABdhPJy3vrMGr2AAysKOKpCIABD9bWNf/h6ylAPSMt7LGOS/RGUqc9yxi8AqK90dRM/9guQ0Rlrmzw==
-X-Received: by 2002:a17:90b:3850:: with SMTP id nl16mr19111548pjb.127.1633803424956;
-        Sat, 09 Oct 2021 11:17:04 -0700 (PDT)
-Received: from [192.168.1.6] ([223.230.43.197])
-        by smtp.gmail.com with ESMTPSA id b16sm2838646pfm.58.2021.10.09.11.17.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 11:17:04 -0700 (PDT)
-Message-ID: <50527d62-3c4e-3b61-5f17-225379c1d6c3@gmail.com>
-Date:   Sat, 9 Oct 2021 23:47:00 +0530
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fuBuwonIJ/RYFG6qboWBn9V7FEmG4HhkblayeVkZims=;
+        b=sf0mE8LTBHbkxI0gmLD6xxIHjv411RtbzNH/2XWy8OxWRI4AQapIUJY5dD1NBmxD/q
+         IRJPv+U3/2QmFDdis9CkNUcwJqJ9ydj+iyt2FHtjdHhMZ8a7LIZG/VwU6TXdYZxd06Gx
+         BIn8vi03DhoLz08UqQYnnmdOWeub9+YXcThONLj3KCtZFvJs+UC80O/dVhogXNxhgptA
+         CcOuggkahT9oCqlR51P4QlTd1uonXBSqhxYlCFXlHGiZ1u8/K1IVE64r0pIKHrBrFjGc
+         Y7xsAVTr5AsESXTiedZDCW6wKtaUo9H35HSyrjV3efzJWesNWdxqnYLjGisrnqnYlwJf
+         gKhQ==
+X-Gm-Message-State: AOAM531+y7XS/aiRilbCJ4KZ0LhzlnOoWtCG/bE9ZyoBPTIXEMD9QGRg
+        7gtBdH7vh6ITA07FjxdovsqHdQ11gaM=
+X-Google-Smtp-Source: ABdhPJzPt4YW3wsGvqc7+shQyegZckapPHFmZy1Q0kXu7hZxEshZjuFYPyViQIpSEUad4HtSnoanpw==
+X-Received: by 2002:a05:6402:4389:: with SMTP id o9mr26674669edc.38.1633803442907;
+        Sat, 09 Oct 2021 11:17:22 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id t19sm1243182ejb.115.2021.10.09.11.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 11:17:22 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 20:17:19 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 15/15] dt-bindings: net: dsa: qca8k: document
+ support for qca8328
+Message-ID: <YWHcr0wkdN0XjBNZ@Ansuel-xps.localdomain>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-16-ansuelsmth@gmail.com>
+ <YWHQXYx7kYckTcqT@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Cc:     saurav.girepunje@hotmail.com, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        insafonov@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: os_dep: simplify the return
- statement.
-Content-Language: en-US
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev
-References: <YWG3oIchovDZnPl8@user> <1661874.ovfstkzlfj@localhost.localdomain>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <1661874.ovfstkzlfj@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWHQXYx7kYckTcqT@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Oct 09, 2021 at 07:24:45PM +0200, Andrew Lunn wrote:
+> On Fri, Oct 08, 2021 at 02:22:25AM +0200, Ansuel Smith wrote:
+> > QCA8328 is the birrget brother of 8327. Document the new compatible
+> 
+> birrget?
+> 
+> 
+>
 
+Me sending patch lat at night... it was brother.
 
-On 09/10/21 10:29 pm, Fabio M. De Francesco wrote:
-> On Saturday, October 9, 2021 5:39:12 PM CEST Saurav Girepunje wrote:
->> Remove the unneeded and redundant check of variable on goto out.
->> Simplify the return using multiple goto label to avoid
->> unneeded check.
->>
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
->>   .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 29 ++++++++++---------
->>   1 file changed, 15 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
-> staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> index 0868f56e2979..574fdb6adce7 100644
->> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> @@ -2282,18 +2282,18 @@ static int rtw_cfg80211_add_monitor_if(struct
-> adapter *padapter, char *name, str
->>
->>   	if (!name) {
->>   		ret = -EINVAL;
->> -		goto out;
->> +		goto err_out;
->>   	}
->>
->>   	if (pwdev_priv->pmon_ndev) {
->>   		ret = -EBUSY;
->> -		goto out;
->> +		goto err_out;
->>   	}
->>
->>   	mon_ndev = alloc_etherdev(sizeof(struct
-> rtw_netdev_priv_indicator));
->>   	if (!mon_ndev) {
->>   		ret = -ENOMEM;
->> -		goto out;
->> +		goto err_out;
->>   	}
->>
->>   	mon_ndev->type = ARPHRD_IEEE80211_RADIOTAP;
->> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter
-> *padapter, char *name, str
->>   	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
->>   	if (!mon_wdev) {
->>   		ret = -ENOMEM;
->> -		goto out;
->> +		goto err_zmalloc;
->>   	}
->>
->>   	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
->> @@ -2322,22 +2322,23 @@ static int rtw_cfg80211_add_monitor_if(struct
-> adapter *padapter, char *name, str
->>
->>   	ret = cfg80211_register_netdevice(mon_ndev);
->>   	if (ret) {
->> -		goto out;
->> +		goto err_register;
->>   	}
->>
->>   	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
->>   	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
->>
->> -out:
->> -	if (ret && mon_wdev) {
->> -		kfree(mon_wdev);
->> -		mon_wdev = NULL;
->> -	}
->> +err_register:
->>
->> -	if (ret && mon_ndev) {
->> -		free_netdev(mon_ndev);
->> -		*ndev = mon_ndev = NULL;
->> -	}
->> +	kfree(mon_wdev);
->> +	mon_wdev = NULL;
->> +
->> +err_zmalloc:
->> +
->> +	free_netdev(mon_ndev);
->> +	*ndev = mon_ndev = NULL;
->> +
->> +err_out:
->>
->>   	return ret;
->>   }
->> --
->> 2.32.0
->>
-> At a quick look it seems that now you unconditionally free memory and free a
-> network device immediately after the last memcpy().
+> > binding.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index 9fb4db65907e..0e84500b8db2 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -3,6 +3,7 @@
+> >  Required properties:
+> >  
+> >  - compatible: should be one of:
+> > +    "qca,qca8328"
+> >      "qca,qca8327"
+> >      "qca,qca8334"
+> >      "qca,qca8337"
 > 
-> Why are you doing this even if no errors are returned from device and memory
-> allocations (i.e., while "ret" is still equal to zero)?
+> This is much nice than the old DT property. But since the internal IDs
+> are the same, i think it would be good to add a little documentation
+> here about how the 8327 and 8328 differ, since most people are not
+> going to look at the commit message.
 > 
-> Thanks,
-> 
-> Fabio
->   
-> 
-> 
-> 
+>       Andrew
 
-Thanks Fabio for review. Yes, That is missed.
-I can do that in either one of the way.
-Either I should check for ret before free or I should use goto out(may 
-be I will rename err_out goto label to "out" only) just after the memcpy 
-statement so that function will not free for no error case and return 
-ret value only.
+Ok will add some description on how to understand the correct compatible
+to use.
 
-Please let me know you input on above.
-
-Regards,
-Saurav Girepunje
+-- 
+	Ansuel
