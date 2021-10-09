@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AF6427A75
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 15:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E08427A7C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 15:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhJINKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 09:10:36 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:57833 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233120AbhJINKb (ORCPT
+        id S233298AbhJINPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 09:15:25 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:52341 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233141AbhJINPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 09:10:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0Ur7Snt5_1633784910;
-Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0Ur7Snt5_1633784910)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 09 Oct 2021 21:08:31 +0800
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-To:     James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-security-module@vger.kernel.org
-Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Subject: [PATCH 2/2] tpm: use SM3 instead of SM3_256
-Date:   Sat,  9 Oct 2021 21:08:28 +0800
-Message-Id: <20211009130828.101396-3-tianjia.zhang@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
-In-Reply-To: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
-References: <20211009130828.101396-1-tianjia.zhang@linux.alibaba.com>
+        Sat, 9 Oct 2021 09:15:21 -0400
+Received: from tomoyo.flets-east.jp ([114.149.34.46])
+        by smtp.orange.fr with ESMTPA
+        id ZC9zmoEn4UGqlZCA6m2idT; Sat, 09 Oct 2021 15:13:16 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: MDU0YmViZGZmMDIzYiBlMiM2NTczNTRjNWZkZTMwOGRiOGQ4ODf3NWI1ZTMyMzdiODlhOQ==
+X-ME-Date: Sat, 09 Oct 2021 15:13:16 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v2 0/3] report the controller capabilities through the netlink interface
+Date:   Sat,  9 Oct 2021 22:13:01 +0900
+Message-Id: <20211009131304.19729-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to https://tools.ietf.org/id/draft-oscca-cfrg-sm3-01.html,
-SM3 always produces a 256-bit hash value and there are no plans for
-other length development, so there is no ambiguity in the name of sm3.
+The main purpose of this series is to report the CAN controller
+capabilities. The proposed method reuses the existing struct
+can_ctrlmode and thus do not need a new IFLA_CAN_* entry.
 
-Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
----
- drivers/char/tpm/tpm-sysfs.c              | 4 ++--
- drivers/char/tpm/tpm2-cmd.c               | 2 +-
- include/linux/tpm.h                       | 2 +-
- security/keys/trusted-keys/trusted_tpm2.c | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+While doing so, I also realized that can_priv::ctrlmode_static could
+actually be derived from the other ctrlmode fields. So I added two
+extra patches to the series: one to replace that field with a function
+and one to repack struct can_priv and fill the hole created after
+removing can_priv::ctrlmode_priv.
 
-diff --git a/drivers/char/tpm/tpm-sysfs.c b/drivers/char/tpm/tpm-sysfs.c
-index 63f03cfb8e6a..fe6c785dc84a 100644
---- a/drivers/char/tpm/tpm-sysfs.c
-+++ b/drivers/char/tpm/tpm-sysfs.c
-@@ -471,7 +471,7 @@ PCR_ATTR_BUILD(TPM_ALG_SHA1, sha1);
- PCR_ATTR_BUILD(TPM_ALG_SHA256, sha256);
- PCR_ATTR_BUILD(TPM_ALG_SHA384, sha384);
- PCR_ATTR_BUILD(TPM_ALG_SHA512, sha512);
--PCR_ATTR_BUILD(TPM_ALG_SM3_256, sm3);
-+PCR_ATTR_BUILD(TPM_ALG_SM3, sm3);
- 
- 
- void tpm_sysfs_add_device(struct tpm_chip *chip)
-@@ -500,7 +500,7 @@ void tpm_sysfs_add_device(struct tpm_chip *chip)
- 		case TPM_ALG_SHA512:
- 			chip->groups[chip->groups_cnt++] = &pcr_group_sha512;
- 			break;
--		case TPM_ALG_SM3_256:
-+		case TPM_ALG_SM3:
- 			chip->groups[chip->groups_cnt++] = &pcr_group_sm3;
- 			break;
- 		default:
-diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-index 20f55de9d87b..d5a9410d2273 100644
---- a/drivers/char/tpm/tpm2-cmd.c
-+++ b/drivers/char/tpm/tpm2-cmd.c
-@@ -19,7 +19,7 @@ static struct tpm2_hash tpm2_hash_map[] = {
- 	{HASH_ALGO_SHA256, TPM_ALG_SHA256},
- 	{HASH_ALGO_SHA384, TPM_ALG_SHA384},
- 	{HASH_ALGO_SHA512, TPM_ALG_SHA512},
--	{HASH_ALGO_SM3, TPM_ALG_SM3_256},
-+	{HASH_ALGO_SM3, TPM_ALG_SM3},
- };
- 
- int tpm2_get_timeouts(struct tpm_chip *chip)
-diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-index aa11fe323c56..56a79fee1250 100644
---- a/include/linux/tpm.h
-+++ b/include/linux/tpm.h
-@@ -40,7 +40,7 @@ enum tpm_algorithms {
- 	TPM_ALG_SHA384		= 0x000C,
- 	TPM_ALG_SHA512		= 0x000D,
- 	TPM_ALG_NULL		= 0x0010,
--	TPM_ALG_SM3_256		= 0x0012,
-+	TPM_ALG_SM3		= 0x0012,
- };
- 
- /*
-diff --git a/security/keys/trusted-keys/trusted_tpm2.c b/security/keys/trusted-keys/trusted_tpm2.c
-index 52a696035176..b15a9961213d 100644
---- a/security/keys/trusted-keys/trusted_tpm2.c
-+++ b/security/keys/trusted-keys/trusted_tpm2.c
-@@ -23,7 +23,7 @@ static struct tpm2_hash tpm2_hash_map[] = {
- 	{HASH_ALGO_SHA256, TPM_ALG_SHA256},
- 	{HASH_ALGO_SHA384, TPM_ALG_SHA384},
- 	{HASH_ALGO_SHA512, TPM_ALG_SHA512},
--	{HASH_ALGO_SM3, TPM_ALG_SM3_256},
-+	{HASH_ALGO_SM3, TPM_ALG_SM3},
- };
- 
- static u32 tpm2key_oid[] = { 2, 23, 133, 10, 1, 5 };
+Please note that the first two patches are not required by the third
+one. I am just grouping everything in the same series because the
+patches all revolve around the controller modes.
+
+
+** Changelog **
+
+v1 -> v2:
+
+  - Add a first patch to replace can_priv::ctrlmode_static by the
+    inline function can_get_static_ctrlmode()
+
+  - Add a second patch to reorder the fields of struct can_priv for
+    better packing (save eight bytes on x86_64 \o/)
+
+  - Rewrite the comments of the third patch "can: netlink: report the
+    CAN controller mode supported flags" (no changes on the code
+    itself).
+
+
+Vincent Mailhol (3):
+  can: dev: replace can_priv::ctrlmode_static by
+    can_get_static_ctrlmode()
+  can: dev: reorder struct can_priv members for better packing
+  can: netlink: report the CAN controller mode supported flags
+
+ drivers/net/can/dev/dev.c        |  5 +++--
+ drivers/net/can/dev/netlink.c    |  7 +++++--
+ include/linux/can/dev.h          | 18 +++++++++++++-----
+ include/uapi/linux/can/netlink.h |  5 ++++-
+ 4 files changed, 25 insertions(+), 10 deletions(-)
+
 -- 
-2.19.1.3.ge56e4f7
+2.32.0
 
