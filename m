@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DA6427487
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844C8427488
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243972AbhJIANI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39626 "EHLO
+        id S243999AbhJIANM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243818AbhJIANH (ORCPT
+        with ESMTP id S243818AbhJIANJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:13:07 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7EEC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:11:11 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id z130-20020a256588000000b005b6b4594129so14771746ybb.15
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:11:11 -0700 (PDT)
+        Fri, 8 Oct 2021 20:13:09 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D210DC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:11:13 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id p9-20020a05621421e900b003830bb235fbso10085273qvj.14
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=EsXKxBGCni9aCrMUCZ3dcGRsp5mvNJAnlof7sA2/gMU=;
-        b=r7TVramm4KQYMm4ZbJewSuH45QEg2ckrho/CW1KrjHjc2thA66/vB+3BJd37qYdEqo
-         8SJocOQHOYIRX/ksQvW6Db0DVqoN/rQq6z/BtbPTYeKviOYr4wGKG+Tiwvt54C3OAEw5
-         DEKmbIkxS3jz3tQJ+KTzgGcELVK0IefB3AkcjzqkeXtaMZERFTcKUmLjDkipznsLirCh
-         m4l1L/SHSVd0jsqc2SgZnetIHlr14wqa7xBUsJI4qzJLpiScDBtZda2dK3zc4mPqgQvY
-         LW3Sqx83mehztENWAzPJpUMJN5cowrW6Jn7cC2CX5sB/X3WUHf+xkAdfF+JOvji+vPQh
-         GQog==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=Jpbo+B/GhwXgwxD1by7/DXTldt+Mb436guJudBghH8A=;
+        b=C8410r5ajEijJDUgktftizTQ2SFhw825HDX8x4RMiSyJDTLrbUC7tx9Q5aLXxnfm+l
+         msNYG80c9PcM3gKhl5ayhrxTDm/3M4hf2CsQEC3juu0lxJSF0Ue+Rm4r8fMraYSSms/Y
+         fQnnhcjtr/0tpVg3bED+ZM8BxcEi1ABpHyVhOriyWd9gCz6BTZ91pHwVk16b4mrfhhgq
+         hgeK8F3oD17jRUT0OBQyJZ/mg3oJECgTeCUvLAOZ09BvqGNgkvwOdrSr9k4M0H6e2qNQ
+         hsxK11/1GniyFj+JsUSswG4Vxcz1wDQJsfBct0fZaG0Wk+CDfjyspOgs4mZVrFZLJaKy
+         ppJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=EsXKxBGCni9aCrMUCZ3dcGRsp5mvNJAnlof7sA2/gMU=;
-        b=VLSKmfQ5WK3WvZPAVlmSTFHCBpwCyEfjD9kx5kbp0dh3acWJZK78dO5QJrzhMTQk+S
-         4tcHOihOw5nyokt3axDXUrgYdyDOPNHg1+7frMnTSe1oyxvyYraHa8ihWF4INLcoLAIy
-         3DY0xkNYznZOsjihy/eZ+POlpmIAReqbo5dwDYYUSNfo2j8UBYIL7bolueQ7CXkV3lLF
-         L6revG0IggTXu045xDJxr8ixvXgLc0pPGSGVdOSFk8SzT2Yfl0VsCGE9etJp6RQouCUD
-         iTVjpWFG8EvJBQ4lbmGuML3N/pQ4MFiD2HX+06semgxP8NkAuX/kf9OqABC8rsD8hQPO
-         7b9g==
-X-Gm-Message-State: AOAM531efGZxUqV/ai6B+06JZLEsAUbRs9zhUwsQvWZlsZwoYlOgevQw
-        +Dn9yHJF1/Oh05kJTsVrJsMJenpF694=
-X-Google-Smtp-Source: ABdhPJzeH5KJuoZncUc/SVbpxwGP+sApSgKZJEvS5AFcD3CoEq/XEZUf9MgZc8kmDJAIx4mRVDMMlw1m5dg=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=Jpbo+B/GhwXgwxD1by7/DXTldt+Mb436guJudBghH8A=;
+        b=EIGm3+BUj3EvZXb13jGaMguf9+kod8fJ3o0vhgutclRMr6ZQNLUAdjvH/GiuLV+Xwi
+         I4dJtp9ql8okLkDq5RpiUdhvj6yyLD1ZoawG1uwYkOrxYifb1p2+cGpMrPZqfTZJkmvw
+         lHLXwFixfjC0avCUM2Y63jnl5zN/Cgnsn8U3lNsMLcEr6uT8n+yCBRqputjR7+1z66ea
+         oBAUXL6jDkGpVMOFPrIstn30zgbagqKQmVdYz7qKPot5TFvAQ0WuOWYtaGwpOHwG7pVa
+         HkpvtPDLR/yddK9NhhjVKwL+36ON5XTOYT8uqRKEVdXsF3aJETwhyfNPKGPLDVtzg44j
+         +R8A==
+X-Gm-Message-State: AOAM5323b47AgZtb3P+ojUXRZ3jBrxFkNh9AH2U6xY4Uo3jLwboWXoJD
+        3vubfErphACBRab9ErKHeLYTTgSRcO8=
+X-Google-Smtp-Source: ABdhPJwi03qK1ZV9VOpWwjVXNzCrboIXvkE07AK1H+8yFhag5kzKnREdL38PD0yNe4Pzbm7Qg5F6nGLc5oU=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e39b:6333:b001:cb])
- (user=seanjc job=sendgmr) by 2002:a25:b904:: with SMTP id x4mr6122257ybj.48.1633738270781;
- Fri, 08 Oct 2021 17:11:10 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ac8:430e:: with SMTP id z14mr1441247qtm.208.1633738272984;
+ Fri, 08 Oct 2021 17:11:12 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Oct 2021 17:11:03 -0700
-Message-Id: <20211009001107.3936588-1-seanjc@google.com>
+Date:   Fri,  8 Oct 2021 17:11:04 -0700
+In-Reply-To: <20211009001107.3936588-1-seanjc@google.com>
+Message-Id: <20211009001107.3936588-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20211009001107.3936588-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 0/4] x86/x86: KVM: Fixes for KVM's PI wakeup handler
+Subject: [PATCH 1/4] x86/irq: Ensure PI wakeup handler is unregistered before
+ module unload
 From:   Sean Christopherson <seanjc@google.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -66,28 +70,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two fixes and two cleanups related to KVM's posted interrupt wakeup
-handler.  Fix #1 ensures any in-flight IRQs finish after changing the
-handler.  Fix #2 actually uninstalls KVM's handler so that a spurious IRQ
-won't jump into a freed module.
+Add a synchronize_rcu() after setting the posted interrupt wakeup handler
+to ensure all readers, i.e. in-flight IRQ handlers, see the new handler
+before returning to the caller.  If the caller is an exiting module and
+is unregistering its handler, failure to wait could result in the IRQ
+handler jumping into an unloaded module.
 
-AFAIK, no one has actually hit these bugs as it would require a really
-spurious IRQ, or a bug+race elsehwere that caused a device to post an
-interrupt well after a KVM guest is torn down.
+Fixes: f6b3c72c2366 ("x86/irq: Define a global vector for VT-d Posted-Interrupts")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kernel/irq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Sean Christopherson (4):
-  x86/irq: Ensure PI wakeup handler is unregistered before module unload
-  KVM: VMX: Unregister posted interrupt wakeup handler on hardware
-    unsetup
-  x86/irq: KVM: Harden posted interrupt (un)registration paths
-  KVM: VMX: Register posted interrupt wakeup handler iff APICv is
-    enabled
-
- arch/x86/include/asm/irq.h |  3 ++-
- arch/x86/kernel/irq.c      | 30 +++++++++++++++++++++---------
- arch/x86/kvm/vmx/vmx.c     |  9 +++++++--
- 3 files changed, 30 insertions(+), 12 deletions(-)
-
+diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
+index e28f6a5d14f1..20773d315308 100644
+--- a/arch/x86/kernel/irq.c
++++ b/arch/x86/kernel/irq.c
+@@ -293,6 +293,7 @@ void kvm_set_posted_intr_wakeup_handler(void (*handler)(void))
+ 		kvm_posted_intr_wakeup_handler = handler;
+ 	else
+ 		kvm_posted_intr_wakeup_handler = dummy_handler;
++	synchronize_rcu();
+ }
+ EXPORT_SYMBOL_GPL(kvm_set_posted_intr_wakeup_handler);
+ 
 -- 
 2.33.0.882.g93a45727a2-goog
 
