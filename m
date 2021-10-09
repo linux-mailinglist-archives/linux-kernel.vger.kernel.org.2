@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1DF427549
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B5142754D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244035AbhJIBBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:01:22 -0400
-Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:55618 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231996AbhJIBBU (ORCPT
+        id S244050AbhJIBDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232037AbhJIBDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:01:20 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 9A08C182CED28;
-        Sat,  9 Oct 2021 00:59:23 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 5105C315D75;
-        Sat,  9 Oct 2021 00:59:19 +0000 (UTC)
-Message-ID: <5b6dc5760b42af6c07c8ffc789466be7d7da358e.camel@perches.com>
-Subject: Re: [PATCH v4 4/7] list.h: Replace kernel.h with the necessary
- inclusions
-From:   Joe Perches <joe@perches.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linux@rasmusvillemoes.dk,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Date:   Fri, 08 Oct 2021 17:59:18 -0700
-In-Reply-To: <YV8ucQJD1ccucQTy@pendragon.ideasonboard.com>
-References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
-         <20211007154407.29746-5-andriy.shevchenko@linux.intel.com>
-         <20211007171635.2f161739@jic23-huawei>
-         <YV8ucQJD1ccucQTy@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 5105C315D75
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: zd745zhjiud6c1zmjfw9r5nwy89k5iif
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX184NsuyxE4r3AJbQ/TLzn6fTZhsBYBNplw=
-X-HE-Tag: 1633741159-16292
+        Fri, 8 Oct 2021 21:03:36 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E37BC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:01:40 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id az37-20020a05620a172500b0045e43348ee8so9603900qkb.19
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:01:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=2XmwK2K833EFOLIJ37ngWkEGrt3oRZzXMcCNeCxgUt8=;
+        b=SC025lOceSrL6R2NfEHW+1SG5OZ9xeLPjd1eipxsnCviLmnH7udp7jPgvu7dZDugwy
+         Qfv4MFmr85/b3FP1zVVeBS64mxu8ZfVL782E8y4h3mC14eVMd9mHPAr1YzjNZlcj/SO9
+         Ckt8eQj5sywPNjVt8kRi87iiMhein1EVB5wMjXI0v/lStKpPF+9IQl77Op2q4Q9gKo+E
+         IRPHGIWDHK33IxRZZ2Vms1cc0cQOk+QBucaCCKVctW3YXrqBSNsJajq3uDGkvpeihlI+
+         skbz2lKmBXLRWCitCiFkG6vmUDjZ/PzZNLqueG3Qj/bRaC2jmzfm5EiU0UHF5qVoDxxy
+         eDpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=2XmwK2K833EFOLIJ37ngWkEGrt3oRZzXMcCNeCxgUt8=;
+        b=t4QevHCn2TCjE4ZOLima1ZeffVKJSHyzkQLIELDeRVdTLQSY74pM7OAwUPlbrsSGBu
+         JNPTLnJlu7bWvlSwpiEDWSipCI8b94CXsDxSF6dmHb+ZhPp5jhu7gdzoGvvIQT0txAKb
+         Jbri/s43W086dv6V7HJQThwA0GBlRmC1MYcYXfadhLWAiWDaHPKi34qNgw6Ygkcbc7Oz
+         +ttAmpeunIPVfIz70QESaGFFF23kZqFXwLu01J2iyyA26bUu+B/CTYGC1FV6cUygppqR
+         0BdTfJSXKCotEdS0L/YOdj7xAR7f2ed78EaU9Kea2Zjlm7mRQEcZy0SeNQp0mLA5dWmy
+         3mgw==
+X-Gm-Message-State: AOAM531Y/cbLaUGBu1s0vUieu8XWRCuLVAO4MDxwjZGIPhcWjCbiWhTK
+        pFri0oUj2QEew2jxbMAmWN9O/qTm+GE=
+X-Google-Smtp-Source: ABdhPJyImYrXiX4huD62GcgSUkgAGB2sC+Z7x6QVt8ecoJLUPZQusHnIg9Dk9iwp/Sa9e7cFfJw+0K4lQX8=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e39b:6333:b001:cb])
+ (user=seanjc job=sendgmr) by 2002:ac8:5a4f:: with SMTP id o15mr1663853qta.394.1633741298613;
+ Fri, 08 Oct 2021 18:01:38 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri,  8 Oct 2021 18:01:33 -0700
+Message-Id: <20211009010135.4031460-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-07 at 20:29 +0300, Laurent Pinchart wrote:
-> On Thu, Oct 07, 2021 at 05:16:35PM +0100, Jonathan Cameron wrote:
-> > On Thu,  7 Oct 2021 18:44:04 +0300 Andy Shevchenko wrote:
-> > > When kernel.h is used in the headers it adds a lot into dependency hell,
-> > > especially when there are circular dependencies are involved.
-> > > 
-> > > Replace kernel.h inclusion with the list of what is really being used.
-[]
-> > > diff --git a/include/linux/list.h b/include/linux/list.h
-[]
-> > > @@ -2,11 +2,13 @@
-> > >  #ifndef _LINUX_LIST_H
-> > >  #define _LINUX_LIST_H
-> > > 
-> > > +#include <linux/container_of.h>
-> > > +#include <linux/const.h>
-> > >  #include <linux/types.h>
-> > >  #include <linux/stddef.h>
-> > >  #include <linux/poison.h>
-> > 
-> > Is there a reason you didn't quite sort this into alphabetical order?
-> 
-> On a side note, if someone with perle knowledge could add a checkpatch
-> warning for this, I think it would be very nice. I'm a bit tired of
-> asking for alphabetical order in reviews :-)
+Belated "code review" for Maxim's recent series to rework the AVIC inhibit
+code.  Using the global APICv status in the page fault path is wrong as
+the correct status is always the vCPU's, since that status is accurate
+with respect to the time of the page fault.  In a similar vein, the code
+to change the inhibit can be cleaned up since KVM can't rely on ordering
+between the update and the request for anything except consumers of the
+request.
 
-As are people that want reverse christmas tree.
-Neither of which I will do as I think both are poor form at best.
+Sean Christopherson (2):
+  KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
+    memslot
+  KVM: x86: Simplify APICv update request logic
 
-If you want, this was a checkpatch reverse christmas tree attempt,
-as that was more common to some.
+ arch/x86/kvm/mmu/mmu.c |  2 +-
+ arch/x86/kvm/x86.c     | 16 +++++++---------
+ 2 files changed, 8 insertions(+), 10 deletions(-)
 
-https://lore.kernel.org/lkml/1478242438.1924.31.camel@perches.com/
-
+-- 
+2.33.0.882.g93a45727a2-goog
 
