@@ -2,117 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B4C427496
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F41FB42749C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243992AbhJIASe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:18:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40930 "EHLO
+        id S243969AbhJIAVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243818AbhJIASb (ORCPT
+        with ESMTP id S243892AbhJIAVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:18:31 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EBEC061570;
-        Fri,  8 Oct 2021 17:16:35 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g8so42277486edt.7;
-        Fri, 08 Oct 2021 17:16:35 -0700 (PDT)
+        Fri, 8 Oct 2021 20:21:04 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B77C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:19:08 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 133so4612813pgb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:19:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zsushKItico0ZEJaSnp8Ow4XZrSnt1M0EB9dgx2CPoA=;
-        b=GlLPMSYFstebNrNY8SqWmHQdkBsvBl09+yYHtbgUmHsPOCjPzsAbhNix9q9YauZ8qC
-         NU5OMoS5OwcLiEbtzK08ylq3M3xvmOjO9Ylf1yh7ef/tEg81QNHF69j08+NFvXwuUk4L
-         i9QKBGANVhCPFAYYw0tJlQTyxMhZJ//cNQWYO7WorcWpyeVfL2e/u/FAXZ5oDV+mM0ob
-         WwuPkVDh/jLfyo+VkYDq0wRZ5gd6Sn9c/ynbd6A/zMGC5OXuNxDk7QaH781Q7V9a3b7/
-         f0RZXsVUvn/lDWMoflPaA3AVuYiKuaEm++XufRHzmKCEv+JCEmmLAfZWysJ9s128lumn
-         7VCA==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=LB1tqTg7JIBTDwc1gmSEz4/wFsLPlTgEcqybliaCAkE=;
+        b=cAFOFT5mTdnpWSMjey4+W+i0C9GYdGa3LD4bS8TYCC/opQjIXSln/+4NVLaQnGkRtB
+         8Is88Flk0Tw1a62MWvn9VmtfiptDX1oppV6g4c1OraUO9Vex3hwyLCf8zrFB23Ddf62y
+         tdskULK0/UKLWgGlOjKTU9vzTatQCXJ3BTXs9F+vRJKBF6ecZIpk6pGot8RKbF8UJsAa
+         955dc+9MT8YN00YxNxZeVWHcoJ+hX2oNY8Sm8gt21nf8gnvfkaqqq0eBethEcuLOttyL
+         vr8joAXYoKpZcoBYgetybmFkCbvxmQ7X9gWPvkD/qD4+AG+R4TYmfoAzBYCjHnBA4opQ
+         VlMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zsushKItico0ZEJaSnp8Ow4XZrSnt1M0EB9dgx2CPoA=;
-        b=bhOeEwSU1wLHSQQl9g1rpkL0B5GkC2DPonxv1MB/tQRki9TvPkb9XBIwjucOF15I8g
-         w8QwHV5Ep1qYzU2sv2ZYdxOu4NPY7Eir68E9vVf6PnyK09Bd8TygWVYmY0b4xIXdPSMb
-         Zxr4g3sdxG0slvlXkonvJAAF2yg60C2iEyfz74JIh0kLzLqqsOe566N3saAFjylDE1u7
-         TQh13Ms7vC9PBjMN0QIuHg84zGIhjk3yRerpeFpmh84CXSkVzmdK8rFMuwQYOH3Nz0uC
-         CpozBTzKzB6dzHuGlSnx2TqBssDvl9iBgFWbLVy2hYwf6onB765NbVl56cJxPOSbKxKr
-         WOnw==
-X-Gm-Message-State: AOAM531long2bRKEtfW09NQQr/RdPH/pFwbMmaZ6MTxod05zzKNGPLkU
-        L5IyeDPMkxgboStpgguPkN69X7Z4wuU=
-X-Google-Smtp-Source: ABdhPJz992UIiUyJGpqnaCYF1JKxr7B/MvsrPlVx6R2Th1qUEDUKtdymMhB9UeVsyaIH5stXAaVH3g==
-X-Received: by 2002:a05:6402:40d0:: with SMTP id z16mr19908287edb.220.1633738594226;
-        Fri, 08 Oct 2021 17:16:34 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id v13sm332382edl.69.2021.10.08.17.16.33
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=LB1tqTg7JIBTDwc1gmSEz4/wFsLPlTgEcqybliaCAkE=;
+        b=yWQkFxzULxfaesg4VGArc3CgGjl4Ipj3zGpdeN42vnEnG3R+vnoNY/yNHVySYl5zmi
+         6WsBqMijO9popH+6n2S6HriBHp5fewsRfb9c9UkPDhQ8MFeoFZTjsClFgBqoovGRv5De
+         RD4v8jQD8lkOW2uGusaJ/MWG2eSWRZMvYUOzWFidvmkebpe5F5fRgKIl4Inxlojm9JFq
+         wIddjynub3FhLi4CEWfXQgTZIOSXSAyPhMwYVCsibuvPmj/1Mi/0pdkC44Fc5gVzFGCf
+         n+q0McYTqyYWTtQyeKfjtZhFq+pDbVSNa+TThEiluwa3UoS3ZzaJ7SI1FY5VAVP4uISG
+         V46g==
+X-Gm-Message-State: AOAM53284C1VtLRYIHVWFBTw+Y6yppJp3Y4Em7PINM7uQbe3rYRauT4c
+        GlNYx9VM4A7dekZJ9gb28WU=
+X-Google-Smtp-Source: ABdhPJx5xE1U5RxvrbhFLR1CWLp141FmZ6zNLPMmjL63kvh9hL7vmOn+zNp7EpJ7l+WuVj7nczbVJg==
+X-Received: by 2002:a63:6943:: with SMTP id e64mr7124543pgc.480.1633738748135;
+        Fri, 08 Oct 2021 17:19:08 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id u12sm11739324pjr.2.2021.10.08.17.19.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 17:16:33 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 02:16:31 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [net PATCH 1/2] drivers: net: phy: at803x: fix resume for
- QCA8327 phy
-Message-ID: <YWDfXyuvmFYwywJW@Ansuel-xps.localdomain>
-References: <20211008233426.1088-1-ansuelsmth@gmail.com>
- <20211008164750.4007f2d9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YWDZPfWOe+C2abWz@Ansuel-xps.localdomain>
- <20211008171355.74ea6295@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 08 Oct 2021 17:19:07 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 00:19:03 +0000
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: [RFC] Some questions and an idea on SLUB/SLAB
+Message-ID: <20211009001903.GA3285@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008171355.74ea6295@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 05:13:55PM -0700, Jakub Kicinski wrote:
-> On Sat, 9 Oct 2021 01:50:21 +0200 Ansuel Smith wrote:
-> > On Fri, Oct 08, 2021 at 04:47:50PM -0700, Jakub Kicinski wrote:
-> > > On Sat,  9 Oct 2021 01:34:25 +0200 Ansuel Smith wrote:  
-> > > > From Documentation phy resume triggers phy reset and restart
-> > > > auto-negotiation. Add a dedicated function to wait reset to finish as
-> > > > it was notice a regression where port sometime are not reliable after a
-> > > > suspend/resume session. The reset wait logic is copied from phy_poll_reset.
-> > > > Add dedicated suspend function to use genphy_suspend only with QCA8337
-> > > > phy and set only additional debug settings for QCA8327. With more test
-> > > > it was reported that QCA8327 doesn't proprely support this mode and
-> > > > using this cause the unreliability of the switch ports, especially the
-> > > > malfunction of the port0.
-> > > > 
-> > > > Fixes: 15b9df4ece17 ("net: phy: at803x: add resume/suspend function to qca83xx phy")  
-> > > 
-> > > Hm, there's some confusion here. This commit does not exist in net,
-> > > and neither does the one from patch 2.
-> > > 
-> > > We should be fine with these going into net-next, right Andrew?  
-> > 
-> > Took the hash from linux-next. Think this is the reason they are not in
-> > net?
-> 
-> Yup, just to be sure you understand the process please take a look at
-> 
->  - How do the changes posted to netdev make their way into Linux?
->  - How often do changes from these trees make it to the mainline Linus
->    tree?
-> 
-> here:
-> 
-> https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html#how-do-the-changes-posted-to-netdev-make-their-way-into-linux
-> 
-> But yeah, I think we can go back to posting all 15 patches as one
-> series. Let's see if Andrew has any feedback on the v2.
-> 
-> Sorry for the confusion!
+Questions:
 
-It's ok. We got all confused with the Fixes tag. Pushing stuff too
-quickly... I should have notice they were not present in net and
-reporting that. Sorry for the mess.
+ - Is there a reason that SLUB does not implement cache coloring?
+   it will help utilizing hardware cache. Especially in block layer,
+   they are literally *squeezing* its performance now.
+ 
+ - In SLAB, do we really need to flush queues every few seconds? 
+   (per cpu queue and shared queue). Flushing alien caches makes
+   sense, but flushing queues seems reducing it's fastpath.
+   But yeah, we need to reclaim memory. can we just defer this?
 
--- 
-	Ansuel
+Idea:
+
+  - I don't like SLAB's per-node cache coloring, because L1 cache
+    isn't shared between cpus. For now, cpus in same node are sharing
+    its colour_next - but we can do better.
+
+    what about splitting some per-cpu variables into kmem_cache_cpu
+    like SLUB? I think cpu_cache, colour (and colour_next),
+    alloc{hit,miss}, and free{hit,miss} can be per-cpu variables.
