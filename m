@@ -2,64 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98756427806
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 10:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CCB42780A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 10:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230274AbhJIIMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 04:12:22 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55534 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229722AbhJIIMV (ORCPT
+        id S230217AbhJIIQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 04:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229578AbhJIIQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 04:12:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ur5FUdx_1633766979;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ur5FUdx_1633766979)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 09 Oct 2021 16:10:23 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     aelior@marvell.com
-Cc:     GR-everest-linux-l2@marvell.com, davem@davemloft.net,
-        kuba@kernel.org, linux@armlinux.org.uk, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, chongjiapeng <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] qed: Fix missing error code in qed_slowpath_start()
-Date:   Sat,  9 Oct 2021 16:09:26 +0800
-Message-Id: <1633766966-115907-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 9 Oct 2021 04:16:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46AE0C061570;
+        Sat,  9 Oct 2021 01:14:56 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1e220071dfbf03a8036444.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:2200:71df:bf03:a803:6444])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BE4A01EC047E;
+        Sat,  9 Oct 2021 10:14:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633767294;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Ii9ilVFrFzBPrdZEAvTPG+KbkptRtNK53pyEhnOp3/s=;
+        b=Gx5t0ey7vR5N7gh/pkOoX+pBgbX3eETX1ggEKMqLshfUH6RgiY3ye0k8VnpRcslSsmmK63
+        DEeDd+arU6JLmpgphJppvFqOJcr7+QvsofUDM4ut3xb5pTxgiPqh+N7Cudco0y//wxpl4S
+        4tgrTZVKaazE2iYQw/T0U6yc5Ee/V3o=
+Date:   Sat, 9 Oct 2021 10:14:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Subject: Re: [Bug 214453] New: skl_int3472_unregister_clock: kernel NULL
+ pointer dereference (HP Elite x2 1013 G3)
+Message-ID: <YWFPe8yeiYYeYPWy@zn.tnic>
+References: <bug-214453-6385@https.bugzilla.kernel.org/>
+ <YVsy5Gv3z6JAWnxj@zn.tnic>
+ <035a956e-9987-9b26-38a5-8319f69d4b6d@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <035a956e-9987-9b26-38a5-8319f69d4b6d@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+On Fri, Oct 08, 2021 at 11:18:50PM +0100, Daniel Scally wrote:
+> I can patch this - but do I need to do to show that the patch is for
+> that specific bug report or anything?
 
-The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'rc'.
+What we do in such cases, usually, is add
 
-Eliminate the follow smatch warning:
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=214453
 
-drivers/net/ethernet/qlogic/qed/qed_main.c:1298 qed_slowpath_start()
-warn: missing error code 'rc'.
+to the commit message, under the SOB chain.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: d51e4af5c209 ("qed: aRFS infrastructure support")
-Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/ethernet/qlogic/qed/qed_main.c | 1 +
- 1 file changed, 1 insertion(+)
+Also, you probably also should give in a Fixes: tag the commit ID of the
+patch your fix is for, so that your fix gets automatically backported to
+stable.
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
-index 5e7242304ee2..359ad859ae18 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_main.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
-@@ -1295,6 +1295,7 @@ static int qed_slowpath_start(struct qed_dev *cdev,
- 			} else {
- 				DP_NOTICE(cdev,
- 					  "Failed to acquire PTT for aRFS\n");
-+				rc = -EINVAL;
- 				goto err;
- 			}
- 		}
+I.e.:
+
+Fixes: 12-char-sha1-abbrev ("Commit title")
+Cc: <stable@vger.kernel.org>
+
+HTH.
+
 -- 
-2.19.1.6.gb485710b
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
