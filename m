@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A33E427762
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A317A427764
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232410AbhJIElQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:41:16 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:44138 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIElP (ORCPT
+        id S232392AbhJIEnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhJIEnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:41:15 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 377B41008CBC1;
-        Sat,  9 Oct 2021 12:39:15 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 1FE0B200C082D;
-        Sat,  9 Oct 2021 12:39:15 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id O8Xitoy0QZnE; Sat,  9 Oct 2021 12:39:15 +0800 (CST)
-Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 0808B200B8924;
-        Sat,  9 Oct 2021 12:38:54 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Guo Zhi <qtxuning1999@sjtu.edu.cn>, open-iscsi@googlegroups.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] scsi scsi_transport_iscsi.c: fix misuse of %llu in scsi_transport_iscsi.c
-Date:   Sat,  9 Oct 2021 12:38:51 +0800
-Message-Id: <20211009043851.212503-1-qtxuning1999@sjtu.edu.cn>
-X-Mailer: git-send-email 2.33.0
+        Sat, 9 Oct 2021 00:43:02 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D055C061570;
+        Fri,  8 Oct 2021 21:41:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=dWH4qjA33whTZ4Wx/aYp4ATOSdmZkILXTl4W7Gnaxqs=; b=ODVrCEaLmds1oXMb8Y0/8CUvJB
+        DP1ABypOnb7u12aFdm96y7XFc9PVP1ZLhOr69VgJSgrX6DdNI7YyZlsIDz+9kg1w8dkGeGoYPZvB6
+        fBq72ccby3bMY0gjr7jYzszuoZyQfMMtQbhbmVZ6Gd/jcfl6C+HQOfQEBgSg0/DL3dAHThzNjaZd0
+        l5KgXLL8jmu3WZzHWjqUIFvRhdySKOgzBvcwfb+dcYnElOYLJPvMDn2gNuUvve3TkGe3N7ggw8tHX
+        t/oqyrZbtYmZuJ0JkLmn026RJaovZa7zkPGbUcO9nI15SzLyibKrVOYucTO1qFf9fWOTZNSgnPh+z
+        E/sc/cEw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZ4AT-0058DR-3k; Sat, 09 Oct 2021 04:41:05 +0000
+Subject: Re: [PATCH] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
+To:     guangming.cao@mediatek.com, Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Cc:     wsd_upstream@mediatek.com
+References: <20211009024733.65676-1-guangming.cao@mediatek.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c23181a5-b75b-c04b-7cc4-020f2b2b44c1@infradead.org>
+Date:   Fri, 8 Oct 2021 21:41:04 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211009024733.65676-1-guangming.cao@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pointers should be printed with %p or %px rather than
-cast to (unsigned long long) and printed with %llu.
-Change %llu to %p to print the pointer into sysfs.
+On 10/8/21 7:47 PM, guangming.cao@mediatek.com wrote:
+> From: Guangming Cao <Guangming.Cao@mediatek.com>
+> 
+> If dma-buf don't want userspace users to touch the dmabuf buffer,
+> it seems we should add this restriction into dma_buf_ops.mmap,
+> not in this IOCTL:DMA_BUF_SET_NAME.
+> 
+> With this restriction, we can only know the kernel users of the dmabuf
+> by attachments.
+> However, for many userspace users, such as userpsace users of dma_heap,
+> they also need to mark the usage of dma-buf, and they don't care about
+> who attached to this dmabuf, and seems it's no meaning to waitting for
 
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
----
- drivers/scsi/scsi_transport_iscsi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+                                                          to be waiting for
 
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-index 922e4c7bd88e..14050c4fdb89 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -129,8 +129,7 @@ show_transport_handle(struct device *dev, struct device_attribute *attr,
- 
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EACCES;
--	return sysfs_emit(buf, "%llu\n",
--		  (unsigned long long)iscsi_handle(priv->iscsi_transport));
-+	return sysfs_emit(buf, "%p\n", priv->iscsi_transport);
- }
- static DEVICE_ATTR(handle, S_IRUGO, show_transport_handle, NULL);
- 
+> IOCTL:DMA_BUF_SET_NAME rather than mmap.
+> 
+> Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+> ---
+>   drivers/dma-buf/dma-buf.c | 14 ++------------
+>   1 file changed, 2 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+> index 511fe0d217a0..afbd0a226639 100644
+> --- a/drivers/dma-buf/dma-buf.c
+> +++ b/drivers/dma-buf/dma-buf.c
+> @@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
+>   
+>   /**
+>    * dma_buf_set_name - Set a name to a specific dma_buf to track the usage.
+> - * The name of the dma-buf buffer can only be set when the dma-buf is not
+> - * attached to any devices. It could theoritically support changing the
+> - * name of the dma-buf if the same piece of memory is used for multiple
+> - * purpose between different devices.
+> + * It could theoritically support changing the name of the dma-buf if the same
+
+                theoretically
+
+(yes, it was incorrect before this change.)
+
+> + * piece of memory is used for multiple purpose between different devices.
+>    *
+>    * @dmabuf: [in]     dmabuf buffer that will be renamed.
+>    * @buf:    [in]     A piece of userspace memory that contains the name of
+> @@ -346,19 +344,11 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
+>   	if (IS_ERR(name))
+>   		return PTR_ERR(name);
+>   
+> -	dma_resv_lock(dmabuf->resv, NULL);
+> -	if (!list_empty(&dmabuf->attachments)) {
+> -		ret = -EBUSY;
+> -		kfree(name);
+> -		goto out_unlock;
+> -	}
+>   	spin_lock(&dmabuf->name_lock);
+>   	kfree(dmabuf->name);
+>   	dmabuf->name = name;
+>   	spin_unlock(&dmabuf->name_lock);
+>   
+> -out_unlock:
+> -	dma_resv_unlock(dmabuf->resv);
+>   	return ret;
+>   }
+>   
+> 
+
+
 -- 
-2.33.0
-
+~Randy
