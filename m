@@ -2,155 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE069427851
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CD9427854
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244368AbhJIJO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:14:56 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:13882 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbhJIJOz (ORCPT
+        id S233082AbhJIJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:16:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230455AbhJIJQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:14:55 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HRK3F44Xyz8skb;
-        Sat,  9 Oct 2021 17:08:09 +0800 (CST)
-Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 17:12:56 +0800
-Received: from [10.174.178.240] (10.174.178.240) by
- dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 17:12:50 +0800
-From:   Zhang Changzhong <zhangchangzhong@huawei.com>
-Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session if
- receive TP.DT with error length
-To:     Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
-CC:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
-        "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
- <20210930074206.GB7502@x1.vandijck-laurijssen.be>
- <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
- <20211008110007.GE29653@pengutronix.de>
- <20211008170937.GA12224@x1.vandijck-laurijssen.be>
-Message-ID: <4d516eed-e45c-a694-9608-07eebe8a3382@huawei.com>
-Date:   Sat, 9 Oct 2021 17:12:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sat, 9 Oct 2021 05:16:13 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B99C061570;
+        Sat,  9 Oct 2021 02:14:17 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id 24so17095541oix.0;
+        Sat, 09 Oct 2021 02:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MHz+fLkq0sPp6F+6xlYzKWQ6Hgd1dcKc+eCm2j1oBAM=;
+        b=LlJTUeM3tz8zBMSDxBtJdys+DPI7z7uVXdrAAvfxCS/HO90vN97DhEVebwNZZYazFQ
+         yqIXb0fLTfqzjgdzs7fKtqzXccix8ZOBEyLzKfY/hvT57ydUSH5tbuHJvoHjDjmaLvZ6
+         TI3nn/K65oEChEm0J14oDzex9sAHQ7xY79aU7pdwydkyYgO8ziPh8xaFozD4vItc8Fku
+         Q/h0MSyRo/Hc/grVLdqPNeAoCHlTnQjT1qhVIGL/ZSUjIj34hc99zKAdx8wCNcIBg+LD
+         +z1RsfgqKOKBe/UzrCiKWwyv+pnsfdnzLb1fE4ne1lnP1vachTvl3ejujScrgkigpbRI
+         2M8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MHz+fLkq0sPp6F+6xlYzKWQ6Hgd1dcKc+eCm2j1oBAM=;
+        b=yMiTfjGIbZNelAViZfDYGgSLxMT7egPKTTq2idbplYbOeGF67uZFIFEgT1/F8NpkSh
+         FQzU3ktxS2hd8MFs8p0gI5ShPCDUtTwp8nWFcT+moGO0vFXk4copR4Ua2adxC9t5Xxpm
+         LdJfV8Qw3Kdc5pSLYdBxXN5zbSLn2WqTeeX37TSAexSEF5UAZNkXmBb3a9Hd3y0lj8Xi
+         eeS9xHQpLwvJvOyo8rW6M9Q3+J9ji3mSZnhyBZQZQdx+B31w6gQ/NzME4Llwd53+lSi9
+         Tkn7ZASMSK+WMXbo9H9det0I1b8gclMtr4w4dMra8/lHBrx80gs9lZ1lxC5nLWZgoAU4
+         DCyg==
+X-Gm-Message-State: AOAM533gn1DXBVbjYf5kVnrzAbbruJh3xlBWpmNenJHb+3ejJjJd+g5i
+        HydB/Nfu3JioZ10UWfack/naP/LF6fB9VHeVRdQ=
+X-Google-Smtp-Source: ABdhPJxvCeZUVnWEZeKcA3Hequb2mutBsquMD43Fn51l8katMgFyhwtwbhe2hVUhDluo2RGgUSPEsWdC2+l1mjR97gc=
+X-Received: by 2002:aca:4587:: with SMTP id s129mr19335653oia.5.1633770856604;
+ Sat, 09 Oct 2021 02:14:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211008170937.GA12224@x1.vandijck-laurijssen.be>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.240]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500006.china.huawei.com (7.185.36.76)
-X-CFilter-Loop: Reflected
+References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
+ <1633687054-18865-3-git-send-email-wanpengli@tencent.com> <87ily73i0x.fsf@vitty.brq.redhat.com>
+ <CANRm+Cy=bb_iap6JKsux7ekmo6Td0FXqwpuVdgPSC8u8b2wFNA@mail.gmail.com> <YWBq56G/ZrsytEP7@google.com>
+In-Reply-To: <YWBq56G/ZrsytEP7@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Sat, 9 Oct 2021 17:14:05 +0800
+Message-ID: <CANRm+Czj4Kv56HcX2vYu6mMa6o6xrMrCKmZ8x=rp-apLrrGHZQ@mail.gmail.com>
+Subject: Re: [PATCH 3/3] KVM: LAPIC: Optimize PMI delivering overhead
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/9 1:09, Kurt Van Dijck wrote:
-> On Fri, 08 Oct 2021 13:00:07 +0200, Oleksij Rempel wrote:
->> On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
->>> Hi Kurt,
->>> Sorry for the late reply.
->>>
->>> On 2021/9/30 15:42, Kurt Van Dijck wrote:
->>>> On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
->>>>> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
->>>>> cancel session when receive unexpected TP.DT message.
->>>>
->>>> SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
->>>> However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
->>>> If I remember well, they are even not 'reserved'.
->>>
->>> Agree, these bytes are meaningless for last TP.DT.
->>>
->>>>
->>>>>
->>>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
->>>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
->>>>> ---
->>>>>  net/can/j1939/transport.c | 7 +++++--
->>>>>  1 file changed, 5 insertions(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
->>>>> index bb5c4b8..eedaeaf 100644
->>>>> --- a/net/can/j1939/transport.c
->>>>> +++ b/net/can/j1939/transport.c
->>>>> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
->>>>>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->>>>>  				 struct sk_buff *skb)
->>>>>  {
->>>>> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
->>>>>  	struct j1939_priv *priv = session->priv;
->>>>>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
->>>>>  	struct sk_buff *se_skb = NULL;
->>>>> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->>>>>  
->>>>>  	skcb = j1939_skb_to_cb(skb);
->>>>>  	dat = skb->data;
->>>>> -	if (skb->len <= 1)
->>>>> +	if (skb->len != 8) {
->>>>>  		/* makes no sense */
->>>>> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
->>>>>  		goto out_session_cancel;
->>>>
->>>> I think this is a situation of
->>>> "be strict on what you send, be tolerant on what you receive".
->>>>
->>>> Did you find a technical reason to abort a session because the last frame didn't
->>>> bring overhead that you don't use?
->>>
->>> No technical reason. The only reason is that SAE-J1939-82 requires responder
->>> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
-> 
-> IMHO, this is some kind of laziness to make the exception for the last TP.DT.
-> 
-> I attended an ISOBUS certification (back in 2013) where the transmitting
-> node effectively stripped the trailing bytes, and this 'deviation' was
-> not even noticed.
+On Fri, 8 Oct 2021 at 23:59, Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Fri, Oct 08, 2021, Wanpeng Li wrote:
+> > On Fri, 8 Oct 2021 at 18:52, Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+> > >
+> > > Wanpeng Li <kernellwp@gmail.com> writes:
+> > >
+> > > > From: Wanpeng Li <wanpengli@tencent.com>
+> > > >
+> > > > The overhead of kvm_vcpu_kick() is huge since expensive rcu/memory
+> > > > barrier etc operations in rcuwait_wake_up(). It is worse when local
+>
+> Memory barriers on x86 are just compiler barriers.  The only meaningful overhead
+> is the locked transaction in rcu_read_lock() => preempt_disable().  I suspect the
+> performance benefit from this patch comes either comes from avoiding a second
+> lock when disabling preemption again for get_cpu(), or by avoiding the cmpxchg()
+> in kvm_vcpu_exiting_guest_mode().
+>
+> > > > delivery since the vCPU is scheduled and we still suffer from this.
+> > > > We can observe 12us+ for kvm_vcpu_kick() in kvm_pmu_deliver_pmi()
+> > > > path by ftrace before the patch and 6us+ after the optimization.
+>
+> Those numbers seem off, I wouldn't expect a few locks to take 6us.
 
-I found that SAE-J1939-82 contains the following test:
-"BAM Transport: Ensure extra (unused) bytes of last Data Transfer data packet
-is/are filled-in correctly. (DUT as Originator)" ... "Verify last TP.DT data
-packet for a BAM transport is sent with an 8 byte data field and the unused
-bytes of this packet are filled with FF" (section A.3.3, Row 8).
+Maybe the ftrace introduces more overhead.
 
-So the J1939 compliance test can detect this kind of 'deviation', perhaps
-ISOBUS certification does not do this check?
+>
+> > > > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> > > > ---
+> > > >  arch/x86/kvm/lapic.c | 3 ++-
+> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> > > > index 76fb00921203..ec6997187c6d 100644
+> > > > --- a/arch/x86/kvm/lapic.c
+> > > > +++ b/arch/x86/kvm/lapic.c
+> > > > @@ -1120,7 +1120,8 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
+> > > >       case APIC_DM_NMI:
+> > > >               result = 1;
+> > > >               kvm_inject_nmi(vcpu);
+> > > > -             kvm_vcpu_kick(vcpu);
+> > > > +             if (vcpu != kvm_get_running_vcpu())
+> > > > +                     kvm_vcpu_kick(vcpu);
+> > >
+> > > Out of curiosity,
+> > >
+> > > can this be converted into a generic optimization for kvm_vcpu_kick()
+> > > instead? I.e. if kvm_vcpu_kick() is called for the currently running
+> > > vCPU, there's almost nothing to do, especially when we already have a
+> > > request pending, right? (I didn't put too much though to it)
+> >
+> > I thought about it before, I will do it in the next version since you
+> > also vote for it. :)
+>
+> Adding a kvm_get_running_vcpu() check before kvm_vcpu_wake_up() in kvm_vcpu_kick()
+> is not functionally correct as it's possible to reach kvm_cpu_kick() from (soft)
+> IRQ context, e.g. hrtimer => apic_timer_expired() and pi_wakeup_handler().  If
+> the kick occurs after prepare_to_rcuwait() and the final kvm_vcpu_check_block(),
+> but before the vCPU is scheduled out, then the kvm_vcpu_wake_up() is required to
+> wake the vCPU, even if it is the current running vCPU.
 
-> 
-> This change applies to the receiving side. Would a sender that
-> leaves the trailing bytes want you to discard the session bacause of this?
-> So the spirit of the SAE-J1939-82 is, in this case, different from
-> the strict literal interpretation.
+Good point.
 
-Such packets should not be sent if the sender complies with SAE-J1939-82, but
-if the transmitting node you mentioned above exist on the network, this patch
-will casue their sessions to be aborted. From this point of view, I think it is
-reasonable to drop this patch.
+>
+> The extra check might also degrade performance for many cases since the full kick
+> path would need to disable preemption three times, though if the overhead is from
+> x86's cmpxchg() then it's a moot point.
+>
+> I think we'd want something like this to avoid extra preempt_disable() as well
+> as the cmpxchg() when @vcpu is the running vCPU.
 
-Regards,
-Changzhong
+Do it in v2, thanks for the suggestion.
 
-> 
->>
->> Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
->> TP.DT data packets are not correct size" ... "Verify DUT discards the
->> BAM transport if any TP.DT data packet has less than 8 bytes"?
-> 
-> Kind regards,
-> Kurt
-> .
-> 
+    Wanpeng
