@@ -2,475 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33328427A33
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827C7427A37
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbhJIMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 08:41:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244664AbhJIMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 08:41:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D5160F6D;
-        Sat,  9 Oct 2021 12:39:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633783146;
-        bh=ZWX7luEy8GKfA7qjJecLFvt4CMY3hT3UEMEO5MudJgY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mXLeB4t3DQTzWirGspVTnxwRVp8NiTCFlr7AK7292NZpcb/qfikrQyjlCs17IxxgR
-         Gr0ZlVztFuvbVJBbjXnQVxc2WUNFGgCrkcoPGVvpRk/o3xxvoMe8pBMeS6c6HZXaLb
-         GSf5kFz4jmU+iODTmxwuaNjJNcgsr9UmPZUj2CYY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 4.19.210
-Date:   Sat,  9 Oct 2021 14:38:55 +0200
-Message-Id: <1633783134220130@kroah.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <16337831348850@kroah.com>
-References: <16337831348850@kroah.com>
+        id S244808AbhJIMmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 08:42:22 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:34573 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233139AbhJIMmV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 08:42:21 -0400
+Received: by mail-io1-f69.google.com with SMTP id k20-20020a5d97d4000000b005da6f3b7dc7so9709273ios.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 05:40:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=zAUZJ2KhYa0Ny02TkMjgog303WTChLS1Apr/NeAOdno=;
+        b=116BBVksNA/ylp0mi/Q7X6GqKMVFsbbZKznFxaolM9yAqJL3/1pnjvYAzTCkm63soV
+         op9uNKqqvNXd9Q2OngSXIJB8DSVNX7CtHK708GSiUYpT7PcOvbkRi1L9XbekzIgsnXNv
+         Ste3XGWj337AVcFRiXWnoajlR3P0rpU60g6nA5emaXSqiuSwcvpn/yH43ISesAZqHvCq
+         TcIPkk8HmhNMRXyo8DUl7TBn3PukT35fm4nCFft+XrQb05PqvtJ514CefZeI5VzfGSmu
+         Hjdjnx5IaMwTJ07SGJjATslvMgtfAWXYEKdui64WFVSzPrYyUEzorEd8h4YVmYkhVJm/
+         OoNg==
+X-Gm-Message-State: AOAM532cScx46+K3Rd6FY63OsYbmpp0ZDIabKccAALD5wKmUtC/kO001
+        h5U8IvJmhWj2eK3RLqpMkk81x4uXhyx94gnfIiQYY3Tse4gu
+X-Google-Smtp-Source: ABdhPJwJrlYEaPSUdWkBRiB+WSdb8SCEc96klWv/N8o7DamTITM1bVu1febppTYS1eDiklQ3Fxmg1aFnGEVvss7F0V5hMRQYDSdU
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1a85:: with SMTP id k5mr12217030ilv.39.1633783224813;
+ Sat, 09 Oct 2021 05:40:24 -0700 (PDT)
+Date:   Sat, 09 Oct 2021 05:40:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c1524005cdeacc5f@google.com>
+Subject: [syzbot] KASAN: use-after-free Read in veth_xdp_rcv
+From:   syzbot <syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index a144a7117a1b..d9c39b3c05d5 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 4
- PATCHLEVEL = 19
--SUBLEVEL = 209
-+SUBLEVEL = 210
- EXTRAVERSION =
- NAME = "People's Front"
- 
-diff --git a/arch/sparc/lib/iomap.c b/arch/sparc/lib/iomap.c
-index c9da9f139694..f3a8cd491ce0 100644
---- a/arch/sparc/lib/iomap.c
-+++ b/arch/sparc/lib/iomap.c
-@@ -19,8 +19,10 @@ void ioport_unmap(void __iomem *addr)
- EXPORT_SYMBOL(ioport_map);
- EXPORT_SYMBOL(ioport_unmap);
- 
-+#ifdef CONFIG_PCI
- void pci_iounmap(struct pci_dev *dev, void __iomem * addr)
- {
- 	/* nothing to do */
- }
- EXPORT_SYMBOL(pci_iounmap);
-+#endif
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index b95a4194a68d..897360a56fdd 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -2268,6 +2268,25 @@ static void ata_dev_config_ncq_prio(struct ata_device *dev)
- 
- }
- 
-+static bool ata_dev_check_adapter(struct ata_device *dev,
-+				  unsigned short vendor_id)
-+{
-+	struct pci_dev *pcidev = NULL;
-+	struct device *parent_dev = NULL;
-+
-+	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
-+	     parent_dev = parent_dev->parent) {
-+		if (dev_is_pci(parent_dev)) {
-+			pcidev = to_pci_dev(parent_dev);
-+			if (pcidev->vendor == vendor_id)
-+				return true;
-+			break;
-+		}
-+	}
-+
-+	return false;
-+}
-+
- static int ata_dev_config_ncq(struct ata_device *dev,
- 			       char *desc, size_t desc_sz)
- {
-@@ -2284,6 +2303,13 @@ static int ata_dev_config_ncq(struct ata_device *dev,
- 		snprintf(desc, desc_sz, "NCQ (not used)");
- 		return 0;
- 	}
-+
-+	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_ATI &&
-+	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_ATI)) {
-+		snprintf(desc, desc_sz, "NCQ (not used)");
-+		return 0;
-+	}
-+
- 	if (ap->flags & ATA_FLAG_NCQ) {
- 		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
- 		dev->flags |= ATA_DFLAG_NCQ;
-@@ -4575,9 +4601,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
- 	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_ATI, },
- 	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
--						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+						ATA_HORKAGE_ZERO_AFTER_TRIM |
-+						ATA_HORKAGE_NO_NCQ_ON_ATI, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 
-@@ -6934,6 +6962,8 @@ static int __init ata_parse_force_one(char **cur,
- 		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
- 		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
- 		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
-+		{ "noncqati",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_ATI },
-+		{ "ncqati",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_ATI },
- 		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
- 		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
- 		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index c924700cf37b..922f0f8973b6 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -176,6 +176,16 @@ static int mdio_remove(struct device *dev)
- 	return 0;
- }
- 
-+static void mdio_shutdown(struct device *dev)
-+{
-+	struct mdio_device *mdiodev = to_mdio_device(dev);
-+	struct device_driver *drv = mdiodev->dev.driver;
-+	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
-+
-+	if (mdiodrv->shutdown)
-+		mdiodrv->shutdown(mdiodev);
-+}
-+
- /**
-  * mdio_driver_register - register an mdio_driver with the MDIO layer
-  * @new_driver: new mdio_driver to register
-@@ -190,6 +200,7 @@ int mdio_driver_register(struct mdio_driver *drv)
- 	mdiodrv->driver.bus = &mdio_bus_type;
- 	mdiodrv->driver.probe = mdio_probe;
- 	mdiodrv->driver.remove = mdio_remove;
-+	mdiodrv->driver.shutdown = mdio_shutdown;
- 
- 	retval = driver_register(&mdiodrv->driver);
- 	if (retval) {
-diff --git a/drivers/net/xen-netback/netback.c b/drivers/net/xen-netback/netback.c
-index 41bdfb684d46..4d0d5501ca56 100644
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -492,7 +492,7 @@ static int xenvif_tx_check_gop(struct xenvif_queue *queue,
- 				 * the header's copy failed, and they are
- 				 * sharing a slot, send an error
- 				 */
--				if (i == 0 && sharedslot)
-+				if (i == 0 && !first_shinfo && sharedslot)
- 					xenvif_idx_release(queue, pending_idx,
- 							   XEN_NETIF_RSP_ERROR);
- 				else
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 342352d8e7bf..ed3702dadd30 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3444,15 +3444,16 @@ static int sd_probe(struct device *dev)
- 	}
- 
- 	device_initialize(&sdkp->dev);
--	sdkp->dev.parent = dev;
-+	sdkp->dev.parent = get_device(dev);
- 	sdkp->dev.class = &sd_disk_class;
- 	dev_set_name(&sdkp->dev, "%s", dev_name(dev));
- 
- 	error = device_add(&sdkp->dev);
--	if (error)
--		goto out_free_index;
-+	if (error) {
-+		put_device(&sdkp->dev);
-+		goto out;
-+	}
- 
--	get_device(dev);
- 	dev_set_drvdata(dev, sdkp);
- 
- 	get_device(&sdkp->dev);	/* prevent release before async_schedule */
-diff --git a/drivers/scsi/ses.c b/drivers/scsi/ses.c
-index 0fc39224ce1e..caf35ca577ce 100644
---- a/drivers/scsi/ses.c
-+++ b/drivers/scsi/ses.c
-@@ -103,9 +103,16 @@ static int ses_recv_diag(struct scsi_device *sdev, int page_code,
- 		0
- 	};
- 	unsigned char recv_page_code;
-+	unsigned int retries = SES_RETRIES;
-+	struct scsi_sense_hdr sshdr;
-+
-+	do {
-+		ret = scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
-+				       &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (ret > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
- 
--	ret =  scsi_execute_req(sdev, cmd, DMA_FROM_DEVICE, buf, bufflen,
--				NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (unlikely(ret))
- 		return ret;
- 
-@@ -137,9 +144,16 @@ static int ses_send_diag(struct scsi_device *sdev, int page_code,
- 		bufflen & 0xff,
- 		0
- 	};
-+	struct scsi_sense_hdr sshdr;
-+	unsigned int retries = SES_RETRIES;
-+
-+	do {
-+		result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
-+					  &sshdr, SES_TIMEOUT, 1, NULL);
-+	} while (result > 0 && --retries && scsi_sense_valid(&sshdr) &&
-+		 (sshdr.sense_key == NOT_READY ||
-+		  (sshdr.sense_key == UNIT_ATTENTION && sshdr.asc == 0x29)));
- 
--	result = scsi_execute_req(sdev, cmd, DMA_TO_DEVICE, buf, bufflen,
--				  NULL, SES_TIMEOUT, SES_RETRIES, NULL);
- 	if (result)
- 		sdev_printk(KERN_ERR, sdev, "SEND DIAGNOSTIC result: %8x\n",
- 			    result);
-diff --git a/drivers/usb/dwc2/hcd.c b/drivers/usb/dwc2/hcd.c
-index 58e53e3d905b..22c4d554865e 100644
---- a/drivers/usb/dwc2/hcd.c
-+++ b/drivers/usb/dwc2/hcd.c
-@@ -5234,6 +5234,10 @@ int dwc2_hcd_init(struct dwc2_hsotg *hsotg)
- 	hcd->has_tt = 1;
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		retval = -EINVAL;
-+		goto error1;
-+	}
- 	hcd->rsrc_start = res->start;
- 	hcd->rsrc_len = resource_size(res);
- 
-diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-index 33db13365c5e..fc59e0557e50 100644
---- a/fs/ext2/balloc.c
-+++ b/fs/ext2/balloc.c
-@@ -48,10 +48,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
- 	struct ext2_sb_info *sbi = EXT2_SB(sb);
- 
- 	if (block_group >= sbi->s_groups_count) {
--		ext2_error (sb, "ext2_get_group_desc",
--			    "block_group >= groups_count - "
--			    "block_group = %d, groups_count = %lu",
--			    block_group, sbi->s_groups_count);
-+		WARN(1, "block_group >= groups_count - "
-+		     "block_group = %d, groups_count = %lu",
-+		     block_group, sbi->s_groups_count);
- 
- 		return NULL;
- 	}
-@@ -59,10 +58,9 @@ struct ext2_group_desc * ext2_get_group_desc(struct super_block * sb,
- 	group_desc = block_group >> EXT2_DESC_PER_BLOCK_BITS(sb);
- 	offset = block_group & (EXT2_DESC_PER_BLOCK(sb) - 1);
- 	if (!sbi->s_group_desc[group_desc]) {
--		ext2_error (sb, "ext2_get_group_desc",
--			    "Group descriptor not loaded - "
--			    "block_group = %d, group_desc = %lu, desc = %lu",
--			     block_group, group_desc, offset);
-+		WARN(1, "Group descriptor not loaded - "
-+		     "block_group = %d, group_desc = %lu, desc = %lu",
-+		      block_group, group_desc, offset);
- 		return NULL;
- 	}
- 
-diff --git a/include/linux/libata.h b/include/linux/libata.h
-index 3d076aca7ac2..6d9194fb38df 100644
---- a/include/linux/libata.h
-+++ b/include/linux/libata.h
-@@ -440,6 +440,7 @@ enum {
- 	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
- 	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
- 	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
-+	ATA_HORKAGE_NO_NCQ_ON_ATI = (1 << 27),	/* Disable NCQ on ATI chipset */
- 
- 	 /* DMA mask for user DMA control: User visible values; DO NOT
- 	    renumber */
-diff --git a/include/linux/mdio.h b/include/linux/mdio.h
-index bfa7114167d7..85325e110a79 100644
---- a/include/linux/mdio.h
-+++ b/include/linux/mdio.h
-@@ -66,6 +66,9 @@ struct mdio_driver {
- 
- 	/* Clears up any memory if needed */
- 	void (*remove)(struct mdio_device *mdiodev);
-+
-+	/* Quiesces the device on system shutdown, turns off interrupts etc */
-+	void (*shutdown)(struct mdio_device *mdiodev);
- };
- #define to_mdio_driver(d)						\
- 	container_of(to_mdio_common_driver(d), struct mdio_driver, mdiodrv)
-diff --git a/include/linux/timerqueue.h b/include/linux/timerqueue.h
-index 78b8cc73f12f..aff122f1062a 100644
---- a/include/linux/timerqueue.h
-+++ b/include/linux/timerqueue.h
-@@ -12,8 +12,7 @@ struct timerqueue_node {
- };
- 
- struct timerqueue_head {
--	struct rb_root head;
--	struct timerqueue_node *next;
-+	struct rb_root_cached rb_root;
- };
- 
- 
-@@ -29,13 +28,14 @@ extern struct timerqueue_node *timerqueue_iterate_next(
-  *
-  * @head: head of timerqueue
-  *
-- * Returns a pointer to the timer node that has the
-- * earliest expiration time.
-+ * Returns a pointer to the timer node that has the earliest expiration time.
-  */
- static inline
- struct timerqueue_node *timerqueue_getnext(struct timerqueue_head *head)
- {
--	return head->next;
-+	struct rb_node *leftmost = rb_first_cached(&head->rb_root);
-+
-+	return rb_entry(leftmost, struct timerqueue_node, node);
- }
- 
- static inline void timerqueue_init(struct timerqueue_node *node)
-@@ -45,7 +45,6 @@ static inline void timerqueue_init(struct timerqueue_node *node)
- 
- static inline void timerqueue_init_head(struct timerqueue_head *head)
- {
--	head->head = RB_ROOT;
--	head->next = NULL;
-+	head->rb_root = RB_ROOT_CACHED;
- }
- #endif /* _LINUX_TIMERQUEUE_H */
-diff --git a/lib/timerqueue.c b/lib/timerqueue.c
-index 0d54bcbc8170..7a8ae3d5fd40 100644
---- a/lib/timerqueue.c
-+++ b/lib/timerqueue.c
-@@ -39,9 +39,10 @@
-  */
- bool timerqueue_add(struct timerqueue_head *head, struct timerqueue_node *node)
- {
--	struct rb_node **p = &head->head.rb_node;
-+	struct rb_node **p = &head->rb_root.rb_root.rb_node;
- 	struct rb_node *parent = NULL;
--	struct timerqueue_node  *ptr;
-+	struct timerqueue_node *ptr;
-+	bool leftmost = true;
- 
- 	/* Make sure we don't add nodes that are already added */
- 	WARN_ON_ONCE(!RB_EMPTY_NODE(&node->node));
-@@ -49,19 +50,17 @@ bool timerqueue_add(struct timerqueue_head *head, struct timerqueue_node *node)
- 	while (*p) {
- 		parent = *p;
- 		ptr = rb_entry(parent, struct timerqueue_node, node);
--		if (node->expires < ptr->expires)
-+		if (node->expires < ptr->expires) {
- 			p = &(*p)->rb_left;
--		else
-+		} else {
- 			p = &(*p)->rb_right;
-+			leftmost = false;
-+		}
- 	}
- 	rb_link_node(&node->node, parent, p);
--	rb_insert_color(&node->node, &head->head);
-+	rb_insert_color_cached(&node->node, &head->rb_root, leftmost);
- 
--	if (!head->next || node->expires < head->next->expires) {
--		head->next = node;
--		return true;
--	}
--	return false;
-+	return leftmost;
- }
- EXPORT_SYMBOL_GPL(timerqueue_add);
- 
-@@ -78,15 +77,10 @@ bool timerqueue_del(struct timerqueue_head *head, struct timerqueue_node *node)
- {
- 	WARN_ON_ONCE(RB_EMPTY_NODE(&node->node));
- 
--	/* update next pointer */
--	if (head->next == node) {
--		struct rb_node *rbn = rb_next(&node->node);
--
--		head->next = rb_entry_safe(rbn, struct timerqueue_node, node);
--	}
--	rb_erase(&node->node, &head->head);
-+	rb_erase_cached(&node->node, &head->rb_root);
- 	RB_CLEAR_NODE(&node->node);
--	return head->next != NULL;
-+
-+	return !RB_EMPTY_ROOT(&head->rb_root.rb_root);
- }
- EXPORT_SYMBOL_GPL(timerqueue_del);
- 
-diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
-index a5d40653a921..9700281bee4c 100644
---- a/tools/testing/selftests/lib.mk
-+++ b/tools/testing/selftests/lib.mk
-@@ -26,6 +26,7 @@ include $(top_srcdir)/scripts/subarch.include
- ARCH		?= $(SUBARCH)
- 
- .PHONY: khdr
-+.NOTPARALLEL:
- khdr:
- 	make ARCH=$(ARCH) -C $(top_srcdir) headers_install
- 
-diff --git a/tools/usb/testusb.c b/tools/usb/testusb.c
-index 2d89b5f686b1..791aadef2d59 100644
---- a/tools/usb/testusb.c
-+++ b/tools/usb/testusb.c
-@@ -278,12 +278,6 @@ static int find_testdev(const char *name, const struct stat *sb, int flag)
- 	}
- 
- 	entry->ifnum = ifnum;
--
--	/* FIXME update USBDEVFS_CONNECTINFO so it tells about high speed etc */
--
--	fprintf(stderr, "%s speed\t%s\t%u\n",
--		speed(entry->speed), entry->name, entry->ifnum);
--
- 	entry->next = testdevs;
- 	testdevs = entry;
- 	return 0;
-@@ -312,6 +306,14 @@ static void *handle_testdev (void *arg)
- 		return 0;
- 	}
- 
-+	status  =  ioctl(fd, USBDEVFS_GET_SPEED, NULL);
-+	if (status < 0)
-+		fprintf(stderr, "USBDEVFS_GET_SPEED failed %d\n", status);
-+	else
-+		dev->speed = status;
-+	fprintf(stderr, "%s speed\t%s\t%u\n",
-+			speed(dev->speed), dev->name, dev->ifnum);
-+
- restart:
- 	for (i = 0; i < TEST_CASES; i++) {
- 		if (dev->test != -1 && dev->test != i)
-diff --git a/tools/vm/page-types.c b/tools/vm/page-types.c
-index 1ff3a6c0367b..89063b967b6b 100644
---- a/tools/vm/page-types.c
-+++ b/tools/vm/page-types.c
-@@ -1341,7 +1341,7 @@ int main(int argc, char *argv[])
- 	if (opt_list && opt_list_mapcnt)
- 		kpagecount_fd = checked_open(PROC_KPAGECOUNT, O_RDONLY);
- 
--	if (opt_mark_idle && opt_file)
-+	if (opt_mark_idle)
- 		page_idle_fd = checked_open(SYS_KERNEL_MM_PAGE_IDLE, O_RDWR);
- 
- 	if (opt_list && opt_pid)
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    af4bb50d4647 bpf, tests: Add more LD_IMM64 tests
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=129a1214b00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9290a409049988d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=67f89551088ea1a6850e
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+67f89551088ea1a6850e@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __ptr_ring_peek include/linux/ptr_ring.h:172 [inline]
+BUG: KASAN: use-after-free in __ptr_ring_consume include/linux/ptr_ring.h:299 [inline]
+BUG: KASAN: use-after-free in veth_xdp_rcv+0x70b/0x810 drivers/net/veth.c:856
+Read of size 8 at addr ffff88804c47a1d8 by task ksoftirqd/0/13
+
+CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.15.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ __ptr_ring_peek include/linux/ptr_ring.h:172 [inline]
+ __ptr_ring_consume include/linux/ptr_ring.h:299 [inline]
+ veth_xdp_rcv+0x70b/0x810 drivers/net/veth.c:856
+ veth_poll+0x134/0x850 drivers/net/veth.c:913
+ __napi_poll+0xaf/0x440 net/core/dev.c:6993
+ napi_poll net/core/dev.c:7060 [inline]
+ net_rx_action+0x801/0xb40 net/core/dev.c:7147
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ run_ksoftirqd kernel/softirq.c:920 [inline]
+ run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
+ smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Allocated by task 23048:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:513 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:472 [inline]
+ __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
+ kmalloc_node include/linux/slab.h:614 [inline]
+ kvmalloc_node+0x61/0x120 mm/util.c:587
+ kvmalloc include/linux/mm.h:805 [inline]
+ kvmalloc_array include/linux/mm.h:823 [inline]
+ __ptr_ring_init_queue_alloc include/linux/ptr_ring.h:471 [inline]
+ ptr_ring_init include/linux/ptr_ring.h:489 [inline]
+ __veth_napi_enable_range+0xa2/0x780 drivers/net/veth.c:941
+ __veth_napi_enable drivers/net/veth.c:964 [inline]
+ veth_enable_xdp+0x30f/0x620 drivers/net/veth.c:1068
+ veth_xdp_set drivers/net/veth.c:1483 [inline]
+ veth_xdp+0x4d4/0x780 drivers/net/veth.c:1523
+ dev_xdp_install+0xd5/0x270 net/core/dev.c:9365
+ dev_xdp_attach+0x83d/0x1010 net/core/dev.c:9513
+ dev_xdp_attach_link net/core/dev.c:9532 [inline]
+ bpf_xdp_link_attach+0x262/0x410 net/core/dev.c:9695
+ link_create kernel/bpf/syscall.c:4258 [inline]
+ __sys_bpf+0x549c/0x5df0 kernel/bpf/syscall.c:4657
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Freed by task 23044:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
+ ____kasan_slab_free mm/kasan/common.c:366 [inline]
+ ____kasan_slab_free mm/kasan/common.c:328 [inline]
+ __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1700 [inline]
+ slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
+ slab_free mm/slub.c:3483 [inline]
+ kfree+0xe4/0x530 mm/slub.c:4543
+ kvfree+0x42/0x50 mm/util.c:620
+ ptr_ring_cleanup include/linux/ptr_ring.h:671 [inline]
+ veth_napi_del_range+0x3aa/0x560 drivers/net/veth.c:985
+ veth_napi_del drivers/net/veth.c:991 [inline]
+ veth_disable_xdp+0x2b3/0x430 drivers/net/veth.c:1101
+ veth_xdp_set drivers/net/veth.c:1499 [inline]
+ veth_xdp+0x698/0x780 drivers/net/veth.c:1523
+ dev_xdp_install+0x1ed/0x270 net/core/dev.c:9365
+ dev_xdp_detach_link net/core/dev.c:9549 [inline]
+ bpf_xdp_link_release+0x242/0x4e0 net/core/dev.c:9564
+ bpf_link_free+0xe6/0x1b0 kernel/bpf/syscall.c:2419
+ bpf_link_put+0x161/0x1b0 kernel/bpf/syscall.c:2445
+ bpf_link_release+0x33/0x40 kernel/bpf/syscall.c:2453
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3067
+ netlink_release+0xdd4/0x1dd0 net/netlink/af_netlink.c:812
+ __sock_release+0xcd/0x280 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+The buggy address belongs to the object at ffff88804c47a000
+ which belongs to the cache kmalloc-2k of size 2048
+The buggy address is located 472 bytes inside of
+ 2048-byte region [ffff88804c47a000, ffff88804c47a800)
+The buggy address belongs to the page:
+page:ffffea0001311e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4c478
+head:ffffea0001311e00 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff888010c42000
+raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 19628, ts 447286861857, free_ts 447089779835
+ prep_new_page mm/page_alloc.c:2424 [inline]
+ get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
+ alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
+ alloc_slab_page mm/slub.c:1763 [inline]
+ allocate_slab mm/slub.c:1900 [inline]
+ new_slab+0x319/0x490 mm/slub.c:1963
+ ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
+ __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
+ slab_alloc_node mm/slub.c:3172 [inline]
+ __kmalloc_node_track_caller+0x2d2/0x340 mm/slub.c:4936
+ kmalloc_reserve net/core/skbuff.c:352 [inline]
+ __alloc_skb+0xda/0x360 net/core/skbuff.c:424
+ alloc_skb include/linux/skbuff.h:1116 [inline]
+ nlmsg_new include/net/netlink.h:953 [inline]
+ rtmsg_ifinfo_build_skb+0x72/0x1a0 net/core/rtnetlink.c:3809
+ unregister_netdevice_many+0x9e4/0x1790 net/core/dev.c:11054
+ unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10984
+ unregister_netdevice include/linux/netdevice.h:2988 [inline]
+ __tun_detach+0x10ad/0x13d0 drivers/net/tun.c:670
+ tun_detach drivers/net/tun.c:687 [inline]
+ tun_chr_close+0xc4/0x180 drivers/net/tun.c:3397
+ __fput+0x288/0x9f0 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1338 [inline]
+ free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
+ free_unref_page_prepare mm/page_alloc.c:3315 [inline]
+ free_unref_page+0x19/0x690 mm/page_alloc.c:3394
+ __unfreeze_partials+0x340/0x360 mm/slub.c:2495
+ qlink_free mm/kasan/quarantine.c:146 [inline]
+ qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
+ kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
+ __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
+ kasan_slab_alloc include/linux/kasan.h:254 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:3206 [inline]
+ slab_alloc mm/slub.c:3214 [inline]
+ kmem_cache_alloc+0x209/0x390 mm/slub.c:3219
+ getname_flags.part.0+0x50/0x4f0 fs/namei.c:138
+ getname_flags+0x9a/0xe0 include/linux/audit.h:319
+ user_path_at_empty+0x2b/0x60 fs/namei.c:2800
+ user_path_at include/linux/namei.h:57 [inline]
+ vfs_statx+0x142/0x390 fs/stat.c:221
+ vfs_fstatat fs/stat.c:243 [inline]
+ vfs_lstat include/linux/fs.h:3356 [inline]
+ __do_sys_newlstat+0x91/0x110 fs/stat.c:398
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+Memory state around the buggy address:
+ ffff88804c47a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804c47a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88804c47a180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                    ^
+ ffff88804c47a200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88804c47a280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
