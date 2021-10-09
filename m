@@ -2,481 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD0542757D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F7142757E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244093AbhJIBwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:52:32 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43576 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231947AbhJIBwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:52:31 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxJOZb9WBhatsWAA--.43933S2;
-        Sat, 09 Oct 2021 09:50:20 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v4] test_bpf: Add module parameter test_suite
-Date:   Sat,  9 Oct 2021 09:50:19 +0800
-Message-Id: <1633744219-17398-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9CxJOZb9WBhatsWAA--.43933S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Cr47Cw4xZr4kJr43Cr18uFg_yoWkuw15pF
-        WUtrn0yF18XF97XF18XF17Aa4rtF4vy3yrtrWfJryqyrs5CryUtF48K34Iqrn3Jr40vw15
-        Z3WIvF45G3W2yaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xf
-        McIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7
-        v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF
-        7I0E8cxan2IY04v7MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-        IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-        nIWIevJa73UjIFyTuYvjfUOMKZDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S244095AbhJIByJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231947AbhJIByH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 21:54:07 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A824CC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:52:11 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id r201so4763701pgr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:52:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=J3/G+Htr0JzoQ9SW3wtIiw5W7YL3z8+P6XbDg6D7GbI=;
+        b=m8+6I0AkdQ6x6UksboO6N1QINdiEk6XajNGDuHqhLFaZdEmTVA0YYxFThZhwfdClSJ
+         zJY2AaBb/H3PPjv3mNLqkXbIdGwBaW6trRH75Ge2Wx1DqWcrk0RvH6w/jGjRxqCdGFAd
+         2bKOHS457JB7ytkR8gupGVj4Z9f0wYGhw6rat3oBFHGMpbSefj43BH2oDa4DySHZ0sit
+         kBGHh5LHiuTV8wymPKl6IcqIoHyy234J9UrW4jmk8MH6jCmSkgKHEIPiuf0adu8x9Hs0
+         7kQ6QjEq0z2BgoUQqsfN5n4UBYVb3o5mLQLJzRZIflU7cYC45buPGT0wab1ft76NWcpb
+         o24A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=J3/G+Htr0JzoQ9SW3wtIiw5W7YL3z8+P6XbDg6D7GbI=;
+        b=YhRrSw9dBFxbmv43D6TiyQaGJh5Bi9pHskQW4HiDNsYuIcoa6iN9yyRAAkQNq0MOr8
+         7ADg5u8Z6CpMZV2aj0BgaALBlwhQwwNW4yi3zpJGX2l6L8HRo3EB6+DaEgq+w719W3VC
+         qMw/Ds1CjSVB8EQNp9zr6JjDEbXXnK582Af9GzM+Vm3ZRSR0dz+eopZO79rXI6WzL2Ea
+         Y2DmwtW5EPZTU7FsvVft/lzGQIDAHWHUYNZlh6BnUU/4o44DoCFkwyMVusYEMZlG1Uoo
+         VygyLVpJpSBY/yNK2s1nuHpwCq9nkXurJQNUMs3yU7iREb1TZQlCg+w60vAiJlGVt6hv
+         xzmg==
+X-Gm-Message-State: AOAM530XqqoG47Np1ycMwGpCUnivgqkkRi+0Xw4+pGl4fraGIVidDjAK
+        ja2WxonTq4YlOr1DPy0hUwk=
+X-Google-Smtp-Source: ABdhPJxVc5UpfDMkvsxcKWseNE5uyehdjqaPjnS14YlXBlap57ULvnJRqqdLE8o1kNq1b41gX+BzkA==
+X-Received: by 2002:a62:7e4e:0:b0:44c:51f5:5895 with SMTP id z75-20020a627e4e000000b0044c51f55895mr13234300pfc.73.1633744331133;
+        Fri, 08 Oct 2021 18:52:11 -0700 (PDT)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id i18sm486958pfq.198.2021.10.08.18.52.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Oct 2021 18:52:10 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 09:52:04 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <xiang@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>, huyue2@yulong.com,
+        zhangwen@yulong.com, shaojunjun@yulong.com
+Subject: Re: [PATCH v2 1/3] erofs: get compression algorithms directly on
+ mapping
+Message-ID: <20211009095204.00000974.zbestahu@gmail.com>
+In-Reply-To: <20211008200839.24541-2-xiang@kernel.org>
+References: <20211008200839.24541-1-xiang@kernel.org>
+        <20211008200839.24541-2-xiang@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 9298e63eafea ("bpf/tests: Add exhaustive tests of ALU
-operand magnitudes"), when modprobe test_bpf.ko with jit on mips64,
-there exists segment fault due to the following reason:
+On Sat,  9 Oct 2021 04:08:37 +0800
+Gao Xiang <xiang@kernel.org> wrote:
 
-ALU64_MOV_X: all register value magnitudes jited:1
-Break instruction in kernel code[#1]
+> From: Gao Xiang <hsiangkao@linux.alibaba.com>
+> 
+> Currently, z_erofs_map_blocks_iter() returns whether extents are
+> compressed or not, and the decompression frontend gets the specific
+> algorithms then.
+> 
+> It works but not quite well in many aspests, for example:
+>  - The decompression frontend has to deal with whether extents are
+>    compressed or not again and lookup the algorithms if compressed.
+>    It's duplicated and too detailed about the on-disk mapping.
+> 
+>  - A new secondary compression head will be introduced later so that
+>    each file can have 2 compression algorithms at most for different
+>    type of data. It could increase the complexity of the decompression
+>    frontend if still handled in this way;
+> 
+>  - A new readmore decompression strategy will be introduced to get
+>    better performance for much bigger pcluster and lzma, which needs
+>    the specific algorithm in advance as well.
+> 
+> Let's look up compression algorithms in z_erofs_map_blocks_iter()
+> directly instead.
+> 
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+>  fs/erofs/compress.h          |  5 -----
+>  fs/erofs/internal.h          | 12 +++++++++---
+>  fs/erofs/zdata.c             | 12 ++++++------
+>  fs/erofs/zmap.c              | 19 ++++++++++---------
+>  include/trace/events/erofs.h |  2 +-
+>  5 files changed, 26 insertions(+), 24 deletions(-)
+> 
+> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
+> index 3701c72bacb2..ad62d1b4d371 100644
+> --- a/fs/erofs/compress.h
+> +++ b/fs/erofs/compress.h
+> @@ -8,11 +8,6 @@
+>  
+>  #include "internal.h"
+>  
+> -enum {
+> -	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
+> -	Z_EROFS_COMPRESSION_RUNTIME_MAX
+> -};
+> -
+>  struct z_erofs_decompress_req {
+>  	struct super_block *sb;
+>  	struct page **in, **out;
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index 9524e155b38f..48bfc6eb2b02 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -338,7 +338,7 @@ extern const struct address_space_operations z_erofs_aops;
+>   * of the corresponding uncompressed data in the file.
+>   */
+>  enum {
+> -	BH_Zipped = BH_PrivateStart,
+> +	BH_Encoded = BH_PrivateStart,
+>  	BH_FullMapped,
+>  };
+>  
+> @@ -346,8 +346,8 @@ enum {
+>  #define EROFS_MAP_MAPPED	(1 << BH_Mapped)
+>  /* Located in metadata (could be copied from bd_inode) */
+>  #define EROFS_MAP_META		(1 << BH_Meta)
+> -/* The extent has been compressed */
+> -#define EROFS_MAP_ZIPPED	(1 << BH_Zipped)
+> +/* The extent is encoded */
+> +#define EROFS_MAP_ENCODED	(1 << BH_Encoded)
+>  /* The length of extent is full */
+>  #define EROFS_MAP_FULL_MAPPED	(1 << BH_FullMapped)
+>  
+> @@ -355,6 +355,7 @@ struct erofs_map_blocks {
+>  	erofs_off_t m_pa, m_la;
+>  	u64 m_plen, m_llen;
+>  
+> +	char m_algorithmformat;
+>  	unsigned int m_flags;
+>  
+>  	struct page *mpage;
+> @@ -368,6 +369,11 @@ struct erofs_map_blocks {
+>   */
+>  #define EROFS_GET_BLOCKS_FIEMAP	0x0002
+>  
+> +enum {
+> +	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
+> +	Z_EROFS_COMPRESSION_RUNTIME_MAX
+> +};
+> +
+>  /* zmap.c */
+>  extern const struct iomap_ops z_erofs_iomap_report_ops;
+>  
+> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
+> index 11c7a1aaebad..5c34ef66677f 100644
+> --- a/fs/erofs/zdata.c
+> +++ b/fs/erofs/zdata.c
+> @@ -476,6 +476,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
+>  	struct erofs_workgroup *grp;
+>  	int err;
+>  
+> +	if (!(map->m_flags & EROFS_MAP_ENCODED)) {
+> +		DBG_BUGON(1);
+> +		return -EFSCORRUPTED;
+> +	}
+> +
+>  	/* no available pcluster, let's allocate one */
+>  	pcl = z_erofs_alloc_pcluster(map->m_plen >> PAGE_SHIFT);
+>  	if (IS_ERR(pcl))
+> @@ -483,16 +488,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
+>  
+>  	atomic_set(&pcl->obj.refcount, 1);
+>  	pcl->obj.index = map->m_pa >> PAGE_SHIFT;
+> -
+> +	pcl->algorithmformat = map->m_algorithmformat;
+>  	pcl->length = (map->m_llen << Z_EROFS_PCLUSTER_LENGTH_BIT) |
+>  		(map->m_flags & EROFS_MAP_FULL_MAPPED ?
+>  			Z_EROFS_PCLUSTER_FULL_LENGTH : 0);
+>  
+> -	if (map->m_flags & EROFS_MAP_ZIPPED)
+> -		pcl->algorithmformat = Z_EROFS_COMPRESSION_LZ4;
+> -	else
+> -		pcl->algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
+> -
+>  	/* new pclusters should be claimed as type 1, primary and followed */
+>  	pcl->next = clt->owned_head;
+>  	clt->mode = COLLECT_PRIMARY_FOLLOWED;
+> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> index 7a6df35fdc91..9d9c26343dab 100644
+> --- a/fs/erofs/zmap.c
+> +++ b/fs/erofs/zmap.c
+> @@ -111,7 +111,7 @@ struct z_erofs_maprecorder {
+>  
+>  	unsigned long lcn;
+>  	/* compression extent information gathered */
+> -	u8  type;
+> +	u8  type, headtype;
+>  	u16 clusterofs;
+>  	u16 delta[2];
+>  	erofs_blk_t pblk, compressedlcs;
+> @@ -446,9 +446,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
+>  		}
+>  		return z_erofs_extent_lookback(m, m->delta[0]);
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -		map->m_flags &= ~EROFS_MAP_ZIPPED;
+> -		fallthrough;
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+> +		m->headtype = m->type;
+>  		map->m_la = (lcn << lclusterbits) | m->clusterofs;
+>  		break;
+>  	default:
+> @@ -472,7 +471,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+>  
+>  	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
+>  		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
+> -	if (!(map->m_flags & EROFS_MAP_ZIPPED) ||
+> +	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+>  	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
+>  		map->m_plen = 1 << lclusterbits;
+>  		return 0;
+> @@ -609,16 +608,13 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+>  	if (err)
+>  		goto unmap_out;
+>  
+> -	map->m_flags = EROFS_MAP_ZIPPED;	/* by default, compressed */
+>  	end = (m.lcn + 1ULL) << lclusterbits;
+>  
+>  	switch (m.type) {
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -		if (endoff >= m.clusterofs)
+> -			map->m_flags &= ~EROFS_MAP_ZIPPED;
+> -		fallthrough;
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+>  		if (endoff >= m.clusterofs) {
+> +			m.headtype = m.type;
+>  			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
+>  			break;
+>  		}
+> @@ -650,12 +646,17 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+>  
+>  	map->m_llen = end - map->m_la;
+>  	map->m_pa = blknr_to_addr(m.pblk);
+> -	map->m_flags |= EROFS_MAP_MAPPED;
+> +	map->m_flags = EROFS_MAP_MAPPED | EROFS_MAP_ENCODED;
+>  
+>  	err = z_erofs_get_extent_compressedlen(&m, initial_lcn);
+>  	if (err)
+>  		goto out;
+>  
+> +	if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN)
+> +		map->m_algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
+> +	else
+> +		map->m_algorithmformat = vi->z_algorithmtype[0];
+> +
+>  	if (flags & EROFS_GET_BLOCKS_FIEMAP) {
+>  		err = z_erofs_get_extent_decompressedlen(&m);
+>  		if (!err)
+> diff --git a/include/trace/events/erofs.h b/include/trace/events/erofs.h
+> index db4f2cec8360..16ae7b666810 100644
+> --- a/include/trace/events/erofs.h
+> +++ b/include/trace/events/erofs.h
+> @@ -24,7 +24,7 @@ struct erofs_map_blocks;
+>  #define show_mflags(flags) __print_flags(flags, "",	\
+>  	{ EROFS_MAP_MAPPED,	"M" },			\
+>  	{ EROFS_MAP_META,	"I" },			\
+> -	{ EROFS_MAP_ZIPPED,	"Z" })
+> +	{ EROFS_MAP_ENCODED,	"E" })
 
-It seems that the related jit implementations of some test cases
-in test_bpf() have problems. At this moment, I do not care about
-the segment fault while I just want to verify the test cases of
-tail calls.
+Looks good to me.
 
-Based on the above background and motivation, add the following
-module parameter test_suite to the test_bpf.ko:
-test_suite=<string>: only the specified test suite will be run, the
-string can be "test_bpf", "test_tail_calls" or "test_skb_segment".
+Reviewed-by: Yue Hu <huyue2@yulong.com>
 
-If test_suite is not specified, but test_id, test_name or test_range
-is specified, set 'test_bpf' as the default test suite.
-
-This is useful to only test the corresponding test suite when specify
-the valid test_suite string.
-
-Any invalid test suite will result in -EINVAL being returned and no
-tests being run. If the test_suite is not specified or specified as
-empty string, it does not change the current logic, all of the test
-cases will be run.
-
-Here are some test results:
- # dmesg -c
- # modprobe test_bpf
- # dmesg
- # dmesg | grep Summary
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf
- # dmesg | tail -1
- test_bpf: Summary: 1009 PASSED, 0 FAILED, [0/997 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls
- # dmesg
- test_bpf: #0 Tail call leaf jited:0 21 PASS
- [...]
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 8 PASSED, 0 FAILED, [0/8 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment
- # dmesg
- test_bpf: #0 gso_with_rx_frags PASS
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 2 PASSED, 0 FAILED
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_id=1
- # dmesg
- test_bpf: test_bpf: set 'test_bpf' as the default test_suite.
- test_bpf: #1 TXA jited:0 54 51 50 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_bpf test_name=TXA
- # dmesg
- test_bpf: #1 TXA jited:0 54 50 51 PASS
- test_bpf: Summary: 1 PASSED, 0 FAILED, [0/1 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_tail_calls test_range=6,7
- # dmesg
- test_bpf: #6 Tail call error path, NULL target jited:0 41 PASS
- test_bpf: #7 Tail call error path, index out of range jited:0 32 PASS
- test_bpf: test_tail_calls: Summary: 2 PASSED, 0 FAILED, [0/2 JIT'ed]
-
- # rmmod test_bpf
- # dmesg -c
- # modprobe test_bpf test_suite=test_skb_segment test_id=1
- # dmesg
- test_bpf: #1 gso_linear_no_head_frag PASS
- test_bpf: test_skb_segment: Summary: 1 PASSED, 0 FAILED
-
-By the way, the above segment fault has been fixed in the latest bpf-next
-tree.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
-
-v4:
-  -- Fix the following checkpatch issues:
-     CHECK: Alignment should match open parenthesis
-     CHECK: Please don't use multiple blank lines
-
-     ./scripts/checkpatch.pl --strict *.patch
-     total: 0 errors, 0 warnings, 0 checks, 299 lines checked
-
-     the default max-line-length is 100 in ./scripts/checkpatch.pl,
-     but it seems that the netdev/checkpatch is 80:
-     https://patchwork.hopto.org/static/nipa/559961/12545157/checkpatch/stdout
-
-v3:
-  -- Use test_suite instead of test_type as module parameter
-  -- Make test_id, test_name and test_range selection applied to each test suite
-
-v2:
-  -- Fix typo in the commit message
-  -- Use my private email to send
-
- lib/test_bpf.c | 262 ++++++++++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 186 insertions(+), 76 deletions(-)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index e5b10fd..124204e 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -14316,72 +14316,9 @@ module_param_string(test_name, test_name, sizeof(test_name), 0);
- static int test_id = -1;
- module_param(test_id, int, 0);
- 
--static int test_range[2] = { 0, ARRAY_SIZE(tests) - 1 };
-+static int test_range[2] = { -1, -1 };
- module_param_array(test_range, int, NULL, 0);
- 
--static __init int find_test_index(const char *test_name)
--{
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(tests); i++) {
--		if (!strcmp(tests[i].descr, test_name))
--			return i;
--	}
--	return -1;
--}
--
--static __init int prepare_bpf_tests(void)
--{
--	if (test_id >= 0) {
--		/*
--		 * if a test_id was specified, use test_range to
--		 * cover only that test.
--		 */
--		if (test_id >= ARRAY_SIZE(tests)) {
--			pr_err("test_bpf: invalid test_id specified.\n");
--			return -EINVAL;
--		}
--
--		test_range[0] = test_id;
--		test_range[1] = test_id;
--	} else if (*test_name) {
--		/*
--		 * if a test_name was specified, find it and setup
--		 * test_range to cover only that test.
--		 */
--		int idx = find_test_index(test_name);
--
--		if (idx < 0) {
--			pr_err("test_bpf: no test named '%s' found.\n",
--			       test_name);
--			return -EINVAL;
--		}
--		test_range[0] = idx;
--		test_range[1] = idx;
--	} else {
--		/*
--		 * check that the supplied test_range is valid.
--		 */
--		if (test_range[0] >= ARRAY_SIZE(tests) ||
--		    test_range[1] >= ARRAY_SIZE(tests) ||
--		    test_range[0] < 0 || test_range[1] < 0) {
--			pr_err("test_bpf: test_range is out of bound.\n");
--			return -EINVAL;
--		}
--
--		if (test_range[1] < test_range[0]) {
--			pr_err("test_bpf: test_range is ending before it starts.\n");
--			return -EINVAL;
--		}
--	}
--
--	return 0;
--}
--
--static __init void destroy_bpf_tests(void)
--{
--}
--
- static bool exclude_test(int test_id)
- {
- 	return test_id < test_range[0] || test_id > test_range[1];
-@@ -14553,6 +14490,10 @@ static __init int test_skb_segment(void)
- 	for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
- 		const struct skb_segment_test *test = &skb_segment_tests[i];
- 
-+		cond_resched();
-+		if (exclude_test(i))
-+			continue;
-+
- 		pr_info("#%d %s ", i, test->descr);
- 
- 		if (test_skb_segment_single(test)) {
-@@ -14934,6 +14875,8 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 		int ret;
- 
- 		cond_resched();
-+		if (exclude_test(i))
-+			continue;
- 
- 		pr_info("#%d %s ", i, test->descr);
- 		if (!fp) {
-@@ -14966,29 +14909,196 @@ static __init int test_tail_calls(struct bpf_array *progs)
- 	return err_cnt ? -EINVAL : 0;
- }
- 
-+static char test_suite[32];
-+module_param_string(test_suite, test_suite, sizeof(test_suite), 0);
-+
-+static __init int find_test_index(const char *test_name)
-+{
-+	int i;
-+
-+	if (!strcmp(test_suite, "test_bpf")) {
-+		for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+			if (!strcmp(tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_tail_calls")) {
-+		for (i = 0; i < ARRAY_SIZE(tail_call_tests); i++) {
-+			if (!strcmp(tail_call_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	if (!strcmp(test_suite, "test_skb_segment")) {
-+		for (i = 0; i < ARRAY_SIZE(skb_segment_tests); i++) {
-+			if (!strcmp(skb_segment_tests[i].descr, test_name))
-+				return i;
-+		}
-+	}
-+
-+	return -1;
-+}
-+
-+static __init int prepare_bpf_tests(void)
-+{
-+	if (test_id >= 0) {
-+		/*
-+		 * if a test_id was specified, use test_range to
-+		 * cover only that test.
-+		 */
-+		if (!strcmp(test_suite, "test_bpf") &&
-+		    test_id >= ARRAY_SIZE(tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_tail_calls") &&
-+		    test_id >= ARRAY_SIZE(tail_call_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		if (!strcmp(test_suite, "test_skb_segment") &&
-+		    test_id >= ARRAY_SIZE(skb_segment_tests)) {
-+			pr_err("test_bpf: invalid test_id specified for '%s' suite.\n",
-+			       test_suite);
-+			return -EINVAL;
-+		}
-+
-+		test_range[0] = test_id;
-+		test_range[1] = test_id;
-+	} else if (*test_name) {
-+		/*
-+		 * if a test_name was specified, find it and setup
-+		 * test_range to cover only that test.
-+		 */
-+		int idx = find_test_index(test_name);
-+
-+		if (idx < 0) {
-+			pr_err("test_bpf: no test named '%s' found for '%s' suite.\n",
-+			       test_name, test_suite);
-+			return -EINVAL;
-+		}
-+		test_range[0] = idx;
-+		test_range[1] = idx;
-+	} else {
-+		/*
-+		 * check that the supplied test_range is valid.
-+		 */
-+		if (!strcmp(test_suite, "test_bpf")) {
-+			if (test_range[0] >= ARRAY_SIZE(tests) ||
-+			    test_range[1] >= ARRAY_SIZE(tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+				       test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (!strcmp(test_suite, "test_tail_calls")) {
-+			if (test_range[0] >= ARRAY_SIZE(tail_call_tests) ||
-+			    test_range[1] >= ARRAY_SIZE(tail_call_tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+				       test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (!strcmp(test_suite, "test_skb_segment")) {
-+			if (test_range[0] >= ARRAY_SIZE(skb_segment_tests) ||
-+			    test_range[1] >= ARRAY_SIZE(skb_segment_tests) ||
-+			    test_range[0] < 0 || test_range[1] < 0) {
-+				pr_err("test_bpf: test_range is out of bound for '%s' suite.\n",
-+				       test_suite);
-+				return -EINVAL;
-+			}
-+		}
-+
-+		if (test_range[1] < test_range[0]) {
-+			pr_err("test_bpf: test_range is ending before it starts.\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static __init void destroy_bpf_tests(void)
-+{
-+}
-+
- static int __init test_bpf_init(void)
- {
- 	struct bpf_array *progs = NULL;
- 	int ret;
- 
-+	if (strlen(test_suite) &&
-+	    strcmp(test_suite, "test_bpf") &&
-+	    strcmp(test_suite, "test_tail_calls") &&
-+	    strcmp(test_suite, "test_skb_segment")) {
-+		pr_err("test_bpf: invalid test_suite '%s' specified.\n", test_suite);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * if test_suite is not specified, but test_id, test_name or test_range
-+	 * is specified, set 'test_bpf' as the default test suite.
-+	 */
-+	if (!strlen(test_suite) &&
-+	    (test_id != -1 || strlen(test_name) ||
-+	    (test_range[0] != -1 || test_range[1] != -1))) {
-+		pr_info("test_bpf: set 'test_bpf' as the default test_suite.\n");
-+		strcpy(test_suite, "test_bpf");
-+	}
-+
-+	/* if test_range is not specified, set the limit of test_range */
-+	if (test_range[0] == -1 && test_range[1] == -1) {
-+		/* if test_suite is not specified, set the possible max upper limit */
-+		if (!strlen(test_suite)) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tests) - 1;
-+		/* otherwise, set the limit of each test_suite */
-+		} else if (!strcmp(test_suite, "test_bpf")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tests) - 1;
-+		} else if (!strcmp(test_suite, "test_tail_calls")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(tail_call_tests) - 1;
-+		} else if (!strcmp(test_suite, "test_skb_segment")) {
-+			test_range[0] = 0;
-+			test_range[1] = ARRAY_SIZE(skb_segment_tests) - 1;
-+		}
-+	}
-+
- 	ret = prepare_bpf_tests();
- 	if (ret < 0)
- 		return ret;
- 
--	ret = test_bpf();
--	destroy_bpf_tests();
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_bpf")) {
-+		ret = test_bpf();
-+		destroy_bpf_tests();
-+		if (ret)
-+			return ret;
-+	}
- 
--	ret = prepare_tail_call_tests(&progs);
--	if (ret)
--		return ret;
--	ret = test_tail_calls(progs);
--	destroy_tail_call_tests(progs);
--	if (ret)
--		return ret;
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_tail_calls")) {
-+		ret = prepare_tail_call_tests(&progs);
-+		if (ret)
-+			return ret;
-+		ret = test_tail_calls(progs);
-+		destroy_tail_call_tests(progs);
-+		if (ret)
-+			return ret;
-+	}
- 
--	return test_skb_segment();
-+	if (!strlen(test_suite) || !strcmp(test_suite, "test_skb_segment"))
-+		return test_skb_segment();
-+
-+	return 0;
- }
- 
- static void __exit test_bpf_exit(void)
--- 
-2.1.0
+>  
+>  TRACE_EVENT(erofs_lookup,
+>  
 
