@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A20427D69
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64903427D6E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhJIUmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 16:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhJIUmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 16:42:06 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B646C061768
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 13:40:09 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id np13so10135545pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 13:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PNkbI6CC4MPwch06xoRoPuOpZuZRykTcMawJcvuLIGc=;
-        b=Muu3r0eHUqB/dNHg2SbcMZBR59fyebiqEBsvk6PezrQlxQGwEI1ZicQJ1XHU8yb+jR
-         kHSIW8u2KEJn+hh/8bqD+oSUoLGTMzHi2MKjMWxijaluyFQ9X/HFL9QP8jG3kJvP1+yC
-         MFrvKW7dOAqDY1UzAuwqQRxVpGtbg2xoYhxoIQminXJgv3DKYb4mwO0GqHZDYiNWBRPr
-         zX9FmLpjC1P17blRe4cxwK4BawnSAcTVigJTMtvWGUVR4Krw0LhW/yHMyjDs7LwJths0
-         zTeiN6ZgCa7R3RDBLb9WPt7ZUqU0TGXpSpq1OOroQI9pRt1DcheHTMwoozKzKGHc51Jc
-         ai5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PNkbI6CC4MPwch06xoRoPuOpZuZRykTcMawJcvuLIGc=;
-        b=B4LONTOt6f2T0tivGp85nASxzqqGowu7DXF+Hy/WEOBFb2TMTOcYPxdIxVQH5sGpkp
-         Q+aUL1ZLO4jDtYBygI663Ak16bVgTVAoEYnVr1ekwJNEJs8b8gsTi8Sa7pWtVjGLe+m/
-         c19Gj10O2cCoYtiS79cVgIwyW1JuNMToGy8yzsMWphQRgcp5VdmTGwQYnRJDuapp99i/
-         WjyTF9CIdpJ83WSlwsY4iTnPZIym147MXGN/Pe2riQ+bNIsvyYEZ1RQ1jPHAy+uqehOa
-         voc6gU+eTFaQzBcClidbAtJ2fxl0rkW7NxysYkSBlLCufgsz/th5k+djH8GJjz7Cka+U
-         HGVw==
-X-Gm-Message-State: AOAM531kZoeX9/VXnH4ufXtzldbGUin6Ndwbe3NRkK6sobxh4yI0hfVB
-        4kSKHmbrwoJHA+BZcjqwW0IbJQua3jn8opr2hOpv4w==
-X-Google-Smtp-Source: ABdhPJySd5zqNERLKr8S37E5WA9IMnevPxuJEZ9BVS6uY8X2FGjPzRDwsaOEKoQH/I5/2YcevgWJ2BJGpdsvJiUJb30=
-X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr20678375pju.8.1633812008773;
- Sat, 09 Oct 2021 13:40:08 -0700 (PDT)
+        id S230327AbhJIUnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 16:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229806AbhJIUm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 16:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6905960F90;
+        Sat,  9 Oct 2021 20:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633812061;
+        bh=HwWE77+NdeRx9l7KL8B4x2PzoXQ2pMa2AlP5+SKIX08=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=I5nHXhQ2IIK9y6PhZCBJ8dTNMkxIbfmZB7hZ6uob0bvHyHhN8drpW68/n9wO5glUF
+         tFtzSfRttTyKWOJhFAhwNl/ys6hcQPiEaqT3BY4sKwyiUFr9+iTqs5RdRSPhrFM2lF
+         lgubZgv9usBD2eDbYHTpu+/DBo6VDAk2Sr2Y0gvFowJN2tbNRoqozQO8QthexjXWRG
+         ufFeAFhtGaoCwAwdgr3bU2k6zDgOZlTHeI6/0tF3lTky7kgCTAQ0EvQgGuEVz2FRFk
+         OrREBAyPzTlEk2j+Pk30glj6fBHxfF4+18GXasi9VecR1zbYehXdiDlw1phZcXKC8t
+         i1007eZSmTqaQ==
+Subject: Re: [PATCH v3 4/5] dt-bindings: clock: Document Exynos850 CMU
+ bindings
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+References: <20211008154352.19519-1-semen.protsenko@linaro.org>
+ <20211008154352.19519-5-semen.protsenko@linaro.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <7049b3a9-dc8f-2ae9-01e6-eb3b6f461400@kernel.org>
+Date:   Sat, 9 Oct 2021 22:40:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com> <20211009053103-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20211009053103-mutt-send-email-mst@kernel.org>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 9 Oct 2021 13:39:57 -0700
-Message-ID: <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(), pci_iomap_host_shared_range()
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211008154352.19519-5-semen.protsenko@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 2:53 AM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Fri, Oct 08, 2021 at 05:37:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> > From: Andi Kleen <ak@linux.intel.com>
-> >
-> > For Confidential VM guests like TDX, the host is untrusted and hence
-> > the devices emulated by the host or any data coming from the host
-> > cannot be trusted. So the drivers that interact with the outside world
-> > have to be hardened by sharing memory with host on need basis
-> > with proper hardening fixes.
-> >
-> > For the PCI driver case, to share the memory with the host add
-> > pci_iomap_host_shared() and pci_iomap_host_shared_range() APIs.
-> >
-> > Signed-off-by: Andi Kleen <ak@linux.intel.com>
-> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->
-> So I proposed to make all pci mappings shared, eliminating the need
-> to patch drivers.
->
-> To which Andi replied
->         One problem with removing the ioremap opt-in is that
->         it's still possible for drivers to get at devices without going through probe.
->
-> To which Greg replied:
-> https://lore.kernel.org/all/YVXBNJ431YIWwZdQ@kroah.com/
->         If there are in-kernel PCI drivers that do not do this, they need to be
->         fixed today.
->
-> Can you guys resolve the differences here?
+On 08.10.2021 17:43, Sam Protsenko wrote:
+> Provide dt-schema documentation for Exynos850 SoC clock controller.
+> 
+> Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-I agree with you and Greg here. If a driver is accessing hardware
-resources outside of the bind lifetime of one of the devices it
-supports, and in a way that neither modrobe-policy nor
-device-authorization -policy infrastructure can block, that sounds
-like a bug report. Fix those drivers instead of sprinkling
-ioremap_shared in select places and with unclear rules about when a
-driver is allowed to do "shared" mappings. Let the new
-device-authorization mechanism (with policy in userspace) be the
-central place where all of these driver "trust" issues are managed.
+> diff --git a/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> new file mode 100644
+> index 000000000000..79202e6e6402
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/samsung,exynos850-clock.yaml
+> @@ -0,0 +1,185 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/samsung,exynos850-clock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Samsung Exynos850 SoC clock controller
+> +
+> +maintainers:
+> +  - Sam Protsenko <semen.protsenko@linaro.org>
+> +  - Chanwoo Choi <cw00.choi@samsung.com>
+> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> +  - Sylwester Nawrocki <s.nawrocki@samsung.com>
+> +  - Tomasz Figa <tomasz.figa@gmail.com>
+> +
+> +description: |
+> +  Exynos850 clock controller is comprised of several CMU units, generating
+> +  clocks for different domains. Those CMU units are modeled as separate device
+> +  tree nodes, and might depend on each other. Root clocks in that clock tree are
+> +  two external clocks:: OSCCLK (26 MHz) and RTCCLK (32768 Hz). Those external
+> +  clocks must be defined as fixed-rate clocks in dts.
+> +
+> +  CMU_TOP is a top-level CMU, where all base clocks are prepared using PLLs and
+> +  dividers; all other leaf clocks (other CMUs) are usually derived from CMU_TOP.
+> +
+> +  Each clock is assigned an identifier and client nodes can use this identifier
+> +  to specify the clock which they consume. All clocks that available for usage
 
-> And once they are resolved, mention this in the commit log so
-> I don't get to re-read the series just to find out nothing
-> changed in this respect?
->
-> I frankly do not believe we are anywhere near being able to harden
-> an arbitrary kernel config against attack.
-> How about creating a defconfig that makes sense for TDX then?
-> Anyone deviating from that better know what they are doing,
-> this API tweaking is just putting policy into the kernel  ...
+s/All clocks that available/All clocks available ?
+No need to resend, I can amend it when applying.
 
-Right, userspace authorization policy and select driver fixups seems
-to be the answer to the raised concerns.
