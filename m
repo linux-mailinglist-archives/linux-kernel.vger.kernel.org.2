@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D8242784C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:09:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE069427851
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244431AbhJIJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:11:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244391AbhJIJLs (ORCPT
+        id S244368AbhJIJO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:14:56 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13882 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231219AbhJIJOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:11:48 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2742EC061570;
-        Sat,  9 Oct 2021 02:09:52 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id o4so16923978oia.10;
-        Sat, 09 Oct 2021 02:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AWlcECk9c8kTLFlOaur0Gv/up7C1gqtDcFwTvhK0BeA=;
-        b=KwAoNEoTFSpQKQOOFUHUWTkAupifyh7qUracxaMSYWXDUXSqYgPWEoQPBQX8tZAxQs
-         esUitSL1AtnlTcDoIDAb02RgcJz7R87UvUoaJsQi4Rq01BxC0/5bSahrc/Cpt0RPzD1H
-         eg+G1ixQI/sfJNPbt7dIK7F0EygOCPKY+NOgJ7KwJpJtxf6p0d6zvXELxlBRNiEqDLqP
-         4MjsTXbnaR+LNOO3c7/EX/pHYvWmbIcZ04+/c0yqLABZcFEycUoK6G2t8e/9HrhkqOO7
-         iilKGZtMlcN3Q7SXv2s6vLQRYmiWGLAP+ovj+D07FmiTULjIzxCR/fhGilxfYtsPOFB5
-         Gwvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AWlcECk9c8kTLFlOaur0Gv/up7C1gqtDcFwTvhK0BeA=;
-        b=xQnt4bypdIIOn088nchFHqM8oH7a1dowK4Puzb7b/uaa6LJd44eQ8X5G+YC/J6l6H2
-         Dgjc5pyyNMtjVrFdP9qcQcbcBeueSn2qY6PC3+lPtN1Kw39PhVv/GnDfskurnC0Ascjr
-         UZJY4SRDzkQ8/dEyTdM00J+W93k71yuqJLkTsXOq7P4EgMjNbva1R4NrJgYCcYoWDYxY
-         3ZWrgguWUSLQqXUC3Yqrgu+Um1nJ5k1fyc3Xhk3d3UDW8oOG2DTlVGjBbH7toasQ7nMO
-         q5VvRysO6afFv18GloIXmBcDzoSYOnX2ylktDP9/DPhjpTEYqSt9BQdsvXnKtBrJzBCl
-         9XwQ==
-X-Gm-Message-State: AOAM530IM+J5/7Bj0IryDbkO4TSKP/ESGgBv7AuQF+pl3V39vlJrEZ4L
-        b30QUJHGvg4C/3GwbnTHO37+uUvZBMZW8xQGuPPR/Sbd3p0=
-X-Google-Smtp-Source: ABdhPJy1cTcnxG2cj5lcXuYwRgsCHfdXC2i41qpIW+3g0k40YSdGg/dGvGGn+nl+zoKwgPaPfPK43olDv5Q/kLfitDo=
-X-Received: by 2002:a05:6808:1148:: with SMTP id u8mr11082381oiu.33.1633770591589;
- Sat, 09 Oct 2021 02:09:51 -0700 (PDT)
+        Sat, 9 Oct 2021 05:14:55 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HRK3F44Xyz8skb;
+        Sat,  9 Oct 2021 17:08:09 +0800 (CST)
+Received: from dggpeml500006.china.huawei.com (7.185.36.76) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 17:12:56 +0800
+Received: from [10.174.178.240] (10.174.178.240) by
+ dggpeml500006.china.huawei.com (7.185.36.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 17:12:50 +0800
+From:   Zhang Changzhong <zhangchangzhong@huawei.com>
+Subject: Re: [PATCH net] can: j1939: j1939_xtp_rx_dat_one(): cancel session if
+ receive TP.DT with error length
+To:     Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+CC:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        <kernel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Jayat <maxime.jayat@mobile-devices.fr>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1632972800-45091-1-git-send-email-zhangchangzhong@huawei.com>
+ <20210930074206.GB7502@x1.vandijck-laurijssen.be>
+ <1cab07f2-593a-1d1c-3a29-43ee9df4b29e@huawei.com>
+ <20211008110007.GE29653@pengutronix.de>
+ <20211008170937.GA12224@x1.vandijck-laurijssen.be>
+Message-ID: <4d516eed-e45c-a694-9608-07eebe8a3382@huawei.com>
+Date:   Sat, 9 Oct 2021 17:12:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com> <YWBhpzsBxe16z+L1@google.com>
-In-Reply-To: <YWBhpzsBxe16z+L1@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Sat, 9 Oct 2021 17:09:40 +0800
-Message-ID: <CANRm+CxCLjts0EPORmQvkiggujN_bRf_rL0LvVq8homLoVS6Og@mail.gmail.com>
-Subject: Re: [PATCH 1/3] KVM: emulate: #GP when emulating rdpmc if CR0.PE is 1
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211008170937.GA12224@x1.vandijck-laurijssen.be>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.240]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500006.china.huawei.com (7.185.36.76)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 23:20, Sean Christopherson <seanjc@google.com> wrote:
->
-> The shortlog makes it sound like "inject a #GP if CR0.PE=1", i.e. unconditionally
-> inject #GP for RDMPC in protected mode.  Maybe "Don't inject #GP when emulating
-> RDMPC if CR0.PE=0"?
->
+On 2021/10/9 1:09, Kurt Van Dijck wrote:
+> On Fri, 08 Oct 2021 13:00:07 +0200, Oleksij Rempel wrote:
+>> On Fri, Oct 08, 2021 at 05:22:12PM +0800, Zhang Changzhong wrote:
+>>> Hi Kurt,
+>>> Sorry for the late reply.
+>>>
+>>> On 2021/9/30 15:42, Kurt Van Dijck wrote:
+>>>> On Thu, 30 Sep 2021 11:33:20 +0800, Zhang Changzhong wrote:
+>>>>> According to SAE-J1939-21, the data length of TP.DT must be 8 bytes, so
+>>>>> cancel session when receive unexpected TP.DT message.
+>>>>
+>>>> SAE-j1939-21 indeed says that all TP.DT must be 8 bytes.
+>>>> However, the last TP.DT may contain up to 6 stuff bytes, which have no meaning.
+>>>> If I remember well, they are even not 'reserved'.
+>>>
+>>> Agree, these bytes are meaningless for last TP.DT.
+>>>
+>>>>
+>>>>>
+>>>>> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+>>>>> Signed-off-by: Zhang Changzhong <zhangchangzhong@huawei.com>
+>>>>> ---
+>>>>>  net/can/j1939/transport.c | 7 +++++--
+>>>>>  1 file changed, 5 insertions(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+>>>>> index bb5c4b8..eedaeaf 100644
+>>>>> --- a/net/can/j1939/transport.c
+>>>>> +++ b/net/can/j1939/transport.c
+>>>>> @@ -1789,6 +1789,7 @@ static void j1939_xtp_rx_dpo(struct j1939_priv *priv, struct sk_buff *skb,
+>>>>>  static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+>>>>>  				 struct sk_buff *skb)
+>>>>>  {
+>>>>> +	enum j1939_xtp_abort abort = J1939_XTP_ABORT_FAULT;
+>>>>>  	struct j1939_priv *priv = session->priv;
+>>>>>  	struct j1939_sk_buff_cb *skcb, *se_skcb;
+>>>>>  	struct sk_buff *se_skb = NULL;
+>>>>> @@ -1803,9 +1804,11 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
+>>>>>  
+>>>>>  	skcb = j1939_skb_to_cb(skb);
+>>>>>  	dat = skb->data;
+>>>>> -	if (skb->len <= 1)
+>>>>> +	if (skb->len != 8) {
+>>>>>  		/* makes no sense */
+>>>>> +		abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
+>>>>>  		goto out_session_cancel;
+>>>>
+>>>> I think this is a situation of
+>>>> "be strict on what you send, be tolerant on what you receive".
+>>>>
+>>>> Did you find a technical reason to abort a session because the last frame didn't
+>>>> bring overhead that you don't use?
+>>>
+>>> No technical reason. The only reason is that SAE-J1939-82 requires responder
+>>> to abort session if any TP.DT less than 8 bytes (section A.3.4, Row 7).
+> 
+> IMHO, this is some kind of laziness to make the exception for the last TP.DT.
+> 
+> I attended an ISOBUS certification (back in 2013) where the transmitting
+> node effectively stripped the trailing bytes, and this 'deviation' was
+> not even noticed.
 
-Agreed.
+I found that SAE-J1939-82 contains the following test:
+"BAM Transport: Ensure extra (unused) bytes of last Data Transfer data packet
+is/are filled-in correctly. (DUT as Originator)" ... "Verify last TP.DT data
+packet for a BAM transport is sent with an 8 byte data field and the unused
+bytes of this packet are filled with FF" (section A.3.3, Row 8).
 
-> On Fri, Oct 08, 2021, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > SDM mentioned that, RDPMC:
-> >
-> >   IF (((CR4.PCE = 1) or (CPL = 0) or (CR0.PE = 0)) and (ECX indicates a supported counter))
-> >       THEN
-> >           EAX := counter[31:0];
-> >           EDX := ZeroExtend(counter[MSCB:32]);
-> >       ELSE (* ECX is not valid or CR4.PCE is 0 and CPL is 1, 2, or 3 and CR0.PE is 1 *)
-> >           #GP(0);
-> >   FI;
-> >
-> > Let's add the CR0.PE is 1 checking to rdpmc emulate.
-> >
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > ---
-> >  arch/x86/kvm/emulate.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
-> > index 9a144ca8e146..ab7ec569e8c9 100644
-> > --- a/arch/x86/kvm/emulate.c
-> > +++ b/arch/x86/kvm/emulate.c
-> > @@ -4213,6 +4213,7 @@ static int check_rdtsc(struct x86_emulate_ctxt *ctxt)
-> >  static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
-> >  {
-> >       u64 cr4 = ctxt->ops->get_cr(ctxt, 4);
-> > +     u64 cr0 = ctxt->ops->get_cr(ctxt, 0);
-> >       u64 rcx = reg_read(ctxt, VCPU_REGS_RCX);
-> >
-> >       /*
-> > @@ -4222,7 +4223,7 @@ static int check_rdpmc(struct x86_emulate_ctxt *ctxt)
-> >       if (enable_vmware_backdoor && is_vmware_backdoor_pmc(rcx))
-> >               return X86EMUL_CONTINUE;
-> >
-> > -     if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt)) ||
-> > +     if ((!(cr4 & X86_CR4_PCE) && ctxt->ops->cpl(ctxt) && (cr0 & X86_CR0_PE)) ||
->
-> I don't think it's possible for CPL to be >0 if CR0.PE=0, e.g. we could probably
-> WARN in the #GP path.  Realistically it doesn't add value though, so maybe just
-> add a blurb in the changelog saying this isn't strictly necessary?
+So the J1939 compliance test can detect this kind of 'deviation', perhaps
+ISOBUS certification does not do this check?
 
-Do it in v2.
+> 
+> This change applies to the receiving side. Would a sender that
+> leaves the trailing bytes want you to discard the session bacause of this?
+> So the spirit of the SAE-J1939-82 is, in this case, different from
+> the strict literal interpretation.
 
-    Wanpeng
+Such packets should not be sent if the sender complies with SAE-J1939-82, but
+if the transmitting node you mentioned above exist on the network, this patch
+will casue their sessions to be aborted. From this point of view, I think it is
+reasonable to drop this patch.
+
+Regards,
+Changzhong
+
+> 
+>>
+>> Do you mean: "BAM Transport: Ensure DUT discards BAM transport when
+>> TP.DT data packets are not correct size" ... "Verify DUT discards the
+>> BAM transport if any TP.DT data packet has less than 8 bytes"?
+> 
+> Kind regards,
+> Kurt
+> .
+> 
