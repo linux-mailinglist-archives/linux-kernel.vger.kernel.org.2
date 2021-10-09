@@ -2,80 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82336427DEE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 00:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9471427DF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 00:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhJIWnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 18:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        id S231201AbhJIWsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 18:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbhJIWnt (ORCPT
+        with ESMTP id S230116AbhJIWsP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 18:43:49 -0400
+        Sat, 9 Oct 2021 18:48:15 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D8AC061570;
-        Sat,  9 Oct 2021 15:41:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06BFC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 15:46:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=irb6FRwPU2dQSsNxYUCgkPV+9G3ES5Ac2nbK8COEBzU=; b=DXMGHD/JX7AFdlaWO/D2GkVpwP
-        QHCWfAPEgda5tzNYUSnnKZKCGkQknXnodDJbMYotyD8jaVhs69KREgh7jIBPVJ/5E16H/9bcgXTKD
-        IroinWzWCbs73n5/onzduuOpL3gxMExtapMVaQDRRpCm+DFsvm9c3Pm+SfhOnfW5wzJefTXiU1YGc
-        VgkiiMjqM65eIxzikDCe9D2I1XruRKUFEougWAdwFo2xqTsuoZ/gbloLdtivYIomIPmuJTli09DRS
-        c3QhGj6d23zWxNrWup/YMnbaDJBwo5HH6sd5/tN9kVP1mZSgoEURfTGx2vX/FVt2MFL7+d9egwyvg
-        cVv9mw4Q==;
+        bh=CdahD9KGB2jW2SFMgdzmX7pbdEnWq7g4q8ajzwa5WNg=; b=XiAm0xm2/4/JT1k6xXlb85PYIh
+        Pvf/8J2NVxnunn9kDesp5RREDkQ8LxNrzzcVe0N0p3h7B/KBp7bmvycoIaVNB0zA8uuRRjk6pKgjD
+        Rs7S+se/tyMzsYy1L7rb2Ho1K+8hQb8LUuyqrOalRx97h1pC3snRIC3PXk2q6Rhq197V0rytBxxgo
+        qmBPe9Gia53/88ZXvZty7B3V4OqlCpCtQappCKrddrRpjeA/P73JnA7/U/RX9D27ojeoI1dwD1VLQ
+        UkGh5qpW/5GMz0VJZjOCOs1CLfYJUqhsk2tEsaVeYEvpGWrBvkKmxm38ibgaczOqmYvWpi6lj+t/7
+        KG7WKQjw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZL2B-008uuN-8R; Sat, 09 Oct 2021 22:41:39 +0000
+        id 1mZL6H-008uwi-LR; Sat, 09 Oct 2021 22:45:53 +0000
 Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D30FD9811D4; Sun, 10 Oct 2021 00:41:38 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 00:41:38 +0200
+        id 113F29811D4; Sun, 10 Oct 2021 00:45:53 +0200 (CEST)
+Date:   Sun, 10 Oct 2021 00:45:52 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
-Cc:     bristot@redhat.com, christian@brauner.io, ebiederm@xmission.com,
-        lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, juri.lelli@redhat.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, containers@lists.linux.dev,
-        containers@lists.linux-foundation.org, pratik.r.sampat@gmail.com
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-Message-ID: <20211009224138.GZ174703@worktop.programming.kicks-ass.net>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH] sched/pelt: Use or not add in update_irq_load_avg()
+Message-ID: <20211009224552.GA174703@worktop.programming.kicks-ass.net>
+References: <20211009180642.20319-1-tao.zhou@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211009151243.8825-1-psampat@linux.ibm.com>
+In-Reply-To: <20211009180642.20319-1-tao.zhou@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 08:42:38PM +0530, Pratik R. Sampat wrote:
+On Sun, Oct 10, 2021 at 02:06:42AM +0800, Tao Zhou wrote:
+> The ret value of update_irq_load_avg() can be 2. And this value
+> is used in __update_blocked_others(). It should be 0 or 1. Use
+> OR operation in update_irq_load_avg().
 
-> Current shortcomings in the prototype:
-> --------------------------------------
-> 1. Containers also frequently use cfs period and quotas to restrict CPU
->    runtime also known as millicores in modern container runtimes.
->    The RFC interface currently does not account for this in
->    the scheme of things.
-> 2. While /proc/stat is now namespace aware and userspace programs like
->    top will see the CPU utilization for their view of virtual CPUs;
->    if the system or any other application outside the namespace
->    bumps up the CPU utilization it will still show up in sys/user time.
->    This should ideally be shown as stolen time instead.
->    The current implementation plugs into the display of stats rather
->    than accounting which causes incorrect reporting of stolen time.
-> 3. The current implementation assumes that no hotplug operations occur
->    within a container and hence the online and present cpus within a CPU
->    namespace are always the same and query the same CPU namespace mask
-> 4. As this is a proof of concept, currently we do not differentiate
->    between cgroup cpus_allowed and effective_cpus and plugs them into
->    the same virtual CPU map of the namespace
-> 5. As described in a fair use implication earlier, knowledge of the
->    CPU topology can potentially be taken an misused with a flood.
->    While scrambling the CPUset in the namespace can help by
->    obfuscation of information, the topology can still be roughly figured
->    out with the use of IPI latencies to determine siblings or far away
->    cores
+AFAICT it doesn't matter one way or the other, but you're probably right
+in that |= makes more sense.
 
-6. completely destroys and ignores any machine topology information.
+No Signed-off-by tag...
+
+> ---
+>  kernel/sched/pelt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> index a554e3bbab2b..7edf21f7977c 100644
+> --- a/kernel/sched/pelt.c
+> +++ b/kernel/sched/pelt.c
+> @@ -458,7 +458,7 @@ int update_irq_load_avg(struct rq *rq, u64 running)
+>  				0,
+>  				0,
+>  				0);
+> -	ret += ___update_load_sum(rq->clock, &rq->avg_irq,
+> +	ret |= ___update_load_sum(rq->clock, &rq->avg_irq,
+>  				1,
+>  				1,
+>  				1);
+> -- 
+> 2.32.0
+> 
