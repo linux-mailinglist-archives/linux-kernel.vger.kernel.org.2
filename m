@@ -2,136 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5852B427D75
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD516427DB6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 23:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbhJIU6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 16:58:15 -0400
-Received: from mga06.intel.com ([134.134.136.31]:9691 "EHLO mga06.intel.com"
+        id S231187AbhJIVjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 17:39:15 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58694 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230003AbhJIU6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 16:58:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="287568430"
-X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
-   d="scan'208";a="287568430"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 13:56:15 -0700
-X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
-   d="scan'208";a="440285384"
-Received: from lmtorre1-mobl-2020.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.84.14])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 13:56:14 -0700
-Subject: Re: [PATCH v10 00/11] Add TDX Guest Support (Initial support)
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YWFG7+QqVGZ5ZdG9@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <6584b4d5-b7a1-2dbb-1a27-10f9c7949be9@linux.intel.com>
-Date:   Sat, 9 Oct 2021 13:56:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S230052AbhJIVjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 17:39:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Chk7yE4J2WOqoX/5dLGbdpv9rujKzHvkaAG1M3o1khQ=; b=l4x709xfkEYY9qNWS4juI1FElQ
+        EQQaQbQ28CIIFstyfZKEVQGpGvf4cnX50tcURnZCZpjlGDvmrVJo2ozVhvR686EcUloI1RskpJ0Yo
+        fz6nAHa1q1DemVwAQhJwuxh3JdvLNEL6IVAjb5Y414EsxTQJOub6upCysWs9uNU75f1E=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mZK1m-00ABFQ-A2; Sat, 09 Oct 2021 23:37:10 +0200
+Date:   Sat, 9 Oct 2021 23:37:10 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Hagan <mnhagan88@gmail.com>
+Subject: Re: [net-next PATCH v2 08/15] dt-bindings: net: dsa: qca8k: Add MAC
+ swap and clock phase properties
+Message-ID: <YWILhniu2KFIGut9@lunn.ch>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-9-ansuelsmth@gmail.com>
+ <YWHMRMTSa8xP4SKK@lunn.ch>
+ <YWHamNcXmxuaVgB+@Ansuel-xps.localdomain>
+ <YWHx7Q9jBrws8ioN@lunn.ch>
+ <YWH2P7ogyH3T0CVp@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <YWFG7+QqVGZ5ZdG9@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWH2P7ogyH3T0CVp@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/9/21 12:38 AM, Borislav Petkov wrote:
-> On Fri, Oct 08, 2021 at 10:37:36PM -0700, Kuppuswamy Sathyanarayanan wrote:
->> Hi All,
+> Here is 2 configuration one from an Netgear r7800 qca8337:
 > 
-> Now let's see: you sent this particular patchset on Monday, 4th. The
-> usual process is that you wait at least a week for review comments,
-> incorporate them into your next revision and then you send it. We were
-> still reviewing v8...
-
-Sorry for the quick re-submissions. But the main reason for sending v9
-within a week is,
-
-1. Following compilation error found in v8.
-
-This fails to build:
-
-arch/x86/kernel/tdx.c: In function ‘tdx_write_msr_safe’:
-arch/x86/kernel/tdx.c:135:22: error: implicit declaration of function ‘tdx_is_context_switched_msr’ 
-[-Werror=implicit-function-declaration]
-135 | WARN_ON_ONCE(tdx_is_context_switched_msr(msr));
-| ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-./include/asm-generic/bug.h:104:32: note: in definition of macro ‘WARN_ON_ONCE’
-104 | int __ret_warn_on = !!(condition);
-
-
-2. I had to rebase my patches on your tip tree again to adapt to the latest
-version of CC patches.
-3. Also to address your comment about using is_tdx_guest() in
-cc_platform_has()
-
-I thought the above issues warranted a re-submission. I know that it is a mistake
-from my end. But I did not want you to review code changes that might go away
-due to rebase.
-
-
+> 	switch@10 {
+> 		compatible = "qca,qca8337";
+> 		#address-cells = <1>;
+> 		#size-cells = <0>;
+> 		reg = <0x10>;
 > 
-> But I see already a v9 in my mbox from yesterday and *also* a v10. v9
-> you probably didn't build-test enough so you had to hastily do a v10. 4
-> days later!
+> 		qca8k,rgmii0_1_8v;
+> 		qca8k,rgmii56_1_8v;
+> 
+> 		ports {
+> 			#address-cells = <1>;
+> 			#size-cells = <0>;
+> 
+> 			port@0 {
+> 				reg = <0>;
+> 				label = "cpu";
+> 				ethernet = <&gmac1>;
+> 				phy-mode = "rgmii-id";
+> 
+> 				fixed-link {
+> 					speed = <1000>;
+> 					full-duplex;
+> 				};
+> 			};
+> 
+> 			port@1 {
+> 				reg = <1>;
+> 				label = "lan1";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port1>;
+> 			};
+> 
+> 			port@2 {
+> 				reg = <2>;
+> 				label = "lan2";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port2>;
+> 			};
+> 
+> 			port@3 {
+> 				reg = <3>;
+> 				label = "lan3";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port3>;
+> 			};
+> 
+> 			port@4 {
+> 				reg = <4>;
+> 				label = "lan4";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port4>;
+> 			};
+> 
+> 			port@5 {
+> 				reg = <5>;
+> 				label = "wan";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port5>;
+> 			};
+> 
+> 			port@6 {
+> 				reg = <6>;
+> 				label = "cpu";
+> 				ethernet = <&gmac2>;
+> 				phy-mode = "sgmii";
+> 
+> 				fixed-link {
+> 					speed = <1000>;
+> 					full-duplex;
+> 				};
 
-I have sent v10 within few hours of v9 submission to fix a static inline issue.
+So here, it is a second CPU port.  But some other board could connect
+an SGMII PHY, and call the port lan5. Or it could be connected to an
+SFP cage, and used that way. Or are you forced to use it as a CPU
+port, or not use it at all?
 
-I did not catch it my compilation test because, it happens only with a
-TDX disabled config.
+> And here is one with mac swap Tp-Link Archer c7 v4 qca8327 
+> 
+> 	switch0@10 {
+> 		compatible = "qca,qca8337";
+> 		#address-cells = <1>;
+> 		#size-cells = <0>;
+> 
+> 		reg = <0>;
+> 		qca,sgmii-rxclk-falling-edge;
+> 		qca,mac6-exchange;
+> 
+> 		ports {
+> 			#address-cells = <1>;
+> 			#size-cells = <0>;
+> 
+> 			port@0 {
+> 				reg = <0>;
+> 				label = "cpu";
+> 				ethernet = <&eth0>;
+> 				phy-mode = "sgmii";
+> 
+> 				fixed-link {
+> 					speed = <1000>;
+> 					full-duplex;
+> 				};
 
-Sorry for the trouble again. Please ignore the v9 version. I will try not to repeat
-this  in future.
+So when looking for SGMI properties, you need to look here. Where as
+in the previous example, you would look in port 6. And the reverse is
+true for RGMII delays.
 
+> 			};
 > 
-> And because that's not enough, there are a bunch of other TDX patchsets
-> from you flying in constantly.
+> 			port@1 {
+> 				reg = <1>;
+> 				label = "wan";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port1>;
+> 			};
 > 
-> Now, please explain to me how you imagine this whole review thing is
-> supposed to work?
+> 			port@2 {
+> 				reg = <2>;
+> 				label = "lan1";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port2>;
+> 			};
 > 
-> You hammer people with patchsets until they go in? Forget proper review?
+> 			port@3 {
+> 				reg = <3>;
+> 				label = "lan2";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port3>;
+> 			};
 > 
-> Or people should drop the other things they have to do for their jobs
-> and deal only with your patchsets?
+> 			port@4 {
+> 				reg = <4>;
+> 				label = "lan3";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port4>;
+> 			};
 > 
-> How about we trade places: you review and try to get sh*t to work and I
-> hammer you with patchsets every 3-4 days?
-> 
-> For chrissakes, please calm down with that constant hammering and try to
-> put yourself in the maintainer's shoes for once. Also, try to realize
-> that hammering people with patchsets will get you the *opposite* of what
-> you're trying to achieve - you will get ignored.
-> 
-> Geez.
-> 
+> 			port@5 {
+> 				reg = <5>;
+> 				label = "lan4";
+> 				phy-mode = "internal";
+> 				phy-handle = <&phy_port5>;
+> 			};
+> 		};
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+So here, port '6' is not used. But it could be connected to an RGMII
+PHY and called lan5. Would the naming work out? What does devlink
+think of it, etc. What about phy-handle? Is there an external MDIO
+bus? What address would be used if there is no phy-handle?
+
+      Andrew
