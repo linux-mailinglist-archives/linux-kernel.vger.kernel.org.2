@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01CD9427854
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 640FF42785F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233082AbhJIJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:16:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhJIJQN (ORCPT
+        id S231767AbhJIJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:20:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29223 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231219AbhJIJUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:16:13 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B99C061570;
-        Sat,  9 Oct 2021 02:14:17 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id 24so17095541oix.0;
-        Sat, 09 Oct 2021 02:14:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MHz+fLkq0sPp6F+6xlYzKWQ6Hgd1dcKc+eCm2j1oBAM=;
-        b=LlJTUeM3tz8zBMSDxBtJdys+DPI7z7uVXdrAAvfxCS/HO90vN97DhEVebwNZZYazFQ
-         yqIXb0fLTfqzjgdzs7fKtqzXccix8ZOBEyLzKfY/hvT57ydUSH5tbuHJvoHjDjmaLvZ6
-         TI3nn/K65oEChEm0J14oDzex9sAHQ7xY79aU7pdwydkyYgO8ziPh8xaFozD4vItc8Fku
-         Q/h0MSyRo/Hc/grVLdqPNeAoCHlTnQjT1qhVIGL/ZSUjIj34hc99zKAdx8wCNcIBg+LD
-         +z1RsfgqKOKBe/UzrCiKWwyv+pnsfdnzLb1fE4ne1lnP1vachTvl3ejujScrgkigpbRI
-         2M8A==
+        Sat, 9 Oct 2021 05:20:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633771083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2UwzU/Hl4oyLBnA1BVpvqm3h7gRDiFiszHCb/NTENEE=;
+        b=NeQIzLRZG8Ci6Wyi5PTHTSFZzkUnvMOM3qh7K4TpBZz/aOX1l95yYszilRTMEl7bBYsuRv
+        hZcHjziBnigJjhYKa9b+McH1OGDr28GcQkpu8izAXfFy1OjTxsMESzOwv7SknAFBNL4YK0
+        uaMBVc/MQKE+4jQhSWt2mt1rw/2K5X8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-T7s5fZsMOQ-g2Zou_sI3QA-1; Sat, 09 Oct 2021 05:18:01 -0400
+X-MC-Unique: T7s5fZsMOQ-g2Zou_sI3QA-1
+Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso11390725edn.4
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 02:18:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MHz+fLkq0sPp6F+6xlYzKWQ6Hgd1dcKc+eCm2j1oBAM=;
-        b=yMiTfjGIbZNelAViZfDYGgSLxMT7egPKTTq2idbplYbOeGF67uZFIFEgT1/F8NpkSh
-         FQzU3ktxS2hd8MFs8p0gI5ShPCDUtTwp8nWFcT+moGO0vFXk4copR4Ua2adxC9t5Xxpm
-         LdJfV8Qw3Kdc5pSLYdBxXN5zbSLn2WqTeeX37TSAexSEF5UAZNkXmBb3a9Hd3y0lj8Xi
-         eeS9xHQpLwvJvOyo8rW6M9Q3+J9ji3mSZnhyBZQZQdx+B31w6gQ/NzME4Llwd53+lSi9
-         Tkn7ZASMSK+WMXbo9H9det0I1b8gclMtr4w4dMra8/lHBrx80gs9lZ1lxC5nLWZgoAU4
-         DCyg==
-X-Gm-Message-State: AOAM533gn1DXBVbjYf5kVnrzAbbruJh3xlBWpmNenJHb+3ejJjJd+g5i
-        HydB/Nfu3JioZ10UWfack/naP/LF6fB9VHeVRdQ=
-X-Google-Smtp-Source: ABdhPJxvCeZUVnWEZeKcA3Hequb2mutBsquMD43Fn51l8katMgFyhwtwbhe2hVUhDluo2RGgUSPEsWdC2+l1mjR97gc=
-X-Received: by 2002:aca:4587:: with SMTP id s129mr19335653oia.5.1633770856604;
- Sat, 09 Oct 2021 02:14:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=2UwzU/Hl4oyLBnA1BVpvqm3h7gRDiFiszHCb/NTENEE=;
+        b=vlsPSJ8z0Ps5BpU8/pVWQhUN8OHI4iHurSnoIWA/rs/wgLqO/7Q5S4VOeyQ5nVgOkN
+         hrD8aT3RqT2DSpkbi36Os2hK1nXSb691v8GcRYQJqs8EVdz0iVb/dSii2yNBk3cL5Odq
+         hzfp2iuiYqBycamrnllwWUQbyX3GQiJsCCt8bBq9CafKtfwb/DzKiDvpe5rEiWcrNAgq
+         VFa1ZhL3CQMUbO57aN5nX06DUePgIjL3S/IcCSNL6t5q9MV1mtCrre+PYHnCCvzPwFH0
+         aiz5sFqWdqLulV7f8I22pztGnrou5W33A6E4RDYoXb9HUzY4Uwmjtzf611TyEguif7Rl
+         L60Q==
+X-Gm-Message-State: AOAM5318ADQBEzdWV1evEj7UX8iEd6aRMc5LanlB1wFVBcyZPHfrMpbJ
+        YKOE20Hg8+8oTVndcsjzKyFxkvvk2p2Znc8Db/T+nwriVgH9Fl8FxkVny5MzqqttoRRDvEXrJrJ
+        oPdtHbYs1izrFwqntNtv58mqYQPuquR/zBUgxJbyMJDDF87z8uWcnibqjPOx1OeYkX4aWcQ==
+X-Received: by 2002:a05:6402:5202:: with SMTP id s2mr15544705edd.67.1633771080257;
+        Sat, 09 Oct 2021 02:18:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGfmIQZR+1/PAQ0xIABJbC6CJzPRKYIoGKikbdWi9pwKm3KdMLPvApqQ8MIxMgBYddw5gdjQ==
+X-Received: by 2002:a05:6402:5202:: with SMTP id s2mr15544541edd.67.1633771078558;
+        Sat, 09 Oct 2021 02:17:58 -0700 (PDT)
+Received: from redhat.com ([2.55.132.170])
+        by smtp.gmail.com with ESMTPSA id ck9sm722624ejb.56.2021.10.09.02.17.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 02:17:57 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 05:17:53 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Corentin =?utf-8?B?Tm/Dq2w=?= <corentin.noel@collabora.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Subject: [PATCH net] virtio-net: fix for skb_over_panic inside big mode
+Message-ID: <20211009091604.84141-1-mst@redhat.com>
 MIME-Version: 1.0
-References: <1633687054-18865-1-git-send-email-wanpengli@tencent.com>
- <1633687054-18865-3-git-send-email-wanpengli@tencent.com> <87ily73i0x.fsf@vitty.brq.redhat.com>
- <CANRm+Cy=bb_iap6JKsux7ekmo6Td0FXqwpuVdgPSC8u8b2wFNA@mail.gmail.com> <YWBq56G/ZrsytEP7@google.com>
-In-Reply-To: <YWBq56G/ZrsytEP7@google.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Sat, 9 Oct 2021 17:14:05 +0800
-Message-ID: <CANRm+Czj4Kv56HcX2vYu6mMa6o6xrMrCKmZ8x=rp-apLrrGHZQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] KVM: LAPIC: Optimize PMI delivering overhead
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 23:59, Sean Christopherson <seanjc@google.com> wrote:
->
-> On Fri, Oct 08, 2021, Wanpeng Li wrote:
-> > On Fri, 8 Oct 2021 at 18:52, Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
-> > >
-> > > Wanpeng Li <kernellwp@gmail.com> writes:
-> > >
-> > > > From: Wanpeng Li <wanpengli@tencent.com>
-> > > >
-> > > > The overhead of kvm_vcpu_kick() is huge since expensive rcu/memory
-> > > > barrier etc operations in rcuwait_wake_up(). It is worse when local
->
-> Memory barriers on x86 are just compiler barriers.  The only meaningful overhead
-> is the locked transaction in rcu_read_lock() => preempt_disable().  I suspect the
-> performance benefit from this patch comes either comes from avoiding a second
-> lock when disabling preemption again for get_cpu(), or by avoiding the cmpxchg()
-> in kvm_vcpu_exiting_guest_mode().
->
-> > > > delivery since the vCPU is scheduled and we still suffer from this.
-> > > > We can observe 12us+ for kvm_vcpu_kick() in kvm_pmu_deliver_pmi()
-> > > > path by ftrace before the patch and 6us+ after the optimization.
->
-> Those numbers seem off, I wouldn't expect a few locks to take 6us.
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 
-Maybe the ftrace introduces more overhead.
+commit 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net")
+accidentally reverted the effect of
+commit 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
+on drivers/net/virtio_net.c
 
->
-> > > > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-> > > > ---
-> > > >  arch/x86/kvm/lapic.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> > > > index 76fb00921203..ec6997187c6d 100644
-> > > > --- a/arch/x86/kvm/lapic.c
-> > > > +++ b/arch/x86/kvm/lapic.c
-> > > > @@ -1120,7 +1120,8 @@ static int __apic_accept_irq(struct kvm_lapic *apic, int delivery_mode,
-> > > >       case APIC_DM_NMI:
-> > > >               result = 1;
-> > > >               kvm_inject_nmi(vcpu);
-> > > > -             kvm_vcpu_kick(vcpu);
-> > > > +             if (vcpu != kvm_get_running_vcpu())
-> > > > +                     kvm_vcpu_kick(vcpu);
-> > >
-> > > Out of curiosity,
-> > >
-> > > can this be converted into a generic optimization for kvm_vcpu_kick()
-> > > instead? I.e. if kvm_vcpu_kick() is called for the currently running
-> > > vCPU, there's almost nothing to do, especially when we already have a
-> > > request pending, right? (I didn't put too much though to it)
-> >
-> > I thought about it before, I will do it in the next version since you
-> > also vote for it. :)
->
-> Adding a kvm_get_running_vcpu() check before kvm_vcpu_wake_up() in kvm_vcpu_kick()
-> is not functionally correct as it's possible to reach kvm_cpu_kick() from (soft)
-> IRQ context, e.g. hrtimer => apic_timer_expired() and pi_wakeup_handler().  If
-> the kick occurs after prepare_to_rcuwait() and the final kvm_vcpu_check_block(),
-> but before the vCPU is scheduled out, then the kvm_vcpu_wake_up() is required to
-> wake the vCPU, even if it is the current running vCPU.
+As a result, users of crosvm (which is using large packet mode)
+are experiencing crashes with 5.14-rc1 and above that do not
+occur with 5.13.
 
-Good point.
+Crash trace:
 
->
-> The extra check might also degrade performance for many cases since the full kick
-> path would need to disable preemption three times, though if the overhead is from
-> x86's cmpxchg() then it's a moot point.
->
-> I think we'd want something like this to avoid extra preempt_disable() as well
-> as the cmpxchg() when @vcpu is the running vCPU.
+[   61.346677] skbuff: skb_over_panic: text:ffffffff881ae2c7 len:3762 put:3762 head:ffff8a5ec8c22000 data:ffff8a5ec8c22010 tail:0xec2 end:0xec0 dev:<NULL>
+[   61.369192] kernel BUG at net/core/skbuff.c:111!
+[   61.372840] invalid opcode: 0000 [#1] SMP PTI
+[   61.374892] CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.14.0-rc1 linux-v5.14-rc1-for-mesa-ci.tar.bz2 #1
+[   61.376450] Hardware name: ChromiumOS crosvm, BIOS 0
 
-Do it in v2, thanks for the suggestion.
+..
 
-    Wanpeng
+[   61.393635] Call Trace:
+[   61.394127]  <IRQ>
+[   61.394488]  skb_put.cold+0x10/0x10
+[   61.395095]  page_to_skb+0xf7/0x410
+[   61.395689]  receive_buf+0x81/0x1660
+[   61.396228]  ? netif_receive_skb_list_internal+0x1ad/0x2b0
+[   61.397180]  ? napi_gro_flush+0x97/0xe0
+[   61.397896]  ? detach_buf_split+0x67/0x120
+[   61.398573]  virtnet_poll+0x2cf/0x420
+[   61.399197]  __napi_poll+0x25/0x150
+[   61.399764]  net_rx_action+0x22f/0x280
+[   61.400394]  __do_softirq+0xba/0x257
+[   61.401012]  irq_exit_rcu+0x8e/0xb0
+[   61.401618]  common_interrupt+0x7b/0xa0
+[   61.402270]  </IRQ>
+
+See
+https://lore.kernel.org/r/5edaa2b7c2fe4abd0347b8454b2ac032b6694e2c.camel%40collabora.com
+for the report.
+
+Apply the original 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
+again, the original logic still holds:
+
+In virtio-net's large packet mode, there is a hole in the space behind
+buf.
+
+    hdr_padded_len - hdr_len
+
+We must take this into account when calculating tailroom.
+
+Cc: Greg KH <gregkh@linuxfoundation.org>
+Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there's sufficient tailroom")
+Fixes: 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net")
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Reported-by: Corentin Noël <corentin.noel@collabora.com>
+Tested-by: Corentin Noël <corentin.noel@collabora.com>
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+---
+
+David, I think we need this in stable, too.
+
+ drivers/net/virtio_net.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 096c2ac6b7a6..6b0812f44bbf 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -406,7 +406,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	 * add_recvbuf_mergeable() + get_mergeable_buf_len()
+ 	 */
+ 	truesize = headroom ? PAGE_SIZE : truesize;
+-	tailroom = truesize - len - headroom;
++	tailroom = truesize - len - headroom - (hdr_padded_len - hdr_len);
+ 	buf = p - headroom;
+ 
+ 	len -= hdr_len;
+-- 
+MST
+
