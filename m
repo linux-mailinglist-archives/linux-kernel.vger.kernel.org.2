@@ -2,230 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A315427878
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3069142787C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244383AbhJIJi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230022AbhJIJi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:38:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C30956103B;
-        Sat,  9 Oct 2021 09:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633772191;
-        bh=SjT8GXjp2vALqAboJSsc+ya7I8HSo3JkjeRK9RdsfOs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RPa5mVuZmKfBqcwzAKdwFLiOTh4k96G1uawf5srCOZkavlEliMGmiGYkMd7zaYuur
-         9D/ZlUyYDul7Iscb2Mj4kG9D1oktsPMIHdKq28uLstTO+wi+4Wyqg6G/dZfjqibPlX
-         BWvz/ey57e+lL7xBmVtUf/NMqHIu87QifvYy8QuWHYaUFj9311A2jnF3aSvVPWq44V
-         KVZ87zyADOVHAVnZ1Ian7zheZDXzmotL+Yhr3k8r+3DZ0DNfQ8KbYtVUYfCDsrLy09
-         320QguKRYhBKQczyXoi0ZYQCk6nuZOTUhkRXtLwm+lAYi62nqVX8UY3xT8x7Mc78Nv
-         IW/MbN0QRJCKw==
-Received: by mail-ua1-f51.google.com with SMTP id r17so189394uaf.8;
-        Sat, 09 Oct 2021 02:36:31 -0700 (PDT)
-X-Gm-Message-State: AOAM532YhZTiXp89NiMmfRD1AumqnX8VDxiLTqOo7S80vJ2uEkcuT+Po
-        tVIxJrzhhWt214xwdiHlh4IoBbBWsCFuRZkFn9M=
-X-Google-Smtp-Source: ABdhPJw4K9Vh0ayL3YzQdV/mPKwTuZ6tYl/k8iHoEU5LBj948W/50Y3El7sw3j56qe2h+lEng8MYJoY+5CCl0TmO9lE=
-X-Received: by 2002:a05:6130:426:: with SMTP id ba38mr7997026uab.108.1633772190841;
- Sat, 09 Oct 2021 02:36:30 -0700 (PDT)
+        id S244490AbhJIJlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:41:10 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:24229 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230022AbhJIJlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 05:41:04 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HRKjl4LYxzQj5H;
+        Sat,  9 Oct 2021 17:38:03 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 17:39:06 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 17:39:05 +0800
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <akpm@linux-foundation.org>,
+        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
+        <peterz@infradead.org>, <yuzhao@google.com>, <jhubbard@nvidia.com>,
+        <will@kernel.org>, <willy@infradead.org>, <jgg@ziepe.ca>,
+        <mcroce@microsoft.com>, <willemb@google.com>,
+        <cong.wang@bytedance.com>, <pabeni@redhat.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <memxor@gmail.com>, <vvs@virtuozzo.com>, <linux-mm@kvack.org>,
+        <edumazet@google.com>, <alexander.duyck@gmail.com>,
+        <dsahern@gmail.com>
+Subject: [PATCH net-next -v5 0/4] some optimization for page pool
+Date:   Sat, 9 Oct 2021 17:37:20 +0800
+Message-ID: <20211009093724.10539-1-linyunsheng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20211008111527.438276127@infradead.org> <20211008111626.455137084@infradead.org>
-In-Reply-To: <20211008111626.455137084@infradead.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 9 Oct 2021 17:36:19 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTRTbOjqfNcm16E_XCtBSxTiUyczsWYR9uy6ZYqSuR41Pg@mail.gmail.com>
-Message-ID: <CAJF2gTRTbOjqfNcm16E_XCtBSxTiUyczsWYR9uy6ZYqSuR41Pg@mail.gmail.com>
-Subject: Re: [PATCH 7/7] arch: Fix STACKTRACE_SUPPORT
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        vcaputo@pengaru.com, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com, amistry@google.com,
-        Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com,
-        Helge Deller <deller@gmx.de>, zhengqi.arch@bytedance.com,
-        me@tobin.cc, tycho@tycho.pizza,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jens Axboe <axboe@kernel.dk>, metze@samba.org,
-        laijs@linux.alibaba.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, jpoimboe@redhat.com,
-        linux-hardening@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>, vgupta@kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        David Miller <davem@davemloft.net>,
-        Chris Zankel <chris@zankel.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx Peter,
+Patch 1: disable dma mapping support for 32-bit arch with 64-bit
+         DMA.
+Patch 2 - 4: pp page frag tracking support
 
-On Fri, Oct 8, 2021 at 7:18 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> A few archs got save_stack_trace_tsk() vs in_sched_functions() wrong.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/csky/kernel/stacktrace.c  |    7 ++++++-
->  arch/mips/kernel/stacktrace.c  |   27 ++++++++++++++++-----------
->  arch/nds32/kernel/stacktrace.c |   21 +++++++++++----------
->  3 files changed, 33 insertions(+), 22 deletions(-)
->
-> --- a/arch/csky/kernel/stacktrace.c
-> +++ b/arch/csky/kernel/stacktrace.c
-> @@ -122,12 +122,17 @@ static bool save_trace(unsigned long pc,
->         return __save_trace(pc, arg, false);
->  }
->
-> +static bool save_trace_nosched(unsigned long pc, void *arg)
-> +{
-> +       return __save_trace(pc, arg, true);
-> +}
-> +
->  /*
->   * Save stack-backtrace addresses into a stack_trace buffer.
->   */
->  void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
->  {
-> -       walk_stackframe(tsk, NULL, save_trace, trace);
-> +       walk_stackframe(tsk, NULL, save_trace_nosched, trace);
->  }
->  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
-I think the patch should be:
-@@ -138,7 +138,7 @@ static bool __save_trace(unsigned long pc, void
-*arg, bool nosched)
+The small packet drop test show no notiable performance degradation
+when page pool is disabled.
 
- static bool save_trace(unsigned long pc, void *arg)
- {
--       return __save_trace(pc, arg, false);
-+       return __save_trace(pc, arg, true);
- }
+V5: Keep the put_page()/get_page() semantics.
 
-Another question:
-If we put sched_text in the backtrace buffer, just cause put no useful
-information in wchan, right?
-(I think it wouldn't cause a worse problem than debugging.)
+V4:
+    1. Change error code to EOPNOTSUPP in patch 1.
+    2. Drop patch 2.
+    3. Use pp_frag_count to indicate if a pp page can be tracked,
+       to avoid breaking the mlx5 driver.
 
+V3:
+    1. add patch 1/4/6/7.
+    2. use pp_magic to identify pp page uniquely too.
+    3. avoid unnecessary compound_head() calling.
 
->
-> --- a/arch/mips/kernel/stacktrace.c
-> +++ b/arch/mips/kernel/stacktrace.c
-> @@ -66,16 +66,7 @@ static void save_context_stack(struct st
->  #endif
->  }
->
-> -/*
-> - * Save stack-backtrace addresses into a stack_trace buffer.
-> - */
-> -void save_stack_trace(struct stack_trace *trace)
-> -{
-> -       save_stack_trace_tsk(current, trace);
-> -}
-> -EXPORT_SYMBOL_GPL(save_stack_trace);
-> -
-> -void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-> +static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
->  {
->         struct pt_regs dummyregs;
->         struct pt_regs *regs = &dummyregs;
-> @@ -88,6 +79,20 @@ void save_stack_trace_tsk(struct task_st
->                 regs->cp0_epc = tsk->thread.reg31;
->         } else
->                 prepare_frametrace(regs);
-> -       save_context_stack(trace, tsk, regs, tsk == current);
-> +       save_context_stack(trace, tsk, regs, savesched);
-> +}
-> +
-> +/*
-> + * Save stack-backtrace addresses into a stack_trace buffer.
-> + */
-> +void save_stack_trace(struct stack_trace *trace)
-> +{
-> +       __save_stack_trace_tsk(current, trace, true);
-> +}
-> +EXPORT_SYMBOL_GPL(save_stack_trace);
-> +
-> +void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-> +{
-> +       __save_stack_trace_tsk(tsk, trace, false);
->  }
->  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
-> --- a/arch/nds32/kernel/stacktrace.c
-> +++ b/arch/nds32/kernel/stacktrace.c
-> @@ -6,25 +6,16 @@
->  #include <linux/stacktrace.h>
->  #include <linux/ftrace.h>
->
-> -void save_stack_trace(struct stack_trace *trace)
-> -{
-> -       save_stack_trace_tsk(current, trace);
-> -}
-> -EXPORT_SYMBOL_GPL(save_stack_trace);
-> -
-> -void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-> +static void __save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace, bool savesched)
->  {
->         unsigned long *fpn;
->         int skip = trace->skip;
-> -       int savesched;
->         int graph_idx = 0;
->
->         if (tsk == current) {
->                 __asm__ __volatile__("\tori\t%0, $fp, #0\n":"=r"(fpn));
-> -               savesched = 1;
->         } else {
->                 fpn = (unsigned long *)thread_saved_fp(tsk);
-> -               savesched = 0;
->         }
->
->         while (!kstack_end(fpn) && !((unsigned long)fpn & 0x3)
-> @@ -50,4 +41,14 @@ void save_stack_trace_tsk(struct task_st
->                 fpn = (unsigned long *)fpp;
->         }
->  }
-> +void save_stack_trace(struct stack_trace *trace)
-> +{
-> +       __save_stack_trace_tsk(current, trace, true);
-> +}
-> +EXPORT_SYMBOL_GPL(save_stack_trace);
-> +
-> +void save_stack_trace_tsk(struct task_struct *tsk, struct stack_trace *trace)
-> +{
-> +       __save_stack_trace_tsk(tsk, trace, false);
-> +}
->  EXPORT_SYMBOL_GPL(save_stack_trace_tsk);
->
->
+V2: add patch 2, adjust the commit log accroding to the discussion
+    in V1, and fix a compiler error reported by kernel test robot.
 
+Yunsheng Lin (4):
+  page_pool: disable dma mapping support for 32-bit arch with 64-bit DMA
+  page_pool: change BIAS_MAX to support incrementing
+  mm: introduce __get_page() and __put_page()
+  skbuff: keep track of pp page when pp_frag_count is used
 
---
-Best Regards
- Guo Ren
+ include/linux/mm.h       | 21 ++++++++++++++-------
+ include/linux/mm_types.h | 13 +------------
+ include/linux/skbuff.h   | 30 ++++++++++++++++++++----------
+ include/net/page_pool.h  | 36 ++++++++++++++++++++++++------------
+ mm/swap.c                |  6 +++---
+ net/core/page_pool.c     | 29 +++++++++--------------------
+ net/core/skbuff.c        | 10 ++++++++--
+ 7 files changed, 79 insertions(+), 66 deletions(-)
 
-ML: https://lore.kernel.org/linux-csky/
+-- 
+2.33.0
+
