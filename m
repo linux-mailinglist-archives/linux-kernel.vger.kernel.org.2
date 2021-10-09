@@ -2,81 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329D94277CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 08:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C62454277D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232736AbhJIGwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 02:52:55 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24227 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhJIGwy (ORCPT
+        id S232611AbhJIHB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 03:01:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhJIHBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 02:52:54 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HRFzh5J9pzQj3X;
-        Sat,  9 Oct 2021 14:49:52 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 14:50:55 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 9 Oct 2021
- 14:50:54 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <tiwai@suse.com>, <perex@perex.cz>, <broonie@kernel.org>,
-        <lgirdwood@gmail.com>
-Subject: [PATCH] ASoC: soc-core: fix null-ptr-deref in snd_soc_del_component_unlocked()
-Date:   Sat, 9 Oct 2021 14:58:40 +0800
-Message-ID: <20211009065840.3196239-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+        Sat, 9 Oct 2021 03:01:55 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC50C061570;
+        Fri,  8 Oct 2021 23:59:58 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s75so5307291pgs.5;
+        Fri, 08 Oct 2021 23:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=emkYxqV58YPcnV9wK+4W0hPkQJrufAB8SQaSjaWcy5A=;
+        b=WqZKMgV11Xw4RG4qCsyL9ju4SHNDw3Y0p+eqNq+CtEFun6XseYSK1oSe95cgNNov8G
+         +iyHPv0r6PmCdcMItx9+IeZc3rviPXopp5yVWkJF3DvT9KuAh5Ek8T382FB5nUqt+Afk
+         lZMtPD4ujs+ZRWzAyIPqE33/v5SmWbU2RhSfS8QUrGWlaHJJ2HFBNHaWu8LO4disSYb3
+         zhJjr1rvn6ro3J98PV5DKT7M2TIGiwVcU+PTQcLeDOfhleJLmYcbrBQbkIYZR/KeGvb2
+         14AWPEkXzRzuLe26ov7pI/H1cCKGABvvnAGpQKAnhgmWtACxwy81nZ7X2vO4nMC8pnuF
+         7Vtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=emkYxqV58YPcnV9wK+4W0hPkQJrufAB8SQaSjaWcy5A=;
+        b=ArZo+JINEiZ8OofY41RNKCR7jZSFyb41fYEZlN30RZ583MlAUeQD1ZClNZdlJksGDd
+         krsoRUXgYMejFxDQfD5PCksk7ERAb8zDMSmKtSBt+oWt9StlRcK1vAvfhHqFRhnFO/LJ
+         QaW/adxRLTKptCB/jj7ep2ct3SDdIQsRekOIUF9Wyfqo8K6QFueoWyBvfidPxTjFb44e
+         47UL38b8Rgss4axvnH7tLXDId5N+rxru+9k4ZwbRJpJmFtTjEgSlhhZZFkxtGi4bguNm
+         +J5iBSPvpcEe8XJ3VFqrqDitl+vCdoSymEFCxXVTzva4Gb6H9giMy4/MKmMYKruEsuXH
+         raJw==
+X-Gm-Message-State: AOAM531lCmjQQZNX0XqHhYzxDw1V+g50N1p738xH+epqUQjwjufLUHjb
+        xGsd5L0FWDhbsG7T2XZp4HmdkudSwTxbNw==
+X-Google-Smtp-Source: ABdhPJztwOXqNXOM0Zc8NmSCVPIUJraqhJkrm2fVuLW3P69MLO2hajyzqdiY1Hm+fpSEucSY3bP9ZA==
+X-Received: by 2002:a63:f5b:: with SMTP id 27mr8197250pgp.302.1633762798198;
+        Fri, 08 Oct 2021 23:59:58 -0700 (PDT)
+Received: from BJ-zhangqiang.qcraft.lan ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id g3sm1389513pgj.66.2021.10.08.23.59.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 23:59:57 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     axboe@kernel.dk
+Cc:     penguin-kernel@I-love.SAKURA.ne.jp, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>
+Subject: [PATCH] block: fix syzbot report UAF in bdev_free_inode()
+Date:   Sat,  9 Oct 2021 14:59:51 +0800
+Message-Id: <20211009065951.11567-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'component' is allocated in snd_soc_register_component(), but component->list
-is not initalized, this may cause snd_soc_del_component_unlocked() deref null
-ptr in the error handing case.
-
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-RIP: 0010:__list_del_entry_valid+0x81/0xf0
+BUG: KASAN: use-after-free in bdev_free_inode+0x202/0x220
+Read of size 8 at addr ffff88806e022148 by task systemd-udevd/8843
 Call Trace:
- snd_soc_del_component_unlocked+0x69/0x1b0 [snd_soc_core]
- snd_soc_add_component.cold+0x54/0x6c [snd_soc_core]
- snd_soc_register_component+0x70/0x90 [snd_soc_core]
- devm_snd_soc_register_component+0x5e/0xd0 [snd_soc_core]
- tas2552_probe+0x265/0x320 [snd_soc_tas2552]
- ? tas2552_component_probe+0x1e0/0x1e0 [snd_soc_tas2552]
- i2c_device_probe+0xa31/0xbe0
+ <IRQ>
+ __dump_stack [inline]
+ dump_stack_lvl+0xcd/0x134
+ print_address_description.constprop.0.cold+0x6c/0x2d6
+ __kasan_report [inline]
+ kasan_report.cold+0x83/0xdf
+ bdev_free_inode+0x202/0x220
+ i_callback+0x3f/0x70
+ rcu_do_batch [inline]
+ rcu_core+0x7ab/0x1470
+ __do_softirq+0x29b/0x9c2
+ invoke_softirq [inline]
+ __irq_exit_rcu+0x123/0x180
+ irq_exit_rcu+0x5/0x20
 
-Fix by adding INIT_LIST_HEAD() to snd_soc_component_initialize().
+Allocated by task 15227:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track [inline]
+ set_alloc_info [inline]
+ ____kasan_kmalloc [inline]
+ ____kasan_kmalloc [inline]
+ __kasan_kmalloc+0xa1/0xd0
+ kasan_kmalloc [inline]
+ kmem_cache_alloc_node_trace+0x20b/0x5d0
+ kmalloc_node [inline]
+ kzalloc_node [inline]
+ __alloc_disk_node+0x77/0x580
+ __blk_mq_alloc_disk+0xed/0x160
+ loop_add+0x340/0x960
+ loop_control_get_free [inline]
+ loop_control_ioctl+0x227/0x4a0
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+ Freed by task 15227:
+ kasan_save_stack+0x1b/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x20/0x30
+ ____kasan_slab_free [inline]
+ ____kasan_slab_free [inline]
+ __kasan_slab_free+0xd1/0x110
+ kasan_slab_free [inline]
+ __cache_free [inline]
+ kfree+0x10a/0x2c0
+ __alloc_disk_node+0x474/0x580
+ __blk_mq_alloc_disk+0xed/0x160
+ loop_add+0x340/0x960
+ loop_control_get_free [inline]
+ loop_control_ioctl+0x227/0x4a0
+
+The xa_insert() may be return error in __alloc_disk_node(), and the disk
+object will be release, however there are two operations that will release
+it, kfree(disk) and iput(disk->part0->bd_inode), the iput operations
+will call call_rcu(), because the rcu callback executed is an asynchronous
+actionthe, so when free disk object in rcu callback, the disk object haven
+been released. solve it through a unified release action.
+
+Reported-by: syzbot+8281086e8a6fbfbd952a@syzkaller.appspotmail.com
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 ---
- sound/soc/soc-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ block/genhd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index c830e96afba2..80ca260595fd 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2599,6 +2599,7 @@ int snd_soc_component_initialize(struct snd_soc_component *component,
- 	INIT_LIST_HEAD(&component->dai_list);
- 	INIT_LIST_HEAD(&component->dobj_list);
- 	INIT_LIST_HEAD(&component->card_list);
-+	INIT_LIST_HEAD(&component->list);
- 	mutex_init(&component->io_mutex);
+diff --git a/block/genhd.c b/block/genhd.c
+index 5e8aa0ab66c2..924b75d9dfa6 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -1269,11 +1269,13 @@ struct gendisk *__alloc_disk_node(struct request_queue *q, int node_id,
  
- 	component->name = fmt_single_name(dev, &component->id);
+ out_destroy_part_tbl:
+ 	xa_destroy(&disk->part_tbl);
+-	iput(disk->part0->bd_inode);
+ out_free_bdi:
+ 	bdi_put(disk->bdi);
+ out_free_disk:
+-	kfree(disk);
++	if (disk->part0)
++		iput(disk->part0->bd_inode);
++	else
++		kfree(disk);
+ out_put_queue:
+ 	blk_put_queue(q);
+ 	return NULL;
 -- 
-2.25.1
+2.17.1
 
