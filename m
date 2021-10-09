@@ -2,288 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BB0427701
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B5A427702
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244254AbhJIDvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 23:51:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59924 "EHLO
+        id S244267AbhJIDwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 23:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhJIDvv (ORCPT
+        with ESMTP id S229561AbhJIDwe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 23:51:51 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D78C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 20:49:55 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so9194949pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 20:49:55 -0700 (PDT)
+        Fri, 8 Oct 2021 23:52:34 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0EB5C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 20:50:38 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id s75so4958218pgs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 20:50:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YsOo6uJpHFuwAQVn6OjX/o2BoeDbNko2xmVe2QMnXMU=;
-        b=jB+fqNCISS9Dpu/l3tmqlCxrHSjotS0mWBWaYn1dhjl5Pq5AJ3I0csA17iVRNhsAfH
-         M/ucWx8hzQBGsqktvMsGjrHWwL0GPNxApjbq+Lkww2RmLsz2S4orK49qYZy52YAoiBB+
-         yfongPR4yguxoG76fp3l4EStXuKCuTfb5dRkpBPGphd8Jnd8CZf5aev38CbJQJW5dqmg
-         bbSWgJ6D2pnt2KgHCdBFudgvZM3V73f0HpjNsBS9LwpYaH9S2Dqa/uO9k5V1c/ODgZ9F
-         rh2WxFiSnohp1CxHcppL4uuBmFzQ0VWpfyuj/XStZ4v93a2dR/E7UA5q9OGORKT4NwN6
-         F+bQ==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Qn3VO9TX+pIEqHsNnrQsSRHoGXlUJQFsmUa2joL3IPw=;
+        b=ZjgG7b5C8AZ7bflPUYEASFNTqtsHfyPPy1EclzjnyP8/Yf7g5K5FU3oGlM3KbMd+V2
+         SayK4IZ425j3BadSSdI/iU8lxivMsTdoF8w3fcmKTqqqIlFawx+2TNEh70rJ0ZunHe9k
+         5KTxKrV6Km2pOA3J1WJVP/EN8xwhrYnePbQyE4FIKzuoyxgIbIQvl548CNgq9C3R6oaC
+         s0JKDa0xEx3mO3cL3CSB9qCMCqri5tdPaOsqAK4dgk7iFuRKt9Hhk7l6Bvpswx6eqbPh
+         t0u/8pvKTAVh02+jyV2dAJq67MwO4TBoTSCbZEqq5Dh+oznwfLfpBBFDHhYAyMpDxa0i
+         oK4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YsOo6uJpHFuwAQVn6OjX/o2BoeDbNko2xmVe2QMnXMU=;
-        b=W941egqQyzkiJe33B3nOoxCCfCZrUzzygOOawEL3i7weGQ9ZTWGM068wmJRAHx+jvf
-         fjRFrptQxxTminvcafdHa1MIms9f+A+RUKEkQbk3pXTSoQk52R34vLLsrnzZIWNLd5Ck
-         n9E86KdMYBEkNe+H00HWjBiT8Koe8ctbYq8Pa8sKFTaQVTqu2I/hXzVPojhDEp4cY+NE
-         A1UzbFpSWyFiorIdtI7fyxwowEhNchuEXDldwrltp1030DaINYGzMXf4prIKZQ8uq2bO
-         Es7t1dpBcrQEf9AdL1GvEaV2Ngl3HmcNtwN/MlLpi64w9fzxCijfy5ESrpi1T3ZmdSzC
-         tmBA==
-X-Gm-Message-State: AOAM533d7YGojhpZpl8wpv2AGEr+RglXvt34lmatc4iv6f7HKdb0zmwN
-        5scFC3yz/hhF3VVAvXZNZg==
-X-Google-Smtp-Source: ABdhPJxQZXlwH2PohsiZXf9412JVOod24wFAdxtPoy7iglEJeotIjVMAdw2Gy4ELeqU2x1whFg44Ug==
-X-Received: by 2002:a17:902:7d89:b0:13c:a5e1:f0f1 with SMTP id a9-20020a1709027d8900b0013ca5e1f0f1mr12865501plm.24.1633751394201;
-        Fri, 08 Oct 2021 20:49:54 -0700 (PDT)
-Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l14sm12853915pjq.13.2021.10.08.20.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 20:49:53 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 11:49:47 +0800
-From:   Pingfan Liu <kernelfans@gmail.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Joey Gouly <joey.gouly@arm.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Julien Thierry <julien.thierry@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Yuichi Ito <ito-yuichi@fujitsu.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
-Message-ID: <YWERWy5tMdbaEUU8@piliu.users.ipa.redhat.com>
-References: <20210924132837.45994-1-kernelfans@gmail.com>
- <20210924132837.45994-2-kernelfans@gmail.com>
- <20210924175306.GB42068@C02TD0UTHF1T.local>
- <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
- <20210930133257.GB18258@lakrids.cambridge.arm.com>
- <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
- <YWBbyPJPpt5zgj+b@piliu.users.ipa.redhat.com>
- <20211008172513.GD976@C02TD0UTHF1T.local>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Qn3VO9TX+pIEqHsNnrQsSRHoGXlUJQFsmUa2joL3IPw=;
+        b=AMeC8YZUZSRzBByCl9fNV2ZW13hT4+lVK4x3q6EKhyDt86QosuSKQAMFVcWRiscy6E
+         HGJyEE4G8v8ruvYC04Ado8LQuL9EYnuWwDLEIUMRshZonFblWWFzZVrNaxplmtpQk+oL
+         MUbT+ThzrqNlt2QHAhkg1Ifyvot2Kv3Nq7RphrWWtl9NtWUrELGKu+wKQA6kn7ar5W3c
+         wtoKom+pclPGx03lsS6c+2jMz5fihIBu8fhfvfB3D+sR71S4tgZeAWSWZsvO5A9/bhSn
+         Wo+3spFFUEO/xrXjNR9W6jIwNpk0J3VYyk11sH9083sq6MMLj+pnu5snSHyIOHfrCu+r
+         CnqQ==
+X-Gm-Message-State: AOAM5339+6toYxR3JQ21r9ZhPK/NW7uberCfwARUKDdB56oqSs2zV68P
+        pv2Wg8CvsESDzMJeZZdXM3iT0niih4TN8Q==
+X-Google-Smtp-Source: ABdhPJwrdLQzB7NQb5rT0Jc0lzXVz/5flW55L1ff74MKJgsomrBQVr92Z9MQVSL6YxdHzP/bV8tWUg==
+X-Received: by 2002:a63:3d4a:: with SMTP id k71mr7924665pga.276.1633751438224;
+        Fri, 08 Oct 2021 20:50:38 -0700 (PDT)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id k9sm657242pfa.88.2021.10.08.20.50.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 08 Oct 2021 20:50:38 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 11:50:32 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Gao Xiang <xiang@kernel.org>
+Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>, huyue2@yulong.com,
+        zhangwen@yulong.com
+Subject: Re: [PATCH v2 2/3] erofs: introduce the secondary compression head
+Message-ID: <20211009115032.00002f26.zbestahu@gmail.com>
+In-Reply-To: <20211008200839.24541-3-xiang@kernel.org>
+References: <20211008200839.24541-1-xiang@kernel.org>
+        <20211008200839.24541-3-xiang@kernel.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008172513.GD976@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 06:25:13PM +0100, Mark Rutland wrote:
-> On Fri, Oct 08, 2021 at 10:55:04PM +0800, Pingfan Liu wrote:
-> > On Fri, Oct 08, 2021 at 12:01:25PM +0800, Pingfan Liu wrote:
-> > > Sorry that I missed this message and I am just back from a long
-> > > festival.
-> > > 
-> > > Adding Paul for RCU guidance.
-> > > 
-> > > On Thu, Sep 30, 2021 at 02:32:57PM +0100, Mark Rutland wrote:
-> > > > On Sat, Sep 25, 2021 at 11:39:55PM +0800, Pingfan Liu wrote:
-> > > > > On Fri, Sep 24, 2021 at 06:53:06PM +0100, Mark Rutland wrote:
-> > > > > > On Fri, Sep 24, 2021 at 09:28:33PM +0800, Pingfan Liu wrote:
-> > > > > > > In enter_el1_irq_or_nmi(), it can be the case which NMI interrupts an
-> > > > > > > irq, which makes the condition !interrupts_enabled(regs) fail to detect
-> > > > > > > the NMI. This will cause a mistaken account for irq.
-> > > > > > 
-> > > > > Sorry about the confusing word "account", it should be "lockdep/rcu/.."
-> > > > > 
-> > > > > > Can you please explain this in more detail? It's not clear which
-> > > > > > specific case you mean when you say "NMI interrupts an irq", as that
-> > > > > > could mean a number of distinct scenarios.
-> > > > > > 
-> > > > > > AFAICT, if we're in an IRQ handler (with NMIs unmasked), and an NMI
-> > > > > > causes a new exception we'll do the right thing. So either I'm missing a
-> > > > > > subtlety or you're describing a different scenario..
-> > > > > > 
-> > > > > > Note that the entry code is only trying to distinguish between:
-> > > > > > 
-> > > > > > a) This exception is *definitely* an NMI (because regular interrupts
-> > > > > >    were masked).
-> > > > > > 
-> > > > > > b) This exception is *either* and IRQ or an NMI (and this *cannot* be
-> > > > > >    distinguished until we acknowledge the interrupt), so we treat it as
-> > > > > >    an IRQ for now.
-> > > > > > 
-> > > > > b) is the aim.
-> > > > > 
-> > > > > At the entry, enter_el1_irq_or_nmi() -> enter_from_kernel_mode()->rcu_irq_enter()/rcu_irq_enter_check_tick() etc.
-> > > > > While at irqchip level, gic_handle_irq()->gic_handle_nmi()->nmi_enter(),
-> > > > > which does not call rcu_irq_enter_check_tick(). So it is not proper to
-> > > > > "treat it as an IRQ for now"
-> > > > 
-> > > > I'm struggling to understand the problem here. What is "not proper", and
-> > > > why?
-> > > > 
-> > > > Do you think there's a correctness problem, or that we're doing more
-> > > > work than necessary? 
-> > > > 
-> > > I had thought it just did redundant accounting. But after revisiting RCU
-> > > code, I think it confronts a real bug.
-> > > 
-> > > > If you could give a specific example of a problem, it would really help.
-> > > > 
-> > > Refer to rcu_nmi_enter(), which can be called by
-> > > enter_from_kernel_mode():
-> > > 
-> > > ||noinstr void rcu_nmi_enter(void)
-> > > ||{
-> > > ||        ...
-> > > ||        if (rcu_dynticks_curr_cpu_in_eqs()) {
-> > > ||
-> > > ||                if (!in_nmi())
-> > > ||                        rcu_dynticks_task_exit();
-> > > ||
-> > > ||                // RCU is not watching here ...
-> > > ||                rcu_dynticks_eqs_exit();
-> > > ||                // ... but is watching here.
-> > > ||
-> > > ||                if (!in_nmi()) {
-> > > ||                        instrumentation_begin();
-> > > ||                        rcu_cleanup_after_idle();
-> > > ||                        instrumentation_end();
-> > > ||                }
-> > > ||
-> > > ||                instrumentation_begin();
-> > > ||                // instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
-> > > ||                instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
-> > > ||                // instrumentation for the noinstr rcu_dynticks_eqs_exit()
-> > > ||                instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
-> > > ||
-> > > ||                incby = 1;
-> > > ||        } else if (!in_nmi()) {
-> > > ||                instrumentation_begin();
-> > > ||                rcu_irq_enter_check_tick();
-> > > ||        } else  {
-> > > ||                instrumentation_begin();
-> > > ||        }
-> > > ||        ...
-> > > ||}
-> > > 
-> > 
-> > Forget to supplement the context for understanding the case:
-> >   On arm64, at present, a pNMI (akin to NMI) may call rcu_nmi_enter()
-> >   without calling "__preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);".
-> >   As a result it can be mistaken as an normal interrupt in
-> >   rcu_nmi_enter().
+On Sat,  9 Oct 2021 04:08:38 +0800
+Gao Xiang <xiang@kernel.org> wrote:
+
+> From: Gao Xiang <hsiangkao@linux.alibaba.com>
 > 
-> I appreciate that there's a window where we treat the pNMI like an IRQ,
-> but that's by design, and we account for this in gic_handle_irq() and
-> gic_handle_nmi() where we "upgrade" to NMI context with
-> nmi_enter()..nmi_exit().
+> Previously, for each HEAD lcluster, it can be either HEAD or PLAIN
+> lcluster to indicate whether the whole pcluster is compressed or not.
 > 
-> The idea is that we have two cases: 
+> In this patch, a new HEAD2 head type is introduced to specify another
+> compression algorithm other than the primary algorithm for each
+> compressed file, which can be used for upcoming LZMA compression and
+> LZ4 range dictionary compression for various data patterns.
 > 
-> 1) If we take a pNMI from a context where IRQs were masked, we know it
->    must be a pNMI, and perform the NMI entry immediately to avoid
->    reentrancy problems. 
+> It has been stayed in the EROFS roadmap for years. Complete it now!
 > 
->    I think we're all happy with this case.
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+>  fs/erofs/erofs_fs.h |  8 +++++---
+>  fs/erofs/zmap.c     | 36 +++++++++++++++++++++++++++---------
+>  2 files changed, 32 insertions(+), 12 deletions(-)
 > 
-Right.
+> diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+> index b0b23f41abc3..f579c8c78fff 100644
+> --- a/fs/erofs/erofs_fs.h
+> +++ b/fs/erofs/erofs_fs.h
+> @@ -21,11 +21,13 @@
+>  #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+>  #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
+>  #define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
+> +#define EROFS_FEATURE_INCOMPAT_COMPR_HEAD2	0x00000008
+>  #define EROFS_ALL_FEATURE_INCOMPAT		\
+>  	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+>  	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+>  	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
+> -	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
+> +	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE | \
+> +	 EROFS_FEATURE_INCOMPAT_COMPR_HEAD2)
+>  
+>  #define EROFS_SB_EXTSLOT_SIZE	16
+>  
+> @@ -314,9 +316,9 @@ struct z_erofs_map_header {
+>   */
+>  enum {
+>  	Z_EROFS_VLE_CLUSTER_TYPE_PLAIN		= 0,
+> -	Z_EROFS_VLE_CLUSTER_TYPE_HEAD		= 1,
+> +	Z_EROFS_VLE_CLUSTER_TYPE_HEAD1		= 1,
+>  	Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD	= 2,
+> -	Z_EROFS_VLE_CLUSTER_TYPE_RESERVED	= 3,
+> +	Z_EROFS_VLE_CLUSTER_TYPE_HEAD2		= 3,
+>  	Z_EROFS_VLE_CLUSTER_TYPE_MAX
+>  };
+>  
+> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> index 9d9c26343dab..03945f15ceae 100644
+> --- a/fs/erofs/zmap.c
+> +++ b/fs/erofs/zmap.c
+> @@ -69,11 +69,17 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
+>  	vi->z_algorithmtype[1] = h->h_algorithmtype >> 4;
+>  
+>  	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX) {
+> -		erofs_err(sb, "unknown compression format %u for nid %llu, please upgrade kernel",
+> +		erofs_err(sb, "unknown HEAD1 format %u for nid %llu, please upgrade kernel",
+>  			  vi->z_algorithmtype[0], vi->nid);
+>  		err = -EOPNOTSUPP;
+>  		goto unmap_done;
+>  	}
+> +	if (vi->z_algorithmtype[1] >= Z_EROFS_COMPRESSION_MAX) {
+> +		erofs_err(sb, "unknown HEAD2 format %u for nid %llu, please upgrade kernel",
+> +			  vi->z_algorithmtype[1], vi->nid);
+> +		err = -EOPNOTSUPP;
+> +		goto unmap_done;
+> +	}
 
-> 2) If we take a pNMI from a context where IRQs were unmasked, we don't know
->    whether the trigger was a pNMI/IRQ until we read from the GIC, and
->    since we *could* have taken an IRQ, this is equivalent to taking a
->    spurious IRQ, and while handling that, taking the NMI, e.g.
->    
->    < run with IRQs unmasked >
->      ~~~ take IRQ ~~~
->      < enter IRQ >
->        ~~~ take NMI exception ~~~
->        < enter NMI >
->        < handle NMI >
->        < exit NMI > 
->        ~~~ return from NMI exception ~~~
->      < handle IRQ / spurious / do-nothing >
->      < exit IRQ >
->      ~~~ return from IRQ exception ~~~
->    < continue running with IRQs unmasked >
-> 
-Yes, here I am on the same page. (I think I used a wrong example in
-previous email, which caused the confusion)
+Seems duplicated a little, how about below code?
 
->    ... except that we don't do the HW NMI exception entry/exit, just all
->    the necessary SW accounting.
-> 
-A little but important thing: local_irq_save() etc can not disable pNMI.
+	if (vi->z_algorithmtype[i] >= Z_EROFS_COMPRESSION_MAX ||
+	    vi->z_algorithmtype[++i] >= Z_EROFS_COMPRESSION_MAX) {
+                erofs_err(sb, "unknown HEAD%u format %u for nid %llu, please upgrade kernel",
+			  i, vi->z_algorithmtype[i], vi->nid);
+		err = -EOPNOTSUPP;
+		goto unmap_done;
+	}
 
-> 
-> Note that case (2) can *never* nest within itself or within case (1).
-> 
-> Do you have a specific example of something that goes wrong with the
-> above? e.g. something that's inconsistent with that rationale?
-> 
-Please see the following comment.
+>  
+>  	vi->z_logical_clusterbits = LOG_BLOCK_SIZE + (h->h_clusterbits & 7);
+>  	if (!erofs_sb_has_big_pcluster(EROFS_SB(sb)) &&
+> @@ -189,7 +195,8 @@ static int legacy_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+>  		m->delta[1] = le16_to_cpu(di->di_u.delta[1]);
+>  		break;
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+>  		m->clusterofs = le16_to_cpu(di->di_clusterofs);
+>  		m->pblk = le32_to_cpu(di->di_u.blkaddr);
+>  		break;
+> @@ -446,7 +453,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
+>  		}
+>  		return z_erofs_extent_lookback(m, m->delta[0]);
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+>  		m->headtype = m->type;
+>  		map->m_la = (lcn << lclusterbits) | m->clusterofs;
+>  		break;
+> @@ -470,13 +478,18 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+>  	int err;
+>  
+>  	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
+> -		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
+> +		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 &&
+> +		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD2);
+> +	DBG_BUGON(m->type != m->headtype);
+> +
+>  	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+> -	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
+> +	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1) &&
+> +	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) ||
+> +	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) &&
+> +	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_2))) {
+>  		map->m_plen = 1 << lclusterbits;
+>  		return 0;
+>  	}
+> -
+>  	lcn = m->lcn + 1;
+>  	if (m->compressedlcs)
+>  		goto out;
+> @@ -498,7 +511,8 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+>  
+>  	switch (m->type) {
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+>  		/*
+>  		 * if the 1st NONHEAD lcluster is actually PLAIN or HEAD type
+>  		 * rather than CBLKCNT, it's a 1 lcluster-sized pcluster.
+> @@ -553,7 +567,8 @@ static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
+>  			DBG_BUGON(!m->delta[1] &&
+>  				  m->clusterofs != 1 << lclusterbits);
+>  		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+> -			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
+> +			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 ||
+> +			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) {
+>  			/* go on until the next HEAD lcluster */
+>  			if (lcn != headlcn)
+>  				break;
+> @@ -612,7 +627,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+>  
+>  	switch (m.type) {
+>  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+> -	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
+> +	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+>  		if (endoff >= m.clusterofs) {
+>  			m.headtype = m.type;
+>  			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
+> @@ -654,6 +670,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+>  
+>  	if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN)
+>  		map->m_algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
+> +	else if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2)
+> +		map->m_algorithmformat = vi->z_algorithmtype[1];
+>  	else
+>  		map->m_algorithmformat = vi->z_algorithmtype[0];
+>  
 
-> > And this may cause the following issue:
-> > > There is 3 pieces of code put under the
-> > > protection of if (!in_nmi()). At least the last one
-> > > "rcu_irq_enter_check_tick()" can trigger a hard lock up bug. Because it
-> > > is supposed to hold a spin lock with irqoff by
-> > > "raw_spin_lock_rcu_node(rdp->mynode)", but pNMI can breach it. The same
-> > > scenario in rcu_nmi_exit()->rcu_prepare_for_idle().
-
-Sorry that this should be an wrong example, since here it takes the case (1).
-
-Concentrating on the spin lock rcu_node->lock, there are two operators:
-  raw_spin_lock_rcu_node()
-  raw_spin_trylock_rcu_node()
-
-Then suppose the scenario for deadlock:
-note_gp_changes() in non-irq-context
-{
-    local_irq_save(flags);
-    ...
-    raw_spin_trylock_rcu_node(rnp) // hold lock
-    needwake = __note_gp_changes(rnp, rdp);        ------\
-    raw_spin_unlock_irqrestore_rcu_node(rnp, flags);      \
-}                                                          \
-                                                            \---> pNMI breaks in due to local_irq_save() can not disable it.
-                                                                 rcu_irq_enter() without __preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET)
-								   ->rcu_nmi_enter()
-								     {
-								         else if (!in_nmi())
-									     rcu_irq_enter_check_tick()
-									       ->__rcu_irq_enter_check_tick()
-									         {
-										     ...
-									             raw_spin_lock_rcu_node(rdp->mynode);
-
-										     //Oops deadlock!
-									         }
-								     }
-
-
-> > > 
-> > > As for the first two "if (!in_nmi())", I have no idea of why, except
-> > > breaching spin_lock_irq() by NMI. Hope Paul can give some guide.
-> 
-> That code (in enter_from_kernel_mode()) only runs in case 2, where it
-> cannot be nested within a pNMI, so I struggle to see how this can
-> deadlock. It it can, then I would expect the general case of a pNMI
-> nesting within and IRQ would be broken?
-> 
-Sorry again for the previous misleading wrong example. Hope my new
-example can help.
-
-> Can you give a concrete example of a sequence that would lockup?
-> Currently I can't see how that's possible.
-> 
-
-It seems the RCU subsystem has a strict semantic on NMI and normal
-interrupt. Besides the deadlock example, there may be other supprise to
-confront with (will trace it on another mail with Paul)
-
-Thanks,
-
-	Pingfan
