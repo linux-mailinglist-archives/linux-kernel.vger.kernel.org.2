@@ -2,229 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0AD4274A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CFC4274AF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243958AbhJIAZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:25:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
+        id S243996AbhJIAbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243892AbhJIAZp (ORCPT
+        with ESMTP id S231975AbhJIAbm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:25:45 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B41C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:23:49 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id k2-20020a056830168200b0054e523d242aso4081665otr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:23:49 -0700 (PDT)
+        Fri, 8 Oct 2021 20:31:42 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA8C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:29:46 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id y3so1387622wrl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:29:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JkIOVgb0rFlzTTWYy9nxBqEDUeJR0ZAQd/WMS4wwxAg=;
-        b=tgAss8XZylSYp96jFg8QWvj9pCW5nn8W6lfIhXtFcDdGjnT4o75iOG3+ZFeQ0itOVZ
-         A7HUnFO77nQkpIyQ6FDNdgQcfwvmoELb9OzY0ejzLQN+/pI6PFJP1L+yaNnL9plpzhkB
-         cUGWlTJ4ZG4v118IUpr03AcbDINktfy4IHtmixC4qCsFDCSQXI3XGXWyG78s7+Bb8Im5
-         hK4TJ3EijoTqVCwniZ8B6+RsZFZOvP1OU72d9BjQtpGNoz+wpvCeftBis4JEFN/Juz94
-         IwaAH959OJr9R5aMjk5LApH2oSebuNeiupx/GZE/bR+fVID4eCgPJaRZQudMjA56yl3Y
-         AE9g==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/Sn+ay3w7XhYS/cW7EsEYXtsnzNUJKfJeytfY5AXlNw=;
+        b=DQrYV071HwuJ4qlYfUdoEbaiPwF9VWcsVMR3sf204l60jHxe0+LPVxB9A/gRq+kBoM
+         9BBswd+Y2c8M85U518SjjraF9Wl7LAK7JNIkGGqmzMwqElCa0F/9QogDB4i/+wi34AA/
+         h1LPsXztvj171+0wg5CPSKB3qkRkhH+FJ7WY5cz/5OcsRxKNRdSAy/OOSqRPixMQcvJ5
+         Y5ZkhjJ1liEerJI9nGoAgxtkDQU9fCCtCgGb4jlsU4+EuxRgAgtq5uilo15YcnxMhOoC
+         PM5LtcrfmzAQz0SKjyw7uuqkomS++53ZgBm7+HZtkTfWkFuCoCl4b2caRL5ZXpzYtRI1
+         NTvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JkIOVgb0rFlzTTWYy9nxBqEDUeJR0ZAQd/WMS4wwxAg=;
-        b=BpROTKoQIVs/fH9RS6M5tQw+F5FJnr+1QMII5LzkQ04On4KPaIfytpDkaIMMPqwyxJ
-         isMMWfeqvgieofH18gGJnkreSlExDYtoKk7lzz6CY63Jk8aluF4rwlmhrKtm1RYCNrKw
-         3cxSpyqB0WRFNK3rTQuq0i3DEnDeedcsZcCiAuDq1pIGFrEXqDi6i53hhueSzJB/1k72
-         XLhFP0e57X3jHfx062lOKz0XUJlQPBAlXzbDHDrl+qfVqZ6jztcFeY7D99YhBXZLxhHw
-         +VzomFHOK+fKlY5YpC4yej8Ir+g4j/RfL11M+4z6ekBmhGI9an7uvflwlOFQGMmv2UPB
-         pjrg==
-X-Gm-Message-State: AOAM533xFfnYZ9VbYVGLRxSGjRlIsNsjE8lKIJABkpTRRBDKu9CpkAnZ
-        8KExlcWKa0KXiGxexKufqvV9Og==
-X-Google-Smtp-Source: ABdhPJzScZ5VD0XmUxg3zl8evGFYSN5Cwytom2vRIcVLCXghggc5kzuN6ajWU8F0d5f8RB5Vf11hFg==
-X-Received: by 2002:a05:6830:2486:: with SMTP id u6mr10866085ots.353.1633739028379;
-        Fri, 08 Oct 2021 17:23:48 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id bd24sm255815oib.52.2021.10.08.17.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 17:23:48 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 17:25:26 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v3] rpmsg: ctrl: Introduce new
- RPMSG_CREATE/RELEASE_DEV_IOCTL controls
-Message-ID: <YWDhdq4iOihzC5FI@ripper>
-References: <20210712132303.25058-1-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/Sn+ay3w7XhYS/cW7EsEYXtsnzNUJKfJeytfY5AXlNw=;
+        b=5/D8NEsbGyWIVfS2zaOYqgzmuyuD/BhfaZhKgUwXiyg1nuEEjIhitXAA4vqdoCAXCt
+         TE7qlqatxFlMfUF+wlst2N4o/bz3zASG7o1Udc973AznDHtWQ+SGGf3DVroXBpYc684T
+         H1stCHlD77+E9jtr8J7PEiL+I6NbeGYAbDDJpnmPZnOjAx3m/L7uc4mhSCbo62tqIim1
+         t0r/aMeOIidJIIrEjA3855ZlbGD3Vd9fU9K7hCESxVez2g6QXgv4qLVISnJPTDL5moFd
+         5Q5MAlkwYvrCOi0LSQ/EXqTcttnTBrCIdZFf8Ab94PLf3lDdvXPKldWKkDZg/XrqlaZH
+         mK1w==
+X-Gm-Message-State: AOAM5321IG2jE5rsLQM59OewU0tKeEeKjY9ac0A1OPsLxPAFyFJv82HR
+        e39WldlRKXfReuNoYAe2Qh4OA3d5nkYR34n8io59oTmYh9pYtw==
+X-Google-Smtp-Source: ABdhPJw2as5bmHxecz7/0JS4czddYtNYJSsVrXvAoFT7mivsXp/HLhL+2JtXv4Di72c0revJv3TErf9hqexvG9Ouwq4=
+X-Received: by 2002:adf:a152:: with SMTP id r18mr7974165wrr.317.1633739384795;
+ Fri, 08 Oct 2021 17:29:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712132303.25058-1-arnaud.pouliquen@foss.st.com>
+References: <20211008232421.1264857-1-dlatypov@google.com>
+In-Reply-To: <20211008232421.1264857-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 9 Oct 2021 08:29:33 +0800
+Message-ID: <CABVgOS=GanpOft7jtKNtyjucE1aaLH8-n3PPmQNCzvdnLAZ1bA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: tool: fix --json output for skipped tests
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Jul 06:23 PDT 2021, Arnaud Pouliquen wrote:
-
-> Allow the user space application to create and release an rpmsg device
-> by adding RPMSG_CREATE_DEV_IOCTL and RPMSG_RELEASE_DEV_IOCTL ioctrls to
-> the /dev/rpmsg_ctrl interface
-> 
-
-With
-https://lore.kernel.org/linux-remoteproc/CAHk-=wgea9bo-j4+LAvZF7OKPAXKqrGgiBAhXTJ3Jv5JAZgA+A@mail.gmail.com/
-and
-https://lore.kernel.org/linux-arm-msm/1609958656-15064-1-git-send-email-hemantk@codeaurora.org/
-in mind, I would like some concrete examples of when and how this is
-going to be used.
-
-
-Also, as I said previously, this would have been better to put together
-with the split out of rpmsg_ctrl, because afaict this is the only reason
-for doing that. Or am I simply missing something?
-
-> The RPMSG_CREATE_DEV_IOCTL Ioctl can be used to instantiate a local rpmsg
-> device.
-> Depending on the back-end implementation, the associated rpmsg driver is
-> probed and a NS announcement can be sent to the remote processor.
-> 
-
-So, does this imply that in order to spawn a new rpmsg_char from the
-host side, I would use RPMSG_CREATE_DEV_IOCTL and to open a channel
-announced by the remote I would use RPMSG_CREATE_EPT_IOCTL?
-
-> The RPMSG_RELEASE_DEV_IOCTL allows the user application to release a
-> rpmsg device created either by the remote processor or with the
-> RPMSG_CREATE_DEV_IOCTL call.
-
-Is this a side effect, bug or a feature?
-
-Regards,
-Bjorn
-
-> Depending on the back-end implementation, the associated rpmsg driver is
-> removed and a NS destroy rpmsg can be sent to the remote processor.
-> 
-> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+On Sat, Oct 9, 2021 at 7:24 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Currently, KUnit will report SKIPPED tests as having failed if one uses
+> --json.
+>
+> Add the missing if statement to set the appropriate status ("SKIP").
+> See https://api.kernelci.org/schema-test-case.html:
+>   "status": {
+>       "type": "string",
+>       "description": "The status of the execution of this test case",
+>       "enum": ["PASS", "FAIL", "SKIP", "ERROR"],
+>       "default": "PASS"
+>   },
+> with this, we now can properly produce all four of the statuses.
+>
+> Fixes: 5acaf6031f53 ("kunit: tool: Support skipped tests in kunit_tool")
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
 > ---
-> update from V2
-> - add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> - rebased on kernel V.14-rc1 + 
->   series V5 Restructure the rpmsg char to decorrelate the control part [1]
-> 
-> 
-> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=514017
-> 
-> ---
->  drivers/rpmsg/rpmsg_ctrl.c | 37 +++++++++++++++++++++++++++++++++----
->  include/uapi/linux/rpmsg.h | 10 ++++++++++
->  2 files changed, 43 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index eeb1708548c1..cb19e32d05e1 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -23,6 +23,7 @@
->  #include <uapi/linux/rpmsg.h>
->  
->  #include "rpmsg_char.h"
-> +#include "rpmsg_internal.h"
->  
->  static dev_t rpmsg_major;
->  
-> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
->   * @rpdev:	underlaying rpmsg device
->   * @cdev:	cdev for the ctrl device
->   * @dev:	device for the ctrl device
-> + * @ctrl_lock:	serialize the ioctrls.
->   */
->  struct rpmsg_ctrldev {
->  	struct rpmsg_device *rpdev;
->  	struct cdev cdev;
->  	struct device dev;
-> +	struct mutex ctrl_lock;
->  };
->  
->  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
-> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->  	void __user *argp = (void __user *)arg;
->  	struct rpmsg_endpoint_info eptinfo;
->  	struct rpmsg_channel_info chinfo;
-> -
-> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> -		return -EINVAL;
-> +	struct rpmsg_device *rpdev;
-> +	int ret = 0;
->  
->  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->  		return -EFAULT;
-> @@ -82,7 +84,33 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->  	chinfo.src = eptinfo.src;
->  	chinfo.dst = eptinfo.dst;
->  
-> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-> +	mutex_lock(&ctrldev->ctrl_lock);
-> +	switch (cmd) {
-> +	case RPMSG_CREATE_EPT_IOCTL:
-> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-> +		break;
+
+Ah: thanks! I totally missed this!
+
+Reviewed-by: David Gow <davidgow@google.com>
+
+-- David
+
+>  tools/testing/kunit/kunit_json.py      | 2 ++
+>  tools/testing/kunit/kunit_tool_test.py | 6 ++++++
+>  2 files changed, 8 insertions(+)
+>
+> diff --git a/tools/testing/kunit/kunit_json.py b/tools/testing/kunit/kunit_json.py
+> index 746bec72b9ac..b6e66c5d64d1 100644
+> --- a/tools/testing/kunit/kunit_json.py
+> +++ b/tools/testing/kunit/kunit_json.py
+> @@ -30,6 +30,8 @@ def _get_group_json(test: Test, def_config: str,
+>                         test_case = {"name": subtest.name, "status": "FAIL"}
+>                         if subtest.status == TestStatus.SUCCESS:
+>                                 test_case["status"] = "PASS"
+> +                       elif subtest.status == TestStatus.SKIPPED:
+> +                               test_case["status"] = "SKIP"
+>                         elif subtest.status == TestStatus.TEST_CRASHED:
+>                                 test_case["status"] = "ERROR"
+>                         test_cases.append(test_case)
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 77e61b0a40e8..b3cc0227843c 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -426,6 +426,12 @@ class KUnitJsonTest(unittest.TestCase):
+>                         {'name': 'example_simple_test', 'status': 'ERROR'},
+>                         result["sub_groups"][1]["test_cases"][0])
+>
+> +       def test_skipped_test_json(self):
+> +               result = self._json_for('test_skip_tests.log')
+> +               self.assertEqual(
+> +                       {'name': 'example_skip_test', 'status': 'SKIP'},
+> +                       result["sub_groups"][1]["test_cases"][1])
 > +
-> +	case RPMSG_CREATE_DEV_IOCTL:
-> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
-> +		if (!rpdev) {
-> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
-> +			ret = -ENXIO;
-> +		}
-> +		break;
-> +
-> +	case RPMSG_RELEASE_DEV_IOCTL:
-> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
-> +		if (ret)
-> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
-> +				chinfo.name, ret);
-> +		break;
-> +
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&ctrldev->ctrl_lock);
-> +
-> +	return ret;
->  };
->  
->  static const struct file_operations rpmsg_ctrldev_fops = {
-> @@ -119,6 +147,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->  	device_initialize(dev);
->  	dev->parent = &rpdev->dev;
->  
-> +	mutex_init(&ctrldev->ctrl_lock);
->  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->  	ctrldev->cdev.owner = THIS_MODULE;
->  
-> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-> index f5ca8740f3fb..1637e68177d9 100644
-> --- a/include/uapi/linux/rpmsg.h
-> +++ b/include/uapi/linux/rpmsg.h
-> @@ -33,4 +33,14 @@ struct rpmsg_endpoint_info {
->   */
->  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->  
-> +/**
-> + * Instantiate a new local rpmsg service device.
-> + */
-> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
-> +
-> +/**
-> + * Release a local rpmsg device.
-> + */
-> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
-> +
->  #endif
-> -- 
-> 2.17.1
-> 
+>         def test_no_tests_json(self):
+>                 result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+>                 self.assertEqual(0, len(result['sub_groups']))
+>
+> base-commit: 4a86e2973c31902a2a72f4f25f99b2367188ec5d
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
