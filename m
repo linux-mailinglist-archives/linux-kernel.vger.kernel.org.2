@@ -2,93 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047DF427910
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0499342791A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244519AbhJIKol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:44:41 -0400
-Received: from mx24.baidu.com ([111.206.215.185]:35264 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232564AbhJIKoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:44:39 -0400
-Received: from BC-Mail-EX08.internal.baidu.com (unknown [172.31.51.48])
-        by Forcepoint Email with ESMTPS id 8F164A796E2FAAF1384F;
-        Sat,  9 Oct 2021 18:42:40 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-EX08.internal.baidu.com (172.31.51.48) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sat, 9 Oct 2021 18:42:40 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Sat, 9
- Oct 2021 18:42:40 +0800
-Date:   Sat, 9 Oct 2021 18:42:46 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>
-CC:     Jason Gunthorpe <jgg@nvidia.com>, Lijun Ou <oulijun@huawei.com>,
-        "Weihang Li" <liweihang@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/hns: Use dma_alloc_coherent() instead of
- kmalloc/dma_map_single()
-Message-ID: <20211009104246.GA1205@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20210926061116.282-1-caihuoqing@baidu.com>
- <20210927115913.GA3544071@ziepe.ca>
- <20211004195224.GA2576309@nvidia.com>
- <07922740-2d3d-50dc-7239-421e39c42142@huawei.com>
+        id S244668AbhJIKqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:46:39 -0400
+Received: from ixit.cz ([94.230.151.217]:41654 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244544AbhJIKqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 06:46:34 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id AEA0420064;
+        Sat,  9 Oct 2021 12:44:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633776274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s131/szhZQJcT42zguyRZMn4H+/xcH/hdWtFJwYz2wM=;
+        b=IVjXIfoPDUx3s9ZIJzF8H6DZPht0ohiIk2KPyZjZA1nZ4w3/VEKHpcw0I0rbLAp6nhBd23
+        8JuCsTaJ+D+VB1rcCXhbzNpHll4UVWMkfF7Pa8q+7Z1nbzNIU1buNlbVPJaccPo0/PLU+Q
+        vLjqxSRB4wm+eMuHZKDcnUrvK38dLCQ=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>
+Cc:     linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH] WIP: dt-bindings: arm: hwmon: gpio-fan: Convert txt bindings to yaml
+Date:   Sat,  9 Oct 2021 12:43:09 +0200
+Message-Id: <20211009104309.45117-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <07922740-2d3d-50dc-7239-421e39c42142@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex21.internal.baidu.com (172.31.51.15) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09 10月 21 17:50:50, Wenpeng Liang wrote:
-> 
-> 
-> On 2021/10/5 3:52, Jason Gunthorpe wrote:
-> > On Mon, Sep 27, 2021 at 08:59:13AM -0300, Jason Gunthorpe wrote:
-> >> On Sun, Sep 26, 2021 at 02:11:15PM +0800, Cai Huoqing wrote:
-> >>> Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
-> >>> with dma_alloc_coherent/dma_free_coherent() helps to reduce
-> >>> code size, and simplify the code, and coherent DMA will not
-> >>> clear the cache every time.
-> >>>
-> >>> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> >>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 20 +++++---------------
-> >>>  1 file changed, 5 insertions(+), 15 deletions(-)
-> >>
-> >> Given I don't see any dma_sync_single calls for this mapping, isn't
-> >> this a correctness fix too?
-> > 
-> > HNS folks?
-> > 
-> > Jason
-> > .
-> > 
-> 
-> Our SoC can keep cache coherent, so there is no exception even if
-> dma_sync_single* is not called, but the driver should not make
-> assumptions about SoC.
-> 
-> So using dma_alloc_coherent() instead of kmalloc/dma_map_single()
-> can simplify the code and achieve the same purpose.
-> 
-> Wenpeng Liang
+Convert fan devices connected to GPIOs to the YAML syntax.
 
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../devicetree/bindings/hwmon/gpio-fan.txt    | 41 -----------
+ .../devicetree/bindings/hwmon/gpio-fan.yaml   | 69 +++++++++++++++++++
+ 2 files changed, 69 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+ create mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
 
-Hi Liang
+diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt b/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+deleted file mode 100644
+index f4cfa350f6a1..000000000000
+--- a/Documentation/devicetree/bindings/hwmon/gpio-fan.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-Bindings for fan connected to GPIO lines
+-
+-Required properties:
+-- compatible : "gpio-fan"
+-
+-Optional properties:
+-- gpios: Specifies the pins that map to bits in the control value,
+-  ordered MSB-->LSB.
+-- gpio-fan,speed-map: A mapping of possible fan RPM speeds and the
+-  control value that should be set to achieve them. This array
+-  must have the RPM values in ascending order.
+-- alarm-gpios: This pin going active indicates something is wrong with
+-  the fan, and a udev event will be fired.
+-- #cooling-cells: If used as a cooling device, must be <2>
+-  Also see:
+-  Documentation/devicetree/bindings/thermal/thermal-cooling-devices.yaml
+-  min and max states are derived from the speed-map of the fan.
+-
+-Note: At least one the "gpios" or "alarm-gpios" properties must be set.
+-
+-Examples:
+-
+-	gpio_fan {
+-		compatible = "gpio-fan";
+-		gpios = <&gpio1 14 1
+-			 &gpio1 13 1>;
+-		gpio-fan,speed-map = <0    0
+-				      3000 1
+-				      6000 2>;
+-		alarm-gpios = <&gpio1 15 1>;
+-	};
+-	gpio_fan_cool: gpio_fan {
+-		compatible = "gpio-fan";
+-		gpios = <&gpio2 14 1
+-			 &gpio2 13 1>;
+-		gpio-fan,speed-map =	<0    0>,
+-					<3000 1>,
+-					<6000 2>;
+-		alarm-gpios = <&gpio2 15 1>;
+-		#cooling-cells = <2>; /* min followed by max */
+-	};
+diff --git a/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
+new file mode 100644
+index 000000000000..e2db65d58a92
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
+@@ -0,0 +1,69 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/hwmon/gpio-fan.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Bindings for fan connected to GPIO lines
++
++maintainers:
++  - Rob Herring <robh+dt@kernel.org>
++
++properties:
++  compatible:
++    const: gpio-fan
++
++  gpios:
++    description: |
++      Specifies the pins that map to bits in the control value,
++      ordered MSB-->LSB.
++
++  gpio-fan,speed-map:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    minItems: 4
++    maxItems: 254
++    description: |
++      A mapping of possible fan RPM speeds and the
++      control value that should be set to achieve them. This array
++      must have the RPM values in ascending order.
++
++  alarm-gpios:
++    description: |
++      This pin going active indicates something is wrong with
++      the fan, and a udev event will be fired.
++
++  '#cooling-cells':
++    const: 2
++
++required:
++  - compatible
++  - gpio-fan,speed-map
++
++anyOf:
++  - required: [gpios]
++  - required: [alarm-gpios]
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio_fan {
++      compatible = "gpio-fan";
++      gpios = <&gpio1 14 1
++               &gpio1 13 1>;
++      gpio-fan,speed-map = <0    0
++                            3000 1
++                            6000 2>;
++      alarm-gpios = <&gpio1 15 1>;
++    };
++  - |
++    gpio_fan_cool: gpio_fan {
++      compatible = "gpio-fan";
++      gpios = <&gpio2 14 1
++               &gpio2 13 1>;
++      gpio-fan,speed-map = <0    0
++                            3000 1
++                            6000 2>;
++      alarm-gpios = <&gpio2 15 1>;
++      #cooling-cells = <2>; /* min followed by max */
++    };
+-- 
+2.33.0
 
-Thanks for your feedback.
-
-If you think my patch is correct, you can give a Reviewed-by: to it.
-You can also give a Tested-by: to it, if the test on hardware was made.
-
-Thanks
-Cai
