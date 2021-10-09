@@ -2,77 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74A9B427769
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 661EF42776C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhJIEqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:46:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36694 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229596AbhJIEqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:46:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46C6160FD7;
-        Sat,  9 Oct 2021 04:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633754650;
-        bh=/DP0YNGWaWd7IkbhoG4Fi8yCcVeNmnaI1/+O1tyTZi8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=jwZCIDoBye/Db5VufJzbIarfc+pif9cRf1j2M4Mnrx5InfLvcMXzyQPV3EemCANUJ
-         0KKBPdm3oSzw1oKXkn9Njun5N50wmkIr6CleARVZTVIS+uyEj3FQZ7O/cS29QOPhn1
-         RaOSDCuLmU2kOq2VpXADX51Qxxwgc01oWDsMxRJZHBQV+fv42eD9n33bvw9x282iWI
-         N3670y6IXzlHy1nt/fOwzJPPyBCgL92Cf4x5mOfMFDNjed7jvNQNvpTU3UBNBPqt21
-         VuqQBXGs1UfhktCyEMliLaCGb/lGeLl8UDd+NUPqSXop3nDjSTgW4AgvWyNIQCkQyO
-         RuLXWMwiGTC1A==
-Subject: Re: [f2fs-dev] [PATCH] f2fs: include non-compressed blocks in
- compr_written_block
-To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-References: <20211006174910.2964885-1-daeho43@gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <5743eeca-a6e8-87d4-5799-c622fbada429@kernel.org>
-Date:   Sat, 9 Oct 2021 12:44:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232420AbhJIEtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:49:47 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:43687 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229596AbhJIEtq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 00:49:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ur3l3OA_1633754867;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ur3l3OA_1633754867)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 09 Oct 2021 12:47:48 +0800
+Date:   Sat, 9 Oct 2021 12:47:46 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     Gao Xiang <xiang@kernel.org>, linux-erofs@lists.ozlabs.org,
+        Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        huyue2@yulong.com, zhangwen@yulong.com
+Subject: Re: [PATCH v2 2/3] erofs: introduce the secondary compression head
+Message-ID: <YWEe8nPqFEusXkKP@B-P7TQMD6M-0146.local>
+References: <20211008200839.24541-1-xiang@kernel.org>
+ <20211008200839.24541-3-xiang@kernel.org>
+ <20211009115032.00002f26.zbestahu@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211006174910.2964885-1-daeho43@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211009115032.00002f26.zbestahu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/7 1:49, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> Need to include non-compressed blocks in compr_written_block to
-> estimate average compression ratio more accurately.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
->   fs/f2fs/compress.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> index c1bf9ad4c220..9b663eaf4805 100644
-> --- a/fs/f2fs/compress.c
-> +++ b/fs/f2fs/compress.c
-> @@ -1530,6 +1530,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
->   	if (cluster_may_compress(cc)) {
->   		err = f2fs_compress_pages(cc);
->   		if (err == -EAGAIN) {
-> +			add_compr_block_stat(cc->inode, cc->cluster_size);
+Hi Yue,
 
-Shouldn't we relocate this after 'write' label?
+On Sat, Oct 09, 2021 at 11:50:32AM +0800, Yue Hu wrote:
+> On Sat,  9 Oct 2021 04:08:38 +0800
+> Gao Xiang <xiang@kernel.org> wrote:
+> 
+> > From: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > 
+> > Previously, for each HEAD lcluster, it can be either HEAD or PLAIN
+> > lcluster to indicate whether the whole pcluster is compressed or not.
+> > 
+> > In this patch, a new HEAD2 head type is introduced to specify another
+> > compression algorithm other than the primary algorithm for each
+> > compressed file, which can be used for upcoming LZMA compression and
+> > LZ4 range dictionary compression for various data patterns.
+> > 
+> > It has been stayed in the EROFS roadmap for years. Complete it now!
+> > 
+> > Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> > ---
+> >  fs/erofs/erofs_fs.h |  8 +++++---
+> >  fs/erofs/zmap.c     | 36 +++++++++++++++++++++++++++---------
+> >  2 files changed, 32 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+> > index b0b23f41abc3..f579c8c78fff 100644
+> > --- a/fs/erofs/erofs_fs.h
+> > +++ b/fs/erofs/erofs_fs.h
+> > @@ -21,11 +21,13 @@
+> >  #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+> >  #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
+> >  #define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
+> > +#define EROFS_FEATURE_INCOMPAT_COMPR_HEAD2	0x00000008
+> >  #define EROFS_ALL_FEATURE_INCOMPAT		\
+> >  	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+> >  	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+> >  	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
+> > -	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
+> > +	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE | \
+> > +	 EROFS_FEATURE_INCOMPAT_COMPR_HEAD2)
+> >  
+> >  #define EROFS_SB_EXTSLOT_SIZE	16
+> >  
+> > @@ -314,9 +316,9 @@ struct z_erofs_map_header {
+> >   */
+> >  enum {
+> >  	Z_EROFS_VLE_CLUSTER_TYPE_PLAIN		= 0,
+> > -	Z_EROFS_VLE_CLUSTER_TYPE_HEAD		= 1,
+> > +	Z_EROFS_VLE_CLUSTER_TYPE_HEAD1		= 1,
+> >  	Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD	= 2,
+> > -	Z_EROFS_VLE_CLUSTER_TYPE_RESERVED	= 3,
+> > +	Z_EROFS_VLE_CLUSTER_TYPE_HEAD2		= 3,
+> >  	Z_EROFS_VLE_CLUSTER_TYPE_MAX
+> >  };
+> >  
+> > diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+> > index 9d9c26343dab..03945f15ceae 100644
+> > --- a/fs/erofs/zmap.c
+> > +++ b/fs/erofs/zmap.c
+> > @@ -69,11 +69,17 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
+> >  	vi->z_algorithmtype[1] = h->h_algorithmtype >> 4;
+> >  
+> >  	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX) {
+> > -		erofs_err(sb, "unknown compression format %u for nid %llu, please upgrade kernel",
+> > +		erofs_err(sb, "unknown HEAD1 format %u for nid %llu, please upgrade kernel",
+> >  			  vi->z_algorithmtype[0], vi->nid);
+> >  		err = -EOPNOTSUPP;
+> >  		goto unmap_done;
+> >  	}
+> > +	if (vi->z_algorithmtype[1] >= Z_EROFS_COMPRESSION_MAX) {
+> > +		erofs_err(sb, "unknown HEAD2 format %u for nid %llu, please upgrade kernel",
+> > +			  vi->z_algorithmtype[1], vi->nid);
+> > +		err = -EOPNOTSUPP;
+> > +		goto unmap_done;
+> > +	}
+> 
+> Seems duplicated a little, how about below code?
+> 
+> 	if (vi->z_algorithmtype[i] >= Z_EROFS_COMPRESSION_MAX ||
+> 	    vi->z_algorithmtype[++i] >= Z_EROFS_COMPRESSION_MAX) {
+>                 erofs_err(sb, "unknown HEAD%u format %u for nid %llu, please upgrade kernel",
+> 			  i, vi->z_algorithmtype[i], vi->nid);
+> 		err = -EOPNOTSUPP;
+> 		goto unmap_done;
+> 	}
 
-One more concern, it looks we've changed what compr_block stat indicated,
-literally, the block we account should be compressed..., how about accounting
-it by introducing .presist_blocks, used_blocks or occupied_blocks.... thoughts?
+Yeah, good simplification. I will update it and rename `i' to `headnr'
+here.
 
 Thanks,
-
->   			goto write;
->   		} else if (err) {
->   			f2fs_put_rpages_wbc(cc, wbc, true, 1);
-> 
+Gao Xiang
