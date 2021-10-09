@@ -2,262 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7370F427E0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 01:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130E8427E10
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 01:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhJIXmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 19:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231350AbhJIXmH (ORCPT
+        id S231443AbhJIXnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 19:43:46 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42736 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231411AbhJIXnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 19:42:07 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFD1C061570;
-        Sat,  9 Oct 2021 16:40:09 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id o204so10754229oih.13;
-        Sat, 09 Oct 2021 16:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HZ3ynlsT/dBORO2ziPHTfzp6eSWHI6Fwf/1E1+5w09M=;
-        b=LYUm9VC/2S5/0Pwo190vfiNOST/L1iJ/tZvftBqx2ai1aAn4bciq5pxIDQmehvInNh
-         Uiez/c4zUHy65ZUlAIm97zpiOSCFtDtIYXi0YW8ULZS1Q10LZQ7U4LelR5JKkUizFOz9
-         XFn2Bv+qVcXeUkKBJIke1VAdy1Ep9fzbM6fio8uWdwwJb0nULW0ZIeMrp2SbIP49mdIi
-         0/1J7Spd95w5BBK3pv0o+6L9/iHsLeHp2JwNup99AEfSj6iX7UyC5mb4nuTUHrYBkYG/
-         gjhTPvdEJa7NquO55XKQ3HWmwRUF5VVDjxBA6vArvibAPFdHlOPycopmrIJXplvvEemi
-         XDSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HZ3ynlsT/dBORO2ziPHTfzp6eSWHI6Fwf/1E1+5w09M=;
-        b=tcDh+OQLm6RAbuKgmY9MTG2TtSzVgfpMGGU7nLC+WXktsDZ4jkiq8etnP0y8skB27x
-         xyaAeXqBpuS7R+lXqeqn9gQEmmVwJl6ay+dAOhTfiYo3WsoFSzfU+dzVKB9tsOlvpRJJ
-         7t1uKmo4EsWcr3QbI968l8guam8XtXJneTzl7fwBKD7UQdPdtrwW5tB0iO/SnvuzLFbW
-         hyRx2ANqik+q7o9IplRgH0FITI8lfuHaTEWWufUdEWuMCgS1wqHQLjZhju7YC4pOg+eq
-         qUqDFywRjzvnsqg8eG+GHx+CGWK+W1CIJbOYZIqN3Oya7YrwpPjquxTnvPSxX+77X1Gy
-         rJNw==
-X-Gm-Message-State: AOAM532UenNc2UaA6mLBeiOBZmvM2j3hXJMrL23qvOu0Cn5Ll6CveeZK
-        QveK50+1wcm4BgfugM1yMTyqyX78SaY=
-X-Google-Smtp-Source: ABdhPJwfhEuGbfEKXC7qNOrauAlwvqjJi0fS7NjkD7Pw9u/jVjOLWbkmlXTJPupuANhw9MNrE5D1fA==
-X-Received: by 2002:aca:31c9:: with SMTP id x192mr7181930oix.173.1633822808429;
-        Sat, 09 Oct 2021 16:40:08 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o2sm797405otl.34.2021.10.09.16.40.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 16:40:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211009185257.2230013-1-osk@google.com>
- <20211009185257.2230013-2-osk@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v5 2/2] hwmon: (nct7802) Make temperature/voltage sensors
- configurable
-Message-ID: <638924f2-4323-16d8-5a8b-2afd2b1872d6@roeck-us.net>
-Date:   Sat, 9 Oct 2021 16:40:05 -0700
+        Sat, 9 Oct 2021 19:43:45 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5C3E620B8008;
+        Sat,  9 Oct 2021 16:41:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5C3E620B8008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1633822908;
+        bh=z3zf34sgNDMstN+SyGxYF9nej/yHt0w7n1f8XPjEbq8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VN5D8jo+bXxo4INnos5oTRkSaTrFn0XmDmrnCyOjzknzYmrE78ZNYxlGlF6231D9Q
+         NZ8r6WUmi3LKAZjHNbTKwMyUiYvmv59wA3n6lmRhjo1ocZUdxmvSt65uw2+qQ9MXsa
+         sQmzqrGL4aslJZuLbrCKr0pM25lfLpGr1kHUBQkQ=
+Subject: Re: [RFC PATCH v8 1/4] arm64: Make all stack walking functions use
+ arch_stack_walk()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     broonie@kernel.org, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-2-madvenka@linux.microsoft.com>
+ <20210824131344.GE96738@C02TD0UTHF1T.local>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <63dc1c80-2e20-66ec-67c1-c2d447797a11@linux.microsoft.com>
+Date:   Sat, 9 Oct 2021 18:41:46 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211009185257.2230013-2-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210824131344.GE96738@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oskar,
 
-On 10/9/21 11:52 AM, Oskar Senft wrote:
-> This change allows LTD and RTD inputs to be configured via
-> device tree bindings. If the DT bindings are not present or
-> invalid, the input configuration is not modified and left at
-> HW defaults.
+
+On 8/24/21 8:13 AM, Mark Rutland wrote:
+> On Thu, Aug 12, 2021 at 02:06:00PM -0500, madvenka@linux.microsoft.com wrote:
+>> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>>
+>> Currently, there are multiple functions in ARM64 code that walk the
+>> stack using start_backtrace() and unwind_frame(). Convert all of
+>> them to use arch_stack_walk(). This makes maintenance easier.
 > 
-> Signed-off-by: Oskar Senft <osk@google.com>
-> ---
-
-change log goes here (after ---), not in a separate e-mail.
-
->   drivers/hwmon/nct7802.c | 133 ++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 129 insertions(+), 4 deletions(-)
+> It would be good to split this into a series of patches as Mark Brown
+> suggested in v7.
 > 
-> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
-> index 604af2f6103a..e28f8eaf9f0f 100644
-> --- a/drivers/hwmon/nct7802.c
-> +++ b/drivers/hwmon/nct7802.c
-> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
->   #define REG_CHIP_ID		0xfe
->   #define REG_VERSION_ID		0xff
->   
-> +/*
-> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
-> + * Selection Register
-> + */
-> +#define RTD_MODE_CURRENT	0x1
-> +#define RTD_MODE_THERMISTOR	0x2
-> +#define RTD_MODE_VOLTAGE	0x3
-> +
-> +#define MODE_RTD_MASK		0x3
-> +#define MODE_LTD_EN		0x40
-> +
-> +/*
-> + * Bit offset for sensors modes in REG_MODE.
-> + * Valid for index 0..2, indicating RTD1..3.
-> + */
-> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
-> +
->   /*
->    * Data structures and manipulation thereof
->    */
-> @@ -1038,7 +1055,116 @@ static const struct regmap_config nct7802_regmap_config = {
->   	.volatile_reg = nct7802_regmap_is_volatile,
->   };
->   
-> -static int nct7802_init_chip(struct nct7802_data *data)
-> +static int nct7802_get_channel_config(struct device *dev,
-> +				      struct device_node *node, u8 *mode_mask,
-> +				      u8 *mode_val)
-> +{
-> +	u32 reg;
-> +	const char *type_str, *md_str;
-> +	u8 md;
-> +
-> +	if (!node->name || of_node_cmp(node->name, "channel"))
-> +		return 0;
-> +
-> +	if (of_property_read_u32(node, "reg", &reg)) {
-> +		dev_err(dev, "Could not read reg value for '%s'\n",
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg > 3) {
-> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 0) {
-> +		if (!of_device_is_available(node))
-> +			*mode_val &= ~MODE_LTD_EN;
-> +		else
-> +			*mode_val |= MODE_LTD_EN;
-> +		*mode_mask |= MODE_LTD_EN;
-> +		return 0;
-> +	}
-> +
-> +	/* At this point we have reg >= 1 && reg <= 3 */
-> +
-> +	if (!of_device_is_available(node)) {
-> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
-> +		dev_err(dev, "No type for '%s'\n", node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!strcmp(type_str, "voltage")) {
-> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
-> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (strcmp(type_str, "temperature")) {
-> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 3) {
-> +		/* RTD3 only supports thermistor mode */
-> +		md = RTD_MODE_THERMISTOR;
-> +	} else {
-> +		if (of_property_read_string(node, "temperature-mode",
-> +					    &md_str)) {
-> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (!strcmp(md_str, "thermal-diode"))
-> +			md = RTD_MODE_CURRENT;
-> +		else if (!strcmp(md_str, "thermistor"))
-> +			md = RTD_MODE_THERMISTOR;
-> +		else {
-> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
-> +				node->full_name);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
-> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nct7802_configure_channels(struct device *dev,
-> +				      struct nct7802_data *data)
-> +{
-> +	bool found_channel_config = false;
-
-now unused, as 0-day points out.
-
-> +	u8 mode_mask = 0, mode_val = 0;
-> +	struct device_node *node;
-> +	int err;
-> +
-> +	/* Enable local temperature sensor by default */
-> +	mode_val |= MODE_LTD_EN;
-> +	mode_mask |= MODE_LTD_EN;
-> +
-
-Either make it = and drop the initialization above, or better
-initialize the variables with MODE_LTD_EN right away.
-
-> +	if (dev->of_node) {
-> +		for_each_child_of_node(dev->of_node, node) {
-> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
-> +							 &mode_val);
-> +			if (err)
-> +				return err;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
-> +}
-> +
-> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
->   {
->   	int err;
->   
-> @@ -1047,8 +1173,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
->   	if (err)
->   		return err;
->   
-> -	/* Enable local temperature sensor */
-> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
-> +	err = nct7802_configure_channels(dev, data);
->   	if (err)
->   		return err;
->   
-> @@ -1074,7 +1199,7 @@ static int nct7802_probe(struct i2c_client *client)
->   	mutex_init(&data->access_lock);
->   	mutex_init(&data->in_alarm_lock);
->   
-> -	ret = nct7802_init_chip(data);
-> +	ret = nct7802_init_chip(dev, data);
->   	if (ret < 0)
->   		return ret;
->   
+>> Here is the list of functions:
+>>
+>> 	perf_callchain_kernel()
+>> 	get_wchan()
+>> 	return_address()
+>> 	dump_backtrace()
+>> 	profile_pc()
+> 
+> Note that arch_stack_walk() depends on CONFIG_STACKTRACE (which is not in
+> defconfig), so we'll need to reorganise things such that it's always defined,
+> or factor out the core of that function and add a wrapper such that we
+> can always use it.
+> 
+>> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+>> ---
+>>  arch/arm64/include/asm/stacktrace.h |  3 ---
+>>  arch/arm64/kernel/perf_callchain.c  |  5 +---
+>>  arch/arm64/kernel/process.c         | 39 ++++++++++++++++++-----------
+>>  arch/arm64/kernel/return_address.c  |  6 +----
+>>  arch/arm64/kernel/stacktrace.c      | 38 +++-------------------------
+>>  arch/arm64/kernel/time.c            | 22 +++++++++-------
+>>  6 files changed, 43 insertions(+), 70 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/stacktrace.h b/arch/arm64/include/asm/stacktrace.h
+>> index 8aebc00c1718..e43dea1c6b41 100644
+>> --- a/arch/arm64/include/asm/stacktrace.h
+>> +++ b/arch/arm64/include/asm/stacktrace.h
+>> @@ -61,9 +61,6 @@ struct stackframe {
+>>  #endif
+>>  };
+>>  
+>> -extern int unwind_frame(struct task_struct *tsk, struct stackframe *frame);
+>> -extern void walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>> -			    bool (*fn)(void *, unsigned long), void *data);
+>>  extern void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  			   const char *loglvl);
+>>  
+>> diff --git a/arch/arm64/kernel/perf_callchain.c b/arch/arm64/kernel/perf_callchain.c
+>> index 4a72c2727309..2f289013c9c9 100644
+>> --- a/arch/arm64/kernel/perf_callchain.c
+>> +++ b/arch/arm64/kernel/perf_callchain.c
+>> @@ -147,15 +147,12 @@ static bool callchain_trace(void *data, unsigned long pc)
+>>  void perf_callchain_kernel(struct perf_callchain_entry_ctx *entry,
+>>  			   struct pt_regs *regs)
+>>  {
+>> -	struct stackframe frame;
+>> -
+>>  	if (perf_guest_cbs && perf_guest_cbs->is_in_guest()) {
+>>  		/* We don't support guest os callchain now */
+>>  		return;
+>>  	}
+>>  
+>> -	start_backtrace(&frame, regs->regs[29], regs->pc);
+>> -	walk_stackframe(current, &frame, callchain_trace, entry);
+>> +	arch_stack_walk(callchain_trace, entry, current, regs);
+>>  }
+> 
+> We can also update callchain_trace take the return value of
+> perf_callchain_store into acount, e.g.
+> 
+> | static bool callchain_trace(void *data, unsigned long pc) 
+> | {
+> | 	struct perf_callchain_entry_ctx *entry = data;
+> | 	return perf_callchain_store(entry, pc) == 0;
+> | }
+> 
+>>  
+>>  unsigned long perf_instruction_pointer(struct pt_regs *regs)
+>> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+>> index c8989b999250..52c12fd26407 100644
+>> --- a/arch/arm64/kernel/process.c
+>> +++ b/arch/arm64/kernel/process.c
+>> @@ -544,11 +544,28 @@ __notrace_funcgraph struct task_struct *__switch_to(struct task_struct *prev,
+>>  	return last;
+>>  }
+>>  
+>> +struct wchan_info {
+>> +	unsigned long	pc;
+>> +	int		count;
+>> +};
+>> +
+>> +static bool get_wchan_cb(void *arg, unsigned long pc)
+>> +{
+>> +	struct wchan_info *wchan_info = arg;
+>> +
+>> +	if (!in_sched_functions(pc)) {
+>> +		wchan_info->pc = pc;
+>> +		return false;
+>> +	}
+>> +	wchan_info->count--;
+>> +	return !!wchan_info->count;
+>> +}
+> 
+> This will terminate one entry earlier than the old logic since we used
+> to use a post-increment (testing the prior value), and now we're
+> effectively using a pre-decrement (testing the new value).
+> 
+> I don't think that matters all that much in practice, but it might be
+> best to keep the original logic, e.g. initialize `count` to 0 and here
+> do:
+> 
+> 	return wchan_info->count++ < 16;
+> 
+>> +
+>>  unsigned long get_wchan(struct task_struct *p)
+>>  {
+>> -	struct stackframe frame;
+>> -	unsigned long stack_page, ret = 0;
+>> -	int count = 0;
+>> +	unsigned long stack_page;
+>> +	struct wchan_info wchan_info;
+>> +
+>>  	if (!p || p == current || task_is_running(p))
+>>  		return 0;
+>>  
+>> @@ -556,20 +573,12 @@ unsigned long get_wchan(struct task_struct *p)
+>>  	if (!stack_page)
+>>  		return 0;
+>>  
+>> -	start_backtrace(&frame, thread_saved_fp(p), thread_saved_pc(p));
+>> +	wchan_info.pc = 0;
+>> +	wchan_info.count = 16;
+>> +	arch_stack_walk(get_wchan_cb, &wchan_info, p, NULL);
+>>  
+>> -	do {
+>> -		if (unwind_frame(p, &frame))
+>> -			goto out;
+>> -		if (!in_sched_functions(frame.pc)) {
+>> -			ret = frame.pc;
+>> -			goto out;
+>> -		}
+>> -	} while (count++ < 16);
+>> -
+>> -out:
+>>  	put_task_stack(p);
+>> -	return ret;
+>> +	return wchan_info.pc;
+>>  }
+> 
+> Other than the comment above, this looks good to me.
+> 
+>>  unsigned long arch_align_stack(unsigned long sp)
+>> diff --git a/arch/arm64/kernel/return_address.c b/arch/arm64/kernel/return_address.c
+>> index a6d18755652f..92a0f4d434e4 100644
+>> --- a/arch/arm64/kernel/return_address.c
+>> +++ b/arch/arm64/kernel/return_address.c
+>> @@ -35,15 +35,11 @@ NOKPROBE_SYMBOL(save_return_addr);
+>>  void *return_address(unsigned int level)
+>>  {>  	struct return_address_data data;
+>> -	struct stackframe frame;
+>>  
+>>  	data.level = level + 2;
+>>  	data.addr = NULL;
+>>  
+>> -	start_backtrace(&frame,
+>> -			(unsigned long)__builtin_frame_address(0),
+>> -			(unsigned long)return_address);
+>> -	walk_stackframe(current, &frame, save_return_addr, &data);
+>> +	arch_stack_walk(save_return_addr, &data, current, NULL);
+>>  
+>>  	if (!data.level)
+>>  		return data.addr;
+> 
+> Nor that arch_stack_walk() will start with it's caller, so
+> return_address() will be included in the trace where it wasn't
+> previously, which implies we need to skip an additional level.
+> 
+> That said, I'm not entirely sure why we need to skip 2 levels today; it
+> might be worth checking that's correct.
+> 
+> We should also mark return_address() as noinline to avoid surprises with
+> LTO.
+> 
+>> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
+>> index 8982a2b78acf..1800310f92be 100644
+>> --- a/arch/arm64/kernel/stacktrace.c
+>> +++ b/arch/arm64/kernel/stacktrace.c
+>> @@ -151,23 +151,21 @@ void notrace walk_stackframe(struct task_struct *tsk, struct stackframe *frame,
+>>  }
+>>  NOKPROBE_SYMBOL(walk_stackframe);
+>>  
+>> -static void dump_backtrace_entry(unsigned long where, const char *loglvl)
+>> +static bool dump_backtrace_entry(void *arg, unsigned long where)
+>>  {
+>> +	char *loglvl = arg;
+>>  	printk("%s %pSb\n", loglvl, (void *)where);
+>> +	return true;
+>>  }
+>>  
+>>  void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  		    const char *loglvl)
+>>  {
+>> -	struct stackframe frame;
+>> -	int skip = 0;
+>> -
+>>  	pr_debug("%s(regs = %p tsk = %p)\n", __func__, regs, tsk);
+>>  
+>>  	if (regs) {
+>>  		if (user_mode(regs))
+>>  			return;
+>> -		skip = 1;
+>>  	}
+> 
+> We can simplifiy this to:
+> 
+> 	if (regs && user_mode(regs))
+> 		return;
+> 
+>>  
+>>  	if (!tsk)
+>> @@ -176,36 +174,8 @@ void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+>>  	if (!try_get_task_stack(tsk))
+>>  		return;
+>>  
+>> -	if (tsk == current) {
+>> -		start_backtrace(&frame,
+>> -				(unsigned long)__builtin_frame_address(0),
+>> -				(unsigned long)dump_backtrace);
+>> -	} else {
+>> -		/*
+>> -		 * task blocked in __switch_to
+>> -		 */
+>> -		start_backtrace(&frame,
+>> -				thread_saved_fp(tsk),
+>> -				thread_saved_pc(tsk));
+>> -	}
+>> -
+>>  	printk("%sCall trace:\n", loglvl);
+>> -	do {
+>> -		/* skip until specified stack frame */
+>> -		if (!skip) {
+>> -			dump_backtrace_entry(frame.pc, loglvl);
+>> -		} else if (frame.fp == regs->regs[29]) {
+>> -			skip = 0;
+>> -			/*
+>> -			 * Mostly, this is the case where this function is
+>> -			 * called in panic/abort. As exception handler's
+>> -			 * stack frame does not contain the corresponding pc
+>> -			 * at which an exception has taken place, use regs->pc
+>> -			 * instead.
+>> -			 */
+>> -			dump_backtrace_entry(regs->pc, loglvl);
+>> -		}
+>> -	} while (!unwind_frame(tsk, &frame));
+>> +	arch_stack_walk(dump_backtrace_entry, (void *)loglvl, tsk, regs);
+> 
+> It turns out we currently need this skipping to get the balance the
+> ftrace call stack, and arch_stack_walk() doesn't currently do the right
+> thing when starting from regs. That balancing isn't quite right, and
+> will be wrong in some case when unwinding across exception boundaries;
+> we could implement HAVE_FUNCTION_GRAPH_RET_ADDR_PTR using the FP to
+> solve that.
 > 
 
+Hi Mark,
+
+It seems that the behavior is the same in the old and new code. Do you
+agree?
+
+In the old code when regs is used, the stack trace starts from regs->regs[29]
+and the first PC displayed is regs->pc. arch_stack_walk() does the same thing.
+
+Can you elaborate what change you want me to make here?
+
+Madhavan
