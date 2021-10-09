@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A3342754E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5388B427550
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbhJIBDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50820 "EHLO
+        id S244082AbhJIBDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:03:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhJIBDh (ORCPT
+        with ESMTP id S232037AbhJIBDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:03:37 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D518DC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:01:41 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v70-20020a256149000000b005ba4d61ea0fso10924063ybb.22
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:01:41 -0700 (PDT)
+        Fri, 8 Oct 2021 21:03:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16451C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:01:44 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id t7-20020a258387000000b005b6d7220c79so14750837ybk.16
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:01:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=SFTOsCD2fLbfCOpXgpJNz0YV7VaZgcPTwQZKs+/RiZg=;
-        b=INhEx0aHocRJIKUfy17arUjZbG4Z1fUL01B/tSss7d45qbojh+sJscLUPYCLQOjqKO
-         k+bTTPouGSj5oku4lc+lVLEHhXAx05lrJWQZTx18FF/obwXeULeDsYhiBCXq/1bJo6Ib
-         G5kNPJlqUtZKWtUUcRgKu19442TbSeGHUHBwnIORDVRyMTeQFnopS5LrKqpLsJfNbc03
-         5pOR0tc5VlI82fX6uCx3xWJUUVnTYULT32DIHcttClFyHD2gItVVIXr7Zi5Xkm7elSoN
-         ZtrRNcUF31BaBhuUgGb6nYU5v2tI1tH1wl8M9PYYd7XLCIW1FM4m8KQ+4zOEQmKjn6Tk
-         3wEw==
+        bh=zwQuCdTORRqikJJrq1qC6FroomOZbrYRK1ulZL74DVc=;
+        b=VPL6BD8DqplY2SY6r2wwMp6R71favIqg8UbS1freyl6PspIN7PB/XAXbzy7myyu/xy
+         oLkUuGIFLCI0PF4R4nzPJ7dlO3VYAc966eOfv5YO3ZIDALOMl+AmWZEPBOnAdaG/jRi1
+         cvV6OVK38x0C1lSI/rdvr2DPbRak4pKgdopBBCQyKs7wlCGEdkBA/PCwu1HoXVWv3r2G
+         rwikWFuxpvFWMRorFycOR0xRJaCahXeDPl7+jSd8a/ZZOofDzvUergeS/N9oVr2I8i4z
+         7f+4M5DoDcsCUfgpK5ztGpsmpVSAZ6zMTwkoMeXsCxRtlKOk1VpiKF3Sr/PMBJm81Wz1
+         Vxcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=SFTOsCD2fLbfCOpXgpJNz0YV7VaZgcPTwQZKs+/RiZg=;
-        b=ko69nigpCtBJFiQl+FyEGlhzjyFWUUm1adxgxA5oWtJFKRZglYhP4BjzaRqUnIJpWT
-         bGK35HVqqRKDM1FecbMObmkGkhy6P5/Lgvm49w1V+swUlefz6NqZbaNu59lbI2AwkVJd
-         CBkQwYqU3Z3XtPHxqMK1ztjCyHNwDW5CwzD9fC6MVpJtLO/r4bm0AQkYyPcBwzMIn5jM
-         /JPpnqleC793lBq6l8ubD9az/Q+lDXMBfQ2/jaOGVgXbro5q68uy64Q4RCCIIKPT+g52
-         FHKdLfXNH0ZauzJ0lRgkF1M3EA1nreWDad6k6GopT8PMa7BmcNKiv3WLD3uWS25XiHaB
-         ErOg==
-X-Gm-Message-State: AOAM532x7aw4Ks/4QVRqCntavhM7O7VzUyb6Whg3/cVvCLKajR/QHxJo
-        uLBjJVt/YMV9LWSWRiccj2EYwixEDWY=
-X-Google-Smtp-Source: ABdhPJxYynAqY2pZXjNxz5n0Wf5R/VHZFGNQAxKMkEMoM4wxKpMIR8LjH7nMVxQ1ekk9EDonFbnziobBfxY=
+        bh=zwQuCdTORRqikJJrq1qC6FroomOZbrYRK1ulZL74DVc=;
+        b=bjragLBF/SbXQef8JcF9dvo4fWGiauuIimFUvlOpfxcpnPqi1daTCAGmreN7rDTeRZ
+         9hTNqhMgPppYKzGqGI6HmQO+97rjAMfSCpKCTQpdeFlZMAoc9Y/FOxEE+ojwuZzoIMMu
+         eAHYO4hJYLWfhWivi3pNEaO6BSksJmoBZ0GC/L5Hepl+OOaJiUciXA6oAr0RA17rHXck
+         iosQ7iLvF1DpzKuyZfDwidQdm7fRt+noYbFU2gi/FvOuv27hC2XnwT5IowCzSt2bTlsf
+         jgUV9tDTMsDEHqfuv8aHMsfTabdMbQbBso4Eza1nI6CMbigYc+PsUKWLRFHWca68g9lo
+         E6aA==
+X-Gm-Message-State: AOAM530+Af+a75XbDZeVjRCsa4Mn9NU7Jo+ZUvX575Hha9GbRjqyAdlG
+        doMdacjov19i8d5xKK9Z7FqW1LOWxGg=
+X-Google-Smtp-Source: ABdhPJz/lVm1tAyG2/05wptxlPgGKBEsKfdRlSeu5DeabsGON86LvMzMY5MLwtAV5MJ8M4omaOcOR40MoTA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e39b:6333:b001:cb])
- (user=seanjc job=sendgmr) by 2002:a05:6902:120a:: with SMTP id
- s10mr7342143ybu.224.1633741301116; Fri, 08 Oct 2021 18:01:41 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:5093:: with SMTP id e141mr7043195ybb.171.1633741303350;
+ Fri, 08 Oct 2021 18:01:43 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Oct 2021 18:01:34 -0700
+Date:   Fri,  8 Oct 2021 18:01:35 -0700
 In-Reply-To: <20211009010135.4031460-1-seanjc@google.com>
-Message-Id: <20211009010135.4031460-2-seanjc@google.com>
+Message-Id: <20211009010135.4031460-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211009010135.4031460-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 1/2] KVM: x86/mmu: Use vCPU's APICv status when handling
- APIC_ACCESS memslot
+Subject: [PATCH 2/2] KVM: x86: Simplify APICv update request logic
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,39 +66,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Query the vCPU's APICv status, not the overall VM's status, when handling
-a page fault that hit the APIC Access Page memslot.  If an APICv status
-update is pending, using the VM's status is non-deterministic as the
-initiating vCPU may or may not have updated overall VM's status.  E.g. if
-a vCPU hits an APIC Access page fault with APICv disabled and a different
-vCPU is simultaneously performing an APICv update, the page fault handler
-will incorrectly skip the special APIC access page MMIO handling.
+Drop confusing and flawed code that intentionally sets that per-VM APICv
+inhibit mask after sending KVM_REQ_APICV_UPDATE to all vCPUs.  The code
+is confusing because it's not obvious that there's no race between a CPU
+seeing the request and consuming the new mask.  The code works only
+because the request handling path takes the same lock, i.e. responding
+vCPUs will be blocked until the full update completes.
 
-Using the vCPU's status in the page fault handler is correct regardless
-of any pending APICv updates, as the vCPU's status is accurate with
-respect to the last VM-Enter, and thus reflects the context in which the
-page fault occurred.
+The concept is flawed because ordering the mask update after the request
+can't be relied upon for correct behavior.  The only guarantee provided
+by kvm_make_all_cpus_request() is that all vCPUs exited the guest.  It
+does not guarantee all vCPUs are waiting on the lock.  E.g. a VCPU could
+be in the process of handling an emulated MMIO APIC access page fault
+that occurred before the APICv update was initiated, and thus toggling
+and reading the per-VM field would be racy.  If correctness matters, KVM
+either needs to use the per-vCPU status (if appropriate), take the lock,
+or have some other mechanism that guarantees the per-VM status is correct.
 
 Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Fixes: 9cc13d60ba6b ("KVM: x86/mmu: allow APICv memslot to be enabled but invisible")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 24a9f4c3f5e7..d36e205b90a5 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3853,7 +3853,7 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 		 * when the AVIC is re-enabled.
- 		 */
- 		if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
--		    !kvm_apicv_activated(vcpu->kvm)) {
-+		    !kvm_vcpu_apicv_active(vcpu)) {
- 			*r = RET_PF_EMULATE;
- 			return true;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 4a52a08707de..960c2d196843 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9431,29 +9431,27 @@ EXPORT_SYMBOL_GPL(kvm_vcpu_update_apicv);
+ 
+ void __kvm_request_apicv_update(struct kvm *kvm, bool activate, ulong bit)
+ {
+-	unsigned long old, new;
++	unsigned long old;
+ 
+ 	if (!kvm_x86_ops.check_apicv_inhibit_reasons ||
+ 	    !static_call(kvm_x86_check_apicv_inhibit_reasons)(bit))
+ 		return;
+ 
+-	old = new = kvm->arch.apicv_inhibit_reasons;
++	old = kvm->arch.apicv_inhibit_reasons;
+ 
+ 	if (activate)
+-		__clear_bit(bit, &new);
++		__clear_bit(bit, &kvm->arch.apicv_inhibit_reasons);
+ 	else
+-		__set_bit(bit, &new);
++		__set_bit(bit, &kvm->arch.apicv_inhibit_reasons);
+ 
+-	if (!!old != !!new) {
++	if (!!old != !!kvm->arch.apicv_inhibit_reasons) {
+ 		trace_kvm_apicv_update_request(activate, bit);
+ 		kvm_make_all_cpus_request(kvm, KVM_REQ_APICV_UPDATE);
+-		kvm->arch.apicv_inhibit_reasons = new;
+-		if (new) {
++		if (kvm->arch.apicv_inhibit_reasons) {
+ 			unsigned long gfn = gpa_to_gfn(APIC_DEFAULT_PHYS_BASE);
+ 			kvm_zap_gfn_range(kvm, gfn, gfn+1);
  		}
+-	} else
+-		kvm->arch.apicv_inhibit_reasons = new;
++	}
+ }
+ EXPORT_SYMBOL_GPL(__kvm_request_apicv_update);
+ 
 -- 
 2.33.0.882.g93a45727a2-goog
 
