@@ -2,154 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 640FF42785F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A62427864
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231767AbhJIJUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:20:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29223 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231219AbhJIJUE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:20:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633771083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=2UwzU/Hl4oyLBnA1BVpvqm3h7gRDiFiszHCb/NTENEE=;
-        b=NeQIzLRZG8Ci6Wyi5PTHTSFZzkUnvMOM3qh7K4TpBZz/aOX1l95yYszilRTMEl7bBYsuRv
-        hZcHjziBnigJjhYKa9b+McH1OGDr28GcQkpu8izAXfFy1OjTxsMESzOwv7SknAFBNL4YK0
-        uaMBVc/MQKE+4jQhSWt2mt1rw/2K5X8=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-T7s5fZsMOQ-g2Zou_sI3QA-1; Sat, 09 Oct 2021 05:18:01 -0400
-X-MC-Unique: T7s5fZsMOQ-g2Zou_sI3QA-1
-Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso11390725edn.4
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 02:18:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=2UwzU/Hl4oyLBnA1BVpvqm3h7gRDiFiszHCb/NTENEE=;
-        b=vlsPSJ8z0Ps5BpU8/pVWQhUN8OHI4iHurSnoIWA/rs/wgLqO/7Q5S4VOeyQ5nVgOkN
-         hrD8aT3RqT2DSpkbi36Os2hK1nXSb691v8GcRYQJqs8EVdz0iVb/dSii2yNBk3cL5Odq
-         hzfp2iuiYqBycamrnllwWUQbyX3GQiJsCCt8bBq9CafKtfwb/DzKiDvpe5rEiWcrNAgq
-         VFa1ZhL3CQMUbO57aN5nX06DUePgIjL3S/IcCSNL6t5q9MV1mtCrre+PYHnCCvzPwFH0
-         aiz5sFqWdqLulV7f8I22pztGnrou5W33A6E4RDYoXb9HUzY4Uwmjtzf611TyEguif7Rl
-         L60Q==
-X-Gm-Message-State: AOAM5318ADQBEzdWV1evEj7UX8iEd6aRMc5LanlB1wFVBcyZPHfrMpbJ
-        YKOE20Hg8+8oTVndcsjzKyFxkvvk2p2Znc8Db/T+nwriVgH9Fl8FxkVny5MzqqttoRRDvEXrJrJ
-        oPdtHbYs1izrFwqntNtv58mqYQPuquR/zBUgxJbyMJDDF87z8uWcnibqjPOx1OeYkX4aWcQ==
-X-Received: by 2002:a05:6402:5202:: with SMTP id s2mr15544705edd.67.1633771080257;
-        Sat, 09 Oct 2021 02:18:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwGfmIQZR+1/PAQ0xIABJbC6CJzPRKYIoGKikbdWi9pwKm3KdMLPvApqQ8MIxMgBYddw5gdjQ==
-X-Received: by 2002:a05:6402:5202:: with SMTP id s2mr15544541edd.67.1633771078558;
-        Sat, 09 Oct 2021 02:17:58 -0700 (PDT)
-Received: from redhat.com ([2.55.132.170])
-        by smtp.gmail.com with ESMTPSA id ck9sm722624ejb.56.2021.10.09.02.17.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 02:17:57 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 05:17:53 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Corentin =?utf-8?B?Tm/Dq2w=?= <corentin.noel@collabora.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: [PATCH net] virtio-net: fix for skb_over_panic inside big mode
-Message-ID: <20211009091604.84141-1-mst@redhat.com>
+        id S231788AbhJIJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:26:10 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:60653 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231219AbhJIJ0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 05:26:09 -0400
+Received: from [192.168.0.2] (ip5f5aef39.dynamic.kabel-deutschland.de [95.90.239.57])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id ECA9861E5FE00;
+        Sat,  9 Oct 2021 11:24:09 +0200 (CEST)
+Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig
+ unconditionally
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Simon Trimmer <simont@opensource.cirrus.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210928075216.4193128-1-arnd@kernel.org>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <9dedf9bb-5377-9f2c-cbb1-2a57b40493da@molgen.mpg.de>
+Date:   Sat, 9 Oct 2021 11:24:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+In-Reply-To: <20210928075216.4193128-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+[Cc: +linuxppc-dev@lists.ozlabs.org]
 
-commit 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net")
-accidentally reverted the effect of
-commit 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
-on drivers/net/virtio_net.c
+Dear Arnd,
 
-As a result, users of crosvm (which is using large packet mode)
-are experiencing crashes with 5.14-rc1 and above that do not
-occur with 5.13.
 
-Crash trace:
+Am 28.09.21 um 09:50 schrieb Arnd Bergmann:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Compile-testing drivers that require access to a firmware layer
+> fails when that firmware symbol is unavailable. This happened
+> twice this week:
+> 
+>   - My proposed to change to rework the QCOM_SCM firmware symbol
+>     broke on ppc64 and others.
+> 
+>   - The cs_dsp firmware patch added device specific firmware loader
+>     into drivers/firmware, which broke on the same set of
+>     architectures.
+> 
+> We should probably do the same thing for other subsystems as well,
+> but fix this one first as this is a dependency for other patches
+> getting merged.
+> 
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Cc: Simon Trimmer <simont@opensource.cirrus.com>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> Not sure how we'd want to merge this patch, if two other things
+> need it. I'd prefer to merge it along with the QCOM_SCM change
+> through the soc tree, but that leaves the cirrus firmware broken
+> unless we also merge it the same way (rather than through ASoC
+> as it is now).
+> 
+> Alternatively, we can try to find a different home for the Cirrus
+> firmware to decouple the two problems. I'd argue that it's actually
+> misplaced here, as drivers/firmware is meant for kernel code that
+> interfaces with system firmware, not for device drivers to load
+> their own firmware blobs from user space.
+> ---
+>   arch/arm/Kconfig    | 2 --
+>   arch/arm64/Kconfig  | 2 --
+>   arch/ia64/Kconfig   | 2 --
+>   arch/mips/Kconfig   | 2 --
+>   arch/parisc/Kconfig | 2 --
+>   arch/riscv/Kconfig  | 2 --
+>   arch/x86/Kconfig    | 2 --
+>   drivers/Kconfig     | 2 ++
+>   8 files changed, 2 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+> index ad96f3dd7e83..194d10bbff9e 100644
+> --- a/arch/arm/Kconfig
+> +++ b/arch/arm/Kconfig
+> @@ -1993,8 +1993,6 @@ config ARCH_HIBERNATION_POSSIBLE
+>   
+>   endmenu
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   if CRYPTO
+>   source "arch/arm/crypto/Kconfig"
+>   endif
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index ebb49585a63f..8749517482ae 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1931,8 +1931,6 @@ source "drivers/cpufreq/Kconfig"
+>   
+>   endmenu
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   source "drivers/acpi/Kconfig"
+>   
+>   source "arch/arm64/kvm/Kconfig"
+> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+> index 045792cde481..1e33666fa679 100644
+> --- a/arch/ia64/Kconfig
+> +++ b/arch/ia64/Kconfig
+> @@ -388,8 +388,6 @@ config CRASH_DUMP
+>   	  help
+>   	    Generate crash dump after being started by kexec.
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   endmenu
+>   
+>   menu "Power management and ACPI options"
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 771ca53af06d..6b8f591c5054 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -3316,8 +3316,6 @@ source "drivers/cpuidle/Kconfig"
+>   
+>   endmenu
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   source "arch/mips/kvm/Kconfig"
+>   
+>   source "arch/mips/vdso/Kconfig"
+> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+> index 4742b6f169b7..27a8b49af11f 100644
+> --- a/arch/parisc/Kconfig
+> +++ b/arch/parisc/Kconfig
+> @@ -384,6 +384,4 @@ config KEXEC_FILE
+>   
+>   endmenu
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   source "drivers/parisc/Kconfig"
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 301a54233c7e..6a6fa9e976d5 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -561,5 +561,3 @@ menu "Power management options"
+>   source "kernel/power/Kconfig"
+>   
+>   endmenu
+> -
+> -source "drivers/firmware/Kconfig"
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index e5ba8afd29a0..5dcec5f13a82 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -2834,8 +2834,6 @@ config HAVE_ATOMIC_IOMAP
+>   	def_bool y
+>   	depends on X86_32
+>   
+> -source "drivers/firmware/Kconfig"
+> -
+>   source "arch/x86/kvm/Kconfig"
+>   
+>   source "arch/x86/Kconfig.assembler"
+> diff --git a/drivers/Kconfig b/drivers/Kconfig
+> index 30d2db37cc87..0d399ddaa185 100644
+> --- a/drivers/Kconfig
+> +++ b/drivers/Kconfig
+> @@ -17,6 +17,8 @@ source "drivers/bus/Kconfig"
+>   
+>   source "drivers/connector/Kconfig"
+>   
+> +source "drivers/firmware/Kconfig"
+> +
+>   source "drivers/gnss/Kconfig"
+>   
+>   source "drivers/mtd/Kconfig"
+> 
 
-[   61.346677] skbuff: skb_over_panic: text:ffffffff881ae2c7 len:3762 put:3762 head:ffff8a5ec8c22000 data:ffff8a5ec8c22010 tail:0xec2 end:0xec0 dev:<NULL>
-[   61.369192] kernel BUG at net/core/skbuff.c:111!
-[   61.372840] invalid opcode: 0000 [#1] SMP PTI
-[   61.374892] CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.14.0-rc1 linux-v5.14-rc1-for-mesa-ci.tar.bz2 #1
-[   61.376450] Hardware name: ChromiumOS crosvm, BIOS 0
+With this change, I have the new entries below in my .config:
 
-..
+```
+$ diff -u .config.old .config
+--- .config.old 2021-10-07 11:38:39.544000000 +0200
++++ .config     2021-10-09 10:02:03.156000000 +0200
+@@ -1992,6 +1992,25 @@
 
-[   61.393635] Call Trace:
-[   61.394127]  <IRQ>
-[   61.394488]  skb_put.cold+0x10/0x10
-[   61.395095]  page_to_skb+0xf7/0x410
-[   61.395689]  receive_buf+0x81/0x1660
-[   61.396228]  ? netif_receive_skb_list_internal+0x1ad/0x2b0
-[   61.397180]  ? napi_gro_flush+0x97/0xe0
-[   61.397896]  ? detach_buf_split+0x67/0x120
-[   61.398573]  virtnet_poll+0x2cf/0x420
-[   61.399197]  __napi_poll+0x25/0x150
-[   61.399764]  net_rx_action+0x22f/0x280
-[   61.400394]  __do_softirq+0xba/0x257
-[   61.401012]  irq_exit_rcu+0x8e/0xb0
-[   61.401618]  common_interrupt+0x7b/0xa0
-[   61.402270]  </IRQ>
+  CONFIG_CONNECTOR=y
+  CONFIG_PROC_EVENTS=y
++
++#
++# Firmware Drivers
++#
++
++#
++# ARM System Control and Management Interface Protocol
++#
++# end of ARM System Control and Management Interface Protocol
++
++# CONFIG_FIRMWARE_MEMMAP is not set
++# CONFIG_GOOGLE_FIRMWARE is not set
++
++#
++# Tegra firmware driver
++#
++# end of Tegra firmware driver
++# end of Firmware Drivers
++
+  # CONFIG_GNSS is not set
+  CONFIG_MTD=m
+  # CONFIG_MTD_TESTS is not set
+```
 
-See
-https://lore.kernel.org/r/5edaa2b7c2fe4abd0347b8454b2ac032b6694e2c.camel%40collabora.com
-for the report.
+No idea if the entries could be hidden for platforms not supporting them.
 
-Apply the original 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
-again, the original logic still holds:
+         ARM System Control and Management Interface Protocol  ----
+     [ ] Add firmware-provided memory map to sysfs
+     [ ] Google Firmware Drivers  ----
+         Tegra firmware driver  ----
 
-In virtio-net's large packet mode, there is a hole in the space behind
-buf.
 
-    hdr_padded_len - hdr_len
+Kind regards,
 
-We must take this into account when calculating tailroom.
-
-Cc: Greg KH <gregkh@linuxfoundation.org>
-Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there's sufficient tailroom")
-Fixes: 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netdev/net")
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Reported-by: Corentin Noël <corentin.noel@collabora.com>
-Tested-by: Corentin Noël <corentin.noel@collabora.com>
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
-
-David, I think we need this in stable, too.
-
- drivers/net/virtio_net.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 096c2ac6b7a6..6b0812f44bbf 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -406,7 +406,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 	 * add_recvbuf_mergeable() + get_mergeable_buf_len()
- 	 */
- 	truesize = headroom ? PAGE_SIZE : truesize;
--	tailroom = truesize - len - headroom;
-+	tailroom = truesize - len - headroom - (hdr_padded_len - hdr_len);
- 	buf = p - headroom;
- 
- 	len -= hdr_len;
--- 
-MST
-
+Paul
