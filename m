@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40321427777
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91899427779
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhJIE7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46314 "EHLO
+        id S232735AbhJIFB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIE7X (ORCPT
+        with ESMTP id S229596AbhJIFB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:59:23 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370D4C061570;
-        Fri,  8 Oct 2021 21:57:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HRCTs3Gfmz4xbV;
-        Sat,  9 Oct 2021 15:57:21 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633755441;
-        bh=kvTdE1xwFU52ecxKGXJ/Il5ls0/DSHeWi+HYNCbNm6w=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vELj9wXTmrKljHJoiy+w9gQDD1p0QZzQw5YhkwaSbdjH4k3XVI4guGxX0ad31wCY0
-         P8ORj7m3DfG8pN/sJpC/83T+p+hIzXxsA+ceSSiKi+9wfLCy0WTl6046UhYRttKCvw
-         1AxqjE1sBG1js+IQWJ1eRuN+kkIpRelq9TwYsST44jiKBvPUpMEbX7PxRG9fi5gzz2
-         m2PQefqcFxmCQ1jrWjqCh+qDd4cWkLyVMKp7l0o6O73q3a99U4iI/5CgvNMXrrhwuc
-         2PYJnE/X9qP46sH9eJ9QWqLUU4SwmPlBAiXi7XBxOGAreNi8gI8jfH3NpVhmcnNSsY
-         H/Ajy08T44hCw==
-Date:   Sat, 9 Oct 2021 15:57:18 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20211009155718.50655bd8@canb.auug.org.au>
-In-Reply-To: <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr>
-References: <20211008113116.4bdd7b6c@canb.auug.org.au>
-        <jXLIcCYkgHdIQna5SW6W4GGHVG5By4-GXiaosbXyyaYXFNTH60nmH6twdxMYgM2X63FhEOyxU7Qh_vbKFywBKmUwp7l4DYXe_hTt86AS-ZM=@emersion.fr>
-        <20211008192910.600a188d@canb.auug.org.au>
-        <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr>
+        Sat, 9 Oct 2021 01:01:26 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E04C061570;
+        Fri,  8 Oct 2021 21:59:30 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id b20so48061786lfv.3;
+        Fri, 08 Oct 2021 21:59:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=hfrhfFfHeMuH40pk8UUXISUecyF3YafJVf4birPzCpo=;
+        b=j3xjbyOKIUrtsctGmfwkprOmHqvuUtYrHaHRJzCzrHczAbNfCTe5EXc0RisYYSnox5
+         hcpOz0SkVg7zB5spWbka8GOpE5ujnajzHhYT7vTryg/LzkkRWSdrTdRWg6nvNkL4ZA0u
+         Rk1nY7oYdvp2O8JV2JJu0j1mrliOEehHvs+Fea6NwNU8psS0FaxYLOxGRNkcg2XH/zi4
+         J7bTwbPVoiIrI10UWUk5oCFNCkSpZCgW8fmKfW/5zE5gmh2/oFPDyHkYQTacx+LFWJbT
+         mjMNYuvmzJrIFTli7ClQeLtsmsi1pX3sgJoCOCUfHPl6j97q+Njk0cH6g6cWt1aym5RA
+         3Qsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=hfrhfFfHeMuH40pk8UUXISUecyF3YafJVf4birPzCpo=;
+        b=Lxw7ePNqeeo/rkmaMEDiESRL73QGXXu6j72+suEl+FdlFk2dFhHQTN5UoBe/bC+sOj
+         A36Tn3TJ1THHr+kOEKRpreOkWRXtPP0ZUNrf9kCU+OjmbOtYRMxm8Q6AbINDk76zLoZx
+         WqCFV/PrxWbLOuIkQFRy+w3XTOBylmuyqW2gE5+VZceERL1/8h1xF4OkSVVqAEs4yZYA
+         MG87mRgY63ojhy0Libdl11a2orxGlKyQXB+dPkg+UN2EMp4p8PT7pZBJmuNId+7KZ4fd
+         9gn0r/8Hcnideo7Bd8lGMOb8gfcXmyvAzy2mjT12EH1a6knXn01GSsuvYw0ZBZjOy7JM
+         7DqQ==
+X-Gm-Message-State: AOAM5338zfG/FM22uuRjLOxpJRvuQcog4uvL5b4DBxyu6F+5/fmxd3aJ
+        jBlY3YLn1W4lSLgtobooqQpGQmMxvZMgIpuzCX2wHl8twGQ=
+X-Google-Smtp-Source: ABdhPJwZK3T6rc6/7dgQ8eGPgfyV/EBNOLbysl4tXxSIQBruci/Ifr7Vraf3VkaUwBtD4mnQpLX0O3k+zS2HBVv4ey8=
+X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr14009092lfu.595.1633755568261;
+ Fri, 08 Oct 2021 21:59:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/u+go1SMTgmhAVuoC3nBeQ.3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 8 Oct 2021 23:59:17 -0500
+Message-ID: <CAH2r5msTLfojvmuejv+hO6CvF8cwuAw9CpiJWxs9a_D7pZfSLw@mail.gmail.com>
+Subject: [GIT PULL] ksmbd fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/u+go1SMTgmhAVuoC3nBeQ.3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Please pull the following changes since commit
+9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
 
-Hi Simon,
+  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
 
-On Fri, 08 Oct 2021 09:22:16 +0000 Simon Ser <contact@emersion.fr> wrote:
->
-> On Friday, October 8th, 2021 at 10:29, Stephen Rothwell <sfr@canb.auug.or=
-g.au> wrote:
->=20
-> > That symbol (get_mm_exe_file) is not exported to modules. =20
->=20
-> I see this:
->=20
->     EXPORT_SYMBOL(get_mm_exe_file);
->=20
-> in kernel/fork.c
+are available in the Git repository at:
 
-That was remove by commit
+  git://git.samba.org/ksmbd.git tags/5.15-rc4-ksmbd-fixes
 
-  05da8113c9ba ("kernel/fork.c: unexport get_{mm,task}_exe_file")
+for you to fetch changes up to 64e7875560270b8f669fca9fcd6a689fea56fbeb:
 
-which is in v5.15-rc1.
+  ksmbd: fix oops from fuse driver (2021-10-07 10:18:36 -0500)
 
---=20
-Cheers,
-Stephen Rothwell
+----------------------------------------------------------------
+Six fixes for the ksmbd kernel server, including:
+- two additional fixes for missing overflow checks
+- some cleanup (e.g. remove dead code for less secure dialects that
+has been removed, and clarify overflow checks in smb3 decryption)
+- update ksmbd internal module version
+- fix for an oops
 
---Sig_/u+go1SMTgmhAVuoC3nBeQ.3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+regression test results from current Linux to ksmbd:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/79
+----------------------------------------------------------------
+Namjae Jeon (6):
+      ksmbd: add the check to vaildate if stream protocol length
+exceeds maximum value
+      ksmbd: check strictly data area in ksmbd_smb2_check_message()
+      ksmbd: remove the leftover of smb2.0 dialect support
+      ksmbd: use buf_data_size instead of recalculation in smb3_decrypt_req()
+      ksmbd: fix version mismatch with out of tree
+      ksmbd: fix oops from fuse driver
 
------BEGIN PGP SIGNATURE-----
+ fs/ksmbd/connection.c | 10 +++---
+ fs/ksmbd/glob.h       |  2 +-
+ fs/ksmbd/smb2misc.c   | 98
+++++++++++++++++++++++++++++-------------------------------
+ fs/ksmbd/smb2ops.c    |  5 ---
+ fs/ksmbd/smb2pdu.c    | 59 +++++++++++------------------------
+ fs/ksmbd/smb2pdu.h    |  1 -
+ fs/ksmbd/smb_common.c | 12 ++------
+ fs/ksmbd/smb_common.h |  4 +--
+ 8 files changed, 77 insertions(+), 114 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFhIS4ACgkQAVBC80lX
-0GyHLAf9HsuKfJek7rTwY0hETY+XpvZyLlQKrRSjkU59jHxkpVvBeq6rE7Das/Fd
-zJFlnekut5oV9SddwPbeONlOeXCA+xBWOucm7CiWfSu0d05VogldZUf3GvJix9Y4
-UBk1E1U5gHjeWrSdV56dsNhSnEytPh/MW/gv4DsFen/3FogyJC1JOAuTzzxUbyFl
-q6vAc/eu7FPVk16BOgjHDvHtLfyKbnawrgmswQnDCuNByiZLvcUrXq2S7q77mYj8
-rne+zAYeZQF/HuQ6W6ojGfzzmCWEi8wmWz5QmFUOaqIxoqo2jMOSzujocCBDXMGa
-5vWXGdYswaG7fTmtBKgkEquCXvNeBw==
-=N0kh
------END PGP SIGNATURE-----
+-- 
+Thanks,
 
---Sig_/u+go1SMTgmhAVuoC3nBeQ.3--
+Steve
