@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4F8427D44
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA164427D49
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230307AbhJIUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 16:21:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhJIUUx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 16:20:53 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544ADC061570;
-        Sat,  9 Oct 2021 13:18:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=OdxynBMvMWIJFcPB8GGPc5a3zX/bgG/GY3urYIWqlq4=; b=PohPH2FbWggj4HpbO17djBxK7l
-        9M0zKr6izo5jGkvEZEqFhmJ/IdL+XOM1Zte5RoXcT1AAexeKXuVdOw2YbbvSC7Y1JxS64U5Q8pp2u
-        rZMsRFUjJy4eRrFpaHANTn0fZvaOrReiDgZZIy0wEymnZWy4pUWd5E/KOyyjmmGuqP5qvE08DKt4l
-        /bR0j1LYmdrZ6mCEWIHhqitcyP9O+NP1a9zbCj128yaD8UiimthSeRKvU5QLApIGbYnz3zD6j0/2h
-        G5MErc8XoGD5rIG0QY6tTGBXjYWNr69ZiwhfP1mJCvO5KfvhFbHodH0FuWQ1UMOPIBdjzjBdkD4kE
-        vIWTnufg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZInz-0062rz-Ru; Sat, 09 Oct 2021 20:18:51 +0000
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-To:     Jacopo Mondi <jacopo@jmondi.org>,
-        =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>,
-        "joe@perches.com" <joe@perches.com>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <m3fstfoexa.fsf@t19.piap.pl>
- <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> <m3zgrlkxn6.fsf@t19.piap.pl>
- <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
-Date:   Sat, 9 Oct 2021 13:18:50 -0700
+        id S230257AbhJIU1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 16:27:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229806AbhJIU07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 16:26:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2F8360F6E;
+        Sat,  9 Oct 2021 20:24:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633811102;
+        bh=d+01LSE2G4B7F5/XtrWaFaDt4UeXHeAWwv79TeuwqsU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=hELJYZmCo9pdyOh2ZT72pmWE2JVXx07bY6qDt+j9FyK0P7s9qdFFGWSp/ZZc0w5ce
+         UOy4pAroFcaYc2YwSTHidsmTB/wLalioef2fyGAFo+4G3fpL80QYEo/p1hIXc6YDom
+         3lQN7qAG5NyLgKWBHD/K+m2D99/Ccpwhf1zSk9dTxa3Byokcwv5bF2nNY4KZVVCp/w
+         7lJ8bK1mKWO4aVGZ15BHRDqsezk74zn1xLZ6Wh7fuXl2LDZGIo1KdJ9wg2S+oWl3V5
+         H1qBCe7UKrPybxfvXAvn7efa8HXedcD/dzhkmTBHQWDf/Ta34LqUCPMXmk1bQ5Ku0H
+         AdZ7od8LoJJWg==
+Subject: Re: [PATCH v3 1/5] clk: samsung: clk-pll: Implement pll0822x PLL type
+To:     Sam Protsenko <semen.protsenko@linaro.org>
+Cc:     Ryu Euiyoul <ryu.real@samsung.com>, Tom Gall <tom.gall@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>
+References: <20211008154352.19519-1-semen.protsenko@linaro.org>
+ <20211008154352.19519-2-semen.protsenko@linaro.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <76d164d0-dc1a-5941-c66b-959e88e736d5@kernel.org>
+Date:   Sat, 9 Oct 2021 22:24:56 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
+In-Reply-To: <20211008154352.19519-2-semen.protsenko@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/21 2:07 AM, Jacopo Mondi wrote:
-> Hi Krzysztof,
+On 08.10.2021 17:43, Sam Protsenko wrote:
+> pll0822x PLL is used in Exynos850 SoC for top-level integer PLLs. The
+> code was derived from very similar pll35xx type, with next differences:
 > 
->     I've been testing this driver in the last few days, thanks for your
-> effort in upstreaming it!
+> 1. Lock time for pll0822x is 150*P_DIV, when for pll35xx it's 270*P_DIV
+> 2. It's not suggested in Exynos850 TRM that S_DIV change doesn't require
+>     performing PLL lock procedure (which is done in pll35xx
+>     implementation)
 > 
-> I'll separately comment on what I had to change to have it working for
-> my use case, but let me continue the discussion from where it was left
-> pending here to add my 2 cents.
+> When defining pll0822x type, CON3 register offset should be provided as
+> a "con" parameter of PLL() macro, like this:
 > 
-> On Thu, Oct 07, 2021 at 11:11:09AM +0200, Krzysztof Hałasa wrote:
->> Hi Sakari,
->>
->> Thanks for your input.
->>
->>> Where's the corresponding DT binding patch? Ideally it would be part of the
->>> same set.
->>
->> Well I've sent it a moment before this one. Will make them a set next
->> time.
->>
->>>> +#define AR0521_WIDTH_BLANKING_MIN     572u
->>>> +#define AR0521_HEIGHT_BLANKING_MIN     28u // must be even
->>>
->>> Please use /* */ for comments. The SPDX tag is an exception.
->>
->> As far as I know, this is no longer the case, the C99 comments are now
->> permitted and maybe even encouraged. Or was I dreaming?
->>
->> checkpatch doesn't protest either.
+>      PLL(pll_0822x, 0, "fout_shared0_pll", "oscclk",
+>          PLL_LOCKTIME_PLL_SHARED0, PLL_CON3_PLL_SHARED0,
+>          exynos850_shared0_pll_rates),
 > 
-> To my understanding the C99 standard added support for the //
-> commenting style and tollerate them, but they're still from C++ and I
-> see very few places where they're used in the kernel, and per as far I
-> know they're still not allowed by the coding style
-> https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
-
-http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
-
-Maybe we should update coding-style then.
-
+> To define PLL rates table, one can use PLL_35XX_RATE() macro, e.g.:
 > 
-> Looking at how you used comments in the driver I think you could get
-> rid of most // comments easily, the register tables might be an
-> exception but I would really try to remove them from there as well.
+>      PLL_35XX_RATE(26 * MHZ, 1600 * MHZ, 800, 13, 0)
 > 
+> as it's completely appropriate for pl0822x type and there is no sense in
+> duplicating that.
 > 
->>
->>> Please wrap your lines at 80 or earlier, unless a sound reason exists to do
->>> otherwise.
->>
->> This limitation appears to be lifted as well, after all those years.
->> Is there a specific reason to still use it here? Yes, lines longer than
->> 80 chars make the code much more readable (for my eyes, at least).
->> Yes, I know there is some "soft" limit, and I trim lines when it makes
->> them better in my opinion.
->>
+> If bit #1 (MANUAL_PLL_CTRL) is not set in CON1 register, it won't be
+> possible to set new rate, with next error showing in kernel log:
 > 
-> In my personal opinion lifting that restriction caused more pain than
-> anything, as different subsystem are now imposing different
-> requirements. Here everything has been so far pretty strict about
-> going over 80-cols, but I think there are situation where it makes
-> sense in example
+>      Could not lock PLL fout_shared1_pll
 > 
-
-[snip]
-
+> That can happen for example if bootloader clears that bit beforehand.
+> PLL driver doesn't account for that, so if MANUAL_PLL_CTRL bit was
+> cleared, it's assumed it was done for a reason and it shouldn't be
+> possible to change that PLL's rate at all.
 > 
-> My suggestion is: aim to 80 cols whenever possible, if it forces you
-> to do things like the above shown function declaration you can go a
-> little over that
+> Signed-off-by: Sam Protsenko<semen.protsenko@linaro.org>
+> Reviewed-by: Krzysztof Kozlowski<krzysztof.kozlowski@canonical.com>
+> Acked-by: Chanwoo Choi<cw00.choi@samsung.com>
 
-Yes, 80 max is still preferred. Up to 100 may be tolerable in some
-cases.
-
-> As reported here
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
-> if you go over 100 you should ask yourself what are you doing :)
-
-
-
-
--- 
-~Randy
+Applied, thanks.
