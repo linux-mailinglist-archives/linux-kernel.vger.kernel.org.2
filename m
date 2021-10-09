@@ -2,130 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 274FE42789F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 039614278B1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232461AbhJIJ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:58:44 -0400
-Received: from mout.web.de ([212.227.17.12]:52681 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhJIJ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:58:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1633773405;
-        bh=Zo5JvUyWLGeW3CGXIvjBIxjiMTVXy0P1pfwH3RQzSSM=;
-        h=X-UI-Sender-Class:To:Subject:From:Date;
-        b=U9ITZcm0iwdMz0vWZCM4alYdY2gFjjMcwhuR88J8DpSDRbTLqjdtY+0MKwFU2wJlk
-         9lGSm9WyOO+X5l0cKfDP+gdCxTrRd7pbpPqvaJwLm/KVXEnt8SwBtGk3oSPelpASqQ
-         MnNQIJihuXQ5obRmSr9OOumgKQ6sXmRp9UUI+Ozo=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from localhost.localdomain ([178.9.154.36]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MC1nQ-1mQJPI43kG-008rIV for
- <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:56:45 +0200
-To:     linux-kernel@vger.kernel.org
-Subject: Unwanted activation of root-processes getting highly activated
-From:   secret <andreas-stoewing@web.de>
-Date:   Sat, 9 Oct 2021 11:58:22 +0000
+        id S244541AbhJIKJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244411AbhJIKJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 06:09:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B24C061570;
+        Sat,  9 Oct 2021 03:07:04 -0700 (PDT)
+Date:   Sat, 09 Oct 2021 10:06:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633774020;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KAVJicna/b7C2WGjjGSmvD9XEwNO08BcYAxnu1bhB4A=;
+        b=qNXbMDhOLyCTcLxugNHuU6pEj4b2sAb+xWlhudLDd7QYcTMmT/7J+upyKxNnnXtkJLOKcI
+        1A5Aez39IAN5wQs0D6LEGqHqYN+pt5/rlnrPlWVknJds1gXmLO0ibMbAQCTqAkghxviPvH
+        6Y8G6/6iKnTGRND7vdKJXySqPsYRa8WoxGeWmySUpn6o42iEyvpDxA5U1kSelxH21LVaxi
+        oWPrGjbJUBvaWGKzhdpEKpfYDYFiOpDw+ssSD3xq5So1zN7Z4AJ/R7JkcrpnS4sU4+QZtl
+        pGZN1KA42MEZYa40OuGVOtY56zm6HqejksgISu+/RDr5Y257ib/uk/DrHvsyHg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633774020;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KAVJicna/b7C2WGjjGSmvD9XEwNO08BcYAxnu1bhB4A=;
+        b=s98zpnWn3qR5S7R+BqWrxdMlfUBZShn3PPh24yqqKuyTARsPlgzBht8FiXqs4oC+a8m0WT
+        YSSmLxFyfLwtPqBA==
+From:   tip-bot2 for =?utf-8?q?Andr=C3=A9?= Almeida 
+        <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] futex2: Documentation: Document sys_futex_waitv() uAPI
+Cc:     andrealmeid@collabora.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210923171111.300673-23-andrealmeid@collabora.com>
+References: <20210923171111.300673-23-andrealmeid@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Message-ID: <163377401910.25758.10428842079103776202.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <202110091158.27436.andreas-stoewing@web.de>
-X-Provags-ID: V03:K1:AO52xnoRFL8crzi+QaHqNDsi6TkpBf5M+8hD68d8zkhu3g/dBQQ
- fNUq/cbVZOFZWRCJIfDDmxS/3H8fkdhQabS7NYpHlsM8AGWPnuINbUYTfEKL20NaHtng2Ld
- 2dR/ClP4ncCJBRZm1VjFoSbQF6f9dT8ibWwb51MfWnUPDM76MS7h6MJpvXCKTRcyaO4z3s1
- kgW4jZXQ4pXXEMalhWI8A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tRtgcfH+MqQ=:Jun+2OtRHpexyXKFdnUTsq
- mQPdvaB0U0UMgQ0gY+S6vByjamU8HYjBcwe8FMwwlq39iKemJiXMJzYfmlxyNF+3QPOUKd9S9
- d6ij9UcyH3auMBvPweZXTzj33n+aIZ6ZN2x6Mp7ikaFseuQWIyol/Y3C1M9J3mPPFv0Rlct9N
- mgS4BViomBfvc2Q+sGhAIP3c8HVw8a/7zccdhTOQwJGAyqXTaXNuJihsQa0x/5AJUzcPMOR/n
- cG9vbLMSZFe+TuEWqjkWxplgKYmd5u68aN80thyQ6/tNc9X4Gg/PGtcoV74qkeFnFLRgSBsiZ
- 1uZkLcB+8QMc3JsnuEyY6MI5cHlxPeYloS4khvh2HVTrimnDsyXCSDIepghGzc7U8TsKrD8sM
- YYVZgY5JYu/PXiPit7sv2P0BtMso4AsSV3dIXVG9NTh8CYRd/iMcVqYgeNA+es0O6jM8N8WwP
- dzw3sJ+/TpBj9WZArDY3DFQVo2ZhIeK6Xjm+YBSPCiVfrBGSf1SeB+TwpH5ShP/jMeCEOIZR0
- dvQg9Su1BBreN+vjt2wiI99HseIU0pJeVNSeKc1LHAQvrlb/iEl4B5GM9bBRvaR+b3tWYuT/k
- LOuPuEvMJmXCs3E0DWf5CGDYNVqaDN/t1lAm3rPhERZuVD9QnUrfnq6zDv1Wk6unwiQAfKnMu
- a8BIUeAqsTHWWRSWPR53iM79vT5KlogZ0ItPuFuQTwfQX3FmvIzRxjG10MqcR2ARQal5i/ypS
- R9M508f7siRFvyHmJjg77AxRUdCZspjyvU5Ma+nDmEJdlacBMSXAU1e+kiye6U5wLcZgdcs7T
- WahIt3tizcOQC01/EoDrve28FIQgeNsHv6UVFmUKhbV/91theSQfK/B4tMdygMu4dcNCAAB/X
- VkCyVWkPl+avRG47+9Ph8NT5saOAhaD9+p0e7fUyVUtZTDPAbhOAuicU8Y845OOB2vb7e2DPS
- dc4Ocn14yZP0e6/qL6UFCBACx4ah5uvjCOB3QO0empErqfiiMHm9yUj0LL3EtstH5x8yGXLEa
- d4qsKoe8bBRRcg/+97DC8nKt6ITyPc/RX3kmzBYL3mi8aqzU0YPLp6vjRveEsL2n7XbASLzpp
- Vd2RVm5VuSOf7E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Such processes get always activated. But I have never seen them in such
-dangerous high activity as described below!
+The following commit has been merged into the locking/core branch of tip:
 
-Regards,
-Andreas (Gooken)
+Commit-ID:     dd0aa2cd2e9e3e49b8c3b43924dc1a1d4e22b4d1
+Gitweb:        https://git.kernel.org/tip/dd0aa2cd2e9e3e49b8c3b43924dc1a1d4e2=
+2b4d1
+Author:        Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+AuthorDate:    Thu, 23 Sep 2021 14:11:11 -03:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 07 Oct 2021 13:51:13 +02:00
 
-Date: 08.10.2021
+futex2: Documentation: Document sys_futex_waitv() uAPI
 
-Subject/Betreff: Unwanted activation of root-processes reading and writing=
- out
-the whole SSD/harddrive ! / Kernel-5.4.134 (pclos, AppArmor / Tor (OpenSuS=
-E)
-usw. etc.: Freigabe von Informationen, Ausf=FChren von Code mit h=F6heren
-Privilegien und beliebiger Kommandos in Linux, Erzeugung, Lesen und
-=DCberschreiben beliebiger Dateien
+Create userspace documentation for futex_waitv() syscall, detailing how
+the arguments are used.
 
-Hi, Greg, dear Linux experts and friends,
+Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210923171111.300673-23-andrealmeid@collabor=
+a.com
+---
+ Documentation/userspace-api/futex2.rst | 86 +++++++++++++++++++++++++-
+ Documentation/userspace-api/index.rst  |  1 +-
+ 2 files changed, 87 insertions(+)
+ create mode 100644 Documentation/userspace-api/futex2.rst
 
-this is one of the most dangerous and worst things, Linux can happen!
-Refering to the actual kernel 5.4.134 ( now up to the actual version 5.4.1=
-51
-and higher, additional remark from 10.08.2021), there still is a problem w=
-ith
-unexpectedly activated, highly active root-processes (making the tower-LED
-causing readwrites onto harddiscs and making the SSD/harddrive blink serio=
-us-
-madly hard for about up to 20 minutes). The whole SSD/harddrive seems to g=
-et
-read out and overwritten!
-
-The unwanted, highly by tor (pclos, mga7) resp. firejail activated kernel-
-root-processes are named
-
-kworker/u2:1-kcryptd/253:2 (escpecially this one, CPU: gt; 10%)
-kworker/0:1H-kblockd
-dmcrypt_write/2 and
-jbd2/dm2--8
-
-This occurs since kernel around 5.4.13, whenever I start browsing (with Pa=
-le
-Moon), activating firejail and tor.
-
-Please patch the kernel-5.4 to prevent it in future!
-Regards
-Andreas St=F6wing (Gooken-producer, Gooken: https://gooken.safe-ws.de/gook=
-en)
-
-Appendix
-libapparmor.so.required by firejail (OpenSuSE 15.X) needed by tor (rosa201=
-6.1,
-mga7) must be the cause for the activation as much as high activity of som=
-e
-root-processes!
-I have got no other explanation.
-Kernel security module apparmor itself got deactivated within the kernel b=
-y my
-boot-parameters "security=3Dnone" and "apparmor=3Dnone".
-
-After tor and firejail version got changed from OpenSuSE 15.X to mga7
-(firejail) resp. to CentOS el7 (Tor), so that libapparmor.so.1  is not
-required anymore, such root-processes did not get activated resp. active t=
-oo
-much!<BR>
-But they did appear unexpectedly again in kernel-5.4.151 !
-<BR><BR>
-So I still await your patches for kernel-5.4.
-In my opinion, Linux is killing spy-software and rubbish, if you won&#180;=
-t
-patch it !
-
-Regards
-Gooken
+diff --git a/Documentation/userspace-api/futex2.rst b/Documentation/userspace=
+-api/futex2.rst
+new file mode 100644
+index 0000000..9693f47
+--- /dev/null
++++ b/Documentation/userspace-api/futex2.rst
+@@ -0,0 +1,86 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=3D=3D=3D=3D=3D=3D
++futex2
++=3D=3D=3D=3D=3D=3D
++
++:Author: Andr=C3=A9 Almeida <andrealmeid@collabora.com>
++
++futex, or fast user mutex, is a set of syscalls to allow userspace to create
++performant synchronization mechanisms, such as mutexes, semaphores and
++conditional variables in userspace. C standard libraries, like glibc, uses it
++as a means to implement more high level interfaces like pthreads.
++
++futex2 is a followup version of the initial futex syscall, designed to overc=
+ome
++limitations of the original interface.
++
++User API
++=3D=3D=3D=3D=3D=3D=3D=3D
++
++``futex_waitv()``
++-----------------
++
++Wait on an array of futexes, wake on any::
++
++  futex_waitv(struct futex_waitv *waiters, unsigned int nr_futexes,
++              unsigned int flags, struct timespec *timeout, clockid_t clocki=
+d)
++
++  struct futex_waitv {
++        __u64 val;
++        __u64 uaddr;
++        __u32 flags;
++        __u32 __reserved;
++  };
++
++Userspace sets an array of struct futex_waitv (up to a max of 128 entries),
++using ``uaddr`` for the address to wait for, ``val`` for the expected value
++and ``flags`` to specify the type (e.g. private) and size of futex.
++``__reserved`` needs to be 0, but it can be used for future extension. The
++pointer for the first item of the array is passed as ``waiters``. An invalid
++address for ``waiters`` or for any ``uaddr`` returns ``-EFAULT``.
++
++If userspace has 32-bit pointers, it should do a explicit cast to make sure
++the upper bits are zeroed. ``uintptr_t`` does the tricky and it works for
++both 32/64-bit pointers.
++
++``nr_futexes`` specifies the size of the array. Numbers out of [1, 128]
++interval will make the syscall return ``-EINVAL``.
++
++The ``flags`` argument of the syscall needs to be 0, but it can be used for
++future extension.
++
++For each entry in ``waiters`` array, the current value at ``uaddr`` is compa=
+red
++to ``val``. If it's different, the syscall undo all the work done so far and
++return ``-EAGAIN``. If all tests and verifications succeeds, syscall waits u=
+ntil
++one of the following happens:
++
++- The timeout expires, returning ``-ETIMEOUT``.
++- A signal was sent to the sleeping task, returning ``-ERESTARTSYS``.
++- Some futex at the list was woken, returning the index of some waked futex.
++
++An example of how to use the interface can be found at ``tools/testing/selft=
+ests/futex/functional/futex_waitv.c``.
++
++Timeout
++-------
++
++``struct timespec *timeout`` argument is an optional argument that points to=
+ an
++absolute timeout. You need to specify the type of clock being used at
++``clockid`` argument. ``CLOCK_MONOTONIC`` and ``CLOCK_REALTIME`` are support=
+ed.
++This syscall accepts only 64bit timespec structs.
++
++Types of futex
++--------------
++
++A futex can be either private or shared. Private is used for processes that
++shares the same memory space and the virtual address of the futex will be the
++same for all processes. This allows for optimizations in the kernel. To use
++private futexes, it's necessary to specify ``FUTEX_PRIVATE_FLAG`` in the fut=
+ex
++flag. For processes that doesn't share the same memory space and therefore c=
+an
++have different virtual addresses for the same futex (using, for instance, a
++file-backed shared memory) requires different internal mechanisms to be get
++properly enqueued. This is the default behavior, and it works with both priv=
+ate
++and shared futexes.
++
++Futexes can be of different sizes: 8, 16, 32 or 64 bits. Currently, the only
++supported one is 32 bit sized futex, and it need to be specified using
++``FUTEX_32`` flag.
+diff --git a/Documentation/userspace-api/index.rst b/Documentation/userspace-=
+api/index.rst
+index c432be0..a61eac0 100644
+--- a/Documentation/userspace-api/index.rst
++++ b/Documentation/userspace-api/index.rst
+@@ -28,6 +28,7 @@ place where this information is gathered.
+    media/index
+    sysfs-platform_profile
+    vduse
++   futex2
+=20
+ .. only::  subproject and html
+=20
