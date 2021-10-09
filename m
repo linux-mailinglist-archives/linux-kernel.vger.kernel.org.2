@@ -2,164 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC81442783C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA82A427840
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244276AbhJIJEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229995AbhJIJEE (ORCPT
+        id S244325AbhJIJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:06:09 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42738 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229995AbhJIJGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:04:04 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93D6C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 02:02:07 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id d13-20020a17090ad3cd00b0019e746f7bd4so11039168pjw.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 02:02:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:to:cc:references
-         :from:in-reply-to:content-transfer-encoding;
-        bh=ytt3WCg91eCNZjpSJuDFk04EFIJndQ+IVu53Sddgxts=;
-        b=BMJh9CoYoLSK483lqgaxKiqc1i4rbMsi7dHs4LIDn7EW60lJZh+8V1ICNXdNviuM31
-         +0GVpIl4OSMMFdRDBZeKk/+cWq52ZwwUF2uNjPXeHWVmDULLMjbjVVJ6fvn7PVNuSLe0
-         XiRlfST0zdMNMEaKZVEWKVmCOYB8Q28yNMYnmPRypAZ3/W7PrrzV+P5SevGdxulr+KZl
-         I94quIADKEL/NfbpBHH5Tj+Rnl79RZQbr+6DrFuOnZo7w5wuuFoYcsVTACj79vqJWHdq
-         pWibraS6oDxGdCQhvtVeChQXBmuS5wml9bdWJ5/HFwMD0XtuszPXsInOVQjUXigEFpZR
-         fksQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :to:cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ytt3WCg91eCNZjpSJuDFk04EFIJndQ+IVu53Sddgxts=;
-        b=03EEbKSOjsObVUMxSsKdeu2OZ5ut/s1E7LgtFHyR9nrvJqNzWsscIVwz2w4H9A9G16
-         6su3Zvt5N+/IlcXmkAKpF0VqP0H+WBattAS5Hong28Y6ageDyyy0IbQLq6h4cyIlKznf
-         av0T97J1vR0QhQc/x4I3ILsSDxgGZi2CnAkx10CQW9QGKmdwL9mbmSZwhC8wUkjoKyTQ
-         EB3sXp/C94y/U4FVAwwO/enPJh7kVjfzMOlxWUbTxbjt/wIkViGd8Y0kWzIYfWAJHOcG
-         1nmtipiHo2yH1JLBF2N0ihPOe7Jf/fznPD4JgzHcrfgALYkVZJ/HRxxApO4wAgrLzp+b
-         4NzA==
-X-Gm-Message-State: AOAM5333gKh30LlU5tKf0z716QK6sWzqeJZJrBnXOmKPiY4r6pKEBkP6
-        w9NzUeeiiR+u2HBU1AAcx+JBzw==
-X-Google-Smtp-Source: ABdhPJzzGNAEiznsVxQdTECGGLVnK/AfgBo9InHms4uyKkf2mCgrrHBQ3EOjFYdahdz347Qfq7PMZA==
-X-Received: by 2002:a17:90b:4c0f:: with SMTP id na15mr17070904pjb.200.1633770127224;
-        Sat, 09 Oct 2021 02:02:07 -0700 (PDT)
-Received: from [10.254.129.32] ([139.177.225.254])
-        by smtp.gmail.com with ESMTPSA id p189sm1588836pfp.167.2021.10.09.02.02.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 02:02:06 -0700 (PDT)
-Message-ID: <ad3d7e5d-cac1-5773-95f9-cc8f3cfd63a4@bytedance.com>
-Date:   Sat, 9 Oct 2021 17:02:03 +0800
+        Sat, 9 Oct 2021 05:06:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ur5ZLLu_1633770249;
+Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Ur5ZLLu_1633770249)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 09 Oct 2021 17:04:10 +0800
+Subject: Re: [PATCH] ocfs2: cleanup journal init and shutdown
+To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>, ocfs2-devel@oss.oracle.com,
+        linux-kernel@vger.kernel.org
+References: <20211002143640.26512-1-vvidic@valentin-vidic.from.hr>
+From:   Joseph Qi <joseph.qi@linux.alibaba.com>
+Message-ID: <faceeac2-7419-e500-12ba-ab11b915e660@linux.alibaba.com>
+Date:   Sat, 9 Oct 2021 17:04:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [External] Re: [PATCH] Clocksource: Avoid misjudgment of
- clocksource
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20211008080305.13401-1-yanghui.def@bytedance.com>
- <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
- <665f749e-b71e-a793-d759-87f7cf89677c@bytedance.com>
- <CALAqxLXWVpxTwEssBBUnS2ZYTpaCr3cue_dw5ZmEm5ZQ8Wf=wg@mail.gmail.com>
-From:   yanghui <yanghui.def@bytedance.com>
-In-Reply-To: <CALAqxLXWVpxTwEssBBUnS2ZYTpaCr3cue_dw5ZmEm5ZQ8Wf=wg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211002143640.26512-1-vvidic@valentin-vidic.from.hr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-在 2021/10/9 上午11:38, John Stultz 写道:
-> On Fri, Oct 8, 2021 at 8:22 PM yanghui <yanghui.def@bytedance.com> wrote:
->> 在 2021/10/9 上午7:45, John Stultz 写道:
->>> On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
->>>>
->>>> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
->>>> Timer. But sometimes system is very busy and the Timer cannot be
->>>> executed in 0.5sec. For example,if clocksource_watchdog be executed
->>>> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
->>>> be enlarged. Then the current clocksource will be misjudged as
->>>> unstable. So we add conditions to prevent the clocksource from
->>>> being misjudged.
->>>>
->>>> Signed-off-by: yanghui <yanghui.def@bytedance.com>
->>>> ---
->>>>    kernel/time/clocksource.c | 6 +++++-
->>>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
->>>> index b8a14d2fb5ba..d535beadcbc8 100644
->>>> --- a/kernel/time/clocksource.c
->>>> +++ b/kernel/time/clocksource.c
->>>> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
->>>>
->>>>    /*
->>>>     * Interval: 0.5sec.
->>>> + * MaxInterval: 1s.
->>>>     */
->>>>    #define WATCHDOG_INTERVAL (HZ >> 1)
->>>> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
->>>>
->>>>    static void clocksource_watchdog_work(struct work_struct *work)
->>>>    {
->>>> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
->>>>
->>>>                   /* Check the deviation from the watchdog clocksource. */
->>>>                   md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->>>> -               if (abs(cs_nsec - wd_nsec) > md) {
->>>> +               if ((abs(cs_nsec - wd_nsec) > md) &&
->>>> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
->>>
->>> Sorry, it's been awhile since I looked at this code, but why are you
->>> bounding the clocksource delta here?
->>> It seems like if the clocksource being watched was very wrong (with a
->>> delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
->>>
->>>> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
->>>
->>> Bounding the watchdog interval on the check does seem reasonable.
->>> Though one may want to keep track that if we are seeing too many of
->>> these delayed watchdog checks we provide some feedback via dmesg.
->>
->>     Yes, only to check watchdog delta is more reasonable.
->>     I think Only have dmesg is not enough, because if tsc was be misjudged
->>     as unstable then switch to hpet. And hpet is very expensive for
->>     performance, so if we want to switch to tsc the only way is to reboot
->>     the server. We need to prevent the switching of the clock source in
->>     case of misjudgment.
->>     Circumstances of misjudgment:
->>     if clocksource_watchdog is executed after 10sec, the value of wd_delta
->>     and cs_delta also be about 10sec, also the value of (cs_nsec- wd_nsec)
->>     will be magnified 20 times(10sec/0.5sec).The delta value is magnified.
+On 10/2/21 10:36 PM, Valentin Vidic wrote:
+> Allocate and free struct ocfs2_journal in ocfs2_journal_init and
+> ocfs2_journal_shutdown. Init and release of system inodes references
+> the journal so reorder calls to make sure they work correctly.
 > 
-> Yea, it might be worth calculating an error rate instead of assuming
-> the interval is fixed, but also just skipping the check may be
-> reasonable assuming timers aren't constantly being delayed (and it's
-> more of a transient state).
+> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
+> ---
+>  fs/ocfs2/inode.c   |  4 ++--
+>  fs/ocfs2/journal.c | 25 +++++++++++++++++++++----
+>  fs/ocfs2/journal.h |  3 +--
+>  fs/ocfs2/super.c   | 40 +++-------------------------------------
+>  4 files changed, 27 insertions(+), 45 deletions(-)
 > 
-> At some point if the watchdog timer is delayed too much, the watchdog
-I mean the execution cycle of this function(static void 
-clocksource_watchdog(struct timer_list *unused)) has been delayed.
+> diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
+> index bc8f32fab964..c2275895c229 100644
+> --- a/fs/ocfs2/inode.c
+> +++ b/fs/ocfs2/inode.c
+> @@ -125,7 +125,6 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
+>  	struct inode *inode = NULL;
+>  	struct super_block *sb = osb->sb;
+>  	struct ocfs2_find_inode_args args;
+> -	journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
+>  
+>  	trace_ocfs2_iget_begin((unsigned long long)blkno, flags,
+>  			       sysfile_type);
+> @@ -172,10 +171,11 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
+>  	 * part of the transaction - the inode could have been reclaimed and
+>  	 * now it is reread from disk.
+>  	 */
+> -	if (journal) {
+> +	if (OCFS2_SB(sb)->journal) {
 
-> hardware will fully wrap and one can no longer properly compare
-> intervals. That's why the timer length is chosen as such, so having
-> that timer delayed is really pushing the system into a potentially bad
-> state where other subtle problems are likely to crop up.
-> 
-> So I do worry these watchdog robustness fixes are papering over a
-> problem, pushing expectations closer to the edge of how far the system
-> should tolerate bad behavior. Because at some point we'll fall off. :)
+Use osb->journal instead.
 
-Sorry,I don't seem to understand what you mean. Should I send your Patch 
-v2 ?
+>  		transaction_t *transaction;
+>  		tid_t tid;
+>  		struct ocfs2_inode_info *oi = OCFS2_I(inode);
+> +		journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
 
-thanks
--hui
-> 
-> thanks
-> -john
+Ditto.
+
+>  
+>  		read_lock(&journal->j_state_lock);
+>  		if (journal->j_running_transaction)
+> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+> index 4f15750aac5d..d50f0ac3fd46 100644
+> --- a/fs/ocfs2/journal.c
+> +++ b/fs/ocfs2/journal.c
+> @@ -810,19 +810,34 @@ void ocfs2_set_journal_params(struct ocfs2_super *osb)
+>  	write_unlock(&journal->j_state_lock);
+>  }
+>  
+> -int ocfs2_journal_init(struct ocfs2_journal *journal, int *dirty)
+> +int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
+>  {
+>  	int status = -1;
+>  	struct inode *inode = NULL; /* the journal inode */
+>  	journal_t *j_journal = NULL;
+> +	struct ocfs2_journal *journal = NULL;
+>  	struct ocfs2_dinode *di = NULL;
+>  	struct buffer_head *bh = NULL;
+> -	struct ocfs2_super *osb;
+>  	int inode_lock = 0;
+>  
+> -	BUG_ON(!journal);
+> +	/* initialize our journal structure */
+> +	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
+> +	if (!journal) {
+> +		mlog(ML_ERROR, "unable to alloc journal\n");
+> +		status = -ENOMEM;
+> +		goto done;
+> +	}
+> +	osb->journal = journal;
+> +	journal->j_osb = osb;
+>  
+> -	osb = journal->j_osb;
+> +	atomic_set(&journal->j_num_trans, 0);
+> +	init_rwsem(&journal->j_trans_barrier);
+> +	init_waitqueue_head(&journal->j_checkpointed);
+> +	spin_lock_init(&journal->j_lock);
+> +	journal->j_trans_id = 1UL;
+> +	INIT_LIST_HEAD(&journal->j_la_cleanups);
+> +	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
+> +	journal->j_state = OCFS2_JOURNAL_FREE;
+>  
+>  	/* already have the inode for our journal */
+>  	inode = ocfs2_get_system_file_inode(osb, JOURNAL_SYSTEM_INODE,
+> @@ -1031,6 +1046,8 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
+>  //	up_write(&journal->j_trans_barrier);
+
+Could you please clean up the above line as well?
+
+Thanks,
+Joseph
+
+>  done:
+>  	iput(inode);
+> +	kfree(journal);
+> +	osb->journal = NULL;
+>  }
+>  
+>  static void ocfs2_clear_journal_error(struct super_block *sb,
+> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
+> index d158acb8b38a..8dcb2f2cadbc 100644
+> --- a/fs/ocfs2/journal.h
+> +++ b/fs/ocfs2/journal.h
+> @@ -167,8 +167,7 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb);
+>   *  ocfs2_start_checkpoint - Kick the commit thread to do a checkpoint.
+>   */
+>  void   ocfs2_set_journal_params(struct ocfs2_super *osb);
+> -int    ocfs2_journal_init(struct ocfs2_journal *journal,
+> -			  int *dirty);
+> +int    ocfs2_journal_init(struct ocfs2_super *osb, int *dirty);
+>  void   ocfs2_journal_shutdown(struct ocfs2_super *osb);
+>  int    ocfs2_journal_wipe(struct ocfs2_journal *journal,
+>  			  int full);
+> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
+> index 5c914ce9b3ac..1286b88b6fa1 100644
+> --- a/fs/ocfs2/super.c
+> +++ b/fs/ocfs2/super.c
+> @@ -1894,8 +1894,6 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
+>  	/* This will disable recovery and flush any recovery work. */
+>  	ocfs2_recovery_exit(osb);
+>  
+> -	ocfs2_journal_shutdown(osb);
+> -
+>  	ocfs2_sync_blockdev(sb);
+>  
+>  	ocfs2_purge_refcount_trees(osb);
+> @@ -1918,6 +1916,8 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
+>  
+>  	ocfs2_release_system_inodes(osb);
+>  
+> +	ocfs2_journal_shutdown(osb);
+> +
+>  	/*
+>  	 * If we're dismounting due to mount error, mount.ocfs2 will clean
+>  	 * up heartbeat.  If we're a local mount, there is no heartbeat.
+> @@ -2016,7 +2016,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
+>  	int i, cbits, bbits;
+>  	struct ocfs2_dinode *di = (struct ocfs2_dinode *)bh->b_data;
+>  	struct inode *inode = NULL;
+> -	struct ocfs2_journal *journal;
+>  	struct ocfs2_super *osb;
+>  	u64 total_blocks;
+>  
+> @@ -2197,33 +2196,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
+>  
+>  	get_random_bytes(&osb->s_next_generation, sizeof(u32));
+>  
+> -	/* FIXME
+> -	 * This should be done in ocfs2_journal_init(), but unknown
+> -	 * ordering issues will cause the filesystem to crash.
+> -	 * If anyone wants to figure out what part of the code
+> -	 * refers to osb->journal before ocfs2_journal_init() is run,
+> -	 * be my guest.
+> -	 */
+> -	/* initialize our journal structure */
+> -
+> -	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
+> -	if (!journal) {
+> -		mlog(ML_ERROR, "unable to alloc journal\n");
+> -		status = -ENOMEM;
+> -		goto bail;
+> -	}
+> -	osb->journal = journal;
+> -	journal->j_osb = osb;
+> -
+> -	atomic_set(&journal->j_num_trans, 0);
+> -	init_rwsem(&journal->j_trans_barrier);
+> -	init_waitqueue_head(&journal->j_checkpointed);
+> -	spin_lock_init(&journal->j_lock);
+> -	journal->j_trans_id = (unsigned long) 1;
+> -	INIT_LIST_HEAD(&journal->j_la_cleanups);
+> -	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
+> -	journal->j_state = OCFS2_JOURNAL_FREE;
+> -
+>  	INIT_WORK(&osb->dquot_drop_work, ocfs2_drop_dquot_refs);
+>  	init_llist_head(&osb->dquot_drop_list);
+>  
+> @@ -2404,7 +2376,7 @@ static int ocfs2_check_volume(struct ocfs2_super *osb)
+>  						  * ourselves. */
+>  
+>  	/* Init our journal object. */
+> -	status = ocfs2_journal_init(osb->journal, &dirty);
+> +	status = ocfs2_journal_init(osb, &dirty);
+>  	if (status < 0) {
+>  		mlog(ML_ERROR, "Could not initialize journal!\n");
+>  		goto finally;
+> @@ -2513,12 +2485,6 @@ static void ocfs2_delete_osb(struct ocfs2_super *osb)
+>  
+>  	kfree(osb->osb_orphan_wipes);
+>  	kfree(osb->slot_recovery_generations);
+> -	/* FIXME
+> -	 * This belongs in journal shutdown, but because we have to
+> -	 * allocate osb->journal at the start of ocfs2_initialize_osb(),
+> -	 * we free it here.
+> -	 */
+> -	kfree(osb->journal);
+>  	kfree(osb->local_alloc_copy);
+>  	kfree(osb->uuid_str);
+>  	kfree(osb->vol_label);
 > 
