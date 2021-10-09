@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04655427B86
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FEA427B89
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234928AbhJIP6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 11:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234773AbhJIP6p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 11:58:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CE6C061570;
-        Sat,  9 Oct 2021 08:56:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=kfS9IFc+ft0tnD2SQEc8vNQr0xV7R9ONfbzwm4T1Iwk=; b=PWCYcdKmk35HrcvAGpSdloB/9b
-        SEVDohD5B1iSqbitqfVvxv5tUcWo7uhymHnFSsdZ5Lk0yffvHuyCnQ/J650pI4LuVXJTmgRcBefQN
-        cJ4pSi/9rlSVb7cjfmFaYbicdqjLEnjxBy9R0PRccR9o2bCext8XUN0ssrwn0BMdj9XAbF3PiZPa+
-        L7a9oJiESw7Py9k1zFHCQxT2av/HdAzvNI/vb1sfhX40DLPqPzLDMJ6VuZntKfaTg+Fft6fwkOq1p
-        +DhtN+cd6GhJxsj/GOJ4WQS9ui+P0RNX4mL8+tdt2YjQgUhT4GLL4md8U29Gl0LgANVRtezBeMoW4
-        N/fbU2hg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZEiJ-008s2f-2f; Sat, 09 Oct 2021 15:56:43 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 395709811D4; Sat,  9 Oct 2021 17:56:42 +0200 (CEST)
-Date:   Sat, 9 Oct 2021 17:56:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-tip-commits@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [tip: locking/core] futex: Move to kernel/futex/
-Message-ID: <20211009155642.GX174703@worktop.programming.kicks-ass.net>
-References: <20210923171111.300673-2-andrealmeid@collabora.com>
- <163377403828.25758.17995844716836790939.tip-bot2@tip-bot2>
- <6d99ad7a-8f2a-90af-7dc4-3d763413e045@collabora.com>
+        id S234869AbhJIQCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:02:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234664AbhJIQCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:02:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E861A60ED4;
+        Sat,  9 Oct 2021 16:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633795243;
+        bh=EpMQF1oty+jMI5ME7I60WgZY3kW/WrLj0/FPXYfXUms=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TKXUM6wg7DNJnQNwYqABSkrHhgIAUAuhV8nkDbjy4pXUblz794YWMNokZSt0Bczv4
+         ROLQmyQgEmdKdv5f6ZVDCmX9cNpYGmKMz7O84nzrk0JnJV6OfZvBIm9r1KfI8gJOIn
+         Gh08WLwqU/eYQ0WJDrPRk0DoSneYq2Hk0ZXQw2Px2PhcuXwsVkNYAJTaxPvI+boh3F
+         SCOeyBY+slLHBscUBw9w4aZFwKIx+K+FIVh/jCX0QYu5uteU4lA8Za88C9p4schY+P
+         s+S1rKChphR7MnKoRGgFFiUpP93O7AAq4ZU8aElMrXrnEe8l8KL54tjui74Exm7KGn
+         Frp4gi/9BvaXA==
+Received: by pali.im (Postfix)
+        id 75ACE310; Sat,  9 Oct 2021 18:00:40 +0200 (CEST)
+Date:   Sat, 9 Oct 2021 18:00:40 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     sean.wang@mediatek.com
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        Mark-YW.Chen@mediatek.com, Soul.Huang@mediatek.com,
+        YN.Chen@mediatek.com, Leon.Yen@mediatek.com,
+        Eric-SY.Chang@mediatek.com, Deren.Wu@mediatek.com,
+        km.lin@mediatek.com, robin.chiu@mediatek.com,
+        Eddie.Chen@mediatek.com, ch.yeh@mediatek.com,
+        posh.sun@mediatek.com, ted.huang@mediatek.com,
+        Eric.Liang@mediatek.com, Stella.Chang@mediatek.com,
+        Tom.Chou@mediatek.com, steve.lee@mediatek.com, jsiuda@google.com,
+        frankgor@google.com, jemele@google.com, abhishekpandit@google.com,
+        michaelfsun@google.com, mcchou@chromium.org, shawnku@google.com,
+        linux-bluetooth@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 10/10] Bluetooth: btmtksdio: add MT7921s Bluetooth
+ support
+Message-ID: <20211009160040.y4geidvrsffuuayw@pali>
+References: <cover.1633728573.git.objelf@gmail.com>
+ <cae32b7d93a13273c7610ce7c2b82129847ee587.1633728573.git.objelf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d99ad7a-8f2a-90af-7dc4-3d763413e045@collabora.com>
+In-Reply-To: <cae32b7d93a13273c7610ce7c2b82129847ee587.1633728573.git.objelf@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 11:23:36AM -0300, André Almeida wrote:
-> Hi Peter,
+Hello!
+
+On Saturday 09 October 2021 06:10:17 sean.wang@mediatek.com wrote:
+> From: Sean Wang <sean.wang@mediatek.com>
 > 
-> Às 07:07 de 09/10/21, tip-bot2 for Peter Zijlstra escreveu:
-> > The following commit has been merged into the locking/core branch of tip:
-> > 
-> > Commit-ID:     77e52ae35463521041906c510fe580d15663bb93
-> > Gitweb:        https://git.kernel.org/tip/77e52ae35463521041906c510fe580d15663bb93
-> > Author:        Peter Zijlstra <peterz@infradead.org>
-> > AuthorDate:    Thu, 23 Sep 2021 14:10:50 -03:00
-> > Committer:     Peter Zijlstra <peterz@infradead.org>
-> > CommitterDate: Thu, 07 Oct 2021 13:51:07 +02:00
-> > 
-> > futex: Move to kernel/futex/
-> > 
-> > In preparation for splitup..
-> > 
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-> > Signed-off-by: André Almeida <andrealmeid@collabora.com>
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> > Reviewed-by: André Almeida <andrealmeid@collabora.com>
-> This Signed-off-by chain seems odd, all patches to 15/22 have this, is
-> it right?
+> add MT7921s Bluetooth support
+...
+> +	{SDIO_DEVICE(SDIO_VENDOR_ID_MEDIATEK, SDIO_DEVICE_ID_MEDIATEK_MT7961),
+> +	 .driver_data = (kernel_ulong_t)&mt7961_data },
 
-Well, I wrote the patch, you reposted it and then I applied it, that
-gets me there twice.
-
-Arguably my script got the Suggested-by in the wrong place tho...
+You have there probably a typo (MT7921 vs MT7961).
