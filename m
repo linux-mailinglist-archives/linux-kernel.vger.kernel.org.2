@@ -2,68 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69869427A01
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A68427A0F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244719AbhJIMOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 08:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
+        id S233171AbhJIM22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 08:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhJIMOg (ORCPT
+        with ESMTP id S233117AbhJIM21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 08:14:36 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EC9C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 05:12:39 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id i15so4449103uap.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 05:12:39 -0700 (PDT)
+        Sat, 9 Oct 2021 08:28:27 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D3EC061570;
+        Sat,  9 Oct 2021 05:26:30 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id i12so25559626wrb.7;
+        Sat, 09 Oct 2021 05:26:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/Qx1lSqcZ43h2NOxuR5UY1OIT4Wwub/0McaZwM/0E5I=;
-        b=B+23i429qRUzjCV4WDgXIcMIoVLncQyP4jyO83yyPQMVHmpAp/Grcq64HJRC5LQ19q
-         GJTshQ+d0r9HFIIPWrMPJP6JuX5x7HDmVV/GYbXPMtBodhzIPnLFZgRP59wiZimiCyql
-         omMeob8pMPI4D9VnIUHLjwACxJ31xwrbrROBCq8yFQtGEvD/8xIzBz/YSaNfQpDKeNUY
-         N/Okh0MX2kxGBlYzmec3KHWm50JUBBjZvbovedC7kUljCEWwIJh/PUvQFf680dPav0+h
-         DkKjj7pM1ZE0NxT1zKRHHQ7ujAr7OggCPHHCjQ1WS3vQ8TD2+pMdT24g67sH71b1C7jU
-         26BA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UBEdLjsSDpzSYSrkJTEaUEEJcVMFPpSfiM84UPXqOU8=;
+        b=OB+4rId2iZJtnZl7HGJ6IR0yuqog3G0yy80LkkezhN8bMmR82H8AHwmEsRH2tcyNql
+         4lBM32yH901vUvWS+dh+LMDbfwzHzx86VhGmpWTEKhfivFb27vWGEjcMtsiBJb0p8+fQ
+         LZAmlOR2wYzAlEUlc9iVwA+EiXKLty8/WtOa7cmvv/7NcgclR7tXRk5xM8jmNoLOSfDb
+         /i6Ow/O9Y1xMUANDLkkHBnqnwKN2pf03PGsNeZNPLyGNaOsU+m+IQwwozkQRFS7fFyKQ
+         eBNP44qKbzcIxhvvzdB0ummzbC1YEVno+9jGge8LviB5JiGyFjLutWH0YgRhJzsoXjUk
+         rIeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/Qx1lSqcZ43h2NOxuR5UY1OIT4Wwub/0McaZwM/0E5I=;
-        b=keV4agth7S6O7c7LCadbyq7mQ6DVIPYDDIHaaWa3qHktpp3IOJeu/T1iHCvsoK0n/R
-         pGciIG4FU6vJ/MgJsUdfCNrFhrcUPWzYFYZOUYYOLi8SFombQXF++wMafsblhwMbOkkf
-         ghcX6XiI5rnoHaDM80uJD7LdGke10v2XuHlyZxmHOxSxwEuklD7p+SP/ykaUHFvhWI12
-         VeW9+K4hqr7C8dggVTLtC5hG7wL+KYhkDKGjo3A/CT+WmbsD2VlgPQnoICw6rV/xmKZn
-         nNGxQD9nj/qo2TqWIICjIPEg2oS2puay8hu6kX1dp7ZLABKRPLyZfk9FOJfAPC9pzc2g
-         woBg==
-X-Gm-Message-State: AOAM530kkEErU81LuDXxbZMR2ZFgSLps1JponveVyz0QluIvHweZn/gH
-        zidFZeNS4o7uAx1LEFM4CQQOQhwa3Det3xFLlp4=
-X-Google-Smtp-Source: ABdhPJw6cNlUN2BaHKQ0IqZHJP1cL/b9gmlYdqPMQcTdOZYPO9eZahp24sOvsKJSJLr58zcjVHPYlJUwiWm5iEk++Vs=
-X-Received: by 2002:a05:6130:426:: with SMTP id ba38mr8329276uab.108.1633781558475;
- Sat, 09 Oct 2021 05:12:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UBEdLjsSDpzSYSrkJTEaUEEJcVMFPpSfiM84UPXqOU8=;
+        b=XOnkx6A9Xz6xJIa43UKaPDR46gzy56P4HQT8q9WH8YT2r1YH6djwg4zoGES8lBToqg
+         VV0eRxzhc5MZNRNVZq8r+SSj3GxJBUU+hhvxuRte/CLUlkoppcSTzmoLDVT1sXC7x6GW
+         3YQ14ohdKL7uPglqmcgDbzEDu4yJZkjfoWR4tYnOmbOp8i/rXrfi9++VW/HrRqn+a5PM
+         ImNKUlynlm6QD9c0So/Y2upn+lFfhu29GjY4mb4lVcn01J3PzgspYyNhgSsWG13j67Oc
+         g/rc0qPfNsrgqXc5oE05Q9+oRMUGUR7t4jsNVJbsCopY2rBqYeaWSXrL8FwpfbpB334k
+         pWMw==
+X-Gm-Message-State: AOAM532r+RWunzPcIq6bRT75LCpfZUVs/PkA6AQY0Q7kNdJ43Ugfeid8
+        jDf87pEUbtQXMc2g2U5uSk2ZM1S+PqM=
+X-Google-Smtp-Source: ABdhPJzRDRW6ohCZvt2WHcPnSnvdsUmQuJ2PtNbitBkJIjGK1cBod9GMZmm/QJQaYe3jB5oP7qA79w==
+X-Received: by 2002:adf:fe4e:: with SMTP id m14mr10650758wrs.14.1633782389425;
+        Sat, 09 Oct 2021 05:26:29 -0700 (PDT)
+Received: from localhost.localdomain ([85.255.236.155])
+        by smtp.gmail.com with ESMTPSA id o12sm2157468wrv.78.2021.10.09.05.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 05:26:29 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     asml.silence@gmail.com
+Subject: [PATCH 0/6] some block optimisations
+Date:   Sat,  9 Oct 2021 13:25:37 +0100
+Message-Id: <cover.1633781740.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a59:5d10:0:b0:235:cc09:d8f with HTTP; Sat, 9 Oct 2021
- 05:12:38 -0700 (PDT)
-Reply-To: salemchantal@mail.ee
-From:   MRS Salem Chantal Lawrence <patrickmurphy791@gmail.com>
-Date:   Sat, 9 Oct 2021 05:12:38 -0700
-Message-ID: <CAEsU2=jALhCVz0efZbnW189bOuzKY0+vRhB5gvUDgxt46Ot5Vg@mail.gmail.com>
-Subject: Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention
+On top of perf-wip branch,
 
-You have been compensated with the sum of 4.6 million dollars in this
-United Nation the payment will be issue into Atm Visa Card and send to you
-from the Bank we need your Address Passport and your whatsapp number
+./io_uring -d32 -s32 -c32 -b512 -p1 /dev/nullb0
+~3.3 MIOPS vs 3.5 MIOPS, so gives around extra ~4-5%.
 
-  Contact this Email address for more Details (salemchantal@mail.ee)
+The main part is caching struct block_device + some inlining.
 
-THANKS
-MRS Salem Chantal Lawrence
+Pavel Begunkov (6):
+  block: cache bdev in struct file for raw bdev IO
+  block: inline BDEV_I and friends
+  blk-mq: optimise *end_request non-stat path
+  block: inline hot paths of blk_account_io_*()
+  blk-mq: inline hot part of __blk_mq_sched_restart
+  block: convert ->bd_inode to container_of()
+
+ block/bdev.c           | 16 ----------------
+ block/blk-core.c       | 30 +++++++++---------------------
+ block/blk-mq-sched.c   |  4 +---
+ block/blk-mq-sched.h   |  8 +++++++-
+ block/blk-mq.c         |  9 ++++-----
+ block/blk.h            | 24 +++++++++++++++++++++---
+ block/fops.c           | 40 ++++++++++++++++++++++------------------
+ include/linux/blkdev.h | 31 +++++++++++++++++++++++++------
+ 8 files changed, 89 insertions(+), 73 deletions(-)
+
+-- 
+2.33.0
+
