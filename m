@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F96427BFC
+	by mail.lfdr.de (Postfix) with ESMTP id 5353A427BFD
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhJIQ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S232105AbhJIQ3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231848AbhJIQ3a (ORCPT
+        with ESMTP id S231956AbhJIQ3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:29:30 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284B3C061570;
-        Sat,  9 Oct 2021 09:27:33 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id s17so9256834ioa.13;
-        Sat, 09 Oct 2021 09:27:33 -0700 (PDT)
+        Sat, 9 Oct 2021 12:29:31 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA57C061762;
+        Sat,  9 Oct 2021 09:27:34 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id s17so9256889ioa.13;
+        Sat, 09 Oct 2021 09:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XuJaZNgF74UYMRE6pkGwMNLIVjxtetPUKBOwSGBs5mY=;
-        b=TYUnmffEvq2yzC0xfMovOzvLnCbkitxSYNEBDAgTzkAjGjZjhIwE4N23aO3wKjkCQr
-         9JG82E3cZwJ+eqWpmh+Fha1s2yGBJ5itvsNVouYtMvpDfVn3hd8oFUClswEUqEpo2SO6
-         H2UPTkxCFW9ntZBUizxPCiweL8orSHp35MG5pZ8F/IsfzDBQuYX7uEpPWaa2/g8dICKw
-         rEfXoGeiOALaszEZ/TjvAZrges54rzKLuJyrZ90uNEedpGUNEzZh6Lf5QOGhIpGq5DUI
-         SwsQYdhhuLWUtUxm3mTZUb0Rtaefekgzl7WICVgRgS0wRNmYjeOfsjtOhnEtGLEEEe/Z
-         gyPw==
+        bh=SC7yuE+y+yY04HdxUeULdqELR2rOPU50GZB4BwqAcXk=;
+        b=gyneMYk2SYZinM2+aS9T33hNi9L+S/ef8XR4SxciZa2SXX+iUee1BB9RCWBv9u1AJO
+         ZgOBgnculKgnAGRa7CrNx9/Y/Ck+dfhXbV+rqidawT+NIMqcsrnCuXnilHLzHozWQ2A2
+         6VcJ/xluC9SgFZvEqybrsd0OLY6Mrq8c6a/yNvZ6WA1LaQF+q/hVkqPCCwClZjc8sxcZ
+         GpZ6YLjxVbDoUAYLoN3IsDQ7pTVto6/NKHjAS1i3Q3Svfm7aHf55Bi13lV3siUw4g7vz
+         Be9zOLAWS/nVvKNvFjyNY/PJhnhCMlyOtbKvLSCDRIL7LmSDrsXxeNZxWHqgLr5sFOEP
+         ptZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XuJaZNgF74UYMRE6pkGwMNLIVjxtetPUKBOwSGBs5mY=;
-        b=FQE01kPlXq00q1HRdXpeimHdS52zFPy3reCKeC+356DoThAVukDDKr2DaIu/XCajQd
-         454Sy8smUeOkmKL2QnbL18/F3NFcdNN3vqVDZ1vA+zsqQ7lukzpNPXmUTAoBK5AP6sF4
-         /ZL1qQq0PtsE0iIKBcFg9yGQJcmbWyECSEm+9gWfN3sd32v3TNLqcyRLEdF1+peWf1pT
-         m5WtuT4iTp/lH0SMuIH8q1rRcCmXTplIA3y7hgnLYDv4AEf9S8XGhCHyKekL0f1SxcQs
-         4uuMC5e/QVyXlpHpdOYbiMaPxvzAoCDr1tilTPXjGvaLCUZdA6wElSy+u/cFGH4oUkbt
-         K47w==
-X-Gm-Message-State: AOAM533NasrcjoKltdmnIcTHbL7beQ0CGGIjfN4lGy3B+rVDIwEBmQtc
-        5LY4BMv0Ww/MXfjFbCwn5wA=
-X-Google-Smtp-Source: ABdhPJym2rfAWwSc3C8qgOdqjtjBVIXW1crZZyJFsgUxC24BTMjWA7izbr2RVcx6rEj/HR2cZ5vwuA==
-X-Received: by 2002:a02:6913:: with SMTP id e19mr5646360jac.53.1633796852475;
-        Sat, 09 Oct 2021 09:27:32 -0700 (PDT)
+        bh=SC7yuE+y+yY04HdxUeULdqELR2rOPU50GZB4BwqAcXk=;
+        b=YZrOh5ctFE0vosLe47nJYjOZEj3fGfzuAvYrNZN8F66sranlTR5ok5bik1svo83wGL
+         PDKrrl94iNmaZgrzqLX6tlDIiUFDaj/iKWKG3spzbdD7TFGK9TjbMoAHCjDVBKSufLBh
+         cLPpkIY9AJowmXImcXkrVeCyvKyGE52Tkb50C7TKEwZpzjPja840NsXL4Yg6WNqgftZG
+         JIkYFUEku4gAJqqjA3uRbw80EE9FxAKG4WZjRFO60Pk+q5o7qGlJj28vgezl9qiKc8go
+         5l5za9/jFbgV+zt1qgNp55NQX0OGFEnQZeRqTSPEgblZKf+0bE0U+hJ9pDDzD0D3mwWX
+         dxYA==
+X-Gm-Message-State: AOAM5323lmNYPqAAoifa3IC4ILCHYPtU9KnX+tXVT+238n97pyeasW8J
+        7MIJX0ywj88B6AmOKjhZvsQ=
+X-Google-Smtp-Source: ABdhPJyppGKGyNDI/6yCWc9m04gVdtGmfW2N54kjD3LaaTGlYaTXW3TOfprE4Likwych2/jbudHHIQ==
+X-Received: by 2002:a02:a18c:: with SMTP id n12mr878391jah.130.1633796854199;
+        Sat, 09 Oct 2021 09:27:34 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:cb0f:c46c:9a27:ace])
-        by smtp.gmail.com with ESMTPSA id y5sm1253722ilg.58.2021.10.09.09.27.31
+        by smtp.gmail.com with ESMTPSA id y5sm1253722ilg.58.2021.10.09.09.27.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 09:27:32 -0700 (PDT)
+        Sat, 09 Oct 2021 09:27:33 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -59,9 +59,9 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 8/9] arm64: dts: imx8mn: add DISP blk-ctrl
-Date:   Sat,  9 Oct 2021 11:26:58 -0500
-Message-Id: <20211009162700.1452857-9-aford173@gmail.com>
+Subject: [PATCH V2 9/9] arm64: dts: imx8mn: Enable GPU
+Date:   Sat,  9 Oct 2021 11:26:59 -0500
+Message-Id: <20211009162700.1452857-10-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211009162700.1452857-1-aford173@gmail.com>
 References: <20211009162700.1452857-1-aford173@gmail.com>
@@ -71,53 +71,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the DT node for the DISP blk-ctrl. With this in place the
-display/mipi power domains should be functional.
+The i.MX8M-Nano features a GC7000. The Etnaviv driver detects it as:
+
+    etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mn.dtsi | 28 +++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 25 +++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-index 4e9d7099bb4f..6ac14903bcef 100644
+index 6ac14903bcef..2aafc17d8aa3 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-@@ -1011,6 +1011,34 @@ aips4: bus@32c00000 {
- 			#size-cells = <1>;
- 			ranges;
+@@ -1089,6 +1089,31 @@ gpmi: nand-controller@33002000 {
+ 			status = "disabled";
+ 		};
  
-+			disp_blk_ctrl: blk-ctrl@32e28000 {
-+				compatible = "fsl,imx8mn-disp-blk-ctrl", "syscon";
-+				reg = <0x32e28000 0x100>;
-+				power-domains = <&pgc_dispmix>, <&pgc_dispmix>,
-+						<&pgc_dispmix>, <&pgc_mipi>,
-+						<&pgc_mipi>;
-+				power-domain-names = "bus", "isi",
-+						     "lcdif", "mipi-dsi",
-+						     "mipi-csi";
-+				clocks = <&clk IMX8MN_CLK_DISP_AXI>,
-+					 <&clk IMX8MN_CLK_DISP_APB>,
-+					 <&clk IMX8MN_CLK_DISP_AXI_ROOT>,
-+					 <&clk IMX8MN_CLK_DISP_APB_ROOT>,
-+					 <&clk IMX8MN_CLK_DISP_AXI_ROOT>,
-+					 <&clk IMX8MN_CLK_DISP_APB_ROOT>,
-+					 <&clk IMX8MN_CLK_DISP_PIXEL_ROOT>,
-+					 <&clk IMX8MN_CLK_DSI_CORE>,
-+					 <&clk IMX8MN_CLK_DSI_PHY_REF>,
-+					 <&clk IMX8MN_CLK_CSI1_PHY_REF>,
-+					 <&clk IMX8MN_CLK_CAMERA_PIXEL_ROOT>;
-+				clock-names = "disp_axi", "disp_apb",
-+					      "disp_axi_root", "disp_apb_root",
-+					      "lcdif-axi", "lcdif-apb", "lcdif-pix",
-+					      "dsi-pclk", "dsi-ref",
-+					      "csi-aclk", "csi-pclk";
-+				#power-domain-cells = <1>;
-+			};
++		gpu: gpu@38000000 {
++			compatible = "vivante,gc";
++			reg = <0x38000000 0x8000>;
++			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&clk IMX8MN_CLK_GPU_AHB>,
++				<&clk IMX8MN_CLK_GPU_BUS_ROOT>,
++				<&clk IMX8MN_CLK_GPU_CORE_ROOT>,
++				<&clk IMX8MN_CLK_GPU_SHADER>;
++			clock-names = "reg", "bus", "core", "shader";
++			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE>,
++					  <&clk IMX8MN_CLK_GPU_SHADER>,
++					  <&clk IMX8MN_CLK_GPU_AXI>,
++					  <&clk IMX8MN_CLK_GPU_AHB>,
++					  <&clk IMX8MN_GPU_PLL>,
++					  <&clk IMX8MN_CLK_GPU_CORE>,
++					  <&clk IMX8MN_CLK_GPU_SHADER>;
++			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
++						  <&clk IMX8MN_GPU_PLL_OUT>,
++						  <&clk IMX8MN_SYS_PLL1_800M>,
++						  <&clk IMX8MN_SYS_PLL1_800M>;
++			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
++				<400000000>, <400000000>;
++			power-domains = <&pgc_gpumix>;
++		};
 +
- 			usbotg1: usb@32e40000 {
- 				compatible = "fsl,imx8mn-usb", "fsl,imx7d-usb";
- 				reg = <0x32e40000 0x200>;
+ 		gic: interrupt-controller@38800000 {
+ 			compatible = "arm,gic-v3";
+ 			reg = <0x38800000 0x10000>,
 -- 
 2.25.1
 
