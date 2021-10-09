@@ -2,252 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6BC4427713
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF699427717
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbhJIEMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
+        id S229601AbhJIEQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:16:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhJIEMk (ORCPT
+        with ESMTP id S229480AbhJIEQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:12:40 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D2FC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:10:44 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id p13so44189495edw.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:10:44 -0700 (PDT)
+        Sat, 9 Oct 2021 00:16:57 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164B6C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:15:01 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id 133so5011444pgb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:15:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jwIk6DoGEf9TP7Z80lA8E8gEbDecGq93ZrD08M5e2xk=;
-        b=zMEZFgTrb0pkV+kKQ5PvtsYNFpS82Ub8EKQUkdbP1WQ8KovmWsPyR6nL50frcBp78M
-         r22BDZoavEgQOOCwBHv1O5JpMqmJx6Bdgj/FlxFYohlf+qtf5PxqgbvnBcJ8+ysC+zG0
-         wOWD6bYUePpj90sH3UWiKfVWjqa2jGsxcRA4mA4V9weDnk22wkpjchr9k7wzonACZitg
-         +9puPyKJwVh0xEGU4uhuAllZQix6gjWOHBpDHpBl1XcmdHxZnafthXtqia+RG8zfgbUj
-         xWoD4B//7o/khFcwdonu3ebr8QVYCMQTeEHVVbHuyluC6OokOjlljNvQSZNBDFPgeBBz
-         iafg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Io2K8Gs5Uy4lV1ustz6eBAsYaKVHMWynGJ6LMeJkvvY=;
+        b=IHlRPDPpGTYdsWbiRJXxD+IxZUcuwj+pvS7dKcfkiRsFOQl8VutpHqvWEHLw4KE/zR
+         8QsUEbBbybuj0tGLq930M+QzuaBJaTeUyfo12ZqWWf1yRezDlwYCJuJ2lHZ4vkE2Bgqo
+         yQx3BNgxk9YnBTOHv5gpj2L18cUCS1ZyVwqXh2vIvgODtYzP4n64yB3sGTcS9HyBmBlc
+         XiHptpI2NOjjljCG+RSeCwLHt6+7HMdH81Xp7/R+Cu5FVLxDSIIkv0UDVuvwmz22y+8b
+         j82d119YSaWwWOqdjreO/UzC5bP6PaIrxXXzaJanZFnoV0WW4HAxU0gPZVw6O9clGPZp
+         Gggg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jwIk6DoGEf9TP7Z80lA8E8gEbDecGq93ZrD08M5e2xk=;
-        b=Cab2cGcg3M2fTm9HqlDV0uTrF4yig0bHyt2cZwy81vuZTCB7Qwv714TywqhT5I28IO
-         AmjVE1TOl1/iiC9l7pWiTx3yMm/aqZ48MrMg3FSkzfqQ86Pc5EdJIl4zfIm4SdQ1cc9J
-         gQxa0R14BU5mU38OCjnPVyEOv965paiofnlaMbRLQjFJvntFvuqpsASZu3qWa4aCmIrb
-         HD5mvFJl0mAnEqYSunMuhz3duOiSZOzT/F77tS+b3sdFaUw9BaEoug8O5wHE6CcwJY3N
-         fVEuQzfTw93ID6h51FXgQCOeaAvWFqgbLYtZ5HqRybhgOWRmFxhDgG1uD0lxMY7R9lEO
-         08aw==
-X-Gm-Message-State: AOAM533i+gWRL47bHIofIfYd44+x04o32/j8B8kj3Lg2xdU8OIPEhPxC
-        GBP2WArlc0NMixpGxdLEfsZwkAwRPGJpa8+Cndn/tMqyPN4Q7A==
-X-Google-Smtp-Source: ABdhPJxMgM7yXGhMNA3UWNlicUqx5KeTYQU8EKJX3OuypJs8Mz2lk6nB+E7gPuuOg18TLNcaeRrd63tbN8OPaMYAr+Q=
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr20650096edc.182.1633752642854;
- Fri, 08 Oct 2021 21:10:42 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Io2K8Gs5Uy4lV1ustz6eBAsYaKVHMWynGJ6LMeJkvvY=;
+        b=djArzJVImI0XKxJwNaBbcAuRyMV4f9kQZkd0doQRp8DKNsSPChCFgSkNCVOezJ1E4l
+         KXBMFufdfDmGUjUW9mo4PunCZ8H8sZY3Kolq2jd5ujdjw7hqmXkbyuJyIZaGO5SkxxNn
+         6F5kUm8PqUs4WeLQVsH1BeNU72ac74dKS/GKC1rOIbipDY/4UIrI0X47j4u97Z7ITWzv
+         PEp1k0qtWVq6U6yEJcDWxhsPsSpgw+lrbzqsW7C9DNLXEFsbrYecDIc2fX7wE3b8zN5w
+         U93gL3HkTc3qJoR8tv2fR5/5HiMRBX03HFNM+qLWA5CTvLYBFbEDvfm557ctlfMcZxOd
+         vA0w==
+X-Gm-Message-State: AOAM531b79gEorNQBTGyPWCLorgYkRL+KfFZ6XmBrBo0U/+8OAUw1mR9
+        H3HBX1F/+QXaOesZEn0Gew==
+X-Google-Smtp-Source: ABdhPJwPoU06MU8dcjlX4qmTI9/9eo81W8ghWdb0go400KHtc5KlpLZVwJhxWSWxNfzg1gGq4ckRLw==
+X-Received: by 2002:a63:b917:: with SMTP id z23mr7811076pge.284.1633752900459;
+        Fri, 08 Oct 2021 21:15:00 -0700 (PDT)
+Received: from piliu.users.ipa.redhat.com ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id y3sm623228pjg.7.2021.10.08.21.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 21:15:00 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 12:14:52 +0800
+From:   Pingfan Liu <kernelfans@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Julien Thierry <julien.thierry@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Yuichi Ito <ito-yuichi@fujitsu.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 1/5] arm64/entry-common: push the judgement of nmi ahead
+Message-ID: <YWEXPIIeMgSAuSBf@piliu.users.ipa.redhat.com>
+References: <20210924132837.45994-1-kernelfans@gmail.com>
+ <20210924132837.45994-2-kernelfans@gmail.com>
+ <20210924175306.GB42068@C02TD0UTHF1T.local>
+ <YU9Cy9kTew4ySeGZ@piliu.users.ipa.redhat.com>
+ <20210930133257.GB18258@lakrids.cambridge.arm.com>
+ <YV/ClUNWvMga3qud@piliu.users.ipa.redhat.com>
+ <20211008154523.GP880162@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
-References: <20211008112720.008415452@linuxfoundation.org>
-In-Reply-To: <20211008112720.008415452@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 9 Oct 2021 09:40:31 +0530
-Message-ID: <CA+G9fYvx+c1ANBqjpmvVZWw2f_yxNNGNx-d=DnfSsjhwpP2YtQ@mail.gmail.com>
-Subject: Re: [PATCH 5.14 00/48] 5.14.11-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008154523.GP880162@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 17:03, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.14.11 release.
-> There are 48 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.14.11-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Oct 08, 2021 at 08:45:23AM -0700, Paul E. McKenney wrote:
+> On Fri, Oct 08, 2021 at 12:01:25PM +0800, Pingfan Liu wrote:
+> > Sorry that I missed this message and I am just back from a long
+> > festival.
+> > 
+> > Adding Paul for RCU guidance.
+> 
+> Didn't the recent patch series cover this, or is this a new problem?
+> 
+Sorry not to explain it clearly. This is a new problem.
+
+The acked recent series derive from [3-4/5], which addresses the nested calling:
+in a single normal interrupt handler
+    rcu_irq_enter()
+        rcu_irq_enter()
+	...
+        rcu_irq_exit()
+    rcu_irq_exit()
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+While this new problem [1-2/5] is about pNMI (similar to NMI in this context).
+On arm64, the current process in a pNMI handler looks like:
+    rcu_irq_enter(){ rcu_nmi_enter()}
+        ^^^ At this point, the handler is treated as a normal interrupt temporary, (no chance to __preempt_count_add(NMI_OFFSET + HARDIRQ_OFFSET);).
+	    So rcu_nmi_enter() can not distinguish NMI, because "if (!in_nmi())" can not tell it. (goto "questionA")
+        nmi_enter()
+	NMI handler
+	nmi_exit()
+    rcu_irq_exit()
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+[...]
+> > Refer to rcu_nmi_enter(), which can be called by
+> > enter_from_kernel_mode():
+> > 
+> > ||noinstr void rcu_nmi_enter(void)
+> > ||{
+> > ||        ...
+> > ||        if (rcu_dynticks_curr_cpu_in_eqs()) {
+> > ||
+> > ||                if (!in_nmi())
+> > ||                        rcu_dynticks_task_exit();
+> > ||
+> > ||                // RCU is not watching here ...
+> > ||                rcu_dynticks_eqs_exit();
+> > ||                // ... but is watching here.
+> > ||
+> > ||                if (!in_nmi()) {
+> > ||                        instrumentation_begin();
+> > ||                        rcu_cleanup_after_idle();
+> > ||                        instrumentation_end();
+> > ||                }
+> > ||
+> > ||                instrumentation_begin();
+> > ||                // instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
+> > ||                instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
+> > ||                // instrumentation for the noinstr rcu_dynticks_eqs_exit()
+> > ||                instrument_atomic_write(&rdp->dynticks, sizeof(rdp->dynticks));
+> > ||
+> > ||                incby = 1;
+> > ||        } else if (!in_nmi()) {
+> > ||                instrumentation_begin();
+> > ||                rcu_irq_enter_check_tick();
+> > ||        } else  {
+> > ||                instrumentation_begin();
+> > ||        }
+> > ||        ...
+> > ||}
+> > 
+> > There is 3 pieces of code put under the
+> > protection of if (!in_nmi()). At least the last one
+> > "rcu_irq_enter_check_tick()" can trigger a hard lock up bug. Because it
+> > is supposed to hold a spin lock with irqoff by
+> > "raw_spin_lock_rcu_node(rdp->mynode)", but pNMI can breach it. The same
+> > scenario in rcu_nmi_exit()->rcu_prepare_for_idle().
+> > 
 
-## Build
-* kernel: 5.14.11-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.14.y
-* git commit: 24e85a19693f1f7231d0187f165cb4dcbaa95125
-* git describe: v5.14.10-49-g24e85a19693f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
-.10-49-g24e85a19693f
+questionA:
+> > As for the first two "if (!in_nmi())", I have no idea of why, except
+> > breaching spin_lock_irq() by NMI. Hope Paul can give some guide.
+> > 
 
-## No regressions (compared to v5.14.9-173-gd1d4d31a257c)
+Thanks,
 
-## No fixes (compared to v5.14.9-173-gd1d4d31a257c)
-
-
-## Test result summary
-total: 93302, pass: 78578, fail: 1250, skip: 12589, xfail: 885
-
-## Build Summary
-* arc: 20 total, 20 passed, 0 failed
-* arm: 289 total, 289 passed, 0 failed
-* arm64: 39 total, 39 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 57 total, 57 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 63 total, 63 passed, 0 failed
-* parisc: 24 total, 24 passed, 0 failed
-* powerpc: 72 total, 72 passed, 0 failed
-* riscv: 60 total, 60 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 48 total, 48 passed, 0 failed
-* sparc: 24 total, 24 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 60 total, 60 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-co[
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* prep-inline
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+	Pingfan
