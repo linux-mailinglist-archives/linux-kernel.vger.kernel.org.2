@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CB59427B69
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E911427B6D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbhJIPmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 11:42:01 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:65280 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234664AbhJIPlw (ORCPT
+        id S234786AbhJIPnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 11:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234290AbhJIPni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 11:41:52 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id b9030ac8620afd0a; Sat, 9 Oct 2021 17:39:54 +0200
-Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id D1AFB661ECD;
-        Sat,  9 Oct 2021 17:39:52 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-pm@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Len Brown <len.brown@intel.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] cpuidle: Avoid calls to cpuidle_resume|pause() for s2idle
-Date:   Sat, 09 Oct 2021 17:39:52 +0200
-Message-ID: <4692163.31r3eYUQgx@kreacher>
-In-Reply-To: <20210929144451.113334-2-ulf.hansson@linaro.org>
-References: <20210929144451.113334-1-ulf.hansson@linaro.org> <20210929144451.113334-2-ulf.hansson@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.77.51.84
-X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrudeljedgleelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdejjedrhedurdekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrjeejrdehuddrkeegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheprhgrfhgrvghlsehkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuhhlfhdrhhgrnhhsshhonheslhhinhgrrhhordhorhhgpdhrtghpthhtohepmhhkshhhrghhsegtohguvggruhhrohhrrgdrohhrghdprhgtphhtthho
- pehpvghtvghriiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehvihhntggvnhhtrdhguhhithhtohhtsehlihhnrghrohdrohhrghdprhgtphhtthhopehlvghnrdgsrhhofihnsehinhhtvghlrdgtohhmpdhrtghpthhtohepsghjohhrnhdrrghnuggvrhhsshhonheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqrghrmhdqkhgvrhhnvghlsehlihhsthhsrdhinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-DCC--Metrics: v370.home.net.pl 1024; Body=12 Fuz1=12 Fuz2=12
+        Sat, 9 Oct 2021 11:43:38 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9420C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 08:41:37 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id c29so10761381pfp.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 08:41:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:in-reply-to:cc:from:to:message-id;
+        bh=0gQT1wDNziElgFccRviJGzaeuhF8bzANmDqRrn7eERw=;
+        b=6eF0EPdFNDsqwF05KLJBzQZIXqTbjSrF/+ogFX2DV19hbeyYOOb8Ar8FGLdrtptK5T
+         giTmLcHnCQJcVLYwWn3tv6SjAIvmIG1NJnhPY+lbkEs3BXzJbNDmPYFdEm8pASl6LcY3
+         B9VVtF+Pf0mEDmGa5S3qkQClOcnlE8m6xvJPqvwkP91TXQljbNhZ6S4bctF28NfPkJiO
+         N0/jpNId9M3H/wWx2l8khCtNC3o1pDzuAIllN2sIgPl6KDpdB3eDN2ZzoFt+/6MgU4Ko
+         veIgQ8gvhZfxIkGRagM4/tpFeEQlX2xw0zLSyVJ1IbPnnWfmHd+7r40cqexSWlt7heEr
+         LjfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id;
+        bh=0gQT1wDNziElgFccRviJGzaeuhF8bzANmDqRrn7eERw=;
+        b=W4atnFfJ91dhKFzdAFRuLoouiR/Z1O2LppGHw0K7iHXSTrH73xkB9azpbV4bu38MUX
+         kWagkpNbfyymJ4DVtBEt6e1ppiouwQbcVYQIaZgYsgVhjF1fRTXOjP7Sxmi2HsXDtk3j
+         9DV5lFYjxJmepEOt7sDo7tQ/BTsyfKyDFo1YNhaY0/lkq14ZEmd7Yzj93Oa9so2YN5H8
+         j9Ws6AEqxINXGom2ugdNXkirgdBAO0WTqdFMEM6Ohv2h5WcyZUJVu72BOOZwES06oETk
+         Js8nls3Ybsa1Y84vYHbBDHoiirJDvxXd9TMlPYX9F18eiCMKn6oSvS6/raTzI0IL48BM
+         uBvQ==
+X-Gm-Message-State: AOAM533XWZuJSt9ko23lVrN6H4hrT8HMDp7BDE9RDK2+yNrHkdG3znIq
+        oVmJ4Gi3ipcf6oZqi0bXVqRwvCpZFSPAxg==
+X-Google-Smtp-Source: ABdhPJwotUF7gJqBKy6Z/80gjOF943OgJqU4wLfmFLwu6aHzRApgRBXwzM6qE+CBXW5RTEgn0Kmgsg==
+X-Received: by 2002:a65:6158:: with SMTP id o24mr10132170pgv.141.1633794097133;
+        Sat, 09 Oct 2021 08:41:37 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e9sm2611981pjl.41.2021.10.09.08.41.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 08:41:36 -0700 (PDT)
+Date:   Sat, 09 Oct 2021 08:41:36 -0700 (PDT)
+X-Google-Original-Date: Sat, 09 Oct 2021 08:41:26 PDT (-0700)
+Subject:     Re: [GIT PULL] RISC-V Fixes for 5.15-rc5
+In-Reply-To: <mhng-26107d68-d2af-46eb-a8a4-43c1496a9ef4@palmerdabbelt-glaptop>
+CC:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-8bd1a7b1-4ed8-4da1-b2eb-96b189dbadea@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, September 29, 2021 4:44:50 PM CEST Ulf Hansson wrote:
-> In s2idle_enter(), cpuidle_resume|pause() are invoked to re-allow calls to
-> the cpuidle callbacks during s2idle operations. This is needed because
-> cpuidle is paused in-between in dpm_suspend_noirq() and dpm_resume_noirq().
+On Fri, 08 Oct 2021 21:38:14 PDT (-0700), Palmer Dabbelt wrote:
+> The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+>
+>   Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+>
+> are available in the Git repository at:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.15-rc5
+>
+> for you to fetch changes up to 3ef6ca4f354c53abf263cbeb51e7272523c294d8:
+>
+>   checksyscalls: Unconditionally ignore fstat{,at}64 (2021-10-07 17:16:28 -0700)
+>
+> ----------------------------------------------------------------
+> RISC-V Fixes for 5.15-rc5
+>
+> * A pair of fixes (along with the necessary cleanup) to our VDSO, to
+>   avoid
 
-Well, in fact, doing that last thing for s2idle is pointless, because cpuidle
-is going to be resumed eventually anyway in that case and the breakage expected
-to be prevented by the pausing will still occur.
+Sorry, that should be something more like
 
-So I would rather do something like the patch below (untested).
+   * A pair of fixes (along with the necessory cleanup) to our VDSO, to
+     avoid a locking during OOM and to prevent the text from overflowing 
+     into the data page.
 
----
- drivers/base/power/main.c |   11 ++++++-----
- kernel/power/suspend.c    |    8 ++++++--
- 2 files changed, 12 insertions(+), 7 deletions(-)
-
-Index: linux-pm/drivers/base/power/main.c
-===================================================================
---- linux-pm.orig/drivers/base/power/main.c
-+++ linux-pm/drivers/base/power/main.c
-@@ -747,8 +747,6 @@ void dpm_resume_noirq(pm_message_t state
- 
- 	resume_device_irqs();
- 	device_wakeup_disarm_wake_irqs();
--
--	cpuidle_resume();
- }
- 
- /**
-@@ -881,6 +879,7 @@ void dpm_resume_early(pm_message_t state
- void dpm_resume_start(pm_message_t state)
- {
- 	dpm_resume_noirq(state);
-+	cpuidle_resume();
- 	dpm_resume_early(state);
- }
- EXPORT_SYMBOL_GPL(dpm_resume_start);
-@@ -1336,8 +1335,6 @@ int dpm_suspend_noirq(pm_message_t state
- {
- 	int ret;
- 
--	cpuidle_pause();
--
- 	device_wakeup_arm_wake_irqs();
- 	suspend_device_irqs();
- 
-@@ -1521,9 +1518,13 @@ int dpm_suspend_end(pm_message_t state)
- 	if (error)
- 		goto out;
- 
-+	cpuidle_pause();
-+
- 	error = dpm_suspend_noirq(state);
--	if (error)
-+	if (error) {
-+		cpuidle_resume();
- 		dpm_resume_early(resume_event(state));
-+	}
- 
- out:
- 	dpm_show_time(starttime, state, error, "end");
-Index: linux-pm/kernel/power/suspend.c
-===================================================================
---- linux-pm.orig/kernel/power/suspend.c
-+++ linux-pm/kernel/power/suspend.c
-@@ -97,7 +97,6 @@ static void s2idle_enter(void)
- 	raw_spin_unlock_irq(&s2idle_lock);
- 
- 	cpus_read_lock();
--	cpuidle_resume();
- 
- 	/* Push all the CPUs into the idle loop. */
- 	wake_up_all_idle_cpus();
-@@ -105,7 +104,6 @@ static void s2idle_enter(void)
- 	swait_event_exclusive(s2idle_wait_head,
- 		    s2idle_state == S2IDLE_STATE_WAKE);
- 
--	cpuidle_pause();
- 	cpus_read_unlock();
- 
- 	raw_spin_lock_irq(&s2idle_lock);
-@@ -405,6 +403,9 @@ static int suspend_enter(suspend_state_t
- 	if (error)
- 		goto Devices_early_resume;
- 
-+	if (state != PM_SUSPEND_TO_IDLE)
-+		cpuidle_pause();
-+
- 	error = dpm_suspend_noirq(PMSG_SUSPEND);
- 	if (error) {
- 		pr_err("noirq suspend of devices failed\n");
-@@ -459,6 +460,9 @@ static int suspend_enter(suspend_state_t
- 	dpm_resume_noirq(PMSG_RESUME);
- 
-  Platform_early_resume:
-+	if (state != PM_SUSPEND_TO_IDLE)
-+		cpuidle_resume();
-+
- 	platform_resume_early(state);
- 
-  Devices_early_resume:
-
-
-
+> * A fix to checksyscalls to teach it about our rv32 UABI.
+> * A fix to add clone3() to the rv32 UABI, which was pointed out by
+>   checksyscalls.
+> * A fix to properly flush the icache on the local CPU in addition to the
+>   remote CPUs.
+>
+> ----------------------------------------------------------------
+> Alexandre Ghiti (1):
+>       riscv: Flush current cpu icache before other cpus
+>
+> Palmer Dabbelt (4):
+>       Merge remote-tracking branch 'palmer/riscv-vdso-cleanup' into fixes
+>       RISC-V: Include clone3() on rv32
+>       Merge remote-tracking branch 'palmer/riscv-clone3' into fixes
+>       checksyscalls: Unconditionally ignore fstat{,at}64
+>
+> Tong Tiangen (3):
+>       riscv/vdso: Refactor asm/vdso.h
+>       riscv/vdso: Move vdso data page up front
+>       riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for write killable
+>
+>  arch/riscv/include/asm/syscall.h     |  1 +
+>  arch/riscv/include/asm/vdso.h        | 18 ++++++++----
+>  arch/riscv/include/uapi/asm/unistd.h |  3 +-
+>  arch/riscv/kernel/syscall_table.c    |  1 -
+>  arch/riscv/kernel/vdso.c             | 53 ++++++++++++++++++++++--------------
+>  arch/riscv/kernel/vdso/vdso.lds.S    |  3 +-
+>  arch/riscv/mm/cacheflush.c           |  2 ++
+>  scripts/checksyscalls.sh             |  6 ++--
+>  8 files changed, 56 insertions(+), 31 deletions(-)
