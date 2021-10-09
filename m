@@ -2,264 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41215427882
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456E142788B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244587AbhJIJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:41:15 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:25115 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhJIJlF (ORCPT
+        id S232270AbhJIJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231806AbhJIJo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:41:05 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HRKjC1XKCz1DHQk;
-        Sat,  9 Oct 2021 17:37:35 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 17:39:07 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 17:39:06 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <akpm@linux-foundation.org>,
-        <hawk@kernel.org>, <ilias.apalodimas@linaro.org>,
-        <peterz@infradead.org>, <yuzhao@google.com>, <jhubbard@nvidia.com>,
-        <will@kernel.org>, <willy@infradead.org>, <jgg@ziepe.ca>,
-        <mcroce@microsoft.com>, <willemb@google.com>,
-        <cong.wang@bytedance.com>, <pabeni@redhat.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <memxor@gmail.com>, <vvs@virtuozzo.com>, <linux-mm@kvack.org>,
-        <edumazet@google.com>, <alexander.duyck@gmail.com>,
-        <dsahern@gmail.com>
-Subject: [PATCH net-next -v5 4/4] skbuff: keep track of pp page when pp_frag_count is used
-Date:   Sat, 9 Oct 2021 17:37:24 +0800
-Message-ID: <20211009093724.10539-5-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211009093724.10539-1-linyunsheng@huawei.com>
-References: <20211009093724.10539-1-linyunsheng@huawei.com>
+        Sat, 9 Oct 2021 05:44:56 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 127AAC061755
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 02:43:00 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id q12so4854761pgq.12
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 02:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=qcraft-ai.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=Ah1u3rGdryLKEZSr8qONi3KYTW8xXaP8VYmQu7I06zs=;
+        b=DM+sQEd8R0s55VvykaEo09ijuTVbj4g51xu3oGt31muxER76bFZvdt+Y9B2EiudfAS
+         W35WtFxxcerQllaI3kx41V3dFhjlA6dtnUsn0hgnzvwty2jXX2Ukq/9Kwg0dw/yZGf+W
+         V4IX2C2Z0UtNGARJuxSYC65EIJxjGxWjk8aN2ZR0bhGl5pdIY/TnHZtsyH1faNrHyVtj
+         FI0rKJgfUZfE+uwVewm+uCcnIa9le2NSeuecm1+ZB+E1EjrZy9VuAc9Lb47AtljC2L04
+         1EKBSpou/AV10HVD4fHOXWXVzFFMaiC5eJcRxnc25cmAak+IHzX91mc+toR1FbX2suWi
+         a9yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Ah1u3rGdryLKEZSr8qONi3KYTW8xXaP8VYmQu7I06zs=;
+        b=k+Lg9YCPy7FR6eXbUWXdqY+kZ+8G1DYH6TF20nxbZ5wSl0nKsWcYU8HwZ0Ivtr+D4J
+         wY2f0YGoShEs9oBXmiA09iV7U28rKLDjGSeofHRZhDr9Y+plYoqYPrIGAVRQpmtRsDvk
+         mmwRGRwNk3hsyk/sV11QCHHdr4p3NASXqwEYW92a23xZa8Y4bQuEqNSJnDpExl0hccfp
+         ovI7ZYOUcw4+Oy0eluFJYxZn24T4RkgckvAULPlVpK2V7zqO4CA259hpEZSaS2PBX9OJ
+         2j6cF1248FZVCNCRB9B7JlbLg6AyltQiBVBHtTNilvsFNFP70cUcrBJgfEdoDlAkCayw
+         9JbA==
+X-Gm-Message-State: AOAM531kX9CNy1y4NrLpg96aroh36InYaH7Sft6KCf0UzTRYzYml7WWY
+        L6cvt3JJMesy2YHDg2aEFUhBdA==
+X-Google-Smtp-Source: ABdhPJzSyygY4RYse7dpTLIIt5yYljy7F+9kivN6hBaigSHsPbcD170Gl/o5s87wJkO4eJeQu2kFfQ==
+X-Received: by 2002:aa7:8f12:0:b0:44c:833f:9dad with SMTP id x18-20020aa78f12000000b0044c833f9dadmr14614319pfr.35.1633772579535;
+        Sat, 09 Oct 2021 02:42:59 -0700 (PDT)
+Received: from [172.18.2.138] ([137.59.101.13])
+        by smtp.gmail.com with ESMTPSA id s7sm2007535pgc.60.2021.10.09.02.42.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 02:42:59 -0700 (PDT)
+Subject: Re: [PATCH] block: fix syzbot report UAF in bdev_free_inode()
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Zqiang <qiang.zhang1211@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk
+References: <20211009065951.11567-1-qiang.zhang1211@gmail.com>
+ <ad09fde9-9655-fc28-4298-4b43d57cd76c@i-love.sakura.ne.jp>
+From:   zhangqiang <zhangqiang@qcraft.ai>
+Message-ID: <d1cf5746-360a-9cb1-a69f-020480994352@qcraft.ai>
+Date:   Sat, 9 Oct 2021 17:42:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+In-Reply-To: <ad09fde9-9655-fc28-4298-4b43d57cd76c@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As the skb->pp_recycle and page->pp_magic may not be enough
-to track if a frag page is from page pool after the calling
-of __skb_frag_ref(), mostly because of a data race, see:
-commit 2cc3aeb5eccc ("skbuff: Fix a potential race while
-recycling page_pool packets").
 
-There may be clone and expand head case that might lose the
-track if a frag page is from page pool or not.
+On 2021/10/9 下午5:34, Tetsuo Handa wrote:
+> On 2021/10/09 15:59, Zqiang wrote:
+>> The xa_insert() may be return error in __alloc_disk_node(), and the disk
+>> object will be release, however there are two operations that will release
+>> it, kfree(disk) and iput(disk->part0->bd_inode), the iput operations
+>> will call call_rcu(), because the rcu callback executed is an asynchronous
+>> actionthe, so when free disk object in rcu callback, the disk object haven
+>> been released. solve it through a unified release action.
+>>
+>> Reported-by: syzbot+8281086e8a6fbfbd952a@syzkaller.appspotmail.com
+>> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+> Thanks. But my patch is ready for 5.15.
+>
+> https://lore.kernel.org/all/e6dd13c5-8db0-4392-6e78-a42ee5d2a1c4@i-love.sakura.ne.jp/T/#u
 
-And not being able to keep track of pp page may cause problem
-for the skb_split() case in tso_fragment() too:
-Supposing a skb has 3 frag pages, all coming from a page pool,
-and is split to skb1 and skb2:
-skb1: first frag page + first half of second frag page
-skb2: second half of second frag page + third frag page
 
-How do we set the skb->pp_recycle of skb1 and skb2?
-1. If we set both of them to 1, then we may have a similar
-   race as the above commit for second frag page.
-2. If we set only one of them to 1, then we may have resource
-   leaking problem as both first frag page and third frag page
-   are indeed from page pool.
-
-Increment the pp_frag_count of pp page frag in __skb_frag_ref(),
-and only use page->pp_magic to indicate a pp page frag in
-__skb_frag_unref() to keep track of pp page frag.
-
-Similar handling is done for the head page of a skb too.
-
-As we need the head page of a compound page to decide if it is
-from page pool at first, so __page_frag_cache_drain() and
-page_ref_inc() is used to avoid unnecessary compound_head()
-calling.
-
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- include/linux/skbuff.h  | 30 ++++++++++++++++++++----------
- include/net/page_pool.h | 24 +++++++++++++++++++++++-
- net/core/page_pool.c    | 17 ++---------------
- net/core/skbuff.c       | 10 ++++++++--
- 4 files changed, 53 insertions(+), 28 deletions(-)
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 841e2f0f5240..c4f8b04a694c 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -3073,7 +3073,19 @@ static inline struct page *skb_frag_page(const skb_frag_t *frag)
-  */
- static inline void __skb_frag_ref(skb_frag_t *frag)
- {
--	get_page(skb_frag_page(frag));
-+	struct page *page = skb_frag_page(frag);
-+
-+	page = compound_head(page);
-+
-+#ifdef CONFIG_PAGE_POOL
-+	if (page_pool_is_pp_page(page) &&
-+	    page_pool_is_pp_page_frag(page)) {
-+		page_pool_atomic_inc_frag_count(page);
-+		return;
-+	}
-+#endif
-+
-+	__get_page(page);
- }
- 
- /**
-@@ -3100,11 +3112,16 @@ static inline void __skb_frag_unref(skb_frag_t *frag, bool recycle)
- {
- 	struct page *page = skb_frag_page(frag);
- 
-+	page = compound_head(page);
-+
- #ifdef CONFIG_PAGE_POOL
--	if (recycle && page_pool_return_skb_page(page))
-+	if (page_pool_is_pp_page(page) &&
-+	    (recycle || page_pool_is_pp_page_frag(page))) {
-+		page_pool_return_skb_page(page);
- 		return;
-+	}
- #endif
--	put_page(page);
-+	__put_page(page);
- }
- 
- /**
-@@ -4718,12 +4735,5 @@ static inline void skb_mark_for_recycle(struct sk_buff *skb)
- }
- #endif
- 
--static inline bool skb_pp_recycle(struct sk_buff *skb, void *data)
--{
--	if (!IS_ENABLED(CONFIG_PAGE_POOL) || !skb->pp_recycle)
--		return false;
--	return page_pool_return_skb_page(virt_to_page(data));
--}
--
- #endif	/* __KERNEL__ */
- #endif	/* _LINUX_SKBUFF_H */
-diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 3855f069627f..740a8ca7f4a6 100644
---- a/include/net/page_pool.h
-+++ b/include/net/page_pool.h
-@@ -164,7 +164,7 @@ inline enum dma_data_direction page_pool_get_dma_dir(struct page_pool *pool)
- 	return pool->p.dma_dir;
- }
- 
--bool page_pool_return_skb_page(struct page *page);
-+void page_pool_return_skb_page(struct page *page);
- 
- struct page_pool *page_pool_create(const struct page_pool_params *params);
- 
-@@ -231,6 +231,28 @@ static inline void page_pool_set_frag_count(struct page *page, long nr)
- 	atomic_long_set(&page->pp_frag_count, nr);
- }
- 
-+static inline void page_pool_atomic_inc_frag_count(struct page *page)
-+{
-+	atomic_long_inc(&page->pp_frag_count);
-+}
-+
-+static inline bool page_pool_is_pp_page(struct page *page)
-+{
-+	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
-+	 * in order to preserve any existing bits, such as bit 0 for the
-+	 * head page of compound page and bit 1 for pfmemalloc page, so
-+	 * mask those bits for freeing side when doing below checking,
-+	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
-+	 * to avoid recycling the pfmemalloc page.
-+	 */
-+	return (page->pp_magic & ~0x3UL) == PP_SIGNATURE;
-+}
-+
-+static inline bool page_pool_is_pp_page_frag(struct page *page)
-+{
-+	return !!atomic_long_read(&page->pp_frag_count);
-+}
-+
- static inline long page_pool_atomic_sub_frag_count_return(struct page *page,
- 							  long nr)
- {
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index 2c643b72ce16..d141e00459c9 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -219,6 +219,7 @@ static void page_pool_set_pp_info(struct page_pool *pool,
- {
- 	page->pp = pool;
- 	page->pp_magic |= PP_SIGNATURE;
-+	page_pool_set_frag_count(page, 0);
- }
- 
- static void page_pool_clear_pp_info(struct page *page)
-@@ -736,22 +737,10 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
- }
- EXPORT_SYMBOL(page_pool_update_nid);
- 
--bool page_pool_return_skb_page(struct page *page)
-+void page_pool_return_skb_page(struct page *page)
- {
- 	struct page_pool *pp;
- 
--	page = compound_head(page);
--
--	/* page->pp_magic is OR'ed with PP_SIGNATURE after the allocation
--	 * in order to preserve any existing bits, such as bit 0 for the
--	 * head page of compound page and bit 1 for pfmemalloc page, so
--	 * mask those bits for freeing side when doing below checking,
--	 * and page_is_pfmemalloc() is checked in __page_pool_put_page()
--	 * to avoid recycling the pfmemalloc page.
--	 */
--	if (unlikely((page->pp_magic & ~0x3UL) != PP_SIGNATURE))
--		return false;
--
- 	pp = page->pp;
- 
- 	/* Driver set this to memory recycling info. Reset it on recycle.
-@@ -760,7 +749,5 @@ bool page_pool_return_skb_page(struct page *page)
- 	 * 'flipped' fragment being in use or not.
- 	 */
- 	page_pool_put_full_page(pp, page, false);
--
--	return true;
- }
- EXPORT_SYMBOL(page_pool_return_skb_page);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 74601bbc56ac..e3691b025d30 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -646,9 +646,15 @@ static void skb_free_head(struct sk_buff *skb)
- 	unsigned char *head = skb->head;
- 
- 	if (skb->head_frag) {
--		if (skb_pp_recycle(skb, head))
-+		struct page *page = virt_to_head_page(head);
-+
-+		if (page_pool_is_pp_page(page) &&
-+		    (skb->pp_recycle || page_pool_is_pp_page_frag(page))) {
-+			page_pool_return_skb_page(page);
- 			return;
--		skb_free_frag(head);
-+		}
-+
-+		__page_frag_cache_drain(page, 1);
- 	} else {
- 		kfree(head);
- 	}
--- 
-2.33.0
+Thanks, there is a problem with my patch, your path is more suitable
 
