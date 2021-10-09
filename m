@@ -2,220 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A759F427C8C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C499427C8E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhJISQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S230013AbhJISQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhJISQO (ORCPT
+        with ESMTP id S229518AbhJISQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:16:14 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DDEC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 11:14:17 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so599893pjq.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:14:17 -0700 (PDT)
+        Sat, 9 Oct 2021 14:16:42 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9D3C061570;
+        Sat,  9 Oct 2021 11:14:45 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id d9so25279439edh.5;
+        Sat, 09 Oct 2021 11:14:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:cc:subject:content-language
-         :to:references:from:in-reply-to:content-transfer-encoding;
-        bh=CWTfgGVMFavm0exUxVdTkCtIcKrvf9YPDx3Ir4BnYtw=;
-        b=c1eo5pMoZ8D3d5OHrwfUmncEOTMBHFRzaKZ0bSlOKbTxdp8alBrJKYkUW+bvweZC5H
-         AgDGZi7KpbzygMqVoloF4WMpJ6crGC6SouYMPf6sIwynandTcsPUIpn7731SoK8xRskd
-         ibavPN/k5OvtkDTDUChlxoWGRnIxH5/WaMfGN9m71tjNxZ5mtNSK+AlN6GSVK8kjIH+H
-         hrL1pGpn65Zwex6ZixlJgcZcaXvptbIwJE5ErPNkCiv4aXMmIuJ+3bYxV8MiGstIHB2O
-         IgY9ox2OTzL7U8cAVPLEls9a6fZ9X2r5IRW53i8KBmDBHZKdEUlvuhkpdPuwoOKgrVza
-         xWvQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NB/NbO2pnzp8rCJeSeD4fOtiBWghV++U+S27/Xc8iw0=;
+        b=En3bOU2gWXENrRPQgcBG5LZinOcpsx9+nrwow4EU5VR2dUu+mmmq1TiG+srtQxbnO0
+         VfiK2cs4QmrNLrcSzL7FwotkFcUOttwll1hSleJ/hvB1vampzEvAfAx1+A9G8iLaBGkf
+         U0xCIm7uWS8PBooiRcaWLByRqcEQOvXrv73SCfkT+3SAiBWEyVJb1SIlLQgBQ244J45d
+         UrRrKIQMmps/heRmg+NRS9xSDWqQX9FnxdP2eeSbYIbjAEjvaof1w+AMFSEAAvUxJTiY
+         IFAMENH3OylatZUP481gI9zwo/WkhumCL2gyQu+6hwiAML66HFeEG9mbQNFWDwO5Yrcw
+         ZZtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=CWTfgGVMFavm0exUxVdTkCtIcKrvf9YPDx3Ir4BnYtw=;
-        b=Qd0eINxU2WooCEOg/Fgh0eJn7DmVWgZLall2m8L3DuJratxHbhJYgG6AhteqVJg7bJ
-         Ti0Otvfbq7OS8WC50CDFxb+mxlHhsYs1Atl5GHmGThxzjQZmBFbipehgj3p0uJUORBAb
-         OoIfyF6Fsd9+DsTUjXa3Is2ss89nz6IWzqXxDtqeQo58XpMtMaMvfJfywl4150CM1Opu
-         vDth9FdJ84658mOKTzwj/8Lw99VXMgL5/Cib967UjCr1nlO822BEIE1O0XFnr8h12x4P
-         UG0j3bLoCPpX6PaHvBF01nJPfQV24U78y3WXB/5p/1oQMK954kOBeSopupg779GHkJOF
-         aGCw==
-X-Gm-Message-State: AOAM530BjqYqVwVhi0bxiwQcqpbI+/2jmkKjTaFnQ0MhKDufjDTEixQw
-        TeZO+ovo58O3XxbUxPxBLK3tEKFxleQO9A==
-X-Google-Smtp-Source: ABdhPJx2PaxFMJ+bGQ+4Yd1uSd6YhKMjs/22VwAMQrP9jIODuUeH+oor6WlHrnHzc9gsGb3QXDaC7w==
-X-Received: by 2002:a17:90a:ad46:: with SMTP id w6mr3569886pjv.68.1633803256542;
-        Sat, 09 Oct 2021 11:14:16 -0700 (PDT)
-Received: from [192.168.1.6] ([223.230.43.197])
-        by smtp.gmail.com with ESMTPSA id k3sm14416293pjg.43.2021.10.09.11.14.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 11:14:16 -0700 (PDT)
-Message-ID: <b9dcf405-3436-983f-143c-a429ce9598cf@gmail.com>
-Date:   Sat, 9 Oct 2021 23:44:12 +0530
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NB/NbO2pnzp8rCJeSeD4fOtiBWghV++U+S27/Xc8iw0=;
+        b=nwWQneGdO8rHZ0xFzRmhKxVopHpn4d3Q2XF+CYiT8dSVAqM56uEeyZE0RmCv9BbhN2
+         1V021VfiOqMVNW4v1HQu4/hGGbf599vKhbO7GPJFOVbMN/D7pB0RY22Ru8fGhaBx7uLa
+         Jz/S6GpQs4PjkBaAKRHjAHr5Zcp+eeClpqACmZhSDyYjo4+Fg3FLFfwvYHhIzJqjCGXH
+         Jtw0eFM4/WUJ+Gr9BKPfMy+HChnCklfKxUI1BuOM3Q0LqTHIePLAyTohqZj3Imfr3Lze
+         OG++H/r/6UXQ7Tpf9xE1ofgk+2+MVAb2Q71TMJj06tLmL0HE4SOBX2DgqYhZ5mF7dIFl
+         wKBw==
+X-Gm-Message-State: AOAM530hbkHa/D8bfFw5Tz6szxetD5qwiuTfgKhm/ZfrCX3DRo/dawTn
+        GA/p2Sa+JZUIjYbomUBdPxE=
+X-Google-Smtp-Source: ABdhPJyL02etfR/VvFSZ7cwwu5dfOCfx2MwDZ3qjoyr9gCSfVVV8xN1PRO0CxRk+8iJVhy4M9yyZGw==
+X-Received: by 2002:a17:906:b1d5:: with SMTP id bv21mr13128042ejb.346.1633803283771;
+        Sat, 09 Oct 2021 11:14:43 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id h8sm1256257ejj.22.2021.10.09.11.14.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 11:14:43 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 20:14:40 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 11/15] dt-bindings: net: dsa: qca8k: Document
+ qca,sgmii-enable-pll
+Message-ID: <YWHcEFKzgjE4Ikj2@Ansuel-xps.localdomain>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-12-ansuelsmth@gmail.com>
+ <YWHN1iDSelFQTPUC@lunn.ch>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Cc:     saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: rtl8723bs: core: simplify the if condition
-Content-Language: en-US
-To:     Hans de Goede <hdegoede@redhat.com>, gregkh@linuxfoundation.org,
-        fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        deborahbrouwer3563@gmail.com, marcocesati@gmail.com,
-        phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <YWEwFf0YMi4W1xKN@user>
- <94cb79ea-1952-c92c-f5c9-f03f7b1a892c@redhat.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <94cb79ea-1952-c92c-f5c9-f03f7b1a892c@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWHN1iDSelFQTPUC@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 09/10/21 10:21 pm, Hans de Goede wrote:
-> Hi,
+On Sat, Oct 09, 2021 at 07:13:58PM +0200, Andrew Lunn wrote:
+> On Fri, Oct 08, 2021 at 02:22:21AM +0200, Ansuel Smith wrote:
+> > Document qca,sgmii-enable-pll binding used in the CPU nodes to
+> > enable SGMII PLL on MAC config.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index 208ee5bc1bbb..b9cccb657373 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -50,6 +50,12 @@ A CPU port node has the following optional node:
+> >                            managed entity. See
+> >                            Documentation/devicetree/bindings/net/fixed-link.txt
+> >                            for details.
+> > +- qca,sgmii-enable-pll  : For SGMII CPU port, explicitly enable PLL, TX and RX
+> > +                          chain along with Signal Detection.
+> > +                          This should NOT be enabled for qca8327.
 > 
-> On 10/9/21 8:00 AM, Saurav Girepunje wrote:
->> if psta is NULL, function is returning with fail. On next if condition
->> again checking if psta is not a NULL. Remove multiple if condition check.
->>
->> Function is already using goto exit statement to exit.Replace multiple
->> return with goto exit statement.
->>
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
->>   drivers/staging/rtl8723bs/core/rtw_xmit.c | 61 ++++++++++-------------
->>   1 file changed, 26 insertions(+), 35 deletions(-)
->>
->> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
->> index 34505b35a7f3..4e4a1bed882b 100644
->> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
->> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
->> @@ -932,49 +932,40 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
->>   		/* TODO: fill HT Control Field */
->>
->>   		/* Update Seq Num will be handled by f/w */
->> -		{
->> -			struct sta_info *psta;
->> -
->> -			psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
->> -			if (pattrib->psta != psta)
->> -				return _FAIL;
->> -
->> -			if (!psta)
->> -				return _FAIL;
->> +		struct sta_info *psta;
-> 
-> You are now declaring a variable after some statements, this will
-> cause a compiler warning in some cases. Please move this variable
-> declaration up, grouping it together with the other variable
-> declarations.
-> 
-Yes, I will move variable declaration to up.
->>
->> -			if (!(psta->state & _FW_LINKED))
->> -				return _FAIL;
->> +		psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
->> +		if (!psta || pattrib->psta != psta || !(psta->state & _FW_LINKED))
->> +			res = _FAIL;
->> +			goto exit;
-> 
-> You are both removing an identation level here because you are removing
-> the compound statement which contained the psta declaration as well
-> as refactoring the code.
-> 
-> Please split this into 2 separate commits, 1 where you only drop the
-> extra indentation level (and move the psta declaration up).
-> 
-> And then a separate commit which just the actual code changes.
-> 
-> Your current patch is very hard to review because you are doing
-> 2 things at once.
-> 
-> Also it looks like this patch depends on your previous patch:
-> "[PATCH] staging: rtl8723bs: core: remove empty else section"
-> 
-> When patches depend on each other please send them together
-> as a single patch series. E.g. for version 2 (v2) of a 3 patch
-> series consisting of the last 3 commits in your local tree use
-> (so the next version of these patches) use:
-> 
-> git format-patch -v2 --cover-letter HEAD~3
-> $editor v2-0000-cover-letter.patch
->   <describe series contents + what was changed in the cover-letter>
-> git send-email v2-00*.patch
-> 
-> Regards,
-> 
-> Hans
+> So how about -EINVAL for qca8327, and document it is not valid then.
 >
-Sure, I will split this patch and resend all of them as a single patch 
-series including my previous patch.
 
+I would also add a warning. With all the ported device we found pll
+needed only qca8337. I will add the error but also report the reason as
+we really don't know if it does exist a qca8327 device that needs pll.
+In theory not but who knows.
+
+> > +                          This can be required for qca8337 switch with revision 2.
 > 
->>
->> -			if (psta) {
->> -				psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
->> -				psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
->> -				pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
->> +		psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
->> +		psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
->> +		pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
->>
->> -				SetSeqNum(hdr, pattrib->seqnum);
->> +		SetSeqNum(hdr, pattrib->seqnum);
->>
->> -				/* check if enable ampdu */
->> -				if (pattrib->ht_en && psta->htpriv.ampdu_enable)
->> -					if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
->> -						pattrib->ampdu_en = true;
->> +		/* check if enable ampdu */
->> +		if (pattrib->ht_en && psta->htpriv.ampdu_enable)
->> +			if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
->> +				pattrib->ampdu_en = true;
->>
->> -				/* re-check if enable ampdu by BA_starting_seqctrl */
->> -				if (pattrib->ampdu_en == true) {
->> -					u16 tx_seq;
->> +		/* re-check if enable ampdu by BA_starting_seqctrl */
->> +		if (pattrib->ampdu_en == true) {
->> +			u16 tx_seq;
->>
->> -					tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
->> +			tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
->>
->> -					/* check BA_starting_seqctrl */
->> -					if (SN_LESS(pattrib->seqnum, tx_seq)) {
->> -						pattrib->ampdu_en = false;/* AGG BK */
->> -					} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
->> -						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
->> +			/* check BA_starting_seqctrl */
->> +			if (SN_LESS(pattrib->seqnum, tx_seq)) {
->> +				pattrib->ampdu_en = false;/* AGG BK */
->> +			} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
->> +				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
->>
->> -						pattrib->ampdu_en = true;/* AGG EN */
->> -					} else {
->> -						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
->> -						pattrib->ampdu_en = true;/* AGG EN */
->> -					}
->> -				}
->> +				pattrib->ampdu_en = true;/* AGG EN */
->> +			} else {
->> +				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
->> +				pattrib->ampdu_en = true;/* AGG EN */
->>   			}
->>   		}
->>   	}
->> --
->> 2.32.0
->>
+> Maybe add a warning if enabled with revision < 2? I would not make it
+> an error, because there could be devices manufactured with a mixture
+> or v1 and v2 silicon. Do you have any idea how wide spread v1 is?
 > 
 
-Thanks Hans for review.
+No idea about the revision and can't be recovered from the switch data
+print on the chip. Will add a warning and put in the documentation that
+we warn when an uncorrect revision is detected.
 
-Regards,
-Saurav
+> > +                          With CPU port set to sgmii and qca8337 it is advised
+> > +                          to set this unless a communication problem is observed.
+> 
+>   Andrew
+
+-- 
+	Ansuel
