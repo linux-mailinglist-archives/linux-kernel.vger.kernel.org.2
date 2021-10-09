@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8ED427920
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D6D427924
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244639AbhJIKvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:51:02 -0400
-Received: from ixit.cz ([94.230.151.217]:41692 "EHLO ixit.cz"
+        id S244554AbhJIKwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:52:01 -0400
+Received: from ixit.cz ([94.230.151.217]:41708 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244412AbhJIKut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:50:49 -0400
+        id S231718AbhJIKwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 06:52:00 -0400
 Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 6679020064;
-        Sat,  9 Oct 2021 12:48:51 +0200 (CEST)
+        by ixit.cz (Postfix) with ESMTPSA id 5643C236BE;
+        Sat,  9 Oct 2021 12:50:02 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633776531;
+        t=1633776602;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding;
-        bh=EoizMIfnXpLkqcgJXPhKkISzgcvhmyOaWVCO/uKrTro=;
-        b=XWaLZILJw9RKOqVfrSXmFR8DvQpGIWVZZlyY4msV2tLdkVTc+lFvD08jqqcUcj7ndHSexu
-        f0xMlWxBmT8XMDy5I4BxTTyLv7mCuR2DH6nxko8XR5h6tEH446DG1LBsmPvzI5Ns/rjpYk
-        dx+J0nN2d1/eey9lfTEhHFKKzyzKsg4=
+        bh=pXtBP44GOWMz1wPbaqa7bXoz0JlEqPT/QbX93YFXbbY=;
+        b=KzJszMlAqkc4HZOVO1hgfQp8ZCaGDWBAfsxHUsXpnb8NXIHqyN2H/LcZyUMZ2nQZE3JoZW
+        vJHAZlbdlEqeXdU582qXtYi/5hjhwhs6TcPwzZhoCqNC+JPmiWpylmqRUQGAZBy9MDNTw6
+        ggD9+hTiFrm/9OUXJhNOIw37tuKBgdM=
 From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+To:     Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
         David Heidelberg <david@ixit.cz>
-Subject: [PATCH] dt-bindings: net: marvell-bluetooth: Convert txt bindings to yaml
-Date:   Sat,  9 Oct 2021 12:47:16 +0200
-Message-Id: <20211009104716.46162-1-david@ixit.cz>
+Subject: [PATCH] dt-bindings: input: mcs-touchkey: Convert txt bindings to yaml
+Date:   Sat,  9 Oct 2021 12:48:37 +0200
+Message-Id: <20211009104837.46626-1-david@ixit.cz>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,82 +42,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert documentation for The Marvell Avastar 88W8897 into YAML syntax.
+Convert MELFAS MCS-5000 touchscreen controller chip documentation to the YAML format.
 
 Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- .../bindings/net/marvell-bluetooth.txt        | 25 ---------------
- .../bindings/net/marvell-bluetooth.yaml       | 31 +++++++++++++++++++
- 2 files changed, 31 insertions(+), 25 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/net/marvell-bluetooth.txt
- create mode 100644 Documentation/devicetree/bindings/net/marvell-bluetooth.yaml
+ .../bindings/input/mcs-touchkey.txt           | 26 ---------
+ .../bindings/input/mcs-touchkey.yaml          | 53 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/mcs-touchkey.txt
+ create mode 100644 Documentation/devicetree/bindings/input/mcs-touchkey.yaml
 
-diff --git a/Documentation/devicetree/bindings/net/marvell-bluetooth.txt b/Documentation/devicetree/bindings/net/marvell-bluetooth.txt
+diff --git a/Documentation/devicetree/bindings/input/mcs-touchkey.txt b/Documentation/devicetree/bindings/input/mcs-touchkey.txt
 deleted file mode 100644
-index 0e2842296032..000000000000
---- a/Documentation/devicetree/bindings/net/marvell-bluetooth.txt
+index 545454112a43..000000000000
+--- a/Documentation/devicetree/bindings/input/mcs-touchkey.txt
 +++ /dev/null
-@@ -1,25 +0,0 @@
--Marvell Bluetooth Chips
-------------------------
--
--This documents the binding structure and common properties for serial
--attached Marvell Bluetooth devices. The following chips are included in
--this binding:
--
--* Marvell 88W8897 Bluetooth devices
+@@ -1,26 +0,0 @@
+-* mcs_touchkey MELFAS MCS5000/5080 controller
 -
 -Required properties:
-- - compatible: should be:
--    "mrvl,88w8897"
--
--Optional properties:
--None so far
+-- compatible: must be "mcs5000_touchkey" or "mcs5080_touchkey"
+-- reg : I2C address of the chip
+-- interrupts: interrupt to which the chop is connected
+-- key_maxval: size of keycode table
+-- interrupts: interrupt to which the chip is connected
+-- code: key code for this device
 -
 -Example:
 -
--&serial0 {
--	compatible = "ns16550a";
--	...
--	bluetooth {
--		compatible = "mrvl,88w8897";
+-	i2c_touch_key: i2c-gpio-0 {
+-	       /* ... */
+-
+-	       touch_key@20 {
+-		       compatible = "mcs5080_touchkey";
+-		       reg = <0x20>;
+-		       interrupt-patrent = <gpj0>;
+-		       key_maxval = <2>;
+-		       linux, code = <0x0000009e
+-			              0x000000a9>;
+-	       };
+-
+-	       /* ... */
 -	};
--};
-diff --git a/Documentation/devicetree/bindings/net/marvell-bluetooth.yaml b/Documentation/devicetree/bindings/net/marvell-bluetooth.yaml
+diff --git a/Documentation/devicetree/bindings/input/mcs-touchkey.yaml b/Documentation/devicetree/bindings/input/mcs-touchkey.yaml
 new file mode 100644
-index 000000000000..08813e3ecff6
+index 000000000000..b56de0361ff8
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/marvell-bluetooth.yaml
-@@ -0,0 +1,31 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++++ b/Documentation/devicetree/bindings/input/mcs-touchkey.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: "http://devicetree.org/schemas/net/marvell-bluetooth.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++$id: http://devicetree.org/schemas/input/mcs-touchkey.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Marvell Bluetooth chips
-+
-+description: |
-+  This documents the binding structure and common properties for serial
-+  attached Marvell Bluetooth devices.
++title: MELFAS MCS5000/5080 controller
 +
 +maintainers:
 +  - Rob Herring <robh+dt@kernel.org>
 +
 +properties:
 +  compatible:
-+    const: mrvl,88w8897
++    enum:
++      - mcs5000_touchkey
++      - mcs5080_touchkey
++
++  reg: true
++  interrupts: true
++  key_maxval:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: size of keycode table
++
++  linux,code:
++    $ref: /schemas/types.yaml#/definitions/uint32-array
++    description: key code for this device
 +
 +required:
 +  - compatible
++  - reg
++  - interrupts
++  - linux,code
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    serial {
-+      bluetooth {
-+        compatible = "mrvl,88w8897";
++    #include <dt-bindings/gpio/tegra-gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c_touch_key: i2c-gpio-0 {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      melfas-touchkey@20 {
++        compatible = "mcs5080_touchkey";
++        reg = <0x20>;
++        interrupt-parent = <&gpio>;
++        interrupts = <TEGRA_GPIO(Q, 4) IRQ_TYPE_EDGE_FALLING>;
++        key_maxval = <4>;
++        linux,code = <139 102 158 217>;
 +      };
 +    };
 -- 
