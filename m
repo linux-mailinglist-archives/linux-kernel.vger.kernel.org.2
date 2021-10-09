@@ -2,78 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB4F427997
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3522242799F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244759AbhJILul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:50:41 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:55087 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232943AbhJILug (ORCPT
+        id S232890AbhJILwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:52:46 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:42513 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231526AbhJILwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:50:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Ur6QRPs_1633780116;
-Received: from localhost(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0Ur6QRPs_1633780116)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 09 Oct 2021 19:48:36 +0800
-From:   Xianting Tian <xianting.tian@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org, amit@kernel.org,
-        arnd@arndb.de, osandov@fb.com
-Cc:     shile.zhang@linux.alibaba.com, linuxppc-dev@lists.ozlabs.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Xianting Tian <xianting.tian@linux.alibaba.com>
-Subject: [PATCH v10 3/3] virtio-console: remove unnecessary kmemdup()
-Date:   Sat,  9 Oct 2021 19:48:29 +0800
-Message-Id: <20211009114829.1071021-4-xianting.tian@linux.alibaba.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211009114829.1071021-1-xianting.tian@linux.alibaba.com>
-References: <20211009114829.1071021-1-xianting.tian@linux.alibaba.com>
+        Sat, 9 Oct 2021 07:52:42 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id AEFD3580A0F;
+        Sat,  9 Oct 2021 07:50:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Sat, 09 Oct 2021 07:50:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=DkQo3Y76p/829Ck2u4MWorQHm6
+        enIPYpBvnzwrSnMYo=; b=nxz+YpzV0nx4lm8+onS79tFmR174TX3oWYuPn9iHiC
+        ow3TQPddi2EngpJSLm8N5jylJVGZEvRjfiUtN0R4rTXLB/yfqPlHkUiyE0HWXtjU
+        dQ4haf7La7E0uxRcPkgzjnXjXKDTpMM+4w6jODKtqlqAFjrjryMYfBjTbjUcMzr3
+        4KkIMKdUPTNS/ttDLwZXk8b9tjgyOpZpSahiGfVzYjCIMIy0sx7fswB6mGbMWixJ
+        x8hXcoK7MI52HV9c3dgcIh6SN4wSyCd7VbL1aCcD10ecvtABTCi/sxQM4UCBspaf
+        4SAQIg8ookq2ILVLBtz8b0QscqALN/p9RILnqEkvSvEg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=DkQo3Y76p/829Ck2u
+        4MWorQHm6enIPYpBvnzwrSnMYo=; b=L5mugscpkS9Nt9h7R4M2XTgpwJfJY/ikE
+        dLnTey6Y25lpZU/UQA88/Mwn5VbL57zKHczO5l9+rRgJiC5B54pcx4odVAVWTSAV
+        deRKnejvs2nqNP+qxLwK3dmE+3UsLTsoXlLLisXVaXNiaWPIknTdaKlGsh9vZrjx
+        IpHU1O8Z3TDviX246TdSbPXotSfMyUHp+niU7tf9DrqSDllw38rYa6Jmy/F+9Xil
+        jF0vVHmxwmyRiSPd4nFunVt4GR7O8NI1XPNiDNeSvJsPidI1nj0dEbgrsT233Wts
+        A12aVGZQX+mBIt4lNEerGmXhSurTnNsqcudX7v7OJcnSz1vWUwuPw==
+X-ME-Sender: <xms:FYJhYeArCdf1ZnD7EKrsqfgHV6ncx3Mfei24Ue_ceqUl2zjIVIHiHQ>
+    <xme:FYJhYYgKycbzARkCvIk6HOSvSAfy3b13J2fY7wlttySsa7WsDvHu4Ra-55AqxEuw6
+    Nd05d5PxMO6RISzu4s>
+X-ME-Received: <xmr:FYJhYRkE0N9QnbrOPXDLK8mqVBUsIUGe5XX9Ezy_4Uzz48l2oDL_nQ2e5Dkto0lNK6BkNRSqzfYJFnIzbZDbVKz0HvCpfUf_O04>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtvddggeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeejleeihfdvtefgtd
+    ethfdtgefftdeiffefjeeiffefveeuleejheejvefhffeukeenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsth
+    grihhrvdefrdhmvg
+X-ME-Proxy: <xmx:FYJhYcygL-kaEBXd1ZLiNaq6RdHKmdroazuMlqqEPtZiLuGHugMleQ>
+    <xmx:FYJhYTSDEnQoibc0T0Ljujxc0ej4WjYWvjqNKMvPUXiJQeotMUQ04g>
+    <xmx:FYJhYXYxmZoa5aO4wRugsWI4LZ9QB1m1gqvJQJ3M2gsQr3CrN9VhXw>
+    <xmx:FYJhYUjnmGh2oaHRJC0fufi3YUphKA0zUhMIlxz_i0O66LvhYbI8UQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Oct 2021 07:50:38 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, kernel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        amitk@kernel.org, rui.zhang@intel.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v12 00/10] Add support for the silergy,sy7636a
+Date:   Sat,  9 Oct 2021 21:50:19 +1000
+Message-Id: <20211009115031.18392-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This revert commit c4baad5029 ("virtio-console: avoid DMA from stack")
+v12:
+ - Rebase
+v11:
+ - Address comments on hwmon
+ - Improve "mfd: simple-mfd-i2c: Add a Kconfig name" commit message
+v10:
+ - Use dev_get_regmap() instead of dev_get_drvdata()
+v9:
+ - Convert to use the simple-mfd-i2c instead
 
-hvc framework will never pass stack memory to the put_chars() function,
-So the calling of kmemdup() is unnecessary, we can remove it.
+Alistair Francis (10):
+  dt-bindings: mfd: Initial commit of silergy,sy7636a.yaml
+  mfd: simple-mfd-i2c: Add a Kconfig name
+  mfd: simple-mfd-i2c: Enable support for the silergy,sy7636a
+  regulator: sy7636a: Remove requirement on sy7636a mfd
+  thermal: sy7636a: Add thermal driver for sy7636a
+  hwmon: sy7636a: Add temperature driver for sy7636a
+  ARM: imx_v6_v7_defconfig: Enable silergy,sy7636a
+  ARM: dts: imx7d: remarkable2: Enable silergy,sy7636a
+  ARM: imx_v6_v7_defconfig: Enable backlight class devices
+  ARM: dts: imx7d: remarkable2: Enable lcdif
 
-Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
-Reviewed-by: Shile Zhang <shile.zhang@linux.alibaba.com>
----
- drivers/char/virtio_console.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+ .../bindings/mfd/silergy,sy7636a.yaml         |  79 ++++++++++++
+ arch/arm/boot/dts/imx7d-remarkable2.dts       | 115 ++++++++++++++++++
+ arch/arm/configs/imx_v6_v7_defconfig          |   5 +
+ drivers/hwmon/Kconfig                         |  10 ++
+ drivers/hwmon/Makefile                        |   1 +
+ drivers/hwmon/sy7636a-hwmon.c                 |  77 ++++++++++++
+ drivers/mfd/Kconfig                           |   2 +-
+ drivers/mfd/simple-mfd-i2c.c                  |  12 ++
+ drivers/regulator/Kconfig                     |   1 -
+ drivers/regulator/sy7636a-regulator.c         |   2 +-
+ drivers/thermal/Kconfig                       |   6 +
+ drivers/thermal/Makefile                      |   1 +
+ drivers/thermal/sy7636a_thermal.c             |  94 ++++++++++++++
+ include/linux/mfd/sy7636a.h                   |  41 +++++++
+ 14 files changed, 443 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/silergy,sy7636a.yaml
+ create mode 100644 drivers/hwmon/sy7636a-hwmon.c
+ create mode 100644 drivers/thermal/sy7636a_thermal.c
+ create mode 100644 include/linux/mfd/sy7636a.h
 
-diff --git a/drivers/char/virtio_console.c b/drivers/char/virtio_console.c
-index 7eaf303a7..4ed3ffb1d 100644
---- a/drivers/char/virtio_console.c
-+++ b/drivers/char/virtio_console.c
-@@ -1117,8 +1117,6 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- {
- 	struct port *port;
- 	struct scatterlist sg[1];
--	void *data;
--	int ret;
- 
- 	if (unlikely(early_put_chars))
- 		return early_put_chars(vtermno, buf, count);
-@@ -1127,14 +1125,8 @@ static int put_chars(u32 vtermno, const char *buf, int count)
- 	if (!port)
- 		return -EPIPE;
- 
--	data = kmemdup(buf, count, GFP_ATOMIC);
--	if (!data)
--		return -ENOMEM;
--
--	sg_init_one(sg, data, count);
--	ret = __send_to_port(port, sg, 1, count, data, false);
--	kfree(data);
--	return ret;
-+	sg_init_one(sg, buf, count);
-+	return __send_to_port(port, sg, 1, count, (void *)buf, false);
- }
- 
- /*
 -- 
-2.17.1
+2.31.1
 
