@@ -2,172 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308B5427BDD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B41C427BE9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhJIQXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:23:22 -0400
-Received: from ixit.cz ([94.230.151.217]:42350 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229558AbhJIQXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:23:17 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 110EF20064;
-        Sat,  9 Oct 2021 18:21:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633796478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=klFPWNBavOKzoLXujkcSqVGvJ28gIY1/bFBY8mxhqMI=;
-        b=w9Dt4MutgFo/rFnlR2PGxo3P7HPEJyKj/yhTC1T8AElUwdOAWwmn/Lh37VFejCeV10RCp+
-        8JVrPxliG3tcSQMuQ5eifquA7dMhRQijIObAb7lOgic7Hx8zpIQQ/kxpfQoX9tMOhJXemR
-        w68XS8l6W5P+f0ifVsRDyoXHMC+mxgw=
-From:   David Heidelberg <david@ixit.cz>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH v3] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings to yaml
-Date:   Sat,  9 Oct 2021 18:19:42 +0200
-Message-Id: <20211009161941.41634-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S229790AbhJIQ2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhJIQ2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:28:32 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC20EC061762
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 09:26:35 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id s17so9254910ioa.13
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 09:26:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=tzgCA7E355JBDp4s5SOgr19PHTQj2Yqya87H/7XlOEE=;
+        b=djDX4r0f2kAuHCCoyDTO5nT+bV/QoQ907ot/s7SJ8DWcJDyOSc5p6gwLT71dUBfFst
+         U+38LvWX0DmHHhMHOPuHjloBPkLbAMqWgWq5H2ZHxUu86Q+BqK2ZnOD0121/vlUtG4Vt
+         ukpxa0I55Pp7h9URGkFzPJNtBT1ttZ3TvcL8/LBHb1vzI+tDvlT9qwaw0/gDOPUSF+9p
+         K7T2sgBkJ69S3ShQKyY/QcXdxHCXH2jdZoZ7VLBeogEivGdF5Pkyc/k+f/SIYT4WAgHR
+         q59HpE788hzf+oJO4xV+JQYXems+OXmBPWiwQiKABekMflAakMxvz1P5Zog7qMbNRbU8
+         2sqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=tzgCA7E355JBDp4s5SOgr19PHTQj2Yqya87H/7XlOEE=;
+        b=IQssiYLcKa6o97N0HLuYzrLyA4voxRRNrSZpynhn0yPPw/BKy+LeCQS4b2ap0CKdYX
+         jeUcWUK1SJ0nMhwTe4ZqNmmuVSHXjqxPIh7IoSYcZj40+lutZ9x/Nm8HhKAIbb+nMx0o
+         H93t4hCe6/M9Z1s4UOSRU0+s3nKFN4jDWl6UafLvz3mLYT+R7nYL8Rt3APx6OI0eMSoh
+         kKHC+c13ZUJrhlBFI6+tSMU2aQBAzWGQ4vWfTFTEfDwIxkLXRZ0UGIjsrxzqgwlrFcH7
+         63Jn3U8nSaX+9AIrPvPixHlXaqTzq5ByhvCZpcrnElT/pTY4O49089I9yYHO2acP1a9H
+         ziPA==
+X-Gm-Message-State: AOAM532BxqBHD5LAfrxPe3qhBx/Eufjl9XbtKfCq9yW/5A4lxFwFiUVn
+        aI7BFJsNJsWKS4GSTEVBuMIecLrs0xuCNWFL0gI=
+X-Google-Smtp-Source: ABdhPJwi5QubQin1sXxMTeejMIt4xdIQyFC79r0sWzh1rc/RgcgtCq5FlrShk+VbfajnAqk6vW+9qiiXlJ3d5oyUKhE=
+X-Received: by 2002:a5d:8183:: with SMTP id u3mr11809995ion.67.1633796795044;
+ Sat, 09 Oct 2021 09:26:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a4f:ca01:0:0:0:0:0 with HTTP; Sat, 9 Oct 2021 09:26:34 -0700 (PDT)
+Reply-To: mrmichelduku@outlook.com
+From:   mr michel <mrmichel2233@gmail.com>
+Date:   Sat, 9 Oct 2021 16:26:34 +0000
+Message-ID: <CALSo2Nb_-UXNQ_EixXcizzN72m9MeDtywzYjttSTFeqAV3iPRQ@mail.gmail.com>
+Subject: Please Respond Urgently
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert bindings for NXP PN544 NFC driver to YAML syntax.
+Greetings,
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
-v2
- - Krzysztof is a maintainer
- - pintctrl dropped
- - 4 space indent for example
- - nfc node name
-v3
- - remove whole pinctrl
- .../bindings/net/nfc/nxp,pn544.yaml           | 61 +++++++++++++++++++
- .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
- 2 files changed, 61 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+With due respect to your person, I make this contact with you as I
+believe that you can be of great assistance to me. I need your urgent
+assistance in transferring the sum of $11.3million to your private
+account Where this money can be shared between us.
 
-diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-new file mode 100644
-index 000000000000..5fc57341cf33
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-@@ -0,0 +1,61 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Semiconductors PN544 NFC Controller
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+properties:
-+  compatible:
-+    const: nxp,pn544-i2c
-+
-+  clock-frequency: true
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: Output GPIO pin used for enabling/disabling the PN544
-+
-+  firmware-gpios:
-+    description: Output GPIO pin used to enter firmware download mode
-+
-+required:
-+  - compatible
-+  - clock-frequency
-+  - reg
-+  - interrupts
-+  - enable-gpios
-+  - firmware-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nfc@28 {
-+            compatible = "nxp,pn544-i2c";
-+
-+            reg = <0x28>;
-+            clock-frequency = <400000>;
-+
-+            interrupt-parent = <&gpio1>;
-+            interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-+
-+            enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
-+            firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
-deleted file mode 100644
-index 2bd82562ce8e..000000000000
---- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--* NXP Semiconductors PN544 NFC Controller
--
--Required properties:
--- compatible: Should be "nxp,pn544-i2c".
--- clock-frequency: I²C work frequency.
--- reg: address on the bus
--- interrupts: GPIO interrupt to which the chip is connected
--- enable-gpios: Output GPIO pin used for enabling/disabling the PN544
--- firmware-gpios: Output GPIO pin used to enter firmware download mode
--
--Optional SoC Specific Properties:
--- pinctrl-names: Contains only one value - "default".
--- pintctrl-0: Specifies the pin control groups used for this controller.
--
--Example (for ARM-based BeagleBone with PN544 on I2C2):
--
--&i2c2 {
--
--
--	pn544: pn544@28 {
--
--		compatible = "nxp,pn544-i2c";
--
--		reg = <0x28>;
--		clock-frequency = <400000>;
--
--		interrupt-parent = <&gpio1>;
--		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
--
--		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
--		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
--	};
--};
--- 
-2.33.0
+The money has been here in our Bank lying dormant for years now
+without anybody coming for the claim. I want to release the money to
+you as the relative to our deceased customer (the account owner) who
+died in a plane crash with his family since 16th October 2005.
 
+By indicating your interest I will send you the full details on how
+the business will be executed.
+
+Best Regards,
+Mr.Michel Duku.
