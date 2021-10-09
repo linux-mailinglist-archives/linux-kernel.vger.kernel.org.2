@@ -2,71 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560DD4278DE
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1184278DF
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244903AbhJIKKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:10:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244749AbhJIKJa (ORCPT
+        id S244913AbhJIKKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:10:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49544 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244750AbhJIKJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:09:30 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF3C061774
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 03:07:26 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f1e2200eaf5135f74ba603d.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:2200:eaf5:135f:74ba:603d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0E3901EC050F;
-        Sat,  9 Oct 2021 12:07:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633774045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=XBb5DRuvpHCIpaOFwyxafYPw1UQ6Ea57NV5kAAnUc/4=;
-        b=ooUMbUWXhNxc75bL/39RkCCBkIYHVZxCR5dEVq8cQLzz6fGUnJTrS8sQlODRgxWOalJM+d
-        Y52gDdMTK03Hg8tX5BhNkZqFdgS0oRQ9ZlOzlVeQMXfxqgb0WaeXOu9ek5UE1ZAoHfXc5c
-        kMtcjjxagIKgtCXi/5Og251Ok6pQbxc=
-Date:   Sat, 9 Oct 2021 12:07:22 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Quan, Evan" <Evan.Quan@amd.com>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "Chen, Guchun" <Guchun.Chen@amd.com>
-Subject: Re: bf756fb833cb ("drm/amdgpu: add missing cleanups for Polaris12
- UVD/VCE on suspend")
-Message-ID: <YWFp2qHwbWHEqxWh@zn.tnic>
-References: <YV81vidWQLWvATMM@zn.tnic>
- <CADnq5_NjiRM9sF6iAE3=KbzuSVc1MeLe0nUCdJfEpNQ=RDz4Zw@mail.gmail.com>
- <YWBeD7fd2sYSSTyc@zn.tnic>
- <CADnq5_MeEP-PbDp+Js3zEsuj=CvxDAD2qcFSskWhW4b4SkhwEQ@mail.gmail.com>
- <YWBlVzZK35ecQHNZ@zn.tnic>
- <DM6PR12MB2619FD47CD826ADC91F87AFBE4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
- <YWFaUjKEp+5819O/@zn.tnic>
- <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
+        Sat, 9 Oct 2021 06:09:31 -0400
+Date:   Sat, 09 Oct 2021 10:07:32 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1633774053;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsmLx22RdeJXOzDhfJMDcgUCQc92VIsYk0FbQu69TCA=;
+        b=HrwE8uGHgqUUGpEkfE2hUKxD46wPRib6D9uq/8ZCy3sep8//aO4h8yX2aNIWQUq02oe+j2
+        GIuIVAfO+po335rfftRMgtz6Cl60SDUk/xwO8RFetSImzNDmGMTiJgKDm5iMfdx7OUrTvC
+        kpQbxelyEMGNBaTcJb5VYmaqT6VIy3QYh04vfd5GS4YBnYj7GDMSEqhyAl4P7sRyY73n62
+        SvjcCqWflaq4lfeXzsgxYODIltmxEIF0ymBDillTnk3e6c3e3qGHkiUQS9RA+kV3ClZjZv
+        HDg63sLqltUGIh3zlJOJg4pSabm1zt/yq3rPITjjBOcDhdFvh6ghcJmKN3KAJg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1633774053;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TsmLx22RdeJXOzDhfJMDcgUCQc92VIsYk0FbQu69TCA=;
+        b=43p78LGifadB3k1ayikYtnwvaeJk8HL8f6aIRHSzI/q2RkitDvPNsHp4R7+ltK/V8ev5l0
+        G5FJPRRcdFjPCwBw==
+From:   "tip-bot2 for Kees Cook" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched: Fill unconditional hole induced by sched_entity
+Cc:     Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210924025450.4138503-1-keescook@chromium.org>
+References: <20210924025450.4138503-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
+Message-ID: <163377405280.25758.581808828384380024.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 09:54:13AM +0000, Quan, Evan wrote:
-> Oops, I just found some necessary changes are missing from the patch of the link below.
-> https://lists.freedesktop.org/archives/amd-gfx/2021-September/069006.html
-> 
-> Could you try the patch from the link above + the attached patch?
+The following commit has been merged into the sched/core branch of tip:
 
-Nope, still no joy. ;-\
+Commit-ID:     b2d5b9cec60fecc72a13191c2c6c05acf60975a5
+Gitweb:        https://git.kernel.org/tip/b2d5b9cec60fecc72a13191c2c6c05acf60975a5
+Author:        Kees Cook <keescook@chromium.org>
+AuthorDate:    Thu, 23 Sep 2021 19:54:50 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 07 Oct 2021 13:51:17 +02:00
 
--- 
-Regards/Gruss,
-    Boris.
+sched: Fill unconditional hole induced by sched_entity
 
-https://people.kernel.org/tglx/notes-about-netiquette
+With struct sched_entity before the other sched entities, its alignment
+won't induce a struct hole. This saves 64 bytes in defconfig task_struct:
+
+Before:
+	...
+        unsigned int               rt_priority;          /*   120     4 */
+
+        /* XXX 4 bytes hole, try to pack */
+
+        /* --- cacheline 2 boundary (128 bytes) --- */
+        const struct sched_class  * sched_class;         /*   128     8 */
+
+        /* XXX 56 bytes hole, try to pack */
+
+        /* --- cacheline 3 boundary (192 bytes) --- */
+        struct sched_entity        se __attribute__((__aligned__(64))); /*   192   448 */
+        /* --- cacheline 10 boundary (640 bytes) --- */
+        struct sched_rt_entity     rt;                   /*   640    48 */
+        struct sched_dl_entity     dl __attribute__((__aligned__(8))); /*   688   224 */
+        /* --- cacheline 14 boundary (896 bytes) was 16 bytes ago --- */
+
+After:
+	...
+        unsigned int               rt_priority;          /*   120     4 */
+
+        /* XXX 4 bytes hole, try to pack */
+
+        /* --- cacheline 2 boundary (128 bytes) --- */
+        struct sched_entity        se __attribute__((__aligned__(64))); /*   128   448 */
+        /* --- cacheline 9 boundary (576 bytes) --- */
+        struct sched_rt_entity     rt;                   /*   576    48 */
+        struct sched_dl_entity     dl __attribute__((__aligned__(8))); /*   624   224 */
+        /* --- cacheline 13 boundary (832 bytes) was 16 bytes ago --- */
+
+Summary diff:
+-	/* size: 7040, cachelines: 110, members: 188 */
++	/* size: 6976, cachelines: 109, members: 188 */
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210924025450.4138503-1-keescook@chromium.org
+---
+ include/linux/sched.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 193e16e..343603f 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -775,10 +775,10 @@ struct task_struct {
+ 	int				normal_prio;
+ 	unsigned int			rt_priority;
+ 
+-	const struct sched_class	*sched_class;
+ 	struct sched_entity		se;
+ 	struct sched_rt_entity		rt;
+ 	struct sched_dl_entity		dl;
++	const struct sched_class	*sched_class;
+ 
+ #ifdef CONFIG_SCHED_CORE
+ 	struct rb_node			core_node;
