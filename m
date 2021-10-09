@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6FD427BEB
+	by mail.lfdr.de (Postfix) with ESMTP id B7938427BED
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhJIQ3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:29:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57010 "EHLO
+        id S230427AbhJIQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhJIQ3Q (ORCPT
+        with ESMTP id S229518AbhJIQ3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:29:16 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6F8C061570;
-        Sat,  9 Oct 2021 09:27:19 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id 5so14411897iov.9;
-        Sat, 09 Oct 2021 09:27:19 -0700 (PDT)
+        Sat, 9 Oct 2021 12:29:17 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6953C061570;
+        Sat,  9 Oct 2021 09:27:20 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id r134so3267057iod.11;
+        Sat, 09 Oct 2021 09:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KombIHVlZOMP4XadihU884YzUUN1SHaapvqwBZQ2iuQ=;
-        b=ByB5eoTxH/tkVBwz2uDnfVnft/IyHvcvOW/ps4hLSx0o8/8sluexO6eMreCD9JTZqg
-         3RBL5FQbpvM4/gQEB8qm63TOhYSjn1whHgig1jklRBbOYh0RMCG+/h2Tih8UuO094IO5
-         RSCKy7ZwjhHakDacE5WnLtmdHyfziSSzU2FaQ+crJy2faLUlOvj5TMTSljAbkSl2r+pM
-         Y4mQYoumWWcwBTX040k0Xlm6fgUIis7bEcDcVtKGwwN+C5v6zjf9/9qAdGtb4H38X5sx
-         yp+EPWuhT6Sfa0WbP4RGLRU05YAqLqLBF5AUgD+N8eGLE1FCiRgESCkLa1G/wy4MRBqZ
-         7+0Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=jTRWJ0+geg/Q+VvyzY0P5f/pbfTOM2Qw4iCzF8elDzw=;
+        b=H6CxIL0WlaSA/YKWPOnLQiLITx6jJPx2G+P3lp/NckyTEluuCGe9NBdnKaf8QrELr8
+         Z+Nb8KiUPBpT5sbjUHHtKe8MPZCg5Mn+bo97S8Zd2eryKXNojr2bMLcaWsvJ4lu55xJL
+         5Q/UFvYevYMlj3dJWJudqJlHfF1AEnhgN+lVe7ZTH8+oKw6a0POREe/GUn6YqvmNYeng
+         Z1SAaL1JUPrflAlbwDo7WIk9GHZ5Fy8RW9MFtKcd80GvezSvklr3TN66Qr/JYrp0mNWn
+         TpiAHuYMFmDTnXgFjZt2oi0vCGlHo3iAVJScbCmaZxgdJinZTz0+ibqk68v3KMnIVd3X
+         R+ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KombIHVlZOMP4XadihU884YzUUN1SHaapvqwBZQ2iuQ=;
-        b=GBrxSqJrQHWkpkNp82eWgaMEwMflb7bjXaVvxwjezVRGE+jZdb1tMYBkkUgQJ+inni
-         4QGlHsryEk5iBXzC951TYdflYrQdeyC8MUiPAxTW2gBvrUttnkmXWnq+yCaC9YuHh8ll
-         jYy9bo1N3JNdKFx31HURawsZxEP8vVOjL3L0v1C1pRxhrE8tkCFiPCbiOwwUPX9JCvuu
-         2VgZID+n+QP8VETYySuYLXA/4dPZKgMg8VtoHq+pZJAEq+PW1NSUrcCSwB6O1uQ9MTXF
-         6/BVVCU5E9GOe/Zve+DFKM9SAKFhPJ0LhMdIX+wc3EqEmuyrCFipgIPTkByGeZ/Mim1Q
-         WKOg==
-X-Gm-Message-State: AOAM531dXWL6JSp2hfal8go/zIYUHNHw7/MVf36BGwO9rHPQEI6+SVc1
-        zP1ZjCS0NPlce6k9YBWyebM=
-X-Google-Smtp-Source: ABdhPJzov8/HyYhOWD1DIHnHRVUJx8QleE10QE88ovOQKWA9xnPgr3c/V1DC6Xr16UOhryMFUqFdog==
-X-Received: by 2002:a05:6602:1644:: with SMTP id y4mr11727199iow.82.1633796838296;
-        Sat, 09 Oct 2021 09:27:18 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jTRWJ0+geg/Q+VvyzY0P5f/pbfTOM2Qw4iCzF8elDzw=;
+        b=JuFH/KS5UILR+emjMfErOLJL+3DE33/Ds70kX/zeRLDd10Nx2UJ3U5/oFw3bw9RE5d
+         C56d/x679OfbGgTGLrAvulk2QzC8fIf96HtJFIh9hyAXGudNxUtqDezzIjqSB4QPLW7v
+         pCo324IcoVsB60XlKo13agXcqd+dB+14vNQAFWBBk/6VsqgTJxjff72yQFxtfHR6Sl4M
+         M3AUcH4mu++kGiDcAKxOxig9hsD7O12I4s0ropJcoYdhyVhSjufGQdRbMzpBe4xOO5m8
+         Gvj0Plv0FjmgDNRRzhKvMAwjFA+jPnXwHHSdLzONk7JcRe2r+AnbLFQmuElvRzBOMjiX
+         Sx4g==
+X-Gm-Message-State: AOAM533e7OIv4yYwiLRFk5AxJjbV9CBYG0snx28TG4SZsSCft6Nl1tef
+        tP017ndA7HZ9K6VUTF9JZKE=
+X-Google-Smtp-Source: ABdhPJzOplxSY4beEbL/NXEefPKnRIDUj1PSKsIGUYcW4FJMOEgPOVbi3Ps4cVXmpQUbH5mso31iQg==
+X-Received: by 2002:a6b:6901:: with SMTP id e1mr11886899ioc.137.1633796839927;
+        Sat, 09 Oct 2021 09:27:19 -0700 (PDT)
 Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:cb0f:c46c:9a27:ace])
-        by smtp.gmail.com with ESMTPSA id y5sm1253722ilg.58.2021.10.09.09.27.17
+        by smtp.gmail.com with ESMTPSA id y5sm1253722ilg.58.2021.10.09.09.27.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 09:27:17 -0700 (PDT)
+        Sat, 09 Oct 2021 09:27:19 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -59,46 +59,38 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Lucas Stach <l.stach@pengutronix.de>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2 0/9] arm64: imx8mn: Enable additional power domains and peripherals
-Date:   Sat,  9 Oct 2021 11:26:50 -0500
-Message-Id: <20211009162700.1452857-1-aford173@gmail.com>
+Subject: [PATCH V2 1/9] soc: imx: gpcv2: keep i.MX8MN gpumix bus clock enabled
+Date:   Sat,  9 Oct 2021 11:26:51 -0500
+Message-Id: <20211009162700.1452857-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211009162700.1452857-1-aford173@gmail.com>
+References: <20211009162700.1452857-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The blk-ctrl and the GPCv2 in the i.MX8MN is similar but slightly different to that
-of the i.MX8MM.  This series is based on work from Lucas Stach for i.MX8MM, but
-adapted for i.MX8MN.  With the additional power domains and blk-ctrl enabled,
-additional peripherals like gpu and USB can be enabled.
+Like the i.MX8MM, keep the gpumix clocks running when the
+domain is active.
 
-V2:  Add mising patches for expanding GPCv2 which are necessary
-       to make the blk-ctl operate.
-     Fix clk names
-     Fix missing references to structures in blk-ctl driver to link
-       them to the device tree.
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+ drivers/soc/imx/gpcv2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Adam Ford (9):
-  soc: imx: gpcv2: keep i.MX8MN gpumix bus clock enabled
-  soc: imx: gpcv2: Add dispmix and mipi domains to imx8mn
-  dt-bindings: power: imx8mn: add defines for DISP blk-ctrl domains
-  dt-bindings: soc: add binding for i.MX8MN DISP blk-ctrl
-  soc: imx: imx8m-blk-ctrl: add i.MX8MN DISP blk-ctrl
-  arm64: dts: imx8mn: add GPC node
-  arm64: dts: imx8mn: put USB controller into power-domains
-  arm64: dts: imx8mn: add DISP blk-ctrl
-  arm64: dts: imx8mn: Enable GPU
-
- .../soc/imx/fsl,imx8mn-disp-blk-ctrl.yaml     |  97 +++++++++++++++++
- arch/arm64/boot/dts/freescale/imx8mn.dtsi     | 103 ++++++++++++++++++
- drivers/soc/imx/gpcv2.c                       |  26 +++++
- drivers/soc/imx/imx8m-blk-ctrl.c              |  75 ++++++++++++-
- include/dt-bindings/power/imx8mn-power.h      |   5 +
- 5 files changed, 305 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx8mn-disp-blk-ctrl.yaml
-
+diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+index b8d52d8d29db..95f05575f843 100644
+--- a/drivers/soc/imx/gpcv2.c
++++ b/drivers/soc/imx/gpcv2.c
+@@ -840,6 +840,7 @@ static const struct imx_pgc_domain imx8mn_pgc_domains[] = {
+ 			.hskack = IMX8MN_GPUMIX_HSK_PWRDNACKN,
+ 		},
+ 		.pgc   = BIT(IMX8MN_PGC_GPUMIX),
++		.keep_clocks = true,
+ 	},
+ };
+ 
 -- 
 2.25.1
 
