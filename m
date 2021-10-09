@@ -2,119 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958A342771E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7678D427723
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbhJIEWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:22:49 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:56504
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229480AbhJIEWr (ORCPT
+        id S230194AbhJIE0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:26:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229594AbhJIE0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:22:47 -0400
+        Sat, 9 Oct 2021 00:26:37 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66AE3C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:24:41 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id x7so41800731edd.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:24:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=djcJNMrGEx
-        11DVeXfstEyaEscPLXu5hozbJu0q4CIqU=; b=tW3DT98Y/QG1bzhwtNp/ra8uo9
-        Wxaa2l2HM3rczHiQ8lc4PvZ1UYti6+NOCW8R0N6R5XhfoJc87rGWOdBvR0uBOxEW
-        l/WxbBN6V6gpxzqO6H0JD4MbPujy8rvVav3lfyer8hLJZHLQcf4JcQfMnWPwJSXF
-        XUj9OTAUsElweQ/wY=
-Received: from localhost.localdomain (unknown [10.102.225.147])
-        by app2 (Coremail) with SMTP id XQUFCgBXim6OGGFhruAAAA--.1394S4;
-        Sat, 09 Oct 2021 12:20:40 +0800 (CST)
-From:   Xin Xiong <xiongx18@fudan.edu.cn>
-To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>
-Subject: [PATCH v4] drivers/mmc: fix reference count leaks in moxart_probe
-Date:   Sat,  9 Oct 2021 12:19:18 +0800
-Message-Id: <20211009041918.28419-1-xiongx18@fudan.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CtayG/2Jwc3T42oMFOgLbtoi8yv9c+x98Ir15MDjDG0=;
+        b=lXhE6maY17OUwCmUe0E7x43ggrUcdkCH1na7zZZEUugTJKFlBLYEcEgGezQC3fZnIv
+         v8gAIRpMJgXHv7Nzgira4rNiWCqyCYRVuchqTRRoCa/hWKrb+GBTcu1XjEmhj/tj0qPx
+         YEScqL8AhEqF5n2xVUq11cilQ31qCNNBE/FdEVy45mmuBbL4tNUSRyANThRzrYvaFFrY
+         w/YgBsyhftKuQZL5cIeb6I2CTOHyEfzYOdAe49IjFO4LirUH57SB2D2LoAwb0E+Qob5d
+         K8B7f6O++MbZag3iJ7sGqQb9QdZ474ECf5jJjHfMSiP43vB8z1vJJl1jvoIFPWViw/h8
+         Y43w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CtayG/2Jwc3T42oMFOgLbtoi8yv9c+x98Ir15MDjDG0=;
+        b=4Pkimj9hFQ/gFeoqv8MEOujD+z7CunIkOvW65P4VicRKVRqrJQIVte5MbPaK0gH0M0
+         z71Kvpx1E82APAbprLzmfrjgSs/PWJVDI1L3UpeLv2JIIAsdxdEyzCV212UyV6Ea+qRC
+         B9ohL4CbAKdnkV34ah/qthXpKKLOS/7xfMiQfBPng+IZuky6e5URlHlLvNk79xQdcUN4
+         L3qrSdHpBeic1ADyFZndgOKNaL3HL/OOPmJwodNlyaPi+wzaUKOiTYUK8RUNDmmfbXMv
+         VIsRDRp0wldykeXADYI0r5takTYYYPLbmlXhqGwYWYsOQbYBrv7aSS07majLvi082y7E
+         bGNg==
+X-Gm-Message-State: AOAM5304ol7PrurnVJUFlVXyXshP9xPBNjzoFuZ77olOlf3YYrV5WiKj
+        ODrabdAkfg7Tgt2Cp0DzatUvOkj9bwEMeeeOlxo3Ce6oGWSQXQ==
+X-Google-Smtp-Source: ABdhPJwie6DwlYLxZbYPSoaIf86UF66XwpCGrLTca77CAKBF2nHvqNqR4OBZtXTarHBBRmgcOukue723gKsOvmdvx3E=
+X-Received: by 2002:a50:bf07:: with SMTP id f7mr21126237edk.288.1633753479852;
+ Fri, 08 Oct 2021 21:24:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: XQUFCgBXim6OGGFhruAAAA--.1394S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF1xJF4Utw4rKFyUXr4xJFb_yoW8tr4xpF
-        48Cr9xKrWUtr4agF4xCa1kXF18Zr1Fyw4akrZ8u3s7A34UJFnrC34kG3W0qF95JryrXa9Y
-        gF15tF1ruFW8JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
-        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
-        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
-        ZEXa7VU1c4S5UUUUU==
-X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiARAIEFKp41whwwABsu
+References: <20211008112716.914501436@linuxfoundation.org>
+In-Reply-To: <20211008112716.914501436@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 9 Oct 2021 09:54:28 +0530
+Message-ID: <CA+G9fYvRkt61tGJJpaWi8yNLHp6Ruxz6AsYvhfNpF3s5ELM94Q@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/29] 5.10.72-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The issue happens in several error handling paths on two refcounted
-object related to the object "host" (dma_chan_rx, dma_chan_tx). In
-these paths, the function forgets to decrement one or both objects'
-reference count increased earlier by dma_request_chan(), causing
-reference count leaks.
+On Fri, 8 Oct 2021 at 17:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.72 release.
+> There are 29 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.72-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Fix it by balancing the refcounts of both objects in some error
-handling paths. In correspondence with the changes in moxart_probe(),
-IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
----
- drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
-index 6c9d38132..7b9fcef49 100644
---- a/drivers/mmc/host/moxart-mmc.c
-+++ b/drivers/mmc/host/moxart-mmc.c
-@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
- 			ret = -EPROBE_DEFER;
- 			goto out;
- 		}
-+		if (!IS_ERR(host->dma_chan_tx)) {
-+			dma_release_channel(host->dma_chan_tx);
-+			host->dma_chan_tx = NULL;
-+		}
-+		if (!IS_ERR(host->dma_chan_rx)) {
-+			dma_release_channel(host->dma_chan_rx);
-+			host->dma_chan_rx = NULL;
-+		}
- 		dev_dbg(dev, "PIO mode transfer enabled\n");
- 		host->have_dma = false;
- 	} else {
-@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
- 	return 0;
- 
- out:
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
-+		dma_release_channel(host->dma_chan_tx);
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
-+		dma_release_channel(host->dma_chan_rx);
- 	if (mmc)
- 		mmc_free_host(mmc);
- 	return ret;
-@@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
- 
- 	dev_set_drvdata(&pdev->dev, NULL);
- 
--	if (!IS_ERR(host->dma_chan_tx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
- 		dma_release_channel(host->dma_chan_tx);
--	if (!IS_ERR(host->dma_chan_rx))
-+	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
- 		dma_release_channel(host->dma_chan_rx);
- 	mmc_remove_host(mmc);
- 	mmc_free_host(mmc);
--- 
-2.25.1
+## Build
+* kernel: 5.10.72-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: 1164874f979faefe5369c77fc31721dd66dd8d6b
+* git describe: v5.10.71-30-g1164874f979f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.71-30-g1164874f979f
 
+## No regressions (compared to v5.10.71)
+
+## No fixes (compared to v5.10.71)
+
+## Test result summary
+total: 90823, pass: 76904, fail: 575, skip: 12384, xfail: 960
+
+## Build Summary
+* arc: 20 total, 20 passed, 0 failed
+* arm: 290 total, 290 passed, 0 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 58 total, 58 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 63 total, 63 passed, 0 failed
+* parisc: 24 total, 24 passed, 0 failed
+* powerpc: 36 total, 36 passed, 0 failed
+* riscv: 45 total, 45 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 48 total, 48 passed, 0 failed
+* sparc: 24 total, 24 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 61 total, 61 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
