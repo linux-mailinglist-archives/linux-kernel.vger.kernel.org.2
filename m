@@ -2,131 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12565427ABB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B19427AC1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233891AbhJIOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 10:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
+        id S234053AbhJIOOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 10:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhJIOGX (ORCPT
+        with ESMTP id S233498AbhJIOOY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 10:06:23 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14196C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 07:04:27 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so9973546pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 07:04:27 -0700 (PDT)
+        Sat, 9 Oct 2021 10:14:24 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44783C061570;
+        Sat,  9 Oct 2021 07:12:27 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id o4so17616508oia.10;
+        Sat, 09 Oct 2021 07:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
+        h=sender:subject:to:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jr6NELFTJSILYLfmz25jHNXv/Ijq+7slmsiNmx6mB/o=;
-        b=bP/f+RdZIBWQqjUy1P5tdIejEDYDo6EqoAnnpIc25e2bsZ5f25QWxX0PvGdAgA9CSQ
-         x3MMY6r4zU/t2P6Efeu8biuk+Ka0S+fHeNW4qNiKoC6iZ72s/tjhs2kwK0kO77NyFJWy
-         l5CfLYQcPCqMOkAyqg0nDxlvZTbW4f9mkeeF2ikuFrzGAnuKqJcYvuCTJEGue530px4q
-         Zt2yIKMHUxwg7YP8DZT4Qj2/RzzreidqN3zWYTyaVM00RolPaEJLxoOHbbvmuQEfjdr+
-         J1qRhp6SfXHSWqwojHiNFDd7ehGenD7YVOwNrr/BehILpu7TMf8aF7aWJPC0dvxe4Hbu
-         vL8g==
+        bh=fYxvGux+YIH/Aqub7pVrD9hRMD1Jk0m9PUG/ERO3fQw=;
+        b=Scw32G50T/215mJ0Id/LyJJ+TsK4os9pgw78ZKo1JVA6sQy1wTfZE7xkzzSC4a38qH
+         gvcjqAr9rMxqTiPo9wN4/N8wMm2Dgw/MiEZ4N/9Jzm6KRxV+Le2II98yhZWrJRL910z6
+         6ub8xXzlQDQIF2pqnpp2vzVNmBaNkRDylnaptMYdiM7hpWkMnOdsAEY7NXfAKesZ3via
+         8Sm/ve32a0U8uJj16EZnqRDKQeYOXZdxLwbutidy2nGvLcg0a/PdpXx6XtRXWI7GHDWO
+         XzlWKssQIO5cpmX3fE2FF/FV6QReuCzF3oWJDaEZUFQhSTpUT5IoefXrJXVOKVmjXbxT
+         q89w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Jr6NELFTJSILYLfmz25jHNXv/Ijq+7slmsiNmx6mB/o=;
-        b=eJVZ2l3mLPJp6VKpi2Fg++HycCXchb1/f0P/eUwE49ioqumo1kldIBM4xFRyRPmqc1
-         FJ2OCrklQ6JSYsnyi7/zzsgBeZWN6LvsH5P/Y11NazUFGdZ1rJTMOtR0fIxF9c+USMwR
-         LWwU1SveBP4r7cDk8bDovkAIDeqEzl8jBcuQEijT9klk99VCfs3O8GzjM7s5E13cDDkF
-         GXTiU47B139/xuI9dwZA7ERD/wSIhZQLM8d/1kXhYJNzgj7m268XSRnE9VBg0vV/yk3t
-         nTl1YNzXOSbqixRJv0rF3OnvyYpAy0vo/b9JfGe0RiHZyp4jHLi8MlIo5OKIRRTdUYnY
-         og1g==
-X-Gm-Message-State: AOAM532DXi9IUf5SAh3GBu1AIbUd5S0zWbDFBGZ1KMbvdPiZPva2m8rG
-        ZFTH48i4/KOUNG7kqAUBY/FnUfZvoRO3Ng==
-X-Google-Smtp-Source: ABdhPJyhh2TUX8OURWKMchmffRhfwaLQMbMa3ofiD3ZluWEMJ/tIa+cDnfX576MvHZMYJm9TdAytJg==
-X-Received: by 2002:a17:90a:6583:: with SMTP id k3mr18915882pjj.147.1633788266350;
-        Sat, 09 Oct 2021 07:04:26 -0700 (PDT)
-Received: from [192.168.255.10] ([203.205.141.112])
-        by smtp.gmail.com with ESMTPSA id d137sm2480755pfd.72.2021.10.09.07.04.18
+        bh=fYxvGux+YIH/Aqub7pVrD9hRMD1Jk0m9PUG/ERO3fQw=;
+        b=X8GMOjnaGzCYAsvp99OIgbXNZRhjcpHlPdQFAWkv4Xfc2Pe+Jp/c4vQT6tcgc5sNi/
+         diA4F3PcheRDs3FqcV5nDTlSWno0zfnTVE0RsqG6dppsDjNYdaJKmq1wo/P7kymxX5fv
+         ClWUYVMKH4OvB4m/ccjOTu8ADKwwqs56lGV3Q8VDGZk/bqpltrzrMjXQK5M2mAubQT7R
+         fpu2M7SzX3qr+6eB2pOk9pcKjbvmV6GlqsTzrI/VB/oA3FnZK9x7wjQRE8eS2FNEr/WR
+         XBLNOuu6mrVhZ4cNpRpXi6bwWsjX+zdE1TSTrjMlqVHzbiOnvhIqElBsfJgt73lUuRR4
+         Yhng==
+X-Gm-Message-State: AOAM532CIo5ZRTzysK2GtKHQSZdoM7aTJvJXGj4gP4aslLdMTLPOlUVm
+        gk0Lrc4Md7tgpksn6x9zDJI3e+2UBnQ=
+X-Google-Smtp-Source: ABdhPJwf+YwpDm7Q1ZqZCgWMWFve342OJkBptOMs3NoNNY2ok6Xpq0U66Cr0xizp2UZcegSic0mTLA==
+X-Received: by 2002:aca:de83:: with SMTP id v125mr17299344oig.71.1633788746222;
+        Sat, 09 Oct 2021 07:12:26 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f10sm455814ooh.42.2021.10.09.07.12.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 07:04:26 -0700 (PDT)
-Subject: Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
-To:     John Stultz <john.stultz@linaro.org>,
-        yanghui <yanghui.def@bytedance.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-References: <20211008080305.13401-1-yanghui.def@bytedance.com>
- <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
-From:   brookxu <brookxu.cn@gmail.com>
-Message-ID: <c70a418d-4748-6876-ac8a-c9d1b7e94e78@gmail.com>
-Date:   Sat, 9 Oct 2021 22:04:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sat, 09 Oct 2021 07:12:25 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: Add nct7802 bindings
+To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20211009025858.3326725-1-osk@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <e22787cc-e3f0-39ae-df68-f222d74f081a@roeck-us.net>
+Date:   Sat, 9 Oct 2021 07:12:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211009025858.3326725-1-osk@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hello
+On 10/8/21 7:58 PM, Oskar Senft wrote:
+> Document bindings for the Nuvoton NCT7802Y driver.
+> 
+> Signed-off-by: Oskar Senft <osk@google.com>
+> ---
+>   .../bindings/hwmon/nuvoton,nct7802.yaml       | 142 ++++++++++++++++++
+>   1 file changed, 142 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> new file mode 100644
+> index 000000000000..a97b89d0d197
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> @@ -0,0 +1,142 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Nuvoton NCT7802Y Hardware Monitoring IC
+> +
+> +maintainers:
+> +  - Guenter Roeck <linux@roeck-us.net>
+> +
+> +description: |
+> +  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
+> +  5 remote temperature sensors with SMBus interface.
+> +
+> +  Datasheets:
+> +    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - nuvoton,nct7802
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  input@0:
 
-John Stultz wrote on 2021/10/9 7:45:
-> On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrote:
->>
->> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
->> Timer. But sometimes system is very busy and the Timer cannot be
->> executed in 0.5sec. For example,if clocksource_watchdog be executed
->> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
->> be enlarged. Then the current clocksource will be misjudged as
->> unstable. So we add conditions to prevent the clocksource from
->> being misjudged.
->>
->> Signed-off-by: yanghui <yanghui.def@bytedance.com>
->> ---
->>  kernel/time/clocksource.c | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
->> index b8a14d2fb5ba..d535beadcbc8 100644
->> --- a/kernel/time/clocksource.c
->> +++ b/kernel/time/clocksource.c
->> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
->>
->>  /*
->>   * Interval: 0.5sec.
->> + * MaxInterval: 1s.
->>   */
->>  #define WATCHDOG_INTERVAL (HZ >> 1)
->> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
->>
->>  static void clocksource_watchdog_work(struct work_struct *work)
->>  {
->> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list *unused)
->>
->>                 /* Check the deviation from the watchdog clocksource. */
->>                 md = cs->uncertainty_margin + watchdog->uncertainty_margin;
->> -               if (abs(cs_nsec - wd_nsec) > md) {
->> +               if ((abs(cs_nsec - wd_nsec) > md) &&
->> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
-> 
-> Sorry, it's been awhile since I looked at this code, but why are you
-> bounding the clocksource delta here?
-> It seems like if the clocksource being watched was very wrong (with a
-> delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
-> 
->> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
-> 
-> Bounding the watchdog interval on the check does seem reasonable.
-> Though one may want to keep track that if we are seeing too many of
-> these delayed watchdog checks we provide some feedback via dmesg.
+Please use "channel".
 
-For some fast timeout timers, such as acpi-timer, checking wd_nsec should not
-make much sense, because when wacthdog is called, the timer may overflow many
-times.
-
-> thanks
-> -john
+> +    type: object
+> +    description: Local Temperature Sensor ("LTD")
+> +    properties:
+> +      reg:
+> +        const: 0
+> +    required:
+> +      - reg
+> +
+> +  input@1:
+> +    type: object
+> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD1")
+> +    properties:
+> +      reg:
+> +        const: 1
+> +      sensor-type:
+> +        items:
+> +          - enum:
+> +              - temperature
+> +              - voltage
+> +      temperature-mode:
+> +        items:
+> +          - enum:
+> +              - thermistor
+> +              - thermal-diode
+> +    required:
+> +      - reg
+> +      - sensor-type
+> +
+> +  input@2:
+> +    type: object
+> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
+> +    properties:
+> +      reg:
+> +        const: 2
+> +      sensor-type:
+> +        items:
+> +          - enum:
+> +              - temperature
+> +              - voltage
+> +      temperature-mode:
+> +        items:
+> +          - enum:
+> +              - thermistor
+> +              - thermal-diode
+> +    required:
+> +      - reg
+> +      - sensor-type
+> +
+> +  input@3:
+> +    type: object
+> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
+> +    properties:
+> +      reg:
+> +        const: 3
+> +      sensor-type:
+> +        items:
+> +          - enum:
+> +              - temperature
+> +              - voltage
+> +    required:
+> +      - reg
+> +      - sensor-type
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        nct7802@28 {
+> +            compatible = "nuvoton,nct7802";
+> +            reg = <0x28>;
+> +
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            input@0 { /* LTD */
+> +              reg = <0>;
+> +              status = "okay";
+> +            };
+> +
+> +            input@1 { /* RTD1 */
+> +              reg = <1>;
+> +              status = "okay";
+> +              sensor-type = "temperature";
+> +              temperature-mode = "thermistor";
+> +            };
+> +
+> +            input@2 { /* RTD2 */
+> +              reg = <2>;
+> +              status = "okay";
+> +              sensor-type = "temperature";
+> +              temperature-mode = "thermal-diode";
+> +            };
+> +
+> +            input@3 { /* RTD3 */
+> +              reg = <3>;
+> +              status = "okay";
+> +              sensor-type = "voltage";
+> +            };
+> +        };
+> +    };
 > 
+
