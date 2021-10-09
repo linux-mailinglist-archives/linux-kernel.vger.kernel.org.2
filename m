@@ -2,312 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D51427584
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EE3427587
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244126AbhJIB4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244112AbhJIB4Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:56:16 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B464C061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:54:20 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id p9-20020a05621421e900b003830bb235fbso10272562qvj.14
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=/BFuDxjBhHOhIxtZh16h2WKXDrqK0nM9uXbgauSX0cE=;
-        b=Exhl9qN4bHilVV3EMRGH9uFWiU4Obdd5CEjxgNTxD6CCpxzzrn9UbEvRxhwc8bZgvH
-         abj1E4CAZBVgmwx++uks7jsxPmHt8LuAckbBR+Kd+TkK1H6JZVh212BijTZ0/9SE9XiQ
-         1G47jKOGEtyACOLK8aTA2ic9tZKDafWmNx+19X8mI7r9VvQpqdRzrA1qRWks9q3/e9cm
-         ibgINR+TbotiXN1XopZQQfLuuNoEqLiadY89xccv06VRWwrjB8tMjGJqVXe9sBMi9rl3
-         VLMAn007CgF31vS8NIIGorb6heJUppfel4EyR0F3SNIY4fh3tcEddfcxuW+7Nz/wVVjQ
-         8jEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/BFuDxjBhHOhIxtZh16h2WKXDrqK0nM9uXbgauSX0cE=;
-        b=VGIHbgunTrDLBabTXY2kCV0hz2zqnIfqOfu9ut+JODDJqUKvAL3cYsAUBpCRtGwc2F
-         eLx0Fdqca4FK5fDZ3wlN3nskc3W186SE4ZGNIVFnB88FssUMIi5qcYsF4sLGTVM3e/QB
-         nKhP85GorabG05Mebv0HPK4EaT0anRk+dDLrES+7xtYXiPuhBe4qaPXpSkKnF8eokF7a
-         roHc42+PEcErdeR5aHaPHyLljMnKirYXefHVRJgV2SdXqGjMwNaU18pV3AGGCrB2UgQ0
-         eTuMmzRAy5hmcwk4fW/e+n0qS/+7hF4LjfzO7vZSxG5IzKOfcQqBNMefCN2Y2X8PcAxS
-         jfFA==
-X-Gm-Message-State: AOAM533EwsK1z1S0V61UklB7yzN6HL+W2pXRXNmZRopUlWONC3ghaEng
-        e2q3dq9lmmcJ9bxP5ELpWPVhynZC3c6z7Q==
-X-Google-Smtp-Source: ABdhPJx3JkLFfb6HNWrDZycGSjzK+wvmW+wxFcD65PEQ2s9rB7S8aKTKKkVILNC0Wd+YFhk+bZtOu+Ob7eevGQ==
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:fc52:cec:3819:b41f])
- (user=dlatypov job=sendgmr) by 2002:ac8:138c:: with SMTP id
- h12mr1781731qtj.357.1633744459494; Fri, 08 Oct 2021 18:54:19 -0700 (PDT)
-Date:   Fri,  8 Oct 2021 18:54:06 -0700
-In-Reply-To: <20211009015406.1311319-1-dlatypov@google.com>
-Message-Id: <20211009015406.1311319-2-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20211009015406.1311319-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 2/2] kunit: tool: delete kunit_parser.TestResult type
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S244047AbhJICBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 22:01:20 -0400
+Received: from out0.migadu.com ([94.23.1.103]:31069 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231947AbhJICBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 22:01:18 -0400
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1633744760;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=baOU4ubE+z8CrjkNOJZM7ZxznBxnXbIcqBgb2zvXCKg=;
+        b=o0tVxIk9anefKhd/FyfM/JskNJoc+37gCtk4dW6MMKjB0a8hOlulAkx4eGCmoAyKMFk7+8
+        ycYzxfXRxvp2ajFOUjaWBPtqnvzQj/ouY0xCtPKXrDQI/SHkCUYzDHmrJ3jjBgb7UMNywS
+        TTGvIYuueKTKHYxo2PnbUCGyMtpYg88=
+From:   Jackie Liu <liu.yun@linux.dev>
+To:     daniel.lezcano@linaro.org
+Cc:     rafael@kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liu.yun@linux.dev
+Subject: [PATCH] thermal/drivers/qcom/lmh: make QCOM_LMH depends on QCOM_SCM
+Date:   Sat,  9 Oct 2021 09:58:53 +0800
+Message-Id: <20211009015853.3509559-1-liu.yun@linux.dev>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: liu.yun@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The `log` field is unused, and the `status` field is accessible via
-`test.status`.
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-So it's simpler to just return the main `Test` object directly.
+Without QCOM_SCM, build failed, avoid like below:
 
-And since we're no longer returning a namedtuple, which has no type
-annotations, this hopefully means typecheckers are better equipped to
-find any errors.
+aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
+aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
+aarch64-linux-gnu-ld: drivers/thermal/qcom/lmh.o: in function `lmh_probe':
+/data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:141: undefined reference to `qcom_scm_lmh_dcvsh_available'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:144: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:149: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:154: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:159: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:166: undefined reference to `qcom_scm_lmh_profile_change'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:173: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:180: undefined reference to `qcom_scm_lmh_dcvsh'
+aarch64-linux-gnu-ld: /data/arm/workspace/kernel-build/linux/build/../drivers/thermal/qcom/lmh.c:187: undefined reference to `qcom_scm_lmh_dcvsh'
+make[1]: *** [/data/arm/workspace/kernel-build/linux/Makefile:1183: vmlinux] Error 1
+make[1]: Leaving directory '/data/arm/workspace/kernel-build/linux/build'
+make: *** [Makefile:219: __sub-make] Error 2
+make: Leaving directory '/data/arm/workspace/kernel-build/linux'
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
+Fixes: 53bca371cdf7 ("thermal/drivers/qcom: Add support for LMh driver")
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 ---
- tools/testing/kunit/kunit.py           | 14 ++++++--------
- tools/testing/kunit/kunit_json.py      |  6 +++---
- tools/testing/kunit/kunit_parser.py    | 10 +++-------
- tools/testing/kunit/kunit_tool_test.py | 26 +++++++++++++-------------
- 4 files changed, 25 insertions(+), 31 deletions(-)
+ drivers/thermal/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index f879414a13c4..72ba4ec20244 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -172,10 +172,10 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest) -
- 		test_end = time.time()
- 		exec_time += test_end - test_start
+diff --git a/drivers/thermal/qcom/Kconfig b/drivers/thermal/qcom/Kconfig
+index 7d942f71e532..bfd889422dd3 100644
+--- a/drivers/thermal/qcom/Kconfig
++++ b/drivers/thermal/qcom/Kconfig
+@@ -34,7 +34,7 @@ config QCOM_SPMI_TEMP_ALARM
  
--		test_counts.add_subtest_counts(result.result.test.counts)
-+		test_counts.add_subtest_counts(result.result.counts)
- 
- 	kunit_status = _map_to_overall_status(test_counts.get_status())
--	return KunitResult(status=kunit_status, result=result.result, elapsed_time=exec_time)
-+	return KunitResult(status=kunit_status, result=result, elapsed_time=exec_time)
- 
- def _map_to_overall_status(test_status: kunit_parser.TestStatus) -> KunitStatus:
- 	if test_status in (kunit_parser.TestStatus.SUCCESS, kunit_parser.TestStatus.SKIPPED):
-@@ -186,14 +186,12 @@ def _map_to_overall_status(test_status: kunit_parser.TestStatus) -> KunitStatus:
- def parse_tests(request: KunitParseRequest, input_data: Iterable[str]) -> KunitResult:
- 	parse_start = time.time()
- 
--	test_result = kunit_parser.TestResult(kunit_parser.TestStatus.SUCCESS,
--					      kunit_parser.Test(),
--					      'Tests not Parsed.')
-+	test_result = kunit_parser.Test()
- 
- 	if request.raw_output:
- 		# Treat unparsed results as one passing test.
--		test_result.test.status = kunit_parser.TestStatus.SUCCESS
--		test_result.test.counts.passed = 1
-+		test_result.status = kunit_parser.TestStatus.SUCCESS
-+		test_result.counts.passed = 1
- 
- 		output: Iterable[str] = input_data
- 		if request.raw_output == 'all':
-@@ -211,7 +209,7 @@ def parse_tests(request: KunitParseRequest, input_data: Iterable[str]) -> KunitR
- 
- 	if request.json:
- 		json_obj = kunit_json.get_json_result(
--					test_result=test_result,
-+					test=test_result,
- 					def_config='kunit_defconfig',
- 					build_dir=request.build_dir,
- 					json_path=request.json)
-diff --git a/tools/testing/kunit/kunit_json.py b/tools/testing/kunit/kunit_json.py
-index 746bec72b9ac..31d76030f5c2 100644
---- a/tools/testing/kunit/kunit_json.py
-+++ b/tools/testing/kunit/kunit_json.py
-@@ -11,7 +11,7 @@ import os
- 
- import kunit_parser
- 
--from kunit_parser import Test, TestResult, TestStatus
-+from kunit_parser import Test, TestStatus
- from typing import Any, Dict, Optional
- 
- JsonObj = Dict[str, Any]
-@@ -48,9 +48,9 @@ def _get_group_json(test: Test, def_config: str,
- 	}
- 	return test_group
- 
--def get_json_result(test_result: TestResult, def_config: str,
-+def get_json_result(test: Test, def_config: str,
- 		build_dir: Optional[str], json_path: str) -> str:
--	test_group = _get_group_json(test_result.test, def_config, build_dir)
-+	test_group = _get_group_json(test, def_config, build_dir)
- 	test_group["name"] = "KUnit Test Group"
- 	json_obj = json.dumps(test_group, indent=4)
- 	if json_path != 'stdout':
-diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
-index f01fd565f978..0b2626cc0628 100644
---- a/tools/testing/kunit/kunit_parser.py
-+++ b/tools/testing/kunit/kunit_parser.py
-@@ -12,14 +12,11 @@
- from __future__ import annotations
- import re
- 
--from collections import namedtuple
- from datetime import datetime
- from enum import Enum, auto
- from functools import reduce
- from typing import Iterable, Iterator, List, Optional, Tuple
- 
--TestResult = namedtuple('TestResult', ['status','test','log'])
--
- class Test(object):
- 	"""
- 	A class to represent a test parsed from KTAP results. All KTAP
-@@ -796,7 +793,7 @@ def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
- 		print_test_result(test)
- 	return test
- 
--def parse_run_tests(kernel_output: Iterable[str]) -> TestResult:
-+def parse_run_tests(kernel_output: Iterable[str]) -> Test:
- 	"""
- 	Using kernel output, extract KTAP lines, parse the lines for test
- 	results and print condensed test results and summary line .
-@@ -805,8 +802,7 @@ def parse_run_tests(kernel_output: Iterable[str]) -> TestResult:
- 	kernel_output - Iterable object contains lines of kernel output
- 
- 	Return:
--	TestResult - Tuple containg status of main test object, main test
--		object with all subtests, and log of all KTAP lines.
-+	Test - the main test object with all subtests.
- 	"""
- 	print_with_timestamp(DIVIDER)
- 	lines = extract_tap_lines(kernel_output)
-@@ -820,4 +816,4 @@ def parse_run_tests(kernel_output: Iterable[str]) -> TestResult:
- 			test.status = test.counts.get_status()
- 	print_with_timestamp(DIVIDER)
- 	print_summary_line(test)
--	return TestResult(test.status, test, lines)
-+	return test
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 2540bb10b4e8..6aa625a55a1b 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -179,7 +179,7 @@ class KUnitParserTest(unittest.TestCase):
- 		with open(empty_log) as file:
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(file.readlines()))
--		self.assertEqual(0, len(result.test.subtests))
-+		self.assertEqual(0, len(result.subtests))
- 		self.assertEqual(
- 			kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
- 			result.status)
-@@ -191,7 +191,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(
- 				file.readlines()))
--		self.assertEqual(2, result.test.counts.errors)
-+		self.assertEqual(2, result.counts.errors)
- 		self.assertEqual(
- 			kunit_parser.TestStatus.SUCCESS,
- 			result.status)
-@@ -203,7 +203,7 @@ class KUnitParserTest(unittest.TestCase):
- 			result = kunit_parser.parse_run_tests(
- 				kunit_parser.extract_tap_lines(
- 				file.readlines()))
--		self.assertEqual(0, len(result.test.subtests))
-+		self.assertEqual(0, len(result.subtests))
- 		self.assertEqual(
- 			kunit_parser.TestStatus.NO_TESTS,
- 			result.status)
-@@ -217,7 +217,7 @@ class KUnitParserTest(unittest.TestCase):
- 				file.readlines()))
- 		print_mock.assert_any_call(StrContains('invalid KTAP input!'))
- 		print_mock.stop()
--		self.assertEqual(0, len(result.test.subtests))
-+		self.assertEqual(0, len(result.subtests))
- 
- 	def test_crashed_test(self):
- 		crashed_log = test_data_path('test_is_test_passed-crash.log')
-@@ -258,10 +258,10 @@ class KUnitParserTest(unittest.TestCase):
- 			result.status)
- 		self.assertEqual(
- 			"sysctl_test",
--			result.test.subtests[0].name)
-+			result.subtests[0].name)
- 		self.assertEqual(
- 			"example",
--			result.test.subtests[1].name)
-+			result.subtests[1].name)
- 		file.close()
- 
- 
-@@ -272,7 +272,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.SUCCESS,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- 	def test_ignores_multiple_prefixes(self):
- 		prefix_log = test_data_path('test_multiple_prefixes.log')
-@@ -281,7 +281,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.SUCCESS,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- 	def test_prefix_mixed_kernel_output(self):
- 		mixed_prefix_log = test_data_path('test_interrupted_tap_output.log')
-@@ -290,7 +290,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.SUCCESS,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- 	def test_prefix_poundsign(self):
- 		pound_log = test_data_path('test_pound_sign.log')
-@@ -299,7 +299,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.SUCCESS,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- 	def test_kernel_panic_end(self):
- 		panic_log = test_data_path('test_kernel_panic_interrupt.log')
-@@ -308,7 +308,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.TEST_CRASHED,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- 	def test_pound_no_prefix(self):
- 		pound_log = test_data_path('test_pound_no_prefix.log')
-@@ -317,7 +317,7 @@ class KUnitParserTest(unittest.TestCase):
- 			self.assertEqual(
- 				kunit_parser.TestStatus.SUCCESS,
- 				result.status)
--			self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
-+			self.assertEqual('kunit-resource-test', result.subtests[0].name)
- 
- class LinuxSourceTreeTest(unittest.TestCase):
- 
-@@ -368,7 +368,7 @@ class KUnitJsonTest(unittest.TestCase):
- 		with open(test_data_path(log_file)) as file:
- 			test_result = kunit_parser.parse_run_tests(file)
- 			json_obj = kunit_json.get_json_result(
--				test_result=test_result,
-+				test=test_result,
- 				def_config='kunit_defconfig',
- 				build_dir=None,
- 				json_path='stdout')
+ config QCOM_LMH
+ 	tristate "Qualcomm Limits Management Hardware"
+-	depends on ARCH_QCOM
++	depends on ARCH_QCOM && QCOM_SCM
+ 	help
+ 	  This enables initialization of Qualcomm limits management
+ 	  hardware(LMh). LMh allows for hardware-enforced mitigation for cpus based on
 -- 
-2.33.0.882.g93a45727a2-goog
+2.25.1
 
