@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7737442762F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8E6427633
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244494AbhJICRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 22:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38342 "EHLO
+        id S244354AbhJICR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 22:17:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244575AbhJICQk (ORCPT
+        with ESMTP id S244164AbhJICQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:16:40 -0400
+        Fri, 8 Oct 2021 22:16:55 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 422B4C0617AD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:13:44 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i83-20020a252256000000b005b67a878f56so15033128ybi.17
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:13:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1314C06139D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:13:46 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id i21-20020a253b15000000b005b9c0fbba45so15082821yba.20
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:13:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=sIQRe0bn32KEKwbOVvtx42Ei92aBPRnG0u1z9yXF7CE=;
-        b=L08kypVluCyFKbpY0oUWWIYegtRsmlesq0wNJKsfeI8a+xUhccbxmouLf27lMOIMO9
-         m9aDG4U98QItV5Ohy31bYubmFprE/QZuQESLgVJSjhpfU/yNgKP/78Q9UuOg6rzwLHC0
-         I4lwz0lK7D60KgROmr99XXMz1SfThZEdbn4DKl+Bq52u94Dtdh0Eotn9sUFXLmNXNTbw
-         6AcWYEC/LOtNjiY9B+NbBHy51wS3Qc+ABq6bMsBOBRird64iFAtM2ABnk7IiuRD0HQUk
-         sjoVTJNAcXG0HP9OnEd8LwZlRBWZpFzxibDplRt3XRCh0O4+qvRQnekLDqaQSXwlvM/O
-         WhoA==
+        bh=va765MwNV8lkPK+fPa+/nQPV7Q6ICFe76wXLuhKBR7k=;
+        b=B5oLyIOK5DCmxdgNe+Nl5/eUZ+1dZvr28zFbfb0yUmRDrQAn6gFu0meDWGbooWcwf+
+         l+waGmWoLOHDfWujUlJgTIfXQBGxvJYpWrTevNrJNk5M8uz1livq3G0CbLqGnwGl0JPm
+         sNTwBIZ8vWCCI3dUoTv7AkcFha93KYIamIUHSTRqHBmzceqRPtYmNYOCGYVyZvVn3Np/
+         TL6ymtR5bZm6u0h37kbtwh2/3um/F6VSleLNBRjXkJxQwQ6Tl5usknG2mBtpFmrzjKYA
+         RfxJYCWymoaofgRtrejK3tfUhsfLqLitFSkmp9z1zLeMTRzswrj10R8lRDFv/A07PTzr
+         ihYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=sIQRe0bn32KEKwbOVvtx42Ei92aBPRnG0u1z9yXF7CE=;
-        b=J0mjdVH/hGbT6PziOhMTUmv3K9CHrfGqLFzy3yLXN6sV/hS/TFw8CB5sXCunK+qqcr
-         IS33PtE0nEjEcKDbJIHwlRXctIdzin9W1Cqb8KLrWIFAd6HNkwst1ed+40rsie1dSNYw
-         dJZK5F46wkUHT+YQn7CtVwMsbDMNF0NjAS6x969L/nFPKdZYJxFlZJSIFt6NCSTzYQHp
-         UDrV9nGyQBVWSqn+pOvDVc9eYq2fkNCMx7Hwltcbo9kcrjGOC8R9FEUb/+GkCtJtpzHS
-         PTc+luA39hDWq+OgQ3HghXp4nZdCAGnKYM3bOgCtrU0wPKXhVqESnjcxd8Nza37MGJNu
-         6S0g==
-X-Gm-Message-State: AOAM5303chg1MP9r+/YgmhH+rtwvsHaByR7WAVuXSVWIFndj5XFB/aSz
-        +Xh8MtBSA7WETKDQ85krZhiIMFj2Yew=
-X-Google-Smtp-Source: ABdhPJwLBmcqJzHPV5bzQgN7SUGs2wP/5HXQxp4+zEmbtDKAgC6fngbLUg0PIYqYm/p4aFsJ/BNsgFl1S/s=
+        bh=va765MwNV8lkPK+fPa+/nQPV7Q6ICFe76wXLuhKBR7k=;
+        b=tmBOexEoWG1Wrs9qDpUtOnfVYAzej0UlzH37Tmef6vCamd/h85C1RrCP0EmP8h8nmH
+         1dA/rGY//CtOk9CghrInOU7COUXZLlb1i5FRtDs+DPJ7nFCuQ+qmkcjZKBVOLu2/f6Ce
+         8p8lGDdWjmlNlLCyt2QsTHtOJPiYMxdWxMCNSV3XMwatxkdCHlaFa3mIyntRhTMyHOhO
+         NY/LuGVT7fLbmYonPzQPL8iyjydk5lQyW6yK3SiPsfDD0R972nvpS1I08fhsAfFJ630n
+         gIzGWOZAVUcgPkySOfwlRPYwTDq+c6ZjuF2upTMPD83sQYqqjRLXrH4AYh3qcyQIojNl
+         hBLQ==
+X-Gm-Message-State: AOAM5301066ZII2f2dLwGigdCjaq2aC2OCAplySp9i0J1PJeVbl/tARm
+        k+oEw7xXhcTx5pSek8X1aSmKfzlkmig=
+X-Google-Smtp-Source: ABdhPJxNwqY1vJaMvOgnvL3+QcSM5HrN4+PYEJxKTsdN858kzlppD8XZ0WLvzzYX6ErETJg0fQvQs2GFQ5w=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e39b:6333:b001:cb])
- (user=seanjc job=sendgmr) by 2002:a25:393:: with SMTP id 141mr7017004ybd.534.1633745623429;
- Fri, 08 Oct 2021 19:13:43 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:69c7:: with SMTP id e190mr6678164ybc.334.1633745625928;
+ Fri, 08 Oct 2021 19:13:45 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Oct 2021 19:12:18 -0700
+Date:   Fri,  8 Oct 2021 19:12:19 -0700
 In-Reply-To: <20211009021236.4122790-1-seanjc@google.com>
-Message-Id: <20211009021236.4122790-26-seanjc@google.com>
+Message-Id: <20211009021236.4122790-27-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211009021236.4122790-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2 25/43] KVM: VMX: Save/restore IRQs (instead of CLI/STI)
- during PI pre/post block
+Subject: [PATCH v2 26/43] KVM: VMX: Read Posted Interrupt "control" exactly
+ once per loop iteration
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -89,64 +89,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Save/restore IRQs when disabling IRQs in posted interrupt pre/post block
-in preparation for moving the code into vcpu_put/load(), and thus may be
-called with IRQs already disabled.
+Use READ_ONCE() when loading the posted interrupt descriptor control
+field to ensure "old" and "new" have the same base value.  If the
+compiler emits separate loads, and loads into "new" before "old", KVM
+could theoretically drop the ON bit if it were set between the loads.
 
-No functional changed intended.
-
+Fixes: 28b835d60fcc ("KVM: Update Posted-Interrupts Descriptor when vCPU is preempted")
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/posted_intr.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ arch/x86/kvm/vmx/posted_intr.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
-index 239e0e72a0dd..414ea6972b5c 100644
+index 414ea6972b5c..fea343dcc011 100644
 --- a/arch/x86/kvm/vmx/posted_intr.c
 +++ b/arch/x86/kvm/vmx/posted_intr.c
-@@ -140,6 +140,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
- {
- 	struct pi_desc old, new;
- 	struct pi_desc *pi_desc = vcpu_to_pi_desc(vcpu);
-+	unsigned long flags;
+@@ -53,7 +53,7 @@ void vmx_vcpu_pi_load(struct kvm_vcpu *vcpu, int cpu)
  
- 	if (!kvm_arch_has_assigned_device(vcpu->kvm) ||
- 	    !irq_remapping_cap(IRQ_POSTING_CAP) ||
-@@ -147,8 +148,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
- 	    vmx_interrupt_blocked(vcpu))
- 		return 0;
+ 	/* The full case.  */
+ 	do {
+-		old.control = new.control = pi_desc->control;
++		old.control = new.control = READ_ONCE(pi_desc->control);
  
--	WARN_ON(irqs_disabled());
--	local_irq_disable();
-+	local_irq_save(flags);
+ 		dest = cpu_physical_id(cpu);
  
- 	vcpu->pre_pcpu = vcpu->cpu;
- 	spin_lock(&per_cpu(blocked_vcpu_on_cpu_lock, vcpu->cpu));
-@@ -171,19 +171,20 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
- 	if (pi_test_on(pi_desc))
- 		__pi_post_block(vcpu);
+@@ -104,7 +104,7 @@ static void __pi_post_block(struct kvm_vcpu *vcpu)
+ 	     "Wakeup handler not enabled while the vCPU was blocking");
  
--	local_irq_enable();
-+	local_irq_restore(flags);
- 	return (vcpu->pre_pcpu == -1);
- }
+ 	do {
+-		old.control = new.control = pi_desc->control;
++		old.control = new.control = READ_ONCE(pi_desc->control);
  
- void pi_post_block(struct kvm_vcpu *vcpu)
- {
-+	unsigned long flags;
-+
- 	if (vcpu->pre_pcpu == -1)
- 		return;
+ 		dest = cpu_physical_id(vcpu->cpu);
  
--	WARN_ON(irqs_disabled());
--	local_irq_disable();
-+	local_irq_save(flags);
- 	__pi_post_block(vcpu);
--	local_irq_enable();
-+	local_irq_restore(flags);
- }
+@@ -160,7 +160,7 @@ int pi_pre_block(struct kvm_vcpu *vcpu)
+ 	     "Posted Interrupt Suppress Notification set before blocking");
  
- /*
+ 	do {
+-		old.control = new.control = pi_desc->control;
++		old.control = new.control = READ_ONCE(pi_desc->control);
+ 
+ 		/* set 'NV' to 'wakeup vector' */
+ 		new.nv = POSTED_INTR_WAKEUP_VECTOR;
 -- 
 2.33.0.882.g93a45727a2-goog
 
