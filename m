@@ -2,838 +2,1887 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD804276AB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD0D4276B2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244139AbhJICag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 22:30:36 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10779 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232271AbhJICaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:30:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="249994489"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="gz'50?scan'50,208,50";a="249994489"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 19:28:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="gz'50?scan'50,208,50";a="658002288"
-Received: from lkp-server02.sh.intel.com (HELO 1950922c5479) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 08 Oct 2021 19:28:35 -0700
-Received: from kbuild by 1950922c5479 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mZ26F-0000zp-4r; Sat, 09 Oct 2021 02:28:35 +0000
-Date:   Sat, 9 Oct 2021 10:27:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: [mark:arm64/uaccess/rework 17/19] arch/arm64/kernel/traps.c:443:5:
- warning: no previous prototype for function 'hark_foo'
-Message-ID: <202110091032.VuzgedCl-lkp@intel.com>
+        id S244230AbhJIChd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 22:37:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232256AbhJIChc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 22:37:32 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48511C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:35:36 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i12so22442661wrb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eB7JIYmW6WyX+NZ1hmP2C6Z2jtkjRWZdfhTaNB0m4SI=;
+        b=X1u08DRObq48bonr+LCcPSd3O5MXAv6oP6rxZML2oncJsLcu/fJdYHJPs3CYICkCaX
+         FH+dNuHot0R0sXU/tzZ5mKqNuwgebMQ7lJ1XWFwA5jpDGx6g69CNF0usdT4d6oNLgzQD
+         FlNCtMeynqPbLuaflv+8McmbdOF9c6WBlky0wypH5tB1S3lPHMROJGmSBCLoobPNx0UL
+         njaZlnm6QTF15V9pQpHwisJ+GUjTTn3AZAYNwTioHs6rAgo7Du/4YVfsVu/78mVqOY62
+         CMECepEj1wMsnxumWFyWAudtDdlK2P78uKbT3GPv0PVHjolLBtKb8h8ZPU7ldV063GSf
+         D1ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eB7JIYmW6WyX+NZ1hmP2C6Z2jtkjRWZdfhTaNB0m4SI=;
+        b=oK7AB0kd9SXQqF3dQogmF90f0iEZfXk13zJGVbyKtlehnQvtkBE/oB46HiQgUBHWC6
+         DVzT3pV3KSDpU9lMqvEGNhdTbHrXrneIhVSAPz9QlNKg3gzSo55Q/MTkyVKDdsfpD6Zl
+         bPhWw08A3QrqFtjY0nx+XFGL9PKjl4TI/YTpYojpX8vFqlnkzLln072T/Pw1heZGOayf
+         Vzb3WoSPIwbrFxcVRmDUO+Whv9l7gcjRxCOUQkaL/KN0nDCzdS7c6PQMRljdDm5ADDWs
+         TyzwFaXgbWri5vGs0XEjvMnrS5CIUFUVXXwQg0aJlV+YeKaWskIRr2Bp/kWISCQWcHde
+         rRKQ==
+X-Gm-Message-State: AOAM531Oq/OB+iTsQEjnJJqnmyfXyEloDrx+GzTH1AO5XpGAWJBFE+CZ
+        qSXdtgHkzLK3EdC/HlByewXZ3d7hngWmOa7BKTG+VQ==
+X-Google-Smtp-Source: ABdhPJza+uRCVf5YrPqpfHDrUe+QVSybjxayWSObZQKN8Ep5G7TSFDP8+XzcnuvFrDeTbsa5kWpQSIZoQtUm02WyoDI=
+X-Received: by 2002:a5d:4882:: with SMTP id g2mr8382028wrq.399.1633746933707;
+ Fri, 08 Oct 2021 19:35:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="azLHFNyN32YCQGCU"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20211007210324.707912-1-dlatypov@google.com>
+In-Reply-To: <20211007210324.707912-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 9 Oct 2021 10:35:21 +0800
+Message-ID: <CABVgOS=aJ39zpaEZ8-3qPnKe7EoGoNEhrQ=qmdafdjz17oFRng@mail.gmail.com>
+Subject: Re: [PATCH v7] kunit: tool: improve compatibility of kunit_parser
+ with KTAP specification
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 8, 2021 at 5:03 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> From: Rae Moar <rmoar@google.com>
+>
+> Update to kunit_parser to improve compatibility with KTAP
+> specification including arbitrarily nested tests. Patch accomplishes
+> three major changes:
+>
+> - Use a general Test object to represent all tests rather than TestCase
+> and TestSuite objects. This allows for easier implementation of arbitrary
+> levels of nested tests and promotes the idea that both test suites and test
+> cases are tests.
+>
+> - Print errors incrementally rather than all at once after the
+> parsing finishes to maximize information given to the user in the
+> case of the parser given invalid input and to increase the helpfulness
+> of the timestamps given during printing. Note that kunit.py parse does
+> not print incrementally yet. However, this fix brings us closer to
+> this feature.
+>
+> - Increase compatibility for different formats of input. Arbitrary levels
+> of nested tests supported. Also, test cases and test suites are now
+> supported to be present on the same level of testing.
+>
+> This patch now implements the draft KTAP specification here:
+> https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> We'll update the parser as the spec evolves.
+>
+> This patch adjusts the kunit_tool_test.py file to check for
+> the correct outputs from the new parser and adds a new test to check
+> the parsing for a KTAP result log with correct format for multiple nested
+> subtests (test_is_test_passed-all_passed_nested.log).
+>
+> This patch also alters the kunit_json.py file to allow for arbitrarily
+> nested tests.
+>
+> Signed-off-by: Rae Moar <rmoar@google.com>
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
+> ---
 
---azLHFNyN32YCQGCU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Found a regression here with the KASAN tests and treating "BUG:" as a crash.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/uaccess/rework
-head:   692de878f919de31942d0d28571b5e6f32c7135e
-commit: d8e501ad8a85b31fbff728b8bb17e89e58076c3d [17/19] HACK: test
-config: arm64-randconfig-r035-20211008 (attached as .config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 30caca39f401ae17927439c0a0bd6d1b1916dd6a)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # install arm64 cross compiling tool for clang build
-        # apt-get install binutils-aarch64-linux-gnu
-        # https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?id=d8e501ad8a85b31fbff728b8bb17e89e58076c3d
-        git remote add mark https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git
-        git fetch --no-tags mark arm64/uaccess/rework
-        git checkout d8e501ad8a85b31fbff728b8bb17e89e58076c3d
-        # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=arm64 
+Take this output, for example:
+[19:32:07] # Subtest: kasan
+[19:32:07] 1..48
+[19:32:07] # kasan: pass:42 fail:0 skip:6 total:48
+[19:32:07] # Totals: pass:42 fail:0 skip:6 total:48
+[19:32:07] ok 1 - kasan
+[19:32:07] ===================== [CRASHED] kasan ======================
+[19:32:07] ============================================================
+[19:32:07] Testing complete. Passed: 4, Failed: 0, Crashed: 38,
+Skipped: 6, Errors: 0
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> arch/arm64/kernel/traps.c:443:5: warning: no previous prototype for function 'hark_foo' [-Wmissing-prototypes]
-   int hark_foo(int __user *thing)
-       ^
-   arch/arm64/kernel/traps.c:443:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int hark_foo(int __user *thing)
-   ^
-   static 
-   arch/arm64/kernel/traps.c:558:43: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
-                   __user_cache_maint("dc civac", address, ret);
-                                                           ^
-   arch/arm64/kernel/traps.c:558:3: note: use constraint modifier "w"
-                   __user_cache_maint("dc civac", address, ret);
-                   ^
-   arch/arm64/kernel/traps.c:540:4: note: expanded from macro '__user_cache_maint'
-                           _ASM_EXTABLE_EFAULT(1b, 2b, %0)         \
-                           ^
-   arch/arm64/include/asm/asm-extable.h:67:2: note: expanded from macro '_ASM_EXTABLE_EFAULT'
-           _ASM_EXTABLE_EFAULT_ZERO(insn, fixup, err, xzr)
-           ^
-   arch/arm64/include/asm/asm-extable.h:64:10: note: expanded from macro '_ASM_EXTABLE_EFAULT_ZERO'
-                             "(" EX_DATA_REG(ERR, err) " | " EX_DATA_REG(ZERO, zero) ")")
-                                 ^
-   arch/arm64/include/asm/asm-extable.h:59:19: note: expanded from macro 'EX_DATA_REG'
-           "((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
-                            ^
-   <scratch space>:12:2: note: expanded from here
-   "%0"
-    ^
-   arch/arm64/kernel/traps.c:561:43: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
-                   __user_cache_maint("dc civac", address, ret);
-                                                           ^
-   arch/arm64/kernel/traps.c:561:3: note: use constraint modifier "w"
-                   __user_cache_maint("dc civac", address, ret);
-                   ^
-   arch/arm64/kernel/traps.c:540:4: note: expanded from macro '__user_cache_maint'
-                           _ASM_EXTABLE_EFAULT(1b, 2b, %0)         \
-                           ^
-   arch/arm64/include/asm/asm-extable.h:67:2: note: expanded from macro '_ASM_EXTABLE_EFAULT'
-           _ASM_EXTABLE_EFAULT_ZERO(insn, fixup, err, xzr)
-           ^
-   arch/arm64/include/asm/asm-extable.h:64:10: note: expanded from macro '_ASM_EXTABLE_EFAULT_ZERO'
-                             "(" EX_DATA_REG(ERR, err) " | " EX_DATA_REG(ZERO, zero) ")")
-                                 ^
-   arch/arm64/include/asm/asm-extable.h:59:19: note: expanded from macro 'EX_DATA_REG'
-           "((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
-                            ^
-   <scratch space>:23:2: note: expanded from here
-   "%0"
-    ^
-   arch/arm64/kernel/traps.c:564:52: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
-                   __user_cache_maint("sys 3, c7, c13, 1", address, ret);
-                                                                    ^
-   arch/arm64/kernel/traps.c:564:3: note: use constraint modifier "w"
-                   __user_cache_maint("sys 3, c7, c13, 1", address, ret);
-                   ^
-   arch/arm64/kernel/traps.c:540:4: note: expanded from macro '__user_cache_maint'
-                           _ASM_EXTABLE_EFAULT(1b, 2b, %0)         \
-                           ^
-   arch/arm64/include/asm/asm-extable.h:67:2: note: expanded from macro '_ASM_EXTABLE_EFAULT'
-           _ASM_EXTABLE_EFAULT_ZERO(insn, fixup, err, xzr)
-           ^
-   arch/arm64/include/asm/asm-extable.h:64:10: note: expanded from macro '_ASM_EXTABLE_EFAULT_ZERO'
-                             "(" EX_DATA_REG(ERR, err) " | " EX_DATA_REG(ZERO, zero) ")")
-                                 ^
-   arch/arm64/include/asm/asm-extable.h:59:19: note: expanded from macro 'EX_DATA_REG'
-           "((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
-                            ^
-   <scratch space>:34:2: note: expanded from here
-   "%0"
-    ^
-   arch/arm64/kernel/traps.c:567:52: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
-                   __user_cache_maint("sys 3, c7, c12, 1", address, ret);
-                                                                    ^
-   arch/arm64/kernel/traps.c:567:3: note: use constraint modifier "w"
-                   __user_cache_maint("sys 3, c7, c12, 1", address, ret);
-                   ^
-   arch/arm64/kernel/traps.c:540:4: note: expanded from macro '__user_cache_maint'
-                           _ASM_EXTABLE_EFAULT(1b, 2b, %0)         \
-                           ^
-   arch/arm64/include/asm/asm-extable.h:67:2: note: expanded from macro '_ASM_EXTABLE_EFAULT'
-           _ASM_EXTABLE_EFAULT_ZERO(insn, fixup, err, xzr)
-           ^
-   arch/arm64/include/asm/asm-extable.h:64:10: note: expanded from macro '_ASM_EXTABLE_EFAULT_ZERO'
-                             "(" EX_DATA_REG(ERR, err) " | " EX_DATA_REG(ZERO, zero) ")")
-                                 ^
-   arch/arm64/include/asm/asm-extable.h:59:19: note: expanded from macro 'EX_DATA_REG'
-           "((.L__gpr_num_" #gpr ") << " __stringify(EX_DATA_REG_##reg##_SHIFT) ")"
-                            ^
-   <scratch space>:45:2: note: expanded from here
-   "%0"
-    ^
-   arch/arm64/kernel/traps.c:570:43: warning: value size does not match register size specified by the constraint and modifier [-Wasm-operand-widths]
-                   __user_cache_maint("dc civac", address, ret);
-                                                           ^
-   arch/arm64/kernel/traps.c:570:3: note: use constraint modifier "w"
-                   __user_cache_maint("dc civac", address, ret);
-                   ^
-   arch/arm64/kernel/traps.c:540:4: note: expanded from macro '__user_cache_maint'
-                           _ASM_EXTABLE_EFAULT(1b, 2b, %0)         \
-                           ^
-   arch/arm64/include/asm/asm-extable.h:67:2: note: expanded from macro '_ASM_EXTABLE_EFAULT'
+The in-kernel totals are correctly: 42 passed, 7 skipped, 0 failed. In
+kunit_tool, only 4 tests are recorded as passed, and 38 are marked as
+crashed.
 
 
-vim +/hark_foo +443 arch/arm64/kernel/traps.c
+> Change log from v6:
+> https://lore.kernel.org/linux-kselftest/20211006170049.106852-1-dlatypov@google.com/
+> - Rebase onto shuah/linux-kselftest/kunit
+> - fix one new unit test failure (s/suites/test.subtests)
+>
+> Change log from v5:
+> https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
+> - Tweak commit message to reflect the KTAP spec is a draft
+> - Add missing Signed-off-by
+> - Tweak docstrings
+>
+> Change log from v3,4:
+> https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
+> - Move test_kselftest_nested from LinuxSourceTreeTest => KUnitParserTest.
+> - Resolve conflict with hermetic testing patches.
+>   - max_status is no longer defined, so we need to use the TestCounts
+>     type now. And to keep --raw_output working, we need to set this to
+>     SUCCESS to avoid the default assumption that the kernel crashed.
+>
+> Ignore v4, was accidentally based on v2.
+>
+> Change log from v2:
+> https://lore.kernel.org/linux-kselftest/20210826195505.3066755-1-rmoar@google.com/
+> - Fixes bug of type disagreement in kunit_json.py for build_dir
+> - Removes raw_output()
+> - Changes docstrings in kunit_parser.py (class docstring, LineStream
+>   docstrings, add_error(), total(), get_status(), all parsing methods)
+> - Fixes bug of not printing diagnostic log in the case of end of lines
+> - Sets default status of all tests to TEST_CRASHED
+> - Adds and prints empty tests with crashed status in case of missing
+>   tests
+> - Prints 'subtest' in instance of 1 subtest instead of 'subtests'
+> - Includes checking for 'BUG:' message in search of crash messages in
+>   log (note that parse_crash_in_log method could be removed but would
+>   require deleting tests in kunit_tool_test.py that include the crash
+>   message that is no longer used. If removed, parser would still print
+>   log in cases of test crashed or failure, which would now include
+>   missing subtests)
 
-   442	
- > 443	int hark_foo(int __user *thing)
-   444	{
-   445		int val;
-   446	
-   447		if (!get_user(val, thing))
-   448			return val;
-   449	
-   450		return 0xf00fd00d;
-   451	}
-   452	
+So this causes problems with the KASAN tests, because they include
+KASAN errors in the log (which are expected), and these messages do
+contain "BUG:".
+Even though the KASAN integration code then marks the test as success,
+and it shows up as "ok" in the KTAP output, kunit_tool now marks it as
+crashed.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+There are two obvious solutions to this:
+- Update KASAN to not include "BUG" in the message for KASAN failures
+which are expected.
+- Alter this patch to not mark tests as crashed just because they have
+"BUG" in their logs.
 
---azLHFNyN32YCQGCU
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=".config.gz"
-Content-Transfer-Encoding: base64
+(There are also more complicated solutions, like having a "failure
+expected" message added to the log, and only ignoring "BUG:" if that
+exists in kunit_tool, but that seems needlessly complicated.)
 
-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
+I feel that, in the short term, we should revert this change, and not
+treat "BUG:" specially. We can add it back in as a separate patch if
+we want to fix this issue differently.
 
---azLHFNyN32YCQGCU--
+> - Fixes bug of including directives (other than SKIP) in test name
+>   when matching name in result line for subtests
+>
+>
+> Change log from v1:
+> https://lore.kernel.org/linux-kselftest/20210820200032.2178134-1-rmoar@google.com/
+> - Rebase onto kselftest/kunit branch
+> - Add tests to kunit_tool_test.py to check parser is correctly stripping
+>   hyphen, producing correct json objects with nested tests, correctly
+>   passing kselftest TAP output, and correctly deals with missing test plan.
+> - Fix bug to correctly match test name in instance of a missing test plan.
+> - Fix bug in kunit_tool_test.py pointed out by Daniel where it was not
+>   correctly checking for a proper match to the '0 tests run!' error
+>   message. Reverts changes back to original.
+> - A few minor changes to commit message using Daniel's comments.
+> - Change docstrings using Daniel's comments to reduce:
+>   - Shortens some docstrings to be one-line or just description if it is
+>     self explanatory.
+>   - Remove explicit respecification of types of parameters and returns
+>     because this is already specified in the function annoations. However,
+>     some descriptions of the parameters and returns remain and some contain
+>     the type for context. Additionally, the types of public attributes of
+>     classes remain.
+>   - Remove any documentation of 'Return: None'
+>   - Remove docstrings of helper methods within other methods
+> ---
+> ---
+>  tools/testing/kunit/kunit.py                  |   19 +-
+>  tools/testing/kunit/kunit_json.py             |   56 +-
+>  tools/testing/kunit/kunit_parser.py           | 1021 ++++++++++++-----
+>  tools/testing/kunit/kunit_tool_test.py        |  135 ++-
+>  .../test_is_test_passed-all_passed_nested.log |   34 +
+>  .../test_is_test_passed-kselftest.log         |   14 +
+>  .../test_is_test_passed-missing_plan.log      |   31 +
+>  .../kunit/test_data/test_strip_hyphen.log     |   16 +
+>  8 files changed, 941 insertions(+), 385 deletions(-)
+>  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-all_passed_nested.log
+>  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-kselftest.log
+>  create mode 100644 tools/testing/kunit/test_data/test_is_test_passed-missing_plan.log
+>  create mode 100644 tools/testing/kunit/test_data/test_strip_hyphen.log
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index 7197e5fb8342..9c9ed4071e9e 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -135,7 +135,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
+>                                 test_glob = request.filter_glob.split('.', maxsplit=2)[1]
+>                                 filter_globs = [g + '.'+ test_glob for g in filter_globs]
+>
+> -       overall_status = kunit_parser.TestStatus.SUCCESS
+> +       test_counts = kunit_parser.TestCounts()
+>         exec_time = 0.0
+>         for i, filter_glob in enumerate(filter_globs):
+>                 kunit_parser.print_with_timestamp('Starting KUnit Kernel ({}/{})...'.format(i+1, len(filter_globs)))
+> @@ -154,18 +154,29 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
+>                 test_end = time.time()
+>                 exec_time += test_end - test_start
+>
+> -               overall_status = kunit_parser.max_status(overall_status, result.status)
+> +               test_counts.add_subtest_counts(result.result.test.counts)
+>
+> -       return KunitResult(status=result.status, result=result.result, elapsed_time=exec_time)
+> +       kunit_status = _map_to_overall_status(test_counts.get_status())
+> +       return KunitResult(status=kunit_status, result=result.result, elapsed_time=exec_time)
+> +
+> +def _map_to_overall_status(test_status: kunit_parser.TestStatus) -> KunitStatus:
+> +       if test_status in (kunit_parser.TestStatus.SUCCESS, kunit_parser.TestStatus.SKIPPED):
+> +               return KunitStatus.SUCCESS
+> +       else:
+> +               return KunitStatus.TEST_FAILURE
+>
+>  def parse_tests(request: KunitParseRequest, input_data: Iterable[str]) -> KunitResult:
+>         parse_start = time.time()
+>
+>         test_result = kunit_parser.TestResult(kunit_parser.TestStatus.SUCCESS,
+> -                                             [],
+> +                                             kunit_parser.Test(),
+>                                               'Tests not Parsed.')
+>
+>         if request.raw_output:
+> +               # Treat unparsed results as one passing test.
+> +               test_result.test.status = kunit_parser.TestStatus.SUCCESS
+> +               test_result.test.counts.passed = 1
+> +
+>                 output: Iterable[str] = input_data
+>                 if request.raw_output == 'all':
+>                         pass
+> diff --git a/tools/testing/kunit/kunit_json.py b/tools/testing/kunit/kunit_json.py
+> index f5cca5c38cac..746bec72b9ac 100644
+> --- a/tools/testing/kunit/kunit_json.py
+> +++ b/tools/testing/kunit/kunit_json.py
+> @@ -11,47 +11,47 @@ import os
+>
+>  import kunit_parser
+>
+> -from kunit_parser import TestStatus
+> -
+> -def get_json_result(test_result, def_config, build_dir, json_path) -> str:
+> -       sub_groups = []
+> -
+> -       # Each test suite is mapped to a KernelCI sub_group
+> -       for test_suite in test_result.suites:
+> -               sub_group = {
+> -                       "name": test_suite.name,
+> -                       "arch": "UM",
+> -                       "defconfig": def_config,
+> -                       "build_environment": build_dir,
+> -                       "test_cases": [],
+> -                       "lab_name": None,
+> -                       "kernel": None,
+> -                       "job": None,
+> -                       "git_branch": "kselftest",
+> -               }
+> -               test_cases = []
+> -               # TODO: Add attachments attribute in test_case with detailed
+> -               #  failure message, see https://api.kernelci.org/schema-test-case.html#get
+> -               for case in test_suite.cases:
+> -                       test_case = {"name": case.name, "status": "FAIL"}
+> -                       if case.status == TestStatus.SUCCESS:
+> +from kunit_parser import Test, TestResult, TestStatus
+> +from typing import Any, Dict, Optional
+> +
+> +JsonObj = Dict[str, Any]
+> +
+> +def _get_group_json(test: Test, def_config: str,
+> +               build_dir: Optional[str]) -> JsonObj:
+> +       sub_groups = []  # List[JsonObj]
+> +       test_cases = []  # List[JsonObj]
+> +
+> +       for subtest in test.subtests:
+> +               if len(subtest.subtests):
+> +                       sub_group = _get_group_json(subtest, def_config,
+> +                               build_dir)
+> +                       sub_groups.append(sub_group)
+> +               else:
+> +                       test_case = {"name": subtest.name, "status": "FAIL"}
+> +                       if subtest.status == TestStatus.SUCCESS:
+>                                 test_case["status"] = "PASS"
+> -                       elif case.status == TestStatus.TEST_CRASHED:
+> +                       elif subtest.status == TestStatus.TEST_CRASHED:
+>                                 test_case["status"] = "ERROR"
+>                         test_cases.append(test_case)
+> -               sub_group["test_cases"] = test_cases
+> -               sub_groups.append(sub_group)
+> +
+>         test_group = {
+> -               "name": "KUnit Test Group",
+> +               "name": test.name,
+>                 "arch": "UM",
+>                 "defconfig": def_config,
+>                 "build_environment": build_dir,
+>                 "sub_groups": sub_groups,
+> +               "test_cases": test_cases,
+>                 "lab_name": None,
+>                 "kernel": None,
+>                 "job": None,
+>                 "git_branch": "kselftest",
+>         }
+> +       return test_group
+> +
+> +def get_json_result(test_result: TestResult, def_config: str,
+> +               build_dir: Optional[str], json_path: str) -> str:
+> +       test_group = _get_group_json(test_result.test, def_config, build_dir)
+> +       test_group["name"] = "KUnit Test Group"
+>         json_obj = json.dumps(test_group, indent=4)
+>         if json_path != 'stdout':
+>                 with open(json_path, 'w') as result_path:
+> diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+> index 6310a641b151..f01fd565f978 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -1,11 +1,15 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  #
+> -# Parses test results from a kernel dmesg log.
+> +# Parses KTAP test results from a kernel dmesg log and incrementally prints
+> +# results with reader-friendly format. Stores and returns test results in a
+> +# Test object.
+>  #
+>  # Copyright (C) 2019, Google LLC.
+>  # Author: Felix Guo <felixguoxiuping@gmail.com>
+>  # Author: Brendan Higgins <brendanhiggins@google.com>
+> +# Author: Rae Moar <rmoar@google.com>
+>
+> +from __future__ import annotations
+>  import re
+>
+>  from collections import namedtuple
+> @@ -14,33 +18,52 @@ from enum import Enum, auto
+>  from functools import reduce
+>  from typing import Iterable, Iterator, List, Optional, Tuple
+>
+> -TestResult = namedtuple('TestResult', ['status','suites','log'])
+> -
+> -class TestSuite(object):
+> +TestResult = namedtuple('TestResult', ['status','test','log'])
+> +
+> +class Test(object):
+> +       """
+> +       A class to represent a test parsed from KTAP results. All KTAP
+> +       results within a test log are stored in a main Test object as
+> +       subtests.
+> +
+> +       Attributes:
+> +       status : TestStatus - status of the test
+> +       name : str - name of the test
+> +       expected_count : int - expected number of subtests (0 if single
+> +               test case and None if unknown expected number of subtests)
+> +       subtests : List[Test] - list of subtests
+> +       log : List[str] - log of KTAP lines that correspond to the test
+> +       counts : TestCounts - counts of the test statuses and errors of
+> +               subtests or of the test itself if the test is a single
+> +               test case.
+> +       """
+>         def __init__(self) -> None:
+> -               self.status = TestStatus.SUCCESS
+> -               self.name = ''
+> -               self.cases = []  # type: List[TestCase]
+> -
+> -       def __str__(self) -> str:
+> -               return 'TestSuite(' + str(self.status) + ',' + self.name + ',' + str(self.cases) + ')'
+> -
+> -       def __repr__(self) -> str:
+> -               return str(self)
+> -
+> -class TestCase(object):
+> -       def __init__(self) -> None:
+> -               self.status = TestStatus.SUCCESS
+> +               """Creates Test object with default attributes."""
+> +               self.status = TestStatus.TEST_CRASHED
+>                 self.name = ''
+> +               self.expected_count = 0  # type: Optional[int]
+> +               self.subtests = []  # type: List[Test]
+>                 self.log = []  # type: List[str]
+> +               self.counts = TestCounts()
+>
+>         def __str__(self) -> str:
+> -               return 'TestCase(' + str(self.status) + ',' + self.name + ',' + str(self.log) + ')'
+> +               """Returns string representation of a Test class object."""
+> +               return ('Test(' + str(self.status) + ', ' + self.name +
+> +                       ', ' + str(self.expected_count) + ', ' +
+> +                       str(self.subtests) + ', ' + str(self.log) + ', ' +
+> +                       str(self.counts) + ')')
+>
+>         def __repr__(self) -> str:
+> +               """Returns string representation of a Test class object."""
+>                 return str(self)
+>
+> +       def add_error(self, error_message: str) -> None:
+> +               """Records an error that occurred while parsing this test."""
+> +               self.counts.errors += 1
+> +               print_error('Test ' + self.name + ': ' + error_message)
+> +
+>  class TestStatus(Enum):
+> +       """An enumeration class to represent the status of a test."""
+>         SUCCESS = auto()
+>         FAILURE = auto()
+>         SKIPPED = auto()
+> @@ -48,381 +71,753 @@ class TestStatus(Enum):
+>         NO_TESTS = auto()
+>         FAILURE_TO_PARSE_TESTS = auto()
+>
+> +class TestCounts:
+> +       """
+> +       Tracks the counts of statuses of all test cases and any errors within
+> +       a Test.
+> +
+> +       Attributes:
+> +       passed : int - the number of tests that have passed
+> +       failed : int - the number of tests that have failed
+> +       crashed : int - the number of tests that have crashed
+> +       skipped : int - the number of tests that have skipped
+> +       errors : int - the number of errors in the test and subtests
+> +       """
+> +       def __init__(self):
+> +               """Creates TestCounts object with counts of all test
+> +               statuses and test errors set to 0.
+> +               """
+> +               self.passed = 0
+> +               self.failed = 0
+> +               self.crashed = 0
+> +               self.skipped = 0
+> +               self.errors = 0
+> +
+> +       def __str__(self) -> str:
+> +               """Returns the string representation of a TestCounts object.
+> +               """
+> +               return ('Passed: ' + str(self.passed) +
+> +                       ', Failed: ' + str(self.failed) +
+> +                       ', Crashed: ' + str(self.crashed) +
+> +                       ', Skipped: ' + str(self.skipped) +
+> +                       ', Errors: ' + str(self.errors))
+> +
+> +       def total(self) -> int:
+> +               """Returns the total number of test cases within a test
+> +               object, where a test case is a test with no subtests.
+> +               """
+> +               return (self.passed + self.failed + self.crashed +
+> +                       self.skipped)
+> +
+> +       def add_subtest_counts(self, counts: TestCounts) -> None:
+> +               """
+> +               Adds the counts of another TestCounts object to the current
+> +               TestCounts object. Used to add the counts of a subtest to the
+> +               parent test.
+> +
+> +               Parameters:
+> +               counts - a different TestCounts object whose counts
+> +                       will be added to the counts of the TestCounts object
+> +               """
+> +               self.passed += counts.passed
+> +               self.failed += counts.failed
+> +               self.crashed += counts.crashed
+> +               self.skipped += counts.skipped
+> +               self.errors += counts.errors
+> +
+> +       def get_status(self) -> TestStatus:
+> +               """Returns the aggregated status of a Test using test
+> +               counts.
+> +               """
+> +               if self.total() == 0:
+> +                       return TestStatus.NO_TESTS
+> +               elif self.crashed:
+> +                       # If one of the subtests crash, the expected status
+> +                       # of the Test is crashed.
+> +                       return TestStatus.TEST_CRASHED
+> +               elif self.failed:
+> +                       # Otherwise if one of the subtests fail, the
+> +                       # expected status of the Test is failed.
+> +                       return TestStatus.FAILURE
+> +               elif self.passed:
+> +                       # Otherwise if one of the subtests pass, the
+> +                       # expected status of the Test is passed.
+> +                       return TestStatus.SUCCESS
+> +               else:
+> +                       # Finally, if none of the subtests have failed,
+> +                       # crashed, or passed, the expected status of the
+> +                       # Test is skipped.
+> +                       return TestStatus.SKIPPED
+> +
+> +       def add_status(self, status: TestStatus) -> None:
+> +               """
+> +               Increments count of inputted status.
+> +
+> +               Parameters:
+> +               status - status to be added to the TestCounts object
+> +               """
+> +               if status == TestStatus.SUCCESS or \
+> +                               status == TestStatus.NO_TESTS:
+> +                       # if status is NO_TESTS the most appropriate
+> +                       # attribute to increment is passed because
+> +                       # the test did not fail, crash or get skipped.
+> +                       self.passed += 1
+> +               elif status == TestStatus.FAILURE:
+> +                       self.failed += 1
+> +               elif status == TestStatus.SKIPPED:
+> +                       self.skipped += 1
+> +               else:
+> +                       self.crashed += 1
+> +
+>  class LineStream:
+> -       """Provides a peek()/pop() interface over an iterator of (line#, text)."""
+> +       """
+> +       A class to represent the lines of kernel output.
+> +       Provides a peek()/pop() interface over an iterator of
+> +       (line#, text).
+> +       """
+>         _lines: Iterator[Tuple[int, str]]
+>         _next: Tuple[int, str]
+>         _done: bool
+>
+>         def __init__(self, lines: Iterator[Tuple[int, str]]):
+> +               """Creates a new LineStream that wraps the given iterator."""
+>                 self._lines = lines
+>                 self._done = False
+>                 self._next = (0, '')
+>                 self._get_next()
+>
+>         def _get_next(self) -> None:
+> +               """Advances the LineSteam to the next line."""
+>                 try:
+>                         self._next = next(self._lines)
+>                 except StopIteration:
+>                         self._done = True
+>
+>         def peek(self) -> str:
+> +               """Returns the current line, without advancing the LineStream.
+> +               """
+>                 return self._next[1]
+>
+>         def pop(self) -> str:
+> +               """Returns the current line and advances the LineStream to
+> +               the next line.
+> +               """
+>                 n = self._next
+>                 self._get_next()
+>                 return n[1]
+>
+>         def __bool__(self) -> bool:
+> +               """Returns True if stream has more lines."""
+>                 return not self._done
+>
+>         # Only used by kunit_tool_test.py.
+>         def __iter__(self) -> Iterator[str]:
+> +               """Empties all lines stored in LineStream object into
+> +               Iterator object and returns the Iterator object.
+> +               """
+>                 while bool(self):
+>                         yield self.pop()
+>
+>         def line_number(self) -> int:
+> +               """Returns the line number of the current line."""
+>                 return self._next[0]
+>
+> -kunit_start_re = re.compile(r'TAP version [0-9]+$')
+> -kunit_end_re = re.compile('(List of all partitions:|'
+> -                         'Kernel panic - not syncing: VFS:|reboot: System halted)')
+> +# Parsing helper methods:
+> +
+> +KTAP_START = re.compile(r'KTAP version ([0-9]+)$')
+> +TAP_START = re.compile(r'TAP version ([0-9]+)$')
+> +KTAP_END = re.compile('(List of all partitions:|'
+> +       'Kernel panic - not syncing: VFS:|reboot: System halted)')
+>
+>  def extract_tap_lines(kernel_output: Iterable[str]) -> LineStream:
+> -       def isolate_kunit_output(kernel_output: Iterable[str]) -> Iterator[Tuple[int, str]]:
+> +       """Extracts KTAP lines from the kernel output."""
+> +       def isolate_ktap_output(kernel_output: Iterable[str]) \
+> +                       -> Iterator[Tuple[int, str]]:
+>                 line_num = 0
+>                 started = False
+>                 for line in kernel_output:
+>                         line_num += 1
+> -                       line = line.rstrip()  # line always has a trailing \n
+> -                       if kunit_start_re.search(line):
+> +                       line = line.rstrip()  # remove trailing \n
+> +                       if not started and KTAP_START.search(line):
+> +                               # start extracting KTAP lines and set prefix
+> +                               # to number of characters before version line
+> +                               prefix_len = len(
+> +                                       line.split('KTAP version')[0])
+> +                               started = True
+> +                               yield line_num, line[prefix_len:]
+> +                       elif not started and TAP_START.search(line):
+> +                               # start extracting KTAP lines and set prefix
+> +                               # to number of characters before version line
+>                                 prefix_len = len(line.split('TAP version')[0])
+>                                 started = True
+>                                 yield line_num, line[prefix_len:]
+> -                       elif kunit_end_re.search(line):
+> +                       elif started and KTAP_END.search(line):
+> +                               # stop extracting KTAP lines
+>                                 break
+>                         elif started:
+> -                               yield line_num, line[prefix_len:]
+> -       return LineStream(lines=isolate_kunit_output(kernel_output))
+> -
+> -DIVIDER = '=' * 60
+> -
+> -RESET = '\033[0;0m'
+> -
+> -def red(text) -> str:
+> -       return '\033[1;31m' + text + RESET
+> -
+> -def yellow(text) -> str:
+> -       return '\033[1;33m' + text + RESET
+> -
+> -def green(text) -> str:
+> -       return '\033[1;32m' + text + RESET
+> -
+> -def print_with_timestamp(message) -> None:
+> -       print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
+> +                               # remove prefix and any indention and yield
+> +                               # line with line number
+> +                               line = line[prefix_len:].lstrip()
+> +                               yield line_num, line
+> +       return LineStream(lines=isolate_ktap_output(kernel_output))
+> +
+> +KTAP_VERSIONS = [1]
+> +TAP_VERSIONS = [13, 14]
+> +
+> +def check_version(version_num: int, accepted_versions: List[int],
+> +                       version_type: str, test: Test) -> None:
+> +       """
+> +       Adds error to test object if version number is too high or too
+> +       low.
+> +
+> +       Parameters:
+> +       version_num - The inputted version number from the parsed KTAP or TAP
+> +               header line
+> +       accepted_version - List of accepted KTAP or TAP versions
+> +       version_type - 'KTAP' or 'TAP' depending on the type of
+> +               version line.
+> +       test - Test object for current test being parsed
+> +       """
+> +       if version_num < min(accepted_versions):
+> +               test.add_error(version_type +
+> +                       ' version lower than expected!')
+> +       elif version_num > max(accepted_versions):
+> +               test.add_error(
+> +                       version_type + ' version higher than expected!')
+> +
+> +def parse_ktap_header(lines: LineStream, test: Test) -> bool:
+> +       """
+> +       Parses KTAP/TAP header line and checks version number.
+> +       Returns False if fails to parse KTAP/TAP header line.
+> +
+> +       Accepted formats:
+> +       - 'KTAP version [version number]'
+> +       - 'TAP version [version number]'
+> +
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       test - Test object for current test being parsed
+> +
+> +       Return:
+> +       True if successfully parsed KTAP/TAP header line
+> +       """
+> +       ktap_match = KTAP_START.match(lines.peek())
+> +       tap_match = TAP_START.match(lines.peek())
+> +       if ktap_match:
+> +               version_num = int(ktap_match.group(1))
+> +               check_version(version_num, KTAP_VERSIONS, 'KTAP', test)
+> +       elif tap_match:
+> +               version_num = int(tap_match.group(1))
+> +               check_version(version_num, TAP_VERSIONS, 'TAP', test)
+> +       else:
+> +               return False
+> +       test.log.append(lines.pop())
+> +       return True
+>
+> -def format_suite_divider(message) -> str:
+> -       return '======== ' + message + ' ========'
+> +TEST_HEADER = re.compile(r'^# Subtest: (.*)$')
+>
+> -def print_suite_divider(message) -> None:
+> -       print_with_timestamp(DIVIDER)
+> -       print_with_timestamp(format_suite_divider(message))
+> +def parse_test_header(lines: LineStream, test: Test) -> bool:
+> +       """
+> +       Parses test header and stores test name in test object.
+> +       Returns False if fails to parse test header line.
+>
+> -def print_log(log) -> None:
+> -       for m in log:
+> -               print_with_timestamp(m)
+> +       Accepted format:
+> +       - '# Subtest: [test name]'
+>
+> -TAP_ENTRIES = re.compile(r'^(TAP|[\s]*ok|[\s]*not ok|[\s]*[0-9]+\.\.[0-9]+|[\s]*# (Subtest:|.*: kunit test case crashed!)).*$')
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       test - Test object for current test being parsed
+>
+> -def consume_non_diagnostic(lines: LineStream) -> None:
+> -       while lines and not TAP_ENTRIES.match(lines.peek()):
+> -               lines.pop()
+> -
+> -def save_non_diagnostic(lines: LineStream, test_case: TestCase) -> None:
+> -       while lines and not TAP_ENTRIES.match(lines.peek()):
+> -               test_case.log.append(lines.peek())
+> -               lines.pop()
+> +       Return:
+> +       True if successfully parsed test header line
+> +       """
+> +       match = TEST_HEADER.match(lines.peek())
+> +       if not match:
+> +               return False
+> +       test.log.append(lines.pop())
+> +       test.name = match.group(1)
+> +       return True
+>
+> -OkNotOkResult = namedtuple('OkNotOkResult', ['is_ok','description', 'text'])
+> +TEST_PLAN = re.compile(r'1\.\.([0-9]+)')
+>
+> -OK_NOT_OK_SKIP = re.compile(r'^[\s]*(ok|not ok) [0-9]+ - (.*) # SKIP(.*)$')
+> +def parse_test_plan(lines: LineStream, test: Test) -> bool:
+> +       """
+> +       Parses test plan line and stores the expected number of subtests in
+> +       test object. Reports an error if expected count is 0.
+> +       Returns False and reports missing test plan error if fails to parse
+> +       test plan.
+>
+> -OK_NOT_OK_SUBTEST = re.compile(r'^[\s]+(ok|not ok) [0-9]+ - (.*)$')
+> +       Accepted format:
+> +       - '1..[number of subtests]'
+>
+> -OK_NOT_OK_MODULE = re.compile(r'^(ok|not ok) ([0-9]+) - (.*)$')
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       test - Test object for current test being parsed
+>
+> -def parse_ok_not_ok_test_case(lines: LineStream, test_case: TestCase) -> bool:
+> -       save_non_diagnostic(lines, test_case)
+> -       if not lines:
+> -               test_case.status = TestStatus.TEST_CRASHED
+> -               return True
+> -       line = lines.peek()
+> -       match = OK_NOT_OK_SUBTEST.match(line)
+> -       while not match and lines:
+> -               line = lines.pop()
+> -               match = OK_NOT_OK_SUBTEST.match(line)
+> -       if match:
+> -               test_case.log.append(lines.pop())
+> -               test_case.name = match.group(2)
+> -               skip_match = OK_NOT_OK_SKIP.match(line)
+> -               if skip_match:
+> -                       test_case.status = TestStatus.SKIPPED
+> -                       return True
+> -               if test_case.status == TestStatus.TEST_CRASHED:
+> -                       return True
+> -               if match.group(1) == 'ok':
+> -                       test_case.status = TestStatus.SUCCESS
+> -               else:
+> -                       test_case.status = TestStatus.FAILURE
+> -               return True
+> -       else:
+> +       Return:
+> +       True if successfully parsed test plan line
+> +       """
+> +       match = TEST_PLAN.match(lines.peek())
+> +       if not match:
+> +               test.expected_count = None
+> +               test.add_error('missing plan line!')
+>                 return False
+> -
+> -SUBTEST_DIAGNOSTIC = re.compile(r'^[\s]+# (.*)$')
+> -DIAGNOSTIC_CRASH_MESSAGE = re.compile(r'^[\s]+# .*?: kunit test case crashed!$')
+> -
+> -def parse_diagnostic(lines: LineStream, test_case: TestCase) -> bool:
+> -       save_non_diagnostic(lines, test_case)
+> -       if not lines:
+> +       test.log.append(lines.pop())
+> +       expected_count = int(match.group(1))
+> +       test.expected_count = expected_count
+> +       if expected_count == 0:
+> +               test.status = TestStatus.NO_TESTS
+> +               test.add_error('0 tests run!')
+> +       return True
+> +
+> +TEST_RESULT = re.compile(r'^(ok|not ok) ([0-9]+) (- )?([^#]*)( # .*)?$')
+> +
+> +TEST_RESULT_SKIP = re.compile(r'^(ok|not ok) ([0-9]+) (- )?(.*) # SKIP(.*)$')
+> +
+> +def peek_test_name_match(lines: LineStream, test: Test) -> bool:
+> +       """
+> +       Matches current line with the format of a test result line and checks
+> +       if the name matches the name of the current test.
+> +       Returns False if fails to match format or name.
+> +
+> +       Accepted format:
+> +       - '[ok|not ok] [test number] [-] [test name] [optional skip
+> +               directive]'
+> +
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       test - Test object for current test being parsed
+> +
+> +       Return:
+> +       True if matched a test result line and the name matching the
+> +               expected test name
+> +       """
+> +       line = lines.peek()
+> +       match = TEST_RESULT.match(line)
+> +       if not match:
+>                 return False
+> +       name = match.group(4)
+> +       return (name == test.name)
+> +
+> +def parse_test_result(lines: LineStream, test: Test,
+> +                       expected_num: int) -> bool:
+> +       """
+> +       Parses test result line and stores the status and name in the test
+> +       object. Reports an error if the test number does not match expected
+> +       test number.
+> +       Returns False if fails to parse test result line.
+> +
+> +       Note that the SKIP directive is the only direction that causes a
+> +       change in status.
+> +
+> +       Accepted format:
+> +       - '[ok|not ok] [test number] [-] [test name] [optional skip
+> +               directive]'
+> +
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       test - Test object for current test being parsed
+> +       expected_num - expected test number for current test
+> +
+> +       Return:
+> +       True if successfully parsed a test result line.
+> +       """
+>         line = lines.peek()
+> -       match = SUBTEST_DIAGNOSTIC.match(line)
+> -       if match:
+> -               test_case.log.append(lines.pop())
+> -               crash_match = DIAGNOSTIC_CRASH_MESSAGE.match(line)
+> -               if crash_match:
+> -                       test_case.status = TestStatus.TEST_CRASHED
+> -               return True
+> -       else:
+> +       match = TEST_RESULT.match(line)
+> +       skip_match = TEST_RESULT_SKIP.match(line)
+> +
+> +       # Check if line matches test result line format
+> +       if not match:
+>                 return False
+> +       test.log.append(lines.pop())
+>
+> -def parse_test_case(lines: LineStream) -> Optional[TestCase]:
+> -       test_case = TestCase()
+> -       save_non_diagnostic(lines, test_case)
+> -       while parse_diagnostic(lines, test_case):
+> -               pass
+> -       if parse_ok_not_ok_test_case(lines, test_case):
+> -               return test_case
+> +       # Set name of test object
+> +       if skip_match:
+> +               test.name = skip_match.group(4)
+>         else:
+> -               return None
+> -
+> -SUBTEST_HEADER = re.compile(r'^[\s]+# Subtest: (.*)$')
+> -
+> -def parse_subtest_header(lines: LineStream) -> Optional[str]:
+> -       consume_non_diagnostic(lines)
+> -       if not lines:
+> -               return None
+> -       match = SUBTEST_HEADER.match(lines.peek())
+> -       if match:
+> -               lines.pop()
+> -               return match.group(1)
+> +               test.name = match.group(4)
+> +
+> +       # Check test num
+> +       num = int(match.group(2))
+> +       if num != expected_num:
+> +               test.add_error('Expected test number ' +
+> +                       str(expected_num) + ' but found ' + str(num))
+> +
+> +       # Set status of test object
+> +       status = match.group(1)
+> +       if skip_match:
+> +               test.status = TestStatus.SKIPPED
+> +       elif status == 'ok':
+> +               test.status = TestStatus.SUCCESS
+>         else:
+> -               return None
+> +               test.status = TestStatus.FAILURE
+> +       return True
+> +
+> +def parse_diagnostic(lines: LineStream) -> List[str]:
+> +       """
+> +       Parse lines that do not match the format of a test result line or
+> +       test header line and returns them in list.
+> +
+> +       Line formats that are not parsed:
+> +       - '# Subtest: [test name]'
+> +       - '[ok|not ok] [test number] [-] [test name] [optional skip
+> +               directive]'
+> +
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +
+> +       Return:
+> +       Log of diagnostic lines
+> +       """
+> +       log = []  # type: List[str]
+> +       while lines and not TEST_RESULT.match(lines.peek()) and not \
+> +                       TEST_HEADER.match(lines.peek()):
+> +               log.append(lines.pop())
+> +       return log
+> +
+> +DIAGNOSTIC_CRASH_MESSAGE = re.compile(
+> +               r'^(BUG:|# .*?: kunit test case crashed!$)')
+
+Let's get rid of "BUG:|" here.
+
+Doing so makes the KASAN results come out correctly.
+
+> +
+> +def parse_crash_in_log(test: Test) -> bool:
+> +       """
+> +       Iterate through the lines of the log to parse for crash message.
+> +       If crash message found, set status to crashed and return True.
+> +       Otherwise return False.
+> +
+> +       Parameters:
+> +       test - Test object for current test being parsed
+> +
+> +       Return:
+> +       True if crash message found in log
+> +       """
+> +       for line in test.log:
+> +               if DIAGNOSTIC_CRASH_MESSAGE.match(line):
+> +                       test.status = TestStatus.TEST_CRASHED
+> +                       return True
+> +       return False
+>
+> -SUBTEST_PLAN = re.compile(r'[\s]+[0-9]+\.\.([0-9]+)')
+>
+> -def parse_subtest_plan(lines: LineStream) -> Optional[int]:
+> -       consume_non_diagnostic(lines)
+> -       match = SUBTEST_PLAN.match(lines.peek())
+> -       if match:
+> -               lines.pop()
+> -               return int(match.group(1))
+> -       else:
+> -               return None
+> -
+> -def max_status(left: TestStatus, right: TestStatus) -> TestStatus:
+> -       if left == right:
+> -               return left
+> -       elif left == TestStatus.TEST_CRASHED or right == TestStatus.TEST_CRASHED:
+> -               return TestStatus.TEST_CRASHED
+> -       elif left == TestStatus.FAILURE or right == TestStatus.FAILURE:
+> -               return TestStatus.FAILURE
+> -       elif left == TestStatus.SKIPPED:
+> -               return right
+> -       else:
+> -               return left
+> +# Printing helper methods:
+>
+> -def parse_ok_not_ok_test_suite(lines: LineStream,
+> -                              test_suite: TestSuite,
+> -                              expected_suite_index: int) -> bool:
+> -       consume_non_diagnostic(lines)
+> -       if not lines:
+> -               test_suite.status = TestStatus.TEST_CRASHED
+> -               return False
+> -       line = lines.peek()
+> -       match = OK_NOT_OK_MODULE.match(line)
+> -       if match:
+> -               lines.pop()
+> -               if match.group(1) == 'ok':
+> -                       test_suite.status = TestStatus.SUCCESS
+> -               else:
+> -                       test_suite.status = TestStatus.FAILURE
+> -               skip_match = OK_NOT_OK_SKIP.match(line)
+> -               if skip_match:
+> -                       test_suite.status = TestStatus.SKIPPED
+> -               suite_index = int(match.group(2))
+> -               if suite_index != expected_suite_index:
+> -                       print_with_timestamp(
+> -                               red('[ERROR] ') + 'expected_suite_index ' +
+> -                               str(expected_suite_index) + ', but got ' +
+> -                               str(suite_index))
+> -               return True
+> -       else:
+> -               return False
+> +DIVIDER = '=' * 60
+>
+> -def bubble_up_errors(status_list: Iterable[TestStatus]) -> TestStatus:
+> -       return reduce(max_status, status_list, TestStatus.SKIPPED)
+> +RESET = '\033[0;0m'
+>
+> -def bubble_up_test_case_errors(test_suite: TestSuite) -> TestStatus:
+> -       max_test_case_status = bubble_up_errors(x.status for x in test_suite.cases)
+> -       return max_status(max_test_case_status, test_suite.status)
+> +def red(text: str) -> str:
+> +       """Returns inputted string with red color code."""
+> +       return '\033[1;31m' + text + RESET
+>
+> -def parse_test_suite(lines: LineStream, expected_suite_index: int) -> Optional[TestSuite]:
+> -       if not lines:
+> -               return None
+> -       consume_non_diagnostic(lines)
+> -       test_suite = TestSuite()
+> -       test_suite.status = TestStatus.SUCCESS
+> -       name = parse_subtest_header(lines)
+> -       if not name:
+> -               return None
+> -       test_suite.name = name
+> -       expected_test_case_num = parse_subtest_plan(lines)
+> -       if expected_test_case_num is None:
+> -               return None
+> -       while expected_test_case_num > 0:
+> -               test_case = parse_test_case(lines)
+> -               if not test_case:
+> -                       break
+> -               test_suite.cases.append(test_case)
+> -               expected_test_case_num -= 1
+> -       if parse_ok_not_ok_test_suite(lines, test_suite, expected_suite_index):
+> -               test_suite.status = bubble_up_test_case_errors(test_suite)
+> -               return test_suite
+> -       elif not lines:
+> -               print_with_timestamp(red('[ERROR] ') + 'ran out of lines before end token')
+> -               return test_suite
+> -       else:
+> -               print(f'failed to parse end of suite "{name}", at line {lines.line_number()}: {lines.peek()}')
+> -               return None
+> +def yellow(text: str) -> str:
+> +       """Returns inputted string with yellow color code."""
+> +       return '\033[1;33m' + text + RESET
+>
+> -TAP_HEADER = re.compile(r'^TAP version 14$')
+> +def green(text: str) -> str:
+> +       """Returns inputted string with green color code."""
+> +       return '\033[1;32m' + text + RESET
+>
+> -def parse_tap_header(lines: LineStream) -> bool:
+> -       consume_non_diagnostic(lines)
+> -       if TAP_HEADER.match(lines.peek()):
+> -               lines.pop()
+> -               return True
+> -       else:
+> -               return False
+> +ANSI_LEN = len(red(''))
+>
+> -TEST_PLAN = re.compile(r'[0-9]+\.\.([0-9]+)')
+> +def print_with_timestamp(message: str) -> None:
+> +       """Prints message with timestamp at beginning."""
+> +       print('[%s] %s' % (datetime.now().strftime('%H:%M:%S'), message))
+>
+> -def parse_test_plan(lines: LineStream) -> Optional[int]:
+> -       consume_non_diagnostic(lines)
+> -       match = TEST_PLAN.match(lines.peek())
+> -       if match:
+> -               lines.pop()
+> -               return int(match.group(1))
+> -       else:
+> -               return None
+> -
+> -def bubble_up_suite_errors(test_suites: Iterable[TestSuite]) -> TestStatus:
+> -       return bubble_up_errors(x.status for x in test_suites)
+> -
+> -def parse_test_result(lines: LineStream) -> TestResult:
+> -       consume_non_diagnostic(lines)
+> -       if not lines or not parse_tap_header(lines):
+> -               return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+> -       expected_test_suite_num = parse_test_plan(lines)
+> -       if expected_test_suite_num == 0:
+> -               return TestResult(TestStatus.NO_TESTS, [], lines)
+> -       elif expected_test_suite_num is None:
+> -               return TestResult(TestStatus.FAILURE_TO_PARSE_TESTS, [], lines)
+> -       test_suites = []
+> -       for i in range(1, expected_test_suite_num + 1):
+> -               test_suite = parse_test_suite(lines, i)
+> -               if test_suite:
+> -                       test_suites.append(test_suite)
+> +def format_test_divider(message: str, len_message: int) -> str:
+> +       """
+> +       Returns string with message centered in fixed width divider.
+> +
+> +       Example:
+> +       '===================== message example ====================='
+> +
+> +       Parameters:
+> +       message - message to be centered in divider line
+> +       len_message - length of the message to be printed such that
+> +               any characters of the color codes are not counted
+> +
+> +       Return:
+> +       String containing message centered in fixed width divider
+> +       """
+> +       default_count = 3  # default number of dashes
+> +       len_1 = default_count
+> +       len_2 = default_count
+> +       difference = len(DIVIDER) - len_message - 2  # 2 spaces added
+> +       if difference > 0:
+> +               # calculate number of dashes for each side of the divider
+> +               len_1 = int(difference / 2)
+> +               len_2 = difference - len_1
+> +       return ('=' * len_1) + ' ' + message + ' ' + ('=' * len_2)
+> +
+> +def print_test_header(test: Test) -> None:
+> +       """
+> +       Prints test header with test name and optionally the expected number
+> +       of subtests.
+> +
+> +       Example:
+> +       '=================== example (2 subtests) ==================='
+> +
+> +       Parameters:
+> +       test - Test object representing current test being printed
+> +       """
+> +       message = test.name
+> +       if test.expected_count:
+> +               if test.expected_count == 1:
+> +                       message += (' (' + str(test.expected_count) +
+> +                               ' subtest)')
+>                 else:
+> -                       print_with_timestamp(
+> -                               red('[ERROR] ') + ' expected ' +
+> -                               str(expected_test_suite_num) +
+> -                               ' test suites, but got ' + str(i - 2))
+> -                       break
+> -       test_suite = parse_test_suite(lines, -1)
+> -       if test_suite:
+> -               print_with_timestamp(red('[ERROR] ') +
+> -                       'got unexpected test suite: ' + test_suite.name)
+> -       if test_suites:
+> -               return TestResult(bubble_up_suite_errors(test_suites), test_suites, lines)
+> -       else:
+> -               return TestResult(TestStatus.NO_TESTS, [], lines)
+> +                       message += (' (' + str(test.expected_count) +
+> +                               ' subtests)')
+> +       print_with_timestamp(format_test_divider(message, len(message)))
+>
+> -class TestCounts:
+> -       passed: int
+> -       failed: int
+> -       crashed: int
+> -       skipped: int
+> +def print_log(log: Iterable[str]) -> None:
+> +       """
+> +       Prints all strings in saved log for test in yellow.
+>
+> -       def __init__(self):
+> -               self.passed = 0
+> -               self.failed = 0
+> -               self.crashed = 0
+> -               self.skipped = 0
+> -
+> -       def total(self) -> int:
+> -               return self.passed + self.failed + self.crashed + self.skipped
+> -
+> -def print_and_count_results(test_result: TestResult) -> TestCounts:
+> -       counts = TestCounts()
+> -       for test_suite in test_result.suites:
+> -               if test_suite.status == TestStatus.SUCCESS:
+> -                       print_suite_divider(green('[PASSED] ') + test_suite.name)
+> -               elif test_suite.status == TestStatus.SKIPPED:
+> -                       print_suite_divider(yellow('[SKIPPED] ') + test_suite.name)
+> -               elif test_suite.status == TestStatus.TEST_CRASHED:
+> -                       print_suite_divider(red('[CRASHED] ' + test_suite.name))
+> -               else:
+> -                       print_suite_divider(red('[FAILED] ') + test_suite.name)
+> -               for test_case in test_suite.cases:
+> -                       if test_case.status == TestStatus.SUCCESS:
+> -                               counts.passed += 1
+> -                               print_with_timestamp(green('[PASSED] ') + test_case.name)
+> -                       elif test_case.status == TestStatus.SKIPPED:
+> -                               counts.skipped += 1
+> -                               print_with_timestamp(yellow('[SKIPPED] ') + test_case.name)
+> -                       elif test_case.status == TestStatus.TEST_CRASHED:
+> -                               counts.crashed += 1
+> -                               print_with_timestamp(red('[CRASHED] ' + test_case.name))
+> -                               print_log(map(yellow, test_case.log))
+> -                               print_with_timestamp('')
+> +       Parameters:
+> +       log - Iterable object with all strings saved in log for test
+> +       """
+> +       for m in log:
+> +               print_with_timestamp(yellow(m))
+> +
+> +def format_test_result(test: Test) -> str:
+> +       """
+> +       Returns string with formatted test result with colored status and test
+> +       name.
+> +
+> +       Example:
+> +       '[PASSED] example'
+> +
+> +       Parameters:
+> +       test - Test object representing current test being printed
+> +
+> +       Return:
+> +       String containing formatted test result
+> +       """
+> +       if test.status == TestStatus.SUCCESS:
+> +               return (green('[PASSED] ') + test.name)
+> +       elif test.status == TestStatus.SKIPPED:
+> +               return (yellow('[SKIPPED] ') + test.name)
+> +       elif test.status == TestStatus.TEST_CRASHED:
+> +               print_log(test.log)
+> +               return (red('[CRASHED] ') + test.name)
+> +       else:
+> +               print_log(test.log)
+> +               return (red('[FAILED] ') + test.name)
+> +
+> +def print_test_result(test: Test) -> None:
+> +       """
+> +       Prints result line with status of test.
+> +
+> +       Example:
+> +       '[PASSED] example'
+> +
+> +       Parameters:
+> +       test - Test object representing current test being printed
+> +       """
+> +       print_with_timestamp(format_test_result(test))
+> +
+> +def print_test_footer(test: Test) -> None:
+> +       """
+> +       Prints test footer with status of test.
+> +
+> +       Example:
+> +       '===================== [PASSED] example ====================='
+> +
+> +       Parameters:
+> +       test - Test object representing current test being printed
+> +       """
+> +       message = format_test_result(test)
+> +       print_with_timestamp(format_test_divider(message,
+> +               len(message) - ANSI_LEN))
+> +
+> +def print_summary_line(test: Test) -> None:
+> +       """
+> +       Prints summary line of test object. Color of line is dependent on
+> +       status of test. Color is green if test passes, yellow if test is
+> +       skipped, and red if the test fails or crashes. Summary line contains
+> +       counts of the statuses of the tests subtests or the test itself if it
+> +       has no subtests.
+> +
+> +       Example:
+> +       "Testing complete. Passed: 2, Failed: 0, Crashed: 0, Skipped: 0,
+> +       Errors: 0"
+> +
+> +       test - Test object representing current test being printed
+> +       """
+> +       if test.status == TestStatus.SUCCESS or \
+> +                       test.status == TestStatus.NO_TESTS:
+> +               color = green
+> +       elif test.status == TestStatus.SKIPPED:
+> +               color = yellow
+> +       else:
+> +               color = red
+> +       counts = test.counts
+> +       print_with_timestamp(color('Testing complete. ' + str(counts)))
+> +
+> +def print_error(error_message: str) -> None:
+> +       """
+> +       Prints error message with error format.
+> +
+> +       Example:
+> +       "[ERROR] Test example: missing test plan!"
+> +
+> +       Parameters:
+> +       error_message - message describing error
+> +       """
+> +       print_with_timestamp(red('[ERROR] ') + error_message)
+> +
+> +# Other methods:
+> +
+> +def bubble_up_test_results(test: Test) -> None:
+> +       """
+> +       If the test has subtests, add the test counts of the subtests to the
+> +       test and check if any of the tests crashed and if so set the test
+> +       status to crashed. Otherwise if the test has no subtests add the
+> +       status of the test to the test counts.
+> +
+> +       Parameters:
+> +       test - Test object for current test being parsed
+> +       """
+> +       parse_crash_in_log(test)
+> +       subtests = test.subtests
+> +       counts = test.counts
+> +       status = test.status
+> +       for t in subtests:
+> +               counts.add_subtest_counts(t.counts)
+> +       if counts.total() == 0:
+> +               counts.add_status(status)
+> +       elif test.counts.get_status() == TestStatus.TEST_CRASHED:
+> +               test.status = TestStatus.TEST_CRASHED
+> +
+> +def parse_test(lines: LineStream, expected_num: int, log: List[str]) -> Test:
+> +       """
+> +       Finds next test to parse in LineStream, creates new Test object,
+> +       parses any subtests of the test, populates Test object with all
+> +       information (status, name) about the test and the Test objects for
+> +       any subtests, and then returns the Test object. The method accepts
+> +       three formats of tests:
+> +
+> +       Accepted test formats:
+> +
+> +       - Main KTAP/TAP header
+> +
+> +       Example:
+> +
+> +       KTAP version 1
+> +       1..4
+> +       [subtests]
+> +
+> +       - Subtest header line
+> +
+> +       Example:
+> +
+> +       # Subtest: name
+> +       1..3
+> +       [subtests]
+> +       ok 1 name
+> +
+> +       - Test result line
+> +
+> +       Example:
+> +
+> +       ok 1 - test
+> +
+> +       Parameters:
+> +       lines - LineStream of KTAP output to parse
+> +       expected_num - expected test number for test to be parsed
+> +       log - list of strings containing any preceding diagnostic lines
+> +               corresponding to the current test
+> +
+> +       Return:
+> +       Test object populated with characteristics and any subtests
+> +       """
+> +       test = Test()
+> +       test.log.extend(log)
+> +       parent_test = False
+> +       main = parse_ktap_header(lines, test)
+> +       if main:
+> +               # If KTAP/TAP header is found, attempt to parse
+> +               # test plan
+> +               test.name = "main"
+> +               parse_test_plan(lines, test)
+> +       else:
+> +               # If KTAP/TAP header is not found, test must be subtest
+> +               # header or test result line so parse attempt to parser
+> +               # subtest header
+> +               parent_test = parse_test_header(lines, test)
+> +               if parent_test:
+> +                       # If subtest header is found, attempt to parse
+> +                       # test plan and print header
+> +                       parse_test_plan(lines, test)
+> +                       print_test_header(test)
+> +       expected_count = test.expected_count
+> +       subtests = []
+> +       test_num = 1
+> +       while expected_count is None or test_num <= expected_count:
+> +               # Loop to parse any subtests.
+> +               # Break after parsing expected number of tests or
+> +               # if expected number of tests is unknown break when test
+> +               # result line with matching name to subtest header is found
+> +               # or no more lines in stream.
+> +               sub_log = parse_diagnostic(lines)
+> +               sub_test = Test()
+> +               if not lines or (peek_test_name_match(lines, test) and
+> +                               not main):
+> +                       if expected_count and test_num <= expected_count:
+> +                               # If parser reaches end of test before
+> +                               # parsing expected number of subtests, print
+> +                               # crashed subtest and record error
+> +                               test.add_error('missing expected subtest!')
+> +                               sub_test.log.extend(sub_log)
+> +                               test.counts.add_status(
+> +                                       TestStatus.TEST_CRASHED)
+> +                               print_test_result(sub_test)
+>                         else:
+> -                               counts.failed += 1
+> -                               print_with_timestamp(red('[FAILED] ') + test_case.name)
+> -                               print_log(map(yellow, test_case.log))
+> -                               print_with_timestamp('')
+> -       return counts
+> +                               test.log.extend(sub_log)
+> +                               break
+> +               else:
+> +                       sub_test = parse_test(lines, test_num, sub_log)
+> +               subtests.append(sub_test)
+> +               test_num += 1
+> +       test.subtests = subtests
+> +       if not main:
+> +               # If not main test, look for test result line
+> +               test.log.extend(parse_diagnostic(lines))
+> +               if (parent_test and peek_test_name_match(lines, test)) or \
+> +                               not parent_test:
+> +                       parse_test_result(lines, test, expected_num)
+> +               else:
+> +                       test.add_error('missing subtest result line!')
+> +       # Add statuses to TestCounts attribute in Test object
+> +       bubble_up_test_results(test)
+> +       if parent_test:
+> +               # If test has subtests and is not the main test object, print
+> +               # footer.
+> +               print_test_footer(test)
+> +       elif not main:
+> +               print_test_result(test)
+> +       return test
+>
+>  def parse_run_tests(kernel_output: Iterable[str]) -> TestResult:
+> -       counts = TestCounts()
+> +       """
+> +       Using kernel output, extract KTAP lines, parse the lines for test
+> +       results and print condensed test results and summary line .
+> +
+> +       Parameters:
+> +       kernel_output - Iterable object contains lines of kernel output
+> +
+> +       Return:
+> +       TestResult - Tuple containg status of main test object, main test
+> +               object with all subtests, and log of all KTAP lines.
+> +       """
+> +       print_with_timestamp(DIVIDER)
+>         lines = extract_tap_lines(kernel_output)
+> -       test_result = parse_test_result(lines)
+> -       if test_result.status == TestStatus.NO_TESTS:
+> -               print(red('[ERROR] ') + yellow('no tests run!'))
+> -       elif test_result.status == TestStatus.FAILURE_TO_PARSE_TESTS:
+> -               print(red('[ERROR] ') + yellow('could not parse test results!'))
+> +       test = Test()
+> +       if not lines:
+> +               test.add_error('invalid KTAP input!')
+> +               test.status = TestStatus.FAILURE_TO_PARSE_TESTS
+>         else:
+> -               counts = print_and_count_results(test_result)
+> +               test = parse_test(lines, 0, [])
+> +               if test.status != TestStatus.NO_TESTS:
+> +                       test.status = test.counts.get_status()
+>         print_with_timestamp(DIVIDER)
+> -       if test_result.status == TestStatus.SUCCESS:
+> -               fmt = green
+> -       elif test_result.status == TestStatus.SKIPPED:
+> -               fmt = yellow
+> -       else:
+> -               fmt =red
+> -       print_with_timestamp(
+> -               fmt('Testing complete. %d tests run. %d failed. %d crashed. %d skipped.' %
+> -                   (counts.total(), counts.failed, counts.crashed, counts.skipped)))
+> -       return test_result
+> +       print_summary_line(test)
+> +       return TestResult(test.status, test, lines)
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index 6e01140cb60e..6648de1f9ceb 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -107,10 +107,10 @@ class KUnitParserTest(unittest.TestCase):
+>                 with open(log_path) as file:
+>                         result = kunit_parser.extract_tap_lines(file.readlines())
+>                 self.assertContains('TAP version 14', result)
+> -               self.assertContains('   # Subtest: example', result)
+> -               self.assertContains('   1..2', result)
+> -               self.assertContains('   ok 1 - example_simple_test', result)
+> -               self.assertContains('   ok 2 - example_mock_test', result)
+> +               self.assertContains('# Subtest: example', result)
+> +               self.assertContains('1..2', result)
+> +               self.assertContains('ok 1 - example_simple_test', result)
+> +               self.assertContains('ok 2 - example_mock_test', result)
+>                 self.assertContains('ok 1 - example', result)
+>
+>         def test_output_with_prefix_isolated_correctly(self):
+> @@ -118,28 +118,28 @@ class KUnitParserTest(unittest.TestCase):
+>                 with open(log_path) as file:
+>                         result = kunit_parser.extract_tap_lines(file.readlines())
+>                 self.assertContains('TAP version 14', result)
+> -               self.assertContains('   # Subtest: kunit-resource-test', result)
+> -               self.assertContains('   1..5', result)
+> -               self.assertContains('   ok 1 - kunit_resource_test_init_resources', result)
+> -               self.assertContains('   ok 2 - kunit_resource_test_alloc_resource', result)
+> -               self.assertContains('   ok 3 - kunit_resource_test_destroy_resource', result)
+> -               self.assertContains(' foo bar   #', result)
+> -               self.assertContains('   ok 4 - kunit_resource_test_cleanup_resources', result)
+> -               self.assertContains('   ok 5 - kunit_resource_test_proper_free_ordering', result)
+> +               self.assertContains('# Subtest: kunit-resource-test', result)
+> +               self.assertContains('1..5', result)
+> +               self.assertContains('ok 1 - kunit_resource_test_init_resources', result)
+> +               self.assertContains('ok 2 - kunit_resource_test_alloc_resource', result)
+> +               self.assertContains('ok 3 - kunit_resource_test_destroy_resource', result)
+> +               self.assertContains('foo bar    #', result)
+> +               self.assertContains('ok 4 - kunit_resource_test_cleanup_resources', result)
+> +               self.assertContains('ok 5 - kunit_resource_test_proper_free_ordering', result)
+>                 self.assertContains('ok 1 - kunit-resource-test', result)
+> -               self.assertContains(' foo bar   # non-kunit output', result)
+> -               self.assertContains('   # Subtest: kunit-try-catch-test', result)
+> -               self.assertContains('   1..2', result)
+> -               self.assertContains('   ok 1 - kunit_test_try_catch_successful_try_no_catch',
+> +               self.assertContains('foo bar    # non-kunit output', result)
+> +               self.assertContains('# Subtest: kunit-try-catch-test', result)
+> +               self.assertContains('1..2', result)
+> +               self.assertContains('ok 1 - kunit_test_try_catch_successful_try_no_catch',
+>                                     result)
+> -               self.assertContains('   ok 2 - kunit_test_try_catch_unsuccessful_try_does_catch',
+> +               self.assertContains('ok 2 - kunit_test_try_catch_unsuccessful_try_does_catch',
+>                                     result)
+>                 self.assertContains('ok 2 - kunit-try-catch-test', result)
+> -               self.assertContains('   # Subtest: string-stream-test', result)
+> -               self.assertContains('   1..3', result)
+> -               self.assertContains('   ok 1 - string_stream_test_empty_on_creation', result)
+> -               self.assertContains('   ok 2 - string_stream_test_not_empty_after_add', result)
+> -               self.assertContains('   ok 3 - string_stream_test_get_string', result)
+> +               self.assertContains('# Subtest: string-stream-test', result)
+> +               self.assertContains('1..3', result)
+> +               self.assertContains('ok 1 - string_stream_test_empty_on_creation', result)
+> +               self.assertContains('ok 2 - string_stream_test_not_empty_after_add', result)
+> +               self.assertContains('ok 3 - string_stream_test_get_string', result)
+>                 self.assertContains('ok 3 - string-stream-test', result)
+>
+>         def test_parse_successful_test_log(self):
+> @@ -150,6 +150,22 @@ class KUnitParserTest(unittest.TestCase):
+>                         kunit_parser.TestStatus.SUCCESS,
+>                         result.status)
+>
+> +       def test_parse_successful_nested_tests_log(self):
+> +               all_passed_log = test_data_path('test_is_test_passed-all_passed_nested.log')
+> +               with open(all_passed_log) as file:
+> +                       result = kunit_parser.parse_run_tests(file.readlines())
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.SUCCESS,
+> +                       result.status)
+> +
+> +       def test_kselftest_nested(self):
+> +               kselftest_log = test_data_path('test_is_test_passed-kselftest.log')
+> +               with open(kselftest_log) as file:
+> +                       result = kunit_parser.parse_run_tests(file.readlines())
+> +                       self.assertEqual(
+> +                               kunit_parser.TestStatus.SUCCESS,
+> +                               result.status)
+> +
+>         def test_parse_failed_test_log(self):
+>                 failed_log = test_data_path('test_is_test_passed-failure.log')
+>                 with open(failed_log) as file:
+> @@ -163,17 +179,31 @@ class KUnitParserTest(unittest.TestCase):
+>                 with open(empty_log) as file:
+>                         result = kunit_parser.parse_run_tests(
+>                                 kunit_parser.extract_tap_lines(file.readlines()))
+> -               self.assertEqual(0, len(result.suites))
+> +               self.assertEqual(0, len(result.test.subtests))
+>                 self.assertEqual(
+>                         kunit_parser.TestStatus.FAILURE_TO_PARSE_TESTS,
+>                         result.status)
+>
+> +       def test_missing_test_plan(self):
+> +               missing_plan_log = test_data_path('test_is_test_passed-'
+> +                       'missing_plan.log')
+> +               with open(missing_plan_log) as file:
+> +                       result = kunit_parser.parse_run_tests(
+> +                               kunit_parser.extract_tap_lines(
+> +                               file.readlines()))
+> +               self.assertEqual(2, result.test.counts.errors)
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.SUCCESS,
+> +                       result.status)
+> +
+>         def test_no_tests(self):
+> -               empty_log = test_data_path('test_is_test_passed-no_tests_run_with_header.log')
+> -               with open(empty_log) as file:
+> +               header_log = test_data_path('test_is_test_passed-'
+> +                       'no_tests_run_with_header.log')
+> +               with open(header_log) as file:
+>                         result = kunit_parser.parse_run_tests(
+> -                               kunit_parser.extract_tap_lines(file.readlines()))
+> -               self.assertEqual(0, len(result.suites))
+> +                               kunit_parser.extract_tap_lines(
+> +                               file.readlines()))
+> +               self.assertEqual(0, len(result.test.subtests))
+>                 self.assertEqual(
+>                         kunit_parser.TestStatus.NO_TESTS,
+>                         result.status)
+> @@ -183,15 +213,17 @@ class KUnitParserTest(unittest.TestCase):
+>                 print_mock = mock.patch('builtins.print').start()
+>                 with open(crash_log) as file:
+>                         result = kunit_parser.parse_run_tests(
+> -                               kunit_parser.extract_tap_lines(file.readlines()))
+> -               print_mock.assert_any_call(StrContains('could not parse test results!'))
+> +                               kunit_parser.extract_tap_lines(
+> +                               file.readlines()))
+> +               print_mock.assert_any_call(StrContains('invalid KTAP input!'))
+>                 print_mock.stop()
+> -               self.assertEqual(0, len(result.suites))
+> +               self.assertEqual(0, len(result.test.subtests))
+>
+>         def test_crashed_test(self):
+>                 crashed_log = test_data_path('test_is_test_passed-crash.log')
+>                 with open(crashed_log) as file:
+> -                       result = kunit_parser.parse_run_tests(file.readlines())
+> +                       result = kunit_parser.parse_run_tests(
+> +                               file.readlines())
+>                 self.assertEqual(
+>                         kunit_parser.TestStatus.TEST_CRASHED,
+>                         result.status)
+> @@ -215,6 +247,23 @@ class KUnitParserTest(unittest.TestCase):
+>                         kunit_parser.TestStatus.SKIPPED,
+>                         result.status)
+>
+> +       def test_ignores_hyphen(self):
+> +               hyphen_log = test_data_path('test_strip_hyphen.log')
+> +               file = open(hyphen_log)
+> +               result = kunit_parser.parse_run_tests(file.readlines())
+> +
+> +               # A skipped test does not fail the whole suite.
+> +               self.assertEqual(
+> +                       kunit_parser.TestStatus.SUCCESS,
+> +                       result.status)
+> +               self.assertEqual(
+> +                       "sysctl_test",
+> +                       result.test.subtests[0].name)
+> +               self.assertEqual(
+> +                       "example",
+> +                       result.test.subtests[1].name)
+> +               file.close()
+> +
+>
+>         def test_ignores_prefix_printk_time(self):
+>                 prefix_log = test_data_path('test_config_printk_time.log')
+> @@ -223,7 +272,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.SUCCESS,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>         def test_ignores_multiple_prefixes(self):
+>                 prefix_log = test_data_path('test_multiple_prefixes.log')
+> @@ -232,7 +281,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.SUCCESS,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>         def test_prefix_mixed_kernel_output(self):
+>                 mixed_prefix_log = test_data_path('test_interrupted_tap_output.log')
+> @@ -241,7 +290,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.SUCCESS,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>         def test_prefix_poundsign(self):
+>                 pound_log = test_data_path('test_pound_sign.log')
+> @@ -250,7 +299,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.SUCCESS,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>         def test_kernel_panic_end(self):
+>                 panic_log = test_data_path('test_kernel_panic_interrupt.log')
+> @@ -259,7 +308,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.TEST_CRASHED,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>         def test_pound_no_prefix(self):
+>                 pound_log = test_data_path('test_pound_no_prefix.log')
+> @@ -268,7 +317,7 @@ class KUnitParserTest(unittest.TestCase):
+>                         self.assertEqual(
+>                                 kunit_parser.TestStatus.SUCCESS,
+>                                 result.status)
+> -                       self.assertEqual('kunit-resource-test', result.suites[0].name)
+> +                       self.assertEqual('kunit-resource-test', result.test.subtests[0].name)
+>
+>  class LinuxSourceTreeTest(unittest.TestCase):
+>
+> @@ -341,6 +390,12 @@ class KUnitJsonTest(unittest.TestCase):
+>                 result = self._json_for('test_is_test_passed-no_tests_run_with_header.log')
+>                 self.assertEqual(0, len(result['sub_groups']))
+>
+> +       def test_nested_json(self):
+> +               result = self._json_for('test_is_test_passed-all_passed_nested.log')
+> +               self.assertEqual(
+> +                       {'name': 'example_simple_test', 'status': 'PASS'},
+> +                       result["sub_groups"][0]["sub_groups"][0]["test_cases"][0])
+> +
+>  class StrContains(str):
+>         def __eq__(self, other):
+>                 return self in other
+> @@ -399,7 +454,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.assertEqual(e.exception.code, 1)
+>                 self.assertEqual(self.linux_source_mock.build_reconfig.call_count, 1)
+>                 self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
+> -               self.print_mock.assert_any_call(StrContains(' 0 tests run'))
+> +               self.print_mock.assert_any_call(StrContains('invalid KTAP input!'))
+>
+>         def test_exec_raw_output(self):
+>                 self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> @@ -407,7 +462,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
+>                 for call in self.print_mock.call_args_list:
+>                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+> -                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+> +                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run!')))
+>
+>         def test_run_raw_output(self):
+>                 self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> @@ -416,7 +471,7 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.assertEqual(self.linux_source_mock.run_kernel.call_count, 1)
+>                 for call in self.print_mock.call_args_list:
+>                         self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+> -                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+> +                       self.assertNotEqual(call, mock.call(StrContains(' 0 tests run!')))
+>
+>         def test_run_raw_output_kunit(self):
+>                 self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-all_passed_nested.log b/tools/testing/kunit/test_data/test_is_test_passed-all_passed_nested.log
+> new file mode 100644
+> index 000000000000..9d5b04fe43a6
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_is_test_passed-all_passed_nested.log
+> @@ -0,0 +1,34 @@
+> +TAP version 14
+> +1..2
+> +       # Subtest: sysctl_test
+> +       1..4
+> +       # sysctl_test_dointvec_null_tbl_data: sysctl_test_dointvec_null_tbl_data passed
+> +       ok 1 - sysctl_test_dointvec_null_tbl_data
+> +               # Subtest: example
+> +               1..2
+> +       init_suite
+> +               # example_simple_test: initializing
+> +               # example_simple_test: example_simple_test passed
+> +               ok 1 - example_simple_test
+> +               # example_mock_test: initializing
+> +               # example_mock_test: example_mock_test passed
+> +               ok 2 - example_mock_test
+> +       kunit example: all tests passed
+> +       ok 2 - example
+> +       # sysctl_test_dointvec_table_len_is_zero: sysctl_test_dointvec_table_len_is_zero passed
+> +       ok 3 - sysctl_test_dointvec_table_len_is_zero
+> +       # sysctl_test_dointvec_table_read_but_position_set: sysctl_test_dointvec_table_read_but_position_set passed
+> +       ok 4 - sysctl_test_dointvec_table_read_but_position_set
+> +kunit sysctl_test: all tests passed
+> +ok 1 - sysctl_test
+> +       # Subtest: example
+> +       1..2
+> +init_suite
+> +       # example_simple_test: initializing
+> +       # example_simple_test: example_simple_test passed
+> +       ok 1 - example_simple_test
+> +       # example_mock_test: initializing
+> +       # example_mock_test: example_mock_test passed
+> +       ok 2 - example_mock_test
+> +kunit example: all tests passed
+> +ok 2 - example
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-kselftest.log b/tools/testing/kunit/test_data/test_is_test_passed-kselftest.log
+> new file mode 100644
+> index 000000000000..65d3f27feaf2
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_is_test_passed-kselftest.log
+> @@ -0,0 +1,14 @@
+> +TAP version 13
+> +1..2
+> +# selftests: membarrier: membarrier_test_single_thread
+> +# TAP version 13
+> +# 1..2
+> +# ok 1 sys_membarrier available
+> +# ok 2 sys membarrier invalid command test: command = -1, flags = 0, errno = 22. Failed as expected
+> +ok 1 selftests: membarrier: membarrier_test_single_thread
+> +# selftests: membarrier: membarrier_test_multi_thread
+> +# TAP version 13
+> +# 1..2
+> +# ok 1 sys_membarrier available
+> +# ok 2 sys membarrier invalid command test: command = -1, flags = 0, errno = 22. Failed as expected
+> +ok 2 selftests: membarrier: membarrier_test_multi_thread
+> diff --git a/tools/testing/kunit/test_data/test_is_test_passed-missing_plan.log b/tools/testing/kunit/test_data/test_is_test_passed-missing_plan.log
+> new file mode 100644
+> index 000000000000..5cd17b7f818a
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_is_test_passed-missing_plan.log
+> @@ -0,0 +1,31 @@
+> +KTAP version 1
+> +       # Subtest: sysctl_test
+> +       # sysctl_test_dointvec_null_tbl_data: sysctl_test_dointvec_null_tbl_data passed
+> +       ok 1 - sysctl_test_dointvec_null_tbl_data
+> +       # sysctl_test_dointvec_table_maxlen_unset: sysctl_test_dointvec_table_maxlen_unset passed
+> +       ok 2 - sysctl_test_dointvec_table_maxlen_unset
+> +       # sysctl_test_dointvec_table_len_is_zero: sysctl_test_dointvec_table_len_is_zero passed
+> +       ok 3 - sysctl_test_dointvec_table_len_is_zero
+> +       # sysctl_test_dointvec_table_read_but_position_set: sysctl_test_dointvec_table_read_but_position_set passed
+> +       ok 4 - sysctl_test_dointvec_table_read_but_position_set
+> +       # sysctl_test_dointvec_happy_single_positive: sysctl_test_dointvec_happy_single_positive passed
+> +       ok 5 - sysctl_test_dointvec_happy_single_positive
+> +       # sysctl_test_dointvec_happy_single_negative: sysctl_test_dointvec_happy_single_negative passed
+> +       ok 6 - sysctl_test_dointvec_happy_single_negative
+> +       # sysctl_test_dointvec_single_less_int_min: sysctl_test_dointvec_single_less_int_min passed
+> +       ok 7 - sysctl_test_dointvec_single_less_int_min
+> +       # sysctl_test_dointvec_single_greater_int_max: sysctl_test_dointvec_single_greater_int_max passed
+> +       ok 8 - sysctl_test_dointvec_single_greater_int_max
+> +kunit sysctl_test: all tests passed
+> +ok 1 - sysctl_test
+> +       # Subtest: example
+> +       1..2
+> +init_suite
+> +       # example_simple_test: initializing
+> +       # example_simple_test: example_simple_test passed
+> +       ok 1 - example_simple_test
+> +       # example_mock_test: initializing
+> +       # example_mock_test: example_mock_test passed
+> +       ok 2 - example_mock_test
+> +kunit example: all tests passed
+> +ok 2 - example
+> diff --git a/tools/testing/kunit/test_data/test_strip_hyphen.log b/tools/testing/kunit/test_data/test_strip_hyphen.log
+> new file mode 100644
+> index 000000000000..92ac7c24b374
+> --- /dev/null
+> +++ b/tools/testing/kunit/test_data/test_strip_hyphen.log
+> @@ -0,0 +1,16 @@
+> +KTAP version 1
+> +1..2
+> +       # Subtest: sysctl_test
+> +       1..1
+> +       # sysctl_test_dointvec_null_tbl_data: sysctl_test_dointvec_null_tbl_data passed
+> +       ok 1 - sysctl_test_dointvec_null_tbl_data
+> +kunit sysctl_test: all tests passed
+> +ok 1 - sysctl_test
+> +       # Subtest: example
+> +       1..1
+> +init_suite
+> +       # example_simple_test: initializing
+> +       # example_simple_test: example_simple_test passed
+> +       ok 1 example_simple_test
+> +kunit example: all tests passed
+> +ok 2 example
+>
+> base-commit: e7198adb84dcad671ad4f0e90aaa7e9fabf258dc
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
