@@ -2,86 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C845F427C9A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C13427C9F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230194AbhJISTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53454 "EHLO
+        id S229821AbhJIS0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhJISTp (ORCPT
+        with ESMTP id S229558AbhJIS0P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:19:45 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F4DC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 11:17:48 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id j8so1696507ila.11
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:17:48 -0700 (PDT)
+        Sat, 9 Oct 2021 14:26:15 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CDDC061570;
+        Sat,  9 Oct 2021 11:24:18 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c29so11000905pfp.2;
+        Sat, 09 Oct 2021 11:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=uBupTRvdbvrPYWfcioDH+Rupm0D6631B5wClCxA7h5s=;
-        b=VsIRkK1A2ncOzz8Wg87HvQAYGTH0+Q2uCpNOB58Vr8TiZCEbGawMjza09jhM3UTA00
-         GYDxjWUMNbgbCY+MMa2qWoGQ0+Wat2Z6xak6i8Spp7vE2Wkn4NoI7C++4tldL8GwLRqW
-         fkQJV+Z5o4sMJlCFam9zW57TmYcwcEze68WNpLpvLybf4aJ4B5BYo0Z52I4WKnQaC1Uk
-         vRCJAHB4gcrrlEvJg5TV/QCpr0K98wKry9uasUjKXEMMXYN4j9iC7plbPWPzXAZmtyoa
-         zKAqZvnIBaFLVfLzEE4W0T7E8FaLPQybdR34emlMut0figHD199sxF4orasHsfjlpkaZ
-         DAPA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wthCRwj5FH0koGyinZmaCCCkEb1uAurioH4UJCJCixU=;
+        b=beKPGyt0BjgYrdBFh5k6xvgvcHMx6EZdeVoOAzL12s+L+ASt6sOJk5AV4qJiXvVPaN
+         4X3RhIEicAa8cJ53Bg4PiRgmM5NTHgpq+XMyoPDpM34bxoyfEJtychNRtj5cmp7I0GmP
+         +h/GNk9VfP/tFto8+fQSed7ZK1DsZNJxj8qQSdY5LAYWYwatxJOfT3gutz7CJXw3cHCh
+         CxDBCfd6QKLNh4UheIvk0rFsZZYQ3aihkBc1e9Zuho0ptXYKhDrJBZtubKDEytif3B3J
+         rxWbGbD68BPbNVnmoKgtO23IXXkqjNaalu9C2shcDRnMeKJeKZZinoRq54e/pKV9cR9X
+         +45Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=uBupTRvdbvrPYWfcioDH+Rupm0D6631B5wClCxA7h5s=;
-        b=w7WBtumRf+krXemnvKXVvs+8/kDgKf6gxngFkCTSSG5yca8+9ijKbMnkOZAArahkcP
-         Q1XZUBr5unduXAzTFcoyephyUli7X/RwthPeaaTJdw91r1RTj5xRHet8Sptr8nS7OcDY
-         f8wEB9aGLsriHDIOZak4a5OH6qI8J6Fwy8NUa7rPW4ExqlMbXBlUAuVEhziOEMcc9ajc
-         9bYeVCOKEnJaKzCL0a/2WbVp7s91Lf+kZR+3171iWD3ZTems+GYHF2NzrkpH7reyaiBk
-         5CwBk3Q8RFEXCfiuzm1AlINWgy4thw/vseczU0a1zGvMmZERmvE+2rjT/uqKIr8QdCXF
-         Ma7Q==
-X-Gm-Message-State: AOAM530KbpNJrTRTks99IeWuuJEsnvh4QOy/1RHo7fP7+OZCDJ+dNCBj
-        aE/I6hv1RLDlCUOtVIapySx5ecXivFXkrxIrlA==
-X-Google-Smtp-Source: ABdhPJy5LY2n+vMWNXRe4EOn7XHYUW9oPhypLVh6S9JoH0c5tAIhmjD7f8cA4quazIofemDOBThAB7AtMhtX8sEQ73M=
-X-Received: by 2002:a05:6e02:214b:: with SMTP id d11mr12768397ilv.305.1633803467994;
- Sat, 09 Oct 2021 11:17:47 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wthCRwj5FH0koGyinZmaCCCkEb1uAurioH4UJCJCixU=;
+        b=lbITFF4legeWKQIOy+SKVv9UgDkKWJj1Ozgv6MS5ywW9G1t6ZUfZOGmGUmrlrI13Nk
+         7lECE6liCteS7K8R2OhB+ijpVFGnr6jxoYNpUhxNkLjYT7e2Qmxm6U2w5aBjiYVsqZMN
+         yFuJvqtFCl6p9ajEX759kHYk47bVbatm4QHk9WDzCAAAshKAaT6EL1VppPufTxcStoSO
+         BopPNFt0bAN9w0Dc6fdbE/H1KMv77ugd1UnFjIYMDYm7fqoD7gkQGfui26Mo11eXfAy9
+         ARGjMmPhsWiZ1jGjRnyrNdwkyqBIRxFDBTRslBhJ0pja4vRUVHu7WNWgrgUHoZsBT9x5
+         fAzg==
+X-Gm-Message-State: AOAM533ZzhE+ZoWhBn5ZnzKrzgh48O+anszKAd7gGdLYNQdCv0fxf7x5
+        Z8TAhZe6/POm8OOpY659iXs=
+X-Google-Smtp-Source: ABdhPJw5F9+eyK2he1Qb0U9apf8QXbpO0qOB9KQu8twm22KQk3dB6RXQSFpJ6YZ+72rk0+1jApWQ5A==
+X-Received: by 2002:a62:b50d:0:b0:44b:b81f:a956 with SMTP id y13-20020a62b50d000000b0044bb81fa956mr16284052pfe.27.1633803857535;
+        Sat, 09 Oct 2021 11:24:17 -0700 (PDT)
+Received: from hoboy.vegasvil.org ([2601:645:c000:2163:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id rm6sm2851075pjb.18.2021.10.09.11.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 11:24:16 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 11:24:14 -0700
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Sebastien Laveze <sebastien.laveze@oss.nxp.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yangbo.lu@nxp.com, yannick.vignon@oss.nxp.com,
+        rui.sousa@oss.nxp.com
+Subject: Re: [PATCH net-next] ptp: add vclock timestamp conversion IOCTL
+Message-ID: <20211009182414.GB21759@hoboy.vegasvil.org>
+References: <20210927145916.GA9549@hoboy.vegasvil.org>
+ <b9397ec109ca1055af74bd8f20be8f64a7a1c961.camel@oss.nxp.com>
+ <20210927202304.GC11172@hoboy.vegasvil.org>
+ <98a91f5889b346f7a3b347bebb9aab56bddfd6dc.camel@oss.nxp.com>
+ <20210928133100.GB28632@hoboy.vegasvil.org>
+ <0941a4ea73c496ab68b24df929dcdef07637c2cd.camel@oss.nxp.com>
+ <20210930143527.GA14158@hoboy.vegasvil.org>
+ <fea51ae9423c07e674402047851dd712ff1733bb.camel@oss.nxp.com>
+ <20211007201927.GA9326@hoboy.vegasvil.org>
+ <768227b1f347cb1573efb1b5f6c642e2654666ba.camel@oss.nxp.com>
 MIME-Version: 1.0
-Received: by 2002:ac0:fd2c:0:0:0:0:0 with HTTP; Sat, 9 Oct 2021 11:17:47 -0700 (PDT)
-Reply-To: jennehkandeh@yahoo.com
-From:   Jenneh Kandeh <mmamieshimirah@gmail.com>
-Date:   Sat, 9 Oct 2021 11:17:47 -0700
-Message-ID: <CAEQZFm17B79adqzjq8FQ2PTUPayEymySpLX5NAeay=GqMqp7Qw@mail.gmail.com>
-Subject: Re: Regarding Of My Late Father's Fund $10,200,000
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <768227b1f347cb1573efb1b5f6c642e2654666ba.camel@oss.nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dear,
+On Fri, Oct 08, 2021 at 09:13:58AM +0200, Sebastien Laveze wrote:
+> On Thu, 2021-10-07 at 13:19 -0700, Richard Cochran wrote:
 
-I got your contact through the internet due to serious searching for a
-reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
-Sierra Leone. Time of opposed to the government of President Ahmad
-Tejan Kebbah the ex-leader.
+> > If two independent processes are both adjusting a clock concurrently,
+> > asynchronously, and at different control rates, the result will be
+> > chaos.
+> 
+> This is especially what we want to prove feasible and we think it's
+> posssible with the following conditions:
+> -limited frequency adjustments
+> -offset adjustment in software
 
-Since 21st November, 2005 But I am current residing in Porto-Novo
-Benin due to war of my country, my mother killed on 04/01/2002 for
-Sierra Leone civilian war my father decided to change another
-residence country with me because I am only child for my family bad
-news that my father passed away on 25/11/2018.
+Sorry, the kernel still must function correctly, even when user space
+does crazy stuff.
 
-During the war, My father made a lot of money through the illegal
-sales of Diamonds. To the tune of $10,200,000. This money is currently
-and secretly kept in ECOWAS security company here in Benin, but
-because of the political turmoil which still exists here in Africa, I
-can not invest the money by myself, hence am soliciting your help to
-help me take these funds into your custody and also advise me on how
-to invest it.
+> > It does not matter that it *might* work for some random setup of
+> > yours.
+> > 
+> > The kernel has to function correctly in general, not just in some
+> > special circumstances.
+> 
+> Of course, so what tests and measurements can we bring on the table to
+> convince you that it doesn't lead to chaos ?
 
-And I want to add here that if agreed 35% of the total worth of the
-fund will be yours minus your total expenses incurred during the
-clearing of the fund in
-Porto Novo Benin that 35% is a $3,570,000 I would like to invest on
-heavy duty agricultural equipment and earth moving machines to enable
-me go into a full scale mechanized farming.
+Show that it always works, even with worst case crazy adjustments.
 
-While l wait to hear from you soon, my warm regards to you and your family
+Thanks,
+Richard
