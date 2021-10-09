@@ -2,231 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A623427C56
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF32427C59
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhJIRWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 13:22:21 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48333 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhJIRWU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 13:22:20 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 938581C0002;
-        Sat,  9 Oct 2021 17:20:20 +0000 (UTC)
-Subject: Re: [PATCH v7 1/3] riscv: Introduce CONFIG_RELOCATABLE
-To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-References: <20211009171259.2515351-1-alexandre.ghiti@canonical.com>
- <20211009171259.2515351-2-alexandre.ghiti@canonical.com>
-From:   Alexandre ghiti <alex@ghiti.fr>
-Message-ID: <a6223864-7263-5450-0890-0f05a137d8c2@ghiti.fr>
-Date:   Sat, 9 Oct 2021 19:20:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S232787AbhJIRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 13:22:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58408 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229928AbhJIRWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 13:22:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JA/9DYJu3KwR5i2N9Fs5uKDbKHpeiznfL7FRQ+x+5cc=; b=olUzjFa5mVDAx4v9YaY2wAqcvS
+        hn4tnVvIEQYtpPD+ESJtRJJT7mALqmwLUxK8c4npP+xq4FkCxyRefZ/RA8iDDc09h54I9YjLAH0Tg
+        9E7WNyNJJjBvx3Vbplq92fVaP9lArdk3qfkTpx2dOnpuV5NtY8yvlYI4wqRJGZtD4I60=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mZG1h-00AANy-D7; Sat, 09 Oct 2021 19:20:49 +0200
+Date:   Sat, 9 Oct 2021 19:20:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 13/15] dt-bindings: net: dsa: qca8k: document
+ open drain binding
+Message-ID: <YWHPccukYpemv77x@lunn.ch>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-14-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211009171259.2515351-2-alexandre.ghiti@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008002225.2426-14-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arf, I have sent this patchset with the wrong email address. @Palmer
-tell me if you want me to resend it correctly.
-
-Thanks,
-
-Alex
-
-On 10/9/21 7:12 PM, Alexandre Ghiti wrote:
-> From: Alexandre Ghiti <alex@ghiti.fr>
->
-> This config allows to compile 64b kernel as PIE and to relocate it at
-> any virtual address at runtime: this paves the way to KASLR.
-> Runtime relocation is possible since relocation metadata are embedded into
-> the kernel.
->
-> Note that relocating at runtime introduces an overhead even if the
-> kernel is loaded at the same address it was linked at and that the compiler
-> options are those used in arm64 which uses the same RELA relocation
-> format.
->
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+On Fri, Oct 08, 2021 at 02:22:23AM +0200, Ansuel Smith wrote:
+> Document new binding qca,power_on_sel used to enable Power-on-strapping
+> select reg and qca,led_open_drain to set led to open drain mode.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->  arch/riscv/Kconfig              | 12 ++++++++
->  arch/riscv/Makefile             |  7 +++--
->  arch/riscv/kernel/vmlinux.lds.S |  6 ++++
->  arch/riscv/mm/Makefile          |  4 +++
->  arch/riscv/mm/init.c            | 54 ++++++++++++++++++++++++++++++++-
->  5 files changed, 80 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index ea16fa2dd768..043ba92559fa 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -213,6 +213,18 @@ config PGTABLE_LEVELS
->  config LOCKDEP_SUPPORT
->  	def_bool y
+>  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> index b9cccb657373..9fb4db65907e 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> @@ -13,6 +13,17 @@ Required properties:
+>  Optional properties:
 >  
-> +config RELOCATABLE
-> +	bool
-> +	depends on MMU && 64BIT && !XIP_KERNEL
-> +	help
-> +          This builds a kernel as a Position Independent Executable (PIE),
-> +          which retains all relocation metadata required to relocate the
-> +          kernel binary at runtime to a different virtual address than the
-> +          address it was linked at.
-> +          Since RISCV uses the RELA relocation format, this requires a
-> +          relocation pass at runtime even if the kernel is loaded at the
-> +          same address it was linked at.
-> +
->  source "arch/riscv/Kconfig.socs"
->  source "arch/riscv/Kconfig.erratas"
->  
-> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-> index 0eb4568fbd29..2f509915f246 100644
-> --- a/arch/riscv/Makefile
-> +++ b/arch/riscv/Makefile
-> @@ -9,9 +9,12 @@
->  #
->  
->  OBJCOPYFLAGS    := -O binary
-> -LDFLAGS_vmlinux :=
-> +ifeq ($(CONFIG_RELOCATABLE),y)
-> +	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext -z norelro
-> +	KBUILD_CFLAGS += -fPIE
-> +endif
->  ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
-> -	LDFLAGS_vmlinux := --no-relax
-> +	LDFLAGS_vmlinux += --no-relax
->  	KBUILD_CPPFLAGS += -DCC_USING_PATCHABLE_FUNCTION_ENTRY
->  	CC_FLAGS_FTRACE := -fpatchable-function-entry=8
->  endif
-> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
-> index 5104f3a871e3..862a8c09723c 100644
-> --- a/arch/riscv/kernel/vmlinux.lds.S
-> +++ b/arch/riscv/kernel/vmlinux.lds.S
-> @@ -133,6 +133,12 @@ SECTIONS
->  
->  	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
->  
-> +	.rela.dyn : ALIGN(8) {
-> +		__rela_dyn_start = .;
-> +		*(.rela .rela*)
-> +		__rela_dyn_end = .;
-> +	}
-> +
->  #ifdef CONFIG_EFI
->  	. = ALIGN(PECOFF_SECTION_ALIGNMENT);
->  	__pecoff_data_virt_size = ABSOLUTE(. - __pecoff_text_end);
-> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
-> index 7ebaef10ea1b..2d33ec574bbb 100644
-> --- a/arch/riscv/mm/Makefile
-> +++ b/arch/riscv/mm/Makefile
-> @@ -1,6 +1,10 @@
->  # SPDX-License-Identifier: GPL-2.0-only
->  
->  CFLAGS_init.o := -mcmodel=medany
-> +ifdef CONFIG_RELOCATABLE
-> +CFLAGS_init.o += -fno-pie
-> +endif
-> +
->  ifdef CONFIG_FTRACE
->  CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index c0cddf0fc22d..42041c12d496 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -20,6 +20,9 @@
->  #include <linux/dma-map-ops.h>
->  #include <linux/crash_dump.h>
->  #include <linux/hugetlb.h>
-> +#ifdef CONFIG_RELOCATABLE
-> +#include <linux/elf.h>
-> +#endif
->  
->  #include <asm/fixmap.h>
->  #include <asm/tlbflush.h>
-> @@ -103,7 +106,7 @@ static void __init print_vm_layout(void)
->  	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
->  		  (unsigned long)high_memory);
->  #ifdef CONFIG_64BIT
-> -	print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
-> +	print_mlm("kernel", (unsigned long)kernel_map.virt_addr,
->  		  (unsigned long)ADDRESS_SPACE_END);
->  #endif
->  }
-> @@ -518,6 +521,44 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
->  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
->  #endif
->  
-> +#ifdef CONFIG_RELOCATABLE
-> +extern unsigned long __rela_dyn_start, __rela_dyn_end;
-> +
-> +static void __init relocate_kernel(void)
-> +{
-> +	Elf64_Rela *rela = (Elf64_Rela *)&__rela_dyn_start;
-> +	/*
-> +	 * This holds the offset between the linked virtual address and the
-> +	 * relocated virtual address.
-> +	 */
-> +	uintptr_t reloc_offset = kernel_map.virt_addr - KERNEL_LINK_ADDR;
-> +	/*
-> +	 * This holds the offset between kernel linked virtual address and
-> +	 * physical address.
-> +	 */
-> +	uintptr_t va_kernel_link_pa_offset = KERNEL_LINK_ADDR - kernel_map.phys_addr;
-> +
-> +	for ( ; rela < (Elf64_Rela *)&__rela_dyn_end; rela++) {
-> +		Elf64_Addr addr = (rela->r_offset - va_kernel_link_pa_offset);
-> +		Elf64_Addr relocated_addr = rela->r_addend;
-> +
-> +		if (rela->r_info != R_RISCV_RELATIVE)
-> +			continue;
-> +
-> +		/*
-> +		 * Make sure to not relocate vdso symbols like rt_sigreturn
-> +		 * which are linked from the address 0 in vmlinux since
-> +		 * vdso symbol addresses are actually used as an offset from
-> +		 * mm->context.vdso in VDSO_OFFSET macro.
-> +		 */
-> +		if (relocated_addr >= KERNEL_LINK_ADDR)
-> +			relocated_addr += reloc_offset;
-> +
-> +		*(Elf64_Addr *)addr = relocated_addr;
-> +	}
-> +}
-> +#endif /* CONFIG_RELOCATABLE */
-> +
->  #ifdef CONFIG_XIP_KERNEL
->  static void __init create_kernel_page_table(pgd_t *pgdir,
->  					    __always_unused bool early)
-> @@ -625,6 +666,17 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->  	BUG_ON((kernel_map.virt_addr + kernel_map.size) > ADDRESS_SPACE_END - SZ_4K);
->  #endif
->  
-> +#ifdef CONFIG_RELOCATABLE
-> +	/*
-> +	 * Early page table uses only one PGDIR, which makes it possible
-> +	 * to map PGDIR_SIZE aligned on PGDIR_SIZE: if the relocation offset
-> +	 * makes the kernel cross over a PGDIR_SIZE boundary, raise a bug
-> +	 * since a part of the kernel would not get mapped.
-> +	 */
-> +	BUG_ON(PGDIR_SIZE - (kernel_map.virt_addr & (PGDIR_SIZE - 1)) < kernel_map.size);
-> +	relocate_kernel();
-> +#endif
-> +
->  	pt_ops.alloc_pte = alloc_pte_early;
->  	pt_ops.get_pte_virt = get_pte_virt_early;
->  #ifndef __PAGETABLE_PMD_FOLDED
+>  - reset-gpios: GPIO to be used to reset the whole device
+> +- qca,ignore-power-on-sel: Ignore power on pin strapping to configure led open
+> +                           drain or eeprom presence.
+
+So strapping is only used for LEDs and EEPROM presence? Nothing else?
+Seems link MAC0/MAC6 swap would be a good candidate for strapping?
+
+I just want to make it clear that if you select this option, you need
+to take care of X, Y and Z in DT.
+
+	Andrew
