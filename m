@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F297A4275FC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AEB427600
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244454AbhJICPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 22:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38322 "EHLO
+        id S244548AbhJICP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 22:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244341AbhJICPd (ORCPT
+        with ESMTP id S244222AbhJICPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:15:33 -0400
+        Fri, 8 Oct 2021 22:15:35 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A63DAC06178C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:13:19 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id j193-20020a2523ca000000b005b789d71d9aso14934817ybj.21
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:13:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0515CC061797
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:13:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id f8-20020a2585480000b02905937897e3daso15198405ybn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:13:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=v9oEyavsvbZNuuh7Q+PKViZhWtX7WRERjDZsEYQR4V4=;
-        b=SCbmKo34lA8oU3dDYTZHOvAjjDoLBR2GtJ37FhHZtdcyaf6gZ6bVC5uP3+oE2UTrpm
-         SJ1/Of1dkXNWhoAvrrrc0TBpKSCl7QbMbUP05V4KS7XrfFN5yznrDd3S3rpM+VJAfNxW
-         sgJsB3R3InfKb1YxSdio9cjUyN5vLtdRPSuiKEuzXF8FYwyexaMMd9+vSRILinVV6qSV
-         xoprkuvodBmblmVDAvTCkF2/PUTZlIljlA8Ho6n+DzaVU4wysVfev3JmNpwSBGxwUiGy
-         zAM+39D7BSF2N/tsIW4ULNBWFxHAGE3XzfEwYZiASKhZBF1Ybs3+4AJhw+TkNz0XHMRV
-         DQvQ==
+        bh=iENfBAERukntPY2X5QGQTh9qzr8Td2a/eMmZN0gkPVI=;
+        b=DzCx6d3mDseqABvdcGbaVVyn1eWP9DyM0ptlZC0Av6M11xsmwM4hDygp2I9SRsOTlD
+         CaLslZ/5tpgFn7ZGK8Q+oAp/z+7Kry0ksTb1JHhzjTahq7Wh+o5eGwzQrJzYlowAOZ48
+         VNCB+jXgqhl1lAdIBlzi52PfjMMWOIp8/GrzMp+AjpBgmC/UstMbkG/AsaR/Zi/J2Jar
+         o4OtrA3m//aakuHjWV9VK3H1BLYWwyP3onVfEMCmc4KxgicKakfGDgJSztgcePWQk2I1
+         bTHWhpYvVB73G/ZnG29ntm8kUxVEF6vAxFCPnskmCGo64vtpSvX8eFpV4pMmLiFClOgf
+         jaMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=v9oEyavsvbZNuuh7Q+PKViZhWtX7WRERjDZsEYQR4V4=;
-        b=zWzOqxRYx0m+rYH63TSuABTd4poIoYi3a9jz2Z8hSGDMB5Coyhjh0h/jNgaM8iweSp
-         hyd6Ss23lisSmKZ1bps15yxXg8xOqtKyEoLAB7R/V0G/MWv+8Ai71qMjHNl8CmO3I3yk
-         1EkQImbSwyBAUNbznm2s/HZVBnvjfHYf8yJIQ7TGfxu7NtxiaIPKn1rn45YGUi5nro7K
-         2zaF4XQmP9tJVkR3U/+64i8A9bvW8FV/xLbzapip82kSnbHEU+5FytXdwcD8MK4Cdgwl
-         Bzk89BRVBksE6ZzzOzvGAxl3LFhICOrag4thKn8grTgrNtQPtHqUqXMu687+rv4Ir1VC
-         IJNw==
-X-Gm-Message-State: AOAM533RnARcDKvRqZE0MrdHxyOP9ZWB/PAb5K8rs7Wy+LIcUIiyCpoJ
-        1PAjOn7CRZDDtmV8aYT0sXVhHwlsMwE=
-X-Google-Smtp-Source: ABdhPJwUqQu18tVTrfSb9It/bTdj70+Yz1bQzfPNIbddjOrg1SwRs7KNWGr+9IBciM02rc1wp9LnG/EuPwQ=
+        bh=iENfBAERukntPY2X5QGQTh9qzr8Td2a/eMmZN0gkPVI=;
+        b=cdwBLH6Yyv/N6nNzBOG9yNKAtHjuuRAjXyi5vCMqRC4wz8ErDbPP2UwoWnNSXwTyd5
+         Cr7e3ZqONDS8/evO+/17HQ3LoSsOtl7eyIBIwSAx70gRiujpBQwX+ZDPzPP7BJpLgQ1s
+         tRAhhk/BXAdpAuxWGOuMMY+PbNJDSacWyE1/IAPJgkLvnT/0LytBohYssl+wDiohhd2x
+         Qb/jefsUCFFZzfLsnA+KkXqSsB69QdYlPB8q20x89301KCFVdJOGKUmfMf6O9ki8muTT
+         Iz8FB2DzE68lE4+S6ewgXobiel/jCY0V33+I3bLLEoXQ4UaYS3cdZSrpNlWxny0PMyms
+         k9Zg==
+X-Gm-Message-State: AOAM533O34oIsj8x+AE0xhyo0jdB1eKYxoRg1TrvGZYC/Z3gBlLqjDjD
+        AuNJ87P0QMUb9ne9JSpJXdlIpURHZqk=
+X-Google-Smtp-Source: ABdhPJzWNw6k/Tym0AlNYDL00dpB0fqVjcBxlLLKgA5wVnQqHXg+hyQOuiK3gpCLlIvGNpb1Xv6thLhfBP8=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:e39b:6333:b001:cb])
- (user=seanjc job=sendgmr) by 2002:a25:4cc3:: with SMTP id z186mr7298391yba.212.1633745598902;
- Fri, 08 Oct 2021 19:13:18 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:bb93:: with SMTP id y19mr7661688ybg.266.1633745601224;
+ Fri, 08 Oct 2021 19:13:21 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Oct 2021 19:12:08 -0700
+Date:   Fri,  8 Oct 2021 19:12:09 -0700
 In-Reply-To: <20211009021236.4122790-1-seanjc@google.com>
-Message-Id: <20211009021236.4122790-16-seanjc@google.com>
+Message-Id: <20211009021236.4122790-17-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211009021236.4122790-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v2 15/43] KVM: stats: Add stat to detect if vcpu is currently blocking
+Subject: [PATCH v2 16/43] KVM: Don't redo ktime_get() when calculating
+ halt-polling stop/deadline
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -88,75 +89,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jing Zhang <jingzhangos@google.com>
+Calculate the halt-polling "stop" time using "cur" instead of redoing
+ktime_get().  In the happy case where hardware correctly predicts
+do_halt_poll, "cur" is only a few cycles old.  And if the branch is
+mispredicted, arguably that extra latency should count toward the
+halt-polling time.
 
-Add a "blocking" stat that userspace can use to detect the case where a
-vCPU is not being run because of an vCPU/guest action, e.g. HLT or WFS on
-x86, WFI on arm64, etc...  Current guest/host/halt stats don't show this
-well, e.g. if a guest halts for a long period of time then the vCPU could
-could appear pathologically blocked due to a host condition, when in
-reality the vCPU has been put into a not-runnable state by the guest.
+In all likelihood, the numbers involved are in the noise and either
+approach is perfectly ok.
 
-Originally-by: Cannon Matthews <cannonmatthews@google.com>
-Suggested-by: Sean Christopherson <seanjc@google.com>
 Reviewed-by: David Matlack <dmatlack@google.com>
-Signed-off-by: Jing Zhang <jingzhangos@google.com>
-[sean: renamed stat to "blocking", massaged changelog]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- include/linux/kvm_host.h  | 3 ++-
- include/linux/kvm_types.h | 1 +
- virt/kvm/kvm_main.c       | 4 ++++
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ virt/kvm/kvm_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 2d837e06eeec..bdaa0e70b060 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1462,7 +1462,8 @@ struct _kvm_stats_desc {
- 	STATS_DESC_LOGHIST_TIME_NSEC(VCPU_GENERIC, halt_poll_fail_hist,	       \
- 			HALT_POLL_HIST_COUNT),				       \
- 	STATS_DESC_LOGHIST_TIME_NSEC(VCPU_GENERIC, halt_wait_hist,	       \
--			HALT_POLL_HIST_COUNT)
-+			HALT_POLL_HIST_COUNT),				       \
-+	STATS_DESC_ICOUNTER(VCPU_GENERIC, blocking)
- 
- extern struct dentry *kvm_debugfs_dir;
- 
-diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
-index 2237abb93ccd..c4f9257bf32d 100644
---- a/include/linux/kvm_types.h
-+++ b/include/linux/kvm_types.h
-@@ -94,6 +94,7 @@ struct kvm_vcpu_stat_generic {
- 	u64 halt_poll_success_hist[HALT_POLL_HIST_COUNT];
- 	u64 halt_poll_fail_hist[HALT_POLL_HIST_COUNT];
- 	u64 halt_wait_hist[HALT_POLL_HIST_COUNT];
-+	u64 blocking;
- };
- 
- #define KVM_STATS_NAME_SIZE	48
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 42894ff7c474..a36ccdc93a72 100644
+index a36ccdc93a72..481e8178b43d 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -3211,6 +3211,8 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 	struct rcuwait *wait = kvm_arch_vcpu_get_wait(vcpu);
- 	bool waited = false;
+@@ -3272,7 +3272,7 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
  
-+	vcpu->stat.generic.blocking = 1;
-+
- 	kvm_arch_vcpu_blocking(vcpu);
+ 	start = cur = poll_end = ktime_get();
+ 	if (do_halt_poll) {
+-		ktime_t stop = ktime_add_ns(ktime_get(), vcpu->halt_poll_ns);
++		ktime_t stop = ktime_add_ns(cur, vcpu->halt_poll_ns);
  
- 	prepare_to_rcuwait(wait);
-@@ -3227,6 +3229,8 @@ bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 
- 	kvm_arch_vcpu_unblocking(vcpu);
- 
-+	vcpu->stat.generic.blocking = 0;
-+
- 	return waited;
- }
- 
+ 		do {
+ 			/*
 -- 
 2.33.0.882.g93a45727a2-goog
 
