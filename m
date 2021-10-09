@@ -2,83 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEF4427756
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929E4427758
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230264AbhJIEhS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Oct 2021 00:37:18 -0400
-Received: from smtp179.sjtu.edu.cn ([202.120.2.179]:48300 "EHLO
-        smtp179.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIEhR (ORCPT
+        id S231468AbhJIEhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhJIEhh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:37:17 -0400
-Received: from mta04.sjtu.edu.cn (mta04.sjtu.edu.cn [202.121.179.8])
-        by smtp179.sjtu.edu.cn (Postfix) with ESMTPS id 34EFE100888DA;
-        Sat,  9 Oct 2021 12:35:18 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id 083D0185F5239;
-        Sat,  9 Oct 2021 12:35:18 +0800 (CST)
-X-Virus-Scanned: amavisd-new at mta04.sjtu.edu.cn
-Received: from mta04.sjtu.edu.cn ([127.0.0.1])
-        by localhost (mta04.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jtfBzz9G5XvD; Sat,  9 Oct 2021 12:35:17 +0800 (CST)
-Received: from mstore105.sjtu.edu.cn (unknown [10.118.0.105])
-        by mta04.sjtu.edu.cn (Postfix) with ESMTP id C0ABB1805DA80;
-        Sat,  9 Oct 2021 12:35:17 +0800 (CST)
-Date:   Sat, 9 Oct 2021 12:35:17 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     Joe Perches <joe@perches.com>
-Cc:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1054322431.5783331.1633754117686.JavaMail.zimbra@sjtu.edu.cn>
-In-Reply-To: <5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>
-References: <20211009030254.205714-1-qtxuning1999@sjtu.edu.cn> <5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>
-Subject: Re: [PATCH] scsi scsi_transport_iscsi.c: fix misuse of %llu in
- scsi_transport_iscsi.c
+        Sat, 9 Oct 2021 00:37:37 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1EEC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:35:40 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id i20so27462434edj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:35:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nGvUYvbmK0K5Ldg7vRbKHacSlMzqBKNjyJWApImR3yg=;
+        b=WlVDYqNW/Ch7MBfrrhDWNKf1VGGe4MUo6pYqqSe7/aDzZf+I1Jjgn6sOrC9TXCioRw
+         DNhBhT25m5uIAbpVtd3e1NDiNp5zVxQRWW42T8TQBCageHAloYEoZDVt22YP5R5AGcNk
+         CfCcWert2uTBW/mJFlKIAEL0ATdHqHQ/j+zNGyfyHdTpn5gBPaOAzMlakJa+iYGJzKAC
+         baSMIHznGNNjg043PGT0GB4lZt+Z7X9e1IlvGkM8wGCVE1dmORt0qKOxM+vLD1XM8Do6
+         qucvgVFK8btS8yVxJ6woXequfFtYPSnbkayjInsOaG5NdrHsTvGt6rxckYJBqSrqTu5h
+         0ZLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nGvUYvbmK0K5Ldg7vRbKHacSlMzqBKNjyJWApImR3yg=;
+        b=hALzU25hF2qSBRaX/acgroNq93pTxK2SCBzofn9nfunKVVJA3H8B05ro7FWU/SjXs4
+         swSAmqY/pD2Ww6WN31opC/g4DHRbZN8RYQWEdzcR1GBLmdcGIwX6SjYJsSS7z+4cJKVS
+         AfGm4glmrdl3tBml6zbVSq6lfgsMFrJMJdl9Sy/5MK8MlWWjiYru/j1VHwDOtjUegDlm
+         dsMRNHCu/JpDuuNWsk8pSOlgDnPQ47xnJppnnzUanM1NNde4xDkjt7lHtAhAKgTn7WTX
+         cxQYz+tJ96o1rIpU2zpW1kpmVnZMNWO76PP1AKTc4V2n3p93zwyVwOt5gU7H2OMScRYw
+         8btA==
+X-Gm-Message-State: AOAM530kd5a4U9WA9SeUp4aRJPjYV8vLcxjjRTEpXzh1SIudfatSn5WU
+        68yQ+noqLYGqydUPgdZvvUfAkovUrYFazk3N9dkTMA==
+X-Google-Smtp-Source: ABdhPJybdjXOrnJxYGywpVwFJ9wR5rOXxImb5yLnv54kZvhAAUaus8FDEzaXnAO5dtkfXUXwgHBddYZU3eNILz91ZAs=
+X-Received: by 2002:a17:906:82c8:: with SMTP id a8mr9329583ejy.384.1633754139245;
+ Fri, 08 Oct 2021 21:35:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.166.42.95]
-X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - GC91 (Linux)/8.8.15_GA_3928)
-Thread-Topic: scsi scsi_transport_iscsi.c: fix misuse of %llu in scsi_transport_iscsi.c
-Thread-Index: XXuAZWa/hbD+Z5L5JVAn1uE58Jskmw==
+References: <20211008112715.444305067@linuxfoundation.org>
+In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 9 Oct 2021 10:05:27 +0530
+Message-ID: <CA+G9fYv_xOaLYQCkSBhBRUXaJ0oEVy9NzKq+wvS1n13K+V2UgA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/16] 5.4.152-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I will send a V2 patch.
+On Fri, 8 Oct 2021 at 17:00, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.152 release.
+> There are 16 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.152-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
------ 原始邮件 -----
-发件人: "Joe Perches" <joe@perches.com>
-收件人: "Guo Zhi" <qtxuning1999@sjtu.edu.cn>, "Lee Duncan" <lduncan@suse.com>, "Chris Leech" <cleech@redhat.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen" <martin.petersen@oracle.com>
-抄送: open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org, "linux-kernel" <linux-kernel@vger.kernel.org>
-发送时间: 星期六, 2021年 10 月 09日 上午 11:14:36
-主题: Re: [PATCH] scsi scsi_transport_iscsi.c: fix misuse of %llu in scsi_transport_iscsi.c
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On Sat, 2021-10-09 at 11:02 +0800, Guo Zhi wrote:
-> Pointers should be printed with %p or %px rather than
-> cast to (unsigned long long) and printed with %llu.
-> Change %llu to %p to print the pointer into sysfs.
-][]
-> diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-[]
-> @@ -129,8 +129,8 @@ show_transport_handle(struct device *dev, struct device_attribute *attr,
->  
-> 
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EACCES;
-> -	return sysfs_emit(buf, "%llu\n",
-> -		  (unsigned long long)iscsi_handle(priv->iscsi_transport));
-> +	return sysfs_emit(buf, "%p\n",
-> +		iscsi_ptr(priv->iscsi_transport));
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-iscsi_transport is a pointer isn't it?
+## Build
+* kernel: 5.4.152-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: 0a25e1455412122583bd9796e6f05bc146458fde
+* git describe: v5.4.151-17-g0a25e1455412
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+51-17-g0a25e1455412
 
-so why not just
+## No regressions (compared to v5.4.151-17-gb1d2e2889dcd)
 
-	return sysfs_emit(buf, "%p\n", priv->iscsi_transport);
+## No fixes (compared to v5.4.151-17-gb1d2e2889dcd)
 
-?
+## Test result summary
+total: 85242, pass: 70848, fail: 633, skip: 12366, xfail: 1395
+
+## Build Summary
+* arc: 20 total, 20 passed, 0 failed
+* arm: 576 total, 576 passed, 0 failed
+* arm64: 76 total, 76 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 37 total, 37 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 78 total, 78 passed, 0 failed
+* parisc: 24 total, 24 passed, 0 failed
+* powerpc: 72 total, 72 passed, 0 failed
+* riscv: 60 total, 60 passed, 0 failed
+* s390: 24 total, 24 passed, 0 failed
+* sh: 48 total, 48 passed, 0 failed
+* sparc: 24 total, 24 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 76 total, 76 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
