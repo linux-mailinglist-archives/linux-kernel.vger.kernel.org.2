@@ -2,242 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC0E427E16
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 01:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE80427E1C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 01:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbhJIXsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 19:48:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        id S231418AbhJIXvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 19:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhJIXsu (ORCPT
+        with ESMTP id S230342AbhJIXvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 19:48:50 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE47C061570;
-        Sat,  9 Oct 2021 16:46:53 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id u69so6510554oie.3;
-        Sat, 09 Oct 2021 16:46:53 -0700 (PDT)
+        Sat, 9 Oct 2021 19:51:13 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F7BC061570;
+        Sat,  9 Oct 2021 16:49:15 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so10752165otv.0;
+        Sat, 09 Oct 2021 16:49:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2wILuR247BAv3G9ZPIDL5c69UUwA6KLYz7TDBC2qPfE=;
-        b=dBdaPv84AeKfKclXk2dA8+okXP9/NZcf+C6fqbIbWBgtVxgMGWBqRXoCDDd495uLyP
-         5CZzkfHkzQ9lZmxynQDrNKY7njbeCsjgIBmNBZ48kzCWWESd5bUaLkJd7wBfNaPmdNNn
-         LmrKowqa67wrOtva0bLchp/S+fyvcjLTpR5E+6I2roumeTLih6FNKZnZbkqkmVQWsEoY
-         JDKysC8+uo6SLfVNXc4FLFI6WbDWj+0nv3Cmyb9hBjLxViDDXluSQQOdaPBobRwqVRon
-         JG3XO63vtqs9BZwJo4jWPJgbvasEpzXDiW74Gl20V+NijTKWxlcokT6by5J3bPMWe3Ff
-         ed2A==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=je1XZIxljgdSR278fp4p1LdoO9f59hu34O6qug1reV4=;
+        b=qM09xTUaQU5TmqVOUFyfH71NBCO+EsREBkLHEny26Z67CdFRvMMhd4LrpcmsN9VtBc
+         mHndOfODqBDmmWHy8ppw8rBJPhbQelbqyhH4pvsJLz6PSTOxAkikQWMZmGNHioq6JiA1
+         E820I2jcws5Ik6gYp9xraqcpdUD+nWK9kp9tyx7E93gB2xQGt+Ai5AIL9lOSREttbY9T
+         Ns13lyFcoTqCH5eSeel1WT9tBn9qgHdrFYIIDG89hSEyfCDwnoCj1swHi+0BS1iVPZef
+         XohXq08mX/UciM18H8t3h8cYmy74RT0KRMSHllzAy5YiEzGgpyE2Zb+bOqo/04lRQeoU
+         g5SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2wILuR247BAv3G9ZPIDL5c69UUwA6KLYz7TDBC2qPfE=;
-        b=I3eFzZi6QNodKu/ngzncPc8Z9t0Rs4KRFbVL7jugu8WctmyDTBXmS2ugF8VlFCU2uZ
-         8zm3re9N+gSXmi2l9olPxtdq8adbzos3X68U2aCOqe597DS81Vk55/5uhMUZPZ2X7+uB
-         9GbPeB4zlrz6KDkmL6I4veikH0OpsS+bG+naWWOfwLWVNzanJfH3k9zA7/i3fxmIOJ9Q
-         DFWeTsNm865kZYXwHTBDoPXGkxUCd+KmjtSuJ9XJjlUkq2zCltXM5D99PH22pAokk74C
-         fBdaxkJbVWi4z8dhSva8vMA2q7BWfj2Vm63MzWPeobFQuaS1/gO0u5alRU7jbOQtIjo/
-         PTpQ==
-X-Gm-Message-State: AOAM532Z+sVIO2VzxZ4xP1sTLSoUogFEMBk3NWZcO6V8fNBjq/6Jkixw
-        G0P1rZfCgp5YbfMnlY1nuQVc4JWivxQ=
-X-Google-Smtp-Source: ABdhPJx2hblAO4GbttJx9Yx5FiYOgbMWllPBe64aI38GmM/um12VznMhYmKSu89UZBF+QPUvPlR4Uw==
-X-Received: by 2002:aca:c087:: with SMTP id q129mr22257958oif.135.1633823212421;
-        Sat, 09 Oct 2021 16:46:52 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=je1XZIxljgdSR278fp4p1LdoO9f59hu34O6qug1reV4=;
+        b=TxT7Rl7DPhqVHyjiF5XJ+Qs1j92wodvNq/TlHKlk2xAT57SyuRgHMoo9TBu5I4BgVG
+         S8jqsJk+FiPNXJZOQRuzILoAaEvORxNbw+8+Qvl24U8n3i/JS3Zuc2jvNW/+7+4XJd8R
+         99VvScKcJ2+a+2oitAwe6ax+35eORKZQFFLPA1FKmnYUsqcET1+8JPXyauS3liWvo0bO
+         VixdaELdlhoX1SgMqOwOD612fKMOp5ABwpR9nNIfCD1k0JHj+TXMLqTwYmt4NX63jHYZ
+         wn5hZ7Vr/ZTo+KYRFam5kTZ4l9vkf2yPFMqOnFwqB0m921uOvrYCLygAsUDIL74+YRtO
+         /ZnQ==
+X-Gm-Message-State: AOAM531A/g+/3FsS+2bIUGDMr6M7yLTaJ1/8M5rp2zIqKSB1pV59FaVB
+        mHifZ+ETG6X4NrvMjAa1spQ=
+X-Google-Smtp-Source: ABdhPJxzP2b+kx2aWPE8XYDoJOmsRkxxYSAqAsXQJgb9xBBnyTGDFsYtgPTbMzowveRS0rvALOwVrA==
+X-Received: by 2002:a05:6830:1514:: with SMTP id k20mr14457570otp.44.1633823354966;
+        Sat, 09 Oct 2021 16:49:14 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d18sm125098ook.14.2021.10.09.16.46.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 16:46:51 -0700 (PDT)
+        by smtp.gmail.com with ESMTPSA id k21sm796717oig.26.2021.10.09.16.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 16:49:14 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: hwmon: Add nct7802 bindings
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211009185257.2230013-1-osk@google.com>
+Date:   Sat, 9 Oct 2021 16:49:13 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <b73b638e-5a24-4960-354d-c8ab5d61c387@roeck-us.net>
-Date:   Sat, 9 Oct 2021 16:46:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, kernel@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, linux-imx@nxp.com, amitk@kernel.org,
+        rui.zhang@intel.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v12 05/10] thermal: sy7636a: Add thermal driver for
+ sy7636a
+Message-ID: <20211009234913.GA2234993@roeck-us.net>
+References: <20211009115031.18392-1-alistair@alistair23.me>
+ <20211009115031.18392-9-alistair@alistair23.me>
 MIME-Version: 1.0
-In-Reply-To: <20211009185257.2230013-1-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211009115031.18392-9-alistair@alistair23.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/21 11:52 AM, Oskar Senft wrote:
-> This change documents the device tree bindings for the Nuvoton
-> NCT7802Y driver.
+On Sat, Oct 09, 2021 at 09:50:27PM +1000, Alistair Francis wrote:
+> Add thermal driver to enable kernel based polling
+> and shutdown of device for temperatures out of spec
 > 
-> Signed-off-by: Oskar Senft <osk@google.com>
+
+It _should_ be possible to implement this as part of the hwmon driver
+(by using the _with_info hwmon API).
+
+Guenter
+
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
 > ---
-
-change log goes here.
-
->   .../bindings/hwmon/nuvoton,nct7802.yaml       | 142 ++++++++++++++++++
->   1 file changed, 142 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+>  drivers/thermal/Kconfig           |  6 ++
+>  drivers/thermal/Makefile          |  1 +
+>  drivers/thermal/sy7636a_thermal.c | 94 +++++++++++++++++++++++++++++++
+>  3 files changed, 101 insertions(+)
+>  create mode 100644 drivers/thermal/sy7636a_thermal.c
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+> diff --git a/drivers/thermal/Kconfig b/drivers/thermal/Kconfig
+> index d7f44deab5b1..6ee0e7de1b37 100644
+> --- a/drivers/thermal/Kconfig
+> +++ b/drivers/thermal/Kconfig
+> @@ -450,6 +450,12 @@ depends on (ARCH_STI || ARCH_STM32) && OF
+>  source "drivers/thermal/st/Kconfig"
+>  endmenu
+>  
+> +config SY7636A_THERMAL
+> +	tristate "SY7636A thermal management"
+> +	help
+> +	  Enable the sy7636a thermal driver, which supports the
+> +	  temperature sensor embedded in Silabs SY7636A IC.
+> +
+>  source "drivers/thermal/tegra/Kconfig"
+>  
+>  config GENERIC_ADC_THERMAL
+> diff --git a/drivers/thermal/Makefile b/drivers/thermal/Makefile
+> index 82fc3e616e54..2e1aca8a0a09 100644
+> --- a/drivers/thermal/Makefile
+> +++ b/drivers/thermal/Makefile
+> @@ -51,6 +51,7 @@ obj-$(CONFIG_DA9062_THERMAL)	+= da9062-thermal.o
+>  obj-y				+= intel/
+>  obj-$(CONFIG_TI_SOC_THERMAL)	+= ti-soc-thermal/
+>  obj-y				+= st/
+> +obj-$(CONFIG_SY7636A_THERMAL)	+= sy7636a_thermal.o
+>  obj-$(CONFIG_QCOM_TSENS)	+= qcom/
+>  obj-y				+= tegra/
+>  obj-$(CONFIG_HISI_THERMAL)     += hisi_thermal.o
+> diff --git a/drivers/thermal/sy7636a_thermal.c b/drivers/thermal/sy7636a_thermal.c
 > new file mode 100644
-> index 000000000000..ff99f40034f2
+> index 000000000000..9e58305ca3ce
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-> @@ -0,0 +1,142 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
+> +++ b/drivers/thermal/sy7636a_thermal.c
+> @@ -0,0 +1,94 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Functions to access SY3686A power management chip temperature
+> + *
+> + * Copyright (C) 2019 reMarkable AS - http://www.remarkable.com/
+> + *
+> + * Authors: Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>
+> + *          Alistair Francis <alistair@alistair23.me>
+> + */
 > +
-> +$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/thermal.h>
 > +
-> +title: Nuvoton NCT7802Y Hardware Monitoring IC
+> +#include <linux/mfd/sy7636a.h>
 > +
-> +maintainers:
-> +  - Guenter Roeck <linux@roeck-us.net>
+> +static int sy7636a_get_temp(void *arg, int *res)
+> +{
+> +	unsigned int mode_ctr;
+> +	int ret, reg_val;
+> +	struct regmap *regmap = arg;
+> +	bool isVoltageActive;
 > +
-> +description: |
-> +  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
-> +  5 remote temperature sensors with SMBus interface.
+> +	ret = regmap_read(regmap,
+> +			SY7636A_REG_OPERATION_MODE_CRL, &mode_ctr);
+> +	if (ret)
+> +		return ret;
 > +
-
-Just noticed: 5 remote temperature sensors ? Shouldn't that be 3 ?
-
-> +  Datasheets:
-> +    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
+> +	isVoltageActive = mode_ctr & SY7636A_OPERATION_MODE_CRL_ONOFF;
 > +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nuvoton,nct7802
+> +	/* If operation mode isn't set to control, then let's set it. */
+> +	if (!isVoltageActive) {
+> +		ret = regmap_write(regmap,
+> +				SY7636A_REG_OPERATION_MODE_CRL,
+> +				mode_ctr | SY7636A_OPERATION_MODE_CRL_ONOFF);
+> +		if (ret)
+> +			return ret;
+> +	}
 > +
-> +  reg:
-> +    maxItems: 1
+> +	ret = regmap_read(regmap,
+> +			SY7636A_REG_TERMISTOR_READOUT, &reg_val);
+> +	if (ret)
+> +		return ret;
 > +
-> +  "#address-cells":
-> +    const: 1
+> +	/* Restore the operation mode if it wasn't set */
+> +	if (!isVoltageActive) {
+> +		ret = regmap_write(regmap,
+> +				SY7636A_REG_OPERATION_MODE_CRL,
+> +				mode_ctr);
+> +		if (ret)
+> +			return ret;
+> +	}
 > +
-> +  "#size-cells":
-> +    const: 0
+> +	*res = reg_val * 1000;
 > +
-> +  channel@0:
-> +    type: object
-> +    description: Local Temperature Sensor ("LTD")
-> +    properties:
-> +      reg:
-> +        const: 0
-> +    required:
-> +      - reg
+> +	return ret;
+> +}
 > +
-> +  channel@1:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD1")
-> +    properties:
-> +      reg:
-> +        const: 1
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +      temperature-mode:
-> +        items:
-> +          - enum:
-> +              - thermistor
-> +              - thermal-diode
-> +    required:
-> +      - reg
-> +      - sensor-type
-
-If I understand correctly, "temperature-mode" is implemented as mandatory
-for channels 1 and 2 if sensor-type is "temperature" (which makes sense).
-No idea though if it is possible to express that in yaml.
-If not, can it be mentioned as comment ?
-
+> +static const struct thermal_zone_of_device_ops ops = {
+> +	.get_temp	= sy7636a_get_temp,
+> +};
 > +
-> +  channel@2:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
-> +    properties:
-> +      reg:
-> +        const: 2
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +      temperature-mode:
-> +        items:
-> +          - enum:
-> +              - thermistor
-> +              - thermal-diode
-> +    required:
-> +      - reg
-> +      - sensor-type
+> +static int sy7636a_thermal_probe(struct platform_device *pdev)
+> +{
+> +	struct regmap *regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> +	struct thermal_zone_device *thermal_zone_dev;
 > +
-> +  channel@3:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
-> +    properties:
-> +      reg:
-> +        const: 3
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +    required:
-> +      - reg
-> +      - sensor-type
+> +	thermal_zone_dev = devm_thermal_zone_of_sensor_register(
+> +			pdev->dev.parent,
+> +			0,
+> +			regmap,
+> +			&ops);
 > +
-> +required:
-> +  - compatible
-> +  - reg
+> +	return PTR_ERR_OR_ZERO(thermal_zone_dev);
+> +}
 > +
-> +additionalProperties: false
+> +static const struct platform_device_id sy7636a_thermal_id_table[] = {
+> +	{ "sy7636a-thermal", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(platform, sy7636a_thermal_id_table);
 > +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
+> +static struct platform_driver sy7636a_thermal_driver = {
+> +	.driver = {
+> +		.name = "sy7636a-thermal",
+> +	},
+> +	.probe = sy7636a_thermal_probe,
+> +	.id_table = sy7636a_thermal_id_table,
+> +};
+> +module_platform_driver(sy7636a_thermal_driver);
 > +
-> +        nct7802@28 {
-> +            compatible = "nuvoton,nct7802";
-> +            reg = <0x28>;
-> +
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            channel@0 { /* LTD */
-> +              reg = <0>;
-> +              status = "okay";
-> +            };
-> +
-> +            channel@1 { /* RTD1 */
-> +              reg = <1>;
-> +              status = "okay";
-> +              sensor-type = "temperature";
-> +              temperature-mode = "thermistor";
-> +            };
-> +
-> +            channel@2 { /* RTD2 */
-> +              reg = <2>;
-> +              status = "okay";
-> +              sensor-type = "temperature";
-> +              temperature-mode = "thermal-diode";
-> +            };
-> +
-> +            channel@3 { /* RTD3 */
-> +              reg = <3>;
-> +              status = "okay";
-> +              sensor-type = "voltage";
-> +            };
-> +        };
-> +    };
-> 
-
+> +MODULE_AUTHOR("Lars Ivar Miljeteig <lars.ivar.miljeteig@remarkable.com>");
+> +MODULE_DESCRIPTION("SY7636A thermal driver");
+> +MODULE_LICENSE("GPL v2");
