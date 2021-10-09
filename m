@@ -2,119 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A76427479
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458C342747E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243914AbhJIAFc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Oct 2021 20:05:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243797AbhJIAFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:05:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7275060FC1;
-        Sat,  9 Oct 2021 00:03:35 +0000 (UTC)
-Date:   Fri, 8 Oct 2021 20:03:28 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [RESEND PATCH v2] trace: prevent preemption in
- perf_ftrace_function_call()
-Message-ID: <20211008200328.5b88422d@oasis.local.home>
-In-Reply-To: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
-References: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S243942AbhJIAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243850AbhJIAGv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 20:06:51 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EBFC061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:04:55 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id a3so15808538oid.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9N6N5ZTR9CIN4xom+ZlVChwK9wG/IG6oiW3V0bEVeE0=;
+        b=pnxjmjuB6yVd7ZXZnO/+xjCpCQiPZPzLM+yHPuwW4K98MFNX8Zlp9l5ZhU6MNa35Xq
+         DpTBfPXSsPYedCt2+dphpLoLh76LXhwMOaQ4j+vLc2LVfSe/5YxWWcjjkoeAXVhg/W69
+         3Vm3tJanr3Dr5cwiAYiJptcQbl/RNloGTul82Wm4CB/vu+BjsZHEBeNk7r4lUhf1oMUi
+         GKw7U2V6A2vpfgvlTGkExT1cEfiyb0/mp95ErxQFH6d9FKCvz1iEYKhs/N8p4YhLS/4s
+         s8JIzGE2wWjlSSnhBSeTqQp/TCLCg0k911f3jlbl4HjaH805QWDVZTXJXHKOUB2ya4k2
+         5WoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9N6N5ZTR9CIN4xom+ZlVChwK9wG/IG6oiW3V0bEVeE0=;
+        b=Kfxqu9nw9boop8Ukza/aRxhK3/e+agHU8A+2RoifB2JFHQ7o5FMQryOCGjV5GoX6Rv
+         ioZsDQGfsnO6FypgyNRo1aW/X0Vg4R+NS5fR4HRkN407V+O1EeCTd9d/QwBfew+hdLrM
+         tw+mJTTMDnD6fDscLGlL7CD2SVwlrvekD9bmvPPfQbM73FIZ3MAOb7GQGbrmzjJupjjY
+         PrqP4c+fvPOr9YdFXfRw31WNjqFFcvlvFIu084RJL+BWQ+27PdCTOWSh/utE3RSELTQe
+         uNfxviJnDBlp/F4Wzuvmz4xFgxCZuSoEUsSik74V4ZKdR1rI9cf0djFnCE9majNh8lTa
+         3CTg==
+X-Gm-Message-State: AOAM530D99hfZ++vaHaLob9OgB3y2qYv0mWLmmgosf9DZONRli2vStgP
+        W1VrQaJruJdpUY2TS7GN3+w5BnUTwaTK9w==
+X-Google-Smtp-Source: ABdhPJxnYVoBlj5hRyP6LkDot6B3z6O7w8iCB/+04vuWpx5srscRpG1TfqpTbY3LQw+aE/sAB1Fb8A==
+X-Received: by 2002:a54:4f0e:: with SMTP id e14mr10134624oiy.73.1633737894759;
+        Fri, 08 Oct 2021 17:04:54 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id c17sm237599oiw.10.2021.10.08.17.04.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 17:04:54 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 17:06:32 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
+Subject: Re: [PATCH v4 4/4] rpmsg: char: Introduce the "rpmsg-raw" channel
+Message-ID: <YWDdCFot7G0IuQNg@ripper>
+References: <20210712131900.24752-1-arnaud.pouliquen@foss.st.com>
+ <20210712131900.24752-5-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210712131900.24752-5-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 28 Sep 2021 11:12:24 +0800
-王贇 <yun.wang@linux.alibaba.com> wrote:
+On Mon 12 Jul 06:19 PDT 2021, Arnaud Pouliquen wrote:
 
-> With CONFIG_DEBUG_PREEMPT we observed reports like:
+> Allows to probe the endpoint device on a remote name service announcement,
+> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
 > 
->   BUG: using smp_processor_id() in preemptible
->   caller is perf_ftrace_function_call+0x6f/0x2e0
->   CPU: 1 PID: 680 Comm: a.out Not tainted
->   Call Trace:
->    <TASK>
->    dump_stack_lvl+0x8d/0xcf
->    check_preemption_disabled+0x104/0x110
->    ? optimize_nops.isra.7+0x230/0x230
->    ? text_poke_bp_batch+0x9f/0x310
->    perf_ftrace_function_call+0x6f/0x2e0
->    ...
-
-It would be useful to see the full backtrace, to know how this
-happened. Please do not shorten back traces.
-
--- Steve
-
->    __text_poke+0x5/0x620
->    text_poke_bp_batch+0x9f/0x310
+> With this patch the /dev/rpmsgX interface can be instantiated by the remote
+> firmware.
 > 
-> This telling us the CPU could be changed after task is preempted, and
-> the checking on CPU before preemption will be invalid.
-> 
-> This patch just turn off preemption in perf_ftrace_function_call()
-> to prevent CPU changing.
-> 
-> Reported-by: Abaci <abaci@linux.alibaba.com>
-> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Tested-by: Julien Massot <julien.massot@iot.bzh>
 > ---
->  kernel/trace/trace_event_perf.c | 17 +++++++++++++----
->  1 file changed, 13 insertions(+), 4 deletions(-)
+>  drivers/rpmsg/rpmsg_char.c | 75 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 73 insertions(+), 2 deletions(-)
 > 
-> diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-> index 6aed10e..dcbefdf 100644
-> --- a/kernel/trace/trace_event_perf.c
-> +++ b/kernel/trace/trace_event_perf.c
-> @@ -441,12 +441,19 @@ void perf_trace_buf_update(void *record, u16 type)
->  	if (!rcu_is_watching())
->  		return;
-> 
-> +	/*
-> +	 * Prevent CPU changing from now on. rcu must
-> +	 * be in watching if the task was migrated and
-> +	 * scheduled.
-> +	 */
-> +	preempt_disable_notrace();
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index bd728d90ba4c..1b7b610e113d 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -25,6 +25,8 @@
+>  
+>  #include "rpmsg_char.h"
+>  
+> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
 > +
->  	if ((unsigned long)ops->private != smp_processor_id())
-> -		return;
-> +		goto out;
-> 
->  	bit = ftrace_test_recursion_trylock(ip, parent_ip);
->  	if (bit < 0)
-> -		return;
-> +		goto out;
-> 
->  	event = container_of(ops, struct perf_event, ftrace_ops);
-> 
-> @@ -468,16 +475,18 @@ void perf_trace_buf_update(void *record, u16 type)
-> 
->  	entry = perf_trace_buf_alloc(ENTRY_SIZE, NULL, &rctx);
->  	if (!entry)
-> -		goto out;
-> +		goto unlock;
-> 
->  	entry->ip = ip;
->  	entry->parent_ip = parent_ip;
->  	perf_trace_buf_submit(entry, ENTRY_SIZE, rctx, TRACE_FN,
->  			      1, &regs, &head, NULL);
-> 
-> -out:
-> +unlock:
->  	ftrace_test_recursion_unlock(bit);
->  #undef ENTRY_SIZE
-> +out:
-> +	preempt_enable_notrace();
+>  static dev_t rpmsg_major;
+>  static struct class *rpmsg_class;
+>  
+> @@ -421,6 +423,61 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
 >  }
-> 
->  static int perf_ftrace_function_register(struct perf_event *event)
+>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+>  
+> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_channel_info chinfo;
+> +	struct rpmsg_eptdev *eptdev;
+> +	struct rpmsg_endpoint *ept;
+> +
+> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
 
+The length should relate to the size of the destination buffer.
+This looks like an excellent job for strscpy_pad()
+
+> +	chinfo.src = rpdev->src;
+> +	chinfo.dst = rpdev->dst;
+> +
+> +	eptdev =  __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo);
+
+Note that this creates a new endpoint device as a child of the rpdev,
+while new endpoints created by RPMSG_CREATE_EPT_IOCTL are parented by
+the rpmsg_ctrl device.
+
+So it is possible to create two /dev/rpmsgN nodes for the same endpoint,
+I believe with the outcome that this one will be open but
+__rpmsg_create_ept() in virtio_rpmsg_bus should return NULL if the user
+tries to open the other one.
+
+> +	if (IS_ERR(eptdev))
+> +		return PTR_ERR(eptdev);
+> +
+> +	/*
+> +	 * Create the default endpoint associated to the rpmsg device and provide rpmsg_eptdev
+> +	 * structure as callback private data.
+> +	 */
+> +	ept = rpmsg_create_default_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
+
+Why don't you just set rpdev->priv to eptdev and make rpmsg_ept_cb the
+callback of your rpmsg_driver?
+
+> +	if (!ept) {
+> +		dev_err(&rpdev->dev, "failed to create %s\n", eptdev->chinfo.name);
+> +		put_device(&eptdev->dev);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/*
+> +	 * Do not allow the creation and release of an endpoint on /dev/rpmsgX open and close,
+> +	 * reuse the default endpoint instead
+> +	 */
+
+What happens when __rpmsg_chrdev_eptdev_create() delivers a uevent and
+user space quickly calls open() on the newly created /dev/rpmsgN, before
+the next line?
+
+> +	eptdev->static_ept = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+> +{
+> +	int ret;
+> +
+> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+> +	if (ret)
+> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+> +}
+> +
+> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+> +	{ .name	= RPMSG_CHAR_DEVNAME },
+
+I would expect that this list would grow, but you hard coded
+RPMSG_CHAR_DEVNAME in probe, so that won't work.
+
+Regards,
+Bjorn
+
+> +	{ },
+> +};
+> +
+> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+> +	.probe = rpmsg_chrdev_probe,
+> +	.remove = rpmsg_chrdev_remove,
+> +	.id_table = rpmsg_chrdev_id_table,
+> +	.drv.name = "rpmsg_chrdev",
+> +};
+> +
+>  static int rpmsg_chrdev_init(void)
+>  {
+>  	int ret;
+> @@ -434,16 +491,30 @@ static int rpmsg_chrdev_init(void)
+>  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+>  	if (IS_ERR(rpmsg_class)) {
+>  		pr_err("failed to create rpmsg class\n");
+> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> -		return PTR_ERR(rpmsg_class);
+> +		ret = PTR_ERR(rpmsg_class);
+> +		goto free_region;
+> +	}
+> +
+> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+> +	if (ret < 0) {
+> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
+> +		goto free_class;
+>  	}
+>  
+>  	return 0;
+> +
+> +free_class:
+> +	class_destroy(rpmsg_class);
+> +free_region:
+> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> +
+> +	return ret;
+>  }
+>  postcore_initcall(rpmsg_chrdev_init);
+>  
+>  static void rpmsg_chrdev_exit(void)
+>  {
+> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+>  	class_destroy(rpmsg_class);
+>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>  }
+> -- 
+> 2.17.1
+> 
