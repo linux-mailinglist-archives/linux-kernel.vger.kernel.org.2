@@ -2,123 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C499427C8E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:14:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B3F427C92
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhJISQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        id S229850AbhJISTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhJISQm (ORCPT
+        with ESMTP id S229518AbhJISTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:16:42 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9D3C061570;
-        Sat,  9 Oct 2021 11:14:45 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id d9so25279439edh.5;
-        Sat, 09 Oct 2021 11:14:45 -0700 (PDT)
+        Sat, 9 Oct 2021 14:19:02 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0ABC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 11:17:05 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v20so1241163plo.7
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NB/NbO2pnzp8rCJeSeD4fOtiBWghV++U+S27/Xc8iw0=;
-        b=En3bOU2gWXENrRPQgcBG5LZinOcpsx9+nrwow4EU5VR2dUu+mmmq1TiG+srtQxbnO0
-         VfiK2cs4QmrNLrcSzL7FwotkFcUOttwll1hSleJ/hvB1vampzEvAfAx1+A9G8iLaBGkf
-         U0xCIm7uWS8PBooiRcaWLByRqcEQOvXrv73SCfkT+3SAiBWEyVJb1SIlLQgBQ244J45d
-         UrRrKIQMmps/heRmg+NRS9xSDWqQX9FnxdP2eeSbYIbjAEjvaof1w+AMFSEAAvUxJTiY
-         IFAMENH3OylatZUP481gI9zwo/WkhumCL2gyQu+6hwiAML66HFeEG9mbQNFWDwO5Yrcw
-         ZZtg==
+        h=message-id:date:mime-version:user-agent:cc:subject:content-language
+         :to:references:from:in-reply-to:content-transfer-encoding;
+        bh=007I3r/K6V+qYxnE5VmcGCIC1RlYnIaC4Ivz6Ke0WkI=;
+        b=QpKpSVYoRRYXZ6KuyGcVBossh3kIvBTZm92Bn98cYu5WxY7vQbPwRdlRte264B3F/C
+         u/8+o/UucxDJEX5sSqgh+zDhiTv/fAdZgMdQVdcx2Q9NLf83MPhkVnicJ/qMgKyKXjq8
+         FqMZVbD2s6jpMjiSfVnX0U+It/av/AhM7964eej7VjkGI8XLSzA+NkejMOBPNmRDU0us
+         UAlPi5TwwT6JRmDjYnEt8jNqoIMlO5h5lAXkEQxa0mZe6bHzniVVu4wTH2MbejhIe4EY
+         Hyh2vWB8lOSZJ7/IKGjkYV4qXG1CXprmtic62VJK7oCLUH4w8RuXt/sXoI23ldrf7eHZ
+         7THQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NB/NbO2pnzp8rCJeSeD4fOtiBWghV++U+S27/Xc8iw0=;
-        b=nwWQneGdO8rHZ0xFzRmhKxVopHpn4d3Q2XF+CYiT8dSVAqM56uEeyZE0RmCv9BbhN2
-         1V021VfiOqMVNW4v1HQu4/hGGbf599vKhbO7GPJFOVbMN/D7pB0RY22Ru8fGhaBx7uLa
-         Jz/S6GpQs4PjkBaAKRHjAHr5Zcp+eeClpqACmZhSDyYjo4+Fg3FLFfwvYHhIzJqjCGXH
-         Jtw0eFM4/WUJ+Gr9BKPfMy+HChnCklfKxUI1BuOM3Q0LqTHIePLAyTohqZj3Imfr3Lze
-         OG++H/r/6UXQ7Tpf9xE1ofgk+2+MVAb2Q71TMJj06tLmL0HE4SOBX2DgqYhZ5mF7dIFl
-         wKBw==
-X-Gm-Message-State: AOAM530hbkHa/D8bfFw5Tz6szxetD5qwiuTfgKhm/ZfrCX3DRo/dawTn
-        GA/p2Sa+JZUIjYbomUBdPxE=
-X-Google-Smtp-Source: ABdhPJyL02etfR/VvFSZ7cwwu5dfOCfx2MwDZ3qjoyr9gCSfVVV8xN1PRO0CxRk+8iJVhy4M9yyZGw==
-X-Received: by 2002:a17:906:b1d5:: with SMTP id bv21mr13128042ejb.346.1633803283771;
-        Sat, 09 Oct 2021 11:14:43 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id h8sm1256257ejj.22.2021.10.09.11.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 11:14:43 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 20:14:40 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 11/15] dt-bindings: net: dsa: qca8k: Document
- qca,sgmii-enable-pll
-Message-ID: <YWHcEFKzgjE4Ikj2@Ansuel-xps.localdomain>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
- <20211008002225.2426-12-ansuelsmth@gmail.com>
- <YWHN1iDSelFQTPUC@lunn.ch>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=007I3r/K6V+qYxnE5VmcGCIC1RlYnIaC4Ivz6Ke0WkI=;
+        b=AtlNAZJoS7xQK4CrDolfulZldDjPjRRkgld+GuWDm/1+WHBMZIa8rNldV+e813z2h2
+         MF8C8P3oR5hbXUdlacGv7ceCA5TiIivKjB22elqXgiSNUcox10cFvP0NbAnXzX6VItlt
+         7cuSIbyolMWhBQ+HgSp8meVjzwjtrNV0scCpJdSX9T2x2vD5W2EUMoOra4OMO9sr2npm
+         tXHTo6CIDz9I3DuiScNwkLK2f6aGpd1mpZ71vBXRRfSmH2STmURlYkT/pW9bPSnCxAls
+         4/k9zi0xcfxuse06HUU2fSTk7Pg5A/pb1BIMCnQTFVWQwYWggFo4UJxIGpvxQjePjYFE
+         1YBQ==
+X-Gm-Message-State: AOAM533aDjNlTUlqeEoo3kbWMDotYwoJ0wHObdn/1NZcHJdrOjuV4h76
+        qS2Bk9lj/ADITmDguvrYVKfWoI0/7zwslg==
+X-Google-Smtp-Source: ABdhPJy3vrMGr2AAysKOKpCIABD9bWNf/h6ylAPSMt7LGOS/RGUqc9yxi8AqK90dRM/9guQ0Rlrmzw==
+X-Received: by 2002:a17:90b:3850:: with SMTP id nl16mr19111548pjb.127.1633803424956;
+        Sat, 09 Oct 2021 11:17:04 -0700 (PDT)
+Received: from [192.168.1.6] ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id b16sm2838646pfm.58.2021.10.09.11.17.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 11:17:04 -0700 (PDT)
+Message-ID: <50527d62-3c4e-3b61-5f17-225379c1d6c3@gmail.com>
+Date:   Sat, 9 Oct 2021 23:47:00 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWHN1iDSelFQTPUC@lunn.ch>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Cc:     saurav.girepunje@hotmail.com, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        insafonov@gmail.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: os_dep: simplify the return
+ statement.
+Content-Language: en-US
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev
+References: <YWG3oIchovDZnPl8@user> <1661874.ovfstkzlfj@localhost.localdomain>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <1661874.ovfstkzlfj@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 07:13:58PM +0200, Andrew Lunn wrote:
-> On Fri, Oct 08, 2021 at 02:22:21AM +0200, Ansuel Smith wrote:
-> > Document qca,sgmii-enable-pll binding used in the CPU nodes to
-> > enable SGMII PLL on MAC config.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > index 208ee5bc1bbb..b9cccb657373 100644
-> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > @@ -50,6 +50,12 @@ A CPU port node has the following optional node:
-> >                            managed entity. See
-> >                            Documentation/devicetree/bindings/net/fixed-link.txt
-> >                            for details.
-> > +- qca,sgmii-enable-pll  : For SGMII CPU port, explicitly enable PLL, TX and RX
-> > +                          chain along with Signal Detection.
-> > +                          This should NOT be enabled for qca8327.
+
+
+On 09/10/21 10:29 pm, Fabio M. De Francesco wrote:
+> On Saturday, October 9, 2021 5:39:12 PM CEST Saurav Girepunje wrote:
+>> Remove the unneeded and redundant check of variable on goto out.
+>> Simplify the return using multiple goto label to avoid
+>> unneeded check.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 29 ++++++++++---------
+>>   1 file changed, 15 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
+> staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> index 0868f56e2979..574fdb6adce7 100644
+>> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> @@ -2282,18 +2282,18 @@ static int rtw_cfg80211_add_monitor_if(struct
+> adapter *padapter, char *name, str
+>>
+>>   	if (!name) {
+>>   		ret = -EINVAL;
+>> -		goto out;
+>> +		goto err_out;
+>>   	}
+>>
+>>   	if (pwdev_priv->pmon_ndev) {
+>>   		ret = -EBUSY;
+>> -		goto out;
+>> +		goto err_out;
+>>   	}
+>>
+>>   	mon_ndev = alloc_etherdev(sizeof(struct
+> rtw_netdev_priv_indicator));
+>>   	if (!mon_ndev) {
+>>   		ret = -ENOMEM;
+>> -		goto out;
+>> +		goto err_out;
+>>   	}
+>>
+>>   	mon_ndev->type = ARPHRD_IEEE80211_RADIOTAP;
+>> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter
+> *padapter, char *name, str
+>>   	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+>>   	if (!mon_wdev) {
+>>   		ret = -ENOMEM;
+>> -		goto out;
+>> +		goto err_zmalloc;
+>>   	}
+>>
+>>   	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+>> @@ -2322,22 +2322,23 @@ static int rtw_cfg80211_add_monitor_if(struct
+> adapter *padapter, char *name, str
+>>
+>>   	ret = cfg80211_register_netdevice(mon_ndev);
+>>   	if (ret) {
+>> -		goto out;
+>> +		goto err_register;
+>>   	}
+>>
+>>   	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+>>   	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
+>>
+>> -out:
+>> -	if (ret && mon_wdev) {
+>> -		kfree(mon_wdev);
+>> -		mon_wdev = NULL;
+>> -	}
+>> +err_register:
+>>
+>> -	if (ret && mon_ndev) {
+>> -		free_netdev(mon_ndev);
+>> -		*ndev = mon_ndev = NULL;
+>> -	}
+>> +	kfree(mon_wdev);
+>> +	mon_wdev = NULL;
+>> +
+>> +err_zmalloc:
+>> +
+>> +	free_netdev(mon_ndev);
+>> +	*ndev = mon_ndev = NULL;
+>> +
+>> +err_out:
+>>
+>>   	return ret;
+>>   }
+>> --
+>> 2.32.0
+>>
+> At a quick look it seems that now you unconditionally free memory and free a
+> network device immediately after the last memcpy().
 > 
-> So how about -EINVAL for qca8327, and document it is not valid then.
->
-
-I would also add a warning. With all the ported device we found pll
-needed only qca8337. I will add the error but also report the reason as
-we really don't know if it does exist a qca8327 device that needs pll.
-In theory not but who knows.
-
-> > +                          This can be required for qca8337 switch with revision 2.
+> Why are you doing this even if no errors are returned from device and memory
+> allocations (i.e., while "ret" is still equal to zero)?
 > 
-> Maybe add a warning if enabled with revision < 2? I would not make it
-> an error, because there could be devices manufactured with a mixture
-> or v1 and v2 silicon. Do you have any idea how wide spread v1 is?
+> Thanks,
+> 
+> Fabio
+>   
+> 
+> 
 > 
 
-No idea about the revision and can't be recovered from the switch data
-print on the chip. Will add a warning and put in the documentation that
-we warn when an uncorrect revision is detected.
+Thanks Fabio for review. Yes, That is missed.
+I can do that in either one of the way.
+Either I should check for ret before free or I should use goto out(may 
+be I will rename err_out goto label to "out" only) just after the memcpy 
+statement so that function will not free for no error case and return 
+ret value only.
 
-> > +                          With CPU port set to sgmii and qca8337 it is advised
-> > +                          to set this unless a communication problem is observed.
-> 
->   Andrew
+Please let me know you input on above.
 
--- 
-	Ansuel
+Regards,
+Saurav Girepunje
