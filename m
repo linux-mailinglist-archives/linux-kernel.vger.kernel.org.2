@@ -2,186 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAFE4276F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480AE4276F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232681AbhJIDiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 23:38:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        id S244215AbhJIDkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 23:40:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhJIDh7 (ORCPT
+        with ESMTP id S229970AbhJIDkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 23:37:59 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C49C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 20:36:03 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so8251431otv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 20:36:03 -0700 (PDT)
+        Fri, 8 Oct 2021 23:40:41 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08F54C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 20:38:45 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id r19so44858714lfe.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 20:38:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4bSpNJPwT1vNF1+AfYe0YCy792p+0Ep8kGezfzAgQtY=;
-        b=DHngEJe1oZcDoy9FWK6YfExDfhAM35H4sK9yztoZ9RAL2HE94VKG2iO5zTejlkOqVF
-         HgJtOG63wpgRxOxpMkqwHuNdwJ06u8HMsoRrItl3svlMaa9jssnUCdgOOxNc8yPlboFo
-         7gxrlt8APJeBIIkLcovevN/nmkJBW5i1f8gnxGSiZWpA6+kMDcv1PIxwkH1OAtGeWqL8
-         hgB2xC6FY6aTKzUNS5Zu89jFvGHmzNeMhm+NH7zwfjvI6Ig5R/JE+51d0s3D5woEAdgt
-         +6q1Al51Gsjif1dcNGyXd3wZ5vd6A7mPFNd6iIMALu+ztlZDiQs8hd8PlrO5EknG+h4s
-         DbGg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RiWQECJyXrvGibCFo4LTV3Lak3718z6ulvjp/x9FWHg=;
+        b=Nr590eGnuTsOzVHVYYId1H7aYmrB/zTCyFqY+2J2JAaCFxf4LoY2yfDwUx5vVkxB/n
+         /1Zl1PnhmBmhyPGNciLEPRdwNsyXT1uZnYl5XYsjODBYhq3RRxeIik8CevAfA7j6fHwA
+         bF0GBaPfM/wMWZcF1iZx5Ah7KzpBuUTqGemwhEJFymVe6s94e2Vx8dA02vVJqjG6m+Vx
+         kSVhTDK1vqCFhbVoiKE+SLNDswvSOM9dXXnQXQ4LKvH5sdrxGyopp2zch22THouaAGfE
+         UfXTvfrJlPzmXsm/2B/ZneI/gqZSQLms23dxb/MiVjpf1orS5OfCYF6b3yBqxJxQupIK
+         vPXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4bSpNJPwT1vNF1+AfYe0YCy792p+0Ep8kGezfzAgQtY=;
-        b=AkODariCqcsxGzoGkyRmadQCYo0r8zEKm9SNtmr5ghbQkK/kz3G4c5tAWfgH1F97Jy
-         9EkzGjO9aJOuFhYMDYOtdHPUrxWHskAo2PRcJ/5IfInLmKlOc2xpcJp8R+IjkUVkLk7T
-         d52qPnixua3r+Vc7LjSVG+rUUwqecliERwOTPAOp6qmZjZ9tiFW/lfwB1zDHw6/7cPK8
-         JlSExqf8pBOdExqtxCfMQAaOmBKnD26Hjgp7Rfd67zcwqk/mFGRfc2WLy2weK1PeSA+J
-         9WfrxpXZqBaGz1vixbUPtiOH7oAC1gVChxPyHM9TNHpbCtFj8hx+ribYwaR240g1q3qr
-         gwPg==
-X-Gm-Message-State: AOAM532zUwFhEcBcLKQeHtmlTOGX51KneRcInggkZ+pWg4royEf4nlrP
-        AUgaGRJrBUEqHog9fGyu6dfutA==
-X-Google-Smtp-Source: ABdhPJyaa9dlRviM/cAUSatTSRIaJzgJe5GD1iSAJtY5jd32p+Rh+j0pYpc0Yc+BgfmZscIvNaUurg==
-X-Received: by 2002:a05:6830:1d8b:: with SMTP id y11mr11561729oti.291.1633750562871;
-        Fri, 08 Oct 2021 20:36:02 -0700 (PDT)
-Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
-        by smtp.gmail.com with ESMTPSA id j12sm283806ota.47.2021.10.08.20.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 20:36:02 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 22:36:00 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        Stefano Stabellini <stefanos@xilinx.com>,
-        Bruce Ashfield <bruce.ashfield@xilinx.com>
-Subject: Re: [RFC PATCH 4/7] remoteproc: create the REMOTEPROC_VIRTIO config
-Message-ID: <YWEOIHrp4Z8+MHaE@builder.lan>
-References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
- <20211001101234.4247-5-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RiWQECJyXrvGibCFo4LTV3Lak3718z6ulvjp/x9FWHg=;
+        b=K6XFuaL5b9SaXN7HmiypeYoH3MlJFNvLY1Jt4Yvi9M/XpJqJNX+M0hvmdACT07o8XZ
+         y/GO5RnOeuPsDCOCJq2odj6T6oaTvYalypfO60pXlp9eFqPcxO1H7qwS3Z3Wo6o+XCGU
+         Ke5xDNhC+hCUSTbkVYV4DTgOi7wOIphQ6yyQmgjK8uXt/x3XD8/eNE4B+cl1DLBMj3nI
+         GQOaY1/S5FeKjYo6DB9AM1tEwnrVkxapNxju8IDz8KHKMBKdVrMN+B3LDkj9EFbBxNqU
+         Q8tVzg14XKtOJxZjX5mTKw5rkX3NAxWjlAPqqd6JJC7KaCyk1Ui3/o0q265ODMyTlOk4
+         EHaw==
+X-Gm-Message-State: AOAM532Svf0tnp1fDU6IuXT0ZUM69ns0vJYf8IVxbghXUgPZzyie23yG
+        S3a/pQZ5xyZHNdVfN+wjCWtwiX+Tlx5Sh+purXNCLw==
+X-Google-Smtp-Source: ABdhPJwVvxzD7OZ8qsi3EVicuBX+DNaQgeL39sYq/YYhHG4GzpfLY69zwA1ly+vzlGS03NWrzjMlfnmKJW0Q2rUvokY=
+X-Received: by 2002:a05:6512:1189:: with SMTP id g9mr13955093lfr.661.1633750723302;
+ Fri, 08 Oct 2021 20:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001101234.4247-5-arnaud.pouliquen@foss.st.com>
+References: <20211008080305.13401-1-yanghui.def@bytedance.com>
+ <CALAqxLWUNFozhfhuVFAPo9xGgO+xsXPQ=i5w1Y0E9-w-PdHXgw@mail.gmail.com> <665f749e-b71e-a793-d759-87f7cf89677c@bytedance.com>
+In-Reply-To: <665f749e-b71e-a793-d759-87f7cf89677c@bytedance.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 8 Oct 2021 20:38:31 -0700
+Message-ID: <CALAqxLXWVpxTwEssBBUnS2ZYTpaCr3cue_dw5ZmEm5ZQ8Wf=wg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] Clocksource: Avoid misjudgment of clocksource
+To:     yanghui <yanghui.def@bytedance.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 01 Oct 05:12 CDT 2021, Arnaud Pouliquen wrote:
+On Fri, Oct 8, 2021 at 8:22 PM yanghui <yanghui.def@bytedance.com> wrote:
+> =E5=9C=A8 2021/10/9 =E4=B8=8A=E5=8D=887:45, John Stultz =E5=86=99=E9=81=
+=93:
+> > On Fri, Oct 8, 2021 at 1:03 AM yanghui <yanghui.def@bytedance.com> wrot=
+e:
+> >>
+> >> clocksource_watchdog is executed every WATCHDOG_INTERVAL(0.5s) by
+> >> Timer. But sometimes system is very busy and the Timer cannot be
+> >> executed in 0.5sec. For example,if clocksource_watchdog be executed
+> >> after 10sec, the calculated value of abs(cs_nsec - wd_nsec) will
+> >> be enlarged. Then the current clocksource will be misjudged as
+> >> unstable. So we add conditions to prevent the clocksource from
+> >> being misjudged.
+> >>
+> >> Signed-off-by: yanghui <yanghui.def@bytedance.com>
+> >> ---
+> >>   kernel/time/clocksource.c | 6 +++++-
+> >>   1 file changed, 5 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+> >> index b8a14d2fb5ba..d535beadcbc8 100644
+> >> --- a/kernel/time/clocksource.c
+> >> +++ b/kernel/time/clocksource.c
+> >> @@ -136,8 +136,10 @@ static void __clocksource_change_rating(struct cl=
+ocksource *cs, int rating);
+> >>
+> >>   /*
+> >>    * Interval: 0.5sec.
+> >> + * MaxInterval: 1s.
+> >>    */
+> >>   #define WATCHDOG_INTERVAL (HZ >> 1)
+> >> +#define WATCHDOG_MAX_INTERVAL_NS (NSEC_PER_SEC)
+> >>
+> >>   static void clocksource_watchdog_work(struct work_struct *work)
+> >>   {
+> >> @@ -404,7 +406,9 @@ static void clocksource_watchdog(struct timer_list=
+ *unused)
+> >>
+> >>                  /* Check the deviation from the watchdog clocksource.=
+ */
+> >>                  md =3D cs->uncertainty_margin + watchdog->uncertainty=
+_margin;
+> >> -               if (abs(cs_nsec - wd_nsec) > md) {
+> >> +               if ((abs(cs_nsec - wd_nsec) > md) &&
+> >> +                       cs_nsec < WATCHDOG_MAX_INTERVAL_NS &&
+> >
+> > Sorry, it's been awhile since I looked at this code, but why are you
+> > bounding the clocksource delta here?
+> > It seems like if the clocksource being watched was very wrong (with a
+> > delta larger than the MAX_INTERVAL_NS), we'd want to throw it out.
+> >
+> >> +                       wd_nsec < WATCHDOG_MAX_INTERVAL_NS) {
+> >
+> > Bounding the watchdog interval on the check does seem reasonable.
+> > Though one may want to keep track that if we are seeing too many of
+> > these delayed watchdog checks we provide some feedback via dmesg.
+>
+>    Yes, only to check watchdog delta is more reasonable.
+>    I think Only have dmesg is not enough, because if tsc was be misjudged
+>    as unstable then switch to hpet. And hpet is very expensive for
+>    performance, so if we want to switch to tsc the only way is to reboot
+>    the server. We need to prevent the switching of the clock source in
+>    case of misjudgment.
+>    Circumstances of misjudgment:
+>    if clocksource_watchdog is executed after 10sec, the value of wd_delta
+>    and cs_delta also be about 10sec, also the value of (cs_nsec- wd_nsec)
+>    will be magnified 20 times(10sec/0.5sec).The delta value is magnified.
 
-> Create the config to associate to the remoteproc virtio.
-> 
-> Notice that the REMOTEPROC_VIRTIO config can not set to m. the reason
-> is that it defines API that is used by the built-in remote proc core.
-> Functions such are rproc_add_virtio_dev can be called during the
-> Linux boot phase.
-> 
+Yea, it might be worth calculating an error rate instead of assuming
+the interval is fixed, but also just skipping the check may be
+reasonable assuming timers aren't constantly being delayed (and it's
+more of a transient state).
 
-Please don't introduce new Kconfig options for everything. Consider that
-the expectation should be that everyone runs the default defconfig on
-their boards - and if someone actually needs this level of control, they
-are welcome to present patches with numbers showing the benefit of the
-savings.
+At some point if the watchdog timer is delayed too much, the watchdog
+hardware will fully wrap and one can no longer properly compare
+intervals. That's why the timer length is chosen as such, so having
+that timer delayed is really pushing the system into a potentially bad
+state where other subtle problems are likely to crop up.
 
-Thanks,
-Bjorn
+So I do worry these watchdog robustness fixes are papering over a
+problem, pushing expectations closer to the edge of how far the system
+should tolerate bad behavior. Because at some point we'll fall off. :)
 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/remoteproc/Kconfig               | 11 +++++++++-
->  drivers/remoteproc/Makefile              |  2 +-
->  drivers/remoteproc/remoteproc_internal.h | 28 ++++++++++++++++++++++++
->  3 files changed, 39 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-> index 9a6eedc3994a..f271552c0d84 100644
-> --- a/drivers/remoteproc/Kconfig
-> +++ b/drivers/remoteproc/Kconfig
-> @@ -6,7 +6,7 @@ config REMOTEPROC
->  	depends on HAS_DMA
->  	select CRC32
->  	select FW_LOADER
-> -	select VIRTIO
-> +	select REMOTEPROC_VIRTIO
->  	select WANT_DEV_COREDUMP
->  	help
->  	  Support for remote processors (such as DSP coprocessors). These
-> @@ -14,6 +14,15 @@ config REMOTEPROC
->  
->  if REMOTEPROC
->  
-> +config REMOTEPROC_VIRTIO
-> +	bool "Remoteproc virtio device "
-> +	select VIRTIO
-> +	help
-> +	  Say y here to have a virtio device support for the remoteproc
-> +	  communication.
-> +
-> +	  It's safe to say N if you don't use the virtio for the IPC.
-> +
->  config REMOTEPROC_CDEV
->  	bool "Remoteproc character device interface"
->  	help
-> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
-> index bb26c9e4ef9c..73d2384a76aa 100644
-> --- a/drivers/remoteproc/Makefile
-> +++ b/drivers/remoteproc/Makefile
-> @@ -8,8 +8,8 @@ remoteproc-y				:= remoteproc_core.o
->  remoteproc-y				+= remoteproc_coredump.o
->  remoteproc-y				+= remoteproc_debugfs.o
->  remoteproc-y				+= remoteproc_sysfs.o
-> -remoteproc-y				+= remoteproc_virtio.o
->  remoteproc-y				+= remoteproc_elf_loader.o
-> +obj-$(CONFIG_REMOTEPROC_VIRTIO)		+= remoteproc_virtio.o
->  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
->  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
->  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
-> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
-> index 152fe2e8668a..4ce012c353c0 100644
-> --- a/drivers/remoteproc/remoteproc_internal.h
-> +++ b/drivers/remoteproc/remoteproc_internal.h
-> @@ -30,10 +30,38 @@ int rproc_of_parse_firmware(struct device *dev, int index,
->  			    const char **fw_name);
->  
->  /* from remoteproc_virtio.c */
-> +#if IS_ENABLED(CONFIG_REMOTEPROC_VIRTIO)
-> +
->  int rproc_rvdev_add_device(struct rproc_vdev *rvdev);
->  irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
->  void rproc_vdev_release(struct kref *ref);
->  
-> +#else
-> +
-> +int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +
-> +	return -ENXIO;
-> +}
-> +
-> +static inline irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +
-> +	return IRQ_NONE;
-> +}
-> +
-> +static inline void rproc_vdev_release(struct kref *ref)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +}
-> +
-> +#endif
-> +
->  /* from remoteproc_debugfs.c */
->  void rproc_remove_trace_file(struct dentry *tfile);
->  struct dentry *rproc_create_trace_file(const char *name, struct rproc *rproc,
-> -- 
-> 2.17.1
-> 
+thanks
+-john
