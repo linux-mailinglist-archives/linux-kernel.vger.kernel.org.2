@@ -2,226 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957E842756B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:33:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BD8242756F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244117AbhJIBfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:35:47 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13711 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232063AbhJIBfq (ORCPT
+        id S232195AbhJIBqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:46:24 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13881 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232063AbhJIBqX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:35:46 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HR6xD1SmhzWjNd;
-        Sat,  9 Oct 2021 09:32:16 +0800 (CST)
-Received: from dggpeml100016.china.huawei.com (7.185.36.216) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 09:33:47 +0800
-Received: from DESKTOP-27KDQMV.china.huawei.com (10.174.148.223) by
- dggpeml100016.china.huawei.com (7.185.36.216) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Sat, 9 Oct 2021 09:33:47 +0800
-From:   "Longpeng(Mike)" <longpeng2@huawei.com>
-To:     <andraprs@amazon.com>, <lexnv@amazon.com>, <alcioa@amazon.com>
-CC:     <arei.gonglei@huawei.com>, <gregkh@linuxfoundation.org>,
-        <kamal@canonical.com>, <pbonzini@redhat.com>,
-        <sgarzare@redhat.com>, <stefanha@redhat.com>,
-        <vkuznets@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>, Longpeng <longpeng2@huawei.com>
-Subject: [PATCH v3 4/4] nitro_enclaves: Add KUnit tests for contiguous physical memory regions merging
-Date:   Sat, 9 Oct 2021 09:32:48 +0800
-Message-ID: <20211009013248.1174-5-longpeng2@huawei.com>
-X-Mailer: git-send-email 2.25.0.windows.1
-In-Reply-To: <20211009013248.1174-1-longpeng2@huawei.com>
-References: <20211009013248.1174-1-longpeng2@huawei.com>
+        Fri, 8 Oct 2021 21:46:23 -0400
+Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HR75k4CsKz903F;
+        Sat,  9 Oct 2021 09:39:38 +0800 (CST)
+Received: from dggeme756-chm.china.huawei.com (10.3.19.102) by
+ dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 09:44:24 +0800
+Received: from dggeme756-chm.china.huawei.com ([10.6.80.68]) by
+ dggeme756-chm.china.huawei.com ([10.6.80.68]) with mapi id 15.01.2308.008;
+ Sat, 9 Oct 2021 09:44:24 +0800
+From:   "Songxiaowei (Kirin_DRV)" <songxiaowei@hisilicon.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linuxarm <linuxarm@huawei.com>,
+        Mauro Carvalho Chehab <mauro.chehab@huawei.com>,
+        =?utf-8?B?S3J6eXN6dG9mIFdpbGN6ecWEc2tp?= <kw@linux.com>,
+        "Wangbinghui (Biggio, Kirin_DRV)" <wangbinghui@hisilicon.com>,
+        Rob Herring <robh@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>
+Subject: Re: [PATCH v12 00/11] Add support for Hikey 970 PCIe
+Thread-Topic: [PATCH v12 00/11] Add support for Hikey 970 PCIe
+Thread-Index: Ade8q7iJlFQZnl/9QeuKIfdoWRmMGg==
+Date:   Sat, 9 Oct 2021 01:44:24 +0000
+Message-ID: <cd22c1e143b94f55a78d969193847812@hisilicon.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.143.62.236]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.148.223]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100016.china.huawei.com (7.185.36.216)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng <longpeng2@huawei.com>
-
-Add KUnit tests for the contiguous physical memory regions merging
-functionality from the Nitro Enclaves misc device logic.
-
-We'll see the following message using dmesg if everything goes well:
-
-[...]     # Subtest: ne_misc_dev_test
-[...]     1..1
-[...] (NULL device *): Physical mem region address is not 2 MiB aligned
-[...] (NULL device *): Physical mem region size is not multiple of 2 MiB
-[...] (NULL device *): Physical mem region address is not 2 MiB aligned
-[...]     ok 1 - ne_misc_dev_test_merge_phys_contig_memory_regions
-[...] ok 1 - ne_misc_dev_test
-
-Signed-off-by: Longpeng <longpeng2@huawei.com>
----
-Changes v2 -> v3:
-  - update the commit title and commit message.  [Andra]
-  - align the fileds in 'struct phys_regions_test'.  [Andra]
-  - rename 'phys_regions_testcases' to 'phys_regions_test_cases'.  [Andra]
-  - add comments before each test cases.  [Andra]
-  - initialize the variables in ne_misc_dev_test_merge_phys_contig_memory_regions.  [Andra]
----
- drivers/virt/nitro_enclaves/ne_misc_dev_test.c | 136 +++++++++++++++++++++++++
- 1 file changed, 136 insertions(+)
-
-diff --git a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-index bcb755e..7bd6b34 100644
---- a/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-+++ b/drivers/virt/nitro_enclaves/ne_misc_dev_test.c
-@@ -2,7 +2,143 @@
- 
- #include <kunit/test.h>
- 
-+#define MAX_PHYS_REGIONS	16
-+#define INVALID_VALUE		(~0ull)
-+
-+struct phys_regions_test {
-+	u64 paddr;
-+	u64 size;
-+	int expect_rc;
-+	int expect_num;
-+	u64 expect_last_paddr;
-+	u64 expect_last_size;
-+} phys_regions_test_cases[] = {
-+	/*
-+	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Failed, start address is not 2M-aligned
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 0
-+	 *   region = {}
-+	 */
-+	{0x1000, 0x200000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
-+
-+	/*
-+	 * Add the region from 0x200000 to (0x200000 + 0x1000 - 1):
-+	 *   Expected result:
-+	 *       Failed, size is not 2M-aligned
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 0
-+	 *   region = {}
-+	 */
-+	{0x200000, 0x1000, -EINVAL, 0, INVALID_VALUE, INVALID_VALUE},
-+
-+	/*
-+	 * Add the region from 0x200000 to (0x200000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 1
-+	 *   region = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *   }
-+	 */
-+	{0x200000, 0x200000, 0, 1, 0x200000, 0x200000},
-+
-+	/*
-+	 * Add the region from 0x0 to (0x0 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 2
-+	 *   region = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *   }
-+	 */
-+	{0x0, 0x200000, 0, 2, 0x0, 0x200000},
-+
-+	/*
-+	 * Add the region from 0x600000 to (0x600000 + 0x400000 - 1):
-+	 *   Expected result:
-+	 *       Successful
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   region = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0x9fffff}, // len=0x400000
-+	 *   }
-+	 */
-+	{0x600000, 0x400000, 0, 3, 0x600000, 0x400000},
-+
-+	/*
-+	 * Add the region from 0xa00000 to (0xa00000 + 0x400000 - 1):
-+	 *   Expected result:
-+	 *       Successful, merging case!
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   region = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
-+	 *   }
-+	 */
-+	{0xa00000, 0x400000, 0, 3, 0x600000, 0x800000},
-+
-+	/*
-+	 * Add the region from 0x1000 to (0x1000 + 0x200000 - 1):
-+	 *   Expected result:
-+	 *       Failed, start address is not 2M-aligned
-+	 *
-+	 * Now the instance of struct phys_contig_mem_regions is:
-+	 *   num = 3
-+	 *   region = {
-+	 *       {start=0x200000, end=0x3fffff}, // len=0x200000
-+	 *       {start=0x0,      end=0x1fffff}, // len=0x200000
-+	 *       {start=0x600000, end=0xdfffff}, // len=0x800000
-+	 *   }
-+	 */
-+	{0x1000, 0x200000, -EINVAL, 3, 0x600000, 0x800000},
-+};
-+
-+static void ne_misc_dev_test_merge_phys_contig_memory_regions(struct kunit *test)
-+{
-+	struct phys_contig_mem_regions *regions;
-+	size_t sz = 0;
-+	int rc = 0;
-+	int i = 0;
-+
-+	sz = sizeof(*regions) + MAX_PHYS_REGIONS * sizeof(struct range);
-+	regions = kunit_kzalloc(test, sz, GFP_KERNEL);
-+	KUNIT_ASSERT_TRUE(test, regions != NULL);
-+
-+	for (i = 0; i < ARRAY_SIZE(phys_regions_test_cases); i++) {
-+		struct phys_regions_test *entry = phys_regions_test_cases + i;
-+
-+		rc = ne_merge_phys_contig_memory_regions(regions,
-+							 entry->paddr, entry->size);
-+		KUNIT_EXPECT_EQ(test, rc, entry->expect_rc);
-+		KUNIT_EXPECT_EQ(test, regions->num, entry->expect_num);
-+
-+		if (entry->expect_last_paddr == INVALID_VALUE)
-+			continue;
-+
-+		KUNIT_EXPECT_EQ(test, regions->region[regions->num - 1].start,
-+				entry->expect_last_paddr);
-+		KUNIT_EXPECT_EQ(test, range_len(&regions->region[regions->num - 1]),
-+				entry->expect_last_size);
-+	}
-+}
-+
- static struct kunit_case ne_misc_dev_test_cases[] = {
-+	KUNIT_CASE(ne_misc_dev_test_merge_phys_contig_memory_regions),
- 	{}
- };
- 
--- 
-1.8.3.1
-
+QWNrLWJ5IFhpYW93ZWkgU29uZy4NCg0KPiBIaSBMb3JlbnpvLA0KPiANCj4gRW0gVGh1LCA3IE9j
+dCAyMDIxIDE1OjQxOjAzICswMTAwDQo+IExvcmVuem8gUGllcmFsaXNpIDxsb3JlbnpvLnBpZXJh
+bGlzaUBhcm0uY29tPiBlc2NyZXZldToNCj4gDQo+ID4gT24gVHVlLCBPY3QgMDUsIDIwMjEgYXQg
+MDE6MjM6MjFQTSAtMDUwMCwgQmpvcm4gSGVsZ2FhcyB3cm90ZToNCj4gPiA+IFsrY2MgTG9yZW56
+b10NCj4gPiA+IA0KPiA+ID4gT24gVHVlLCBPY3QgMDUsIDIwMjEgYXQgMTE6MjQ6NDhBTSArMDIw
+MCwgTWF1cm8gQ2FydmFsaG8gQ2hlaGFiIHdyb3RlOiAgDQo+ID4gPiA+IEhpIEJqb3JuLA0KPiA+
+ID4gPiANCj4gPiA+ID4gRW0gVHVlLCAyOCBTZXAgMjAyMSAwOTozNDoxMCArMDIwMA0KPiA+ID4g
+PiBNYXVybyBDYXJ2YWxobyBDaGVoYWIgPG1jaGVoYWIraHVhd2VpQGtlcm5lbC5vcmc+IGVzY3Jl
+dmV1OiAgDQo+ID4gPiAgIA0KPiA+ID4gPiA+ICAgUENJOiBraXJpbjogUmVvcmdhbml6ZSB0aGUg
+UEhZIGxvZ2ljIGluc2lkZSB0aGUgZHJpdmVyDQo+ID4gPiA+ID4gICBQQ0k6IGtpcmluOiBBZGQg
+c3VwcG9ydCBmb3IgYSBQSFkgbGF5ZXINCj4gPiA+ID4gPiAgIFBDSToga2lyaW46IFVzZSByZWdt
+YXAgZm9yIEFQQiByZWdpc3RlcnMNCj4gPiA+ID4gPiAgIFBDSToga2lyaW46IEFkZCBzdXBwb3J0
+IGZvciBicmlkZ2Ugc2xvdCBEVCBzY2hlbWENCj4gPiA+ID4gPiAgIFBDSToga2lyaW46IEFkZCBL
+aXJpbiA5NzAgY29tcGF0aWJsZQ0KPiA+ID4gPiA+ICAgUENJOiBraXJpbjogQWRkIE1PRFVMRV8q
+IG1hY3Jvcw0KPiA+ID4gPiA+ICAgUENJOiBraXJpbjogQWxsb3cgYnVpbGRpbmcgaXQgYXMgYSBt
+b2R1bGUNCj4gPiA+ID4gPiAgIFBDSToga2lyaW46IEFkZCBwb3dlcl9vZmYgc3VwcG9ydCBmb3Ig
+S2lyaW4gOTYwIFBIWQ0KPiA+ID4gPiA+ICAgUENJOiBraXJpbjogZml4IHBvd2Vyb2ZmIHNlcXVl
+bmNlDQo+ID4gPiA+ID4gICBQQ0k6IGtpcmluOiBBbGxvdyByZW1vdmluZyB0aGUgZHJpdmVyICAN
+Cj4gPiA+ID4gDQo+ID4gPiA+IEkgZ3Vlc3MgZXZlcnl0aGluZyBpcyBhbHJlYWR5IHNhdGlzZnlp
+bmcgdGhlIHJldmlldyBmZWVkYmFja3MuDQo+ID4gPiA+IElmIHNvLCBjb3VsZCB5b3UgcGxlYXNl
+IG1lcmdlIHRoZSBQQ0kgb25lcz8gIA0KPiA+ID4gDQo+ID4gPiBMb3JlbnpvIHRha2VzIGNhcmUg
+b2YgdGhlIG5hdGl2ZSBob3N0IGJyaWRnZSBkcml2ZXJzLCBzbyBJJ20gc3VyZSB0aGlzDQo+ID4g
+PiBpcyBvbiBoaXMgbGlzdC4gIEkgYWRkZWQgaGltIHRvIGNjOiBpbiBjYXNlIG5vdC4gIA0KPiA+
+IA0KPiA+IElkZWFsbHkgSSdkIGxpa2UgdG8gc2VlIHRoZXNlIHBhdGNoZXMgQUNLZWQvUmV2aWV3
+LWVkIGJ5IHRoZSBraXJpbg0KPiA+IG1haW50YWluZXJzIC0gdGhhdCdzIHdoYXQgSSB3YXMgd2Fp
+dGluZyBmb3IgYW5kIHRoYXQncyB3aGF0IHRoZXkNCj4gPiBhcmUgdGhlcmUgZm9yLg0KPiA+IA0K
+PiA+IEhhdmluZyBzYWlkIHRoYXQsIEkgd2lsbCBrZWVwIGFuIGV5ZSBvbiB0aGlzIHNlcmllcyBz
+byB0aGF0IHdlDQo+ID4gY2FuIGhvcGVmdWxseSBxdWV1ZSBpdCBmb3IgdjUuMTYuDQo+IA0KPiBO
+b3Qgc3VyZSBpZiB5b3UgcmVjZWl2ZWQgdGhlIGUtbWFpbCBmcm9tIFhpYW93ZWkgd2l0aCBoaXMg
+YWNrLg0KDQpJIGhhdmUgbm90IChhbmQgaXQgZGlkIG5vdCBtYWtlIGl0IHRvIGxpbnV4LXBjaSBl
+aXRoZXIpLg0KDQo+IEF0IGxlYXN0IGhlcmUsIEkgb25seSByZWNlaXZlZCBvbiBteSBpbnRlcm5h
+bCBlLW1haWwgKHBlcmhhcHMgYmVjYXVzZQ0KPiB0aGUgb3JpZ2luYWwgZS1tYWlsIHdhcyBiYXNl
+NjQtZW5jb2RlZCB3aXRoIGdiMjMxMiBjaGFyc2V0KS4gDQo+IA0KPiBTbywgbGV0IG1lIGZvcndh
+cmQgaGlzIGFuc3dlciB0byB5b3UsIGMvYyB0aGUgbWFpbGluZyBsaXN0cy4NCg0KUGF0Y2hlcyBz
+aG91bGQgYmUgYWNrZWQgd2l0aCB0YWdzIHRoYXQgdG9vbGluZyByZWNvZ25pemUsIHRoaXMNCndv
+dWxkIGhlbHAgbWUuDQoNCj4gVGhhbmtzLA0KPiBNYXVybw0KPiANCg0KVGhhbmtzLg0K
