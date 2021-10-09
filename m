@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9943B427DFD
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 00:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA9F427E04
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 01:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhJIWyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 18:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57056 "EHLO
+        id S231324AbhJIXSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 19:18:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230296AbhJIWyS (ORCPT
+        with ESMTP id S231143AbhJIXSL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 18:54:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6AFC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 15:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HlKWYN2dw8uuQPxr2tgsDfcykAdf/apHp3S9FQkV370=; b=qk9H63EqlV+cMSj2hs8OSZ5oac
-        RtLNYC37cNC862LycoSvAKYfUanYEXUG9Det5ZBNgpP98WCYlwhsERVwlJLbfUYItiX7wzoeLTKVv
-        swRoqZgcvoO5HBHXijyx71h0r+Z2IctlwhtuksO/1HfO1a1Renjx5O9kNvNXseoJV1SJ39QLmDgTI
-        FjIYaG/a1/feq0Z9kTpHvlbt2NHb66HF2Hqfwu2UFnha2CIAFP2FT/7tH5YLMriDErMpk08Yagi/n
-        XlLDvKtXpSySU/KGObNuAejiBxzk/vVmqzao2YoLVwhVS5tPzNnInsm1NEjiz384fomLpIV/lCTwm
-        fdE7z7FQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZLBB-004SNm-LJ; Sat, 09 Oct 2021 22:51:09 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 414639811D4; Sun, 10 Oct 2021 00:50:57 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 00:50:57 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH] sched/fair: Check idle_cpu in select_idle_core/cpu()
-Message-ID: <20211009225057.GB174703@worktop.programming.kicks-ass.net>
-References: <20211009180941.20458-1-tao.zhou@linux.dev>
+        Sat, 9 Oct 2021 19:18:11 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2D8C061570;
+        Sat,  9 Oct 2021 16:16:13 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id i20so34765510edj.10;
+        Sat, 09 Oct 2021 16:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hOSRe/Yki+d7ofiMIHxMQp0x1aWjsfq22qP+igPVVo4=;
+        b=KRob+oPfn99rJQUaa23vS6tW9Wf6YlkrHW4Phl8Uy+UPqlxCKb+dgtDFy+4rHpwFxT
+         0GzShpFMAw7vamGlW/jej+YfmFdH6UJnSpJDRckMm67h2KSJd9HMRS/F6ORu8Z6Ni5M3
+         XadWYQtXdzbqPXjLKQ22evhkigjL6IVzM+ledy2j1hhUkWuq6+49HSE38GifQDMqJoTN
+         l7acBijb5i9Fn9qYzRvdU6JvCC85Eq6266VxJeo1pUzF+eQrEOg5OA3rilZG+F7rvcx0
+         UR5i+uMnU2faua+WTkCkaPsfq+JIXAD4ia3HCXEQiZrYUpsMGQa7gXeffirTVu42iXZe
+         Oxsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hOSRe/Yki+d7ofiMIHxMQp0x1aWjsfq22qP+igPVVo4=;
+        b=X54LRLb74HI9cfNEkH7lBJfssEgYOFzU8cYfLbuHP5YE/NCcuYQaDa8/525TK6CXjO
+         qbDOsgh6sdFQYhmWTxHq/lcjpcpEIVxi5AFYiZAHTnkzOc/sdw3EuNRlgBZFN3dJDcTT
+         LhpIh3i/IeupzJgjpPYN34g2Hv5mjmNwduY/wJGHNpT0lu9SqO3IjB83CySCCw+y/agt
+         1SZTt6qa0O+L+WIIeywwm4yunHGHZYiZX5+O16RkKeaKC7v2TALtRrtdilPS4M4SylrM
+         GHXlP6a/aQ+5Y8t3mnXeVYQlMhNDUIlc/wBvO9p7CAepUavGH027FmJL5D+/EbuXwvpM
+         tnvg==
+X-Gm-Message-State: AOAM533jxozZT1yDy41yOyMfOdBG/clLBSRk1o6uUuQZ2iEg3/4QZfXz
+        agpaS/tdJ1UbSP2nbz4ozU8=
+X-Google-Smtp-Source: ABdhPJwZFDc036TJFPF6Iku8nQFDac4JkNH43ch+62ffBTNkLHjy9R5SfdL/VuB3Z7L+Sy3GRez3kQ==
+X-Received: by 2002:a17:906:3192:: with SMTP id 18mr14830278ejy.246.1633821371899;
+        Sat, 09 Oct 2021 16:16:11 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id d18sm1469022ejo.80.2021.10.09.16.16.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 16:16:11 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 01:16:09 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v2 13/15] dt-bindings: net: dsa: qca8k: document
+ open drain binding
+Message-ID: <YWIiuVSeAsvZEEUx@Ansuel-xps.localdomain>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-14-ansuelsmth@gmail.com>
+ <YWHPccukYpemv77x@lunn.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211009180941.20458-1-tao.zhou@linux.dev>
+In-Reply-To: <YWHPccukYpemv77x@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 02:09:41AM +0800, Tao Zhou wrote:
-> In select_idle_core(), the idle core returned may have no cpu
-> allowed. I think the idle core returned for the task is the one
-> that can be allowed to run. I insist on this semantics.
+On Sat, Oct 09, 2021 at 07:20:49PM +0200, Andrew Lunn wrote:
+> On Fri, Oct 08, 2021 at 02:22:23AM +0200, Ansuel Smith wrote:
+> > Document new binding qca,power_on_sel used to enable Power-on-strapping
+> > select reg and qca,led_open_drain to set led to open drain mode.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 11 +++++++++++
+> >  1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index b9cccb657373..9fb4db65907e 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -13,6 +13,17 @@ Required properties:
+> >  Optional properties:
+> >  
+> >  - reset-gpios: GPIO to be used to reset the whole device
+> > +- qca,ignore-power-on-sel: Ignore power on pin strapping to configure led open
+> > +                           drain or eeprom presence.
 > 
-> In select_idle_cpu(), if select_idle_core() can not find the
-> idle core, one reason is that the core is not allowed for the
-> task, but the core itself is idle from the point of
-> sds->has_idle_cores. I insist on this semantics.
+> So strapping is only used for LEDs and EEPROM presence? Nothing else?
+> Seems link MAC0/MAC6 swap would be a good candidate for strapping?
 > 
-> No others, just two additional check.
-> ---
->  kernel/sched/fair.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I just want to make it clear that if you select this option, you need
+> to take care of X, Y and Z in DT.
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index f6a05d9b5443..a44aca5095d3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6213,7 +6213,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
->  			*idle_cpu = cpu;
->  	}
->  
-> -	if (idle)
-> +	if (idle && *idle_cpu != -1)
->  		return core;
+> 	Andrew
 
-In that case, core would be nr_cpu_ids (==nr_cpumask_bits), and then the caller checks:
+Sorry I missed this. Yes strapping is used only for LEDs and EEPROM. No
+reference in Documentation about mac swap. Other strapping are related
+to voltage selection and other hardware stuff. Thing that can't be set
+from sw.
 
-	(unsigned)i < nr_cpumask_bits
-
->  	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-> @@ -6324,7 +6324,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
->  		}
->  	}
->  
-> -	if (has_idle_core)
-> +	if (has_idle_core && *idle_cpu != -1)
->  		set_idle_cores(target, false);
-
-And this one I'm completely failing, why shouldn't we mark the core as
-non-idle when there is a single idle CPU found? That's just worng.
+-- 
+	Ansuel
