@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B7BD42778B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182E0427791
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:37:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235667AbhJIFh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIFhy (ORCPT
+        id S244296AbhJIFjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:39:16 -0400
+Received: from mail-yb1-f175.google.com ([209.85.219.175]:44782 "EHLO
+        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhJIFjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:37:54 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B56AC061570;
-        Fri,  8 Oct 2021 22:35:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id g5so4444277plg.1;
-        Fri, 08 Oct 2021 22:35:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bqacdlZ0cmVRSHorJWN1YVAH6yq1T0MI3rxKlNLYK9A=;
-        b=QjjJaQJxOOkx4qxUiqRuksZKYDI63fhF5knUb38/AjsRY4VIRcrteMhWLdvWVU2NTP
-         71sxQmUZZ4YS2yCZnhWZ1q3/pceWLJXKKK09xJOfPApbQnJeHuSoaojrG3Z6JzcKpop3
-         CD+MruInKj1oSZXcvKVh3LuK8RyNam2T9o8lngtO2Sb69+CpKKDJ58j5CRL5hBnDUkBO
-         iwEgngKqghiJebIhoiPRF14gTrMKmqol6BCEg25YQLCp2/BozTouQ/USyTKblivadi7Q
-         44Tuk73sKScSchiYKtxxQFOmhd+3GluS3mBB9IGfqm9f/XZ1v6sXEkkrFrHPx9V2r8Jc
-         5b/g==
+        Sat, 9 Oct 2021 01:39:14 -0400
+Received: by mail-yb1-f175.google.com with SMTP id s64so25518242yba.11;
+        Fri, 08 Oct 2021 22:37:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bqacdlZ0cmVRSHorJWN1YVAH6yq1T0MI3rxKlNLYK9A=;
-        b=AaKhpWRZfDO70/ffUSEItS6Ain6VD9tlyFFnvZSMIb0hLAvHRvyzPGsFjqGe0HVqf+
-         biS31VUeESbqnaO9QuzDsO/tuf+z4/4LNpH8Aed5QiQ4+AXXO4/bHau25Yz91/nRX2o1
-         ARzxq0B5Qa28Z9LyyDPi6eaLKmUEYkv5jHFYL3kiMdsrbc18ausqjtLKjZ+wIN7SSsVF
-         xp3EE/fFecVL7WX0PKLxr9wLt5vTRcEQEuRHtQG2LoAg2DsHbCYpccVBC2pBaWv6+S4R
-         2kC4GuWAjoXrQ7DT6qCAjWHddi1VPkiPUgr97zZVLXxqMgq3YQ0MDpgx2x1SztFyb7/u
-         GJ9w==
-X-Gm-Message-State: AOAM532Q4azZBzIketeMjgUSLbcEtANpLtPk0JxtCUbgE4V+lLPqzBPU
-        05tXWEowxvEdLsnLl5uXQU1itYhjhQOdPw==
-X-Google-Smtp-Source: ABdhPJw9ptxkHGA+Fi9ih0wXIc/ExRrcAg1FLFFfkg2kE5bqzpvdiFgXWd+PrBq0Wsm9GlFhHFrK8w==
-X-Received: by 2002:a17:90a:6fc1:: with SMTP id e59mr10482537pjk.103.1633757757442;
-        Fri, 08 Oct 2021 22:35:57 -0700 (PDT)
-Received: from localhost.localdomain ([103.112.79.203])
-        by smtp.gmail.com with ESMTPSA id 186sm946247pfg.20.2021.10.08.22.35.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Oct 2021 22:35:56 -0700 (PDT)
-From:   "Yan, Zheng" <ukernel@gmail.com>
-To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk, paskripkin@gmail.com,
-        "Yan, Zheng" <yanzheng03@kuaishou.com>
-Subject: [PATCH] block: nbd: fix sanity check for first_minor
-Date:   Sat,  9 Oct 2021 13:35:40 +0800
-Message-Id: <20211009053540.95100-1-ukernel@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aIghcbJ60FBCmsTSZcidGZHdsZIgJ4C2Kwndg3+KdLc=;
+        b=GSRQ1Iaf1jcG6jkjDcE0B8hBNwjtTQ4mbDh4TEU1M0ryezASe86tpYTv9qBlFiPagV
+         0mOzC2xtjSIGX/LLi4BHeLJy0yDZkYncrVPdPuUleydzjo0GGcOF1zXVENu9wwUi8mr0
+         QFCfJwknKg16eYQ19JaarW9giEtkdoIJCNn36fsdUT6BKWgRP17/fRIVV4SlgUaKA1iN
+         f6QEw1wJP0XwSwpMn3LNUnUHrE0XkFp0zJlCWyNAgQdRU10qXhL40FqSD0ZyQsIfhHPv
+         DuUS9Dk8SJi5XuhcFayv/JGNevgGZcnQrqeZdjcyIx3jgzOfj1ylaI0wQ6d7cP5FAUaZ
+         Pdeg==
+X-Gm-Message-State: AOAM532jXNoziPEEQG1Xma1tenb3tIzCE3M5Toi64XQfIIcIviqsRT9d
+        HI1KThQXJpoZ2J45OshLZ4NdIbJiw/XNgA0vSsajTDd22nk=
+X-Google-Smtp-Source: ABdhPJwapPhvRWOK7oAubzYHeJAPIsGJxNM1/egYo2N66jARLGywT7RkiLRh5RujnE7WH05gmBL1JvYmHW5mG+9ozEE=
+X-Received: by 2002:a25:4146:: with SMTP id o67mr8514459yba.113.1633757837390;
+ Fri, 08 Oct 2021 22:37:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
+In-Reply-To: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sat, 9 Oct 2021 14:37:06 +0900
+Message-ID: <CAMZ6RqKm+nLPd2oHgNebeDh2hSOMVnV7cJn12FM6NLpVaOz2iA@mail.gmail.com>
+Subject: Re: [PATCH v1] can: netlink: report the CAN controller mode supported flags
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Yan, Zheng" <yanzheng03@kuaishou.com>
+On Sun. 3 Oct 2021 at 13:40, Vincent Mailhol <mailhol.vincent@wanadoo.fr> wrote:
+> This patch introduces a method for the user to check both the
+> supported and the static capabilities.
+>
+> Currently, the CAN netlink interface provides no easy ways to check
+> the capabilities of a given controller. The only method from the
+> command line is to try each CAN_CTRLMODE_ individually to check
+> whether the netlink interface returns an -EOPNOTSUPP error or not
+> (alternatively, one may find it easier to directly check the source
+> code of the driver instead...)
+>
+> It appears that, currently, the struct can_ctrlmode::mask field is
+> only used in one direction: from the userland to the kernel. So we can
+> just reuse this field in the other direction (from the kernel to
+> userland). But, because the semantic is different, we use a union to
+> give this field a proper name: supported.
+>
+> Below table explains how the two fields can_ctrlmode::supported and
+> can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
+> flags, allow us to identify both the supported and the static
+> capabilities:
+>
+>  supported &    flags &         Controller capabilities
+>  CAN_CTRLMODE_* CAN_CTRLMODE_*
+>  ------------------------------------------------------------------------
+>  false          false           Feature not supported (always disabled)
+>  false          true            Static feature (always enabled)
+>  true           false           Feature supported but disabled
+>  true           true            Feature supported and enabled
+>
+> N.B.: This patch relies on the fact that a given CAN_CTRLMODE_*
+> feature can not be set for both can_priv::ctrlmode_supported and
+> can_priv::ctrlmode_static at the same time. c.f. comments in struct
+> can_priv [1]. Else, there would be no way to distinguish which
+> features were statically enabled.
 
-Device's minor is a 20-bits number, max value is 0xfffff.
+Actually, can_priv::ctrlmode_static can be derived from the other
+ctrlmode fields. I will send a v2 in which I will add a patch to
+replace that field with an inline function.
 
-Fixes: b1a811633f ("block: nbd: add sanity check for first_minor").
-Signed-off-by: "Yan, Zheng" <yanzheng03@kuaishou.com>
----
- drivers/block/nbd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 1183f7872b71..53cd038c96e9 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -1753,7 +1753,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
- 	 * byte in __device_add_disk().
- 	 */
- 	disk->first_minor = index << part_shift;
--	if (disk->first_minor > 0xff) {
-+	if (disk->first_minor > MINORMASK) {
- 		err = -EINVAL;
- 		goto out_free_idr;
- 	}
--- 
-2.12.2
-
+Yours sincerely,
+Vincent Mailhol
