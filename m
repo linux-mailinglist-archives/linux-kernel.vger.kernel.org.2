@@ -2,117 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A9442749E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0AD4274A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243988AbhJIAXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        id S243958AbhJIAZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243892AbhJIAX3 (ORCPT
+        with ESMTP id S243892AbhJIAZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:23:29 -0400
-Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A881C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:21:33 -0700 (PDT)
-Received: from grubbs.orbis-terrarum.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        by smtp.gentoo.org (Postfix) with ESMTPS id 233063430EF
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:21:30 +0000 (UTC)
-Received: (qmail 561 invoked by uid 10000); 9 Oct 2021 00:21:29 -0000
-Date:   Sat, 9 Oct 2021 00:21:29 +0000
-From:   "Robin H. Johnson" <robbat2@gentoo.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        rjohnson@digitalocean.com,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
-Message-ID: <robbat2-20211009T000917-463381491Z@orbis-terrarum.net>
-References: <20210831043723.13481-1-robbat2@gentoo.org>
- <20210907212426.73ed81d1@rorschach.local.home>
- <20211007071151.GL174703@worktop.programming.kicks-ass.net>
- <20211007092358.65152792@gandalf.local.home>
- <robbat2-20211007T172058-955036195Z@orbis-terrarum.net>
- <20211008181348.4c2488b7@gandalf.local.home>
+        Fri, 8 Oct 2021 20:25:45 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B41C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:23:49 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id k2-20020a056830168200b0054e523d242aso4081665otr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:23:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JkIOVgb0rFlzTTWYy9nxBqEDUeJR0ZAQd/WMS4wwxAg=;
+        b=tgAss8XZylSYp96jFg8QWvj9pCW5nn8W6lfIhXtFcDdGjnT4o75iOG3+ZFeQ0itOVZ
+         A7HUnFO77nQkpIyQ6FDNdgQcfwvmoELb9OzY0ejzLQN+/pI6PFJP1L+yaNnL9plpzhkB
+         cUGWlTJ4ZG4v118IUpr03AcbDINktfy4IHtmixC4qCsFDCSQXI3XGXWyG78s7+Bb8Im5
+         hK4TJ3EijoTqVCwniZ8B6+RsZFZOvP1OU72d9BjQtpGNoz+wpvCeftBis4JEFN/Juz94
+         IwaAH959OJr9R5aMjk5LApH2oSebuNeiupx/GZE/bR+fVID4eCgPJaRZQudMjA56yl3Y
+         AE9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JkIOVgb0rFlzTTWYy9nxBqEDUeJR0ZAQd/WMS4wwxAg=;
+        b=BpROTKoQIVs/fH9RS6M5tQw+F5FJnr+1QMII5LzkQ04On4KPaIfytpDkaIMMPqwyxJ
+         isMMWfeqvgieofH18gGJnkreSlExDYtoKk7lzz6CY63Jk8aluF4rwlmhrKtm1RYCNrKw
+         3cxSpyqB0WRFNK3rTQuq0i3DEnDeedcsZcCiAuDq1pIGFrEXqDi6i53hhueSzJB/1k72
+         XLhFP0e57X3jHfx062lOKz0XUJlQPBAlXzbDHDrl+qfVqZ6jztcFeY7D99YhBXZLxhHw
+         +VzomFHOK+fKlY5YpC4yej8Ir+g4j/RfL11M+4z6ekBmhGI9an7uvflwlOFQGMmv2UPB
+         pjrg==
+X-Gm-Message-State: AOAM533xFfnYZ9VbYVGLRxSGjRlIsNsjE8lKIJABkpTRRBDKu9CpkAnZ
+        8KExlcWKa0KXiGxexKufqvV9Og==
+X-Google-Smtp-Source: ABdhPJzScZ5VD0XmUxg3zl8evGFYSN5Cwytom2vRIcVLCXghggc5kzuN6ajWU8F0d5f8RB5Vf11hFg==
+X-Received: by 2002:a05:6830:2486:: with SMTP id u6mr10866085ots.353.1633739028379;
+        Fri, 08 Oct 2021 17:23:48 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id bd24sm255815oib.52.2021.10.08.17.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 17:23:48 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 17:25:26 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v3] rpmsg: ctrl: Introduce new
+ RPMSG_CREATE/RELEASE_DEV_IOCTL controls
+Message-ID: <YWDhdq4iOihzC5FI@ripper>
+References: <20210712132303.25058-1-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kfJPulgMX8wmlwUv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008181348.4c2488b7@gandalf.local.home>
+In-Reply-To: <20210712132303.25058-1-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 12 Jul 06:23 PDT 2021, Arnaud Pouliquen wrote:
 
---kfJPulgMX8wmlwUv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Allow the user space application to create and release an rpmsg device
+> by adding RPMSG_CREATE_DEV_IOCTL and RPMSG_RELEASE_DEV_IOCTL ioctrls to
+> the /dev/rpmsg_ctrl interface
+> 
 
-On Fri, Oct 08, 2021 at 06:13:48PM -0400, Steven Rostedt wrote:
-> On Thu, 7 Oct 2021 17:26:04 +0000
-> "Robin H. Johnson" <robbat2@gentoo.org> wrote:
->=20
-> > I was trying to think further what would make sense for the constant.
-> > - What are the negative impacts of a too-large value?
-> > - Is there demand for more reconfigurability?=20
-> > - Should PERF_MAX_TRACE_SIZE be a knob in Kconfig?
->=20
-> One thing you haven't discussed was, have you hit this warning, and if so,
-> what were you doing?
-Ah, I covered that in patch 2/2 in the original series, which discussed
-why I was raising the limit, and how I came to the 8K value for
-PERF_MAX_TRACE_SIZE.
-https://lore.kernel.org/all/20210831043723.13481-2-robbat2@gentoo.org/
+With
+https://lore.kernel.org/linux-remoteproc/CAHk-=wgea9bo-j4+LAvZF7OKPAXKqrGgiBAhXTJ3Jv5JAZgA+A@mail.gmail.com/
+and
+https://lore.kernel.org/linux-arm-msm/1609958656-15064-1-git-send-email-hemantk@codeaurora.org/
+in mind, I would like some concrete examples of when and how this is
+going to be used.
 
-To summarize here:
-$work requires that all employees run endpoint security software from
-SentinalOne [1]. I can see that it uses trace/perf stuff to dig deeply
-into what's taking place on the system.
 
-Something in my personal setup/configuration, leads to SentinelOne
-getting large perf backlogs during heavy workloads, primarily when I'm
-doing deep things with containers (esp with tun devices inside
-containers). I haven't been able to narrow it down much more than that,
-and I don't have the source to SentinelOne at all.
+Also, as I said previously, this would have been better to put together
+with the split out of rpmsg_ctrl, because afaict this is the only reason
+for doing that. Or am I simply missing something?
 
-It does feel like SentinelOne either has a leak of some sort, or gets a
-backlog of work that takes a noticible amount of time to clean up.
+> The RPMSG_CREATE_DEV_IOCTL Ioctl can be used to instantiate a local rpmsg
+> device.
+> Depending on the back-end implementation, the associated rpmsg driver is
+> probed and a NS announcement can be sent to the remote processor.
+> 
 
-[1] https://www.sentinelone.com/
+So, does this imply that in order to spawn a new rpmsg_char from the
+host side, I would use RPMSG_CREATE_DEV_IOCTL and to open a channel
+announced by the remote I would use RPMSG_CREATE_EPT_IOCTL?
 
---=20
-Robin Hugh Johnson
-Gentoo Linux: Dev, Infra Lead, Foundation Treasurer
-E-Mail   : robbat2@gentoo.org
-GnuPG FP : 11ACBA4F 4778E3F6 E4EDF38E B27B944E 34884E85
-GnuPG FP : 7D0B3CEB E9B85B1F 825BCECF EE05E6F6 A48F6136
+> The RPMSG_RELEASE_DEV_IOCTL allows the user application to release a
+> rpmsg device created either by the remote processor or with the
+> RPMSG_CREATE_DEV_IOCTL call.
 
---kfJPulgMX8wmlwUv
-Content-Type: application/pgp-signature; name="signature.asc"
+Is this a side effect, bug or a feature?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-Comment: Robbat2 @ Orbis-Terrarum Networks - The text below is a digital signature. If it doesn't make any sense to you, ignore it.
+Regards,
+Bjorn
 
-iQKTBAABCgB9FiEEveu2pS8Vb98xaNkRGTlfI8WIJsQFAmFg4IhfFIAAAAAALgAo
-aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEJE
-RUJCNkE1MkYxNTZGREYzMTY4RDkxMTE5Mzk1RjIzQzU4ODI2QzQACgkQGTlfI8WI
-JsQkxg/9FGbga4N7gVcD8JEyxEfYtKNreVCaoc8FuLNZeDXb7c76pngLj/B55uYK
-ztbA4pR+jY4LnyC7xNRWQZ9H5EcqU8Q8WibS7ULKFk6W0Y3DwL7WOMZe5PFeJVkQ
-krwN5qlkTNeTDmKlvTMVRK/reRmz+Z2XjXAJCiYGAdXyb3H6dQKIlNgLbTpeUYA9
-kZwAaZrZzkHlbF4kbhaKSFFXSeyoQvc8O6W8TzSXB2WmsO38a0Y/N33sUayHq2du
-PC/Xcd3QISHIsLt7LkL7QfWyLRDsTVdQXlvgK+wMa/HOwEyezjzZuDI3pWKVCBQJ
-T7gNJphwiz9a71mVZe5f5JEO8gk5cjFNOa28CtM/AKSUDwhRb62esZSzGwB0trne
-TfhJnymCg2MKimeEVUAbDp7LxyrjQckcr+O4/0bb5ivkns6QXRftFojsDLUPx4B2
-whRW+ul0sYnl4DqgOdb6o2GXdf5xJdFo2DiJ9XQs8BZAPKBsjJLGjp6B6OOL6ZRp
-tNEbwyJn/hh7eibyhawwbPL+bPWHCg4vX2Qag7hJ7g8P0eGU/idil30SrBDD+sfY
-fk0SYGFWXKWGkiSHn09BkRUWrC6huDY5blPwj57YrQ1w2U5sE3pGD/gnlrxjNuu8
-VVPp6rbU638MRBWgcTRky4v8CqrXp0/iGx8VEOnUV3bdedmfgRs=
-=G1v3
------END PGP SIGNATURE-----
-
---kfJPulgMX8wmlwUv--
+> Depending on the back-end implementation, the associated rpmsg driver is
+> removed and a NS destroy rpmsg can be sent to the remote processor.
+> 
+> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+> update from V2
+> - add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> - rebased on kernel V.14-rc1 + 
+>   series V5 Restructure the rpmsg char to decorrelate the control part [1]
+> 
+> 
+> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=514017
+> 
+> ---
+>  drivers/rpmsg/rpmsg_ctrl.c | 37 +++++++++++++++++++++++++++++++++----
+>  include/uapi/linux/rpmsg.h | 10 ++++++++++
+>  2 files changed, 43 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> index eeb1708548c1..cb19e32d05e1 100644
+> --- a/drivers/rpmsg/rpmsg_ctrl.c
+> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> @@ -23,6 +23,7 @@
+>  #include <uapi/linux/rpmsg.h>
+>  
+>  #include "rpmsg_char.h"
+> +#include "rpmsg_internal.h"
+>  
+>  static dev_t rpmsg_major;
+>  
+> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
+>   * @rpdev:	underlaying rpmsg device
+>   * @cdev:	cdev for the ctrl device
+>   * @dev:	device for the ctrl device
+> + * @ctrl_lock:	serialize the ioctrls.
+>   */
+>  struct rpmsg_ctrldev {
+>  	struct rpmsg_device *rpdev;
+>  	struct cdev cdev;
+>  	struct device dev;
+> +	struct mutex ctrl_lock;
+>  };
+>  
+>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
+> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  	void __user *argp = (void __user *)arg;
+>  	struct rpmsg_endpoint_info eptinfo;
+>  	struct rpmsg_channel_info chinfo;
+> -
+> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
+> -		return -EINVAL;
+> +	struct rpmsg_device *rpdev;
+> +	int ret = 0;
+>  
+>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+>  		return -EFAULT;
+> @@ -82,7 +84,33 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>  	chinfo.src = eptinfo.src;
+>  	chinfo.dst = eptinfo.dst;
+>  
+> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
+> +	mutex_lock(&ctrldev->ctrl_lock);
+> +	switch (cmd) {
+> +	case RPMSG_CREATE_EPT_IOCTL:
+> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
+> +		break;
+> +
+> +	case RPMSG_CREATE_DEV_IOCTL:
+> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
+> +		if (!rpdev) {
+> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
+> +			ret = -ENXIO;
+> +		}
+> +		break;
+> +
+> +	case RPMSG_RELEASE_DEV_IOCTL:
+> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
+> +		if (ret)
+> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
+> +				chinfo.name, ret);
+> +		break;
+> +
+> +	default:
+> +		ret = -EINVAL;
+> +	}
+> +	mutex_unlock(&ctrldev->ctrl_lock);
+> +
+> +	return ret;
+>  };
+>  
+>  static const struct file_operations rpmsg_ctrldev_fops = {
+> @@ -119,6 +147,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>  	device_initialize(dev);
+>  	dev->parent = &rpdev->dev;
+>  
+> +	mutex_init(&ctrldev->ctrl_lock);
+>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+>  	ctrldev->cdev.owner = THIS_MODULE;
+>  
+> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
+> index f5ca8740f3fb..1637e68177d9 100644
+> --- a/include/uapi/linux/rpmsg.h
+> +++ b/include/uapi/linux/rpmsg.h
+> @@ -33,4 +33,14 @@ struct rpmsg_endpoint_info {
+>   */
+>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
+>  
+> +/**
+> + * Instantiate a new local rpmsg service device.
+> + */
+> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
+> +
+> +/**
+> + * Release a local rpmsg device.
+> + */
+> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
+> +
+>  #endif
+> -- 
+> 2.17.1
+> 
