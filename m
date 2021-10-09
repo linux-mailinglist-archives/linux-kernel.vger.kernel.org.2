@@ -2,61 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AC9427BD6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308B5427BDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhJIQNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43980 "EHLO mail.kernel.org"
+        id S229804AbhJIQXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:23:22 -0400
+Received: from ixit.cz ([94.230.151.217]:42350 "EHLO ixit.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230051AbhJIQNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:13:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id E8E7F60F22;
-        Sat,  9 Oct 2021 16:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633795885;
-        bh=5Xg7lRWZ6AIBKIBUhXKXWn5Pz4tIZkltjsgQlkz9fII=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=dMWivXKdJLKt27/H/CaBafdWtWjSv7h9UezwDaxiIRSIldbTyrnojmddLSrXRTxDD
-         FLJbycI8TsdXoQPzhfBbh1bhUEqojc4oy63G1SkOD9ccLUdNtBrZzyGNlVIG6NkT9p
-         QxH8swZUhV1ShUm4VMIY0LMQTPuspemJAoIKu2qkiei2SQXEU6OwORa1LR5QHQapoa
-         X8BBz066wBo5wOaL02OaFjNcyk1CPY9UTX3pXTknzAjYELrj4pbAPlJoFncaIK771y
-         FWVqmFiH6uv9B8E7Zq9QB8/npVZjFaML0EJKSCeeMeZiFNFo9J7eSNPfiS1nacwwtq
-         eHJzoqLEKNKqA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D5FDA60A3A;
-        Sat,  9 Oct 2021 16:11:25 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 updates for 5.15-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01633735195-ext-0881@work.hours>
-References: <your-ad-here.call-01633735195-ext-0881@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01633735195-ext-0881@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-5
-X-PR-Tracked-Commit-Id: a46044a92add6a400f4dada7b943b30221f7cc80
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f84fc4e36cd816d2d5dff0541f32fed411b0355f
-Message-Id: <163379588582.23991.11047088438145748760.pr-tracker-bot@kernel.org>
-Date:   Sat, 09 Oct 2021 16:11:25 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S229558AbhJIQXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:23:17 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 110EF20064;
+        Sat,  9 Oct 2021 18:21:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633796478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=klFPWNBavOKzoLXujkcSqVGvJ28gIY1/bFBY8mxhqMI=;
+        b=w9Dt4MutgFo/rFnlR2PGxo3P7HPEJyKj/yhTC1T8AElUwdOAWwmn/Lh37VFejCeV10RCp+
+        8JVrPxliG3tcSQMuQ5eifquA7dMhRQijIObAb7lOgic7Hx8zpIQQ/kxpfQoX9tMOhJXemR
+        w68XS8l6W5P+f0ifVsRDyoXHMC+mxgw=
+From:   David Heidelberg <david@ixit.cz>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH v3] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings to yaml
+Date:   Sat,  9 Oct 2021 18:19:42 +0200
+Message-Id: <20211009161941.41634-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 9 Oct 2021 01:19:55 +0200:
+Convert bindings for NXP PN544 NFC driver to YAML syntax.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.15-5
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+v2
+ - Krzysztof is a maintainer
+ - pintctrl dropped
+ - 4 space indent for example
+ - nfc node name
+v3
+ - remove whole pinctrl
+ .../bindings/net/nfc/nxp,pn544.yaml           | 61 +++++++++++++++++++
+ .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
+ 2 files changed, 61 insertions(+), 33 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f84fc4e36cd816d2d5dff0541f32fed411b0355f
-
-Thank you!
-
+diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+new file mode 100644
+index 000000000000..5fc57341cf33
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP Semiconductors PN544 NFC Controller
++
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
++
++properties:
++  compatible:
++    const: nxp,pn544-i2c
++
++  clock-frequency: true
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  enable-gpios:
++    description: Output GPIO pin used for enabling/disabling the PN544
++
++  firmware-gpios:
++    description: Output GPIO pin used to enter firmware download mode
++
++required:
++  - compatible
++  - clock-frequency
++  - reg
++  - interrupts
++  - enable-gpios
++  - firmware-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nfc@28 {
++            compatible = "nxp,pn544-i2c";
++
++            reg = <0x28>;
++            clock-frequency = <400000>;
++
++            interrupt-parent = <&gpio1>;
++            interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
++
++            enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
++            firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+deleted file mode 100644
+index 2bd82562ce8e..000000000000
+--- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
++++ /dev/null
+@@ -1,33 +0,0 @@
+-* NXP Semiconductors PN544 NFC Controller
+-
+-Required properties:
+-- compatible: Should be "nxp,pn544-i2c".
+-- clock-frequency: I²C work frequency.
+-- reg: address on the bus
+-- interrupts: GPIO interrupt to which the chip is connected
+-- enable-gpios: Output GPIO pin used for enabling/disabling the PN544
+-- firmware-gpios: Output GPIO pin used to enter firmware download mode
+-
+-Optional SoC Specific Properties:
+-- pinctrl-names: Contains only one value - "default".
+-- pintctrl-0: Specifies the pin control groups used for this controller.
+-
+-Example (for ARM-based BeagleBone with PN544 on I2C2):
+-
+-&i2c2 {
+-
+-
+-	pn544: pn544@28 {
+-
+-		compatible = "nxp,pn544-i2c";
+-
+-		reg = <0x28>;
+-		clock-frequency = <400000>;
+-
+-		interrupt-parent = <&gpio1>;
+-		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+-
+-		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+-		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+-	};
+-};
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.33.0
+
