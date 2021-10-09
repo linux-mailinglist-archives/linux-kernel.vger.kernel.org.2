@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587334276B6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DED74276B9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhJICqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 22:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
+        id S244059AbhJICqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 22:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhJICqi (ORCPT
+        with ESMTP id S232267AbhJICqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:46:38 -0400
+        Fri, 8 Oct 2021 22:46:44 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BB5C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:44:42 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id v70-20020a256149000000b005ba4d61ea0fso11202323ybb.22
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:44:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A41C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:44:47 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v70-20020a256149000000b005ba4d61ea0fso11202475ybb.22
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=kf7CalnyuFZkYhPjNjgl2jKwF5f9iQ5T88AqkNZlBhM=;
-        b=PTm8Q58rLoMMQBjtuBNjPDDyRkDz2pwkEBRM+hXj/cayiP5UTNTs/DsIOuJIo2pr8j
-         PsjUfcJCGaN+KPa3X5ToNlcEeDmhzr7AeUXyExEJk04ekHtZdwZT6APVAPF3w0gh9n2Z
-         sex9qKGWNiDd/SFyFj2sGHBi5pHboJNtPLejyQ2eoQSDzXM6HKNLAXbUzjnxepC5r1oQ
-         x9E8haah2ZJ3S89pr2zoKZwBH7QYCKa+ijIZlH0MORFigm7FRb87pmDnTjgzzfqdzsg0
-         vJD5rNcIBrHYsh4n5i8Lqn4FXV2yeYFg5HMC7pH9k3tiFBMlGXoL1aG58kKG8BVCD2WO
-         BAhQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=rLZuY70s2J0nCJYNwXryNWiTb1APsrIhur4uJsUdNpU=;
+        b=faj7TxRq9plYk+wfDay6lkhIXEAT9vR+xZRoA+ujxj2/TGQnrFBOvYuKI+7FiM54dZ
+         N6Yagv+iJE2vpcfiIRqi+fqzG9cyN8d+sK9KJvOa11oZQi4P8JXSCw/TyMtW0rU5+0iW
+         7o53e0XzlkWLfkzQsfvx/OkFCvYnYBZgkFpaOYVHnZ2tvl8Mm+klCFY4KFg8NJJ9m1xO
+         teZlqzyYPSzPuk6+gAX8F9hql94Uyg6OGuNrlI+i4QnlFkAB7H9sxXsXEdTmt6jWRnQh
+         c81yCMJinN72mtiqvTnpxNYaxEVV8RwSqiEio0xj/WoBJLcOlHSE0SKOgtj/P/PEQE1+
+         1siQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=kf7CalnyuFZkYhPjNjgl2jKwF5f9iQ5T88AqkNZlBhM=;
-        b=HeIGaYIcVtiFK3DQdpLt/ES4pxH4eQYia1iz4AsSThx8V+cUxx1wL+xyhkv4od68Le
-         /fCNRstNqXSTSTCgVX7WvkZw567IS/EaOElardd77sc6g15oD3AmYG87Avt7saNYk6Q+
-         +S+p3eptktvfmdWImtYUw8AL6bEb3pTX8VBlGEHgmeySk5rFA0qp8h0CQ72an5IZnyJW
-         e5PfMHAJx4D7lquFXOTR2KwBAwCsqsHfJ6o3m4Lg3TDFM3oOFWrg+yvZ8lIYRqWXRsA0
-         +lgkprfOAyD2MtyZqLCY0vLaA9Zvpl0FRTH8g9gYNCrM4ERXQHPWGY+z6/MFEcGc+MDg
-         Ws9w==
-X-Gm-Message-State: AOAM530L+z2XQC4izP71yort70dH3Yx+rCdKbZqlKq1icjeM16inrpGj
-        bIO8cAIIWERCirOcPsvXOnXglBQ=
-X-Google-Smtp-Source: ABdhPJxv7IhrL6cbOin6c3Hmh1FGR0aqH74Axlx+fYYUsYtHZdQZNXf1WQiLRFezxS6n6yK1LPJB5yI=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=rLZuY70s2J0nCJYNwXryNWiTb1APsrIhur4uJsUdNpU=;
+        b=gFj6JdM1cuImdgdXnAG81cLl+F9UPsfpPRs/Vw3J69VMV5A2Ds/7nym6eybeckmxAz
+         FE+uqBnEYcddPgyIYLaBCTlmySd7fDR94KmtlR3rl2fswsVJn7vPz+A6CtrYQkX5xqnS
+         /BMqr6Baii1WCgF5LjQ4DZHm0aluxSgn2WNBr08NbmW8IXaElmoZQefu9kqrMBHV391+
+         wowsl74nJ9hlNvZ+PaLHWjnyqmZL6fnm27Lyf3bxq1fSfovlIoySVPodgvzgkgoFzvcR
+         ISRgRwQp7CQxvhBYMBZCUS7JPzeMIwtWugcoERkJDaFY9vjZfLDBIX4zFm/tYi80f0Fh
+         IEIg==
+X-Gm-Message-State: AOAM531g3MkjYWpiQcc4E4AG/9bEc97CoPjj1vwE+yq1WkHyGtI2karc
+        zjCypOyC3LDIb/hfpC1EdEuCuoE=
+X-Google-Smtp-Source: ABdhPJxQxmQy6tX3cuSRW4sjx1Zy89o5VKAM/Fak7MlqfbQ7YRga2/4Wd4fFAUZ01LQdPT7tR6zfwxM=
 X-Received: from osk.cam.corp.google.com ([2620:0:1004:1a:acb9:8fa6:8db4:ee39])
- (user=osk job=sendgmr) by 2002:a25:610e:: with SMTP id v14mr7909627ybb.90.1633747481732;
- Fri, 08 Oct 2021 19:44:41 -0700 (PDT)
-Date:   Fri,  8 Oct 2021 22:44:29 -0400
-Message-Id: <20211009024430.3322230-1-osk@google.com>
+ (user=osk job=sendgmr) by 2002:a25:734b:: with SMTP id o72mr7517859ybc.356.1633747487040;
+ Fri, 08 Oct 2021 19:44:47 -0700 (PDT)
+Date:   Fri,  8 Oct 2021 22:44:30 -0400
+In-Reply-To: <20211009024430.3322230-1-osk@google.com>
+Message-Id: <20211009024430.3322230-2-osk@google.com>
 Mime-Version: 1.0
+References: <20211009024430.3322230-1-osk@google.com>
 X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH v3 1/2] dt-bindings: hwmon: Add nct7802 bindings
+Subject: [PATCH v3 2/2] hwmon: (nct7802) Make temperature sensors configurable.
 From:   Oskar Senft <osk@google.com>
 To:     Jean Delvare <jdelvare@suse.com>,
         Guenter Roeck <linux@roeck-us.net>,
@@ -59,162 +63,242 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document bindings for the Nuvoton NCT7802Y driver.
+This change allows LTD and RTD inputs to be configured via
+device tree bindings. If the DT bindings are not present,
+the input configuration is not modified and left at HW
+defaults.
 
 Signed-off-by: Oskar Senft <osk@google.com>
 ---
- .../bindings/hwmon/nuvoton,nct7802.yaml       | 142 ++++++++++++++++++
- 1 file changed, 142 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+ drivers/hwmon/nct7802.c | 160 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 145 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-new file mode 100644
-index 000000000000..a97b89d0d197
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-@@ -0,0 +1,142 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
+diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
+index 604af2f6103a..515c081c2506 100644
+--- a/drivers/hwmon/nct7802.c
++++ b/drivers/hwmon/nct7802.c
+@@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
+ #define REG_CHIP_ID		0xfe
+ #define REG_VERSION_ID		0xff
+ 
++/*
++ * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
++ * Selection Register
++ */
++#define RTD_MODE_CURRENT	0x1
++#define RTD_MODE_THERMISTOR	0x2
++#define RTD_MODE_VOLTAGE	0x3
 +
-+$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++#define MODE_RTD_MASK		0x3
++#define MODE_LTD_EN		0x40
 +
-+title: Nuvoton NCT7802Y Hardware Monitoring IC
++/*
++ * Bit offset for sensors modes in REG_MODE.
++ * Valid for index 0..2, indicating RTD1..3.
++ */
++#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
 +
-+maintainers:
-+  - Guenter Roeck <linux@roeck-us.net>
+ /*
+  * Data structures and manipulation thereof
+  */
+@@ -74,7 +91,9 @@ static ssize_t temp_type_show(struct device *dev,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return sprintf(buf, "%u\n", (mode >> (2 * sattr->index) & 3) + 2);
++	return sprintf(buf, "%u\n",
++			((mode >> MODE_BIT_OFFSET_RTD(sattr->index)) &
++				MODE_RTD_MASK) + 2);
+ }
+ 
+ static ssize_t temp_type_store(struct device *dev,
+@@ -94,7 +113,8 @@ static ssize_t temp_type_store(struct device *dev,
+ 	if (type < 3 || type > 4)
+ 		return -EINVAL;
+ 	err = regmap_update_bits(data->regmap, REG_MODE,
+-			3 << 2 * sattr->index, (type - 2) << 2 * sattr->index);
++			MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(sattr->index),
++			(type - 2) << MODE_BIT_OFFSET_RTD(sattr->index));
+ 	return err ? : count;
+ }
+ 
+@@ -682,24 +702,24 @@ static umode_t nct7802_temp_is_visible(struct kobject *kobj,
+ 	struct device *dev = kobj_to_dev(kobj);
+ 	struct nct7802_data *data = dev_get_drvdata(dev);
+ 	unsigned int reg;
++	unsigned int rtd_mode;
+ 	int err;
+ 
+ 	err = regmap_read(data->regmap, REG_MODE, &reg);
+ 	if (err < 0)
+ 		return 0;
+ 
+-	if (index < 10 &&
+-	    (reg & 03) != 0x01 && (reg & 0x03) != 0x02)		/* RD1 */
++	rtd_mode = (reg >> MODE_BIT_OFFSET_RTD(index / 10)) & MODE_RTD_MASK;
++	if (index >= 0 && index < 20 &&				/* RD1, RD 2*/
++	    rtd_mode != 0x01 && rtd_mode != 0x02)
+ 		return 0;
+ 
+-	if (index >= 10 && index < 20 &&
+-	    (reg & 0x0c) != 0x04 && (reg & 0x0c) != 0x08)	/* RD2 */
+-		return 0;
+-	if (index >= 20 && index < 30 && (reg & 0x30) != 0x20)	/* RD3 */
++	if (index >= 20 && index < 30 && rtd_mode != 0x02)	/* RD3 */
+ 		return 0;
+ 
+-	if (index >= 30 && index < 38)				/* local */
+-		return attr->mode;
++	if (index >= 30 && index < 38 &&			/* local */
++	    (reg & MODE_LTD_EN) != MODE_LTD_EN)
++		return 0;
+ 
+ 	err = regmap_read(data->regmap, REG_PECI_ENABLE, &reg);
+ 	if (err < 0)
+@@ -1038,7 +1058,118 @@ static const struct regmap_config nct7802_regmap_config = {
+ 	.volatile_reg = nct7802_regmap_is_volatile,
+ };
+ 
+-static int nct7802_init_chip(struct nct7802_data *data)
++static bool nct7802_get_input_config(struct device *dev,
++	struct device_node *input, u8 *mode_mask, u8 *mode_val)
++{
++	u32 reg;
++	const char *type_str, *md_str;
++	u8 md;
 +
-+description: |
-+  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
-+  5 remote temperature sensors with SMBus interface.
++	if (!input->name || of_node_cmp(input->name, "input"))
++		return false;
 +
-+  Datasheets:
-+    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
++	if (of_property_read_u32(input, "reg", &reg)) {
++		dev_err(dev, "Could not read reg value for '%s'\n",
++			input->full_name);
++		return false;
++	}
 +
-+properties:
-+  compatible:
-+    enum:
-+      - nuvoton,nct7802
++	if (reg > 3) {
++		dev_err(dev,
++			"Invalid reg (%u) in '%s'\n", reg, input->full_name);
++		return false;
++	}
 +
-+  reg:
-+    maxItems: 1
++	if (reg == 0) {
++		if (!of_device_is_available(input))
++			*mode_val &= ~MODE_LTD_EN;
++		else
++			*mode_val |= MODE_LTD_EN;
++		*mode_mask |= MODE_LTD_EN;
++		return true;
++	}
 +
-+  "#address-cells":
-+    const: 1
++	if (reg >= 1 && reg <= 3 && !of_device_is_available(input)) {
++		*mode_val &= ~(MODE_RTD_MASK
++			<< MODE_BIT_OFFSET_RTD(reg-1));
++		*mode_mask |= MODE_RTD_MASK
++			<< MODE_BIT_OFFSET_RTD(reg-1);
++		return true;
++	}
 +
-+  "#size-cells":
-+    const: 0
++	if (of_property_read_string(input, "sensor-type", &type_str)) {
++		dev_err(dev, "No type for '%s'\n", input->full_name);
++		return false;
++	}
 +
-+  input@0:
-+    type: object
-+    description: Local Temperature Sensor ("LTD")
-+    properties:
-+      reg:
-+        const: 0
-+    required:
-+      - reg
++	if (!strcmp(type_str, "voltage")) {
++		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
++			<< MODE_BIT_OFFSET_RTD(reg-1);
++		*mode_mask |= MODE_RTD_MASK
++			<< MODE_BIT_OFFSET_RTD(reg-1);
++		return true;
++	}
 +
-+  input@1:
-+    type: object
-+    description: Remote Temperature Sensor or Voltage Sensor ("RTD1")
-+    properties:
-+      reg:
-+        const: 1
-+      sensor-type:
-+        items:
-+          - enum:
-+              - temperature
-+              - voltage
-+      temperature-mode:
-+        items:
-+          - enum:
-+              - thermistor
-+              - thermal-diode
-+    required:
-+      - reg
-+      - sensor-type
++	if (strcmp(type_str, "temperature")) {
++		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
++			input->full_name);
++		return false;
++	}
 +
-+  input@2:
-+    type: object
-+    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
-+    properties:
-+      reg:
-+        const: 2
-+      sensor-type:
-+        items:
-+          - enum:
-+              - temperature
-+              - voltage
-+      temperature-mode:
-+        items:
-+          - enum:
-+              - thermistor
-+              - thermal-diode
-+    required:
-+      - reg
-+      - sensor-type
++	if (reg == 3) {
++		/* RTD3 only supports thermistor mode */
++		md = RTD_MODE_THERMISTOR;
++	} else {
++		if (of_property_read_string(input, "temperature-mode",
++								&md_str)) {
++			dev_err(dev, "No mode for '%s'\n", input->full_name);
++			return false;
++		}
 +
-+  input@3:
-+    type: object
-+    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
-+    properties:
-+      reg:
-+        const: 3
-+      sensor-type:
-+        items:
-+          - enum:
-+              - temperature
-+              - voltage
-+    required:
-+      - reg
-+      - sensor-type
++		if (!strcmp(md_str, "thermal-diode"))
++			md = RTD_MODE_CURRENT;
++		else if (!strcmp(md_str, "thermistor"))
++			md = RTD_MODE_THERMISTOR;
++		else {
++			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
++				input->full_name);
++			return false;
++		}
++	}
 +
-+required:
-+  - compatible
-+  - reg
++	*mode_val |= (md & MODE_RTD_MASK)
++		<< MODE_BIT_OFFSET_RTD(reg-1);
++	*mode_mask |= MODE_RTD_MASK
++		<< MODE_BIT_OFFSET_RTD(reg-1);
 +
-+additionalProperties: false
++	return true;
++}
 +
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
++static int nct7802_configure_inputs(struct device *dev,
++	struct nct7802_data *data)
++{
++	bool found_input_config = false;
++	u8 mode_mask = 0, mode_val = 0;
++	struct device_node *input;
 +
-+        nct7802@28 {
-+            compatible = "nuvoton,nct7802";
-+            reg = <0x28>;
++	if (dev->of_node) {
++		for_each_child_of_node(dev->of_node, input) {
++			if (nct7802_get_input_config(dev, input, &mode_mask,
++					&mode_val))
++				found_input_config = true;
++		}
++	}
 +
-+            #address-cells = <1>;
-+            #size-cells = <0>;
++	if (!found_input_config) {
++		/* Enable local temperature sensor by default */
++		mode_val |= MODE_LTD_EN;
++		mode_mask |= MODE_LTD_EN;
++	}
 +
-+            input@0 { /* LTD */
-+              reg = <0>;
-+              status = "okay";
-+            };
++	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
++}
 +
-+            input@1 { /* RTD1 */
-+              reg = <1>;
-+              status = "okay";
-+              sensor-type = "temperature";
-+              temperature-mode = "thermistor";
-+            };
-+
-+            input@2 { /* RTD2 */
-+              reg = <2>;
-+              status = "okay";
-+              sensor-type = "temperature";
-+              temperature-mode = "thermal-diode";
-+            };
-+
-+            input@3 { /* RTD3 */
-+              reg = <3>;
-+              status = "okay";
-+              sensor-type = "voltage";
-+            };
-+        };
-+    };
++static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
+ {
+ 	int err;
+ 
+@@ -1047,12 +1178,11 @@ static int nct7802_init_chip(struct nct7802_data *data)
+ 	if (err)
+ 		return err;
+ 
+-	/* Enable local temperature sensor */
+-	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
++	err = nct7802_configure_inputs(dev, data);
+ 	if (err)
+ 		return err;
+ 
+-	/* Enable Vcore and VCC voltage monitoring */
++	/* Enable Vcore and VCC voltage monit, struct nct7802_data *dataoring */
+ 	return regmap_update_bits(data->regmap, REG_VMON_ENABLE, 0x03, 0x03);
+ }
+ 
+@@ -1074,7 +1204,7 @@ static int nct7802_probe(struct i2c_client *client)
+ 	mutex_init(&data->access_lock);
+ 	mutex_init(&data->in_alarm_lock);
+ 
+-	ret = nct7802_init_chip(data);
++	ret = nct7802_init_chip(dev, data);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.33.0.882.g93a45727a2-goog
 
