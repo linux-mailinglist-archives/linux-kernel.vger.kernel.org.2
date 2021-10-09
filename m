@@ -2,114 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF338427978
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC9A427984
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhJILjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:39:21 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:38699 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232960AbhJILjS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:39:18 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 50DE63200DA8;
-        Sat,  9 Oct 2021 07:37:21 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 09 Oct 2021 07:37:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=3mNRLjHegM/+z
-        sOwmvU7YPcMf59k7n3IQSmcunFOm/k=; b=2oUdJxfvt4ge/cMZKSPjZ42LwtUsl
-        ijUvpLsPwFaih0hmZSt+N0oih+aUMjuYtsG6oCjup+D9+beLyg4tCrrH8GSf+2x4
-        h7g8POaDsmr0NBuHtUT2H12wW2Mdb2hjv99bgHhqG8WinR5+IPk3FTjY0OJue3y3
-        dw2zsKYK0zxsUDpzqHkj9TTwAGJLPyck6sAk1pTHII+CeNWeus+I2WOnOHgXOoVf
-        4NYnd4DdKQBgmUWtQpdmSbXhad7fLy8g5aWEWsAzNTFLOA1Ml2aeJm3piIHEFBHH
-        XiEax6djYHgAzWEGNDK4b/kPC1MIDogaHqjtPFRcRtoY0JuKWStfRd7HQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=3mNRLjHegM/+zsOwmvU7YPcMf59k7n3IQSmcunFOm/k=; b=lAvxDR+0
-        3qGUQv+W5D9bnygahUXFVLlbRVaBUuu508MhZ20EUU4KOQuDlmXLCP+GxS20s+4N
-        bxr1OFXmoMPxP76cHmOOjJO3AXPzGAPSE7pHenudP8qi/IgIz9+8XmIL++SqHzD2
-        o+qso7GSeSc/IHa6JVzzJZtmYpqlC6/qgHoICJSSL3KqZxrsVAxrsTjykU2irNFZ
-        IdE9eNBR6+J2eiDZgrl77Zo1lAscUFFiEpAYwJAJyMVav64kdocSvpAEijrce+BL
-        1VrHFS6ykQX1dQbD8Uy7I+Rda4kxukL2xxk4Roi076iRIs159jiTXYUGq8TNmKpO
-        Cf4M+MsxvLdNxA==
-X-ME-Sender: <xms:8H5hYY9fNESsQZT1fyd0HrdELyXzpSTjAs2ylma4sxjmqnVQ_tW9qA>
-    <xme:8H5hYQtG8XnpqMo_enEcqYoZSAacVGVzCvoqT1VYXrV81MOy6ZkuzJQT27mplERXH
-    cdvJiP4aoU9gwt9vhU>
-X-ME-Received: <xmr:8H5hYeAMLcTplPPUBcZXH0ygNWCZKaHNxG5SJb3CqCGAF8M_qF_FFw9-jvAxLl9P9aZI0Vf0M721JI_-IPN62n1CM_LuZNaqoiI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtvddggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgr
-    ihhrsegrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeeggedtteejke
-    eggeeugfehueevudegvdetjeeviedugedvtdekffekhedtteduhfenucevlhhushhtvghr
-    ufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlih
-    hsthgrihhrvdefrdhmvg
-X-ME-Proxy: <xmx:8H5hYYcnI2TBOGZJhoKfS5gnGjEvDVp2syKv-RisdEu0vT2FZNiNqA>
-    <xmx:8H5hYdPiMvdHeYKO9PZzbP6ZafgWfffOqZky7qO2pKPhCZ_QgdH4DA>
-    <xmx:8H5hYSnC3o1QEY0k1kIqp01PxhV4jFjXoCu8x55puJdUNgF_G1lMcQ>
-    <xmx:8H5hYerj4xDU1yzTUOwrXfDSEjrnc7aB1kglOa83tMZHJEXzXBaCYQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 9 Oct 2021 07:37:18 -0400 (EDT)
-From:   Alistair Francis <alistair@alistair23.me>
-To:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     alistair@alistair23.me, alistair23@gmail.com
-Subject: [PATCH 2/2] Input: wacom_i2c - Use macros for the bit masks
-Date:   Sat,  9 Oct 2021 21:37:07 +1000
-Message-Id: <20211009113707.17568-2-alistair@alistair23.me>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20211009113707.17568-1-alistair@alistair23.me>
-References: <20211009113707.17568-1-alistair@alistair23.me>
+        id S233043AbhJILox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:44:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232933AbhJILow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 07:44:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E8B460F55;
+        Sat,  9 Oct 2021 11:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633779775;
+        bh=T4zLC2wq7Ew+/gREr7dQWKQu8oEQOgyhjA1bYwutRow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bk00IqJOHz2JLrg4Q2254i35CtdF2AqaBldbRYLwOcnYYiG77LthopT4hiNZbYxn4
+         7DCoJXrRPzYmdxelXcGatKBD/JRh8XKzysJbvAGXUEjoiFBWzKUIe9wy/TjRw2ccwU
+         /dD5578rEDZ2eRn7NXvfXsziNb6uCqrJ8+ER3mxOXZRTRez1S/9amqooK9gVczUf9M
+         +XmE+MPDkk0F8dOqkyazSmaOTB3/1c231m4YZilnl0sykCzoK0TkTGmDUxJWIv4+47
+         eXSeg0OvF2q6ThYRFhZs7P/4kmcObLTex4gjlildMuwRlnHT+aErJv0Y1v3ez6DXv9
+         5CWYXm2kM1tTA==
+Received: by pali.im (Postfix)
+        id B9356310; Sat,  9 Oct 2021 13:42:52 +0200 (CEST)
+Date:   Sat, 9 Oct 2021 13:42:52 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH v4 7/9] fs/ntfs3: Add iocharset= mount option as alias
+ for nls=
+Message-ID: <20211009114252.jn2uehmaveucimp5@pali>
+References: <20210907153557.144391-1-kari.argillander@gmail.com>
+ <20210907153557.144391-8-kari.argillander@gmail.com>
+ <20210908190938.l32kihefvtfw5tjp@pali>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210908190938.l32kihefvtfw5tjp@pali>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make the code easier to read use macros for the bit masks.
+Hello!
 
-Signed-off-by: Alistair Francis <alistair@alistair23.me>
----
- drivers/input/touchscreen/wacom_i2c.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+This patch have not been applied yet:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ntfs3/super.c#n247
 
-diff --git a/drivers/input/touchscreen/wacom_i2c.c b/drivers/input/touchscreen/wacom_i2c.c
-index 8d7267ccc661..6865342db659 100644
---- a/drivers/input/touchscreen/wacom_i2c.c
-+++ b/drivers/input/touchscreen/wacom_i2c.c
-@@ -14,6 +14,12 @@
- #include <linux/interrupt.h>
- #include <asm/unaligned.h>
- 
-+// Bitmasks (for data[3])
-+#define WACOM_TIP_SWITCH_bm         (1 << 0)
-+#define WACOM_BARREL_SWITCH_bm      (1 << 1)
-+#define WACOM_ERASER_bm             (1 << 2)
-+#define WACOM_BARREL_SWITCH_2_bm    (1 << 4)
-+
- // Registers
- #define WACOM_COMMAND_LSB   0x04
- #define WACOM_COMMAND_MSB   0x00
-@@ -110,10 +116,10 @@ static irqreturn_t wacom_i2c_irq(int irq, void *dev_id)
- 	if (error < 0)
- 		goto out;
- 
--	tsw = data[3] & 0x01;
--	ers = data[3] & 0x04;
--	f1 = data[3] & 0x02;
--	f2 = data[3] & 0x10;
-+	tsw = data[3] & WACOM_TIP_SWITCH_bm;
-+	ers = data[3] & WACOM_ERASER_bm;
-+	f1 = data[3] & WACOM_BARREL_SWITCH_bm;
-+	f2 = data[3] & WACOM_BARREL_SWITCH_2_bm;
- 	x = le16_to_cpup((__le16 *)&data[4]);
- 	y = le16_to_cpup((__le16 *)&data[6]);
- 	pressure = le16_to_cpup((__le16 *)&data[8]);
--- 
-2.31.1
+What happened that in upstream tree is still only nls= option and not
+this iocharset=?
 
+On Wednesday 08 September 2021 21:09:38 Pali Rohár wrote:
+> On Tuesday 07 September 2021 18:35:55 Kari Argillander wrote:
+> > Other fs drivers are using iocharset= mount option for specifying charset.
+> > So add it also for ntfs3 and mark old nls= mount option as deprecated.
+> > 
+> > Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+> 
+> Reviewed-by: Pali Rohár <pali@kernel.org>
+> 
+> > ---
+> >  Documentation/filesystems/ntfs3.rst |  4 ++--
+> >  fs/ntfs3/super.c                    | 18 +++++++++++-------
+> >  2 files changed, 13 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+> > index af7158de6fde..ded706474825 100644
+> > --- a/Documentation/filesystems/ntfs3.rst
+> > +++ b/Documentation/filesystems/ntfs3.rst
+> > @@ -32,12 +32,12 @@ generic ones.
+> >  
+> >  ===============================================================================
+> >  
+> > -nls=name		This option informs the driver how to interpret path
+> > +iocharset=name		This option informs the driver how to interpret path
+> >  			strings and translate them to Unicode and back. If
+> >  			this option is not set, the default codepage will be
+> >  			used (CONFIG_NLS_DEFAULT).
+> >  			Examples:
+> > -				'nls=utf8'
+> > +				'iocharset=utf8'
+> >  
+> >  uid=
+> >  gid=
+> > diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+> > index 729ead6f2fac..503e2e23f711 100644
+> > --- a/fs/ntfs3/super.c
+> > +++ b/fs/ntfs3/super.c
+> > @@ -226,7 +226,7 @@ enum Opt {
+> >  	Opt_nohidden,
+> >  	Opt_showmeta,
+> >  	Opt_acl,
+> > -	Opt_nls,
+> > +	Opt_iocharset,
+> >  	Opt_prealloc,
+> >  	Opt_no_acs_rules,
+> >  	Opt_err,
+> > @@ -245,9 +245,13 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
+> >  	fsparam_flag_no("hidden",		Opt_nohidden),
+> >  	fsparam_flag_no("acl",			Opt_acl),
+> >  	fsparam_flag_no("showmeta",		Opt_showmeta),
+> > -	fsparam_string("nls",			Opt_nls),
+> >  	fsparam_flag_no("prealloc",		Opt_prealloc),
+> >  	fsparam_flag("no_acs_rules",		Opt_no_acs_rules),
+> > +	fsparam_string("iocharset",		Opt_iocharset),
+> > +
+> > +	__fsparam(fs_param_is_string,
+> > +		  "nls", Opt_iocharset,
+> > +		  fs_param_deprecated, NULL),
+> >  	{}
+> >  };
+> >  
+> > @@ -346,7 +350,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
+> >  	case Opt_showmeta:
+> >  		opts->showmeta = result.negated ? 0 : 1;
+> >  		break;
+> > -	case Opt_nls:
+> > +	case Opt_iocharset:
+> >  		kfree(opts->nls_name);
+> >  		opts->nls_name = param->string;
+> >  		param->string = NULL;
+> > @@ -380,11 +384,11 @@ static int ntfs_fs_reconfigure(struct fs_context *fc)
+> >  	new_opts->nls = ntfs_load_nls(new_opts->nls_name);
+> >  	if (IS_ERR(new_opts->nls)) {
+> >  		new_opts->nls = NULL;
+> > -		errorf(fc, "ntfs3: Cannot load nls %s", new_opts->nls_name);
+> > +		errorf(fc, "ntfs3: Cannot load iocharset %s", new_opts->nls_name);
+> >  		return -EINVAL;
+> >  	}
+> >  	if (new_opts->nls != sbi->options->nls)
+> > -		return invalf(fc, "ntfs3: Cannot use different nls when remounting!");
+> > +		return invalf(fc, "ntfs3: Cannot use different iocharset when remounting!");
+> >  
+> >  	sync_filesystem(sb);
+> >  
+> > @@ -528,9 +532,9 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
+> >  	if (opts->dmask)
+> >  		seq_printf(m, ",dmask=%04o", ~opts->fs_dmask_inv);
+> >  	if (opts->nls)
+> > -		seq_printf(m, ",nls=%s", opts->nls->charset);
+> > +		seq_printf(m, ",iocharset=%s", opts->nls->charset);
+> >  	else
+> > -		seq_puts(m, ",nls=utf8");
+> > +		seq_puts(m, ",iocharset=utf8");
+> >  	if (opts->sys_immutable)
+> >  		seq_puts(m, ",sys_immutable");
+> >  	if (opts->discard)
+> > -- 
+> > 2.25.1
+> > 
