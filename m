@@ -2,84 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBB042777C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5E6427783
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhJIFKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
+        id S232526AbhJIFWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIFKp (ORCPT
+        with ESMTP id S229596AbhJIFWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:10:45 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5A0C061570;
-        Fri,  8 Oct 2021 22:08:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HRCl265tgz4xb7;
-        Sat,  9 Oct 2021 16:08:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633756127;
-        bh=mNuumbvlIZPJWISrf5EkOeLygrUGyi9lLdGgk6mAGHY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Seh17pBQNL8U1UrJcQVSkclfrjgh/h+RZA31/dAMl0l40rZaN6Nb5JDRsRDdMK4o3
-         3nBpo9SsGb3HFKQ0RlWXW3txr4yLghY3ZSRQoYin3VwYik231/4eCgxtIdhtWHgtOP
-         nfOJnfTVsCiDJ6FvZkyxo++2xji/+5Ppd+f098B2zBZFXskxQgTz+91jjv4EpNePKz
-         kAgxDbBdLHBR31DuANwqP0aSqlJdNRudYlvAFgEmRZ2SuqEtS0c4gIa2AkRx2hC5jn
-         BHBRi+M8GkwHLGPSPdmwlEFAzFD4OupMRjMXIhdS3SZuxgBjfeRqhsSdcFBSZ2+Geg
-         ynz71iaOHUfKg==
-Date:   Sat, 9 Oct 2021 16:08:46 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: contact/tree changes for the swiotlb tree
-Message-ID: <20211009160846.5b90d9ba@canb.auug.org.au>
-In-Reply-To: <YWCZHIk+QpsDb7Y8@0xbeefdead.lan>
-References: <20211008082637.78598d36@canb.auug.org.au>
-        <YWCZHIk+QpsDb7Y8@0xbeefdead.lan>
+        Sat, 9 Oct 2021 01:22:07 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C48C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 22:20:11 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id e7so5137805pgk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 22:20:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=TRbs+RpG/bJ1OltPUfWK5TostibOXaRSuhgVNbapoY0=;
+        b=k2sTWanTnqYrUy3IFvhH2mcqNs0p6jkdCzVjoX3pUr+nhG7rfe2Icp1WyDLVzt4wPh
+         muMQDYq/Jj26sKlKVcQmfksaiUOq5eUOwUmNOJbGxOfl0Bl3ZMLcXBs58f7KamMBATKz
+         PJWMdM3P4udczCZgRHDD5+xM2RlqjbwbU7o+PgOXHoF4qN2VrXgAvwG9XDwCclb69hd1
+         /9W3piqQ9qUbfGA6IIT0aBi4xm6cmvNiL1KRW5Y+j9xkRkbkNmzvR6ul0ed2UyjcSWWN
+         q5k5DLAFU5UF9xSlSAc5GSFPcoeo32mFIvMY4ZdSVMril9VGpGoX8EpoQFi7lhA4lAYV
+         GXcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=TRbs+RpG/bJ1OltPUfWK5TostibOXaRSuhgVNbapoY0=;
+        b=KMC8rzFPXomgyaIwsKUFBnh9rHD6Na2YPSnWtNs/J4MjiRfP7yi4RGVaRtRhjkNOi3
+         xs3PIZIzQyCHRvO+qvafLXmMxk0oXYLQ5pLrx0XgC1/6YjX9Eeb2Xjjw6rDi10rCFWCj
+         HWiZAGizygIHz3HZTAyseVWNV1ilkh71/ffQkfDEEIe7GCgXQEbruqxeKA5EEH4kXOGm
+         ihtPfE/kj0ercy6+KAEQmgkZ7OaIyUAxmlh6Bca4cJctpar9Er+tH8/JsxAwT+xaeAfD
+         5j7gTj+VegLEGvrMvH3+nh16QV3zVSIjPcn9OXIuHsASGz7+dHjpjNjg32cJqJK2LCtO
+         phbA==
+X-Gm-Message-State: AOAM530f0P+rzxnyVubzezXvxT5GqMwrORqm93x0a4r1XPW5rcpeIrF8
+        MPu0+6ziLyTLbl+f3Que0k4=
+X-Google-Smtp-Source: ABdhPJyCoL6N6rUUeGy4eq3W5yFHSPGpFuBIfsgzXN2zEsBpdEUCitL7AZgcrL4LpmkXBCGNCzkJdg==
+X-Received: by 2002:a63:79c7:: with SMTP id u190mr8202981pgc.378.1633756810547;
+        Fri, 08 Oct 2021 22:20:10 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id k17sm881666pff.214.2021.10.08.22.20.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 22:20:10 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 10:50:04 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, hdegoede@redhat.com,
+        deborahbrouwer3563@gmail.com, marcocesati@gmail.com,
+        linux@roeck-us.net, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8723bs: core: remove empty else section
+Message-ID: <YWEmhBt3e0dNKl1G@user>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GZVamjOgJpFn9mAQgcrEbYR";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GZVamjOgJpFn9mAQgcrEbYR
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Remove the empty else section in rtw_make_wlanhdr().
 
-Hi Konrad,
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_xmit.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Fri, 8 Oct 2021 15:16:44 -0400 Konrad Rzeszutek Wilk <konrad.wilk@oracle=
-.com> wrote:
->=20
-> Yes please go ahead and drop the swiotlb.git tree from your excellent
-> system.
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+index 46054d6a1fb5..34505b35a7f3 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -977,7 +977,6 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
+ 				}
+ 			}
+ 		}
+-	} else {
+ 	}
 
-Done.
---=20
-Cheers,
-Stephen Rothwell
+ exit:
+--
+2.32.0
 
---Sig_/GZVamjOgJpFn9mAQgcrEbYR
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFhI94ACgkQAVBC80lX
-0GzY3gf7Bl779vMsHMq5hWlRsJvHwozbenLttTGaCIGvQUVVSnK7zE9EFXIMnYcG
-AFSkKjS3zFj+DjdBF+siG/wPNyHVGZ+PXWvJZwS0d5q73e87FA7xVh8hle0Kt3Ft
-oIxiZGXtk20om2slx4Djc/viEDHjGQYAzlAaJiGB2doSvSD9oKftQVNxjIT4xuX9
-bRkI02noYM9NaCTdgvGIRdHrNmoA74122Mi3x4reqVf5qHJq6bMeSs7Br7Ap5TQg
-9J9BUd/157tbIzoU1TOFT/emvdSTtAv8HJAZtiOwb2CCEyE6Mciqvi1WFrZMoKSB
-ZiiTdQ3C7yU4pbZd4HZhY5Ka0nUo0w==
-=zE0v
------END PGP SIGNATURE-----
-
---Sig_/GZVamjOgJpFn9mAQgcrEbYR--
