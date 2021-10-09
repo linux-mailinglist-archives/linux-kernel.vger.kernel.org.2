@@ -2,141 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0C0427B7A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021C3427B80
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhJIPsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 11:48:31 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:33886
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234373AbhJIPsa (ORCPT
+        id S234777AbhJIPwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 11:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234428AbhJIPwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 11:48:30 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 7667240015
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 15:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633794392;
-        bh=v1+QlvKaJ7Bh5M6oMybEXJsFX39EduvKj9WCPeD3iRE=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=ktP2f3fq7PHuT1E6KdcNjSe9xSf7Jr/Vm9lvJSOqxattK3D/7O6FDL3s0ZePS+iU+
-         WXrfFIdfbWmalHTxCBcHlRdCRsywzCBGqKmpXfLp354Pq1pS9zv9dVuBZKK2zswtf6
-         I3rJRjsXJelfJmV1SlVIMBzCxJBmmb4El8ciTsW0SJwUi+/EBTphRQZqvQ+Jbrb3q4
-         WkjfaxW+2Sl/tJHKTgCUmtS7MMelQ82woZ7+o0yto+1BiDBcOQ0ySgPRbfzu1Mzzet
-         S3MnuE1XLEJMs+Jke97cT8KV27hp5UjGBcdZOtiAIEILieC1tohRbBXyBeuisBPG/9
-         O9mFjoHKkdbtw==
-Received: by mail-ed1-f69.google.com with SMTP id p13-20020a056402044d00b003db3256e4f2so11902461edw.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 08:46:32 -0700 (PDT)
+        Sat, 9 Oct 2021 11:52:12 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE02C061570;
+        Sat,  9 Oct 2021 08:50:16 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so15403858otb.10;
+        Sat, 09 Oct 2021 08:50:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JMVUxn512Tfe+t4BKLTuIbM7ZEEL6xwwLQvWXKN58Uc=;
+        b=mHvc2Ht4xyUaO4+T5NLjfL5+6NFv1GAkzatd59MKWqa70sLiGuTYBkYVKjzgooE4lV
+         9fYQoX8OxaTHchBXobOwYvwIbEkT/m362aUFcLs/frmB0GGz+Bc+uIZSO9deOOO5nF8n
+         FYFOvhQnjHC2QhzmzVZGVF2Z9yEK857AONfSDwoXJNsydXv8Wrl3D8sSeABlwggAtJ56
+         MgNEpZNvpv/IubCm2Y+WafOB7fhlTv6FJrH7Ooc2PO9YT9F6tC3k8PRTlVHHcaiYHalR
+         VrA/du3xhGJSHCL++g0wuOMqlBBolk6Tc17SAApHoGyY7QiwQfQE3xN+inZXzD4ChL1q
+         ZX4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=v1+QlvKaJ7Bh5M6oMybEXJsFX39EduvKj9WCPeD3iRE=;
-        b=7AbEVlbGQDEZW/vd8nfpQp7jL9UIiLTDcGKrCWOISivS8S4011sstjk2shu6MS8boS
-         8twDsRB92FIerdW55V7Rpg4gt1InIWOnTCS/bh3zQ5jNsynbGgktrB7Vf3O6n62Qs+Gp
-         pib8unSmifgshcHiUqK/dWv0CHfx2/QtEvoDojEuQYNuTK79lHTXxKT6p1jMrpXpTnVj
-         aMkQx1P1+ZPAoGYVgJXL6Qi2f3CusSRpsHnqK9G9vgop8uOGIbVZn0p9xyk1nXRk4dS1
-         roxfKv5TuH6Ws5IrJwMA3txkIKx5rQVzyqwT5c6Xi66xx/MchKJEAhEE1zpaTj4j84/L
-         LKuA==
-X-Gm-Message-State: AOAM532d4+zbZ//xQAqQD0zP4l6zBkO2rPQsCJivV2QcSCbdNuZ65my+
-        eBabcmAoecyeFp7rfQG9Cru7R/H6t9lcMP8V4KU0n3Lgc+o2C74MOfPJQsUkSfIGOP3DA3s018x
-        YKdmU9hOs/TTat4lp4IB5rbOhRW+wAGQQlIROA7+qwg==
-X-Received: by 2002:a50:9d8e:: with SMTP id w14mr24670462ede.74.1633794391988;
-        Sat, 09 Oct 2021 08:46:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2VPYG8VbUO+BMxIVbYguDgxJuPFsNUpuHGhQL3ig+n1yG0BiNoNGTraMX8HzkO8k4m52zUQ==
-X-Received: by 2002:a50:9d8e:: with SMTP id w14mr24670441ede.74.1633794391842;
-        Sat, 09 Oct 2021 08:46:31 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id l5sm1096050ejx.76.2021.10.09.08.46.31
+        bh=JMVUxn512Tfe+t4BKLTuIbM7ZEEL6xwwLQvWXKN58Uc=;
+        b=aOZylGYQ6ysQ5TXcce1ktoZanv4gho3wlBc/N4dtcdCKU1KAru3q929CxQoJ3yAFMc
+         Phxr2gMpzsG7igbwXAYtBL5LRlw/SpmE5fn1pagbAbXdAjhHeNnDpZKk5i+iuaoGcrCv
+         KwpNnbf5Hwmkh9GKwyxx23jyyUcWp5MZJVtzatEYEsmwPWv3ziU3UcoVF0YF+43Ja3jR
+         SE/nS5NlWr4VdxpDBN4PiVCsw2VnXwllMHjAXMOKGGhsuS8jsABAcu+S6NIVZb5M1ljy
+         a/kbcqa4VMIQGbh1ezewaa853RMXkhD5BwhhaIAojhU++Lyp1DwA3GAbbZHDfueutDv6
+         H0vQ==
+X-Gm-Message-State: AOAM530NtU2y1D1yThX1SdVwxcqT17q4oCd8ZT0+WZHozA1/xyC6YwQq
+        CqAg3AI6Ibl2Dck6q20FqOBTT9EeOZE=
+X-Google-Smtp-Source: ABdhPJxMirTwuQLEVUw64sE7/Ga4CN/r1MlwBVxZfFk75niQyaoL5AghA+KVXjP3MLgaXJLIbLTg/A==
+X-Received: by 2002:a9d:17c5:: with SMTP id j63mr14044004otj.191.1633794615090;
+        Sat, 09 Oct 2021 08:50:15 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t6sm503959ooa.27.2021.10.09.08.50.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 08:46:31 -0700 (PDT)
-Subject: Re: [PATCH v2] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
- to yaml
-To:     David Heidelberg <david@ixit.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
-References: <20211009153003.33529-1-david@ixit.cz>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8050a43b-8278-8148-2827-cccbfc28b414@canonical.com>
-Date:   Sat, 9 Oct 2021 17:46:30 +0200
+        Sat, 09 Oct 2021 08:50:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211009025858.3326725-1-osk@google.com>
+ <20211009025858.3326725-2-osk@google.com>
+ <0674a2d0-f0a2-d6bc-33e3-483614602bae@roeck-us.net>
+ <CABoTLcTL42a23=P501UoqNWr76A3fmEoxwjymz1-g0MNMyYPRA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v4 2/2] hwmon: (nct7802) Make temperature sensors
+ configurable.
+Message-ID: <fb878fce-8fa1-36b0-fa30-013d571563ee@roeck-us.net>
+Date:   Sat, 9 Oct 2021 08:50:12 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20211009153003.33529-1-david@ixit.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CABoTLcTL42a23=P501UoqNWr76A3fmEoxwjymz1-g0MNMyYPRA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/10/2021 17:30, David Heidelberg wrote:
-> Convert bindings for NXP PN544 NFC driver to YAML syntax.
+On 10/9/21 7:50 AM, Oskar Senft wrote:
+> Hi Guenter
 > 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
-> v2
->  - Krzysztof is a maintainer
->  - pintctrl dropped
->  - 4 space indent for example
->  - nfc node name
+> Thanks for the review!
 > 
->  .../bindings/net/nfc/nxp,pn544.yaml           | 65 +++++++++++++++++++
->  .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
->  2 files changed, 65 insertions(+), 33 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+>>> +     return sprintf(buf, "%u\n",
+>>> +                     ((mode >> MODE_BIT_OFFSET_RTD(sattr->index)) &
+>>> +                             MODE_RTD_MASK) + 2);
+>>
+>> Please split into two patches to simplify review. The changes from
+>> constant to define are logically separate and should thus be in a
+>> separate patch.
+> Ok, will do.
 > 
-> diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-> new file mode 100644
-> index 000000000000..6a4bc511d962
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-> @@ -0,0 +1,65 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP Semiconductors PN544 NFC Controller
-> +
-> +maintainers:
-> +  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: nxp,pn544-i2c
-> +
-> +  clock-frequency: true
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  enable-gpios:
-> +    description: Output GPIO pin used for enabling/disabling the PN544
-> +
-> +  firmware-gpios:
-> +    description: Output GPIO pin used to enter firmware download mode
-> +
-> +  pinctrl-names:
-> +    items:
-> +      - const: default
+>>> +     if (index >= 30 && index < 38 &&                        /* local */
+>>> +         (reg & MODE_LTD_EN) != MODE_LTD_EN)
+>>
+>> This is just a single bit, so "!(reg & MODE_LTD_EN)" is sufficient.
+> Ack.
+> 
+>>> +static bool nct7802_get_input_config(struct device *dev,
+>>> +     struct device_node *input, u8 *mode_mask, u8 *mode_val)
+>>
+>> Please align continuation lines with "(".
+> Oh, even if that would result in a lot of extra lines? Or just start
+> the first argument on a new line?
+> 
 
-I wasn't specific, because pinctrl always go together - names with -0.
-This as well should be dropped.
+I sincerely doubt that will happen with the 100-column limit,
+but yes unless it really doesn't work.
 
+>> The function should return an error code.
+> Ok, I'll look into that.
+> 
+>>> +     if (reg >= 1 && reg <= 3 && !of_device_is_available(input)) {
+>>
+>> reg will always be >=1 and <=3 here.
+> Good catch!
+> 
+>>> +             *mode_val &= ~(MODE_RTD_MASK
+>>> +                     << MODE_BIT_OFFSET_RTD(reg-1));
+>>
+>> space around '-'
+> Oh yeah, I'm sorry. Is there a code formatter I should have run? I did
+> run "checkpatch.pl", hoping that it would catch those.
+> 
+For some reason checkpatch doesn't always catch this.
 
-Best regards,
-Krzysztof
+>>> +             *mode_mask |= MODE_RTD_MASK
+>>> +                     << MODE_BIT_OFFSET_RTD(reg-1);
+>>
+>> Unnecessary continuation lines. There are several more of those;
+>> I won't comment on it further. Please only use continuation lines if
+>> the resulting line length is otherwise > 100 columns.
+> Argh, yeah. After refactoring that function, I thought I caught all of
+> them, but obviously I didn't. According to [1] we should stay within
+> 80 columns (and use tabs that are 8 spaces wide). I assume that still
+> applies? The rest of this code follows that rule.
+> 
+
+ From checkpatch, commit bdc48fa11e46 ("checkpatch/coding-style:
+deprecate 80-column warning"):
+
+     Yes, staying withing 80 columns is certainly still _preferred_.  But
+     it's not the hard limit that the checkpatch warnings imply, and other
+     concerns can most certainly dominate.
+
+I prefer readability over the 80 column limit.
+
+>>> +     if (dev->of_node) {
+>>> +             for_each_child_of_node(dev->of_node, input) {
+>>> +                     if (nct7802_get_input_config(dev, input, &mode_mask,
+>>> +                                     &mode_val))
+>>> +                             found_input_config = true;
+>>
+>> This is mixing errors with "dt configuration does not exist".
+>> nct7802_get_input_config() should return an actual error if the
+>> DT configuration is bad, and return that error to the calling code
+>> if that is the case.
+> Ok, I'll change that. I wasn't sure whether we'd rather configure "as
+> much as we can" or fail completely without configuring anything. Shall
+> we allow all of the configuration to be validated before erroring out?
+
+No, bail out on the first error.
+
+> That would make it easier to get the DT right in one pass, but makes
+> the code more complicated.
+> 
+>>> +     if (!found_input_config) {
+>>> +             /* Enable local temperature sensor by default */
+>>> +             mode_val |= MODE_LTD_EN;
+>>> +             mode_mask |= MODE_LTD_EN;
+>>> +     }
+>>
+>> This can be set by default since nct7802_get_input_config()
+>> removes it if the channel is disabled, meaning found_input_config
+>> is really unnecessary.
+> Ok. Should we actually phase out the "LTD enabled by default"
+> completely? Or is that for a future change?
+> 
+
+Why ? That would change code behavior and would be unexpected.
+Just initialize mode_val and mode_mask variables with MODE_LTD_EN.
+
+Thanks,
+Guenter
