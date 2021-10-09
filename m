@@ -2,170 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E9E427961
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627A7427963
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232806AbhJILPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:15:43 -0400
-Received: from ixit.cz ([94.230.151.217]:41754 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231932AbhJILPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:15:39 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 0669A20064;
-        Sat,  9 Oct 2021 13:13:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633778021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7CzgujPt9VaXozmAuTSRx2+fkUV5y4FFTGUZ/Wh2Nxc=;
-        b=HjAykaMply+l7azhgLQWDaNf7OtPnd8hfshK7x1D3wUun4WPW2vo+HtIV/8Zk/VlYcLlSE
-        tqpQxBaAbvnZ/ha6djerABcnccU46JqtEVJ67Apu4NTMiBF/0ypr2xmDTDbmHrXtCzqnSH
-        rqE6RnEUtkU4hbwXtg+pbQ1ZZuUk9vk=
-From:   David Heidelberg <david@ixit.cz>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings to yaml
-Date:   Sat,  9 Oct 2021 13:12:15 +0200
-Message-Id: <20211009111215.51775-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S232918AbhJILQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:16:24 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33489 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231932AbhJILQX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 07:16:23 -0400
+Received: by mail-il1-f197.google.com with SMTP id r18-20020a056e02109200b0025920bc2e5eso2009350ilj.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 04:14:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=pwHzytuOLbM8wQAkLqWi6P86FJuSP9gw7ny5OBo/tUA=;
+        b=nkxzvgtBHRWPPpN6zuBVVHoiFkVgSoGlRiuw6XfrI4bgyq7pWtmj+Exn+/XEzuMFh8
+         pvOKW+ggSfUhqzYijCm8C6CFtKMuB4aEi4KbiXzbI3h6BPlP1Km6tUrTI8DDEZGSwQnS
+         Ju2Xh+PsI6e3SEGKMmjbjtjQp81d8Riu2o7CcnhHQTLrW7jv/DMFVvjfqYiThCQnxD9K
+         4Ly0L8iF6/I+HvrL0TECtEw6Dk2GiRNzBEb8ypjNRoMTjGWm298Ctyb85N2zCk9iluNs
+         4dgHmOI5wPRskbcHKaaVu1Hr19UiPGWj5x5IcPjrH9SZHKC+Bw3byL9aZPkhTFrCK+0K
+         pWtg==
+X-Gm-Message-State: AOAM5327iaE3wD6kmleZ3MSyiKgaROoldV/D5Ag2vva29zqMhZj/mA7j
+        lG4luGcaTN4HsGRx7s5/d9XxCK4Z2DcbPi0KrpFT78z6idTm
+X-Google-Smtp-Source: ABdhPJwur+gA/yZVetuCbDgK2mR8soyYi2g2JJW5ahqXVSjd4wk07kh7tfi3x8urQrl+ezyxEnPfQmIFBL+a9eFi0We5k6kpoeVB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:12c3:: with SMTP id i3mr11859002ilm.145.1633778066191;
+ Sat, 09 Oct 2021 04:14:26 -0700 (PDT)
+Date:   Sat, 09 Oct 2021 04:14:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000046faa305cde9998e@google.com>
+Subject: [syzbot] KASAN: global-out-of-bounds Read in usb_match_device
+From:   syzbot <syzbot+cf1553a86d1962a0c79f@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, hadess@hadess.net, johan@kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        m.v.b@runbox.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert bindings for NXP PN544 NFC driver to YAML syntax.
+Hello,
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
+syzbot found the following issue on:
+
+HEAD commit:    89e84f946479 usb: typec: tipd: Remove FIXME about testing ..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=1638063f300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cd8a1eadba1e4ce4
+dashboard link: https://syzkaller.appspot.com/bug?extid=cf1553a86d1962a0c79f
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=158c3deb300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1190df03300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cf1553a86d1962a0c79f@syzkaller.appspotmail.com
+
+usb 1-1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+usb 1-1: Product: syz
+usb 1-1: Manufacturer: syz
+usb 1-1: SerialNumber: syz
+usb 1-1: config 0 descriptor??
+==================================================================
+BUG: KASAN: global-out-of-bounds in usb_match_device+0x4dc/0x550 drivers/usb/core/driver.c:641
+Read of size 2 at addr ffffffff87bdfd50 by task kworker/0:1/7
+
+CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.15.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
+ usb_match_device+0x4dc/0x550 drivers/usb/core/driver.c:641
+ usb_match_one_id drivers/usb/core/driver.c:722 [inline]
+ usb_match_id.part.0+0x10d/0x1b0 drivers/usb/core/driver.c:816
+ usb_match_id+0x23/0x40 drivers/usb/core/driver.c:806
+ ehset_prepare_port_for_testing+0x4a/0xf0 drivers/usb/misc/ehset.c:43
+ ehset_probe+0x271/0x460 drivers/usb/misc/ehset.c:82
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x245/0xcc0 drivers/base/dd.c:596
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc35/0x21b0 drivers/base/core.c:3359
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:517 [inline]
+ really_probe+0x245/0xcc0 drivers/base/dd.c:596
+ __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+ __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+ device_add+0xc35/0x21b0 drivers/base/core.c:3359
+ usb_new_device.cold+0x63f/0x108e drivers/usb/core/hub.c:2563
+ hub_port_connect drivers/usb/core/hub.c:5348 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5488 [inline]
+ port_event drivers/usb/core/hub.c:5634 [inline]
+ hub_event+0x2357/0x4330 drivers/usb/core/hub.c:5716
+ process_one_work+0x9bf/0x1620 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3c2/0x4a0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+The buggy address belongs to the variable:
+ platform_bus+0x530/0x560
+
+Memory state around the buggy address:
+ ffffffff87bdfc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffffffff87bdfc80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffffffff87bdfd00: 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 f9
+                                                 ^
+ ffffffff87bdfd80: 00 00 00 00 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9
+ ffffffff87bdfe00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+==================================================================
+
+
 ---
- .../bindings/net/nfc/nxp,pn544.yaml           | 67 +++++++++++++++++++
- .../devicetree/bindings/net/nfc/pn544.txt     | 33 ---------
- 2 files changed, 67 insertions(+), 33 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-new file mode 100644
-index 000000000000..c44f5ee8e2c2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
-@@ -0,0 +1,67 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP Semiconductors PN544 NFC Controller
-+
-+maintainers:
-+  - Rob Herring <robh+dt@kernel.org>
-+
-+properties:
-+  compatible:
-+    const: nxp,pn544-i2c
-+
-+  clock-frequency: true
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: Output GPIO pin used for enabling/disabling the PN544
-+
-+  firmware-gpios:
-+    description: Output GPIO pin used to enter firmware download mode
-+
-+  pinctrl-names:
-+    items:
-+      - const: default
-+
-+  pintctrl-0: true
-+
-+required:
-+  - compatible
-+  - clock-frequency
-+  - reg
-+  - interrupts
-+  - enable-gpios
-+  - firmware-gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      pn544@28 {
-+        compatible = "nxp,pn544-i2c";
-+
-+        reg = <0x28>;
-+        clock-frequency = <400000>;
-+
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
-+
-+        enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
-+        firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
-deleted file mode 100644
-index 2bd82562ce8e..000000000000
---- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
-+++ /dev/null
-@@ -1,33 +0,0 @@
--* NXP Semiconductors PN544 NFC Controller
--
--Required properties:
--- compatible: Should be "nxp,pn544-i2c".
--- clock-frequency: I²C work frequency.
--- reg: address on the bus
--- interrupts: GPIO interrupt to which the chip is connected
--- enable-gpios: Output GPIO pin used for enabling/disabling the PN544
--- firmware-gpios: Output GPIO pin used to enter firmware download mode
--
--Optional SoC Specific Properties:
--- pinctrl-names: Contains only one value - "default".
--- pintctrl-0: Specifies the pin control groups used for this controller.
--
--Example (for ARM-based BeagleBone with PN544 on I2C2):
--
--&i2c2 {
--
--
--	pn544: pn544@28 {
--
--		compatible = "nxp,pn544-i2c";
--
--		reg = <0x28>;
--		clock-frequency = <400000>;
--
--		interrupt-parent = <&gpio1>;
--		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
--
--		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
--		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
--	};
--};
--- 
-2.33.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
