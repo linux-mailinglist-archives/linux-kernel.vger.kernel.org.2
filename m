@@ -2,240 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C05427C10
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD3A427C13
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhJIQjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:39:52 -0400
-Received: from mga14.intel.com ([192.55.52.115]:55992 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhJIQjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:39:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="226961587"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="226961587"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 09:37:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="440253688"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 09 Oct 2021 09:37:52 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mZFM7-0000OT-Sa; Sat, 09 Oct 2021 16:37:51 +0000
-Date:   Sun, 10 Oct 2021 00:36:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- d298b03506d3e161f7492c440babb0bfae35e650
-Message-ID: <6161c528.6gaU4HbrwHlcFRMR%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231235AbhJIQov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhJIQot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:44:49 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A69B3C061570;
+        Sat,  9 Oct 2021 09:42:52 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id a25so32631447edx.8;
+        Sat, 09 Oct 2021 09:42:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oC3W0L4nbj+Es3qnEJSnPIpp2bogBOkZdrry4xHeY8Y=;
+        b=hbfKNn7sYURhUZT0/cn/Y5MI5W30HAzpz+g/ZdDeyc3fLP7UgvcB8X800okGHUOSEb
+         qArJoFO58daWe3xe9XhgXSbo1274tYU7URbayX4mKAuow2RANl9nkZ8aX1Zxz7/rU2AW
+         wpZIUekchUR4dePvshcMnwWSYcioGwjWE8SFfzT39QupeMvMkmLilAco8hoV2P8m/1Oc
+         YNpacH967Vji89pQkbHlgbp1iArI49xCGCaTVzoTPLEEW71pr0C0D3ozCH7grr8VkBeP
+         vBQmB7748J+9vAKI9hDZgnLLYaNeWRSRUxAhNyzngnRPrdhZHrwxs47FVFFJ+9hUDeba
+         s0sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oC3W0L4nbj+Es3qnEJSnPIpp2bogBOkZdrry4xHeY8Y=;
+        b=njE0atsCv8KMc4UyCdDpEmhzYrMvgLHIMpJz4JUxXji/d0i5pv96g6VhdZIhIfkhqt
+         0yjkqH5B2ODW8Ggf7RTMuO3ZQn6LA+iW+ft08cLen1LxgVn8Zzy+xOuMPFDAAg9/ZLx2
+         bzycSJVmfBETGSavJIaT2TD0FnDFS3XQm/ZrWP/is03jNdWOHWHYkMtpkuB2i0SDRD9o
+         iy9bSdLiZ8M77s4sEF3acXtK5yEosn7lOCew7IX9/DVEyuWNq6h3PsEpqRpbpmwnDMUJ
+         bjTwvR64TpONXLRejnpsUG8A2uYqMquNnovH7ywkXYMH/y20T8tPtz+Y0fH3U0UvjgcY
+         8uMQ==
+X-Gm-Message-State: AOAM530/GNyGCsPAR7tGgeasTSXftxbtVh+P3Ul1Z+QRrNGRi8TVz0Ah
+        Cy9Z4skRrjbClMsw5Z3G2Rg=
+X-Google-Smtp-Source: ABdhPJysCc2OxyudNqo7dV0pCLF+VuQvNPKj5bnrtzr3FBJNjovVxLB4M+c/ptbAwICZCNlIdLDhoA==
+X-Received: by 2002:a50:da8f:: with SMTP id q15mr25805243edj.139.1633797771213;
+        Sat, 09 Oct 2021 09:42:51 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id g2sm1424437edq.81.2021.10.09.09.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 09:42:50 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 19:42:49 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: procfs: add seq_puts() statement for
+ dev_mcast
+Message-ID: <20211009164249.euf7dfpccr6kz7a3@skbuf>
+References: <20210816085757.28166-1-yajun.deng@linux.dev>
+ <20211009163511.vayjvtn3rrteglsu@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20211009163511.vayjvtn3rrteglsu@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: d298b03506d3e161f7492c440babb0bfae35e650  x86/fpu: Restore the masking out of reserved MXCSR bits
+On Sat, Oct 09, 2021 at 07:35:11PM +0300, Vladimir Oltean wrote:
+> On Mon, Aug 16, 2021 at 04:57:57PM +0800, Yajun Deng wrote:
+> > Add seq_puts() statement for dev_mcast, make it more readable.
+> > As also, keep vertical alignment for {dev, ptype, dev_mcast} that
+> > under /proc/net.
+> > 
+> > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> > ---
+> 
+> FYI, this program got broken by this commit (reverting it restores
+> functionality):
+> 
+> root@debian:~# ifstat
+> ifstat: /proc/net/dev: unsupported format.
+> 
+> Confusingly enough, the "ifstat" provided by Debian is not from iproute2:
+> https://git.kernel.org/pub/scm/network/iproute2/iproute2.git/tree/misc/ifstat.c
+> but rather a similarly named program:
+> https://packages.debian.org/source/bullseye/ifstat
+> https://github.com/matttbe/ifstat
+> 
+> I haven't studied how this program parses /proc/net/dev, but here's how
+> the kernel's output changed:
 
-elapsed time: 1803m
+Ah, it scrapes the text for "Inter-|":
+https://github.com/matttbe/ifstat/blob/main/drivers.c#L825
 
-configs tested: 182
-configs skipped: 77
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211009
-sh                           se7206_defconfig
-sh                   sh7724_generic_defconfig
-powerpc                      pasemi_defconfig
-x86_64                              defconfig
-arm                        cerfcube_defconfig
-nios2                         10m50_defconfig
-mips                       capcella_defconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                        omega2p_defconfig
-sh                        dreamcast_defconfig
-mips                           gcw0_defconfig
-sh                        sh7763rdp_defconfig
-mips                        jmr3927_defconfig
-s390                                defconfig
-powerpc                     pq2fads_defconfig
-arc                         haps_hs_defconfig
-mips                         mpc30x_defconfig
-riscv             nommu_k210_sdcard_defconfig
-m68k                          multi_defconfig
-arm                         axm55xx_defconfig
-arm                           stm32_defconfig
-powerpc                     pseries_defconfig
-xtensa                           alldefconfig
-arm                          moxart_defconfig
-sh                           se7724_defconfig
-arc                 nsimosci_hs_smp_defconfig
-arm                       cns3420vb_defconfig
-mips                           rs90_defconfig
-xtensa                              defconfig
-powerpc                     mpc83xx_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                          atari_defconfig
-arm                             mxs_defconfig
-sh                   sh7770_generic_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                            titan_defconfig
-sh                             espt_defconfig
-arm                      jornada720_defconfig
-powerpc                  mpc885_ads_defconfig
-arm                       imx_v4_v5_defconfig
-arm                          collie_defconfig
-sh                               allmodconfig
-powerpc                 mpc837x_rdb_defconfig
-powerpc                  storcenter_defconfig
-powerpc                    gamecube_defconfig
-sh                        edosk7705_defconfig
-mips                        bcm63xx_defconfig
-mips                     loongson1b_defconfig
-arm64                            alldefconfig
-mips                    maltaup_xpa_defconfig
-riscv                             allnoconfig
-arm                          ixp4xx_defconfig
-powerpc                      mgcoge_defconfig
-mips                           mtx1_defconfig
-sh                           se7712_defconfig
-sh                   secureedge5410_defconfig
-arm                        vexpress_defconfig
-powerpc                      ppc40x_defconfig
-um                                  defconfig
-mips                           ip22_defconfig
-mips                   sb1250_swarm_defconfig
-arm                        realview_defconfig
-arm                       versatile_defconfig
-powerpc                 mpc836x_mds_defconfig
-arm                          gemini_defconfig
-m68k                            q40_defconfig
-microblaze                      mmu_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                               j2_defconfig
-sh                            shmin_defconfig
-sh                           se7619_defconfig
-sh                           se7721_defconfig
-powerpc                      arches_defconfig
-arm                           u8500_defconfig
-h8300                    h8300h-sim_defconfig
-arm                           viper_defconfig
-mips                 decstation_r4k_defconfig
-m68k                        m5307c3_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                  colibri_pxa270_defconfig
-arm                            mps2_defconfig
-sh                          lboxre2_defconfig
-mips                           xway_defconfig
-x86_64               randconfig-c001-20211009
-arm                  randconfig-c002-20211009
-x86_64               randconfig-c001-20211008
-i386                 randconfig-c001-20211008
-arm                  randconfig-c002-20211008
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-nds32                             allnoconfig
-arc                              allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-parisc                              defconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a003-20211009
-x86_64               randconfig-a005-20211009
-x86_64               randconfig-a001-20211009
-x86_64               randconfig-a002-20211009
-x86_64               randconfig-a004-20211009
-x86_64               randconfig-a006-20211009
-i386                 randconfig-a001-20211009
-i386                 randconfig-a003-20211009
-i386                 randconfig-a005-20211009
-i386                 randconfig-a004-20211009
-i386                 randconfig-a002-20211009
-i386                 randconfig-a006-20211009
-x86_64               randconfig-a015-20211008
-x86_64               randconfig-a012-20211008
-x86_64               randconfig-a016-20211008
-x86_64               randconfig-a013-20211008
-x86_64               randconfig-a011-20211008
-x86_64               randconfig-a014-20211008
-i386                 randconfig-a013-20211008
-i386                 randconfig-a016-20211008
-i386                 randconfig-a014-20211008
-i386                 randconfig-a011-20211008
-i386                 randconfig-a012-20211008
-i386                 randconfig-a015-20211008
-arc                  randconfig-r043-20211008
-s390                 randconfig-r044-20211008
-riscv                randconfig-r042-20211008
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
-
-clang tested configs:
-x86_64               randconfig-a003-20211008
-x86_64               randconfig-a005-20211008
-x86_64               randconfig-a001-20211008
-x86_64               randconfig-a002-20211008
-x86_64               randconfig-a004-20211008
-x86_64               randconfig-a006-20211008
-i386                 randconfig-a001-20211008
-i386                 randconfig-a003-20211008
-i386                 randconfig-a005-20211008
-i386                 randconfig-a004-20211008
-i386                 randconfig-a002-20211008
-i386                 randconfig-a006-20211008
-x86_64               randconfig-a015-20211009
-x86_64               randconfig-a012-20211009
-x86_64               randconfig-a016-20211009
-x86_64               randconfig-a013-20211009
-x86_64               randconfig-a011-20211009
-x86_64               randconfig-a014-20211009
-i386                 randconfig-a013-20211009
-i386                 randconfig-a016-20211009
-i386                 randconfig-a014-20211009
-i386                 randconfig-a012-20211009
-i386                 randconfig-a011-20211009
-i386                 randconfig-a015-20211009
-hexagon              randconfig-r045-20211009
-hexagon              randconfig-r041-20211009
-s390                 randconfig-r044-20211009
-riscv                randconfig-r042-20211009
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> Doesn't work:
+> 
+> root@debian:~# cat /proc/net/dev
+> Interface|                            Receive                                       |                                 Transmit
+>          |            bytes      packets errs   drop fifo frame compressed multicast|            bytes      packets errs   drop fifo colls carrier compressed
+>        lo:            97400         1204    0      0    0     0          0         0            97400         1204    0      0    0     0       0          0
+>     bond0:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>      sit0:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>      eno2:          5002206         6651    0      0    0     0          0         0        105518642      1465023    0      0    0     0       0          0
+>      swp0:           134531         2448    0      0    0     0          0         0         99599598      1464381    0      0    0     0       0          0
+>      swp1:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>      swp2:          4867675         4203    0      0    0     0          0         0            58134          631    0      0    0     0       0          0
+>     sw0p0:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>     sw0p1:           124739         2448    0   1422    0     0          0         0         93741184      1464369    0      0    0     0       0          0
+>     sw0p2:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>     sw2p0:          4850863         4203    0      0    0     0          0         0            54722          619    0      0    0     0       0          0
+>     sw2p1:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>     sw2p2:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>     sw2p3:                0            0    0      0    0     0          0         0                0            0    0      0    0     0       0          0
+>       br0:            10508          212    0    212    0     0          0       212         61369558       958857    0      0    0     0       0          0
+> 
+> Works:
+> 
+> root@debian:~# cat /proc/net/dev
+> Inter-|   Receive                                                |  Transmit
+>  face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+>     lo:   13160     164    0    0    0     0          0         0    13160     164    0    0    0     0       0          0
+>  bond0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>   sit0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>   eno2:   30824     268    0    0    0     0          0         0     3332      37    0    0    0     0       0          0
+>   swp0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>   swp1:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>   swp2:   30824     268    0    0    0     0          0         0     2428      27    0    0    0     0       0          0
+>  sw0p0:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>  sw0p1:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>  sw0p2:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>  sw2p0:   29752     268    0    0    0     0          0         0     1564      17    0    0    0     0       0          0
+>  sw2p1:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>  sw2p2:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
+>  sw2p3:       0       0    0    0    0     0          0         0        0       0    0    0    0     0       0          0
