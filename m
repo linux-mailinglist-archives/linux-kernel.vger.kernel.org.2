@@ -2,108 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFB4427C51
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6709427C55
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhJIRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 13:20:37 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49554
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229928AbhJIRUg (ORCPT
+        id S232564AbhJIRVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 13:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhJIRVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 13:20:36 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3B6133FFEC
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 17:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633799912;
-        bh=6vTs51Lr8vLHY4n076CsFn/gLEdhdBV/K1u6U6+j1dg=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=qU7kRu1ooq4DiwA76+/cW2PhNcRR9JSQH2Pyh1nz9vUVYJQHnPri3eqLhDqVztGh0
-         SqIYN1OTjQ/BLOTfr0CQ/sq+NFQonvitWDBcYa975ksICmfdLVBaT1nku9PLe43xNG
-         YmRUUDXVkSMbVWovpR+wf331cdjHT79W1mvWaWezubEBiCFAWcBMUQRPYop6GGsWNd
-         ova3UFfrL+ayOz/SfX4tdoNvQbU/U67UskWzQAanPe9mQyDgeOP5aYQczEVksAcxE0
-         vhWs2eNrZvhKxFsl8jpw7p/kbwv4/wwfWvv2JYY758Jx/M3LCeH9g3apYHCY7B4iGm
-         IbMxmkC7CBceQ==
-Received: by mail-ed1-f72.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so2353502edy.22
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 10:18:32 -0700 (PDT)
+        Sat, 9 Oct 2021 13:21:23 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD95C061570;
+        Sat,  9 Oct 2021 10:19:26 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so11161822ote.8;
+        Sat, 09 Oct 2021 10:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UZqTJRIKhlJ43FGgr7DGTxAyJOWTtWJNQ/u5JBWcW1k=;
+        b=WZwp2JD30emcfMBe/9zCcNw9rAKyhIEH/bhw90Ex9zNcZ/HzXp/XarDmhJhc6I02Qv
+         XvxcudZ6hmLVuzdlxUo4WQhZ9TcPhHUE2NHCw8EG5PaUtjnYxqdKpOLADGrOhloNeVcx
+         DuIS9S0NzpXBD5ihOoLOsY9xViKKTflUW4qaHnMwJAhah7GYzWDGNUFKFd/pdPPhCLUs
+         ciY5oUhfpME910q4qGpgo9VB+c7xJJtjdz5MucTjDFWlQHm54HrKHh07Oq1R3ecbXwbK
+         wi28bdDR5C5+GbiI+hdY+iTXhJqePZOG1n8GFcwyAcpF7a0vYm6AeH4Tk6B2BcxQvx9j
+         ZXcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6vTs51Lr8vLHY4n076CsFn/gLEdhdBV/K1u6U6+j1dg=;
-        b=kVVqaOLLp8ApebM5/7UGSHm8m9xvXKIbG33IK9dNFWfLx66bRFiU6t8Q7Czf3uJY1T
-         uVDR9DXQ3tnLZQgXEiJHq2jgAfN4SdnDq999+xbLBc1dcRCKhGo3Ekfthrv1Zja6HOdV
-         350odZbBndl4sF7NZ1NAMI2TRzqi0qSeLHMDZHjCt9+wO4KOwFpUscMC4V4MpEDNoLBI
-         AmiayMIochdl3kxyGar6ztq7fy4IBQawJfNPOmgFrsEgnYp1SZ2L6nD55//NNYoreVsA
-         ht1cblX6JQvCHdI89/1j016Zp2ConIK+N2Dy6Q5Vtg2PGoSgHg4YhCSsYWZnUbcXL0mS
-         KeXA==
-X-Gm-Message-State: AOAM533TmDsMgagwG+nEzfyn/uNl5fvZnc9/UP14YP92KysZEJAMBPRM
-        ifYYOF1h8K9pATHNwpxPnsv/IMBRS4dyDG2oadEBV+71ikcMICINsDnznsfXq8Qur7FjnMOx4Z7
-        U2GupeliSERCALPjILLI464Gf035dRUPJHyRyBuGqmQ==
-X-Received: by 2002:a17:906:2ccf:: with SMTP id r15mr12596556ejr.182.1633799911927;
-        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxTFK3yvDCh4cP+YD8IAgX0mwfVS3GVAk+kiNZrMFqKNDBoZ+Nedcqb9ctSXXgWuVyyuZbFrw==
-X-Received: by 2002:a17:906:2ccf:: with SMTP id r15mr12596540ejr.182.1633799911789;
-        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id y19sm321830edd.39.2021.10.09.10.18.30
+        bh=UZqTJRIKhlJ43FGgr7DGTxAyJOWTtWJNQ/u5JBWcW1k=;
+        b=VEzfc0hQQ3yvY3xTfD2omE8AO/yrjEjNysCDyqcUugQs3YWkq2PZ6K2tKVRZ8/Uj1C
+         QWsiZAPQMUoNOmFqDmYWTRuNLSCXAkONlzrIFUm3Yng/RMgukdCmCZkCAAa9IuYLoHMG
+         Fq03Kp31UmCQO21f7Wlh0ak8POHoidlMeZHwjVS4fSftt8qZwDEXpzM8mc6bIgxrw9u7
+         yvmyNnMaqyIHDfMSHud3zC7+XQBkGZpC7q5XL0AIiB96K5xws3ZSTvn0EZC84m4NplPS
+         9rTUTvKuRAqCJ9LrxAvKsY7TTV1ksGBV+DCNjQUyhhQUddD/fMF2sO0QiYEnrSptre0f
+         kaPA==
+X-Gm-Message-State: AOAM531FvjBHhQsJk2+nraz4LA5Uza5D/W54W/TxTwKOqa0jsQC+XjrB
+        IlD34Hap3BnOogppHyiTbYDIvSWgyxdVYA==
+X-Google-Smtp-Source: ABdhPJx5koKOmpa4SIttslUC6uXSHE/n/hySn/pg6RoVqHhZ65HpSs3ilfxf16QPUj+oGLiV4gBoxw==
+X-Received: by 2002:a9d:60da:: with SMTP id b26mr14793219otk.369.1633799965288;
+        Sat, 09 Oct 2021 10:19:25 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.30])
+        by smtp.googlemail.com with ESMTPSA id q12sm609705oth.79.2021.10.09.10.19.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
-Subject: Re: [PATCH] power: supply: max17040: fix null-ptr-deref in
- max17040_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     sre@kernel.org, iskren.chernev@gmail.com
-References: <20211008063150.822066-1-yangyingliang@huawei.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <394b0984-50a6-af80-195b-033bf9624dea@canonical.com>
-Date:   Sat, 9 Oct 2021 19:18:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 09 Oct 2021 10:19:24 -0700 (PDT)
+Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
+To:     Leonard Crestez <cdleonard@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        Yonghong Song <yhs@fb.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
+ <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
+ <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
+ <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
+ <3b52d69d-c39f-c662-7211-4b9130c8b527@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <eec5818a-c62c-eecf-c81c-e3162fc9e01a@gmail.com>
+Date:   Sat, 9 Oct 2021 11:19:22 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211008063150.822066-1-yangyingliang@huawei.com>
+In-Reply-To: <3b52d69d-c39f-c662-7211-4b9130c8b527@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2021 08:31, Yang Yingliang wrote:
-> Add check the return value of devm_regmap_init_i2c(), otherwise
-> later access may cause null-ptr-deref as follows:
+On 10/8/21 9:51 AM, Leonard Crestez wrote:
+> On 07.10.2021 21:27, David Ahern wrote:
+>> On 10/7/21 12:41 AM, Leonard Crestez wrote:
+>>> On 07.10.2021 04:14, David Ahern wrote:
+>>>> On 10/6/21 11:48 AM, Leonard Crestez wrote:
+>>>>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key
+>>>>> *tcp_md5_do_lookup_exact(const struct sock *sk,
+>>>>>    #endif
+>>>>>        hlist_for_each_entry_rcu(key, &md5sig->head, node,
+>>>>>                     lockdep_sock_is_held(sk)) {
+>>>>>            if (key->family != family)
+>>>>>                continue;
+>>>>> -        if (key->l3index && key->l3index != l3index)
+>>>>> +        if (key->l3index != l3index)
+>>>>
+>>>> That seems like the bug fix there. The L3 reference needs to match for
+>>>> new key and existing key. I think the same change is needed in
+>>>> __tcp_md5_do_lookup.
+>>>
+>>> Current behavior is that keys added without tcpm_ifindex will match
+>>> connections both inside and outside VRFs. Changing this might break real
+>>> applications, is it really OK to claim that this behavior was a bug all
+>>> along?
+>>
+>> no.
+>>
+>> It's been a few years. I need to refresh on the logic and that is not
+>> going to happen before this weekend.
 > 
-> KASAN: null-ptr-deref in range [0x0000000000000360-0x0000000000000367]
-> RIP: 0010:regmap_read+0x33/0x170
-> Call Trace:
->   max17040_probe+0x61b/0xff0 [max17040_battery]
->  ? write_comp_data+0x2a/0x90
->  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
->  ? tracer_hardirqs_on+0x33/0x520
->  ? __sanitizer_cov_trace_pc+0x1d/0x50
->  ? _raw_spin_unlock_irqrestore+0x4b/0x60
->  ? trace_hardirqs_on+0x63/0x2d0
->  ? write_comp_data+0x2a/0x90
->  ? __sanitizer_cov_trace_pc+0x1d/0x50
->  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
->  i2c_device_probe+0xa31/0xbe0
+> It seems that always doing a strict key->l3index != l3index condition
+> inside of __tcp_md5_do_lookup breaks the usecase of binding one listener
+> to each VRF and not specifying the ifindex for each key.
 > 
-> Fixes: 6455a8a84bdf ("power: supply: max17040: Use regmap i2c")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/power/supply/max17040_battery.c | 2 ++
->  1 file changed, 2 insertions(+)
+> This is a very valid usecase, maybe the most common way to use md5 with
+> vrf.
+> 
+> Ways to fix this:
+> * Make this comparison only take effect if TCP_MD5SIG_FLAG_IFINDEX is set.
+> * Make this comparison only take effect if tcp_l3mdev_accept=1
+> * Add a new flag?
+> 
+> Right now passing TCP_MD5SIG_FLAG_IFINDEX and ifindex == 0 results in an
+> error but maybe it should be accepted to mean "key applies only for
+> default VRF".
+> 
 
+I think I remember the history now: prior to the set
+98c8147648fa..5cad8bce26e0 MD5 lookups for VRF and default VRF both
+succeed on an address or prefix match because the L3 domain was not
+checked. That set did not want to break the legacy behavior which is why
+the change is based on db key having l3index set and matching the
+ingress domain.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+That means the limitation (hole depending on perspective) is a default
+VRF and a VRF having overlap addresses with a key installed with the L3
+index set (can't since default VRF does not have one) - which I believe
+is your point.
 
-
-Best regards,
-Krzysztof
+So, yes, one option is to have a flag that indicates strict checking to
+close the legacy path.
