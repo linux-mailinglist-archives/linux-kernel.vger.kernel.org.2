@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470674278D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560DD4278DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244853AbhJIKKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:10:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49538 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244657AbhJIKJR (ORCPT
+        id S244903AbhJIKKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244749AbhJIKJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:09:17 -0400
-Date:   Sat, 09 Oct 2021 10:07:19 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1633774040;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g3pCBjl2e8Da4p/V5bnaKUuPbwpFUMahEuvVM8sY/DQ=;
-        b=JWvu76gdJK4gakbpZXUsiXssoLjGVFF68PWDzVDaz+bvWmiIjCu8+/rZIQiwFuIwxSelYH
-        QDxsfEHwOs2HAi+0A9k+V5KlX5dcRjSH5G5JIsrwAkvxh6NninVQOg7LYqa93yNUanmfoq
-        +hOqUxrngflxDDozIV7TvyCLiyVI5ue+cp76hkXI/on+bQlFuKxc9D5BnDIz/LhNlnKMz4
-        zko9ZhKNpTH2fgwuQrqGUsIGBifR9YyDmlxJwivZWL9JvOR7wUFlo7QovKd0EvpAQniUEm
-        hiHaXYstA3G7yJ2gJVL2npE+acokJ1HOb3x/AbEHsjUPoWJ0yynPNBnidC5T3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1633774040;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g3pCBjl2e8Da4p/V5bnaKUuPbwpFUMahEuvVM8sY/DQ=;
-        b=oUt1K8HkA3xxfbv3X0XycH3RojsFD3JBVyND763c59RhE1NYAR9spqB0kdyWQlzdgV23D1
-        XoaxaLLdS5tarWCQ==
-From:   "tip-bot2 for Davidlohr Bueso" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] locking/rwbase: Optimize rwbase_read_trylock
-Cc:     Davidlohr Bueso <dbueso@suse.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210920052031.54220-2-dave@stgolabs.net>
-References: <20210920052031.54220-2-dave@stgolabs.net>
+        Sat, 9 Oct 2021 06:09:30 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF3C061774
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 03:07:26 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1e2200eaf5135f74ba603d.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:2200:eaf5:135f:74ba:603d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0E3901EC050F;
+        Sat,  9 Oct 2021 12:07:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633774045;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=XBb5DRuvpHCIpaOFwyxafYPw1UQ6Ea57NV5kAAnUc/4=;
+        b=ooUMbUWXhNxc75bL/39RkCCBkIYHVZxCR5dEVq8cQLzz6fGUnJTrS8sQlODRgxWOalJM+d
+        Y52gDdMTK03Hg8tX5BhNkZqFdgS0oRQ9ZlOzlVeQMXfxqgb0WaeXOu9ek5UE1ZAoHfXc5c
+        kMtcjjxagIKgtCXi/5Og251Ok6pQbxc=
+Date:   Sat, 9 Oct 2021 12:07:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Quan, Evan" <Evan.Quan@amd.com>
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "Chen, Guchun" <Guchun.Chen@amd.com>
+Subject: Re: bf756fb833cb ("drm/amdgpu: add missing cleanups for Polaris12
+ UVD/VCE on suspend")
+Message-ID: <YWFp2qHwbWHEqxWh@zn.tnic>
+References: <YV81vidWQLWvATMM@zn.tnic>
+ <CADnq5_NjiRM9sF6iAE3=KbzuSVc1MeLe0nUCdJfEpNQ=RDz4Zw@mail.gmail.com>
+ <YWBeD7fd2sYSSTyc@zn.tnic>
+ <CADnq5_MeEP-PbDp+Js3zEsuj=CvxDAD2qcFSskWhW4b4SkhwEQ@mail.gmail.com>
+ <YWBlVzZK35ecQHNZ@zn.tnic>
+ <DM6PR12MB2619FD47CD826ADC91F87AFBE4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
+ <YWFaUjKEp+5819O/@zn.tnic>
+ <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Message-ID: <163377403924.25758.18240935726439029694.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <DM6PR12MB26195857D2FA0946C9833F19E4B39@DM6PR12MB2619.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
+On Sat, Oct 09, 2021 at 09:54:13AM +0000, Quan, Evan wrote:
+> Oops, I just found some necessary changes are missing from the patch of the link below.
+> https://lists.freedesktop.org/archives/amd-gfx/2021-September/069006.html
+> 
+> Could you try the patch from the link above + the attached patch?
 
-Commit-ID:     c78416d122243c92992a1d1063f17ddd0bc80e6c
-Gitweb:        https://git.kernel.org/tip/c78416d122243c92992a1d1063f17ddd0bc80e6c
-Author:        Davidlohr Bueso <dave@stgolabs.net>
-AuthorDate:    Sun, 19 Sep 2021 22:20:30 -07:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 07 Oct 2021 13:51:07 +02:00
+Nope, still no joy. ;-\
 
-locking/rwbase: Optimize rwbase_read_trylock
+-- 
+Regards/Gruss,
+    Boris.
 
-Instead of a full barrier around the Rmw insn, micro-optimize
-for weakly ordered archs such that we only provide the required
-ACQUIRE semantics when taking the read lock.
-
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Waiman Long <longman@redhat.com>
-Link: https://lkml.kernel.org/r/20210920052031.54220-2-dave@stgolabs.net
----
- kernel/locking/rwbase_rt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-index 15c8110..6fd3162 100644
---- a/kernel/locking/rwbase_rt.c
-+++ b/kernel/locking/rwbase_rt.c
-@@ -59,8 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
- 	 * set.
- 	 */
- 	for (r = atomic_read(&rwb->readers); r < 0;) {
--		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
--		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
-+		if (likely(atomic_try_cmpxchg_acquire(&rwb->readers, &r, r + 1)))
- 			return 1;
- 	}
- 	return 0;
-@@ -187,7 +186,7 @@ static inline void __rwbase_write_unlock(struct rwbase_rt *rwb, int bias,
- 
- 	/*
- 	 * _release() is needed in case that reader is in fast path, pairing
--	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
-+	 * with atomic_try_cmpxchg_acquire() in rwbase_read_trylock().
- 	 */
- 	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
- 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+https://people.kernel.org/tglx/notes-about-netiquette
