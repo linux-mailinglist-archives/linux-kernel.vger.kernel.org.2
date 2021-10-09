@@ -2,174 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910AA427C0B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AB4427C08
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231607AbhJIQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:35:51 -0400
-Received: from ixit.cz ([94.230.151.217]:42386 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229587AbhJIQfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:35:50 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 5D14820064;
-        Sat,  9 Oct 2021 18:33:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633797231;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VG0XiF7oaA2a7ZkmNQfV1Wi+icaIuRu9C91JRKV71Fs=;
-        b=R2wx0ccZ26o/LhT82tyvvIwzmTzBhtcndZBdQj8WsN43Yu2DE3IwHNe4Vkg3OwDOKb/z8G
-        eoqBsQKm/X0FN6CldQnXjLBaO+jb9y5MLABU2lqqGkV44e90c1+/NpjfVhfWFBVaTP8qIc
-        Vex0pmD7IutmfEvWdjcHeUh3IRHvP/I=
-From:   David Heidelberg <david@ixit.cz>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH] dt-bindings: power: reset: gpio-poweroff: Convert txt bindings to yaml
-Date:   Sat,  9 Oct 2021 18:32:26 +0200
-Message-Id: <20211009163226.45564-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S230178AbhJIQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:35:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhJIQfR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:35:17 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBD7C061762
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 09:33:20 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id y17so13359402ilb.9
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 09:33:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NOsRu7Gl5frflQDzwyqruKASxPNHzdSSKCi/MZwdyAY=;
+        b=SvCLButW0E32uzvmfP52sqIX/ovO93QEo5xC7076+7uon2m3OPBnBNCafcs8RfT7Ju
+         X3MeJ/RKl8DegGr9vANlrCgGuQdSjZp1gnRfFcOUsU5/HpoZi+Z8ovb3g6CHj1B6zjSR
+         bWnXggRNmz1QTbjPFpbB2vgXO3Rt/HHaKfZhmfSHDVTs7PDSiAut4pnMxQSjSdW6JpyV
+         L42IivM6Hw5VfJJLPGDfNI/fA5qDgZlCNhObLnz0Ci3vaf7HqVuRI3r256XJPlL4vf5S
+         x4k0+PBAA3vsZmmKxzSWfTfSdcxH1v2RalA8blzd7GsH4zG5RcyfIsrT9c5pAghtNFdl
+         F32g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NOsRu7Gl5frflQDzwyqruKASxPNHzdSSKCi/MZwdyAY=;
+        b=RgecFIkW0FZhx76euxSuCT+6uXASo+X9pcqhR8+AZR7xg5JkFe5uDMFk7BzzQV2C8W
+         CgJ6E7TIAhMObSmOIbbtbKROe2XZbKdli4DMsj4d6o2BNSUFVEq+42wms83evM2ErkH6
+         kO0ssbIJW2ZKO0/Vm2JhF4l+UqF8/gEz14HGAvaSLxMWI1eJncdaXWAat+OQCkXFPOGn
+         nbzLKAY29ZEsGNc9ziYLQ3cJRz8OlDLYPIooM6FvXNxI9LRD3fT5lkA4+tUwODlL9vjq
+         KN/4fMouurUbawGsGWLA4DJK/TTmDGXPY0JC289+e5YHk/0eUpFOzQmGTOxoShjj+WcO
+         y97Q==
+X-Gm-Message-State: AOAM533Ei75j2ELG1OyXB5IPTenHgGwtqIqimwlUowksUdFgAHZz5XKf
+        HU6+gLL/35BSzp2JpHeaVJDKtOSzJQmWIQ==
+X-Google-Smtp-Source: ABdhPJx1NjG6/F1SHb0HuayQrLS9FpxxBkrKxeYOOAbQVOqZHtuzyuzO0Xs0nUIDDf/8WBZRkUaXyQ==
+X-Received: by 2002:a05:6e02:1b07:: with SMTP id i7mr12989533ilv.63.1633797199110;
+        Sat, 09 Oct 2021 09:33:19 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id w11sm1268567iom.23.2021.10.09.09.33.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 09:33:18 -0700 (PDT)
+Subject: Re: [PATCH 1/6] block: cache bdev in struct file for raw bdev IO
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1633781740.git.asml.silence@gmail.com>
+ <cfc66d9946422fa1778504f976621c91be2befb5.1633781740.git.asml.silence@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0785c707-ba82-1e46-5d4d-63ccacdb471f@kernel.dk>
+Date:   Sat, 9 Oct 2021 10:33:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+In-Reply-To: <cfc66d9946422fa1778504f976621c91be2befb5.1633781740.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert power-off action connected to the GPIO documentation to the YAML syntax.
+On 10/9/21 6:25 AM, Pavel Begunkov wrote:
+> bdev = &BDEV_I(file->f_mapping->host)->bdev
+> 
+> Getting struct block_device from a file requires 2 memory dereferences
+> as illustrated above, that takes a toll on performance, so cache it in
+> yet unused file->private_data. That gives a noticeable peak performance
+> improvement.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../bindings/power/reset/gpio-poweroff.txt    | 41 ------------
- .../bindings/power/reset/gpio-poweroff.yaml   | 64 +++++++++++++++++++
- 2 files changed, 64 insertions(+), 41 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
- create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+It's hilariously bad right now, so I really welcome this change. One
+comment:
 
-diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-deleted file mode 100644
-index 3e56c1b34a4c..000000000000
---- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
-+++ /dev/null
-@@ -1,41 +0,0 @@
--Driver a GPIO line that can be used to turn the power off.
--
--The driver supports both level triggered and edge triggered power off.
--At driver load time, the driver will request the given gpio line and
--install a handler to power off the system. If the optional properties
--'input' is not found, the GPIO line will be driven in the inactive
--state. Otherwise its configured as an input.
--
--When the power-off handler is called, the gpio is configured as an
--output, and drive active, so triggering a level triggered power off
--condition. This will also cause an inactive->active edge condition, so
--triggering positive edge triggered power off. After a delay of 100ms,
--the GPIO is set to inactive, thus causing an active->inactive edge,
--triggering negative edge triggered power off. After another 100ms
--delay the GPIO is driver active again. If the power is still on and
--the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
--
--Required properties:
--- compatible : should be "gpio-poweroff".
--- gpios : The GPIO to set high/low, see "gpios property" in
--  Documentation/devicetree/bindings/gpio/gpio.txt. If the pin should be
--  low to power down the board set it to "Active Low", otherwise set
--  gpio to "Active High".
--
--Optional properties:
--- input : Initially configure the GPIO line as an input. Only reconfigure
--  it to an output when the power-off handler is called. If this optional
--  property is not specified, the GPIO is initialized as an output in its
--  inactive state.
--- active-delay-ms: Delay (default 100) to wait after driving gpio active
--- inactive-delay-ms: Delay (default 100) to wait after driving gpio inactive
--- timeout-ms: Time to wait before asserting a WARN_ON(1). If nothing is
--              specified, 3000 ms is used.
--
--Examples:
--
--gpio-poweroff {
--	compatible = "gpio-poweroff";
--	gpios = <&gpio 4 0>;
--	timeout-ms = <3000>;
--};
-diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-new file mode 100644
-index 000000000000..50ae0cec6493
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/power/reset/gpio-poweroff.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Driver a GPIO line that can be used to turn the power off
-+
-+maintainers:
-+  - Sebastian Reichel <sre@kernel.org>
-+
-+description:
-+  The driver supports both level triggered and edge triggered power off.
-+  At driver load time, the driver will request the given gpio line and
-+  install a handler to power off the system. If the optional properties
-+  'input' is not found, the GPIO line will be driven in the inactive
-+  state. Otherwise its configured as an input.
-+
-+  When the power-off handler is called, the gpio is configured as an
-+  output, and drive active, so triggering a level triggered power off
-+  condition. This will also cause an inactive->active edge condition, so
-+  triggering positive edge triggered power off. After a delay of 100ms,
-+  the GPIO is set to inactive, thus causing an active->inactive edge,
-+  triggering negative edge triggered power off. After another 100ms
-+  delay the GPIO is driver active again. If the power is still on and
-+  the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
-+
-+properties:
-+  compatible:
-+    const: gpio-poweroff
-+
-+  gpios: true
-+
-+  input:
-+    description: |
-+      Initially configure the GPIO line as an input. Only reconfigure
-+      it to an output when the power-off handler is called. If this optional
-+      property is not specified, the GPIO is initialized as an output in its inactive state.
-+
-+  active-delay-ms:
-+    default: 100
-+    description: Delay to wait after driving gpio active
-+
-+  inactive-delay-ms:
-+    default: 100
-+    description: Delay to wait after driving gpio inactive
-+
-+  timeout-ms:
-+    default: 3000
-+    description: Time to wait before asserting a WARN_ON(1).
-+
-+required:
-+  - compatible
-+  - gpios
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio-poweroff {
-+        compatible = "gpio-poweroff";
-+        gpios = <&gpio 4 0>;
-+        timeout-ms = <3000>;
-+    };
+> +static inline struct block_device *blkdev_get_bdev(struct file *file)
+> +{
+> +	return file->private_data;
+> +}
+
+Get rid of this and just use bdev = file->private_data where
+appropriate. Easier to read, we don't need to hide this in a function.
+
 -- 
-2.33.0
+Jens Axboe
 
