@@ -2,387 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BD3427C90
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:16:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBF8427C8A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:12:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhJISS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:18:26 -0400
-Received: from out10.migadu.com ([46.105.121.227]:51822 "EHLO out10.migadu.com"
+        id S229754AbhJISOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:14:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhJISSZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:18:25 -0400
-X-Greylist: delayed 325 seconds by postgrey-1.27 at vger.kernel.org; Sat, 09 Oct 2021 14:18:24 EDT
-Date:   Sun, 10 Oct 2021 02:11:35 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1633803054;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZFnPaMcDOkShOKznuSmXm6cQBwzsOJYRgxStF69uW1A=;
-        b=DYFhFBTdNroH0+5fO2w0d7YaV3TBHc5tc4DKMCtDcTmnKlffwWxitkl46isguTTQmEvgmT
-        XW12Npr+A+vtGsjd/psTTfMQjYvDLLN4jfZlOHyLOptpe9HWIu057G2oIP+EpKkTZy0q0o
-        ZR9+P5OMvS48izfAA8Vs2wmJokDepYs=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Vineeth Pillai <vineethrp@gmail.com>,
-        Hao Luo <haoluo@google.com>, linux-kernel@vger.kernel.org,
-        Tao Zhou <tao.zhou@linux.dev>
-Subject: Re: [PATCH] sched/core: forced idle accounting
-Message-ID: <YWHbV8NFSEj2qtQo@geo.homenetwork>
-References: <20211008000825.1364224-1-joshdon@google.com>
+        id S229518AbhJISOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 14:14:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7EE460F23;
+        Sat,  9 Oct 2021 18:12:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633803156;
+        bh=y1QfitQt6joK9ydk+PcC3KY+Eo04RKLCeVsZMjpTwrA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=geUQuBp/yCzGZTFtzg+pLgn3aq+LcOR3SkodwyfJyjlDL38j+llScM0Yunn4sNr/H
+         Uio4nv1HXIIzWZsPrOspZM8/PU0TbLSap1Zej1tUeTpaRWIHpxbffoY+/CkmdIk9sW
+         7c693Ctwc8kDDFzsN1A3WujapxfRwJcdLBzve2qx7LYqB7xzIewlaeCG+YQCq5UJS3
+         5gJWiRJhC0x4OACe7YHGI9+CkRmfFEahEmQWkJ/pLSKuODZYcOepxWi/5epfHO2GjX
+         2TKWfCcDSqnySnGR1V6rsgdAmvB6eOwQ3kd/BHzUunLUn7mLXeXEMQciUfz/hsGvXv
+         VGSNlJaROM8pA==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org
+Cc:     Chao Yu <chao@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Yue Hu <zbestahu@gmail.com>,
+        Gao Xiang <hsiangkao@linux.alibaba.com>
+Subject: [PATCH v3 2/3] erofs: introduce the secondary compression head
+Date:   Sun, 10 Oct 2021 02:12:09 +0800
+Message-Id: <20211009181209.23041-1-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211008200839.24541-3-xiang@kernel.org>
+References: <20211008200839.24541-3-xiang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008000825.1364224-1-joshdon@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Josh,
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
 
-On Thu, Oct 07, 2021 at 05:08:25PM -0700, Josh Don wrote:
-> Adds accounting for "forced idle" time, which is time where a cookie'd
-> task forces its SMT sibling to idle, despite the presence of runnable
-> tasks.
-> 
-> Forced idle time is one means to measure the cost of enabling core
-> scheduling (ie. the capacity lost due to the need to force idle).
-> 
-> Signed-off-by: Josh Don <joshdon@google.com>
-> ---
->  include/linux/sched.h     |  1 +
->  kernel/sched/core.c       | 46 ++++++++++++++++-----
->  kernel/sched/core_sched.c | 85 ++++++++++++++++++++++++++++++++++++++-
->  kernel/sched/debug.c      |  3 ++
->  kernel/sched/sched.h      | 11 ++++-
->  5 files changed, 135 insertions(+), 11 deletions(-)
-> 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 2aa30e8e1440..d114ba350802 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -784,6 +784,7 @@ struct task_struct {
->  	struct rb_node			core_node;
->  	unsigned long			core_cookie;
->  	unsigned int			core_occupation;
-> +	u64				core_forceidle_sum;
->  #endif
->  
->  #ifdef CONFIG_CGROUP_SCHED
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index ada028e579b0..baa4f48cacff 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -181,15 +181,23 @@ void sched_core_enqueue(struct rq *rq, struct task_struct *p)
->  	rb_add(&p->core_node, &rq->core_tree, rb_sched_core_less);
->  }
->  
-> -void sched_core_dequeue(struct rq *rq, struct task_struct *p)
-> +void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags)
->  {
->  	rq->core->core_task_seq++;
->  
-> -	if (!sched_core_enqueued(p))
-> -		return;
-> +	if (sched_core_enqueued(p)) {
-> +		rb_erase(&p->core_node, &rq->core_tree);
-> +		RB_CLEAR_NODE(&p->core_node);
-> +	}
->  
-> -	rb_erase(&p->core_node, &rq->core_tree);
-> -	RB_CLEAR_NODE(&p->core_node);
-> +	/*
-> +	 * Migrating the last task off the cpu, with the cpu in forced idle
-> +	 * state. Reschedule to create an accounting edge for forced idle,
-> +	 * and re-examine whether the core is still in forced idle state.
-> +	 */
-> +	if (!(flags & DEQUEUE_SAVE) && rq->nr_running == 1 &&
-> +	    rq->core->core_forceidle && rq->curr == rq->idle)
-> +		resched_curr(rq);
->  }
->  
->  /*
-> @@ -364,7 +372,8 @@ void sched_core_put(void)
->  #else /* !CONFIG_SCHED_CORE */
->  
->  static inline void sched_core_enqueue(struct rq *rq, struct task_struct *p) { }
-> -static inline void sched_core_dequeue(struct rq *rq, struct task_struct *p) { }
-> +static inline void
-> +sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags) { }
->  
->  #endif /* CONFIG_SCHED_CORE */
->  
-> @@ -2020,7 +2029,7 @@ static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
->  static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
->  {
->  	if (sched_core_enabled(rq))
-> -		sched_core_dequeue(rq, p);
-> +		sched_core_dequeue(rq, p, flags);
->  
->  	if (!(flags & DEQUEUE_NOCLOCK))
->  		update_rq_clock(rq);
-> @@ -5256,6 +5265,7 @@ void scheduler_tick(void)
->  	if (sched_feat(LATENCY_WARN))
->  		resched_latency = cpu_resched_latency(rq);
->  	calc_global_load_tick(rq);
-> +	sched_core_tick(rq);
->  
->  	rq_unlock(rq, &rf);
->  
-> @@ -5668,6 +5678,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	struct task_struct *next, *p, *max = NULL;
->  	const struct cpumask *smt_mask;
->  	bool fi_before = false;
-> +	bool core_clock_updated = (rq == rq->core);
->  	unsigned long cookie;
->  	int i, cpu, occ = 0;
->  	struct rq *rq_i;
-> @@ -5721,9 +5732,15 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	/* reset state */
->  	rq->core->core_cookie = 0UL;
->  	if (rq->core->core_forceidle) {
-> +		if (!core_clock_updated) {
-> +			update_rq_clock(rq->core);
-> +			core_clock_updated = true;
-> +		}
-> +		sched_core_account_forceidle(rq);
-> +		rq->core->core_forceidle = false;
-> +		rq->core->core_forceidle_start = 0;
->  		need_sync = true;
->  		fi_before = true;
-> -		rq->core->core_forceidle = false;
->  	}
->  
->  	/*
-> @@ -5765,7 +5782,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  	for_each_cpu_wrap(i, smt_mask, cpu) {
->  		rq_i = cpu_rq(i);
->  
-> -		if (i != cpu)
-> +		if (i != cpu && (rq_i != rq->core || !core_clock_updated))
->  			update_rq_clock(rq_i);
->  
->  		p = rq_i->core_pick = pick_task(rq_i);
-> @@ -5804,6 +5821,9 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
->  		}
->  	}
->  
-> +	if (rq->core->core_forceidle && cookie)
-> +		rq->core->core_forceidle_start = rq_clock(rq->core);
-> +
->  	rq->core->core_pick_seq = rq->core->core_task_seq;
->  	next = rq->core_pick;
->  	rq->core_sched_seq = rq->core->core_pick_seq;
-> @@ -6051,6 +6071,13 @@ static void sched_core_cpu_deactivate(unsigned int cpu)
->  	core_rq->core_forceidle     = rq->core_forceidle;
->  	core_rq->core_forceidle_seq = rq->core_forceidle_seq;
->  
-> +	/*
-> +	 * Accounting edge for forced idle is handled in pick_next_task().
-> +	 * Don't need another one here, since the hotplug thread shouldn't
-> +	 * have a cookie.
-> +	 */
-> +	core_rq->core_forceidle_start = 0;
-> +
->  	/* install new leader */
->  	for_each_cpu(t, smt_mask) {
->  		rq = cpu_rq(t);
-> @@ -9424,6 +9451,7 @@ void __init sched_init(void)
->  		rq->core_enabled = 0;
->  		rq->core_tree = RB_ROOT;
->  		rq->core_forceidle = false;
-> +		rq->core_forceidle_start = 0;
->  
->  		rq->core_cookie = 0UL;
->  #endif
-> diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-> index 48ac72696012..aae4ac2ac7ec 100644
-> --- a/kernel/sched/core_sched.c
-> +++ b/kernel/sched/core_sched.c
-> @@ -73,7 +73,7 @@ static unsigned long sched_core_update_cookie(struct task_struct *p,
->  
->  	enqueued = sched_core_enqueued(p);
->  	if (enqueued)
-> -		sched_core_dequeue(rq, p);
-> +		sched_core_dequeue(rq, p, DEQUEUE_SAVE);
->  
->  	old_cookie = p->core_cookie;
->  	p->core_cookie = cookie;
-> @@ -85,6 +85,10 @@ static unsigned long sched_core_update_cookie(struct task_struct *p,
->  	 * If task is currently running, it may not be compatible anymore after
->  	 * the cookie change, so enter the scheduler on its CPU to schedule it
->  	 * away.
-> +	 *
-> +	 * Note that it is possible that as a result of this cookie change, the
-> +	 * core has now entered/left forced idle state. Defer accounting to the
-> +	 * next scheduling edge, rather than always forcing a reschedule here.
->  	 */
->  	if (task_running(rq, p))
->  		resched_curr(rq);
-> @@ -109,6 +113,7 @@ void sched_core_fork(struct task_struct *p)
->  {
->  	RB_CLEAR_NODE(&p->core_node);
->  	p->core_cookie = sched_core_clone_cookie(current);
-> +	p->core_forceidle_sum = 0;
->  }
->  
->  void sched_core_free(struct task_struct *p)
-> @@ -228,3 +233,81 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
->  	return err;
->  }
->  
-> +/* REQUIRES: rq->core's clock recently updated. */
-> +void sched_core_account_forceidle(struct rq *rq)
-> +{
-> +	const struct cpumask *smt_mask = cpu_smt_mask(cpu_of(rq));
-> +	unsigned int smt_count;
-> +	u64 delta, now = rq_clock(rq->core);
-> +	struct rq *rq_i;
-> +	struct task_struct *p;
-> +	int i;
-> +
-> +	lockdep_assert_rq_held(rq);
-> +
-> +	WARN_ON_ONCE(!rq->core->core_forceidle);
-> +
-> +	if (rq->core->core_forceidle_start == 0)
-> +		return;
-> +
-> +	delta = now - rq->core->core_forceidle_start;
-> +	if (unlikely((s64)delta <= 0))
-> +		return;
-> +
-> +	rq->core->core_forceidle_start = now;
-> +
-> +	/*
-> +	 * For larger SMT configurations, we need to scale the charged
-> +	 * forced idle amount since there can be more than one forced idle
-> +	 * sibling and more than one running cookied task.
-> +	 */
-> +	smt_count = cpumask_weight(smt_mask);
-> +	if (smt_count > 2) {
-> +		unsigned int nr_forced_idle = 0, nr_running = 0;
-> +
-> +		for_each_cpu(i, smt_mask) {
-> +			rq_i = cpu_rq(i);
-> +			p = rq_i->core_pick ?: rq_i->curr;
-> +
-> +			if (p != rq_i->idle)
-> +				nr_running++;
-> +			else if (rq_i->nr_running)
-> +				nr_forced_idle++;
-> +		}
-> +
-> +		if (WARN_ON_ONCE(!nr_running)) {
-> +			/* can't be forced idle without a running task */
-> +		} else {
-> +			delta *= nr_forced_idle;
-> +			delta /= nr_running;
-> +		}
+Previously, for each HEAD lcluster, it can be either HEAD or PLAIN
+lcluster to indicate whether the whole pcluster is compressed or not.
 
-Is it possible to use (smt_count - core_occupation) / core_occupation 
-to evaluate this delta ?
+In this patch, a new HEAD2 head type is introduced to specify another
+compression algorithm other than the primary algorithm for each
+compressed file, which can be used for upcoming LZMA compression and
+LZ4 range dictionary compression for various data patterns.
 
-> +	}
-> +
-> +	for_each_cpu(i, smt_mask) {
-> +		rq_i = cpu_rq(i);
-> +		p = rq_i->core_pick ?: rq_i->curr;
-> +
-> +		if (!p->core_cookie)
-> +			continue;
-> +
-> +		p->core_forceidle_sum += delta;
-> +
-> +		/* Optimize for common case. */
-> +		if (smt_count == 2)
-> +			break;
-> +	}
-> +}
-> +
-> +void sched_core_tick(struct rq *rq)
-> +{
-> +	if (!sched_core_enabled(rq))
-> +		return;
-> +
-> +	if (!rq->core->core_forceidle)
-> +		return;
-> +
-> +	if (rq != rq->core)
-> +		update_rq_clock(rq->core);
-> +	sched_core_account_forceidle(rq);
-> +}
-> +
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 26fac5e28bc0..0fe6a1bb8b60 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -1045,6 +1045,9 @@ void proc_sched_show_task(struct task_struct *p, struct pid_namespace *ns,
->  	__PS("uclamp.max", p->uclamp_req[UCLAMP_MAX].value);
->  	__PS("effective uclamp.min", uclamp_eff_value(p, UCLAMP_MIN));
->  	__PS("effective uclamp.max", uclamp_eff_value(p, UCLAMP_MAX));
-> +#endif
-> +#ifdef CONFIG_SCHED_CORE
-> +	PN(core_forceidle_sum);
->  #endif
->  	P(policy);
->  	P(prio);
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index a00fc7057d97..4678b85754f2 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1113,6 +1113,7 @@ struct rq {
->  	unsigned long		core_cookie;
->  	unsigned char		core_forceidle;
->  	unsigned int		core_forceidle_seq;
-> +	u64			core_forceidle_start;
->  #endif
->  };
->  
-> @@ -1253,11 +1254,15 @@ static inline bool sched_core_enqueued(struct task_struct *p)
->  }
->  
->  extern void sched_core_enqueue(struct rq *rq, struct task_struct *p);
-> -extern void sched_core_dequeue(struct rq *rq, struct task_struct *p);
-> +extern void sched_core_dequeue(struct rq *rq, struct task_struct *p, int flags);
->  
->  extern void sched_core_get(void);
->  extern void sched_core_put(void);
->  
-> +extern void sched_core_account_forceidle(struct rq *rq);
-> +
-> +extern void sched_core_tick(struct rq *rq);
-> +
->  #else /* !CONFIG_SCHED_CORE */
->  
->  static inline bool sched_core_enabled(struct rq *rq)
-> @@ -1300,6 +1305,10 @@ static inline bool sched_group_cookie_match(struct rq *rq,
->  {
->  	return true;
->  }
-> +
-> +static inline void sched_core_account_forceidle(struct rq *rq) {}
-> +
-> +static inline void sched_core_tick(struct rq *rq) {}
->  #endif /* CONFIG_SCHED_CORE */
->  
->  static inline void lockdep_assert_rq_held(struct rq *rq)
-> -- 
-> 2.33.0.882.g93a45727a2-goog
+It has been stayed in the EROFS roadmap for years. Complete it now!
 
+Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+---
+v2: https://lore.kernel.org/r/20211008200839.24541-3-xiang@kernel.org
+changes since v2:
+ - simplify z_algorithmtype check suggested by Yue.
 
+ fs/erofs/erofs_fs.h |  8 +++++---
+ fs/erofs/zmap.c     | 38 ++++++++++++++++++++++++++------------
+ 2 files changed, 31 insertions(+), 15 deletions(-)
 
-Thanks,
-Tao
+diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
+index b0b23f41abc3..f579c8c78fff 100644
+--- a/fs/erofs/erofs_fs.h
++++ b/fs/erofs/erofs_fs.h
+@@ -21,11 +21,13 @@
+ #define EROFS_FEATURE_INCOMPAT_COMPR_CFGS	0x00000002
+ #define EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER	0x00000002
+ #define EROFS_FEATURE_INCOMPAT_CHUNKED_FILE	0x00000004
++#define EROFS_FEATURE_INCOMPAT_COMPR_HEAD2	0x00000008
+ #define EROFS_ALL_FEATURE_INCOMPAT		\
+ 	(EROFS_FEATURE_INCOMPAT_LZ4_0PADDING | \
+ 	 EROFS_FEATURE_INCOMPAT_COMPR_CFGS | \
+ 	 EROFS_FEATURE_INCOMPAT_BIG_PCLUSTER | \
+-	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE)
++	 EROFS_FEATURE_INCOMPAT_CHUNKED_FILE | \
++	 EROFS_FEATURE_INCOMPAT_COMPR_HEAD2)
+ 
+ #define EROFS_SB_EXTSLOT_SIZE	16
+ 
+@@ -314,9 +316,9 @@ struct z_erofs_map_header {
+  */
+ enum {
+ 	Z_EROFS_VLE_CLUSTER_TYPE_PLAIN		= 0,
+-	Z_EROFS_VLE_CLUSTER_TYPE_HEAD		= 1,
++	Z_EROFS_VLE_CLUSTER_TYPE_HEAD1		= 1,
+ 	Z_EROFS_VLE_CLUSTER_TYPE_NONHEAD	= 2,
+-	Z_EROFS_VLE_CLUSTER_TYPE_RESERVED	= 3,
++	Z_EROFS_VLE_CLUSTER_TYPE_HEAD2		= 3,
+ 	Z_EROFS_VLE_CLUSTER_TYPE_MAX
+ };
+ 
+diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
+index 9d9c26343dab..864d9d5474d5 100644
+--- a/fs/erofs/zmap.c
++++ b/fs/erofs/zmap.c
+@@ -28,7 +28,7 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
+ {
+ 	struct erofs_inode *const vi = EROFS_I(inode);
+ 	struct super_block *const sb = inode->i_sb;
+-	int err;
++	int err, headnr;
+ 	erofs_off_t pos;
+ 	struct page *page;
+ 	void *kaddr;
+@@ -68,9 +68,11 @@ static int z_erofs_fill_inode_lazy(struct inode *inode)
+ 	vi->z_algorithmtype[0] = h->h_algorithmtype & 15;
+ 	vi->z_algorithmtype[1] = h->h_algorithmtype >> 4;
+ 
+-	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX) {
+-		erofs_err(sb, "unknown compression format %u for nid %llu, please upgrade kernel",
+-			  vi->z_algorithmtype[0], vi->nid);
++	headnr = 0;
++	if (vi->z_algorithmtype[0] >= Z_EROFS_COMPRESSION_MAX ||
++	    vi->z_algorithmtype[++headnr] >= Z_EROFS_COMPRESSION_MAX) {
++		erofs_err(sb, "unknown HEAD%u format %u for nid %llu, please upgrade kernel",
++			  headnr + 1, vi->z_algorithmtype[headnr], vi->nid);
+ 		err = -EOPNOTSUPP;
+ 		goto unmap_done;
+ 	}
+@@ -189,7 +191,8 @@ static int legacy_load_cluster_from_disk(struct z_erofs_maprecorder *m,
+ 		m->delta[1] = le16_to_cpu(di->di_u.delta[1]);
+ 		break;
+ 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+-	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+ 		m->clusterofs = le16_to_cpu(di->di_clusterofs);
+ 		m->pblk = le32_to_cpu(di->di_u.blkaddr);
+ 		break;
+@@ -446,7 +449,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
+ 		}
+ 		return z_erofs_extent_lookback(m, m->delta[0]);
+ 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+-	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+ 		m->headtype = m->type;
+ 		map->m_la = (lcn << lclusterbits) | m->clusterofs;
+ 		break;
+@@ -470,13 +474,18 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+ 	int err;
+ 
+ 	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
+-		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
++		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 &&
++		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD2);
++	DBG_BUGON(m->type != m->headtype);
++
+ 	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+-	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
++	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1) &&
++	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) ||
++	    ((m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) &&
++	     !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_2))) {
+ 		map->m_plen = 1 << lclusterbits;
+ 		return 0;
+ 	}
+-
+ 	lcn = m->lcn + 1;
+ 	if (m->compressedlcs)
+ 		goto out;
+@@ -498,7 +507,8 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
+ 
+ 	switch (m->type) {
+ 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+-	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+ 		/*
+ 		 * if the 1st NONHEAD lcluster is actually PLAIN or HEAD type
+ 		 * rather than CBLKCNT, it's a 1 lcluster-sized pcluster.
+@@ -553,7 +563,8 @@ static int z_erofs_get_extent_decompressedlen(struct z_erofs_maprecorder *m)
+ 			DBG_BUGON(!m->delta[1] &&
+ 				  m->clusterofs != 1 << lclusterbits);
+ 		} else if (m->type == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
+-			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD) {
++			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD1 ||
++			   m->type == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2) {
+ 			/* go on until the next HEAD lcluster */
+ 			if (lcn != headlcn)
+ 				break;
+@@ -612,7 +623,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+ 
+ 	switch (m.type) {
+ 	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
+-	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD1:
++	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD2:
+ 		if (endoff >= m.clusterofs) {
+ 			m.headtype = m.type;
+ 			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
+@@ -654,6 +666,8 @@ int z_erofs_map_blocks_iter(struct inode *inode,
+ 
+ 	if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN)
+ 		map->m_algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
++	else if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_HEAD2)
++		map->m_algorithmformat = vi->z_algorithmtype[1];
+ 	else
+ 		map->m_algorithmformat = vi->z_algorithmtype[0];
+ 
+-- 
+2.20.1
+
