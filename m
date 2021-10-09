@@ -2,293 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE369427954
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141BC42795D
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232798AbhJILCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:02:47 -0400
-Received: from ixit.cz ([94.230.151.217]:41726 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231932AbhJILCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:02:46 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id CA90120064;
-        Sat,  9 Oct 2021 13:00:47 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633777248;
+        id S229904AbhJILG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:06:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232777AbhJILGY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 07:06:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633777466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=D5OZZStBDWR0Yfk/KUPyl72+0dY9A0/rhYfI20JIbMc=;
-        b=ClDl3UnN+gOgRSjyUKH+qvxT91iF2wA/lAnXa0Ue04HCUsKNcBjE2Yg/cZJOzb503lqWNz
-        WA3yfCZLB6Jq3N7T82bY6oYd3k3oWlzyxZUqSXqUfMQ2evP+ccTrxYDvePZoc8UPcMgEhW
-        lv6ru74sv4k5z7s2ZFJVAD8xg+mDhZE=
-From:   David Heidelberg <david@ixit.cz>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>
-Subject: [PATCH] WIP: dt-bindings: input: microchip,cap11xx: Convert txt bindings to yaml
-Date:   Sat,  9 Oct 2021 12:59:22 +0200
-Message-Id: <20211009105922.48835-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lJ/2iCuZIJi8M6YSq3TSpepZV4prmg5N+D8TG37hfos=;
+        b=AaxYMxWO/BxUn2MZXFoc35vCI1KV/4CUz8y8p85dSztjOa0jHIixCxO6RGnznkOiLHXPN7
+        MG0m5wU+2AxYtXxgK0xS3+g6vwV6+CPFP/huMjMwvP1CzbKNNwHiI33KTu9lMzum0tsYdu
+        aJUfkc2diMHEqi6grWIVPcouKMuHSR0=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-_ff4ntGlMc64kQQvHsJq0w-1; Sat, 09 Oct 2021 07:04:22 -0400
+X-MC-Unique: _ff4ntGlMc64kQQvHsJq0w-1
+Received: by mail-ed1-f72.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso11473012edt.11
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 04:04:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lJ/2iCuZIJi8M6YSq3TSpepZV4prmg5N+D8TG37hfos=;
+        b=a3iqu5Qk0dw1GJ04HBZNBRVrqf+YPE4FjmNMmG3ASkYH+w20ebk1/vr/LXOEbaZvJ7
+         9Za9rIpujSak66iefYMJ0z/5T9M606M9hQfi5sS6eKbmfKEJ8Yu+sqWp64c2qtcZX3jZ
+         wjHaa1EJ1JfrvDtvP+znbOVx6f5uqhY8mkzXoG1EuFYApV7e9249+DQNlB/9qylevBaZ
+         6QSXK6vmZVJXcL5lgeyMVE1fTPJzBuQt4uYtRX/JBHNNl90Fo2cXtlRRW3u6hjtFesXd
+         clAzPEApThO4dbTPt35n4v2yQiMcgsNnV36MbxbA6a7MS94Fmw3yWtwYK4YJ6uHUu19T
+         FACw==
+X-Gm-Message-State: AOAM531FKKOaTgCN1hBhXXLZO1AW729XqUlF3bamJpnuQB9qhbXDU6ZY
+        /XqFBxKlc1NVba4Lqsws0YPvYIYaM5z0FvyVbjVjVwgZLiRu2qXZfGrcbaI4FV8Avfr7x+IBYua
+        nC+Gb6ryoigcTPhwSlIPoiLRK
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr10966043ejs.31.1633777461691;
+        Sat, 09 Oct 2021 04:04:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwobA8ZxtLfM+i96qTUZJc2D6zqI9p4pA768qS/bvwYQXY5otl6Kxnqg/w4gwu0W8PjfTgg/g==
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr10965985ejs.31.1633777461334;
+        Sat, 09 Oct 2021 04:04:21 -0700 (PDT)
+Received: from redhat.com ([2.55.132.170])
+        by smtp.gmail.com with ESMTPSA id n22sm831106eja.120.2021.10.09.04.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 04:04:20 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 07:04:10 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
+ ioremap_host_shared
+Message-ID: <20211009070132-mutt-send-email-mst@kernel.org>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert binding for the Microchip CAP11xx series HW to the YAML syntax.
+On Fri, Oct 08, 2021 at 05:37:11PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +	ioremap_force_shared= [X86_64, CCG]
+> +			Force the kernel to use shared memory mappings which do
+> +			not use ioremap_host_shared/pcimap_host_shared to opt-in
+> +			to shared mappings with the host. This feature is mainly
+> +			used by a confidential guest when enabling new drivers
+> +			without proper shared memory related changes. Please note
+> +			that this option might also allow other non explicitly
+> +			enabled drivers to interact with the host in confidential
+> +			guest, which could cause other security risks. This option
+> +			will also cause BIOS data structures to be shared with the
+> +			host, which might open security holes.
+> +
+>  	io7=		[HW] IO7 for Marvel-based Alpha systems
+>  			See comment before marvel_specify_io7 in
+>  			arch/alpha/kernel/core_marvel.c.
 
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- .../devicetree/bindings/input/cap11xx.txt     |  78 ----------
- .../bindings/input/microchip,cap11xx.yaml     | 146 ++++++++++++++++++
- 2 files changed, 146 insertions(+), 78 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/cap11xx.txt
- create mode 100644 Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+The connection is quite unfortunate IMHO.
+Can't there be an option
+that unbreaks drivers *without* opening up security holes by
+making BIOS shared?
 
-diff --git a/Documentation/devicetree/bindings/input/cap11xx.txt b/Documentation/devicetree/bindings/input/cap11xx.txt
-deleted file mode 100644
-index 8c67a0b5058d..000000000000
---- a/Documentation/devicetree/bindings/input/cap11xx.txt
-+++ /dev/null
-@@ -1,78 +0,0 @@
--Device tree bindings for Microchip CAP11xx based capacitive touch sensors
--
--The node for this device must be a child of a I2C controller node, as the
--device communication via I2C only.
--
--Required properties:
--
--	compatible:		Must contain one of:
--					"microchip,cap1106"
--					"microchip,cap1126"
--					"microchip,cap1188"
--
--	reg:			The I2C slave address of the device.
--
--	interrupts:		Property describing the interrupt line the
--				device's ALERT#/CM_IRQ# pin is connected to.
--				The device only has one interrupt source.
--
--Optional properties:
--
--	autorepeat:		Enables the Linux input system's autorepeat
--				feature on the input device.
--
--	microchip,sensor-gain:	Defines the gain of the sensor circuitry. This
--				effectively controls the sensitivity, as a
--				smaller delta capacitance is required to
--				generate the same delta count values.
--				Valid values are 1, 2, 4, and 8.
--				By default, a gain of 1 is set.
--
--	microchip,irq-active-high:	By default the interrupt pin is active low
--				open drain. This property allows using the active
--				high push-pull output.
--
--	linux,keycodes:		Specifies an array of numeric keycode values to
--				be used for the channels. If this property is
--				omitted, KEY_A, KEY_B, etc are used as
--				defaults. The array must have exactly six
--				entries.
--
--Example:
--
--i2c_controller {
--	cap1106@28 {
--		compatible = "microchip,cap1106";
--		interrupt-parent = <&gpio1>;
--		interrupts = <0 0>;
--		reg = <0x28>;
--		autorepeat;
--		microchip,sensor-gain = <2>;
--
--		linux,keycodes = <103>,		/* KEY_UP */
--				 <106>,		/* KEY_RIGHT */
--				 <108>,		/* KEY_DOWN */
--				 <105>,		/* KEY_LEFT */
--				 <109>,		/* KEY_PAGEDOWN */
--				 <104>;		/* KEY_PAGEUP */
--
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		usr@0 {
--			label = "cap11xx:green:usr0";
--			reg = <0>;
--		};
--
--		usr@1 {
--			label = "cap11xx:green:usr1";
--			reg = <1>;
--		};
--
--		alive@2 {
--			label = "cap11xx:green:alive";
--			reg = <2>;
--			linux,default_trigger = "heartbeat";
--		};
--	};
--}
-diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-new file mode 100644
-index 000000000000..89079c019794
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
-@@ -0,0 +1,146 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/input/microchip,cap11xx.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Device tree bindings for Microchip CAP11xx based capacitive touch sensors
-+
-+description: |
-+  The Microchip CAP1xxx Family of RightTouchTM multiple-channel capacitive
-+  touch controllers and LED drivers. The device communication via I2C only.
-+
-+maintainers:
-+  - Rob Herring <robh+dt@kernel.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - microchip,cap1106
-+      - microchip,cap1126
-+      - microchip,cap1188
-+
-+  reg:
-+    maxItems: 1
-+
-+  '#address-cells':
-+    const: 1
-+  '#size-cells':
-+    const: 0
-+
-+  interrupts:
-+    maxItems: 1
-+    description: |
-+      Property describing the interrupt line the
-+      device's ALERT#/CM_IRQ# pin is connected to.
-+      The device only has one interrupt source.
-+
-+  autorepeat:
-+    description: |
-+      Enables the Linux input system's autorepeat feature on the input device.
-+
-+  linux,keycodes:
-+    minItems: 6
-+    maxItems: 6
-+    description: |
-+      Specifies an array of numeric keycode values to
-+      be used for the channels. If this property is
-+      omitted, KEY_A, KEY_B, etc are used as defaults.
-+      The array must have exactly six entries.
-+
-+  microchip,sensor-gain:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 1
-+    enum: [1, 2, 4, 8]
-+    description: |
-+      Defines the gain of the sensor circuitry. This
-+      effectively controls the sensitivity, as a
-+      smaller delta capacitance is required to
-+      generate the same delta count values.
-+
-+  microchip,irq-active-high:
-+    type: boolean
-+    description: |
-+      By default the interrupt pin is active low
-+      open drain. This property allows using the active
-+      high push-pull output.
-+
-+patternProperties:
-+  "^led@[0-7]$":
-+    type: object
-+    description: CAP11xx LEDs
-+    $ref: ../leds/common.yaml#
-+
-+    properties:
-+      reg:
-+        enum: [0, 1, 2, 3, 4, 5, 6, 7]
-+
-+      label: true
-+
-+      linux,default-trigger: true
-+
-+      default-state: true
-+
-+    required:
-+      - reg
-+
-+    additionalProperties: false
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - microchip,cap1106
-+    then:
-+      patternProperties:
-+        "^led@[0-7]$": false
-+
-+required:
-+  - compatible
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      cap1188@28 {
-+        compatible = "microchip,cap1188";
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <0 0>;
-+        reg = <0x28>;
-+        autorepeat;
-+        microchip,sensor-gain = <2>;
-+
-+        linux,keycodes = <103>,	/* KEY_UP */
-+                         <106>,	/* KEY_RIGHT */
-+                         <108>,	/* KEY_DOWN */
-+                         <105>,	/* KEY_LEFT */
-+                         <109>,	/* KEY_PAGEDOWN */
-+                         <104>;	/* KEY_PAGEUP */
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        led@0 {
-+                label = "cap11xx:green:usr0";
-+                reg = <0>;
-+        };
-+
-+        led@1 {
-+                label = "cap11xx:green:usr1";
-+                reg = <1>;
-+        };
-+
-+        led@2 {
-+                label = "cap11xx:green:alive";
-+                reg = <2>;
-+                linux,default-trigger = "heartbeat";
-+        };
-+      };
-+    };
 -- 
-2.33.0
+MST
 
