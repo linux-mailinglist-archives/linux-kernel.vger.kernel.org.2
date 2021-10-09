@@ -2,85 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B37B427D40
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4F8427D44
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:19:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230003AbhJIUSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 16:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51362 "EHLO
+        id S230307AbhJIUVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 16:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhJIUSk (ORCPT
+        with ESMTP id S229806AbhJIUUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 16:18:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBDE1C061570;
-        Sat,  9 Oct 2021 13:16:42 -0700 (PDT)
+        Sat, 9 Oct 2021 16:20:53 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544ADC061570;
+        Sat,  9 Oct 2021 13:18:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QCahwkB1CqDtILURVeqMuorUmriTCbVy3djEQFfSyiI=; b=FZ/0xfnHz/A7L+ZVNvwuiGfM0y
-        uL6tehn83mI4lK5C5+Z0le/6YHz3DicNN8TsgUkOXKSocLrkU6un1Fakb2/A3JKh5GEm1XudzRFwK
-        rLsCUHfo9ae4C3eiivJOmpwy4xLQ4JTdUqVDDvS3fHvNH/4lVNU5piqyozccRvNdgdhg0hOBWvV/y
-        tFgH1X3fRv3si0Y7RHTlmSBIGece5oa/lw7nl3EDNh3AgGE7rur2H+vFVuciGEr5zo5Ofr/iTVb5b
-        RsAVUPdUfXMdTIsEBQuQvh6lM3Mb06SgUf1VOdFmZcc0mo1XrcQa/l/CJZBY1JNfgSfNxBksV7Mvf
-        QYA7FWww==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZIkj-004NjC-8Q; Sat, 09 Oct 2021 20:15:44 +0000
-Date:   Sat, 9 Oct 2021 21:15:29 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
-        akpm@linux-foundation.org, hawk@kernel.org,
-        ilias.apalodimas@linaro.org, peterz@infradead.org,
-        yuzhao@google.com, will@kernel.org, jgg@ziepe.ca,
-        mcroce@microsoft.com, willemb@google.com, cong.wang@bytedance.com,
-        pabeni@redhat.com, haokexin@gmail.com, nogikh@google.com,
-        elver@google.com, memxor@gmail.com, vvs@virtuozzo.com,
-        linux-mm@kvack.org, edumazet@google.com, alexander.duyck@gmail.com,
-        dsahern@gmail.com
-Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
- __put_page()
-Message-ID: <YWH4YbkC+XtpXTux@casper.infradead.org>
-References: <20211009093724.10539-1-linyunsheng@huawei.com>
- <20211009093724.10539-4-linyunsheng@huawei.com>
- <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=OdxynBMvMWIJFcPB8GGPc5a3zX/bgG/GY3urYIWqlq4=; b=PohPH2FbWggj4HpbO17djBxK7l
+        9M0zKr6izo5jGkvEZEqFhmJ/IdL+XOM1Zte5RoXcT1AAexeKXuVdOw2YbbvSC7Y1JxS64U5Q8pp2u
+        rZMsRFUjJy4eRrFpaHANTn0fZvaOrReiDgZZIy0wEymnZWy4pUWd5E/KOyyjmmGuqP5qvE08DKt4l
+        /bR0j1LYmdrZ6mCEWIHhqitcyP9O+NP1a9zbCj128yaD8UiimthSeRKvU5QLApIGbYnz3zD6j0/2h
+        G5MErc8XoGD5rIG0QY6tTGBXjYWNr69ZiwhfP1mJCvO5KfvhFbHodH0FuWQ1UMOPIBdjzjBdkD4kE
+        vIWTnufg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZInz-0062rz-Ru; Sat, 09 Oct 2021 20:18:51 +0000
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+To:     Jacopo Mondi <jacopo@jmondi.org>,
+        =?UTF-8?Q?Krzysztof_Ha=c5=82asa?= <khalasa@piap.pl>,
+        "joe@perches.com" <joe@perches.com>
+Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <m3fstfoexa.fsf@t19.piap.pl>
+ <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> <m3zgrlkxn6.fsf@t19.piap.pl>
+ <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
+Date:   Sat, 9 Oct 2021 13:18:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
+In-Reply-To: <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 12:49:29PM -0700, John Hubbard wrote:
-> On 10/9/21 02:37, Yunsheng Lin wrote:
-> > Introduce __get_page() and __put_page() to operate on the
-> > base page or head of a compound page for the cases when a
-> > page is known to be a base page or head of a compound page.
+On 10/9/21 2:07 AM, Jacopo Mondi wrote:
+> Hi Krzysztof,
 > 
-> Hi,
+>     I've been testing this driver in the last few days, thanks for your
+> effort in upstreaming it!
 > 
-> I wonder if you are aware of a much larger, 137-patch seriesto do that:
-> folio/pageset [1]?
+> I'll separately comment on what I had to change to have it working for
+> my use case, but let me continue the discussion from where it was left
+> pending here to add my 2 cents.
 > 
-> The naming you are proposing here does not really improve clarity. There
-> is nothing about __get_page() that makes it clear that it's meant only
-> for head/base pages, while get_page() tail pages as well. And the
-> well-known and widely used get_page() and put_page() get their meaning
-> shifted.
+> On Thu, Oct 07, 2021 at 11:11:09AM +0200, Krzysztof Hałasa wrote:
+>> Hi Sakari,
+>>
+>> Thanks for your input.
+>>
+>>> Where's the corresponding DT binding patch? Ideally it would be part of the
+>>> same set.
+>>
+>> Well I've sent it a moment before this one. Will make them a set next
+>> time.
+>>
+>>>> +#define AR0521_WIDTH_BLANKING_MIN     572u
+>>>> +#define AR0521_HEIGHT_BLANKING_MIN     28u // must be even
+>>>
+>>> Please use /* */ for comments. The SPDX tag is an exception.
+>>
+>> As far as I know, this is no longer the case, the C99 comments are now
+>> permitted and maybe even encouraged. Or was I dreaming?
+>>
+>> checkpatch doesn't protest either.
 > 
-> This area is hard to get right, and that's why there have been 15
-> versions, and a lot of contention associated with [1]. If you have an
-> alternate approach, I think it would be better in its own separate
-> series, with a cover letter that, at a minimum, explains how it compares
-> to folios/pagesets.
+> To my understanding the C99 standard added support for the //
+> commenting style and tollerate them, but they're still from C++ and I
+> see very few places where they're used in the kernel, and per as far I
+> know they're still not allowed by the coding style
+> https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
 
-I wasn't initially sure whether network pagepools should be part of
-struct folio or should be their own separate type.  At this point, I
-think they should be a folio.  But that's all kind of irrelevant until
-Linus decides whether he's going to take the folio patchset or not.
-Feel free to let him know your opinion when the inevitable argument
-blows up again around the next pull request.
+http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
+
+Maybe we should update coding-style then.
+
+> 
+> Looking at how you used comments in the driver I think you could get
+> rid of most // comments easily, the register tables might be an
+> exception but I would really try to remove them from there as well.
+> 
+> 
+>>
+>>> Please wrap your lines at 80 or earlier, unless a sound reason exists to do
+>>> otherwise.
+>>
+>> This limitation appears to be lifted as well, after all those years.
+>> Is there a specific reason to still use it here? Yes, lines longer than
+>> 80 chars make the code much more readable (for my eyes, at least).
+>> Yes, I know there is some "soft" limit, and I trim lines when it makes
+>> them better in my opinion.
+>>
+> 
+> In my personal opinion lifting that restriction caused more pain than
+> anything, as different subsystem are now imposing different
+> requirements. Here everything has been so far pretty strict about
+> going over 80-cols, but I think there are situation where it makes
+> sense in example
+> 
+
+[snip]
+
+> 
+> My suggestion is: aim to 80 cols whenever possible, if it forces you
+> to do things like the above shown function declaration you can go a
+> little over that
+
+Yes, 80 max is still preferred. Up to 100 may be tolerable in some
+cases.
+
+> As reported here
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+> if you go over 100 you should ask yourself what are you doing :)
+
+
+
+
+-- 
+~Randy
