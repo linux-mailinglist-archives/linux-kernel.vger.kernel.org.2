@@ -2,205 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD516427DB6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 23:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F732427DC0
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 23:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhJIVjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 17:39:15 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58694 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230052AbhJIVjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 17:39:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Chk7yE4J2WOqoX/5dLGbdpv9rujKzHvkaAG1M3o1khQ=; b=l4x709xfkEYY9qNWS4juI1FElQ
-        EQQaQbQ28CIIFstyfZKEVQGpGvf4cnX50tcURnZCZpjlGDvmrVJo2ozVhvR686EcUloI1RskpJ0Yo
-        fz6nAHa1q1DemVwAQhJwuxh3JdvLNEL6IVAjb5Y414EsxTQJOub6upCysWs9uNU75f1E=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mZK1m-00ABFQ-A2; Sat, 09 Oct 2021 23:37:10 +0200
-Date:   Sat, 9 Oct 2021 23:37:10 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Hagan <mnhagan88@gmail.com>
-Subject: Re: [net-next PATCH v2 08/15] dt-bindings: net: dsa: qca8k: Add MAC
- swap and clock phase properties
-Message-ID: <YWILhniu2KFIGut9@lunn.ch>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
- <20211008002225.2426-9-ansuelsmth@gmail.com>
- <YWHMRMTSa8xP4SKK@lunn.ch>
- <YWHamNcXmxuaVgB+@Ansuel-xps.localdomain>
- <YWHx7Q9jBrws8ioN@lunn.ch>
- <YWH2P7ogyH3T0CVp@Ansuel-xps.localdomain>
+        id S230356AbhJIVmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 17:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229806AbhJIVml (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 17:42:41 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9B6C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 14:40:44 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id t63so8322777qkf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 14:40:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=p5kNrRk6EQH4XN73phFXODXoyEaT0CA7DHL3ggw5Pq8=;
+        b=N6uJLZfV6cIkqW6VvptGAwLSfZiF3Ekx6ZmIE0s2/3jAwZoxAdvOHOqhF4NC/V4jx1
+         izQC/XHyNOha+TtGBSHvNmVXyc4CTZcRAwhz9wA/TuGPz3ZOr/E6KoL4iOE3eeKoo4yA
+         rL+Iy/kBIg2LfLRn6b0blWVsWvUg4qEBeM3kg+aRIySZ4Ns5AwK29L4XPBqGzRREazED
+         tjsQgFAQS15gJA0RFtvwteVpgD7/aRz+/D+8Pd4X6JlRkQ/x9wJmzrgZzQ9+BDdURt2+
+         MVvlPGEzgTE53jW4hljEXwkzOKyKL3xNoJmAFLLe1sr1Z1yZaM356jWaJud9gnBy52gk
+         +Wmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=p5kNrRk6EQH4XN73phFXODXoyEaT0CA7DHL3ggw5Pq8=;
+        b=zv32f8QJKZn766cHM8F0VsQL0EV9wU/BnNhPc0NxzfY7uR8Ll1mzCWYPrUVsYXnkin
+         Jiw5e+ImOrHnBhCoCuLeHwSJzziD2L+KSLc7ZEV75JQPknRt4WFQCwNApDaKIlM8Anfi
+         7mMmxfAMge7qoDE1wh88ZUCv00S7m8ACdpRDonO4G2X5fSM9uJYa4e9MyD1iVL2ISWLh
+         g4ctqgtzHVuvZT2ZjUzZ84apBjE1rxH7a99vMeWXsKSBmEQYus+mzl1YrZQXs9rym9D3
+         qbW3qM/bt6i/q+k/cp1NRojoGKHsrom52hU8dtlea0PUj2qf9ul+CUWzbGwBcOWW5BU9
+         7pCg==
+X-Gm-Message-State: AOAM531IdxgBuES/T8dnNNfqsIqkSSk+2XagScp9vYN2x+ulgenbsFXL
+        gRtWtFfeTqLgdx6/gIl3EBKQelcXoAsjK5HiGVA=
+X-Google-Smtp-Source: ABdhPJx+w8U04bCgy4Khb+XvF1eyZS5x3sLIk/ylFQNQ6TTDZXdt1zP/czxRqj2ZheTFbGTKha/Tw0Q7V7nRuVYjiYc=
+X-Received: by 2002:a37:e409:: with SMTP id y9mr8900586qkf.441.1633815643502;
+ Sat, 09 Oct 2021 14:40:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWH2P7ogyH3T0CVp@Ansuel-xps.localdomain>
+Received: by 2002:ac8:14f:0:0:0:0:0 with HTTP; Sat, 9 Oct 2021 14:40:42 -0700 (PDT)
+Reply-To: mayaomur6@gmail.com
+From:   "Mrs. Maya omur" <marianhenry51@gmail.com>
+Date:   Sat, 9 Oct 2021 21:40:42 +0000
+Message-ID: <CAF+cUj-3uTEeb1rLjgy1VcRUWZozF0cRu1VPuNnDjvnDMXOZuw@mail.gmail.com>
+Subject: GOD IS WITH US
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Here is 2 configuration one from an Netgear r7800 qca8337:
-> 
-> 	switch@10 {
-> 		compatible = "qca,qca8337";
-> 		#address-cells = <1>;
-> 		#size-cells = <0>;
-> 		reg = <0x10>;
-> 
-> 		qca8k,rgmii0_1_8v;
-> 		qca8k,rgmii56_1_8v;
-> 
-> 		ports {
-> 			#address-cells = <1>;
-> 			#size-cells = <0>;
-> 
-> 			port@0 {
-> 				reg = <0>;
-> 				label = "cpu";
-> 				ethernet = <&gmac1>;
-> 				phy-mode = "rgmii-id";
-> 
-> 				fixed-link {
-> 					speed = <1000>;
-> 					full-duplex;
-> 				};
-> 			};
-> 
-> 			port@1 {
-> 				reg = <1>;
-> 				label = "lan1";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port1>;
-> 			};
-> 
-> 			port@2 {
-> 				reg = <2>;
-> 				label = "lan2";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port2>;
-> 			};
-> 
-> 			port@3 {
-> 				reg = <3>;
-> 				label = "lan3";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port3>;
-> 			};
-> 
-> 			port@4 {
-> 				reg = <4>;
-> 				label = "lan4";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port4>;
-> 			};
-> 
-> 			port@5 {
-> 				reg = <5>;
-> 				label = "wan";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port5>;
-> 			};
-> 
-> 			port@6 {
-> 				reg = <6>;
-> 				label = "cpu";
-> 				ethernet = <&gmac2>;
-> 				phy-mode = "sgmii";
-> 
-> 				fixed-link {
-> 					speed = <1000>;
-> 					full-duplex;
-> 				};
-
-So here, it is a second CPU port.  But some other board could connect
-an SGMII PHY, and call the port lan5. Or it could be connected to an
-SFP cage, and used that way. Or are you forced to use it as a CPU
-port, or not use it at all?
-
-> And here is one with mac swap Tp-Link Archer c7 v4 qca8327 
-> 
-> 	switch0@10 {
-> 		compatible = "qca,qca8337";
-> 		#address-cells = <1>;
-> 		#size-cells = <0>;
-> 
-> 		reg = <0>;
-> 		qca,sgmii-rxclk-falling-edge;
-> 		qca,mac6-exchange;
-> 
-> 		ports {
-> 			#address-cells = <1>;
-> 			#size-cells = <0>;
-> 
-> 			port@0 {
-> 				reg = <0>;
-> 				label = "cpu";
-> 				ethernet = <&eth0>;
-> 				phy-mode = "sgmii";
-> 
-> 				fixed-link {
-> 					speed = <1000>;
-> 					full-duplex;
-> 				};
-
-So when looking for SGMI properties, you need to look here. Where as
-in the previous example, you would look in port 6. And the reverse is
-true for RGMII delays.
-
-> 			};
-> 
-> 			port@1 {
-> 				reg = <1>;
-> 				label = "wan";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port1>;
-> 			};
-> 
-> 			port@2 {
-> 				reg = <2>;
-> 				label = "lan1";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port2>;
-> 			};
-> 
-> 			port@3 {
-> 				reg = <3>;
-> 				label = "lan2";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port3>;
-> 			};
-> 
-> 			port@4 {
-> 				reg = <4>;
-> 				label = "lan3";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port4>;
-> 			};
-> 
-> 			port@5 {
-> 				reg = <5>;
-> 				label = "lan4";
-> 				phy-mode = "internal";
-> 				phy-handle = <&phy_port5>;
-> 			};
-> 		};
-
-So here, port '6' is not used. But it could be connected to an RGMII
-PHY and called lan5. Would the naming work out? What does devlink
-think of it, etc. What about phy-handle? Is there an external MDIO
-bus? What address would be used if there is no phy-handle?
-
-      Andrew
+Greetings my beloved, My name is Mrs. Maya omur,I am a widow  and also a cancer
+patient who has decided to donate what I have to you for God's works.
+I want to donate $4.5 million to you so that you will use part of this
+fund to help the poor, for more details on how to receive this fund
+PLEASE REPLY ME THROUGH THIS EMAIL: mayaomur6@gmail.com
