@@ -2,106 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED854277A9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8A84277AE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 08:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244279AbhJIFzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:55:25 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:37822 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232529AbhJIFzW (ORCPT
+        id S244277AbhJIGC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 02:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232529AbhJIGC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:55:22 -0400
-X-UUID: bb78f1369c79463db52dfa763b5575e2-20211009
-X-UUID: bb78f1369c79463db52dfa763b5575e2-20211009
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-        (envelope-from <guangming.cao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 211365005; Sat, 09 Oct 2021 13:53:19 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Sat, 9 Oct 2021 13:53:18 +0800
-Received: from mszswglt01.gcn.mediatek.inc (10.16.20.20) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sat, 9 Oct 2021 13:53:17 +0800
-From:   <guangming.cao@mediatek.com>
-To:     <rdunlap@infradead.org>
-CC:     <christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
-        <guangming.cao@mediatek.com>, <linaro-mm-sig@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <matthias.bgg@gmail.com>,
-        <sumit.semwal@linaro.org>, <wsd_upstream@mediatek.com>,
-        Guangming Cao <Guangming.Cao@mediatek.com>
-Subject: [PATCH v2] dma-buf: remove restriction of IOCTL:DMA_BUF_SET_NAME
-Date:   Sat, 9 Oct 2021 13:55:04 +0800
-Message-ID: <20211009055504.68272-1-guangming.cao@mediatek.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <c23181a5-b75b-c04b-7cc4-020f2b2b44c1@infradead.org>
-References: <c23181a5-b75b-c04b-7cc4-020f2b2b44c1@infradead.org>
+        Sat, 9 Oct 2021 02:02:57 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF47BC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 23:01:00 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id y7so394439pfg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 23:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=C9X3+JbpAnm1664JqZK4rRwcWBLzpjufr2U1bouWSmk=;
+        b=FTTAtN3DeEC4upmCz/vszJPmcjicDqXFKELIJgrzO7JVhy5N45E69h2lQm199jlEDU
+         KrBZY3jLaEi2EzWTHOg/BKGvlbq4L5u0UNRrlYDFG0ja4dkObshzQG/nNQLWg755hIMx
+         QxWg1OruTArVOLMLHMCbYc15jiabuEZXxyzmpLF90/EoGlypomvimx5Kxkow57bxslWJ
+         o2InJdlHmGU9zPcyfd4mbpZmK8a6pHzF/OxXBzBWYyC01EDpPLXmF1gjXvxQFypOyheb
+         0oIClNY9E+Ng4UzpfGxCw0i4bjPlzlKaDFv/FCYCHvpyxf1t7Dc3yE2+RK54Dqoj4nmd
+         DmCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=C9X3+JbpAnm1664JqZK4rRwcWBLzpjufr2U1bouWSmk=;
+        b=e9mg424KPKeASsh8oZ1VQwz9yjTZPSNMtkNyv5Q8bVwiANYeF5P+owo5sVPxYaTvFV
+         VXHw9Sp730SUDox1spta//YydWG456OlkRS7rhrwb2/AETbywfCp2kGK4kI3q1GxmAkE
+         /+H28NzojDBrvHoxYGPaS6P91R+FqtaD8cNPKDNBQbVafX12lQ3c94J47QUGWcdEvtbm
+         LCNWZQQZHXVt1ydCa3ycvXYZXQRWGaAoXvUEOzMAOkX1pLk4CKVVRgkUe5A3pa6VKIbs
+         EvpOQNMTV6PWwDs6SvuUHUTbeTSABjlJUfPthWFUvr7bcF8BJMudwSuZdknexh2ZXB84
+         Pv7w==
+X-Gm-Message-State: AOAM533TFqsVmNLinZBlRmUUSlYtIyp3lSRPzCzbEbLlklN677mQqYMR
+        cyDON9PIgaVQIM3mBeLIuZE=
+X-Google-Smtp-Source: ABdhPJwSCln2RNPMu0VQ2AflnAWkyAXMRmS5nSs0u78nnEg6Nw3wb3rLKn5qs9VPpADtvJAlVq8yyQ==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr8261555pgh.190.1633759260137;
+        Fri, 08 Oct 2021 23:01:00 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id s14sm1011264pfg.50.2021.10.08.23.00.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 23:00:59 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 11:30:53 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, deborahbrouwer3563@gmail.com,
+        hdegoede@redhat.com, marcocesati@gmail.com,
+        saurav.girepunje@gmail.com, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8723bs: core: simplify the if condition
+Message-ID: <YWEwFf0YMi4W1xKN@user>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guangming Cao <Guangming.Cao@mediatek.com>
+if psta is NULL, function is returning with fail. On next if condition
+again checking if psta is not a NULL. Remove multiple if condition check.
 
-If dma-buf don't want userspace users to touch the dmabuf buffer,
-it seems we should add this restriction into dma_buf_ops.mmap,
-not in this IOCTL:DMA_BUF_SET_NAME.
+Function is already using goto exit statement to exit.Replace multiple
+return with goto exit statement.
 
-With this restriction, we can only know the kernel users of the dmabuf
-by attachments.
-However, for many userspace users, such as userpsace users of dma_heap,
-they also need to mark the usage of dma-buf, and they don't care about
-who attached to this dmabuf, and seems it's no meaning to be waiting for
-IOCTL:DMA_BUF_SET_NAME rather than mmap.
-
-Signed-off-by: Guangming Cao <Guangming.Cao@mediatek.com>
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
- drivers/dma-buf/dma-buf.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_xmit.c | 61 ++++++++++-------------
+ 1 file changed, 26 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
-index 511fe0d217a0..db2f4efdec32 100644
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -325,10 +325,8 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
- 
- /**
-  * dma_buf_set_name - Set a name to a specific dma_buf to track the usage.
-- * The name of the dma-buf buffer can only be set when the dma-buf is not
-- * attached to any devices. It could theoritically support changing the
-- * name of the dma-buf if the same piece of memory is used for multiple
-- * purpose between different devices.
-+ * It could theoretically support changing the name of the dma-buf if the same
-+ * piece of memory is used for multiple purpose between different devices.
-  *
-  * @dmabuf: [in]     dmabuf buffer that will be renamed.
-  * @buf:    [in]     A piece of userspace memory that contains the name of
-@@ -346,19 +344,11 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
- 	if (IS_ERR(name))
- 		return PTR_ERR(name);
- 
--	dma_resv_lock(dmabuf->resv, NULL);
--	if (!list_empty(&dmabuf->attachments)) {
--		ret = -EBUSY;
--		kfree(name);
--		goto out_unlock;
--	}
- 	spin_lock(&dmabuf->name_lock);
- 	kfree(dmabuf->name);
- 	dmabuf->name = name;
- 	spin_unlock(&dmabuf->name_lock);
- 
--out_unlock:
--	dma_resv_unlock(dmabuf->resv);
- 	return ret;
- }
- 
--- 
-2.17.1
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+index 34505b35a7f3..4e4a1bed882b 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -932,49 +932,40 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
+ 		/* TODO: fill HT Control Field */
+
+ 		/* Update Seq Num will be handled by f/w */
+-		{
+-			struct sta_info *psta;
+-
+-			psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
+-			if (pattrib->psta != psta)
+-				return _FAIL;
+-
+-			if (!psta)
+-				return _FAIL;
++		struct sta_info *psta;
+
+-			if (!(psta->state & _FW_LINKED))
+-				return _FAIL;
++		psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
++		if (!psta || pattrib->psta != psta || !(psta->state & _FW_LINKED))
++			res = _FAIL;
++			goto exit;
+
+-			if (psta) {
+-				psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
+-				psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
+-				pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
++		psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
++		psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
++		pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
+
+-				SetSeqNum(hdr, pattrib->seqnum);
++		SetSeqNum(hdr, pattrib->seqnum);
+
+-				/* check if enable ampdu */
+-				if (pattrib->ht_en && psta->htpriv.ampdu_enable)
+-					if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
+-						pattrib->ampdu_en = true;
++		/* check if enable ampdu */
++		if (pattrib->ht_en && psta->htpriv.ampdu_enable)
++			if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
++				pattrib->ampdu_en = true;
+
+-				/* re-check if enable ampdu by BA_starting_seqctrl */
+-				if (pattrib->ampdu_en == true) {
+-					u16 tx_seq;
++		/* re-check if enable ampdu by BA_starting_seqctrl */
++		if (pattrib->ampdu_en == true) {
++			u16 tx_seq;
+
+-					tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
++			tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
+
+-					/* check BA_starting_seqctrl */
+-					if (SN_LESS(pattrib->seqnum, tx_seq)) {
+-						pattrib->ampdu_en = false;/* AGG BK */
+-					} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
+-						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
++			/* check BA_starting_seqctrl */
++			if (SN_LESS(pattrib->seqnum, tx_seq)) {
++				pattrib->ampdu_en = false;/* AGG BK */
++			} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
++				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
+
+-						pattrib->ampdu_en = true;/* AGG EN */
+-					} else {
+-						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
+-						pattrib->ampdu_en = true;/* AGG EN */
+-					}
+-				}
++				pattrib->ampdu_en = true;/* AGG EN */
++			} else {
++				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
++				pattrib->ampdu_en = true;/* AGG EN */
+ 			}
+ 		}
+ 	}
+--
+2.32.0
 
