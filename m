@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91899427779
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C77A42777A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhJIFB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:01:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S233830AbhJIFIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIFB0 (ORCPT
+        with ESMTP id S229596AbhJIFIP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:01:26 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E04C061570;
-        Fri,  8 Oct 2021 21:59:30 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id b20so48061786lfv.3;
-        Fri, 08 Oct 2021 21:59:30 -0700 (PDT)
+        Sat, 9 Oct 2021 01:08:15 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7CEC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 22:06:19 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id n11so7043487plf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 22:06:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=hfrhfFfHeMuH40pk8UUXISUecyF3YafJVf4birPzCpo=;
-        b=j3xjbyOKIUrtsctGmfwkprOmHqvuUtYrHaHRJzCzrHczAbNfCTe5EXc0RisYYSnox5
-         hcpOz0SkVg7zB5spWbka8GOpE5ujnajzHhYT7vTryg/LzkkRWSdrTdRWg6nvNkL4ZA0u
-         Rk1nY7oYdvp2O8JV2JJu0j1mrliOEehHvs+Fea6NwNU8psS0FaxYLOxGRNkcg2XH/zi4
-         J7bTwbPVoiIrI10UWUk5oCFNCkSpZCgW8fmKfW/5zE5gmh2/oFPDyHkYQTacx+LFWJbT
-         mjMNYuvmzJrIFTli7ClQeLtsmsi1pX3sgJoCOCUfHPl6j97q+Njk0cH6g6cWt1aym5RA
-         3Qsg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=RCPTshEDJD1Y+rfEbp8XH1g9vPebJXz3+gWAjl+hT5g=;
+        b=EIJ5Mz+icS1YZj8r0R1Nc8L1pvrdj0GhkTBuGyuhtY2XcPQDw48WeA3M2t8AcrjNPO
+         7sGDkLLKNqvqXNdUZXW27u44R/xEJS06uTOYFTx5v4PFtcmdm2XmW34rhHpOwfuSYElO
+         VgAAH2C8NT0pshjoqZ4wfKGFuoL8m1Wqu9Uyp4r49xQZwKmuq169yLQZqqIyw2VNOKN7
+         mxWampOIacsBfGY92ms76f97AZvX4T/chjTi/pov3q07MwUhv+zKAFrv5+0bVntpDvkF
+         vfRBabI66ToZ4R2JUABelFWkdin2LB0Y7UBKcomjF/qZjEHJQ76FND/JUFASsYE/KQlw
+         HIjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=hfrhfFfHeMuH40pk8UUXISUecyF3YafJVf4birPzCpo=;
-        b=Lxw7ePNqeeo/rkmaMEDiESRL73QGXXu6j72+suEl+FdlFk2dFhHQTN5UoBe/bC+sOj
-         A36Tn3TJ1THHr+kOEKRpreOkWRXtPP0ZUNrf9kCU+OjmbOtYRMxm8Q6AbINDk76zLoZx
-         WqCFV/PrxWbLOuIkQFRy+w3XTOBylmuyqW2gE5+VZceERL1/8h1xF4OkSVVqAEs4yZYA
-         MG87mRgY63ojhy0Libdl11a2orxGlKyQXB+dPkg+UN2EMp4p8PT7pZBJmuNId+7KZ4fd
-         9gn0r/8Hcnideo7Bd8lGMOb8gfcXmyvAzy2mjT12EH1a6knXn01GSsuvYw0ZBZjOy7JM
-         7DqQ==
-X-Gm-Message-State: AOAM5338zfG/FM22uuRjLOxpJRvuQcog4uvL5b4DBxyu6F+5/fmxd3aJ
-        jBlY3YLn1W4lSLgtobooqQpGQmMxvZMgIpuzCX2wHl8twGQ=
-X-Google-Smtp-Source: ABdhPJwZK3T6rc6/7dgQ8eGPgfyV/EBNOLbysl4tXxSIQBruci/Ifr7Vraf3VkaUwBtD4mnQpLX0O3k+zS2HBVv4ey8=
-X-Received: by 2002:a05:6512:2307:: with SMTP id o7mr14009092lfu.595.1633755568261;
- Fri, 08 Oct 2021 21:59:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=RCPTshEDJD1Y+rfEbp8XH1g9vPebJXz3+gWAjl+hT5g=;
+        b=pqeXpB9ay9KXIj+qFZVVFGmdsXZTBHaJ9B+ki0JtdUN02nriOD00Q0VWsRAOnJq/fT
+         UmMy5zqg9idPc23lJ2nntM7RNuj8qfSY6qxC9DJo2hNG7lGodVotMSPFf/q8u2sNd9ga
+         /wXPX2cxA7um84cuaibd/LxHh8me2U9ldRzAlaFMQgqPXMadiMJ/CPthArh+Xdxs6YyI
+         rRWB/M/2f1AOPn1CtYSNppIC4bhpI93Fq7HfCEZLweaysjISUm7nQcd2MqdUmS2C5Bs8
+         muXj0QJ2InQ8PPq1NAStOjDIWvc27Hb5uheOrZNrZSk2nf4agQnCeu7dNIq8PrABG84P
+         zm3A==
+X-Gm-Message-State: AOAM5328/f7s5ocnbsrJE3yA2m/i6UCOA5m5vQC/+ilkB7lhThk4TFUT
+        xuWpYiiDQoNd9Y/h9kMysq4=
+X-Google-Smtp-Source: ABdhPJzgoC5KXNuVzYu5qXB78+uaAonwDHIH4jd5tYu5LZcw6KKPu8qR9I8vCVr3IY3n9CRAWpUSAA==
+X-Received: by 2002:a17:902:a40c:b029:12c:17cf:ab6f with SMTP id p12-20020a170902a40cb029012c17cfab6fmr13119033plq.71.1633755978416;
+        Fri, 08 Oct 2021 22:06:18 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id w15sm829770pfc.220.2021.10.08.22.06.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 22:06:17 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 10:36:12 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, fmdefrancesco@gmail.com,
+        zhansayabagdaulet@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8723bs: core: merge the if conditions
+Message-ID: <YWEjRHU5FCoVphmu@user>
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Fri, 8 Oct 2021 23:59:17 -0500
-Message-ID: <CAH2r5msTLfojvmuejv+hO6CvF8cwuAw9CpiJWxs9a_D7pZfSLw@mail.gmail.com>
-Subject: [GIT PULL] ksmbd fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
+merge the two consecutive if conditions in rtw_set_rpwm().
+Both are having same condition to check.
 
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-are available in the Git repository at:
+diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+index a392d5b4caf2..5292f90251e0 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
++++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+@@ -272,11 +272,11 @@ void rtw_set_rpwm(struct adapter *padapter, u8 pslv)
+ 	pwrpriv->rpwm = pslv;
 
-  git://git.samba.org/ksmbd.git tags/5.15-rc4-ksmbd-fixes
+ 	cpwm_orig = 0;
+-	if (rpwm & PS_ACK)
++	if (rpwm & PS_ACK) {
+ 		rtw_hal_get_hwreg(padapter, HW_VAR_CPWM, &cpwm_orig);
+-
+-	if (rpwm & PS_ACK)
+ 		_set_timer(&pwrpriv->pwr_rpwm_timer, LPS_RPWM_WAIT_MS);
++	}
++
+ 	rtw_hal_set_hwreg(padapter, HW_VAR_SET_RPWM, (u8 *)(&rpwm));
 
-for you to fetch changes up to 64e7875560270b8f669fca9fcd6a689fea56fbeb:
+ 	pwrpriv->tog += 0x80;
+--
+2.32.0
 
-  ksmbd: fix oops from fuse driver (2021-10-07 10:18:36 -0500)
-
-----------------------------------------------------------------
-Six fixes for the ksmbd kernel server, including:
-- two additional fixes for missing overflow checks
-- some cleanup (e.g. remove dead code for less secure dialects that
-has been removed, and clarify overflow checks in smb3 decryption)
-- update ksmbd internal module version
-- fix for an oops
-
-regression test results from current Linux to ksmbd:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/79
-----------------------------------------------------------------
-Namjae Jeon (6):
-      ksmbd: add the check to vaildate if stream protocol length
-exceeds maximum value
-      ksmbd: check strictly data area in ksmbd_smb2_check_message()
-      ksmbd: remove the leftover of smb2.0 dialect support
-      ksmbd: use buf_data_size instead of recalculation in smb3_decrypt_req()
-      ksmbd: fix version mismatch with out of tree
-      ksmbd: fix oops from fuse driver
-
- fs/ksmbd/connection.c | 10 +++---
- fs/ksmbd/glob.h       |  2 +-
- fs/ksmbd/smb2misc.c   | 98
-++++++++++++++++++++++++++++-------------------------------
- fs/ksmbd/smb2ops.c    |  5 ---
- fs/ksmbd/smb2pdu.c    | 59 +++++++++++------------------------
- fs/ksmbd/smb2pdu.h    |  1 -
- fs/ksmbd/smb_common.c | 12 ++------
- fs/ksmbd/smb_common.h |  4 +--
- 8 files changed, 77 insertions(+), 114 deletions(-)
-
--- 
-Thanks,
-
-Steve
