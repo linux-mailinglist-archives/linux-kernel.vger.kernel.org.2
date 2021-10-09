@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CC2427C48
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFB4427C51
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:18:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhJIRQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 13:16:03 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:58394 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229624AbhJIRQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 13:16:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=ew+yMrSTpg9IhspE8AzrvbQjeSk7geL9IQkRlqtQrgg=; b=vPqj3J7Bo/WKMJ78CT0g6nReZc
-        DvWEvvl2WhOKZN8Kl+nkQr3ziXI3LmLpeOejfa7LPVDzS+3E+r/wWQe6e+vFphgzWxO+8FjDpfpI5
-        si+FAbRjmi5ELppuesVfoD6NlSeAHOjPR5Jo0b9FAYyQH2cUL7h0APJd/x4HihC09rv8=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mZFv4-00AALz-Ug; Sat, 09 Oct 2021 19:13:58 +0200
-Date:   Sat, 9 Oct 2021 19:13:58 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net-next PATCH v2 11/15] dt-bindings: net: dsa: qca8k: Document
- qca,sgmii-enable-pll
-Message-ID: <YWHN1iDSelFQTPUC@lunn.ch>
-References: <20211008002225.2426-1-ansuelsmth@gmail.com>
- <20211008002225.2426-12-ansuelsmth@gmail.com>
+        id S232176AbhJIRUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 13:20:37 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:49554
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbhJIRUg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 13:20:36 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3B6133FFEC
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 17:18:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633799912;
+        bh=6vTs51Lr8vLHY4n076CsFn/gLEdhdBV/K1u6U6+j1dg=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=qU7kRu1ooq4DiwA76+/cW2PhNcRR9JSQH2Pyh1nz9vUVYJQHnPri3eqLhDqVztGh0
+         SqIYN1OTjQ/BLOTfr0CQ/sq+NFQonvitWDBcYa975ksICmfdLVBaT1nku9PLe43xNG
+         YmRUUDXVkSMbVWovpR+wf331cdjHT79W1mvWaWezubEBiCFAWcBMUQRPYop6GGsWNd
+         ova3UFfrL+ayOz/SfX4tdoNvQbU/U67UskWzQAanPe9mQyDgeOP5aYQczEVksAcxE0
+         vhWs2eNrZvhKxFsl8jpw7p/kbwv4/wwfWvv2JYY758Jx/M3LCeH9g3apYHCY7B4iGm
+         IbMxmkC7CBceQ==
+Received: by mail-ed1-f72.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so2353502edy.22
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 10:18:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6vTs51Lr8vLHY4n076CsFn/gLEdhdBV/K1u6U6+j1dg=;
+        b=kVVqaOLLp8ApebM5/7UGSHm8m9xvXKIbG33IK9dNFWfLx66bRFiU6t8Q7Czf3uJY1T
+         uVDR9DXQ3tnLZQgXEiJHq2jgAfN4SdnDq999+xbLBc1dcRCKhGo3Ekfthrv1Zja6HOdV
+         350odZbBndl4sF7NZ1NAMI2TRzqi0qSeLHMDZHjCt9+wO4KOwFpUscMC4V4MpEDNoLBI
+         AmiayMIochdl3kxyGar6ztq7fy4IBQawJfNPOmgFrsEgnYp1SZ2L6nD55//NNYoreVsA
+         ht1cblX6JQvCHdI89/1j016Zp2ConIK+N2Dy6Q5Vtg2PGoSgHg4YhCSsYWZnUbcXL0mS
+         KeXA==
+X-Gm-Message-State: AOAM533TmDsMgagwG+nEzfyn/uNl5fvZnc9/UP14YP92KysZEJAMBPRM
+        ifYYOF1h8K9pATHNwpxPnsv/IMBRS4dyDG2oadEBV+71ikcMICINsDnznsfXq8Qur7FjnMOx4Z7
+        U2GupeliSERCALPjILLI464Gf035dRUPJHyRyBuGqmQ==
+X-Received: by 2002:a17:906:2ccf:: with SMTP id r15mr12596556ejr.182.1633799911927;
+        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxTFK3yvDCh4cP+YD8IAgX0mwfVS3GVAk+kiNZrMFqKNDBoZ+Nedcqb9ctSXXgWuVyyuZbFrw==
+X-Received: by 2002:a17:906:2ccf:: with SMTP id r15mr12596540ejr.182.1633799911789;
+        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id y19sm321830edd.39.2021.10.09.10.18.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 10:18:31 -0700 (PDT)
+Subject: Re: [PATCH] power: supply: max17040: fix null-ptr-deref in
+ max17040_probe()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     sre@kernel.org, iskren.chernev@gmail.com
+References: <20211008063150.822066-1-yangyingliang@huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <394b0984-50a6-af80-195b-033bf9624dea@canonical.com>
+Date:   Sat, 9 Oct 2021 19:18:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008002225.2426-12-ansuelsmth@gmail.com>
+In-Reply-To: <20211008063150.822066-1-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 02:22:21AM +0200, Ansuel Smith wrote:
-> Document qca,sgmii-enable-pll binding used in the CPU nodes to
-> enable SGMII PLL on MAC config.
+On 08/10/2021 08:31, Yang Yingliang wrote:
+> Add check the return value of devm_regmap_init_i2c(), otherwise
+> later access may cause null-ptr-deref as follows:
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> KASAN: null-ptr-deref in range [0x0000000000000360-0x0000000000000367]
+> RIP: 0010:regmap_read+0x33/0x170
+> Call Trace:
+>   max17040_probe+0x61b/0xff0 [max17040_battery]
+>  ? write_comp_data+0x2a/0x90
+>  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
+>  ? tracer_hardirqs_on+0x33/0x520
+>  ? __sanitizer_cov_trace_pc+0x1d/0x50
+>  ? _raw_spin_unlock_irqrestore+0x4b/0x60
+>  ? trace_hardirqs_on+0x63/0x2d0
+>  ? write_comp_data+0x2a/0x90
+>  ? __sanitizer_cov_trace_pc+0x1d/0x50
+>  ? max17040_set_property+0x1d0/0x1d0 [max17040_battery]
+>  i2c_device_probe+0xa31/0xbe0
+> 
+> Fixes: 6455a8a84bdf ("power: supply: max17040: Use regmap i2c")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> index 208ee5bc1bbb..b9cccb657373 100644
-> --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> @@ -50,6 +50,12 @@ A CPU port node has the following optional node:
->                            managed entity. See
->                            Documentation/devicetree/bindings/net/fixed-link.txt
->                            for details.
-> +- qca,sgmii-enable-pll  : For SGMII CPU port, explicitly enable PLL, TX and RX
-> +                          chain along with Signal Detection.
-> +                          This should NOT be enabled for qca8327.
+>  drivers/power/supply/max17040_battery.c | 2 ++
+>  1 file changed, 2 insertions(+)
 
-So how about -EINVAL for qca8327, and document it is not valid then.
 
-> +                          This can be required for qca8337 switch with revision 2.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-Maybe add a warning if enabled with revision < 2? I would not make it
-an error, because there could be devices manufactured with a mixture
-or v1 and v2 silicon. Do you have any idea how wide spread v1 is?
 
-> +                          With CPU port set to sgmii and qca8337 it is advised
-> +                          to set this unless a communication problem is observed.
-
-  Andrew
+Best regards,
+Krzysztof
