@@ -2,238 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC86427C73
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62930427C7C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhJISAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbhJISAC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:00:02 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590E5C061762
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 10:58:05 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id z20so48862476edc.13
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 10:58:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=26GX/wGEIQiVWrxm/nE9sssXMxKWNLT2XSFrEZkSKSY=;
-        b=Fw2UjsGpFJELrlkB2qrFVTWEiARpurxZ7FvArZ/GWC/4RwjPSHY5cdUaL2yG6jaAxV
-         7eBu0L9+qubQuKxJoZUAvTyK+DnfX+ktrDnUXg2ArgfEl9EFmTAlpG33CnImkXeNjs+x
-         jny3MzlKp49DlmFhSUIeqJvEqiK3Dq4IU9IQV6n8g+VmmswzP7BGtqdp+MvNKx4X19AK
-         Mvzk1NCPd1a+C99Yx3Sghgg/+eLyf5RQm9TndtZfzxWEOVXJSOgItXk/9W4COdzAAIOf
-         6YzA4YainqNJ4j0ZCnBhVdrmavsJRx4u46xUtdHx8aiOq9iQb4DcbikhXcpkm5qCiULP
-         f11A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=26GX/wGEIQiVWrxm/nE9sssXMxKWNLT2XSFrEZkSKSY=;
-        b=VvrbTMdyvesFhl0HpvZ8NWnqAcjkwSP+tPNa5L0lgPFyuzi7Lfb+TV48Rx64lbVTcN
-         NrZJP4ABu6wOJ9fMIe9gd8q4Eh90HQOk6Fc8vYC27mtU9Jmgwz7e978fh/jggPtna/Pw
-         IlZ6y++4x8dcNV8oVVMealoXnzIDjJAAAPVeF1eooY406bPmbjPmeFRgX6ztuyv3vaFu
-         c+vTh0aEgh3X/I7WmSrJdy/KOlCYdTsUDsohTP3hYfIGuhi/j/IjusbB0omophitaqk3
-         0qhsgdSlrSbZYPzne08y2SVpq/ec2Jl2csWuzilZSF/sOoiydJrs5PwPwOHOKpKBKjOf
-         6Ejg==
-X-Gm-Message-State: AOAM531QI8We6GamuOsfqc3X2KcLUiIM1RHAyA26wsT8JDp21TwCSDrR
-        piXPvxBp5I1IzLXDBqHtJusfEyNadAHlx0rgZPAlLQ==
-X-Google-Smtp-Source: ABdhPJySLYH4bizNUWoi7AdOiuFRRvf4L/Or8Zvshnxbk7Qd1H0G98fLTYii1DsQ32UmASkBq3EsJ4ZBuuYal9K28z8=
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr13364976ejc.69.1633802283629;
- Sat, 09 Oct 2021 10:58:03 -0700 (PDT)
+        id S229928AbhJISGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:06:08 -0400
+Received: from mga06.intel.com ([134.134.136.31]:62010 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229508AbhJISGH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 14:06:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="287559672"
+X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
+   d="scan'208";a="287559672"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 11:04:10 -0700
+X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
+   d="scan'208";a="489895338"
+Received: from apendlex-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.129.86])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 11:04:10 -0700
+Date:   Sat, 9 Oct 2021 11:04:09 -0700
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>, linux-cxl@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
+Subject: Re: [PATCH v3 02/10] cxl/pci: Remove dev_dbg for unknown register
+ blocks
+Message-ID: <20211009180409.rf7vqdly4loubthe@intel.com>
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163379784717.692348.3478221381958300790.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <0f625a108a2905c4f7d7ebb5b0db62b42f865338.camel@perches.com>
 MIME-Version: 1.0
-References: <20211008112714.445637990@linuxfoundation.org>
-In-Reply-To: <20211008112714.445637990@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 9 Oct 2021 23:27:52 +0530
-Message-ID: <CA+G9fYsMfNPa2HQWQA4jYC1W2N=1fiVGc7m2uGVUKaLznytkbg@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/10] 4.14.250-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f625a108a2905c4f7d7ebb5b0db62b42f865338.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 16:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.250 release.
-> There are 10 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.250-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 21-10-09 09:48:10, Joe Perches wrote:
+> On Sat, 2021-10-09 at 09:44 -0700, Dan Williams wrote:
+> > From: Ben Widawsky <ben.widawsky@intel.com>
+> > 
+> > While interesting to driver developers, the dev_dbg message doesn't do
+> > much except clutter up logs.
+> 
+> So?  This isn't enabled by default.  How does it 'clutter' logs?
+> 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Clutter logs for driver developers working on this subsystem. It's fine to drop
+this and just use the next sentence as the explanation as well.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.14.250-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.14.y
-* git commit: 7d769cc629ad98f5af7d44e0b70717708a7b323e
-* git describe: v4.14.249-11-g7d769cc629ad
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
-.249-11-g7d769cc629ad
-
-## No regressions (compared to v4.14.249-11-ge016eae29d2d)
-
-## No fixes (compared to v4.14.249-11-ge016eae29d2d)
-
-## Test result summary
-total: 75800, pass: 61082, fail: 609, skip: 12086, xfail: 2023
-
-## Build Summary
-* arm: 258 total, 258 passed, 0 failed
-* arm64: 68 total, 68 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 48 total, 48 passed, 0 failed
-* sparc: 24 total, 24 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 36 total, 36 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> > This information should be attainable
+> > through sysfs, and someday lspci like utilities. This change
+> > additionally helps reduce the LOC in a subsequent patch to refactor some
+> > of cxl_pci register mapping.
+> > 
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > ---
+> >  drivers/cxl/pci.c |    3 ---
+> >  1 file changed, 3 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> > index 64180f46c895..ccc7c2573ddc 100644
+> > --- a/drivers/cxl/pci.c
+> > +++ b/drivers/cxl/pci.c
+> > @@ -475,9 +475,6 @@ static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
+> >  		cxl_decode_register_block(reg_lo, reg_hi, &bar, &offset,
+> >  					  &reg_type);
+> >  
+> > 
+> > -		dev_dbg(dev, "Found register block in bar %u @ 0x%llx of type %u\n",
+> > -			bar, offset, reg_type);
+> > -
+> >  		/* Ignore unknown register block types */
+> >  		if (reg_type > CXL_REGLOC_RBI_MEMDEV)
+> >  			continue;
+> > 
+> 
+> 
