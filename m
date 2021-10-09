@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A233427D57
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:34:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A20427D69
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 22:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhJIUgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 16:36:40 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:60328 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhJIUgj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 16:36:39 -0400
-Received: from hillosipuli.retiisi.eu (89-27-103-169.bb.dnainternet.fi [89.27.103.169])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id 893AC2022B;
-        Sat,  9 Oct 2021 23:34:39 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1633811679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cwgfcscAVjJ/fmxUFVQni0ETup14UF01zfhz8STAAZc=;
-        b=zJiRqYMfd12n4I1zDx2l5zyQ2ImarnRg1bxKc9Q2ja1EIjLrDhoRtKkjsDnSEQDgiGgjWR
-        vwEK8gGM31M14hlyTdUn5lpuBIsop/mG+5057ZnQz9sV0e14pUksZ0+MzpEZEUDleio0AR
-        gWgxl+ygTFv/r+6+cQSWmYux7Qp7eco=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 14037634C90;
-        Sat,  9 Oct 2021 23:34:38 +0300 (EEST)
-Date:   Sat, 9 Oct 2021 23:34:37 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Jacopo Mondi <jacopo@jmondi.org>,
-        Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>,
-        "joe@perches.com" <joe@perches.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-Message-ID: <YWH83W8uVbU6RzVe@valkosipuli.retiisi.eu>
-References: <m3fstfoexa.fsf@t19.piap.pl>
- <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu>
- <m3zgrlkxn6.fsf@t19.piap.pl>
- <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
- <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
+        id S230292AbhJIUmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 16:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230257AbhJIUmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 16:42:06 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B646C061768
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 13:40:09 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id np13so10135545pjb.4
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 13:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PNkbI6CC4MPwch06xoRoPuOpZuZRykTcMawJcvuLIGc=;
+        b=Muu3r0eHUqB/dNHg2SbcMZBR59fyebiqEBsvk6PezrQlxQGwEI1ZicQJ1XHU8yb+jR
+         kHSIW8u2KEJn+hh/8bqD+oSUoLGTMzHi2MKjMWxijaluyFQ9X/HFL9QP8jG3kJvP1+yC
+         MFrvKW7dOAqDY1UzAuwqQRxVpGtbg2xoYhxoIQminXJgv3DKYb4mwO0GqHZDYiNWBRPr
+         zX9FmLpjC1P17blRe4cxwK4BawnSAcTVigJTMtvWGUVR4Krw0LhW/yHMyjDs7LwJths0
+         zTeiN6ZgCa7R3RDBLb9WPt7ZUqU0TGXpSpq1OOroQI9pRt1DcheHTMwoozKzKGHc51Jc
+         ai5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PNkbI6CC4MPwch06xoRoPuOpZuZRykTcMawJcvuLIGc=;
+        b=B4LONTOt6f2T0tivGp85nASxzqqGowu7DXF+Hy/WEOBFb2TMTOcYPxdIxVQH5sGpkp
+         Q+aUL1ZLO4jDtYBygI663Ak16bVgTVAoEYnVr1ekwJNEJs8b8gsTi8Sa7pWtVjGLe+m/
+         c19Gj10O2cCoYtiS79cVgIwyW1JuNMToGy8yzsMWphQRgcp5VdmTGwQYnRJDuapp99i/
+         WjyTF9CIdpJ83WSlwsY4iTnPZIym147MXGN/Pe2riQ+bNIsvyYEZ1RQ1jPHAy+uqehOa
+         voc6gU+eTFaQzBcClidbAtJ2fxl0rkW7NxysYkSBlLCufgsz/th5k+djH8GJjz7Cka+U
+         HGVw==
+X-Gm-Message-State: AOAM531kZoeX9/VXnH4ufXtzldbGUin6Ndwbe3NRkK6sobxh4yI0hfVB
+        4kSKHmbrwoJHA+BZcjqwW0IbJQua3jn8opr2hOpv4w==
+X-Google-Smtp-Source: ABdhPJySd5zqNERLKr8S37E5WA9IMnevPxuJEZ9BVS6uY8X2FGjPzRDwsaOEKoQH/I5/2YcevgWJ2BJGpdsvJiUJb30=
+X-Received: by 2002:a17:90a:d686:: with SMTP id x6mr20678375pju.8.1633812008773;
+ Sat, 09 Oct 2021 13:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1633811679; a=rsa-sha256; cv=none;
-        b=JZF/R1HDdB3Elg609SYrw0bz12+J9me/dbwMC4Vj2lSnRCMb03OE3LnwSdyr3aSMPFmb8t
-        cwJAxGdqDYIWggBhs2rJ9JteTZ5Q3OicKkYAR54YYzosHfmdK4ZV7rVGRLTuuA/PLdBQaw
-        e3p/UPSt/9uv3MyPQ/ARjhpPXB2wbKI=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1633811679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cwgfcscAVjJ/fmxUFVQni0ETup14UF01zfhz8STAAZc=;
-        b=OxWkEl7DnxjgJQiMfzv3YWz932M/mEMn1WiHxkqLMB/DwcpGvgblQGjUCb9mVcXMR8vdVm
-        /GNOchnk+/7rcerKHpCaQg/PeuFAtrdekr/q6t0gO0eJxjOboDzuzujjozAgDkZrqnA6DS
-        yE45gHP5CsiigkECYEPL2WBxMLkW62M=
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com> <20211009053103-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20211009053103-mutt-send-email-mst@kernel.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 9 Oct 2021 13:39:57 -0700
+Message-ID: <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(), pci_iomap_host_shared_range()
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy, others,
+On Sat, Oct 9, 2021 at 2:53 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Oct 08, 2021 at 05:37:07PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> > From: Andi Kleen <ak@linux.intel.com>
+> >
+> > For Confidential VM guests like TDX, the host is untrusted and hence
+> > the devices emulated by the host or any data coming from the host
+> > cannot be trusted. So the drivers that interact with the outside world
+> > have to be hardened by sharing memory with host on need basis
+> > with proper hardening fixes.
+> >
+> > For the PCI driver case, to share the memory with the host add
+> > pci_iomap_host_shared() and pci_iomap_host_shared_range() APIs.
+> >
+> > Signed-off-by: Andi Kleen <ak@linux.intel.com>
+> > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>
+> So I proposed to make all pci mappings shared, eliminating the need
+> to patch drivers.
+>
+> To which Andi replied
+>         One problem with removing the ioremap opt-in is that
+>         it's still possible for drivers to get at devices without going through probe.
+>
+> To which Greg replied:
+> https://lore.kernel.org/all/YVXBNJ431YIWwZdQ@kroah.com/
+>         If there are in-kernel PCI drivers that do not do this, they need to be
+>         fixed today.
+>
+> Can you guys resolve the differences here?
 
-On Sat, Oct 09, 2021 at 01:18:50PM -0700, Randy Dunlap wrote:
-> On 10/9/21 2:07 AM, Jacopo Mondi wrote:
-> > Hi Krzysztof,
-> > 
-> >     I've been testing this driver in the last few days, thanks for your
-> > effort in upstreaming it!
-> > 
-> > I'll separately comment on what I had to change to have it working for
-> > my use case, but let me continue the discussion from where it was left
-> > pending here to add my 2 cents.
-> > 
-> > On Thu, Oct 07, 2021 at 11:11:09AM +0200, Krzysztof Hałasa wrote:
-> > > Hi Sakari,
-> > > 
-> > > Thanks for your input.
-> > > 
-> > > > Where's the corresponding DT binding patch? Ideally it would be part of the
-> > > > same set.
-> > > 
-> > > Well I've sent it a moment before this one. Will make them a set next
-> > > time.
-> > > 
-> > > > > +#define AR0521_WIDTH_BLANKING_MIN     572u
-> > > > > +#define AR0521_HEIGHT_BLANKING_MIN     28u // must be even
-> > > > 
-> > > > Please use /* */ for comments. The SPDX tag is an exception.
-> > > 
-> > > As far as I know, this is no longer the case, the C99 comments are now
-> > > permitted and maybe even encouraged. Or was I dreaming?
-> > > 
-> > > checkpatch doesn't protest either.
-> > 
-> > To my understanding the C99 standard added support for the //
-> > commenting style and tollerate them, but they're still from C++ and I
-> > see very few places where they're used in the kernel, and per as far I
-> > know they're still not allowed by the coding style
-> > https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
-> 
-> http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
-> 
-> Maybe we should update coding-style then.
+I agree with you and Greg here. If a driver is accessing hardware
+resources outside of the bind lifetime of one of the devices it
+supports, and in a way that neither modrobe-policy nor
+device-authorization -policy infrastructure can block, that sounds
+like a bug report. Fix those drivers instead of sprinkling
+ioremap_shared in select places and with unclear rules about when a
+driver is allowed to do "shared" mappings. Let the new
+device-authorization mechanism (with policy in userspace) be the
+central place where all of these driver "trust" issues are managed.
 
-That's not really a statement for C++ (//) comments as it's against other
-/* ... */ multi-line comment styles some of which are used by the
-networking stack.
+> And once they are resolved, mention this in the commit log so
+> I don't get to re-read the series just to find out nothing
+> changed in this respect?
+>
+> I frankly do not believe we are anywhere near being able to harden
+> an arbitrary kernel config against attack.
+> How about creating a defconfig that makes sense for TDX then?
+> Anyone deviating from that better know what they are doing,
+> this API tweaking is just putting policy into the kernel  ...
 
-I haven't read all the discussion but I see coding-style.rst still
-documents a different multi-line comment style for the network stack.
-
-What comes to // comments, almost all the cases that exist in the kernel
-currently outside SPDX tags are either adjacent copyright notices or the
-AMD DRM driver. Based on this, I'd rather not adopt that style in a sensor
-driver.
-
--- 
-Regards,
-
-Sakari Ailus
+Right, userspace authorization policy and select driver fixups seems
+to be the answer to the raised concerns.
