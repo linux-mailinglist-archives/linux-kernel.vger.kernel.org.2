@@ -2,228 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C42C427C7F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A53427C82
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 20:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhJISI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 14:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50946 "EHLO
+        id S230013AbhJISK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 14:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhJISIy (ORCPT
+        with ESMTP id S229546AbhJISK1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 14:08:54 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B8FC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 11:06:57 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id i20so32862457edj.10
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 11:06:57 -0700 (PDT)
+        Sat, 9 Oct 2021 14:10:27 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C6DC061570;
+        Sat,  9 Oct 2021 11:08:30 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id z20so48938908edc.13;
+        Sat, 09 Oct 2021 11:08:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=P5vKfi+9td8NhqpCP6I+GiD2oc/BmGL/ilhpzsfT3Ow=;
-        b=x5eh8NbQc6Obxe+4AnG+SZCVUbY5WnMGMfN7jeJJDtdMM7S/ecm+EdD6gUFHk2ukjE
-         JIt4zNZbaeX/R04UaBB3QFX38NvRqxOA2vTPwLIehZySTobbbD9PEgTVHqCXLtwUv1FL
-         LQobFB75wQzBb3Moo1ciEHERr0PoEPD9dMDEqHgzqCLBAm6vRgZuwoEfzUOMnY41wFwD
-         CcAuOX2ldEXC14AJV9k6bWQArEsAYyfHTuXxWE2UKafHeujEC0ntWCPIZdoGLSg3d7fS
-         RBPWgix41MOrFqyoCrlyKaIkfa5x8ESsffwoVe24EUDhKePMPzw/rPsvxFwsRou5pE4b
-         QxjQ==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UnnvRWJLkepc9TqBG6AXA25unMvK8Yk7T2RTgklmfTY=;
+        b=Ibdr0spF52RuS1ZydZK+8AL/uPz2izxQey8nt6XtdLMb36blpBRU7pCYXSWywT3yY/
+         TL0AqBGyIaBSzlmcaBftggl0uy5kK73jf9ORgetQFY0jzNty2BlzHMaYxoNRcObG7thg
+         lU5j5xfS6ctbTTc+NM4V4JowDnrxRgV16VBBQmQMzHSWire0hX09yPp6ug7X4174x0jR
+         n9zn/aaGMIDotSg52kz6nJYHk98vvJ3uRQXsPGN9oa7fa6bF7A39s4JosHV8Nu16ot7Z
+         SNJLHCysTTJKVj7PH0LmuwkcvRqiUjTl+/SowS356z4oeLEF82jQRgz8DnpOp8sFuTV6
+         xl2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=P5vKfi+9td8NhqpCP6I+GiD2oc/BmGL/ilhpzsfT3Ow=;
-        b=5FMIMtWEXwo5GQJc4mQEzWb4WgdNBzAV056XS4Le6N4Z4MIyvdAdp66VclJxJx8aDP
-         XOhhJSCEwJtSPSeiIRBu6b9tGTm6WuZmMY69CkSijzPfufzOFluXKLaJxNZjsxBPB4ua
-         ujUOcj9V5lE2pcGXVfjPTdp28yYQ/ZXt4z4qrMvRlOpjPVoFHiSW59A7i1OgOCDqMnKT
-         IYfjPxEN1Ra5eiwkcL47brZZrHDSWF+tZ/sUZjsNOt5PKlP17rLZ6EfOVVLsGqKatr8P
-         qp+Ylj7zyhSw1LMRgaT307tTQbh8w7WU7SjpXHTUiu46TexgCBHvi/cTbmpyRdjX4Fww
-         XJCw==
-X-Gm-Message-State: AOAM532SvB7i3RHG9v8FSe4kp6jAvkBzCdIzAPweFMqMVA5q4cyZN2ds
-        b4P8OH8Rkk0CT/qDLywsG5tFMpTO7MDETxndqu2PLA==
-X-Google-Smtp-Source: ABdhPJwtOeuBviCkxf0FgD01Ay0AfL2n69BofneDxcuVFToH92Ejz6lSWxYP63CjqOzVU8fiSQHcXgPaxAvWk+AgCyI=
-X-Received: by 2002:a50:bf07:: with SMTP id f7mr26062474edk.288.1633802816110;
- Sat, 09 Oct 2021 11:06:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UnnvRWJLkepc9TqBG6AXA25unMvK8Yk7T2RTgklmfTY=;
+        b=xVGRw2xbVzbScCavUwX+VQJaOF007tE8NGik39T1q/tmcB77i0X3wKQ2vxmsZ0pW6z
+         f5rWJJHLkArL/XUQut4QsVzlt7kBHmvXvhk6rcSf1sHB+CO1CWpbUZWMzi+txrhdyZBJ
+         4keSGouwrvHvWZH5LSgoj+iM59zK0BJTblPHY58FHpqNo/P7XIkQdNrXsDQcI5Cn5i0c
+         wzYxx4y4q6qjtccJxm/S36+LdRzwiJC31Sq4mMDJ3+U8nEHQqLFHyxMQnt3Haa2KRbYM
+         6p3A/0CcVhhsjiIlN5bffbH9SAtvwzTAxqhcKkMLkAPLebkmJoNWJuZsefzDh8F9YbjD
+         TomQ==
+X-Gm-Message-State: AOAM530WEOpiwQuE94ay1cbmKdugnu2Mz/G/PN3b+8bAVwR39XLh0q8z
+        GVybByAkk47hre9URDPgljk=
+X-Google-Smtp-Source: ABdhPJzan03w4d2FojSAnGhHS0JkRsb3xqdRgQucj+KQqROcc+Su8AF2Md1SvGQQwu6Po9a3b6MnEQ==
+X-Received: by 2002:a17:906:f98c:: with SMTP id li12mr13295205ejb.108.1633802908518;
+        Sat, 09 Oct 2021 11:08:28 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id jv12sm1226293ejc.83.2021.10.09.11.08.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 11:08:27 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 20:08:24 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Matthew Hagan <mnhagan88@gmail.com>
+Subject: Re: [net-next PATCH v2 08/15] dt-bindings: net: dsa: qca8k: Add MAC
+ swap and clock phase properties
+Message-ID: <YWHamNcXmxuaVgB+@Ansuel-xps.localdomain>
+References: <20211008002225.2426-1-ansuelsmth@gmail.com>
+ <20211008002225.2426-9-ansuelsmth@gmail.com>
+ <YWHMRMTSa8xP4SKK@lunn.ch>
 MIME-Version: 1.0
-References: <20211008112713.941269121@linuxfoundation.org>
-In-Reply-To: <20211008112713.941269121@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 9 Oct 2021 23:36:44 +0530
-Message-ID: <CA+G9fYus19QMLfPy_Z2z87AKOwUP4v8aC0L=aF4x+1=hrpF87Q@mail.gmail.com>
-Subject: Re: [PATCH 4.9 0/8] 4.9.286-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWHMRMTSa8xP4SKK@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 16:59, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.286 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.286-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Sat, Oct 09, 2021 at 07:07:16PM +0200, Andrew Lunn wrote:
+> On Fri, Oct 08, 2021 at 02:22:18AM +0200, Ansuel Smith wrote:
+> > Add names and decriptions of additional PORT0_PAD_CTRL properties.
+> > Document new binding qca,mac6_exchange that exchange the mac0 port
+> > with mac6.
+> > qca,sgmii-(rx|tx)clk-falling-edge are for setting the respective clock
+> > phase to failling edge.
+> > 
+> > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > index 9383d6bf2426..208ee5bc1bbb 100644
+> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> > @@ -13,6 +13,11 @@ Required properties:
+> >  Optional properties:
+> >  
+> >  - reset-gpios: GPIO to be used to reset the whole device
+> > +- qca,mac6-exchange: Internally swap MAC0 with MAC6.
+> > +- qca,sgmii-rxclk-falling-edge: Set the receive clock phase to falling edge.
+> > +                                Mostly used in qca8327 with CPU port 0 set to
+> > +                                sgmii.
+> > +- qca,sgmii-txclk-falling-edge: Set the transmit clock phase to falling edge.
+> >  - qca,rgmii0-1-8v: Set the internal regulator to supply 1.8v for MAC0 port.
+> >                     This is needed for qca8337 and toggles the supply voltage
+> >                     from 1.5v to 1.8v. For the specific regs it was observed
+> 
+> The edge configuration is a port configuration. So it should be inside
+> the port DT node it applies to. That also gives a clean way forward
+> when a new switch appears with more SGMII interfaces, each with its
+> own edge configuration.
+> 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Problem here is that from Documentation falling edge can be set only on
+PAD0. PAD5 and PAD6 have the related bit reserved.
+But anyway qca8k support only single sgmii and it's not supported a
+config with multiple sgmii. Do we have standard binding for this?
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> But that then leads into the MAC0/MAC6 swap mess. I need to think
+> about that some more, how do we cleanly describe that in DT.
+> 
+>       Andrew
 
-## Build
-* kernel: 4.9.286-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.9.y
-* git commit: b57b518625d959467e72b2a28682237a0b7973c6
-* git describe: v4.9.285-9-gb57b518625d9
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-85-9-gb57b518625d9
+About the mac swap. Do we really need to implement a complex thing for
+something that is really implemented internally to the switch? With this
+option MAC6 is swapped with MAC0. But with the port configuration in DT
+it doesn't change anything. Same reg, no change. It's really that some
+OEM connect the secondary port instead of the primary (for some reason,
+hw choice?) and swap them internally.
 
-## No regressions (compared to v4.9.285-9-gdf647e504ac8)
+Anyway some question.
+I will move the falling binding to the port DT node and move the
+configuration to mac_config. Should I keep the
+dedicated function to setup PAD0 swap or I can directly add the check in
+the qca8k_setup for only the bit related to enable the swap?
 
-## No fixes (compared to v4.9.285-9-gdf647e504ac8)
-
-## Test result summary
-total: 76039, pass: 60936, fail: 492, skip: 12752, xfail: 1859
-
-## Build Summary
-* arm: 258 total, 258 passed, 0 failed
-* arm64: 68 total, 68 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 35 total, 35 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 48 total, 48 passed, 0 failed
-* sparc: 24 total, 24 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 36 total, 36 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+-- 
+	Ansuel
