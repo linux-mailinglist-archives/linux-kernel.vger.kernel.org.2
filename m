@@ -2,216 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6ED427B59
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3E2427B61
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 17:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234743AbhJIPeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 11:34:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51570 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234664AbhJIPeB (ORCPT
+        id S234462AbhJIPlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 11:41:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234106AbhJIPlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 11:34:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633793523;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vy5Z3QdUpfqORn2sjpoSvKPS9hNo2meUhZmX+X04/3o=;
-        b=WhCXw6G4pLzjpN9waCKTFFoZMJ2310eI5WQ8d26fGIgiQGdp/+18ttaWLypKrCF+ZBuw6b
-        471GIFhAxoJSnUoBUGOGyGsvY2fL4QVHypIJdBRXmkEPbMPTxZRML7OyRPznq57WbZ0Mi7
-        7pyaQDBc1m1N2TH8DJ657NyFpBZG2Gg=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-t4zFgvy3Pguxf_G3p-1Zmg-1; Sat, 09 Oct 2021 11:32:02 -0400
-X-MC-Unique: t4zFgvy3Pguxf_G3p-1Zmg-1
-Received: by mail-ed1-f70.google.com with SMTP id c8-20020a50d648000000b003daa53c7518so11767238edj.21
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 08:32:02 -0700 (PDT)
+        Sat, 9 Oct 2021 11:41:16 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C253C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 08:39:19 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id 187so10729520pfc.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 08:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=xn3cZFmsRkEBphig5j0Fjp/Shbu/DV7lATpJ+tppRws=;
+        b=I65/gN9VXJyrTgtS9X2dyUj2il1coHyZyab1Wy4IojdCqRUWrytic7fYUURUp2ljaV
+         g3DkawOXbe2ClE2ta1jdpPKZX239GAq1dP5OJ9xPumNmP9xcJkkv/oChtWNbUeBb5S3w
+         OY86igjXcsIixfzDakmLK/8ShFAyu5zLw4K1rIZs7jvEzVM35fnwtWBY4kLcO/rPEyUc
+         HZaTgiPk1m+Mc8SKZO3IX1xA2xM8S0c1Y+1B8uwbdYGkhWZF2FSwac0Rra9ZeusEWcPi
+         aADR758y7cT4Mg47QuPR21cNe5oMzl3ud9sCf+jbUIaNqWB8x8vG9JWvK8A97sZxIvYV
+         3xSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vy5Z3QdUpfqORn2sjpoSvKPS9hNo2meUhZmX+X04/3o=;
-        b=Ts3NoK5vbBfGfngUO9VYmZnU4aHGLmF4KFEv4NL+RH6xPRiQ+/Mdxoq+J6N8hYPCa3
-         KLcDnaUtI6UpH8NXzBEfVRCodNkCR5KqddqrKt2AHyX/ZXbkX0DEnfBd1Lp2XvMuz4nD
-         MeUZWq1OsmAYqoI39dn043a3BQ3oEX9NLZmJJJGkkYYDP7+4HW3M5q7/BnOYS+vGJu+m
-         z89SELW/0KnmgR2L4pYJ8kkYT2Zm/jwQFsLo/Ovp7KYCn0znItujUD2HnOpOGgzs3j23
-         uuumVCrsDrvKPrVa/JjA1dSDgds/sR7ICHAceF0PI/6MoJyB6o4QmDAWrXjX9SkdOYAM
-         4NqA==
-X-Gm-Message-State: AOAM531Jdr5IWSPl1Ndw0b7VYnBfmsSu8qVhyBeKG6gnfLtlgchDAwjU
-        /IDljOxSgSD9qswVGkr1Zcu5V57BYEcXc7vLZIdpIB5a/Xf93KebvRzZV6uUwwFCZjrwFaogFUG
-        mIVzUVFaCC5PVnx4WnZ8u/QKs
-X-Received: by 2002:a17:906:b098:: with SMTP id x24mr12681589ejy.88.1633793521606;
-        Sat, 09 Oct 2021 08:32:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyc0aq1v6Cen4pucn+xg+/nXUMviu2iQrLJ+UJsvQU04U/MylIKbJlM/0EapQnMuOm9DIR2Pw==
-X-Received: by 2002:a17:906:b098:: with SMTP id x24mr12681565ejy.88.1633793521374;
-        Sat, 09 Oct 2021 08:32:01 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id dj8sm1335992edb.53.2021.10.09.08.32.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 08:32:00 -0700 (PDT)
-From:   Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 02/12] media: i2c: ov8865: Add an has_unmet_acpi_deps()
- check
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211008162121.6628-1-hdegoede@redhat.com>
- <20211008162121.6628-3-hdegoede@redhat.com>
- <YWCQ6/AMzP5Nfcyk@pendragon.ideasonboard.com>
- <39a85265-017e-f86d-619b-c1aa6a771a26@redhat.com>
- <YWCUv+gEnfWnpRS6@pendragon.ideasonboard.com>
-Message-ID: <ca413a75-f1e5-e322-029f-bb15e4b190ce@redhat.com>
-Date:   Sat, 9 Oct 2021 17:31:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=xn3cZFmsRkEBphig5j0Fjp/Shbu/DV7lATpJ+tppRws=;
+        b=0wzHrlMl3+qEwmof7rnYVbgfOxr52hySmXPlGzb0oQoSz0k4HGiC04lJRM1HTo85mG
+         kAbr4bje0VkSIQWkjmDflPzfy6akp3yacDZ6D68hgDZ5wmViECJSBpiF1AG+eJAdReLs
+         2e0wt9eoHiOjZbyadE7AeJW3j0ReG8zjBA+izID3XbdgT9fn02QKSiCjnFLT9aP94Ufa
+         UPNKY2JV4PMLVNFZeQQdP7oOH/RCIhOGQGllTgPs5BfKyT0/GGvr3ccSduZHc3xqeQDV
+         OOxngUvUybWyGcQIioEA0i5pwVik4mROGXifD9IEC/PJZG5aIIl5ehvf531z0KP14yUs
+         +Fmg==
+X-Gm-Message-State: AOAM530Ew1f3a2b92dQBgpnWw4QyZ3vO1BR2+SGHNggapD4jlOAmffwf
+        XLGJ239t5auXiavXUPLTwsErYSlw74s=
+X-Google-Smtp-Source: ABdhPJy37wMBE/ZvwJCG4r4p1qVkUAyHu1kF4A5stn8oRkLvqOd3NOPV7yICAlD+ybVTepC9IIdFAw==
+X-Received: by 2002:a63:b04c:: with SMTP id z12mr9923338pgo.371.1633793958266;
+        Sat, 09 Oct 2021 08:39:18 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id a17sm2730058pfd.54.2021.10.09.08.39.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 08:39:17 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 21:09:12 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        insafonov@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8723bs: os_dep: simplify the return statement.
+Message-ID: <YWG3oIchovDZnPl8@user>
 MIME-Version: 1.0
-In-Reply-To: <YWCUv+gEnfWnpRS6@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Remove the unneeded and redundant check of variable on goto out.
+Simplify the return using multiple goto label to avoid
+unneeded check.
 
-On 10/8/21 8:58 PM, Laurent Pinchart wrote:
-> Hi Hans,
-> 
-> On Fri, Oct 08, 2021 at 08:48:18PM +0200, Hans de Goede wrote:
->> On 10/8/21 8:41 PM, Laurent Pinchart wrote:
->>> On Fri, Oct 08, 2021 at 06:21:11PM +0200, Hans de Goede wrote:
->>>> The clk and regulator frameworks expect clk/regulator consumer-devices
->>>> to have info about the consumed clks/regulators described in the device's
->>>> fw_node.
->>>>
->>>> To work around cases where this info is not present in the firmware tables,
->>>> which is often the case on x86/ACPI devices, both frameworks allow the
->>>> provider-driver to attach info about consumers to the clks/regulators
->>>> when registering these.
->>>>
->>>> This causes problems with the probe ordering of the ov8865 driver vs the
->>>> drivers for these clks/regulators. Since the lookups are only registered
->>>> when the provider-driver binds, trying to get these clks/regulators before
->>>> then results in a -ENOENT error for clks and a dummy regulator for regs.
->>>>
->>>> On ACPI/x86 where this is a problem, the ov8865 ACPI fw-nodes have a _DEP
->>>> dependency on the INT3472 ACPI fw-node which describes the hardware which
->>>> provides the clks/regulators.
->>>>
->>>> The drivers/platform/x86/intel/int3472/ code dealing with these ACPI
->>>> fw-nodes will call acpi_dev_clear_dependencies() to indicate that this
->>>> _DEP has been "met" when all the clks/regulators have been setup.
->>>>
->>>> Call the has_unmet_acpi_deps() helper to check for unmet _DEPs
->>>> and return -EPROBE_DEFER if this returns true, so that we wait for
->>>> the clk/regulator setup to be done before continuing with probing.
->>>>
->>>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
->>>> ---
->>>>  drivers/media/i2c/ov8865.c | 3 +++
->>>>  1 file changed, 3 insertions(+)
->>>>
->>>> diff --git a/drivers/media/i2c/ov8865.c b/drivers/media/i2c/ov8865.c
->>>> index ce4e0ae2c4d3..fd18d1256f78 100644
->>>> --- a/drivers/media/i2c/ov8865.c
->>>> +++ b/drivers/media/i2c/ov8865.c
->>>> @@ -2978,6 +2978,9 @@ static int ov8865_probe(struct i2c_client *client)
->>>>  	unsigned int i;
->>>>  	int ret;
->>>>  
->>>> +	if (has_unmet_acpi_deps(dev))
->>>> +		return -EPROBE_DEFER;
->>>> +
->>>
->>> We've worked hard to avoid adding ACPI-specific code such as this in
->>> sensor drivers, as it would then spread like crazy, and also open the
->>> door to more ACPI-specific support. I don't want to open this pandora's
->>> box, I'd like to see this handled in another layer (the I2C core could
->>> be a condidate for instance, but bonus points if it can be handled in
->>> the ACPI subsystem itself).
->>
->> The problem is that we do NOT want this check for all i2c devices,
-> 
-> Any of these sensors can be used on non-ACPI-based platforms, or on
-> ACPI-based platforms where integration has been done right. If it causes
-> an issue to call this function on those platforms, then this driver
-> won't work. If it causes no issue, why can't we call it in the I2C core
-> (or somewhere else) ?
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 29 ++++++++++---------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-This call checks the ACPI-core's count which keep track of all 
-dependencies listed in the _DEP method have been marked as
-"ready/available" by the driver for the Linux-device for those
-dependencies having called acpi_dev_clear_dependencies().
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 0868f56e2979..574fdb6adce7 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2282,18 +2282,18 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
 
-The ACPI core code could delay instantiating devices for ACPI described
-devices based on this itself, but it is deliberately not doing this.
+ 	if (!name) {
+ 		ret = -EINVAL;
+-		goto out;
++		goto err_out;
+ 	}
 
-This is deliberately not done because the _DEP method
-may point to pretty much any random ACPI object and Linux does
-not necessarily have a driver for all ACPI objects the driver
-points too, which would lead to the devices never getting instantiated.
+ 	if (pwdev_priv->pmon_ndev) {
+ 		ret = -EBUSY;
+-		goto out;
++		goto err_out;
+ 	}
 
->> so doing
->> it in any place other then the drivers means having some list of APCI-ids
->> to which to apply this someplace else. And then for every sensor driver
->> which needs this we need to update this list.
->>
->> This is wht I've chosen to just put this check directly in the sensor
->> drivers. It is only 2 lines, it is a no-op on kernels where ACPI
->> is not enabled (without need a #ifdef) and it is a no-op if the
->> sensor i2c-client is not instantiated through APCI even when ACPI
->> support is enabled in the kernel.
->>
->> I understand that you don't want a lot of ACPI specific code inside
->> the drivers, which is why I've come up with this fix which consists
->> of only 2 lines.  My previous attempts (which I never posted)
->> where much worse then this.
-> 
-> So we only need to take one more step to remove just two lines :-)
-> 
-> This is all caused by Intel messing up their ACPI design badly. It's too
-> late to point and shame, it won't fix the problem, but I don't want this
-> to spread through drivers, neither for just those two lines (there are
-> dozens of sensors that would need the same treatment), nor for what the
-> next steps would be when someone else will want to add ACPI-specific
-> code and use this as a precedent. That's why we tried hard with Dan
-> Scally to isolate all the necessary quirks in a single place instead of
-> spreading them through drivers, which would have been easier to
-> implement.
+ 	mon_ndev = alloc_etherdev(sizeof(struct rtw_netdev_priv_indicator));
+ 	if (!mon_ndev) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto err_out;
+ 	}
 
-Ok, so I've come up with a way to deal with this in the ACPI code
-which does not require sensor-driver code modifications.
+ 	mon_ndev->type = ARPHRD_IEEE80211_RADIOTAP;
+@@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+ 	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+ 	if (!mon_wdev) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto err_zmalloc;
+ 	}
 
-What I've done is make the ACPI core honor _DEP dependencies for
-a device (instead of mostly ignore them) when one of those _DEPs
-is for a device with a HID of INT3472 (the camera PMIC / discrete
-clk/regulator ACPI device/node). This way the ACPI core can make
-this decision without it having to keep an ever growing list of
-sensor HIDs for which it should honor _DEP-s.
+ 	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+@@ -2322,22 +2322,23 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
 
-I'm about to send out a v2 of this series with this change,
-see patch 1 + 2 of the v2 series.
+ 	ret = cfg80211_register_netdevice(mon_ndev);
+ 	if (ret) {
+-		goto out;
++		goto err_register;
+ 	}
 
-I hope that Rafael is ok with the ACPI changes in there,
-we will see...
+ 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+ 	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
 
-Regards,
+-out:
+-	if (ret && mon_wdev) {
+-		kfree(mon_wdev);
+-		mon_wdev = NULL;
+-	}
++err_register:
 
-Hans
+-	if (ret && mon_ndev) {
+-		free_netdev(mon_ndev);
+-		*ndev = mon_ndev = NULL;
+-	}
++	kfree(mon_wdev);
++	mon_wdev = NULL;
++
++err_zmalloc:
++
++	free_netdev(mon_ndev);
++	*ndev = mon_ndev = NULL;
++
++err_out:
+
+ 	return ret;
+ }
+--
+2.32.0
 
