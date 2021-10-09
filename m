@@ -2,288 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F7142757E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E871427582
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 03:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244095AbhJIByJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 21:54:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33596 "EHLO
+        id S244107AbhJIB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231947AbhJIByH (ORCPT
+        with ESMTP id S232078AbhJIB4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 21:54:07 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A824CC061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:52:11 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id r201so4763701pgr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:52:11 -0700 (PDT)
+        Fri, 8 Oct 2021 21:56:14 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FFA9C061755
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 18:54:18 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id gg11-20020a056214252b00b00382e4692e72so10239003qvb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 18:54:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=J3/G+Htr0JzoQ9SW3wtIiw5W7YL3z8+P6XbDg6D7GbI=;
-        b=m8+6I0AkdQ6x6UksboO6N1QINdiEk6XajNGDuHqhLFaZdEmTVA0YYxFThZhwfdClSJ
-         zJY2AaBb/H3PPjv3mNLqkXbIdGwBaW6trRH75Ge2Wx1DqWcrk0RvH6w/jGjRxqCdGFAd
-         2bKOHS457JB7ytkR8gupGVj4Z9f0wYGhw6rat3oBFHGMpbSefj43BH2oDa4DySHZ0sit
-         kBGHh5LHiuTV8wymPKl6IcqIoHyy234J9UrW4jmk8MH6jCmSkgKHEIPiuf0adu8x9Hs0
-         7kQ6QjEq0z2BgoUQqsfN5n4UBYVb3o5mLQLJzRZIflU7cYC45buPGT0wab1ft76NWcpb
-         o24A==
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=76p5MfvWGdwgnPxyAjvl4ZNMkG5vyADIcjc+KTZ0VLI=;
+        b=Chzs3PWcNNhn8atVsXvU5xbtTKp9v03XRcUaIQlfRAi6Z92Ln3/UerWQvw7iAUguex
+         0OQfmH0CI5eiRMXm+Tg+aUQ7RUcAVXwHEhwDGRQBYSzdncJn14B0u9hpxxtm0XZ0rD8t
+         J2Ie9fU6G4OZ/6CVU1Z3xJpNO+g5GhSCkTqskkfP6rl870Z7AkLBDA5euXRgwgxDFu9N
+         5K/lzQBqhdDqJNyC+9089GXQ/yh64cmnQRDxfTkP2Jq2xnwCyFw+ZD0qO/p9UcOMcUwg
+         98QdGMomgEh0gIPmDwJ9P7BBvRgTUSSNlNY+Zvknqsu/u/zlhAyFIqdkB3DqsvvFPcyA
+         jSZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=J3/G+Htr0JzoQ9SW3wtIiw5W7YL3z8+P6XbDg6D7GbI=;
-        b=YhRrSw9dBFxbmv43D6TiyQaGJh5Bi9pHskQW4HiDNsYuIcoa6iN9yyRAAkQNq0MOr8
-         7ADg5u8Z6CpMZV2aj0BgaALBlwhQwwNW4yi3zpJGX2l6L8HRo3EB6+DaEgq+w719W3VC
-         qMw/Ds1CjSVB8EQNp9zr6JjDEbXXnK582Af9GzM+Vm3ZRSR0dz+eopZO79rXI6WzL2Ea
-         Y2DmwtW5EPZTU7FsvVft/lzGQIDAHWHUYNZlh6BnUU/4o44DoCFkwyMVusYEMZlG1Uoo
-         VygyLVpJpSBY/yNK2s1nuHpwCq9nkXurJQNUMs3yU7iREb1TZQlCg+w60vAiJlGVt6hv
-         xzmg==
-X-Gm-Message-State: AOAM530XqqoG47Np1ycMwGpCUnivgqkkRi+0Xw4+pGl4fraGIVidDjAK
-        ja2WxonTq4YlOr1DPy0hUwk=
-X-Google-Smtp-Source: ABdhPJxVc5UpfDMkvsxcKWseNE5uyehdjqaPjnS14YlXBlap57ULvnJRqqdLE8o1kNq1b41gX+BzkA==
-X-Received: by 2002:a62:7e4e:0:b0:44c:51f5:5895 with SMTP id z75-20020a627e4e000000b0044c51f55895mr13234300pfc.73.1633744331133;
-        Fri, 08 Oct 2021 18:52:11 -0700 (PDT)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id i18sm486958pfq.198.2021.10.08.18.52.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Oct 2021 18:52:10 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 09:52:04 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Gao Xiang <xiang@kernel.org>
-Cc:     linux-erofs@lists.ozlabs.org, Chao Yu <chao@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>, huyue2@yulong.com,
-        zhangwen@yulong.com, shaojunjun@yulong.com
-Subject: Re: [PATCH v2 1/3] erofs: get compression algorithms directly on
- mapping
-Message-ID: <20211009095204.00000974.zbestahu@gmail.com>
-In-Reply-To: <20211008200839.24541-2-xiang@kernel.org>
-References: <20211008200839.24541-1-xiang@kernel.org>
-        <20211008200839.24541-2-xiang@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=76p5MfvWGdwgnPxyAjvl4ZNMkG5vyADIcjc+KTZ0VLI=;
+        b=XrPUczetZn2gMwSKR1V7BVhOJTjJ8DQisKNPewfq5nzilEsxThB5WTVCysJekzQLnZ
+         cTiq33HcdLpAcbpiEtAdix0Y4SIIhw/3Uth9xAOn6x8kDri6H0ziV7NflQq/Aa/vUNeY
+         XX1tcTIu7/F0m9HDwuCE0Ac4IcCCO5p0KyoRmzfRByNTFaUPjqJNK+l5m+188tXcyA53
+         DsFiL2nqNh7qA5EwaeOVJ3Uid5xh57dsglWIV2x46E1qbH5fyxfFp1jVypYOAf5wwzL5
+         plQdUWZwqo0RL8ztuNx3549fCoHcHcphPsSqkFj8A0X/4DCpEAx5IoJVYDLt1E1VTbEp
+         CCQA==
+X-Gm-Message-State: AOAM5311T4gWzDJ0su5NexRpSHqXS+zcl0UR/AapPplNue+jiTiO840q
+        KuLE1d0wq29Hjzjd4zibbCAzJV2UHDfY8g==
+X-Google-Smtp-Source: ABdhPJwmD1xs2RsWk/c6qQMb40ItPikYaYoMbdjAvJqHFKg0LeD3Gl1ATx8YZfcMbjmOANvoaB/jeWkQ+7XFVA==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:fc52:cec:3819:b41f])
+ (user=dlatypov job=sendgmr) by 2002:ac8:3e82:: with SMTP id
+ y2mr1861044qtf.284.1633744457242; Fri, 08 Oct 2021 18:54:17 -0700 (PDT)
+Date:   Fri,  8 Oct 2021 18:54:05 -0700
+Message-Id: <20211009015406.1311319-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH 1/2] kunit: tool: use dataclass instead of collections.namedtuple
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com, davidgow@google.com
+Cc:     linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  9 Oct 2021 04:08:37 +0800
-Gao Xiang <xiang@kernel.org> wrote:
+namedtuple is a terse way of defining a collection of fields.
+However, it does not allow us to annotate the type of these fields.
+It also doesn't let us have any sort of inheritance between types.
 
-> From: Gao Xiang <hsiangkao@linux.alibaba.com>
-> 
-> Currently, z_erofs_map_blocks_iter() returns whether extents are
-> compressed or not, and the decompression frontend gets the specific
-> algorithms then.
-> 
-> It works but not quite well in many aspests, for example:
->  - The decompression frontend has to deal with whether extents are
->    compressed or not again and lookup the algorithms if compressed.
->    It's duplicated and too detailed about the on-disk mapping.
-> 
->  - A new secondary compression head will be introduced later so that
->    each file can have 2 compression algorithms at most for different
->    type of data. It could increase the complexity of the decompression
->    frontend if still handled in this way;
-> 
->  - A new readmore decompression strategy will be introduced to get
->    better performance for much bigger pcluster and lzma, which needs
->    the specific algorithm in advance as well.
-> 
-> Let's look up compression algorithms in z_erofs_map_blocks_iter()
-> directly instead.
-> 
-> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
-> ---
->  fs/erofs/compress.h          |  5 -----
->  fs/erofs/internal.h          | 12 +++++++++---
->  fs/erofs/zdata.c             | 12 ++++++------
->  fs/erofs/zmap.c              | 19 ++++++++++---------
->  include/trace/events/erofs.h |  2 +-
->  5 files changed, 26 insertions(+), 24 deletions(-)
-> 
-> diff --git a/fs/erofs/compress.h b/fs/erofs/compress.h
-> index 3701c72bacb2..ad62d1b4d371 100644
-> --- a/fs/erofs/compress.h
-> +++ b/fs/erofs/compress.h
-> @@ -8,11 +8,6 @@
->  
->  #include "internal.h"
->  
-> -enum {
-> -	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
-> -	Z_EROFS_COMPRESSION_RUNTIME_MAX
-> -};
-> -
->  struct z_erofs_decompress_req {
->  	struct super_block *sb;
->  	struct page **in, **out;
-> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-> index 9524e155b38f..48bfc6eb2b02 100644
-> --- a/fs/erofs/internal.h
-> +++ b/fs/erofs/internal.h
-> @@ -338,7 +338,7 @@ extern const struct address_space_operations z_erofs_aops;
->   * of the corresponding uncompressed data in the file.
->   */
->  enum {
-> -	BH_Zipped = BH_PrivateStart,
-> +	BH_Encoded = BH_PrivateStart,
->  	BH_FullMapped,
->  };
->  
-> @@ -346,8 +346,8 @@ enum {
->  #define EROFS_MAP_MAPPED	(1 << BH_Mapped)
->  /* Located in metadata (could be copied from bd_inode) */
->  #define EROFS_MAP_META		(1 << BH_Meta)
-> -/* The extent has been compressed */
-> -#define EROFS_MAP_ZIPPED	(1 << BH_Zipped)
-> +/* The extent is encoded */
-> +#define EROFS_MAP_ENCODED	(1 << BH_Encoded)
->  /* The length of extent is full */
->  #define EROFS_MAP_FULL_MAPPED	(1 << BH_FullMapped)
->  
-> @@ -355,6 +355,7 @@ struct erofs_map_blocks {
->  	erofs_off_t m_pa, m_la;
->  	u64 m_plen, m_llen;
->  
-> +	char m_algorithmformat;
->  	unsigned int m_flags;
->  
->  	struct page *mpage;
-> @@ -368,6 +369,11 @@ struct erofs_map_blocks {
->   */
->  #define EROFS_GET_BLOCKS_FIEMAP	0x0002
->  
-> +enum {
-> +	Z_EROFS_COMPRESSION_SHIFTED = Z_EROFS_COMPRESSION_MAX,
-> +	Z_EROFS_COMPRESSION_RUNTIME_MAX
-> +};
-> +
->  /* zmap.c */
->  extern const struct iomap_ops z_erofs_iomap_report_ops;
->  
-> diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-> index 11c7a1aaebad..5c34ef66677f 100644
-> --- a/fs/erofs/zdata.c
-> +++ b/fs/erofs/zdata.c
-> @@ -476,6 +476,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
->  	struct erofs_workgroup *grp;
->  	int err;
->  
-> +	if (!(map->m_flags & EROFS_MAP_ENCODED)) {
-> +		DBG_BUGON(1);
-> +		return -EFSCORRUPTED;
-> +	}
-> +
->  	/* no available pcluster, let's allocate one */
->  	pcl = z_erofs_alloc_pcluster(map->m_plen >> PAGE_SHIFT);
->  	if (IS_ERR(pcl))
-> @@ -483,16 +488,11 @@ static int z_erofs_register_collection(struct z_erofs_collector *clt,
->  
->  	atomic_set(&pcl->obj.refcount, 1);
->  	pcl->obj.index = map->m_pa >> PAGE_SHIFT;
-> -
-> +	pcl->algorithmformat = map->m_algorithmformat;
->  	pcl->length = (map->m_llen << Z_EROFS_PCLUSTER_LENGTH_BIT) |
->  		(map->m_flags & EROFS_MAP_FULL_MAPPED ?
->  			Z_EROFS_PCLUSTER_FULL_LENGTH : 0);
->  
-> -	if (map->m_flags & EROFS_MAP_ZIPPED)
-> -		pcl->algorithmformat = Z_EROFS_COMPRESSION_LZ4;
-> -	else
-> -		pcl->algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
-> -
->  	/* new pclusters should be claimed as type 1, primary and followed */
->  	pcl->next = clt->owned_head;
->  	clt->mode = COLLECT_PRIMARY_FOLLOWED;
-> diff --git a/fs/erofs/zmap.c b/fs/erofs/zmap.c
-> index 7a6df35fdc91..9d9c26343dab 100644
-> --- a/fs/erofs/zmap.c
-> +++ b/fs/erofs/zmap.c
-> @@ -111,7 +111,7 @@ struct z_erofs_maprecorder {
->  
->  	unsigned long lcn;
->  	/* compression extent information gathered */
-> -	u8  type;
-> +	u8  type, headtype;
->  	u16 clusterofs;
->  	u16 delta[2];
->  	erofs_blk_t pblk, compressedlcs;
-> @@ -446,9 +446,8 @@ static int z_erofs_extent_lookback(struct z_erofs_maprecorder *m,
->  		}
->  		return z_erofs_extent_lookback(m, m->delta[0]);
->  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
-> -		map->m_flags &= ~EROFS_MAP_ZIPPED;
-> -		fallthrough;
->  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
-> +		m->headtype = m->type;
->  		map->m_la = (lcn << lclusterbits) | m->clusterofs;
->  		break;
->  	default:
-> @@ -472,7 +471,7 @@ static int z_erofs_get_extent_compressedlen(struct z_erofs_maprecorder *m,
->  
->  	DBG_BUGON(m->type != Z_EROFS_VLE_CLUSTER_TYPE_PLAIN &&
->  		  m->type != Z_EROFS_VLE_CLUSTER_TYPE_HEAD);
-> -	if (!(map->m_flags & EROFS_MAP_ZIPPED) ||
-> +	if (m->headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN ||
->  	    !(vi->z_advise & Z_EROFS_ADVISE_BIG_PCLUSTER_1)) {
->  		map->m_plen = 1 << lclusterbits;
->  		return 0;
-> @@ -609,16 +608,13 @@ int z_erofs_map_blocks_iter(struct inode *inode,
->  	if (err)
->  		goto unmap_out;
->  
-> -	map->m_flags = EROFS_MAP_ZIPPED;	/* by default, compressed */
->  	end = (m.lcn + 1ULL) << lclusterbits;
->  
->  	switch (m.type) {
->  	case Z_EROFS_VLE_CLUSTER_TYPE_PLAIN:
-> -		if (endoff >= m.clusterofs)
-> -			map->m_flags &= ~EROFS_MAP_ZIPPED;
-> -		fallthrough;
->  	case Z_EROFS_VLE_CLUSTER_TYPE_HEAD:
->  		if (endoff >= m.clusterofs) {
-> +			m.headtype = m.type;
->  			map->m_la = (m.lcn << lclusterbits) | m.clusterofs;
->  			break;
->  		}
-> @@ -650,12 +646,17 @@ int z_erofs_map_blocks_iter(struct inode *inode,
->  
->  	map->m_llen = end - map->m_la;
->  	map->m_pa = blknr_to_addr(m.pblk);
-> -	map->m_flags |= EROFS_MAP_MAPPED;
-> +	map->m_flags = EROFS_MAP_MAPPED | EROFS_MAP_ENCODED;
->  
->  	err = z_erofs_get_extent_compressedlen(&m, initial_lcn);
->  	if (err)
->  		goto out;
->  
-> +	if (m.headtype == Z_EROFS_VLE_CLUSTER_TYPE_PLAIN)
-> +		map->m_algorithmformat = Z_EROFS_COMPRESSION_SHIFTED;
-> +	else
-> +		map->m_algorithmformat = vi->z_algorithmtype[0];
-> +
->  	if (flags & EROFS_GET_BLOCKS_FIEMAP) {
->  		err = z_erofs_get_extent_decompressedlen(&m);
->  		if (!err)
-> diff --git a/include/trace/events/erofs.h b/include/trace/events/erofs.h
-> index db4f2cec8360..16ae7b666810 100644
-> --- a/include/trace/events/erofs.h
-> +++ b/include/trace/events/erofs.h
-> @@ -24,7 +24,7 @@ struct erofs_map_blocks;
->  #define show_mflags(flags) __print_flags(flags, "",	\
->  	{ EROFS_MAP_MAPPED,	"M" },			\
->  	{ EROFS_MAP_META,	"I" },			\
-> -	{ EROFS_MAP_ZIPPED,	"Z" })
-> +	{ EROFS_MAP_ENCODED,	"E" })
+Since commit df4b0807ca1a ("kunit: tool: Assert the version
+requirement"), kunit.py has asserted that it's running on python >=3.7.
 
-Looks good to me.
+So in that case use a 3.7 feature, dataclasses, to replace these.
 
-Reviewed-by: Yue Hu <huyue2@yulong.com>
+Changes in detail:
+* Make KunitExecRequest contain all the fields needed for exec_tests
+* Use inheritance to dedupe fields
+  * also allows us to e.g. pass a KUnitRequest in as a KUnitParseRequest
+  * this has changed around the order of some fields
+* Use named arguments when constructing all request objects in kunit.py
+  * This is to prevent accidentally mixing up fields, etc.
 
->  
->  TRACE_EVENT(erofs_lookup,
->  
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ tools/testing/kunit/kunit.py           | 139 +++++++++++++------------
+ tools/testing/kunit/kunit_tool_test.py |   6 +-
+ 2 files changed, 75 insertions(+), 70 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 9c9ed4071e9e..f879414a13c4 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -15,38 +15,57 @@ import time
+ 
+ assert sys.version_info >= (3, 7), "Python version is too old"
+ 
+-from collections import namedtuple
++from dataclasses import dataclass
+ from enum import Enum, auto
+-from typing import Iterable, List
++from typing import Any, Iterable, List, Optional
+ 
+ import kunit_json
+ import kunit_kernel
+ import kunit_parser
+ 
+-KunitResult = namedtuple('KunitResult', ['status','result','elapsed_time'])
+-
+-KunitConfigRequest = namedtuple('KunitConfigRequest',
+-				['build_dir', 'make_options'])
+-KunitBuildRequest = namedtuple('KunitBuildRequest',
+-			       ['jobs', 'build_dir', 'alltests',
+-				'make_options'])
+-KunitExecRequest = namedtuple('KunitExecRequest',
+-			      ['timeout', 'build_dir', 'alltests',
+-			       'filter_glob', 'kernel_args', 'run_isolated'])
+-KunitParseRequest = namedtuple('KunitParseRequest',
+-			       ['raw_output', 'build_dir', 'json'])
+-KunitRequest = namedtuple('KunitRequest', ['raw_output','timeout', 'jobs',
+-					   'build_dir', 'alltests', 'filter_glob',
+-					   'kernel_args', 'run_isolated', 'json', 'make_options'])
+-
+-KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
+-
+ class KunitStatus(Enum):
+ 	SUCCESS = auto()
+ 	CONFIG_FAILURE = auto()
+ 	BUILD_FAILURE = auto()
+ 	TEST_FAILURE = auto()
+ 
++@dataclass
++class KunitResult:
++	status: KunitStatus
++	result: Any
++	elapsed_time: float
++
++@dataclass
++class KunitConfigRequest:
++	build_dir: str
++	make_options: Optional[List[str]]
++
++@dataclass
++class KunitBuildRequest(KunitConfigRequest):
++	jobs: int
++	alltests: bool
++
++@dataclass
++class KunitParseRequest:
++	raw_output: Optional[str]
++	build_dir: str
++	json: Optional[str]
++
++@dataclass
++class KunitExecRequest(KunitParseRequest):
++	timeout: int
++	alltests: bool
++	filter_glob: str
++	kernel_args: Optional[List[str]]
++	run_isolated: Optional[str]
++
++@dataclass
++class KunitRequest(KunitExecRequest, KunitBuildRequest):
++	pass
++
++
++KernelDirectoryPath = sys.argv[0].split('tools/testing/kunit/')[0]
++
+ def get_kernel_root_path() -> str:
+ 	path = sys.argv[0] if not __file__ else __file__
+ 	parts = os.path.realpath(path).split('tools/testing/kunit')
+@@ -121,8 +140,7 @@ def _suites_from_test_list(tests: List[str]) -> List[str]:
+ 
+ 
+ 
+-def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
+-	       parse_request: KunitParseRequest) -> KunitResult:
++def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest) -> KunitResult:
+ 	filter_globs = [request.filter_glob]
+ 	if request.run_isolated:
+ 		tests = _list_tests(linux, request)
+@@ -147,7 +165,7 @@ def exec_tests(linux: kunit_kernel.LinuxSourceTree, request: KunitExecRequest,
+ 			filter_glob=filter_glob,
+ 			build_dir=request.build_dir)
+ 
+-		result = parse_tests(parse_request, run_result)
++		result = parse_tests(request, run_result)
+ 		# run_kernel() doesn't block on the kernel exiting.
+ 		# That only happens after we get the last line of output from `run_result`.
+ 		# So exec_time here actually contains parsing + execution time, which is fine.
+@@ -211,27 +229,15 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 	      request: KunitRequest) -> KunitResult:
+ 	run_start = time.time()
+ 
+-	config_request = KunitConfigRequest(request.build_dir,
+-					    request.make_options)
+-	config_result = config_tests(linux, config_request)
++	config_result = config_tests(linux, request)
+ 	if config_result.status != KunitStatus.SUCCESS:
+ 		return config_result
+ 
+-	build_request = KunitBuildRequest(request.jobs, request.build_dir,
+-					  request.alltests,
+-					  request.make_options)
+-	build_result = build_tests(linux, build_request)
++	build_result = build_tests(linux, request)
+ 	if build_result.status != KunitStatus.SUCCESS:
+ 		return build_result
+ 
+-	exec_request = KunitExecRequest(request.timeout, request.build_dir,
+-				 request.alltests, request.filter_glob,
+-				 request.kernel_args, request.run_isolated)
+-	parse_request = KunitParseRequest(request.raw_output,
+-					  request.build_dir,
+-					  request.json)
+-
+-	exec_result = exec_tests(linux, exec_request, parse_request)
++	exec_result = exec_tests(linux, request)
+ 
+ 	run_end = time.time()
+ 
+@@ -382,16 +388,16 @@ def main(argv, linux=None):
+ 					cross_compile=cli_args.cross_compile,
+ 					qemu_config_path=cli_args.qemu_config)
+ 
+-		request = KunitRequest(cli_args.raw_output,
+-				       cli_args.timeout,
+-				       cli_args.jobs,
+-				       cli_args.build_dir,
+-				       cli_args.alltests,
+-				       cli_args.filter_glob,
+-				       cli_args.kernel_args,
+-				       cli_args.run_isolated,
+-				       cli_args.json,
+-				       cli_args.make_options)
++		request = KunitRequest(build_dir=cli_args.build_dir,
++				       make_options=cli_args.make_options,
++				       jobs=cli_args.jobs,
++				       alltests=cli_args.alltests,
++				       raw_output=cli_args.raw_output,
++				       json=cli_args.json,
++				       timeout=cli_args.timeout,
++				       filter_glob=cli_args.filter_glob,
++				       kernel_args=cli_args.kernel_args,
++				       run_isolated=cli_args.run_isolated)
+ 		result = run_tests(linux, request)
+ 		if result.status != KunitStatus.SUCCESS:
+ 			sys.exit(1)
+@@ -407,8 +413,8 @@ def main(argv, linux=None):
+ 					cross_compile=cli_args.cross_compile,
+ 					qemu_config_path=cli_args.qemu_config)
+ 
+-		request = KunitConfigRequest(cli_args.build_dir,
+-					     cli_args.make_options)
++		request = KunitConfigRequest(build_dir=cli_args.build_dir,
++					     make_options=cli_args.make_options)
+ 		result = config_tests(linux, request)
+ 		kunit_parser.print_with_timestamp((
+ 			'Elapsed time: %.3fs\n') % (
+@@ -423,10 +429,10 @@ def main(argv, linux=None):
+ 					cross_compile=cli_args.cross_compile,
+ 					qemu_config_path=cli_args.qemu_config)
+ 
+-		request = KunitBuildRequest(cli_args.jobs,
+-					    cli_args.build_dir,
+-					    cli_args.alltests,
+-					    cli_args.make_options)
++		request = KunitBuildRequest(build_dir=cli_args.build_dir,
++					    make_options=cli_args.make_options,
++					    jobs=cli_args.jobs,
++					    alltests=cli_args.alltests)
+ 		result = build_tests(linux, request)
+ 		kunit_parser.print_with_timestamp((
+ 			'Elapsed time: %.3fs\n') % (
+@@ -441,16 +447,15 @@ def main(argv, linux=None):
+ 					cross_compile=cli_args.cross_compile,
+ 					qemu_config_path=cli_args.qemu_config)
+ 
+-		exec_request = KunitExecRequest(cli_args.timeout,
+-						cli_args.build_dir,
+-						cli_args.alltests,
+-						cli_args.filter_glob,
+-						cli_args.kernel_args,
+-						cli_args.run_isolated)
+-		parse_request = KunitParseRequest(cli_args.raw_output,
+-						  cli_args.build_dir,
+-						  cli_args.json)
+-		result = exec_tests(linux, exec_request, parse_request)
++		exec_request = KunitExecRequest(raw_output=cli_args.raw_output,
++						build_dir=cli_args.build_dir,
++						json=cli_args.json,
++						timeout=cli_args.timeout,
++						alltests=cli_args.alltests,
++						filter_glob=cli_args.filter_glob,
++						kernel_args=cli_args.kernel_args,
++						run_isolated=cli_args.run_isolated)
++		result = exec_tests(linux, exec_request)
+ 		kunit_parser.print_with_timestamp((
+ 			'Elapsed time: %.3fs\n') % (result.elapsed_time))
+ 		if result.status != KunitStatus.SUCCESS:
+@@ -461,9 +466,9 @@ def main(argv, linux=None):
+ 		else:
+ 			with open(cli_args.file, 'r') as f:
+ 				kunit_output = f.read().splitlines()
+-		request = KunitParseRequest(cli_args.raw_output,
+-					    None,
+-					    cli_args.json)
++		request = KunitParseRequest(raw_output=cli_args.raw_output,
++					    build_dir='',
++					    json=cli_args.json)
+ 		result = parse_tests(request, kunit_output)
+ 		if result.status != KunitStatus.SUCCESS:
+ 			sys.exit(1)
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 6648de1f9ceb..2540bb10b4e8 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -556,7 +556,7 @@ class KUnitMainTest(unittest.TestCase):
+ 		self.linux_source_mock.run_kernel.return_value = ['TAP version 14', 'init: random output'] + want
+ 
+ 		got = kunit._list_tests(self.linux_source_mock,
+-				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'suite'))
++				     kunit.KunitExecRequest(None, '.kunit', None, 300, False, 'suite*', None, 'suite'))
+ 
+ 		self.assertEqual(got, want)
+ 		# Should respect the user's filter glob when listing tests.
+@@ -571,7 +571,7 @@ class KUnitMainTest(unittest.TestCase):
+ 
+ 		# Should respect the user's filter glob when listing tests.
+ 		mock_tests.assert_called_once_with(mock.ANY,
+-				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*.test*', None, 'suite'))
++				     kunit.KunitExecRequest(None, '.kunit', None, 300, False, 'suite*.test*', None, 'suite'))
+ 		self.linux_source_mock.run_kernel.assert_has_calls([
+ 			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test*', timeout=300),
+ 			mock.call(args=None, build_dir='.kunit', filter_glob='suite2.test*', timeout=300),
+@@ -584,7 +584,7 @@ class KUnitMainTest(unittest.TestCase):
+ 
+ 		# Should respect the user's filter glob when listing tests.
+ 		mock_tests.assert_called_once_with(mock.ANY,
+-				     kunit.KunitExecRequest(300, '.kunit', False, 'suite*', None, 'test'))
++				     kunit.KunitExecRequest(None, '.kunit', None, 300, False, 'suite*', None, 'test'))
+ 		self.linux_source_mock.run_kernel.assert_has_calls([
+ 			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test1', timeout=300),
+ 			mock.call(args=None, build_dir='.kunit', filter_glob='suite.test2', timeout=300),
+
+base-commit: e3c6457b588d83b7ecd40eb4bd6d95007020fbe4
+-- 
+2.33.0.882.g93a45727a2-goog
 
