@@ -2,203 +2,343 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5F1427AD9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A82FB427ADC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhJIOfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 10:35:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S234066AbhJIOhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 10:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233850AbhJIOfa (ORCPT
+        with ESMTP id S233159AbhJIOhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 10:35:30 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA32C061570;
-        Sat,  9 Oct 2021 07:33:32 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id r19so49596871lfe.10;
-        Sat, 09 Oct 2021 07:33:32 -0700 (PDT)
+        Sat, 9 Oct 2021 10:37:34 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CF8C061570;
+        Sat,  9 Oct 2021 07:35:37 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id l7-20020a0568302b0700b0054e40740571so9577173otv.0;
+        Sat, 09 Oct 2021 07:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QDp2yNokFdoQ44aXDJPVFLwnE9qYqpLQcn22DBoeZOk=;
-        b=Fas4aZoC3qmO5paWn3GZzJkxnC0ssfYOr4r9OTDqiDOqtUR49T+MU1HWmn8RoBVmSd
-         Ncd7BwML/OUUOyaBFHGQiNR1lcVtp4VAwhGL47ejFCSnCUx7XOxmzGqfety1zghSENCQ
-         lSRean/XqtseEKR2jTqHiwOoZ+du4nPwuZSiiZg97qjci/HF1RgM1MpZDJL/uMmIbijL
-         Fs1U6/YB0d0xAKZItb2r5s/M/6CWIxtAcxWS+Y+TZgLqDh29OFf4odYh4XNxefOw7foE
-         S/KWg6OCY/arK4QT5iTP0ambDQ0IFLUM5XENvHuy55frFghUM1asYfZYcCGaLly0/2t6
-         wuGg==
+        h=sender:to:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XWlZarvv2JxPdrzhfRVj8fyMdevADTATJGBJxYBWoLE=;
+        b=AOU8zwZItd6x4C4+kwSwuUXQr8wtrHWenJ9GWRw9PCVoTLsY+pqIHcVsmStezMl1ym
+         3BpOZS/VJ58AEqUq/rk2l1uraQgs10aEYpg1viay2ZZKPKnGOXljGgN6mEYLQFFyPlzt
+         KSf7LxfQyfbuD/Cbdpy/N5zQ5O6xBADjUOFCiux24o338j0BJSZUo6o+UB90YDzv73I7
+         WKEpufoFN3v+1a/EthStv5u0P8qJKKEw8lq0LXa/84gexQdR1z0+ec8dMThRlQNigQJ5
+         l/VDWrySjzxBemQzE8YZI49zzsC4FnIpFhutAkBpNtDPRthvfY4Mg208dtwuIpIJpGk0
+         UuuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QDp2yNokFdoQ44aXDJPVFLwnE9qYqpLQcn22DBoeZOk=;
-        b=1Op/eWFdjKRPmgirFwivacRCjtR86UJLTZEQJFS0jKNSpxY1NLyBOeG6SMaov1zZuI
-         Rhh5V2Dsc7WR1un76va/gVe36p/T/GpvY2MYX7HVhAL6ISDDIy1mdyOkD2xBVHzBHvW/
-         +KsoiK85BPEETlzKNVYBmPMp/fZnRqcTnxhWaZ3IrSNf8673azwHjqdL8JcgpCVsyGxR
-         iwdgnqUdm57PBsVHLLsEF2ZH1Zr+DlYhHTJUdw1JtkwiLf00lgl+Vcao9TNsyrtAb1EU
-         +ViepwDTZSvQ3v0UH/NppRTZVM1tuuK2wSU5OG5TP+e2Fs+AWkXvtqFg14q9y7qATYVT
-         XKkA==
-X-Gm-Message-State: AOAM532/cTw+oC/fA5niCW79xKuT8FyV2wKi3Iu0UL13V1GDQ7/SYSrd
-        HHj2bQrNDy5vRdvNhRcI3XM=
-X-Google-Smtp-Source: ABdhPJy6UPZVuas4ohCJgQ0pRn0sijAXEhKsOjup9vra8T5xskPRL4ywsqMRXNLV5TB00CFiTdh7VQ==
-X-Received: by 2002:a2e:8743:: with SMTP id q3mr10543641ljj.280.1633790010481;
-        Sat, 09 Oct 2021 07:33:30 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id w16sm221263lfq.272.2021.10.09.07.33.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 07:33:30 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 17:33:27 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev, Christoph Hellwig <hch@lst.de>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        torvalds@linux-foundation.org
-Subject: Re: [PATCH v4 7/9] fs/ntfs3: Add iocharset= mount option as alias
- for nls=
-Message-ID: <20211009143327.mqwwwlc4bgwtpush@kari-VirtualBox>
-References: <20210907153557.144391-1-kari.argillander@gmail.com>
- <20210907153557.144391-8-kari.argillander@gmail.com>
- <20210908190938.l32kihefvtfw5tjp@pali>
- <20211009114252.jn2uehmaveucimp5@pali>
+        h=x-gm-message-state:sender:to:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XWlZarvv2JxPdrzhfRVj8fyMdevADTATJGBJxYBWoLE=;
+        b=S4U+csd6JlD/kn8+mGkRxUo09eiUm4oTb+q78TOrMiAjIpXQ4j9k5Ypgd2i18BEY+F
+         DGoZvHz31PagMxWvswTFn5V6yNCHGq7KISEO3yXelZlaoKCW7TIWm6JxYbId+/z25i0F
+         zpGbz0XLXww/L2DDZLwvNVTsF2ZRGrcEL3KEIAd2JJn25dvC9l/G43ZhdtVFfh7yGAee
+         7m30XzqYynkYgByX32VuX41xI0OdSJRICO+V8v55mk8aEsAt1QUSb0zFfUsmUCzR1nOa
+         MWpWEcidOZpvlhGt6m4yaGUGtwOc5iD5hIi/imDXcJyPp3K0rrGz9pFf7QAKqoh6GNK/
+         Sc9w==
+X-Gm-Message-State: AOAM530FpoWkR9nWkO2W0VD30/qjy33p8PpIlpVpW93MGBQT+/CTijR2
+        x+Rb7ozzrIKTRlLGth3LL1qx/2a8leA=
+X-Google-Smtp-Source: ABdhPJyMBkX/F0Ft4kQWEykV5BgWfFHIrG0yfYAG4ZKITh0UaSaPd6kqOgwi3b5IGtF82ORN6y+Iag==
+X-Received: by 2002:a05:6830:2386:: with SMTP id l6mr10988733ots.88.1633790136445;
+        Sat, 09 Oct 2021 07:35:36 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j16sm561135oig.29.2021.10.09.07.35.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 07:35:35 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20211009025858.3326725-1-osk@google.com>
+ <20211009025858.3326725-2-osk@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v4 2/2] hwmon: (nct7802) Make temperature sensors
+ configurable.
+Message-ID: <0674a2d0-f0a2-d6bc-33e3-483614602bae@roeck-us.net>
+Date:   Sat, 9 Oct 2021 07:35:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20211009025858.3326725-2-osk@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211009114252.jn2uehmaveucimp5@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Choose to add Linus to CC so that he also knows whats coming.
-
-On Sat, Oct 09, 2021 at 01:42:52PM +0200, Pali Rohár wrote:
-> Hello!
+On 10/8/21 7:58 PM, Oskar Senft wrote:
+> This change allows LTD and RTD inputs to be configured via
+> device tree bindings. If the DT bindings are not present,
+> the input configuration is not modified and left at HW
+> defaults.
 > 
-> This patch have not been applied yet:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ntfs3/super.c#n247
+> Signed-off-by: Oskar Senft <osk@google.com>
+> ---
+>   drivers/hwmon/nct7802.c | 158 ++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 144 insertions(+), 14 deletions(-)
 > 
-> What happened that in upstream tree is still only nls= option and not
-> this iocharset=?
+> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
+> index 604af2f6103a..5a7e38e8a188 100644
+> --- a/drivers/hwmon/nct7802.c
+> +++ b/drivers/hwmon/nct7802.c
+> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
+>   #define REG_CHIP_ID		0xfe
+>   #define REG_VERSION_ID		0xff
+>   
+> +/*
+> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
+> + * Selection Register
+> + */
+> +#define RTD_MODE_CURRENT	0x1
+> +#define RTD_MODE_THERMISTOR	0x2
+> +#define RTD_MODE_VOLTAGE	0x3
+> +
+> +#define MODE_RTD_MASK		0x3
+> +#define MODE_LTD_EN		0x40
+> +
+> +/*
+> + * Bit offset for sensors modes in REG_MODE.
+> + * Valid for index 0..2, indicating RTD1..3.
+> + */
+> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
+> +
+>   /*
+>    * Data structures and manipulation thereof
+>    */
+> @@ -74,7 +91,9 @@ static ssize_t temp_type_show(struct device *dev,
+>   	if (ret < 0)
+>   		return ret;
+>   
+> -	return sprintf(buf, "%u\n", (mode >> (2 * sattr->index) & 3) + 2);
+> +	return sprintf(buf, "%u\n",
+> +			((mode >> MODE_BIT_OFFSET_RTD(sattr->index)) &
+> +				MODE_RTD_MASK) + 2);
 
-Very valid question. For some reason Konstantin has not sended pr to
-Linus. I have also address my concern that pr is not yet sended and he
-will make very massive "patch dumb" to rc6/rc7. See thread [1]. There is
-about 50-70 patch already which he will send to rc6/rc7. I have get also
-impression that patches which are not yet even applied to ntfs3 tree [2]
-will be also sended to rc6/rc7. There is lot of refactoring and new
-algorithms which imo are not rc material. I have sended many message to
-Konstantin about this topic, but basically ignored.
+Please split into two patches to simplify review. The changes from
+constant to define are logically separate and should thus be in a
+separate patch.
 
-Basically we do not have anything for next merge window and every patch
-will be sended for 5.15.
+>   }
+>   
+>   static ssize_t temp_type_store(struct device *dev,
+> @@ -94,7 +113,8 @@ static ssize_t temp_type_store(struct device *dev,
+>   	if (type < 3 || type > 4)
+>   		return -EINVAL;
+>   	err = regmap_update_bits(data->regmap, REG_MODE,
+> -			3 << 2 * sattr->index, (type - 2) << 2 * sattr->index);
+> +			MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(sattr->index),
+> +			(type - 2) << MODE_BIT_OFFSET_RTD(sattr->index));
+>   	return err ? : count;
+>   }
+>   
+> @@ -682,24 +702,24 @@ static umode_t nct7802_temp_is_visible(struct kobject *kobj,
+>   	struct device *dev = kobj_to_dev(kobj);
+>   	struct nct7802_data *data = dev_get_drvdata(dev);
+>   	unsigned int reg;
+> +	unsigned int rtd_mode;
+>   	int err;
+>   
+>   	err = regmap_read(data->regmap, REG_MODE, &reg);
+>   	if (err < 0)
+>   		return 0;
+>   
+> -	if (index < 10 &&
+> -	    (reg & 03) != 0x01 && (reg & 0x03) != 0x02)		/* RD1 */
+> +	rtd_mode = (reg >> MODE_BIT_OFFSET_RTD(index / 10)) & MODE_RTD_MASK;
+> +	if (index >= 0 && index < 20 &&				/* RD1, RD 2*/
+> +	    rtd_mode != 0x01 && rtd_mode != 0x02)
+>   		return 0;
+>   
+> -	if (index >= 10 && index < 20 &&
+> -	    (reg & 0x0c) != 0x04 && (reg & 0x0c) != 0x08)	/* RD2 */
+> -		return 0;
+> -	if (index >= 20 && index < 30 && (reg & 0x30) != 0x20)	/* RD3 */
+> +	if (index >= 20 && index < 30 && rtd_mode != 0x02)	/* RD3 */
+>   		return 0;
+>   
+> -	if (index >= 30 && index < 38)				/* local */
+> -		return attr->mode;
+> +	if (index >= 30 && index < 38 &&			/* local */
+> +	    (reg & MODE_LTD_EN) != MODE_LTD_EN)
 
-[1] lore.kernel.org/lkml/20210925082823.fo2wm62xlcexhwvi@kari-VirtualBox
-[2] https://github.com/Paragon-Software-Group/linux-ntfs3/commits/master
+This is just a single bit, so "!(reg & MODE_LTD_EN)" is sufficient.
 
-  Argillander
+> +		return 0;
+>   
+>   	err = regmap_read(data->regmap, REG_PECI_ENABLE, &reg);
+>   	if (err < 0)
+> @@ -1038,7 +1058,118 @@ static const struct regmap_config nct7802_regmap_config = {
+>   	.volatile_reg = nct7802_regmap_is_volatile,
+>   };
+>   
+> -static int nct7802_init_chip(struct nct7802_data *data)
+> +static bool nct7802_get_input_config(struct device *dev,
+> +	struct device_node *input, u8 *mode_mask, u8 *mode_val)
 
+Please align continuation lines with "(".
+The function should return an error code.
+
+> +{
+> +	u32 reg;
+> +	const char *type_str, *md_str;
+> +	u8 md;
+> +
+> +	if (!input->name || of_node_cmp(input->name, "input"))
+> +		return false;
+> +
+> +	if (of_property_read_u32(input, "reg", &reg)) {
+> +		dev_err(dev, "Could not read reg value for '%s'\n",
+> +			input->full_name);
+> +		return false;
+> +	}
+> +
+> +	if (reg > 3) {
+> +		dev_err(dev,
+> +			"Invalid reg (%u) in '%s'\n", reg, input->full_name);
+> +		return false;
+> +	}
+> +
+> +	if (reg == 0) {
+> +		if (!of_device_is_available(input))
+> +			*mode_val &= ~MODE_LTD_EN;
+> +		else
+> +			*mode_val |= MODE_LTD_EN;
+> +		*mode_mask |= MODE_LTD_EN;
+> +		return true;
+> +	}
+> +
+> +	if (reg >= 1 && reg <= 3 && !of_device_is_available(input)) {
+
+reg will always be >=1 and <=3 here.
+
+> +		*mode_val &= ~(MODE_RTD_MASK
+> +			<< MODE_BIT_OFFSET_RTD(reg-1));
+
+space around '-'
+
+> +		*mode_mask |= MODE_RTD_MASK
+> +			<< MODE_BIT_OFFSET_RTD(reg-1);
+
+Unnecessary continuation lines. There are several more of those;
+I won't comment on it further. Please only use continuation lines if
+the resulting line length is otherwise > 100 columns.
+
+> +		return true;
+> +	}
+> +
+> +	if (of_property_read_string(input, "sensor-type", &type_str)) {
+> +		dev_err(dev, "No type for '%s'\n", input->full_name);
+> +		return false;
+> +	}
+> +
+> +	if (!strcmp(type_str, "voltage")) {
+> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
+> +			<< MODE_BIT_OFFSET_RTD(reg-1);
+> +		*mode_mask |= MODE_RTD_MASK
+> +			<< MODE_BIT_OFFSET_RTD(reg-1);
+> +		return true;
+> +	}
+> +
+> +	if (strcmp(type_str, "temperature")) {
+> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
+> +			input->full_name);
+> +		return false;
+> +	}
+> +
+> +	if (reg == 3) {
+> +		/* RTD3 only supports thermistor mode */
+> +		md = RTD_MODE_THERMISTOR;
+> +	} else {
+> +		if (of_property_read_string(input, "temperature-mode",
+> +								&md_str)) {
+> +			dev_err(dev, "No mode for '%s'\n", input->full_name);
+> +			return false;
+> +		}
+> +
+> +		if (!strcmp(md_str, "thermal-diode"))
+> +			md = RTD_MODE_CURRENT;
+> +		else if (!strcmp(md_str, "thermistor"))
+> +			md = RTD_MODE_THERMISTOR;
+> +		else {
+> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
+> +				input->full_name);
+> +			return false;
+> +		}
+> +	}
+> +
+> +	*mode_val |= (md & MODE_RTD_MASK)
+> +		<< MODE_BIT_OFFSET_RTD(reg-1);
+
+space before and after '-'
+
+> +	*mode_mask |= MODE_RTD_MASK
+> +		<< MODE_BIT_OFFSET_RTD(reg-1);
+> +
+> +	return true;
+> +}
+> +
+> +static int nct7802_configure_inputs(struct device *dev,
+> +	struct nct7802_data *data)
+> +{
+> +	bool found_input_config = false;
+> +	u8 mode_mask = 0, mode_val = 0;
+> +	struct device_node *input;
+> +
+> +	if (dev->of_node) {
+> +		for_each_child_of_node(dev->of_node, input) {
+> +			if (nct7802_get_input_config(dev, input, &mode_mask,
+> +					&mode_val))
+> +				found_input_config = true;
+
+This is mixing errors with "dt configuration does not exist".
+nct7802_get_input_config() should return an actual error if the
+DT configuration is bad, and return that error to the calling code
+if that is the case.
+
+> +		}
+> +	}
+> +
+> +	if (!found_input_config) {
+> +		/* Enable local temperature sensor by default */
+> +		mode_val |= MODE_LTD_EN;
+> +		mode_mask |= MODE_LTD_EN;
+> +	}
+
+This can be set by default since nct7802_get_input_config()
+removes it if the channel is disabled, meaning found_input_config
+is really unnecessary.
+
+> +
+> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
+> +}
+> +
+> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
+>   {
+>   	int err;
+>   
+> @@ -1047,8 +1178,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
+>   	if (err)
+>   		return err;
+>   
+> -	/* Enable local temperature sensor */
+> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
+> +	err = nct7802_configure_inputs(dev, data);
+>   	if (err)
+>   		return err;
+>   
+> @@ -1074,7 +1204,7 @@ static int nct7802_probe(struct i2c_client *client)
+>   	mutex_init(&data->access_lock);
+>   	mutex_init(&data->in_alarm_lock);
+>   
+> -	ret = nct7802_init_chip(data);
+> +	ret = nct7802_init_chip(dev, data);
+>   	if (ret < 0)
+>   		return ret;
+>   
 > 
-> On Wednesday 08 September 2021 21:09:38 Pali Rohár wrote:
-> > On Tuesday 07 September 2021 18:35:55 Kari Argillander wrote:
-> > > Other fs drivers are using iocharset= mount option for specifying charset.
-> > > So add it also for ntfs3 and mark old nls= mount option as deprecated.
-> > > 
-> > > Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> > 
-> > Reviewed-by: Pali Rohár <pali@kernel.org>
-> > 
-> > > ---
-> > >  Documentation/filesystems/ntfs3.rst |  4 ++--
-> > >  fs/ntfs3/super.c                    | 18 +++++++++++-------
-> > >  2 files changed, 13 insertions(+), 9 deletions(-)
-> > > 
-> > > diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
-> > > index af7158de6fde..ded706474825 100644
-> > > --- a/Documentation/filesystems/ntfs3.rst
-> > > +++ b/Documentation/filesystems/ntfs3.rst
-> > > @@ -32,12 +32,12 @@ generic ones.
-> > >  
-> > >  ===============================================================================
-> > >  
-> > > -nls=name		This option informs the driver how to interpret path
-> > > +iocharset=name		This option informs the driver how to interpret path
-> > >  			strings and translate them to Unicode and back. If
-> > >  			this option is not set, the default codepage will be
-> > >  			used (CONFIG_NLS_DEFAULT).
-> > >  			Examples:
-> > > -				'nls=utf8'
-> > > +				'iocharset=utf8'
-> > >  
-> > >  uid=
-> > >  gid=
-> > > diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> > > index 729ead6f2fac..503e2e23f711 100644
-> > > --- a/fs/ntfs3/super.c
-> > > +++ b/fs/ntfs3/super.c
-> > > @@ -226,7 +226,7 @@ enum Opt {
-> > >  	Opt_nohidden,
-> > >  	Opt_showmeta,
-> > >  	Opt_acl,
-> > > -	Opt_nls,
-> > > +	Opt_iocharset,
-> > >  	Opt_prealloc,
-> > >  	Opt_no_acs_rules,
-> > >  	Opt_err,
-> > > @@ -245,9 +245,13 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
-> > >  	fsparam_flag_no("hidden",		Opt_nohidden),
-> > >  	fsparam_flag_no("acl",			Opt_acl),
-> > >  	fsparam_flag_no("showmeta",		Opt_showmeta),
-> > > -	fsparam_string("nls",			Opt_nls),
-> > >  	fsparam_flag_no("prealloc",		Opt_prealloc),
-> > >  	fsparam_flag("no_acs_rules",		Opt_no_acs_rules),
-> > > +	fsparam_string("iocharset",		Opt_iocharset),
-> > > +
-> > > +	__fsparam(fs_param_is_string,
-> > > +		  "nls", Opt_iocharset,
-> > > +		  fs_param_deprecated, NULL),
-> > >  	{}
-> > >  };
-> > >  
-> > > @@ -346,7 +350,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
-> > >  	case Opt_showmeta:
-> > >  		opts->showmeta = result.negated ? 0 : 1;
-> > >  		break;
-> > > -	case Opt_nls:
-> > > +	case Opt_iocharset:
-> > >  		kfree(opts->nls_name);
-> > >  		opts->nls_name = param->string;
-> > >  		param->string = NULL;
-> > > @@ -380,11 +384,11 @@ static int ntfs_fs_reconfigure(struct fs_context *fc)
-> > >  	new_opts->nls = ntfs_load_nls(new_opts->nls_name);
-> > >  	if (IS_ERR(new_opts->nls)) {
-> > >  		new_opts->nls = NULL;
-> > > -		errorf(fc, "ntfs3: Cannot load nls %s", new_opts->nls_name);
-> > > +		errorf(fc, "ntfs3: Cannot load iocharset %s", new_opts->nls_name);
-> > >  		return -EINVAL;
-> > >  	}
-> > >  	if (new_opts->nls != sbi->options->nls)
-> > > -		return invalf(fc, "ntfs3: Cannot use different nls when remounting!");
-> > > +		return invalf(fc, "ntfs3: Cannot use different iocharset when remounting!");
-> > >  
-> > >  	sync_filesystem(sb);
-> > >  
-> > > @@ -528,9 +532,9 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
-> > >  	if (opts->dmask)
-> > >  		seq_printf(m, ",dmask=%04o", ~opts->fs_dmask_inv);
-> > >  	if (opts->nls)
-> > > -		seq_printf(m, ",nls=%s", opts->nls->charset);
-> > > +		seq_printf(m, ",iocharset=%s", opts->nls->charset);
-> > >  	else
-> > > -		seq_puts(m, ",nls=utf8");
-> > > +		seq_puts(m, ",iocharset=utf8");
-> > >  	if (opts->sys_immutable)
-> > >  		seq_puts(m, ",sys_immutable");
-> > >  	if (opts->discard)
-> > > -- 
-> > > 2.25.1
-> > > 
+
