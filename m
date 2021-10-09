@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F41FB42749C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:19:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47A9442749E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243969AbhJIAVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
+        id S243988AbhJIAXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243892AbhJIAVE (ORCPT
+        with ESMTP id S243892AbhJIAX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:21:04 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B77C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:19:08 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id 133so4612813pgb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=LB1tqTg7JIBTDwc1gmSEz4/wFsLPlTgEcqybliaCAkE=;
-        b=cAFOFT5mTdnpWSMjey4+W+i0C9GYdGa3LD4bS8TYCC/opQjIXSln/+4NVLaQnGkRtB
-         8Is88Flk0Tw1a62MWvn9VmtfiptDX1oppV6g4c1OraUO9Vex3hwyLCf8zrFB23Ddf62y
-         tdskULK0/UKLWgGlOjKTU9vzTatQCXJ3BTXs9F+vRJKBF6ecZIpk6pGot8RKbF8UJsAa
-         955dc+9MT8YN00YxNxZeVWHcoJ+hX2oNY8Sm8gt21nf8gnvfkaqqq0eBethEcuLOttyL
-         vr8joAXYoKpZcoBYgetybmFkCbvxmQ7X9gWPvkD/qD4+AG+R4TYmfoAzBYCjHnBA4opQ
-         VlMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=LB1tqTg7JIBTDwc1gmSEz4/wFsLPlTgEcqybliaCAkE=;
-        b=yWQkFxzULxfaesg4VGArc3CgGjl4Ipj3zGpdeN42vnEnG3R+vnoNY/yNHVySYl5zmi
-         6WsBqMijO9popH+6n2S6HriBHp5fewsRfb9c9UkPDhQ8MFeoFZTjsClFgBqoovGRv5De
-         RD4v8jQD8lkOW2uGusaJ/MWG2eSWRZMvYUOzWFidvmkebpe5F5fRgKIl4Inxlojm9JFq
-         wIddjynub3FhLi4CEWfXQgTZIOSXSAyPhMwYVCsibuvPmj/1Mi/0pdkC44Fc5gVzFGCf
-         n+q0McYTqyYWTtQyeKfjtZhFq+pDbVSNa+TThEiluwa3UoS3ZzaJ7SI1FY5VAVP4uISG
-         V46g==
-X-Gm-Message-State: AOAM53284C1VtLRYIHVWFBTw+Y6yppJp3Y4Em7PINM7uQbe3rYRauT4c
-        GlNYx9VM4A7dekZJ9gb28WU=
-X-Google-Smtp-Source: ABdhPJx5xE1U5RxvrbhFLR1CWLp141FmZ6zNLPMmjL63kvh9hL7vmOn+zNp7EpJ7l+WuVj7nczbVJg==
-X-Received: by 2002:a63:6943:: with SMTP id e64mr7124543pgc.480.1633738748135;
-        Fri, 08 Oct 2021 17:19:08 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
-        by smtp.gmail.com with ESMTPSA id u12sm11739324pjr.2.2021.10.08.17.19.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 17:19:07 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 00:19:03 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [RFC] Some questions and an idea on SLUB/SLAB
-Message-ID: <20211009001903.GA3285@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
+        Fri, 8 Oct 2021 20:23:29 -0400
+Received: from smtp.gentoo.org (smtp.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A881C061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:21:33 -0700 (PDT)
+Received: from grubbs.orbis-terrarum.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        by smtp.gentoo.org (Postfix) with ESMTPS id 233063430EF
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:21:30 +0000 (UTC)
+Received: (qmail 561 invoked by uid 10000); 9 Oct 2021 00:21:29 -0000
+Date:   Sat, 9 Oct 2021 00:21:29 +0000
+From:   "Robin H. Johnson" <robbat2@gentoo.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Robin H. Johnson" <robbat2@gentoo.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        rjohnson@digitalocean.com,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 1/2] tracing: show size of requested buffer
+Message-ID: <robbat2-20211009T000917-463381491Z@orbis-terrarum.net>
+References: <20210831043723.13481-1-robbat2@gentoo.org>
+ <20210907212426.73ed81d1@rorschach.local.home>
+ <20211007071151.GL174703@worktop.programming.kicks-ass.net>
+ <20211007092358.65152792@gandalf.local.home>
+ <robbat2-20211007T172058-955036195Z@orbis-terrarum.net>
+ <20211008181348.4c2488b7@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kfJPulgMX8wmlwUv"
 Content-Disposition: inline
+In-Reply-To: <20211008181348.4c2488b7@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Questions:
 
- - Is there a reason that SLUB does not implement cache coloring?
-   it will help utilizing hardware cache. Especially in block layer,
-   they are literally *squeezing* its performance now.
- 
- - In SLAB, do we really need to flush queues every few seconds? 
-   (per cpu queue and shared queue). Flushing alien caches makes
-   sense, but flushing queues seems reducing it's fastpath.
-   But yeah, we need to reclaim memory. can we just defer this?
+--kfJPulgMX8wmlwUv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Idea:
+On Fri, Oct 08, 2021 at 06:13:48PM -0400, Steven Rostedt wrote:
+> On Thu, 7 Oct 2021 17:26:04 +0000
+> "Robin H. Johnson" <robbat2@gentoo.org> wrote:
+>=20
+> > I was trying to think further what would make sense for the constant.
+> > - What are the negative impacts of a too-large value?
+> > - Is there demand for more reconfigurability?=20
+> > - Should PERF_MAX_TRACE_SIZE be a knob in Kconfig?
+>=20
+> One thing you haven't discussed was, have you hit this warning, and if so,
+> what were you doing?
+Ah, I covered that in patch 2/2 in the original series, which discussed
+why I was raising the limit, and how I came to the 8K value for
+PERF_MAX_TRACE_SIZE.
+https://lore.kernel.org/all/20210831043723.13481-2-robbat2@gentoo.org/
 
-  - I don't like SLAB's per-node cache coloring, because L1 cache
-    isn't shared between cpus. For now, cpus in same node are sharing
-    its colour_next - but we can do better.
+To summarize here:
+$work requires that all employees run endpoint security software from
+SentinalOne [1]. I can see that it uses trace/perf stuff to dig deeply
+into what's taking place on the system.
 
-    what about splitting some per-cpu variables into kmem_cache_cpu
-    like SLUB? I think cpu_cache, colour (and colour_next),
-    alloc{hit,miss}, and free{hit,miss} can be per-cpu variables.
+Something in my personal setup/configuration, leads to SentinelOne
+getting large perf backlogs during heavy workloads, primarily when I'm
+doing deep things with containers (esp with tun devices inside
+containers). I haven't been able to narrow it down much more than that,
+and I don't have the source to SentinelOne at all.
+
+It does feel like SentinelOne either has a leak of some sort, or gets a
+backlog of work that takes a noticible amount of time to clean up.
+
+[1] https://www.sentinelone.com/
+
+--=20
+Robin Hugh Johnson
+Gentoo Linux: Dev, Infra Lead, Foundation Treasurer
+E-Mail   : robbat2@gentoo.org
+GnuPG FP : 11ACBA4F 4778E3F6 E4EDF38E B27B944E 34884E85
+GnuPG FP : 7D0B3CEB E9B85B1F 825BCECF EE05E6F6 A48F6136
+
+--kfJPulgMX8wmlwUv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+Comment: Robbat2 @ Orbis-Terrarum Networks - The text below is a digital signature. If it doesn't make any sense to you, ignore it.
+
+iQKTBAABCgB9FiEEveu2pS8Vb98xaNkRGTlfI8WIJsQFAmFg4IhfFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldEJE
+RUJCNkE1MkYxNTZGREYzMTY4RDkxMTE5Mzk1RjIzQzU4ODI2QzQACgkQGTlfI8WI
+JsQkxg/9FGbga4N7gVcD8JEyxEfYtKNreVCaoc8FuLNZeDXb7c76pngLj/B55uYK
+ztbA4pR+jY4LnyC7xNRWQZ9H5EcqU8Q8WibS7ULKFk6W0Y3DwL7WOMZe5PFeJVkQ
+krwN5qlkTNeTDmKlvTMVRK/reRmz+Z2XjXAJCiYGAdXyb3H6dQKIlNgLbTpeUYA9
+kZwAaZrZzkHlbF4kbhaKSFFXSeyoQvc8O6W8TzSXB2WmsO38a0Y/N33sUayHq2du
+PC/Xcd3QISHIsLt7LkL7QfWyLRDsTVdQXlvgK+wMa/HOwEyezjzZuDI3pWKVCBQJ
+T7gNJphwiz9a71mVZe5f5JEO8gk5cjFNOa28CtM/AKSUDwhRb62esZSzGwB0trne
+TfhJnymCg2MKimeEVUAbDp7LxyrjQckcr+O4/0bb5ivkns6QXRftFojsDLUPx4B2
+whRW+ul0sYnl4DqgOdb6o2GXdf5xJdFo2DiJ9XQs8BZAPKBsjJLGjp6B6OOL6ZRp
+tNEbwyJn/hh7eibyhawwbPL+bPWHCg4vX2Qag7hJ7g8P0eGU/idil30SrBDD+sfY
+fk0SYGFWXKWGkiSHn09BkRUWrC6huDY5blPwj57YrQ1w2U5sE3pGD/gnlrxjNuu8
+VVPp6rbU638MRBWgcTRky4v8CqrXp0/iGx8VEOnUV3bdedmfgRs=
+=G1v3
+-----END PGP SIGNATURE-----
+
+--kfJPulgMX8wmlwUv--
