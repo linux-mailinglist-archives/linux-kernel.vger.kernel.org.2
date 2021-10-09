@@ -2,94 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 073D7427870
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAD1427876
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244386AbhJIJbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231818AbhJIJbC (ORCPT
+        id S232042AbhJIJgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:36:49 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56698 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhJIJgr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:31:02 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7A9C061570;
-        Sat,  9 Oct 2021 02:29:05 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id q13so8456272uaq.2;
-        Sat, 09 Oct 2021 02:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oLC/VnDaYUY8fgV3Hp40JKJYdSjqq7NCr8LBM7EfoA4=;
-        b=STFzCygS9G3fHBUe+dATTfUZp1n67q09x80weyuah1L170rvvoVGCeO+ugxxrKAN/I
-         3vFEltznl0ysWFVX6kXnvoO0xJL6tcMDAWRzHC3CWGiQ4MIqezMzJLbOGeNF09XysgPv
-         32D0rLpSyA1wKxjm75pWNBNyt2l3ReGF3dQSNMyjauGLWKyeSLUCHuIevnCagNEWJZp3
-         XzgiX46uoFt73AWBR1rNF2Tx7i3Y+aQQ7+rvi5S/IW0mReiKIu74VfDVsJYJp4pT0gXr
-         r1aM7Hgxe8XZy4pjMOqfIUB3mUzdxHhKtosOhwGmRxuuil2TG2K88MPId4NxSwJP/8r0
-         UI1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oLC/VnDaYUY8fgV3Hp40JKJYdSjqq7NCr8LBM7EfoA4=;
-        b=xKwqmTYZDt1hycVG4Pg+kUKcsOMdVDkdtU+hOR6LH/cWjRAsZGYE6uYLTEXlp62pgA
-         L8L0bbtevniji9s6nhVQxYJnrTgyQ0tpbEgSe2GBb2ga3cZ4O+ByhmjxDV2JvibtQnN6
-         bezc4b9n2J9gd7oilVh3PD5KlSiHkp1jZAwZA+MpTM1H6KH2OfTKcV/WhLrqZMvuluMT
-         wXlkWJvzy1bIlwJiV6gLo034vLq/6g5YHLaRLzzVXz7byFXqlEhY828Ox5L9oVjxGMTa
-         4wNHVFsUTWuCv+a/Rcp2BCghU25zJcRCkSFp/8t8WLZx/sR1qxUsXKf7Irk+DKC3Q8xz
-         UUeQ==
-X-Gm-Message-State: AOAM530KCKSn8PKnuYKbCoyPvFPo1gy50ZPtrMNNZHhYUDSqb7LIxZGX
-        7pB3zyJnoxUJFzxRfjeVOSLfvO5HeQyL8flWK+PPx05M
-X-Google-Smtp-Source: ABdhPJwvAGyKpGj/2mqKUhbiygn98rJmJJrL0hsfHFhBvDHJxiTchHJtwgWuvoFOrJ10VvnYZV57L/bu7tJCmf1PpqA=
-X-Received: by 2002:ab0:538b:: with SMTP id k11mr7618027uaa.131.1633771744631;
- Sat, 09 Oct 2021 02:29:04 -0700 (PDT)
+        Sat, 9 Oct 2021 05:36:47 -0400
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 1999YksO093143;
+        Sat, 9 Oct 2021 18:34:46 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Sat, 09 Oct 2021 18:34:46 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 1999YjUX093140
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 9 Oct 2021 18:34:45 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [PATCH] block: fix syzbot report UAF in bdev_free_inode()
+To:     Zqiang <qiang.zhang1211@gmail.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        axboe@kernel.dk
+References: <20211009065951.11567-1-qiang.zhang1211@gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <ad09fde9-9655-fc28-4298-4b43d57cd76c@i-love.sakura.ne.jp>
+Date:   Sat, 9 Oct 2021 18:34:43 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211008095311.26475-1-sergio.paracuellos@gmail.com> <YWFUyhO5uRoks6sd@kroah.com>
-In-Reply-To: <YWFUyhO5uRoks6sd@kroah.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Sat, 9 Oct 2021 11:28:52 +0200
-Message-ID: <CAMhs-H-sfgfLwq8wNAjozYfehxp7EF9X++98S5poHooFqMZU7Q@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: asm: pci: define arch-specific 'pci_remap_iospace()'
- dependent on 'CONFIG_PCI_DRIVERS_GENERIC'
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211009065951.11567-1-qiang.zhang1211@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 10:37 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, Oct 08, 2021 at 11:53:11AM +0200, Sergio Paracuellos wrote:
-> > Some MIPS defconfigs that don't define 'CONFIG_PCI_DRIVERS_GENERIC' but
-> > define 'CONFIG_PCI_DRIVERS_LEGACY' or none of them, can fail when they are
-> > built since definition for 'pci_remap_iospace' is being done in include
-> > file 'arch/mips/include/asm/pci.h' and the specific function implemented
-> > in 'arch/mips/pci/pci-generic.c'. MIPS PCI drivers that don't use generic
-> > PCI core APIs don't really need 'pci_remap_iospace' to be defined at all.
-> > Hence, change definition for 'pci_remap_iospace' to be dependent on the
-> > preprocessor 'CONFIG_PCI_DRIVERS_GENERIC' definition to avoid possible
-> > build problems.
-> >
-> > CC: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Fixes: 9f76779f2418 ("MIPS: implement architecture-specific 'pci_remap_iospace()'")
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > ---
-> > Hi Greg, Thomas, Stephen,
-> >
-> > I guess this should also go through the staging-tree.
->
-> Now queued up, thanks!
+On 2021/10/09 15:59, Zqiang wrote:
+> The xa_insert() may be return error in __alloc_disk_node(), and the disk
+> object will be release, however there are two operations that will release
+> it, kfree(disk) and iput(disk->part0->bd_inode), the iput operations
+> will call call_rcu(), because the rcu callback executed is an asynchronous
+> actionthe, so when free disk object in rcu callback, the disk object haven
+> been released. solve it through a unified release action.
+> 
+> Reported-by: syzbot+8281086e8a6fbfbd952a@syzkaller.appspotmail.com
+> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
 
-Thanks, Greg!
+Thanks. But my patch is ready for 5.15.
 
-Best regards,
-    Sergio Paracuellos
->
-> greg k-h
+https://lore.kernel.org/all/e6dd13c5-8db0-4392-6e78-a42ee5d2a1c4@i-love.sakura.ne.jp/T/#u
