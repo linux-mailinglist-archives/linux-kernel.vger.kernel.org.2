@@ -2,191 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE67427916
+	by mail.lfdr.de (Postfix) with ESMTP id D6350427918
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244617AbhJIKqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37472 "EHLO
+        id S244635AbhJIKqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232176AbhJIKqb (ORCPT
+        with ESMTP id S244492AbhJIKqc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:46:31 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3EE2C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 03:44:34 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id r18so37664001wrg.6
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 03:44:34 -0700 (PDT)
+        Sat, 9 Oct 2021 06:46:32 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DF5C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 03:44:35 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id v25so37548566wra.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 03:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ks4Rqh46v5CyBYF2ay+xbKrnRkWuCYMNGLOMnRH/Zk=;
-        b=b6qNh5kIGgBQ/EFKEC2zp6oTn6UR31uO/DJVTixIJj1pJ/krY5FCUi6FC9GYSYe/mu
-         RvdDlxkQmX6UL/Jzou8UsvoHNrXWDd8TxaMy9tRJHFC7JJwiYefl0bfIADqvQF5yy5p/
-         1x/sk+NfZjgYR11fkdvru7vxrfgmtuCQ+loKx1gyoezzXVDPb+JYZ0H3rjYBbRSMpeJu
-         ZZ91LT2GSTJQ+QCD4AKBIPDRd09IJ1/djJL57fNZrkUvwdAQcN0KC0kCs2QkRtr9y9cY
-         +s5q2LqGJow6yrfe4GPcsqU4wlRjNQZjhpE30DJIC5a5K2XPYzKdQlS/jLRHudwOzSmu
-         2n6w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SCovqsK/g5JdyZXgPyx0zG0FN5Hs6YuyIwfiLWnb1Sk=;
+        b=NHGsc8Eeo1jlnPbTqQrOk4id/R6TdhIg87W/ULRvtmQh8J4rI/h7oy3AFm2Z2+IY/8
+         5ul0MkmICHb+S/GT22NXkGXB+lRzh0pTPXqySqs+eBmp/HOMQaznC+VI145v/V47+8ke
+         le7/Sl4earG+9gjH2M28pvavGYUTxd5q8JolJT5p1A4v9lEPltGobFnBuKGRBKJ9BVeu
+         MdyuG61UGOij+940xDK3CsevQ6JC7ayz9vNWfkIPaeb0D6b6nZZYP6OSEcKk2BGbJKnC
+         gEhN4/kkIXNvG3OyGw4lJ8iICBYBJeAmkWUeRWGljVWGU1EoJx3E2QwMfJ/c75S+khOe
+         rsLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ks4Rqh46v5CyBYF2ay+xbKrnRkWuCYMNGLOMnRH/Zk=;
-        b=bC+2hdahPzZaeWGoTpaLtoAqfi4vaJ+e5ejV9lYGr6eMAxqI+AeJCQqAxCmrYJ3Xh+
-         HcdDjBX7IWXOrmzS85pVFmQ+AU30S8qH68OngWDSaWj5lHdkVJwH87EireQ5e2bAoblX
-         zRsZz9BhV9P7mioNvUlB+DsQVmgxgqv8jb+c9MU4AblkSRovLPgnc4fJzO9dcIhGcmGY
-         7+FmRB00P3lcTUkxtPeKUzdKRLpxke2PxWVACm+pvzkgro3y6JC95TVVZVnG995qbBe2
-         s4X11m5X3BGrZjS1na4P0dWQJS5/9E45oKxC4JZXOV/dH1qnCV5vmNay8Lo1eHq7ueoF
-         jgTg==
-X-Gm-Message-State: AOAM5305Z2B6bp926HtNYQwyww+ob7zYzYE15dkYRgPpGLfNrsvD4usc
-        arZ0UltGhAuAbkAlj18t7PI=
-X-Google-Smtp-Source: ABdhPJxNfl10d2+GEYTnfELkyzriRwhqM9rTTlc0bGJm9fzybS78/2xaKBL+XZmiWHTtKjsZtSVpuw==
-X-Received: by 2002:a05:6000:2a1:: with SMTP id l1mr10447854wry.87.1633776273627;
-        Sat, 09 Oct 2021 03:44:33 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SCovqsK/g5JdyZXgPyx0zG0FN5Hs6YuyIwfiLWnb1Sk=;
+        b=zmBIaSO2jCKXfld9ROxU3ExNf2jEGZaPtsnHfafSSB+Ct19YsxupgpuZJtJlCA124N
+         EK91h0N4RCDejpDxaXraOsvMgSU0raVM5EZYwOWX8FvPpDcgNI5Bx1t2eUAMHWQ/FZrk
+         fi4VuVAfakCNaSHViE8fXb1BR16Nz3ueJ/XjJYpbD2pBFSYtAAwZMck92ifH41AOn5m6
+         +NhjKQ4f/VoQfY2AYuNqklHZwqs+sGm7eG6yr1qDhMgRBlV+b/QSvcrJCbGrVNlQ5scp
+         Z/aw7fGMDdIWz1glNtHw5d52J49Mdf+R8FtuL5OiAnU4JNmwjtkE4exnDMudi3wHD9jW
+         tdzg==
+X-Gm-Message-State: AOAM531xgfqrf1RPd76uWP6uxeDeddq0lrNRQwXg7Zz0NkXjziSfsIOE
+        dYj31E2nAhtlh/ALdMFkC4U=
+X-Google-Smtp-Source: ABdhPJzNRmZFO/zsNbw29UuGaFCcXo03oGe5J+TYMblp9eG3TF8RFVaUTGzE0xQT8wFmFVZVP9fltA==
+X-Received: by 2002:a1c:a302:: with SMTP id m2mr8939437wme.111.1633776274347;
+        Sat, 09 Oct 2021 03:44:34 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::5d0b])
-        by smtp.gmail.com with ESMTPSA id a81sm1905431wmd.30.2021.10.09.03.44.32
+        by smtp.gmail.com with ESMTPSA id a81sm1905431wmd.30.2021.10.09.03.44.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 03:44:33 -0700 (PDT)
+        Sat, 09 Oct 2021 03:44:34 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 1/3] staging: r8188eu: remove unused macros and defines from rtl8188e_hal.h
-Date:   Sat,  9 Oct 2021 12:44:17 +0200
-Message-Id: <20211009104419.8811-1-straube.linux@gmail.com>
+Subject: [PATCH 2/3] staging: r8188eu: replace MACADDRLEN with ETH_ALEN
+Date:   Sat,  9 Oct 2021 12:44:18 +0200
+Message-Id: <20211009104419.8811-2-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211009104419.8811-1-straube.linux@gmail.com>
+References: <20211009104419.8811-1-straube.linux@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused macros and defines from rtl8188e_hal.h.
+Replace the custom constant MACADDRLEN with in-kernel ETH_ALEN.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- .../staging/r8188eu/include/rtl8188e_hal.h    | 55 -------------------
- 1 file changed, 55 deletions(-)
+ drivers/staging/r8188eu/core/rtw_xmit.c      | 44 ++++++++++----------
+ drivers/staging/r8188eu/include/drv_types.h  |  6 +--
+ drivers/staging/r8188eu/include/rtw_br_ext.h |  3 +-
+ 3 files changed, 26 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 66ecd3c3ac13..5fdee1c6299c 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -19,29 +19,10 @@
+diff --git a/drivers/staging/r8188eu/core/rtw_xmit.c b/drivers/staging/r8188eu/core/rtw_xmit.c
+index 4913da785a1d..720e190a7436 100644
+--- a/drivers/staging/r8188eu/core/rtw_xmit.c
++++ b/drivers/staging/r8188eu/core/rtw_xmit.c
+@@ -1553,31 +1553,31 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 	rcu_read_unlock();
+ 	spin_lock_bh(&padapter->br_ext_lock);
+ 	if (!(skb->data[0] & 1) && br_port &&
+-	    memcmp(skb->data + MACADDRLEN, padapter->br_mac, MACADDRLEN) &&
+-	    *((__be16 *)(skb->data + MACADDRLEN * 2)) != __constant_htons(ETH_P_8021Q) &&
+-	    *((__be16 *)(skb->data + MACADDRLEN * 2)) == __constant_htons(ETH_P_IP) &&
+-	    !memcmp(padapter->scdb_mac, skb->data + MACADDRLEN, MACADDRLEN) && padapter->scdb_entry) {
+-		memcpy(skb->data + MACADDRLEN, GET_MY_HWADDR(padapter), MACADDRLEN);
++	    memcmp(skb->data + ETH_ALEN, padapter->br_mac, ETH_ALEN) &&
++	    *((__be16 *)(skb->data + ETH_ALEN * 2)) != __constant_htons(ETH_P_8021Q) &&
++	    *((__be16 *)(skb->data + ETH_ALEN * 2)) == __constant_htons(ETH_P_IP) &&
++	    !memcmp(padapter->scdb_mac, skb->data + ETH_ALEN, ETH_ALEN) && padapter->scdb_entry) {
++		memcpy(skb->data + ETH_ALEN, GET_MY_HWADDR(padapter), ETH_ALEN);
+ 		padapter->scdb_entry->ageing_timer = jiffies;
+ 		spin_unlock_bh(&padapter->br_ext_lock);
+ 	} else {
+-		if (*((__be16 *)(skb->data + MACADDRLEN * 2)) == __constant_htons(ETH_P_8021Q)) {
++		if (*((__be16 *)(skb->data + ETH_ALEN * 2)) == __constant_htons(ETH_P_8021Q)) {
+ 			is_vlan_tag = 1;
+-			vlan_hdr = *((unsigned short *)(skb->data + MACADDRLEN * 2 + 2));
++			vlan_hdr = *((unsigned short *)(skb->data + ETH_ALEN * 2 + 2));
+ 			for (i = 0; i < 6; i++)
+-				*((unsigned short *)(skb->data + MACADDRLEN * 2 + 2 - i * 2)) = *((unsigned short *)(skb->data + MACADDRLEN * 2 - 2 - i * 2));
++				*((unsigned short *)(skb->data + ETH_ALEN * 2 + 2 - i * 2)) = *((unsigned short *)(skb->data + ETH_ALEN * 2 - 2 - i * 2));
+ 			skb_pull(skb, 4);
+ 		}
+-		if (!memcmp(skb->data + MACADDRLEN, padapter->br_mac, MACADDRLEN) &&
+-		    (*((__be16 *)(skb->data + MACADDRLEN * 2)) == __constant_htons(ETH_P_IP)))
++		if (!memcmp(skb->data + ETH_ALEN, padapter->br_mac, ETH_ALEN) &&
++		    (*((__be16 *)(skb->data + ETH_ALEN * 2)) == __constant_htons(ETH_P_IP)))
+ 			memcpy(padapter->br_ip, skb->data + WLAN_ETHHDR_LEN + 12, 4);
  
- #include "odm_precomp.h"
+-		if (*((__be16 *)(skb->data + MACADDRLEN * 2)) == __constant_htons(ETH_P_IP)) {
+-			if (memcmp(padapter->scdb_mac, skb->data + MACADDRLEN, MACADDRLEN)) {
++		if (*((__be16 *)(skb->data + ETH_ALEN * 2)) == __constant_htons(ETH_P_IP)) {
++			if (memcmp(padapter->scdb_mac, skb->data + ETH_ALEN, ETH_ALEN)) {
+ 				padapter->scdb_entry = (struct nat25_network_db_entry *)scdb_findEntry(padapter,
+ 							skb->data + WLAN_ETHHDR_LEN + 12);
+ 				if (padapter->scdb_entry) {
+-					memcpy(padapter->scdb_mac, skb->data + MACADDRLEN, MACADDRLEN);
++					memcpy(padapter->scdb_mac, skb->data + ETH_ALEN, ETH_ALEN);
+ 					memcpy(padapter->scdb_ip, skb->data + WLAN_ETHHDR_LEN + 12, 4);
+ 					padapter->scdb_entry->ageing_timer = jiffies;
+ 					do_nat25 = 0;
+@@ -1587,7 +1587,7 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 					padapter->scdb_entry->ageing_timer = jiffies;
+ 					do_nat25 = 0;
+ 				} else {
+-					memset(padapter->scdb_mac, 0, MACADDRLEN);
++					memset(padapter->scdb_mac, 0, ETH_ALEN);
+ 					memset(padapter->scdb_ip, 0, 4);
+ 				}
+ 			}
+@@ -1601,8 +1601,8 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 					skb_push(skb, 4);
+ 					for (i = 0; i < 6; i++)
+ 						*((unsigned short *)(skb->data + i * 2)) = *((unsigned short *)(skb->data + 4 + i * 2));
+-					*((__be16 *)(skb->data + MACADDRLEN * 2)) = __constant_htons(ETH_P_8021Q);
+-					*((unsigned short *)(skb->data + MACADDRLEN * 2 + 2)) = vlan_hdr;
++					*((__be16 *)(skb->data + ETH_ALEN * 2)) = __constant_htons(ETH_P_8021Q);
++					*((unsigned short *)(skb->data + ETH_ALEN * 2 + 2)) = vlan_hdr;
+ 				}
  
--/*  Fw Array */
--#define Rtl8188E_FwImageArray		Rtl8188EFwImgArray
--#define Rtl8188E_FWImgArrayLength	Rtl8188EFWImgArrayLength
--
--#define RTL8188E_FW_UMC_IMG			"rtl8188E\\rtl8188efw.bin"
--#define RTL8188E_PHY_REG			"rtl8188E\\PHY_REG_1T.txt"
--#define RTL8188E_PHY_RADIO_A			"rtl8188E\\radio_a_1T.txt"
--#define RTL8188E_PHY_RADIO_B			"rtl8188E\\radio_b_1T.txt"
--#define RTL8188E_AGC_TAB			"rtl8188E\\AGC_TAB_1T.txt"
--#define RTL8188E_PHY_MACREG			"rtl8188E\\MAC_REG.txt"
--#define RTL8188E_PHY_REG_PG			"rtl8188E\\PHY_REG_PG.txt"
--#define RTL8188E_PHY_REG_MP			"rtl8188E\\PHY_REG_MP.txt"
--
- /* 		RTL8188E Power Configuration CMDs for USB/SDIO interfaces */
- #define Rtl8188E_NIC_PWR_ON_FLOW		rtl8188E_power_on_flow
--#define Rtl8188E_NIC_RF_OFF_FLOW		rtl8188E_radio_off_flow
- #define Rtl8188E_NIC_DISABLE_FLOW		rtl8188E_card_disable_flow
--#define Rtl8188E_NIC_ENABLE_FLOW		rtl8188E_card_enable_flow
--#define Rtl8188E_NIC_SUSPEND_FLOW		rtl8188E_suspend_flow
--#define Rtl8188E_NIC_RESUME_FLOW		rtl8188E_resume_flow
--#define Rtl8188E_NIC_PDN_FLOW			rtl8188E_hwpdn_flow
- #define Rtl8188E_NIC_LPS_ENTER_FLOW		rtl8188E_enter_lps_flow
--#define Rtl8188E_NIC_LPS_LEAVE_FLOW		rtl8188E_leave_lps_flow
+ 				newskb = skb_copy(skb, GFP_ATOMIC);
+@@ -1614,9 +1614,9 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
  
- #define DRVINFO_SZ	4 /*  unit is 8bytes */
- #define PageNum_128(_Len)	(u32)(((_Len)>>7) + ((_Len) & 0x7F ? 1 : 0))
-@@ -49,7 +30,6 @@
- /*  download firmware related data structure */
- #define FW_8188E_SIZE			0x4000 /* 16384,16k */
- #define FW_8188E_START_ADDRESS		0x1000
--#define FW_8188E_END_ADDRESS		0x1FFF /* 0x5FFF */
+ 				*pskb = skb = newskb;
+ 				if (is_vlan_tag) {
+-					vlan_hdr = *((unsigned short *)(skb->data + MACADDRLEN * 2 + 2));
++					vlan_hdr = *((unsigned short *)(skb->data + ETH_ALEN * 2 + 2));
+ 					for (i = 0; i < 6; i++)
+-						*((unsigned short *)(skb->data + MACADDRLEN * 2 + 2 - i * 2)) = *((unsigned short *)(skb->data + MACADDRLEN * 2 - 2 - i * 2));
++						*((unsigned short *)(skb->data + ETH_ALEN * 2 + 2 - i * 2)) = *((unsigned short *)(skb->data + ETH_ALEN * 2 - 2 - i * 2));
+ 					skb_pull(skb, 4);
+ 				}
+ 			}
+@@ -1640,7 +1640,7 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 			}
+ 		}
  
- #define MAX_PAGE_SIZE			4096	/*  @ page : 4k bytes */
+-		memcpy(skb->data + MACADDRLEN, GET_MY_HWADDR(padapter), MACADDRLEN);
++		memcpy(skb->data + ETH_ALEN, GET_MY_HWADDR(padapter), ETH_ALEN);
  
-@@ -108,11 +88,6 @@ enum usb_rx_agg_mode {
-       0x2400 /* 9k for 88E nornal chip , MaxRxBuff=10k-max(TxReportSize(64*8),
- 	      * WOLPattern(16*24)) */
+ 		dhcp_flag_bcast(padapter, skb);
  
--#define MAX_TX_REPORT_BUFFER_SIZE		0x0400 /*  1k */
--
--/*  BK, BE, VI, VO, HCCA, MANAGEMENT, COMMAND, HIGH, BEACON. */
--#define MAX_TX_QUEUE			9
--
- #define TX_SELE_HQ			BIT(0)		/*  High Queue */
- #define TX_SELE_LQ			BIT(1)		/*  Low Queue */
- #define TX_SELE_NQ			BIT(2)		/*  Normal Queue */
-@@ -134,11 +109,6 @@ enum usb_rx_agg_mode {
- #define WMM_NORMAL_TX_PAGE_BOUNDARY_88E			\
- 	(WMM_NORMAL_TX_TOTAL_PAGE_NUMBER + 1) /* 0xA9 */
+@@ -1648,13 +1648,13 @@ static int rtw_br_client_tx(struct adapter *padapter, struct sk_buff **pskb)
+ 			skb_push(skb, 4);
+ 			for (i = 0; i < 6; i++)
+ 				*((unsigned short *)(skb->data + i * 2)) = *((unsigned short *)(skb->data + 4 + i * 2));
+-			*((__be16 *)(skb->data + MACADDRLEN * 2)) = __constant_htons(ETH_P_8021Q);
+-			*((unsigned short *)(skb->data + MACADDRLEN * 2 + 2)) = vlan_hdr;
++			*((__be16 *)(skb->data + ETH_ALEN * 2)) = __constant_htons(ETH_P_8021Q);
++			*((unsigned short *)(skb->data + ETH_ALEN * 2 + 2)) = vlan_hdr;
+ 		}
+ 	}
  
--/* 	Chip specific */
--#define CHIP_BONDING_IDENTIFIER(_value)	(((_value)>>22)&0x3)
--#define CHIP_BONDING_92C_1T2R	0x1
--#define CHIP_BONDING_88C_USB_MCARD	0x2
--#define CHIP_BONDING_88C_USB_HP	0x1
- #include "HalVerDef.h"
- #include "hal_com.h"
+ 	/*  check if SA is equal to our MAC */
+-	if (memcmp(skb->data + MACADDRLEN, GET_MY_HWADDR(padapter), MACADDRLEN)) {
++	if (memcmp(skb->data + ETH_ALEN, GET_MY_HWADDR(padapter), ETH_ALEN)) {
+ 		DEBUG_ERR("TX DROP: untransformed frame SA:%02X%02X%02X%02X%02X%02X!\n",
+ 			  skb->data[6], skb->data[7], skb->data[8], skb->data[9], skb->data[10], skb->data[11]);
+ 		return -1;
+diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
+index edf86b6c254e..ce88575a8726 100644
+--- a/drivers/staging/r8188eu/include/drv_types.h
++++ b/drivers/staging/r8188eu/include/drv_types.h
+@@ -280,11 +280,11 @@ struct adapter {
+ 	spinlock_t br_ext_lock;
+ 	struct nat25_network_db_entry	*nethash[NAT25_HASH_SIZE];
+ 	int				pppoe_connection_in_progress;
+-	unsigned char			pppoe_addr[MACADDRLEN];
+-	unsigned char			scdb_mac[MACADDRLEN];
++	unsigned char			pppoe_addr[ETH_ALEN];
++	unsigned char			scdb_mac[ETH_ALEN];
+ 	unsigned char			scdb_ip[4];
+ 	struct nat25_network_db_entry	*scdb_entry;
+-	unsigned char			br_mac[MACADDRLEN];
++	unsigned char			br_mac[ETH_ALEN];
+ 	unsigned char			br_ip[4];
+ 	struct br_ext_info		ethBrExtInfo;
  
-@@ -168,29 +138,11 @@ struct txpowerinfo24g {
+diff --git a/drivers/staging/r8188eu/include/rtw_br_ext.h b/drivers/staging/r8188eu/include/rtw_br_ext.h
+index 69905d30c191..17a6154e760a 100644
+--- a/drivers/staging/r8188eu/include/rtw_br_ext.h
++++ b/drivers/staging/r8188eu/include/rtw_br_ext.h
+@@ -4,7 +4,6 @@
+ #ifndef _RTW_BR_EXT_H_
+ #define _RTW_BR_EXT_H_
+ 
+-#define MACADDRLEN		6
+ #define _DEBUG_ERR		DBG_88E
+ #define _DEBUG_INFO		DBG_88E
+ #define DEBUG_WARN		DBG_88E
+@@ -40,7 +39,7 @@ struct br_ext_info {
+ 	unsigned int	macclone_enable;
+ 	unsigned int	dhcp_bcst_disable;
+ 	int	addPPPoETag;		/* 1: Add PPPoE relay-SID, 0: disable */
+-	unsigned char	nat25_dmzMac[MACADDRLEN];
++	unsigned char	nat25_dmzMac[ETH_ALEN];
+ 	unsigned int	nat25sc_disable;
  };
  
- #define EFUSE_REAL_CONTENT_LEN		512
--#define EFUSE_MAX_SECTION		16
--#define EFUSE_IC_ID_OFFSET		506 /* For some inferior IC purpose*/
- #define AVAILABLE_EFUSE_ADDR(addr)	(addr < EFUSE_REAL_CONTENT_LEN)
--/*  To prevent out of boundary programming case, */
--/*  leave 1byte and program full section */
--/*  9bytes + 1byt + 5bytes and pre 1byte. */
--/*  For worst case: */
--/*  | 1byte|----8bytes----|1byte|--5bytes--| */
--/*  |         |            Reserved(14bytes)	      | */
--
--/*  PG data exclude header, dummy 6 bytes frome CP test and reserved 1byte. */
--#define EFUSE_OOB_PROTECT_BYTES			15
--
--#define		HWSET_MAX_SIZE_88E		512
- 
- #define		EFUSE_REAL_CONTENT_LEN_88E	256
- #define		EFUSE_MAP_LEN_88E		512
--#define EFUSE_MAP_LEN			EFUSE_MAP_LEN_88E
- #define		EFUSE_MAX_SECTION_88E		64
--#define		EFUSE_MAX_WORD_UNIT_88E		4
--#define		EFUSE_IC_ID_OFFSET_88E		506
--#define		AVAILABLE_EFUSE_ADDR_88E(addr)			\
--	(addr < EFUSE_REAL_CONTENT_LEN_88E)
- /*  To prevent out of boundary programming case, leave 1byte and program
-  *  full section */
- /*  9bytes + 1byt + 5bytes and pre 1byte. */
-@@ -198,12 +150,6 @@ struct txpowerinfo24g {
- /*  | 2byte|----8bytes----|1byte|--7bytes--| 92D */
- /*  PG data exclude header, dummy 7 bytes frome CP test and reserved 1byte. */
- #define		EFUSE_OOB_PROTECT_BYTES_88E	18
--#define		EFUSE_PROTECT_BYTES_BANK_88E	16
--
--/* 			EFUSE for BT definition */
--#define EFUSE_BT_REAL_CONTENT_LEN	1536	/*  512*3 */
--#define EFUSE_BT_MAP_LEN		1024	/*  1k bytes */
--#define EFUSE_BT_MAX_SECTION		128	/*  1024/8 */
- 
- #define EFUSE_PROTECT_BYTES_BANK	16
- 
-@@ -367,7 +313,6 @@ struct hal_data_8188e {
- 
- #define GET_HAL_DATA(__pAdapter)				\
- 	((struct hal_data_8188e *)((__pAdapter)->HalData))
--#define GET_RF_TYPE(priv)		(GET_HAL_DATA(priv)->rf_type)
- 
- /*  rtl8188e_hal_init.c */
- s32 rtl8188e_FirmwareDownload(struct adapter *padapter);
 -- 
 2.33.0
 
