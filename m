@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B439A427786
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7BD42778B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:36:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244290AbhJIFWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:22:42 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:42902 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244289AbhJIFWQ (ORCPT
+        id S235667AbhJIFh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhJIFhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:22:16 -0400
-Received: by mail-il1-f197.google.com with SMTP id y16-20020a927d10000000b00245291ad122so7156031ilc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 22:20:20 -0700 (PDT)
+        Sat, 9 Oct 2021 01:37:54 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B56AC061570;
+        Fri,  8 Oct 2021 22:35:58 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id g5so4444277plg.1;
+        Fri, 08 Oct 2021 22:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bqacdlZ0cmVRSHorJWN1YVAH6yq1T0MI3rxKlNLYK9A=;
+        b=QjjJaQJxOOkx4qxUiqRuksZKYDI63fhF5knUb38/AjsRY4VIRcrteMhWLdvWVU2NTP
+         71sxQmUZZ4YS2yCZnhWZ1q3/pceWLJXKKK09xJOfPApbQnJeHuSoaojrG3Z6JzcKpop3
+         CD+MruInKj1oSZXcvKVh3LuK8RyNam2T9o8lngtO2Sb69+CpKKDJ58j5CRL5hBnDUkBO
+         iwEgngKqghiJebIhoiPRF14gTrMKmqol6BCEg25YQLCp2/BozTouQ/USyTKblivadi7Q
+         44Tuk73sKScSchiYKtxxQFOmhd+3GluS3mBB9IGfqm9f/XZ1v6sXEkkrFrHPx9V2r8Jc
+         5b/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=qKSYJ/XBrp/2GqQtjIUo2OP1HXBHWhXQVpcO4ycWl/A=;
-        b=bYz3SmoPN2/ysdZxHRU9KZV+lVwAk1upROFMES5IflrvkNsA2IvMHGxyCNDbutDxAj
-         0bwkzEUDR5zYLc5ZGsaxyNgiV53z/6q0C1be3iaZ31j7iW9TYkeahHuLAbNAWVK6B2NA
-         Q3WuoI/6juwO2M9F+4J+MsIHntNeZuTew8KfH4QdnGC0hkZQfNm24QO+CoRZce+Waqt5
-         nVkANT5fEmSHmiYqwuQCJ1ebQ46EZY+xmc++Bo08/7fVbn7UJoQ3LGCGs4tKs217F6R9
-         deds5yYZb69AJiBWh1m5au/lKXBX3sP01YWOu5Ph7wEaj+9S3LqQtE7X43/X29gR8C65
-         JQIg==
-X-Gm-Message-State: AOAM532L+RBXb8XfEQpDSa5fftArv8Ux/kW9usc23S2lKvmuIakVemeC
-        gTg7oGKgInSuMkIrONwI2L5IAPdsFkdPPId+2LhxC1lKBqVc
-X-Google-Smtp-Source: ABdhPJzu4OoJGujlCIRLF4RCXEwDKkpm4BZzZ5NR365YWHMJvHJmr2En5KhAZGtRygW8kXhmUxJpnCHQnUGc8/a2mGvdwXDrYpVb
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bqacdlZ0cmVRSHorJWN1YVAH6yq1T0MI3rxKlNLYK9A=;
+        b=AaKhpWRZfDO70/ffUSEItS6Ain6VD9tlyFFnvZSMIb0hLAvHRvyzPGsFjqGe0HVqf+
+         biS31VUeESbqnaO9QuzDsO/tuf+z4/4LNpH8Aed5QiQ4+AXXO4/bHau25Yz91/nRX2o1
+         ARzxq0B5Qa28Z9LyyDPi6eaLKmUEYkv5jHFYL3kiMdsrbc18ausqjtLKjZ+wIN7SSsVF
+         xp3EE/fFecVL7WX0PKLxr9wLt5vTRcEQEuRHtQG2LoAg2DsHbCYpccVBC2pBaWv6+S4R
+         2kC4GuWAjoXrQ7DT6qCAjWHddi1VPkiPUgr97zZVLXxqMgq3YQ0MDpgx2x1SztFyb7/u
+         GJ9w==
+X-Gm-Message-State: AOAM532Q4azZBzIketeMjgUSLbcEtANpLtPk0JxtCUbgE4V+lLPqzBPU
+        05tXWEowxvEdLsnLl5uXQU1itYhjhQOdPw==
+X-Google-Smtp-Source: ABdhPJw9ptxkHGA+Fi9ih0wXIc/ExRrcAg1FLFFfkg2kE5bqzpvdiFgXWd+PrBq0Wsm9GlFhHFrK8w==
+X-Received: by 2002:a17:90a:6fc1:: with SMTP id e59mr10482537pjk.103.1633757757442;
+        Fri, 08 Oct 2021 22:35:57 -0700 (PDT)
+Received: from localhost.localdomain ([103.112.79.203])
+        by smtp.gmail.com with ESMTPSA id 186sm946247pfg.20.2021.10.08.22.35.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Oct 2021 22:35:56 -0700 (PDT)
+From:   "Yan, Zheng" <ukernel@gmail.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     axboe@kernel.dk, paskripkin@gmail.com,
+        "Yan, Zheng" <yanzheng03@kuaishou.com>
+Subject: [PATCH] block: nbd: fix sanity check for first_minor
+Date:   Sat,  9 Oct 2021 13:35:40 +0800
+Message-Id: <20211009053540.95100-1-ukernel@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3052:: with SMTP id u18mr10288726jak.148.1633756820093;
- Fri, 08 Oct 2021 22:20:20 -0700 (PDT)
-Date:   Fri, 08 Oct 2021 22:20:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e93f4205cde4a661@google.com>
-Subject: [syzbot] KMSAN: uninit-value in hci_loglink_complete_evt
-From:   syzbot <syzbot+5da5c010bb611b9399a8@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: "Yan, Zheng" <yanzheng03@kuaishou.com>
 
-syzbot found the following issue on:
+Device's minor is a 20-bits number, max value is 0xfffff.
 
-HEAD commit:    90f502f5d016 kmsan: speculatively unpoison curent_thread_i..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a65fcb300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=978f1b2d7a5aad3e
-dashboard link: https://syzkaller.appspot.com/bug?extid=5da5c010bb611b9399a8
-compiler:       clang version 14.0.0 (git@github.com:llvm/llvm-project.git 0996585c8e3b3d409494eb5f1cad714b9e1f7fb5), GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5da5c010bb611b9399a8@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
-BUG: KMSAN: uninit-value in hci_loglink_complete_evt+0x18c/0x580 net/bluetooth/hci_event.c:5088
- hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
- hci_loglink_complete_evt+0x18c/0x580 net/bluetooth/hci_event.c:5088
- hci_event_packet+0x11fc/0x22e0 net/bluetooth/hci_event.c:6462
- hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-
-Uninit was created at:
- slab_alloc_node mm/slub.c:3221 [inline]
- __kmalloc_node_track_caller+0x8d2/0x1340 mm/slub.c:4955
- kmalloc_reserve net/core/skbuff.c:355 [inline]
- __alloc_skb+0x4db/0xe40 net/core/skbuff.c:426
- alloc_skb include/linux/skbuff.h:1116 [inline]
- bt_skb_alloc include/net/bluetooth/bluetooth.h:389 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:165 [inline]
- vhci_write+0x182/0x8f0 drivers/bluetooth/hci_vhci.c:285
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write fs/read_write.c:507 [inline]
- vfs_write+0x1295/0x1f20 fs/read_write.c:594
- ksys_write+0x28c/0x520 fs/read_write.c:647
- __do_sys_write fs/read_write.c:659 [inline]
- __se_sys_write fs/read_write.c:656 [inline]
- __x64_sys_write+0xdb/0x120 fs/read_write.c:656
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x54/0xd0 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-=====================================================
-Kernel panic - not syncing: panic_on_kmsan set ...
-CPU: 1 PID: 6382 Comm: kworker/u5:2 Tainted: G    B             5.15.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: hci4 hci_rx_work
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1ff/0x28e lib/dump_stack.c:106
- dump_stack+0x25/0x28 lib/dump_stack.c:113
- panic+0x44f/0xdeb kernel/panic.c:232
- kmsan_report+0x2ee/0x300 mm/kmsan/report.c:186
- __msan_warning+0xd7/0x150 mm/kmsan/instrumentation.c:208
- hci_conn_hash_lookup_handle include/net/bluetooth/hci_core.h:988 [inline]
- hci_loglink_complete_evt+0x18c/0x580 net/bluetooth/hci_event.c:5088
- hci_event_packet+0x11fc/0x22e0 net/bluetooth/hci_event.c:6462
- hci_rx_work+0x6ae/0xd10 net/bluetooth/hci_core.c:5136
- process_one_work+0xdc7/0x1760 kernel/workqueue.c:2297
- worker_thread+0x1101/0x22b0 kernel/workqueue.c:2444
- kthread+0x66b/0x780 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Fixes: b1a811633f ("block: nbd: add sanity check for first_minor").
+Signed-off-by: "Yan, Zheng" <yanzheng03@kuaishou.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/block/nbd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 1183f7872b71..53cd038c96e9 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1753,7 +1753,7 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+ 	 * byte in __device_add_disk().
+ 	 */
+ 	disk->first_minor = index << part_shift;
+-	if (disk->first_minor > 0xff) {
++	if (disk->first_minor > MINORMASK) {
+ 		err = -EINVAL;
+ 		goto out_free_idr;
+ 	}
+-- 
+2.12.2
+
