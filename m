@@ -2,124 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5456427C06
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910AA427C0B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231255AbhJIQdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhJIQdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:33:18 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF13CC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 09:31:21 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id d3so20980703edp.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 09:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4ZN4LmU5TkDPnpppYR+BVtqRy5brlt6OMMmyuri2dzg=;
-        b=nj3ljy19/ZxZV1xG4Hf/xSjDsI0cgkH4tnI6/pOfiwvqyOreHWpOk+hiFuaLR76Gd6
-         Wx6QTfNQq4pf4wwU/bpep4Qx74UombBf/1TLFtG6cP6vMixZRFBWRzw0J6WQ8s17JFUH
-         EdW4/+PyyjaHAhkjQHsOnWtKr1ZMZHrlN3Kf2aTwHCWB1rP9LcY4UmWGJM+2uP7wozXM
-         YRX/WDnd+3d+lAutzgV2eDWyfCM6WrDFxfaILumxNENKcL4Vy78Zll2yjh1cXBT0UW+6
-         0nTT84wzNYul/+NJ7R3g8Q1kiugrg6MFUBppGA39zi2W6bYhuktYXTVxs+ZJ1HxOp8tP
-         cz0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4ZN4LmU5TkDPnpppYR+BVtqRy5brlt6OMMmyuri2dzg=;
-        b=oMBfaUzzpSss1XMgIRuZfUrGOlAwtMyoeVborBD1WJy+cOdsXXQZfykD0E3qwmYU0K
-         ZMNepkxsvHHOCSJJkMKBBQ1qtiFfXLa9VuWgFRL10pHwrJwUmOpv8+EP/MDeopXX+uJP
-         hydPKiu3vA1oNhRIw4PBYSiVxQLochKOgPMLJTcRiGN2+P5ZQcSJFzT3BmJMVqMFKP60
-         ms7TiqUFKwu/r6D4sUbQWhf6QcsnuGR7+fVPM+2w2ODzuMn7D1b5XDDhhPh8xGnAwfCf
-         bJQGzSV+qoFjDwofBpkfU5C1dLYD0qwpj7V+ddWd4RmSmkPT+tn+qlgSUIU/BOObq5Uh
-         uqyg==
-X-Gm-Message-State: AOAM531dZzE9OtniEBTxTf/CkDhd8dJvD0t3tD81D6aafiib3DKDlmhO
-        5ig2FKRb+AcZ9D1SnWOM/Ps=
-X-Google-Smtp-Source: ABdhPJwlHEcCYDPvmo61YsvLnq394NCUVV4o2DgjnmN/yc2H+OYP5abeJzfsMJPP4OAjz1+QLUVN8w==
-X-Received: by 2002:a05:6402:270f:: with SMTP id y15mr20085598edd.126.1633797080297;
-        Sat, 09 Oct 2021 09:31:20 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-109-12.retail.telecomitalia.it. [79.43.109.12])
-        by smtp.gmail.com with ESMTPSA id v13sm1151965ejh.62.2021.10.09.09.31.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 09:31:19 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-staging@lists.linux.dev
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: r8188eu: Provide a TODO file for this driver
-Date:   Sat, 09 Oct 2021 18:31:12 +0200
-Message-ID: <6435467.SEsBC3EFVD@localhost.localdomain>
-In-Reply-To: <20210826135413.GA1931@kadam>
-References: <20210826130342.9552-1-fmdefrancesco@gmail.com> <20210826135413.GA1931@kadam>
+        id S231607AbhJIQfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:35:51 -0400
+Received: from ixit.cz ([94.230.151.217]:42386 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229587AbhJIQfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:35:50 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id 5D14820064;
+        Sat,  9 Oct 2021 18:33:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633797231;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VG0XiF7oaA2a7ZkmNQfV1Wi+icaIuRu9C91JRKV71Fs=;
+        b=R2wx0ccZ26o/LhT82tyvvIwzmTzBhtcndZBdQj8WsN43Yu2DE3IwHNe4Vkg3OwDOKb/z8G
+        eoqBsQKm/X0FN6CldQnXjLBaO+jb9y5MLABU2lqqGkV44e90c1+/NpjfVhfWFBVaTP8qIc
+        Vex0pmD7IutmfEvWdjcHeUh3IRHvP/I=
+From:   David Heidelberg <david@ixit.cz>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH] dt-bindings: power: reset: gpio-poweroff: Convert txt bindings to yaml
+Date:   Sat,  9 Oct 2021 18:32:26 +0200
+Message-Id: <20211009163226.45564-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, August 26, 2021 3:54:13 PM CEST Dan Carpenter wrote:
-> Another thing to fix are some of the sleeping in atomic bugs.
-> 
-> drivers/staging/r8188eu/core/rtw_ap.c:139 update_BCNTIM() warn: sleeping in 
-atomic context
-> drivers/staging/r8188eu/core/rtw_ap.c:1296 update_bcn_wps_ie() warn: 
-sleeping in atomic context
-> drivers/staging/r8188eu/core/rtw_ap.c:1361 update_beacon() warn: sleeping 
-in atomic context
-> drivers/staging/r8188eu/core/rtw_ap.c:1725 ap_free_sta() warn: sleeping in 
-atomic context
-> drivers/staging/r8188eu/core/rtw_pwrctrl.c:79 ips_leave() warn: sleeping in 
-atomic context
-> drivers/staging/r8188eu/core/rtw_pwrctrl.c:81 ips_leave() warn: sleeping in 
-atomic context
-> drivers/staging/r8188eu/core/rtw_mlme_ext.c:6764 receive_disconnect() warn: 
-sleeping in atomic context
-> drivers/staging/r8188eu/core/rtw_mlme_ext.c:7083 report_del_sta_event() 
-warn: sleeping in atomic context
-> drivers/staging/r8188eu/core/rtw_mlme_ext.c:8133 set_tx_beacon_cmd() warn: 
-sleeping in atomic context
-> drivers/staging/r8188eu/os_dep/mlme_linux.c:117 rtw_report_sec_ie() warn: 
-sleeping in atomic context
-> 
-> There are a few in rtl8723bs as well since the code came from the same
-> place.
-> 
-> drivers/staging/rtl8723bs/core/rtw_ap.c:1601 update_beacon() warn: sleeping 
-in atomic context
-> drivers/staging/rtl8723bs/core/rtw_ap.c:1919 ap_free_sta() warn: sleeping 
-in atomic context
-> drivers/staging/rtl8723bs/core/rtw_mlme_ext.c:4270 receive_disconnect() 
-warn: sleeping in atomic context
-> drivers/staging/rtl8723bs/hal/hal_intf.c:100 rtw_hal_init() warn: sleeping 
-in atomic context
-> 
-> regards,
-> dan carpenter
-> 
-Hello Dan,
+Convert power-off action connected to the GPIO documentation to the YAML syntax.
 
-I'd like to address these kind of bugs, but I have a couple of questions 
-about them.
+Signed-off-by: David Heidelberg <david@ixit.cz>
+---
+ .../bindings/power/reset/gpio-poweroff.txt    | 41 ------------
+ .../bindings/power/reset/gpio-poweroff.yaml   | 64 +++++++++++++++++++
+ 2 files changed, 64 insertions(+), 41 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
+ create mode 100644 Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
 
-1) You've listed what looks like the output of a compiler or static analyzer. 
-How did you get the warnings you copy-pasted above?
-
-2) I know that both the execution of interrupt handlers (ISRs) as well as any 
-code blocks that are executed holding spinlocks are "atomic contexts". In 
-these cases, "sleeping" is not allowed (for obvious reasons). Besides the two 
-mentioned above, are there any further cases of "atomic contexts" in the 
-kernel? 
-
-Thank you in advance,
-
-Fabio
-
-
+diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
+deleted file mode 100644
+index 3e56c1b34a4c..000000000000
+--- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.txt
++++ /dev/null
+@@ -1,41 +0,0 @@
+-Driver a GPIO line that can be used to turn the power off.
+-
+-The driver supports both level triggered and edge triggered power off.
+-At driver load time, the driver will request the given gpio line and
+-install a handler to power off the system. If the optional properties
+-'input' is not found, the GPIO line will be driven in the inactive
+-state. Otherwise its configured as an input.
+-
+-When the power-off handler is called, the gpio is configured as an
+-output, and drive active, so triggering a level triggered power off
+-condition. This will also cause an inactive->active edge condition, so
+-triggering positive edge triggered power off. After a delay of 100ms,
+-the GPIO is set to inactive, thus causing an active->inactive edge,
+-triggering negative edge triggered power off. After another 100ms
+-delay the GPIO is driver active again. If the power is still on and
+-the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
+-
+-Required properties:
+-- compatible : should be "gpio-poweroff".
+-- gpios : The GPIO to set high/low, see "gpios property" in
+-  Documentation/devicetree/bindings/gpio/gpio.txt. If the pin should be
+-  low to power down the board set it to "Active Low", otherwise set
+-  gpio to "Active High".
+-
+-Optional properties:
+-- input : Initially configure the GPIO line as an input. Only reconfigure
+-  it to an output when the power-off handler is called. If this optional
+-  property is not specified, the GPIO is initialized as an output in its
+-  inactive state.
+-- active-delay-ms: Delay (default 100) to wait after driving gpio active
+-- inactive-delay-ms: Delay (default 100) to wait after driving gpio inactive
+-- timeout-ms: Time to wait before asserting a WARN_ON(1). If nothing is
+-              specified, 3000 ms is used.
+-
+-Examples:
+-
+-gpio-poweroff {
+-	compatible = "gpio-poweroff";
+-	gpios = <&gpio 4 0>;
+-	timeout-ms = <3000>;
+-};
+diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+new file mode 100644
+index 000000000000..50ae0cec6493
+--- /dev/null
++++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+@@ -0,0 +1,64 @@
++# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/power/reset/gpio-poweroff.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Driver a GPIO line that can be used to turn the power off
++
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
++
++description:
++  The driver supports both level triggered and edge triggered power off.
++  At driver load time, the driver will request the given gpio line and
++  install a handler to power off the system. If the optional properties
++  'input' is not found, the GPIO line will be driven in the inactive
++  state. Otherwise its configured as an input.
++
++  When the power-off handler is called, the gpio is configured as an
++  output, and drive active, so triggering a level triggered power off
++  condition. This will also cause an inactive->active edge condition, so
++  triggering positive edge triggered power off. After a delay of 100ms,
++  the GPIO is set to inactive, thus causing an active->inactive edge,
++  triggering negative edge triggered power off. After another 100ms
++  delay the GPIO is driver active again. If the power is still on and
++  the CPU still running after a 3000ms delay, a WARN_ON(1) is emitted.
++
++properties:
++  compatible:
++    const: gpio-poweroff
++
++  gpios: true
++
++  input:
++    description: |
++      Initially configure the GPIO line as an input. Only reconfigure
++      it to an output when the power-off handler is called. If this optional
++      property is not specified, the GPIO is initialized as an output in its inactive state.
++
++  active-delay-ms:
++    default: 100
++    description: Delay to wait after driving gpio active
++
++  inactive-delay-ms:
++    default: 100
++    description: Delay to wait after driving gpio inactive
++
++  timeout-ms:
++    default: 3000
++    description: Time to wait before asserting a WARN_ON(1).
++
++required:
++  - compatible
++  - gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio-poweroff {
++        compatible = "gpio-poweroff";
++        gpios = <&gpio 4 0>;
++        timeout-ms = <3000>;
++    };
+-- 
+2.33.0
 
