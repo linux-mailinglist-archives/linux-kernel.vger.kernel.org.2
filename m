@@ -2,224 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458C342747E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E2F427485
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243942AbhJIAGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243850AbhJIAGv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:06:51 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EBFC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:04:55 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id a3so15808538oid.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9N6N5ZTR9CIN4xom+ZlVChwK9wG/IG6oiW3V0bEVeE0=;
-        b=pnxjmjuB6yVd7ZXZnO/+xjCpCQiPZPzLM+yHPuwW4K98MFNX8Zlp9l5ZhU6MNa35Xq
-         DpTBfPXSsPYedCt2+dphpLoLh76LXhwMOaQ4j+vLc2LVfSe/5YxWWcjjkoeAXVhg/W69
-         3Vm3tJanr3Dr5cwiAYiJptcQbl/RNloGTul82Wm4CB/vu+BjsZHEBeNk7r4lUhf1oMUi
-         GKw7U2V6A2vpfgvlTGkExT1cEfiyb0/mp95ErxQFH6d9FKCvz1iEYKhs/N8p4YhLS/4s
-         s8JIzGE2wWjlSSnhBSeTqQp/TCLCg0k911f3jlbl4HjaH805QWDVZTXJXHKOUB2ya4k2
-         5WoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9N6N5ZTR9CIN4xom+ZlVChwK9wG/IG6oiW3V0bEVeE0=;
-        b=Kfxqu9nw9boop8Ukza/aRxhK3/e+agHU8A+2RoifB2JFHQ7o5FMQryOCGjV5GoX6Rv
-         ioZsDQGfsnO6FypgyNRo1aW/X0Vg4R+NS5fR4HRkN407V+O1EeCTd9d/QwBfew+hdLrM
-         tw+mJTTMDnD6fDscLGlL7CD2SVwlrvekD9bmvPPfQbM73FIZ3MAOb7GQGbrmzjJupjjY
-         PrqP4c+fvPOr9YdFXfRw31WNjqFFcvlvFIu084RJL+BWQ+27PdCTOWSh/utE3RSELTQe
-         uNfxviJnDBlp/F4Wzuvmz4xFgxCZuSoEUsSik74V4ZKdR1rI9cf0djFnCE9majNh8lTa
-         3CTg==
-X-Gm-Message-State: AOAM530D99hfZ++vaHaLob9OgB3y2qYv0mWLmmgosf9DZONRli2vStgP
-        W1VrQaJruJdpUY2TS7GN3+w5BnUTwaTK9w==
-X-Google-Smtp-Source: ABdhPJxnYVoBlj5hRyP6LkDot6B3z6O7w8iCB/+04vuWpx5srscRpG1TfqpTbY3LQw+aE/sAB1Fb8A==
-X-Received: by 2002:a54:4f0e:: with SMTP id e14mr10134624oiy.73.1633737894759;
-        Fri, 08 Oct 2021 17:04:54 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id c17sm237599oiw.10.2021.10.08.17.04.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 17:04:54 -0700 (PDT)
-Date:   Fri, 8 Oct 2021 17:06:32 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH v4 4/4] rpmsg: char: Introduce the "rpmsg-raw" channel
-Message-ID: <YWDdCFot7G0IuQNg@ripper>
-References: <20210712131900.24752-1-arnaud.pouliquen@foss.st.com>
- <20210712131900.24752-5-arnaud.pouliquen@foss.st.com>
+        id S243963AbhJIAME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 20:12:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243818AbhJIAMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Oct 2021 20:12:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0EB2F60FC3;
+        Sat,  9 Oct 2021 00:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633738207;
+        bh=98gtCc2rJJsNDXtGpCkdID9cTcNp76kpQ/7acnYzelI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TRsFyhMf8bUdmsDncV2P8EnnSYJIsq3C/Y3Ui/SolyAW6cUfCs6rfg/P9X9jc9Z0i
+         CSf2qopxm0htj3FdRB636vhnqhX3A5tj3arBhyu3g3MDQ0hPeYDn/TdtKI7Xud8zU5
+         qCuUlLjf1hUb3Uh9QfXQG7WhAKLz7xin3SB15ivCUVyMRIK85Ab3XyBlgtx6SE7tSy
+         hswHCwWFFJwmM8Z24v5GrBZF7FSAfq5yKuF6xSWbrJJTytJxejALnv7pPKY7eYEuE1
+         fw1zGf5QDFZSXU/P+PVHDiP7C1GVFjsTi8BsXqIt0lb740cFaAQy4WbbeKWJtcMeil
+         QSTvxOypAX+Zw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 016BC60A38;
+        Sat,  9 Oct 2021 00:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210712131900.24752-5-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests/tls: add SM4 GCM/CCM to tls selftests
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163373820700.1766.226175234547653621.git-patchwork-notify@kernel.org>
+Date:   Sat, 09 Oct 2021 00:10:07 +0000
+References: <20211008091745.42917-1-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <20211008091745.42917-1-tianjia.zhang@linux.alibaba.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
+        borisp@nvidia.com, john.fastabend@gmail.com, daniel@iogearbox.net,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Jul 06:19 PDT 2021, Arnaud Pouliquen wrote:
+Hello:
 
-> Allows to probe the endpoint device on a remote name service announcement,
-> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri,  8 Oct 2021 17:17:45 +0800 you wrote:
+> Add new cipher as a variant of standard tls selftests.
 > 
-> With this patch the /dev/rpmsgX interface can be instantiated by the remote
-> firmware.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Tested-by: Julien Massot <julien.massot@iot.bzh>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 > ---
->  drivers/rpmsg/rpmsg_char.c | 75 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 73 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index bd728d90ba4c..1b7b610e113d 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -25,6 +25,8 @@
->  
->  #include "rpmsg_char.h"
->  
-> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> +
->  static dev_t rpmsg_major;
->  static struct class *rpmsg_class;
->  
-> @@ -421,6 +423,61 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
->  }
->  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
->  
-> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_channel_info chinfo;
-> +	struct rpmsg_eptdev *eptdev;
-> +	struct rpmsg_endpoint *ept;
-> +
-> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+>  tools/testing/selftests/net/tls.c | 28 ++++++++++++++++++++++++++--
+>  1 file changed, 26 insertions(+), 2 deletions(-)
 
-The length should relate to the size of the destination buffer.
-This looks like an excellent job for strscpy_pad()
+Here is the summary with links:
+  - selftests/tls: add SM4 GCM/CCM to tls selftests
+    https://git.kernel.org/netdev/net-next/c/e506342a03c7
 
-> +	chinfo.src = rpdev->src;
-> +	chinfo.dst = rpdev->dst;
-> +
-> +	eptdev =  __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo);
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Note that this creates a new endpoint device as a child of the rpdev,
-while new endpoints created by RPMSG_CREATE_EPT_IOCTL are parented by
-the rpmsg_ctrl device.
 
-So it is possible to create two /dev/rpmsgN nodes for the same endpoint,
-I believe with the outcome that this one will be open but
-__rpmsg_create_ept() in virtio_rpmsg_bus should return NULL if the user
-tries to open the other one.
-
-> +	if (IS_ERR(eptdev))
-> +		return PTR_ERR(eptdev);
-> +
-> +	/*
-> +	 * Create the default endpoint associated to the rpmsg device and provide rpmsg_eptdev
-> +	 * structure as callback private data.
-> +	 */
-> +	ept = rpmsg_create_default_ept(rpdev, rpmsg_ept_cb, eptdev, eptdev->chinfo);
-
-Why don't you just set rpdev->priv to eptdev and make rpmsg_ept_cb the
-callback of your rpmsg_driver?
-
-> +	if (!ept) {
-> +		dev_err(&rpdev->dev, "failed to create %s\n", eptdev->chinfo.name);
-> +		put_device(&eptdev->dev);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/*
-> +	 * Do not allow the creation and release of an endpoint on /dev/rpmsgX open and close,
-> +	 * reuse the default endpoint instead
-> +	 */
-
-What happens when __rpmsg_chrdev_eptdev_create() delivers a uevent and
-user space quickly calls open() on the newly created /dev/rpmsgN, before
-the next line?
-
-> +	eptdev->static_ept = true;
-> +
-> +	return 0;
-> +}
-> +
-> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> +{
-> +	int ret;
-> +
-> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
-> +	if (ret)
-> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> +}
-> +
-> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> +	{ .name	= RPMSG_CHAR_DEVNAME },
-
-I would expect that this list would grow, but you hard coded
-RPMSG_CHAR_DEVNAME in probe, so that won't work.
-
-Regards,
-Bjorn
-
-> +	{ },
-> +};
-> +
-> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> +	.probe = rpmsg_chrdev_probe,
-> +	.remove = rpmsg_chrdev_remove,
-> +	.id_table = rpmsg_chrdev_id_table,
-> +	.drv.name = "rpmsg_chrdev",
-> +};
-> +
->  static int rpmsg_chrdev_init(void)
->  {
->  	int ret;
-> @@ -434,16 +491,30 @@ static int rpmsg_chrdev_init(void)
->  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
->  	if (IS_ERR(rpmsg_class)) {
->  		pr_err("failed to create rpmsg class\n");
-> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> -		return PTR_ERR(rpmsg_class);
-> +		ret = PTR_ERR(rpmsg_class);
-> +		goto free_region;
-> +	}
-> +
-> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> +	if (ret < 0) {
-> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> +		goto free_class;
->  	}
->  
->  	return 0;
-> +
-> +free_class:
-> +	class_destroy(rpmsg_class);
-> +free_region:
-> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> +
-> +	return ret;
->  }
->  postcore_initcall(rpmsg_chrdev_init);
->  
->  static void rpmsg_chrdev_exit(void)
->  {
-> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->  	class_destroy(rpmsg_class);
->  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->  }
-> -- 
-> 2.17.1
-> 
