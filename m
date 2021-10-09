@@ -2,83 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D36C42780C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 10:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98756427806
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 10:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230442AbhJIIR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 04:17:28 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64484 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230430AbhJIIR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 04:17:26 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="312843197"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="312843197"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 01:15:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="590785544"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga004.jf.intel.com with ESMTP; 09 Oct 2021 01:15:19 -0700
-Date:   Sat, 9 Oct 2021 16:08:59 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Russ Weight <russell.h.weight@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com
-Subject: Re: [PATCH v17 0/5] FPGA Image Load (previously Security Manager)
-Message-ID: <20211009080859.GA85181@yilunxu-OptiPlex-7050>
-References: <20210929230025.68961-1-russell.h.weight@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929230025.68961-1-russell.h.weight@intel.com>
+        id S230274AbhJIIMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 04:12:22 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55534 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229722AbhJIIMV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 04:12:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Ur5FUdx_1633766979;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ur5FUdx_1633766979)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 09 Oct 2021 16:10:23 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     aelior@marvell.com
+Cc:     GR-everest-linux-l2@marvell.com, davem@davemloft.net,
+        kuba@kernel.org, linux@armlinux.org.uk, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] qed: Fix missing error code in qed_slowpath_start()
+Date:   Sat,  9 Oct 2021 16:09:26 +0800
+Message-Id: <1633766966-115907-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:00:20PM -0700, Russ Weight wrote:
-> The FPGA Image Load framework provides an API to upload image
-> files to an FPGA device. Image files are self-describing. They could
-> contain FPGA images, BMC images, Root Entry Hashes, or other device
-> specific files. It is up to the lower-level device driver and the
-> target device to authenticate and disposition the file data.
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-I've reconsider the FPGA persistent image update again, and think we
-may include it in FPGA manager framework.
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'rc'.
 
-Sorry I raised this topic again when it is already at patch v17, but now
-I need to consider more seriously than before.
+Eliminate the follow smatch warning:
 
-We have consensus the FPGA persistent image update is just like a normal
-firmware update which finally writes the nvmem like flash or eeprom,
-while the current FPGA manager deals with the active FPGA region update
-and re-activation. Could we just expand the FPGA manager and let it handle
-the nvmem update as well? Many FPGA cards have nvmem and downloaders
-supports updating both FPGA region and nvmem.
+drivers/net/ethernet/qlogic/qed/qed_main.c:1298 qed_slowpath_start()
+warn: missing error code 'rc'.
 
-According to the patchset, the basic workflow of the 2 update types are
-quite similar, get the data, prepare for the HW, write and complete.
-They are already implemented in FPGA manager. We've discussed some
-differences like threading or canceling the update, which are
-not provided by FPGA manager but they may also nice to have for FPGA
-region update. An FPGA region update may also last for a long time??
-So I think having 2 sets of similar frameworks in FPGA is unnecessary.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: d51e4af5c209 ("qed: aRFS infrastructure support")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/ethernet/qlogic/qed/qed_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-My quick mind is that we add some flags in struct fpga_mgr & struct
-fpga_image_info to indicate the HW capability (support FPGA region
-update or nvmem update or both) of the download engine and the provided
-image type. Then the low-level driver knows how to download if it
-supports both image types.
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 5e7242304ee2..359ad859ae18 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -1295,6 +1295,7 @@ static int qed_slowpath_start(struct qed_dev *cdev,
+ 			} else {
+ 				DP_NOTICE(cdev,
+ 					  "Failed to acquire PTT for aRFS\n");
++				rc = -EINVAL;
+ 				goto err;
+ 			}
+ 		}
+-- 
+2.19.1.6.gb485710b
 
-An char device could be added for each fpga manager dev, providing the
-user APIs for nvmem update. We may not use the char dev for FPGA region
-update cause it changes the system HW devices and needs device hotplug
-in FPGA region. We'd better leave it to FPGA region class, this is
-another topic.
-
-More discussion is appreciated.
-
-Thanks,
-Yilun
