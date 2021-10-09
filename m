@@ -2,171 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B13AA427A54
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E414427A57
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 14:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhJIMyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 08:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37848 "EHLO
+        id S233274AbhJIMzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 08:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhJIMyE (ORCPT
+        with ESMTP id S232978AbhJIMzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 08:54:04 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E786CC061570;
-        Sat,  9 Oct 2021 05:52:07 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id d9so22944791edh.5;
-        Sat, 09 Oct 2021 05:52:07 -0700 (PDT)
+        Sat, 9 Oct 2021 08:55:02 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77FFEC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 05:53:05 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so292199otk.3
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 05:53:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=975/0lKre2jbukZyrsOHoZ3KIJn08g0A4cVpQ8XD8kI=;
-        b=hVcr+o1302lP3dfkILDlV1SWMYeqJQl7pYfgbS3boQXLZweylwSzlGJGLLJwQNk8Kh
-         CwL7ZYgMcu859cwij3WRju+M/6IBw1l5qVyv2sqs6vEeLyQuIkqRBOLAvpHG2flk3GUu
-         tn0JJzxP25bxoKIzhRhoiWy9CUZiPDduVKRLOFHRfOkYUOyLurBQIqcI3eVAOA/JbRy2
-         URi2wY4/k/7uTuVYTbc7wFkTe2AuqPP9pdDjOKvn430JKAXbvj/JUkCfUmvxV47WBwOb
-         Mj3LP/fA8TkfpmWrugYinFcFGixuwTX3+KlDePQpccjqsQkgWcVl0e5M7KhxZopGYHU0
-         f0Lw==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=Bd8ElF1Nr8BGOpgy9+8IsTvq17ptCqSo1py94eudfreFdtP504NMoaiX9Vh07Kp9Jr
+         /A5u6qMALuF64aXJPDHmFsOlz6fB4+T/PMtOv3XZcXG0Wj/BygaqH/5a/hrjTMUJp7hO
+         jNmX8c2EPkLJfJnwvBYNbeC8jzdMxBwhtUyc9aEIAv/MukcHdUsE2QbuY50LuZggh/a2
+         9I2AmJs2lmbnyDrcf6Z6IXTvdqvdgSdyi1VSHCUiBwOreBd9DrwUxVkLFcw1PD2T4RUu
+         FLPxBUfXaccJUr9pjaSAm1vP3yop7MN2zjFPbYZR57Ddcw0BSY8ysVkdmCwYvPQy8bfu
+         NCng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=975/0lKre2jbukZyrsOHoZ3KIJn08g0A4cVpQ8XD8kI=;
-        b=58bRgh0YaApsf9ucmbdBUrwwnu1g2tFopow5ehNT7NW94QMrRzcmLItk2H/kFz3+mY
-         XwF2sELqV8jQ1CXDwarwvo4La6X5Eujv9cCj9tAtqskh+bmyKYtKHgYdBoKWGSKRR8FH
-         NTGZ78bUZ03A0lOfOGEui5NGDLWavOV0HNzQwqzHsc47Cqe43Bkmoyfs7a69XU0azDtY
-         ZH6w+0Lk7CrjSJCksaEtw1sM3DSKNNcLt1/Jr2UoncN2VlC09vPYUGZa8xfqIRG3INHq
-         mOYw5ZdlytbhIh9FNlt6eTGLY8/LVRL1sQPgNAVsj0qHMJnAhsFVUWxnKpPfeKnTh23/
-         q/lw==
-X-Gm-Message-State: AOAM532aokajDtWcxh8tk8E55SWI3Lws098OzbiEPI8hEr58pY9114MT
-        RfIC26JzHIZE6YUjsIiGiQ==
-X-Google-Smtp-Source: ABdhPJwyfUp4OaPU6ugKRCPVVsevXJUZSC5gxhhEWZth3zrYETY0kH108F0bm4pu2qMTrK4qsPlwXg==
-X-Received: by 2002:a17:906:7848:: with SMTP id p8mr11404695ejm.212.1633783926493;
-        Sat, 09 Oct 2021 05:52:06 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.249.82])
-        by smtp.gmail.com with ESMTPSA id l23sm967292ejn.15.2021.10.09.05.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 05:52:06 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 15:52:02 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexey Gladkov <gladkov.alexey@gmail.com>, jannh@google.com,
-        vcaputo@pengaru.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, christian.brauner@ubuntu.com,
-        amistry@google.com, Kenta.Tada@sony.com, legion@kernel.org,
-        michael.weiss@aisec.fraunhofer.de, mhocko@suse.com, deller@gmx.de,
-        zhengqi.arch@bytedance.com, me@tobin.cc, tycho@tycho.pizza,
-        tglx@linutronix.de, bp@alien8.de, hpa@zytor.com, axboe@kernel.dk,
-        metze@samba.org, laijs@linux.alibaba.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, ebiederm@xmission.com,
-        ohoono.kwon@samsung.com, kaleshsingh@google.com,
-        yifeifz2@illinois.edu, linux-arch@vger.kernel.org,
-        vgupta@kernel.org, linux@armlinux.org.uk, will@kernel.org,
-        guoren@kernel.org, bcain@codeaurora.org, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, nickhu@andestech.com,
-        jonas@southpole.se, mpe@ellerman.id.au, paul.walmsley@sifive.com,
-        hca@linux.ibm.com, ysato@users.sourceforge.jp, davem@davemloft.net,
-        chris@zankel.net, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] selftests: proc: Make sure wchan works when it exists
-Message-ID: <YWGQckkJuKB4yAfg@localhost.localdomain>
-References: <20211008235504.2957528-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YXA6ubmxBM3AO934Ql+xSBBVvleUU47PEWiFVU0c5sY=;
+        b=Ckq5tr8AvPJg6zzYU5iJ3TjlO59ukrlkkQhdVswKSnNXTka02BADhCOnu7ec7mfB0j
+         cS1xJJmcDcx+yreTyvui8nin6V/K5L63UpMapbqHi1iVpAk0jmnYKpbTdVZNlHcbbVA1
+         QXg81X6/U95dQZZkNRVvhQTMQD5VoQP1LAWWWbWJgDE6JsOfU0CGDDopS1kDoHYIKo7k
+         rt0CMMQdvpa36Lh24/mcl/ERQTfX93lw+dXJ+sTP5fWvzfIg3WzyBD4YOjoaq0yQl5d8
+         sRsci5+j+KY6NfDAv3NTk0bjAWk8PKBTsT5c4ursuCMObexF8IgkQxzy7CfoevdVKfZ5
+         8CDA==
+X-Gm-Message-State: AOAM530cFiwJP9+q3fT0osvs/xqdXQNIHADk98xM9B2Tsl2NkmX3B66y
+        fg/9VeFFkVuIpSOk16zWSkR4tPsCANnu0Ga3v3c=
+X-Google-Smtp-Source: ABdhPJwBZrKNhGqELGV/V71UlDF/f3a+1zzOXLERkUG97cnpHS6HBDKjFCy4foUuWHYD7jJGMKX5PRzBSdi15pnP7qs=
+X-Received: by 2002:a05:6830:1513:: with SMTP id k19mr13515684otp.41.1633783984847;
+ Sat, 09 Oct 2021 05:53:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211008235504.2957528-1-keescook@chromium.org>
+Reply-To: zahirikeen@gmail.com
+Sender: aliwat885@gmail.com
+Received: by 2002:a05:6838:4038:0:0:0:0 with HTTP; Sat, 9 Oct 2021 05:53:04
+ -0700 (PDT)
+From:   Zahiri Keen <zahirikeen2@gmail.com>
+Date:   Sat, 9 Oct 2021 12:53:04 +0000
+X-Google-Sender-Auth: 0YrNY2BeIG17vkdwvG_bjy78FiI
+Message-ID: <CAA2insJ_mES8cgAZry77UJD_bo97yjV5cB84oAE0oyPeWq3x4A@mail.gmail.com>
+Subject: Very Urgent Please.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 04:55:04PM -0700, Kees Cook wrote:
-> This makes sure that wchan contains a sensible symbol when a process is
-> blocked.
+Greetings,
 
-> Specifically this calls the sleep() syscall, and expects the
-> architecture to have called schedule() from a function that has "sleep"
-> somewhere in its name.
+            I have a Mutual/Beneficial Business Project that would be
+beneficial to you. I only have two questions to ask of you, if you are
+interested.
 
-This exposes internal kernel symbol to userspace.
-Why would want to test that?
+1. Can you handle this project?
+2. Can I give you this trust?
 
-Doing s/sleep/SLEEP/g doesn't change kernel but now the test is broken.
+Please note that the deal requires high level of maturity, honesty and
+secrecy. This will involve moving some money from my office, on trust
+to your hands or bank account. Also note that i will do everything to
+make sure that the money is moved as a purely legitimate fund, so you
+will not be exposed to any risk.
 
-> For example, on the architectures I tested
-> (x86_64, arm64, arm, mips, and powerpc) this is "hrtimer_nanosleep":
+I request for your full co-operation. I will give you details and
+procedure when I receive your reply, to commence this transaction, I
+require you to immediately indicate your interest by a return reply. I
+will be waiting for your response in a timely manner.
 
-> +/*
-> + * Make sure that wchan returns a reasonable symbol when blocked.
-> + */
-
-Test should be "contains C identifier" then?
-
-> +int main(void)
-> +{
-> +	char buf[64];
-> +	pid_t child;
-> +	int sync[2], fd;
-> +
-> +	if (pipe(sync) < 0)
-> +		perror_exit("pipe");
-> +
-> +	child = fork();
-> +	if (child < 0)
-> +		perror_exit("fork");
-> +	if (child == 0) {
-> +		/* Child */
-> +		if (close(sync[0]) < 0)
-> +			perror_exit("child close sync[0]");
-> +		if (close(sync[1]) < 0)
-> +			perror_exit("child close sync[1]");
-
-Redundant close().
-
-> +		sleep(10);
-> +		_exit(0);
-> +	}
-> +	/* Parent */
-> +	if (close(sync[1]) < 0)
-> +		perror_exit("parent close sync[1]");
-
-Redundant close().
-
-> +	if (read(sync[0], buf, 1) != 0)
-> +		perror_exit("parent read sync[0]");
-
-Racy if child is scheduled out after first close in the child.
-
-> +	snprintf(buf, sizeof(buf), "/proc/%d/wchan", child);
-> +	fd = open(buf, O_RDONLY);
-> +	if (fd < 0) {
-> +		if (errno == ENOENT)
-> +			return 4;
-> +		perror_exit(buf);
-> +	}
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +	if (read(fd, buf, sizeof(buf) - 1) < 1)
-> +		perror_exit(buf);
-> +	if (strstr(buf, "sleep") == NULL) {
-> +		fprintf(stderr, "FAIL: did not find 'sleep' in wchan '%s'\n", buf);
-> +		return 1;
-> +	}
-> +	printf("ok: found 'sleep' in wchan '%s'\n", buf);
-> +
-> +	if (kill(child, SIGKILL) < 0)
-> +		perror_exit("kill");
-> +	if (waitpid(child, NULL, 0) != child) {
-> +		fprintf(stderr, "waitpid: got the wrong child!?\n");
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
+Contact  Email: zahirikeen@gmail.com
+Best Regard,
+Mr Zahiri Keen.
