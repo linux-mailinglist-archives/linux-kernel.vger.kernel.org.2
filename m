@@ -2,89 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B63A4276C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E8D4276C5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 04:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhJIC6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 22:58:41 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:44953 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232081AbhJIC6k (ORCPT
+        id S232353AbhJIDA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 23:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232081AbhJIDA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 22:58:40 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yinan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ur3IQOD_1633748201;
-Received: from 30.240.97.92(mailfrom:yinan@linux.alibaba.com fp:SMTPD_---0Ur3IQOD_1633748201)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 09 Oct 2021 10:56:42 +0800
-Message-ID: <1d069626-1aed-6244-b932-7853e832eb70@linux.alibaba.com>
-Date:   Sat, 9 Oct 2021 10:56:40 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [PATCH 1/2] scripts: ftrace - move the sort-processing in
- ftrace_init to compile time
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     mark-pk.tsai@mediatek.com, peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-References: <20210911135043.16014-1-yinan@linux.alibaba.com>
- <20210911135043.16014-2-yinan@linux.alibaba.com>
- <20210911095937.5a298619@rorschach.local.home>
- <0b783c9e-c129-6907-0637-5c7638158a65@linux.alibaba.com>
- <20211008194821.3b6a18a4@oasis.local.home>
-From:   Yinan Liu <yinan@linux.alibaba.com>
-In-Reply-To: <20211008194821.3b6a18a4@oasis.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Fri, 8 Oct 2021 23:00:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF02CC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 19:59:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i21-20020a253b15000000b005b9c0fbba45so15172768yba.20
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 19:59:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=kf7CalnyuFZkYhPjNjgl2jKwF5f9iQ5T88AqkNZlBhM=;
+        b=Ql7DVirqHyWKvhHv5RTenTZ97vcqpw08NbUhpJBtD1bPP8hGQBHt5JK57pME40uBIt
+         Jdxwl1FS2iOAraJx/ARCzFdu/AsAtU+Iwf3fatndjJMLLvXcRwfIz4MHwt8FFlYsOkFV
+         oPznFm2+iK7ZDsz/ozIMsV2I6FW97Tvt++ytP1hE8EdXTkAHSGArQaj2fSZhdFiPv+7I
+         nGlB6Vxxp9OhvTsiSO32W+RpqsrA8xH5GBKbGR1uWfJkMktoD/97XYLtZAbWa/S+N4JW
+         TF/g7kv26UHmMNUk2tYgNKPLX7vUW32ETtvjyQ7F0hFvG25U7FGHZkIPLiPO7q2lIXRC
+         yznQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=kf7CalnyuFZkYhPjNjgl2jKwF5f9iQ5T88AqkNZlBhM=;
+        b=xHaKXEAZJD8CzHtbNnF2ZclKc/vrEUfLcCqMU95h8IK60F92e7rVa3mzUYcgG+GDDP
+         JtjDYYrXiIjOtmhoC061TB/OVojH4P6pP4bUfpnGk1h1X6XUmcGZLX5q4rcv5rp5YmFJ
+         qiKj2UDWwmDaAcdGZjNjmQaSeohd202pQRBewhLK9g6BAVkIzOiGLfyd0+Y7KTTVjm87
+         47OBWS2rWTToAycI1TXtVDRP6tL+rALWNArRZriAxIP+tcml5y/JngXBDxuUr6Sj7LtM
+         H78EBTTEvFqt4K7XcTqEoU7fSaWX0bt5QVpYPLRZXPhBKGPFIzC/Touv3uARuUnUBsUu
+         DBTQ==
+X-Gm-Message-State: AOAM5322gWLHZAUWBUK3ZTKRW13PWfgKit44tNOSB71Z169okRBEtQGB
+        Vdx1GovGgrQbWiEkOU7uQqO6nZs=
+X-Google-Smtp-Source: ABdhPJyU/TodyBwpj0FQcBOdGczlr3Z+KthsCP5SqDy7zMCa9a2c7kGISIxRpK5CaTR0SmzO2TRLF4w=
+X-Received: from osk.cam.corp.google.com ([2620:0:1004:1a:acb9:8fa6:8db4:ee39])
+ (user=osk job=sendgmr) by 2002:a25:610e:: with SMTP id v14mr7956450ybb.90.1633748341880;
+ Fri, 08 Oct 2021 19:59:01 -0700 (PDT)
+Date:   Fri,  8 Oct 2021 22:58:57 -0400
+Message-Id: <20211009025858.3326725-1-osk@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
+Subject: [PATCH v4 1/2] dt-bindings: hwmon: Add nct7802 bindings
+From:   Oskar Senft <osk@google.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Oskar Senft <osk@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Document bindings for the Nuvoton NCT7802Y driver.
 
+Signed-off-by: Oskar Senft <osk@google.com>
+---
+ .../bindings/hwmon/nuvoton,nct7802.yaml       | 142 ++++++++++++++++++
+ 1 file changed, 142 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
 
-On 2021/10/9 上午7:48, Steven Rostedt wrote:
-> On Sun, 3 Oct 2021 21:42:10 +0800
-> Yinan Liu <yinan@linux.alibaba.com> wrote:
-> 
->> Sorry for my slow progress . I have encountered some problems with the
->> sorting
->> of the module's mcount in compile time. The .ko file will be relocated
->> after insmod
->> or modprobe, most of the mcount relocation is based on .text section,
->> but there are
->> also a small part of mcount relocation based on .init.text section such
->> as module_init().
->> The loading position of .init.text and .text does not seem to be in a
->> definite order.
-> 
-> Right, there's no guarantee that the .text portion of a module is
-> placed before or after the .init.text portion.
-yes.
-> 
->>
->> For example, when I insmod ip_tables.ko twice, the front and back
->> positions of init.text
->> and .text are different, so we cannot sort the mcounts in the two
->> sections, which makes
->> the mcount sorting in the module meaningless.
->>
->> What is your opinion on this?
-> 
-> Probably just keep the sorting algorithm in the kernel and take place
-> on module load.
-> 
-> If you still want to sort at compile time, then do the sort for .init
-> functions separate from the .text ones, and have a way to extract this
-> information (shouldn't be too hard) in the kernel at module load, and
-> then just swap the init and text functions if they were added in the
-> reverse order that was expect.
-> 
-> The functions in .init will either be before all the functions in .text
-> or after. They wont be intermingled. Thus, if they are both sorted,
-> then they are placed correctly or the two groups of functions need to
-> be switched. No other sorting should be necessary.
-Thanks so much! I see. And I will have a try.
-> 
-> -- Steve
-> 
-Best regards!
--- Yinan liu
+diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+new file mode 100644
+index 000000000000..a97b89d0d197
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
+@@ -0,0 +1,142 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Nuvoton NCT7802Y Hardware Monitoring IC
++
++maintainers:
++  - Guenter Roeck <linux@roeck-us.net>
++
++description: |
++  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
++  5 remote temperature sensors with SMBus interface.
++
++  Datasheets:
++    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
++
++properties:
++  compatible:
++    enum:
++      - nuvoton,nct7802
++
++  reg:
++    maxItems: 1
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++  input@0:
++    type: object
++    description: Local Temperature Sensor ("LTD")
++    properties:
++      reg:
++        const: 0
++    required:
++      - reg
++
++  input@1:
++    type: object
++    description: Remote Temperature Sensor or Voltage Sensor ("RTD1")
++    properties:
++      reg:
++        const: 1
++      sensor-type:
++        items:
++          - enum:
++              - temperature
++              - voltage
++      temperature-mode:
++        items:
++          - enum:
++              - thermistor
++              - thermal-diode
++    required:
++      - reg
++      - sensor-type
++
++  input@2:
++    type: object
++    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
++    properties:
++      reg:
++        const: 2
++      sensor-type:
++        items:
++          - enum:
++              - temperature
++              - voltage
++      temperature-mode:
++        items:
++          - enum:
++              - thermistor
++              - thermal-diode
++    required:
++      - reg
++      - sensor-type
++
++  input@3:
++    type: object
++    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
++    properties:
++      reg:
++        const: 3
++      sensor-type:
++        items:
++          - enum:
++              - temperature
++              - voltage
++    required:
++      - reg
++      - sensor-type
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        nct7802@28 {
++            compatible = "nuvoton,nct7802";
++            reg = <0x28>;
++
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            input@0 { /* LTD */
++              reg = <0>;
++              status = "okay";
++            };
++
++            input@1 { /* RTD1 */
++              reg = <1>;
++              status = "okay";
++              sensor-type = "temperature";
++              temperature-mode = "thermistor";
++            };
++
++            input@2 { /* RTD2 */
++              reg = <2>;
++              status = "okay";
++              sensor-type = "temperature";
++              temperature-mode = "thermal-diode";
++            };
++
++            input@3 { /* RTD3 */
++              reg = <3>;
++              status = "okay";
++              sensor-type = "voltage";
++            };
++        };
++    };
+-- 
+2.33.0.882.g93a45727a2-goog
+
