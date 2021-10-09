@@ -2,76 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682E542790B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BBA42790E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244458AbhJIKj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 06:39:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35992 "EHLO
+        id S244520AbhJIKlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 06:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhJIKj6 (ORCPT
+        with ESMTP id S231386AbhJIKlG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 06:39:58 -0400
-Received: from mail1.systemli.org (mail1.systemli.org [IPv6:2a00:c38:11e:ffff::a032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62F6C061570;
-        Sat,  9 Oct 2021 03:38:00 -0700 (PDT)
-Message-ID: <274013cd-29e4-9202-423b-bd2b2222d6b8@systemli.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=systemli.org;
-        s=default; t=1633775877;
-        bh=FP4QHWhYPgjbDQ7Gbz/E/+mQlwH5z/kUq6BgWbS1qOg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=jDPDHvGlk2IgrAgT8Y+MgQ05kEgdcU9akyg6mMQi4XUuT7HcMREUU55ygXx1BCrza
-         aresiwir+C1lhaISjZiNzmTFFXI1G/6UiE+dqauZg6cLzb12+w6MoqNwwJv7+4dRZx
-         IYB8+ai09l5W5P3Nl8ev3Is97kAGXSnz+FcdCErG2bzEl8cmGKppEyFL96foXIP+7q
-         Ni4Lwtdyjeneewgj62n4a75OYlmOuBuHtB2haCVQYb67neUZBnZHhcjX30t29OrfE4
-         4u7zNASHRNMIVUEnAm4vMmTQX8rDqizfWzG3NLkAPRvhjj1yDad1f2UqCaDc0YjHHQ
-         hHmT4BkOHwsjg==
-Date:   Sat, 9 Oct 2021 12:37:53 +0200
+        Sat, 9 Oct 2021 06:41:06 -0400
+Received: from ha0.nfschina.com (unknown [IPv6:2400:dd01:100f:2:d63d:7eff:fe08:eb3f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B936C061570;
+        Sat,  9 Oct 2021 03:39:08 -0700 (PDT)
+Received: from localhost (unknown [127.0.0.1])
+        by ha0.nfschina.com (Postfix) with ESMTP id 8DEB8AE0E44;
+        Sat,  9 Oct 2021 18:40:50 +0800 (CST)
+X-Virus-Scanned: amavisd-new at test.com
+Received: from ha0.nfschina.com ([127.0.0.1])
+        by localhost (ha0.nfschina.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FtkZCRRlX7cL; Sat,  9 Oct 2021 18:40:29 +0800 (CST)
+Received: from localhost.localdomain (unknown [180.167.10.98])
+        (Authenticated sender: liqiong@nfschina.com)
+        by ha0.nfschina.com (Postfix) with ESMTPA id 28FD7AE0DE1;
+        Sat,  9 Oct 2021 18:40:29 +0800 (CST)
+From:   liqiong <liqiong@nfschina.com>
+To:     Simon.THOBY@viveris.fr, zohar@linux.ibm.com
+Cc:     dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, liqiong@nfschina.com,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] ima: fix deadlock when traversing "ima_default_rules".
+Date:   Sat,  9 Oct 2021 18:38:21 +0800
+Message-Id: <20211009103821.51767-1-liqiong@nfschina.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210918031139.22674-1-liqiong@nfschina.com>
+References: <20210918031139.22674-1-liqiong@nfschina.com>
 MIME-Version: 1.0
-Subject: Re: [RFC v2] mt76: mt7615: mt7622: fix ibss and meshpoint
-Content-Language: en-US
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     nbd@nbd.name, lorenzo.bianconi83@gmail.com, ryder.lee@mediatek.com,
-        davem@davemloft.net, kuba@kernel.org, matthias.bgg@gmail.com,
-        sean.wang@mediatek.com, shayne.chen@mediatek.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Robert Foss <robert.foss@linaro.org>
-References: <20211007225725.2615-1-vincent@systemli.org>
- <87czoe61kh.fsf@codeaurora.org>
-From:   Nick <vincent@systemli.org>
-In-Reply-To: <87czoe61kh.fsf@codeaurora.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/21 10:32, Kalle Valo wrote:
+The current IMA ruleset is identified by the variable "ima_rules"
+that default to "&ima_default_rules". When loading a custom policy
+for the first time, the variable is updated to "&ima_policy_rules"
+instead. That update isn't RCU-safe, and deadlocks are possible.
+Indeed, some functions like ima_match_policy() may loop indefinitely
+when traversing "ima_default_rules" with list_for_each_entry_rcu().
 
-> Nick Hainke <vincent@systemli.org> writes:
->
->> Fixes: d8d59f66d136 ("mt76: mt7615: support 16 interfaces").
-> The fixes tag should be in the end, before Signed-off-by tags. But I can
-> fix that during commit.
-Thanks for feedback. Already changed that locally but I did not want to 
-spam you with another RFC v3. :)
-I was able to organize me a BPI-MT7615 PCIE Express Card. With and 
-without this patch beacons were sent on the mt7615 pcie, so the patch 
-did not make any difference. However, the mt7622 wifi will only work 
-with my patch.
+When iterating over the default ruleset back to head, if the list
+head is "ima_default_rules", and "ima_rules" have been updated to
+"&ima_policy_rules", the loop condition (&entry->list != ima_rules)
+stays always true, traversing won't terminate, causing a soft lockup
+and RCU stalls.
 
-OpenWrt buildroot says that the chips are almost the same?
+Introduce a temporary value for "ima_rules" when iterating over
+the ruleset to avoid the deadlocks.
 
-|
-> |This adds support for the built-in WMAC on MT7622 SoC devices which 
-> has the same feature set as a MT7615, but limited to 2.4 GHz only.||
+Signed-off-by: liqiong <liqiong@nfschina.com>
+Reviewed-by: THOBY Simon <Simon.THOBY@viveris.fr>
+Fixes: 38d859f991f3 ("IMA: policy can now be updated multiple times")
+Reported-by: kernel test robot <lkp@intel.com> (Fix sparse: incompatible types in comparison expression.)
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ security/integrity/ima/ima_policy.c | 27 ++++++++++++++++++---------
+ 1 file changed, 18 insertions(+), 9 deletions(-)
 
-I also did a version where I check for "is_mt7622(dev)", so it will only 
-affect the internal banana pi r64 wifi. I'm happy to insert your 
-feedback into my patch.
-
-Bests
-Nick
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 87b9b71cb820..12e8adcd80a2 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -228,7 +228,7 @@ static struct ima_rule_entry *arch_policy_entry __ro_after_init;
+ static LIST_HEAD(ima_default_rules);
+ static LIST_HEAD(ima_policy_rules);
+ static LIST_HEAD(ima_temp_rules);
+-static struct list_head *ima_rules = &ima_default_rules;
++static struct list_head __rcu *ima_rules = (struct list_head __rcu *)(&ima_default_rules);
+ 
+ static int ima_policy __initdata;
+ 
+@@ -675,12 +675,14 @@ int ima_match_policy(struct user_namespace *mnt_userns, struct inode *inode,
+ {
+ 	struct ima_rule_entry *entry;
+ 	int action = 0, actmask = flags | (flags << 1);
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (template_desc && !*template_desc)
+ 		*template_desc = ima_template_desc_current();
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 
+ 		if (!(entry->action & actmask))
+ 			continue;
+@@ -741,9 +743,11 @@ void ima_update_policy_flags(void)
+ {
+ 	struct ima_rule_entry *entry;
+ 	int new_policy_flag = 0;
++	struct list_head *ima_rules_tmp;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		/*
+ 		 * SETXATTR_CHECK rules do not implement a full policy check
+ 		 * because rule checking would probably have an important
+@@ -968,10 +972,10 @@ void ima_update_policy(void)
+ 
+ 	list_splice_tail_init_rcu(&ima_temp_rules, policy, synchronize_rcu);
+ 
+-	if (ima_rules != policy) {
++	if (ima_rules != (struct list_head __rcu *)policy) {
+ 		ima_policy_flag = 0;
+-		ima_rules = policy;
+ 
++		rcu_assign_pointer(ima_rules, policy);
+ 		/*
+ 		 * IMA architecture specific policy rules are specified
+ 		 * as strings and converted to an array of ima_entry_rules
+@@ -1061,7 +1065,7 @@ static int ima_lsm_rule_init(struct ima_rule_entry *entry,
+ 		pr_warn("rule for LSM \'%s\' is undefined\n",
+ 			entry->lsm[lsm_rule].args_p);
+ 
+-		if (ima_rules == &ima_default_rules) {
++		if (ima_rules == (struct list_head __rcu *)(&ima_default_rules)) {
+ 			kfree(entry->lsm[lsm_rule].args_p);
+ 			entry->lsm[lsm_rule].args_p = NULL;
+ 			result = -EINVAL;
+@@ -1768,9 +1772,11 @@ void *ima_policy_start(struct seq_file *m, loff_t *pos)
+ {
+ 	loff_t l = *pos;
+ 	struct ima_rule_entry *entry;
++	struct list_head *ima_rules_tmp;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (!l--) {
+ 			rcu_read_unlock();
+ 			return entry;
+@@ -1789,7 +1795,8 @@ void *ima_policy_next(struct seq_file *m, void *v, loff_t *pos)
+ 	rcu_read_unlock();
+ 	(*pos)++;
+ 
+-	return (&entry->list == ima_rules) ? NULL : entry;
++	return (&entry->list == &ima_default_rules ||
++		&entry->list == &ima_policy_rules) ? NULL : entry;
+ }
+ 
+ void ima_policy_stop(struct seq_file *m, void *v)
+@@ -2014,6 +2021,7 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	struct ima_rule_entry *entry;
+ 	bool found = false;
+ 	enum ima_hooks func;
++	struct list_head *ima_rules_tmp;
+ 
+ 	if (id >= READING_MAX_ID)
+ 		return false;
+@@ -2021,7 +2029,8 @@ bool ima_appraise_signature(enum kernel_read_file_id id)
+ 	func = read_idmap[id] ?: FILE_CHECK;
+ 
+ 	rcu_read_lock();
+-	list_for_each_entry_rcu(entry, ima_rules, list) {
++	ima_rules_tmp = rcu_dereference(ima_rules);
++	list_for_each_entry_rcu(entry, ima_rules_tmp, list) {
+ 		if (entry->action != APPRAISE)
+ 			continue;
+ 
+-- 
+2.25.1
 
