@@ -2,110 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F107427BCD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0DD427BD5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhJIQJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:09:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37530 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232413AbhJIQIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:08:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633795608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kyRSTZhAr4vtiVySKg6oKQ+eD8aKotXSs6/ZudHdQ1c=;
-        b=Y8gVLv/m8TgIOTDc7BEnAw7y4Gi+ZZVcP64Y/wxAgqFa1+Z9UzRwbNVq2OxFLk+IS7q9jr
-        6ijAq6j3p6GBAI/lZD7q36T8K2+HJFT1Ln/ANdC8gMHLgvfw5IvcI7MV5Usn3v1/ws6850
-        NY2Rw6BZDM6aKwyr9IVjdDjueHHAY8s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-xPlLhf1rMK2nUINEyyfQaQ-1; Sat, 09 Oct 2021 12:06:47 -0400
-X-MC-Unique: xPlLhf1rMK2nUINEyyfQaQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0BB01808310;
-        Sat,  9 Oct 2021 16:06:44 +0000 (UTC)
-Received: from x1.localdomain.com (unknown [10.39.192.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B645B5C1B4;
-        Sat,  9 Oct 2021 16:06:41 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v2 13/13] media: ipu3-cio2: Add module soft-deps for the INT3472 drivers
-Date:   Sat,  9 Oct 2021 18:05:48 +0200
-Message-Id: <20211009160548.306550-14-hdegoede@redhat.com>
-In-Reply-To: <20211009160548.306550-1-hdegoede@redhat.com>
-References: <20211009160548.306550-1-hdegoede@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S230386AbhJIQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:13:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230125AbhJIQNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:13:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 031DF60F48;
+        Sat,  9 Oct 2021 16:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633795886;
+        bh=Zkm9WMyVZJvHlnzzyGSk2xNb4qHWVCVklol1no09I7Q=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=kBpEHw6yB9t68qgY+pD6fqIGJ/py+k+rDej3aDqBe/uKhu0oLT8yB+EYgtWv79ELM
+         Ugmhlp2ELWRyUmdT3jzCxgzh3w3GGD4dOF+2OUk0A42nbAvi3pOQW0zue5fgwp3VHE
+         J2eB1IPq8F1b8Nw1fHFwJ1ziPkgmSUh0Phiwirtv23QyTrjPriFuNEd9/R1Kux4qYX
+         nMEDxIlDea5Wlf34GWc9Ht/Yo72KKaN0uW+TjARcKa/kwOyVLs96ePT5rhOLI9GchV
+         /ZJHRkQFqDIu4GwYrmeVKrOWdyKVIY7gv0BtXdM5bgO6AeRPNuuDmHI5BkyALtzc19
+         4ST6VT59MjETg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EB04860A38;
+        Sat,  9 Oct 2021 16:11:25 +0000 (UTC)
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.15-rc5
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <mhng-26107d68-d2af-46eb-a8a4-43c1496a9ef4@palmerdabbelt-glaptop>
+References: <mhng-26107d68-d2af-46eb-a8a4-43c1496a9ef4@palmerdabbelt-glaptop>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <mhng-26107d68-d2af-46eb-a8a4-43c1496a9ef4@palmerdabbelt-glaptop>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.15-rc5
+X-PR-Tracked-Commit-Id: 3ef6ca4f354c53abf263cbeb51e7272523c294d8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 717478d89fe22df61a4ecf73b1adb31b5f8d1bba
+Message-Id: <163379588595.23991.2589894586404146995.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 Oct 2021 16:11:25 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The clk and regulator frameworks expect clk/regulator consumer-devices
-to have info about the consumed clks/regulators described in the device's
-fw_node.
+The pull request you sent on Fri, 08 Oct 2021 21:38:14 -0700 (PDT):
 
-To work around this info missing from the ACPI tables on devices where
-the int3472 driver is used, the int3472 MFD-cell drivers attach info about
-consumers to the clks/regulators when registering these.
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.15-rc5
 
-This causes problems with the probe ordering wrt drivers for consumers
-of these clks/regulators. Since the lookups are only registered when the
-provider-driver binds, trying to get these clks/regulators before then
-results in a -ENOENT error for clks and a dummy regulator for regulators.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/717478d89fe22df61a4ecf73b1adb31b5f8d1bba
 
-All the sensor ACPI fw-nodes have a _DEP dependency on the INT3472 ACPI
-fw-node, so to work around these probe ordering issues the ACPI core
-reports status.present and status.enabled as false for any ACPI devices
-which have a dependency on an INT3472 ACPI device until all _DEP-s are met.
+Thank you!
 
-Our sensor-detect code in cio2-bridge.c depends on the status.present /
-status.enabled fields. So the INT3472 driver (which fullfills the _DEP-s)
-must be loaded before us to ensure the sensor-detect code works.
-Add module soft-deps on the INT3472 drivers to ensure that they are loaded
-first.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/media/pci/intel/ipu3/ipu3-cio2-main.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-index 7bb86e246ebe..4db6b637f555 100644
---- a/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-+++ b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
-@@ -2063,3 +2063,9 @@ MODULE_AUTHOR("Yuning Pu <yuning.pu@intel.com>");
- MODULE_AUTHOR("Yong Zhi <yong.zhi@intel.com>");
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("IPU3 CIO2 driver");
-+/*
-+ * The sensor detection in cio2-bridge.c relies on adev->status.present/enabled
-+ * which will only be true for sensors if their _DEP dependencies are met, which
-+ * requires the INT3472 drivers to have loaded.
-+ */
-+MODULE_SOFTDEP("pre: intel_skl_int3472_discrete intel_skl_int3472_tps68470");
 -- 
-2.31.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
