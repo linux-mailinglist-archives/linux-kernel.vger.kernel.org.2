@@ -2,95 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF26427545
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1DF427549
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 02:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244051AbhJIAnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 20:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhJIAm7 (ORCPT
+        id S244035AbhJIBBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 21:01:22 -0400
+Received: from smtprelay0081.hostedemail.com ([216.40.44.81]:55618 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231996AbhJIBBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:42:59 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7671C061570
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 17:41:03 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ls18so8779089pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 17:41:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gbNbd7Wz3p2O73QmnnBxtoMhGaSnr/esB6d0N4BYdkI=;
-        b=UdDACpcGI1OYHgzs7fn54lJkzb95zBJCcBzcGHNvaiBRASRQWD/q6MKpoOlieuDAdK
-         VA9WjxdGPPpazXJ5w2HKmLOSjbaymw8QhO6irlr9R4gsvTVU/fe7HiEAMqSE2T7ADJMC
-         zMZY6wOKabiw9VJcgpTGv5Zr6H21Kk/a6GLDIxTErukM6XU9wI/uZZkEl6U7V+UFK1J6
-         Fsz82c/1p8NApmcnC6qonAyfKv9KD8RCE71s/pS9T9UJZbudo6pE5GcnsBOi6s0H+jit
-         RUd/oCfW4XV+Qs6aEuFb1X//FHvWnu+LiA+dVQyvFS506KDB5NIrRbmJ2Tf5w4tKAKTn
-         bXHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gbNbd7Wz3p2O73QmnnBxtoMhGaSnr/esB6d0N4BYdkI=;
-        b=yis8hcr3puCrntIXzaUE56A3Y+IlgNIpg2MT0ov6t0eiEkgj7UcIOabS0hDt9h38hV
-         dWvxGc/R+BVZAj07m4h/8yP92X+zLKKEWg5jo4uXK4/C/ZkYzp7kOiEfw8mlRrkbjsjh
-         yU/LNKOLf0g0bukU/xFtSmsaXukip4UpiS8T3b7xl67C81/+LWYPkdmM1VTXJpjf6U63
-         6uLAKc5uWNFB3bMehKOY3H5j1wAJjHIgv0/HroqMucIhZP2wmbO6u2V0e+i6c55f8syo
-         vbU0wpFXj3J8ix4W7tDWo/GuFTA2MAw1x60RIZ4VEmMt17ngkF30H31jHvFN10MaXff4
-         H8XQ==
-X-Gm-Message-State: AOAM532eH/ak/B7w8FGB7yr6q5cM41kx9y9QvClg0f7VKpD86fl/P1iL
-        ohIPpFfFobD5xJBvUItmVEw=
-X-Google-Smtp-Source: ABdhPJyYwe7zdrfsKr5vEd8p4BqsNBWp4hcUbTNFi5nOi3lN9tZWD/JsDhtna7BolMR7mhRN0f8aZw==
-X-Received: by 2002:a17:902:b40a:b0:13d:cbcd:2e64 with SMTP id x10-20020a170902b40a00b0013dcbcd2e64mr12554348plr.18.1633740063356;
-        Fri, 08 Oct 2021 17:41:03 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
-        by smtp.gmail.com with ESMTPSA id lp9sm335253pjb.35.2021.10.08.17.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 17:41:03 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 00:40:58 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Fri, 8 Oct 2021 21:01:20 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 9A08C182CED28;
+        Sat,  9 Oct 2021 00:59:23 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 5105C315D75;
+        Sat,  9 Oct 2021 00:59:19 +0000 (UTC)
+Message-ID: <5b6dc5760b42af6c07c8ffc789466be7d7da358e.camel@perches.com>
+Subject: Re: [PATCH v4 4/7] list.h: Replace kernel.h with the necessary
+ inclusions
+From:   Joe Perches <joe@perches.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-media@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC] Some questions and an idea on SLUB/SLAB
-Message-ID: <20211009004058.GA4992@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20211009001903.GA3285@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
- <YWDjZ+KlkV2wKShh@casper.infradead.org>
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        linux@rasmusvillemoes.dk,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Date:   Fri, 08 Oct 2021 17:59:18 -0700
+In-Reply-To: <YV8ucQJD1ccucQTy@pendragon.ideasonboard.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+         <20211007154407.29746-5-andriy.shevchenko@linux.intel.com>
+         <20211007171635.2f161739@jic23-huawei>
+         <YV8ucQJD1ccucQTy@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWDjZ+KlkV2wKShh@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 5105C315D75
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: zd745zhjiud6c1zmjfw9r5nwy89k5iif
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX184NsuyxE4r3AJbQ/TLzn6fTZhsBYBNplw=
+X-HE-Tag: 1633741159-16292
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 01:33:43AM +0100, Matthew Wilcox wrote:
-> On Sat, Oct 09, 2021 at 12:19:03AM +0000, Hyeonggon Yoo wrote:
-> >  - Is there a reason that SLUB does not implement cache coloring?
-> >    it will help utilizing hardware cache. Especially in block layer,
-> >    they are literally *squeezing* its performance now.
+On Thu, 2021-10-07 at 20:29 +0300, Laurent Pinchart wrote:
+> On Thu, Oct 07, 2021 at 05:16:35PM +0100, Jonathan Cameron wrote:
+> > On Thu,  7 Oct 2021 18:44:04 +0300 Andy Shevchenko wrote:
+> > > When kernel.h is used in the headers it adds a lot into dependency hell,
+> > > especially when there are circular dependencies are involved.
+> > > 
+> > > Replace kernel.h inclusion with the list of what is really being used.
+[]
+> > > diff --git a/include/linux/list.h b/include/linux/list.h
+[]
+> > > @@ -2,11 +2,13 @@
+> > >  #ifndef _LINUX_LIST_H
+> > >  #define _LINUX_LIST_H
+> > > 
+> > > +#include <linux/container_of.h>
+> > > +#include <linux/const.h>
+> > >  #include <linux/types.h>
+> > >  #include <linux/stddef.h>
+> > >  #include <linux/poison.h>
+> > 
+> > Is there a reason you didn't quite sort this into alphabetical order?
 > 
-> Have you tried turning off cache colouring in SLAB and seeing if
-> performance changes?  My impression is that it's useful for caches
-> with low associativity (direct mapped / 2-way / 4-way), but loses
-> its effectiveness for caches with higher associativity.  For example,
-> my laptop:
-> 
->  L1 Data Cache: 48KB, 12-way associative, 64 byte line size
->  L1 Instruction Cache: 32KB, 8-way associative, 64 byte line size
->  L2 Unified Cache: 1280KB, 20-way associative, 64 byte line size
->  L3 Unified Cache: 12288KB, 12-way associative, 64 byte line size
-> 
-> I very much doubt that cache colouring is still useful for this machine.
+> On a side note, if someone with perle knowledge could add a checkpatch
+> warning for this, I think it would be very nice. I'm a bit tired of
+> asking for alphabetical order in reviews :-)
 
-Hello Matthew,
-What benchmark did you use for test?
+As are people that want reverse christmas tree.
+Neither of which I will do as I think both are poor form at best.
 
--
-Hyeonggon
+If you want, this was a checkpatch reverse christmas tree attempt,
+as that was more common to some.
+
+https://lore.kernel.org/lkml/1478242438.1924.31.camel@perches.com/
+
+
