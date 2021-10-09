@@ -2,162 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9AA427C31
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9552B427C33
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 18:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhJIQvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 12:51:14 -0400
-Received: from mail-bn7nam10on2091.outbound.protection.outlook.com ([40.107.92.91]:8348
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229624AbhJIQvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 12:51:13 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VgLOSjOPvE0ZysqwWtWBVdfjddt0SpFBhgez9RoTjRw4MsFq12LBTNijtruZcMQS5DyQuUzKkq3QeMdFyPfBKhDLNRPpzpEMh+z1yo8bqzoowr4D4T3yJGYr3DbPduPz6nijLeCf0TryuTw8h15Df449jIcaghNbKcEg6PsnVLY+FJa3CWfBjBx031nXbaUCog2kiMcacfKWoB1wxl2NbBa74AyoMnCdBKnYkAXJZFJ4dk6BIh62nhyae2aAgbGIPS1mWR/bF1pbl7hjDQFJbooyqSn6S9IbTrp6G/zpV24ivZ4lcp5fWyu4ns1vhUrTWFhrpJcEBuM4jkJ9JvTjtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qJI/TA42sQ/r/5lhQoPDtsaVbpn/hBa3/4IVV6tcJik=;
- b=mvSglNtjlYMybLlaPiCsRZzjUSktERbZ9UVBkjvWT82X0HyS87GTkeSfMnI2olULNoxwJ4nAgowzWBV/6/hwFbLGGxqOYEPXxgIm7W/VzGeZnMudnk1eg4R8StW2V+aW8MYkMkAjwu9ZpOZ0f8qvrLJKd33+CnLQnXNuX1TDEigrgfdzdXcsdcO6jQ6qd0ame3qyhGE5RofHE5naGQomILTQmFkcdoQ8LGSKLYTXid/59Mt0+gp9u3NhaktWQb8jJQCuwWvWisAvpBb3cKrrVwMesuGspv+pnY7PcGybO3lDySATI8KVKEwdVYHDmUiDwJzUGufqfAtK4thhnuqPaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=concurrent-rt.com; dmarc=pass action=none
- header.from=concurrent-rt.com; dkim=pass header.d=concurrent-rt.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=concurrentrt.onmicrosoft.com; s=selector2-concurrentrt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qJI/TA42sQ/r/5lhQoPDtsaVbpn/hBa3/4IVV6tcJik=;
- b=QM8PKaC8YZfPfu765sJYvBakoM0l4CtsedLSsSFQZzdGVKtG8UNfH6HaInFQh/58KU0DNJcV4ojvY1MDbauVRN2jEt46nhV8XDzqMn/CpzJxgrdb7VhnxxTPET/H/eyTlgtPd0qCG0KuCNH3+MJbRhfBSklJWC+A57j5zvvVpLc=
-Authentication-Results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none
- header.from=concurrent-rt.com;
-Received: from CY4PR11MB2007.namprd11.prod.outlook.com (2603:10b6:903:30::7)
- by CY4PR11MB1559.namprd11.prod.outlook.com (2603:10b6:910:11::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Sat, 9 Oct
- 2021 16:49:14 +0000
-Received: from CY4PR11MB2007.namprd11.prod.outlook.com
- ([fe80::45cf:c7fe:9a7f:219f]) by CY4PR11MB2007.namprd11.prod.outlook.com
- ([fe80::45cf:c7fe:9a7f:219f%12]) with mapi id 15.20.4587.025; Sat, 9 Oct 2021
- 16:49:14 +0000
-Date:   Sat, 9 Oct 2021 12:49:08 -0400
-From:   Joe Korty <joe.korty@concurrent-rt.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>,
-        Jun Miao <jun.miao@windriver.com>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5.10-rt+] drm/i915/gt: transform irq_disable into
- local_lock.
-Message-ID: <20211009164908.GA21269@zipoli.concurrent-rt.com>
-Reply-To: Joe Korty <joe.korty@concurrent-rt.com>
-References: <20211007165928.GA43890@zipoli.concurrent-rt.com>
- <20211007171929.hegwwqelf46skjyw@linutronix.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007171929.hegwwqelf46skjyw@linutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-ClientProxiedBy: BN1PR14CA0001.namprd14.prod.outlook.com
- (2603:10b6:408:e3::6) To CY4PR11MB2007.namprd11.prod.outlook.com
- (2603:10b6:903:30::7)
+        id S231556AbhJIQx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 12:53:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39366 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229624AbhJIQxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 12:53:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633798286;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jhkTisAzLueFjEQ5vp959zU5veAEKBJB1nSIxVUvRI=;
+        b=Hfs5TBg46jHdYGyDDMBRXsNh6Oy15OaMmH5hHMXsPFWocK1UCvQ7RW6NSmiPm0L5JxkuRi
+        lhXsSK2Ijcmr1494YLII6FSkDNmNxQwI7HvZv+xMgXEToJOTpro9aDUlaWcLuchhCWd0ye
+        KI1nEfVFJqxspTHI/UHBBPse2Fiq4rA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-554-gDz_hgw4O5mQV6LYupEa5w-1; Sat, 09 Oct 2021 12:51:25 -0400
+X-MC-Unique: gDz_hgw4O5mQV6LYupEa5w-1
+Received: by mail-ed1-f72.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso11884699edt.11
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 09:51:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0jhkTisAzLueFjEQ5vp959zU5veAEKBJB1nSIxVUvRI=;
+        b=RWohrBreNUOJanZb0JAQM7WrLLW4rY9pOmqYYUiefP4PnVDWgcB/zKqnQddZbR8Ee3
+         uvFCp+UdFzls1YX4yq2pjUBdwnBHo2IYYhBoNr0DLjQgpQCXdXvbcxYIc/w6Yqbrh08f
+         PYqcBPt1rK8gMiI+PEolT6nCWKIih2237Rz5NPzkX9Octm92lEOzi9k4Y+Y5nIy/1nzs
+         fKbQh0f4nsq52WrFX9fBloJq0Y0S9JiYEsHH2jxT39byi40uDKLrkKZj3wwv0CYPhkia
+         QtiqMlPnauBJj0J76nllMeLMhF80yCg0vvUDMiITPDDSC2GiXvtdPig0dxi1A142qcwA
+         kkqw==
+X-Gm-Message-State: AOAM531ODgCnlTp86NdHZjRw6NTFePj7GR9OgnwkeFeulxbhW2+4CRh9
+        1viNSWdtgBFmo+F0UEpYxaFc9LaKlNDG+i5iA4dhDls9N9l0SR0bH0j9j4FN2a4fbp1XTMQOV8u
+        rr+zK4wwkQKWPlp3ewMPAtiX7
+X-Received: by 2002:a17:906:8a45:: with SMTP id gx5mr6219527ejc.144.1633798284147;
+        Sat, 09 Oct 2021 09:51:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXfk2ROfWAGprSF17LQwM+9KZastpHfzZgNyntGvMLAQIAfcvpOnjsvr7EwImIcFncjRFRtQ==
+X-Received: by 2002:a17:906:8a45:: with SMTP id gx5mr6219503ejc.144.1633798283882;
+        Sat, 09 Oct 2021 09:51:23 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id c11sm1473287edw.5.2021.10.09.09.51.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 09:51:23 -0700 (PDT)
+Subject: Re: [PATCH] staging: rtl8723bs: core: simplify the if condition
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, deborahbrouwer3563@gmail.com,
+        marcocesati@gmail.com, phil@philpotter.co.uk,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YWEwFf0YMi4W1xKN@user>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <94cb79ea-1952-c92c-f5c9-f03f7b1a892c@redhat.com>
+Date:   Sat, 9 Oct 2021 18:51:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Received: from zipoli.concurrent-rt.com (12.220.59.2) by BN1PR14CA0001.namprd14.prod.outlook.com (2603:10b6:408:e3::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Sat, 9 Oct 2021 16:49:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3322e61c-0373-4964-dcd8-08d98b44b8b9
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1559:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB1559EE2F17CC6BBB34515DC5A0B39@CY4PR11MB1559.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eRI8NEeAIQDOvuD4XqUq8/R6Eja6NOoTf4qxow4eTJdjC9Pw8TX5lS6WnqyRNGHLaBNhJzgmi5R26Xc7ppNzfaMy/U+baCbZtrMqTjtu8JsxWzKg9ntawGI+nRHWvu1rT0gsa2KmLJLgi6MpQmTGqlVhgiry8JFSUAk450vaJh5bXodxqbMKcJ/Yh5hSz7XeiHHXpCwApB6i1bww9vj4bBWsZnHZdFP7bce2eDIF+GaA/1JYZiemiAgwFAIAZKKqfPAIVg7DWXuAhNo8vXyJsXjnGbONQfPCwrJQL52Cha4JblEBmDu4rtP3fJucnZUHitNV7aytImnI5q2KmFkXLvQd3Ha6JJbrUWP/7aDbZ9HQvpwsxWYMqG2p0LSR362x02ElBjNypjlJYBFPonSQ19iNBkJwKS2xp0XOmtqHeokUZr5WHHwJu7chItOtsSwrTaqiF1hWswyxCgqfPngRw3M+kyOg8tlqJDfK+FKT+I8B1+SSEmlccnezRHIDmC6L6Z0MsThT4GS9fJBHxdL6Ra5oFoUnT6lY5kazoPylNPZ03Jum160yrB1lpfS7oonWagI38Ww0gP9gHxiDr3YlHLga2Fwofy33awaVOOUO5/1hy2QbNLFBwYrZqM0DaC1HExu/Og7ez+K5pMDc5RQZom5HZcz//zTogO+z+A6XBOW+OGw4kB3AN51zjDtOchehuYeDHkkH9NgOy63K5rGzsq3gJKDVsTkVI19CKTW46aviGO7Cx3rKek78I1/chci3ZwGBCMttxa7URkLxnhu22prTMWe/ytrNNCeMEdl1rLI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB2007.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(396003)(366004)(346002)(39830400003)(26005)(956004)(38100700002)(7696005)(52116002)(2906002)(55016002)(44832011)(5660300002)(3450700001)(186003)(8676002)(316002)(1076003)(54906003)(66556008)(508600001)(966005)(6666004)(83380400001)(38350700002)(6916009)(8936002)(66946007)(66476007)(86362001)(33656002)(53546011)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ANCZK1U39C0Qla6+fPUoeO0KhdoTkzACENldBzJBhaxVT/lzjwhJvZLrzrAe?=
- =?us-ascii?Q?H8MLCG8hPrHwjp+Ov4grwFVfNBP9ipUWS5D+CoGJsl/JXgxxlaKXTppyxC3h?=
- =?us-ascii?Q?YHqNh+oEfc1qIcC3c/JS0NU+FeiHQjAs3Pe83a3BpdWUpincyAmnkdkPVPSf?=
- =?us-ascii?Q?Y4zMB4QvG+JF2SLiJAJEq75lCymGUSLlDM86cuedsMTJNZq+/qUApRnhgg0X?=
- =?us-ascii?Q?/ROkXVh5Bj0TaQu9k/yBRUdOx3DCLuf8nVPXnsml+mDXVGlKutBjVpsGUtGv?=
- =?us-ascii?Q?KmJLzAeiWV0ow7jk8GoBBjt1kHqTlGROHW1wc57wzdsu0jZ7KkaNaRvnHQxh?=
- =?us-ascii?Q?Ig02XHC3D/VT8VNtbVUWs4LNhhdgWe2egBu1pgiFedCO/22jMSSXvpNYlydC?=
- =?us-ascii?Q?wltZsBLCQM+UN5Vxd7hMsWmNut3Dcn0X85Whh0rrZ8zqk96rCkYoomfhEByx?=
- =?us-ascii?Q?4XYqAXZnv04Mp/2Gc9Q+eLauqpLT/SU30gKmZpOMyV3qxDBlAIbIg3l66Oyk?=
- =?us-ascii?Q?2w6wussUklzixII/pmBwQweKY7NU4m2Ru1XYI/4N9xJGCjIFRZitbzuQhYZQ?=
- =?us-ascii?Q?9MZ3gEkFFptz18uu80x6E/A85yPiSoi3B378f+dXPr+pj7vJx+xb8JCXwFJx?=
- =?us-ascii?Q?6wpuQZ9xHkbTC9YzhzR9FzuFLVUEEZt81ZYNr2DSiziyOMr1mf5eoA9aieQ8?=
- =?us-ascii?Q?e0xwvrvU2h18MEzdp9zvkt62yD/Fr6ofFKfNKTjhm0QUqpD19Notpq8hrP8X?=
- =?us-ascii?Q?W0xwZNDvvAegiodaO16SKjCCudwVmaY619OlQBo0m8EkpKMRxM0HsNAgA+ht?=
- =?us-ascii?Q?P1mK2ekSVDVmPDsbfcQOcnjk+HoAluSPoCaWYLZvpUuxTr1o6Aqqg4/zaBdO?=
- =?us-ascii?Q?wvFEEi1po0yS7Y33gstMCXtKxW3gv6dkAPPfyWFM7pJc/16gN8ongttFXjZS?=
- =?us-ascii?Q?wDs+VAyVUbVVE+Er96lK1NgCG8/paFfaMOMhX4bfpnuRGjI9NCzC9xpZWE+d?=
- =?us-ascii?Q?scbtm2+G+r9d8Zb22v/EzXUPCKApH5iiyE2NpN3gyynO/lLfIxladCTvX2EI?=
- =?us-ascii?Q?mhP53aBp657T8A9HBNJwIa/NlpVLvPvIZ7uWDRE/+TrP+e3tVD8uuwA4qujN?=
- =?us-ascii?Q?2L1GlPYmjIdQlUHjLYa9FH+mEAISq/wJQZvxAJMGwJ2VOfz1FlYKOXaAyMLT?=
- =?us-ascii?Q?4bnC8X/OCnI2irB5nwSVJwqNPiANoMwJX8lBWdn6Z14Tp+LAx70oTWn74nv9?=
- =?us-ascii?Q?1FYe7wKqSpf6HuKghHCRWHomar+A6LHRY5cq0GgOr2Cvu23UNPWB38iBHrd0?=
- =?us-ascii?Q?2a01NJqEEqTwiUGHgV4YzdCQ?=
-X-OriginatorOrg: concurrent-rt.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3322e61c-0373-4964-dcd8-08d98b44b8b9
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB2007.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2021 16:49:13.8594
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 38747689-e6b0-4933-86c0-1116ee3ef93e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KM7CyVVhjCOc3g4cSyMxSWeQCTZwTt2tWI/aKpgRQPaU2bBD+cMV+UZmpJvn3Hx2G95YwZaTNncnOejGeOySUVu85fCfBMuUexV7q3os584=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1559
+In-Reply-To: <YWEwFf0YMi4W1xKN@user>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 07:19:29PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2021-10-07 12:59:28 [-0400], Joe Korty wrote:
-> > Convert IRQ blocking in intel_breadcrumbs_park() to a local lock.
-> > 
-> > Affects 5.10-rt and all later releases, up to and including when
-> > rt was merged into mainline.
+Hi,
+
+On 10/9/21 8:00 AM, Saurav Girepunje wrote:
+> if psta is NULL, function is returning with fail. On next if condition
+> again checking if psta is not a NULL. Remove multiple if condition check.
 > 
-> RT was merged into mainline? Nobody tells me anything anymore??? 
+> Function is already using goto exit statement to exit.Replace multiple
+> return with goto exit statement.
 > 
-> > This problem has been reported in two other linux-rt-users postings,
-> >   
-> >    [PREEMPT_RT] i915: fix PREEMPT_RT locking splats (Clark Williams)
-> >    [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts enabled (Jun Miao)
-> > 
-> > Neither of these submit the obvious solution, nor,
-> > AFAICT, has either yet been acted on.  So I muddy the
-> > waters further by submitting this, a third fix.
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+>  drivers/staging/rtl8723bs/core/rtw_xmit.c | 61 ++++++++++-------------
+>  1 file changed, 26 insertions(+), 35 deletions(-)
 > 
-> 5.12 is longer maintained. Could you please take the latest devel tree
-> for testing and participate in
->   https://lore.kernel.org/all/20211005150046.1000285-1-bigeasy@linutronix.de/
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> index 34505b35a7f3..4e4a1bed882b 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+> @@ -932,49 +932,40 @@ s32 rtw_make_wlanhdr(struct adapter *padapter, u8 *hdr, struct pkt_attrib *pattr
+>  		/* TODO: fill HT Control Field */
 > 
-> If anything I would prefer those patches backported into v5.10 if it is
-> affected.
+>  		/* Update Seq Num will be handled by f/w */
+> -		{
+> -			struct sta_info *psta;
+> -
+> -			psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
+> -			if (pattrib->psta != psta)
+> -				return _FAIL;
+> -
+> -			if (!psta)
+> -				return _FAIL;
+> +		struct sta_info *psta;
+
+You are now declaring a variable after some statements, this will
+cause a compiler warning in some cases. Please move this variable
+declaration up, grouping it together with the other variable
+declarations.
+
+> 
+> -			if (!(psta->state & _FW_LINKED))
+> -				return _FAIL;
+> +		psta = rtw_get_stainfo(&padapter->stapriv, pattrib->ra);
+> +		if (!psta || pattrib->psta != psta || !(psta->state & _FW_LINKED))
+> +			res = _FAIL;
+> +			goto exit;
+
+You are both removing an identation level here because you are removing
+the compound statement which contained the psta declaration as well
+as refactoring the code.
+
+Please split this into 2 separate commits, 1 where you only drop the
+extra indentation level (and move the psta declaration up).
+
+And then a separate commit which just the actual code changes.
+
+Your current patch is very hard to review because you are doing
+2 things at once.
+
+Also it looks like this patch depends on your previous patch:
+"[PATCH] staging: rtl8723bs: core: remove empty else section"
+
+When patches depend on each other please send them together
+as a single patch series. E.g. for version 2 (v2) of a 3 patch
+series consisting of the last 3 commits in your local tree use
+(so the next version of these patches) use:
+
+git format-patch -v2 --cover-letter HEAD~3
+$editor v2-0000-cover-letter.patch 
+ <describe series contents + what was changed in the cover-letter>
+git send-email v2-00*.patch
+
+Regards,
+
+Hans
 
 
-Hi Sebastian,
-Please add my 'Tested-by' to the below patch.  
-
-   [linux-5.12.y-rt] drm/i915/gt: Fix a lockdep warning with interrupts enabled (Jun Miao)
-
-What was tested was a backport to 5.10-rt.  One reject
-was encountered, trivially resolved.  No other adjustments
-were made.
-
-My regression tests of last night all passed without any
-of the usual lockdep splats occuring.  Prior to this,
-I could be assured of a large enough flood of splats to
-overwhelm the kernel log.
-
-My test stand is a Supermicro C7Z170-SQ.  This is tthe
-only system I have on which I could trigger the problem.
-
-I could not find this patch in the 5.12-rt or the 5.15-rt
-tree, so I fetched a copy out of the linux-rt-users
-archives, and backported that.
-
-Tested-by: Joe Korty <joe.korty@concurrent-rt.com>
+> 
+> -			if (psta) {
+> -				psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
+> -				psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
+> -				pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
+> +		psta->sta_xmitpriv.txseq_tid[pattrib->priority]++;
+> +		psta->sta_xmitpriv.txseq_tid[pattrib->priority] &= 0xFFF;
+> +		pattrib->seqnum = psta->sta_xmitpriv.txseq_tid[pattrib->priority];
+> 
+> -				SetSeqNum(hdr, pattrib->seqnum);
+> +		SetSeqNum(hdr, pattrib->seqnum);
+> 
+> -				/* check if enable ampdu */
+> -				if (pattrib->ht_en && psta->htpriv.ampdu_enable)
+> -					if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
+> -						pattrib->ampdu_en = true;
+> +		/* check if enable ampdu */
+> +		if (pattrib->ht_en && psta->htpriv.ampdu_enable)
+> +			if (psta->htpriv.agg_enable_bitmap & BIT(pattrib->priority))
+> +				pattrib->ampdu_en = true;
+> 
+> -				/* re-check if enable ampdu by BA_starting_seqctrl */
+> -				if (pattrib->ampdu_en == true) {
+> -					u16 tx_seq;
+> +		/* re-check if enable ampdu by BA_starting_seqctrl */
+> +		if (pattrib->ampdu_en == true) {
+> +			u16 tx_seq;
+> 
+> -					tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
+> +			tx_seq = psta->BA_starting_seqctrl[pattrib->priority & 0x0f];
+> 
+> -					/* check BA_starting_seqctrl */
+> -					if (SN_LESS(pattrib->seqnum, tx_seq)) {
+> -						pattrib->ampdu_en = false;/* AGG BK */
+> -					} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
+> -						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
+> +			/* check BA_starting_seqctrl */
+> +			if (SN_LESS(pattrib->seqnum, tx_seq)) {
+> +				pattrib->ampdu_en = false;/* AGG BK */
+> +			} else if (SN_EQUAL(pattrib->seqnum, tx_seq)) {
+> +				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (tx_seq+1)&0xfff;
+> 
+> -						pattrib->ampdu_en = true;/* AGG EN */
+> -					} else {
+> -						psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
+> -						pattrib->ampdu_en = true;/* AGG EN */
+> -					}
+> -				}
+> +				pattrib->ampdu_en = true;/* AGG EN */
+> +			} else {
+> +				psta->BA_starting_seqctrl[pattrib->priority & 0x0f] = (pattrib->seqnum+1)&0xfff;
+> +				pattrib->ampdu_en = true;/* AGG EN */
+>  			}
+>  		}
+>  	}
+> --
+> 2.32.0
+> 
 
