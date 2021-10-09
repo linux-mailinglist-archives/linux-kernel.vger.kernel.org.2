@@ -2,40 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE9F427AEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F59A427AE1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 16:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhJIOtQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Oct 2021 10:49:16 -0400
-Received: from bizcloud-buckstonebuilders.com ([137.184.149.251]:47376 "EHLO
-        bizcloud-buckstonebuilders.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234256AbhJIOtP (ORCPT
+        id S234143AbhJIOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 10:40:19 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:48182
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233581AbhJIOkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 10:49:15 -0400
-X-Greylist: delayed 534 seconds by postgrey-1.27 at vger.kernel.org; Sat, 09 Oct 2021 10:49:15 EDT
-Received: from [5.135.230.141] (bizcloud-buckstonebuilders.com [IPv6:::1])
-        by bizcloud-buckstonebuilders.com (Postfix) with ESMTP id 5969654C6
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 14:37:55 +0000 (UTC)
-Reply-To: luisfernandezconsultant@gmail.com
-From:   Luis Fernandez <luisfernandezfirm@consultant.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Re: Mutual Investment Proposal
-Date:   9 Oct 2021 07:37:54 -0700
-Message-ID: <20211009073754.D613002166FFB3F9@consultant.com>
+        Sat, 9 Oct 2021 10:40:18 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 2ABC03FFE3
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 14:38:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633790300;
+        bh=piKl389zZcyeHqnlCZHkGS20SA85lTrv1Cw48kxXcc4=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=IfzgzRinl/pdjD8kscCSljHRVmwn6ru/+yLOnyB+KsiRUKB9rK1+ylIRiDq2typAx
+         vLWV1e/yC5ifLfEldo95bMBpVIwhZpq187383uMNGCcHp9SEa9z6MvlTiGcSvcOG2+
+         067VVXBNuHQC90+gJL/IHFeljk/5rptxoh/gzwseu3S7iv3m24WIenmegtRkOfFmJh
+         p4nQtbaMmFnAzHPgK0O1cY9eDvpVq4R4rI651ovVlofdrO4Wh0m8YP0zlcBAR4DUrT
+         6IWXYwkBEkLSZrQuomeO39X3XlOIG5c8NB4m4tNQZVkluh2ZGN5+FVqSohoKe/q+ag
+         0wY/6Eefxwl/w==
+Received: by mail-ed1-f71.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso11734160edf.7
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 07:38:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=piKl389zZcyeHqnlCZHkGS20SA85lTrv1Cw48kxXcc4=;
+        b=VYhaA07jqFS09wphDPFElG4rmUMEyatVC+y8FGhS8ZcLOswdnujRW5FwMH5BLBFu7/
+         HNe4bp0qt6HgJwhP64sg2rGsikBaWsk67+84/KRF1ZsWa6JlEgYCSPHB38nIi9S1n43h
+         aUo0lAEY3xuj7fV16kZ58zNpLZq4iigXbNrGVj4ecD7kuhuRlP3tA8p4198V9vzCn6xi
+         aBgYhVXd3gYBnRdhIbfX189zHIcS/g2gUBeKghv5zl4/TQokCl/VXXU+JGUxHxZZlxXi
+         l6XyFf89OmtW94abbmmRaa8yU1IBI+JnQBjvFjvq5fl8s6U7/z7Y+dQ4XqCi+JIupJHv
+         o0fA==
+X-Gm-Message-State: AOAM530rKmrUp4sQKRX59RA+PKSn97ol+0DX7mx2lqjVvhVOl3osTZjf
+        whDkVYfhg3WkdNjiolnhusjwJd6rE/W+rHKfnz3zLeafTI5R39FDYlySPVIHdNMyeSJUjHvsUu8
+        Q+sG5ExNVgb4oH/5Ub4WlKCKpogiH533xbTvFuvUHhQ==
+X-Received: by 2002:a17:906:454a:: with SMTP id s10mr12005405ejq.11.1633790299742;
+        Sat, 09 Oct 2021 07:38:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJySnG0AidBa0+FS688Hs3cRj+PsAMJtoScCF1sdlpdUlvL/P3XWYtMxfLUNnXJZN29ivuMmPg==
+X-Received: by 2002:a17:906:454a:: with SMTP id s10mr12005382ejq.11.1633790299467;
+        Sat, 09 Oct 2021 07:38:19 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id r19sm1285131edt.54.2021.10.09.07.38.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 07:38:18 -0700 (PDT)
+Subject: Re: [PATCH] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings to
+ yaml
+To:     David Heidelberg <david@ixit.cz>, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
+References: <20211009111215.51775-1-david@ixit.cz>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <b52a93da-e805-b04e-3b50-454956764d04@canonical.com>
+Date:   Sat, 9 Oct 2021 16:38:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20211009111215.51775-1-david@ixit.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+On 09/10/2021 13:12, David Heidelberg wrote:
+> Convert bindings for NXP PN544 NFC driver to YAML syntax.
+> 
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+>  .../bindings/net/nfc/nxp,pn544.yaml           | 67 +++++++++++++++++++
+>  .../devicetree/bindings/net/nfc/pn544.txt     | 33 ---------
+>  2 files changed, 67 insertions(+), 33 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
+> 
 
-I have an investment proposal that I would like to discuss with 
-you. I await your urgent response so that I will explain more 
-regarding this awesome Investment Opportunity.
+Hi,
 
-Regards,
+Thanks for the patch. Please use get_maintainers.pl to get the list of
+folks to Cc. You missed Rob. This is even weirder because you put him as
+a maintainer...
 
-Luis Fernandez
+> diff --git a/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+> new file mode 100644
+> index 000000000000..c44f5ee8e2c2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/net/nfc/nxp,pn544.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP Semiconductors PN544 NFC Controller
+> +
+> +maintainers:
+> +  - Rob Herring <robh+dt@kernel.org>
+
+This should not be Rob but someone responsible for the driver. I see
+there is no maintainers entry, so put there me:
+
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+
+> +
+> +properties:
+> +  compatible:
+> +    const: nxp,pn544-i2c
+> +
+> +  clock-frequency: true
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  enable-gpios:
+> +    description: Output GPIO pin used for enabling/disabling the PN544
+> +
+> +  firmware-gpios:
+> +    description: Output GPIO pin used to enter firmware download mode
+> +
+> +  pinctrl-names:
+> +    items:
+> +      - const: default
+> +
+> +  pintctrl-0: true
+
+Drop pinctrl, there is a typo here and this is already provided by the
+schema.
+
+> +
+> +required:
+> +  - compatible
+> +  - clock-frequency
+> +  - reg
+> +  - interrupts
+> +  - enable-gpios
+> +  - firmware-gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+
+Use 4-space indentation for the example. Easier to read.
+
+> +
+> +      pn544@28 {
+
+Nodes should have generic name, so "nfc".
+
+> +        compatible = "nxp,pn544-i2c";
+
+
+
+Best regards,
+Krzysztof
