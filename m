@@ -2,242 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA82A427840
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B161742784E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244325AbhJIJGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:06:09 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:42738 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229995AbhJIJGI (ORCPT
+        id S244448AbhJIJNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:13:37 -0400
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:52473 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244412AbhJIJNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:06:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=joseph.qi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Ur5ZLLu_1633770249;
-Received: from B-D1K7ML85-0059.local(mailfrom:joseph.qi@linux.alibaba.com fp:SMTPD_---0Ur5ZLLu_1633770249)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 09 Oct 2021 17:04:10 +0800
-Subject: Re: [PATCH] ocfs2: cleanup journal init and shutdown
-To:     Valentin Vidic <vvidic@valentin-vidic.from.hr>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org
-References: <20211002143640.26512-1-vvidic@valentin-vidic.from.hr>
-From:   Joseph Qi <joseph.qi@linux.alibaba.com>
-Message-ID: <faceeac2-7419-e500-12ba-ab11b915e660@linux.alibaba.com>
-Date:   Sat, 9 Oct 2021 17:04:09 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Sat, 9 Oct 2021 05:13:35 -0400
+Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id C9EBBCB61C
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 09:07:24 +0000 (UTC)
+Received: (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 101E2C0003;
+        Sat,  9 Oct 2021 09:07:00 +0000 (UTC)
+Date:   Sat, 9 Oct 2021 11:07:49 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
+Message-ID: <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
+References: <m3fstfoexa.fsf@t19.piap.pl>
+ <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu>
+ <m3zgrlkxn6.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20211002143640.26512-1-vvidic@valentin-vidic.from.hr>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <m3zgrlkxn6.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Krzysztof,
+
+   I've been testing this driver in the last few days, thanks for your
+effort in upstreaming it!
+
+I'll separately comment on what I had to change to have it working for
+my use case, but let me continue the discussion from where it was left
+pending here to add my 2 cents.
+
+On Thu, Oct 07, 2021 at 11:11:09AM +0200, Krzysztof Hałasa wrote:
+> Hi Sakari,
+>
+> Thanks for your input.
+>
+> > Where's the corresponding DT binding patch? Ideally it would be part of the
+> > same set.
+>
+> Well I've sent it a moment before this one. Will make them a set next
+> time.
+>
+> >> +#define AR0521_WIDTH_BLANKING_MIN     572u
+> >> +#define AR0521_HEIGHT_BLANKING_MIN     28u // must be even
+> >
+> > Please use /* */ for comments. The SPDX tag is an exception.
+>
+> As far as I know, this is no longer the case, the C99 comments are now
+> permitted and maybe even encouraged. Or was I dreaming?
+>
+> checkpatch doesn't protest either.
+
+To my understanding the C99 standard added support for the //
+commenting style and tollerate them, but they're still from C++ and I
+see very few places where they're used in the kernel, and per as far I
+know they're still not allowed by the coding style
+https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
+
+Looking at how you used comments in the driver I think you could get
+rid of most // comments easily, the register tables might be an
+exception but I would really try to remove them from there as well.
 
 
-On 10/2/21 10:36 PM, Valentin Vidic wrote:
-> Allocate and free struct ocfs2_journal in ocfs2_journal_init and
-> ocfs2_journal_shutdown. Init and release of system inodes references
-> the journal so reorder calls to make sure they work correctly.
-> 
-> Signed-off-by: Valentin Vidic <vvidic@valentin-vidic.from.hr>
-> ---
->  fs/ocfs2/inode.c   |  4 ++--
->  fs/ocfs2/journal.c | 25 +++++++++++++++++++++----
->  fs/ocfs2/journal.h |  3 +--
->  fs/ocfs2/super.c   | 40 +++-------------------------------------
->  4 files changed, 27 insertions(+), 45 deletions(-)
-> 
-> diff --git a/fs/ocfs2/inode.c b/fs/ocfs2/inode.c
-> index bc8f32fab964..c2275895c229 100644
-> --- a/fs/ocfs2/inode.c
-> +++ b/fs/ocfs2/inode.c
-> @@ -125,7 +125,6 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
->  	struct inode *inode = NULL;
->  	struct super_block *sb = osb->sb;
->  	struct ocfs2_find_inode_args args;
-> -	journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
->  
->  	trace_ocfs2_iget_begin((unsigned long long)blkno, flags,
->  			       sysfile_type);
-> @@ -172,10 +171,11 @@ struct inode *ocfs2_iget(struct ocfs2_super *osb, u64 blkno, unsigned flags,
->  	 * part of the transaction - the inode could have been reclaimed and
->  	 * now it is reread from disk.
->  	 */
-> -	if (journal) {
-> +	if (OCFS2_SB(sb)->journal) {
+>
+> > Please wrap your lines at 80 or earlier, unless a sound reason exists to do
+> > otherwise.
+>
+> This limitation appears to be lifted as well, after all those years.
+> Is there a specific reason to still use it here? Yes, lines longer than
+> 80 chars make the code much more readable (for my eyes, at least).
+> Yes, I know there is some "soft" limit, and I trim lines when it makes
+> them better in my opinion.
+>
 
-Use osb->journal instead.
+In my personal opinion lifting that restriction caused more pain than
+anything, as different subsystem are now imposing different
+requirements. Here everything has been so far pretty strict about
+going over 80-cols, but I think there are situation where it makes
+sense in example
 
->  		transaction_t *transaction;
->  		tid_t tid;
->  		struct ocfs2_inode_info *oi = OCFS2_I(inode);
-> +		journal_t *journal = OCFS2_SB(sb)->journal->j_journal;
+static int a_very_long_function_name(struct a_long_struct_name with_a_long_list_of_args)
+{
 
-Ditto.
+}
 
->  
->  		read_lock(&journal->j_state_lock);
->  		if (journal->j_running_transaction)
-> diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
-> index 4f15750aac5d..d50f0ac3fd46 100644
-> --- a/fs/ocfs2/journal.c
-> +++ b/fs/ocfs2/journal.c
-> @@ -810,19 +810,34 @@ void ocfs2_set_journal_params(struct ocfs2_super *osb)
->  	write_unlock(&journal->j_state_lock);
->  }
->  
-> -int ocfs2_journal_init(struct ocfs2_journal *journal, int *dirty)
-> +int ocfs2_journal_init(struct ocfs2_super *osb, int *dirty)
->  {
->  	int status = -1;
->  	struct inode *inode = NULL; /* the journal inode */
->  	journal_t *j_journal = NULL;
-> +	struct ocfs2_journal *journal = NULL;
->  	struct ocfs2_dinode *di = NULL;
->  	struct buffer_head *bh = NULL;
-> -	struct ocfs2_super *osb;
->  	int inode_lock = 0;
->  
-> -	BUG_ON(!journal);
-> +	/* initialize our journal structure */
-> +	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
-> +	if (!journal) {
-> +		mlog(ML_ERROR, "unable to alloc journal\n");
-> +		status = -ENOMEM;
-> +		goto done;
-> +	}
-> +	osb->journal = journal;
-> +	journal->j_osb = osb;
->  
-> -	osb = journal->j_osb;
-> +	atomic_set(&journal->j_num_trans, 0);
-> +	init_rwsem(&journal->j_trans_barrier);
-> +	init_waitqueue_head(&journal->j_checkpointed);
-> +	spin_lock_init(&journal->j_lock);
-> +	journal->j_trans_id = 1UL;
-> +	INIT_LIST_HEAD(&journal->j_la_cleanups);
-> +	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
-> +	journal->j_state = OCFS2_JOURNAL_FREE;
->  
->  	/* already have the inode for our journal */
->  	inode = ocfs2_get_system_file_inode(osb, JOURNAL_SYSTEM_INODE,
-> @@ -1031,6 +1046,8 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
->  //	up_write(&journal->j_trans_barrier);
+Would read bad if written
 
-Could you please clean up the above line as well?
+static int
+a_very_long_function_name(
+        struct a_long_struct_name with_a_long_list_of_args)
+{
 
-Thanks,
-Joseph
+}
 
->  done:
->  	iput(inode);
-> +	kfree(journal);
-> +	osb->journal = NULL;
->  }
->  
->  static void ocfs2_clear_journal_error(struct super_block *sb,
-> diff --git a/fs/ocfs2/journal.h b/fs/ocfs2/journal.h
-> index d158acb8b38a..8dcb2f2cadbc 100644
-> --- a/fs/ocfs2/journal.h
-> +++ b/fs/ocfs2/journal.h
-> @@ -167,8 +167,7 @@ int ocfs2_compute_replay_slots(struct ocfs2_super *osb);
->   *  ocfs2_start_checkpoint - Kick the commit thread to do a checkpoint.
->   */
->  void   ocfs2_set_journal_params(struct ocfs2_super *osb);
-> -int    ocfs2_journal_init(struct ocfs2_journal *journal,
-> -			  int *dirty);
-> +int    ocfs2_journal_init(struct ocfs2_super *osb, int *dirty);
->  void   ocfs2_journal_shutdown(struct ocfs2_super *osb);
->  int    ocfs2_journal_wipe(struct ocfs2_journal *journal,
->  			  int full);
-> diff --git a/fs/ocfs2/super.c b/fs/ocfs2/super.c
-> index 5c914ce9b3ac..1286b88b6fa1 100644
-> --- a/fs/ocfs2/super.c
-> +++ b/fs/ocfs2/super.c
-> @@ -1894,8 +1894,6 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
->  	/* This will disable recovery and flush any recovery work. */
->  	ocfs2_recovery_exit(osb);
->  
-> -	ocfs2_journal_shutdown(osb);
-> -
->  	ocfs2_sync_blockdev(sb);
->  
->  	ocfs2_purge_refcount_trees(osb);
-> @@ -1918,6 +1916,8 @@ static void ocfs2_dismount_volume(struct super_block *sb, int mnt_err)
->  
->  	ocfs2_release_system_inodes(osb);
->  
-> +	ocfs2_journal_shutdown(osb);
-> +
->  	/*
->  	 * If we're dismounting due to mount error, mount.ocfs2 will clean
->  	 * up heartbeat.  If we're a local mount, there is no heartbeat.
-> @@ -2016,7 +2016,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
->  	int i, cbits, bbits;
->  	struct ocfs2_dinode *di = (struct ocfs2_dinode *)bh->b_data;
->  	struct inode *inode = NULL;
-> -	struct ocfs2_journal *journal;
->  	struct ocfs2_super *osb;
->  	u64 total_blocks;
->  
-> @@ -2197,33 +2196,6 @@ static int ocfs2_initialize_super(struct super_block *sb,
->  
->  	get_random_bytes(&osb->s_next_generation, sizeof(u32));
->  
-> -	/* FIXME
-> -	 * This should be done in ocfs2_journal_init(), but unknown
-> -	 * ordering issues will cause the filesystem to crash.
-> -	 * If anyone wants to figure out what part of the code
-> -	 * refers to osb->journal before ocfs2_journal_init() is run,
-> -	 * be my guest.
-> -	 */
-> -	/* initialize our journal structure */
-> -
-> -	journal = kzalloc(sizeof(struct ocfs2_journal), GFP_KERNEL);
-> -	if (!journal) {
-> -		mlog(ML_ERROR, "unable to alloc journal\n");
-> -		status = -ENOMEM;
-> -		goto bail;
-> -	}
-> -	osb->journal = journal;
-> -	journal->j_osb = osb;
-> -
-> -	atomic_set(&journal->j_num_trans, 0);
-> -	init_rwsem(&journal->j_trans_barrier);
-> -	init_waitqueue_head(&journal->j_checkpointed);
-> -	spin_lock_init(&journal->j_lock);
-> -	journal->j_trans_id = (unsigned long) 1;
-> -	INIT_LIST_HEAD(&journal->j_la_cleanups);
-> -	INIT_WORK(&journal->j_recovery_work, ocfs2_complete_recovery);
-> -	journal->j_state = OCFS2_JOURNAL_FREE;
-> -
->  	INIT_WORK(&osb->dquot_drop_work, ocfs2_drop_dquot_refs);
->  	init_llist_head(&osb->dquot_drop_list);
->  
-> @@ -2404,7 +2376,7 @@ static int ocfs2_check_volume(struct ocfs2_super *osb)
->  						  * ourselves. */
->  
->  	/* Init our journal object. */
-> -	status = ocfs2_journal_init(osb->journal, &dirty);
-> +	status = ocfs2_journal_init(osb, &dirty);
->  	if (status < 0) {
->  		mlog(ML_ERROR, "Could not initialize journal!\n");
->  		goto finally;
-> @@ -2513,12 +2485,6 @@ static void ocfs2_delete_osb(struct ocfs2_super *osb)
->  
->  	kfree(osb->osb_orphan_wipes);
->  	kfree(osb->slot_recovery_generations);
-> -	/* FIXME
-> -	 * This belongs in journal shutdown, but because we have to
-> -	 * allocate osb->journal at the start of ocfs2_initialize_osb(),
-> -	 * we free it here.
-> -	 */
-> -	kfree(osb->journal);
->  	kfree(osb->local_alloc_copy);
->  	kfree(osb->uuid_str);
->  	kfree(osb->vol_label);
-> 
+but here you have multiple cases where it would be very easy to stay
+in the 80 cols limit
+
+	ret = ar0521_write_regs(sensor, pixel_timing_recommended, ARRAY_SIZE(pixel_timing_recommended));
+	if (ret)
+		goto off;
+
+
+should be
+
+	ret = ar0521_write_regs(sensor, pixel_timing_recommended,
+                                ARRAY_SIZE(pixel_timing_recommended));
+	if (ret)
+		goto off;
+
+The register tables again could easily be shrinked in 80 cols (also
+because you have them in two different styles).
+
+My suggestion is: aim to 80 cols whenever possible, if it forces you
+to do things like the above shown function declaration you can go a
+little over that
+
+As reported here
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
+if you go over 100 you should ask yourself what are you doing :)
+
+> >> +static int ar0521_s_ctrl(struct v4l2_ctrl *ctrl)
+> >> +{
+> >> +	struct v4l2_subdev *sd = ctrl_to_sd(ctrl);
+> >> +	struct ar0521_dev *sensor = to_ar0521_dev(sd);
+> >> +	int ret;
+> >> +
+> >> +	// v4l2_ctrl_lock() locks our own mutex
+> >> +
+> >> +	dev_dbg(&sensor->i2c_client->dev, "%s(0x%X)\n", __func__, ctrl->id);
+> >
+> > Please make sure the sensor is powered on before accessing it. See e.g.
+> > imx219_set_ctrl() how to do this.
+>
+> I do, the lower-level IO function ar0521_write_regs() checks for this.
+
+yes it returns immediately
+
+        if (!sensor->power_count)
+		return 0;
+
+But I would rather move to runtime_pm and
+
+         if (!pm_runtime_get_if_in_use(&client->dev))
+                    return 0;
+
+at the very beginning of s_ctrl and call __v4l2_ctrl_handler_setup()
+at s_stream() time to apply the cached controls values before
+streaming starts
+
+> However, I identified a case when pm_runtime_* isn't available
+> (CONFIG_*), so I will post corrected patch.
+>
+> > Please drop the s_power callback and rely on runtime PM.
+>
+> Ok
+>
+> > Please drop *frame_interval() callbacks. See
+> > https://hverkuil.home.xs4all.nl/spec/driver-api/camera-sensor.html for an
+> > explanation.
+> >
+> > Let me know if you have questions.
+>
+> I already wrote about this, you must have missed it:
+>
+> ...However, it apparently isn't as flexible as *frame_interval() -
+> I can't control the precise timings:
+> - the V4L2_CID_PIXEL_RATE is discrete and R/O (i.e. the application
+>   can't control it)
+> - even if I could somehow control pixel rate, frame interval is
+>   calculated as (width + h_blanking) * (height + v_blanking) /
+>   pixel_rate, which may be a bit coarse for precise video.
+>   With *frame_interval(), I compensate with per-frame "extra" delay
+>   (in single pixels, not whole H or V lines).
+>
+> If the (userspace) application can control pixel rate and the "extra"
+> timing (well maybe pixel rate and the total number of pixels including
+> blanking and "extra") then I would be more than happy dropping
+> frame_interval().
+>
+> I guess I could easily do that myself, if there is consensus about it.
+>
+> E.g. V4L2_CID_PIXEL_RATE would not be forced R/O (and discrete) anymore
+> and I would invent a V4L2_CID_TOTAL_PIXELS or something.
+>
+> The V4L2_CID_PIXEL_RATE issue may be somehow offset by the
+> V4L2_CID_LINK_FREQ, but the latter is "menu" type and thus not very
+> useful (am I to populate it with 250 values 1 MHz apart?).
+>
+> Perhaps the receiver could publish it's input frequency range instead,
+> then the transmitter would set a fixed value? I don't know. And this
+> doesn't cover a case where the user needs a slower rate than max(tx, rx)
+> for some reason.
+>
+> We should decide something about this, though.
+
+The sensor frame rate is configured by userspace by changing the
+blankings through the V4L2_CID_[VH]BLANK.
+
+You are right the current definition is akward to work with, as there
+is no way to set the 'total pixels' like you have suggested, but it's
+rather userspace that knowing the desired total sizes has to compute
+the blankings by subtracting the visible sizes (plus the mandatory min
+blanking sizes).
+
+Thanks
+   j
+
+>
+> I look forward for your comments,
+> --
+> Krzysztof "Chris" Hałasa
+>
+> Sieć Badawcza Łukasiewicz
+> Przemysłowy Instytut Automatyki i Pomiarów PIAP
+> Al. Jerozolimskie 202, 02-486 Warszawa
