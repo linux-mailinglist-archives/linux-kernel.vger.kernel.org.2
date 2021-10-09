@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5963B4279DE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FD44279E1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244829AbhJIL7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:59:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S244858AbhJIL7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232846AbhJIL7M (ORCPT
+        with ESMTP id S244839AbhJIL7d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:59:12 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F030C061570;
-        Sat,  9 Oct 2021 04:57:15 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id r134so2632008iod.11;
-        Sat, 09 Oct 2021 04:57:15 -0700 (PDT)
+        Sat, 9 Oct 2021 07:59:33 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF07C061764
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 04:57:36 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id j21so32610849lfe.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 04:57:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=b6PCq4Gkwis4c8eZUmnooNUV0Fha5o7at5yue5VuXyw=;
-        b=fLkwbZhg2oiOnoYuSZpq0qa6f2oN3xEGRYGP/buE8l3dxeDp5hb0njNy/tVjxxjmGT
-         YsNvvbJ1IGgcPu4Hf1y9HdoZPPdL5ZNH1R3PlBJFKLyt466rdfI29qWDGnX3S0NU0djw
-         pH4Ilnj1alWs635XglmbROXVGIqJiAnI+Uh+vCiMF4fR8rjPUbCiobCSe6+BNL500rzW
-         c4q3PI5UTaAPeAOKJp+szft9o0j0ZI2gW1bK+Uaw3UbmP9V9N4scUWKUIDbMFjzhH3iH
-         x+nGNas4MP33mCbUwVvrJIdaHpm5JFnLOJsLC7SUpUWeTuZasp6+ZiBXWIF+Gep3PW4c
-         RL6w==
+        bh=ddKTI6gnxdVhQkUnuikMlEViQcCSWc9S4SrlE2LPasM=;
+        b=Yg6rDn/QwCnZ4mhkc/514eVzXNnZnBJsuoxUVFlrhZpRt82oMGdPOHTiqm3+XtRIxZ
+         RwhlX2vDonxSDsF54dlYxNdjdZ5st2xZg6UDF9Y6azZS2DzXd1a44z7AiXAoReSRQUKP
+         Dc6WUjrIY96qhIbo47NxeAk/WuDTgKAGgJbEw5ERZ6y870+1KUF29r5ru+dxsOPZWayB
+         +n1TZ9b6jw3syhLy3nDVDCyxYqVb0tSEXN+nzyxiq1fM4uJgTW+CvHYnDoHgrjN7Nfyi
+         3fVroAlBduYh/hXHXEUQNR8qFidOFS8cpveEAjcS4aPeILNiZctB27eDCNOc6kxlATt3
+         IIBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=b6PCq4Gkwis4c8eZUmnooNUV0Fha5o7at5yue5VuXyw=;
-        b=XsznwLk/PU96CfK3t96LY6SKgeMg0XDPChAlouR6+uJVSKmaOk9MMvMPraG4PpONXQ
-         /1C/xMXQK0hw59eXdc8OHjAK54gOcV1rhwNHMuJVj4CVP0SuonbkpY13rniMV3SWlSYQ
-         aOPnDLspR6E/RuHzjVw1mHsDf4FBdneK3935JkTdSS4TQlxDgNTdofsK60QGFRmRml5v
-         WXzSULw2wnrDk9SKlyh+FRxx8Z2SIt7M+hx3TyeJ/MRFPet1mgDGW1iKCShURaQjYCgU
-         X/DUzllfpfCkdrBWnQhFEgywfjZnbznLWVkC5ZtWUl6Y0GH94PEjQF5GPiE6D9CYa3kQ
-         yDVA==
-X-Gm-Message-State: AOAM530grnI0GFYjF30uvHcMF3iIsASewtM7sKbLvYCb5h3RGtb1rcG+
-        0aRI0eHrXpPaURnEYjXQd7iRR8xoAgFr2sc1kVA=
-X-Google-Smtp-Source: ABdhPJzmSyqKU/YcdHWZExJXMvHzqYHsLnCWw9ApzCbbCsVUgoCpXARsNWldWo7W1pCgwU9mHWKjai5fbpyX2fBmXxk=
-X-Received: by 2002:a05:6602:2e88:: with SMTP id m8mr5018798iow.91.1633780634902;
- Sat, 09 Oct 2021 04:57:14 -0700 (PDT)
+        bh=ddKTI6gnxdVhQkUnuikMlEViQcCSWc9S4SrlE2LPasM=;
+        b=XaVvAhjX15IVv6OBYP/3LzZaCiQNgnDK5LngC4V6jHL8p1NM203VZEvp2RfQcK0Ohb
+         q11u8Re6j6KXzQOhWKYsWTeHyFlLtfrPkfd+DiGwIGGYATKL6tyudESI4PXZmMrrJ3Ac
+         SqZgrPv0+guOqLmB9nPfqWKMaWJi4S0zkZHpqw4ENuuMWbuV7/7eK4C9V5APLH1c5Lpp
+         s3msX78P/mq3Faj0eBRn7UkB7W2oexx+hkO1q2gbRVSeZxlfRQGvCheo+DcGJUIPpYkJ
+         dVIeoarosj1zv91KAVWD9JeLDk9bjmzCEL2qIwOTlRAQwHMtmcy71Z2AR9fSCAQ9gWqP
+         nIcQ==
+X-Gm-Message-State: AOAM532vWGxGFUzU70jva+RzAX+8/WvzJ9+akdf1a6r/FqhSpiFTGhpO
+        B2chLvzM43zqt23v8om9cjEzeML3TwSaH3MWqCVAog==
+X-Google-Smtp-Source: ABdhPJwi87OXKsFksT0f11sHBmIjP1L0dHkYUJoao8hhpCllD6s+7zVPFAfZxfwRJPU4ZrBJgZ13OyJvtYsEL3F0atY=
+X-Received: by 2002:a05:651c:140d:: with SMTP id u13mr9541773lje.9.1633780654110;
+ Sat, 09 Oct 2021 04:57:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211009115031.18392-1-alistair@alistair23.me> <20211009115031.18392-8-alistair@alistair23.me>
-In-Reply-To: <20211009115031.18392-8-alistair@alistair23.me>
-From:   Alistair Francis <alistair23@gmail.com>
-Date:   Sat, 9 Oct 2021 21:56:49 +1000
-Message-ID: <CAKmqyKOQ32zMucsEexgfJcs9Tks4JB_ra6nhjVf=36aiwkvYHg@mail.gmail.com>
-Subject: Re: [PATCH 5/7] capsules: hmac: Continue reducing code size
-To:     Alistair Francis <alistair@alistair23.me>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        lgirdwood@gmail.com, Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>, amitk@kernel.org,
-        rui.zhang@intel.com, devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-pm@vger.kernel.org,
-        Alistair Francis <alistair.francis@wdc.com>
+References: <20211009024430.3322230-1-osk@google.com> <089c590f-5b35-8a2a-6132-d8d3e2695c15@roeck-us.net>
+In-Reply-To: <089c590f-5b35-8a2a-6132-d8d3e2695c15@roeck-us.net>
+From:   Oskar Senft <osk@google.com>
+Date:   Sat, 9 Oct 2021 07:57:17 -0400
+Message-ID: <CABoTLcSMDPQvhgmUL5aE_df++pg4qN+cmf=31J9WPVnKnT6k7g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add nct7802 bindings
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 9:51 PM Alistair Francis <alistair@alistair23.me> wrote:
->
-> From: Alistair Francis <alistair.francis@wdc.com>
->
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
+Hi everyone
 
-Sorry, I wrongly copied this patch. Just ignore this patch
+> > Document bindings for the Nuvoton NCT7802Y driver.
+> >
+> > Signed-off-by: Oskar Senft <osk@google.com>
+>
+> Please pdon't expect from reviewers to figure out what changed
+> between versions and provide change logs.
+Uh, I'm sorry, I'm new to the Linux upstreaming game. I'm used to
+using code review tools like Gerrit, which help with that.
 
-Alistair
+Changes from "PATCH v2 1/2" to "PATCH v4 1/2" (v3 was sent with a
+typo, so please ignore v3):
+- Removed extra layer "temperature-sensors" as discussed.
+- Renamed "sensor" to "input" as discussed.
+- Renamed "mode" to "sensor-type" to indicate temperature or voltage.
+- Added "temperature-mode" to indicate "thermistor" or "thermal-diode".
+- Removed description attributes from "sensor-type" and didn't add for
+"temperature-mode", since they would have just repeated the names of
+the properties.
+- Numbered sensors 0 (LTD) and 1..3 (RTD1..3).
+
+Some notes:
+- While 1..3 are "natural numberings", there's no equivalent for "0"
+in the datasheet - the name "0" is arbitrary. An alternative would be
+to name this sensor "ltd" instead of "input", since it's not
+configurable (beyond disabling it).
+- I wasn't sure what the correct way is to enforce a match from
+"input@X" to "reg = <X>", so I listed the inputs individually.
+Technically RTD1 and RTD2 could be done as "patternProperties", if we
+could enforce the match between @X and reg.
+
+I hope I included all the various comments and discussion points both
+from PATCH v2 and from the "tmp421" thread [1]. Please let me know if
+I missed anything.
+
+Does this proposal match the general thinking and goals for
+dt-bindings for hwmon devices?
+
+Thanks
+Oskar.
+
+[1] https://lore.kernel.org/linux-hwmon/20210924114636.GB2694238@roeck-us.net/
