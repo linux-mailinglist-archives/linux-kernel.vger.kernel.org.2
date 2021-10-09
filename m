@@ -2,262 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A62427864
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 624CD42786A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 11:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhJIJ0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 05:26:10 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:60653 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231219AbhJIJ0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 05:26:09 -0400
-Received: from [192.168.0.2] (ip5f5aef39.dynamic.kabel-deutschland.de [95.90.239.57])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id ECA9861E5FE00;
-        Sat,  9 Oct 2021 11:24:09 +0200 (CEST)
-Subject: Re: [PATCH 1/2] firmware: include drivers/firmware/Kconfig
- unconditionally
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Simon Trimmer <simont@opensource.cirrus.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210928075216.4193128-1-arnd@kernel.org>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <9dedf9bb-5377-9f2c-cbb1-2a57b40493da@molgen.mpg.de>
-Date:   Sat, 9 Oct 2021 11:24:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S233099AbhJIJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 05:29:02 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44072 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231598AbhJIJ27 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 05:28:59 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Ur5qOcb_1633771618;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0Ur5qOcb_1633771618)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 09 Oct 2021 17:26:59 +0800
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, willy@infradead.org,
+        viro@zeniv.linux.org.uk, song@kernel.org,
+        william.kucharski@oracle.com, hughd@google.com,
+        shy828301@gmail.com, linmiaohe@huawei.com, peterx@redhat.com
+Subject: [PATCH 0/3] mm, thp: introduce a new sysfs interface to facilitate file THP for .text
+Date:   Sat,  9 Oct 2021 17:26:55 +0800
+Message-Id: <20211009092658.59665-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210928075216.4193128-1-arnd@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Cc: +linuxppc-dev@lists.ozlabs.org]
+Hi, all
 
-Dear Arnd,
+Recently, our team focus on huge pages of executable binary files
+and share libraries, refer to these huge pages as 'hugetext' in
+the next description. The hugetext indeed to improve the performance
+of application, e.g. mysql. It has been shown in [1][2]. And with
+the increase of the text section, the improvement will be more
+obvious. Base on [1][2], we make some improvement to make file-backed
+THP more usability and easy for applications.
 
+In current kernel, ref[1] introduced READ_ONLY_THP_FOR_FS, and ref[2]
+add the support for share libraries based on the previous one. However,
+Until now, hugetext is not convenient to use at present. For example,
+we need to explicitly madvise MADV_HUGEPAGE for .text and set
+"transparent_hugepage/enabled" to always or madvise . On the other
+hand, hugetext requires 2M alignment of vma->vm_start and vma->vm_pgoff,
+which is not guaranteed by kernel or loader.
 
-Am 28.09.21 um 09:50 schrieb Arnd Bergmann:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Compile-testing drivers that require access to a firmware layer
-> fails when that firmware symbol is unavailable. This happened
-> twice this week:
-> 
->   - My proposed to change to rework the QCOM_SCM firmware symbol
->     broke on ppc64 and others.
-> 
->   - The cs_dsp firmware patch added device specific firmware loader
->     into drivers/firmware, which broke on the same set of
->     architectures.
-> 
-> We should probably do the same thing for other subsystems as well,
-> but fix this one first as this is a dependency for other patches
-> getting merged.
-> 
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Cc: Simon Trimmer <simont@opensource.cirrus.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Not sure how we'd want to merge this patch, if two other things
-> need it. I'd prefer to merge it along with the QCOM_SCM change
-> through the soc tree, but that leaves the cirrus firmware broken
-> unless we also merge it the same way (rather than through ASoC
-> as it is now).
-> 
-> Alternatively, we can try to find a different home for the Cirrus
-> firmware to decouple the two problems. I'd argue that it's actually
-> misplaced here, as drivers/firmware is meant for kernel code that
-> interfaces with system firmware, not for device drivers to load
-> their own firmware blobs from user space.
-> ---
->   arch/arm/Kconfig    | 2 --
->   arch/arm64/Kconfig  | 2 --
->   arch/ia64/Kconfig   | 2 --
->   arch/mips/Kconfig   | 2 --
->   arch/parisc/Kconfig | 2 --
->   arch/riscv/Kconfig  | 2 --
->   arch/x86/Kconfig    | 2 --
->   drivers/Kconfig     | 2 ++
->   8 files changed, 2 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-> index ad96f3dd7e83..194d10bbff9e 100644
-> --- a/arch/arm/Kconfig
-> +++ b/arch/arm/Kconfig
-> @@ -1993,8 +1993,6 @@ config ARCH_HIBERNATION_POSSIBLE
->   
->   endmenu
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   if CRYPTO
->   source "arch/arm/crypto/Kconfig"
->   endif
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index ebb49585a63f..8749517482ae 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1931,8 +1931,6 @@ source "drivers/cpufreq/Kconfig"
->   
->   endmenu
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   source "drivers/acpi/Kconfig"
->   
->   source "arch/arm64/kvm/Kconfig"
-> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-> index 045792cde481..1e33666fa679 100644
-> --- a/arch/ia64/Kconfig
-> +++ b/arch/ia64/Kconfig
-> @@ -388,8 +388,6 @@ config CRASH_DUMP
->   	  help
->   	    Generate crash dump after being started by kexec.
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   endmenu
->   
->   menu "Power management and ACPI options"
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 771ca53af06d..6b8f591c5054 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -3316,8 +3316,6 @@ source "drivers/cpuidle/Kconfig"
->   
->   endmenu
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   source "arch/mips/kvm/Kconfig"
->   
->   source "arch/mips/vdso/Kconfig"
-> diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-> index 4742b6f169b7..27a8b49af11f 100644
-> --- a/arch/parisc/Kconfig
-> +++ b/arch/parisc/Kconfig
-> @@ -384,6 +384,4 @@ config KEXEC_FILE
->   
->   endmenu
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   source "drivers/parisc/Kconfig"
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 301a54233c7e..6a6fa9e976d5 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -561,5 +561,3 @@ menu "Power management options"
->   source "kernel/power/Kconfig"
->   
->   endmenu
-> -
-> -source "drivers/firmware/Kconfig"
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index e5ba8afd29a0..5dcec5f13a82 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -2834,8 +2834,6 @@ config HAVE_ATOMIC_IOMAP
->   	def_bool y
->   	depends on X86_32
->   
-> -source "drivers/firmware/Kconfig"
-> -
->   source "arch/x86/kvm/Kconfig"
->   
->   source "arch/x86/Kconfig.assembler"
-> diff --git a/drivers/Kconfig b/drivers/Kconfig
-> index 30d2db37cc87..0d399ddaa185 100644
-> --- a/drivers/Kconfig
-> +++ b/drivers/Kconfig
-> @@ -17,6 +17,8 @@ source "drivers/bus/Kconfig"
->   
->   source "drivers/connector/Kconfig"
->   
-> +source "drivers/firmware/Kconfig"
-> +
->   source "drivers/gnss/Kconfig"
->   
->   source "drivers/mtd/Kconfig"
-> 
+Our design:
+To solve the drawback mentioned above of file THP in using, we have
+mainly improved two points that shows below.
+(1) introduce a new sysfs interface "transparent_hugepage/hugetext_enabled"
+in order to automatically (i.e., transparently) enable file THP for
+suitable .text vmas. The usage belows:
 
-With this change, I have the new entries below in my .config:
+    to disable hugetext:
+    $ echo 0 > /sys/kernel/mm/transparent_hugepage/hugetext_enabled
 
-```
-$ diff -u .config.old .config
---- .config.old 2021-10-07 11:38:39.544000000 +0200
-+++ .config     2021-10-09 10:02:03.156000000 +0200
-@@ -1992,6 +1992,25 @@
+    to enable hugetext:
+    $ echo 1 > /sys/kernel/mm/transparent_hugepage/hugetext_enabled
 
-  CONFIG_CONNECTOR=y
-  CONFIG_PROC_EVENTS=y
-+
-+#
-+# Firmware Drivers
-+#
-+
-+#
-+# ARM System Control and Management Interface Protocol
-+#
-+# end of ARM System Control and Management Interface Protocol
-+
-+# CONFIG_FIRMWARE_MEMMAP is not set
-+# CONFIG_GOOGLE_FIRMWARE is not set
-+
-+#
-+# Tegra firmware driver
-+#
-+# end of Tegra firmware driver
-+# end of Firmware Drivers
-+
-  # CONFIG_GNSS is not set
-  CONFIG_MTD=m
-  # CONFIG_MTD_TESTS is not set
-```
+    to enable or disable in boot options: hugetext=1 or hugetext=0
 
-No idea if the entries could be hidden for platforms not supporting them.
+Q: Why not add a new option, e.g., "text_always", in addition to
+"always", "madvise", and "never" to "transparent_hugepage/enabled" ?
 
-         ARM System Control and Management Interface Protocol  ----
-     [ ] Add firmware-provided memory map to sysfs
-     [ ] Google Firmware Drivers  ----
-         Tegra firmware driver  ----
+A: A new option to "transparent_hugepage/enabled" cannot handle such
+scenario, where THP always for .text, and madivse/never for others
+(e.g., anon vma).
 
+The .text is usually small in size. In our production environment, at
+most 10G out of 500G total memory is used as .text. The .text is also
+performance critical. More important, We don't want to change the
+user's default behavior too much. So we think that a new independent
+sysfs interface for file THP is worthy.
 
-Kind regards,
+(2) make vm_start of .text 2M align with vm_pgoff, especially
+for PIE/PIC binaries and shared libraries.
 
-Paul
+For binaries that are compiled with '--pie -fPIC' and with LOAD
+alignment smaller than 2M (typically 4K, 64K), change
+maximum_alignment to 2M.
+
+For shared libraries, ld.so seems not to consider p_align well, as
+shown below.
+$ readelf -l /usr/lib64/libc-2.17.so
+LOAD           0x0000000000000000 0x0000000000000000 0x0000000000000000
+               0x00000000001c2fe8 0x00000000001c2fe8  R E    200000
+$ cat /proc/1/smaps
+7fecc4072000-7fecc4235000 r-xp 00000000 08:03 655802  /usr/lib64/libc-2.17.so
+
+Finally, why this feasure is implemented in kernel, not in userspace, or
+ld.so?
+
+Userspace methods like libhugetlbfs have various disadvantages:
+ * require recompiling applications;
+ * the anonymous mapping cannot be shared;
+ * debugging is not convenient.
+
+To madvise MADV_HUGEPAGE for .text in ld.so has been suggested in the
+glibc mailing list[3], but there was no response.
+
+Finally, considering that this feature requires very little code and
+is not too difficult to implement based on the existing file-backed
+THP support, it was finally chosen to be implemented in the kernel.
+
+Thanks!
+
+Reference:
+[1] https://patchwork.kernel.org/project/linux-mm/cover/20190801184244.3169074-1-songliubraving@fb.com/
+[2] https://patchwork.kernel.org/project/linux-fsdevel/patch/20210406000930.3455850-1-cfijalkovich@google.com/
+[3] https://sourceware.org/pipermail/libc-alpha/2021-February/122334.html
+
+Rongwei Wang (3):
+  mm, thp: support binaries transparent use of file THP
+  mm, thp: make mapping address of libraries THP align
+  mm, thp: make mapping address of PIC binaries THP align
+
+ fs/binfmt_elf.c            |  5 +++
+ include/linux/huge_mm.h    | 36 +++++++++++++++++++
+ include/linux/khugepaged.h |  9 +++++
+ mm/Kconfig                 | 11 ++++++
+ mm/huge_memory.c           | 72 ++++++++++++++++++++++++++++++++++++++
+ mm/khugepaged.c            |  4 +++
+ mm/memory.c                | 12 +++++++
+ mm/mmap.c                  | 18 ++++++++++
+ 8 files changed, 167 insertions(+)
+
+-- 
+2.27.0
+
