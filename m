@@ -2,104 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FD44279E1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C6F4279E5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244858AbhJIL7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:59:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244839AbhJIL7d (ORCPT
+        id S244839AbhJIL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:59:42 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:40625 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244876AbhJIL7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:59:33 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF07C061764
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 04:57:36 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id j21so32610849lfe.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 04:57:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ddKTI6gnxdVhQkUnuikMlEViQcCSWc9S4SrlE2LPasM=;
-        b=Yg6rDn/QwCnZ4mhkc/514eVzXNnZnBJsuoxUVFlrhZpRt82oMGdPOHTiqm3+XtRIxZ
-         RwhlX2vDonxSDsF54dlYxNdjdZ5st2xZg6UDF9Y6azZS2DzXd1a44z7AiXAoReSRQUKP
-         Dc6WUjrIY96qhIbo47NxeAk/WuDTgKAGgJbEw5ERZ6y870+1KUF29r5ru+dxsOPZWayB
-         +n1TZ9b6jw3syhLy3nDVDCyxYqVb0tSEXN+nzyxiq1fM4uJgTW+CvHYnDoHgrjN7Nfyi
-         3fVroAlBduYh/hXHXEUQNR8qFidOFS8cpveEAjcS4aPeILNiZctB27eDCNOc6kxlATt3
-         IIBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ddKTI6gnxdVhQkUnuikMlEViQcCSWc9S4SrlE2LPasM=;
-        b=XaVvAhjX15IVv6OBYP/3LzZaCiQNgnDK5LngC4V6jHL8p1NM203VZEvp2RfQcK0Ohb
-         q11u8Re6j6KXzQOhWKYsWTeHyFlLtfrPkfd+DiGwIGGYATKL6tyudESI4PXZmMrrJ3Ac
-         SqZgrPv0+guOqLmB9nPfqWKMaWJi4S0zkZHpqw4ENuuMWbuV7/7eK4C9V5APLH1c5Lpp
-         s3msX78P/mq3Faj0eBRn7UkB7W2oexx+hkO1q2gbRVSeZxlfRQGvCheo+DcGJUIPpYkJ
-         dVIeoarosj1zv91KAVWD9JeLDk9bjmzCEL2qIwOTlRAQwHMtmcy71Z2AR9fSCAQ9gWqP
-         nIcQ==
-X-Gm-Message-State: AOAM532vWGxGFUzU70jva+RzAX+8/WvzJ9+akdf1a6r/FqhSpiFTGhpO
-        B2chLvzM43zqt23v8om9cjEzeML3TwSaH3MWqCVAog==
-X-Google-Smtp-Source: ABdhPJwi87OXKsFksT0f11sHBmIjP1L0dHkYUJoao8hhpCllD6s+7zVPFAfZxfwRJPU4ZrBJgZ13OyJvtYsEL3F0atY=
-X-Received: by 2002:a05:651c:140d:: with SMTP id u13mr9541773lje.9.1633780654110;
- Sat, 09 Oct 2021 04:57:34 -0700 (PDT)
+        Sat, 9 Oct 2021 07:59:40 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5D135580A0F;
+        Sat,  9 Oct 2021 07:57:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sat, 09 Oct 2021 07:57:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alistair23.me;
+         h=from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=ReThg5ZGo1o5jqJWFdVfwe8Jjp
+        jq33hX/M+b6dnDGuI=; b=sLu8nNcMGanwtLsII36vPFgM7F1DQUUc3hir2+g0kI
+        8pvqGepmuBp4DQZgq5CZCfZH8N1DugVcO23eeGtMc2yOn2y9QCZFEIz96aJM55CB
+        WNEmXkOV9woHWGhxEyImfWTa4Z1dCponu+zbx9GCxA1SLYsgoEscrTXI6c5b43Bj
+        MohTtixF3IALd/Z96srurcWGaU5AcrkLWIcgUk0SIVkbvs/fg2KujcFsWlEsyaZQ
+        A6Xz9H5H/DO+miuL2LjDu/J32hFGcu2i092FSwEAmqMbXBp7HnDb4lYxnjbhs/D7
+        frcmhqkHSBg5BC57B+bDHKMrNWGop1mLCp/eAsyhER2Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ReThg5ZGo1o5jqJWF
+        dVfwe8Jjpjq33hX/M+b6dnDGuI=; b=QN8Ys11dYxzubZmJ4Mx4gQG5+owDcHO+v
+        pTSIsdRMeCP554ZY42w1zv3RDDkakSGKkihQkjscGGIahzXCGYyZ42z541tG+6K4
+        rRyF3mrMEVPIPEtOf36sk2KYkHjsyhUvAPy2M8AkR6byobnfuwilqE6AzgoMfjFl
+        awv8QqQ/7UHTlUogYcrlFWoZdjZC5Zh0WQ4MuLFelkUtugJDd8SYtmraNyczLNVx
+        tDW3fwCGbAyRa754W3XxUDxNNwjcr1FOJ6Q92B8gfUa6/ck4tMWILGlK4HzZ3ATw
+        uhICvhKBwRGbXKWi+wRustcFbyX1ZAN9EEtPHoQU+YYypDHHiJG7Q==
+X-ME-Sender: <xms:toNhYdicV8n4lLW8tGEalp39mIFk0bksJNDOau4vZJn66a2hIEHIfA>
+    <xme:toNhYSD0TaDGj8qMcpw8FWxnt4w0w1H7nPwswHvuSJwwDURSFv5FUMDqH-O5Jwi1Z
+    3QJRLLBaDJOT4UbtG4>
+X-ME-Received: <xmr:toNhYdEJZg8n95H46iH-mNKe4CCxWrutW_Y4iAZ1h35oOiAu1t3akdZBb6KgDkKSa6ZV0BsxF1h6xh8CzggeB4fdumdR_06CyFY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtvddggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlihhsthgrihhrucfhrhgrnhgtihhsuceorghlihhsthgrihhr
+    segrlhhishhtrghirhdvfedrmhgvqeenucggtffrrghtthgvrhhnpeejleeihfdvtefgtd
+    ethfdtgefftdeiffefjeeiffefveeuleejheejvefhffeukeenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrlhhishhtrghirhesrghlihhsth
+    grihhrvdefrdhmvg
+X-ME-Proxy: <xmx:toNhYSRg08r8fAusxsZW03nB_AYqzwu_5qU8HnPVkh8Ahwp0A7lWFQ>
+    <xmx:toNhYawL1FmycW0lo9H9lx7DfvACYdN2n0FdZPPBuxx-CObqPfKyQg>
+    <xmx:toNhYY4cPC3n4sY25WfCfM5xfsOnWskjNauRrHi0Mibdq2uwyEMALw>
+    <xmx:t4NhYeDBkiq5tk8D9L9H4nx6mXMEDeyq8Ffx90yqnft_t5vrYIEPmw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 9 Oct 2021 07:57:36 -0400 (EDT)
+From:   Alistair Francis <alistair@alistair23.me>
+To:     lee.jones@linaro.org, robh+dt@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, kernel@pengutronix.de
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, linux-imx@nxp.com,
+        amitk@kernel.org, rui.zhang@intel.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alistair23@gmail.com,
+        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Alistair Francis <alistair@alistair23.me>
+Subject: [PATCH v12 10/10] ARM: dts: imx7d: remarkable2: Enable lcdif
+Date:   Sat,  9 Oct 2021 21:57:32 +1000
+Message-Id: <20211009115732.19102-1-alistair@alistair23.me>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20211009024430.3322230-1-osk@google.com> <089c590f-5b35-8a2a-6132-d8d3e2695c15@roeck-us.net>
-In-Reply-To: <089c590f-5b35-8a2a-6132-d8d3e2695c15@roeck-us.net>
-From:   Oskar Senft <osk@google.com>
-Date:   Sat, 9 Oct 2021 07:57:17 -0400
-Message-ID: <CABoTLcSMDPQvhgmUL5aE_df++pg4qN+cmf=31J9WPVnKnT6k7g@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add nct7802 bindings
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi everyone
+Connect the dispaly on the reMarkable2.
 
-> > Document bindings for the Nuvoton NCT7802Y driver.
-> >
-> > Signed-off-by: Oskar Senft <osk@google.com>
->
-> Please pdon't expect from reviewers to figure out what changed
-> between versions and provide change logs.
-Uh, I'm sorry, I'm new to the Linux upstreaming game. I'm used to
-using code review tools like Gerrit, which help with that.
+Signed-off-by: Alistair Francis <alistair@alistair23.me>
+---
+ arch/arm/boot/dts/imx7d-remarkable2.dts | 74 +++++++++++++++++++++++++
+ 1 file changed, 74 insertions(+)
 
-Changes from "PATCH v2 1/2" to "PATCH v4 1/2" (v3 was sent with a
-typo, so please ignore v3):
-- Removed extra layer "temperature-sensors" as discussed.
-- Renamed "sensor" to "input" as discussed.
-- Renamed "mode" to "sensor-type" to indicate temperature or voltage.
-- Added "temperature-mode" to indicate "thermistor" or "thermal-diode".
-- Removed description attributes from "sensor-type" and didn't add for
-"temperature-mode", since they would have just repeated the names of
-the properties.
-- Numbered sensors 0 (LTD) and 1..3 (RTD1..3).
+diff --git a/arch/arm/boot/dts/imx7d-remarkable2.dts b/arch/arm/boot/dts/imx7d-remarkable2.dts
+index 1b49c26816cd..5f32c216c3fd 100644
+--- a/arch/arm/boot/dts/imx7d-remarkable2.dts
++++ b/arch/arm/boot/dts/imx7d-remarkable2.dts
+@@ -47,6 +47,16 @@ reg_digitizer: regulator-digitizer {
+ 		startup-delay-us = <100000>; /* 100 ms */
+ 	};
+ 
++	reg_sdoe: regulator-sdoe {
++		compatible = "regulator-fixed";
++		regulator-name = "SDOE";
++		pinctrl-names = "default", "sleep";
++		pinctrl-0 = <&pinctrl_sdoe_reg>;
++		pinctrl-1 = <&pinctrl_sdoe_reg>;
++		gpio = <&gpio3 27 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
+ 	wifi_pwrseq: wifi_pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		pinctrl-names = "default";
+@@ -55,6 +65,16 @@ wifi_pwrseq: wifi_pwrseq {
+ 		clocks = <&clks IMX7D_CLKO2_ROOT_DIV>;
+ 		clock-names = "ext_clock";
+ 	};
++
++	panel {
++		compatible = "eink,vb3300-kca";
++
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&display_out>;
++			};
++		};
++	};
+ };
+ 
+ &clks {
+@@ -114,6 +134,20 @@ reg_epdpmic: vcom {
+ 	};
+ };
+ 
++&lcdif {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lcdif>;
++	lcd-supply = <&reg_epdpmic>;
++	lcd2-supply = <&reg_sdoe>;
++	status = "okay";
++
++	port {
++		display_out: endpoint {
++			remote-endpoint = <&panel_in>;
++		};
++	};
++};
++
+ &snvs_pwrkey {
+ 	status = "okay";
+ };
+@@ -228,6 +262,46 @@ MX7D_PAD_I2C4_SCL__I2C4_SCL		0x4000007f
+ 		>;
+ 	};
+ 
++	pinctrl_lcdif: lcdifgrp {
++		fsl,pins = <
++			MX7D_PAD_LCD_DATA00__LCD_DATA0		0x79
++			MX7D_PAD_LCD_DATA01__LCD_DATA1		0x79
++			MX7D_PAD_LCD_DATA02__LCD_DATA2		0x79
++			MX7D_PAD_LCD_DATA03__LCD_DATA3		0x79
++			MX7D_PAD_LCD_DATA04__LCD_DATA4		0x79
++			MX7D_PAD_LCD_DATA05__LCD_DATA5		0x79
++			MX7D_PAD_LCD_DATA06__LCD_DATA6		0x79
++			MX7D_PAD_LCD_DATA07__LCD_DATA7		0x79
++			MX7D_PAD_LCD_DATA08__LCD_DATA8		0x79
++			MX7D_PAD_LCD_DATA09__LCD_DATA9		0x79
++			MX7D_PAD_LCD_DATA10__LCD_DATA10		0x79
++			MX7D_PAD_LCD_DATA11__LCD_DATA11		0x79
++			MX7D_PAD_LCD_DATA12__LCD_DATA12		0x79
++			MX7D_PAD_LCD_DATA13__LCD_DATA13		0x79
++			MX7D_PAD_LCD_DATA14__LCD_DATA14		0x79
++			MX7D_PAD_LCD_DATA15__LCD_DATA15		0x79
++
++			MX7D_PAD_LCD_DATA17__LCD_DATA17		0x79
++			MX7D_PAD_LCD_DATA18__LCD_DATA18		0x79
++			MX7D_PAD_LCD_DATA19__LCD_DATA19		0x79
++			MX7D_PAD_LCD_DATA20__LCD_DATA20		0x79
++			MX7D_PAD_LCD_DATA21__LCD_DATA21		0x79
++
++			MX7D_PAD_LCD_DATA23__LCD_DATA23		0x79
++			MX7D_PAD_LCD_CLK__LCD_CLK		0x79
++			MX7D_PAD_LCD_ENABLE__LCD_ENABLE		0x79
++			MX7D_PAD_LCD_VSYNC__LCD_VSYNC		0x79
++			MX7D_PAD_LCD_HSYNC__LCD_HSYNC		0x79
++			MX7D_PAD_LCD_RESET__LCD_RESET		0x79
++		>;
++	};
++
++	pinctrl_sdoe_reg: sdoereggrp {
++		fsl,pins = <
++			MX7D_PAD_LCD_DATA22__GPIO3_IO27		0x74
++		>;
++	};
++
+ 	pinctrl_uart1: uart1grp {
+ 		fsl,pins = <
+ 			MX7D_PAD_UART1_TX_DATA__UART1_DCE_TX	0x79
+-- 
+2.31.1
 
-Some notes:
-- While 1..3 are "natural numberings", there's no equivalent for "0"
-in the datasheet - the name "0" is arbitrary. An alternative would be
-to name this sensor "ltd" instead of "input", since it's not
-configurable (beyond disabling it).
-- I wasn't sure what the correct way is to enforce a match from
-"input@X" to "reg = <X>", so I listed the inputs individually.
-Technically RTD1 and RTD2 could be done as "patternProperties", if we
-could enforce the match between @X and reg.
-
-I hope I included all the various comments and discussion points both
-from PATCH v2 and from the "tmp421" thread [1]. Please let me know if
-I missed anything.
-
-Does this proposal match the general thinking and goals for
-dt-bindings for hwmon devices?
-
-Thanks
-Oskar.
-
-[1] https://lore.kernel.org/linux-hwmon/20210924114636.GB2694238@roeck-us.net/
