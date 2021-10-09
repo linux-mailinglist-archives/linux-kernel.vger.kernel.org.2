@@ -2,238 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E647D4277C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 08:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1B14277C2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 08:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232708AbhJIGkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 02:40:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229538AbhJIGkH (ORCPT
+        id S232632AbhJIGeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 02:34:16 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:23358 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhJIGeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 02:40:07 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0B2C061570;
-        Fri,  8 Oct 2021 23:38:11 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso14229012otj.13;
-        Fri, 08 Oct 2021 23:38:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yKoplyR7afwfmQLpDG7G94oI4vcD4x6/t29Mo4g9I5k=;
-        b=CXtIaXqbe0r+I5WRQc3DTriZM/14KqOPCAZ/KxIPWQQCV7Ztntc9rR2lCwaQNC2kT1
-         VyKVOXWOjxGjPZhMjhq/AaPPG/4MxXnQmsJuIvTnJQP/IS8I9cug5yhtqAMW8sph0T3O
-         priq0DKBo3JLYRcfl7Wt3cOLqyVqEa3jmjLE+tLRgvHXyJSZFdnVrqK45n5O/8hKMDjz
-         x1RmmMCM2QGtB8XQKzlFd0xtJRe6paKdWPiGhsfQ6i3qKQkXAiPOBfE5g/4piX0LEja6
-         L7D4bg27QNg3rVQXpU1bLOb9/mShSFifDBgRWW6fVIdNZuYyi30wIL4ZEt5R31pTEBAU
-         gDow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yKoplyR7afwfmQLpDG7G94oI4vcD4x6/t29Mo4g9I5k=;
-        b=H+71fnq/v33RlDUPN40l2TgUvffG3IQ7jce6iztBJZTV7H2dHNvgUart/4Ks6Wmiml
-         FMXZq4vtRGblxVjJom6SZXxdSo8qk0qFls8iIaV6fg9o0vxuz1VFCmsgzEM386QMDu/n
-         cm/mmhVm1xzde+i+ImUEfGI6uAaRCkWGWs8MEkwD5fh7nTZiHpVzfRim97g1wzbHRS1U
-         ldGWTWa3Isz2Ty3VBhXNErfZfUomoKGciIEsU8eyw+nVbt5PPUT2J/hP/JMtSRbSHOw7
-         JULcY75VdlfIk2dsz6ZOmFBbbrmb/TbbwTvAMiZniihVyeY7V4MvHa9wQqv+7K/aHjAK
-         xSVQ==
-X-Gm-Message-State: AOAM53396tL+k8CscE/szpcWjvu2KdeUwTBer57fNYE0IlkuVK8syxat
-        UuG44va+KKcCAvWu5+9m5fyzfhSR6nk=
-X-Google-Smtp-Source: ABdhPJxpVWFUMkEBwmuyrlGI5xvsqeIia2XIh4LAOUrlIwX3nAgfG5qExvYCQT3we6w997mQQ5nO0w==
-X-Received: by 2002:a9d:1b41:: with SMTP id l59mr12351768otl.283.1633761490393;
-        Fri, 08 Oct 2021 23:38:10 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u26sm378384oic.51.2021.10.08.23.38.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Oct 2021 23:38:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add nct7802 bindings
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211009024430.3322230-1-osk@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <089c590f-5b35-8a2a-6132-d8d3e2695c15@roeck-us.net>
-Date:   Fri, 8 Oct 2021 23:38:08 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 9 Oct 2021 02:34:15 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HRFVJ36HNzYkMC;
+        Sat,  9 Oct 2021 14:27:52 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 14:31:56 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 9 Oct 2021
+ 14:31:56 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <jic23@kernel.org>,
+        <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: core: fix double free in iio_device_unregister_sysfs()
+Date:   Sat, 9 Oct 2021 14:39:35 +0800
+Message-ID: <20211009063935.3187803-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20211009024430.3322230-1-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oskar,
+I got the double free report:
 
-On 10/8/21 7:44 PM, Oskar Senft wrote:
-> Document bindings for the Nuvoton NCT7802Y driver.
-> 
-> Signed-off-by: Oskar Senft <osk@google.com>
+[   68.308365][  T359] BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+[   68.309532][  T359]
+[   68.309886][  T359] CPU: 0 PID: 359 Comm: xrun Tainted: G        W         5.15.0-rc3-00109-g4dfd49fafc4d-dirty #474 523b7f3c65c42247635e2ac04a95f61f9f36678d
+[   68.312059][  T359] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+[   68.313566][  T359] Call Trace:
+[   68.314063][  T359]  dump_stack_lvl+0xe2/0x152
+[   68.314793][  T359]  print_address_description.constprop.7+0x21/0x150
+[   68.315842][  T359]  ? kfree+0xce/0x390
+[   68.316444][  T359]  kasan_report_invalid_free+0x6f/0xa0
+[   68.317289][  T359]  ? kfree+0xce/0x390
+[   68.317902][  T359]  __kasan_slab_free+0x125/0x140
+[   68.318660][  T359]  slab_free_freelist_hook+0x10d/0x240
+[   68.319497][  T359]  ? iio_device_unregister_sysfs+0x108/0x13b [industrialio]
+[   68.321179][  T359]  kfree+0xce/0x390
+[   68.321781][  T359]  iio_device_unregister_sysfs+0x108/0x13b [industrialio]
+[   68.323438][  T359]  iio_dev_release+0x9e/0x10e [industrialio]
+[   68.324902][  T359]  ? iio_device_unregister_sysfs+0x13b/0x13b [industrialio]
+[   68.326550][  T359]  device_release+0xa5/0x240
+[   68.327258][  T359]  kobject_put+0x1e5/0x540
+[   68.327954][  T359]  put_device+0x20/0x30
+[   68.328612][  T359]  devm_iio_device_release+0x21/0x30 [industrialio]
+[   68.330172][  T359]  release_nodes+0xc3/0x3b0
+[   68.330874][  T359]  ? __sanitizer_cov_trace_pc+0x1d/0x50
+[   68.331765][  T359]  ? _raw_spin_unlock_irqrestore+0x4b/0x5d
+[   68.332668][  T359]  ? trace_hardirqs_on+0x63/0x2d0
+[   68.333509][  T359]  devres_release_group+0x1da/0x2c0
+[   68.334325][  T359]  ? release_nodes+0x3b0/0x3b0
+[   68.335069][  T359]  ? __devm_iio_device_register+0x36/0x80 [industrialio]
+[   68.336721][  T359]  ? max517_probe+0x3df/0x6b0 [max517]
+[   68.338122][  T359]  i2c_device_probe+0x628/0xbb0
+[   68.338886][  T359]  ? i2c_device_match+0x110/0x110
+[   68.339674][  T359]  really_probe+0x285/0xc30
 
-Please pdon't expect from reviewers to figure out what changed
-between versions and provide change logs.
+If __iio_device_register() fails, iio_dev_opaque->groups will be freed
+in error path in iio_device_unregister_sysfs(), then iio_dev_release()
+will call iio_device_unregister_sysfs() again, it causes double free.
+Set iio_dev_opaque->groups to NULL when it's freed to fix this double free.
 
-Thanks,
-Guenter
+Fixes: 32f171724e5c ("iio: core: rework iio device group creation")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+---
+ drivers/iio/industrialio-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> ---
->   .../bindings/hwmon/nuvoton,nct7802.yaml       | 142 ++++++++++++++++++
->   1 file changed, 142 insertions(+)
->   create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-> new file mode 100644
-> index 000000000000..a97b89d0d197
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
-> @@ -0,0 +1,142 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/nuvoton,nct7802.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Nuvoton NCT7802Y Hardware Monitoring IC
-> +
-> +maintainers:
-> +  - Guenter Roeck <linux@roeck-us.net>
-> +
-> +description: |
-> +  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
-> +  5 remote temperature sensors with SMBus interface.
-> +
-> +  Datasheets:
-> +    https://www.nuvoton.com/export/resource-files/Nuvoton_NCT7802Y_Datasheet_V12.pdf
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nuvoton,nct7802
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 0
-> +
-> +  input@0:
-> +    type: object
-> +    description: Local Temperature Sensor ("LTD")
-> +    properties:
-> +      reg:
-> +        const: 0
-> +    required:
-> +      - reg
-> +
-> +  input@1:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD1")
-> +    properties:
-> +      reg:
-> +        const: 1
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +      temperature-mode:
-> +        items:
-> +          - enum:
-> +              - thermistor
-> +              - thermal-diode
-> +    required:
-> +      - reg
-> +      - sensor-type
-> +
-> +  input@2:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
-> +    properties:
-> +      reg:
-> +        const: 2
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +      temperature-mode:
-> +        items:
-> +          - enum:
-> +              - thermistor
-> +              - thermal-diode
-> +    required:
-> +      - reg
-> +      - sensor-type
-> +
-> +  input@3:
-> +    type: object
-> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
-> +    properties:
-> +      reg:
-> +        const: 3
-> +      sensor-type:
-> +        items:
-> +          - enum:
-> +              - temperature
-> +              - voltage
-> +    required:
-> +      - reg
-> +      - sensor-type
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        nct7802@28 {
-> +            compatible = "nuvoton,nct7802";
-> +            reg = <0x28>;
-> +
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            input@0 { /* LTD */
-> +              reg = <0>;
-> +              status = "okay";
-> +            };
-> +
-> +            input@1 { /* RTD1 */
-> +              reg = <1>;
-> +              status = "okay";
-> +              sensor-type = "temperature";
-> +              temperature-mode = "thermistor";
-> +            };
-> +
-> +            input@2 { /* RTD2 */
-> +              reg = <2>;
-> +              status = "okay";
-> +              sensor-type = "temperature";
-> +              temperature-mode = "thermal-diode";
-> +            };
-> +
-> +            input@3 { /* RTD3 */
-> +              reg = <3>;
-> +              status = "okay";
-> +              sensor-type = "voltage";
-> +            };
-> +        };
-> +    };
-> 
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 2dbb37e09b8c..2dc837db50f7 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1600,6 +1600,7 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
+ 	kfree(iio_dev_opaque->chan_attr_group.attrs);
+ 	iio_dev_opaque->chan_attr_group.attrs = NULL;
+ 	kfree(iio_dev_opaque->groups);
++	iio_dev_opaque->groups = NULL;
+ }
+ 
+ static void iio_dev_release(struct device *device)
+-- 
+2.25.1
 
