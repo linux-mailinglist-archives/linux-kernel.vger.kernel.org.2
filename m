@@ -2,142 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6709427C55
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A623427C56
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 19:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232564AbhJIRVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 13:21:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbhJIRVX (ORCPT
+        id S231773AbhJIRWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 13:22:21 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48333 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229928AbhJIRWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 13:21:23 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CD95C061570;
-        Sat,  9 Oct 2021 10:19:26 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so11161822ote.8;
-        Sat, 09 Oct 2021 10:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UZqTJRIKhlJ43FGgr7DGTxAyJOWTtWJNQ/u5JBWcW1k=;
-        b=WZwp2JD30emcfMBe/9zCcNw9rAKyhIEH/bhw90Ex9zNcZ/HzXp/XarDmhJhc6I02Qv
-         XvxcudZ6hmLVuzdlxUo4WQhZ9TcPhHUE2NHCw8EG5PaUtjnYxqdKpOLADGrOhloNeVcx
-         DuIS9S0NzpXBD5ihOoLOsY9xViKKTflUW4qaHnMwJAhah7GYzWDGNUFKFd/pdPPhCLUs
-         ciY5oUhfpME910q4qGpgo9VB+c7xJJtjdz5MucTjDFWlQHm54HrKHh07Oq1R3ecbXwbK
-         wi28bdDR5C5+GbiI+hdY+iTXhJqePZOG1n8GFcwyAcpF7a0vYm6AeH4Tk6B2BcxQvx9j
-         ZXcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UZqTJRIKhlJ43FGgr7DGTxAyJOWTtWJNQ/u5JBWcW1k=;
-        b=VEzfc0hQQ3yvY3xTfD2omE8AO/yrjEjNysCDyqcUugQs3YWkq2PZ6K2tKVRZ8/Uj1C
-         QWsiZAPQMUoNOmFqDmYWTRuNLSCXAkONlzrIFUm3Yng/RMgukdCmCZkCAAa9IuYLoHMG
-         Fq03Kp31UmCQO21f7Wlh0ak8POHoidlMeZHwjVS4fSftt8qZwDEXpzM8mc6bIgxrw9u7
-         yvmyNnMaqyIHDfMSHud3zC7+XQBkGZpC7q5XL0AIiB96K5xws3ZSTvn0EZC84m4NplPS
-         9rTUTvKuRAqCJ9LrxAvKsY7TTV1ksGBV+DCNjQUyhhQUddD/fMF2sO0QiYEnrSptre0f
-         kaPA==
-X-Gm-Message-State: AOAM531FvjBHhQsJk2+nraz4LA5Uza5D/W54W/TxTwKOqa0jsQC+XjrB
-        IlD34Hap3BnOogppHyiTbYDIvSWgyxdVYA==
-X-Google-Smtp-Source: ABdhPJx5koKOmpa4SIttslUC6uXSHE/n/hySn/pg6RoVqHhZ65HpSs3ilfxf16QPUj+oGLiV4gBoxw==
-X-Received: by 2002:a9d:60da:: with SMTP id b26mr14793219otk.369.1633799965288;
-        Sat, 09 Oct 2021 10:19:25 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id q12sm609705oth.79.2021.10.09.10.19.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Oct 2021 10:19:24 -0700 (PDT)
-Subject: Re: [PATCH] tcp: md5: Fix overlap between vrf and non-vrf keys
-To:     Leonard Crestez <cdleonard@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Yonghong Song <yhs@fb.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <3d8387d499f053dba5cd9184c0f7b8445c4470c6.1633542093.git.cdleonard@gmail.com>
- <209548b5-27d2-2059-f2e9-2148f5a0291b@gmail.com>
- <912670a5-8ef2-79cc-b74b-ee5c83534f2b@gmail.com>
- <5c77ac1a-b6af-982f-d72f-e71098df3112@gmail.com>
- <3b52d69d-c39f-c662-7211-4b9130c8b527@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <eec5818a-c62c-eecf-c81c-e3162fc9e01a@gmail.com>
-Date:   Sat, 9 Oct 2021 11:19:22 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Sat, 9 Oct 2021 13:22:20 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 938581C0002;
+        Sat,  9 Oct 2021 17:20:20 +0000 (UTC)
+Subject: Re: [PATCH v7 1/3] riscv: Introduce CONFIG_RELOCATABLE
+To:     Alexandre Ghiti <alexandre.ghiti@canonical.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20211009171259.2515351-1-alexandre.ghiti@canonical.com>
+ <20211009171259.2515351-2-alexandre.ghiti@canonical.com>
+From:   Alexandre ghiti <alex@ghiti.fr>
+Message-ID: <a6223864-7263-5450-0890-0f05a137d8c2@ghiti.fr>
+Date:   Sat, 9 Oct 2021 19:20:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <3b52d69d-c39f-c662-7211-4b9130c8b527@gmail.com>
+In-Reply-To: <20211009171259.2515351-2-alexandre.ghiti@canonical.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/8/21 9:51 AM, Leonard Crestez wrote:
-> On 07.10.2021 21:27, David Ahern wrote:
->> On 10/7/21 12:41 AM, Leonard Crestez wrote:
->>> On 07.10.2021 04:14, David Ahern wrote:
->>>> On 10/6/21 11:48 AM, Leonard Crestez wrote:
->>>>> @@ -1103,11 +1116,11 @@ static struct tcp_md5sig_key
->>>>> *tcp_md5_do_lookup_exact(const struct sock *sk,
->>>>>    #endif
->>>>>        hlist_for_each_entry_rcu(key, &md5sig->head, node,
->>>>>                     lockdep_sock_is_held(sk)) {
->>>>>            if (key->family != family)
->>>>>                continue;
->>>>> -        if (key->l3index && key->l3index != l3index)
->>>>> +        if (key->l3index != l3index)
->>>>
->>>> That seems like the bug fix there. The L3 reference needs to match for
->>>> new key and existing key. I think the same change is needed in
->>>> __tcp_md5_do_lookup.
->>>
->>> Current behavior is that keys added without tcpm_ifindex will match
->>> connections both inside and outside VRFs. Changing this might break real
->>> applications, is it really OK to claim that this behavior was a bug all
->>> along?
->>
->> no.
->>
->> It's been a few years. I need to refresh on the logic and that is not
->> going to happen before this weekend.
-> 
-> It seems that always doing a strict key->l3index != l3index condition
-> inside of __tcp_md5_do_lookup breaks the usecase of binding one listener
-> to each VRF and not specifying the ifindex for each key.
-> 
-> This is a very valid usecase, maybe the most common way to use md5 with
-> vrf.
-> 
-> Ways to fix this:
-> * Make this comparison only take effect if TCP_MD5SIG_FLAG_IFINDEX is set.
-> * Make this comparison only take effect if tcp_l3mdev_accept=1
-> * Add a new flag?
-> 
-> Right now passing TCP_MD5SIG_FLAG_IFINDEX and ifindex == 0 results in an
-> error but maybe it should be accepted to mean "key applies only for
-> default VRF".
-> 
+Arf, I have sent this patchset with the wrong email address. @Palmer
+tell me if you want me to resend it correctly.
 
-I think I remember the history now: prior to the set
-98c8147648fa..5cad8bce26e0 MD5 lookups for VRF and default VRF both
-succeed on an address or prefix match because the L3 domain was not
-checked. That set did not want to break the legacy behavior which is why
-the change is based on db key having l3index set and matching the
-ingress domain.
+Thanks,
 
-That means the limitation (hole depending on perspective) is a default
-VRF and a VRF having overlap addresses with a key installed with the L3
-index set (can't since default VRF does not have one) - which I believe
-is your point.
+Alex
 
-So, yes, one option is to have a flag that indicates strict checking to
-close the legacy path.
+On 10/9/21 7:12 PM, Alexandre Ghiti wrote:
+> From: Alexandre Ghiti <alex@ghiti.fr>
+>
+> This config allows to compile 64b kernel as PIE and to relocate it at
+> any virtual address at runtime: this paves the way to KASLR.
+> Runtime relocation is possible since relocation metadata are embedded into
+> the kernel.
+>
+> Note that relocating at runtime introduces an overhead even if the
+> kernel is loaded at the same address it was linked at and that the compiler
+> options are those used in arm64 which uses the same RELA relocation
+> format.
+>
+> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+> ---
+>  arch/riscv/Kconfig              | 12 ++++++++
+>  arch/riscv/Makefile             |  7 +++--
+>  arch/riscv/kernel/vmlinux.lds.S |  6 ++++
+>  arch/riscv/mm/Makefile          |  4 +++
+>  arch/riscv/mm/init.c            | 54 ++++++++++++++++++++++++++++++++-
+>  5 files changed, 80 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index ea16fa2dd768..043ba92559fa 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -213,6 +213,18 @@ config PGTABLE_LEVELS
+>  config LOCKDEP_SUPPORT
+>  	def_bool y
+>  
+> +config RELOCATABLE
+> +	bool
+> +	depends on MMU && 64BIT && !XIP_KERNEL
+> +	help
+> +          This builds a kernel as a Position Independent Executable (PIE),
+> +          which retains all relocation metadata required to relocate the
+> +          kernel binary at runtime to a different virtual address than the
+> +          address it was linked at.
+> +          Since RISCV uses the RELA relocation format, this requires a
+> +          relocation pass at runtime even if the kernel is loaded at the
+> +          same address it was linked at.
+> +
+>  source "arch/riscv/Kconfig.socs"
+>  source "arch/riscv/Kconfig.erratas"
+>  
+> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+> index 0eb4568fbd29..2f509915f246 100644
+> --- a/arch/riscv/Makefile
+> +++ b/arch/riscv/Makefile
+> @@ -9,9 +9,12 @@
+>  #
+>  
+>  OBJCOPYFLAGS    := -O binary
+> -LDFLAGS_vmlinux :=
+> +ifeq ($(CONFIG_RELOCATABLE),y)
+> +	LDFLAGS_vmlinux += -shared -Bsymbolic -z notext -z norelro
+> +	KBUILD_CFLAGS += -fPIE
+> +endif
+>  ifeq ($(CONFIG_DYNAMIC_FTRACE),y)
+> -	LDFLAGS_vmlinux := --no-relax
+> +	LDFLAGS_vmlinux += --no-relax
+>  	KBUILD_CPPFLAGS += -DCC_USING_PATCHABLE_FUNCTION_ENTRY
+>  	CC_FLAGS_FTRACE := -fpatchable-function-entry=8
+>  endif
+> diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+> index 5104f3a871e3..862a8c09723c 100644
+> --- a/arch/riscv/kernel/vmlinux.lds.S
+> +++ b/arch/riscv/kernel/vmlinux.lds.S
+> @@ -133,6 +133,12 @@ SECTIONS
+>  
+>  	BSS_SECTION(PAGE_SIZE, PAGE_SIZE, 0)
+>  
+> +	.rela.dyn : ALIGN(8) {
+> +		__rela_dyn_start = .;
+> +		*(.rela .rela*)
+> +		__rela_dyn_end = .;
+> +	}
+> +
+>  #ifdef CONFIG_EFI
+>  	. = ALIGN(PECOFF_SECTION_ALIGNMENT);
+>  	__pecoff_data_virt_size = ABSOLUTE(. - __pecoff_text_end);
+> diff --git a/arch/riscv/mm/Makefile b/arch/riscv/mm/Makefile
+> index 7ebaef10ea1b..2d33ec574bbb 100644
+> --- a/arch/riscv/mm/Makefile
+> +++ b/arch/riscv/mm/Makefile
+> @@ -1,6 +1,10 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  
+>  CFLAGS_init.o := -mcmodel=medany
+> +ifdef CONFIG_RELOCATABLE
+> +CFLAGS_init.o += -fno-pie
+> +endif
+> +
+>  ifdef CONFIG_FTRACE
+>  CFLAGS_REMOVE_init.o = $(CC_FLAGS_FTRACE)
+>  CFLAGS_REMOVE_cacheflush.o = $(CC_FLAGS_FTRACE)
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index c0cddf0fc22d..42041c12d496 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -20,6 +20,9 @@
+>  #include <linux/dma-map-ops.h>
+>  #include <linux/crash_dump.h>
+>  #include <linux/hugetlb.h>
+> +#ifdef CONFIG_RELOCATABLE
+> +#include <linux/elf.h>
+> +#endif
+>  
+>  #include <asm/fixmap.h>
+>  #include <asm/tlbflush.h>
+> @@ -103,7 +106,7 @@ static void __init print_vm_layout(void)
+>  	print_mlm("lowmem", (unsigned long)PAGE_OFFSET,
+>  		  (unsigned long)high_memory);
+>  #ifdef CONFIG_64BIT
+> -	print_mlm("kernel", (unsigned long)KERNEL_LINK_ADDR,
+> +	print_mlm("kernel", (unsigned long)kernel_map.virt_addr,
+>  		  (unsigned long)ADDRESS_SPACE_END);
+>  #endif
+>  }
+> @@ -518,6 +521,44 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
+>  #error "setup_vm() is called from head.S before relocate so it should not use absolute addressing."
+>  #endif
+>  
+> +#ifdef CONFIG_RELOCATABLE
+> +extern unsigned long __rela_dyn_start, __rela_dyn_end;
+> +
+> +static void __init relocate_kernel(void)
+> +{
+> +	Elf64_Rela *rela = (Elf64_Rela *)&__rela_dyn_start;
+> +	/*
+> +	 * This holds the offset between the linked virtual address and the
+> +	 * relocated virtual address.
+> +	 */
+> +	uintptr_t reloc_offset = kernel_map.virt_addr - KERNEL_LINK_ADDR;
+> +	/*
+> +	 * This holds the offset between kernel linked virtual address and
+> +	 * physical address.
+> +	 */
+> +	uintptr_t va_kernel_link_pa_offset = KERNEL_LINK_ADDR - kernel_map.phys_addr;
+> +
+> +	for ( ; rela < (Elf64_Rela *)&__rela_dyn_end; rela++) {
+> +		Elf64_Addr addr = (rela->r_offset - va_kernel_link_pa_offset);
+> +		Elf64_Addr relocated_addr = rela->r_addend;
+> +
+> +		if (rela->r_info != R_RISCV_RELATIVE)
+> +			continue;
+> +
+> +		/*
+> +		 * Make sure to not relocate vdso symbols like rt_sigreturn
+> +		 * which are linked from the address 0 in vmlinux since
+> +		 * vdso symbol addresses are actually used as an offset from
+> +		 * mm->context.vdso in VDSO_OFFSET macro.
+> +		 */
+> +		if (relocated_addr >= KERNEL_LINK_ADDR)
+> +			relocated_addr += reloc_offset;
+> +
+> +		*(Elf64_Addr *)addr = relocated_addr;
+> +	}
+> +}
+> +#endif /* CONFIG_RELOCATABLE */
+> +
+>  #ifdef CONFIG_XIP_KERNEL
+>  static void __init create_kernel_page_table(pgd_t *pgdir,
+>  					    __always_unused bool early)
+> @@ -625,6 +666,17 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>  	BUG_ON((kernel_map.virt_addr + kernel_map.size) > ADDRESS_SPACE_END - SZ_4K);
+>  #endif
+>  
+> +#ifdef CONFIG_RELOCATABLE
+> +	/*
+> +	 * Early page table uses only one PGDIR, which makes it possible
+> +	 * to map PGDIR_SIZE aligned on PGDIR_SIZE: if the relocation offset
+> +	 * makes the kernel cross over a PGDIR_SIZE boundary, raise a bug
+> +	 * since a part of the kernel would not get mapped.
+> +	 */
+> +	BUG_ON(PGDIR_SIZE - (kernel_map.virt_addr & (PGDIR_SIZE - 1)) < kernel_map.size);
+> +	relocate_kernel();
+> +#endif
+> +
+>  	pt_ops.alloc_pte = alloc_pte_early;
+>  	pt_ops.get_pte_virt = get_pte_virt_early;
+>  #ifndef __PAGETABLE_PMD_FOLDED
