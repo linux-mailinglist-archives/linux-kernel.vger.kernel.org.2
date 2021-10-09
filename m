@@ -2,121 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A963B427719
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958A342771E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229686AbhJIESi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:18:38 -0400
-Received: from unicom145.biz-email.net ([210.51.26.145]:61341 "EHLO
-        unicom145.biz-email.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhJIESg (ORCPT
+        id S229676AbhJIEWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:22:49 -0400
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:56504
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S229480AbhJIEWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:18:36 -0400
-Received: from ([60.208.111.195])
-        by unicom145.biz-email.net ((LNX1044)) with ASMTP (SSL) id CEZ00035;
-        Sat, 09 Oct 2021 12:16:35 +0800
-Received: from localhost.localdomain (10.200.104.119) by
- jtjnmail201606.home.langchao.com (10.100.2.6) with Microsoft SMTP Server id
- 15.1.2308.14; Sat, 9 Oct 2021 12:16:34 +0800
-From:   Kai Song <songkai01@inspur.com>
-To:     <linuxppc-dev@lists.ozlabs.org>
-CC:     <dja@axtens.net>, <oohall@gmail.com>, <paulus@samba.org>,
-        <linux-kernel@vger.kernel.org>, Kai Song <songkai01@inspur.com>
-Subject: [PATCH] powerpc/eeh: Fix docstrings in eeh.c
-Date:   Sat, 9 Oct 2021 12:16:30 +0800
-Message-ID: <20211009041630.4135-1-songkai01@inspur.com>
-X-Mailer: git-send-email 2.27.0
+        Sat, 9 Oct 2021 00:22:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+        Message-Id:MIME-Version:Content-Transfer-Encoding; bh=djcJNMrGEx
+        11DVeXfstEyaEscPLXu5hozbJu0q4CIqU=; b=tW3DT98Y/QG1bzhwtNp/ra8uo9
+        Wxaa2l2HM3rczHiQ8lc4PvZ1UYti6+NOCW8R0N6R5XhfoJc87rGWOdBvR0uBOxEW
+        l/WxbBN6V6gpxzqO6H0JD4MbPujy8rvVav3lfyer8hLJZHLQcf4JcQfMnWPwJSXF
+        XUj9OTAUsElweQ/wY=
+Received: from localhost.localdomain (unknown [10.102.225.147])
+        by app2 (Coremail) with SMTP id XQUFCgBXim6OGGFhruAAAA--.1394S4;
+        Sat, 09 Oct 2021 12:20:40 +0800 (CST)
+From:   Xin Xiong <xiongx18@fudan.edu.cn>
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     yuanxzhang@fudan.edu.cn, Xin Xiong <xiongx18@fudan.edu.cn>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: [PATCH v4] drivers/mmc: fix reference count leaks in moxart_probe
+Date:   Sat,  9 Oct 2021 12:19:18 +0800
+Message-Id: <20211009041918.28419-1-xiongx18@fudan.edu.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.200.104.119]
-tUid:   20211009121635ba44a8c23c38adce8f579347a9c42382
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: XQUFCgBXim6OGGFhruAAAA--.1394S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF1xJF4Utw4rKFyUXr4xJFb_yoW8tr4xpF
+        48Cr9xKrWUtr4agF4xCa1kXF18Zr1Fyw4akrZ8u3s7A34UJFnrC34kG3W0qF95JryrXa9Y
+        gF15tF1ruFW8JFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+        JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
+        rcIFxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+        6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+        IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2
+        jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+        ZEXa7VU1c4S5UUUUU==
+X-CM-SenderInfo: arytiiqsuqiimz6i3vldqovvfxof0/1tbiARAIEFKp41whwwABsu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We fix the following warnings when building kernel with W=1:
-arch/powerpc/kernel/eeh.c:598: warning: Function parameter or member 'function' not described in 'eeh_pci_enable'
-arch/powerpc/kernel/eeh.c:774: warning: Function parameter or member 'edev' not described in 'eeh_set_dev_freset'
-arch/powerpc/kernel/eeh.c:774: warning: expecting prototype for eeh_set_pe_freset(). Prototype was for eeh_set_dev_freset() instead
-arch/powerpc/kernel/eeh.c:814: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset_full'
-arch/powerpc/kernel/eeh.c:944: warning: Function parameter or member 'ops' not described in 'eeh_init'
-arch/powerpc/kernel/eeh.c:1451: warning: Function parameter or member 'include_passed' not described in 'eeh_pe_reset'
-arch/powerpc/kernel/eeh.c:1526: warning: Function parameter or member 'func' not described in 'eeh_pe_inject_err'
-arch/powerpc/kernel/eeh.c:1526: warning: Excess function parameter 'function' described in 'eeh_pe_inject_err'
+The issue happens in several error handling paths on two refcounted
+object related to the object "host" (dma_chan_rx, dma_chan_tx). In
+these paths, the function forgets to decrement one or both objects'
+reference count increased earlier by dma_request_chan(), causing
+reference count leaks.
 
-Signed-off-by: Kai Song <songkai01@inspur.com>
-Reviewed-by: Daniel Axtens <dja@axtens.net>
+Fix it by balancing the refcounts of both objects in some error
+handling paths. In correspondence with the changes in moxart_probe(),
+IS_ERR() is replaced with IS_ERR_OR_NULL() in moxart_remove() as well.
+
+Signed-off-by: Xin Xiong <xiongx18@fudan.edu.cn>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 ---
- arch/powerpc/kernel/eeh.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/mmc/host/moxart-mmc.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/eeh.c b/arch/powerpc/kernel/eeh.c
-index e9b597ed423c..91e0f4cf1db3 100644
---- a/arch/powerpc/kernel/eeh.c
-+++ b/arch/powerpc/kernel/eeh.c
-@@ -589,6 +589,7 @@ EXPORT_SYMBOL(eeh_check_failure);
- /**
-  * eeh_pci_enable - Enable MMIO or DMA transfers for this slot
-  * @pe: EEH PE
-+ * @function: EEH option
-  *
-  * This routine should be called to reenable frozen MMIO or DMA
-  * so that it would work correctly again. It's useful while doing
-@@ -761,8 +762,8 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev, enum pcie_reset_state stat
- }
+diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.c
+index 6c9d38132..7b9fcef49 100644
+--- a/drivers/mmc/host/moxart-mmc.c
++++ b/drivers/mmc/host/moxart-mmc.c
+@@ -621,6 +621,14 @@ static int moxart_probe(struct platform_device *pdev)
+ 			ret = -EPROBE_DEFER;
+ 			goto out;
+ 		}
++		if (!IS_ERR(host->dma_chan_tx)) {
++			dma_release_channel(host->dma_chan_tx);
++			host->dma_chan_tx = NULL;
++		}
++		if (!IS_ERR(host->dma_chan_rx)) {
++			dma_release_channel(host->dma_chan_rx);
++			host->dma_chan_rx = NULL;
++		}
+ 		dev_dbg(dev, "PIO mode transfer enabled\n");
+ 		host->have_dma = false;
+ 	} else {
+@@ -675,6 +683,10 @@ static int moxart_probe(struct platform_device *pdev)
+ 	return 0;
  
- /**
-- * eeh_set_pe_freset - Check the required reset for the indicated device
-- * @data: EEH device
-+ * eeh_set_dev_freset - Check the required reset for the indicated device
-+ * @edev: EEH device
-  * @flag: return value
-  *
-  * Each device might have its preferred reset type: fundamental or
-@@ -801,6 +802,7 @@ static void eeh_pe_refreeze_passed(struct eeh_pe *root)
- /**
-  * eeh_pe_reset_full - Complete a full reset process on the indicated PE
-  * @pe: EEH PE
-+ * @include_passed: include passed-through devices?
-  *
-  * This function executes a full reset procedure on a PE, including setting
-  * the appropriate flags, performing a fundamental or hot reset, and then
-@@ -937,6 +939,7 @@ static struct notifier_block eeh_device_nb = {
+ out:
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
++		dma_release_channel(host->dma_chan_tx);
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
++		dma_release_channel(host->dma_chan_rx);
+ 	if (mmc)
+ 		mmc_free_host(mmc);
+ 	return ret;
+@@ -687,9 +699,9 @@ static int moxart_remove(struct platform_device *pdev)
  
- /**
-  * eeh_init - System wide EEH initialization
-+ * @ops: struct to trace EEH operation callback functions
-  *
-  * It's the platform's job to call this from an arch_initcall().
-  */
-@@ -1442,6 +1445,7 @@ static int eeh_pe_reenable_devices(struct eeh_pe *pe, bool include_passed)
-  * eeh_pe_reset - Issue PE reset according to specified type
-  * @pe: EEH PE
-  * @option: reset type
-+ * @include_passed: include passed-through devices?
-  *
-  * The routine is called to reset the specified PE with the
-  * indicated type, either fundamental reset or hot reset.
-@@ -1513,12 +1517,12 @@ EXPORT_SYMBOL_GPL(eeh_pe_configure);
-  * eeh_pe_inject_err - Injecting the specified PCI error to the indicated PE
-  * @pe: the indicated PE
-  * @type: error type
-- * @function: error function
-+ * @func: error function
-  * @addr: address
-  * @mask: address mask
-  *
-  * The routine is called to inject the specified PCI error, which
-- * is determined by @type and @function, to the indicated PE for
-+ * is determined by @type and @func, to the indicated PE for
-  * testing purpose.
-  */
- int eeh_pe_inject_err(struct eeh_pe *pe, int type, int func,
+ 	dev_set_drvdata(&pdev->dev, NULL);
+ 
+-	if (!IS_ERR(host->dma_chan_tx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_tx))
+ 		dma_release_channel(host->dma_chan_tx);
+-	if (!IS_ERR(host->dma_chan_rx))
++	if (!IS_ERR_OR_NULL(host->dma_chan_rx))
+ 		dma_release_channel(host->dma_chan_rx);
+ 	mmc_remove_host(mmc);
+ 	mmc_free_host(mmc);
 -- 
-2.27.0
+2.25.1
 
