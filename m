@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1534277DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA034277DC
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhJIHO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 03:14:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47258 "EHLO
+        id S232745AbhJIHOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 03:14:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhJIHOZ (ORCPT
+        with ESMTP id S229479AbhJIHOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 03:14:25 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2ED9C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:12:28 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 75so5335999pga.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 00:12:28 -0700 (PDT)
+        Sat, 9 Oct 2021 03:14:47 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B954C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:12:51 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m14so10025689pfc.9
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 00:12:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=L4GOHKQpdKjGYrmtCwrt0j30dBYvWtSv27SD0TMpOQc=;
-        b=M9WKyzjFWGG/KvU30+aQ9WvUMAmBgCnSBUXf2NWfyO/Jfkd650wpjQbYYaExeQZzWv
-         mth8bJuq6JvWPxVyD41doqYRASh9kcu5Y6eerBNPq4ulyS/XSwjT8H03qEzS5kfnRBZY
-         nJ2tRbVnL5iuMVjt6/AACRz0CYZUMcI2y/tnhoeCBlZ3sr9fSzO1OjneeDcrUzgEush/
-         jD67PxUEYSTC1vskVs+UtU/2nVjuyRNQsRXFtqoDYtrjWbiI1oBUO6iazJFHvv6OhB9r
-         2D4D1HonX6zuoLPt4NZg+g+aJI77N6Vtf8bjppXq77qKz30/TkzHaKH94iLhGYhd7FYs
-         tOYQ==
+        bh=/Dz0AEQUS+5tnE4rP5Lhm0LEEfQ/t1p73p5EaBt6hmA=;
+        b=RYKB4GOVWyquCSCVAJ61Tqp+lLP2okB3soIG8RUco+Jy0LwjYcYT1/hZcTMdM/wSDA
+         Q644gB3MLaLus/4RAgNMC9rhDmfaA8FIROqCnaFf58Qp60wmddk+7njkaWxgKJKyawli
+         qXg73FO/kUmOCYeiDfbLSH16Zz2nIQFmGZT6lrmxoqa0Qe4Qjbeb8MT3q3jWR4cj3CQD
+         pyRrF7aIOHRIFczLPDXf04iXQLZ1nKYNv1/MbLR0i8ty0yNXGE7HwP/7My9YcR1JI63c
+         KfNtjTV1DSbhVadHjgOAPGCXQx9i4I0smFFEB+sjiJLo18TqEIXYwFXUtuxH+G4dDPH8
+         mh7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=L4GOHKQpdKjGYrmtCwrt0j30dBYvWtSv27SD0TMpOQc=;
-        b=k/FvwxgCcKt9K0zLLo+O26IM1iRsGMEwW6xmwhv6BbaM1lTE/NnqvqtqQDAqMVo5sA
-         0WnwN8xiiyZYwBJ+atB5IEfsRB9HdSe4DKKstcnos2mKvn4S96i9GIEReCgrrGyhF09y
-         lw7uLRwzTBATQd+N/dUvdWOv4DWXuPd/ZCNGYe2Guh6z8DFPCUy8T3G8iu38tzK4e5NE
-         H6ejk/hzIHAPZXh+YZ8U4Yy+OJFdG5aOdsefgs0nIZjN0pSHfF1xiFVU59hza6I1+7aw
-         bSr5jAMCSTcWNEfmmjockP+qiRcx9eJuwX0JhODbRGHaLQl2nHOllTEHf2mUAvVLDYnz
-         VnQw==
-X-Gm-Message-State: AOAM533ZGCYlA9Ze1I9M7UB6/abAiWpJgrOSx61CitFaHooM191jg0+Q
-        OjV4OcfkacLPX3CVGgFJjCRK9g==
-X-Google-Smtp-Source: ABdhPJycZN9+KmNLZNVOF85ID4gSIzxcQCNc2S0qYIBgaSwvZd+Qy6e7Mt8jN0ynLvDW8HGMPB7YgQ==
-X-Received: by 2002:a63:7402:: with SMTP id p2mr8364824pgc.472.1633763548294;
-        Sat, 09 Oct 2021 00:12:28 -0700 (PDT)
-Received: from C02FT5A6MD6R.bytedance.net ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id p9sm1333860pfh.162.2021.10.09.00.12.25
+        bh=/Dz0AEQUS+5tnE4rP5Lhm0LEEfQ/t1p73p5EaBt6hmA=;
+        b=yPw0LW+BRPElQx6Alju1uriPKZJt1sE1RuP9NGyvtvR+x/6KN2qH+1A7hMrTM+BjGm
+         /L5uHNaONfvWttfFdRHp4qVv4hcqVar4S47Na6yuA4lo3fnJO9/EzHG62hjYlJlipVUV
+         5Oelw+ybTH1P0tRp9KT3JcHZYGcyIHn8jgQGOHnjJJSymLK0GvOtT268iA4o0pOGaUi4
+         NyutaIumqdSIYu/OjX9vxWKx+BIujBu+shZ64nwVUWhHEKB5DVsEubflhCONMpaF3icw
+         XNh1duXP5vwNjCTYKo2aUkbRY++i+lozgf46vG07xq0Y/SL//WOGq+3F7G95wBAIXuw1
+         /lQg==
+X-Gm-Message-State: AOAM532C3qsI0z0iv7afBGt50PJeGHU5ef1PHoYEomU4nqEjwERv3Dzl
+        Qv81CIJPxOkGnNrJ7e5Wpfw2Kw==
+X-Google-Smtp-Source: ABdhPJwUR/+lBFkiA9E2Il0TycxTql4SR/5+2hjmhVIF/mbw+367GIWh8fh5HNofQqXzVuU8UlK9ZQ==
+X-Received: by 2002:a05:6a00:1512:b0:447:cb0b:8520 with SMTP id q18-20020a056a00151200b00447cb0b8520mr14085973pfu.54.1633763570627;
+        Sat, 09 Oct 2021 00:12:50 -0700 (PDT)
+Received: from C02FT5A6MD6R.tiktokd.org ([139.177.225.253])
+        by smtp.gmail.com with ESMTPSA id k14sm1497567pgg.92.2021.10.09.00.12.47
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 09 Oct 2021 00:12:27 -0700 (PDT)
+        Sat, 09 Oct 2021 00:12:50 -0700 (PDT)
 From:   Gang Li <ligang.bdlg@bytedance.com>
 To:     rostedt@goodmis.org
 Cc:     mingo@redhat.com, akpm@linux-foundation.org, vbabka@suse.cz,
         axelrasmussen@google.com, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Gang Li <ligang.bdlg@bytedance.com>
-Subject: [PATCH v2 1/2] mm: mmap_lock: remove redundant "\n" in TP_printk
-Date:   Sat,  9 Oct 2021 15:11:05 +0800
-Message-Id: <20211009071105.69544-1-ligang.bdlg@bytedance.com>
+Subject: [PATCH v2 2/2] mm: mmap_lock: use DECLARE_EVENT_CLASS and DEFINE_EVENT_FN
+Date:   Sat,  9 Oct 2021 15:12:43 +0800
+Message-Id: <20211009071243.70286-1-ligang.bdlg@bytedance.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -63,45 +63,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ftrace core will add "\n" automatically on print. "\n" in TP_printk
-will create blank line, so remove it.
+By using DECLARE_EVENT_CLASS and TRACE_EVENT_FN, we can save a lot
+of space from duplicate code.
 
 Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 ---
- include/trace/events/mmap_lock.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/trace/events/mmap_lock.h | 44 +++++++++-----------------------
+ 1 file changed, 12 insertions(+), 32 deletions(-)
 
 diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-index 0abff67b96f0..5f980c92e3e9 100644
+index 5f980c92e3e9..14db8044c1ff 100644
 --- a/include/trace/events/mmap_lock.h
 +++ b/include/trace/events/mmap_lock.h
-@@ -32,7 +32,7 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
- 	),
+@@ -13,7 +13,7 @@ struct mm_struct;
+ extern int trace_mmap_lock_reg(void);
+ extern void trace_mmap_lock_unreg(void);
  
- 	TP_printk(
--		"mm=%p memcg_path=%s write=%s\n",
-+		"mm=%p memcg_path=%s write=%s",
+-TRACE_EVENT_FN(mmap_lock_start_locking,
++DECLARE_EVENT_CLASS(mmap_lock,
+ 
+ 	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
+ 
+@@ -36,11 +36,19 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
  		__entry->mm,
  		__get_str(memcg_path),
  		__entry->write ? "true" : "false"
-@@ -63,7 +63,7 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
- 	),
+-	),
+-
+-	trace_mmap_lock_reg, trace_mmap_lock_unreg
++	)
+ );
  
- 	TP_printk(
--		"mm=%p memcg_path=%s write=%s success=%s\n",
-+		"mm=%p memcg_path=%s write=%s success=%s",
- 		__entry->mm,
- 		__get_str(memcg_path),
- 		__entry->write ? "true" : "false",
-@@ -92,7 +92,7 @@ TRACE_EVENT_FN(mmap_lock_released,
- 	),
++#define DEFINE_MMAP_LOCK_EVENT(name)                                    \
++	DEFINE_EVENT_FN(mmap_lock, name,                                \
++		TP_PROTO(struct mm_struct *mm, const char *memcg_path,  \
++			bool write),                                    \
++		TP_ARGS(mm, memcg_path, write),                         \
++		trace_mmap_lock_reg, trace_mmap_lock_unreg)
++
++DEFINE_MMAP_LOCK_EVENT(mmap_lock_start_locking);
++DEFINE_MMAP_LOCK_EVENT(mmap_lock_released);
++
+ TRACE_EVENT_FN(mmap_lock_acquire_returned,
  
- 	TP_printk(
--		"mm=%p memcg_path=%s write=%s\n",
-+		"mm=%p memcg_path=%s write=%s",
- 		__entry->mm,
- 		__get_str(memcg_path),
- 		__entry->write ? "true" : "false"
+ 	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write,
+@@ -73,34 +81,6 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
+ 	trace_mmap_lock_reg, trace_mmap_lock_unreg
+ );
+ 
+-TRACE_EVENT_FN(mmap_lock_released,
+-
+-	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
+-
+-	TP_ARGS(mm, memcg_path, write),
+-
+-	TP_STRUCT__entry(
+-		__field(struct mm_struct *, mm)
+-		__string(memcg_path, memcg_path)
+-		__field(bool, write)
+-	),
+-
+-	TP_fast_assign(
+-		__entry->mm = mm;
+-		__assign_str(memcg_path, memcg_path);
+-		__entry->write = write;
+-	),
+-
+-	TP_printk(
+-		"mm=%p memcg_path=%s write=%s",
+-		__entry->mm,
+-		__get_str(memcg_path),
+-		__entry->write ? "true" : "false"
+-	),
+-
+-	trace_mmap_lock_reg, trace_mmap_lock_unreg
+-);
+-
+ #endif /* _TRACE_MMAP_LOCK_H */
+ 
+ /* This part must be outside protection */
 -- 
 2.20.1
 
