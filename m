@@ -2,71 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD904276DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB574276E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 05:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244199AbhJIDQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Oct 2021 23:16:38 -0400
-Received: from smtprelay0018.hostedemail.com ([216.40.44.18]:34634 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230400AbhJIDQg (ORCPT
+        id S244181AbhJIDUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Oct 2021 23:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230400AbhJIDT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Oct 2021 23:16:36 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 8CED0182CED2A;
-        Sat,  9 Oct 2021 03:14:39 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 52038B2794;
-        Sat,  9 Oct 2021 03:14:38 +0000 (UTC)
-Message-ID: <5daf69b365e23ceecee911c4d0f2f66a0b9ec95c.camel@perches.com>
-Subject: Re: [PATCH] scsi scsi_transport_iscsi.c: fix misuse of %llu in
- scsi_transport_iscsi.c
-From:   Joe Perches <joe@perches.com>
-To:     Guo Zhi <qtxuning1999@sjtu.edu.cn>, Lee Duncan <lduncan@suse.com>,
-        Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 08 Oct 2021 20:14:36 -0700
-In-Reply-To: <20211009030254.205714-1-qtxuning1999@sjtu.edu.cn>
-References: <20211009030254.205714-1-qtxuning1999@sjtu.edu.cn>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Fri, 8 Oct 2021 23:19:58 -0400
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8116BC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 20:18:02 -0700 (PDT)
+Received: by mail-oi1-x235.google.com with SMTP id z11so16247129oih.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 20:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gNhGn3g6n3gMQ9G8iAXR+9nLlZJH5jA/zH8qZm9egMc=;
+        b=iCi28xaiB3OafSfaNp7alys1F5aNoCP30I6BjnNumSWzOkv8sp42L9ZX82RVYeo83r
+         K8ZvzOOq+mbOqYsddydS4fgQa0leKQkQ8Kncm9GdHsj4tSpH9Uvv7na2CIZzVRV8rVq3
+         vwPz6+XavkNyhGkRAV5GqSff0TaYliCQPwEGbmLDxcxK7HNEU2ZVWcfyRWKJU3wB9N3D
+         LrIc1ZQEjD3qKyFJUBufBJM2YF8FeQ5prVCFbvVU1zQJDu2xBNTXkJTUFV74JVpeYHUn
+         kvi6oWv0JN9Ra/EfymqI3dk7URuP8pKWK8ZGKJCiN5JPM8XXm1WYjHekkV3O6dArYsUb
+         5svQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gNhGn3g6n3gMQ9G8iAXR+9nLlZJH5jA/zH8qZm9egMc=;
+        b=NNjjFh+Bm0z7H2txDmq/jwAlA9cmR+QaSbnOBvbmM0iM1+jAQovZ7F2uufEk6JqI2y
+         0Z1IrjZjnlS3x+nA/nNZE8BbESfp0dJRYn6nDnJeoF/ZXpaMXGA8JwGyitaZuAP4zEwu
+         3jtwNR4X5QtENZrtQuUopaPRhyytu5fD55hadeaDzLrT9H/tXLgt4qKwxmgdiXrXIdQJ
+         psHHQpvV//3PnHeBV59MNnBFG9KTHSRmCutfNri23pp89bHXCBWKvdXBW3jUZsNRchfU
+         Rf7m7eiyzedtAym1KYd7pEQgPt+zKuOUJKXjh0KWt+izruw1gPyUja5K384kyFByIUph
+         Ye/Q==
+X-Gm-Message-State: AOAM531AvfOEvhCh0OM+vxajm0lZ8Ylh2xYUPueh02ojuYyOnO692M9B
+        SYw62beWNWjrjRcosIJ6NblQTg==
+X-Google-Smtp-Source: ABdhPJxXstOhM+ddFjQvsSVaa9sRFDTKCu6vJRb14e80L1q0CTMDfiRQz1hcZ6oQVzW9ZpwVdnZKAA==
+X-Received: by 2002:aca:bb07:: with SMTP id l7mr18547596oif.83.1633749481737;
+        Fri, 08 Oct 2021 20:18:01 -0700 (PDT)
+Received: from builder.lan ([2600:1700:a0:3dc8:3697:f6ff:fe85:aac9])
+        by smtp.gmail.com with ESMTPSA id z15sm232341oot.45.2021.10.08.20.18.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 20:18:01 -0700 (PDT)
+Date:   Fri, 8 Oct 2021 22:17:59 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bixuan Cui <cuibixuan@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, agross@kernel.org, ohad@wizery.com,
+        mathieu.poirier@linaro.org
+Subject: Re: [PATCH -next] remoteproc: qcom_wcnss: Add missing of_node_put()
+ in qcom_iris_probe()
+Message-ID: <YWEJ5yKDTdliWS+I@builder.lan>
+References: <20210911081347.33929-1-cuibixuan@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 52038B2794
-X-Spam-Status: No, score=-1.18
-X-Stat-Signature: bbw3xsbbdkewqjzc9ac3mxsm7cyt9oi8
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19VniraqeieMIuZT0TmPUPv+WTE0gtE6oM=
-X-HE-Tag: 1633749278-20152
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210911081347.33929-1-cuibixuan@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-10-09 at 11:02 +0800, Guo Zhi wrote:
-> Pointers should be printed with %p or %px rather than
-> cast to (unsigned long long) and printed with %llu.
-> Change %llu to %p to print the pointer into sysfs.
-][]
-> diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transport_iscsi.c
-[]
-> @@ -129,8 +129,8 @@ show_transport_handle(struct device *dev, struct device_attribute *attr,
->  
+On Sat 11 Sep 03:13 CDT 2021, Bixuan Cui wrote:
+
+> Add missing of_node_put() in qcom_iris_probe() before return.
 > 
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EACCES;
-> -	return sysfs_emit(buf, "%llu\n",
-> -		  (unsigned long long)iscsi_handle(priv->iscsi_transport));
-> +	return sysfs_emit(buf, "%p\n",
-> +		iscsi_ptr(priv->iscsi_transport));
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+>  drivers/remoteproc/qcom_wcnss_iris.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/qcom_wcnss_iris.c b/drivers/remoteproc/qcom_wcnss_iris.c
+> index 09720ddddc85..f77ab49a9cae 100644
+> --- a/drivers/remoteproc/qcom_wcnss_iris.c
+> +++ b/drivers/remoteproc/qcom_wcnss_iris.c
+> @@ -140,6 +140,7 @@ struct qcom_iris *qcom_iris_probe(struct device *parent, bool *use_48mhz_xo)
+>  	ret = device_add(&iris->dev);
+>  	if (ret) {
+>  		put_device(&iris->dev);
+> +		of_node_put(of_node);
 
-iscsi_transport is a pointer isn't it?
+We store "of_node" in iris->dev, so put_device() will invoke
+qcom_iris_release() which of_node_put(iris->dev.of_node);
 
-so why not just
+So I think this is a false alarm, but please correct me if I'm wrong.
 
-	return sysfs_emit(buf, "%p\n", priv->iscsi_transport);
+Thanks,
+Bjorn
 
-?
-
+>  		return ERR_PTR(ret);
+>  	}
+>  
+> @@ -192,10 +193,12 @@ struct qcom_iris *qcom_iris_probe(struct device *parent, bool *use_48mhz_xo)
+>  
+>  	*use_48mhz_xo = data->use_48mhz_xo;
+>  
+> +	of_node_put(of_node);
+>  	return iris;
+>  
+>  err_device_del:
+>  	device_del(&iris->dev);
+> +	of_node_put(of_node);
+>  
+>  	return ERR_PTR(ret);
+>  }
+> -- 
+> 2.17.1
+> 
