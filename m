@@ -2,246 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 929E4427758
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6CA42775A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 06:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231468AbhJIEhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 00:37:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
+        id S231351AbhJIEkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 00:40:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIEhh (ORCPT
+        with ESMTP id S229596AbhJIEkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 00:37:37 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1EEC061755
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:35:40 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id i20so27462434edj.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:35:40 -0700 (PDT)
+        Sat, 9 Oct 2021 00:40:12 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E61DDC061570
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Oct 2021 21:38:15 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id r2so5024747pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Oct 2021 21:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nGvUYvbmK0K5Ldg7vRbKHacSlMzqBKNjyJWApImR3yg=;
-        b=WlVDYqNW/Ch7MBfrrhDWNKf1VGGe4MUo6pYqqSe7/aDzZf+I1Jjgn6sOrC9TXCioRw
-         DNhBhT25m5uIAbpVtd3e1NDiNp5zVxQRWW42T8TQBCageHAloYEoZDVt22YP5R5AGcNk
-         CfCcWert2uTBW/mJFlKIAEL0ATdHqHQ/j+zNGyfyHdTpn5gBPaOAzMlakJa+iYGJzKAC
-         baSMIHznGNNjg043PGT0GB4lZt+Z7X9e1IlvGkM8wGCVE1dmORt0qKOxM+vLD1XM8Do6
-         qucvgVFK8btS8yVxJ6woXequfFtYPSnbkayjInsOaG5NdrHsTvGt6rxckYJBqSrqTu5h
-         0ZLA==
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
+        h=date:subject:cc:from:to:message-id;
+        bh=GLtUQay0Jz5XCFvG0wpPVlDUiFUuJN9wSLCgiMgA340=;
+        b=IPJFaLK9fIGBZhDErrqZ6xMv5p/0wEAtlK+WmoAKM631dJUaqdpCwke1JPuCa2tc+q
+         vwjdoHCJdqjMC1EctnOtR/jAtYEAeofm7p4Di6ZICdSAQ+KYZtrUxNeP/Ajzy06vqSOO
+         UNbaSV4tFFqNt4ZdAChyNOgc10P5U3LL6yMUx+SqcaPKWLPZY7DqdNn01f16WQXLFm2X
+         iNuA86jKPLLrCyLEuZoC6QLmkffXR1YQpPAavXGwqc0QBUkX0oPeWk22E3LR0PIVMmAD
+         SQ+8aZ6oZ6jerIMCA9h+bDuDGDuXV9t7sb2bFuHakDxM9c24nsaO2U3xPk66tNqNOZQI
+         1JWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nGvUYvbmK0K5Ldg7vRbKHacSlMzqBKNjyJWApImR3yg=;
-        b=hALzU25hF2qSBRaX/acgroNq93pTxK2SCBzofn9nfunKVVJA3H8B05ro7FWU/SjXs4
-         swSAmqY/pD2Ww6WN31opC/g4DHRbZN8RYQWEdzcR1GBLmdcGIwX6SjYJsSS7z+4cJKVS
-         AfGm4glmrdl3tBml6zbVSq6lfgsMFrJMJdl9Sy/5MK8MlWWjiYru/j1VHwDOtjUegDlm
-         dsMRNHCu/JpDuuNWsk8pSOlgDnPQ47xnJppnnzUanM1NNde4xDkjt7lHtAhAKgTn7WTX
-         cxQYz+tJ96o1rIpU2zpW1kpmVnZMNWO76PP1AKTc4V2n3p93zwyVwOt5gU7H2OMScRYw
-         8btA==
-X-Gm-Message-State: AOAM530kd5a4U9WA9SeUp4aRJPjYV8vLcxjjRTEpXzh1SIudfatSn5WU
-        68yQ+noqLYGqydUPgdZvvUfAkovUrYFazk3N9dkTMA==
-X-Google-Smtp-Source: ABdhPJybdjXOrnJxYGywpVwFJ9wR5rOXxImb5yLnv54kZvhAAUaus8FDEzaXnAO5dtkfXUXwgHBddYZU3eNILz91ZAs=
-X-Received: by 2002:a17:906:82c8:: with SMTP id a8mr9329583ejy.384.1633754139245;
- Fri, 08 Oct 2021 21:35:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211008112715.444305067@linuxfoundation.org>
-In-Reply-To: <20211008112715.444305067@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 9 Oct 2021 10:05:27 +0530
-Message-ID: <CA+G9fYv_xOaLYQCkSBhBRUXaJ0oEVy9NzKq+wvS1n13K+V2UgA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/16] 5.4.152-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=GLtUQay0Jz5XCFvG0wpPVlDUiFUuJN9wSLCgiMgA340=;
+        b=TT0fkm5YrbtqD1YYYiW1Wqwc4Mod8lANJQ/7rJqlvoDWUkoWEO4uqI+PUIwQxG35kC
+         9MnpWDIyUrSwPJ06r6tFM1k31UkTdrEqrL4iro9rCOQAI5/3KtWEslYbUDV7OAvI2pPq
+         LBiAyJpM82Ibj3Y6A7r/zEIe7cjSTLQ77+WGmOBmctUnW4Vl9PXjtC0WrCVn889xVTOo
+         3ElfYboKmgl88eQpz0fItFa55JarmIvQbvi4szSHzl/WJ8jB7K9cRXEO02D2UxC9fpWr
+         EnUt2wiOkTR/804gpBtrVW7AwdN3Y+jYZ3kwG7W9pjXeVVV7dhl7ikg9cdOif1pptAMX
+         m/jw==
+X-Gm-Message-State: AOAM533RulAo5DzYt880ogv7b1GuQ/1YvI3I0dI7Ni6cu+El+Ffnk9US
+        PLaEaPhITgzutlm1kku+qVdrkQ==
+X-Google-Smtp-Source: ABdhPJyXKpgNDYBHDZJYzeiQInmpo4RkTS3uQ4V5pukFx+04eSE2fphlDz2zyunAKOAULp0oBXYmDw==
+X-Received: by 2002:a63:e74b:: with SMTP id j11mr7989017pgk.322.1633754295243;
+        Fri, 08 Oct 2021 21:38:15 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id e14sm914125pga.23.2021.10.08.21.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Oct 2021 21:38:14 -0700 (PDT)
+Date:   Fri, 08 Oct 2021 21:38:14 -0700 (PDT)
+X-Google-Original-Date: Fri, 08 Oct 2021 21:37:58 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.15-rc5
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-26107d68-d2af-46eb-a8a4-43c1496a9ef4@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 at 17:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.152 release.
-> There are 16 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.152-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+are available in the Git repository at:
 
-## Build
-* kernel: 5.4.152-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 0a25e1455412122583bd9796e6f05bc146458fde
-* git describe: v5.4.151-17-g0a25e1455412
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-51-17-g0a25e1455412
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.15-rc5
 
-## No regressions (compared to v5.4.151-17-gb1d2e2889dcd)
+for you to fetch changes up to 3ef6ca4f354c53abf263cbeb51e7272523c294d8:
 
-## No fixes (compared to v5.4.151-17-gb1d2e2889dcd)
+  checksyscalls: Unconditionally ignore fstat{,at}64 (2021-10-07 17:16:28 -0700)
 
-## Test result summary
-total: 85242, pass: 70848, fail: 633, skip: 12366, xfail: 1395
+----------------------------------------------------------------
+RISC-V Fixes for 5.15-rc5
 
-## Build Summary
-* arc: 20 total, 20 passed, 0 failed
-* arm: 576 total, 576 passed, 0 failed
-* arm64: 76 total, 76 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 37 total, 37 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 78 total, 78 passed, 0 failed
-* parisc: 24 total, 24 passed, 0 failed
-* powerpc: 72 total, 72 passed, 0 failed
-* riscv: 60 total, 60 passed, 0 failed
-* s390: 24 total, 24 passed, 0 failed
-* sh: 48 total, 48 passed, 0 failed
-* sparc: 24 total, 24 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 76 total, 76 passed, 0 failed
+* A pair of fixes (along with the necessary cleanup) to our VDSO, to
+  avoid
+* A fix to checksyscalls to teach it about our rv32 UABI.
+* A fix to add clone3() to the rv32 UABI, which was pointed out by
+  checksyscalls.
+* A fix to properly flush the icache on the local CPU in addition to the
+  remote CPUs.
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+----------------------------------------------------------------
+Alexandre Ghiti (1):
+      riscv: Flush current cpu icache before other cpus
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Palmer Dabbelt (4):
+      Merge remote-tracking branch 'palmer/riscv-vdso-cleanup' into fixes
+      RISC-V: Include clone3() on rv32
+      Merge remote-tracking branch 'palmer/riscv-clone3' into fixes
+      checksyscalls: Unconditionally ignore fstat{,at}64
+
+Tong Tiangen (3):
+      riscv/vdso: Refactor asm/vdso.h
+      riscv/vdso: Move vdso data page up front
+      riscv/vdso: make arch_setup_additional_pages wait for mmap_sem for write killable
+
+ arch/riscv/include/asm/syscall.h     |  1 +
+ arch/riscv/include/asm/vdso.h        | 18 ++++++++----
+ arch/riscv/include/uapi/asm/unistd.h |  3 +-
+ arch/riscv/kernel/syscall_table.c    |  1 -
+ arch/riscv/kernel/vdso.c             | 53 ++++++++++++++++++++++--------------
+ arch/riscv/kernel/vdso/vdso.lds.S    |  3 +-
+ arch/riscv/mm/cacheflush.c           |  2 ++
+ scripts/checksyscalls.sh             |  6 ++--
+ 8 files changed, 56 insertions(+), 31 deletions(-)
