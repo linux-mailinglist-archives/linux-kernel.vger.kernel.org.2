@@ -2,146 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA034277DC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 267354277DF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232745AbhJIHOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 03:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
+        id S229754AbhJIHka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 03:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbhJIHOr (ORCPT
+        with ESMTP id S229560AbhJIHkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 03:14:47 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B954C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:12:51 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m14so10025689pfc.9
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 00:12:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/Dz0AEQUS+5tnE4rP5Lhm0LEEfQ/t1p73p5EaBt6hmA=;
-        b=RYKB4GOVWyquCSCVAJ61Tqp+lLP2okB3soIG8RUco+Jy0LwjYcYT1/hZcTMdM/wSDA
-         Q644gB3MLaLus/4RAgNMC9rhDmfaA8FIROqCnaFf58Qp60wmddk+7njkaWxgKJKyawli
-         qXg73FO/kUmOCYeiDfbLSH16Zz2nIQFmGZT6lrmxoqa0Qe4Qjbeb8MT3q3jWR4cj3CQD
-         pyRrF7aIOHRIFczLPDXf04iXQLZ1nKYNv1/MbLR0i8ty0yNXGE7HwP/7My9YcR1JI63c
-         KfNtjTV1DSbhVadHjgOAPGCXQx9i4I0smFFEB+sjiJLo18TqEIXYwFXUtuxH+G4dDPH8
-         mh7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/Dz0AEQUS+5tnE4rP5Lhm0LEEfQ/t1p73p5EaBt6hmA=;
-        b=yPw0LW+BRPElQx6Alju1uriPKZJt1sE1RuP9NGyvtvR+x/6KN2qH+1A7hMrTM+BjGm
-         /L5uHNaONfvWttfFdRHp4qVv4hcqVar4S47Na6yuA4lo3fnJO9/EzHG62hjYlJlipVUV
-         5Oelw+ybTH1P0tRp9KT3JcHZYGcyIHn8jgQGOHnjJJSymLK0GvOtT268iA4o0pOGaUi4
-         NyutaIumqdSIYu/OjX9vxWKx+BIujBu+shZ64nwVUWhHEKB5DVsEubflhCONMpaF3icw
-         XNh1duXP5vwNjCTYKo2aUkbRY++i+lozgf46vG07xq0Y/SL//WOGq+3F7G95wBAIXuw1
-         /lQg==
-X-Gm-Message-State: AOAM532C3qsI0z0iv7afBGt50PJeGHU5ef1PHoYEomU4nqEjwERv3Dzl
-        Qv81CIJPxOkGnNrJ7e5Wpfw2Kw==
-X-Google-Smtp-Source: ABdhPJwUR/+lBFkiA9E2Il0TycxTql4SR/5+2hjmhVIF/mbw+367GIWh8fh5HNofQqXzVuU8UlK9ZQ==
-X-Received: by 2002:a05:6a00:1512:b0:447:cb0b:8520 with SMTP id q18-20020a056a00151200b00447cb0b8520mr14085973pfu.54.1633763570627;
-        Sat, 09 Oct 2021 00:12:50 -0700 (PDT)
-Received: from C02FT5A6MD6R.tiktokd.org ([139.177.225.253])
-        by smtp.gmail.com with ESMTPSA id k14sm1497567pgg.92.2021.10.09.00.12.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 09 Oct 2021 00:12:50 -0700 (PDT)
-From:   Gang Li <ligang.bdlg@bytedance.com>
-To:     rostedt@goodmis.org
-Cc:     mingo@redhat.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        axelrasmussen@google.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Gang Li <ligang.bdlg@bytedance.com>
-Subject: [PATCH v2 2/2] mm: mmap_lock: use DECLARE_EVENT_CLASS and DEFINE_EVENT_FN
-Date:   Sat,  9 Oct 2021 15:12:43 +0800
-Message-Id: <20211009071243.70286-1-ligang.bdlg@bytedance.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        Sat, 9 Oct 2021 03:40:25 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479E4C061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 00:38:29 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1e220071dfbf03a8036444.dip0.t-ipconnect.de [IPv6:2003:ec:2f1e:2200:71df:bf03:a803:6444])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4E75B1EC047E;
+        Sat,  9 Oct 2021 09:38:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633765107;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qmwSpK5n/52Nbx+LHauAcoGj7Nk39lsvcR0objnyrNY=;
+        b=gf/P9uesWOOY52BMtXXVxYxj2LjYfKTp4FgrN/O0abe63FGEz3SxULuQKtBaoXDynVV5Vr
+        gVmUKc8WZ0+gb+1o0VGLfx3jI7uIm10uzjTmV0kN/0hUrzTn5/0c7iVCxKf3Ex9C8lmKQM
+        OjfFSkGCSWOnlp/o2nmfFilnOMBdCe8=
+Date:   Sat, 9 Oct 2021 09:38:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 00/11] Add TDX Guest Support (Initial support)
+Message-ID: <YWFG7+QqVGZ5ZdG9@zn.tnic>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By using DECLARE_EVENT_CLASS and TRACE_EVENT_FN, we can save a lot
-of space from duplicate code.
+On Fri, Oct 08, 2021 at 10:37:36PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Hi All,
 
-Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
----
- include/trace/events/mmap_lock.h | 44 +++++++++-----------------------
- 1 file changed, 12 insertions(+), 32 deletions(-)
+Now let's see: you sent this particular patchset on Monday, 4th. The
+usual process is that you wait at least a week for review comments,
+incorporate them into your next revision and then you send it. We were
+still reviewing v8...
 
-diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
-index 5f980c92e3e9..14db8044c1ff 100644
---- a/include/trace/events/mmap_lock.h
-+++ b/include/trace/events/mmap_lock.h
-@@ -13,7 +13,7 @@ struct mm_struct;
- extern int trace_mmap_lock_reg(void);
- extern void trace_mmap_lock_unreg(void);
- 
--TRACE_EVENT_FN(mmap_lock_start_locking,
-+DECLARE_EVENT_CLASS(mmap_lock,
- 
- 	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
- 
-@@ -36,11 +36,19 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
- 		__entry->mm,
- 		__get_str(memcg_path),
- 		__entry->write ? "true" : "false"
--	),
--
--	trace_mmap_lock_reg, trace_mmap_lock_unreg
-+	)
- );
- 
-+#define DEFINE_MMAP_LOCK_EVENT(name)                                    \
-+	DEFINE_EVENT_FN(mmap_lock, name,                                \
-+		TP_PROTO(struct mm_struct *mm, const char *memcg_path,  \
-+			bool write),                                    \
-+		TP_ARGS(mm, memcg_path, write),                         \
-+		trace_mmap_lock_reg, trace_mmap_lock_unreg)
-+
-+DEFINE_MMAP_LOCK_EVENT(mmap_lock_start_locking);
-+DEFINE_MMAP_LOCK_EVENT(mmap_lock_released);
-+
- TRACE_EVENT_FN(mmap_lock_acquire_returned,
- 
- 	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write,
-@@ -73,34 +81,6 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
- 	trace_mmap_lock_reg, trace_mmap_lock_unreg
- );
- 
--TRACE_EVENT_FN(mmap_lock_released,
--
--	TP_PROTO(struct mm_struct *mm, const char *memcg_path, bool write),
--
--	TP_ARGS(mm, memcg_path, write),
--
--	TP_STRUCT__entry(
--		__field(struct mm_struct *, mm)
--		__string(memcg_path, memcg_path)
--		__field(bool, write)
--	),
--
--	TP_fast_assign(
--		__entry->mm = mm;
--		__assign_str(memcg_path, memcg_path);
--		__entry->write = write;
--	),
--
--	TP_printk(
--		"mm=%p memcg_path=%s write=%s",
--		__entry->mm,
--		__get_str(memcg_path),
--		__entry->write ? "true" : "false"
--	),
--
--	trace_mmap_lock_reg, trace_mmap_lock_unreg
--);
--
- #endif /* _TRACE_MMAP_LOCK_H */
- 
- /* This part must be outside protection */
+But I see already a v9 in my mbox from yesterday and *also* a v10. v9
+you probably didn't build-test enough so you had to hastily do a v10. 4
+days later!
+
+And because that's not enough, there are a bunch of other TDX patchsets
+from you flying in constantly.
+
+Now, please explain to me how you imagine this whole review thing is
+supposed to work?
+
+You hammer people with patchsets until they go in? Forget proper review?
+
+Or people should drop the other things they have to do for their jobs
+and deal only with your patchsets?
+
+How about we trade places: you review and try to get sh*t to work and I
+hammer you with patchsets every 3-4 days?
+
+For chrissakes, please calm down with that constant hammering and try to
+put yourself in the maintainer's shoes for once. Also, try to realize
+that hammering people with patchsets will get you the *opposite* of what
+you're trying to achieve - you will get ignored.
+
+Geez.
+
 -- 
-2.20.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
