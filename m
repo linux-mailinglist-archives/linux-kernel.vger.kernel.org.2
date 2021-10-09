@@ -2,89 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE2942794A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 12:58:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE369427954
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 13:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244744AbhJILAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 07:00:14 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36348 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231718AbhJILAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:00:08 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2q0dWFhcgkXAA--.21276S4;
-        Sat, 09 Oct 2021 18:58:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next 2/2] bpf, mips: Modify check condition about tail call count
-Date:   Sat,  9 Oct 2021 18:57:56 +0800
-Message-Id: <1633777076-17256-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxv2q0dWFhcgkXAA--.21276S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7XrW5CFWkCF4fZF4UGF1ftFb_yoW8JrWfpa
-        45G3ZrKr1qg34UXF4rAFW8Xr1IgFs8XF47CF92kayxA3Z0v3ZIqF15K345GF90vrW8tayf
-        XryUKrs8ua93A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-        xKxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
-        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
-        v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
-        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
-        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
-        yTuYvjfUwjjgUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S232798AbhJILCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 07:02:47 -0400
+Received: from ixit.cz ([94.230.151.217]:41726 "EHLO ixit.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231932AbhJILCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 07:02:46 -0400
+Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ixit.cz (Postfix) with ESMTPSA id CA90120064;
+        Sat,  9 Oct 2021 13:00:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
+        t=1633777248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D5OZZStBDWR0Yfk/KUPyl72+0dY9A0/rhYfI20JIbMc=;
+        b=ClDl3UnN+gOgRSjyUKH+qvxT91iF2wA/lAnXa0Ue04HCUsKNcBjE2Yg/cZJOzb503lqWNz
+        WA3yfCZLB6Jq3N7T82bY6oYd3k3oWlzyxZUqSXqUfMQ2evP+ccTrxYDvePZoc8UPcMgEhW
+        lv6ru74sv4k5z7s2ZFJVAD8xg+mDhZE=
+From:   David Heidelberg <david@ixit.cz>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
+        David Heidelberg <david@ixit.cz>
+Subject: [PATCH] WIP: dt-bindings: input: microchip,cap11xx: Convert txt bindings to yaml
+Date:   Sat,  9 Oct 2021 12:59:22 +0200
+Message-Id: <20211009105922.48835-1-david@ixit.cz>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In emit_tail_call() of bpf_jit_comp32.c, "blez t2" (t2 <= 0) is not
-consistent with the comment "t2 < 0", modify the check condition to
-keep consistency.
+Convert binding for the Microchip CAP11xx series HW to the YAML syntax.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: David Heidelberg <david@ixit.cz>
 ---
- arch/mips/net/bpf_jit_comp32.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/input/cap11xx.txt     |  78 ----------
+ .../bindings/input/microchip,cap11xx.yaml     | 146 ++++++++++++++++++
+ 2 files changed, 146 insertions(+), 78 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/input/cap11xx.txt
+ create mode 100644 Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
 
-diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
-index 9d7041a..b887c01 100644
---- a/arch/mips/net/bpf_jit_comp32.c
-+++ b/arch/mips/net/bpf_jit_comp32.c
-@@ -1312,12 +1312,12 @@ static int emit_tail_call(struct jit_context *ctx)
- 	emit(ctx, sltu, t1, ind, t1);            /* t1 = ind < t1            */
- 	emit(ctx, beqz, t1, get_offset(ctx, 1)); /* PC += off(1) if t1 == 0  */
- 						 /* (next insn delay slot)   */
--	/* if (TCC-- <= 0) goto out */
-+	/* if (--TCC < 0) goto out */
- 	emit(ctx, lw, t2, ctx->stack_size, MIPS_R_SP);  /* t2 = *(SP + size) */
- 	emit_load_delay(ctx);                     /* Load delay slot         */
--	emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
- 	emit(ctx, addiu, t2, t2, -1);             /* t2-- (delay slot)       */
- 	emit(ctx, sw, t2, ctx->stack_size, MIPS_R_SP);  /* *(SP + size) = t2 */
-+	emit(ctx, bltz, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
- 
- 	/* prog = ary->ptrs[ind] */
- 	off = offsetof(struct bpf_array, ptrs);
+diff --git a/Documentation/devicetree/bindings/input/cap11xx.txt b/Documentation/devicetree/bindings/input/cap11xx.txt
+deleted file mode 100644
+index 8c67a0b5058d..000000000000
+--- a/Documentation/devicetree/bindings/input/cap11xx.txt
++++ /dev/null
+@@ -1,78 +0,0 @@
+-Device tree bindings for Microchip CAP11xx based capacitive touch sensors
+-
+-The node for this device must be a child of a I2C controller node, as the
+-device communication via I2C only.
+-
+-Required properties:
+-
+-	compatible:		Must contain one of:
+-					"microchip,cap1106"
+-					"microchip,cap1126"
+-					"microchip,cap1188"
+-
+-	reg:			The I2C slave address of the device.
+-
+-	interrupts:		Property describing the interrupt line the
+-				device's ALERT#/CM_IRQ# pin is connected to.
+-				The device only has one interrupt source.
+-
+-Optional properties:
+-
+-	autorepeat:		Enables the Linux input system's autorepeat
+-				feature on the input device.
+-
+-	microchip,sensor-gain:	Defines the gain of the sensor circuitry. This
+-				effectively controls the sensitivity, as a
+-				smaller delta capacitance is required to
+-				generate the same delta count values.
+-				Valid values are 1, 2, 4, and 8.
+-				By default, a gain of 1 is set.
+-
+-	microchip,irq-active-high:	By default the interrupt pin is active low
+-				open drain. This property allows using the active
+-				high push-pull output.
+-
+-	linux,keycodes:		Specifies an array of numeric keycode values to
+-				be used for the channels. If this property is
+-				omitted, KEY_A, KEY_B, etc are used as
+-				defaults. The array must have exactly six
+-				entries.
+-
+-Example:
+-
+-i2c_controller {
+-	cap1106@28 {
+-		compatible = "microchip,cap1106";
+-		interrupt-parent = <&gpio1>;
+-		interrupts = <0 0>;
+-		reg = <0x28>;
+-		autorepeat;
+-		microchip,sensor-gain = <2>;
+-
+-		linux,keycodes = <103>,		/* KEY_UP */
+-				 <106>,		/* KEY_RIGHT */
+-				 <108>,		/* KEY_DOWN */
+-				 <105>,		/* KEY_LEFT */
+-				 <109>,		/* KEY_PAGEDOWN */
+-				 <104>;		/* KEY_PAGEUP */
+-
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		usr@0 {
+-			label = "cap11xx:green:usr0";
+-			reg = <0>;
+-		};
+-
+-		usr@1 {
+-			label = "cap11xx:green:usr1";
+-			reg = <1>;
+-		};
+-
+-		alive@2 {
+-			label = "cap11xx:green:alive";
+-			reg = <2>;
+-			linux,default_trigger = "heartbeat";
+-		};
+-	};
+-}
+diff --git a/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+new file mode 100644
+index 000000000000..89079c019794
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/microchip,cap11xx.yaml
+@@ -0,0 +1,146 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/input/microchip,cap11xx.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Device tree bindings for Microchip CAP11xx based capacitive touch sensors
++
++description: |
++  The Microchip CAP1xxx Family of RightTouchTM multiple-channel capacitive
++  touch controllers and LED drivers. The device communication via I2C only.
++
++maintainers:
++  - Rob Herring <robh+dt@kernel.org>
++
++properties:
++  compatible:
++    enum:
++      - microchip,cap1106
++      - microchip,cap1126
++      - microchip,cap1188
++
++  reg:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++  '#size-cells':
++    const: 0
++
++  interrupts:
++    maxItems: 1
++    description: |
++      Property describing the interrupt line the
++      device's ALERT#/CM_IRQ# pin is connected to.
++      The device only has one interrupt source.
++
++  autorepeat:
++    description: |
++      Enables the Linux input system's autorepeat feature on the input device.
++
++  linux,keycodes:
++    minItems: 6
++    maxItems: 6
++    description: |
++      Specifies an array of numeric keycode values to
++      be used for the channels. If this property is
++      omitted, KEY_A, KEY_B, etc are used as defaults.
++      The array must have exactly six entries.
++
++  microchip,sensor-gain:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    default: 1
++    enum: [1, 2, 4, 8]
++    description: |
++      Defines the gain of the sensor circuitry. This
++      effectively controls the sensitivity, as a
++      smaller delta capacitance is required to
++      generate the same delta count values.
++
++  microchip,irq-active-high:
++    type: boolean
++    description: |
++      By default the interrupt pin is active low
++      open drain. This property allows using the active
++      high push-pull output.
++
++patternProperties:
++  "^led@[0-7]$":
++    type: object
++    description: CAP11xx LEDs
++    $ref: ../leds/common.yaml#
++
++    properties:
++      reg:
++        enum: [0, 1, 2, 3, 4, 5, 6, 7]
++
++      label: true
++
++      linux,default-trigger: true
++
++      default-state: true
++
++    required:
++      - reg
++
++    additionalProperties: false
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - microchip,cap1106
++    then:
++      patternProperties:
++        "^led@[0-7]$": false
++
++required:
++  - compatible
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      cap1188@28 {
++        compatible = "microchip,cap1188";
++        interrupt-parent = <&gpio1>;
++        interrupts = <0 0>;
++        reg = <0x28>;
++        autorepeat;
++        microchip,sensor-gain = <2>;
++
++        linux,keycodes = <103>,	/* KEY_UP */
++                         <106>,	/* KEY_RIGHT */
++                         <108>,	/* KEY_DOWN */
++                         <105>,	/* KEY_LEFT */
++                         <109>,	/* KEY_PAGEDOWN */
++                         <104>;	/* KEY_PAGEUP */
++
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led@0 {
++                label = "cap11xx:green:usr0";
++                reg = <0>;
++        };
++
++        led@1 {
++                label = "cap11xx:green:usr1";
++                reg = <1>;
++        };
++
++        led@2 {
++                label = "cap11xx:green:alive";
++                reg = <2>;
++                linux,default-trigger = "heartbeat";
++        };
++      };
++    };
 -- 
-2.1.0
+2.33.0
 
