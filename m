@@ -2,89 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182E0427791
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C41427794
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 07:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244296AbhJIFjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 01:39:16 -0400
-Received: from mail-yb1-f175.google.com ([209.85.219.175]:44782 "EHLO
-        mail-yb1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbhJIFjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 01:39:14 -0400
-Received: by mail-yb1-f175.google.com with SMTP id s64so25518242yba.11;
-        Fri, 08 Oct 2021 22:37:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aIghcbJ60FBCmsTSZcidGZHdsZIgJ4C2Kwndg3+KdLc=;
-        b=GSRQ1Iaf1jcG6jkjDcE0B8hBNwjtTQ4mbDh4TEU1M0ryezASe86tpYTv9qBlFiPagV
-         0mOzC2xtjSIGX/LLi4BHeLJy0yDZkYncrVPdPuUleydzjo0GGcOF1zXVENu9wwUi8mr0
-         QFCfJwknKg16eYQ19JaarW9giEtkdoIJCNn36fsdUT6BKWgRP17/fRIVV4SlgUaKA1iN
-         f6QEw1wJP0XwSwpMn3LNUnUHrE0XkFp0zJlCWyNAgQdRU10qXhL40FqSD0ZyQsIfhHPv
-         DuUS9Dk8SJi5XuhcFayv/JGNevgGZcnQrqeZdjcyIx3jgzOfj1ylaI0wQ6d7cP5FAUaZ
-         Pdeg==
-X-Gm-Message-State: AOAM532jXNoziPEEQG1Xma1tenb3tIzCE3M5Toi64XQfIIcIviqsRT9d
-        HI1KThQXJpoZ2J45OshLZ4NdIbJiw/XNgA0vSsajTDd22nk=
-X-Google-Smtp-Source: ABdhPJwapPhvRWOK7oAubzYHeJAPIsGJxNM1/egYo2N66jARLGywT7RkiLRh5RujnE7WH05gmBL1JvYmHW5mG+9ozEE=
-X-Received: by 2002:a25:4146:: with SMTP id o67mr8514459yba.113.1633757837390;
- Fri, 08 Oct 2021 22:37:17 -0700 (PDT)
+        id S244319AbhJIFjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 01:39:53 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29176 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229596AbhJIFjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Oct 2021 01:39:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="225410040"
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
+   d="scan'208";a="225410040"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 22:37:56 -0700
+X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
+   d="scan'208";a="569280206"
+Received: from dmsojoza-mobl3.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.135.62])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 22:37:55 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v10 00/11] Add TDX Guest Support (Initial support)
+Date:   Fri,  8 Oct 2021 22:37:36 -0700
+Message-Id: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
-In-Reply-To: <20211003044049.568441-1-mailhol.vincent@wanadoo.fr>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Sat, 9 Oct 2021 14:37:06 +0900
-Message-ID: <CAMZ6RqKm+nLPd2oHgNebeDh2hSOMVnV7cJn12FM6NLpVaOz2iA@mail.gmail.com>
-Subject: Re: [PATCH v1] can: netlink: report the CAN controller mode supported flags
-To:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun. 3 Oct 2021 at 13:40, Vincent Mailhol <mailhol.vincent@wanadoo.fr> wrote:
-> This patch introduces a method for the user to check both the
-> supported and the static capabilities.
->
-> Currently, the CAN netlink interface provides no easy ways to check
-> the capabilities of a given controller. The only method from the
-> command line is to try each CAN_CTRLMODE_ individually to check
-> whether the netlink interface returns an -EOPNOTSUPP error or not
-> (alternatively, one may find it easier to directly check the source
-> code of the driver instead...)
->
-> It appears that, currently, the struct can_ctrlmode::mask field is
-> only used in one direction: from the userland to the kernel. So we can
-> just reuse this field in the other direction (from the kernel to
-> userland). But, because the semantic is different, we use a union to
-> give this field a proper name: supported.
->
-> Below table explains how the two fields can_ctrlmode::supported and
-> can_ctrlmode::flags, when masked with any of the CAN_CTRLMODE_* bit
-> flags, allow us to identify both the supported and the static
-> capabilities:
->
->  supported &    flags &         Controller capabilities
->  CAN_CTRLMODE_* CAN_CTRLMODE_*
->  ------------------------------------------------------------------------
->  false          false           Feature not supported (always disabled)
->  false          true            Static feature (always enabled)
->  true           false           Feature supported but disabled
->  true           true            Feature supported and enabled
->
-> N.B.: This patch relies on the fact that a given CAN_CTRLMODE_*
-> feature can not be set for both can_priv::ctrlmode_supported and
-> can_priv::ctrlmode_static at the same time. c.f. comments in struct
-> can_priv [1]. Else, there would be no way to distinguish which
-> features were statically enabled.
+Hi All,
 
-Actually, can_priv::ctrlmode_static can be derived from the other
-ctrlmode fields. I will send a v2 in which I will add a patch to
-replace that field with an inline function.
+Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
+hosts and some physical attacks. This series adds the basic TDX guest
+infrastructure support (including #VE handler support, and #VE support
+for halt and CPUID). This is just a subset of patches in the bare minimum
+TDX support patch list which is required for supporting minimal
+functional TDX guest. Other basic feature features like #VE support for
+IO, MMIO, boot optimization fixes and shared-mm support will be submitted
+in a separate patch set. To make reviewing easier we split it into smaller
+series. This series alone is not necessarily fully functional.
 
-Yours sincerely,
-Vincent Mailhol
+Also, the host-side support patches, and support for advanced TD guest
+features like attestation or debug-mode will be submitted at a later time.
+Also, at this point it is not secure with some known holes in drivers, and
+also hasn’t been fully audited and fuzzed yet.
+
+TDX has a lot of similarities to SEV. It enhances confidentiality and
+of guest memory and state (like registers) and includes a new exception
+(#VE) for the same basic reasons as SEV-ES. Like SEV-SNP (not merged
+yet), TDX limits the host's ability to effect changes in the guest
+physical address space. With TDX the host cannot access the guest memory,
+so various functionality that would normally be done in KVM has moved
+into a (paravirtualized) guest. Partially this is done using the
+Virtualization Exception (#VE) and partially with direct paravirtual hooks.
+
+The TDX architecture also includes a new CPU mode called
+Secure-Arbitration Mode (SEAM). The software (TDX module) running in this
+mode arbitrates interactions between host and guest and implements many of
+the guarantees of the TDX architecture.
+
+Some of the key differences between TD and regular VM is,
+
+1. Multi CPU bring-up is done using the ACPI MADT wake-up table.
+2. A new #VE exception handler is added. The TDX module injects #VE exception
+   to the guest TD in cases of instructions that need to be emulated, disallowed
+   MSR accesses, etc.
+3. By default memory is marked as private, and TD will selectively share it with
+   VMM based on need.
+   
+Note that the kernel will also need to be hardened against low level inputs from
+the now untrusted hosts. This will be done in follow on patches.
+
+Please check the following info for more details about #VE on memory access:
+
+== #VE on Memory Accesses ==
+
+A TD guest is in control of whether its memory accesses are treated as
+private or shared.  It selects the behavior with a bit in its page table
+entries.
+
+=== #VE on Shared Pages ===
+
+Accesses to shared mappings can cause #VE's.  The hypervisor is in
+control of when a #VE might occur, so the guest must be careful to only
+reference shared pages when it is in a context that can safely handle a #VE.
+
+However, shared mapping content can not be trusted since shared page
+content is writable by the hypervisor.  This means that shared mappings
+are never used for sensitive memory contents like stacks or kernel text.
+ This means that the shared mapping property of inducing #VEs requires
+essentially no special kernel handling in sensitive contexts like
+syscall entry or NMIs.
+
+=== #VE on Private Pages ===
+
+Some accesses to private mappings may cause #VEs.  Before a mapping is
+accepted (aka. in the SEPT_PENDING state), a reference would cause
+a #VE.  But, after acceptance, references typically succeed.
+
+The hypervisor can cause a private page reference to fail if it chooses
+to move an accepted page to a "blocked" state.  However, if it does
+this, a page access will not generate a #VE.  It will, instead, cause a
+"TD Exit" where the hypervisor is required to handle the exception.
+
+You can find TDX related documents in the following link.
+
+https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
+
+Changes since v9:
+ * Added inline definition of is_tdx_guest() for !CONFIG_INTEL_TDX_GUEST case
+
+Changes since v8:
+ * * Change logs are include per patch.
+
+Changes since v7:
+ * Included #VE details on memory access in cover letter.
+ * Change log is include per patch.
+
+Changes since v6
+ * Fixed #ifdef format as per Boris comment in patch titled
+   "x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT".
+ * Fixed commit log of "x86/tdx: Handle CPUID via #VE" as per Dave
+   Hansen review comments.
+ * Removed TDX changes from "x86/tdx: Add protected guest support for
+   TDX guest" and created "x86/tdx: Add Intel version of
+   cc_platform_has()"
+ * Rebased on top of Tom Landecky's CC platform support patch series
+   https://lore.kernel.org/linux-iommu/f9951644147e27772bf4512325e8ba6472e363b7.1631141919.git.thomas.lendacky@amd.com/T/
+ * Rebased on top of v5.15-rc1.
+
+Changes since v5:
+ * Moved patch titled "x86/tdx: Get TD execution environment
+   information via TDINFO" to the series which uses it.
+ * Rest of the change log is added per patch.
+
+Changes since v4:
+ * Added a patch that adds TDX guest exception for CSTAR MSR.
+ * Rebased on top of Tom Lendacky's protected guest changes.
+ * Rest of the change log is added per patch.
+
+Changes since v3:
+ * Moved generic protected guest changes from patch titled "x86:
+   Introduce generic protected guest abstraction" into seperate
+   patch outside this patchset. Also, TDX specific changes are
+   moved to patch titled "x86/tdx: Add protected guest support
+   for TDX guest"
+ * Rebased on top of v5.14-rc1.
+ * Rest of the change log is added per patch.
+
+Changes since v1 (v2 is partial set submission):
+ * Patch titled "x86/x86: Add early_is_tdx_guest() interface" is moved
+   out of this series.
+ * Rest of the change log is added per patch.
+
+Andi Kleen (1):
+  x86/tdx: Don't write CSTAR MSR on Intel
+
+Kirill A. Shutemov (6):
+  x86/paravirt: Move halt paravirt calls under CONFIG_PARAVIRT
+  x86/traps: Add #VE support for TDX guest
+  x86/tdx: Add HLT support for TDX guest
+  x86/tdx: Wire up KVM hypercalls
+  x86/tdx: Add MSR support for TDX guest
+  x86/tdx: Handle CPUID via #VE
+
+Kuppuswamy Sathyanarayanan (4):
+  x86/tdx: Introduce INTEL_TDX_GUEST config option
+  x86/cpufeatures: Add TDX Guest CPU feature
+  x86/tdx: Add TDX support to intel_cc_platform_has()
+  x86/tdx: Add __tdx_module_call() and __tdx_hypercall() helper
+    functions
+
+ arch/x86/Kconfig                      |  15 ++
+ arch/x86/include/asm/asm-prototypes.h |   1 +
+ arch/x86/include/asm/cpufeatures.h    |   1 +
+ arch/x86/include/asm/idtentry.h       |   4 +
+ arch/x86/include/asm/irqflags.h       |  44 ++--
+ arch/x86/include/asm/kvm_para.h       |  22 ++
+ arch/x86/include/asm/paravirt.h       |  20 +-
+ arch/x86/include/asm/paravirt_types.h |   3 +-
+ arch/x86/include/asm/tdx.h            | 109 +++++++++
+ arch/x86/kernel/Makefile              |   4 +
+ arch/x86/kernel/asm-offsets.c         |  23 ++
+ arch/x86/kernel/cc_platform.c         |  12 +-
+ arch/x86/kernel/cpu/common.c          |  11 +-
+ arch/x86/kernel/head64.c              |   9 +
+ arch/x86/kernel/idt.c                 |   3 +
+ arch/x86/kernel/paravirt.c            |   3 +-
+ arch/x86/kernel/tdcall.S              | 306 ++++++++++++++++++++++++++
+ arch/x86/kernel/tdx.c                 | 245 +++++++++++++++++++++
+ arch/x86/kernel/traps.c               |  77 +++++++
+ include/linux/cc_platform.h           |   9 +
+ 20 files changed, 884 insertions(+), 37 deletions(-)
+ create mode 100644 arch/x86/include/asm/tdx.h
+ create mode 100644 arch/x86/kernel/tdcall.S
+ create mode 100644 arch/x86/kernel/tdx.c
+
+-- 
+2.25.1
+
