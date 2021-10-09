@@ -2,175 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B311F4277F1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA404277F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Oct 2021 09:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232931AbhJIHnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 03:43:37 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13713 "EHLO
+        id S229846AbhJIHrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 03:47:35 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13714 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232955AbhJIHnh (ORCPT
+        with ESMTP id S229683AbhJIHre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 03:43:37 -0400
-Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HRH5f42whzWZKb;
-        Sat,  9 Oct 2021 15:40:06 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Sat, 9 Oct 2021 15:41:38 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <socketcan@hartkopp.net>, <mkl@pengutronix.de>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2 2/2] can: isotp: fix tx buffer concurrent access in isotp_sendmsg()
-Date:   Sat, 9 Oct 2021 15:40:30 +0800
-Message-ID: <c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com>
+        Sat, 9 Oct 2021 03:47:34 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HRHBC0H8SzWWVW;
+        Sat,  9 Oct 2021 15:44:03 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Sat, 9 Oct 2021 15:45:35 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 9 Oct 2021
+ 15:45:34 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <peterz@infradead.org>, <jpoimboe@redhat.com>, <jbaron@akamai.com>,
+        <rostedt@goodmis.org>, <ardb@kernel.org>, <mingo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH] static_call: fix null-ptr-deref in static_call_del_module
+Date:   Sat, 9 Oct 2021 15:44:28 +0800
+Message-ID: <20211009074428.1668662-1-wanghai38@huawei.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633764159.git.william.xuanziyang@huawei.com>
-References: <cover.1633764159.git.william.xuanziyang@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggeml757-chm.china.huawei.com (10.1.199.137)
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When isotp_sendmsg() concurrent, tx.state of all tx processes can be
-ISOTP_IDLE. The conditions so->tx.state != ISOTP_IDLE and
-wq_has_sleeper(&so->wait) can not protect tx buffer from being accessed
-by multiple tx processes.
+I got a NULL pointer dereference report when doing fault injection test:
 
-We can use cmpxchg() to try to modify tx.state to ISOTP_SENDING firstly.
-If the modification of the previous process succeed, the later process
-must wait tx.state to ISOTP_IDLE firstly. Thus, we can ensure tx buffer
-is accessed by only one process at the same time. And we should also
-restore the original tx.state at the subsequent error processes.
+BUG: kernel NULL pointer dereference, address: 0000000000000009
+...
+RIP: 0010:static_call_del_module+0x7a/0x100
+...
+Call Trace:
+ static_call_module_notify+0x1e1/0x200
+ notifier_call_chain_robust+0x6f/0xe0
+ blocking_notifier_call_chain_robust+0x4e/0x70
+ load_module+0x21f7/0x2b60
+ __do_sys_finit_module+0xb0/0xf0
+ ? __do_sys_finit_module+0xb0/0xf0
+ __x64_sys_finit_module+0x1a/0x20
+ do_syscall_64+0x34/0xb0
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+When loading a module, if it fails to allocate memory for static
+calls, it will delete the non-existent mods (mods == 1) in the
+static_call_module_notify()'s error path.
+
+static_call_module_notify
+	static_call_add_module
+		__static_call_init
+			site_mod = kzalloc() // fault injection
+	static_call_del_module // access non-existent mods
+
+This patch fixes the bug by skipping the operation when the key
+has no mods.
+
+Fixes: a945c8345ec0 ("static_call: Allow early init")
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
 ---
- net/can/isotp.c | 46 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 31 insertions(+), 15 deletions(-)
+ kernel/static_call.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 2ac29c2b2ca6..d1f54273c0bb 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -121,7 +121,7 @@ enum {
- struct tpcon {
- 	int idx;
- 	int len;
--	u8 state;
-+	u32 state;
- 	u8 bs;
- 	u8 sn;
- 	u8 ll_dl;
-@@ -848,6 +848,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- {
- 	struct sock *sk = sock->sk;
- 	struct isotp_sock *so = isotp_sk(sk);
-+	u32 old_state = so->tx.state;
- 	struct sk_buff *skb;
- 	struct net_device *dev;
- 	struct canfd_frame *cf;
-@@ -860,47 +861,55 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		return -EADDRNOTAVAIL;
+diff --git a/kernel/static_call.c b/kernel/static_call.c
+index 43ba0b1e0edb..c3f8ffc5a52f 100644
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -400,7 +400,7 @@ static void static_call_del_module(struct module *mod)
  
- 	/* we do not support multiple buffers - for now */
--	if (so->tx.state != ISOTP_IDLE || wq_has_sleeper(&so->wait)) {
--		if (msg->msg_flags & MSG_DONTWAIT)
--			return -EAGAIN;
-+	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE ||
-+	    wq_has_sleeper(&so->wait)) {
-+		if (msg->msg_flags & MSG_DONTWAIT) {
-+			err = -EAGAIN;
-+			goto err_out;
-+		}
+ 	for (site = start; site < stop; site++) {
+ 		key = static_call_key(site);
+-		if (key == prev_key)
++		if (key == prev_key || !static_call_key_has_mods(key))
+ 			continue;
  
- 		/* wait for complete transmission of current pdu */
- 		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
- 		if (err)
--			return err;
-+			goto err_out;
- 	}
- 
--	if (!size || size > MAX_MSG_LENGTH)
--		return -EINVAL;
-+	if (!size || size > MAX_MSG_LENGTH) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
- 
- 	/* take care of a potential SF_DL ESC offset for TX_DL > 8 */
- 	off = (so->tx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
- 
- 	/* does the given data fit into a single frame for SF_BROADCAST? */
- 	if ((so->opt.flags & CAN_ISOTP_SF_BROADCAST) &&
--	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off))
--		return -EINVAL;
-+	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off)) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
- 
- 	err = memcpy_from_msg(so->tx.buf, msg, size);
- 	if (err < 0)
--		return err;
-+		goto err_out;
- 
- 	dev = dev_get_by_index(sock_net(sk), so->ifindex);
--	if (!dev)
--		return -ENXIO;
-+	if (!dev) {
-+		err = -ENXIO;
-+		goto err_out;
-+	}
- 
- 	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
- 				  msg->msg_flags & MSG_DONTWAIT, &err);
- 	if (!skb) {
- 		dev_put(dev);
--		return err;
-+		goto err_out;
- 	}
- 
- 	can_skb_reserve(skb);
- 	can_skb_prv(skb)->ifindex = dev->ifindex;
- 	can_skb_prv(skb)->skbcnt = 0;
- 
--	so->tx.state = ISOTP_SENDING;
- 	so->tx.len = size;
- 	so->tx.idx = 0;
- 
-@@ -956,7 +965,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if (err) {
- 		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
- 			       __func__, ERR_PTR(err));
--		return err;
-+		goto err_out;
- 	}
- 
- 	if (wait_tx_done) {
-@@ -965,6 +974,13 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	}
- 
- 	return size;
-+
-+err_out:
-+	so->tx.state = old_state;
-+	if (so->tx.state == ISOTP_IDLE)
-+		wake_up_interruptible(&so->wait);
-+
-+	return err;
- }
- 
- static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 		prev_key = key;
 -- 
-2.25.1
+2.17.1
 
