@@ -2,73 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC2742809A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 12:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C2E42809C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhJJK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 06:59:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        id S231681AbhJJLEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 07:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbhJJK7h (ORCPT
+        with ESMTP id S231561AbhJJLEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 06:59:37 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41840C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 03:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lAhR6HL9yrTgsRteyx/m4GYqb0D0402HoRTg/lIVH2A=; b=le24S/qvpsuOjd9rqDTCF18sAH
-        HssyzGn+hbElEhXQbkEjfuX7+SRAJOLx749vHjCthSDkZFf3VNEO3uvKJ0YMe1ncwt6ddy8xyA4dv
-        xEc8equC4WNe9xD7v5HWwtmvUhFnu+a7WbKMZi+uVM6XsgHcViaVFDSP59iJ4kFHdJipbBpD2ci79
-        zQUNpXFGs+nAy9IyzBO95ytErxqfGQGjY0ktv94M8Bfy5IgwhngcvANuuJddLzZyoXglEcXDQYTej
-        Vx3aDvgXbeVUp3VT+U5jpHUVZpwvGVx0lhaP8pR9Wi+vjO8egG+yiD/Q3SatNDQo4pBO7g6djnREU
-        L2z/OWUw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZWWI-0090ge-Gp; Sun, 10 Oct 2021 10:57:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C71A83000A9;
-        Sun, 10 Oct 2021 12:57:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id ACD5E2D15F6CA; Sun, 10 Oct 2021 12:57:28 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 12:57:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        arnd@kernel.org
-Subject: Re: [tip:sched/core 13/47] kernel/sched/core.c:10400:42: error:
- variable 'stats' set but not used
-Message-ID: <YWLHGOSkzaCFi3/a@hirez.programming.kicks-ass.net>
-References: <202110100928.bK8nPf4x-lkp@intel.com>
- <CALOAHbAo91dYPtHFH8E9cXPbn-pY960z06908-twAMb1xWUM_A@mail.gmail.com>
+        Sun, 10 Oct 2021 07:04:12 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4316C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 04:02:13 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 133so8046630pgb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 04:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:cc:subject:content-language
+         :to:references:from:in-reply-to:content-transfer-encoding;
+        bh=mGt9AjRyz59TKgLh09y9NCFfjgPuJll6eNqrTFHEAzw=;
+        b=P8XtbNXAFvT1qDgRluJ3jMCie2isFNR6WZD79lKOdqcphRLa2g9ihFMtk1GZ8DcMYI
+         IS4eblrL3XuNwYblQGkjzVdVvB+oRImzEhCydaSXP77oi3U+c5KNvQhU83Paumo2ReOA
+         BxmOexVPl6o/Ot9KoseSDgUHUN6VnbwuFWXJ0jqkoi6j/67kgEklVK/HcHVibnPn4he1
+         +388Q7rBEQdXfY9v1kCbDHmbXWI/sLMwDk4w1HJRqqVWuH678OyBBm0Lz9remLblPDxv
+         0EmMIsZ+M+hBJi/VDDbmLtUCKdkyp3QUpwQyEplFDhxYvwUejc0briWDtP4LdxIH+yc7
+         93HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:cc
+         :subject:content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=mGt9AjRyz59TKgLh09y9NCFfjgPuJll6eNqrTFHEAzw=;
+        b=gEmJMO9/6neOTPVKj4Bg1KwCxT7tMWcY2tagF2nFnyuPSV9fxTNyjUdfx6JXsnH+tm
+         W21Bx/TQzaY/1Mwe84dYSLfWgMXfHDUluN1Dg7+9Baq7kfWX8djJKulPsNBWO31skgpO
+         KeTJQpTKWHpchl8/A3yauE1QQdZytUjpAoqDFKPccRytOS5EoD1RpDICuKkot9diW8ex
+         zspm7/4dcO/ex8/Ps88swtixaloj3htsrqi8/sajrFzbTaMhKirqmj2aSm0OFepNqYYS
+         mnNl11gQFFqNOmV1ZoqsW26ALanL8aTo1i3jmfFxiACVHdx65AALvxRinZdLROWzm9U3
+         qukw==
+X-Gm-Message-State: AOAM532cLd6ggZ2hggoRtQI5FhAdgbD1zj8ldqW/a1fM0i5lZarlQad5
+        sSjaG7lt2vaCdAjUrKjVqpv6g07DKGA=
+X-Google-Smtp-Source: ABdhPJy930qii06q21V5rCtyuW9c0etlhTpXJyVEyPtZM8q5RW0ySqU1O/+IJNKeL7H8+EwB0DJKvA==
+X-Received: by 2002:aa7:9285:0:b0:44c:caf5:341 with SMTP id j5-20020aa79285000000b0044ccaf50341mr17327648pfa.1.1633863733066;
+        Sun, 10 Oct 2021 04:02:13 -0700 (PDT)
+Received: from [192.168.1.6] ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id d22sm5073571pgi.73.2021.10.10.04.02.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 04:02:12 -0700 (PDT)
+Message-ID: <9dca9f7e-f987-5be5-9523-7dd08c2b364e@gmail.com>
+Date:   Sun, 10 Oct 2021 16:32:08 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAo91dYPtHFH8E9cXPbn-pY960z06908-twAMb1xWUM_A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Cc:     saurav.girepunje@hotmail.com, gregkh@linuxfoundation.org,
+        marcocesati@gmail.com, dan.carpenter@oracle.com,
+        lee.jones@linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: hal: remove if condition which is
+ always false
+Content-Language: en-US
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+References: <YWKXKGuA/Io9sEjf@user> <YWLFf1zPvK9gz+7+@agape.jhs>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <YWLFf1zPvK9gz+7+@agape.jhs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 05:59:54PM +0800, Yafang Shao wrote:
-> On Sun, Oct 10, 2021 at 9:38 AM kernel test robot <lkp@intel.com> wrote:
-> >
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-> > head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
-> > commit: ceeadb83aea28372e54857bf88ab7e17af48ab7b [13/47] sched: Make struct sched_statistics independent of fair sched class
-> > config: microblaze-buildonly-randconfig-r002-20211010 (attached as .config)
-> > compiler: microblaze-linux-gcc (GCC) 11.2.0
-> > reproduce (this is a W=1 build):
+
+
+On 10/10/21 4:20 pm, Fabio Aiuto wrote:
+> Hello Surav,
 > 
-> It is a  W=1 warning.
-> It seems that we don't need to fix the warning.
+> thanks for your patch, see a comment below,
+> 
+> On Sun, Oct 10, 2021 at 01:02:56PM +0530, Saurav Girepunje wrote:
+>> Remove the if condition which is always false. The last update on
+>> variable max_rf_path is value 1. It's value is not changing after that.
+>> So if condition check for value 2 will be always false only.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c | 10 ++++------
+>>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c b/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
+>> index 392cc8a398f5..612575ba961a 100644
+>> --- a/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
+>> +++ b/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
+>> @@ -106,12 +106,10 @@ static s16 odm_InbandNoise_Monitor_NSeries(
+>>   	pDM_Odm->noise_level.noise[RF_PATH_A] = -110 + reg_c50 + noise_data.sum[RF_PATH_A];
+>>   	pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_A];
+>>
+>> -	if (max_rf_path == 2) {
+>> -		reg_c58 = (s32)PHY_QueryBBReg(pDM_Odm->Adapter, rOFDM0_XBAGCCore1, bMaskByte0);
+>> -		reg_c58 &= ~BIT7;
+>> -		pDM_Odm->noise_level.noise[RF_PATH_B] = -110 + reg_c58 + noise_data.sum[RF_PATH_B];
+>> -		pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_B];
+>> -	}
+>> +	reg_c58 = (s32)PHY_QueryBBReg(pDM_Odm->Adapter, rOFDM0_XBAGCCore1, bMaskByte0);
+>> +	reg_c58 &= ~BIT7;
+>> +	pDM_Odm->noise_level.noise[RF_PATH_B] = -110 + reg_c58 + noise_data.sum[RF_PATH_B];
+>> +	pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_B];
+>>   	pDM_Odm->noise_level.noise_all /= max_rf_path;
+> 
+> If the condition is always false the whole block can be wiped out,
+> why did you keep it? Did you change the logic here?
+> 
+>>
+>>   	/*  */
+>> --
+>> 2.32.0
+>>
+> 
+> thank you,
+> 
+> fabio
+> 
 
-Right, and I asked 0day people to stop sending W=1 warnings, but they
-just keep going on and on.
+Thanks for review Fabio.
+It is changing the logic . I should be careful for this. whole block of 
+if statement should also be removed.
 
-Arnd, any way we can 'promote' that warning to W=2?
+
+Please ignore this patch.
+
+Regards,
+Saurav
