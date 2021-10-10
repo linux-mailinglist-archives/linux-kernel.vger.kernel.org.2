@@ -2,124 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030724283C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 23:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079D54283C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 23:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhJJV3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 17:29:08 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:51383 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbhJJV3H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 17:29:07 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSFPQ0CpGz4xb9;
-        Mon, 11 Oct 2021 08:27:06 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633901226;
-        bh=Tdpa6xnFc3ophnWEiOl1ld3ry0k/KgAZC1Myk8IqKNE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mcgfXPRRZC7Eo3EhA1j7l7YmgqLE0qefC1LBZanrPS/alYfJN861aigEFznukuT/R
-         BSpO420gbDzloZGrULJ81Wqcf4m8zgWHFBfTeh7VHlEHo+Zg/AeuRFKF122XzhHILZ
-         kfmSlcvhoEzxk2+kGYAzdksFUk0ZhTLqvDGmHfulpWl9OqU8tLzFcttjXL+KPuZq/T
-         npDi8IuqVpLVlS+szraSwypKUFpu3exd/JjPq3Nsvbmcecx+FjyD2d9ox5isCGmyik
-         RNnpb2KlGPh9+xNkSLwkFovpNk12BDMJ0ugHUjr6Dg18Em22YiqKad4XJU1/ctksUu
-         mcTZHDJMk3BFw==
-Date:   Mon, 11 Oct 2021 08:27:04 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: linux-next: build warnings in Linus' tree
-Message-ID: <20211011082704.3cff4568@canb.auug.org.au>
-In-Reply-To: <20211008164728.30e3d3a3@canb.auug.org.au>
-References: <20211008164728.30e3d3a3@canb.auug.org.au>
+        id S233062AbhJJVd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 17:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230364AbhJJVd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 17:33:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02C2360F22;
+        Sun, 10 Oct 2021 21:31:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633901519;
+        bh=KtET40tdS/7iKcoQytl+RxYKLfngJFpO1eVfPnmXYe0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=HXfO/2qa9j5yYBgMWS0jtVaonMKRBaVTN8EkNMHQtKkMSwLNB7A0Xl8YeniMIpLbV
+         bxGzGSAF6F2BTjswraFY/uvSydX9qCx1LwAjBJcgvpCEk1ne1NVUht4YZJr+kwY9E6
+         S2AP1iZVI0jd/+FCJ1mlGLt8lsOt1NcpIY4Y+4zN52JU3Wnr94quO4sjN8Rnrg66XB
+         Rzil3YWIbr9gblk5Cp3A/GJ2xTIU0Lmrc9xHsjx0Pcq1OrRd0BJyOBgm1QSJkaBNID
+         St11QbIT787sZ3anZQUaorFMw3+kBeTdiUgW5GH2KQAAk7iQpyHQKU+YUVH6DIeM+I
+         BboF+PJ+BI4cQ==
+From:   Gao Xiang <xiang@kernel.org>
+To:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>
+Cc:     Lasse Collin <lasse.collin@tukaani.org>, Chao Yu <chao@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Gao Xiang <xiang@kernel.org>
+Subject: [PATCH 0/7] erofs: add LZMA compression support
+Date:   Mon, 11 Oct 2021 05:31:38 +0800
+Message-Id: <20211010213145.17462-1-xiang@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/xIyb51QYuHZd2a6dL62QVXX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/xIyb51QYuHZd2a6dL62QVXX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi folks,
 
-Hi all,
+Here is the EROFS LZMA support which I've been working on and off for
+more than half a year together with the XZ author Lasse Collin (many
+thanks again!).
 
-[Cc'ing Rob]
+In order to better support the LZMA fixed-sized output compression,
+especially for 4KiB pcluster size (which has lowest memory pressure
+thus useful for memory-sensitive scenarios). Lasse introduced a new
+LZMA header/container format called MicroLZMA [1] to minimize the
+original LZMA1 header (for example, we don't need to waste 4-byte
+dictionary size and another 8-byte uncompressed size, which can be
+calculated by fs directly, for each pcluster.) and enable EROFS
+fixed-sized output compression. Also note that MicroLZMA can be used
+by other things in addition to EROFS too where wasting minimal amount
+of space for headers is important, which can be compiled by enabling
+XZ_DEC_MICROLZMA.
 
-Rob: these warnings have been there for a long time ...
+Similar to LZ4, EROFS LZMA decompression runtime also utilizes inplace
+I/O and overlapped decompression to reuse the file page for compressed
+data temporarily with proper strategies, which is useful to ensure
+guaranteed performance under extremely memory pressure without extra
+cost.
 
-On Fri, 8 Oct 2021 16:47:28 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Hi all,
->=20
-> After merging the origin tree, today's linux-next build (powerpc
-> allyesconfig) produced these warnings (along with many others):
->=20
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
-> arch/powerpc/boot/dts/mpc5200b.dtsi:182.18-186.5: Warning (spi_bus_bridge=
-): /soc5200@f0000000/psc@2000: node name for SPI buses should be 'spi'
-> arch/powerpc/boot/dts/mpc5200b.dtsi:267.20-280.4: Warning (pci_bridge): /=
-pci@f0000d00: missing ranges for PCI bridge (or not a bridge)
->=20
-> Given that arch/powerpc/boot/dts/mpc5200b.dtsi is oncluded by several
-> other dts files, fixing this one file would go quite a long way to
-> silencing our allyesoncig build.  Unfotunatley, I have no idea how to
-> fix this file (ad maybe some fo the interactions it has with other files).
+Due to the EROFS on-disk design, LZMA algorithm can be used in the
+per-file basis independently and as a secondary compression algorithm
+besides the primary algorithm given in one file as a complement for
+specific access/data patterns.
 
---=20
-Cheers,
-Stephen Rothwell
+The latest version can also be fetched from:
+git://git.kernel.org/pub/scm/linux/kernel/git/xiang/linux.git -b erofs/lzma
 
---Sig_/xIyb51QYuHZd2a6dL62QVXX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+The latest mkfs can be fetched from:
+git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs-utils.git -b experimental-lzma
 
------BEGIN PGP SIGNATURE-----
+[ The latest liblzma should be used in order to support MicroLZMA:
+  https://git.tukaani.org/?p=xz.git ]
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFjWqgACgkQAVBC80lX
-0GxbWQf+NO+y1FHCcKtadFk+9aCdVAiB5cYV5hPoHV65SuG78Ye4TEu8yhF3pO46
-EMJ0h9CsatqseqR5dnTqS58wXWqhdGXy4IW0C8zvygeDUFLTSSEVCNp4WmrAKeya
-YD0iEzIAbmNjEwoV9eLh2uJGMaKHf0DvKaBHSjavhVpZf2wAT3nsYF3B+0nT/U61
-px5hq0/aAYkrl3gLySfNeAxwzZQ02evyMqPKhuuA+DF6knKX21mIRFRNCvfSnN8n
-E1AY72UmJeuFXce5XEiwquZ2ULAJCVwPEFyhApX0d27zi65MbcREMlogzWkoMcZQ
-Hej0NkhOhbDH8JpPGM3JVn8DIkWEyA==
-=8c1M
------END PGP SIGNATURE-----
+Finally, there are few in-kernel fses with LZMA support but as always
+I might need to show some real numbers here anyway.. There are still
+some ongoing EROFS runtime strategies to optimize such CPU bound
+decompression algorithms even further. But let's do step by step:
 
---Sig_/xIyb51QYuHZd2a6dL62QVXX--
+Kernel: Linux 5.15.0-rc2
+Testdata: enwik8 (100000000 bytes)
+Compression level: LZMA_PRESET_DEFAULT (6)
+
+Processor: Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz
+SSD: INTEL SSDPEKKF360G7H (360 GB)
+DDR: Samsung M471A1K43CB1-CRC (8 GB)
+OS Distribution: Debian 10
+Test environment:
+Turbo Boost disabled
+scaling_governor = userspace, scaling_{min,max}_freq = 1801000
+ __________________________________________________
+|  file system  |   size    | seq read | rand read |
+|_______________|___________|_ MiB/s __|__ MiB/s __|
+|___erofs_4k____|__41664512_|_ 59.92 __|__ 16.88 __|
+|___erofs_8k____|__38555648_|_ 63.86 __|__ 22.18 __|
+|___erofs_16k___|__36179968_|_ 63.14 __|__ 28.98 __|
+|___erofs_32k___|__34299904_|_ 59.14 __|__ 35.38 __|
+|___erofs_64k___|__32792576_|_ 57.56 __|__ 41.24 __|
+|__squashfs_8k__|__43274240_|_ 21.48 __|__ 15.42 __|
+|__squashfs_16k_|__39866368_|_ 25.10 __|__ 20.80 __|
+|__squashfs_64k_|__35241984_|_ 31.02 __|__ 31.36 __|
+|_squashfs_128k_|__33632256_|_ 36.62 __|__ 36.92 __|
+
+Some numbers of silesia.tar:
+ ___________________________
+|  file system  |   size    |
+|_______________|___________|
+|__silesia.tar__|_211957760_|
+|__squashfs_8k__|__75964416_|
+|___erofs_4k____|__70987776_|
+|__squashfs_16k_|__69337088_|
+|___erofs_8k____|__65617920_|
+|___erofs_16k___|__61333504_|
+|__squashfs_64k_|__60669952_|
+|___erofs_32k___|__58331136_|
+|_squashfs_128k_|__58036224_|
+|___erofs_64k___|__56123392_|
+
+Revised EROFS roadmap:
+https://lore.kernel.org/r/20211009061150.GA7479@hsiangkao-HP-ZHAN-66-Pro-G1
+
+
+[1] where the first byte of a raw LZMA stream has been replaced with a
+    bitwise-negation of the lc/lp/pb properties byte and it has no EOPM marker
+    since the exact compressed size is known and provided explicitly.
+
+
+Hi Andrew,
+
+Some XZ embedded (lib/xz) patches by Lasse are sent out together in this series
+although they're irrelevant to MicroLZMA but quite coupled. Can I send a pull
+request together with EROFS LZMA support for 5.16 then? Many thanks in advance!
+
+Thanks,
+Gao Xiang
+
+
+Gao Xiang (2):
+  erofs: rename some generic methods in decompressor
+  erofs: lzma compression support
+
+Lasse Collin (5):
+  lib/xz: Avoid overlapping memcpy() with invalid input with in-place
+    decompression
+  lib/xz: Validate the value before assigning it to an enum variable
+  lib/xz: Move s->lzma.len = 0 initialization to lzma_reset()
+  lib/xz: Add MicroLZMA decoder
+  lib/xz, lib/decompress_unxz.c: Fix spelling in comments
+
+ fs/erofs/Kconfig             |  16 ++
+ fs/erofs/Makefile            |   1 +
+ fs/erofs/compress.h          |  16 ++
+ fs/erofs/decompressor.c      |  73 +++++----
+ fs/erofs/decompressor_lzma.c | 290 +++++++++++++++++++++++++++++++++++
+ fs/erofs/erofs_fs.h          |  14 +-
+ fs/erofs/internal.h          |  22 +++
+ fs/erofs/super.c             |  17 +-
+ fs/erofs/zdata.c             |   4 +-
+ fs/erofs/zdata.h             |   7 -
+ fs/erofs/zmap.c              |   5 +-
+ include/linux/xz.h           | 106 +++++++++++++
+ lib/decompress_unxz.c        |  10 +-
+ lib/xz/Kconfig               |  13 ++
+ lib/xz/xz_dec_lzma2.c        | 182 +++++++++++++++++++++-
+ lib/xz/xz_dec_stream.c       |   6 +-
+ lib/xz/xz_dec_syms.c         |   9 +-
+ lib/xz/xz_private.h          |   3 +
+ 18 files changed, 725 insertions(+), 69 deletions(-)
+ create mode 100644 fs/erofs/decompressor_lzma.c
+
+-- 
+2.20.1
+
