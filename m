@@ -2,58 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C3F42819D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 15:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4768C4281A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbhJJN4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 09:56:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232814AbhJJN4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 09:56:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AC8F60EE7;
-        Sun, 10 Oct 2021 13:54:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633874094;
-        bh=/lt7hCTo+SQbmtc0aeh/KIz1iT8tkUMtuxhR6dilzjw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=boKKg0VFNS71gjIsSnCTGf/z8fEzxUfl83KFLsyx22jtHm7wwCJ3fYj28+e3b4Su/
-         41y/svGC/6aBLW2fTZswZwgXKValxfWXRHLTCvugqzyaAoKghdzuXSHaNM84QMF/Ng
-         PYbdaPS79mwogMAnnpvRzV5Ql4zYqD1zNQ0IAva5XKWYDC9HugeUxaIrtZ1WdkXjMx
-         pTjuynBAzY6QGj+4PnmMMMAvd4IWhCuS6GX3cc16sXh+mzEUolUo1Br/XgsOmx0/i8
-         +xRJJJ5dDcfCpi8PgqZ6ALdNRtNRNbXANgnFYsZTTev6UQbGFzi4FoxUHZA4se/pMu
-         4T/RJKWqCJnPw==
-Received: by pali.im (Postfix)
-        id 9E6D1795; Sun, 10 Oct 2021 15:54:51 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 15:54:51 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Denis Pauk <pauk.denis@gmail.com>
-Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
-        Ed Brindley <kernel@maidavale.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] Update ASUS WMI supported boards
-Message-ID: <20211010135451.aadvcebestbnzhru@pali>
-References: <20211010095216.25115-1-pauk.denis@gmail.com>
+        id S232864AbhJJOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:02:19 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:41825 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232494AbhJJOCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:02:18 -0400
+Received: from pop-os.home ([90.126.248.220])
+        by mwinf5d78 with ME
+        id 4E0F260064m3Hzu03E0Fup; Sun, 10 Oct 2021 16:00:18 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 10 Oct 2021 16:00:18 +0200
+X-ME-IP: 90.126.248.220
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     l.stach@pengutronix.de, linux+etnaviv@armlinux.org.uk,
+        christian.gmeiner@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
+        robdclark@gmail.com, sean@poorly.run, jyri.sarha@iki.fi,
+        tomba@kernel.org, linux-graphics-maintainer@vmware.com,
+        zackr@vmware.com, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] drm: Remove redundant 'flush_workqueue()' calls
+Date:   Sun, 10 Oct 2021 15:59:40 +0200
+Message-Id: <75e8ba40076ad707d47e3a3670e6b23c1b8b11bc.1633874223.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211010095216.25115-1-pauk.denis@gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 10 October 2021 12:52:13 Denis Pauk wrote:
-> Add support by WMI interface privided by Asus for B550/X570 boards: 
-...
-> Add support by WMI interface privided by Asus for X370/X470/
-> B450/X399 boards:
-...
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=204807
+'destroy_workqueue()' already drains the queue before destroying it, so
+there is no need to flush it explicitly.
 
-Hello! Could you provide (at least into bug tracker) MOF definitions of
-WMI functions? If there are are any issues with driver, definitions of
-API, functions and buffers could help.
+Remove the redundant 'flush_workqueue()' calls.
+
+This was generated with coccinelle:
+
+@@
+expression E;
+@@
+- 	flush_workqueue(E);
+	destroy_workqueue(E);
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 1 -
+ drivers/gpu/drm/msm/dsi/dsi_host.c    | 1 -
+ drivers/gpu/drm/msm/edp/edp_ctrl.c    | 1 -
+ drivers/gpu/drm/msm/hdmi/hdmi.c       | 4 +---
+ drivers/gpu/drm/tilcdc/tilcdc_drv.c   | 4 +---
+ drivers/gpu/drm/vmwgfx/ttm_memory.c   | 1 -
+ 6 files changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index 789acae37f55..06bde46df451 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -1733,7 +1733,6 @@ static void etnaviv_gpu_unbind(struct device *dev, struct device *master,
+ 
+ 	DBG("%s", dev_name(gpu->dev));
+ 
+-	flush_workqueue(gpu->wq);
+ 	destroy_workqueue(gpu->wq);
+ 
+ 	etnaviv_sched_fini(gpu);
+diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+index c86b5090fae6..462ea65ebf89 100644
+--- a/drivers/gpu/drm/msm/dsi/dsi_host.c
++++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+@@ -1925,7 +1925,6 @@ void msm_dsi_host_destroy(struct mipi_dsi_host *host)
+ 	DBG("");
+ 	dsi_tx_buf_free(msm_host);
+ 	if (msm_host->workqueue) {
+-		flush_workqueue(msm_host->workqueue);
+ 		destroy_workqueue(msm_host->workqueue);
+ 		msm_host->workqueue = NULL;
+ 	}
+diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+index fe1366b4c49f..07129a6e5dbb 100644
+--- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
++++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+@@ -1190,7 +1190,6 @@ void msm_edp_ctrl_destroy(struct edp_ctrl *ctrl)
+ 		return;
+ 
+ 	if (ctrl->workqueue) {
+-		flush_workqueue(ctrl->workqueue);
+ 		destroy_workqueue(ctrl->workqueue);
+ 		ctrl->workqueue = NULL;
+ 	}
+diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
+index 737453b6e596..5ba7c8f28419 100644
+--- a/drivers/gpu/drm/msm/hdmi/hdmi.c
++++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
+@@ -61,10 +61,8 @@ static void msm_hdmi_destroy(struct hdmi *hdmi)
+ 	 * at this point, hpd has been disabled,
+ 	 * after flush workq, it's safe to deinit hdcp
+ 	 */
+-	if (hdmi->workq) {
+-		flush_workqueue(hdmi->workq);
++	if (hdmi->workq)
+ 		destroy_workqueue(hdmi->workq);
+-	}
+ 	msm_hdmi_hdcp_destroy(hdmi);
+ 
+ 	if (hdmi->phy_dev) {
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+index 6b03f89a98d4..3ddb7c710a3d 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
+@@ -186,10 +186,8 @@ static void tilcdc_fini(struct drm_device *dev)
+ 	if (priv->mmio)
+ 		iounmap(priv->mmio);
+ 
+-	if (priv->wq) {
+-		flush_workqueue(priv->wq);
++	if (priv->wq)
+ 		destroy_workqueue(priv->wq);
+-	}
+ 
+ 	dev->dev_private = NULL;
+ 
+diff --git a/drivers/gpu/drm/vmwgfx/ttm_memory.c b/drivers/gpu/drm/vmwgfx/ttm_memory.c
+index edd17c30d5a5..7f7fe35fc21d 100644
+--- a/drivers/gpu/drm/vmwgfx/ttm_memory.c
++++ b/drivers/gpu/drm/vmwgfx/ttm_memory.c
+@@ -468,7 +468,6 @@ void ttm_mem_global_release(struct ttm_mem_global *glob)
+ 	struct ttm_mem_zone *zone;
+ 	unsigned int i;
+ 
+-	flush_workqueue(glob->swap_queue);
+ 	destroy_workqueue(glob->swap_queue);
+ 	glob->swap_queue = NULL;
+ 	for (i = 0; i < glob->num_zones; ++i) {
+-- 
+2.30.2
+
