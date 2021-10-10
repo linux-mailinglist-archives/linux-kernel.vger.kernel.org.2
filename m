@@ -2,94 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C352E42842E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 01:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE07F428431
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 01:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhJJXxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 19:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232812AbhJJXxk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 19:53:40 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1CCC061570;
-        Sun, 10 Oct 2021 16:51:41 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so2127483otq.12;
-        Sun, 10 Oct 2021 16:51:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KnJGehr72FMcQg0eBMDYAYtXZrsYa5O5D2gXyYx+3Zw=;
-        b=hfGWRH1OteNaFHbatjy8/7IP9WJirHj+1ahq8MTxFis7a9G4CWhk0pC0nA5mfz1rGP
-         c6f26QE6noKckihQUHfcbXLQfwSzDAFZPt+Y891kI1Y0XisAtAqFy0NxJ7VbfmhWtgKh
-         HO6fsdsVko/DG7NlEHjol1pFEb2yU7sXU59b8H9b9SkovbNa/gW/0o1XyGRyxN8R4QJR
-         H3mtChrCJbggwNCrJaaVKTH7H9R7kMqHPljqDRT6A7CD4bmIJ/WGqTp4kn9VS/tGaouT
-         UHe+okrK+yzdePhKBwr8z4znrWxa+S2hftFDSwZJYn/jA8BqLoWboop7vgpolO6gaDo4
-         iXQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KnJGehr72FMcQg0eBMDYAYtXZrsYa5O5D2gXyYx+3Zw=;
-        b=t8krrLWWOVlg5Hy1yzTGfz25c07juWbwRiqhz2J3aDAggfdk7OkQfRysO10kOHNrTt
-         ZUErRp3TOkITPcyjK8Ef0rX8I0RJXmzqhhJV0W9anU8UPerr/8ElbLj5f5ap/0FPP2rV
-         MjdLQ6C9eX/E2AcRnZs60BlWorwmeQeKget3PZtvemvG8nF61Spy/PClv860Mv6TPuUZ
-         22B4F4KUUEqfxrLTqpwQ/zZdJyZz0DMw0mTknwGC4pEW3f3LVTd86843CRDcEQo/t5mk
-         zbiKtaRrPSDX8Dq5dZIwj0Iqo/nqgx0TviPOhKipjzidcibOvFvvYt7mIVcVPAYjzeBX
-         pFVg==
-X-Gm-Message-State: AOAM533L0cqx49M9p4M69PEHg/1AeK0+hLBDT0ByQKaggTQ4cAMf9QLg
-        78d7IMXIIkpWEk/NgYCOF3CK3Ky4JEg=
-X-Google-Smtp-Source: ABdhPJzFFRwMlHH2RcBLPYb4meszj7yQy8whnHqnVmFgnBh1m+O+aNOhMdNuXQpHY9PpK0cuAQ1RZg==
-X-Received: by 2002:a9d:458a:: with SMTP id x10mr18588001ote.267.1633909900137;
-        Sun, 10 Oct 2021 16:51:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s7sm1362335oiw.27.2021.10.10.16.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 16:51:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Eugene Shalygin <eugene.shalygin@gmail.com>,
-        Denis Pauk <pauk.denis@gmail.com>
-Cc:     andy.shevchenko@gmail.com, platform-driver-x86@vger.kernel.org,
-        Tor Vic <torvic9@mailbox.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211010210513.343925-1-pauk.denis@gmail.com>
- <20211010210513.343925-2-pauk.denis@gmail.com>
- <CAB95QAS863M9Lu3e0Um25PQi_7gxWp4=EyN8j7ioB7eN-G7--g@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v4 1/2] hwmon: (asus_wmi_ec_sensors) Support B550 Asus
- WMI.
-Message-ID: <09a81782-1ab6-662a-01c4-0f6dda1d26fb@roeck-us.net>
-Date:   Sun, 10 Oct 2021 16:51:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233282AbhJJX5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 19:57:35 -0400
+Received: from mx.socionext.com ([202.248.49.38]:24769 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231481AbhJJX5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 19:57:34 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 11 Oct 2021 08:55:34 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 331EB2058B40;
+        Mon, 11 Oct 2021 08:55:34 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Mon, 11 Oct 2021 08:55:34 +0900
+Received: from yuzu2.css.socionext.com (yuzu2 [172.31.9.57])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id BDCB8C1E11;
+        Mon, 11 Oct 2021 08:55:33 +0900 (JST)
+Received: from [10.212.182.24] (unknown [10.212.182.24])
+        by yuzu2.css.socionext.com (Postfix) with ESMTP id 466E1B62B3;
+        Mon, 11 Oct 2021 08:55:33 +0900 (JST)
+Subject: Re: [PATCH v2 4/5] dt-bindings: clock: uniphier: Add clock binding
+ for SoC-glue
+To:     Rob Herring <robh@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+References: <1633518555-8195-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1633518555-8195-5-git-send-email-hayashi.kunihiko@socionext.com>
+ <YV395BTH/gqcuDJH@robh.at.kernel.org>
+ <f2138a98-9740-d1de-5dc9-e14a68fa509b@socionext.com>
+ <CAL_JsqL8N+h7bciDt=4fMHyAP=DL=YikpaTh2v4q383XVXH2AA@mail.gmail.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <1fe99277-10e0-0149-cef5-e839bd2515bb@socionext.com>
+Date:   Mon, 11 Oct 2021 08:55:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAB95QAS863M9Lu3e0Um25PQi_7gxWp4=EyN8j7ioB7eN-G7--g@mail.gmail.com>
+In-Reply-To: <CAL_JsqL8N+h7bciDt=4fMHyAP=DL=YikpaTh2v4q383XVXH2AA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 3:09 PM, Eugene Shalygin wrote:
->> Changes in v4:
->>   - implement wmi driver instead platform driver.
+On 2021/10/09 4:20, Rob Herring wrote:
+> On Thu, Oct 7, 2021 at 3:50 AM Kunihiko Hayashi
+> <hayashi.kunihiko@socionext.com> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 2021/10/07 4:49, Rob Herring wrote:
+>>> On Wed, Oct 06, 2021 at 08:09:14PM +0900, Kunihiko Hayashi wrote:
+>>>> Update binding document for clocks implemented in SoC-glue.
+>>>>
+>>>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>>>> ---
+>>>>    .../bindings/clock/socionext,uniphier-clock.yaml         | 16
+>>> ++++++++++++++++
+>>>>    1 file changed, 16 insertions(+)
+>>>>
+>>>> diff --git
+>>> a/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+>>> b/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+>>>> index ee8d16a8019e..05a9d1f89756 100644
+>>>> ---
+>>> a/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+>>>> +++
+>>> b/Documentation/devicetree/bindings/clock/socionext,uniphier-clock.yaml
+>>>> @@ -46,6 +46,9 @@ properties:
+>>>>              - socionext,uniphier-ld20-peri-clock
+>>>>              - socionext,uniphier-pxs3-peri-clock
+>>>>              - socionext,uniphier-nx1-peri-clock
+>>>> +      - description: SoC-glue clock
+>>>> +        enum:
+>>>> +          - socionext,uniphier-pro4-sg-clock
+>>>>
+>>>>      "#clock-cells":
+>>>>        const: 1
+>>>> @@ -95,3 +98,16 @@ examples:
+>>>>
+>>>>            // other nodes ...
+>>>>        };
+>>>> +
+>>>> +  - |
+>>>> +    soc-glue@5f800000 {
+>>>> +        compatible = "socionext,uniphier-sysctrl", "simple-mfd",
+>>> "syscon";
+>>>> +        reg = <0x5f800000 0x2000>;
+>>>> +
+>>>> +        clock {
+>>>> +            compatible = "socionext,uniphier-pro4-sg-clock";
+>>>> +            #clock-cells = <1>;
+>>>> +        };
+>>>> +
+>>>> +        // other nodes ...
+>>>> +    };
+>>>
+>>> What's the value of this 2nd example? It's just a different compatible
+>>> string.
+>> Following the previous three examples in the document, it describes the
+>> difference between the parent nodes that place the clock.
+>>
+>> They are common to be child nodes of "syscon", and the definition of the
+>> parent node is not in this document.
+>> Should I put them together in a common example?
 > 
-> There are many ASUS boards where the required function is present but
-> does nothing. With the WMI module alias the driver will be attempted
-> to load for those boards (and rejected by the _probe() function). Is
-> it a good thing?
-> 
+> I'd just drop the example.
+I see. I'd drop the example in next.
 
-Drivers failing probe with -ENODEV (presumably here because dmi_check_system()
-does not find a match) is pretty normal. Board detection with the WMI driver
-seems much more straightforward/simple compared the previous version with
-the platform driver. Maybe I am missing something, but I don't see a
-problem with the WMI approach.
+Thank you,
 
-Guenter
+---
+Best Regards
+Kunihiko Hayashi
