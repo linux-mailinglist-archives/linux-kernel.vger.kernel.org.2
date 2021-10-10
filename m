@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D890E428358
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637D8428368
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhJJTeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 15:34:00 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:34476 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbhJJTd7 (ORCPT
+        id S232964AbhJJTeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 15:34:17 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:42530 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232701AbhJJTeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 15:33:59 -0400
-Received: by mail-ot1-f48.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so18984721otb.1;
-        Sun, 10 Oct 2021 12:32:00 -0700 (PDT)
+        Sun, 10 Oct 2021 15:34:06 -0400
+Received: by mail-oo1-f48.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so4667171oof.9;
+        Sun, 10 Oct 2021 12:32:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=lK14d/ZxCOum239lAr4qItrjtoQ0V6X7RBleh7jh8eg=;
-        b=c/SyI0cvVtHnlgovkJ0+IzoaXyj/Btb/mL4BP8bXMB7sqDpf2flhGpPkc7AVd+Sb/L
-         ssRJ9JcULv06RiwHYlnk8yrZvpFmwfA0Puaw4Yw9TcUGpMfn8LBKSCZdHqDkMB6OL4mz
-         p+u3kuR1m7sDn1igBjNj1p9f3N6z6pRdvDr2YBN+d73NHuKGAZzRRpT97iLnoKf5Vqik
-         4K0S778KBWnBcb1KPjumbSsiRSztbZt/TCT7YRAd+PHLTTMPuuaTUPIcn8YuxH60/l8R
-         Y85RfvLDvLlDirX4WDL+YcIrcikEjalrjn3FiAnNxQ6g+j/0YD4bIZ+adL9vvmnhCMDN
-         xukQ==
-X-Gm-Message-State: AOAM532MAT9vLCVf/oP7Ik1GQve/6X3gqvNoEz/bsRQaum9h84YW9ziW
-        MYyGpnfVO8CS0e7z0WVjaQ==
-X-Google-Smtp-Source: ABdhPJwW0aMgzz/GfwMzq1eXoLxvdrpZHi4/EMkkLGnSQF7tl1UJgkErU+9e54CkMBCTA71Arq0DQQ==
-X-Received: by 2002:a05:6830:1df4:: with SMTP id b20mr6429134otj.19.1633894319844;
-        Sun, 10 Oct 2021 12:31:59 -0700 (PDT)
+        bh=oK4cASLRG9KDw6Buwhljv1jwTC0VF/5L0ZVtZoaadh4=;
+        b=I2A0ETz2IjrEpmlITvUS5so/Ltb3Iq3HbWpeWDCvjj9ibapPJZLVZkhVghuDDnlEXw
+         s+xRKd0h9n270PznxiZtvMU9x9LBWfUX0VPbeENWKPkbTQv1piRCK/l5ORLU1W90+qE4
+         mWYj/mp3qXhhd7uzGOUPmsV0S07rx7bbR388h63eqShBkdAoiwzulfTZHdkTaI2od0T1
+         RyxudA3IP1rET72uGSIP14RSTiBSlK6EVkaknvZIFnO4HCeRO+kuUFnIcW2pHUv1LZ42
+         n9fGh0gKcA0OGjAs1uBBKdefzVbbwBoOM0802/DRcOM4T3k6n5jujIqbdaUdO8pTxGmV
+         ulCw==
+X-Gm-Message-State: AOAM531TUya+pEdxKGVymYFZNoCSjVEm87xMLvRxvp4tl9Tm6yo+Yfpt
+        h7ug2E7uDqcM/sfUCycIRg==
+X-Google-Smtp-Source: ABdhPJw/3P18DACANSvasaUJGLn0BgTelQ5sB9S5VvdRh2KhSyIwW4IzTCeFWzSXcM8rcl8Z5Nwj/Q==
+X-Received: by 2002:a4a:e499:: with SMTP id s25mr16419515oov.46.1633894326677;
+        Sun, 10 Oct 2021 12:32:06 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id 15sm1297318otf.14.2021.10.10.12.31.58
+        by smtp.gmail.com with ESMTPSA id b19sm1298316otk.75.2021.10.10.12.32.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 12:31:59 -0700 (PDT)
-Received: (nullmailer pid 3158666 invoked by uid 1000);
+        Sun, 10 Oct 2021 12:32:06 -0700 (PDT)
+Received: (nullmailer pid 3158664 invoked by uid 1000);
         Sun, 10 Oct 2021 19:31:56 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     David Heidelberg <david@ixit.cz>
-Cc:     Anton Vorontsov <anton@enomsg.org>, linux-kernel@vger.kernel.org,
-        Colin Cross <ccross@android.com>, devicetree@vger.kernel.org,
-        ~okias/devicetree@lists.sr.ht, Rob Herring <robh+dt@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Kees Cook <keescook@chromium.org>
-In-Reply-To: <20211009111927.53280-1-david@ixit.cz>
-References: <20211009111927.53280-1-david@ixit.cz>
-Subject: Re: [PATCH] dt-bindings: reserved-memory: ramoops: Convert txt bindings to yaml
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+In-Reply-To: <20211009104309.45117-1-david@ixit.cz>
+References: <20211009104309.45117-1-david@ixit.cz>
+Subject: Re: [PATCH] WIP: dt-bindings: arm: hwmon: gpio-fan: Convert txt bindings to yaml
 Date:   Sun, 10 Oct 2021 14:31:56 -0500
-Message-Id: <1633894316.420061.3158665.nullmailer@robh.at.kernel.org>
+Message-Id: <1633894316.403809.3158663.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Oct 2021 13:19:27 +0200, David Heidelberg wrote:
-> Convert ramoops driver to the YAML syntax.
+On Sat, 09 Oct 2021 12:43:09 +0200, David Heidelberg wrote:
+> Convert fan devices connected to GPIOs to the YAML syntax.
 > 
 > Signed-off-by: David Heidelberg <david@ixit.cz>
 > ---
->  .../bindings/reserved-memory/ramoops.txt      |  66 ---------
->  .../bindings/reserved-memory/ramoops.yaml     | 126 ++++++++++++++++++
->  2 files changed, 126 insertions(+), 66 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.txt
->  create mode 100644 Documentation/devicetree/bindings/reserved-memory/ramoops.yaml
+>  .../devicetree/bindings/hwmon/gpio-fan.txt    | 41 -----------
+>  .../devicetree/bindings/hwmon/gpio-fan.yaml   | 69 +++++++++++++++++++
+>  2 files changed, 69 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.txt
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
 > 
 
 Running 'make dtbs_check' with the schema in this patch gives the
@@ -71,19 +71,28 @@ incorrect. These may not be new warnings.
 Note that it is not yet a requirement to have 0 warnings for dtbs_check.
 This will change in the future.
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1538758
+Full log is available here: https://patchwork.ozlabs.org/patch/1538743
 
 
-ramoops@ac300000: 'devinfo-size' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/sdm845-oneplus-enchilada.dt.yaml
-	arch/arm64/boot/dts/qcom/sdm845-oneplus-fajita.dt.yaml
+fan: 'gpio-fan,speed-map' is a required property
+	arch/arm/boot/dts/kirkwood-nas2big.dt.yaml
+	arch/arm/boot/dts/kirkwood-net2big.dt.yaml
 
-ramoops@ffc00000: 'msg-size' does not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/sm6125-sony-xperia-seine-pdx201.dt.yaml
+gpio-fan: gpio-fan,speed-map: 'anyOf' conditional failed, one must be fixed:
+	arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml
+	arch/arm/boot/dts/gemini-dlink-dns-313.dt.yaml
 
-ramoops@ffc00000: 'msg-size', 'no-map' do not match any of the regexes: 'pinctrl-[0-9]+'
-	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-bahamut.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8150-sony-xperia-kumano-griffin.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx203.dt.yaml
-	arch/arm64/boot/dts/qcom/sm8250-sony-xperia-edo-pdx206.dt.yaml
+gpio_fan: gpio-fan,speed-map: 'anyOf' conditional failed, one must be fixed:
+	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
+
+gpio-fan: gpio-fan,speed-map: 'oneOf' conditional failed, one must be fixed:
+	arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml
+	arch/arm/boot/dts/gemini-dlink-dns-313.dt.yaml
+
+gpio_fan: gpio-fan,speed-map: 'oneOf' conditional failed, one must be fixed:
+	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
+	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
+	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
 
