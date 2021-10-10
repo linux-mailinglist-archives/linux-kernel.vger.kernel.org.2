@@ -2,258 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA4E4282E5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 20:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA86C4282E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 20:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhJJSPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 14:15:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
+        id S232548AbhJJSVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 14:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhJJSPq (ORCPT
+        with ESMTP id S229936AbhJJSU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 14:15:46 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DD7C061570;
-        Sun, 10 Oct 2021 11:13:47 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id n64so21528563oih.2;
-        Sun, 10 Oct 2021 11:13:47 -0700 (PDT)
+        Sun, 10 Oct 2021 14:20:56 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CCAC061570;
+        Sun, 10 Oct 2021 11:18:57 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g8so58364253edt.7;
+        Sun, 10 Oct 2021 11:18:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:to:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o+3Mv1qDXu2U/dFNa/+jh5WfgDQiPOTHDMUH8W5iEIA=;
-        b=LtEwZzR0qscPnx7tmbfCtDiCEzJpNBNzDzLgF2rc/HqvekPrOnYhEbNleqqoWtVxrr
-         NpFLVKkbYrS5iUjl0dBjBjfpdiirf+0ChXYvl/sFZpWK7dIStTZPU1dhWBGLvlvo7se1
-         QdOYLy9C47x9jiXvwkUk8yKlFyXSwYs5Hef8gdiokMG4C2naqRnnDa1Zji+FJJKai+Zq
-         wFx+5IY4E8mNn4erd/SX+d0eTuBmBgJc1WLHlZK0a5d2RngJgFRexl4Qim7XlASvWHIe
-         ydRSNblNikVDfI6HLBonq7ePwhv3t5adwnBSXhcHJT/ONkPGU6+T2GiBQOAbQUvTumrR
-         MnNg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0FJDdY87/7GIuzxKKNba+7Pm5+giJl9a7wRHbISFE+M=;
+        b=b1Gpd3V9pua5ojd68OdZqSk6RnG8hPUFbrs/khGy++qbqwyRYjmKf3y7OVsMo4fouB
+         Cqny1UhHOABf0DHCNCJW6JIDNQJT+lVXZZypTbkR4+kppqX+kTENAnnOAZ/ZCoyomuFa
+         lTSzHgnoHu4I08WzmYpIhUFumNnhlG52TMyloBxsOWS7qxh18pGfn4sr69VUPOIz0zvj
+         W2tNdj0QVnSM+43E6L+dz1084+V8Ee6lI1s6hDomlgQ8sELcX74JQ+FWKj9DEz1v/xmu
+         6dCojW4zPUdZtTHWQhYXAf0RIffLoYkLQQC2zRnt2BXQUl+0t7spKERcTTFRxcHzjNJ6
+         rjoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o+3Mv1qDXu2U/dFNa/+jh5WfgDQiPOTHDMUH8W5iEIA=;
-        b=vbTA0NxgpQD3fcqbdwdMLJ1eFKAbqJC/DwGKaAFuu7ih6/tKkFNaGy3vCZ0z5pYQSb
-         3YwRIFSJcRc5gwt3wCK5P6FSGFx9A5mt+DUWXEpiAjO7QYVOe7k6ifKDHyUz1th/OOl1
-         kqa7T8zAl5WeRbq7GF+EfqmPrMmRFDzZNiJdW+Btm8R6DZAhBBYgRmPcyXWCG6/soTDP
-         0/8F6S3zncDnp4gO0YMV90UplXIikGDOzTotxylW1Jj6FlCEOxYMUu1fJryjDNi20yFT
-         +dQb4tq1FFPimJaUdA2gZsSMpf3pO1nCA2Eqoz6PZJKLjKCzmfzH4lTaPIqWY+lxjR8T
-         PHBA==
-X-Gm-Message-State: AOAM530gXHj8liTakV3DxmeZytYLConCDjASMn6j/U55BdFWhyWoPaW0
-        w7UgU3MKQl8kNABRf6DujJMrFOMQN8Q=
-X-Google-Smtp-Source: ABdhPJz4vLg+ZghpL4Sfh74yVFR8UNRGv9ZDTM6w2UwUjCIxoA7hI6F8ew+XCu1PvybZijsOTeTgvQ==
-X-Received: by 2002:aca:32c5:: with SMTP id y188mr22999632oiy.163.1633889626538;
-        Sun, 10 Oct 2021 11:13:46 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y12sm1243228otu.11.2021.10.10.11.13.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 11:13:45 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211010033112.3621816-1-osk@google.com>
- <20211010033112.3621816-2-osk@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v6 2/2] hwmon: (nct7802) Make temperature/voltage sensors
- configurable
-Message-ID: <d1846fdb-8264-ebb2-f5f1-01780ea384cf@roeck-us.net>
-Date:   Sun, 10 Oct 2021 11:13:44 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0FJDdY87/7GIuzxKKNba+7Pm5+giJl9a7wRHbISFE+M=;
+        b=H9jFrGJA3IMuHspYgmG9BArDclRWMemGCXiAWaJT9PQ7IJG23NStL792do4SnWPcr9
+         r0ksSo/AjCfiKKDkFZAjRh5yBKz9a7YfIDKSTH2OoCOS2+kJ9kQdMGtZ/ONOcFxgSJgi
+         gArmCSK5ArpsOUrYr9/Vbe/KKTtMewjMGA8OOghsjUArRzYuPqJISINl1aSMtj1AZ1fZ
+         q4jkCW09QsjJY0IWd5lvIXSGJV0QWe4DQCu/3IGlzOr0uBhAuPbm0y4BMCIVJIochRzu
+         BiE+Es3G9A37yG95drLCLjWTvpjSls2LmXd7BEhE9SDT/WbEgccAugAOlBiAfPOOEUCU
+         //gA==
+X-Gm-Message-State: AOAM531ztmOWksg2vQsH92L2laZqAVHPO2TyeloFjm4HErPIYXJ8/hzq
+        /hfRQy22my4ysgxdf/IwSlY=
+X-Google-Smtp-Source: ABdhPJzcmYtBza/T9gWNcP8wdTPXrTgXDCPYd5ZSsfA6Drbn+cVUk0Lsxj/j8kzx67NoPLK//stUFA==
+X-Received: by 2002:a17:906:7632:: with SMTP id c18mr21263034ejn.317.1633889935518;
+        Sun, 10 Oct 2021 11:18:55 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.gmail.com with ESMTPSA id v9sm998562ejw.22.2021.10.10.11.18.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 11:18:55 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 20:18:53 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v4 06/13] net: dsa: qca8k: move rgmii delay
+ detection to phylink mac_config
+Message-ID: <YWMujVh232s+Q7dU@Ansuel-xps.localdomain>
+References: <20211010111556.30447-1-ansuelsmth@gmail.com>
+ <20211010111556.30447-7-ansuelsmth@gmail.com>
+ <20211010124732.fageoraoweqqfoew@skbuf>
+ <YWLqh2X0lVwiDMCn@Ansuel-xps.localdomain>
+ <20211010181107.4as42prroyitew3m@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <20211010033112.3621816-2-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211010181107.4as42prroyitew3m@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/9/21 8:31 PM, Oskar Senft wrote:
-> This change allows LTD and RTD inputs to be configured via
-> device tree bindings. If the DT bindings are not present or
-> invalid, the input configuration is not modified and left at
-> HW defaults.
+On Sun, Oct 10, 2021 at 09:11:07PM +0300, Vladimir Oltean wrote:
+> On Sun, Oct 10, 2021 at 03:28:39PM +0200, Ansuel Smith wrote:
+> > > I was actually going to say that since RGMII delays are runtime
+> > > invariants, you should move their entire programming to probe time, now
+> > > you move device tree parsing to runtime :-/
+> > >
+> >
+> > The main idea here was to move everything to mac config and scan the DT
+> > node of the current port that is being configured.
 > 
-> Signed-off-by: Oskar Senft <osk@google.com>
+> If you insist on doing static configuration in a phylink callback, sure,
+> the comment was mostly about not accessing directly this struct dsa_port
+> member. It might change in the future, and the less refactoring required,
+> the better.
+>
 
-For my reference:
+I think I will put values in qca8k_priv and configure them in mac_config.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
-Thanks,
-Guenter
-
-> ---
-> Changes from PATCH v5:
-> - Removed unused "found_channel_config" variable.
-> - Initialize mode_mask and mode_val to defaults.
-> ---
->   drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 125 insertions(+), 4 deletions(-)
+> > > > -{
+> > > > -	struct device_node *port_dn;
+> > > > -	phy_interface_t mode;
+> > > > -	struct dsa_port *dp;
+> > > > -	u32 val;
+> > > > -
+> > > > -	/* CPU port is already checked */
+> > > > -	dp = dsa_to_port(priv->ds, 0);
+> > > > -
+> > > > -	port_dn = dp->dn;
+> > > > -
+> > > > -	/* Check if port 0 is set to the correct type */
+> > > > -	of_get_phy_mode(port_dn, &mode);
+> > > > -	if (mode != PHY_INTERFACE_MODE_RGMII_ID &&
+> > > > -	    mode != PHY_INTERFACE_MODE_RGMII_RXID &&
+> > > > -	    mode != PHY_INTERFACE_MODE_RGMII_TXID) {
+> > > > -		return 0;
+> > > > -	}
+> > > > -
+> > > > -	switch (mode) {
+> > > > -	case PHY_INTERFACE_MODE_RGMII_ID:
+> > > > -	case PHY_INTERFACE_MODE_RGMII_RXID:
+> > >
+> > > Also, since you touch this area.
+> > > There have been tons of discussions on this topic, but I believe that
+> > > your interpretation of the RGMII delays is wrong.
+> > > Basically a MAC should not apply delays based on the phy-mode string (so
+> > > it should treat "rgmii" same as "rgmii-id"), but based on the value of
+> > > "rx-internal-delay-ps" and "tx-internal-delay-ps".
+> > > The phy-mode is for a PHY to use.
+> > >
+> >
+> > Ok so we can just drop the case and directly check for the
+> > internal-delay-ps presence?
 > 
-> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
-> index 604af2f6103a..d56f78327619 100644
-> --- a/drivers/hwmon/nct7802.c
-> +++ b/drivers/hwmon/nct7802.c
-> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
->   #define REG_CHIP_ID		0xfe
->   #define REG_VERSION_ID		0xff
->   
-> +/*
-> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
-> + * Selection Register
-> + */
-> +#define RTD_MODE_CURRENT	0x1
-> +#define RTD_MODE_THERMISTOR	0x2
-> +#define RTD_MODE_VOLTAGE	0x3
-> +
-> +#define MODE_RTD_MASK		0x3
-> +#define MODE_LTD_EN		0x40
-> +
-> +/*
-> + * Bit offset for sensors modes in REG_MODE.
-> + * Valid for index 0..2, indicating RTD1..3.
-> + */
-> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
-> +
->   /*
->    * Data structures and manipulation thereof
->    */
-> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
->   	.volatile_reg = nct7802_regmap_is_volatile,
->   };
->   
-> -static int nct7802_init_chip(struct nct7802_data *data)
-> +static int nct7802_get_channel_config(struct device *dev,
-> +				      struct device_node *node, u8 *mode_mask,
-> +				      u8 *mode_val)
-> +{
-> +	u32 reg;
-> +	const char *type_str, *md_str;
-> +	u8 md;
-> +
-> +	if (!node->name || of_node_cmp(node->name, "channel"))
-> +		return 0;
-> +
-> +	if (of_property_read_u32(node, "reg", &reg)) {
-> +		dev_err(dev, "Could not read reg value for '%s'\n",
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg > 3) {
-> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 0) {
-> +		if (!of_device_is_available(node))
-> +			*mode_val &= ~MODE_LTD_EN;
-> +		else
-> +			*mode_val |= MODE_LTD_EN;
-> +		*mode_mask |= MODE_LTD_EN;
-> +		return 0;
-> +	}
-> +
-> +	/* At this point we have reg >= 1 && reg <= 3 */
-> +
-> +	if (!of_device_is_available(node)) {
-> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
-> +		dev_err(dev, "No type for '%s'\n", node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!strcmp(type_str, "voltage")) {
-> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
-> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (strcmp(type_str, "temperature")) {
-> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 3) {
-> +		/* RTD3 only supports thermistor mode */
-> +		md = RTD_MODE_THERMISTOR;
-> +	} else {
-> +		if (of_property_read_string(node, "temperature-mode",
-> +					    &md_str)) {
-> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (!strcmp(md_str, "thermal-diode"))
-> +			md = RTD_MODE_CURRENT;
-> +		else if (!strcmp(md_str, "thermistor"))
-> +			md = RTD_MODE_THERMISTOR;
-> +		else {
-> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
-> +				node->full_name);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
-> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nct7802_configure_channels(struct device *dev,
-> +				      struct nct7802_data *data)
-> +{
-> +	/* Enable local temperature sensor by default */
-> +	u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
-> +	struct device_node *node;
-> +	int err;
-> +
-> +	if (dev->of_node) {
-> +		for_each_child_of_node(dev->of_node, node) {
-> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
-> +							 &mode_val);
-> +			if (err)
-> +				return err;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
-> +}
-> +
-> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
->   {
->   	int err;
->   
-> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
->   	if (err)
->   		return err;
->   
-> -	/* Enable local temperature sensor */
-> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
-> +	err = nct7802_configure_channels(dev, data);
->   	if (err)
->   		return err;
->   
-> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
->   	mutex_init(&data->access_lock);
->   	mutex_init(&data->in_alarm_lock);
->   
-> -	ret = nct7802_init_chip(data);
-> +	ret = nct7802_init_chip(dev, data);
->   	if (ret < 0)
->   		return ret;
->   
-> 
+> Yes, but please consider existing device trees for this driver. I see
+> qcom-ipq8064-rb3011.dts and imx6dl-yapp4-common.dtsi, and neither use
+> explicit rx-internal-delay-ps or tx-internal-delay-ps properties. So
+> changing the driver to look at just those and ignore "rgmii-id" will
+> break those device trees, which is not pleasant. What would work is to
+> search first for *-internal-delay-ps, and then revert to determining the
+> delays based on the phy-mode, for compatibility.
 
+Ok. Will try to implement something that is not entireley a big complex
+condition ahahah.
+
+-- 
+	Ansuel
