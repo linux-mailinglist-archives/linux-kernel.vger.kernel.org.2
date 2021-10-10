@@ -2,60 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30BF427EAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 06:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BF8427EAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 06:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhJJEMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 00:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40430 "EHLO
+        id S230237AbhJJEMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 00:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhJJEMJ (ORCPT
+        with ESMTP id S229697AbhJJEMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 00:12:09 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613B7C061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 21:10:11 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id v25so43343440wra.2
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 21:10:11 -0700 (PDT)
+        Sun, 10 Oct 2021 00:12:17 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9A4C061762;
+        Sat,  9 Oct 2021 21:10:19 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so16986914otj.2;
+        Sat, 09 Oct 2021 21:10:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
-        b=Nj9CTJG1NdAiCScrkVzvIMmHbdZwL08bYn+r+fIY9ceSnZWNanXLGnDHGdakjLcbtr
-         gYiW4Vb6YSYtASNfmXurywNOSJw1jN1oxlrCIeNrR+pA2gGGihC1EZ4eNUXMTSsR5qeC
-         oQWXTl4MqiQfjaxziDEnYSTq4dr3VpFh4JebKu80ztsZaa3dahbi+vFJhntlnBw9NNT6
-         Xbgs6aTFU4L4d2e/+sRZWzTkQCo+8cjMurF3Bf3ufjiVqvi6+FLLnxJ7VbkkaZ5MPb6W
-         cf23Xv+L8yLhzQN6kEL5su0LRlI7rkxdf3yxxTbc4TqvHgqLbNEQ1jL/hfqe1H6STz9R
-         Oe9A==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6E4858d2orjdrSQiha5Y3WBgnHennset4GT8xzXd6F8=;
+        b=QDFPaASct9RptqvmaxtqeORNuBq/B0TTdo6SMEM1eYka9w1/KUFx8yqgxMEEc6TSA9
+         GWPe+u/xWkftGocQvC2j4ew2w2Gvvf1XaS0DcIkoK4zEcfXp5jXZR6e9FlcDa8pNPD6j
+         /wXClERGRWopPDjJ+KW4oPXVr8OM6lkhfChadatqKulinA93CujlAztkm+o4fseaNdbi
+         uM7l6ta6mExd0ibc98g99Yvc7K9Kq6svc7ZG8BoqpIFj0CdN9JNykyt1EOvaXgpqJ3hG
+         rfEAmHw3G5g3cvoErt0w47BcMn7NbBtL3zIOxubd+xBockfoSrD7g/hb10pqi4/AIAa5
+         TEIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=0NqHQYP/c3mUi/IFOx7CMz/U7QYzqFRbcXZKclx3qeg=;
-        b=4HRCVCVCn5ysTikNI6JZYafu+xVktdOXou1t2H0AzVDEVXifKxpj0UomBK6qvwupQ8
-         7xqEB6SFHJj9P0TevOqnHhotakQf8twNv0R553Sw4KaQiybmVMxdPBfhvAyFh5OjADr1
-         Z7sT8bna8TmkOHtseS3dvUN6tdJvWrEJjcItd0j15YlHzCKZLKiZiQZqCufmAWK+FIUj
-         J1MC2GywVWuy8FhnW9jmgUv1ZGi6eM5FmQoMUw++r/VKHqO2eWc6ByKRhW3dVdGiX6C5
-         b13DKbbhXVNXRqyQckRNfA/izMk+MYe8viOEGBPivsuA/K5Msw6NiqxIxj4E1W1lJeKu
-         BVOg==
-X-Gm-Message-State: AOAM533qlRGdebDyIBzSyAz/sAYI81vzNfgNTxA6hr2p1QPCReXKWCOE
-        EMTMMt3JIRbke1wl/AMdBueb0sk/wP7aOwsvxMM=
-X-Google-Smtp-Source: ABdhPJyL3/cXzfsJvFWoQBBwemuCsqgdxCzbjyxbDhL/lAjLP5g8K6BbUVZHX5tGMGt77xFN/jRc0/pZkfRoDnAyXeM=
-X-Received: by 2002:adf:a402:: with SMTP id d2mr15054716wra.266.1633839009979;
- Sat, 09 Oct 2021 21:10:09 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6E4858d2orjdrSQiha5Y3WBgnHennset4GT8xzXd6F8=;
+        b=7Q7qdjwzz91Q6eQsBUzfgMw7PboT65D+CO65v6572mMsQ3So1B57z04uRJoiUHvBlU
+         nIA/nhbeIt/hRM14GS+799JYyRY9OUduRNh+gOYb8VxYSgYRd3f9D2Xi42M3EbQbM9Z8
+         wRS8lJKGxsQZBq/HV9kG6f9ZTzlgJTY4D/2ut1wBYe5G4cdmf/AZUiz3qiq0D+aqOCKT
+         vbbWZjnttKMghTUiDptJx4AB+oTV3D9l0JuPSVi34x0aminD5AbAPRcXTnFwFiW6iuhX
+         1KDlGEnZNy342gC5HyXtThW+l5fPANuxil+fiqnO99jAAkOiZDPC0YCDEKUbZ8ZBmHtf
+         z+Zw==
+X-Gm-Message-State: AOAM530/C1xsHSn+nhDvaNcNqyH3hnjpF91FO+n1rwK++LgkeAab25nh
+        bAFIuWiQGDdrVHeqrJqfvFMZNtb0sm0=
+X-Google-Smtp-Source: ABdhPJy98qKWYaqED9GpozG805AplEwqWwALxIxtl0yXi9XZd6rEm5RQhWAm2ikMO7o5pyQwoFUJrA==
+X-Received: by 2002:a05:6830:922:: with SMTP id v34mr15639087ott.240.1633839018963;
+        Sat, 09 Oct 2021 21:10:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l7sm804328oog.22.2021.10.09.21.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Oct 2021 21:10:18 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v5 1/2] dt-bindings: hwmon: Add nct7802 bindings
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211009185257.2230013-1-osk@google.com>
+ <b73b638e-5a24-4960-354d-c8ab5d61c387@roeck-us.net>
+ <CABoTLcQBjbW_wtQUo9jdbPbcJJcLaHEA+Oe17bWSCy+_GqOeLg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <bb62fdc5-fea0-333c-3b46-e52cce2fc0c2@roeck-us.net>
+Date:   Sat, 9 Oct 2021 21:10:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a1c:4443:0:0:0:0:0 with HTTP; Sat, 9 Oct 2021 21:10:09 -0700 (PDT)
-Reply-To: monica43brown@gmail.com
-From:   monica brown <houndebake@gmail.com>
-Date:   Sun, 10 Oct 2021 04:10:09 +0000
-Message-ID: <CALWH+16=jo4KjBpG9K-NH_+Bxjj9BfoquP8zS7+yz023nxwY_w@mail.gmail.com>
-Subject: Hi
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CABoTLcQBjbW_wtQUo9jdbPbcJJcLaHEA+Oe17bWSCy+_GqOeLg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings from me
-My name is Monica Brown and how are you today, please I have something that
-i will like to share with you okay please try and get back.
+On 10/9/21 8:06 PM, Oskar Senft wrote:
+> Hi Guenter
+> 
+> Thanks again for your review!
+> 
+>>> Signed-off-by: Oskar Senft <osk@google.com>
+>>> ---
+>>
+>> change log goes here.
+> This might be a silly question: I'm using "git send-email", but I
+> don't think there's a way to edit the e-mail before it goes out. Do I
+> just add "---\n[Change log]" manually in the commit description?
+> 
+
+When you use git send-email, you usually have a patch file to send.
+I use git format-patch to create that patch file, add the change
+log using an editor, and then send it with git send-email.
+
+>>> +description: |
+>>> +  The NCT7802Y is a hardware monitor IC which supports one on-die and up to
+>>> +  5 remote temperature sensors with SMBus interface.
+>>> +
+>>
+>> Just noticed: 5 remote temperature sensors ? Shouldn't that be 3 ?
+> This includes 2 temperature sensors that are queried via PECI (i.e.
+> SMBus). I generated the description from the "general description"
+> section in the datasheet. I think the driver doesn't implement the 2
+> PECI sensors at this time, but the statement about the HW is still
+> true.
+> 
+
+Ok, make sense.
+
+Thanks,
+Guenter
+
+>>> +      sensor-type:
+>>> +        items:
+>>> +          - enum:
+>>> +              - temperature
+>>> +              - voltage
+>>> +      temperature-mode:
+>>> +        items:
+>>> +          - enum:
+>>> +              - thermistor
+>>> +              - thermal-diode
+>>> +    required:
+>>> +      - reg
+>>> +      - sensor-type
+>>
+>> If I understand correctly, "temperature-mode" is implemented as mandatory
+>> for channels 1 and 2 if sensor-type is "temperature" (which makes sense).
+>> No idea though if it is possible to express that in yaml.
+>> If not, can it be mentioned as comment ?
+> 
+> After doing a bit more searching, I found the amazing "if: then:
+> else:" construct that allows to express this properly and eliminates
+> the code duplication. I'll follow up in PATCH v6.
+> 
+> Thanks
+> Oskar.
+> 
+> 
+> 
+>>
+>>> +
+>>> +  channel@2:
+>>> +    type: object
+>>> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD2")
+>>> +    properties:
+>>> +      reg:
+>>> +        const: 2
+>>> +      sensor-type:
+>>> +        items:
+>>> +          - enum:
+>>> +              - temperature
+>>> +              - voltage
+>>> +      temperature-mode:
+>>> +        items:
+>>> +          - enum:
+>>> +              - thermistor
+>>> +              - thermal-diode
+>>> +    required:
+>>> +      - reg
+>>> +      - sensor-type
+>>> +
+>>> +  channel@3:
+>>> +    type: object
+>>> +    description: Remote Temperature Sensor or Voltage Sensor ("RTD3")
+>>> +    properties:
+>>> +      reg:
+>>> +        const: 3
+>>> +      sensor-type:
+>>> +        items:
+>>> +          - enum:
+>>> +              - temperature
+>>> +              - voltage
+>>> +    required:
+>>> +      - reg
+>>> +      - sensor-type
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    i2c {
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <0>;
+>>> +
+>>> +        nct7802@28 {
+>>> +            compatible = "nuvoton,nct7802";
+>>> +            reg = <0x28>;
+>>> +
+>>> +            #address-cells = <1>;
+>>> +            #size-cells = <0>;
+>>> +
+>>> +            channel@0 { /* LTD */
+>>> +              reg = <0>;
+>>> +              status = "okay";
+>>> +            };
+>>> +
+>>> +            channel@1 { /* RTD1 */
+>>> +              reg = <1>;
+>>> +              status = "okay";
+>>> +              sensor-type = "temperature";
+>>> +              temperature-mode = "thermistor";
+>>> +            };
+>>> +
+>>> +            channel@2 { /* RTD2 */
+>>> +              reg = <2>;
+>>> +              status = "okay";
+>>> +              sensor-type = "temperature";
+>>> +              temperature-mode = "thermal-diode";
+>>> +            };
+>>> +
+>>> +            channel@3 { /* RTD3 */
+>>> +              reg = <3>;
+>>> +              status = "okay";
+>>> +              sensor-type = "voltage";
+>>> +            };
+>>> +        };
+>>> +    };
+>>>
+>>
+
