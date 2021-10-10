@@ -2,161 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE494280DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4811A4280EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231972AbhJJLmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 07:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbhJJLmj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 07:42:39 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D13C061764;
-        Sun, 10 Oct 2021 04:40:40 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id b8so55516008edk.2;
-        Sun, 10 Oct 2021 04:40:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZwHHSl6iZFkJFRf7Rx7RAcQVkeUEshDkhUR0gfMkh98=;
-        b=S0+Xca3eP7sEa6Y/D2sXWtKshGHKw62dsaYuv9uvDLjnFyzpzfcRze691IvPS1/EGa
-         hKDyVtRvj7ZmFJqabg2jdSMGpWp/sUw3M/nBIbz3j8cdHcYnTFlzAc2wi48xTslcstJC
-         mEZbrlUWScXx1NYBioV6nnBpDkJuDBBwe6HJvq61hGbcn76M7ZWwr+gWYlU5q/z4mJRW
-         qntp1uS5fUX+Sq4qID/mhEXRAXQw9BCNi+vXH3Ls1Ge8s3aCukl8eH2A1SIHW1EszOM2
-         ApneXSOGvEa1m6rwcwUjGKhMORAy7g489uOhWMQCqBQvYpvsLPvFXce+YEys+ff5TBbg
-         ro9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZwHHSl6iZFkJFRf7Rx7RAcQVkeUEshDkhUR0gfMkh98=;
-        b=45QtJ0/Zpo1UWJeJm/hlk8eIXBgIl/fj3YvmJyf4nXx665irGmLksQ1vbsDY4FR5wZ
-         Ex3MSsmcT4PHryE3VtWc4uyTovdohSDVVaoAmghpBOmaTRZsEAZ/7VglsdSH7lU9oaZG
-         3VuCrAaLnAmJSW9ZrvuNSBeLKbTmKVmTn4IalkUlEBm/FBaRDFx+qT5CPkaFkTQgWM0G
-         nYJ5CPnAngqhfGpJPnLprT8OUn0vWugvi4cxYARdfzHkkJkW0gj9vJbz7LWP/FfRWCcI
-         1CW5GJF+dl8jJsLO4JxjFqNuUVaVUaO8WSTNviuOUs6Mz5TG7vMW2KcxoKF5v5LaVDMP
-         h5OQ==
-X-Gm-Message-State: AOAM530+agQoBIz1KYxk8FDTVulpwehChpo7otg/VWh6mVNAlHPiapDo
-        l9yOGh1Feujnxd9/AJfQUqU=
-X-Google-Smtp-Source: ABdhPJwiShsIHfMG7RhBDJFf5zBNvqiWrgyNebz12Ge/FvGRVUM04yjEYomLUmeJW069ama1yILrsQ==
-X-Received: by 2002:a17:907:6010:: with SMTP id fs16mr15356405ejc.266.1633866039360;
-        Sun, 10 Oct 2021 04:40:39 -0700 (PDT)
-Received: from skbuf ([188.26.53.217])
-        by smtp.gmail.com with ESMTPSA id g17sm2425195edv.72.2021.10.10.04.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 04:40:38 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 14:40:37 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Hagan <mnhagan88@gmail.com>
-Subject: Re: [net-next PATCH 07/13] net: dsa: qca8k: add support for
- mac6_exchange, sgmii falling edge
-Message-ID: <20211010114037.2xy65gbdeshpwg2s@skbuf>
-References: <20211006223603.18858-1-ansuelsmth@gmail.com>
- <20211006223603.18858-8-ansuelsmth@gmail.com>
+        id S232008AbhJJLpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 07:45:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231561AbhJJLpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 07:45:10 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29D4F610CF;
+        Sun, 10 Oct 2021 11:43:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mZXET-00FqFc-QT; Sun, 10 Oct 2021 12:43:10 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6 support
+Date:   Sun, 10 Oct 2021 12:42:49 +0100
+Message-Id: <20211010114306.2910453-1-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211006223603.18858-8-ansuelsmth@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, mark.rutland@arm.com, daniel.lezcano@linaro.org, tglx@linutronix.de, pshier@google.com, rananta@google.com, ricarkol@google.com, oupton@google.com, will@kernel.org, catalin.marinas@arm.com, linus.walleij@linaro.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 12:35:57AM +0200, Ansuel Smith wrote:
-> Some device set the switch to exchange the mac0 port with mac6 port. Add
-> support for this in the qca8k driver. Also add support for SGMII rx/tx
-> clock falling edge. This is only present for pad0, pad5 and pad6 have
-> these bit reserved from Documentation.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> ---
->  drivers/net/dsa/qca8k.c | 33 +++++++++++++++++++++++++++++++++
->  drivers/net/dsa/qca8k.h |  3 +++
->  2 files changed, 36 insertions(+)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index 5bce7ac4dea7..3a040a3ed58e 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -973,6 +973,34 @@ qca8k_setup_mac_pwr_sel(struct qca8k_priv *priv)
->  	return ret;
->  }
->  
-> +static int
-> +qca8k_setup_port0_pad_ctrl_reg(struct qca8k_priv *priv)
-> +{
-> +	struct device_node *node = priv->dev->of_node;
-> +	u32 mask = 0;
-> +	int ret = 0;
-> +
-> +	/* Swap MAC0-MAC6 */
-> +	if (of_property_read_bool(node, "qca,mac6-exchange"))
-> +		mask |= QCA8K_PORT0_PAD_CTRL_MAC06_EXCHG;
-> +
-> +	/* SGMII Clock phase configuration */
-> +	if (of_property_read_bool(node, "qca,sgmii-rxclk-falling-edge"))
-> +		mask |= QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE;
-> +
-> +	if (of_property_read_bool(node, "qca,sgmii-txclk-falling-edge"))
-> +		mask |= QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE;
-> +
-> +	if (mask)
-> +		ret = qca8k_rmw(priv, QCA8K_REG_PORT0_PAD_CTRL,
-> +				QCA8K_PORT0_PAD_CTRL_MAC06_EXCHG |
-> +				QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE |
-> +				QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE,
-> +				mask);
-> +
-> +	return ret;
-> +}
-> +
->  static int
->  qca8k_setup(struct dsa_switch *ds)
->  {
-> @@ -1006,6 +1034,11 @@ qca8k_setup(struct dsa_switch *ds)
->  	if (ret)
->  		return ret;
->  
-> +	/* Configure additional PORT0_PAD_CTRL properties */
-> +	ret = qca8k_setup_port0_pad_ctrl_reg(priv);
-> +	if (ret)
-> +		return ret;
-> +
->  	/* Enable CPU Port */
->  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
->  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
-> diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-> index fc7db94cc0c9..3fded69a6839 100644
-> --- a/drivers/net/dsa/qca8k.h
-> +++ b/drivers/net/dsa/qca8k.h
-> @@ -35,6 +35,9 @@
->  #define   QCA8K_MASK_CTRL_DEVICE_ID_MASK		GENMASK(15, 8)
->  #define   QCA8K_MASK_CTRL_DEVICE_ID(x)			((x) >> 8)
->  #define QCA8K_REG_PORT0_PAD_CTRL			0x004
-> +#define   QCA8K_PORT0_PAD_CTRL_MAC06_EXCHG		BIT(31)
+This is v3 of the series enabling ARMv8.6 support for timer subsystem,
+and was prompted by a discussion with Oliver around the fact that an
+ARMv8.6 implementation must have a 1GHz counter, which leads to a
+number of things to break in the timer code:
 
-Where can I find more information about this mac0/mac6 exchange? In this
-document for ar8327, bit 31 of PORT0 PAD MODE CTRL is reserved.
-http://www.datasheet.es/PDF/771154/AR8327-pdf.html
+- the counter rollover can come pretty quickly as we only advertise a
+  56bit counter,
+- the maximum timer delta can be remarkably small, as we use the
+  countdown interface which is limited to 32bit...
 
-> +#define   QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE	BIT(19)
-> +#define   QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE	BIT(18)
->  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
->  #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
->  #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
-> -- 
-> 2.32.0
-> 
+Thankfully, there is a way out: we can compute the minimal width of
+the counter based on the guarantees that the architecture gives us,
+and we can use the 64bit comparator interface instead of the countdown
+to program the timer.
+
+Finally, we start making use of the ARMv8.6 ECV features by switching
+accesses to the counters to a self-synchronising register, removing
+the need for an ISB. Hopefully, implementations will *not* just stick
+an invisible ISB there...
+
+A side effect of the switch to CVAL is that XGene-1 breaks. I have
+added a workaround to keep it alive.
+
+I have added Oliver's original patch[0] to the series and tweaked a
+couple of things. Blame me if I broke anything.
+
+The whole things has been tested on Juno (sysreg + MMIO timers),
+XGene-1 (broken sysreg timers), FVP (FEAT_ECV, CNT*CTSS_EL0).
+
+* From v2 [2]:
+  - New patch adding a HWCAP (ECV) allowing userspace to probe for
+    the presence of CNTVSS_EL0.
+
+* From v1 [1]:
+  - New patch adding a bunch of BUILD_BUG()s for register accesses we
+    don't expect. This makes subsequent patches much simpler.
+  - New patch moving the ISBs for workaround in a way that makes
+    more sense for the self-synchronising accessors.
+  - Rework the XGene-1 workaround to rely solely on MIDR.
+  - Split the CNTVCTSS trap handling in its own patch.
+  - Rebased on 5.15-rc2
+  - Collected RBs, with thanks.
+
+[0] https://lore.kernel.org/r/20210807191428.3488948-1-oupton@google.com
+[1] https://lore.kernel.org/r/20210809152651.2297337-2-maz@kernel.org
+[2] https://lore.kernel.org/r/20210922211941.2756270-1-maz@kernel.org
+
+Marc Zyngier (16):
+  clocksource/arm_arch_timer: Add build-time guards for unhandled
+    register accesses
+  clocksource/arm_arch_timer: Drop CNT*_TVAL read accessors
+  clocksource/arm_arch_timer: Extend write side of timer register
+    accessors to u64
+  clocksource/arm_arch_timer: Move system register timer programming
+    over to CVAL
+  clocksource/arm_arch_timer: Move drop _tval from erratum function
+    names
+  clocksource/arm_arch_timer: Fix MMIO base address vs callback ordering
+    issue
+  clocksource/arm_arch_timer: Move MMIO timer programming over to CVAL
+  clocksource/arm_arch_timer: Advertise 56bit timer to the core code
+  clocksource/arm_arch_timer: Work around broken CVAL implementations
+  clocksource/arm_arch_timer: Remove any trace of the TVAL programming
+    interface
+  clocksource/arm_arch_timer: Drop unnecessary ISB on CVAL programming
+  clocksource/arch_arm_timer: Move workaround synchronisation around
+  arm64: Add a capability for FEAT_ECV
+  arm64: Add CNT{P,V}CTSS_EL0 alternatives to cnt{p,v}ct_el0
+  arm64: Add handling of CNTVCTSS traps
+  arm64: Add HWCAP for self-synchronising virtual counter
+
+Oliver Upton (1):
+  clocksource/arm_arch_timer: Fix masking for high freq counters
+
+ Documentation/arm64/elf_hwcaps.rst   |   4 +
+ arch/arm/include/asm/arch_timer.h    |  37 ++--
+ arch/arm64/include/asm/arch_timer.h  |  78 +++++----
+ arch/arm64/include/asm/esr.h         |   6 +
+ arch/arm64/include/asm/hwcap.h       |   1 +
+ arch/arm64/include/asm/sysreg.h      |   3 +
+ arch/arm64/include/uapi/asm/hwcap.h  |   1 +
+ arch/arm64/kernel/cpufeature.c       |  13 +-
+ arch/arm64/kernel/cpuinfo.c          |   1 +
+ arch/arm64/kernel/traps.c            |  11 ++
+ arch/arm64/tools/cpucaps             |   1 +
+ drivers/clocksource/arm_arch_timer.c | 243 ++++++++++++++++-----------
+ include/clocksource/arm_arch_timer.h |   2 +-
+ 13 files changed, 254 insertions(+), 147 deletions(-)
+
+-- 
+2.30.2
+
