@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BA94282D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C934282D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232859AbhJJRzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
+        id S231621AbhJJR5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232895AbhJJRyp (ORCPT
+        with ESMTP id S230271AbhJJR5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:54:45 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A699AC061745
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:52:44 -0700 (PDT)
-Received: from dslb-188-104-061-167.188.104.pools.vodafone-ip.de ([188.104.61.167] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1mZd04-0001WC-KS; Sun, 10 Oct 2021 19:52:40 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 11/11] staging: r8188eu: remove odm ext lna info
-Date:   Sun, 10 Oct 2021 19:52:04 +0200
-Message-Id: <20211010175204.24029-11-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211010175204.24029-1-martin@kaiser.cx>
-References: <20211010175204.24029-1-martin@kaiser.cx>
+        Sun, 10 Oct 2021 13:57:05 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2A4C061570;
+        Sun, 10 Oct 2021 10:55:06 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id m3so63650234lfu.2;
+        Sun, 10 Oct 2021 10:55:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3ydAC66omwb1n8JzeihR606o2VoQwnojRyDJQl+M5oM=;
+        b=UJ93bh4pdIRSVY7Hax/KViCfkdhDkcsNNlpzVwYW9CQIPNLd/UawcgYsU72qsqkFtY
+         zgT34v77cDenF/Hmb2JFJ2EyKv9qk/4+14jIJgy8Mng2cXrUSX0J4AxaIOcV6LKdgn0b
+         qsgOJrI14CMQyRVJ+5XXR0uWCRwxjtOW3L+7d/Q1BafBCV7ZzWuzz2NxPIXCoJEW5NZN
+         xz7C5ya3cA09rLbCtq9dJpHSMBMjVvYy6DNIj8g5hEBpLkcbs0G9OLLChh1vjOA5BwAI
+         RLlChiP4duKlszzdEKnQw3CphjhKia952+Jrn8YjbshQTk5zvTZ6e8imgAkjXhBf6AnC
+         exHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3ydAC66omwb1n8JzeihR606o2VoQwnojRyDJQl+M5oM=;
+        b=AOWz8LH/nrRNj6XQajdP7kyrVxZ/lQpSvhVC33usEsVKMHbmU+GZWQODt8zBa5xKFf
+         Z8iPQGa2Kdf8NlgyVN5+AH4stGOxUsNEhMZ5VRvwasfV2XF5hvIBv15PzLhbnN9RBl9W
+         D6FvKqcbfu5PO/sOlGtAAMTWKxHp6P2A7FZFQyC64Yw/C9iRxMk2TRHLIcxhwSYdKp7R
+         CaSiSV28uH62qoNdTqtCheSUiX/K6gIBuWVZfNDL/SoSj//FpZAMz0Bc2wgIBIO1MiyC
+         trC0ujn5zRY40bTKX5GyyLHnszcpUdqEcMjWKtEF0RvXJs2f8ymToCKSmyGQNb1FMfio
+         uDSg==
+X-Gm-Message-State: AOAM532IopSxFjCq8CxqTVO14KHBQYDhfmdjAgOTfZ+zTdnxsFvwOBNz
+        1I1vedxbKUSU6hCCWBjU2iB6EnbuqVV9Eg==
+X-Google-Smtp-Source: ABdhPJytIFiRW7vug7rXrjFy2fWR+VAQPQZHZxnJgAxhmQ4pktSZp3NIk3wzeKCdSWr7zhP9mqKMJw==
+X-Received: by 2002:a05:6512:33c9:: with SMTP id d9mr22726278lfg.18.1633888504907;
+        Sun, 10 Oct 2021 10:55:04 -0700 (PDT)
+Received: from localhost (37-145-209-168.broadband.corbina.ru. [37.145.209.168])
+        by smtp.gmail.com with ESMTPSA id u3sm550824lfr.130.2021.10.10.10.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 10:55:04 -0700 (PDT)
+From:   Mikhail Rudenko <mike.rudenko@gmail.com>
+To:     linux-media@vger.kernel.org
+Cc:     Mikhail Rudenko <mike.rudenko@gmail.com>,
+        Helen Koike <helen.koike@collabora.com>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] media: rockchip: rkisp1: use device name for debugfs subdir name
+Date:   Sun, 10 Oct 2021 20:54:57 +0300
+Message-Id: <20211010175457.438627-1-mike.rudenko@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ext lna info is never set. Remove it and fix up the one place
-where it's read.
+While testing Rockchip RK3399 with both ISPs enabled, a dmesg error
+was observed:
+```
+[   15.559141] debugfs: Directory 'rkisp1' with parent '/' already present!
+```
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Fix it by using the device name for the debugfs subdirectory name
+instead of the driver name, thus preventing name collision.
+
+Signed-off-by: Mikhail Rudenko <mike.rudenko@gmail.com>
 ---
- drivers/staging/r8188eu/hal/odm.c     | 7 +------
- drivers/staging/r8188eu/include/odm.h | 3 ---
- 2 files changed, 1 insertion(+), 9 deletions(-)
+ drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/r8188eu/hal/odm.c b/drivers/staging/r8188eu/hal/odm.c
-index 7d31067d95a8..5bb5ce950438 100644
---- a/drivers/staging/r8188eu/hal/odm.c
-+++ b/drivers/staging/r8188eu/hal/odm.c
-@@ -237,9 +237,6 @@ void ODM_CmnInfoInit(struct odm_dm_struct *pDM_Odm, enum odm_common_info_def Cmn
- 	case	ODM_CMNINFO_BOARD_TYPE:
- 		pDM_Odm->BoardType = (u8)Value;
- 		break;
--	case	ODM_CMNINFO_EXT_LNA:
--		pDM_Odm->ExtLNA = (u8)Value;
--		break;
- 	/* To remove the compiler warning, must add an empty default statement to handle the other values. */
- 	default:
- 		/* do nothing */
-@@ -494,7 +491,7 @@ void odm_DIG(struct odm_dm_struct *pDM_Odm)
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index 7474150b94ed..560f928c3752 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -426,7 +426,7 @@ static void rkisp1_debug_init(struct rkisp1_device *rkisp1)
+ {
+ 	struct rkisp1_debug *debug = &rkisp1->debug;
  
- 	/* 1 Boundary Decision */
- 	if ((pDM_Odm->SupportICType & (ODM_RTL8192C | ODM_RTL8723A)) &&
--	    ((pDM_Odm->BoardType == ODM_BOARD_HIGHPWR) || pDM_Odm->ExtLNA)) {
-+	    (pDM_Odm->BoardType == ODM_BOARD_HIGHPWR)) {
- 		if (pDM_Odm->SupportPlatform & (ODM_AP | ODM_ADSL)) {
- 			dm_dig_max = DM_DIG_MAX_AP_HP;
- 			dm_dig_min = DM_DIG_MIN_AP_HP;
-@@ -729,8 +726,6 @@ void odm_CCKPacketDetectionThresh(struct odm_dm_struct *pDM_Odm)
- 
- 	if (!(pDM_Odm->SupportAbility & (ODM_BB_CCK_PD | ODM_BB_FA_CNT)))
- 		return;
--	if (pDM_Odm->ExtLNA)
--		return;
- 	if (pDM_Odm->bLinked) {
- 		if (pDM_Odm->RSSI_Min > 25) {
- 			CurCCK_CCAThres = 0xcd;
-diff --git a/drivers/staging/r8188eu/include/odm.h b/drivers/staging/r8188eu/include/odm.h
-index 90539fa2ef2d..f4b427cfaeee 100644
---- a/drivers/staging/r8188eu/include/odm.h
-+++ b/drivers/staging/r8188eu/include/odm.h
-@@ -268,7 +268,6 @@ enum odm_common_info_def {
- 	ODM_CMNINFO_IC_TYPE,		/* ODM_IC_TYPE_E */
- 	ODM_CMNINFO_RF_TYPE,		/* RF_PATH_E or ODM_RF_TYPE_E? */
- 	ODM_CMNINFO_BOARD_TYPE,		/* ODM_BOARD_TYPE_E */
--	ODM_CMNINFO_EXT_LNA,		/* true */
- 	/* HOOK BEFORE REG INIT-----------  */
- 
- 	/*  Dynamic value: */
-@@ -646,8 +645,6 @@ struct odm_dm_struct {
- 	u8	RFType;
- 	/*  Board Type Normal/HighPower/MiniCard/SLIM/Combo/. = 0/1/2/3/4/. */
- 	u8	BoardType;
--	/*  with external LNA  NO/Yes = 0/1 */
--	u8	ExtLNA;
- 
- 	u32	BK_SupportAbility;
- 	u8	AntDivType;
+-	debug->debugfs_dir = debugfs_create_dir(RKISP1_DRIVER_NAME, NULL);
++	debug->debugfs_dir = debugfs_create_dir(dev_name(rkisp1->dev), NULL);
+ 	debugfs_create_ulong("data_loss", 0444, debug->debugfs_dir,
+ 			     &debug->data_loss);
+ 	debugfs_create_ulong("outform_size_err", 0444,  debug->debugfs_dir,
 -- 
-2.20.1
+2.33.0
 
