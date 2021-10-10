@@ -2,79 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAA8428148
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:38:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 213E642814A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232456AbhJJMil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:38:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230500AbhJJMik (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:38:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A550B60F23;
-        Sun, 10 Oct 2021 12:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633869401;
-        bh=KKuR0+sAx3mDL1ZnwEq6Hv5EFP1wCtjWVzDgRMPvDPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ocEVx5FB3+aoYHrE9YHCTHGLC43ddDSccxbXp4bzzAqWuVMALrfka+xatjXulOlAd
-         3da4xAUAZmxK+sv4MixQxRqpnPGlBOpDB8Mpl3uTqJVlkLvet80XEUZh+GxhZ8HsLO
-         WhbuW1eXYAcJ7viAFPei8O2XJNYRB069KY5B/hG+cLp0gHk+E4Xt+KyPPNkGieSWbK
-         u7TlnnI7kOlzHF1umN6TFD9Du8xGS7NcrwElrpfcZoX1GKt8wji8sRydAV4mfUNFrI
-         F/xrzVuPp0+ydmrmEidsY/nMF1zMKpBJsb40Rtf6mNRE/n94F0ec0h2dMGWb3ogYTD
-         nx1HjMvDR/gew==
-Received: by pali.im (Postfix)
-        id 96F44795; Sun, 10 Oct 2021 14:36:39 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 14:36:39 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Martin Kepplinger <martink@posteo.de>
-Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, angus@akkea.ca,
-        linux-kernel@vger.kernel.org, kay.sievers@vrfy.org,
-        lennart@poettering.net, gregkh@linuxfoundation.org, david@fubar.dk,
-        tytso@mit.edu, alan@lxorguk.ukuu.org.uk, akpm@linux-foundation.org
-Subject: Re: [PATCH] fs: fat: Make the volume label writable when mounted
-Message-ID: <20211010123639.ubjvilz5fe3nlmau@pali>
-References: <20211007095639.5002-1-martink@posteo.de>
- <874k9pccdf.fsf@mail.parknet.co.jp>
- <20211010121816.fdvn6uiiteszbnql@pali>
+        id S232480AbhJJMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:40:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56483 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230500AbhJJMkD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:40:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633869484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SHPEZkzx4aJGCaDO+FrRniDoOaTUcTMIUDzNCqN3F/M=;
+        b=JpNYqwqGv1YQAE6bqkleCz/fauZa12JZo5YBVxpfttY1YI2gs6q01MqxtDXPD/Wz9hjzZg
+        YqRcyd3Gf/15Boeo6f7N5yIixuWOz+Xe7BWG9DOV+UsQhMadXuyB6HF7P+2aMCeGd+92v3
+        +vC0Uk3HY7dGet5Zo/GGrdC3IBr613I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-329-3clG0ISkMliTq5WIfFDT2w-1; Sun, 10 Oct 2021 08:38:01 -0400
+X-MC-Unique: 3clG0ISkMliTq5WIfFDT2w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EFE410A8E05;
+        Sun, 10 Oct 2021 12:37:59 +0000 (UTC)
+Received: from starship (unknown [10.35.206.50])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3070F5D6CF;
+        Sun, 10 Oct 2021 12:37:56 +0000 (UTC)
+Message-ID: <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
+Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 10 Oct 2021 15:37:56 +0300
+In-Reply-To: <20211009010135.4031460-1-seanjc@google.com>
+References: <20211009010135.4031460-1-seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211010121816.fdvn6uiiteszbnql@pali>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 10 October 2021 14:18:16 Pali Rohár wrote:
-> Hello!
+On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
+> Belated "code review" for Maxim's recent series to rework the AVIC inhibit
+> code.  Using the global APICv status in the page fault path is wrong as
+> the correct status is always the vCPU's, since that status is accurate
+> with respect to the time of the page fault.  In a similar vein, the code
+> to change the inhibit can be cleaned up since KVM can't rely on ordering
+> between the update and the request for anything except consumers of the
+> request.
 > 
-> On Sunday 10 October 2021 21:06:52 OGAWA Hirofumi wrote:
-> > > diff --git a/include/uapi/linux/msdos_fs.h b/include/uapi/linux/msdos_fs.h
-> > > index a5773899f4d9..b666bca09238 100644
-> > > --- a/include/uapi/linux/msdos_fs.h
-> > > +++ b/include/uapi/linux/msdos_fs.h
-> > > @@ -104,6 +104,7 @@ struct __fat_dirent {
-> > >  #define FAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
-> > >  /*Android kernel has used 0x12, so we use 0x13*/
-> > >  #define FAT_IOCTL_GET_VOLUME_ID		_IOR('r', 0x13, __u32)
-> > > +#define VFAT_IOCTL_SET_LABEL		_IOW('r', 0x14, __u32)
-> > 
-> > maybe FAT_IOCTL_SET_LABEL is better.
+> Sean Christopherson (2):
+>   KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
+>     memslot
+>   KVM: x86: Simplify APICv update request logic
 > 
-> Please do not introduce a new fs specific ioctls. There is already
-> vfs-agnostic FS_IOC_SETFSLABEL ioctl, look at manpage:
-> https://man7.org/linux/man-pages/man2/ioctl_fslabel.2.html
+>  arch/x86/kvm/mmu/mmu.c |  2 +-
+>  arch/x86/kvm/x86.c     | 16 +++++++---------
+>  2 files changed, 8 insertions(+), 10 deletions(-)
 > 
-> I have WIP patches which adds support for FS_IOC_SETFSLABEL ioctl into
-> kernel vfat driver. But it is not possible to implement this ioctl
-> properly until issues with encoding are fixed in vfat driver. Some of
-> dependency patches I have sent to ML as RFC series:
-> https://lore.kernel.org/lkml/20210808162453.1653-1-pali@kernel.org/
 
-Also look at important details about encoding in discussion:
-https://lore.kernel.org/lkml/20200107231522.GC472641@magnolia/
+Are you sure about it? Let me explain how the algorithm works:
 
-> If you have a time and motivation, I can send you my unfinished WIP
-> patches which implements FS_IOC_SETFSLABEL ioctl for vfat.
+- kvm_request_apicv_update:
+
+	- take kvm->arch.apicv_update_lock
+
+	- if inhibition state doesn't really change (kvm->arch.apicv_inhibit_reasons still zero or non zero)
+		- update kvm->arch.apicv_inhibit_reasons
+		- release the lock
+
+	- raise KVM_REQ_APICV_UPDATE
+		* since kvm->arch.apicv_update_lock is taken, all vCPUs will be kicked out of guest
+		  mode and will be either doing someing in the KVM (like page fault) or stuck on trying to process that request
+                  the important thing is that no vCPU will be able to get back to the guest mode.
+
+	- update the kvm->arch.apicv_inhibit_reasons
+		* since we hold vm->arch.apicv_update_lock vcpus can't see the new value
+
+	- update the SPTE that covers the APIC's mmio window:
+
+		- if we enable AVIC, then do nothing.
+			
+			* First vCPU to access it will page fault and populate that SPTE
+
+			* If we race with page fault again no problem, worst case the page fault
+			  doesn't populte the SPTE, and we will get another page fault later
+			  and it will. 
+
+			  -> SPTE not present + AVIC enabled is not a problem, it just causes
+			  a spurious page fault, and then retried at which point AVIC is used.
+
+			  It is nice to re-install the SPTE as fast as possible to avoid such
+			  faults for performance reasons.
+
+		- if we disable AVIC, then we zap the spte:
+
+			* page fault should not happen just before zapping as AVIC is enabled on the vCPUs now.
+			  even if it does happen, it doesn't matter if it does populate the SPTE, as we will zap it anyway.
+
+			* during the zapping we take the mmu lock and use mmu notifier counter hack
+			  to avoid racing with page fault that can happen concurrently with it.
+
+			* if page fault on another vCPU happens after the zapping, it will see the correct 
+			  kvm->arch.apicv_inhibit_reasons (but likely incorrect its own vCPU AVIC inhibit state)
+			  and will not re-populate the SPTE.
+
+			  -> and SPTE present + AVIC inhibited on this vCPU is the problem,
+			  as this will cause writes to AVIC to disappear into that dummy page mapped by that SPTE.
+
+			  That is why patch 1 IMHO is wrong.
+
+	- release the kvm->arch.apicv_update_lock
+		* at that point all vCPUs can re-enter but they all will process the KVM_REQ_APICV_UPDATE
+		  prior to that, which will update their AVIC state.
+
+
+Best regards,
+	Maxim Levitsky
+
+
+
