@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43B242839A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBB042839E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhJJUy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 16:54:59 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35526
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231936AbhJJUy6 (ORCPT
+        id S232964AbhJJUzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 16:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231936AbhJJUze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 16:54:58 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 9EA863FFDE
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633899178;
-        bh=VUoZvUcEz5W61r6JJ0vnYx7Iv2cJ136M8cBt3vNkKRo=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=Cg6GwNaIpXwBsjoB2F2R5WeCYlJG/1vXNWTvJjDwvb401T8dudGZIiZ6AJKwmhvcW
-         /WxPq4qGvcFzqPXCSStGIlh/8avTGjkhoCTuTCirk/a02BOKESLkUicK1ssuk+4+8/
-         2LkLhjnrPcajpYOHpOpeg2NmbfN94M8WxGnnfgUXw5JwJRzGTrRXa5he+v0lMT4QNn
-         0M4AHLCp1AW35YVwqgHRH9mE3x17hbCbhpAozLD4k72pop/Y/P8WIfl3r8UAmOwXly
-         jvr624nYId3tlIApY95NN7y7VrLDIi/yigCILsUmfMnHxyA7zzafW+ENwlFbDd0KUX
-         tbF6vwg8Ak6mg==
-Received: by mail-ed1-f69.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso13910635edf.7
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:52:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VUoZvUcEz5W61r6JJ0vnYx7Iv2cJ136M8cBt3vNkKRo=;
-        b=3/FpB6oFDNexKjPS1vx4fCogsAO5INrpRIwDV44wmMi3ih/afmkKVewLUt0SksT7L7
-         gGXK0tXj04jxiAYh33t42Hj9IxNXtZT96Gc7sGTlRjmtsupTXPDpEFtcH8ZDPxc4oDjR
-         eYq83uAC7zx4q07mb5HQw1aXLuEZmCL+GSFP/FtSYxu5f7UWh2ofwNkfSnrPUPAFrgYy
-         8EbsmfOT0Pe+OeNPQe8fGoA82dpWC0faA1ROfR0pVGQuBG3MfrRkZhTO+hzq2nRb66u/
-         1aJZTCm5nVtHJnG4mvmG78ysypOKzzRPME1ns/2EXKMVwfTLLXD1CD/3FqnVqc7n4tm8
-         gLLw==
-X-Gm-Message-State: AOAM533zAVE4wsGVlZnS1yP81LbzI+UhmoAjnFmWgO6ZB4wSxzq+8wbE
-        ACcum8mUPIE2pf+2vYH8kAzKI4hjTFT4K/R2czfqS3wK74zD2ALasogUV2DVRXvmMo+feEPY/60
-        sirfS1jRSuokfDYDMZYYVNDNZjvMMJjnXiQc4wJlPiQ==
-X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr21252744ejb.277.1633899178187;
-        Sun, 10 Oct 2021 13:52:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUsaX5GVNNhedfg3aGctYY89+Bp8z44cavbVqI0d3fIzvOES2m0gz5xMXHfGP+pcKi3YgXYA==
-X-Received: by 2002:a17:906:d0c3:: with SMTP id bq3mr21252732ejb.277.1633899178038;
-        Sun, 10 Oct 2021 13:52:58 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id w2sm3061619edj.44.2021.10.10.13.52.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 13:52:57 -0700 (PDT)
-Subject: Re: [PATCH 1/7] dt-bindings: nfc: nxp,nci: convert to dtschema
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-nfc@lists.01.org, devicetree@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Charles Gorand <charles.gorand@effinnov.com>
-References: <20211010142317.168259-1-krzysztof.kozlowski@canonical.com>
- <1633894316.441793.3158669.nullmailer@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0e26d0e6-9468-63b5-a357-af4c4e7ec677@canonical.com>
-Date:   Sun, 10 Oct 2021 22:52:56 +0200
+        Sun, 10 Oct 2021 16:55:34 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C025C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=dY+e0+GivX+BFolWbrBQUWXwzOA/TgaPNehM3ikoutE=; b=Hv8ff7DNG/OdsjKQdgUibJUTRd
+        VM1Ad+5Wctr9hbkanBq9fCw+PyMdPWflX8K9+Tj9ds3A2QhnSitDOnPYJY9QrkQkiYmA/NMbVFVHt
+        Rbj3UcYV+BH5KeRBktPHxanptklkSXx3kWdeXX2KP835PsgSwuug7EhMQ03WPV6GYZh4n3e4gY2Gp
+        LUul+ceQ0Ce5BrTvqzo0lxVYwz8oVUnrJb6kivjGjS1/fPmIXytCmh2vQSXZoa+oQ928EBHaubf8U
+        qcTBFU2cmI9kVXFCUtXnvMb8BVWJCA+x6Z03FYFecs1sFEjKRekEfF50vEH/Cnc8hwXwy/ciz4bHo
+        FQBbMCLg==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZfoz-007MZk-Jb; Sun, 10 Oct 2021 20:53:25 +0000
+Subject: Re: [PATCH v2] drm/r128: fix build for UML
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+References: <20211010172955.30088-1-rdunlap@infradead.org>
+ <YWND2QZTZRB92XHX@ravnborg.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <30fa4926-6054-40ab-74c5-2a1f641966be@infradead.org>
+Date:   Sun, 10 Oct 2021 13:53:24 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1633894316.441793.3158669.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YWND2QZTZRB92XHX@ravnborg.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2021 21:31, Rob Herring wrote:
-> On Sun, 10 Oct 2021 16:23:11 +0200, Krzysztof Kozlowski wrote:
->> Convert the NXP NCI NFC controller to DT schema format.
+On 10/10/21 12:49 PM, Sam Ravnborg wrote:
+> Hi Randy,
+> 
+> On Sun, Oct 10, 2021 at 10:29:55AM -0700, Randy Dunlap wrote:
+>> Fix a build error on CONFIG_UML, which does not support (provide)
+>> wbinvd(). UML can use the generic mb() instead.
 >>
->> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
+>> ../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
+>>    wbinvd();
+>>    ^~~~~~
+>>
+>> Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: David Airlie <airlied@linux.ie>
+>> Cc: Daniel Vetter <daniel@ffwll.ch>
+>> Cc: dri-devel@lists.freedesktop.org
+>> Cc: Jeff Dike <jdike@addtoit.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>> Cc: linux-um@lists.infradead.org
 >> ---
->>  .../devicetree/bindings/net/nfc/nxp,nci.yaml  | 61 +++++++++++++++++++
->>  .../devicetree/bindings/net/nfc/nxp-nci.txt   | 33 ----------
->>  MAINTAINERS                                   |  1 +
->>  3 files changed, 62 insertions(+), 33 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,nci.yaml
->>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+>> v2: update Fixes: tag (thanks, Johannes)
 >>
+>>   drivers/gpu/drm/r128/ati_pcigart.c |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> --- linux-next-20211007.orig/drivers/gpu/drm/r128/ati_pcigart.c
+>> +++ linux-next-20211007/drivers/gpu/drm/r128/ati_pcigart.c
+>> @@ -215,7 +215,7 @@ int drm_ati_pcigart_init(struct drm_devi
+>>   	}
+>>   	ret = 0;
+>>   
+>> -#if defined(__i386__) || defined(__x86_64__)
+>> +#if (defined(__i386__) || defined(__x86_64__)) && !defined(CONFIG_UML)
+>>   	wbinvd();
+>>   #else
+>>   	mb();
 > 
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
+> If we look at drivers/video/fbdev/i810/i810_main.h
+> then it looks like we can replace the above with a simple:
+> #ifdef CONFIG_X86
+> 	wbinvd();
+> #else
+> 	mb();
+> #endif
 > 
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
-> 
-> Full log is available here: https://patchwork.ozlabs.org/patch/1539010
-> 
-> 
-> nfc@28: 'clock-frequency' is a required property
-> 	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
-> 
-> nfc@28: compatible:0: 'nxp,nxp-nci-i2c' was expected
-> 	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
-> 
-> nfc@28: compatible: Additional items are not allowed ('nxp,nxp-nci-i2c' was unexpected)
-> 	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
-> 
-> nfc@28: compatible: ['nxp,pn547', 'nxp,nxp-nci-i2c'] is too long
-> 	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
-> 
-> nfc@30: 'clock-frequency' is a required property
-> 	arch/arm/boot/dts/ste-ux500-samsung-janice.dt.yaml
-> 
-> nfc@30: compatible:0: 'nxp,nxp-nci-i2c' was expected
-> 	arch/arm/boot/dts/ste-ux500-samsung-janice.dt.yaml
-> 
-> nfc@30: compatible: Additional items are not allowed ('nxp,nxp-nci-i2c' was unexpected)
-> 	arch/arm/boot/dts/ste-ux500-samsung-janice.dt.yaml
-> 
-> nfc@30: compatible: ['nxp,pn547', 'nxp,nxp-nci-i2c'] is too long
-> 	arch/arm/boot/dts/ste-ux500-samsung-janice.dt.yaml
-> 
+> If you think this would work could you try it out.
+> It would be nicer with the simpler variant.
 
-I missed that new compatible. I'll send a patch adding nxp,nxp-nci-i2c
-and try to fix the DTS (missing clock-frequency).
+Hi Sam,
+Good idea, thanks.
 
-Best regards,
-Krzysztof
+OK, I tested it, it works fine.
+
+Will resend the patch later...
+
+> Note: I have no clue what wbinvd() does - seems like some x86 assembler
+> specific thingy.
+
+
+-- 
+~Randy
