@@ -2,146 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4768C4281A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A3E4281A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbhJJOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 10:02:19 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:41825 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232494AbhJJOCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 10:02:18 -0400
-Received: from pop-os.home ([90.126.248.220])
-        by mwinf5d78 with ME
-        id 4E0F260064m3Hzu03E0Fup; Sun, 10 Oct 2021 16:00:18 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Oct 2021 16:00:18 +0200
-X-ME-IP: 90.126.248.220
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     l.stach@pengutronix.de, linux+etnaviv@armlinux.org.uk,
-        christian.gmeiner@gmail.com, airlied@linux.ie, daniel@ffwll.ch,
-        robdclark@gmail.com, sean@poorly.run, jyri.sarha@iki.fi,
-        tomba@kernel.org, linux-graphics-maintainer@vmware.com,
-        zackr@vmware.com, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Cc:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] drm: Remove redundant 'flush_workqueue()' calls
-Date:   Sun, 10 Oct 2021 15:59:40 +0200
-Message-Id: <75e8ba40076ad707d47e3a3670e6b23c1b8b11bc.1633874223.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S232871AbhJJOKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:10:03 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:55352 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232494AbhJJOKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:10:02 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 Oct 2021 10:10:01 EDT
+Received: from [172.17.203.2] (port=53125 helo=deneb.enyo.de)
+        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1mZZOs-0005i0-H2; Sun, 10 Oct 2021 14:02:02 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.94.2)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1mZZOs-0006bz-4t; Sun, 10 Oct 2021 16:02:02 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        j alglave <j.alglave@ucl.ac.uk>,
+        luc maranget <luc.maranget@inria.fr>,
+        akiyks <akiyks@gmail.com>,
+        linux-toolchains <linux-toolchains@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Subject: Re: [RFC PATCH] LKMM: Add ctrl_dep() macro for control dependency
+References: <20210928211507.20335-1-mathieu.desnoyers@efficios.com>
+        <87lf3f7eh6.fsf@oldenburg.str.redhat.com>
+        <20210929174146.GF22689@gate.crashing.org>
+        <2088260319.47978.1633104808220.JavaMail.zimbra@efficios.com>
+        <871r54ww2k.fsf@oldenburg.str.redhat.com>
+        <CAHk-=wgexLqNnngLPts=wXrRcoP_XHO03iPJbsAg8HYuJbbAvw@mail.gmail.com>
+Date:   Sun, 10 Oct 2021 16:02:02 +0200
+In-Reply-To: <CAHk-=wgexLqNnngLPts=wXrRcoP_XHO03iPJbsAg8HYuJbbAvw@mail.gmail.com>
+        (Linus Torvalds's message of "Fri, 1 Oct 2021 09:35:47 -0700")
+Message-ID: <87y271yo4l.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+* Linus Torvalds:
 
-Remove the redundant 'flush_workqueue()' calls.
+> On Fri, Oct 1, 2021 at 9:26 AM Florian Weimer <fweimer@redhat.com> wrote:
+>>
+>> Will any conditional branch do, or is it necessary that it depends in
+>> some way on the data read?
+>
+> The condition needs to be dependent on the read.
+>
+> (Easy way to see it: if the read isn't related to the conditional or
+> write data/address, the read could just be delayed to after the
+> condition and the store had been done).
 
-This was generated with coccinelle:
+That entirely depends on how the hardware is specified to work.  And
+the hardware could recognize certain patterns as always producing the
+same condition codes, e.g., AND with zero.  Do such tests still count?
+It depends on what the specification says.
 
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 1 -
- drivers/gpu/drm/msm/dsi/dsi_host.c    | 1 -
- drivers/gpu/drm/msm/edp/edp_ctrl.c    | 1 -
- drivers/gpu/drm/msm/hdmi/hdmi.c       | 4 +---
- drivers/gpu/drm/tilcdc/tilcdc_drv.c   | 4 +---
- drivers/gpu/drm/vmwgfx/ttm_memory.c   | 1 -
- 6 files changed, 2 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 789acae37f55..06bde46df451 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -1733,7 +1733,6 @@ static void etnaviv_gpu_unbind(struct device *dev, struct device *master,
- 
- 	DBG("%s", dev_name(gpu->dev));
- 
--	flush_workqueue(gpu->wq);
- 	destroy_workqueue(gpu->wq);
- 
- 	etnaviv_sched_fini(gpu);
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index c86b5090fae6..462ea65ebf89 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -1925,7 +1925,6 @@ void msm_dsi_host_destroy(struct mipi_dsi_host *host)
- 	DBG("");
- 	dsi_tx_buf_free(msm_host);
- 	if (msm_host->workqueue) {
--		flush_workqueue(msm_host->workqueue);
- 		destroy_workqueue(msm_host->workqueue);
- 		msm_host->workqueue = NULL;
- 	}
-diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-index fe1366b4c49f..07129a6e5dbb 100644
---- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-+++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-@@ -1190,7 +1190,6 @@ void msm_edp_ctrl_destroy(struct edp_ctrl *ctrl)
- 		return;
- 
- 	if (ctrl->workqueue) {
--		flush_workqueue(ctrl->workqueue);
- 		destroy_workqueue(ctrl->workqueue);
- 		ctrl->workqueue = NULL;
- 	}
-diff --git a/drivers/gpu/drm/msm/hdmi/hdmi.c b/drivers/gpu/drm/msm/hdmi/hdmi.c
-index 737453b6e596..5ba7c8f28419 100644
---- a/drivers/gpu/drm/msm/hdmi/hdmi.c
-+++ b/drivers/gpu/drm/msm/hdmi/hdmi.c
-@@ -61,10 +61,8 @@ static void msm_hdmi_destroy(struct hdmi *hdmi)
- 	 * at this point, hpd has been disabled,
- 	 * after flush workq, it's safe to deinit hdcp
- 	 */
--	if (hdmi->workq) {
--		flush_workqueue(hdmi->workq);
-+	if (hdmi->workq)
- 		destroy_workqueue(hdmi->workq);
--	}
- 	msm_hdmi_hdcp_destroy(hdmi);
- 
- 	if (hdmi->phy_dev) {
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.c b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-index 6b03f89a98d4..3ddb7c710a3d 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.c
-@@ -186,10 +186,8 @@ static void tilcdc_fini(struct drm_device *dev)
- 	if (priv->mmio)
- 		iounmap(priv->mmio);
- 
--	if (priv->wq) {
--		flush_workqueue(priv->wq);
-+	if (priv->wq)
- 		destroy_workqueue(priv->wq);
--	}
- 
- 	dev->dev_private = NULL;
- 
-diff --git a/drivers/gpu/drm/vmwgfx/ttm_memory.c b/drivers/gpu/drm/vmwgfx/ttm_memory.c
-index edd17c30d5a5..7f7fe35fc21d 100644
---- a/drivers/gpu/drm/vmwgfx/ttm_memory.c
-+++ b/drivers/gpu/drm/vmwgfx/ttm_memory.c
-@@ -468,7 +468,6 @@ void ttm_mem_global_release(struct ttm_mem_global *glob)
- 	struct ttm_mem_zone *zone;
- 	unsigned int i;
- 
--	flush_workqueue(glob->swap_queue);
- 	destroy_workqueue(glob->swap_queue);
- 	glob->swap_queue = NULL;
- 	for (i = 0; i < glob->num_zones; ++i) {
--- 
-2.30.2
-
+What I really dislike about this: Operators like & and < now have side
+effects, and is no longer possible to reason about arithmetic
+expressions in isolation.
