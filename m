@@ -2,169 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA2A427FB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 09:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA1E427FD6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 09:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhJJH1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 03:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54272 "EHLO
+        id S230412AbhJJHfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 03:35:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhJJH1B (ORCPT
+        with ESMTP id S229697AbhJJHfA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 03:27:01 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998BDC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:25:03 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id d9so30074753edh.5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:25:03 -0700 (PDT)
+        Sun, 10 Oct 2021 03:35:00 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F6EC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:33:02 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id kk10so10802547pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:33:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cKfkGh414B/iRXkK8RbjxGaH4QllS+6UvmAmMf9vRl0=;
-        b=lSOMmnyZ1kYF70+Uvy8gOq2A87O2XTg6onjugrMc6BKu51iDGFzKcPRqqgP1FtV4E+
-         y5NW/Usep2TaGLRPGWQjcXLiL7aDU3dpJPF6XqWrCQOv6MdYt6Wfz+ntLhsKqcyeVrtv
-         mLHdwI2PxPbgzLWMVVEFEvW7bikK/pb6mjlb+9qOD5YaSt3oyeDWrpGMRR5v9mddgf5U
-         INVEaumXGAIbzZUTwvWvH7Byi3QZFz0xVY96c1MzXbqgHS6LIBZThn0ZJWJWLu/23pck
-         y8nKXnEKxC+t9cwJr5IHP8cFpePoyLMZPPc5XPAUYf8hFQ3kaMRvEJig9NYYL+8m2zoU
-         /jqg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=ykKHrA/r2EJEyEbkVUzjv11eom1VFrBiZ2DCTiavQzo=;
+        b=Hb/Ifoo2P85nAkYyM1k9huuKSfcZ5dXqO0RwtNc4j0IL05RnvQoitTnjX4nVoYPH28
+         UG3GWkEZSra0ygkWG7XZdtWayY2qEPBDGGsYb1+olWIz2q8DkLotxcwCPLGBQAor3cQ2
+         BvVBqZV7yBvojMEhrBTMTshx69f1SseJxynNMyYfKUnXrc1WQehZLQXd0e5a0tqcgZNK
+         apb1Z2mMN3V5MazcRP/A6/PU+4/preXy/k644n7BO52PDc3hXPNt9BIjLvMQ65FrPBW6
+         f+09qr8V03hTdVyI9PTZdWiWov9VwQgCk2BBn5ouqAUxTwhvG+T7UW+kSscqrS25BTJS
+         hMwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cKfkGh414B/iRXkK8RbjxGaH4QllS+6UvmAmMf9vRl0=;
-        b=XRJ3MsgKXRU7k5yKbe1jUpCIfkL3Y5mcUzyAfwfwEb1nqi/hjknzKiF9x/oaczWFNX
-         5wmYB8szueysIDdAr4YExv3xDlt8k373hknApERrSPhBtvtjo9AelW+U4xHCjif9zrjX
-         0zsMdQLdjfYsvLZL5tobRTKiC+nWObfHwr5c3ev4+MT9oRbUH3Pcfr9uqHBmaOo/g8BM
-         Fj0ec5prIxpQ6FlljHgyOwLCy5U/W5wy2dXa9Wxfmtz+TiUrrctzgtmVqerMrlh2yLbp
-         zWin0pkSK5SfZA51Qj8QMo1egx6KxqsJohK2Aa4GcpZosNUmaIEUTMmerbvVDkNRDOeK
-         5hQQ==
-X-Gm-Message-State: AOAM530/huVkRrqO0gpJ9jCq2vOeGka7VODoN9VrjYZBSMaSQ6BfG/ga
-        dh4fG5cOiJGoVf1C8lEKzzzcsV4Im78=
-X-Google-Smtp-Source: ABdhPJwlWnqyUQH7uAsnYIo5cIkre1x/GmihkXFuZOqhpsHQyA1Mw4c0eBlB0ZWnMXHYXFpeAs1LAQ==
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr17107979ejy.493.1633850701293;
-        Sun, 10 Oct 2021 00:25:01 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-109-12.retail.telecomitalia.it. [79.43.109.12])
-        by smtp.gmail.com with ESMTPSA id eg42sm2131384edb.61.2021.10.10.00.24.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ykKHrA/r2EJEyEbkVUzjv11eom1VFrBiZ2DCTiavQzo=;
+        b=gBxOvsShks02vGTTnJgtx7pCaSEsXzBN4GUwYrJHQGEn3+pQOIMrtJcibQODaI8paQ
+         l4NkE2yEfwZuxWzyJRr9XkSIsTkrCxaduwSKQPVi9dA9Z+ECvDQr1E0oOqWsyVztzI5r
+         YEEUCPtZygfvBKk+to26gUqrsJA7NUJu7a44q9L+4/LvbqTEOsoy3n4WTgl7brniroJm
+         tjjwXHM5tZmC4y0euTgUxAysoxZpvYzrWqVg8wKb5xl5tYOMjmfw4kDNMplKAA5njfp8
+         4se3kRVPjW/f10pArt4r3HLs239CIyO3k7ufWgkW0NuhDKNF7QjI8tsAZ67SEyp6HVqe
+         vi+Q==
+X-Gm-Message-State: AOAM531DBYAzSE7H/zZ6GjqGIP/siWVRTljul3+QBkojjCxPJVak4kkd
+        hyxBB6SO9okW1f7RJvqzHg8=
+X-Google-Smtp-Source: ABdhPJyaBp/q4QLGz16KTew7U5mk6UQ/Tzhv3gHfJhX+TdLkxX9fWtvzGMYTlmsaua+7XZ3VtmslyQ==
+X-Received: by 2002:a17:902:e544:b0:13e:e863:6cd2 with SMTP id n4-20020a170902e54400b0013ee8636cd2mr17885504plf.41.1633851182186;
+        Sun, 10 Oct 2021 00:33:02 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id 184sm3981317pfw.49.2021.10.10.00.32.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 00:25:00 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, saurav.girepunje@gmail.com,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
-        marcocesati@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return statement.
-Date:   Sun, 10 Oct 2021 09:24:58 +0200
-Message-ID: <5843476.m7FxXixzUK@localhost.localdomain>
-In-Reply-To: <YWJ0vSrgsiKK7suE@user>
-References: <YWJ0vSrgsiKK7suE@user>
+        Sun, 10 Oct 2021 00:33:01 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 13:02:56 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        marcocesati@gmail.com, dan.carpenter@oracle.com,
+        lee.jones@linaro.org, saurav.girepunje@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8723bs: hal: remove if condition which is always
+ false
+Message-ID: <YWKXKGuA/Io9sEjf@user>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
-> Remove the unneeded and redundant check of variable on goto out.
-> Simplify the return using multiple goto label to avoid
-> unneeded check.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
-> 
-> ChangeLog V2:
-> 	-Add goto out after the memcpy for no error case return with
-> 	 ret only. Free is not required on no error case.
-> 
-> ChangeLog V1:
-> 	-Remove the unneeded and redundant check of variable on
-> 	 goto out.
-> 	-Simplify the return using multiple goto label to avoid
-> 	 unneeded check.
-> 
->  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
-staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> index 0868f56e2979..ae9579dc0848 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
-*padapter, char *name, str
->  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
->  	if (!mon_wdev) {
->  		ret = -ENOMEM;
-> -		goto out;
-> +		goto err_zmalloc;
->  	}
-> 
->  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
-> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
-adapter *padapter, char *name, str
-> 
->  	ret = cfg80211_register_netdevice(mon_ndev);
->  	if (ret) {
-> -		goto out;
-> +		goto err_register;
->  	}
-> 
->  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
->  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
-> +	goto out;
+Remove the if condition which is always false. The last update on
+variable max_rf_path is value 1. It's value is not changing after that.
+So if condition check for value 2 will be always false only.
 
-I think this is the right thing to do in order to remove the bug you 
-introduced in v1. Well done.
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-> 
-> -out:
-> -	if (ret && mon_wdev) {
-> -		kfree(mon_wdev);
-> -		mon_wdev = NULL;
-> -	}
-> -
-> -	if (ret && mon_ndev) {
-> -		free_netdev(mon_ndev);
-> -		*ndev = mon_ndev = NULL;
-> -	}
-> +err_register:
-> +	kfree(mon_wdev);
-> +	mon_wdev = NULL;
-> 
-> +err_zmalloc:
-> +	free_netdev(mon_ndev);
-> +	*ndev = mon_ndev = NULL;
+diff --git a/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c b/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
+index 392cc8a398f5..612575ba961a 100644
+--- a/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
++++ b/drivers/staging/rtl8723bs/hal/odm_NoiseMonitor.c
+@@ -106,12 +106,10 @@ static s16 odm_InbandNoise_Monitor_NSeries(
+ 	pDM_Odm->noise_level.noise[RF_PATH_A] = -110 + reg_c50 + noise_data.sum[RF_PATH_A];
+ 	pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_A];
 
-Not sure about what the Linux coding guidelines say, but I think that 
-assigning NULL to local (on stack) pointers (mon_wdev, mon_ndev) at this 
-point is unnecessary. There is no risk of reusing them after the "out" 
-labelled block, because at function exit they are destroyed when the stack is 
-unwound.
+-	if (max_rf_path == 2) {
+-		reg_c58 = (s32)PHY_QueryBBReg(pDM_Odm->Adapter, rOFDM0_XBAGCCore1, bMaskByte0);
+-		reg_c58 &= ~BIT7;
+-		pDM_Odm->noise_level.noise[RF_PATH_B] = -110 + reg_c58 + noise_data.sum[RF_PATH_B];
+-		pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_B];
+-	}
++	reg_c58 = (s32)PHY_QueryBBReg(pDM_Odm->Adapter, rOFDM0_XBAGCCore1, bMaskByte0);
++	reg_c58 &= ~BIT7;
++	pDM_Odm->noise_level.noise[RF_PATH_B] = -110 + reg_c58 + noise_data.sum[RF_PATH_B];
++	pDM_Odm->noise_level.noise_all += pDM_Odm->noise_level.noise[RF_PATH_B];
+ 	pDM_Odm->noise_level.noise_all /= max_rf_path;
 
-If you decide to remove these assignments, take care to leave "*ndev = NULL;" 
-as-is (why?).
-
-Aside from this minor objection...
-
-Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-
-Thanks,
-
-Fabio
-
-> +out:
->  	return ret;
->  }
-> 
-> --
-> 2.32.0
-> 
-> 
-> 
-
-
-
+ 	/*  */
+--
+2.32.0
 
