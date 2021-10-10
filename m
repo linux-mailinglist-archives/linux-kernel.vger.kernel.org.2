@@ -2,97 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637D8428368
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 300A242836C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhJJTeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 15:34:17 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:42530 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232701AbhJJTeG (ORCPT
+        id S231621AbhJJTkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 15:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229679AbhJJTki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 15:34:06 -0400
-Received: by mail-oo1-f48.google.com with SMTP id a17-20020a4a6851000000b002b59bfbf669so4667171oof.9;
-        Sun, 10 Oct 2021 12:32:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=oK4cASLRG9KDw6Buwhljv1jwTC0VF/5L0ZVtZoaadh4=;
-        b=I2A0ETz2IjrEpmlITvUS5so/Ltb3Iq3HbWpeWDCvjj9ibapPJZLVZkhVghuDDnlEXw
-         s+xRKd0h9n270PznxiZtvMU9x9LBWfUX0VPbeENWKPkbTQv1piRCK/l5ORLU1W90+qE4
-         mWYj/mp3qXhhd7uzGOUPmsV0S07rx7bbR388h63eqShBkdAoiwzulfTZHdkTaI2od0T1
-         RyxudA3IP1rET72uGSIP14RSTiBSlK6EVkaknvZIFnO4HCeRO+kuUFnIcW2pHUv1LZ42
-         n9fGh0gKcA0OGjAs1uBBKdefzVbbwBoOM0802/DRcOM4T3k6n5jujIqbdaUdO8pTxGmV
-         ulCw==
-X-Gm-Message-State: AOAM531TUya+pEdxKGVymYFZNoCSjVEm87xMLvRxvp4tl9Tm6yo+Yfpt
-        h7ug2E7uDqcM/sfUCycIRg==
-X-Google-Smtp-Source: ABdhPJw/3P18DACANSvasaUJGLn0BgTelQ5sB9S5VvdRh2KhSyIwW4IzTCeFWzSXcM8rcl8Z5Nwj/Q==
-X-Received: by 2002:a4a:e499:: with SMTP id s25mr16419515oov.46.1633894326677;
-        Sun, 10 Oct 2021 12:32:06 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id b19sm1298316otk.75.2021.10.10.12.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 12:32:06 -0700 (PDT)
-Received: (nullmailer pid 3158664 invoked by uid 1000);
-        Sun, 10 Oct 2021 19:31:56 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     David Heidelberg <david@ixit.cz>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        ~okias/devicetree@lists.sr.ht, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org
-In-Reply-To: <20211009104309.45117-1-david@ixit.cz>
-References: <20211009104309.45117-1-david@ixit.cz>
-Subject: Re: [PATCH] WIP: dt-bindings: arm: hwmon: gpio-fan: Convert txt bindings to yaml
-Date:   Sun, 10 Oct 2021 14:31:56 -0500
-Message-Id: <1633894316.403809.3158663.nullmailer@robh.at.kernel.org>
+        Sun, 10 Oct 2021 15:40:38 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3420C061570;
+        Sun, 10 Oct 2021 12:38:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=D36anXYT66Tw0vGET6GPozDF3jPQy6fMETODmwssbmY=; b=Zqkwie5kC+sD6J+m8V4GOx3jVJ
+        /rUqhnK1X3WUXMqNGNjFUP5SLZKv1mW+vc6OdFKA4VB6Z8q8HmvlCCykfYPawWUzPYKxgaenqFg33
+        OCfTKRf1qjxe6cvrXmrWZyiGOcWzkZyY/UxsuJeq7Ay3HViBJor4cMdqW7uJiZWfTXEIlm280BjMz
+        mXpJiXv9sJK+sWm4X+hodeXj8MzT0b/OsqvGVfgO2Zfww+1F/Qjb+SEaZkYfYWby3cUyMUJ9JHJwq
+        zDpVexOAoxOs/l5RzDuucEdwg+eqrxSzmtWIap3Rvgg/qHXdigIUGFg1O3rCaR1ew9DChVok4iF2N
+        2oRgFBEw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZeeb-007JXi-6r; Sun, 10 Oct 2021 19:38:37 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andy Walls <awalls@md.metrocast.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-um@lists.infradead.org,
+        Richard Weinberger <richard@nod.at>
+Subject: [PATCH] media: ivtv: fix build for UML
+Date:   Sun, 10 Oct 2021 12:38:36 -0700
+Message-Id: <20211010193836.32300-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Oct 2021 12:43:09 +0200, David Heidelberg wrote:
-> Convert fan devices connected to GPIOs to the YAML syntax.
-> 
-> Signed-off-by: David Heidelberg <david@ixit.cz>
-> ---
->  .../devicetree/bindings/hwmon/gpio-fan.txt    | 41 -----------
->  .../devicetree/bindings/hwmon/gpio-fan.yaml   | 69 +++++++++++++++++++
->  2 files changed, 69 insertions(+), 41 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.txt
->  create mode 100644 Documentation/devicetree/bindings/hwmon/gpio-fan.yaml
-> 
+Prevent the use of page table macros and types from 2 conflicting
+places. This fixes multiple build errors and warnings, e.g.:
 
-Running 'make dtbs_check' with the schema in this patch gives the
-following warnings. Consider if they are expected or the schema is
-incorrect. These may not be new warnings.
+../arch/x86/include/asm/pgtable_64_types.h:21:34: error: conflicting types for ‘pte_t’
+ typedef struct { pteval_t pte; } pte_t;
+                                  ^~~~~
+In file included from ../include/linux/mm_types_task.h:16:0,
+                 from ../include/linux/mm_types.h:5,
+                 from ../include/linux/buildid.h:5,
+                 from ../include/linux/module.h:14,
+                 from ../drivers/media/pci/ivtv/ivtv-driver.h:40,
+                 from ../drivers/media/pci/ivtv/ivtvfb.c:29:
+../arch/um/include/asm/page.h:57:39: note: previous declaration of ‘pte_t’ was here
+ typedef struct { unsigned long pte; } pte_t;
 
-Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-This will change in the future.
+../arch/x86/include/asm/pgtable_types.h:284:43: error: expected ‘)’ before ‘prot’
+ static inline pgprot_t pgprot_nx(pgprot_t prot)
+                                           ^
+../include/linux/pgtable.h:914:26: note: in definition of macro ‘pgprot_nx’
+ #define pgprot_nx(prot) (prot)
+                          ^~~~
+In file included from ../arch/x86/include/asm/memtype.h:6:0,
+                 from ../drivers/media/pci/ivtv/ivtvfb.c:40:
+../arch/x86/include/asm/pgtable_types.h:288:0: warning: "pgprot_nx" redefined
+ #define pgprot_nx pgprot_nx
 
-Full log is available here: https://patchwork.ozlabs.org/patch/1538743
+../arch/x86/include/asm/page_types.h:11:0: warning: "PAGE_SIZE" redefined
+ #define PAGE_SIZE  (_AC(1,UL) << PAGE_SHIFT)
+ 
+In file included from ../include/linux/mm_types_task.h:16:0,
+                 from ../include/linux/mm_types.h:5,
+                 from ../include/linux/buildid.h:5,
+                 from ../include/linux/module.h:14,
+                 from ../drivers/media/pci/ivtv/ivtv-driver.h:40,
+                 from ../drivers/media/pci/ivtv/ivtvfb.c:29:
+../arch/um/include/asm/page.h:14:0: note: this is the location of the previous definition
+ #define PAGE_SIZE (_AC(1, UL) << PAGE_SHIFT)
 
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Andy Walls <awalls@md.metrocast.net>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: Richard Weinberger <richard@nod.at>
+---
+ drivers/media/pci/ivtv/ivtvfb.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-fan: 'gpio-fan,speed-map' is a required property
-	arch/arm/boot/dts/kirkwood-nas2big.dt.yaml
-	arch/arm/boot/dts/kirkwood-net2big.dt.yaml
-
-gpio-fan: gpio-fan,speed-map: 'anyOf' conditional failed, one must be fixed:
-	arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml
-	arch/arm/boot/dts/gemini-dlink-dns-313.dt.yaml
-
-gpio_fan: gpio-fan,speed-map: 'anyOf' conditional failed, one must be fixed:
-	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
-	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
-	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
-
-gpio-fan: gpio-fan,speed-map: 'oneOf' conditional failed, one must be fixed:
-	arch/arm/boot/dts/gemini-dlink-dir-685.dt.yaml
-	arch/arm/boot/dts/gemini-dlink-dns-313.dt.yaml
-
-gpio_fan: gpio-fan,speed-map: 'oneOf' conditional failed, one must be fixed:
-	arch/arm/boot/dts/am57xx-beagle-x15.dt.yaml
-	arch/arm/boot/dts/am57xx-beagle-x15-revb1.dt.yaml
-	arch/arm/boot/dts/am57xx-beagle-x15-revc.dt.yaml
-
+--- linux-next-20211007.orig/drivers/media/pci/ivtv/ivtvfb.c
++++ linux-next-20211007/drivers/media/pci/ivtv/ivtvfb.c
+@@ -36,7 +36,7 @@
+ #include <linux/fb.h>
+ #include <linux/ivtvfb.h>
+ 
+-#ifdef CONFIG_X86_64
++#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+ #include <asm/memtype.h>
+ #endif
+ 
+@@ -1157,7 +1157,7 @@ static int ivtvfb_init_card(struct ivtv
+ {
+ 	int rc;
+ 
+-#ifdef CONFIG_X86_64
++#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
+ 	if (pat_enabled()) {
+ 		if (ivtvfb_force_pat) {
+ 			pr_info("PAT is enabled. Write-combined framebuffer caching will be disabled.\n");
