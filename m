@@ -2,144 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9FA427F62
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 08:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E813E427F65
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 08:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhJJGop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 02:44:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
+        id S230335AbhJJGuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 02:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhJJGol (ORCPT
+        with ESMTP id S229697AbhJJGua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 02:44:41 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50033C061570;
-        Sat,  9 Oct 2021 23:42:43 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id 187so11897504pfc.10;
-        Sat, 09 Oct 2021 23:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=/fo+SL59BqhBp8OwXWZaQWCV9nYu75S/chQz3wujueI=;
-        b=ZgFYjNHVIn8b1F/37R31LzGFz1t2iuolTYtbKonSY1vvYElgPlb7XncvrVoW1UFuYr
-         T4Nv+62Z7y7ERSUpvHvmin3wIn0BJBNNi3eyGIDKBKXaCceSo6JwIVjDceZDT9QqI9px
-         hz50DraMhIGWlN3GDw8gKAF3L85GQQVoCbcOlQ+dFcaBlLF9BeNs8g7Ggy53+CTou91u
-         qmKZq2u35eDB5Q3XwclmRRluSqlYasoJ0GooeEAucKSPcFW7zg/mbhqFcegXURHa48xp
-         iKWHx5FqYz2UquuiItB5fRLtFKRS6bU726w7v1ngB7UYuenYClbSSBGyAghjBGvfXRO8
-         OpHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=/fo+SL59BqhBp8OwXWZaQWCV9nYu75S/chQz3wujueI=;
-        b=0HiQ5L38skp83VFyDFIwYBC/vX50xJ155Ngw+ZzKSsEHbBQVwsdWZJCxFi9Rs4und4
-         lec/QKWtGUoKdaW7Nv7gimbOI38Vytpum6M+OpYskCBN8WQHFrLwRcVBbJX8qKKlHvff
-         IFh4kSXJvp09RSgCl/rJhXOjeD8mTOWcsT1Lq6iBiiW192va8ssFF9AmQXQzSETA1Dcf
-         Sx9bMUCXg2NROSR2v6BS2TgBON2Ta0F+SYA218PL49Vjn5OLVpNu7CZnsKzJKQy+0pTk
-         W807EeNmZJhlwvtQuJGzUUFxwXEeRLe0IQAJz3qcqQFb0QwQr6vt5kJZzlBhqscTYFWm
-         Fp1A==
-X-Gm-Message-State: AOAM530Z7ULJ8OI0h9GyXJCM1+b0lY6cq5whZ8m5WGONlb/6QoJfK4o3
-        vyqTnRiYj2VfpJIcxbkm8Q==
-X-Google-Smtp-Source: ABdhPJwV/WF678MkNnZwGi1mVyKfzHnZ5lAckmRMyF9WU/RzTeI724ojh+nwcm48h7sCrxFtqfxqkg==
-X-Received: by 2002:a63:7746:: with SMTP id s67mr2983525pgc.225.1633848162816;
-        Sat, 09 Oct 2021 23:42:42 -0700 (PDT)
-Received: from vultr.guest ([107.191.53.97])
-        by smtp.gmail.com with ESMTPSA id t3sm2553823pgu.87.2021.10.09.23.42.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 09 Oct 2021 23:42:42 -0700 (PDT)
-From:   Zheyu Ma <zheyuma97@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zheyu Ma <zheyuma97@gmail.com>
-Subject: [PATCH 2/2] fbdev: fbmem: Fix double free of 'fb_info->pixmap.addr'
-Date:   Sun, 10 Oct 2021 06:42:28 +0000
-Message-Id: <1633848148-29747-1-git-send-email-zheyuma97@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        Sun, 10 Oct 2021 02:50:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414F7C061570;
+        Sat,  9 Oct 2021 23:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=TIv3XoILn5B+vBgc5cit6C+zMQxnp9VBILUPYEKq37s=; b=bF7qWdgmVCYYS5yU9SklqgEy3m
+        hxCrRZbtnKQEWgF+fCh4qA7vJyhehkaXn2okOSEmoQ6E6Z6LbE8inEMICirhzBKyTEVTvSr5KGuNP
+        9gBPWByzOtx3KhFPRsAXQg8vKryWwiSP2N5OR8Kh09YdSo3RR9+fGYN1WOK+y7QZpijcfstxd0uTv
+        EHwYyuzYABUKZXjd3/pwvM/oUhqvP9FaxKyXe4E78PgB/tJmbaaJq3lqcEOx1P2989gbd3wxE5Wsh
+        uNvSvFwFN7+ankQV+ra/VzHYBJfBQTIXvm3VgG/ZQiOymAOeCpHHXTgqwi8jDgCu9Lfny6XbqOnFj
+        h9xnMpJQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZSdI-006PPd-M2; Sun, 10 Oct 2021 06:48:28 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] docs: UML: user_mode_linux_howto_v2 edits
+Date:   Sat,  9 Oct 2021 23:48:27 -0700
+Message-Id: <20211010064827.3405-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-savagefb and some other drivers call kfree to free 'info->pixmap.addr'
-even after calling unregister_framebuffer, which may cause double free.
+Fix various typos, command syntax, punctuation, capitalization,
+and whitespace.
 
-Fix this by setting 'fb_info->pixmap.addr' to NULL after kfree in
-unregister_framebuffer.
-
-The following log reveals it:
-
-[   37.318872] BUG: KASAN: double-free or invalid-free in kfree+0x13e/0x290
-[   37.319369]
-[   37.320803] Call Trace:
-[   37.320992]  dump_stack_lvl+0xa8/0xd1
-[   37.321274]  print_address_description+0x87/0x3b0
-[   37.321632]  ? kfree+0x13e/0x290
-[   37.321879]  ? kfree+0x13e/0x290
-[   37.322126]  ? kfree+0x13e/0x290
-[   37.322374]  kasan_report_invalid_free+0x58/0x90
-[   37.322724]  ____kasan_slab_free+0x123/0x140
-[   37.323049]  __kasan_slab_free+0x11/0x20
-[   37.323347]  slab_free_freelist_hook+0x81/0x150
-[   37.323689]  ? savagefb_remove+0xa1/0xc0 [savagefb]
-[   37.324066]  kfree+0x13e/0x290
-[   37.324304]  savagefb_remove+0xa1/0xc0 [savagefb]
-[   37.324655]  pci_device_remove+0xa9/0x250
-[   37.324959]  ? pci_device_probe+0x7d0/0x7d0
-[   37.325273]  device_release_driver_internal+0x4f7/0x7a0
-[   37.325666]  driver_detach+0x1e8/0x2c0
-[   37.325952]  bus_remove_driver+0x134/0x290
-[   37.326262]  ? sysfs_remove_groups+0x97/0xb0
-[   37.326584]  driver_unregister+0x77/0xa0
-[   37.326883]  pci_unregister_driver+0x2c/0x1c0
-[   37.336124]
-[   37.336245] Allocated by task 5465:
-[   37.336507]  ____kasan_kmalloc+0xb5/0xe0
-[   37.336801]  __kasan_kmalloc+0x9/0x10
-[   37.337069]  kmem_cache_alloc_trace+0x12b/0x220
-[   37.337405]  register_framebuffer+0x3f3/0xa00
-[   37.337731]  foo_register_framebuffer+0x3b/0x50 [savagefb]
-[   37.338136]
-[   37.338255] Freed by task 5475:
-[   37.338492]  kasan_set_track+0x3d/0x70
-[   37.338774]  kasan_set_free_info+0x23/0x40
-[   37.339081]  ____kasan_slab_free+0x10b/0x140
-[   37.339399]  __kasan_slab_free+0x11/0x20
-[   37.339694]  slab_free_freelist_hook+0x81/0x150
-[   37.340034]  kfree+0x13e/0x290
-[   37.340267]  do_unregister_framebuffer+0x21c/0x3d0
-[   37.340624]  unregister_framebuffer+0x23/0x40
-[   37.340950]  savagefb_remove+0x45/0xc0 [savagefb]
-[   37.341302]  pci_device_remove+0xa9/0x250
-[   37.341603]  device_release_driver_internal+0x4f7/0x7a0
-[   37.341990]  driver_detach+0x1e8/0x2c0
-[   37.342272]  bus_remove_driver+0x134/0x290
-[   37.342577]  driver_unregister+0x77/0xa0
-[   37.342873]  pci_unregister_driver+0x2c/0x1c0
-[   37.343196]  cleanup_module+0x15/0x1c [savagefb]
-[   37.343543]  __se_sys_delete_module+0x398/0x490
-[   37.343881]  __x64_sys_delete_module+0x56/0x60
-[   37.344221]  do_syscall_64+0x4d/0xc0
-[   37.344492]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+Fixes: 04301bf5b072 ("docs: replace the old User Mode Linux HowTo with a new one")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
 ---
- drivers/video/fbdev/core/fbmem.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/virt/uml/user_mode_linux_howto_v2.rst |  119 +++++-----
+ 1 file changed, 62 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 7420d2c16e47..b81b0e37daed 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -1702,8 +1702,10 @@ static void do_unregister_framebuffer(struct fb_info *fb_info)
- {
- 	unlink_framebuffer(fb_info);
- 	if (fb_info->pixmap.addr &&
--	    (fb_info->pixmap.flags & FB_PIXMAP_DEFAULT))
-+	    (fb_info->pixmap.flags & FB_PIXMAP_DEFAULT)) {
- 		kfree(fb_info->pixmap.addr);
-+		fb_info->pixmap.addr = NULL;
-+	}
- 	fb_destroy_modelist(&fb_info->modelist);
- 	registered_fb[fb_info->node] = NULL;
- 	num_registered_fb--;
--- 
-2.17.6
-
+--- linux-next-20211007.orig/Documentation/virt/uml/user_mode_linux_howto_v2.rst
++++ linux-next-20211007/Documentation/virt/uml/user_mode_linux_howto_v2.rst
+@@ -128,7 +128,7 @@ Create a minimal OS installation on the
+ debootstrap does not set up the root password, fstab, hostname or
+ anything related to networking. It is up to the user to do that.
+ 
+-Set the root password -t he easiest way to do that is to chroot into the
++Set the root password - the easiest way to do that is to chroot into the
+ mounted image::
+ 
+    # chroot /mnt
+@@ -144,7 +144,7 @@ will be empty and it needs an entry for
+    /dev/ubd0   ext4    discard,errors=remount-ro  0       1
+ 
+ The image hostname will be set to the same as the host on which you
+-are creating it image. It is a good idea to change that to avoid
++are creating its image. It is a good idea to change that to avoid
+ "Oh, bummer, I rebooted the wrong machine".
+ 
+ UML supports two classes of network devices - the older uml_net ones
+@@ -162,7 +162,7 @@ need entries like::
+ 
+    # vector UML network devices
+    auto vec0
+-   iface eth0 inet dhcp
++   iface vec0 inet dhcp
+ 
+ We now have a UML image which is nearly ready to run, all we need is a
+ UML kernel and modules for it.
+@@ -179,7 +179,12 @@ directory to the mounted UML filesystem:
+ If you have compiled your own kernel, you need to use the usual "install
+ modules to a location" procedure by running::
+ 
+-  # make install MODULES_DIR=/mnt/lib/modules
++  # make INSTALL_MOD_PATH=/mnt/lib/modules modules_install
++
++This will install modules into /mnt/lib/modules/$(KERNELRELEASE).
++To specify the full module installation path, use::
++
++  # make MODLIB=/mnt/lib/modules modules_install
+ 
+ At this point the image is ready to be brought up.
+ 
+@@ -188,7 +193,7 @@ Setting Up UML Networking
+ *************************
+ 
+ UML networking is designed to emulate an Ethernet connection. This
+-connection may be either a point-to-point (similar to a connection
++connection may be either point-to-point (similar to a connection
+ between machines using a back-to-back cable) or a connection to a
+ switch. UML supports a wide variety of means to build these
+ connections to all of: local machine, remote machine(s), local and
+@@ -231,7 +236,7 @@ remote UML and other VM instances.
+ * All transports which have multi-packet rx and/or tx can deliver pps
+   rates of up to 1Mps or more.
+ 
+-* All legacy transports are generally limited to ~600-700MBit and 0.05Mps
++* All legacy transports are generally limited to ~600-700MBit and 0.05Mps.
+ 
+ * GRE and L2TPv3 allow connections to all of: local machine, remote
+   machines, remote network devices and remote UML instances.
+@@ -255,7 +260,7 @@ raw sockets where needed.
+ 
+ This can be achieved by granting the user a particular capability instead
+ of running UML as root.  In case of vector transport, a user can add the
+-capability ``CAP_NET_ADMIN`` or ``CAP_NET_RAW``, to the uml binary.
++capability ``CAP_NET_ADMIN`` or ``CAP_NET_RAW`` to the uml binary.
+ Thenceforth, UML can be run with normal user privilges, along with
+ full networking.
+ 
+@@ -286,7 +291,7 @@ These options are common for all transpo
+ 
+ * ``mac=XX:XX:XX:XX:XX`` - sets the interface MAC address value.
+ 
+-* ``gro=[0,1]`` - sets GRO on or off. Enables receive/transmit offloads.
++* ``gro=[0,1]`` - sets GRO off or on. Enables receive/transmit offloads.
+   The effect of this option depends on the host side support in the transport
+   which is being configured. In most cases it will enable TCP segmentation and
+   RX/TX checksumming offloads. The setting must be identical on the host side
+@@ -301,7 +306,7 @@ These options are common for all transpo
+ * ``headroom=int`` - adjusts the default headroom (32 bytes) reserved
+   if a packet will need to be re-encapsulated into for instance VXLAN.
+ 
+-* ``vec=0`` - disable multipacket io and fall back to packet at a
++* ``vec=0`` - disable multipacket IO and fall back to packet at a
+   time mode
+ 
+ Shared Options
+@@ -331,7 +336,7 @@ Example::
+ This will connect vec0 to tap0 on the host. Tap0 must already exist (for example
+ created using tunctl) and UP.
+ 
+-tap0 can be configured as a point-to-point interface and given an ip
++tap0 can be configured as a point-to-point interface and given an IP
+ address so that UML can talk to the host. Alternatively, it is possible
+ to connect UML to a tap interface which is connected to a bridge.
+ 
+@@ -358,7 +363,7 @@ Example::
+ 
+ This is an experimental/demo transport which couples tap for transmit
+ and a raw socket for receive. The raw socket allows multi-packet
+-receive resulting in significantly higher packet rates than normal tap
++receive resulting in significantly higher packet rates than normal tap.
+ 
+ Privileges required: hybrid requires ``CAP_NET_RAW`` capability by
+ the UML user as well as the requirements for the tap transport.
+@@ -426,10 +431,10 @@ This will configure an Ethernet over ``G
+ endpoint at host dst_host. ``GRE`` supports the following additional
+ options:
+ 
+-* ``rx_key=int`` - GRE 32 bit integer key for rx packets, if set,
++* ``rx_key=int`` - GRE 32-bit integer key for rx packets, if set,
+   ``txkey`` must be set too
+ 
+-* ``tx_key=int`` - GRE 32 bit integer key for tx packets, if set
++* ``tx_key=int`` - GRE 32-bit integer key for tx packets, if set
+   ``rx_key`` must be set too
+ 
+ * ``sequence=[0,1]`` - enable GRE sequence
+@@ -444,12 +449,12 @@ options:
+ 
+ GRE has a number of caveats:
+ 
+-* You can use only one GRE connection per ip address. There is no way to
++* You can use only one GRE connection per IP address. There is no way to
+   multiplex connections as each GRE tunnel is terminated directly on
+   the UML instance.
+ 
+ * The key is not really a security feature. While it was intended as such
+-  it's "security" is laughable. It is, however, a useful feature to
++  its "security" is laughable. It is, however, a useful feature to
+   ensure that the tunnel is not misconfigured.
+ 
+ An example configuration for a Linux host with a local address of
+@@ -489,22 +494,22 @@ the L2TPv3 UDP flavour and UDP destinati
+ 
+ L2TPv3 always requires the following additional options:
+ 
+-* ``rx_session=int`` - l2tpv3 32 bit integer session for rx packets
++* ``rx_session=int`` - l2tpv3 32-bit integer session for rx packets
+ 
+-* ``tx_session=int`` - l2tpv3 32 bit integer session for tx packets
++* ``tx_session=int`` - l2tpv3 32-bit integer session for tx packets
+ 
+ As the tunnel is fixed these are not negotiated and they are
+ preconfigured on both ends.
+ 
+-Additionally, L2TPv3 supports the following optional parameters
++Additionally, L2TPv3 supports the following optional parameters.
+ 
+-* ``rx_cookie=int`` - l2tpv3 32 bit integer cookie for rx packets - same
++* ``rx_cookie=int`` - l2tpv3 32-bit integer cookie for rx packets - same
+   functionality as GRE key, more to prevent misconfiguration than provide
+   actual security
+ 
+-* ``tx_cookie=int`` - l2tpv3 32 bit integer cookie for tx packets
++* ``tx_cookie=int`` - l2tpv3 32-bit integer cookie for tx packets
+ 
+-* ``cookie64=[0,1]`` - use 64 bit cookies instead of 32 bit.
++* ``cookie64=[0,1]`` - use 64-bit cookies instead of 32-bit.
+ 
+ * ``counter=[0,1]`` - enable l2tpv3 counter
+ 
+@@ -518,12 +523,12 @@ Additionally, L2TPv3 supports the follow
+ 
+ L2TPv3 has a number of caveats:
+ 
+-* you can use only one connection per ip address in raw mode. There is
++* you can use only one connection per IP address in raw mode. There is
+   no way to multiplex connections as each L2TPv3 tunnel is terminated
+   directly on the UML instance. UDP mode can use different ports for
+   this purpose.
+ 
+-Here is an example of how to configure a linux host to connect to UML
++Here is an example of how to configure a Linux host to connect to UML
+ via L2TPv3:
+ 
+ **/etc/network/interfaces**::
+@@ -586,7 +591,7 @@ distribution or a custom built kernel ha
+ These add an executable called linux to the system. This is the UML
+ kernel. It can be run just like any other executable.
+ It will take most normal linux kernel arguments as command line
+-arguments.  Additionally, it will need some UML specific arguments
++arguments.  Additionally, it will need some UML-specific arguments
+ in order to do something useful.
+ 
+ Arguments
+@@ -595,7 +600,7 @@ Arguments
+ Mandatory Arguments:
+ --------------------
+ 
+-* ``mem=int[K,M,G]`` - amount of memory. By default bytes. It will
++* ``mem=int[K,M,G]`` - amount of memory. By default in bytes. It will
+   also accept K, M or G qualifiers.
+ 
+ * ``ubdX[s,d,c,t]=`` virtual disk specification. This is not really
+@@ -603,7 +608,7 @@ Mandatory Arguments:
+   specify a root file system.
+   The simplest possible image specification is the name of the image
+   file for the filesystem (created using one of the methods described
+-  in `Creating an image`_)
++  in `Creating an image`_).
+ 
+   * UBD devices support copy on write (COW). The changes are kept in
+     a separate file which can be discarded allowing a rollback to the
+@@ -613,15 +618,15 @@ Mandatory Arguments:
+ 
+   * UBD devices can be set to use synchronous IO. Any writes are
+     immediately flushed to disk. This is done by adding ``s`` after
+-    the ``ubdX`` specification
++    the ``ubdX`` specification.
+ 
+-  * UBD performs some euristics on devices specified as a single
++  * UBD performs some heuristics on devices specified as a single
+     filename to make sure that a COW file has not been specified as
+-    the image. To turn them off, use the ``d`` flag after ``ubdX``
++    the image. To turn them off, use the ``d`` flag after ``ubdX``.
+ 
+   * UBD supports TRIM - asking the Host OS to reclaim any unused
+     blocks in the image. To turn it off, specify the ``t`` flag after
+-    ``ubdX``
++    ``ubdX``.
+ 
+ * ``root=`` root device - most likely ``/dev/ubd0`` (this is a Linux
+   filesystem image)
+@@ -631,7 +636,7 @@ Important Optional Arguments
+ 
+ If UML is run as "linux" with no extra arguments, it will try to start an
+ xterm for every console configured inside the image (up to 6 in most
+-linux distributions). Each console is started inside an
++Linux distributions). Each console is started inside an
+ xterm. This makes it nice and easy to use UML on a host with a GUI. It is,
+ however, the wrong approach if UML is to be used as a testing harness or run
+ in a text-only environment.
+@@ -656,10 +661,10 @@ one is input, the second one output.
+ * The null channel - Discard all input or output. Example ``con=null`` will set
+   all consoles to null by default.
+ 
+-* The fd channel - use file descriptor numbers for input/out. Example:
++* The fd channel - use file descriptor numbers for input/output. Example:
+   ``con1=fd:0,fd:1.``
+ 
+-* The port channel - listen on tcp port number. Example: ``con1=port:4321``
++* The port channel - listen on TCP port number. Example: ``con1=port:4321``
+ 
+ * The pty and pts channels - use system pty/pts.
+ 
+@@ -667,7 +672,7 @@ one is input, the second one output.
+   will make UML use the host 8th console (usually unused).
+ 
+ * The xterm channel - this is the default - bring up an xterm on this channel
+-  and direct IO to it. Note, that in order for xterm to work, the host must
++  and direct IO to it. Note that in order for xterm to work, the host must
+   have the UML distribution package installed. This usually contains the
+   port-helper and other utilities needed for UML to communicate with the xterm.
+   Alternatively, these need to be complied and installed from source. All
+@@ -685,7 +690,7 @@ We can now run UML.
+     vec0:transport=tap,ifname=tap0,depth=128,gro=1 \
+     root=/dev/ubda con=null con0=null,fd:2 con1=fd:0,fd:1
+ 
+-This will run an instance with ``2048M RAM``, try to use the image file
++This will run an instance with ``2048M RAM`` and try to use the image file
+ called ``Filesystem.img`` as root. It will connect to the host using tap0.
+ All consoles except ``con1`` will be disabled and console 1 will
+ use standard input/output making it appear in the same terminal it was started.
+@@ -702,7 +707,7 @@ The UML Management Console
+ ============================
+ 
+ In addition to managing the image from "the inside" using normal sysadmin tools,
+-it is possible to perform a number of low level operations using the UML
++it is possible to perform a number of low-level operations using the UML
+ management console. The UML management console is a low-level interface to the
+ kernel on a running UML instance, somewhat like the i386 SysRq interface. Since
+ there is a full-blown operating system under UML, there is much greater
+@@ -726,7 +731,7 @@ kernel.  When you boot UML, you'll see a
+ 
+    mconsole initialized on /home/jdike/.uml/umlNJ32yL/mconsole
+ 
+-If you specify a unique machine id one the UML command line, i.e. 
++If you specify a unique machine id on the UML command line, i.e.
+ ``umid=debian``, you'll see this::
+ 
+    mconsole initialized on /home/jdike/.uml/debian/mconsole
+@@ -881,11 +886,11 @@ be able to cache the shared data using a
+ so UML disk requests will be served from the host's memory rather than
+ its disks.  There is a major caveat in doing this on multisocket NUMA
+ machines.  On such hardware, running many UML instances with a shared
+-master image and COW changes may caise issues like NMIs from excess of
++master image and COW changes may cause issues like NMIs from excess of
+ inter-socket traffic.
+ 
+-If you are running UML on high end hardware like this, make sure to
+-bind UML to a set of logical cpus residing on the same socket using the
++If you are running UML on high-end hardware like this, make sure to
++bind UML to a set of logical CPUs residing on the same socket using the
+ ``taskset`` command or have a look at the "tuning" section.
+ 
+ To add a copy-on-write layer to an existing block device file, simply
+@@ -986,7 +991,7 @@ specify a subdirectory to mount with the
+ 
+    # mount none /mnt/home -t hostfs -o /home
+ 
+-will mount the hosts's /home on the virtual machine's /mnt/home.
++will mount the host's /home on the virtual machine's /mnt/home.
+ 
+ hostfs as the root filesystem
+ -----------------------------
+@@ -1035,7 +1040,7 @@ The UBD driver, SIGIO and the MMU emulat
+ idle, these threads will be migrated to other processors on a SMP host.
+ This, unfortunately, will usually result in LOWER performance because of
+ all of the cache/memory synchronization traffic between cores. As a
+-result, UML will usually benefit from being pinned on a single CPU
++result, UML will usually benefit from being pinned on a single CPU,
+ especially on a large system. This can result in performance differences
+ of 5 times or higher on some benchmarks.
+ 
+@@ -1061,7 +1066,7 @@ filesystems, devices, virtualization, et
+ opportunities to create and test them without being constrained to
+ emulating specific hardware.
+ 
+-Example - want to try how linux will work with 4096 "proper" network
++Example - want to try how Linux will work with 4096 "proper" network
+ devices?
+ 
+ Not an issue with UML. At the same time, this is something which
+@@ -1070,10 +1075,10 @@ constrained by the number of devices all
+ they are trying to emulate (for example 16 on a PCI bus in qemu).
+ 
+ If you have something to contribute such as a patch, a bugfix, a
+-new feature, please send it to ``linux-um@lists.infradead.org``
++new feature, please send it to ``linux-um@lists.infradead.org``.
+ 
+ Please follow all standard Linux patch guidelines such as cc-ing
+-relevant maintainers and run ``./sripts/checkpatch.pl`` on your patch.
++relevant maintainers and run ``./scripts/checkpatch.pl`` on your patch.
+ For more details see ``Documentation/process/submitting-patches.rst``
+ 
+ Note - the list does not accept HTML or attachments, all emails must
+@@ -1082,21 +1087,21 @@ be formatted as plain text.
+ Developing always goes hand in hand with debugging. First of all,
+ you can always run UML under gdb and there will be a whole section
+ later on on how to do that. That, however, is not the only way to
+-debug a linux kernel. Quite often adding tracing statements and/or
++debug a Linux kernel. Quite often adding tracing statements and/or
+ using UML specific approaches such as ptracing the UML kernel process
+ are significantly more informative.
+ 
+ Tracing UML
+ =============
+ 
+-When running UML consists of a main kernel thread and a number of
++When running, UML consists of a main kernel thread and a number of
+ helper threads. The ones of interest for tracing are NOT the ones
+ that are already ptraced by UML as a part of its MMU emulation.
+ 
+ These are usually the first three threads visible in a ps display.
+ The one with the lowest PID number and using most CPU is usually the
+ kernel thread. The other threads are the disk
+-(ubd) device helper thread and the sigio helper thread.
++(ubd) device helper thread and the SIGIO helper thread.
+ Running ptrace on this thread usually results in the following picture::
+ 
+    host$ strace -p 16566
+@@ -1121,21 +1126,21 @@ Running ptrace on this thread usually re
+    --- SIGALRM {si_signo=SIGALRM, si_code=SI_TIMER, si_timerid=0, si_overrun=0, si_value={int=1631716592, ptr=0x614204f0}} ---
+    rt_sigreturn({mask=[PIPE]})             = -1 EINTR (Interrupted system call)
+ 
+-This is a typical picture from a mostly idle UML instance
++This is a typical picture from a mostly idle UML instance.
+ 
+ * UML interrupt controller uses epoll - this is UML waiting for IO
+   interrupts:
+ 
+    epoll_wait(4, [{EPOLLIN, {u32=3721159424, u64=3721159424}}], 64, 0) = 1
+ 
+-* The sequence of ptrace calls is part of MMU emulation and runnin the
+-  UML userspace
++* The sequence of ptrace calls is part of MMU emulation and running the
++  UML userspace.
+ * ``timer_settime`` is part of the UML high res timer subsystem mapping
+-  timer requests from inside UML onto the host high resultion timers.
++  timer requests from inside UML onto the host high resolution timers.
+ * ``clock_nanosleep`` is UML going into idle (similar to the way a PC
+   will execute an ACPI idle).
+ 
+-As you can see UML will generate quite a bit of output even in idle.The output
++As you can see UML will generate quite a bit of output even in idle. The output
+ can be very informative when observing IO. It shows the actual IO calls, their
+ arguments and returns values.
+ 
+@@ -1164,14 +1169,14 @@ in order to really leverage UML, one nee
+ userspace code which maps driver concepts onto actual userspace host
+ calls.
+ 
+-This forms the so called "user" portion of the driver. While it can
++This forms the so-called "user" portion of the driver. While it can
+ reuse a lot of kernel concepts, it is generally just another piece of
+ userspace code. This portion needs some matching "kernel" code which
+ resides inside the UML image and which implements the Linux kernel part.
+ 
+ *Note: There are very few limitations in the way "kernel" and "user" interact*.
+ 
+-UML does not have a strictly defined kernel to host API. It does not
++UML does not have a strictly defined kernel-to-host API. It does not
+ try to emulate a specific architecture or bus. UML's "kernel" and
+ "user" can share memory, code and interact as needed to implement
+ whatever design the software developer has in mind. The only
+@@ -1180,7 +1185,7 @@ variables having the same names, the dev
+ which includes and libraries they are trying to refer to.
+ 
+ As a result a lot of userspace code consists of simple wrappers.
+-F.e. ``os_close_file()`` is just a wrapper around ``close()``
++E.g. ``os_close_file()`` is just a wrapper around ``close()``
+ which ensures that the userspace function close does not clash
+ with similarly named function(s) in the kernel part.
+ 
+@@ -1188,7 +1193,7 @@ Security Considerations
+ -----------------------
+ 
+ Drivers or any new functionality should default to not
+-accepting arbitrary filename, bpf code or other  parameters
++accepting arbitrary filename, bpf code or other parameters
+ which can affect the host from inside the UML instance.
+ For example, specifying the socket used for IPC communication
+ between a driver and the host at the UML command line is OK
