@@ -2,153 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5182F427EB2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 06:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AF4C427EB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 06:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhJJESm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 00:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhJJESk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 00:18:40 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51344C061762
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 21:16:42 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id g125so12781558oif.9
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 21:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9dKksHyZGIoBAPrBU/GqwD12Fnz5BhKh8zQvkAEnzwI=;
-        b=iCjZiCxoSer6nwXKtggrDTz0n8s8SkVXF46eVVf+dAXR7iAWmg2pOFnaz+uVwYkvcR
-         8r/6AvZwj+EfCRbp3HGARx5fYbAxihUt6E+Frj2tjhGXpfgMKKn5CZMd1RxmMpW9QdVt
-         dXTbLisBUVmNM6Wdyhbgny2tJnO6R5EF4qqH5xTBbfvGCr6FIHoUwiISBgEWodBNl+Mb
-         //n8m5+LA2xS9jwEkiXTxHsVZtLeeYM1OanjAvYd1xRdnlcA7HvDjCQH2IyTvcMCUCBt
-         q3SDVuwNDLKDrfRJmpBg+F5Ety22YhHWZsbkgTfcKBe1FD8ZYqLbziAGwiT2warMuoMO
-         7L8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9dKksHyZGIoBAPrBU/GqwD12Fnz5BhKh8zQvkAEnzwI=;
-        b=rGo82tfJVECzRrYqudREOGtR/NBoA1xSG7eac4ILmQcD0b2VT4lKrVzvHefIZM8mev
-         jGxjd66tSS2hOjaGSJ2wSGd+Y3dOrYbfOmVqeAeyXWdhDCZ0+MzShBlti7vvM2T6UsZa
-         SiHq8KYy0XMun78aB4xLSHpoR8mVNM5YmFZCQ0SwZNr06Is4pI41OLScxUAACqzEDq0+
-         9BXn1YAhX0T2gVb+WxLbpvR1FGUpWqZYSLhE6Xx2Mz2mIp0eeiE2gIhsgtnF6CdvlgxJ
-         UbuOvCnN5zpjBwT6icCnVdFaLON0b7FRcmlpdRKvSxiDJqtosssQ5Dps5BNQEGA7tg6N
-         epNA==
-X-Gm-Message-State: AOAM530hZn5EILStzoABYwXmOZZS8XDWTEugbZnlVPUIAlxeC/qu5qLe
-        lvZ8JJvEMJToboXSiPZrTVk7xg==
-X-Google-Smtp-Source: ABdhPJxnOE3APNnnhnQmDWVAu7V3BvKoUVtdoeSGZ4XRGgWVmuQ54HqxcfsBWYHkiC1jZ4YcsSvprA==
-X-Received: by 2002:a05:6808:1816:: with SMTP id bh22mr13248863oib.69.1633839401460;
-        Sat, 09 Oct 2021 21:16:41 -0700 (PDT)
-Received: from yoga ([2600:1700:a0:3dc8:c84c:8eff:fe1e:256f])
-        by smtp.gmail.com with ESMTPSA id 38sm907603oti.13.2021.10.09.21.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 21:16:40 -0700 (PDT)
-Date:   Sat, 9 Oct 2021 23:16:38 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: Re: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
-Message-ID: <YWJpJnaQ2Nr4PUwr@yoga>
-References: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
+        id S230097AbhJJEW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 00:22:57 -0400
+Received: from mga14.intel.com ([192.55.52.115]:15543 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229645AbhJJEW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 00:22:56 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="226994330"
+X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
+   d="scan'208";a="226994330"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 21:20:57 -0700
+X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
+   d="scan'208";a="658231268"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 21:20:56 -0700
+Date:   Sat, 9 Oct 2021 21:20:56 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, hch@lst.de
+Subject: Re: [PATCH v3 06/10] cxl/pci: Add @base to cxl_register_map
+Message-ID: <20211010042056.GJ3114988@iweiny-DESK2.sc.intel.com>
+References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <163379786922.692348.2318044990911111834.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 09 Oct 21:33 CDT 2021, Dmitry Baryshkov wrote:
-
-> After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
-> qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
-> However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
-> qcom_smmu_impl_init() is never called.
+On Sat, Oct 09, 2021 at 09:44:29AM -0700, Dan Williams wrote:
+> In addition to carrying @barno, @block_offset, and @reg_type, add @base
+> to keep all map/unmap parameters in one object. The helpers
+> cxl_{map,unmap}_regblock() handle adjusting @base to the @block_offset
+> at map and unmap time.
 > 
-> So, let's fix this by always calling qcom_smmu_impl_init(). It does not
-> touch the smmu passed unless the device is a non-Qualcomm one. Make
-> ARM_SMMU select QCOM_SCM for ARCH_QCOM.
-> 
-
-Arnd's intention was to not force QCOM_SCM to be built on non-Qualcomm
-devices. But as Daniel experienced, attempting to boot most Qualcomm
-boards without this results in a instant reboot.
-
-I think it's okay if we tinker with CONFIG_ARM_SMMU_QCOM for v5.16, but
-we're getting late in v5.15 so I would prefer if we make sure this works
-out of the box.
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 > ---
->  drivers/iommu/Kconfig                      | 1 +
->  drivers/iommu/arm/arm-smmu/Makefile        | 3 +--
->  drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 9 +++++++--
->  3 files changed, 9 insertions(+), 4 deletions(-)
+>  drivers/cxl/cxl.h |    1 +
+>  drivers/cxl/pci.c |   31 ++++++++++++++++---------------
+>  2 files changed, 17 insertions(+), 15 deletions(-)
 > 
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index c5c71b7ab7e8..a4593e53fe7d 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -309,6 +309,7 @@ config ARM_SMMU
->  	tristate "ARM Ltd. System MMU (SMMU) Support"
->  	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
->  	select IOMMU_API
-> +	select QCOM_SCM
->  	select IOMMU_IO_PGTABLE_LPAE
->  	select ARM_DMA_USE_IOMMU if ARM
->  	help
-> diff --git a/drivers/iommu/arm/arm-smmu/Makefile b/drivers/iommu/arm/arm-smmu/Makefile
-> index b0cc01aa20c9..e240a7bcf310 100644
-> --- a/drivers/iommu/arm/arm-smmu/Makefile
-> +++ b/drivers/iommu/arm/arm-smmu/Makefile
-> @@ -1,5 +1,4 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_QCOM_IOMMU) += qcom_iommu.o
->  obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
-> -arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o
-> -arm_smmu-$(CONFIG_ARM_SMMU_QCOM) += arm-smmu-qcom.o
-> +arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
-> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> index 2c25cce38060..8199185dd262 100644
-> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
-> @@ -215,8 +215,13 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->  	    of_device_is_compatible(np, "nvidia,tegra186-smmu"))
->  		return nvidia_smmu_impl_init(smmu);
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index a6687e7fd598..7cd16ef144dd 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -140,6 +140,7 @@ struct cxl_device_reg_map {
+>  };
 >  
-> -	if (IS_ENABLED(CONFIG_ARM_SMMU_QCOM))
-> -		smmu = qcom_smmu_impl_init(smmu);
-> +	/*
-> +	 * qcom_smmu_impl_init() will not touch smmu if the device is not
-> +	 * a Qualcomm one.
-> +	 */
-> +	smmu = qcom_smmu_impl_init(smmu);
-> +	if (IS_ERR(smmu))
-> +		return smmu;
+>  struct cxl_register_map {
+> +	void __iomem *base;
+>  	u64 block_offset;
+>  	u8 reg_type;
+>  	u8 barno;
+> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> index 9f006299a0e3..b42407d067ac 100644
+> --- a/drivers/cxl/pci.c
+> +++ b/drivers/cxl/pci.c
+> @@ -306,8 +306,7 @@ static int cxl_pci_setup_mailbox(struct cxl_mem *cxlm)
+>  	return 0;
+>  }
 >  
->  	if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
->  		smmu->impl = &mrvl_mmu500_impl;
-> -- 
-> 2.30.2
+> -static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
+> -					  struct cxl_register_map *map)
+> +static int cxl_map_regblock(struct pci_dev *pdev, struct cxl_register_map *map)
+>  {
+>  	void __iomem *addr;
+>  	int bar = map->barno;
+> @@ -318,24 +317,27 @@ static void __iomem *cxl_pci_map_regblock(struct pci_dev *pdev,
+>  	if (pci_resource_len(pdev, bar) < offset) {
+>  		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+>  			&pdev->resource[bar], (unsigned long long)offset);
+> -		return NULL;
+> +		return -ENXIO;
+>  	}
+>  
+>  	addr = pci_iomap(pdev, bar, 0);
+>  	if (!addr) {
+>  		dev_err(dev, "failed to map registers\n");
+> -		return addr;
+> +		return -ENOMEM;
+>  	}
+>  
+>  	dev_dbg(dev, "Mapped CXL Memory Device resource bar %u @ %#llx\n",
+>  		bar, offset);
+>  
+> -	return addr;
+> +	map->base = addr + map->block_offset;
+> +	return 0;
+>  }
+>  
+> -static void cxl_pci_unmap_regblock(struct pci_dev *pdev, void __iomem *base)
+> +static void cxl_unmap_regblock(struct pci_dev *pdev,
+> +			       struct cxl_register_map *map)
+>  {
+> -	pci_iounmap(pdev, base);
+> +	pci_iounmap(pdev, map->base - map->block_offset);
+
+I know we need to get these in soon.  But I think map->base should be 'base'
+and map->block_offset should be handled in cxl_probe_regs() rather than
+subtract it here..
+
+Either way this is cleaner than what it was.
+
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+
+> +	map->base = NULL;
+>  }
+>  
+>  static int cxl_pci_dvsec(struct pci_dev *pdev, int dvsec)
+> @@ -361,12 +363,12 @@ static int cxl_pci_dvsec(struct pci_dev *pdev, int dvsec)
+>  	return 0;
+>  }
+>  
+> -static int cxl_probe_regs(struct pci_dev *pdev, void __iomem *base,
+> -			  struct cxl_register_map *map)
+> +static int cxl_probe_regs(struct pci_dev *pdev, struct cxl_register_map *map)
+>  {
+>  	struct cxl_component_reg_map *comp_map;
+>  	struct cxl_device_reg_map *dev_map;
+>  	struct device *dev = &pdev->dev;
+> +	void __iomem *base = map->base;
+>  
+>  	switch (map->reg_type) {
+>  	case CXL_REGLOC_RBI_COMPONENT:
+> @@ -442,7 +444,6 @@ static void cxl_decode_regblock(u32 reg_lo, u32 reg_hi,
+>   */
+>  static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
+>  {
+> -	void __iomem *base;
+>  	u32 regloc_size, regblocks;
+>  	int regloc, i, n_maps, ret = 0;
+>  	struct device *dev = cxlm->dev;
+> @@ -475,12 +476,12 @@ static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
+>  		if (map->reg_type > CXL_REGLOC_RBI_MEMDEV)
+>  			continue;
+>  
+> -		base = cxl_pci_map_regblock(pdev, map);
+> -		if (!base)
+> -			return -ENOMEM;
+> +		ret = cxl_map_regblock(pdev, map);
+> +		if (ret)
+> +			return ret;
+>  
+> -		ret = cxl_probe_regs(pdev, base + map->block_offset, map);
+> -		cxl_pci_unmap_regblock(pdev, base);
+> +		ret = cxl_probe_regs(pdev, map);
+> +		cxl_unmap_regblock(pdev, map);
+>  		if (ret)
+>  			return ret;
+>  
 > 
