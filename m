@@ -2,64 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DED4280CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B73124280D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhJJL1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 07:27:30 -0400
-Received: from honk.sigxcpu.org ([24.134.29.49]:36462 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231482AbhJJL12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 07:27:28 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 54D03FB03;
-        Sun, 10 Oct 2021 13:25:28 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id tSDyrNOlMlRU; Sun, 10 Oct 2021 13:25:27 +0200 (CEST)
-Date:   Sun, 10 Oct 2021 13:25:25 +0200
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Diederik de Haas <didi.debian@cknow.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
-Message-ID: <YWLNpbvxWp/81lXz@qwark.sigxcpu.org>
-References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
- <4974503.Y8KB3sNASq@bagend>
- <61a82214-0de8-816f-ff63-3979b86343bf@perex.cz>
- <5069869.zQgEQKRxDW@bagend>
+        id S231816AbhJJLfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 07:35:20 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:57012 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231556AbhJJLfT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 07:35:19 -0400
+Received: from pop-os.home ([90.126.248.220])
+        by mwinf5d73 with ME
+        id 4BZH2600A4m3Hzu03BZHvZ; Sun, 10 Oct 2021 13:33:20 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 10 Oct 2021 13:33:20 +0200
+X-ME-IP: 90.126.248.220
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        yangyingliang@huawei.com
+Cc:     linux-geode@lists.infradead.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] USB: gadget: udc: Remove some dead code
+Date:   Sun, 10 Oct 2021 13:33:16 +0200
+Message-Id: <9a85b2353843b95e2d86acb3103967fd405a8536.1633865503.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5069869.zQgEQKRxDW@bagend>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Sun, Oct 10, 2021 at 12:40:00PM +0200, Diederik de Haas wrote:
-> On Sunday, 10 October 2021 10:40:09 CEST Jaroslav Kysela wrote:
-> > > Unfortunately this change broke multichannel audio on my Rock64 device
-> > > running Debian. My Rock64 is connected to my AVR (Pioneer SC-1224) via a
-> > > HDMI cable.
-> > This looks like an user space configuration problem.
-> 
-> I have placed ALSA card definitions (I think) from LibreELEC on my system from
-> https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/Rockchip/
-> filesystem/usr/share/alsa/cards
+The 'drd_wq' workqueue_struct has never been used.
+It is only destroyed, but never created.
 
-You likely have the paths wrong, see how `simple-card` ends up in the
-config file path:
+It was introduced in commit 1b9f35adb0ff ("usb: gadget: udc: Add Synopsys
+UDC Platform driver")
 
-   https://github.com/alsa-project/alsa-ucm-conf/pull/102/files
+Remove the corresponding dead code and save some space from the 'udc'
+structure.
 
-Cheers,
- -- Guido
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/usb/gadget/udc/amd5536udc.h    | 1 -
+ drivers/usb/gadget/udc/snps_udc_plat.c | 5 -----
+ 2 files changed, 6 deletions(-)
+
+diff --git a/drivers/usb/gadget/udc/amd5536udc.h b/drivers/usb/gadget/udc/amd5536udc.h
+index 3296f3fcee48..055436016503 100644
+--- a/drivers/usb/gadget/udc/amd5536udc.h
++++ b/drivers/usb/gadget/udc/amd5536udc.h
+@@ -572,7 +572,6 @@ struct udc {
+ 	struct extcon_specific_cable_nb	extcon_nb;
+ 	struct notifier_block		nb;
+ 	struct delayed_work		drd_work;
+-	struct workqueue_struct		*drd_wq;
+ 	u32				conn_type;
+ };
+ 
+diff --git a/drivers/usb/gadget/udc/snps_udc_plat.c b/drivers/usb/gadget/udc/snps_udc_plat.c
+index 99805d60a7ab..8bbb89c80348 100644
+--- a/drivers/usb/gadget/udc/snps_udc_plat.c
++++ b/drivers/usb/gadget/udc/snps_udc_plat.c
+@@ -243,11 +243,6 @@ static int udc_plat_remove(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, NULL);
+ 
+-	if (dev->drd_wq) {
+-		flush_workqueue(dev->drd_wq);
+-		destroy_workqueue(dev->drd_wq);
+-	}
+-
+ 	phy_power_off(dev->udc_phy);
+ 	phy_exit(dev->udc_phy);
+ 	extcon_unregister_notifier(dev->edev, EXTCON_USB, &dev->nb);
+-- 
+2.30.2
 
