@@ -2,187 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D31A4283A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2124283A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhJJU7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 16:59:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhJJU7P (ORCPT
+        id S233042AbhJJVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 17:01:04 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49250
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232861AbhJJVBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 16:59:15 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CE1C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:57:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=180p9fb+elBeRuoqEawvqFUI9vLDBl8hrC/K7xu8wEA=; b=JGcETydjQvzsFcwFHMJTNf9r21
-        B62GmzW67qrMEQAAiuM5xm9FM+aKQr1NhlTXMV1p/xTUSANIvbNLmcgbHBSInvWbZcFSPyQgOW+Gs
-        zi8KuPQV9ozozKA8jbh4MfjGkToniH/RNgylKlhiUki16WuTRHf2l4VO7I3JV3SSgtaVu/NgwCVbc
-        ALPqam35umXB8uZZAqVFYcqEWylOnzTlJ0n0wsODaf5CuEMLmgFIaYtxKlvJ+bGsbMXf6WtSNT8B5
-        gcSt0T+pDePD7WpcFYgjh3pWPJ8VGOP7e3YgIWBXAKIeJQn3fUC2fy6dTkAplVN+TqHNMI8xiTIXf
-        1dGEVDDw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZfsZ-007Mqi-9o; Sun, 10 Oct 2021 20:57:07 +0000
-Subject: Re: [PATCH -next] drm/connector: fix all kernel-doc warnings
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     linux-kernel@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Boris Brezillon <boris.brezillon@bootlin.com>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20211007005305.15171-1-rdunlap@infradead.org>
- <YWNHMsBo5xhuwuAw@ravnborg.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <1189b525-52e6-a2de-fb70-d30b693c7840@infradead.org>
-Date:   Sun, 10 Oct 2021 13:57:06 -0700
+        Sun, 10 Oct 2021 17:01:01 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id A366640015
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633899541;
+        bh=vbA6KQmT88TPosyqyyvRSbT6u/s6NWq+qTxHMzpWCdA=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=aafMjLiidKOfsoeaHM20W+8ZulnVY8h64S3f2lL0Tno1x5kCfuGvMWH3BUYRAM+t7
+         NXmC7wXvSoh8XdQ33xM4nOD12sSM7Ej1sfMpQ4xNUmOTqVjn3LiFM3xljxa7G1PVle
+         MLacPZYnipHWZY65L+IhVDSegidceVU1uQlBvT9/Xl1E4iS1vXJBlvfyMgAhRVIqi0
+         IChraGyGK0wMiLfMZbzJOI2ioEDP6YqlV6TT+2WedGkk5VEZcuIl6LDU+ICtL4eu9w
+         lafKR3Xto5h0HnWLl6gNrBf6mufPBAlwPraDSdK3NOA008yccTM3/7f+2LePYvh7O3
+         I5rBP990MTXWw==
+Received: by mail-ed1-f70.google.com with SMTP id l10-20020a056402230a00b003db6977b694so5593812eda.23
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:59:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vbA6KQmT88TPosyqyyvRSbT6u/s6NWq+qTxHMzpWCdA=;
+        b=Zru6WfCOBdwOFhM9jMrcUWpEnoZusInkNaCEqjOfuS9BGL0frHwxMsA2vVZE9w9CqL
+         rhaKeGy3OsIFpleV5sq6RjY2+DdztxcuNbAG+WJ1M6CSUNzDGV7Kcw63E5UDTfFaAbSZ
+         wTxlquAlCi7Cl9vyUv+wRuKfk45ud9QeYz/ag6GCCK7IHDnLECX0sW4gD6XPRh80qJm0
+         U5viaZ2T6aq7w2o1b066/rumYQ9y87F8s9KRTL1x3eTi7ZJYUrnC08Uh3zd4VLJkn/yY
+         kpicPF2/en7it8QBI4zxUl2hQweKw9sMSpGNWJeD6ahmbMr0bETAF7A1JQXrXHOeiwM2
+         iaeA==
+X-Gm-Message-State: AOAM531PZyxxqXlRnANz+sEzfI0ePj0vx/5NZKTn5WUe+UIh/Coau0J/
+        ITCPtcGoBSZ5CbLJeDUVFDzGXpzLs8Yge4kjBIeYOH1R0AL+cJ0OwY7dI2ZTas7wsp7to/YG6c3
+        Lw3HcMszMuAwzDBodrOYXyy+UxI8DxyKgiJ5dLozT4Q==
+X-Received: by 2002:a05:6402:1941:: with SMTP id f1mr8554632edz.3.1633899541310;
+        Sun, 10 Oct 2021 13:59:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyFdhFoFHiozNsDRv0hkz318JVGkZTHVd/QS3nQ6sTbPFwP2FFLCChwQCYgJKHsOaeft+JO3g==
+X-Received: by 2002:a05:6402:1941:: with SMTP id f1mr8554606edz.3.1633899541074;
+        Sun, 10 Oct 2021 13:59:01 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id fx4sm2495638ejb.113.2021.10.10.13.58.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 13:59:00 -0700 (PDT)
+Subject: Re: [PATCH 1/7] dt-bindings: nfc: nxp,nci: convert to dtschema
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-nfc@lists.01.org, devicetree@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Charles Gorand <charles.gorand@effinnov.com>
+References: <20211010142317.168259-1-krzysztof.kozlowski@canonical.com>
+ <1633894316.441793.3158669.nullmailer@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <f955726a-eb2d-7b3e-9c5f-978358710eb6@canonical.com>
+Date:   Sun, 10 Oct 2021 22:58:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <YWNHMsBo5xhuwuAw@ravnborg.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1633894316.441793.3158669.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sam,
-
-On 10/10/21 1:04 PM, Sam Ravnborg wrote:
-> Hi Randy,
-> 
-> I noticed a few things that in my opinion could be improved.
-> See below.
-> 
-> 	Sam
-> 
-> 
-> On Wed, Oct 06, 2021 at 05:53:05PM -0700, Randy Dunlap wrote:
->> Clean up all of the kernel-doc issues in drm_connector.c:
+On 10/10/2021 21:31, Rob Herring wrote:
+> On Sun, 10 Oct 2021 16:23:11 +0200, Krzysztof Kozlowski wrote:
+>> Convert the NXP NCI NFC controller to DT schema format.
 >>
->> drivers/gpu/drm/drm_connector.c:2611: warning: Excess function parameter 'connector' description in 'drm_connector_oob_hotplug_event'
->> drivers/gpu/drm/drm_connector.c:2611: warning: Function parameter or member 'connector_fwnode' not described in 'drm_connector_oob_hotplug_event'
->>
->> drm_connector.c:630: warning: No description found for return value of 'drm_get_connector_status_name'
->> drm_connector.c:715: warning: No description found for return value of 'drm_connector_list_iter_next'
->> drm_connector.c:785: warning: No description found for return value of 'drm_get_subpixel_order_name'
->> drm_connector.c:816: warning: No description found for return value of 'drm_display_info_set_bus_formats'
->> drm_connector.c:1331: warning: No description found for return value of 'drm_mode_create_dvi_i_properties'
->> drm_connector.c:1412: warning: No description found for return value of 'drm_connector_attach_content_type_property'
->> drm_connector.c:1492: warning: No description found for return value of 'drm_mode_create_tv_margin_properties'
->> drm_connector.c:1534: warning: No description found for return value of 'drm_mode_create_tv_properties'
->> drm_connector.c:1627: warning: No description found for return value of 'drm_mode_create_scaling_mode_property'
->> drm_connector.c:1944: warning: No description found for return value of 'drm_mode_create_suggested_offset_properties'
->>
->> drm_connector.c:2315: warning: missing initial short description on line:
->>   * drm_connector_set_panel_orientation_with_quirk -
->>
->> [The last warning listed is probably a quirk/bug in scripts/kernel-doc.]
->>
->> Fixes: 613051dac40d ("drm: locking&new iterators for connector_list")
->> Fixes: 522171951761 ("drm: Extract drm_connector.[hc]")
->> Fixes: b3c6c8bfe378 ("drm: document drm_display_info")
->> Fixes: 50525c332b55 ("drm: content-type property for HDMI connector")
->> Fixes: 6c4f52dca36f ("drm/connector: Allow creation of margin props alone")
->> Fixes: 69654c632d80 ("drm/connector: Split out orientation quirk detection (v2)")
->> Fixes: 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: David Airlie <airlied@linux.ie>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
->> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
->> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
->> Cc: Derek Basehore <dbasehore@chromium.org>
->> Cc: Hans de Goede <hdegoede@redhat.com>
->> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
->> Cc: Maxime Ripard <mripard@kernel.org>
->> Cc: Thomas Zimmermann <tzimmermann@suse.de>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 >> ---
->> 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
->>    is only in linux-next. The others are in mainline.
+>>  .../devicetree/bindings/net/nfc/nxp,nci.yaml  | 61 +++++++++++++++++++
+>>  .../devicetree/bindings/net/nfc/nxp-nci.txt   | 33 ----------
+>>  MAINTAINERS                                   |  1 +
+>>  3 files changed, 62 insertions(+), 33 deletions(-)
+>>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,nci.yaml
+>>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
 >>
->>   drivers/gpu/drm/drm_connector.c |   30 ++++++++++++++++++++++++++----
->>   1 file changed, 26 insertions(+), 4 deletions(-)
->>
->> --- linux-next-20211006.orig/drivers/gpu/drm/drm_connector.c
->> +++ linux-next-20211006/drivers/gpu/drm/drm_connector.c
->> @@ -625,6 +625,8 @@ int drm_connector_register_all(struct dr
->>    *
->>    * In contrast to the other drm_get_*_name functions this one here returns a
->>    * const pointer and hence is threadsafe.
->> + *
->> + * Returns: connector status string
->>    */
->>   const char *drm_get_connector_status_name(enum drm_connector_status status)
->>   {
->> @@ -707,7 +709,7 @@ __drm_connector_put_safe(struct drm_conn
->>    * drm_connector_list_iter_next - return next connector
->>    * @iter: connector_list iterator
->>    *
->> - * Returns the next connector for @iter, or NULL when the list walk has
->> + * Returns: the next connector for @iter, or NULL when the list walk has
->>    * completed.
->>    */
->>   struct drm_connector *
->> @@ -780,6 +782,8 @@ static const struct drm_prop_enum_list d
->>    *
->>    * Note you could abuse this and return something out of bounds, but that
->>    * would be a caller error.  No unscrubbed user data should make it here.
->> + *
->> + * Returns: string describing an enumerated subpixel property
->>    */
->>   const char *drm_get_subpixel_order_name(enum subpixel_order order)
->>   {
->> @@ -809,6 +813,9 @@ static const struct drm_prop_enum_list d
->>    * Store the supported bus formats in display info structure.
->>    * See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
->>    * a full list of available formats.
->> + *
->> + * Returns:
->> + * Zero on success, negative errno on failure.
-> I prefer the following variant:
-> "0 on success or a negative error code on failure."
 > 
-> Then we do not use the overloaded "errno" name.
-> At least in include/drm/* my preferred variant is the most popular for
-> what it is worth.
-
-OK, I'll change it to that.
-
+> Running 'make dtbs_check' with the schema in this patch gives the
+> following warnings. Consider if they are expected or the schema is
+> incorrect. These may not be new warnings.
 > 
->>    */
->>   int drm_display_info_set_bus_formats(struct drm_display_info *info,
->>   				     const u32 *formats,
->> @@ -1326,6 +1333,8 @@ int drm_connector_create_standard_proper
->>    * @dev: DRM device
->>    *
->>    * Called by a driver the first time a DVI-I connector is made.
->> + *
->> + * Returns: %0
-> Looks like some macro gone wrong - but I looked it up.
-> It is kernel-doc syntax for a named constant.
+> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
+> This will change in the future.
 > 
-> My personal preference would be a plain "0" - but that just
-> bikeshedding.
+> Full log is available here: https://patchwork.ozlabs.org/patch/1539010
+> 
+> 
+> nfc@28: 'clock-frequency' is a required property
+> 	arch/arm64/boot/dts/qcom/msm8916-huawei-g7.dt.yaml
+> 
 
-Yeah, I would prefer to use kernel-doc notation for constants.
-It is documented and has been around for a long time.
+Hmm, this actually looks as mistake in bindings. First, clock-frequency
+is a property of a I2C bus, not I2C child device. Second, it should not
+be a required property anyway, as I2C will choose a default one matching
+driver (e.g. standard speed of 100 kHz).
 
-I will resend the patch.
+Except the trf7970a NFC driver, none of other NFC drivers parse the
+clock-frequency.
 
-Thanks.
-
--- 
-~Randy
+Best regards,
+Krzysztof
