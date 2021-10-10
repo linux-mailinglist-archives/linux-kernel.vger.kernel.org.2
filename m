@@ -2,101 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43BFA428135
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838BE428138
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232416AbhJJMYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:24:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231892AbhJJMYm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:24:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E18DE60EDF;
-        Sun, 10 Oct 2021 12:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633868564;
-        bh=MFImbL7l7iaihtx0OWpPhL0Cx6Oqn4VM20u+CfvjnGU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d0VzwahRyfgcYxaVj3SNb8rpNrrtMItE8E3pKQ8e6B95dPQC3StN7N2lFrV6q0YNA
-         o+s0J+KlErfnkJdn726PuyhnECiSmeCBOohx07DBGtEb9TE7r6MzGtIWi5D8CHOqPq
-         nEzQXlzxwg3C8IjrWMnm+ZdN8lbUGH06GBiyQD6E=
-Date:   Sun, 10 Oct 2021 14:22:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
-Message-ID: <YWLbEdHUE3k/i0fe@kroah.com>
+        id S232452AbhJJM2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:28:37 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:37147 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232437AbhJJM2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:28:36 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HS1Pj3jwKz4xbV;
+        Sun, 10 Oct 2021 23:26:33 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1633868796;
+        bh=2SCtlclSeJAdn42vIADSqNqIlvZP/SXox9aUhdHwUe8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=StkHLogs6xa0KHrETSr+PQju0YwvURe4HeTimC9313Lq5SLOeWKgX6yQSkxeaoKM+
+         l1BpDedw8uWbkw3d4yxNPt+/FS8pwEifFXXWgyiqEENUvJdTXiaYhqeB6ExBXB3gKS
+         vq54vESD3IgFEosmeszZxOGI+GiuvClH/5Zem72luwj3fAwg/51mQn4YUiRONDB3AC
+         18lZOZV4bPg4pmzhgSg5jzHnEqZ5j/mncegGrxQ024ziAW/vtlEU3+GCzJeW5hFUmy
+         nHFuCVCsuw9xVsrSGMj/3rHeDa0TRP7T9w07uJOGRTU8rWL2SGK9PykKhnhEv3wutu
+         tkojioV8vEVSQ==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     aik@ozlabs.ru, christophe.leroy@csgroup.eu, clg@kaod.org,
+        johan.almbladh@anyfinetworks.com, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com,
+        naveen.n.rao@linux.vnet.ibm.com, npiggin@gmail.com,
+        songliubraving@fb.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-3 tag
+Date:   Sun, 10 Oct 2021 23:26:30 +1100
+Message-ID: <87y271m5ft.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Schiit Hel device does not like to respond to all get_ctl_value_v2()
-requests for some reason.  This used to work in older kernels, but now
-with more strict checking, this failure causes the device to fail to
-work.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
+Hi Linus,
 
-This fixes the Shiit Hel device that I have.  It used to work on older
-kernels (a year ago?), but stopped working for some reason and I didn't
-take the time to track it down.  This change fixes the issue for me, but
-feels wrong for some reason.  At least now I can use the device as a
-headphone driver, much better than the built-in one for my current
-machine...
+Please pull some more powerpc fixes for 5.15.
 
-If needed, I can take the time to do bisection to track down the real
-issue here, it might be due to stricter endpoint checking in the USB
-core, but that feels wrong somehow.
+A bit of a big batch, partly because I didn't send any last week, and also =
+just because
+the BPF fixes happened to land this week.
 
-Here's the debugfs USB output for this device, showing the endpoints:
+cheers
 
-T:  Bus=07 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
-D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-P:  Vendor=30be ProdID=0101 Rev=01.02
-S:  Manufacturer=Schiit Audio
-S:  Product=Schiit Hel
-C:  #Ifs= 4 Cfg#= 1 Atr=c0 MxPwr=0mA
-I:  If#= 0 Alt= 0 #EPs= 1 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
-E:  Ad=8f(I) Atr=03(Int.) MxPS=   6 Ivl=1ms
-I:  If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
-E:  Ad=05(O) Atr=05(Isoc) MxPS= 104 Ivl=125us
-E:  Ad=85(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
-I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
-E:  Ad=88(I) Atr=05(Isoc) MxPS= 156 Ivl=125us
-I:  If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
-E:  Ad=84(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
 
-Any other suggestions to fix this are welcome.
+The following changes since commit e4e737bb5c170df6135a127739a9e6148ee3da82:
 
- sound/usb/mixer.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+  Linux 5.15-rc2 (2021-09-19 17:28:22 -0700)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index a2ce535df14b..37d3d697776b 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -371,11 +371,11 @@ static int get_ctl_value_v2(struct usb_mixer_elem_info *cval, int request,
- 			      validx, idx, buf, size);
- 	snd_usb_unlock_shutdown(chip);
- 
--	if (ret < 0) {
-+	if ((ret < 0) && (ret != -EPIPE)) {
- error:
- 		usb_audio_err(chip,
--			"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d\n",
--			request, validx, idx, cval->val_type);
-+			"cannot get ctl value: req = %#x, wValue = %#x, wIndex = %#x, type = %d, ret = %d\n",
-+			request, validx, idx, cval->val_type, ret);
- 		return ret;
- 	}
- 
--- 
-2.33.0
+are available in the git repository at:
 
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-5.15-3
+
+for you to fetch changes up to eb8257a12192f43ffd41bd90932c39dade958042:
+
+  pseries/eeh: Fix the kdump kernel crash during eeh_pseries_init (2021-10-=
+07 23:37:22 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.15 #3
+
+Fix a regression hit by the IPR SCSI driver, introduced by the recent addit=
+ion of MSI
+domains on pseries.
+
+A big series including 8 BPF fixes, some with potential security impact and=
+ the rest
+various code generation issues.
+
+Fix our program check assembler entry path, which was accidentally jumping =
+into a gas
+macro and generating strange stack frames, which could confuse find_bug().
+
+A couple of fixes, and related changes, to fix corner cases in our machine =
+check handling.
+
+Fix our DMA IOMMU ops, which were not always returning the optimal DMA mask=
+, leading to
+at least one device falling back to 32-bit DMA when it shouldn't.
+
+A fix for KUAP handling on 32-bit Book3S.
+
+Fix crashes seen when kdumping on some pseries systems.
+
+Thanks to: Naveen N. Rao, Nicholas Piggin, Alexey Kardashevskiy, C=C3=A9dri=
+c Le Goater,
+Christophe Leroy, Mahesh Salgaonkar, Abdul Haleem, Christoph Hellwig, Johan=
+ Almbladh, Stan
+Johnson.
+
+- ------------------------------------------------------------------
+Alexey Kardashevskiy (1):
+      powerpc/iommu: Report the correct most efficient DMA mask for PCI dev=
+ices
+
+Christophe Leroy (1):
+      powerpc/32s: Fix kuap_kernel_restore()
+
+C=C3=A9dric Le Goater (1):
+      powerpc/pseries/msi: Add an empty irq_write_msi_msg() handler
+
+Mahesh Salgaonkar (1):
+      pseries/eeh: Fix the kdump kernel crash during eeh_pseries_init
+
+Naveen N. Rao (10):
+      powerpc/lib: Add helper to check if offset is within conditional bran=
+ch range
+      powerpc/bpf: Validate branch ranges
+      powerpc/bpf: Fix BPF_MOD when imm =3D=3D 1
+      powerpc/bpf: Fix BPF_SUB when imm =3D=3D 0x80000000
+      powerpc/security: Add a helper to query stf_barrier type
+      powerpc/bpf: Emit stf barrier instruction sequences for BPF_NOSPEC
+      powerpc/bpf ppc32: Fix ALU32 BPF_ARSH operation
+      powerpc/bpf ppc32: Fix JMP32_JSET_K
+      powerpc/bpf ppc32: Do not emit zero extend instruction for 64-bit BPF=
+_END
+      powerpc/bpf ppc32: Fix BPF_SUB when imm =3D=3D 0x80000000
+
+Nicholas Piggin (5):
+      powerpc/64s: fix program check interrupt emergency stack path
+      powerpc/traps: do not enable irqs in _exception
+      powerpc/64: warn if local irqs are enabled in NMI or hardirq context
+      powerpc/64/interrupt: Reconcile soft-mask state in NMI and fix false =
+BUG
+      powerpc/64s: Fix unrecoverable MCE calling async handler from NMI
+
+
+ arch/powerpc/include/asm/book3s/32/kup.h     |   8 ++
+ arch/powerpc/include/asm/code-patching.h     |   1 +
+ arch/powerpc/include/asm/interrupt.h         |  18 ++--
+ arch/powerpc/include/asm/security_features.h |   5 +
+ arch/powerpc/kernel/dma-iommu.c              |   9 ++
+ arch/powerpc/kernel/exceptions-64s.S         |  25 +++--
+ arch/powerpc/kernel/irq.c                    |   6 ++
+ arch/powerpc/kernel/security.c               |   5 +
+ arch/powerpc/kernel/traps.c                  |  43 +++++----
+ arch/powerpc/lib/code-patching.c             |   7 +-
+ arch/powerpc/net/bpf_jit.h                   |  33 ++++---
+ arch/powerpc/net/bpf_jit64.h                 |   8 +-
+ arch/powerpc/net/bpf_jit_comp.c              |   6 +-
+ arch/powerpc/net/bpf_jit_comp32.c            |  16 ++--
+ arch/powerpc/net/bpf_jit_comp64.c            | 100 ++++++++++++++++----
+ arch/powerpc/platforms/pseries/eeh_pseries.c |   4 +
+ arch/powerpc/platforms/pseries/msi.c         |  15 +++
+ 17 files changed, 234 insertions(+), 75 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmFi26IACgkQUevqPMjh
+pYCMSxAAh40nmRryws4rJ6R6UQlp5eKKAitlFo5y/P3h/qNzu5kelwkS93tog5CA
+9i/uznMlyu3jpauHiDaeZCU0WYBqs3AL3qE11pHeG4HkGCCQ/D5eX3KxFRYuqbWh
+mfGvgRGxr4Rew3ACgQ/eUGwU9DkzmAr49CX9/5MR8chpNzeERpPMcq4jolEjkfJl
+Jf74WoIhHkuDMXFWVC8Aj6AKuQM+Ia9bXhSAFUIk2yjKRdADFgnR8stjzebW8B5v
+rSJ9WWNFt97UcgpTcvE+0gEuXFdD3cR16Ov6ObdZjsT1Y3ubC9jTZXy/pO8+YZbq
+jjGjNfxp7eWr6umgd2bhO5RKDwu/PbKvhM3l8OPQxOkoGK4L8trPm2IGEFjVyV/1
+/vhMa439vbPtT7eItmXEuEqgouUCzwA11Du7KhZu+IkdWyJCXsRzkExTI+rYGAYU
+nokOmE6A9VI4sgqLXAOxVSWDQSURhBfXx5cGeu9sdWNZ1V/F1TCi9kslE4eSlJie
+NjT5X1rEnM4HDMBKuiSkmu2GzcCAP5IktrkzAmWt1CbFWtLqdOExTmQGR/3DNMwp
+SniCYTgAw9GdGz46Zkiprr1X8fEqyrGBY6kjrAJ6Yior2Oy5GxU23w7UmE5iddFx
+jXsVMOh6dWIvJlhkeFEjLed3NezkpQuKehM0inOcAiPcCpnZhYc=3D
+=3DhYTj
+-----END PGP SIGNATURE-----
