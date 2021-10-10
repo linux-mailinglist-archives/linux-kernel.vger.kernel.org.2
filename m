@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56F7242827F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 18:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E411428287
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 18:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhJJQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 12:21:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57716 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhJJQVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 12:21:19 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 231CB6008E;
-        Sun, 10 Oct 2021 16:19:18 +0000 (UTC)
-Date:   Sun, 10 Oct 2021 17:23:25 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        <alexandru.ardelean@analog.com>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-Subject: Re: [PATCH v6 6/6] drivers:iio:dac:ad5766.c: Add trigger buffer
-Message-ID: <20211010172325.3a546322@jic23-huawei>
-In-Reply-To: <20211007080035.2531-7-mihail.chindris@analog.com>
-References: <20211007080035.2531-1-mihail.chindris@analog.com>
-        <20211007080035.2531-7-mihail.chindris@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S231895AbhJJQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 12:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhJJQnC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 12:43:02 -0400
+Received: from mail-vk1-xa36.google.com (mail-vk1-xa36.google.com [IPv6:2607:f8b0:4864:20::a36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 188E4C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 09:41:04 -0700 (PDT)
+Received: by mail-vk1-xa36.google.com with SMTP id n201so5645876vkn.12
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 09:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=uBupTRvdbvrPYWfcioDH+Rupm0D6631B5wClCxA7h5s=;
+        b=Z5hkJav/Ah/nITbuxcdy6IyRIS5Fuukil6yFoq0uOa8hilzsVFviYhEMtaluLiv+LV
+         /XYK9s9X24lSgYn8HdnZ0EFJFbq/NKjISIzGpyerDKGxMEDW3PKsVgmfBdpMPiTI8eIb
+         dsojH2b43Qpk3MvZOvrMOIRPTt31hh1MrI3LE3Sd0JWPuPbsSG4/4oWNrQoGPgDChAAd
+         DT/UYyAII2e7qWGYHKULKiYF5gTsjk2tIlcY6nRIStlZ9qYrqgHC+GhOOqQyiSBgyd+A
+         Y3RTg8A3YHqo4mpRYIfLtXBWL9otdIZFc1A1DEmKcdktmaqRHiPAVO7JmCFcWr1inGqw
+         3KKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=uBupTRvdbvrPYWfcioDH+Rupm0D6631B5wClCxA7h5s=;
+        b=PWJ88IHdeNmPEhe2jY8IAX98WKlRBuMFPN2X3Pghn0Zdnv1KMatLWbCCQOHlYGXCnG
+         5ODnDM4cl/6PvJyQ7DKUXxrSWPOh96B0wlizmfE+sTrGW3DCHdnwVjgogfCFwq3iibAV
+         twd9Y7vJ6D8UqgNOxOcWJCjjCtkBkmUgF9doP+L8kz9rVGlbZOg+dD+OQISd8xLbHD8w
+         fGnbzNrVnP0QmvJ/shW1zHIqtrWrsm77PBmOkgDgp9ez+wXNCd41Bo6FdHxZsOLT79TF
+         IOTQBWej6yrd1U+StRbYKfaQ98A1QkYBvnYD8VY0LrFmmiTx5vSHxhsqC02Axl89mWJB
+         vGGA==
+X-Gm-Message-State: AOAM533XRArHp1XaPJoNBIJARN9mnxwYFWunciAd/LmJ1FOCrppV9Kv4
+        01+k8c+d1Ue4gLCGn6n4LJeXBQlaMakb77lneg==
+X-Google-Smtp-Source: ABdhPJwqr+mS3sHSMbLUK8dyrH3iUG81rL0Hd80tpUwHvxqABVW/MR5nKiS3AYCByero3glUbx3U/N+bN0KeL1+zDJc=
+X-Received: by 2002:a1f:9748:: with SMTP id z69mr17159195vkd.25.1633884062557;
+ Sun, 10 Oct 2021 09:41:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:612c:ca:b0:236:4c21:9e05 with HTTP; Sun, 10 Oct 2021
+ 09:41:02 -0700 (PDT)
+Reply-To: jennehkandeh@yahoo.com
+From:   Jenneh Kandeh <bgfibankofficial2@gmail.com>
+Date:   Sun, 10 Oct 2021 09:41:02 -0700
+Message-ID: <CALKzV9pOf6jmUin3+QpBo8nAPVc3HgH+oDct6BVN-sMNVU-bdg@mail.gmail.com>
+Subject: Re: Regarding Of My Late Father's Fund $10,200,000
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 08:00:37 +0000
-Mihail Chindris <mihail.chindris@analog.com> wrote:
+dear,
 
-> This chip is able to generate waveform and using an
-> with the output trigger buffer will be easy to generate one.
-> 
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-> Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+I got your contact through the internet due to serious searching for a
+reliable personality.  I am Jenneh Kandeh from FreeTown Capital of
+Sierra Leone. Time of opposed to the government of President Ahmad
+Tejan Kebbah the ex-leader.
 
-Rest of series applied to the togreg branch of iio.git, initially pushed out as
-testing for 0-day to poke at it.
+Since 21st November, 2005 But I am current residing in Porto-Novo
+Benin due to war of my country, my mother killed on 04/01/2002 for
+Sierra Leone civilian war my father decided to change another
+residence country with me because I am only child for my family bad
+news that my father passed away on 25/11/2018.
 
-Thanks,
+During the war, My father made a lot of money through the illegal
+sales of Diamonds. To the tune of $10,200,000. This money is currently
+and secretly kept in ECOWAS security company here in Benin, but
+because of the political turmoil which still exists here in Africa, I
+can not invest the money by myself, hence am soliciting your help to
+help me take these funds into your custody and also advise me on how
+to invest it.
 
-Jonathan
+And I want to add here that if agreed 35% of the total worth of the
+fund will be yours minus your total expenses incurred during the
+clearing of the fund in
+Porto Novo Benin that 35% is a $3,570,000 I would like to invest on
+heavy duty agricultural equipment and earth moving machines to enable
+me go into a full scale mechanized farming.
 
-> ---
->  drivers/iio/dac/ad5766.c | 42 ++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
-> 
-> diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
-> index dafda84fdea3..b0d220c3a126 100644
-> --- a/drivers/iio/dac/ad5766.c
-> +++ b/drivers/iio/dac/ad5766.c
-> @@ -5,10 +5,13 @@
->   * Copyright 2019-2020 Analog Devices Inc.
->   */
->  #include <linux/bitfield.h>
-> +#include <linux/bitops.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/gpio/consumer.h>
->  #include <linux/iio/iio.h>
-> +#include <linux/iio/triggered_buffer.h>
-> +#include <linux/iio/trigger_consumer.h>
->  #include <linux/module.h>
->  #include <linux/spi/spi.h>
->  #include <asm/unaligned.h>
-> @@ -455,6 +458,7 @@ static const struct iio_chan_spec_ext_info ad5766_ext_info[] = {
->  	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),			\
->  	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OFFSET) |		\
->  		BIT(IIO_CHAN_INFO_SCALE),				\
-> +	.scan_index = (_chan),						\
->  	.scan_type = {							\
->  		.sign = 'u',						\
->  		.realbits = (_bits),					\
-> @@ -576,6 +580,35 @@ static int ad5766_default_setup(struct ad5766_state *st)
->  	return  __ad5766_spi_write(st, AD5766_CMD_SPAN_REG, st->crt_range);
->  }
->  
-> +static irqreturn_t ad5766_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf = p;
-> +	struct iio_dev *indio_dev = pf->indio_dev;
-> +	struct iio_buffer *buffer = indio_dev->buffer;
-> +	struct ad5766_state *st = iio_priv(indio_dev);
-> +	int ret, ch, i;
-> +	u16 data[ARRAY_SIZE(ad5766_channels)];
-> +
-> +	ret = iio_pop_from_buffer(buffer, data);
-> +	if (ret)
-> +		goto done;
-> +
-> +	i = 0;
-> +	mutex_lock(&st->lock);
-> +	for_each_set_bit(ch, indio_dev->active_scan_mask,
-> +			 st->chip_info->num_channels - 1)
-> +		__ad5766_spi_write(st, AD5766_CMD_WR_IN_REG(ch), data[i++]);
-> +
-> +	__ad5766_spi_write(st, AD5766_CMD_SW_LDAC,
-> +			   *indio_dev->active_scan_mask);
-> +	mutex_unlock(&st->lock);
-> +
-> +done:
-> +	iio_trigger_notify_done(indio_dev->trig);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static int ad5766_probe(struct spi_device *spi)
->  {
->  	enum ad5766_type type;
-> @@ -609,6 +642,15 @@ static int ad5766_probe(struct spi_device *spi)
->  	if (ret)
->  		return ret;
->  
-> +	/* Configure trigger buffer */
-> +	ret = devm_iio_triggered_buffer_setup_ext(&spi->dev, indio_dev, NULL,
-> +						  ad5766_trigger_handler,
-> +						  IIO_BUFFER_DIRECTION_OUT,
-> +						  NULL,
-> +						  NULL);
-> +	if (ret)
-> +		return ret;
-> +
->  	return devm_iio_device_register(&spi->dev, indio_dev);
->  }
->  
-
+While l wait to hear from you soon, my warm regards to you and your family
