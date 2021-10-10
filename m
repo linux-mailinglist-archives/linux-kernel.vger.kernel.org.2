@@ -2,355 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7E64281D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E1F4281E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233203AbhJJOZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 10:25:48 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60158
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233043AbhJJOZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 10:25:34 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 3DBC33FFFC
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 14:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633875814;
-        bh=sEh5KUYuxEm3bzH5hsUc+ps6L/VdQWx+zLSKJvPfz9w=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version;
-        b=VyZZtcASe1pO0P0rxz7P52CCOO7yZRO6uVw+boMSt57xIVSaPAfNu+MB1wtm3Gyu4
-         t+5AyxUWrKZB7BfhPtUgm+Elyf2JhUjuQNT0uc0i18BChkG8RJcmMc+37DIUbPu34G
-         jWhm9ctI6QBv9Q83L2EAtgmiZxXOoB5Dr70prdCb4tFDMrGg8brzIQdy12gokrp2ju
-         NmuBNbxfwGGqwuMQzDeBLRBR9FnzwbeujgY8nIZDGcRF7rsYCQ8im8CUP1GAFK4IqX
-         AteorF92Eo1imfVsX4zq+PsP2ryVzb3M0y1tMUXv3dHG0Ve25jiafwbVbSFvzyZrqr
-         6cNtVSKySkPdQ==
-Received: by mail-ed1-f70.google.com with SMTP id x5-20020a50f185000000b003db0f796903so13442571edl.18
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 07:23:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sEh5KUYuxEm3bzH5hsUc+ps6L/VdQWx+zLSKJvPfz9w=;
-        b=d3MFdM1s+qzxCejw8sa8htjpuKtS6cpZVOPbIEefJ28qPPKxGpxh8UGk9a8xlzifpb
-         ZkP2gM1ckYm8Y1x74OTQeIXfiGMNkrOGVkfcUpV/m0J0kdakjvCc4HcUyQFWMGjs5EtP
-         irjZGbq28Dy8gpU3BIDuErthm2NUksIW54rOtdJy9C7Dc/8oGQKtgkz1Dn0v/ThH+Hcl
-         xbedsDT3oj28Q8g3suSM7kVOnVVo58dI+4jhHG7AQw9/kVbaerdMzDDqJpAKhrTOPqjF
-         mdTqoejhsk7gCGrKs7WKCR2izpb8xuX+QFdD1oCLTw90eRDIir5AD/xglphtNYtQJ6Jv
-         RNlg==
-X-Gm-Message-State: AOAM533y3kR7+PxKWdiNK8i6b05/LWdFVZ4RjwEtGK7wvHXMJs9QbPaV
-        DGKQTWtEchXtyiyjYXLCitRtbiT2aO6k2RoIGsSSgAKHk6qqYwDIdL8McDhHXT3o89M8IGqC+Fz
-        VpbVga4jSSRDEFzZ5wyDLNYEbbLhvEBuJHjli4hc4OQ==
-X-Received: by 2002:a05:6402:4402:: with SMTP id y2mr24480385eda.222.1633875813783;
-        Sun, 10 Oct 2021 07:23:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzSm8Z9KjucD039kn/b+DLN9Na+qvLcx4ZvjArJNxoedCFKyLu8nt+Jwvf6H9WcO3menFHzzw==
-X-Received: by 2002:a05:6402:4402:: with SMTP id y2mr24480345eda.222.1633875813587;
-        Sun, 10 Oct 2021 07:23:33 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id 6sm2129017ejx.82.2021.10.10.07.23.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 07:23:33 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Charles Gorand <charles.gorand@effinnov.com>,
-        Mark Greer <mgreer@animalcreek.com>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: [PATCH 7/7] dt-bindings: nfc: marvell,nfc: convert to dtschema
-Date:   Sun, 10 Oct 2021 16:23:17 +0200
-Message-Id: <20211010142317.168259-7-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211010142317.168259-1-krzysztof.kozlowski@canonical.com>
-References: <20211010142317.168259-1-krzysztof.kozlowski@canonical.com>
+        id S232320AbhJJO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:28:45 -0400
+Received: from out0.migadu.com ([94.23.1.103]:42383 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231842AbhJJO2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:28:43 -0400
+Date:   Sun, 10 Oct 2021 22:27:24 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1633876001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xhOtgkZ+tjHM29IGh04Mb8pYgZ9ao2sJhmPA9HYKAj0=;
+        b=O4tkQGJHLIiN/cVHsrR7jVBTfMZMJjGrIODjARk8Vm/vcjQKOJN8wRk0Ea0PCaPDJlcxTZ
+        4IR+XiIZJXi+5Vt1ByRSi+gUL0aNAjFTa7fRyZDT0p3ZP1wghlKatjnS3aqdMZqkCK0IO3
+        JPTqzenacxiy5n2IBuPno+G7ssU8Axc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Tao Zhou <tao.zhou@linux.dev>
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH] sched/fair: Check idle_cpu in select_idle_core/cpu()
+Message-ID: <YWL4TA19eFsfd4c7@geo.homenetwork>
+References: <20211009180941.20458-1-tao.zhou@linux.dev>
+ <20211009225057.GB174703@worktop.programming.kicks-ass.net>
+ <YWK0yEJNGYAZ3hhD@geo.homenetwork>
+ <CAGsJ_4xW5s-ze6QjVLJPscEcCaakdS6Np84w9Hwh8Zj_=WqhTw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGsJ_4xW5s-ze6QjVLJPscEcCaakdS6Np84w9Hwh8Zj_=WqhTw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: tao.zhou@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Marvell NCI NFC controller to DT schema format.
+Hi Barry,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../bindings/net/nfc/marvell,nci.yaml         | 170 ++++++++++++++++++
- .../devicetree/bindings/net/nfc/nfcmrvl.txt   |  84 ---------
- 2 files changed, 170 insertions(+), 84 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/nfc/marvell,nci.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/nfc/nfcmrvl.txt
+On Mon, Oct 11, 2021 at 01:19:57AM +1300, Barry Song wrote:
+> On Sun, Oct 10, 2021 at 10:45 PM Tao Zhou <tao.zhou@linux.dev> wrote:
+> >
+> > Hi Peter,
+> >
+> > On Sun, Oct 10, 2021 at 12:50:57AM +0200, Peter Zijlstra wrote:
+> > > On Sun, Oct 10, 2021 at 02:09:41AM +0800, Tao Zhou wrote:
+> > > > In select_idle_core(), the idle core returned may have no cpu
+> > > > allowed. I think the idle core returned for the task is the one
+> > > > that can be allowed to run. I insist on this semantics.
+> > > >
+> > > > In select_idle_cpu(), if select_idle_core() can not find the
+> > > > idle core, one reason is that the core is not allowed for the
+> > > > task, but the core itself is idle from the point of
+> > > > sds->has_idle_cores. I insist on this semantics.
+> > > >
+> > > > No others, just two additional check.
+> > > > ---
+> > > >  kernel/sched/fair.c | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > > index f6a05d9b5443..a44aca5095d3 100644
+> > > > --- a/kernel/sched/fair.c
+> > > > +++ b/kernel/sched/fair.c
+> > > > @@ -6213,7 +6213,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
+> > > >                     *idle_cpu = cpu;
+> > > >     }
+> > > >
+> > > > -   if (idle)
+> > > > +   if (idle && *idle_cpu != -1)
+> > > >             return core;
+> > >
+> > > In that case, core would be nr_cpu_ids (==nr_cpumask_bits), and then the caller checks:
+> > >
+> > >       (unsigned)i < nr_cpumask_bits
+> >
+> > Thank you for reply.
+> >
+> >
+> > If (1)there is no idle core or (2)the idle core has no allowed cpu, we return -1.
+> > Originally, just (1) has happened, we return -1. The (2) is what I want to add.
+> 
+> I don't understand (2). before doing
+>         for_each_cpu_wrap(cpu, cpus, target + 1) {
+>                 if (has_idle_core) {
+>                         i = select_idle_core(p, cpu, cpus, &idle_cpu);
+>                         if ((unsigned int)i < nr_cpumask_bits)
+>                                 return i;
+> 
+>                 } else {
+>                         if (!--nr)
+>                                 return -1;
+>                         idle_cpu = __select_idle_cpu(cpu, p);
+>                         if ((unsigned int)idle_cpu < nr_cpumask_bits)
+>                                 break;
+>                 }
+>         }
+> 
+> to select idle core, we have already done:
+>     cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> 
+> so we are only scanning allowed cpus.
 
-diff --git a/Documentation/devicetree/bindings/net/nfc/marvell,nci.yaml b/Documentation/devicetree/bindings/net/nfc/marvell,nci.yaml
-new file mode 100644
-index 000000000000..15a45db3899a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/nfc/marvell,nci.yaml
-@@ -0,0 +1,170 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/nfc/marvell,nci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Marvell International Ltd. NCI NFC controller
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - marvell,nfc-i2c
-+      - marvell,nfc-spi
-+      - marvell,nfc-uart
-+
-+  hci-muxed:
-+    type: boolean
-+    description: |
-+      Specifies that the chip is muxing NCI over HCI frames
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+  reset-n-io:
-+    $ref: "/schemas/types.yaml#/definitions/phandle-array"
-+    maxItems: 1
-+    description: |
-+      Output GPIO pin used to reset the chip (active low)
-+
-+  i2c-int-falling:
-+    type: boolean
-+    description: |
-+      For I2C type of connection. Specifies that the chip read event shall be
-+      trigged on falling edge.
-+
-+  i2c-int-rising:
-+    type: boolean
-+    description: |
-+      For I2C type of connection.  Specifies that the chip read event shall be
-+      trigged on rising edge.
-+
-+  break-control:
-+    type: boolean
-+    description: |
-+      For UART type of connection. Specifies that the chip needs specific break
-+      management.
-+
-+  flow-control:
-+    type: boolean
-+    description: |
-+      For UART type of connection. Specifies that the chip is using RTS/CTS.
-+
-+  spi-cpha: true
-+  spi-cpol: true
-+  spi-max-frequency: true
-+
-+required:
-+  - compatible
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: marvell,nfc-i2c
-+    then:
-+      properties:
-+        break-control: false
-+        flow-control: false
-+        spi-cpha: false
-+        spi-cpol: false
-+        spi-max-frequency: false
-+      required:
-+        - reg
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: marvell,nfc-spi
-+    then:
-+      properties:
-+        break-control: false
-+        flow-control: false
-+        i2c-int-falling: false
-+        i2c-int-rising: false
-+      required:
-+        - reg
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: marvell,nfc-uart
-+    then:
-+      properties:
-+        i2c-int-falling: false
-+        i2c-int-rising: false
-+        interrupts: false
-+        spi-cpha: false
-+        spi-cpol: false
-+        spi-max-frequency: false
-+        reg: false
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nfc@8 {
-+            compatible = "marvell,nfc-i2c";
-+            reg = <0x8>;
-+
-+            interrupt-parent = <&gpio3>;
-+            interrupts = <21 IRQ_TYPE_EDGE_RISING>;
-+
-+            i2c-int-rising;
-+
-+            reset-n-io = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+        };
-+    };
-+
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        nfc@0 {
-+            compatible = "marvell,nfc-spi";
-+            reg = <0>;
-+
-+            spi-max-frequency = <3000000>;
-+            spi-cpha;
-+            spi-cpol;
-+
-+            interrupt-parent = <&gpio1>;
-+            interrupts = <17 IRQ_TYPE_EDGE_RISING>;
-+
-+            reset-n-io = <&gpio3 19 GPIO_ACTIVE_HIGH>;
-+        };
-+    };
-+
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    uart {
-+        nfc {
-+            compatible = "marvell,nfc-uart";
-+
-+            reset-n-io = <&gpio3 16 GPIO_ACTIVE_HIGH>;
-+
-+            hci-muxed;
-+            flow-control;
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/nfc/nfcmrvl.txt b/Documentation/devicetree/bindings/net/nfc/nfcmrvl.txt
-deleted file mode 100644
-index c9b35251bb20..000000000000
---- a/Documentation/devicetree/bindings/net/nfc/nfcmrvl.txt
-+++ /dev/null
-@@ -1,84 +0,0 @@
--* Marvell International Ltd. NCI NFC Controller
--
--Required properties:
--- compatible: Should be:
--  - "marvell,nfc-uart" or "mrvl,nfc-uart" for UART devices
--  - "marvell,nfc-i2c" for I2C devices
--  - "marvell,nfc-spi" for SPI devices
--
--Optional SoC specific properties:
--- pinctrl-names: Contains only one value - "default".
--- pintctrl-0: Specifies the pin control groups used for this controller.
--- reset-n-io: Output GPIO pin used to reset the chip (active low).
--- hci-muxed: Specifies that the chip is muxing NCI over HCI frames.
--
--Optional UART-based chip specific properties:
--- flow-control: Specifies that the chip is using RTS/CTS.
--- break-control: Specifies that the chip needs specific break management.
--
--Optional I2C-based chip specific properties:
--- i2c-int-falling: Specifies that the chip read event shall be trigged on
--  		   falling edge.
--- i2c-int-rising: Specifies that the chip read event shall be trigged on
--  		  rising edge.
--
--Example (for ARM-based BeagleBoard Black with 88W8887 on UART5):
--
--&uart5 {
--
--	nfcmrvluart: nfcmrvluart@5 {
--		compatible = "marvell,nfc-uart";
--
--		reset-n-io = <&gpio3 16 0>;
--
--		hci-muxed;
--		flow-control;
--        }
--};
--
--
--Example (for ARM-based BeagleBoard Black with 88W8887 on I2C1):
--
--&i2c1 {
--	clock-frequency = <400000>;
--
--	nfcmrvli2c0: i2c@1 {
--		compatible = "marvell,nfc-i2c";
--
--		reg = <0x8>;
--
--		/* I2C INT configuration */
--		interrupt-parent = <&gpio3>;
--		interrupts = <21 0>;
--
--		/* I2C INT trigger configuration */
--		i2c-int-rising;
--
--		/* Reset IO */
--		reset-n-io = <&gpio3 19 0>;
--	};
--};
--
--
--Example (for ARM-based BeagleBoard Black on SPI0):
--
--&spi0 {
--
--	mrvlnfcspi0: spi@0 {
--		compatible = "marvell,nfc-spi";
--
--		reg = <0>;
--
--		/* SPI Bus configuration */
--		spi-max-frequency = <3000000>;
--		spi-cpha;
--		spi-cpol;
--
--		/* SPI INT configuration */
--		interrupt-parent = <&gpio1>;
--		interrupts = <17 0>;
--
--		/* Reset IO */
--       		reset-n-io = <&gpio3 19 0>;
--	};
--};
--- 
-2.30.2
+Um.. You read top down.. and you are right.
+The function itself semantics is important to me.
 
+After a secondary recall and not thorough now, I realize that
+cpus_ptr may be changed.
+
+
+See code of this:
+
+static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
+{
+	if (likely(!p->migration_disabled))
+		return;
+
+	if (p->cpus_ptr != &p->cpus_mask)
+		return;
+
+	/*
+	 * Violates locking rules! see comment in __do_set_cpus_allowed().
+	 */
+	__do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
+}
+
+
+This change is under the light of ->pi_lock.
+That thing is quick to forget to me..
+Not sure I am right. Thank you for remind.
+
+If the cpu_ptr can be changed, you can not depend on the first AND
+operation there.
+
+> >
+> > If we find idle core and has allowed cpu in the core, is it better to return
+> > @*idle_cpu.
+> >
+> >     if (idle && *idle_cpu != -1)
+> >             return *idle_cpu;
+> >
+> > This @*idle_cpu is the allowed cpu in the idle core. We do not promise anything
+> > about the @core(target) is the allowed cpu until we hit in select_task_rq() -->
+> > select_fallback_rq(). And the select_fallback_rq() will return a different cpu
+> > than the @core or @*idle_cpu.
+> >
+> > > >     cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+> > > > @@ -6324,7 +6324,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+> > > >             }
+> > > >     }
+> > > >
+> > > > -   if (has_idle_core)
+> > > > +   if (has_idle_core && *idle_cpu != -1)
+> > > >             set_idle_cores(target, false);
+> > >
+> > > And this one I'm completely failing, why shouldn't we mark the core as
+> > > non-idle when there is a single idle CPU found? That's just worng.
+> >
+> > When @has_idle_core is true, it implies for all cpu in the core the case
+> > (1) or case (2) has happened. The (1) can be mark as non-idle. I conclude
+> > to contradiction myself last time. The (2) is also seemed to be non-idle.
+> >
+> >
+> > But, I think I am totally wrong because the sds->has_idle_cores is related
+> > to the cpu not task. So, the affinity should not affect the decision of
+> > sds->has_idle_cores.
+> >
+> >
+> >
+> > Thanks,
+> > Tao
+> 
+> Thanks
+> barry
+
+
+
+Thanks,
+Tao
