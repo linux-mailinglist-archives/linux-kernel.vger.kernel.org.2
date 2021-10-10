@@ -2,59 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3C0428294
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F09042829B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhJJRTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:19:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232196AbhJJRTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:19:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6A50E60F39;
-        Sun, 10 Oct 2021 17:17:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633886245;
-        bh=SyZp6ya7ThnLvYdt9qoz/hyE2TPZve+Pule7YnyO9Gk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gOC/7pvcwB/0dUsaUSIFw4DptXAVrhMjIkactJay5glCLb5cDDPJ13Dbz2O6OuCwF
-         gYgwr3DJF7mvvhO/sarBZrRyf9sj0b5mXylwCqdw0C/P7O3MB+SEfbtLB5Aiy7K1H2
-         0ArsMKcVv2X6ooj66tb4ALuzu53vH0PXEVhOAGjT1xzP1D42uZdwiAlG6vmw8TEMv0
-         67u4DUG43t4uOk9DFv9tuxxrJlcK/HHWvE3eKYAF4AsSRF6ufXBtOnxXLNdRCluzbA
-         9gjv6+W3pq5k6N887CcYfoDLEVFszeKJSR3MCZXuKPjhcrLrlsSC3c9hFziqaDolYy
-         7SwlpGT6RGE3g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5553560A39;
-        Sun, 10 Oct 2021 17:17:25 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/urgent for v5.15-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YWKqpkLDl4Yd87z1@zn.tnic>
-References: <YWKqpkLDl4Yd87z1@zn.tnic>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YWKqpkLDl4Yd87z1@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc5
-X-PR-Tracked-Commit-Id: d298b03506d3e161f7492c440babb0bfae35e650
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c22ccc4a3ef198752855f44e9279732260c889d5
-Message-Id: <163388624528.22826.1082132223915723058.pr-tracker-bot@kernel.org>
-Date:   Sun, 10 Oct 2021 17:17:25 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        id S232659AbhJJRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:20:57 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33704
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231144AbhJJRU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 13:20:56 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AAE2E3FFEE
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 17:18:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633886336;
+        bh=4qntQH6iTVpY2LlsjZficLjwmHfD3YcYFwNAdv68/mo=;
+        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
+         MIME-Version:Content-Type;
+        b=iB6QNWE73oao3wOJHt5CczYwkUiP1SwNqftNBNjOMVodIUgaiQlTkL0iAsIYuCGId
+         Eqkg7oeBXFz1KmbFU0BQX4B5g7LNxhrCF8A9ZHrAETTTfsyH96Ao9LkFMtT+O+gmD+
+         2Bv9ifqJj/xe2RS9VV+pd/Igj6FGNJIpSddSa66ir+Ph/Gnm3t6mtP4apdH85lRrFt
+         uaXWOjMlDgjTid9GFgzf7acehacCITl/ebjjrW6xNqXKvjgTX0mqDXYdquJ6y0Qg8/
+         t/nsUuziunniB6UMMskgDo1LrGBDJ1P1+SulKj1OcXhDtzw1mU2uzTNQuDHSpoWAWw
+         yivGJozg9AHkA==
+Received: by mail-ed1-f71.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso13714017edx.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:18:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4qntQH6iTVpY2LlsjZficLjwmHfD3YcYFwNAdv68/mo=;
+        b=5hU0YRetFaGuVEQdT5BnjOlsu7M/kc4eOwivyj92xLaVggJ3Pr/EXiiaO+6GZPetHz
+         t2kv1gChk6i0EABXEclHv2yAh0bX/17yTPTdtvbDIovFXTPgTaMf9ncbq3I3A7DxrZhH
+         MN9ZJt6W1OcxhFy+MjHTqYc9vbmqxBG+VSMMr9cjTqfLgNFUf1mD9xLwvffm7v/OPFse
+         u30S2SmSOUNJlMOeglZWG1EJhZEcWr73tkPqktPzjxac0cL8yBxP9hxvbbPr3ViIq6RO
+         L2kliB9h+QNAYtZgPXqITWDvr0bDrbwRnK0lhTqyj8/yqYUeENofonZbz8vadGIZd6oo
+         7U1w==
+X-Gm-Message-State: AOAM530u9sSNWJkKYaX/82PvuQJlqCXK2JefWZfkTz8f28zHKSW4/uvd
+        QwGETj7sbkPmISLu5gggly/nTXWS1o6gUlqAq4HdAvdGQ6k8RyWD7FupwByFH4/HMLIjB9bTJFf
+        25sNzuYVoQ01F5sQySgwByKDYELArGhO+BwcsTsM/iA==
+X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr18305480eju.419.1633886336076;
+        Sun, 10 Oct 2021 10:18:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR3op9vPfBpT/Rur3yAGyVqNTQAFkiXYhxIGK/aJsucDUphDJMtt0Mbk2Xsc0fWr/HMgUcmQ==
+X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr18305471eju.419.1633886335878;
+        Sun, 10 Oct 2021 10:18:55 -0700 (PDT)
+Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id x14sm2952429edd.25.2021.10.10.10.18.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 10:18:55 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: Re: [PATCH] soc: samsung: pm_domains: drop unused is_off field
+Date:   Sun, 10 Oct 2021 19:18:53 +0200
+Message-Id: <163388632924.9226.9866323662921764229.b4-ty@canonical.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211008075253.67961-1-krzysztof.kozlowski@canonical.com>
+References: <20211008075253.67961-1-krzysztof.kozlowski@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 10 Oct 2021 10:56:06 +0200:
+On Fri, 8 Oct 2021 09:52:53 +0200, Krzysztof Kozlowski wrote:
+> The 'is_off' member of internal state structure 'exynos_pm_domain' is
+> not used anymore.
+> 
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.15_rc5
+Applied, thanks!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c22ccc4a3ef198752855f44e9279732260c889d5
+[1/1] soc: samsung: pm_domains: drop unused is_off field
+      commit: 178d6c1b83e5244b866d90071246b3b0135c3f7d
 
-Thank you!
-
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
