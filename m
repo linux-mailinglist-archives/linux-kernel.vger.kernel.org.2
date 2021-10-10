@@ -2,234 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A7B427E67
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 03:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA03427E6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 04:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230342AbhJJB7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Oct 2021 21:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        id S229813AbhJJCf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Oct 2021 22:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbhJJB6Z (ORCPT
+        with ESMTP id S229689AbhJJCfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Oct 2021 21:58:25 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB62BC06177B;
-        Sat,  9 Oct 2021 18:56:24 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id a25so36067227edx.8;
-        Sat, 09 Oct 2021 18:56:24 -0700 (PDT)
+        Sat, 9 Oct 2021 22:35:53 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F86C061762
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 19:33:54 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id z11so48241817lfj.4
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 19:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=65S6lCh47tZ5HxQyo6DocfizCuDWrcJIBiYIGFhvY1k=;
-        b=mJWQtEL0O+3B0eLbY62Rh4f1pwQ7EXajJNKfLKm+Qo0CjYjQzRvwMYFEBmbCX4VccU
-         PtxrHPANjnZF8Ybbs3SrpC/4iAoZZjl5xQ9fgxE32YHjWaOIl83rL0UOBC0OJgV8SBIf
-         7ChvswFvD4mGjV85RPTl7vUDPX/dqzPLk98zzkhlwNFI5F67QvP9WRhkfFYlnj+LifAR
-         dHXV6U4su96n/9v3hUAErwokU7SB/h0sfm4Es7L2UPkxqnPGx/XUKKXDD0535Vzlm8IW
-         8/Qjqes1gIZERVtH7koafHvPbbfCYCLKOJoRehekKwaldLlOzmaq598PDcSM81dGp/jd
-         nGFg==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H8MR/G+R6dUa+Wsak7wjS+wkWi7PQwjwNuQYwbKSDbs=;
+        b=zsm4QGk8rPd0xznOtFQ4jM80KtqL6ElVzYNVtbULnt2VHGFGaqGQ7IBeRCpToy8QqY
+         jhZJajveM8niezxDR4oPUnd6i2H+QSkDf0koHaqlaS/jjfuhzl1LDxD5n3UrISdt612y
+         3QOjwAj8MnSWmCzR4bLzRBMKSxRgRuLZQkxq2ZM1CZttdVdZfbI8blnawJ+G5wHMimro
+         OEcln7Qkhx0sFcTamb0Aa6vJloLkLAyPGGJm4pclFSG8/0/6zUpdjepSBRWKJwPIceKm
+         RJtGgOkyHwxbcllHuO0MHDiJvyN3jRzuQAZUnei00npwrQaDOPCkpuhPqSSKi8XF0wTX
+         xIYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=65S6lCh47tZ5HxQyo6DocfizCuDWrcJIBiYIGFhvY1k=;
-        b=PZ1m8wp5MnzKo8CjTxZbZ31CN6i6jPAzLtveH437GYJ/USCEdT62HRI6v06wszcAX8
-         obvop6spYbIJheWQJSudimKCTYaE57PRzrgfP+RMlgHPARKqnNuIP8eX0zfDPkD3m+Hm
-         r+FaqkLbG4OiwSf9tak+CnVycKcOvI/ONNpQchckfknT4fD1z0lTz0sdjlhyWuBgPfUn
-         hhlANdrcj+7Yc3zucFfnT53wzxIngS2SFYfWVJ/k/gSQPd1x+DFB5gylbMnBKGknphMz
-         liCBrEE4mnVZfU92Ogny0WDy0XYIcghPhNd0THjqq4uU7ZWC3hZU+duPUzRMbEYwS8ov
-         AvRA==
-X-Gm-Message-State: AOAM532qPTr9aV0orpOobxvWIUDLfreL8y9zXvTQbXWXPcKjH32/9uh0
-        g6g5M8W4vrqnXUPzKepUBCY=
-X-Google-Smtp-Source: ABdhPJxMIt7F4ILICHqyAP5I4Py4EGQsUUf5FxCti1SBd22xO3sSAhGimgGMvv4FQEqyiIH61oXTiw==
-X-Received: by 2002:a50:cf4d:: with SMTP id d13mr28232129edk.50.1633830983188;
-        Sat, 09 Oct 2021 18:56:23 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id x11sm1877253edj.62.2021.10.09.18.56.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H8MR/G+R6dUa+Wsak7wjS+wkWi7PQwjwNuQYwbKSDbs=;
+        b=1OGNF2hquGiQf75yMa4HZQJFbltoW7MTAsayFOPwk5XYP6UaIdLeMrNEXGKo+aPf1q
+         9Y39QqDlFcB7QERLgCnMKNrcmcnAzhmi5ybdl3rQctftJJ74qa/v+mn1V2FCi5ccKRLE
+         RhubbOFxc5mgUJFAY+6J98y3GSrrlnqpnN5yNTJ6r/eaeV2FoulZ+VTYPUqGl0WRVVTK
+         vYWgTnvpy0EMEkbd9n8slp+wYjci9cppXaLzjmCnkxKJXwwMwfGJB+RBcpUwb1fx9K01
+         VdWrqbR9EiAMgA4+NIFcfW6EAasP8ffEz/Gf7WIxvVCZhGY/8FbW5FgMg3pEmcrRoVPi
+         QTgQ==
+X-Gm-Message-State: AOAM5301/+D039mhQ78vypcmXKHX4g7IHGct2Qt6r+B/Y/8do0X99gyx
+        Xzei2JusppE+HQ7q4dxH2hCJKoKErCFLsw==
+X-Google-Smtp-Source: ABdhPJwSGRHUjgYDj6ZuRGbJ8leAofMXLbnvvETRVb2XglZdualtHhvMW4bmUmSAHrmweRUkmAHnFw==
+X-Received: by 2002:a2e:6e0b:: with SMTP id j11mr13538657ljc.527.1633833232637;
+        Sat, 09 Oct 2021 19:33:52 -0700 (PDT)
+Received: from umbar.lan ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id p23sm345322lfd.127.2021.10.09.19.33.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 18:56:22 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v3 13/13] drivers: net: dsa: qca8k: set internal delay also for sgmii
-Date:   Sun, 10 Oct 2021 03:56:03 +0200
-Message-Id: <20211010015603.24483-14-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211010015603.24483-1-ansuelsmth@gmail.com>
-References: <20211010015603.24483-1-ansuelsmth@gmail.com>
+        Sat, 09 Oct 2021 19:33:52 -0700 (PDT)
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thierry Reding <treding@nvidia.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
+Date:   Sun, 10 Oct 2021 05:33:50 +0300
+Message-Id: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCA original code report port instability and sa that SGMII also require
-to set internal delay. Generalize the rgmii delay function and apply the
-advised value if they are not defined in DT.
+After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
+qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
+However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
+qcom_smmu_impl_init() is never called.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+So, let's fix this by always calling qcom_smmu_impl_init(). It does not
+touch the smmu passed unless the device is a non-Qualcomm one. Make
+ARM_SMMU select QCOM_SCM for ARCH_QCOM.
+
+Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
+Cc: Arnd Bergmann <arnd@arndb.de>
+Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/net/dsa/qca8k.c | 102 +++++++++++++++++++++++++---------------
- drivers/net/dsa/qca8k.h |   2 +
- 2 files changed, 67 insertions(+), 37 deletions(-)
+ drivers/iommu/Kconfig                      | 1 +
+ drivers/iommu/arm/arm-smmu/Makefile        | 3 +--
+ drivers/iommu/arm/arm-smmu/arm-smmu-impl.c | 9 +++++++--
+ 3 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 7c68c272ce3a..21776826bf2e 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1164,13 +1164,67 @@ qca8k_setup(struct dsa_switch *ds)
- 	return 0;
- }
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index c5c71b7ab7e8..a4593e53fe7d 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -309,6 +309,7 @@ config ARM_SMMU
+ 	tristate "ARM Ltd. System MMU (SMMU) Support"
+ 	depends on ARM64 || ARM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+ 	select IOMMU_API
++	select QCOM_SCM
+ 	select IOMMU_IO_PGTABLE_LPAE
+ 	select ARM_DMA_USE_IOMMU if ARM
+ 	help
+diff --git a/drivers/iommu/arm/arm-smmu/Makefile b/drivers/iommu/arm/arm-smmu/Makefile
+index b0cc01aa20c9..e240a7bcf310 100644
+--- a/drivers/iommu/arm/arm-smmu/Makefile
++++ b/drivers/iommu/arm/arm-smmu/Makefile
+@@ -1,5 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_QCOM_IOMMU) += qcom_iommu.o
+ obj-$(CONFIG_ARM_SMMU) += arm_smmu.o
+-arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o
+-arm_smmu-$(CONFIG_ARM_SMMU_QCOM) += arm-smmu-qcom.o
++arm_smmu-objs += arm-smmu.o arm-smmu-impl.o arm-smmu-nvidia.o arm-smmu-qcom.o
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+index 2c25cce38060..8199185dd262 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+@@ -215,8 +215,13 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
+ 	    of_device_is_compatible(np, "nvidia,tegra186-smmu"))
+ 		return nvidia_smmu_impl_init(smmu);
  
-+static void
-+qca8k_mac_config_setup_internal_delay(struct qca8k_priv *priv, struct dsa_port *dp,
-+				      u32 reg, const struct phylink_link_state *state)
-+{
-+	u32 delay, val = 0;
-+	int ret;
-+
-+	if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-+	    state->interface == PHY_INTERFACE_MODE_RGMII_TXID ||
-+	    state->interface == PHY_INTERFACE_MODE_SGMII) {
-+		if (of_property_read_u32(dp->dn, "tx-internal-delay-ps", &delay))
-+			delay = 1;
-+		else
-+			/* Switch regs accept value in ns, convert ps to ns */
-+			delay = delay / 1000;
-+
-+		if (delay > QCA8K_MAX_DELAY) {
-+			dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
-+			delay = 3;
-+		}
-+
-+		val |= QCA8K_PORT_PAD_RGMII_TX_DELAY(delay) |
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_EN;
-+	}
-+
-+	if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-+	    state->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
-+	    state->interface == PHY_INTERFACE_MODE_SGMII) {
-+		if (of_property_read_u32(dp->dn, "rx-internal-delay-ps", &delay))
-+			delay = 2;
-+		else
-+			/* Switch regs accept value in ns, convert ps to ns */
-+			delay = delay / 1000;
-+
-+		if (delay > QCA8K_MAX_DELAY) {
-+			dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
-+			delay = 3;
-+		}
-+
-+		val |= QCA8K_PORT_PAD_RGMII_RX_DELAY(delay) |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_EN;
-+	}
-+
-+	/* Set RGMII delay based on the selected values */
-+	ret = qca8k_rmw(priv, reg,
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_EN,
-+			val);
-+	if (ret)
-+		dev_err(priv->dev, "Failed to set internal delay for CPU port %d", dp->index);
-+}
-+
- static void
- qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 			 const struct phylink_link_state *state)
- {
- 	struct qca8k_priv *priv = ds->priv;
- 	struct dsa_port *dp;
--	u32 reg, val, delay;
-+	u32 reg, val;
- 	int ret;
+-	if (IS_ENABLED(CONFIG_ARM_SMMU_QCOM))
+-		smmu = qcom_smmu_impl_init(smmu);
++	/*
++	 * qcom_smmu_impl_init() will not touch smmu if the device is not
++	 * a Qualcomm one.
++	 */
++	smmu = qcom_smmu_impl_init(smmu);
++	if (IS_ERR(smmu))
++		return smmu;
  
- 	switch (port) {
-@@ -1222,44 +1276,11 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 	case PHY_INTERFACE_MODE_RGMII_TXID:
- 	case PHY_INTERFACE_MODE_RGMII_RXID:
- 		dp = dsa_to_port(ds, port);
--		val = QCA8K_PORT_PAD_RGMII_EN;
--
--		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
--		    state->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
--			if (of_property_read_u32(dp->dn, "tx-internal-delay-ps", &delay))
--				delay = 1;
--			else
--				/* Switch regs accept value in ns, convert ps to ns */
--				delay = delay / 1000;
--
--			if (delay > QCA8K_MAX_DELAY) {
--				dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
--				delay = 3;
--			}
--
--			val |= QCA8K_PORT_PAD_RGMII_TX_DELAY(delay) |
--			       QCA8K_PORT_PAD_RGMII_TX_DELAY_EN;
--		}
- 
--		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
--		    state->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
--			if (of_property_read_u32(dp->dn, "rx-internal-delay-ps", &delay))
--				delay = 2;
--			else
--				/* Switch regs accept value in ns, convert ps to ns */
--				delay = delay / 1000;
--
--			if (delay > QCA8K_MAX_DELAY) {
--				dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
--				delay = 3;
--			}
--
--			val |= QCA8K_PORT_PAD_RGMII_RX_DELAY(delay) |
--			       QCA8K_PORT_PAD_RGMII_RX_DELAY_EN;
--		}
-+		qca8k_write(priv, reg, QCA8K_PORT_PAD_RGMII_EN);
- 
--		/* Set RGMII delay based on the selected values */
--		qca8k_write(priv, reg, val);
-+		/* Configure rgmii delay from dp or taking advised values */
-+		qca8k_mac_config_setup_internal_delay(priv, dp, reg, state);
- 
- 		/* QCA8337 requires to set rgmii rx delay for all ports.
- 		 * This is enabled through PORT5_PAD_CTRL for all ports,
-@@ -1341,6 +1362,13 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 					QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE |
- 					QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE,
- 					val);
-+
-+		/* From original code is reported port instability as SGMII also
-+		 * require delay set. Apply advised values here or take them from DT.
-+		 */
-+		if (state->interface == PHY_INTERFACE_MODE_SGMII)
-+			qca8k_mac_config_setup_internal_delay(priv, dp, reg, state);
-+
- 		break;
- 	default:
- 		dev_err(ds->dev, "xMII mode %s not supported for port %d\n",
-diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-index c032db5e0d41..92867001cc34 100644
---- a/drivers/net/dsa/qca8k.h
-+++ b/drivers/net/dsa/qca8k.h
-@@ -39,7 +39,9 @@
- #define QCA8K_REG_PORT5_PAD_CTRL			0x008
- #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
- #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
-+#define   QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK		GENMASK(23, 22)
- #define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		((x) << 22)
-+#define   QCA8K_PORT_PAD_RGMII_RX_DELAY_MASK		GENMASK(21, 20)
- #define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		((x) << 20)
- #define	  QCA8K_PORT_PAD_RGMII_TX_DELAY_EN		BIT(25)
- #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
+ 	if (of_device_is_compatible(np, "marvell,ap806-smmu-500"))
+ 		smmu->impl = &mrvl_mmu500_impl;
 -- 
-2.32.0
+2.30.2
 
