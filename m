@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C843428155
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B437428157
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhJJMpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:45:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232560AbhJJMou (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:44:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B05F460ED4;
-        Sun, 10 Oct 2021 12:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633869771;
-        bh=O7+5G/8cFVwXN7V725JU1cD+Zpxq8xjRo6+pVgVOhVw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jKz0pNq6Q5iZWuMfYjmKpkYC6U1u8MqDXXtyM2G3UYzLsZwYdHxjqBCt73FHxQjxl
-         fwduLn+5AolNU04rqGAYFqA9hryGjofjrwdLF4l8JlE3lM1KUw7iRNiM8KYAv5xwoe
-         dlbU/oPC2mMgXrqGbHG/3AzeBdfnZZptl/mL78EU=
-Date:   Sun, 10 Oct 2021 14:42:48 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module
- namespace
-Message-ID: <YWLfyDSZmNogcU5m@kroah.com>
-References: <YU8oVDFoeD5YYeDT@kroah.com>
- <CAO_48GG-ygn6ox0JUM89qEO9BG662pBU5KKjx2R+T2ftCs75_Q@mail.gmail.com>
- <CADnq5_O1GNteyrrYfVHMN9CpRx5gt+Bvtr1uahR7DsSbw04TTQ@mail.gmail.com>
+        id S232095AbhJJMrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:47:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231842AbhJJMrY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:47:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633869925;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hGzveYbUBicRzug96qwjzZADX2Wt9eAHz5hNvkN82fY=;
+        b=TKurP6/v5EmufEOyF61+NJDVW1vGcJEbd9Vfy8adnwgkjxEIcVgyZL1raHn9Nglbgr5xVN
+        TdgAb1MdxmI2Tiu0zQ/3dmpigY6F0RIscw3jTRoOCtJkYdN86/C3THMcyVkcjfiSODmw3N
+        w+NZoO7eUhnBBAWaid2khPOyeZPHaw4=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-tphaKzNUMgeXWCW1zxq4ZA-1; Sun, 10 Oct 2021 08:45:23 -0400
+X-MC-Unique: tphaKzNUMgeXWCW1zxq4ZA-1
+Received: by mail-ed1-f69.google.com with SMTP id cy14-20020a0564021c8e00b003db8c9a6e30so936765edb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 05:45:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hGzveYbUBicRzug96qwjzZADX2Wt9eAHz5hNvkN82fY=;
+        b=7A1WgwRWmgehfPJh1q9rflBnHMWV9Lu9811SAqS38gmReJdNPNp/I9sC6VrKQAj8QR
+         2E9lXLnNiEKXuCGJooqLaews71A90cTzHLZYeqDAI2KqRJg6hUQZlVlyf1qf2en8f9VM
+         ag23EnyicCjKDB8pULaFd+Lp4tE21vZM0WkSRhKOSXUteXJuZzgm4NkMS8T+bLgR8HM8
+         ZqrpdUA8Pk2mLakSCWJkDFz4obqPw4nhFHx9rq1V5woY23jbJhM067q5HSH5coHJK1WU
+         7DhBLgra9VYy/0mElXbydwdgFd4xlQ8LQqlXQjMgqhyROWiqMTG/QMVZwa2/Ce1w5hFn
+         Lb3w==
+X-Gm-Message-State: AOAM530YimSDrwFP0VrS1EuxIeFR8/bqUKwqoT1fUDI1AhB2RJr0NrYh
+        DKq5a1MPI8jXDgldAYNPwzyraYJMxDfx7Iah1EMKdKvUMipL35rolQlScs1zJkwal4qTfauJk70
+        UJiRspWfIknTk6YsYV88FCCoY
+X-Received: by 2002:a05:6402:268c:: with SMTP id w12mr31316106edd.376.1633869922640;
+        Sun, 10 Oct 2021 05:45:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5R81f51iOnHvmeJnqpJ7elPHbjPZqqu58M/bMxC5dmnMuMA5wa5cZk8kiknyGER654My7eg==
+X-Received: by 2002:a05:6402:268c:: with SMTP id w12mr31316077edd.376.1633869922440;
+        Sun, 10 Oct 2021 05:45:22 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id oz11sm2036382ejc.72.2021.10.10.05.45.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 05:45:22 -0700 (PDT)
+Subject: Re: [PATCH] staging: rtl8723bs: hal: remove duplicate check
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
+        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        marcocesati@gmail.com, dan.carpenter@oracle.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+References: <YWKRfYpTioAmTWa0@user>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6c589c93-b224-1490-5f38-63947f02ff6a@redhat.com>
+Date:   Sun, 10 Oct 2021 14:45:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_O1GNteyrrYfVHMN9CpRx5gt+Bvtr1uahR7DsSbw04TTQ@mail.gmail.com>
+In-Reply-To: <YWKRfYpTioAmTWa0@user>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 11:00:14AM -0400, Alex Deucher wrote:
-> On Mon, Sep 27, 2021 at 7:15 AM Sumit Semwal <sumit.semwal@linaro.org> wrote:
-> >
-> > Hello Greg,
-> >
-> > Thanks for the patch!
-> >
-> > On Sat, 25 Sept 2021 at 19:17, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> >>
-> >> In order to better track where in the kernel the dma-buf code is used,
-> >> put the symbols in the namespace DMA_BUF and modify all users of the
-> >> symbols to properly import the namespace to not break the build at the
-> >> same time.
-> >>
-> >> Now the output of modinfo shows the use of these symbols, making it
-> >> easier to watch for users over time:
-> >>
-> >> $ modinfo drivers/misc/fastrpc.ko | grep import
-> >> import_ns:      DMA_BUF
-> >>
-> >> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> >> Cc: "Christian König" <christian.koenig@amd.com>
-> >> Cc: Alex Deucher <alexander.deucher@amd.com>
-> >> Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
-> >> Cc: David Airlie <airlied@linux.ie>
-> >> Cc: Daniel Vetter <daniel@ffwll.ch>
-> >> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> >> Cc: Maxime Ripard <mripard@kernel.org>
-> >> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> >> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> >> Cc: Arnd Bergmann <arnd@arndb.de>
-> >> Cc: dri-devel@lists.freedesktop.org
-> >> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> >
-> > With the addition of the 2 misses found by Arnd, please feel free to add my
-> > Acked-by: Sumit Semwal <sumit.semwal@linaro.org>
-> 
-> Same here.
-> 
-> Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Hi,
 
-Thanks both of you for your acks.
+On 10/10/21 9:08 AM, Saurav Girepunje wrote:
+> Remove 'bPerformance' from if condition check. As on previous
+> if condition it is already check for same variable.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 
-greg k-h
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+> ---
+>  drivers/staging/rtl8723bs/hal/odm_DIG.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/hal/odm_DIG.c b/drivers/staging/rtl8723bs/hal/odm_DIG.c
+> index beda7b8a7c6a..7e92c373cddb 100644
+> --- a/drivers/staging/rtl8723bs/hal/odm_DIG.c
+> +++ b/drivers/staging/rtl8723bs/hal/odm_DIG.c
+> @@ -544,7 +544,7 @@ void odm_DIG(void *pDM_VOID)
+>  	/* 1 Adjust initial gain by false alarm */
+>  	if (pDM_Odm->bLinked && bPerformance) {
+> 
+> -		if (bFirstTpTarget || (FirstConnect && bPerformance)) {
+> +		if (bFirstTpTarget || FirstConnect) {
+>  			pDM_DigTable->LargeFAHit = 0;
+> 
+>  			if (pDM_Odm->RSSI_Min < DIG_MaxOfMin) {
+> --
+> 2.32.0
+> 
+
