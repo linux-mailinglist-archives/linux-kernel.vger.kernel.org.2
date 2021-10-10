@@ -2,122 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 333074283AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 23:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6854283B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 23:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbhJJVD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 17:03:27 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:49296
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231936AbhJJVD0 (ORCPT
+        id S233011AbhJJVIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 17:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232748AbhJJVIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 17:03:26 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 9ABA53FFFF
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:01:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633899686;
-        bh=H2uxHzAe6TlUN0i9yZmgBvOWIIeVlNqhS2vORWZhyZw=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=tNqtwUBpKuMZMe9p9UlQO8uwXtnP5fK9oxJG+SqA3o95/uAA6FzABWU61QtVQGI38
-         Eaj6hswV8Kja22563KnrNgiq1PMDCMm3Nvz/tG8n80TCw1R4Vp/wLN6IAU4d6wEp8Z
-         8Zk+pck3K2CSjl6PVNdo6JexnghvUVobih8LEsWsRdRrYmnncleq2GtRO3F0N20LwO
-         UDarmZhkkg6KTnuilaCrtZbzr6WQVb/H+WIAHiEfn44GvvRmOvY8n6z7SARrgK8LNF
-         g8DnBs3Qq18fB2g3yh+IfhJdVZvV6LbZTdYPSMLf9nQAzZ4nJTtBKa9AHV8Ft/9aFE
-         7Io1Rfm6aM/vg==
-Received: by mail-ed1-f71.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso13920347edf.7
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 14:01:26 -0700 (PDT)
+        Sun, 10 Oct 2021 17:08:19 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F75C061570;
+        Sun, 10 Oct 2021 14:06:19 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id a25so43463015edx.8;
+        Sun, 10 Oct 2021 14:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6gQ2KVUd8DCi5DdgGacGB/Bif0hOdRztQJCe1iIZeK8=;
+        b=JUiUbZ+yhAzPgctRna9ZmSTREywX5/vB1bj3wrVZMt12Pig29zB0tYE77Q75+c9Rmb
+         fchWZrzU5HK7ZDJguJJP82ySUD7uMgQw1gKP/HHgIaB11d3kw76uNUiJ+YRogc2JfE3u
+         800znk4nRnOapaXUUbRBYDqtFwxqVX3Pif9Gir0qjOzWj/c6dojlvkCXwl6PxgPXdQoi
+         21quDwfCejulFfCC6OW7/EhDf5eEBF7JzJYmHlgV6SARcTkCqVRl1VNkPtP1O/hOHIj2
+         zrm+QBW6FKIW3qMl3yjX0wJgT9vtsa/V3Q71FiL4+xG3uW01istJSe8U3Gk5sX4OVTdN
+         tYSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=H2uxHzAe6TlUN0i9yZmgBvOWIIeVlNqhS2vORWZhyZw=;
-        b=YOxsModOADzwueob9Hj10EBW5FS4W+Y+56UpeXGuSf8pqgMLp9mPYIPjgKnOzocXgf
-         sRzV7B5y6mQQHYYAFMuXlJg1gfswjgDlKxE45XvTQVQKULengl1ETyux3w7Sliao4nPi
-         ORi3UJ4GxsOigSO57OoAfT+oi/BAxRjuY+cZYPTv8gqFX2cOd+BAW72j66SdsTKhfB93
-         pXGDSesvG4LiFIerwJ7ci5acwKPWjHShFwJID8Td7YQ5d/M1kcirfi2LSFSquIN/NZp/
-         cX99c9jyvvnanxIJVLA0j6d31KP6GTlcLWPUtEujsLa11/UPrsJnPmsIuHjg/2EcHBaY
-         +O6w==
-X-Gm-Message-State: AOAM532MfLSjhf3OPk3BEgwsTE5wzzXQCt+vsIdcitZpcdss5OA5sfXw
-        C+/ylw9d3+4deJUchRAyHFfXRXaBl9RU6Z8A9VdpVIallAUp0bo+Wgm89FMPOYKqN73N4r+B7Ph
-        NuNlBnzUWDldNnUYr1xH9hn9l66kyt3DdPKs4HzCdcA==
-X-Received: by 2002:a17:906:d979:: with SMTP id rp25mr20510172ejb.355.1633899686258;
-        Sun, 10 Oct 2021 14:01:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjSgUFXXROM9c6E/IwY9mvFF/lw9viqSodp2KEoabBou2gaVWP6Wge9DFYZaeMF9MLTgDfrQ==
-X-Received: by 2002:a17:906:d979:: with SMTP id rp25mr20510153ejb.355.1633899686064;
-        Sun, 10 Oct 2021 14:01:26 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id g20sm3038565edw.71.2021.10.10.14.01.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 14:01:25 -0700 (PDT)
-Subject: Re: [PATCH v3] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
- to yaml
-To:     Rob Herring <robh@kernel.org>, David Heidelberg <david@ixit.cz>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, ~okias/devicetree@lists.sr.ht
-References: <20211009161941.41634-1-david@ixit.cz>
- <1633894316.431235.3158667.nullmailer@robh.at.kernel.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <1a315cff-fa34-0fac-8312-9a96d56966c7@canonical.com>
-Date:   Sun, 10 Oct 2021 23:01:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        bh=6gQ2KVUd8DCi5DdgGacGB/Bif0hOdRztQJCe1iIZeK8=;
+        b=TKptND7EDNGfp5yyGTKXjz7GNH63ojGRCX8TOYwdxDzp/3KbrPdHypJESEp1Y8H3e9
+         dKzreBHctXZEzGQv1Yo9DzGQosQJFu1G80PkTsNoxok+rl0qeB3Sn0oxP3I1cmL7vP63
+         achmOjrU4R/Ytt+v5TJJgpntPmK6DW9e2w/8UwDo+ylFma9o7CW5vLew9FJvx4cf9IMX
+         u8F3P+vdg+0m77EmiaZqUYg98kHsdlH+tqx8wYRi+KSeuE7Bij3whArdh8l5ipqFsa7J
+         3lkymP4oIZ8s3vGWiKkO3QnZjfQXzWCDooD+gGG/w8Symmc9pq75dWrN6Vb/qw27nUob
+         nFwA==
+X-Gm-Message-State: AOAM533mexXYyUhoZVGBgtmP2EkqRAA4r3Wj24aAc5U1DXvyPN6pIn4o
+        /PErNRmiVSNVcEpazXKX40tgZ3DhOtdHzg==
+X-Google-Smtp-Source: ABdhPJzp+UkBFeTe1Kb/4LWPfqL0Eh/KhrLdlB22UIQ3KHsTcQ9x85eRGN7bBfDTp6z8ACEOwCmFFA==
+X-Received: by 2002:a17:906:1359:: with SMTP id x25mr21510332ejb.145.1633899978020;
+        Sun, 10 Oct 2021 14:06:18 -0700 (PDT)
+Received: from localhost.localdomain ([94.179.9.244])
+        by smtp.gmail.com with ESMTPSA id j4sm3037089edk.9.2021.10.10.14.06.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 14:06:17 -0700 (PDT)
+From:   Denis Pauk <pauk.denis@gmail.com>
+Cc:     eugene.shalygin@gmail.com, andy.shevchenko@gmail.com,
+        pauk.denis@gmail.com, platform-driver-x86@vger.kernel.org,
+        Ed Brindley <kernel@maidavale.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] Update ASUS WMI supported boards
+Date:   Mon, 11 Oct 2021 00:05:10 +0300
+Message-Id: <20211010210513.343925-1-pauk.denis@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <1633894316.431235.3158667.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/2021 21:31, Rob Herring wrote:
-> On Sat, 09 Oct 2021 18:19:42 +0200, David Heidelberg wrote:
->> Convert bindings for NXP PN544 NFC driver to YAML syntax.
->>
->> Signed-off-by: David Heidelberg <david@ixit.cz>
->> ---
->> v2
->>  - Krzysztof is a maintainer
->>  - pintctrl dropped
->>  - 4 space indent for example
->>  - nfc node name
->> v3
->>  - remove whole pinctrl
->>  .../bindings/net/nfc/nxp,pn544.yaml           | 61 +++++++++++++++++++
->>  .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
->>  2 files changed, 61 insertions(+), 33 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
->>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
->>
-> 
-> Running 'make dtbs_check' with the schema in this patch gives the
-> following warnings. Consider if they are expected or the schema is
-> incorrect. These may not be new warnings.
-> 
-> Note that it is not yet a requirement to have 0 warnings for dtbs_check.
-> This will change in the future.
-> 
-> Full log is available here: https://patchwork.ozlabs.org/patch/1538804
-> 
-> 
-> pn547@28: 'clock-frequency' is a required property
-> 	arch/arm64/boot/dts/qcom/msm8992-msft-lumia-octagon-talkman.dt.yaml
-> 	arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon-cityman.dt.yaml
-> 
+Add support by WMI interface privided by Asus for B550/X570 boards: 
+* PRIME X570-PRO,
+* ROG CROSSHAIR VIII HERO
+* ROG CROSSHAIR VIII DARK HERO
+* ROG CROSSHAIR VIII FORMULA
+* ROG STRIX X570-E GAMING
+* ROG STRIX B550-E GAMING
 
-I think clock-frequency should be dropped from I2C slave device.
-Similarly to this one:
-https://lore.kernel.org/linux-nfc/f955726a-eb2d-7b3e-9c5f-978358710eb6@canonical.com/T/#u
+Add support by WMI interface privided by Asus for X370/X470/
+B450/X399 boards:
+* ROG CROSSHAIR VI HERO,
+* PRIME X399-A,
+* PRIME X470-PRO,
+* ROG CROSSHAIR VI EXTREME,
+* ROG CROSSHAIR VI HERO (WI-FI AC),
+* ROG CROSSHAIR VII HERO,
+* ROG CROSSHAIR VII HERO (WI-FI),
+* ROG STRIX B450-E GAMING,
+* ROG STRIX B450-F GAMING,
+* ROG STRIX B450-I GAMING,
+* ROG STRIX X399-E GAMING,
+* ROG STRIX X470-F GAMING,
+* ROG STRIX X470-I GAMING,
+* ROG ZENITH EXTREME,
+* ROG ZENITH EXTREME ALPHA.
+
+I have removed link to https://bugzilla.kernel.org/show_bug.cgi?id=204807 
+as not directly related to patches.
+
+Could you please review?
+
+Signed-off-by: Denis Pauk <pauk.denis@gmail.com>
+Signed-off-by: Ed Brindley <kernel@maidavale.org>
+Signed-off-by: Eugene Shalygin <eugene.shalygin@gmail.com>
+
+---
+Changes in v4:
+ - Implement wmi driver instead platform driver.
+ - Update documentation with known issues.
+
+Changes in v3:
+ - Use MODULE_DEVICE_TABLE for match devices.
+ - asus_wmi_ec_sensors: Use get_unaligned_be32 instead incorrectly used 
+   get_unaligned_le32.
+ - Add documentaion for drivers.
+
+Changes in v2:
+ - asus_wmi_ec_sensors: Rename asus_wmi_sensors to asus_wmi_ec_sensors for 
+   B550/X570 boards.
+ - asus_wmi_ec_sensors: Use utf8s_to_utf16s/utf16s_to_utf8s instead handmade 
+   fuctions.
+ - asus_wmi_ec_sensors: Use post increment.
+ - asus_wmi_ec_sensors: Use get_unaligned* for convert values.
+ - asus_wmi_ec_sensors: Use PTR_ERR_OR_ZERO.
+ - asus_wmi_ec_sensors: Specify per-board sensors in a declarative way 
+   (by Eugene Shalygin).
+ - asus_wmi_sensors: Add support for X370/X470/B450/X399 boards.
+ 
+---
+
+Denis Pauk (2):
+  hwmon: (asus_wmi_ec_sensors) Support B550 Asus WMI.
+  hwmon: (asus_wmi_sensors) Support X370 Asus WMI.
+
+ Documentation/hwmon/asus_wmi_ec_sensors.rst |  35 ++
+ Documentation/hwmon/asus_wmi_sensors.rst    |  74 +++
+ MAINTAINERS                                 |   8 +
+ drivers/hwmon/Kconfig                       |  22 +
+ drivers/hwmon/Makefile                      |   2 +
+ drivers/hwmon/asus_wmi_ec_sensors.c         | 644 ++++++++++++++++++++
+ drivers/hwmon/asus_wmi_sensors.c            | 620 +++++++++++++++++++
+ 7 files changed, 1405 insertions(+)
+ create mode 100644 Documentation/hwmon/asus_wmi_ec_sensors.rst
+ create mode 100644 Documentation/hwmon/asus_wmi_sensors.rst
+ create mode 100644 drivers/hwmon/asus_wmi_ec_sensors.c
+ create mode 100644 drivers/hwmon/asus_wmi_sensors.c
 
 
-Best regards,
-Krzysztof
+base-commit: 39b483aa38995329326988cbc4077422bebc175a
+-- 
+2.33.0
+
