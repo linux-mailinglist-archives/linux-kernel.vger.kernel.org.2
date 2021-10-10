@@ -2,234 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41354280CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 525DC4280D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhJJLTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 07:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48430 "EHLO
+        id S231775AbhJJLca (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 07:32:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232167AbhJJLSW (ORCPT
+        with ESMTP id S231556AbhJJLc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 07:18:22 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD22CC0613DF;
-        Sun, 10 Oct 2021 04:16:20 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id d9so31490814edh.5;
-        Sun, 10 Oct 2021 04:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TH+I2aVPtNSn1H4wrwimzYH2fn7rX1yhAgj/wkO2epY=;
-        b=SAwKikuFE7Gqk2mpSPnL6vEAUJ7Wa4nTc98aaI0981t4K/Fno551seimvndVh+iO5/
-         jP1HW0ArDjUIVrE74G1Cvg7ijRi0abJh8IrXwRZbS/9siNIX1352nYGCkiwKypUCN4rF
-         ARCztPwpy1DZ+lIzB3vXN5xeltdvyVHFOPmU1sSdVYf7mLtD1wgtXxQrZis89t+MOylp
-         U6WERl8sCxpJ2ohok9YghzcLLzq5xBy2ixOitUDZg/rF20cXy4LlTXhggDU2z6MmXYkc
-         YJGV2ZrzgpToWqQt0TzDSHqWNd4zsMoeGx0+Zy8Vpw5hiDy/vjXrrZLKTBWJiYh2bqVj
-         XXmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TH+I2aVPtNSn1H4wrwimzYH2fn7rX1yhAgj/wkO2epY=;
-        b=jrosKiKB8QSvvQl81XKpaRFFnY+m6QmrXjEN52UvP7zSi5mAMQY4G38ckZpEpdi6JD
-         zpAfdp6f9fsWwxs8gL4/6fbNi7gHZR4awTfE4hw4d62bCvXWLcP5MkOf3mB2E9c6bxwi
-         I5SfDZu5wg1MpeHyDGrqwwV9GiZ6nbgLW5CcQjbysd8EfCQHzhl9ZyQzustNSZ4OmpeO
-         RqpzNNGZutNql/zWKANtZnJl+xd0leIloGhh+7trjqzlTkeRqMVUwWShSLKTt9bFF3yD
-         YaOx39ryHd+9EnmyZBouSatYIClIb4o4GdGUanCIoTbr4SDHk+1UCfn22N6T00g9pG9u
-         sFKA==
-X-Gm-Message-State: AOAM531cJIN3hMTvLg7AePOCD4n9mse+nx8dxy9Os5E9Wm+qLDkpU0Fe
-        qxWtzE14KxKqPXZKO7ESFak=
-X-Google-Smtp-Source: ABdhPJz92WfjiBDX77VFxq8S4b0B9O88QGuVYaRLINnw1XGWmfheI8GeS7+7V/3Td2y290GBherxLg==
-X-Received: by 2002:a17:906:5cf:: with SMTP id t15mr18081370ejt.375.1633864579275;
-        Sun, 10 Oct 2021 04:16:19 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.googlemail.com with ESMTPSA id z5sm2414438edm.82.2021.10.10.04.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 04:16:19 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>
-Subject: [net-next PATCH v4 13/13] drivers: net: dsa: qca8k: set internal delay also for sgmii
-Date:   Sun, 10 Oct 2021 13:15:56 +0200
-Message-Id: <20211010111556.30447-14-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211010111556.30447-1-ansuelsmth@gmail.com>
-References: <20211010111556.30447-1-ansuelsmth@gmail.com>
+        Sun, 10 Oct 2021 07:32:29 -0400
+X-Greylist: delayed 594 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 10 Oct 2021 04:30:29 PDT
+Received: from mail.hahnjo.de (backus.hahnjo.de [IPv6:2a03:4000:2a:2c1::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C8FC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 04:30:28 -0700 (PDT)
+Received: from Jonas-Dell.home (unknown [IPv6:2a01:cb15:40c:c100:cf0a:528a:fee7:c993])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.hahnjo.de (Postfix) with ESMTPSA id DC73B51CFA5A;
+        Sun, 10 Oct 2021 13:20:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hahnjo.de; s=default;
+        t=1633864831; bh=euYIU/P6O7NV+xmb08ycljLE1YgZeMPZ2GgVpN+dqMA=;
+        h=From:To:Cc:Subject:Date;
+        b=XWbJ7Y7a2jQ9Yp0JEXe6ThLSU9ktxeGpsnmk246SYaIMJ2xX0PKwRKqfDcy6TH6rx
+         ClR6mfLDWRr0iZRez547/rd/5n3bDXY9eAUL6ZpfagGzXSUmGx9usuyALiyRLcQg2J
+         +6UGfY1qNyBmD7e0zEGtd+r3rBuvVkI7rCMv/NXX6JNzSbGCGkH+CY1hCpGO/BgIBC
+         Y1Jp0SnPBDB1WvUpmrwMlBabnVlXU+NYWLpSLJNn3QhRFoJq5DraQ9LcTkQhQuCanr
+         5+Qk5e9c52C83BrLkILHADHvVlyEufT3BdLqKGTKJ4EAxIlLsU+BvQ6k7avlvUwV5G
+         gG08Xe3Cvf2qQ==
+From:   Jonas Hahnfeld <hahnjo@hahnjo.de>
+To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Jonas Hahnfeld <hahnjo@hahnjo.de>
+Subject: [PATCH] ALSA: usb-audio: Add quirk for VF0770
+Date:   Sun, 10 Oct 2021 13:19:47 +0200
+Message-Id: <20211010111947.5796-1-hahnjo@hahnjo.de>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCA original code report port instability and sa that SGMII also require
-to set internal delay. Generalize the rgmii delay function and apply the
-advised value if they are not defined in DT.
+The device advertises 8 formats, but only a rate of 48kHz is honored
+by the hardware and 24 bits give chopped audio, so only report the
+one working combination. This fixes out-of-the-box audio experience
+with PipeWire which otherwise attempts to choose S24_3LE (while
+PulseAudio defaulted to S16_LE).
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Signed-off-by: Jonas Hahnfeld <hahnjo@hahnjo.de>
 ---
- drivers/net/dsa/qca8k.c | 102 +++++++++++++++++++++++++---------------
- drivers/net/dsa/qca8k.h |   2 +
- 2 files changed, 67 insertions(+), 37 deletions(-)
+ sound/usb/quirks-table.h | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-index 947346511514..444894d108ee 100644
---- a/drivers/net/dsa/qca8k.c
-+++ b/drivers/net/dsa/qca8k.c
-@@ -1164,13 +1164,67 @@ qca8k_setup(struct dsa_switch *ds)
- 	return 0;
- }
+diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
+index e03043f7dad3..be5c2bc26a1d 100644
+--- a/sound/usb/quirks-table.h
++++ b/sound/usb/quirks-table.h
+@@ -77,6 +77,45 @@
+ /* E-Mu 0204 USB */
+ { USB_DEVICE_VENDOR_SPEC(0x041e, 0x3f19) },
  
-+static void
-+qca8k_mac_config_setup_internal_delay(struct qca8k_priv *priv, struct dsa_port *dp,
-+				      u32 reg, const struct phylink_link_state *state)
++/*
++ * Creative Technology, Ltd Live! Cam Sync HD [VF0770]
++ * The device advertises 8 formats, but only a rate of 48kHz is honored by the
++ * hardware and 24 bits give chopped audio, so only report the one working
++ * combination.
++ */
 +{
-+	u32 delay, val = 0;
-+	int ret;
++	USB_DEVICE(0x041e, 0x4095),
++	.driver_info = (unsigned long) &(const struct snd_usb_audio_quirk) {
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = &(const struct snd_usb_audio_quirk[]) {
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_MIXER,
++			},
++			{
++				.ifnum = 3,
++				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
++				.data = &(const struct audioformat) {
++					.formats = SNDRV_PCM_FMTBIT_S16_LE,
++					.channels = 2,
++					.fmt_bits = 16,
++					.iface = 3,
++					.altsetting = 4,
++					.altset_idx = 4,
++					.endpoint = 0x82,
++					.ep_attr = 0x05,
++					.rates = SNDRV_PCM_RATE_48000,
++					.rate_min = 48000,
++					.rate_max = 48000,
++					.nr_rates = 1,
++					.rate_table = (unsigned int[]) { 48000 },
++				},
++			},
++		},
++	},
++},
 +
-+	if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-+	    state->interface == PHY_INTERFACE_MODE_RGMII_TXID ||
-+	    state->interface == PHY_INTERFACE_MODE_SGMII) {
-+		if (of_property_read_u32(dp->dn, "tx-internal-delay-ps", &delay))
-+			delay = 1;
-+		else
-+			/* Switch regs accept value in ns, convert ps to ns */
-+			delay = delay / 1000;
-+
-+		if (delay > QCA8K_MAX_DELAY) {
-+			dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
-+			delay = 3;
-+		}
-+
-+		val |= QCA8K_PORT_PAD_RGMII_TX_DELAY(delay) |
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_EN;
-+	}
-+
-+	if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-+	    state->interface == PHY_INTERFACE_MODE_RGMII_RXID ||
-+	    state->interface == PHY_INTERFACE_MODE_SGMII) {
-+		if (of_property_read_u32(dp->dn, "rx-internal-delay-ps", &delay))
-+			delay = 2;
-+		else
-+			/* Switch regs accept value in ns, convert ps to ns */
-+			delay = delay / 1000;
-+
-+		if (delay > QCA8K_MAX_DELAY) {
-+			dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
-+			delay = 3;
-+		}
-+
-+		val |= QCA8K_PORT_PAD_RGMII_RX_DELAY(delay) |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_EN;
-+	}
-+
-+	/* Set RGMII delay based on the selected values */
-+	ret = qca8k_rmw(priv, reg,
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_MASK |
-+			QCA8K_PORT_PAD_RGMII_RX_DELAY_EN,
-+			val);
-+	if (ret)
-+		dev_err(priv->dev, "Failed to set internal delay for CPU port %d", dp->index);
-+}
-+
- static void
- qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 			 const struct phylink_link_state *state)
- {
- 	struct qca8k_priv *priv = ds->priv;
- 	struct dsa_port *dp;
--	u32 reg, val, delay;
-+	u32 reg, val;
- 	int ret;
- 
- 	switch (port) {
-@@ -1222,44 +1276,11 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 	case PHY_INTERFACE_MODE_RGMII_TXID:
- 	case PHY_INTERFACE_MODE_RGMII_RXID:
- 		dp = dsa_to_port(ds, port);
--		val = QCA8K_PORT_PAD_RGMII_EN;
--
--		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
--		    state->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
--			if (of_property_read_u32(dp->dn, "tx-internal-delay-ps", &delay))
--				delay = 1;
--			else
--				/* Switch regs accept value in ns, convert ps to ns */
--				delay = delay / 1000;
--
--			if (delay > QCA8K_MAX_DELAY) {
--				dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
--				delay = 3;
--			}
--
--			val |= QCA8K_PORT_PAD_RGMII_TX_DELAY(delay) |
--			       QCA8K_PORT_PAD_RGMII_TX_DELAY_EN;
--		}
- 
--		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
--		    state->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
--			if (of_property_read_u32(dp->dn, "rx-internal-delay-ps", &delay))
--				delay = 2;
--			else
--				/* Switch regs accept value in ns, convert ps to ns */
--				delay = delay / 1000;
--
--			if (delay > QCA8K_MAX_DELAY) {
--				dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
--				delay = 3;
--			}
--
--			val |= QCA8K_PORT_PAD_RGMII_RX_DELAY(delay) |
--			       QCA8K_PORT_PAD_RGMII_RX_DELAY_EN;
--		}
-+		qca8k_write(priv, reg, QCA8K_PORT_PAD_RGMII_EN);
- 
--		/* Set RGMII delay based on the selected values */
--		qca8k_write(priv, reg, val);
-+		/* Configure rgmii delay from dp or taking advised values */
-+		qca8k_mac_config_setup_internal_delay(priv, dp, reg, state);
- 
- 		/* QCA8337 requires to set rgmii rx delay for all ports.
- 		 * This is enabled through PORT5_PAD_CTRL for all ports,
-@@ -1341,6 +1362,13 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
- 					QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE |
- 					QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE,
- 					val);
-+
-+		/* From original code is reported port instability as SGMII also
-+		 * require delay set. Apply advised values here or take them from DT.
-+		 */
-+		if (state->interface == PHY_INTERFACE_MODE_SGMII)
-+			qca8k_mac_config_setup_internal_delay(priv, dp, reg, state);
-+
- 		break;
- 	default:
- 		dev_err(ds->dev, "xMII mode %s not supported for port %d\n",
-diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-index c032db5e0d41..92867001cc34 100644
---- a/drivers/net/dsa/qca8k.h
-+++ b/drivers/net/dsa/qca8k.h
-@@ -39,7 +39,9 @@
- #define QCA8K_REG_PORT5_PAD_CTRL			0x008
- #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
- #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
-+#define   QCA8K_PORT_PAD_RGMII_TX_DELAY_MASK		GENMASK(23, 22)
- #define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		((x) << 22)
-+#define   QCA8K_PORT_PAD_RGMII_RX_DELAY_MASK		GENMASK(21, 20)
- #define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		((x) << 20)
- #define	  QCA8K_PORT_PAD_RGMII_TX_DELAY_EN		BIT(25)
- #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
+ /*
+  * HP Wireless Audio
+  * When not ignored, causes instability issues for some users, forcing them to
 -- 
-2.32.0
+2.33.0
 
