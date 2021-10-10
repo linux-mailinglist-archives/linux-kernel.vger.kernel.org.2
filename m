@@ -2,140 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8200B428419
+	by mail.lfdr.de (Postfix) with ESMTP id CFD5842841A
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 00:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhJJWp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 18:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57504 "EHLO
+        id S233187AbhJJWrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 18:47:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhJJWpz (ORCPT
+        with ESMTP id S232586AbhJJWrD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 18:45:55 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C438C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:43:56 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 75so9015468pga.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:43:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=wIBUW6zc6MUbXhHNaYoyVQ0gurfpKZ2/JrmRwbRJyjw=;
-        b=Cq3SX6S5HlMNcDmorjSLbAWhkIOGV1dZn6r/k2GUH4TzkYiBXzAr2jhidjKet5xBGP
-         Q6KXRzwqvatmTMzuy7LjqSUZUM2rjRekZ1JtSfsAvbV67uAuFXpqXjr5QZf0Tr8Y4rL+
-         hAj1rsokigc3Y2l3z8ieVfpZ70nqwmErdxfbO43WoJYVxnF459Fh1a+dgqW9ybvuKKGg
-         G9Mwgdq4gma9bs612jYAQXB5IEluHUGQ/OqxbZt9nMCgH9jdUM2QtWQ5I8+IuBhy3n0s
-         eheA4hU2iSTpnvL8aqYgJZZirj4/GHdYYa383MSpHuQfPkf/AfHknETN1giEPqKrv0E2
-         H77Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=wIBUW6zc6MUbXhHNaYoyVQ0gurfpKZ2/JrmRwbRJyjw=;
-        b=p3rbb1XuWAYVnOr5hD3l5u6SHWWo+wB6uPA8zZe23cWuFyhZ5mUxopxIQhPxMEpd3y
-         mKS+n+1jd7b7pxdywMJLx5Y7ET5LrwBhzSgf+ea3KcCqhKHXZhoREeGieBjKbHYicrYI
-         wIoJBHihonazhRxj4IhfVnsEf69K6o3NKN5HVIgLUNme3bqrWbE5JuxjNwXeYltTc/0D
-         hRWW+6F24A/LYti3f/3mbVZpkM6ZMqcIgardunF9M+ZVjgECqyoyFnD1Aauoee5UJ6+f
-         xKbNJqnep1HFL2wSER/PFAlnYjbT7W/dNTn2jWYOFZjtw+2M0ZicDGi1QjP8d4Z+HWMS
-         ZmdA==
-X-Gm-Message-State: AOAM532HZC48thKrDmYHRhkIF2TqDywq990Yo2Uce0iRlJ14ShRf0hlD
-        RSZ1FPADnP1qby/g12uZDI6IlA==
-X-Google-Smtp-Source: ABdhPJyk2OEzkPPtqpWI6h3nLJiITXPlStEa+F4iRzbceJ+h5AtvReQT3QJszcRIt6AXfWgMCiUhmA==
-X-Received: by 2002:a63:4f:: with SMTP id 76mr15353398pga.457.1633905835385;
-        Sun, 10 Oct 2021 15:43:55 -0700 (PDT)
-Received: from [2620:15c:17:3:3280:1d46:7d55:1fbb] ([2620:15c:17:3:3280:1d46:7d55:1fbb])
-        by smtp.gmail.com with ESMTPSA id z11sm5398218pfk.204.2021.10.10.15.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 15:43:54 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 15:43:53 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Hao Peng <flyingpenghao@gmail.com>
-cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        David Hildenbrand <david@redhat.com>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm/huge_memory.c: disable THP with large THP size on
- small present memory
-In-Reply-To: <CAPm50a+E6mm_qA9h9MSvh4K+WA8Qf6mU=2yig5GyVw9GFJzr8g@mail.gmail.com>
-Message-ID: <aece8474-4881-4c9-362-a7cb211e5933@google.com>
-References: <CAPm50aLPxJCiVTqqwiz00oMNiqHggB84sXB3x=tv_HUAd5UktQ@mail.gmail.com> <20211008095123.73b4bubwrpdj6tuz@box.shutemov.name> <CAPm50a+E6mm_qA9h9MSvh4K+WA8Qf6mU=2yig5GyVw9GFJzr8g@mail.gmail.com>
+        Sun, 10 Oct 2021 18:47:03 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA6FC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=zZJzETgz2Wp+qRmqRUpxUZm0BAho4on48nu/OSIk334=; b=11zW+hiUCpSZ0z1hb110i4+45n
+        MXuJ0y67uf/qT6dumZ+To8l5fPhbj20BUDzt+v9da6bgr1EoLLFoSrgOYDs2Ykuc5df7cXbgc7XoU
+        JmuJ+kfmElyt7z8YH/N1l7RzRRJS0bQgIhV6ebsPawaqq9TyhcblR1kt4x/d/WL4fRwE+UdGKEnai
+        JVAFyLAH+Iw1NEq+iUWu9mpbF5VlwARngcL7Uq8sqXki+ecpIhRv7xZjiAAIhBbjNhhtlZg5LCBig
+        rB8hPT//SqHeysyUZZ0/8eBWpiry1sBmHi5L5PWmpQ7nzkijVY5AEouOG1k5AU5R0vHolrs1GGQB2
+        lokkf4sg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZhYz-007Rf9-DY; Sun, 10 Oct 2021 22:45:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Derek Basehore <dbasehore@chromium.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>
+Subject: [PATCH -next v2] drm/connector: fix all kernel-doc warnings
+Date:   Sun, 10 Oct 2021 15:44:59 -0700
+Message-Id: <20211010224459.3603-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Oct 2021, Hao Peng wrote:
+Clean up all of the kernel-doc issues in drm_connector.c:
 
-> > > After setting the page size to 64k on ARM64, the supported huge page
-> > > size is 512M and 1TB. Therefore, if the thp is enabled, the size
-> > > of the thp is 512M. But if THP is enabled, min_free_kbytes will
-> > > be recalculated. At this time, min_free_kbytes is calculated based
-> > > on the size of THP.
-> > >
-> > > On an arm64 server with 64G memory, the page size is 64k, with thp
-> > > enabled.
-> > > cat /proc/sys/vm/min_free_kbytes
-> > > 3335104
-> > >
-> > > Therefore, when judging whether to enable THP by default, consider
-> > > the size of thp.
-> > >
-> > > V2: title suggested by David Hildenbrand
-> > >
-> > > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> > > ---
-> > >  mm/huge_memory.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > > index 5e9ef0fc261e..03c7f571b3ae 100644
-> > > --- a/mm/huge_memory.c
-> > > +++ b/mm/huge_memory.c
-> > > @@ -437,7 +437,7 @@ static int __init hugepage_init(void)
-> > >          * where the extra memory used could hurt more than TLB overhead
-> > >          * is likely to save.  The admin can still enable it through /sys.
-> > >          */
-> > > -       if (totalram_pages() < (512 << (20 - PAGE_SHIFT))) {
-> > > +       if (totalram_pages() < (512 << (HPAGE_PMD_SHIFT - PAGE_SHIFT))) {
-> >
-> > On x86-64 HPAGE_PMD_SHIFT is 21, so you double the amount of memory
-> > required to enabled THP by default. It doesn't seem to be the intent of
-> > the patch.
-> >
-> > What about something like
-> >
-> >         if (totalram_pages() < 256 * HPAGE_PMD_NR)
-> >
-> > ?
-> >
-> I think that setting the threshold to 512M here is also a rough
-> estimate. If it is 512M
-> of memory and 2M of THP is used, there are only 256 pages in total.
-> This is actually
-> too small.
+drivers/gpu/drm/drm_connector.c:2611: warning: Excess function parameter 'connector' description in 'drm_connector_oob_hotplug_event'
+drivers/gpu/drm/drm_connector.c:2611: warning: Function parameter or member 'connector_fwnode' not described in 'drm_connector_oob_hotplug_event'
 
-So does this mean that the original intent of the patch is what you 
-proposed?  It's not discussed in the changelog so it's unclear.
+drm_connector.c:630: warning: No description found for return value of 'drm_get_connector_status_name'
+drm_connector.c:715: warning: No description found for return value of 'drm_connector_list_iter_next'
+drm_connector.c:785: warning: No description found for return value of 'drm_get_subpixel_order_name'
+drm_connector.c:816: warning: No description found for return value of 'drm_display_info_set_bus_formats'
+drm_connector.c:1331: warning: No description found for return value of 'drm_mode_create_dvi_i_properties'
+drm_connector.c:1412: warning: No description found for return value of 'drm_connector_attach_content_type_property'
+drm_connector.c:1492: warning: No description found for return value of 'drm_mode_create_tv_margin_properties'
+drm_connector.c:1534: warning: No description found for return value of 'drm_mode_create_tv_properties'
+drm_connector.c:1627: warning: No description found for return value of 'drm_mode_create_scaling_mode_property'
+drm_connector.c:1944: warning: No description found for return value of 'drm_mode_create_suggested_offset_properties'
 
-The "extra memory used could hurt more..." statement in the comment 
-depends on other system-wide settings like max_ptes_none and whether you 
-default to faulting hugepages if eligible.  There are scenarios where 
-there is no extra memory used, so I think the intent is for sane default 
-behavior and, as you mention, it can always be enabled at runtime as well.
+drm_connector.c:2315: warning: missing initial short description on line:
+ * drm_connector_set_panel_orientation_with_quirk -
 
-By using 64KB native page sizes on small memory capacity systems, you're 
-already opting into this memory bloat.
+[The last warning listed is probably a quirk/bug in scripts/kernel-doc.]
 
-If we are trying to avoid memory bloat then we likely shouldn't be 
-defaulting max_ptes_none to 511 either and that would be a bigger 
-consideration than a minimum memory capacity to enable thp.
+Fixes: 613051dac40d ("drm: locking&new iterators for connector_list")
+Fixes: 522171951761 ("drm: Extract drm_connector.[hc]")
+Fixes: b3c6c8bfe378 ("drm: document drm_display_info")
+Fixes: 50525c332b55 ("drm: content-type property for HDMI connector")
+Fixes: 6c4f52dca36f ("drm/connector: Allow creation of margin props alone")
+Fixes: 69654c632d80 ("drm/connector: Split out orientation quirk detection (v2)")
+Fixes: 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: Derek Basehore <dbasehore@chromium.org>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Sam Ravnborg <sam@ravnborg.org>
+---
+v2: drop Cc: Boris Brezillon <boris.brezillon@bootlin.com> [bounced]
+    Address Sam's comment on Returns:
 
-Or maybe you are questioning the adjustment to min_free_kbytes and whether 
-that is rational or not for small machine sizes (but large page sizes).
+72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
+  is only in linux-next. The others are in mainline.
 
-> In addition, THP is disabled by default, but you can also enable THP
-> dynamically.
-> Thanks.
+ drivers/gpu/drm/drm_connector.c |   30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
+--- linux-next-20211007.orig/drivers/gpu/drm/drm_connector.c
++++ linux-next-20211007/drivers/gpu/drm/drm_connector.c
+@@ -625,6 +625,8 @@ int drm_connector_register_all(struct dr
+  *
+  * In contrast to the other drm_get_*_name functions this one here returns a
+  * const pointer and hence is threadsafe.
++ *
++ * Returns: connector status string
+  */
+ const char *drm_get_connector_status_name(enum drm_connector_status status)
+ {
+@@ -707,7 +709,7 @@ __drm_connector_put_safe(struct drm_conn
+  * drm_connector_list_iter_next - return next connector
+  * @iter: connector_list iterator
+  *
+- * Returns the next connector for @iter, or NULL when the list walk has
++ * Returns: the next connector for @iter, or NULL when the list walk has
+  * completed.
+  */
+ struct drm_connector *
+@@ -780,6 +782,8 @@ static const struct drm_prop_enum_list d
+  *
+  * Note you could abuse this and return something out of bounds, but that
+  * would be a caller error.  No unscrubbed user data should make it here.
++ *
++ * Returns: string describing an enumerated subpixel property
+  */
+ const char *drm_get_subpixel_order_name(enum subpixel_order order)
+ {
+@@ -809,6 +813,9 @@ static const struct drm_prop_enum_list d
+  * Store the supported bus formats in display info structure.
+  * See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
+  * a full list of available formats.
++ *
++ * Returns:
++ * 0 on success or a negative error code on failure.
+  */
+ int drm_display_info_set_bus_formats(struct drm_display_info *info,
+ 				     const u32 *formats,
+@@ -1326,6 +1333,8 @@ int drm_connector_create_standard_proper
+  * @dev: DRM device
+  *
+  * Called by a driver the first time a DVI-I connector is made.
++ *
++ * Returns: %0
+  */
+ int drm_mode_create_dvi_i_properties(struct drm_device *dev)
+ {
+@@ -1407,6 +1416,8 @@ EXPORT_SYMBOL(drm_connector_attach_dp_su
+  * @connector: connector to attach content type property on.
+  *
+  * Called by a driver the first time a HDMI connector is made.
++ *
++ * Returns: %0
+  */
+ int drm_connector_attach_content_type_property(struct drm_connector *connector)
+ {
+@@ -1487,6 +1498,9 @@ EXPORT_SYMBOL(drm_connector_attach_tv_ma
+  * creates the TV margin properties for a given device. No need to call this
+  * function for an SDTV connector, it's already called from
+  * drm_mode_create_tv_properties().
++ *
++ * Returns:
++ * 0 on success or a negative error code on failure.
+  */
+ int drm_mode_create_tv_margin_properties(struct drm_device *dev)
+ {
+@@ -1527,6 +1541,9 @@ EXPORT_SYMBOL(drm_mode_create_tv_margin_
+  * the TV specific connector properties for a given device.  Caller is
+  * responsible for allocating a list of format names and passing them to
+  * this routine.
++ *
++ * Returns:
++ * 0 on success or a negative error code on failure.
+  */
+ int drm_mode_create_tv_properties(struct drm_device *dev,
+ 				  unsigned int num_modes,
+@@ -1622,6 +1639,8 @@ EXPORT_SYMBOL(drm_mode_create_tv_propert
+  * Atomic drivers should use drm_connector_attach_scaling_mode_property()
+  * instead to correctly assign &drm_connector_state.scaling_mode
+  * in the atomic state.
++ *
++ * Returns: %0
+  */
+ int drm_mode_create_scaling_mode_property(struct drm_device *dev)
+ {
+@@ -1939,6 +1958,9 @@ EXPORT_SYMBOL(drm_mode_create_content_ty
+  * @dev: DRM device
+  *
+  * Create the suggested x/y offset property for connectors.
++ *
++ * Returns:
++ * 0 on success or a negative error code on failure.
+  */
+ int drm_mode_create_suggested_offset_properties(struct drm_device *dev)
+ {
+@@ -2312,8 +2334,8 @@ int drm_connector_set_panel_orientation(
+ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+ 
+ /**
+- * drm_connector_set_panel_orientation_with_quirk -
+- *	set the connector's panel_orientation after checking for quirks
++ * drm_connector_set_panel_orientation_with_quirk - set the
++ *	connector's panel_orientation after checking for quirks
+  * @connector: connector for which to init the panel-orientation property.
+  * @panel_orientation: drm_panel_orientation value to set
+  * @width: width in pixels of the panel, used for panel quirk detection
+@@ -2597,7 +2619,7 @@ struct drm_connector *drm_connector_find
+ 
+ /**
+  * drm_connector_oob_hotplug_event - Report out-of-band hotplug event to connector
+- * @connector: connector to report the event on
++ * @connector_fwnode: fwnode_handle to report the event on
+  *
+  * On some hardware a hotplug event notification may come from outside the display
+  * driver / device. An example of this is some USB Type-C setups where the hardware
