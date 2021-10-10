@@ -2,148 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12C042826B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 18:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62FC6428268
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 18:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbhJJQDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 12:03:45 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:53298 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230271AbhJJQDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 12:03:44 -0400
-Received: from BC-Mail-Ex18.internal.baidu.com (unknown [172.31.51.12])
-        by Forcepoint Email with ESMTPS id F423C628CB139476D543;
-        Mon, 11 Oct 2021 00:01:43 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex18.internal.baidu.com (172.31.51.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Mon, 11 Oct 2021 00:01:43 +0800
-Received: from localhost.localdomain (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Mon, 11 Oct 2021 00:01:42 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "Paul Mackerras" <paulus@samba.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] scsi: ibmvscsi: Use dma_alloc_coherent() instead of get_zeroed_page/dma_map_single()
-Date:   Mon, 11 Oct 2021 00:01:19 +0800
-Message-ID: <20211010160121.539-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S230526AbhJJQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 12:03:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232849AbhJJQD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 12:03:26 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6337460F5B;
+        Sun, 10 Oct 2021 16:01:21 +0000 (UTC)
+Date:   Sun, 10 Oct 2021 17:05:27 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        "Neil Armstrong" <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Andy Gross <agross@kernel.org>,
+        "Bjorn Andersson" <bjorn.andersson@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-amlogic@lists.infradead.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>
+Subject: Re: [PATCH v4 6/9] iio: adc: meson_saradc: Make use of the helper
+ function dev_err_probe()
+Message-ID: <20211010170527.13547811@jic23-huawei>
+In-Reply-To: <20211008092858.495-6-caihuoqing@baidu.com>
+References: <20211008092858.495-1-caihuoqing@baidu.com>
+        <20211008092858.495-6-caihuoqing@baidu.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BJHW-Mail-Ex16.internal.baidu.com (10.127.64.39) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replacing get_zeroed_page/free_page/dma_map_single/dma_unmap_single()
-with dma_alloc_coherent/dma_free_coherent() helps to reduce
-code size, and simplify the code, and coherent DMA will not
-clear the cache every time.
+On Fri, 8 Oct 2021 17:28:54 +0800
+Cai Huoqing <caihuoqing@baidu.com> wrote:
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c   | 15 +++------------
- drivers/scsi/ibmvscsi/ibmvscsi.c | 26 ++++++--------------------
- 2 files changed, 9 insertions(+), 32 deletions(-)
+> When possible use dev_err_probe help to properly deal with the
+> PROBE_DEFER error, the benefit is that DEFER issue will be logged
+> in the devices_deferred debugfs file.
+> Using dev_err_probe() can reduce code size, and the error value
+> gets printed.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Make sure you don't miss any tags on previous versions.  This had:
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 1f1586ad48fe..f65d1a78b272 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -869,8 +869,7 @@ static void ibmvfc_free_queue(struct ibmvfc_host *vhost,
- {
- 	struct device *dev = vhost->dev;
- 
--	dma_unmap_single(dev, queue->msg_token, PAGE_SIZE, DMA_BIDIRECTIONAL);
--	free_page((unsigned long)queue->msgs.handle);
-+	dma_free_coherent(dev, PAGE_SIZE, queue->msgs.handle, queue->msg_token);
- 	queue->msgs.handle = NULL;
- 
- 	ibmvfc_free_event_pool(vhost, queue);
-@@ -5663,19 +5662,11 @@ static int ibmvfc_alloc_queue(struct ibmvfc_host *vhost,
- 		return -ENOMEM;
- 	}
- 
--	queue->msgs.handle = (void *)get_zeroed_page(GFP_KERNEL);
-+	queue->msgs.handle = dma_alloc_coherent(dev, PAGE_SIZE,
-+						&queue->msg_token, GFP_KERNEL);
- 	if (!queue->msgs.handle)
- 		return -ENOMEM;
- 
--	queue->msg_token = dma_map_single(dev, queue->msgs.handle, PAGE_SIZE,
--					  DMA_BIDIRECTIONAL);
--
--	if (dma_mapping_error(dev, queue->msg_token)) {
--		free_page((unsigned long)queue->msgs.handle);
--		queue->msgs.handle = NULL;
--		return -ENOMEM;
--	}
--
- 	queue->cur = 0;
- 	queue->fmt = fmt;
- 	queue->size = PAGE_SIZE / fmt_size;
-diff --git a/drivers/scsi/ibmvscsi/ibmvscsi.c b/drivers/scsi/ibmvscsi/ibmvscsi.c
-index ea8e01f49cba..61b315d1edbc 100644
---- a/drivers/scsi/ibmvscsi/ibmvscsi.c
-+++ b/drivers/scsi/ibmvscsi/ibmvscsi.c
-@@ -151,10 +151,7 @@ static void ibmvscsi_release_crq_queue(struct crq_queue *queue,
- 			msleep(100);
- 		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
- 	} while ((rc == H_BUSY) || (H_IS_LONG_BUSY(rc)));
--	dma_unmap_single(hostdata->dev,
--			 queue->msg_token,
--			 queue->size * sizeof(*queue->msgs), DMA_BIDIRECTIONAL);
--	free_page((unsigned long)queue->msgs);
-+	dma_free_coherent(hostdata->dev, PAGE_SIZE, queue->msgs, queue->msg_token);
- }
- 
- /**
-@@ -331,18 +328,11 @@ static int ibmvscsi_init_crq_queue(struct crq_queue *queue,
- 	int retrc;
- 	struct vio_dev *vdev = to_vio_dev(hostdata->dev);
- 
--	queue->msgs = (struct viosrp_crq *)get_zeroed_page(GFP_KERNEL);
--
--	if (!queue->msgs)
--		goto malloc_failed;
- 	queue->size = PAGE_SIZE / sizeof(*queue->msgs);
--
--	queue->msg_token = dma_map_single(hostdata->dev, queue->msgs,
--					  queue->size * sizeof(*queue->msgs),
--					  DMA_BIDIRECTIONAL);
--
--	if (dma_mapping_error(hostdata->dev, queue->msg_token))
--		goto map_failed;
-+	queue->msgs = dma_alloc_coherent(hostdata->dev, PAGE_SIZE,
-+					&queue->msg_token, GFP_KERNEL);
-+	if (!queue->msg)
-+		goto malloc_failed;
- 
- 	gather_partition_info();
- 	set_adapter_info(hostdata);
-@@ -395,11 +385,7 @@ static int ibmvscsi_init_crq_queue(struct crq_queue *queue,
- 		rc = plpar_hcall_norets(H_FREE_CRQ, vdev->unit_address);
- 	} while ((rc == H_BUSY) || (H_IS_LONG_BUSY(rc)));
-       reg_crq_failed:
--	dma_unmap_single(hostdata->dev,
--			 queue->msg_token,
--			 queue->size * sizeof(*queue->msgs), DMA_BIDIRECTIONAL);
--      map_failed:
--	free_page((unsigned long)queue->msgs);
-+	dma_free_coherent(hostdata->dev, PAGE_SIZE, queue->msg, queue->msg_token);
-       malloc_failed:
- 	return -1;
- }
--- 
-2.25.1
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com> #Meson8b Odroid-C1
+
+
+> v1->v2: Remove the separate line of PTR_ERR().
+> 
+>  drivers/iio/adc/meson_saradc.c | 39 +++++++++++++++-------------------
+>  1 file changed, 17 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/meson_saradc.c b/drivers/iio/adc/meson_saradc.c
+> index 705d5e11a54b..62cc6fb0ef85 100644
+> --- a/drivers/iio/adc/meson_saradc.c
+> +++ b/drivers/iio/adc/meson_saradc.c
+> @@ -1230,35 +1230,31 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	priv->clkin = devm_clk_get(&pdev->dev, "clkin");
+> -	if (IS_ERR(priv->clkin)) {
+> -		dev_err(&pdev->dev, "failed to get clkin\n");
+> -		return PTR_ERR(priv->clkin);
+> -	}
+> +	if (IS_ERR(priv->clkin))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->clkin),
+> +				     "failed to get clkin\n");
+>  
+>  	priv->core_clk = devm_clk_get(&pdev->dev, "core");
+> -	if (IS_ERR(priv->core_clk)) {
+> -		dev_err(&pdev->dev, "failed to get core clk\n");
+> -		return PTR_ERR(priv->core_clk);
+> -	}
+> +	if (IS_ERR(priv->core_clk))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->core_clk),
+> +				     "failed to get core clk\n");
+>  
+>  	priv->adc_clk = devm_clk_get(&pdev->dev, "adc_clk");
+>  	if (IS_ERR(priv->adc_clk)) {
+> -		if (PTR_ERR(priv->adc_clk) == -ENOENT) {
+> +		if (PTR_ERR(priv->adc_clk) == -ENOENT)
+>  			priv->adc_clk = NULL;
+> -		} else {
+> -			dev_err(&pdev->dev, "failed to get adc clk\n");
+> -			return PTR_ERR(priv->adc_clk);
+> -		}
+> +		else
+> +			return dev_err_probe(&pdev->dev, PTR_ERR(priv->adc_clk),
+> +					     "failed to get adc clk\n");
+>  	}
+>  
+>  	priv->adc_sel_clk = devm_clk_get(&pdev->dev, "adc_sel");
+>  	if (IS_ERR(priv->adc_sel_clk)) {
+> -		if (PTR_ERR(priv->adc_sel_clk) == -ENOENT) {
+> +		if (PTR_ERR(priv->adc_sel_clk) == -ENOENT)
+>  			priv->adc_sel_clk = NULL;
+> -		} else {
+> -			dev_err(&pdev->dev, "failed to get adc_sel clk\n");
+> -			return PTR_ERR(priv->adc_sel_clk);
+> -		}
+> +		else
+> +			return dev_err_probe(&pdev->dev, PTR_ERR(priv->adc_sel_clk),
+> +					     "failed to get adc_sel clk\n");
+>  	}
+>  
+>  	/* on pre-GXBB SoCs the SAR ADC itself provides the ADC clock: */
+> @@ -1269,10 +1265,9 @@ static int meson_sar_adc_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	priv->vref = devm_regulator_get(&pdev->dev, "vref");
+> -	if (IS_ERR(priv->vref)) {
+> -		dev_err(&pdev->dev, "failed to get vref regulator\n");
+> -		return PTR_ERR(priv->vref);
+> -	}
+> +	if (IS_ERR(priv->vref))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->vref),
+> +				     "failed to get vref regulator\n");
+>  
+>  	priv->calibscale = MILLION;
+>  
 
