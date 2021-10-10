@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73124280D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7014280DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 13:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231816AbhJJLfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 07:35:20 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:57012 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231556AbhJJLfT (ORCPT
+        id S231869AbhJJLjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 07:39:17 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:58540
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231828AbhJJLjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 07:35:19 -0400
-Received: from pop-os.home ([90.126.248.220])
-        by mwinf5d73 with ME
-        id 4BZH2600A4m3Hzu03BZHvZ; Sun, 10 Oct 2021 13:33:20 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Oct 2021 13:33:20 +0200
-X-ME-IP: 90.126.248.220
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        yangyingliang@huawei.com
-Cc:     linux-geode@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] USB: gadget: udc: Remove some dead code
-Date:   Sun, 10 Oct 2021 13:33:16 +0200
-Message-Id: <9a85b2353843b95e2d86acb3103967fd405a8536.1633865503.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Sun, 10 Oct 2021 07:39:11 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 990D43FFF1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 11:37:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633865831;
+        bh=3aL2g6ASYJjmJXLGE2td/GKebrEEfp5cYtOVSOPNOjE=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=RatrrUBM0raRQ9o99r5tsntg+AojFT1r+xlDCozpBhnbeWwHh6dk7sgiyeQB9p+RE
+         F59A+Xo4Ee9pOJmWnm3ldFzK4rfdF6v2caoSjSGBIiUirB7bre4wavbvdpLL2lNYLr
+         Chh5/Rxlm69N9QlHACBT6HdzaD2mn9DIEBII/Wcg4Tuct28Wzj+iIh3kFFaM4dy1LW
+         v+Uuuc1RrPCbNJJM5cKsH0oze/RWEq/unwQZPWYu3wHr0tbbOVqBALC/EpGVPJHxiS
+         vqIO4SjkN5UKXgXwUofVPt584F+DJ3b/qZwkaNqGq4A6hWHucYrrTomxfXXT6o7PpD
+         HSVtr0I3G9IhA==
+Received: by mail-ed1-f72.google.com with SMTP id g28-20020a50d0dc000000b003dae69dfe3aso13235333edf.7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 04:37:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3aL2g6ASYJjmJXLGE2td/GKebrEEfp5cYtOVSOPNOjE=;
+        b=XwyNTPZdh2WQNgESGiwxehwVxOCe8/XPW3dSdsgZQoryZPa66dZbgpUbCqP0mK2R/7
+         RwbXPDRe4NdoRaBQZjUty4a526jjV/IAR18y/WcnVZewKGYCzEkGDKxGt9UVQF060A+x
+         fs0JbV4Itt89C6UgoXp9ph0Jrm15yCeZDnoVwG67/ujDfHmMp9CkB6SiRaC0PtBUe+tc
+         CEEbWnyCwBBDrXf8Xyxv5ztoKDYQMJO8WOoMPCOS+KbVdu0AcG6jd3mHxaZlHZ5A4GMS
+         OisYWksGfMg0WsLDolvVY+20Hi97FjLUxFrPTq0gInCSjTo7uSrhd6pFYXrm+DcfTCL7
+         BYxA==
+X-Gm-Message-State: AOAM532d91W6NPnwqnxcq+jvS0y4uP9IM2QFUjeMBxYD6V+9Qdp9ZoY7
+        Hv3MF14t3Heq61SxQWAo+S9XobyutvftJKGZngzQKZiRRVGVOX3jyZdV9KEsntQLk7KylBu9oPc
+        NVwTVjC+jvtLeMERj5LCmNRvS+zknhZ1BN1Zsa/WYjlPwhdjxz/TIv2Dwvg==
+X-Received: by 2002:a17:906:919:: with SMTP id i25mr17554113ejd.171.1633865830570;
+        Sun, 10 Oct 2021 04:37:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzmGfXRax8w6ByvvioynebBatQTyi+KnMs4IdARMtMQVkKFfh4370Xu091DRaFkuwupjNT9l7lw+PWQutb8gQQ=
+X-Received: by 2002:a17:906:919:: with SMTP id i25mr17554102ejd.171.1633865830425;
+ Sun, 10 Oct 2021 04:37:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211007133021.32704-1-krzysztof.kozlowski@canonical.com>
+ <20211008.111646.1874039740182175606.davem@davemloft.net> <CA+Eumj5k9K9DUsPifDchNixj0QG5WrTJX+dzADmAgYSFe49+4g@mail.gmail.com>
+In-Reply-To: <CA+Eumj5k9K9DUsPifDchNixj0QG5WrTJX+dzADmAgYSFe49+4g@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Date:   Sun, 10 Oct 2021 13:36:59 +0200
+Message-ID: <CA+Eumj65krM_LhEgbBe2hxAZhYZLmuo3zMoVcq6zp9xKa+n_Jg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2 0/7] nfc: minor printk cleanup
+To:     David Miller <davem@davemloft.net>
+Cc:     k.opasiak@samsung.com, mgreer@animalcreek.com, kuba@kernel.org,
+        linux-nfc@lists.01.org, netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'drd_wq' workqueue_struct has never been used.
-It is only destroyed, but never created.
+On Fri, 8 Oct 2021 at 12:18, Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> On Fri, 8 Oct 2021 at 12:17, David Miller <davem@davemloft.net> wrote:
+> >
+> > From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > Date: Thu,  7 Oct 2021 15:30:14 +0200
+> >
+> > > Hi,
+> > >
+> > > This is a rebase and resend of v2. No other changes.
+> > >
+> > > Changes since v1:
+> > > 1. Remove unused variable in pn533 (reported by kbuild).
+> >
+> > Please CC: netdev for nfc patches otherwise they will not get tracked
+> > and applied.
+>
+> netdev@vger.kernel.org is here. Which address I missed?
 
-It was introduced in commit 1b9f35adb0ff ("usb: gadget: udc: Add Synopsys
-UDC Platform driver")
+The patchset reached patchwork:
+https://patchwork.kernel.org/project/netdevbpf/list/?series=559153&state=*
+although for some reason it is marked as "changes requested". Are
+there any other changes needed except Joe's comment for one patch?
 
-Remove the corresponding dead code and save some space from the 'udc'
-structure.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/usb/gadget/udc/amd5536udc.h    | 1 -
- drivers/usb/gadget/udc/snps_udc_plat.c | 5 -----
- 2 files changed, 6 deletions(-)
-
-diff --git a/drivers/usb/gadget/udc/amd5536udc.h b/drivers/usb/gadget/udc/amd5536udc.h
-index 3296f3fcee48..055436016503 100644
---- a/drivers/usb/gadget/udc/amd5536udc.h
-+++ b/drivers/usb/gadget/udc/amd5536udc.h
-@@ -572,7 +572,6 @@ struct udc {
- 	struct extcon_specific_cable_nb	extcon_nb;
- 	struct notifier_block		nb;
- 	struct delayed_work		drd_work;
--	struct workqueue_struct		*drd_wq;
- 	u32				conn_type;
- };
- 
-diff --git a/drivers/usb/gadget/udc/snps_udc_plat.c b/drivers/usb/gadget/udc/snps_udc_plat.c
-index 99805d60a7ab..8bbb89c80348 100644
---- a/drivers/usb/gadget/udc/snps_udc_plat.c
-+++ b/drivers/usb/gadget/udc/snps_udc_plat.c
-@@ -243,11 +243,6 @@ static int udc_plat_remove(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, NULL);
- 
--	if (dev->drd_wq) {
--		flush_workqueue(dev->drd_wq);
--		destroy_workqueue(dev->drd_wq);
--	}
--
- 	phy_power_off(dev->udc_phy);
- 	phy_exit(dev->udc_phy);
- 	extcon_unregister_notifier(dev->edev, EXTCON_USB, &dev->nb);
--- 
-2.30.2
-
+Best regards,
+Krzysztof
