@@ -2,133 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EBD42815A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB4042815E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhJJMtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:49:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58824 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231842AbhJJMtM (ORCPT
+        id S232456AbhJJMtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232291AbhJJMtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:49:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633870033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YkLueNpEbRl5qinSVfMvo4zcnNOyRMqcIvp24LoixTE=;
-        b=Z4+C1iRBwBeSQjx9WULCHAUWRS7uKjWpUWYnWv87Nrwjo4RKDxxbbuQCXZ+LkuHXS5Oa0f
-        HeTH7HoQsfUdMlG29XnfBmJYz5Q7FNkZ/uU4Qj7jCPsDQpdfnNZOa8M4QdyHMqdrpODks+
-        e62FEGQ5dKWwNHWj6QBnxm4IS5KbFTw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-VtjM5XUUNC6BHo1qC-oBHA-1; Sun, 10 Oct 2021 08:47:10 -0400
-X-MC-Unique: VtjM5XUUNC6BHo1qC-oBHA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C02941006AA3;
-        Sun, 10 Oct 2021 12:47:08 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA60757CA0;
-        Sun, 10 Oct 2021 12:47:05 +0000 (UTC)
-Message-ID: <eecb66f6a0829b5f81b11e69537d943280b5719c.camel@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86/mmu: Use vCPU's APICv status when handling
- APIC_ACCESS memslot
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 10 Oct 2021 15:47:04 +0300
-In-Reply-To: <20211009010135.4031460-2-seanjc@google.com>
-References: <20211009010135.4031460-1-seanjc@google.com>
-         <20211009010135.4031460-2-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Sun, 10 Oct 2021 08:49:33 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56288C061745;
+        Sun, 10 Oct 2021 05:47:35 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id b8so55970646edk.2;
+        Sun, 10 Oct 2021 05:47:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OS0MBKfnqyglG28DvY1QiRG3YhG3y071RIW9V3K+ZJo=;
+        b=FVQx+D1nE2INiVnJ+PyG9T3Lxh7kJLEBnviKdnvqmm7A+1kzWyfl342fwDXk6gcQGh
+         DChzuIB7swdab7txfWto+o6lt0Mb+sw9ds+qmyFNEFhj5zZCLGXaTGfA6xkfos7TyPLD
+         elpDGNGsg9CIuQqsoceZ5Or8yoIcEzlnS2oK4pky7jYay0mj5XnANX7sJzp7rJ3Ea6I7
+         VoHA0+ylW60PwGdT6dsBhHcomSZnVhl4PPi9S5hjQ5dDqii407S3SozCHkszPgQqo/QQ
+         FnMXs/m9cvcncERKVrBSDLGC5eETUL8z3NNg7uefkJFxRh0v8KvhVkNXPasksT30eaEX
+         CcUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OS0MBKfnqyglG28DvY1QiRG3YhG3y071RIW9V3K+ZJo=;
+        b=V/m+0iwEaCAR4uaqqUHGh7e9VCx4UkoXiGNu5qOHlaW1XFOC8e1Lw7ZPckA3U1EsXr
+         xC0OACOvxl12aOtAs5hnjx8x6bnMqGek+HzBHtzWCAsmwF0FmeHVzVA3M34EQA3eNM48
+         G2YG5SufNrhFNQEBsJPfNKIJ/4xHG0q/qrcPbrFoN3Rmak0dYMluYO7W80eSEq9IL2/a
+         1DTAmAqJWLrWpIifv0BSAOUCoj2lRRwiQOghGGHSJEzPn7JX2d89zWxqgvqUY65+FjGY
+         Oq4rJrZB0O1vzMEjDJL7wem7y6B23s6HAwNISpBj8vuLIc6V6aV4vZM2z3zBI+ijF/Kh
+         7aiw==
+X-Gm-Message-State: AOAM532xbed7z7W1itaWATqA8et6cb3D/HsOEjH6cl0qzEufTTXic/Al
+        V4MsVW4BVzJUXcfYhcNbVcc=
+X-Google-Smtp-Source: ABdhPJz3wVn0C4XeCRzhMpjo+HFLN8Y5j/TLV+UaSP6c/xMaMogrpbgNi54lV6v8CRfLxN453NZs+A==
+X-Received: by 2002:a50:d80d:: with SMTP id o13mr32677044edj.204.1633870053851;
+        Sun, 10 Oct 2021 05:47:33 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id l8sm2053708ejn.103.2021.10.10.05.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 05:47:33 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 15:47:32 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v4 06/13] net: dsa: qca8k: move rgmii delay
+ detection to phylink mac_config
+Message-ID: <20211010124732.fageoraoweqqfoew@skbuf>
+References: <20211010111556.30447-1-ansuelsmth@gmail.com>
+ <20211010111556.30447-7-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211010111556.30447-7-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
-> Query the vCPU's APICv status, not the overall VM's status, when handling
-> a page fault that hit the APIC Access Page memslot.  If an APICv status
-> update is pending, using the VM's status is non-deterministic as the
-> initiating vCPU may or may not have updated overall VM's status.  E.g. if
-> a vCPU hits an APIC Access page fault with APICv disabled and a different
-> vCPU is simultaneously performing an APICv update, the page fault handler
-> will incorrectly skip the special APIC access page MMIO handling.
+On Sun, Oct 10, 2021 at 01:15:49PM +0200, Ansuel Smith wrote:
+> Future proof commit. This switch have 2 CPU port and one valid
+> configuration is first CPU port set to sgmii and second CPU port set to
+> regmii-id. The current implementation detects delay only for CPU port
+> zero set to rgmii and doesn't count any delay set in a secondary CPU
+> port. Drop the current delay scan function and move it to the phylink
+> mac_config to generilize and implicitly add support for secondary CPU
+> port set to rgmii-id.
 > 
-> Using the vCPU's status in the page fault handler is correct regardless
-> of any pending APICv updates, as the vCPU's status is accurate with
-> respect to the last VM-Enter, and thus reflects the context in which the
-> page fault occurred.
-
-Actually I don't think that this patch is correct, and the current code is correct.
-
-- The page fault can happen if one of the following is true:
-
-	- AVIC is currently inhibited.
-	
-	- AVIC is currently inhibited but is in the process of being uninhibited.
-
-	- AVIC is not inhibited but has never been accessed by a VCPU after it was uninihibited.
-
-	This will *usually* cause this code to populate the corresponding SPTE entry and re-enter the guest which 
-	  will make the AVIC work on instruction re-execution without a page fault.
-
-        It depends if the page fault code sees new or old value of the global inhibition state, which is not possible
-	to avoid, as the page fault can happen anytime.
-
-        If the code doesn't populate the SPTE entry, the access will be emulated (which is correct too, and next access
-	will page fault again and that fault will re-install the SPTE.
-
-
-Note that AVIC's SPTE is *VM global*, just like all other SPTEs.
-
-- The decision is here to poplute the SPTE and retry or just emulate the APIC read/write without populating it.
-
-  Since AVIC read/writes the same apic register page, reading it now, or populating the SPTE, enabling AVIC and letting the AVIC read/write it should read/write the same values.
-
-  Thus the real decision here is if to populate the SPTE or not.
-
-- If AVIC is currently inhibited on this VCPU, but global AVIC inhibit is already OFF, we do want
-  to populute the SPTE, and prior to guest entry we will update the vCPU inhibit state to disable inhibition on this VCPU.
-
-So its the global AVIC inhibit state, is what is correct to use for this decision IMHO.
-
-Best regards,
-	Maxim Levitsky
-
-
-> 
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Fixes: 9cc13d60ba6b ("KVM: x86/mmu: allow APICv memslot to be enabled but invisible")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/dsa/qca8k.c | 121 +++++++++++++++-------------------------
+>  drivers/net/dsa/qca8k.h |   2 -
+>  2 files changed, 44 insertions(+), 79 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 24a9f4c3f5e7..d36e205b90a5 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3853,7 +3853,7 @@ static bool kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
->  		 * when the AVIC is re-enabled.
->  		 */
->  		if (slot && slot->id == APIC_ACCESS_PAGE_PRIVATE_MEMSLOT &&
-> -		    !kvm_apicv_activated(vcpu->kvm)) {
-> +		    !kvm_vcpu_apicv_active(vcpu)) {
->  			*r = RET_PF_EMULATE;
->  			return true;
->  		}
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index df0a622acdd7..126f20b0b94c 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -888,68 +888,6 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
+>  	return 0;
+>  }
+>  
+> -static int
+> -qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
 
+I was actually going to say that since RGMII delays are runtime
+invariants, you should move their entire programming to probe time, now
+you move device tree parsing to runtime :-/
+
+> -{
+> -	struct device_node *port_dn;
+> -	phy_interface_t mode;
+> -	struct dsa_port *dp;
+> -	u32 val;
+> -
+> -	/* CPU port is already checked */
+> -	dp = dsa_to_port(priv->ds, 0);
+> -
+> -	port_dn = dp->dn;
+> -
+> -	/* Check if port 0 is set to the correct type */
+> -	of_get_phy_mode(port_dn, &mode);
+> -	if (mode != PHY_INTERFACE_MODE_RGMII_ID &&
+> -	    mode != PHY_INTERFACE_MODE_RGMII_RXID &&
+> -	    mode != PHY_INTERFACE_MODE_RGMII_TXID) {
+> -		return 0;
+> -	}
+> -
+> -	switch (mode) {
+> -	case PHY_INTERFACE_MODE_RGMII_ID:
+> -	case PHY_INTERFACE_MODE_RGMII_RXID:
+
+Also, since you touch this area.
+There have been tons of discussions on this topic, but I believe that
+your interpretation of the RGMII delays is wrong.
+Basically a MAC should not apply delays based on the phy-mode string (so
+it should treat "rgmii" same as "rgmii-id"), but based on the value of
+"rx-internal-delay-ps" and "tx-internal-delay-ps".
+The phy-mode is for a PHY to use.
+
+> -		if (of_property_read_u32(port_dn, "rx-internal-delay-ps", &val))
+> -			val = 2;
+> -		else
+> -			/* Switch regs accept value in ns, convert ps to ns */
+> -			val = val / 1000;
+> -
+> -		if (val > QCA8K_MAX_DELAY) {
+> -			dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
+> -			val = 3;
+> -		}
+> -
+> -		priv->rgmii_rx_delay = val;
+> -		/* Stop here if we need to check only for rx delay */
+> -		if (mode != PHY_INTERFACE_MODE_RGMII_ID)
+> -			break;
+> -
+> -		fallthrough;
+> -	case PHY_INTERFACE_MODE_RGMII_TXID:
+> -		if (of_property_read_u32(port_dn, "tx-internal-delay-ps", &val))
+> -			val = 1;
+> -		else
+> -			/* Switch regs accept value in ns, convert ps to ns */
+> -			val = val / 1000;
+> -
+> -		if (val > QCA8K_MAX_DELAY) {
+> -			dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
+> -			val = 3;
+> -		}
+> -
+> -		priv->rgmii_tx_delay = val;
+> -		break;
+> -	default:
+> -		return 0;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static int
+>  qca8k_setup_mac_pwr_sel(struct qca8k_priv *priv)
+>  {
+> @@ -1019,10 +957,6 @@ qca8k_setup(struct dsa_switch *ds)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = qca8k_setup_of_rgmii_delay(priv);
+> -	if (ret)
+> -		return ret;
+> -
+>  	ret = qca8k_setup_mac_pwr_sel(priv);
+>  	if (ret)
+>  		return ret;
+> @@ -1190,7 +1124,7 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>  {
+>  	struct qca8k_priv *priv = ds->priv;
+>  	struct dsa_port *dp;
+> -	u32 reg, val;
+> +	u32 reg, val, delay;
+>  	int ret;
+>  
+>  	switch (port) {
+> @@ -1241,17 +1175,50 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>  	case PHY_INTERFACE_MODE_RGMII_ID:
+>  	case PHY_INTERFACE_MODE_RGMII_TXID:
+>  	case PHY_INTERFACE_MODE_RGMII_RXID:
+> -		/* RGMII_ID needs internal delay. This is enabled through
+> -		 * PORT5_PAD_CTRL for all ports, rather than individual port
+> -		 * registers
+> +		dp = dsa_to_port(ds, port);
+> +		val = QCA8K_PORT_PAD_RGMII_EN;
+> +
+> +		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +		    state->interface == PHY_INTERFACE_MODE_RGMII_TXID) {
+> +			if (of_property_read_u32(dp->dn, "tx-internal-delay-ps", &delay))
+> +				delay = 1;
+> +			else
+> +				/* Switch regs accept value in ns, convert ps to ns */
+> +				delay = delay / 1000;
+> +
+> +			if (delay > QCA8K_MAX_DELAY) {
+> +				dev_err(priv->dev, "rgmii tx delay is limited to a max value of 3ns, setting to the max value");
+> +				delay = 3;
+> +			}
+> +
+> +			val |= QCA8K_PORT_PAD_RGMII_TX_DELAY(delay) |
+> +			       QCA8K_PORT_PAD_RGMII_TX_DELAY_EN;
+> +		}
+> +
+> +		if (state->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +		    state->interface == PHY_INTERFACE_MODE_RGMII_RXID) {
+> +			if (of_property_read_u32(dp->dn, "rx-internal-delay-ps", &delay))
+> +				delay = 2;
+> +			else
+> +				/* Switch regs accept value in ns, convert ps to ns */
+> +				delay = delay / 1000;
+> +
+> +			if (delay > QCA8K_MAX_DELAY) {
+> +				dev_err(priv->dev, "rgmii rx delay is limited to a max value of 3ns, setting to the max value");
+> +				delay = 3;
+> +			}
+> +
+> +			val |= QCA8K_PORT_PAD_RGMII_RX_DELAY(delay) |
+> +			       QCA8K_PORT_PAD_RGMII_RX_DELAY_EN;
+> +		}
+> +
+> +		/* Set RGMII delay based on the selected values */
+> +		qca8k_write(priv, reg, val);
+> +
+> +		/* QCA8337 requires to set rgmii rx delay for all ports.
+> +		 * This is enabled through PORT5_PAD_CTRL for all ports,
+> +		 * rather than individual port registers.
+>  		 */
+> -		qca8k_write(priv, reg,
+> -			    QCA8K_PORT_PAD_RGMII_EN |
+> -			    QCA8K_PORT_PAD_RGMII_TX_DELAY(priv->rgmii_tx_delay) |
+> -			    QCA8K_PORT_PAD_RGMII_RX_DELAY(priv->rgmii_rx_delay) |
+> -			    QCA8K_PORT_PAD_RGMII_TX_DELAY_EN |
+> -			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
+> -		/* QCA8337 requires to set rgmii rx delay */
+>  		if (priv->switch_id == QCA8K_ID_QCA8337)
+>  			qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
+>  				    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
+> diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> index 5df0f0ef6526..a790b27bc310 100644
+> --- a/drivers/net/dsa/qca8k.h
+> +++ b/drivers/net/dsa/qca8k.h
+> @@ -259,8 +259,6 @@ struct qca8k_match_data {
+>  struct qca8k_priv {
+>  	u8 switch_id;
+>  	u8 switch_revision;
+> -	u8 rgmii_tx_delay;
+> -	u8 rgmii_rx_delay;
+>  	bool legacy_phy_port_mapping;
+>  	struct regmap *regmap;
+>  	struct mii_bus *bus;
+> -- 
+> 2.32.0
+> 
 
