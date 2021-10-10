@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52CB42837F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5848E428382
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:28:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhJJU2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 16:28:11 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56430 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhJJU2K (ORCPT
+        id S232590AbhJJUaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 16:30:06 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44500 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232216AbhJJUaD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 16:28:10 -0400
+        Sun, 10 Oct 2021 16:30:03 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id B87091FD4C;
-        Sun, 10 Oct 2021 20:26:10 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 3525421FD6;
+        Sun, 10 Oct 2021 20:28:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633897570; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1633897684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SJC2KoQ+Qb7tBG8ADatZhzgv/vS/Dwb4Q2ZnO1dzMqg=;
-        b=dbPegV7wEdCs3VwDXGXDvZkAfofxhV9oDx0RcUaczlbwvWFIWhWH7cAARlkt4h2zblvSAN
-        uHFBFqVAsLGktgM1Z9rXX7BPCXlyWMRbBNZYnvb3E+BiHgLNQC8etC+vEDZKF1M8ClEoPa
-        fGKKpMPifP5ovJCTt0LIfCC89ikMsWA=
+        bh=Z/YyxHp0IJ8+TO9viRmFQSiStpG0d4klgBkhQNcmPHg=;
+        b=qxzBBokr5zAqpLIKIzvaDogp0nPvn53xW2KqkSf4iTi1V09pUG8IoR5LIBlNjovy4P2kjv
+        91THK7UUA2dFdPdcbpZXwHk2hboNbjnHWYynpJzcm046tJaWxC6YOcM7meX5HZtIlx0pg1
+        QTCM/ohnPb7KaY9bSN+vdkMNsdjrojs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633897570;
+        s=susede2_ed25519; t=1633897684;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=SJC2KoQ+Qb7tBG8ADatZhzgv/vS/Dwb4Q2ZnO1dzMqg=;
-        b=skwvTvWdsz3TTSIl4EKsR3eEmz3Rht4Yp4Hl2IEeM1Y/9qFwOorweabOiO9c1ZIVtDkvn2
-        ysKUGVXOTkJ/l7DQ==
+        bh=Z/YyxHp0IJ8+TO9viRmFQSiStpG0d4klgBkhQNcmPHg=;
+        b=3sOt6is8MNbDCmO7ZqJy/J50WLZ21REjZHvvzdSjgT4DdXeBtILyfV7ifsupE+CO7JilZI
+        vCKdc8QuVvWnHyBg==
 Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
-        by relay2.suse.de (Postfix) with ESMTP id A4EE0A3B83;
-        Sun, 10 Oct 2021 20:26:10 +0000 (UTC)
-Date:   Sun, 10 Oct 2021 22:26:10 +0200
-Message-ID: <s5hh7do62zh.wl-tiwai@suse.de>
+        by relay2.suse.de (Postfix) with ESMTP id 23886A3B81;
+        Sun, 10 Oct 2021 20:28:04 +0000 (UTC)
+Date:   Sun, 10 Oct 2021 22:28:04 +0200
+Message-ID: <s5hfst862wb.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Jonas Hahnfeld <hahnjo@hahnjo.de>
-Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: usb-audio: Add quirk for VF0770
-In-Reply-To: <20211010111947.5796-1-hahnjo@hahnjo.de>
-References: <20211010111947.5796-1-hahnjo@hahnjo.de>
+To:     William Overton <willovertonuk@gmail.com>
+Cc:     tiwai@suse.com, perex@perex.cz, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] Sound: Add support for the Pioneer DJM 750MK2 Mixer/Soundcard
+In-Reply-To: <20211010145841.11907-1-willovertonuk@gmail.com>
+References: <20211010145841.11907-1-willovertonuk@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -52,22 +52,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Oct 2021 13:19:47 +0200,
-Jonas Hahnfeld wrote:
+On Sun, 10 Oct 2021 16:58:41 +0200,
+William Overton wrote:
 > 
-> The device advertises 8 formats, but only a rate of 48kHz is honored
-> by the hardware and 24 bits give chopped audio, so only report the
-> one working combination. This fixes out-of-the-box audio experience
-> with PipeWire which otherwise attempts to choose S24_3LE (while
-> PulseAudio defaulted to S16_LE).
+> The kernel already has support for very similar Pioneer djm products and this work is based on that.
 > 
-> Signed-off-by: Jonas Hahnfeld <hahnjo@hahnjo.de>
+> Added device to quirks-table.h and added control info to mixer_quirks.c.
+> 
+> Tested on my hardware and all working.
+> 
+> Signed-off-by: William Overton <willovertonuk@gmail.com>
 
-Could you give alsa-info.sh output with and without patch, just for
-comparison?  Run the script with --no-upload option and attach the
-outputs.
+Thanks, applied.
 
-
-thanks,
 
 Takashi
