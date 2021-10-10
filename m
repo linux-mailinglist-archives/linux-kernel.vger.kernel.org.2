@@ -2,99 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22114281EB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0A94281EF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhJJObc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 10:31:32 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:28101 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232181AbhJJOba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 10:31:30 -0400
-Received: from pop-os.home ([90.126.248.220])
-        by mwinf5d78 with ME
-        id 4EVW260074m3Hzu03EVWPz; Sun, 10 Oct 2021 16:29:31 +0200
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Oct 2021 16:29:31 +0200
-X-ME-IP: 90.126.248.220
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     colyli@suse.de, kent.overstreet@gmail.com, agk@redhat.com,
-        snitzer@redhat.com, dm-devel@redhat.com
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] dm: Remove redundant 'flush_workqueue()' calls
-Date:   Sun, 10 Oct 2021 16:29:28 +0200
-Message-Id: <65c7c385af7b3f825ace8803b1bc6b6403269813.1633876058.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S232216AbhJJOdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:33:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232020AbhJJOdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:33:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF956610D1;
+        Sun, 10 Oct 2021 14:31:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633876267;
+        bh=I5e0if3bbAU39SnKM3+lyercJe2Dv9qbSOpNHhwJ3lw=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=UfEB53pD2h3DoSLZ4v24QtQFLcI0BYyc3QmBwIqax5EMDsrvKc3KYS740mTqAIiNC
+         KCTOmHm5UKS2gPJIzITSUQ18zqPE7j1JrqL2fdLgmOMPbzGLseY+l49Bb5jHoor75k
+         ZyZvU3Wistn+gs5W9wcRUiF5oUnZk+RvtRShp+DO/PrWJEhWz12eqaUISaM7lqGK7X
+         6dlqL+2AF3KgsgDBBxeoUA2GFvUK/peMYueZfUSK/9j2vuElI7mx3loz6hmbdK8h5Y
+         fptAcOT16cuYmnofcHNLu4s1lXz9TO14v8f6hb1b5RNmhHNUwcEixYLsgnpoAAUQDl
+         Uy4eDjLmaVF0Q==
+Received: by mail-oi1-f172.google.com with SMTP id y207so17780582oia.11;
+        Sun, 10 Oct 2021 07:31:07 -0700 (PDT)
+X-Gm-Message-State: AOAM5306w0GUsXmg9Hoc/HzPFQO4GoYACyVGheIyelX7b4Yy93r7ktox
+        2+rnq3mtxI2DdM1mWPoXva7xI9xUgguP2i1GJi8=
+X-Google-Smtp-Source: ABdhPJzuEbRMimOqMlVA1uO1swo+5suU12k4mo3OU9BjZUtb7X8cT3lOM4rXmlrXXK5ljjnya+AOsRjc1BDNP8hEcdY=
+X-Received: by 2002:aca:b5c3:: with SMTP id e186mr24004139oif.51.1633876267173;
+ Sun, 10 Oct 2021 07:31:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:ac9:31e7:0:0:0:0:0 with HTTP; Sun, 10 Oct 2021 07:31:06
+ -0700 (PDT)
+In-Reply-To: <bf5648ef0933536661e42cc73aa06722522d5862.1633872027.git.christophe.jaillet@wanadoo.fr>
+References: <bf5648ef0933536661e42cc73aa06722522d5862.1633872027.git.christophe.jaillet@wanadoo.fr>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Sun, 10 Oct 2021 23:31:06 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd_uOE9T47+xDJTvNbZQvsxCPUozTj-Se0tsRPi1EpXtmA@mail.gmail.com>
+Message-ID: <CAKYAXd_uOE9T47+xDJTvNbZQvsxCPUozTj-Se0tsRPi1EpXtmA@mail.gmail.com>
+Subject: Re: [PATCH] ksmbd: Remove redundant 'flush_workqueue()' calls
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     senozhatsky@chromium.org, sfrench@samba.org, hyc.lee@gmail.com,
+        linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'destroy_workqueue()' already drains the queue before destroying it, so
-there is no need to flush it explicitly.
+2021-10-10 22:21 GMT+09:00, Christophe JAILLET <christophe.jaillet@wanadoo.fr>:
+> 'destroy_workqueue()' already drains the queue before destroying it, so
+> there is no need to flush it explicitly.
+>
+> Remove the redundant 'flush_workqueue()' calls.
+>
+> This was generated with coccinelle:
+>
+> @@
+> expression E;
+> @@
+> - 	flush_workqueue(E);
+> 	destroy_workqueue(E);
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Namjae Jeon <linkinjeon@kernel.org>
 
-Remove the redundant 'flush_workqueue()' calls.
-
-This was generated with coccinelle:
-
-@@
-expression E;
-@@
-- 	flush_workqueue(E);
-	destroy_workqueue(E);
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/md/bcache/writeback.c | 4 +---
- drivers/md/dm-bufio.c         | 1 -
- drivers/md/dm-zoned-target.c  | 1 -
- 3 files changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-index 8120da278161..dbb6cb8069d9 100644
---- a/drivers/md/bcache/writeback.c
-+++ b/drivers/md/bcache/writeback.c
-@@ -790,10 +790,8 @@ static int bch_writeback_thread(void *arg)
- 		}
- 	}
- 
--	if (dc->writeback_write_wq) {
--		flush_workqueue(dc->writeback_write_wq);
-+	if (dc->writeback_write_wq)
- 		destroy_workqueue(dc->writeback_write_wq);
--	}
- 	cached_dev_put(dc);
- 	wait_for_kthread_stop();
- 
-diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-index 50f3e673729c..fc8f8e9f9e39 100644
---- a/drivers/md/dm-bufio.c
-+++ b/drivers/md/dm-bufio.c
-@@ -2082,7 +2082,6 @@ static void __exit dm_bufio_exit(void)
- 	int bug = 0;
- 
- 	cancel_delayed_work_sync(&dm_bufio_cleanup_old_work);
--	flush_workqueue(dm_bufio_wq);
- 	destroy_workqueue(dm_bufio_wq);
- 
- 	if (dm_bufio_client_count) {
-diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
-index ae1bc48c0043..dfc822295c25 100644
---- a/drivers/md/dm-zoned-target.c
-+++ b/drivers/md/dm-zoned-target.c
-@@ -967,7 +967,6 @@ static void dmz_dtr(struct dm_target *ti)
- 	struct dmz_target *dmz = ti->private;
- 	int i;
- 
--	flush_workqueue(dmz->chunk_wq);
- 	destroy_workqueue(dmz->chunk_wq);
- 
- 	for (i = 0; i < dmz->nr_ddevs; i++)
--- 
-2.30.2
-
+Thanks!
