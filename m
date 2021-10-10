@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDE44282C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8AA4282C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhJJRyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        id S231838AbhJJRyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231838AbhJJRyb (ORCPT
+        with ESMTP id S232536AbhJJRye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:54:31 -0400
+        Sun, 10 Oct 2021 13:54:34 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989FCC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:52:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9290CC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:52:35 -0700 (PDT)
 Received: from dslb-188-104-061-167.188.104.pools.vodafone-ip.de ([188.104.61.167] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1mZczs-0001WC-IT; Sun, 10 Oct 2021 19:52:28 +0200
+        id 1mZczv-0001WC-Ih; Sun, 10 Oct 2021 19:52:31 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
@@ -27,9 +27,9 @@ Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
         Michael Straube <straube.linux@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 02/11] staging: r8188eu: remove specific device table
-Date:   Sun, 10 Oct 2021 19:51:55 +0200
-Message-Id: <20211010175204.24029-2-martin@kaiser.cx>
+Subject: [PATCH 03/11] staging: r8188eu: RfOnOffDetect is unused
+Date:   Sun, 10 Oct 2021 19:51:56 +0200
+Message-Id: <20211010175204.24029-3-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211010175204.24029-1-martin@kaiser.cx>
 References: <20211010175204.24029-1-martin@kaiser.cx>
@@ -39,96 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver implements a mechanism to set additional configuration flags
-per supported usb device.
+Remove the RfOnOffDetect function, which is not used.
 
-None of the supported devices uses these additional flags. Remove the data
-types and the code to process the flags.
-
+Suggested-by: Michael Straube <straube.linux@gmail.com>
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/staging/r8188eu/include/drv_types.h | 13 ---------
- drivers/staging/r8188eu/os_dep/usb_intf.c   | 29 ---------------------
- 2 files changed, 42 deletions(-)
+ drivers/staging/r8188eu/hal/usb_halinit.c     | 18 ------------------
+ drivers/staging/r8188eu/include/rtw_pwrctrl.h |  2 --
+ 2 files changed, 20 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/drv_types.h b/drivers/staging/r8188eu/include/drv_types.h
-index ce88575a8726..3e4928320f17 100644
---- a/drivers/staging/r8188eu/include/drv_types.h
-+++ b/drivers/staging/r8188eu/include/drv_types.h
-@@ -37,19 +37,6 @@
- 
- #define DRIVERVERSION	"v4.1.4_6773.20130222"
- 
--#define SPEC_DEV_ID_NONE		BIT(0)
--#define SPEC_DEV_ID_DISABLE_HT		BIT(1)
--#define SPEC_DEV_ID_ENABLE_PS		BIT(2)
--#define SPEC_DEV_ID_RF_CONFIG_1T1R	BIT(3)
--#define SPEC_DEV_ID_RF_CONFIG_2T2R	BIT(4)
--#define SPEC_DEV_ID_ASSIGN_IFNAME	BIT(5)
--
--struct specific_device_id {
--	u32		flags;
--	u16		idVendor;
--	u16		idProduct;
--};
--
- struct registry_priv {
- 	u8	chip_version;
- 	u8	rfintfs;
-diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-index 664ffaba589b..4b8a3e821b74 100644
---- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-+++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-@@ -49,10 +49,6 @@ static struct usb_device_id rtw_usb_id_tbl[] = {
- 
- MODULE_DEVICE_TABLE(usb, rtw_usb_id_tbl);
- 
--static struct specific_device_id specific_device_id_tbl[] = {
--	{}		/* empty table for now */
--};
--
- struct rtw_usb_drv {
- 	struct usb_driver usbdrv;
- 	int drv_registered;
-@@ -212,28 +208,6 @@ static void rtw_dev_unload(struct adapter *padapter)
- 	DBG_88E("<=== rtw_dev_unload\n");
+diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+index 94a2b3e32fe7..f6db5b05e6e7 100644
+--- a/drivers/staging/r8188eu/hal/usb_halinit.c
++++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+@@ -599,24 +599,6 @@ static void _InitAntenna_Selection(struct adapter *Adapter)
+ 	DBG_88E("%s,Cur_ant:(%x)%s\n", __func__, haldata->CurAntenna, (haldata->CurAntenna == Antenna_A) ? "Antenna_A" : "Antenna_B");
  }
  
--static void process_spec_devid(const struct usb_device_id *pdid)
+-enum rt_rf_power_state RfOnOffDetect(struct adapter *adapt)
 -{
--	u16 vid, pid;
--	u32 flags;
--	int i;
--	int num = sizeof(specific_device_id_tbl) /
--		  sizeof(struct specific_device_id);
+-	u8 val8;
+-	enum rt_rf_power_state rfpowerstate = rf_off;
 -
--	for (i = 0; i < num; i++) {
--		vid = specific_device_id_tbl[i].idVendor;
--		pid = specific_device_id_tbl[i].idProduct;
--		flags = specific_device_id_tbl[i].flags;
--
--		if ((pdid->idVendor == vid) && (pdid->idProduct == pid) &&
--		    (flags & SPEC_DEV_ID_DISABLE_HT)) {
--			rtw_ht_enable = 0;
--			rtw_cbw40_enable = 0;
--			rtw_ampdu_enable = 0;
--		}
+-	if (adapt->pwrctrlpriv.bHWPowerdown) {
+-		val8 = rtw_read8(adapt, REG_HSISR);
+-		DBG_88E("pwrdown, 0x5c(BIT(7))=%02x\n", val8);
+-		rfpowerstate = (val8 & BIT(7)) ? rf_off : rf_on;
+-	} else { /*  rf on/off */
+-		rtw_write8(adapt, REG_MAC_PINMUX_CFG, rtw_read8(adapt, REG_MAC_PINMUX_CFG) & ~(BIT(3)));
+-		val8 = rtw_read8(adapt, REG_GPIO_IO_SEL);
+-		DBG_88E("GPIO_IN=%02x\n", val8);
+-		rfpowerstate = (val8 & BIT(3)) ? rf_on : rf_off;
 -	}
--}
+-	return rfpowerstate;
+-}	/*  HalDetectPwrDownMode */
 -
- static int rtw_suspend(struct usb_interface *pusb_intf, pm_message_t message)
+ u32 rtl8188eu_hal_init(struct adapter *Adapter)
  {
- 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
-@@ -499,9 +473,6 @@ static int rtw_drv_init(struct usb_interface *pusb_intf, const struct usb_device
- 	struct adapter *if1 = NULL;
- 	struct dvobj_priv *dvobj;
+ 	u8 value8 = 0;
+diff --git a/drivers/staging/r8188eu/include/rtw_pwrctrl.h b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
+index e412ef71b54b..47a20702e376 100644
+--- a/drivers/staging/r8188eu/include/rtw_pwrctrl.h
++++ b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
+@@ -143,8 +143,6 @@ int ips_leave(struct adapter *padapter);
  
--	/* step 0. */
--	process_spec_devid(pdid);
+ void rtw_ps_processor(struct adapter *padapter);
+ 
+-enum rt_rf_power_state RfOnOffDetect(struct adapter *iadapter);
 -
- 	/* Initialize dvobj_priv */
- 	dvobj = usb_dvobj_init(pusb_intf);
- 	if (!dvobj)
+ s32 LPS_RF_ON_check(struct adapter *adapter, u32 delay_ms);
+ void LPS_Enter(struct adapter *adapter);
+ void LPS_Leave(struct adapter *adapter);
 -- 
 2.20.1
 
