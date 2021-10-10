@@ -2,220 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A762042837C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A8242837E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 22:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhJJU0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 16:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhJJU0U (ORCPT
+        id S232238AbhJJU1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 16:27:11 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:44476 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230352AbhJJU1J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 16:26:20 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6002C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:24:21 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id r18so59128186edv.12
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 13:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=upi5UHXslpTMD28HId/2YrS90VRMSJOA79htf23qd38=;
-        b=Ip4+f3D4yKNWWnytmgIcKWQjup07UgfcA98Hto5wrthgr42TVVpL6rsVH0zGk3jAY3
-         Zzl+OlIn2ueuvws4zOyuHqwXHXcZrku7kOHaOnHZDRjILgIz5oNSOavoTh1vg5RpKsra
-         +eJ7HtsaSAqhrZW6nl8Wwi/XuiCG6dr6Q09kDoZL3o2SwZfarIZriqyGdazyGktLrcVj
-         nN6VljPQq0cmhfLGybbjO8ZmIlVt85EJ0apFH9txamCDMjPk4K0K0+R0m8vJt4vO3IHI
-         hfk2hJtN3eO6aC58ggu2z//6zrptw06J5styLy++TxEQR6yqGeXRpEQbPVuh9HRB3jli
-         I+eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=upi5UHXslpTMD28HId/2YrS90VRMSJOA79htf23qd38=;
-        b=47LUS2pW5pDFHXnv+spxPvyXbqP/kTwMjwTCIW26/zwp7Qmpw1l6ZkolUQgBOqqWdA
-         IfzeK1NdGjR2CRvNhPH6dwkiqx4kJHoXj5BnhkqUndtOzI5HoH+7WntwnXg3NhCXXo0F
-         UVYfLW+/rFgUhiY8SJK/4QiK+jaH8Cp9cDiy9ASwvhfhPoDFOZPR2NSNLbaVDMBJSVuy
-         UGCH+n3MGkqJ/uPKeK/PYfWVT6lcsy+dfMzx0MebBiLQoVWklNdETc/YMRxg2kzBpF5A
-         HZH5F8k5LWoYljxRErUV3yx1P1coH4t0zNngdqRmecHgi3n6Fzj/vFgxllPp2wzRGpc+
-         PN7w==
-X-Gm-Message-State: AOAM530dj2gGezEqfpYhAFzkcErMOFbWSn5eSvk1cn9sfb769vGQyEHj
-        7/NEJSLQc7HPoD0rh/cPnQZVIWdORfIbRHWui/s=
-X-Google-Smtp-Source: ABdhPJwvX57CqEi5yeESL0hFzjPc5FfIee6dV+KY8SiwxjdTVsc8XFaVpnf9qrJXv6q6KEoe3ClRhXWb5cfH46OuKp4=
-X-Received: by 2002:a05:6402:5216:: with SMTP id s22mr3018482edd.167.1633897460224;
- Sun, 10 Oct 2021 13:24:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211009180941.20458-1-tao.zhou@linux.dev> <20211009225057.GB174703@worktop.programming.kicks-ass.net>
- <YWK0yEJNGYAZ3hhD@geo.homenetwork> <CAGsJ_4xW5s-ze6QjVLJPscEcCaakdS6Np84w9Hwh8Zj_=WqhTw@mail.gmail.com>
- <YWL4TA19eFsfd4c7@geo.homenetwork>
-In-Reply-To: <YWL4TA19eFsfd4c7@geo.homenetwork>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Mon, 11 Oct 2021 09:24:09 +1300
-Message-ID: <CAGsJ_4zfEV0f0KX6T9mBMPGdc3T8UzmQRsh6XdTzc+3G_ZGPDg@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: Check idle_cpu in select_idle_core/cpu()
-To:     Tao Zhou <tao.zhou@linux.dev>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 10 Oct 2021 16:27:09 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 1A18421FE1;
+        Sun, 10 Oct 2021 20:25:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1633897510; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEQcDzhZ8Ka5CSVQvfxwlWYWOhU/3/GhrODN3V13RPI=;
+        b=u/T4QtmO4zjpWP4G6PpsJYj8evddBVP5dABrjZMZ8CqJbfZUoqzHgHzZlDxk080ekTJTOR
+        FnVqbL2/kEtp1nAvWgB3vmPw6WtaIe54m+Xj94yu8dxg9fQjsG1yUPxVx+R5+HaCXwLwz2
+        YMIg25qOhHH+4FFj6i8tkiQ55eRU83k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1633897510;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GEQcDzhZ8Ka5CSVQvfxwlWYWOhU/3/GhrODN3V13RPI=;
+        b=eipG8Doua46nR7vEC1XNGKPBUEGveXX7uStsTSmBb2NhhNFJd9GuLwtCB/FluGSb1yeZgu
+        XcZpQvh5ZrswNlAg==
+Received: from alsa1.suse.de (alsa1.suse.de [10.160.4.42])
+        by relay2.suse.de (Postfix) with ESMTP id F3877A3B83;
+        Sun, 10 Oct 2021 20:25:09 +0000 (UTC)
+Date:   Sun, 10 Oct 2021 22:25:09 +0200
+Message-ID: <s5hily46316.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
+In-Reply-To: <YWLbEdHUE3k/i0fe@kroah.com>
+References: <YWLbEdHUE3k/i0fe@kroah.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 3:26 AM Tao Zhou <tao.zhou@linux.dev> wrote:
->
-> Hi Barry,
->
-> On Mon, Oct 11, 2021 at 01:19:57AM +1300, Barry Song wrote:
-> > On Sun, Oct 10, 2021 at 10:45 PM Tao Zhou <tao.zhou@linux.dev> wrote:
-> > >
-> > > Hi Peter,
-> > >
-> > > On Sun, Oct 10, 2021 at 12:50:57AM +0200, Peter Zijlstra wrote:
-> > > > On Sun, Oct 10, 2021 at 02:09:41AM +0800, Tao Zhou wrote:
-> > > > > In select_idle_core(), the idle core returned may have no cpu
-> > > > > allowed. I think the idle core returned for the task is the one
-> > > > > that can be allowed to run. I insist on this semantics.
-> > > > >
-> > > > > In select_idle_cpu(), if select_idle_core() can not find the
-> > > > > idle core, one reason is that the core is not allowed for the
-> > > > > task, but the core itself is idle from the point of
-> > > > > sds->has_idle_cores. I insist on this semantics.
-> > > > >
-> > > > > No others, just two additional check.
-> > > > > ---
-> > > > >  kernel/sched/fair.c | 4 ++--
-> > > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > > index f6a05d9b5443..a44aca5095d3 100644
-> > > > > --- a/kernel/sched/fair.c
-> > > > > +++ b/kernel/sched/fair.c
-> > > > > @@ -6213,7 +6213,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
-> > > > >                     *idle_cpu = cpu;
-> > > > >     }
-> > > > >
-> > > > > -   if (idle)
-> > > > > +   if (idle && *idle_cpu != -1)
-> > > > >             return core;
-> > > >
-> > > > In that case, core would be nr_cpu_ids (==nr_cpumask_bits), and then the caller checks:
-> > > >
-> > > >       (unsigned)i < nr_cpumask_bits
-> > >
-> > > Thank you for reply.
-> > >
-> > >
-> > > If (1)there is no idle core or (2)the idle core has no allowed cpu, we return -1.
-> > > Originally, just (1) has happened, we return -1. The (2) is what I want to add.
-> >
-> > I don't understand (2). before doing
-> >         for_each_cpu_wrap(cpu, cpus, target + 1) {
-> >                 if (has_idle_core) {
-> >                         i = select_idle_core(p, cpu, cpus, &idle_cpu);
-> >                         if ((unsigned int)i < nr_cpumask_bits)
-> >                                 return i;
-> >
-> >                 } else {
-> >                         if (!--nr)
-> >                                 return -1;
-> >                         idle_cpu = __select_idle_cpu(cpu, p);
-> >                         if ((unsigned int)idle_cpu < nr_cpumask_bits)
-> >                                 break;
-> >                 }
-> >         }
-> >
-> > to select idle core, we have already done:
-> >     cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> >
-> > so we are only scanning allowed cpus.
->
-> Um.. You read top down.. and you are right.
-> The function itself semantics is important to me.
->
-> After a secondary recall and not thorough now, I realize that
-> cpus_ptr may be changed.
->
->
-> See code of this:
->
-> static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
-> {
->         if (likely(!p->migration_disabled))
->                 return;
->
->         if (p->cpus_ptr != &p->cpus_mask)
->                 return;
->
->         /*
->          * Violates locking rules! see comment in __do_set_cpus_allowed().
->          */
->         __do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
-> }
->
->
-> This change is under the light of ->pi_lock.
-> That thing is quick to forget to me..
-> Not sure I am right. Thank you for remind.
->
-> If the cpu_ptr can be changed, you can not depend on the first AND
-> operation there.
+On Sun, 10 Oct 2021 14:22:41 +0200,
+Greg Kroah-Hartman wrote:
+> 
+> The Schiit Hel device does not like to respond to all get_ctl_value_v2()
+> requests for some reason.  This used to work in older kernels, but now
+> with more strict checking, this failure causes the device to fail to
+> work.
+> 
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> ---
+> 
+> This fixes the Shiit Hel device that I have.  It used to work on older
+> kernels (a year ago?), but stopped working for some reason and I didn't
+> take the time to track it down.  This change fixes the issue for me, but
+> feels wrong for some reason.  At least now I can use the device as a
+> headphone driver, much better than the built-in one for my current
+> machine...
+> 
+> If needed, I can take the time to do bisection to track down the real
+> issue here, it might be due to stricter endpoint checking in the USB
+> core, but that feels wrong somehow.
+> 
+> Here's the debugfs USB output for this device, showing the endpoints:
+> 
+> T:  Bus=07 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
+> D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=30be ProdID=0101 Rev=01.02
+> S:  Manufacturer=Schiit Audio
+> S:  Product=Schiit Hel
+> C:  #Ifs= 4 Cfg#= 1 Atr=c0 MxPwr=0mA
+> I:  If#= 0 Alt= 0 #EPs= 1 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
+> E:  Ad=8f(I) Atr=03(Int.) MxPS=   6 Ivl=1ms
+> I:  If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=05(O) Atr=05(Isoc) MxPS= 104 Ivl=125us
+> E:  Ad=85(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
+> I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=88(I) Atr=05(Isoc) MxPS= 156 Ivl=125us
+> I:  If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
+> E:  Ad=84(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
+> 
+> Any other suggestions to fix this are welcome.
 
-The explanation doesn't make any sense to me. We are scanning
-based on the first AND operation.  select_idle_core() is returning
-*idle_cpu based on the cpumask after AND operation.
-Even though cpumask can change after select_idle_core() is done
-or before select_idle_core() is called, the return value is not wrong.
+Could you show the exact error messages and lsusb -v output?
+We may paper over only the problematic node instead.
 
->
-> > >
-> > > If we find idle core and has allowed cpu in the core, is it better to return
-> > > @*idle_cpu.
-> > >
-> > >     if (idle && *idle_cpu != -1)
-> > >             return *idle_cpu;
-> > >
-> > > This @*idle_cpu is the allowed cpu in the idle core. We do not promise anything
-> > > about the @core(target) is the allowed cpu until we hit in select_task_rq() -->
-> > > select_fallback_rq(). And the select_fallback_rq() will return a different cpu
-> > > than the @core or @*idle_cpu.
-> > >
-> > > > >     cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-> > > > > @@ -6324,7 +6324,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> > > > >             }
-> > > > >     }
-> > > > >
-> > > > > -   if (has_idle_core)
-> > > > > +   if (has_idle_core && *idle_cpu != -1)
-> > > > >             set_idle_cores(target, false);
-> > > >
-> > > > And this one I'm completely failing, why shouldn't we mark the core as
-> > > > non-idle when there is a single idle CPU found? That's just worng.
-> > >
-> > > When @has_idle_core is true, it implies for all cpu in the core the case
-> > > (1) or case (2) has happened. The (1) can be mark as non-idle. I conclude
-> > > to contradiction myself last time. The (2) is also seemed to be non-idle.
-> > >
-> > >
-> > > But, I think I am totally wrong because the sds->has_idle_cores is related
-> > > to the cpu not task. So, the affinity should not affect the decision of
-> > > sds->has_idle_cores.
-> > >
-> > >
-> > >
-> > > Thanks,
-> > > Tao
-> >
-> > Thanks
-> > barry
->
->
->
-> Thanks,
-> Tao
+
+thanks,
+
+Takashi
