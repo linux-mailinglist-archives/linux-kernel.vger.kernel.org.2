@@ -2,137 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 213E642814A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5609B42814B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhJJMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:40:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56483 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230500AbhJJMkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:40:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633869484;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SHPEZkzx4aJGCaDO+FrRniDoOaTUcTMIUDzNCqN3F/M=;
-        b=JpNYqwqGv1YQAE6bqkleCz/fauZa12JZo5YBVxpfttY1YI2gs6q01MqxtDXPD/Wz9hjzZg
-        YqRcyd3Gf/15Boeo6f7N5yIixuWOz+Xe7BWG9DOV+UsQhMadXuyB6HF7P+2aMCeGd+92v3
-        +vC0Uk3HY7dGet5Zo/GGrdC3IBr613I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-3clG0ISkMliTq5WIfFDT2w-1; Sun, 10 Oct 2021 08:38:01 -0400
-X-MC-Unique: 3clG0ISkMliTq5WIfFDT2w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7EFE410A8E05;
-        Sun, 10 Oct 2021 12:37:59 +0000 (UTC)
-Received: from starship (unknown [10.35.206.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3070F5D6CF;
-        Sun, 10 Oct 2021 12:37:56 +0000 (UTC)
-Message-ID: <9e9e91149ab4fa114543b69eaf493f84d2f33ce2.camel@redhat.com>
-Subject: Re: [PATCH 0/2] KVM: x86: Fix and cleanup for recent AVIC changes
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        id S232501AbhJJMmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:42:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230500AbhJJMmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:42:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E523760D07;
+        Sun, 10 Oct 2021 12:40:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1633869646;
+        bh=oaYB3NF9gEsWf0KpJdgbjCYjcL0/kIjSGtIHoxA4PAc=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=yrpoRCU3L9czZ4JE9gFE1f7AvdyrtYEcinTdEvxJaqFJkqUSzRs2b4JKv2dQfbN1u
+         OJosxLnVIwfyUPaG3oHv+Kz8LpFDHaJMdtb+cPocKBTDnhL0V5RxK9uhDkJveKszyx
+         k5oiW8o3Id9jpAGvXXB0Z3ZtFXyLG86sKlVv/UZ8=
+Date:   Sun, 10 Oct 2021 14:40:43 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Date:   Sun, 10 Oct 2021 15:37:56 +0300
-In-Reply-To: <20211009010135.4031460-1-seanjc@google.com>
-References: <20211009010135.4031460-1-seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+Subject: Re: [PATCH] dma-buf: move dma-buf symbols into the DMA_BUF module
+ namespace
+Message-ID: <YWLfS/VDRrMdj0r2@kroah.com>
+References: <YU8oVDFoeD5YYeDT@kroah.com>
+ <YVLE4b/nG5/qCOJN@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YVLE4b/nG5/qCOJN@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-10-08 at 18:01 -0700, Sean Christopherson wrote:
-> Belated "code review" for Maxim's recent series to rework the AVIC inhibit
-> code.  Using the global APICv status in the page fault path is wrong as
-> the correct status is always the vCPU's, since that status is accurate
-> with respect to the time of the page fault.  In a similar vein, the code
-> to change the inhibit can be cleaned up since KVM can't rely on ordering
-> between the update and the request for anything except consumers of the
-> request.
+On Tue, Sep 28, 2021 at 09:31:45AM +0200, Daniel Vetter wrote:
+> On Sat, Sep 25, 2021 at 03:47:00PM +0200, Greg Kroah-Hartman wrote:
+> > In order to better track where in the kernel the dma-buf code is used,
+> > put the symbols in the namespace DMA_BUF and modify all users of the
+> > symbols to properly import the namespace to not break the build at the
+> > same time.
+> > 
+> > Now the output of modinfo shows the use of these symbols, making it
+> > easier to watch for users over time:
+> > 
+> > $ modinfo drivers/misc/fastrpc.ko | grep import
+> > import_ns:      DMA_BUF
+> > 
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: "Christian König" <christian.koenig@amd.com>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > Cc: Maxime Ripard <mripard@kernel.org>
+> > Cc: Thomas Zimmermann <tzimmermann@suse.de>
+> > Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > ---
+> > 
+> > The topic of dma-buf came up in the Maintainer's summit yesterday, and
+> > one comment was to put the symbols in their own module namespace, to
+> > make it easier to notice and track who was using them.  This patch does
+> > so, and finds some "interesting" users of the api already in the tree.
 > 
-> Sean Christopherson (2):
->   KVM: x86/mmu: Use vCPU's APICv status when handling APIC_ACCESS
->     memslot
->   KVM: x86: Simplify APICv update request logic
+> Yeah, the interesting ones is why I added the dma-buf wildcard match a
+> while ago.  Since that landed I don't think anything escaped. Should we
+> perhaps also add
 > 
->  arch/x86/kvm/mmu/mmu.c |  2 +-
->  arch/x86/kvm/x86.c     | 16 +++++++---------
->  2 files changed, 8 insertions(+), 10 deletions(-)
+> K: MODULE_IMPORT_NS(DMA_BUF);
 > 
+> to the dma-buf MAINATINERS entry? Entirely untested, also no idea whether
+> there's not a better way to match for module namespaces. Either way:
 
-Are you sure about it? Let me explain how the algorithm works:
+I think MAINTAINERS is already overloaded with too many of these things,
+but feel free to mess with it if you want to :)
 
-- kvm_request_apicv_update:
+> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-	- take kvm->arch.apicv_update_lock
+Thanks for the ack!
 
-	- if inhibition state doesn't really change (kvm->arch.apicv_inhibit_reasons still zero or non zero)
-		- update kvm->arch.apicv_inhibit_reasons
-		- release the lock
-
-	- raise KVM_REQ_APICV_UPDATE
-		* since kvm->arch.apicv_update_lock is taken, all vCPUs will be kicked out of guest
-		  mode and will be either doing someing in the KVM (like page fault) or stuck on trying to process that request
-                  the important thing is that no vCPU will be able to get back to the guest mode.
-
-	- update the kvm->arch.apicv_inhibit_reasons
-		* since we hold vm->arch.apicv_update_lock vcpus can't see the new value
-
-	- update the SPTE that covers the APIC's mmio window:
-
-		- if we enable AVIC, then do nothing.
-			
-			* First vCPU to access it will page fault and populate that SPTE
-
-			* If we race with page fault again no problem, worst case the page fault
-			  doesn't populte the SPTE, and we will get another page fault later
-			  and it will. 
-
-			  -> SPTE not present + AVIC enabled is not a problem, it just causes
-			  a spurious page fault, and then retried at which point AVIC is used.
-
-			  It is nice to re-install the SPTE as fast as possible to avoid such
-			  faults for performance reasons.
-
-		- if we disable AVIC, then we zap the spte:
-
-			* page fault should not happen just before zapping as AVIC is enabled on the vCPUs now.
-			  even if it does happen, it doesn't matter if it does populate the SPTE, as we will zap it anyway.
-
-			* during the zapping we take the mmu lock and use mmu notifier counter hack
-			  to avoid racing with page fault that can happen concurrently with it.
-
-			* if page fault on another vCPU happens after the zapping, it will see the correct 
-			  kvm->arch.apicv_inhibit_reasons (but likely incorrect its own vCPU AVIC inhibit state)
-			  and will not re-populate the SPTE.
-
-			  -> and SPTE present + AVIC inhibited on this vCPU is the problem,
-			  as this will cause writes to AVIC to disappear into that dummy page mapped by that SPTE.
-
-			  That is why patch 1 IMHO is wrong.
-
-	- release the kvm->arch.apicv_update_lock
-		* at that point all vCPUs can re-enter but they all will process the KVM_REQ_APICV_UPDATE
-		  prior to that, which will update their AVIC state.
-
-
-Best regards,
-	Maxim Levitsky
-
-
-
+greg k-h
