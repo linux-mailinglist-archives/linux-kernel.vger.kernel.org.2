@@ -2,188 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609F8427F02
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 06:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F50427F3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 07:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhJJEqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 00:46:34 -0400
-Received: from mga02.intel.com ([134.134.136.20]:7333 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229694AbhJJEqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 00:46:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="213852610"
-X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
-   d="scan'208";a="213852610"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 21:44:34 -0700
-X-IronPort-AV: E=Sophos;i="5.85,361,1624345200"; 
-   d="scan'208";a="489989569"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 21:44:34 -0700
-Date:   Sat, 9 Oct 2021 21:44:34 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, hch@lst.de
-Subject: Re: [PATCH v3 07/10] cxl/pci: Split cxl_pci_setup_regs()
-Message-ID: <20211010044434.GK3114988@iweiny-DESK2.sc.intel.com>
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
- <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S230271AbhJJFIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 01:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230124AbhJJFIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 01:08:10 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D0DC061570
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 22:06:12 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id h3so7490389pgb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 22:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=dM074y++lE+8ycfGWmkuR8//9HdPqcSHLfhb3QYeN40=;
+        b=nOII8D7OGVKWvJsvhJeHKmcFnb6jyU+FXn9kyzIkfXgeLp7kjzo6Ag+505vaK505FS
+         iBngUdAnNHTk/SlHolIV33oxOLbeEyJBcL8crFcpdh+UP8tq9BPAan7srq/hv5XY2ew3
+         XKoj2NGX5RfpxXM+9cTo56uSDFmjHPNI2oX5d0kfYfJtbQpebpuWYA299EmSi24rwGYA
+         qQdY30tQc+uCp7tZYO9hUbPOIrGzlNxZXdkcByBqvvU7bKkcIysbz2Q3hTkHRL9RdFtW
+         bQLSVoSxUxh26pCElvbABa3YH4XMzNoc0KeuNcWTA4icYxHb5hHxNi1nJBo3p6DXYe3/
+         x1bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=dM074y++lE+8ycfGWmkuR8//9HdPqcSHLfhb3QYeN40=;
+        b=kckkMed/CegVdilC522khfRXmjPf4ZkvCjnh/+vSf5bQVjHTQ7lNykccn9OyRl8+wT
+         Lxc6kGDat2CGyl/7haJYdVcIs3/wiDIbweYGSBMnsO7Q1YLfmulftg2JyhgF+10HAJjq
+         ME2BPfHf0JePjq/kYvx1R+3T6/RGe5vs16AOnWfzl6vNglR2loTVBlnu+x146dNhLcBq
+         CeOaBICjTY2yhpWbNvPPwHAxvT0vfngy5jmLfjcehQivJhNMeQtf2eR07Ynngywem/AM
+         IqptEq119eiQ3t4ym85SMBkDauJ8KNlgNDCx7n2wKg2CZ8WGY+x2wznyRli7ehgPjvNy
+         WvAw==
+X-Gm-Message-State: AOAM532pESJY+fCKlzzbpMs5Ew2BklwnKMYemdysVcb3lb8e+ZNPwBnB
+        AX2c+G6y6GwNsmSyYPQ3WYM=
+X-Google-Smtp-Source: ABdhPJyoXtUr+pUjqFCmRuG4VkqqOnxm94iHyfw2sUdXDaVekhD8AYmCsukNZE8takZb7s9uWK5DwA==
+X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr18709447pfk.85.1633842371256;
+        Sat, 09 Oct 2021 22:06:11 -0700 (PDT)
+Received: from user ([223.230.43.197])
+        by smtp.gmail.com with ESMTPSA id i2sm3548309pfa.34.2021.10.09.22.06.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 22:06:10 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 10:36:05 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        saurav.girepunje@gmail.com, insafonov@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return statement.
+Message-ID: <YWJ0vSrgsiKK7suE@user>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <163379787433.692348.2451270397309803556.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 09, 2021 at 09:44:34AM -0700, Dan Williams wrote:
-> From: Ben Widawsky <ben.widawsky@intel.com>
-> 
-> In preparation for moving parts of register mapping to cxl_core, split
-> cxl_pci_setup_regs() into a helper that finds register blocks,
-> (cxl_find_regblock()), and a generic wrapper that probes the precise
-> register sets within a block (cxl_setup_regs()).
-> 
-> Move the actual mapping (cxl_map_regs()) of the only register-set that
-> cxl_pci cares about (memory device registers) up a level from the former
-> cxl_pci_setup_regs() into cxl_pci_probe().
-> 
-> With this change the unused component registers are no longer mapped,
-> but the helpers are primed to move into the core.
-> 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> [djbw: rebase on the cxl_register_map refactor]
-> [djbw: drop cxl_map_regs() for component registers]
+Remove the unneeded and redundant check of variable on goto out.
+Simplify the return using multiple goto label to avoid
+unneeded check.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
 
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/cxl/pci.c |   73 +++++++++++++++++++++++++++--------------------------
->  1 file changed, 37 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index b42407d067ac..b6bc8e5ca028 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -433,72 +433,69 @@ static void cxl_decode_regblock(u32 reg_lo, u32 reg_hi,
->  }
->  
->  /**
-> - * cxl_pci_setup_regs() - Setup necessary MMIO.
-> - * @cxlm: The CXL memory device to communicate with.
-> + * cxl_find_regblock() - Locate register blocks by type
-> + * @pdev: The CXL PCI device to enumerate.
-> + * @type: Register Block Indicator id
-> + * @map: Enumeration output, clobbered on error
->   *
-> - * Return: 0 if all necessary registers mapped.
-> + * Return: 0 if register block enumerated, negative error code otherwise
->   *
-> - * A memory device is required by spec to implement a certain set of MMIO
-> - * regions. The purpose of this function is to enumerate and map those
-> - * registers.
-> + * A CXL DVSEC may additional point one or more register blocks, search
-> + * for them by @type.
->   */
-> -static int cxl_pci_setup_regs(struct cxl_mem *cxlm)
-> +static int cxl_find_regblock(struct pci_dev *pdev, enum cxl_regloc_type type,
-> +			     struct cxl_register_map *map)
->  {
->  	u32 regloc_size, regblocks;
-> -	int regloc, i, n_maps, ret = 0;
-> -	struct device *dev = cxlm->dev;
-> -	struct pci_dev *pdev = to_pci_dev(dev);
-> -	struct cxl_register_map *map, maps[CXL_REGLOC_RBI_TYPES];
-> +	int regloc, i;
->  
->  	regloc = cxl_pci_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_DVSEC_ID);
-> -	if (!regloc) {
-> -		dev_err(dev, "register location dvsec not found\n");
-> +	if (!regloc)
->  		return -ENXIO;
-> -	}
->  
-> -	/* Get the size of the Register Locator DVSEC */
->  	pci_read_config_dword(pdev, regloc + PCI_DVSEC_HEADER1, &regloc_size);
->  	regloc_size = FIELD_GET(PCI_DVSEC_HEADER1_LENGTH_MASK, regloc_size);
->  
->  	regloc += PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET;
->  	regblocks = (regloc_size - PCI_DVSEC_ID_CXL_REGLOC_BLOCK1_OFFSET) / 8;
->  
-> -	for (i = 0, n_maps = 0; i < regblocks; i++, regloc += 8) {
-> +	for (i = 0; i < regblocks; i++, regloc += 8) {
->  		u32 reg_lo, reg_hi;
->  
->  		pci_read_config_dword(pdev, regloc, &reg_lo);
->  		pci_read_config_dword(pdev, regloc + 4, &reg_hi);
->  
-> -		map = &maps[n_maps];
->  		cxl_decode_regblock(reg_lo, reg_hi, map);
->  
-> -		/* Ignore unknown register block types */
-> -		if (map->reg_type > CXL_REGLOC_RBI_MEMDEV)
-> -			continue;
-> +		if (map->reg_type == type)
-> +			return 0;
-> +	}
->  
-> -		ret = cxl_map_regblock(pdev, map);
-> -		if (ret)
-> -			return ret;
-> +	return -ENODEV;
-> +}
->  
-> -		ret = cxl_probe_regs(pdev, map);
-> -		cxl_unmap_regblock(pdev, map);
-> -		if (ret)
-> -			return ret;
-> +static int cxl_setup_regs(struct pci_dev *pdev, enum cxl_regloc_type type,
-> +			  struct cxl_register_map *map)
-> +{
-> +	int rc;
->  
-> -		n_maps++;
-> -	}
-> +	rc = cxl_find_regblock(pdev, type, map);
-> +	if (rc)
-> +		return rc;
->  
-> -	for (i = 0; i < n_maps; i++) {
-> -		ret = cxl_map_regs(cxlm, &maps[i]);
-> -		if (ret)
-> -			break;
-> -	}
-> +	rc = cxl_map_regblock(pdev, map);
-> +	if (rc)
-> +		return rc;
-> +
-> +	rc = cxl_probe_regs(pdev, map);
-> +	cxl_unmap_regblock(pdev, map);
->  
-> -	return ret;
-> +	return rc;
->  }
->  
->  static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
-> +	struct cxl_register_map map;
->  	struct cxl_memdev *cxlmd;
->  	struct cxl_mem *cxlm;
->  	int rc;
-> @@ -518,7 +515,11 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (IS_ERR(cxlm))
->  		return PTR_ERR(cxlm);
->  
-> -	rc = cxl_pci_setup_regs(cxlm);
-> +	rc = cxl_setup_regs(pdev, CXL_REGLOC_RBI_MEMDEV, &map);
-> +	if (rc)
-> +		return rc;
-> +
-> +	rc = cxl_map_regs(cxlm, &map);
->  	if (rc)
->  		return rc;
->  
-> 
+ChangeLog V2:
+	-Add goto out after the memcpy for no error case return with
+	 ret only. Free is not required on no error case.
+
+ChangeLog V1:
+	-Remove the unneeded and redundant check of variable on
+	 goto out.
+	-Simplify the return using multiple goto label to avoid
+	 unneeded check.
+
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index 0868f56e2979..ae9579dc0848 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+ 	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+ 	if (!mon_wdev) {
+ 		ret = -ENOMEM;
+-		goto out;
++		goto err_zmalloc;
+ 	}
+
+ 	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+@@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
+
+ 	ret = cfg80211_register_netdevice(mon_ndev);
+ 	if (ret) {
+-		goto out;
++		goto err_register;
+ 	}
+
+ 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+ 	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
++	goto out;
+
+-out:
+-	if (ret && mon_wdev) {
+-		kfree(mon_wdev);
+-		mon_wdev = NULL;
+-	}
+-
+-	if (ret && mon_ndev) {
+-		free_netdev(mon_ndev);
+-		*ndev = mon_ndev = NULL;
+-	}
++err_register:
++	kfree(mon_wdev);
++	mon_wdev = NULL;
+
++err_zmalloc:
++	free_netdev(mon_ndev);
++	*ndev = mon_ndev = NULL;
++out:
+ 	return ret;
+ }
+
+--
+2.32.0
+
