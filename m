@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AADF428122
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7984842812C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhJJMNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:13:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbhJJMNt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:13:49 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BE5C061570;
-        Sun, 10 Oct 2021 05:11:50 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id r18so55819467edv.12;
-        Sun, 10 Oct 2021 05:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fJ6kaV8bcdv5Zt4pSqpABLt7WYhvyccXqerlD+DDAng=;
-        b=ZOewO46GQqyDxTqKPsKLKlGbRzulv0+Z4Lsd8soCpYX1IiuJERI66/ENouWuJIPSLA
-         Q5dQnTRiqHpk2ixWyxelbtYQqRRUR6TrY4GyxektiMpDEBxuHepesYlCfVZm95ocPQbz
-         KodihQr21IkzUM/6DCYAuii2PH2wrA3jHCPp3mV709B6vNsbcF42DhxmfhKER2xxA7p7
-         QupCqL2ztRVwsvQXSX9uah/5UOi5Aw4jN/PhQqUmWtcOGT2C3zyNuxmm1tWhJp0wNLnm
-         MovQBZv/9NbEooHqd2/BvAyDiNfEFLOJAjF8F76aarXNmqjaozGs0EZLTSCbEZBPdU5C
-         781A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fJ6kaV8bcdv5Zt4pSqpABLt7WYhvyccXqerlD+DDAng=;
-        b=HOZZ4MeWDJIuQyZonjqh+kuw8yIC02KILzC6M+79CLma2smrKUAaVRCx5PITuvWq8W
-         aPr4Dzs6hdMmYbtsox3MrX6GD5wuNKhvb+Fam0auZ8/+kDczsQXIZHj7AQVGnqFbwv7+
-         kmTQMPkBNYPqDnVLeJD3iATQeXZmds3GUC1565gQiWgwugBbvh8+lWeKMOdSnYJ/5wKg
-         aG6Pl0vldokFKsNVJNaptU4i35wVC0B2oBIFs2kHxnQBOCNF63htQ8+LcVD7n7ndT08x
-         ThMHHWXHx4RtkVz7RCbK3nS55wn2yZtWRSY46J0/0f11TuddEz4L/eHTVztamV68CnPv
-         /0+A==
-X-Gm-Message-State: AOAM533vJxEXTZHr5qqwd9z50SYp4O2yo6/sISOkUc5BpVK0hGbKrw4N
-        jtfP6YNTRdEaLedWIX7o434=
-X-Google-Smtp-Source: ABdhPJyzUTAZK8Ygbv79B9odsuZfuNXkkNWmKizOibLzZRDvgyxfsGbmsEWIfPanKT9Vg5IEvkccMg==
-X-Received: by 2002:a50:bf08:: with SMTP id f8mr31245921edk.400.1633867909000;
-        Sun, 10 Oct 2021 05:11:49 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
-        by smtp.gmail.com with ESMTPSA id b13sm2538452ede.97.2021.10.10.05.11.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 05:11:48 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 14:11:46 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Hagan <mnhagan88@gmail.com>
-Subject: Re: [net-next PATCH v4 03/13] dt-bindings: net: dsa: qca8k: Add MAC
- swap and clock phase properties
-Message-ID: <YWLYguB8jIN8QXK4@Ansuel-xps.localdomain>
-References: <20211010111556.30447-1-ansuelsmth@gmail.com>
- <20211010111556.30447-4-ansuelsmth@gmail.com>
- <20211010120728.da56if3z7rtzb6hu@skbuf>
+        id S232375AbhJJMUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:20:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231892AbhJJMUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B25A560D42;
+        Sun, 10 Oct 2021 12:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633868299;
+        bh=iLj2MpGB1WIVyMpUNkkS49LMRVq2pz/qDF6FnIC1qWs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sovEQ2HVT7iYQZSPiDHcR3JgAiLt1L/nkeY3g5uIoYS8BFns1FVCkx0k0iMXaTzdq
+         K60bnx8lxuMZ9fBlESH+Ddq96E0EnorytJ6MqdooTRB6x6yfmDx984gEYU96liEmV8
+         yyn/CXtUje3tmqmGsuKf8//6LqqWy94VzFtpiWPd19+ZlHr71jQ/v7zuojrpni8mkD
+         dKbYdjPvwFYneJwzTH8ftbUWzNqynNBEDgBWKjsRec7rvUXg8oHoYk5z8vDFNeEW1s
+         P4cn2ECIBCKZJb7MJI0KRbgQl4uhO7jyIxjO/dS81eg1nHcW3hXDRPMJOe+3DAMz5Y
+         26LS9Y6TkQyFw==
+Received: by pali.im (Postfix)
+        id E45A8795; Sun, 10 Oct 2021 14:18:16 +0200 (CEST)
+Date:   Sun, 10 Oct 2021 14:18:16 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Martin Kepplinger <martink@posteo.de>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, angus@akkea.ca,
+        linux-kernel@vger.kernel.org, kay.sievers@vrfy.org,
+        lennart@poettering.net, harald@redhat.com,
+        gregkh@linuxfoundation.org, david@fubar.dk, tytso@mit.edu,
+        alan@lxorguk.ukuu.org.uk, akpm@linux-foundation.org
+Subject: Re: [PATCH] fs: fat: Make the volume label writable when mounted
+Message-ID: <20211010121816.fdvn6uiiteszbnql@pali>
+References: <20211007095639.5002-1-martink@posteo.de>
+ <874k9pccdf.fsf@mail.parknet.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211010120728.da56if3z7rtzb6hu@skbuf>
+In-Reply-To: <874k9pccdf.fsf@mail.parknet.co.jp>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 03:07:28PM +0300, Vladimir Oltean wrote:
-> On Sun, Oct 10, 2021 at 01:15:46PM +0200, Ansuel Smith wrote:
-> > Add names and descriptions of additional PORT0_PAD_CTRL properties.
-> > qca,sgmii-(rx|tx)clk-falling-edge are for setting the respective clock
-> > phase to failling edge.
-> > 
-> > Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > index 8c73f67c43ca..cc214e655442 100644
-> > --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
-> > @@ -37,6 +37,10 @@ A CPU port node has the following optional node:
-> >                            managed entity. See
-> >                            Documentation/devicetree/bindings/net/fixed-link.txt
-> >                            for details.
-> > +- qca,sgmii-rxclk-falling-edge: Set the receive clock phase to falling edge.
-> > +                                Mostly used in qca8327 with CPU port 0 set to
-> > +                                sgmii.
-> > +- qca,sgmii-txclk-falling-edge: Set the transmit clock phase to falling edge.
-> >  
-> >  For QCA8K the 'fixed-link' sub-node supports only the following properties:
-> >  
-> > -- 
-> > 2.32.0
-> > 
+Hello!
+
+On Sunday 10 October 2021 21:06:52 OGAWA Hirofumi wrote:
+> > diff --git a/include/uapi/linux/msdos_fs.h b/include/uapi/linux/msdos_fs.h
+> > index a5773899f4d9..b666bca09238 100644
+> > --- a/include/uapi/linux/msdos_fs.h
+> > +++ b/include/uapi/linux/msdos_fs.h
+> > @@ -104,6 +104,7 @@ struct __fat_dirent {
+> >  #define FAT_IOCTL_SET_ATTRIBUTES	_IOW('r', 0x11, __u32)
+> >  /*Android kernel has used 0x12, so we use 0x13*/
+> >  #define FAT_IOCTL_GET_VOLUME_ID		_IOR('r', 0x13, __u32)
+> > +#define VFAT_IOCTL_SET_LABEL		_IOW('r', 0x14, __u32)
 > 
-> Must first document, then use.
-> Also, would you care converting qca8k.txt to qca8k.yaml?
+> maybe FAT_IOCTL_SET_LABEL is better.
 
-Ow ok, will swap alle the patch.
-About converting... Hard task will try but it will be a nightmare. Sad
-me.
+Please do not introduce a new fs specific ioctls. There is already
+vfs-agnostic FS_IOC_SETFSLABEL ioctl, look at manpage:
+https://man7.org/linux/man-pages/man2/ioctl_fslabel.2.html
 
--- 
-	Ansuel
+I have WIP patches which adds support for FS_IOC_SETFSLABEL ioctl into
+kernel vfat driver. But it is not possible to implement this ioctl
+properly until issues with encoding are fixed in vfat driver. Some of
+dependency patches I have sent to ML as RFC series:
+https://lore.kernel.org/lkml/20210808162453.1653-1-pali@kernel.org/
+
+If you have a time and motivation, I can send you my unfinished WIP
+patches which implements FS_IOC_SETFSLABEL ioctl for vfat.
