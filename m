@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEE942825F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 17:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3C9428263
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 18:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhJJP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 11:57:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231842AbhJJP5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 11:57:13 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36F3C60EFE;
-        Sun, 10 Oct 2021 15:55:13 +0000 (UTC)
-Date:   Sun, 10 Oct 2021 16:59:19 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Roan van Dijk <roan@protonic.nl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, david@protonic.nl,
-        Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v5 0/4] iio: chemical: Add support for Sensirion SCD4x
- CO2 sensor
-Message-ID: <20211010165919.51f06938@jic23-huawei>
-In-Reply-To: <20211008101706.755942-1-roan@protonic.nl>
-References: <20211008101706.755942-1-roan@protonic.nl>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S232613AbhJJQCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 12:02:44 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:52118 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231842AbhJJQCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 12:02:43 -0400
+Received: from BC-Mail-Ex23.internal.baidu.com (unknown [172.31.51.17])
+        by Forcepoint Email with ESMTPS id ED7DB433CF7D7CA2F05B;
+        Mon, 11 Oct 2021 00:00:37 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex23.internal.baidu.com (172.31.51.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Mon, 11 Oct 2021 00:00:37 +0800
+Received: from localhost.localdomain (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 11 Oct 2021 00:00:37 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Boris Brezillon <bbrezillon@kernel.org>,
+        Arnaud Ebalard <arno@natisbad.org>,
+        Srujana Challa <schalla@marvell.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] crypto: octeontx2 - Use dma_alloc_coherent() instead of kzalloc/dma_map_single()
+Date:   Mon, 11 Oct 2021 00:00:04 +0800
+Message-ID: <20211010160010.435-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex13.internal.baidu.com (172.31.51.53) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  8 Oct 2021 12:17:02 +0200
-Roan van Dijk <roan@protonic.nl> wrote:
+Replacing kzalloc/kfree/dma_map_single/dma_unmap_single()
+with dma_alloc_coherent/dma_free_coherent() helps to reduce
+code size, and simplify the code, and coherent DMA will not
+clear the cache every time.
 
-> This series adds support for the Sensirion SCD4x sensor.
-> 
-> The driver supports continuous reads of temperature, relative humdity and CO2
-> concentration. There is an interval of 5 seconds between readings. During
-> this interval the drivers checks if the sensor has new data available.
-> 
-> The driver is based on the scd30 driver. However, The scd4x has become too
-> different to just expand the scd30 driver. I made a new driver instead of
-> expanding the scd30 driver. I hope I made the right choice by doing so?
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+ drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-Applied to the togreg branch of iio.git with the issues Randy mentioned tidied
-up. Pushed out as testing for 0-day to see if it can find anything we missed
-
-Thanks,
-
-Jonathan
-
-> 
-> Changes since v5:
-> scd4x.c:
->   - Fix bug in trigger_handler
-> 
-> Changes since v4:
-> scd4x.c:
->   - Minor fixes in documentation
->   - Reorder trigger_handler so memcpy is not needed anymore
-> Documentation:
->   - Change information about the KernelVersion for the 
->     calibration_forced_value_available
-> 
-> Changes since v3:
-> scd4x.c
->   - Change read and write_and_fetch function parameter. CRC byte is now
->     hidden inside the function.
->   - Fix minor style issues
->   - Add calibration_forced_value_available attribute to the driver
->   - Remove including BUFFER_TRIGGERED
->   - Change calibbias to raw ADC readings rather than converting it to
->     milli degrees C.
-> Documentation:
->   - Change description of driver attributes
->   - Add calibration_forced_value_available documentation
-> 
-> Changes since v2:
-> scd4x.c:
->   - Change boolean operations
->   - Document scope of lock
->   - Remove device *dev from struct
->   - Add goto block for errror handling
->   - Add function to read value per channel in read_raw
->   - Fix bug with lock in error paths
->   - Remove conversion of humidity and temperature values
->   - Add scale and offset to temperature channel
->   - Add scale to humidity channel
->   - Move memset out of locked section
->   - Remove unused irq functions
->   - Move device register at end of probe function
-> Documentation:
->   - Copy content of sysfs-bus-iio-scd30 to sysfs-bus-iio
->   - Remove Documentation/ABI/testing/sysfs-bus-iio-scd30
-> 
-> Changes since v1:
-> dt-bindings:
->   - Separated compatible string for each sensor type
-> scd4x.c:
->   - Changed probe, resume and suspend functions to static
->   - Added SIMPLE_DEV_PM_OPS function call for power management
->     operations.
-> 
-> Roan van Dijk (4):
->   dt-bindings: iio: chemical: sensirion,scd4x: Add yaml description
->   MAINTAINERS: Add myself as maintainer of the scd4x driver
->   drivers: iio: chemical: Add support for Sensirion SCD4x CO2 sensor
->   iio: documentation: Document scd4x calibration use
-> 
->  Documentation/ABI/testing/sysfs-bus-iio       |  41 ++
->  Documentation/ABI/testing/sysfs-bus-iio-scd30 |  34 -
->  .../iio/chemical/sensirion,scd4x.yaml         |  46 ++
->  MAINTAINERS                                   |   6 +
->  drivers/iio/chemical/Kconfig                  |  13 +
->  drivers/iio/chemical/Makefile                 |   1 +
->  drivers/iio/chemical/scd4x.c                  | 689 ++++++++++++++++++
->  7 files changed, 796 insertions(+), 34 deletions(-)
->  delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-scd30
->  create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
->  create mode 100644 drivers/iio/chemical/scd4x.c
-> 
+diff --git a/drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c b/drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c
+index dff34b3ec09e..60d62ce049a6 100644
+--- a/drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c
++++ b/drivers/crypto/marvell/octeontx2/otx2_cptpf_ucode.c
+@@ -1449,18 +1449,11 @@ int otx2_cpt_discover_eng_capabilities(struct otx2_cptpf_dev *cptpf)
+ 	compl_rlen = ALIGN(sizeof(union otx2_cpt_res_s), OTX2_CPT_DMA_MINALIGN);
+ 	len = compl_rlen + LOADFVC_RLEN;
+ 
+-	result = kzalloc(len, GFP_KERNEL);
++	result = dma_alloc_coherent(&pdev->dev, len, &rptr_baddr, GFP_KERNEL);
+ 	if (!result) {
+ 		ret = -ENOMEM;
+ 		goto lf_cleanup;
+ 	}
+-	rptr_baddr = dma_map_single(&pdev->dev, (void *)result, len,
+-				    DMA_BIDIRECTIONAL);
+-	if (dma_mapping_error(&pdev->dev, rptr_baddr)) {
+-		dev_err(&pdev->dev, "DMA mapping failed\n");
+-		ret = -EFAULT;
+-		goto free_result;
+-	}
+ 	rptr = (u8 *)result + compl_rlen;
+ 
+ 	/* Fill in the command */
+@@ -1489,11 +1482,9 @@ int otx2_cpt_discover_eng_capabilities(struct otx2_cptpf_dev *cptpf)
+ 
+ 		cptpf->eng_caps[etype].u = be64_to_cpup(rptr);
+ 	}
+-	dma_unmap_single(&pdev->dev, rptr_baddr, len, DMA_BIDIRECTIONAL);
++	dma_free_coherent(&pdev->dev, len, (void *)result, rptr_baddr);
+ 	cptpf->is_eng_caps_discovered = true;
+ 
+-free_result:
+-	kfree(result);
+ lf_cleanup:
+ 	otx2_cptlf_shutdown(&cptpf->lfs);
+ delete_grps:
+-- 
+2.25.1
 
