@@ -2,192 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E1F4281E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:26:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7A924281E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhJJO2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 10:28:45 -0400
-Received: from out0.migadu.com ([94.23.1.103]:42383 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231842AbhJJO2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 10:28:43 -0400
-Date:   Sun, 10 Oct 2021 22:27:24 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1633876001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xhOtgkZ+tjHM29IGh04Mb8pYgZ9ao2sJhmPA9HYKAj0=;
-        b=O4tkQGJHLIiN/cVHsrR7jVBTfMZMJjGrIODjARk8Vm/vcjQKOJN8wRk0Ea0PCaPDJlcxTZ
-        4IR+XiIZJXi+5Vt1ByRSi+gUL0aNAjFTa7fRyZDT0p3ZP1wghlKatjnS3aqdMZqkCK0IO3
-        JPTqzenacxiy5n2IBuPno+G7ssU8Axc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Tao Zhou <tao.zhou@linux.dev>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH] sched/fair: Check idle_cpu in select_idle_core/cpu()
-Message-ID: <YWL4TA19eFsfd4c7@geo.homenetwork>
-References: <20211009180941.20458-1-tao.zhou@linux.dev>
- <20211009225057.GB174703@worktop.programming.kicks-ass.net>
- <YWK0yEJNGYAZ3hhD@geo.homenetwork>
- <CAGsJ_4xW5s-ze6QjVLJPscEcCaakdS6Np84w9Hwh8Zj_=WqhTw@mail.gmail.com>
+        id S232476AbhJJO3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:29:38 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60230
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232283AbhJJO3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:29:36 -0400
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BC8993F338
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 14:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633876057;
+        bh=xW+MKR8E4EzaY0k+syaHUY7byAQSWGtIq6VGpVZrt24=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=VPLZ0dZrchKy/cmjaavMybZLRyi40NCGV7J/vVPbHidrBKr+Wiiozx0MMlqnC55bd
+         QHR+1iVGRBM8YDQSrIiQC1YpV4Zrfk4oHpuPGsC5QHWSkmczGUpNjFKnYIVuvq3WpJ
+         cMrHxst4jfWeG+HAaCphcKbZYs2pIYg4lw4E7L54n6qzwIelavTHixRgFmdyCDdYUZ
+         ZDNpTUKm0KVX2LD0qo62Ht504RPHzaB6wbxdEWgXeSesNkkt0QuwoxdyglPRjMemTx
+         bRmLWO8Gdw2Ex57tZjLNd+jJIaMQSS4NBBHjopl2OT3rruIceqHI7h2JjojH6oGRfw
+         p3dyzLvoFjVSw==
+Received: by mail-ed1-f71.google.com with SMTP id u23-20020a50a417000000b003db23c7e5e2so13486455edb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 07:27:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xW+MKR8E4EzaY0k+syaHUY7byAQSWGtIq6VGpVZrt24=;
+        b=ov8Q0JjZyNO6VzuN9N90yq1mULzg8QEFpIpttQuAwsfqTtST+Eqg+HNvSLt6+aOlpK
+         WE+OAwm2wvaczDy2O/i9rWdcmcNTvdlBzWf1nqtbvOcZP4fzw+xJMg+reQXt/3JGFwVT
+         AstPab2CVOv9Uax6+HFggo8NCsSO+fYl1Gcxo0APyv9cUZDr5hXF6GEl+i6EXUAGtr5v
+         P9DvK/GDWIhVnqjuRXozWVSasM8iMyFHb7OEbNL7OzWQTuIwEVgdgVoKtVz8vO13mfJF
+         e4A4UJ1FdnUIx/AqbMLUcE82I2GAUrk2otj2J09EY9DVRtuFYpwDbBXh+JjVXK0sLHue
+         D1dQ==
+X-Gm-Message-State: AOAM532907zoY/QdC85aIwr0CEzsZ7fN57qIwe+TuN8RLDfv5j+C0/13
+        oIUjQS/jIk2ljZpoONb68xP0PRMDOq9R950dnkJ0OrmTcUOmqjSmIRtN3vUe6dGdvntORJRrdS8
+        vdf0YK7pJfxDVCwWLiJLcS3o6MCPTecvX+/P2+2FP+A==
+X-Received: by 2002:a17:906:2b82:: with SMTP id m2mr17278475ejg.122.1633876057111;
+        Sun, 10 Oct 2021 07:27:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOb5sSykNnVt0L3Cfv4VoKMjjb/lVgRt7i3QyqKVJ2bc9CBmr9I9/nNU70u+GVpQvkkynwBg==
+X-Received: by 2002:a17:906:2b82:: with SMTP id m2mr17278456ejg.122.1633876056898;
+        Sun, 10 Oct 2021 07:27:36 -0700 (PDT)
+Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
+        by smtp.gmail.com with ESMTPSA id v6sm2713007edc.52.2021.10.10.07.27.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 07:27:36 -0700 (PDT)
+Subject: Re: [PATCH v3] dt-bindings: net: nfc: nxp,pn544: Convert txt bindings
+ to yaml
+To:     David Heidelberg <david@ixit.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht
+References: <20211009161941.41634-1-david@ixit.cz>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <5fab38bd-33fa-e0bc-5625-e972008f4c97@canonical.com>
+Date:   Sun, 10 Oct 2021 16:27:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGsJ_4xW5s-ze6QjVLJPscEcCaakdS6Np84w9Hwh8Zj_=WqhTw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: tao.zhou@linux.dev
+In-Reply-To: <20211009161941.41634-1-david@ixit.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Barry,
-
-On Mon, Oct 11, 2021 at 01:19:57AM +1300, Barry Song wrote:
-> On Sun, Oct 10, 2021 at 10:45 PM Tao Zhou <tao.zhou@linux.dev> wrote:
-> >
-> > Hi Peter,
-> >
-> > On Sun, Oct 10, 2021 at 12:50:57AM +0200, Peter Zijlstra wrote:
-> > > On Sun, Oct 10, 2021 at 02:09:41AM +0800, Tao Zhou wrote:
-> > > > In select_idle_core(), the idle core returned may have no cpu
-> > > > allowed. I think the idle core returned for the task is the one
-> > > > that can be allowed to run. I insist on this semantics.
-> > > >
-> > > > In select_idle_cpu(), if select_idle_core() can not find the
-> > > > idle core, one reason is that the core is not allowed for the
-> > > > task, but the core itself is idle from the point of
-> > > > sds->has_idle_cores. I insist on this semantics.
-> > > >
-> > > > No others, just two additional check.
-> > > > ---
-> > > >  kernel/sched/fair.c | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > > index f6a05d9b5443..a44aca5095d3 100644
-> > > > --- a/kernel/sched/fair.c
-> > > > +++ b/kernel/sched/fair.c
-> > > > @@ -6213,7 +6213,7 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
-> > > >                     *idle_cpu = cpu;
-> > > >     }
-> > > >
-> > > > -   if (idle)
-> > > > +   if (idle && *idle_cpu != -1)
-> > > >             return core;
-> > >
-> > > In that case, core would be nr_cpu_ids (==nr_cpumask_bits), and then the caller checks:
-> > >
-> > >       (unsigned)i < nr_cpumask_bits
-> >
-> > Thank you for reply.
-> >
-> >
-> > If (1)there is no idle core or (2)the idle core has no allowed cpu, we return -1.
-> > Originally, just (1) has happened, we return -1. The (2) is what I want to add.
+On 09/10/2021 18:19, David Heidelberg wrote:
+> Convert bindings for NXP PN544 NFC driver to YAML syntax.
 > 
-> I don't understand (2). before doing
->         for_each_cpu_wrap(cpu, cpus, target + 1) {
->                 if (has_idle_core) {
->                         i = select_idle_core(p, cpu, cpus, &idle_cpu);
->                         if ((unsigned int)i < nr_cpumask_bits)
->                                 return i;
+> Signed-off-by: David Heidelberg <david@ixit.cz>
+> ---
+> v2
+>  - Krzysztof is a maintainer
+>  - pintctrl dropped
+>  - 4 space indent for example
+>  - nfc node name
+> v3
+>  - remove whole pinctrl
+>  .../bindings/net/nfc/nxp,pn544.yaml           | 61 +++++++++++++++++++
+>  .../devicetree/bindings/net/nfc/pn544.txt     | 33 ----------
+>  2 files changed, 61 insertions(+), 33 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/nfc/nxp,pn544.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/nfc/pn544.txt
 > 
->                 } else {
->                         if (!--nr)
->                                 return -1;
->                         idle_cpu = __select_idle_cpu(cpu, p);
->                         if ((unsigned int)idle_cpu < nr_cpumask_bits)
->                                 break;
->                 }
->         }
-> 
-> to select idle core, we have already done:
->     cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> 
-> so we are only scanning allowed cpus.
 
-Um.. You read top down.. and you are right.
-The function itself semantics is important to me.
+Rob,
 
-After a secondary recall and not thorough now, I realize that
-cpus_ptr may be changed.
+The netdev folks marked patch as not-applicable, so I guess they expect
+you to pick it up.
+
+Can you take it? Similarly to my NFC bindings conversion sent this weekend:
+https://lore.kernel.org/linux-nfc/20211010142317.168259-1-krzysztof.kozlowski@canonical.com/T/#t
 
 
-See code of this:
-
-static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
-{
-	if (likely(!p->migration_disabled))
-		return;
-
-	if (p->cpus_ptr != &p->cpus_mask)
-		return;
-
-	/*
-	 * Violates locking rules! see comment in __do_set_cpus_allowed().
-	 */
-	__do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
-}
-
-
-This change is under the light of ->pi_lock.
-That thing is quick to forget to me..
-Not sure I am right. Thank you for remind.
-
-If the cpu_ptr can be changed, you can not depend on the first AND
-operation there.
-
-> >
-> > If we find idle core and has allowed cpu in the core, is it better to return
-> > @*idle_cpu.
-> >
-> >     if (idle && *idle_cpu != -1)
-> >             return *idle_cpu;
-> >
-> > This @*idle_cpu is the allowed cpu in the idle core. We do not promise anything
-> > about the @core(target) is the allowed cpu until we hit in select_task_rq() -->
-> > select_fallback_rq(). And the select_fallback_rq() will return a different cpu
-> > than the @core or @*idle_cpu.
-> >
-> > > >     cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-> > > > @@ -6324,7 +6324,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
-> > > >             }
-> > > >     }
-> > > >
-> > > > -   if (has_idle_core)
-> > > > +   if (has_idle_core && *idle_cpu != -1)
-> > > >             set_idle_cores(target, false);
-> > >
-> > > And this one I'm completely failing, why shouldn't we mark the core as
-> > > non-idle when there is a single idle CPU found? That's just worng.
-> >
-> > When @has_idle_core is true, it implies for all cpu in the core the case
-> > (1) or case (2) has happened. The (1) can be mark as non-idle. I conclude
-> > to contradiction myself last time. The (2) is also seemed to be non-idle.
-> >
-> >
-> > But, I think I am totally wrong because the sds->has_idle_cores is related
-> > to the cpu not task. So, the affinity should not affect the decision of
-> > sds->has_idle_cores.
-> >
-> >
-> >
-> > Thanks,
-> > Tao
-> 
-> Thanks
-> barry
-
-
-
-Thanks,
-Tao
+Best regards,
+Krzysztof
