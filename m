@@ -2,221 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD5842841A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 00:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D5042841C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 00:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbhJJWrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 18:47:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57756 "EHLO
+        id S233207AbhJJWvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 18:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232586AbhJJWrD (ORCPT
+        with ESMTP id S229974AbhJJWvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 18:47:03 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA6FC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=zZJzETgz2Wp+qRmqRUpxUZm0BAho4on48nu/OSIk334=; b=11zW+hiUCpSZ0z1hb110i4+45n
-        MXuJ0y67uf/qT6dumZ+To8l5fPhbj20BUDzt+v9da6bgr1EoLLFoSrgOYDs2Ykuc5df7cXbgc7XoU
-        JmuJ+kfmElyt7z8YH/N1l7RzRRJS0bQgIhV6ebsPawaqq9TyhcblR1kt4x/d/WL4fRwE+UdGKEnai
-        JVAFyLAH+Iw1NEq+iUWu9mpbF5VlwARngcL7Uq8sqXki+ecpIhRv7xZjiAAIhBbjNhhtlZg5LCBig
-        rB8hPT//SqHeysyUZZ0/8eBWpiry1sBmHi5L5PWmpQ7nzkijVY5AEouOG1k5AU5R0vHolrs1GGQB2
-        lokkf4sg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZhYz-007Rf9-DY; Sun, 10 Oct 2021 22:45:01 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Derek Basehore <dbasehore@chromium.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH -next v2] drm/connector: fix all kernel-doc warnings
-Date:   Sun, 10 Oct 2021 15:44:59 -0700
-Message-Id: <20211010224459.3603-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 10 Oct 2021 18:51:08 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76907C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:49:09 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id y7so3663296pfg.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:49:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=8EcW2ShAuYWF0QWBJ5C9v70rQEiQ/Ji8vWsPGRffTa4=;
+        b=tIpCjTWtXKNGQJUpE6NPQfM2QPMkw6oTY7R71q3/D/7RUZDQ+x6ZY9899Lp7OOGdru
+         2uuCSCilLNWMitn+XVpEqCq5xFUErtDMqivNCsdQi5proI88u6r373VQpDPSz11lQfFy
+         Gt/BO7j12Pi5XQb1pRVqi3CPufpn1mZ9h+XvBTGa33EzpLmkd6tv4wvAGF2uU7OO8D13
+         dCS2UAmFLRhCPsqkmRwYffez9C+GBxjZkhuylxs+O4v2YG7NtiM8kN/6EojBYtuCV7MD
+         eku6uoMEDF1jJGVYYS15NaM0vCNZVpn3GuAqfv9yqWh90EUYq3zYZpxQRoAJEwHFOTMT
+         Ehig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=8EcW2ShAuYWF0QWBJ5C9v70rQEiQ/Ji8vWsPGRffTa4=;
+        b=iDyOSt4BKe1xwgKlvQLOSGCefJj0m53c+vpp3Nfrl6p5spnioWcv+Bdo6FqkmyhcMe
+         5B/0UtLeTBVLNxiVIU+saBTImPfmMDsjISn25GoZC4T92feHwUiRfv0LmR/TF/Yp3lAB
+         FvAqLezQlNhQPA45CtX4nDMtZJWJY+kbuL1MPaXJS8VURpWD6SqQDX6gKGai9f+pVIbR
+         Ra9XnipEszj8aj20rE5EnrLJsm0pdbhO7lm5E38f4ogFhDC0ysDttmr6gdrXGlq0ahg4
+         JkAg5ToAaPcSe5zX00zcDxRRN2H+ldW89aoCtD0FMqs9T5eQnPRrO7tb2Og/L7ws9rHe
+         76qQ==
+X-Gm-Message-State: AOAM531Gi9hKEx2QRAVXoCRvdNovhE2AJxx70r3r0btmAlnHWAOJmtfG
+        uU1ZIS7wPE6/Ir4WOT6q5XcszQ==
+X-Google-Smtp-Source: ABdhPJwlNO90Xh8cmYucSShJXLf+PIqFNTI8K4kHV+potciLWvaDJvnKsgMzBGTjNB2bPrBOAzjYsg==
+X-Received: by 2002:a05:6a00:230e:b0:44c:4f2d:9b00 with SMTP id h14-20020a056a00230e00b0044c4f2d9b00mr22150072pfh.24.1633906148786;
+        Sun, 10 Oct 2021 15:49:08 -0700 (PDT)
+Received: from [2620:15c:17:3:3280:1d46:7d55:1fbb] ([2620:15c:17:3:3280:1d46:7d55:1fbb])
+        by smtp.gmail.com with ESMTPSA id u24sm5403060pfm.85.2021.10.10.15.49.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 15:49:08 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 15:49:07 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
+cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm, slub: Use prefetchw instead of prefetch
+In-Reply-To: <20211008133602.4963-1-42.hyeyoo@gmail.com>
+Message-ID: <30a76d87-e0af-3eec-d095-d87e898b31cf@google.com>
+References: <20211008133602.4963-1-42.hyeyoo@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up all of the kernel-doc issues in drm_connector.c:
+On Fri, 8 Oct 2021, Hyeonggon Yoo wrote:
 
-drivers/gpu/drm/drm_connector.c:2611: warning: Excess function parameter 'connector' description in 'drm_connector_oob_hotplug_event'
-drivers/gpu/drm/drm_connector.c:2611: warning: Function parameter or member 'connector_fwnode' not described in 'drm_connector_oob_hotplug_event'
+> It's certain that an object will be not only read, but also
+> written after allocation.
+> 
 
-drm_connector.c:630: warning: No description found for return value of 'drm_get_connector_status_name'
-drm_connector.c:715: warning: No description found for return value of 'drm_connector_list_iter_next'
-drm_connector.c:785: warning: No description found for return value of 'drm_get_subpixel_order_name'
-drm_connector.c:816: warning: No description found for return value of 'drm_display_info_set_bus_formats'
-drm_connector.c:1331: warning: No description found for return value of 'drm_mode_create_dvi_i_properties'
-drm_connector.c:1412: warning: No description found for return value of 'drm_connector_attach_content_type_property'
-drm_connector.c:1492: warning: No description found for return value of 'drm_mode_create_tv_margin_properties'
-drm_connector.c:1534: warning: No description found for return value of 'drm_mode_create_tv_properties'
-drm_connector.c:1627: warning: No description found for return value of 'drm_mode_create_scaling_mode_property'
-drm_connector.c:1944: warning: No description found for return value of 'drm_mode_create_suggested_offset_properties'
+Why is it certain?  I think perhaps what you meant to say is that if we 
+are doing any prefetching here, then access will benefit from prefetchw 
+instead of prefetch.  But it's not "certain" that allocated memory will be 
+accessed at all.
 
-drm_connector.c:2315: warning: missing initial short description on line:
- * drm_connector_set_panel_orientation_with_quirk -
+> Use prefetchw instead of prefetchw. On supported architecture
 
-[The last warning listed is probably a quirk/bug in scripts/kernel-doc.]
+If we're using prefetchw instead of prefetchw, I think the diff would be 
+0 lines changed :)
 
-Fixes: 613051dac40d ("drm: locking&new iterators for connector_list")
-Fixes: 522171951761 ("drm: Extract drm_connector.[hc]")
-Fixes: b3c6c8bfe378 ("drm: document drm_display_info")
-Fixes: 50525c332b55 ("drm: content-type property for HDMI connector")
-Fixes: 6c4f52dca36f ("drm/connector: Allow creation of margin props alone")
-Fixes: 69654c632d80 ("drm/connector: Split out orientation quirk detection (v2)")
-Fixes: 72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Derek Basehore <dbasehore@chromium.org>
-Cc: Hans de Goede <hdegoede@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Sam Ravnborg <sam@ravnborg.org>
----
-v2: drop Cc: Boris Brezillon <boris.brezillon@bootlin.com> [bounced]
-    Address Sam's comment on Returns:
-
-72ad49682dde ("drm/connector: Add support for out-of-band hotplug notification (v3)")
-  is only in linux-next. The others are in mainline.
-
- drivers/gpu/drm/drm_connector.c |   30 ++++++++++++++++++++++++++----
- 1 file changed, 26 insertions(+), 4 deletions(-)
-
---- linux-next-20211007.orig/drivers/gpu/drm/drm_connector.c
-+++ linux-next-20211007/drivers/gpu/drm/drm_connector.c
-@@ -625,6 +625,8 @@ int drm_connector_register_all(struct dr
-  *
-  * In contrast to the other drm_get_*_name functions this one here returns a
-  * const pointer and hence is threadsafe.
-+ *
-+ * Returns: connector status string
-  */
- const char *drm_get_connector_status_name(enum drm_connector_status status)
- {
-@@ -707,7 +709,7 @@ __drm_connector_put_safe(struct drm_conn
-  * drm_connector_list_iter_next - return next connector
-  * @iter: connector_list iterator
-  *
-- * Returns the next connector for @iter, or NULL when the list walk has
-+ * Returns: the next connector for @iter, or NULL when the list walk has
-  * completed.
-  */
- struct drm_connector *
-@@ -780,6 +782,8 @@ static const struct drm_prop_enum_list d
-  *
-  * Note you could abuse this and return something out of bounds, but that
-  * would be a caller error.  No unscrubbed user data should make it here.
-+ *
-+ * Returns: string describing an enumerated subpixel property
-  */
- const char *drm_get_subpixel_order_name(enum subpixel_order order)
- {
-@@ -809,6 +813,9 @@ static const struct drm_prop_enum_list d
-  * Store the supported bus formats in display info structure.
-  * See MEDIA_BUS_FMT_* definitions in include/uapi/linux/media-bus-format.h for
-  * a full list of available formats.
-+ *
-+ * Returns:
-+ * 0 on success or a negative error code on failure.
-  */
- int drm_display_info_set_bus_formats(struct drm_display_info *info,
- 				     const u32 *formats,
-@@ -1326,6 +1333,8 @@ int drm_connector_create_standard_proper
-  * @dev: DRM device
-  *
-  * Called by a driver the first time a DVI-I connector is made.
-+ *
-+ * Returns: %0
-  */
- int drm_mode_create_dvi_i_properties(struct drm_device *dev)
- {
-@@ -1407,6 +1416,8 @@ EXPORT_SYMBOL(drm_connector_attach_dp_su
-  * @connector: connector to attach content type property on.
-  *
-  * Called by a driver the first time a HDMI connector is made.
-+ *
-+ * Returns: %0
-  */
- int drm_connector_attach_content_type_property(struct drm_connector *connector)
- {
-@@ -1487,6 +1498,9 @@ EXPORT_SYMBOL(drm_connector_attach_tv_ma
-  * creates the TV margin properties for a given device. No need to call this
-  * function for an SDTV connector, it's already called from
-  * drm_mode_create_tv_properties().
-+ *
-+ * Returns:
-+ * 0 on success or a negative error code on failure.
-  */
- int drm_mode_create_tv_margin_properties(struct drm_device *dev)
- {
-@@ -1527,6 +1541,9 @@ EXPORT_SYMBOL(drm_mode_create_tv_margin_
-  * the TV specific connector properties for a given device.  Caller is
-  * responsible for allocating a list of format names and passing them to
-  * this routine.
-+ *
-+ * Returns:
-+ * 0 on success or a negative error code on failure.
-  */
- int drm_mode_create_tv_properties(struct drm_device *dev,
- 				  unsigned int num_modes,
-@@ -1622,6 +1639,8 @@ EXPORT_SYMBOL(drm_mode_create_tv_propert
-  * Atomic drivers should use drm_connector_attach_scaling_mode_property()
-  * instead to correctly assign &drm_connector_state.scaling_mode
-  * in the atomic state.
-+ *
-+ * Returns: %0
-  */
- int drm_mode_create_scaling_mode_property(struct drm_device *dev)
- {
-@@ -1939,6 +1958,9 @@ EXPORT_SYMBOL(drm_mode_create_content_ty
-  * @dev: DRM device
-  *
-  * Create the suggested x/y offset property for connectors.
-+ *
-+ * Returns:
-+ * 0 on success or a negative error code on failure.
-  */
- int drm_mode_create_suggested_offset_properties(struct drm_device *dev)
- {
-@@ -2312,8 +2334,8 @@ int drm_connector_set_panel_orientation(
- EXPORT_SYMBOL(drm_connector_set_panel_orientation);
- 
- /**
-- * drm_connector_set_panel_orientation_with_quirk -
-- *	set the connector's panel_orientation after checking for quirks
-+ * drm_connector_set_panel_orientation_with_quirk - set the
-+ *	connector's panel_orientation after checking for quirks
-  * @connector: connector for which to init the panel-orientation property.
-  * @panel_orientation: drm_panel_orientation value to set
-  * @width: width in pixels of the panel, used for panel quirk detection
-@@ -2597,7 +2619,7 @@ struct drm_connector *drm_connector_find
- 
- /**
-  * drm_connector_oob_hotplug_event - Report out-of-band hotplug event to connector
-- * @connector: connector to report the event on
-+ * @connector_fwnode: fwnode_handle to report the event on
-  *
-  * On some hardware a hotplug event notification may come from outside the display
-  * driver / device. An example of this is some USB Type-C setups where the hardware
+> like x86, it helps to invalidate cache line when the object exists
+> in other processors' cache.
+> 
+> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+> ---
+>  mm/slub.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 3d2025f7163b..2aca7523165e 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -352,9 +352,9 @@ static inline void *get_freepointer(struct kmem_cache *s, void *object)
+>  	return freelist_dereference(s, object + s->offset);
+>  }
+>  
+> -static void prefetch_freepointer(const struct kmem_cache *s, void *object)
+> +static void prefetchw_freepointer(const struct kmem_cache *s, void *object)
+>  {
+> -	prefetch(object + s->offset);
+> +	prefetchw(object + s->offset);
+>  }
+>  
+>  static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
+> @@ -3195,10 +3195,9 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
+>  			note_cmpxchg_failure("slab_alloc", s, tid);
+>  			goto redo;
+>  		}
+> -		prefetch_freepointer(s, next_object);
+> +		prefetchw_freepointer(s, next_object);
+>  		stat(s, ALLOC_FASTPATH);
+>  	}
+> -
+>  	maybe_wipe_obj_freeptr(s, object);
+>  	init = slab_want_init_on_alloc(gfpflags, s);
+>  
+> -- 
+> 2.27.0
+> 
+> 
