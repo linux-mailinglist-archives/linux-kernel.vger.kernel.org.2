@@ -2,82 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2AA42829C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD0942829E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhJJRXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:23:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:46190 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229872AbhJJRXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:23:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF44A1FB;
-        Sun, 10 Oct 2021 10:21:15 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 684EA3F694;
-        Sun, 10 Oct 2021 10:21:14 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 18:19:46 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     mripard@kernel.org, wens@csie.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: sun50i-de2: Adjust printing error message
-Message-ID: <20211010181848.7b0ac8d4@slackpad.fritz.box>
-In-Reply-To: <20211010071812.145178-1-jernej.skrabec@gmail.com>
-References: <20211010071812.145178-1-jernej.skrabec@gmail.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S231443AbhJJRZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:25:04 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:62004 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhJJRZD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 13:25:03 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
+ id 548923abeb68aa07; Sun, 10 Oct 2021 19:23:03 +0200
+Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 965A566A6B4;
+        Sun, 10 Oct 2021 19:23:02 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: [PATCH v2] ACPI: LPSS: Use ACPI_COMPANION() directly
+Date:   Sun, 10 Oct 2021 19:23:01 +0200
+Message-ID: <11853240.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.77.51.84
+X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvddtgedgudduvdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppeekledrjeejrdehuddrkeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdejjedrhedurdekgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegrnhgurhhihidrshhhvghvtghhvghnkhhosehlihhnuhigrdhinhhtvghlrdgtohhmpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepmhhikhgrrdifvghsthgvrhgsvghrgheslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Oct 2021 09:18:12 +0200
-Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> SRAM driver often returns -EPROBE_DEFER and thus this bus driver often
-> prints error message, even if it probes successfully later. This is
-> confusing for users and they often think that something is wrong.
-> 
-> Use dev_err_probe() helper for printing error message. It handles
-> -EPROBE_DEFER automatically.
+The ACPI_HANDLE() macro returns the ACPI handle of the ACPI device
+object returned by the ACPI_COMPANION() macro, so it is more
+straightforward to call the latter directly instead of passing
+the handle produced by the former to acpi_bus_get_device().
 
-Ah, many thanks for just fixing this, it was indeed confusing people.
-And thanks for pointing to this useful helper!
+Modify the code accordingly (no intentional functional impact).
 
-Would this actually be a candidate for stable?
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+-> v2:
+   * Set ret = 0 on successful return from lpss_reg_read().
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+---
+ drivers/acpi/acpi_lpss.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-Cheers,
-Andre
+Index: linux-pm/drivers/acpi/acpi_lpss.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/acpi_lpss.c
++++ linux-pm/drivers/acpi/acpi_lpss.c
+@@ -712,14 +712,13 @@ static void __lpss_reg_write(u32 val, st
+ 
+ static int lpss_reg_read(struct device *dev, unsigned int reg, u32 *val)
+ {
+-	struct acpi_device *adev;
++	struct acpi_device *adev = ACPI_COMPANION(dev);
+ 	struct lpss_private_data *pdata;
+ 	unsigned long flags;
+ 	int ret;
+ 
+-	ret = acpi_bus_get_device(ACPI_HANDLE(dev), &adev);
+-	if (WARN_ON(ret))
+-		return ret;
++	if (WARN_ON(!adev))
++		return -ENODEV;
+ 
+ 	spin_lock_irqsave(&dev->power.lock, flags);
+ 	if (pm_runtime_suspended(dev)) {
+@@ -732,6 +731,7 @@ static int lpss_reg_read(struct device *
+ 		goto out;
+ 	}
+ 	*val = __lpss_reg_read(pdata, reg);
++	ret = 0;
+ 
+  out:
+ 	spin_unlock_irqrestore(&dev->power.lock, flags);
+@@ -1266,7 +1266,8 @@ static int acpi_lpss_platform_notify(str
+ 	if (!id || !id->driver_data)
+ 		return 0;
+ 
+-	if (acpi_bus_get_device(ACPI_HANDLE(&pdev->dev), &adev))
++	adev = ACPI_COMPANION(&pdev->dev);
++	if (!adev)
+ 		return 0;
+ 
+ 	pdata = acpi_driver_data(adev);
 
-> ---
->  drivers/bus/sun50i-de2.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/bus/sun50i-de2.c b/drivers/bus/sun50i-de2.c
-> index 672518741f86..414f29cdedf0 100644
-> --- a/drivers/bus/sun50i-de2.c
-> +++ b/drivers/bus/sun50i-de2.c
-> @@ -15,10 +15,9 @@ static int sun50i_de2_bus_probe(struct platform_device *pdev)
->  	int ret;
->  
->  	ret = sunxi_sram_claim(&pdev->dev);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "Error couldn't map SRAM to device\n");
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(&pdev->dev, ret,
-> +				     "Couldn't map SRAM to device\n");
->  
->  	of_platform_populate(np, NULL, NULL, &pdev->dev);
->  
+
 
