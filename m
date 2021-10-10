@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4CA8428168
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D362442816B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 14:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232580AbhJJM4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 08:56:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231833AbhJJM4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 08:56:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 414B261076;
-        Sun, 10 Oct 2021 12:54:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633870485;
-        bh=zxsP281bRmnj1ubhDY5IwzGloqMPyxj4oCdJF8F2VC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q1mSgdAIpzJhet4ZJQQ1NUhdaBvkmtAK///jigWxEfz+VK7QDxHZeixuBd7wfQHmT
-         sIEzoddXP7UmQ1ZhTJKrtWhf/ofbrXe6SV0jHKlf01S5dpcJAnQlVIv1da3w0GIdjr
-         n4OoFCjYj7t1F/KniQpLwFPMsF1ArJE0U0ehNmWk=
-Date:   Sun, 10 Oct 2021 14:54:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Siou-Jhih, Guo" <hallblazzar@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] staging: r8188eu: Fix misspelling in comment
-Message-ID: <YWLik3BH1ANIzLM8@kroah.com>
-References: <681b368a-d326-ffc6-3a21-ef735ad1ee54@gmail.com>
+        id S232619AbhJJM5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 08:57:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231833AbhJJM5B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 08:57:01 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B6F8C061570;
+        Sun, 10 Oct 2021 05:55:02 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id a25so40171064edx.8;
+        Sun, 10 Oct 2021 05:55:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uxf6d2g9ffV+zwe6N7TVe+9fOiv/YRNPfGxPEDH5JAw=;
+        b=CmRFSQ3ceribCREYPrJtIO/38NeV5PbWTtvEeAb6oUAX6KFxJQ8gZibTkMfHkXUauA
+         8ZCW10ti7de2lcgk6CQj46GtITS6we+wT7Kxk7gbNxGoonhIVAxGZdja0kJj7863E72A
+         DIaZf9W86tUDAL2clsXo7eJND+ZBQ2ZklV8YRPPN2WACO8dOtY17P5AxZlbNHp5x5lNH
+         AYBzXX/Nh6ftUBRKhtjhPhOrdk16lmU4BHQLEE0OP1nr7k9zFvYlFhwh08e+qf9AVDpo
+         DxdKducZ5FanwvmTVYIVA1RsT5HgweF1PY5Grsv4Na2gjVQ9Zcn+twcQ088KZvsSCHdT
+         9+Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uxf6d2g9ffV+zwe6N7TVe+9fOiv/YRNPfGxPEDH5JAw=;
+        b=ohMNjPEWJXtvaeYbBKRNVqDrIcsWG8Hgwq2SMytDP+0yLOlg0PMZ6AR3VoQK6A5hYb
+         xTwcIPHUkuE3gZj+Ldo9B6tYILXABPMeAtbvybZnp/R0NEo3xkCwCbNIKMQodXLYqpHI
+         RSP0IHYQtRivlJbastGbYbBNGecZiMv6arUVtdVWwqN/vftMqzO9jngDOZKiZYWQvrj9
+         GuJAt1uMVZcwGucczqfMW76cuELjVrQq7JfqIdzWzNsWL4DIOJ7gLXOKrYZTbO8Xjpbz
+         1kyLH0ndg64S5iyywe6KuyUnDe5J7CeUjtVYoGF1mdtEeGlzm/8MoflhBv6w6LoO0juf
+         56Aw==
+X-Gm-Message-State: AOAM532X/UrGTVwY23nK8BNyA6N+NFVDPhWUAHrnIa2coriHApJEBuP4
+        G5E9hWkRbRGDEuUl6cwpygQ=
+X-Google-Smtp-Source: ABdhPJyT8k9tf4EVic9k6/FRm8QazOpZmsxcJQ/6LKzJ1mtKmUFh+JZ/goAkhgVU/R3qUBLq4tRxRQ==
+X-Received: by 2002:a50:cd02:: with SMTP id z2mr32351652edi.241.1633870501195;
+        Sun, 10 Oct 2021 05:55:01 -0700 (PDT)
+Received: from skbuf ([188.26.53.217])
+        by smtp.gmail.com with ESMTPSA id z19sm589819ejw.44.2021.10.10.05.55.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 05:55:00 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 15:54:59 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net-next PATCH v4 10/13] dt-bindings: net: dsa: qca8k: document
+ open drain binding
+Message-ID: <20211010125459.evdv4khxcxk5ewiz@skbuf>
+References: <20211010111556.30447-1-ansuelsmth@gmail.com>
+ <20211010111556.30447-11-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <681b368a-d326-ffc6-3a21-ef735ad1ee54@gmail.com>
+In-Reply-To: <20211010111556.30447-11-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 10:10:05PM +0100, Siou-Jhih, Guo wrote:
-> As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
-> looks misspelled by accident. Help fix it.
+On Sun, Oct 10, 2021 at 01:15:53PM +0200, Ansuel Smith wrote:
+> Document new binding qca,power_on_sel used to enable Power-on-strapping
+> select reg and qca,led_open_drain to set led to open drain mode.
+
+Please spend 5 minutes to proof-read your emails before sending. You
+will find tons of spelling mistakes and inconsistencies.
+
+The commit message refers to qca,led_open_drain and qca,power_on_sel
+which are not the names added to the documentation.
+
 > 
-> The original error is as below shows:
-> 
-> CHECK: 'followign' may be misspelled - perhaps 'following'?
-> +Set to 0 (HT pure) under the followign conditions
-> 
-> Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
-> Changes in v3:
->   - Fix wrong signed name in "From" field in email header(mismatch with
->     sign-off).
->   - Refer to the latest commit, ecd667f5f.
->   - Add missing change log between each patch version.
+>  Documentation/devicetree/bindings/net/dsa/qca8k.txt | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> Changes in v2:
->   - Remove redundant "Subject:" from Subject
->   - Fix missing public mail list in cc list
-> ---
->  drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-> index 94e02aad96b7..205168f960f6 100644
-> --- a/drivers/staging/r8188eu/core/rtw_ap.c
-> +++ b/drivers/staging/r8188eu/core/rtw_ap.c
-> @@ -744,7 +744,7 @@ void update_beacon(struct adapter *padapter, u8 ie_id, u8 *oui, u8 tx)
->  
->  /*
->  op_mode
-> -Set to 0 (HT pure) under the followign conditions
-> +Set to 0 (HT pure) under the following conditions
->      - all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
->      - all STAs in the BSS are 20 MHz HT in 20 MHz BSS
->  Set to 1 (HT non-member protection) if there may be non-HT STAs
+> diff --git a/Documentation/devicetree/bindings/net/dsa/qca8k.txt b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> index 05a8ddfb5483..71cd45818430 100644
+> --- a/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> +++ b/Documentation/devicetree/bindings/net/dsa/qca8k.txt
+> @@ -13,6 +13,17 @@ Required properties:
+>  Optional properties:
+>  
+>  - reset-gpios: GPIO to be used to reset the whole device
+> +- qca,ignore-power-on-sel: Ignore power on pin strapping to configure led open
+> +                           drain or eeprom presence. This is needed for broken
+> +                           device that have wrong configuration or when the oem
+
+_devices_ that _have_
+
+> +                           decided to not use pin strapping and fallback to sw
+> +                           regs.
+> +- qca,led-open-drain: Set leds to open-drain mode. This require the
+
+This _requires_
+
+> +                      qca,ignore-power-on-sel to be set or the driver will fail
+> +                      to probe. This is needed if the oem doesn't use pin
+
+oem _prefers_
+
+> +                      strapping to set this mode and prefer to set it using sw
+> +                      regs. The pin strapping related to led open drain mode is
+> +                      the pin B68 for QCA832x and B49 for QCA833x
+>  
+>  Subnodes:
+>  
 > -- 
-> 2.25.1
+> 2.32.0
 > 
-> 
-
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
