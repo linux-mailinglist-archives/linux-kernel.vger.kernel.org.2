@@ -2,124 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D5042841C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 00:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66F0E428424
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 01:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233207AbhJJWvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 18:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S233235AbhJJXO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 19:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbhJJWvI (ORCPT
+        with ESMTP id S232812AbhJJXO4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 18:51:08 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76907C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:49:09 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id y7so3663296pfg.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 15:49:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=8EcW2ShAuYWF0QWBJ5C9v70rQEiQ/Ji8vWsPGRffTa4=;
-        b=tIpCjTWtXKNGQJUpE6NPQfM2QPMkw6oTY7R71q3/D/7RUZDQ+x6ZY9899Lp7OOGdru
-         2uuCSCilLNWMitn+XVpEqCq5xFUErtDMqivNCsdQi5proI88u6r373VQpDPSz11lQfFy
-         Gt/BO7j12Pi5XQb1pRVqi3CPufpn1mZ9h+XvBTGa33EzpLmkd6tv4wvAGF2uU7OO8D13
-         dCS2UAmFLRhCPsqkmRwYffez9C+GBxjZkhuylxs+O4v2YG7NtiM8kN/6EojBYtuCV7MD
-         eku6uoMEDF1jJGVYYS15NaM0vCNZVpn3GuAqfv9yqWh90EUYq3zYZpxQRoAJEwHFOTMT
-         Ehig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=8EcW2ShAuYWF0QWBJ5C9v70rQEiQ/Ji8vWsPGRffTa4=;
-        b=iDyOSt4BKe1xwgKlvQLOSGCefJj0m53c+vpp3Nfrl6p5spnioWcv+Bdo6FqkmyhcMe
-         5B/0UtLeTBVLNxiVIU+saBTImPfmMDsjISn25GoZC4T92feHwUiRfv0LmR/TF/Yp3lAB
-         FvAqLezQlNhQPA45CtX4nDMtZJWJY+kbuL1MPaXJS8VURpWD6SqQDX6gKGai9f+pVIbR
-         Ra9XnipEszj8aj20rE5EnrLJsm0pdbhO7lm5E38f4ogFhDC0ysDttmr6gdrXGlq0ahg4
-         JkAg5ToAaPcSe5zX00zcDxRRN2H+ldW89aoCtD0FMqs9T5eQnPRrO7tb2Og/L7ws9rHe
-         76qQ==
-X-Gm-Message-State: AOAM531Gi9hKEx2QRAVXoCRvdNovhE2AJxx70r3r0btmAlnHWAOJmtfG
-        uU1ZIS7wPE6/Ir4WOT6q5XcszQ==
-X-Google-Smtp-Source: ABdhPJwlNO90Xh8cmYucSShJXLf+PIqFNTI8K4kHV+potciLWvaDJvnKsgMzBGTjNB2bPrBOAzjYsg==
-X-Received: by 2002:a05:6a00:230e:b0:44c:4f2d:9b00 with SMTP id h14-20020a056a00230e00b0044c4f2d9b00mr22150072pfh.24.1633906148786;
-        Sun, 10 Oct 2021 15:49:08 -0700 (PDT)
-Received: from [2620:15c:17:3:3280:1d46:7d55:1fbb] ([2620:15c:17:3:3280:1d46:7d55:1fbb])
-        by smtp.gmail.com with ESMTPSA id u24sm5403060pfm.85.2021.10.10.15.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 15:49:08 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 15:49:07 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>
-cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm, slub: Use prefetchw instead of prefetch
-In-Reply-To: <20211008133602.4963-1-42.hyeyoo@gmail.com>
-Message-ID: <30a76d87-e0af-3eec-d095-d87e898b31cf@google.com>
-References: <20211008133602.4963-1-42.hyeyoo@gmail.com>
+        Sun, 10 Oct 2021 19:14:56 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 329E6C061570;
+        Sun, 10 Oct 2021 16:12:57 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSHlR526lz4xbX;
+        Mon, 11 Oct 2021 10:12:51 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633907572;
+        bh=r4GrcWgdPshNlgLFAN2ew38xMvBogldJEh6Jwj6T4Lo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=plD333k2zZ919Oksf26N01S6htufeT8J3HDCkLm8P7ymey7KTvhr02P4CdtHxAWch
+         pNflSwq9jbshGs95iqi3wy5o5MkbSf4gEygRqU8ahV9erh7MEJOmwqzg67mePyBPX2
+         NX6iiCuMgGLcdbwTh375JwvSS4bjTEZ9E4S+jxKPT4wEP7znUGxdBkHW0dxTSYO3ZA
+         j8x4l9fJZ6rgV11L4G6WC798RPx7ryFm59QfQwtaEeC6aOZvNPjXmBc+KWxZ9aASpc
+         0asN71yuFSyZgJyAwiBvLDDQ3g7mM6OprhA1s9W8qkbcAUP8IfGeV9W5Y3yNxCwGQr
+         u8V3uvguJgfLQ==
+Date:   Mon, 11 Oct 2021 10:12:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the pci tree
+Message-ID: <20211011101250.11902b31@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/signed; boundary="Sig_/ZQ0r+/uMtE58Xit7vKdYfVj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021, Hyeonggon Yoo wrote:
+--Sig_/ZQ0r+/uMtE58Xit7vKdYfVj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> It's certain that an object will be not only read, but also
-> written after allocation.
-> 
+Hi all,
 
-Why is it certain?  I think perhaps what you meant to say is that if we 
-are doing any prefetching here, then access will benefit from prefetchw 
-instead of prefetch.  But it's not "certain" that allocated memory will be 
-accessed at all.
+After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-> Use prefetchw instead of prefetchw. On supported architecture
+ERROR: modpost: "dw_pcie_ep_reset_bar" [drivers/pci/controller/dwc/pcie-qco=
+m-ep.ko] undefined!
+ERROR: modpost: "dw_pcie_ep_raise_msi_irq" [drivers/pci/controller/dwc/pcie=
+-qcom-ep.ko] undefined!
+ERROR: modpost: "dw_pcie_ep_raise_legacy_irq" [drivers/pci/controller/dwc/p=
+cie-qcom-ep.ko] undefined!
 
-If we're using prefetchw instead of prefetchw, I think the diff would be 
-0 lines changed :)
+Caused by commit
 
-> like x86, it helps to invalidate cache line when the object exists
-> in other processors' cache.
-> 
-> Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
-> ---
->  mm/slub.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 3d2025f7163b..2aca7523165e 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -352,9 +352,9 @@ static inline void *get_freepointer(struct kmem_cache *s, void *object)
->  	return freelist_dereference(s, object + s->offset);
->  }
->  
-> -static void prefetch_freepointer(const struct kmem_cache *s, void *object)
-> +static void prefetchw_freepointer(const struct kmem_cache *s, void *object)
->  {
-> -	prefetch(object + s->offset);
-> +	prefetchw(object + s->offset);
->  }
->  
->  static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
-> @@ -3195,10 +3195,9 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->  			note_cmpxchg_failure("slab_alloc", s, tid);
->  			goto redo;
->  		}
-> -		prefetch_freepointer(s, next_object);
-> +		prefetchw_freepointer(s, next_object);
->  		stat(s, ALLOC_FASTPATH);
->  	}
-> -
->  	maybe_wipe_obj_freeptr(s, object);
->  	init = slab_want_init_on_alloc(gfpflags, s);
->  
-> -- 
-> 2.27.0
-> 
-> 
+  3872e6f0544f ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver=
+")
+
+I have used the pci tree from next-20211008 fot today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZQ0r+/uMtE58Xit7vKdYfVj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFjc3IACgkQAVBC80lX
+0GyO2QgAjV4gmDCOEw+EtCFZoOfOazl7NZQ4ttI0l6Sdz/2V8lF8/fc5hDAZ2crm
+3KapfaB93lHG4ai75gs0fEAZRtU7Ry9tnyICbdyenuNjoieD1LmEzM0olH6puaYV
+u2vWMgR1U3UkVMEvRDpiCn/2csRd+pkBhi57Yfm5hJd2GlW0ieOuFZPanrV5x0HR
+G0wnCYhNWMaqJvw1ArB/NVvOqSFyj+D7Cfwc2ebOwLRhaNNN+td6n1vKeckH8Tc1
+hpNGTu6+UVQQu07rh9JvxUXEpQbyzBmgDUNWpSi+gFY5jfbmny3YATge0CoejicL
+4cyJ/0asRvzvhGeEKp9w6/8GmS0DjQ==
+=g/5v
+-----END PGP SIGNATURE-----
+
+--Sig_/ZQ0r+/uMtE58Xit7vKdYfVj--
