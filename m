@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6ED42805E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 12:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D28F428070
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 12:22:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231404AbhJJKCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 06:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbhJJKC3 (ORCPT
+        id S231523AbhJJKXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 06:23:51 -0400
+Received: from www381.your-server.de ([78.46.137.84]:33124 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231508AbhJJKXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 06:02:29 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11899C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 03:00:31 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id g2so13855330ild.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 03:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fxU9s++4m8Jcx7P0Dv5tNUg+Qx08M5zlGy6Sk47Zz8I=;
-        b=O+LJ7te8Zvt/npubcIUEUwNHBUl0AdKm0bmpnzPADGd6LrJKt8Ley5uZRFKMkU1o7I
-         QG75dji0Azv8QGYwc5qDDavvS7gt30ZBXNocpWVLaDfHyHWzmCIkjN7nsD+DhPVtIikQ
-         DFazb+nHcTPDEyKMNLPT2Bi1pngIS8lcHwKxQuvzCI7j7ozZWDsK86CH0p5yau5F3OHk
-         mJxcB5yTwt686G4PvokWViJS4p2da8HYnRcv9HvHyyKyh5mhY/SI49EByNJqoC0G+dF9
-         AMXNu53gDhiHR2npCQrDrW475wq07NPaNZyXrnO8pt3YKrDaeomv4d17tSCW463jFiYa
-         mi7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fxU9s++4m8Jcx7P0Dv5tNUg+Qx08M5zlGy6Sk47Zz8I=;
-        b=SGsz+7cTQWokHfToV1sC4ppZ7Ro3paBZiZ8JnCn1sxW0MF4RKIqNZiaX9VVINYfgUv
-         699fG/ukhfjnwBp6PD18VGnP4RGNh3bDxt2H7Ikd2OwdvQTIRFrk3KuZPRNUPpSInqqE
-         Rbx9/Nt4ppLhfCwtZxgEDe+qwXLXo/S7rC0jw74g8Q2PoLzFtyH5v2oIjIFn+5tMNzfU
-         wt9M9+BF8o13ayefQ05R6nCmefC0Wuw/ysNle7Qb3/Km2ki/gAjUOs0IdoXgE0m2QzBM
-         WACuIWicrePi4SQpKPxTfOhRM6U35VrYzRb0bXFdDiFYZDhrEXIdOtFQqd52+p1dr+Ia
-         6upw==
-X-Gm-Message-State: AOAM530pN6EoNICJubhjL7HQUlY6njZaPBbMWkjO19mGnrciR+AzT3JJ
-        tyFXe2w1KhfEx3OLgQKE/bbWu92U9qIL8n1UPYyivXNDjJz3pg==
-X-Google-Smtp-Source: ABdhPJwyWhk0bYjC6JKVP3ScNHzxqFJSDsg+sYpSQZuawDUax5pO+suS5WBoYCPey0SgIu5r52xcqGJQ0WNHjVneGso=
-X-Received: by 2002:a05:6e02:1cab:: with SMTP id x11mr15386541ill.254.1633860030232;
- Sun, 10 Oct 2021 03:00:30 -0700 (PDT)
+        Sun, 10 Oct 2021 06:23:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=c46M9ZL4PHoGNLaSjDTPmoqEixflkJdQTjuXl7mlxts=; b=NdYv0K/aMeVYKrxzSSA1vU9q8h
+        EuuOtDYr7Pb19hoo9Wh7KOb46hG/bqQL66SdBNWJBkDaaRptisfD5Yr+yoNxiEK6XxEE8szPf0VCD
+        vFSVt16n4Jmkft4R6A2oXzimNAd11E4qCtuHfg3x9I2KY4XCthawPdRAYfLAPIzm11S0Vfaanf/UG
+        KPe1EpvkLXzzH4Htx0N91C2XE4EqIUU8DBBi+E8gF9qVe1hnEY2hvLU1PnSbFiPCLxztANcmjNBaX
+        Q6MiGe8wF3HCYEjDj917rX91fKaw3sKw0b85fvEAlW5ShEJWp6xxfqi6QFpn3OfwKoV5z8QiUoUsy
+        xUyePzIg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1mZVfn-0004Gm-Hh; Sun, 10 Oct 2021 12:03:15 +0200
+Received: from [82.135.83.71] (helo=[192.168.178.20])
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1mZVfn-000StH-A7; Sun, 10 Oct 2021 12:03:15 +0200
+Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Fix an array overflow in
+ st_lsm6dsx_set_odr()
+To:     Teng Qi <starmiku1207184332@gmail.com>,
+        lorenzo.bianconi83@gmail.com, jic23@kernel.org
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        islituo@gmail.com, baijiaju1990@gmail.com,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+References: <20211010091230.895549-1-starmiku1207184332@gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <8efeaffd-ae9a-d0ef-0222-6c94c0e31e7e@metafoo.de>
+Date:   Sun, 10 Oct 2021 12:03:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <202110100928.bK8nPf4x-lkp@intel.com>
-In-Reply-To: <202110100928.bK8nPf4x-lkp@intel.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sun, 10 Oct 2021 17:59:54 +0800
-Message-ID: <CALOAHbAo91dYPtHFH8E9cXPbn-pY960z06908-twAMb1xWUM_A@mail.gmail.com>
-Subject: Re: [tip:sched/core 13/47] kernel/sched/core.c:10400:42: error:
- variable 'stats' set but not used
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, LKML <linux-kernel@vger.kernel.org>,
-        x86 <x86@kernel.org>, Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20211010091230.895549-1-starmiku1207184332@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.103.3/26318/Sun Oct 10 10:18:47 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 9:38 AM kernel test robot <lkp@intel.com> wrote:
+On 10/10/21 11:12 AM, Teng Qi wrote:
+> The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
+> variable whose value is between 0 and 5.
+> However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
+>   switch (sensor->id) {
 >
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-> head:   b2d5b9cec60fecc72a13191c2c6c05acf60975a5
-> commit: ceeadb83aea28372e54857bf88ab7e17af48ab7b [13/47] sched: Make struct sched_statistics independent of fair sched class
-> config: microblaze-buildonly-randconfig-r002-20211010 (attached as .config)
-> compiler: microblaze-linux-gcc (GCC) 11.2.0
-> reproduce (this is a W=1 build):
+> If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
+> function st_lsm6dsx_check_odr():
+>    odr_table = &sensor->hw->settings->odr_table[sensor->id];
+>
+> and in function st_lsm6dsx_set_odr():
+>    reg = &hw->settings->odr_table[ref_sensor->id].reg;
+>
+> To fix this possible array overflow, ref_sensor->id should be checked
+> first. If it is greater than or equal to 2, the function
+> st_lsm6dsx_set_odr() returns -EINVAL.
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+> Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
 
-It is a  W=1 warning.
-It seems that we don't need to fix the warning.
+Hi,
 
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?id=ceeadb83aea28372e54857bf88ab7e17af48ab7b
->         git remote add tip https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
->         git fetch --no-tags tip sched/core
->         git checkout ceeadb83aea28372e54857bf88ab7e17af48ab7b
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross ARCH=microblaze
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    kernel/sched/core.c: In function 'ttwu_stat':
->    kernel/sched/core.c:3482:20: error: variable 'rq' set but not used [-Werror=unused-but-set-variable]
->     3482 |         struct rq *rq;
->          |                    ^~
->    kernel/sched/core.c: In function 'cpu_cfs_stat_show':
-> >> kernel/sched/core.c:10400:42: error: variable 'stats' set but not used [-Werror=unused-but-set-variable]
->    10400 |                 struct sched_statistics *stats;
->          |                                          ^~~~~
->    cc1: all warnings being treated as errors
->
->
-> vim +/stats +10400 kernel/sched/core.c
->
->  10389
->  10390  static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
->  10391  {
->  10392          struct task_group *tg = css_tg(seq_css(sf));
->  10393          struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
->  10394
->  10395          seq_printf(sf, "nr_periods %d\n", cfs_b->nr_periods);
->  10396          seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
->  10397          seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
->  10398
->  10399          if (schedstat_enabled() && tg != &root_task_group) {
->  10400                  struct sched_statistics *stats;
->  10401                  u64 ws = 0;
->  10402                  int i;
->  10403
->  10404                  for_each_possible_cpu(i) {
->  10405                          stats = __schedstats_from_se(tg->se[i]);
->  10406                          ws += schedstat_val(stats->wait_sum);
->  10407                  }
->  10408
->  10409                  seq_printf(sf, "wait_sum %llu\n", ws);
->  10410          }
->  10411
->  10412          seq_printf(sf, "nr_bursts %d\n", cfs_b->nr_burst);
->  10413          seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
->  10414
->  10415          return 0;
->  10416  }
->  10417  #endif /* CONFIG_CFS_BANDWIDTH */
->  10418  #endif /* CONFIG_FAIR_GROUP_SCHED */
->  10419
->
+Thanks for the patch, good catch. But there are a few things to improve 
+here, the goal should not be to silence the output of your checker, but 
+to write good code.
+
+Let's start with ST_LSM6DSX_ID_MAX. As the name suggests this is an 
+entry at the end of the enum that is used to get the size of the enum. 
+But its value itself is never assigned to any variable of that type. 
+This is a very common pattern. So strictly speaking there is no bug, 
+since the out-of-range value of ST_LSM6DSX_ID_MAX is never used.
+
+The other thing is that we usually don't want to hardcode range checks 
+for array sizes with integer literals, but rather use ARRAY_SIZE() 
+instead. This makes sure that the code stays correct when the array size 
+changes.
+
+If you really wanted to modify the code sot that your code checker does 
+not detect a false positive I'd modify the switch statement to 
+explicitly handle ST_LSM6DSX_ID_GYRO and ST_LSM6DSX_ID_ACCEL and the 
+return an error for the default case with a comment that default case 
+should never occur.
+
+- Lars
+
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>   drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> index db45f1fc0b81..edf5d33dd256 100644
+> --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+> @@ -1308,6 +1308,10 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+>   		break;
+>   	}
+>   
+> +	if (ref_sensor->id >= 2) {
+> +		return -EINVAL;
+> +	}
+> +
+>   	if (req_odr > 0) {
+>   		err = st_lsm6dsx_check_odr(ref_sensor, req_odr, &val);
+>   		if (err < 0)
 
 
-
--- 
-Thanks
-Yafang
