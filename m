@@ -2,294 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847E44281F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3D0428201
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 16:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232527AbhJJOq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 10:46:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231990AbhJJOqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 10:46:53 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A355D6109E;
-        Sun, 10 Oct 2021 14:44:52 +0000 (UTC)
-Date:   Sun, 10 Oct 2021 15:48:56 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Mihail Chindris <mihail.chindris@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>,
-        <alexandru.ardelean@analog.com>, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
-Message-ID: <20211010154856.29f4fd11@jic23-huawei>
-In-Reply-To: <20211008123909.1901-2-mihail.chindris@analog.com>
-References: <20211008123909.1901-1-mihail.chindris@analog.com>
-        <20211008123909.1901-2-mihail.chindris@analog.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S232707AbhJJO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 10:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhJJO6C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 10:58:02 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE974C061570;
+        Sun, 10 Oct 2021 07:56:03 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id k2-20020a056830168200b0054e523d242aso8772709otr.6;
+        Sun, 10 Oct 2021 07:56:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I4jCJS90Gz2JHsm2ZZk4sJXD8ATVF4qZO2QfZKsg3r4=;
+        b=WfmXYTZRRkJH6iit/65AqwC0WYNTURSv/Q2i3Zp431s7HsDVv8ztvnWn3NemmnGrZL
+         67MpeihXd7KOGDYNw7Cz7DHq5X+SyoqHiCW62HIyxSRvV/CeYYFJo8MnPDPd48OHKCxj
+         T2k5V23ZP2c0nxCEYY4+jiEHTQnLOE5boxU6J8bKLx5/OCVRcoSwt6tKJE4yYZYPl76H
+         j5SXvdI/bu6AF2pMY/tOaOWxV7SLXRfGej0foJPO44CXUie3HYhZKUxGT/7p+0QDDfzN
+         o0brkGAW2GblDSDWf9FUtg542mTUm8HEx72uxbH+7plMnTOo9s/NCZuu7p1CAHY0gqxH
+         m17g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I4jCJS90Gz2JHsm2ZZk4sJXD8ATVF4qZO2QfZKsg3r4=;
+        b=wRNUMtnJ/AHxhvIpyyws4/qbKgXMrggrVI4v4OhaLDPxUlm4b1gU9xJ17asXmxN+/8
+         9TbDyCjVge/ftXDaHMYemm+VWnGMceMPN81smYseJ1pde8wqw6tOe5TIa24AiYLdn2h4
+         wQaObCdbsN57w3CfaaLtba6vUNhu+bpZWC8jo0+HIldW/e1VkoOn6yNng8PaQes+/X8/
+         gbcwIznrWEGCDaUZ7l5aFtG8A551ay92ASRFWY73PLPABv/vDS0SGkbxjAL7CrqciGis
+         5h1ZYxsvyJmHKovwgpBrf7Vzydug5lCgVl90ZGxuv0uzvLEMCMKxB1JtPJViHYQyrcjP
+         /7IQ==
+X-Gm-Message-State: AOAM531diBz9V+SQABUtsEafSe02avZAAsHRpWb+BJOOICo5GV7q3al5
+        7579echM6/Awu4SsFzgl1xo1mOwWhtk=
+X-Google-Smtp-Source: ABdhPJzch+nEh1pNMCUTu9ExCIkHHYBA9h67AL2r4gVVdGqs2W64v6E0D/58zcgZ2vBz0JJxsAPyvQ==
+X-Received: by 2002:a05:6830:2805:: with SMTP id w5mr17480753otu.248.1633877762504;
+        Sun, 10 Oct 2021 07:56:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n13sm1183953otf.3.2021.10.10.07.56.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 07:56:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <thomas@t-8ch.de>
+Cc:     Denis Pauk <pauk.denis@gmail.com>, eugene.shalygin@gmail.com,
+        andy.shevchenko@gmail.com, Ed Brindley <kernel@maidavale.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20211010095216.25115-1-pauk.denis@gmail.com>
+ <20211010095216.25115-3-pauk.denis@gmail.com>
+ <0a037ce5-87bb-4aad-a30a-d954ff0910a7@t-8ch.de>
+ <7658358e-5ba6-b764-463c-317f5b318707@roeck-us.net>
+ <13b23940-88d9-4c72-a55b-a66e8c8edffb@t-8ch.de>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v3 2/2] hwmon: (asus_wmi_sensors) Support X370 Asus WMI.
+Message-ID: <e25063b9-634b-3f56-bcaf-77d8526b9a67@roeck-us.net>
+Date:   Sun, 10 Oct 2021 07:56:00 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <13b23940-88d9-4c72-a55b-a66e8c8edffb@t-8ch.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 12:39:08 +0000
-Mihail Chindris <mihail.chindris@analog.com> wrote:
-
-> Add documentation for ad3552r
+On 10/10/21 7:10 AM, Thomas Weißschuh wrote:
+> On 2021-10-10T06:38-0700, Guenter Roeck wrote:
+>> On 10/10/21 3:20 AM, Thomas Weißschuh wrote:
+>>> Hi,
+>>>
+>>> for WMI drivers the list platform-driver-x86@vger.kernel.org should probably be
+>>> on CC too.
+>>> Also all other WMI drivers, even for hwmon stuff are located in
+>>> drivers/platform/x86 so it may be better to put it there, too.
+>>>
+>>
+>> Not really. If any of those other drivers are pure hwmon drivers, they
+>> should reside in drivers/hwmon instead. And, yes, that really includes
+>> the gigabyte-wmi driver. We don't have arbitrary drivers in drivers/pci
+>> either just because they are drivers for pci devices.
 > 
-> Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>
-Hi Mihael,
-
-A few comments inline.
-
-Thanks,
-
-Jonathan
-
-> ---
->  .../bindings/iio/dac/adi,ad3552r.yaml         | 199 ++++++++++++++++++
->  1 file changed, 199 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+> Fair enough.
+> I suppose it would be too much churn to move gigabyte-wmi to
+> hwmon now though, correct?
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> new file mode 100644
-> index 000000000000..1086e935d330
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> @@ -0,0 +1,199 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020 Analog Devices Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad3552r.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD2552R DAC device driver
-> +
-> +maintainers:
-> +  - Mihail Chindris <mihail.chindris@analog.com>
-> +
-> +description: |
-> +  Bindings for the Analog Devices AD3552R  DAC device. Datasheet can be
 
-Extra space before DAC, and doesn't mention the other supported part.
-One option to avoid a never ending list is "and similar."
+Is it ? I don't recall the reason why it was added to drivers/platform/x86
+in the first place. I see other single-use wmi drivers in that directory
+as well (eg xiaomi-wmi, which should be in input). Is there some unwritten
+rule stating that all wmi drivers shall reside in drivers/platform/x86,
+no matter what subsystem they touch ?
 
-> +  found here:
-> +    https://www.analog.com/media/en/technical-documentation/data-sheets/ad3552r.pdf
+> Having the platform-driver-x86 on Cc would still be useful as they can provide
+> guidance about using the ACPI/WMI/platform APIs.
+> 
 
-Good to have datasheet for the other part as well as I don't think this is a shared
-datasheet?
+Sure, but that is unrelated to the driver location, and the opposite argument
+can be made as well (that drivers implementing subsystem code should be reviewed
+by subsystem maintainers). That is a much stronger argument in my opinion.
 
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad3552r
-> +      - adi,ad3542r
+Guenter
 
-Alphabetical order preferred.
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  spi-max-frequency:
-> +    maximum: 30000000
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  ldac-gpios:
-> +    description: |
-> +      If a LDAC gpio is specified it will generate a LDAC pulse each time the
-> +      trigger handler sends data to the chip.
-
-Trigger handler is a linux concept. You need to write this more generically.
-Something like.
-
-"LDAC pin is used as a hardware trigger to update a set of DACs."
-
-
-> +    maxItems: 1
-> +
-> +  vref-supply:
-> +    description:
-> +      The regulator to use as an external reference. If it does not exists the
-> +      internal reference will be used. External reference must be 2.5V
-> +
-> +  adi,vref-out-en:
-> +    description: Vref I/O driven by internal vref to 2.5V. If not set, Vref pin
-> +      will be floating.
-> +    type: boolean
-> +
-> +  adi,sdo-drive-strength:
-> +    description: |
-> +      Configure SDIO0 and SDIO1 strength levels:
-> +        - 0: low SDO drive strength.
-> +        - 1: medium low SDO drive strength.
-> +        - 2: medium high SDO drive strength.
-> +        - 3: high SDO drive strength
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [0, 1, 2, 3]
-> +
-> +patternProperties:
-> +  "^channel@([0-1])$":
-> +    type: object
-> +    description: Configurations of the DAC Channels
-> +    properties:
-> +      reg:
-> +          description: Channel number
-> +          enum: [0, 1]
-> +
-> +      custom-output-range-config:
-
-Not a generic property so I think this needs an adi prefix.
-
-> +        type: object
-> +        description: Configuration of custom range when
-> +          adi,output-range-microvolt is not present.
-> +          The formulas for calculation the output voltages are
-> +            Vout_fs = 2.5 + [(GainN + Offset/1024) * 2.5 * Rfbx * 1.03]
-> +            Vout_zs = 2.5 - [(GainP + Offset/1024) * 2.5 * Rfbx * 1.03]
-> +        properties:
-> +          adi,gain-offset:
-> +            description: Gain offset used in the above formula
-> +            $ref: /schemas/types.yaml#/definitions/int32
-> +            maximum: 511
-> +            minimum: -511
-> +          adi,gain-scaling-p:
-> +            description: |
-> +              Scaling p:
-> +               0: 1.0
-> +               1: 0.5
-> +               2: 0.25
-> +               3: 0.125
-
-Given this is just a mapping to a simple set of values, could we just have
-the values or express it as 1/(2^GainP) in the equation above and call it
-adi,gain-scalling-inv-log2 or something like that?
-
-If we can avoid a mapping table that is always a nice to have
-
-
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            enum: [0, 1, 2, 3]
-> +          adi,gain-scaling-n:
-> +            description: |
-> +              Scaling p:
-> +               0: 1.0
-> +               1: 0.5
-> +               2: 0.25
-> +               3: 0.125
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +            enum: [0, 1, 2, 3]
-> +          adi,rfb-ohms:
-> +            description: Feedback Resistor
-> +        required:
-> +          - adi,gain-offset
-> +          - adi,gain-sacling-p
-> +          - adi,gain-sacling-n
-> +          - adi,rfb-ohms
-> +    required:
-> +      - reg
-> +
-> +    oneOf:
-> +      # If adi,output-range is missing, custom-output-range-config must be used
-
-adi,output-range-microvolt is missing...
-
-> +      - required:
-> +        - adi,output-range-microvolt
-> +      - required:
-> +        - custom-output-range-config
-> +
-> +allOf:
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: adi,ad3542r
-> +    then:
-> +      patternProperties:
-> +        "^channel@([0-1])$":
-> +          type: object
-> +          properties:
-> +            adi,output-range-microvolt:
-> +              description: |
-> +                Voltage output range of the channel as <minimum, maximum>
-> +                Required connections:
-> +                  Rfb1x for: 0 to 2.5 V; 0 to 3V; 0 to 5 V;
-> +                  Rfb2x for: 0 to 10 V; 2.5 to 7.5V; -5 to 5 V;
-> +              oneOf:
-> +                - items:
-> +                    - const: 0
-> +                    - enum: [2500000, 3000000, 5000000, 10000000]
-> +                - items:
-> +                    - const: -2500000
-> +                    - const: 7500000
-> +                - items:
-> +                    - const: -5000000
-> +                    - const: 5000000
-> +          required:
-> +            - adi,output-range-microvolt
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: adi,ad3552r
-> +    then:
-> +      patternProperties:
-> +        "^channel@([0-1])$":
-> +          type: object
-> +          properties:
-> +            adi,output-range-microvolt: |
-> +                Voltage output range of the channel as <minimum, maximum>
-> +                Required connections:
-> +                  Rfb1x for: 0 to 2.5 V; 0 to 5 V;
-> +                  Rfb2x for: 0 to 10 V; -5 to 5 V;
-> +                  Rfb4x for: -10 to 10V
-> +              oneOf:
-> +                - items:
-> +                    - const: 0
-> +                    - enum: [2500000, 5000000, 10000000]
-> +                - items:
-> +                    - const: -5000000
-> +                    - const: 5000000
-> +                - items:
-> +                    - const: -10000000
-> +                    - const: 10000000
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - spi-max-frequency
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    ad3552r {
-> +            compatible = "adi,ad3552r";
-> +            reg = <0>;
-> +            spi-max-frequency = <20000000>;
-> +            channel@0 {
-> +                    reg = <0>;
-> +                    adi,output-range-microvolt = <0 10000000>;
-> +            };
-> +            channel@1 {
-> +                    reg = <1>;
-> +                    custom-output-range-config {
-> +                            adi,gain-offset = <5>;
-> +                            adi,gain-scaling-p = <1>;
-> +                            adi,gain-scaling-n = <2>;
-> +                            adi,rfb-ohms = <1>;
-> +                    };
-> +          };
-> +      };
-> +...
+> For example by using the WMI bus as mentioned in my other mail would allow
+> to completely remove the manually maintained DMI list and instead directly bind
+> to the WMI GUID for any device that supports this GUID.
+> (This is possible as this WMI API seems to be self-describing, so all
+> specific parameters can be discovered by the driver)
+> 
+> Thomas
+> 
 
