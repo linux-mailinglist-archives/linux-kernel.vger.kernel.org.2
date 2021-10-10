@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21BD427F70
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 08:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A699D427F75
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 09:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhJJG6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 02:58:25 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:63507 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhJJG6K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 02:58:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1633848973; x=1665384973;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=etwVVuZuUkG6awoP/rSKVgKfSupqLMPX6Kk+2INZpPM=;
-  b=lXW8IPmCtR9ZvbMgIbRWMWgCUDM5k46yfC1xoo9p3X1Lk7b2djS1WGpq
-   Ayjb3MP6QI1VG53uJSrZ+d67O2LIASF/AAXUEjI2GKqZn1LgUYd0my/MG
-   OIM10Dqwa58BWM85sSi0CTPlZjfL5eZspea2mMV5N7U9IMc7qbczrHG8O
-   Q=;
-X-IronPort-AV: E=Sophos;i="5.85,362,1624320000"; 
-   d="scan'208";a="143534706"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-a264e6fe.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 10 Oct 2021 06:56:04 +0000
-Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2c-a264e6fe.us-west-2.amazon.com (Postfix) with ESMTPS id 6F91441EDB;
-        Sun, 10 Oct 2021 06:56:03 +0000 (UTC)
-Received: from [192.168.22.40] (10.43.160.215) by EX13D19EUB003.ant.amazon.com
- (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Sun, 10 Oct
- 2021 06:55:55 +0000
-Message-ID: <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
-Date:   Sun, 10 Oct 2021 09:55:49 +0300
+        id S230370AbhJJHCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 03:02:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229697AbhJJHB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 03:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 486AA60F9D;
+        Sun, 10 Oct 2021 07:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633849201;
+        bh=IwnNOrz5seXBx4GJflM5rnye6dM754sH681Dnay32OI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HSTWNjjGve+8OiRUv8wlP7d/V1F2p1jHm3jtCvaqzsLW2dgEwlFo3eErjMjkK1vKi
+         x1OMsgif4Z/xUMI+m735yxoVcx2YPaLD1qBERjts1/wlZ1YODTANAIxp/l9sGmYGeL
+         42SoFDn6IOC8dTa+T4E5W1/zDA6XNrYA9QkU0Q9pkua/3V5/2hda2NIo3Zgm5Co2C5
+         eNDboSrNzmQ1DZrNmZV0li+r/CUN2KfRCZWXD0Otx7aZnieELEzReLHGA18YZ7KkMT
+         JA6l4WEx9nLMpiXx3wSCpTyt8fdvFb6lslRG7mz0M1fprL5RKg/6bThXnZagD9QP6R
+         R8Gy06k2MC1RA==
+Date:   Sun, 10 Oct 2021 09:59:56 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     lee.jones@linaro.org, hdegoede@redhat.com, mgross@linux.intel.com,
+        bhelgaas@google.com, gregkh@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, srinivas.pandruvada@intel.com,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 2/5] platform/x86/intel: Move intel_pmt from MFD to
+ Auxiliary Bus
+Message-ID: <YWKPbEu0k5RiwWYi@unreal>
+References: <20211001012815.1999501-1-david.e.box@linux.intel.com>
+ <20211001012815.1999501-3-david.e.box@linux.intel.com>
+ <YV1lTMwBSVlvadiG@unreal>
+ <668f263e1d2606ad7485c40ce41933300ec4b8a3.camel@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
- <20211007114018.GD2688930@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-In-Reply-To: <20211007114018.GD2688930@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.215]
-X-ClientProxiedBy: EX13D39UWB004.ant.amazon.com (10.43.161.148) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <668f263e1d2606ad7485c40ce41933300ec4b8a3.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/10/2021 14:40, Jason Gunthorpe wrote:
-> On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
+On Wed, Oct 06, 2021 at 01:58:22PM -0700, David E. Box wrote:
+> On Wed, 2021-10-06 at 11:58 +0300, Leon Romanovsky wrote:
+> > On Thu, Sep 30, 2021 at 06:28:12PM -0700, David E. Box wrote:
+> > > Intel Platform Monitoring Technology (PMT) support is indicated by presence
+> > > of an Intel defined PCIe DVSEC structure with a PMT ID. However DVSEC
+> > > structures may also be used by Intel to indicate support for other
+> > > capabilities unrelated to PMT.  The Out Of Band Management Services Module
+> > > (OOBMSM) is an example of a device that can have both PMT and non-PMT
+> > > capabilities. In order to support these capabilities it is necessary to
+> > > modify the intel_pmt driver to handle the creation of platform devices more
+> > > generically. To that end the following changes are made.
+> > > 
+> > > Convert the driver and child drivers from MFD to the Auxiliary Bus. This
+> > > architecture is more suitable anyway since the driver partitions a
+> > > multifunctional PCIe device. This also moves the driver out of the MFD
+> > > subsystem and into platform/x86/intel.
+> > > 
+> > > Before, devices were named by their capability (e.g. pmt_telemetry).
+> > > Instead, generically name them by their capability ID (e.g.
+> > > intel_extended_cap.2). This allows the IDs to be created automatically,
+> > > minimizing the code needed to support future capabilities. However, to
+> > > ensure that unsupported devices aren't created, use an allow list to
+> > > specify supported capabilities. Along these lines, rename the driver from
+> > > intel_pmt to intel_extended_caps to better reflect the purpose.
+> > > 
+> > > Signed-off-by: David E. Box <david.e.box@linux.intel.com>
+> > > ---
+> > > 
+> > > V1:     New patch. However incorporates some elements of [1] which was
+> > >         dropped. Namely enumerating features generically and creating an
+> > >         allow list. Also cleans up probe by moving some code to functions
+> > >         and using a bool instead of an int to track whether a device was
+> > >         added.
+> > > 
+> > > [1] https://lore.kernel.org/all/20210922213007.2738388-3-david.e.box@linux.intel.com/
+> > 
+> > <...>
+> > 
+> > > +static int extended_caps_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > > +{
+> > > +       struct extended_caps_platform_info *info;
+> > > +       bool have_devices = false;
+> > > +       unsigned long quirks = 0;
+> > > +       int ret;
+> > > +
+> > > +       ret = pcim_enable_device(pdev);
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       info = (struct extended_caps_platform_info *)id->driver_data;
+> > 
+> > pci_get_drvdata() in all places and no need to cast void *.
 > 
->> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
->>  	return 0;
->>  }
->>  
->> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
->> -			 u64 virt_addr, int access_flags,
->> -			 struct ib_udata *udata)
->> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
->> +{
->> +	WARN_ON_ONCE(1,
->> +		     "Invalidate callback should not be called when memory is pinned\n");
->> +}
->> +
->> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
->> +	.allow_peer2peer = true,
->> +	.move_notify = efa_dmabuf_invalidate_cb,
->> +};
-> 
-> Shouldn't move_notify really just be left as NULL? I mean fixing
-> whatever is preventing that?
+> This is coming from the id not the pdev. The data here is type kernel_ulong_t.
 
-That's what I had in the previous RFC and I think Christian didn't really like it.
+Ohh, this is very unusual.
 
->> +struct ib_mr *efa_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 start,
->> +				     u64 length, u64 virt_addr,
->> +				     int fd, int access_flags,
->> +				     struct ib_udata *udata)
->> +{
->> +	struct efa_dev *dev = to_edev(ibpd->device);
->> +	struct ib_umem_dmabuf *umem_dmabuf;
->> +	struct efa_mr *mr;
->> +	int err;
->> +
->> +	mr = efa_alloc_mr(ibpd, access_flags, udata);
->> +	if (IS_ERR(mr)) {
->> +		err = PTR_ERR(mr);
->> +		goto err_out;
->> +	}
->> +
->> +	umem_dmabuf = ib_umem_dmabuf_get(ibpd->device, start, length, fd,
->> +					 access_flags, &efa_dmabuf_attach_ops);
->> +	if (IS_ERR(umem_dmabuf)) {
->> +		ibdev_dbg(&dev->ibdev, "Failed to get dmabuf[%d]\n", err);
->> +		err = PTR_ERR(umem_dmabuf);
->> +		goto err_free;
->> +	}
->> +
->> +	dma_resv_lock(umem_dmabuf->attach->dmabuf->resv, NULL);
->> +	err = dma_buf_pin(umem_dmabuf->attach);
->> +	if (err) {
->> +		ibdev_dbg(&dev->ibdev, "Failed to pin dmabuf memory\n");
->> +		goto err_release;
->> +	}
->> +
->> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
->> +	if (err) {
->> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
->> +		goto err_unpin;
->> +	}
->> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> 
-> If it is really this simple the core code should have this logic,
-> 'ib_umem_dmabuf_get_pinned()' or something
-
-Should get_pinned do just get + dma_buf_pin, or should it do
-ib_umem_dmabuf_map_pages as well?
+Thanks
