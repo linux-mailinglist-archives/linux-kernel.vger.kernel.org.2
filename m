@@ -2,141 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8834282AF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 364294282BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhJJRoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:44:19 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:51211 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhJJRoS (ORCPT
+        id S232196AbhJJRvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhJJRvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:44:18 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N0G9p-1mw7Oo2dkd-00xIKV; Sun, 10 Oct 2021 19:42:17 +0200
-Received: by mail-wr1-f42.google.com with SMTP id y3so14981417wrl.1;
-        Sun, 10 Oct 2021 10:42:17 -0700 (PDT)
-X-Gm-Message-State: AOAM532svRuFPxZUNHvlD5UZfO4v7yFNlgwh5svx0fIeT/WBfrChfeE7
-        O6ug4P9JxHxSVZjQGe7YXdfZWRM2vlVQhgngLBo=
-X-Google-Smtp-Source: ABdhPJxAjKU8yfXgt2rjYVImjIKCImbIW4poCzzJGpBcz8kno/AlWQFANYktYRG2caQHUL2ye2HhyFkPp3obwvzre5s=
-X-Received: by 2002:a1c:4b08:: with SMTP id y8mr6006483wma.98.1633887737269;
- Sun, 10 Oct 2021 10:42:17 -0700 (PDT)
+        Sun, 10 Oct 2021 13:51:21 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFADC061745
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:49:22 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id r1so33454769ybo.10
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0m0tVlWSXIOyQB2dgqv4j2n31BilYhoZPAwFWKrJU88=;
+        b=PsUvnSdUSAmqKwDzNq9WJnFPKcbpdmRh5/jw66XAt9hP/tWSJAb/4w/SNgIAPG5Aox
+         mX2G/aDq1B5rPRE46cQTRb2XuHG9e/SSVWq8F53f4DR0mkYuD9jP54/hCWXqUXQxI0Zf
+         pAcHnFJISheLru/OQ8lMIla4gFwGM5gL1R7J8H7bhKtQNeIbU5OS8k2xbFAqEvNyYkq9
+         gNdSwnxBTvz5lkNBP7Dsjn+NJVtuyUR28qOL1AmfDyi9eroRguVFqfbi9gZjfk9qXLmd
+         utsIGcSdYnV2MSanTe+6k1r61+/oFVTNB7smQDAR4XjowUMUmZgtO5J3dPU+BQVD5T6H
+         SWfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0m0tVlWSXIOyQB2dgqv4j2n31BilYhoZPAwFWKrJU88=;
+        b=paUbk+EtYVrSJ5FcCZLY2mrF8MiHYPtoFgNPKBujK19Qr3blQoF2et5sQ5JUIGN66b
+         AJ6h+c9IWdnh7f7qpgJyHiT4jsaJZpgh1iESgekZK8FRGSFGUpuiD+ATWrY5K2wgcIVW
+         s+I7Lptsg5Vk+YQhFZ1DI/4QWQBtj8bgCieLSpYiUiHlXiunzFhYQZNms2+s14AWmn/U
+         VzeDtwhUVI+SbSfI+6euSuKdMIz2SeCg/0Mg7BiAezWCo+NYt5UQVs6PsEjDswDiEACF
+         VRZBSq9CLMgAWZbVCC523+Iqg+T0WNSqS7/UmyuQdy0JRFNP059ldQB5WPsT8OUERj3H
+         ZKJg==
+X-Gm-Message-State: AOAM5307V0tSMjtjJirUclElu9JKHHB9fmuEd8kJVrl3dgLNGh40qT1h
+        kSCqWpu+0r1IRBKer4KF+0bFG6HMrNgoPLZMh2Jqwg==
+X-Google-Smtp-Source: ABdhPJzkZnpQTV5Qp77PgEJ34HsJPqCmVi+ZOVVGOe/uHLDMUs6H/ZfgHJrleyk4/1QDC55+WeC+DLC/a9G2zdhlXUE=
+X-Received: by 2002:a25:c006:: with SMTP id c6mr16530910ybf.480.1633888161709;
+ Sun, 10 Oct 2021 10:49:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211010023350.978638-1-dmitry.baryshkov@linaro.org> <YWJpJnaQ2Nr4PUwr@yoga>
-In-Reply-To: <YWJpJnaQ2Nr4PUwr@yoga>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sun, 10 Oct 2021 19:42:00 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-Message-ID: <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-Subject: Re: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
+References: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn> <1633777076-17256-2-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1633777076-17256-2-git-send-email-yangtiezhu@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Sun, 10 Oct 2021 19:49:11 +0200
+Message-ID: <CAM1=_QT_vR5EZyt6kVVWHJi3rpervkiO4HRrpvRgh2sh6J7yrg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf, mips: Clean up config options about JIT
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:jVG6/l1Sg3kgqLyDpuWv74nnT8ektUJ4DDBI9ZLM/lPylGA3rr0
- HVQVjft4IguLUExdmpqPucvVzz7boSAVEkSJjguaSkLvdxS81umeCUEPrtaT9KlSvCt4DlM
- 86jCwVVc0u8HR5WNQ66W+xSnatPhFyGz7Abpqjt97ugYX++FM5Wz+S1qzE2QyBH0DEvfMJo
- iR+T/2Jr0OMJJV4oZr89A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:r4Iu1hR8NXU=:zjwDXYeJb7ylUVSVOiFk0B
- NFPr8MhoKc7A+8uXNcBwTD9tiFKs9uOeDL+bCLbaW3USNPBZS1uAJb34u65uVai+R3Yfswiaa
- pkzDrwe/XUMo5fnS3p/ev3V4MOLr+fzFwVh3HegQHuG9bwPjEPuCH2Wfl6Ahz7dVAfFnwUGW0
- /+GCZUq18vf+hmHzlldxAXrAz4w9kb8ZOe5SiRGWQ3Bhp5ROXfkE3P7SomytvlR82iaqJF8uG
- wcKKzBMhGK5Zdgcr2ETWy0QJtO8yMBZzkCiD3uZwjimB7pqAXMBcfmTGksa/fJBxCdqBzNHTz
- Daap7mWe4+TVsxdKDlSIpITh7xcshkEGbuUBJIhIlzvjSQIm2QVeKruwxnxJZvkrhh2jv4hrU
- jRghjo/X9/cteVWdjNx5nq5L721hKoFRVfoKJjo+mpaNUfYI2ZOD2QMQxf6Uvokt7eovtuGTA
- kt6PFwY/a+6ZWUIolVdEwh3LaQXRWyXRvstxVY0upa39TEtsfPSTgG8YwmdwjwdYzFZt8+AEf
- ELfvPptbWlIxwcTg3k1ETlnn0TiO9BeVq9PBjkZUqaAscTpYn/XzpntRZyJ37Gu7XG75c2OZo
- qLag3vtEGDuQvTcEEFaiSIPoWBD1c6hnda8MdVeC7adBzk7Pu2PfzOZYrpHk39b0MlzQNRSwn
- zgs+T8w1BYK5tD0jJ2GF9h4+6GKnSPwV3Qn14rcEoQbFCzYazumRrn1Fq+8MQcoHxqAkl67Hy
- srHyK889ZVKmwoqksp6bleCA60RY/4qArm2gdg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 6:17 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Sat, Oct 9, 2021 at 12:58 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
 >
-> On Sat 09 Oct 21:33 CDT 2021, Dmitry Baryshkov wrote:
+> The config options MIPS_CBPF_JIT and MIPS_EBPF_JIT are useless, remove
+> them in arch/mips/Kconfig, and then modify arch/mips/net/Makefile.
 >
-> > After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
-> > qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
-> > However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
-> > qcom_smmu_impl_init() is never called.
-> >
-> > So, let's fix this by always calling qcom_smmu_impl_init(). It does not
-> > touch the smmu passed unless the device is a non-Qualcomm one. Make
-> > ARM_SMMU select QCOM_SCM for ARCH_QCOM.
-
-Sorry about this bug. I was sure I had it working, but I lost part of the commit
-during a rebase, and my randconfig builds still succeeded without it, so I
-sent a wrong version.
-
-> Arnd's intention was to not force QCOM_SCM to be built on non-Qualcomm
-> devices. But as Daniel experienced, attempting to boot most Qualcomm
-> boards without this results in a instant reboot.
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> ---
+>  arch/mips/Kconfig      | 9 ---------
+>  arch/mips/net/Makefile | 6 +++---
+>  2 files changed, 3 insertions(+), 12 deletions(-)
 >
-> I think it's okay if we tinker with CONFIG_ARM_SMMU_QCOM for v5.16, but
-> we're getting late in v5.15 so I would prefer if we make sure this works
-> out of the box.
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 38468f4..9b03c78 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1214,15 +1214,6 @@ config SYS_SUPPORTS_RELOCATABLE
+>           The platform must provide plat_get_fdt() if it selects CONFIG_USE_OF
+>           to allow access to command line and entropy sources.
+>
+> -config MIPS_CBPF_JIT
+> -       def_bool y
+> -       depends on BPF_JIT && HAVE_CBPF_JIT
+> -
+> -config MIPS_EBPF_JIT
+> -       def_bool y
+> -       depends on BPF_JIT && HAVE_EBPF_JIT
+> -
+> -
+>  #
+>  # Endianness selection.  Sufficiently obscure so many users don't know what to
+>  # answer,so we try hard to limit the available choices.  Also the use of a
+> diff --git a/arch/mips/net/Makefile b/arch/mips/net/Makefile
+> index 95e8267..e3e6ae6 100644
+> --- a/arch/mips/net/Makefile
+> +++ b/arch/mips/net/Makefile
+> @@ -1,10 +1,10 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  # MIPS networking code
+>
+> -obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp.o
+> +obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
+>
+>  ifeq ($(CONFIG_32BIT),y)
+> -        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp32.o
+> +        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
+>  else
+> -        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp64.o
+> +        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp64.o
+>  endif
+> --
+> 2.1.0
+>
 
-Yes, makes sense. For reference, see below for how I would fix this properly,
-this is what I had intended to have in the patch. Feel free to pick
-either version
-as the immediate bugfix. I'll give the below a little more randconfig testing
-overnight though. The pasted version of the patch is probably
-whitespace-damaged,
-let me know if you would like me to send it as a proper patch.
+Looks good to me.
 
-       Arnd
-
-8<-----
-Subject: iommu: fix ARM_SMMU_QCOM compilation
-
-My previous bugfix ended up making things worse for the QCOM IOMMU
-driver when it forgot to add the Kconfig symbol that is getting used to
-control the compilation of the SMMU implementation specific code
-for Qualcomm.
-
-Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-----
-diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-index c5c71b7ab7e8..2dfe744ddd97 100644
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@ -311,6 +311,7 @@ config ARM_SMMU
-        select IOMMU_API
-        select IOMMU_IO_PGTABLE_LPAE
-        select ARM_DMA_USE_IOMMU if ARM
-+       select QCOM_SCM if ARM_SMMU_QCOM
-        help
-          Support for implementations of the ARM System MMU architecture
-          versions 1 and 2.
-@@ -355,6 +356,13 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
-          'arm-smmu.disable_bypass' will continue to override this
-          config.
-
-+config ARM_SMMU_QCOM
-+       def_bool y
-+       depends on ARM_SMMU && ARCH_QCOM
-+       help
-+         When running on a Qualcomm platform that has the custom variant
-+         of the ARM SMMU, this needs to be built into the SMMU driver.
-+
- config ARM_SMMU_V3
-        tristate "ARM Ltd. System MMU Version 3 (SMMUv3) Support"
-        depends on ARM64
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
