@@ -2,133 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F50427F3B
+	by mail.lfdr.de (Postfix) with ESMTP id DA4C5427F3D
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 07:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhJJFIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 01:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhJJFIK (ORCPT
+        id S230339AbhJJF02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 01:26:28 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54153 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230310AbhJJF01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 01:08:10 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D0DC061570
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Oct 2021 22:06:12 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id h3so7490389pgb.7
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Oct 2021 22:06:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=dM074y++lE+8ycfGWmkuR8//9HdPqcSHLfhb3QYeN40=;
-        b=nOII8D7OGVKWvJsvhJeHKmcFnb6jyU+FXn9kyzIkfXgeLp7kjzo6Ag+505vaK505FS
-         iBngUdAnNHTk/SlHolIV33oxOLbeEyJBcL8crFcpdh+UP8tq9BPAan7srq/hv5XY2ew3
-         XKoj2NGX5RfpxXM+9cTo56uSDFmjHPNI2oX5d0kfYfJtbQpebpuWYA299EmSi24rwGYA
-         qQdY30tQc+uCp7tZYO9hUbPOIrGzlNxZXdkcByBqvvU7bKkcIysbz2Q3hTkHRL9RdFtW
-         bQLSVoSxUxh26pCElvbABa3YH4XMzNoc0KeuNcWTA4icYxHb5hHxNi1nJBo3p6DXYe3/
-         x1bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=dM074y++lE+8ycfGWmkuR8//9HdPqcSHLfhb3QYeN40=;
-        b=kckkMed/CegVdilC522khfRXmjPf4ZkvCjnh/+vSf5bQVjHTQ7lNykccn9OyRl8+wT
-         Lxc6kGDat2CGyl/7haJYdVcIs3/wiDIbweYGSBMnsO7Q1YLfmulftg2JyhgF+10HAJjq
-         ME2BPfHf0JePjq/kYvx1R+3T6/RGe5vs16AOnWfzl6vNglR2loTVBlnu+x146dNhLcBq
-         CeOaBICjTY2yhpWbNvPPwHAxvT0vfngy5jmLfjcehQivJhNMeQtf2eR07Ynngywem/AM
-         IqptEq119eiQ3t4ym85SMBkDauJ8KNlgNDCx7n2wKg2CZ8WGY+x2wznyRli7ehgPjvNy
-         WvAw==
-X-Gm-Message-State: AOAM532pESJY+fCKlzzbpMs5Ew2BklwnKMYemdysVcb3lb8e+ZNPwBnB
-        AX2c+G6y6GwNsmSyYPQ3WYM=
-X-Google-Smtp-Source: ABdhPJyoXtUr+pUjqFCmRuG4VkqqOnxm94iHyfw2sUdXDaVekhD8AYmCsukNZE8takZb7s9uWK5DwA==
-X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr18709447pfk.85.1633842371256;
-        Sat, 09 Oct 2021 22:06:11 -0700 (PDT)
-Received: from user ([223.230.43.197])
-        by smtp.gmail.com with ESMTPSA id i2sm3548309pfa.34.2021.10.09.22.06.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Oct 2021 22:06:10 -0700 (PDT)
-Date:   Sun, 10 Oct 2021 10:36:05 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        saurav.girepunje@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return statement.
-Message-ID: <YWJ0vSrgsiKK7suE@user>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        Sun, 10 Oct 2021 01:26:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UrDvT6w_1633843467;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UrDvT6w_1633843467)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 10 Oct 2021 13:24:27 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mike.kravetz@oracle.com
+Cc:     mhocko@kernel.org, guro@fb.com, corbet@lwn.net,
+        yaozhenguo1@gmail.com, baolin.wang@linux.alibaba.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] hugetlb: Support node specified when using cma for gigantic hugepages
+Date:   Sun, 10 Oct 2021 13:24:08 +0800
+Message-Id: <1633843448-966-1-git-send-email-baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the unneeded and redundant check of variable on goto out.
-Simplify the return using multiple goto label to avoid
-unneeded check.
+Now the size of CMA area for gigantic hugepages runtime allocation is
+balanced for all online nodes, but we also want to specify the size of
+CMA per-node, or only one node in some cases, which are similar with
+commit 86acc55c3d32 ("hugetlbfs: extend the definition of hugepages
+parameter to support node allocation")[1].
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+Thus this patch adds node format for 'hugetlb_cma' parameter to support
+specifying the size of CMA per-node. An example is as follows:
+
+hugetlb_cma=0:5G,2:5G
+
+which means allocating 5G size of CMA area on node 0 and node 2
+respectively.
+
+[1]
+https://lkml.kernel.org/r/20211005054729.86457-1-yaozhenguo1@gmail.com
+
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
+ Documentation/admin-guide/kernel-parameters.txt |  6 +-
+ mm/hugetlb.c                                    | 79 +++++++++++++++++++++----
+ 2 files changed, 73 insertions(+), 12 deletions(-)
 
-ChangeLog V2:
-	-Add goto out after the memcpy for no error case return with
-	 ret only. Free is not required on no error case.
-
-ChangeLog V1:
-	-Remove the unneeded and redundant check of variable on
-	 goto out.
-	-Simplify the return using multiple goto label to avoid
-	 unneeded check.
-
- .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
- 1 file changed, 10 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index 0868f56e2979..ae9579dc0848 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
- 	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
- 	if (!mon_wdev) {
- 		ret = -ENOMEM;
--		goto out;
-+		goto err_zmalloc;
- 	}
-
- 	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
-@@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct adapter *padapter, char *name, str
-
- 	ret = cfg80211_register_netdevice(mon_ndev);
- 	if (ret) {
--		goto out;
-+		goto err_register;
- 	}
-
- 	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
- 	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
-+	goto out;
-
--out:
--	if (ret && mon_wdev) {
--		kfree(mon_wdev);
--		mon_wdev = NULL;
--	}
--
--	if (ret && mon_ndev) {
--		free_netdev(mon_ndev);
--		*ndev = mon_ndev = NULL;
--	}
-+err_register:
-+	kfree(mon_wdev);
-+	mon_wdev = NULL;
-
-+err_zmalloc:
-+	free_netdev(mon_ndev);
-+	*ndev = mon_ndev = NULL;
-+out:
- 	return ret;
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 3ad8e9d0..a147faa5 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -1587,8 +1587,10 @@
+ 			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
+ 
+ 	hugetlb_cma=	[HW,CMA] The size of a CMA area used for allocation
+-			of gigantic hugepages.
+-			Format: nn[KMGTPE]
++			of gigantic hugepages. Or using node format, the size
++			of a CMA area per node can be specified.
++			Format: nn[KMGTPE] or (node format)
++				<node>:nn[KMGTPE][,<node>:nn[KMGTPE]]
+ 
+ 			Reserve a CMA area of given size and allocate gigantic
+ 			hugepages using the CMA allocator. If enabled, the
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 6d2f4c2..8b4e409 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -50,6 +50,7 @@
+ 
+ #ifdef CONFIG_CMA
+ static struct cma *hugetlb_cma[MAX_NUMNODES];
++static unsigned long hugetlb_cma_size_in_node[MAX_NUMNODES] __initdata;
+ static bool hugetlb_cma_page(struct page *page, unsigned int order)
+ {
+ 	return cma_pages_valid(hugetlb_cma[page_to_nid(page)], page,
+@@ -62,6 +63,7 @@ static bool hugetlb_cma_page(struct page *page, unsigned int order)
  }
-
---
-2.32.0
+ #endif
+ static unsigned long hugetlb_cma_size __initdata;
++static nodemask_t hugetlb_cma_nodes_allowed = NODE_MASK_NONE;
+ 
+ /*
+  * Minimum page order among possible hugepage sizes, set to a proper value
+@@ -3497,9 +3499,15 @@ static ssize_t __nr_hugepages_store_common(bool obey_mempolicy,
+ 
+ 	if (nid == NUMA_NO_NODE) {
+ 		/*
++		 * If we've specified the size of CMA area per node,
++		 * should use it firstly.
++		 */
++		if (hstate_is_gigantic(h) && !nodes_empty(hugetlb_cma_nodes_allowed))
++			n_mask = &hugetlb_cma_nodes_allowed;
++		/*
+ 		 * global hstate attribute
+ 		 */
+-		if (!(obey_mempolicy &&
++		else if (!(obey_mempolicy &&
+ 				init_nodemask_of_mempolicy(&nodes_allowed)))
+ 			n_mask = &node_states[N_MEMORY];
+ 		else
+@@ -6745,7 +6753,38 @@ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
+ 
+ static int __init cmdline_parse_hugetlb_cma(char *p)
+ {
+-	hugetlb_cma_size = memparse(p, &p);
++	int nid, count = 0;
++	unsigned long tmp;
++	char *s = p;
++
++	while (*s) {
++		if (sscanf(s, "%lu%n", &tmp, &count) != 1)
++			break;
++
++		if (s[count] == ':') {
++			nid = tmp;
++			if (nid < 0 || nid >= MAX_NUMNODES)
++				break;
++
++			s += count + 1;
++			tmp = memparse(s, &s);
++			hugetlb_cma_size_in_node[nid] = tmp;
++			hugetlb_cma_size += tmp;
++
++			/*
++			 * Skip the separator if have one, otherwise
++			 * break the parsing.
++			 */
++			if (*s == ',')
++				s++;
++			else
++				break;
++		} else {
++			hugetlb_cma_size = memparse(p, &p);
++			break;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -6754,6 +6793,7 @@ static int __init cmdline_parse_hugetlb_cma(char *p)
+ void __init hugetlb_cma_reserve(int order)
+ {
+ 	unsigned long size, reserved, per_node;
++	bool node_specific_cma_alloc = false;
+ 	int nid;
+ 
+ 	cma_reserve_called = true;
+@@ -6767,20 +6807,37 @@ void __init hugetlb_cma_reserve(int order)
+ 		return;
+ 	}
+ 
+-	/*
+-	 * If 3 GB area is requested on a machine with 4 numa nodes,
+-	 * let's allocate 1 GB on first three nodes and ignore the last one.
+-	 */
+-	per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
+-	pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
+-		hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
++	for_each_node_state(nid, N_ONLINE) {
++		if (hugetlb_cma_size_in_node[nid] > 0) {
++			node_specific_cma_alloc = true;
++			break;
++		}
++	}
++
++	if (!node_specific_cma_alloc) {
++		/*
++		 * If 3 GB area is requested on a machine with 4 numa nodes,
++		 * let's allocate 1 GB on first three nodes and ignore the last one.
++		 */
++		per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
++		pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
++			hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
++	}
+ 
+ 	reserved = 0;
+ 	for_each_node_state(nid, N_ONLINE) {
+ 		int res;
+ 		char name[CMA_MAX_NAME];
+ 
+-		size = min(per_node, hugetlb_cma_size - reserved);
++		if (node_specific_cma_alloc) {
++			if (hugetlb_cma_size_in_node[nid] <= 0)
++				continue;
++
++			size = hugetlb_cma_size_in_node[nid];
++		} else {
++			size = min(per_node, hugetlb_cma_size - reserved);
++		}
++
+ 		size = round_up(size, PAGE_SIZE << order);
+ 
+ 		snprintf(name, sizeof(name), "hugetlb%d", nid);
+@@ -6799,6 +6856,8 @@ void __init hugetlb_cma_reserve(int order)
+ 			continue;
+ 		}
+ 
++		if (node_specific_cma_alloc)
++			node_set(nid, hugetlb_cma_nodes_allowed);
+ 		reserved += size;
+ 		pr_info("hugetlb_cma: reserved %lu MiB on node %d\n",
+ 			size / SZ_1M, nid);
+-- 
+1.8.3.1
 
