@@ -2,113 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43954428352
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A12A428367
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 21:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhJJTY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 15:24:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232115AbhJJTYV (ORCPT
+        id S233051AbhJJTeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 15:34:11 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:37852 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232548AbhJJTeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 15:24:21 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D69C06161C;
-        Sun, 10 Oct 2021 12:22:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=x6CwcmPbUPfmUYETToBP1qbHRKqr4+7yeB4/xu8is44=; b=oK5et9c79wUYggmWFTX056Ergx
-        9AJIY5Hb7El3eJdjbvXslvNYFCzGHh0Q9L/HnX4uxYlBktIIwPw3YiqGzLwhHN3anVwOZj+Cn+ivu
-        s22g9inW86aJDzRpwPVh16+hmnHhKxVOyv1dAV/8RsADKl4GYSI+seH1C5uYShF+nk3WmqGVNXPxP
-        tlNvD3i0NLGh6VK0nYfpfy+/QbuTMkC7G4XpJS6paHcPUsHCbglatgUjU6IA0uLfNWWOZKbP9U5Ni
-        lfdLE7GMcKnWKBPoZieOYLahhmTjlgBmmoHuFsErAPeR2QOoPnJa8eR2/j+YwVlNBlqDsvfa/wAsG
-        WbSJ9h8Q==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZeOs-007IpE-Bu; Sun, 10 Oct 2021 19:22:22 +0000
-Subject: Re: [PATCH v3 05/11] clk: Introduce clk-tps68470 driver
-To:     Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211010185707.195883-1-hdegoede@redhat.com>
- <20211010185707.195883-6-hdegoede@redhat.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2c4a0997-1f32-0ed1-ad2e-bfce1afd85f1@infradead.org>
-Date:   Sun, 10 Oct 2021 12:22:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20211010185707.195883-6-hdegoede@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 10 Oct 2021 15:34:01 -0400
+Received: by mail-ot1-f48.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so18895200otv.4;
+        Sun, 10 Oct 2021 12:32:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=9HyABHgPYgGal/sy/skHP8VtC/QmAdxeyMbtN7+dwms=;
+        b=3I6IpCpE+6hM3qSB1EEyrtYfmo6+uMa5m+cAbXIFa4dbZ286DcGkhYKg+9885b/JaU
+         wcM79znX74eRiKeW93fpQLOZqM8d05Y0RdZ7Er/hRsYbKPgokXq9bNp0BaVcjUaYaxKp
+         52Q0efexDEEbM8IiUQk5gqejul1rTaGrlGJYlI8WuigdVnXWh34Di7M0EEJoSAwM0ZSq
+         y4LI11+AjvDs+IlHmojP4adN/Cdeeu1hvoQNatJzTjXydkSiIBM2G9nin7ZSx++cZrvF
+         +AYMf4g9WACDqBQuv+5o+2pgVZH9Zbpvtc9ezqYgf/dFIt9Naoi18W3quqgMQnMyikmX
+         pz/Q==
+X-Gm-Message-State: AOAM530NbHCW3UClwK6UAgKTZKF/jt3MANNTBZtuoOfxx4PIHOSX0gQo
+        4NO0CLchvI9uSXoyeodm+w==
+X-Google-Smtp-Source: ABdhPJxUkh7mUwxcvqyvZnzD/TkQmuaAeXID3n3EbuHLG3ekM/EhzvUKrm3JDoG9JI2V0JVaELrd9w==
+X-Received: by 2002:a05:6830:3151:: with SMTP id c17mr17982596ots.372.1633894322514;
+        Sun, 10 Oct 2021 12:32:02 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id bo31sm1271139oib.13.2021.10.10.12.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 12:32:02 -0700 (PDT)
+Received: (nullmailer pid 3158662 invoked by uid 1000);
+        Sun, 10 Oct 2021 19:31:56 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Oskar Senft <osk@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, Jean Delvare <jdelvare@suse.com>
+In-Reply-To: <20211010033112.3621816-1-osk@google.com>
+References: <20211010033112.3621816-1-osk@google.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: hwmon: Add nct7802 bindings
+Date:   Sun, 10 Oct 2021 14:31:56 -0500
+Message-Id: <1633894316.391361.3158661.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 11:57 AM, Hans de Goede wrote:
-> The TPS68470 PMIC provides Clocks, GPIOs and Regulators. At present in
-> the kernel the Regulators and Clocks are controlled by an OpRegion
-> driver designed to work with power control methods defined in ACPI, but
-> some platforms lack those methods, meaning drivers need to be able to
-> consume the resources of these chips through the usual frameworks.
+On Sat, 09 Oct 2021 23:31:11 -0400, Oskar Senft wrote:
+> This change documents the device tree bindings for the Nuvoton
+> NCT7802Y driver.
 > 
-> This commit adds a driver for the clocks provided by the tps68470,
-> and is designed to bind to the platform_device registered by the
-> intel_skl_int3472 module.
-> 
-> This is based on this out of tree driver written by Intel:
-> https://github.com/intel/linux-intel-lts/blob/4.14/base/drivers/clk/clk-tps68470.c
-> with various cleanups added.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Oskar Senft <osk@google.com>
 > ---
-> Changes in v2:
-> - Update the comment on why a subsys_initcall is used to register the drv
-> - Fix trailing whitespice on line 100
+> Changes from PATCH v5:
+> - Refactored to use patternProperties.
+> - Added validation for sensor-type and temperature-mode.
 > ---
->   drivers/clk/Kconfig          |   6 +
->   drivers/clk/Makefile         |   1 +
->   drivers/clk/clk-tps68470.c   | 256 +++++++++++++++++++++++++++++++++++
->   include/linux/mfd/tps68470.h |  11 ++
->   4 files changed, 274 insertions(+)
->   create mode 100644 drivers/clk/clk-tps68470.c
+>  .../bindings/hwmon/nuvoton,nct7802.yaml       | 144 ++++++++++++++++++
+>  1 file changed, 144 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml
 > 
-> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
-> index c5b3dc97396a..7dffecac83d1 100644
-> --- a/drivers/clk/Kconfig
-> +++ b/drivers/clk/Kconfig
-> @@ -169,6 +169,12 @@ config COMMON_CLK_CDCE706
->   	help
->   	  This driver supports TI CDCE706 programmable 3-PLL clock synthesizer.
->   
-> +config COMMON_CLK_TPS68470
-> +	tristate "Clock Driver for TI TPS68470 PMIC"
-> +	depends on I2C && REGMAP_I2C && INTEL_SKL_INT3472
-> +	help
-> +	 This driver supports the clocks provided by TPS68470
 
-End that sentence with a period (full stop): '.'.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Also it should be indented with one tab + 2 spaces.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:41:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:48:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:53:13: [warning] wrong indentation: expected 14 but found 12 (indentation)
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:66:19: [warning] wrong indentation: expected 20 but found 18 (indentation)
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:85:19: [warning] wrong indentation: expected 20 but found 18 (indentation)
+./Documentation/devicetree/bindings/hwmon/nuvoton,nct7802.yaml:90:19: [warning] wrong indentation: expected 20 but found 18 (indentation)
 
--- 
-~Randy
+dtschema/dtc warnings/errors:
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1538966
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
