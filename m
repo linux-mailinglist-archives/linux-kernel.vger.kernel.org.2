@@ -2,214 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4C5427F3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 07:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C8C427F40
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 07:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhJJF02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 01:26:28 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54153 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230310AbhJJF01 (ORCPT
+        id S230412AbhJJFdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 01:33:31 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38936 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230180AbhJJFda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 01:26:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UrDvT6w_1633843467;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UrDvT6w_1633843467)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 10 Oct 2021 13:24:27 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mike.kravetz@oracle.com
-Cc:     mhocko@kernel.org, guro@fb.com, corbet@lwn.net,
-        yaozhenguo1@gmail.com, baolin.wang@linux.alibaba.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: [PATCH] hugetlb: Support node specified when using cma for gigantic hugepages
-Date:   Sun, 10 Oct 2021 13:24:08 +0800
-Message-Id: <1633843448-966-1-git-send-email-baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 10 Oct 2021 01:33:30 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19A5BiEC025590;
+        Sun, 10 Oct 2021 01:29:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=shUZ6uqlQTOHed2KAnYjTi0w/xXr6hUSlmrC1GmJuNI=;
+ b=qavXZzNrbaNTpa1IcpTgPSXomJ7rEtgtIZmWFHX2upg0lG9PX9Ou4Xt56crxT+8WJJor
+ Aw9WCDoO3exGtXBTHUHb0h4fshk44sEhj2HrcFY9xwzhL/gsmyTsEQGx5sJARyz7lAIx
+ P8fMwrqughz5QRMaIbgVaBYhPNuQNRw/aBNJ+ERSlxUEQkUQ8sSVJkxwtj6DPgZKyG44
+ ObzcC9L92eIEz+cMqrsKYifpf5eS7lr7mGXbjhzpwG3PkpDOh0CTr22E6z8kzbfvrjA0
+ KsLF2jhFsgg+E5+aGyMKm5okqjUYTqjeQYCj+8KB2AcWlXvVAqNZLgH4s8sNFOsPeCAz EA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bkstd85tf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 Oct 2021 01:29:26 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19A5TQ0r011505;
+        Sun, 10 Oct 2021 01:29:26 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bkstd85t6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 Oct 2021 01:29:26 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19A5R9AN006970;
+        Sun, 10 Oct 2021 05:29:24 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bk2q8w0e5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 10 Oct 2021 05:29:24 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19A5TLnO62587264
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 10 Oct 2021 05:29:21 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB09EA4054;
+        Sun, 10 Oct 2021 05:29:21 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A453FA405C;
+        Sun, 10 Oct 2021 05:29:20 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.54.246])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 10 Oct 2021 05:29:20 +0000 (GMT)
+Date:   Sun, 10 Oct 2021 08:29:18 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Jan Kara <jack@suse.cz>, stable@vger.kernel.org
+Subject: Re: [PATCH] mm/userfaultfd: provide unmasked address on page-fault
+Message-ID: <YWJ6Lv4QpJ3Kzynt@linux.ibm.com>
+References: <20211007235055.469587-1-namit@vmware.com>
+ <d5a244e9-a04e-8794-e55f-380db5e8c6c4@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5a244e9-a04e-8794-e55f-380db5e8c6c4@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: K_g-r_8Z10k5Tl0NqMdiPO_rmmbBoPg2
+X-Proofpoint-GUID: tO4xLlIrcooGRdes9d51jzYTPheidXTO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-10_01,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ suspectscore=0 mlxscore=0 bulkscore=0 mlxlogscore=673 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110100034
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now the size of CMA area for gigantic hugepages runtime allocation is
-balanced for all online nodes, but we also want to specify the size of
-CMA per-node, or only one node in some cases, which are similar with
-commit 86acc55c3d32 ("hugetlbfs: extend the definition of hugepages
-parameter to support node allocation")[1].
+On Fri, Oct 08, 2021 at 10:05:36AM +0200, David Hildenbrand wrote:
+> On 08.10.21 01:50, Nadav Amit wrote:
+> > From: Nadav Amit <namit@vmware.com>
+> > 
+> > Userfaultfd is supposed to provide the full address (i.e., unmasked) of
+> > the faulting access back to userspace. However, that is not the case for
+> > quite some time.
+> > 
+> > Even running "userfaultfd_demo" from the userfaultfd man page provides
+> > the wrong output (and contradicts the man page). Notice that
+> > "UFFD_EVENT_PAGEFAULT event" shows the masked address.
+> > 
+> > 	Address returned by mmap() = 0x7fc5e30b3000
+> > 
+> > 	fault_handler_thread():
+> > 	    poll() returns: nready = 1; POLLIN = 1; POLLERR = 0
+> > 	    UFFD_EVENT_PAGEFAULT event: flags = 0; address = 7fc5e30b3000
+> > 		(uffdio_copy.copy returned 4096)
+> > 	Read address 0x7fc5e30b300f in main(): A
+> > 	Read address 0x7fc5e30b340f in main(): A
+> > 	Read address 0x7fc5e30b380f in main(): A
+> > 	Read address 0x7fc5e30b3c0f in main(): A
+> > 
+> > Add a new "real_address" field to vmf to hold the unmasked address. It
+> > is possible to keep the unmasked address in the existing address field
+> > (and mask whenever necessary) instead, but this is likely to cause
+> > backporting problems of this patch.
+> 
+> Can we be sure that no existing users will rely on this behavior that has
+> been the case since end of 2016 IIRC, one year after UFFD was upstreamed? I
+> do wonder what the official ABI nowadays is, because man pages aren't
+> necessarily the source of truth.
+> 
+> I checked QEMU (postcopy live migration), and I think it should be fine with
+> this change.
 
-Thus this patch adds node format for 'hugetlb_cma' parameter to support
-specifying the size of CMA per-node. An example is as follows:
-
-hugetlb_cma=0:5G,2:5G
-
-which means allocating 5G size of CMA area on node 0 and node 2
-respectively.
-
-[1]
-https://lkml.kernel.org/r/20211005054729.86457-1-yaozhenguo1@gmail.com
-
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  6 +-
- mm/hugetlb.c                                    | 79 +++++++++++++++++++++----
- 2 files changed, 73 insertions(+), 12 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 3ad8e9d0..a147faa5 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1587,8 +1587,10 @@
- 			registers.  Default set by CONFIG_HPET_MMAP_DEFAULT.
+CRIU is Ok with this change, we anyway mask the address.
  
- 	hugetlb_cma=	[HW,CMA] The size of a CMA area used for allocation
--			of gigantic hugepages.
--			Format: nn[KMGTPE]
-+			of gigantic hugepages. Or using node format, the size
-+			of a CMA area per node can be specified.
-+			Format: nn[KMGTPE] or (node format)
-+				<node>:nn[KMGTPE][,<node>:nn[KMGTPE]]
- 
- 			Reserve a CMA area of given size and allocate gigantic
- 			hugepages using the CMA allocator. If enabled, the
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 6d2f4c2..8b4e409 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -50,6 +50,7 @@
- 
- #ifdef CONFIG_CMA
- static struct cma *hugetlb_cma[MAX_NUMNODES];
-+static unsigned long hugetlb_cma_size_in_node[MAX_NUMNODES] __initdata;
- static bool hugetlb_cma_page(struct page *page, unsigned int order)
- {
- 	return cma_pages_valid(hugetlb_cma[page_to_nid(page)], page,
-@@ -62,6 +63,7 @@ static bool hugetlb_cma_page(struct page *page, unsigned int order)
- }
- #endif
- static unsigned long hugetlb_cma_size __initdata;
-+static nodemask_t hugetlb_cma_nodes_allowed = NODE_MASK_NONE;
- 
- /*
-  * Minimum page order among possible hugepage sizes, set to a proper value
-@@ -3497,9 +3499,15 @@ static ssize_t __nr_hugepages_store_common(bool obey_mempolicy,
- 
- 	if (nid == NUMA_NO_NODE) {
- 		/*
-+		 * If we've specified the size of CMA area per node,
-+		 * should use it firstly.
-+		 */
-+		if (hstate_is_gigantic(h) && !nodes_empty(hugetlb_cma_nodes_allowed))
-+			n_mask = &hugetlb_cma_nodes_allowed;
-+		/*
- 		 * global hstate attribute
- 		 */
--		if (!(obey_mempolicy &&
-+		else if (!(obey_mempolicy &&
- 				init_nodemask_of_mempolicy(&nodes_allowed)))
- 			n_mask = &node_states[N_MEMORY];
- 		else
-@@ -6745,7 +6753,38 @@ void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
- 
- static int __init cmdline_parse_hugetlb_cma(char *p)
- {
--	hugetlb_cma_size = memparse(p, &p);
-+	int nid, count = 0;
-+	unsigned long tmp;
-+	char *s = p;
-+
-+	while (*s) {
-+		if (sscanf(s, "%lu%n", &tmp, &count) != 1)
-+			break;
-+
-+		if (s[count] == ':') {
-+			nid = tmp;
-+			if (nid < 0 || nid >= MAX_NUMNODES)
-+				break;
-+
-+			s += count + 1;
-+			tmp = memparse(s, &s);
-+			hugetlb_cma_size_in_node[nid] = tmp;
-+			hugetlb_cma_size += tmp;
-+
-+			/*
-+			 * Skip the separator if have one, otherwise
-+			 * break the parsing.
-+			 */
-+			if (*s == ',')
-+				s++;
-+			else
-+				break;
-+		} else {
-+			hugetlb_cma_size = memparse(p, &p);
-+			break;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -6754,6 +6793,7 @@ static int __init cmdline_parse_hugetlb_cma(char *p)
- void __init hugetlb_cma_reserve(int order)
- {
- 	unsigned long size, reserved, per_node;
-+	bool node_specific_cma_alloc = false;
- 	int nid;
- 
- 	cma_reserve_called = true;
-@@ -6767,20 +6807,37 @@ void __init hugetlb_cma_reserve(int order)
- 		return;
- 	}
- 
--	/*
--	 * If 3 GB area is requested on a machine with 4 numa nodes,
--	 * let's allocate 1 GB on first three nodes and ignore the last one.
--	 */
--	per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
--	pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
--		hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
-+	for_each_node_state(nid, N_ONLINE) {
-+		if (hugetlb_cma_size_in_node[nid] > 0) {
-+			node_specific_cma_alloc = true;
-+			break;
-+		}
-+	}
-+
-+	if (!node_specific_cma_alloc) {
-+		/*
-+		 * If 3 GB area is requested on a machine with 4 numa nodes,
-+		 * let's allocate 1 GB on first three nodes and ignore the last one.
-+		 */
-+		per_node = DIV_ROUND_UP(hugetlb_cma_size, nr_online_nodes);
-+		pr_info("hugetlb_cma: reserve %lu MiB, up to %lu MiB per node\n",
-+			hugetlb_cma_size / SZ_1M, per_node / SZ_1M);
-+	}
- 
- 	reserved = 0;
- 	for_each_node_state(nid, N_ONLINE) {
- 		int res;
- 		char name[CMA_MAX_NAME];
- 
--		size = min(per_node, hugetlb_cma_size - reserved);
-+		if (node_specific_cma_alloc) {
-+			if (hugetlb_cma_size_in_node[nid] <= 0)
-+				continue;
-+
-+			size = hugetlb_cma_size_in_node[nid];
-+		} else {
-+			size = min(per_node, hugetlb_cma_size - reserved);
-+		}
-+
- 		size = round_up(size, PAGE_SIZE << order);
- 
- 		snprintf(name, sizeof(name), "hugetlb%d", nid);
-@@ -6799,6 +6856,8 @@ void __init hugetlb_cma_reserve(int order)
- 			continue;
- 		}
- 
-+		if (node_specific_cma_alloc)
-+			node_set(nid, hugetlb_cma_nodes_allowed);
- 		reserved += size;
- 		pr_info("hugetlb_cma: reserved %lu MiB on node %d\n",
- 			size / SZ_1M, nid);
 -- 
-1.8.3.1
-
+Sincerely yours,
+Mike.
