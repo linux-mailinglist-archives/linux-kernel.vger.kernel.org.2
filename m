@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5503C428020
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 11:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D20428022
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 11:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231214AbhJJJHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 05:07:12 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57580 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230370AbhJJJHM (ORCPT
+        id S231311AbhJJJOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 05:14:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhJJJOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 05:07:12 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C1E151FE36;
-        Sun, 10 Oct 2021 09:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633856711; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Je4Qry92SIQWaxQOPBWfp2Gr2MiLRQzL1dNHzr4QPLA=;
-        b=B18pLTwc37yZUIcJBR+Z+3J5I0CYZm9ngFBqYGUFe1JkRL+3FKbLAA0bKZ1Aha0h/+vqCc
-        9vZGzwCmpX1wdXZesMDGcQf17hlzeIbUKZW2KUW5pB8POIW0TgLhBQcl6dEZPOLo8QU6dH
-        7jNajt+ExqKryUmqFv03390yhnk289w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633856711;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Je4Qry92SIQWaxQOPBWfp2Gr2MiLRQzL1dNHzr4QPLA=;
-        b=LomWZsL/67g0pXNmS1dyoJC6Qx7y/ZozDxIRI3JVUSjcLOEwVuLjbprz14FldZmjmTKqty
-        W4yFG9g7+hhRgiAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B165B13B21;
-        Sun, 10 Oct 2021 09:05:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WWIYK8esYmFSSgAAMHmgww
-        (envelope-from <bp@suse.de>); Sun, 10 Oct 2021 09:05:11 +0000
-Date:   Sun, 10 Oct 2021 11:05:13 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] objtool/urgent for v5.15-rc5
-Message-ID: <YWKsyUevMivmrxdZ@zn.tnic>
+        Sun, 10 Oct 2021 05:14:34 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E50C061570;
+        Sun, 10 Oct 2021 02:12:35 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id x130so3145921pfd.6;
+        Sun, 10 Oct 2021 02:12:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Sv9Ksnrv6f8AsM7joTeVhFY2ovJdnSPF2uih/YjPrM=;
+        b=J+Hvm63H6y/kRR1Bv5kq+m4vNdB61M+NMkMhOIRq87+l0/xEtN2HYKsRQpBIiheyv0
+         t2q4+52Fb/XM0Z+Lh6k/hH/LZ1FWCy9BNK/X1BnOTyvBU+XT+MrCRCXoBSFp4w0GeAZx
+         I3QADnh0tuX7D+ytW1EK/ajI76J8PUQ26mpExbDrw8zNW035ziz15kuxznt+b3+mWMHv
+         oUbUA+iXN5/Yc7ZK+adpPVVd2/xP/AnbNnch4Y0f3Mcxan+/Z0xMerd1xtH0PZTNI8iF
+         M/QWVlSBFF4+/f+RDfBfPUn8ygrWrZjPlcXeAhYEduonHR1sjc5qjYbTIgkn32EsR3qK
+         mDvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9Sv9Ksnrv6f8AsM7joTeVhFY2ovJdnSPF2uih/YjPrM=;
+        b=a190T0BrWxcLcSXBQaVf/Vt4z5r4YoDCJoJW53Fck1G1OiFwIXW82PWI+QIryj3oin
+         OLg4eqb9+zcwGtOHWd89J5kS8XlBVF/N3E6ou2NaT/hXiIppHkNiMMPA27CifzuVPiXG
+         QmgxVVGM2JecrpP8z7OwAJhDaXJKJiq/apWZqIDXheDX/U6W1jjBhu91mfIKN/CucWGf
+         cky8x3wCT4Ctj4bJ0XVHHHiw6zrRgUFWw8Upa/aHBEvpNfzIJL8z0U/ZZ5w0aLBs6HSL
+         895wXetKFARZNuQQlpD//8e84aZKzm3WnGQ0/2HvINNVk7GNKXYsm8ZKZQ7Qfio2Kf1q
+         MRHQ==
+X-Gm-Message-State: AOAM530peLe+iiYFOGzXkjLkeh3fm6SEUrvqT5FpX1l9q37YdY5Rslbi
+        DGacxdOAl9uM2HuYhh+JXSc=
+X-Google-Smtp-Source: ABdhPJxYrhpvwo4tLscQ7DlSzJ9wvYcvtxUIKGFBibLZenvSepvyZ4FHDjst7l1SksGCbuxssEfekQ==
+X-Received: by 2002:a62:5215:0:b0:44c:d170:ed7b with SMTP id g21-20020a625215000000b0044cd170ed7bmr15332622pfb.61.1633857155031;
+        Sun, 10 Oct 2021 02:12:35 -0700 (PDT)
+Received: from localhost ([166.111.139.106])
+        by smtp.gmail.com with ESMTPSA id w8sm4272467pfd.4.2021.10.10.02.12.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 02:12:34 -0700 (PDT)
+From:   Teng Qi <starmiku1207184332@gmail.com>
+To:     lorenzo.bianconi83@gmail.com, jic23@kernel.org, lars@metafoo.de
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        islituo@gmail.com, baijiaju1990@gmail.com,
+        Teng Qi <starmiku1207184332@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] iio: imu: st_lsm6dsx: Fix an array overflow in st_lsm6dsx_set_odr()
+Date:   Sun, 10 Oct 2021 17:12:30 +0800
+Message-Id: <20211010091230.895549-1-starmiku1207184332@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
+variable whose value is between 0 and 5.
+However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
+ switch (sensor->id) {
 
-please pull three urgent objtool fixes for v5.15-rc5.
+If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
+function st_lsm6dsx_check_odr():
+  odr_table = &sensor->hw->settings->odr_table[sensor->id];
 
-Thx.
+and in function st_lsm6dsx_set_odr():
+  reg = &hw->settings->odr_table[ref_sensor->id].reg;
 
+To fix this possible array overflow, ref_sensor->id should be checked 
+first. If it is greater than or equal to 2, the function
+st_lsm6dsx_set_odr() returns -EINVAL.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
 ---
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The following changes since commit 9e1ff307c779ce1f0f810c7ecce3d95bbae40896:
-
-  Linux 5.15-rc4 (2021-10-03 14:08:47 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/objtool_urgent_for_v5.15_rc5
-
-for you to fetch changes up to fe255fe6ad97685e5a4be0d871f43288dbc10ad6:
-
-  objtool: Remove redundant 'len' field from struct section (2021-10-05 12:03:21 -0700)
-
-----------------------------------------------------------------
-- Remove an extra section.len member in favour of section.sh_size
-
-- Align .altinstructions section creation with the kernel's by creating
-them with entry size of 0
-
-- Fix objtool to convert a reloc symbol to a section offset and not to
-not warn about not knowing how
-
-----------------------------------------------------------------
-Joe Lawrence (2):
-      objtool: Make .altinstructions section entry size consistent
-      objtool: Remove redundant 'len' field from struct section
-
-Josh Poimboeuf (1):
-      objtool: Remove reloc symbol type checks in get_alt_entry()
-
- tools/objtool/arch/x86/decode.c     |  2 +-
- tools/objtool/check.c               | 16 +++++++--------
- tools/objtool/elf.c                 | 14 ++++++-------
- tools/objtool/include/objtool/elf.h |  1 -
- tools/objtool/orc_gen.c             |  2 +-
- tools/objtool/special.c             | 40 +++++++++----------------------------
- 6 files changed, 25 insertions(+), 50 deletions(-)
-
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+index db45f1fc0b81..edf5d33dd256 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -1308,6 +1308,10 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+ 		break;
+ 	}
+ 
++	if (ref_sensor->id >= 2) {
++		return -EINVAL;
++	}
++
+ 	if (req_odr > 0) {
+ 		err = st_lsm6dsx_check_odr(ref_sensor, req_odr, &val);
+ 		if (err < 0)
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
