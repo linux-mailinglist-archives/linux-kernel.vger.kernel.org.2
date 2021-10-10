@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCC7427FA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 09:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D68427FAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 09:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhJJHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 03:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S230506AbhJJHWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 03:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhJJHUV (ORCPT
+        with ESMTP id S230425AbhJJHWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 03:20:21 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A74FC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:18:23 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id r7so44373630wrc.10
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:18:23 -0700 (PDT)
+        Sun, 10 Oct 2021 03:22:05 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05596C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:20:07 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id g14so11980859pfm.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 00:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=smartx-com.20210112.gappssmtp.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ircsRGiSRRDI5vvTT/PYNTjvV8p5MX9cyk5yss2d11M=;
-        b=mRV1EPIDOcWgi0ZDOfVMxd+VAqx5nw6cxQgaAoXTRBd0FIGA9mnt+5SIYAhejtfZCr
-         pfspAqx9qtIXRQTXHm01Pndlv3O9OXvtwktCVMMaYIouFz6eL902LeYzGz5VBUNig4kZ
-         PFbs58PpaUYjrTZPYaCTuE/G0kQD2aCj6q2xgL/zuNobHASXYY0NiG4hOEUXSW2x2H6H
-         aGhIpWJFfEJ2fhYwA1kGm6e8pEbRpW9NwO6HNKrVkAhzRXUGWmUR0fecsiMcwJG8pVId
-         eeulCiEQquGk3JRwnzcTANMzOk/zwuJnQ69/qDFurk9O31OoWHFAMcUv0yN9W2TSQ/rK
-         wRxg==
+        bh=wt8NCphr5LPTSGm5kELuO+yCdiTjLhoziCfmEiQX52A=;
+        b=hzOrD2V4QbMAGtGEfzDIWxHhW6RpCH8bdL5VjrY9tNQKZlKEW6hmDMrE+zskaa55F9
+         KsTu8O9zE3HmXcsD3uW/Epeq9uMr1q779pA7PPYU2HtDXxmnYnSr8XLA6ZkpzPLb5T3i
+         ltSlFzKZiMXrS4d0cYoL4wHrkmM8HGt3UxFwvtaNoSHifa1ipRc3nIUG3o7pvG3TSU4I
+         /Q2l/bUiQPTg0RZ7W5MSDdsFkZ6VdHyoyzSFX9+lipqpvGxJGX8ivH6cRW5ecKVK5TVg
+         NRaRc6Pjip69Ff832qrwKZBqosKB1A/3HpLOf7pCzO9zEycpkZhRIBiDsSPE7FQ1wwHD
+         Q3tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ircsRGiSRRDI5vvTT/PYNTjvV8p5MX9cyk5yss2d11M=;
-        b=eKAsMaxBo1q6qyLuwe4inCJ1JRoGU+l/vsTUsD04yv6xvc+E3zFOxIWggNLIJSNbpU
-         aofK4o8p7lBBaYhbcRpxINdBFEyErw1OgVPrxflQXxE6mYFDos/0USEc+gkwAVONb2OO
-         xVEUmXGs5Bndq9NzwBr7ABfk4/9539YOy5eN/JZiAG20cksUZhaA2bDBXKA0RuLUOkon
-         k55IGkWJEUWdUj5lNDNeQc/1mTIMBNjHfOlrCOs9iiIiXoNBIxaxCwB9i7syaPzYZY+D
-         1r540r3iKB1T7ka+CrBH7jx1xTJvgx4mTbc/KIUhwJAB2fJGk1EVjlWk2UZ/4h+NLlNQ
-         onJg==
-X-Gm-Message-State: AOAM533a5+7FIxEP/gnsqcEmwvXp1HosYLQQIkeegAtwtWndpYNIXO7T
-        T23shIK79z+s31ml+zTT4bdCReqCapI=
-X-Google-Smtp-Source: ABdhPJweOswcCJDMYDuEl0xsle+Ew2RuPx8ZRdW1YZ8M6RpUDbLmdzUmpEsY2CiRm/5fQXWfxpHHPw==
-X-Received: by 2002:a05:6000:1042:: with SMTP id c2mr9783493wrx.272.1633850301699;
-        Sun, 10 Oct 2021 00:18:21 -0700 (PDT)
-Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
-        by smtp.gmail.com with ESMTPSA id m4sm17473305wml.28.2021.10.10.00.18.20
+        bh=wt8NCphr5LPTSGm5kELuO+yCdiTjLhoziCfmEiQX52A=;
+        b=MIaXk3iqv6tLvKK9vJEwy7686Io8ZFcmYAQ4YmlJiYjh4BfrSiSmXfQHNLkxR67KVV
+         TTo0s2pOJ9bdynAEF3kH7URM8jxoVWLsyLAck+Kzzujr837hQ6IztEjlTad3BozW5XIR
+         vEamcuiYLJifMqMY9lhmye4FTBGGOemb9t0Ic6YQEi3dw5MXvnlrxz5+Qv44D86wNhkO
+         FUkCsgaOrm5LW9XtgI4F3uri5FllMOCaSNa7puq298+OBrGFMwIlw6kNXAHglaDGt9O+
+         VDL14Z1BP826I6+VGZI1JvbwRfa4ua1XSaGhW+14rMU+ISd8UvN1h4kRhFqGKDXvJcSd
+         k+dg==
+X-Gm-Message-State: AOAM531MftnsmKVuLvAa5ZoKMTzSn1pU53VGn3Z+u8mBJ0azMx4tucNQ
+        HmmjsBMe2YA6k1SRUieixyFGOg==
+X-Google-Smtp-Source: ABdhPJzlDvOIRIK4C4y08W5qslrO/yoNoK/k2ICLFh7pgKexkQcQP/tdQHlXaRyCbyHEPAGyDu8gmQ==
+X-Received: by 2002:a62:84d5:0:b0:44d:7cf:e6dc with SMTP id k204-20020a6284d5000000b0044d07cfe6dcmr3375469pfd.12.1633850405728;
+        Sun, 10 Oct 2021 00:20:05 -0700 (PDT)
+Received: from 64-217.. ([103.97.201.33])
+        by smtp.gmail.com with ESMTPSA id w13sm2384251pfc.10.2021.10.10.00.20.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 00:18:21 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [PATCH] bus: sun50i-de2: Adjust printing error message
-Date:   Sun, 10 Oct 2021 09:18:12 +0200
-Message-Id: <20211010071812.145178-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Sun, 10 Oct 2021 00:20:05 -0700 (PDT)
+From:   Li Feng <fengli@smartx.com>
+To:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        open-iscsi@googlegroups.com (open list:ISCSI),
+        linux-scsi@vger.kernel.org (open list:ISCSI),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     Li Feng <fengli@smartx.com>
+Subject: [PATCH] iscsi_tcp: fix the NULL pointer dereference
+Date:   Sun, 10 Oct 2021 15:19:47 +0800
+Message-Id: <20211010071947.2002025-1-fengli@smartx.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SRAM driver often returns -EPROBE_DEFER and thus this bus driver often
-prints error message, even if it probes successfully later. This is
-confusing for users and they often think that something is wrong.
+iscsi_sw_tcp_conn_set_param should check the pointer before using it.
 
-Use dev_err_probe() helper for printing error message. It handles
--EPROBE_DEFER automatically.
+I got this ops when starting my os:
+[   27.158355] sd 27:0:0:1: [sdco] Mode Sense: 83 00 00 08
+[   27.158377] scsi 27:0:0:3: Direct-Access     ZBS      VOLUME           0000 PQ: 0 ANSI: 5
+[   27.167665]  connection39:0: detected conn error (1020)
+[   27.174681] BUG: kernel NULL pointer dereference, address: 0000000000000020
+[   27.174706] #PF: supervisor read access in kernel mode
+[   27.174719] #PF: error_code(0x0000) - not-present page
+[   27.174731] PGD 0 P4D 0
+[   27.174739] Oops: 0000 [#1] SMP NOPTI
+[   27.174749] CPU: 8 PID: 1044 Comm: iscsid Not tainted 5.11.12-300.fc34.x86_64 #1
+[   27.174767] Hardware name: VMware, Inc. VMware Virtual Platform/440BX Desktop Reference Platform, BIOS 6.00 12/12/2018
+[   27.174790] RIP: 0010:iscsi_sw_tcp_conn_set_param+0x6a/0x80 [iscsi_tcp]
+[   27.174807] Code: 85 d2 74 23 48 89 83 e0 00 00 00 31 c0 5b 5d c3 e8 bb 21 fb ff 31 c0 5b 5d c3 48 89 ef 5b 48 89 d6 5d e9 99 62 ff ff 48 8b 03 <48> 8b 40 20 48 8b 80 a0 00 00 00 eb cd 66 0f 1f 84 00 00 00 00 00
+[   27.174847] RSP: 0018:ffffba8a46103b90 EFLAGS: 00010246
+[   27.174860] RAX: 0000000000000000 RBX: ffff98cbf22766b8 RCX: ffffffffc096d6b9
+[   27.174877] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff98cbdbcb6049
+[   27.174893] RBP: ffff98cbf2276348 R08: 00000000000000ff R09: 000000000000000a
+[   27.174909] R10: 000000000000000a R11: f000000000000000 R12: ffff98cbdbcb6010
+[   27.174925] R13: ffff98cbdbcb6048 R14: ffff98cbf2279800 R15: 0000000000000414
+[   27.174941] FS:  00007fa88bab7cc0(0000) GS:ffff98d1e0000000(0000) knlGS:0000000000000000
+[   27.175188] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   27.175441] CR2: 0000000000000020 CR3: 000000022522c000 CR4: 00000000003506e0
+[   27.175734] Call Trace:
+[   27.176003]  iscsi_if_rx+0xdda/0x1adc [scsi_transport_iscsi]
+[   27.176291]  ? __kmalloc_node_track_caller+0xec/0x280
+[   27.176585]  ? netlink_sendmsg+0x30c/0x440
+[   27.176880]  netlink_unicast+0x1d3/0x2a0
+[   27.177191]  netlink_sendmsg+0x22a/0x440
+[   27.177494]  sock_sendmsg+0x5e/0x60
+[   27.177799]  ____sys_sendmsg+0x22c/0x270
+[   27.178107]  ? import_iovec+0x17/0x20
+[   27.178422]  ? sendmsg_copy_msghdr+0x59/0x90
+[   27.178747]  ? _copy_from_user+0x3c/0x80
+[   27.179072]  ___sys_sendmsg+0x81/0xc0
+[   27.179402]  ? ___sys_recvmsg+0x86/0xe0
+[   27.179736]  ? handle_mm_fault+0x113f/0x1970
+[   27.180076]  ? enqueue_hrtimer+0x32/0x70
+[   27.180422]  __sys_sendmsg+0x49/0x80
+[   27.180778]  do_syscall_64+0x33/0x40
+[   27.181132]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+Signed-off-by: Li Feng <fengli@smartx.com>
 ---
- drivers/bus/sun50i-de2.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/scsi/iscsi_tcp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/bus/sun50i-de2.c b/drivers/bus/sun50i-de2.c
-index 672518741f86..414f29cdedf0 100644
---- a/drivers/bus/sun50i-de2.c
-+++ b/drivers/bus/sun50i-de2.c
-@@ -15,10 +15,9 @@ static int sun50i_de2_bus_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	ret = sunxi_sram_claim(&pdev->dev);
--	if (ret) {
--		dev_err(&pdev->dev, "Error couldn't map SRAM to device\n");
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "Couldn't map SRAM to device\n");
- 
- 	of_platform_populate(np, NULL, NULL, &pdev->dev);
- 
+diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
+index 1bc37593c88f..2ec1405d272d 100644
+--- a/drivers/scsi/iscsi_tcp.c
++++ b/drivers/scsi/iscsi_tcp.c
+@@ -724,6 +724,8 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_cls_conn *cls_conn,
+ 		break;
+ 	case ISCSI_PARAM_DATADGST_EN:
+ 		iscsi_set_param(cls_conn, param, buf, buflen);
++		if (!tcp_sw_conn || !tcp_sw_conn->sock)
++			return -ENOTCONN;
+ 		tcp_sw_conn->sendpage = conn->datadgst_en ?
+ 			sock_no_sendpage : tcp_sw_conn->sock->ops->sendpage;
+ 		break;
 -- 
-2.33.0
+2.31.1
 
