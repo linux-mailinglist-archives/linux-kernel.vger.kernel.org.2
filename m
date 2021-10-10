@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F09042829B
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:19:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2AA42829C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Oct 2021 19:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhJJRU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 13:20:57 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:33704
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231144AbhJJRU4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 13:20:56 -0400
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com [209.85.208.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AAE2E3FFEE
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 17:18:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633886336;
-        bh=4qntQH6iTVpY2LlsjZficLjwmHfD3YcYFwNAdv68/mo=;
-        h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-         MIME-Version:Content-Type;
-        b=iB6QNWE73oao3wOJHt5CczYwkUiP1SwNqftNBNjOMVodIUgaiQlTkL0iAsIYuCGId
-         Eqkg7oeBXFz1KmbFU0BQX4B5g7LNxhrCF8A9ZHrAETTTfsyH96Ao9LkFMtT+O+gmD+
-         2Bv9ifqJj/xe2RS9VV+pd/Igj6FGNJIpSddSa66ir+Ph/Gnm3t6mtP4apdH85lRrFt
-         uaXWOjMlDgjTid9GFgzf7acehacCITl/ebjjrW6xNqXKvjgTX0mqDXYdquJ6y0Qg8/
-         t/nsUuziunniB6UMMskgDo1LrGBDJ1P1+SulKj1OcXhDtzw1mU2uzTNQuDHSpoWAWw
-         yivGJozg9AHkA==
-Received: by mail-ed1-f71.google.com with SMTP id 14-20020a508e4e000000b003d84544f33eso13714017edx.2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 10:18:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4qntQH6iTVpY2LlsjZficLjwmHfD3YcYFwNAdv68/mo=;
-        b=5hU0YRetFaGuVEQdT5BnjOlsu7M/kc4eOwivyj92xLaVggJ3Pr/EXiiaO+6GZPetHz
-         t2kv1gChk6i0EABXEclHv2yAh0bX/17yTPTdtvbDIovFXTPgTaMf9ncbq3I3A7DxrZhH
-         MN9ZJt6W1OcxhFy+MjHTqYc9vbmqxBG+VSMMr9cjTqfLgNFUf1mD9xLwvffm7v/OPFse
-         u30S2SmSOUNJlMOeglZWG1EJhZEcWr73tkPqktPzjxac0cL8yBxP9hxvbbPr3ViIq6RO
-         L2kliB9h+QNAYtZgPXqITWDvr0bDrbwRnK0lhTqyj8/yqYUeENofonZbz8vadGIZd6oo
-         7U1w==
-X-Gm-Message-State: AOAM530u9sSNWJkKYaX/82PvuQJlqCXK2JefWZfkTz8f28zHKSW4/uvd
-        QwGETj7sbkPmISLu5gggly/nTXWS1o6gUlqAq4HdAvdGQ6k8RyWD7FupwByFH4/HMLIjB9bTJFf
-        25sNzuYVoQ01F5sQySgwByKDYELArGhO+BwcsTsM/iA==
-X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr18305480eju.419.1633886336076;
-        Sun, 10 Oct 2021 10:18:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzR3op9vPfBpT/Rur3yAGyVqNTQAFkiXYhxIGK/aJsucDUphDJMtt0Mbk2Xsc0fWr/HMgUcmQ==
-X-Received: by 2002:a17:906:4a09:: with SMTP id w9mr18305471eju.419.1633886335878;
-        Sun, 10 Oct 2021 10:18:55 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id x14sm2952429edd.25.2021.10.10.10.18.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 10:18:55 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH] soc: samsung: pm_domains: drop unused is_off field
-Date:   Sun, 10 Oct 2021 19:18:53 +0200
-Message-Id: <163388632924.9226.9866323662921764229.b4-ty@canonical.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211008075253.67961-1-krzysztof.kozlowski@canonical.com>
-References: <20211008075253.67961-1-krzysztof.kozlowski@canonical.com>
+        id S231134AbhJJRXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 13:23:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:46190 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229872AbhJJRXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 13:23:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF44A1FB;
+        Sun, 10 Oct 2021 10:21:15 -0700 (PDT)
+Received: from slackpad.fritz.box (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 684EA3F694;
+        Sun, 10 Oct 2021 10:21:14 -0700 (PDT)
+Date:   Sun, 10 Oct 2021 18:19:46 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     mripard@kernel.org, wens@csie.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: sun50i-de2: Adjust printing error message
+Message-ID: <20211010181848.7b0ac8d4@slackpad.fritz.box>
+In-Reply-To: <20211010071812.145178-1-jernej.skrabec@gmail.com>
+References: <20211010071812.145178-1-jernej.skrabec@gmail.com>
+Organization: Arm Ltd.
+X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 09:52:53 +0200, Krzysztof Kozlowski wrote:
-> The 'is_off' member of internal state structure 'exynos_pm_domain' is
-> not used anymore.
+On Sun, 10 Oct 2021 09:18:12 +0200
+Jernej Skrabec <jernej.skrabec@gmail.com> wrote:
+
+> SRAM driver often returns -EPROBE_DEFER and thus this bus driver often
+> prints error message, even if it probes successfully later. This is
+> confusing for users and they often think that something is wrong.
 > 
+> Use dev_err_probe() helper for printing error message. It handles
+> -EPROBE_DEFER automatically.
+
+Ah, many thanks for just fixing this, it was indeed confusing people.
+And thanks for pointing to this useful helper!
+
+Would this actually be a candidate for stable?
+
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Cheers,
+Andre
+
+> ---
+>  drivers/bus/sun50i-de2.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 > 
+> diff --git a/drivers/bus/sun50i-de2.c b/drivers/bus/sun50i-de2.c
+> index 672518741f86..414f29cdedf0 100644
+> --- a/drivers/bus/sun50i-de2.c
+> +++ b/drivers/bus/sun50i-de2.c
+> @@ -15,10 +15,9 @@ static int sun50i_de2_bus_probe(struct platform_device *pdev)
+>  	int ret;
+>  
+>  	ret = sunxi_sram_claim(&pdev->dev);
+> -	if (ret) {
+> -		dev_err(&pdev->dev, "Error couldn't map SRAM to device\n");
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(&pdev->dev, ret,
+> +				     "Couldn't map SRAM to device\n");
+>  
+>  	of_platform_populate(np, NULL, NULL, &pdev->dev);
+>  
 
-Applied, thanks!
-
-[1/1] soc: samsung: pm_domains: drop unused is_off field
-      commit: 178d6c1b83e5244b866d90071246b3b0135c3f7d
-
-Best regards,
--- 
-Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
