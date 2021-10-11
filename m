@@ -2,147 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 454024297BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346A94297C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234683AbhJKTsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 15:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232027AbhJKTsi (ORCPT
+        id S234746AbhJKTtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 15:49:47 -0400
+Received: from bmailout3.hostsharing.net ([176.9.242.62]:56163 "EHLO
+        bmailout3.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234727AbhJKTtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:48:38 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FAAC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:46:38 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id oo5-20020a17090b1c8500b0019e585e8f6fso145478pjb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:46:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=USWZuA42U/QdDhA/fHCg+4AfqImFzDShWDW5TcIgstE=;
-        b=PCX8tqSJqlHZW7ppIUhhl82m02ww06ipMjlcSukzw60eV1DC1JFfZQov3EUVtrMhqv
-         i1c2DYrjg47zjo5j+H9DiOJZODHnj8N7B/6Oo1xHWclDDN4kMbpFztxwjWnRkEbL8Ldz
-         8ipDeS/dl3mw/yMWqVn3IVuq3YfqqQTpBXUjXPub2KIOjKVm3FrzSalu+TttA8/eu+Xr
-         su+lz03b1G9qad3VqcJkqmHI3ZGyFkMfHRWljnP+Xso5pY6b2JyDE9yKFH95HuRdf28L
-         fi5ULDDclY4Y0z9slsgXJTUlBEi+mEHuopc78C9s4S1W/CC9EzdzTU/budtAiCcTmQbS
-         ugvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=USWZuA42U/QdDhA/fHCg+4AfqImFzDShWDW5TcIgstE=;
-        b=xKWtuavqlgXaEHQmitF9qi3fkP7oHUDaDFC89rXszMVWVB258CskXnN/KSJrs8IxwH
-         7GDp7bUeJB8Js1420uIb5FdFpaUSGNbgpmwYW8GqjNoSiWDZKOXczS+XF5HLNuvujAR6
-         ZCbx0XldNuZ+k25II69E28zIov9FSvoyq8F77O50w5MEhKo5tbgu351CIRsS1lh6VGS2
-         R3+TpDb+61u9A+A7VcJ6+oFrZ2ZEd0IW01wcCjeHkFPQwEZrU5S9gdxHBQVUFhyVW2NT
-         lhuN/1InrbJajnDHfrhbg4mlsh6MLSTLh2K8CJYIGK5fqQNwerra/IKZavB4I9VcjX7W
-         wZdA==
-X-Gm-Message-State: AOAM5303IXns1UEAxNBI/7StknDuBGBz01VN3YVnfGQxcUzNZjOVaPSa
-        9M/GkfbVIl6YdciVujiYGyYAbT5et7Xp
-X-Google-Smtp-Source: ABdhPJxX7BbtgeFDBPLvl3CztWhO8ssl3rZNi9sIk20/UkWgSRXllqKCRAtJL47Z/IofMenTI5QX5T9Kfc8O
-X-Received: from vipinsh.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:36b0])
- (user=vipinsh job=sendgmr) by 2002:a17:90a:8b89:: with SMTP id
- z9mr1042346pjn.89.1633981597843; Mon, 11 Oct 2021 12:46:37 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 19:46:15 +0000
-Message-Id: <20211011194615.2955791-1-vipinsh@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH] KVM: VMX: Add a wrapper for reading INVPCID/INVEPT/INVVPID type
-From:   Vipin Sharma <vipinsh@google.com>
-To:     pbonzini@redhat.com, seanjc@google.com, dmatlack@google.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 11 Oct 2021 15:49:46 -0400
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 7E740100FBFF2;
+        Mon, 11 Oct 2021 21:47:40 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 5CED64A8C4; Mon, 11 Oct 2021 21:47:40 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 21:47:40 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Naveen Naidu <naveennaidu479@gmail.com>
+Cc:     bhelgaas@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH 16/22] PCI: pciehp: Use RESPONSE_IS_PCI_ERROR() to check
+ read from hardware
+Message-ID: <20211011194740.GA14357@wunner.de>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
+ <36c7c3005c4d86a6884b270807d84433a86c0953.1633972263.git.naveennaidu479@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <36c7c3005c4d86a6884b270807d84433a86c0953.1633972263.git.naveennaidu479@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a common helper function to read invalidation type specified by a
-trapped INVPCID/INVEPT/INVVPID instruction.
+On Mon, Oct 11, 2021 at 11:37:33PM +0530, Naveen Naidu wrote:
+> An MMIO read from a PCI device that doesn't exist or doesn't respond
+> causes a PCI error.  There's no real data to return to satisfy the
+> CPU read, so most hardware fabricates ~0 data.
+> 
+> Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
+> data from hardware.
 
-Add a symbol constant for max INVPCID type.
+Actually what happens is that PCI read transactions *time out*,
+so the host controller fabricates a response.
 
-No functional change intended.
+By contrast, a PCI *error* usually denotes an Uncorrectable or
+Correctable Error as specified in section 6.2.2 of the PCIe Base Spec.
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
----
- arch/x86/include/asm/invpcid.h |  1 +
- arch/x86/kvm/vmx/nested.c      |  4 ++--
- arch/x86/kvm/vmx/vmx.c         |  4 ++--
- arch/x86/kvm/vmx/vmx.h         | 12 ++++++++++++
- 4 files changed, 17 insertions(+), 4 deletions(-)
+Thus something like RESPONSE_IS_PCI_TIMEOUT() or IS_PCI_TIMEOUT() would
+probably be more appropriate.  I'll leave the exact bikeshed color for
+others to decide. :-)
 
-diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
-index 734482afbf81..b5ac26784c1b 100644
---- a/arch/x86/include/asm/invpcid.h
-+++ b/arch/x86/include/asm/invpcid.h
-@@ -21,6 +21,7 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
- #define INVPCID_TYPE_SINGLE_CTXT	1
- #define INVPCID_TYPE_ALL_INCL_GLOBAL	2
- #define INVPCID_TYPE_ALL_NON_GLOBAL	3
-+#define INVPCID_TYPE_MAX		3
- 
- /* Flush all mappings for a given pcid and addr, not including globals. */
- static inline void invpcid_flush_one(unsigned long pcid,
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index af1bbb73430a..f0605a99e0fc 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5392,7 +5392,7 @@ static int handle_invept(struct kvm_vcpu *vcpu)
- 		return 1;
- 
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
- 
- 	types = (vmx->nested.msrs.ept_caps >> VMX_EPT_EXTENT_SHIFT) & 6;
- 
-@@ -5472,7 +5472,7 @@ static int handle_invvpid(struct kvm_vcpu *vcpu)
- 		return 1;
- 
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
- 
- 	types = (vmx->nested.msrs.vpid_caps &
- 			VMX_VPID_EXTENT_SUPPORTED_MASK) >> 8;
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 1c8b2b6e7ed9..77f72a41dde3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5502,9 +5502,9 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
- 	}
- 
- 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
--	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-+	type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
- 
--	if (type > 3) {
-+	if (type > INVPCID_TYPE_MAX) {
- 		kvm_inject_gp(vcpu, 0);
- 		return 1;
- 	}
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index 592217fd7d92..eeafcce57df7 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -522,4 +522,16 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
- 
- void dump_vmcs(struct kvm_vcpu *vcpu);
- 
-+/*
-+ * When handling a VM-exit for one of INVPCID, INVEPT or INVVPID, read the type
-+ * of invalidation specified by the instruction.
-+ */
-+static inline unsigned long vmx_read_invalidation_type(struct kvm_vcpu *vcpu,
-+						       u32 vmx_instr_info)
-+{
-+	u32 vmx_instr_reg2 = (vmx_instr_info >> 28) & 0xf;
-+
-+	return kvm_register_read(vcpu, vmx_instr_reg2);
-+}
-+
- #endif /* __KVM_X86_VMX_H */
--- 
-2.33.0.882.g93a45727a2-goog
 
+> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+> ---
+>  drivers/pci/hotplug/pciehp_hpc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+
+Acked-by: Lukas Wunner <lukas@wunner.de>
