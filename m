@@ -2,98 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D02044291FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29174429200
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238222AbhJKOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237686AbhJKOh3 (ORCPT
+        id S238475AbhJKOip convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 10:38:45 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:55365 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237686AbhJKOin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:37:29 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBDAC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:35:29 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x27so74457118lfa.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:35:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KwV0j5l+6jp7oi03p9mWq74y0+pPufe5DR//TIJnJ0o=;
-        b=tSlT/vaOIZ7/xP1SYtjDrUM6zeicsCDdfvQmPM0bhEaEe106g/25m1QWASj7TLzW/9
-         DsOn6EGujLp17YIv7/Effv67U/zAr79cu3RUSBeiiip5hVaALHGajC6YeLmkQVGQ0C8S
-         w7mEbguwEFrkl0xpyR9z7jGXRDQTRvsMWMlbrPvFO3naoD7VG+ujxFiZQRu+Ahy2Bzey
-         Ow3Hw9kgiyzRRMY48ycOrOj1e0bHAnwCKdT1FEoOuHJWVQLc5aebEokPcv4C4Lp443Qs
-         j3fCIezddi0EX9bSmjbA/1AApjzNwCrfNaOkoxTwADK3ImFvydV9qd75NUqYzbe5TX1i
-         UY6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KwV0j5l+6jp7oi03p9mWq74y0+pPufe5DR//TIJnJ0o=;
-        b=lNFSdd/xWSWcLY2v/5CT+CIs9Eq25gUAw2HRz2owF+IUwfnWQ7xmJLRP89S1NmYowh
-         6h8i6lUS10jtwfTD2edLsfQki6ALbYgO36gYD/bQ7pmInPFxHefAvskeuzDzPy1C8hjf
-         QUvHa/ntHHLpnlo8rTmlmpMzb6IObTu/H+a3lFoS5NdC0xpi7jB1+10C41lVihlJXrtP
-         Eiax87Iz9V75TUIR11ssKDkoOtZ9VQplgriI5wJQpH3vAdyzrzXYpvwLGudfyU5xxcZZ
-         fCeiO7/PS+/KR7EcxGCqFwJEo4vPEcayK7RzdxjY86UoJxaTVrr4YSVc5vfANhJsg2mF
-         dvaw==
-X-Gm-Message-State: AOAM533Y55gjma86hit3UOFu7CxZyvNfTN5ckZwuJ/nuvHCWxXTstST5
-        sPs6n13WPgi6ZA08qJkEBZ1zorpeqDKJPZMRMMtqoQ==
-X-Google-Smtp-Source: ABdhPJyvJq+EGbz0XK0ctDpXW9jQaqubWu99B3p6kIGl1Sf0AYzfikJ14IoEewM995n2g++yyMaWr8hqRWbIxDKMXPo=
-X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr8346534ljl.337.1633962922631;
- Mon, 11 Oct 2021 07:35:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211007231647.3553604-1-seanjc@google.com>
-In-Reply-To: <20211007231647.3553604-1-seanjc@google.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Mon, 11 Oct 2021 09:35:11 -0500
-Message-ID: <CAOQ_Qsj9yiChnBZmotdYFYgsd=C0J5XXR8mthdiC+iXX22F7jw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: Account for 32-bit kernels when handling
- address in TSC attrs
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        Mon, 11 Oct 2021 10:38:43 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-173-pguFWQECPmaCIue-eAt8vw-1; Mon, 11 Oct 2021 10:36:39 -0400
+X-MC-Unique: pguFWQECPmaCIue-eAt8vw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF664112B8C7;
+        Mon, 11 Oct 2021 14:36:36 +0000 (UTC)
+Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.206])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2B76B19C59;
+        Mon, 11 Oct 2021 14:36:32 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH V2 00/19] RTLA: An interface for osnoise/timerlat tracers
+Date:   Mon, 11 Oct 2021 16:35:48 +0200
+Message-Id: <cover.1633958325.git.bristot@kernel.org>
+MIME-Version: 1.0
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 7, 2021 at 6:16 PM Sean Christopherson <seanjc@google.com> wrot=
-e:
->
-> When handling TSC attributes, cast the userspace provided virtual address
-> to an unsigned long before casting it to a pointer to fix warnings on
-> 32-bit kernels due to casting a 64-bit integer to a 32-bit pointer.
->
-> Add a check that the truncated address matches the original address, e.g.
-> to prevent userspace specifying garbage in bits 63:32.
->
->   arch/x86/kvm/x86.c: In function =E2=80=98kvm_arch_tsc_get_attr=E2=80=99=
-:
->   arch/x86/kvm/x86.c:4947:22: error: cast to pointer from integer of diff=
-erent size
->    4947 |  u64 __user *uaddr =3D (u64 __user *)attr->addr;
->         |                      ^
->   arch/x86/kvm/x86.c: In function =E2=80=98kvm_arch_tsc_set_attr=E2=80=99=
-:
->   arch/x86/kvm/x86.c:4967:22: error: cast to pointer from integer of diff=
-erent size
->    4967 |  u64 __user *uaddr =3D (u64 __user *)attr->addr;
->         |                      ^
->
-> Cc: Oliver Upton <oupton@google.com>
-> Fixes: 469fde25e680 ("KVM: x86: Expose TSC offset controls to userspace")
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/kvm/x86.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
+The rtla(1) is a meta-tool that includes a set of commands that
+aims to analyze the real-time properties of Linux. But instead of
+testing Linux as a black box, rtla leverages kernel tracing
+capabilities to provide precise information about the properties
+and root causes of unexpected results.
 
-Reviewed-by: Oliver Upton <oupton@google.com>
+To start, it presents an interface to the osnoise and timerlat tracers.
+In the future, it will also serve as home to the rtsl [1] and other
+latency/noise tracers.
+
+The first five patches are a re-send of [2] that enable multiple
+instances for osnoise/timerlat tracers. They are required to run the -T
+option - to save a trace with osnoise: events for debugging.
+
+The next seven patches are rtla, rtla osnoise, and rtla timerlat.
+
+The following patches are the man pages for the tools.
+
+To compile rtla on fedora you need:
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git
+  $ cd libtraceevent/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git
+  $ cd libtracefs/
+  $ make
+  $ sudo make install
+  $ cd ..
+  $ sudo dnf install asciidoc xmlto procps-devel
+  $ cd $linux/tools/tracing/rtla/
+  $ make
+  $ sudo make install
+
+This tool was be discussed at the RT-MC during LPC2021 [3].
+
+[1] rtsl: https://github.com/bristot/rtsl/
+[2] https://lore.kernel.org/lkml/cover.1628775552.git.bristot@kernel.org/
+[3] https://youtu.be/cZUzc0U1jJ4
+
+Changes from v1:
+  - Fixes -t options on osnoise tracers (-t means --trace for all tools now)
+  - Fixes --bucket-size references (not --bucket_size)
+
+Daniel Bristot de Oliveira (19):
+  trace/osnoise: Do not follow tracing_cpumask
+  trace/osnoise: Split workload start from the tracer start
+  trace/osnoise: Use start/stop_per_cpu_kthreads() on
+    osnoise_cpus_write()
+  trace/osnoise: Support a list of trace_array *tr
+  trace/osnoise: Allow multiple instances of the same tracer
+  rtla: Real-Time Linux Analysis tool
+  rtla: Helper functions for rtla
+  rtla: Add osnoise tool
+  rtla/osnoise: Add osnoise top mode
+  rtla/osnoise: Add the hist mode
+  rtla: Add timerlat tool and timelart top mode
+  rtla/timerlat: Add timerlat hist mode
+  rtla: Add Documentation
+  rtla: Add rtla osnoise man page
+  rtla: Add rtla osnoise top documentation
+  rtla: Add rtla osnoise hist documentation
+  rtla: Add rtla timerlat documentation
+  rtla: Add rtla timerlat top documentation
+  rtla: Add rtla timerlat hist documentation
+
+ kernel/trace/trace_osnoise.c                  | 410 ++++++---
+ tools/tracing/rtla/Documentation/Makefile     | 223 +++++
+ .../tracing/rtla/Documentation/asciidoc.conf  | 118 +++
+ .../rtla/Documentation/manpage-base.xsl       |  35 +
+ .../rtla/Documentation/manpage-normal.xsl     |  13 +
+ .../rtla/Documentation/rtla-osnoise-hist.txt  | 117 +++
+ .../rtla/Documentation/rtla-osnoise-top.txt   |  98 ++
+ .../rtla/Documentation/rtla-osnoise.txt       |  68 ++
+ .../rtla/Documentation/rtla-timerlat-hist.txt | 162 ++++
+ .../rtla/Documentation/rtla-timerlat-top.txt  | 181 ++++
+ .../rtla/Documentation/rtla-timerlat.txt      |  65 ++
+ tools/tracing/rtla/Documentation/rtla.txt     |  56 ++
+ tools/tracing/rtla/Documentation/utils.mk     | 144 +++
+ tools/tracing/rtla/Makefile                   |  71 ++
+ tools/tracing/rtla/src/osnoise.c              | 846 +++++++++++++++++
+ tools/tracing/rtla/src/osnoise.h              |  86 ++
+ tools/tracing/rtla/src/osnoise_hist.c         | 860 ++++++++++++++++++
+ tools/tracing/rtla/src/osnoise_top.c          | 566 ++++++++++++
+ tools/tracing/rtla/src/rtla.c                 |  87 ++
+ tools/tracing/rtla/src/timerlat.c             |  72 ++
+ tools/tracing/rtla/src/timerlat.h             |   3 +
+ tools/tracing/rtla/src/timerlat_hist.c        | 778 ++++++++++++++++
+ tools/tracing/rtla/src/timerlat_top.c         | 578 ++++++++++++
+ tools/tracing/rtla/src/trace.c                | 220 +++++
+ tools/tracing/rtla/src/trace.h                |  26 +
+ tools/tracing/rtla/src/utils.c                | 433 +++++++++
+ tools/tracing/rtla/src/utils.h                |  55 ++
+ 27 files changed, 6250 insertions(+), 121 deletions(-)
+ create mode 100644 tools/tracing/rtla/Documentation/Makefile
+ create mode 100644 tools/tracing/rtla/Documentation/asciidoc.conf
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-base.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/manpage-normal.xsl
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-osnoise.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-hist.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat-top.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla-timerlat.txt
+ create mode 100644 tools/tracing/rtla/Documentation/rtla.txt
+ create mode 100644 tools/tracing/rtla/Documentation/utils.mk
+ create mode 100644 tools/tracing/rtla/Makefile
+ create mode 100644 tools/tracing/rtla/src/osnoise.c
+ create mode 100644 tools/tracing/rtla/src/osnoise.h
+ create mode 100644 tools/tracing/rtla/src/osnoise_hist.c
+ create mode 100644 tools/tracing/rtla/src/osnoise_top.c
+ create mode 100644 tools/tracing/rtla/src/rtla.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.c
+ create mode 100644 tools/tracing/rtla/src/timerlat.h
+ create mode 100644 tools/tracing/rtla/src/timerlat_hist.c
+ create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ create mode 100644 tools/tracing/rtla/src/trace.c
+ create mode 100644 tools/tracing/rtla/src/trace.h
+ create mode 100644 tools/tracing/rtla/src/utils.c
+ create mode 100644 tools/tracing/rtla/src/utils.h
+
+-- 
+2.31.1
+
