@@ -2,208 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 838E04296BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9738E4296C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234366AbhJKSYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhJKSYJ (ORCPT
+        id S234423AbhJKSYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:24:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59476 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234401AbhJKSYo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:24:09 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4795C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:22:08 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id y7so5993927pfg.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=i31zgabbl20JqR4wPw8hpeVNQoFtIqMlPBy58x2LdDE=;
-        b=IS3dcojH0DUbsMAep4w+B67ZVD+inzP2Wv9HKH6NpILPa6b0AxFsdb6WtqEiwih2n3
-         oe9YRwxtmCq3e6Yyl4ZuppPxOcv4jl6bNnIHh8m0iyMgAoPmjmWorg16v0jr73LnofvZ
-         I38RB64tY/pWo5Zbg9I/dy+a4yzoPHfolhCtqKU9B8X0i21kHYXcBmioPazGISR8XvGV
-         dL10QKggGMRi4NSG3NIFBDjLFaBejjS57fAhgmFEJ+6tXMNF4utr5yhOGack64vLr8WB
-         Sr5+BfcR7y4DIfdb6/0/CSuo7LFFIrsR6nwjXqu9p1ctkYZ7ZmgtH8e3xyysPGj4n+OA
-         EFEA==
+        Mon, 11 Oct 2021 14:24:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633976563;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dMNh2Z50mjXzYsw8NI8wyY+ikUuFKE6oW0fJI23ISWw=;
+        b=fISYrrSJNh9ZzUprXO1YpfKegc7B9Qj+81C1tBjNjqnDq7uIFV0QC5vTNWL6fmuDzC/oUL
+        GzepTAj17G/Br0CpfRQzdBSPZ+jrgivJkXcBIQAEvHM3hWf0UlcWAdN4JeJFv0fPeVhfDz
+        apBKm7KWzqve5OWKqVG8qMp5lseaa/o=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-20-u3vntvLvP4iWEALe8jyYHA-1; Mon, 11 Oct 2021 14:22:42 -0400
+X-MC-Unique: u3vntvLvP4iWEALe8jyYHA-1
+Received: by mail-ed1-f71.google.com with SMTP id t28-20020a508d5c000000b003dad7fc5caeso16594042edt.11
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:22:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=i31zgabbl20JqR4wPw8hpeVNQoFtIqMlPBy58x2LdDE=;
-        b=EdekiGeEodBLFZe3p4wVtMTyyIvNfacjHxvuX7M2oppMSug4GXu7NpINNw0xQwuj13
-         lwcIH97Ep1AtQXHXGW7PUxDCEcXaMs8c1fQJSF6m3AQt4ZTUJ1JeJ3TqS9fbZUeRHz5Y
-         5CrDMtT5f6LX8DUdCKGnC/aGZWIMG5XjO4u/fvrh3Bm8s9bMI2jmF5AMxwkU+TUVz8o1
-         QOXaUObbgSQDJwaBHqqXjD6iHQmMFdeN5xaVLUqUNyO7+1+/Mdt4IlxgmV16UWRNpkov
-         2wmW30hsWR8/pDbH+fJgVqhlpFj+n9KYr1hLBW5gf8dArwEtFITI8mthtCmFJ2mDgCRT
-         aHoA==
-X-Gm-Message-State: AOAM5305abKB+CBcTNbN+H8VuDA05pYRrV5mx44y90xW0a+63oQDcdp6
-        1O3HaRKNHARbXPXOfmtqog6i4Q==
-X-Google-Smtp-Source: ABdhPJzRB/kJ875wp94Qq6Yw+LkB6cCP5s6+FEo09+6K1jimUHFci1oJh5cY0Xhhu/QcTtB9xs3l4g==
-X-Received: by 2002:a63:bf07:: with SMTP id v7mr19102498pgf.475.1633976528153;
-        Mon, 11 Oct 2021 11:22:08 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id h2sm139607pjk.44.2021.10.11.11.22.05
+        bh=dMNh2Z50mjXzYsw8NI8wyY+ikUuFKE6oW0fJI23ISWw=;
+        b=LMrs2LzC9LovFsVHVowDK+9NOzPNpk6C5WVRw7zA3p2DwYJxkhnhrF0ANfGIeizf8l
+         J4Pfu/8BfP7etcAe1R03+Xsc58IPxs63M23o7TyIQ+PW5HBJ/KCSutpxtMWD710FCQh+
+         m7koBQQzflDZfJmFo5Pgdc43+wEitgWXhwoK0ixpgWj67fPJ1TWkUQVijV9dTt7c1ERi
+         cCOdsceB+H8eFoPUto5sWMUqJRWgBnwCkqA7OZoEXy2HdJpsx/1QgN/pm5y5Zhp4JOBr
+         dybidJbFhJS8vZkz1uTGzCGDUGx7wO01/TdCYkiLGSTtUxJ880u5C1nhrAMVu+qPdWI3
+         VlvQ==
+X-Gm-Message-State: AOAM530kEyOfX8mQrMpANZvf4a3IYoIDwZzRZjA0unNG0D9NSEf2SKQB
+        5iYVTYgpxwCJT1GV5HeYFoi2IDEjcvr2dDJ608yp7Jzg1ZvXIjMLOAFgksBLE4FtjF7QAPOdPHC
+        fexk/B5IJhC17Qk/++xSk2/nz
+X-Received: by 2002:aa7:c941:: with SMTP id h1mr44235670edt.128.1633976560834;
+        Mon, 11 Oct 2021 11:22:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyN/U+BRUzodKL6gvFVqtuU/Q67n/I/WAJHIiErFZ+rnv84Ucv2oE2o+msvXuPI2MK8YmvNow==
+X-Received: by 2002:aa7:c941:: with SMTP id h1mr44235616edt.128.1633976560614;
+        Mon, 11 Oct 2021 11:22:40 -0700 (PDT)
+Received: from redhat.com ([2.55.159.57])
+        by smtp.gmail.com with ESMTPSA id u2sm4623544eda.32.2021.10.11.11.22.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:22:06 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 12:22:04 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Deepak Kumar Singh <deesin@codeaurora.org>
-Cc:     bjorn.andersson@linaro.org, swboyd@chromium.org,
-        clew@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Subject: Re: [PATCH V1 3/3] rpmsg: char: Add TIOCMGET/TIOCMSET ioctl support
-Message-ID: <20211011182204.GB3817586@p14s>
-References: <1633015924-881-1-git-send-email-deesin@codeaurora.org>
- <1633015924-881-5-git-send-email-deesin@codeaurora.org>
+        Mon, 11 Oct 2021 11:22:39 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 14:22:33 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Message-ID: <20211011141248-mutt-send-email-mst@kernel.org>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
+ <20211011073614-mutt-send-email-mst@kernel.org>
+ <78766e28-8353-acc8-19e2-033d4bbf3472@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1633015924-881-5-git-send-email-deesin@codeaurora.org>
+In-Reply-To: <78766e28-8353-acc8-19e2-033d4bbf3472@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:02:04PM +0530, Deepak Kumar Singh wrote:
-> Add TICOMGET and TIOCMSET ioctl support for rpmsg char device nodes
-> to get/set the low level transport signals.
+On Mon, Oct 11, 2021 at 10:32:23AM -0700, Andi Kleen wrote:
 > 
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> ---
->  drivers/rpmsg/rpmsg_char.c | 43 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 43 insertions(+)
+> > Because it does not end with I/O operations, that's a trivial example.
+> > module unloading is famous for being racy: I just re-read that part of
+> > virtio drivers and sure enough we have bugs there, this is after
+> > they have presumably been audited, so a TDX guest is better off
+> > just disabling hot-unplug completely, and hotplug isn't far behind.
 > 
-
-I would have expected this patch to be 02 rather than 03.  That way the
-framework is sent in place and then used by platform code.
-
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 2bebc9b..60a889b 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -19,6 +19,7 @@
->  #include <linux/rpmsg.h>
->  #include <linux/skbuff.h>
->  #include <linux/slab.h>
-> +#include <linux/termios.h>
->  #include <linux/uaccess.h>
->  #include <uapi/linux/rpmsg.h>
->  
-> @@ -76,6 +77,9 @@ struct rpmsg_eptdev {
->  	spinlock_t queue_lock;
->  	struct sk_buff_head queue;
->  	wait_queue_head_t readq;
-> +
-> +	u32 rsigs;
-> +	bool sig_pending;
->  };
->  
->  static int rpmsg_eptdev_destroy(struct device *dev, void *data)
-> @@ -120,6 +124,18 @@ static int rpmsg_ept_cb(struct rpmsg_device *rpdev, void *buf, int len,
->  	return 0;
->  }
->  
-> +static int rpmsg_sigs_cb(struct rpmsg_device *rpdev, void *priv, u32 sigs)
-> +{
-> +	struct rpmsg_eptdev *eptdev = priv;
-> +
-> +	eptdev->rsigs = sigs;
-> +	eptdev->sig_pending = true;
-
-If two signals are sent in a row without user space having the time to process
-the first one, the second message will overwrite the first one.
-
-> +
-> +	/* wake up any blocking processes, waiting for signal notification */
-> +	wake_up_interruptible(&eptdev->readq);
-> +	return 0;
-> +}
-> +
->  static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->  {
->  	struct rpmsg_eptdev *eptdev = cdev_to_eptdev(inode->i_cdev);
-> @@ -139,6 +155,7 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
->  		return -EINVAL;
->  	}
->  
-> +	ept->sig_cb = rpmsg_sigs_cb;
->  	eptdev->ept = ept;
->  	filp->private_data = eptdev;
->  
-> @@ -157,6 +174,7 @@ static int rpmsg_eptdev_release(struct inode *inode, struct file *filp)
->  		eptdev->ept = NULL;
->  	}
->  	mutex_unlock(&eptdev->ept_lock);
-> +	eptdev->sig_pending = false;
->  
->  	/* Discard all SKBs */
->  	skb_queue_purge(&eptdev->queue);
-> @@ -267,6 +285,9 @@ static __poll_t rpmsg_eptdev_poll(struct file *filp, poll_table *wait)
->  	if (!skb_queue_empty(&eptdev->queue))
->  		mask |= EPOLLIN | EPOLLRDNORM;
->  
-> +	if (eptdev->sig_pending)
-> +		mask |= EPOLLPRI;
-> +
->  	mask |= rpmsg_poll(eptdev->ept, filp, wait);
->  
->  	return mask;
-> @@ -276,10 +297,32 @@ static long rpmsg_eptdev_ioctl(struct file *fp, unsigned int cmd,
->  			       unsigned long arg)
->  {
->  	struct rpmsg_eptdev *eptdev = fp->private_data;
-> +	bool set;
-> +	u32 val;
-> +	int ret;
->  
->  	if (cmd != RPMSG_DESTROY_EPT_IOCTL)
->  		return -EINVAL;
->  
-> +	switch (cmd) {
-> +	case TIOCMGET:
-
-The IOCTLs should be generic so that any kind of out-of-band signals.
-
-> +		eptdev->sig_pending = false;
-> +		ret = put_user(eptdev->rsigs, (int __user *)arg);
-> +		break;
-> +	case TIOCMSET:
-> +		ret = get_user(val, (int __user *)arg);
-> +		if (ret)
-> +			break;
-> +		set = (val & TIOCM_DTR) ? true : false;
-> +		ret = rpmsg_set_flow_control(eptdev->ept, set);
-> +		break;
-
-But as said in patch 01, I'm not sure about the path from AP to RP.  Function
-rpmsg_set_flow_control() turns into qcom_glink_tx().  In this case it should be
-possible for user space to send this information as it does with other kind of
-data destined for the remote processor.  At the very least the send interface
-should be decoupled from the implementation specific nature of this use case.
-
-Lastly, Arnaud has sent patches that refactor rpmsg_eptdev_ioctl().  I would
-like that patchset to be dealth with before we move forward with this one.  That
-way we make sure to avoid supporting features that are incompatible with each
-other.
-
-Regards,
-Mathieu
-
-> +	case RPMSG_DESTROY_EPT_IOCTL:
-> +		ret = rpmsg_eptdev_destroy(&eptdev->dev, NULL);
-> +		break;
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +
->  	return rpmsg_eptdev_destroy(&eptdev->dev, NULL);
->  }
->  
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> These all shouldn't matter for a confidential guest. The only way it can be
+> attacked is through IO, everything else is protected by hardware.
 > 
+> 
+> Also it would all require doing something at the guest level, which we
+> assume is not malicious.
+> 
+> 
+> > Malicious filesystems can exploit many linux systems unless
+> > you take pains to limit what is mounted and how.
+> 
+> That's expected to be handled by authenticated dmcrypt and similar.
+> Hardening at this level has been done for many years.
+
+It's possible to do it like this, sure. But that's not the
+only configuration, userspace needs to be smart about setting things up.
+Which is my point really.
+
+> 
+> > Networking devices tend to get into the default namespaces and can
+> > do more or less whatever CAP_NET_ADMIN can.
+> > Etc.
+> 
+> 
+> Networking should be already hardened, otherwise you would have much worse
+> problems today.
+
+Same thing. NFS is pretty common, you are saying don't do it then. Fair
+enough but again, arbitrary configs just aren't going to be secure.
+
+> 
+> 
+> > hange in your subsystem here.
+> > Well I commented on the API patch, not the virtio patch.
+> > If it's a way for a driver to say "I am hardened
+> > and audited" then I guess it should at least say so.
+> 
+> 
+> This is handled by the central allow list. We intentionally didn't want each
+> driver to declare itself, but have a central list where changes will get
+> more scrutiny than random driver code.
+
+Makes sense. Additionally, distros can tweak that to their heart's
+content, selecting the functionality/security balance that makes sense
+for them.
+
+> But then there are the additional opt-ins for the low level firewall. These
+> are in the API. I don't see how it could be done at the driver level, unless
+> you want to pass in a struct device everywhere?
+
+I am just saying don't do it then. Don't build drivers that distro does
+not want to support into kernel. And don't load them when they are
+modules.
+
+> > > > How about creating a defconfig that makes sense for TDX then?
+> > > TDX can be used in many different ways, I don't think a defconfig is
+> > > practical.
+> > > 
+> > > In theory you could do some Kconfig dependency (at the pain point of having
+> > > separate kernel binariees), but why not just do it at run time then if you
+> > > maintain the list anyways. That's much easier and saner for everyone. In the
+> > > past we usually always ended up with runtime mechanism for similar things
+> > > anyways.
+> > > 
+> > > Also it turns out that the filter mechanisms are needed for some arch
+> > > drivers which are not even configurable, so alone it's probably not enough,
+> > 
+> > I guess they aren't really needed though right, or you won't try to
+> > filter them?
+> 
+> We're addressing most of them with the device filter for platform drivers.
+> But since we cannot stop them doing ioremap IO in their init code they also
+> need the low level firewall.
+> 
+> Some others that cannot be addressed have explicit disables.
+> 
+> 
+> > So make them configurable?
+> 
+> Why not just fix the runtime? It's much saner for everyone. Proposing to do
+> things at build time sounds like we're in Linux 0.99 days.
+> 
+> -Andi
+
+Um. Tweaking driver code is not just build time, it's development time.
+At least with kconfig you don't need to patch your kernel.
+
+-- 
+MST
+
