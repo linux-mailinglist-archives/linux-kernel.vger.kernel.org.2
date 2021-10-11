@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E229C429697
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6587B42969E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbhJKSPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:15:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        id S234386AbhJKSQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhJKSPf (ORCPT
+        with ESMTP id S234320AbhJKSQO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:15:35 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61D0C061570;
-        Mon, 11 Oct 2021 11:13:34 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id s11so11536218pgr.11;
-        Mon, 11 Oct 2021 11:13:34 -0700 (PDT)
+        Mon, 11 Oct 2021 14:16:14 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260EBC061570;
+        Mon, 11 Oct 2021 11:14:14 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so5445564otq.12;
+        Mon, 11 Oct 2021 11:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+xcssxkZTlEueyseAvWLLQTd3E+oYkVw7Pd99PMykLI=;
-        b=co5exKtJ6qDmfzZFrPgxDp6dqyVCFIoEid4UcPCcvPulI+0EzTXG61Pdez9ro0k9TS
-         rOqlkqHbLbs2QHttLz3uTb6FqVFfYGau8dOoF7d8CZwoS8IEYnHQZBODZEK+ayBNrDC4
-         mmf1m5zkVYjFjoFAZO+qn4E//mgIiKpgP9WawSEHMmuJH5366WhZeUNOgVEvJQ9WoKc1
-         w1I1YrdkMK4y17nyUPVbWsw/BUl5YZdgZWUWmAuHlTUTRqsnesaIrFsyYA+gGHJdB4+V
-         e8K3rRj5c63yQgy8L641j+g+Fp1O3jICAzScshja8m+16hA+t3Fo7xzZfrbZB4ZV8VOd
-         Wg9w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=so5v8xcVc8H+6uvaMOS818TeIXcZqDh/c1PHeEhQkb0=;
+        b=dJS2ociZaxImnyy/ctc1JFg0DxR9n+uzK2WvywdKtbLnpKPJ+o6XQ5Vh/f7E2cRZEC
+         /LXvgT39HtTQRqr+UxRHCJbfeAsrSCcmGNnu8EXR9tRAl3ppEvWeLIkqHSG2FiqWYkPZ
+         Sy4HRmErsTzwR9S0HnxF6U+dIBtVCGsPWWyQrk8v90VV0Zw0YlpcPvO18Pi3AzB2fPDW
+         SG71nGm9fSvU+4NWtI5cWNkBywG90U2UVgLlHF0gPUjgLal+ff+XjaqaeUMYz1wAjyJY
+         TmTc5bAyh43f0fkN6KJJvkaEYzdMeDcj1wQzX6MdHcTSct7SK439M0Nbn1R8LDzEX1PO
+         08mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+xcssxkZTlEueyseAvWLLQTd3E+oYkVw7Pd99PMykLI=;
-        b=KDZIwvN4e2olCKi6pMp98GFAnzw2vBOXIx92iB1QAJvGrnBlsmPB3u9k3HzTorJcO9
-         60PQ9OZmvBdcI8qm5Ufp8xHiJIjO4zojX5v59AM0Xs/xne2VDMtlU2A9tl8nrhejIL+C
-         /t0ZEQWyGuHOCFviNlnXSZItqq8iU0OeiYwAAY6F66tAmYtFIk8hZEHhH+N9wBLW84aE
-         UviC5AACZPuT0o0HjckplOWXxsxbczViZ/SNgb1dOwBMQjHTve84udETBfMEH1d1zH/B
-         ZE2EdHuGHdN6idxBmSmBlwaoSeoKReuyZry/NSugosos2CN7npyBHbSHnbBK333ubXQL
-         OS0A==
-X-Gm-Message-State: AOAM531fJ7WI6rbsL1Q5Bbol75QtaJHCq/LKJ7mkY7A6EqLybqdErO0G
-        BunsGlecsy2NWBr5s4+RMdqKdLTIIDfWoQNx
-X-Google-Smtp-Source: ABdhPJxLvHgE+mf4PpgZ/Eb4hUwxN9ixlNaScFlJnQ9Fn0zNCjBFQz8suRQ/dY0sjpiLMCC6Zs3adQ==
-X-Received: by 2002:a63:1717:: with SMTP id x23mr19276856pgl.182.1633976014242;
-        Mon, 11 Oct 2021 11:13:34 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
-        by smtp.gmail.com with ESMTPSA id m7sm8780611pgn.32.2021.10.11.11.13.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:13:33 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        linux-arm-kernel@lists.infradead.org (moderated list:PCI DRIVER FOR
-        APPLIEDMICRO XGENE)
-Subject: [PATCH 22/22] PCI: xgene: Use PCI_ERROR_RESPONSE to specify hardware error
-Date:   Mon, 11 Oct 2021 23:43:19 +0530
-Message-Id: <afbff1fb626206fed8dd73bfde0f836abc2c03b2.1633972263.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=so5v8xcVc8H+6uvaMOS818TeIXcZqDh/c1PHeEhQkb0=;
+        b=wDnkStO4Kdkk9b61eYeMX/NVKJAjf5vCARqiK1tF0mJcHK1r/u1eSmrr7ULXpyeSmR
+         RY5D/SqTowPntOg1jPsjcUx9Lb54fjMmIdiaiqM793lee4HowEuB0LS6obA8cwuL/Yh5
+         tLcpi2KMMpR+xenu87VpXW7vNK93jdA3TVV84NOrqqQb4XZQnI/sRUOQhEcMM5hO4Fvq
+         kNCyxoajVkmZVh3LGR+KfQcQ1osRB+PBGqBaXW6Chei1MkricF6mOUI+2xKFH4HL4WsV
+         NvMZaM8SYJz8SxdM0a/24LawmU96uMJdGldA9neOfDunuhrSnkESMbMT2KNT7RqIaTWK
+         kUrg==
+X-Gm-Message-State: AOAM5313936SDn2kQvsktVdOC3vmIbFpfnsbSzFouDC/A7fAJ+j5GYuA
+        dNpbuic60Dbn+EeAwBfgvoNL/lB3vPJLmp/vhgUZO16uWk4=
+X-Google-Smtp-Source: ABdhPJxo7Lkg+QlgZlHkpUhc9g80AxNDDCis6WeGaKpbzXyEpPer0n7rrlVxTEMErsvMZrye4BUylFm5IgjzpQASsDw=
+X-Received: by 2002:a05:6830:2816:: with SMTP id w22mr21954487otu.351.1633976053471;
+ Mon, 11 Oct 2021 11:14:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
+ <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com> <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
+ <20211004163146.6b34936b.alex.williamson@redhat.com> <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
+ <CAHP4M8UD-k76cg0JmeZAwaWh1deSP82RCE=VC1zHQEYQmX6N9A@mail.gmail.com>
+ <CAHP4M8VPem7xEtx3vQPm3bzCQif7JZFiXgiUGZVErTt5vhOF8A@mail.gmail.com> <20211011085247.7f887b12.alex.williamson@redhat.com>
+In-Reply-To: <20211011085247.7f887b12.alex.williamson@redhat.com>
+From:   Ajay Garg <ajaygargnsit@gmail.com>
+Date:   Mon, 11 Oct 2021 23:43:29 +0530
+Message-ID: <CAHP4M8UmnBH58H3qqba1p3kyEiPUk9xTp063yJr8RFduUNjgbg@mail.gmail.com>
+Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
+ new-DMA-PTE is the same as old-DMA-PTE.
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Include PCI_ERROR_RESPONSE along with 0xffffffff in the comment to
-specify a hardware error. This makes finding where MMIO read error
-occurs easier.
+Thanks Alex for your time.
 
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
----
- drivers/pci/controller/pci-xgene.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I think I may have found the issue. Right now, when doing a
+dma-unmapping, we do a "soft-unmapping" only, as the pte-values
+themselves are not cleared in the unlinked pagetable-frame.
 
-diff --git a/drivers/pci/controller/pci-xgene.c b/drivers/pci/controller/pci-xgene.c
-index e64536047b65..4b10794e1ba1 100644
---- a/drivers/pci/controller/pci-xgene.c
-+++ b/drivers/pci/controller/pci-xgene.c
-@@ -176,10 +176,10 @@ static int xgene_pcie_config_read32(struct pci_bus *bus, unsigned int devfn,
- 	 * Retry Status (CRS) logic: when CRS Software Visibility is
- 	 * enabled and we read the Vendor and Device ID of a non-existent
- 	 * device, the controller fabricates return data of 0xFFFF0001
--	 * ("device exists but is not ready") instead of 0xFFFFFFFF
--	 * ("device does not exist").  This causes the PCI core to retry
--	 * the read until it times out.  Avoid this by not claiming to
--	 * support CRS SV.
-+	 * ("device exists but is not ready") instead of
-+	 * 0xFFFFFFFF (PCI_ERROR_RESPONSE) ("device does not exist"). This causes
-+	 * the PCI core to retry the read until it times out.
-+	 * Avoid this by not claiming to support CRS SV.
- 	 */
- 	if (pci_is_root_bus(bus) && (port->version == XGENE_PCIE_IP_VER_1) &&
- 	    ((where & ~0x3) == XGENE_V1_PCI_EXP_CAP + PCI_EXP_RTCTL))
--- 
-2.25.1
+I have made the (simple) changes, and things are looking good as of
+now (almost an hour now).
+However, this time I will give it a day ;)
 
+If there is not a single-flooding observed in the next 24 hours, I
+would float the v2 patch for review.
+
+
+Thanks again for your time and patience.
+
+
+Thanks and Regards,
+Ajay
+
+
+>
+> Even this QEMU explanation doesn't make a lot of sense, vfio tracks
+> userspace mappings and will return an -EEXIST error for duplicate or
+> overlapping IOVA entries.  We expect to have an entirely empty IOMMU
+> domain when a device is assigned, but it seems the only way userspace
+> can trigger duplicate PTEs would be if mappings already exist, or we
+> have a bug somewhere.
+>
+> If the most recent instance is purely on bare metal, then it seems the
+> host itself has conflicting mappings.  I can only speculate with the
+> limited data presented, but I'm suspicious there's something happening
+> with RMRRs here (but that should also entirely preclude assignment).
+> dmesg, lspci -vvv, and VM configuration would be useful.  Thanks,
+>
+> Alex
+>
