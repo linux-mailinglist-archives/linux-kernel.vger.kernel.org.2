@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DDC42939C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED4E4293A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243453AbhJKPmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238222AbhJKPmO (ORCPT
+        id S238222AbhJKPoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:44:05 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48371 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235746AbhJKPoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:42:14 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A23C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:40:14 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: kholk11)
-        with ESMTPSA id AFEF51F42259
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
-        bjorn.andersson@linaro.org, krzk@kernel.org,
-        geert+renesas@glider.be, vkoul@kernel.org,
-        jagan@amarulasolutions.com, agx@sigxcpu.org,
-        biju.das.jz@bp.renesas.com, enric.balletbo@collabora.com,
-        aford173@gmail.com, nm@ti.com,
-        andrey.zhizhikin@leica-geosystems.com, saravanak@google.com,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH] arm64: defconfig: Enable SC7180 interconnect driver
-Date:   Mon, 11 Oct 2021 17:40:03 +0200
-Message-Id: <20211011154003.904355-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.33.0
+        Mon, 11 Oct 2021 11:44:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=ashimida@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0UrUXPEj_1633966917;
+Received: from ashimida.local(mailfrom:ashimida@linux.alibaba.com fp:SMTPD_---0UrUXPEj_1633966917)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 11 Oct 2021 23:42:00 +0800
+Subject: Re: [PATCH] [PATCH V2]ARM64: SCS: Add gcc plugin to support Shadow
+ Call Stack
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sami Tolvanen <samitolvanen@google.com>, frederic@kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, yifeifz2@illinois.edu,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, andreyknvl@gmail.com,
+        Colin King <colin.king@canonical.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-hardening@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <1633878992-32884-1-git-send-email-ashimida@linux.alibaba.com>
+ <CANiq72nBqiyrcaW47ZW-6i7zJ6HrmjZWSOr==HkEuBR5rXmpdQ@mail.gmail.com>
+From:   Dan Li <ashimida@linux.alibaba.com>
+Message-ID: <a25b9286-fc1f-d398-150c-ce073eadc6c1@linux.alibaba.com>
+Date:   Mon, 11 Oct 2021 23:41:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72nBqiyrcaW47ZW-6i7zJ6HrmjZWSOr==HkEuBR5rXmpdQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On SC7180 device trees, almost all of the nodes are declaring
-interconnect properties, including the QUP nodes: at least on
-some machines, leaving this configuration option disabled, or
-as a module, the kernel appears to hang while initializing the
-QUP node containing the UART device.
 
-To solve this issue, enable the interconnect driver for this
-SoC as built-in.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 10/10/21 11:43 PM, Miguel Ojeda wrote:
+> On Sun, Oct 10, 2021 at 5:16 PM Dan Li <ashimida@linux.alibaba.com> wrote:
+>>
+>> -         This option enables Clang's Shadow Call Stack, which uses a
+>> -         shadow stack to protect function return addresses from being
+>> -         overwritten by an attacker. More information can be found in
+>> -         Clang's documentation:
+>> +         This option enables Clang/GCC plugin's Shadow Call Stack, which
+>> +         uses a shadow stack to protect function return addresses from
+>> +         being overwritten by an attacker. More information can be found
+>> +         in Clang's documentation:
+> 
+> Perhaps it could be worded in a better way? It sounds like it is a
+> custom plugin for Clang as well, e.g.:
+> 
+>      This option enables Shadow Call Stack (in the case of GCC, as a plugin),
+> 
+> Cheers,
+> Miguel
+>
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index fc40ae9e9bdb..171848ace3ac 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1172,6 +1172,7 @@ CONFIG_INTERCONNECT_IMX8MQ=m
- CONFIG_INTERCONNECT_QCOM=y
- CONFIG_INTERCONNECT_QCOM_MSM8916=m
- CONFIG_INTERCONNECT_QCOM_OSM_L3=m
-+CONFIG_INTERCONNECT_QCOM_SC7180=y
- CONFIG_INTERCONNECT_QCOM_SDM845=y
- CONFIG_INTERCONNECT_QCOM_SM8150=m
- CONFIG_INTERCONNECT_QCOM_SM8250=m
--- 
-2.33.0
+Thanks Miguel.
 
+How about writing like this:
+This option enables Shadow Call Stack (supported as a compiler option in
+the case of clang, supported as a plugin in the case of gcc), which uses
+a shadow stack to ...
