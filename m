@@ -2,135 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5504299CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7DE4299D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbhJKX04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53202 "EHLO
+        id S235708AbhJKXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbhJKX0z (ORCPT
+        with ESMTP id S235583AbhJKXam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:26:55 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F789C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:24:54 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id j193-20020a2523ca000000b005b789d71d9aso24977561ybj.21
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:24:54 -0700 (PDT)
+        Mon, 11 Oct 2021 19:30:42 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249B8C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id az39so4240203qkb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sRMGxf/QWkSIvOyrGEHw7zgVURL6a7pQ1XR3ZP8rEXw=;
-        b=nIuAoquaDI/sspmWGoKBMYKBsX//8qBhGRizTZ2/OrijGyzjqxxI/VzNQyWhrt2wOy
-         z8g6u8AleH0Te3HuTsgDF+qJA90zmPuA5UzViXa6m+yGkXqiXIh8lQ0nwUMhqsPItPSD
-         vhZZCr/DY2EHdQ7RkgnbDFVZf2mQ7U5wG22K6X5ZHkMcyxQ+ENNJZMPdPtIweR65TIXS
-         EX5xiWoCTcBSu5O85KuUu/XldqXgFZ634XASi6I8sPIdaUDrIZmeGXAVVHkLUqrhJkVd
-         LYsTueAMOYSxn/m2xwha2YxiiwZ92d67o8Tdj/Uf+6sOt705PsC1PqxIcUt/331edW+e
-         wipA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
+        b=HgSVsa1leI1AlSIfToVWroe+BjAOI3ghwR21CHGPDVexnWIRNvq+Q6E9d3FU+ST+no
+         ocS0/TW3SNZ8jyMLrwCJrPh0ePUJ+a688MNeO/SOH6dsbggdYjQGAUsJxiPe5U0kF/4c
+         XY58+grwbQEppK31zpbsIZaW6qYJZ2vewp8ofGFLbXaclZQIMcZ93nEBHioo26AFAdN3
+         o9ugEBJiQo11Zaj9DuRnUJDPPLYMfgS8KowTy+yVz6++iq5k4ln0p/MdXC+vaaQP/YGk
+         4LaDhUUPgzqijbwXAaNpf83nIDlspt7EVCcaadtiRVk58NDA1pLNB31/ejPvhAokpOj1
+         4Y3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sRMGxf/QWkSIvOyrGEHw7zgVURL6a7pQ1XR3ZP8rEXw=;
-        b=yF2KME7fkzp+TxnJa6JNEb6aWCkr/mSj/Upb9AfU76dyFMt+vkU/pp8ztYqAd6jRPV
-         ima9jqyiAsidECbYLqkHhotKQVySFWYywrIJvjgPmH+OKx0IAT7MsikI18hl4WzYYSWi
-         b2UbY61pLN1ydNYKlV6lnQblVHVwicGeWf2aXFEkBsTRsMj6tDpegjQQXjt1dC9AoSbI
-         Bn4vDpHvSAzqe2VuKXmO9B+H73EU3pPWgWgMXmMYYqeDr+pn7vOX+lH2lg5Rh4gIBtPy
-         i5CDxYpX6Fic3RWwYzE5aD3/mJLhZkdg7itSYpD/PIN12LqlVd1T5TRLOWdhqSDvCTCJ
-         UkFQ==
-X-Gm-Message-State: AOAM531JNjx1BJoi15FHEjnJtIBHosK5DdRBr8IVxG428TdDcHh9WQ2C
-        8QbGV93keptDlFyOCKvLKvMXx734eOJ+
-X-Google-Smtp-Source: ABdhPJw2/5rT3Msh74FHXo0z+T9ByKwujBrHptH+dNLegy9iGwKHXiILFzCByVPGFqvMG+qt28mRXoHX1haD
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:2ad2:cb91:6fbd:a6f2])
- (user=irogers job=sendgmr) by 2002:a25:7383:: with SMTP id
- o125mr24530968ybc.525.1633994693655; Mon, 11 Oct 2021 16:24:53 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 16:24:46 -0700
-In-Reply-To: <20211011232446.250195-1-irogers@google.com>
-Message-Id: <20211011232446.250195-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20211011232446.250195-1-irogers@google.com>
-X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
-Subject: [PATCH 2/2] perf clang: Fixes for more recent LLVM/clang
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Leo Yan <leo.yan@linaro.org>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        llvm@lists.linux.dev
-Cc:     Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
+        b=YkOyOJxlFMpX7dMZOSiQJx8By5Wkzgm1r21mfraaqas2syywbIWvUCvw5SSn9vp0Bc
+         mtw6ZKIiA59YammIWBKxKCQ+XefiG7gy6eQ5QdZhg7qMvN0284bIXvS109JF7/SP3uQ3
+         FdbihNRdXXKEU93OSIgnM8IOS6o6Swq7IP+xMdnijf2hnwIm/QCefFXb37SQSg33Tr/x
+         vHAAYFrfyDw2U6l63LR8fbwgNwnCzSVTKqe4MTjcF4D8O97r+YGtjl4TbLqDV2swobd+
+         ufXy677DmeIZSoqxnFy0OSiFiFK9NkorhKjRBO5HpihbpBxWB01/yZfQkHTHWAx8w3CP
+         jgNg==
+X-Gm-Message-State: AOAM532MOjk8nMJNCwgufmcWVWVSoa/QMVVyeZxQoHTrFw5qTOMJvqCq
+        MZYIpw8C4VMYHbcpmXOuRY9U3g==
+X-Google-Smtp-Source: ABdhPJztEyniOAoNC1NU3iq7Ij0MXitTU2tCF7xYZyS71yMXt88Vb38CmA4delGadNYZaeqqHQ8bqQ==
+X-Received: by 2002:a37:f71a:: with SMTP id q26mr16843729qkj.3.1633994921355;
+        Mon, 11 Oct 2021 16:28:41 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id d5sm5245821qtr.61.2021.10.11.16.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 16:28:40 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1ma4il-00Dk4y-VJ; Mon, 11 Oct 2021 20:28:39 -0300
+Date:   Mon, 11 Oct 2021 20:28:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Gal Pressman <galpress@amazon.com>
+Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Firas Jahjah <firasj@amazon.com>
+Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
+Message-ID: <20211011232839.GF2688930@ziepe.ca>
+References: <20211007104301.76693-1-galpress@amazon.com>
+ <20211007104301.76693-3-galpress@amazon.com>
+ <20211007114018.GD2688930@ziepe.ca>
+ <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The parameters to two functions and the location of a variable have
-changed in more recent LLVM/clang releases.
+On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
+> On 07/10/2021 14:40, Jason Gunthorpe wrote:
+> > On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
+> > 
+> >> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
+> >>  	return 0;
+> >>  }
+> >>  
+> >> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
+> >> -			 u64 virt_addr, int access_flags,
+> >> -			 struct ib_udata *udata)
+> >> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
+> >> +{
+> >> +	WARN_ON_ONCE(1,
+> >> +		     "Invalidate callback should not be called when memory is pinned\n");
+> >> +}
+> >> +
+> >> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
+> >> +	.allow_peer2peer = true,
+> >> +	.move_notify = efa_dmabuf_invalidate_cb,
+> >> +};
+> > 
+> > Shouldn't move_notify really just be left as NULL? I mean fixing
+> > whatever is preventing that?
+> 
+> That's what I had in the previous RFC and I think Christian didn't really like it.
 
-Tested with LLVM 6, 8, 9, 10 and 11.
+Well, having drivers define a dummy function that only fails looks
+a lot worse to me. If not null then it should be a general
+'dmabuf_unsupported_move_notify' shared function
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/util/c++/clang.cpp | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+> >> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
+> >> +	if (err) {
+> >> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
+> >> +		goto err_unpin;
+> >> +	}
+> >> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
+> > 
+> > If it is really this simple the core code should have this logic,
+> > 'ib_umem_dmabuf_get_pinned()' or something
+> 
+> Should get_pinned do just get + dma_buf_pin, or should it do
+> ib_umem_dmabuf_map_pages as well?
 
-diff --git a/tools/perf/util/c++/clang.cpp b/tools/perf/util/c++/clang.cpp
-index c8885dfa3667..756200cb80b1 100644
---- a/tools/perf/util/c++/clang.cpp
-+++ b/tools/perf/util/c++/clang.cpp
-@@ -44,7 +44,6 @@ createCompilerInvocation(llvm::opt::ArgStringList CFlags, StringRef& Path,
- 		"-triple", "bpf-pc-linux",
- 		"-fsyntax-only",
- 		"-ferror-limit", "19",
--		"-fmessage-length", "127",
- 		"-O2",
- 		"-nostdsysteminc",
- 		"-nobuiltininc",
-@@ -55,7 +54,11 @@ createCompilerInvocation(llvm::opt::ArgStringList CFlags, StringRef& Path,
- 		"-x", "c"};
- 
- 	CCArgs.append(CFlags.begin(), CFlags.end());
--	CompilerInvocation *CI = tooling::newInvocation(&Diags, CCArgs);
-+	CompilerInvocation *CI = tooling::newInvocation(&Diags, CCArgs
-+#if CLANG_VERSION_MAJOR >= 11
-+                                                        ,/*BinaryName=*/nullptr
-+#endif
-+                                                        );
- 
- 	FrontendOptions& Opts = CI->getFrontendOpts();
- 	Opts.Inputs.clear();
-@@ -151,13 +154,16 @@ getBPFObjectFromModule(llvm::Module *Module)
- 
- 	legacy::PassManager PM;
- 	bool NotAdded;
--#if CLANG_VERSION_MAJOR < 7
--	NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream,
--						      TargetMachine::CGFT_ObjectFile);
-+	NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream
-+#if CLANG_VERSION_MAJOR >= 7
-+                                                      , /*DwoOut=*/nullptr
-+#endif
-+#if CLANG_VERSION_MAJOR < 10
-+                                                      , TargetMachine::CGFT_ObjectFile
- #else
--	NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream, nullptr,
--						      TargetMachine::CGFT_ObjectFile);
-+                                                      , llvm::CGFT_ObjectFile
- #endif
-+                                                      );
- 	if (NotAdded) {
- 		llvm::errs() << "TargetMachine can't emit a file of this type\n";
- 		return std::unique_ptr<llvm::SmallVectorImpl<char>>(nullptr);
--- 
-2.33.0.882.g93a45727a2-goog
+Yes the map_pages too, a umem is supposed to be dma mapped after
+creation.
 
+Jason
