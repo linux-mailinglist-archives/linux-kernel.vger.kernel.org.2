@@ -2,46 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F5642881E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B842428829
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhJKHxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:53:35 -0400
-Received: from verein.lst.de ([213.95.11.211]:36227 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234657AbhJKHx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:53:27 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id B7E5968AFE; Mon, 11 Oct 2021 09:51:25 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 09:51:25 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Simon Ser <contact@emersion.fr>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <20211011075125.GA11098@lst.de>
-References: <20211008113116.4bdd7b6c@canb.auug.org.au> <jXLIcCYkgHdIQna5SW6W4GGHVG5By4-GXiaosbXyyaYXFNTH60nmH6twdxMYgM2X63FhEOyxU7Qh_vbKFywBKmUwp7l4DYXe_hTt86AS-ZM=@emersion.fr> <20211008192910.600a188d@canb.auug.org.au> <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr> <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com> <_POw9ikafXoqSFqiOb8SZb_uvRZ4okgD4qrl4EtJ0UBiQTV7pwV3pJIM20eIzmpuFWDeBF9NPD00r72ttX0mZZ0bNeH_J44MoaB-jfjrQSU=@emersion.fr> <20211011073348.GA10672@lst.de> <-6WWj2RSqFheia8o3VKtAiF3bELME9376cYzwiLSY1-E7p9nqfWNqJ5i86Q--BKXa3aolokj8g8nj2tQorzn0LXuD85tD_rXSfE5t1lsvBs=@emersion.fr> <20211011074316.GA10882@lst.de> <XrjqMK5E95uVkQJ-wCjostUwiUD_39UdfIJzQhmnSwZO3aStGYHAxf9QsACe2WZ6vUn08BoW5X5Ya-tazSy0Iwn2jLLrCQDKxlJ6uWXLGaA=@emersion.fr>
+        id S234653AbhJKH4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:56:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58618 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234611AbhJKH42 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 03:56:28 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C29522022;
+        Mon, 11 Oct 2021 07:54:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633938868; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=52hF6Ny0CXxEn0NCyAW/H2iOq3Poe78PpEbjrpmjd3c=;
+        b=sUhHN4dKXjYdNjbOdhE5s5Vo9E7Fq5EsbBjrBp8j2JjdrSgHaIDNikKNnlHsciX7oaHego
+        8IvW7v55/PbjbzXczyEuSS+3fetCWQ5CLht5K+jgJEiM7DT2ew46/T+01yzRBLcTh0yX33
+        y9Azt9A8z84DeAoEXnIjWd5x9sXYshg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633938868;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=52hF6Ny0CXxEn0NCyAW/H2iOq3Poe78PpEbjrpmjd3c=;
+        b=CGR/RSvYtu/OcuO7/SSyFakWO5C8xVH7JQX+aROb2h4wNp5yG75Rz1BjoIXgiB7W/2CnmS
+        ARXBIqHM+Qn3klCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E148213B9C;
+        Mon, 11 Oct 2021 07:54:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id yDNKNrPtY2GuaAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 11 Oct 2021 07:54:27 +0000
+Message-ID: <ffc6b1ef-02a8-83f0-b2e0-c03b6a1a4e0c@suse.cz>
+Date:   Mon, 11 Oct 2021 09:54:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <XrjqMK5E95uVkQJ-wCjostUwiUD_39UdfIJzQhmnSwZO3aStGYHAxf9QsACe2WZ6vUn08BoW5X5Ya-tazSy0Iwn2jLLrCQDKxlJ6uWXLGaA=@emersion.fr>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v2 1/2] mm: mmap_lock: remove redundant "\n" in TP_printk
+Content-Language: en-US
+To:     Gang Li <ligang.bdlg@bytedance.com>, rostedt@goodmis.org
+Cc:     mingo@redhat.com, akpm@linux-foundation.org,
+        axelrasmussen@google.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20211009071105.69544-1-ligang.bdlg@bytedance.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20211009071105.69544-1-ligang.bdlg@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:49:44AM +0000, Simon Ser wrote:
-> Have you heard about the kernel no-regression rule? Here, we can't enable a new
-> feature because that would regress user-space which mis-uses the kernel uAPI.
+On 10/9/21 09:11, Gang Li wrote:
+> Ftrace core will add "\n" automatically on print. "\n" in TP_printk
+> will create blank line, so remove it.
+> 
+> Signed-off-by: Gang Li <ligang.bdlg@bytedance.com>
 
-Then you can't enable the feature without an explicit opt-in from
-userspace.  This ain't rocket science.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-> If your reply wasn't aggressive, I don't know what it is.
+> ---
+>  include/trace/events/mmap_lock.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/trace/events/mmap_lock.h b/include/trace/events/mmap_lock.h
+> index 0abff67b96f0..5f980c92e3e9 100644
+> --- a/include/trace/events/mmap_lock.h
+> +++ b/include/trace/events/mmap_lock.h
+> @@ -32,7 +32,7 @@ TRACE_EVENT_FN(mmap_lock_start_locking,
+>  	),
+>  
+>  	TP_printk(
+> -		"mm=%p memcg_path=%s write=%s\n",
+> +		"mm=%p memcg_path=%s write=%s",
+>  		__entry->mm,
+>  		__get_str(memcg_path),
+>  		__entry->write ? "true" : "false"
+> @@ -63,7 +63,7 @@ TRACE_EVENT_FN(mmap_lock_acquire_returned,
+>  	),
+>  
+>  	TP_printk(
+> -		"mm=%p memcg_path=%s write=%s success=%s\n",
+> +		"mm=%p memcg_path=%s write=%s success=%s",
+>  		__entry->mm,
+>  		__get_str(memcg_path),
+>  		__entry->write ? "true" : "false",
+> @@ -92,7 +92,7 @@ TRACE_EVENT_FN(mmap_lock_released,
+>  	),
+>  
+>  	TP_printk(
+> -		"mm=%p memcg_path=%s write=%s\n",
+> +		"mm=%p memcg_path=%s write=%s",
+>  		__entry->mm,
+>  		__get_str(memcg_path),
+>  		__entry->write ? "true" : "false"
+> 
 
-If there is one thing I find agressive it is your extreme passive
-aggressive behavior.
