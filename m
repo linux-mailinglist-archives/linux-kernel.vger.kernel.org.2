@@ -2,104 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8926428EBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0E4428E80
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237437AbhJKNvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38966 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237304AbhJKNuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:50:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CBFB60F4B;
-        Mon, 11 Oct 2021 13:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960114;
-        bh=GyG50fr79fb7WeWpeYdr6CJwKh94meE+AjAgXuX/L1Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GfQiW5DnkTmNm0gzsgBCOb6hTVKOj26uQQFcn3HKc3XwfETrHVz80OZnWXOEhrERZ
-         pEEHRPn0BTFqaEIxBaBVIDzDwfRd3R1R03pxyAwIabhOe/KNjnBuMq0eRjI3DVD3Vz
-         jBZHeAm/oO/Qgd7/pQKVQeMzZHSX5tHlhuMyLRn4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 25/52] bpf: Fix integer overflow in prealloc_elems_and_freelist()
-Date:   Mon, 11 Oct 2021 15:45:54 +0200
-Message-Id: <20211011134504.599505988@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S236273AbhJKNsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:48:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32410 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233144AbhJKNsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:48:03 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BDg5qN010407;
+        Mon, 11 Oct 2021 09:46:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=KNCbvxOv4HZOMGLoYWRwmVJ86+IBx86BffwVvgZzZfM=;
+ b=acxv02kMMcwO68CNwY5tUrc8w7xMPAxFL0gd8arDEBjoMjyZzm4yCw7Vf9Q25pCcZcZF
+ 4mrQdT/maMBBkbTSo8vVYqMdNFd2CwGUxSrWCeYe93nxZXK004WSGvzk7aGjEXKZEmVS
+ 8GXvOgsjEB9Ycbgt61Gf1w2NWn/yJFe6qGPZDpLYsQdzrrok8FafTBR7GMfw9cyieTDB
+ FuQq1CoIMSUuqlhy1JU1V7hYYSZC/PR99BWTzrpS8aPY3jMpwRBkgXKJ/mGUi2uve+ZE
+ P4Ahz0WPUKN6Bahixtl0cxifm5tIe6ZpyNm9uQW9CmsJNYfoFDLJIVriRM7FZZ86ZRo6 0w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmpcm037f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 09:46:03 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19BDgVuE010992;
+        Mon, 11 Oct 2021 09:46:02 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmpcm036q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 09:46:02 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19BDcf6s004391;
+        Mon, 11 Oct 2021 13:46:01 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma05fra.de.ibm.com with ESMTP id 3bk2q9d3mq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 13:46:00 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BDjufC3146446
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 13:45:56 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2CA8BAE061;
+        Mon, 11 Oct 2021 13:45:56 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D99DAE058;
+        Mon, 11 Oct 2021 13:45:55 +0000 (GMT)
+Received: from oc3016276355.ibm.com (unknown [9.145.40.188])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Oct 2021 13:45:55 +0000 (GMT)
+Subject: Re: [RFC PATCH 1/1] s390/cio: make ccw_device_dma_* more robust
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, bfu@redhat.com
+References: <20211011115955.2504529-1-pasic@linux.ibm.com>
+From:   Pierre Morel <pmorel@linux.ibm.com>
+Message-ID: <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
+Date:   Mon, 11 Oct 2021 15:45:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20211011115955.2504529-1-pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IWzA1ARGY-O7cWGTjfAacpDTC4wcb-Og
+X-Proofpoint-GUID: nOqrVsdteWAgsF5pMM1XMuIR6dxFFz9B
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_04,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ impostorscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ clxscore=1011 adultscore=0 priorityscore=1501 mlxlogscore=999
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110110078
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
 
-[ Upstream commit 30e29a9a2bc6a4888335a6ede968b75cd329657a ]
 
-In prealloc_elems_and_freelist(), the multiplication to calculate the
-size passed to bpf_map_area_alloc() could lead to an integer overflow.
-As a result, out-of-bounds write could occur in pcpu_freelist_populate()
-as reported by KASAN:
+On 10/11/21 1:59 PM, Halil Pasic wrote:
+> Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> classic notifiers") we were supposed to make sure that
+> virtio_ccw_release_dev() completes before the ccw device and the
+> attached dma pool are torn down, but unfortunately we did not.  Before
+> that commit it used to be OK to delay cleaning up the memory allocated
+> by virtio-ccw indefinitely (which isn't really intuitive for guys used
+> to destruction happens in reverse construction order), but now we
+> trigger a BUG_ON if the genpool is destroyed before all memory allocated
+> form it. Which brings down the guest. We can observe this problem, when
+> unregister_virtio_device() does not give up the last reference to the
+> virtio_device (e.g. because a virtio-scsi attached scsi disk got removed
+> without previously unmounting its previously mounted  partition).
+> 
+> To make sure that the genpool is only destroyed after all the necessary
+> freeing is done let us take a reference on the ccw device on each
+> ccw_device_dma_zalloc() and give it up on each ccw_device_dma_free().
+> 
+> Actually there are multiple approaches to fixing the problem at hand
+> that can work. The upside of this one is that it is the safest one while
+> remaining simple. We don't crash the guest even if the driver does not
+> pair allocations and frees. The downside is the reference counting
+> overhead, that the reference counting for ccw devices becomes more
+> complex, in a sense that we need to pair the calls to the aforementioned
+> functions for it to be correct, and that if we happen to leak, we leak
+> more than necessary (the whole ccw device instead of just the genpool).
+> 
+> Some alternatives to this approach are taking a reference in
+> virtio_ccw_online() and giving it up in virtio_ccw_release_dev() or
+> making sure virtio_ccw_release_dev() completes its work before
+> virtio_ccw_remove() returns. The downside of these approaches is that
+> these are less safe against programming errors.
+> 
+> Cc: <stable@vger.kernel.org> # v5.3
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+> classic notifiers")
+> Reported-by: bfu@redhat.com
+> 
+> ---
+> 
+> FYI I've proposed a different fix to this very same problem:
+> https://lore.kernel.org/lkml/20210915215742.1793314-1-pasic@linux.ibm.com/
+> 
+> This patch is more or less a result of that discussion.
+> ---
+>   drivers/s390/cio/device_ops.c | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/cio/device_ops.c b/drivers/s390/cio/device_ops.c
+> index 0fe7b2f2e7f5..c533d1dadc6b 100644
+> --- a/drivers/s390/cio/device_ops.c
+> +++ b/drivers/s390/cio/device_ops.c
+> @@ -825,13 +825,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_chid);
+>    */
+>   void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
+>   {
+> -	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
+> +	void *addr;
+> +
+> +	if (!get_device(&cdev->dev))
+> +		return NULL;
+> +	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
+> +	if (IS_ERR_OR_NULL(addr))
 
-[...]
-[   16.968613] BUG: KASAN: slab-out-of-bounds in pcpu_freelist_populate+0xd9/0x100
-[   16.969408] Write of size 8 at addr ffff888104fc6ea0 by task crash/78
-[   16.970038]
-[   16.970195] CPU: 0 PID: 78 Comm: crash Not tainted 5.15.0-rc2+ #1
-[   16.970878] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[   16.972026] Call Trace:
-[   16.972306]  dump_stack_lvl+0x34/0x44
-[   16.972687]  print_address_description.constprop.0+0x21/0x140
-[   16.973297]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.973777]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.974257]  kasan_report.cold+0x7f/0x11b
-[   16.974681]  ? pcpu_freelist_populate+0xd9/0x100
-[   16.975190]  pcpu_freelist_populate+0xd9/0x100
-[   16.975669]  stack_map_alloc+0x209/0x2a0
-[   16.976106]  __sys_bpf+0xd83/0x2ce0
-[...]
+I can be wrong but it seems that only dma_alloc_coherent() used in 
+cio_gp_dma_zalloc() report an error but the error is ignored and used as 
+a valid pointer.
 
-The possibility of this overflow was originally discussed in [0], but
-was overlooked.
+So shouldn't we modify this function and just test for a NULL address here?
 
-Fix the integer overflow by changing elem_size to u64 from u32.
+here what I mean:---------------------------------
 
-  [0] https://lore.kernel.org/bpf/728b238e-a481-eb50-98e9-b0f430ab01e7@gmail.com/
+diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+index 2bc55ccf3f23..b45fbaa7131b 100644
+--- a/drivers/s390/cio/css.c
++++ b/drivers/s390/cio/css.c
+@@ -1176,7 +1176,7 @@ void *cio_gp_dma_zalloc(struct gen_pool *gp_dma, 
+struct device *dma_dev,
+                 chunk_size = round_up(size, PAGE_SIZE);
+                 addr = (unsigned long) dma_alloc_coherent(dma_dev,
+                                          chunk_size, &dma_addr, 
+CIO_DMA_GFP);
+-               if (!addr)
++               if (IS_ERR_OR_NULL(addr))
+                         return NULL;
+                 gen_pool_add_virt(gp_dma, addr, dma_addr, chunk_size, -1);
+                 addr = gen_pool_alloc(gp_dma, size);
 
-Fixes: 557c0c6e7df8 ("bpf: convert stackmap to pre-allocation")
-Signed-off-by: Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20210930135545.173698-1-th.yasumatsu@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/bpf/stackmap.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+---------------------------------
 
-diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-index fba2ade28fb3..49c7a09d688d 100644
---- a/kernel/bpf/stackmap.c
-+++ b/kernel/bpf/stackmap.c
-@@ -60,7 +60,8 @@ static inline int stack_map_data_size(struct bpf_map *map)
- 
- static int prealloc_elems_and_freelist(struct bpf_stack_map *smap)
- {
--	u32 elem_size = sizeof(struct stack_map_bucket) + smap->map.value_size;
-+	u64 elem_size = sizeof(struct stack_map_bucket) +
-+			(u64)smap->map.value_size;
- 	int err;
- 
- 	smap->elems = bpf_map_area_alloc(elem_size * smap->map.max_entries,
+> +		put_device(&cdev->dev);
+
+addr is not null if addr is ERR.
+
+> +	return addr;
+
+may be return IS_ERR_OR_NULL(addr)? NULL : addr;
+
+>   }
+>   EXPORT_SYMBOL(ccw_device_dma_zalloc);
+>   
+>   void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
+>   {
+> +	if (!cpu_addr)
+> +		return;
+
+no need, cpu_addr is already tested in cio_gp_dma_free()
+
+>   	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
+> +	put_device(&cdev->dev);
+>   }
+>   EXPORT_SYMBOL(ccw_device_dma_free);
+>   
+> 
+> base-commit: 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc
+> 
+
 -- 
-2.33.0
-
-
-
+Pierre Morel
+IBM Lab Boeblingen
