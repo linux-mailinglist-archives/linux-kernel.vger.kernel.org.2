@@ -2,86 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CED64295A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABE84295A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhJKRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:32:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:50264 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJKRcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:32:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="227215564"
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="227215564"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:30:13 -0700
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="440883808"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.28.12]) ([10.255.28.12])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:30:08 -0700
-Subject: Re: [PATCH 07/14] KVM: x86: SVM: add warning for CVE-2021-3656
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>
-References: <20210914154825.104886-1-mlevitsk@redhat.com>
- <20210914154825.104886-8-mlevitsk@redhat.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <4c04106a-fd8e-fb54-799f-06331a3e65b9@intel.com>
-Date:   Tue, 12 Oct 2021 01:30:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+        id S231520AbhJKRcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:32:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24452 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230358AbhJKRcT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:32:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633973418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CarqMeokx12krkM9wEuvIxg2HoIn+E5FTTSsUPbSeZI=;
+        b=GO/RDa3BJdgR34/JfEPHIcMVave6I/8+uxKtqKrDxHGeeOZ4iBOhFPJBf4gjMRZA+QpjjL
+        j6zEEgkduw7kPO9EC7mHH96LTqZsfJhXRVly1qvh8gpF2VPVUCTYm/Y5Y1heKx6EWQJmgJ
+        qTD53O7fFKtrfKqexH268rcS6mbrmHQ=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-374-Wah77atdOO6RI_LW16QOdg-1; Mon, 11 Oct 2021 13:30:17 -0400
+X-MC-Unique: Wah77atdOO6RI_LW16QOdg-1
+Received: by mail-qk1-f199.google.com with SMTP id c16-20020a05620a0cf000b0045f1d55407aso10245088qkj.22
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:30:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CarqMeokx12krkM9wEuvIxg2HoIn+E5FTTSsUPbSeZI=;
+        b=XN285X23FMkJeHJ1HEAREzLvYAQHGx44jvhHVSzMhVQjyKvINq4S/tUGxh9/BkClW6
+         JgM+C4nRt4OnRSZ74OSrOwIksD1HKKJWqAXZ/+gr154Jx/A61dwVIxXHOKqBBduO+z3s
+         U8+NZCNnNcYHrR/aCwvgmsyqvcO5SqW0NyjKupKDNkRtorNEieyiebYAD/WazcarHuoX
+         z7TJpBQG3FFSWnG4FixfA9Rn3R+MPxTMNYWzPdNj5rqMH6of9blpbRPlsdrqIB1NKbO5
+         d7Niw3ipHTfN5On9g2IRYf0kyjIHqSz/a2zy4Q+wU8WgvEcAoLSX0CN0HxHKTSZqBtnY
+         YGxA==
+X-Gm-Message-State: AOAM532r3BR8WJi9rZZiFYcmDEvoatDebvB90AqNgEsWNaoKiAGG3R7e
+        SdnxRsBd3G+m+VDLRlba3/+VXEy+S2tTmzasOCrH75HMpywUEWtzq/PThlj4XeYPJl20u9C2uT5
+        pHlrA3LMm8ejSDzwr2p2yKPv2
+X-Received: by 2002:a37:9f4c:: with SMTP id i73mr5858120qke.323.1633973416561;
+        Mon, 11 Oct 2021 10:30:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyv297PgpCOoUroSqnvv2DPpWU94toZJ/VIwdXoD3O5u8pCHTWuOmwhYOvJQwox/tggBYUXiQ==
+X-Received: by 2002:a37:9f4c:: with SMTP id i73mr5858103qke.323.1633973416318;
+        Mon, 11 Oct 2021 10:30:16 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id 128sm4491414qkl.111.2021.10.11.10.30.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:30:15 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 10:30:07 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>, tkjos@google.com
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
+Message-ID: <20211011173007.ejj2zamtdsjljnds@treble>
+References: <00000000000030293b05c39afd6f@google.com>
+ <20210602230054.vyqama2q3koc4bpo@treble>
+ <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
+ <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
+ <20210603133914.j2aeadmvhncnlk5q@treble>
+ <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
+ <YWQ3AzF+q2xeyQ/p@google.com>
+ <20211011104319.7c6125cb@gandalf.local.home>
 MIME-Version: 1.0
-In-Reply-To: <20210914154825.104886-8-mlevitsk@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011104319.7c6125cb@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/14/2021 11:48 PM, Maxim Levitsky wrote:
-> Just in case, add a warning ensuring that on guest entry,
-> either both VMLOAD and VMSAVE intercept is enabled or
-> vVMLOAD/VMSAVE is enabled.
+On Mon, Oct 11, 2021 at 10:43:19AM -0400, Steven Rostedt wrote:
+> ==================================================================
+> BUG: KASAN: stack-out-of-bounds in profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+> Read of size 8 at addr ffffc90001c0f7a0 by task systemd-udevd/12323
 > 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->   arch/x86/kvm/svm/svm.c | 6 ++++++
->   1 file changed, 6 insertions(+)
+> CPU: 1 PID: 12323 Comm: systemd-udevd Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  <IRQ>
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x202/0x31e lib/dump_stack.c:120
+>  print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
+>  __kasan_report mm/kasan/report.c:419 [inline]
+>  kasan_report+0x15c/0x200 mm/kasan/report.c:436
+>  profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+>  profile_tick+0xcd/0x120 kernel/profile.c:408
+>  tick_sched_handle kernel/time/tick-sched.c:227 [inline]
+>  tick_sched_timer+0x287/0x420 kernel/time/tick-sched.c:1373
+>  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
+>  __hrtimer_run_queues+0x4cb/0xa60 kernel/time/hrtimer.c:1601
+>  hrtimer_interrupt+0x3b3/0x1040 kernel/time/hrtimer.c:1663
+>  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+>  __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
+>  sysvec_apic_timer_interrupt+0x8c/0xb0 arch/x86/kernel/apic/apic.c:1100
 > 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 861ac9f74331..deeebd05f682 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -3784,6 +3784,12 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
->   
->   	WARN_ON_ONCE(kvm_apicv_activated(vcpu->kvm) != kvm_vcpu_apicv_active(vcpu));
->   
-> +	/* Check that CVE-2021-3656 can't happen again */
-> +	if (!svm_is_intercept(svm, INTERCEPT_VMSAVE) ||
-> +	    !svm_is_intercept(svm, INTERCEPT_VMSAVE))
+> And the code has:
+> 
+>  profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+> 
+> unsigned long profile_pc(struct pt_regs *regs)
+> {
+> 	unsigned long pc = instruction_pointer(regs);
+> 
+> 	if (!user_mode(regs) && in_lock_functions(pc)) {
+> #ifdef CONFIG_FRAME_POINTER
+> 		return *(unsigned long *)(regs->bp + sizeof(long));
+> #else
+> 		unsigned long *sp = (unsigned long *)regs->sp;
+> 		/*
+> 		 * Return address is either directly at stack pointer
+> 		 * or above a saved flags. Eflags has bits 22-31 zero,
+> 		 * kernel addresses don't.
+> 		 */
+> 		if (sp[0] >> 22)
+> 			return sp[0];  <== line 42
+> 		if (sp[1] >> 22)
+> 			return sp[1];
+> #endif
+> 	}
+> 	return pc;
+> }
+> EXPORT_SYMBOL(profile_pc);
+> 
+> 
+> It looks to me that the profiler is doing a trick to read the contents of
+> the stack when the interrupt went off, but this triggers the KASAN
+> instrumentation to think it's a mistake when it's not. aka "false positive".
+> 
+> How does one tell KASAN that it wants to go outside the stack, because it
+> knows what its doing?
 
-either one needs to be INTERCEPT_VMLOAD, right?
+*If* the code knew what it were doing, it could use READ_ONCE_NOCHECK()
+to skip KASAN checking.  But this code is horribly broken and dangerous.
 
-> +		WARN_ON(!(svm->vmcb->control.virt_ext &
-> +			  VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK));
-> +
->   	sync_lapic_to_cr8(vcpu);
->   
->   	if (unlikely(svm->asid != svm->vmcb->control.asid)) {
-> 
+-- 
+Josh
 
