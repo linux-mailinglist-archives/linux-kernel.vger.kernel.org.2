@@ -2,146 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE84295A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EADD942959A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhJKRcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:32:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24452 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230358AbhJKRcT (ORCPT
+        id S230429AbhJKRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231951AbhJKRat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:32:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633973418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CarqMeokx12krkM9wEuvIxg2HoIn+E5FTTSsUPbSeZI=;
-        b=GO/RDa3BJdgR34/JfEPHIcMVave6I/8+uxKtqKrDxHGeeOZ4iBOhFPJBf4gjMRZA+QpjjL
-        j6zEEgkduw7kPO9EC7mHH96LTqZsfJhXRVly1qvh8gpF2VPVUCTYm/Y5Y1heKx6EWQJmgJ
-        qTD53O7fFKtrfKqexH268rcS6mbrmHQ=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-Wah77atdOO6RI_LW16QOdg-1; Mon, 11 Oct 2021 13:30:17 -0400
-X-MC-Unique: Wah77atdOO6RI_LW16QOdg-1
-Received: by mail-qk1-f199.google.com with SMTP id c16-20020a05620a0cf000b0045f1d55407aso10245088qkj.22
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:30:17 -0700 (PDT)
+        Mon, 11 Oct 2021 13:30:49 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC3FC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:28:49 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id t3-20020a4ad0a3000000b002b6d2394d1fso2334355oor.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:28:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4MH/pEzVgo/ojExwE7YAhFK3vsORj8Zyi8WpQdJ1rDI=;
+        b=chTqXWqb1JnYIW5QmBJ/4Lj1qC9axFR7iY86cpbQ8wWU+FxIT7FcHYI9+Kha3r7NKH
+         UsQM3Rx99zM+xxWEZjKvQyvBLE+3oWv9xSkcSCbJjmTs7noyF4yIzhqAoWnP4md48bgA
+         dq7RYa2cyurSn2Ipo7LS654T2dlUDm3ALmhZsKA58z6gfvkkeJVvOfC4aDhPItap3c5a
+         yY0YA7p26I+BA43xJ7tCA48sVATeAuhZ0ZJ/iIS4vabzBfqvQyIBRYvzLzVX51B5GmtP
+         34x/I88wRRarwZHOCDXdgCj2jwh22v+nUEvIxfE3rUcIhDmdffWt93pVIF5ykfybH0J3
+         9E1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CarqMeokx12krkM9wEuvIxg2HoIn+E5FTTSsUPbSeZI=;
-        b=XN285X23FMkJeHJ1HEAREzLvYAQHGx44jvhHVSzMhVQjyKvINq4S/tUGxh9/BkClW6
-         JgM+C4nRt4OnRSZ74OSrOwIksD1HKKJWqAXZ/+gr154Jx/A61dwVIxXHOKqBBduO+z3s
-         U8+NZCNnNcYHrR/aCwvgmsyqvcO5SqW0NyjKupKDNkRtorNEieyiebYAD/WazcarHuoX
-         z7TJpBQG3FFSWnG4FixfA9Rn3R+MPxTMNYWzPdNj5rqMH6of9blpbRPlsdrqIB1NKbO5
-         d7Niw3ipHTfN5On9g2IRYf0kyjIHqSz/a2zy4Q+wU8WgvEcAoLSX0CN0HxHKTSZqBtnY
-         YGxA==
-X-Gm-Message-State: AOAM532r3BR8WJi9rZZiFYcmDEvoatDebvB90AqNgEsWNaoKiAGG3R7e
-        SdnxRsBd3G+m+VDLRlba3/+VXEy+S2tTmzasOCrH75HMpywUEWtzq/PThlj4XeYPJl20u9C2uT5
-        pHlrA3LMm8ejSDzwr2p2yKPv2
-X-Received: by 2002:a37:9f4c:: with SMTP id i73mr5858120qke.323.1633973416561;
-        Mon, 11 Oct 2021 10:30:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyv297PgpCOoUroSqnvv2DPpWU94toZJ/VIwdXoD3O5u8pCHTWuOmwhYOvJQwox/tggBYUXiQ==
-X-Received: by 2002:a37:9f4c:: with SMTP id i73mr5858103qke.323.1633973416318;
-        Mon, 11 Oct 2021 10:30:16 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id 128sm4491414qkl.111.2021.10.11.10.30.14
+        bh=4MH/pEzVgo/ojExwE7YAhFK3vsORj8Zyi8WpQdJ1rDI=;
+        b=V2ToU4B23Id3TEZtw7+GrfIHxnD5NlsPLDy+GqCgwXGi1KI5ApKdcat8DbvJGiuyFs
+         i6c2p8sKsSc87np69bmk0Fv8BkmGbMZyVTfsX/zigd9j4CeP2u+wcJj58+GIwEIr3nFw
+         o4zpfNgHsYl3W5UPueIwv/HGqMTNkF0eK0okgjEXpAY4uNy1ydV7wlXfGrZ6F/jqLn1u
+         ctQrPn+aN48bFiF5lSnT3Cpp5Kqc7hYG3+H0pIDgk2Wlx+qXGWqPsKoKLAtm7X+Vq7Jj
+         j6/pAJYyTIzUYgDekOR1BLomTgH/Mm0Z0UFVbwrLcOODz7r/rSQoNDmx4U/ldVGhIt7R
+         zULw==
+X-Gm-Message-State: AOAM532VEj3zFnhdChCLs06Wq7s4HIAnblqPzOle1VQy648bsx97znHp
+        awZjfnPvEGvovIHT2vNzD9YApw==
+X-Google-Smtp-Source: ABdhPJzd3YrNICV57tvx33jWscFS6h1B7SofDme+36l6NCXoCT53hk4WkFaKqNiPYHv/+98SM0aE2w==
+X-Received: by 2002:a4a:5343:: with SMTP id n64mr20019128oob.30.1633973328783;
+        Mon, 11 Oct 2021 10:28:48 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id i13sm1377807oig.35.2021.10.11.10.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 10:30:15 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 10:30:07 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
-        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>, tkjos@google.com
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
-Message-ID: <20211011173007.ejj2zamtdsjljnds@treble>
-References: <00000000000030293b05c39afd6f@google.com>
- <20210602230054.vyqama2q3koc4bpo@treble>
- <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
- <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
- <20210603133914.j2aeadmvhncnlk5q@treble>
- <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
- <YWQ3AzF+q2xeyQ/p@google.com>
- <20211011104319.7c6125cb@gandalf.local.home>
+        Mon, 11 Oct 2021 10:28:48 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 10:30:22 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     khsieh@codeaurora.org
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sankeerth Billakanti <sbillaka@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
+Message-ID: <YWR0rrC4yoKtXXTL@ripper>
+References: <YV0FlTyMEzlyNsN9@ripper>
+ <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org>
+ <YV3dddt/GOidTmlN@ripper>
+ <9dc50145fb3e9b189fd38857b20f326a@codeaurora.org>
+ <YV9TQEKPh4SXYFF/@ripper>
+ <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
+ <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
+ <ad244133bdba4570b0b45871fd136350@codeaurora.org>
+ <YWB1cXoaGRXfGau1@ripper>
+ <44ffcac32270a8ea72dcfc044e2b2585@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211011104319.7c6125cb@gandalf.local.home>
+In-Reply-To: <44ffcac32270a8ea72dcfc044e2b2585@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:43:19AM -0400, Steven Rostedt wrote:
-> ==================================================================
-> BUG: KASAN: stack-out-of-bounds in profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
-> Read of size 8 at addr ffffc90001c0f7a0 by task systemd-udevd/12323
-> 
-> CPU: 1 PID: 12323 Comm: systemd-udevd Not tainted 5.13.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  <IRQ>
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x202/0x31e lib/dump_stack.c:120
->  print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report+0x15c/0x200 mm/kasan/report.c:436
->  profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
->  profile_tick+0xcd/0x120 kernel/profile.c:408
->  tick_sched_handle kernel/time/tick-sched.c:227 [inline]
->  tick_sched_timer+0x287/0x420 kernel/time/tick-sched.c:1373
->  __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
->  __hrtimer_run_queues+0x4cb/0xa60 kernel/time/hrtimer.c:1601
->  hrtimer_interrupt+0x3b3/0x1040 kernel/time/hrtimer.c:1663
->  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
->  __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
->  sysvec_apic_timer_interrupt+0x8c/0xb0 arch/x86/kernel/apic/apic.c:1100
-> 
-> And the code has:
-> 
->  profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
-> 
-> unsigned long profile_pc(struct pt_regs *regs)
-> {
-> 	unsigned long pc = instruction_pointer(regs);
-> 
-> 	if (!user_mode(regs) && in_lock_functions(pc)) {
-> #ifdef CONFIG_FRAME_POINTER
-> 		return *(unsigned long *)(regs->bp + sizeof(long));
-> #else
-> 		unsigned long *sp = (unsigned long *)regs->sp;
-> 		/*
-> 		 * Return address is either directly at stack pointer
-> 		 * or above a saved flags. Eflags has bits 22-31 zero,
-> 		 * kernel addresses don't.
-> 		 */
-> 		if (sp[0] >> 22)
-> 			return sp[0];  <== line 42
-> 		if (sp[1] >> 22)
-> 			return sp[1];
-> #endif
-> 	}
-> 	return pc;
-> }
-> EXPORT_SYMBOL(profile_pc);
-> 
-> 
-> It looks to me that the profiler is doing a trick to read the contents of
-> the stack when the interrupt went off, but this triggers the KASAN
-> instrumentation to think it's a mistake when it's not. aka "false positive".
-> 
-> How does one tell KASAN that it wants to go outside the stack, because it
-> knows what its doing?
+On Mon 11 Oct 08:24 PDT 2021, khsieh@codeaurora.org wrote:
 
-*If* the code knew what it were doing, it could use READ_ONCE_NOCHECK()
-to skip KASAN checking.  But this code is horribly broken and dangerous.
+> On 2021-10-08 09:44, Bjorn Andersson wrote:
+> > On Fri 08 Oct 09:07 PDT 2021, khsieh@codeaurora.org wrote:
+> > 
+> > > On 2021-10-07 15:34, Stephen Boyd wrote:
+> > > > Quoting khsieh@codeaurora.org (2021-10-07 13:28:12)
+> > > > > On 2021-10-07 13:06, Bjorn Andersson wrote:
+> > > > > > On Thu 07 Oct 12:51 PDT 2021, khsieh@codeaurora.org wrote:
+> > > > > >
+> > > > > >> On 2021-10-06 10:31, Bjorn Andersson wrote:
+> > > > > >> > On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
+> > > > > >> >
+> > > > > >> > > On 2021-10-05 19:10, Bjorn Andersson wrote:
+> > > > > >> > > > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
+> > > > > >> > > >
+> > > > > >> > > > > On 2021-10-05 15:36, Stephen Boyd wrote:
+> > > > > >> > > > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
+> > > > > >> > > > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
+> > > > > >> > > > > > >
+> > > > > >> > > > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
+> > > > > >> > > > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
+> > > > > >> > > > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
+> > > > > >> > > > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
+> > > > > >> > > > > > > > > eDP this reduction improves the user experience dramatically - i.e.
+> > > > > >> > > > > > > > > removes 9.9s of bland screen time at boot.
+> > > > > >> > > > > > > > >
+> > > > > >> > > > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+> > > > > >> > > > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > > > > >> > > > > > > > > ---
+> > > > > >> > > > > > > >
+> > > > > >> > > > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
+> > > > > >> > > > > > > > re-read the code a couple times to understand that it's waiting 100ms
+> > > > > >> > > > > > > > times the 'delay' number. Whaaaaat?
+> > > > > >> > > > > > > >
+> > > > > >> > > > > > >
+> > > > > >> > > > > > > I assume you're happy with the current 10s delay on the current
+> > > > > >> > > > > > > devices, so I don't think we should push for this to be backported.
+> > > > > >> > > > > > > I have no need for it to be backported on my side at least.
+> > > > > >> > > > > > >
+> > > > > >> > > > > >
+> > > > > >> > > > > > Sure. Fixes tag != backported to stable trees but it is close.
+> > > > > >> > > > > >
+> > > > > >> > > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> > > > > >> > > > > > >
+> > > > > >> > > > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
+> > > > > >> > > > >
+> > > > > >> > > > > This patch will prevent usb3 from working due to dp driver
+> > > > > >> > > > > initialize phy
+> > > > > >> > > > > earlier than usb3 which cause timeout error at power up usb3 phy
+> > > > > >> > > > > when both
+> > > > > >> > > > > edp and dp are enabled.
+> > > > > >> > > >
+> > > > > >> > > > Can you please help me understand what you mean here, I use this on my
+> > > > > >> > > > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
+> > > > > >> > > > work? Or am I just lucky in some race condition?
+> > > > > >> > > >
+> > > > > >> > > > Thanks,
+> > > > > >> > > > Bjorn
+> > > > > >> > > >
+> > > > > >> > > The problem is seen at sc7280.
+> > > > > >> > > Apple dongle have both  hdmi and usb port.
+> > > > > >> > > plug Apple dongle into type-c, then plug DP into apple's hdmi port
+> > > > > >> > > and usb
+> > > > > >> > > mouse into apple's usb port.
+> > > > > >> > > If edp enabled at this time, then usb mouse will not work due to
+> > > > > >> > > timeout at
+> > > > > >> > > phy power up.
+> > > > > >> > >
+> > > > > >> >
+> > > > > >> > Okay, so you're saying that if the DP driver invokes phy_power_on()
+> > > > > >> > before the USB driver does, USB initialization fails (or at least USB
+> > > > > >> > doesn't work)?
+> > > > > >>
+> > > > > >> if dp driver call qcom_qmp_phy_init() before usb3 call
+> > > > > >> qcom_qmp_phy_init(),
+> > > > > >> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+> > > > > >> mask) ==
+> > > > > >> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
+> > > > > >
+> > > > > > Thanks, I will try to reproduce this on my side. So the 10 seconds here
+> > > > > > is strictly to give good enough time for the dwc3 driver to probe...
+> > > > > >
+> > > > > > Any idea why you're saying that this is specific to sc7280, what
+> > > > > > changed
+> > > > > > from sc7180?
+> > > > >
+> > > > > I did not have sc7180 with edp before so that i am not sure it will
+> > > > > happen on sc7180 or not.
+> > > > > The usb3 does not work when both edp and dp enabled I just seen at
+> > > > > sc7280.
+> > > > > Current at sc7280 EC is not boot up correctly when system power up.
+> > > > > I have to manual reboot EC from linux kernel shell before DP/usb3 can
+> > > > > work.
+> > > > > I am not sure this contribute to this problem or not.
+> > > > >
+> > > >
+> > > > Can you make the usb driver into a module and only load that module
+> > > > later in boot after the DP driver calls qcom_qmp_phy_init()? That would
+> > > > be an easy way to move usb probe after DP probe and expose this problem.
+> > > 
+> > > we need usb calls qcom_qmp_phy_init() before dp.
+> > 
+> > Why?
+> I do not know the details.
+> But I did see below scenario,
+> 
+> if dp driver call qcom_qmp_phy_init() before usb3 call
+> qcom_qmp_phy_init(),
+> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+> mask) ==
+> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
 
--- 
-Josh
+Sounds like a bug in the QMP driver, something that could easily be
+reproduced by waiting for DP to be up before we bring up USB - either by
+chance, or following Stephen's suggestion on purpose.
 
+Someone will have to look into this, so that we don't need a 10 second
+workaround in the (e)DP driver.
+
+Regards,
+Bjorn
