@@ -2,83 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260D44295E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98A34295D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233483AbhJKRkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
+        id S233062AbhJKRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhJKRku (ORCPT
+        with ESMTP id S231281AbhJKRjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:40:50 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F124DC061570;
-        Mon, 11 Oct 2021 10:38:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fqo0bOo+F5lZRYgiET0CW5nvyhKmvaEXp+bcdf+ccbw=; b=1LWqsMn801DWb+NcykVCpYJY65
-        0gD0wExbtScZBgSvPDhyfg887T8q5b+g+3/gx7GdjUzptBSwMtH4pmoP8ydx/yrJmr2zq4TAc0JRo
-        bzDCPuBXcpj/flwzflb/t/KbKlM9Pqx9NmSYuTVxf7L0CZBH37aVXUlbtM9pkaYVgxxM67sSAEfZd
-        PL2d4diZe13nFvt8BpGy2d1BZpOmdXrLGQAxcDYGmNqKgWlacyqS/XRBtnWVtuGGaoZelbNXRN0Ji
-        bItlljvIQPD7JGI5g/oenwVX0nhNuVKTf4V2NoMg5TnrOD0jk4MyZRxgzaDeOhNi1xNI6xwIeYHq1
-        BbOBcLlw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZzG9-00AFsC-6i; Mon, 11 Oct 2021 17:38:45 +0000
-Date:   Mon, 11 Oct 2021 10:38:45 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tj@kernel.org, akpm@linux-foundation.org, minchan@kernel.org,
-        jeyu@kernel.org, shuah@kernel.org, bvanassche@acm.org,
-        dan.j.williams@intel.com, joe@perches.com, tglx@linutronix.de,
-        keescook@chromium.org, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 03/12] selftests: add tests_sysfs module
-Message-ID: <YWR2pSIC96Dw8nRn@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-4-mcgrof@kernel.org>
- <YVxeTvKkYs938g94@kroah.com>
+        Mon, 11 Oct 2021 13:39:47 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AEBC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:37:47 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so22574183otb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tj0ez8KOIN3iGavit2nL31CdJWBPsMoFo8+gcn8vAXw=;
+        b=k5ipc3mQAiV0dS9BwOOkFinF90cqy17wrCoe1I1PNBdMpcHiQp6gvslxlfGPI70NxJ
+         qUrKcIxLFNEE7qgg7R5jHasMtvpdAbp9sDtZF3pBN3gapqOkOydT0JE+c1F0di39XM2Z
+         VbuNyetuNkmF8i7ee8VH6xYeUAT+tIhNUZQM76g+AD5BsQgirr2Le9dN7W1duKr7XE4T
+         DxRSCgGT/7Hy9cBkMcr1d06r8QMvHBKPiMFigFg1H4QKX4EVCeJa4s5as5RgRtgNIfvA
+         J9C9gPNCT2JaHhvi6dvm+Ykt3111sT6AnuSz5qrY99nMFAzBnc3J8CdaTzuFra230vzp
+         T+lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tj0ez8KOIN3iGavit2nL31CdJWBPsMoFo8+gcn8vAXw=;
+        b=2sO4c2hrkCJQGfg6NS/qQZxw4LZWXgX8WLMFVNI7HkhnFPcCSzHrUFSYYJZCCeGMPJ
+         5B8cl4nKYdbOetRgW37N8EpmhPfZDR7opsemLx+xG8Vu4Z+ipTV99THTDnA12G9fBER4
+         wljqmcRB3HxA4v8gVPHJJ0yCecn9MTofnIFzW/uebWVkCXpFHJGbCtgp4bpi+B1JVdsY
+         7LWrwHA4pIs1h4Te5ICvwCxpLF030INc8HUmi8PF3a9SzD1EcdZrV+xIaKpqxbcA3TTa
+         Vu9/L7047UviASeWt/mQGcrLuGRxH3UAC+kBszZ5fv1HpnDuun3x9oHC3ZFTusUbrI76
+         xbNw==
+X-Gm-Message-State: AOAM530GyLPI4Qy9TUqsXugYb+kJnxZVbfv29aUzqa9gdC03xnGydoog
+        l9grIXfEcOUYjvpAVLqA6xUosw==
+X-Google-Smtp-Source: ABdhPJx84ZRrul5YadMUtFSkOfvABSC5HC18sJxJwkxN2sgpQFbW7cFm812AGdbEjSMEwU72VtM8vA==
+X-Received: by 2002:a05:6830:17da:: with SMTP id p26mr22664423ota.116.1633973866343;
+        Mon, 11 Oct 2021 10:37:46 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id s18sm1820955oij.3.2021.10.11.10.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:37:45 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 10:39:20 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Subject: Re: [PATCH net-next v2 2/4] dmaengine: qcom: bam_dma: Add "powered
+ remotely" mode
+Message-ID: <YWR2yN3x3zroz1GX@ripper>
+References: <20211011141733.3999-1-stephan@gerhold.net>
+ <20211011141733.3999-3-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVxeTvKkYs938g94@kroah.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211011141733.3999-3-stephan@gerhold.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 04:16:46PM +0200, Greg KH wrote:
-> On Mon, Sep 27, 2021 at 09:37:56AM -0700, Luis Chamberlain wrote:
-> > --- /dev/null
-> > +++ b/lib/test_sysfs.c
-> > @@ -0,0 +1,921 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
-> > +/*
-> > + * sysfs test driver
-> > + *
-> > + * Copyright (C) 2021 Luis Chamberlain <mcgrof@kernel.org>
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of the GNU General Public License as published by the Free
-> > + * Software Foundation; either version 2 of the License, or at your option any
-> > + * later version; or, when distributed separately from the Linux kernel or
-> > + * when incorporated into other software packages, subject to the following
-> > + * license:
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of copyleft-next (version 0.3.1 or later) as published
-> > + * at http://copyleft-next.org/.
+On Mon 11 Oct 07:17 PDT 2021, Stephan Gerhold wrote:
+
+> In some configurations, the BAM DMA controller is set up by a remote
+> processor and the local processor can simply start making use of it
+> without setting up the BAM. This is already supported using the
+> "qcom,controlled-remotely" property.
 > 
-> Independant of the fact that I don't like sysfs code attempting to be
-> accessed in the kernel with licenses other than GPLv2, you do not need
-> the license "boilerplate" text at all in files.  That's what the SPDX
-> line is for.
+> However, for some reason another possible configuration is that the
+> remote processor is responsible for powering up the BAM, but we are
+> still responsible for initializing it (e.g. resetting it etc).
+> 
+> This configuration is quite challenging to handle properly because
+> the power control is handled through separate channels
+> (e.g. device-specific SMSM interrupts / smem-states). Great care
+> must be taken to ensure the BAM registers are not accessed while
+> the BAM is powered off since this results in a bus stall.
+> 
+> Attempt to support this configuration with minimal device-specific
+> code in the bam_dma driver by tracking the number of requested
+> channels. Consumers of DMA channels are responsible to only request
+> DMA channels when the BAM was powered on by the remote processor,
+> and to release them before the BAM is powered off.
+> 
+> When the first channel is requested the BAM is initialized (reset)
+> and it is also put into reset when the last channel was released.
+> 
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> ---
+> Changes since RFC:
+>   - Drop qcom-specific terminology "power collapse", instead rename
+>     "qcom,remote-power-collapse" -> "qcom,powered-remotely"
+> 
+> NOTE: This is *not* a compile-time requirement for the BAM-DMUX driver
+>       so this could also go through the dmaengine tree.
+> 
+> See original RFC for a discussion of alternative approaches to handle
+> this configuration:
+>   https://lore.kernel.org/netdev/20210719145317.79692-3-stephan@gerhold.net/
+> ---
+>  drivers/dma/qcom/bam_dma.c | 88 ++++++++++++++++++++++++--------------
+>  1 file changed, 56 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> index c8a77b428b52..1b33a3ebbfec 100644
+> --- a/drivers/dma/qcom/bam_dma.c
+> +++ b/drivers/dma/qcom/bam_dma.c
+> @@ -388,6 +388,8 @@ struct bam_device {
+>  	/* execution environment ID, from DT */
+>  	u32 ee;
+>  	bool controlled_remotely;
+> +	bool powered_remotely;
+> +	u32 active_channels;
+>  
+>  	const struct reg_offset_data *layout;
+>  
+> @@ -415,6 +417,44 @@ static inline void __iomem *bam_addr(struct bam_device *bdev, u32 pipe,
+>  		r.ee_mult * bdev->ee;
+>  }
+>  
+> +/**
+> + * bam_reset - reset and initialize BAM registers
 
-Sure, I'll remove the boilerplate, sorry for missing that again, I
-thought I had removed it.
+Please include a set of () after the function name.
 
-  Luis
+> + * @bdev: bam device
+> + */
+> +static void bam_reset(struct bam_device *bdev)
+> +{
+> +	u32 val;
+> +
+> +	/* s/w reset bam */
+> +	/* after reset all pipes are disabled and idle */
+> +	val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
+> +	val |= BAM_SW_RST;
+> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> +	val &= ~BAM_SW_RST;
+> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+
+Seems odd to me that we assert and deassert the reset in back-to-back
+writes, without any delay etc. That said, this is unrelated to your
+patch as you just moved this hunk from below.
+
+> +
+> +	/* make sure previous stores are visible before enabling BAM */
+> +	wmb();
+> +
+> +	/* enable bam */
+> +	val |= BAM_EN;
+> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> +
+> +	/* set descriptor threshhold, start with 4 bytes */
+> +	writel_relaxed(DEFAULT_CNT_THRSHLD,
+> +			bam_addr(bdev, 0, BAM_DESC_CNT_TRSHLD));
+> +
+> +	/* Enable default set of h/w workarounds, ie all except BAM_FULL_PIPE */
+> +	writel_relaxed(BAM_CNFG_BITS_DEFAULT, bam_addr(bdev, 0, BAM_CNFG_BITS));
+> +
+> +	/* enable irqs for errors */
+> +	writel_relaxed(BAM_ERROR_EN | BAM_HRESP_ERR_EN,
+> +			bam_addr(bdev, 0, BAM_IRQ_EN));
+> +
+> +	/* unmask global bam interrupt */
+> +	writel_relaxed(BAM_IRQ_MSK, bam_addr(bdev, 0, BAM_IRQ_SRCS_MSK_EE));
+> +}
+> +
+>  /**
+>   * bam_reset_channel - Reset individual BAM DMA channel
+>   * @bchan: bam channel
+> @@ -512,6 +552,9 @@ static int bam_alloc_chan(struct dma_chan *chan)
+>  		return -ENOMEM;
+>  	}
+>  
+> +	if (bdev->active_channels++ == 0 && bdev->powered_remotely)
+> +		bam_reset(bdev);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -565,6 +608,13 @@ static void bam_free_chan(struct dma_chan *chan)
+>  	/* disable irq */
+>  	writel_relaxed(0, bam_addr(bdev, bchan->id, BAM_P_IRQ_EN));
+>  
+> +	if (--bdev->active_channels == 0 && bdev->powered_remotely) {
+> +		/* s/w reset bam */
+> +		val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
+> +		val |= BAM_SW_RST;
+> +		writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> +	}
+> +
+>  err:
+>  	pm_runtime_mark_last_busy(bdev->dev);
+>  	pm_runtime_put_autosuspend(bdev->dev);
+> @@ -1164,38 +1214,10 @@ static int bam_init(struct bam_device *bdev)
+>  		bdev->num_channels = val & BAM_NUM_PIPES_MASK;
+>  	}
+>  
+> -	if (bdev->controlled_remotely)
+> +	if (bdev->controlled_remotely || bdev->powered_remotely)
+>  		return 0;
+
+I think the resulting code would be cleaner if you flipped it around as:
+
+	/* Reset BAM now if fully controlled locally */
+	if (!bdev->controlled_remotely && !bdev->powered_remotely)
+		bam_reset(bdev);
+
+	return 0;
+
+Regards,
+Bjorn
+
+>  
+> -	/* s/w reset bam */
+> -	/* after reset all pipes are disabled and idle */
+> -	val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
+> -	val |= BAM_SW_RST;
+> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> -	val &= ~BAM_SW_RST;
+> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> -
+> -	/* make sure previous stores are visible before enabling BAM */
+> -	wmb();
+> -
+> -	/* enable bam */
+> -	val |= BAM_EN;
+> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> -
+> -	/* set descriptor threshhold, start with 4 bytes */
+> -	writel_relaxed(DEFAULT_CNT_THRSHLD,
+> -			bam_addr(bdev, 0, BAM_DESC_CNT_TRSHLD));
+> -
+> -	/* Enable default set of h/w workarounds, ie all except BAM_FULL_PIPE */
+> -	writel_relaxed(BAM_CNFG_BITS_DEFAULT, bam_addr(bdev, 0, BAM_CNFG_BITS));
+> -
+> -	/* enable irqs for errors */
+> -	writel_relaxed(BAM_ERROR_EN | BAM_HRESP_ERR_EN,
+> -			bam_addr(bdev, 0, BAM_IRQ_EN));
+> -
+> -	/* unmask global bam interrupt */
+> -	writel_relaxed(BAM_IRQ_MSK, bam_addr(bdev, 0, BAM_IRQ_SRCS_MSK_EE));
+> -
+> +	bam_reset(bdev);
+>  	return 0;
+>  }
