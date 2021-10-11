@@ -2,240 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBD34289FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142FB428977
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235686AbhJKJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:47:07 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:46044 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235590AbhJKJrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:47:05 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 8EEDB1A0F9E;
-        Mon, 11 Oct 2021 11:45:04 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 2873F1A19D3;
-        Mon, 11 Oct 2021 11:45:04 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 65C13183AD28;
-        Mon, 11 Oct 2021 17:45:02 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com
-Cc:     linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
-Subject: [PATCH v6 4/4] dt-bindings: dsp: fsl: update binding document for remote proc driver
-Date:   Mon, 11 Oct 2021 17:20:15 +0800
-Message-Id: <1633944015-789-5-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1633944015-789-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1633944015-789-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S235439AbhJKJO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:14:58 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:24236 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235421AbhJKJO5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:14:57 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HSY2b1XngzQjBW;
+        Mon, 11 Oct 2021 17:11:51 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 17:12:53 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 17:12:53 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <ars@metafoo.de>, <jic23@kernel.org>,
+        <alexandru.ardelean@analog.com>, <andy.shevchenko@gmail.com>
+Subject: [PATCH v2] iio: core: fix double free in iio_device_unregister_sysfs()
+Date:   Mon, 11 Oct 2021 17:20:28 +0800
+Message-ID: <20211011092028.2310144-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there are two drivers for DSP on i.MX, one is for sound open
-firmware, another is for remote processor framework. In order to
-distinguish two kinds of driver, defining different compatible strings.
+I got the double free report:
 
-For remote proc driver, the properties firmware-name and fsl,dsp-ctrl
-are needed and the mailbox channel is different with SOF.
+BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Daniel Baluta <daniel.baluta@nxp.com>
+CPU: 0 PID: 359 Comm: xrun Tainted: G        W         5.15.0-rc3-00109-g4dfd49fafc4d-dirty #474 523b7f3c65c42247635e2ac04a95f61f9f36678d
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+Call Trace:
+ dump_stack_lvl+0xe2/0x152
+ print_address_description.constprop.7+0x21/0x150
+ kasan_report_invalid_free+0x6f/0xa0
+ __kasan_slab_free+0x125/0x140
+ slab_free_freelist_hook+0x10d/0x240
+ kfree+0xce/0x390
+ iio_device_unregister_sysfs+0x108/0x13b [industrialio]
+ iio_dev_release+0x9e/0x10e [industrialio]
+ device_release+0xa5/0x240
+ kobject_put+0x1e5/0x540
+ put_device+0x20/0x30
+ devm_iio_device_release+0x21/0x30 [industrialio]
+ release_nodes+0xc3/0x3b0
+ devres_release_group+0x1da/0x2c0
+ i2c_device_probe+0x628/0xbb0
+ really_probe+0x285/0xc30
+
+If __iio_device_register() fails, iio_dev_opaque->groups will be freed
+in error path in iio_device_unregister_sysfs(), then iio_dev_release()
+will call iio_device_unregister_sysfs() again, it causes double free.
+Set iio_dev_opaque->groups to NULL when it's freed to fix this double free.
+
+Fixes: 32f171724e5c ("iio: core: rework iio device group creation")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- .../devicetree/bindings/dsp/fsl,dsp.yaml      | 123 +++++++++++++++++-
- 1 file changed, 117 insertions(+), 6 deletions(-)
+ drivers/iio/industrialio-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-index 7afc9f2be13a..e66ef2da7879 100644
---- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-+++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-@@ -8,6 +8,7 @@ title: NXP i.MX8 DSP core
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index 2dbb37e09b8c..2dc837db50f7 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -1600,6 +1600,7 @@ static void iio_device_unregister_sysfs(struct iio_dev *indio_dev)
+ 	kfree(iio_dev_opaque->chan_attr_group.attrs);
+ 	iio_dev_opaque->chan_attr_group.attrs = NULL;
+ 	kfree(iio_dev_opaque->groups);
++	iio_dev_opaque->groups = NULL;
+ }
  
- maintainers:
-   - Daniel Baluta <daniel.baluta@nxp.com>
-+  - Shengjiu Wang <shengjiu.wang@nxp.com>
- 
- description: |
-   Some boards from i.MX8 family contain a DSP core used for
-@@ -19,6 +20,10 @@ properties:
-       - fsl,imx8qxp-dsp
-       - fsl,imx8qm-dsp
-       - fsl,imx8mp-dsp
-+      - fsl,imx8qxp-hifi4
-+      - fsl,imx8qm-hifi4
-+      - fsl,imx8mp-hifi4
-+      - fsl,imx8ulp-hifi4
- 
-   reg:
-     maxItems: 1
-@@ -28,37 +33,53 @@ properties:
-       - description: ipg clock
-       - description: ocram clock
-       - description: core clock
-+      - description: debug interface clock
-+      - description: message unit clock
-+    minItems: 3
- 
-   clock-names:
-     items:
-       - const: ipg
-       - const: ocram
-       - const: core
-+      - const: debug
-+      - const: mu
-+    minItems: 3
- 
-   power-domains:
-     description:
-       List of phandle and PM domain specifier as documented in
-       Documentation/devicetree/bindings/power/power_domain.txt
-+    minItems: 1
-     maxItems: 4
- 
-   mboxes:
-     description:
-       List of <&phandle type channel> - 2 channels for TXDB, 2 channels for RXDB
-+      or - 1 channel for TX, 1 channel for RX, 1 channel for RXDB
-       (see mailbox/fsl,mu.txt)
-+    minItems: 3
-     maxItems: 4
- 
-   mbox-names:
--    items:
--      - const: txdb0
--      - const: txdb1
--      - const: rxdb0
--      - const: rxdb1
-+    minItems: 3
-+    maxItems: 4
- 
-   memory-region:
-     description:
-       phandle to a node describing reserved memory (System RAM memory)
-       used by DSP (see bindings/reserved-memory/reserved-memory.txt)
--    maxItems: 1
-+    minItems: 1
-+    maxItems: 4
-+
-+  firmware-name:
-+    description: |
-+      Default name of the firmware to load to the remote processor.
-+
-+  fsl,dsp-ctrl:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to syscon block which provide access for processor enablement
- 
- required:
-   - compatible
-@@ -70,6 +91,58 @@ required:
-   - mbox-names
-   - memory-region
- 
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8qxp-dsp
-+              - fsl,imx8qm-dsp
-+              - fsl,imx8qxp-hifi4
-+              - fsl,imx8qm-hifi4
-+    then:
-+      properties:
-+        power-domains:
-+          minItems: 4
-+    else:
-+      properties:
-+        power-domains:
-+          maxItems: 1
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - fsl,imx8qxp-hifi4
-+              - fsl,imx8qm-hifi4
-+              - fsl,imx8mp-hifi4
-+              - fsl,imx8ulp-hifi4
-+    then:
-+      properties:
-+        memory-region:
-+          minItems: 4
-+        mboxes:
-+          maxItems: 3
-+        mbox-names:
-+          items:
-+            - const: tx
-+            - const: rx
-+            - const: rxdb
-+    else:
-+      properties:
-+        memory-region:
-+          maxItems: 1
-+        mboxes:
-+          minItems: 4
-+        mbox-names:
-+          items:
-+            - const: txdb0
-+            - const: txdb1
-+            - const: rxdb0
-+            - const: rxdb1
-+
- additionalProperties: false
- 
- examples:
-@@ -91,3 +164,41 @@ examples:
-         mboxes = <&lsio_mu13 2 0>, <&lsio_mu13 2 1>, <&lsio_mu13 3 0>, <&lsio_mu13 3 1>;
-         memory-region = <&dsp_reserved>;
-     };
-+  - |
-+    #include <dt-bindings/clock/imx8mp-clock.h>
-+    dsp_reserved: dsp@92400000 {
-+      reg = <0x92400000 0x1000000>;
-+      no-map;
-+    };
-+    dsp_vdev0vring0: vdev0vring0@942f0000 {
-+      reg = <0x942f0000 0x8000>;
-+      no-map;
-+    };
-+    dsp_vdev0vring1: vdev0vring1@942f8000 {
-+      reg = <0x942f8000 0x8000>;
-+      no-map;
-+    };
-+    dsp_vdev0buffer: vdev0buffer@94300000 {
-+      compatible = "shared-dma-pool";
-+      reg = <0x94300000 0x100000>;
-+      no-map;
-+    };
-+
-+    dsp: dsp@3b6e8000 {
-+      compatible = "fsl,imx8mp-hifi4";
-+      reg = <0x3b6e8000 0x88000>;
-+      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-+               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
-+               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-+               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
-+      clock-names = "ipg", "ocram", "core", "debug";
-+      firmware-name = "imx/dsp/hifi4.bin";
-+      power-domains = <&audiomix_pd>;
-+      mbox-names = "tx", "rx", "rxdb";
-+      mboxes = <&mu2 0 0>,
-+               <&mu2 1 0>,
-+               <&mu2 3 0>;
-+      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
-+                      <&dsp_vdev0vring1>, <&dsp_reserved>;
-+      fsl,dsp-ctrl = <&audio_blk_ctrl>;
-+    };
+ static void iio_dev_release(struct device *device)
 -- 
-2.17.1
+2.25.1
 
