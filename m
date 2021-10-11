@@ -2,81 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AC8428814
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5CF2428816
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234570AbhJKHvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:51:52 -0400
-Received: from mail-0201.mail-europe.com ([51.77.79.158]:57984 "EHLO
-        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234484AbhJKHvt (ORCPT
+        id S234618AbhJKHwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:52:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51823 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234622AbhJKHv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:51:49 -0400
-Date:   Mon, 11 Oct 2021 07:49:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail; t=1633938587;
-        bh=WottzwwsmtSODAi8XiRezxONYGKj6wTrYEkENppM8hw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lO+NYS5v/w6KZ+fy4jNw6BmlhjsbBQQd7xH1GS1pAWkbcF5aoRb4p7/EFB6SFtkBA
-         Q2x7LMXmoRbV5BtbYklyOUZPhKss6LOgX+IBJxHmdBxImuocpIBUhZb2hTkeJ/V377
-         K69kprN65FfKz7lM1sc8ByT1xx11H04PCWi1faSx3Q7HGw6pHICyKOZkuQOi+vwNCK
-         anasamzJ7XxX2F6ZWjnLTh5cE6wtO1hFt1pEni/h0YeEKm8XkkNfJyK4wILxlaSR2K
-         /88UrBH0GTuzqVfhMxbUhgcd7wmRFnxdK83uHa+j1PfGFyet4n/y6xW3J0gDJJYg/T
-         XymlTB/gvyTxw==
-To:     Christoph Hellwig <hch@lst.de>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: linux-next: build failure after merge of the amdgpu tree
-Message-ID: <XrjqMK5E95uVkQJ-wCjostUwiUD_39UdfIJzQhmnSwZO3aStGYHAxf9QsACe2WZ6vUn08BoW5X5Ya-tazSy0Iwn2jLLrCQDKxlJ6uWXLGaA=@emersion.fr>
-In-Reply-To: <20211011074316.GA10882@lst.de>
-References: <20211008113116.4bdd7b6c@canb.auug.org.au> <jXLIcCYkgHdIQna5SW6W4GGHVG5By4-GXiaosbXyyaYXFNTH60nmH6twdxMYgM2X63FhEOyxU7Qh_vbKFywBKmUwp7l4DYXe_hTt86AS-ZM=@emersion.fr> <20211008192910.600a188d@canb.auug.org.au> <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr> <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com> <_POw9ikafXoqSFqiOb8SZb_uvRZ4okgD4qrl4EtJ0UBiQTV7pwV3pJIM20eIzmpuFWDeBF9NPD00r72ttX0mZZ0bNeH_J44MoaB-jfjrQSU=@emersion.fr> <20211011073348.GA10672@lst.de> <-6WWj2RSqFheia8o3VKtAiF3bELME9376cYzwiLSY1-E7p9nqfWNqJ5i86Q--BKXa3aolokj8g8nj2tQorzn0LXuD85tD_rXSfE5t1lsvBs=@emersion.fr> <20211011074316.GA10882@lst.de>
+        Mon, 11 Oct 2021 03:51:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633938597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3qqrv9XMwmyzSCAT9HOBEBajfN1wyU+0aKu4BbhD+WY=;
+        b=PrVUHj93IefNOnf5De+11wg4w7xrBl7L+DTB8o7RCmxF5DOuOJLeadrpQc4R75CoYIYf4R
+        mxHQ4YHQQNnUZrPmhWoZqR42OvJhMFJN6/Mp/cet0tO9YW63KSPw/omvgqkAC2RRyapy94
+        4l68D66Xqs/tURTiKrr1h5ToKlyXh20=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-z5iGsraZO6iU068PSC6nbQ-1; Mon, 11 Oct 2021 03:49:56 -0400
+X-MC-Unique: z5iGsraZO6iU068PSC6nbQ-1
+Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so9500282edl.17
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:49:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3qqrv9XMwmyzSCAT9HOBEBajfN1wyU+0aKu4BbhD+WY=;
+        b=zOrbruYRqnwfEwYwEEPCVdyFBv19C85wOjzuP/Uth7/Lcw8maHdRdmG52T1F6aTeCf
+         g3f8i8Ok7GJxClZjWQj1u2Ow7DZL0EMlRZk2aJS5RAUDUgxoJKZMm/YKqtKoNiPQa93P
+         WYcFJQ+sfKo0cjmz349nw44gzu5xwxrIJahsJ8CXN4sYUS5HjkioA0z3gK6yRRjIyPbK
+         LQdsc+seamF5h/4Kv3CYu3I7ywvxX39QWkeWJSDM1WTPNB5jD7GFCR1GhiXCEeOuNLc1
+         DTJlB+8I5gv2xsjYgFGUJKMYOMSQQUKwhdvxsI2kACl7pXZXQeYZx93DffbUP1PbnHOP
+         frpg==
+X-Gm-Message-State: AOAM5327r3yCjvgEqPCLgD4nYKzZcMjK6Cg/+QgwlApU2ko8UCUTU3uy
+        YMZClWnPZ+657v+YjIgZSKrn5Z+ZrXY0+3Xm/dSRl259mVC3LjGfBNOF8RBAmx28+L+QzH45ow3
+        fEg8P5RMdCqxae0Hv4qisZMQv2+L92u6QEY/IntmB
+X-Received: by 2002:a17:906:712:: with SMTP id y18mr23264717ejb.408.1633938595521;
+        Mon, 11 Oct 2021 00:49:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcsgmGkDj767ghqvU3WJZCfGbpa7roToTs6zdyTFywS44/zg0bJae92rBiiw0MC/WXlSU3j02FTgJK8XhuKx4=
+X-Received: by 2002:a17:906:712:: with SMTP id y18mr23264703ejb.408.1633938595351;
+ Mon, 11 Oct 2021 00:49:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+In-Reply-To: <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
+From:   Xiao Ni <xni@redhat.com>
+Date:   Mon, 11 Oct 2021 15:49:45 +0800
+Message-ID: <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
+Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
+To:     Song Liu <song@kernel.org>
+Cc:     Li Feng <fengli@smartx.com>,
+        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
+        <linux-raid@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 11th, 2021 at 09:43, Christoph Hellwig <hch@lst.de> wrot=
-e:
+Hi all
 
-> On Mon, Oct 11, 2021 at 07:39:52AM +0000, Simon Ser wrote:
-> > I don't understand. Can you elaborate why you think this commit is
-> > "utter crap"?
+Now the per device sysfs interface file state can change failfast. Do
+we need a new file for failfast?
+
+I did a test. The steps are:
+
+mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
+cd /sys/block/md0/md/dev-sdb
+echo failfast > state
+cat state
+in_sync,failfast
+
+Best Regards
+Xiao
+
+On Sat, Oct 9, 2021 at 7:36 AM Song Liu <song@kernel.org> wrote:
 >
-> A kernel driver has absolutely no business making decissions based
-> on current->comm, which can be changed by any userspace process.  This
-> is kernel programming 101.
+> On Thu, Oct 7, 2021 at 8:22 PM Li Feng <fengli@smartx.com> wrote:
+> >
+> > When the running RAID1/RAID10 need to be set with the fail_fast flag,
+> > we have to remove each device from RAID and re-add it again with the
+> > --fail_fast flag.
+> >
+> > Export the fail_fast flag to the userspace to support the read and
+> > write.
+> >
+> > Signed-off-by: Li Feng <fengli@smartx.com>
 >
-> Independent of that a check for a specific program as the callers makes
-> no sense whatsoever as a given program and change over time.  This is
-> not even something kernel specific but something that ever software
-> engineer should do.
-
-Have you heard about the kernel no-regression rule? Here, we can't enable a=
- new
-feature because that would regress user-space which mis-uses the kernel uAP=
-I.
-
-This isn't unheard of. Core drm already detects Xorg with current->comm, an=
-d
-force-disables atomic KMS.
-
-> > I'd also appreciate if you could be a bit less aggressive. There's
-> > nothing "obvious" about this from my point of view.
+> Thanks for the patch! I applied it to md-next, with some changes in the
+> commit log.
 >
-> I'm not agressive.  I'm just really disappointed by the amoubt of crap
-> that gets shovelled into the kernel and even more disappointed by the
-> abslutely lack of knowledge of some of the contributors.
+> Thanks,
+> Song
+>
 
-If your reply wasn't aggressive, I don't know what it is.
