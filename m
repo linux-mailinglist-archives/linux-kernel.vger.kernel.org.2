@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42F14289DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1E704289E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235595AbhJKJoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbhJKJos (ORCPT
+        id S235615AbhJKJpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:45:19 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58378 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235609AbhJKJpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:44:48 -0400
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AF5C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 02:42:48 -0700 (PDT)
-Received: by mail-vs1-xe2e.google.com with SMTP id j22so3290430vsl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 02:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=elyOSwXUmSlTdb1/CJiGdQ6bWf9yMdIVeAywc3qURWQ=;
-        b=wXcBHZKBoqVbo1hwNG+hikkfLkaxFwTo24yKdtKlLZNxYqDDjDtZAWGDErzVBSEs78
-         GvWp5LDT+GM5DI4XnDDbgcZzXfuvyvMokDtHEUvfseBpueCpHy9F0JzcdGAnE8nP5fzH
-         mjOfuKQVqwVVtfZgEtGm7Y4oc4J7VXCaFqgnj1mQmlG0a9KInuTHVvp4Yov0Gz4uS3yZ
-         ngwh6MfllMT7cKDgJX19KmgREIynarYDLsElbPtFyXuDYjPp3kxaXckubeUKyf+V5YQx
-         dUcUgQF2kZNVaq8HrEEZByv5qEkMgfe01edsSIq1QSLINHYt4GfXEZv0KkkK6ZQpHrTR
-         nGHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=elyOSwXUmSlTdb1/CJiGdQ6bWf9yMdIVeAywc3qURWQ=;
-        b=pqn8uMNCMW4D9LJ48VsUHZYSGf/wjcDv7i/ggnaU9wZwUD/EN75oO0usRZGdmP/83a
-         nPq1KE41Z9fX3X6VORpDKDhf7bvbSED4hgYo0T/XtvCWTTjcOhspSBQDFuCGZwfsUQhP
-         d/u7s/qWNYwYhehpn1vh4XVJ6FFvrSbKdW2nxcvrWeuyD0wuWIaC6Hj19gSBnqTatiPV
-         YejITZ7s4argnw74rjX2mBqfwfkOcEE9iKJYYwD/QcZkYfE7QMkGHfwU6Ifch53giHch
-         Yi1EfEM9LqwCGHO7xHaDCvl203um6MWmYRFwJsNhjS5g/yHQhpFPjYbZICLrqJEb/IGi
-         fCoQ==
-X-Gm-Message-State: AOAM532CSjAAVGy869XKm+JGtpUiwq96AH1L51g4ujwmpM6YhkDV0QsI
-        HG9LTW4DwGNecY8p7YBI3QDTfakEiHYi8cTDl0OUYw==
-X-Google-Smtp-Source: ABdhPJzrQ6F83mHYri4ahs7UbpwEco4J1CLexA6Bt25RLqrWz1tpazLW7QI6Kf0/0jyLoNpVqjlnLoad+TWIHderEgA=
-X-Received: by 2002:a05:6102:222b:: with SMTP id d11mr21378183vsb.20.1633945367425;
- Mon, 11 Oct 2021 02:42:47 -0700 (PDT)
+        Mon, 11 Oct 2021 05:45:17 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B7G35v020092;
+        Mon, 11 Oct 2021 11:43:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=367os0WHYnfF0CXiyp3vc3QPyuTp0IJg33IruYBh7M0=;
+ b=lLTvtFXL/pmi4Vkj4hvxkGOocS6DOFQfh/hDT3zZoRwPNSvcawqsteZx+4N4c125v1aI
+ UvaAGX1HE3B3YtRHpKRnUlY+bhji7jaU0W0vG4LPurTZJsQY5qbmUD7rzzJ8a6T/61GI
+ Tl8wxQ8cSkqeJHv/rXYQbMP9QOlg494LFi3ghp3wNp10FWNv/rCZLaEiCqxwS+OKyOQN
+ RXX6wAMQFgKcJ2fpUcwJyj+kHWxEkAGowo6xvUwUeW6PNzXAnsv0rVWMJe+wnoB1aLsa
+ 1YSdSczG4WIkz4ie3xuEmeKHpRysteZznkNR4ZxQyQpN0NSsjp6dV5EbUcR992LWHW9k Ow== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bmgqu8w58-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 11:43:06 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AEE7210002A;
+        Mon, 11 Oct 2021 11:43:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A71F421B50C;
+        Mon, 11 Oct 2021 11:43:05 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct 2021 11:43:04
+ +0200
+From:   Amelie Delaunay <amelie.delaunay@foss.st.com>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <dmaengine@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Amelie Delaunay <amelie.delaunay@foss.st.com>,
+        Pierre-Yves Mordret <pierre-yves.mordret@foss.st.com>
+Subject: [PATCH 0/3] dmaengine: stm32-dma: some corner case fixes
+Date:   Mon, 11 Oct 2021 11:42:56 +0200
+Message-ID: <20211011094259.315023-1-amelie.delaunay@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211008032231.1143467-1-fengli@smartx.com> <CAPhsuW5+bdQwsyjBP=QDGRbtnF021291D_XrhNtV+v-geVouVg@mail.gmail.com>
- <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
-In-Reply-To: <CALTww28b0HGzSTTNGVzeZdRp0nGMDAyY8sQ+cBsSCuYJ4jMaqw@mail.gmail.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Mon, 11 Oct 2021 17:42:35 +0800
-Message-ID: <CAHckoCyuqxM8po4JA4=OacVWhYuo9SWescUVOKRFGwdc=aoN8A@mail.gmail.com>
-Subject: Re: [PATCH RESEND] md: allow to set the fail_fast on RAID1/RAID10
-To:     Xiao Ni <xni@redhat.com>
-Cc:     Song Liu <song@kernel.org>,
-        "open list:SOFTWARE RAID (Multiple Disks) SUPPORT" 
-        <linux-raid@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xiao Ni <xni@redhat.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=E5=91=
-=A8=E4=B8=80 =E4=B8=8B=E5=8D=883:49=E5=86=99=E9=81=93=EF=BC=9A
->
-> Hi all
->
-> Now the per device sysfs interface file state can change failfast. Do
-> we need a new file for failfast?
->
-> I did a test. The steps are:
->
-> mdadm -CR /dev/md0 -l1 -n2 /dev/sdb /dev/sdc --assume-clean
-> cd /sys/block/md0/md/dev-sdb
-> echo failfast > state
-> cat state
-> in_sync,failfast
+This patchset brings some fixes to STM32 DMA driver.
+It fixes undefined behaviour of STM32 DMA controller when an unaligned address
+is used.
+It also prevents accidental repeated completion using dma_cookie_complete() in
+terminate_all().
 
-This works,  will it be persisted to disk?
+Amelie Delaunay (3):
+  dmaengine: stm32-dma: mark pending descriptor complete in
+    terminate_all
+  dmaengine: stm32-dma: fix stm32_dma_get_max_width
+  dmaengine: stm32-dma: fix burst in case of unaligned memory address
 
->
-> Best Regards
-> Xiao
->
-> On Sat, Oct 9, 2021 at 7:36 AM Song Liu <song@kernel.org> wrote:
-> >
-> > On Thu, Oct 7, 2021 at 8:22 PM Li Feng <fengli@smartx.com> wrote:
-> > >
-> > > When the running RAID1/RAID10 need to be set with the fail_fast flag,
-> > > we have to remove each device from RAID and re-add it again with the
-> > > --fail_fast flag.
-> > >
-> > > Export the fail_fast flag to the userspace to support the read and
-> > > write.
-> > >
-> > > Signed-off-by: Li Feng <fengli@smartx.com>
-> >
-> > Thanks for the patch! I applied it to md-next, with some changes in the
-> > commit log.
-> >
-> > Thanks,
-> > Song
-> >
->
+ drivers/dma/stm32-dma.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
+
