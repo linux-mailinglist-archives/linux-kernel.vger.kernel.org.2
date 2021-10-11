@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A6B428773
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AFE42877C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234082AbhJKHMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:12:35 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56458
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233790AbhJKHMd (ORCPT
+        id S234138AbhJKHNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:13:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43688 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234111AbhJKHNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:12:33 -0400
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E148C3FFFE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:10:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633936232;
-        bh=h1SUzCf91Jwpb9fhrX0NRvLQL7EyCkzdP0gPLLjD4b8=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=aWQClpvl6MpmGv9YTLKRHj5GGnXK8s2u8T7VdhdRFsL4lf0cgATAFNQrEoL/mNSqF
-         dZSqBHS8N7J1UAHIKMT18lUVqy0jHk/UPvA7+XYn0BtUKRakQS3jhHDP38S3z5tJR/
-         UaR80i0SutViYWZOQZXIoZ0gIFjjkCsVVyxkQleFOY1rZ7CEepHknROdCEo762lzXf
-         KP8u9T7L7A8DX0LGQ5vEZhZTF0Fhh/ill2mmcP91WDMwUenWGinlMRvBoNM0aK7Ynb
-         xKaVm3oOHYlI7Apf7s3v+L+/XdY2Vc595yBTG39QnyaTNCZN648cJLZmrqTUHw1+K3
-         V53T2LWmy11WQ==
-Received: by mail-ed1-f72.google.com with SMTP id v2-20020a50f082000000b003db24e28d59so15003809edl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
+        Mon, 11 Oct 2021 03:13:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633936269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4ufHdDwqlN79+UhpsetonLDLuFxLVpaRNLOG0+gN/fs=;
+        b=F5UqrGG1+xp96CeEENc58VpRRQP2Jhy04Npd8eazGM1AEal+/zHmkeKanLIxCPAdH+P/xq
+        l5EiekSt2KvL7uWi/nbmM70jMZkrNxOLPOkVNB60ix6hdbIcCWrrbaIL3lJFXKS18vIQ3n
+        gEX5HKCPXthwQ0U31WJq0318TAMgKao=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-441-drEQ-9wrPdOgNRYgUMl4cA-1; Mon, 11 Oct 2021 03:11:07 -0400
+X-MC-Unique: drEQ-9wrPdOgNRYgUMl4cA-1
+Received: by mail-ed1-f69.google.com with SMTP id x5-20020a50f185000000b003db0f796903so14988142edl.18
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:11:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h1SUzCf91Jwpb9fhrX0NRvLQL7EyCkzdP0gPLLjD4b8=;
-        b=JE+cwE9zO4PVDb4jVhjz/9JtVR/O2ttbHXs9KDbyznDAlCnaOdvTY/BU4pCnm8HGNm
-         9/DNV2ExXFwKI7gvPF84WXaAgXiTbYiS1zmOS1sNW8akcFyqx1kBFBR7Mlwbz6Mk9cqK
-         9hwPiTHk+7LDxjosgvm6CInPj++9qZlxztXvP3qYh60Fk0N1gca6fhk5evGOlsy2wF5v
-         ci8jS4/8mRpXfmwYuf4eeA/GHMSauaGYgDSQ6qWV96NHKaB5heCB17cI6zIiYqFbOoGK
-         U3NjYODEr92Vg513L1MjcTutGMDumMB8Wu8O/XbGmimodXhe3x3Vjv1KFtOFocDiJKPj
-         ZASw==
-X-Gm-Message-State: AOAM531WquwRAvKZKX3kCgbq+wgEs/UePiyI5aJHbGBQuw8um/01Cx9y
-        P3uCLPDSz4pGWfidhiiDi/hEOk2o3wW8IfKGsAFwiDK9QL667LMm9XLJgd2CbG3eIEdc9vvbvpI
-        PObroDSXFOo96+IQnR4MTFlWs5zMakBlEWyXgZURwbA==
-X-Received: by 2002:a17:906:c009:: with SMTP id e9mr23871356ejz.509.1633936232562;
-        Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaYokr373n9+pvypy7SyEpzzJy/337+0O1svYG2JXNNbPWvZ57+ivNRR1KCyf2hS8d9lVTrg==
-X-Received: by 2002:a17:906:c009:: with SMTP id e9mr23871340ejz.509.1633936232329;
-        Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id y19sm2560185edd.39.2021.10.11.00.10.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 00:10:31 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 09:10:30 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
-Message-ID: <YWPjZv7ClDOE66iI@arighi-desktop>
-References: <YWLwUUNuRrO7AxtM@arighi-desktop>
- <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
- <YWPaZSX4WyOwilW+@arighi-desktop>
- <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4ufHdDwqlN79+UhpsetonLDLuFxLVpaRNLOG0+gN/fs=;
+        b=N1lTepVvwUrYRr6+eLRb/aazgqHv48ZgAQvL8UTob0rec+8KnWSSj5BeVT+oncT32l
+         QFrYFDs/KQcJzZXTw8gu5fsk/NcQSFuwQNcy67wlOkyDXJebas7mjo41rqemsS4GJaVb
+         0vSQPe9UFiNxJHk8pBEmQPXoe39+W+826y9LVe/9Gu5vSVfUUvJkx2yC6dCEHRNJUFQV
+         F/8gllgRJGsP71O/hmbsFMPJLbmZOeFXH7ss6L3D/qiP9UNm3/xFueCi6+xN4z2Pj3fq
+         aAtBFVVPiW7c76qRFt3tpPIXA3FciWcLTlqcX/Gop2NbVECVoKi2nDHCAmjUxhq5UfQo
+         j6Cw==
+X-Gm-Message-State: AOAM532q5h9fMe0K8XJKcJfXZtlZCXRsRcr7BbuYAfCmQAzkdsMyKvW4
+        0aJ18io6ZXOo3i3k3L2LhgLNqic/fH3NnkjA9jYyOK7dJ8LVpqAxLfq/9tLd4uYljfY9lfIowk2
+        +wIUer8XFyuYefomGmUxKvKrt
+X-Received: by 2002:a50:e1c3:: with SMTP id m3mr39024421edl.28.1633936266779;
+        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRmTTHfeZR3GBvJS0BieP8VpiV3k5sbhkh02O6Mc2oySZA1exPg32XReVdqCdWp4D448Zz+Q==
+X-Received: by 2002:a50:e1c3:: with SMTP id m3mr39024383edl.28.1633936266561;
+        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id la1sm2996905ejc.48.2021.10.11.00.11.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
+Subject: Re: [PATCH v3 01/11] ACPI: delay enumeration of devices with a _DEP
+ pointing to an INT3472 device
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Mark Gross <markgross@kernel.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        Daniel Scally <djrscally@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20211010185707.195883-1-hdegoede@redhat.com>
+ <20211010185707.195883-2-hdegoede@redhat.com> <YWPXixp/J6KIzWp6@lahna>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <0c08069e-7758-fc09-c200-d867d097b499@redhat.com>
+Date:   Mon, 11 Oct 2021 09:11:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
+In-Reply-To: <YWPXixp/J6KIzWp6@lahna>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 08:48:29AM +0200, Marco Elver wrote:
-> On Mon, 11 Oct 2021 at 08:32, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > On Mon, Oct 11, 2021 at 08:00:00AM +0200, Marco Elver wrote:
-> > > On Sun, 10 Oct 2021 at 15:53, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > > > I can systematically reproduce the following soft lockup w/ the latest
-> > > > 5.15-rc4 kernel (and all the 5.14, 5.13 and 5.12 kernels that I've
-> > > > tested so far).
-> > > >
-> > > > I've found this issue by running systemd autopkgtest (I'm using the
-> > > > latest systemd in Ubuntu - 248.3-1ubuntu7 - but it should happen with
-> > > > any recent version of systemd).
-> > > >
-> > > > I'm running this test inside a local KVM instance and apparently systemd
-> > > > is starting up its own KVM instances to run its tests, so the context is
-> > > > a nested KVM scenario (even if I don't think the nested KVM part really
-> > > > matters).
-> > > >
-> > > > Here's the oops:
-> > > >
-> > > > [   36.466565] watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [udevadm:333]
-> > > > [   36.466565] Modules linked in: btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear psmouse floppy
-> > > > [   36.466565] CPU: 0 PID: 333 Comm: udevadm Not tainted 5.15-rc4
-> > > > [   36.466565] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> > > [...]
-> > > >
-> > > > If I disable CONFIG_KFENCE the soft lockup doesn't happen and systemd
-> > > > autotest completes just fine.
-> > > >
-> > > > We've decided to disable KFENCE in the latest Ubuntu Impish kernel
-> > > > (5.13) for now, because of this issue, but I'm still investigating
-> > > > trying to better understand the problem.
-> > > >
-> > > > Any hint / suggestion?
-> > >
-> > > Can you confirm this is not a QEMU TCG instance? There's been a known
-> > > issue with it: https://bugs.launchpad.net/qemu/+bug/1920934
-> >
-> > It looks like systemd is running qemu-system-x86 without any "accel"
-> > options, so IIUC the instance shouldn't use TCG. Is this a correct
-> > assumption or is there a better way to check?
+Hi,
+
+On 10/11/21 8:19 AM, Mika Westerberg wrote:
+> Hi,
 > 
-> AFAIK, the default is TCG if nothing else is requested. What was the
-> command line?
+> On Sun, Oct 10, 2021 at 08:56:57PM +0200, Hans de Goede wrote:
+>> +/* List of HIDs for which we honor deps of matching ACPI devs, when checking _DEP lists. */
+>> +static const char * const acpi_honor_dep_ids[] = {
+>> +	"INT3472", /* Camera sensor PMIC / clk and regulator info */
+> 
+> Is there some reason why we can't do this for all devices with _DEP?
+> That way we don't need to maintain lists like this.
 
-This is the full command line of what systemd is running:
+Up until now the ACPI core deliberate mostly ignores _DEP-s because the
+_DEP method may point to pretty much any random ACPI object and Linux does
+not necessarily have a driver for all ACPI objects the driver points too,
+which would lead to the devices never getting instantiated.
 
-  /bin/qemu-system-x86_64 -smp 4 -net none -m 512M -nographic -vga none -kernel /boot/vmlinuz-5.15-rc4 -drive format=raw,cache=unsafe,file=/var/tmp/systemd-test.sI1nrh/badid.img -initrd /boot/initrd.img-5.15-rc4 -append  root=/dev/sda1 rw raid=noautodetect rd.luks=0 loglevel=2 init=/lib/systemd/systemd console=ttyS0 selinux=0  SYSTEMD_UNIT_PATH=/usr/lib/systemd/tests/testdata/testsuite-14.units:/usr/lib/systemd/tests/testdata/units: systemd.unit=testsuite.target systemd.wants=testsuite-14.service systemd.wants=end.service
+In hindsight this might not have been the best solution (1), but if we
+now start honoring _DEP-s for all devices all of a sudden then this
+will almost certainly lead to a whole bunch of regressions.
 
-And this is running inside a KVM instance (so a nested KVM scenario).
+Note that in this case the HID which triggers this is for the device
+being depended upon and for all camera sensors used with the IPU3 and
+IPU4 Intel camera blocks this is the INT3472 device. By triggering on
+this HID (rather then on the sensor HIDs) I expect that we will not
+need to update this list all that often.
 
--Andrea
+Regards,
+
+Hans
+
+
+
+1) I believe that Windows does pay more reference to the _DEP-s and we've
+had some other related issues lately.
+
