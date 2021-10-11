@@ -2,236 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4D0429293
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A2C429294
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbhJKOxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:53:24 -0400
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.100]:25177 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237236AbhJKOxW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:53:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633963878;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=aPdmmwfYu/N36PdvoMDHm+Iisa38vvvxbSOQGVHHG6g=;
-    b=hysDLpUK0e3i+XAmX6jEtAm6OHSn0BkbUgWTKMx2O+hLf1/HFXG4N+YlOqA1++q9K9
-    9VypPwlmRDRj2QtoxGR1KV0U3/RMkEzznebsLIvg0NfI6VndELQFZjIBEywO+jnvpTmC
-    bXrt0vNHJw5rQRq2i6/l1xknV+ZbdboDyK7uYoqU/wH9PwEeAwQRU6GHw0dwKaJeWX8Z
-    JPU+AdDnQ5Yvd4/kg3vXI71/85u+VPDr4BCN7xY3UvbPUP4r1YCwjbNeGvuT01KmmYbZ
-    MqRQ4LeiPcJS9iveUS9OL/LtaovD/lafUg8r1owsLdbUt7UfVaSLgerq8vDSDRS6Rhnh
-    yAVw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8p7h"
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
-    with ESMTPSA id 301038x9BEpItxG
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 11 Oct 2021 16:51:18 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 16:51:10 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH net-next v2 4/4] net: wwan: Add Qualcomm BAM-DMUX WWAN
- network driver
-Message-ID: <YWRPXnzh+NLVqHvo@gerhold.net>
-References: <20211011141733.3999-1-stephan@gerhold.net>
- <20211011141733.3999-5-stephan@gerhold.net>
+        id S239917AbhJKOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:53:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235128AbhJKOxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:53:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F02960EE2;
+        Mon, 11 Oct 2021 14:51:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633963907;
+        bh=At0WCNBvjCGiGGgF3z1lDOfAqi3ecy6QdY/pF7Wkrlw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=q1098baukGdyMXC9gk062TUOorgT4YcpqzUMWhNag+SHyat9v4tNffwzh2/2s+4fN
+         yoNybdx3U/EnLtDlrNJaWKIM2eeUquXGnu2a+xdd1H2Rd4WFDWdpUnAHqbItrg10Mq
+         8HKWD/EBJWmGxLYdf+qSiL6+0nB8cwYPxTS/vBuBivBNGbUiAwcZJ3sx9ndUFlQBbx
+         RmaiYbiJS4upE1mII+MXZ+54pQuwBnimwO+0jt/wUWQkF+rZ4fYRgE//RI5uicGuae
+         rsy8r04ytGOK/TCOaVdBaLd6H3hsdqRopBh2TNndkcWFR3UGBmH4LmoJEh6vYWokUi
+         99aIyDwCl9A1g==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Valentin Schneider <Valentin.Schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
+Subject: [PATCH 00/11] rcu: Make rcu_core() safe in PREEMPT_RT with NOCB + a few other fixes v2
+Date:   Mon, 11 Oct 2021 16:51:29 +0200
+Message-Id: <20211011145140.359412-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011141733.3999-5-stephan@gerhold.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 04:17:36PM +0200, Stephan Gerhold wrote:
-> The BAM Data Multiplexer provides access to the network data channels of
-> modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916 or
-> MSM8974. It is built using a simple protocol layer on top of a DMA engine
-> (Qualcomm BAM) and bidirectional interrupts to coordinate power control.
-> 
-> The modem announces a fixed set of channels by sending an OPEN command.
-> The driver exports each channel as separate network interface so that
-> a connection can be established via QMI from userspace. The network
-> interface can work either in Ethernet or Raw-IP mode (configurable via
-> QMI). However, Ethernet mode seems to be broken with most firmwares
-> (network packets are actually received as Raw-IP), therefore the driver
-> only supports Raw-IP mode.
-> 
-> Note that the control channel (QMI/AT) is entirely separate from
-> BAM-DMUX and is already supported by the RPMSG_WWAN_CTRL driver.
-> 
-> The driver uses runtime PM to coordinate power control with the modem.
-> TX/RX buffers are put in a kind of "ring queue" and submitted via
-> the bam_dma driver of the DMAEngine subsystem.
-> 
-> The basic architecture looks roughly like this:
-> 
->                    +------------+                +-------+
->          [IPv4/6]  |  BAM-DMUX  |                |       |
->          [Data...] |            |                |       |
->         ---------->|wwan0       | [DMUX chan: x] |       |
->          [IPv4/6]  | (chan: 0)  | [IPv4/6]       |       |
->          [Data...] |            | [Data...]      |       |
->         ---------->|wwan1       |--------------->| Modem |
->                    | (chan: 1)  |      BAM       |       |
->          [IPv4/6]  | ...        |  (DMA Engine)  |       |
->          [Data...] |            |                |       |
->         ---------->|wwan7       |                |       |
->                    | (chan: 7)  |                |       |
->                    +------------+                +-------+
-> 
-> However, on newer SoCs/firmware versions Qualcomm began gradually moving
-> to QMAP (rmnet driver) as backend-independent protocol for multiplexing
-> and data aggegration. Some firmware versions allow using QMAP on top of
-> BAM-DMUX (effectively resulting in a second multiplexing layer plus data
-> aggregation). The architecture with QMAP would look roughly like this:
-> 
->            +-------------+           +------------+                  +-------+
->  [IPv4/6]  |    RMNET    |           |  BAM-DMUX  |                  |       |
->  [Data...] |             |           |            | [DMUX chan: 0]   |       |
-> ---------->|rmnet_data1  |     ----->|wwan0       | [QMAP mux-id: x] |       |
->            | (mux-id: 1) |     |     | (chan: 0)  | [IPv4/6]         |       |
->            |             |     |     |            | [Data...]        |       |
->  [IPv4/6]  | ...         |------     |            |----------------->| Modem |
->  [Data...] |             |           |            |       BAM        |       |
-> ---------->|rmnet_data42 | [QMAP: x] |[wwan1]     |   (DMA Engine)   |       |
->            | (mux-id: 42)| [IPv4/6]  |... unused! |                  |       |
->            |             | [Data...] |[wwan7]     |                  |       |
->            |             |           |            |                  |       |
->            +-------------+           +------------+                  +-------+
-> 
-> In this case, wwan1-7 would remain unused. The firmware used on the most
-> recent SoCs with BAM-DMUX even seems to announce only a single BAM-DMUX
-> channel (wwan0), which makes QMAP the only option for multiplexing there.
-> 
-> However, so far the driver is mainly tested without QMAP, on various
-> smartphones/tablets based on Qualcomm MSM8916/MSM8974. It looks like QMAP
-> depends on a MTU negotiation feature in BAM-DMUX which is not supported yet.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
-> Note that this is my first network driver, so I apologize in advance
-> if I made some obvious mistakes. :)
-> 
-> Changes since RFC:
->   - Rebase on net-next and fix conflicts
->   - Rename network interfaces from "rmnet%d" -> "wwan%d"
->   - Fix wrong file name in MAINTAINERS entry
->   - Clarify control channel in commit message. (It is entirely independent
->     of BAM-DMUX and is already supported by the RPMSG WWAN CTRL driver.)
-> 
-> Like in the RFC version [1], the driver does not currently use the link
-> management of the WWAN subsystem. Instead, it simply exposes one network
-> interface for each of the up to 8 channels.
-> 
-> This setup works out of the box with all available open-source userspace
-> WWAN implementations, especially ModemManager (no changes needed).
-> oFono works too although it requires minor changes to support WWAN control
-> ports (/dev/wwan0qmi0) which are independent of BAM-DMUX (already provided
-> by the "rpmsg_wwan_ctrl" driver).
-> It was easy to support because the setup is very similar to ones already
-> supported for USB modems. Some of them provide multiple network interfaces
-> and ModemManager can bundle them together to a single modem.
-> 
-> I believe it is best to keep this setup as-is for now and not add even
-> more complexity to userspace with another setup that works only in this
-> particular configuration. I will reply to this patch separately to explain
-> that a bit more clearly. This patch is already long enough as-is. :)
-> 
-> [1]: https://lore.kernel.org/netdev/20210719145317.79692-5-stephan@gerhold.net/
->
+Hi,
 
-The main goal of the WWAN link management is to make the multiplexing
-setup transparent to userspace. Unfortunately it's still unclear to me
-how or even if this can be achieved for the many different different
-setups that exist for Qualcomm modems. To show that more clearly I'll
-"briefly" list the various currently supported setups in ModemManager
-(there might be even more that I am not even aware of).
+No code change in this v2, only changelogs:
 
-The details are not too important, this list only exists to show the
-complexity that is already handled in ModemManager:
+* Add tags from Valentin and Sebastian
 
-Control ports (QMI/AT/MBIM):
- *1. Preferred: WWAN subsystem control port (chardev)*
-     - cdc-wdm
-     - rpmsg_wwan_ctrl (most common setup for BAM-DMUX)
-     - mhi_wwan_ctrl
-  2. QRTR network sockets (net/qrtr) on newer Qualcomm SoCs
-     (most common setup for IPA (drivers/net/ipa)
- (3. Legacy: Driver-specific char devices)
-     - cdc-wdm usbmisc chardev
-     - rpmsg-char
+* Remove last reference to SEGCBLIST_SOFTIRQ_ONLY (thanks Valentin)
 
-Network interfaces:
- *1. Preferred: WWAN subsystem link management*
-     - mhi_wwan_mbim (only for MHI+MBIM, not MHI+QMI)
-     - (iosm, but that's not Qualcomm)
-  2. Single/multiple exposed network interfaces
-     - USB modems
-     - qcom_bam_dmux (this patch)
-  3. qmimux (built-in multiplexing of qmi_wwan driver)
-     - qmi_wwan
-  4. "rmnet" links created via netlink, works on top of:
-     Note: Various different "rmnet" versions and configurations
-           exist that need to be configured appropriately.
-     - qmi_wwan, optional
-     - IPA (drivers/net/ipa), always required
-     - qcom_bam_dmux, optional
-       (supported only on very recent firmware versions/SoCs)
+* Rewrite changelog for "rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check"
+  after off-list debates with Paul.
 
-ModemManager already provides an unified API for all these in userspace.
-The goal for the WWAN subsystem would be to unify all these approaches
-in the kernel, to simplify userspace.
+* Remove the scenario with softirq interrupting rcuc on
+  "rcu/nocb: Limit number of softirq callbacks only on softirq" as it's
+  probably not possible (thanks Valentin).
 
-We have *partially* achieved this for the QMI/AT control ports where
-there are multiple backends with the same frontend now (USB cdc-wdm,
-RPMSG, MHI). But not fully, new Qualcomm SoCs require controlling the
-modem via QRTR network sockets and I'm not sure if this can be mapped to
-the WWAN subsystem chardevs. The "partially" means that userspace still
-needs to support multiple approaches, and usually needs to keep
-supporting old approaches for compatibility with old kernels anyway.
+* Remove the scenario with task spent scheduling out accounted on tlimit
+  as it's not possible (thanks Valentin)
+  (see "rcu: Apply callbacks processing time limit only on softirq")
 
-And for the network interfaces it is even more unclear to me if
-there is a good way to abstract those transparently to userspace.
-The QMI configuration that is currently done in userspace is quite
-specific to hardware/firmware version [2].
+* Fixed changelog of
+  "rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread"
+  (thanks Sebastian).
 
-Sergey suggested to address some of these points by moving the
-QMI setup to the the kernel [3]. Unfortunately, this comes with a lot of
-complexity, which is why this was purposefully left up to userspace when
-the qmi_wwan driver (for USB modems) was added to the kernel [4].
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/rt-v2
 
-All in all, I believe finding a solution that can cover all the setups
-listed above is a huge undertaking, for both kernel and userspace.
-It goes way beyond the scope of this patch and is therefore better
-addressed separately.
+HEAD: 2c9349986d5f70a555195139665841cd98e9aba4
 
-This is why I think it's best to keep the current setup in this patch
-for now (which is already supported by userspace!), and investigate
-unifying the interface separately.
+Thanks,
+	Frederic
+---
 
-Thanks for reading. :)
-Stephan
+Frederic Weisbecker (10):
+      rcu/nocb: Make local rcu_nocb_lock_irqsave() safe against concurrent deoffloading
+      rcu/nocb: Prepare state machine for a new step
+      rcu/nocb: Invoke rcu_core() at the start of deoffloading
+      rcu/nocb: Make rcu_core() callbacks acceleration (de-)offloading safe
+      rcu/nocb: Check a stable offloaded state to manipulate qlen_last_fqs_check
+      rcu/nocb: Use appropriate rcu_nocb_lock_irqsave()
+      rcu/nocb: Limit number of softirq callbacks only on softirq
+      rcu: Fix callbacks processing time limit retaining cond_resched()
+      rcu: Apply callbacks processing time limit only on softirq
+      rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
 
-[2]: https://lore.kernel.org/netdev/YPmRcBXpRtKKSDl8@gerhold.net/
-[3]: https://lore.kernel.org/netdev/CAHNKnsQr4Ys8q3Ctru-H=L3ZDwb__2D3E08mMZchDLAs1KetAg@mail.gmail.com/
-[4]: https://lore.kernel.org/netdev/CAAP7ucLDEoJzwNvWLCWyCNE+kKBDn4aBU-9XT_Uv_yetnX4h-g@mail.gmail.com/
+Thomas Gleixner (1):
+      rcu/nocb: Make rcu_core() callbacks acceleration preempt-safe
+
+
+ include/linux/rcu_segcblist.h | 51 ++++++++++++++++++-------
+ kernel/rcu/rcu_segcblist.c    | 10 ++---
+ kernel/rcu/rcu_segcblist.h    | 12 +++---
+ kernel/rcu/tree.c             | 87 +++++++++++++++++++++++++++++--------------
+ kernel/rcu/tree.h             | 16 +++++---
+ kernel/rcu/tree_nocb.h        | 29 ++++++++++++---
+ 6 files changed, 141 insertions(+), 64 deletions(-)
