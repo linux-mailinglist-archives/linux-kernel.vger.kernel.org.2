@@ -2,123 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85288428671
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA2D428674
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:51:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhJKFwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:52:24 -0400
-Received: from sauhun.de ([88.99.104.3]:49536 "EHLO pokefinder.org"
+        id S233234AbhJKFxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:53:00 -0400
+Received: from muru.com ([72.249.23.125]:43220 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhJKFwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:52:22 -0400
-Received: from localhost (p54b3315a.dip0.t-ipconnect.de [84.179.49.90])
-        by pokefinder.org (Postfix) with ESMTPSA id 5F6122C00A6;
-        Mon, 11 Oct 2021 07:50:20 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 07:50:16 +0200
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v3 02/11] i2c: acpi: Use acpi_dev_ready_for_enumeration()
- helper
-Message-ID: <YWPQmGKI0YzMnm35@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211010185707.195883-1-hdegoede@redhat.com>
- <20211010185707.195883-3-hdegoede@redhat.com>
+        id S229986AbhJKFw7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 01:52:59 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id A3E78805F;
+        Mon, 11 Oct 2021 05:51:30 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 08:50:57 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+        Suman Anna <s-anna@ti.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Simon Horman <horms+renesas@verge.net.au>
+Subject: Re: [PATCH 3/3] dt-bindings: bus: ti-sysc: Update to use yaml binding
+Message-ID: <YWPQwVd9+qvmoD6O@atomide.com>
+References: <20211007124858.44011-1-tony@atomide.com>
+ <20211007124858.44011-4-tony@atomide.com>
+ <YWCsdFWzXEpPyYAI@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kpSW/TDc2ClihKjN"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211010185707.195883-3-hdegoede@redhat.com>
+In-Reply-To: <YWCsdFWzXEpPyYAI@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---kpSW/TDc2ClihKjN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+* Rob Herring <robh@kernel.org> [211008 20:39]:
+> On Thu, Oct 07, 2021 at 03:48:58PM +0300, Tony Lindgren wrote:
+> > +  compatible:
+> > +    oneOf:
+> > +      - items:
+> > +        - enum:
+> > +            - ti,sysc-omap2
+> > +            - ti,sysc-omap2
+> > +            - ti,sysc-omap4
+> > +            - ti,sysc-omap4-simple
+> > +            - ti,sysc-omap2-timer
+> > +            - ti,sysc-omap4-timer
+> > +            - ti,sysc-omap3430-sr
+> > +            - ti,sysc-omap3630-sr
+> > +            - ti,sysc-omap4-sr
+> > +            - ti,sysc-omap3-sham
+> > +            - ti,sysc-omap-aes
+> > +            - ti,sysc-mcasp
+> > +            - ti,sysc-dra7-mcasp
+> > +            - ti,sysc-usb-host-fs
+> > +            - ti,sysc-dra7-mcan
+> > +            - ti,sysc-pruss
+> > +        - const: ti,sysc
+> > +      - items:
+> > +        - const: ti,sysc
+> 
+> This doesn't really match what the old doc said nor the old example. 
+> Fine to fix in the conversion if wrong, but just highlight that in the 
+> commit msg.
 
-On Sun, Oct 10, 2021 at 08:56:58PM +0200, Hans de Goede wrote:
-> The clk and regulator frameworks expect clk/regulator consumer-devices
-> to have info about the consumed clks/regulators described in the device's
-> fw_node.
->=20
-> To work around cases where this info is not present in the firmware table=
-s,
-> which is often the case on x86/ACPI devices, both frameworks allow the
-> provider-driver to attach info about consumers to the clks/regulators
-> when registering these.
->=20
-> This causes problems with the probe ordering wrt drivers for consumers
-> of these clks/regulators. Since the lookups are only registered when the
-> provider-driver binds, trying to get these clks/regulators before then
-> results in a -ENOENT error for clks and a dummy regulator for regulators.
->=20
-> To ensure the correct probe-ordering the ACPI core has code to defer the
-> enumeration of consumers affected by this until the providers are ready.
->=20
-> Call the new acpi_dev_ready_for_enumeration() helper to avoid
-> enumerating / instantiating i2c-clients too early.
->=20
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+OK yes we currently always need "ti,sysc" as the clockdomain autoidle
+handling still relies on auxdata.
 
-If the ACPI and I2C-ACPI maintainers are happy, I am fine with this,
-too:
+> > +
+> > +  reg: true
+> 
+> Any number of register areas is valid?
 
-Acked-by: Wolfram Sang <wsa@kernel.org>
+Yes the number of registers is known, I'll update to use max three reg.
 
+> > +
+> > +  reg-names: true
+> 
+> You've thrown out the names defined before.
 
---kpSW/TDc2ClihKjN
-Content-Type: application/pgp-signature; name="signature.asc"
+Yup these are known too.
 
------BEGIN PGP SIGNATURE-----
+> > +
+> > +  clocks: true
+> 
+> Any number of clocks is valid? 
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFj0JEACgkQFA3kzBSg
-KbYxJhAApjIf+9ZpThQuo57RPJf7E3JLEg8Zt4yCTURtmLlTlc9cX9xyZpaUulfV
-STyFose+JW+221p99KOlw5o3TIVQkXUdNEz2wLOrr3uorLpjYYcc4H2BAm+M7+4v
-Mn1LKckOrCCvoS3fGuHmJRfNId/GBLDHoyWVt3YYsW+2P7xQ3elEe9nm/sKdETIg
-1vmyq7ad5aAezhN2/qflYHCtR1WZWRbA0a4BrXGGg30t3bx1u34b0mG+Q7XqXb6s
-8MnRdT8EmU+2XKIvBUHFSR8BftmwjAbJvzHtGBVHnWgjJHlwJpPQnTRRMgNJSmq6
-OyXgEu506tF+8urV7Q3Iwh9T6B3avMD6+KwnFl1HqVI9dCwrsZTwLrUgA/h5MPkp
-dXleThz8PeJusOIZuNEbvwIwIBndHRS9yDT5Xt6pXPTEcwP7k4VDsNAhPMVMo5kH
-nJguFJ9EDlgxxayoD5R4zSKnDYW+6EJxVEOrRyMQHbjUQQWrXqOJBmqgCzswk8gR
-J5cBOF5deBidKRmS9uikQ+v3PzbSdQLRVa2houbQs7TOex3LJ7+r2aaRbkSAaJ/k
-G/vd9HqA8okfGxpDtm76bjyeEpigSY5xi+0VgWDgkGiud5MvUiiWy/NbmSllEpGx
-zP7glXE7ggCCr6Fc8ydZFp3sSL6hFJeb6tDsg9ev+juPlw8TCu0=
-=mBFk
------END PGP SIGNATURE-----
+I think 8 clocks is the highest seen :)
 
---kpSW/TDc2ClihKjN--
+> > +  clock-names: true
+> 
+> You've thrown out the names defined before.
+
+Hmm fck and ick can be named, the rest are device specific though.
+
+> > +
+> > +  power-domains: true
+> 
+> How many?
+
+Just one should be enough here.
+
+> > +additionalProperties: true
+> 
+> This can be restricted to child nodes only? If so:
+> 
+> additionalProperties:
+>   type: object
+
+OK great, this can be limited to child nodes only.
+
+Regards,
+
+Tony
