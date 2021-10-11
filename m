@@ -2,101 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337C9428444
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 02:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5B2428452
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 02:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbhJKAUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 20:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhJKAUf (ORCPT
+        id S233301AbhJKAkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 20:40:00 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:44453 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhJKAj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 20:20:35 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EA7C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 17:18:36 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id t2so50226215wrb.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 17:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+ertAYRuBrO4o1phVoXpE4ROiBPxr5B4o34tTZaBB8A=;
-        b=DPfU03D3DqsL+CkdbZ/BDchAbEN5TtBMbdvFV9GkUeSTuTTgA/INSnQlJdCMxC5cQI
-         ybD0bKSGMABhPCrWhW7opF0hAycAKHYKGQbNVBRc3BJ7ls05pGAl6mLWfdu9b36B46/N
-         v10OImb6nVtP5wrgqKce/WtzXxAGHx5J1Zli7xFEBtx+D/5rjv9fNVux7EcEqqyMdYOs
-         xrlmUfrxBVHye0urgF/RzoZRqtuVfIN4Jlaj/QMA+AIqvaqLgAdjSgEFFNL9znvjDQpV
-         2wp5dSDTPpMu9QatmmmptpJgYSK/pwe9YC2GD9i6YukCjMK04OcaIs5ypDP6Up5mWO1U
-         qj4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+ertAYRuBrO4o1phVoXpE4ROiBPxr5B4o34tTZaBB8A=;
-        b=4RogfVDecXdw0Ajkt5NBt8M10QBLajKaazCOpTYWyorLXavwnzshu5aB+ECuSkd6CX
-         2s5BIEkLKwCosG0CJqx5IJEZ1GgOGBgDjDrdJsC5bSNXsWn/oz+Y4e09yY/qBGev2lX+
-         MVI04DgzfIWZLbv7A73iPrEpZhQizllWvtvhE6fZjhl835pehQ9UbLie4LpWREs9ZrNy
-         EkrlBNiB6chPPsyOY4ERc0z2lYlC+16xChnlA5+7vddGgodu//iaeZ2m9xw4xAKBZCgf
-         fQaLoh67/mxayC4yFoOaNTrgZe7S+KoTjG5Rk/2rTINhym6ojbxp8eYGkv3pFeHk8VqO
-         o9Mw==
-X-Gm-Message-State: AOAM53128YzFugzwpUIhst702HfXewrnwj6zz4eSlhnOr+oE146tS5UE
-        4v2w+YU6XFP798oVs+VDduS4mA==
-X-Google-Smtp-Source: ABdhPJzLmNrhjQpndv3iPH0ThAst4NK4h72w8khYnDOD3zReF83j4toL6PQbN/Ipmxjv69D5fNHlSQ==
-X-Received: by 2002:adf:e101:: with SMTP id t1mr21586690wrz.395.1633911514884;
-        Sun, 10 Oct 2021 17:18:34 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id d8sm6190613wrz.84.2021.10.10.17.18.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 17:18:34 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 01:18:32 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     axboe@kernel.dk, hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lumip@lumip.de
-Subject: Re: [PATCH] cdrom: docs: reformat table in
- Documentation/userspace-api/ioctl/cdrom.rst
-Message-ID: <YWOC2Iyszh7WAgzf@equinox>
-References: <20211007231720.31997-1-phil@philpotter.co.uk>
- <464a0b2f-c556-ccda-aa3c-26733fba4617@infradead.org>
+        Sun, 10 Oct 2021 20:39:59 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSKdd4pmJz4xb9;
+        Mon, 11 Oct 2021 11:37:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633912679;
+        bh=Ax1GJIXnCtIn0NUDYilG5pwOdgBFXtOsdMYg8/AgB6g=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jVs6WrPVvJ/IaNBbsDEBDvMOdEwsInrHiQXLjVUAK+70ERxRKtIJF2a8fF7X+178m
+         K/J2/w13i5qwm5JT3QP9HkR5U/v6qqc0LqScOYL3glguaG5xsijF866MDHE0cO8cR5
+         tkr5oNE7ZBLIz16CP3F/CwPuIE6/X8GzrnqRNklvntD0Zs6wKcxclsnOIHgFltOF9i
+         FiC2TavL9c4W+dCz5vTSsUvrF0MwMsedEx4K8Xz7pKCpFPxW9f16GvhPNIKc/3vMUH
+         QzRzqrEKWDNc2kbnL1cNTI3kxIUahOrP4ZojEQK8CnNWN5l046X0uP3wMDemCVnBzd
+         f3l29kYgxOBhw==
+Date:   Mon, 11 Oct 2021 11:37:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Jude Shih <shenshih@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>
+Subject: linux-next: manual merge of the drm tree with Linus' tree
+Message-ID: <20211011113755.7a0597af@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <464a0b2f-c556-ccda-aa3c-26733fba4617@infradead.org>
+Content-Type: multipart/signed; boundary="Sig_/HOhXqr_tUBv5nIVqn1p28Y5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 04:34:13PM -0700, Randy Dunlap wrote:
-> On 10/7/21 4:17 PM, Phillip Potter wrote:
-> > Add extra space to the first column of ioctl values table, and also realign
-> > the text in the second column, to fix a documentation build warning
-> > introduced by: commit 67f1e027c270 ("drivers/cdrom: improved ioctl for
-> > media change detection")
-> > 
-> > Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-> > Fixes: 67f1e027c270 ("drivers/cdrom: improved ioctl for media change detection")
-> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-> 
-> Looks good. Thanks.
-> 
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-> 
-> 
-> > ---
-> >   Documentation/userspace-api/ioctl/cdrom.rst | 116 ++++++++++----------
-> >   1 file changed, 58 insertions(+), 58 deletions(-)
-> > 
-> > diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
-> > index bac5bbf93ca0..682948fc88a3 100644
-> > --- a/Documentation/userspace-api/ioctl/cdrom.rst
-> > +++ b/Documentation/userspace-api/ioctl/cdrom.rst
-> 
-> 
-> 
-> -- 
-> ~Randy
+--Sig_/HOhXqr_tUBv5nIVqn1p28Y5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you for the review Randy.
+Hi all,
 
-Regards,
-Phil
+Today's linux-next merge of the drm tree got a conflict in:
+
+  drivers/gpu/drm/amd/display/include/dal_asic_id.h
+
+between commit:
+
+  7ab0965079bb ("drm/amd/display: USB4 bring up set correct address")
+
+from Linus' tree and commit:
+
+  13900e6fde3f ("drm/amd/display: Fix for null pointer access for ddc pin a=
+nd aux engine.")
+
+from the drm tree.
+
+I fixed it up (I used the former) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HOhXqr_tUBv5nIVqn1p28Y5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFjh2MACgkQAVBC80lX
+0Gy3/gf9EhTj4llOseoDDJw9Ky2BbHLscqr+d3jCLVp/0A287YlSFrvcsX+9fgw4
+QGoLlP2jUqy6krXH2OnYRx8KAEuDhmGe+iqRYeSGIwHteUbUPlzqMD7IMPegxhRh
+RO5h4G+FrQVljzzBLhDUL2sonHaTexAoS/GANJj7vdc1bkK/IwT7yTcrvmytspb3
+5mVXqyMbtfxUFGaLFsHX/NrlbpwxDxuQLS2DItA9PHkAxG42pcpavwEfswq0DWH4
+5sNRKkyKyPeaTJj5ar31/qrIe5ZA6e0VSlXgyEypDsllznRpgeIAQQYLwQRpFhSH
+91/w9fLfL0F0TN9a+woSIPkzwBbo6w==
+=gR3t
+-----END PGP SIGNATURE-----
+
+--Sig_/HOhXqr_tUBv5nIVqn1p28Y5--
