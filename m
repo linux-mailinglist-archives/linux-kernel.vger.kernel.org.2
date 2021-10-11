@@ -2,240 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29E64297DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82DDC4297E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234818AbhJKT6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 15:58:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25707 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234763AbhJKT6q (ORCPT
+        id S234820AbhJKUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:00:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhJKUAE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:58:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633982205;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XPKvsjl8YoFxqfpp2DVkXZObdp8Zqyql8QX88E6eqok=;
-        b=Iq4X/sC3FRHAQeoQefPKsF7c1kGRVQpiyFkud8cVZSbK5myc56/WKNr24Q4bd5e9Cl7rSP
-        ascnyEhpD6KsnjUgBX/26RtJnWZLEO+3yQ2YcQxZDj74sYq3TMEnlQVMMMcPrqMAlSyVHQ
-        IJorUw4OdrEiRGPeAm5fmPCIzKpjkrI=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-1mDduGuFOpeu-UK3291hLw-1; Mon, 11 Oct 2021 15:56:44 -0400
-X-MC-Unique: 1mDduGuFOpeu-UK3291hLw-1
-Received: by mail-ed1-f71.google.com with SMTP id f4-20020a50e084000000b003db585bc274so11205492edl.17
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:56:43 -0700 (PDT)
+        Mon, 11 Oct 2021 16:00:04 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1E5C061570;
+        Mon, 11 Oct 2021 12:58:04 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id g8so72056419edt.7;
+        Mon, 11 Oct 2021 12:58:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SKh3z8/eFx39DZqeLn4BLSOUQsWLVYgA6sDrH+x4Ulk=;
+        b=mbTZFkNUWLVTd4DmzdjidHDoed1HvzabyqoqjfbSfDSfnZRHFe4aWbFxP2vttXkLYG
+         fgY+vmdfVg8Mb4knc/uzjZjfn95JQUhUJc5HJhCh9fN/PBs8dpnFew/8uq99xByifowb
+         zBoI1HjWz9lcOv+6aEy9mW2W1p2/VB7839rIxbIRaOXmHbm1i2/FZ2WkzUvWFgD76T78
+         vWYhEa2D/8Mzg57eBzfslfMifTlrCf/5JZr9d7Fgj+UFyhA3ujRICitMDtAQmdSFaVMD
+         DAjQ7PSre+Q5+1Lizyafz9GbRf7aeSI9wN0kfkztsb23UEChT6x/uZTDYIyay0WtQ7DR
+         fBzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XPKvsjl8YoFxqfpp2DVkXZObdp8Zqyql8QX88E6eqok=;
-        b=vbDopioAcMaXyRH2892kQvKsMqf0XxDC8r7T+UIUpOxthQghJwYjIpDofdh1WT4Gj9
-         gTrTUewEbipdYj2MI+j+DZmeC95VRaST4zMZXrtCMbdTFB8DsL8GgJKbT7aWOftYsTJm
-         qwAKjaFZExIT2lEHQAQ6NSPM1nOVclscQMI3P5plfVgn5jIRRUy9/jurRgRPZUtEHYFQ
-         eHgPuASSOrHaOxljRslQRJkfo46OJVHwFKbht0sDGeEnu4s0bbCNGIE2H07G5bcRU1jz
-         EAlgpEhTYWtNh2y3dlCwZHGt51Jr4j5rH1rwjVRMF6Lq8+zlmzQTwxtnqgDc/7ZLh3xp
-         n9lw==
-X-Gm-Message-State: AOAM5328mgL0Et1gxqfEyLjp2Y9/fpU7YkBOY6sdX0xoqqWxj5bAL/9t
-        soR1qhoZSrkba38HIJBwv8hBmkc84UaCrJl1f9PdURaXRPEdaQHcNL6Rsslk1j/RDNFm8ppns2H
-        5KbHW9Nv97oeJbf5gLMOycrpM
-X-Received: by 2002:a17:906:d96a:: with SMTP id rp10mr28022590ejb.497.1633982202923;
-        Mon, 11 Oct 2021 12:56:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxGZ3jPvs4mi57pN4IcTRUYnV+aiSZ94qB6dOZ+sdw++yf0nSx92VTVuWZOO18cEogp0kc1LQ==
-X-Received: by 2002:a17:906:d96a:: with SMTP id rp10mr28022571ejb.497.1633982202722;
-        Mon, 11 Oct 2021 12:56:42 -0700 (PDT)
-Received: from krava ([83.240.63.48])
-        by smtp.gmail.com with ESMTPSA id p22sm3970825ejl.90.2021.10.11.12.56.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 12:56:42 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 21:56:40 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>
-Subject: Re: [PATCH v3 6/8] perf session: Move event read code to separate
- function
-Message-ID: <YWSW+PLDJJlkjlXz@krava>
-References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
- <6ab47325fa261deca4ca55ecacf1ca2437abcd78.1633596227.git.alexey.v.bayduraev@linux.intel.com>
- <YV/0ZZBu01V87A8e@krava>
- <aa62d0ed-abca-2123-c8bf-cd6bced2fe9c@linux.intel.com>
- <YWBX+p1vtLXXbpkF@krava>
- <5e5ecfcd-57f1-1a06-4ed6-6a1e6983d1f8@linux.intel.com>
- <f8d0accb-b569-3fcd-ffe5-99e2fab4c8b7@linux.intel.com>
- <YWQ6TyyYRfx9AXLH@krava>
- <d630cf0d-1bb5-0527-411a-c70a01e2ddea@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SKh3z8/eFx39DZqeLn4BLSOUQsWLVYgA6sDrH+x4Ulk=;
+        b=oKATgOAcA0HYmOdQYC+3hsWhPneEOTDRZJMB6Isb42kZpvRoz3wjKlYuvzx7s3tOJE
+         l3A3sbmkUFwMU7ypz54j+BqoQyVYrhYMVQ6aMyRJtPRQophYqaY6gSYCpx4iK4uFrOmF
+         L+2DtT5+rEGO/ukRo24eNHHK58unu8cpsYAZ1+38aQWN/4fONq1KYoWwmchXZcxHYiCc
+         jqZKDXpCxi6GHCZ2roW8GTTIOJiZEnS3QBqyHcQzYLOGx3KpjOhYdvN6dsRa8SYwuHaf
+         AWfrCmVbmJdWe29YI0PK3u/L77wjdmgRg3akHztHfAaARMhwftr0mAbg//gdBTIoejrj
+         c5Uw==
+X-Gm-Message-State: AOAM533jPKP7l3KTiFoQxiHVus7XvKhriXOqAQWGD4fSgbgyjKqJmQUU
+        VzeHiMG/yv+b1gd7XM/5X3DIRUWxzMifwC4W1xpXkiGBBh0=
+X-Google-Smtp-Source: ABdhPJyvPma2sUPqNK2WXoa3c5nzFwAzXULxWPsz1UOgT2ZXXI0SzXbS+dZePUX9ENuRUxmAFHX8Z0px4jAlKssBXrA=
+X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr28983343ejc.62.1633982282937;
+ Mon, 11 Oct 2021 12:58:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d630cf0d-1bb5-0527-411a-c70a01e2ddea@linux.intel.com>
+References: <20210917205731.262693-1-shy828301@gmail.com> <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
+ <YUdL3lFLFHzC80Wt@casper.infradead.org> <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
+ <YUkCI2I085Sos/64@casper.infradead.org> <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
+In-Reply-To: <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 11 Oct 2021 12:57:51 -0700
+Message-ID: <CAHbLzkrdXQfcudeeDHx8uUD55Rr=Aogi0pnQbBbP8bEZca8-7w@mail.gmail.com>
+Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
+ for invalidatepage
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, cfijalkovich@google.com,
+        Song Liu <song@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 07:40:33PM +0300, Bayduraev, Alexey V wrote:
-> 
-> 
-> On 11.10.2021 16:21, Jiri Olsa wrote:
-> > On Mon, Oct 11, 2021 at 12:53:30PM +0300, Bayduraev, Alexey V wrote:
-> >>
-> >>
-> >> On 11.10.2021 12:08, Bayduraev, Alexey V wrote:
-> >>>
-> >>> On 08.10.2021 17:38, Jiri Olsa wrote:
-> >>>> On Fri, Oct 08, 2021 at 11:42:18AM +0300, Bayduraev, Alexey V wrote:
-> >>>>>
-> >>>>>
-> >>>>> On 08.10.2021 10:33, Jiri Olsa wrote:
-> >>>>>> On Thu, Oct 07, 2021 at 01:25:41PM +0300, Alexey Bayduraev wrote:
-> >>>>>>
-> >>>>>> SNIP
-> >>>>>>
-> >>>>>>>  static int
-> >>>>>>> -reader__process_events(struct reader *rd, struct perf_session *session,
-> >>>>>>> -		       struct ui_progress *prog)
-> >>>>>>> +reader__read_event(struct reader *rd, struct perf_session *session,
-> >>>>>>> +		   struct ui_progress *prog)
-> >>>
-> >>> SNIP
-> >>>
-> >>>>>>
-> >>>>>> active_decomp should be set/unset within reader__process_events,
-> >>>>>> not just for single event read, right?
-> >>>>>
-> >>>>> No, it should be set before perf_session__process_event/process_decomp_events
-> >>>>> and unset after these calls. So active_decomp setting/unsetting is moved in
-> >>>>> this patch to the reader__read_event function. This is necessary for multiple
-> >>>>> trace reader because it could call reader__read_event in round-robin manner.
-> >>>>
-> >>>> hum, is that code already in? I can't see this happening in current code
-> >>>
-> >>> Probably I don't understand the question. In [PATCH v3 2/8] I introduced 
-> >>> active_decomp pointer in perf_session. It is initialized by a pointer to the 
-> >>> decompressor object in perf_session. In reader__process_events it is set to 
-> >>> the reader decompressor object. And it is reset to the session decompressor 
-> >>> object at exit. In this case we do not need to reset it after each 
-> >>> perf_session__process_event because this code reads events in loop with 
-> >>> constant reader object. Maybe setting of active_decomp should be at the 
-> >>> entrance to the reader__process_events, not before reader__process_events, 
-> >>> in [PATCH v3 2/8]. All this code is new.
-> >>
-> >> We set active_decomp for perf_session__process_event (rd->process() in our
-> >> case) and for __perf_session__process_decomp_events, active_decomp is not 
-> >> necessary for other parts of reader__process_events.
-> > 
-> > so what I see in the code is:
-> > 
-> > __perf_session__process_events
-> > {
-> > 	struct reader rd;
-> > 
-> > 	reader__process_events(rd)
-> > 	{
-> > 		reader__read_event(rd)
-> > 		{
-> > ->			session->active_decomp = &rd->decomp_data;
-> > 			rd->process(...
-> > ->			session->active_decomp = &session->decomp_data;
-> > 		}
-> > 
-> > 	}
-> > }
-> > 
-> > 
-> > we set session->active_decomp for each event that we process
-> > and I don't understand why we can't do that just once in
-> > __perf_session__process_events, so it'd be like:
-> > 
-> > __perf_session__process_events
-> > {
-> > 	struct reader rd;
-> > 
-> > ->	session->active_decomp = &rd->decomp_data;
-> > 
-> > 	reader__process_events(rd)
-> > 	{
-> > 		reader__read_event(rd)
-> > 		{
-> > 			rd->process(...
-> > 		}
-> > 
-> > 	}
-> > 
-> > ->	session->active_decomp = &session->decomp_data;
-> > }
-> > 
-> > 
-> > or within reader__process_events if it's more convenient
-> 
-> Now I got it, thanks ;)
-> 
-> With your suggestion, for multiple trace reader, we should always 
-> remember to switch active_decomp when switching the reader object, 
-> just passing the current reader pointer to the reader__read_event 
-> function will not be enough. I thought it would be better to hide 
-> such details in the reader__read_event function.
-> 
-> Of course, I can move setting of active_decomp outside of 
-> reader__read_event if this is better from your point of view.
+On Mon, Sep 20, 2021 at 3:35 PM Yang Shi <shy828301@gmail.com> wrote:
+>
+> On Mon, Sep 20, 2021 at 2:50 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Mon, Sep 20, 2021 at 02:23:41PM -0700, Yang Shi wrote:
+> > > On Sun, Sep 19, 2021 at 7:41 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > > >
+> > > > On Fri, Sep 17, 2021 at 05:07:03PM -0700, Yang Shi wrote:
+> > > > > > The debugging showed the page passed to invalidatepage is a huge page
+> > > > > > and the length is the size of huge page instead of single page due to
+> > > > > > read only FS THP support.  But block_invalidatepage() would throw BUG if
+> > > > > > the size is greater than single page.
+> > > >
+> > > > Things have already gone wrong before we get to this point.  See
+> > > > do_dentry_open().  You aren't supposed to be able to get a writable file
+> > > > descriptor on a file which has had huge pages added to the page cache
+> > > > without the filesystem's knowledge.  That's the problem that needs to
+> > > > be fixed.
+> > >
+> > > I don't quite understand your point here. Do you mean do_dentry_open()
+> > > should fail for such cases instead of truncating the page cache?
+> >
+> > No, do_dentry_open() should have truncated the page cache when it was
+> > called and found that there were THPs in the cache.  Then khugepaged
+> > should see that someone has the file open for write and decline to create
+> > new THPs.  So it shouldn't be possible to get here with THPs in the cache.
+>
 
-at the moment it's not necessary to set/unset it for each event,
-let's do that when it's really needed in the following changes
-for threaded perf record with explanation
+I think Hugh's skipping special file patch
+(https://lore.kernel.org/linux-mm/a07564a3-b2fc-9ffe-3ace-3f276075ea5c@google.com/)
+could fix this specific BUG report and seems like a more proper fix to
+this.
 
-thanks,
-jirka
+However, it still doesn't make too much sense to have thp_size passed
+to do_invalidatepage(), then have PAGE_SIZE hardcoded in a BUG
+assertion IMHO. So it seems this patch is still useful because
+block_invalidatepage() is called by a few filesystems as well, for
+example, ext4. Or I'm wondering whether we should call
+do_invalidatepage() for each subpage of THP in truncate_cleanup_page()
+since private is for each subpage IIUC.
 
-> 
-> Regards,
-> Alexey
-> 
-> > 
-> > jirka
-> > 
-> >>
-> >> Regards,
-> >> Alexey
-> >>
-> >>>
-> >>> In this patch I separates single event reading and moves setting/resetting
-> >>> of active_decomp before/after perf_session__process_event because this is 
-> >>> necessary for multiple trace reader. 
-> >>>
-> >>> Regards,
-> >>> Alexey
-> >>>
-> >>>>
-> >>>> jirka
-> >>>>
-> >>>>>
-> >>>>> Regards,
-> >>>>> Alexey
-> >>>>>
-> >>>>>>
-> >>>>>> jirka
-> >>>>>>
-> >>>>>>>  	return err;
-> >>>>>>>  }
-> >>>>>>>  
-> >>>>>>> -- 
-> >>>>>>> 2.19.0
-> >>>>>>>
-> >>>>>>
-> >>>>>
-> >>>>
-> >>
-> > 
-> 
-
+> AFAICT, it does so.
+>
+> In do_dentry_open():
+> /*
+>          * XXX: Huge page cache doesn't support writing yet. Drop all page
+>          * cache for this file before processing writes.
+>          */
+>         if (f->f_mode & FMODE_WRITE) {
+>                 /*
+>                  * Paired with smp_mb() in collapse_file() to ensure nr_thps
+>                  * is up to date and the update to i_writecount by
+>                  * get_write_access() is visible. Ensures subsequent insertion
+>                  * of THPs into the page cache will fail.
+>                  */
+>                 smp_mb();
+>                 if (filemap_nr_thps(inode->i_mapping))
+>                         truncate_pagecache(inode, 0);
+>         }
+>
+>
+> In khugepaged:
+> filemap_nr_thps_inc(mapping);
+>                 /*
+>                  * Paired with smp_mb() in do_dentry_open() to ensure
+>                  * i_writecount is up to date and the update to nr_thps is
+>                  * visible. Ensures the page cache will be truncated if the
+>                  * file is opened writable.
+>                  */
+>                 smp_mb();
+>                 if (inode_is_open_for_write(mapping->host)) {
+>                         result = SCAN_FAIL;
+>                         __mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
+>                         filemap_nr_thps_dec(mapping);
+>                         goto xa_locked;
+>                 }
+>
+> But I'm not quite sure if there is any race condition.
