@@ -2,167 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E3A4292C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 955A24292E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237857AbhJKPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:04:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236647AbhJKPEF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:04:05 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5571C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:02:04 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id y3so24115590wrl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gVndUYssrhT1+TAmUJh5faXD018hrwwoKVlYhzJy80Q=;
-        b=FasKWF+h3LWJMaLN9s630gc2WwMKFbazr2bx1CBPqgeqwfOwdjCMhq/eJK01cwpTAJ
-         gB8eBvjRtQ7DrkC1Pw7bEukO2eMxmZmV7FhMS+skZ52kcwWF5sWZje0+PMK2g6GyB8Ka
-         TqkHo+8i+n7NaNRdpF3aWWvcutEamrnuFNpTujN2YpbK6Jj8d1X8jYvKECFZbeyM4Z8s
-         NCefVt60WsaJtrUa3kpAlqlf6AERtFxyn8FdgkLfRhEwm59XGqk6jfzG7v25CnfrNhCI
-         2Wkf5d7Dred82bLPRErYscWqFyOMb1VIdZt3tZPtF05D4GU4KSdxxbWFqDihZHcAQE9u
-         tdeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gVndUYssrhT1+TAmUJh5faXD018hrwwoKVlYhzJy80Q=;
-        b=cWGciFhTaCx10fUmCjTwGnfwcm/80K8w5Uo77vqZyCjhf0KU6/0BY3CWBktdGRvQbn
-         Kq+76tVL71nvpED1MB9wWptstftD/Azrizxfw06s6jm7ZbJJukH7MAXTYRH5iU9BNb5E
-         kGHVLWy2SUte19RxvAZ7Ws6A3uj7XAIRMaSlWCta8Mwo2glrBdj5NFxSJIDYQMjwNyKs
-         ssQv0cunMC6aZbBUP1A74s4ffFRw+9iAsT1vJcraDDPyDjH5bUHiYGaWOBNYoAnhC1as
-         IELeoVwHXOUdSBcbFLGSPzLB3sgM0FSgztiPQWhQ5SU995KletoGFiQVKRWs6WOKSx47
-         qHHg==
-X-Gm-Message-State: AOAM530zs4kVBXl1z2qW1a7Wh5u9OiqEIo5KUnJMQ8Wlq3ODIrEvk6/0
-        M0gjSGOCEVZP3At3kigXZ55skcXTGjZinYruxbGbQJqYjY0=
-X-Google-Smtp-Source: ABdhPJzLl/vVPAkLeynPMkJbCDqObfBfXCwKXMgwbPIBrrMIJpi3K/CBDE3cWw6gazA8Yyn82prufGMxb89OHd2ycRg=
-X-Received: by 2002:a05:6000:1acc:: with SMTP id i12mr24854107wry.249.1633964523086;
- Mon, 11 Oct 2021 08:02:03 -0700 (PDT)
+        id S234220AbhJKPRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:17:37 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47654 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233488AbhJKPRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:17:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="225666052"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="225666052"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 08:04:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="479886228"
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7])
+  by orsmga007.jf.intel.com with ESMTP; 11 Oct 2021 08:04:00 -0700
+Received: from irsmsx604.ger.corp.intel.com (163.33.146.137) by
+ irsmsx601.ger.corp.intel.com (163.33.146.7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 11 Oct 2021 16:03:59 +0100
+Received: from irsmsx604.ger.corp.intel.com ([163.33.146.137]) by
+ IRSMSX604.ger.corp.intel.com ([163.33.146.137]) with mapi id 15.01.2242.012;
+ Mon, 11 Oct 2021 16:03:59 +0100
+From:   "Hunter, Adrian" <adrian.hunter@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Subject: RE: [PATCH 5.10 83/83] scsi: ufs: core: Fix task management
+ completion
+Thread-Topic: [PATCH 5.10 83/83] scsi: ufs: core: Fix task management
+ completion
+Thread-Index: AQHXvqegHY5BU+KliUCTrpRZqKMAK6vN4n7w
+Date:   Mon, 11 Oct 2021 15:03:59 +0000
+Message-ID: <8dc0e077af3f4fd5a0887784f65bd722@intel.com>
+References: <20211011134508.362906295@linuxfoundation.org>
+ <20211011134511.235071707@linuxfoundation.org>
+In-Reply-To: <20211011134511.235071707@linuxfoundation.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20211011132431.2792797-1-guoren@kernel.org>
-In-Reply-To: <20211011132431.2792797-1-guoren@kernel.org>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Mon, 11 Oct 2021 20:31:51 +0530
-Message-ID: <CAAhSdy1xjRE0TJ_Nd9fdz4RAK2J5FskQYbWDVXO7jhfcZsFm_g@mail.gmail.com>
-Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Fix duplicate mask/unmask for claim/complete
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 6:54 PM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> PLIC only has enable-registers not mask/unmask registers. Mixing
-> mask/unmask with irq_eoi is wrong, because readl(claim) could mask
-
-This is an incorrect assumption about readl(claim). When SW does
-read(claim) the HW updates internal state that IRQ has been claimed.
-The HW can still get same (already claimed) IRQ again before
-writel(claim) which will be delivered after writel(claim).
-
-> irq by hardware. We only need mask/unmask to fixup the hardware
-> which couldn't claim + mask correctly.
-
-The handle_fasteoi_irq() only calls unmask_irq() mostly when the
-underlying IRQ is threaded. Is there any other case ?
-
-Another fact is that all irqchip drivers using handle_fasteoi_irq()
-implement irq_mask/unmask().
-
-Regards,
-Anup
-
->
-> If hardware supports claim + mask, it would cause unnecessary
-> mask/umak operations.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Anup Patel <anup@brainfault.org>
-> Cc: Atish Patra <atish.patra@wdc.com>
-> ---
->  drivers/irqchip/irq-sifive-plic.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> index cf74cfa82045..0fa46912f452 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -64,6 +64,7 @@ struct plic_priv {
->         struct cpumask lmask;
->         struct irq_domain *irqdomain;
->         void __iomem *regs;
-> +       bool claim_mask_support;
->  };
->
->  struct plic_handler {
-> @@ -111,7 +112,7 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
->         }
->  }
->
-> -static void plic_irq_unmask(struct irq_data *d)
-> +static void plic_irq_enable(struct irq_data *d)
->  {
->         struct cpumask amask;
->         unsigned int cpu;
-> @@ -125,7 +126,7 @@ static void plic_irq_unmask(struct irq_data *d)
->         plic_irq_toggle(cpumask_of(cpu), d, 1);
->  }
->
-> -static void plic_irq_mask(struct irq_data *d)
-> +static void plic_irq_disable(struct irq_data *d)
->  {
->         struct plic_priv *priv = irq_data_get_irq_chip_data(d);
->
-> @@ -168,8 +169,8 @@ static void plic_irq_eoi(struct irq_data *d)
->
->  static struct irq_chip plic_chip = {
->         .name           = "SiFive PLIC",
-> -       .irq_mask       = plic_irq_mask,
-> -       .irq_unmask     = plic_irq_unmask,
-> +       .irq_enable     = plic_irq_enable,
-> +       .irq_disable    = plic_irq_disable,
->         .irq_eoi        = plic_irq_eoi,
->  #ifdef CONFIG_SMP
->         .irq_set_affinity = plic_set_affinity,
-> @@ -181,6 +182,11 @@ static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
->  {
->         struct plic_priv *priv = d->host_data;
->
-> +       if (!priv->claim_mask_support) {
-> +               plic_chip.irq_mask      = plic_irq_disable;
-> +               plic_chip.irq_unmask    = plic_irq_enable;
-> +       }
-> +
->         irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
->                             handle_fasteoi_irq, NULL, NULL);
->         irq_set_noprobe(irq);
-> @@ -298,6 +304,8 @@ static int __init plic_init(struct device_node *node,
->         if (WARN_ON(!nr_contexts))
->                 goto out_iounmap;
->
-> +       priv->claim_mask_support = of_property_read_bool(node, "claim-mask-support");
-> +
->         error = -ENOMEM;
->         priv->irqdomain = irq_domain_add_linear(node, nr_irqs + 1,
->                         &plic_irqdomain_ops, priv);
-> --
-> 2.25.1
->
+SGkNCg0KVGhpcyBkb2Vzbid0IHdvcmsuICBQbGVhc2UgZHJvcC4gIFNvcnJ5LCBubyBpZGVhIHdo
+eSBJIHNlbnQgaXQgYmVmb3JlIHRlc3RpbmcuDQoNClNwZWNpZmljYWxseSwgaW4gdjUuMTAsIHVm
+c2hjZF90bWNfaGFuZGxlcigpIGNhbiBiZSBjYWxsZWQgdW5kZXIgdGhlIHNhbWUgc3BpbmxvY2sN
+Cml0IGlzIHVzaW5nLCB3aGljaCBkZWFkbG9ja3MuDQoNClJlZ2FyZHMNCkFkcmlhbg0KDQo+IC0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3Jl
+Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IFNlbnQ6IE1vbmRheSwgT2N0b2JlciAxMSwgMjAy
+MSA0OjQ3IFBNDQo+IFRvOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IENjOiBHcmVn
+IEtyb2FoLUhhcnRtYW4gPGdyZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPjsNCj4gc3RhYmxlQHZn
+ZXIua2VybmVsLm9yZzsgQmFydCBWYW4gQXNzY2hlIDxidmFuYXNzY2hlQGFjbS5vcmc+OyBIdW50
+ZXIsDQo+IEFkcmlhbiA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+OyBNYXJ0aW4gSy4gUGV0ZXJz
+ZW4NCj4gPG1hcnRpbi5wZXRlcnNlbkBvcmFjbGUuY29tPg0KPiBTdWJqZWN0OiBbUEFUQ0ggNS4x
+MCA4My84M10gc2NzaTogdWZzOiBjb3JlOiBGaXggdGFzayBtYW5hZ2VtZW50IGNvbXBsZXRpb24N
+Cj4gDQo+IEZyb206IEFkcmlhbiBIdW50ZXIgPGFkcmlhbi5odW50ZXJAaW50ZWwuY29tPg0KPiAN
+Cj4gY29tbWl0IGY1ZWYzMzZmZDJlNGMzNmRlZGFlNGU3Y2E2NmNmNTM0OWQ2ZmRhNjIgdXBzdHJl
+YW0uDQo+IA0KPiBUaGUgVUZTIGRyaXZlciB1c2VzIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCkg
+d2hlbiBpZGVudGlmeWluZyB0YXNrDQo+IG1hbmFnZW1lbnQgcmVxdWVzdHMgdG8gY29tcGxldGUs
+IGhvd2V2ZXIgYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIoKQ0KPiBkb2Vzbid0DQo+IHdvcmsuDQo+
+IA0KPiBibGtfbXFfdGFnc2V0X2J1c3lfaXRlcigpIG9ubHkgaXRlcmF0ZXMgcmVxdWVzdHMgZGlz
+cGF0Y2hlZCBieSB0aGUgYmxvY2sNCj4gbGF5ZXIuIFRoYXQgYXBwZWFycyBhcyBpZiBpdCBtaWdo
+dCBoYXZlIHN0YXJ0ZWQgc2luY2UgY29tbWl0IDM3ZjRhMjRjMjQ2OQ0KPiAoImJsay1tcTogY2Vu
+dHJhbGlzZSByZWxhdGVkIGhhbmRsaW5nIGludG8gYmxrX21xX2dldF9kcml2ZXJfdGFnIikgd2hp
+Y2gNCj4gcmVtb3ZlZCAnZGF0YS0+aGN0eC0+dGFncy0+cnFzW3JxLT50YWddID0gcnEnIGZyb20g
+YmxrX21xX3JxX2N0eF9pbml0KCkNCj4gd2hpY2ggZ2V0cyBjYWxsZWQ6DQo+IA0KPiAJYmxrX2dl
+dF9yZXF1ZXN0DQo+IAkJYmxrX21xX2FsbG9jX3JlcXVlc3QNCj4gCQkJX19ibGtfbXFfYWxsb2Nf
+cmVxdWVzdA0KPiAJCQkJYmxrX21xX3JxX2N0eF9pbml0DQo+IA0KPiBTaW5jZSBVRlMgdGFzayBt
+YW5hZ2VtZW50IHJlcXVlc3RzIGFyZSBub3QgZGlzcGF0Y2hlZCBieSB0aGUgYmxvY2sgbGF5ZXIs
+DQo+IGhjdHgtPnRhZ3MtPnJxc1tycS0+dGFnXSByZW1haW5zIE5VTEwsIGFuZCBzaW5jZQ0KPiBi
+bGtfbXFfdGFnc2V0X2J1c3lfaXRlcigpDQo+IHJlbGllcyBvbiBmaW5kaW5nIHJlcXVlc3RzIHVz
+aW5nIGhjdHgtPnRhZ3MtPnJxc1tycS0+dGFnXSwgVUZTIHRhc2sNCj4gbWFuYWdlbWVudCByZXF1
+ZXN0cyBhcmUgbmV2ZXIgZm91bmQgYnkgYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIoKS4NCj4gDQo+
+IEJ5IHVzaW5nIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCksIHRoZSBVRlMgZHJpdmVyIHdhcyBy
+ZWx5aW5nIG9uIGludGVybmFsDQo+IGRldGFpbHMgb2YgdGhlIGJsb2NrIGxheWVyLCB3aGljaCB3
+YXMgZnJhZ2lsZSBhbmQgc3Vic2VxdWVudGx5IGdvdA0KPiBicm9rZW4uIEZpeCBieSByZW1vdmlu
+ZyB0aGUgdXNlIG9mIGJsa19tcV90YWdzZXRfYnVzeV9pdGVyKCkgYW5kIGhhdmluZw0KPiB0aGUN
+Cj4gZHJpdmVyIGtlZXAgdHJhY2sgb2YgdGFzayBtYW5hZ2VtZW50IHJlcXVlc3RzLg0KPiANCj4g
+TGluazogaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMDkyMjA5MTA1OS40MDQwLTEtDQo+
+IGFkcmlhbi5odW50ZXJAaW50ZWwuY29tDQo+IEZpeGVzOiAxMjM1ZmM1NjllMGIgKCJzY3NpOiB1
+ZnM6IGNvcmU6IEZpeCB0YXNrIG1hbmFnZW1lbnQgcmVxdWVzdA0KPiBjb21wbGV0aW9uIHRpbWVv
+dXQiKQ0KPiBGaXhlczogNjlhNmMyNjljMDk3ICgic2NzaTogdWZzOiBVc2UgYmxrX3tnZXQscHV0
+fV9yZXF1ZXN0KCkgdG8gYWxsb2NhdGUgYW5kDQo+IGZyZWUgVE1GcyIpDQo+IENjOiBzdGFibGVA
+dmdlci5rZXJuZWwub3JnDQo+IFRlc3RlZC1ieTogQmFydCBWYW4gQXNzY2hlIDxidmFuYXNzY2hl
+QGFjbS5vcmc+DQo+IFJldmlld2VkLWJ5OiBCYXJ0IFZhbiBBc3NjaGUgPGJ2YW5hc3NjaGVAYWNt
+Lm9yZz4NCj4gU2lnbmVkLW9mZi1ieTogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRlckBpbnRl
+bC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1hcnRpbiBLLiBQZXRlcnNlbiA8bWFydGluLnBldGVy
+c2VuQG9yYWNsZS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IEdyZWcgS3JvYWgtSGFydG1hbiA8Z3Jl
+Z2toQGxpbnV4Zm91bmRhdGlvbi5vcmc+DQo+IA0KPiAtLS0NCj4gIGRyaXZlcnMvc2NzaS91ZnMv
+dWZzaGNkLmMgfCAgIDU0ICsrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5oIHwgICAgMQ0KPiAgMiBmaWxl
+cyBjaGFuZ2VkLCAyNiBpbnNlcnRpb25zKCspLCAyOSBkZWxldGlvbnMoLSkNCj4gDQo+IC0tLSBh
+L2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNo
+Y2QuYw0KPiBAQCAtNjEwNSwyNyArNjEwNSw2IEBAIHN0YXRpYyBpcnFyZXR1cm5fdCB1ZnNoY2Rf
+Y2hlY2tfZXJyb3JzKHMNCj4gIAlyZXR1cm4gcmV0dmFsOw0KPiAgfQ0KPiANCj4gLXN0cnVjdCBj
+dG1faW5mbyB7DQo+IC0Jc3RydWN0IHVmc19oYmEJKmhiYTsNCj4gLQl1bnNpZ25lZCBsb25nCXBl
+bmRpbmc7DQo+IC0JdW5zaWduZWQgaW50CW5jcGw7DQo+IC19Ow0KPiAtDQo+IC1zdGF0aWMgYm9v
+bCB1ZnNoY2RfY29tcGxfdG0oc3RydWN0IHJlcXVlc3QgKnJlcSwgdm9pZCAqcHJpdiwgYm9vbCBy
+ZXNlcnZlZCkNCj4gLXsNCj4gLQlzdHJ1Y3QgY3RtX2luZm8gKmNvbnN0IGNpID0gcHJpdjsNCj4g
+LQlzdHJ1Y3QgY29tcGxldGlvbiAqYzsNCj4gLQ0KPiAtCVdBUk5fT05fT05DRShyZXNlcnZlZCk7
+DQo+IC0JaWYgKHRlc3RfYml0KHJlcS0+dGFnLCAmY2ktPnBlbmRpbmcpKQ0KPiAtCQlyZXR1cm4g
+dHJ1ZTsNCj4gLQljaS0+bmNwbCsrOw0KPiAtCWMgPSByZXEtPmVuZF9pb19kYXRhOw0KPiAtCWlm
+IChjKQ0KPiAtCQljb21wbGV0ZShjKTsNCj4gLQlyZXR1cm4gdHJ1ZTsNCj4gLX0NCj4gLQ0KPiAg
+LyoqDQo+ICAgKiB1ZnNoY2RfdG1jX2hhbmRsZXIgLSBoYW5kbGUgdGFzayBtYW5hZ2VtZW50IGZ1
+bmN0aW9uIGNvbXBsZXRpb24NCj4gICAqIEBoYmE6IHBlciBhZGFwdGVyIGluc3RhbmNlDQo+IEBA
+IC02MTM2LDE0ICs2MTE1LDI0IEBAIHN0YXRpYyBib29sIHVmc2hjZF9jb21wbF90bShzdHJ1Y3Qg
+cmVxdWUNCj4gICAqLw0KPiAgc3RhdGljIGlycXJldHVybl90IHVmc2hjZF90bWNfaGFuZGxlcihz
+dHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiAgew0KPiAtCXN0cnVjdCByZXF1ZXN0X3F1ZXVlICpxID0g
+aGJhLT50bWZfcXVldWU7DQo+IC0Jc3RydWN0IGN0bV9pbmZvIGNpID0gew0KPiAtCQkuaGJhCSA9
+IGhiYSwNCj4gLQkJLnBlbmRpbmcgPSB1ZnNoY2RfcmVhZGwoaGJhLA0KPiBSRUdfVVRQX1RBU0tf
+UkVRX0RPT1JfQkVMTCksDQo+IC0JfTsNCj4gKwl1bnNpZ25lZCBsb25nIGZsYWdzLCBwZW5kaW5n
+LCBpc3N1ZWQ7DQo+ICsJaXJxcmV0dXJuX3QgcmV0ID0gSVJRX05PTkU7DQo+ICsJaW50IHRhZzsN
+Cj4gDQo+IC0JYmxrX21xX3RhZ3NldF9idXN5X2l0ZXIocS0+dGFnX3NldCwgdWZzaGNkX2NvbXBs
+X3RtLCAmY2kpOw0KPiAtCXJldHVybiBjaS5uY3BsID8gSVJRX0hBTkRMRUQgOiBJUlFfTk9ORTsN
+Cj4gKwlwZW5kaW5nID0gdWZzaGNkX3JlYWRsKGhiYSwgUkVHX1VUUF9UQVNLX1JFUV9ET09SX0JF
+TEwpOw0KPiArDQo+ICsJc3Bpbl9sb2NrX2lycXNhdmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZs
+YWdzKTsNCj4gKwlpc3N1ZWQgPSBoYmEtPm91dHN0YW5kaW5nX3Rhc2tzICYgfnBlbmRpbmc7DQo+
+ICsJZm9yX2VhY2hfc2V0X2JpdCh0YWcsICZpc3N1ZWQsIGhiYS0+bnV0bXJzKSB7DQo+ICsJCXN0
+cnVjdCByZXF1ZXN0ICpyZXEgPSBoYmEtPnRtZl9ycXNbdGFnXTsNCj4gKwkJc3RydWN0IGNvbXBs
+ZXRpb24gKmMgPSByZXEtPmVuZF9pb19kYXRhOw0KPiArDQo+ICsJCWNvbXBsZXRlKGMpOw0KPiAr
+CQlyZXQgPSBJUlFfSEFORExFRDsNCj4gKwl9DQo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSho
+YmEtPmhvc3QtPmhvc3RfbG9jaywgZmxhZ3MpOw0KPiArDQo+ICsJcmV0dXJuIHJldDsNCj4gIH0N
+Cj4gDQo+ICAvKioNCj4gQEAgLTYyNzMsOSArNjI2Miw5IEBAIHN0YXRpYyBpbnQgX191ZnNoY2Rf
+aXNzdWVfdG1fY21kKHN0cnVjdA0KPiAgCXVmc2hjZF9ob2xkKGhiYSwgZmFsc2UpOw0KPiANCj4g
+IAlzcGluX2xvY2tfaXJxc2F2ZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gLQlibGtfbXFf
+c3RhcnRfcmVxdWVzdChyZXEpOw0KPiANCj4gIAl0YXNrX3RhZyA9IHJlcS0+dGFnOw0KPiArCWhi
+YS0+dG1mX3Jxc1tyZXEtPnRhZ10gPSByZXE7DQo+ICAJdHJlcS0+cmVxX2hlYWRlci5kd29yZF8w
+IHw9IGNwdV90b19iZTMyKHRhc2tfdGFnKTsNCj4gDQo+ICAJbWVtY3B5KGhiYS0+dXRtcmRsX2Jh
+c2VfYWRkciArIHRhc2tfdGFnLCB0cmVxLCBzaXplb2YoKnRyZXEpKTsNCj4gQEAgLTYzMTksNiAr
+NjMwOCw3IEBAIHN0YXRpYyBpbnQgX191ZnNoY2RfaXNzdWVfdG1fY21kKHN0cnVjdA0KPiAgCX0N
+Cj4gDQo+ICAJc3Bpbl9sb2NrX2lycXNhdmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsN
+Cj4gKwloYmEtPnRtZl9ycXNbcmVxLT50YWddID0gTlVMTDsNCj4gIAlfX2NsZWFyX2JpdCh0YXNr
+X3RhZywgJmhiYS0+b3V0c3RhbmRpbmdfdGFza3MpOw0KPiAgCXNwaW5fdW5sb2NrX2lycXJlc3Rv
+cmUoaGJhLT5ob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCj4gDQo+IEBAIC05MjQ2LDYgKzkyMzYs
+MTIgQEAgaW50IHVmc2hjZF9pbml0KHN0cnVjdCB1ZnNfaGJhICpoYmEsIHZvaQ0KPiAgCQllcnIg
+PSBQVFJfRVJSKGhiYS0+dG1mX3F1ZXVlKTsNCj4gIAkJZ290byBmcmVlX3RtZl90YWdfc2V0Ow0K
+PiAgCX0NCj4gKwloYmEtPnRtZl9ycXMgPSBkZXZtX2tjYWxsb2MoaGJhLT5kZXYsIGhiYS0+bnV0
+bXJzLA0KPiArCQkJCSAgICBzaXplb2YoKmhiYS0+dG1mX3JxcyksIEdGUF9LRVJORUwpOw0KPiAr
+CWlmICghaGJhLT50bWZfcnFzKSB7DQo+ICsJCWVyciA9IC1FTk9NRU07DQo+ICsJCWdvdG8gZnJl
+ZV90bWZfcXVldWU7DQo+ICsJfQ0KPiANCj4gIAkvKiBSZXNldCB0aGUgYXR0YWNoZWQgZGV2aWNl
+ICovDQo+ICAJdWZzaGNkX3ZvcHNfZGV2aWNlX3Jlc2V0KGhiYSk7DQo+IC0tLSBhL2RyaXZlcnMv
+c2NzaS91ZnMvdWZzaGNkLmgNCj4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuaA0KPiBA
+QCAtNzMxLDYgKzczMSw3IEBAIHN0cnVjdCB1ZnNfaGJhIHsNCj4gDQo+ICAJc3RydWN0IGJsa19t
+cV90YWdfc2V0IHRtZl90YWdfc2V0Ow0KPiAgCXN0cnVjdCByZXF1ZXN0X3F1ZXVlICp0bWZfcXVl
+dWU7DQo+ICsJc3RydWN0IHJlcXVlc3QgKip0bWZfcnFzOw0KPiANCj4gIAlzdHJ1Y3QgdWljX2Nv
+bW1hbmQgKmFjdGl2ZV91aWNfY21kOw0KPiAgCXN0cnVjdCBtdXRleCB1aWNfY21kX211dGV4Ow0K
+PiANCg0K
