@@ -2,155 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107374298B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99BBD4298BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235201AbhJKVQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:16:08 -0400
-Received: from mail-bn8nam12on2041.outbound.protection.outlook.com ([40.107.237.41]:28512
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231994AbhJKVQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:16:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bcjcGjs47Ov++9m1tWtmuTCzICHdqdyQ516E0yaXWWX0O8LWUa249Tr3BdqnXNdhpEXCIwRQVH6kWnW67CYccAnikIjimWl/WFpP7x/AqxBuOyRtqw27v/wEr/38xmsiFy2pySYpzdMQ5kXa/sI3qKvIIpq/0uyAOBdutSX2iOqkUP8XMn4Bdf196wPD1kilnR4G3jeTw+xWVNTD4+Oq8MhlSkAJZ+WELX/73mdp6AZSgDBkEk93KLzF4daqA8DmjxSEH5bv525d4SRrtoKRs4uM76NpyOJsTlhOWXQ0KetE0WpjSA4Xdt4J0qLIycH8dhs7NdS8GjkSHYBJFn2JQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1sX5ZNpazDg+CYt7/hc1vcoxwrYj2TnDJfSpll5Y5rA=;
- b=giHYGj7i+f1HZuQqVAJyfFoSVgVtePkbtJ8CFO9sxn6RLtkg6HaGS/ICB1iV5LAzab7TFom9nLPyV7/FgeIQbq7+Ki64pAakrCjsuXDCubSKraix6UTBlBfHcN0GG57OFq8MwJ915+rfMC6bN50qGmu9Gqn7NEFj9h2oCJ0SiazGS0RxT2KsgbNijcn2SRu7OEhsWBQbNzFcf7LCZHY8Ac1hFxwydyndtZD3aKym/aCiDV7vo/tUwIVABrZ1pMTMzeb/obwT9HDCqUKk8wjjBQLx6bTq5Y9zke7HMX9cU7nWmqoaNA+JAFYTfn7pVboZK+gyYytpyxuqybSS9Bo/2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1sX5ZNpazDg+CYt7/hc1vcoxwrYj2TnDJfSpll5Y5rA=;
- b=qxfimY30DfFRnoJkexpezwKQ74IJrC7L1FCxSHJmphxnD6bDeevN6IL2clCYbb5hefXpxzN4k5TQaWv4h18c4AOY8LgKwfC7zz252JUsfx3ujVQXAM4C8Gxv2qBAMBLeaZfZSIhG9rBVms12mJnQwpKi+Lzce4bF6kESFn4DfDBErqeqhiEOA9w9g27h9itO6LGMsSH2HfO1rx+PGZsr8IWo3S2vdl/BWv3B160grJLrIA7iWvc1DZGP+DbR3TVp0hhL4Hhsn1+D5+nYMSNKpxe6jYx3oxXU/WHvRejZmdfixtR/CBoMoo0hcZ6bXczwhmpqeJ2zIUlgE466Cl49PQ==
-Received: from BN9P221CA0008.NAMP221.PROD.OUTLOOK.COM (2603:10b6:408:10a::30)
- by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Mon, 11 Oct
- 2021 21:14:04 +0000
-Received: from BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:10a:cafe::ac) by BN9P221CA0008.outlook.office365.com
- (2603:10b6:408:10a::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Mon, 11 Oct 2021 21:14:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT022.mail.protection.outlook.com (10.13.176.112) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 21:14:03 +0000
-Received: from [172.17.173.69] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
- 2021 21:14:02 +0000
-Subject: Re: [RFC PATCH v1 00/20] Review Request: Add support for Intel PMC
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
-CC:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Saha, Tamal" <tamal.saha@intel.com>, <bala.senthil@intel.com>
-References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
- <CACRpkdZEp0FZOefBPP_sR4g6rKzeKQhpdL-XHYO+CRt5MfTrYg@mail.gmail.com>
-X-Nvconfidentiality: public
-From:   Dipen Patel <dipenp@nvidia.com>
-Message-ID: <f5f97c30-2b4e-2490-2197-1d5a108992d1@nvidia.com>
-Date:   Mon, 11 Oct 2021 14:14:12 -0700
+        id S235233AbhJKVRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232416AbhJKVRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 17:17:30 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14AEC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:15:29 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id k29so1669855qve.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:15:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oRt/0xfqDMIYdNSP0wJTSosZJDZg5crujf+a2Cp5VBg=;
+        b=d8JKBIR773ZV5J6VHjN/DvFgPB/9YH+LOLMlYjwZHMmuX8YlvGMnQEkhu/Vv/ke8/I
+         bzcuN5qu1+GupZnOmsediccE3KHQSokxAabM6XQ3wcb9dtLg58rAqw0lxQNVvl2AU1Kw
+         qbRZl+QhBoNOlo3OITApqaMuoZrweRYOOaaEEVBKWQBq0aSIZ/FArDXhOjbyV7cX7vSB
+         l64RlfakfwcljB0kVjaENqtl6pVYMD1gORO7Bj6egsCZcpEBOZfgrSpYFvbm796tieUC
+         zKCVhG5EyBR/5osbu0HxJZi21jR2H0fq73iF5IhPUkuxjlBHNrvIPIXSDmCwNAiP88qE
+         NESA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oRt/0xfqDMIYdNSP0wJTSosZJDZg5crujf+a2Cp5VBg=;
+        b=t1I96QM/GB7U4nJhe6Rt3F+YcDW3b3fbIbq72ffe7+fG1fyxtxGBSdSnHXsMj3ueuM
+         eqMaW3q1oSdZ+MuJvq37rc1+BBmC9MDb+bnfHULJ+288tUM9JMU9a9s3MJqutyub6DyA
+         uTH+nF3YSmWztUpvwY9bwh0tETwABMm5VcsPqKsFhrOa4tLGXCMwUwlK290aeE1Jdc4S
+         VF4D30aQf4FwF6o77zjto7lDWMGzQhEBf7pDeNB9yN9cr4KfprhLTsFz/Ex9AILaOXCZ
+         aLMmKWo+I7LKG2XMvtzrPrXsWlXjHxTT0chxeSsy3x3aeGLklNRyKKhmy4ILfe2X0/Li
+         +ZIw==
+X-Gm-Message-State: AOAM53130QT/UH43mQFVpNd/YrkPvq7uwBZdQmyzAgEKwUI8BMspwxfb
+        Sl4jFLEtlFNR0peuWpGskKtcNA==
+X-Google-Smtp-Source: ABdhPJw7/3h6SJV4zGg+1+ClRXbq+u/Qyuelpsok1iZhMwQTwP/q7Zlg+VNpaTfBX2QLKoyPgTzbPA==
+X-Received: by 2002:ad4:5748:: with SMTP id q8mr15947224qvx.52.1633986928957;
+        Mon, 11 Oct 2021 14:15:28 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id s203sm4746181qke.21.2021.10.11.14.15.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 14:15:28 -0700 (PDT)
+Subject: Re: [PATCH 1/5] arch_topology: Introduce thermal pressure update
+ function
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211007080729.8262-1-lukasz.luba@arm.com>
+ <20211007080729.8262-2-lukasz.luba@arm.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <0ee4bc3b-0ad8-598d-417f-b8fe0a8fb8b1@linaro.org>
+Date:   Mon, 11 Oct 2021 17:15:27 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdZEp0FZOefBPP_sR4g6rKzeKQhpdL-XHYO+CRt5MfTrYg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20211007080729.8262-2-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 618fba30-ef3b-43f4-c81b-08d98cfc0dc1
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2488:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB2488D123D9124418CFAFBE08AEB59@DM5PR12MB2488.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l6mlhXK+B3rqq9pkgNpgmopOaT/5Kwy1zfZAhb3LIPDyvf43jqQDxeD9YtVz/6Ki3EQ1fiHzpnO6xcKannQ0E65X3wD6YQnoJLYhbOwU497ZJQOslpChI0zIUs+DVTDcQs5p7J9n1/etd14SqCuwXtU5HkF0UHm3W/QQNG2bQb7X0J4+ruBQyJ2e+wldtGEAobUWPUj8zkhcC7ZdrSUahG3NSl6BQaPuHrPqXH9BzEn4pMe1j+HSFZhACFpodSq9FDquKCEkmRIcR0ZrdaSmo3ChFcjJ5T8ZdIK91sEBqNVvr6KJT3Zey2/lo7rMl8WbpkKjn3uUzZSCfhB0loKosuTH0RO9qyk2u9KaV4RHAdlGxYm1UfekDBx4n7f8xyMvgbmD0usiKU1N8/TTKxliR2nQQSz5bAKepJCw5ZSE6ltZ4uww452DbHjL+zM4gnrYczPJR2MvJPqYIrYQr803FbAUu0/BB+yiGW686rD98edVwGaU95Ht8T8RWiVuK7HpXnPoGc0HwwNVZtgDfrXwcr+POrXFukkubUCZpceEpUbxq5m3tuMoyTVA0EzNQSvHmQoq13QjWOvd2mlZ36bbGEVSKuvg1yZOgFSYrUANCJV2dhD8goyN8U1aE36ZopUGtRWm+hLXxrEsZ445KOh8PeuYmd4ASTeyHXHJI+cMf97uB0As/omXHyeWdW7uUjGIYhp2ch0XKKP+hRe37suSvexgCBniOSZK+ttJzmGVAFPRv2PVX9sCJIkY5ncRVVYSLSK5eJ9SeMVyQKLDLh5Ywt/Z06cWN3dFPcGf/J1kBXreHM6Gy/w1HX8LtGyzsi/yS+EW65nSvmC+2KAMU4hWl0k7KbQDLSUTLXNAgL2yQFk=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(82310400003)(83380400001)(336012)(8676002)(16576012)(31686004)(7636003)(6666004)(966005)(5660300002)(36860700001)(186003)(16526019)(316002)(86362001)(508600001)(426003)(110136005)(70206006)(36756003)(31696002)(2906002)(70586007)(356005)(2616005)(26005)(47076005)(54906003)(8936002)(53546011)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 21:14:03.8467
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 618fba30-ef3b-43f4-c81b-08d98cfc0dc1
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2488
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Linus for referring. I will take a look.
-
-@Sowjanya: I have recently sent out the RFC v2 of the HTE (https://patchwork.ozlabs.org/project/linux-tegra/list/?series=264896).
-
-Please have a look and see if you can add TIO as one of the provider. That patch has necessary GPIOLIB and GPIO-CDEV changes
-
-which can help userspace and in kernel driver retrieve GPIO realtime timestamps.
 
 
-Best,
+On 10/7/21 4:07 AM, Lukasz Luba wrote:
+> The thermal pressure is a mechanism which is used for providing
+> information about reduced CPU performance to the scheduler. Usually code
+> has to convert the value from frequency units into capacity units,
+> which are understandable by the scheduler. Create a common conversion code
+> which can be just used via a handy API.
+> 
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>   arch/arm/include/asm/topology.h   |  1 +
+>   arch/arm64/include/asm/topology.h |  1 +
+>   drivers/base/arch_topology.c      | 36 ++++++++++++++++++++++++++++++-
+>   include/linux/arch_topology.h     |  3 +++
+>   include/linux/sched/topology.h    |  7 ++++++
+>   5 files changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
+> index 470299ee2fba..aee6c456c085 100644
+> --- a/arch/arm/include/asm/topology.h
+> +++ b/arch/arm/include/asm/topology.h
+> @@ -24,6 +24,7 @@
+>   /* Replace task scheduler's default thermal pressure API */
+>   #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>   #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_thermal_pressure_update	topology_thermal_pressure_update
+>   
+>   #else
+>   
+> diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
+> index ec2db3419c41..c997015402bc 100644
+> --- a/arch/arm64/include/asm/topology.h
+> +++ b/arch/arm64/include/asm/topology.h
+> @@ -33,6 +33,7 @@ void update_freq_counters_refs(void);
+>   /* Replace task scheduler's default thermal pressure API */
+>   #define arch_scale_thermal_pressure topology_get_thermal_pressure
+>   #define arch_set_thermal_pressure   topology_set_thermal_pressure
+> +#define arch_thermal_pressure_update	topology_thermal_pressure_update
+>   
+>   #include <asm-generic/topology.h>
+>   
+> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
+> index 43407665918f..ad31513d0104 100644
+> --- a/drivers/base/arch_topology.c
+> +++ b/drivers/base/arch_topology.c
+> @@ -25,6 +25,7 @@
+>   static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
+>   static struct cpumask scale_freq_counters_mask;
+>   static bool scale_freq_invariant;
+> +static DEFINE_PER_CPU(u32, freq_factor) = 1;
+>   
+>   static bool supports_scale_freq_counters(const struct cpumask *cpus)
+>   {
+> @@ -168,6 +169,40 @@ void topology_set_thermal_pressure(const struct cpumask *cpus,
+>   }
+>   EXPORT_SYMBOL_GPL(topology_set_thermal_pressure);
+>   
+> +/**
+> + * topology_thermal_pressure_update() - Update thermal pressure for CPUs
+> + * @cpus	: The related CPUs which capacity has been reduced
 
-Dipen Patel
+The related CPUs "for" which
 
-On 9/16/21 2:21 PM, Linus Walleij wrote:
-> Hi Sowjanya,
->
-> thanks for your patches!
->
-> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
->
->> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
->>
->> Starting with Intel(R) Tiger Lake and Elkhart Lake platforms the PMC
->> hardware adds the Timed I/O hardware interface.
->>
->> The Timed I/O hardware implements some functionality similar to GPIO
->> with added timing logic that is driven by the Always Running Timer
->> (ART).
->>
->> The Timed I/O Hardware implement 3 basic functions:
->>   * Input Timestamping
->>   * Single Shot Timed Output
->>   * Periodic Timed Output
->>
->>  Please help to review the changes.
-> This looks very similar to the usecase proposed for the HTE
-> Hardware Timestamping Engine, proposed by Dipen Patel
-> for the nVidia 194 and which is currently in RFC:
-> https://lore.kernel.org/linux-gpio/20210625235532.19575-1-dipenp@nvidia.com/
->
-> Please review this new subsystem and see if you can just
-> make a slot-in driver using Dipen's patches instead.
->
-> Dipen: please have a look at Sowjanya's patches to see
-> if this hardware is similar to yours.
->
-> Sometimes several vendors come up with similar hardware
-> around the same time, because of industry trends, so I would
-> not be surprised if these two hardwares address the very
-> same usecase.
->
-> Yours,
-> Linus Walleij
+> + * @capped_freq	: The maximum allowed frequency that CPUs can run at
+> + *
+> + * Update the value of thermal pressure for all @cpus in the mask. The
+> + * cpumask should include all (online+offline) affected CPUs, to avoid
+> + * operating on stale data when hot-plug is used for some CPUs. The
+> + * @capped_freq must be less or equal to the max possible frequency and
+> + * reflects the currently allowed max CPUs frequency due to thermal capping.
+> + * The @capped_freq must be provided in kHz.
+> + */
+> +void topology_thermal_pressure_update(const struct cpumask *cpus,
+> +				      unsigned long capped_freq)
+> +{
+> +	unsigned long max_capacity, capacity;
+> +	int cpu;
+> +
+> +	if (!cpus)
+> +		return;
+> +
+> +	cpu = cpumask_first(cpus);
+> +	max_capacity = arch_scale_cpu_capacity(cpu);
+> +
+> +	/* Convert to MHz scale which is used in 'freq_factor' */
+> +	capped_freq /= 1000;
+> +
+> +	capacity = capped_freq * max_capacity;
+> +	capacity /= per_cpu(freq_factor, cpu);
+
+use mult_frac as used in other implementations ?
+
+-- 
+Warm Regards
+Thara (She/Her/Hers)
+
+> +
+> +	arch_set_thermal_pressure(cpus, max_capacity - capacity);
+> +}
+> +EXPORT_SYMBOL_GPL(topology_thermal_pressure_update);
+> +
+>   static ssize_t cpu_capacity_show(struct device *dev,
+>   				 struct device_attribute *attr,
+>   				 char *buf)
+> @@ -220,7 +255,6 @@ static void update_topology_flags_workfn(struct work_struct *work)
+>   	update_topology = 0;
+>   }
+>   
+> -static DEFINE_PER_CPU(u32, freq_factor) = 1;
+>   static u32 *raw_capacity;
+>   
+>   static int free_raw_capacity(void)
+> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> index f180240dc95f..9e183621a59b 100644
+> --- a/include/linux/arch_topology.h
+> +++ b/include/linux/arch_topology.h
+> @@ -59,6 +59,9 @@ static inline unsigned long topology_get_thermal_pressure(int cpu)
+>   void topology_set_thermal_pressure(const struct cpumask *cpus,
+>   				   unsigned long th_pressure);
+>   
+> +void topology_thermal_pressure_update(const struct cpumask *cpus,
+> +				      unsigned long capped_freq);
+> +
+>   struct cpu_topology {
+>   	int thread_id;
+>   	int core_id;
+> diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
+> index 8f0f778b7c91..990d14814427 100644
+> --- a/include/linux/sched/topology.h
+> +++ b/include/linux/sched/topology.h
+> @@ -266,6 +266,13 @@ void arch_set_thermal_pressure(const struct cpumask *cpus,
+>   { }
+>   #endif
+>   
+> +#ifndef arch_thermal_pressure_update
+> +static __always_inline
+> +void arch_thermal_pressure_update(const struct cpumask *cpus,
+> +				      unsigned long capped_frequency)
+> +{ }
+> +#endif
+> +
+>   static inline int task_node(const struct task_struct *p)
+>   {
+>   	return cpu_to_node(task_cpu(p));
+> 
+
+
