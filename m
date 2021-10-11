@@ -2,91 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AB14294B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3F274294B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhJKQpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:45:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhJKQpL (ORCPT
+        id S231641AbhJKQq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:46:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231439AbhJKQqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:45:11 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BE57C061570;
-        Mon, 11 Oct 2021 09:43:11 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id h125so5339420pfe.0;
-        Mon, 11 Oct 2021 09:43:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=/0i5k6aKisDUE+9IIy4WbounRGjdngVpSCYlq3tcyfs=;
-        b=F5g+k8CwuG0tYqeLQKpOObY+2GJe4s3fiI8e+wK4ym6Jfn7WcHt1xiHfUpcp9p/+ZS
-         QRZt1kqtqFylzGFscDg5EOkwJdr0gH0GOWOanJRNYLIqD6/gxnC+OwFd1vItdk2AW5g4
-         65zQ3WiK+SbkiJ7P0O/JEvv+sgBY2yYL859gokRHNGJd4M2h880psTdxO0pL3/rYitM9
-         D1O4VQGaX0FHqRvxUypgH3zMg3btPoXis8bow3D52phUujmeIVvHhVy0QbmNvsvTTU/J
-         q+lP2NGBQ7kNgHD0zt4F+oE37cxdGTcn1Wb9SuH/mbq6B7F08e6TI06SLhtgPYMvYXug
-         q9mA==
+        Mon, 11 Oct 2021 12:46:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633970664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v5eQ2fdMZRopXBrJf5sFBVPsk6Ix/lYtLMtjFnBm+68=;
+        b=KZUYjgjYEPFEq2CLQxRc5Q7lPEbPCfDEh/N4tcEr7Y7IVHgHozWwAWEERgClDkXo1FFG1o
+        zNeZM1u1XBb9I25+2AOsMH9X7543gf+oZgLt84dNAzzld3+KTSC8ArqgKgfVY2qMdO30lI
+        QtsgSPXNYVZgfAjPsI9TmJVoyFM5Pgw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-P_y-ET_2PCywWOHHW-VdTg-1; Mon, 11 Oct 2021 12:44:23 -0400
+X-MC-Unique: P_y-ET_2PCywWOHHW-VdTg-1
+Received: by mail-wr1-f71.google.com with SMTP id k2-20020adfc702000000b0016006b2da9bso13711274wrg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 09:44:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=/0i5k6aKisDUE+9IIy4WbounRGjdngVpSCYlq3tcyfs=;
-        b=74S9FGkNNPOBhFFy9BisfICzIZN+Kfc7v6y2Uki1y2nqpuztceF/9fIePgYVum6m72
-         raAdn5nV3N3Pb651/j7bmLX0p/VkKx1I/T4TNd6jrIpktAecFtbVBn/hAW6kIoFIqPjT
-         U3jE/FXUPpsOgFWdHOwtNNflwt8p+6tG2QOEI37p5eL16hh4j9itzmAPZCYl44YuT02f
-         SyPtYg39EUKpN+P1eONbDRwxxj80wtJgMMhABAQgQ2cWHO1UjpSB1p+pkQPljo3MO53C
-         bNLTks+3sb3J+4m00T/QuVyPmiARof6LLhK/gaveh3iFKJhyig1bEeIka1MgfQtz/cAw
-         24Zg==
-X-Gm-Message-State: AOAM532EIUOagMm0qL0voXSdlXKRoch9Vtr+TyBig9p2k7RwPTqEMUEb
-        5r7myh/68nZLqn9N92jYh8/uhZ7b2x2NgaHNoVI=
-X-Google-Smtp-Source: ABdhPJwwZ25lGQlqvdtL90uSW3R0bBR6XRixp7aC9KdMamTO6mbJQjuOpGF+YsJQ+foSGfC6BKTlog==
-X-Received: by 2002:a63:b34a:: with SMTP id x10mr18966406pgt.473.1633970590618;
-        Mon, 11 Oct 2021 09:43:10 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id x7sm8378190pfj.164.2021.10.11.09.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 09:43:10 -0700 (PDT)
-Message-ID: <6164699e.1c69fb81.170a2.6b79@mx.google.com>
-Date:   Mon, 11 Oct 2021 09:43:10 -0700 (PDT)
-X-Google-Original-Date: Mon, 11 Oct 2021 16:43:08 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 000/151] 5.14.12-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        bh=v5eQ2fdMZRopXBrJf5sFBVPsk6Ix/lYtLMtjFnBm+68=;
+        b=hoEek47ID84pFpK6A6gL58M50VyC/hcRc/JuOqhB21FbH2qJXkxJsmHPWapRP/EQ3I
+         bUozGf1wRMLfmhA974+vqaUcvpyUHesYkJeZAELoKB89tmViwMaxNxDmCeAcDggxHSDl
+         omR5w2023yqq6GT7jQLSMUJPQu6RatkkkRp8WuXzshYVUq/gBC6B6P/7jZJEKb83ymZt
+         3P8pIkBGD3MX5SAOO9f85SFz6CVE6KEeoCt5cLfWaVB19BKLemF2JZbM3JTA272Q3GDo
+         nDKP2bWUydokfJYWza5ZuIaN+8wi6olSdxSHwhWuTeri6kpMqOtvRI3SiLBBVYWL10Um
+         dM5A==
+X-Gm-Message-State: AOAM533BT6S1QclHbXPIvGkNaWpS7I9eiFWWucd6/Dp1zS1zq+3QaT6Y
+        dOiGmQiVujj6gbtxHtV3xl8RM83+StQxq5prAqazPBC2x1n4GvEvUSTEP6PkgbeVVXS7lfr6Au7
+        uB35zQNbytHpuGNNZuCGSHMNI
+X-Received: by 2002:a7b:cf06:: with SMTP id l6mr5572wmg.129.1633970661891;
+        Mon, 11 Oct 2021 09:44:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkNV6u5+zpDaiAm71jlzVLgMlxlreNuF/u2+P+xbwTXuHkkQCV+OrxvNWndTmUCXbtqs4IEw==
+X-Received: by 2002:a7b:cf06:: with SMTP id l6mr5550wmg.129.1633970661692;
+        Mon, 11 Oct 2021 09:44:21 -0700 (PDT)
+Received: from ?IPV6:2001:b07:6468:f312:63a7:c72e:ea0e:6045? ([2001:b07:6468:f312:63a7:c72e:ea0e:6045])
+        by smtp.gmail.com with ESMTPSA id w8sm5647263wrr.47.2021.10.11.09.44.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 09:44:20 -0700 (PDT)
+Message-ID: <a2142175-c0f3-c511-4a55-ad22fb732af0@redhat.com>
+Date:   Mon, 11 Oct 2021 18:44:19 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH v2 3/4] KVM: nVMX: Track whether changes in L0 require MSR
+ bitmap for L2 to be rebuilt
+Content-Language: en-US
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20211004161029.641155-1-vkuznets@redhat.com>
+ <20211004161029.641155-4-vkuznets@redhat.com> <YWDaOf/10znebx5S@google.com>
+ <87zgrfzj9k.fsf@vitty.brq.redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87zgrfzj9k.fsf@vitty.brq.redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 15:44:32 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.12 release.
-> There are 151 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+On 11/10/21 17:13, Vitaly Kuznetsov wrote:
+>>
+>> The changelog kind of covers that, but those details will be completely lost to
+>> readers of the code.
+> Would it help if we rename 'msr_bitmap_changed' to something?
 
-5.14.12-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+Yeah, what about 'msr_bitmap_force_recalc'?
+
+Paolo
 
