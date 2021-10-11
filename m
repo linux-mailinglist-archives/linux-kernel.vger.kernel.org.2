@@ -2,103 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF6D429635
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9015642963B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhJKSAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:00:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231771AbhJKSAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:00:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF7F760C49;
-        Mon, 11 Oct 2021 17:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633975123;
-        bh=rs3EhQu/IN/0OssK+/JCwtTgQL5fH+Kl8haINYwQDm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j5TndyVcgOQ3ztEg3QFjvkUdC78SxenUDcwWYQu995ccPf0Y1IES0pSMXmbAv++Sd
-         a+EZ2ZvyJ5/mijMxHsI2vYL5cKMZ2C1sUIm76VYMoufWrPRX8ewcjYzcA854zrxNnk
-         +0Th0v195jkgt3H4eBkAv/5T0QO8IOwjmHYncfoQ=
-Date:   Mon, 11 Oct 2021 19:58:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Long Li <longli@microsoft.com>
-Cc:     vkuznets <vkuznets@redhat.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "longli@linuxonhyperv.com" <longli@linuxonhyperv.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Siddharth Gupta <sidgup@codeaurora.org>,
-        Hannes Reinecke <hare@suse.de>
-Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated
- access to Microsoft Azure Blob for Azure VM
-Message-ID: <YWR7TuGNaMJLXdVr@kroah.com>
-References: <BY5PR21MB1506A93E865A8D6972DD0AAECEF49@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YQ9oTBSRyHCffC2k@kroah.com>
- <BY5PR21MB15065658FA902CC0BC162956CEF79@BY5PR21MB1506.namprd21.prod.outlook.com>
- <BY5PR21MB1506091AFED0EB62F081313ECEA29@BY5PR21MB1506.namprd21.prod.outlook.com>
- <DM6PR21MB15135923A4CB0E61786ABC22CEAA9@DM6PR21MB1513.namprd21.prod.outlook.com>
- <YVa6dtvt/BaajmmK@kroah.com>
- <BY5PR21MB15060E0A4AC1F6335A08EAB4CEB19@BY5PR21MB1506.namprd21.prod.outlook.com>
- <YV/dMdcmADXH/+k2@kroah.com>
- <87fstb3h6h.fsf@vitty.brq.redhat.com>
- <BY5PR21MB150612332F31358E4031A080CEB59@BY5PR21MB1506.namprd21.prod.outlook.com>
+        id S234132AbhJKSCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:02:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232673AbhJKSC3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 14:02:29 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB14C061570;
+        Mon, 11 Oct 2021 11:00:29 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id oa4so13126182pjb.2;
+        Mon, 11 Oct 2021 11:00:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=06w4bvyU3F5XYJfjaevgNf8iCsWjF2RGPbd38EHlRsE=;
+        b=ewhaVOVE3Ut21et20HX9bpL1dBjGMy3f7hQ3DwpDRkqgOicXp9ZoVxk63UAjCISdVW
+         uINmSYUK71oj9tD88th+1BNaOBErxbqvn5DP/5bAqBzvn3VWHBc+MKR3O5UiFcLJdCu0
+         DU1VAnPejnU7bKuvSjzVXqnFJ6IMlao+lMvDCQjNNeI/6SXeKq1q4ZEAeOwSfCH+ROtQ
+         YmrDcj6Yrmf6VbDXgVIK8X1m0UW4IShYFugP69VsnQCseLJbF47XzeFw60v74kjRYyow
+         Xs46ZyAezSIRbYtUQX/OqWuxzXQaE0aE7UTivfDSFVg/83QmMLk65cgoVWopJsZfN1BG
+         DnUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=06w4bvyU3F5XYJfjaevgNf8iCsWjF2RGPbd38EHlRsE=;
+        b=4KT0uFbQw4aYzsA2Xya4xrtLuxqXQrbeyA2fTUe7cRpMBEc819eK9N6LbaLYQ8f7Cc
+         aEXxPSZNep/hnEUCjuFyvEgNN2sAVGYnMAx6niSNd27UsONSyS678y8VcsYlaQFg7zC7
+         5JRazkf/djgQrP0IkudeuFPv8q+yWd+MR8vyLWSSvOJvJ0Mz5+U+JfCGUjXX2lEynIfZ
+         1pIFSkN6HQKk2FAnDVnDxSEnWQgxMh0tSZqchWT9DFqyOQ7tXiEdayOobrbQ+TE4jCKG
+         7baDd6sBjOXI8widGXpPdCXCzk6RfH2hy4eceMHBwZb65LihdF9HUPEVPwkPmBT+jbzQ
+         Ck6Q==
+X-Gm-Message-State: AOAM530obtSGznEpWbyKco+2wu1Z/Zrin47omMKHSI1vfBkHvG3VQM+E
+        kuDOqvWCZplTHCYhe4+/tgfGOLV30qIILpNt
+X-Google-Smtp-Source: ABdhPJybbROwc8U2D4nQvCa26A3RsTPnBtm/nbkH8KGQfx9cS7rugKMW4c3owdWnQGYvQo+LoFV9ew==
+X-Received: by 2002:a17:90a:5894:: with SMTP id j20mr527868pji.82.1633975228856;
+        Mon, 11 Oct 2021 11:00:28 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
+        by smtp.gmail.com with ESMTPSA id z9sm116702pji.42.2021.10.11.11.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 11:00:28 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, kw@linux.com, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 10/22] PCI: mvebu: Use SET_PCI_ERROR_RESPONSE() when device not found
+Date:   Mon, 11 Oct 2021 23:30:00 +0530
+Message-Id: <147d72149c4863be53b6044e8db6772c1b450bc0.1633972263.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BY5PR21MB150612332F31358E4031A080CEB59@BY5PR21MB1506.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:46:48PM +0000, Long Li wrote:
-> > Subject: Re: [Patch v5 0/3] Introduce a driver to support host accelerated access
-> > to Microsoft Azure Blob for Azure VM
-> > 
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > 
-> > ...
-> > >
-> > > Not to mention the whole crazy idea of "let's implement our REST api
-> > > that used to go over a network connection over an ioctl instead!"
-> > > That's the main problem that you need to push back on here.
-> > >
-> > > What is forcing you to put all of this into the kernel in the first
-> > > place?  What's wrong with the userspace network connection/protocol
-> > > that you have today?
-> > >
-> > > Does this mean that we now have to implement all REST apis that people
-> > > dream up as ioctl interfaces over a hyperv transport?  That would be
-> > > insane.
-> > 
-> > As far as I understand, the purpose of the driver is to replace a "slow"
-> > network connection to API endpoint with a "fast" transport over Vmbus. So
-> > what if instead of implementing this new driver we just use Hyper-V Vsock and
-> > move API endpoint to the host?
-> 
-> Hi Vitaly,
-> 
-> We looked at Hyper-V Vsock when designing this driver. The problem is that the Hyper-V device model of Vsock can't support the data throughput and scale needed for Blobs. Vsock is mostly used for management tasks.
-> 
-> The usage of Blob in Azure justifies an dedicated VMBUS channel (and sub-channels) for a new VSP/VSC driver.
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the
+CPU read, so most hardware fabricates ~0 data.
 
-Why not just fix the vsock code to handle data better?  That way all
-users of it would benefit.
+Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
+read occurs.
 
-thanks,
+This helps unify PCI error response checking and make error check
+consistent and easier to find.
 
-greg k-h
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+---
+ drivers/pci/controller/pci-mvebu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/pci-mvebu.c b/drivers/pci/controller/pci-mvebu.c
+index ed13e81cd691..51d61194a31a 100644
+--- a/drivers/pci/controller/pci-mvebu.c
++++ b/drivers/pci/controller/pci-mvebu.c
+@@ -654,7 +654,7 @@ static int mvebu_pcie_rd_conf(struct pci_bus *bus, u32 devfn, int where,
+ 
+ 	port = mvebu_pcie_find_port(pcie, bus, devfn);
+ 	if (!port) {
+-		*val = 0xffffffff;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -664,7 +664,7 @@ static int mvebu_pcie_rd_conf(struct pci_bus *bus, u32 devfn, int where,
+ 						 size, val);
+ 
+ 	if (!mvebu_pcie_link_up(port)) {
+-		*val = 0xffffffff;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+-- 
+2.25.1
+
