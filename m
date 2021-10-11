@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E767428578
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C8E42857A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhJKDLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S233805AbhJKDMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233344AbhJKDL2 (ORCPT
+        with ESMTP id S233344AbhJKDML (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:11:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0643EC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:09:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=XctTWDeHDnCbqssJ7+LWVDey5JZcj1NKOhdkWH7mY54=; b=h1kn/eph8rckOBheDKL4QO47Aj
-        PZ2Plmp4fXyonfDChq6FqSb3Lzm/3/i45EnlmXINzkDNDD9QwVI7hv0LhS541Jr2Jm26O7iovHa+z
-        hxFCBDE0APAWpOJSptZODFkdAo1OKcdb1ocXg4v4eXIIR0zk7w6aKFg8AyvBlIgANu7yw6u2kN9KL
-        ENSRbyTJEv3KgWsZ5Y6XdRb26h3jn4DlWuPAq8moX2EdI8+v9dzr1mJ3SwrfwiER0FZhAOdkW22Ui
-        Z6BrgplL8EXnD8A5Hm3GwWz8moMwfQRjWZA+z0iC3Sl9VXJqfZ9XFSuUGQzPjf0LRqVHQJt8Cx8LR
-        yBxCt5nA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZlfq-005DCU-HK; Mon, 11 Oct 2021 03:08:36 +0000
-Date:   Mon, 11 Oct 2021 04:08:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
-Subject: Re: [PATCH v4 2/2] mm, thp: bail out early in collapse_file for
- writeback page
-Message-ID: <YWOqpgZlqjLhX6oC@casper.infradead.org>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211011022241.97072-1-rongwei.wang@linux.alibaba.com>
- <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
+        Sun, 10 Oct 2021 23:12:11 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24F3C061570;
+        Sun, 10 Oct 2021 20:10:11 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id s11so9478926pgr.11;
+        Sun, 10 Oct 2021 20:10:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sKE37Vzcg9+LHwiEWeLufYL/SNzO2ST/ZEGnzU9bkq8=;
+        b=hfrg3y0aCHXr43ob3bJBuad5QIDCG9lXSL9aOUf9pGEc4MSrwEtp91iCBrcShRgm8w
+         dhSnB1z+otNw2jWe8S0ktt0gEn74l0tk4mfJwdHc3RD+4wJ8mbc4gixsLTL3oStHPUN3
+         bUgIbMMrnhzSMLiuW/bAkDDs8uklzMYPUmA98LzVTNqvWsVWMt3jeC4Nk+eDntr36Czk
+         z3iUIoMJ3pRfUHv9pgFRgDYTbZJgx8KvlXY+frQBpu/qfaLtbpUX+Vs4tjg1VfFVrZcG
+         Jn8LL4xAuR2zskvr/wMgckKsZLu3fU3++cyu4z9GcKLkAvUkXXJfUeVqVJRuq50f8ecH
+         GPVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sKE37Vzcg9+LHwiEWeLufYL/SNzO2ST/ZEGnzU9bkq8=;
+        b=t8OgF2VvqVXb2JPqlNXfAX/FCMtRHSOB6mWKaO6O1u+Sx4R3eXYWEklcn5MLToJjHw
+         6qtTSbKN/rJXytMQOQ7IB+4Ho2Ey5p6pMqAQBEAz631+hF/bKliqayZp9ampND/+R+rT
+         Is37/3inXKMXgizr5EJavPS/vzO/il99aGdxZ2FJ1rzS0SoGdRlSWRWraxYTjacmWy0z
+         3hiLiiZjqdxMl7A0ucsIpsxUvaGPVeKxDrdb1HnZx01EV11ctvetyB4OszDk3U+QBB5p
+         1LU6sA1A7aKI8XFAtOorzaDxdFa5b11sG1Ylrg7AEWq0iQmOiw+pChg/dnyLu80q9i61
+         TzDA==
+X-Gm-Message-State: AOAM530Z4BV9/cNNZQOU1lkGnH/lFuFtXavPgEGh9XEB8TVRjOUJcrwZ
+        tdMllPq0VgCyvAKnKPphj3upO+qUxvgS4OQv
+X-Google-Smtp-Source: ABdhPJwLsGpBUEXcD0l5uiCmjM5PPfSt1CYwOsJymEOYudaTLCjDtFY5B4Vp3afVAU5K0Chl2BO1UQ==
+X-Received: by 2002:a63:5d5f:: with SMTP id o31mr16332181pgm.312.1633921811110;
+        Sun, 10 Oct 2021 20:10:11 -0700 (PDT)
+Received: from localhost.localdomain ([94.177.118.104])
+        by smtp.gmail.com with ESMTPSA id k13sm6121618pfc.197.2021.10.10.20.10.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 20:10:10 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: fix GPF in nilfs_mdt_destroy
+Date:   Mon, 11 Oct 2021 11:09:56 +0800
+Message-Id: <20211011030956.2459172-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:22:41AM +0800, Rongwei Wang wrote:
-> Currently collapse_file does not explicitly check PG_writeback, instead,
-> page_has_private and try_to_release_page are used to filter writeback
-> pages. This does not work for xfs with blocksize equal to or larger
-> than pagesize, because in such case xfs has no page->private.
-> 
-> This makes collapse_file bail out early for writeback page. Otherwise,
-> xfs end_page_writeback will panic as follows.
-> 
-> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+In alloc_inode, inode_init_always could return -NOMEM if
+security_inode_alloc fails. In its error handling, i_callback and
+nilfs_free_inode will be called. However, because inode->i_private is
+not initialized due to the failure of security_inode_alloc, the function
+nilfs_is_metadata_file_inode can return true and nilfs_mdt_destroy will
+be executed to lead to GPF bug.
 
-This is the wrong Fixes line.  This same bug exists earlier than this.
-Your testing may not show it before then, but if you mmap something
-that isn't an executable, you can provoke it.  It should be:
+Fix this bug by moving the assignment of inode->i_private before
+security_inode_alloc.
 
-Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+BTW, this bug is triggered by fault injection in the syzkaller.
 
-(unless there's something I'm missing?)
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+ fs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also, this should surely have a Cc: stable@vger.kernel.org in the
-tags section?  It's a user-visible bug, we want it backported.
+diff --git a/fs/inode.c b/fs/inode.c
+index ed0cab8a32db..f6fce84bf550 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -160,6 +160,7 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
+ 	inode->i_dir_seq = 0;
+ 	inode->i_rdev = 0;
+ 	inode->dirtied_when = 0;
++	inode->i_private = NULL;
+ 
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ 	inode->i_wb_frn_winner = 0;
+@@ -194,7 +195,6 @@ int inode_init_always(struct super_block *sb, struct inode *inode)
+ 	lockdep_set_class_and_name(&mapping->invalidate_lock,
+ 				   &sb->s_type->invalidate_lock_key,
+ 				   "mapping.invalidate_lock");
+-	inode->i_private = NULL;
+ 	inode->i_mapping = mapping;
+ 	INIT_HLIST_HEAD(&inode->i_dentry);	/* buggered by rcu freeing */
+ #ifdef CONFIG_FS_POSIX_ACL
+-- 
+2.25.1
 
-> Suggested-by: Yang Shi <shy828301@gmail.com>
-> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/khugepaged.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 045cc579f724..48de4e1b0783 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
->  				filemap_flush(mapping);
->  				result = SCAN_FAIL;
->  				goto xa_unlocked;
-> +			} else if (PageWriteback(page)) {
-> +				xas_unlock_irq(&xas);
-> +				result = SCAN_FAIL;
-> +				goto xa_unlocked;
->  			} else if (trylock_page(page)) {
->  				get_page(page);
->  				xas_unlock_irq(&xas);
-> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
->  			goto out_unlock;
->  		}
->  
-> -		if (!is_shmem && PageDirty(page)) {
-> +		if (!is_shmem && (PageDirty(page) ||
-> +				  PageWriteback(page))) {
->  			/*
->  			 * khugepaged only works on read-only fd, so this
->  			 * page is dirty because it hasn't been flushed
-> -- 
-> 2.27.0
-> 
