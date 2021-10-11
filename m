@@ -2,118 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9DC429313
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB98742931E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234729AbhJKPZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:25:23 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:45270 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhJKPZV (ORCPT
+        id S238094AbhJKP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:27:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45025 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237861AbhJKP1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:25:21 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 11 Oct 2021 11:27:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633965901; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=/Fnrpv0UZJQ/G5vlRiV4cIFXd3fhNXygriIiiQzzuUg=;
+ b=G8o7Qli4E/0zjv7TA7hxDHq3jucFGtgXZrWO7Cvkzqn41U51A1CmVylGMVY9iMR0687vm08D
+ RMZeXmEnMVmR06mHHh93jOj6uuJ2Izhhs+LM+CDBl/KtRisxXp0xf2w8JALeEyhXUQiIvpch
+ Vbujy40yGiLFh2HsVp6RfU7XvT8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6164573b03355859c8fe9452 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 15:24:43
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEC44C4361A; Mon, 11 Oct 2021 15:24:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 361FF2017B;
-        Mon, 11 Oct 2021 15:23:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633965800; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7c/NrmzTGTsgOvKn52EsTSKmzoG1TlQJCZXKhAlpBfA=;
-        b=hO7xF03Ts64S2p90ng+KaDHXFlaWeJQbfgY0oz5i8Z4FH2+GtaHZr5w66bllhb3wztRKmm
-        XaD8fXn7yC/jL8x/f+4DTJsSIVZCFPGD5xFoo8QO82SHqf6J62kCRtfiPELGQqmK5rwdJ8
-        /YGKVXaRserLrG2N0N67Fz8pFYZLkA0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1532113BC5;
-        Mon, 11 Oct 2021 15:23:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NQQUBOhWZGFSTwAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 11 Oct 2021 15:23:20 +0000
-Date:   Mon, 11 Oct 2021 17:23:18 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     tj@kernel.org, axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
- blkg_create()
-Message-ID: <20211011152318.GA61605@blackbody.suse.cz>
-References: <20211008072720.797814-1-yukuai3@huawei.com>
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8B1E5C4338F;
+        Mon, 11 Oct 2021 15:24:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008072720.797814-1-yukuai3@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Oct 2021 08:24:41 -0700
+From:   khsieh@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Sankeerth Billakanti <sbillaka@codeaurora.org>
+Subject: Re: [PATCH] drm/msm/dp: Shorten SETUP timeout
+In-Reply-To: <YWB1cXoaGRXfGau1@ripper>
+References: <CAE-0n53FC7JCCJoye_uKeqaLKrZeHXLtvObxWFedaUzjirmBaA@mail.gmail.com>
+ <a4a4980e586a70e3b7de989bc61a3e33@codeaurora.org> <YV0FlTyMEzlyNsN9@ripper>
+ <3dbe0fe48da88af9dee396a85b940e76@codeaurora.org> <YV3dddt/GOidTmlN@ripper>
+ <9dc50145fb3e9b189fd38857b20f326a@codeaurora.org> <YV9TQEKPh4SXYFF/@ripper>
+ <0c72f3fd8c49cdada09bb6ee366b53a6@codeaurora.org>
+ <CAE-0n51bvKXmHj0X_cvR2fdk4-mh4SRsrEE33H0e1Q+p=7iPxA@mail.gmail.com>
+ <ad244133bdba4570b0b45871fd136350@codeaurora.org> <YWB1cXoaGRXfGau1@ripper>
+Message-ID: <44ffcac32270a8ea72dcfc044e2b2585@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
-
-On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai <yukuai3@huawei.com> wrote:
-> This is because blkg_alloc() is called from blkg_conf_prep() without
-> holding 'q->queue_lock', and elevator is exited before blkg_create():
- 
-IIUC the problematic interleaving is this one (I've noticed `blkg->pd[i]
-= NULL` to thread 2 call trace):
-
-> thread 1                            thread 2
-> blkg_conf_prep
->  spin_lock_irq(&q->queue_lock);
->  blkg_lookup_check -> return NULL
->  spin_unlock_irq(&q->queue_lock);
+On 2021-10-08 09:44, Bjorn Andersson wrote:
+> On Fri 08 Oct 09:07 PDT 2021, khsieh@codeaurora.org wrote:
 > 
->  blkg_alloc
->   blkcg_policy_enabled -> true
->   pd = ->pd_alloc_fn
->                                    blk_mq_exit_sched
->                                     bfq_exit_queue
->                                      blkcg_deactivate_policy
->                                       spin_lock_irq(&q->queue_lock);
->                                       __clear_bit(pol->plid, q->blkcg_pols);
->
-                                        pol->pd_free_fn(blkg->pd[i]);
-                                        blkg->pd[i] = NULL;
->
->                                       spin_unlock_irq(&q->queue_lock);
->                                     q->elevator = NULL;
-    blkg->pd[i] = pd
->   spin_lock_irq(&q->queue_lock);
->    blkg_create
->     if (blkg->pd[i])
->      ->pd_init_fn -> q->elevator is NULL
->   spin_unlock_irq(&q->queue_lock);
+>> On 2021-10-07 15:34, Stephen Boyd wrote:
+>> > Quoting khsieh@codeaurora.org (2021-10-07 13:28:12)
+>> > > On 2021-10-07 13:06, Bjorn Andersson wrote:
+>> > > > On Thu 07 Oct 12:51 PDT 2021, khsieh@codeaurora.org wrote:
+>> > > >
+>> > > >> On 2021-10-06 10:31, Bjorn Andersson wrote:
+>> > > >> > On Wed 06 Oct 08:37 PDT 2021, khsieh@codeaurora.org wrote:
+>> > > >> >
+>> > > >> > > On 2021-10-05 19:10, Bjorn Andersson wrote:
+>> > > >> > > > On Tue 05 Oct 16:04 PDT 2021, khsieh@codeaurora.org wrote:
+>> > > >> > > >
+>> > > >> > > > > On 2021-10-05 15:36, Stephen Boyd wrote:
+>> > > >> > > > > > Quoting Bjorn Andersson (2021-10-05 14:40:38)
+>> > > >> > > > > > > On Tue 05 Oct 11:45 PDT 2021, Stephen Boyd wrote:
+>> > > >> > > > > > >
+>> > > >> > > > > > > > Quoting Bjorn Andersson (2021-10-04 19:37:50)
+>> > > >> > > > > > > > > Found in the middle of a patch from Sankeerth was the reduction of the
+>> > > >> > > > > > > > > INIT_SETUP timeout from 10s to 100ms. Upon INIT_SETUP timeout the host
+>> > > >> > > > > > > > > is initalized and HPD interrupt start to be serviced, so in the case of
+>> > > >> > > > > > > > > eDP this reduction improves the user experience dramatically - i.e.
+>> > > >> > > > > > > > > removes 9.9s of bland screen time at boot.
+>> > > >> > > > > > > > >
+>> > > >> > > > > > > > > Suggested-by: Sankeerth Billakanti <sbillaka@codeaurora.org>
+>> > > >> > > > > > > > > Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> > > >> > > > > > > > > ---
+>> > > >> > > > > > > >
+>> > > >> > > > > > > > Any Fixes tag? BTW, the delay design is pretty convoluted. I had to go
+>> > > >> > > > > > > > re-read the code a couple times to understand that it's waiting 100ms
+>> > > >> > > > > > > > times the 'delay' number. Whaaaaat?
+>> > > >> > > > > > > >
+>> > > >> > > > > > >
+>> > > >> > > > > > > I assume you're happy with the current 10s delay on the current
+>> > > >> > > > > > > devices, so I don't think we should push for this to be backported.
+>> > > >> > > > > > > I have no need for it to be backported on my side at least.
+>> > > >> > > > > > >
+>> > > >> > > > > >
+>> > > >> > > > > > Sure. Fixes tag != backported to stable trees but it is close.
+>> > > >> > > > > >
+>> > > >> > > > > > > > Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>> > > >> > > > > > >
+>> > > >> > > > >   dp_add_event(dp, EV_HPD_INIT_SETUP, 0, 1); <== to 100ms
+>> > > >> > > > >
+>> > > >> > > > > This patch will prevent usb3 from working due to dp driver
+>> > > >> > > > > initialize phy
+>> > > >> > > > > earlier than usb3 which cause timeout error at power up usb3 phy
+>> > > >> > > > > when both
+>> > > >> > > > > edp and dp are enabled.
+>> > > >> > > >
+>> > > >> > > > Can you please help me understand what you mean here, I use this on my
+>> > > >> > > > sc8180x with both eDP and USB-C/DP right now. What is it that doesn't
+>> > > >> > > > work? Or am I just lucky in some race condition?
+>> > > >> > > >
+>> > > >> > > > Thanks,
+>> > > >> > > > Bjorn
+>> > > >> > > >
+>> > > >> > > The problem is seen at sc7280.
+>> > > >> > > Apple dongle have both  hdmi and usb port.
+>> > > >> > > plug Apple dongle into type-c, then plug DP into apple's hdmi port
+>> > > >> > > and usb
+>> > > >> > > mouse into apple's usb port.
+>> > > >> > > If edp enabled at this time, then usb mouse will not work due to
+>> > > >> > > timeout at
+>> > > >> > > phy power up.
+>> > > >> > >
+>> > > >> >
+>> > > >> > Okay, so you're saying that if the DP driver invokes phy_power_on()
+>> > > >> > before the USB driver does, USB initialization fails (or at least USB
+>> > > >> > doesn't work)?
+>> > > >>
+>> > > >> if dp driver call qcom_qmp_phy_init() before usb3 call
+>> > > >> qcom_qmp_phy_init(),
+>> > > >> usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+>> > > >> mask) ==
+>> > > >> ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
+>> > > >
+>> > > > Thanks, I will try to reproduce this on my side. So the 10 seconds here
+>> > > > is strictly to give good enough time for the dwc3 driver to probe...
+>> > > >
+>> > > > Any idea why you're saying that this is specific to sc7280, what
+>> > > > changed
+>> > > > from sc7180?
+>> > >
+>> > > I did not have sc7180 with edp before so that i am not sure it will
+>> > > happen on sc7180 or not.
+>> > > The usb3 does not work when both edp and dp enabled I just seen at
+>> > > sc7280.
+>> > > Current at sc7280 EC is not boot up correctly when system power up.
+>> > > I have to manual reboot EC from linux kernel shell before DP/usb3 can
+>> > > work.
+>> > > I am not sure this contribute to this problem or not.
+>> > >
+>> >
+>> > Can you make the usb driver into a module and only load that module
+>> > later in boot after the DP driver calls qcom_qmp_phy_init()? That would
+>> > be an easy way to move usb probe after DP probe and expose this problem.
+>> 
+>> we need usb calls qcom_qmp_phy_init() before dp.
+> 
+> Why?
+I do not know the details.
+But I did see below scenario,
 
-In high-level terms, is this a race between (blk)io controller attribute
-write and a device scheduler (elevator) switch?
-If so, I'd add it to the commit message.
-
-> Fix the problem by checking that policy is still enabled in
-> blkg_create().
-
-Is this sufficient wrt some other q->elevator users later?
-
-> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
->  		goto err_free_blkg;
->  	}
->  
-
-I'd add a comment here like:
-
-> Re-check policies are still enabled, since the caller blkg_conf_prep()
-> temporarily drops q->queue_lock and we can race with
-> blk_mq_exit_sched() removing policies.
-
-> +	if (new_blkg)
-> +		blkg_check_pd(q, new_blkg);
-> +
-
-Thanks,
-Michal
+if dp driver call qcom_qmp_phy_init() before usb3 call
+qcom_qmp_phy_init(),
+usb3 driver will timeout at readl_poll_timeout(status, val, (val &
+mask) ==
+ready, 10, PHY_INIT_COMPLETE_TIMEOUT) of qcom_qmp_phy_power_on().
