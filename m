@@ -2,254 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06D1428D64
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31DE428D66
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236707AbhJKMzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:55:19 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:37874 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230061AbhJKMzS (ORCPT
+        id S236717AbhJKMz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:55:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235240AbhJKMz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:55:18 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B9GVev022125;
-        Mon, 11 Oct 2021 14:53:17 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=D917K3Q1knSyVA1O8QE0bgZaxDjZWp8DN2uOU/as1g0=;
- b=M1gSDcan9lDvgfT74iJlLyn2Jfa6gQ0I7GiP5oyGbEkbMwcP/32QfD9lmPkSdRbbkRi1
- N3kBcNHgjSwk8aWsYZ+XO3ET+9A3T4kfxPBsmW/p0HBbHp6h+1THjEceMx4pLbOJywep
- BEagb9BKz4VYBxg98ZINDIvvY54yBeE7nf30r4Frv0s7V9swP+KAva7N0CzJcaioY8Y0
- 1QqTg7JluZhbXFtOviKQQmvd9pWAnOgWly/K+68B08UawtCb3JYg2L0FAqGbTTHvgBjG
- aS850x4rhlLBUYTuTEaoKFMqKyq5JU5UlJOR8g82WDtIoSg7ASfVWS4DEoxUnpkgjw3d Hg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bmd35u1af-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 14:53:17 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8CF5710002A;
-        Mon, 11 Oct 2021 14:53:16 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7F16B226FAB;
-        Mon, 11 Oct 2021 14:53:16 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
- 2021 14:53:15 +0200
-Subject: Re: [PATCH v3] rpmsg: ctrl: Introduce new
- RPMSG_CREATE/RELEASE_DEV_IOCTL controls
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210712132303.25058-1-arnaud.pouliquen@foss.st.com>
- <YWDhdq4iOihzC5FI@ripper>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <277171bf-5947-9d1b-6ad5-e80dc15c4cc1@foss.st.com>
-Date:   Mon, 11 Oct 2021 14:53:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 08:55:56 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B5BC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:53:55 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id x27so73522881lfu.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2k/ZaQAzKjqweGateaE0Tvo0NkW9rSK+3Qj4AApTN/4=;
+        b=ZSLCxjGX7tQYzbDskYfD626rmaWlza7wsgUXb0BjlkAep29giCuf82iT/Cwp0f2elG
+         eiW2+oBxGFnFll/kN5b3ek0W4lXfWyP9dpHscAxui6P3eEU/YRyJJivgyEasyc/TFXZ3
+         RMFXgOCaidKQIHzr4rgIzXMtsg6nyHRtJdsY7VgM2cmbLq7eDrrHs3RBmGtDCu/gcoJh
+         0Ak9dXhrMC4r15EL79vqVYQNAqi79ut4bdi96lfwL8MWZ/nLo/eITxxiuQvfe5nhUnA3
+         m2je+r8iEhEZdm5XFQXeWdz94VqiYeGSkiC5a6QqKtLT9zaae0LjkQUrsptyFxdDDHE2
+         PjkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2k/ZaQAzKjqweGateaE0Tvo0NkW9rSK+3Qj4AApTN/4=;
+        b=qFdRQ9ngr1Oyn7qXZeWCiIpih8uBsDCsEKheEw/t+qs7wmG7P0/fbQOiaBYafJ0jp6
+         JgAu0NYG8heOHBlbS1UdfFaClZKcxDwH1DoTPzygHjiijK1j0rxhbLL7lUjnN4Ab5Hgy
+         9If/TTspQI5x8mYLGhEeieA5KNUnM8rB6OKd3WUkxjmXXcI/dz9zJElB2BfGiRzyyinC
+         Ra2ljSZBWokC2F7HwoINDiYB+akevDp/FpjubDrwMtMU/2ittZhfndkCBSpVdWhjALRY
+         tUDc6WbLxogTrjJ39eCnhTit80wej27QOg8zsHNalW+nNBm1u/+to0s4kNMc9vX2BcDw
+         Eddg==
+X-Gm-Message-State: AOAM530A0MLBgEIdxcjcrwnovFSiJRlRv3m9D6gAYIrw2HgqibXFOh4y
+        dKKDYtaOLzWoGPKKIsPUOnrPNmhvdp1PJ8vDICVEXg==
+X-Google-Smtp-Source: ABdhPJyARxT64gBM4/0hpaqUPffzx2KLdH47VGZHNVvkpM9nZmnWmJZ9tQxSFqsau9mY0cgtxNDE/kF8mTRRm34gUE4=
+X-Received: by 2002:a05:6512:3b94:: with SMTP id g20mr28120003lfv.119.1633956832747;
+ Mon, 11 Oct 2021 05:53:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YWDhdq4iOihzC5FI@ripper>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-11_04,2021-10-07_02,2020-04-07_01
+References: <20211005123645.2766258-1-sumit.garg@linaro.org>
+ <CABCJKuesYcGdKLi1YqHP3PU5n6vf-3Q-A+UNyCLzsoJ+0oiKmw@mail.gmail.com>
+ <20211005153523.GD6678@C02TD0UTHF1T.local> <CAFA6WYMvVuwAsU09iW7LonZGK92hX2rH3f8Xtktqs6t1wVtLUw@mail.gmail.com>
+ <20211008080546.GA495@willie-the-truck>
+In-Reply-To: <20211008080546.GA495@willie-the-truck>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 11 Oct 2021 18:23:41 +0530
+Message-ID: <CAFA6WYPjJ4WUsJf4b=w2vFPnXhxS_vC_SQ-TRK+uwwfVM9HG0Q@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: ftrace: use function_nocfi for _mcount as well
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>, ben.dai@unisoc.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Will,
 
+On Fri, 8 Oct 2021 at 13:35, Will Deacon <will@kernel.org> wrote:
+>
+> Hi Sumit,
+>
+> On Wed, Oct 06, 2021 at 11:05:52AM +0530, Sumit Garg wrote:
+> > On Tue, 5 Oct 2021 at 21:05, Mark Rutland <mark.rutland@arm.com> wrote:
+> > > On Tue, Oct 05, 2021 at 08:20:02AM -0700, Sami Tolvanen wrote:
+> > > > On Tue, Oct 5, 2021 at 5:37 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > > > diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> > > > > index 91fa4baa1a93..347b0cc68f07 100644
+> > > > > --- a/arch/arm64/include/asm/ftrace.h
+> > > > > +++ b/arch/arm64/include/asm/ftrace.h
+> > > > > @@ -15,7 +15,7 @@
+> > > > >  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> > > > >  #define ARCH_SUPPORTS_FTRACE_OPS 1
+> > > > >  #else
+> > > > > -#define MCOUNT_ADDR            ((unsigned long)_mcount)
+> > > > > +#define MCOUNT_ADDR            ((unsigned long)function_nocfi(_mcount))
+> > > > >  #endif
+> > > > >
+> > > > >  /* The BL at the callsite's adjusted rec->ip */
+> > > > > --
+> > > > > 2.17.1
+> > > > >
+> > > >
+> > > > Clang >= 10 supports -fpatchable-function-entry and CFI requires Clang
+> > > > 12, so I assume this is only an issue if
+> > > > CONFIG_DYNAMIC_FTRACE_WITH_REGS is explicitly disabled?
+> > >
+> > > I don't believe it's possible to disable explicitly, since
+> > > DYNAMIC_FTRACE_WITH_REGS isn't user selectable, and is def bool y,
+> > > depending on HAVE_DYNAMIC_FTRACE_WITH_REGS.
+> > >
+> >
+> > Ah, I see.
+> >
+> > > Sumit, have you actually seen a problem, or was this found by
+> > > inspection?
+> > >
+> >
+> > Actually I have seen this ftrace problem with the android11-5.4-lts
+> > kernel and AOSP master user-space on db845c. The reason being kernel
+> > v5.4 LTS doesn't support ftrace with -fpatchable-function-entry on
+> > arm64.
+> >
+> > With the mainline, I haven't tried to reproduce this issue but it was
+> > rather by inspection that this needs to be fixed as well.
+> >
+> > > If this isn't an issue in practice, we could add the funciton_nocfi()
+> > > for consistency, but we should make that clear in the commit message,
+> > > and drop the fixes tag.
+> >
+> > Sure, let me drop the fixes tag and update the commit description in
+> > v3 as mainline only enabled CFI_CLANG for arm64 when
+> > "-fpatchable-function-entry" is supported.
+>
+> Did you post a v3? Just want to make sure I didn't miss it.
+>
 
-On 10/9/21 2:25 AM, Bjorn Andersson wrote:
-> On Mon 12 Jul 06:23 PDT 2021, Arnaud Pouliquen wrote:
-> 
->> Allow the user space application to create and release an rpmsg device
->> by adding RPMSG_CREATE_DEV_IOCTL and RPMSG_RELEASE_DEV_IOCTL ioctrls to
->> the /dev/rpmsg_ctrl interface
->>
-> 
-> With
-> https://lore.kernel.org/linux-remoteproc/CAHk-=wgea9bo-j4+LAvZF7OKPAXKqrGgiBAhXTJ3Jv5JAZgA+A@mail.gmail.com/
-> and
-> https://lore.kernel.org/linux-arm-msm/1609958656-15064-1-git-send-email-hemantk@codeaurora.org/
-> in mind, I would like some concrete examples of when and how this is
-> going to be used.
-> 
-> 
-> Also, as I said previously, this would have been better to put together
-> with the split out of rpmsg_ctrl, because afaict this is the only reason
-> for doing that. Or am I simply missing something?
+Apologies for the delay, here [1] it is.
 
-This as been done by steps to ease the review. Any way, these controls also
-require, to be usable for the rpmsg_char, the implementation of the rpmsg-raw
-channel in the rpmsg_char.
-Should i squash the 3 patchsets in one and add concrete examples in cover letter?
+[1] https://lkml.org/lkml/2021/10/11/485
 
-> 
->> The RPMSG_CREATE_DEV_IOCTL Ioctl can be used to instantiate a local rpmsg
->> device.
->> Depending on the back-end implementation, the associated rpmsg driver is
->> probed and a NS announcement can be sent to the remote processor.
->>
-> 
-> So, does this imply that in order to spawn a new rpmsg_char from the
-> host side, I would use RPMSG_CREATE_DEV_IOCTL and to open a channel
-> announced by the remote I would use RPMSG_CREATE_EPT_IOCTL?
+-Sumit
 
-No, if announced by the remote side the rpmsg_char dev should be automatically
-probed by the virtio bus.
-The RPMSG_CREATE_EPT_IOCTL is the legacy control that is used by QCOM drivers to
-creates the cdev. It doesn't really make sense for the virtio backend, as virtio
-is based on a rpmsg channel that is associated to a rpmsg device.
-The only use case I have in mind would be to create endpoint without channel but
-using fixed addresses. No concrete use case identified in ST Microelectronics
-for hardcoded endpoint addresses.
-
-> 
->> The RPMSG_RELEASE_DEV_IOCTL allows the user application to release a
->> rpmsg device created either by the remote processor or with the
->> RPMSG_CREATE_DEV_IOCTL call.
-> 
-> Is this a side effect, bug or a feature?
-
-Both a side effect but also a feature to remove a channel from the initiative of
-the user application.
-
-Regards,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> Depending on the back-end implementation, the associated rpmsg driver is
->> removed and a NS destroy rpmsg can be sent to the remote processor.
->>
->> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> ---
->> update from V2
->> - add Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> - rebased on kernel V.14-rc1 + 
->>   series V5 Restructure the rpmsg char to decorrelate the control part [1]
->>
->>
->> [1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=514017
->>
->> ---
->>  drivers/rpmsg/rpmsg_ctrl.c | 37 +++++++++++++++++++++++++++++++++----
->>  include/uapi/linux/rpmsg.h | 10 ++++++++++
->>  2 files changed, 43 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
->> index eeb1708548c1..cb19e32d05e1 100644
->> --- a/drivers/rpmsg/rpmsg_ctrl.c
->> +++ b/drivers/rpmsg/rpmsg_ctrl.c
->> @@ -23,6 +23,7 @@
->>  #include <uapi/linux/rpmsg.h>
->>  
->>  #include "rpmsg_char.h"
->> +#include "rpmsg_internal.h"
->>  
->>  static dev_t rpmsg_major;
->>  
->> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
->>   * @rpdev:	underlaying rpmsg device
->>   * @cdev:	cdev for the ctrl device
->>   * @dev:	device for the ctrl device
->> + * @ctrl_lock:	serialize the ioctrls.
->>   */
->>  struct rpmsg_ctrldev {
->>  	struct rpmsg_device *rpdev;
->>  	struct cdev cdev;
->>  	struct device dev;
->> +	struct mutex ctrl_lock;
->>  };
->>  
->>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	void __user *argp = (void __user *)arg;
->>  	struct rpmsg_endpoint_info eptinfo;
->>  	struct rpmsg_channel_info chinfo;
->> -
->> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
->> -		return -EINVAL;
->> +	struct rpmsg_device *rpdev;
->> +	int ret = 0;
->>  
->>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->>  		return -EFAULT;
->> @@ -82,7 +84,33 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>  	chinfo.src = eptinfo.src;
->>  	chinfo.dst = eptinfo.dst;
->>  
->> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> +	mutex_lock(&ctrldev->ctrl_lock);
->> +	switch (cmd) {
->> +	case RPMSG_CREATE_EPT_IOCTL:
->> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->> +		break;
->> +
->> +	case RPMSG_CREATE_DEV_IOCTL:
->> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
->> +		if (!rpdev) {
->> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
->> +			ret = -ENXIO;
->> +		}
->> +		break;
->> +
->> +	case RPMSG_RELEASE_DEV_IOCTL:
->> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
->> +		if (ret)
->> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
->> +				chinfo.name, ret);
->> +		break;
->> +
->> +	default:
->> +		ret = -EINVAL;
->> +	}
->> +	mutex_unlock(&ctrldev->ctrl_lock);
->> +
->> +	return ret;
->>  };
->>  
->>  static const struct file_operations rpmsg_ctrldev_fops = {
->> @@ -119,6 +147,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->>  	device_initialize(dev);
->>  	dev->parent = &rpdev->dev;
->>  
->> +	mutex_init(&ctrldev->ctrl_lock);
->>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->>  	ctrldev->cdev.owner = THIS_MODULE;
->>  
->> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
->> index f5ca8740f3fb..1637e68177d9 100644
->> --- a/include/uapi/linux/rpmsg.h
->> +++ b/include/uapi/linux/rpmsg.h
->> @@ -33,4 +33,14 @@ struct rpmsg_endpoint_info {
->>   */
->>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->>  
->> +/**
->> + * Instantiate a new local rpmsg service device.
->> + */
->> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
->> +
->> +/**
->> + * Release a local rpmsg device.
->> + */
->> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
->> +
->>  #endif
->> -- 
->> 2.17.1
->>
+> Will
