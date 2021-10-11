@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191954287AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFE7D4287A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbhJKHdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:33:55 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:43396
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234459AbhJKHdx (ORCPT
+        id S234436AbhJKHdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:33:49 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:48701 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhJKHdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:33:53 -0400
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+        Mon, 11 Oct 2021 03:33:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 885973FFDE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:31:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633937512;
-        bh=XwHbWdp7VVwQ/yycSh88XsBspIrkx9lp92AdUBkvmF8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=vNvYQN/o9SY69ky2ld9Dwi7jjXmcrd032m0fIvdhmCbEc/TajrcOg60ftavWKQGnx
-         XzzOtlXeLmZy8gFONZxu5h4kyD/wN+TScOAjDASeHj2ElQDWfv7IehHAZ48+avDYPr
-         j9/WX+dlQhjnIV2kAF1cb3hiymYYnHIXNvghz4ADCHBxjHQHS9o/h8q+z/HcDYm8dT
-         U207tIOq4kSDWAIKXuRrMbCz0nPiKQ9B4XrjczHDSuaoNyoCnJV4u6EkgWB1j2mDMY
-         UrDrJYZrTwQWpnSc/NdJN4hqvbmUTPTRRye04/WqA8F540INOCSH7PteXnwYl0RIqD
-         bo6I2ovYFn/SQ==
-Received: by mail-ed1-f69.google.com with SMTP id u24-20020aa7db98000000b003db57b1688aso9672936edt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:31:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XwHbWdp7VVwQ/yycSh88XsBspIrkx9lp92AdUBkvmF8=;
-        b=mqujzGiooq2MRSklFdVia1CkvuqRxsGYt8S/G8j4zPw76r8sUr8blTlpuUPjbE7ani
-         rW60dTXNieFekYUCEyUvFAQz0vXDj70R6wrOuj7mXCKUph0h/VseCZ8JQUPXTbBantq8
-         /7lqg7Mg879gnXUljiP1vzVaeufP1DYcG6X9DREnL3zqI2QSjKHENTbUn7wWx8zAscXz
-         OaDTvS8Q/AdzSbYQuX020a82EHFMENM323dLKduRWx7srLpl+lP/DGdQRqbuaWZPaCBa
-         HP7o0Gp0cAz/W96ntIjjNNARw5aa2PAAJ9ghyHgx3HwJwreZnvjJ0OHQISMgMXCwD1DR
-         6oiQ==
-X-Gm-Message-State: AOAM530iOu5jgbmO8uLHwmaOwFeK7knPSJivK7e/RJYWv2erOkGVuRbR
-        UP6ZfPHEO7rY2oiRQ9KZ5nCtgIIblu1xElfwPydEFQdw7VYXZ6KkXyibqc2kxa4xZwQ5ti/FrZQ
-        all3w/eKPpJ0lGBZf42X5BmvYpzDSpyxg3pHPZnmDiw==
-X-Received: by 2002:a05:6402:5215:: with SMTP id s21mr34199909edd.113.1633937512229;
-        Mon, 11 Oct 2021 00:31:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJywCR4sOtwh0YCcCUI9FHmKswBlDB3H3/tQT8Wk1uf3GQGN52eB0kGY3pjRUV8qGtdaaS42gQ==
-X-Received: by 2002:a05:6402:5215:: with SMTP id s21mr34199896edd.113.1633937512032;
-        Mon, 11 Oct 2021 00:31:52 -0700 (PDT)
-Received: from localhost.localdomain (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id dt4sm3054377ejb.27.2021.10.11.00.31.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 00:31:51 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] arm64: dts: qcom: msm8996: move clock-frequency from PN547 NFC to I2C bus
-Date:   Mon, 11 Oct 2021 09:31:43 +0200
-Message-Id: <20211011073143.32645-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSVq65xhmz4xb7;
+        Mon, 11 Oct 2021 18:31:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633937507;
+        bh=SCPyOZEtiteoQfDJSQr511Ncjg8b28+HnVZHpvs35qo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dyx66GylUUJLC01nHRx9cBSDWiTWGJ6hz4B7Zni/vO5ciqebqrOoS60cOHB2X9+JM
+         htnj4F1FTOxwrwOAjaxQbQTIHQuBz/z5AfaBcIO2pFy2naSJT29SmXas95UQYjnXE1
+         85ZaRNEUiMngSPzoMM+vBJcTJQd9DdPW6xxwz1yHAoQSJc/R+Zt6PfV8r6WW2PA7aj
+         766lgERiYu2+8lNYaT7ABS59vNLNFFGZrER//sMu47XsMv+j9+q89JGluTsxsKfEhr
+         fPMvGzj/vttqEY8ZLxjF+U3nJlmRfreYLjwVEhJO30cBfOI7P9I7GpulwsKIxtXIVs
+         ZuwzDO1Gu7Bwg==
+Date:   Mon, 11 Oct 2021 18:31:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Daniel Micay <danielmicay@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the akpm-current tree
+Message-ID: <20211011183145.6ac3bef3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Although the early NXP NCI NFC bindings required the clock-frequency
-property, it was never used by the driver and it is actually a property
-of I2C bus, not I2C slave.
+--Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-index d239b01b8505..01e573f0dfbf 100644
---- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-@@ -185,12 +185,12 @@ &adsp_pil {
- &blsp2_i2c2 {
- 	status = "okay";
- 	label = "NFC_I2C";
-+	clock-frequency = <400000>;
- 
- 	nfc: pn548@28 {
- 		compatible = "nxp,nxp-nci-i2c";
- 
- 		reg = <0x28>;
--		clock-frequency = <400000>;
- 
- 		interrupt-parent = <&tlmm>;
- 		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.30.2
+After merging the akpm-current tree, today's linux-next build (htmldocs)
+produced these warnings:
 
+include/linux/slab.h:577: warning: Function parameter or member '1' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:577: warning: expecting prototype for kmalloc(). Proto=
+type was for __alloc_size() instead
+include/linux/slab.h:623: warning: Function parameter or member '1' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:623: warning: Function parameter or member '2' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:623: warning: expecting prototype for kmalloc_array().=
+ Prototype was for __alloc_size() instead
+include/linux/slab.h:644: warning: Function parameter or member '2' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:644: warning: Function parameter or member '3' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:644: warning: expecting prototype for krealloc_array()=
+. Prototype was for __alloc_size() instead
+include/linux/slab.h:660: warning: Function parameter or member '1' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:660: warning: Function parameter or member '2' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:660: warning: expecting prototype for kcalloc(). Proto=
+type was for __alloc_size() instead
+include/linux/slab.h:723: warning: Function parameter or member '1' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:723: warning: expecting prototype for kzalloc(). Proto=
+type was for __alloc_size() instead
+include/linux/slab.h:734: warning: Function parameter or member '1' not des=
+cribed in '__alloc_size'
+include/linux/slab.h:734: warning: expecting prototype for kzalloc_node(). =
+Prototype was for __alloc_size() instead
+include/linux/slab.h:1: warning: no structured comments found
+
+Introduced by commit
+
+  04ba82afbbf3 ("slab: add __alloc_size attributes for better bounds checki=
+ng")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFj6GEACgkQAVBC80lX
+0GxzYwgAnPMBM6zTtQPsn0fbvJVknX2DXmNZVGntJZpoC1VbRMB1R97BygYbDVze
+iqOqyqOzd5X0ekxMLMnX7qjriyHb6dWVcAXx+gwjBb4q0xB41GlG8NBqfatAbTG9
+NDYqak4sbPr+CzHKI9PmqnMMNb0upEnsdbBelWUeJ9eSi3AeXsuN9Ua8PnTAXEFK
+yNjGPX5V37hO8Q5eFUZd0Y43QbVy+PA7bDgqN0jgjiF3M9o6/Cdh8P0sp39obHh+
+KNmrGC0R8y3Xo/Q5vXPGgc/zPfvMotKv8KLj/CQIQeukVamkfTzEH665iV1pg4ac
+VOZZTJqZXWbAzFvjWW+7xLqNe5AsJg==
+=OPyt
+-----END PGP SIGNATURE-----
+
+--Sig_/b1XoT7P7Bmi/XTKG6E0Rx7Z--
