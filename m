@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E6A54286EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D10404286F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbhJKGjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:39:36 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:25117 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233522AbhJKGj3 (ORCPT
+        id S234256AbhJKGnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhJKGnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:39:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HSTZb0c8fz1DHJ1;
-        Mon, 11 Oct 2021 14:35:51 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 14:37:25 +0800
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 14:37:25 +0800
-Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
- __put_page()
-To:     Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <akpm@linux-foundation.org>, <hawk@kernel.org>,
-        <ilias.apalodimas@linaro.org>, <peterz@infradead.org>,
-        <yuzhao@google.com>, <will@kernel.org>, <jgg@ziepe.ca>,
-        <mcroce@microsoft.com>, <willemb@google.com>,
-        <cong.wang@bytedance.com>, <pabeni@redhat.com>,
-        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
-        <memxor@gmail.com>, <vvs@virtuozzo.com>, <linux-mm@kvack.org>,
-        <edumazet@google.com>, <alexander.duyck@gmail.com>,
-        <dsahern@gmail.com>
-References: <20211009093724.10539-1-linyunsheng@huawei.com>
- <20211009093724.10539-4-linyunsheng@huawei.com>
- <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
- <YWH4YbkC+XtpXTux@casper.infradead.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <6a072675-89e9-5635-5a9f-08aaf2e5364f@huawei.com>
-Date:   Mon, 11 Oct 2021 14:37:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 11 Oct 2021 02:43:06 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3966EC061570;
+        Sun, 10 Oct 2021 23:41:07 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSThc5f8Yz4xbV;
+        Mon, 11 Oct 2021 17:41:04 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633934465;
+        bh=LqvuD4D+kOfepT0Wnihi4XbiLrE7R/+cI4dVzIbSY8A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tDekxlpR8+wK3w9lEA0fI7+S9b5RLbf4IlPC39vSgN4AmOAx44Uk4XowtiQJwEibO
+         DbCJ6K+aZwrVKCHurZC3XkLyv0TPGqUZrpyno7xCC5wIRbi0s1YKKyCg0tY/D3/qRP
+         pbkxa0OFagD3mfC7OKWR3dlhxHqAZesnUDYeJYLlqHCKZhazqDVI64xgRUNXemt+Fv
+         Xago4VpUv7QLz5TOnkNixQfBOz+azGJd+GT2k82FwFBk13HZTcRrCfcRHshtjXW5sX
+         juwnrt8yacamePJ9jo3nvyFg0hbcaJPsx7/wspmJWGq+Tv3ss1bn9eIIv4d5Uc4+U8
+         +QAyPbqbFu4rA==
+Date:   Mon, 11 Oct 2021 17:41:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: linux-next: manual merge of the akpm-current tree with the userns
+ tree
+Message-ID: <20211011174103.58413a7b@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YWH4YbkC+XtpXTux@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/7Wn0tqi_WrLjsm0io1aaMfX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/10/10 4:15, Matthew Wilcox wrote:
-> On Sat, Oct 09, 2021 at 12:49:29PM -0700, John Hubbard wrote:
->> On 10/9/21 02:37, Yunsheng Lin wrote:
->>> Introduce __get_page() and __put_page() to operate on the
->>> base page or head of a compound page for the cases when a
->>> page is known to be a base page or head of a compound page.
->>
->> Hi,
->>
->> I wonder if you are aware of a much larger, 137-patch seriesto do that:
->> folio/pageset [1]?
->>
->> The naming you are proposing here does not really improve clarity. There
->> is nothing about __get_page() that makes it clear that it's meant only
->> for head/base pages, while get_page() tail pages as well. And the
->> well-known and widely used get_page() and put_page() get their meaning
->> shifted.
->>
->> This area is hard to get right, and that's why there have been 15
->> versions, and a lot of contention associated with [1]. If you have an
->> alternate approach, I think it would be better in its own separate
->> series, with a cover letter that, at a minimum, explains how it compares
->> to folios/pagesets.
+--Sig_/7Wn0tqi_WrLjsm0io1aaMfX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-As I was not familiar enough with mm, so I tried the semantic of
-__page_frag_cache_drain(), which expects a base page or the head
-page of a compound page too.
+Hi all,
 
-I suppose we may need to put a BUG_ON() to catch the case of
-user passing a tail page accidentally, which is a run time error
-and has run time overhead?
-And adding a new type like folio will allow the compiler to
-catch the error without any overhead?
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-> 
-> I wasn't initially sure whether network pagepools should be part of
-> struct folio or should be their own separate type.  At this point, I
+  kernel/exit.c
 
-Actually only a few driver are using page pool now, and others are mostly
-using page allocator directly, see page_frag_alloc_align() and
-skb_page_frag_refill(), only changing the page pool does not seems helpful
-here, maybe the whole network stack should be using a new type like folio,
-as the netstask does not need to deal with tail page directly? And it seems
-virt_to_page() is one of the things need handling when netstack is changed
-to use a new type like folio?
+between commits:
 
-> 
+  d67e03e36161 ("exit: Factor coredump_exit_mm out of exit_mm")
+  92307383082d ("coredump:  Don't perform any cleanups before dumping core")
+
+from the userns tree and commit:
+
+  27692e64c49c ("lazy tlb: introduce lazy mm refcount helper functions")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/exit.c
+index f702a6a63686,8e7b41702ad6..000000000000
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@@ -480,8 -440,42 +480,8 @@@ static void exit_mm(void
+  	if (!mm)
+  		return;
+  	sync_mm_rss(mm);
+ -	/*
+ -	 * Serialize with any possible pending coredump.
+ -	 * We must hold mmap_lock around checking core_state
+ -	 * and clearing tsk->mm.  The core-inducing thread
+ -	 * will increment ->nr_threads for each thread in the
+ -	 * group with ->mm !=3D NULL.
+ -	 */
+  	mmap_read_lock(mm);
+- 	mmgrab(mm);
+ -	core_state =3D mm->core_state;
+ -	if (core_state) {
+ -		struct core_thread self;
+ -
+ -		mmap_read_unlock(mm);
+ -
+ -		self.task =3D current;
+ -		if (self.task->flags & PF_SIGNALED)
+ -			self.next =3D xchg(&core_state->dumper.next, &self);
+ -		else
+ -			self.task =3D NULL;
+ -		/*
+ -		 * Implies mb(), the result of xchg() must be visible
+ -		 * to core_state->dumper.
+ -		 */
+ -		if (atomic_dec_and_test(&core_state->nr_threads))
+ -			complete(&core_state->startup);
+ -
+ -		for (;;) {
+ -			set_current_state(TASK_UNINTERRUPTIBLE);
+ -			if (!self.task) /* see coredump_finish() */
+ -				break;
+ -			freezable_schedule();
+ -		}
+ -		__set_current_state(TASK_RUNNING);
+ -		mmap_read_lock(mm);
+ -	}
++ 	mmgrab_lazy_tlb(mm);
+  	BUG_ON(mm !=3D current->active_mm);
+  	/* more a memory barrier than a real lock */
+  	task_lock(current);
+
+--Sig_/7Wn0tqi_WrLjsm0io1aaMfX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFj3H8ACgkQAVBC80lX
+0Gx2Sgf6Ag5I2T7HSX0r75F1ZiyU4d28AlF1HRkjQ7G7Pur/dvSn++sltJFPjrT4
+WPrGfa2ZioYF8UFQpgKpVBXO3Nbzco1UCPF95d53Y/ALouIaskHhBg/b2iwlH6d2
+O6K7JmVNBl+t70YZLIhcOckvYgtF+q1azhYbB3/8Fc2SAKHwme90G4dbaukaao2U
+UHDhQxZJmwLTBZlvDwPuKbc0WlbVD9KbnE58gezzGOFjnCZlV0+RT9DdhXLLvdYQ
+9WRCsZdlId4en7N5wHY3m3zkJjDz2wBggSlRiowHBwfOMU8nw4McMXS0LexAd0Bn
+Ut7KqNYE9MyO7M4pLWXmVkup/Zu6Nw==
+=Nk5n
+-----END PGP SIGNATURE-----
+
+--Sig_/7Wn0tqi_WrLjsm0io1aaMfX--
