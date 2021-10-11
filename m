@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1959E4297EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898084297E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234884AbhJKUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:08:55 -0400
-Received: from ixit.cz ([94.230.151.217]:50770 "EHLO ixit.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234814AbhJKUIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:08:48 -0400
-Received: from localhost.localdomain (ip-89-176-96-70.net.upcbroadband.cz [89.176.96.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ixit.cz (Postfix) with ESMTPSA id 48F6620064;
-        Mon, 11 Oct 2021 22:06:40 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ixit.cz; s=dkim;
-        t=1633982800;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=sFSERW+c0MCFdwR7sVEFwPDbMSHIzzONuOZe7rm99XM=;
-        b=DanC5hcXCtw32h3wFeYqJOUDTQ75eh96RxFxLUZyOq3XL9bQZfE+lQQy+CPJewLC/KdWjk
-        CpgcjzKcGO4bppxtdMzqE79vBxMTeFepFMhWz1CfARbfWtzZh3CaeaOAtT18Zhuz6p1IeP
-        U3rKQSvPTlOiHYLNGexCZAUE5HqhO+4=
-From:   David Heidelberg <david@ixit.cz>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~okias/devicetree@lists.sr.ht,
-        David Heidelberg <david@ixit.cz>,
-        Caleb Connolly <caleb@connolly.tech>
-Subject: [PATCH] arm64: dts: qcom: sdm845-oneplus: remove devinfo-size from ramoops node
-Date:   Mon, 11 Oct 2021 22:01:38 +0200
-Message-Id: <20211011200138.115688-1-david@ixit.cz>
-X-Mailer: git-send-email 2.33.0
+        id S234858AbhJKUIX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 16:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234835AbhJKUIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 16:08:22 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83F4C061570;
+        Mon, 11 Oct 2021 13:06:21 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1ma1Yv-00033F-K4; Mon, 11 Oct 2021 22:06:17 +0200
+Date:   Mon, 11 Oct 2021 22:06:17 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        SElinux list <selinux@vger.kernel.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 selinux] selinux: remove unneeded ipv6 hook wrappers
+Message-ID: <20211011200617.GA2942@breakpoint.cc>
+References: <20211011142416.26798-1-fw@strlen.de>
+ <CAHC9VhRBYMMSucVbqUkcWTtyeuJ7SSuzDED=Cg=svWiaByo3Qw@mail.gmail.com>
+ <CAFqZXNvHitBVyDga2CO2WAdxFwhY44xXoLkvmvVsPNGwqSe5zw@mail.gmail.com>
+ <CAHC9VhTW9dPDN1F2o7S8cmgU_9yBZCNmzC_-9bKXTTX6zT=Jyg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAHC9VhTW9dPDN1F2o7S8cmgU_9yBZCNmzC_-9bKXTTX6zT=Jyg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This property doesn't exist in Linux kernel.
+Paul Moore <paul@paul-moore.com> wrote:
+> On Mon, Oct 11, 2021 at 2:21 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
+> > On Mon, Oct 11, 2021 at 7:10 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > On Mon, Oct 11, 2021 at 10:25 AM Florian Westphal <fw@strlen.de> wrote:
+> > > > Netfilter places the protocol number the hook function is getting called
+> > > > from in state->pf, so we can use that instead of an extra wrapper.
+> > > >
+> > > > Signed-off-by: Florian Westphal <fw@strlen.de>
+> > > > ---
+> > > >  v2: add back '#endif /* CONFIG_NETFILTER */' erronously axed in v1.
+> > > >  Applies to 'next' branch of
+> > > >  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git/
+> > > >
+> > > >  security/selinux/hooks.c | 52 ++++++++++------------------------------
+> > > >  1 file changed, 12 insertions(+), 40 deletions(-)
+> > >
+> > > ...
+> > >
+> > > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > > > index e7ebd45ca345..831b857d5dd7 100644
+> > > > --- a/security/selinux/hooks.c
+> > > > +++ b/security/selinux/hooks.c
+> > > > @@ -7470,38 +7442,38 @@ DEFINE_LSM(selinux) = {
+> > > >
+> > > >  static const struct nf_hook_ops selinux_nf_ops[] = {
+> > > >         {
+> > > > -               .hook =         selinux_ipv4_postroute,
+> > > > +               .hook =         selinux_hook_postroute,
+> > > >                 .pf =           NFPROTO_IPV4,
+> > > >                 .hooknum =      NF_INET_POST_ROUTING,
+> > > >                 .priority =     NF_IP_PRI_SELINUX_LAST,
+> > > >         },
+> > >
+> > > Thanks for the patch Florian, although the name "selinux_hook_*" seems
+> > > a bit ambiguous to me, after all we have a little more than 200
+> > > "hooks" in the SELinux LSM implementation.  Would you be okay with
+> > > calling the netfilter hook functions "selinux_nf_*" or something
+> > > similar?
 
-Fixes: 288ef8a42612 ("arm64: dts: sdm845: add oneplus6/6t devices")
+Absolutely.
 
-Reviewed-by: Caleb Connolly <caleb@connolly.tech>
-Signed-off-by: David Heidelberg <david@ixit.cz>
----
- arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi | 1 -
- 1 file changed, 1 deletion(-)
+> > > If you don't have time I can do the rename during the merge
+> > > assuming we can all agree on a name.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-index d4355522374a..dec2ac9cbb08 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845-oneplus-common.dtsi
-@@ -93,7 +93,6 @@ ramoops: ramoops@ac300000 {
- 			console-size = <0x40000>;
- 			ftrace-size = <0x40000>;
- 			pmsg-size = <0x200000>;
--			devinfo-size = <0x1000>;
- 			ecc-size = <16>;
- 		};
- 	};
--- 
-2.33.0
+I'll submit a v3.
 
+> > Since selinux_ip_forward() and selinux_ip_postroute() are used only in
+> > the hook functions, how about changing their signature and using them
+> > as hooks directly? That would solve the naming and also remove a few
+> > extra lines of boilerplate.
+> 
+> No argument against that from me, although you should be able to do
+> the same for selinux_ip_output() as well unless I missed a caller.
+
+I'll have a look, thanks for the pointers.
