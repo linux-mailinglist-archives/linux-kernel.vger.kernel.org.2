@@ -2,193 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6F94293B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8D224293B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbhJKPsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:48:23 -0400
-Received: from mail-co1nam11on2061.outbound.protection.outlook.com ([40.107.220.61]:48416
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231967AbhJKPsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:48:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iQEUe4/na1FeVNVdNPuTzROkpe9BOpm041lxUr5WGl1Mi2RhW0FOLgUt5ogxg8knmM+kKqdqmNDUvpxVGXve2AhjaIBDKFF4Ff0CJo3TxS8VRwcdOqS9QEuKFafhFxX5ifqPFrlJjhkRJC5EIWcP9CKmpzQMytBa1fRYb7J10kbYFlyaqcEM7jaC0g9+9q5E2PARe5LctFJVumJBuv4Dn44hAc5VGXOpW3hFf3PoKQhG5XP/aOVKRPvnKl2qm4xrtIvaUfHumY62RjQLkekpUHNl/bVr9+hXYqK1APGsPXRyefvOtH8oSwMqRyj5s6GS8kSxOuqr/Bz1V9w16mDxBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I2aNKp2xP70Tb4j+3sSlPPtluLKfcAqPl5661JQYpwA=;
- b=Mif1n1aebkuEAkjcALnlnQu0Qh2z7Uvv0FBuuSYqXyHYZTSwZqcXtptrkokb9SE8jIpz1mNC8yqvckkWTQOK6pfWzHo0PwffVAkMRStWRBB7qJABBPqP6XPlSOOxezab128tqqVjQFbAe8xv1RxjiSD7Hs3OsrrG6Ghd8/fBDxlTRlXbWg2a9pBT9jWuCC3iCPAndBtkagKzSUY7PLMxqJRKcwPcaZdQGZx3X340m/suxKxjLZGvqfIlttQiETejH6z524EofTOd4LlvzOECFEiCu5tdn/H15FchsXRCzeWXhf7v1suCt8CKLf3Rbxg7f710+I4YDY2Gg6HXlFELpw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I2aNKp2xP70Tb4j+3sSlPPtluLKfcAqPl5661JQYpwA=;
- b=b3Ei/W4/fvnP4vOm8MFguUZeU5JSne2WSpm+pW8d7oxPY/fJ1FNFJhogNnYXwkoMT5tPXZn2NwBOJz7x1ahxR6bBFHRk1fNFxdhKUXM8nDnxmUe1Sx+2zgleNkXzPKlX6JhbjGxPM8ARWuA17pwRW1o4cpVdwJWaEz24Db3cCdI=
-Received: from BN9PR03CA0101.namprd03.prod.outlook.com (2603:10b6:408:fd::16)
- by MN2PR12MB4125.namprd12.prod.outlook.com (2603:10b6:208:1d9::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Mon, 11 Oct
- 2021 15:46:06 +0000
-Received: from BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fd:cafe::d6) by BN9PR03CA0101.outlook.office365.com
- (2603:10b6:408:fd::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend
- Transport; Mon, 11 Oct 2021 15:46:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT036.mail.protection.outlook.com (10.13.177.168) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 15:46:06 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 10:46:04 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 08:46:04 -0700
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Mon, 11 Oct 2021 10:46:00 -0500
-From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>, <Alexander.Deucher@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 3/8] ASoC: amd: acp: Add callback for machine driver on ACP
-Date:   Mon, 11 Oct 2021 21:14:47 +0530
-Message-ID: <20211011154452.76849-4-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011154452.76849-1-AjitKumar.Pandey@amd.com>
-References: <20211011154452.76849-1-AjitKumar.Pandey@amd.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 05a124a7-c015-4101-ffa7-08d98cce3cdd
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4125:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4125B9F8129DB727B4B2B22782B59@MN2PR12MB4125.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AVg49poCGhne0uDDrsqeDt/cPVBBgAV1EPA7ArYnGiKPSZRTOSmYSATgAkedUrZY9uUDGTrZuzcJRnyZiWV/9Ifp/q3nqytb8C+zKm4A+zvryx/wcCIYkjOKy3esSFUgLy6g4s3vl0miHFZw55hWTZ8Hmu0p868YdcA4Zdt5lo1doXALHw6i+budNRSST8w+jpZQGEgJsPIuS0dbrPQCQYkoGra7ZrVzb6YjvtS+YJV9OB33GR+2pN1RBvlZyl7V57zOiKHCJ9zBO5EIOj/qWcJ37Scjxzafur3NRTSExJIQJZzLHJylPcI+Da8SvPDcW6R6nThzSST/LqZF4OzABqwCTV13nNq8zW3tk+AIls3vP5PsQ/Gc6kwxyrN0HOb3UlGY4TUPZF+k+1ZLECJWXrw74tjYrCvq1DEND7YaSm6rLtJVdqSuIhFS7OlONv6Lo62EV7wK9Xquqx1tAYmFU7hCsUGKBbL9XPO0fxsKfaTvCPgXa7OR+oeQmGqs1/U3ssMmIsx8eEBl5e8g4ncM4iiLgVB+p/uo+k35GLCtdatOSrfevJi6zLVXAvyg3sLz8kB6se7TKh6tdaGaDjjLpmMPzyEYN8R34mjR9NDREtoygSbmTaRhQ+4kYrpUzcfydFMrho0HIgWP1AZpCgS4az5JR8c5BAw+LZqkmyobmy8HbdrItLYIjzxKF6UukpvT8Guoi684/5z60nfqB+BxhXnWQNARCOeOaoNn2RMWC5s=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(81166007)(8676002)(316002)(47076005)(186003)(4326008)(82310400003)(26005)(110136005)(1076003)(36756003)(83380400001)(54906003)(356005)(8936002)(426003)(508600001)(5660300002)(70586007)(2616005)(2906002)(6666004)(7696005)(36860700001)(336012)(86362001)(70206006)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 15:46:06.1169
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 05a124a7-c015-4101-ffa7-08d98cce3cdd
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT036.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4125
+        id S238991AbhJKPrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:47:06 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:43650 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236010AbhJKPrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:47:04 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B02941A231B;
+        Mon, 11 Oct 2021 17:45:03 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A33591A22FD;
+        Mon, 11 Oct 2021 17:45:03 +0200 (CEST)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 6A16420395;
+        Mon, 11 Oct 2021 17:45:03 +0200 (CEST)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] clk: imx: Updates for v5.16
+Date:   Mon, 11 Oct 2021 18:44:48 +0300
+Message-Id: <1633967088-5058-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add method to select and register machine driver for acp platform
-based on ACPI ID.
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- sound/soc/amd/acp/acp-platform.c | 23 +++++++++++++++++++++++
- sound/soc/amd/acp/acp-renoir.c   |  3 +++
- sound/soc/amd/acp/amd.h          |  6 ++++++
- 3 files changed, 32 insertions(+)
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
 
-diff --git a/sound/soc/amd/acp/acp-platform.c b/sound/soc/amd/acp/acp-platform.c
-index e79c05276d5f..75003d0a41e3 100644
---- a/sound/soc/amd/acp/acp-platform.c
-+++ b/sound/soc/amd/acp/acp-platform.c
-@@ -67,6 +67,27 @@ static const struct snd_pcm_hardware acp_pcm_hardware_capture = {
- 	.periods_max = CAPTURE_MAX_NUM_PERIODS,
- };
- 
-+int acp_machine_select(struct acp_dev_data *adata)
-+{
-+	struct snd_soc_acpi_mach *mach;
-+	int size;
-+
-+	size = sizeof(*adata->machines);
-+	mach = snd_soc_acpi_find_machine(adata->machines);
-+	if (!mach) {
-+		dev_err(adata->dev, "warning: No matching ASoC machine driver found\n");
-+		return -EINVAL;
-+	}
-+
-+	adata->mach_dev = platform_device_register_data(adata->dev, mach->drv_name,
-+							PLATFORM_DEVID_NONE, mach, size);
-+	if (!adata->mach_dev)
-+		dev_warn(adata->dev, "Unable to register Machine device\n");
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(acp_machine_select, SND_SOC_ACP_COMMON);
-+
- static irqreturn_t i2s_irq_handler(int irq, void *data)
- {
- 	struct acp_dev_data *adata = data;
-@@ -283,6 +304,8 @@ int acp_platform_unregister(struct device *dev)
- {
- 	struct acp_dev_data *adata = dev_get_drvdata(dev);
- 
-+	if (adata->mach_dev)
-+		platform_device_unregister(adata->mach_dev);
- 	return 0;
- }
- EXPORT_SYMBOL_NS_GPL(acp_platform_unregister, SND_SOC_ACP_COMMON);
-diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
-index c7fbf71e4669..82faae1b110b 100644
---- a/sound/soc/amd/acp/acp-renoir.c
-+++ b/sound/soc/amd/acp/acp-renoir.c
-@@ -111,6 +111,9 @@ static int renoir_audio_probe(struct platform_device *pdev)
- 	adata->dai_driver = acp_renoir_dai;
- 	adata->num_dai = ARRAY_SIZE(acp_renoir_dai);
- 
-+	adata->machines = snd_soc_acpi_amd_acp_machines;
-+	acp_machine_select(adata);
-+
- 	dev_set_drvdata(dev, adata);
- 	acp_platform_register(dev);
- 
-diff --git a/sound/soc/amd/acp/amd.h b/sound/soc/amd/acp/amd.h
-index ecb53285526c..3532f4d3ccff 100644
---- a/sound/soc/amd/acp/amd.h
-+++ b/sound/soc/amd/acp/amd.h
-@@ -90,6 +90,9 @@ struct acp_dev_data {
- 	int num_dai;
- 
- 	struct acp_stream *stream[ACP_MAX_STREAM];
-+
-+	struct snd_soc_acpi_mach *machines;
-+	struct platform_device *mach_dev;
- };
- 
- extern const struct snd_soc_dai_ops asoc_acp_cpu_dai_ops;
-@@ -98,6 +101,9 @@ int asoc_acp_i2s_probe(struct snd_soc_dai *dai);
- int acp_platform_register(struct device *dev);
- int acp_platform_unregister(struct device *dev);
- 
-+int acp_machine_select(struct acp_dev_data *adata);
-+extern struct snd_soc_acpi_mach snd_soc_acpi_amd_acp_machines[];
-+
- static inline u64 acp_get_byte_count(struct acp_dev_data *adata, int dai_id, int direction)
- {
- 	u64 byte_count, low = 0, high = 0;
--- 
-2.25.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/clk-imx-5.16
+
+for you to fetch changes up to e8271eff5d8c8499289380edbf3bc47de83ab70b:
+
+  clk: imx: Make CLK_IMX8ULP select MXC_CLK (2021-10-06 22:17:42 +0300)
+
+----------------------------------------------------------------
+i.MX clock changes for 5.15
+
+ - Remove unused helpers from i.MX specific clock header
+ - Rework all clk based helpers to use clk_hw based ones
+ - Rework gate/mux/divider wrappers
+ - Rework imx_clk_hw_composite and imx_clk_hw_pll14xx wrappers
+ - Add i.MX8ULP clock driver and related bindings
+ - Update i.MX pllv4 and composite clocks to support i.MX8ULP
+ - Disable i.MX7ULP composite clock during initialization
+ - Add CLK_SET_RATE_NO_REPARENT flag to the i.MX7ULP composite
+ - Disable the pfd when set pfdv2 clock rate
+ - Add support for i.MX8ULP in pfdv2
+ - Add the pcc reset controller support on i.MX8ULP
+ - Fix the build break when clk-imx8ulp is built as module
+ - Move csi_sel mux to correct base register in i.MX6UL clock drivr
+ - Fix csi clk gate register in i.MX6UL clock driver
+ - Fix the build bu making CLK_IMX8ULP select MXC_CLK
+
+----------------------------------------------------------------
+Abel Vesa (8):
+      clk: imx: Remove unused helpers
+      clk: imx: Make mux/mux2 clk based helpers use clk_hw based ones
+      clk: imx: Rework all clk_hw_register_gate wrappers
+      clk: imx: Rework all clk_hw_register_gate2 wrappers
+      clk: imx: Rework all clk_hw_register_mux wrappers
+      clk: imx: Rework all clk_hw_register_divider wrappers
+      clk: imx: Rework all imx_clk_hw_composite wrappers
+      clk: imx: Rework imx_clk_hw_pll14xx wrapper
+
+Anson Huang (1):
+      clk: imx: disable i.mx7ulp composite clock during initialization
+
+Fabio Estevam (1):
+      clk: imx: Make CLK_IMX8ULP select MXC_CLK
+
+Jacky Bai (9):
+      dt-bindings: clock: Add imx8ulp clock support
+      clk: imx: Update the pllv4 to support imx8ulp
+      clk: imx: Update the compsite driver to support imx8ulp
+      clk: imx: Add 'CLK_SET_RATE_NO_REPARENT' for composite-7ulp
+      clk: imx: disable the pfd when set pfdv2 clock rate
+      clk: imx: Update the pfdv2 for 8ulp specific support
+      clk: imx: Add clock driver for imx8ulp
+      clk: imx: Add the pcc reset controller support on imx8ulp
+      clk: imx: Fix the build break when clk-imx8ulp build as module
+
+Stefan Riedmueller (2):
+      clk: imx: imx6ul: Move csi_sel mux to correct base register
+      clk: imx: imx6ul: Fix csi clk gate register
+
+ .../bindings/clock/imx8ulp-cgc-clock.yaml          |  43 ++
+ .../bindings/clock/imx8ulp-pcc-clock.yaml          |  50 ++
+ drivers/clk/imx/Kconfig                            |   7 +
+ drivers/clk/imx/Makefile                           |   2 +
+ drivers/clk/imx/clk-composite-7ulp.c               |  88 +++-
+ drivers/clk/imx/clk-composite-8m.c                 |   4 +-
+ drivers/clk/imx/clk-imx6ul.c                       |   9 +-
+ drivers/clk/imx/clk-imx7ulp.c                      |  20 +-
+ drivers/clk/imx/clk-imx8ulp.c                      | 569 +++++++++++++++++++++
+ drivers/clk/imx/clk-pfdv2.c                        |  23 +-
+ drivers/clk/imx/clk-pllv4.c                        |  35 +-
+ drivers/clk/imx/clk.h                              | 457 +++++------------
+ include/dt-bindings/clock/imx8ulp-clock.h          | 258 ++++++++++
+ include/dt-bindings/reset/imx8ulp-pcc-reset.h      |  59 +++
+ 14 files changed, 1276 insertions(+), 348 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/imx8ulp-cgc-clock.yaml
+ create mode 100644 Documentation/devicetree/bindings/clock/imx8ulp-pcc-clock.yaml
+ create mode 100644 drivers/clk/imx/clk-imx8ulp.c
+ create mode 100644 include/dt-bindings/clock/imx8ulp-clock.h
+ create mode 100644 include/dt-bindings/reset/imx8ulp-pcc-reset.h
