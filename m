@@ -2,389 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCB4429928
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E937742992B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbhJKVw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        id S235448AbhJKVyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235437AbhJKVwt (ORCPT
+        with ESMTP id S235394AbhJKVya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:52:49 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86033C061749;
-        Mon, 11 Oct 2021 14:50:48 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id j5so79265582lfg.8;
-        Mon, 11 Oct 2021 14:50:48 -0700 (PDT)
+        Mon, 11 Oct 2021 17:54:30 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD9AC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:52:30 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id d125so5504298iof.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:52:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CFOKAogMPVQB4oZNJlqugjaqysN1b1PYFPOt9WrOaLM=;
-        b=nA0+CHF93/xmhq6amcMoaHPsMhXaApVzdhVkN5jWi2UvnLoAtsQb9YyzA4I0WJ3qmI
-         RhAd+LxzrFJTy9m4foJchTdiqMTMOlU9coIQM+UFHhuwOCqv/9+ot+ktYznvBK2ZNWzw
-         QwgBYNjhIzww4+J9B09dh0l8V3pirFrne46ybTSriXLotideg1SA/mdRmtO3+zR/FCY0
-         vvzwcb7/ec7qQgzPyBuEUXBJtqjapKSX3NSPNvl72bSkVxN6ZYoYG1F592KAUdiVgWwT
-         Sngg6Sw1QI6lcVb3dxqoVrUnhxkVfB72l7TQNv/LM++Jiyu6tjcBulHYeGobqhHFcA3E
-         2b6w==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qn552UUYAq2mxys4HsWoy0JUvqhzNWzWMRX1kUD0CDI=;
+        b=SuoAjQkkfqHeeYrmSWc2V/R30BkZrHot5iLSxjniZPG91s6C2WSsR9DIQ/DRh3jMVm
+         66kAOEEkU3Jl+RLUezWKx9zdgoVnzShV9lesGhKrMURL4uYFEuxIdYJTg9sGtlnqL6du
+         Lf14aRhq2zxBzk7UvXHdhIrDZ6r9bBOS6x0oS8C16Evqye9CREFE1ha5K9wnLFf2SeBS
+         kk2C3vhRt6236YDc5WFDGJJt5kGJP5S90LUuCWs1wHvE7qFVCkJeCma1KnMwckIwRJvV
+         mFVOlqmpY8z+Ae2gDSqgTEV0NjWIP19dBBI5gTZDO1zOLwXF/8imYZacN/vWI6mr8WUI
+         mSxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFOKAogMPVQB4oZNJlqugjaqysN1b1PYFPOt9WrOaLM=;
-        b=w4cKbAEMEsCmnH8LU4SgnAlpT/DJN6BeEWMyRVjXTlZYG/mJc5cEgFZfATl1ffrf9l
-         SYT7OBNhzQ/XTKXHvxyQ90gQr7hiL/XnQitxauJQ+vwbHMPaqsWA+I8RybLwziK1Alqm
-         UaPiDRp2pMux6yJw4F61XnbEO+sQrzhI0I3qPp9Twfu4nyWZDYUpywJF8iOI0XPep2Xf
-         c7oDdtPyMJFxgQa0AROIOSzdB9xhEolUGYkRGeGHnqC9EDWjWLXRGufjAmXaquWbRgO1
-         xiWYEFBzp1EQOz0jOFHd+dohQggLzm9USXS8a+18K0K235iq4u2gMcihRofXCoURl6Wz
-         +zcw==
-X-Gm-Message-State: AOAM533JzYARlgwPbzf+qkdhoPQVsdx+RlzIWmUTQyaj+/Aavf1dGKwu
-        zF8jL5hoRWSKX0IFrlM5hGoHuoShje4=
-X-Google-Smtp-Source: ABdhPJyV7p5NoQM7I45hzXf6Ifacl28t/3kSejfgMVnTOMkGgFwyBTiZkiRHs/0homVhYv9tMBHrnw==
-X-Received: by 2002:a2e:7205:: with SMTP id n5mr7220886ljc.65.1633989046697;
-        Mon, 11 Oct 2021 14:50:46 -0700 (PDT)
-Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id w6sm913789lfk.200.2021.10.11.14.50.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 14:50:46 -0700 (PDT)
-Date:   Tue, 12 Oct 2021 00:50:44 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/ntfs3: Fix memory leak if fill_super failed
-Message-ID: <20211011215044.dwxmyy2o6nqers3i@kari-VirtualBox>
-References: <79791816-db23-f3b4-3ea8-139add705c45@paragon-software.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qn552UUYAq2mxys4HsWoy0JUvqhzNWzWMRX1kUD0CDI=;
+        b=LbZF4MJw572PoeH4HEGCOIqHvLMsX/cKyHBJ4DW91pvwp8OKsdYS8Qyhk1wr/PD//O
+         8KUqYNFj2gw/O0ObgsYaEjSrYfjwFDOCZrAA9B6l1hSqW9A2e7sy55G8LEePfWn8f9AB
+         Ff2D4M3nrj6AbWaIiZPNprLbYP6l80BIB5lVI3xpIS2y4bOySc7e3ufKINthIv+v90VS
+         XEgaA/6/3KgoYaZdMXUtCP5xG/BE4aSg9n76WywYhtRx5IlpmbmwgOGc/TR0g8Cf4urw
+         krwUdITh938Gpy+FVRapP1w1wJm3B+rSe5LHpgTkXKnu+InG0VPRAU6FIASSV0ADP2/l
+         ktuQ==
+X-Gm-Message-State: AOAM530ReRk/SmlOspZdCtRrk+gfXA7lnjfaUxAhBogsaASCG9tJBZtg
+        eRVsxDHoKTokmOzvxduvV11ezbIV3b0wQ0sYfpsfFQ==
+X-Google-Smtp-Source: ABdhPJzkLIi0YL9wrh95RO4bWOoiiwu/vbUq62d73FAvovcGiK2NXvBAMmACNQvgo4LkuDynU75amCm9nIo/Xwd0CMQ=
+X-Received: by 2002:a05:6602:1342:: with SMTP id i2mr15279732iov.153.1633989149317;
+ Mon, 11 Oct 2021 14:52:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <79791816-db23-f3b4-3ea8-139add705c45@paragon-software.com>
+References: <20211007210324.707912-1-dlatypov@google.com> <CABVgOS=aJ39zpaEZ8-3qPnKe7EoGoNEhrQ=qmdafdjz17oFRng@mail.gmail.com>
+ <CAGS_qxoW5h40g24Xsgqu4svFdFxr6592eXygV8NoJxW6ECWRVQ@mail.gmail.com> <CAGS_qxobkgnWOp_mEoSzZ-CV7wqbbLyRcJL2Pd_z5-GvUmBR-w@mail.gmail.com>
+In-Reply-To: <CAGS_qxobkgnWOp_mEoSzZ-CV7wqbbLyRcJL2Pd_z5-GvUmBR-w@mail.gmail.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Mon, 11 Oct 2021 14:52:17 -0700
+Message-ID: <CAGS_qxpe26UE32gb=r60ROyR3K2i-h_OH=pM4sSkVFnD6Shucw@mail.gmail.com>
+Subject: Re: [PATCH v7] kunit: tool: improve compatibility of kunit_parser
+ with KTAP specification
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 06:26:53PM +0300, Konstantin Komarov wrote:
-> In ntfs_init_fs_context we allocate memory in fc->s_fs_info.
-> In case of failed mount we must free it in ntfs_fill_super.
-> We can't do it in ntfs_fs_free, because ntfs_fs_free called
-> with fc->s_fs_info == NULL.
-> fc->s_fs_info became NULL in sget_fc.
+On Mon, Oct 11, 2021 at 11:23 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> On Mon, Oct 11, 2021 at 10:14 AM Daniel Latypov <dlatypov@google.com> wrote:
+> >
+> > On Fri, Oct 8, 2021 at 7:35 PM 'David Gow' via KUnit Development
+> > <kunit-dev@googlegroups.com> wrote:
+> > >
+> > > On Fri, Oct 8, 2021 at 5:03 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > >
+> > > > From: Rae Moar <rmoar@google.com>
+> > > >
+> > > > Update to kunit_parser to improve compatibility with KTAP
+> > > > specification including arbitrarily nested tests. Patch accomplishes
+> > > > three major changes:
+> > > >
+> > > > - Use a general Test object to represent all tests rather than TestCase
+> > > > and TestSuite objects. This allows for easier implementation of arbitrary
+> > > > levels of nested tests and promotes the idea that both test suites and test
+> > > > cases are tests.
+> > > >
+> > > > - Print errors incrementally rather than all at once after the
+> > > > parsing finishes to maximize information given to the user in the
+> > > > case of the parser given invalid input and to increase the helpfulness
+> > > > of the timestamps given during printing. Note that kunit.py parse does
+> > > > not print incrementally yet. However, this fix brings us closer to
+> > > > this feature.
+> > > >
+> > > > - Increase compatibility for different formats of input. Arbitrary levels
+> > > > of nested tests supported. Also, test cases and test suites are now
+> > > > supported to be present on the same level of testing.
+> > > >
+> > > > This patch now implements the draft KTAP specification here:
+> > > > https://lore.kernel.org/linux-kselftest/CA+GJov6tdjvY9x12JsJT14qn6c7NViJxqaJk+r-K1YJzPggFDQ@mail.gmail.com/
+> > > > We'll update the parser as the spec evolves.
+> > > >
+> > > > This patch adjusts the kunit_tool_test.py file to check for
+> > > > the correct outputs from the new parser and adds a new test to check
+> > > > the parsing for a KTAP result log with correct format for multiple nested
+> > > > subtests (test_is_test_passed-all_passed_nested.log).
+> > > >
+> > > > This patch also alters the kunit_json.py file to allow for arbitrarily
+> > > > nested tests.
+> > > >
+> > > > Signed-off-by: Rae Moar <rmoar@google.com>
+> > > > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+> > > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> > > > Reviewed-by: David Gow <davidgow@google.com>
+> > > > ---
+> > >
+> > > Found a regression here with the KASAN tests and treating "BUG:" as a crash.
+> > >
+> > > Take this output, for example:
+> > > [19:32:07] # Subtest: kasan
+> > > [19:32:07] 1..48
+> > > [19:32:07] # kasan: pass:42 fail:0 skip:6 total:48
+> > > [19:32:07] # Totals: pass:42 fail:0 skip:6 total:48
+> > > [19:32:07] ok 1 - kasan
+> > > [19:32:07] ===================== [CRASHED] kasan ======================
+> > > [19:32:07] ============================================================
+> > > [19:32:07] Testing complete. Passed: 4, Failed: 0, Crashed: 38,
+> > > Skipped: 6, Errors: 0
+> > >
+> > > The in-kernel totals are correctly: 42 passed, 7 skipped, 0 failed. In
+> > > kunit_tool, only 4 tests are recorded as passed, and 38 are marked as
+> > > crashed.
+> > >
+> > >
+> > > > Change log from v6:
+> > > > https://lore.kernel.org/linux-kselftest/20211006170049.106852-1-dlatypov@google.com/
+> > > > - Rebase onto shuah/linux-kselftest/kunit
+> > > > - fix one new unit test failure (s/suites/test.subtests)
+> > > >
+> > > > Change log from v5:
+> > > > https://lore.kernel.org/linux-kselftest/20211006001447.20919-1-dlatypov@google.com/
+> > > > - Tweak commit message to reflect the KTAP spec is a draft
+> > > > - Add missing Signed-off-by
+> > > > - Tweak docstrings
+> > > >
+> > > > Change log from v3,4:
+> > > > https://lore.kernel.org/linux-kselftest/20210901190623.315736-1-rmoar@google.com/
+> > > > - Move test_kselftest_nested from LinuxSourceTreeTest => KUnitParserTest.
+> > > > - Resolve conflict with hermetic testing patches.
+> > > >   - max_status is no longer defined, so we need to use the TestCounts
+> > > >     type now. And to keep --raw_output working, we need to set this to
+> > > >     SUCCESS to avoid the default assumption that the kernel crashed.
+> > > >
+> > > > Ignore v4, was accidentally based on v2.
+> > > >
+> > > > Change log from v2:
+> > > > https://lore.kernel.org/linux-kselftest/20210826195505.3066755-1-rmoar@google.com/
+> > > > - Fixes bug of type disagreement in kunit_json.py for build_dir
+> > > > - Removes raw_output()
+> > > > - Changes docstrings in kunit_parser.py (class docstring, LineStream
+> > > >   docstrings, add_error(), total(), get_status(), all parsing methods)
+> > > > - Fixes bug of not printing diagnostic log in the case of end of lines
+> > > > - Sets default status of all tests to TEST_CRASHED
+> > > > - Adds and prints empty tests with crashed status in case of missing
+> > > >   tests
+> > > > - Prints 'subtest' in instance of 1 subtest instead of 'subtests'
+> > > > - Includes checking for 'BUG:' message in search of crash messages in
+> > > >   log (note that parse_crash_in_log method could be removed but would
+> > > >   require deleting tests in kunit_tool_test.py that include the crash
+> > > >   message that is no longer used. If removed, parser would still print
+> > > >   log in cases of test crashed or failure, which would now include
+> > > >   missing subtests)
+> > >
+> > > So this causes problems with the KASAN tests, because they include
+> > > KASAN errors in the log (which are expected), and these messages do
+> > > contain "BUG:".
+> > > Even though the KASAN integration code then marks the test as success,
+> > > and it shows up as "ok" in the KTAP output, kunit_tool now marks it as
+> > > crashed.
+> > >
+> > > There are two obvious solutions to this:
+> > > - Update KASAN to not include "BUG" in the message for KASAN failures
+> > > which are expected.
+> > > - Alter this patch to not mark tests as crashed just because they have
+> > > "BUG" in their logs.
+> > >
+> > > (There are also more complicated solutions, like having a "failure
+> > > expected" message added to the log, and only ignoring "BUG:" if that
+> > > exists in kunit_tool, but that seems needlessly complicated.)
+> > >
+> > > I feel that, in the short term, we should revert this change, and not
+> > > treat "BUG:" specially. We can add it back in as a separate patch if
+> > > we want to fix this issue differently.
+> >
+> > Will do.
+> >
+> > I also found another bug relating to test status counting.
+> >
+> > If there's NO_TESTS, add_status() will increment the counts.passed field.
+> > This means if you get
+> >
+> > $ ./tools/testing/kunit/kunit.py exec 'nomatch'
+> > [10:13:34] Starting KUnit Kernel (1/1)...
+> > [10:13:34] ============================================================
+> > [10:13:37] [ERROR] Test main: 0 tests run!
+> > [10:13:37] ============================================================
+> > [10:13:37] Testing complete. Passed: 1, Failed: 0, Crashed: 0,
+> > Skipped: 0, Errors: 1
+> > <exit with status code 0>
+> >
+>
+> I think something like this resolves those two issues.
+> I'm just not sure what the intent behind the SUCCESS or NO_TESTS checks was.
 
-Thanks for fixing this. You can always ask that person who introduce bug
-will fix it.
+Sent out a v8 for both of these.
+Slightly tweaked the diff below to make "NO_TESTS" print out in yellow, not red.
 
-> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+https://lore.kernel.org/linux-kselftest/20211011215037.1629208-1-dlatypov@google.com
 
-Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
-
-> ---
-> v2:
->   Changed fix - now we free memory instead of restoring pointer to memory.
->   Added context how we allocate and free memory.
->   Many commits affected, so no fixes tag.
-
-Many commit affected, but fixed tag is the first one which introduce it.
-This case: 
-
-Fixes: 610f8f5a7baf ("fs/ntfs3: Use new api for mounting")
-
-This will help backporting fixes to stable branches.
-
-> 
->  fs/ntfs3/super.c | 90 ++++++++++++++++++++++++++++++------------------
->  1 file changed, 56 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-> index 705d8b4f4894..d41d76979e12 100644
-> --- a/fs/ntfs3/super.c
-> +++ b/fs/ntfs3/super.c
-> @@ -908,7 +908,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	if (IS_ERR(sbi->options->nls)) {
->  		sbi->options->nls = NULL;
->  		errorf(fc, "Cannot load nls %s", sbi->options->nls_name);
-> -		return -EINVAL;
-> +		err = -EINVAL;
-> +		goto out;
->  	}
->  
->  	rq = bdev_get_queue(bdev);
-> @@ -922,7 +923,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	err = ntfs_init_from_boot(sb, rq ? queue_logical_block_size(rq) : 512,
->  				  bdev->bd_inode->i_size);
->  	if (err)
-> -		return err;
-> +		goto out;
->  
->  	/*
->  	 * Load $Volume. This should be done before $LogFile
-> @@ -933,7 +934,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_VOLUME);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $Volume.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	ni = ntfs_i(inode);
-> @@ -954,19 +956,19 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	} else {
->  		/* Should we break mounting here? */
->  		//err = -EINVAL;
-> -		//goto out;
-> +		//goto put_inode_out;
->  	}
->  
->  	attr = ni_find_attr(ni, attr, NULL, ATTR_VOL_INFO, NULL, 0, NULL, NULL);
->  	if (!attr || is_attr_ext(attr)) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  
->  	info = resident_data_ex(attr, SIZEOF_ATTRIBUTE_VOLUME_INFO);
->  	if (!info) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  
->  	sbi->volume.major_ver = info->major_ver;
-> @@ -980,7 +982,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_MIRROR);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $MFTMirr.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	sbi->mft.recs_mirr =
-> @@ -994,14 +997,15 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_LOGFILE);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load \x24LogFile.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	ni = ntfs_i(inode);
->  
->  	err = ntfs_loadlog_and_replay(ni, sbi);
->  	if (err)
-> -		goto out;
-> +		goto put_inode_out;
->  
->  	iput(inode);
->  
-> @@ -1009,14 +1013,16 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  		if (!sb_rdonly(sb)) {
->  			ntfs_warn(sb,
->  				  "failed to replay log file. Can't mount rw!");
-> -			return -EINVAL;
-> +			err = -EINVAL;
-> +			goto out;
->  		}
->  	} else if (sbi->volume.flags & VOLUME_FLAG_DIRTY) {
->  		if (!sb_rdonly(sb) && !sbi->options->force) {
->  			ntfs_warn(
->  				sb,
->  				"volume is dirty and \"force\" flag is not set!");
-> -			return -EINVAL;
-> +			err = -EINVAL;
-> +			goto out;
->  		}
->  	}
->  
-> @@ -1027,7 +1033,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_MFT);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $MFT.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	ni = ntfs_i(inode);
-> @@ -1038,11 +1045,11 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  
->  	err = wnd_init(&sbi->mft.bitmap, sb, tt);
->  	if (err)
-> -		goto out;
-> +		goto put_inode_out;
->  
->  	err = ni_load_all_mi(ni);
->  	if (err)
-> -		goto out;
-> +		goto put_inode_out;
->  
->  	sbi->mft.ni = ni;
->  
-> @@ -1052,7 +1059,8 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_BADCLUS);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $BadClus.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	ni = ntfs_i(inode);
-> @@ -1075,13 +1083,14 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_BITMAP);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $Bitmap.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  #ifndef CONFIG_NTFS3_64BIT_CLUSTER
->  	if (inode->i_size >> 32) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  #endif
->  
-> @@ -1089,21 +1098,21 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	tt = sbi->used.bitmap.nbits;
->  	if (inode->i_size < bitmap_size(tt)) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  
->  	/* Not necessary. */
->  	sbi->used.bitmap.set_tail = true;
->  	err = wnd_init(&sbi->used.bitmap, sb, tt);
->  	if (err)
-> -		goto out;
-> +		goto put_inode_out;
->  
->  	iput(inode);
->  
->  	/* Compute the MFT zone. */
->  	err = ntfs_refresh_zone(sbi);
->  	if (err)
-> -		return err;
-> +		goto out;
->  
->  	/* Load $AttrDef. */
->  	ref.low = cpu_to_le32(MFT_REC_ATTR);
-> @@ -1111,18 +1120,19 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_ATTRDEF);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $AttrDef -> %d", err);
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	if (inode->i_size < sizeof(struct ATTR_DEF_ENTRY)) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  	bytes = inode->i_size;
->  	sbi->def_table = t = kmalloc(bytes, GFP_NOFS);
->  	if (!t) {
->  		err = -ENOMEM;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  
->  	for (done = idx = 0; done < bytes; done += PAGE_SIZE, idx++) {
-> @@ -1131,7 +1141,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  
->  		if (IS_ERR(page)) {
->  			err = PTR_ERR(page);
-> -			goto out;
-> +			goto put_inode_out;
->  		}
->  		memcpy(Add2Ptr(t, done), page_address(page),
->  		       min(PAGE_SIZE, tail));
-> @@ -1139,7 +1149,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  
->  		if (!idx && ATTR_STD != t->type) {
->  			err = -EINVAL;
-> -			goto out;
-> +			goto put_inode_out;
->  		}
->  	}
->  
-> @@ -1173,12 +1183,13 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_UPCASE);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load $UpCase.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	if (inode->i_size != 0x10000 * sizeof(short)) {
->  		err = -EINVAL;
-> -		goto out;
-> +		goto put_inode_out;
->  	}
->  
->  	for (idx = 0; idx < (0x10000 * sizeof(short) >> PAGE_SHIFT); idx++) {
-> @@ -1188,7 +1199,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  
->  		if (IS_ERR(page)) {
->  			err = PTR_ERR(page);
-> -			goto out;
-> +			goto put_inode_out;
->  		}
->  
->  		src = page_address(page);
-> @@ -1214,7 +1225,7 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  		/* Load $Secure. */
->  		err = ntfs_security_init(sbi);
->  		if (err)
-> -			return err;
-> +			goto out;
->  
->  		/* Load $Extend. */
->  		err = ntfs_extend_init(sbi);
-> @@ -1239,19 +1250,30 @@ static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
->  	inode = ntfs_iget5(sb, &ref, &NAME_ROOT);
->  	if (IS_ERR(inode)) {
->  		ntfs_err(sb, "Failed to load root.");
-> -		return PTR_ERR(inode);
-> +		err = PTR_ERR(inode);
-> +		goto out;
->  	}
->  
->  	sb->s_root = d_make_root(inode);
-> -	if (!sb->s_root)
-> -		return -ENOMEM;
-> +	if (!sb->s_root) {
-> +		err = -ENOMEM;
-> +		goto put_inode_out;
-> +	}
->  
->  	fc->fs_private = NULL;
-> -	fc->s_fs_info = NULL;
->  
->  	return 0;
-> -out:
-> +
-> +put_inode_out:
->  	iput(inode);
-> +out:
-> +	/*
-> +	 * Free resources here.
-> +	 * ntfs_fs_free will be called with fc->s_fs_info = NULL
-> +	 */
-> +	put_ntfs(sbi);
-> +	sb->s_fs_info = NULL;
-> +
->  	return err;
->  }
->  
-> -- 
-> 2.33.0
-> 
+>
+> diff --git a/tools/testing/kunit/kunit_parser.py
+> b/tools/testing/kunit/kunit_parser.py
+> index f01fd565f978..bd3e859bc4e5 100644
+> --- a/tools/testing/kunit/kunit_parser.py
+> +++ b/tools/testing/kunit/kunit_parser.py
+> @@ -156,17 +156,13 @@ class TestCounts:
+>                 Parameters:
+>                 status - status to be added to the TestCounts object
+>                 """
+> -               if status == TestStatus.SUCCESS or \
+> -                               status == TestStatus.NO_TESTS:
+> -                       # if status is NO_TESTS the most appropriate
+> -                       # attribute to increment is passed because
+> -                       # the test did not fail, crash or get skipped.
+> +               if status == TestStatus.SUCCESS:
+>                         self.passed += 1
+>                 elif status == TestStatus.FAILURE:
+>                         self.failed += 1
+>                 elif status == TestStatus.SKIPPED:
+>                         self.skipped += 1
+> -               else:
+> +               elif status != TestStatus.NO_TESTS:
+>                         self.crashed += 1
+>
+>  class LineStream:
+> @@ -475,8 +471,7 @@ def parse_diagnostic(lines: LineStream) -> List[str]:
+>                 log.append(lines.pop())
+>         return log
+>
+> -DIAGNOSTIC_CRASH_MESSAGE = re.compile(
+> -               r'^(BUG:|# .*?: kunit test case crashed!$)')
+> +DIAGNOSTIC_CRASH_MESSAGE = re.compile(r'^# .*?: kunit test case crashed!$')
+>
+>  def parse_crash_in_log(test: Test) -> bool:
+>         """
+> @@ -642,8 +637,7 @@ def print_summary_line(test: Test) -> None:
+>
+>         test - Test object representing current test being printed
+>         """
+> -       if test.status == TestStatus.SUCCESS or \
+> -                       test.status == TestStatus.NO_TESTS:
+> +       if test.status == TestStatus.SUCCESS:
+>                 color = green
+>         elif test.status == TestStatus.SKIPPED:
+>                 color = yellow
