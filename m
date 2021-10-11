@@ -2,707 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42E1428586
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF8AD428588
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhJKDUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:20:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43897 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233274AbhJKDUt (ORCPT
+        id S233849AbhJKDVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:21:00 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28911 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233851AbhJKDU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:20:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633922329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RrmCOWUNFhBpmieo2mW/jV26ouiX7jrbtd5i756UNCw=;
-        b=O7Dp6d7Web0m0QI7hDQ106z3utZHPHH+j6B+XOpLLmO2CWzIeLMlefG9ixNmoURYB3ZQgQ
-        /lDckUuJLVVko2ldijj9alqYkw6vNYOyYtcdu29AiWqNQcxAdNZ8/rSzL1tuPC/9qg30yg
-        Vhd/Y18r4PnZhIf21Jz/OHmMpMeDuLA=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-3NeCvveJOLiodzVDpHZibw-1; Sun, 10 Oct 2021 23:18:48 -0400
-X-MC-Unique: 3NeCvveJOLiodzVDpHZibw-1
-Received: by mail-pg1-f199.google.com with SMTP id i14-20020a63d44e000000b002955652e9deso6198990pgj.16
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:18:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=RrmCOWUNFhBpmieo2mW/jV26ouiX7jrbtd5i756UNCw=;
-        b=7KyI+4accHYROU+IU19+C537AHQIFhSCzcx+AEqZaHEIqzVge2JE24knveuR1qa3Kp
-         eBxrlBwhuYruAW+A+E9HGualo6PWPe55FgIY9ccBk4QRQX4q238hlhuBJdRg82gH9JSH
-         5SxGn4bxTTsH+nW69DswHa7dGitzJKC7VyGmyKJE9xGdgOaPy9Xgutj0H/ZWYcauOQVC
-         kVMi7V9G2sUVr7LBs4fDfVBsFiHCnBatahgPnXDBE9vAtGmbr6c2i11go4OICunFkG9C
-         g/Fa+u4EAAQ7Tp5wXCFBKHj6fczVQpiu5eVjufUKG0ZOtPeKar7BnGs24931tK5q1hu/
-         oEOw==
-X-Gm-Message-State: AOAM5311AN08ZCMsdB+xTy3oYvh5BFnSwE8EA7V5REwT0yoNbbnuopu9
-        92N+oIXaI7jWxQjaverNoeoEtqNAfjLpKhtP2DQEzTMoHKERPMLpgCnBJ7/+NXDZSh0ePTjvY4g
-        SlMwtAAIH/NeDBjiC2qhmOl1y
-X-Received: by 2002:a65:47cd:: with SMTP id f13mr16296395pgs.439.1633922326546;
-        Sun, 10 Oct 2021 20:18:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzF685edzKUD50yLSUADLjG3Ltj9JLirw1QXP6+S4L2ANPSfQSoy6gv+WGA4ouO3YIkWnghA==
-X-Received: by 2002:a65:47cd:: with SMTP id f13mr16296375pgs.439.1633922326167;
-        Sun, 10 Oct 2021 20:18:46 -0700 (PDT)
-Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id l18sm5855225pfu.202.2021.10.10.20.18.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 20:18:45 -0700 (PDT)
-Subject: Re: [PATCH v4 7/7] eni_vdpa: add vDPA driver for Alibaba ENI
-To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, mst@redhat.com
-Cc:     wei.yang1@linux.alibaba.com
-References: <cover.1632313398.git.wuzongyong@linux.alibaba.com>
- <cover.1632882380.git.wuzongyong@linux.alibaba.com>
- <68d4ffac2ed9c21f352c272efbdf21e567d7d48e.1632882380.git.wuzongyong@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7872513b-6cf5-704e-8807-43dc7b563d96@redhat.com>
-Date:   Mon, 11 Oct 2021 11:18:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        Sun, 10 Oct 2021 23:20:58 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSP6H1bpKzbn0h;
+        Mon, 11 Oct 2021 11:14:31 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 11:18:57 +0800
+Received: from [10.174.176.245] (10.174.176.245) by
+ kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 11:18:56 +0800
+Subject: Re: [PATCH] static_call: fix null-ptr-deref in static_call_del_module
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     <jpoimboe@redhat.com>, <jbaron@akamai.com>, <rostedt@goodmis.org>,
+        <ardb@kernel.org>, <mingo@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20211009074428.1668662-1-wanghai38@huawei.com>
+ <20211009100037.GU174703@worktop.programming.kicks-ass.net>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <eb197332-5a33-49a9-85f3-e95a745c6de9@huawei.com>
+Date:   Mon, 11 Oct 2021 11:18:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <68d4ffac2ed9c21f352c272efbdf21e567d7d48e.1632882380.git.wuzongyong@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+In-Reply-To: <20211009100037.GU174703@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-�� 2021/9/29 ����2:11, Wu Zongyong д��:
-> This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
-> Interface) which is build upon virtio 0.9.5 specification.
-> And this driver doesn't support to run on BE host.
+在 2021/10/9 18:00, Peter Zijlstra 写道:
+> On Sat, Oct 09, 2021 at 03:44:28PM +0800, Wang Hai wrote:
+>> I got a NULL pointer dereference report when doing fault injection test:
+>>
+>> BUG: kernel NULL pointer dereference, address: 0000000000000009
+>> ...
+>> RIP: 0010:static_call_del_module+0x7a/0x100
+>> ...
+>> Call Trace:
+>>   static_call_module_notify+0x1e1/0x200
+>>   notifier_call_chain_robust+0x6f/0xe0
+>>   blocking_notifier_call_chain_robust+0x4e/0x70
+>>   load_module+0x21f7/0x2b60
+>>   __do_sys_finit_module+0xb0/0xf0
+>>   ? __do_sys_finit_module+0xb0/0xf0
+>>   __x64_sys_finit_module+0x1a/0x20
+>>   do_syscall_64+0x34/0xb0
+>>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>
+>> When loading a module, if it fails to allocate memory for static
+>> calls, it will delete the non-existent mods (mods == 1) in the
+>> static_call_module_notify()'s error path.
+>>
+>> static_call_module_notify
+>> 	static_call_add_module
+>> 		__static_call_init
+>> 			site_mod = kzalloc() // fault injection
+>> 	static_call_del_module // access non-existent mods
+>>
+>> This patch fixes the bug by skipping the operation when the key
+>> has no mods.
+>>
+>> Fixes: a945c8345ec0 ("static_call: Allow early init")
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> ---
+>>   kernel/static_call.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/static_call.c b/kernel/static_call.c
+>> index 43ba0b1e0edb..c3f8ffc5a52f 100644
+>> --- a/kernel/static_call.c
+>> +++ b/kernel/static_call.c
+>> @@ -400,7 +400,7 @@ static void static_call_del_module(struct module *mod)
+>>   
+>>   	for (site = start; site < stop; site++) {
+>>   		key = static_call_key(site);
+>> -		if (key == prev_key)
+>> +		if (key == prev_key || !static_call_key_has_mods(key))
+>>   			continue;
+>>   
+>>   		prev_key = key;
+> Should you not update prev_key in that case? Also have you looked at
+> jump_label_del_module() which is very similar in construction?
+> .
+Thanks for your guidance, as with jump_label_del_module(),
+the prev_key needs to be updated, can it be fixed like this?
 
+--- a/kernel/static_call.c
++++ b/kernel/static_call.c
+@@ -404,9 +404,9 @@ static void static_call_del_module(struct module *mod)
+                         continue;
 
-If this is true, I think it's still better to exclude this driver via 
-Kconfig.
+                 prev_key = key;
++               site_mod = static_call_key_next(key);
 
+-               for (prev = &key->mods, site_mod = key->mods;
+-                    site_mod && site_mod->mod != mod;
++               for (prev = &key->mods; site_mod && site_mod->mod != mod;
+                      prev = &site_mod->next, site_mod = site_mod->next)
+                         ;
 
->
-> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> ---
->   drivers/vdpa/Kconfig            |   8 +
->   drivers/vdpa/Makefile           |   1 +
->   drivers/vdpa/alibaba/Makefile   |   3 +
->   drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
->   4 files changed, 565 insertions(+)
->   create mode 100644 drivers/vdpa/alibaba/Makefile
->   create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
->
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index 3d91982d8371..9587b9177b05 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -78,4 +78,12 @@ config VP_VDPA
->   	help
->   	  This kernel module bridges virtio PCI device to vDPA bus.
->   
-> +config ALIBABA_ENI_VDPA
-> +	tristate "vDPA driver for Alibaba ENI"
-> +	select VIRTIO_PCI_LEGACY_LIB
-> +	depends on PCI_MSI
-> +	help
-> +	  VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
-> +	  virtio 0.9.5 specification.
-> +
->   endif # VDPA
-> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
-> index f02ebed33f19..15665563a7f4 100644
-> --- a/drivers/vdpa/Makefile
-> +++ b/drivers/vdpa/Makefile
-> @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
->   obj-$(CONFIG_IFCVF)    += ifcvf/
->   obj-$(CONFIG_MLX5_VDPA) += mlx5/
->   obj-$(CONFIG_VP_VDPA)    += virtio_pci/
-> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
-> diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
-> new file mode 100644
-> index 000000000000..ef4aae69f87a
-> --- /dev/null
-> +++ b/drivers/vdpa/alibaba/Makefile
-> @@ -0,0 +1,3 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
-> +
-> diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
-> new file mode 100644
-> index 000000000000..6a09f157d810
-> --- /dev/null
-> +++ b/drivers/vdpa/alibaba/eni_vdpa.c
-> @@ -0,0 +1,553 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
-> + *
-> + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
-> + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
-> + *
-> + */
-> +
-> +#include "linux/bits.h"
-> +#include <linux/interrupt.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/vdpa.h>
-> +#include <linux/virtio.h>
-> +#include <linux/virtio_config.h>
-> +#include <linux/virtio_ring.h>
-> +#include <linux/virtio_pci.h>
-> +#include <linux/virtio_pci_legacy.h>
-> +#include <uapi/linux/virtio_net.h>
-> +
-> +#define ENI_MSIX_NAME_SIZE 256
-> +
-> +#define ENI_ERR(pdev, fmt, ...)	\
-> +	dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> +#define ENI_DBG(pdev, fmt, ...)	\
-> +	dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> +#define ENI_INFO(pdev, fmt, ...) \
-> +	dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
-> +
-> +struct eni_vring {
-> +	void __iomem *notify;
-> +	char msix_name[ENI_MSIX_NAME_SIZE];
-> +	struct vdpa_callback cb;
-> +	int irq;
-> +};
-> +
-> +struct eni_vdpa {
-> +	struct vdpa_device vdpa;
-> +	struct virtio_pci_legacy_device ldev;
-> +	struct eni_vring *vring;
-> +	struct vdpa_callback config_cb;
-> +	char msix_name[ENI_MSIX_NAME_SIZE];
-> +	int config_irq;
-> +	int queues;
-> +	int vectors;
-> +};
-> +
-> +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
-> +{
-> +	return container_of(vdpa, struct eni_vdpa, vdpa);
-> +}
-> +
-> +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +
-> +	return &eni_vdpa->ldev;
-> +}
-> +
-> +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +	u64 features = vp_legacy_get_features(ldev);
-> +
-> +	features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
-> +	features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
-
-
-VERSION_1 is also needed?
-
-
-> +
-> +	return features;
-> +}
-> +
-> +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
-> +		ENI_ERR(ldev->pci_dev,
-> +			"VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
-> +		return -EINVAL;
-
-
-Do we need to make sure FEATURE_OK is not set in this case or the ENI 
-can do this for us?
-
-Other looks good.
-
-Thanks
-
-
-> +	}
-> +
-> +	vp_legacy_set_features(ldev, (u32)features);
-> +
-> +	return 0;
-> +}
-> +
-> +static u8 eni_vdpa_get_status(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return vp_legacy_get_status(ldev);
-> +}
-> +
-> +static int eni_vdpa_get_vq_irq(struct vdpa_device *vdpa, u16 idx)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +	int irq = eni_vdpa->vring[idx].irq;
-> +
-> +	if (irq == VIRTIO_MSI_NO_VECTOR)
-> +		return -EINVAL;
-> +
-> +	return irq;
-> +}
-> +
-> +static void eni_vdpa_free_irq(struct eni_vdpa *eni_vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	struct pci_dev *pdev = ldev->pci_dev;
-> +	int i;
-> +
-> +	for (i = 0; i < eni_vdpa->queues; i++) {
-> +		if (eni_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
-> +			vp_legacy_queue_vector(ldev, i, VIRTIO_MSI_NO_VECTOR);
-> +			devm_free_irq(&pdev->dev, eni_vdpa->vring[i].irq,
-> +				      &eni_vdpa->vring[i]);
-> +			eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-> +		}
-> +	}
-> +
-> +	if (eni_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
-> +		vp_legacy_config_vector(ldev, VIRTIO_MSI_NO_VECTOR);
-> +		devm_free_irq(&pdev->dev, eni_vdpa->config_irq, eni_vdpa);
-> +		eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-> +	}
-> +
-> +	if (eni_vdpa->vectors) {
-> +		pci_free_irq_vectors(pdev);
-> +		eni_vdpa->vectors = 0;
-> +	}
-> +}
-> +
-> +static irqreturn_t eni_vdpa_vq_handler(int irq, void *arg)
-> +{
-> +	struct eni_vring *vring = arg;
-> +
-> +	if (vring->cb.callback)
-> +		return vring->cb.callback(vring->cb.private);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static irqreturn_t eni_vdpa_config_handler(int irq, void *arg)
-> +{
-> +	struct eni_vdpa *eni_vdpa = arg;
-> +
-> +	if (eni_vdpa->config_cb.callback)
-> +		return eni_vdpa->config_cb.callback(eni_vdpa->config_cb.private);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int eni_vdpa_request_irq(struct eni_vdpa *eni_vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	struct pci_dev *pdev = ldev->pci_dev;
-> +	int i, ret, irq;
-> +	int queues = eni_vdpa->queues;
-> +	int vectors = queues + 1;
-> +
-> +	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
-> +	if (ret != vectors) {
-> +		ENI_ERR(pdev,
-> +			"failed to allocate irq vectors want %d but %d\n",
-> +			vectors, ret);
-> +		return ret;
-> +	}
-> +
-> +	eni_vdpa->vectors = vectors;
-> +
-> +	for (i = 0; i < queues; i++) {
-> +		snprintf(eni_vdpa->vring[i].msix_name, ENI_MSIX_NAME_SIZE,
-> +			 "eni-vdpa[%s]-%d\n", pci_name(pdev), i);
-> +		irq = pci_irq_vector(pdev, i);
-> +		ret = devm_request_irq(&pdev->dev, irq,
-> +				       eni_vdpa_vq_handler,
-> +				       0, eni_vdpa->vring[i].msix_name,
-> +				       &eni_vdpa->vring[i]);
-> +		if (ret) {
-> +			ENI_ERR(pdev, "failed to request irq for vq %d\n", i);
-> +			goto err;
-> +		}
-> +		vp_legacy_queue_vector(ldev, i, i);
-> +		eni_vdpa->vring[i].irq = irq;
-> +	}
-> +
-> +	snprintf(eni_vdpa->msix_name, ENI_MSIX_NAME_SIZE, "eni-vdpa[%s]-config\n",
-> +		 pci_name(pdev));
-> +	irq = pci_irq_vector(pdev, queues);
-> +	ret = devm_request_irq(&pdev->dev, irq, eni_vdpa_config_handler, 0,
-> +			       eni_vdpa->msix_name, eni_vdpa);
-> +	if (ret) {
-> +		ENI_ERR(pdev, "failed to request irq for config vq %d\n", i);
-> +		goto err;
-> +	}
-> +	vp_legacy_config_vector(ldev, queues);
-> +	eni_vdpa->config_irq = irq;
-> +
-> +	return 0;
-> +err:
-> +	eni_vdpa_free_irq(eni_vdpa);
-> +	return ret;
-> +}
-> +
-> +static void eni_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	u8 s = eni_vdpa_get_status(vdpa);
-> +
-> +	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
-> +	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
-> +		eni_vdpa_request_irq(eni_vdpa);
-> +	}
-> +
-> +	vp_legacy_set_status(ldev, status);
-> +
-> +	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
-> +	    (s & VIRTIO_CONFIG_S_DRIVER_OK))
-> +		eni_vdpa_free_irq(eni_vdpa);
-> +}
-> +
-> +static int eni_vdpa_reset(struct vdpa_device *vdpa)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	u8 s = eni_vdpa_get_status(vdpa);
-> +
-> +	vp_legacy_set_status(ldev, 0);
-> +
-> +	if (s & VIRTIO_CONFIG_S_DRIVER_OK)
-> +		eni_vdpa_free_irq(eni_vdpa);
-> +
-> +	return 0;
-> +}
-> +
-> +static u16 eni_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return vp_legacy_get_queue_size(ldev, 0);
-> +}
-> +
-> +static u16 eni_vdpa_get_vq_num_min(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return vp_legacy_get_queue_size(ldev, 0);
-> +}
-> +
-> +static int eni_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
-> +				struct vdpa_vq_state *state)
-> +{
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int eni_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
-> +				 const struct vdpa_vq_state *state)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +	const struct vdpa_vq_state_split *split = &state->split;
-> +
-> +	/* ENI is build upon virtio-pci specfication which not support
-> +	 * to set state of virtqueue. But if the state is equal to the
-> +	 * device initial state by chance, we can let it go.
-> +	 */
-> +	if (!vp_legacy_get_queue_enable(ldev, qid)
-> +	    && split->avail_index == 0)
-> +		return 0;
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +
-> +static void eni_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
-> +			       struct vdpa_callback *cb)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +
-> +	eni_vdpa->vring[qid].cb = *cb;
-> +}
-> +
-> +static void eni_vdpa_set_vq_ready(struct vdpa_device *vdpa, u16 qid,
-> +				  bool ready)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	/* ENI is a legacy virtio-pci device. This is not supported
-> +	 * by specification. But we can disable virtqueue by setting
-> +	 * address to 0.
-> +	 */
-> +	if (!ready)
-> +		vp_legacy_set_queue_address(ldev, qid, 0);
-> +}
-> +
-> +static bool eni_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return vp_legacy_get_queue_enable(ldev, qid);
-> +}
-> +
-> +static void eni_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
-> +			       u32 num)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +	struct pci_dev *pdev = ldev->pci_dev;
-> +	u16 n = vp_legacy_get_queue_size(ldev, qid);
-> +
-> +	/* ENI is a legacy virtio-pci device which not allow to change
-> +	 * virtqueue size. Just report a error if someone tries to
-> +	 * change it.
-> +	 */
-> +	if (num != n)
-> +		ENI_ERR(pdev,
-> +			"not support to set vq %u fixed num %u to %u\n",
-> +			qid, n, num);
-> +}
-> +
-> +static int eni_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
-> +				   u64 desc_area, u64 driver_area,
-> +				   u64 device_area)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +	u32 pfn = desc_area >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
-> +
-> +	vp_legacy_set_queue_address(ldev, qid, pfn);
-> +
-> +	return 0;
-> +}
-> +
-> +static void eni_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +
-> +	iowrite16(qid, eni_vdpa->vring[qid].notify);
-> +}
-> +
-> +static u32 eni_vdpa_get_device_id(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return ldev->id.device;
-> +}
-> +
-> +static u32 eni_vdpa_get_vendor_id(struct vdpa_device *vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
-> +
-> +	return ldev->id.vendor;
-> +}
-> +
-> +static u32 eni_vdpa_get_vq_align(struct vdpa_device *vdpa)
-> +{
-> +	return PAGE_SIZE;
-> +}
-> +
-> +static size_t eni_vdpa_get_config_size(struct vdpa_device *vdpa)
-> +{
-> +	return sizeof(struct virtio_net_config);
-> +}
-> +
-> +
-> +static void eni_vdpa_get_config(struct vdpa_device *vdpa,
-> +				unsigned int offset,
-> +				void *buf, unsigned int len)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	void __iomem *ioaddr = ldev->ioaddr +
-> +		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-> +		offset;
-> +	u8 *p = buf;
-> +	int i;
-> +
-> +	for (i = 0; i < len; i++)
-> +		*p++ = ioread8(ioaddr + i);
-> +}
-> +
-> +static void eni_vdpa_set_config(struct vdpa_device *vdpa,
-> +				unsigned int offset, const void *buf,
-> +				unsigned int len)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	void __iomem *ioaddr = ldev->ioaddr +
-> +		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
-> +		offset;
-> +	const u8 *p = buf;
-> +	int i;
-> +
-> +	for (i = 0; i < len; i++)
-> +		iowrite8(*p++, ioaddr + i);
-> +}
-> +
-> +static void eni_vdpa_set_config_cb(struct vdpa_device *vdpa,
-> +				   struct vdpa_callback *cb)
-> +{
-> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
-> +
-> +	eni_vdpa->config_cb = *cb;
-> +}
-> +
-> +static const struct vdpa_config_ops eni_vdpa_ops = {
-> +	.get_features	= eni_vdpa_get_features,
-> +	.set_features	= eni_vdpa_set_features,
-> +	.get_status	= eni_vdpa_get_status,
-> +	.set_status	= eni_vdpa_set_status,
-> +	.reset		= eni_vdpa_reset,
-> +	.get_vq_num_max	= eni_vdpa_get_vq_num_max,
-> +	.get_vq_num_min	= eni_vdpa_get_vq_num_min,
-> +	.get_vq_state	= eni_vdpa_get_vq_state,
-> +	.set_vq_state	= eni_vdpa_set_vq_state,
-> +	.set_vq_cb	= eni_vdpa_set_vq_cb,
-> +	.set_vq_ready	= eni_vdpa_set_vq_ready,
-> +	.get_vq_ready	= eni_vdpa_get_vq_ready,
-> +	.set_vq_num	= eni_vdpa_set_vq_num,
-> +	.set_vq_address	= eni_vdpa_set_vq_address,
-> +	.kick_vq	= eni_vdpa_kick_vq,
-> +	.get_device_id	= eni_vdpa_get_device_id,
-> +	.get_vendor_id	= eni_vdpa_get_vendor_id,
-> +	.get_vq_align	= eni_vdpa_get_vq_align,
-> +	.get_config_size = eni_vdpa_get_config_size,
-> +	.get_config	= eni_vdpa_get_config,
-> +	.set_config	= eni_vdpa_set_config,
-> +	.set_config_cb  = eni_vdpa_set_config_cb,
-> +	.get_vq_irq	= eni_vdpa_get_vq_irq,
-> +};
-> +
-> +
-> +static u16 eni_vdpa_get_num_queues(struct eni_vdpa *eni_vdpa)
-> +{
-> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
-> +	u32 features = vp_legacy_get_features(ldev);
-> +	u16 num = 2;
-> +
-> +	if (features & BIT_ULL(VIRTIO_NET_F_MQ)) {
-> +		__virtio16 max_virtqueue_pairs;
-> +
-> +		eni_vdpa_get_config(&eni_vdpa->vdpa,
-> +			offsetof(struct virtio_net_config, max_virtqueue_pairs),
-> +			&max_virtqueue_pairs,
-> +			sizeof(max_virtqueue_pairs));
-> +		num = 2 * __virtio16_to_cpu(virtio_legacy_is_little_endian(),
-> +				max_virtqueue_pairs);
-> +	}
-> +
-> +	if (features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
-> +		num += 1;
-> +
-> +	return num;
-> +}
-> +
-> +static void eni_vdpa_free_irq_vectors(void *data)
-> +{
-> +	pci_free_irq_vectors(data);
-> +}
-> +
-> +static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct eni_vdpa *eni_vdpa;
-> +	struct virtio_pci_legacy_device *ldev;
-> +	int ret, i;
-> +
-> +	ret = pcim_enable_device(pdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	eni_vdpa = vdpa_alloc_device(struct eni_vdpa, vdpa,
-> +				     dev, &eni_vdpa_ops, NULL, false);
-> +	if (IS_ERR(eni_vdpa)) {
-> +		ENI_ERR(pdev, "failed to allocate vDPA structure\n");
-> +		return PTR_ERR(eni_vdpa);
-> +	}
-> +
-> +	ldev = &eni_vdpa->ldev;
-> +	ldev->pci_dev = pdev;
-> +
-> +	ret = vp_legacy_probe(ldev);
-> +	if (ret) {
-> +		ENI_ERR(pdev, "failed to probe legacy PCI device\n");
-> +		goto err;
-> +	}
-> +
-> +	pci_set_master(pdev);
-> +	pci_set_drvdata(pdev, eni_vdpa);
-> +
-> +	eni_vdpa->vdpa.dma_dev = &pdev->dev;
-> +	eni_vdpa->queues = eni_vdpa_get_num_queues(eni_vdpa);
-> +
-> +	ret = devm_add_action_or_reset(dev, eni_vdpa_free_irq_vectors, pdev);
-> +	if (ret) {
-> +		ENI_ERR(pdev,
-> +			"failed for adding devres for freeing irq vectors\n");
-> +		goto err;
-> +	}
-> +
-> +	eni_vdpa->vring = devm_kcalloc(&pdev->dev, eni_vdpa->queues,
-> +				      sizeof(*eni_vdpa->vring),
-> +				      GFP_KERNEL);
-> +	if (!eni_vdpa->vring) {
-> +		ret = -ENOMEM;
-> +		ENI_ERR(pdev, "failed to allocate virtqueues\n");
-> +		goto err;
-> +	}
-> +
-> +	for (i = 0; i < eni_vdpa->queues; i++) {
-> +		eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
-> +		eni_vdpa->vring[i].notify = ldev->ioaddr + VIRTIO_PCI_QUEUE_NOTIFY;
-> +	}
-> +	eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
-> +
-> +	ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
-> +	if (ret) {
-> +		ENI_ERR(pdev, "failed to register to vdpa bus\n");
-> +		goto err;
-> +	}
-> +
-> +	return 0;
-> +
-> +err:
-> +	put_device(&eni_vdpa->vdpa.dev);
-> +	return ret;
-> +}
-> +
-> +static void eni_vdpa_remove(struct pci_dev *pdev)
-> +{
-> +	struct eni_vdpa *eni_vdpa = pci_get_drvdata(pdev);
-> +
-> +	vdpa_unregister_device(&eni_vdpa->vdpa);
-> +	vp_legacy_remove(&eni_vdpa->ldev);
-> +}
-> +
-> +static struct pci_device_id eni_pci_ids[] = {
-> +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET,
-> +			 VIRTIO_TRANS_ID_NET,
-> +			 PCI_SUBVENDOR_ID_REDHAT_QUMRANET,
-> +			 VIRTIO_ID_NET) },
-> +	{ 0 },
-> +};
-> +
-> +static struct pci_driver eni_vdpa_driver = {
-> +	.name		= "alibaba-eni-vdpa",
-> +	.id_table	= eni_pci_ids,
-> +	.probe		= eni_vdpa_probe,
-> +	.remove		= eni_vdpa_remove,
-> +};
-> +
-> +module_pci_driver(eni_vdpa_driver);
-> +
-> +MODULE_AUTHOR("Wu Zongyong <wuzongyong@linux.alibaba.com>");
-> +MODULE_DESCRIPTION("Alibaba ENI vDPA driver");
-> +MODULE_LICENSE("GPL v2");
+-- 
+Wang Hai
 
