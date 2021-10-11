@@ -2,178 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D616428935
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A38D428937
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235301AbhJKI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235163AbhJKI4U (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:56:20 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C5FC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:54:20 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d9so40987512edh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:54:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=bm3wXMJ4rfAFeHpv39wPQyGuIwFIJmid7Nqz8YDvf6o=;
-        b=TVRxYTOg9IKOYxMjmO5BVUckr++KoEUEpL954fJ9Q7NgyJXNDkssAFnXWfqVFzgKYf
-         DjxjEd7Ec6/4L395nQagHYjuFowEXREwc9rLmjwqvqgdMpPzuKUKu+cl+yRujtVoMXhb
-         T3Jhz4g71lBjVk5PNpSzj4t7kvkZOjoajD2YHimdniVsBaqlm0rKqBOsRg1+pFFCM3mu
-         IsrfY1bibm86Y8/XiDfxJnZXmwMl6iJnkvUlueUJZ8TOoxFnyqEevUDz9IPfscJ6gZi4
-         WgUnDVxnCrU4bI3id8zPxLFn4GUiUDTIDwyLrzhIP7ncYTJQuXkarYbidsKGVdBx/Fqv
-         LliQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=bm3wXMJ4rfAFeHpv39wPQyGuIwFIJmid7Nqz8YDvf6o=;
-        b=3Ix4QOHYYVcihETgbEFCTFzS8ItuORoDX3LUSuTywBcW3SBKPbUmQt7KcFuz5qqiC3
-         LPRpjqJKDkmIRG4JQFa9MJ53ZxYECL6tfWACuUJI4srrhdOvIbypikogQE3QWk6HIyHf
-         OIWWzg5ChcgLmADT6x+cZB0HWZpNR0+nQWzyAbvqP8CRWbhRLF0LY5APE7ZqnG3j1w6t
-         ZJ63KyH8kAtN9/OyM6l3eDCeL9R4VH86ICB0YfD6eBFludZ/4G5ZfuRhbJCU+446Nc/M
-         hKiImgR3EMciZN809hK2iXcJ+ECxuNdYZpbbUPei6QTtdZ1dwUhDQUtNY4VZLKJKVybj
-         C89w==
-X-Gm-Message-State: AOAM533W9VlrCCZE/a+VNYx9BOpeopniBWq1T5uW04cRydquWVGWU8AR
-        /m3nHizX40WvFiClexecjR0=
-X-Google-Smtp-Source: ABdhPJwoKQm0lAofAm+QORUkmLZV/tOjW5jc9AD61qOM7PvkhRw+HXESI56q0RrVqNH9qI8svNtOTg==
-X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr25119293ejc.276.1633942458632;
-        Mon, 11 Oct 2021 01:54:18 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-109-12.retail.telecomitalia.it. [79.43.109.12])
-        by smtp.gmail.com with ESMTPSA id h11sm3130942eji.96.2021.10.11.01.54.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 01:54:18 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        saurav.girepunje@gmail.com, insafonov@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     saurav.girepunje@hotmail.com
-Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return statement.
-Date:   Mon, 11 Oct 2021 10:54:11 +0200
-Message-ID: <2482197.HNbSr4JpUv@localhost.localdomain>
-In-Reply-To: <YWJ0vSrgsiKK7suE@user>
-References: <YWJ0vSrgsiKK7suE@user>
+        id S235330AbhJKI4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:56:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58322 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235163AbhJKI4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:56:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A0A860C4D;
+        Mon, 11 Oct 2021 08:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633942489;
+        bh=bj2txf9AE4jjelz1ZJ8/dxmmJOUi0mHFy5SCoK6LbZ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K7Zcgkcevx5U9RHY7xDKV8LyI2JNE6kZjPu3fS08b8EU1T2Ddc2h1G93KPI98+fUa
+         SGIRQtAPyjja/+rSmTvQcIaNcbaiBl+zDIsiZWzg6U6Kkca2Ks2nw8MSc7q1ei3/J5
+         FdBmvPrOtHqngVYHZFcCNFahjVPa7TN0IjzndCXghU2My5EPkX1WPyMJs7JuoLpwZ0
+         7v5cIQdJSUhnlIwmHrBVBU9EcHrx57kNI3gQT/EKKdKcy1SIU4VmqCIj835pfXA2YT
+         dTqt4/J1UGIcIFazr+LpsuMQW7c5skrjaQC/UG9evrzw8GnoyYiTc7QApj8tIeD77/
+         axFUWVA+Oimng==
+Date:   Mon, 11 Oct 2021 10:54:45 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "R.T.Dickinson" <rtd@a-eon.com>,
+        Matthew Leaman <matthew@a-eon.biz>,
+        Darren Stevens <darren@stevens-zone.net>
+Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
+Message-ID: <YWP71c8cXlE3PcIo@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Sven Peter <sven@svenpeter.dev>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>, Hector Martin <marcan@marcan.st>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "R.T.Dickinson" <rtd@a-eon.com>, Matthew Leaman <matthew@a-eon.biz>,
+        Darren Stevens <darren@stevens-zone.net>
+References: <20211008163532.75569-1-sven@svenpeter.dev>
+ <YWFqr4uQGlNgnT1z@ninjato>
+ <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
+ <11d8f784-c90a-4e6c-9abd-564cb5241cb7@www.fastmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="HXVZJbBqVEpobDP8"
+Content-Disposition: inline
+In-Reply-To: <11d8f784-c90a-4e6c-9abd-564cb5241cb7@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
-> Remove the unneeded and redundant check of variable on goto out.
-> Simplify the return using multiple goto label to avoid
-> unneeded check.
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
-> 
-> ChangeLog V2:
-> 	-Add goto out after the memcpy for no error case return with
-> 	 ret only. Free is not required on no error case.
 
-Please write versions logs that reflect clearly and unequivocally what you 
-changed between revisions and why. Subjects, Commit messages (Changelogs), 
-and Versions logs are the "specifics" of your work. There must be no 
-inconsistencies between these and the code or the history of the changes of 
-the code.
+--HXVZJbBqVEpobDP8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You may think that I'm pedantic, but since I acked your patch, I don't want 
-to be misunderstood to be a promoter of approximate or clearly incorrect 
-messages.
+> MAINTAINERS. It'll probably apply cleanly to 5.15-rc5 but if that happens again
 
-"Free is not required on no error case" conveys the message that you have 
-changed something that is not required but that is still potentially allowed.
+It doesn't because Linus' git doesn't have:
 
-This is not the case because the problem that you fix with v2 is _not_ 
-something that is merely not required and unnecessary. You have fixed a bug 
-that is introduced in v1. Introducing bugs is not allowed. If you do 
-something that is not allowed you cannot simply say that it is not required. 
+Documentation/devicetree/bindings/pci/apple,pcie.yaml
 
-> 
-> ChangeLog V1:
-> 	-Remove the unneeded and redundant check of variable on
-> 	 goto out.
-> 	-Simplify the return using multiple goto label to avoid
-> 	 unneeded check.
-> 
->  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
->  1 file changed, 10 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
-staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> index 0868f56e2979..ae9579dc0848 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
-*padapter, char *name, str
->  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
->  	if (!mon_wdev) {
->  		ret = -ENOMEM;
-> -		goto out;
-> +		goto err_zmalloc;
->  	}
-> 
->  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
-> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
-adapter *padapter, char *name, str
-> 
->  	ret = cfg80211_register_netdevice(mon_ndev);
->  	if (ret) {
-> -		goto out;
-> +		goto err_register;
->  	}
-> 
->  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
->  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
-> +	goto out;
-> 
-> -out:
-> -	if (ret && mon_wdev) {
-> -		kfree(mon_wdev);
-> -		mon_wdev = NULL;
-> -	}
-> -
-> -	if (ret && mon_ndev) {
-> -		free_netdev(mon_ndev);
-> -		*ndev = mon_ndev = NULL;
-> -	}
-> +err_register:
-> +	kfree(mon_wdev);
-> +	mon_wdev = NULL;
-
-Probably you have already read a message by Greg Kroah-Hartman that confirms 
-what I wrote in another message: "There is no need to set a local variable 
-like this to NULL.".
-
-So please submit a v3. With the two changes requested above, my "acked-by" 
-tag is confirmed again.
-
-Thanks,
-
-Fabio
-
-> 
-> +err_zmalloc:
-> +	free_netdev(mon_ndev);
-> +	*ndev = mon_ndev = NULL;
-> +out:
->  	return ret;
->  }
-> 
-> --
-> 2.32.0
-> 
-> 
-> 
+Because MAINTAINER dependencies can be a bit nasty, I suggest I drop the
+MAINTAINER additions for now and we add them later. Then, you can add
+the pasemi-core as well. D'accord?
 
 
+--HXVZJbBqVEpobDP8
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFj+9EACgkQFA3kzBSg
+Kbat0w//fw5VdmsRtV8ijZlTatoIS3foufsa+aQgccAyrnGA1gT1pQBIWtqFpZdk
+VKts/zB8J1JhUQvEL2CC1wxKhuuppahrsbQ3TqpraCWVom3EW7NduuwpZQIRTi3W
+JW8XHZGx8dfLgKb2NMMnPq8NlOMhDIpS7yvqTw+nlOyAePjZGuS6eR+LBARHsmZm
+IXwm/btIsWJlJGSETYdfDlwv7vqYPhx1tjKx+hvvbTjyNlpfntTrnUC8L6ZpY8Yi
+sfAjVIdaSa22sTbcpD/HdhBB2YAoVdW6IRwfYOBA9oxt5j4BQ4PEow+5evUzFcpz
+v3HyxBsateLXIUb92T9T7u8i9+45Ewow3XHJ3+7+tpVC8nh+/LoTt7dOKR746r+e
+Q2EkG5O3gqtstFONNEmZ+431Jdk8om4ZpmcivcNFGJMlddAWE612AFOA38SVKPWq
+Syirz+FfLYbOFSNcHGUqPKO/9kcbzsKI6b+sQq4OaLtjImeEBjMBJ0qzDrh6188u
+Etk/KKrtlI3aJXIrSnYpwXPfvJQsir0J0caB8CRp05U49xOkI91ktlMHz6R26fh+
+hGjwCStbslmzitohw7brY2M1huPu6n8DcWt5SwqyJywaMk7DTuWSMhEs4QTdcuCS
+im2loqk9hIpMmK49c0RbVz+WS2hGRUTA/Ab0enOebV30+Xkp3m4=
+=vgd9
+-----END PGP SIGNATURE-----
+
+--HXVZJbBqVEpobDP8--
