@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B249428A1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A081428A1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbhJKJt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:49:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43520 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235539AbhJKJt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B370260D07;
-        Mon, 11 Oct 2021 09:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633945648;
-        bh=vB/8tYwO/Zfs45j4rAaUI7XHZeBWjc49gNuQjGutcoU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=coJ5KbQZlymBO0G8Sbc6a5iqQnWrSlhnuEkEUvudOmeny2EN0Y/KeRxdBULIqHoGz
-         C9WqO/tQo9K+krtq4wexsUJWZU3HIl76U5tEb/AfQwUEe0TMHIRb1ZvoRTUOWFOxov
-         8pkMQ/pwhG2cA9JBkyJDfIY7RKM/JcXepvIr9LIOLmZMpeAIBP7H2sU55k/D1rrXb8
-         vnjC7LOj1lV1im+UCNGARZJ0j68QfL2G5f0ElsNQKtzEEGFE1goTagsQdKJRI1oB5B
-         EI+15FZAiZBHbL90r69f400MVcuIuiba8icA+wpf8B4yb4kabo44hPpz0goAyjnL6z
-         zLiXbUxQTcHvA==
-Date:   Mon, 11 Oct 2021 11:47:24 +0200
-From:   Lorenzo Bianconi <lorenzo@kernel.org>
-To:     Lars-Peter Clausen <lars@metafoo.de>
-Cc:     Teng Qi <starmiku1207184332@gmail.com>,
-        lorenzo.bianconi83@gmail.com, jic23@kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        islituo@gmail.com, baijiaju1990@gmail.com,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: Re: [PATCH] iio: imu: st_lsm6dsx: Fix an array overflow in
- st_lsm6dsx_set_odr()
-Message-ID: <YWQILPRHZw2BsAYu@lore-desk>
-References: <20211010091230.895549-1-starmiku1207184332@gmail.com>
- <8efeaffd-ae9a-d0ef-0222-6c94c0e31e7e@metafoo.de>
+        id S235636AbhJKJtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:49:45 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:34305 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235539AbhJKJto (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:49:44 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 2BA0A20016;
+        Mon, 11 Oct 2021 09:47:39 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 11:47:39 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+        a.zummo@towertech.it
+Subject: Re: [PATCH 2/2] rtc: class: return error code when cdev_device_add()
+ failed
+Message-ID: <YWQIOxX28VY552qC@piout.net>
+References: <20211011080302.1982894-1-yangyingliang@huawei.com>
+ <20211011080302.1982894-2-yangyingliang@huawei.com>
+ <YWP3f1wPbim8VG6K@piout.net>
+ <6fcea87c-b44a-2045-9644-dce4eb968c68@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gLTk5hY2TkhJnKDu"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8efeaffd-ae9a-d0ef-0222-6c94c0e31e7e@metafoo.de>
+In-Reply-To: <6fcea87c-b44a-2045-9644-dce4eb968c68@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---gLTk5hY2TkhJnKDu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-> On 10/10/21 11:12 AM, Teng Qi wrote:
-> > The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
-> > variable whose value is between 0 and 5.
-> > However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
-> >   switch (sensor->id) {
-> >=20
-> > If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
-> > function st_lsm6dsx_check_odr():
-> >    odr_table =3D &sensor->hw->settings->odr_table[sensor->id];
-> >=20
-> > and in function st_lsm6dsx_set_odr():
-> >    reg =3D &hw->settings->odr_table[ref_sensor->id].reg;
-> >=20
-> > To fix this possible array overflow, ref_sensor->id should be checked
-> > first. If it is greater than or equal to 2, the function
-> > st_lsm6dsx_set_odr() returns -EINVAL.
-> >=20
-> > Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> > Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
->=20
+On 11/10/2021 17:40:34+0800, Yang Yingliang wrote:
+> 
 > Hi,
->=20
-> Thanks for the patch, good catch. But there are a few things to improve
-> here, the goal should not be to silence the output of your checker, but to
-> write good code.
->=20
-> Let's start with ST_LSM6DSX_ID_MAX. As the name suggests this is an entry=
- at
-> the end of the enum that is used to get the size of the enum. But its val=
-ue
-> itself is never assigned to any variable of that type. This is a very com=
-mon
-> pattern. So strictly speaking there is no bug, since the out-of-range val=
-ue
-> of ST_LSM6DSX_ID_MAX is never used.
->=20
-> The other thing is that we usually don't want to hardcode range checks for
-> array sizes with integer literals, but rather use ARRAY_SIZE() instead. T=
-his
-> makes sure that the code stays correct when the array size changes.
->=20
-> If you really wanted to modify the code sot that your code checker does n=
-ot
-> detect a false positive I'd modify the switch statement to explicitly han=
-dle
-> ST_LSM6DSX_ID_GYRO and ST_LSM6DSX_ID_ACCEL and the return an error for the
-> default case with a comment that default case should never occur.
+> 
+> On 2021/10/11 16:36, Alexandre Belloni wrote:
+> > On 11/10/2021 16:03:02+0800, Yang Yingliang wrote:
+> > > I got a null-ptr-deref report when doing fault injection test:
+> > > 
+> > > general protection fault, probably for non-canonical address 0xdffffc0000000022: 0000 [#1] SMP KASAN PTI
+> > > KASAN: null-ptr-deref in range [0x0000000000000110-0x0000000000000117]
+> > > CPU: 1 PID: 1028 Comm: 33 Not tainted 5.15.0-rc3-00111-gf5dad42ed4fe-dirty #481 2a70b3e6ca240b8638beac7ef491cce6183bbec7
+> > > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
+> > > RIP: 0010:device_del+0x132/0xdc0
+> > > Code: 48 c1 ea 03 80 3c 02 00 0f 85 4f 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 7b 48 4d 8d a7 10 01 00 00 4c 89 e2 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 7f 0a 00 00 45 0f b6 b7 10 01 00 00
+> > > RSP: 0018:ffffc90002e876b8 EFLAGS: 00010206
+> > > RAX: dffffc0000000000 RBX: ffff88801eb84000 RCX: ffffffff97227644
+> > > RDX: 0000000000000022 RSI: ffff8880146a0000 RDI: 0000000000000002
+> > > RBP: ffff88801eb84120 R08: fffffbfff349a60d R09: fffffbfff349a60d
+> > > R10: ffffc90002e876b8 R11: fffffbfff349a60c R12: 0000000000000110
+> > > R13: 0000000000000001 R14: ffffc90002e87848 R15: 0000000000000000
+> > > FS:  00007fa514973500(0000) GS:ffff888104600000(0000) knlGS:0000000000000000
+> > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > CR2: 00007fa51474ccb0 CR3: 000000002bcb0001 CR4: 0000000000770ee0
+> > > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > PKRU: 55555554
+> > > Call Trace:
+> > >   ? write_comp_data+0x2a/0x90
+> > >   ? cleanup_glue_dir+0x260/0x260
+> > >   ? is_rtc_hctosys.isra.0+0xb9/0xf0
+> > >   ? rtc_proc_show+0x440/0x440
+> > >   ? rcu_read_lock_held_common+0xe/0xa0
+> > >   ? rcu_read_lock_sched_held+0x62/0xe0
+> > >   cdev_device_del+0x1a/0x80
+> > >   devm_rtc_unregister_device+0x37/0x80
+> > >   release_nodes+0xc3/0x3b0
+> > > 
+> > > If cdev_device_add() fails, 'dev->p' is not set, it causes
+> > > null-ptr-deref when calling cdev_device_del(), return error
+> > > code when cdev_device_add() failed to fix this.
+> > > 
+> > > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > > Fixes: 3068a254d5519 ("rtc: introduce new registration method")
+> > > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> > > ---
+> > >   drivers/rtc/class.c | 6 ++++--
+> > >   1 file changed, 4 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+> > > index 1f18c39a4b82..76422faee05b 100644
+> > > --- a/drivers/rtc/class.c
+> > > +++ b/drivers/rtc/class.c
+> > > @@ -399,12 +399,14 @@ int __devm_rtc_register_device(struct module *owner, struct rtc_device *rtc)
+> > >   	rtc_dev_prepare(rtc);
+> > >   	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
+> > > -	if (err)
+> > > +	if (err) {
+> > >   		dev_warn(rtc->dev.parent, "failed to add char device %d:%d\n",
+> > >   			 MAJOR(rtc->dev.devt), rtc->id);
+> > > -	else
+> > > +		return err;
+> > As the checkpatch warning indicates, registering the character device as
+> > always been optional. d5ed9177f64fe95d9de79e6504d41612d9127e8a is the
+> > commit you want to fix.
+> So we can keep doing rtc register, even if cdev_device_add() failed ?
+> 
 
-+1 :)
+Yes, this has always been the case.
 
-Regards,
-Lorenzo
 
->=20
-> - Lars
->=20
-> > ---
-> >   drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> >=20
-> > diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio=
-/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> > index db45f1fc0b81..edf5d33dd256 100644
-> > --- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> > +++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
-> > @@ -1308,6 +1308,10 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sen=
-sor, u32 req_odr)
-> >   		break;
-> >   	}
-> > +	if (ref_sensor->id >=3D 2) {
-> > +		return -EINVAL;
-> > +	}
-> > +
-> >   	if (req_odr > 0) {
-> >   		err =3D st_lsm6dsx_check_odr(ref_sensor, req_odr, &val);
-> >   		if (err < 0)
->=20
->=20
-
---gLTk5hY2TkhJnKDu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCYWQILAAKCRA6cBh0uS2t
-rB6iAQCIGK44O0mznjUHIz1nfCz74dh/KY7G2nH0FupurFNatwD7BaTRDpzoNjdX
-oV4e2lPCW+wy7PU1cXyPRA7hWIz/3AQ=
-=Vtt3
------END PGP SIGNATURE-----
-
---gLTk5hY2TkhJnKDu--
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
