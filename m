@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31406428D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E597428D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbhJKMo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbhJKMo5 (ORCPT
+        id S236705AbhJKMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:48:58 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:9054 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235034AbhJKMs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:44:57 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CACC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:42:57 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id w14so15536792edv.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aH+daMH8/JBhYD/VNld/K3vNCe4mWktvAcObPC4aWG4=;
-        b=xLAEEpeguQ0woOp63ioI84nC66mr/vNC4iM/XmaXMiR9QYFGYakzTcnCnaHK0Zc1e9
-         F6SVKNckvU9wm9BB5+GFFc5UNe+g/qDBgYlf7xCE6cKla83nQsT0yJy3JCE7ac6G9KJq
-         XADRbelRbMcY+njlJNQLn1PW7duC4Vj6rnp0iM7FWu9pPI//hOj0ra+tRNKgsOEbqqhL
-         vX6oQOe0/+oBUJhXHqiH+UYFE+t6drOSbO7orVfi6uwUrGSpthmNLpMq/WxwZbuqJA53
-         qKDIBq882XZzIobYK11lbxtPNhoujcK7bDUlmekVqSfHwHnN4AIswFT6iM2pJDUpoNgy
-         9sNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aH+daMH8/JBhYD/VNld/K3vNCe4mWktvAcObPC4aWG4=;
-        b=o3GmPjNdRQtxAC20UbQa+LE2esI2Hk0OiZrZv9KKmjIGIGKte0jxnaBLqJcRcO95uf
-         9A0u3dA82Yy1bmM/zbz13GmRbSv8hn7JRwkqTt6pQnHnxWh4LXSXUx7MkeZdH9haErI5
-         Qec7o9TAIV1I8duxkIuE7xDcT/dDjwBgvnEC59tMr69j/QWUOHD6i5Ot4jVoaqurgJh5
-         Tyots186Pot3BdIXg2ZNk0zk0otVUeIaGJzPT3R9490LRdwesF121xCyQIiJ4k5Wt0rk
-         eWjocLcqvS2eY3Ouef7/jH2vbnQ/4EQANxLWLHgybHv5Yb4WNzLt0rYhZRoARzQS5CpA
-         3H6Q==
-X-Gm-Message-State: AOAM532xl6nkXM/f6XXZQdui+pqGhAN4IMJW8Jp6xKrWcR3cej7RBtBZ
-        bVBVKbLea9fH1kHE0bUQv2MmvsrPgFRXRmUig6HKNQ==
-X-Google-Smtp-Source: ABdhPJykj6TCtLZRl69RScymhuL6xnVXERm419IM+Tqe+l6k+vL0tbI4Gbo/sD+X5hpP0r9q9iM2ImzMDT4aN+LSPZ4=
-X-Received: by 2002:a50:9993:: with SMTP id m19mr40386265edb.357.1633956175595;
- Mon, 11 Oct 2021 05:42:55 -0700 (PDT)
+        Mon, 11 Oct 2021 08:48:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633956417; x=1665492417;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jR4VLxh2n5xrvKbxAr/Rz+ZWsobmRxxPA6ztv3jzo5Y=;
+  b=HnjOgo44w8EECvo5yMzsnRxG6VeYlTp5BQp15Xa+9rXQ73lA3SydkxAZ
+   bu4TxdsSQydf8r+EjlBGli5OK0rFSruwmtrSDIJ/DlbOcvauh6U/MsqLP
+   Vvl85r+1OFeMhe8FWfFeKCheVQnEVm++jVQoH5uwY1W14cJGfeJToxxJi
+   f7hGyCAgV91QJ9WWA/gKTG59LQZnsYP34EdOhYK64f2fUm0zWvoqhrjBz
+   JRcvihDFzJMpA5/oDBAVKH/h7nnqOCHqVeBL00t9Dz7aoMYV7eYpc+bek
+   Atul/gFrjld4Iref5K1n7+z+XIohMQd7D+rL34L4ZQiTrVQyHeADmqCud
+   A==;
+IronPort-SDR: X42KZZDPyQaa+T8ATntHjJcZxHb52QJuGuGjbsyKrSRRFVNbBTdE3QGejyswvNRYX43DXglH5j
+ cM5PUXq2ceda7Svum7SfewApl+pA+C6w6ncQf8XGN3vdeM9Hs3g6eB+cE6kvXlkhoA276BBYCM
+ oAUjJPfrebXWIk9ZE9YitXJbc0NY2FQx2E5BYFUMpf86nwu0lCRQUlRpPumI+onWAIT1mygVb8
+ wH0YpHYNeSuKAytnc7B0DW+1uiUh4aDZ/ZE3fXz3fMFKPT71vXfyeDItVFOeasMtVAYiQVAhIF
+ EJAaaHtU97W1iYZBe1vBsbRc
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="72502423"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 05:46:56 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 11 Oct 2021 05:46:56 -0700
+Received: from ness.microchip.com (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2176.14 via Frontend
+ Transport; Mon, 11 Oct 2021 05:46:54 -0700
+From:   <nicolas.ferre@microchip.com>
+To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        <arm@kernel.org>, <soc@kernel.org>
+CC:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Kavyasree Kotagiri - I30978 
+        <Kavyasree.Kotagiri@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>
+Subject: [GIT PULL] ARM: at91: soc for 5.16
+Date:   Mon, 11 Oct 2021 14:46:50 +0200
+Message-ID: <20211011124650.17218-1-nicolas.ferre@microchip.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
-In-Reply-To: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 11 Oct 2021 18:12:44 +0530
-Message-ID: <CA+G9fYtD2EFu7-j1wPLCiu2yVpZb_wObXXXebKNSW5o4gh9vgA@mail.gmail.com>
-Subject: Re: mm/kasan/init.c:282:20: error: redefinition of 'kasan_populate_early_vm_area_shadow'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Organization: microchip
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Andrew Morton <akpm@linux-foundation.org>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-On Mon, 11 Oct 2021 at 17:08, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> Regression found on x86_64 gcc-11 built with KASAN enabled.
-> Following build warnings / errors reported on linux next 20211011.
->
-> metadata:
->     git_describe: next-20211011
->     git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
->     git_short_log: d3134eb5de85 (\"Add linux-next specific files for 20211011\")
->     target_arch: x86_64
->     toolchain: gcc-11
->
-> build error :
-> --------------
-> mm/kasan/init.c:282:20: error: redefinition of
-> 'kasan_populate_early_vm_area_shadow'
->   282 | void __init __weak kasan_populate_early_vm_area_shadow(void *start,
->       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> In file included from include/linux/mm.h:34,
->                  from include/linux/memblock.h:13,
->                  from mm/kasan/init.c:9:
-> include/linux/kasan.h:463:20: note: previous definition of
-> 'kasan_populate_early_vm_area_shadow' with type 'void(void *, long
-> unsigned int)'
->   463 | static inline void kasan_populate_early_vm_area_shadow(void *start,
->       |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> make[3]: *** [scripts/Makefile.build:288: mm/kasan/init.o] Error 1
-> make[3]: Target '__build' not remade because of errors.
->
->
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> build link:
-> -----------
-> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/build.log
->
-> build config:
-> -------------
-> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
->
-> # To install tuxmake on your system globally
-> # sudo pip3 install -U tuxmake
-> tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
-> --kconfig defconfig --kconfig-add
-> https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+Arnd, Olof,
+
+Here are the at91 soc changes for 5.16. We are really at the beginning for
+lan966 family with an ongoing activity in the clock sub-system, for instance.
+
+Thanks, best regards,
+  Nicolas
+
+The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+
+  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/at91/linux.git tags/at91-soc-5.16
+
+for you to fetch changes up to 3efc443121180c2acc987929b3b7b86ca83e3ee5:
+
+  ARM: at91: add basic support for new SoC family lan966 (2021-10-04 14:50:18 +0200)
+
+----------------------------------------------------------------
+AT91 SoC #1 for 5.16:
+
+- Documentation for sama7g5 and lan966 families
+- Kconfig entry for lan966 new SoC.
+
+----------------------------------------------------------------
+Kavyasree Kotagiri (3):
+      ARM: at91: Documentation: add lan966 family
+      dt-bindings: arm: at91: Document lan966 pcb8291 and pcb8290 boards
+      ARM: at91: add basic support for new SoC family lan966
+
+Nicolas Ferre (1):
+      ARM: at91: Documentation: add sama7g5 family
+
+ Documentation/arm/microchip.rst                      | 20 ++++++++++++++++++++
+ .../devicetree/bindings/arm/atmel-at91.yaml          | 12 ++++++++++++
+ arch/arm/mach-at91/Kconfig                           |  9 +++++++++
+ 3 files changed, 41 insertions(+)
+
+-- 
+Nicolas Ferre
