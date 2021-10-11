@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CE0428D9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C692B428DA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236841AbhJKNRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:17:08 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48686 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhJKNRH (ORCPT
+        id S236859AbhJKNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235196AbhJKNRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:17:07 -0400
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        Mon, 11 Oct 2021 09:17:24 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96466C061570;
+        Mon, 11 Oct 2021 06:15:24 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08bb00608dded251e09f1b.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:608d:ded2:51e0:9f1b])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AACA61F424D4;
-        Mon, 11 Oct 2021 14:15:06 +0100 (BST)
-Date:   Mon, 11 Oct 2021 15:15:01 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Sean Nyekjaer <sean@geanix.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mtd: mtdconcat: add suspend lock handling
-Message-ID: <20211011151501.48cc9289@collabora.com>
-In-Reply-To: <20211011115253.38497-4-sean@geanix.com>
-References: <20211011115253.38497-1-sean@geanix.com>
-        <20211011115253.38497-4-sean@geanix.com>
-Organization: Collabora
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 161DB1EC01B7;
+        Mon, 11 Oct 2021 15:15:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633958123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=jCMoAF/G6nShUACG0ht2kXTNSZwdTajCxjyuJX54Kmg=;
+        b=YYMwvqngYlD0Vfggl3CGG7j1wno7aGftVm86pVdEvkTAF2WXsZE2p2el+RlGwnWjVc0fby
+        GquYSnZklcwTHOg48URxTs3OP3g5iMplqm4VaBPmavEfPooaN4YjC5+G+/LTjCr6nO4Gqc
+        kGH+HsmjZ5ZCvNsQqE25noSASoHWfvA=
+Date:   Mon, 11 Oct 2021 15:15:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Venu Busireddy <venu.busireddy@oracle.com>
+Subject: Re: [PATCH v6 02/42] x86/sev: Shorten GHCB terminate macro names
+Message-ID: <YWQ4694RuZUY3TaU@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-3-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211008180453.462291-3-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 13:52:53 +0200
-Sean Nyekjaer <sean@geanix.com> wrote:
+On Fri, Oct 08, 2021 at 01:04:13PM -0500, Brijesh Singh wrote:
 
-> Use new suspend lock handling for this special case for concatenated
-> MTD devices.
-> 
-> Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+Yeah, let's add a trivial commit message here anyway:
+
+<-- "Shorten macro names for improved readability."
+
+> Reviewed-by: Venu Busireddy <venu.busireddy@oracle.com>
+> Suggested-by: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
 > ---
->  drivers/mtd/mtdconcat.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> index f685a581df48..c497c851481f 100644
-> --- a/drivers/mtd/mtdconcat.c
-> +++ b/drivers/mtd/mtdconcat.c
-> @@ -561,25 +561,32 @@ static void concat_sync(struct mtd_info *mtd)
->  
->  static int concat_suspend(struct mtd_info *mtd)
->  {
-> +	struct mtd_info *master = mtd_get_master(mtd);
->  	struct mtd_concat *concat = CONCAT(mtd);
->  	int i, rc = 0;
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		if ((rc = mtd_suspend(subdev)) < 0)
-> +
-> +		down_write(&master->master.suspend_lock);
-> +		if ((rc = __mtd_suspend(subdev)) < 0)
->  			return rc;
-> +		up_write(&master->master.suspend_lock);
->  	}
->  	return rc;
->  }
->  
->  static void concat_resume(struct mtd_info *mtd)
->  {
-> +	struct mtd_info *master = mtd_get_master(mtd);
->  	struct mtd_concat *concat = CONCAT(mtd);
->  	int i;
->  
->  	for (i = 0; i < concat->num_subdev; i++) {
->  		struct mtd_info *subdev = concat->subdev[i];
-> -		mtd_resume(subdev);
-> +		down_write(&master->master.suspend_lock);
-> +		__mtd_resume(subdev);
-> +		up_write(&master->master.suspend_lock);
->  	}
->  }
->  
+>  arch/x86/boot/compressed/sev.c    | 6 +++---
+>  arch/x86/include/asm/sev-common.h | 4 ++--
+>  arch/x86/kernel/sev-shared.c      | 2 +-
+>  arch/x86/kernel/sev.c             | 4 ++--
+>  4 files changed, 8 insertions(+), 8 deletions(-)
 
-Why do we need to implement the _suspend/_resume() hooks here? The
-underlying MTD devices should be suspended at some point (when the
-class ->suspend() method is called on those device), and there's
-nothing mtdconcat-specific to do here. Looks like implementing this
-suspend-all-subdevs loop results in calling mtd->_suspend()/_resume()
-twice, which is useless. The only issue I see is if the subdevices
-haven't been registered to the device model, but that happens, I
-believe we have bigger issues (those devices won't be suspended when
-mtdconcat is not used).
+...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
