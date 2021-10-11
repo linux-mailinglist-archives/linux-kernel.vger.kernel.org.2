@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228AB4288ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:36:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD8254288F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235183AbhJKIiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:38:23 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:40003 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235166AbhJKIiR (ORCPT
+        id S235169AbhJKIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:39:20 -0400
+Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:30335 "EHLO
+        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234885AbhJKIjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:38:17 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 42A83240018;
-        Mon, 11 Oct 2021 08:36:15 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 10:36:15 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        a.zummo@towertech.it
-Subject: Re: [PATCH 2/2] rtc: class: return error code when cdev_device_add()
- failed
-Message-ID: <YWP3f1wPbim8VG6K@piout.net>
-References: <20211011080302.1982894-1-yangyingliang@huawei.com>
- <20211011080302.1982894-2-yangyingliang@huawei.com>
+        Mon, 11 Oct 2021 04:39:16 -0400
+IronPort-SDR: U0VjdClWbSGtL1ulqKHnOxVlsXjCx8+fLEl3lakAdsdlmEYSJSB2PcCEuNHJk9+qSKiy4x/atV
+ O373nA8/Vk4G209ArQLurqdo3Ti96fGpsnxIse1myYoXuScHTqr2KXws1pTYY7Ew/LtBx3tkPo
+ ZdJA8kcEfqOpSmAAGwY3yP7VU7Qlv9WSeNPsqXe2jc7wJ1oTnO6Ozr/plqtiUO5OmfpAdhH625
+ tnDA+A/mZbQzG8EQHFRse6aupF2mRVu00jcUqpkI2amFEEU+n1wpsXGEucY5fO7JdFi/fgA1Pb
+ 5JN5FqvyU9ETt/OS3zoyHPuV
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="28062049"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624287600"; 
+   d="scan'208";a="28062049"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 11 Oct 2021 17:37:14 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+        by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id D892AE6800;
+        Mon, 11 Oct 2021 17:37:13 +0900 (JST)
+Received: from yto-om3.fujitsu.com (yto-om3.o.css.fujitsu.com [10.128.89.164])
+        by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 170AECA703;
+        Mon, 11 Oct 2021 17:37:13 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by yto-om3.fujitsu.com (Postfix) with ESMTP id F3F584005EA44;
+        Mon, 11 Oct 2021 17:37:12 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: [PATCH v3] libperf tests: Fix test_stat_cpu
+Date:   Mon, 11 Oct 2021 17:37:04 +0900
+Message-Id: <20211011083704.4108720-1-nakamura.shun@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011080302.1982894-2-yangyingliang@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 16:03:02+0800, Yang Yingliang wrote:
-> I got a null-ptr-deref report when doing fault injection test:
-> 
-> general protection fault, probably for non-canonical address 0xdffffc0000000022: 0000 [#1] SMP KASAN PTI
-> KASAN: null-ptr-deref in range [0x0000000000000110-0x0000000000000117]
-> CPU: 1 PID: 1028 Comm: 33 Not tainted 5.15.0-rc3-00111-gf5dad42ed4fe-dirty #481 2a70b3e6ca240b8638beac7ef491cce6183bbec7
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-> RIP: 0010:device_del+0x132/0xdc0
-> Code: 48 c1 ea 03 80 3c 02 00 0f 85 4f 0c 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 7b 48 4d 8d a7 10 01 00 00 4c 89 e2 48 c1 ea 03 <0f> b6 04 02 84 c0 74 06 0f 8e 7f 0a 00 00 45 0f b6 b7 10 01 00 00
-> RSP: 0018:ffffc90002e876b8 EFLAGS: 00010206
-> RAX: dffffc0000000000 RBX: ffff88801eb84000 RCX: ffffffff97227644
-> RDX: 0000000000000022 RSI: ffff8880146a0000 RDI: 0000000000000002
-> RBP: ffff88801eb84120 R08: fffffbfff349a60d R09: fffffbfff349a60d
-> R10: ffffc90002e876b8 R11: fffffbfff349a60c R12: 0000000000000110
-> R13: 0000000000000001 R14: ffffc90002e87848 R15: 0000000000000000
-> FS:  00007fa514973500(0000) GS:ffff888104600000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007fa51474ccb0 CR3: 000000002bcb0001 CR4: 0000000000770ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  ? write_comp_data+0x2a/0x90
->  ? cleanup_glue_dir+0x260/0x260
->  ? is_rtc_hctosys.isra.0+0xb9/0xf0
->  ? rtc_proc_show+0x440/0x440
->  ? rcu_read_lock_held_common+0xe/0xa0
->  ? rcu_read_lock_sched_held+0x62/0xe0
->  cdev_device_del+0x1a/0x80
->  devm_rtc_unregister_device+0x37/0x80
->  release_nodes+0xc3/0x3b0
-> 
-> If cdev_device_add() fails, 'dev->p' is not set, it causes
-> null-ptr-deref when calling cdev_device_del(), return error
-> code when cdev_device_add() failed to fix this.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: 3068a254d5519 ("rtc: introduce new registration method")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/rtc/class.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
-> index 1f18c39a4b82..76422faee05b 100644
-> --- a/drivers/rtc/class.c
-> +++ b/drivers/rtc/class.c
-> @@ -399,12 +399,14 @@ int __devm_rtc_register_device(struct module *owner, struct rtc_device *rtc)
->  	rtc_dev_prepare(rtc);
->  
->  	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
-> -	if (err)
-> +	if (err) {
->  		dev_warn(rtc->dev.parent, "failed to add char device %d:%d\n",
->  			 MAJOR(rtc->dev.devt), rtc->id);
-> -	else
-> +		return err;
+`cpu` of perf_evsel__read() must be specified the cpu index.
+perf_cpu_map__for_each_cpu is for iterating the cpu number (not index)
+and is not appropriate.
+So, if there is an offline CPU, the cpu number specified in the argument
+may point out of range because the cpu number and the cpu index are
+different.
 
-As the checkpatch warning indicates, registering the character device as
-always been optional. d5ed9177f64fe95d9de79e6504d41612d9127e8a is the
-commit you want to fix.
+Fix test_stat_cpu.
 
-> +	} else {
->  		dev_dbg(rtc->dev.parent, "char device (%d:%d)\n",
->  			MAJOR(rtc->dev.devt), rtc->id);
-> +	}
->  
->  	rtc_proc_add_device(rtc);
->  
-> -- 
-> 2.25.1
-> 
+Committer testing:
 
+  # make tests -C tools/lib/perf/
+  make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
+  running static:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  running dynamic:
+  - running tests/test-cpumap.c...OK
+  - running tests/test-threadmap.c...OK
+  - running tests/test-evlist.c...OK
+  - running tests/test-evsel.c...OK
+  make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_fix/tools/lib/perf'
+
+Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+---
+Previous version at:
+https://lore.kernel.org/lkml/20211006094817.477494-1-nakamura.shun@fujitsu.com/
+
+Changes in v3:
+  - Fix build error
+
+Changes in v2:
+  - Remove "2/2" from Patch Subject
+
+ tools/lib/perf/tests/test-evlist.c | 6 +++---
+ tools/lib/perf/tests/test-evsel.c  | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index c67c83399170..ce91a582f0e4 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -40,7 +40,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_TASK_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -70,10 +70,10 @@ static int test_stat_cpu(void)
+ 	perf_evlist__for_each_evsel(evlist, evsel) {
+ 		cpus = perf_evsel__cpus(evsel);
+ 
+-		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++		for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
+ 			struct perf_counts_values counts = { .val = 0 };
+ 
+-			perf_evsel__read(evsel, cpu, 0, &counts);
++			perf_evsel__read(evsel, idx, 0, &counts);
+ 			__T("failed to read value for evsel", counts.val != 0);
+ 		}
+ 	}
+diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+index 9abd4c0bf6db..33ae9334861a 100644
+--- a/tools/lib/perf/tests/test-evsel.c
++++ b/tools/lib/perf/tests/test-evsel.c
+@@ -22,7 +22,7 @@ static int test_stat_cpu(void)
+ 		.type	= PERF_TYPE_SOFTWARE,
+ 		.config	= PERF_COUNT_SW_CPU_CLOCK,
+ 	};
+-	int err, cpu, tmp;
++	int err, idx;
+ 
+ 	cpus = perf_cpu_map__new(NULL);
+ 	__T("failed to create cpus", cpus);
+@@ -33,10 +33,10 @@ static int test_stat_cpu(void)
+ 	err = perf_evsel__open(evsel, cpus, NULL);
+ 	__T("failed to open evsel", err == 0);
+ 
+-	perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {
++	for (idx = 0; idx < perf_cpu_map__nr(cpus); idx++) {
+ 		struct perf_counts_values counts = { .val = 0 };
+ 
+-		perf_evsel__read(evsel, cpu, 0, &counts);
++		perf_evsel__read(evsel, idx, 0, &counts);
+ 		__T("failed to read value for evsel", counts.val != 0);
+ 	}
+ 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.25.1
+
