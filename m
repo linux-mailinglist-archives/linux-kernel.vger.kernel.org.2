@@ -2,145 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111A74299A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1A74299A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235655AbhJKXNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        id S235674AbhJKXN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233420AbhJKXNG (ORCPT
+        with ESMTP id S235622AbhJKXN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:13:06 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C35DC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:11:05 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id g8so73627430edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:11:05 -0700 (PDT)
+        Mon, 11 Oct 2021 19:13:28 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D5C061570;
+        Mon, 11 Oct 2021 16:11:27 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id c7so17895228qka.2;
+        Mon, 11 Oct 2021 16:11:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h1aojVMiAC+dTJJ9CxG9nUezJ612JW4LOoadws/Wdgg=;
-        b=ibryuqSlxRvY3tcfhcqgvog5M3wbrRAapyw8XCWWSuXm8vG56eJfeVmy2Xbv4z/zZF
-         8pwYzCKKrrdVgveJzQeaCsghTrjV9hu5ZmSJw/V1tjPokRHPYnJWZtsathabPyNqFzvp
-         ESHhUWgDfmPsALNVSkGr/+18KBjVZbyQUSHD3IFzJccyCVaLrt+lPkvNk0F3vbRguonh
-         HGJpf5sRFAFTZjGWFFNnp3x/BmvQka0TlBfhM6FBuSZ3aCZmx4LDDx+WUPQ5mU42hbKq
-         G67TAms50uVImTBEpvs00E7JyuGMsYa7gPtrZ5+ethDTWjDBKPQamhJw707s8Sm1/1vk
-         +yQg==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6MEGfH0hL9/oeXXsdllzYyVOfG604h9YDXxJhS4oZDM=;
+        b=jo03eI7iVBVSZFo2Mys3hVqkELAk2ME9kTyxazmWWYFlzOWAqJxuAQT2cHYjC+9BiH
+         reU2umZpV3lzTZNGA3BMHolh5GxnvlyOFwgCj8v6LFCvWXmthGj0CQJUCYzTCo52tyXN
+         jRNpHJhsPIRPhQ5y6NpxBUbIhgQlkLcT2+bV5welOAm5G1eJ/7/5Olfgvhks9rcP9noZ
+         HYXoS8WjCg/o7+0CXSf60pkAH5XGfESciyko40S582Y1beV8osvK4OiDU7RDgYCnBd4N
+         CxT6Da+DC7GBPC8+Hvuezj8a9GVGKb9R7PxlWbb4v5xg+jJQp5UNR3hzVOtWbfvd1g2p
+         dYUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h1aojVMiAC+dTJJ9CxG9nUezJ612JW4LOoadws/Wdgg=;
-        b=iyb1OxIn3UD08Ok+wB6GZ+ODSbhCf1Cm/OVAGK7fq6y0U+THb1iTYnZbfwhlaAYDQW
-         jtc9o3oW2SnsP7PZnueydjomy83F6QEIBRCCpj6dN8fqL04jq0r/DKQkHgArdpRHZOrB
-         NiZh6tdZNM3a96kmo7euSoN/fh6/EJwSmaKVaj2hm1jk9QYPIpge/GBBSdM13o/7V3sM
-         St5piSvgMLK1wZWpxGNkzLSlPkDgRjKfUfpB+k1Jg8iGhCxxfANDC80uNa6irB1gQgfd
-         kbZd45oueyReNKHl0O5Jaxb5pxcPjKnhfF/0tT3ttFm2mHkxAkSY6kZbvEimkWW+9KtU
-         0vKA==
-X-Gm-Message-State: AOAM5323V+NcnKSuYTqk5FpaNM1OmZ7k4ALBv2ldgYFWI2pJ4ktxE1u8
-        9+q5joVfUC4z2zrC0r/4Gm2a/kJL0NiOPNg4TbkP
-X-Google-Smtp-Source: ABdhPJxF6p6SBEimtPUNrEkSQF+zX9DJpwgGk4iFPWdSD+Id4rVokmvAN6idcgQhVjJ7yAcuLfiu8m9JyNw2bU7wl94=
-X-Received: by 2002:a17:907:784b:: with SMTP id lb11mr29565002ejc.307.1633993863523;
- Mon, 11 Oct 2021 16:11:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6MEGfH0hL9/oeXXsdllzYyVOfG604h9YDXxJhS4oZDM=;
+        b=DtAlnmFXU1LJd81PtLT209rPYF3RcLK3RGbdQaotqzrN3QbAFtxaCbYmYOY8Mggau+
+         Nc9HxeCbYRiFr2Pgt+h0ANIABbJFaVHKWoQbmEhb3fnjVd3QOl0dcGJWW4A4y+jzFd95
+         HuxZDvJj41Uy2gI4oM2279SarQ3tzaSPFdsjXLFrZ/mutp6B9+ipwgkodfmtMzsI+S5t
+         Tkx8kJDHsQSqFJUhm+oan7hfgo1FXGkrvkUElfHA+L15Sbrs0GAFE9eelbAqz9jaLETp
+         DedNPou/qDem2p2TAkocW8m3qlYyapjicFEEDAUNDDTHCh/jEL6qSBltc/d+845AnYG5
+         vVMg==
+X-Gm-Message-State: AOAM531UN5vDSXehXELkKLiXwZO45f6x36FgaXbWyGEIi9n5mW6swfa+
+        A1wffua8X/V/0FZUhs5WNTU=
+X-Google-Smtp-Source: ABdhPJzOLQrBvZXH6sMBoOOsipKnP5T/uXVxwDVNFZaBqH7F4OlIWcRmuSuyiyefjpq0AGyBqooAXQ==
+X-Received: by 2002:a37:9fc6:: with SMTP id i189mr17243267qke.467.1633993886997;
+        Mon, 11 Oct 2021 16:11:26 -0700 (PDT)
+Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
+        by smtp.gmail.com with ESMTPSA id v3sm4957667qkd.20.2021.10.11.16.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 16:11:26 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 19:11:24 -0400
+From:   Eric Whitney <enwlinux@gmail.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Subject: Re: kernel BUG at fs/ext4/inode.c:1721!
+Message-ID: <20211011231124.GB17897@localhost.localdomain>
+References: <YWANK0HchPv9m6hA@zn.tnic>
+ <20211008173305.GA28198@localhost.localdomain>
+ <YWCL2OXaz8/OnBiF@zn.tnic>
 MIME-Version: 1.0
-References: <20211007004629.1113572-1-tkjos@google.com> <20211007004629.1113572-3-tkjos@google.com>
- <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com> <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com>
-In-Reply-To: <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Mon, 11 Oct 2021 19:10:52 -0400
-Message-ID: <CAHC9VhRZz8ORWfQpQ8Wix845Zx3xGyusc3ne_UM7AmeLUpz9Eg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] binder: use cred instead of task for getsecid
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Todd Kjos <tkjos@google.com>, gregkh@linuxfoundation.org,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        christian@brauner.io, James Morris <jmorris@namei.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
-        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
-        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        kernel-team@android.com, kernel test robot <lkp@intel.com>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWCL2OXaz8/OnBiF@zn.tnic>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 5:59 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 10/11/2021 2:33 PM, Paul Moore wrote:
-> > On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
-> >> Use the 'struct cred' saved at binder_open() to lookup
-> >> the security ID via security_cred_getsecid(). This
-> >> ensures that the security context that opened binder
-> >> is the one used to generate the secctx.
-> >>
-> >> Fixes: ec74136ded79 ("binder: create node flag to request sender's
-> >> security context")
-> >> Signed-off-by: Todd Kjos <tkjos@google.com>
-> >> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Cc: stable@vger.kernel.org # 5.4+
-> >> ---
-> >> v3: added this patch to series
-> >> v4: fix build-break for !CONFIG_SECURITY
-> >>
-> >>  drivers/android/binder.c | 11 +----------
-> >>  include/linux/security.h |  4 ++++
-> >>  2 files changed, 5 insertions(+), 10 deletions(-)
-> >>
-> >> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> >> index ca599ebdea4a..989afd0804ca 100644
-> >> --- a/drivers/android/binder.c
-> >> +++ b/drivers/android/binder.c
-> >> @@ -2722,16 +2722,7 @@ static void binder_transaction(struct binder_proc *proc,
-> >>                 u32 secid;
-> >>                 size_t added_size;
-> >>
-> >> -               /*
-> >> -                * Arguably this should be the task's subjective LSM secid but
-> >> -                * we can't reliably access the subjective creds of a task
-> >> -                * other than our own so we must use the objective creds, which
-> >> -                * are safe to access.  The downside is that if a task is
-> >> -                * temporarily overriding it's creds it will not be reflected
-> >> -                * here; however, it isn't clear that binder would handle that
-> >> -                * case well anyway.
-> >> -                */
-> >> -               security_task_getsecid_obj(proc->tsk, &secid);
-> >> +               security_cred_getsecid(proc->cred, &secid);
-> >>                 ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
-> >>                 if (ret) {
-> >>                         return_error = BR_FAILED_REPLY;
-> >> diff --git a/include/linux/security.h b/include/linux/security.h
-> >> index 6344d3362df7..f02cc0211b10 100644
-> >> --- a/include/linux/security.h
-> >> +++ b/include/linux/security.h
-> >> @@ -1041,6 +1041,10 @@ static inline void security_transfer_creds(struct cred *new,
-> >>  {
-> >>  }
-> >>
-> >> +static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
-> >> +{
-> >> +}
-> >
-> > Since security_cred_getsecid() doesn't return an error code we should
-> > probably set the secid to 0 in this case, for example:
-> >
-> >   static inline void security_cred_getsecid(...)
-> >   {
-> >     *secid = 0;
-> >   }
->
-> If CONFIG_SECURITY is unset there shouldn't be any case where
-> the secid value is ever used for anything. Are you suggesting that
-> it be set out of an abundance of caution?
+* Borislav Petkov <bp@alien8.de>:
+> Hi Eric,
+> 
+> On Fri, Oct 08, 2021 at 01:33:05PM -0400, Eric Whitney wrote:
+> > Hi, Boris - thanks very much for your report.
+> 
+> sure, np.
+> 
+> > Was your kernel configured with the CONFIG_FS_ENCRYPTION option?
+> 
+> $ grep CONFIG_FS_ENCRYPTION /boot/config-5.15.0-rc4+ 
+> # CONFIG_FS_ENCRYPTION is not set
+> 
+> > Could you please provide the output of the mount command for the affected
+> > file system?
+> 
+> Well, I can't figure out from dmesg - it's all I have from that run -
+> which fs it was. So lemme give you all ext4 ones:
+> 
+> $ mount | grep ext4
+> /dev/nvme0n1p2 on / type ext4 (rw,relatime,errors=remount-ro)
+> /dev/sdc1 on /home type ext4 (rw,noatime)
+> /dev/sda1 on /mnt/oldhome type ext4 (rw,noatime)
+> /dev/sdb1 on /mnt/smr type ext4 (rw,noatime)
+> /dev/nvme1n1p1 on /mnt/kernel type ext4 (rw,nosuid,nodev,noatime,user)
+> 
+> > Do you recall what sort of code might have been running on this system at
+> > the time of failure (for example, kernel build, desktop apps, etc.)?
+> 
+> Good question. I'm not sure. Kernel build is likely as I do those on
+> that workstation constantly.
+> 
+> Unfortunately, I don't have an exact reproducer. And I can't debug stuff
+> on that box since it is my workstation and I've reverted it to 5.14.
+> 
+> What I can do is, I can slap 5.15-rc4 or whichever version you'd want me
+> to, on a test box and try running kernel builds or some other load to
+> see whether it would fire. I have a similar box to my workstation.
+> 
+> Or if you have a better idea...
 
-It follows a pattern with the other LSM hooks when !CONFIG_SECURITY,
-and I'd much rather us keep things consistent.
+Hi, Boris:
 
--- 
-paul moore
-www.paul-moore.com
+I've tried numerous kernel builds with -rc4 and rerun the full set of xfstests
+we use when regressing ext4 each rc using a kernel that doesn't enable
+FS_ENCRYPTION (I normally run with that) without luck.  The code that caused
+the splat you saw is new and would run when an assertion is violated,
+suggesting that there may be an unsuspected bug elsewhere in ext4.
+
+Do you recall having seen any evidence of ENOMEM or ENOSPC conditions prior
+to the failure?
+
+If you're willing to share, please send along your kernel config file and I'll
+try working with that as well.
+
+In the meantime, should this bug get in your way, just revert the following
+patch and you should be able to run without further trouble:
+
+948ca5f30e1d "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
+
+I'll likely be posting a patch to revert this shortly, since it's going to
+take some time to sort out what's going on without a reproducer.
+
+Thanks again for your help,
+Eric
+
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
