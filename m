@@ -2,212 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60D8B428A4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49372428A50
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbhJKKC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbhJKKC6 (ORCPT
+        id S235734AbhJKKDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:03:23 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52410 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235602AbhJKKDV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:02:58 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592F5C061570;
-        Mon, 11 Oct 2021 03:00:58 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id 5so19076403iov.9;
-        Mon, 11 Oct 2021 03:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yXcvq1zADtmcg32ryQtdH4a+0FvgZKed0QthCOmoDpI=;
-        b=QAQqV+bDQO33uF6/KpR9PYACxfCcadoANuvPU7QoHKA0od6J0LHRYUxhgY+Ygo5K9B
-         l31yjNV3TWME2U8o3xy8xoTAj9d31NtM7T1tmVgMizsqcAFY/VOIr1LydauRgLj8qjaH
-         2jMTrlzUf9EFxOq1mReHwa3+yI+/AbAaAkJGPn3dO2k4j75o59XafFv4PRZdUQRyNQXT
-         jjfQjAVyw+jqueCZixlDtbYCJel+1r2Hf7/iUzO6JeDbwlFL58KOi4//2eQpFQgz8tza
-         t2mGtfo0ZFVbqwVNgSWmm/Bxi2Ub9/8/5nZ2aNNWonGCoalVHlAH6pPBAftRKVo1BueJ
-         voNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yXcvq1zADtmcg32ryQtdH4a+0FvgZKed0QthCOmoDpI=;
-        b=sbwrLRTIEA9HtUfWxAwk9d2RkaAOReKW8IV0b+9Epz7/hdOLTz98QCVeZYSsk42TaG
-         VDKSjlICH5uES2UYWFnnilXcpxAqwE1W/T+u3QgrUHpCmgFwn2TEyycT5Q3nvMj/uSXa
-         1Os8/wjkKMaJei2Dl/jE2ZKg/qBUBL0dV5WlOyXU1NXhexKzV5vNe1XdSgzmfs/S0eUC
-         p/KKZsOACQznBJUySb/ivjdRH4Nrnso19jzQ7XNvWwWrbNn/vz4Sjk/Tur3JSBRdW6S7
-         Hnqi8v1gLiHiHhTi8TT2n9IqMslnXfD/swykeNHNoWsYzWfq44GYGRgKrEpCrIIx1tO9
-         N7Vw==
-X-Gm-Message-State: AOAM531a/44bsAbsGhsOaJBYByi1jR5OCEdU9QdsGROEX2+rrLpktegq
-        tYV9PPuWZrPsTR94NmTdj6zKKrz4VcpyNFKsbpU=
-X-Google-Smtp-Source: ABdhPJwxaGE2iK30U5/jrs1jVvsUDLIabaQ09onY1Mk3bondvsaQahhYyWt4k5W8cnGvxl3udGcwTpQ+9J3IO1h35kE=
-X-Received: by 2002:a02:7105:: with SMTP id n5mr1133311jac.64.1633946457732;
- Mon, 11 Oct 2021 03:00:57 -0700 (PDT)
+        Mon, 11 Oct 2021 06:03:21 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B938RY021282;
+        Mon, 11 Oct 2021 06:01:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=WCNQW008KqRadTwMEqOJX2IJ4+dVZVQvodrIMlZrvdQ=;
+ b=GmGL0WOzVowCFmYLDtnYmlEVWSiAIMvDubcuzEeu3q5Z6JHAsT/nEHi+tufCwmYmwAF9
+ fiU4kEEfcsLoOXBRPChU75uyfrdsvXBT+iMhdSS7wXXMvBRbwNZgrWtRBJIzWdaaxx6R
+ r4ycO9ZlNL+UCOFMG2zc5bE9iZBpw4Y18LZNl1itwRMdAfI5Hi9IhwYbSwlNu1EITSKh
+ BSYsvCJiNwXli/m3XhPJy4p1O7EmzeTijy0MdCSXbSyrsIkMGSucnuqMcoSZHZ58Kuwx
+ byUE7xB/m2Woj6eRjgFJbgylF0lOlCAl4rt1flcFrevDCob3329YK5z3XFyaSLQLoqJO 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmj9s13ku-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 06:01:11 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19B9S7Fu030037;
+        Mon, 11 Oct 2021 06:01:11 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bmj9s13k0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 06:01:11 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19B9vmlt021154;
+        Mon, 11 Oct 2021 10:01:09 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bhvj5n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 10:01:09 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BA0pHq60490126
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 10:00:51 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A2C7A11C069;
+        Mon, 11 Oct 2021 10:00:51 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22A0B11C073;
+        Mon, 11 Oct 2021 10:00:51 +0000 (GMT)
+Received: from osiris (unknown [9.145.33.245])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 11 Oct 2021 10:00:51 +0000 (GMT)
+Date:   Mon, 11 Oct 2021 12:00:49 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     llvm@lists.linux.dev, linux-s390@vger.kernel.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Andreas Krebbel <krebbel@linux.ibm.com>,
+        Ulrich Weigand <Ulrich.Weigand@de.ibm.com>,
+        Jonas Paulsson <paulsson@linux.vnet.ibm.com>
+Subject: Re: clang-13: s390/kernel/head64.S:24:17: error: invalid operand for
+ instruction
+Message-ID: <YWQLUd+BQ1Cc88HG@osiris>
+References: <CA+G9fYuqwJD5bFO74vG6Mvbbt1G8rxzd_NDHg-gtOZ6rPjeu3A@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuqwJD5bFO74vG6Mvbbt1G8rxzd_NDHg-gtOZ6rPjeu3A@mail.gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: IkMHF_JJLk0yR1ir2y9ttGHU4E_89xur
+X-Proofpoint-ORIG-GUID: 4joU-_84x3xGn-j9pomuJqH9vVMSAvf1
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <1633689012-14492-1-git-send-email-dillon.minfei@gmail.com>
- <1633689012-14492-7-git-send-email-dillon.minfei@gmail.com> <290d78b5-b6d4-a115-9556-f2f909f573da@xs4all.nl>
-In-Reply-To: <290d78b5-b6d4-a115-9556-f2f909f573da@xs4all.nl>
-From:   Dillon Min <dillon.minfei@gmail.com>
-Date:   Mon, 11 Oct 2021 18:00:21 +0800
-Message-ID: <CAL9mu0KxAmULQofQMgt2JxVLs=L-YT5HZa+mA7sSKebG88GbcA@mail.gmail.com>
-Subject: Re: [PATCH v3 6/8] media: v4l2-ctrls: Add ARGB color effects control
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, Pi-Hsun Shih <pihsun@chromium.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, gabriel.fernandez@st.com,
-        gabriel.fernandez@foss.st.com,
-        Patrice CHOTARD <patrice.chotard@foss.st.com>,
-        hugues.fruchet@foss.st.com,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxlogscore=853 clxscore=1011 mlxscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110110057
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans
+On Mon, Oct 11, 2021 at 11:47:42AM +0530, Naresh Kamboju wrote:
+> [Please ignore this email if it is already reported ]
+> 
+> Following s390 builds failed due to warnings / errors.
+> 
+> metadata:
+>     git_describe: v5.15-rc5
+>     git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>     git_short_log: 64570fbc14f8 (\"Linux 5.15-rc5\")
+>     target_arch: s390
+>     toolchain: clang-13
+> 
+> 
+> Fail (2861 errors) s390 (tinyconfig) with clang-nightly
+>   @ https://builds.tuxbuild.com/1zL35IUSGhDGeVuyIrAp7eyzEUi/
+> Fail (2861 errors) s390 (tinyconfig) with clang-13
+>   @ https://builds.tuxbuild.com/1zL35Hn7wjErKsLDM6zAgh27BYJ/
+> Fail (4112 errors) s390 (allnoconfig) with clang-13
+>   @ https://builds.tuxbuild.com/1zL35HR60hSFvBmAcYJvKHm8Lko/
+> Fail (4112 errors) s390 (allnoconfig) with clang-nightly
+>   @ https://builds.tuxbuild.com/1zL35DTlrX9qRGCtGqgtmmMDjnQ/
+> Fail (23048 errors) s390 (defconfig) with clang-13
+>   @ https://builds.tuxbuild.com/1zL35DE2KWQUPxbbXeTbwIJaWXS/
+> Fail (23045 errors) s390 (defconfig) with clang-nightly
+>   @ https://builds.tuxbuild.com/1zL35EgeQfWQDXDupp4itkUO5At/
+> 
+> 
+> Build errors log:
+> ----------------
+> arch/s390/kernel/head64.S:24:17: error: invalid operand for instruction
+>  lctlg %c0,%c15,.Lctl-.LPG1(%r13) # load control registers
+>                 ^
+> arch/s390/kernel/head64.S:40:8: error: invalid operand for instruction
+>  lpswe .Ldw-.(%r13) # load disabled wait psw
 
-Thanks for the quick reply.
+You need to pass LLVM_IAS=0 on the make command line on s390 since
+commit f12b034afeb3 ("scripts/Makefile.clang: default to LLVM_IAS=1").
 
-On Mon, 11 Oct 2021 at 17:40, Hans Verkuil <hverkuil-cisco@xs4all.nl> wrote:
->
-> On 08/10/2021 12:30, dillon.minfei@gmail.com wrote:
-> > From: Dillon Min <dillon.minfei@gmail.com>
-> >
-> > - add V4L2_COLORFX_SET_ARGB color effects control.
-> > - add V4L2_CID_COLORFX_ARGB for ARGB color setting.
-> >
-> > Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> > ---
-> > v3: according to Hans's suggestion, thanks.
-> > - remove old stm32 private R2M ioctl
-> > - add V4L2_CID_COLORFX_ARGB
-> > - add V4L2_COLORFX_SET_ARGB
-> >
-> >  Documentation/userspace-api/media/v4l/control.rst | 8 ++++++++
-> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 2 ++
-> >  include/uapi/linux/v4l2-controls.h                | 4 +++-
-> >  3 files changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
-> > index f8d0b923da20..319606a6288f 100644
-> > --- a/Documentation/userspace-api/media/v4l/control.rst
-> > +++ b/Documentation/userspace-api/media/v4l/control.rst
-> > @@ -242,8 +242,16 @@ Control IDs
-> >      * - ``V4L2_COLORFX_SET_CBCR``
-> >        - The Cb and Cr chroma components are replaced by fixed coefficients
-> >       determined by ``V4L2_CID_COLORFX_CBCR`` control.
-> > +    * - ``V4L2_COLORFX_SET_ARGB``
-> > +      - ARGB colors.
->
-> How about:
->
->         - The ARGB components are replaced by the fixed ARGB components
->         determined by ``V4L2_CID_COLORFX_ARGB`` control.
-
-Sure, will be addressed by v4.
-
->
-> I also wonder if it makes sense to include the alpha channel here.
->
-> Looking at the driver code it appears to me (I might be wrong) that the alpha
-> channel is never touched (DMA2D_ALPHA_MODE_NO_MODIF), and setting the alpha
-> channel as part of a color effects control is rather odd as well.
-
-Indeed, Alpha channel is not used in current code. I'll remove this item in v4.
-how about change the code like below:
-
-    * - ``V4L2_COLORFX_SET_RGB``
-       - The RGB components are replaced by the fixed RGB components
-         determined by ``V4L2_CID_COLORFX_RGB`` control.
-
-``V4L2_CID_COLORFX_RGB`` ``(integer)``
-    Determines the Red, Green, and Blue coefficients for
-    ``V4L2_COLORFX_SET_RGB`` color effect.
-    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
-    bits [15:8] as Green component, bits [23:16] as Red component, and
-    bits [31:24] must be zero.
-
-
->
-> Alpha channel manipulation really is separate from the color and - if needed - should
-> be done with a separate control.
-
-OK, Will use a separate control when adding blend features.
-
-Best Regards,
-Dillon
-
->
-> Regards,
->
->         Hans
->
-> >
-> >
-> > +``V4L2_CID_COLORFX_ARGB`` ``(integer)``
-> > +    Determines the Alpha, Red, Green, and Blue coefficients for
-> > +    ``V4L2_COLORFX_SET_ARGB`` color effect.
-> > +    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
-> > +    bits [15:8] as Green component, bits [23:16] as Red component, and
-> > +    bits [31:24] as Alpha component.
-> >
-> >  ``V4L2_CID_COLORFX_CBCR`` ``(integer)``
-> >      Determines the Cb and Cr coefficients for ``V4L2_COLORFX_SET_CBCR``
-> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> > index 421300e13a41..53be6aadb289 100644
-> > --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> > @@ -785,6 +785,7 @@ const char *v4l2_ctrl_get_name(u32 id)
-> >       case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:   return "Min Number of Output Buffers";
-> >       case V4L2_CID_ALPHA_COMPONENT:          return "Alpha Component";
-> >       case V4L2_CID_COLORFX_CBCR:             return "Color Effects, CbCr";
-> > +     case V4L2_CID_COLORFX_ARGB:             return "Color Effects, ARGB";
-> >
-> >       /*
-> >        * Codec controls
-> > @@ -1392,6 +1393,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
-> >               *min = *max = *step = *def = 0;
-> >               break;
-> >       case V4L2_CID_BG_COLOR:
-> > +     case V4L2_CID_COLORFX_ARGB:
-> >               *type = V4L2_CTRL_TYPE_INTEGER;
-> >               *step = 1;
-> >               *min = 0;
-> > diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> > index 5532b5f68493..2876c2282a68 100644
-> > --- a/include/uapi/linux/v4l2-controls.h
-> > +++ b/include/uapi/linux/v4l2-controls.h
-> > @@ -128,6 +128,7 @@ enum v4l2_colorfx {
-> >       V4L2_COLORFX_SOLARIZATION               = 13,
-> >       V4L2_COLORFX_ANTIQUE                    = 14,
-> >       V4L2_COLORFX_SET_CBCR                   = 15,
-> > +     V4L2_COLORFX_SET_ARGB                   = 16,
-> >  };
-> >  #define V4L2_CID_AUTOBRIGHTNESS                      (V4L2_CID_BASE+32)
-> >  #define V4L2_CID_BAND_STOP_FILTER            (V4L2_CID_BASE+33)
-> > @@ -145,9 +146,10 @@ enum v4l2_colorfx {
-> >
-> >  #define V4L2_CID_ALPHA_COMPONENT             (V4L2_CID_BASE+41)
-> >  #define V4L2_CID_COLORFX_CBCR                        (V4L2_CID_BASE+42)
-> > +#define V4L2_CID_COLORFX_ARGB                        (V4L2_CID_BASE+43)
-> >
-> >  /* last CID + 1 */
-> > -#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+43)
-> > +#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
-> >
-> >  /* USER-class private control IDs */
-> >
-> >
->
+LLVM's integrated assembler doesn't seem to work well when compiling
+the kernel for s390 yet.
