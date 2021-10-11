@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0610429593
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7F142959E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhJKR0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57306 "EHLO
+        id S231585AbhJKRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233171AbhJKR0M (ORCPT
+        with ESMTP id S230061AbhJKRbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:26:12 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F8C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:24:11 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id j21so58996664lfe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:24:11 -0700 (PDT)
+        Mon, 11 Oct 2021 13:31:36 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAED1C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:29:35 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id p13so71304207edw.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:29:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Nu4G/4LFT2B+dN7Ud24heVwfxO4x4OPVUBz/3Y6zfcc=;
-        b=EUjn8oMwIJr6hI/Bj9RHyQtE8rNarSGeAJzHLDRlf0gs56UilEaSyWlLkJkqtHPbXs
-         ZEODFTtC/dQJ5P8HlTZ1hq6XDtsIsYJirGNPl2h8K1eNe9bIivfDbjjYmAfIe3Q5fZAU
-         O6taffpbbG7GOh8ZSbzYa1GAvKvy+aZgoj7QJkSX0v56ptHUMjXpUKrA9FXnQpjapUyb
-         6ehm8hxJJwznPBHD7rrBhXrHkHfIE+hzuNQ5rZAlJtPEbnFA/y3jGQ1YwicY40J/NweQ
-         YXADeHg47bCpGEvT/Ug3U/QSUMUuwIBm/d6R+zxmKWJse000kTWSS4znRTrxelOAg85V
-         fC0w==
+        bh=qA3YuL7fYmv4Y8Yvw8BDi0DK+UWHyslqyhO8rDvQoNY=;
+        b=d+BRza8HiCfXT1IwFtf5HXAvgHtq59Wg3QEi22ubyhxfWeM5jg8fYggLDauZf4D62E
+         ussN8dvte5J0e2s0xVWV9KtiXwsJSNs1IEkau5yacd6kSEHgXjuutTXkH0JRQyqwpy8I
+         gI9QJ7P0fOQf07zjlkUMcCik5oB+GpKIezcjH7/MuAwRafmk1NrQuPvLsllqRXLEgiRr
+         PM7wr+Zmcj+wrj9W/eet2X4fKldR9TiUJ9ssP0pQYWnPUPT76NawLB92sH0R+nWcNnPI
+         7I9YK+HLgZozd3wSV2SLDu/8mYkroFiAW+mrwMrXg/lihmOyENJX0bxvqlT9ZkpwqgBg
+         XM5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Nu4G/4LFT2B+dN7Ud24heVwfxO4x4OPVUBz/3Y6zfcc=;
-        b=YFDG/ZXxG1hTEddjOfh6FT9/E7VrORgSbOTJdzIkxvXK7xRpvSeOLx+djUcNdVDeuc
-         SDg1BGXuyUOgxEZdhfPI++9VbPiRrq3Fos7HwxwKsxXmJHjwulVg/vmyitHMaC6jXbbC
-         798ONswASz33w1qYLuk4Ih92DnlH3Tx68oh4DI9ORrQvyDR9mMrCzqIuITebXZ35Fiby
-         TKl/Y2BFVTCIMdwAeMGoGbPWTwh+DqfA8Mm8rcyJ7J6EXbkB0Gtx/OjJ5CZ7QpAQopb1
-         JihM3QqpvktbdSSyU3oTDO3A8amEFHeCwTnFcGvFzANKsVbZedUkt87TIeYNLlA6vgd3
-         FnXw==
-X-Gm-Message-State: AOAM530J5AvvWQZYFczIlPp3tdiKD8Uwpk/60Wuj2KxiB56y4FDX7LOp
-        N4Br78/18ZzoNHQ0CU9VGe7CkyHidUTfT52IkIDsWA==
-X-Google-Smtp-Source: ABdhPJx8Wmu1eFUyMMOc2Y6/MLpi/jVTxrWxVNHptlry0/segS30TKqsljF5elMMFSgFv2p74FpCXhrQjYRj5WhX7lE=
-X-Received: by 2002:a19:6a16:: with SMTP id u22mr29139566lfu.444.1633973049612;
- Mon, 11 Oct 2021 10:24:09 -0700 (PDT)
+        bh=qA3YuL7fYmv4Y8Yvw8BDi0DK+UWHyslqyhO8rDvQoNY=;
+        b=aVKX5fsKGyeQXH7T9bcPY7OoD5cwDCDJV6zqP5EFHksAH2PaFwRZcZmolBbOUSQOqX
+         JkkDcgKB06bWxdYdbuKsKtYinIEsWDrkuyju6kWV0wR36Nxf806jTL8PlTFgU8WOl+ca
+         523g3WssohfL0WBWVplelfd5XkGDmSyypE0kBuwvf2scTJd3dbnO7ve91MCY8gdJyCJ4
+         G1CmZzbKcq6mEN5eOOGwsJSTEOmeZs2+0O8Qdfjz2tEBggS3W7Wj7NzN46LgmJ9ikUOa
+         BqAXYQMq4lPCgVPQfn/MzZcIPNsEZd28Oo7bgEwFvU61K42cl0Q9Gx/WLoPjlHjxWe6/
+         WxEQ==
+X-Gm-Message-State: AOAM531f3AMMns/fFBHETuUXhugRRJrJfADYfi30/fvVT6HeM6qRlhTB
+        kQJ7389FeeKynKQRUD4U1uvR3gk7gizYwgrIuRWGbw==
+X-Google-Smtp-Source: ABdhPJwNEv9b5UFK5ZJWQ4MEFZdqdPTSJb8KzPRNG7wtiK2VDmIq0TGi9Nsj9oe4DWFRz0C7k6Y3sFNbjCBJLkLqzBs=
+X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr43089286edc.182.1633973374304;
+ Mon, 11 Oct 2021 10:29:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <1633878992-32884-1-git-send-email-ashimida@linux.alibaba.com>
- <CANiq72nBqiyrcaW47ZW-6i7zJ6HrmjZWSOr==HkEuBR5rXmpdQ@mail.gmail.com> <a25b9286-fc1f-d398-150c-ce073eadc6c1@linux.alibaba.com>
-In-Reply-To: <a25b9286-fc1f-d398-150c-ce073eadc6c1@linux.alibaba.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 Oct 2021 10:23:57 -0700
-Message-ID: <CAKwvOd=D=UvGfHjEyeYPk3c=ksg9mF8nUX-9jyJhkX8QbugMSQ@mail.gmail.com>
-Subject: Re: [PATCH] [PATCH V2]ARM64: SCS: Add gcc plugin to support Shadow
- Call Stack
-To:     Dan Li <ashimida@linux.alibaba.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sami Tolvanen <samitolvanen@google.com>, frederic@kernel.org,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, yifeifz2@illinois.edu,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>, andreyknvl@gmail.com,
-        Colin King <colin.king@canonical.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-hardening@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20211011134508.362906295@linuxfoundation.org> <20211011134510.897297770@linuxfoundation.org>
+In-Reply-To: <20211011134510.897297770@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 11 Oct 2021 22:59:23 +0530
+Message-ID: <CA+G9fYshyzMVBbO9ySSYtK+oucZ4k0e4M2JcVfQ8-U26cV+7=Q@mail.gmail.com>
+Subject: Re: [PATCH 5.10 73/83] powerpc/bpf: Fix BPF_MOD when imm == 1
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 8:42 AM Dan Li <ashimida@linux.alibaba.com> wrote:
->
->
->
-> On 10/10/21 11:43 PM, Miguel Ojeda wrote:
-> > On Sun, Oct 10, 2021 at 5:16 PM Dan Li <ashimida@linux.alibaba.com> wrote:
-> >>
-> >> -         This option enables Clang's Shadow Call Stack, which uses a
-> >> -         shadow stack to protect function return addresses from being
-> >> -         overwritten by an attacker. More information can be found in
-> >> -         Clang's documentation:
-> >> +         This option enables Clang/GCC plugin's Shadow Call Stack, which
-> >> +         uses a shadow stack to protect function return addresses from
-> >> +         being overwritten by an attacker. More information can be found
-> >> +         in Clang's documentation:
-> >
-> > Perhaps it could be worded in a better way? It sounds like it is a
-> > custom plugin for Clang as well, e.g.:
-> >
-> >      This option enables Shadow Call Stack (in the case of GCC, as a plugin),
-> >
-> > Cheers,
-> > Miguel
-> >
->
-> Thanks Miguel.
->
-> How about writing like this:
-> This option enables Shadow Call Stack (supported as a compiler option in
-> the case of clang, supported as a plugin in the case of gcc), which uses
-> a shadow stack to ...
+stable-rc 5.4 build failed due this patch.
+ - powerpc gcc-10-defconfig - FAILED
+ - powerpc gcc-11-defconfig - FAILED
+ - powerpc gcc-8-defconfig - FAILED
+ - powerpc gcc-9-defconfig - FAILED
 
-That sounds reasonable.
+On Mon, 11 Oct 2021 at 19:28, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>
+> [ Upstream commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 ]
+>
+> Only ignore the operation if dividing by 1.
+>
+> Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
+> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Acked-by: Song Liu <songliubraving@fb.com>
+> Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  arch/powerpc/net/bpf_jit_comp64.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 658ca2bab13c..e79f9eae2bc0 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -408,8 +408,14 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
+>                 case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+>                         if (imm == 0)
+>                                 return -EINVAL;
+> -                       else if (imm == 1)
+> -                               goto bpf_alu32_trunc;
+> +                       if (imm == 1) {
+> +                               if (BPF_OP(code) == BPF_DIV) {
+> +                                       goto bpf_alu32_trunc;
+> +                               } else {
+> +                                       EMIT(PPC_RAW_LI(dst_reg, 0));
 
-One question I have Dan, what is your sense for getting this feature
-landed upstream in GCC proper?  It's neat to be able to use plugins to
-support older versions of a compiler than when the feature initially
-lands; I was curious if you're working to submit this into GCC as
-well?  I didn't see anything in GCC's bug tracker for "shadow call
-stack," but maybe there's a different feature bug tracking this?
+In file included from arch/powerpc/net/bpf_jit64.h:11,
+                 from arch/powerpc/net/bpf_jit_comp64.c:19:
+arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+arch/powerpc/net/bpf_jit_comp64.c:415:46: error: implicit declaration
+of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
+[-Werror=implicit-function-declaration]
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                              ^~~~~~~~~~
+arch/powerpc/net/bpf_jit.h:32:34: note: in definition of macro 'PLANT_INSTR'
+   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
+      |                                  ^~~~~
+arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                         ^~~~
+cc1: all warnings being treated as errors
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
 -- 
-Thanks,
-~Nick Desaulniers
+Linaro LKFT
+https://lkft.linaro.org
