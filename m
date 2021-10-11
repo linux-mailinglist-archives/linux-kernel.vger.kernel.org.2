@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B208A42870A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9ED42870D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbhJKGux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:50:53 -0400
-Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:42490
-        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234352AbhJKGuw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:50:52 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S234357AbhJKGwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:52:21 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:59287 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234300AbhJKGwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 02:52:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633935019; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=TXk71XK/vEYfwGU4P+f/iw8Xd38iVJG3pkx2rxci/YE=; b=O6pagYHDBssvjPsaPx8FIu28EH1E//PWyxaknHjShpq48eOc4lS/Z26iJtm7IKPY3aoIfIyb
+ wRlhFO37mewvuRbZb/cfayY8yuiRRkutc/V/lKbxiu5UopzoAlcNdzhQ8fsD0zaPncag1GC/
+ +ngXl8ZUoRxxDyQ5i4JEn7qiROQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6163de9cab9da96e644ca561 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 06:50:04
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EC710C4360C; Mon, 11 Oct 2021 06:50:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.109] (unknown [49.204.182.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id AEB3C3FFEF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:48:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633934931;
-        bh=CPA7uzjIObwjcajWBp0XF7TZaxKa4ak20yBxoc8Joug=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=WuVqIwoC3/FEau3CN7P9tkxFMu6/htF8aMWl6AhLm6PedK2eIerybd+kyyO9ZGIof
-         VCbnvAZq9mfBo9/Iu1IOoUc9k4+rK+sB99ZM3RbnFnYEweHuE2vBahb4umMSEeDq/U
-         lxhJrlWLHQereVEpKllkJx5/HusM+jSor/fhfKOuQltu7mvLBGojGBMi2e7ZdBBMM4
-         wjEjpot0LMqS1vAozXwUfO5s7eDnhXwbgEYOpWgcNmHtniQ+KSlD+/oaRor81a/NeI
-         HQjiuVcQbt4JajuriF4qoa5joFA2Nt/oxuMoS2t3lILQLSITTlYLLGhvZRNqk2oAEE
-         MRoe+4jaQpTgw==
-Received: by mail-ed1-f70.google.com with SMTP id p13-20020a056402044d00b003db3256e4f2so15029707edw.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:48:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CPA7uzjIObwjcajWBp0XF7TZaxKa4ak20yBxoc8Joug=;
-        b=iDfvg3NwBfFdq5xtpVJEJgzdas8EjBdm6r5SZTQDuLvbTin6ilJKfU7YSqqXYjSupA
-         k+GfcxbkkYY5o9nG/vEea8IQ9UzGp96VZSVv+t1YFpzxqGklt0MdCuWa4cLcyfcLXNJa
-         XTltN1iQA8552V2x8+kpJZqtF845ZQYn2KzV9GYJ7zG6HyMofwah9CHNan3UBAcGTkGI
-         Jt22t3mEMlJd2ZsFi6Aj3CPc6f/TBXVc6M6xjjpV8cSD3lisly6QPlsyC3bNTObhcmU3
-         t61P3pF2aPGCO6DeLrLHWOoqaIoqHC6ae2KWBYDEN46PmfIVnA30jrNuF1NfsdEMY/69
-         516g==
-X-Gm-Message-State: AOAM533C2nF+ajkNrW6IVGsIck11YelPLoTfaISU7c8Mz6YRxjwvaJH2
-        3YSVj+7oD7caG3kLTtENbtzb6bb1kNX/uETRvg//Ak2Sq8FtYi0u80J80DkQ7hbS99YbwwkEdLL
-        S9X2WKgNoZdtFn5mTiQVSahzE4XQfAKKF9491Ss2BMA==
-X-Received: by 2002:a17:906:b803:: with SMTP id dv3mr23882248ejb.289.1633934931379;
-        Sun, 10 Oct 2021 23:48:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwuxCqjNMs6Kw57A47X/e54HeKbkQEUbux8m9ZH97PAe0Joxy5ueBHUew3edGYZnzAXBEw19Q==
-X-Received: by 2002:a17:906:b803:: with SMTP id dv3mr23882218ejb.289.1633934931167;
-        Sun, 10 Oct 2021 23:48:51 -0700 (PDT)
-Received: from [192.168.0.20] (78-11-189-27.static.ip.netia.com.pl. [78.11.189.27])
-        by smtp.gmail.com with ESMTPSA id ox9sm2943850ejb.66.2021.10.10.23.48.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 23:48:50 -0700 (PDT)
-Subject: Re: [PATCH 6/7] tty: serial: samsung_tty: Support runtime PM
-To:     Hector Martin <marcan@marcan.st>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20211005155923.173399-1-marcan@marcan.st>
- <20211005155923.173399-7-marcan@marcan.st>
- <77ae3bb1-6da5-3ec6-de33-5e5f661b6145@canonical.com>
- <46109820-904b-4e87-5134-7d045dbbe57e@marcan.st>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <b4aa2023-238a-7929-fd1b-3a2aa0b49b6c@canonical.com>
-Date:   Mon, 11 Oct 2021 08:48:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 70D17C4338F;
+        Mon, 11 Oct 2021 06:50:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 70D17C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v1] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org
+References: <1632819849-511-1-git-send-email-faiyazm@codeaurora.org>
+ <248ec931-7c16-3e2d-cc8f-8ce0dd4e923b@redhat.com>
+ <0149edd5-fe7f-2786-413c-6de2eab3e30c@codeaurora.org>
+ <ab7a9fb0-a3e7-0cb8-6dbd-40a68e6fd299@redhat.com>
+ <1f6708d2-1ca8-6d1f-d9f0-855f2df755ed@codeaurora.org>
+ <d5a2e107-70e2-30b5-6723-9eea6650517a@redhat.com>
+ <88df48af-901b-5765-d92c-6d14c2b1f73e@codeaurora.org>
+ <aee9523c-4930-7980-e498-00f671b7d336@redhat.com>
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Message-ID: <c2f9cbf5-ff81-f36e-68f9-ba3110b1ddd3@codeaurora.org>
+Date:   Mon, 11 Oct 2021 12:19:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <46109820-904b-4e87-5134-7d045dbbe57e@marcan.st>
+In-Reply-To: <aee9523c-4930-7980-e498-00f671b7d336@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 07:32, Hector Martin wrote:
->>> +
->>>   		s3c24xx_serial_cpufreq_deregister(to_ourport(port));
->>>   		uart_remove_one_port(&s3c24xx_uart_drv, port);
->>> +
->>> +		pm_runtime_disable(&dev->dev);
+
+
+On 10/6/2021 5:48 PM, David Hildenbrand wrote:
+> On 06.10.21 14:13, Faiyaz Mohammed wrote:
+>> Hi,
 >>
->> Why disabling it only if port!=NULL? Can remove() be called if
->> platform_set_drvdata() was not?
+>> Sorry for delayed response.
+>>
+>> On 9/29/2021 10:33 PM, David Hildenbrand wrote:
+>>> On 29.09.21 10:58, Faiyaz Mohammed wrote:
+>>>>
+>>>>
+>>>> On 9/28/2021 4:46 PM, David Hildenbrand wrote:
+>>>>> On 28.09.21 12:53, Faiyaz Mohammed wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 9/28/2021 4:09 PM, David Hildenbrand wrote:
+>>>>>>> On 28.09.21 11:04, Faiyaz Mohammed wrote:
+>>>>>>>> For INITRD and initmem memory is reserved through
+>>>>>>>> "memblock_reserve"
+>>>>>>>> during boot up but it is free via "free_reserved_area" instead
+>>>>>>>> of "memblock_free".
+>>>>>>>> For example:
+>>>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>>>
+>>>>>>>> To get the start and end address of the above freed memory and to
+>>>>>>>> account
+>>>>>>>> proper memblock added memblock_dbg log in "free_reserved_area".
+>>>>>>>> After adding log:
+>>>>>>>> [    0.294837] memblock_free: [0x00000083600000-0x00000083603000]
+>>>>>>>> free_initrd_mem+0x20/0x28
+>>>>>>>> [    0.294848] Freeing initrd memory: 12K.
+>>>>>>>> [    0.695246] memblock_free: [0x00000081600000-0x00000081a00000]
+>>>>>>>> free_initmem+0x70/0xc8
+>>>>>>>> [    0.696688] Freeing unused kernel memory: 4096K.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+>>>>>>>> ---
+>>>>>>>>      mm/page_alloc.c | 5 +++++
+>>>>>>>>      1 file changed, 5 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>>>>> index b37435c..f85c3b2 100644
+>>>>>>>> --- a/mm/page_alloc.c
+>>>>>>>> +++ b/mm/page_alloc.c
+>>>>>>>> @@ -8129,6 +8129,11 @@ unsigned long free_reserved_area(void
+>>>>>>>> *start,
+>>>>>>>> void *end, int poison, const char
+>>>>>>>>              pr_info("Freeing %s memory: %ldK\n",
+>>>>>>>>                  s, pages << (PAGE_SHIFT - 10));
+>>>>>>>>      +#ifdef CONFIG_HAVE_MEMBLOCK
+>>>>>>>> +        memblock_dbg("memblock_free: [%#016llx-%#016llx] %pS\n",
+>>>>>>>> +            __pa(start), __pa(end), (void *)_RET_IP_);
+>>>>>>>> +#endif
+>>>>>>>
+>>>>>>> IMHO, the "memblock_free" part is misleading. Something was
+>>>>>>> allocated
+>>>>>>> early via memblock, then we transitioned to the buddy, now we're
+>>>>>>> freeing
+>>>>>>> that early allocation via the buddy.
+>>>>>>> Yes, we're freeing the early allocation via buddy, but for proper
+>>>>>> memblock accounting we need this debug print.
+>>>>>>
+>>>>>
+>>>>> What do you mean with "accounting" ? These are debug statements.
+>>>>>
+>>>>>
+>>>> Yes, these are debug statements, which help to know the a-b address
+>>>> belongs to x callsite. This info is required when memblock=debug is
+>>>> passed through command line and CONFIG_HAVE_MEMBLOCK is enabled.
+>>>
+>>> The issue I'm having is talking in the name of memblock "memblock_dbg,
+>>> memblock_free", when memblock might no longer be around. We have other
+>>> places where we free early memblock allocations back to the buddy.
+>> I didn't find place where we free early memblock allocation back to the
+>> buddy.
 > 
-> Good question, I'm not entirely sure why these code paths have a check 
-> for NULL there. They were already there, do you happen to know why? To 
-> me it sounds like remove would only be called if probe succeeds, at 
-> which point drvdata should always be set.
+> One example I know is
 > 
+> section_deactivate()->free_map_bootmem()->vmemmap_free()-> ...
+> free_pagetable()->free_reserved_page().
+> 
+> when we free the vmemmap allocated via memblock back to the buddy.
+> 
+>>
+>> Why "memblock_dbg" print with "memblock_free" string?.
+>> - After buddy took over, buddy will free memblock reserved memory
+>> through free_reserved_area and it will print the freed memory size, but
+>> the freed memory through buddy still be part of
+>> memblock.reserved.regions.
+>> - To know the address ranges, added the "memblock_dbg" print along with
+>> "membloc_free" string.
+>> - If it is misleading or confusing, we can remove the "memblock_free"
+>> string from the "memblock_dgb" print and we can just print the address
+>> range when "memlock=debug" pass through command line.
+> 
+> That would be better, but do we really have to depend on
+> "memlock=debug"? Can't we do pr_debug() ?
+> 
+Yes, I think we can do pr_debug. I will update the patch and push again.
 
-Exactly, anyway it is not part of your patch, so no problem.
-
-
-Best regards,
-Krzysztof
+Thanks and regards,
+Mohammed Faiyaz
