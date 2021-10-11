@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3BA428FF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:02:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34E33428FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:02:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238906AbhJKOCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:02:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50128 "EHLO mail.kernel.org"
+        id S238982AbhJKODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:03:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238392AbhJKOAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:00:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A263360D42;
-        Mon, 11 Oct 2021 13:57:09 +0000 (UTC)
+        id S234554AbhJKOA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:00:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6017560EB1;
+        Mon, 11 Oct 2021 13:57:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960630;
-        bh=Dlo3aCwdkLnQbCE8HPeM3kQ2Acdz+aR++eMNMz1rZJM=;
+        s=korg; t=1633960633;
+        bh=6HKDCx+ad9b/P5y/PaIadr5JJJ84ChOLIAYP/vJHqtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uf0QnbvHkn2m7/3tZ8u/bhweccOMax9LwOV12t+Dca/WMyHuX4mK5RzViwx5ECcrR
-         OX/WH71NYC/HBjaEfwKQ8Ddx+DY9DlLtPhUOMiGAOpf/g60jcLDWlllC5Ex6vKiyY9
-         A9ZJBJ0vgwTDRwMN6dtQv+YUbw3fQgZIkzJc13d4=
+        b=ZM4qZxk5H68HydhYzoP+7/F+Q/6skIU0SFEg0Hg3nxSWcdFU7fa52tAZF0+12AdZy
+         4h/cG6Uw4fGB4HLSNfPpVSymbnbidM3BisuCBLqhknbmwuSxGIGKuk7lcqQsq9hXS0
+         cD7+sZz8e4bn+fxFcfGG+ZAYjhn/vTsoSnmDUaqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        stable@vger.kernel.org, "J. Bruce Fields" <bfields@redhat.com>,
         Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.14 028/151] nfsd4: Handle the NFSv4 READDIR dircount hint being zero
-Date:   Mon, 11 Oct 2021 15:45:00 +0200
-Message-Id: <20211011134518.761095766@linuxfoundation.org>
+Subject: [PATCH 5.14 029/151] SUNRPC: fix sign error causing rpcsec_gss drops
+Date:   Mon, 11 Oct 2021 15:45:01 +0200
+Message-Id: <20211011134518.791983887@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
 References: <20211011134517.833565002@linuxfoundation.org>
@@ -40,52 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: J. Bruce Fields <bfields@redhat.com>
 
-commit f2e717d655040d632c9015f19aa4275f8b16e7f2 upstream.
+commit 2ba5acfb34957e8a7fe47cd78c77ca88e9cc2b03 upstream.
 
-RFC3530 notes that the 'dircount' field may be zero, in which case the
-recommendation is to ignore it, and only enforce the 'maxcount' field.
-In RFC5661, this recommendation to ignore a zero valued field becomes a
-requirement.
+If sd_max is unsigned, then sd_max - GSS_SEQ_WIN is a very large number
+whenever sd_max is less than GSS_SEQ_WIN, and the comparison:
 
-Fixes: aee377644146 ("nfsd4: fix rd_dircount enforcement")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+	seq_num <= sd->sd_max - GSS_SEQ_WIN
+
+in gss_check_seq_num is pretty much always true, even when that's
+clearly not what was intended.
+
+This was causing pynfs to hang when using krb5, because pynfs uses zero
+as the initial gss sequence number.  That's perfectly legal, but this
+logic error causes knfsd to drop the rpc in that case.  Out-of-order
+sequence IDs in the first GSS_SEQ_WIN (128) calls will also cause this.
+
+Fixes: 10b9d99a3dbb ("SUNRPC: Augment server-side rpcgss tracepoints")
+Cc: stable@vger.kernel.org
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfs4xdr.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ net/sunrpc/auth_gss/svcauth_gss.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -3544,15 +3544,18 @@ nfsd4_encode_dirent(void *ccdv, const ch
- 		goto fail;
- 	cd->rd_maxcount -= entry_bytes;
- 	/*
--	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", so
--	 * let's always let through the first entry, at least:
-+	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", and
-+	 * notes that it could be zero. If it is zero, then the server
-+	 * should enforce only the rd_maxcount value.
- 	 */
--	if (!cd->rd_dircount)
--		goto fail;
--	name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
--	if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
--		goto fail;
--	cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+	if (cd->rd_dircount) {
-+		name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
-+		if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
-+			goto fail;
-+		cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+		if (!cd->rd_dircount)
-+			cd->rd_maxcount = 0;
-+	}
- 
- 	cd->cookie_offset = cookie_offset;
- skip_entry:
+--- a/net/sunrpc/auth_gss/svcauth_gss.c
++++ b/net/sunrpc/auth_gss/svcauth_gss.c
+@@ -643,7 +643,7 @@ static bool gss_check_seq_num(const stru
+ 		}
+ 		__set_bit(seq_num % GSS_SEQ_WIN, sd->sd_win);
+ 		goto ok;
+-	} else if (seq_num <= sd->sd_max - GSS_SEQ_WIN) {
++	} else if (seq_num + GSS_SEQ_WIN <= sd->sd_max) {
+ 		goto toolow;
+ 	}
+ 	if (__test_and_set_bit(seq_num % GSS_SEQ_WIN, sd->sd_win))
 
 
