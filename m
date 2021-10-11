@@ -2,168 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F87428654
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0A4428663
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234009AbhJKFlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:41:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52194 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234011AbhJKFll (ORCPT
+        id S233102AbhJKFoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:44:19 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54516 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230317AbhJKFoS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:41:41 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B4482n036941;
-        Mon, 11 Oct 2021 01:39:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=4HW4pQ25GO1K6URUKRqS+7ujDcAMEDeHj0XORmuOSA8=;
- b=Fr4eXMe4OkDkyiQmqrBL1+8IzDGUg+4XlH/GOfVLDc05Wz+GqSmqX4QCgQgoN2InZsqQ
- 9al/6cazEusi2dieO+HhlZuuf94GIhONYgfFzw5/5SMHmBlarli8aWimkPx89jIVeGzp
- ORvIT7fpybLJ9ukJmQg6goAyXjRgxa85YzgQUapdX9TEfLXzAaTpFlSlHsYQwaH4EMSg
- zrCOfr22XNXArC6wQiTrcN+Cb7nEF5aWwvfW7BFqUHghCYQ2YMPoYRIHNKdqk+oH94b1
- GrBXyX5RKK/jG3gxcA8lMO6fcssgShwVAfL090RY1H7sL140D6AeZ8s0iguk/wV4DDYq qQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bm25mugj6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 01:39:32 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19B5K9pm038567;
-        Mon, 11 Oct 2021 01:39:32 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bm25mughk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 01:39:32 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19B5VlGF019479;
-        Mon, 11 Oct 2021 05:39:30 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bht3y9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 05:39:30 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19B5dQCl5440160
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Oct 2021 05:39:27 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D9F3442045;
-        Mon, 11 Oct 2021 05:39:26 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 445CB42041;
-        Mon, 11 Oct 2021 05:39:26 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Oct 2021 05:39:26 +0000 (GMT)
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>, stable@vger.kernel.org,
-        markver@us.ibm.com, Cornelia Huck <cohuck@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-Date:   Mon, 11 Oct 2021 07:39:21 +0200
-Message-Id: <20211011053921.1198936-1-pasic@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Oct 2021 01:44:18 -0400
+X-UUID: a738c0e3d88c4adf9b8ef6d36eb6d4f1-20211011
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=k9ifZ9vuBiBf5AnO4d5XKJK0BFQtIYXAIA+5OzwhUnY=;
+        b=nJ3gX/DP7gCnvkX2P/bhep/gTweRoI/2+OQgvhmYFthlhLqhZax9Im3utWOvcBkVQOl9YNt3Ml+rlsfH8XMWCSnuivWIqCXiUCIAFkaQcdCjacSt2VR7kqYFT/I4ug7udeVud0U+pPK5ysouTsQpB13PFL2TwLqX7neSolXdTeg=;
+X-UUID: a738c0e3d88c4adf9b8ef6d36eb6d4f1-20211011
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <yunfei.dong@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1263059338; Mon, 11 Oct 2021 13:42:14 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 11 Oct 2021 13:42:13 +0800
+Received: from mhfsdcap04 (10.17.3.154) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 11 Oct 2021 13:42:11 +0800
+Message-ID: <e41bc32907c5c8abc65b66c1612cb9265d21614c.camel@mediatek.com>
+Subject: Re: [PATCH v6, 12/15] media: mtk-vcodec: Support 34bits dma address
+ for vdec
+From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        "Tiffany Lin" <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Date:   Mon, 11 Oct 2021 13:42:15 +0800
+In-Reply-To: <09ce48f4-a785-97d9-2920-eacb39c59573@collabora.com>
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+         <20210901083215.25984-13-yunfei.dong@mediatek.com>
+         <09ce48f4-a785-97d9-2920-eacb39c59573@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MkvVeVrmStp-ePltWRF4RTURcd9rcOLa
-X-Proofpoint-GUID: nhX1dJtH4R_VgKXe83_52DJi-xKWhRzH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-10_07,2021-10-07_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
- clxscore=1015 spamscore=0 suspectscore=0 lowpriorityscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109230001 definitions=main-2110110032
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
-
-However, the specification also says: "... the driver MAY read (but MUST
-NOT write) the device-specific configuration fields to check that it can
-support the device ..." before setting FEATURES_OK.
-
-In that case, any transitional device relying solely on
-VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-legacy format.  In particular, this implies that it is in big endian
-format for big endian guests. This naturally confuses the driver which
-expects little endian in the modern mode.
-
-It is probably a good idea to amend the spec to clarify that
-VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-is complete. Before validate callback existed, config space was only
-read after FEATURES_OK. However, we already have two regressions, so
-let's address this here as well.
-
-The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-with DASD backing, because things simply don't work with the default.
-See Fixes tags for relevant commits.
-
-For QEMU, we can work around the issue by writing out the feature bits
-with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-config op for this. This isn't enough to address all vhost devices since
-these do not get the features until FEATURES_OK, however it looks like
-the affected devices actually never handled the endianness for legacy
-mode correctly, so at least that's not a regression.
-
-No devices except virtio net and virtio blk seem to be affected.
-
-Long term the right thing to do is to fix the hypervisors.
-
-Cc: <stable@vger.kernel.org> #v4.11
-Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-Reported-by: markver@us.ibm.com
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
----
-
-@Connie: I made some more commit message changes to accommodate Michael's
-requests. I just assumed these will work or you as well and kept your
-r-b. Please shout at me if it needs to be dropped :)
----
- drivers/virtio/virtio.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 0a5b54034d4b..236081afe9a2 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
- 		driver_features_legacy = driver_features;
- 	}
- 
-+	/*
-+	 * Some devices detect legacy solely via F_VERSION_1. Write
-+	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-+	 * these when needed.
-+	 */
-+	if (drv->validate && !virtio_legacy_is_little_endian()
-+			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-+		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-+		dev->config->finalize_features(dev);
-+	}
-+
- 	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
- 		dev->features = driver_features & device_features;
- 	else
-
-base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
--- 
-2.25.1
+SGkgQmVuamlhbWluLA0KDQoNCk9uIFRodSwgMjAyMS0xMC0wNyBhdCAxMzozNyArMDIwMCwgQmVu
+amFtaW4gR2FpZ25hcmQgd3JvdGU6DQo+IExlIDAxLzA5LzIwMjEgw6AgMTA6MzIsIFl1bmZlaSBE
+b25nIGEgw6ljcml0IDoNCj4gPiBVc2UgdGhlIGRtYV9zZXRfbWFza19hbmRfY29oZXJlbnQgaGVs
+cGVyIHRvIHNldCB2ZGVjDQo+ID4gRE1BIGJpdCBtYXNrIHRvIHN1cHBvcnQgMzRiaXRzIGlvdmEg
+c3BhY2UoMTZHQikgdGhhdA0KPiA+IHRoZSBtdDgxOTIgaW9tbXUgSFcgc3VwcG9ydC4NCj4gPiAN
+Cj4gPiBXaG9sZSB0aGUgaW92YSByYW5nZSBzZXBhcmF0ZSB0byAwfjRHLzRHfjhHLzhHfjEyRy8x
+Mkd+MTZHLA0KPiA+IHJlZ2FyZGluZyB3aGljaCBpb3ZhIHJhbmdlIFZERUMgYWN0dWFsbHkgbG9j
+YXRlLCBpdA0KPiA+IGRlcGVuZHMgb24gdGhlIGRtYS1yYW5nZXMgcHJvcGVydHkgb2YgdmRlYyBk
+dHNpIG5vZGUuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogWXVuZmVpIERvbmcgPHl1bmZlaS5k
+b25nQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0v
+bXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19kcnYuYyB8IDMgKysrDQo+ID4gICAxIGZpbGUgY2hh
+bmdlZCwgMyBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVk
+aWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19kcnYuYyANCj4gPiBiL2RyaXZl
+cnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19kcnYuYw0KPiA+IGlu
+ZGV4IDAwMjM1MmZjZjhkZS4uMWE4ZDkzMDgzMjdkIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMv
+bWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19kcnYuYw0KPiA+ICsrKyBi
+L2RyaXZlcnMvbWVkaWEvcGxhdGZvcm0vbXRrLXZjb2RlYy9tdGtfdmNvZGVjX2RlY19kcnYuYw0K
+PiA+IEBAIC00MTcsNiArNDE3LDkgQEAgc3RhdGljIGludCBtdGtfdmNvZGVjX3Byb2JlKHN0cnVj
+dA0KPiA+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPiAgIAkJfQ0KPiA+ICAgCX0NCj4gPiAg
+IA0KPiA+ICsJaWYgKG9mX2dldF9wcm9wZXJ0eShwZGV2LT5kZXYub2Zfbm9kZSwgImRtYS1yYW5n
+ZXMiLCBOVUxMKSkNCj4gPiArCQlkbWFfc2V0X21hc2tfYW5kX2NvaGVyZW50KCZwZGV2LT5kZXYs
+DQo+ID4gRE1BX0JJVF9NQVNLKDM0KSk7DQo+ID4gKw0KPiANCj4gSGkgWXVuZmVpLA0KPiANCj4g
+RG9lcyBhbGwgU29DIHN1cHBvcnQgMzRiaXRzIGlvdmEgc3BhY2UgPw0KPiBJZiBub3QgeW91IG5l
+ZWQgdG8gYWxzbyBjaGVjayBTb0MgdmVyc2lvbiBiZWZvcmUgc2V0dGluZyBkbWEgbWFzay4NCj4g
+DQpOb3QgYWxsIFNvQyBzdXBwb3J0IDM0Yml0cy4gV2lsbCBhZGQgZG1hLXJhbmdlcyBwcm9wZXJ0
+eSBpbiBkdHNpIGlmIHRoZQ0KU29DIHN1cHBvcnQgMzRiaXRzLg0KDQpsaWtlIHRoaXM6DQpkbWEt
+cmFuZ2VzID0gPD47DQoNClRoYW5rcywNCll1bmZlaSBEb25nDQo+IFJlZ2FyZHMsDQo+IEJlbmph
+bWluDQo+IA0KPiA+ICAgCWZvciAoaSA9IDA7IGkgPCBNVEtfVkRFQ19IV19NQVg7IGkrKykNCj4g
+PiAgIAkJbXV0ZXhfaW5pdCgmZGV2LT5kZWNfbXV0ZXhbaV0pOw0KPiA+ICAgCXNwaW5fbG9ja19p
+bml0KCZkZXYtPmlycWxvY2spOw0K
 
