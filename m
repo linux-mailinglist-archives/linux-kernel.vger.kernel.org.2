@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7B7428EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:51:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0534428EF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237833AbhJKNxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:53:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
+        id S236517AbhJKNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:53:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237527AbhJKNvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA55E60F21;
-        Mon, 11 Oct 2021 13:49:52 +0000 (UTC)
+        id S237546AbhJKNv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:51:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AD37610C7;
+        Mon, 11 Oct 2021 13:49:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960193;
-        bh=FT8kaXscQ1VA2HwnfeQ8B32N5crSb2YYTsnin1OriAU=;
+        s=korg; t=1633960196;
+        bh=SA5zmA6InVNzguv6c0s+gu7/z8QIRs9ky1BnBicRA48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GyLNEM8OxHY0HHYjqVLUuCqFwETU/VEBKTWr4leR9yrakQKeiwxbfFWq0wPQes9sz
-         ICEwYEavVu1YooWtnkZanOspspFI1ew66mPZOqwJvBUgOyQirMJI8AXg5fIKEX/gSt
-         HD7vJSzMoNUJtGBP+/yweV1gFxDoXAPXZLNcfVdw=
+        b=AGhG8sjOvtjzuCu2OoKpJsvW7kjVCJAjvjqt+07w4Z9e1iBR3KVDDTO3Gr3W0buIv
+         943hchGILvD/P32FBET+HTONmPQrc9IwzhfLSiRzfpBYvvI/4jV/1YfoRVoFwA5fPT
+         6Js97wFpR1gigc4QL+OZ3jK/swpWYQaRo4GkAAAQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jamie Iles <quic_jiles@quicinc.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 46/52] i2c: acpi: fix resource leak in reconfiguration device addition
-Date:   Mon, 11 Oct 2021 15:46:15 +0200
-Message-Id: <20211011134505.301785724@linuxfoundation.org>
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 47/52] bpf, s390: Fix potential memory leak about jit_data
+Date:   Mon, 11 Oct 2021 15:46:16 +0200
+Message-Id: <20211011134505.342187054@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
 References: <20211011134503.715740503@linuxfoundation.org>
@@ -40,38 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jamie Iles <quic_jiles@quicinc.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-[ Upstream commit 6558b646ce1c2a872fe1c2c7cb116f05a2c1950f ]
+[ Upstream commit 686cb8b9f6b46787f035afe8fbd132a74e6b1bdd ]
 
-acpi_i2c_find_adapter_by_handle() calls bus_find_device() which takes a
-reference on the adapter which is never released which will result in a
-reference count leak and render the adapter unremovable.  Make sure to
-put the adapter after creating the client in the same manner that we do
-for OF.
+Make sure to free jit_data through kfree() in the error path.
 
-Fixes: 525e6fabeae2 ("i2c / ACPI: add support for ACPI reconfigure notifications")
-Signed-off-by: Jamie Iles <quic_jiles@quicinc.com>
-Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-[wsa: fixed title]
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 1c8f9b91c456 ("bpf: s390: add JIT support for multi-function programs")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-core-acpi.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/s390/net/bpf_jit_comp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
-index c70983780ae7..fe466ee4c49b 100644
---- a/drivers/i2c/i2c-core-acpi.c
-+++ b/drivers/i2c/i2c-core-acpi.c
-@@ -436,6 +436,7 @@ static int i2c_acpi_notify(struct notifier_block *nb, unsigned long value,
- 			break;
- 
- 		i2c_acpi_register_device(adapter, adev, &info);
-+		put_device(&adapter->dev);
- 		break;
- 	case ACPI_RECONFIG_DEVICE_REMOVE:
- 		if (!acpi_device_enumerated(adev))
+diff --git a/arch/s390/net/bpf_jit_comp.c b/arch/s390/net/bpf_jit_comp.c
+index 2d2996627629..f63e4cb6c9b3 100644
+--- a/arch/s390/net/bpf_jit_comp.c
++++ b/arch/s390/net/bpf_jit_comp.c
+@@ -1385,7 +1385,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *fp)
+ 	jit.addrs = kvcalloc(fp->len + 1, sizeof(*jit.addrs), GFP_KERNEL);
+ 	if (jit.addrs == NULL) {
+ 		fp = orig_fp;
+-		goto out;
++		goto free_addrs;
+ 	}
+ 	/*
+ 	 * Three initial passes:
 -- 
 2.33.0
 
