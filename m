@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEF4428D85
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED75428D89
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhJKNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:07:37 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:52211 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235418AbhJKNHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:07:36 -0400
-Received: from [192.168.0.7] (ip5f5aef5a.dynamic.kabel-deutschland.de [95.90.239.90])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 1C82A61E5FE33;
-        Mon, 11 Oct 2021 15:05:34 +0200 (CEST)
-Subject: Re: `AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT=y` causes AMDGPU to fail on
- Ryzen: amdgpu: SME is not compatible with RAVEN
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Alex Deucher <alexdeucher@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+        id S236792AbhJKNJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235410AbhJKNJT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:09:19 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5973CC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:07:19 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id v17so55981973wrv.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:07:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DTDmXntOGSA3Xd4P+y4+zBs6FGtMnqAxNvN3gSTquro=;
+        b=qRVoTKYkKnql0wxTeybXAvUaagl9ZnkCJxXwOQacOJjXWqCh3jCC6DYWUKOtXsHVeW
+         onObDNZ1r62xm7Xvvp5UJGapqN4RejjVbAIlSdWV1/JfyoK/UE71JxyjkJCbFtbLt4fU
+         SDPbWhaLNML8641Az4DsgUUTV4/kj3DvPSt/YBuKcDpAemGIoe6Y3F3bHQl2HtMnOlMq
+         g+io2Ij6ocFztU2UxCq8+8GWJZr54GEhcl1orbS23XBrLQZ2Be1IQehNE/kLPYPA8BLX
+         PJfICI9ll8HLygYsuhH/6doVt1Wc4oZa5q5VAoGIg1FeF9Gyl58xwg7h8WCqoiLMm4n3
+         HjEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DTDmXntOGSA3Xd4P+y4+zBs6FGtMnqAxNvN3gSTquro=;
+        b=x/k62aBoryeZVJyYJxstJXYzwxxeVYBqGdzzMMHoh4UEWGKqNxINRTx7WsT8h9PjvK
+         g/FutLDqAGHByM+USH4fVZhdlw9MpjT9XTbbAL4Zv8vA5icpTS97yG4lzmeRDfXn9v6a
+         NZmpchRdE06ROGs1msHVPs6MAWTFc2FEJigzjkHoB3peh1HG5/3RU05qSREjyudgDQ8x
+         oL7qSqDSfnRRF2PmmTznbmlgYqimtxjSYzwRkcq9AlYjtIhQAN4xi3I4oxpy5LtbnX9F
+         5AgY881LpjUP4K2Vlq8XbNQ+z3zDnA3iBA/+IlZcPIhWmB31AuArTMz3f8ZBwRK15dNF
+         sz7Q==
+X-Gm-Message-State: AOAM5312A5rRKMKakgBvvvTehx0FZJUKEBtN4HSiJVqtJdJ0TFUAL//L
+        1/kixGzJlXl+rYSWzu8hovyevQ==
+X-Google-Smtp-Source: ABdhPJwmpFZoh27kFQoCvaGOimhqUJpXjbsJwyIhjfMpe0JT/YZQMwdj5MuX0zWfYJXLMbUvInpb2w==
+X-Received: by 2002:adf:bd8a:: with SMTP id l10mr24179774wrh.159.1633957637860;
+        Mon, 11 Oct 2021 06:07:17 -0700 (PDT)
+Received: from google.com ([95.148.6.175])
+        by smtp.gmail.com with ESMTPSA id d24sm7514801wmb.35.2021.10.11.06.07.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 06:07:17 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 14:07:15 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx@lists.freedesktop.org,
-        Tom Lendacky <thomas.lendacky@amd.com>
-References: <8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de>
- <CADnq5_ONNvuvTbiJDFfRwfnPUBeAqPmDJRmESDYG_7CymikJpQ@mail.gmail.com>
- <YV1vcKpRvF9WTwAo@zn.tnic>
- <CADnq5_N5+SEW4JyXLc=FdSHnSbXrGKWjEw4vW1Jxv9-KdWf+Jg@mail.gmail.com>
- <96f6dbed-b027-c65e-6888-c0e8630cc006@amd.com> <YV3hbK/uhChK5Pse@zn.tnic>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <d704afb9-7c7c-fa55-4329-58bb2fa25b33@molgen.mpg.de>
-Date:   Mon, 11 Oct 2021 15:05:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>, tkjos@google.com
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
+Message-ID: <YWQ3AzF+q2xeyQ/p@google.com>
+References: <00000000000030293b05c39afd6f@google.com>
+ <20210602230054.vyqama2q3koc4bpo@treble>
+ <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
+ <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
+ <20210603133914.j2aeadmvhncnlk5q@treble>
+ <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <YV3hbK/uhChK5Pse@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Borislav,
+On Thu, 03 Jun 2021, Andi Kleen wrote:
 
+> 
+> > True, ftrace does have function profiling (function_profile_enabled).
+> > 
+> > Steve, is there a way to enable that on the kernel cmdline?
+> 
+> That's not really comparable. function profiling has a lot more overhead.
+> Also there is various code which has ftrace instrumentation disabled.
+> 
+> I don't think why you want to kill the old profiler. It's rarely used, but
+> when you need it usually works. It's always good to have simple fall backs.
+> And it's not that it's a lot of difficult code.
 
-Am 06.10.21 um 19:48 schrieb Borislav Petkov:
-> Ok,
-> 
-> so I sat down and wrote something and tried to capture all the stuff we
-> so talked about that it is clear in the future why we did it.
-> 
-> Thoughts?
-> 
-> ---
-> From: Borislav Petkov <bp@suse.de>
-> Date: Wed, 6 Oct 2021 19:34:55 +0200
-> Subject: [PATCH] x86/Kconfig: Do not enable AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
-> 
-> This Kconfig option was added initially so that memory encryption is
-> enabled by default on machines which support it.
-> 
-> However, Raven-class GPUs, a.o., cannot handle DMA masks which are
-> shorter than the bit position of the encryption, aka C-bit. For that,
-> those devices need to have the IOMMU present.
-> 
-> If the IOMMU is disabled or in passthrough mode, though, the kernel
-> would switch to SWIOTLB bounce-buffering for those transfers.
-> 
-> In order to avoid that,
-> 
->     2cc13bb4f59f ("iommu: Disable passthrough mode when SME is active")
-> 
-> disables the default IOMMU passthrough mode so that devices for which
-> the default 256K DMA is insufficient, can use the IOMMU instead.
-> 
-> However 2, there are cases where the IOMMU is disabled in the BIOS, etc,
-> think the usual hardware folk "oops, I dropped the ball there" cases.
-> 
-> Which means, it can happen that there are systems out there with devices
-> which need the IOMMU to function properly with SME enabled but the IOMMU
-> won't necessarily be enabled.
-> 
-> So in order for those devices to function, drop the "default y" for
-> the SME by default on option so that users who want to have SME, will
-> need to either enable it in their config or use "mem_encrypt=on" on the
-> kernel command line.
-> 
-> Fixes: 7744ccdbc16f ("x86/mm: Add Secure Memory Encryption (SME) support")
-> Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: <stable@vger.kernel.org>
-> Link: https://lkml.kernel.org/r/8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de
-> ---
->   arch/x86/Kconfig | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 8055da49f1c0..6a336b1f3f28 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1525,7 +1525,6 @@ config AMD_MEM_ENCRYPT
->   
->   config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
->   	bool "Activate AMD Secure Memory Encryption (SME) by default"
-> -	default y
->   	depends on AMD_MEM_ENCRYPT
->   	help
->   	  Say yes to have system memory encrypted by default if running on
-> 
+sysbot is still sending out reports on this:
 
-I think, the IOMMU is enabled on the MSI B350M MORTAR, but otherwise, 
-yes this looks fine. The help text could also be updated to mention 
-problems with AMD Raven devices.
+  https://syzkaller.appspot.com/bug?id=00c965d957410afc0d40cac5343064e0a98b9ecd
 
+Are you guys still planning on sending out a fix?
 
-Kind regards,
+Is there anything I can do to help?
 
-Paul
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
