@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B7442901A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C65C428FF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238634AbhJKOFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:05:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49584 "EHLO mail.kernel.org"
+        id S237857AbhJKOCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:02:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238254AbhJKOC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:02:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FFA0610C7;
-        Mon, 11 Oct 2021 13:57:52 +0000 (UTC)
+        id S238371AbhJKOAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:00:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9AA060F11;
+        Mon, 11 Oct 2021 13:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960673;
-        bh=aqIMde/IbE456poK236f3QZEFoBxFYexbryBLuZJPhg=;
+        s=korg; t=1633960624;
+        bh=C4Fazr0fXV39GkNP2BVdXuK8r82UtSZ2UYa7dAn69AI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c2kEqgcANdGrzUQMOpoEKQ4zzeEymWguUhDdMJrRlYojGV80mG9gSGWxtb/hcSXxu
-         1SRoMjdbUpS8/6d2L9tsdZBBH969tVX0ARTSSnfaeTTEbjSD7WIaiwXZ6m+2ROJ14h
-         4XBfR1vX0norWMZ4CM8+vkRLtbY505aGY+vh1T0Q=
+        b=CgUMQYbYZMYcA2MWft5n7HyEIolzENKWhJw3ippoRccaT/tEQIqJLrTJCH4kUMAko
+         yuaJDROBnQwA+L0nj576vkG6v23j7pR9MjHOcCrFal6hy42drVTyEgBHxdyp0PM9K3
+         Rj/HEjRNnqfXHbdVcgj1CGw0SPkazL2hfNM2tmtY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Regupathy, Rajaram" <rajaram.regupathy@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: [PATCH 5.14 009/151] usb: typec: tipd: Remove dependency on "connector" child fwnode
-Date:   Mon, 11 Oct 2021 15:44:41 +0200
-Message-Id: <20211011134518.148420921@linuxfoundation.org>
+        stable@vger.kernel.org, Patrick Ho <Patrick.Ho@netapp.com>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Chuck Lever <chuck.lever@oracle.com>
+Subject: [PATCH 5.14 027/151] nfsd: fix error handling of register_pernet_subsys() in init_nfsd()
+Date:   Mon, 11 Oct 2021 15:44:59 +0200
+Message-Id: <20211011134518.723594008@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
 References: <20211011134517.833565002@linuxfoundation.org>
@@ -40,47 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+From: Patrick Ho <Patrick.Ho@netapp.com>
 
-commit b87d8d0d4c43c29ccdc57d15b2ebc1df886a34b4 upstream.
+commit 1d625050c7c2dd877e108e382b8aaf1ae3cfe1f4 upstream.
 
-There is no "connector" child node available on every
-platform, so the driver can't fail to probe when it's
-missing.
+init_nfsd() should not unregister pernet subsys if the register fails
+but should instead unwind from the last successful operation which is
+register_filesystem().
 
-Fixes: 57560ee95cb7 ("usb: typec: tipd: Don't block probing of consumer of "connector" nodes")
-Cc: stable@vger.kernel.org # 5.14+
-Reported-by: "Regupathy, Rajaram" <rajaram.regupathy@intel.com>
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Link: https://lore.kernel.org/r/20210930124758.23233-1-heikki.krogerus@linux.intel.com
+Unregistering a failed register_pernet_subsys() call can result in
+a kernel GPF as revealed by programmatically injecting an error in
+register_pernet_subsys().
+
+Verified the fix handled failure gracefully with no lingering nfsd
+entry in /proc/filesystems.  This change was introduced by the commit
+bd5ae9288d64 ("nfsd: register pernet ops last, unregister first"),
+the original error handling logic was correct.
+
+Fixes: bd5ae9288d64 ("nfsd: register pernet ops last, unregister first")
+Cc: stable@vger.kernel.org
+Signed-off-by: Patrick Ho <Patrick.Ho@netapp.com>
+Acked-by: J. Bruce Fields <bfields@redhat.com>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/typec/tipd/core.c |    8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/nfsd/nfsctl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/typec/tipd/core.c
-+++ b/drivers/usb/typec/tipd/core.c
-@@ -625,10 +625,6 @@ static int tps6598x_probe(struct i2c_cli
- 	if (ret < 0)
- 		return ret;
- 
--	fwnode = device_get_named_child_node(&client->dev, "connector");
--	if (!fwnode)
--		return -ENODEV;
--
- 	/*
- 	 * This fwnode has a "compatible" property, but is never populated as a
- 	 * struct device. Instead we simply parse it to read the properties.
-@@ -636,7 +632,9 @@ static int tps6598x_probe(struct i2c_cli
- 	 * with existing DT files, we work around this by deleting any
- 	 * fwnode_links to/from this fwnode.
- 	 */
--	fw_devlink_purge_absent_suppliers(fwnode);
-+	fwnode = device_get_named_child_node(&client->dev, "connector");
-+	if (fwnode)
-+		fw_devlink_purge_absent_suppliers(fwnode);
- 
- 	tps->role_sw = fwnode_usb_role_switch_get(fwnode);
- 	if (IS_ERR(tps->role_sw)) {
+--- a/fs/nfsd/nfsctl.c
++++ b/fs/nfsd/nfsctl.c
+@@ -1545,7 +1545,7 @@ static int __init init_nfsd(void)
+ 		goto out_free_all;
+ 	return 0;
+ out_free_all:
+-	unregister_pernet_subsys(&nfsd_net_ops);
++	unregister_filesystem(&nfsd_fs_type);
+ out_free_exports:
+ 	remove_proc_entry("fs/nfs/exports", NULL);
+ 	remove_proc_entry("fs/nfs", NULL);
 
 
