@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BD24299B9
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0814299B8
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbhJKXPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:15:52 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:36854 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235708AbhJKXPu (ORCPT
+        id S235703AbhJKXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:15:51 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:42877 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235622AbhJKXPs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:15:50 -0400
-Received: by mail-ot1-f44.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so8846678otk.3;
-        Mon, 11 Oct 2021 16:13:49 -0700 (PDT)
+        Mon, 11 Oct 2021 19:15:48 -0400
+Received: by mail-ot1-f46.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso23560443otu.9;
+        Mon, 11 Oct 2021 16:13:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=DF/d5K0cmxoRkh9SydPvlCe1QMk0HbpgU+/wg0AVV2o=;
-        b=phfP82wLetlEu0gRwYx+pkFB7iMWsZOtKj/4TBuOyKswEKhhihQfIJQPTFSZUvGQHC
-         OwyYPBMGX/ZqOQXPJ6vUitkdG9TsaCDOmLWohOQIAWakd5vDxbbLbQxJBxW4b4g+ign6
-         pFWegdPzfOkhgh+r8poThtGwDcd0+6UGyjasjqPP8OFTeDfhkGDsbGZFfs8bOExhxlvY
-         LCl4wjezBvxN6VVdxy1VQRnLCwEQo5oJksqKNVmVUKvFWt7+odil2BJqbsuEYuIuGVex
-         aA7zk3PW3658X3K9sgk62hU0fDY4nbARuEFUGMxZMLTTUiRybqztE6s060rCvXHf/Im4
-         KNxA==
-X-Gm-Message-State: AOAM532mwoGMiTz4qu4mJMRCxPw3eioxuBFWObW3o9PpIuJbh3lbOKos
-        TWfcCOx3TVGZVhlIkjHHB+S7kSJApw==
-X-Google-Smtp-Source: ABdhPJy6od+aZa9csuzLBy1w8Z9iY9Ca4jrZ7WaqPvk3lpAM+SGIgdAqicVrOYilyATFt1MGFp/MFQ==
-X-Received: by 2002:a9d:4c8:: with SMTP id 66mr23888697otm.113.1633994029005;
-        Mon, 11 Oct 2021 16:13:49 -0700 (PDT)
+        bh=7zuoS5ImJfku8d8xCEMyvxbsSp1wfRVxODVvjTNPpWI=;
+        b=amsw0I40qmeKasNEjfYH2Jd4dK2wBuvNBUVvnolS+jQRmzD6fAMsKFaDwVx1G6Dh35
+         3knGgQUQoJq+RPbioGihQzCSqF5oiFAf7FB62v122N9WLIQRppUHioW8pDAvvDBT//yq
+         NF0sESjjmW7e4anLcOCyazbM3wd3rHY8AjaIq8SqjZgJchBPct7+xptY80wakF7xC2d5
+         nr7jYET6ZdFzA4D1BUG69J4HQm5WClfpdSp5ifFT6gGbuRxz2uHdVVSxH7lZUCxnr/0q
+         O8gp4T1lRtNG4EwdVr3O3NCxL7czJieyWYjtbYqgr19EdolOPR89jKzg6Ao6EzSuqelA
+         XHRg==
+X-Gm-Message-State: AOAM533zqOlNXUU1b1h9M9bf66Z+woWXfbuLhjkMP6DjnUANESDgvD/K
+        3VxDMZPLTeJznPtyReohAgaB4Kat9w==
+X-Google-Smtp-Source: ABdhPJwgjqa80alYqxnGTfd3HMgT9XwEeOu7Wz9fbyC7hQnvyMYxKzqnL/RZNXXaNYHYTgIuXCirxw==
+X-Received: by 2002:a9d:7114:: with SMTP id n20mr14348496otj.25.1633994026820;
+        Mon, 11 Oct 2021 16:13:46 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id d7sm2012596otl.19.2021.10.11.16.13.47
+        by smtp.gmail.com with ESMTPSA id r4sm2049640oiw.36.2021.10.11.16.13.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 16:13:48 -0700 (PDT)
-Received: (nullmailer pid 1347638 invoked by uid 1000);
+        Mon, 11 Oct 2021 16:13:45 -0700 (PDT)
+Received: (nullmailer pid 1347640 invoked by uid 1000);
         Mon, 11 Oct 2021 23:13:43 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     dmaengine@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        devicetree@vger.kernel.org, list@opendingux.net,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20211011143652.51976-2-paul@crapouillou.net>
-References: <20211011143652.51976-1-paul@crapouillou.net> <20211011143652.51976-2-paul@crapouillou.net>
-Subject: Re: [PATCH 1/5] dt-bindings: dma: ingenic: Add compatible strings for MDMA and BDMA
+To:     Olivier Moysan <olivier.moysan@foss.st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@st.com>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20211011155717.1594-2-olivier.moysan@foss.st.com>
+References: <20211011155717.1594-1-olivier.moysan@foss.st.com> <20211011155717.1594-2-olivier.moysan@foss.st.com>
+Subject: Re: [PATCH v4 1/7] dt-bindings: iio: stm32-adc: add generic channel binding
 Date:   Mon, 11 Oct 2021 18:13:43 -0500
-Message-Id: <1633994023.327839.1347637.nullmailer@robh.at.kernel.org>
+Message-Id: <1633994023.340533.1347639.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 16:36:48 +0200, Paul Cercueil wrote:
-> The JZ4760 and JZ4760B SoCs have two additional DMA controllers: the
-> MDMA, which only supports memcpy operations, and the BDMA which is
-> mostly used for transfer between memories and the BCH controller.
-> The JZ4770 also features the same BDMA as in the JZ4760B, but does not
-> seem to have a MDMA.
+On Mon, 11 Oct 2021 17:57:11 +0200, Olivier Moysan wrote:
+> Add ADC generic channel binding. This binding should
+> be used as an alternate to legacy channel properties
+> whenever possible.
+> ADC generic channel binding allows to identify supported
+> internal channels through the following reserved label names:
+> "vddcore", "vrefint" and "vbat".
+> This binding also allows to set a different sampling time
+> for each channel.
 > 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 > ---
->  .../devicetree/bindings/dma/ingenic,dma.yaml  | 26 ++++++++++++-------
->  1 file changed, 17 insertions(+), 9 deletions(-)
+>  .../bindings/iio/adc/st,stm32-adc.yaml        | 100 ++++++++++++++++--
+>  1 file changed, 93 insertions(+), 7 deletions(-)
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/dma/ingenic,dma.yaml:19:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/dma/ingenic,dma.yaml:32:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
 dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@13: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@14: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@15: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1539355
+See https://patchwork.ozlabs.org/patch/1539385
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
