@@ -2,193 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE39429709
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B5C429711
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232277AbhJKSpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:45:01 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25292 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbhJKSpA (ORCPT
+        id S232259AbhJKSri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhJKSrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:45:00 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BIckQq011753;
-        Mon, 11 Oct 2021 14:42:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=0TVdZp8CZyIcGmhupCXobsLVC7Yz9AAA+YCIK7aqVnM=;
- b=USa9DOqiZTb8DB3blIIO6uSIoqhm0H69izzOF0G5M4FUVc522BBGgDGT3wHLmke0CsEl
- Yq2E5GkX1JxzLULQRbkocCFdL497L0oZccCV3Z1uIDGM1BzxFsSgRxFXIoJSjaUvaJes
- mKaHBxkhW/vbUzGeCxFNidAE6hcrKwAG1al8WPEz1tdRQZWlrSpaptc7haaf84JUlOWw
- /cGFRhgGLDLEENB2JtoGWT/u7i8yWnU+680RQVRJIMq42Bp8lyz5kOr0OqBGzSoZhyRY
- xePYPeifsPEMi8q8VOTU23p3qzkXYUAEdWHvQK9xyTBfCOttA/S5fTqiLpCQ9T9An2u2 Hw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmsrjse73-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 14:42:58 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19BIeVhK019234;
-        Mon, 11 Oct 2021 14:42:58 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmsrjse6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 14:42:58 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19BIfqEF030557;
-        Mon, 11 Oct 2021 18:42:56 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bj0u1q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 18:42:56 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BIbJtD59244806
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Oct 2021 18:37:19 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC52742052;
-        Mon, 11 Oct 2021 18:42:52 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D898142045;
-        Mon, 11 Oct 2021 18:42:51 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 11 Oct 2021 18:42:51 +0000 (GMT)
-Date:   Mon, 11 Oct 2021 20:42:49 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Pierre Morel <pmorel@linux.ibm.com>
-Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Michael Mueller <mimu@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        bfu@redhat.com, Halil Pasic <pasic@linux.ibm.com>
-Subject: Re: [RFC PATCH 1/1] s390/cio: make ccw_device_dma_* more robust
-Message-ID: <20211011204249.3c53ce2a.pasic@linux.ibm.com>
-In-Reply-To: <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
-References: <20211011115955.2504529-1-pasic@linux.ibm.com>
-        <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rFoN8xc6J3Czo-dMFnIc_pAlMo6_83_A
-X-Proofpoint-GUID: f3mIXnY0SdR1n0-AW0u5T4jB7f_EPJMt
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 11 Oct 2021 14:47:36 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF2CC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:45:36 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id u18so77186117lfd.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pchvvATNbk/8sMncxiiN9k1TbKkT0wEgMkyPDBPDVzw=;
+        b=ZncLCafilGU3tbBlGe8oY8z+FbwIimNfmXZZByooJEci9fFTSwKdArncsKw0Qshi8D
+         KUpWqOvO9gwSUGOkYntqxbZ5uY/378EDzdvVljc7P218vvcRQl141QmwGP1NZqjygjn2
+         qTDD1XoKtPOGVPzZ/yu7BWYrh61VhQVN9t80SAc2PH7kkmBUw47GZFUeNtAtR2cro51C
+         IK4Clulz6aKBfwIw+qLiCzEQ5HX7K4AEq9yqGzf6P9iQX6pfnLu5K/1vb+DEUll/JqHU
+         wAuPIpLrX+GI+ul2LzPFqkoPCqK0SkA30vJfHL2tLuW6F7RqCJJwB26bnUTq6EHJLRTu
+         vkDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pchvvATNbk/8sMncxiiN9k1TbKkT0wEgMkyPDBPDVzw=;
+        b=0uGUksPlSeX5V68PYb/i8B1m7CXFD5GZEruaXNWOiRkLLj9l2eV0xTlwymKg2Ngc73
+         pYE4K8Qep3DibzyXDmTpz9mnsRyEIaFqfbOdZPBO17X42oAUslJ5DjJbOyTx8ZQDIiNt
+         OzaWHQZeuRbpwcYZ7/zSKKVzFjT8IoSnL7cd576FEMChsjTMTDlG95q30FDMjuuE2plj
+         KLgl4iqtiaProBsQL4Qc99b75+vdkf46ffSwYFXAMu6u5TtShO6Pn6WIaDrMHbUXdIDB
+         fSESO55rTKTRiSR5jZCC7IZqhFl1gIvuT1tiUXCMDZ1B4PH4VMBexin20OgtnDrVa2UG
+         dn1g==
+X-Gm-Message-State: AOAM5316JQOVdTjg2chrbFzo/ZZ5f9EIzTrAG4q5XITXIx/44HYD+K3O
+        +Vd6iCBEoq3Y3XpRWli+HlwfSdPPgU+VP9/fxiIZDkkj7q0isg==
+X-Google-Smtp-Source: ABdhPJxnc6NOysL6L51/L6pRT+8yki6z66uJ0eFrosskIU82EVx0kymz+KCrsBNJrLmnl+Nto7Jm2+yNPsnf45Rc4gs=
+X-Received: by 2002:a05:6512:1103:: with SMTP id l3mr14202886lfg.550.1633977934045;
+ Mon, 11 Oct 2021 11:45:34 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-11_06,2021-10-11_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- lowpriorityscore=0 malwarescore=0 adultscore=0 bulkscore=0
- priorityscore=1501 mlxlogscore=999 phishscore=0 clxscore=1015
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2109230001 definitions=main-2110110107
+References: <163369609308.636038.15295764725220907794.stgit@devnote2> <163369614818.636038.5019945597127474028.stgit@devnote2>
+In-Reply-To: <163369614818.636038.5019945597127474028.stgit@devnote2>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 11 Oct 2021 11:45:22 -0700
+Message-ID: <CAKwvOdkdPHN0Y5GwTPUeaZyjtBttWrfoeLvQJFaJrfOHAtxkHg@mail.gmail.com>
+Subject: Re: [PATCH 6/8] ARM: clang: Do not relay on lr register for stacktrace
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Nathan Huckleberry <nhuck@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 15:45:55 +0200
-Pierre Morel <pmorel@linux.ibm.com> wrote:
+On Fri, Oct 8, 2021 at 5:29 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Currently the stacktrace on clang compiled arm kernel uses the 'lr'
+> register to find the first frame address from pt_regs. However, that
+> is wrong after calling another function, because the 'lr' register
+> is used by 'bl' instruction and never be recovered.
+>
+> As same as gcc arm kernel, directly use the frame pointer (x11) of
+> the pt_regs to find the first frame address.
 
-> > +	if (IS_ERR_OR_NULL(addr))  
-> 
-> I can be wrong but it seems that only dma_alloc_coherent() used in 
-> cio_gp_dma_zalloc() report an error but the error is ignored and used as 
-> a valid pointer.
+Hi Masami,
+Thanks for the patch. Testing with ARCH=arm defconfig (multi_v7_defconfig)
 
+Before this patch:
 
-https://www.kernel.org/doc/Documentation/DMA-API.txt says:
+$ mount -t proc /proc
+$ echo 0 > /proc/sys/kernel/kptr_restrict
+$ cat /proc/self/stack
+[<0>] proc_single_show+0x4c/0xb8
+[<0>] seq_read_iter+0x174/0x4d8
+[<0>] seq_read+0x134/0x158
+[<0>] vfs_read+0xcc/0x2f8
+[<0>] ksys_read+0x74/0xd0
+[<0>] __entry_text_start+0x14/0x14
+[<0>] 0xbea38cc0
 
-Part Ia - Using large DMA-coherent buffers
-------------------------------------------
+After this patch:
+$ mount -t proc /proc
+$ echo 0 > /proc/sys/kernel/kptr_restrict
+$ cat /proc/self/stack
+[<0>] proc_single_show+0x4c/0xb8
+[<0>] seq_read_iter+0x174/0x4d8
+[<0>] seq_read+0x134/0x158
+[<0>] vfs_read+0xcc/0x2f8
+[<0>] ksys_read+0x74/0xd0
+[<0>] __entry_text_start+0x14/0x14
+[<0>] 0xbeb55cc0
 
-::
+Is there a different way to test/verify this patch? (I'm pretty sure
+we had verified the WARN_ONCE functionality with this, too.)
 
-	void *
-	dma_alloc_coherent(struct device *dev, size_t size,
-			   dma_addr_t *dma_handle, gfp_t flag)
+If I change from CONFIG_UNWINDER_ARM=y to
+CONFIG_UNWINDER_FRAME_POINTER=y, before:
 
-[..]
+# cat /proc/self/stack
+[<0>] stack_trace_save_tsk+0x50/0x6c
+[<0>] proc_pid_stack+0xa0/0xf8
+[<0>] proc_single_show+0x50/0xbc
+[<0>] seq_read_iter+0x178/0x4ec
+[<0>] seq_read+0x138/0x15c
+[<0>] vfs_read+0xd0/0x304
+[<0>] ksys_read+0x78/0xd4
+[<0>] sys_read+0xc/0x10
 
-It returns a pointer to the allocated region (in the processor's virtual
-address space) or NULL if the allocation failed.
+after:
+# cat /proc/self/stack
+[<0>] proc_pid_stack+0xa0/0xf8
+[<0>] proc_single_show+0x50/0xbc
+[<0>] seq_read_iter+0x178/0x4ec
+[<0>] seq_read+0x138/0x15c
+[<0>] vfs_read+0xd0/0x304
+[<0>] ksys_read+0x78/0xd4
+[<0>] sys_read+0xc/0x10
+[<0>] __entry_text_start+0x14/0x14
+[<0>] 0xffffffff
 
-I hope that is still true. If not we should fix cio_gp_dma_zalloc().
+So I guess this helps the CONFIG_UNWINDER_FRAME_POINTER=y case? (That
+final frame address looks wrong, but is potentially yet another bug;
+perhaps for clang we need to manually store the previous frame's pc at
+a different offset before jumping to __entry_text_start).
 
-> 
-> So shouldn't we modify this function and just test for a NULL address here?
-> 
+Also, I'm curious about CONFIG_THUMB2_KERNEL (forces CONFIG_UNWINDER_ARM=y).
 
-Isn't IS_ERR_OR_NULL() safer, in a sense that even if we decided to
-eventually return an error code, this piece of code would be robust
-and safe?
+before:
+# cat /proc/self/stack
+[<0>] proc_single_show+0x31/0x86
+[<0>] seq_read_iter+0xff/0x326
+[<0>] seq_read+0xd7/0xf2
+[<0>] vfs_read+0x93/0x20e
+[<0>] ksys_read+0x53/0x92
+[<0>] ret_fast_syscall+0x1/0x52
+[<0>] 0xbe9a9cc0
 
-We may exploit the knowledge that cio_gp_dma_zalloc() either
-returns NULL or a valid pointer, but doing it like this is IMHO also an
-option.
+after:
+# cat /proc/self/stack
+[<0>] proc_single_show+0x31/0x86
+[<0>] seq_read_iter+0xff/0x326
+[<0>] seq_read+0xd7/0xf2
+[<0>] vfs_read+0x93/0x20e
+[<0>] ksys_read+0x53/0x92
+[<0>] ret_fast_syscall+0x1/0x52
+[<0>] 0xbec08cc0
 
-> here what I mean:---------------------------------
-> 
-> diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
-> index 2bc55ccf3f23..b45fbaa7131b 100644
-> --- a/drivers/s390/cio/css.c
-> +++ b/drivers/s390/cio/css.c
-> @@ -1176,7 +1176,7 @@ void *cio_gp_dma_zalloc(struct gen_pool *gp_dma, 
-> struct device *dma_dev,
->                  chunk_size = round_up(size, PAGE_SIZE);
->                  addr = (unsigned long) dma_alloc_coherent(dma_dev,
->                                           chunk_size, &dma_addr, 
-> CIO_DMA_GFP);
-> -               if (!addr)
-> +               if (IS_ERR_OR_NULL(addr))
->                          return NULL;
->                  gen_pool_add_virt(gp_dma, addr, dma_addr, chunk_size, -1);
->                  addr = gen_pool_alloc(gp_dma, size);
-> 
-> ---------------------------------
-> 
-> > +		put_device(&cdev->dev);  
-> 
-> addr is not null if addr is ERR.
-> 
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Your point?
+so likely this fixes/improves CONFIG_UNWINDER_FRAME_POINTER=y? Is that correct?
 
-> > +	return addr;  
-> 
-> may be return IS_ERR_OR_NULL(addr)? NULL : addr;
-> 
+>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  arch/arm/kernel/stacktrace.c |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/arch/arm/kernel/stacktrace.c b/arch/arm/kernel/stacktrace.c
+> index 76ea4178a55c..db798eac7431 100644
+> --- a/arch/arm/kernel/stacktrace.c
+> +++ b/arch/arm/kernel/stacktrace.c
+> @@ -54,8 +54,7 @@ int notrace unwind_frame(struct stackframe *frame)
+>
+>         frame->sp = frame->fp;
+>         frame->fp = *(unsigned long *)(fp);
+> -       frame->pc = frame->lr;
+> -       frame->lr = *(unsigned long *)(fp + 4);
+> +       frame->pc = *(unsigned long *)(fp + 4);
+>  #else
+>         /* check current frame pointer is within bounds */
+>         if (fp < low + 12 || fp > high - 4)
+>
 
-See above. I don't think that is necessary.
-
-> >   }
-> >   EXPORT_SYMBOL(ccw_device_dma_zalloc);
-> >   
-> >   void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
-> >   {
-> > +	if (!cpu_addr)
-> > +		return;  
-> 
-> no need, cpu_addr is already tested in cio_gp_dma_free()
-> 
-
-This is added in because of the put_device(). An alternative would be
-to call cio_gp_dma_free() unconditionally do the check just for the
-put_device(). But I like this one better.
-
-Thanks for your feedback!
-
-Halil
-
-> >   	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
-> > +	put_device(&cdev->dev);
-> >   }
-> >   EXPORT_SYMBOL(ccw_device_dma_free);
-> >   
-> > 
+-- 
+Thanks,
+~Nick Desaulniers
