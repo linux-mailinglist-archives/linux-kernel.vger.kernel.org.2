@@ -2,84 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53158428D50
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D920F428D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235129AbhJKMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35688 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235034AbhJKMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:50:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2E8760D43
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:48:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633956493;
-        bh=coqwi6nrnA/rgfWRyHfZ4CX9I41AAO4LFY7T6A6Bsgw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fCBYVELim5H7qEx8MtUbWk+zL+QYHcDl0fWakHht6uomtyVJzVfu5Oc3dxEn2iuH8
-         7Om8KYBzvfeBnTBLJvHLB2ed05TEBERHouOJkHhu3fflewP5babV/z/VkMtexSz+HP
-         GCapGrGYpY0sSIFw+wK/eTGUYCmdhn1ojxIFY9Lbz2n401uP73kc8vquAEEz1Ih5Vu
-         yfBFX3n/VM5SiRs+n6SEhPnOVZg31FsbIw8rgHtsXeIrZ9emq3gzp1KmY+W+Hvdp/W
-         33zDysy0cKYiJrTY1Q4TPR1OFDWYa1EDOrO9JPXG0PP+KpI9d/9w48+bObAGbaBvzj
-         AtELl6NjPlVlw==
-Received: by mail-wr1-f41.google.com with SMTP id e12so55874849wra.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:48:13 -0700 (PDT)
-X-Gm-Message-State: AOAM533+PECAvmKxlqFb6WNESn10h3LJmFTeCsrosmvfLBEKP3Ag8jow
-        Xorulm/n5N/QQ4QVxL4NMrBvT53YVVUTbAUv+CI=
-X-Google-Smtp-Source: ABdhPJzJ91rg+hLVEkHiRANCRlm7wUcbsrFmq3ntDIPHvq3mN08w74MORoShTwBnXcQGewIx+vDDLKOAdiZZR1df8bE=
-X-Received: by 2002:a1c:4b08:: with SMTP id y8mr10407430wma.98.1633956492335;
- Mon, 11 Oct 2021 05:48:12 -0700 (PDT)
+        id S235158AbhJKMxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234885AbhJKMxj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 08:53:39 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B48C2C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:51:39 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n11so10848119plf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:51:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TfUZzwiLi5+SzReakJZopKh7Hr/7mT1olQHJVB0Sy/c=;
+        b=XWik9ZjFOk/4LLMhsIRzlkjZAquZ5m7H8NaN5TMttt2vSZ3pq5pP3OZSf38j4YwHdI
+         gjCeW9qYzgChbzQJD9+vA0aSFs6YXFrhxrd3rqnlmxR1GizzkXt+sM6zVBqjusLxYRlr
+         oFCzJgZAGDR9YcUHlYmAWE+g+tAvAYJLMaPtkzylAJKuHQx0t9Nuf4vsRqWEWd36cLnk
+         XPHOioohb1gNaWDDI5dDzjmVakYn8I6bGgwP5i3OdDKygO0wd1y5RikGTYGx9HuCBdMB
+         EBIUYsbYxRCw9vpRoOvuU0Q8E7rX/J7r0WSXj9YUU4GRvKs5uaKHa3k30jMKryt0a4iH
+         0BQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TfUZzwiLi5+SzReakJZopKh7Hr/7mT1olQHJVB0Sy/c=;
+        b=kbB7fLP/Cq0bRFSKqMQhFApC6zxEFd5eeXCJbMhYIsaXJDYjEbBfHQoj/pEio9B9LB
+         phP67dbnAJBe8orHIeMKvPoIYLbvl/7TWVLMGOlROYRlfnvsvuLsGSDBzYUekZGnE4Qu
+         yScRreh/ynwMrWvpQp7fnSIeh4TD8ZkETJQH0EDV0AwF7Txw3CZS7WEwf54t+txSwCUJ
+         ZL+T1f64qEMWNXT+wHQd+dGOFOp5VUc6ixmPf635/S7xGBw4xRjCGyp9DP6xhvOyWwWh
+         fM+IJxsLV/NDNZg3r/szp8aQc3UUpUmW/SpCdCSdTbAcm7VsFfhFA1tuAH4EK0O0iWrk
+         tEcg==
+X-Gm-Message-State: AOAM531ja4gXZyLyy1HexmGLNKoyi8CMWanOZLxlrQ3s94qlOje8M3eW
+        wFsBYq086HqOL16VmttCzG/PokWwEtOJaTlq
+X-Google-Smtp-Source: ABdhPJxFZ3ep63oEgxhyrB2JHoxuFpBAlBufBPTktok4aRDzrFgs5FckkIkLnYlFxBevJSyHzNRdhw==
+X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr30587060pjr.17.1633956699007;
+        Mon, 11 Oct 2021 05:51:39 -0700 (PDT)
+Received: from localhost.localdomain ([223.178.212.208])
+        by smtp.gmail.com with ESMTPSA id y18sm7734194pff.184.2021.10.11.05.51.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 05:51:38 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     will@kernel.org, catalin.marinas@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, rostedt@goodmis.org,
+        mingo@redhat.com, samitolvanen@google.com, ben.dai@unisoc.com,
+        mark.rutland@arm.com, nathan@kernel.org, keescook@chromium.org,
+        ndesaulniers@google.com, daniel.thompson@linaro.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH v3] arm64: ftrace: use function_nocfi for _mcount as well
+Date:   Mon, 11 Oct 2021 18:20:59 +0530
+Message-Id: <20211011125059.3378646-1-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211007195754.678124-1-anders.roxell@linaro.org> <20211011100256.GA3681@willie-the-truck>
-In-Reply-To: <20211011100256.GA3681@willie-the-truck>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Oct 2021 14:47:56 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0wf8_8YWmi8FRjmqUZej3ximgfxHgRZEOxsV-x3M5_QQ@mail.gmail.com>
-Message-ID: <CAK8P3a0wf8_8YWmi8FRjmqUZej3ximgfxHgRZEOxsV-x3M5_QQ@mail.gmail.com>
-Subject: Re: [PATCH] arm64: asm: vdso: gettimeofday: export common variables
-To:     Will Deacon <will@kernel.org>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 12:03 PM Will Deacon <will@kernel.org> wrote:
->
-> On Thu, Oct 07, 2021 at 09:57:54PM +0200, Anders Roxell wrote:
-> > When building the kernel with sparse enabled 'C=1' the following
-> > warnings can be seen:
-> >
-> > arch/arm64/kernel/vdso/vgettimeofday.c:9:5: warning: symbol '__kernel_clock_gettime' was not declared. Should it be static?
-> > arch/arm64/kernel/vdso/vgettimeofday.c:15:5: warning: symbol '__kernel_gettimeofday' was not declared. Should it be static?
-> > arch/arm64/kernel/vdso/vgettimeofday.c:21:5: warning: symbol '__kernel_clock_getres' was not declared. Should it be static?
-> >
-> > Rework so the variables are exported, since these variables are
-> > created and used in vdso/vgettimeofday.c, also used in vdso.lds.S.
->
-> Hmm, these functions are part of the vDSO and shouldn't be called from the
-> kernel, so I don't think it makes sense to add prototypes for them to a
-> kernel header, to be honest.
+Commit 800618f955a9 ("arm64: ftrace: use function_nocfi for ftrace_call")
+only fixed address of ftrace_call but address of _mcount needs to be
+fixed as well. Use function_nocfi() to get the actual address of _mcount
+function as with CONFIG_CFI_CLANG, the compiler replaces function pointers
+with jump table addresses which breaks dynamic ftrace as the address of
+_mcount is replaced with the address of _mcount.cfi_jt.
 
-It's a recurring problem, and I have recommended this method to Anders as
-I don't see any of the alternatives as better.
+With mainline, this won't be a problem since by default
+CONFIG_DYNAMIC_FTRACE_WITH_REGS=y with Clang >= 10 as it supports
+-fpatchable-function-entry and CFI requires Clang 12 but for consistency
+we should add function_nocfi() for _mcount as well.
 
-The thing is that both sparse (with make C=1) and gcc/clang (with make W=1)
-warn about missing prototypes, and this catches a lot of real bugs. I hope
-that we can eventually get to the point of enabling the warning by default for
-all files, but that means we need a declaration for each global function and
-variable.
+Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+---
 
-It's possible to work around this by adding a declaration just before the
-function definition to shut up those warnings, but I think that's worse because
-we should not encourage having declarations in .c files where they may
-get out of sync with a definition in another file. It's also possible that some
-of the tools will start warning about extern declarations in .c files for this
-reason, so it would end up as double work to add them here and move them
-later.
+Changes in v3:
+- Droped fixes tag as it isn't critical.
+- Modified commit description in order to make this change for consistency.
+- Picked up Sami's review tag.
 
-       Arnd
+Changes in v2:
+- Added fixes tag.
+- Extended commit description.
+- Picked up Mark's ack.
+
+ arch/arm64/include/asm/ftrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+index 91fa4baa1a93..347b0cc68f07 100644
+--- a/arch/arm64/include/asm/ftrace.h
++++ b/arch/arm64/include/asm/ftrace.h
+@@ -15,7 +15,7 @@
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+ #define ARCH_SUPPORTS_FTRACE_OPS 1
+ #else
+-#define MCOUNT_ADDR		((unsigned long)_mcount)
++#define MCOUNT_ADDR		((unsigned long)function_nocfi(_mcount))
+ #endif
+ 
+ /* The BL at the callsite's adjusted rec->ip */
+-- 
+2.17.1
+
