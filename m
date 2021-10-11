@@ -2,129 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C864284F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:04:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2044284FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:05:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhJKCGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:06:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231578AbhJKCGB (ORCPT
+        id S233576AbhJKCHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 22:07:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35657 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233541AbhJKCHI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:06:01 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5766C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 19:04:01 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id v4so17226348vsg.12
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 19:04:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=smartx-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bfZxBQqSlnMz3lcuj1XK/231rEN9kT4LRHRvZ4eNtbk=;
-        b=M23AiDiWE0ixlr2J7wy3RNlffR8Q4Iv8C/4PyN5IuUPVZvUf/A+DM4u7QpRMwqizdZ
-         H+UNTTRapKZo2UQ77sVi70HrjrkTVG5p47S8xnrJUOIZ66KWZS5yjXLMi1SqwF+fsSD+
-         d0zBMz3WFrCAXS+6EdGE1BvC84JB3JzQe7Knl8kPTmg0gDQEbltLrrYZKGgim1LH9yFa
-         X6e5Yo1lUAdIMVK2Dq4zuyo6MBRR/6F7jOuPr80mHe50TYS+kDq+RJNDyMKL11nHXgu4
-         RA8n7pbgBYrmrxlGvNiH2EHJiVmOumKX35sZKvKB+DbBYwFRQSe8b+K/kzmbFLcMbmfz
-         SdSg==
+        Sun, 10 Oct 2021 22:07:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633917909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Dt3W97nn3nLieRHcwrHXkZHoe+y8SxklSbymQfso1QE=;
+        b=De8W9ydjpOM6FchOpHJRXT+DP043yoGNWdJiCoRRfjW2znQU7SQs2R3CzUYBuNZWvhbcRQ
+        XppcF2+Z+UwII6zWo0k6x8A+dKunhWDEO3gcg6vBn99iIVAQs3dBLNAf7wiOrSyY4Owd1t
+        L6xTJIm0yF9q1Qq7MsuLrZgVxUMzfII=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-25-ggvznWhzPSOw_k1kLE8ElQ-1; Sun, 10 Oct 2021 22:05:07 -0400
+X-MC-Unique: ggvznWhzPSOw_k1kLE8ElQ-1
+Received: by mail-lf1-f69.google.com with SMTP id i40-20020a0565123e2800b003f53da59009so11443916lfv.16
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bfZxBQqSlnMz3lcuj1XK/231rEN9kT4LRHRvZ4eNtbk=;
-        b=txjUQlZvE9ON4cdhiHgXh5OMGi8tOQ4Em/DU8aM3D9GbEqO9GW0LANyMOTVapX5cIo
-         o99yx+TzuCv3nVqEkTuKXtGZOGeoUgPJB40L70PH08rt0uGtRxQp6SDzHR2mZQdTN59F
-         9DlPPKsD09r5GBxpHeIRtI7FoUa2d+P7YoaUQXWRGsNfHSTKP8TFdCksS9Lr05eJmo0a
-         /AWt4tpNMmOVrWo6fZvuvtlBGrfhBiVyXNbyUNs75HDk+F0eUfEyqLn3I2P9KM5P6W8+
-         Jdg1hrApGTx7nJfV8sSwfWPPNUFQFVWTLKwN6qXmCKgnnolNO2ImfiYhE7aAE9CICmvE
-         6ssw==
-X-Gm-Message-State: AOAM5305RNxukCTLyQJhhB0ecIBRojPb9juFOJrmtFNS9t7F5mzmxSAH
-        5cb+Og9KDNhLcC38hWUs2N+qBkIhzaIbg+gnxxOREw==
-X-Google-Smtp-Source: ABdhPJxcuf1rdNXYSV6+NbpGyOa0b6p/JhpkthDczILToJF0O1F+AIc1Hg9+g7STLtYKtseLexVIB72v02JVIbqOjmI=
-X-Received: by 2002:a67:ee4b:: with SMTP id g11mr18874850vsp.5.1633917841003;
- Sun, 10 Oct 2021 19:04:01 -0700 (PDT)
+        bh=Dt3W97nn3nLieRHcwrHXkZHoe+y8SxklSbymQfso1QE=;
+        b=sRzlEehStqyimq3d+dPaQWPdPQhYjIERzwsmf5PQ4eyRcddQVl9wk20O6F7xfGytJe
+         9M+bXWsbiwzh84Ao/PrcbcpXrATjRrafrrvNa7Tucyk9WcRlIIj2BSAGvOe6w3ItZ70e
+         i2cBF+26OE/UOOHO+Mk9dCyDp2z32P38yfdTytFs8HyP+2OiJMajo8kRg5h7h4nWJLEQ
+         d8bjkQunPFiwknd9W8l2D8CyF6YGWxhot2KP6Cgb+prXe2oDNvERn5jBwaoVagSZYbUC
+         zGVakaA9ZaWH4Dq/0jHRHEuLcFSIP7SJwZrQIFDLPN80Si1iIh7XUk9P5zM4YgULKW1T
+         OgrQ==
+X-Gm-Message-State: AOAM533LS+GgRu9oFlYhFTBe6K3H5dN6dTnmzX+vNfjVbLbxjwUS9Kgl
+        CA52CqyuDo1s2LeHI2Gxz0DN77CMIvTKEgqj365Xr8y9w26E1QlKCeJhcJItSTV/g+vpOQWZRwA
+        uF4EWTHdTUXLU3xQvbtBEjNTGyuZoPCvdP5d5r8fX
+X-Received: by 2002:a2e:8099:: with SMTP id i25mr8180069ljg.277.1633917906367;
+        Sun, 10 Oct 2021 19:05:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzkDiR/BGptgc+pbWgE/RLAuwXL6JyrQ0fkP5KqdZaKCoCdI7ytGhHRzptoWN+ks5B3l30AvuWSt/eeqfwAjQw=
+X-Received: by 2002:a2e:8099:: with SMTP id i25mr8180041ljg.277.1633917906102;
+ Sun, 10 Oct 2021 19:05:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20211010071947.2002025-1-fengli@smartx.com> <95db5f3d-99dd-ddbb-ea44-8cd37d92ce0f@oracle.com>
-In-Reply-To: <95db5f3d-99dd-ddbb-ea44-8cd37d92ce0f@oracle.com>
-From:   Li Feng <fengli@smartx.com>
-Date:   Mon, 11 Oct 2021 10:03:49 +0800
-Message-ID: <CAHckoCxCRZXXcSp3A+i+vxzM8AomDtAohVYDy1FmARJzB2SrCQ@mail.gmail.com>
-Subject: Re: [PATCH] iscsi_tcp: fix the NULL pointer dereference
-To:     michael.christie@oracle.com
-Cc:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "open list:ISCSI" <open-iscsi@googlegroups.com>,
-        "open list:ISCSI" <linux-scsi@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Gulam Mohamed <gulam.mohamed@oracle.com>
+References: <20211009091604.84141-1-mst@redhat.com>
+In-Reply-To: <20211009091604.84141-1-mst@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Date:   Mon, 11 Oct 2021 10:04:55 +0800
+Message-ID: <CACGkMEsjxm9u8QvQ9c9f34v1WWhGkbwPE-2BgAkRjd+zB6V-AQ@mail.gmail.com>
+Subject: Re: [PATCH net] virtio-net: fix for skb_over_panic inside big mode
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        =?UTF-8?Q?Corentin_No=C3=ABl?= <corentin.noel@collabora.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev <netdev@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
-Feng Li
+On Sat, Oct 9, 2021 at 5:18 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+>
+> commit 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netde=
+v/net")
+> accidentally reverted the effect of
+> commit 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
+> on drivers/net/virtio_net.c
+>
+> As a result, users of crosvm (which is using large packet mode)
+> are experiencing crashes with 5.14-rc1 and above that do not
+> occur with 5.13.
+>
+> Crash trace:
+>
+> [   61.346677] skbuff: skb_over_panic: text:ffffffff881ae2c7 len:3762 put=
+:3762 head:ffff8a5ec8c22000 data:ffff8a5ec8c22010 tail:0xec2 end:0xec0 dev:=
+<NULL>
+> [   61.369192] kernel BUG at net/core/skbuff.c:111!
+> [   61.372840] invalid opcode: 0000 [#1] SMP PTI
+> [   61.374892] CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.14.0-rc1 linux=
+-v5.14-rc1-for-mesa-ci.tar.bz2 #1
+> [   61.376450] Hardware name: ChromiumOS crosvm, BIOS 0
+>
+> ..
+>
+> [   61.393635] Call Trace:
+> [   61.394127]  <IRQ>
+> [   61.394488]  skb_put.cold+0x10/0x10
+> [   61.395095]  page_to_skb+0xf7/0x410
+> [   61.395689]  receive_buf+0x81/0x1660
+> [   61.396228]  ? netif_receive_skb_list_internal+0x1ad/0x2b0
+> [   61.397180]  ? napi_gro_flush+0x97/0xe0
+> [   61.397896]  ? detach_buf_split+0x67/0x120
+> [   61.398573]  virtnet_poll+0x2cf/0x420
+> [   61.399197]  __napi_poll+0x25/0x150
+> [   61.399764]  net_rx_action+0x22f/0x280
+> [   61.400394]  __do_softirq+0xba/0x257
+> [   61.401012]  irq_exit_rcu+0x8e/0xb0
+> [   61.401618]  common_interrupt+0x7b/0xa0
+> [   61.402270]  </IRQ>
+>
+> See
+> https://lore.kernel.org/r/5edaa2b7c2fe4abd0347b8454b2ac032b6694e2c.camel%=
+40collabora.com
+> for the report.
+>
+> Apply the original 1a8024239da ("virtio-net: fix for skb_over_panic insid=
+e big mode")
+> again, the original logic still holds:
+>
+> In virtio-net's large packet mode, there is a hole in the space behind
+> buf.
+>
+>     hdr_padded_len - hdr_len
+>
+> We must take this into account when calculating tailroom.
+>
+> Cc: Greg KH <gregkh@linuxfoundation.org>
+> Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there'=
+s sufficient tailroom")
+> Fixes: 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netde=
+v/net")
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> Reported-by: Corentin No=C3=ABl <corentin.noel@collabora.com>
+> Tested-by: Corentin No=C3=ABl <corentin.noel@collabora.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> ---
 
-<michael.christie@oracle.com> =E4=BA=8E2021=E5=B9=B410=E6=9C=8811=E6=97=A5=
-=E5=91=A8=E4=B8=80 =E4=B8=8A=E5=8D=8812:05=E5=86=99=E9=81=93=EF=BC=9A
->
-> On 10/10/21 2:19 AM, Li Feng wrote:
-> >  drivers/scsi/iscsi_tcp.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
-> > index 1bc37593c88f..2ec1405d272d 100644
-> > --- a/drivers/scsi/iscsi_tcp.c
-> > +++ b/drivers/scsi/iscsi_tcp.c
-> > @@ -724,6 +724,8 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi=
-_cls_conn *cls_conn,
-> >               break;
-> >       case ISCSI_PARAM_DATADGST_EN:
-> >               iscsi_set_param(cls_conn, param, buf, buflen);
-> > +             if (!tcp_sw_conn || !tcp_sw_conn->sock)
-> > +                     return -ENOTCONN;
-> >               tcp_sw_conn->sendpage =3D conn->datadgst_en ?
-> >                       sock_no_sendpage : tcp_sw_conn->sock->ops->sendpa=
-ge;
-> >               break;
-> >
->
-> Hi,
->
-> Thanks for the patch. This was supposed to be fixed in:
->
-> commit 9e67600ed6b8565da4b85698ec659b5879a6c1c6
-> Author: Gulam Mohamed <gulam.mohamed@oracle.com>
-> Date:   Thu Mar 25 09:32:48 2021 +0000
->
->     scsi: iscsi: Fix race condition between login and sync thread
->
-> because it was not supposed to allow set_param to be called on
-> an unbound connection. However, it looks like there was a mistake in
-> the patch:
->
->                 err =3D transport->set_param(conn, ev->u.set_param.param,
->                                            data, ev->u.set_param.len);
-> +               if ((conn->state =3D=3D ISCSI_CONN_BOUND) ||
-> +                       (conn->state =3D=3D ISCSI_CONN_UP)) {
-> +                       err =3D transport->set_param(conn, ev->u.set_para=
-m.param,
-> +                                       data, ev->u.set_param.len);
-> +               } else {
-> +                       return -ENOTCONN;
-> +               }
->
->
-> and that first set_param call was supposed to be deleted and
-> replaced with the one that was added in the conn->state check.
->
-> We should just need a patch to remove that first set_param call.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-Yes, I have checked the upstream code, this is an obvious mistake here.
-I encountered this issue on 5.11.12-300.fc34.x86_64, it doesn't
-include this patch,
-so I check the pointer like my patch.
-Thanks.
+>
+> David, I think we need this in stable, too.
+>
+>  drivers/net/virtio_net.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+> index 096c2ac6b7a6..6b0812f44bbf 100644
+> --- a/drivers/net/virtio_net.c
+> +++ b/drivers/net/virtio_net.c
+> @@ -406,7 +406,7 @@ static struct sk_buff *page_to_skb(struct virtnet_inf=
+o *vi,
+>          * add_recvbuf_mergeable() + get_mergeable_buf_len()
+>          */
+>         truesize =3D headroom ? PAGE_SIZE : truesize;
+> -       tailroom =3D truesize - len - headroom;
+> +       tailroom =3D truesize - len - headroom - (hdr_padded_len - hdr_le=
+n);
+>         buf =3D p - headroom;
+>
+>         len -=3D hdr_len;
+> --
+> MST
+>
+
