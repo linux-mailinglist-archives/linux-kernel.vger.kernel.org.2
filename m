@@ -2,157 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF054289C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2BA4289CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhJKJkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:40:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:40382 "EHLO foss.arm.com"
+        id S235580AbhJKJk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235500AbhJKJke (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:40:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 676011FB;
-        Mon, 11 Oct 2021 02:38:33 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.22.9])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A2033F66F;
-        Mon, 11 Oct 2021 02:38:30 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 10:38:18 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
+        id S235500AbhJKJkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:40:51 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 29D5660231;
+        Mon, 11 Oct 2021 09:38:52 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mZrli-00FySl-62; Mon, 11 Oct 2021 10:38:50 +0100
+Date:   Mon, 11 Oct 2021 10:38:49 +0100
+Message-ID: <87v923q4t2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ke Wang <ke.wang@unisoc.com>, ping.zhou1@unisoc.com
-Subject: Re: [RFC PATCH] arch: ARM64: add isb before enable pan
-Message-ID: <20211011093803.GA1421@C02TD0UTHF1T.local>
-References: <1633673269-15048-1-git-send-email-huangzhaoyang@gmail.com>
- <20211008080113.GA441@willie-the-truck>
- <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGWkznEh6RuEgxTH-vHB1kMjb0CERigqpL4+f0Lg1X1_VBQuMQ@mail.gmail.com>
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        xen-devel@lists.xenproject.org,
+        Artem Kashkanov <artem.kashkanov@intel.com>,
+        Like Xu <like.xu.linux@gmail.com>,
+        Zhu Lingshan <lingshan.zhu@intel.com>
+Subject: Re: [PATCH v3 14/16] KVM: arm64: Convert to the generic perf callbacks
+In-Reply-To: <20210922000533.713300-15-seanjc@google.com>
+References: <20210922000533.713300-1-seanjc@google.com>
+        <20210922000533.713300-15-seanjc@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, will@kernel.org, mark.rutland@arm.com, guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, boris.ostrovsky@oracle.com, jgross@suse.com, alexander.shishkin@linux.intel.com, jolsa@redhat.com, namhyung@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, sstabellini@kernel.org, linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, xen-devel@lists.xenproject.org, artem.kashkanov@intel.com, like.xu.linux@gmail.com, lingshan.zhu@intel.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Fri, Oct 08, 2021 at 04:34:12PM +0800, Zhaoyang Huang wrote:
-> On Fri, Oct 8, 2021 at 4:01 PM Will Deacon <will@kernel.org> wrote:
-> > On Fri, Oct 08, 2021 at 02:07:49PM +0800, Huangzhaoyang wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > set_pstate_pan failure is observed in an ARM64 system occasionaly on a reboot
-> > > test, which can be work around by a msleep on the sw context. We assume
-> > > suspicious on disorder of previous instr of disabling SW_PAN and add an isb here.
-> > >
-> > > PS:
-> > > The bootup test failed with a invalid TTBR1_EL1 that equals 0x34000000, which is
-> > > alike racing between on chip PAN and SW_PAN.
-> >
-> > Sorry, but I'm struggling to understand the problem here. Please could you
-> > explain it in more detail?
-> >
-> >   - Why does a TTBR1_EL1 value of `0x34000000` indicate a race?
-> >   - Can you explain the race that you think might be occurring?
-> >   - Why does an ISB prevent the race?
-> Please find panic logs[1], related codes[2], sample of debug patch[3]
-> below. TTBR1_EL1 equals 0x34000000 when panic
-
-Just to check, how do you know the value of TTBR1_EL1 was 0x34000000?
-That isn't in the log sample below -- was that from the output of
-show_pte(), an external debugger, or something else?
-
-I'm assuming from the "(ptrval)" bits below that can't have been from
-show_pte().
-
-> and can NOT be captured
-> by the debug patch during retest (all entrances that msr ttbr1_el1 are
-> under watch) which should work. Adding ISB here to prevent race on
-> TTBR1 from previous access of sysregs which can affect the msr
-> result(the test is still ongoing). Could the race be
-> ARM64_HAS_PAN(automated by core) and SW_PAN.
+On Wed, 22 Sep 2021 01:05:31 +0100,
+Sean Christopherson <seanjc@google.com> wrote:
 > 
-> [1]
-> [    0.348000]  [0:    migration/0:   11] Synchronous External Abort:
-> level 1 (translation table walk) (0x96000055) at 0xffffffc000e06004
-> [    0.352000]  [0:    migration/0:   11] Internal error: : 96000055
-> [#1] PREEMPT SMP
-> [    0.352000]  [0:    migration/0:   11] Modules linked in:
-> [    0.352000]  [0:    migration/0:   11] Process migration/0 (pid:
-> 11, stack limit = 0x        (ptrval))
-> [    0.352000]  [0:    migration/0:   11] CPU: 0 PID: 11 Comm:
-> migration/0 Tainted: G S
-
-Assuming I've read the `taint_flags` table correctly, that 'S' is
-`TAINT_CPU_OUT_OF_SPEC`, for which we should dump warnings for at boot
-time. The 'G' indicates the absence of proprietary modules.
-
-Can you provide a full dmesg for a failed boot, please?
-
-Have you made any changes to arch/arm64/kernel/cpufeature.c?
-
-Are you able to test with a mainline kernel?
-
-> 4.14.199-22631304-abA035FXXU0AUJ4_T4 #2
->
-> [    0.352000]  [0:    migration/0:   11] Hardware name: Spreadtrum
-> UMS9230 1H10 SoC (DT)
-> [    0.352000]  [0:    migration/0:   11] task:         (ptrval)
-> task.stack:         (ptrval)
-> [    0.352000]  [0:    migration/0:   11] pc : patch_alternative+0x68/0x27c
-> [    0.352000]  [0:    migration/0:   11] lr :
-> __apply_alternatives.llvm.7450387295891320208+0x60/0x160
+> Drop arm64's version of the callbacks in favor of the callbacks provided
+> by generic KVM, which are semantically identical.
 > 
-> [2]
-> __apply_alternatives
->    for()
->        patch_alternative    <----panic here in the 2nd round of loop
-> after invoking flush_icache_range
->        flush_icache_range
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/arm64/kvm/perf.c | 34 ++--------------------------------
+>  1 file changed, 2 insertions(+), 32 deletions(-)
 > 
-> [3]
-> sub \tmp1, \tmp1, #SWAPPER_DIR_SIZE
-> + tst     \tmp1, #0xffff80000000 // check ttbr1_el1 valid
-> +    b.le    .
+> diff --git a/arch/arm64/kvm/perf.c b/arch/arm64/kvm/perf.c
+> index 3e99ac4ab2d6..0b902e0d5b5d 100644
+> --- a/arch/arm64/kvm/perf.c
+> +++ b/arch/arm64/kvm/perf.c
+> @@ -13,45 +13,15 @@
+>  
+>  DEFINE_STATIC_KEY_FALSE(kvm_arm_pmu_available);
+>  
+> -static unsigned int kvm_guest_state(void)
+> -{
+> -	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
+> -	unsigned int state;
+> -
+> -	if (!vcpu)
+> -		return 0;
+> -
+> -	state = PERF_GUEST_ACTIVE;
+> -	if (!vcpu_mode_priv(vcpu))
+> -		state |= PERF_GUEST_USER;
+> -
+> -	return state;
+> -}
+> -
+> -static unsigned long kvm_get_guest_ip(void)
+> -{
+> -	struct kvm_vcpu *vcpu = kvm_get_running_vcpu();
+> -
+> -	if (WARN_ON_ONCE(!vcpu))
+> -		return 0;
+> -
+> -	return *vcpu_pc(vcpu);
+> -}
+> -
+> -static struct perf_guest_info_callbacks kvm_guest_cbs = {
+> -	.state		= kvm_guest_state,
+> -	.get_ip		= kvm_get_guest_ip,
+> -};
+> -
+>  void kvm_perf_init(void)
+>  {
+>  	if (kvm_pmu_probe_pmuver() != 0xf && !is_protected_kvm_enabled())
+>  		static_branch_enable(&kvm_arm_pmu_available);
+>  
+> -	perf_register_guest_info_callbacks(&kvm_guest_cbs);
+> +	kvm_register_perf_callbacks(NULL);
+>  }
+>  
+>  void kvm_perf_teardown(void)
+>  {
+> -	perf_unregister_guest_info_callbacks(&kvm_guest_cbs);
+> +	kvm_unregister_perf_callbacks();
+>  }
 
-What are you trying to detect for here? This is testing both the ASID
-and BADDR[47] bits, so I don;t understand the rationale.
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 
-Thanks,
-Mark.
+	M.
 
-> msr ttbr1_el1, \tmp1 // set reserved ASID
-> 
-> >
-> > > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > > ---
-> > >  arch/arm64/kernel/cpufeature.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> > > index efed283..3c0de0d 100644
-> > > --- a/arch/arm64/kernel/cpufeature.c
-> > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > @@ -1663,6 +1663,7 @@ static void cpu_enable_pan(const struct arm64_cpu_capabilities *__unused)
-> > >       WARN_ON_ONCE(in_interrupt());
-> > >
-> > >       sysreg_clear_set(sctlr_el1, SCTLR_EL1_SPAN, 0);
-> > > +     isb();
-> > >       set_pstate_pan(1);
-> >
-> > SCTLR_EL1.SPAN only affects the PAN behaviour on taking an exception, which
-> > is itself a context-synchronizing event, so I can't see why the ISB makes
-> > any difference here (at least, for the purposes of PAN).
-> >
-> > Thanks,
-> >
-> > Will
+-- 
+Without deviation from the norm, progress is not possible.
