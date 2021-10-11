@@ -2,122 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC094298C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086324298D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbhJKVTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
+        id S235260AbhJKV14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbhJKVTK (ORCPT
+        with ESMTP id S230114AbhJKV1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:19:10 -0400
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FA4C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:17:10 -0700 (PDT)
-Received: by mail-qt1-x832.google.com with SMTP id t16so5476204qto.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aFaiNjeTvld1X0vmZ2G8WJDTc5Mp6lRCwddZ5BoVR2Q=;
-        b=Gb2RHde2HCKly4rPx15NmHm1f7OWhrDTPB3a0iaNuflguTgncOk7Kvaw1KLKEdTaJO
-         J3AGNOCXxeWy7w2MnHfbSydxQuJhSg4TWodM8k8FSXRmijzpYmSwwufNcfKGVqScyex+
-         2Ozg675RNYEVr4++41Mr1WyJwkpyvI6Gt2UuzdHqsTjlUaRrtfxqCgiLIjrIYqhOo1zk
-         7LT0LEsYSqoEn4P2vgDEl2xHywR5AZulDVopV0wnwTW9xV2e6ncAFzzUXosQGjpp1txA
-         zIylJcrs6sMShuvPgi8O+by4rUyYbYOXiTVrQnoRjeWfM4dz+kVNmgl+hHigM/8Z/uzx
-         LDHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aFaiNjeTvld1X0vmZ2G8WJDTc5Mp6lRCwddZ5BoVR2Q=;
-        b=6BljfqfJFCnEc0ZPQv3rEc27rYWg/MfdyajptTmEf8okcA3keXcc5H+QlaGUY+cSoc
-         OueuvVvlK+DJmVXrYcKzk8CZPwuHAwWb00pQ2tDOIRTDj4Niw2WSAl7hDfhKQlgm2Dvj
-         fqKkgyUdnOmkwub8loG9h29YkOxAeKoqFDI6Is8weRpAxkADFvPlop8PLgWt8fRSNDpJ
-         09JBaxmzta1Vx70jcYeu//CoNRP+oTERC/UVsO0vV1NJMlOYCqo9Ad8Wgj7l0oFg7VT/
-         nu4HqSsNw/CyujD8CCG2+EJcLh9k0oHHlm7HbA6Wge6Fx65jD6xyMC87T/IyNaOXN3GG
-         2cyQ==
-X-Gm-Message-State: AOAM533DajsNAQV3pfhoCEmhQYTw51jl5HetlR5vZwYCrLcTtfX8gva7
-        aG4hgK2cPkRnoPyDRxuWHb/srA==
-X-Google-Smtp-Source: ABdhPJz7OaV0k5DNpo+Cq2aVen8Ye/B/FsyQaMp+I9D3BUe3XJWtXSXSh7FNWC9QRXKN+u3xiB6WjA==
-X-Received: by 2002:ac8:3e8a:: with SMTP id y10mr17839236qtf.31.1633987029152;
-        Mon, 11 Oct 2021 14:17:09 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id c7sm3252830qke.78.2021.10.11.14.17.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 14:17:08 -0700 (PDT)
-Subject: Re: [PATCH 3/5] cpufreq: qcom-cpufreq-hw: Update offline CPUs per-cpu
- thermal pressure
-To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
-        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
-        gregkh@linuxfoundation.org, rafael@kernel.org,
-        viresh.kumar@linaro.org, amitk@kernel.org,
-        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org
-References: <20211007080729.8262-1-lukasz.luba@arm.com>
- <20211007080729.8262-4-lukasz.luba@arm.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <be6fb99f-90bc-9ba1-b5a7-034b30734158@linaro.org>
-Date:   Mon, 11 Oct 2021 17:17:08 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 11 Oct 2021 17:27:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89388C061570;
+        Mon, 11 Oct 2021 14:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rvR++cOV6St/IKyuFj/V4jUUpnc9vYLPZ+efnuLPdWc=; b=25WRJtmBryphhp7aLK/UkJ4aWA
+        tK73XQukZ8oxuJlQ20xqvbyZ2vAL72VzbO+/iHZ5dWu8l0Tc0dS1+X1oi6wITuyN3WczsfC/2TbAS
+        8i+0OvOlvtM+vtQzQDamnzOhvw3FD2fGqvmkfMBXQz9adj5JPXbLeIv0PtKY6JIpjcR0jw/X857w3
+        J7B/ZD3uRcS6NnIiRdDYtHdxi8o/MPiyFEWaeoj8iXZonj6X7sJ91q3TlaR1N3d14Se1r+cs/QHve
+        soiEUlTGPsgb7VMv7J1IS6q03hcBm3HjPypLaF6BEWefYfZdAQ0+Ey1qR/nUTt1ZlL33O807I0Diy
+        iYbx0SOA==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ma2nq-00Al54-96; Mon, 11 Oct 2021 21:25:46 +0000
+Date:   Mon, 11 Oct 2021 14:25:46 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 09/12] sysfs: fix deadlock race with module removal
+Message-ID: <YWSr2trabEJflzlj@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-10-mcgrof@kernel.org>
+ <YVwZwh7qDKfSM59h@T590>
 MIME-Version: 1.0
-In-Reply-To: <20211007080729.8262-4-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVwZwh7qDKfSM59h@T590>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/7/21 4:07 AM, Lukasz Luba wrote:
-> The thermal pressure signal gives information to the scheduler about
-> reduced CPU capacity due to thermal. It is based on a value stored in
-> a per-cpu 'thermal_pressure' variable. The online CPUs will get the
-> new value there, while the offline won't. Unfortunately, when the CPU
-> is back online, the value read from per-cpu variable might be wrong
-> (stale data).  This might affect the scheduler decisions, since it
-> sees the CPU capacity differently than what is actually available.
+On Tue, Oct 05, 2021 at 05:24:18PM +0800, Ming Lei wrote:
+> On Mon, Sep 27, 2021 at 09:38:02AM -0700, Luis Chamberlain wrote:
+> > When driver sysfs attributes use a lock also used on module removal we
+> > can race to deadlock. This happens when for instance a sysfs file on
+> > a driver is used, then at the same time we have module removal call
+> > trigger. The module removal call code holds a lock, and then the
+> > driver's sysfs file entry waits for the same lock. While holding the
+> > lock the module removal tries to remove the sysfs entries, but these
+> > cannot be removed yet as one is waiting for a lock. This won't complete
+> > as the lock is already held. Likewise module removal cannot complete,
+> > and so we deadlock.
+> > 
+> > This can now be easily reproducible with our sysfs selftest as follows:
+> > 
+> > ./tools/testing/selftests/sysfs/sysfs.sh -t 0027
+> > 
+> > This uses a local driver lock. Test 0028 can also be used, that uses
+> > the rtnl_lock():
+> > 
+> > ./tools/testing/selftests/sysfs/sysfs.sh -t 0028
+> > 
+> > To fix this we extend the struct kernfs_node with a module reference
+> > and use the try_module_get() after kernfs_get_active() is called. As
+> > documented in the prior patch, we now know that once kernfs_get_active()
+> > is called the module is implicitly guarded to exist and cannot be removed.
+> > This is because the module is the one in charge of removing the same
+> > sysfs file it created, and removal of sysfs files on module exit will wait
+> > until they don't have any active references. By using a try_module_get()
+> > after kernfs_get_active() we yield to let module removal trump calls to
+> > process a sysfs operation, while also preventing module removal if a sysfs
+> > operation is in already progress. This prevents the deadlock.
+> > 
+> > This deadlock was first reported with the zram driver, however the live
 > 
-> Fix it by making sure that all online+offline CPUs would get the
-> proper value in their per-cpu variable when there is throttling
-> or throttling is removed.
+> Looks not see the lock pattern you mentioned in zram driver, can you
+> share the related zram code?
+
+I recommend to not look at the zram driver, instead look at the
+test_sysfs driver as that abstracts the issue more clearly and uses
+two different locks as an example. The point is that if on module
+removal *any* lock is used which is *also* used on the sysfs file
+created by the module, you can deadlock.
+
+> > And this can lead to this condition:
+> > 
+> > CPU A                              CPU B
+> >                                    foo_store()
+> > foo_exit()
+> >   mutex_lock(&foo)
+> >                                    mutex_lock(&foo)
+> >    del_gendisk(some_struct->disk);
+> >      device_del()
+> >        device_remove_groups()
 > 
-> Fixes: 275157b367f479 ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> I guess the deadlock exists if foo_exit() is called anywhere. If yes,
+> look the issue may not be related with removing module directly, right?
 
-Thanks for the fix.
+No, the reason this can deadlock is that the module exit routine will
+patiently wait for the sysfs / kernfs files to be stop being used,
+but clearly they cannot if the exit routine took the mutex also used
+by the sysfs ops. That is, the special condition here is the removal of
+the sysfs files, and the sysfs files using a lock also used on module
+exit.
 
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-
-> ---
->   drivers/cpufreq/qcom-cpufreq-hw.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-> index a2be0df7e174..0138b2ec406d 100644
-> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
-> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-> @@ -304,7 +304,8 @@ static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
->   	if (capacity > max_capacity)
->   		capacity = max_capacity;
->   
-> -	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
-> +	arch_set_thermal_pressure(policy->related_cpus,
-> +				  max_capacity - capacity);
->   
->   	/*
->   	 * In the unlikely case policy is unregistered do not enable
-> 
-
--- 
-Warm Regards
-Thara (She/Her/Hers)
+ Luis
