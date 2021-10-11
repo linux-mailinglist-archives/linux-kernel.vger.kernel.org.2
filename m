@@ -2,587 +2,707 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D23B9428585
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42E1428586
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233793AbhJKDTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:19:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233541AbhJKDTL (ORCPT
+        id S233834AbhJKDUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:20:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233274AbhJKDUt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:19:11 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F414C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:17:12 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so15466735ote.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:17:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5UPN17vUpLMk0dVpDuL6lQda+tt9UkgYM8vgekuuo8o=;
-        b=qyUqjj0Ve6QPENIYAdsSBE1Qb39DOlEeKDhWv+5kKKXwJBLFzunVHxnMWXMuEa+XrK
-         gMHot5hryYrvWyzqIYZ5KObp190y6vGNtcAfpAa8fgfLrtmpGWrvXoP/pXMO4q2zJcuT
-         fsMPsHUHREBkZpyamUAD1x71rEI6CHFRp+yTkXIFcjgMAlpLH1T0xCI03vAQfiOKp+x/
-         39qSBsiHe9lJg565pD5tDHbqVmjYN36jgfHhHtVgePRH5MbpA1No6h489Ri3kWtArIAf
-         E1pjZKJKfg1O0EG3MEZStWox4euKMACyT1c2pzA6pJZ9XQDxe+/V9CjBCU6YUaegc1kh
-         oNmQ==
+        Sun, 10 Oct 2021 23:20:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633922329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RrmCOWUNFhBpmieo2mW/jV26ouiX7jrbtd5i756UNCw=;
+        b=O7Dp6d7Web0m0QI7hDQ106z3utZHPHH+j6B+XOpLLmO2CWzIeLMlefG9ixNmoURYB3ZQgQ
+        /lDckUuJLVVko2ldijj9alqYkw6vNYOyYtcdu29AiWqNQcxAdNZ8/rSzL1tuPC/9qg30yg
+        Vhd/Y18r4PnZhIf21Jz/OHmMpMeDuLA=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-517-3NeCvveJOLiodzVDpHZibw-1; Sun, 10 Oct 2021 23:18:48 -0400
+X-MC-Unique: 3NeCvveJOLiodzVDpHZibw-1
+Received: by mail-pg1-f199.google.com with SMTP id i14-20020a63d44e000000b002955652e9deso6198990pgj.16
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:18:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5UPN17vUpLMk0dVpDuL6lQda+tt9UkgYM8vgekuuo8o=;
-        b=aRTDrmtU4rjy+mlrrf2HRDTOzhEBhww0fP9kyDfV2yeiH/VCMGQlU3pQfqCBxjTCpk
-         8xDwN9TWH/HU3cgkfEV51qARL0QQieJv7NKpd0Kuu8YlVkXDzOKR0O4eJJ+lCSYBVMQH
-         caBzAXpFJOcuOhsfbluMsUOPBfd2q5VoWrE0Bp5HAAkYnc9clua2IpPyXPwdYKNyytbQ
-         stly/jctyYcb8Wr+eHyMJlUQxn9M8t6juEHrzEpOj2MTMheeS0ok5fCVzpcPI+ACLAd4
-         jgmaTNDtSC/jvtVvnWFCTtMtQalofPoEGCjQSyvqLsmL8cfmCz9F2oGaeWC6lmgtV8lJ
-         jmWg==
-X-Gm-Message-State: AOAM531MbdRlKedmf6NSeA6/gREJP4RGYCR3leZrrHJBPyhs8HEdYLNJ
-        +hscgSCQzh2vdif0Fg3WaJcbngM3w5JpVzTcMkvzXQ==
-X-Google-Smtp-Source: ABdhPJxHy125D88lNFuloawX5QHl+maKN0P4xSh0rth4Gf7QDHRrxU4+eUzCZjUslATBX3RF62BzY987yJkJ6z2C6cg=
-X-Received: by 2002:a9d:7114:: with SMTP id n20mr10131610otj.25.1633922231427;
- Sun, 10 Oct 2021 20:17:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RrmCOWUNFhBpmieo2mW/jV26ouiX7jrbtd5i756UNCw=;
+        b=7KyI+4accHYROU+IU19+C537AHQIFhSCzcx+AEqZaHEIqzVge2JE24knveuR1qa3Kp
+         eBxrlBwhuYruAW+A+E9HGualo6PWPe55FgIY9ccBk4QRQX4q238hlhuBJdRg82gH9JSH
+         5SxGn4bxTTsH+nW69DswHa7dGitzJKC7VyGmyKJE9xGdgOaPy9Xgutj0H/ZWYcauOQVC
+         kVMi7V9G2sUVr7LBs4fDfVBsFiHCnBatahgPnXDBE9vAtGmbr6c2i11go4OICunFkG9C
+         g/Fa+u4EAAQ7Tp5wXCFBKHj6fczVQpiu5eVjufUKG0ZOtPeKar7BnGs24931tK5q1hu/
+         oEOw==
+X-Gm-Message-State: AOAM5311AN08ZCMsdB+xTy3oYvh5BFnSwE8EA7V5REwT0yoNbbnuopu9
+        92N+oIXaI7jWxQjaverNoeoEtqNAfjLpKhtP2DQEzTMoHKERPMLpgCnBJ7/+NXDZSh0ePTjvY4g
+        SlMwtAAIH/NeDBjiC2qhmOl1y
+X-Received: by 2002:a65:47cd:: with SMTP id f13mr16296395pgs.439.1633922326546;
+        Sun, 10 Oct 2021 20:18:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyzF685edzKUD50yLSUADLjG3Ltj9JLirw1QXP6+S4L2ANPSfQSoy6gv+WGA4ouO3YIkWnghA==
+X-Received: by 2002:a65:47cd:: with SMTP id f13mr16296375pgs.439.1633922326167;
+        Sun, 10 Oct 2021 20:18:46 -0700 (PDT)
+Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id l18sm5855225pfu.202.2021.10.10.20.18.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 20:18:45 -0700 (PDT)
+Subject: Re: [PATCH v4 7/7] eni_vdpa: add vDPA driver for Alibaba ENI
+To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, mst@redhat.com
+Cc:     wei.yang1@linux.alibaba.com
+References: <cover.1632313398.git.wuzongyong@linux.alibaba.com>
+ <cover.1632882380.git.wuzongyong@linux.alibaba.com>
+ <68d4ffac2ed9c21f352c272efbdf21e567d7d48e.1632882380.git.wuzongyong@linux.alibaba.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7872513b-6cf5-704e-8807-43dc7b563d96@redhat.com>
+Date:   Mon, 11 Oct 2021 11:18:42 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211005234459.430873-1-michael.roth@amd.com> <20211006203710.13326-1-michael.roth@amd.com>
-In-Reply-To: <20211006203710.13326-1-michael.roth@amd.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Sun, 10 Oct 2021 20:17:00 -0700
-Message-ID: <CAA03e5EmnbpKOwfNJUV7fog-7UpJJNpu7mQYmCODpk=tYfXxig@mail.gmail.com>
-Subject: Re: [RFC 06/16] KVM: selftests: add library for creating/interacting
- with SEV guests
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     linux-kselftest@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>,
-        Nathan Tempelman <natet@google.com>,
-        Steve Rutherford <srutherford@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <68d4ffac2ed9c21f352c272efbdf21e567d7d48e.1632882380.git.wuzongyong@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 6, 2021 at 1:40 PM Michael Roth <michael.roth@amd.com> wrote:
+
+ÔÚ 2021/9/29 ÏÂÎç2:11, Wu Zongyong Ð´µÀ:
+> This patch adds a new vDPA driver for Alibaba ENI(Elastic Network
+> Interface) which is build upon virtio 0.9.5 specification.
+> And this driver doesn't support to run on BE host.
+
+
+If this is true, I think it's still better to exclude this driver via 
+Kconfig.
+
+
 >
-> Add interfaces to allow tests to create/manage SEV guests. The
-> additional state associated with these guests is encapsulated in a new
-> struct sev_vm, which is a light wrapper around struct kvm_vm. These
-> VMs will use vm_set_memory_encryption() and vm_get_encrypted_phy_pages()
-> under the covers to configure and sync up with the core kvm_util
-> library on what should/shouldn't be treated as encrypted memory.
->
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 > ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../selftests/kvm/include/x86_64/sev.h        |  62 ++++
->  tools/testing/selftests/kvm/lib/x86_64/sev.c  | 303 ++++++++++++++++++
->  3 files changed, 366 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/include/x86_64/sev.h
->  create mode 100644 tools/testing/selftests/kvm/lib/x86_64/sev.c
+>   drivers/vdpa/Kconfig            |   8 +
+>   drivers/vdpa/Makefile           |   1 +
+>   drivers/vdpa/alibaba/Makefile   |   3 +
+>   drivers/vdpa/alibaba/eni_vdpa.c | 553 ++++++++++++++++++++++++++++++++
+>   4 files changed, 565 insertions(+)
+>   create mode 100644 drivers/vdpa/alibaba/Makefile
+>   create mode 100644 drivers/vdpa/alibaba/eni_vdpa.c
 >
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 5832f510a16c..c7a5e1c69e0c 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -35,6 +35,7 @@ endif
->
->  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
->  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> +LIBKVM_x86_64 += lib/x86_64/sev.c
-
-Regarding RFC-level feedback: First off, I'm super jazzed with what
-I'm seeing so far! (While this is my first review, I've been studying
-the patches up through the SEV boot test, i.e., patch #7). One thing
-I'm wondering is: the way this is structured is to essentially split
-the test cases into non-SEV and SEV. I'm wondering how hard it would
-be to add some flag or environment variable to set up pre-existing
-tests to run under SEV. Or is this something you all thought about,
-and decided that it does not make sense?
-
-Looking at how the guest memory is handled, it seems like it's not far
-off from handling SEV transparently across all test cases. I'd think
-that we could just default all memory to use the encryption bit, and
-then have test cases, such as the test case in patch #7, clear the
-encryption bit for shared pages. However, I think the VM creation
-would need a bit more refactoring to work with other test cases.
-
->  LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->
-> diff --git a/tools/testing/selftests/kvm/include/x86_64/sev.h b/tools/testing/selftests/kvm/include/x86_64/sev.h
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 3d91982d8371..9587b9177b05 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -78,4 +78,12 @@ config VP_VDPA
+>   	help
+>   	  This kernel module bridges virtio PCI device to vDPA bus.
+>   
+> +config ALIBABA_ENI_VDPA
+> +	tristate "vDPA driver for Alibaba ENI"
+> +	select VIRTIO_PCI_LEGACY_LIB
+> +	depends on PCI_MSI
+> +	help
+> +	  VDPA driver for Alibaba ENI(Elastic Network Interface) which is build upon
+> +	  virtio 0.9.5 specification.
+> +
+>   endif # VDPA
+> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> index f02ebed33f19..15665563a7f4 100644
+> --- a/drivers/vdpa/Makefile
+> +++ b/drivers/vdpa/Makefile
+> @@ -5,3 +5,4 @@ obj-$(CONFIG_VDPA_USER) += vdpa_user/
+>   obj-$(CONFIG_IFCVF)    += ifcvf/
+>   obj-$(CONFIG_MLX5_VDPA) += mlx5/
+>   obj-$(CONFIG_VP_VDPA)    += virtio_pci/
+> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += alibaba/
+> diff --git a/drivers/vdpa/alibaba/Makefile b/drivers/vdpa/alibaba/Makefile
 > new file mode 100644
-> index 000000000000..d2f41b131ecc
+> index 000000000000..ef4aae69f87a
 > --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/x86_64/sev.h
-> @@ -0,0 +1,62 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Helpers used for SEV guests
-> + *
-> + * Copyright (C) 2021 Advanced Micro Devices
-> + */
-> +#ifndef SELFTEST_KVM_SEV_H
-> +#define SELFTEST_KVM_SEV_H
+> +++ b/drivers/vdpa/alibaba/Makefile
+> @@ -0,0 +1,3 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +obj-$(CONFIG_ALIBABA_ENI_VDPA) += eni_vdpa.o
 > +
-> +#include <stdint.h>
-> +#include <stdbool.h>
-> +#include "kvm_util.h"
-> +
-> +#define SEV_DEV_PATH           "/dev/sev"
-
-Not necessary for the initial patches, but eventually, it would be
-nice to make this configurable. On the machine I was using to test
-this, the sev device appears at `/mnt/devtmpfs/sev`
-
-> +#define SEV_FW_REQ_VER_MAJOR   1
-> +#define SEV_FW_REQ_VER_MINOR   30
-
-Where does the requirement for this minimum version come from? Maybe
-add a comment?
-
-Edit: Is this for patches later on in the series that exercise SNP? If
-so, I think it would be better to add a check like this in the test
-itself, rather than globally. I happened to test this on a machine
-with a very old PSP FW, 0.22, and the SEV test added in patch #7 seems
-to work fine with this ancient PSP FW.
-
-> +
-> +#define SEV_POLICY_NO_DBG      (1UL << 0)
-> +#define SEV_POLICY_ES          (1UL << 2)
-> +
-> +#define SEV_GUEST_ASSERT(sync, token, _cond) do {      \
-> +       if (!(_cond))                                   \
-> +               sev_guest_abort(sync, token, 0);        \
-> +} while (0)
-> +
-> +enum {
-> +       SEV_GSTATE_UNINIT = 0,
-> +       SEV_GSTATE_LUPDATE,
-> +       SEV_GSTATE_LSECRET,
-> +       SEV_GSTATE_RUNNING,
-> +};
-> +
-> +struct sev_sync_data {
-> +       uint32_t token;
-> +       bool pending;
-> +       bool done;
-> +       bool aborted;
-> +       uint64_t info;
-> +};
-
-nit: This struct could use some comments. For example, `token` is not
-totally self-explanatory. In general, a comment explaining how this
-struct is intended to be used by test cases seems useful.
-
-> +
-> +struct sev_vm;
-> +
-> +void sev_guest_sync(struct sev_sync_data *sync, uint32_t token, uint64_t info);
-> +void sev_guest_done(struct sev_sync_data *sync, uint32_t token, uint64_t info);
-> +void sev_guest_abort(struct sev_sync_data *sync, uint32_t token, uint64_t info);
-> +
-> +void sev_check_guest_sync(struct kvm_run *run, struct sev_sync_data *sync,
-> +                         uint32_t token);
-> +void sev_check_guest_done(struct kvm_run *run, struct sev_sync_data *sync,
-> +                         uint32_t token);
-> +
-> +void kvm_sev_ioctl(struct sev_vm *sev, int cmd, void *data);
-> +struct kvm_vm *sev_get_vm(struct sev_vm *sev);
-> +uint8_t sev_get_enc_bit(struct sev_vm *sev);
-> +
-> +struct sev_vm *sev_vm_create(uint32_t policy, uint64_t npages);
-> +void sev_vm_free(struct sev_vm *sev);
-> +void sev_vm_launch(struct sev_vm *sev);
-> +void sev_vm_measure(struct sev_vm *sev, uint8_t *measurement);
-> +void sev_vm_launch_finish(struct sev_vm *sev);
-> +
-> +#endif /* SELFTEST_KVM_SEV_H */
-> diff --git a/tools/testing/selftests/kvm/lib/x86_64/sev.c b/tools/testing/selftests/kvm/lib/x86_64/sev.c
+> diff --git a/drivers/vdpa/alibaba/eni_vdpa.c b/drivers/vdpa/alibaba/eni_vdpa.c
 > new file mode 100644
-> index 000000000000..adda3b396566
+> index 000000000000..6a09f157d810
 > --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/x86_64/sev.c
-> @@ -0,0 +1,303 @@
+> +++ b/drivers/vdpa/alibaba/eni_vdpa.c
+> @@ -0,0 +1,553 @@
 > +// SPDX-License-Identifier: GPL-2.0-only
 > +/*
-> + * Helpers used for SEV guests
+> + * vDPA bridge driver for Alibaba ENI(Elastic Network Interface)
 > + *
-> + * Copyright (C) 2021 Advanced Micro Devices
+> + * Copyright (c) 2021, Alibaba Inc. All rights reserved.
+> + * Author: Wu Zongyong <wuzongyong@linux.alibaba.com>
+> + *
 > + */
 > +
-> +#include <stdint.h>
-> +#include <stdbool.h>
-> +#include "kvm_util.h"
-> +#include "linux/psp-sev.h"
-> +#include "processor.h"
-> +#include "sev.h"
+> +#include "linux/bits.h"
+> +#include <linux/interrupt.h>
+> +#include <linux/module.h>
+> +#include <linux/pci.h>
+> +#include <linux/vdpa.h>
+> +#include <linux/virtio.h>
+> +#include <linux/virtio_config.h>
+> +#include <linux/virtio_ring.h>
+> +#include <linux/virtio_pci.h>
+> +#include <linux/virtio_pci_legacy.h>
+> +#include <uapi/linux/virtio_net.h>
 > +
-> +#define PAGE_SHIFT             12
-> +#define PAGE_SIZE              (1UL << PAGE_SHIFT)
+> +#define ENI_MSIX_NAME_SIZE 256
 > +
-> +struct sev_vm {
-> +       struct kvm_vm *vm;
-> +       int fd;
-> +       int enc_bit;
-> +       uint32_t sev_policy;
+> +#define ENI_ERR(pdev, fmt, ...)	\
+> +	dev_err(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +#define ENI_DBG(pdev, fmt, ...)	\
+> +	dev_dbg(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +#define ENI_INFO(pdev, fmt, ...) \
+> +	dev_info(&pdev->dev, "%s"fmt, "eni_vdpa: ", ##__VA_ARGS__)
+> +
+> +struct eni_vring {
+> +	void __iomem *notify;
+> +	char msix_name[ENI_MSIX_NAME_SIZE];
+> +	struct vdpa_callback cb;
+> +	int irq;
 > +};
 > +
-> +/* Helpers for coordinating between guests and test harness. */
+> +struct eni_vdpa {
+> +	struct vdpa_device vdpa;
+> +	struct virtio_pci_legacy_device ldev;
+> +	struct eni_vring *vring;
+> +	struct vdpa_callback config_cb;
+> +	char msix_name[ENI_MSIX_NAME_SIZE];
+> +	int config_irq;
+> +	int queues;
+> +	int vectors;
+> +};
 > +
-> +void sev_guest_sync(struct sev_sync_data *sync, uint32_t token, uint64_t info)
+> +static struct eni_vdpa *vdpa_to_eni(struct vdpa_device *vdpa)
 > +{
-> +       sync->token = token;
-> +       sync->info = info;
-> +       sync->pending = true;
-> +
-> +       asm volatile("hlt" : : : "memory");
+> +	return container_of(vdpa, struct eni_vdpa, vdpa);
 > +}
 > +
-> +void sev_guest_done(struct sev_sync_data *sync, uint32_t token, uint64_t info)
+> +static struct virtio_pci_legacy_device *vdpa_to_ldev(struct vdpa_device *vdpa)
 > +{
-> +       while (true) {
-> +               sync->done = true;
-> +               sev_guest_sync(sync, token, info);
-> +       }
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +
+> +	return &eni_vdpa->ldev;
 > +}
 > +
-> +void sev_guest_abort(struct sev_sync_data *sync, uint32_t token, uint64_t info)
+> +static u64 eni_vdpa_get_features(struct vdpa_device *vdpa)
 > +{
-> +       while (true) {
-> +               sync->aborted = true;
-> +               sev_guest_sync(sync, token, info);
-> +       }
-> +}
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +	u64 features = vp_legacy_get_features(ldev);
+> +
+> +	features |= BIT_ULL(VIRTIO_F_ACCESS_PLATFORM);
+> +	features |= BIT_ULL(VIRTIO_F_ORDER_PLATFORM);
 
-Maybe this should have some logic to make sure it only gets executed
-once instead of a while loop. Something like:
 
-void sev_guest_done(struct sev_sync_data *sync, uint32_t token, uint64_t info)
-{
-     static bool abort = false;
+VERSION_1 is also needed?
 
-     SEV_GUEST_ASSERT(sync, 0xDEADBEEF, !abort);
-     abort = true;
-
-     sync->done = true;
-     sev_guest_sync(sync, token, info);
-}
 
 > +
-> +void sev_check_guest_sync(struct kvm_run *run, struct sev_sync_data *sync,
-> +                         uint32_t token)
-> +{
-> +       TEST_ASSERT(run->exit_reason == KVM_EXIT_HLT,
-> +                   "unexpected exit reason: %u (%s)",
-> +                   run->exit_reason, exit_reason_str(run->exit_reason));
-> +       TEST_ASSERT(sync->token == token,
-> +                   "unexpected guest token, expected %d, got: %d", token,
-> +                   sync->token);
-> +       TEST_ASSERT(!sync->done, "unexpected guest state");
-> +       TEST_ASSERT(!sync->aborted, "unexpected guest state");
-> +       sync->pending = false;
-
-Check that `pending` is `true` before setting to `false`?
-
+> +	return features;
 > +}
 > +
-> +void sev_check_guest_done(struct kvm_run *run, struct sev_sync_data *sync,
-> +                         uint32_t token)
+> +static int eni_vdpa_set_features(struct vdpa_device *vdpa, u64 features)
 > +{
-> +       TEST_ASSERT(run->exit_reason == KVM_EXIT_HLT,
-> +                   "unexpected exit reason: %u (%s)",
-> +                   run->exit_reason, exit_reason_str(run->exit_reason));
-> +       TEST_ASSERT(sync->token == token,
-> +                   "unexpected guest token, expected %d, got: %d", token,
-> +                   sync->token);
-> +       TEST_ASSERT(sync->done, "unexpected guest state");
-> +       TEST_ASSERT(!sync->aborted, "unexpected guest state");
-> +       sync->pending = false;
-> +}
-
-nit: This function is nearly identical to `sev_check_guest_sync()`,
-other than the ASSERT for `sync->done`. Might be worth splitting out a
-common static helper or using a single function for both cases, and
-distinguishing between them with a function parameter.
-
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
 > +
-> +/* Common SEV helpers/accessors. */
+> +	if (!(features & BIT_ULL(VIRTIO_NET_F_MRG_RXBUF)) && features) {
+> +		ENI_ERR(ldev->pci_dev,
+> +			"VIRTIO_NET_F_MRG_RXBUF is not negotiated\n");
+> +		return -EINVAL;
+
+
+Do we need to make sure FEATURE_OK is not set in this case or the ENI 
+can do this for us?
+
+Other looks good.
+
+Thanks
+
+
+> +	}
 > +
-> +struct kvm_vm *sev_get_vm(struct sev_vm *sev)
-> +{
-> +       return sev->vm;
+> +	vp_legacy_set_features(ldev, (u32)features);
+> +
+> +	return 0;
 > +}
 > +
-> +uint8_t sev_get_enc_bit(struct sev_vm *sev)
+> +static u8 eni_vdpa_get_status(struct vdpa_device *vdpa)
 > +{
-> +       return sev->enc_bit;
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return vp_legacy_get_status(ldev);
 > +}
 > +
-> +void sev_ioctl(int sev_fd, int cmd, void *data)
+> +static int eni_vdpa_get_vq_irq(struct vdpa_device *vdpa, u16 idx)
 > +{
-> +       int ret;
-> +       struct sev_issue_cmd arg;
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +	int irq = eni_vdpa->vring[idx].irq;
 > +
-> +       arg.cmd = cmd;
-> +       arg.data = (unsigned long)data;
-
-nit: Should the cast be `(__u64)`, rather than `(unsigned long)`? This
-is how `data` is defined in `struct sev_issue_cmd`, and also how the
-`data` field is cast in `sev_ioctl`, below.
-
-> +       ret = ioctl(sev_fd, SEV_ISSUE_CMD, &arg);
-> +       TEST_ASSERT(ret == 0,
-> +                   "SEV ioctl %d failed, error: %d, fw_error: %d",
-> +                   cmd, ret, arg.error);
+> +	if (irq == VIRTIO_MSI_NO_VECTOR)
+> +		return -EINVAL;
+> +
+> +	return irq;
 > +}
 > +
-> +void kvm_sev_ioctl(struct sev_vm *sev, int cmd, void *data)
+> +static void eni_vdpa_free_irq(struct eni_vdpa *eni_vdpa)
 > +{
-> +       struct kvm_sev_cmd arg = {0};
-> +       int ret;
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	struct pci_dev *pdev = ldev->pci_dev;
+> +	int i;
 > +
-> +       arg.id = cmd;
-> +       arg.sev_fd = sev->fd;
-> +       arg.data = (__u64)data;
+> +	for (i = 0; i < eni_vdpa->queues; i++) {
+> +		if (eni_vdpa->vring[i].irq != VIRTIO_MSI_NO_VECTOR) {
+> +			vp_legacy_queue_vector(ldev, i, VIRTIO_MSI_NO_VECTOR);
+> +			devm_free_irq(&pdev->dev, eni_vdpa->vring[i].irq,
+> +				      &eni_vdpa->vring[i]);
+> +			eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+> +		}
+> +	}
 > +
-> +       ret = ioctl(vm_get_fd(sev->vm), KVM_MEMORY_ENCRYPT_OP, &arg);
-> +       TEST_ASSERT(ret == 0,
-> +                   "SEV KVM ioctl %d failed, rc: %i errno: %i (%s), fw_error: %d",
-> +                   cmd, ret, errno, strerror(errno), arg.error);
-
-nit: Technically, the `KVM_MEMORY_ENCRYPT_OP ` ioctl failed. The
-failure message should reflect this. Maybe something like:
-
-"SEV KVM_MEMORY_ENCRYPT_OP ioctl w/ cmd: %d failed, ..."
-
+> +	if (eni_vdpa->config_irq != VIRTIO_MSI_NO_VECTOR) {
+> +		vp_legacy_config_vector(ldev, VIRTIO_MSI_NO_VECTOR);
+> +		devm_free_irq(&pdev->dev, eni_vdpa->config_irq, eni_vdpa);
+> +		eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
+> +	}
+> +
+> +	if (eni_vdpa->vectors) {
+> +		pci_free_irq_vectors(pdev);
+> +		eni_vdpa->vectors = 0;
+> +	}
 > +}
 > +
-> +/* Local helpers. */
-> +
-> +static void
-> +sev_register_user_range(struct sev_vm *sev, void *hva, uint64_t size)
+> +static irqreturn_t eni_vdpa_vq_handler(int irq, void *arg)
 > +{
-> +       struct kvm_enc_region range = {0};
-> +       int ret;
+> +	struct eni_vring *vring = arg;
 > +
-> +       pr_debug("register_user_range: hva: %p, size: %lu\n", hva, size);
+> +	if (vring->cb.callback)
+> +		return vring->cb.callback(vring->cb.private);
 > +
-> +       range.addr = (__u64)hva;
-> +       range.size = size;
-> +
-> +       ret = ioctl(vm_get_fd(sev->vm), KVM_MEMORY_ENCRYPT_REG_REGION, &range);
-> +       TEST_ASSERT(ret == 0, "failed to register user range, errno: %i\n", errno);
+> +	return IRQ_HANDLED;
 > +}
+> +
+> +static irqreturn_t eni_vdpa_config_handler(int irq, void *arg)
+> +{
+> +	struct eni_vdpa *eni_vdpa = arg;
+> +
+> +	if (eni_vdpa->config_cb.callback)
+> +		return eni_vdpa->config_cb.callback(eni_vdpa->config_cb.private);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static int eni_vdpa_request_irq(struct eni_vdpa *eni_vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	struct pci_dev *pdev = ldev->pci_dev;
+> +	int i, ret, irq;
+> +	int queues = eni_vdpa->queues;
+> +	int vectors = queues + 1;
+> +
+> +	ret = pci_alloc_irq_vectors(pdev, vectors, vectors, PCI_IRQ_MSIX);
+> +	if (ret != vectors) {
+> +		ENI_ERR(pdev,
+> +			"failed to allocate irq vectors want %d but %d\n",
+> +			vectors, ret);
+> +		return ret;
+> +	}
+> +
+> +	eni_vdpa->vectors = vectors;
+> +
+> +	for (i = 0; i < queues; i++) {
+> +		snprintf(eni_vdpa->vring[i].msix_name, ENI_MSIX_NAME_SIZE,
+> +			 "eni-vdpa[%s]-%d\n", pci_name(pdev), i);
+> +		irq = pci_irq_vector(pdev, i);
+> +		ret = devm_request_irq(&pdev->dev, irq,
+> +				       eni_vdpa_vq_handler,
+> +				       0, eni_vdpa->vring[i].msix_name,
+> +				       &eni_vdpa->vring[i]);
+> +		if (ret) {
+> +			ENI_ERR(pdev, "failed to request irq for vq %d\n", i);
+> +			goto err;
+> +		}
+> +		vp_legacy_queue_vector(ldev, i, i);
+> +		eni_vdpa->vring[i].irq = irq;
+> +	}
+> +
+> +	snprintf(eni_vdpa->msix_name, ENI_MSIX_NAME_SIZE, "eni-vdpa[%s]-config\n",
+> +		 pci_name(pdev));
+> +	irq = pci_irq_vector(pdev, queues);
+> +	ret = devm_request_irq(&pdev->dev, irq, eni_vdpa_config_handler, 0,
+> +			       eni_vdpa->msix_name, eni_vdpa);
+> +	if (ret) {
+> +		ENI_ERR(pdev, "failed to request irq for config vq %d\n", i);
+> +		goto err;
+> +	}
+> +	vp_legacy_config_vector(ldev, queues);
+> +	eni_vdpa->config_irq = irq;
+> +
+> +	return 0;
+> +err:
+> +	eni_vdpa_free_irq(eni_vdpa);
+> +	return ret;
+> +}
+> +
+> +static void eni_vdpa_set_status(struct vdpa_device *vdpa, u8 status)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	u8 s = eni_vdpa_get_status(vdpa);
+> +
+> +	if (status & VIRTIO_CONFIG_S_DRIVER_OK &&
+> +	    !(s & VIRTIO_CONFIG_S_DRIVER_OK)) {
+> +		eni_vdpa_request_irq(eni_vdpa);
+> +	}
+> +
+> +	vp_legacy_set_status(ldev, status);
+> +
+> +	if (!(status & VIRTIO_CONFIG_S_DRIVER_OK) &&
+> +	    (s & VIRTIO_CONFIG_S_DRIVER_OK))
+> +		eni_vdpa_free_irq(eni_vdpa);
+> +}
+> +
+> +static int eni_vdpa_reset(struct vdpa_device *vdpa)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	u8 s = eni_vdpa_get_status(vdpa);
+> +
+> +	vp_legacy_set_status(ldev, 0);
+> +
+> +	if (s & VIRTIO_CONFIG_S_DRIVER_OK)
+> +		eni_vdpa_free_irq(eni_vdpa);
+> +
+> +	return 0;
+> +}
+> +
+> +static u16 eni_vdpa_get_vq_num_max(struct vdpa_device *vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return vp_legacy_get_queue_size(ldev, 0);
+> +}
+> +
+> +static u16 eni_vdpa_get_vq_num_min(struct vdpa_device *vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return vp_legacy_get_queue_size(ldev, 0);
+> +}
+> +
+> +static int eni_vdpa_get_vq_state(struct vdpa_device *vdpa, u16 qid,
+> +				struct vdpa_vq_state *state)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int eni_vdpa_set_vq_state(struct vdpa_device *vdpa, u16 qid,
+> +				 const struct vdpa_vq_state *state)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +	const struct vdpa_vq_state_split *split = &state->split;
+> +
+> +	/* ENI is build upon virtio-pci specfication which not support
+> +	 * to set state of virtqueue. But if the state is equal to the
+> +	 * device initial state by chance, we can let it go.
+> +	 */
+> +	if (!vp_legacy_get_queue_enable(ldev, qid)
+> +	    && split->avail_index == 0)
+> +		return 0;
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +
+> +static void eni_vdpa_set_vq_cb(struct vdpa_device *vdpa, u16 qid,
+> +			       struct vdpa_callback *cb)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +
+> +	eni_vdpa->vring[qid].cb = *cb;
+> +}
+> +
+> +static void eni_vdpa_set_vq_ready(struct vdpa_device *vdpa, u16 qid,
+> +				  bool ready)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	/* ENI is a legacy virtio-pci device. This is not supported
+> +	 * by specification. But we can disable virtqueue by setting
+> +	 * address to 0.
+> +	 */
+> +	if (!ready)
+> +		vp_legacy_set_queue_address(ldev, qid, 0);
+> +}
+> +
+> +static bool eni_vdpa_get_vq_ready(struct vdpa_device *vdpa, u16 qid)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return vp_legacy_get_queue_enable(ldev, qid);
+> +}
+> +
+> +static void eni_vdpa_set_vq_num(struct vdpa_device *vdpa, u16 qid,
+> +			       u32 num)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +	struct pci_dev *pdev = ldev->pci_dev;
+> +	u16 n = vp_legacy_get_queue_size(ldev, qid);
+> +
+> +	/* ENI is a legacy virtio-pci device which not allow to change
+> +	 * virtqueue size. Just report a error if someone tries to
+> +	 * change it.
+> +	 */
+> +	if (num != n)
+> +		ENI_ERR(pdev,
+> +			"not support to set vq %u fixed num %u to %u\n",
+> +			qid, n, num);
+> +}
+> +
+> +static int eni_vdpa_set_vq_address(struct vdpa_device *vdpa, u16 qid,
+> +				   u64 desc_area, u64 driver_area,
+> +				   u64 device_area)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +	u32 pfn = desc_area >> VIRTIO_PCI_QUEUE_ADDR_SHIFT;
+> +
+> +	vp_legacy_set_queue_address(ldev, qid, pfn);
+> +
+> +	return 0;
+> +}
+> +
+> +static void eni_vdpa_kick_vq(struct vdpa_device *vdpa, u16 qid)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +
+> +	iowrite16(qid, eni_vdpa->vring[qid].notify);
+> +}
+> +
+> +static u32 eni_vdpa_get_device_id(struct vdpa_device *vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return ldev->id.device;
+> +}
+> +
+> +static u32 eni_vdpa_get_vendor_id(struct vdpa_device *vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = vdpa_to_ldev(vdpa);
+> +
+> +	return ldev->id.vendor;
+> +}
+> +
+> +static u32 eni_vdpa_get_vq_align(struct vdpa_device *vdpa)
+> +{
+> +	return PAGE_SIZE;
+> +}
+> +
+> +static size_t eni_vdpa_get_config_size(struct vdpa_device *vdpa)
+> +{
+> +	return sizeof(struct virtio_net_config);
+> +}
+> +
+> +
+> +static void eni_vdpa_get_config(struct vdpa_device *vdpa,
+> +				unsigned int offset,
+> +				void *buf, unsigned int len)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	void __iomem *ioaddr = ldev->ioaddr +
+> +		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
+> +		offset;
+> +	u8 *p = buf;
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++)
+> +		*p++ = ioread8(ioaddr + i);
+> +}
+> +
+> +static void eni_vdpa_set_config(struct vdpa_device *vdpa,
+> +				unsigned int offset, const void *buf,
+> +				unsigned int len)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	void __iomem *ioaddr = ldev->ioaddr +
+> +		VIRTIO_PCI_CONFIG_OFF(eni_vdpa->vectors) +
+> +		offset;
+> +	const u8 *p = buf;
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++)
+> +		iowrite8(*p++, ioaddr + i);
+> +}
+> +
+> +static void eni_vdpa_set_config_cb(struct vdpa_device *vdpa,
+> +				   struct vdpa_callback *cb)
+> +{
+> +	struct eni_vdpa *eni_vdpa = vdpa_to_eni(vdpa);
+> +
+> +	eni_vdpa->config_cb = *cb;
+> +}
+> +
+> +static const struct vdpa_config_ops eni_vdpa_ops = {
+> +	.get_features	= eni_vdpa_get_features,
+> +	.set_features	= eni_vdpa_set_features,
+> +	.get_status	= eni_vdpa_get_status,
+> +	.set_status	= eni_vdpa_set_status,
+> +	.reset		= eni_vdpa_reset,
+> +	.get_vq_num_max	= eni_vdpa_get_vq_num_max,
+> +	.get_vq_num_min	= eni_vdpa_get_vq_num_min,
+> +	.get_vq_state	= eni_vdpa_get_vq_state,
+> +	.set_vq_state	= eni_vdpa_set_vq_state,
+> +	.set_vq_cb	= eni_vdpa_set_vq_cb,
+> +	.set_vq_ready	= eni_vdpa_set_vq_ready,
+> +	.get_vq_ready	= eni_vdpa_get_vq_ready,
+> +	.set_vq_num	= eni_vdpa_set_vq_num,
+> +	.set_vq_address	= eni_vdpa_set_vq_address,
+> +	.kick_vq	= eni_vdpa_kick_vq,
+> +	.get_device_id	= eni_vdpa_get_device_id,
+> +	.get_vendor_id	= eni_vdpa_get_vendor_id,
+> +	.get_vq_align	= eni_vdpa_get_vq_align,
+> +	.get_config_size = eni_vdpa_get_config_size,
+> +	.get_config	= eni_vdpa_get_config,
+> +	.set_config	= eni_vdpa_set_config,
+> +	.set_config_cb  = eni_vdpa_set_config_cb,
+> +	.get_vq_irq	= eni_vdpa_get_vq_irq,
+> +};
+> +
+> +
+> +static u16 eni_vdpa_get_num_queues(struct eni_vdpa *eni_vdpa)
+> +{
+> +	struct virtio_pci_legacy_device *ldev = &eni_vdpa->ldev;
+> +	u32 features = vp_legacy_get_features(ldev);
+> +	u16 num = 2;
+> +
+> +	if (features & BIT_ULL(VIRTIO_NET_F_MQ)) {
+> +		__virtio16 max_virtqueue_pairs;
+> +
+> +		eni_vdpa_get_config(&eni_vdpa->vdpa,
+> +			offsetof(struct virtio_net_config, max_virtqueue_pairs),
+> +			&max_virtqueue_pairs,
+> +			sizeof(max_virtqueue_pairs));
+> +		num = 2 * __virtio16_to_cpu(virtio_legacy_is_little_endian(),
+> +				max_virtqueue_pairs);
+> +	}
+> +
+> +	if (features & BIT_ULL(VIRTIO_NET_F_CTRL_VQ))
+> +		num += 1;
+> +
+> +	return num;
+> +}
+> +
+> +static void eni_vdpa_free_irq_vectors(void *data)
+> +{
+> +	pci_free_irq_vectors(data);
+> +}
+> +
+> +static int eni_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct eni_vdpa *eni_vdpa;
+> +	struct virtio_pci_legacy_device *ldev;
+> +	int ret, i;
+> +
+> +	ret = pcim_enable_device(pdev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	eni_vdpa = vdpa_alloc_device(struct eni_vdpa, vdpa,
+> +				     dev, &eni_vdpa_ops, NULL, false);
+> +	if (IS_ERR(eni_vdpa)) {
+> +		ENI_ERR(pdev, "failed to allocate vDPA structure\n");
+> +		return PTR_ERR(eni_vdpa);
+> +	}
+> +
+> +	ldev = &eni_vdpa->ldev;
+> +	ldev->pci_dev = pdev;
+> +
+> +	ret = vp_legacy_probe(ldev);
+> +	if (ret) {
+> +		ENI_ERR(pdev, "failed to probe legacy PCI device\n");
+> +		goto err;
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +	pci_set_drvdata(pdev, eni_vdpa);
+> +
+> +	eni_vdpa->vdpa.dma_dev = &pdev->dev;
+> +	eni_vdpa->queues = eni_vdpa_get_num_queues(eni_vdpa);
+> +
+> +	ret = devm_add_action_or_reset(dev, eni_vdpa_free_irq_vectors, pdev);
+> +	if (ret) {
+> +		ENI_ERR(pdev,
+> +			"failed for adding devres for freeing irq vectors\n");
+> +		goto err;
+> +	}
+> +
+> +	eni_vdpa->vring = devm_kcalloc(&pdev->dev, eni_vdpa->queues,
+> +				      sizeof(*eni_vdpa->vring),
+> +				      GFP_KERNEL);
+> +	if (!eni_vdpa->vring) {
+> +		ret = -ENOMEM;
+> +		ENI_ERR(pdev, "failed to allocate virtqueues\n");
+> +		goto err;
+> +	}
+> +
+> +	for (i = 0; i < eni_vdpa->queues; i++) {
+> +		eni_vdpa->vring[i].irq = VIRTIO_MSI_NO_VECTOR;
+> +		eni_vdpa->vring[i].notify = ldev->ioaddr + VIRTIO_PCI_QUEUE_NOTIFY;
+> +	}
+> +	eni_vdpa->config_irq = VIRTIO_MSI_NO_VECTOR;
+> +
+> +	ret = vdpa_register_device(&eni_vdpa->vdpa, eni_vdpa->queues);
+> +	if (ret) {
+> +		ENI_ERR(pdev, "failed to register to vdpa bus\n");
+> +		goto err;
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	put_device(&eni_vdpa->vdpa.dev);
+> +	return ret;
+> +}
+> +
+> +static void eni_vdpa_remove(struct pci_dev *pdev)
+> +{
+> +	struct eni_vdpa *eni_vdpa = pci_get_drvdata(pdev);
+> +
+> +	vdpa_unregister_device(&eni_vdpa->vdpa);
+> +	vp_legacy_remove(&eni_vdpa->ldev);
+> +}
+> +
+> +static struct pci_device_id eni_pci_ids[] = {
+> +	{ PCI_DEVICE_SUB(PCI_VENDOR_ID_REDHAT_QUMRANET,
+> +			 VIRTIO_TRANS_ID_NET,
+> +			 PCI_SUBVENDOR_ID_REDHAT_QUMRANET,
+> +			 VIRTIO_ID_NET) },
+> +	{ 0 },
+> +};
+> +
+> +static struct pci_driver eni_vdpa_driver = {
+> +	.name		= "alibaba-eni-vdpa",
+> +	.id_table	= eni_pci_ids,
+> +	.probe		= eni_vdpa_probe,
+> +	.remove		= eni_vdpa_remove,
+> +};
+> +
+> +module_pci_driver(eni_vdpa_driver);
+> +
+> +MODULE_AUTHOR("Wu Zongyong <wuzongyong@linux.alibaba.com>");
+> +MODULE_DESCRIPTION("Alibaba ENI vDPA driver");
+> +MODULE_LICENSE("GPL v2");
 
-I don't see any code to call `KVM_MEMORY_ENCRYPT_UNREG_REGION` in this
-code. Shouldn't we be calling it to unpin the memory when the test is
-done?
-
-> +
-> +static void
-> +sev_encrypt_phy_range(struct sev_vm *sev, vm_paddr_t gpa, uint64_t size)
-> +{
-> +       struct kvm_sev_launch_update_data ksev_update_data = {0};
-> +
-> +       pr_debug("encrypt_phy_range: addr: 0x%lx, size: %lu\n", gpa, size);
-> +
-> +       ksev_update_data.uaddr = (__u64)addr_gpa2hva(sev->vm, gpa);
-> +       ksev_update_data.len = size;
-> +
-> +       kvm_sev_ioctl(sev, KVM_SEV_LAUNCH_UPDATE_DATA, &ksev_update_data);
-> +}
-> +
-> +static void sev_encrypt(struct sev_vm *sev)
-> +{
-> +       struct sparsebit *enc_phy_pages;
-> +       struct kvm_vm *vm = sev->vm;
-> +       sparsebit_idx_t pg = 0;
-> +       vm_paddr_t gpa_start;
-> +       uint64_t memory_size;
-> +
-> +       /* Only memslot 0 supported for now. */
-> +       enc_phy_pages = vm_get_encrypted_phy_pages(sev->vm, 0, &gpa_start, &memory_size);
-> +       TEST_ASSERT(enc_phy_pages, "Unable to retrieve encrypted pages bitmap");
-> +       while (pg < (memory_size / vm_get_page_size(vm))) {
-> +               sparsebit_idx_t pg_cnt;
-> +
-> +               if (sparsebit_is_clear(enc_phy_pages, pg)) {
-> +                       pg = sparsebit_next_set(enc_phy_pages, pg);
-> +                       if (!pg)
-> +                               break;
-> +               }
-> +
-> +               pg_cnt = sparsebit_next_clear(enc_phy_pages, pg) - pg;
-> +               if (pg_cnt <= 0)
-> +                       pg_cnt = 1;
-
-The `pg_cnt <= 0` case doesn't seem correct. First off, I'd just git
-rid of the `<`, because `pg_cnt` is unsigned. Second, the comment
-header for `sparsebit_next_clear()` says that a return value of `0`
-indicates that no bits following `prev` are cleared. Thus, in this
-case, I'd think that `pg_cnt` should be set to `memory_size - pg`. So
-maybe something like:
-
-end = sparsebit_next_clear(enc_phy_pages, pg);
-if (end == 0)
-     end = memory_size;
-pg_cnt = end - pg;
-
-> +
-> +               sev_encrypt_phy_range(sev,
-> +                                     gpa_start + pg * vm_get_page_size(vm),
-> +                                     pg_cnt * vm_get_page_size(vm));
-> +               pg += pg_cnt;
-> +       }
-> +
-> +       sparsebit_free(&enc_phy_pages);
-> +}
-> +
-> +/* SEV VM implementation. */
-> +
-> +static struct sev_vm *sev_common_create(struct kvm_vm *vm)
-> +{
-> +       struct sev_user_data_status sev_status = {0};
-> +       uint32_t eax, ebx, ecx, edx;
-> +       struct sev_vm *sev;
-> +       int sev_fd;
-> +
-> +       sev_fd = open(SEV_DEV_PATH, O_RDWR);
-> +       if (sev_fd < 0) {
-> +               pr_info("Failed to open SEV device, path: %s, error: %d, skipping test.\n",
-> +                       SEV_DEV_PATH, sev_fd);
-> +               return NULL;
-> +       }
-> +
-> +       sev_ioctl(sev_fd, SEV_PLATFORM_STATUS, &sev_status);
-> +
-> +       if (!(sev_status.api_major > SEV_FW_REQ_VER_MAJOR ||
-> +             (sev_status.api_major == SEV_FW_REQ_VER_MAJOR &&
-> +              sev_status.api_minor >= SEV_FW_REQ_VER_MINOR))) {
-> +               pr_info("SEV FW version too old. Have API %d.%d (build: %d), need %d.%d, skipping test.\n",
-> +                       sev_status.api_major, sev_status.api_minor, sev_status.build,
-> +                       SEV_FW_REQ_VER_MAJOR, SEV_FW_REQ_VER_MINOR);
-
-nit: If we fail here, we leak `sev_fd`. Should we call `close(sev_fd)` here?
-
-> +               return NULL;
-> +       }
-> +
-> +       sev = calloc(1, sizeof(*sev));
-> +       sev->fd = sev_fd;
-> +       sev->vm = vm;
-> +
-> +       /* Get encryption bit via CPUID. */
-> +       eax = 0x8000001f;
-> +       ecx = 0;
-> +       cpuid(&eax, &ebx, &ecx, &edx);
-> +       sev->enc_bit = ebx & 0x3F;
-> +
-> +       return sev;
-> +}
-> +
-> +static void sev_common_free(struct sev_vm *sev)
-> +{
-> +       close(sev->fd);
-> +       free(sev);
-> +}
-> +
-> +struct sev_vm *sev_vm_create(uint32_t policy, uint64_t npages)
-> +{
-> +       struct sev_vm *sev;
-> +       struct kvm_vm *vm;
-> +
-> +       /* Need to handle memslots after init, and after setting memcrypt. */
-> +       vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-> +       sev = sev_common_create(vm);
-> +       if (!sev)
-> +               return NULL;
-> +       sev->sev_policy = policy;
-> +
-> +       kvm_sev_ioctl(sev, KVM_SEV_INIT, NULL);
-> +
-> +       vm_set_memory_encryption(vm, true, true, sev->enc_bit);
-> +       vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, 0, 0, npages, 0);
-> +       sev_register_user_range(sev, addr_gpa2hva(vm, 0), npages * vm_get_page_size(vm));
-> +
-> +       pr_info("SEV guest created, policy: 0x%x, size: %lu KB\n",
-> +               sev->sev_policy, npages * vm_get_page_size(vm) / 1024);
-> +
-> +       return sev;
-> +}
-> +
-> +void sev_vm_free(struct sev_vm *sev)
-> +{
-> +       kvm_vm_free(sev->vm);
-> +       sev_common_free(sev);
-> +}
-> +
-> +void sev_vm_launch(struct sev_vm *sev)
-> +{
-> +       struct kvm_sev_launch_start ksev_launch_start = {0};
-> +       struct kvm_sev_guest_status ksev_status = {0};
-> +
-> +       ksev_launch_start.policy = sev->sev_policy;
-> +       kvm_sev_ioctl(sev, KVM_SEV_LAUNCH_START, &ksev_launch_start);
-> +       kvm_sev_ioctl(sev, KVM_SEV_GUEST_STATUS, &ksev_status);
-> +       TEST_ASSERT(ksev_status.policy == sev->sev_policy, "Incorrect guest policy.");
-> +       TEST_ASSERT(ksev_status.state == SEV_GSTATE_LUPDATE,
-> +                   "Unexpected guest state: %d", ksev_status.state);
-> +
-> +       sev_encrypt(sev);
-> +}
-> +
-> +void sev_vm_measure(struct sev_vm *sev, uint8_t *measurement)
-> +{
-> +       struct kvm_sev_launch_measure ksev_launch_measure = {0};
-> +       struct kvm_sev_guest_status ksev_guest_status = {0};
-> +
-> +       ksev_launch_measure.len = 256;
-> +       ksev_launch_measure.uaddr = (__u64)measurement;
-> +       kvm_sev_ioctl(sev, KVM_SEV_LAUNCH_MEASURE, &ksev_launch_measure);
-> +
-> +       /* Measurement causes a state transition, check that. */
-> +       kvm_sev_ioctl(sev, KVM_SEV_GUEST_STATUS, &ksev_guest_status);
-> +       TEST_ASSERT(ksev_guest_status.state == SEV_GSTATE_LSECRET,
-> +                   "Unexpected guest state: %d", ksev_guest_status.state);
-> +}
-> +
-> +void sev_vm_launch_finish(struct sev_vm *sev)
-> +{
-> +       struct kvm_sev_guest_status ksev_status = {0};
-> +
-> +       kvm_sev_ioctl(sev, KVM_SEV_GUEST_STATUS, &ksev_status);
-> +       TEST_ASSERT(ksev_status.state == SEV_GSTATE_LUPDATE ||
-> +                   ksev_status.state == SEV_GSTATE_LSECRET,
-> +                   "Unexpected guest state: %d", ksev_status.state);
-> +
-> +       kvm_sev_ioctl(sev, KVM_SEV_LAUNCH_FINISH, NULL);
-> +
-> +       kvm_sev_ioctl(sev, KVM_SEV_GUEST_STATUS, &ksev_status);
-> +       TEST_ASSERT(ksev_status.state == SEV_GSTATE_RUNNING,
-> +                   "Unexpected guest state: %d", ksev_status.state);
-> +}
-> --
-> 2.25.1
->
-
-This is phenomenal. I'll try to send feedback on the other patches in
-the first batch of 7 sooner rather than later. I haven't looked past
-patch #7 yet. Let me know what you think about my first comment, on
-whether we can get all pre-existing tests to run under SEV, or that's
-a bad idea. I probably haven't given it as much thought as you have.
