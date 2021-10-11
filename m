@@ -2,191 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B587042915E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5574B429100
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239583AbhJKORk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:17:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35160 "EHLO mail.kernel.org"
+        id S243520AbhJKOOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243035AbhJKOPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:15:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F95C61206;
-        Mon, 11 Oct 2021 14:05:06 +0000 (UTC)
+        id S238808AbhJKOMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:12:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AF3861168;
+        Mon, 11 Oct 2021 14:03:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961107;
-        bh=1FNn6WQqx4qUj5H1MmDo1lN58D7dhV/1N2RCcD77hic=;
-        h=From:To:Cc:Subject:Date:From;
-        b=yh2Kdm87X8pbg6aHFe4+fqUYecwypYqfHaDbwt/OCyLjQp9+r/Lz0zQMyW19fn0hm
-         lb87abmT101oa/xso5cse47wV79DrPGdxqKfsNftyTnqjJThjdsnwSCABxBlJuD4MT
-         TRLrRAs01OjLbLpdSXgmhvYkOV4VwQQGDmrkAhdk=
+        s=korg; t=1633961011;
+        bh=jRqsfNbvi/+458Oqbhny0QHOj10dPgZclno2gV8++IU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=FfCqqysBH1uVj1uT0Pb6+v9ypAkPg6Qw6ne4AO0y8Xo9eKUJ7aJbSnjea2gNDl957
+         6bIwVCa6Qy4ScUnGuBLMYpKcA/uVY9/0YPSzNbegPq/xRLl33019XGPXOMkEoxriVT
+         pJBO88TxAZTcZY12oxXKEXWFZ/le7F7CJGlwOVlY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.19 00/28] 4.19.211-rc1 review
-Date:   Mon, 11 Oct 2021 15:46:50 +0200
-Message-Id: <20211011134640.711218469@linuxfoundation.org>
+        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.14 139/151] powerpc/64s: fix program check interrupt emergency stack path
+Date:   Mon, 11 Oct 2021 15:46:51 +0200
+Message-Id: <20211011134522.300646197@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-MIME-Version: 1.0
+In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
+References: <20211011134517.833565002@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.19.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.19.211-rc1
-X-KernelTest-Deadline: 2021-10-13T13:46+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.19.211 release.
-There are 28 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Nicholas Piggin <npiggin@gmail.com>
 
-Responses should be made by Wed, 13 Oct 2021 13:46:31 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 3e607dc4df180b72a38e75030cb0f94d12808712 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.211-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-and the diffstat can be found below.
+Emergency stack path was jumping into a 3: label inside the
+__GEN_COMMON_BODY macro for the normal path after it had finished,
+rather than jumping over it. By a small miracle this is the correct
+place to build up a new interrupt frame with the existing stack
+pointer, so things basically worked okay with an added weird looking
+700 trap frame on top (which had the wrong ->nip so it didn't decode
+bug messages either).
 
-thanks,
+Fix this by avoiding using numeric labels when jumping over non-trivial
+macros.
 
-greg k-h
+Before:
 
--------------
-Pseudo-Shortlog of commits:
+ LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
+ Modules linked in:
+ CPU: 0 PID: 88 Comm: sh Not tainted 5.15.0-rc2-00034-ge057cdade6e5 #2637
+ NIP:  7265677368657265 LR: c00000000006c0c8 CTR: c0000000000097f0
+ REGS: c0000000fffb3a50 TRAP: 0700   Not tainted
+ MSR:  9000000000021031 <SF,HV,ME,IR,DR,LE>  CR: 00000700  XER: 20040000
+ CFAR: c0000000000098b0 IRQMASK: 0
+ GPR00: c00000000006c964 c0000000fffb3cf0 c000000001513800 0000000000000000
+ GPR04: 0000000048ab0778 0000000042000000 0000000000000000 0000000000001299
+ GPR08: 000001e447c718ec 0000000022424282 0000000000002710 c00000000006bee8
+ GPR12: 9000000000009033 c0000000016b0000 00000000000000b0 0000000000000001
+ GPR16: 0000000000000000 0000000000000002 0000000000000000 0000000000000ff8
+ GPR20: 0000000000001fff 0000000000000007 0000000000000080 00007fff89d90158
+ GPR24: 0000000002000000 0000000002000000 0000000000000255 0000000000000300
+ GPR28: c000000001270000 0000000042000000 0000000048ab0778 c000000080647e80
+ NIP [7265677368657265] 0x7265677368657265
+ LR [c00000000006c0c8] ___do_page_fault+0x3f8/0xb10
+ Call Trace:
+ [c0000000fffb3cf0] [c00000000000bdac] soft_nmi_common+0x13c/0x1d0 (unreliable)
+ --- interrupt: 700 at decrementer_common_virt+0xb8/0x230
+ NIP:  c0000000000098b8 LR: c00000000006c0c8 CTR: c0000000000097f0
+ REGS: c0000000fffb3d60 TRAP: 0700   Not tainted
+ MSR:  9000000000021031 <SF,HV,ME,IR,DR,LE>  CR: 22424282  XER: 20040000
+ CFAR: c0000000000098b0 IRQMASK: 0
+ GPR00: c00000000006c964 0000000000002400 c000000001513800 0000000000000000
+ GPR04: 0000000048ab0778 0000000042000000 0000000000000000 0000000000001299
+ GPR08: 000001e447c718ec 0000000022424282 0000000000002710 c00000000006bee8
+ GPR12: 9000000000009033 c0000000016b0000 00000000000000b0 0000000000000001
+ GPR16: 0000000000000000 0000000000000002 0000000000000000 0000000000000ff8
+ GPR20: 0000000000001fff 0000000000000007 0000000000000080 00007fff89d90158
+ GPR24: 0000000002000000 0000000002000000 0000000000000255 0000000000000300
+ GPR28: c000000001270000 0000000042000000 0000000048ab0778 c000000080647e80
+ NIP [c0000000000098b8] decrementer_common_virt+0xb8/0x230
+ LR [c00000000006c0c8] ___do_page_fault+0x3f8/0xb10
+ --- interrupt: 700
+ Instruction dump:
+ XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+ XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX
+ ---[ end trace 6d28218e0cc3c949 ]---
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.19.211-rc1
+After:
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com>
-    x86/Kconfig: Correct reference to MWINCHIP3D
+ ------------[ cut here ]------------
+ kernel BUG at arch/powerpc/kernel/exceptions-64s.S:491!
+ Oops: Exception in kernel mode, sig: 5 [#1]
+ LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=2048 NUMA PowerNV
+ Modules linked in:
+ CPU: 0 PID: 88 Comm: login Not tainted 5.15.0-rc2-00034-ge057cdade6e5-dirty #2638
+ NIP:  c0000000000098b8 LR: c00000000006bf04 CTR: c0000000000097f0
+ REGS: c0000000fffb3d60 TRAP: 0700   Not tainted
+ MSR:  9000000000021031 <SF,HV,ME,IR,DR,LE>  CR: 24482227  XER: 00040000
+ CFAR: c0000000000098b0 IRQMASK: 0
+ GPR00: c00000000006bf04 0000000000002400 c000000001513800 c000000001271868
+ GPR04: 00000000100f0d29 0000000042000000 0000000000000007 0000000000000009
+ GPR08: 00000000100f0d29 0000000024482227 0000000000002710 c000000000181b3c
+ GPR12: 9000000000009033 c0000000016b0000 00000000100f0d29 c000000005b22f00
+ GPR16: 00000000ffff0000 0000000000000001 0000000000000009 00000000100eed90
+ GPR20: 00000000100eed90 0000000010000000 000000001000a49c 00000000100f1430
+ GPR24: c000000001271868 0000000002000000 0000000000000215 0000000000000300
+ GPR28: c000000001271800 0000000042000000 00000000100f0d29 c000000080647860
+ NIP [c0000000000098b8] decrementer_common_virt+0xb8/0x230
+ LR [c00000000006bf04] ___do_page_fault+0x234/0xb10
+ Call Trace:
+ Instruction dump:
+ 4182000c 39400001 48000008 894d0932 714a0001 39400008 408225fc 718a4000
+ 7c2a0b78 3821fcf0 41c20008 e82d0910 <0981fcf0> f92101a0 f9610170 f9810178
+ ---[ end trace a5dbd1f5ea4ccc51 ]---
 
-Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    powerpc/bpf: Fix BPF_MOD when imm == 1
+Fixes: 0a882e28468f4 ("powerpc/64s/exception: remove bad stack branch")
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20211004145642.1331214-2-npiggin@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/powerpc/kernel/exceptions-64s.S | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Jamie Iles <quic_jiles@quicinc.com>
-    i2c: acpi: fix resource leak in reconfiguration device addition
+diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
+index 37859e62a8dc..024d9231f88c 100644
+--- a/arch/powerpc/kernel/exceptions-64s.S
++++ b/arch/powerpc/kernel/exceptions-64s.S
+@@ -1665,27 +1665,30 @@ EXC_COMMON_BEGIN(program_check_common)
+ 	 */
+ 
+ 	andi.	r10,r12,MSR_PR
+-	bne	2f			/* If userspace, go normal path */
++	bne	.Lnormal_stack		/* If userspace, go normal path */
+ 
+ 	andis.	r10,r12,(SRR1_PROGTM)@h
+-	bne	1f			/* If TM, emergency		*/
++	bne	.Lemergency_stack	/* If TM, emergency		*/
+ 
+ 	cmpdi	r1,-INT_FRAME_SIZE	/* check if r1 is in userspace	*/
+-	blt	2f			/* normal path if not		*/
++	blt	.Lnormal_stack		/* normal path if not		*/
+ 
+ 	/* Use the emergency stack					*/
+-1:	andi.	r10,r12,MSR_PR		/* Set CR0 correctly for label	*/
++.Lemergency_stack:
++	andi.	r10,r12,MSR_PR		/* Set CR0 correctly for label	*/
+ 					/* 3 in EXCEPTION_PROLOG_COMMON	*/
+ 	mr	r10,r1			/* Save r1			*/
+ 	ld	r1,PACAEMERGSP(r13)	/* Use emergency stack		*/
+ 	subi	r1,r1,INT_FRAME_SIZE	/* alloc stack frame		*/
+ 	__ISTACK(program_check)=0
+ 	__GEN_COMMON_BODY program_check
+-	b 3f
+-2:
++	b .Ldo_program_check
++
++.Lnormal_stack:
+ 	__ISTACK(program_check)=1
+ 	__GEN_COMMON_BODY program_check
+-3:
++
++.Ldo_program_check:
+ 	addi	r3,r1,STACK_FRAME_OVERHEAD
+ 	bl	program_check_exception
+ 	REST_NVGPRS(r1) /* instruction emulation may change GPRs */
+-- 
+2.33.0
 
-Sylwester Dziedziuch <sylwesterx.dziedziuch@intel.com>
-    i40e: Fix freeing of uninitialized misc IRQ vector
-
-Jiri Benc <jbenc@redhat.com>
-    i40e: fix endless loop under rtnl
-
-Eric Dumazet <edumazet@google.com>
-    rtnetlink: fix if_nlmsg_stats_size() under estimation
-
-Yang Yingliang <yangyingliang@huawei.com>
-    drm/nouveau/debugfs: fix file release memory leak
-
-Eric Dumazet <edumazet@google.com>
-    netlink: annotate data races around nlk->bound
-
-Sean Anderson <sean.anderson@seco.com>
-    net: sfp: Fix typo in state machine debug string
-
-Eric Dumazet <edumazet@google.com>
-    net: bridge: use nla_total_size_64bit() in br_get_linkxstats_size()
-
-Oleksij Rempel <o.rempel@pengutronix.de>
-    ARM: imx6: disable the GIC CPU interface before calling stby-poweroff sequence
-
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-    ptp_pch: Load module automatically if ID matches
-
-Pali Rohár <pali@kernel.org>
-    powerpc/fsl/dts: Fix phy-connection-type for fm1mac3
-
-Eric Dumazet <edumazet@google.com>
-    net_sched: fix NULL deref in fifo_set_limit()
-
-Pavel Skripkin <paskripkin@gmail.com>
-    phy: mdio: fix memory leak
-
-Tatsuhiko Yasumatsu <th.yasumatsu@gmail.com>
-    bpf: Fix integer overflow in prealloc_elems_and_freelist()
-
-Johan Almbladh <johan.almbladh@anyfinetworks.com>
-    bpf, arm: Fix register clobbering in div/mod implementation
-
-Max Filippov <jcmvbkbc@gmail.com>
-    xtensa: call irqchip_init only when CONFIG_USE_OF is selected
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf, mips: Validate conditional branch offsets
-
-David Heidelberg <david@ixit.cz>
-    ARM: dts: qcom: apq8064: use compatible which contains chipid
-
-Roger Quadros <rogerq@kernel.org>
-    ARM: dts: omap3430-sdp: Fix NAND device node
-
-Juergen Gross <jgross@suse.com>
-    xen/balloon: fix cancelled balloon action
-
-Trond Myklebust <trond.myklebust@hammerspace.com>
-    nfsd4: Handle the NFSv4 READDIR 'dircount' hint being zero
-
-Zheng Liang <zhengliang6@huawei.com>
-    ovl: fix missing negative dentry check in ovl_rename()
-
-Jan Beulich <jbeulich@suse.com>
-    xen/privcmd: fix error handling in mmap-resource processing
-
-Johan Hovold <johan@kernel.org>
-    USB: cdc-acm: fix break reporting
-
-Johan Hovold <johan@kernel.org>
-    USB: cdc-acm: fix racy tty buffer accesses
-
-Ben Hutchings <ben@decadent.org.uk>
-    Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
-
-
--------------
-
-Diffstat:
-
- Makefile                                    |  4 +-
- arch/arm/boot/dts/omap3430-sdp.dts          |  2 +-
- arch/arm/boot/dts/qcom-apq8064.dtsi         |  3 +-
- arch/arm/mach-imx/pm-imx6.c                 |  2 +
- arch/arm/net/bpf_jit_32.c                   | 19 ++++++++++
- arch/mips/net/bpf_jit.c                     | 57 ++++++++++++++++++++++-------
- arch/powerpc/boot/dts/fsl/t1023rdb.dts      |  2 +-
- arch/powerpc/net/bpf_jit_comp64.c           | 10 ++++-
- arch/x86/Kconfig                            |  2 +-
- arch/xtensa/kernel/irq.c                    |  2 +-
- drivers/gpu/drm/nouveau/nouveau_debugfs.c   |  1 +
- drivers/i2c/i2c-core-acpi.c                 |  1 +
- drivers/net/ethernet/intel/i40e/i40e_main.c |  5 ++-
- drivers/net/phy/mdio_bus.c                  |  7 ++++
- drivers/net/phy/sfp.c                       |  2 +-
- drivers/ptp/ptp_pch.c                       |  1 +
- drivers/usb/Kconfig                         |  3 +-
- drivers/usb/class/cdc-acm.c                 |  8 ++++
- drivers/xen/balloon.c                       | 21 ++++++++---
- drivers/xen/privcmd.c                       |  7 ++--
- fs/nfsd/nfs4xdr.c                           | 19 ++++++----
- fs/overlayfs/dir.c                          | 10 +++--
- kernel/bpf/stackmap.c                       |  3 +-
- net/bridge/br_netlink.c                     |  2 +-
- net/core/rtnetlink.c                        |  2 +-
- net/netlink/af_netlink.c                    | 14 +++++--
- net/sched/sch_fifo.c                        |  3 ++
- 27 files changed, 156 insertions(+), 56 deletions(-)
 
 
