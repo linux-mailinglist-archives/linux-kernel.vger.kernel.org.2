@@ -2,110 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4516B4284D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626AA4284D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233274AbhJKBqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
+        id S233325AbhJKBsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:48:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhJKBqV (ORCPT
+        with ESMTP id S232812AbhJKBsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:46:21 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B633C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:44:22 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so13540337pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:44:22 -0700 (PDT)
+        Sun, 10 Oct 2021 21:48:07 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C747DC061570;
+        Sun, 10 Oct 2021 18:46:08 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id k2-20020a056830168200b0054e523d242aso10219659otr.6;
+        Sun, 10 Oct 2021 18:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=XHhGuz+XprWcRZlX2mia8Y6kjwxUAUx+3iJusRDWyfg=;
-        b=hac24URoTl5lw7ZUyU/t5U8m74C4Qni855om3yf4J2+QCP+OjmyC9KC3NAOR/XfPgo
-         3QbeXH37eqpwShP5+7kZw1FtZn7hJ/R7EbtiAxQ/QpfIGGHnOrS9s9dk5AlymEJGrYBY
-         JihGdkNsPF41x3i0U8xcry4OQWdYAnaWc2/d97GATppo+N2TeAzxPJiSZs1tcJDsCYgS
-         8cFf/ZvxfEGWsyiD70Z19N5fbh1hr6zq5EZQlJOjBVfF7G2cg6yCRFRqDP6N2nz3tZAx
-         FaC4vQOuAa1ZtD/Q/bKBGK2PkL/q8d205AfFK/JyxUVIagBXgdIVwSa6CX9WT3EORx7Y
-         IwGA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HACLZwdhjcmKsKaL3skVTjexZS/nk6K5PaP3br5Yqbs=;
+        b=OVfTwDF7oJSs5+vFxLjoprIk842DPu2vJyQfF2mWv/Esc046SL7IkOytKskHlVown0
+         biHbluY748JG4nORTZoFV/tTn25PPdWPCCM8M1/p+xE9Gz7XZ5GjEW8yrVHuI8RuzjBe
+         E49UOJI318SiTNEWK/VK4lQNhO18qwpmMVfamcwTc8vitgPEvjZ80KtWTXVOWNOdOzLm
+         1AmQkoiylFHRxzZlMkbeNORhXUj0TtWDF5vWKvj93tXmvBNZmnJo45e2v8rS8iTvbE35
+         OJkzAWZMwQCIM0/j030f0+S6P1APZraRZ8FFic/SehftB4Da6gUfU8IGuCAmsi4bCYUG
+         V6ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XHhGuz+XprWcRZlX2mia8Y6kjwxUAUx+3iJusRDWyfg=;
-        b=4d5VSKc8y4rqBOquwPqHTtPH+w8+tebqR+nMS39yHOimJEQiqsgWBpNtNjCAJva+8I
-         4ZGOLNLr/IIde4y1AqHXmpeWs+AwAP0ZN/6XPna2NrleVoP7gD5+N764raH8g1H+d6wQ
-         hdMsnkvaE3SfxiqVrMnDY9esA4Ow0QtxB9xvj9XyaCxzQ2IW5w6SwG81zGPHepIVI+Hr
-         szQzpQoYGjmOYNUcqZ7PSWQkXRzerzbHbqeK+YB31ljArdT8XDR9jkoa8mGi5uhxUQHt
-         jhpJs+BFoQcm72l1sTioBr54gz8xGPkLoY+IDB+ap479OJwlPrGWmFQzpq5/6+6E42BB
-         fzOg==
-X-Gm-Message-State: AOAM530/j3VsuhPpOo/YnVZVkke/buxb2kRLnMvyERqmUK3+hBFoWucM
-        2TkFrHtkcikKQn5v57S/jCN0jkFjaEi+iPesULmFYnsK2hyP
-X-Google-Smtp-Source: ABdhPJwoPyl/vws4WDbd76yyRcCCa83VSVOCjTGZp7jj2tOM8W7CVSREIu5ltxZoYLWBrgK0LhlMMdoZ/FID64aRiYI=
-X-Received: by 2002:a17:902:7b84:b0:13b:90a7:e270 with SMTP id
- w4-20020a1709027b8400b0013b90a7e270mr21910103pll.21.1633916661767; Sun, 10
- Oct 2021 18:44:21 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=HACLZwdhjcmKsKaL3skVTjexZS/nk6K5PaP3br5Yqbs=;
+        b=IXcfAe2kaaReDKJ5gFFb08mlwht3QIilwZXpmmC0lPqFK58DxWm1QXlVC0nQkT4zTJ
+         259I7JuLmw9L2aOzedZ6m+6LUafWm0VCMpyh99bB8CIN8d99F355/H+P4z7S8iPgII9/
+         CfKE5JGe+6AtBpJEMC6LpU2cRsDe4FwwfR/g3/y7GzUwLSfk3XorpYZvhIBB2NOWNE+q
+         EX0McXDMYY1yqOblLWilTVjRYwRJrWLfIwxL/1pvCrn3XwjSRTKUe09IBjJg04vm/soP
+         U0EwgCQ3wFX8OWXBYIcsLesXeH10oabkf/issRLzlT4TuLcC3FCasPVsMQnSOB+TpIDn
+         QZ1A==
+X-Gm-Message-State: AOAM53181uYiYX1CjXHl3/lLnte9m74xXLtBYIqnzwyLqj84OecHNO5U
+        e5SqPbmXHquqRzYmUEWWKEw=
+X-Google-Smtp-Source: ABdhPJxcXxYcLbVxfz8x7TBFUmJG0eDZztaKdir5GuNYpcwZOG7xULEYf9Noa57veBzCk1bMHLoYbw==
+X-Received: by 2002:a05:6830:24b8:: with SMTP id v24mr19452163ots.100.1633916768101;
+        Sun, 10 Oct 2021 18:46:08 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bd24sm1456873oib.52.2021.10.10.18.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 18:46:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 10 Oct 2021 18:46:06 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Curtis Klein <curtis.klein@hpe.com>
+Cc:     wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] watchdog: Extend watchdog timeout during kernel panic
+Message-ID: <20211011014606.GA3781525@roeck-us.net>
+References: <1628994598-30907-1-git-send-email-curtis.klein@hpe.com>
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 11 Oct 2021 09:44:11 +0800
-Message-ID: <CACkBjsZ5cRX5t0wCr2MfjBp4=-Utn43MzZD4uEyzznvWuUz05A@mail.gmail.com>
-Subject: UBSAN: shift-out-of-bounds in extAlloc
-To:     shaggy@kernel.org, jfs-discussion@lists.sourceforge.net
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1628994598-30907-1-git-send-email-curtis.klein@hpe.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Aug 14, 2021 at 07:29:58PM -0700, Curtis Klein wrote:
+> From: JP Ertola <jp.ertola@hpe.com>
+> 
+> If the watchdog timeout is set such that the crash kernel does not
+> have time to collect a coredump and the crash kernel is not equipped to
+> ping the watchdog timer itself, then a kernel coredump will not be
+> collected before the watchdog fires. This change registers a panic
+> notifier and callback so the watchdog timeout can be extended if a
+> kernel panic occurs. This timeout extension would give the crash kernel
+> enough time to collect a coredump before the CPU resets. The watchdog
+> timeout is extended if and only if a crash kernel image is loaded in
+> memory, the watchdog is active at the time of the panic, and the kconfig
+> setting is set.
+> 
+> A Kconfig option has been added to configure the timeout duration at
+> compile-time. Default is zero seconds.
+> 
+> Signed-off-by: JP Ertola <jp.ertola@hpe.com>
+> Co-developed-by: Curtis Klein <curtis.klein@hpe.com>
+> Signed-off-by: Curtis Klein <curtis.klein@hpe.com>
+> ---
+> v6: 
+>  - Only register panic notifier if wdt_panic_timeout is set. 
+>  - Exit notifier callback early if watchdog is not active and hw is not running
+>  - Handle more scenarios where the wdt_panic_timeout is invalid.
+>  - Unregister notifier in watchdog_dev_unregister.
+>  - Rework notifier callback flow
+> 
+> v5: Clean up variable names and spacing. Call __watchdog_ping() instead of 
+> wdd->ops->ping(). Remove notifier_from_errno() as it could cause unintended
+> behavior in the future if this watchdog extension notifier has its priority
+> elevated above minimum.
+> v4: Remove optional callback mechanism alltogether. I agree with Guenter,
+> not widely used.
+> v3: Fix logic so timeout extension is not longer than wdd->max_timeout
+> v2: Remove dead code and comments.
+> 
+>  drivers/watchdog/Kconfig        | 13 +++++++
+>  drivers/watchdog/watchdog_dev.c | 84 ++++++++++++++++++++++++++++++++++-------
+>  include/linux/watchdog.h        |  1 +
+>  3 files changed, 84 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 546dfc1..e7c6230 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -149,6 +149,19 @@ comment "Watchdog Device Drivers"
+>  
+>  # Architecture Independent
+>  
+> +config DEFAULT_WATCHDOG_CRASH_KERNEL_TIMEOUT
+> +	int "Default timeout for watchdog timer before crash kernel starts (seconds)"
+> +	default 0
+> +	help
+> +	  This option allows an extended timeout to be used for the watchdog when
+> +	  the kernel panics and a crash kernel is about to start. This is helpful
+> +	  when the existing WDT timeout value is less than the time required for
+> +	  crash kernel to run and the crash kernel is unable to handle the
+> +	  the watchdog itself. The timeout extension happens last in chain of
+> +	  kernel panic handler callbacks just in case another panic handler
+> +	  hangs unexpectedly. When this value is set to 0, the watchdog timeout
+> +	  will not be changed.
+> +
+>  config SOFT_WATCHDOG
+>  	tristate "Software watchdog"
+>  	select WATCHDOG_CORE
+> diff --git a/drivers/watchdog/watchdog_dev.c b/drivers/watchdog/watchdog_dev.c
+> index 3bab324..68e1281 100644
+> --- a/drivers/watchdog/watchdog_dev.c
+> +++ b/drivers/watchdog/watchdog_dev.c
+> @@ -29,20 +29,22 @@
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+> -#include <linux/cdev.h>		/* For character device */
+> -#include <linux/errno.h>	/* For the -ENODEV/... values */
+> -#include <linux/fs.h>		/* For file operations */
+> -#include <linux/init.h>		/* For __init/__exit/... */
+> -#include <linux/hrtimer.h>	/* For hrtimers */
+> -#include <linux/kernel.h>	/* For printk/panic/... */
+> -#include <linux/kthread.h>	/* For kthread_work */
+> -#include <linux/miscdevice.h>	/* For handling misc devices */
+> -#include <linux/module.h>	/* For module stuff/... */
+> -#include <linux/mutex.h>	/* For mutexes */
+> -#include <linux/slab.h>		/* For memory functions */
+> -#include <linux/types.h>	/* For standard types (like size_t) */
+> -#include <linux/watchdog.h>	/* For watchdog specific items */
+> -#include <linux/uaccess.h>	/* For copy_to_user/put_user/... */
+> +#include <linux/cdev.h>		    /* For character device */
+> +#include <linux/errno.h>	    /* For the -ENODEV/... values */
+> +#include <linux/fs.h>		    /* For file operations */
+> +#include <linux/init.h>		    /* For __init/__exit/... */
+> +#include <linux/hrtimer.h>	    /* For hrtimers */
+> +#include <linux/kernel.h>	    /* For printk/panic/... */
+> +#include <linux/kexec.h>	    /* For checking if crash kernel is loaded */
+> +#include <linux/kthread.h>	    /* For kthread_work */
+> +#include <linux/miscdevice.h>	    /* For handling misc devices */
+> +#include <linux/module.h>	    /* For module stuff/... */
+> +#include <linux/mutex.h>	    /* For mutexes */
+> +#include <linux/panic_notifier.h>   /* For panic_notifier_list */
+> +#include <linux/slab.h>		    /* For memory functions */
+> +#include <linux/types.h>	    /* For standard types (like size_t) */
+> +#include <linux/watchdog.h>	    /* For watchdog specific items */
+> +#include <linux/uaccess.h>	    /* For copy_to_user/put_user/... */
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+Please drop unrelated changes.
 
-HEAD commit: 60a9483534ed Merge tag 'warning-fixes-20211005'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1IM13hIeSrriEEkaACcmQaVYfOJ85xKZQ/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1u-ncYGLkq3xqdlNQYJz8-G6Fhf3H-moP/view?usp=sharing
+>  
+>  #include "watchdog_core.h"
+>  #include "watchdog_pretimeout.h"
+> @@ -57,6 +59,9 @@ static struct kthread_worker *watchdog_kworker;
+>  static bool handle_boot_enabled =
+>  	IS_ENABLED(CONFIG_WATCHDOG_HANDLE_BOOT_ENABLED);
+>  
+> +static unsigned int wdt_panic_timeout =
+> +	CONFIG_DEFAULT_WATCHDOG_CRASH_KERNEL_TIMEOUT;
+> +
+>  static unsigned open_timeout = CONFIG_WATCHDOG_OPEN_TIMEOUT;
+>  
+>  static bool watchdog_past_open_deadline(struct watchdog_core_data *data)
+> @@ -818,6 +823,43 @@ static long watchdog_ioctl(struct file *file, unsigned int cmd,
+>  	return err;
+>  }
+>  
+> +static int watchdog_panic_notifier(struct notifier_block *nb,
+> +	unsigned long code, void *data)
+> +{
+> +	struct watchdog_device *wdd = container_of(nb, struct watchdog_device, panic_nb);
+> +	unsigned int timeout = wdt_panic_timeout;
+> +	int set_timeout_ret, ping_ret;
+> +
+> +	if (wdd == NULL || wdt_panic_timeout == 0 || kexec_crash_image == NULL ||
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+wdd can not be NULL here.
 
-loop9: detected capacity change from 0 to 65534
-================================================================================
-UBSAN: shift-out-of-bounds in fs/jfs/jfs_extent.c:511:16
-shift exponent -1 is negative
-CPU: 0 PID: 12367 Comm: syz-executor Not tainted 5.15.0-rc4+ #22
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:106
- ubsan_epilogue+0xa/0x4e lib/ubsan.c:151
- __ubsan_handle_shift_out_of_bounds+0x161/0x182 lib/ubsan.c:330
- extBalloc fs/jfs/jfs_extent.c:511 [inline]
- extAlloc+0x699/0x6c0 fs/jfs/jfs_extent.c:125
- jfs_get_block+0x290/0x3f0 fs/jfs/inode.c:257
- nobh_write_begin+0x29d/0x990 fs/buffer.c:2648
- jfs_write_begin+0x37/0x80 fs/jfs/inode.c:321
- generic_perform_write+0xce/0x220 mm/filemap.c:3770
- __generic_file_write_iter+0x20d/0x240 mm/filemap.c:3897
- generic_file_write_iter+0x6d/0xd0 mm/filemap.c:3929
- call_write_iter include/linux/fs.h:2163 [inline]
- new_sync_write+0x18d/0x260 fs/read_write.c:507
- vfs_write+0x43b/0x4a0 fs/read_write.c:594
- ksys_write+0xd2/0x120 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46ae99
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f58ac19fc48 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046ae99
-RDX: 00000000ffffff6a RSI: 0000000020043440 RDI: 000000000000000a
-RBP: 00000000004e4809 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c0a0
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffdbff36e60
-================================================================================
+> +	    !(watchdog_active(wdd) || watchdog_hw_running(wdd)))
+
+!(a || b) --> !a && !b
+
+Please use (!watchdog_active(wdd) && !watchdog_hw_running(wdd))
+which is much easier to understand.
+
+> +		return NOTIFY_DONE;
+> +
+> +	if (wdd->max_hw_heartbeat_ms && wdd->max_hw_heartbeat_ms < wdt_panic_timeout * 1000)
+> +		timeout = wdd->max_hw_heartbeat_ms / 1000;
+
+FWIW, this won't help much if max_hw_heartbeat_ms is really low.
+It might make sense to list that limitation in the Kconfig
+description (the watchdog timeout will never be higher than
+the maximum hardware watchdog timeout).
+
+> +	else if (watchdog_timeout_invalid(wdd, wdt_panic_timeout))
+> +		timeout = wdd->max_timeout;
+> +
+> +	if (timeout != wdt_panic_timeout)
+> +		pr_err("watchdog%d: Cannot set specified panic timeout, using %ds.\n",
+> +			wdd->id, timeout);
+> +
+> +	set_timeout_ret = watchdog_set_timeout(wdd, timeout);
+> +	if (set_timeout_ret)
+> +		pr_err("watchdog%d: Failed to extend watchdog timeout (%d)\n",
+> +			wdd->id, set_timeout_ret);
+> +
+> +	ping_ret = watchdog_ping(wdd);
+> +	if (ping_ret)
+> +		pr_warn("watchdog%d: Failed to ping watchdog (%d)\n",
+> +			wdd->id, ping_ret);
+> +
+> +	if (set_timeout_ret == 0 && ping_ret == 0)
+
+	if (!set_timeout_ret && !ping_ret)
+
+> +		pr_info("watchdog%d: Extended watchdog timeout to %d seconds\n",
+> +			wdd->id, timeout);
+> +
+> +	return NOTIFY_DONE;
+> +}
+> +
+>  /*
+>   *	watchdog_open: open the /dev/watchdog* devices.
+>   *	@inode: inode of device
+> @@ -1129,6 +1171,17 @@ int watchdog_dev_register(struct watchdog_device *wdd)
+>  	if (ret)
+>  		watchdog_cdev_unregister(wdd);
+>  
+> +	if (wdt_panic_timeout) {
+> +		wdd->panic_nb.priority = INT_MIN; /* Run last */
+> +		wdd->panic_nb.notifier_call = watchdog_panic_notifier;
+> +
+> +		ret = atomic_notifier_chain_register(&panic_notifier_list,
+> +						     &wdd->panic_nb);
+> +		if (ret)
+> +			pr_warn("watchdog%d: Cannot register panic notifier (%d)\n",
+> +				wdd->id, ret);
+
+ret is returned to the caller, and thus the calling code will fail
+and assume that watchdog registration failed. That happens without cleanup.
+Specifically, the watchdog character device will still exist after the error.
+If this is considered fatal, please make it pr_error and handle cleanup
+as necessary. I am not convinced that it is fatal, though, so please
+also provide justification.
+
+> +	}
+> +
+>  	return ret;
+>  }
+>  
+> @@ -1142,6 +1195,9 @@ int watchdog_dev_register(struct watchdog_device *wdd)
+>  
+>  void watchdog_dev_unregister(struct watchdog_device *wdd)
+>  {
+> +	if (wdt_panic_timeout)
+> +		atomic_notifier_chain_unregister(&panic_notifier_list, &wdd->panic_nb);
+> +
+>  	watchdog_unregister_pretimeout(wdd);
+>  	watchdog_cdev_unregister(wdd);
+>  }
+> diff --git a/include/linux/watchdog.h b/include/linux/watchdog.h
+> index 9b19e6b..bc7e6e8 100644
+> --- a/include/linux/watchdog.h
+> +++ b/include/linux/watchdog.h
+> @@ -107,6 +107,7 @@ struct watchdog_device {
+>  	unsigned int max_hw_heartbeat_ms;
+>  	struct notifier_block reboot_nb;
+>  	struct notifier_block restart_nb;
+> +	struct notifier_block panic_nb;
+>  	void *driver_data;
+>  	struct watchdog_core_data *wd_data;
+>  	unsigned long status;
