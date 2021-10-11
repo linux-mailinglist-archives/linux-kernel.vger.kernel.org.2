@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2246F4296B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 379364296B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234337AbhJKSSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:18:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36941 "EHLO
+        id S234338AbhJKSV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:21:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34017 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231697AbhJKSSU (ORCPT
+        by vger.kernel.org with ESMTP id S229565AbhJKSVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:18:20 -0400
+        Mon, 11 Oct 2021 14:21:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633976180;
+        s=mimecast20190719; t=1633976395;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=H82X7xRMODdZ4WEyS/ecEKADaJNvP9H/PqLV/Kv09G8=;
-        b=L9eq1b+Atio5euPWBPBKj665WaUYuGpY4F66gyTfF4gv8/uUoMJyXMgXHviGVE0Y7UlDzY
-        DJkwiBYnn9hi0GeL5AOyHWELGFPfnLhfhpjIIw0macYAsNssZzmh8/dquRuf8xk+ZRWVMk
-        yrBpzvCDcdXFEzDWavRCctiEUgE8QMY=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-b68F5Il6Pa-329bJL4X6Rw-1; Mon, 11 Oct 2021 14:16:19 -0400
-X-MC-Unique: b68F5Il6Pa-329bJL4X6Rw-1
-Received: by mail-qt1-f198.google.com with SMTP id 90-20020aed3163000000b002a6bd958077so13989916qtg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:16:18 -0700 (PDT)
+        bh=MttXTOG7P9ZAA72SX78ClayBg0KZinyulsAec13x76M=;
+        b=FWtGK2MxJETeGxMtNcaDhMNNVDSkPVM7zvfgqMczops2/NkDkraV9CqG/JmgXXW4XDvEUO
+        yXvZZYqRGYJ0wEp16p2bMuLNinkfXRyZaRb54Irx30yaubZx0EMQOisHixCUOkLXrQp0BM
+        yvGTucSD9dMwZFcR8kmHH0/1YWTuuBY=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-4R9t9CPOP6q4SILtDpPn4A-1; Mon, 11 Oct 2021 14:19:53 -0400
+X-MC-Unique: 4R9t9CPOP6q4SILtDpPn4A-1
+Received: by mail-qt1-f199.google.com with SMTP id l14-20020ac8458e000000b002a7829805b8so3633750qtn.22
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:19:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=H82X7xRMODdZ4WEyS/ecEKADaJNvP9H/PqLV/Kv09G8=;
-        b=1putM6GRsP0FbnyLaa5V1gxuP9/QQKV46hvZlR77zB8pCaiYIDaJb1umXZDZkSzSfF
-         s9EmBPN8KoBFIGk/4inXAqLiOO25NAnG8xNsogdZFBb+QDu/i/JmWyauRUrMSQCbHg1A
-         vxEztD3gpCWXCT9zHPpds+7wWg5GLi9TIx72b+zb9lPMsDwSVBMeYnJO9AspXIHiSBVB
-         TBlAEbK7I7lIc65gGEpQd4cx0UUwM6RBFJ9d122hdShq+N02CUCZGqyrkfPJY9+3vAdC
-         fv1E2Op30bPWVd7vfHeuGHNDvXu7fOSHUOEyqsa+CxIfgU50/rjrb6Msb+KAD3gIMWVZ
-         mkHQ==
-X-Gm-Message-State: AOAM53154nTtLDBBqeYDf+9XBWi1lcz2ngSqfYGnYuoQ+0LtxtM9K9DB
-        mCjfsc+3zgiWOY17SiFX2tqNT3Fm295dAvC8xCmfkssbbpQKmUuHsRm+fKi1K9c0oJi2tEp7ISA
-        o30bBRcv/Qe0uMRP7AkI/njmP
-X-Received: by 2002:ad4:46ab:: with SMTP id br11mr24958872qvb.33.1633976178460;
-        Mon, 11 Oct 2021 11:16:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzfrJays15jS42HTdd5fDBYyP3bqCXbB4dhWeVXrgKHraYFT4MS3AeDWFU4ydMErPCW/g76Q==
-X-Received: by 2002:ad4:46ab:: with SMTP id br11mr24958844qvb.33.1633976178221;
-        Mon, 11 Oct 2021 11:16:18 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=MttXTOG7P9ZAA72SX78ClayBg0KZinyulsAec13x76M=;
+        b=ssD84gwfSjS3NRcl0PgjhAQ3EY1Ish4JoMGGQPZCcqzbazBVA5aopinEoKv3vHHRGe
+         2FlN+GYlJb4TQjjPFy55XH869ePZ6+Lp0CT8TbvHkrOcdFmyYkbpzPeJkF5rRcdh2H9h
+         Pv8dTnG4KvKZoLoKXcNnY1Tk+i/8oESD4CxKunx0FVr7H4CJyLzD8F0g5dZkVj4m+0KM
+         nGohd6e44XHdG4XXU/bw8VjKazKwOu6gGFQJq9djKAYBfJJSjSHlglR6HwB6xUl+kTqB
+         l4LvwQbQVxv6GnEyiFU5mz6d3T5OXxf7tPdTu0ml7pR8nmzJImAMdG9/iqtECUdJ9qU5
+         6NBQ==
+X-Gm-Message-State: AOAM531uD9JcsPDC+eN553Pnl9hQpbd64K2WBssvmcBOtGCHaMHn8W6D
+        +v62JuoWgIBe+apEdCDMzcx/03YEd/qx3arp9D6pRD8wcQV+PZ5AdcL0EloEa6O7010yGM0EKsD
+        DJj60kQ1sFg662WL1xxwHkFy1
+X-Received: by 2002:ac8:5bce:: with SMTP id b14mr10836178qtb.194.1633976393440;
+        Mon, 11 Oct 2021 11:19:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFVX5robRCsYjhCO4rpkDWlzo+DOZDVwzw/04TSEW8Kouze7DjppfYr32XtldSWHVr6RTt3g==
+X-Received: by 2002:ac8:5bce:: with SMTP id b14mr10836140qtb.194.1633976393271;
+        Mon, 11 Oct 2021 11:19:53 -0700 (PDT)
 Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id l3sm4642202qkj.110.2021.10.11.11.16.15
+        by smtp.gmail.com with ESMTPSA id u19sm5292644qtx.40.2021.10.11.11.19.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:16:17 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 11:16:13 -0700
+        Mon, 11 Oct 2021 11:19:52 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 11:19:48 -0700
 From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Kuppuswamy, Sathyanarayanan" 
+To:     Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -73,61 +75,37 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 11/11] x86/tdx: Handle CPUID via #VE
-Message-ID: <20211011181613.mqvzj55xhlaotgaz@treble>
-References: <20211005025205.1784480-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211005025205.1784480-12-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211006202630.chblrhdqepsbtdaa@treble>
- <02e4f583-39dd-cac9-5b51-5fa9ba81b996@linux.intel.com>
+Subject: Re: [PATCH v10 02/11] x86/tdx: Introduce INTEL_TDX_GUEST config
+ option
+Message-ID: <20211011181948.fkt7o2fezmuyynze@treble>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053747.1694419-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <02e4f583-39dd-cac9-5b51-5fa9ba81b996@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211009053747.1694419-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 07:25:44PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> > - _tdx_halt() warns and doesn't return anything.
-> 
-> Since tdx_halt handler is shared with pv_ops, we can't return anything
-> back (so we use WARN_ON to report the error).
+On Fri, Oct 08, 2021 at 10:37:38PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +config INTEL_TDX_GUEST
+> +	bool "Intel Trusted Domain Extensions (TDX) Guest Support"
+> +	depends on X86_64 && CPU_SUP_INTEL && PARAVIRT
+> +	depends on SECURITY
+> +	depends on X86_X2APIC
+> +	help
+> +	  Provide support for running in a trusted domain on Intel processors
+> +	  equipped with Trusted Domain Extensions. TDX is a Intel technology
+> +	  that extends VMX and Memory Encryption with a new kind of virtual
+> +	  machine guest called Trust Domain (TD). A TD is designed to run in
+> +	  a CPU mode that protects the confidentiality of TD memory contents
+> +	  and the TD’s CPU state from other software, including VMM. TDX guest
+> +	  uses virtual X2APIC for interrupt management.
 
-Saying the "current structure of the code doesn't allow it" is not a
-valid reason.
-
-You could for example have _tdx_halt() return an error, and have the #VE
-handler call _tdx_halt() directly so it can receive the error.
-
-> > - tdx_read_msr_safe() and tdx_write_msr_safe() convert all errors to -EIO.
-> 
-> Return value does not matter. we only check for zero/non-zero value in
-> tdx_handle_virtualization_exception(). we have used -EIO to convey that it is
-> an IO error.
-
-If I'm reading the GHCI spec right, the only possible error code for msr
-access is VMCALL_INVALID_OPERAND.  Which sounds like -EINVAL to me.
-
-> > - tdx_handle_cpuid() returns the raw vmcall error.
-> > 
-> > Second, as far as I can tell, the #VE handler doesn't check the actual
-> > return code value, other than checking for non-zero.  Should it at least
-> > be printed in a warning?
-> 
-> I don't think this is required. We can use trace to check the error code
-> or argument details in failure case. Since we don't really use the
-> error value, I am planning to change the #VE handler return type to
-> bool.
-
-In general the kernel prefers errno values instead of bool.  If
-hard-coding an error, it should probably be hard-coded to a valid kernel
-errno from within the inner handler (_tdx_halt(), tdx_read_msr_safe(),
-etc).
-
-That prevents confusion and will give the freedom to add more return
-codes in the future, in case the inner handler wants to eventually
-report multiple error types, or the top-level handler wants to handle
-error types differently, or trace them, or warn, etc.
+Why does it depend on SECURITY?  It should at least be explained in the
+commit message.
 
 -- 
 Josh
