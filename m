@@ -2,123 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD142429377
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4822A42937C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239314AbhJKPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:35:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54654 "EHLO mail.kernel.org"
+        id S239517AbhJKPgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:36:48 -0400
+Received: from mga09.intel.com ([134.134.136.24]:7814 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233815AbhJKPff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:35:35 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3481760C49;
-        Mon, 11 Oct 2021 15:33:35 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mZxIy-00G3oP-Qe; Mon, 11 Oct 2021 16:33:33 +0100
-Date:   Mon, 11 Oct 2021 16:33:31 +0100
-Message-ID: <87lf2zpodw.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
+        id S239229AbhJKPgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:36:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226801165"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="226801165"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 08:34:39 -0700
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="523873669"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.146])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 08:34:38 -0700
+Date:   Mon, 11 Oct 2021 08:34:37 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Eric Badger <ebadger@purestorage.com>
+Cc:     Meeta Saggi <msaggi@purestorage.com>,
+        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
         James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v3 12/16] KVM: Move x86's perf guest info callbacks to generic KVM
-In-Reply-To: <YWROQSGPuPf3wfC9@google.com>
-References: <20210922000533.713300-1-seanjc@google.com>
-        <20210922000533.713300-13-seanjc@google.com>
-        <87wnmjq4y3.wl-maz@kernel.org>
-        <YWROQSGPuPf3wfC9@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: seanjc@google.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, will@kernel.org, mark.rutland@arm.com, guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, boris.ostrovsky@oracle.com, jgross@suse.com, alexander.shishkin@linux.intel.com, jolsa@redhat.com, namhyung@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, sstabellini@kernel.org, linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, xen-devel@lists.xenproject.org, artem.kashkanov@intel.com, like.xu.linux@gmail.com, lingshan.zhu@intel.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        Robert Richter <rric@kernel.org>,
+        "open list:EDAC-SBRIDGE" <linux-edac@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] EDAC/sb_edac: Fix top-of-high-memory value for
+ Broadwell/Haswell
+Message-ID: <YWRZjYTY7Mu1iK6L@agluck-desk2.amr.corp.intel.com>
+References: <20211010170127.848113-1-ebadger@purestorage.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211010170127.848113-1-ebadger@purestorage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 15:46:25 +0100,
-Sean Christopherson <seanjc@google.com> wrote:
+On Sun, Oct 10, 2021 at 10:06:56AM -0700, Eric Badger wrote:
+> The computation of TOHM is off by one bit. This missed bit results in
+> too low a value for TOHM, which can cause errors in regular memory to
+> incorrectly report:
 > 
-> On Mon, Oct 11, 2021, Marc Zyngier wrote:
-> > On Wed, 22 Sep 2021 01:05:29 +0100, Sean Christopherson <seanjc@google.com> wrote:
-> > > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> > > index ed940aec89e0..828b6eaa2c56 100644
-> > > --- a/arch/arm64/include/asm/kvm_host.h
-> > > +++ b/arch/arm64/include/asm/kvm_host.h
-> > > @@ -673,6 +673,14 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa);
-> > >  void kvm_perf_init(void);
-> > >  void kvm_perf_teardown(void);
-> > >  
-> > > +#ifdef CONFIG_GUEST_PERF_EVENTS
-> > > +static inline bool kvm_arch_pmi_in_guest(struct kvm_vcpu *vcpu)
-> > 
-> > Pardon my x86 ignorance, what is PMI? PMU Interrupt?
+>   EDAC MC0: 1 CE Error at MMIOH area, on addr 0x000000207fffa680 on any memory
 > 
-> Ya, Performance Monitoring Interrupt.  I didn't realize the term wasn't
-> common perf terminology.  Maybe kvm_arch_perf_events_in_guest() to be
-> less x86-centric?
+> Reported-by: Meeta Saggi <msaggi@purestorage.com>
+> Signed-off-by: Eric Badger <ebadger@purestorage.com>
 
-Up to you. I would be happy with just a comment.
+Applied (with added Fixes: tag and Cc: stable).
 
-> 
-> > > +{
-> > > +	/* Any callback while a vCPU is loaded is considered to be in guest. */
-> > > +	return !!vcpu;
-> > > +}
-> > > +#endif
-> > 
-> > Do you really need this #ifdef?
-> 
-> Nope, should compile fine without it, though simply dropping the #ifdef
-> would make make the semantics of the function wrong, even if nothing
-> consumes it.  Tweak it to use IS_ENABLED()?
-> 
-> 	return IS_ENABLED(CONFIG_GUEST_PERF_EVENTS) && !!vcpu;
+Thanks
 
-LGTM.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+-Tony
