@@ -2,210 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B529242869B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879B742869C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbhJKGHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S234040AbhJKGIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbhJKGHy (ORCPT
+        with ESMTP id S233772AbhJKGH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:07:54 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8005C061570;
-        Sun, 10 Oct 2021 23:05:54 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so20321575otb.10;
-        Sun, 10 Oct 2021 23:05:54 -0700 (PDT)
+        Mon, 11 Oct 2021 02:07:59 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E38C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:06:00 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id na16-20020a17090b4c1000b0019f5bb661f9so12697869pjb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:06:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fTIHUEqXg0ktBodoRxwr+G0+AFSSNgvE2tJ/mjBW9uk=;
-        b=ANq9OiyrANgs7ew8IchI1McMjeg+adshr5yG6ZkFrO2aUgfqgbNLzXD1fC+Il0qp1p
-         KFcUOZ7Dcb12wcPSepbNM4JpQ+xSR11lO9Y1RgoeZJIyCpIP38wX5D6zBGcWU7HziMWF
-         djUyYHbXo4osU8NRUlAhT4+9ELzv76dwz8xJCUa5eLPqTb/+m5PhkTy8jlaz6qbZXy8t
-         XFNX/2TwGohbZRA4i53+CUQLHB0xzQEI3ymaXyyW3l2wMrQV/8J23nM/D5wtFGZgGb6y
-         072sh2i9KBaibsQ+qfb/Cbrr9pxiVL+VGJblRPbmOVJFiPmYnQFksGWUhqUOuNf7chYB
-         /6Fg==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lW+Ct8pp1U25isGJ3zESNWUY7CfzwYFs3/lozVSwjsc=;
+        b=KXe7IadhFNd9RX8m6/dJQ84e4nHw2ATBKfnoBvetIYYeSshX0DQVLtAFkiaRDvWb0s
+         gPM2lND9HsMonDEu3cXnftNJs7O6cGDPK3jv/PsQOxIR50tFE0VElPIpiALVgic3btoC
+         ITdR0FyvXHQTiI2huTPC0vg/TOcrNNfFlQ/r1Ko194slrh9ElopygwBVhKqhQPeJU1qk
+         /Z7/QVK4lpr557NR8A9Ua4ev/SqXoLxVP7unQQfR193WM13qIPZKKW6t5GnSwycSedm7
+         KxfP+OOUHNVlGuepmKUf83wZ3fiMxglW7RDR68bBpAT6FwEqeYNDDJdpcSVoP0aLjS/D
+         X2Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fTIHUEqXg0ktBodoRxwr+G0+AFSSNgvE2tJ/mjBW9uk=;
-        b=gHzC4LxEPFa9g5TicIrWLFLDUwbPoEcUqTwCXy1AT+u5fFaKdloqVG7Xvdu3BLZm1r
-         rukuBGYnVM5GZjoC1ghuVH68402X7cJcMrb20pRSwucGBZvaI9fIzXJlOja4oX7+XrQG
-         2pl1C7qcc+tuoUDmfUOjdZl5YRKL9tJtxFVCnj851vELrzTC1KXt3R1ROYGn2zzqLCCN
-         Md6foqOc6FKR1YCEt+gWl27aqafxB9gjvHan5Seo8B20mICKk1+nE+T3KtZOocCeqCVT
-         DWgXlIlx9XB38cRZfhObUxzJkcOOPLLVfLRGS2eFfk5JalaybeQgXK+71Wm75Og9sarQ
-         s5LQ==
-X-Gm-Message-State: AOAM5306eG4eoE0LUlJzy5I7m3858HXfXp+edC2mffCzQUt4EtDPAHO0
-        RDNIte9KU0lVexw+K21HXmRy78MAEKyFLtfI1hBOR95x
-X-Google-Smtp-Source: ABdhPJwanKKtvGiW2SqA7SLXruEcwLP7+pNDS8X0xvdAxfxRco3TlRtC0AyFPYcZxYIG4nLszcPk1NMNUIlHzcvEqWU=
-X-Received: by 2002:a9d:4616:: with SMTP id y22mr3028425ote.165.1633932354022;
- Sun, 10 Oct 2021 23:05:54 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=lW+Ct8pp1U25isGJ3zESNWUY7CfzwYFs3/lozVSwjsc=;
+        b=XewjzJpSpzwRQeKdmAzlaDjEAjpxVW+t9jjAhYutCJ0ts6QU2OYpKH3hQOxlIp16oa
+         uSsPQRJfYnYb/3VCkYq0u6TYum2B+QLd0I05T1NXxy+sUfpQTBLXNrlX/bFTimusi3kb
+         WkLHxrZ2ZloWnDX4uQbZEoCEK4zjJUwTyO+DaDdgddsKi+yiDa0pGlbFg1CtiRjPOmor
+         19dFAPT5hhp1a4u5KO8a4BSDD3Ib3ZcSHXOPI6Gi9K4MksaK4vhXzPsjp7uckh8Lroog
+         lpfmin6dK0ivHk0REbUwwHr/OE4rja/V0f23IKbjDmL+SHlmb/zSNmqjK5lh/1v0Hzrf
+         K4QQ==
+X-Gm-Message-State: AOAM532SdUkKa0tGhuSYKnjOqJETm+hUuLr7u0D1Xq6Ilp1O0AhIMKQZ
+        SSfDUTDirCxD0siu9KNOBJhC7w9a/pg=
+X-Google-Smtp-Source: ABdhPJwb8iBIf801C9C30Ow0A6bRlhGVTMnEhbEU070iZWBlA+/Jj91+HyM+tiSxHW2exegDl0NLyw==
+X-Received: by 2002:a17:902:bb94:b0:13c:9113:5652 with SMTP id m20-20020a170902bb9400b0013c91135652mr23178056pls.70.1633932359462;
+        Sun, 10 Oct 2021 23:05:59 -0700 (PDT)
+Received: from balhae.hsd1.ca.comcast.net ([2601:647:4800:5800:20c6:f9f2:3f22:9bc])
+        by smtp.gmail.com with ESMTPSA id d9sm6519818pgn.64.2021.10.10.23.05.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 23:05:58 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: [RFC] perf/core: Set event shadow time for inactive events too
+Date:   Sun, 10 Oct 2021 23:05:56 -0700
+Message-Id: <20211011060556.1190936-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.33.0.882.g93a45727a2-goog
 MIME-Version: 1.0
-References: <20210929004400.25717-2-refactormyself@gmail.com> <20210930155400.GA886716@bhelgaas>
-In-Reply-To: <20210930155400.GA886716@bhelgaas>
-From:   Saheed Bolarinwa <refactormyself@gmail.com>
-Date:   Mon, 11 Oct 2021 08:05:42 +0200
-Message-ID: <CABGxfO4QM-0=CRQ64NJMW9nC219m53NJJ3zGG+c_-E0ftZ+Eag@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/4] [PCI/ASPM:] Remove struct pcie_link_state.clkpm_default
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 5:54 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> On Wed, Sep 29, 2021 at 02:43:57AM +0200, Saheed O. Bolarinwa wrote:
-> > From: "Bolarinwa O. Saheed" <refactormyself@gmail.com>
-> >
-> > The clkpm_default member of the struct pcie_link_state stores the
-> > value of the default clkpm state as it is in the BIOS.
-> >
-> > This patch:
-> > - Removes clkpm_default from struct pcie_link_state
-> > - Creates pcie_get_clkpm_state() which return the clkpm state
-> >   obtained the BIOS
-> > - Replaces references to clkpm_default with call to
-> >   pcie_get_clkpm_state()
-> >
-> > Signed-off-by: Bolarinwa O. Saheed <refactormyself@gmail.com>
-> > ---
-> >  drivers/pci/pcie/aspm.c | 37 +++++++++++++++++++++++++++----------
-> >  1 file changed, 27 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> > index 013a47f587ce..c23da9a4e2fb 100644
-> > --- a/drivers/pci/pcie/aspm.c
-> > +++ b/drivers/pci/pcie/aspm.c
-> > @@ -63,7 +63,6 @@ struct pcie_link_state {
-> >       /* Clock PM state */
-> >       u32 clkpm_capable:1;            /* Clock PM capable? */
-> >       u32 clkpm_enabled:1;            /* Current Clock PM state */
-> > -     u32 clkpm_default:1;            /* Default Clock PM state by BIOS */
-> >       u32 clkpm_disable:1;            /* Clock PM disabled */
-> >
-> >       /* Exit latencies */
-> > @@ -123,6 +122,30 @@ static int policy_to_aspm_state(struct pcie_link_state *link)
-> >       return 0;
-> >  }
-> >
-> > +static int pcie_get_clkpm_state(struct pci_dev *pdev)
-> > +{
-> > +     int enabled = 1;
-> > +     u32 reg32;
-> > +     u16 reg16;
-> > +     struct pci_dev *child;
-> > +     struct pci_bus *linkbus = pdev->subordinate;
-> > +
-> > +     /* All functions should have the same clkpm state, take the worst */
-> > +     list_for_each_entry(child, &linkbus->devices, bus_list) {
-> > +             pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
-> > +             if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
-> > +                     enabled = 0;
-> > +                     break;
-> > +             }
-> > +
-> > +             pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
-> > +             if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
-> > +                     enabled = 0;
-> > +     }
-> > +
-> > +     return enabled;
-> > +}
-> > +
-> >  static int policy_to_clkpm_state(struct pcie_link_state *link)
-> >  {
-> >       switch (aspm_policy) {
-> > @@ -134,7 +157,7 @@ static int policy_to_clkpm_state(struct pcie_link_state *link)
-> >               /* Enable Clock PM */
-> >               return 1;
-> >       case POLICY_DEFAULT:
-> > -             return link->clkpm_default;
-> > +             return pcie_get_clkpm_state(link->pdev);
-> >       }
-> >       return 0;
-> >  }
-> > @@ -168,9 +191,8 @@ static void pcie_set_clkpm(struct pcie_link_state *link, int enable)
-> >
-> >  static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
-> >  {
-> > -     int capable = 1, enabled = 1;
-> > +     int capable = 1;
-> >       u32 reg32;
-> > -     u16 reg16;
-> >       struct pci_dev *child;
-> >       struct pci_bus *linkbus = link->pdev->subordinate;
-> >
-> > @@ -179,15 +201,10 @@ static void pcie_clkpm_cap_init(struct pcie_link_state *link, int blacklist)
-> >               pcie_capability_read_dword(child, PCI_EXP_LNKCAP, &reg32);
-> >               if (!(reg32 & PCI_EXP_LNKCAP_CLKPM)) {
-> >                       capable = 0;
-> > -                     enabled = 0;
-> >                       break;
-> >               }
-> > -             pcie_capability_read_word(child, PCI_EXP_LNKCTL, &reg16);
-> > -             if (!(reg16 & PCI_EXP_LNKCTL_CLKREQ_EN))
-> > -                     enabled = 0;
-> >       }
-> > -     link->clkpm_enabled = enabled;
-> > -     link->clkpm_default = enabled;
-> > +     link->clkpm_enabled = pcie_get_clkpm_state(link->pdev);
->
-> I love the idea of removing clkpm_default, but I need a little more
-> convincing.  Before this patch, this code computes clkpm_default from
-> PCI_EXP_LNKCAP_CLKPM and PCI_EXP_LNKCTL_CLKREQ_EN of all the functions
-> of the device.
->
-> PCI_EXP_LNKCAP_CLKPM is a read-only value, so we can re-read that any
-> time.  But PCI_EXP_LNKCTL_CLKREQ_EN is writable, so if we want to know
-> the value that firmware put there, we need to read and save it before
-> we modify it.
- >
-> Why is it safe to remove this init-time read of
-> PCI_EXP_LNKCTL_CLKREQ_EN and instead re-read it any time we need the
-> "default" settings from firmware?
-After another look, it "may" not be safe, but then clkpm_default
-should be documented
-as /* Clock PM state at last boot */ because I don't think it is the
-*default* state. Please,
-let me know what I missing, I list below my reasons: (pardon the repetitions)
+Normally the shadow time is set in event_sched_in() and used to
+calculate up-to-date enabled and running times without accessing
+ctx->time in a NMI context.  It's fine for active events.
 
-- I agree that clkpm_default current stores the boot time value.
-- currently, the value of clkpm_default reflect the value of
-PCI_EXP_LNKCAP_CLKPM
-   (read-only) and PCI_EXP_LNKCTL_CLKREQ_EN (writable)
-- calling pcie_set_clkpm() can change the "default" state in the
-firmware and it is stored
-   in clkpm_enable until the next boot, when clkpm_enable = clkpm_default
-- if the "default" state is changed after boot then its initial value
-stored in clkpm_default is
-  lost at reboot.
-- IMO the intention of calling pcie_set_clkpm() is to set the default
-value on the firmware.
-  We may need another function to set clkpm to a *temporary state*
-that may at any time
-  be different from the value in the firmware.
-- Currently, clkpm_enable always reflect the value in the firmware and
-the may be different
-  from the value of clkpm_default.
-- If clkpm_default does not reflect the value in the firmware after
-boot, it feels to me like it is
-  not the *default* value
-- I also think that clkpm_enabled is supposed to be a sort of
-*temporary/current state* that
-  may or may not be stored as the default. Although, I am not sure why
-it will be needed!
+However, we can access inactive events as well in some cases (like
+in BPF) and it caused errors due to the missing shadow time.  If
+the event is not yet scheduled in for the first time, the shadow
+time would be zero.  Then the time calculation in the
+perf_event_read_local() can go wrong like below:
 
+  perf_event_read_local(event, ...)
+    now = event->shadow_ctx_time + perf_clock();
+    __perf_update_times(event, now, ...)
+      delta = now - event->tstamp;
+      if (state >= INACTIVE)
+        enabled += delta;
+      if (state >= ACTIVE)
+        running += delta;
 
->
-> >       link->clkpm_capable = capable;
-> >       link->clkpm_disable = blacklist ? 1 : 0;
-> >  }
-> > --
-> > 2.20.1
-> >
+In my understanding, the 'now' and event->tstamp are in ctx->time
+which keeps actual time the given context is used.  While perf_clock()
+returns a timestamp using a local clock, and event->shadow_ctx_time
+should kinda convert it into ctx->time unit.
+
+But since the shadow ctx time is not set, the delta calculation is
+using two different units.  And it's added to enabled time only as
+it's in an inactive state.  It'd be much bigger than ctx->time, so
+it'd return much bigger enabled time.
+
+The recent bperf infra can trigger this issue easily.  As this is
+about a small window with multiplexing, we need a large number of
+events and short duration like below:
+
+  # perf stat -a -v --bpf-counters -e instructions,branches,branch-misses \
+    -e cache-references,cache-misses,bus-cycles,ref-cycles,cycles sleep 0.1
+
+  Control descriptor is not initialized
+  instructions: 19616489 431324015 360374366
+  branches: 3685346 417640114 344175443
+  branch-misses: 75714 404089360 336145421
+  cache-references: 438667 390474289 327444074
+  cache-misses: 49279 349333164 272835067
+  bus-cycles: 631887 283423953 165164214
+  ref-cycles: 2578771111104847872 18446744069443110306 182116355
+  cycles: 1785221016051271680 18446744071682768912 115821694
+
+   Performance counter stats for 'system wide':
+
+          19,616,489      instructions              #    0.00  insn per cycle           (83.55%)
+           3,685,346      branches                                                      (82.41%)
+              75,714      branch-misses             #    2.05% of all branches          (83.19%)
+             438,667      cache-references                                              (83.86%)
+              49,279      cache-misses              #   11.234 % of all cache refs      (78.10%)
+             631,887      bus-cycles                                                    (58.27%)
+  2,578,771,111,104,847,872      ref-cycles                                                    (0.00%)
+  1,785,221,016,051,271,680      cycles                                                        (0.00%)
+
+       0.010824702 seconds time elapsed
+
+As you can see, it shows invalid values for the last two events.
+The -v option shows that the enabled time is way bigger than the
+running time.  So it scaled the counter values using the ratio
+between the two and resulted in that.  This problem can get worse
+if users want no-aggregation or cgroup aggregation with a small
+interval.
+
+Actually 18446744069443110306 is 0xffffffff01b345a2 so it seems to
+have a negative enabled time.  In fact, bperf keeps values returned by
+bpf_perf_event_read_value() which calls perf_event_read_local(), and
+accumulates delta between two calls.  When event->shadow_ctx_time is
+not set, it'd return invalid enabled time which is bigger than normal.
+Later, the shadow time is set and the function starts to return a
+valid time.  At the moment, the recent value is smaller than before so
+the delta in the bperf can be negative.
+
+I think we need to set the shadow time even the events are inactive so
+that BPF programs (or other potential users) can see valid time values
+anytime.
+
+Cc: Song Liu <songliubraving@fb.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ kernel/events/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 1cb1f9b8392e..e28d410c67e3 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3730,6 +3730,8 @@ static int merge_sched_in(struct perf_event *event, void *data)
+ 			perf_event_set_state(event, PERF_EVENT_STATE_ERROR);
+ 		}
+ 
++		perf_set_shadow_time(event, ctx);
++
+ 		*can_add_hw = 0;
+ 		ctx->rotate_necessary = 1;
+ 		perf_mux_hrtimer_restart(cpuctx);
+-- 
+2.33.0.882.g93a45727a2-goog
+
