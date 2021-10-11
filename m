@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D81428B4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97F7428B82
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236032AbhJKK5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236119AbhJKK4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:56:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CBAD6023F;
-        Mon, 11 Oct 2021 10:54:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633949670;
-        bh=efC4KA59LTu76+6Io6IabNwAy4+PIrTQ5Oouhu4OhOo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YTsOkR/PDdrvKtPGsBT9/OeJcWzf+/ckGqz27wOdLxgsHfTuAINLmM18an7Ge6no5
-         3cbavbARtyhJg8L+2YPpEGzrBfLBlJp4EgBVK7tvh4zMuQ/6tmpdF5Zb0f9RpejgKw
-         YbmrQEhZzCm+6ECSQlPhPdrfOoXXh6xjXgyPbkDyERZUlDBmI0Q5Y3ACG+UO2/tGaW
-         9Yh0cm4BIHUDKUkb3sOef0hunodERTMs8Nmlofq+axj33nKzs02Lk/phRlx6KQv+a1
-         u9YmJPI5V15f5m8k+vDxt2vqaaAEfUd5K8wE3etv8sajpXaD6ip4VUtt36QP74VcvT
-         aZgdVxoYXqb0g==
-Date:   Mon, 11 Oct 2021 11:54:23 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 16/17] arm64: Add handling of CNTVCTSS traps
-Message-ID: <20211011105423.GA4009@willie-the-truck>
-References: <20211010114306.2910453-1-maz@kernel.org>
- <20211010114306.2910453-17-maz@kernel.org>
+        id S236152AbhJKK62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236037AbhJKK6V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:58:21 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCBFC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:56:13 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id o20so54713330wro.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:56:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=DOxN63QWnl4dBNWQl+LufsBrewR+8VuPJnGph7ijSeE=;
+        b=km/+rwE10MGCG3K0BNjxD+A2l394aMlSCDFqBEiDyrs45mObKwVEkOccUp5BPFftJU
+         5cB06txNzUPVxcrxQnkqMq9zaxAqQeR9eoa3+7DqnAg3rX7wMze/dloERdrhczopiGET
+         PvxtLks7kWCMKTs5Q8Mmq12LwUKUT5cPH1x1mszpEwl0kuXWAYNTl0kX4+cL3oWAj8+a
+         6an2wLimFEmscCT9jtQf7FGYav0q/UTa6GRCeFihab7mYp8KZTVzyAi9ONxHllw1wfay
+         OSS3CoE7RnQ2PFKTnc/5Yya8gHnSshWvMzermo1msudbBS7MTk09iY8fA6ci8A/KmFSk
+         +E4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=DOxN63QWnl4dBNWQl+LufsBrewR+8VuPJnGph7ijSeE=;
+        b=63trWsPXY+TmzS9PLwAgVLngcnIztes4cN3JAzfQg+IMZKFodcKxqbHKwnuAlSKGTl
+         x6RjOh/RyBqwUaiWz/hgaE2gzb6Ulo2wzjEqbdbPm7VTwLmaWvxl3c6LrRvcj1HYF2Q5
+         sOOqDKdC3kb5PV+PIzs/+oP/3TCytHsqmTFxQRKR3Git4a31sL9B36mHx7MxzxvK6o25
+         WNeka9RSS6V6ubq/R8hVTgKFnTBq5yb4lqUSqlaD++pcDzI+TBL7mkbDcJsniLFXlg+u
+         otLNjlyocNkgKG0gYHEcUlPDBSLFHlkey8MbJ+EdEcm3xj6BriQJpADkD16fdOEiNwAn
+         a7nA==
+X-Gm-Message-State: AOAM533MXsL/M0NVPEzvdyydW0PpWMarHnKvoYyYaDlp66iGQgxMDdpc
+        DOpXiEDJ5WSZhres7UoCIVsZl2askkhOnUPH+rniHMG87kwZJg==
+X-Google-Smtp-Source: ABdhPJxWYMUVxuj7Tly9azrkWxEMXzTPZAklmoVIH4V2ykknMMiBN9imOFz2zTqxux/zk/7pzvFSRlX+C6mfjc7ADy4=
+X-Received: by 2002:adf:8b9a:: with SMTP id o26mr24377548wra.109.1633949760323;
+ Mon, 11 Oct 2021 03:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211010114306.2910453-17-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:adf:dd8c:0:0:0:0:0 with HTTP; Mon, 11 Oct 2021 03:55:59
+ -0700 (PDT)
+Reply-To: ramcharan9910@outlook.com
+From:   "Cr.David Ramcharan" <convy0101@gmail.com>
+Date:   Mon, 11 Oct 2021 03:55:59 -0700
+Message-ID: <CADDRs95718H=K3tUjphEHH_C96xYhoJw7jeCMpt_FfZZjhEXrA@mail.gmail.com>
+Subject: Thank You
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 12:43:05PM +0100, Marc Zyngier wrote:
-> Since CNTVCTSS obey the same control bits as CNTVCT, add the necessary
-> decoding to the hook table. Note that there is no known user of
-> this at the moment.
-> 
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/include/asm/esr.h |  6 ++++++
->  arch/arm64/kernel/traps.c    | 11 +++++++++++
->  2 files changed, 17 insertions(+)
+Please I am writing to notify you again on my intention to list your
+name as a beneficiary to the total sum of GBP6.350 million (Six
+million, Three hundred and fifty thousand British Pounds Sterlings) in
+the intent of the deceased (name now withheld since this is my second
+letter to you).
 
-Acked-by: Will Deacon <will@kernel.org>
+I contacted you because you bear the surname identity and therefore
+can present you as the beneficiary to inherit the account proceeds of
+the deceased since there is no written "WILL" or trace to the deceased
+family relatives. My aim is to present you to my Bank Authorities as
+the Next of Kin to our deceased client. I will guide you all through
+the Claim procedure by providing all relevant Information and guiding
+you in your decisions and response to the Bank Management. All the
+papers will be processed after your acceptance.
 
-Will
+In your acceptance of this deal, I request that you kindly forward to
+me your letter of acceptance; your current telephone and fax numbers
+,age, occupational status and a forwarding address to enable me submit
+to the Bank Management the details as the Next of Kin to their
+deceased customer. Reply strictly through: ramcharancrdavid@gmail.com
+
+Yours faithfully,
+Cr.David Ramcharan
