@@ -2,90 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12B5428ED1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA76F428E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237601AbhJKNwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:52:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39356 "EHLO mail.kernel.org"
+        id S236251AbhJKNrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:47:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237361AbhJKNvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B2DE61056;
-        Mon, 11 Oct 2021 13:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960138;
-        bh=qQ1MSWuaX5GKaoeukYrLPxRqvuiM40+VmOg6aGJbrpY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZVI7tvPJij1irXpJrLjD4IvC/L4wXem5KKQTWvAUdnQozHhGn/ZMjSFu3yKXvWZhL
-         FhCbE3FGHhwcQ3himgpkBa7S5uX3TuvSLR1dnZiO4cDagqQo2f6xLtSnxTUazWSXtA
-         wphtRMiMV2ihu1yJnLF/8BaK//h2IQAowgPer9IE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.4 09/52] nfsd4: Handle the NFSv4 READDIR dircount hint being zero
-Date:   Mon, 11 Oct 2021 15:45:38 +0200
-Message-Id: <20211011134504.034986456@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233144AbhJKNrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:47:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10E6060E8B;
+        Mon, 11 Oct 2021 13:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633959940;
+        bh=0WcCw9f2VehodFi62DgP5LsC7sX0VGHD14Z0bkkKFcA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FYnD39fMdIttB5fmStGu2gnl4BPbuIe7gxpshI6HXiEApVCjQEji7l8oiuvdx/U7k
+         G+sKTcs9RJBl5rS+eGuvmbNxJXwilygoHrkz4jBYxz14Xo3YpTtvwimsSMsnpXKaYq
+         K3BY6mDLaTL2p03TlMpAi+t98AZTYC8KKhGF4NgIJb5yziit8e5fIf2bXD1c+GcinY
+         HnWDH8VG0QRQ2CU1cxMdBgkeC6TKeuZ0LljmCki1LHb+BUwua5PXw6zMtKdFRXrBjN
+         6tGKwVxEg6aORiuHGpOcGVF9p/NcNaQ0kkYZeqywzsTy0S+ns6EZYIMXgfStZ3r7Rr
+         SDQ/fSc1bDeEg==
+Date:   Mon, 11 Oct 2021 06:45:38 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <Arun.Ramadoss@microchip.com>
+Cc:     <andrew@lunn.ch>, <olteanv@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <george.mccollister@gmail.com>,
+        <vivien.didelot@gmail.com>, <UNGLinuxDriver@microchip.com>,
+        <f.fainelli@gmail.com>, <netdev@vger.kernel.org>,
+        <Woojung.Huh@microchip.com>, <davem@davemloft.net>
+Subject: Re: [PATCH net] net: dsa: microchip: Added the condition for
+ scheduling ksz_mib_read_work
+Message-ID: <20211011064538.7fabf949@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <601a427d9d73ef7aa85e50770cce38ecd6e84463.camel@microchip.com>
+References: <20211008084348.7306-1-arun.ramadoss@microchip.com>
+        <YWBOeP3dHFbEdg8w@lunn.ch>
+        <20211008113402.0aed1d2b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <601a427d9d73ef7aa85e50770cce38ecd6e84463.camel@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+On Mon, 11 Oct 2021 09:41:55 +0000 Arun.Ramadoss@microchip.com wrote:
+> On Fri, 2021-10-08 at 11:34 -0700, Jakub Kicinski wrote:
+> > Also the cancel_delayed_work_sync() is suspiciously early in the
+> > remove
+> > flow. There is a schedule_work call in ksz_mac_link_down() which may
+> > schedule the work back in. That'd also explain why the patch helps
+> > since
+> > ksz_mac_link_down() only schedules if (dev->mib_read_interval).  
+> In this patch, I did two things. Added the if condition for
+> rescheduling the queue and other is resetted the mib_read_interval to
+> zero.
+> As per the cancel_delayed_queue_sync() functionality, Now I tried rmod
+> after removing the if condition for resheduling the queue,kernel didn't
+> crash. So, concluded that it is not rearm in ksz_mib_read_work  is
+> causing the problem but it is due to scheduling in the
+> ksz_mac_link_down function. This function is called due to the
+> dsa_unregister_switch. Due to resetting of the mib_read_interval to
+> zero in switch_remove, the queue is not scheduled in mac_link_down, so
+> kernel didn't crash.
+> 
+> And also, as per suggestion on cancel_delayed_work_sync() is
+> suspiciously placed in switch_remove. I undo this patch, and tried just
+> by moving the canceling of delayed_work after the dsa_unregister_switch
+> function. As expected dsa_unregister_switch calls the
+> ksz_mac_link_down, which schedules the mib_read_work. Now, when
+> cancel_delayed_work_sync is called, it cancels all the workqueue. As a
+> result, module is removed successfully without kernel crash.
+> 
+> Can I send the updated patch as v1 or new patch with updated commit
+> message and description.
 
-commit f2e717d655040d632c9015f19aa4275f8b16e7f2 upstream.
-
-RFC3530 notes that the 'dircount' field may be zero, in which case the
-recommendation is to ignore it, and only enforce the 'maxcount' field.
-In RFC5661, this recommendation to ignore a zero valued field becomes a
-requirement.
-
-Fixes: aee377644146 ("nfsd4: fix rd_dircount enforcement")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/nfsd/nfs4xdr.c |   19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
-
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -3131,15 +3131,18 @@ nfsd4_encode_dirent(void *ccdv, const ch
- 		goto fail;
- 	cd->rd_maxcount -= entry_bytes;
- 	/*
--	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", so
--	 * let's always let through the first entry, at least:
-+	 * RFC 3530 14.2.24 describes rd_dircount as only a "hint", and
-+	 * notes that it could be zero. If it is zero, then the server
-+	 * should enforce only the rd_maxcount value.
- 	 */
--	if (!cd->rd_dircount)
--		goto fail;
--	name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
--	if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
--		goto fail;
--	cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+	if (cd->rd_dircount) {
-+		name_and_cookie = 4 + 4 * XDR_QUADLEN(namlen) + 8;
-+		if (name_and_cookie > cd->rd_dircount && cd->cookie_offset)
-+			goto fail;
-+		cd->rd_dircount -= min(cd->rd_dircount, name_and_cookie);
-+		if (!cd->rd_dircount)
-+			cd->rd_maxcount = 0;
-+	}
- 
- 	cd->cookie_offset = cookie_offset;
- skip_entry:
-
-
+Please send a patch with just the second chunk (zeroing
+mib_read_interval), you can mark it as v2.
