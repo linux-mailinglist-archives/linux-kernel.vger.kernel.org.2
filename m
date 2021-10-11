@@ -2,128 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18CB429460
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5071C429468
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231520AbhJKQTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:19:35 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:54711 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231163AbhJKQTe (ORCPT
+        id S231669AbhJKQXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:23:32 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:46736 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhJKQXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:19:34 -0400
-Received: (qmail 823502 invoked by uid 1000); 11 Oct 2021 12:17:32 -0400
-Date:   Mon, 11 Oct 2021 12:17:32 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     zhuyinbo <zhuyinbo@loongson.cn>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        Patchwork Bot <patchwork-bot@kernel.org>
-Subject: Re: [PATCH v3] usb: ohci: add check for host controller functional
- states
-Message-ID: <20211011161732.GA822456@rowland.harvard.edu>
-References: <1633677970-10619-1-git-send-email-zhuyinbo@loongson.cn>
- <20211008142639.GA721194@rowland.harvard.edu>
- <7a505fc4-ec47-ac83-633f-7a5251bd5f82@loongson.cn>
- <20211009193901.GA753830@rowland.harvard.edu>
- <adc67ae2-e162-a427-a8a9-7df55c92a00c@loongson.cn>
+        Mon, 11 Oct 2021 12:23:31 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BAA7722132;
+        Mon, 11 Oct 2021 16:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1633969289; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=j8grqsuiDa1p2LSXgYDqekInnTQ7Jhon0WjFTDwZwJs=;
+        b=TQj0MIlN7mg/iFLoicMLPRRgjwJjxnKhDlzHKKsy5eqTNIlGKN4X2cGLnM6joCpLDt5M+Y
+        8z3ZR6vJy9LB/YIcpGArNopx9B96owXx4jG48I2mk3pUG7kSYpzcyRk/wBJYBipHQYdVgt
+        0S7T4dqGiuFhd6SlWtRhBszhQgwdkp8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 90FAA13BC0;
+        Mon, 11 Oct 2021 16:21:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8ae4IolkZGGqawAAMHmgww
+        (envelope-from <mkoutny@suse.com>); Mon, 11 Oct 2021 16:21:29 +0000
+Date:   Mon, 11 Oct 2021 18:21:28 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     quanyang.wang@windriver.com
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Ming Lei <ming.lei@redhat.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH] cgroup: fix memory leak caused by missing
+ cgroup_bpf_offline
+Message-ID: <20211011162128.GC61605@blackbody.suse.cz>
+References: <20211007121603.1484881-1-quanyang.wang@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <adc67ae2-e162-a427-a8a9-7df55c92a00c@loongson.cn>
+In-Reply-To: <20211007121603.1484881-1-quanyang.wang@windriver.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 01:10:18PM +0800, zhuyinbo wrote:
-> 
-> 在 2021/10/10 上午3:39, Alan Stern 写道:
-> > On Sat, Oct 09, 2021 at 10:01:25AM +0800, zhuyinbo wrote:
-> > > 在 2021/10/8 下午10:26, Alan Stern 写道:
-> > > > On Fri, Oct 08, 2021 at 03:26:10PM +0800, Yinbo Zhu wrote:
-> > > > > The usb states of ohci controller include UsbOperational, UsbReset,
-> > > > > UsbSuspend and UsbResume. Among them, only the UsbOperational state
-> > > > > supports launching the start of frame for host controller according
-> > > > > the ohci protocol spec, but in S3/S4 press test procedure, it may
-> > > > Nobody reading this will know what "S3/S4 press test procedure" means.
-> > > > You have to explain it, or use a different name that people will
-> > > > understand.
-> > > okay, I got it.
-> > > > > happen that the start of frame was launched in other usb states and
-> > > > > cause ohci works abnormally then kernel will allways report rcu
-> > > > > call trace. This patch was to add check for host controller
-> > > > > functional states and if it is not UsbOperational state that need
-> > > > > set INTR_SF in intrdisable register to ensure SOF Token generation
-> > > > > was been disabled.
-> > > > This doesn't make sense.  You already mentioned that only the
-> > > > UsbOperational state supports sending start-of-frame packets.  So if the
-> > > > controller is in a different state then it won't send these packets,
-> > > > whether INTR_SF is enabled or not.
-> > > > 
-> > > > What problem are you really trying to solve?
-> > > Only UsbOperational state supports sending start-of-frame packets, but in
-> > > fact, in S3/S4 press test procedure,
-> > > 
-> > > usb in non-UsbOperational state that send start-of-frame packets but hc
-> > > driver doesn't deal with this frame. and hc will
-> > > 
-> > > allways lauched the SOF for finishing the frame, the cpu will hand this sof
-> > > interrupt and doesn't deal with time interrupt
-> > > 
-> > > that will cause rcu call trace then system doesn't suspend to memory/disk.
-> > I still don't understand.
-> > 
-> > Are you saying that your OHCI controller behaves badly because it sends
-> > SOF packets even when the state is different from UsbOperational?
-> 
-> HC will allways report the SoF interrupt in the all time when HC was not in
-> NO-UsbOperation state.
+Hello.
 
-How did your host controller get into the non-UsbOperational state?  
-What part of the code is responsible for changing to a different state?
+On Thu, Oct 07, 2021 at 08:16:03PM +0800, quanyang.wang@windriver.com wrote:
+> This is because that root_cgrp->bpf.refcnt.data is allocated by the
+> function percpu_ref_init in cgroup_bpf_inherit which is called by
+> cgroup_setup_root when mounting, but not freed along with root_cgrp
+> when umounting.
 
-It looks like the only place where this could happen is in 
-ohci_rh_suspend().  So if you disable SOF interrupts there, it should 
-fix your problem.
+Good catch!
 
-> and no WritebackDoneHead interrupt that is the issue phenomenon. and this
-> situation is badly state for ohci.
-> 
-> > 
-> > > Hi Alan Stern,
-> > > 
-> > >      even though ed_rm_list is non-NULL, if hc in non-UsbOperation state set
-> > > SoF status in usbsts register that is illegal,
-> > > 
-> > > at this time hcd doesn't need care URB whether finished,  because hc had
-> > > into a wrong state. even thoug it doesn't has this patch,
-> > > 
-> > > URB was not be able to finish when hc in above worng state. except software
-> > > can intervence this wrong state. but the SoF bit of usbsts
-> > > 
-> > > register was set by HC, and this action will happen always !!! software
-> > > clear SoF state I think it isn't make sense. software only disable SoF
-> > > 
-> > > interrupt to fix HC wrong state.
-> > This problem happens when you go into S3 or S4 suspend, right?  So you
-> > should fix the problem by disabling INTR_SF when the root hub is
-> > suspended.  Try adding
-> > 
-> > 	/* All ED unlinks should be finished, no need for SOF interrupts */
-> > 	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
-> > 
-> > into ohci_rh_suspend(), just before the update_done_list() call.  If you
-> > add this then INTR_SF will not be enabled during S3 or S4 suspend, so
-> > the problem shouldn't occur.  Does that work for you?
-> 
-> The system doesn't suspend to disk completely by my test result and hc will
-> always produce SoF interrupt.
+> Adding cgroup_bpf_offline which calls percpu_ref_kill to
+> cgroup_kill_sb can free root_cgrp->bpf.refcnt.data in umount path.
 
-Have you tried adding those two lines of code shown above?
+That is sensible.
 
-If you haven't tested them, please don't write back until you have.
+> Fixes: 2b0d3d3e4fcfb ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
 
-Alan Stern
+Why this Fixes:? Is the leak absent before the percpu_ref refactoring?
+I guess the embedded data are free'd together with cgroup. Makes me
+wonder why struct cgroup_bpf has a separate percpu_ref counter from
+struct cgroup...
+
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -2147,8 +2147,10 @@ static void cgroup_kill_sb(struct super_block *sb)
+>  	 * And don't kill the default root.
+>  	 */
+>  	if (list_empty(&root->cgrp.self.children) && root != &cgrp_dfl_root &&
+> -	    !percpu_ref_is_dying(&root->cgrp.self.refcnt))
+> +			!percpu_ref_is_dying(&root->cgrp.self.refcnt)) {
+> +		cgroup_bpf_offline(&root->cgrp);
+
+(You made some unnecessary whitespace here breaking indention :-)
+
+>  		percpu_ref_kill(&root->cgrp.self.refcnt);
+> +	}
+>  	cgroup_put(&root->cgrp);
+>  	kernfs_kill_sb(sb);
+>  }
