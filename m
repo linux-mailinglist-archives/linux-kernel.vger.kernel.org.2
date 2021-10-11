@@ -2,105 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B554293C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F704293D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239124AbhJKPua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:50:30 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:58849 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhJKPu2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:50:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633967309; x=1665503309;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=qdqRhy8u30cGTSDqA5uDEb07g7Exe+Dpl/5HUZmeZ6Y=;
-  b=rj78fZ/+tbixmWy/FCGYiyPfsM3812SenOGVHEsqAPBqH33SQOEv58AL
-   t1iOQEM56wn1qWAQ7HW93qhO8WrlcVdhM8PmM0dhzZYz1oF/BBomJf3vX
-   W3koldl0PRODn/0CEd/Pzc9j9HKv26tDo9b0cnGR7UGqyTgz0iL1z3iUJ
-   YA2vyg6PDpy0tXLVHsHtKxHNT0kIVRECUk4AbAAGI+0vTva63lcGj89xK
-   xE1tBssr/0yf6U5A/4kpET+POwdJWdTMNJRsM4PmwleTsHhCBBaz9BwUA
-   GzaxPJ7Em0dXJW3xM+k//zNgzEhEOZM/xJzz0E+CyZb65RoqObl/NEei+
-   g==;
-IronPort-SDR: eXAG0+Y+QE2GIUA0wW8YGynIrXo/pOdnWSUJbSl5DUdA5iPeZGxMB9Febo/ohrUpDGnXMiHxko
- MedadBfjgAzydw1M04AQJZPdmZEXJU33OmphqdeS8wE5hwLWBsHV3CmU16SQ8f+vmsLQRa5qGz
- /uVgBC4g0WgWyyDib9vcr1bBOpfsz8uvyHypVFXdaXfuO8XN9OwSTfbo6su9a8ikrF9RMlMYuM
- uIlJKQDn6xByxu4zyyb2E/ccQ5bnE/AjMe6i9mcW7YrcR0/YhjLE66gOKpU1ab0atuFMF/KHf6
- b7OXpzLcHDfa153NhScBfYeU
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="135109164"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 08:48:27 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 11 Oct 2021 08:48:27 -0700
-Received: from CHE-LT-I17769U.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 08:48:23 -0700
-From:   Arun Ramadoss <arun.ramadoss@microchip.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     George McCollister <george.mccollister@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, <UNGLinuxDriver@microchip.com>,
-        Woojung Huh <woojung.huh@microchip.com>
-Subject: [PATCH v2 net] net: dsa: microchip: Added the condition for scheduling ksz_mib_read_work
-Date:   Mon, 11 Oct 2021 21:18:08 +0530
-Message-ID: <20211011154808.25820-1-arun.ramadoss@microchip.com>
-X-Mailer: git-send-email 2.33.0
+        id S237093AbhJKPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:54:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40040 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230417AbhJKPys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:54:48 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA0A360E74;
+        Mon, 11 Oct 2021 15:52:46 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 11:52:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     kernel test robot <yujie.liu@intel.com>
+Cc:     <llvm@lists.linux.dev>, <kbuild-all@lists.01.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Subject: Re: [rostedt-trace:ftrace/core 2/2] kernel/trace/pid_list.c:439:6:
+ warning: Branch condition evaluates to a garbage value
+ [clang-analyzer-core.uninitialized.Branch]
+Message-ID: <20211011115243.211b4611@gandalf.local.home>
+In-Reply-To: <aa487fb0-6e7a-451d-b534-9c8aca2ca39b@intel.com>
+References: <202109300520.e7Cli09Z-lkp@intel.com>
+        <aa487fb0-6e7a-451d-b534-9c8aca2ca39b@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the ksz module is installed and removed using rmmod, kernel crashes
-with null pointer dereferrence error. During rmmod, ksz_switch_remove
-function tries to cancel the mib_read_workqueue using
-cancel_delayed_work_sync routine and unregister switch from dsa.
+On Sun, 10 Oct 2021 17:46:20 +0800
+kernel test robot <yujie.liu@intel.com> wrote:
 
-During dsa_unregister_switch it calls ksz_mac_link_down, which in turn
-reschedules the workqueue since mib_interval is non-zero.
-Due to which queue executed after mib_interval and it tries to access
-dp->slave. But the slave is unregistered in the ksz_switch_remove
-function. Hence kernel crashes.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git ftrace/core
+> head:   c8d01c02b46e599b057d7d24d1342ae9fcf828c2
+> commit: c8d01c02b46e599b057d7d24d1342ae9fcf828c2 [2/2] tracing: Create a sparse bitmask for pid filtering
+> config: riscv-randconfig-c006-20210927 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project dc6e8dfdfe7efecfda318d43a06fae18b40eb498)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install riscv cross compiling tool for clang build
+>          # apt-get install binutils-riscv64-linux-gnu
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git/commit/?id=c8d01c02b46e599b057d7d24d1342ae9fcf828c2
+>          git remote add rostedt-trace https://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+>          git fetch --no-tags rostedt-trace ftrace/core
+>          git checkout c8d01c02b46e599b057d7d24d1342ae9fcf828c2
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv clang-analyzer
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 
-To avoid this crash, before canceling the workqueue, resetted the
-mib_interval to 0.
 
-v1 -> v2:
--Removed the if condition in ksz_mib_read_work
+Thanks, this was already reported.
 
-Fixes: 469b390e1ba3 ("net: dsa: microchip: use delayed_work instead of timer + work")
-Signed-off-by: Arun Ramadoss <arun.ramadoss@microchip.com>
----
- drivers/net/dsa/microchip/ksz_common.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+  https://lore.kernel.org/all/221bc7ba-a475-1cb9-1bbe-730bb9c2d448@canonical.com/
 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 1542bfb8b5e5..7c2968a639eb 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -449,8 +449,10 @@ EXPORT_SYMBOL(ksz_switch_register);
- void ksz_switch_remove(struct ksz_device *dev)
- {
- 	/* timer started */
--	if (dev->mib_read_interval)
-+	if (dev->mib_read_interval) {
-+		dev->mib_read_interval = 0;
- 		cancel_delayed_work_sync(&dev->mib_read);
-+	}
- 
- 	dev->dev_ops->exit(dev);
- 	dsa_unregister_switch(dev->ds);
--- 
-2.33.0
+-- Steve
 
