@@ -2,148 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D1942892E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0B5428934
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235330AbhJKIyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235298AbhJKIyO (ORCPT
+        id S235182AbhJKI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:56:23 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3954 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235329AbhJKI4G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:54:14 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE850C061570;
-        Mon, 11 Oct 2021 01:52:14 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id z20so64712024edc.13;
-        Mon, 11 Oct 2021 01:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/EgDaikTcU3ZPE2vrvTMJwpUblaQMnmC465MWD/CtjE=;
-        b=hua6DOLXhL84HQk+Q9sixuzRMOlsw5dVMgwdxf9MSeKQSG8800sKaGkOIgFCQrkEgn
-         Pmu/Fb+1BHgoXACNB50rLA897B3dXZwT+Az2WPpUXp1iBCnCHMjoW+XbojiZyo/IbgvP
-         lbvgtpHlXvR8SAoXIpV1Ug1GvBezgWzNz1YvMHyGA0qYfgbI++SPQRepzt/VN+iCNjAw
-         0F17DSFR12ykNxZJhWk9TquqsCPR8KFcnmnTNr+nsxMwN1H51MG6K5v+oF+Z2Lx7+MEs
-         rnpaUzrXQPiLbaAMtcZjf42USM4nSQIP6weva65reJ5bmqvfIJNoo+ojjL+g1CsvGEAt
-         2H8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/EgDaikTcU3ZPE2vrvTMJwpUblaQMnmC465MWD/CtjE=;
-        b=OAEYR0oTbENutpwMbCZ31rzat4HG2sPPqMmOse++nQ4XogiWsEHsA5fuBdh1NrasGR
-         DXwcVuNBtDeu0o9f1p3NNkqgJlprdJ1KioWf0tGX9JeXJJXeM965DcrFBNlipREht/IL
-         uC/gRZgjSmyhb1JaDZzfw6q3xdsOgfGDVwbh7DyJ8q2OksT8attGoEJDjIOOTFYBPBKM
-         GFrdKC3SMhzBY8dIhbd1BMShr6rG/jWUums/RYtJBJzdPn981HguLGCvR5SyY7P1yc/Z
-         HZLY37j76Vv005JKZDfWmZiS8zGcgAWqtfzVja5fPLrKmAHJGutrclOYHwv5HvwVzyjh
-         oC+g==
-X-Gm-Message-State: AOAM530WEn2acN6w5uxVOcC18tTuvoCbIWueUI2H2blP84RnKRXUPfd/
-        z+WXRiPVmLz0Ce5CbZJh8A10XxVSmV3/KZ3/a7s=
-X-Google-Smtp-Source: ABdhPJwjMX2u3XDdp1JabEVjD/UGiPIZKSXLvzmZwSlEB8qFF2+MbNv1OBxu7ZVeXkamUIaFzEuwtAdB1I9p8Y7D1mw=
-X-Received: by 2002:a50:e384:: with SMTP id b4mr39659511edm.314.1633942333366;
- Mon, 11 Oct 2021 01:52:13 -0700 (PDT)
+        Mon, 11 Oct 2021 04:56:06 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HSXYG48KFz6887d;
+        Mon, 11 Oct 2021 16:49:54 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 10:53:18 +0200
+Received: from localhost (10.52.122.204) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 09:53:17 +0100
+Date:   Mon, 11 Oct 2021 09:52:59 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     "Chindris, Mihail" <Mihail.Chindris@analog.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "lars@metafoo.de" <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        "Sa, Nuno" <Nuno.Sa@analog.com>,
+        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
+        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
+Message-ID: <20211011095259.0000037b@Huawei.com>
+In-Reply-To: <SJ0PR03MB5791AE72F7666812DFD726B299B59@SJ0PR03MB5791.namprd03.prod.outlook.com>
+References: <20211008123909.1901-1-mihail.chindris@analog.com>
+        <20211008123909.1901-2-mihail.chindris@analog.com>
+        <20211010154856.29f4fd11@jic23-huawei>
+        <SJ0PR03MB5791AE72F7666812DFD726B299B59@SJ0PR03MB5791.namprd03.prod.outlook.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20211011084049.53643-1-wanghai38@huawei.com>
-In-Reply-To: <20211011084049.53643-1-wanghai38@huawei.com>
-From:   Barry Song <21cnbao@gmail.com>
-Date:   Mon, 11 Oct 2021 21:52:02 +1300
-Message-ID: <CAGsJ_4yHW5YbmErTdv7Hq3-XOVL_-t5OdDR8WEYGyXyqiQmRxA@mail.gmail.com>
-Subject: Re: [PATCH] PCI/MSI: fix page fault when msi_populate_sysfs() failed
-To:     Wang Hai <wanghai38@huawei.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.122.204]
+X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 9:24 PM Wang Hai <wanghai38@huawei.com> wrote:
->
-> I got a page fault report when doing fault injection test:
->
-> BUG: unable to handle page fault for address: fffffffffffffff4
-> ...
-> RIP: 0010:sysfs_remove_groups+0x25/0x60
-> ...
-> Call Trace:
->  msi_destroy_sysfs+0x30/0xa0
->  free_msi_irqs+0x11d/0x1b0
->  __pci_enable_msix_range+0x67f/0x760
->  pci_alloc_irq_vectors_affinity+0xe7/0x170
->  vp_find_vqs_msix+0x129/0x560
->  vp_find_vqs+0x52/0x230
->  vp_modern_find_vqs+0x47/0xb0
->  p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
->  virtio_dev_probe+0x1ed/0x2e0
->  really_probe+0x1c7/0x400
->  __driver_probe_device+0xa4/0x120
->  driver_probe_device+0x32/0xe0
->  __driver_attach+0xbf/0x130
->  bus_for_each_dev+0xbb/0x110
->  driver_attach+0x27/0x30
->  bus_add_driver+0x1d9/0x270
->  driver_register+0xa9/0x180
->  register_virtio_driver+0x31/0x50
->  p9_virtio_init+0x3c/0x1000 [9pnet_virtio]
->  do_one_initcall+0x7b/0x380
->  do_init_module+0x5f/0x21e
->  load_module+0x265c/0x2c60
->  __do_sys_finit_module+0xb0/0xf0
->  __x64_sys_finit_module+0x1a/0x20
->  do_syscall_64+0x34/0xb0
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
->
-> When populating msi_irqs sysfs failed in msi_capability_init() or
-> msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
-> This will cause a page fault when destroying the wrong
-> dev->msi_irq_groups in free_msi_irqs().
->
-> Fix this by setting dev->msi_irq_groups to NULL when msi_populate_sysfs()
-> failed.
->
-> Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wang Hai <wanghai38@huawei.com>
 
-Acked-by: Barry Song <song.bao.hua@hisilicon.com>
 
-> ---
->  drivers/pci/msi.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
-> index 0099a00af361..6f75db9f3be7 100644
-> --- a/drivers/pci/msi.c
-> +++ b/drivers/pci/msi.c
-> @@ -561,6 +561,7 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
->         dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
->         if (IS_ERR(dev->msi_irq_groups)) {
->                 ret = PTR_ERR(dev->msi_irq_groups);
-> +               dev->msi_irq_groups = NULL;
->                 goto err;
->         }
->
-> @@ -733,6 +734,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
->         dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
->         if (IS_ERR(dev->msi_irq_groups)) {
->                 ret = PTR_ERR(dev->msi_irq_groups);
-> +               dev->msi_irq_groups = NULL;
+On Mon, 11 Oct 2021 08:37:44 +0000
+"Chindris, Mihail" <Mihail.Chindris@analog.com> wrote:
 
-Can you define a temp variable and assign it to dev->msi_irq_groups if
-the temp variable
-is not PTR_ERR?
+> > -----Original Message-----
+> > From: Jonathan Cameron <jic23@kernel.org>
+> > Sent: Sunday, 10 October 2021 17:49
+> > To: Chindris, Mihail <Mihail.Chindris@analog.com>
+> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
+> > lars@metafoo.de; Hennerich, Michael <Michael.Hennerich@analog.com>;
+> > Sa, Nuno <Nuno.Sa@analog.com>; Bogdan, Dragos
+> > <Dragos.Bogdan@analog.com>; alexandru.ardelean@analog.com; Mark
+> > Brown <broonie@kernel.org>
+> > Subject: Re: [PATCH v2 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
+> > 
+> > On Fri, 8 Oct 2021 12:39:08 +0000
+> > Mihail Chindris <mihail.chindris@analog.com> wrote:
+> >   
+> > > Add documentation for ad3552r
+> > >
+> > > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>  
+> > Hi Mihael,
+> > 
+> > A few comments inline.
+> > 
+> > Thanks,
+> > 
+> > Jonathan
 
->                 goto out_free;
->         }
->
-> --
-> 2.17.1
->
+Just realized this is missing cc for Rob + dt list which is a must for
+any new binding doc.  Query for Rob inline.
 
-Thanks
-Barry
+Thanks,
+
+Jonathan
+
+> >   
+> > > ---
+> > >  .../bindings/iio/dac/adi,ad3552r.yaml         | 199 ++++++++++++++++++
+> > >  1 file changed, 199 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+> > >
+> > > diff --git
+> > > a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+> > > b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+> > > new file mode 100644
+> > > index 000000000000..1086e935d330
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
+> > > @@ -0,0 +1,199 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) # Copyright 2020
+> > > +Analog Devices Inc.
+> > > +%YAML 1.2
+> > > +---
+> > > +$id:
+> > > +https://urldefense.com/v3/__http://devicetree.org/schemas/iio/dac/adi
+> > >  
+> > +,ad3552r.yaml*__;Iw!!A3Ni8CS0y2Y!pqvd1NyV8G8KXIcfAtV1erPpylxLUGXD
+> > 1Tx5  
+> > > +UoK2MMNNgQpv5RSyFb6NQDSL0sEuJOI$
+> > > +$schema:
+> > > +https://urldefense.com/v3/__http://devicetree.org/meta-  
+> > schemas/core.y  
+> > >  
+> > +aml*__;Iw!!A3Ni8CS0y2Y!pqvd1NyV8G8KXIcfAtV1erPpylxLUGXD1Tx5UoK2
+> > MMNNgQ  
+> > > +pv5RSyFb6NQDSL3G5680U$
+> > > +
+> > > +title: Analog Devices AD2552R DAC device driver
+> > > +
+> > > +maintainers:
+> > > +  - Mihail Chindris <mihail.chindris@analog.com>
+> > > +
+> > > +description: |
+> > > +  Bindings for the Analog Devices AD3552R  DAC device. Datasheet can
+> > > +be  
+> > 
+> > Extra space before DAC, and doesn't mention the other supported part.
+> > One option to avoid a never ending list is "and similar."
+> >   
+> > > +  found here:
+> > > +
+> > > + https://www.analog.com/media/en/technical-documentation/data-  
+> > sheets/  
+> > > + ad3552r.pdf  
+> > 
+> > Good to have datasheet for the other part as well as I don't think this is a
+> > shared datasheet?
+> >   
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    enum:
+> > > +      - adi,ad3552r
+> > > +      - adi,ad3542r  
+> > 
+> > Alphabetical order preferred.
+> >   
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  spi-max-frequency:
+> > > +    maximum: 30000000
+> > > +
+> > > +  reset-gpios:
+> > > +    maxItems: 1
+> > > +
+> > > +  ldac-gpios:
+> > > +    description: |
+> > > +      If a LDAC gpio is specified it will generate a LDAC pulse each time the
+> > > +      trigger handler sends data to the chip.  
+> > 
+> > Trigger handler is a linux concept. You need to write this more generically.
+> > Something like.
+> > 
+> > "LDAC pin is used as a hardware trigger to update a set of DACs."
+> > 
+> >   
+> > > +    maxItems: 1
+> > > +
+> > > +  vref-supply:
+> > > +    description:
+> > > +      The regulator to use as an external reference. If it does not exists the
+> > > +      internal reference will be used. External reference must be
+> > > + 2.5V
+> > > +
+> > > +  adi,vref-out-en:
+> > > +    description: Vref I/O driven by internal vref to 2.5V. If not set, Vref pin
+> > > +      will be floating.
+> > > +    type: boolean
+> > > +
+> > > +  adi,sdo-drive-strength:
+> > > +    description: |
+> > > +      Configure SDIO0 and SDIO1 strength levels:
+> > > +        - 0: low SDO drive strength.
+> > > +        - 1: medium low SDO drive strength.
+> > > +        - 2: medium high SDO drive strength.
+> > > +        - 3: high SDO drive strength
+> > > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > > +    enum: [0, 1, 2, 3]
+> > > +
+> > > +patternProperties:
+> > > +  "^channel@([0-1])$":
+> > > +    type: object
+> > > +    description: Configurations of the DAC Channels
+> > > +    properties:
+> > > +      reg:
+> > > +          description: Channel number
+> > > +          enum: [0, 1]
+> > > +
+> > > +      custom-output-range-config:  
+> > 
+> > Not a generic property so I think this needs an adi prefix.  
+> 
+> I tried with adi prefix but I get weird errors while running dt_binding_check for properties with adi prefix and with type:object
+> Do you have any suggestion for this issues?
+
+@Rob
+
+> 
+> > > +        type: object
+> > > +        description: Configuration of custom range when
+> > > +          adi,output-range-microvolt is not present.
+> > > +          The formulas for calculation the output voltages are
+> > > +            Vout_fs = 2.5 + [(GainN + Offset/1024) * 2.5 * Rfbx * 1.03]
+> > > +            Vout_zs = 2.5 - [(GainP + Offset/1024) * 2.5 * Rfbx * 1.03]
+> > > +        properties:
+> > > +          adi,gain-offset:
+> > > +            description: Gain offset used in the above formula
+> > > +            $ref: /schemas/types.yaml#/definitions/int32
+> > > +            maximum: 511
+> > > +            minimum: -511
+> > > +          adi,gain-scaling-p:
+> > > +            description: |
+> > > +              Scaling p:
+> > > +               0: 1.0
+> > > +               1: 0.5
+> > > +               2: 0.25
+> > > +               3: 0.125  
+> > 
+> > Given this is just a mapping to a simple set of values, could we just have the
+> > values or express it as 1/(2^GainP) in the equation above and call it
+> > adi,gain-scalling-inv-log2 or something like that?
+> > 
+> > If we can avoid a mapping table that is always a nice to have
+> > 
+> >   
+> > > +            $ref: /schemas/types.yaml#/definitions/uint32
+> > > +            enum: [0, 1, 2, 3]
+> > > +          adi,gain-scaling-n:
+> > > +            description: |
+> > > +              Scaling p:
+> > > +               0: 1.0
+> > > +               1: 0.5
+> > > +               2: 0.25
+> > > +               3: 0.125
+> > > +            $ref: /schemas/types.yaml#/definitions/uint32
+> > > +            enum: [0, 1, 2, 3]
+> > > +          adi,rfb-ohms:
+> > > +            description: Feedback Resistor
+> > > +        required:
+> > > +          - adi,gain-offset
+> > > +          - adi,gain-sacling-p
+> > > +          - adi,gain-sacling-n
+> > > +          - adi,rfb-ohms
+> > > +    required:
+> > > +      - reg
+> > > +
+> > > +    oneOf:
+> > > +      # If adi,output-range is missing, custom-output-range-config
+> > > + must be used  
+> > 
+> > adi,output-range-microvolt is missing...
+> >   
+> > > +      - required:
+> > > +        - adi,output-range-microvolt
+> > > +      - required:
+> > > +        - custom-output-range-config
+> > > +
+> > > +allOf:
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            const: adi,ad3542r
+> > > +    then:
+> > > +      patternProperties:
+> > > +        "^channel@([0-1])$":
+> > > +          type: object
+> > > +          properties:
+> > > +            adi,output-range-microvolt:
+> > > +              description: |
+> > > +                Voltage output range of the channel as <minimum, maximum>
+> > > +                Required connections:
+> > > +                  Rfb1x for: 0 to 2.5 V; 0 to 3V; 0 to 5 V;
+> > > +                  Rfb2x for: 0 to 10 V; 2.5 to 7.5V; -5 to 5 V;
+> > > +              oneOf:
+> > > +                - items:
+> > > +                    - const: 0
+> > > +                    - enum: [2500000, 3000000, 5000000, 10000000]
+> > > +                - items:
+> > > +                    - const: -2500000
+> > > +                    - const: 7500000
+> > > +                - items:
+> > > +                    - const: -5000000
+> > > +                    - const: 5000000
+> > > +          required:
+> > > +            - adi,output-range-microvolt
+> > > +  - if:
+> > > +      properties:
+> > > +        compatible:
+> > > +          contains:
+> > > +            const: adi,ad3552r
+> > > +    then:
+> > > +      patternProperties:
+> > > +        "^channel@([0-1])$":
+> > > +          type: object
+> > > +          properties:
+> > > +            adi,output-range-microvolt: |
+> > > +                Voltage output range of the channel as <minimum, maximum>
+> > > +                Required connections:
+> > > +                  Rfb1x for: 0 to 2.5 V; 0 to 5 V;
+> > > +                  Rfb2x for: 0 to 10 V; -5 to 5 V;
+> > > +                  Rfb4x for: -10 to 10V
+> > > +              oneOf:
+> > > +                - items:
+> > > +                    - const: 0
+> > > +                    - enum: [2500000, 5000000, 10000000]
+> > > +                - items:
+> > > +                    - const: -5000000
+> > > +                    - const: 5000000
+> > > +                - items:
+> > > +                    - const: -10000000
+> > > +                    - const: 10000000
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - spi-max-frequency
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    ad3552r {
+> > > +            compatible = "adi,ad3552r";
+> > > +            reg = <0>;
+> > > +            spi-max-frequency = <20000000>;
+> > > +            channel@0 {
+> > > +                    reg = <0>;
+> > > +                    adi,output-range-microvolt = <0 10000000>;
+> > > +            };
+> > > +            channel@1 {
+> > > +                    reg = <1>;
+> > > +                    custom-output-range-config {
+> > > +                            adi,gain-offset = <5>;
+> > > +                            adi,gain-scaling-p = <1>;
+> > > +                            adi,gain-scaling-n = <2>;
+> > > +                            adi,rfb-ohms = <1>;
+> > > +                    };
+> > > +          };
+> > > +      };
+> > > +...  
+> 
+
