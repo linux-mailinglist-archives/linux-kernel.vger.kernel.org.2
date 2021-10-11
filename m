@@ -2,74 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09F64292A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E84D4292AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244051AbhJKOzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:55:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36858 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244233AbhJKOyw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:54:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633963972;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=89zmHIrU5FNV2xiprQFh1fRhF37l31tX1FhfGy5HLqE=;
-        b=cCKrVsTxMGoz1E3ZnLStiEtq0jHQXfkgsnYVJ3kAOza2KFwA9Bjnplk/wSN+RPFZRG9I8k
-        DlLQkwRd1my4U/TtGTN8YzyC4WMIWLM4kB0pCuxp7n2YjOEVC3XDeOTikXxWRG1Q5r42J7
-        rmr2rU6Of5JXZdVKL7/iiePMKElL+Jg=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-nYHgrtcuM5COQvtstOltpg-1; Mon, 11 Oct 2021 10:52:51 -0400
-X-MC-Unique: nYHgrtcuM5COQvtstOltpg-1
-Received: by mail-oo1-f72.google.com with SMTP id 68-20020a4a0d47000000b0028fe7302d04so10198407oob.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:52:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=89zmHIrU5FNV2xiprQFh1fRhF37l31tX1FhfGy5HLqE=;
-        b=h36PcovUppAb2/khsBWTEfaUBKBMnkmGNEFAPs6/DklLrn+dh7FDaLnFCtJmoimBxA
-         JiHscv2r1sO3HDQ94ACxGwzNPJjDPW1dQRYNeUZ+NRaW5gpt1T7bXu8LJe9ZI/3pgm0m
-         C5EU/HEm2WejOXVkzGxCAxnD6q3WbtZw2c0BZ4yMtassYd8PZX1MajeEvc9NLvMHNvtC
-         prgh8rVmD4zMBPix9dyPzJiBr5hAxnhKm/gLPv7vXDIYNxeEaAzRf450YyoER9ZRFLz4
-         7W+lJEyRP9efYQ5SksN7/EAivQo08JNkbdutgc2+ejmv0gLsboigPMtA0D6+9Jleeo63
-         k79w==
-X-Gm-Message-State: AOAM533HKQxaT4KJgpWZ9AAxXhKVYHAeJFhdi0NCmONwP1yl/cmFKdgr
-        ZNx/JejbMyX/T92cDujDCjUJgC7yzMNhyn+7Lw4Qsaz7hTrPReC7X3Hy2qiw4E9fTs0zAIz+5Ev
-        +9HXeObMTW/0SMbRYyWcw8VWK
-X-Received: by 2002:a4a:9541:: with SMTP id n1mr14720674ooi.62.1633963970705;
-        Mon, 11 Oct 2021 07:52:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9v/DeW+zwCiT+kQifox09JmpwS7WRLrIq2+cIai843pldXiRD31wdX0Bt0DnZuoCVFoc0oQ==
-X-Received: by 2002:a4a:9541:: with SMTP id n1mr14720661ooi.62.1633963970465;
-        Mon, 11 Oct 2021 07:52:50 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id d18sm976983ook.14.2021.10.11.07.52.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 07:52:50 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 08:52:47 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Ajay Garg <ajaygargnsit@gmail.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-Message-ID: <20211011085247.7f887b12.alex.williamson@redhat.com>
-In-Reply-To: <CAHP4M8VPem7xEtx3vQPm3bzCQif7JZFiXgiUGZVErTt5vhOF8A@mail.gmail.com>
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
-        <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com>
-        <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
-        <20211004163146.6b34936b.alex.williamson@redhat.com>
-        <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
-        <CAHP4M8UD-k76cg0JmeZAwaWh1deSP82RCE=VC1zHQEYQmX6N9A@mail.gmail.com>
-        <CAHP4M8VPem7xEtx3vQPm3bzCQif7JZFiXgiUGZVErTt5vhOF8A@mail.gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S237253AbhJKPAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234614AbhJKPAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:00:05 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6945D60EBD;
+        Mon, 11 Oct 2021 14:58:04 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 10:58:02 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Tao Zhou <tao.zhou@linux.dev>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH] sched/fair: Use this_sd->weight to calculate span_avg
+Message-ID: <20211011105802.344b907c@gandalf.local.home>
+In-Reply-To: <20211009181055.20512-1-tao.zhou@linux.dev>
+References: <20211009181055.20512-1-tao.zhou@linux.dev>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -77,40 +38,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 11:49:33 +0530
-Ajay Garg <ajaygargnsit@gmail.com> wrote:
+On Sun, 10 Oct 2021 02:10:55 +0800
+Tao Zhou <tao.zhou@linux.dev> wrote:
 
-> The flooding was seen today again, after I booted the host-machine in
-> the morning.
-> Need to look what the heck is going on ...
+> avg_idle, avg_cost got from this_rq and this_sd. I think
+> use this_sd->weight to calculate and estimate the number
+> of loop cpus in the target domain.
+
+If that's the case, then shouldn't the CPUs to be checked come from this_sd
+as well? I mean, at the beginning of the function we have:
+
+	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+	if (!this_sd)
+		return -1;
+
+	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+
+Where "cpus" comes from sd, and not this_sd.
+
+
+> ---
+>  kernel/sched/fair.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> On Sun, Oct 10, 2021 at 11:45 AM Ajay Garg <ajaygargnsit@gmail.com> wrote:
-> >  
-> > > I'll try and backtrack to the userspace process that is sending these ioctls.
-> > >  
-> >
-> > The userspace process is qemu.
-> >
-> > I compiled qemu from latest source, installed via "sudo make install"
-> > on host-machine, rebooted the host-machine, and booted up the
-> > guest-machine on the host-machine. Now, no kernel-flooding is seen on
-> > the host-machine.
-> >
-> > For me, the issue is thus closed-invalid; admins may take the
-> > necessary action to officially mark ;)
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index f6a05d9b5443..7fab7b70814c 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6300,7 +6300,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool
+>  		avg_idle = this_rq->wake_avg_idle;
+>  		avg_cost = this_sd->avg_scan_cost + 1;
+>  
+> -		span_avg = sd->span_weight * avg_idle;
+> +		span_avg = this_sd->span_weight * avg_idle;
+>  		if (span_avg > 4*avg_cost)
+>  			nr = div_u64(span_avg, avg_cost);
+>  		else
 
-Even this QEMU explanation doesn't make a lot of sense, vfio tracks
-userspace mappings and will return an -EEXIST error for duplicate or
-overlapping IOVA entries.  We expect to have an entirely empty IOMMU
-domain when a device is assigned, but it seems the only way userspace
-can trigger duplicate PTEs would be if mappings already exist, or we
-have a bug somewhere.
 
-If the most recent instance is purely on bare metal, then it seems the
-host itself has conflicting mappings.  I can only speculate with the
-limited data presented, but I'm suspicious there's something happening
-with RMRRs here (but that should also entirely preclude assignment).
-dmesg, lspci -vvv, and VM configuration would be useful.  Thanks,
+And after this code, the nr that is determined from the above, is for
+limiting the looping over those CPUs from sd, not this_sd:
 
-Alex
+	for_each_cpu_wrap(cpu, cpus, target + 1) {
+		if (has_idle_core) {
+			i = select_idle_core(p, cpu, cpus, &idle_cpu);
+			if ((unsigned int)i < nr_cpumask_bits)
+				return i;
 
+		} else {
+			if (!--nr)
+				return -1;
+			idle_cpu = __select_idle_cpu(cpu, p);
+			if ((unsigned int)idle_cpu < nr_cpumask_bits)
+				break;
+		}
+	}
+
+I'm guessing there's nothing wrong here. But, I don't fully understand it
+myself.
+
+-- Steve
