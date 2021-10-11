@@ -2,97 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05790429948
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D406142994D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235463AbhJKWFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 18:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbhJKWFA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 18:05:00 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26BEC061570;
-        Mon, 11 Oct 2021 15:02:59 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id r2so11998751pgl.10;
-        Mon, 11 Oct 2021 15:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=HAdOW08pUGdUyMrTZxurTqi+ppgklE5YNPt3pyK3J9Y=;
-        b=msXhSiuDh0TAfFpXf7otQ4GKX/jL9A3xSgn0ohRua33XqhiKTEwLRhyXaaueECwKeh
-         4FOUyz1OrCpiS5KlUDb60Fu6L6I6GWsAa5Jy7GHfcEwv7mX56CD9H7gb67LydZKqqWEx
-         za2+mtS2MGrNocBbyNpxOVnStZpVkJgnrrmsDBkSs48INoZuBgggWkJ9eyDXpK9IYlro
-         nzJAiTLGR0Fl1kFLb9qK0JRfQPZBIYKbz0A2CZ4+vLHrmGdyro1qFIIBkArE/oMY/1Vt
-         mTdsTFmBnul1MsYiC3UAp7E6aP39tFgn1trqg1mvD/xViQu2F++i95WG7e8AnGJgrrKL
-         kz+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=HAdOW08pUGdUyMrTZxurTqi+ppgklE5YNPt3pyK3J9Y=;
-        b=PYU/5HkmPYu4lEMIP9BlJxTPCkvYd7VXBUCTyZJrC0oE2fiitA2piNdQiCFb1V2nBw
-         zz11J5uNfXYv2+qOe9QSx/rpQXY2dxlaHNVQpEH0omonn9W2SFLsugq7SczL5IVOXcRb
-         g31F7pYwUNaroEWu+Q6RR9fR5THhFNoibUwZ/87u44U/cZliT1dxg955OB9FUNaVE2ug
-         5JrXGlYC9/d2RSjlnHDcuLmvnQ4RAUee+NsNbIcI+T+7/V8xAWdoGRoN+fD6baSZTGIH
-         dnCiJ0SYa9kta071ZUMI5YRPt3/sagjJJ0caxYrcKJCsPT6oUsRIpmJbUdygc9ok/9/P
-         zoQA==
-X-Gm-Message-State: AOAM531Rox6wbEIGgWCo3C5+Xm1POrjjvRkcF0I+hHzSIOJd7V0ItfLL
-        PozA6jbbSjZ7CmU90LcoOiHBGv6/U9/DnA==
-X-Google-Smtp-Source: ABdhPJxoDWg9cFb9RgY3a20u4GeVDtZnuvVfU/kd/9eocrlurCJJTcBSjp+wYZswBh5gEsV7aC7l4g==
-X-Received: by 2002:a63:5608:: with SMTP id k8mr20176424pgb.287.1633989779234;
-        Mon, 11 Oct 2021 15:02:59 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id a7sm8533717pfn.150.2021.10.11.15.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 15:02:58 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 11 Oct 2021 12:02:57 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] cgroup fixes for v5.15-rc6
-Message-ID: <YWS0kcEY3MmKrZJk@slm.duckdns.org>
+        id S235483AbhJKWGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 18:06:45 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:59122 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235301AbhJKWGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 18:06:43 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1ma3PM-00016Q-QT; Tue, 12 Oct 2021 00:04:32 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        linux-riscv@lists.infradead.org
+Cc:     Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        Anup Patel <anup@brainfault.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Anup Patel <anup.patel@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>
+Subject: Re: [PATCH v8 1/8] RISC-V: Enable CPU_IDLE drivers
+Date:   Tue, 12 Oct 2021 00:04:31 +0200
+Message-ID: <30695639.mNO2d7px6N@diego>
+In-Reply-To: <20211011081820.1135261-2-anup.patel@wdc.com>
+References: <20211011081820.1135261-1-anup.patel@wdc.com> <20211011081820.1135261-2-anup.patel@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus.
+Hi Anup,
 
-All documentation / comment updates.
+Am Montag, 11. Oktober 2021, 10:18:13 CEST schrieb Anup Patel:
+> We force select CPU_PM and provide asm/cpuidle.h so that we can
+> use CPU IDLE drivers for Linux RISC-V kernel.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> ---
+>  arch/riscv/Kconfig                |  7 +++++++
+>  arch/riscv/configs/defconfig      |  1 +
+>  arch/riscv/configs/rv32_defconfig |  1 +
+>  arch/riscv/include/asm/cpuidle.h  | 24 ++++++++++++++++++++++++
+>  arch/riscv/kernel/process.c       |  3 ++-
+>  5 files changed, 35 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/riscv/include/asm/cpuidle.h
+> 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 8de2afb460f7..d02f1f5a2431 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -46,6 +46,7 @@ config RISCV
+>  	select CLONE_BACKWARDS
+>  	select CLINT_TIMER if !MMU
+>  	select COMMON_CLK
+> +	select CPU_PM if CPU_IDLE
+>  	select EDAC_SUPPORT
+>  	select GENERIC_ARCH_TOPOLOGY if SMP
+>  	select GENERIC_ATOMIC64 if !64BIT
+> @@ -564,5 +565,11 @@ source "kernel/power/Kconfig"
+>  
+>  endmenu
+>  
+> +menu "CPU Power Management"
+> +
+> +source "drivers/cpuidle/Kconfig"
+> +
+> +endmenu
+> +
+>  source "arch/riscv/kvm/Kconfig"
+>  source "drivers/firmware/Kconfig"
+> diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
+> index be21f54e9b91..39b4c32e7997 100644
+> --- a/arch/riscv/configs/defconfig
+> +++ b/arch/riscv/configs/defconfig
+> @@ -20,6 +20,7 @@ CONFIG_SOC_SIFIVE=y
+>  CONFIG_SOC_VIRT=y
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+> +CONFIG_CPU_IDLE=y
+>  CONFIG_VIRTUALIZATION=y
+>  CONFIG_KVM=y
+>  CONFIG_JUMP_LABEL=y
 
-Thanks.
+This doesn't apply.
 
-The following changes since commit 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f:
+In the history of your tree that you referenced in the cover-letter
+I found "RISC-V: Enable KVM for RV64 and RV32"
+with that nice "DO NOT UPSTREAM !!!!!" message in caps in it ;-)
 
-  Linux 5.15-rc1 (2021-09-12 16:28:37 -0700)
+This of course makes this not apply on the main riscv tree.
 
-are available in the Git repository at:
+So you might want to base your series on top of a clean "for-next"
+branch of Palmer's tree instead of collecting other stuff below it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.15-fixes
+Same for rv32_defconfig below.
 
-for you to fetch changes up to c0002d11d79900f8aa5c8375336434940d6afedf:
 
-  cgroupv2, docs: fix misinformation in "device controller" section (2021-09-13 08:08:46 -1000)
+Heiko
 
-----------------------------------------------------------------
-ArthurChiao (1):
-      cgroupv2, docs: fix misinformation in "device controller" section
 
-Chunguang Xu (1):
-      docs/cgroup: remove some duplicate words
+> diff --git a/arch/riscv/configs/rv32_defconfig b/arch/riscv/configs/rv32_defconfig
+> index ad01f50c98f1..fed827c82a9e 100644
+> --- a/arch/riscv/configs/rv32_defconfig
+> +++ b/arch/riscv/configs/rv32_defconfig
+> @@ -20,6 +20,7 @@ CONFIG_SOC_VIRT=y
+>  CONFIG_ARCH_RV32I=y
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+> +CONFIG_CPU_IDLE=y
+>  CONFIG_VIRTUALIZATION=y
+>  CONFIG_KVM=y
+>  CONFIG_JUMP_LABEL=y
+> diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
+> new file mode 100644
+> index 000000000000..71fdc607d4bc
+> --- /dev/null
+> +++ b/arch/riscv/include/asm/cpuidle.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2021 Allwinner Ltd
+> + * Copyright (C) 2021 Western Digital Corporation or its affiliates.
+> + */
+> +
+> +#ifndef _ASM_RISCV_CPUIDLE_H
+> +#define _ASM_RISCV_CPUIDLE_H
+> +
+> +#include <asm/barrier.h>
+> +#include <asm/processor.h>
+> +
+> +static inline void cpu_do_idle(void)
+> +{
+> +	/*
+> +	 * Add mb() here to ensure that all
+> +	 * IO/MEM accesses are completed prior
+> +	 * to entering WFI.
+> +	 */
+> +	mb();
+> +	wait_for_interrupt();
+> +}
+> +
+> +#endif
+> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+> index 03ac3aa611f5..504b496787aa 100644
+> --- a/arch/riscv/kernel/process.c
+> +++ b/arch/riscv/kernel/process.c
+> @@ -23,6 +23,7 @@
+>  #include <asm/string.h>
+>  #include <asm/switch_to.h>
+>  #include <asm/thread_info.h>
+> +#include <asm/cpuidle.h>
+>  
+>  register unsigned long gp_in_global __asm__("gp");
+>  
+> @@ -37,7 +38,7 @@ extern asmlinkage void ret_from_kernel_thread(void);
+>  
+>  void arch_cpu_idle(void)
+>  {
+> -	wait_for_interrupt();
+> +	cpu_do_idle();
+>  	raw_local_irq_enable();
+>  }
+>  
+> 
 
-Waiman Long (1):
-      cgroup/cpuset: Change references of cpuset_mutex to cpuset_rwsem
 
- Documentation/admin-guide/cgroup-v2.rst | 28 ++++++++---------
- kernel/cgroup/cpuset.c                  | 56 +++++++++++++++++----------------
- 2 files changed, 43 insertions(+), 41 deletions(-)
 
--- 
-tejun
+
