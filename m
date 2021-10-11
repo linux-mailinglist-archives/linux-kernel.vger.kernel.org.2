@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82149428E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7245D428E20
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235897AbhJKNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:38:02 -0400
-Received: from first.geanix.com ([116.203.34.67]:37366 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235759AbhJKNiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:38:00 -0400
-Received: from skn-laptop (_gateway [172.25.0.1])
-        by first.geanix.com (Postfix) with ESMTPSA id 766D3C3DCB;
-        Mon, 11 Oct 2021 13:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1633959358; bh=xE4X5BF6E0aIpTrV8lCehzVbxCNFk1JaXrnIGkwaPM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=XylsbvZJw/MkJO9l9jUSUS4m1IjoBfgfn0MEkkKOxYSFue3IogdDPmaT+FIyeJPXa
-         eZEyWlTJZofBtk9p3LHmE+JtcnbHtxDRdgUFVqgvNYi9uxPXp97Q5uYP4h+tfSfI0k
-         hf9akEBZ9F/pbPj2XNAKvWZEmhNvqQGECMscUx6KTVSQF5GVimEAv1ptALdKeqdvqK
-         IwjTRFDpjpHKNx5xIpST0St/rZs+dwbZuZIS7XsDIK4Drs5gLESU1k3aX6CkIDey0U
-         H23cKJCg04PEyaMeTnC9fr46llxFo/N3oRw/JFgOv/TC2PX/0d6VV5yQhBAd+fXWcf
-         MYX6N3vfuGNIg==
-Date:   Mon, 11 Oct 2021 15:35:56 +0200
-From:   Sean Nyekjaer <sean@geanix.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mtd: mtdconcat: add suspend lock handling
-Message-ID: <20211011133556.probhbuowxkumpzb@skn-laptop>
-References: <20211011115253.38497-1-sean@geanix.com>
- <20211011115253.38497-4-sean@geanix.com>
- <20211011151501.48cc9289@collabora.com>
- <20211011152703.0086d990@collabora.com>
+        id S235602AbhJKNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:38:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236972AbhJKNiW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:38:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633959381;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uHe86D0+9HSkQCQI9gdmYfNs35nscG967x0fei7/3Sc=;
+        b=eNIkVUox3E0MyPTV2g6Olj7xkJK4LQShPTllLUT/PHMqlC7/MtL14JwKzKZd/WcQ44ut1R
+        PM24cuIk6YcttA8mzX8gbvvt+zV6iB8f7DJOcxn5zzwZOnx/CrSqt7gsnQS40NAa2BAuDL
+        JRgT3tEieudP0ZHnE9p7qNYfsQ2NY7I=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-23-hZ8-C2wWNriX89zaQ197NA-1; Mon, 11 Oct 2021 09:36:20 -0400
+X-MC-Unique: hZ8-C2wWNriX89zaQ197NA-1
+Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso15939355edn.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:36:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uHe86D0+9HSkQCQI9gdmYfNs35nscG967x0fei7/3Sc=;
+        b=axl3bhoZ156jCoXBHrbuAvz2KwyMzbUlEbGYd/d7ul5dnfPK3wnVG2GBnsTLbfsG2T
+         odBy+WKu/BIsP6GlIBltgdpfc05r9AnbLBiFlxP9tBjGi1VRPCZCBzfSDga9PfPtNOS9
+         w+Q67OCvfWkUj6O3ydBLowhVArveGCoVYQTGy3WwgEoCKgbmMwy/vA2IePFgyD1XKn8+
+         vWEPZ4FLuzj8OGkK3Tbdisp014JKekuQKZUJHTncq/PYskUZO4Ua3I6RXFO8fROPoQh9
+         o1Fk8cSNvLxHsCkMydUm27p1ex23in1h5kQyUam6/psiknhWOC7McrAJLg6yuhrWRLu/
+         Wh4g==
+X-Gm-Message-State: AOAM533H2Yx3at17dO4+QyifC5Zlbf6uZVfTwtOG2cuMgymT3tPzyOwm
+        KPLio+5l6YmFnq9I/4GueuTy01dm4fKvzO2YpIczxdqS6wrVujye73/pXzGQ/tU3s69fTuhUA1K
+        XNqbK1Rdt2zKu1IvU4PiMylmZ
+X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr16099559ede.238.1633959379474;
+        Mon, 11 Oct 2021 06:36:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrJGPPxVQTyMxL0GifZrDFtfAmBX/n9m1xonFauKYVQffG6tYBEjVi/imTxjJfsMZ+H1bUFg==
+X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr16099531ede.238.1633959379286;
+        Mon, 11 Oct 2021 06:36:19 -0700 (PDT)
+Received: from x1.localdomain ([81.30.35.201])
+        by smtp.gmail.com with ESMTPSA id x14sm4744935edd.25.2021.10.11.06.36.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 06:36:18 -0700 (PDT)
+Subject: Re: [PATCH 0/3] platform/x86: intel_scu_ipc: timeout fixes and
+ cleanup
+To:     Prashant Malani <pmalani@chromium.org>,
+        linux-kernel@vger.kernel.org
+Cc:     bleung@chromium.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "open list:X86 PLATFORM DRIVERS" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20210928101932.2543937-1-pmalani@chromium.org>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <95257882-ed9c-eb04-f09e-9d6e559ece2c@redhat.com>
+Date:   Mon, 11 Oct 2021 15:36:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210928101932.2543937-1-pmalani@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211011152703.0086d990@collabora.com>
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 03:27:03PM +0200, Boris Brezillon wrote:
-> On Mon, 11 Oct 2021 15:15:01 +0200
-> Boris Brezillon <boris.brezillon@collabora.com> wrote:
+Hi,
+
+On 9/28/21 12:19 PM, Prashant Malani wrote:
+> This is a short series to make some fixes and timeout value
+> modifications to the SCU IPC driver timeout handling.
 > 
-> > On Mon, 11 Oct 2021 13:52:53 +0200
-> > Sean Nyekjaer <sean@geanix.com> wrote:
-> > 
-> > > Use new suspend lock handling for this special case for concatenated
-> > > MTD devices.
-> > > 
-> > > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
-> > > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
-> > > ---
-> > >  drivers/mtd/mtdconcat.c | 11 +++++++++--
-> > >  1 file changed, 9 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-> > > index f685a581df48..c497c851481f 100644
-> > > --- a/drivers/mtd/mtdconcat.c
-> > > +++ b/drivers/mtd/mtdconcat.c
-> > > @@ -561,25 +561,32 @@ static void concat_sync(struct mtd_info *mtd)
-> > >  
-> > >  static int concat_suspend(struct mtd_info *mtd)
-> > >  {
-> > > +	struct mtd_info *master = mtd_get_master(mtd);
-> > >  	struct mtd_concat *concat = CONCAT(mtd);
-> > >  	int i, rc = 0;
-> > >  
-> > >  	for (i = 0; i < concat->num_subdev; i++) {
-> > >  		struct mtd_info *subdev = concat->subdev[i];
-> > > -		if ((rc = mtd_suspend(subdev)) < 0)
-> > > +
-> > > +		down_write(&master->master.suspend_lock);
-> > > +		if ((rc = __mtd_suspend(subdev)) < 0)
-> > >  			return rc;
-> > > +		up_write(&master->master.suspend_lock);
-> > >  	}
-> > >  	return rc;
-> > >  }
-> > >  
-> > >  static void concat_resume(struct mtd_info *mtd)
-> > >  {
-> > > +	struct mtd_info *master = mtd_get_master(mtd);
-> > >  	struct mtd_concat *concat = CONCAT(mtd);
-> > >  	int i;
-> > >  
-> > >  	for (i = 0; i < concat->num_subdev; i++) {
-> > >  		struct mtd_info *subdev = concat->subdev[i];
-> > > -		mtd_resume(subdev);
-> > > +		down_write(&master->master.suspend_lock);
-> > > +		__mtd_resume(subdev);
-> > > +		up_write(&master->master.suspend_lock);
-> > >  	}
-> > >  }
-> > >    
-> > 
-> > Why do we need to implement the _suspend/_resume() hooks here? The
-> > underlying MTD devices should be suspended at some point (when the
-> > class ->suspend() method is called on those device), and there's
-> > nothing mtdconcat-specific to do here. Looks like implementing this
-> > suspend-all-subdevs loop results in calling mtd->_suspend()/_resume()
-> > twice, which is useless. The only issue I see is if the subdevices
-> > haven't been registered to the device model, but that happens, I
-> > believe we have bigger issues (those devices won't be suspended when
-> > mtdconcat is not used).
-> 
-> 
-> Uh, just had a look at mtd_concat_create() callers, and they indeed
-> don't register the subdevices, so I guess the suspend-all-subdevs loop
-> is needed. I really thought mtdconcat was something more generic
-> aggregating already registered devices...
+> Prashant Malani (3):
+>   platform/x86: intel_scu_ipc: Fix busy loop expiry time
+>   platform/x86: intel_scu_ipc: Increase virtual timeout to 10s
+>   platform/x86: intel_scu_ipc: Update timeout value in comment
 
-Hi Boris,
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Cool, mtd_concat should be seen as mtd devices concatenated? Could be
-spi-nors and rawnand. So _suspend() needs to be called for every device
-layer?
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-From what I see here, mtd_suspend()/mtd_resume() is called for every mtd
-device. Before this patch mtd_suspend() would only have effect on the
-first device as master->master.suspended is set and then calls to
-device specific _suspend() is skipped.
+Since these are clear bug fixes I will also include these
+in my upcoming pdx86-fixes pull-req for 5.15 .
 
-Correct?
+Regards,
 
-/Sean
+Hans
+
+
