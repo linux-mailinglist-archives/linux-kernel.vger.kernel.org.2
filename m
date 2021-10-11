@@ -2,101 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A383428960
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:07:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3A2428961
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:07:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235386AbhJKJJQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 05:09:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53218 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235182AbhJKJJP (ORCPT
+        id S235397AbhJKJJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:09:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43445 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235182AbhJKJJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:09:15 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-231-ej5tqsneN3Wj5_e8EA6vRA-1; Mon, 11 Oct 2021 10:07:13 +0100
-X-MC-Unique: ej5tqsneN3Wj5_e8EA6vRA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 10:07:10 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Mon, 11 Oct 2021 10:07:10 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
-CC:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        "jic23@kernel.org" <jic23@kernel.org>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: RE: [PATCH v4 2/7] kernel.h: Split out container_of() and
- typeof_member() macros
-Thread-Topic: [PATCH v4 2/7] kernel.h: Split out container_of() and
- typeof_member() macros
-Thread-Index: AQHXu5hFfxTcZGJlCEqsZaCSpNxtnavNhYtQ
-Date:   Mon, 11 Oct 2021 09:07:10 +0000
-Message-ID: <33e1be3f6e3b40eeb6f3cd5524e649fe@AcuMS.aculab.com>
-References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
-         <20211007154407.29746-3-andriy.shevchenko@linux.intel.com>
- <86b05929e5aa8fa6e975c59cf523ad84498351b6.camel@perches.com>
-In-Reply-To: <86b05929e5aa8fa6e975c59cf523ad84498351b6.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Oct 2021 05:09:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633943260;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SDNmTw3S09hIeU8Xean1+IG/zrM+6vJwA8pmtg/de7s=;
+        b=ANifVtvDLC56AY8ttB1B4tQKVfAcJgkBVK3lmpRch2oeJLE/ngkpqQu/S7+S/zYKkJwdhp
+        YFIk1a8xj1cdMmsio/KW5ln9mCx4Or8bhYvhubs2UyEjsRT5XijoAtAg4xMaMI1TkOBszG
+        kHCeNJVGhxDcY+qhE/RbcpeeCcKjubM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-hIvBPOWyOviZmm_DpWdpRQ-1; Mon, 11 Oct 2021 05:07:31 -0400
+X-MC-Unique: hIvBPOWyOviZmm_DpWdpRQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DCB3EC1A0;
+        Mon, 11 Oct 2021 09:07:29 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.101])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA5535F707;
+        Mon, 11 Oct 2021 09:07:13 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xie Yongji <xieyongji@bytedance.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Halil Pasic <pasic@linux.ibm.com>, stable@vger.kernel.org,
+        markver@us.ibm.com, Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, stefanha@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        qemu-devel@nongnu.org
+Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
+In-Reply-To: <20211011053921.1198936-1-pasic@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20211011053921.1198936-1-pasic@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 11 Oct 2021 11:07:12 +0200
+Message-ID: <87czocx73z.fsf@redhat.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 07 October 2021 17:28
-...
-> IMO: this new file is missing 2 #include directives.
-...
-> This is not a self-contained header as it requires
-> #include <linux/build_bug.h>
-> which should be at the top of this file.
-...
-> And this requires
-> 
-> #include <linux/err.h>
+On Mon, Oct 11 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-And I bet the biggest problem is the time spent by the compiler
-searching down the -I path for headers.
+> The virtio specification virtio-v1.1-cs01 states: "Transitional devices
+> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
+> been acknowledged by the driver."  This is exactly what QEMU as of 6.1
+> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
+>
+> However, the specification also says: "... the driver MAY read (but MUST
+> NOT write) the device-specific configuration fields to check that it can
+> support the device ..." before setting FEATURES_OK.
+>
+> In that case, any transitional device relying solely on
+> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
+> legacy format.  In particular, this implies that it is in big endian
+> format for big endian guests. This naturally confuses the driver which
+> expects little endian in the modern mode.
+>
+> It is probably a good idea to amend the spec to clarify that
+> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
+> is complete. Before validate callback existed, config space was only
+> read after FEATURES_OK. However, we already have two regressions, so
+> let's address this here as well.
+>
+> The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
+> the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
+> virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
+> with DASD backing, because things simply don't work with the default.
+> See Fixes tags for relevant commits.
+>
+> For QEMU, we can work around the issue by writing out the feature bits
+> with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
+> config op for this. This isn't enough to address all vhost devices since
+> these do not get the features until FEATURES_OK, however it looks like
+> the affected devices actually never handled the endianness for legacy
+> mode correctly, so at least that's not a regression.
+>
+> No devices except virtio net and virtio blk seem to be affected.
+>
+> Long term the right thing to do is to fix the hypervisors.
+>
+> Cc: <stable@vger.kernel.org> #v4.11
+> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
+> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
+> Reported-by: markver@us.ibm.com
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> ---
+>
+> @Connie: I made some more commit message changes to accommodate Michael's
+> requests. I just assumed these will work or you as well and kept your
+> r-b. Please shout at me if it needs to be dropped :)
 
-If you count system calls during a build I suspect that
-failed opens of .h files dominate.
+No need to shout, still looks good to me :)
 
-To see how much this really costs try running a build with
-a (traditional) NFS mounted source tree - where every directory
-name in a filename requires an NFS file handle lookup.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+> ---
+>  drivers/virtio/virtio.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 0a5b54034d4b..236081afe9a2 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
+>  		driver_features_legacy = driver_features;
+>  	}
+>  
+> +	/*
+> +	 * Some devices detect legacy solely via F_VERSION_1. Write
+> +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
+> +	 * these when needed.
+> +	 */
+> +	if (drv->validate && !virtio_legacy_is_little_endian()
+> +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
+> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
+> +		dev->config->finalize_features(dev);
+> +	}
+> +
+>  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
+>  		dev->features = driver_features & device_features;
+>  	else
+>
+> base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
+> -- 
+> 2.25.1
 
