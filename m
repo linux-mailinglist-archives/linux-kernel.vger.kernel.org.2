@@ -2,123 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF8AD428588
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D941B42858E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhJKDVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:21:00 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28911 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233851AbhJKDU6 (ORCPT
+        id S231578AbhJKDYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:24:19 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:38950 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233793AbhJKDYR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:20:58 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSP6H1bpKzbn0h;
-        Mon, 11 Oct 2021 11:14:31 +0800 (CST)
-Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 11:18:57 +0800
-Received: from [10.174.176.245] (10.174.176.245) by
- kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 11:18:56 +0800
-Subject: Re: [PATCH] static_call: fix null-ptr-deref in static_call_del_module
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     <jpoimboe@redhat.com>, <jbaron@akamai.com>, <rostedt@goodmis.org>,
-        <ardb@kernel.org>, <mingo@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20211009074428.1668662-1-wanghai38@huawei.com>
- <20211009100037.GU174703@worktop.programming.kicks-ass.net>
-From:   "wanghai (M)" <wanghai38@huawei.com>
-Message-ID: <eb197332-5a33-49a9-85f3-e95a745c6de9@huawei.com>
-Date:   Mon, 11 Oct 2021 11:18:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Sun, 10 Oct 2021 23:24:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UrJgEv6_1633922535;
+Received: from 30.240.97.150(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrJgEv6_1633922535)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 11 Oct 2021 11:22:16 +0800
+Message-ID: <4da91be0-7370-9ae7-d294-8ddd9859bf58@linux.alibaba.com>
+Date:   Mon, 11 Oct 2021 11:22:14 +0800
 MIME-Version: 1.0
-In-Reply-To: <20211009100037.GU174703@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.245]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm600001.china.huawei.com (7.193.23.3)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:93.0)
+ Gecko/20100101 Thunderbird/93.0
+Subject: Re: [PATCH v4 2/2] mm, thp: bail out early in collapse_file for
+ writeback page
+Content-Language: en-US
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, song@kernel.org,
+        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20211011022241.97072-1-rongwei.wang@linux.alibaba.com>
+ <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
+ <YWOqpgZlqjLhX6oC@casper.infradead.org>
+From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
+In-Reply-To: <YWOqpgZlqjLhX6oC@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-在 2021/10/9 18:00, Peter Zijlstra 写道:
-> On Sat, Oct 09, 2021 at 03:44:28PM +0800, Wang Hai wrote:
->> I got a NULL pointer dereference report when doing fault injection test:
+
+On 10/11/21 11:08 AM, Matthew Wilcox wrote:
+> On Mon, Oct 11, 2021 at 10:22:41AM +0800, Rongwei Wang wrote:
+>> Currently collapse_file does not explicitly check PG_writeback, instead,
+>> page_has_private and try_to_release_page are used to filter writeback
+>> pages. This does not work for xfs with blocksize equal to or larger
+>> than pagesize, because in such case xfs has no page->private.
 >>
->> BUG: kernel NULL pointer dereference, address: 0000000000000009
->> ...
->> RIP: 0010:static_call_del_module+0x7a/0x100
->> ...
->> Call Trace:
->>   static_call_module_notify+0x1e1/0x200
->>   notifier_call_chain_robust+0x6f/0xe0
->>   blocking_notifier_call_chain_robust+0x4e/0x70
->>   load_module+0x21f7/0x2b60
->>   __do_sys_finit_module+0xb0/0xf0
->>   ? __do_sys_finit_module+0xb0/0xf0
->>   __x64_sys_finit_module+0x1a/0x20
->>   do_syscall_64+0x34/0xb0
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>> This makes collapse_file bail out early for writeback page. Otherwise,
+>> xfs end_page_writeback will panic as follows.
 >>
->> When loading a module, if it fails to allocate memory for static
->> calls, it will delete the non-existent mods (mods == 1) in the
->> static_call_module_notify()'s error path.
->>
->> static_call_module_notify
->> 	static_call_add_module
->> 		__static_call_init
->> 			site_mod = kzalloc() // fault injection
->> 	static_call_del_module // access non-existent mods
->>
->> This patch fixes the bug by skipping the operation when the key
->> has no mods.
->>
->> Fixes: a945c8345ec0 ("static_call: Allow early init")
->> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+> 
+> This is the wrong Fixes line.  This same bug exists earlier than this.
+> Your testing may not show it before then, but if you mmap something
+> that isn't an executable, you can provoke it.  It should be:
+> 
+> Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+> 
+> (unless there's something I'm missing?)
+Hi, Matthew
+I forget the Patch #2 fix the bug that is different with Patch #1. I 
+will update this.
+
+Thanks for your remind!
+> 
+> Also, this should surely have a Cc: stable@vger.kernel.org in the
+> tags section?  It's a user-visible bug, we want it backported.
+OK, Thanks!
+> 
+>> Suggested-by: Yang Shi <shy828301@gmail.com>
+>> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+>> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+>> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>> Reviewed-by: Yang Shi <shy828301@gmail.com>
 >> ---
->>   kernel/static_call.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>   mm/khugepaged.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
 >>
->> diff --git a/kernel/static_call.c b/kernel/static_call.c
->> index 43ba0b1e0edb..c3f8ffc5a52f 100644
->> --- a/kernel/static_call.c
->> +++ b/kernel/static_call.c
->> @@ -400,7 +400,7 @@ static void static_call_del_module(struct module *mod)
+>> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+>> index 045cc579f724..48de4e1b0783 100644
+>> --- a/mm/khugepaged.c
+>> +++ b/mm/khugepaged.c
+>> @@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
+>>   				filemap_flush(mapping);
+>>   				result = SCAN_FAIL;
+>>   				goto xa_unlocked;
+>> +			} else if (PageWriteback(page)) {
+>> +				xas_unlock_irq(&xas);
+>> +				result = SCAN_FAIL;
+>> +				goto xa_unlocked;
+>>   			} else if (trylock_page(page)) {
+>>   				get_page(page);
+>>   				xas_unlock_irq(&xas);
+>> @@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
+>>   			goto out_unlock;
+>>   		}
 >>   
->>   	for (site = start; site < stop; site++) {
->>   		key = static_call_key(site);
->> -		if (key == prev_key)
->> +		if (key == prev_key || !static_call_key_has_mods(key))
->>   			continue;
->>   
->>   		prev_key = key;
-> Should you not update prev_key in that case? Also have you looked at
-> jump_label_del_module() which is very similar in construction?
-> .
-Thanks for your guidance, as with jump_label_del_module(),
-the prev_key needs to be updated, can it be fixed like this?
-
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -404,9 +404,9 @@ static void static_call_del_module(struct module *mod)
-                         continue;
-
-                 prev_key = key;
-+               site_mod = static_call_key_next(key);
-
--               for (prev = &key->mods, site_mod = key->mods;
--                    site_mod && site_mod->mod != mod;
-+               for (prev = &key->mods; site_mod && site_mod->mod != mod;
-                      prev = &site_mod->next, site_mod = site_mod->next)
-                         ;
-
--- 
-Wang Hai
-
+>> -		if (!is_shmem && PageDirty(page)) {
+>> +		if (!is_shmem && (PageDirty(page) ||
+>> +				  PageWriteback(page))) {
+>>   			/*
+>>   			 * khugepaged only works on read-only fd, so this
+>>   			 * page is dirty because it hasn't been flushed
+>> -- 
+>> 2.27.0
+>>
