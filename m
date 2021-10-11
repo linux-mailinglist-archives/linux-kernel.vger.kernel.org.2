@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5A4428FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6AC428FC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238419AbhJKOAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:00:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49408 "EHLO mail.kernel.org"
+        id S236903AbhJKOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236986AbhJKN6y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:58:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8365861167;
-        Mon, 11 Oct 2021 13:55:26 +0000 (UTC)
+        id S237773AbhJKN7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A74610E7;
+        Mon, 11 Oct 2021 13:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960527;
-        bh=GsOKpLZbNKyk0oRTidppXS/3zJVsgtJu4Wv25N74IPA=;
+        s=korg; t=1633960530;
+        bh=8QyFRXt1ty+bSfUAH28UXsajU+uxYWy1fQ7W42jAeDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fxtLe+VGgnXJkQghNe3kGhGtefz9Tpd7F5QFhcw+dcj0CbXgBz5SOVdJmf2xhFhVt
-         DwrLmd5Vo6VNj9i1sGsCXEPzmcYdBVEj0+M/NxwD+TpPXQboBSJH0JSDaKVxYh00fZ
-         vX2Z8ARQvy4+LXLrx3Vp4WRcHTFWCrnJeMHnn6T0=
+        b=H8WOYvVb+Nx87O5y7Kzu7fmll/ipxP1sPGPPYZngsmCHqazSWE3vnb9GGhgFwdU/L
+         wvcYrV/Ox4esz3eVtU2yqlsZmSIDnj3JrZSDxQDDjLYyIJrARphW7LWPL8KHXEn3oL
+         IxKvvjcdLx/xjIzKqw2a1+GxvMdsai/xcKohva38=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
+        stable@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 72/83] RISC-V: Include clone3() on rv32
-Date:   Mon, 11 Oct 2021 15:46:32 +0200
-Message-Id: <20211011134510.860697582@linuxfoundation.org>
+Subject: [PATCH 5.10 73/83] powerpc/bpf: Fix BPF_MOD when imm == 1
+Date:   Mon, 11 Oct 2021 15:46:33 +0200
+Message-Id: <20211011134510.897297770@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
 References: <20211011134508.362906295@linuxfoundation.org>
@@ -41,40 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
 
-[ Upstream commit 59a4e0d5511ba61353ea9a4efdb1b86c23ecf134 ]
+[ Upstream commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 ]
 
-As far as I can tell this should be enabled on rv32 as well, I'm not
-sure why it's rv64-only.  checksyscalls is complaining about our lack of
-clone3() on rv32.
+Only ignore the operation if dividing by 1.
 
-Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
+Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Song Liu <songliubraving@fb.com>
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/uapi/asm/unistd.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/net/bpf_jit_comp64.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/include/uapi/asm/unistd.h b/arch/riscv/include/uapi/asm/unistd.h
-index 4b989ae15d59..8062996c2dfd 100644
---- a/arch/riscv/include/uapi/asm/unistd.h
-+++ b/arch/riscv/include/uapi/asm/unistd.h
-@@ -18,9 +18,10 @@
- #ifdef __LP64__
- #define __ARCH_WANT_NEW_STAT
- #define __ARCH_WANT_SET_GET_RLIMIT
--#define __ARCH_WANT_SYS_CLONE3
- #endif /* __LP64__ */
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index 658ca2bab13c..e79f9eae2bc0 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -408,8 +408,14 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
+ 		case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
+ 			if (imm == 0)
+ 				return -EINVAL;
+-			else if (imm == 1)
+-				goto bpf_alu32_trunc;
++			if (imm == 1) {
++				if (BPF_OP(code) == BPF_DIV) {
++					goto bpf_alu32_trunc;
++				} else {
++					EMIT(PPC_RAW_LI(dst_reg, 0));
++					break;
++				}
++			}
  
-+#define __ARCH_WANT_SYS_CLONE3
-+
- #include <asm-generic/unistd.h>
- 
- /*
+ 			PPC_LI32(b2p[TMP_REG_1], imm);
+ 			switch (BPF_CLASS(code)) {
 -- 
 2.33.0
 
