@@ -2,85 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287F642883A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571F542883F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbhJKICM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:02:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233968AbhJKICK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:02:10 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B603C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:00:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=zw5H1GolSJlAJnSqiGkDvpToHiUTjs8D4PJCKCb2xv0=; b=gj03Y6mMO/cTC4AqUK5u9f0iuY
-        IdPuCbi9rkI7dVCc2d51TDP8jm7f8tXB+RqnCe/pGlGwhyEQXjtPOXLKwVN6lSqtN19XWQ4NFrYrz
-        hEcCwRXMOFGFo2+9PdP3FImId7kxM+/9AyyMH92qW++1wvNn7d0vhk1ayVg71P0C8m2qsWAjWlj5F
-        nPt6Zah1QmR5BX3kkxwBGk0JwnoTenIRZTrVphUSchQ2GGNhYROyOvZaLD8zZh0ceEKok8zefmXeL
-        bnayIZcBA5NUi5bNNZ6umU8Vawf7oIqcy6FsOC9qkH+ZN8OmxdlDwSYwQB1hYSUxu2mIx3mjePs11
-        fo+NFOTQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZqEB-008Czv-Hn; Mon, 11 Oct 2021 08:00:07 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@linux.ie>,
+        id S234733AbhJKIEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:04:10 -0400
+Received: from verein.lst.de ([213.95.11.211]:36271 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234753AbhJKIEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:04:02 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CF92A68AFE; Mon, 11 Oct 2021 10:01:35 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 10:01:35 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alex Deucher <alexdeucher@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
         Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org, Sam Ravnborg <sam@ravnborg.org>
-Subject: [PATCH v2] drm/r128: fix build for UML
-Date:   Mon, 11 Oct 2021 01:00:06 -0700
-Message-Id: <20211011080006.31081-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20211011080135.GA11242@lst.de>
+References: <20211008113116.4bdd7b6c@canb.auug.org.au> <Dz13Vv6-f2sFL9b6FSyhY_PlgeJfAnCBSn_SLFYSVRmXevReQOCK7ZD_DRX2DsjHYb45cTPpnTC-aG-tFNU2AapS9qsQZQB_boozWiTz-dI=@emersion.fr> <CADnq5_NUkzK=uOJKn5tiaSSA0i=WPJZFZBSPDne8ooims8JkCQ@mail.gmail.com> <_POw9ikafXoqSFqiOb8SZb_uvRZ4okgD4qrl4EtJ0UBiQTV7pwV3pJIM20eIzmpuFWDeBF9NPD00r72ttX0mZZ0bNeH_J44MoaB-jfjrQSU=@emersion.fr> <20211011073348.GA10672@lst.de> <-6WWj2RSqFheia8o3VKtAiF3bELME9376cYzwiLSY1-E7p9nqfWNqJ5i86Q--BKXa3aolokj8g8nj2tQorzn0LXuD85tD_rXSfE5t1lsvBs=@emersion.fr> <20211011074316.GA10882@lst.de> <XrjqMK5E95uVkQJ-wCjostUwiUD_39UdfIJzQhmnSwZO3aStGYHAxf9QsACe2WZ6vUn08BoW5X5Ya-tazSy0Iwn2jLLrCQDKxlJ6uWXLGaA=@emersion.fr> <20211011075125.GA11098@lst.de> <eOlxebs_u0NKPwzSFL2q48CRHVKEXqiWyoQcHWDsG5qHnhrrphhwczUtgd4bE1o1988Jja35uxf3pWwn2lU8I_5Tmyk1WzeKYQ7yi9qS4sc=@emersion.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eOlxebs_u0NKPwzSFL2q48CRHVKEXqiWyoQcHWDsG5qHnhrrphhwczUtgd4bE1o1988Jja35uxf3pWwn2lU8I_5Tmyk1WzeKYQ7yi9qS4sc=@emersion.fr>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a build error on CONFIG_UML, which does not support (provide)
-wbinvd(). UML can use the generic mb() instead.
+On Mon, Oct 11, 2021 at 07:57:17AM +0000, Simon Ser wrote:
+> No, we can't have a "I_AM_NOT_BROKEN" ioctl for each and every uAPI mis-use.
+> User-space detection has been determined to be the best course of action.
 
-../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
-../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
-  wbinvd();
-  ^~~~~~
+If your API addition breaks userspace, yes you need an add-in.
 
-Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
-Cc: Sam Ravnborg <sam@ravnborg.org>
----
-v2: update Fixes: tag (Johannes)
-    Use simple CONFIG_X86 instead of a more complicated expression. (Sam)
+> I guess I'll just inline these functions in the driver then, if a revert will
+> be NACK'ed by you?
 
- drivers/gpu/drm/r128/ati_pcigart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It will be NACKed, and I will also complain to Linus about any PR containing
+buggy code like this.
 
---- linux-next-20211007.orig/drivers/gpu/drm/r128/ati_pcigart.c
-+++ linux-next-20211007/drivers/gpu/drm/r128/ati_pcigart.c
-@@ -215,7 +215,7 @@ int drm_ati_pcigart_init(struct drm_devi
- 	}
- 	ret = 0;
- 
--#if defined(__i386__) || defined(__x86_64__)
-+#ifdef CONFIG_X86
- 	wbinvd();
- #else
- 	mb();
+With your completely broken change you cement in a mapping of an executable
+name to map to what you consider a "bug" without any way to fix it up.
+
+Which is even worse for a something fast moving like chrome/chromeos which
+will eventually gets its act together and fix things while you'll keep a
+weird feature mismatch just for it around forever.
+
+No wonder our graphics stack is stuch a convoluted buggy mess if you keep
+piling broken workarounds over workarounds instead of sorting things out
+properly.
