@@ -2,73 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1189D428DC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA6A428DC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236901AbhJKN06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236854AbhJKN05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:26:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F9E460F35;
-        Mon, 11 Oct 2021 13:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633958697;
-        bh=LEZbhktiDsSW+AwzStPDh+VwFomRdqomqsmfTAm2/aY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y8cUKprreXse2sf+Od1xtI2PwfWHJEK1o0LhxjXvuXjvtKARsNBuXxxJzowHNZh9I
-         2AKJ1iEMrNNbky/N5gmhCqdWeesxYR4OzP2LMF7JSTYPVy2oqSjx92arAgil2QBZTX
-         b+4UFaSi207sdMjcsVAvxcTZOEv4/QLC8kM/+T0oJqjPr14yCryQgQpx8e0JpHS+oc
-         QjW5U2Tnrd9MOwGz4/8RvcpncnjpOEmGsBwVDR/K4CrfiuwhhVHCJGuWhsslCEI6dY
-         t0zaEzkhF5lHCU3PUpJ4DFtHfwxb+oBeQnYk1xb+BYfDBY1xkFDxDRY26EvwLPjb21
-         jHM2gP0IQZRgw==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, anup@brainfault.org, atish.patra@wdc.com,
-        maz@kernel.org, tglx@linutronix.de, palmer@dabbelt.com
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Rob Herring <robh@kernel.org>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH 2/2] dt-bindings: update riscv plic claim-mask-support property
-Date:   Mon, 11 Oct 2021 21:24:31 +0800
-Message-Id: <20211011132431.2792797-2-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011132431.2792797-1-guoren@kernel.org>
-References: <20211011132431.2792797-1-guoren@kernel.org>
+        id S235280AbhJKN3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:29:10 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48814 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235197AbhJKN3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:29:08 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 1803D1F42741;
+        Mon, 11 Oct 2021 14:27:07 +0100 (BST)
+Date:   Mon, 11 Oct 2021 15:27:03 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mtd: mtdconcat: add suspend lock handling
+Message-ID: <20211011152703.0086d990@collabora.com>
+In-Reply-To: <20211011151501.48cc9289@collabora.com>
+References: <20211011115253.38497-1-sean@geanix.com>
+        <20211011115253.38497-4-sean@geanix.com>
+        <20211011151501.48cc9289@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Mon, 11 Oct 2021 15:15:01 +0200
+Boris Brezillon <boris.brezillon@collabora.com> wrote:
 
-Add claim-mask-support to control riscv,plic don't call
-unnecessary mask/unmask operations.
+> On Mon, 11 Oct 2021 13:52:53 +0200
+> Sean Nyekjaer <sean@geanix.com> wrote:
+> 
+> > Use new suspend lock handling for this special case for concatenated
+> > MTD devices.
+> > 
+> > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> > ---
+> >  drivers/mtd/mtdconcat.c | 11 +++++++++--
+> >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> > index f685a581df48..c497c851481f 100644
+> > --- a/drivers/mtd/mtdconcat.c
+> > +++ b/drivers/mtd/mtdconcat.c
+> > @@ -561,25 +561,32 @@ static void concat_sync(struct mtd_info *mtd)
+> >  
+> >  static int concat_suspend(struct mtd_info *mtd)
+> >  {
+> > +	struct mtd_info *master = mtd_get_master(mtd);
+> >  	struct mtd_concat *concat = CONCAT(mtd);
+> >  	int i, rc = 0;
+> >  
+> >  	for (i = 0; i < concat->num_subdev; i++) {
+> >  		struct mtd_info *subdev = concat->subdev[i];
+> > -		if ((rc = mtd_suspend(subdev)) < 0)
+> > +
+> > +		down_write(&master->master.suspend_lock);
+> > +		if ((rc = __mtd_suspend(subdev)) < 0)
+> >  			return rc;
+> > +		up_write(&master->master.suspend_lock);
+> >  	}
+> >  	return rc;
+> >  }
+> >  
+> >  static void concat_resume(struct mtd_info *mtd)
+> >  {
+> > +	struct mtd_info *master = mtd_get_master(mtd);
+> >  	struct mtd_concat *concat = CONCAT(mtd);
+> >  	int i;
+> >  
+> >  	for (i = 0; i < concat->num_subdev; i++) {
+> >  		struct mtd_info *subdev = concat->subdev[i];
+> > -		mtd_resume(subdev);
+> > +		down_write(&master->master.suspend_lock);
+> > +		__mtd_resume(subdev);
+> > +		up_write(&master->master.suspend_lock);
+> >  	}
+> >  }
+> >    
+> 
+> Why do we need to implement the _suspend/_resume() hooks here? The
+> underlying MTD devices should be suspended at some point (when the
+> class ->suspend() method is called on those device), and there's
+> nothing mtdconcat-specific to do here. Looks like implementing this
+> suspend-all-subdevs loop results in calling mtd->_suspend()/_resume()
+> twice, which is useless. The only issue I see is if the subdevices
+> haven't been registered to the device model, but that happens, I
+> believe we have bigger issues (those devices won't be suspended when
+> mtdconcat is not used).
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Cc: Rob Herring <robh@kernel.org>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Anup Patel <anup@brainfault.org>
-Cc: Atish Patra <atish.patra@wdc.com>
----
- .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml        | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-index 08d5a57ce00f..f32c1792604c 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-@@ -71,6 +71,8 @@ properties:
-     description:
-       Specifies how many external interrupts are supported by this controller.
- 
-+  claim-mask-support: true
-+
- required:
-   - compatible
-   - '#address-cells'
--- 
-2.25.1
-
+Uh, just had a look at mtd_concat_create() callers, and they indeed
+don't register the subdevices, so I guess the suspend-all-subdevs loop
+is needed. I really thought mtdconcat was something more generic
+aggregating already registered devices...
