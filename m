@@ -2,188 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C2A4295FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30704295FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhJKRpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:45:46 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:4157 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhJKRpo (ORCPT
+        id S233163AbhJKRrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:47:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhJKRre (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:45:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1633974224; x=1665510224;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=+F9l5T5x2PMp6M/KDfNyBQ/u3YF2P+eW3/LZuRhLqB0=;
-  b=RH+H42EfcoxmM/kzqPBnHztha3v32H026a34vh/d2W7wo457rDULmDsh
-   zMqma0ne6QA4/Ja0k+SlHeiHJRjS2lzq+KngdFJEEWfM366jhhy4mQCAy
-   m5ASkv3EjluLknsUk19o9/VRApmdgFBQ78bwgBxIdq/hPMtMyqjbmld7N
-   EacFZEJYsXhq6VxuVx/0Y1+rkewEHsCnz7rH7wj5iZcLD2gVv/v+TWa9s
-   FPVai+CIUIyc+078hw6jMq0NgHVLfi04gIDxW3KxJGm17S5TFppdGC1iY
-   kTIDo/avxF8LmSQMIH5A1ybHvdAwfFCWrLHI4QNimjrcvdaROZcwmNXiE
-   A==;
-IronPort-SDR: YJjfVilpcqhcgN6hjFOU8uvyBBQ7GvCHcIhebE8NRgOG1L6Uv96E4TrLrnvook/IBUG7ahoH56
- k5zlWGCEieevyNqqOnpFgADJyAe7E52G5ttIspqsIoJkJjwsehIYqOFcpkLjJxU3s/6lj4lvkr
- AOYhCaBgQm1gUVqHdlcuHsyk4+8lzyRx1easPmdA95V9VtXtYbduksnVeUcOS/RoBktmQo+04U
- nYw5DcJFs+oYNSOQxFJAqAGvn2C38qV8Oj374tICfCRmnd8eMuuzw6ATzbVj8Sh9LH7Qaz7gCZ
- V/pu7PitMXQaQATPAVw/QfFW
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="135122494"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 10:43:43 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.14; Mon, 11 Oct 2021 10:43:42 -0700
-Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 10:43:37 -0700
-Message-ID: <6c97e0771204b492f31b3d003a5fd97d789920ef.camel@microchip.com>
-Subject: Re: [PATCH v4 net-next 10/10] net: dsa: microchip: add support for
- vlan operations
-From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
-        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
-        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
-        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
-Date:   Mon, 11 Oct 2021 23:13:36 +0530
-In-Reply-To: <20211007201705.polwaqgbzff4u3vx@skbuf>
-References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
-         <20211007151200.748944-11-prasanna.vengateshan@microchip.com>
-         <20211007201705.polwaqgbzff4u3vx@skbuf>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-1 
+        Mon, 11 Oct 2021 13:47:34 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E09F7C061570;
+        Mon, 11 Oct 2021 10:45:33 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id y1so11780549plk.10;
+        Mon, 11 Oct 2021 10:45:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rvyIILinTPLJ5IGz12ZGgmNprHQpAgzhPfKruj1QRTQ=;
+        b=JrP1Ohv+cYjrx5Jh/JaA7MwB/9gvY+X1vWCy+bHL75WvvGHkjD9CJL50NjhZAIFjel
+         W5Vd5bG4LFgS3+ZaYLS/EccdCLVOWQmE8zFXKq9L9XxrEpD9Ed9OBzeOpnYV8MWVt5m7
+         RovxeDrvhFMwn64Ldcfe+yGWQSQFgoqFSBOUS5wMtlPZCeU6300+7LyIS5TCDPt/CuPV
+         Z3c+Xrw5aDYy7ivX6Mwnx6Hs79JA+/O1VJyrmjMtNG7vgfCyYpC41G+WQDwijKoIxiLC
+         bgJYonkUnoYeHr/pMqT80xLaX/Zv3upaDGR6IG3ul+W3X++nwnJbyRcvjNMSuijQGKSN
+         dzgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rvyIILinTPLJ5IGz12ZGgmNprHQpAgzhPfKruj1QRTQ=;
+        b=FEZvf4lpkzvj6R8RuVn7fpKv+FzvFsrvRckvyWXYOmF32bhYuMfez2u43ZyoijO/Pj
+         e4Yxdr8YTeSNqL4qpSy5N1T+avqQou0c3KEvmqEMR4hx4JEp3uEvHtOW9ZBcOkHZqZls
+         94kYkNuWv9VCkjNaCyPvUIOeQecwUX3Qyg9NNfIt+Q8VZ7y6em3IRTUaX6i1kuKRZfCR
+         6Yftkjb4UylWeRuuejhrtuzrU5shnmDDLMF3bx6MAq0DTPiKLq7IwGx9ye7qipP5bNnx
+         wYSCZcSl9aYlzDB1Lh3owOSGWp6R6zFCEJFHoITn4gWDALuVBeejmqtTSbGO6xKYvLYS
+         iu8A==
+X-Gm-Message-State: AOAM533+PrRZPunrodmPItJSHx28729ZfkNs2rIWBs1GlGtWLlaYDeny
+        JaOhEKVv3XwYR7tfjoh8nr27LOnTBlda07a0
+X-Google-Smtp-Source: ABdhPJxj6ob2ZpfsVy9xfdI99KTdNW8a1qGjYI7I2upgWYUEMQtqA6qVYw3yibmKLLl8AKLPxR4CHQ==
+X-Received: by 2002:a17:903:2451:b0:13e:f1ef:d819 with SMTP id l17-20020a170903245100b0013ef1efd819mr25566918pls.85.1633974333299;
+        Mon, 11 Oct 2021 10:45:33 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
+        by smtp.gmail.com with ESMTPSA id k22sm8395232pfi.149.2021.10.11.10.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:45:32 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Robert Richter <rric@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 03/22] PCI: thunder: Use SET_PCI_ERROR_RESPONSE() when device not found
+Date:   Mon, 11 Oct 2021 23:15:10 +0530
+Message-Id: <c5f9e140106cd6a38026300a4e5e5e6ad9257fb3.1633972263.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-10-07 at 23:17 +0300, Vladimir Oltean wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
-> content is safe
-> 
-> > +static int lan937x_port_vlan_filtering(struct dsa_switch *ds, int port,
-> > +                                    bool flag,
-> > +                                    struct netlink_ext_ack *extack)
-> > +{
-> > +     struct ksz_device *dev = ds->priv;
-> > +     int ret;
-> > +
-> > +     ret = lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE,
-> > +                       flag);
-> 
-> If you're going to resend anyway, can you please check the entire
-> submission for this pattern, where you can eliminate the intermediary
-> "ret" variable and just return the function call directly?
-> 
->         return lan937x_cfg(...)
-Sure
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the
+CPU read, so most hardware fabricates ~0 data.
 
-> Do you have an explanation for what SW_VLAN_ENABLE does exactly?
-Enabling the VLAN mode and then act as per the VLAN table.
-Do you want me to add this explanation as a comment? or?
+Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
+read occurs.
 
+This helps unify PCI error response checking and make error check
+consistent and easier to find.
 
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+---
+ drivers/pci/controller/pci-thunder-ecam.c | 20 ++++++++++----------
+ drivers/pci/controller/pci-thunder-pem.c  |  2 +-
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-> > 
-> > 
-> > +static int lan937x_port_vlan_del(struct dsa_switch *ds, int port,
-> > +                              const struct switchdev_obj_port_vlan *vlan)
-> > +{
-> > +     bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
-> > +     struct ksz_device *dev = ds->priv;
-> > +     struct lan937x_vlan vlan_entry;
-> > +     u16 pvid;
-> > +     int ret;
-> > +
-> > +     lan937x_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
-> > +     pvid &= 0xFFF;
-> > +
-> > +     ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
-> > +     if (ret < 0) {
-> > +             dev_err(dev->dev, "Failed to get vlan table\n");
-> > +             return ret;
-> > +     }
-> > +     /* clear port fwd map */
-> > +     vlan_entry.fwd_map &= ~BIT(port);
-> > +
-> > +     if (untagged)
-> > +             vlan_entry.untag_prtmap &= ~BIT(port);
-> 
-> This is bogus.
-> The user can add a VLAN entry using:
-> 
-> bridge vlan add dev lan0 vid 100 pvid untagged
-> 
-> and remove it using
-> 
-> bridge vlan del dev lan0 vid 100
-> 
-> so BRIDGE_VLAN_INFO_UNTAGGED is not set on removal.
-> 
-> Considering the fact that it doesn't matter whether the port is
-> egress-tagged or not when it isn't in the fwd_map in the first place,
-> I suggest you completely drop this condition.
-Sure, i agree with you.
-
-> 
-> > +
-> > +     ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
-> > +     if (ret < 0) {
-> > +             dev_err(dev->dev, "Failed to set vlan table\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID, pvid);
-> 
-> What is the point of reading the pvid and writing it back unmodified?
-> Is the AND-ing with 0xFFF supposed to do anything? Because when you
-> write to REG_PORT_DEFAULT_VID, you write it with nothing in the upper
-> bits, so I expect there to be nothing in the upper bits when you read it
-> back either.
-I had a feedback for not to reset the PVID as per the switchdev documentation
-during vlan del. As part of the fix , i just removed PVID reset code alone but
-missed these. Read/write PVID to be completely removed. I had a test case to
-make sure that the PVID is not reset during vlan del. Since this is
-reading/writing back the same values, could not catch them. I will clean up in
-the next patch.
-
-
-> 
-> > +     if (ret < 0) {
-> > +             dev_err(dev->dev, "Failed to set pvid\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> 
-> Also, consider the following set of commands:
-> 
-Step (0)
-> ip link add br0 type bridge vlan_filtering 1
-> ip link set lan0 master br0
-> bridge vlan add dev lan0 vid 100 pvid untagged
-Step (1)
-> bridge vlan del dev lan0 vid 100
-Step (2)
-> ip link set br0 type bridge vlan_filtering 0
-> 
-> The expectation is that the switch, being VLAN-unaware as it is currently
-> configured, receives and sends any packet regardless of VLAN ID.
-> If you put an IP on br0 in this state, are you able to ping an outside host?
-
-I have numbered the commands above.
-Results are,
-Before Step (0). Am able to ping outside.
-After Step (0). Am not able to ping outside because the vlan table is set
-After Step (1). Am not able to ping outside
-After Step (2). Am able to ping outside because of vlan unaware mode.
+diff --git a/drivers/pci/controller/pci-thunder-ecam.c b/drivers/pci/controller/pci-thunder-ecam.c
+index ffd84656544f..4c57ad2aa9aa 100644
+--- a/drivers/pci/controller/pci-thunder-ecam.c
++++ b/drivers/pci/controller/pci-thunder-ecam.c
+@@ -42,7 +42,7 @@ static int handle_ea_bar(u32 e0, int bar, struct pci_bus *bus,
+ 	if (where_a == 0x4) {
+ 		addr = bus->ops->map_bus(bus, devfn, bar); /* BAR 0 */
+ 		if (!addr) {
+-			*val = ~0;
++			SET_PCI_ERROR_RESPONSE(val);
+ 			return PCIBIOS_DEVICE_NOT_FOUND;
+ 		}
+ 		v = readl(addr);
+@@ -57,7 +57,7 @@ static int handle_ea_bar(u32 e0, int bar, struct pci_bus *bus,
+ 
+ 		addr = bus->ops->map_bus(bus, devfn, bar); /* BAR 0 */
+ 		if (!addr) {
+-			*val = ~0;
++			SET_PCI_ERROR_RESPONSE(val);
+ 			return PCIBIOS_DEVICE_NOT_FOUND;
+ 		}
+ 		barl_orig = readl(addr + 0);
+@@ -73,7 +73,7 @@ static int handle_ea_bar(u32 e0, int bar, struct pci_bus *bus,
+ 	if (where_a == 0xc) {
+ 		addr = bus->ops->map_bus(bus, devfn, bar + 4); /* BAR 1 */
+ 		if (!addr) {
+-			*val = ~0;
++			SET_PCI_ERROR_RESPONSE(val);
+ 			return PCIBIOS_DEVICE_NOT_FOUND;
+ 		}
+ 		v = readl(addr); /* EA entry-3. Base-H */
+@@ -105,7 +105,7 @@ static int thunder_ecam_p2_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, where_a);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -136,7 +136,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, 0xc);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -147,7 +147,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, 8);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -177,7 +177,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, 0);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -197,7 +197,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 		addr = bus->ops->map_bus(bus, devfn, 0x70);
+ 		if (!addr) {
+-			*val = ~0;
++			SET_PCI_ERROR_RESPONSE(val);
+ 			return PCIBIOS_DEVICE_NOT_FOUND;
+ 		}
+ 		/* E_CAP */
+@@ -212,7 +212,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 		if (where_a == 0xb0) {
+ 			addr = bus->ops->map_bus(bus, devfn, where_a);
+ 			if (!addr) {
+-				*val = ~0;
++				SET_PCI_ERROR_RESPONSE(val);
+ 				return PCIBIOS_DEVICE_NOT_FOUND;
+ 			}
+ 			v = readl(addr);
+@@ -269,7 +269,7 @@ static int thunder_ecam_config_read(struct pci_bus *bus, unsigned int devfn,
+ 		if (where_a == 0x70) {
+ 			addr = bus->ops->map_bus(bus, devfn, where_a);
+ 			if (!addr) {
+-				*val = ~0;
++				SET_PCI_ERROR_RESPONSE(val);
+ 				return PCIBIOS_DEVICE_NOT_FOUND;
+ 			}
+ 			v = readl(addr);
+diff --git a/drivers/pci/controller/pci-thunder-pem.c b/drivers/pci/controller/pci-thunder-pem.c
+index 0660b9da204f..a463a1b61f23 100644
+--- a/drivers/pci/controller/pci-thunder-pem.c
++++ b/drivers/pci/controller/pci-thunder-pem.c
+@@ -42,7 +42,7 @@ static int thunder_pem_bridge_read(struct pci_bus *bus, unsigned int devfn,
+ 	struct thunder_pem_pci *pem_pci = (struct thunder_pem_pci *)cfg->priv;
+ 
+ 	if (devfn != 0 || where >= 2048) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+-- 
+2.25.1
 
