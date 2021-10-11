@@ -2,79 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7A74293DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030664293E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239110AbhJKP5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:57:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:35654 "EHLO foss.arm.com"
+        id S239210AbhJKP5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:57:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231766AbhJKP5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:57:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE100ED1;
-        Mon, 11 Oct 2021 08:55:42 -0700 (PDT)
-Received: from [10.1.31.146] (e127744.cambridge.arm.com [10.1.31.146])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F20D23F66F;
-        Mon, 11 Oct 2021 08:55:39 -0700 (PDT)
-Subject: Re: [PATCH 4/5] perf arm-spe: Implement find_snapshot callback
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        James Clark <James.Clark@arm.com>
-References: <20210916154635.1525-1-german.gomez@arm.com>
- <20210916154635.1525-4-german.gomez@arm.com>
- <20210923135016.GG400258@leoy-ThinkPad-X240s>
- <20210923144048.GB603008@leoy-ThinkPad-X240s>
- <1c6a3a73-27dc-6673-7fe7-34bc7fcb0a68@arm.com>
- <20211004122724.GC174271@leoy-ThinkPad-X240s>
- <6b092f13-832f-5d1d-a504-aea96c81bf17@arm.com>
- <20211006095124.GC14400@leoy-ThinkPad-X240s>
-From:   German Gomez <german.gomez@arm.com>
-Message-ID: <377b54ef-b9c0-9cfc-ef0c-0187d7c493cc@arm.com>
-Date:   Mon, 11 Oct 2021 16:55:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239142AbhJKP5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 11:57:48 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C0AA60E98;
+        Mon, 11 Oct 2021 15:55:48 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=hot-poop.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mZxeU-00G454-1s; Mon, 11 Oct 2021 16:55:46 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     james.morse@arm.com, linux-arm-kernel@lists.infradead.org,
+        will@kernel.org, corbet@lwn.net,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, suzuki.poulose@arm.com,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH] Documentation: admin-guide: Document side effects when pKVM is enabled
+Date:   Mon, 11 Oct 2021 16:55:42 +0100
+Message-Id: <163396773657.855753.9209725646924595792.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211011153835.291147-1-alexandru.elisei@arm.com>
+References: <20211011153835.291147-1-alexandru.elisei@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20211006095124.GC14400@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: james.morse@arm.com, linux-arm-kernel@lists.infradead.org, will@kernel.org, corbet@lwn.net, alexandru.elisei@arm.com, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, suzuki.poulose@arm.com, linux-doc@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+On Mon, 11 Oct 2021 16:38:35 +0100, Alexandru Elisei wrote:
+> Recent changes to KVM for arm64 has made it impossible for the host to
+> hibernate or use kexec when protected mode is enabled via the kernel
+> command line.
+> 
+> There are people who rely on kexec (for example, developers who use kexec
+> as a quick way to test a new kernel), let's document this change in
+> behaviour, so it doesn't catch them by surprise and we have a place to
+> point people to if it does.
 
-On 06/10/2021 10:51, Leo Yan wrote:
-> On Wed, Oct 06, 2021 at 10:35:20AM +0100, German Gomez wrote:
->
-> [...]
->
->>> So simply say, I think the head pointer monotonically increasing is
->>> the right thing to do in Arm SPE driver.
->> I will talk to James about how we can proceed on this.
-> Thanks!
+Applied to next, thanks!
 
-I took this offline with James and, though it looks possible to patch
-the SPE driver to have a monotonically increasing head pointer in order
-to simplify the handling in the perf tool, it could be a breaking change
-for users of the perf_event_open syscall that currently rely on the way
-it works now.
+[1/1] Documentation: admin-guide: Document side effects when pKVM is enabled
+      commit: 53e8ce137f7b34bd7a54429d18e0d0e5f56f54e8
 
-An alternative way we considered to simplify the patch is to change the
-logic inside the find_snapshot callback so that it records the entire
-contents of the aux buffer every time.
+Cheers,
 
-What do you think?
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
 
-Many thanks,
-German
+
