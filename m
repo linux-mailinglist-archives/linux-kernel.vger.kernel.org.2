@@ -2,320 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4243A428EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4F7428EE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237382AbhJKNvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:51:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42795 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237289AbhJKNuf (ORCPT
+        id S237179AbhJKNwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:52:44 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:33402 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237326AbhJKNvb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:50:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633960113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uXHfjscGcvZFNxsglQ5OlKnQlpRW8PJ8T4iIDGaTsAE=;
-        b=axJ7GmFkdBtnNIHNgWkhXsZOaGiUrXS4h4Gz8FFXXzVcmCAwIuaZKrjMpD3ZuPQxKxg1Sh
-        /c6KTCTPrDjrTrqN1qaSnNd0B/o7Ixr4ez3p9RjR28Jv299NA/GX4fINSb6zsKRBLYhHRn
-        eIQf+UWHaEr5PEZ4MH27CCDqRIbPM4A=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-2nmHJbVXOUyEudxHTfvpVQ-1; Mon, 11 Oct 2021 09:48:32 -0400
-X-MC-Unique: 2nmHJbVXOUyEudxHTfvpVQ-1
-Received: by mail-ed1-f70.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so6355611edy.22
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:48:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uXHfjscGcvZFNxsglQ5OlKnQlpRW8PJ8T4iIDGaTsAE=;
-        b=VlnAtK48/uXNQFBCnaxdbDarWDAWZkani4o6G2g8vPZLcVbBP+87AuYD7MFvnmu47N
-         5IOwUv/CXCbqXL92LzMzSU/tuLdKJPnxXX6aJQrEaxVi+UN/pnwgB//Omc05unC7q1lR
-         R9OyDCi259COKpgeSpk4wwiQuKBgadmgkoReRnBZLPIkVTx7IP4qgEY5ZvKnuOBlfNaO
-         QABkhX+r5NTUHbJ9HzynV60ntPiJIHM2L4PpOwUsCtqW5Ta+AhXkr+fCEkVy0NU2cyzh
-         SKRskOsjxlzmk0axgwJfBJShFmkZYpNJCft+71a/TmdOXHqkle7A+AM7XxM4vBjwY0OW
-         w2TA==
-X-Gm-Message-State: AOAM530LaFoTKVbLRIs7mk/7TNMoMdBEgp2tO/A9lzC4zaSyUm1rK5AA
-        8WblWRy+fFabUuRGqhwo9xD305+ZfAbjH08hbX6Pw86Qehww2KNqok5s0Mw4cFBlcSY6LczCXym
-        Dkq+usgsQTKsMXK8PZ22EYfKk
-X-Received: by 2002:a17:906:7848:: with SMTP id p8mr25849743ejm.212.1633960109483;
-        Mon, 11 Oct 2021 06:48:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDMIfO5Q2xjFaF7/r+z4xwwVPMAYIs+QMYrxeijfg/2kao39jda1nsyIawptV7zv6WXizG/Q==
-X-Received: by 2002:a17:906:7848:: with SMTP id p8mr25849707ejm.212.1633960109175;
-        Mon, 11 Oct 2021 06:48:29 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id o3sm3541144eju.123.2021.10.11.06.48.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 06:48:28 -0700 (PDT)
-Subject: Re: [PATCH 1/2] platform/x86: amd-pmc: Add alternative acpi id for
- PMC controller
-To:     Sachi King <nakato@nakato.io>, mgross@linux.intel.com,
-        rafael@kernel.org, lenb@kernel.org, Sanket.Goswami@amd.com,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        "Limonciello, Mario" <mario.limonciello@amd.com>
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org, stable@vger.kernel.org
-References: <20211002041840.2058647-1-nakato@nakato.io>
- <42e9a7d0-536f-bd15-0c4a-071d09195bc2@amd.com>
- <fa761e91-0aa7-d18d-a1ad-17325f419c4c@amd.com> <5824654.09FbfXajTC@youmu>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <bb392381-541b-e6db-1b4b-2915118d5314@redhat.com>
-Date:   Mon, 11 Oct 2021 15:48:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 11 Oct 2021 09:51:31 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BDStlW023196;
+        Mon, 11 Oct 2021 13:49:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=pqSgaVjpuEQ4qshdU27k+6pFpxyYI10hDjm0N+L+xr8=;
+ b=uMxS1DnYKELsYyJTiNQAJopsxRIg3zTGnKhkySOYsMSAfrrue4AvdRp20nQVKdIvsyLU
+ bLELSYLHBoO9BRcRdDvUkW32FXZ+LOeuxOqLWfFqxghfgqprMJI2a09KY4BA3GQtPLfS
+ f0UsVyC7TvdcmWUQSadDTsY5jfBXeL0jdNUlzpBNL16OM62oll5HDkAfxQjyQLvOFABC
+ Xeb9QhjJKE527xIUqMOtTV8QdRVHNi9ttT8ZAYs3BYwj2mxfu72j9sY3xvxAS6jKHcbq
+ d9dxxDPVppVt8D61GF4Oaa9rm5S/yFeaPzV2UWl6isvB3Jr6AFX123zIvCsfxTQRgkOn vw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bkwyumcmg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 13:49:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19BDif2s083714;
+        Mon, 11 Oct 2021 13:49:27 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
+        by aserp3020.oracle.com with ESMTP id 3bmadw99h6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 13:49:26 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OC/gWDVNJ/yboSCyWI/4MBi9wm0hQ6nGbYKglRgQpb9WN6FjAwhMNDAncNWr6c8HddAksyc/FhM8ZYesc1Gh/mb13QpbH74BAQVaPOK1WLQ0oLqw4cpFLT3T7b4OCQVI1xMrZeKJYdQWBMGMcAZdLjq3xKhTixrtWI5mYbm/MBrI4AR7u3P9AxYR7TM93f5hO50gR5afZb/FijCSpM5OS1CPtTMwCByqYPRc3VWK/w1BclqQn7Ljy47vosTf4ocfdYObPhxh+Y/M6uuXHiLXtP7/K4ITVYNbWL5n1cqx5rIjO1M1EAKiZta+ZyknTBosl/b1OgxcP7Is6hAH8EIuqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pqSgaVjpuEQ4qshdU27k+6pFpxyYI10hDjm0N+L+xr8=;
+ b=OBNm+G4yuw+dwCNRxkMjZx0IBtfubdRqWg+M97uKdR+EfNWQTqY6toy9av7k91MuHNNC/cyx++IEUYFQ+p/UJrSCPzMlnJILeyHDCmosl8lo7zxluVJWpmkrTft6ky6EcXoPwG+3TPHTYRg86nnv/M5XvuUYluz6znYgvfV2m5jJ8UFZA1ApaW8ANtHXQY5C9Cupk3ivt5tyGWV9wZOszMZ1DQvRt30qo7qfceSAjzDPmOn9uaiilCzXO2fj/MAqBxtbi5IK4CmRK5EP/dBkxMpTFzOmhjjt6+B9xq3esfK6BDvsaZHTFQ4pPiIxDQl6X7KZhpdCdwZyy3cOuPh2Cw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pqSgaVjpuEQ4qshdU27k+6pFpxyYI10hDjm0N+L+xr8=;
+ b=e0dCrk1cjG1mTMvqDNAJavr4qXUxAFtajk+DTQGyPigoB3sEeYp5lvtU7MNPi1ocEV2+8aT15F+5xl8SKPTzSoZTDEAUQbD0vKP69Yzcz7B8F0+bPkpgFR1sxMwEVgQP/5xYAaeBPCCoTvmB3Wq7rYJa1qA3LAYzwkyvA6DKIQY=
+Authentication-Results: lists.01.org; dkim=none (message not signed)
+ header.d=none;lists.01.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1293.namprd10.prod.outlook.com
+ (2603:10b6:300:21::10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Mon, 11 Oct
+ 2021 13:49:25 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::d409:11b5:5eb2:6be9%5]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
+ 13:49:25 +0000
+Date:   Mon, 11 Oct 2021 16:49:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     kbuild@lists.01.org, Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [ti:ti-rt-linux-5.10.y 4405/9998]
+ drivers/pci/endpoint/pci-epf-core.c:169 pci_epf_add_vepf() warn:
+ inconsistent returns '&epf_pf->lock'.
+Message-ID: <202110112106.CuCZQB5D-lkp@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-ClientProxiedBy: JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-In-Reply-To: <5824654.09FbfXajTC@youmu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from kadam (62.8.83.99) by JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Mon, 11 Oct 2021 13:49:21 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 51d47708-a1dd-47f3-b92a-08d98cbdefa8
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1293:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1293068ACAE5D568832817E68EB59@MWHPR10MB1293.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:67;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: a7R6Dt2uyTNuo6odRX8AtXymT7bQi/Porn5o7YVhE04bbgVwJZfjLZdAPR1Y1d1vB0V/mFyTf9z9dDLeQHgmVcw6BZKVquFBNgZeLC4fjhKaWI07utiUjQenUJlPWGm7gcmi4Yy51AidjpUbIcos4njkm8VvBzoz9EFeKBHKPGd2bjAn35POdpVVzmzNWXwdA9uV9CvCoo05wH6vvFJckntj855USaKy5xFWiwPvBkKNKU1YgYygZ+jZcRzbhlOJmDj7Ii3UBGk2/ckNsX4iK+GY0S8C78XnYdtTbRqrdFh4CowUusl5nmyqYGTljgG6DDnu3lV+VePBSd67cspdCG5rDywcwCTUJqHvRo/lR4MbBqGEjnDfXH51ImDaQfvib6HSlkkuyD1CN+cTSgfuSqdR93MswNtvbX2gBX3UNhxZL9o83YLeEdBMbrPfleh9ulHlBOEycQvxqfcWba5cgxcIv9Yy6JnoPI7AA7kKUDtxcm/JajJu7zV/ZwmfczTd33nDLm/050dg/t0ktJ891BiW8M0XmUL0aQGVg1PBOt69KHghlfh+OIB5DtVaDzqqWSIVLRIchV/SWGbys6MVSTToVGbNeVPyD58S+zXet7AYgmzUPYwrQToPxb7/dYA37PSEtIRHR09rd8+pqUViNAikPCZdc94pdkF0PkX2g8Of2iswr46y4rYG/pF9IXHwXC2BakTYcFAE265bO+38PO2/Htt4So5tHoaUH37YO8VicnSwguwGVlBoRXOLMtNDB1VAwnsBkjvOtMTqk4DfVnejNUWX05NTR1KcRhaQZno=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(1076003)(6486002)(36756003)(8676002)(26005)(86362001)(186003)(8936002)(52116002)(966005)(6496006)(508600001)(66946007)(4326008)(66476007)(66556008)(316002)(9686003)(6666004)(6916009)(44832011)(956004)(2906002)(38350700002)(38100700002)(5660300002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qmQoowxni8CJSjdvzozYArAnsWKgFNFtlg44a9L8ZG2s9kzgeyzuQmXCNJ0k?=
+ =?us-ascii?Q?mpQsgMHIJbt0wNFWrpRM507D1PxX+YlV/wKslmIHC5ZneHtKvzSa3Sjz3Pl4?=
+ =?us-ascii?Q?8f5411hrx1FLBKC7VyyPfY9c0ORh/ixtzOvQvUKMkZgfVnmQO9bt4rcoytlQ?=
+ =?us-ascii?Q?AJNYSZx8N5WWKyd/Jus+uIigoZ0FUhfSPE6PxqpzO9WMB7DCm3wWKE/TVnNm?=
+ =?us-ascii?Q?n6zfY6K79EvAo3/AckhpaTgYw0EoNjc4+GNtlKhBwdav3TjCnPVMGdPUacJN?=
+ =?us-ascii?Q?ftB4lzbB5JlFefHMP4rU82g7RTd9AKprUriF4VvEmPeXX8v4luB/hnObt1TB?=
+ =?us-ascii?Q?HX7HVJ/gr4yiFzTi+R17Gqd9CT7rb0HTs82AR0vr4bhJGt3a0Woj4qhY0xou?=
+ =?us-ascii?Q?2yH8si15QYISbavAhQcGFRs2Z8WqK7UdMLyetgW6vPnHxv9pCpNm/0UIJsep?=
+ =?us-ascii?Q?X8W9gZlqEQMviKjRSofdrl8ZgIrjB1yEcUi45uTiauIlJ6SeCYRUKnAbWofv?=
+ =?us-ascii?Q?X3eDc+xDuTIWbhh00MpmMxGJ19h0c3yjbU12hP+8LNcNYZ09m6HI5pN5jWzu?=
+ =?us-ascii?Q?QFdWBN60YgBSjnyk9wLFXflZo+mDPssQaPkkQA1qXG/BpNW/PebHTNCtuZQR?=
+ =?us-ascii?Q?+LX8+P0Fx65WkAXTwN76GwxmygMp11QtuWGLTrYI8e4/Zlvrk1jXvelPFH6E?=
+ =?us-ascii?Q?FqsjreBeJBYs610yXk3Xq8UVi+O0vTxgimU3WCgfzB3II12XS8cSga15EVjp?=
+ =?us-ascii?Q?o8qVqfFyrsW+2HnSBxMCnjTx0fBlBYi4XKjl57ky37NfU5gXNm30m7171I81?=
+ =?us-ascii?Q?5mkeUszU779vn1tBWG96UDNAJzqDIMlQJOiedfntulKoAhWHn1UVJcV+8A8z?=
+ =?us-ascii?Q?Xv8QykZ8FKF8qVZybe2DsHyjIsTaACfm1eG/d8pDP56/wxUOrUsVMdhUhYMS?=
+ =?us-ascii?Q?wn0DxfTQnKGq5jreKmoPa7AA1sstcfVg1GBYGJ+A+HX2lCyoJBEQw3eu9OaQ?=
+ =?us-ascii?Q?n4xiFDpuuSs+oW/yUomfZB92pFS40MvR1PUJxfAU4Zg6XloU9/4qnuHRHlRU?=
+ =?us-ascii?Q?X2zvrSthFIgXnGSkFwhv+GBuuqsqJpGLrRjd62yKAyd6t15wPnVEANpmCoZs?=
+ =?us-ascii?Q?Ughh4AqvNr2UiovPVV8yTdlFgThNnbfk9VrL6QvlWkN5PWYlpepR2YLysJI/?=
+ =?us-ascii?Q?Ip28y4I9RFAczvdlBPfZxFNgL75HbIMKb23ewWNd8w3DnDeo7l/nvHplSqWl?=
+ =?us-ascii?Q?Pnxaas5LFiVAabIyiLi/zjTtC3oTwYlMBqIiQ/jjF+8AGewoMDydNQjd7V6Y?=
+ =?us-ascii?Q?W/NZ2ujSjhWX+T3nkViJUwUx?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51d47708-a1dd-47f3-b92a-08d98cbdefa8
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 13:49:24.9594
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y3bv29ejrZe2EwggSJuuJZkG1QkRQprxzXr6i7HL1wZs5/nLlsQGV9yxEAY06qmTMpV9zHuZxFcTZlWWRNLjvLKsYpreDw2FlxlI/zJ7JOY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1293
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10133 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110110080
+X-Proofpoint-ORIG-GUID: F6lIlnPh9scFFUuTqbJgFC33jjn4NY1k
+X-Proofpoint-GUID: F6lIlnPh9scFFUuTqbJgFC33jjn4NY1k
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+tree:   git://git.ti.com/ti-linux-kernel/ti-linux-kernel.git ti-rt-linux-5.10.y
+head:   7ff055c5f01acc96255948cdd632c72fd78a1f72
+commit: 0cf43e35b1743dc43574089fcf3ff71d8cd2ae39 [4405/9998] PCI: endpoint: Add support to add virtual function in endpoint core
+config: x86_64-randconfig-m001-20211011 (attached as .config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
 
-On 10/9/21 4:05 AM, Sachi King wrote:
-> On Saturday, 9 October 2021 06:01:53 AEDT Limonciello, Mario wrote:
->> On 10/8/2021 10:57, Limonciello, Mario wrote:
->>> On 10/8/2021 07:19, Sachi King wrote:
->>>> On Friday, 8 October 2021 21:27:15 AEDT Shyam Sundar S K wrote:
->>>>>
->>>>> On 10/8/2021 1:30 AM, Limonciello, Mario wrote:
->>>>>>
->>>>>> On 10/5/2021 00:16, Shyam Sundar S K wrote:
->>>>>>>
->>>>>>> On 10/2/2021 9:48 AM, Sachi King wrote:
->>>>>>>> The Surface Laptop 4 AMD has used the AMD0005 to identify this
->>>>>>>> controller instead of using the appropriate ACPI ID AMDI0005.  
->>>>>>>> Include
->>>>>>>> AMD0005 in the acpi id list.
->>>>>>>
->>>>>>> Can you provide an ACPI dump and output of 'cat /sys/power/mem_sleep'
->>>>>>
->>>>>> I had a look through the acpidump listed there and it seems like the 
->>>>>> PEP
->>>>>> device is filled with a lot of NO-OP type of code.  This means the LPS0
->>>>>> patch really isn't "needed", but still may be a good idea to include 
->>>>>> for
->>>>>> completeness in case there ends up being a design based upon this that
->>>>>> does need it.
->>>>>>
->>>>>> As for this one (the amd-pmc patch) how are things working with it? 
->>>>>> Have
->>>>>> you checked power consumption
->>>>
->>>> Using my rather limited plug-in power meter I measure 1w with this patch,
->>>> and I've never seen the meter go below this reading, so this may be over
->>>> reporting.  Without this patch however the device bounces around 
->>>> 2.2-2.5w.
->>>> The device consumes 6w with the display off.
->>>>
->>>> I have not left the device for long periods of time to see what the 
->>>> battery
->>>> consumption is over a period of time, however this patch is being carried
->>>> in linux-surface in advance and one users suspend power consumption is
->>>> looking good.  They have reported 2 hours of suspend without a noticable
->>>> power drop from the battery indicator.
->>>>
->>>>
->>>
->>> Thanks, in that case this is certainly part of what you'll need and it 
->>> sounds like you're on the right train as it pertains to the wakeup sources.
->>>
->>> For both patches in this series:
->>>
->>> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
->>>
->>>>
->>>>>> and verified that the amd_pmc debugfs
->>>>>> statistics are increasing?
->>>>
->>>> s0ix_stats included following smu_fw_info below.
->>>>
->>>>>> Is the system able to resume from s2idle?
->>>>
->>>> It does, however additional patches are required to do so without an 
->>>> external
->>>> device such as a keyboard.  The power button, lid, and power plug trigger
->>>> events via pinctrl-amd.  Keyboard and trackpad go via the Surface EC and
->>>> require the surface_* drivers, which do not have wakeup support.
->>>>
->>>> 1. The AMDI0031 pinctrl-amd device is setup on Interrupt 7, however 
->>>> the APIC
->>>> table does not define an interrupt source override.  Right now I'm not 
->>>> sure
->>>> how approach producing a quirk for this.  linux-surface is carrying 
->>>> the hack
->>>> described in
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flkml%2F87lf8ddjqx.ffs%40nanos.tec.linutronix.de%2F&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=5dWwpgh%2FRIA%2F57UpY5h0l9Snzem%2BNpirgE6ujEHO7aY%3D&amp;reserved=0 
->>>>
->>>> Also available here:
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Flinux-surface%2Fkernel%2Fcommit%2F25baf27d6d76f068ab8e7cb7a5be33218ac9bd6b&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=HPZfqPoVUJT8w%2FRD7UaVjegT0iRLDlRkXfOwMx5HS8Q%3D&amp;reserved=0 
->>>>
->>>>
->>>> 2. pinctrl: amd: Handle wake-up interrupt
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Ftorvalds%2Fc%2Facd47b9f28e5&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=gUtHcFKolVIZeHtIIJuT3BkruQbjq8NAOU5504%2F02Mg%3D&amp;reserved=0 
->>>>
->>>> Without this patch the device would suspend, but any interrupt via
->>>> pinctrl-amd would result in a failed resume, which is every wakeup
->>>> souce I know of on this device.
->>>
->>> Yes that was the same experience a number of us had on other AMD based 
->>> platforms as well which led to this patch being submitted.
->>>
->>>>
->>>> 3. pinctrl: amd: disable and mask interrupts on probe
->>>> Once I worked out that I needed the patch in 2 above the device gets a 
->>>> lot
->>>> of spurious wakeups, largely because Surface devices have a second 
->>>> embedded
->>>> controller that wants to wake the device on all sorts of events.  We 
->>>> don't
->>>> have support for that, and there were a number of interrupts not 
->>>> configured
->>>> by linux that were set enabled, unmasked, and wake in s0i3 on boot.
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Flinux-gpio%2F20211001161714.2053597-1-nakato%40nakato.io%2FT%2F%23t&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=mwJgcXBY9zdlTG671KssViHdSwHfq6DCJ2fpeLbRbR4%3D&amp;reserved=0 
->>>>
->>>
->>> We'll have to take a look at this to make sure it's not causing a 
->>> regression for the other platforms the original patch helped.  If it 
->>> does, then we'll need some sort of other messaging to accomplish this 
->>> for the surface devices.
->>>
->>>>
->>>> These three are enough to be able to wake the device via a lid event, 
->>>> or by
->>>> changing the state of the power cable.
->>>>
->>>> 4. The power button requires another pair of patches.  These are only 
->>>> in the
->>>> linux-surface kernel as qzed would like to run them there for a couple of
->>>> releases before we propose them upstream.  These patches change the 
->>>> method
->>>> used to determine if we should load surfacepro3-button or 
->>>> soc-button-array.
->>>> The AMD variant Surface Laptops were loading surfacepro3-button instead
->>>> soc-button-array.  They can be seen:
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Flinux-surface%2Fkernel%2Fcommit%2F1927c0b30e5cd95a566a23b6926472bc2be54f42&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=PGWON0kCpByJtsO1rS9wrYr7oH86V%2F8M%2FYLmUoFjBhM%3D&amp;reserved=0 
->>>>
->>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgithub.com%2Flinux-surface%2Fkernel%2Fcommit%2Fac1a977392880456f61e830a95e368cad7a0fa3f&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=B%2BBW3M4L5TLCq3Fc6oB0KHaC9A%2FQp3uwkB2Jby%2FdDo8%3D&amp;reserved=0 
->>>>
->>>>
->>>>
->>>>> Echo-ing to what Mario said, I am also equally interested in knowing the
->>>>> the surface devices are able to reach S2Idle.
->>>>>
->>>>> Spefically can you check if your tree has this commit?
->>>>> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgit.kernel.org%2Fpub%2Fscm%2Flinux%2Fkernel%2Fgit%2Fpdx86%2Fplatform-drivers-x86.git%2Fcommit%2F%3Fh%3Dfor-next%26id%3D9cfe02023cf67a36c2dfb05d1ea3eb79811a8720&amp;data=04%7C01%7Cmario.limonciello%40amd.com%7Cb95422d699a2496a56f608d98a55e888%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637692923846585025%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=XdRCk8klBuDRCk7UWL%2Ft5wiupVVgdCWBqFmaYgGK%2BFU%3D&amp;reserved=0 
->>>>>
->>>>
->>>> My tree currently does not have that one.  I've applied it.
->>>
->>> You should look through all the other amd-pmc patches that have happened 
->>> as well in linux-next, it's very likely some others will make sense too 
->>> for you to be using and testing with.
->>>
->>>>
->>>>> this would tell the last s0i3 status, whether it was successful or not.
->>>>>
->>>>> cat /sys/kernel/debug/amd_pmc/smu_fw_info
->>>>
->>>>
->>>> === SMU Statistics ===
->>>> Table Version: 3
->>>> Hint Count: 1
->>>> Last S0i3 Status: Success
->>>> Time (in us) to S0i3: 102543
->>>> Time (in us) in S0i3: 10790466
->>>>
->>>> === Active time (in us) ===
->>>> DISPLAY  : 0
->>>> CPU      : 39737
->>>> GFX      : 0
->>>> VDD      : 39732
->>>> ACP      : 0
->>>> VCN      : 0
->>>> DF       : 18854
->>>> USB0     : 3790
->>>> USB1     : 2647
->>>>
->>>>>> /sys/kernel/debug/amd_pmc/s0ix_stats
->>>>
->>>> After two seperate suspends:
->>>>
->>>> === S0ix statistics ===
->>>> S0ix Entry Time: 19022953504
->>>> S0ix Exit Time: 19485830941
->>>> Residency Time: 9643279
->>>>
->>>> === S0ix statistics ===
->>>> S0ix Entry Time: 21091709805
->>>> S0ix Exit Time: 21586928064
->>>> Residency Time: 10317047
->>>>
->>>>
->>>
->>> Yeah these look good, thanks.
->>>
->>>>>> Does pinctrl-amd load on this system? It seems to me that the power
->>>>>> button GPIO doesn't get used like normally on "regular" UEFI based AMD
->>>>>> systems.  I do see MSHW0040 so this is probably supported by
->>>>>> surfacepro3-button and that will probably service all the important 
->>>>>> events.
->>>>
->>>> We require the first patch listed above to get pinctrl-amd to load on 
->>>> this
->>>> system, and the two patches mentioned in 4 so we correctly choose
->>>> soc-button-array which is used by all recent Surface devices.
->>>>
->>>>
->>>>
->>>>
->>>
->>
->> Sachi,
->>
->> I was talking to some internal folks about this patch.  We had one more 
->> thought - can you please put into a Github gist (or somewhere 
->> semi-permanent) the output of:
->>
->> # cat /sys/kernel/debug/dri/0/amdgpu_firmware_info
->>
->> That way we know more about the FW versions on your system in case of 
->> any future regressions stemming from this.
->>
->> Hans,
->>
->> If you can pick up the tag:
->>
->> Link: 
->> https://github.com/linux-surface/acpidumps/tree/master/surface_laptop_4_amd
->>
->> as well as that value for "Link: <url>" pointing to amdgpu_firmware_info 
->> in the commit message.  Or if you want Sachi to re-spin to do 
->> themselves, then Sachi feel free to add my Reviewed-by tag in your v2.
-> 
-> Hans,
-> 
-> The  requested amdgpu_firmware_info
-> Link:
-> https://gist.github.com/nakato/2a1a7df1a45fe680d7a08c583e1bf863
-> 
-> If you want me to re-spin with with the these two links and Mario's 
-> Reviewed-by tag, let me know.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-There is no need to resend this, I've just merged it with the following tags added:
+smatch warnings:
+drivers/pci/endpoint/pci-epf-core.c:169 pci_epf_add_vepf() warn: inconsistent returns '&epf_pf->lock'.
 
-Link: https://github.com/linux-surface/acpidumps/tree/master/surface_laptop_4_amd
-Link: https://gist.github.com/nakato/2a1a7df1a45fe680d7a08c583e1bf863
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+vim +169 drivers/pci/endpoint/pci-epf-core.c
 
-Regards,
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  141  int pci_epf_add_vepf(struct pci_epf *epf_pf, struct pci_epf *epf_vf)
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  142  {
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  143  	u32 vfunc_no;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  144  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  145  	if (IS_ERR_OR_NULL(epf_pf) || IS_ERR_OR_NULL(epf_vf))
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  146  		return -EINVAL;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  147  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  148  	if (epf_pf->epc || epf_vf->epc || epf_vf->epf_pf)
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  149  		return -EBUSY;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  150  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  151  	if (epf_pf->sec_epc || epf_vf->sec_epc)
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  152  		return -EBUSY;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  153  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  154  	mutex_lock(&epf_pf->lock);
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  155  	vfunc_no = find_first_zero_bit(&epf_pf->vfunction_num_map,
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  156  				       BITS_PER_LONG);
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  157  	if (vfunc_no >= BITS_PER_LONG)
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  158  		return -EINVAL;
 
-Hans
+Unlock before returning.
+
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  159  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  160  	set_bit(vfunc_no, &epf_pf->vfunction_num_map);
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  161  	epf_vf->vfunc_no = vfunc_no;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  162  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  163  	epf_vf->epf_pf = epf_pf;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  164  	epf_vf->is_vf = true;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  165  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  166  	list_add_tail(&epf_vf->list, &epf_pf->pci_vepf);
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  167  	mutex_unlock(&epf_pf->lock);
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  168  
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30 @169  	return 0;
+0cf43e35b1743d Kishon Vijay Abraham I 2021-03-30  170  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
