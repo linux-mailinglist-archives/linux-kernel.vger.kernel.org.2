@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA867429103
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D62429147
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243807AbhJKOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:14:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34548 "EHLO mail.kernel.org"
+        id S242443AbhJKORE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:17:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37968 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241398AbhJKOMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:12:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D134D611C3;
-        Mon, 11 Oct 2021 14:03:36 +0000 (UTC)
+        id S236716AbhJKOOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:14:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 153D961352;
+        Mon, 11 Oct 2021 14:04:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961017;
-        bh=NOGSNji1o8kG1g3XIXYxkdGf31q50X9+8naDMWaz/Zc=;
+        s=korg; t=1633961087;
+        bh=8fezxCJFjDsKvW5ukJWrJsfQPh+RcvRx3k2yBB2rrpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E2us64Jl5/O18W0/NlVJeSlHXlrKh6jc/yEnNuTPpQEA4orA9zjm52qE6G88xoMBd
-         lN2Pv4a5lK6M6HMmhiykOGXligtwVCzA/RfXY4V7vuas/wnNXKH1ZUm+HiTvxNERTF
-         RU9yr0mrugI1aQQBhZwHs/LnHXK+aoKiZ/dS0Ke0=
+        b=tulRX9fDnjzP6Ny+2mXdtS63bIvjZN9w8VYIt27aZBlmKDf2a6V3lXoBaDsyO8T7O
+         krhfoCdNGnvK747hXFXkxm7X/A6dAXN+YX78oLyTm1ENWkIELmlrKeYlr+EFG30WXr
+         GrdG2dhmYIKuyi1p3yT6gN6YYeZXqWf3aXsaw8UQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 141/151] powerpc/64s: Fix unrecoverable MCE calling async handler from NMI
-Date:   Mon, 11 Oct 2021 15:46:53 +0200
-Message-Id: <20211011134522.371374641@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.19 04/28] xen/privcmd: fix error handling in mmap-resource processing
+Date:   Mon, 11 Oct 2021 15:46:54 +0200
+Message-Id: <20211011134640.856296875@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-References: <20211011134517.833565002@linuxfoundation.org>
+In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
+References: <20211011134640.711218469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,144 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit f08fb25bc66986b0952724530a640d9970fa52c1 ]
+commit e11423d6721dd63b23fb41ade5e8d0b448b17780 upstream.
 
-The machine check handler is not considered NMI on 64s. The early
-handler is the true NMI handler, and then it schedules the
-machine_check_exception handler to run when interrupts are enabled.
+xen_pfn_t is the same size as int only on 32-bit builds (and not even
+on Arm32). Hence pfns[] can't be used directly to read individual error
+values returned from xen_remap_domain_mfn_array(); every other error
+indicator would be skipped/ignored on 64-bit.
 
-This works fine except the case of an unrecoverable MCE, where the true
-NMI is taken when MSR[RI] is clear, it can not recover, so it calls
-machine_check_exception directly so something might be done about it.
+Fixes: 3ad0876554ca ("xen/privcmd: add IOCTL_PRIVCMD_MMAP_RESOURCE")
+Cc: stable@vger.kernel.org
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Calling an async handler from NMI context can result in irq state and
-other things getting corrupted. This can also trigger the BUG at
-  arch/powerpc/include/asm/interrupt.h:168
-  BUG_ON(!arch_irq_disabled_regs(regs) && !(regs->msr & MSR_EE));
-
-Fix this by making an _async version of the handler which is called
-in the normal case, and a NMI version that is called for unrecoverable
-interrupts.
-
-Fixes: 2b43dd7653cc ("powerpc/64: enable MSR[EE] in irq replay pt_regs")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Tested-by: Cédric Le Goater <clg@kaod.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20211004145642.1331214-6-npiggin@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/aa6d6a67-6889-338a-a910-51e889f792d5@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- arch/powerpc/include/asm/interrupt.h |  5 ++---
- arch/powerpc/kernel/exceptions-64s.S |  8 +++++--
- arch/powerpc/kernel/traps.c          | 31 ++++++++++++++++------------
- 3 files changed, 26 insertions(+), 18 deletions(-)
+ drivers/xen/privcmd.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
-index 6b800d3e2681..a925dbc5833c 100644
---- a/arch/powerpc/include/asm/interrupt.h
-+++ b/arch/powerpc/include/asm/interrupt.h
-@@ -525,10 +525,9 @@ static __always_inline long ____##func(struct pt_regs *regs)
- /* kernel/traps.c */
- DECLARE_INTERRUPT_HANDLER_NMI(system_reset_exception);
- #ifdef CONFIG_PPC_BOOK3S_64
--DECLARE_INTERRUPT_HANDLER_ASYNC(machine_check_exception);
--#else
--DECLARE_INTERRUPT_HANDLER_NMI(machine_check_exception);
-+DECLARE_INTERRUPT_HANDLER_ASYNC(machine_check_exception_async);
- #endif
-+DECLARE_INTERRUPT_HANDLER_NMI(machine_check_exception);
- DECLARE_INTERRUPT_HANDLER(SMIException);
- DECLARE_INTERRUPT_HANDLER(handle_hmi_exception);
- DECLARE_INTERRUPT_HANDLER(unknown_exception);
-diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
-index 024d9231f88c..eaf1f72131a1 100644
---- a/arch/powerpc/kernel/exceptions-64s.S
-+++ b/arch/powerpc/kernel/exceptions-64s.S
-@@ -1243,7 +1243,7 @@ EXC_COMMON_BEGIN(machine_check_common)
- 	li	r10,MSR_RI
- 	mtmsrd 	r10,1
- 	addi	r3,r1,STACK_FRAME_OVERHEAD
--	bl	machine_check_exception
-+	bl	machine_check_exception_async
- 	b	interrupt_return_srr
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -835,11 +835,12 @@ static long privcmd_ioctl_mmap_resource(
+ 		unsigned int domid =
+ 			(xdata.flags & XENMEM_rsrc_acq_caller_owned) ?
+ 			DOMID_SELF : kdata.dom;
+-		int num;
++		int num, *errs = (int *)pfns;
  
++		BUILD_BUG_ON(sizeof(*errs) > sizeof(*pfns));
+ 		num = xen_remap_domain_mfn_array(vma,
+ 						 kdata.addr & PAGE_MASK,
+-						 pfns, kdata.num, (int *)pfns,
++						 pfns, kdata.num, errs,
+ 						 vma->vm_page_prot,
+ 						 domid,
+ 						 vma->vm_private_data);
+@@ -849,7 +850,7 @@ static long privcmd_ioctl_mmap_resource(
+ 			unsigned int i;
  
-@@ -1303,7 +1303,11 @@ END_FTR_SECTION_IFSET(CPU_FTR_HVMODE)
- 	subi	r12,r12,1
- 	sth	r12,PACA_IN_MCE(r13)
- 
--	/* Invoke machine_check_exception to print MCE event and panic. */
-+	/*
-+	 * Invoke machine_check_exception to print MCE event and panic.
-+	 * This is the NMI version of the handler because we are called from
-+	 * the early handler which is a true NMI.
-+	 */
- 	addi	r3,r1,STACK_FRAME_OVERHEAD
- 	bl	machine_check_exception
- 
-diff --git a/arch/powerpc/kernel/traps.c b/arch/powerpc/kernel/traps.c
-index 4ac85ab15ad7..08356ec9bfed 100644
---- a/arch/powerpc/kernel/traps.c
-+++ b/arch/powerpc/kernel/traps.c
-@@ -797,24 +797,22 @@ void die_mce(const char *str, struct pt_regs *regs, long err)
- 	 * do_exit() checks for in_interrupt() and panics in that case, so
- 	 * exit the irq/nmi before calling die.
- 	 */
--	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64))
--		irq_exit();
--	else
-+	if (in_nmi())
- 		nmi_exit();
-+	else
-+		irq_exit();
- 	die(str, regs, err);
- }
- 
- /*
-- * BOOK3S_64 does not call this handler as a non-maskable interrupt
-+ * BOOK3S_64 does not usually call this handler as a non-maskable interrupt
-  * (it uses its own early real-mode handler to handle the MCE proper
-  * and then raises irq_work to call this handler when interrupts are
-- * enabled).
-+ * enabled). The only time when this is not true is if the early handler
-+ * is unrecoverable, then it does call this directly to try to get a
-+ * message out.
-  */
--#ifdef CONFIG_PPC_BOOK3S_64
--DEFINE_INTERRUPT_HANDLER_ASYNC(machine_check_exception)
--#else
--DEFINE_INTERRUPT_HANDLER_NMI(machine_check_exception)
--#endif
-+static void __machine_check_exception(struct pt_regs *regs)
- {
- 	int recover = 0;
- 
-@@ -848,12 +846,19 @@ DEFINE_INTERRUPT_HANDLER_NMI(machine_check_exception)
- 	/* Must die if the interrupt is not recoverable */
- 	if (!(regs->msr & MSR_RI))
- 		die_mce("Unrecoverable Machine check", regs, SIGBUS);
-+}
- 
- #ifdef CONFIG_PPC_BOOK3S_64
--	return;
--#else
--	return 0;
-+DEFINE_INTERRUPT_HANDLER_ASYNC(machine_check_exception_async)
-+{
-+	__machine_check_exception(regs);
-+}
- #endif
-+DEFINE_INTERRUPT_HANDLER_NMI(machine_check_exception)
-+{
-+	__machine_check_exception(regs);
-+
-+	return 0;
- }
- 
- DEFINE_INTERRUPT_HANDLER(SMIException) /* async? */
--- 
-2.33.0
-
+ 			for (i = 0; i < num; i++) {
+-				rc = pfns[i];
++				rc = errs[i];
+ 				if (rc < 0)
+ 					break;
+ 			}
 
 
