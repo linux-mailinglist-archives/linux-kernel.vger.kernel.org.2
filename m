@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCAA428F78
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975AF428EF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238519AbhJKN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:59:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40706 "EHLO mail.kernel.org"
+        id S236716AbhJKNxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:53:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237871AbhJKN4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E0F06113E;
-        Mon, 11 Oct 2021 13:53:44 +0000 (UTC)
+        id S237558AbhJKNv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:51:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4457C60F35;
+        Mon, 11 Oct 2021 13:49:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960425;
-        bh=/0tBGpF2fMEpWCmF9dekE4Dd8i04Y0hi+ckxHaw3qD0=;
+        s=korg; t=1633960199;
+        bh=viXiHdPmngiTRMz49JB4l91oaJ5LphyDDRh4UEmyCT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cB9NLwVFu788WJD8iSxRhqhmgWUJPlOk2JsgpG/khFiEMsnHdKSYNPQ72aRd4ugUV
-         dTMG25UB5m0KpVszbdYsDyl693EDIMLLiTPlmoY7+rz2RvTtWMfBms/sP4SsGo8aB0
-         p8IDJsanqiOKSThrH75yNpXFEhNWjwTAaRemGsIk=
+        b=juv6ClsZDRIAx0xE3AA/HIRLTLX/e+pbyUii0fpKHf6wFk0n5/bIAdhV+KghIcQ1y
+         fcDbpOr7uHK3ZoeKR6L99rFgDNbW1ivBnk3VqWfWyfIpiN/tChfEhSLxhcOVcQAL6E
+         x2Sk6hh93f0oR5e8Sn4ecK2eTdChQ2O53DNw3qds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thierry Reding <treding@nvidia.com>,
-        Jeremy Cline <jcline@redhat.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        stable@vger.kernel.org, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 56/83] drm/nouveau: avoid a use-after-free when BO init fails
-Date:   Mon, 11 Oct 2021 15:46:16 +0200
-Message-Id: <20211011134510.328120161@linuxfoundation.org>
+Subject: [PATCH 5.4 48/52] RISC-V: Include clone3() on rv32
+Date:   Mon, 11 Oct 2021 15:46:17 +0200
+Message-Id: <20211011134505.380852703@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
-References: <20211011134508.362906295@linuxfoundation.org>
+In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
+References: <20211011134503.715740503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Cline <jcline@redhat.com>
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-[ Upstream commit bcf34aa5082ee2343574bc3f4d1c126030913e54 ]
+[ Upstream commit 59a4e0d5511ba61353ea9a4efdb1b86c23ecf134 ]
 
-nouveau_bo_init() is backed by ttm_bo_init() and ferries its return code
-back to the caller. On failures, ttm_bo_init() invokes the provided
-destructor which should de-initialize and free the memory.
+As far as I can tell this should be enabled on rv32 as well, I'm not
+sure why it's rv64-only.  checksyscalls is complaining about our lack of
+clone3() on rv32.
 
-Thus, when nouveau_bo_init() returns an error the gem object has already
-been released and the memory freed by nouveau_bo_del_ttm().
-
-Fixes: 019cbd4a4feb ("drm/nouveau: Initialize GEM object before TTM object")
-Cc: Thierry Reding <treding@nvidia.com>
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
-Reviewed-by: Lyude Paul <lyude@redhat.com>
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20201203000220.18238-1-jcline@redhat.com
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Fixes: 56ac5e213933 ("riscv: enable sys_clone3 syscall for rv64")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_gem.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/riscv/include/uapi/asm/unistd.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_gem.c b/drivers/gpu/drm/nouveau/nouveau_gem.c
-index c2051380d18c..6504ebec1190 100644
---- a/drivers/gpu/drm/nouveau/nouveau_gem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_gem.c
-@@ -196,10 +196,8 @@ nouveau_gem_new(struct nouveau_cli *cli, u64 size, int align, uint32_t domain,
- 	}
+diff --git a/arch/riscv/include/uapi/asm/unistd.h b/arch/riscv/include/uapi/asm/unistd.h
+index 13ce76cc5aff..80dff2c2bf67 100644
+--- a/arch/riscv/include/uapi/asm/unistd.h
++++ b/arch/riscv/include/uapi/asm/unistd.h
+@@ -18,9 +18,10 @@
+ #ifdef __LP64__
+ #define __ARCH_WANT_NEW_STAT
+ #define __ARCH_WANT_SET_GET_RLIMIT
+-#define __ARCH_WANT_SYS_CLONE3
+ #endif /* __LP64__ */
  
- 	ret = nouveau_bo_init(nvbo, size, align, domain, NULL, NULL);
--	if (ret) {
--		nouveau_bo_ref(NULL, &nvbo);
-+	if (ret)
- 		return ret;
--	}
++#define __ARCH_WANT_SYS_CLONE3
++
+ #include <asm-generic/unistd.h>
  
- 	/* we restrict allowed domains on nv50+ to only the types
- 	 * that were requested at creation time.  not possibly on
+ /*
 -- 
 2.33.0
 
