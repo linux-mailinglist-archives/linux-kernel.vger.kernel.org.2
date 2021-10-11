@@ -2,158 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 338574285B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 06:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698C642860A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 06:47:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbhJKENW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 00:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbhJKENT (ORCPT
+        id S231517AbhJKEtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 00:49:33 -0400
+Received: from esa5.hc1455-7.c3s2.iphmx.com ([68.232.139.130]:13399 "EHLO
+        esa5.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230102AbhJKEtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 00:13:19 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E91C06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:11:20 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id i1so14156379qtr.6
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yJkzv/qLRuMHpfFpS4P34KqTWJ3Vx+EAHqhp1ZZOPqI=;
-        b=g7nfie8pkWJr8W9Kqw/m1Vzt+2qKlzvyuggXbDSXZwyI3x53OnoV+ClCoAT6bMqbo+
-         Fw9xw9Q+uutz8BMZkylGG9FSYeCVHjZlVmRe4dG9eAzOFyL8OtwLXuwyJMGujzhjOCqT
-         4xbpCjnVe8bTFEsxJpdMDp1oRQjQVP9rkw3UjLxf7y75Pt82JMC26UcvpJHuYPifUF7x
-         hse5hvFMSgnTujr4TFfW8sleWouVyzHOPNRji5xM7EcFK0c+HMaln5X+EUOu8swmQQBm
-         0CzyD03a0bQfFRESp5UrOPO3KClKDCJz72DEewHOE/75UzuGCOABNP+DD+3sFpi+ZGi6
-         9RWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yJkzv/qLRuMHpfFpS4P34KqTWJ3Vx+EAHqhp1ZZOPqI=;
-        b=hDzfdn1tjjQapO5otVWHB6vABXxticV47OxtAy6ObW5ZJ039u2qPqXT9Nct7K5rAHo
-         4fv88DfCNDaik9CsI2+d8QpTDIBHFq6u/gcUnbMTSCnSLDBQ5U7gbxLFcQzsfn6eXzPV
-         aK9hNq/4YEiojgArgTpmmO0Vi1SG9ZjL1i/e4zl/XnbcV6buOsaK1EuWYfY6v6AZqK5j
-         JTXBBSCwp/sLQE0BAuDmxY6ObwzOx6YTV6sSTjOLOMhwCEaEWgm3XzNOp7Izn/jw42OQ
-         80kuE/DVI9RKpZgolRMeQZcYq7QPLIAplSWv1j/QW2yqPRbOxsVQcZG9rSNSzDAQXrk2
-         KRBA==
-X-Gm-Message-State: AOAM5324ZPqUEi9GoQ+qFilnnfYnRlBo6Svj3K25tkDWmLRICLz5aBEt
-        53f+hTxijWIq/quAJTCneqicYy9nyuO9NXkLzSplLQ==
-X-Google-Smtp-Source: ABdhPJxRuJ9TkoBbKOvVwOudaBHMqMs50XuLzRSTTUx4oR/M2EB3whe37CwIsMGxez4j3kIQ4T8PvHWhehH7hl2PAYo=
-X-Received: by 2002:ac8:1011:: with SMTP id z17mr12653163qti.388.1633925479158;
- Sun, 10 Oct 2021 21:11:19 -0700 (PDT)
+        Mon, 11 Oct 2021 00:49:31 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Oct 2021 00:49:31 EDT
+IronPort-SDR: DOEnyVVHj8EcA9rouyjnVrPcXkDj8DRY+/viJeR2tU79Ha/ELXmljnPclORShn9T3QkLkfxKqG
+ fDQeMqcGLzOxKwi9YxSQcU88urfO49OkfSgpuIT86k9rpLbxRDKhqSQQs7Dic5stl5Upz7uA6K
+ /UZ4r+oXstmYV1yi+rnM231Q7+mwmEryFZVGjY/pHGYNs60cdE86BuhRXwYYVYjQkH8tOfEyEP
+ qrJehGJJpqna5Wj8O9RwhDzwXNQ3D/tUikXFmhXOI4wEd+nUjDj6qYFbnFWaqNBPmFedUmsycd
+ CaO5noUpRZnIgIN6iI5cryBu
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="48057871"
+X-IronPort-AV: E=Sophos;i="5.85,363,1624287600"; 
+   d="scan'208";a="48057871"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa5.hc1455-7.c3s2.iphmx.com with ESMTP; 11 Oct 2021 13:40:23 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 78EAFEB346
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:40:21 +0900 (JST)
+Received: from yto-om3.fujitsu.com (yto-om3.o.css.fujitsu.com [10.128.89.164])
+        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id B5EA156F77
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:40:20 +0900 (JST)
+Received: from localhost.localdomain (n3235113.np.ts.nmh.cs.fujitsu.co.jp [10.123.235.113])
+        by yto-om3.fujitsu.com (Postfix) with ESMTP id 85F624005E9CA;
+        Mon, 11 Oct 2021 13:40:20 +0900 (JST)
+From:   Kohei Tarumizu <tarumizu.kohei@fujitsu.com>
+To:     hpa@zytor.com, tglx@linutronix.de, mingo@redhat.com,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     tarumizu.kohei@fujitsu.com
+Subject: [RFC PATCH 0/4] Add hardware prefetch core driver and A64FX support
+Date:   Mon, 11 Oct 2021 13:39:48 +0900
+Message-Id: <20211011043952.995856-1-tarumizu.kohei@fujitsu.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
- <YWJpJnaQ2Nr4PUwr@yoga> <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-In-Reply-To: <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Mon, 11 Oct 2021 07:11:07 +0300
-Message-ID: <CAA8EJpoD4Th1tdwYQLnZur2oA0xX0LojSrNFLyJqdi6+rnB3YQ@mail.gmail.com>
-Subject: Re: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Oct 2021 at 20:42, Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Sun, Oct 10, 2021 at 6:17 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Sat 09 Oct 21:33 CDT 2021, Dmitry Baryshkov wrote:
-> >
-> > > After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
-> > > qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
-> > > However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
-> > > qcom_smmu_impl_init() is never called.
-> > >
-> > > So, let's fix this by always calling qcom_smmu_impl_init(). It does not
-> > > touch the smmu passed unless the device is a non-Qualcomm one. Make
-> > > ARM_SMMU select QCOM_SCM for ARCH_QCOM.
->
-> Sorry about this bug. I was sure I had it working, but I lost part of the commit
-> during a rebase, and my randconfig builds still succeeded without it, so I
-> sent a wrong version.
->
-> > Arnd's intention was to not force QCOM_SCM to be built on non-Qualcomm
-> > devices. But as Daniel experienced, attempting to boot most Qualcomm
-> > boards without this results in a instant reboot.
-> >
-> > I think it's okay if we tinker with CONFIG_ARM_SMMU_QCOM for v5.16, but
-> > we're getting late in v5.15 so I would prefer if we make sure this works
-> > out of the box.
->
-> Yes, makes sense. For reference, see below for how I would fix this properly,
-> this is what I had intended to have in the patch. Feel free to pick
-> either version
-> as the immediate bugfix. I'll give the below a little more randconfig testing
-> overnight though. The pasted version of the patch is probably
-> whitespace-damaged,
-> let me know if you would like me to send it as a proper patch.
->
->        Arnd
->
-> 8<-----
-> Subject: iommu: fix ARM_SMMU_QCOM compilation
->
-> My previous bugfix ended up making things worse for the QCOM IOMMU
-> driver when it forgot to add the Kconfig symbol that is getting used to
-> control the compilation of the SMMU implementation specific code
-> for Qualcomm.
->
-> Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ----
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index c5c71b7ab7e8..2dfe744ddd97 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -311,6 +311,7 @@ config ARM_SMMU
->         select IOMMU_API
->         select IOMMU_IO_PGTABLE_LPAE
->         select ARM_DMA_USE_IOMMU if ARM
-> +       select QCOM_SCM if ARM_SMMU_QCOM
->         help
->           Support for implementations of the ARM System MMU architecture
->           versions 1 and 2.
-> @@ -355,6 +356,13 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
->           'arm-smmu.disable_bypass' will continue to override this
->           config.
->
-> +config ARM_SMMU_QCOM
-> +       def_bool y
-> +       depends on ARM_SMMU && ARCH_QCOM
-> +       help
-> +         When running on a Qualcomm platform that has the custom variant
-> +         of the ARM SMMU, this needs to be built into the SMMU driver.
-> +
->  config ARM_SMMU_V3
->         tristate "ARM Ltd. System MMU Version 3 (SMMUv3) Support"
->         depends on ARM64
+Hello,
 
-The patch seems correct, but it becomes overcomplicated. What about:
-- restoring QCOM_SCM stubs
-- making ARM_SMMU select QCOM_SCM if ARM_SMMU_QCOM
+This patch series add hardware prefetch driver register/unregister
+function, and support for A64FX processor. The purpose of this driver is
+to provide an interface to control the hardware prefetch mechanism
+depending on the application characteristics.
 
-This would have almost the same result as with your patch, but without
-extra ARM_SMMU_QCOM Kconfig symbol.
+An earlier RFC[1] suggested creating a hardware prefetch directory under
+/sys/devices/system/cpu/[CPUNUM]/cache.
+Surely, hardware prefetch is a cache-related feature, but it does not
+require cache sysfs feature, so we decided to isolate the code.
+Specifically, we create a hardware prefetch directory under cpu/[CPUNUM].
+
+[1]https://lore.kernel.org/lkml/OSBPR01MB2037D114B11153F00F233F8780389@OSBPR01MB2037.jpnprd01.prod.outlook.com/
+
+Patch organizations are as follows:
+
+- patch1: Add hardware prefetch core driver
+  This adds register/unregister function to create the sysfs interface
+  with attribute "enable", "dist", and "strong".  Detailed description
+  of these are in Documentation/ABI/testing/sysfs-devices-system-cpu.
+
+- patch2: Add support for A64FX
+  This adds module init/exit code for A64FX. If someone would like to
+  add new support for another environment, refer to this.
+
+- patch3: Add Kconfig/Makefile to build module
+
+- patch4: Add documentation for the new sysfs interface
+
+[Merit]
+For reference, here is the result of STREAM Triad when tuning with the
+dist file in L1 and L2 cache on A64FX.
+In pattern A, we set the size of the array to 174720, which is about
+half the size of the L1d cache.
+In pattern B, we set the size of the array to 10485120, which is about
+twice the size of the L2 cache.
+
+| dist combination  | Pattern A   | Pattern B   |
+|-------------------|-------------|-------------|
+| L1:256,  L2:1024  | 234505.2144 | 114600.0801 |
+| L1:1536, L2:1024  | 279172.8742 | 118979.4542 |
+| L1:256,  L2:10240 | 247716.7757 | 127364.1533 |
+| L1:1536, L2:10240 | 283675.6625 | 125950.6847 |
+
+In pattern A, a change of dist at L1 has a larger effect. On the other
+hand, in pattern B, the change of dist at L2 has a larger effect.
+As described above, the optimal dist combination depends on the
+characteristics of the application.
+Therefore, such a sysfs interface is useful for performance tuning.
+
+[RFC & Future plan]
+Please comment on how to handle the enable attribute file in this
+chapter.
+
+We plan to support some Intel processors that have MSR 0x1A4[2] in the
+same way. The register supports enabling two types of hardware
+prefetches for each cache.
+
+[2]https://software.intel.com/content/www/us/en/develop/articles/disclosure-of-hw-prefetcher-control-on-some-intel-processors.html
+
+We would like to assign these features to an enable attribute file,
+and consider the two proposals:
+
+A) The enable file handles only one bit, and changes affect the multiple
+   hardware prefetch types at a certain cache level.
+
+B) The enable file handles one or more bit, and changes to a single bit
+   affect a corresponding single hardware prefetch type.
+
+For each proposal, an example of the result of writing to the enable
+file when all bits of the MSR 0x1A4 are 0 is shown below.
+
+| Value to write          | bit[0] | bit[1] | bit[2] | bit[3] |
+|-------------------------|--------|--------|--------|--------|
+| A) write 1 to l1/enable | 0      | 0      | 1      | 1      |
+| A) write 1 to l2/enable | 1      | 1      | 0      | 0      |
+| B) write 1 to l1/enable | 0      | 0      | 1      | 0      |
+| B) write 2 to l1/enable | 0      | 0      | 0      | 1      |
+| B) write 3 to l2/enable | 1      | 1      | 0      | 0      |
+
+Proposal A is simple, it uniformly controls the enablement of the
+hardware prefetch type at a certain cache level. In this case, it is
+easy to provide the same interface as the A64FX. However, it cannot
+allow the detailed tuning.
+
+Proposal B allows the same tuning as direct register access. However,
+user needs to know the hardware specifications (e.g. Number of features
+that can be enabled via register) to use interface.
+
+We think proposal A is better for providing a standard interface, but it
+is a concern that it cannot provide all the features of the register.
+Do you have any comments on these proposals?
+
+Best regards,
+Kohei Tarumizu
+
+Kohei Tarumizu (4):
+  driver: hwpf: Add hardware prefetch core driver register/unregister
+    functions
+  driver: hwpf: Add support for A64FX to hardware prefetch driver
+  driver: hwpf: Add Kconfig/Makefile to build hardware prefetch driver
+  docs: ABI: Add sysfs documentation interface of hardware prefetch
+    driver
+
+ .../ABI/testing/sysfs-devices-system-cpu      |  58 +++
+ MAINTAINERS                                   |   7 +
+ arch/arm64/Kconfig.platforms                  |   6 +
+ drivers/Kconfig                               |   2 +
+ drivers/Makefile                              |   1 +
+ drivers/hwpf/Kconfig                          |  24 +
+ drivers/hwpf/Makefile                         |   6 +
+ drivers/hwpf/fujitsu_hwpf.c                   | 460 ++++++++++++++++++
+ drivers/hwpf/hwpf.c                           | 452 +++++++++++++++++
+ include/linux/hwpf.h                          |  38 ++
+ 10 files changed, 1054 insertions(+)
+ create mode 100644 drivers/hwpf/Kconfig
+ create mode 100644 drivers/hwpf/Makefile
+ create mode 100644 drivers/hwpf/fujitsu_hwpf.c
+ create mode 100644 drivers/hwpf/hwpf.c
+ create mode 100644 include/linux/hwpf.h
 
 -- 
-With best wishes
-Dmitry
+2.27.0
+
