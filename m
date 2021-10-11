@@ -2,195 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE3C429767
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC5E429760
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhJKTQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 15:16:35 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:26205 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233634AbhJKTQe (ORCPT
+        id S234598AbhJKTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 15:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234121AbhJKTNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:16:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633979485;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=grch5KYkzTXyGVux1SYPAnHZtd4ppQKlGwWMfNHYtu8=;
-    b=oIhIAQ2L+yfPBN8Phjv2BejKLtennplUFwnp6n3NL/ocu58u+3T+ygYxlBOyYFZuHb
-    YmwoClkVGJHR9kdD4igGJ5QegSztmu9QuOm5aMEEy66TA2Q3T3cjMTOwcbBA7qUSV6MV
-    SjUoQzqUSfNC1uAkqVJh/+evq/lgbKPxriZzf+qW+4zidJ+I6ZF+py811L+w3frjl0MH
-    O7EuzjVEw/39fjyTi8P8GaBXo0PzrMC6S+DBQK2a5Gaz9BWf39rluM56Y7ftH7HeVv6Y
-    31Sd3su/mCxOujfsPKD6q/TdnodD8jPCYLJ3Cu9gHmDfpsXcjbfgkBSkEc3lenFJ0JE+
-    O+3w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVvBOfXT2V6Q=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a00:6020:1cfa:f904::b82]
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 900f80x9BJBPwng
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 11 Oct 2021 21:11:25 +0200 (CEST)
-Subject: Re: [PATCH net v2 2/2] can: isotp: fix tx buffer concurrent access in
- isotp_sendmsg()
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>, mkl@pengutronix.de
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1633764159.git.william.xuanziyang@huawei.com>
- <c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <37b50a76-db66-c043-9967-c1ae2787475f@hartkopp.net>
-Date:   Mon, 11 Oct 2021 21:11:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 11 Oct 2021 15:13:43 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 334F6C061570;
+        Mon, 11 Oct 2021 12:11:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ftuJyAIkxX7N4Dz/v5CU90ZsxfI0kloQ5HQEKjjsC9M=; b=tXeFa3ISt/VDGSJDRaEEvR43kP
+        KNm3e7FjPlzGc0rVjcTWihz4v0DUvUrreG75r3ChG2HDvi7Pq2x4Iik5Mh+NczNE9PCh2eFuYSaCy
+        IGlzJt+h3jbz99GTgPgcreQ+fzxxHo137H0pOvsyc0X/VyVrPMzXDOJ03EzHKHDWlrfCNIMTjSjst
+        xzuWQRwsGREcfyZENaluVObW8Yq7h67jkRlUM+MPGh/R0x5BK765Mgvs9L8bxL69NfruWIZ/1s+Vt
+        CgdcAXVkRZTQ4LudKgo7B9a4xop7T0iIL/ieQlTgf5Jt0eC3Y96PNr51OJmr7KrncnYKT4aztOgz3
+        bLXM+vTw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ma0i0-00ASpf-OY; Mon, 11 Oct 2021 19:11:36 +0000
+Date:   Mon, 11 Oct 2021 12:11:36 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Miroslav Benes <mbenes@suse.cz>
+Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
+        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
+        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
+        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
+        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 03/12] selftests: add tests_sysfs module
+Message-ID: <YWSMaIW1JRtottET@bombadil.infradead.org>
+References: <20210927163805.808907-1-mcgrof@kernel.org>
+ <20210927163805.808907-4-mcgrof@kernel.org>
+ <alpine.LSU.2.21.2110071620130.19025@pobox.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <c2517874fbdf4188585cf9ddf67a8fa74d5dbde5.1633764159.git.william.xuanziyang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.21.2110071620130.19025@pobox.suse.cz>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 09.10.21 09:40, Ziyang Xuan wrote:
-> When isotp_sendmsg() concurrent, tx.state of all tx processes can be
-> ISOTP_IDLE. The conditions so->tx.state != ISOTP_IDLE and
-> wq_has_sleeper(&so->wait) can not protect tx buffer from being accessed
-> by multiple tx processes.
+On Thu, Oct 07, 2021 at 04:23:22PM +0200, Miroslav Benes wrote:
+> On Mon, 27 Sep 2021, Luis Chamberlain wrote:
 > 
-> We can use cmpxchg() to try to modify tx.state to ISOTP_SENDING firstly.
-> If the modification of the previous process succeed, the later process
-> must wait tx.state to ISOTP_IDLE firstly. Thus, we can ensure tx buffer
-> is accessed by only one process at the same time. And we should also
-> restore the original tx.state at the subsequent error processes.
+> > This adds a new selftest module which can be used to test sysfs, which
+> > would otherwise require using an existing driver. This lets us muck
+> > with a template driver to test breaking things without affecting
+> > system behaviour or requiring the dependencies of a real device
+> > driver.
+> > 
+> > A series of 28 tests are added. Support for using two device types are
+> > supported:
+> > 
+> >   * misc
+> >   * block
 > 
-> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> I suppose the selftests will run for more than 45 seconds (default 
+> kselftest timeout), so you probably also want to set timeout to something 
+> sensible in tools/testing/selftests/sysfs/settings file (0 would disable 
+> it).
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Good catch, I'll use a default of 200, in practice for me this runs in
+much less than that, about 110 seconds, so 200 should be good wiggle
+room.
 
-Many thanks!
-Oliver
-
-> ---
->   net/can/isotp.c | 46 +++++++++++++++++++++++++++++++---------------
->   1 file changed, 31 insertions(+), 15 deletions(-)
-> 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 2ac29c2b2ca6..d1f54273c0bb 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -121,7 +121,7 @@ enum {
->   struct tpcon {
->   	int idx;
->   	int len;
-> -	u8 state;
-> +	u32 state;
->   	u8 bs;
->   	u8 sn;
->   	u8 ll_dl;
-> @@ -848,6 +848,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->   {
->   	struct sock *sk = sock->sk;
->   	struct isotp_sock *so = isotp_sk(sk);
-> +	u32 old_state = so->tx.state;
->   	struct sk_buff *skb;
->   	struct net_device *dev;
->   	struct canfd_frame *cf;
-> @@ -860,47 +861,55 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->   		return -EADDRNOTAVAIL;
->   
->   	/* we do not support multiple buffers - for now */
-> -	if (so->tx.state != ISOTP_IDLE || wq_has_sleeper(&so->wait)) {
-> -		if (msg->msg_flags & MSG_DONTWAIT)
-> -			return -EAGAIN;
-> +	if (cmpxchg(&so->tx.state, ISOTP_IDLE, ISOTP_SENDING) != ISOTP_IDLE ||
-> +	    wq_has_sleeper(&so->wait)) {
-> +		if (msg->msg_flags & MSG_DONTWAIT) {
-> +			err = -EAGAIN;
-> +			goto err_out;
-> +		}
->   
->   		/* wait for complete transmission of current pdu */
->   		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
->   		if (err)
-> -			return err;
-> +			goto err_out;
->   	}
->   
-> -	if (!size || size > MAX_MSG_LENGTH)
-> -		return -EINVAL;
-> +	if (!size || size > MAX_MSG_LENGTH) {
-> +		err = -EINVAL;
-> +		goto err_out;
-> +	}
->   
->   	/* take care of a potential SF_DL ESC offset for TX_DL > 8 */
->   	off = (so->tx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
->   
->   	/* does the given data fit into a single frame for SF_BROADCAST? */
->   	if ((so->opt.flags & CAN_ISOTP_SF_BROADCAST) &&
-> -	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off))
-> -		return -EINVAL;
-> +	    (size > so->tx.ll_dl - SF_PCI_SZ4 - ae - off)) {
-> +		err = -EINVAL;
-> +		goto err_out;
-> +	}
->   
->   	err = memcpy_from_msg(so->tx.buf, msg, size);
->   	if (err < 0)
-> -		return err;
-> +		goto err_out;
->   
->   	dev = dev_get_by_index(sock_net(sk), so->ifindex);
-> -	if (!dev)
-> -		return -ENXIO;
-> +	if (!dev) {
-> +		err = -ENXIO;
-> +		goto err_out;
-> +	}
->   
->   	skb = sock_alloc_send_skb(sk, so->ll.mtu + sizeof(struct can_skb_priv),
->   				  msg->msg_flags & MSG_DONTWAIT, &err);
->   	if (!skb) {
->   		dev_put(dev);
-> -		return err;
-> +		goto err_out;
->   	}
->   
->   	can_skb_reserve(skb);
->   	can_skb_prv(skb)->ifindex = dev->ifindex;
->   	can_skb_prv(skb)->skbcnt = 0;
->   
-> -	so->tx.state = ISOTP_SENDING;
->   	so->tx.len = size;
->   	so->tx.idx = 0;
->   
-> @@ -956,7 +965,7 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->   	if (err) {
->   		pr_notice_once("can-isotp: %s: can_send_ret %pe\n",
->   			       __func__, ERR_PTR(err));
-> -		return err;
-> +		goto err_out;
->   	}
->   
->   	if (wait_tx_done) {
-> @@ -965,6 +974,13 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->   	}
->   
->   	return size;
-> +
-> +err_out:
-> +	so->tx.state = old_state;
-> +	if (so->tx.state == ISOTP_IDLE)
-> +		wake_up_interruptible(&so->wait);
-> +
-> +	return err;
->   }
->   
->   static int isotp_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-> 
+  Luis
