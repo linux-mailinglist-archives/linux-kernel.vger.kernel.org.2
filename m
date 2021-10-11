@@ -2,93 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4130242946E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5943429471
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhJKQZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:25:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43286 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhJKQZg (ORCPT
+        id S231927AbhJKQ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:27:30 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35042 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231808AbhJKQ12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:25:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45142C061570;
-        Mon, 11 Oct 2021 09:23:36 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08bb0030636ca0dab1dbfc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:3063:6ca0:dab1:dbfc])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9BC1A1EC03CA;
-        Mon, 11 Oct 2021 18:23:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633969414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=tSm9jf94PmL4XEwSBV/yP6piPnrq638nfyV8/qTI/6g=;
-        b=UvABe+xtZyBfGqYegcgX4vWmRppTbCWJlWGD+yTluNiWmN3LKRfqxkzzRqlXBHDgSKsNlO
-        guAQYlPXfsGLf1BPOjfFep9JmROjWUlcffiTSUht0sLz9reByfmhpmrLs0428FdknBo2rN
-        sDmWBWMFM6jyR9c4mE2Ogxk5F7iU9pg=
-Date:   Mon, 11 Oct 2021 18:23:35 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Liguang Zhang <zhangliguang@linux.alibaba.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, James Morse <james.morse@arm.com>,
-        Tony Luck <tony.luck@intel.com>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ACPI / APEI: restore interrupt before panic in sdei flow
-Message-ID: <YWRlBzBXq7T1Vo4c@zn.tnic>
-References: <20211011151028.105215-1-zhangliguang@linux.alibaba.com>
+        Mon, 11 Oct 2021 12:27:28 -0400
+Received: from kbox (unknown [24.17.193.74])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7D5B120B8966;
+        Mon, 11 Oct 2021 09:25:28 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7D5B120B8966
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1633969528;
+        bh=knkFwK85QFrF0qOhjDycyvfu/WtNh39v6S3FyHmkg8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VQNiS8TggI4OrE08gnOAgARjkR2s1dlomhH0YSO0f9c3jR/RabfHbMrBjnNvzxq+o
+         dysN1Zt8+ta57NJnRS8xENwdbOM0Lq6vduP30UPXmc6ukfyk4rqmrYSuopfm4UOoBg
+         H40jSD5kRDIdbYLJIx3z8c2zD7mRc6u9DqxMqSqo=
+Date:   Mon, 11 Oct 2021 09:25:23 -0700
+From:   Beau Belgrave <beaub@linux.microsoft.com>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     rostedt@goodmis.org, linux-trace-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] user_events: Enable user processes to create and write
+ to trace events
+Message-ID: <20211011162523.GA1542@kbox>
+References: <20211005224428.2551-1-beaub@linux.microsoft.com>
+ <20211007012827.99cd5795140cbb0c932e1b5a@kernel.org>
+ <20211006175611.GA2995@kbox>
+ <20211007231738.0626e348322dc09e7ebbf1d6@kernel.org>
+ <20211007162204.GA30947@kbox>
+ <20211008081249.8fbacc4f5d9fa7cf2e488d21@kernel.org>
+ <20211008000540.GA31220@kbox>
+ <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211011151028.105215-1-zhangliguang@linux.alibaba.com>
+In-Reply-To: <20211008182258.6bf272e6691679d41e7971fc@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 11:10:28PM +0800, Liguang Zhang wrote:
-> We use ACPI_HEST_NOTIFY_SOFTWARE_DELEGATED Notify type for ras event.
+On Fri, Oct 08, 2021 at 06:22:58PM +0900, Masami Hiramatsu wrote:
+> > > I'm not sure this point, you mean 1 fd == 1 event model?
+> > > 
+> > Yeah, I like the idea of not having an fd per event.
 > 
-> In ATF:
-> ehf_activate_priority()
->    dispatch sdei()
-> ehf_deactivate_priority()
+> Ah, OK. I misunderstood the idea.
+> per-FD model sounds like having events/user-events/*/marker file.
 > 
-> If ras error severity is fatal, panic was called in sdei(),
-> ehf_deactivate_priority was not called. we should restore interrupt before panic
-> otherwise kdump will trigger error.
+Thanks for the back and forth, I appreciate your time on this.
 
-I have *absolutely* no clue what this commit message is trying to tell
-me - sorry you'd have to try again. Maybe structuring it this way, would
-help:
+Yes, in my mind there are two options to avoid kernel memory usage
+per-event.
 
---
-Problem is A.
+1.
+We have a an array per file struct that is independently ref-counted.
+This is required to ensure lifetime requirements and to ensure user code
+cannot access other user events that might have been free'd outside of
+the lifetime and cause a kernel crash.
 
-It happens because of B.
+This approach also requires 2 int's to be returned, 1 for the status
+page the other a local index for the write into the above array per-file
+struct.
 
-Fix it by doing C.
+This is likely the most complex method due to it's lifetime and RCU
+synchronization requirements. However, it represents the least memory to
+both kernel and user space.
 
-(Potentially do D).
+2.
+We have a anon_inode FD that gets installed into the user process and
+returned via the ioctl from user_events tracefs file. The file struct
+backing the FD is shared by all user mode processes for that event. Like
+having an inject/marker file per-event in the user_events subsystem.
 
-For more detailed info, see
-Documentation/process/submitting-patches.rst, Section "2) Describe your
-changes".
+This approach requires an FD returned and either an int for the status
+page or the returend FD could expose the ID via another IOCTL being
+issued.
 
-Also, to the tone, from Documentation/process/submitting-patches.rst:
+This is the simplest method since the FD manages the lifetime, when FD
+is released so is the shared file struct. Kernel side memory is reduced
+to only unique events that are actively being used. There is no RCU or
+synchronization beyond the FD lifetime. The user mode processes does
+incur an FD per-event within their file description table. So they
+events charge against their FD per-process limit (not necessarily a bad
+thing).
 
- "Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-  instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-  to do frotz", as if you are giving orders to the codebase to change
-  its behaviour."
+This also seems to follow the pre-existing patterns of tracefs
+(trace_marker, inject, format, etc all have a shared file available to
+user-processes that have been granted access). For our case, we want
+that, but we want it on a access boundary to who all have access to the
+user_events_* tracefs files. We don't want to open up all of tracefs
+widely.
 
-Also, do not talk about what your patch does - that should hopefully be
-visible in the diff itself. Rather, talk about *why* you're doing what
-you're doing.
+> > I want to make
+> > sure the complexity is worth it. Is the overhead of an FD per event in
+> > user space too much?
+> 
+> It depends on the use case, how much events you wants to use with
+> the user-events. If there are hundreds of the evets, that will consume
+> kernel resources and /proc/*/fd/ will be filled with the event's fds.
+> But if there is a few events, I think no problem.
+> 
+In our own use case this will be low due to the way we plan to use the
+events. However, I am not sure others will follow that :)
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+-Beau
