@@ -2,145 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F844285A4
+	by mail.lfdr.de (Postfix) with ESMTP id F25BF4285A5
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhJKDrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:47:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        id S233620AbhJKD6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:58:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhJKDrV (ORCPT
+        with ESMTP id S230261AbhJKD6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:47:21 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 607D6C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:45:22 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id m21so9557150pgu.13
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:45:22 -0700 (PDT)
+        Sun, 10 Oct 2021 23:58:24 -0400
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11702C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:56:25 -0700 (PDT)
+Received: by mail-vs1-xe35.google.com with SMTP id i7so288211vsm.4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=65ujd5zWPxKALq+MmqVYqoTyiZcmFSF+8wsgTyrTV+k=;
-        b=GOmKg7vgvi8duuzeIia+J3wyH8CQQAAhsJSo0RCw6MdSoO6pjsp1J+eeSt4cDQvw/o
-         IsU3GIeKPYYx1UkDW6D2xZ7Q2163jKJvAZNvK75LvgPfk6M+9bCzuTON9fL4/z+V8xVa
-         FRXn8sgkVxMWK0B6KOGHmSIOvpBmykiQepg7yMGSNYoxJOvowbkRo1UZQYxBbczwdb8M
-         OLQIu6XZJS7wVNzN2tuXdeDWe8piRDeM0A5wA5qZ2mS5gADyMEN14Eb7hESfJ4tym0eO
-         OggNMj94SOo1MFlO/Ao7jEtEcbz7er9AIKBLfrWwiZrXeUZhWBlTlsPf0ho2vZvKXxxU
-         h2qA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hm/WnPjACRBoXScfbY0rQ9zM9UXlZisRQsmhTz6cU6o=;
+        b=NoJf0g/i/EvNgprP5JthR3UA1KqGONFpUy/5x+DhivykLN5l0jCd5xucAoiKuGMtlj
+         1esRKukL5+qMFwAD3s8JLv4dyBintdVA1qWN/37qCJWo03eXayAUGRhAsOh4QKcJe3IY
+         O81MlB9w+DvTDWVe4y7ybit5SIb4vCTFD6BAIWVZswck6kRo7G1QkteU8cSFbiMoF04/
+         y2WLC9dqj6ka9lkxiQ68OIOV/ArRx/D+L8SJbsrA0WEJrE51vYOlGGHwC5Rv6wobQ6Jp
+         JjJkRvYhXs5sEsoSwA6nV+dPv+svBSAkBM50kfZqC0eTkz1OSN58aVJjAuOk2Rohkhoj
+         cQyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=65ujd5zWPxKALq+MmqVYqoTyiZcmFSF+8wsgTyrTV+k=;
-        b=16u+k9zjcjFEXnWRrhZJVkC0E7JGhlB+FcZUBdI1YyTQZZt4X43hU0rweVxxSl9E46
-         thLqV+jNOJs6mIwteCllZyLcfU+n6NFKs0G229FmTVMrjL65AKsOqxKqxvYHvI/bHC34
-         XI5MU3n+8AZ0IHgid8KuK93omUMYp150mDvkrE7l4jj3eWq4niXF763KQy55avydPrqI
-         WrDyld2CIKZF7CcHjIAcIDHTP4p+sdMzKCM8a/95zWvpfpKBFCRRXrL2DdaKBPGtb8Uq
-         N3LDFrwlKfCvkZvr9WQcw/bPKBaxuMGnYe8ljMhEcQx5VfATXAP4OFJOGOzc+/Lj8elM
-         or/Q==
-X-Gm-Message-State: AOAM532dsfkJSxxBAl3gY73i1iKimbHPYUbylu4wWcH72K1z8xySbLb+
-        0RfK0Jd8kOBfo2fadxjg588=
-X-Google-Smtp-Source: ABdhPJyTjnYl5mbT+ZZypHNSBbzp+kOAPW0Kby6t0DALxE7Ff9cvy2Z0drJdIn/eByUh753t5p8E7Q==
-X-Received: by 2002:a05:6a00:230e:b0:44c:4f2d:9b00 with SMTP id h14-20020a056a00230e00b0044c4f2d9b00mr23213756pfh.24.1633923921548;
-        Sun, 10 Oct 2021 20:45:21 -0700 (PDT)
-Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id d138sm5840290pfd.74.2021.10.10.20.45.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 Oct 2021 20:45:20 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Subject: Re: [PATCH 1/2] mm/mprotect: use mmu_gather
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20210925205423.168858-2-namit@vmware.com>
-Date:   Sun, 10 Oct 2021 20:45:17 -0700
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, X86 ML <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <B8D86FB6-8A9E-4133-9477-0008B3FE46A3@gmail.com>
-References: <20210925205423.168858-1-namit@vmware.com>
- <20210925205423.168858-2-namit@vmware.com>
-To:     Jerome Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-X-Mailer: Apple Mail (2.3654.120.0.1.13)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hm/WnPjACRBoXScfbY0rQ9zM9UXlZisRQsmhTz6cU6o=;
+        b=hrWARTj2A/QcSGGGNffs9ZZKmRbkl2kgjGQ9c+rWzE30H7wU/+Xd6lpsvgNUWgBrnI
+         ASP1gyllZUn+xKJdaV+LYiCsQIfER8t0ERUnmm7PJTku7ZOZ6FpAF/j6d6Uh6I65PzUe
+         ByecJHnWXtndVGdJX3hcAg/bAvHg7xhkfufewuBA8dSOjS+RGblLkWj7leCBWK1gQBkz
+         XGaaF86P7QfOsCr+L4Ew+kc+nyjq6WPgl9x1Sx9y0QAX+55XAjGeGVdaH7GQiqbkzpx3
+         XocOOJt5CxzXKPzyK+HJL2U+dGJyq8OttpGKzyl5KD0ccPLuImF0cQ+efenUTAuLAp6J
+         DN+w==
+X-Gm-Message-State: AOAM532jvd1C9BUQAmcB8BccL1jOH5l/MyciOFpOXQQII6vv5AYTMMnp
+        vVrOnPYzBRe+KbGHblYKNBHv6sjysf2nWdS7C8s=
+X-Google-Smtp-Source: ABdhPJwnwkAkJ1q/wmyPmrl6FYjETg+oftnturOvq1SlZkbfBqz+4zN1f0ODqYkUFzRtNZHipE0d3p+CxoXOFaRJkPo=
+X-Received: by 2002:a67:dc0c:: with SMTP id x12mr1008048vsj.17.1633924583922;
+ Sun, 10 Oct 2021 20:56:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAPm50aLPxJCiVTqqwiz00oMNiqHggB84sXB3x=tv_HUAd5UktQ@mail.gmail.com>
+ <20211008095123.73b4bubwrpdj6tuz@box.shutemov.name> <CAPm50a+E6mm_qA9h9MSvh4K+WA8Qf6mU=2yig5GyVw9GFJzr8g@mail.gmail.com>
+ <aece8474-4881-4c9-362-a7cb211e5933@google.com>
+In-Reply-To: <aece8474-4881-4c9-362-a7cb211e5933@google.com>
+From:   Hao Peng <flyingpenghao@gmail.com>
+Date:   Mon, 11 Oct 2021 11:55:52 +0800
+Message-ID: <CAPm50aL6vD-nP9Nh8dTLubpTUkRKveXon4izjHG-_aE3L=AD1A@mail.gmail.com>
+Subject: Re: [PATCH v2] mm/huge_memory.c: disable THP with large THP size on
+ small present memory
+To:     David Rientjes <rientjes@google.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        David Hildenbrand <david@redhat.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On Sep 25, 2021, at 1:54 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
-> 
-> From: Nadav Amit <namit@vmware.com>
-> 
-> change_pXX_range() currently does not use mmu_gather, but instead
-> implements its own deferred TLB flushes scheme. This both complicates
-> the code, as developers need to be aware of different invalidation
-> schemes, and prevents opportunities to avoid TLB flushes or perform them
-> in finer granularity.
-> 
-> Use mmu_gather in change_pXX_range(). As the pages are not released,
-> only record the flushed range using tlb_flush_pXX_range().
-
-Andrea pointed out that I do not take care of THP. Actually, there is
-indeed a missing TLB flush on THP, but it is not required due to the
-pmdp_invalidate(). Anyhow, the patch needs to address it cleanly, and
-to try to avoid the flush on pmdp_invalidate(), which at least on x86
-does not appear to be necessary.
-
-There is an additional bug, as tlb_change_page_size() needs to be
-called.
-
--- Jerome,
-
-While I am reviewing my (bad) code, I wanted to understand whether
-update of migration entries requires a TLB flush, because I do not
-think I got that right either.
-
-I thought they should not, but I now am not very sure. I am very
-confused by the following code in migrate_vma_collect_pmd():
-
-        pte_unmap_unlock(ptep - 1, ptl);
-
-        /* Only flush the TLB if we actually modified any entries */
-        if (unmapped)
-                flush_tlb_range(walk->vma, start, end);
-
-
-According to this code flush_tlb_range() is called without the ptl.
-So theoretically there is a possible race:
-
-
-	CPU0				CPU1
-	----				----
-	migrate_vma_collect_pmd()
-	 set_pte_at() [ present->
-			non-present]
-
-	 pte_unmap_unlock()
-
-					madvise(MADV_DONTNEED)
-					 zap_pte_range()
-
-					[ PTE non-present =>
-					  no flush ]
-
-So my questions:
-
-1. Is there a reason the above scenario is invalid?
-2. Does one need to flush a migration entry he updates it?
-
-Thanks,
-Nadav
-
-
+On Mon, Oct 11, 2021 at 6:43 AM David Rientjes <rientjes@google.com> wrote:
+>
+> On Sat, 9 Oct 2021, Hao Peng wrote:
+>
+> > > > After setting the page size to 64k on ARM64, the supported huge page
+> > > > size is 512M and 1TB. Therefore, if the thp is enabled, the size
+> > > > of the thp is 512M. But if THP is enabled, min_free_kbytes will
+> > > > be recalculated. At this time, min_free_kbytes is calculated based
+> > > > on the size of THP.
+> > > >
+> > > > On an arm64 server with 64G memory, the page size is 64k, with thp
+> > > > enabled.
+> > > > cat /proc/sys/vm/min_free_kbytes
+> > > > 3335104
+> > > >
+> > > > Therefore, when judging whether to enable THP by default, consider
+> > > > the size of thp.
+> > > >
+> > > > V2: title suggested by David Hildenbrand
+> > > >
+> > > > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+> > > > ---
+> > > >  mm/huge_memory.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > > index 5e9ef0fc261e..03c7f571b3ae 100644
+> > > > --- a/mm/huge_memory.c
+> > > > +++ b/mm/huge_memory.c
+> > > > @@ -437,7 +437,7 @@ static int __init hugepage_init(void)
+> > > >          * where the extra memory used could hurt more than TLB overhead
+> > > >          * is likely to save.  The admin can still enable it through /sys.
+> > > >          */
+> > > > -       if (totalram_pages() < (512 << (20 - PAGE_SHIFT))) {
+> > > > +       if (totalram_pages() < (512 << (HPAGE_PMD_SHIFT - PAGE_SHIFT))) {
+> > >
+> > > On x86-64 HPAGE_PMD_SHIFT is 21, so you double the amount of memory
+> > > required to enabled THP by default. It doesn't seem to be the intent of
+> > > the patch.
+> > >
+> > > What about something like
+> > >
+> > >         if (totalram_pages() < 256 * HPAGE_PMD_NR)
+> > >
+> > > ?
+> > >
+> > I think that setting the threshold to 512M here is also a rough
+> > estimate. If it is 512M
+> > of memory and 2M of THP is used, there are only 256 pages in total.
+> > This is actually
+> > too small.
+>
+> So does this mean that the original intent of the patch is what you
+> proposed?  It's not discussed in the changelog so it's unclear.
+>
+I have considered this point, but I think the initial threshold is only a
+rough estimate. And THP can be enabled at runtime, so this threshold
+does not need to be accurate.
+> The "extra memory used could hurt more..." statement in the comment
+> depends on other system-wide settings like max_ptes_none and whether you
+> default to faulting hugepages if eligible.  There are scenarios where
+> there is no extra memory used, so I think the intent is for sane default
+> behavior and, as you mention, it can always be enabled at runtime as well.
+>
+> By using 64KB native page sizes on small memory capacity systems, you're
+> already opting into this memory bloat.
+>
+If it is on an arm64 machine with a small memory system, such as a mobile phone,
+it generally uses 4KB native page size, so the page size of THP is 2MB.
+> If we are trying to avoid memory bloat then we likely shouldn't be
+> defaulting max_ptes_none to 511 either and that would be a bigger
+> consideration than a minimum memory capacity to enable thp.
+>
+> Or maybe you are questioning the adjustment to min_free_kbytes and whether
+> that is rational or not for small machine sizes (but large page sizes).
+>
+The main reason for my modification is that excessively large THP page
+size may make
+min_free_kbytes too large when enabled, especially on systems without
+swap that easily
+trigger OOM.
+> > In addition, THP is disabled by default, but you can also enable THP
+> > dynamically.
+> > Thanks.
+>
