@@ -2,145 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3A2428961
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D4D428967
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235397AbhJKJJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:09:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43445 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235182AbhJKJJk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:09:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633943260;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SDNmTw3S09hIeU8Xean1+IG/zrM+6vJwA8pmtg/de7s=;
-        b=ANifVtvDLC56AY8ttB1B4tQKVfAcJgkBVK3lmpRch2oeJLE/ngkpqQu/S7+S/zYKkJwdhp
-        YFIk1a8xj1cdMmsio/KW5ln9mCx4Or8bhYvhubs2UyEjsRT5XijoAtAg4xMaMI1TkOBszG
-        kHCeNJVGhxDcY+qhE/RbcpeeCcKjubM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-396-hIvBPOWyOviZmm_DpWdpRQ-1; Mon, 11 Oct 2021 05:07:31 -0400
-X-MC-Unique: hIvBPOWyOviZmm_DpWdpRQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DCB3EC1A0;
-        Mon, 11 Oct 2021 09:07:29 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.101])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EA5535F707;
-        Mon, 11 Oct 2021 09:07:13 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Halil Pasic <pasic@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xie Yongji <xieyongji@bytedance.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Halil Pasic <pasic@linux.ibm.com>, stable@vger.kernel.org,
-        markver@us.ibm.com, Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, stefanha@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        qemu-devel@nongnu.org
-Subject: Re: [PATCH v3 1/1] virtio: write back F_VERSION_1 before validate
-In-Reply-To: <20211011053921.1198936-1-pasic@linux.ibm.com>
-Organization: Red Hat GmbH
-References: <20211011053921.1198936-1-pasic@linux.ibm.com>
-User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
-Date:   Mon, 11 Oct 2021 11:07:12 +0200
-Message-ID: <87czocx73z.fsf@redhat.com>
+        id S235400AbhJKJLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:11:16 -0400
+Received: from mga03.intel.com ([134.134.136.65]:59970 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235366AbhJKJLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:11:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226790399"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="226790399"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:09:12 -0700
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="490393044"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.229.105]) ([10.249.229.105])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:09:09 -0700
+Subject: Re: [PATCH v3 6/8] perf session: Move event read code to separate
+ function
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>
+References: <cover.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+ <6ab47325fa261deca4ca55ecacf1ca2437abcd78.1633596227.git.alexey.v.bayduraev@linux.intel.com>
+ <YV/0ZZBu01V87A8e@krava>
+ <aa62d0ed-abca-2123-c8bf-cd6bced2fe9c@linux.intel.com>
+ <YWBX+p1vtLXXbpkF@krava>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <5e5ecfcd-57f1-1a06-4ed6-6a1e6983d1f8@linux.intel.com>
+Date:   Mon, 11 Oct 2021 12:08:57 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <YWBX+p1vtLXXbpkF@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11 2021, Halil Pasic <pasic@linux.ibm.com> wrote:
 
-> The virtio specification virtio-v1.1-cs01 states: "Transitional devices
-> MUST detect Legacy drivers by detecting that VIRTIO_F_VERSION_1 has not
-> been acknowledged by the driver."  This is exactly what QEMU as of 6.1
-> has done relying solely on VIRTIO_F_VERSION_1 for detecting that.
->
-> However, the specification also says: "... the driver MAY read (but MUST
-> NOT write) the device-specific configuration fields to check that it can
-> support the device ..." before setting FEATURES_OK.
->
-> In that case, any transitional device relying solely on
-> VIRTIO_F_VERSION_1 for detecting legacy drivers will return data in
-> legacy format.  In particular, this implies that it is in big endian
-> format for big endian guests. This naturally confuses the driver which
-> expects little endian in the modern mode.
->
-> It is probably a good idea to amend the spec to clarify that
-> VIRTIO_F_VERSION_1 can only be relied on after the feature negotiation
-> is complete. Before validate callback existed, config space was only
-> read after FEATURES_OK. However, we already have two regressions, so
-> let's address this here as well.
->
-> The regressions affect the VIRTIO_NET_F_MTU feature of virtio-net and
-> the VIRTIO_BLK_F_BLK_SIZE feature of virtio-blk for BE guests when
-> virtio 1.0 is used on both sides. The latter renders virtio-blk unusable
-> with DASD backing, because things simply don't work with the default.
-> See Fixes tags for relevant commits.
->
-> For QEMU, we can work around the issue by writing out the feature bits
-> with VIRTIO_F_VERSION_1 bit set.  We (ab)use the finalize_features
-> config op for this. This isn't enough to address all vhost devices since
-> these do not get the features until FEATURES_OK, however it looks like
-> the affected devices actually never handled the endianness for legacy
-> mode correctly, so at least that's not a regression.
->
-> No devices except virtio net and virtio blk seem to be affected.
->
-> Long term the right thing to do is to fix the hypervisors.
->
-> Cc: <stable@vger.kernel.org> #v4.11
-> Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
-> Fixes: 82e89ea077b9 ("virtio-blk: Add validation for block size in config space")
-> Fixes: fe36cbe0671e ("virtio_net: clear MTU when out of range")
-> Reported-by: markver@us.ibm.com
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> ---
->
-> @Connie: I made some more commit message changes to accommodate Michael's
-> requests. I just assumed these will work or you as well and kept your
-> r-b. Please shout at me if it needs to be dropped :)
+On 08.10.2021 17:38, Jiri Olsa wrote:
+> On Fri, Oct 08, 2021 at 11:42:18AM +0300, Bayduraev, Alexey V wrote:
+>>
+>>
+>> On 08.10.2021 10:33, Jiri Olsa wrote:
+>>> On Thu, Oct 07, 2021 at 01:25:41PM +0300, Alexey Bayduraev wrote:
+>>>
+>>> SNIP
+>>>
+>>>>  static int
+>>>> -reader__process_events(struct reader *rd, struct perf_session *session,
+>>>> -		       struct ui_progress *prog)
+>>>> +reader__read_event(struct reader *rd, struct perf_session *session,
+>>>> +		   struct ui_progress *prog)
 
-No need to shout, still looks good to me :)
+SNIP
 
-> ---
->  drivers/virtio/virtio.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-> index 0a5b54034d4b..236081afe9a2 100644
-> --- a/drivers/virtio/virtio.c
-> +++ b/drivers/virtio/virtio.c
-> @@ -239,6 +239,17 @@ static int virtio_dev_probe(struct device *_d)
->  		driver_features_legacy = driver_features;
->  	}
->  
-> +	/*
-> +	 * Some devices detect legacy solely via F_VERSION_1. Write
-> +	 * F_VERSION_1 to force LE config space accesses before FEATURES_OK for
-> +	 * these when needed.
-> +	 */
-> +	if (drv->validate && !virtio_legacy_is_little_endian()
-> +			  && device_features & BIT_ULL(VIRTIO_F_VERSION_1)) {
-> +		dev->features = BIT_ULL(VIRTIO_F_VERSION_1);
-> +		dev->config->finalize_features(dev);
-> +	}
-> +
->  	if (device_features & (1ULL << VIRTIO_F_VERSION_1))
->  		dev->features = driver_features & device_features;
->  	else
->
-> base-commit: 60a9483534ed0d99090a2ee1d4bb0b8179195f51
-> -- 
-> 2.25.1
+>>>
+>>> active_decomp should be set/unset within reader__process_events,
+>>> not just for single event read, right?
+>>
+>> No, it should be set before perf_session__process_event/process_decomp_events
+>> and unset after these calls. So active_decomp setting/unsetting is moved in
+>> this patch to the reader__read_event function. This is necessary for multiple
+>> trace reader because it could call reader__read_event in round-robin manner.
+> 
+> hum, is that code already in? I can't see this happening in current code
 
+Probably I don't understand the question. In [PATCH v3 2/8] I introduced 
+active_decomp pointer in perf_session. It is initialized by a pointer to the 
+decompressor object in perf_session. In reader__process_events it is set to 
+the reader decompressor object. And it is reset to the session decompressor 
+object at exit. In this case we do not need to reset it after each 
+perf_session__process_event because this code reads events in loop with 
+constant reader object. Maybe setting of active_decomp should be at the 
+entrance to the reader__process_events, not before reader__process_events, 
+in [PATCH v3 2/8]. All this code is new.
+
+In this patch I separates single event reading and moves setting/resetting
+of active_decomp before/after perf_session__process_event because this is 
+necessary for multiple trace reader. 
+
+Regards,
+Alexey
+
+> 
+> jirka
+> 
+>>
+>> Regards,
+>> Alexey
+>>
+>>>
+>>> jirka
+>>>
+>>>>  	return err;
+>>>>  }
+>>>>  
+>>>> -- 
+>>>> 2.19.0
+>>>>
+>>>
+>>
+> 
