@@ -2,255 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860574294DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2AE64294DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbhJKQ5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:57:41 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:41681 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229816AbhJKQ5k (ORCPT
+        id S232730AbhJKQ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:58:30 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:29420 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232695AbhJKQ62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:57:40 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 37F2880901;
-        Mon, 11 Oct 2021 19:55:38 +0300 (MSK)
+        Mon, 11 Oct 2021 12:58:28 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BFqQV3004394;
+        Mon, 11 Oct 2021 16:56:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=z9lpEwcxl8iP6dhkotpwzmWw260eeMJLo9XGJPeFtrk=;
+ b=d1oth7xDcs7fIryIFmH0fnJypRgT9ycQVOkc05hCENNwpwqXm7ulPS0GQp9tJwAU2RpL
+ ASHkiQa5FM7nQh1TvLn5DQCFKngddqZq4IDYCtKt5NRptAnXu6lZ/jlWqDoK8P+oT3Wj
+ pRjc9rLroP1wNYZ9ZJR+wXwgV7kL6zYe4+Xx6+1OrEQ3jIrmyifl4Plobot6o+KHJUU0
+ /YHRZ6TSZT2TniIULqMfaUt8ph9nYNcvAcK0562Yje6I2GnF4IgW3qznJb5TRyCaXBpR
+ IlZG+56Ns9Ohvl7VoFmvxKbWomLK0CjeW+VjxL1RN8M3EFGyw9QQFJR3hU1Rb1ELFQjf LQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmq3b8yqa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 16:56:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19BGoMq1145017;
+        Mon, 11 Oct 2021 16:55:57 GMT
+Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1anam02lp2040.outbound.protection.outlook.com [104.47.57.40])
+        by aserp3030.oracle.com with ESMTP id 3bkyxq7uw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 16:55:57 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTBfPurqQhIleEiTtYAbXWXXYIFtATY8KIHWVxfF9p1pTX30Md826GbZK+eIuKmldsy2xOduUt5aGd6RO9yV83Fjqp7E8vIsV4S6beSVz4A6IZCSjDjSfkIBZRT07be/TcklRsisdpYUxetNhTRUxML1adturSsj+6ElCI5jKDX/BGiqt1uX/Ob2MaoB3ze7SxMvGWJvxc/zG+fsH+fXBCuCkxyp9K5BTUQ8yXrBhN0vWHc3XhzP8NjVPZPBjNvoqy/2Bt+GYcNQsD+IKVNKGPJTev+ovfVlPrKnIUSxXOTAipbGmsnr07VKqt5LwIxzdPEmOzWKoVu99H8y0T9a+w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=z9lpEwcxl8iP6dhkotpwzmWw260eeMJLo9XGJPeFtrk=;
+ b=Smf9Qi9prWE8vgh440qCE0ZqUY/4BE/XdYFUL8zfNwqvcGz92IdjrmgUmOStPQ9+VPk9AjIV3jIHOtWmlRhBc1dnzrUwsQFQ+8hAMv1QCFtxua8OIIiIegxFg7YAGZs8R028zhtkwTUTr+aekydXor3/2p5G+br9sdOUIHrEMFC1diT8MO3eM1RgzRBJkxVTmj9Y7m/dL6PkIg/AUJLq+6I+ULmCQU9bGWghWxkQ7LXDccvUHwzbnv71Q6U6PwsuJosZkiuhqV0vvOCJum7s5Q3gCLlb7GAyLBiAGRvvkQ3tGKv2xKdr1u6bRlSapD0jB0xLeD91Mm01T1iS0cRXmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1633971338;
-        bh=22cj4zb7cIg8ILTzWd3ObiPRTCpiobozufK3uDfMdw8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=Od5qxkUDoRm3+5BdN0czT2LzjoShwi09s0xfV9JiQ3j9pfx2gOPs8WBwLeQQZSmhp
-         8eDM7L4Iq/nvLg/6JshWnh0vjLMaoFfhsoaRBUJuQi4Kr6LRAsCF16qlCsiZ3Yvmma
-         3Y1FnwMtVCne5+7b1V7xZuyEty5dwfpUYRry0J/0=
-Received: from [192.168.211.33] (192.168.211.33) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 11 Oct 2021 19:55:37 +0300
-Message-ID: <7e5b8dc9-9989-0e8a-9e8d-ae26b6e74df4@paragon-software.com>
-Date:   Mon, 11 Oct 2021 19:55:37 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [PATCH] fs/ntfs3: Check for NULL if ATTR_EA_INFO is incorrect
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z9lpEwcxl8iP6dhkotpwzmWw260eeMJLo9XGJPeFtrk=;
+ b=OsVnSrAhXkmPnrZ72XJSo09ZXuzZOPPpJQXjAcWccR+aPWoCzFSHl9zIm9cPZZVs+/26f9yT2zsuwIRShejqMUrmLhhDjG74sg0YK8HTK0Jq7y/2Rq4y+85R7J/ESZpAhsNc6qGYwfHhCnW+OJkv6m6HfekM+76G1wXO8kwyyI4=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com (2603:10b6:510:e0::9)
+ by PH0PR10MB4694.namprd10.prod.outlook.com (2603:10b6:510:3e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Mon, 11 Oct
+ 2021 16:55:55 +0000
+Received: from PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::958c:1aaa:ad5:40c6]) by PH0PR10MB5433.namprd10.prod.outlook.com
+ ([fe80::958c:1aaa:ad5:40c6%8]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
+ 16:55:55 +0000
+Subject: Re: [PATCH] staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        YueHaibing <yuehaibing@huawei.com>
+References: <20211011152941.12847-1-vegard.nossum@oracle.com>
+ <YWRaJfSqKsTqsRdr@kroah.com>
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+Message-ID: <df17fd33-c6be-bd4f-e000-4d39a72ba733@oracle.com>
+Date:   Mon, 11 Oct 2021 18:55:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <YWRaJfSqKsTqsRdr@kroah.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Mohammad Rasim <mohammad.rasim96@gmail.com>
-CC:     <ntfs3@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>,
-        Kari Argillander <kari.argillander@gmail.com>
-References: <227c13e3-5a22-0cba-41eb-fcaf41940711@paragon-software.com>
- <20211003175036.ly4m3lw2bjoippsh@kari-VirtualBox>
- <c892016c-3e50-739b-38d2-010f02d52019@gmail.com>
- <bcbb8ddc-3ddf-4a91-6e92-d5cee2722bad@paragon-software.com>
- <2998a9b9-8ea0-6a44-7093-66c7a08dcab2@gmail.com>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-In-Reply-To: <2998a9b9-8ea0-6a44-7093-66c7a08dcab2@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.211.33]
-X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR0P264CA0285.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:100:1::33) To PH0PR10MB5433.namprd10.prod.outlook.com
+ (2603:10b6:510:e0::9)
+MIME-Version: 1.0
+Received: from [192.168.1.13] (86.217.161.200) by PR0P264CA0285.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.25 via Frontend Transport; Mon, 11 Oct 2021 16:55:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1d92914d-4546-4936-acae-08d98cd7fdc6
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4694:
+X-Microsoft-Antispam-PRVS: <PH0PR10MB46946C3CD939E6426550722F97B59@PH0PR10MB4694.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: snxsiHL3bmBveG+iQxjX5dcnOL2MnFHSM4qQNyRJtZ0cFk/ag9DKhFlJ+gAcxUuJwtSkgZwhWt0cq1+sv+TZhYph0p+OX5/clm+hdDI6/3fdgSlOZrqIcoEA59kx73oM1viCIqWpEFB1iOiOj0UxT8BvISQgTMoOWm3oDc5IK5SsvnPdD+UsmW8e7UNfRujPj6mPtKVmMEHSK0gAxf9zJzPCqnfRqLnCvodtzduDnTf9P1MHGimStAV+yGJkh4aFWBYKpgVob3iIQva1EVkmVSRDK4MeJc0uEJkXvEMIknjDt7neQeya/gkQ2qtn3L72zyO/RQepBQiJRPFS0yLWnNGTdw1YZjoiPGmG16Vca4h/58PtU+xl/Hhwqm6Wl0cgjFwSLks9s2zwmsa2HuoyGtfo4FP6u+GpzE7n8DPBRukqIOy2uIFzwDi1MP+GQj7+Dyw9vTfjqwuDa2WC34hjzBSmLIz8xg5IBpVhE4TgURG3g8zT49LmYkzmcE+/L2iAVOXV2nG3hFx6hyYBLhQLQZH2AqT8D9rn61+WhsYLO/JqeB1M3oGyr2qrB50EcR5aatZb51hnJk+Bhd3WpLKBVTA4L/QskNcBS57SUbvZ2UJnsXHhaTXOUOs38cbXtM98dz5ag83RMTDUfOcqZNxhHKlil/eHy9tx68McxRru86091LbNklBb6JjHSMcQNSXvo8rQI5EI1srXrN7TsRrfhCNIqzoYVADtxtaR7CnNGDQbN0zkmdusJ4CxzfPuLespDn8RwhyhOwJWEOMiYliOV3AHgfsX290I7hZMsagy1KI3pMOt8TEZjnh9dRTkGdkQCHdrjTOcNzb3KJ2bw54PJiRXcGehCDtghxVXrq6cm3EAO27Nkhigo2vBglW5sVPdOxy6a8lAH26gX12qUXSHQg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5433.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(5660300002)(6486002)(86362001)(4326008)(956004)(186003)(26005)(8936002)(966005)(83380400001)(54906003)(8676002)(36756003)(31686004)(6666004)(53546011)(52116002)(508600001)(66556008)(38100700002)(31696002)(66946007)(6916009)(38350700002)(66476007)(2906002)(16576012)(44832011)(316002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXRDT2J5VS9aaSs4aENhWmF4M0FENVRuMVBWTkJrMVY2bUNYL2ZLTjJKajc1?=
+ =?utf-8?B?SEtSdDhJbTJxeXRCNURxdUJrTDhWRTc5VjJFTEttSjl4SDZ4akV5NTVGcVZF?=
+ =?utf-8?B?RklENzFJeHpjWVdITzVvS2crZU92NUM0bC9lOC9IVW1yTnI3ZzZOYUd1bEE1?=
+ =?utf-8?B?Wk1ESVZJaEgvbmxlcW9VM0s4OFFKTXBUbWxLbWl4VUgzbG93RW5IOElUT3dk?=
+ =?utf-8?B?OTRDd0hXbWRMamZ6ekVucFdvaVE2ZXY3dlBWOVZQTWR0Q000Y2xzbVlTZU9Q?=
+ =?utf-8?B?UHhOdE1wUGVQUDY4eTcrckdpMi9obUNTRis4c3A3NkZKQlpkQlBWMXo0Y285?=
+ =?utf-8?B?OU4xMlRuYmNaQ01oMTUzMmdEekYwcERBbkM5RVdQdHB6ZU9GMTd6NVVaemVC?=
+ =?utf-8?B?QklQR2lLWlo1TmRyb29DWVBJVmpwWHJFZ2hhdXYyK2t2OVVFUm1GeDA4Um9U?=
+ =?utf-8?B?SW5nUWJBL2wwc3pvUkVtaDRIVldWdTNva3N4MjhlOVNUYjBnUGxIVmtXU3J5?=
+ =?utf-8?B?VHZJQ1ovU0hxZXpxQktnUDFoSGIydVF5NGg5bDNxRWkwVG5wRXBTbDlDdFNT?=
+ =?utf-8?B?R1V1SnJkTTQzekJQWG1DeEZrb3FMTitmVktqSUwyVTl6aStxaWllSWFRaGRz?=
+ =?utf-8?B?WVVQWkR3QUhZYmhOY2V4RjFyODZESW9vcTRuSTdGSHpCdUJEVVYwWmg0Q0Fz?=
+ =?utf-8?B?eDVUdEhsdm5SaHdTcFRaMVJJdy9OWVRBa2g3aDZZMmlud0dDeHFPQTZuZ3dT?=
+ =?utf-8?B?OEJaNWJQUnA1cjFGcnR1b1IrcVAzTEN5dlhObGRVdTB2RTdtUnZKQTJ2bWRK?=
+ =?utf-8?B?Ykl6STRRSzNCUmc4Vzd2ZWJhcjFsQXcrWGlvck1RSEhQVHBUYUYwVmxVREE3?=
+ =?utf-8?B?NXBxS3Jib0NIakNIYU1Ea1pPLzU4ak9DQzJpVjRiU2tsdTloNk5EVUowRDVD?=
+ =?utf-8?B?Qm9BNlozV0pHODlTRkxLK05GbjdsVERQZnN0R1ZKWDEzdnFHdHNwQzJPL1k4?=
+ =?utf-8?B?NCtISTk1QXlaQWEraHlrRFV1WTBqQ1ZXUXBPcER3YnRQcjVGWlNIc2ZPZVBh?=
+ =?utf-8?B?Y1FaNXdUdFJFZVd6WkcyQ0JsV0R3VDY5Qmw4alZjNnRnT2ZhQ054WnlyVCt6?=
+ =?utf-8?B?UWR1K0NiK1ZiZnpZY0RSNjRUM1dmT3prMVZPWktJaFhPN1RpcVgyRlRlMkhH?=
+ =?utf-8?B?cnV3alpldFVOSmIwV3BBNFVGU0NSZUR0eVVKcWdvekhORTFlRWNOcDVWNzdr?=
+ =?utf-8?B?b3RjNmJ3aENkMEtraEl2UkhsaTBjbThDajFlQ01QNWZLaEJTZDdBV2lBQkd0?=
+ =?utf-8?B?YmhGS09qeUozeWJzUGlYMmZISThlaVlReHFkY2owVWd2N1U2dE1JQ2FaS0Vv?=
+ =?utf-8?B?Ly80VnVjZUlkRDJ3YmZPTnlwNkNGaTdVT09rb2ZQOE1nSEpiaU4ya0JBdFhl?=
+ =?utf-8?B?TWdCamkyOTVhL2dDc3U3SlhOY3cwc2NGbzlCQUZjZ0o5WVZBMnRQaWhXQXIx?=
+ =?utf-8?B?MnJJbWw0NjkrRHFTRzNGcWJwa3dNemZsQ3pMMU1CTEQzc2hjZlVURlpHVmk1?=
+ =?utf-8?B?ZG1EZXZBSzdkZDJHOHRoOGpFT0VRNW56d0ljOURjSVM4UnNsSUhOV05weGZR?=
+ =?utf-8?B?T0tXNzRlRjJ2ZjBWT2VrSDYyRnhHWUFWclZ0Vm0ycmFHNTZSVWZIcUZZRm1V?=
+ =?utf-8?B?VG0raFBBWFVDSmVFSldoZ3k5WlF4S2R2eDk5OE4vZ094TkdLcnBqYWdoeWY5?=
+ =?utf-8?Q?Dr3F14XxJIer+rsl5TAQMNS2RxNHWwqjkvNI9r9?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d92914d-4546-4936-acae-08d98cd7fdc6
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5433.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 16:55:55.5439
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wdOP0YfBEyGLjve7oU2W3L25g70sKNmF1B8HXEjOsyzXyi1S3p0qZsNYORmxL9Ll35iN120gWCJKVAqhUVqNc9ygMVDngLQ3MzYGVGVAUYA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4694
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10134 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 mlxscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110110099
+X-Proofpoint-GUID: xxPfC-REG_BVoCdiDbzHOyHqvcfLuiKn
+X-Proofpoint-ORIG-GUID: xxPfC-REG_BVoCdiDbzHOyHqvcfLuiKn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
 
-Presumably we found the code, that panics.
-But it panics in place, where pointer must be always not NULL.
-Please try patch provided below.
-If it helps (there is no panic), then check dmesg for
-message "Looks like internal error".
-And please compare copied folders.
-This way it will be clear what file / folder cause this logic error.
-
-Thanks for all your help so far.
-
-[PATCH] fs/ntfs3: Check for NULL pointers in ni_try_remove_attr_list
-
-All these checks must be redundant.
-If this commit helps, then there is bug in code.
-
-Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
----
- fs/ntfs3/frecord.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index ecb965e4afd0..37e19fe7d496 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -705,18 +705,35 @@ static int ni_try_remove_attr_list(struct ntfs_inode *ni)
- 			continue;
- 
- 		mi = ni_find_mi(ni, ino_get(&le->ref));
-+		if (!mi) {
-+			/* Should never happened, 'cause already checked. */
-+			goto bad;
-+		}
- 
- 		attr = mi_find_attr(mi, NULL, le->type, le_name(le),
- 				    le->name_len, &le->id);
-+		if (!attr) {
-+			/* Should never happened, 'cause already checked. */
-+			goto bad;
-+		}
- 		asize = le32_to_cpu(attr->size);
- 
- 		/* Insert into primary record. */
- 		attr_ins = mi_insert_attr(&ni->mi, le->type, le_name(le),
- 					  le->name_len, asize,
- 					  le16_to_cpu(attr->name_off));
--		id = attr_ins->id;
-+		if (!attr_ins) {
-+			/*
-+			 * Internal error.
-+			 * Either no space in primary record (already checked).
-+			 * Either tried to insert another
-+			 * non indexed attribute (logic error).
-+			 */
-+			goto bad;
-+		}
- 
- 		/* Copy all except id. */
-+		id = attr_ins->id;
- 		memcpy(attr_ins, attr, asize);
- 		attr_ins->id = id;
- 
-@@ -732,6 +749,10 @@ static int ni_try_remove_attr_list(struct ntfs_inode *ni)
- 	ni->attr_list.dirty = false;
- 
- 	return 0;
-+bad:
-+	ntfs_inode_err(&ni->vfs_inode, "Looks like internal error");
-+	make_bad_inode(&ni->vfs_inode);
-+	return -EINVAL;
- }
- 
- /*
--- 
-2.33.0
-
-
-
-On 06.10.2021 20:42, Mohammad Rasim wrote:
-> 
-> On 10/6/21 17:47, Konstantin Komarov wrote:
+On 10/11/21 5:37 PM, Greg Kroah-Hartman wrote:
+> On Mon, Oct 11, 2021 at 05:29:41PM +0200, Vegard Nossum wrote:
+>> Fix the following build/link errors:
 >>
->> On 04.10.2021 23:39, Mohammad Rasim wrote:
->>> On 10/3/21 20:50, Kari Argillander wrote:
->>>> On Wed, Sep 29, 2021 at 07:35:43PM +0300, Konstantin Komarov wrote:
->>>>> This can be reason for reported panic.
->>>>> Fixes: 4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
->>>> I see that you have include this to devel branch but you did not send V2
->>>> [1]. I also included Mohammad Rasim to this thread. Maybe they can test
->>>> this patch. Rasim can you test [2] if your problem will be fixed with
->>>> this tree. Or just test this patch if you prefer that way.
->>>>
->>>> [1]: github.com/Paragon-Software-Group/linux-ntfs3/commit/35afb70dcfe4eb445060dd955e5b67d962869ce5
->>>> [2]: github.com/Paragon-Software-Group/linux-ntfs3/tree/devel
->>> Yeah unfortunately the problem still exist, moving the buildroot git tree from my nvme ext4 partition to my wd ntfs partition still causes the panic.
->>>
->>> Note that i used the master branch if that matters but it contains the same commit
->>>
->>>
->>> Regards
->>>
->> Is panic the same as old one?
+>>   ld: drivers/staging/ks7010/ks_hostif.o: in function `michael_mic.constprop.0':
+>>   ks_hostif.c:(.text+0x95b): undefined reference to `crypto_alloc_shash'
+>>   ld: ks_hostif.c:(.text+0x97a): undefined reference to `crypto_shash_setkey'
+>>   ld: ks_hostif.c:(.text+0xa13): undefined reference to `crypto_shash_update'
+>>   ld: ks_hostif.c:(.text+0xa28): undefined reference to `crypto_shash_update'
+>>   ld: ks_hostif.c:(.text+0xa48): undefined reference to `crypto_shash_finup'
+>>   ld: ks_hostif.c:(.text+0xa6d): undefined reference to `crypto_destroy_tfm'
 >>
->> BUG: kernel NULL pointer dereference, address: 000000000000000e
->> RIP: 0010:ni_write_inode+0xe6b/0xed0 [ntfs3]
->> etc.
+>> Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+>> ---
+>>  drivers/staging/ks7010/Kconfig | 3 +++
+>>  1 file changed, 3 insertions(+)
 > 
-> This is the complete panic log:
+> What commit caused these issues?
 > 
-> [  241.985898] ntfs3: sdb1: ino=724a0, "buildroot-raw" add mount option "acl" to use acl
-> [  241.985905] ntfs3: sdb1: ino=724a0, "buildroot-raw" add mount option "acl" to use acl
-> [  241.987109] ntfs3: sdb1: ino=724a1, ".git" add mount option "acl" to use acl
-> [  241.987114] ntfs3: sdb1: ino=724a1, ".git" add mount option "acl" to use acl
-> [  241.987630] ntfs3: sdb1: ino=724af, "branches" add mount option "acl" to use acl
-> [  241.987634] ntfs3: sdb1: ino=724af, "branches" add mount option "acl" to use acl
-> [  241.987645] ntfs3: sdb1: ino=724b0, "hooks" add mount option "acl" to use acl
-> [  241.987647] ntfs3: sdb1: ino=724b0, "hooks" add mount option "acl" to use acl
-> [  241.987670] ntfs3: sdb1: ino=724b1, "info" add mount option "acl" to use acl
-> [  241.987672] ntfs3: sdb1: ino=724b1, "info" add mount option "acl" to use acl
-> [  246.614529] BUG: kernel NULL pointer dereference, address: 000000000000000e
-> [  246.614531] #PF: supervisor read access in kernel mode
-> [  246.614532] #PF: error_code(0x0000) - not-present page
-> [  246.614533] PGD 0 P4D 0
-> [  246.614535] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [  246.614536] CPU: 8 PID: 196 Comm: kworker/u64:7 Not tainted 5.14.0-rc7-MANJARO+ #51
-> [  246.614538] Hardware name: Micro-Star International Co., Ltd MS-7C02/B450 TOMAHAWK MAX (MS-7C02), BIOS 3.B0 05/12/2021
-> [  246.614539] Workqueue: writeback wb_workfn (flush-8:16)
-> [  246.614543] RIP: 0010:ni_write_inode+0xd69/0xe40
-> [  246.614545] Code: 4f 06 44 8b 40 04 41 8b 37 48 89 c3 44 0f b7 48 0a 48 8b 7c 24 18 4c 01 fa 44 89 44 24 30 e8 ae 32 01 00 8b 54 24 30 48 89 de <44> 0f b7 48 0e 48 89 c7 44 89 4c 24 28 e8 85 fc 97 00 44 8b 4c 24
-> [  246.614546] RSP: 0018:ffffac2dc09cbac8 EFLAGS: 00010286
-> [  246.614548] RAX: 0000000000000000 RBX: ffff98b0d08ac430 RCX: 0000000000000000
-> [  246.614548] RDX: 0000000000000050 RSI: ffff98b0d08ac430 RDI: ffff98b0d88b31a4
-> [  246.614549] RBP: ffff98b0d654f7a0 R08: ffff98b0d5be0000 R09: 0000000000000001
-> [  246.614550] R10: 0000000000000002 R11: 0000000000000002 R12: 0000000000000000
-> [  246.614550] R13: ffff98b0d4f6a000 R14: ffff98b0da2fcc80 R15: ffff98b0d08ab060
-> [  246.614551] FS:  0000000000000000(0000) GS:ffff98b7dea00000(0000) knlGS:0000000000000000
-> [  246.614552] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  246.614553] CR2: 000000000000000e CR3: 00008001011f8000 CR4: 0000000000350ee0
-> [  246.614554] Call Trace:
-> [  246.614558]  __writeback_single_inode+0x25a/0x310
-> [  246.614560]  writeback_sb_inodes+0x1fc/0x480
-> [  246.614562]  __writeback_inodes_wb+0x4c/0xe0
-> [  246.614563]  wb_writeback+0x1ff/0x2f0
-> [  246.614564]  wb_workfn+0x2f8/0x510
-> [  246.614566]  ? psi_task_switch+0xb9/0x1e0
-> [  246.614567]  ? _raw_spin_unlock+0x16/0x30
-> [  246.614570]  process_one_work+0x1e3/0x3b0
-> [  246.614573]  worker_thread+0x50/0x3b0
-> [  246.614574]  ? process_one_work+0x3b0/0x3b0
-> [  246.614575]  kthread+0x141/0x170
-> [  246.614577]  ? set_kthread_struct+0x40/0x40
-> [  246.614579]  ret_from_fork+0x22/0x30
-> [  246.614582] Modules linked in:
-> [  246.614584] CR2: 000000000000000e
-> [  246.614585] ---[ end trace 7c7c742732266d51 ]---
-> [  246.614585] RIP: 0010:ni_write_inode+0xd69/0xe40
-> [  246.614587] Code: 4f 06 44 8b 40 04 41 8b 37 48 89 c3 44 0f b7 48 0a 48 8b 7c 24 18 4c 01 fa 44 89 44 24 30 e8 ae 32 01 00 8b 54 24 30 48 89 de <44> 0f b7 48 0e 48 89 c7 44 89 4c 24 28 e8 85 fc 97 00 44 8b 4c 24
-> [  246.614587] RSP: 0018:ffffac2dc09cbac8 EFLAGS: 00010286
-> [  246.614588] RAX: 0000000000000000 RBX: ffff98b0d08ac430 RCX: 0000000000000000
-> [  246.614589] RDX: 0000000000000050 RSI: ffff98b0d08ac430 RDI: ffff98b0d88b31a4
-> [  246.614589] RBP: ffff98b0d654f7a0 R08: ffff98b0d5be0000 R09: 0000000000000001
-> [  246.614590] R10: 0000000000000002 R11: 0000000000000002 R12: 0000000000000000
-> [  246.614590] R13: ffff98b0d4f6a000 R14: ffff98b0da2fcc80 R15: ffff98b0d08ab060
-> [  246.614591] FS:  0000000000000000(0000) GS:ffff98b7dea00000(0000) knlGS:0000000000000000
-> [  246.614592] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  246.614592] CR2: 000000000000000e CR3: 00008001011f8000 CR4: 0000000000350ee0
-> [  246.991844] ntfs3: 6354 callbacks suppressed
-> [  246.991846] ntfs3: sdb1: ino=73f4b, ".gstreamer1-mm.mk.SxnMfX" add mount option "acl" to use acl
-> [  246.993111] ntfs3: sdb1: ino=73f4c, ".Config.in.2oeC7E" add mount option "acl" to use acl
-> [  246.993135] ntfs3: sdb1: ino=73f4d, ".gstreamer1.hash.MS4lZ2" add mount option "acl" to use acl
-> [  246.993159] ntfs3: sdb1: ino=73f4e, ".gstreamer1.mk.YFKaZf" add mount option "acl" to use acl
-> [  246.993189] ntfs3: sdb1: ino=73f4f, ".Config.in.KMudor" add mount option "acl" to use acl
-> [  246.993360] ntfs3: sdb1: ino=73f50, ".gtest.hash.2RTkJH" add mount option "acl" to use acl
-> [  246.993383] ntfs3: sdb1: ino=73f51, ".gtest.mk.KTCGz4" add mount option "acl" to use acl
-> [  246.993403] ntfs3: sdb1: ino=73f52, ".Config.in.8W4t5y" add mount option "acl" to use acl
-> [  246.993423] ntfs3: sdb1: ino=73f53, ".gtk2-engines.hash.AOVwL1" add mount option "acl" to use acl
-> [  246.994082] ntfs3: sdb1: ino=73f54, ".gtk2-engines.mk.WB8hM4" add mount option "acl" to use acl
+> thanks,
 > 
+> greg k-h
 > 
->>>>> Signed-off-by: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
->>>>> ---
->>>>>    fs/ntfs3/frecord.c | 4 +++-
->>>>>    1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
->>>>> index 9a53f809576d..007602badd90 100644
->>>>> --- a/fs/ntfs3/frecord.c
->>>>> +++ b/fs/ntfs3/frecord.c
->>>>> @@ -3080,7 +3080,9 @@ static bool ni_update_parent(struct ntfs_inode *ni, struct NTFS_DUP_INFO *dup,
->>>>>                           const struct EA_INFO *info;
->>>>>                             info = resident_data_ex(attr, sizeof(struct EA_INFO));
->>>>> -                       dup->ea_size = info->size_pack;
->>>>> +                       /* If ATTR_EA_INFO exists 'info' can't be NULL. */
->>>>> +                       if (info)
->>>>> +                               dup->ea_size = info->size_pack;
->>>>>                   }
->>>>>           }
->>>>>    --
->>>>> 2.33.0
->>>>>
+
+So I found this commit that appears to (attempt to) fix this issue already:
+
+commit 3e5bc68fa596874500e8c718605aa44d5e42a34c
+Author: YueHaibing <yuehaibing@huawei.com>
+Date:   Fri Jun 21 15:24:55 2019 +0800
+
+    staging: ks7010: Fix build error
+
+    when CRYPTO is m and KS7010 is y, building fails:
+
+    drivers/staging/ks7010/ks_hostif.o: In function
+`michael_mic.constprop.13':
+    ks_hostif.c:(.text+0x560): undefined reference to `crypto_alloc_shash'
+    ks_hostif.c:(.text+0x580): undefined reference to `crypto_shash_setkey'
+    ks_hostif.c:(.text+0x5e0): undefined reference to `crypto_destroy_tfm'
+    ks_hostif.c:(.text+0x614): undefined reference to `crypto_shash_update'
+    ks_hostif.c:(.text+0x62c): undefined reference to `crypto_shash_update'
+    ks_hostif.c:(.text+0x648): undefined reference to `crypto_shash_finup'
+
+    Add CRYPTO and CRYPTO_HASH dependencies to fix this.
+
+    Reported-by: Hulk Robot <hulkci@huawei.com>
+    Fixes: 8b523f20417d ("staging: ks7010: removed custom Michael MIC
+implementation.")
+    Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Notes (mainline):
+    Fixes: 8b523f20417d ("staging: ks7010: removed custom Michael MIC
+implementation.") # v5.1-rc1
+    Lore:
+https://lore.kernel.org/r/20190621034221.36708-1-yuehaibing@huawei.com #
+driverdev-devel, lkml
+
+However, it was reverted in v5.2-rc6:
+
+commit a4961427e74948ced9ddd40f3efb2a206b87e4c8
+Author: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Mon Jun 24 16:45:34 2019 +0800
+
+    Revert "staging: ks7010: Fix build error"
+
+    This reverts commit 3e5bc68fa596874500e8c718605aa44d5e42a34c as it
+    causes build errors in linux-next.
+
+    Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Cc: YueHaibing <yuehaibing@huawei.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+Looks like this was the build error in question:
+
+https://lore.kernel.org/all/20190624173855.3c188955@canb.auug.org.au/
+
+To be honest I don't really see what the full recursive dependency cycle
+is, but I think "select" should work instead -- Arnd?
+
+Maybe we can add this:
+
+Fixes: 8b523f20417d ("staging: ks7010: removed custom Michael MIC
+implementation.")
+Fixes: 3e5bc68fa5968 ("staging: ks7010: Fix build error")
+Fixes: a4961427e7494 ("Revert "staging: ks7010: Fix build error"")
+
+
+Vegard
