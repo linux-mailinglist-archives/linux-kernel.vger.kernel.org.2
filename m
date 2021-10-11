@@ -2,147 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0364289BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9F4F4289C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbhJKJhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:37:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39250 "EHLO mail.kernel.org"
+        id S235532AbhJKJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235443AbhJKJhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:37:51 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7730860E8B;
-        Mon, 11 Oct 2021 09:35:51 +0000 (UTC)
-Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1mZrin-00FyQD-Cg; Mon, 11 Oct 2021 10:35:49 +0100
-Date:   Mon, 11 Oct 2021 10:35:48 +0100
-Message-ID: <87wnmjq4y3.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Stefano Stabellini <sstabellini@kernel.org>,
+        id S230475AbhJKJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D06360EDF;
+        Mon, 11 Oct 2021 09:37:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633945061;
+        bh=YyuuSg4+Xw1WBeodqUV8qTEhir5tsvWm6bEneSlHOmM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i59HQEsRw6XeL+wWM/VpKT61n1VUj0RezFOCjc+1AthZno/w4EKiQ4PAZfRzpXHbs
+         rRtiFU/s5A2ARGgjZqjyUtCPpPmvI7itUB8+OIkU69WuIAbfy6uYeC/NzCvk0WRrQN
+         Z3xsGY1KDeSChYzBHmLDiFnJG6I14FlxtXTV57f3XxFvj5mqCevNecNIqdbBq2LdJo
+         5REpks8Dc6RbBI0lCZE9EGHhPL4YGrBAGb+qCtVqFszz0ycd76ybGzMPwrfwDLCaZy
+         eIWNHd2cCloOSxOhnhPsp2XpAniAjsWuvMcU/feK35TSsS070j7U2Vuoy6LwcEl8hf
+         WFrunQPR7oIWQ==
+Date:   Mon, 11 Oct 2021 11:37:36 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Sven Peter <sven@svenpeter.dev>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
         linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Artem Kashkanov <artem.kashkanov@intel.com>,
-        Like Xu <like.xu.linux@gmail.com>,
-        Zhu Lingshan <lingshan.zhu@intel.com>
-Subject: Re: [PATCH v3 12/16] KVM: Move x86's perf guest info callbacks to generic KVM
-In-Reply-To: <20210922000533.713300-13-seanjc@google.com>
-References: <20210922000533.713300-1-seanjc@google.com>
-        <20210922000533.713300-13-seanjc@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: seanjc@google.com, peterz@infradead.org, mingo@redhat.com, acme@kernel.org, will@kernel.org, mark.rutland@arm.com, guoren@kernel.org, nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, pbonzini@redhat.com, boris.ostrovsky@oracle.com, jgross@suse.com, alexander.shishkin@linux.intel.com, jolsa@redhat.com, namhyung@kernel.org, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, sstabellini@kernel.org, linux-arm-kernel@lists.infradead.org, linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, kvm@vger.kernel.org, xen-devel@lists.xenproject.org, artem.kashkanov@intel.com, like.xu.linux@gmail.com, lingshan.zhu@intel.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "R.T.Dickinson" <rtd@a-eon.com>,
+        Matthew Leaman <matthew@a-eon.biz>,
+        Darren Stevens <darren@stevens-zone.net>
+Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
+Message-ID: <YWQF4D40a/qpfM3/@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Christian Zigotzky <chzigotzky@xenosoft.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "R.T.Dickinson" <rtd@a-eon.com>, Matthew Leaman <matthew@a-eon.biz>,
+        Darren Stevens <darren@stevens-zone.net>
+References: <20211008163532.75569-1-sven@svenpeter.dev>
+ <YWFqr4uQGlNgnT1z@ninjato>
+ <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
+ <11d8f784-c90a-4e6c-9abd-564cb5241cb7@www.fastmail.com>
+ <YWP71c8cXlE3PcIo@kunai>
+ <5ae30425-d6d4-5688-36e3-58cc6c6ff264@marcan.st>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5TP+rHLVHtolMC1P"
+Content-Disposition: inline
+In-Reply-To: <5ae30425-d6d4-5688-36e3-58cc6c6ff264@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 22 Sep 2021 01:05:29 +0100,
-Sean Christopherson <seanjc@google.com> wrote:
-> 
-> Move x86's perf guest callbacks into common KVM, as they are semantically
-> identical to arm64's callbacks (the only other such KVM callbacks).
-> arm64 will convert to the common versions in a future patch.
-> 
-> Implement the necessary arm64 arch hooks now to avoid having to provide
-> stubs or a temporary #define (from x86) to avoid arm64 compilation errors
-> when CONFIG_GUEST_PERF_EVENTS=y.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h |  8 +++++
->  arch/arm64/kvm/arm.c              |  5 +++
->  arch/x86/include/asm/kvm_host.h   |  3 ++
->  arch/x86/kvm/x86.c                | 53 +++++++------------------------
->  include/linux/kvm_host.h          | 10 ++++++
->  virt/kvm/kvm_main.c               | 44 +++++++++++++++++++++++++
->  6 files changed, 81 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index ed940aec89e0..828b6eaa2c56 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -673,6 +673,14 @@ int io_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa);
->  void kvm_perf_init(void);
->  void kvm_perf_teardown(void);
->  
-> +#ifdef CONFIG_GUEST_PERF_EVENTS
-> +static inline bool kvm_arch_pmi_in_guest(struct kvm_vcpu *vcpu)
 
-Pardon my x86 ignorance, what is PMI? PMU Interrupt?
+--5TP+rHLVHtolMC1P
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +{
-> +	/* Any callback while a vCPU is loaded is considered to be in guest. */
-> +	return !!vcpu;
-> +}
-> +#endif
 
-Do you really need this #ifdef?
+> > Because MAINTAINER dependencies can be a bit nasty, I suggest I drop the
+> > MAINTAINER additions for now and we add them later. Then, you can add
+> > the pasemi-core as well. D'accord?
+> >=20
+>=20
+> We can just split the MAINTAINERS changes into a separate patch and I can
+> push that one through the SoC tree, along with other MAINTAINERS updates.
+> Does that work for everyone?
 
-> +
->  long kvm_hypercall_pv_features(struct kvm_vcpu *vcpu);
->  gpa_t kvm_init_stolen_time(struct kvm_vcpu *vcpu);
->  void kvm_update_stolen_time(struct kvm_vcpu *vcpu);
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index e9a2b8f27792..2b542fdc237e 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -500,6 +500,11 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
->  	return vcpu_mode_priv(vcpu);
->  }
->  
-> +unsigned long kvm_arch_vcpu_get_ip(struct kvm_vcpu *vcpu)
-> +{
-> +	return *vcpu_pc(vcpu);
-> +}
-> +
->  /* Just ensure a guest exit from a particular CPU */
->  static void exit_vm_noop(void *info)
->  {
+That would also work for me. Thank you!
 
-The above nits notwithstanding,
 
-Acked-by: Marc Zyngier <maz@kernel.org>
+--5TP+rHLVHtolMC1P
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	M.
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Without deviation from the norm, progress is not possible.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFkBdwACgkQFA3kzBSg
+KbYFeRAAn3V00WXZcUzFlKUIvdYT0C7Yni7P6e8BRdY0CYPcLdAQdT588ZDnztXb
+F1+gVrKcGjcSW0PH9Poor5cE1bH3BtCWl3bM0lVC3QXPSLEA23ZjO/WA+mWDLnNM
+y08LX6qn0jNDSf7MEgWCkKA7gpYTmxwZr4+hanflNHp2V+imR1vp803p59rSpX4+
+ZO+bm4HBy3A0VvTU26uzIbOJgpn5cO9vdZ6bLdw4Q6CdYmr1rq3p0mytsPEnnIOz
+gDuacJ9HwN3xmRa1cdMhXOKTgdryn6ZAEqyfaW5rgiM2dL9ZTumEUkJyHXcc1sMS
+QQqvQnY3zzhyLyEJsLPLMJnQQHGwUyMFX4D5R54tO1s0ne6iNIcOdWMsfAcrOb8b
+YWaikNAw3oQ392V6g/iXPUfMppY9O1f47gZkLMHuHZV5XusPm84qyYIlysgyyf3d
+Qwg5nFywlOFxYtySkxfje/OLREkzZoVOQXaxi/kC3IQiWDtoxU9NYMu7blXrJa71
+/kEe4lftTRBKib/iRahLb0ZOOiBI2Zpd0IiY3z5/Edhp9TY4akDHFOBOGZ66p8Af
+P/3TDcr7XZ/10fBZA/2biB4a5/hVKbnUTMBkXjqhNYN4lQA4VbuFB4+KvXJXrf4y
+Lsy0yB+hE2CIa7sRFrjGBPjPZTjvuYg1VONj3P/VUS4KDw02Uss=
+=z66C
+-----END PGP SIGNATURE-----
+
+--5TP+rHLVHtolMC1P--
