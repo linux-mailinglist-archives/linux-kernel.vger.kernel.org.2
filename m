@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D2C429189
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C74B742915A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244435AbhJKOTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:19:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33628 "EHLO mail.kernel.org"
+        id S243301AbhJKORe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:17:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35058 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243626AbhJKONQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:13:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A29E561278;
-        Mon, 11 Oct 2021 14:04:07 +0000 (UTC)
+        id S243835AbhJKOOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:14:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3BE261354;
+        Mon, 11 Oct 2021 14:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961048;
-        bh=RY+0TqbUFWpr/jiEAPvuKo7HtWP6ZZMQ/NTVq3rkQ+I=;
+        s=korg; t=1633961096;
+        bh=VhVdJO++/fA/CrMBT1l2MTIpN+N+tBrIikvMt4s0sPs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfwDuJW2/7cYC/6dAJJJ7sAeF+bxXThTKKghRusSHFnbg7JaDwMu/NdCS2YQldYv+
-         I5PVfHIHp4Ua/3+zfzXJi3gFf8y9qi7EWCDG50UJpGH3GUmR0TCNDmJpnhBg8ijMch
-         R8L4ROCsqtO9MuShGe6h/InufCIBzi3qgUv7VnH4=
+        b=D+7gufIDmE30GEirV3/iRZ09GxZoL0DTsjm3DgyXIF5ha/TC3YGBcLRxPfx2BvuBQ
+         RqKRtkzPWT64a7XFpew7Vh+7IWzj7nqVtGIQPePiDU4mmUZOKaKFZnnWusiJh0Sjys
+         AhZKlLWW26EiP2l9Z/gSdnsV9wVwuIoEYhCeBeZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.14 144/151] x86/platform/olpc: Correct ifdef symbol to intended CONFIG_OLPC_XO15_SCI
-Date:   Mon, 11 Oct 2021 15:46:56 +0200
-Message-Id: <20211011134522.466502690@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
+        <marmarek@invisiblethingslab.com>, Juergen Gross <jgross@suse.com>,
+        Jason Andryuk <jandryuk@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Subject: [PATCH 4.19 07/28] xen/balloon: fix cancelled balloon action
+Date:   Mon, 11 Oct 2021 15:46:57 +0200
+Message-Id: <20211011134640.946996802@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-References: <20211011134517.833565002@linuxfoundation.org>
+In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
+References: <20211011134640.711218469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +42,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Juergen Gross <jgross@suse.com>
 
-commit 4758fd801f919b8b9acad78d2e49a195ec2be46b upstream.
+commit 319933a80fd4f07122466a77f93e5019d71be74c upstream.
 
-The refactoring in the commit in Fixes introduced an ifdef
-CONFIG_OLPC_XO1_5_SCI, however the config symbol is actually called
-"CONFIG_OLPC_XO15_SCI".
+In case a ballooning action is cancelled the new kernel thread handling
+the ballooning might end up in a busy loop.
 
-Fortunately, ./scripts/checkkconfigsymbols.py warns:
+Fix that by handling the cancelled action gracefully.
 
-OLPC_XO1_5_SCI
-Referencing files: arch/x86/platform/olpc/olpc.c
+While at it introduce a short wait for the BP_WAIT case.
 
-Correct this ifdef condition to the intended config symbol.
-
-Fixes: ec9964b48033 ("Platform: OLPC: Move EC-specific functionality out from x86")
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210803113531.30720-3-lukas.bulwahn@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a workqueue")
+Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Tested-by: Jason Andryuk <jandryuk@gmail.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Link: https://lore.kernel.org/r/20211005133433.32008-1-jgross@suse.com
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/platform/olpc/olpc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/xen/balloon.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
---- a/arch/x86/platform/olpc/olpc.c
-+++ b/arch/x86/platform/olpc/olpc.c
-@@ -274,7 +274,7 @@ static struct olpc_ec_driver ec_xo1_driv
+--- a/drivers/xen/balloon.c
++++ b/drivers/xen/balloon.c
+@@ -508,12 +508,12 @@ static enum bp_state decrease_reservatio
+ }
  
- static struct olpc_ec_driver ec_xo1_5_driver = {
- 	.ec_cmd = olpc_xo1_ec_cmd,
--#ifdef CONFIG_OLPC_XO1_5_SCI
-+#ifdef CONFIG_OLPC_XO15_SCI
- 	/*
- 	 * XO-1.5 EC wakeups are available when olpc-xo15-sci driver is
- 	 * compiled in
+ /*
+- * Stop waiting if either state is not BP_EAGAIN and ballooning action is
+- * needed, or if the credit has changed while state is BP_EAGAIN.
++ * Stop waiting if either state is BP_DONE and ballooning action is
++ * needed, or if the credit has changed while state is not BP_DONE.
+  */
+ static bool balloon_thread_cond(enum bp_state state, long credit)
+ {
+-	if (state != BP_EAGAIN)
++	if (state == BP_DONE)
+ 		credit = 0;
+ 
+ 	return current_credit() != credit || kthread_should_stop();
+@@ -533,10 +533,19 @@ static int balloon_thread(void *unused)
+ 
+ 	set_freezable();
+ 	for (;;) {
+-		if (state == BP_EAGAIN)
+-			timeout = balloon_stats.schedule_delay * HZ;
+-		else
++		switch (state) {
++		case BP_DONE:
++		case BP_ECANCELED:
+ 			timeout = 3600 * HZ;
++			break;
++		case BP_EAGAIN:
++			timeout = balloon_stats.schedule_delay * HZ;
++			break;
++		case BP_WAIT:
++			timeout = HZ;
++			break;
++		}
++
+ 		credit = current_credit();
+ 
+ 		wait_event_freezable_timeout(balloon_thread_wq,
 
 
