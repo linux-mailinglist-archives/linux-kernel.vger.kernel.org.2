@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D8C428B93
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:56:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C08428B97
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbhJKK6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:58:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50032 "EHLO mail.kernel.org"
+        id S236202AbhJKK6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:58:55 -0400
+Received: from sauhun.de ([88.99.104.3]:53570 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236190AbhJKK6i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:58:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 531E960EB4;
-        Mon, 11 Oct 2021 10:56:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633949798;
-        bh=g6eOo7baVMAlB8CHao6MjQMNqHLg/GMJHrwiPTDHLF8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nzff+TeJVtKL5bG99c/4gakkFVrBi4fyyb1UDTPufBMS7ts3ifHfAzDqx9fKBOTBJ
-         rPJ+p1Ohpf6SiCaC/V2xeqysamtwpAhf6V6Z/jgCBlrt3o5jLr+52KmWzzVZG539sX
-         DuTElPR5ZyD+f6CWufUAVZQ93zAGA02mCH8+WxqKlR7xmkYp03/EK95NqYNQeIuYvZ
-         WjytS8d+9Ogl2aITINBL2p0dClWVV9d8PUpCiQfI2LK1XQoyVmSrAjTn/H66s3i8c6
-         XxXs6B5ocnx+TN+BqAWilrBzWaXv5RWhfHKTzHgdWTsjk1f9obRj6WpU5U0Q53cSqw
-         ESe5RAOWnPHmw==
-Date:   Mon, 11 Oct 2021 11:56:30 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Shier <pshier@google.com>,
-        Raghavendra Rao Ananta <rananta@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        kernel-team@android.com
-Subject: Re: [PATCH v3 14/17] arm64: Add a capability for FEAT_ECV
-Message-ID: <20211011105629.GB4009@willie-the-truck>
-References: <20211010114306.2910453-1-maz@kernel.org>
- <20211010114306.2910453-15-maz@kernel.org>
+        id S236190AbhJKK6t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:58:49 -0400
+Received: from localhost (p54b3315a.dip0.t-ipconnect.de [84.179.49.90])
+        by pokefinder.org (Postfix) with ESMTPSA id 45CB42C00A6;
+        Mon, 11 Oct 2021 12:56:46 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 12:56:45 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Kewei Xu <kewei.xu@mediatek.com>
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        leilk.liu@mediatek.com, qii.wang@mediatek.com,
+        liguo.zhang@mediatek.com, caiyu.chen@mediatek.com,
+        ot_daolong.zhu@mediatek.com, yuhan.wei@mediatek.com
+Subject: Re: [PATCH v7 6/7] i2c: mediatek: Isolate speed setting via dts for
+ special devices
+Message-ID: <YWQYbaTIhud2QHNP@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Kewei Xu <kewei.xu@mediatek.com>, matthias.bgg@gmail.com,
+        robh+dt@kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        srv_heupstream@mediatek.com, leilk.liu@mediatek.com,
+        qii.wang@mediatek.com, liguo.zhang@mediatek.com,
+        caiyu.chen@mediatek.com, ot_daolong.zhu@mediatek.com,
+        yuhan.wei@mediatek.com
+References: <20210917101416.20760-1-kewei.xu@mediatek.com>
+ <20210917101416.20760-7-kewei.xu@mediatek.com>
+ <YVf+83LdUEPjoLdI@kunai>
+ <1891acec7f5c417f62081a8b10249b265df7ea62.camel@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VEgwt+bxKre9p0ta"
 Content-Disposition: inline
-In-Reply-To: <20211010114306.2910453-15-maz@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1891acec7f5c417f62081a8b10249b265df7ea62.camel@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 12:43:03PM +0100, Marc Zyngier wrote:
-> Add a new capability to detect the Enhanced Counter Virtualization
-> feature (FEAT_ECV).
-> 
-> Reviewed-by: Oliver Upton <oupton@google.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  arch/arm64/kernel/cpufeature.c | 10 ++++++++++
->  arch/arm64/tools/cpucaps       |  1 +
->  2 files changed, 11 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index f8a3067d10c6..26b11ce8fff6 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -1926,6 +1926,16 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
->  		.sign = FTR_UNSIGNED,
->  		.min_field_value = 1,
->  	},
-> +	{
-> +		.desc = "Enhanced Counter Virtualization",
-> +		.capability = ARM64_HAS_ECV,
-> +		.type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> +		.matches = has_cpuid_feature,
-> +		.sys_reg = SYS_ID_AA64MMFR0_EL1,
-> +		.field_pos = ID_AA64MMFR0_ECV_SHIFT,
-> +		.sign = FTR_UNSIGNED,
-> +		.min_field_value = 1,
-> +	},
->  #ifdef CONFIG_ARM64_PAN
->  	{
->  		.desc = "Privileged Access Never",
-> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
-> index 49305c2e6dfd..7a7c58acd8f0 100644
-> --- a/arch/arm64/tools/cpucaps
-> +++ b/arch/arm64/tools/cpucaps
-> @@ -18,6 +18,7 @@ HAS_CRC32
->  HAS_DCPODP
->  HAS_DCPOP
->  HAS_E0PD
-> +HAS_ECV
->  HAS_EPAN
->  HAS_GENERIC_AUTH
->  HAS_GENERIC_AUTH_ARCH
 
-We should also make the ECV field FTR_VISIBLE.
+--VEgwt+bxKre9p0ta
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Will
+Hi,
+
+> stretching. But if the slave device stretch the SCL line for too long
+> time, our design still cannot make tSU,STA/tHD,STA/tSU,STO meet spec.
+
+Isn't the new algorithm broken if it cannot support clock stretching?
+What was the problem of the old algorithm not meeting the spec?
+
+> However in the old (default) timing algorithm before the commit
+> be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust support"),
+> tSU,STA/tHD,STA/tSU,STO can meet spec. So we want to define a new
+> setting "default-adjust-timing" for using the old (default) timing
+> algorithm."
+
+What I still do not get: the old algorithm was able to handle clock
+stretching. Why can't you update the new one to handle clock stretching
+as well. I might be missing something, but what is it?
+
+Happy hacking,
+
+   Wolfram
+
+
+--VEgwt+bxKre9p0ta
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFkGG0ACgkQFA3kzBSg
+KbZD3g//RihGqp/HqgzrerO26mwuF/kpOwfbJAoegQU0RTv+6k2GV/0x7lvxfxmj
+hTRoxrNH+wQYSQLiAwwqPwJ+nXTzoob2WVFXd0+KPeVXm7C84+PIWEg5xth9kpfX
+Kd+ReQezeCfSEthKN43pE0roJmobGBVK43PX2kxRjluZqN4NbmnaaWoV3xY6YJs0
+RWM5gOESUyfAUr1s23uPXPI/+VwA27jpEXhabP5CxciQpJizJ4Agdtx9dkOZuCMF
+TsgXrFj3ZD6EETIQXoNkTkjZyiSVVC5XyAdKVsGxHA966Vi+s9MCbqPZj9Hq1STO
+v03VnlbCyQzL2cy/09XYDS8Mu0Xph1MQg8nbQEsD8SgsrR6BM7Lv6gRbXd//TaSH
+xMz/+kU6B90pBnc+H+wjpwwjMxGTTcwLzRqYB0HsSJ7/kO3vHrXIVe9KyUrRmyHm
+fHwKAkO0SNKjWyrLdhixR9pmgYTKpVKt4zwmEZiqTvbb923yZ9fU1qpnts7rtXZi
+P8g5CaqtG2piS/5VLfRjinMbPH6Tl4KPT4OBMZAuoZ10EL16XjdODrrG6jA1oA5h
+QzWdk8sbQiidCpZG/WGTz9yMQUlZeJZOefsfNyQwOJ5E0kxff+tWFLmF32fusrhm
+Yoyg00b+KULq1E8zb7X9PCn0o0K8bwE3bhrlGdsHcpCR76p2r6E=
+=1ToD
+-----END PGP SIGNATURE-----
+
+--VEgwt+bxKre9p0ta--
