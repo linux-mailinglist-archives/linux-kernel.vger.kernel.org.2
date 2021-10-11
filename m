@@ -2,167 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8586429266
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F38842926C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244291AbhJKOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:45:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244168AbhJKOpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:45:23 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BEF160BD3;
-        Mon, 11 Oct 2021 14:43:21 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 10:43:19 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
-        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        x86@kernel.org, Andy Lutomirski <luto@kernel.org>, tkjos@google.com
-Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
-Message-ID: <20211011104319.7c6125cb@gandalf.local.home>
-In-Reply-To: <YWQ3AzF+q2xeyQ/p@google.com>
-References: <00000000000030293b05c39afd6f@google.com>
-        <20210602230054.vyqama2q3koc4bpo@treble>
-        <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
-        <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
-        <20210603133914.j2aeadmvhncnlk5q@treble>
-        <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
-        <YWQ3AzF+q2xeyQ/p@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S243874AbhJKOp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244304AbhJKOpj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:45:39 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF74DC061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:43:38 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id x8so11454375plv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:43:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nVcPbrW7jTXPSod0cAliddkcKMdj7+RC4+UQL16qp2w=;
+        b=HKmLQjSKI5121K/arvfpPig0nCIrxGzhYAr3aAiQCJ4m26FnXbMGiSPRb1V4vB25zd
+         z4jaO7HfCWEfT6wXpJuPUZ9XgMwaX1nfBGrchKRRVXaMlj56yU/HwBnOfZ57zDaL7Cb+
+         ABcz6XAE8d0RhNDoGoTB+K3ihldmFDHZ3mwZ11VULGau+hAiqY6zrBMqBuo6hX7/ATQ1
+         W1Ng1sWzOux/pBG0LofXdRLfgxv8xE0kkPQyXByQPoJCVoOWjK001jIe1oR8qF8yQnGB
+         1NAcH9IGzqFFuJxWaV1w0xIvWkvVt3avJ0g+DnPW3IOUy893GK5H/MZtudL4hjAexoOj
+         x6og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nVcPbrW7jTXPSod0cAliddkcKMdj7+RC4+UQL16qp2w=;
+        b=4ZmVUK8ivgfVa2WQAKulUYsRsoUoT4UEBUvxwUMucL6SRkvPKVEs4KzhOqfrA9Byzc
+         W8IWqLJmdaqElOmVTfv155EMW/rS6QSNw3TdaYaVxc52huRY4WWyDTna9P1s8k1R21eL
+         OcNqt+sXhE/xWwCSsJfGLgEopwXdjkT0V7tb+NEf8a7ZBdDBoUdHcl7Z4j/JUvYxSPCV
+         XDHqJNkUBYMDjshQX1hLxjZzo4lPm/KThg5I4rYlF/btxTwYIZ6bMh2/dhLBkdGE/TOD
+         mDyOoYg20bGte7TaBaDri5GDtv0tLo7d3zubnEoVLkSewvgmWZr/8XsE0rfSj3fnDccs
+         T4Zw==
+X-Gm-Message-State: AOAM533YteMGq3F/k5X87TLcW/vmEUY4Twe5TUmYskLO8ecPgH8AM3Kh
+        X42EihrhvfYK+P/4KdlJW28=
+X-Google-Smtp-Source: ABdhPJxkhDzidQh0CsIpV/KbDDV/tXjU/ZIEfEDFVL2VAtEW524XfWmrMGMWLPXrQCB0nBLnnRJ6jA==
+X-Received: by 2002:a17:902:f703:b029:12c:982:c9ae with SMTP id h3-20020a170902f703b029012c0982c9aemr25114746plo.20.1633963418417;
+        Mon, 11 Oct 2021 07:43:38 -0700 (PDT)
+Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
+        by smtp.gmail.com with ESMTPSA id 192sm7528593pfy.121.2021.10.11.07.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 07:43:37 -0700 (PDT)
+From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     42.hyeyoo@gmail.com, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mm, slub: Use prefetchw instead of prefetch
+Date:   Mon, 11 Oct 2021 14:43:31 +0000
+Message-Id: <20211011144331.70084-1-42.hyeyoo@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 14:07:15 +0100
-Lee Jones <lee.jones@linaro.org> wrote:
+commit 0ad9500e16fe ("slub: prefetch next freelist pointer in
+slab_alloc()") introduced prefetch_freepointer() because when other cpu(s)
+freed objects into a page that current cpu owns, the freelist link is
+hot on cpu(s) which freed objects and possibly very cold on current cpu.
 
-> On Thu, 03 Jun 2021, Andi Kleen wrote:
-> 
-> >   
-> > > True, ftrace does have function profiling (function_profile_enabled).
-> > > 
-> > > Steve, is there a way to enable that on the kernel cmdline?  
-> > 
-> > That's not really comparable. function profiling has a lot more overhead.
-> > Also there is various code which has ftrace instrumentation disabled.
-> > 
-> > I don't think why you want to kill the old profiler. It's rarely used, but
-> > when you need it usually works. It's always good to have simple fall backs.
-> > And it's not that it's a lot of difficult code.  
-> 
-> sysbot is still sending out reports on this:
-> 
->   https://syzkaller.appspot.com/bug?id=00c965d957410afc0d40cac5343064e0a98b9ecd
-> 
-> Are you guys still planning on sending out a fix?
-> 
-> Is there anything I can do to help?
-> 
+But if freelist link chain is hot on cpu(s) which freed objects,
+it's better to invalidate that chain because they're not going to access
+again within a short time.
 
-According to the above:
+So use prefetchw instead of prefetch. On supported architectures like x86
+and arm, it invalidates other copied instances of a cache line when
+prefetching it.
 
-==================================================================
-BUG: KASAN: stack-out-of-bounds in profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
-Read of size 8 at addr ffffc90001c0f7a0 by task systemd-udevd/12323
+Before:
 
-CPU: 1 PID: 12323 Comm: systemd-udevd Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x202/0x31e lib/dump_stack.c:120
- print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report+0x15c/0x200 mm/kasan/report.c:436
- profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
- profile_tick+0xcd/0x120 kernel/profile.c:408
- tick_sched_handle kernel/time/tick-sched.c:227 [inline]
- tick_sched_timer+0x287/0x420 kernel/time/tick-sched.c:1373
- __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
- __hrtimer_run_queues+0x4cb/0xa60 kernel/time/hrtimer.c:1601
- hrtimer_interrupt+0x3b3/0x1040 kernel/time/hrtimer.c:1663
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
- __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
- sysvec_apic_timer_interrupt+0x8c/0xb0 arch/x86/kernel/apic/apic.c:1100
+Time: 91.677
 
-And the code has:
+ Performance counter stats for 'hackbench -g 100 -l 10000':
+        1462938.07 msec cpu-clock                 #   15.908 CPUs utilized
+          18072550      context-switches          #   12.354 K/sec
+           1018814      cpu-migrations            #  696.416 /sec
+            104558      page-faults               #   71.471 /sec
+     1580035699271      cycles                    #    1.080 GHz                      (54.51%)
+     2003670016013      instructions              #    1.27  insn per cycle           (54.31%)
+        5702204863      branch-misses                                                 (54.28%)
+      643368500985      cache-references          #  439.778 M/sec                    (54.26%)
+       18475582235      cache-misses              #    2.872 % of all cache refs      (54.28%)
+      642206796636      L1-dcache-loads           #  438.984 M/sec                    (46.87%)
+       18215813147      L1-dcache-load-misses     #    2.84% of all L1-dcache accesses  (46.83%)
+      653842996501      dTLB-loads                #  446.938 M/sec                    (46.63%)
+        3227179675      dTLB-load-misses          #    0.49% of all dTLB cache accesses  (46.85%)
+      537531951350      iTLB-loads                #  367.433 M/sec                    (54.33%)
+         114750630      iTLB-load-misses          #    0.02% of all iTLB cache accesses  (54.37%)
+      630135543177      L1-icache-loads           #  430.733 M/sec                    (46.80%)
+       22923237620      L1-icache-load-misses     #    3.64% of all L1-icache accesses  (46.76%)
 
- profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+      91.964452802 seconds time elapsed
 
-unsigned long profile_pc(struct pt_regs *regs)
-{
-	unsigned long pc = instruction_pointer(regs);
+      43.416742000 seconds user
+    1422.441123000 seconds sys
 
-	if (!user_mode(regs) && in_lock_functions(pc)) {
-#ifdef CONFIG_FRAME_POINTER
-		return *(unsigned long *)(regs->bp + sizeof(long));
-#else
-		unsigned long *sp = (unsigned long *)regs->sp;
-		/*
-		 * Return address is either directly at stack pointer
-		 * or above a saved flags. Eflags has bits 22-31 zero,
-		 * kernel addresses don't.
-		 */
-		if (sp[0] >> 22)
-			return sp[0];  <== line 42
-		if (sp[1] >> 22)
-			return sp[1];
-#endif
-	}
-	return pc;
-}
-EXPORT_SYMBOL(profile_pc);
+After:
 
+Time: 90.220
 
-It looks to me that the profiler is doing a trick to read the contents of
-the stack when the interrupt went off, but this triggers the KASAN
-instrumentation to think it's a mistake when it's not. aka "false positive".
+ Performance counter stats for 'hackbench -g 100 -l 10000':
+        1437418.48 msec cpu-clock                 #   15.880 CPUs utilized
+          17694068      context-switches          #   12.310 K/sec
+            958257      cpu-migrations            #  666.651 /sec
+            100604      page-faults               #   69.989 /sec
+     1583259429428      cycles                    #    1.101 GHz                      (54.57%)
+     2004002484935      instructions              #    1.27  insn per cycle           (54.37%)
+        5594202389      branch-misses                                                 (54.36%)
+      643113574524      cache-references          #  447.409 M/sec                    (54.39%)
+       18233791870      cache-misses              #    2.835 % of all cache refs      (54.37%)
+      640205852062      L1-dcache-loads           #  445.386 M/sec                    (46.75%)
+       17968160377      L1-dcache-load-misses     #    2.81% of all L1-dcache accesses  (46.79%)
+      651747432274      dTLB-loads                #  453.415 M/sec                    (46.59%)
+        3127124271      dTLB-load-misses          #    0.48% of all dTLB cache accesses  (46.75%)
+      535395273064      iTLB-loads                #  372.470 M/sec                    (54.38%)
+         113500056      iTLB-load-misses          #    0.02% of all iTLB cache accesses  (54.35%)
+      628871845924      L1-icache-loads           #  437.501 M/sec                    (46.80%)
+       22585641203      L1-icache-load-misses     #    3.59% of all L1-icache accesses  (46.79%)
 
-How does one tell KASAN that it wants to go outside the stack, because it
-knows what its doing?
+      90.514819303 seconds time elapsed
 
-Should that just be converted to a "copy_from_kernel_nofault()"? That is,
-does this fix it? (not even compiled tested)
+      43.877656000 seconds user
+    1397.176001000 seconds sys
 
--- Steve
+Link: https://lkml.org/lkml/2021/10/8/598 
+Signed-off-by: Hyeonggon Yoo <42.hyeyoo@gmail.com>
+---
+ mm/slub.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/mm/slub.c b/mm/slub.c
+index 3d2025f7163b..ce3d8b11215c 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -354,7 +354,7 @@ static inline void *get_freepointer(struct kmem_cache *s, void *object)
+ 
+ static void prefetch_freepointer(const struct kmem_cache *s, void *object)
+ {
+-	prefetch(object + s->offset);
++	prefetchw(object + s->offset);
+ }
+ 
+ static inline void *get_freepointer_safe(struct kmem_cache *s, void *object)
+-- 
+2.27.0
 
-diff --git a/arch/x86/kernel/time.c b/arch/x86/kernel/time.c
-index e42faa792c07..cc6ec29aa14d 100644
---- a/arch/x86/kernel/time.c
-+++ b/arch/x86/kernel/time.c
-@@ -34,15 +34,18 @@ unsigned long profile_pc(struct pt_regs *regs)
- 		return *(unsigned long *)(regs->bp + sizeof(long));
- #else
- 		unsigned long *sp = (unsigned long *)regs->sp;
-+		unsigned long retaddr;
- 		/*
- 		 * Return address is either directly at stack pointer
- 		 * or above a saved flags. Eflags has bits 22-31 zero,
- 		 * kernel addresses don't.
- 		 */
--		if (sp[0] >> 22)
--			return sp[0];
--		if (sp[1] >> 22)
--			return sp[1];
-+		if (!copy_from_kernel_nofault(&retaddr, sp, sizeof(long)) &&
-+		    retaddr >> 22)
-+			return retaddr;
-+		if (!copy_from_kernel_nofault(&retaddr, sp + 1, sizeof(long)) &&
-+		    retaddr >> 22)
-+			return retaddr;
- #endif
- 	}
- 	return pc;
