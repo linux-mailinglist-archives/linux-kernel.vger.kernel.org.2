@@ -2,132 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7044E4287C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441BE4287B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234494AbhJKHkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:40:46 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55942 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234449AbhJKHkl (ORCPT
+        id S234459AbhJKHeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234481AbhJKHd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:40:41 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 0C48D22034;
-        Mon, 11 Oct 2021 07:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633937915;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dW7+2eJDZzMMtGdCNOgIHEUM067pLA4d6dFLRywGPD4=;
-        b=WFTse2hZYIoIjFqfZjv5PAgWCWFgooCkIozWjsupLGm8SoHvXBWPHGWwh7HqUxmw80B8ka
-        Bg5SDMGYYsqw468ebe5l8SDICoARIXFr63Cfek2bsTsW2LzPp68jDjW4PNbON5EXLjXKC/
-        ze0L4ImmtO0CAQ56GSCSjyNUKghsQfU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633937915;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dW7+2eJDZzMMtGdCNOgIHEUM067pLA4d6dFLRywGPD4=;
-        b=61KZEbecF+I9JeDAnm9cLH1zoJ9jX5+xCpAI6DjZKezXCtQqoslXtMlRc6196AP2reGulR
-        INHvCFmFFQo43eAQ==
-Received: from g78 (unknown [10.163.24.38])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0EA24A3B83;
-        Mon, 11 Oct 2021 07:38:34 +0000 (UTC)
-References: <20211008112714.601107695@linuxfoundation.org>
- <CA+G9fYvOK+5qPEU7RMfD1O5O3EwTfThoh3Le9Rx8GDhY3nY1Ww@mail.gmail.com>
-User-agent: mu4e 1.6.5; emacs 27.2
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        LTP List <ltp@lists.linux.it>, Cyril Hrubis <chrubis@suse.cz>,
-        Li Wang <liwang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>, mkoutny@suse.cz
-Subject: Re: [PATCH 4.19 00/12] 4.19.210-rc1 review
-Date:   Mon, 11 Oct 2021 08:28:31 +0100
-Reply-To: rpalethorpe@suse.de
-In-reply-to: <CA+G9fYvOK+5qPEU7RMfD1O5O3EwTfThoh3Le9Rx8GDhY3nY1Ww@mail.gmail.com>
-Message-ID: <875yu4au4n.fsf@suse.de>
+        Mon, 11 Oct 2021 03:33:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBACC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:31:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mZpml-00021n-DJ; Mon, 11 Oct 2021 09:31:47 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mZpme-0003JX-Rz; Mon, 11 Oct 2021 09:31:40 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1mZpme-0007mP-Qf; Mon, 11 Oct 2021 09:31:40 +0200
+Date:   Mon, 11 Oct 2021 09:31:38 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
+        andrew@aj.id.au, thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v12 2/2] pwm: Add Aspeed ast2600 PWM support
+Message-ID: <20211011073138.rofxayep6p47zrc6@pengutronix.de>
+References: <20210906024339.21124-1-billy_tsai@aspeedtech.com>
+ <20210906024339.21124-3-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yedmwtf2izpi2vro"
+Content-Disposition: inline
+In-Reply-To: <20210906024339.21124-3-billy_tsai@aspeedtech.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Naresh,
 
-Naresh Kamboju <naresh.kamboju@linaro.org> writes:
+--yedmwtf2izpi2vro
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, 8 Oct 2021 at 17:00, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
->>
->> This is the start of the stable review cycle for the 4.19.210 release.
->> There are 12 patches in this series, all will be posted as a response
->> to this one.  If anyone has any issues with these being applied, please
->> let me know.
->>
->> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
->> Anything received after that time might be too late.
->>
->> The whole patch series can be found in one patch at:
->>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch=
--4.19.210-rc1.gz
->> or in the git tree and branch at:
->>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stabl=
-e-rc.git linux-4.19.y
->> and the diffstat can be found below.
->>
->> thanks,
->>
->> greg k-h
->
-> Results from Linaro=E2=80=99s test farm.
-> No regressions on arm64, arm, x86_64, and i386.
->
-> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
->
-> NOTE:
-> LTP version upgrade to LTP 20210927.
-> The new case "cfs_bandwidth01" found the following warning.
-> Since it is a new test case that found this warning can not be considered=
- as
-> regression.
-> This warning is only seen on stable rc 4.19
-> but not found on 4.14, 5.4, 5.10 and 5.14.
->
-> Test output log:
-> ----------------
-> cfs_bandwidth01.c:57: TINFO: Set 'worker1/cpu.max' =3D '3000 10000'
-> cfs_bandwidth01.c:57: TINFO: Set 'worker2/cpu.max' =3D '2000 10000'
-> cfs_bandwidth01.c:57: TINFO: Set 'worker3/cpu.max' =3D '3000 10000'
-> cfs_bandwidth01.c:118: TPASS: Scheduled bandwidth constrained workers
-> cfs_bandwidth01.c:57: TINFO: Set 'level2/cpu.max' =3D '5000 10000'
-> cfs_bandwidth01.c:130: TPASS: Workers exited
-> cfs_bandwidth01.c:118: TPASS: Scheduled bandwidth constrained workers
-> cfs_bandwidth01.c:57: TINFO: Set 'level2/cpu.max' =3D '5000 10000'
-> cfs_bandwidth01.c:130: TPASS: Workers exited
-> cfs_bandwidth01.c:118: TPASS: Scheduled bandwidth constrained work[
-> 56.624213] ------------[ cut here ]------------
-> [   56.629421] rq->tmp_alone_branch !=3D &rq->leaf_cfs_rq_list
+On Mon, Sep 06, 2021 at 10:43:39AM +0800, Billy Tsai wrote:
+> This patch add the support of PWM controller which can be found at aspeed
+> ast2600 soc. The pwm supoorts up to 16 channels and it's part function
+> of multi-function device "pwm-tach controller".
+>=20
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  drivers/pwm/Kconfig              |  10 +
+>  drivers/pwm/Makefile             |   1 +
+>  drivers/pwm/pwm-aspeed-ast2600.c | 327 +++++++++++++++++++++++++++++++
+>  3 files changed, 338 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-aspeed-ast2600.c
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 63be5362fd3a..b0d26f6c2a8f 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -51,6 +51,16 @@ config PWM_AB8500
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-ab8500.
+> =20
+> +config PWM_ASPEED_AST2600
+> +	tristate "Aspeed ast2600 PWM support"
+> +	depends on ARCH_ASPEED || COMPILE_TEST
+> +	depends on HAVE_CLK && HAS_IOMEM
+> +	help
+> +	  This driver provides support for Aspeed ast2600 PWM controllers.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-aspeed-ast2600.
+> +
+>  config PWM_ATMEL
+>  	tristate "Atmel PWM support"
+>  	depends on OF
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index cbdcd55d69ee..ada454f9129a 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -2,6 +2,7 @@
+>  obj-$(CONFIG_PWM)		+=3D core.o
+>  obj-$(CONFIG_PWM_SYSFS)		+=3D sysfs.o
+>  obj-$(CONFIG_PWM_AB8500)	+=3D pwm-ab8500.o
+> +obj-$(CONFIG_PWM_ASPEED_AST2600)	+=3D pwm-aspeed-ast2600.o
+>  obj-$(CONFIG_PWM_ATMEL)		+=3D pwm-atmel.o
+>  obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+=3D pwm-atmel-hlcdc.o
+>  obj-$(CONFIG_PWM_ATMEL_TCB)	+=3D pwm-atmel-tcb.o
+> diff --git a/drivers/pwm/pwm-aspeed-ast2600.c b/drivers/pwm/pwm-aspeed-as=
+t2600.c
+> new file mode 100644
+> index 000000000000..e4507a503698
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-aspeed-ast2600.c
+> @@ -0,0 +1,327 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (C) 2021 Aspeed Technology Inc.
+> + *
+> + * PWM controller driver for Aspeed ast2600 SoCs.
+> + * This drivers doesn't support earlier version of the IP.
+> + *
+> + * The formula of pwm period duration:
+> + * period duration =3D ((DIV_L + 1) * (PERIOD + 1) << DIV_H) / input-clk
+> + *
+> + * The formula of pwm duty cycle duration:
+> + * duty cycle duration =3D period duration * DUTY_CYCLE_FALLING_POINT / =
+(PERIOD + 1)
+> + * =3D ((DIV_L + 1) * DUTY_CYCLE_FALLING_POINT << DIV_H) / input-clk
+> + *
+> + * The software driver fixes the period to 255, which causes the high-fr=
+equency
+> + * precision of the PWM to be coarse, in exchange for the fineness of th=
+e duty cycle.
+> + *
 
-FWIW this appears to be the bug the test is intended to
-reproduce. Originally seen on a SUSE enterprise 4.12 kernel.
+=46rom reading this it's not clear (to me that is) what's the difference
+between "period duration" and "PERIOD". Maybe rewrite the comment to
+something like:
+
+	The hardware operates in time quantities of length
+
+		Q :=3D (DIV_L + 1) << DIV_H / input-clk
+
+	The length of a PWM period is (DUTY_CYCLE_PERIOD + 1) * Q.
+	The maximal value for DUTY_CYCLE_PERIOD is used here to provide
+	a fine grained selection for the duty cycle.
+
+	This driver uses DUTY_CYCLE_RISING_POINT =3D 0, so from the start of a
+	period the output is active until DUTY_CYCLE_FALLING_POINT * Q. Note
+	that if DUTY_CYCLE_RISING_POINT =3D DUTY_CYCLE_FALLING_POINT the output is
+	always active.
+
+This is a bit more high-level and still gives all the details.
+
+Maybe the special case with DUTY_CYCLE_RISING_POINT =3D
+DUTY_CYCLE_FALLING_POINT would be a bit more natural if the driver used
+inverse logic: Assume the output to be inverted with CTRL_INVERSE =3D 0,
+fix DUTY_CYCLE_FALLING_POINT to 0 and adapt DUTY_CYCLE_RISING_POINT
+dependant on duty cycle? At least then DUTY_CYCLE_RISING_POINT =3D 0
+corresponds to duty_cycle =3D 0. Just an idea ... which might or might not
+work depending on the hardware.
+
+> + * Register usage:
+> + * PIN_ENABLE: When it is unset the pwm controller will emit inactive le=
+vel to the extern.
+> + * Use to determine whether the PWM channel is enabled or disabled
+> + * CLK_ENABLE: When it is unset the pwm controller will assert the duty =
+counter reset and
+> + * emit inactive level to the PIN_ENABLE mux after that the driver can s=
+till change the pwm period
+> + * and duty and the value will apply when CLK_ENABLE be set again.
+> + * Use to determine whether duty_cycle bigger than 0.
+> + * PWM_ASPEED_CTRL_INVERSE: When it is toggled the output value will inv=
+erse immediately.
+> + * PWM_ASPEED_DUTY_CYCLE_FALLING_POINT/PWM_ASPEED_DUTY_CYCLE_RISING_POIN=
+T: When these two
+> + * values are equal it means the duty cycle =3D 100%.
+> + *
+> + * The glitch may generate at:
+> + * - Enabled changing when the duty_cycle bigger than 0% and less than 1=
+00%.
+> + * - Polarity changing when the duty_cycle bigger than 0% and less than =
+100%.
+> + * - Set duty cycle to 0% from other values.
+> + *
+> + * Limitations:
+> + * - When changing both duty cycle and period, we cannot prevent in
+> + *   software that the output might produce a period with mixed
+> + *   settings.
+> + * - Disabling the PWM doesn't complete the current period.
+> + *
+> + * Improvements:
+> + * - When only changing one of duty cycle or period, our pwm controller =
+will not
+> + *   generate the glitch, the configure will change at next cycle of pwm.
+> + *   This improvement can disable/enable through PWM_ASPEED_CTRL_DUTY_SY=
+NC_DISABLE.
+> + */
+> +
+> [...]
+> +static int aspeed_pwm_apply(struct pwm_chip *chip, struct pwm_device *pw=
+m,
+> +			    const struct pwm_state *state)
+> +{
+> +	struct device *dev =3D chip->dev;
+> +	struct aspeed_pwm_data *priv =3D aspeed_pwm_chip_to_data(chip);
+> +	u32 hwpwm =3D pwm->hwpwm, duty_pt;
+> +	unsigned long rate;
+> +	u64 div_h, div_l, divisor;
+> +	bool clk_en;
+> +
+> +	dev_dbg(dev, "expect period: %lldns, duty_cycle: %lldns", state->period,
+> +		state->duty_cycle);
+> +
+> +	rate =3D clk_get_rate(priv->clk);
+> +	if (state->period > div64_u64(ULLONG_MAX, (u64)rate))
+> +		return -ERANGE;
+
+Given that the biggest possible period <=3D requested period should be
+configured, this check + return is wrong.
+
+> +	/*
+> +	 * Pick the smallest value for div_h so that div_l can be the biggest
+> +	 * which results in a finer resolution near the target period value.
+> +	 */
+> +	divisor =3D (u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1) *
+> +		  (FIELD_MAX(PWM_ASPEED_CTRL_CLK_DIV_L) + 1);
+> +	div_h =3D order_base_2(DIV64_U64_ROUND_UP(rate * state->period, divisor=
+));
+> +	if (div_h > 0xf)
+> +		div_h =3D 0xf;
+> +
+> +	divisor =3D ((u64)NSEC_PER_SEC * (PWM_ASPEED_FIXED_PERIOD + 1)) << div_=
+h;
+> +	div_l =3D div64_u64(rate * state->period, divisor);
+> +
+> +	if (div_l =3D=3D 0)
+> +		return -ERANGE;
+> +
+> +	div_l -=3D 1;
+> +
+> +	if (div_l > 255)
+> +		div_l =3D 255;
+> +
+> + [...]
+
+I didn't check the remaining part here in detail, it does look right and
+I think we already discussed this in the earlier revisions.
+
+Best regards
+Uwe
 
 --=20
-Thank you,
-Richard.
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yedmwtf2izpi2vro
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmFj6FcACgkQwfwUeK3K
+7Amp1QgAoX+pmbfrkAp6L86xmjjYiGH0g4aGp+iO0LZSybNiemKmoezrZg/JmEfU
+9ppyxw/XhFudTmO3f/EtaoHDuys7C8qDK/26IT3mXp7hH6hImQ4yNZjAU2BsvNT9
+CEjX5Mmz4YkyRl9tMOt7cCumU1An1Br0xbjJQizuaEZe7k4Ef64YHHmppzboCKxP
+NiFUM9gWTUzUio2DqP1FRPWLb8ETavKQ1T5GTK+XwIIjICmIT0RS/M0Q2ir8bWeL
+BfacRjilzdzdo2ySCS1ARrzEZ5seEWnNyNsRLvXxVP8gn1aL8TWhKSsQM5EJH3Ts
+zk2YnlBf5kn3FTbTyDnWQe2s+ClC+Q==
+=hbqw
+-----END PGP SIGNATURE-----
+
+--yedmwtf2izpi2vro--
