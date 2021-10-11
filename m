@@ -2,107 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D29642886C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CCC42886E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:15:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234886AbhJKIQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:16:20 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:24235 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhJKIQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:16:19 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HSWkx3fKQzQj9t;
-        Mon, 11 Oct 2021 16:13:13 +0800 (CST)
-Received: from dggpeml500005.china.huawei.com (7.185.36.59) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 16:14:18 +0800
-Received: from [10.174.178.155] (10.174.178.155) by
- dggpeml500005.china.huawei.com (7.185.36.59) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 16:14:17 +0800
-To:     <vincent.guittot@linaro.org>, <dietmar.eggemann@arm.com>,
-        <xuyang2018.jy@fujitsu.com>, <liwang@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <vincent.guittot@linaro.org>, <mingo@redhat.com>,
-        <peterz@infradead.org>, <mgorman@suse.de>,
-        <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        "David Hildenbrand" <david@redhat.com>, <willy@infradead.org>,
-        "Wangkefeng (OS Kernel Lab)" <wangkefeng.wang@huawei.com>
-From:   Yongqiang Liu <liuyongqiang13@huawei.com>
-Subject: [QUESTION] ltp: mavise06 failed when the task scheduled to another
- cpu
-Message-ID: <5ed4bc3d-9c30-8cae-e826-b2d0c37c2f6e@huawei.com>
-Date:   Mon, 11 Oct 2021 16:14:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.155]
-X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
- dggpeml500005.china.huawei.com (7.185.36.59)
-X-CFilter-Loop: Reflected
+        id S234896AbhJKIRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:17:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231300AbhJKIRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:17:15 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F02A60ED4;
+        Mon, 11 Oct 2021 08:15:16 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mZqSo-00FxTa-3C; Mon, 11 Oct 2021 09:15:14 +0100
+Date:   Mon, 11 Oct 2021 09:15:13 +0100
+Message-ID: <87y270ou3y.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Andrew Jones <drjones@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH v8 03/15] KVM: arm64: selftests: Use read/write definitions from sysreg.h
+In-Reply-To: <20211007233439.1826892-4-rananta@google.com>
+References: <20211007233439.1826892-1-rananta@google.com>
+        <20211007233439.1826892-4-rananta@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: rananta@google.com, pbonzini@redhat.com, drjones@redhat.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, pshier@google.com, ricarkol@google.com, oupton@google.com, reijiw@google.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Raghavendra,
 
-when runing this case in 5.10-lts kernel, it will trigger the folloing 
-failure:
+On Fri, 08 Oct 2021 00:34:27 +0100,
+Raghavendra Rao Ananta <rananta@google.com> wrote:
+> 
+> Make use of the register read/write definitions from
+> sysreg.h, instead of the existing definitions. A syntax
+> correction is needed for the files that use write_sysreg()
+> to make it compliant with the new (kernel's) syntax.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Reviewed-by: Oliver Upton <oupton@google.com>
+> Reviewed-by: Andrew Jones <drjones@redhat.com>
+> ---
+>  .../selftests/kvm/aarch64/debug-exceptions.c  | 28 +++++++++----------
+>  .../selftests/kvm/include/aarch64/processor.h | 13 +--------
+>  2 files changed, 15 insertions(+), 26 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> index e5e6c92b60da..11fd23e21cb4 100644
+> --- a/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> +++ b/tools/testing/selftests/kvm/aarch64/debug-exceptions.c
+> @@ -34,16 +34,16 @@ static void reset_debug_state(void)
+>  {
+>  	asm volatile("msr daifset, #8");
+>  
+> -	write_sysreg(osdlr_el1, 0);
+> -	write_sysreg(oslar_el1, 0);
+> +	write_sysreg(0, osdlr_el1);
+> +	write_sysreg(0, oslar_el1);
 
-  ......
+The previous patch has obviously introduced significant breakage which
+this patch is now fixing. In the interval, the build is broken, which
+isn't great.
 
-     madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 1752 Kb
-     madvise06.c:208: TPASS: more than 102400 Kb were moved to the swap 
-cache
-     madvise06.c:217: TINFO: PageFault(madvice / no mem access): 102401
-     madvise06.c:221: TINFO: PageFault(madvice / mem access): 102417
-     madvise06.c:82: TINFO: After page access
-     madvise06.c:84: TINFO:  Swap: 307372 Kb
-     madvise06.c:86: TINFO:  SwapCached: 101820 Kb
-     madvise06.c:88: TINFO:  Cached: 103004Kb
-     madvise06.c:74: TINFO:  memory.kmem.usage_in_bytes: 0Kb
-     madvise06.c:225: TFAIL: 16 pages were faulted out of 2 max
+You can either rework this series to work around the issue, or I can
+squash patches #2 and #3 together.
 
-and we found that when we call the madvise the task was scheduled to 
-another cpu:
+Thanks,
 
-......
+	M.
 
-tst_res(TINFO, "before madvise MEMLIMIT CPU:%d", sched_getcpu());--->cpu0
-
-TEST(madvise(target, MEM_LIMIT, MADV_WILLNEED));
-
-tst_res(TINFO, "after madvise MEMLIMIT CPU:%d", sched_getcpu());--->cpu1
-
-......
-
-tst_res(TINFO, "before madvise PASS_THRESHOLDCPU:%d", 
-sched_getcpu());-->cpu1
-
-TEST(madvise(target, PASS_THRESHOLD, MADV_WILLNEED));
-
-tst_res(TINFO, "after madvise PASS_THRESHOLDCPU:%d", 
-sched_getcpu());-->cpu0
-
-.....
-
-Is the PERCPU data swap_slot was not handled well?
-
-
-with the following patch almost fix the error:
-
-e9b9734b7465 sched/fair: Reduce cases for active balance
-
-8a41dfcda7a3 sched/fair: Don't set LBF_ALL_PINNED unnecessarily
-
-fc488ffd4297 sched/fair: Skip idle cfs_rq
-
-but bind the task to a cpu also can solve this problem.
-
-Kind regards,
-
+-- 
+Without deviation from the norm, progress is not possible.
