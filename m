@@ -2,168 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C51DC428C48
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF28B428BEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234473AbhJKLps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:45:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234258AbhJKLpp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:45:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633952624;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sLERr4wwqXS0zpFcNWBnvOvmmDhWW73fjpWHdhZQYhI=;
-        b=Nl7C079gA4K0aKVX3UIKYhoMQ/fshtvJBW1YH6viejuSFVir9Q031jWLSlQvaGHczaTFF9
-        0qUqKNYupT5U3vuyMUBSI3yU2O1+7vEoY/X++zU4Oq1VHXvo9yLbCBKt+yuSyMwzBdJPBR
-        +iIG6WjfiwPJTIVaHJa3q/orfwVDY/0=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300-YqN2XDe3Oya_3Lv-s5Sn7Q-1; Mon, 11 Oct 2021 07:43:43 -0400
-X-MC-Unique: YqN2XDe3Oya_3Lv-s5Sn7Q-1
-Received: by mail-ed1-f70.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso15660292edn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:43:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sLERr4wwqXS0zpFcNWBnvOvmmDhWW73fjpWHdhZQYhI=;
-        b=5urMHjfm7BEpKYUoCem4wkcmlKOMdn3sW4UY4Gy6zeK/KjzSSCALEUGehRjP6RjABr
-         cDXG0Q9NelA0yPsxEgBz9MHakz1rzhZZkSeQc4U0npPY/7SXBPMO+SYJSbbiVBQF0//P
-         9R2kj9mRktY0g5Bs14e9VM3XFSmTjuxwlGrzyHw2/ZCILgU3K6YQSav3hafJdUuISb53
-         V3GYFP8Th1G3BgSa5omweDIRGFJ7q7THioPDvJ46PL4Tv/6HeZ8CKvC3x3V94eRrl5R4
-         ago1rxGrAbeplHa2xJratLy2A5tzOX5wK/r0jxIrseDuG8+r1N+K0YkkeT4fpDXgQW1V
-         mWlA==
-X-Gm-Message-State: AOAM530WxRJM4wCziIsf+IYdlMNlV87KJKMK+y9M/OqBlEWixp7Jhmh9
-        qs3Cbv212disSJGDvxTwPJ3jaXKri3NXiu48P1dpBmmv26dYLpxjJiS1RRE/8ZsPOqVo3uc+/QF
-        UAJhCPnBpthI8BAHC3VzokJ3D
-X-Received: by 2002:a50:e142:: with SMTP id i2mr39787454edl.107.1633952621873;
-        Mon, 11 Oct 2021 04:43:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzoBMlYivGscv/CpFZXt+Isxb/TUwR/lh7DEa3/tPor+O3a4b49kIUWc1t55oZdKq8JCUSS4w==
-X-Received: by 2002:a50:e142:: with SMTP id i2mr39787430edl.107.1633952621702;
-        Mon, 11 Oct 2021 04:43:41 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id g9sm3400631ejo.60.2021.10.11.04.43.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 04:43:41 -0700 (PDT)
-Subject: Re: [PATCH 05/12] regulator: Introduce tps68470-regulator driver
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        id S236234AbhJKL1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:27:08 -0400
+Received: from mail-mw2nam10on2049.outbound.protection.outlook.com ([40.107.94.49]:24160
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236227AbhJKL1H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:27:07 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JEO4RzFCavzoRoqEBKklnYTemF4n5j3qihsU3aPKegf8q6x+WHteVlC1MkUkE824yH+T0gs3x5wHGU3uz+m0wm0CwN3m2f87IDbl3m7vJJ/IrVdMuunswaIL3vG7uqiM8u/7apyz/m7f/mpUKQ758bCu4dTDkis8OCWBL3+dtpAPdyRFKiF1EsIOIroTe06qFiT0q7EogJ9dZ20W0ykC8iATiWygJpXMhRQZ2ykkeGVU+ZgwdUM0j14LlhmTod/swXnewFTwWOv9mTr5Cx9VROCrvZRfwystork7fCKGNaiHrME2AZIMbxrkY5cqCZTGauaBn8OMKn4FCvN+jeVB3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BZiLSZd5gI0xbxSmL3i0Kfx3wb+ajEfUfax68v3dvAw=;
+ b=LVdugOb0hmxy460tC8oVSM66c56Ov19axwq5H+3t8BmzWlw/CsW6bqBJZCjA9IIrW8tfUB5PEbC40fZJ4DOrQVLu0ffTsjAHlrzC9uMSE076TZYLFd4lNSmvsx078bHl4dj573JMkXIz0SOOT5usvZn38UQRI77ipbfMmwgweZFr0/oWooDPoM41CtLrZWWUy7cBchd2c1cVZ+f88zgavynm+P661Mb1lL9LtYPGX+WWGLyLrpAAT5rDMSecIxQhuBVmsfhRZ0bCeoE9D5NZH9YU55gXyi+g/YHV5CKzx9JL+9EruQnc2dcE1ROqiZzUEYVuUbc9blBTtH0FQyyqcg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BZiLSZd5gI0xbxSmL3i0Kfx3wb+ajEfUfax68v3dvAw=;
+ b=JQur6/gZhHo1/eZVya1s5FDgV2HoCcto/VKs3mmW8/P9QIjwI1eCVDzP+NqIBrmPNQpANApu+OjO+pxRbB8J8HsPQodJqR31/el06bZT+wIUSEdlKPy3mVrrVXRCdwixbHI85NG/guFC+V9NYLEmCF4lx9rhMLiAl7sKDjONncU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com (2603:10b6:5:21f::23)
+ by DM5PR12MB1849.namprd12.prod.outlook.com (2603:10b6:3:107::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Mon, 11 Oct
+ 2021 11:25:05 +0000
+Received: from DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::e887:8ff6:34b5:99b3]) by DM6PR12MB4123.namprd12.prod.outlook.com
+ ([fe80::e887:8ff6:34b5:99b3%9]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
+ 11:25:05 +0000
+Subject: Re: [PATCH 02/13] ASoC: amd: add Yellow Carp ACP PCI driver
+To:     "Gong, Richard" <richard.gong@amd.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Hiregoudar, Basavaraj" <Basavaraj.Hiregoudar@amd.com>,
+        "Dommati, Sunil-kumar" <Sunil-kumar.Dommati@amd.com>,
+        "Limonciello, Mario" <Mario.Limonciello@amd.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211008162121.6628-1-hdegoede@redhat.com>
- <20211008162121.6628-6-hdegoede@redhat.com> <YWQU/SYTT5Vk24XH@sirena.org.uk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f6f2d7e8-fdb8-ed64-0cdd-65aded9fc42c@redhat.com>
-Date:   Mon, 11 Oct 2021 13:43:40 +0200
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20211011055621.13240-1-Vijendar.Mukunda@amd.com>
+ <20211011055621.13240-3-Vijendar.Mukunda@amd.com>
+ <e61fa81d-bf63-8b41-03d8-12bd3e61af59@amd.com>
+From:   "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Message-ID: <95e0a6c8-c4fa-6471-d19b-27fd8e5599f7@amd.com>
+Date:   Mon, 11 Oct 2021 17:13:50 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YWQU/SYTT5Vk24XH@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+ Thunderbird/78.13.0
+In-Reply-To: <e61fa81d-bf63-8b41-03d8-12bd3e61af59@amd.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0082.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:23::27) To DM6PR12MB4123.namprd12.prod.outlook.com
+ (2603:10b6:5:21f::23)
+MIME-Version: 1.0
+Received: from [10.129.9.123] (165.204.159.251) by PN2PR01CA0082.INDPRD01.PROD.OUTLOOK.COM (2603:1096:c01:23::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20 via Frontend Transport; Mon, 11 Oct 2021 11:25:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1919a799-0838-41cc-f6d2-08d98ca9c659
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1849:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR12MB184930AA1074DEEBC2DE38F097B59@DM5PR12MB1849.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:626;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qccWs/BWAGUkN94WJ2nUSvZL/unBVqLQYtMDr2O91hFpsXejr2Wixr6plxItLrohsrN7sjpY/15oHnu323D20DEVyXyZ6UqLHQ1aYt51+DOw+WIM7yCJ/2le96cYOlHtxN/zM8EAK0fiL2c8Sx7b7EMQGQwZCw/KUkYhz/9mEhn1WDR8NKkc6gMlfLpTYVuUzkBN56POKkO89EbFJQBNb1N8ra1Jyms56ErkCV/GWtN0+3v0ZKivSuLbUqHcv5rcuhr3Pa0bC6XP5dkE561BBMAcE1JI1bfHUx1HzdQkwp2l9zqHbEHfShtxXMNapTRw01NxVVM9pSY1CNeBacv3UIST9FGGFM7b0lG+D+YdnLJy+PZYn3U8pEQCQkNCVxtsn224u3VSIG99N9m/0Y41HJKJDFQKnff27NwLUPC+JGGV1Z21h0Qpb6ZnQXt+UB8kkotyWIVX5fydXc6icI6HK1f9pUhtVMg7we2c6EF/GoeiYsazw2/io4qE6lfwD8Xzmm3+y8wYtmGc23ghT7mYnztioPdwry3mrKvdIOGf1yJv1lhaSI4IrPPsoOGsUE7p0dBEsMaG6sNPCwrfNpPHjYBDjGXCxmbIHuQJoiL6/Gf7YbhbGe+Zl/tkmMldFnoxCz6Dx4UctDWp964DoiV5Ar0OLQHKv21cpM50LLCXZd/jr0baS+U1uGik0Nl9nK/4VN5xDLNbhlKNJUcr0BM0h3NJZ2oLiaxexqn/B4Kt/O940fDuGL2pLBC0FH1KcJFo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4123.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66556008)(66476007)(83380400001)(31686004)(86362001)(66946007)(31696002)(2616005)(956004)(36756003)(2906002)(53546011)(186003)(4326008)(6486002)(8676002)(508600001)(5660300002)(8936002)(26005)(316002)(54906003)(110136005)(16576012)(6666004)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Y1E5OGo4WXZuSURVZTl5YWkxUm9UOGNsSjBWK3gvWitHTTg1NSs0OVVSVG53?=
+ =?utf-8?B?dXhWRVQ0bzQxNzlveWh3cTNBZmsvTVFrakQ4azFjTXpla0hKRkxhK1JEK1VT?=
+ =?utf-8?B?NlkxNTAzdUJmSVEwZm1vZDI2U2tyME9zZVlERXUwbUs0eUxXMUlSd1N2QXZ3?=
+ =?utf-8?B?MTl1QllzRFp6cFVrQlpWMVJMbnNuVEorWlB3UDJ4a3RLL2FUbitsOU9CMUVi?=
+ =?utf-8?B?V3lCa3NobCthZlArYTVCYWNKZWNsajByRDJ1U0FXYmhWeHhkenVJQzl5Tnp6?=
+ =?utf-8?B?dG9za25kSWNuZlBndXhrT0lPbG1NRHJSNDBVYnFhTGxHMGFhcFJYRzlHR2t6?=
+ =?utf-8?B?ZkJZZW1CdnoyeC91SlI0UlJZTlAzeHFLaTUyS2FHeXcyYWE3eE1XbDJoUDB5?=
+ =?utf-8?B?cmlKZC8vcHhqSzcvMlBORjQ0aHB4LytQL3VoNXp6eEFpUE9rTDR0Zk9UVysv?=
+ =?utf-8?B?UmRScWM5ejBlc2tCVVlXY0htbkdkT2dZTS9NeEs1SGxDNVRjYTV6cEtCd0V3?=
+ =?utf-8?B?YzBhYzdRZFNBYWkwVGdmN1ppemlDQk1jTFFZckJKVFB5amN6UXR0U216MG14?=
+ =?utf-8?B?TkUycjBUZTUrVUQwT0wrd29LeUVQWHZqeXJRamJrUUhQa08yZGJoR1ZwcTlM?=
+ =?utf-8?B?b3d1aEdRdXdxRG40SzBtUnpNTDdrdWEzaHVvbEdHOTlxUUh2Nm1Db1BNM3Y0?=
+ =?utf-8?B?NjZZVnBqWUZVSmdiYkFnTThOVXhnYXZ1VWg0M1IvNnBlMERHOCtpSytGUXJh?=
+ =?utf-8?B?WXBwaUp2bkczanUvYjNFK0VaU3dDZjBUY3JVci9RNVJVNUxnaWd0R05qbXdr?=
+ =?utf-8?B?ZTlnU2V1c21GRDdYS2hscEkwcHh2MDl5cDFvam8vd0ZRcEYxaCtzNGNsUXZY?=
+ =?utf-8?B?QXVGMXlGOTZmK1YzV2p0NVZ1Q05mUW02K2tJZFZhRWt6N042SWdtTkF5OEpo?=
+ =?utf-8?B?cENPUzJNVU9RYWRuZWhld2t2S3FFSVIwMXR6WExadFNzRk5nTUU3RnVsL0xT?=
+ =?utf-8?B?cVpPZk9LZy91blQxOHFMOGZjMUlOZnhEZEN2RGJLdFlHZk9VQ3Zmb0JUMWIz?=
+ =?utf-8?B?dWhzbEZUUDJ4Y0lEbGRtV1VHVkMrQTR4Q2FLUThLbVNyeEhranZTdTBZYS9H?=
+ =?utf-8?B?UFVueEszZjlIbzdLSTk1QzBOY1g2V09LMmpPNjdsaGsrRG1TTEtkQXdoMFNi?=
+ =?utf-8?B?ZlZORWd0T0NCZnJ3TjZBdWF2RTFkcENreldHeHhsRVgvdFhUVk9GMHR2MGl5?=
+ =?utf-8?B?d2RwNTNFWHhGb3pBRXJwejBpRndyNUhGdks0UjJZMjc4bWI5N1VXVGNqY2VV?=
+ =?utf-8?B?NmVQT2UxNkpKRHgrTGdxNE5vbkdxRXJKcm5nYm9tb3J5UE5mZUFGczFaLzdE?=
+ =?utf-8?B?cENRRFhoRHAvLzVBbWJkZXNUdFduU2VMTHpWQXR5QmFYVDA4U3RtMk5QeHVE?=
+ =?utf-8?B?QURRc0IzTkFIUnhXc2RwdFRnSnQ2VHJkbnhJWnhJUTIzc2pXOTZWNHQvM05v?=
+ =?utf-8?B?TkRwc3BkcXh5Q0tOaU5SWlRNV0RoTVRZYVJ3VjRvSDJla3doOXFKVllMZjZ3?=
+ =?utf-8?B?UGNab1RUcWpodGtQalRhcXM2MTgwQStXNEZZSXo1bWZEbS9KZEQzVU5hdkps?=
+ =?utf-8?B?VTRraXRoN2E4WHlVVm9MQnY1ZjVNejh5c09MaTZoVDZ4Wjl0R0lUNmg2UE4w?=
+ =?utf-8?B?VFRLTFBUcWIwcEVvTGV4TWlUSXhZSW5RaVk4akx3enRMYlhTd3pYMVE3SnVS?=
+ =?utf-8?Q?jeHRr2j7UvcHpOus49Hln64Ou841hQxtR8Gu0Ta?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1919a799-0838-41cc-f6d2-08d98ca9c659
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4123.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 11:25:05.5688
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JR8oXakqCYnZtPJrKOyQsYMu6C3YpchB5Omy9Gnw1zQfygv0moM3oHn1NhhwsD41uma1L65EooYQja5RfU+gng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1849
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 10/11/21 12:42 PM, Mark Brown wrote:
-> On Fri, Oct 08, 2021 at 06:21:14PM +0200, Hans de Goede wrote:
+On 10/11/21 4:31 PM, Gong, Richard wrote:
 > 
->> +++ b/drivers/regulator/tps68470-regulator.c
->> @@ -0,0 +1,194 @@
->> +// SPDX-License-Identifier: GPL-2.0
+> On 10/11/2021 12:56 AM, Vijendar Mukunda wrote:
+>> ACP is a PCI audio device.
+>> This patch adds PCI driver to bind to this device and get
+>> PCI resources.
+>>
+>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+>> ---
+>>   sound/soc/amd/yc/acp6x.h     | 21 +++++++++
+>>   sound/soc/amd/yc/pci-acp6x.c | 89 ++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 110 insertions(+)
+>>   create mode 100644 sound/soc/amd/yc/acp6x.h
+>>   create mode 100644 sound/soc/amd/yc/pci-acp6x.c
+>>
+>> diff --git a/sound/soc/amd/yc/acp6x.h b/sound/soc/amd/yc/acp6x.h
+>> new file mode 100644
+>> index 000000000000..62a05db5e34c
+>> --- /dev/null
+>> +++ b/sound/soc/amd/yc/acp6x.h
+>> @@ -0,0 +1,21 @@
+>> +/* SPDX-License-Identifier: GPL-2.0+ */
+> Use // here
+
+Will fix it and post the new version.
+
 >> +/*
->> + * Regulator driver for TPS68470 PMIC
+>> + * AMD ALSA SoC PDM Driver
 >> + *
-> 
-> Please make the entire comment a C++ one so things look more
-> intentional.
-
-Ok, will do so for the next version.
-
-
->> +
->> +/*
->> + * The ACPI tps68470 probe-ordering depends on the clk/gpio/regulator drivers
->> + * being registered before the MFD cells are created (the MFD driver calls
->> + * acpi_dev_clear_dependencies() after the cell creation).
->> + * subsys_initcall() ensures this when the drivers are builtin.
+>> + * Copyright (C) 2021 Advanced Micro Devices, Inc. All rights reserved.
 >> + */
->> +static int __init tps68470_regulator_init(void)
+>> +
+>> +#include "acp6x_chip_offset_byte.h"
+>> +
+>> +#define ACP_DEVICE_ID 0x15E2
+>> +#define ACP6x_PHY_BASE_ADDRESS 0x1240000
+>> +
+>> +static inline u32 acp6x_readl(void __iomem *base_addr)
 >> +{
->> +	return platform_driver_register(&tps68470_regulator_driver);
+>> +    return readl(base_addr - ACP6x_PHY_BASE_ADDRESS);
 >> +}
->> +subsys_initcall(tps68470_regulator_init);
-> 
-> If this is actually required then the driver is broken for modular use
-> which frankly is just generally broken.  I don't understand why this
-> driver would require this when other drivers don't, or what the actual
-> requirement is here - what does the call do and why is the ordering
-> important?
+>> +
+>> +static inline void acp6x_writel(u32 val, void __iomem *base_addr)
+>> +{
+>> +    writel(val, base_addr - ACP6x_PHY_BASE_ADDRESS);
+>> +}
+>> diff --git a/sound/soc/amd/yc/pci-acp6x.c b/sound/soc/amd/yc/pci-acp6x.c
+>> new file mode 100644
+>> index 000000000000..2965e8b00314
+>> --- /dev/null
+>> +++ b/sound/soc/amd/yc/pci-acp6x.c
+>> @@ -0,0 +1,89 @@
+>> +// SPDX-License-Identifier: GPL-2.0+
+> It's correct to use // here.
+>> +//
+>> +// AMD Renoir ACP PCI Driver
+>> +//
+>> +//Copyright 2021 Advanced Micro Devices, Inc.
+>> +
+> Use /*  */ rather than //
 
-For the camera-sensor which is a consumer of this devices to be able
-to get the regulators (and not end up with a dummy regulator) the
-consumer info added through the constraints passed as platform data
-must be available to the regulator framework before the sensor-driver's
-probe() method tries to get the regulators.
+Will fix it and post the new version.
 
-The ACPI fwnode describing the sensor has an ACPI _DEP dependency on
-the ACPI fwnode describing the PMIC. To ensure that the PMIC driver
-binds first patches 1 + 2 of this series make the ACPI code use this
-dependency to not instantiate the i2c-client for the sensor until
-the PMIC driver has bound.
-
-The PMIC driver is a MFD driver creating GPIO, clk and regulator
-MFD cells. So in order for the ACPI code delaying the instantiation
-to help, the regulator constraints / consumer info must be registered
-when the MFD driver is done binding. This means that the regulator
-driver for the regulator MFD cells must be registered before the
-platform_dev-s for the cell is instantiated, so that the driver
-binds immediately (during instantiation) and thus the regulator
-consumer info is available before the PMIC-MFD-driver's probe()
-method is done.
-
-The use of a subsys_initcall() here ensures that when builtin
-the regulator driver is registered before the PMIC-MFD-driver
-is registered (the PMIC driver uses a normal device_initcall).
-
-To make this work when everything is build as a module patch 12/12
-adds the following to the PMIC-MFD-driver:
-
-MODULE_SOFTDEP("pre: clk-tps68470 tps68470-regulator");
-
-This will make modprobe load the clk and regulator drivers
-before it loads the main/MFD tps68470 driver.
-
-I've tested this with everything built as module (the typical
-setup for standard x86 setups) and without the MODULE_SOFTDEP
-the sensor driver ends up with a dummy regulator (illustrating
-the problem) and with the SOFTDEP in place everything works
-as it should.
-
-I hope this helps explain things.
-
-Regards,
-
-Hans
+-Vijendar
+>> +#include <linux/pci.h>
+>> +#include <linux/module.h>
+>> +#include <linux/io.h>
+>> +
+>> +#include "acp6x.h"
+>> +
+>> +struct acp6x_dev_data {
+>> +    void __iomem *acp6x_base;
+>> +};
+>> +
+>> +static int snd_acp6x_probe(struct pci_dev *pci,
+>> +               const struct pci_device_id *pci_id)
+>> +{
+>> +    struct acp6x_dev_data *adata;
+>> +    int ret;
+>> +    u32 addr;
+>> +
+>> +    /* Yellow Carp device check */
+>> +    if (pci->revision != 0x60)
+>> +        return -ENODEV;
+>> +
+>> +    if (pci_enable_device(pci)) {
+>> +        dev_err(&pci->dev, "pci_enable_device failed\n");
+>> +        return -ENODEV;
+>> +    }
+>> +
+>> +    ret = pci_request_regions(pci, "AMD ACP3x audio");
+>> +    if (ret < 0) {
+>> +        dev_err(&pci->dev, "pci_request_regions failed\n");
+>> +        goto disable_pci;
+>> +    }
+>> +
+>> +    adata = devm_kzalloc(&pci->dev, sizeof(struct acp6x_dev_data),
+>> +                 GFP_KERNEL);
+>> +    if (!adata) {
+>> +        ret = -ENOMEM;
+>> +        goto release_regions;
+>> +    }
+>> +
+>> +    addr = pci_resource_start(pci, 0);
+>> +    adata->acp6x_base = devm_ioremap(&pci->dev, addr,
+>> +                     pci_resource_len(pci, 0));
+>> +    if (!adata->acp6x_base) {
+>> +        ret = -ENOMEM;
+>> +        goto release_regions;
+>> +    }
+>> +    pci_set_master(pci);
+>> +    pci_set_drvdata(pci, adata);
+>> +    return 0;
+>> +release_regions:
+>> +    pci_release_regions(pci);
+>> +disable_pci:
+>> +    pci_disable_device(pci);
+>> +
+>> +    return ret;
+>> +}
+>> +
+>> +static void snd_acp6x_remove(struct pci_dev *pci)
+>> +{
+>> +    pci_release_regions(pci);
+>> +    pci_disable_device(pci);
+>> +}
+>> +
+>> +static const struct pci_device_id snd_acp6x_ids[] = {
+>> +    { PCI_DEVICE(PCI_VENDOR_ID_AMD, ACP_DEVICE_ID),
+>> +    .class = PCI_CLASS_MULTIMEDIA_OTHER << 8,
+>> +    .class_mask = 0xffffff },
+>> +    { 0, },
+>> +};
+>> +MODULE_DEVICE_TABLE(pci, snd_acp6x_ids);
+>> +
+>> +static struct pci_driver yc_acp6x_driver  = {
+>> +    .name = KBUILD_MODNAME,
+>> +    .id_table = snd_acp6x_ids,
+>> +    .probe = snd_acp6x_probe,
+>> +    .remove = snd_acp6x_remove,
+>> +};
+>> +
+>> +module_pci_driver(yc_acp6x_driver);
+>> +
+>> +MODULE_AUTHOR("Vijendar.Mukunda@amd.com");
+>> +MODULE_DESCRIPTION("AMD ACP Yellow Carp PCI driver");
+>> +MODULE_LICENSE("GPL v2");
 
