@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCB1428E14
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82149428E15
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbhJKNh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:37:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3964 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235759AbhJKNh2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:37:28 -0400
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HSfpL1VfCz6H7ct;
-        Mon, 11 Oct 2021 21:31:38 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 15:35:23 +0200
-Received: from localhost (10.52.122.204) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 14:35:22 +0100
-Date:   Mon, 11 Oct 2021 14:35:04 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, Ben Widawsky <ben.widawsky@intel.com>,
-        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <hch@lst.de>
-Subject: Re: [PATCH v3 09/10] cxl/pci: Use pci core's DVSEC functionality
-Message-ID: <20211011143504.00003b2d@Huawei.com>
-In-Reply-To: <163379788528.692348.11581080806976608802.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <163379783658.692348.16064992154261275220.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <163379788528.692348.11581080806976608802.stgit@dwillia2-desk3.amr.corp.intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S235897AbhJKNiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:38:02 -0400
+Received: from first.geanix.com ([116.203.34.67]:37366 "EHLO first.geanix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235759AbhJKNiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:38:00 -0400
+Received: from skn-laptop (_gateway [172.25.0.1])
+        by first.geanix.com (Postfix) with ESMTPSA id 766D3C3DCB;
+        Mon, 11 Oct 2021 13:35:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
+        t=1633959358; bh=xE4X5BF6E0aIpTrV8lCehzVbxCNFk1JaXrnIGkwaPM0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=XylsbvZJw/MkJO9l9jUSUS4m1IjoBfgfn0MEkkKOxYSFue3IogdDPmaT+FIyeJPXa
+         eZEyWlTJZofBtk9p3LHmE+JtcnbHtxDRdgUFVqgvNYi9uxPXp97Q5uYP4h+tfSfI0k
+         hf9akEBZ9F/pbPj2XNAKvWZEmhNvqQGECMscUx6KTVSQF5GVimEAv1ptALdKeqdvqK
+         IwjTRFDpjpHKNx5xIpST0St/rZs+dwbZuZIS7XsDIK4Drs5gLESU1k3aX6CkIDey0U
+         H23cKJCg04PEyaMeTnC9fr46llxFo/N3oRw/JFgOv/TC2PX/0d6VV5yQhBAd+fXWcf
+         MYX6N3vfuGNIg==
+Date:   Mon, 11 Oct 2021 15:35:56 +0200
+From:   Sean Nyekjaer <sean@geanix.com>
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] mtd: mtdconcat: add suspend lock handling
+Message-ID: <20211011133556.probhbuowxkumpzb@skn-laptop>
+References: <20211011115253.38497-1-sean@geanix.com>
+ <20211011115253.38497-4-sean@geanix.com>
+ <20211011151501.48cc9289@collabora.com>
+ <20211011152703.0086d990@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.122.204]
-X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20211011152703.0086d990@collabora.com>
+X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
+        autolearn=disabled version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on 13e2a5895688
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 9 Oct 2021 09:44:45 -0700
-Dan Williams <dan.j.williams@intel.com> wrote:
-
-> From: Ben Widawsky <ben.widawsky@intel.com>
+On Mon, Oct 11, 2021 at 03:27:03PM +0200, Boris Brezillon wrote:
+> On Mon, 11 Oct 2021 15:15:01 +0200
+> Boris Brezillon <boris.brezillon@collabora.com> wrote:
 > 
-> Reduce maintenance burden of DVSEC query implementation by using the
-> centralized PCI core implementation.
+> > On Mon, 11 Oct 2021 13:52:53 +0200
+> > Sean Nyekjaer <sean@geanix.com> wrote:
+> > 
+> > > Use new suspend lock handling for this special case for concatenated
+> > > MTD devices.
+> > > 
+> > > Fixes: 013e6292aaf5 ("mtd: rawnand: Simplify the locking")
+> > > Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> > > ---
+> > >  drivers/mtd/mtdconcat.c | 11 +++++++++--
+> > >  1 file changed, 9 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> > > index f685a581df48..c497c851481f 100644
+> > > --- a/drivers/mtd/mtdconcat.c
+> > > +++ b/drivers/mtd/mtdconcat.c
+> > > @@ -561,25 +561,32 @@ static void concat_sync(struct mtd_info *mtd)
+> > >  
+> > >  static int concat_suspend(struct mtd_info *mtd)
+> > >  {
+> > > +	struct mtd_info *master = mtd_get_master(mtd);
+> > >  	struct mtd_concat *concat = CONCAT(mtd);
+> > >  	int i, rc = 0;
+> > >  
+> > >  	for (i = 0; i < concat->num_subdev; i++) {
+> > >  		struct mtd_info *subdev = concat->subdev[i];
+> > > -		if ((rc = mtd_suspend(subdev)) < 0)
+> > > +
+> > > +		down_write(&master->master.suspend_lock);
+> > > +		if ((rc = __mtd_suspend(subdev)) < 0)
+> > >  			return rc;
+> > > +		up_write(&master->master.suspend_lock);
+> > >  	}
+> > >  	return rc;
+> > >  }
+> > >  
+> > >  static void concat_resume(struct mtd_info *mtd)
+> > >  {
+> > > +	struct mtd_info *master = mtd_get_master(mtd);
+> > >  	struct mtd_concat *concat = CONCAT(mtd);
+> > >  	int i;
+> > >  
+> > >  	for (i = 0; i < concat->num_subdev; i++) {
+> > >  		struct mtd_info *subdev = concat->subdev[i];
+> > > -		mtd_resume(subdev);
+> > > +		down_write(&master->master.suspend_lock);
+> > > +		__mtd_resume(subdev);
+> > > +		up_write(&master->master.suspend_lock);
+> > >  	}
+> > >  }
+> > >    
+> > 
+> > Why do we need to implement the _suspend/_resume() hooks here? The
+> > underlying MTD devices should be suspended at some point (when the
+> > class ->suspend() method is called on those device), and there's
+> > nothing mtdconcat-specific to do here. Looks like implementing this
+> > suspend-all-subdevs loop results in calling mtd->_suspend()/_resume()
+> > twice, which is useless. The only issue I see is if the subdevices
+> > haven't been registered to the device model, but that happens, I
+> > believe we have bigger issues (those devices won't be suspended when
+> > mtdconcat is not used).
 > 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> [djbw: kill cxl_pci_dvsec()]
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-Very pleased to see this being cleaned up.  Thanks,
-fwiw
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/cxl/pci.c |   26 ++------------------------
->  1 file changed, 2 insertions(+), 24 deletions(-)
 > 
-> diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-> index b6bc8e5ca028..f2e2a02d1fe6 100644
-> --- a/drivers/cxl/pci.c
-> +++ b/drivers/cxl/pci.c
-> @@ -340,29 +340,6 @@ static void cxl_unmap_regblock(struct pci_dev *pdev,
->  	map->base = NULL;
->  }
->  
-> -static int cxl_pci_dvsec(struct pci_dev *pdev, int dvsec)
-> -{
-> -	int pos;
-> -
-> -	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_DVSEC);
-> -	if (!pos)
-> -		return 0;
-> -
-> -	while (pos) {
-> -		u16 vendor, id;
-> -
-> -		pci_read_config_word(pdev, pos + PCI_DVSEC_HEADER1, &vendor);
-> -		pci_read_config_word(pdev, pos + PCI_DVSEC_HEADER2, &id);
-> -		if (vendor == PCI_DVSEC_VENDOR_ID_CXL && dvsec == id)
-> -			return pos;
-> -
-> -		pos = pci_find_next_ext_capability(pdev, pos,
-> -						   PCI_EXT_CAP_ID_DVSEC);
-> -	}
-> -
-> -	return 0;
-> -}
-> -
->  static int cxl_probe_regs(struct pci_dev *pdev, struct cxl_register_map *map)
->  {
->  	struct cxl_component_reg_map *comp_map;
-> @@ -449,7 +426,8 @@ static int cxl_find_regblock(struct pci_dev *pdev, enum cxl_regloc_type type,
->  	u32 regloc_size, regblocks;
->  	int regloc, i;
->  
-> -	regloc = cxl_pci_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_DVSEC_ID);
-> +	regloc = pci_find_dvsec_capability(pdev, PCI_DVSEC_VENDOR_ID_CXL,
-> +					   PCI_DVSEC_ID_CXL_REGLOC_DVSEC_ID);
->  	if (!regloc)
->  		return -ENXIO;
->  
-> 
+> Uh, just had a look at mtd_concat_create() callers, and they indeed
+> don't register the subdevices, so I guess the suspend-all-subdevs loop
+> is needed. I really thought mtdconcat was something more generic
+> aggregating already registered devices...
 
+Hi Boris,
+
+Cool, mtd_concat should be seen as mtd devices concatenated? Could be
+spi-nors and rawnand. So _suspend() needs to be called for every device
+layer?
+
+From what I see here, mtd_suspend()/mtd_resume() is called for every mtd
+device. Before this patch mtd_suspend() would only have effect on the
+first device as master->master.suspended is set and then calls to
+device specific _suspend() is skipped.
+
+Correct?
+
+/Sean
