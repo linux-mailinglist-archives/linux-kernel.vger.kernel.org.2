@@ -2,195 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0D642926B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8586429266
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244200AbhJKOpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:45:41 -0400
-Received: from pv50p00im-zteg10011401.me.com ([17.58.6.41]:59633 "EHLO
-        pv50p00im-zteg10011401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244058AbhJKOpe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:45:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1633963411; bh=Ffmgc+eOs3zeWuYxNFkiIe3ut9JNJ7qAah2dXr12VAo=;
-        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-        b=gnbIrso9Cl5Vgx2dO3qzq9do26CMp2D6CoFEew9w9XfIwAeqFze4/WwX8bj3SPj1p
-         uELSAL8XiGYUt2StXsYd2XdlaZ5qo/b/z+8EcbiawP04pnTc1Wngtd96MmxRVpcy1I
-         an4TmeTq3Y2EoyGO3RrUgellfhWnQ98OlCF5/6qhJD936vTWGGDTu4s/MERoMBr6lb
-         75lIxPhWDdG6cBXTDTyUrB06z96h7Q3VwGa2sShytF6oD4wRqJN7mSq8B8Vc7VCipD
-         seccnOL9LRE4fHD/pxRudikLoqikN4oEbLKmDpqiWMJDIsoTsG28rkqQqo/7YyfJlA
-         8pfjfnAHTUVdA==
-Received: from 192.168.1.6 (unknown [120.245.2.114])
-        by pv50p00im-zteg10011401.me.com (Postfix) with ESMTPSA id AD7D49002D2;
+        id S244291AbhJKOpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:45:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244168AbhJKOpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:45:23 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BEF160BD3;
         Mon, 11 Oct 2021 14:43:21 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH v2 0/6] Use generic code for randomization of virtual
- address of x86
-From:   Xiongwei Song <sxwjean@me.com>
-In-Reply-To: <20211011143150.318239-1-sxwjean@me.com>
-Date:   Mon, 11 Oct 2021 22:43:17 +0800
-Cc:     Xiongwei Song <sxwjean@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Kees Cook <keescook@chromium.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
+Date:   Mon, 11 Oct 2021 10:43:19 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Yazen Ghannam <yazen.ghannam@amd.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <23A70A75-8016-4A80-9AEC-89B41F155104@me.com>
-References: <20211011143150.318239-1-sxwjean@me.com>
-To:     linux-mm@kvack.org, x86@kernel.org
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
- definitions=2021-10-11_05:2021-10-07,2021-10-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=892 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2110110086
+        syzbot <syzbot+84fe685c02cd112a2ac3@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, inglorion@google.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, Andy Lutomirski <luto@kernel.org>, tkjos@google.com
+Subject: Re: [syzbot] KASAN: stack-out-of-bounds Read in profile_pc
+Message-ID: <20211011104319.7c6125cb@gandalf.local.home>
+In-Reply-To: <YWQ3AzF+q2xeyQ/p@google.com>
+References: <00000000000030293b05c39afd6f@google.com>
+        <20210602230054.vyqama2q3koc4bpo@treble>
+        <527ad07e-eec2-a211-03e7-afafe5196100@linux.intel.com>
+        <YLjZYvXnuPnbXzOm@hirez.programming.kicks-ass.net>
+        <20210603133914.j2aeadmvhncnlk5q@treble>
+        <0b71d4f9-f707-3d39-c358-7c06c5689a9d@linux.intel.com>
+        <YWQ3AzF+q2xeyQ/p@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Oct 2021 14:07:15 +0100
+Lee Jones <lee.jones@linaro.org> wrote:
+
+> On Thu, 03 Jun 2021, Andi Kleen wrote:
+> 
+> >   
+> > > True, ftrace does have function profiling (function_profile_enabled).
+> > > 
+> > > Steve, is there a way to enable that on the kernel cmdline?  
+> > 
+> > That's not really comparable. function profiling has a lot more overhead.
+> > Also there is various code which has ftrace instrumentation disabled.
+> > 
+> > I don't think why you want to kill the old profiler. It's rarely used, but
+> > when you need it usually works. It's always good to have simple fall backs.
+> > And it's not that it's a lot of difficult code.  
+> 
+> sysbot is still sending out reports on this:
+> 
+>   https://syzkaller.appspot.com/bug?id=00c965d957410afc0d40cac5343064e0a98b9ecd
+> 
+> Are you guys still planning on sending out a fix?
+> 
+> Is there anything I can do to help?
+> 
+
+According to the above:
+
+==================================================================
+BUG: KASAN: stack-out-of-bounds in profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+Read of size 8 at addr ffffc90001c0f7a0 by task systemd-udevd/12323
+
+CPU: 1 PID: 12323 Comm: systemd-udevd Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x202/0x31e lib/dump_stack.c:120
+ print_address_description+0x5f/0x3b0 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report+0x15c/0x200 mm/kasan/report.c:436
+ profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+ profile_tick+0xcd/0x120 kernel/profile.c:408
+ tick_sched_handle kernel/time/tick-sched.c:227 [inline]
+ tick_sched_timer+0x287/0x420 kernel/time/tick-sched.c:1373
+ __run_hrtimer kernel/time/hrtimer.c:1537 [inline]
+ __hrtimer_run_queues+0x4cb/0xa60 kernel/time/hrtimer.c:1601
+ hrtimer_interrupt+0x3b3/0x1040 kernel/time/hrtimer.c:1663
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1089 [inline]
+ __sysvec_apic_timer_interrupt+0xf9/0x270 arch/x86/kernel/apic/apic.c:1106
+ sysvec_apic_timer_interrupt+0x8c/0xb0 arch/x86/kernel/apic/apic.c:1100
+
+And the code has:
+
+ profile_pc+0xa4/0xe0 arch/x86/kernel/time.c:42
+
+unsigned long profile_pc(struct pt_regs *regs)
+{
+	unsigned long pc = instruction_pointer(regs);
+
+	if (!user_mode(regs) && in_lock_functions(pc)) {
+#ifdef CONFIG_FRAME_POINTER
+		return *(unsigned long *)(regs->bp + sizeof(long));
+#else
+		unsigned long *sp = (unsigned long *)regs->sp;
+		/*
+		 * Return address is either directly at stack pointer
+		 * or above a saved flags. Eflags has bits 22-31 zero,
+		 * kernel addresses don't.
+		 */
+		if (sp[0] >> 22)
+			return sp[0];  <== line 42
+		if (sp[1] >> 22)
+			return sp[1];
+#endif
+	}
+	return pc;
+}
+EXPORT_SYMBOL(profile_pc);
 
 
-> On Oct 11, 2021, at 10:31 PM, sxwjean@me.com wrote:
->=20
-> From: Xiongwei Song <sxwjean@gmail.com>
->=20
-> Hello,
->=20
-> This patchset are to use generic code for randomization of virtual =
-address
-> of x86. Since the basic code logic of x86 is same as generic code, so =
-no
-> need to implement these functions on x86.
->=20
-> Patch 1~3 are prepared to change the generic code to apply to x86.
->=20
-> Patch 4 is to switch to generic arch_pick_mmap_layout() with=20
-> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT enabled. Also provided basically
-> test and the result was put in commit message too.
->=20
-> Patch 5~6 are used to handle the legacy things.
->=20
-> Test programs(to verify if the entropy of return value of mmap is kept
-> after applying the patchset):
-> - C code for mmap test:
-> 	#include <stdio.h>
-> 	#include <stdlib.h>
-> 	#include <sys/mman.h>
->=20
-> 	int main(int argc, char *argv[])
-> 	{
-> 		unsigned long *addr;
->=20
-> 		addr =3D mmap(NULL, 4096, PROT_READ, =
-MAP_SHARED|MAP_ANONYMOUS, -1, 0);
-> 		if (addr =3D=3D MAP_FAILED) {
-> 			printf("NULL\n");
-> 		} else {
-> 			printf("%lx\n", (unsigned long)addr);
-> 			munmap(addr, 4096);
-> 		}
->=20
-> 		return 0;
-> 	}
->=20
-> - Shell script for collecting output of C progarm above and give a
->  statistics:
-> 	#!/bin/bash
-> 	declare -a COUNT
->=20
-> 	if [ "$1" =3D=3D "" ]; then
-> 	    echo "Please give a test number!"
-> 	    exit 1
-> 	fi
-> 	number=3D$1
->=20
-> 	for ((i=3D0; i<$number; i++))
-> 	do
-> 	    addr=3D$(mmaptest)
-> 	    addr=3D$(((16#$addr&0xf000000000)>>36))
-> 	    COUNT[$addr]=3D$((COUNT[$addr]+1))
-> 	done
->=20
-> 	echo "    Virtual Address Range     |   hit times   "
-> 	echo "----------------------------------------"
-> 	for ((i=3D0; i<16; i++))
-> 	do
-> 	    j=3D`echo "obase=3D16; $i" | bc`
-> 	    echo "0x7f${j,,}000000000 - 0x7f${j,,}ffffff000 |   =
-${COUNT[i]}"
-> 	done
->=20
-> Run 10 thousands times C progam, collect the output with shell script, =
-get
-> the test results below:
-> 	Before the patchset:
->            Virtual Address Range       | hit times
->        ----------------------------------------
->        0x7f0000000000 - 0x7f0ffffff000 |   655=20
->        0x7f1000000000 - 0x7f1ffffff000 |   617=20
->        0x7f2000000000 - 0x7f2ffffff000 |   636=20
->        0x7f3000000000 - 0x7f3ffffff000 |   625=20
->        0x7f4000000000 - 0x7f4ffffff000 |   651=20
->        0x7f5000000000 - 0x7f5ffffff000 |   591=20
->        0x7f6000000000 - 0x7f6ffffff000 |   623=20
->        0x7f7000000000 - 0x7f7ffffff000 |   627=20
->        0x7f8000000000 - 0x7f8ffffff000 |   638=20
->        0x7f9000000000 - 0x7f9ffffff000 |   586=20
->        0x7fa000000000 - 0x7faffffff000 |   637=20
->        0x7fb000000000 - 0x7fbffffff000 |   607=20
->        0x7fc000000000 - 0x7fcffffff000 |   618=20
->        0x7fd000000000 - 0x7fdffffff000 |   656=20
->        0x7fe000000000 - 0x7feffffff000 |   614=20
->        0x7ff000000000 - 0x7ffffffff000 |   619=20
->=20
-> 	After the patchset:
->            Virtual Address Range       | hit times
->        ----------------------------------------
->        0x7f0000000000 - 0x7f0ffffff000 |   661=20
->        0x7f1000000000 - 0x7f1ffffff000 |   645=20
->        0x7f2000000000 - 0x7f2ffffff000 |   609=20
->        0x7f3000000000 - 0x7f3ffffff000 |   594=20
->        0x7f4000000000 - 0x7f4ffffff000 |   616=20
->        0x7f5000000000 - 0x7f5ffffff000 |   622=20
->        0x7f6000000000 - 0x7f6ffffff000 |   617=20
->        0x7f7000000000 - 0x7f7ffffff000 |   582=20
->        0x7f8000000000 - 0x7f8ffffff000 |   618=20
->        0x7f9000000000 - 0x7f9ffffff000 |   629=20
->        0x7fa000000000 - 0x7faffffff000 |   635=20
->        0x7fb000000000 - 0x7fbffffff000 |   625=20
->        0x7fc000000000 - 0x7fcffffff000 |   614=20
->        0x7fd000000000 - 0x7fdffffff000 |   610=20
->        0x7fe000000000 - 0x7feffffff000 |   648
->        0x7ff000000000 - 0x7ffffffff000 |   675
+It looks to me that the profiler is doing a trick to read the contents of
+the stack when the interrupt went off, but this triggers the KASAN
+instrumentation to think it's a mistake when it's not. aka "false positive".
 
-Hi Kees,
+How does one tell KASAN that it wants to go outside the stack, because it
+knows what its doing?
 
-Sorry, I have no idea about the entropy measure tools, so I designed a =
-test program
-myself. I=E2=80=99m not sure if my test is enough. Or could you please =
-share a better method to
-measure entropy?
+Should that just be converted to a "copy_from_kernel_nofault()"? That is,
+does this fix it? (not even compiled tested)
 
-Regards,
-Xiongwei
+-- Steve
 
 
+diff --git a/arch/x86/kernel/time.c b/arch/x86/kernel/time.c
+index e42faa792c07..cc6ec29aa14d 100644
+--- a/arch/x86/kernel/time.c
++++ b/arch/x86/kernel/time.c
+@@ -34,15 +34,18 @@ unsigned long profile_pc(struct pt_regs *regs)
+ 		return *(unsigned long *)(regs->bp + sizeof(long));
+ #else
+ 		unsigned long *sp = (unsigned long *)regs->sp;
++		unsigned long retaddr;
+ 		/*
+ 		 * Return address is either directly at stack pointer
+ 		 * or above a saved flags. Eflags has bits 22-31 zero,
+ 		 * kernel addresses don't.
+ 		 */
+-		if (sp[0] >> 22)
+-			return sp[0];
+-		if (sp[1] >> 22)
+-			return sp[1];
++		if (!copy_from_kernel_nofault(&retaddr, sp, sizeof(long)) &&
++		    retaddr >> 22)
++			return retaddr;
++		if (!copy_from_kernel_nofault(&retaddr, sp + 1, sizeof(long)) &&
++		    retaddr >> 22)
++			return retaddr;
+ #endif
+ 	}
+ 	return pc;
