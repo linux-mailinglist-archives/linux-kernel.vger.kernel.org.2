@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E11428681
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A25428684
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhJKF4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:56:13 -0400
-Received: from mail-co1nam11on2041.outbound.protection.outlook.com ([40.107.220.41]:63680
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233802AbhJKF4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:56:10 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n+5/wQj+fPsGvAMrtE9hWurs5XTHTVzvGsuKhGTBs65ixp7XBqgKb4w5UibIzF5J1HuibTIM4+QDn28kSEI7LkKsjv4HvZpxuTak4ydtM6mcxAK2IZ1Kj59e/A1RRFLm4rMFKPweoBsm8s4s7cpwh/alnY5bp+OqlmoadYHW8f7a1wIZnVMZOj3KJVq8eJAv7U8v0g9oIpfrxY3qdowVXQXVuFCcojtMoAh9YxPPkFnYrWmXFsbU2Ox17jbycSq/ZJcGJEQv5yM3etJUsiiqau1/B5C2txiLZgHM3TLNhU5qGLhniE3n7gkWDQN/JZm7TvNoULP9tbjFpceZwR79dg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1pOy6LqmgSBBtu403W9qa+2xxpZoxTlcYPuQoiRSD+0=;
- b=NDwnqbRZzox9if3Mg0KJwe2OGh9ub1RKT9CQ6AJbRHzbAILWAG5jZEiA8l795EPxhzD3Mr4W+KHjATvRy5tmwv+po9IIE+b6e4aMkOhH/nsyHl8xQPkzCerJju/Q0mUD9c1xpSJiie2PpZfDn1vXRsnj5l5ZkiG4BVBSEIcoxvYZnGb/L69wsjyMwWuR0W+ORb7BFbgbymZWkY+xqAwsXOQjxVGmXiep2n7oMFxOy3tvk1nL5322kPSMgIAzAAet47bczWhBQyOnBu1mesyyYzN6qwP2OwM9mxVcBtS73ARPbvcIVI7njX4+jVtZabPUqfSdzuQASsMaTtU9oCkFBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1pOy6LqmgSBBtu403W9qa+2xxpZoxTlcYPuQoiRSD+0=;
- b=p38iy4ezu9JN/3zScbrqMo6OH+j8SqI18jQPmzcYdO3nURRt1E6jLToXNKexWc2+gPP27Qy6oaAVWqLZxcBD/Lk4/J+XTjYSEuPwixqVnhC4J18i7/v6XdMlPVwW4K9sBk9T53W7BBCaajztr4hzt88OQJMi7gFcJJYV4Ni5PO4=
-Received: from MW4PR04CA0079.namprd04.prod.outlook.com (2603:10b6:303:6b::24)
- by MWHPR1201MB0221.namprd12.prod.outlook.com (2603:10b6:301:56::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Mon, 11 Oct
- 2021 05:54:08 +0000
-Received: from CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:6b:cafe::64) by MW4PR04CA0079.outlook.office365.com
- (2603:10b6:303:6b::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Mon, 11 Oct 2021 05:54:08 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com;
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CO1NAM11FT041.mail.protection.outlook.com (10.13.174.217) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 05:54:08 +0000
-Received: from SATLEXMB07.amd.com (10.181.41.45) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 00:54:07 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB07.amd.com
- (10.181.41.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sun, 10 Oct
- 2021 22:54:06 -0700
-Received: from chrome.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2308.8 via Frontend
- Transport; Mon, 11 Oct 2021 00:53:57 -0500
-From:   Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>, <Alexander.Deucher@amd.com>,
-        Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Vijendar Mukunda <vijendar.mukunda@amd.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: amd: Kconfig: Select fch clock support with machine driver
-Date:   Mon, 11 Oct 2021 11:23:53 +0530
-Message-ID: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
-X-Mailer: git-send-email 2.25.1
+        id S233444AbhJKF6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:58:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhJKF6R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 01:58:17 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E9DC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:56:17 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id v2-20020a05683018c200b0054e3acddd91so15844065ote.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MCMZjprOoTO3FY4Nz8fWbXma5aFkRInKRgNzdjqncZA=;
+        b=H2DkxHxjCwHTlWNcj7RtGx/DxRPxzHwZghfAeje3xwNMr2IfztQNWaSbHta7p1E/1i
+         KhmCsa5FwUQYfWC7RBbeSuQZWO62DGXrYPiazxqpUXwkzA1P3cyyJ/VEdNDRtyRVPZ4D
+         uiiHRYcvyIsX254t3/TpRkEwqzFgYeY3Du5uizYwt7Q++SiuaQimcXxecPQ5vb3WWV1P
+         QOVtboB1pjaKaXfW+yUWGSZw1PL2lRfM/IphFOwHIBbXB8g2C0LUOFMDGJ6k/aq+gQbc
+         ygRWuKxaavYRLg6NvKNe860DMSccJZ4qBWq8X77EVjoYsztpIwyson1ZqHpx6hGMjpLS
+         8KVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MCMZjprOoTO3FY4Nz8fWbXma5aFkRInKRgNzdjqncZA=;
+        b=sa/+ZpGVxUM32/dP5Gz2K3RBFeOhy5J5KKfXQ/WgHeJHo1snyctk+5tpcr1RA3Ln4A
+         k2trLK9bRrT7sbPddh3FrKs2fv9M7AYRyyCZOk/3IY8o3KsfE2YNuyyLPHubgDRs26Cy
+         rDVjUopXBDrBmHaq1Sg+XZgXrkM6vmZngsUPKF+zU5BZBdQNSlwnV0N0FHtB58KiVvGi
+         /Raukzq+ncKF9yCooEo5M7ohQLhpXVQpZsWi/kN+s3b4bW+4lE2c4MdEzn/wI7UN2UiI
+         FhNabdRSZRxbgwM4qNmY485iC/AmDzCC0+NKks+zxALRQ85bMxXCDKTfo86Yu+vTdZPP
+         MSLw==
+X-Gm-Message-State: AOAM533jOEgYP/fHpmUbLJubNc5bHSHFpEdn3SLsBqgnxFDnOOPalUBJ
+        XqIRcIMgB6ofM5edb76BFeDylXxhOnGE+txRpN2dcw==
+X-Google-Smtp-Source: ABdhPJylB5lDjs9TmS+U3sBCJ7MOpvTx1gdWY4wcOlXdElGccgyFt0pFSmgzEYoH3F20+7YJZV4ucGOZTZ8aK2M6HyE=
+X-Received: by 2002:a05:6830:402c:: with SMTP id i12mr5601347ots.319.1633931777032;
+ Sun, 10 Oct 2021 22:56:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e03226d-b9d1-4c4d-46bd-08d98c7b8a84
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0221:
-X-Microsoft-Antispam-PRVS: <MWHPR1201MB0221D5749B5559E00B64631482B59@MWHPR1201MB0221.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fyFqaky8uFSWf0NGHrsTYk630u0mg1QCTRpivgBpw9VLJFvB8asL5Oo6g98fZ6f1cEw6jl+EBcinSAPlAVBftC0uLmLOTxkB84aenMR5pHi/t8W6GWIWcL1Ma+oqmsmYjvyYu6yBk9wGpOWPQqLSwBqG6MnlCBMDxNdnwSHfMq4MsfpfHotAggu7yO5/mbPEnN2sSjj8s9IZGfvBtX5RmWusb9Y0iN06q+9GjjZxickT0FKK0r7vZJHdUx4AdeH8CVPOxApJVrVYz4kI9UPL8UhWdGJ69YgVNw6F0SbBlOrIedBHlU4K4t5Zfq/pk0JL/iTkxKg3/KgrPCaf5uEfdkv85qL1tQ/4VQqDHgiV3rMBHzA+rLafniYhHTnBge4p9mp7Yka4cVQtFTUwEVpq8XT5XiTgw5QLze9Sqmbntq7dszrLMZL6wggcidKIf9jPYn8xb6vAH3IsLNJYy2iotC6WawZUnrvqQcwjygGY5HzqNcfwbmTTCR24xs8fKaeChvCY0m/JvS9S4e5b+YFjKI3wwubfa7O51vCiKmdfWq0/6ORxQvoW3n+L+qFp7aCbdH1sUABBW5qrL8unmtsDjxpkolInNetJcktUJFcS6/qjW50OnH3pVO0vjcQtGQ75RF54pjlG9ZoUYUB5sILVKQ8apVJHGdRsMl04I5nbiHEoLDvHi+u01SRtGE+xRXNueohILtmvrK/6fd2ntSwulewWSnpgTrY4YXsKPEnnzqY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(2906002)(8676002)(70206006)(2616005)(110136005)(36860700001)(70586007)(356005)(186003)(7696005)(54906003)(426003)(4326008)(26005)(5660300002)(336012)(81166007)(82310400003)(1076003)(508600001)(36756003)(6666004)(316002)(47076005)(4744005)(8936002)(86362001)(83380400001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 05:54:08.0977
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e03226d-b9d1-4c4d-46bd-08d98c7b8a84
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT041.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0221
+References: <000000000000baddc805cdf928c3@google.com> <YWKmBWfBS3oshQ/z@codewreck.org>
+In-Reply-To: <YWKmBWfBS3oshQ/z@codewreck.org>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 11 Oct 2021 07:56:05 +0200
+Message-ID: <CACT4Y+bqD=EkkQB6hm+FVWVraDBChnRgqViLTqvmVrVM=1gH+w@mail.gmail.com>
+Subject: Re: [syzbot] KMSAN: uninit-value in p9pdu_readf
+To:     asmadeus@codewreck.org
+Cc:     syzbot <syzbot+06472778c97ed94af66d@syzkaller.appspotmail.com>,
+        davem@davemloft.net, ericvh@gmail.com, glider@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, lucho@ionkov.net,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        v9fs-developer@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are using fch clock controller as parent mclk source for rt5682
-codec. Add config to enable clock framework support for 48MHz fixed
-clock when machine driver config is selected.
+On Sun, 10 Oct 2021 at 10:36, <asmadeus@codewreck.org> wrote:
+>
+> Question for people who know about KMSAN: which of the backtrace or the
+> 'Local variable' message should I trust?
 
-Signed-off-by: Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>
----
- sound/soc/amd/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
+Hi Dominique,
 
-diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-index 49ff5e73e9ba..a2cb50d09980 100644
---- a/sound/soc/amd/Kconfig
-+++ b/sound/soc/amd/Kconfig
-@@ -6,6 +6,7 @@ config SND_SOC_AMD_ACP
- 
- config SND_SOC_AMD_CZ_DA7219MX98357_MACH
- 	tristate "AMD CZ support for DA7219, RT5682 and MAX9835"
-+	select CLK_FIXED_FCH
- 	select SND_SOC_DA7219
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_MAX98357A
-@@ -30,6 +31,7 @@ config SND_SOC_AMD_ACP3x
- 
- config SND_SOC_AMD_RV_RT5682_MACH
- 	tristate "AMD RV support for RT5682"
-+	select CLK_FIXED_FCH
- 	select SND_SOC_RT5682_I2C
- 	select SND_SOC_MAX98357A
- 	select SND_SOC_CROS_EC_CODEC
--- 
-2.25.1
+Both.
+The first is the use of the unit, the second is the origin of the uninit.
 
+
+> syzbot wrote on Sat, Oct 09, 2021 at 10:48:17PM -0700:
+> > =====================================================
+> > BUG: KMSAN: uninit-value in p9pdu_vreadf net/9p/protocol.c:147 [inline]
+> > BUG: KMSAN: uninit-value in p9pdu_readf+0x46cf/0x4fc0 net/9p/protocol.c:526
+> >  p9pdu_vreadf net/9p/protocol.c:147 [inline]
+> >  p9pdu_readf+0x46cf/0x4fc0 net/9p/protocol.c:526
+> >  p9pdu_vreadf net/9p/protocol.c:198 [inline]
+> >  p9pdu_readf+0x2080/0x4fc0 net/9p/protocol.c:526
+> >  p9_client_stat+0x2b3/0x710 net/9p/client.c:1724
+> >  v9fs_mount+0xc14/0x12c0 fs/9p/vfs_super.c:170
+>
+> would be 'len' in p9pdu_vreadf, which has to be set as far as I can understand:
+> > uint16_t len;
+> >
+> > errcode = p9pdu_readf(pdu, proto_version,
+> >                                 "w", &len);
+> > if (errcode)
+> >         break;
+> >
+> > *sptr = kmalloc(len + 1, GFP_NOFS);
+>
+> with relevant part of p9pdu_readf being:
+> > case 'w':{
+> >                int16_t *val = va_arg(ap, int16_t *);
+> >                __le16 le_val;
+> >                if (pdu_read(pdu, &le_val, sizeof(le_val))) {
+> >                        errcode = -EFAULT;
+> >                        break;
+> >                }
+> >                *val = le16_to_cpu(le_val);
+> >        }
+> > ...
+> > return errcode;
+>
+> e.g. either len or errcode should be set...
+>
+> But:
+> > Local variable ----ecode@p9_check_errors created at:
+> >  p9_check_errors+0x68/0xb90 net/9p/client.c:506
+> >  p9_client_rpc+0xd90/0x1410 net/9p/client.c:801
+>
+> is something totally different, p9_client_rpc happens before the
+> p9pdu_readf call in p9_client_stat, and ecode is local to
+> p9_check_errors, I don't see how it could get that far.
+>
+> Note that inspecting p9_check_errors manually, there is a case where
+> ecode is returned (indirectly through err = -ecode) without being
+> initialized,
+
+Does this connect both stacks? So the uinit is ecode, is it used in
+p9pdu_vreadf? If yes, then that's what KMSAN reported.
+
+
+> so I will send a patch for that at least, but I have no
+> idea if that is what has been reported and it should be trivial to
+> reproduce so I do not see why syzbot does not have a reproducer -- it
+> retries running the last program that triggered the error before sending
+> the report, right?
+
+Yes.
+
+>
+> --
+> Dominique Martinet | Asmadeus
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/YWKmBWfBS3oshQ/z%40codewreck.org.
