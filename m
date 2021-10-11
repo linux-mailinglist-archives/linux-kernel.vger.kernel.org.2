@@ -2,116 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F4F4289C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 306D34289C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhJKJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39652 "EHLO mail.kernel.org"
+        id S235539AbhJKJjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:39:43 -0400
+Received: from mga14.intel.com ([192.55.52.115]:10638 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhJKJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:39:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D06360EDF;
-        Mon, 11 Oct 2021 09:37:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633945061;
-        bh=YyuuSg4+Xw1WBeodqUV8qTEhir5tsvWm6bEneSlHOmM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i59HQEsRw6XeL+wWM/VpKT61n1VUj0RezFOCjc+1AthZno/w4EKiQ4PAZfRzpXHbs
-         rRtiFU/s5A2ARGgjZqjyUtCPpPmvI7itUB8+OIkU69WuIAbfy6uYeC/NzCvk0WRrQN
-         Z3xsGY1KDeSChYzBHmLDiFnJG6I14FlxtXTV57f3XxFvj5mqCevNecNIqdbBq2LdJo
-         5REpks8Dc6RbBI0lCZE9EGHhPL4YGrBAGb+qCtVqFszz0ycd76ybGzMPwrfwDLCaZy
-         eIWNHd2cCloOSxOhnhPsp2XpAniAjsWuvMcU/feK35TSsS070j7U2Vuoy6LwcEl8hf
-         WFrunQPR7oIWQ==
-Date:   Mon, 11 Oct 2021 11:37:36 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "R.T.Dickinson" <rtd@a-eon.com>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        Darren Stevens <darren@stevens-zone.net>
-Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
-Message-ID: <YWQF4D40a/qpfM3/@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, Olof Johansson <olof@lixom.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "R.T.Dickinson" <rtd@a-eon.com>, Matthew Leaman <matthew@a-eon.biz>,
-        Darren Stevens <darren@stevens-zone.net>
-References: <20211008163532.75569-1-sven@svenpeter.dev>
- <YWFqr4uQGlNgnT1z@ninjato>
- <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
- <11d8f784-c90a-4e6c-9abd-564cb5241cb7@www.fastmail.com>
- <YWP71c8cXlE3PcIo@kunai>
- <5ae30425-d6d4-5688-36e3-58cc6c6ff264@marcan.st>
+        id S235443AbhJKJjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:39:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="227125535"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="227125535"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:37:41 -0700
+X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
+   d="scan'208";a="479786701"
+Received: from acleivam-mobl1.amr.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.40.144])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:37:38 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] checkpatch: get default codespell dictionary path from package location
+Date:   Mon, 11 Oct 2021 12:37:48 +0300
+Message-Id: <20211011093748.2455-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5TP+rHLVHtolMC1P"
-Content-Disposition: inline
-In-Reply-To: <5ae30425-d6d4-5688-36e3-58cc6c6ff264@marcan.st>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The standard location of dictionary.txt is under codespell's package, on
+my machine atm (codespell 2.1, Artix Linux):
+/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
 
---5TP+rHLVHtolMC1P
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Since we enable the codespell by default for SOF I have constant:
+No codespell typos will be found - \
+file '/usr/share/codespell/dictionary.txt': No such file or directory
 
+The patch proposes to try to fix up the path following the recommendation
+found here:
+https://github.com/codespell-project/codespell/issues/1540
 
-> > Because MAINTAINER dependencies can be a bit nasty, I suggest I drop the
-> > MAINTAINER additions for now and we add them later. Then, you can add
-> > the pasemi-core as well. D'accord?
-> >=20
->=20
-> We can just split the MAINTAINERS changes into a separate patch and I can
-> push that one through the SoC tree, along with other MAINTAINERS updates.
-> Does that work for everyone?
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+Hi,
 
-That would also work for me. Thank you!
+Changes since v2:
+- Only try to check for dictionary path it is enabled or when the help is
+  displayed
+ - Move the check after the GetOptions()
+ - Set $help to 2 in case invalid option is passed in order to be able to use
+   correct exitcode and still display the correct path for dictionary.txt
 
+Changes sicne v1:
+- add missing ';' to the line updating the $codespellfile with $codespell_dict
 
---5TP+rHLVHtolMC1P
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
+Peter
 
------BEGIN PGP SIGNATURE-----
+ scripts/checkpatch.pl | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmFkBdwACgkQFA3kzBSg
-KbYFeRAAn3V00WXZcUzFlKUIvdYT0C7Yni7P6e8BRdY0CYPcLdAQdT588ZDnztXb
-F1+gVrKcGjcSW0PH9Poor5cE1bH3BtCWl3bM0lVC3QXPSLEA23ZjO/WA+mWDLnNM
-y08LX6qn0jNDSf7MEgWCkKA7gpYTmxwZr4+hanflNHp2V+imR1vp803p59rSpX4+
-ZO+bm4HBy3A0VvTU26uzIbOJgpn5cO9vdZ6bLdw4Q6CdYmr1rq3p0mytsPEnnIOz
-gDuacJ9HwN3xmRa1cdMhXOKTgdryn6ZAEqyfaW5rgiM2dL9ZTumEUkJyHXcc1sMS
-QQqvQnY3zzhyLyEJsLPLMJnQQHGwUyMFX4D5R54tO1s0ne6iNIcOdWMsfAcrOb8b
-YWaikNAw3oQ392V6g/iXPUfMppY9O1f47gZkLMHuHZV5XusPm84qyYIlysgyyf3d
-Qwg5nFywlOFxYtySkxfje/OLREkzZoVOQXaxi/kC3IQiWDtoxU9NYMu7blXrJa71
-/kEe4lftTRBKib/iRahLb0ZOOiBI2Zpd0IiY3z5/Edhp9TY4akDHFOBOGZ66p8Af
-P/3TDcr7XZ/10fBZA/2biB4a5/hVKbnUTMBkXjqhNYN4lQA4VbuFB4+KvXJXrf4y
-Lsy0yB+hE2CIa7sRFrjGBPjPZTjvuYg1VONj3P/VUS4KDw02Uss=
-=z66C
------END PGP SIGNATURE-----
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index c27d2312cfc3..179e02acab6e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -130,7 +130,7 @@ Options:
+   --ignore-perl-version      override checking of perl version.  expect
+                              runtime errors.
+   --codespell                Use the codespell dictionary for spelling/typos
+-                             (default:/usr/share/codespell/dictionary.txt)
++                             (default:$codespellfile)
+   --codespellfile            Use this codespell dictionary
+   --typedefsfile             Read additional types from this file
+   --color[=WHEN]             Use colors 'always', 'never', or only when output
+@@ -325,9 +325,19 @@ GetOptions(
+ 	'kconfig-prefix=s'	=> \${CONFIG_},
+ 	'h|help'	=> \$help,
+ 	'version'	=> \$help
+-) or help(1);
++) or $help = 2;
+ 
+-help(0) if ($help);
++print($help);
++
++# Override the codespellfile location based on codespell install location
++if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
++	my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
++	$codespellfile = $codespell_dict if (-e $codespell_dict);
++}
++
++# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
++# $help is 2 if invalid option is passed - exitcode: 1
++help($help - 1) if ($help);
+ 
+ die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
+ die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
+-- 
+2.33.0
 
---5TP+rHLVHtolMC1P--
