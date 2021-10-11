@@ -2,105 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BEFD428CE2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EA8428D11
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236517AbhJKMTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:19:19 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:28915 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235094AbhJKMTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:19:19 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSd3N5MVrzbn3m;
-        Mon, 11 Oct 2021 20:12:48 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 20:17:15 +0800
-Received: from localhost.localdomain (10.175.112.125) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 20:17:14 +0800
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     <naresh.kamboju@linaro.org>, <akpm@linux-foundatio.org>
-CC:     <andreyknvl@gmail.com>, <dvyukov@google.com>, <glider@google.com>,
-        <kasan-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-next@vger.kernel.org>,
-        <ryabinin.a.a@gmail.com>, <sfr@canb.auug.org.au>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        "Linux Kernel Functional Testing" <lkft@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH] mm: kasan: Fix redefinition of 'kasan_populate_early_vm_area_shadow'
-Date:   Mon, 11 Oct 2021 12:32:11 +0000
-Message-ID: <20211011123211.3936196-1-wangkefeng.wang@huawei.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
-References: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
+        id S236631AbhJKMer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:34:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:50916 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234689AbhJKMeo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 08:34:44 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 043F6101E;
+        Mon, 11 Oct 2021 05:32:44 -0700 (PDT)
+Received: from [10.57.25.70] (unknown [10.57.25.70])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 143E93F70D;
+        Mon, 11 Oct 2021 05:32:41 -0700 (PDT)
+Subject: Re: [PATCH v3 15/16] arm64: errata: Advertise the workaround for TSB
+ flush failures
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, mathieu.poirier@linaro.org,
+        mike.leach@linaro.org, leo.yan@linaro.org,
+        anshuman.khandual@arm.com, coresight@lists.linaro.org,
+        maz@kernel.org, james.morse@arm.com, mark.rutland@arm.com,
+        lcherian@marvell.com
+References: <20211008182906.1688009-1-suzuki.poulose@arm.com>
+ <20211008182906.1688009-16-suzuki.poulose@arm.com>
+ <20211011101851.GC3681@willie-the-truck>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <982da86b-44ff-b244-33b0-02c95fa2f082@arm.com>
+Date:   Mon, 11 Oct 2021 13:32:40 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.112.125]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20211011101851.GC3681@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move kasan_populate_early_vm_area_shadow() from mm/kasan/init.c to
-mm/kasan/shadow.c, make it under CONFIG_KASAN_VMALLOC to fix the
-redefinition issue.
+On 11/10/2021 11:18, Will Deacon wrote:
+> On Fri, Oct 08, 2021 at 07:29:05PM +0100, Suzuki K Poulose wrote:
+>> Advertise the workaround for the TSB flush failures via
+>> Kconfig entries.
+>>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> ---
+>> Changes since previous:
+>>    - Split the Kconfig/erratum updates to keep the conflicts
+>>      minimal with the other Kconfig updates in TRBE errata
+>>      I have retained the tags
+>> ---
+>>   Documentation/arm64/silicon-errata.rst |  4 ++++
+>>   arch/arm64/Kconfig                     | 31 ++++++++++++++++++++++++++
+>>   2 files changed, 35 insertions(+)
+>>
+>> diff --git a/Documentation/arm64/silicon-errata.rst b/Documentation/arm64/silicon-errata.rst
+>> index 2f99229d993c..569a92411dcd 100644
+>> --- a/Documentation/arm64/silicon-errata.rst
+>> +++ b/Documentation/arm64/silicon-errata.rst
+>> @@ -94,6 +94,8 @@ stable kernels.
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Cortex-A710     | #2119858        | ARM64_ERRATUM_2119858       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> +| ARM            | Cortex-A710     | #2054223        | ARM64_ERRATUM_2054223       |
+>> ++----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N1     | #1188873,1418040| ARM64_ERRATUM_1418040       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N1     | #1349291        | N/A                         |
+>> @@ -102,6 +104,8 @@ stable kernels.
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | Neoverse-N2     | #2139208        | ARM64_ERRATUM_2139208       |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> +| ARM            | Neoverse-N2     | #2067961        | ARM64_ERRATUM_2067961       |
+>> ++----------------+-----------------+-----------------+-----------------------------+
+>>   | ARM            | MMU-500         | #841119,826419  | N/A                         |
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>>   +----------------+-----------------+-----------------+-----------------------------+
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index eac4030322df..0764774e12bb 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -705,6 +705,37 @@ config ARM64_ERRATUM_2139208
+>>   
+>>   	  If unsure, say Y.
+>>   
+>> +config ARM64_WORKAROUND_TSB_FLUSH_FAILURE
+>> +	bool
+>> +
+>> +config ARM64_ERRATUM_2054223
+>> +	bool "Cortex-A710: 2054223: workaround TSB instruction failing to flush trace"
+>> +	default y
+>> +	help
+>> +	  Enable workaround for ARM Cortex-A710 erratum 2054223
+>> +
+>> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
+>> +	  the PE is in trace prohibited state. This will cause losing a few bytes
+>> +	  of the trace cached.
+>> +
+>> +	  Workaround is to issue two TSB consecutively on affected cores.
+>> +
+>> +	  If unsure, say Y.
+>> +
+>> +config ARM64_ERRATUM_2067961
+>> +	bool "Neoverse-N2: 2067961: workaround TSB instruction failing to flush trace"
+>> +	default y
+>> +	help
+>> +	  Enable workaround for ARM Neoverse-N2 erratum 2067961
+>> +
+>> +	  Affected cores may fail to flush the trace data on a TSB instruction, when
+>> +	  the PE is in trace prohibited state. This will cause losing a few bytes
+>> +	  of the trace cached.
+>> +
+>> +	  Workaround is to issue two TSB consecutively on affected cores.
+>> +
+>> +	  If unsure, say Y.
+> 
+> Shouldn't these two be selecting the workaround?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: kasan-dev@googlegroups.com
-Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
----
-Hi Andrew,
-Could you help to merge this into previos patch
- "kasan: arm64: fix pcpu_page_first_chunk crash with KASAN_VMALLOC",
-sorry for the build error.
+doh! I have given myself a slap for this and fixed it locally.
 
- mm/kasan/init.c   | 5 -----
- mm/kasan/shadow.c | 5 +++++
- 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-index d39577d088a1..cc64ed6858c6 100644
---- a/mm/kasan/init.c
-+++ b/mm/kasan/init.c
-@@ -279,11 +279,6 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
- 	return 0;
- }
- 
--void __init __weak kasan_populate_early_vm_area_shadow(void *start,
--						       unsigned long size)
--{
--}
--
- static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
- {
- 	pte_t *pte;
-diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
-index 8d95ee52d019..4a4929b29a23 100644
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -254,6 +254,11 @@ core_initcall(kasan_memhotplug_init);
- 
- #ifdef CONFIG_KASAN_VMALLOC
- 
-+void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-+						       unsigned long size)
-+{
-+}
-+
- static int kasan_populate_vmalloc_pte(pte_t *ptep, unsigned long addr,
- 				      void *unused)
- {
--- 
-2.27.0
-
+Suzuki
