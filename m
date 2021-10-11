@@ -2,131 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7F142959E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CED64295A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231585AbhJKRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhJKRbg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:31:36 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAED1C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:29:35 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id p13so71304207edw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:29:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qA3YuL7fYmv4Y8Yvw8BDi0DK+UWHyslqyhO8rDvQoNY=;
-        b=d+BRza8HiCfXT1IwFtf5HXAvgHtq59Wg3QEi22ubyhxfWeM5jg8fYggLDauZf4D62E
-         ussN8dvte5J0e2s0xVWV9KtiXwsJSNs1IEkau5yacd6kSEHgXjuutTXkH0JRQyqwpy8I
-         gI9QJ7P0fOQf07zjlkUMcCik5oB+GpKIezcjH7/MuAwRafmk1NrQuPvLsllqRXLEgiRr
-         PM7wr+Zmcj+wrj9W/eet2X4fKldR9TiUJ9ssP0pQYWnPUPT76NawLB92sH0R+nWcNnPI
-         7I9YK+HLgZozd3wSV2SLDu/8mYkroFiAW+mrwMrXg/lihmOyENJX0bxvqlT9ZkpwqgBg
-         XM5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qA3YuL7fYmv4Y8Yvw8BDi0DK+UWHyslqyhO8rDvQoNY=;
-        b=aVKX5fsKGyeQXH7T9bcPY7OoD5cwDCDJV6zqP5EFHksAH2PaFwRZcZmolBbOUSQOqX
-         JkkDcgKB06bWxdYdbuKsKtYinIEsWDrkuyju6kWV0wR36Nxf806jTL8PlTFgU8WOl+ca
-         523g3WssohfL0WBWVplelfd5XkGDmSyypE0kBuwvf2scTJd3dbnO7ve91MCY8gdJyCJ4
-         G1CmZzbKcq6mEN5eOOGwsJSTEOmeZs2+0O8Qdfjz2tEBggS3W7Wj7NzN46LgmJ9ikUOa
-         BqAXYQMq4lPCgVPQfn/MzZcIPNsEZd28Oo7bgEwFvU61K42cl0Q9Gx/WLoPjlHjxWe6/
-         WxEQ==
-X-Gm-Message-State: AOAM531f3AMMns/fFBHETuUXhugRRJrJfADYfi30/fvVT6HeM6qRlhTB
-        kQJ7389FeeKynKQRUD4U1uvR3gk7gizYwgrIuRWGbw==
-X-Google-Smtp-Source: ABdhPJwNEv9b5UFK5ZJWQ4MEFZdqdPTSJb8KzPRNG7wtiK2VDmIq0TGi9Nsj9oe4DWFRz0C7k6Y3sFNbjCBJLkLqzBs=
-X-Received: by 2002:a05:6402:3587:: with SMTP id y7mr43089286edc.182.1633973374304;
- Mon, 11 Oct 2021 10:29:34 -0700 (PDT)
+        id S231690AbhJKRcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:32:16 -0400
+Received: from mga14.intel.com ([192.55.52.115]:50264 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229824AbhJKRcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:32:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="227215564"
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="227215564"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:30:13 -0700
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="440883808"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.255.28.12]) ([10.255.28.12])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:30:08 -0700
+Subject: Re: [PATCH 07/14] KVM: x86: SVM: add warning for CVE-2021-3656
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Borislav Petkov <bp@alien8.de>, Bandan Das <bsd@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+References: <20210914154825.104886-1-mlevitsk@redhat.com>
+ <20210914154825.104886-8-mlevitsk@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <4c04106a-fd8e-fb54-799f-06331a3e65b9@intel.com>
+Date:   Tue, 12 Oct 2021 01:30:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-References: <20211011134508.362906295@linuxfoundation.org> <20211011134510.897297770@linuxfoundation.org>
-In-Reply-To: <20211011134510.897297770@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 11 Oct 2021 22:59:23 +0530
-Message-ID: <CA+G9fYshyzMVBbO9ySSYtK+oucZ4k0e4M2JcVfQ8-U26cV+7=Q@mail.gmail.com>
-Subject: Re: [PATCH 5.10 73/83] powerpc/bpf: Fix BPF_MOD when imm == 1
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Song Liu <songliubraving@fb.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210914154825.104886-8-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-stable-rc 5.4 build failed due this patch.
- - powerpc gcc-10-defconfig - FAILED
- - powerpc gcc-11-defconfig - FAILED
- - powerpc gcc-8-defconfig - FAILED
- - powerpc gcc-9-defconfig - FAILED
-
-On Mon, 11 Oct 2021 at 19:28, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
->
-> [ Upstream commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 ]
->
-> Only ignore the operation if dividing by 1.
->
-> Fixes: 156d0e290e969c ("powerpc/ebpf/jit: Implement JIT compiler for extended BPF")
-> Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> Tested-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Acked-by: Song Liu <songliubraving@fb.com>
-> Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-> Link: https://lore.kernel.org/r/c674ca18c3046885602caebb326213731c675d06.1633464148.git.naveen.n.rao@linux.vnet.ibm.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On 9/14/2021 11:48 PM, Maxim Levitsky wrote:
+> Just in case, add a warning ensuring that on guest entry,
+> either both VMLOAD and VMSAVE intercept is enabled or
+> vVMLOAD/VMSAVE is enabled.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > ---
->  arch/powerpc/net/bpf_jit_comp64.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-> index 658ca2bab13c..e79f9eae2bc0 100644
-> --- a/arch/powerpc/net/bpf_jit_comp64.c
-> +++ b/arch/powerpc/net/bpf_jit_comp64.c
-> @@ -408,8 +408,14 @@ static int bpf_jit_build_body(struct bpf_prog *fp, u32 *image,
->                 case BPF_ALU64 | BPF_DIV | BPF_K: /* dst /= imm */
->                         if (imm == 0)
->                                 return -EINVAL;
-> -                       else if (imm == 1)
-> -                               goto bpf_alu32_trunc;
-> +                       if (imm == 1) {
-> +                               if (BPF_OP(code) == BPF_DIV) {
-> +                                       goto bpf_alu32_trunc;
-> +                               } else {
-> +                                       EMIT(PPC_RAW_LI(dst_reg, 0));
+>   arch/x86/kvm/svm/svm.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 861ac9f74331..deeebd05f682 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -3784,6 +3784,12 @@ static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
+>   
+>   	WARN_ON_ONCE(kvm_apicv_activated(vcpu->kvm) != kvm_vcpu_apicv_active(vcpu));
+>   
+> +	/* Check that CVE-2021-3656 can't happen again */
+> +	if (!svm_is_intercept(svm, INTERCEPT_VMSAVE) ||
+> +	    !svm_is_intercept(svm, INTERCEPT_VMSAVE))
 
-In file included from arch/powerpc/net/bpf_jit64.h:11,
-                 from arch/powerpc/net/bpf_jit_comp64.c:19:
-arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
-arch/powerpc/net/bpf_jit_comp64.c:415:46: error: implicit declaration
-of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
-[-Werror=implicit-function-declaration]
-  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
-      |                                              ^~~~~~~~~~
-arch/powerpc/net/bpf_jit.h:32:34: note: in definition of macro 'PLANT_INSTR'
-   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
-      |                                  ^~~~~
-arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
-  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
-      |                                         ^~~~
-cc1: all warnings being treated as errors
+either one needs to be INTERCEPT_VMLOAD, right?
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> +		WARN_ON(!(svm->vmcb->control.virt_ext &
+> +			  VIRTUAL_VMLOAD_VMSAVE_ENABLE_MASK));
+> +
+>   	sync_lapic_to_cr8(vcpu);
+>   
+>   	if (unlikely(svm->asid != svm->vmcb->control.asid)) {
+> 
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
