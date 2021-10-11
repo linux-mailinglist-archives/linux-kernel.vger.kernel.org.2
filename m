@@ -2,55 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CF04286C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C12E4286CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbhJKG0O convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 02:26:14 -0400
-Received: from ni.piap.pl ([195.187.100.5]:55596 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234022AbhJKG0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:26:13 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Sakari Ailus <sakari.ailus@iki.fi>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Jacopo Mondi <jacopo@jmondi.org>,
-        "joe@perches.com" <joe@perches.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-References: <m3fstfoexa.fsf@t19.piap.pl>
-        <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> <m3zgrlkxn6.fsf@t19.piap.pl>
-        <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
-        <a8bd12e5-cdb5-ee85-d0a9-03ede990f5d2@infradead.org>
-        <YWH83W8uVbU6RzVe@valkosipuli.retiisi.eu>
-Date:   Mon, 11 Oct 2021 08:24:12 +0200
-In-Reply-To: <YWH83W8uVbU6RzVe@valkosipuli.retiisi.eu> (Sakari Ailus's message
-        of "Sat, 9 Oct 2021 23:34:37 +0300")
-Message-ID: <m3r1cskrjn.fsf@t19.piap.pl>
+        id S234175AbhJKG1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:27:44 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11979 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234066AbhJKG1n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 02:27:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633933543; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=vqRerw6jepTKl0s7qcA0sRoOaWNZI36gX/8yJK4zDK0=;
+ b=UKYSLZuOPQdgzcGdOVFcHQlQO7uIe4Cq/ItO5HiT9B4cq7Tcel1+8ZIs68fQvUYfLPOnYEGa
+ fNyoC4WAhwdwygehdC+LGHhDaYUsCadJXuvLdrBUdoojeSBJvIuIuvG7ZId061Xm8AGGEof3
+ KTxFYgR0lYx12A3wU7iyJsqCAkY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6163d8ce060523968994a020 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 06:25:18
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92C0BC43616; Mon, 11 Oct 2021 06:25:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2691BC43460;
+        Mon, 11 Oct 2021 06:25:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2691BC43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ath11k: Use kcalloc() instead of kzalloc()
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211006181204.GA913553@embeddedor>
+References: <20211006181204.GA913553@embeddedor>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163393351300.20318.18394119881469164997.kvalo@codeaurora.org>
+Date:   Mon, 11 Oct 2021 06:25:17 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sakari Ailus <sakari.ailus@iki.fi> writes:
+"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
 
->> http://lkml.iu.edu/hypermail/linux/kernel/1607.1/00627.html
->
-> That's not really a statement for C++ (//) comments as it's against other
-> /* ... */ multi-line comment styles some of which are used by the
-> networking stack.
+> Use 2-factor multiplication argument form kcalloc() instead
+> of kzalloc().
+> 
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-It appears it's about both multi-line and single-line comments, though:
-(c)
-// This can be a single line. Or many. Your choice.
-                 ^^^^^^^^^^^
+Patch applied to ath-next branch of ath.git, thanks.
+
+ec4363384c3f ath11k: Use kcalloc() instead of kzalloc()
+
 -- 
-Krzysztof "Chris" Hałasa
+https://patchwork.kernel.org/project/linux-wireless/patch/20211006181204.GA913553@embeddedor/
 
-Sieć Badawcza Łukasiewicz
-Przemysłowy Instytut Automatyki i Pomiarów PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
