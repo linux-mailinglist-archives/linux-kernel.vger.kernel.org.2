@@ -2,170 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93594289D3
+	by mail.lfdr.de (Postfix) with ESMTP id EAA704289D4
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbhJKJmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:42:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235518AbhJKJmQ (ORCPT
+        id S235578AbhJKJmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:42:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27219 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235500AbhJKJmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Oct 2021 05:42:16 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAE3C061570;
-        Mon, 11 Oct 2021 02:40:15 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id ZrmzmxWsHk3b0Zrn3mLuYm; Mon, 11 Oct 2021 11:40:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1633945214; bh=QMJAVf8Q7oJ7fV4THX5ne/5n45aV1FB1ikretTZlvTk=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=fh+5Ii6t7j5Hj1MF7htRyUxZBLFY3A9VdDG+YYiUr2Mbc19QWo5svMucex0AaIdh/
-         hxTgJuqa7IKvPoWBp088UpQ58w81W5TyegEZfcveuZpCk4QaD+vnmKuwFjtPSJNlf4
-         wGFMT+zEMKq7wVkf3DWvP9dJRpnGJTsJaJ9LhslDstf9cfTadgSbCt26DC+40pglWl
-         1p+1EHUgbizuSNJktleMw3Mw13F20HSknuV+Q5OFNIyqU3ER4x4ublWqAGOap5aJ5R
-         CHhNeSGfMnIgvP1oXTH6HRtbDdv/16IchP3lzbIe5fsrqZPO7ScfZNlXXBtZx8SL1v
-         muABHYtaY3r/w==
-Subject: Re: [PATCH v3 6/8] media: v4l2-ctrls: Add ARGB color effects control
-To:     dillon.minfei@gmail.com, mchehab@kernel.org,
-        mchehab+huawei@kernel.org, ezequiel@collabora.com,
-        gnurou@gmail.com, pihsun@chromium.org, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, gabriel.fernandez@st.com,
-        gabriel.fernandez@foss.st.com
-Cc:     patrice.chotard@foss.st.com, hugues.fruchet@foss.st.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <1633689012-14492-1-git-send-email-dillon.minfei@gmail.com>
- <1633689012-14492-7-git-send-email-dillon.minfei@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <290d78b5-b6d4-a115-9556-f2f909f573da@xs4all.nl>
-Date:   Mon, 11 Oct 2021 11:40:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633945216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nvm/qex5O1o/iUk7v0jlAEBgI/qIYmJudO2T4n06fHw=;
+        b=Yy87L9GOelgf+y0eddyNRdZsH8PejzraP3JlBCOs51W/0gMvT3TEmnbuvEnjPMBGwHkBzL
+        Sex0Kp8s0p+EtWv/g7ExT5pyDh3fX7UNmAzwFDB+01+Apj9rxwKw6x3NO7C5Df8GTlXqlM
+        +/y0y2GR5QZcZIqBlG5qK5zmqqyYSE0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-QlUU8msMOReSeflVvIpM6w-1; Mon, 11 Oct 2021 05:40:15 -0400
+X-MC-Unique: QlUU8msMOReSeflVvIpM6w-1
+Received: by mail-wr1-f70.google.com with SMTP id j19-20020adfb313000000b00160a9de13b3so12831988wrd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 02:40:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Nvm/qex5O1o/iUk7v0jlAEBgI/qIYmJudO2T4n06fHw=;
+        b=qlHvKAKGBxPk/HlLUhCORATlKkEJqMPAzXBLeo5D+tq/slneXra/kZPJ9RLsWVBhod
+         Oh0VIUvcswBZjkxxyc3VhN/QbwCgUI4k6aamSV27FYl1UDN4uYLGNCFkR7fwZrdKN5mr
+         89uVGFeQdYuYT5K2kbhud88K1gzf3f3zE4WV9nIV9H6Bgnkc/7zG3TpRwtR1f5Mqvs6x
+         2MK5albJ5PaRFSoCQuCNnHYna3ohNV8BZh1k05YFL9JEM0sZC0MEYEShQhqIMnXB4UrO
+         CPQgEPVCDgXrJnUJ3/32nTTf1Ir65TjKJv77C2s/dbD01BBHQeyKEiRHopLey5B3GfuV
+         /bcg==
+X-Gm-Message-State: AOAM533ftPDH1W2FL5/5/vYw/3xUnIihp/cGJ1jGjTuqUYMnAz0yNhhW
+        D0L9zcRHMNFcPIz0LocyrH2zP8OWmQj6Cy+Xdr+8lMNWRA63wtmUFB/Yl934fqWc/2VOywXshsz
+        b+C/Bq3GTIN/N0anblWzigU3V
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr20209652wmf.61.1633945213835;
+        Mon, 11 Oct 2021 02:40:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwbwaJB797an2sMAZ7pQoYzSQIrEcgcM7naLW3zaJiRPSrzLO96YOx+/YJBwMe6cq4fgXMd2g==
+X-Received: by 2002:a1c:4c17:: with SMTP id z23mr20209632wmf.61.1633945213663;
+        Mon, 11 Oct 2021 02:40:13 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ba.dip0.t-ipconnect.de. [91.12.100.186])
+        by smtp.gmail.com with ESMTPSA id v23sm7087848wmj.4.2021.10.11.02.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 02:40:13 -0700 (PDT)
+Subject: Re: [PATCH] mm: Free per cpu pages async to shorten program exit time
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     ultrachin@163.com, akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, brookxu.cn@gmail.com,
+        chen xiaoguang <xiaoggchen@tencent.com>,
+        zeng jingxiang <linuszeng@tencent.com>,
+        lu yihui <yihuilu@tencent.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+References: <20211008063933.331989-1-ultrachin@163.com>
+ <d71e6021-777b-3ca9-b08f-64fe7ff51e08@redhat.com>
+ <YWQDqtnA5FXk7xan@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <278a6cda-3095-5e27-e136-2765f73bc67d@redhat.com>
+Date:   Mon, 11 Oct 2021 11:40:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.14.0
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <1633689012-14492-7-git-send-email-dillon.minfei@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YWQDqtnA5FXk7xan@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfA8mrB9Abh2IhqjcRtxRyKAse1GQxeM0M/SgzSbw8HkLHyu12yxnElzZhTCfKRhh/soLDsqaOBPhwN+cTmh6Ru2MpyRyzDRfmOQ2AuG9LP2BEMDAhJNW
- 54p9fMY6GMgRiP5YMoOlwvpcCu6YmFjv4+0cge7V0VnzxyErDrzwWzjQNCBRl7zXGzj/DSagdo/L5BOfCPXT1u9cI5QgdtcepfvGNc76+s/wyjAumrDrQZkM
- nciZ7ksamb4wTgDSKUvWhDNpU0LS9fUWQAR4lb2a1WWD+Cl0r8qQQ8RDMXzBsGIxX1z9TYe8pC4tTtBTVfwAjlIxLlUpY88dH31NTPTwY2ZDO0uPdChcb+ul
- OSyglAZ1HlddrxnwOQl6JW9OW3hIerE4p7hhSjZWGQ+x/MjIG70+OkjhjSrn4yf/ec2FeJ5j7GgqMQGjM5TXAbAKdUTZU7WepIt332w43i08ktMdRAA0IWp3
- VhtrMemf1IstQGzTnDkFxm40x/pVvnFK9bP38li91ZlwTm9vSAZzOkaZqvmE21R4VTGoo58d+Fb5Q0Q6EJ8ctviyfumwOyba9Cq7C+9EA3lpzEw8zQgO9bmq
- ZdZFvFm0WbUaYpKhdNGRrr1VZG0VUXZ0y2K9JGhdZ9J8AUvzGZ9X8F3VBRCx/NeNYW5mik0FVciorMb0t3oGoC4eJ7ayW3CuBb3g5qTkOGuXnkaxgVu+yJF4
- hwqwMBFuFjDdsQ4VTqhxglcp/S5FCFUGa+HTWv7oPlR7SFJZeyxNT/uwyUS+I9LCghxVSNGGx8A9PJaKs07+lsHsT5/p6qs12eSRzwsr8aGaZzVYb6buqgWD
- ivDJR2IegcEnADEn3mDDhflHO+WOxg9gfkLcr+PBksWma6GHJGb3QwNlXPR8ElS1idrfkR2mqqpGA2Hjdv1UmCW++F2Gug8C3JOghirHWzK1UuHaqPyygR+B
- 7P6EjEVSTobOXB8oEs7j4TIeeDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/10/2021 12:30, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
+On 11.10.21 11:28, Michal Hocko wrote:
+> On Fri 08-10-21 10:17:50, David Hildenbrand wrote:
+>> On 08.10.21 08:39, ultrachin@163.com wrote:
+>>> From: chen xiaoguang <xiaoggchen@tencent.com>
+>>>
+>>> The exit time is long when program allocated big memory and
+>>> the most time consuming part is free memory which takes 99.9%
+>>> of the total exit time. By using async free we can save 25% of
+>>> exit time.
+>>>
+>>> Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
+>>> Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
+>>> Signed-off-by: lu yihui <yihuilu@tencent.com>
+>>
+>> I recently discussed with Claudio if it would be possible to tear down the
+>> process MM deferred, because for some use cases (secure/encrypted
+>> virtualization, very large mmaps) tearing down the page tables is already
+>> the much more expensive operation.
+>>
+>> There is mmdrop_async(), and I wondered if one could reuse that concept when
+>> tearing down a process -- I didn't look into feasibility, however, so it's
+>> just some very rough idea.
 > 
-> - add V4L2_COLORFX_SET_ARGB color effects control.
-> - add V4L2_CID_COLORFX_ARGB for ARGB color setting.
-> 
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
-> ---
-> v3: according to Hans's suggestion, thanks.
-> - remove old stm32 private R2M ioctl
-> - add V4L2_CID_COLORFX_ARGB
-> - add V4L2_COLORFX_SET_ARGB
-> 
->  Documentation/userspace-api/media/v4l/control.rst | 8 ++++++++
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c         | 2 ++
->  include/uapi/linux/v4l2-controls.h                | 4 +++-
->  3 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/control.rst b/Documentation/userspace-api/media/v4l/control.rst
-> index f8d0b923da20..319606a6288f 100644
-> --- a/Documentation/userspace-api/media/v4l/control.rst
-> +++ b/Documentation/userspace-api/media/v4l/control.rst
-> @@ -242,8 +242,16 @@ Control IDs
->      * - ``V4L2_COLORFX_SET_CBCR``
->        - The Cb and Cr chroma components are replaced by fixed coefficients
->  	determined by ``V4L2_CID_COLORFX_CBCR`` control.
-> +    * - ``V4L2_COLORFX_SET_ARGB``
-> +      - ARGB colors.
+> This is not a new problem. Large process tear down can take ages. The
+> primary road block has been accounting. This lot of work has to be
+> accounted to the proper domain (e.g. cpu cgroup). 
 
-How about:
+In general, yes. For some setups where admins don't care about that 
+accounting (e.g., enabled via some magic toggle for large VMs), I guess 
+this accounting isn't the major roadblock, correct?
 
-        - The ARGB components are replaced by the fixed ARGB components
-  	determined by ``V4L2_CID_COLORFX_ARGB`` control.
+-- 
+Thanks,
 
-I also wonder if it makes sense to include the alpha channel here.
-
-Looking at the driver code it appears to me (I might be wrong) that the alpha
-channel is never touched (DMA2D_ALPHA_MODE_NO_MODIF), and setting the alpha
-channel as part of a color effects control is rather odd as well.
-
-Alpha channel manipulation really is separate from the color and - if needed - should
-be done with a separate control.
-
-Regards,
-
-	Hans
-
->  
->  
-> +``V4L2_CID_COLORFX_ARGB`` ``(integer)``
-> +    Determines the Alpha, Red, Green, and Blue coefficients for
-> +    ``V4L2_COLORFX_SET_ARGB`` color effect.
-> +    Bits [7:0] of the supplied 32 bit value are interpreted as Blue component,
-> +    bits [15:8] as Green component, bits [23:16] as Red component, and
-> +    bits [31:24] as Alpha component.
->  
->  ``V4L2_CID_COLORFX_CBCR`` ``(integer)``
->      Determines the Cb and Cr coefficients for ``V4L2_COLORFX_SET_CBCR``
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-defs.c b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> index 421300e13a41..53be6aadb289 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-defs.c
-> @@ -785,6 +785,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MIN_BUFFERS_FOR_OUTPUT:	return "Min Number of Output Buffers";
->  	case V4L2_CID_ALPHA_COMPONENT:		return "Alpha Component";
->  	case V4L2_CID_COLORFX_CBCR:		return "Color Effects, CbCr";
-> +	case V4L2_CID_COLORFX_ARGB:		return "Color Effects, ARGB";
->  
->  	/*
->  	 * Codec controls
-> @@ -1392,6 +1393,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  		*min = *max = *step = *def = 0;
->  		break;
->  	case V4L2_CID_BG_COLOR:
-> +	case V4L2_CID_COLORFX_ARGB:
->  		*type = V4L2_CTRL_TYPE_INTEGER;
->  		*step = 1;
->  		*min = 0;
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 5532b5f68493..2876c2282a68 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -128,6 +128,7 @@ enum v4l2_colorfx {
->  	V4L2_COLORFX_SOLARIZATION		= 13,
->  	V4L2_COLORFX_ANTIQUE			= 14,
->  	V4L2_COLORFX_SET_CBCR			= 15,
-> +	V4L2_COLORFX_SET_ARGB			= 16,
->  };
->  #define V4L2_CID_AUTOBRIGHTNESS			(V4L2_CID_BASE+32)
->  #define V4L2_CID_BAND_STOP_FILTER		(V4L2_CID_BASE+33)
-> @@ -145,9 +146,10 @@ enum v4l2_colorfx {
->  
->  #define V4L2_CID_ALPHA_COMPONENT		(V4L2_CID_BASE+41)
->  #define V4L2_CID_COLORFX_CBCR			(V4L2_CID_BASE+42)
-> +#define V4L2_CID_COLORFX_ARGB			(V4L2_CID_BASE+43)
->  
->  /* last CID + 1 */
-> -#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+43)
-> +#define V4L2_CID_LASTP1                         (V4L2_CID_BASE+44)
->  
->  /* USER-class private control IDs */
->  
-> 
+David / dhildenb
 
