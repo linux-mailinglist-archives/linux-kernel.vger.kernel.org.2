@@ -2,262 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98A34295D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A544295EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233062AbhJKRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231281AbhJKRjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:39:47 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08AEBC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:37:47 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so22574183otb.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tj0ez8KOIN3iGavit2nL31CdJWBPsMoFo8+gcn8vAXw=;
-        b=k5ipc3mQAiV0dS9BwOOkFinF90cqy17wrCoe1I1PNBdMpcHiQp6gvslxlfGPI70NxJ
-         qUrKcIxLFNEE7qgg7R5jHasMtvpdAbp9sDtZF3pBN3gapqOkOydT0JE+c1F0di39XM2Z
-         VbuNyetuNkmF8i7ee8VH6xYeUAT+tIhNUZQM76g+AD5BsQgirr2Le9dN7W1duKr7XE4T
-         DxRSCgGT/7Hy9cBkMcr1d06r8QMvHBKPiMFigFg1H4QKX4EVCeJa4s5as5RgRtgNIfvA
-         J9C9gPNCT2JaHhvi6dvm+Ykt3111sT6AnuSz5qrY99nMFAzBnc3J8CdaTzuFra230vzp
-         T+lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tj0ez8KOIN3iGavit2nL31CdJWBPsMoFo8+gcn8vAXw=;
-        b=2sO4c2hrkCJQGfg6NS/qQZxw4LZWXgX8WLMFVNI7HkhnFPcCSzHrUFSYYJZCCeGMPJ
-         5B8cl4nKYdbOetRgW37N8EpmhPfZDR7opsemLx+xG8Vu4Z+ipTV99THTDnA12G9fBER4
-         wljqmcRB3HxA4v8gVPHJJ0yCecn9MTofnIFzW/uebWVkCXpFHJGbCtgp4bpi+B1JVdsY
-         7LWrwHA4pIs1h4Te5ICvwCxpLF030INc8HUmi8PF3a9SzD1EcdZrV+xIaKpqxbcA3TTa
-         Vu9/L7047UviASeWt/mQGcrLuGRxH3UAC+kBszZ5fv1HpnDuun3x9oHC3ZFTusUbrI76
-         xbNw==
-X-Gm-Message-State: AOAM530GyLPI4Qy9TUqsXugYb+kJnxZVbfv29aUzqa9gdC03xnGydoog
-        l9grIXfEcOUYjvpAVLqA6xUosw==
-X-Google-Smtp-Source: ABdhPJx84ZRrul5YadMUtFSkOfvABSC5HC18sJxJwkxN2sgpQFbW7cFm812AGdbEjSMEwU72VtM8vA==
-X-Received: by 2002:a05:6830:17da:: with SMTP id p26mr22664423ota.116.1633973866343;
-        Mon, 11 Oct 2021 10:37:46 -0700 (PDT)
-Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
-        by smtp.gmail.com with ESMTPSA id s18sm1820955oij.3.2021.10.11.10.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 10:37:45 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 10:39:20 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephan Gerhold <stephan@gerhold.net>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Aleksander Morgado <aleksander@aleksander.es>,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Subject: Re: [PATCH net-next v2 2/4] dmaengine: qcom: bam_dma: Add "powered
- remotely" mode
-Message-ID: <YWR2yN3x3zroz1GX@ripper>
-References: <20211011141733.3999-1-stephan@gerhold.net>
- <20211011141733.3999-3-stephan@gerhold.net>
+        id S232940AbhJKRmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:42:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230077AbhJKRmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:42:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C518260E78;
+        Mon, 11 Oct 2021 17:40:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633974012;
+        bh=wUgyPRlrN40w92/x9x5ZUj578p+SudX8ZQCQXPc7iE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dLSqJblgUZU4lM6fwyhYUQQXHffLbkxsNzOlyze8/LHGACa8tYWpJVVqFHK6I9cZV
+         LbrRB5JJYa7W6JVxY8icW/ieeYLBUA/tWBOaJdzptjaY2wQkI7+PX6dLMx75qivbr3
+         pPAA8Hj8Gf0chdElnsV4MB0lDy1FNiF/kKjqHBIfbFg6n/iZzzLfEk5qeTUPc+XO8R
+         GPVBfQMRusg3ItuZHlMeAEFxDetWBHPuMQ+KWI6fgz/CCb02+M+2pulyb6KY6LEUm3
+         WT6tUywx2mRZgtH7X4WRvYiYqwMc0cZYTpDucMaiVmIQxansApA23u/zLY7+09WScU
+         n+SDwztWm9nNA==
+Date:   Mon, 11 Oct 2021 18:40:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, rafael@kernel.org,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH] regmap: Fix possible double-free in
+ regcache_rbtree_exit()
+Message-ID: <YWR2+CAtFuGl4cSz@sirena.org.uk>
+References: <20211011135526.282115-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2BLWWtuTBXTCPXy2"
 Content-Disposition: inline
-In-Reply-To: <20211011141733.3999-3-stephan@gerhold.net>
+In-Reply-To: <20211011135526.282115-1-yangyingliang@huawei.com>
+X-Cookie: May contain nuts.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11 Oct 07:17 PDT 2021, Stephan Gerhold wrote:
 
-> In some configurations, the BAM DMA controller is set up by a remote
-> processor and the local processor can simply start making use of it
-> without setting up the BAM. This is already supported using the
-> "qcom,controlled-remotely" property.
-> 
-> However, for some reason another possible configuration is that the
-> remote processor is responsible for powering up the BAM, but we are
-> still responsible for initializing it (e.g. resetting it etc).
-> 
-> This configuration is quite challenging to handle properly because
-> the power control is handled through separate channels
-> (e.g. device-specific SMSM interrupts / smem-states). Great care
-> must be taken to ensure the BAM registers are not accessed while
-> the BAM is powered off since this results in a bus stall.
-> 
-> Attempt to support this configuration with minimal device-specific
-> code in the bam_dma driver by tracking the number of requested
-> channels. Consumers of DMA channels are responsible to only request
-> DMA channels when the BAM was powered on by the remote processor,
-> and to release them before the BAM is powered off.
-> 
-> When the first channel is requested the BAM is initialized (reset)
-> and it is also put into reset when the last channel was released.
-> 
-> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> ---
-> Changes since RFC:
->   - Drop qcom-specific terminology "power collapse", instead rename
->     "qcom,remote-power-collapse" -> "qcom,powered-remotely"
-> 
-> NOTE: This is *not* a compile-time requirement for the BAM-DMUX driver
->       so this could also go through the dmaengine tree.
-> 
-> See original RFC for a discussion of alternative approaches to handle
-> this configuration:
->   https://lore.kernel.org/netdev/20210719145317.79692-3-stephan@gerhold.net/
-> ---
->  drivers/dma/qcom/bam_dma.c | 88 ++++++++++++++++++++++++--------------
->  1 file changed, 56 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-> index c8a77b428b52..1b33a3ebbfec 100644
-> --- a/drivers/dma/qcom/bam_dma.c
-> +++ b/drivers/dma/qcom/bam_dma.c
-> @@ -388,6 +388,8 @@ struct bam_device {
->  	/* execution environment ID, from DT */
->  	u32 ee;
->  	bool controlled_remotely;
-> +	bool powered_remotely;
-> +	u32 active_channels;
->  
->  	const struct reg_offset_data *layout;
->  
-> @@ -415,6 +417,44 @@ static inline void __iomem *bam_addr(struct bam_device *bdev, u32 pipe,
->  		r.ee_mult * bdev->ee;
->  }
->  
-> +/**
-> + * bam_reset - reset and initialize BAM registers
+--2BLWWtuTBXTCPXy2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Please include a set of () after the function name.
+On Mon, Oct 11, 2021 at 09:55:26PM +0800, Yang Yingliang wrote:
+> In regcache_rbtree_insert_to_block(), when 'present' realloc failed,
+> the 'blk' which is supposed to assign to 'rbnode->block' will be freed,
+> so 'rbnode->block' points a freed memory, in the error handling path of
+> regcache_rbtree_init(), 'rbnode->block' will be freed again in
+> regcache_rbtree_exit(), KASAN will report double-free as follows:
+>=20
+> BUG: KASAN: double-free or invalid-free in kfree+0xce/0x390
+> Call Trace:
+>  dump_stack_lvl+0xe2/0x152
+>  print_address_description.constprop.7+0x21/0x150
+>  kasan_report_invalid_free+0x6f/0xa0
+>  __kasan_slab_free+0x125/0x140
 
-> + * @bdev: bam device
-> + */
-> +static void bam_reset(struct bam_device *bdev)
-> +{
-> +	u32 val;
-> +
-> +	/* s/w reset bam */
-> +	/* after reset all pipes are disabled and idle */
-> +	val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
-> +	val |= BAM_SW_RST;
-> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> +	val &= ~BAM_SW_RST;
-> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+Please think hard before including complete backtraces in upstream
+reports, they are very large and contain almost no useful information
+relative to their size so often obscure the relevant content in your
+message. If part of the backtrace is usefully illustrative (it often is
+for search engines if nothing else) then it's usually better to pull out
+the relevant sections.
 
-Seems odd to me that we assert and deassert the reset in back-to-back
-writes, without any delay etc. That said, this is unrelated to your
-patch as you just moved this hunk from below.
+> Set rbnode->block to NULL when the 'present' realloc failed to fix this.
 
-> +
-> +	/* make sure previous stores are visible before enabling BAM */
-> +	wmb();
-> +
-> +	/* enable bam */
-> +	val |= BAM_EN;
-> +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> +
-> +	/* set descriptor threshhold, start with 4 bytes */
-> +	writel_relaxed(DEFAULT_CNT_THRSHLD,
-> +			bam_addr(bdev, 0, BAM_DESC_CNT_TRSHLD));
-> +
-> +	/* Enable default set of h/w workarounds, ie all except BAM_FULL_PIPE */
-> +	writel_relaxed(BAM_CNFG_BITS_DEFAULT, bam_addr(bdev, 0, BAM_CNFG_BITS));
-> +
-> +	/* enable irqs for errors */
-> +	writel_relaxed(BAM_ERROR_EN | BAM_HRESP_ERR_EN,
-> +			bam_addr(bdev, 0, BAM_IRQ_EN));
-> +
-> +	/* unmask global bam interrupt */
-> +	writel_relaxed(BAM_IRQ_MSK, bam_addr(bdev, 0, BAM_IRQ_SRCS_MSK_EE));
-> +}
-> +
->  /**
->   * bam_reset_channel - Reset individual BAM DMA channel
->   * @bchan: bam channel
-> @@ -512,6 +552,9 @@ static int bam_alloc_chan(struct dma_chan *chan)
->  		return -ENOMEM;
->  	}
->  
-> +	if (bdev->active_channels++ == 0 && bdev->powered_remotely)
-> +		bam_reset(bdev);
-> +
->  	return 0;
->  }
->  
-> @@ -565,6 +608,13 @@ static void bam_free_chan(struct dma_chan *chan)
->  	/* disable irq */
->  	writel_relaxed(0, bam_addr(bdev, bchan->id, BAM_P_IRQ_EN));
->  
-> +	if (--bdev->active_channels == 0 && bdev->powered_remotely) {
-> +		/* s/w reset bam */
-> +		val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
-> +		val |= BAM_SW_RST;
-> +		writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> +	}
-> +
->  err:
->  	pm_runtime_mark_last_busy(bdev->dev);
->  	pm_runtime_put_autosuspend(bdev->dev);
-> @@ -1164,38 +1214,10 @@ static int bam_init(struct bam_device *bdev)
->  		bdev->num_channels = val & BAM_NUM_PIPES_MASK;
->  	}
->  
-> -	if (bdev->controlled_remotely)
-> +	if (bdev->controlled_remotely || bdev->powered_remotely)
->  		return 0;
+This is not a good fix, it will both leak block and corrupt the data
+structure since now there's a NULL pointer where there should be a data
+block.  We should instead be moving the assignment of rbnode->block up
+to immediately after the reallocation has succeeded so that the data
+structure stays valid even if the second reallocation fails.
 
-I think the resulting code would be cleaner if you flipped it around as:
+--2BLWWtuTBXTCPXy2
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	/* Reset BAM now if fully controlled locally */
-	if (!bdev->controlled_remotely && !bdev->powered_remotely)
-		bam_reset(bdev);
+-----BEGIN PGP SIGNATURE-----
 
-	return 0;
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFkdvcACgkQJNaLcl1U
+h9Bdjgf/SPGmHN0mEJymwELokYct2G8hrD7YhwoG25HFiUn+TKNU+8Xo+osr6YN4
+i3zOPtD12cct/Z/DGL9eet8vVg2EaxWhdneUn7VPGTxOcjAbQUxDsYE28qpIgB7K
+oLsvS/vSVXsfOy0Jp/OzuWa6Ppc+HHR91yLyoUAXBCFex3QhM80cYsxSQnyWCxgU
+4Cr2TjYkusuYFjHzAPxh7sWv6y0nbESBjQaCLQbZEMhE89oOCukoP8qE6dssWYLz
+jZoQBylpk66R8rAomAa28evusf0DRP/BYumbMwvaxyRv0MY7hNKrFGS4tF2Xs7Do
+RBbrjwXbk20VE1gTtAdlhiXmor2Gjw==
+=auXJ
+-----END PGP SIGNATURE-----
 
-Regards,
-Bjorn
-
->  
-> -	/* s/w reset bam */
-> -	/* after reset all pipes are disabled and idle */
-> -	val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
-> -	val |= BAM_SW_RST;
-> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> -	val &= ~BAM_SW_RST;
-> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> -
-> -	/* make sure previous stores are visible before enabling BAM */
-> -	wmb();
-> -
-> -	/* enable bam */
-> -	val |= BAM_EN;
-> -	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
-> -
-> -	/* set descriptor threshhold, start with 4 bytes */
-> -	writel_relaxed(DEFAULT_CNT_THRSHLD,
-> -			bam_addr(bdev, 0, BAM_DESC_CNT_TRSHLD));
-> -
-> -	/* Enable default set of h/w workarounds, ie all except BAM_FULL_PIPE */
-> -	writel_relaxed(BAM_CNFG_BITS_DEFAULT, bam_addr(bdev, 0, BAM_CNFG_BITS));
-> -
-> -	/* enable irqs for errors */
-> -	writel_relaxed(BAM_ERROR_EN | BAM_HRESP_ERR_EN,
-> -			bam_addr(bdev, 0, BAM_IRQ_EN));
-> -
-> -	/* unmask global bam interrupt */
-> -	writel_relaxed(BAM_IRQ_MSK, bam_addr(bdev, 0, BAM_IRQ_SRCS_MSK_EE));
-> -
-> +	bam_reset(bdev);
->  	return 0;
->  }
+--2BLWWtuTBXTCPXy2--
