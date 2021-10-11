@@ -2,89 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D48142986B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3CE442986D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234238AbhJKUxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S235096AbhJKUxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbhJKUxO (ORCPT
+        with ESMTP id S230299AbhJKUxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:53:14 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96ABC061570;
-        Mon, 11 Oct 2021 13:51:13 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso5754263ooq.8;
-        Mon, 11 Oct 2021 13:51:13 -0700 (PDT)
+        Mon, 11 Oct 2021 16:53:32 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530E5C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:51:32 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id x8-20020a4ac588000000b002b716e347eeso107399oop.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zpp+ByPTuu11cRdb4qZvSO4X5qVzsBdD+2ORz/hi9KM=;
-        b=e7oJKJ0jv9KnyF/1q2zozxqTQmuwcVt8JrTBvgebjwazhwOq8RvHuUnhxU7D0KQGN6
-         gcSSu0lMd9bNLsDvcXDq9erVShUaxhJGmJvV1bVGwQUYMdxmrYpG9BdoTR/rrYtLqt2K
-         aRKCIh+fOx3vIeqKY2QK7Yf8k5EZy53oq0GZ2uO8qqsIp+PfW3LuspSm08agAv/++cK7
-         Uw++h9W2YNdAxcOVmOAzmBo7WQaJgS+gpLq/fAAIDpujGjRxon9sf5cVI9A31t+UxIEd
-         MLYxv8VJq8Jv2vpC1llP99XlBe8+eB4RA+8H1qr6yL7ifpITa7JzB4AoIB/nNan9zrPC
-         oLOw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rn09d7caDfoCbeJ1oRsOFnGTsCgujh7Av70+yx/v1WI=;
+        b=IhgME2s1Lw/QYpkgDbnn0nQRygV74w2OrP3PH3TYuBCg5K7lDyq+RPZFd5OHiv1V7V
+         8AA/50E48T7mbhSgUMuJJoS0KhXDLPE25pT7MaZa0XrNES4VnIrnJkm1PBnZoqN5c5oN
+         y7KQsN/gc8JMyXx1PfrSnVTOojAy/Sj8mDvNWSCBYszrVFy51N0aC06AldZ+sp7Z5DyE
+         AihXd3C9TVowWnZIZgFSAYYwhxeP9BCj1LkhPnScdFS++vXtYNzuym4C2zCr0ofa6+M9
+         yRz2bHqAzt+9hpTvtXU9ZmDntB20zhqFBhfbllc6GgUOSv0qPIKJ9ymCZXuMbiqBxxfv
+         FrOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zpp+ByPTuu11cRdb4qZvSO4X5qVzsBdD+2ORz/hi9KM=;
-        b=AzhfM6WUVi1dAuBUbqZhfhLwBxqciA5cKNz6CQ4EZtbnxsX5YZQKooKWjADB9I0LIt
-         h1pSEFSlKipe8rweaLfXYRARYA5V1judMy0VyEsW6tsH39g8BlwY2Y7v6YUevnlJIkir
-         tv5kcaJqe42QBwzcnTnY4e5pB++EUkLfXwtouZf5kfPaewKNLCEGpywB26fQysTgVeq6
-         IQu4wBnUS66LlbXY2EIVuAWL9+mV1wAQAnqCvmxC0tONb0gQzNy4oqgj8rLzVqaLUJMl
-         d1Q2EoBl5xohQpminkIC8kSUb4P+Zw0kF2dIYFM/MrLkdGgMylWYVwVxAlcee8LsR1Fq
-         zt+Q==
-X-Gm-Message-State: AOAM531AUr9UzJ0q8+Qpbl0r+P2CaQTQBCXxei80ZyNFYYbgLJsJXzd8
-        2sseOR5lU9h8PamMo9rBbi9H0rOIFM8=
-X-Google-Smtp-Source: ABdhPJzx9T/NF6ecmyYusbJp+EleQrbTzkuBFNNqvCY3uOEW302AgOCWSXFQvwwxigVRS5U7luC9lA==
-X-Received: by 2002:a05:6820:1015:: with SMTP id v21mr7158053oor.47.1633985472933;
-        Mon, 11 Oct 2021 13:51:12 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h5sm1946940oti.58.2021.10.11.13.51.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 13:51:12 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-References: <20211011134640.711218469@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 4.19 00/28] 4.19.211-rc1 review
-Message-ID: <d8d3263e-f97e-402e-e390-b96a4223c45b@roeck-us.net>
-Date:   Mon, 11 Oct 2021 13:51:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rn09d7caDfoCbeJ1oRsOFnGTsCgujh7Av70+yx/v1WI=;
+        b=vOhRi6Mt8QnU6B54NgCnksbVwJZeSJiNOnN+H6C9+H2uE9kRy4UydKY5bJKmC5aMoD
+         2FZK8QxjUb+sYKIzBHugk20Z14rKGtWul1RhFRk9NTef2XiaMvarmT2jCf7KENjKsaeT
+         YlyndekYhssHQRVK6ZTwFu/1wLxald6a91ONU55U4NyX8vG4byE4MkoeWLucxUmNWtBS
+         ULZ2tIjzLsH8iJ021Duppi4WIKqAXcw1ZPHaDxmKAq+BP5rXsh2cz78KcxglA/HrzPih
+         twB8BiloRPxLmlTdYeR9izKxejGhNItWBF99nU/wvem4iMoQIXjsvv9GkzpoPhjveg8c
+         Egug==
+X-Gm-Message-State: AOAM5312+IX5vN9rXvP2qs0mz8Hqdrhshc/LSmtPkDaoBYqREkRre+U6
+        gI1O0DDoR3ln0Dc7B3/TuJyYibiCxEbsx/msIf+ucw==
+X-Google-Smtp-Source: ABdhPJw1SEPgrTzAzcFlHjeqFH5OMD09k/R0xvA4RipgQ0bJP5ZZLoKzkZzlFuqKK6OL8cCzwu0pdBUZIQ7SHYC9q+I=
+X-Received: by 2002:a4a:c993:: with SMTP id u19mr2904192ooq.31.1633985491354;
+ Mon, 11 Oct 2021 13:51:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20211011194615.2955791-1-vipinsh@google.com> <YWSdTpkzNt3nppBc@google.com>
+In-Reply-To: <YWSdTpkzNt3nppBc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Mon, 11 Oct 2021 13:51:20 -0700
+Message-ID: <CALMp9eRzPXg2WS6-Yy6U90+B8wXm=zhVSkmAym4Y924m7FM-7g@mail.gmail.com>
+Subject: Re: [PATCH] KVM: VMX: Add a wrapper for reading INVPCID/INVEPT/INVVPID
+ type
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vipin Sharma <vipinsh@google.com>, pbonzini@redhat.com,
+        dmatlack@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 6:46 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.211 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Oct 2021 13:46:31 +0000.
-> Anything received after that time might be too late.
-> 
+On Mon, Oct 11, 2021 at 1:23 PM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Oct 11, 2021, Vipin Sharma wrote:
+> > Add a common helper function to read invalidation type specified by a
+> > trapped INVPCID/INVEPT/INVVPID instruction.
+> >
+> > Add a symbol constant for max INVPCID type.
+> >
+> > No functional change intended.
+> >
+> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
+> > ---
+> >  arch/x86/include/asm/invpcid.h |  1 +
+> >  arch/x86/kvm/vmx/nested.c      |  4 ++--
+> >  arch/x86/kvm/vmx/vmx.c         |  4 ++--
+> >  arch/x86/kvm/vmx/vmx.h         | 12 ++++++++++++
+> >  4 files changed, 17 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
+> > index 734482afbf81..b5ac26784c1b 100644
+> > --- a/arch/x86/include/asm/invpcid.h
+> > +++ b/arch/x86/include/asm/invpcid.h
+> > @@ -21,6 +21,7 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
+> >  #define INVPCID_TYPE_SINGLE_CTXT     1
+> >  #define INVPCID_TYPE_ALL_INCL_GLOBAL 2
+> >  #define INVPCID_TYPE_ALL_NON_GLOBAL  3
+> > +#define INVPCID_TYPE_MAX             3
+>
+> ...
+>
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index 1c8b2b6e7ed9..77f72a41dde3 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -5502,9 +5502,9 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+> >       }
+> >
+> >       vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+> > -     type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
+> > +     type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
+>
+> I would prefer to keep the register read visibile in this code so that it's
+> obvious what exactly is being read.  With this approach, it's not clear that KVM
+> is reading a GPR vs. VMCS vs. simply extracting "type" from "vmx_instruction_info".
+>
+> And it's not just the INV* instruction, VMREAD and VMWRITE use the same encoding.
+>
+> The hardest part is coming up with a name :-)  Maybe do the usually-ill-advised
+> approach of following the SDM verbatim?  Reg2 is common to all flavors, so this?
+>
+>         gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
+>         type = kvm_register_read(vcpu, gpr_index);
+>
+> >
+> > -     if (type > 3) {
+> > +     if (type > INVPCID_TYPE_MAX) {
+>
+> Hrm, I don't love this because it's not auto-updating in the unlikely chance that
+> a new type is added.  I definitely don't like open coding '3' either.  What about
+> going with a verbose option of
+>
+>         if (type != INVPCID_TYPE_INDIV_ADDR &&
+>             type != INVPCID_TYPE_SINGLE_CTXT &&
+>             type != INVPCID_TYPE_ALL_INCL_GLOBAL &&
+>             type != INVPCID_TYPE_ALL_NON_GLOBAL) {
+>                 kvm_inject_gp(vcpu, 0);
+>                 return 1;
+>         }
 
-arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
-arch/powerpc/net/bpf_jit_comp64.c:392:46: error: implicit declaration of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
+Better, perhaps, to introduce a new function, valid_invpcid_type(),
+and squirrel away the ugliness there?
 
-This problem affects all release candidates from v4.9.y to v5.4.y.
-
-Guenter
+> It's kind of gross, but gcc10 is smart enought to coalesce those all into a single
+> CMP <reg>, 3; JA <#GP>, i.e. the resulting binary is identical.
+>
+> >               kvm_inject_gp(vcpu, 0);
+> >               return 1;
+> >       }
+> > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> > index 592217fd7d92..eeafcce57df7 100644
+> > --- a/arch/x86/kvm/vmx/vmx.h
+> > +++ b/arch/x86/kvm/vmx/vmx.h
+> > @@ -522,4 +522,16 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
+> >
+> >  void dump_vmcs(struct kvm_vcpu *vcpu);
+> >
+> > +/*
+> > + * When handling a VM-exit for one of INVPCID, INVEPT or INVVPID, read the type
+> > + * of invalidation specified by the instruction.
+> > + */
+> > +static inline unsigned long vmx_read_invalidation_type(struct kvm_vcpu *vcpu,
+> > +                                                    u32 vmx_instr_info)
+> > +{
+> > +     u32 vmx_instr_reg2 = (vmx_instr_info >> 28) & 0xf;
+> > +
+> > +     return kvm_register_read(vcpu, vmx_instr_reg2);
+> > +}
+> > +
+> >  #endif /* __KVM_X86_VMX_H */
+> > --
+> > 2.33.0.882.g93a45727a2-goog
+> >
