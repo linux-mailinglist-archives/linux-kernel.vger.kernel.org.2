@@ -2,59 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA18142850F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1781C428514
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhJKCPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:15:23 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:46330 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231578AbhJKCPW (ORCPT
+        id S233498AbhJKCXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 22:23:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231578AbhJKCX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:15:22 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UrJKsBw_1633918399;
-Received: from 30.21.164.80(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UrJKsBw_1633918399)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 11 Oct 2021 10:13:20 +0800
-Subject: Re: [PATCH] hugetlb: Support node specified when using cma for
- gigantic hugepages
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     mike.kravetz@oracle.com, mhocko@kernel.org, guro@fb.com,
-        corbet@lwn.net, yaozhenguo1@gmail.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <1633843448-966-1-git-send-email-baolin.wang@linux.alibaba.com>
- <20211010135507.f2d1c6bcaeecc82d6d025604@linux-foundation.org>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <d0d09382-c6ea-bf60-efbd-11a57a09263d@linux.alibaba.com>
-Date:   Mon, 11 Oct 2021 10:14:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Sun, 10 Oct 2021 22:23:26 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DA4C061570;
+        Sun, 10 Oct 2021 19:21:27 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSMwz2wMCz4xbV;
+        Mon, 11 Oct 2021 13:21:22 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633918885;
+        bh=qGj4JuuOQ7aMU00GqyhAwyXP3iaQyCXLKl8P0Nd07qM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Pq/zV3jDZoVM4vWqyDsrQnk7wnyuxf9syRDdL4OwUIdZGot6yxvyAKljLpWBwlwLu
+         kBLhkpvfQDF4omCuYTMPNoVc4A/lRvHf/hMZj2gpmP3VLI5IOBnhnTd3Sxgevngclx
+         hJWQnaEiA9SuptcgdtZFTlRQxmtAZLFOFyWqjae4VAmmy8JFP35vK2+c4yRsp2b6XT
+         2l3+vLllHBwmrBo73wwAjDry/pKtJZSefdwSjs9unjXGdMVnT2nWQSmG/Zu91Gq+H+
+         xepX7REqmgxJ/wzXCUCdDUMs5Nhh36dN7uFixnPKHmJC3BaexthrkgFgJH0BZnUFLh
+         flT/HJIG+kjRA==
+Date:   Mon, 11 Oct 2021 13:21:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the tip tree with Linus' tree
+Message-ID: <20211011132120.7bdb70d9@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20211010135507.f2d1c6bcaeecc82d6d025604@linux-foundation.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_//6sOA+BwMo_Xl7u7csf2ryj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_//6sOA+BwMo_Xl7u7csf2ryj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2021/10/11 4:55, Andrew Morton wrote:
-> On Sun, 10 Oct 2021 13:24:08 +0800 Baolin Wang <baolin.wang@linux.alibaba.com> wrote:
-> 
->> Now the size of CMA area for gigantic hugepages runtime allocation is
->> balanced for all online nodes, but we also want to specify the size of
->> CMA per-node, or only one node in some cases, which are similar with
-> 
-> Please describe in full detail why "we want to" do this.  In other
-> words, what is the benefit to our users?  What are the use-cases, etc?
+Today's linux-next merge of the tip tree got a conflict in:
 
-Sure. On some multi-nodes systems, each node's memory can be different, 
-allocating the same size of CMA for each node is not suitable for the 
-low-memory nodes. Meanwhile some workloads like DPDK mentioned by 
-Zhenguo only need hugepages in one node.
+  arch/x86/kernel/fpu/signal.c
 
-On the other hand, we have some machines with multiple types of memory, 
-like DRAM and PMEM (persistent memory). On this system, we may want to 
-specify all the hugepages on DRAM node, or specify the proportion of 
-DRAM node and PMEM node, to tuning the performance of the workloads.
+between commit:
+
+  d298b03506d3 ("x86/fpu: Restore the masking out of reserved MXCSR bits")
+
+from Linus' tree and commits:
+
+  052adee66828 ("x86/fpu/signal: Change return type of copy_fpstate_to_sigf=
+rame() to boolean")
+  908d969f88bf ("x86/fpu: Restore the masking out of reserved MXCSR bits")
+
+from the tip tree.
+
+I fixed it up (I just used the version form Linus' tree, but with the
+changed return type - see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/x86/kernel/fpu/signal.c
+index fa17a27390ab,ae51e50f25e8..000000000000
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@@ -377,16 -382,10 +382,16 @@@ static bool __fpu_restore_sig(void __us
+  	} else {
+  		if (__copy_from_user(&fpu->state.fxsave, buf_fx,
+  				     sizeof(fpu->state.fxsave)))
+- 			return -EFAULT;
++ 			return false;
+ =20
+ -		/* Mask out reserved MXCSR bits. */
+ -		fpu->state.fxsave.mxcsr &=3D mxcsr_feature_mask;
+ +		if (IS_ENABLED(CONFIG_X86_64)) {
+ +			/* Reject invalid MXCSR values. */
+ +			if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
+- 				return -EINVAL;
+++				return false;
+ +		} else {
+ +			/* Mask invalid bits out for historical reasons (broken hardware). */
+ +			fpu->state.fxsave.mxcsr &=3D ~mxcsr_feature_mask;
+ +		}
+ =20
+  		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
+  		if (use_xsave())
+
+--Sig_//6sOA+BwMo_Xl7u7csf2ryj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFjn6AACgkQAVBC80lX
+0GxvgggAis3wR6+vLh2yzpPjW++00CQ06K0GZj6tUVIaGH0kjeeYHIxFqthHEwkU
+2d47S2wQFpuq+FkweNjpJ+0PDplSbvJeGR2DGg3ImxJlQ4I201a4IbX2YiSjDDqF
+TGzYeAmHa4QEHNq5mlsnGolQV+PSJ1LBOywz6ffLhofopXIJvbSg0YQZnqPhqRFU
+qeNeQFzkDM108Y/XAPW667e9hVRXnt78OJ/mBBVRmqeEXAW6lYgOyAfMA1apIsSv
+ZqhWrEpKRSd79FuBw/cZmkxoRgd86RLcyB+vTTsrr9LmLpHQEUY8WEZSTVK8NpNu
+P7zStT7ERvt4jAwBkcta0YU6ZJhTGw==
+=mfAh
+-----END PGP SIGNATURE-----
+
+--Sig_//6sOA+BwMo_Xl7u7csf2ryj--
