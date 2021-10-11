@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9069E428F57
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B46428ED7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237016AbhJKN5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:57:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39742 "EHLO mail.kernel.org"
+        id S237712AbhJKNw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:52:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236911AbhJKNzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9566610C8;
-        Mon, 11 Oct 2021 13:53:01 +0000 (UTC)
+        id S237379AbhJKNvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:51:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B35460C49;
+        Mon, 11 Oct 2021 13:49:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960383;
-        bh=Io/4ppa+oQGBnZuwCiFENoxZpM+nqYKIaoBGzVn7u2A=;
+        s=korg; t=1633960152;
+        bh=eel5NhudzUmvRMwzvf+FmJa3uUYsQKH4gd0yvmnSzv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=n5D4QDCXOYLtBGrGpc8zw4yffyYG5TKuQe+zUps/Z2fXsynYWcT+e7MLP0KU4RkNi
-         IZQ4VJVUiNH33HoNfs+lgP7kOEZA/yGi0a4/kOviukYzmqtZ8pBnhu84bGcWpvRmHE
-         YZhxMFYNbHwBfYYlz1fcXTXbZHjIyvNUMkP9sI7c=
+        b=daN65Pwp+1pgFRUBs+k/TYFWZsyWgVwrvTm92CzA6bDmNNflHFY6ESzEfILgW4DOw
+         fWbfCNu0UsK6UjB5JOsFX0Z0MR0jQTV+NeyST5ixZSadFsBS6+TZLQQxTgv6HOb09F
+         i23FnnPyScv9c07xsqmO4PEZhVBLtBYHjBymyE7Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 45/83] dt-bindings: drm/bridge: ti-sn65dsi86: Fix reg value
-Date:   Mon, 11 Oct 2021 15:46:05 +0200
-Message-Id: <20211011134509.959795246@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 37/52] bus: ti-sysc: Use CLKDM_NOAUTO for dra7 dcan1 for errata i893
+Date:   Mon, 11 Oct 2021 15:46:06 +0200
+Message-Id: <20211011134505.002056141@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
-References: <20211011134508.362906295@linuxfoundation.org>
+In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
+References: <20211011134503.715740503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit b2d70c0dbf2731a37d1c7bcc86ab2387954d5f56 ]
+[ Upstream commit b13a270ace2e4c70653aa1d1d0394c553905802f ]
 
-make dtbs_check:
+Commit 94f6345712b3 ("bus: ti-sysc: Implement quirk handling for
+CLKDM_NOAUTO") should have also added the quirk for dra7 dcan1 in
+addition to dcan2 for errata i893 handling.
 
-    arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dt.yaml: bridge@2c: reg:0:0: 45 was expected
+Let's also pass the quirk flag for legacy mode booting for if "ti,hwmods"
+dts property is used with related dcan hwmod data. This should be only
+needed if anybody needs to git bisect earlier stable trees though.
 
-According to the datasheet, the I2C address can be either 0x2c or 0x2d,
-depending on the ADDR control input.
-
-Fixes: e3896e6dddf0b821 ("dt-bindings: drm/bridge: Document sn65dsi86 bridge bindings")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-Link: https://lore.kernel.org/r/08f73c2aa0d4e580303357dfae107d084d962835.1632486753.git.geert+renesas@glider.be
-Signed-off-by: Rob Herring <robh@kernel.org>
+Fixes: 94f6345712b3 ("bus: ti-sysc: Implement quirk handling for CLKDM_NOAUTO")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../devicetree/bindings/display/bridge/ti,sn65dsi86.yaml        | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-omap2/omap_hwmod.c | 2 ++
+ drivers/bus/ti-sysc.c            | 3 +++
+ 2 files changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-index f8622bd0f61e..f0e0345da498 100644
---- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-@@ -18,7 +18,7 @@ properties:
-     const: ti,sn65dsi86
+diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
+index eb74aa182661..6289b288d60a 100644
+--- a/arch/arm/mach-omap2/omap_hwmod.c
++++ b/arch/arm/mach-omap2/omap_hwmod.c
+@@ -3656,6 +3656,8 @@ int omap_hwmod_init_module(struct device *dev,
+ 		oh->flags |= HWMOD_SWSUP_SIDLE_ACT;
+ 	if (data->cfg->quirks & SYSC_QUIRK_SWSUP_MSTANDBY)
+ 		oh->flags |= HWMOD_SWSUP_MSTANDBY;
++	if (data->cfg->quirks & SYSC_QUIRK_CLKDM_NOAUTO)
++		oh->flags |= HWMOD_CLKDM_NOAUTO;
  
-   reg:
--    const: 0x2d
-+    enum: [ 0x2c, 0x2d ]
- 
-   enable-gpios:
-     maxItems: 1
+ 	error = omap_hwmod_check_module(dev, oh, data, sysc_fields,
+ 					rev_offs, sysc_offs, syss_offs,
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 90053c4a8290..469ca73de4ce 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1388,6 +1388,9 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 	/* Quirks that need to be set based on detected module */
+ 	SYSC_QUIRK("aess", 0, 0, 0x10, -ENODEV, 0x40000000, 0xffffffff,
+ 		   SYSC_MODULE_QUIRK_AESS),
++	/* Errata i893 handling for dra7 dcan1 and 2 */
++	SYSC_QUIRK("dcan", 0x4ae3c000, 0x20, -ENODEV, -ENODEV, 0xa3170504, 0xffffffff,
++		   SYSC_QUIRK_CLKDM_NOAUTO),
+ 	SYSC_QUIRK("dcan", 0x48480000, 0x20, -ENODEV, -ENODEV, 0xa3170504, 0xffffffff,
+ 		   SYSC_QUIRK_CLKDM_NOAUTO),
+ 	SYSC_QUIRK("dss", 0x4832a000, 0, 0x10, 0x14, 0x00000020, 0xffffffff,
 -- 
 2.33.0
 
