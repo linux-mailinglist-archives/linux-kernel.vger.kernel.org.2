@@ -2,72 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200D1429583
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E9A42958B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233954AbhJKRYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:24:44 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40838 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233933AbhJKRYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:24:42 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 834D01C0B82; Mon, 11 Oct 2021 19:22:41 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 19:22:41 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/82] 5.10.73-rc2 review
-Message-ID: <20211011172241.GA8644@duo.ucw.cz>
-References: <20211011153306.939942789@linuxfoundation.org>
+        id S234025AbhJKRZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:25:05 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3265 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233933AbhJKRZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:25:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="207042928"
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="207042928"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:23:02 -0700
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="440882109"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.255.229.69]) ([10.255.229.69])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:23:01 -0700
+Message-ID: <a070274e-6a3a-fb0a-68ff-d320d0729377@linux.intel.com>
+Date:   Mon, 11 Oct 2021 10:23:00 -0700
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="MGYHOYXEY6WxJCY8"
-Content-Disposition: inline
-In-Reply-To: <20211011153306.939942789@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Content-Language: en-US
+To:     Christoph Hellwig <hch@infradead.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YWPunfa+WK86Cgnv@infradead.org>
+From:   Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <YWPunfa+WK86Cgnv@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---MGYHOYXEY6WxJCY8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/11/2021 12:58 AM, Christoph Hellwig wrote:
+> Just as last time:  This does not make any sense.  ioremap is shared
+> by definition.
 
-Hi!
+It's not necessarily shared with the host for confidential computing: 
+for example BIOS mappings definitely should not be shared, but they're 
+using ioremap today.
 
-> This is the start of the stable review cycle for the 5.10.73 release.
-> There are 82 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+But if you have a better term please propose something. I tried to 
+clarify it with "shared_host", but I don't know a better term.
 
-CIP testing did not find any problems here:
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-5.10.y
+-Andi
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Best regards,
-                                                                Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---MGYHOYXEY6WxJCY8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYWRy4QAKCRAw5/Bqldv6
-8g8mAJ4sMsN6cbv+WzeYmVwrj+aTr5lR1QCgwtzD6kLcDMncrb7bAibw4IQuiVs=
-=zjHU
------END PGP SIGNATURE-----
-
---MGYHOYXEY6WxJCY8--
