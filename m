@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8740342998B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5EF429994
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234328AbhJKW7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 18:59:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60986 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhJKW7a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 18:59:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633993049;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qXN/vzdwnclocStV3rAgvMW+lzmIwxCoY9r4CfSlUdw=;
-        b=MP6jGY0QErblbSBquwp4bxT3E1awuFlPntZHbtj2Em9mk4P8cNkIHfhdaCyBmqa5Rin1PQ
-        QxjxACKG8fFRLJukpOJQbXyrRDTVtIpXv7vo10R14k4+7x3fBG22+WlV2V+3HbQ6EubmYp
-        0iFtohas815dv1c0HPXm6PNUWxqH8j4=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-SqyiTHxMOaKyz-C3-CfEMQ-1; Mon, 11 Oct 2021 18:57:28 -0400
-X-MC-Unique: SqyiTHxMOaKyz-C3-CfEMQ-1
-Received: by mail-pg1-f197.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso7608158pgb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 15:57:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qXN/vzdwnclocStV3rAgvMW+lzmIwxCoY9r4CfSlUdw=;
-        b=0T6eoftIowMWXI9avwPHvymZiz63UIhWF1mFpAd3z45Is+TosQlXFxkogzVZv6iVnz
-         gSgxDQRl4V6S9K5l2OP1R3/M8enfomdMyCC0q8COoNYUfM/2BD5NtN42rzZJvMjp5qYe
-         YSl+bRUj3XU+6jA4qkcDdPglwkLWHRCzap0ZZQQt+a34B0kA7XnByzOMWqaPr+D+7HT6
-         060H298jwfe8Kkp97Ngmrf328o1sz3vkaKe5Cp19u6nTp7ESYZz7igSehHq1JKDXm0en
-         9D+fmBhmDKkDRdPqZbJ1UqvYJNoklOEnGGy4v/xPoAyl2zoD57mOCXHclK5gMjc9UsaE
-         OOAw==
-X-Gm-Message-State: AOAM530KQhuN92NiqezAl7G8IvkQWu9vMemSVwyWTTyDF08KtTm9gOXk
-        o3G5f5qPgFzh+I4q1XxzWYcKmLQIi83G0fjmo5UfbfE6NepmI5yO8NqhJ9v0f4WMSw53lgk1ivj
-        CzlGXk2pezRcEeaThg4nBNIWD
-X-Received: by 2002:a17:903:22cc:b0:13e:fa73:6fef with SMTP id y12-20020a17090322cc00b0013efa736fefmr27329637plg.25.1633993046991;
-        Mon, 11 Oct 2021 15:57:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy7tlCmjti8dDtX3s90mHbpNajYA411v7qqZAafpSxBDhxylbZeGvAJU/eVUmaUhZ21fDfU6w==
-X-Received: by 2002:a17:903:22cc:b0:13e:fa73:6fef with SMTP id y12-20020a17090322cc00b0013efa736fefmr27329611plg.25.1633993046632;
-        Mon, 11 Oct 2021 15:57:26 -0700 (PDT)
-Received: from t490s ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id k190sm8664644pfd.211.2021.10.11.15.57.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 15:57:25 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 18:57:18 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>, Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [v3 PATCH 2/5] mm: filemap: check if THP has hwpoisoned subpage
- for PMD page fault
-Message-ID: <YWTBTg0JCgBb14Ae@t490s>
-References: <20210930215311.240774-1-shy828301@gmail.com>
- <20210930215311.240774-3-shy828301@gmail.com>
- <20211004140637.qejvenbkmrulqdno@box.shutemov.name>
- <CAHbLzkp5d_j97MizSFCgfnHQj_tUQuHJqxWtrvRo_0kZMKCgtA@mail.gmail.com>
- <20211004194130.6hdzanjl2e2np4we@box.shutemov.name>
- <CAHbLzkqcrGCksMXbW5p75ZK2ODv4bLcdQWs7Jz0NG4-=5N20zw@mail.gmail.com>
- <YV3+6K3uupLit3aH@t490s>
- <20211008093529.sb54gnlbhuiy6klr@box.shutemov.name>
+        id S235624AbhJKXAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235610AbhJKXAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 19:00:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99D3360E9C;
+        Mon, 11 Oct 2021 22:58:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633993118;
+        bh=C7TM3EmPN6DorfUEVOLqh8TJscFvq9jGaAVd0ARsT1c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oOAawjLPgc6W09z6cqLCC04LuJz+rEeKqmk+zYRPRu2oUVyJNHjXNKpnxA8H3PHxh
+         IAd8Vz0/ehIs3ZXxFiUenpmaR1RLiPh1P4GxD6raXoPXTBmgZMRnA0IF5QX9M+j9WX
+         dsTSIoVWuQcGKZcVg1Jru1fOpLw9sGyaOBf44C9NfTTNv6NMZzKeuaoMzzveYe3VZq
+         FGfSC4zE+4CAwEfYUp/4pFCdfd6oOG4kxl/UmONFl1xVy70mwRrl4pyrPMSk1pyHdj
+         8E+B4uvo1J9jgFYNKBJ2+jXEUDdkML8CKZaLWY65FbMaRkBSvBUkSdLzusyky49Z5T
+         t7RhldW9YPb+g==
+Date:   Mon, 11 Oct 2021 15:58:38 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] xfs: Use kvcalloc() instead of kvzalloc()
+Message-ID: <20211011225838.GJ24307@magnolia>
+References: <20210928223307.GA295934@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211008093529.sb54gnlbhuiy6klr@box.shutemov.name>
+In-Reply-To: <20210928223307.GA295934@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 12:35:29PM +0300, Kirill A. Shutemov wrote:
-> JFYI, git blame -w ignores whitespace changes :P
+On Tue, Sep 28, 2021 at 05:33:07PM -0500, Gustavo A. R. Silva wrote:
+> Use 2-factor argument multiplication form kvcalloc() instead of
+> kvzalloc().
+> 
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Thanks, Kirill. :)
+Oooh, fun, checks for multiplication overflows.
 
-I must confess in reality I didn't encounter white-space changes a lot, but
-mostly on moving the code around either e.g. by putting things into, or out of,
-"if/for" blocks, or moving code between files.
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-I used git-blame a lot not to looking for people to blame but to dig history of
-code changes, not sure about how others do that.  So maybe it's just that I
-didn't do it right beforfe, and I'll be more than glad to learn if there's more
-tricks like the "-w" one (which I don't know before..).
+--D
 
--- 
-Peter Xu
-
+> ---
+>  fs/xfs/xfs_ioctl.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
+> index 0c795dc093ef..174cd8950cb6 100644
+> --- a/fs/xfs/xfs_ioctl.c
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -1547,7 +1547,7 @@ xfs_ioc_getbmap(
+>  	if (bmx.bmv_count > ULONG_MAX / recsize)
+>  		return -ENOMEM;
+>  
+> -	buf = kvzalloc(bmx.bmv_count * sizeof(*buf), GFP_KERNEL);
+> +	buf = kvcalloc(bmx.bmv_count, sizeof(*buf), GFP_KERNEL);
+>  	if (!buf)
+>  		return -ENOMEM;
+>  
+> @@ -1601,11 +1601,11 @@ xfs_ioc_getfsmap(
+>  	 */
+>  	count = min_t(unsigned int, head.fmh_count,
+>  			131072 / sizeof(struct fsmap));
+> -	recs = kvzalloc(count * sizeof(struct fsmap), GFP_KERNEL);
+> +	recs = kvcalloc(count, sizeof(struct fsmap), GFP_KERNEL);
+>  	if (!recs) {
+>  		count = min_t(unsigned int, head.fmh_count,
+>  				PAGE_SIZE / sizeof(struct fsmap));
+> -		recs = kvzalloc(count * sizeof(struct fsmap), GFP_KERNEL);
+> +		recs = kvcalloc(count, sizeof(struct fsmap), GFP_KERNEL);
+>  		if (!recs)
+>  			return -ENOMEM;
+>  	}
+> -- 
+> 2.27.0
+> 
