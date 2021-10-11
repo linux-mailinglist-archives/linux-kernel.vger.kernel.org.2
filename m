@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676D342856F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:04:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF09428575
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233783AbhJKDGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:06:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57417 "EHLO
+        id S233793AbhJKDIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:08:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45425 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231966AbhJKDGU (ORCPT
+        by vger.kernel.org with ESMTP id S231966AbhJKDIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:06:20 -0400
+        Sun, 10 Oct 2021 23:08:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633921461;
+        s=mimecast20190719; t=1633921611;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=T79BKdCqOj489zc3OMzu2/jJB+p06oKh0yYujOy933Y=;
-        b=MYLXmxTBszOmjtaGjJoIorRAN04cRlXGXkPQc5jewC8/sDxRrm9P5huY1bPw8I8nKz84qf
-        wwsQvk61znLlRInWIUg0PMr+6SaYsRagdEpUXVNo2RMyaZvVGZmcdMxm1wCZA/L9p48oVz
-        KZbbJ7FGMgotd++q+Ff1zL256CzwGNo=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-525-SviUat8oOXKLnKQjv_RO3g-1; Sun, 10 Oct 2021 23:04:19 -0400
-X-MC-Unique: SviUat8oOXKLnKQjv_RO3g-1
-Received: by mail-pg1-f199.google.com with SMTP id q23-20020a6562570000b029023cbfb4fd73so6169787pgv.14
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:04:19 -0700 (PDT)
+        bh=UQlWWNm8nIIxCQWMb6EGZQHK9gk6FB/0D1OfhEh8hqw=;
+        b=KwJjzMoxfsXlrJq9kuxo3B4ujAtB5t+THvoQj95sVbuY0/B3HAXfNudBj69Dnze7yV5I73
+        2vYfMd3Tbh/wMu/5Dj0mYcPK45ljwCaE0uMPF5TuuTFLOJhzPVsFXJjCjMKQQxAaTZTDBi
+        KnjMZvXgIPpQ5ZmfGB3cZfEMS/HZveo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-QwfpLThQNCSYjrInSsOS7Q-1; Sun, 10 Oct 2021 23:06:50 -0400
+X-MC-Unique: QwfpLThQNCSYjrInSsOS7Q-1
+Received: by mail-pl1-f200.google.com with SMTP id p2-20020a170902bd0200b0013da15f4ab0so7227286pls.7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:06:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=T79BKdCqOj489zc3OMzu2/jJB+p06oKh0yYujOy933Y=;
-        b=yrw5byZQ9hKHW9W6VOXwrHQDUUemItK0wFsvci2UmwZibyzijtQgNr+VCLUXM6M3Pf
-         iCWfaAB+MOzEaBk4dak+WMxo8gBMNyB9KFXvLywzZZ+bqdlcrYhJbn7jQWC44nts9DLA
-         dcyYcRxnHySAUbPcP/blBnjAbs0XAGYMW4B+3sLj9Getr2sFu6Clw8/t4YITMJ2FY5OR
-         X39MbpR5BQvHOpeT0Hs1VSeF8nTmQhz8vFqp/wyRPoMs8+7eZ7qFqaLarXGcOeDqbmDw
-         rN5HfjffZc6ZRoFsps+wcxAPYIRx2881v5tzC5yh92ugW8ZYYHCI2+smJwQ5mZq+vxGv
-         DApg==
-X-Gm-Message-State: AOAM5303zJQ9gqFtq7qzpWvgo7USjTkQZHrlbZ5QnXupXUV5jyAN7Vql
-        DgPVpIY74oijOfIp/4Q51akApotLAlHvXiinHBHQwbLVvrW9M/U6n1OzwT8jpwjS15zk0ms09eG
-        Qj6jLtNXzoKfYJCO/RurJC1LD
-X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr27157210pjb.100.1633921458614;
-        Sun, 10 Oct 2021 20:04:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwj5eVsOT5kcTZ/KTOQVLWqO2RshC4Do9f4Y1Paq4OzbE2pH4irvvwspv1U+ckK8B0ZVkiBng==
-X-Received: by 2002:a17:90b:4d09:: with SMTP id mw9mr27157183pjb.100.1633921458358;
-        Sun, 10 Oct 2021 20:04:18 -0700 (PDT)
+        bh=UQlWWNm8nIIxCQWMb6EGZQHK9gk6FB/0D1OfhEh8hqw=;
+        b=Q1/wOZBFDcCoOS4WV3tDkQoeBMYWGjO9DTzB1D5QcKSQ3RMyvTsJg82Cl57DL1otGv
+         M6aKKVxGIX90an1xQuHmnyUCM53rq5cEU08iJr8KIHIMidyua++kzqnt+oeEHeiWIl0+
+         eKtLPOKJ10hvpUAa/3tm7E0u3KiTB6nt8BaH+8TS1W67+NGxgtRGXsoEEdA6/z4lt4S1
+         f07ncXq5bXAablOu5uwaTRCU1w4FXyGc5sNWmdam6dQorQvXKeBjcJLDHRFvPI8qxZ0Z
+         ZdCvJYt8wAhZ7AEpWMeYmXBENN6sYNkI+zAl9xcZ/euKeot+q5IZPkyTVr/WYOgtp+A6
+         c5PA==
+X-Gm-Message-State: AOAM532NLR/b2CXOpr+4u6K83AGNiV4Z6IxNKOzIPlp88yPRP5yx+Mkj
+        WbgkVtvbERD4oV/r0SWs9uaaMfprHSZvQIAQY2ysC3lJi4abwPZKIeANHoCUoFSUrvUknZtbR9V
+        UsETfwp4K9ufg2UrqXZdoXCw/
+X-Received: by 2002:a17:903:2451:b0:13f:297b:829e with SMTP id l17-20020a170903245100b0013f297b829emr8976528pls.45.1633921608790;
+        Sun, 10 Oct 2021 20:06:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz522aC78Wz+FanCjWbLjzHnHSGJZv8uq5qq+u1k0QNh4wUny/4WSnXaCkLiou5iG+lw3yODA==
+X-Received: by 2002:a17:903:2451:b0:13f:297b:829e with SMTP id l17-20020a170903245100b0013f297b829emr8976514pls.45.1633921608552;
+        Sun, 10 Oct 2021 20:06:48 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z9sm5505242pji.42.2021.10.10.20.04.15
+        by smtp.gmail.com with ESMTPSA id a67sm5739308pfa.128.2021.10.10.20.06.46
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 20:04:17 -0700 (PDT)
-Subject: Re: [PATCH v4 4/7] vdpa: add new callback get_vq_num_min in
- vdpa_config_ops
+        Sun, 10 Oct 2021 20:06:48 -0700 (PDT)
+Subject: Re: [PATCH v4 5/7] virtio_vdpa: setup correct vq size with callbacks
+ get_vq_num_{max,min}
 To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
         virtualization@lists.linux-foundation.org,
         linux-kernel@vger.kernel.org, mst@redhat.com
 Cc:     wei.yang1@linux.alibaba.com
 References: <cover.1632313398.git.wuzongyong@linux.alibaba.com>
  <cover.1632882380.git.wuzongyong@linux.alibaba.com>
- <451ce3c272ebd5d532db1ed19c2ab53c4609f7ad.1632882380.git.wuzongyong@linux.alibaba.com>
+ <e971b011b9224a4da4fcab6e904fcee0b7393ac6.1632882380.git.wuzongyong@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <a07c02e3-e5eb-ae94-33d9-26c29de484c9@redhat.com>
-Date:   Mon, 11 Oct 2021 11:04:14 +0800
+Message-ID: <514a4a6e-89d5-3200-bb31-3660389f5315@redhat.com>
+Date:   Mon, 11 Oct 2021 11:06:44 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <451ce3c272ebd5d532db1ed19c2ab53c4609f7ad.1632882380.git.wuzongyong@linux.alibaba.com>
+In-Reply-To: <e971b011b9224a4da4fcab6e904fcee0b7393ac6.1632882380.git.wuzongyong@linux.alibaba.com>
 Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
@@ -77,41 +77,80 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 ÔÚ 2021/9/29 ÏÂÎç2:11, Wu Zongyong Ð´µÀ:
-> This callback is optional. For vdpa devices that not support to change
-> virtqueue size, get_vq_num_min and get_vq_num_max will return the same
-> value, so that users can choose a correct value for that device.
->
-> Suggested-by: Jason Wang <jasowang@redhat.com>
+
 > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
 
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+Commit log please.
 
 
 > ---
->   include/linux/vdpa.h | 4 ++++
->   1 file changed, 4 insertions(+)
+>   drivers/virtio/virtio_vdpa.c | 25 ++++++++++++++++++++-----
+>   1 file changed, 20 insertions(+), 5 deletions(-)
 >
-> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> index a896ee021e5f..30864848950b 100644
-> --- a/include/linux/vdpa.h
-> +++ b/include/linux/vdpa.h
-> @@ -171,6 +171,9 @@ struct vdpa_map_file {
->    * @get_vq_num_max:		Get the max size of virtqueue
->    *				@vdev: vdpa device
->    *				Returns u16: max size of virtqueue
-> + * @get_vq_num_min:		Get the min size of virtqueue (optional)
-> + *				@vdev: vdpa device
-> + *				Returns u16: min size of virtqueue
->    * @get_device_id:		Get virtio device id
->    *				@vdev: vdpa device
->    *				Returns u32: virtio device id
-> @@ -266,6 +269,7 @@ struct vdpa_config_ops {
->   	void (*set_config_cb)(struct vdpa_device *vdev,
->   			      struct vdpa_callback *cb);
->   	u16 (*get_vq_num_max)(struct vdpa_device *vdev);
-> +	u16 (*get_vq_num_min)(struct vdpa_device *vdev);
->   	u32 (*get_device_id)(struct vdpa_device *vdev);
->   	u32 (*get_vendor_id)(struct vdpa_device *vdev);
->   	u8 (*get_status)(struct vdpa_device *vdev);
+> diff --git a/drivers/virtio/virtio_vdpa.c b/drivers/virtio/virtio_vdpa.c
+> index 72eaef2caeb1..8aa4ebe2a2a2 100644
+> --- a/drivers/virtio/virtio_vdpa.c
+> +++ b/drivers/virtio/virtio_vdpa.c
+> @@ -145,7 +145,8 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+>   	/* Assume split virtqueue, switch to packed if necessary */
+>   	struct vdpa_vq_state state = {0};
+>   	unsigned long flags;
+> -	u32 align, num;
+> +	u32 align, max_num, min_num = 0;
+> +	bool may_reduce_num = true;
+>   	int err;
+>   
+>   	if (!name)
+> @@ -163,22 +164,36 @@ virtio_vdpa_setup_vq(struct virtio_device *vdev, unsigned int index,
+>   	if (!info)
+>   		return ERR_PTR(-ENOMEM);
+>   
+> -	num = ops->get_vq_num_max(vdpa);
+> -	if (num == 0) {
+> +	max_num = ops->get_vq_num_max(vdpa);
+> +	if (max_num == 0) {
+>   		err = -ENOENT;
+>   		goto error_new_virtqueue;
+>   	}
+>   
+> +	if (ops->get_vq_num_min)
+> +		min_num = ops->get_vq_num_min(vdpa);
+> +	if (min_num > max_num) {
+> +		err = -ENOENT;
+> +		goto error_new_virtqueue;
+> +	}
+
+
+If we really want to do this, let's move this to vdpa core during device 
+probing.
+
+Or just leave it as is (device risk itself).
+
+Thanks
+
+
+> +
+> +	may_reduce_num = (max_num == min_num) ? false : true;
+> +
+>   	/* Create the vring */
+>   	align = ops->get_vq_align(vdpa);
+> -	vq = vring_create_virtqueue(index, num, align, vdev,
+> -				    true, true, ctx,
+> +	vq = vring_create_virtqueue(index, max_num, align, vdev,
+> +				    true, may_reduce_num, ctx,
+>   				    virtio_vdpa_notify, callback, name);
+>   	if (!vq) {
+>   		err = -ENOMEM;
+>   		goto error_new_virtqueue;
+>   	}
+>   
+> +	if (virtqueue_get_vring_size(vq) < min_num) {
+> +		err = -EINVAL;
+> +		goto err_vq;
+> +	}
+> +
+>   	/* Setup virtqueue callback */
+>   	cb.callback = virtio_vdpa_virtqueue_cb;
+>   	cb.private = info;
 
