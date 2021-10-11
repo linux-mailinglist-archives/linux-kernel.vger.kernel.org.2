@@ -2,221 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D35042885E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B24428862
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhJKIMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:12:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53646 "EHLO mga05.intel.com"
+        id S234825AbhJKINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:13:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:35246 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231300AbhJKIMb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:12:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="313023539"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="313023539"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 01:10:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="716297474"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga005.fm.intel.com with ESMTP; 11 Oct 2021 01:10:31 -0700
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 11 Oct 2021 01:10:31 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Mon, 11 Oct 2021 01:10:31 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12 via Frontend Transport; Mon, 11 Oct 2021 01:10:31 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.48) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.12; Mon, 11 Oct 2021 01:10:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FHCuBsa1NNBi7OMCIXol0rE72Abba6gin2ptnp4rs7jOuxievamCWGMNaMeD2iIQolznDTuX+fy7Q9ONvdzitb5kflZSiexrKNCWt9/dWHknVQZWLI6podlOv49Z0VRxjWly4FnP/wa1xYju1jg1ejzBud/eCxF7FilNepEkw7P2lOdgS47AijHv1ZziVg6I/T5LBrvikytPy45Dj9MqR4u8Qd8gtNrGhU76Dd838mSJE64iLQ0Ovb5F1SJd24TBGQupd3WXVyJqypW+/hkqzB/zT6awn1quleJnkqbJoWwmw3WDg50rio3JcsGmoz7vUJ5E8CawNHQd4P+uuW1pPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yLrLVnGRysKH5R2Ksb4M95u+/b5gJt58QeXzuPQusb8=;
- b=Fm0c1CTeek8XHlYzGdPzVfhXiQktLxxTCjyQM7Xu0jc+SvRySV0YIN2M3l9vSl2w6Xff/m2FynLgfzk+LIvFDwXbLpHSMIHkjokYolAd1yLusglqTX4Bz9hCLhVCV1qy0f/CYH1tXnPCvsL/GDWCD4foNBrxeKzmkCX8T999In/fb/lZ1UlrjA+ArFDGJ2ZejBcqiQdXpjXZMGeDaOtP2iMd+oFjPKCvrYi6LAVxctsJ7nOLfOdbvBFgxQFHXMkNeUzbs8AsZrP93xnwivyRPjmSMw9cNS392lDbtQS4iBEdemX52FDddw81lT7A6URYa1liECq0AW4eHPPqi/RFXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yLrLVnGRysKH5R2Ksb4M95u+/b5gJt58QeXzuPQusb8=;
- b=V9m1SnllPIAZcBcV7BniBC7JV7dxWjDojlPYolAsHp6XfTv+m80gkN2h/dbUt++TNiGKOvKDOWpE8SonOtaW3bNVKM4UE8i0RR/qJ/zTF3zoQhu2/cJUa4amfcz2OFy1zx5wGg+rqITuZX+O6bW1Gze1LS5HOSjy/HKtasKFx6A=
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16)
- by MW3PR11MB4715.namprd11.prod.outlook.com (2603:10b6:303:57::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Mon, 11 Oct
- 2021 08:10:29 +0000
-Received: from CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::982e:c29c:fe8a:5273]) by CO1PR11MB5089.namprd11.prod.outlook.com
- ([fe80::982e:c29c:fe8a:5273%6]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
- 08:10:29 +0000
-From:   "Keller, Jacob E" <jacob.e.keller@intel.com>
-To:     Yongxin Liu <yongxin.liu@windriver.com>,
-        "G, GurucharanX" <gurucharanx.g@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "kuba@kernel.org" <kuba@kernel.org>
-Subject: RE: [PATCH net] ice: check whether PTP is initialized in
- ice_ptp_release()
-Thread-Topic: [PATCH net] ice: check whether PTP is initialized in
- ice_ptp_release()
-Thread-Index: AQHXvm715C75JcNIGkyx4vym/rHCe6vNccpQ
-Date:   Mon, 11 Oct 2021 08:10:29 +0000
-Message-ID: <CO1PR11MB5089DDA3AE43771D735673E0D6B59@CO1PR11MB5089.namprd11.prod.outlook.com>
-References: <20211011070216.40657-1-yongxin.liu@windriver.com>
-In-Reply-To: <20211011070216.40657-1-yongxin.liu@windriver.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: windriver.com; dkim=none (message not signed)
- header.d=none;windriver.com; dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 55a4ca52-1174-42b7-2ebc-08d98c8e96f9
-x-ms-traffictypediagnostic: MW3PR11MB4715:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR11MB47158739D1033D36BC85555AD6B59@MW3PR11MB4715.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: both6vFB17Fm0rr5W+iM4AQ7ZaV6cUGP3agJhcHHeFEBdgGj3mccf57PI6HpzeAdkYHV0HRTrkiCjy1m3WDRmvu5fIQAJMZvm4Eba/6Vo7Cx3xwIcf0cWdDhMzib6VDsosIWLn+UCH0wwJTKXxeCHmSA6MXybLdP2S1UxjMTuDO717HwX6SJUPxPOnd+oloQmulpuUYhqtrngX0lC39SBBQDBqGRy0gcnVrKYeJ/Hr/mYRHgfsofgN1bfJeIpejaTvZtxijOO8bhPGvWU88Y6trESLQbW2nJRzOBI4QNiSAO41iexJoYIYIV3u3DG/OOKRpjvm5B1HdcT34spX+l8RgdtYM5a1sfgnL9f2chENHVeMyRSg6k9LP0/+TPblsuYoHys/tRO8F9hhP1nNUwvedP1Q37doI9IkAuLoKyYR8KISVesXm12GxSuZgHtZkgYjs6tsGgE2/8jTlfe7dUk/hzLI0Gp/Je9njJC9UQJ2GFpDkSC6enbpeYKwsQIUVukS3hVKUATw8R9wqcCmaXAH8Vd/H0WfMbHxNGzAqgDQI9IQb0j4lwT036TzZJseC+AgbA6Tn6Y5CDXRDk4MCpu8j2kr/hiXp2xbjj11Ocx6uygHnGwLfUCuIED+xICCM+l2CJMhsThNWmvjYt3vzXWpKb3i4f6mXvG6BSZZ0l3NR9r3y5lXx650VM6OYqhaj57P5J40TDyD/5uy8VXgD3fQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR11MB5089.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(52536014)(2906002)(6636002)(6506007)(7696005)(186003)(26005)(66556008)(83380400001)(53546011)(38100700002)(54906003)(66446008)(9686003)(64756008)(122000001)(8676002)(38070700005)(86362001)(316002)(66476007)(5660300002)(508600001)(4326008)(55016002)(8936002)(110136005)(33656002)(66946007)(76116006)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Fi08AwOWQktSY6WVPvQqB7AQ0Mx8HKC/jx9W37c8uLl+A7rnAtTJxWWcaPEX?=
- =?us-ascii?Q?qlgZFp0rxV8z/kcGHSPFCXTGhDPFFHqEYlFq2dM0TQvzpWwIpRdkjzOWU5xP?=
- =?us-ascii?Q?pRnCbatesS1FvbXoESHf5hD6XHxSYq5Hu7TSDyefZTTJ8fgBbTEy37B8Nthk?=
- =?us-ascii?Q?O5v6EHwlDgAuzC7JbeVkO8RpNszRz6q9WSecaBbi48eBrKbQ4sn0+cQRWHEb?=
- =?us-ascii?Q?+uHOpCdxREjtynwhQItifzjDqmQfYhLT3uURrqbj5F8P2fx6U1z8kEAIPkGY?=
- =?us-ascii?Q?an3bOIt67w5f1YAcCsYMwRB0UsyTy441fJjqmYoETyX6j9Jl0nz4z9QcB/cp?=
- =?us-ascii?Q?lViaLFFWN8X7U9N5/TmyXutwpFNhIAIE9HWizJ9MomkunTU/S4RIGgcn8qcV?=
- =?us-ascii?Q?WUWZe+/P0JQmYIN3VikgkDCWpXl2N0wlBo1q8pTyfTUdwyNVqRVrFZ8H6l5T?=
- =?us-ascii?Q?xsmq4M9T5NFRNEHKmlAieKj1OdK0Nco9Se3zGpXl47hx++H2yxAFMb54dW5S?=
- =?us-ascii?Q?YOPdcjQu4FdnAZ7tWZU8CP6vlR9+VtndIJrQK+Y45SuneARAfzaEuDqXzh1K?=
- =?us-ascii?Q?evyfXX7mCMvuAci89uPE0K6EQR5I0XHic+pssQh3o+71kvjqdbid4Z27A2ot?=
- =?us-ascii?Q?ciAYKfrVn87FAmhCSv1ix3+XIZN1mtZldlp4ZhsAOQSoIAfhUgLpOHnuIOal?=
- =?us-ascii?Q?1HZDVn9NS9CwRRoLt+tKjfwkyDpCICqJq+/Gm4j03bNVnuie4NgCxl9AsB+C?=
- =?us-ascii?Q?jl9yWeovEMs347JpOZ5Aj2mUMv1o1OdAjUcOOKoqBXgaodZeucA86EdyFD4w?=
- =?us-ascii?Q?jAYTt9Vs7+AgC+f+AVGtWpe7gBbRM1TT+urT9i2Rw13Ny/gKBVmtyXZ+Vvrt?=
- =?us-ascii?Q?Ir3VYQJ7W28reSQVJ/ZDHLWp+XjvTE/7mn6dMo1GuekKq7pbA9NTDt+AVX6B?=
- =?us-ascii?Q?yOIegklAfZs1W0iOrcRK19Mg3QEsUcsgv92B4xtkeBU3oCn4FUn0tgRlFLq1?=
- =?us-ascii?Q?sbKNJ1Z/fx1QkqDGJ4hDJfzxOc5pLuYtSBDW5L5EkSgdi4Ya5Hj5fTsuaHby?=
- =?us-ascii?Q?XdbLxHGcOXzntjPAn+UXDA9TjQFzM2z20ghYY4F6r+JeukCGZH0eykRQOW86?=
- =?us-ascii?Q?A+IV+4L5e5mx/OK3Feovs9eIat42RFL5w8fwfUhgX7obHL3SIKZagsokGLdC?=
- =?us-ascii?Q?mGU84JPry0xDupq7uHobB/zCKWkBG20bmaLN9Wm8VPr9l/dEuZM6uCTRzT2g?=
- =?us-ascii?Q?bW7pcxd4137p7Zc2TjD6EezJMifgIeE8acUINF/s5v1bsxhIdTy/tn631Agi?=
- =?us-ascii?Q?Jpk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S231300AbhJKINX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:13:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60E7813A1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
+Received: from mail-pl1-f177.google.com (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 496CF3FA35
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id f21so2010048plb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
+X-Gm-Message-State: AOAM533ziykEARnb1Pqr4KjgiUjjEBDSTwWEc5xmP6b+VMtsKJUGqnYp
+        +/+spGn5mdpoV9qE5AeSVu3MYVu++nq81rCxUCI=
+X-Google-Smtp-Source: ABdhPJxpgWkq2JXuhyC5cSUsG8YBYjnxKFd9JFYfb0AdYL4fS13p9K2CJ10dWF5pg4KXSn5b2Uhp22eVuQguQX4tG9g=
+X-Received: by 2002:a17:90a:46c2:: with SMTP id x2mr29707698pjg.207.1633939878591;
+ Mon, 11 Oct 2021 01:11:18 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR11MB5089.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55a4ca52-1174-42b7-2ebc-08d98c8e96f9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2021 08:10:29.4837
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iwOEE0jJ+V0+qTevnOZv5WiRYGHtkKbmYiiOTj3awkXDmBJUMJzE2URxuJN5h8AvGruXD6ZuhUCL8xEhvX0ajhDeNhjn7ZfzUnURLUrVotA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4715
-X-OriginatorOrg: intel.com
+References: <20210423095147.27922-1-vivek.gautam@arm.com> <20210423095147.27922-4-vivek.gautam@arm.com>
+ <YUoCTV6WYxxE10qj@myrica>
+In-Reply-To: <YUoCTV6WYxxE10qj@myrica>
+From:   Vivek Gautam <vivek.gautam@arm.com>
+Date:   Mon, 11 Oct 2021 13:41:15 +0530
+X-Gmail-Original-Message-ID: <CAFp+6iEM7K8YOnQ4vSNoM+HuHQ-7pr=G3aui-77dGipyJ0+RjQ@mail.gmail.com>
+Message-ID: <CAFp+6iEM7K8YOnQ4vSNoM+HuHQ-7pr=G3aui-77dGipyJ0+RjQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v1 03/11] iommu/virtio: Handle incoming page faults
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>, mst@redhat.com,
+        Will Deacon <will.deacon@arm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jean,
 
 
-> -----Original Message-----
-> From: Yongxin Liu <yongxin.liu@windriver.com>
-> Sent: Monday, October 11, 2021 12:02 AM
-> To: Keller, Jacob E <jacob.e.keller@intel.com>; G, GurucharanX
-> <gurucharanx.g@intel.com>; Nguyen, Anthony L <anthony.l.nguyen@intel.com>
-> Cc: netdev@vger.kernel.org; linux-kernel@vger.kernel.org;
-> davem@davemloft.net; Brandeburg, Jesse <jesse.brandeburg@intel.com>; inte=
-l-
-> wired-lan@lists.osuosl.org; kuba@kernel.org
-> Subject: [PATCH net] ice: check whether PTP is initialized in ice_ptp_rel=
-ease()
->=20
-> PTP is currently only supported on E810 devices, it is checked
-> in ice_ptp_init(). However, there is no check in ice_ptp_release().
-> For other E800 series devices, ice_ptp_release() will be wrongly executed=
-.
->=20
-> Fix the following calltrace.
->=20
+On Tue, Sep 21, 2021 at 9:33 PM Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+>
+> On Fri, Apr 23, 2021 at 03:21:39PM +0530, Vivek Gautam wrote:
+> > Redirect the incoming page faults to the registered fault handler
+> > that can take the fault information such as, pasid, page request
+> > group-id, address and pasid flags.
+> >
+> > Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
+> > ---
+> >  drivers/iommu/virtio-iommu.c      | 80 ++++++++++++++++++++++++++++++-
+> >  include/uapi/linux/virtio_iommu.h |  1 +
+> >  2 files changed, 80 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> > index c970f386f031..fd237cad1ce5 100644
+> > --- a/drivers/iommu/virtio-iommu.c
+> > +++ b/drivers/iommu/virtio-iommu.c
+> > @@ -37,6 +37,13 @@
+> >  /* Some architectures need an Address Space ID for each page table */
+> >  DEFINE_XARRAY_ALLOC1(viommu_asid_xa);
+> >
+> > +struct viommu_dev_pri_work {
+> > +     struct work_struct              work;
+> > +     struct viommu_dev               *dev;
+> > +     struct virtio_iommu_fault       *vfault;
+> > +     u32                             endpoint;
+> > +};
+> > +
+> >  struct viommu_dev {
+> >       struct iommu_device             iommu;
+> >       struct device                   *dev;
+> > @@ -49,6 +56,8 @@ struct viommu_dev {
+> >       struct list_head                requests;
+> >       void                            *evts;
+> >       struct list_head                endpoints;
+> > +     struct workqueue_struct         *pri_wq;
+> > +     struct viommu_dev_pri_work      *pri_work;
+>
+> IOPF already has a workqueue, so the driver doesn't need one.
+> iommu_report_device_fault() should be fast enough to be called from the
+> event handler.
 
+Sure, will call iommu_report_device_fault() directly from
+viommu_fault_handler().
 
-Ahhh. Yep.
+>
+> >
+> >       /* Device configuration */
+> >       struct iommu_domain_geometry    geometry;
+> > @@ -666,6 +675,58 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
+> >       return ret;
+> >  }
+> >
+> > +static void viommu_handle_ppr(struct work_struct *work)
+> > +{
+> > +     struct viommu_dev_pri_work *pwork =
+> > +                             container_of(work, struct viommu_dev_pri_work, work);
+> > +     struct viommu_dev *viommu = pwork->dev;
+> > +     struct virtio_iommu_fault *vfault = pwork->vfault;
+> > +     struct viommu_endpoint *vdev;
+> > +     struct viommu_ep_entry *ep;
+> > +     struct iommu_fault_event fault_evt = {
+> > +             .fault.type = IOMMU_FAULT_PAGE_REQ,
+> > +     };
+> > +     struct iommu_fault_page_request *prq = &fault_evt.fault.prm;
+> > +
+> > +     u32 flags       = le32_to_cpu(vfault->flags);
+> > +     u32 prq_flags   = le32_to_cpu(vfault->pr_evt_flags);
+> > +     u32 endpoint    = pwork->endpoint;
+> > +
+> > +     memset(prq, 0, sizeof(struct iommu_fault_page_request));
+>
+> The fault_evt struct is already initialized
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+Right, I will remove this line.
 
->   INFO: trying to register non-static key.
->   The code is fine but needs lockdep annotation, or maybe
->   you didn't initialize this object before use?
->   turning off the locking correctness validator.
->   Workqueue: ice ice_service_task [ice]
->   Call Trace:
->    dump_stack_lvl+0x5b/0x82
->    dump_stack+0x10/0x12
->    register_lock_class+0x495/0x4a0
->    ? find_held_lock+0x3c/0xb0
->    __lock_acquire+0x71/0x1830
->    lock_acquire+0x1e6/0x330
->    ? ice_ptp_release+0x3c/0x1e0 [ice]
->    ? _raw_spin_lock+0x19/0x70
->    ? ice_ptp_release+0x3c/0x1e0 [ice]
->    _raw_spin_lock+0x38/0x70
->    ? ice_ptp_release+0x3c/0x1e0 [ice]
->    ice_ptp_release+0x3c/0x1e0 [ice]
->    ice_prepare_for_reset+0xcb/0xe0 [ice]
->    ice_do_reset+0x38/0x110 [ice]
->    ice_service_task+0x138/0xf10 [ice]
->    ? __this_cpu_preempt_check+0x13/0x20
->    process_one_work+0x26a/0x650
->    worker_thread+0x3f/0x3b0
->    ? __kthread_parkme+0x51/0xb0
->    ? process_one_work+0x650/0x650
->    kthread+0x161/0x190
->    ? set_kthread_struct+0x40/0x40
->    ret_from_fork+0x1f/0x30
->=20
-> Fixes: 4dd0d5c33c3e ("ice: add lock around Tx timestamp tracker flush")
-> Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_ptp.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c
-> b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> index 05cc5870e4ef..b1cd26a5ad33 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_ptp.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> @@ -1572,6 +1572,9 @@ void ice_ptp_init(struct ice_pf *pf)
->   */
->  void ice_ptp_release(struct ice_pf *pf)
->  {
-> +	if (!test_bit(ICE_FLAG_PTP, pf->flags))
-> +		return;
-> +
->  	/* Disable timestamping for both Tx and Rx */
->  	ice_ptp_cfg_timestamp(pf, false);
->=20
-> --
-> 2.31.1
+>
+> > +     prq->addr = le64_to_cpu(vfault->address);
+> > +
+> > +     if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_LAST_PAGE)
+> > +             prq->flags |= IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
+> > +     if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) {
+> > +             prq->flags |= IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
+> > +             prq->pasid = le32_to_cpu(vfault->pasid);
+> > +             prq->grpid = le32_to_cpu(vfault->grpid);
+> > +     }
+> > +
+> > +     if (flags & VIRTIO_IOMMU_FAULT_F_READ)
+> > +             prq->perm |= IOMMU_FAULT_PERM_READ;
+> > +     if (flags & VIRTIO_IOMMU_FAULT_F_WRITE)
+> > +             prq->perm |= IOMMU_FAULT_PERM_WRITE;
+> > +     if (flags & VIRTIO_IOMMU_FAULT_F_EXEC)
+> > +             prq->perm |= IOMMU_FAULT_PERM_EXEC;
+> > +     if (flags & VIRTIO_IOMMU_FAULT_F_PRIV)
+> > +             prq->perm |= IOMMU_FAULT_PERM_PRIV;
+> > +
+> > +     list_for_each_entry(ep, &viommu->endpoints, list) {
+> > +             if (ep->eid == endpoint) {
+> > +                     vdev = ep->vdev;
 
+I have a question here though -
+Is endpoint-ID unique across all the endpoints available per 'viommu_dev' or
+per 'viommu_domain'?
+If it is per 'viommu_domain' then the above list is also incorrect.
+As you pointed to in the patch [1] -
+[PATCH RFC v1 02/11] iommu/virtio: Maintain a list of endpoints served
+by viommu_dev
+I am planning to add endpoint ID into a static global xarray in
+viommu_probe_device() as below:
+
+        vdev_for_each_id(i, eid, vdev) {
+                ret = xa_insert(&viommu_ep_ids, eid, vdev, GFP_KERNEL);
+                if (ret)
+                        goto err_free_dev;
+        }
+
+and replace the above list traversal as below:
+
+                xa_lock_irqsave(&viommu_ep_ids, flags);
+                xa_for_each(&viommu_ep_ids, eid, vdev) {
+                        if (eid == endpoint) {
+                                ret =
+iommu_report_device_fault(vdev->dev, &fault_evt);
+                                if (ret)
+                                        dev_err(vdev->dev, "Couldn't
+handle page request\n");
+                        }
+                }
+                xa_unlock_irqrestore(&viommu_ep_ids, flags);
+
+But using a global xarray would also be incorrect if the endpointsID are global
+across 'viommu_domain'.
+
+I need to find the correct 'viommu_endpoint' to call iommu_report_device_fault()
+with the correct device.
+
+> > +                     break;
+> > +             }
+> > +     }
+> > +
+> > +     if ((prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) &&
+> > +         (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_NEEDS_PASID))
+> > +             prq->flags |= IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
+> > +
+> > +     if (iommu_report_device_fault(vdev->dev, &fault_evt))
+> > +             dev_err(vdev->dev, "Couldn't handle page request\n");
+>
+> An error likely means that nobody registered a fault handler, but we could
+> display a few more details about the fault that would help debug the
+> endpoint
+
+Sure, will add more debug info to this log.
+
+>
+> > +}
+> > +
+> >  static int viommu_fault_handler(struct viommu_dev *viommu,
+> >                               struct virtio_iommu_fault *fault)
+> >  {
+> > @@ -679,7 +740,13 @@ static int viommu_fault_handler(struct viommu_dev *viommu,
+> >       u32 pasid       = le32_to_cpu(fault->pasid);
+> >
+> >       if (type == VIRTIO_IOMMU_FAULT_F_PAGE_REQ) {
+> > -             dev_info(viommu->dev, "Page request fault - unhandled\n");
+> > +             dev_info_ratelimited(viommu->dev,
+> > +                                  "Page request fault from EP %u\n",
+> > +                                  endpoint);
+>
+> That's rather for debugging the virtio-iommu driver, so should be
+> dev_dbg() (or removed entirely)
+
+I will remove this log.
+
+>
+> > +
+> > +             viommu->pri_work->vfault = fault;
+> > +             viommu->pri_work->endpoint = endpoint;
+> > +             queue_work(viommu->pri_wq, &viommu->pri_work->work);
+> >               return 0;
+> >       }
+> >
+> > @@ -1683,6 +1750,17 @@ static int viommu_probe(struct virtio_device *vdev)
+> >               goto err_free_vqs;
+> >       }
+> >
+> > +     viommu->pri_work = kzalloc(sizeof(*viommu->pri_work), GFP_KERNEL);
+> > +     if (!viommu->pri_work)
+> > +             return -ENOMEM;
+> > +
+> > +     viommu->pri_work->dev = viommu;
+> > +
+> > +     INIT_WORK(&viommu->pri_work->work, viommu_handle_ppr);
+> > +     viommu->pri_wq = create_singlethread_workqueue("viommu-pri-wq");
+> > +     if (!viommu->pri_wq)
+> > +             return -ENOMEM;
+> > +
+> >       viommu->map_flags = VIRTIO_IOMMU_MAP_F_READ | VIRTIO_IOMMU_MAP_F_WRITE;
+> >       viommu->last_domain = ~0U;
+> >
+> > diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
+> > index accc3318ce46..53aa88e6b077 100644
+> > --- a/include/uapi/linux/virtio_iommu.h
+> > +++ b/include/uapi/linux/virtio_iommu.h
+> > @@ -302,6 +302,7 @@ struct virtio_iommu_req_invalidate {
+> >  #define VIRTIO_IOMMU_FAULT_F_READ            (1 << 0)
+> >  #define VIRTIO_IOMMU_FAULT_F_WRITE           (1 << 1)
+> >  #define VIRTIO_IOMMU_FAULT_F_EXEC            (1 << 2)
+> > +#define VIRTIO_IOMMU_FAULT_F_PRIV            (1 << 3)
+>
+> Should go in the previous patch. (I'd also prefer 'privileged' because in
+> this context 'priv' is easily read as 'private')
+
+Sure, will move this to the previous patch.
+
+Thanks & regards
+Vivek
+
+[1] https://lore.kernel.org/all/YUoBW13+CvIljUgc@myrica/#t
+
+[snip]
