@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898084297E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8425E4297EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbhJKUIX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 16:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        id S234808AbhJKUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234835AbhJKUIW (ORCPT
+        with ESMTP id S231926AbhJKUIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:08:22 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C83F4C061570;
-        Mon, 11 Oct 2021 13:06:21 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1ma1Yv-00033F-K4; Mon, 11 Oct 2021 22:06:17 +0200
-Date:   Mon, 11 Oct 2021 22:06:17 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        SElinux list <selinux@vger.kernel.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 selinux] selinux: remove unneeded ipv6 hook wrappers
-Message-ID: <20211011200617.GA2942@breakpoint.cc>
-References: <20211011142416.26798-1-fw@strlen.de>
- <CAHC9VhRBYMMSucVbqUkcWTtyeuJ7SSuzDED=Cg=svWiaByo3Qw@mail.gmail.com>
- <CAFqZXNvHitBVyDga2CO2WAdxFwhY44xXoLkvmvVsPNGwqSe5zw@mail.gmail.com>
- <CAHC9VhTW9dPDN1F2o7S8cmgU_9yBZCNmzC_-9bKXTTX6zT=Jyg@mail.gmail.com>
+        Mon, 11 Oct 2021 16:08:43 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C66CC061570;
+        Mon, 11 Oct 2021 13:06:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08bb0022234ba9186d35fd.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:2223:4ba9:186d:35fd])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 63C7A1EC01FC;
+        Mon, 11 Oct 2021 22:06:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633982801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=sHYrqFRbYrEH2ohEyvm54WlvJW+Ifcb/2V9eQlCd/PU=;
+        b=mIYzaIydq3WW3gWAjE6T2K1pdYPtVCYlQvaJDfXOzzREBc6lCOfiQmEe6P+MpCD7Gbnp4i
+        9X0N4OQCjQChihVgTg6tbJ5oHYmKKsTrwIQ0seEOiQX1ho+iAkWowyBq53F2wrrem02c9f
+        Kc09T7ysxEghODkpZO5N02Jn0nUt1rU=
+Date:   Mon, 11 Oct 2021 22:06:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
+        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "olof@lixom.net" <olof@lixom.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "zweiss@equinix.com" <zweiss@equinix.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
+ headers
+Message-ID: <YWSZTq8NWWcCMXtA@zn.tnic>
+References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
+ <20210803113134.2262882-2-iwona.winiarska@intel.com>
+ <YVtQG+idmwKn0qLe@zn.tnic>
+ <58ef4107e9b2c60a2605aac0d2fb6670a95bc9e0.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAHC9VhTW9dPDN1F2o7S8cmgU_9yBZCNmzC_-9bKXTTX6zT=Jyg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <58ef4107e9b2c60a2605aac0d2fb6670a95bc9e0.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul Moore <paul@paul-moore.com> wrote:
-> On Mon, Oct 11, 2021 at 2:21 PM Ondrej Mosnacek <omosnace@redhat.com> wrote:
-> > On Mon, Oct 11, 2021 at 7:10 PM Paul Moore <paul@paul-moore.com> wrote:
-> > > On Mon, Oct 11, 2021 at 10:25 AM Florian Westphal <fw@strlen.de> wrote:
-> > > > Netfilter places the protocol number the hook function is getting called
-> > > > from in state->pf, so we can use that instead of an extra wrapper.
-> > > >
-> > > > Signed-off-by: Florian Westphal <fw@strlen.de>
-> > > > ---
-> > > >  v2: add back '#endif /* CONFIG_NETFILTER */' erronously axed in v1.
-> > > >  Applies to 'next' branch of
-> > > >  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git/
-> > > >
-> > > >  security/selinux/hooks.c | 52 ++++++++++------------------------------
-> > > >  1 file changed, 12 insertions(+), 40 deletions(-)
-> > >
-> > > ...
-> > >
-> > > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > > > index e7ebd45ca345..831b857d5dd7 100644
-> > > > --- a/security/selinux/hooks.c
-> > > > +++ b/security/selinux/hooks.c
-> > > > @@ -7470,38 +7442,38 @@ DEFINE_LSM(selinux) = {
-> > > >
-> > > >  static const struct nf_hook_ops selinux_nf_ops[] = {
-> > > >         {
-> > > > -               .hook =         selinux_ipv4_postroute,
-> > > > +               .hook =         selinux_hook_postroute,
-> > > >                 .pf =           NFPROTO_IPV4,
-> > > >                 .hooknum =      NF_INET_POST_ROUTING,
-> > > >                 .priority =     NF_IP_PRI_SELINUX_LAST,
-> > > >         },
-> > >
-> > > Thanks for the patch Florian, although the name "selinux_hook_*" seems
-> > > a bit ambiguous to me, after all we have a little more than 200
-> > > "hooks" in the SELinux LSM implementation.  Would you be okay with
-> > > calling the netfilter hook functions "selinux_nf_*" or something
-> > > similar?
+On Mon, Oct 11, 2021 at 07:21:26PM +0000, Winiarska, Iwona wrote:
+> Same reason why PECI can't just include arch/x86 directly (we're building for
+> ARM, not x86).
 
-Absolutely.
+Aha.
 
-> > > If you don't have time I can do the rename during the merge
-> > > assuming we can all agree on a name.
+So what do you need those INTEL_FAM6* defines for?
 
-I'll submit a v3.
+I see peci_cpu_device_ids[] which are used to match the CPU so at least
+that thing must be loading on x86 hardware... reading your 0th message,
+it sounds like that peci-cpu thing is loaded on an x86 CPU and it then
+exposes those interfaces which a PECI controller accesses.
 
-> > Since selinux_ip_forward() and selinux_ip_postroute() are used only in
-> > the hook functions, how about changing their signature and using them
-> > as hooks directly? That would solve the naming and also remove a few
-> > extra lines of boilerplate.
-> 
-> No argument against that from me, although you should be able to do
-> the same for selinux_ip_output() as well unless I missed a caller.
+And then I see in init_core_mask() the single usage of INTEL_FAM6* and
+that drivers/hwmon/peci/cputemp.c is a CPU temp monitoring client so
+that thing probably runs on x86 too.
 
-I'll have a look, thanks for the pointers.
+Or?
+
+If it does, then you don't need the code move.
+
+But it looks like I'm missing something...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
