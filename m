@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B18F9428EDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBA2428F62
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhJKNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:52:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39742 "EHLO mail.kernel.org"
+        id S237683AbhJKN57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:57:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236433AbhJKNvY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8340360EB4;
-        Mon, 11 Oct 2021 13:49:23 +0000 (UTC)
+        id S237635AbhJKN4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A5EBD60C49;
+        Mon, 11 Oct 2021 13:53:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960164;
-        bh=YHK9LF7MHxvCWm8u3yvM9HZ/76pAoR3qWodjtDuaDJs=;
+        s=korg; t=1633960400;
+        bh=jAz0QDhi7uwy6GomUW3C5wwwc48GcIieJyzK9BUlaGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fnu7iIJYu7JMOW+z+xKWot+1B5W6HDspT50QeN9slb4VxZlywI6a6X5kG+qGWqLzO
-         wM4/Y0UqswHcdiMPMcnCwDygwyD9ZfMPYvPMxJQambdT2zvLbFgjT9lLmzC+xGOWX+
-         KJZHp/3yv/cWwxyRyuwDqFigu4aTwdfzSAbxhiQw=
+        b=abS5ZO+sDCwp3NO1q0/4W3i560UB4+24Lc4y5it2z3o3tLst+HO7dgASbnqOIoguP
+         pDLSKQqvBYmDEptUY21txlrZ+1FwtXepjx65iVEjvcBmsq0SRaVyvAJVvFY6idjmS0
+         2H2GD3SFZns8Y3wJDQE5kTR0Y0m0su0h22P1o2qk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Catherine Sullivan <csully@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
+        stable@vger.kernel.org, Sean Anderson <sean.anderson@seco.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 40/52] gve: Correct available tx qpl check
-Date:   Mon, 11 Oct 2021 15:46:09 +0200
-Message-Id: <20211011134505.101363550@linuxfoundation.org>
+Subject: [PATCH 5.10 50/83] net: sfp: Fix typo in state machine debug string
+Date:   Mon, 11 Oct 2021 15:46:10 +0200
+Message-Id: <20211011134510.123820625@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Catherine Sullivan <csully@google.com>
+From: Sean Anderson <sean.anderson@seco.com>
 
-[ Upstream commit d03477ee10f4bc35d3573cf1823814378ef2dca2 ]
+[ Upstream commit 25a9da6641f1f66006e93ddbefee13a437efa8c0 ]
 
-The qpl_map_size is rounded up to a multiple of sizeof(long), but the
-number of qpls doesn't have to be.
+The string should be "tx_disable" to match the state enum.
 
-Fixes: f5cedc84a30d2 ("gve: Add transmit and receive support")
-Signed-off-by: Catherine Sullivan <csully@google.com>
-Signed-off-by: Jeroen de Borst <jeroendb@google.com>
+Fixes: 4005a7cb4f55 ("net: phy: sftp: print debug message with text, not numbers")
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/google/gve/gve.h | 2 +-
+ drivers/net/phy/sfp.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/google/gve/gve.h b/drivers/net/ethernet/google/gve/gve.h
-index ebc37e256922..f19edd4c6c5b 100644
---- a/drivers/net/ethernet/google/gve/gve.h
-+++ b/drivers/net/ethernet/google/gve/gve.h
-@@ -391,7 +391,7 @@ struct gve_queue_page_list *gve_assign_rx_qpl(struct gve_priv *priv)
- 				    gve_num_tx_qpls(priv));
+diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
+index 2fff62695455..32c34c728c7a 100644
+--- a/drivers/net/phy/sfp.c
++++ b/drivers/net/phy/sfp.c
+@@ -133,7 +133,7 @@ static const char * const sm_state_strings[] = {
+ 	[SFP_S_LINK_UP] = "link_up",
+ 	[SFP_S_TX_FAULT] = "tx_fault",
+ 	[SFP_S_REINIT] = "reinit",
+-	[SFP_S_TX_DISABLE] = "rx_disable",
++	[SFP_S_TX_DISABLE] = "tx_disable",
+ };
  
- 	/* we are out of rx qpls */
--	if (id == priv->qpl_cfg.qpl_map_size)
-+	if (id == gve_num_tx_qpls(priv) + gve_num_rx_qpls(priv))
- 		return NULL;
- 
- 	set_bit(id, priv->qpl_cfg.qpl_id_map);
+ static const char *sm_state_to_str(unsigned short sm_state)
 -- 
 2.33.0
 
