@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFDF4284CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074A84284CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232813AbhJKBiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhJKBiL (ORCPT
+        id S233122AbhJKBjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:39:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28910 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231390AbhJKBjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:38:11 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61CF0C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:36:12 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id 5so17857167iov.9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 18:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0bn13mcQUloSRmo2eFgDJ5AKWLlTB4WVGCyGBhdHi1I=;
-        b=PUNzBLN0rAwEjaoY5DFZoIT6PAnDeq2HrcyPBsBdjDMJ+5ssrFHD6zCyoJc4z/zmj4
-         pabBnmBUNZyRRmlPNPgboZ3JjUe66pkK44amXWcghmcZEHu97HCVtC56OR1j2eU1VSB+
-         lVO3514+6RCocUyjvUJz3NtmM4cIiPWa2HbvR2JGDBzJ8UTCa+MrbQTVDTQPYK/ZRtKc
-         TYfAQOWYsH2BAkU8T5d3Y3ezrTgTjLbZ2rmOaa2lCmNQHH3hjztRWyjnWX27Q7pv6Bx7
-         NMalo4tJCCq0xjfYEowhJwjcd66AxppFPmZenfdHINg887eJ32+RYxIEHlglSWOHiBD/
-         oR6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0bn13mcQUloSRmo2eFgDJ5AKWLlTB4WVGCyGBhdHi1I=;
-        b=ZXVkS4ov0ni3KUZcBcBPYYibl0BoVWu+PYHJB7S35IfNmhKHevL/dQCvuzLXSo7T6y
-         BfGba2TmsCuD8N7VXtqDl/j0p+Vv1E0unM00ly/bZsdHABygXUdozv+WFEmX0ifffh8b
-         lPcdOaSWnlw+jENTifuIMQM2XQGNmVsVlI+s+oJN2z53Yu3xpTQR/FvJe5gHYfi/L2dM
-         mMtUwVCjyKGNbAptsltbq/S+FiNrVKmcaVcF6xwiWj/nUOy3zvgFJg+eBtLliUEqE/uU
-         KVnPLx6660K6uQqmH3O4o9knirRdTTCK0BjDSv7f8ro7lNJqrEFJRpnWfDRSkMzFsPgP
-         Bqxw==
-X-Gm-Message-State: AOAM533gtOsqghjtSF/B+W/Tw6VqUkOmrYO71OICRDByF5roXQ2M6jTj
-        xVDplK5yZGwVCV9nMmmEZ8XYPNHlRQN/9Q==
-X-Google-Smtp-Source: ABdhPJxeONXJBLUs5vdfEPp0jHJoYSLvOIByQwSY9dL/Y1x8XfIolodZeK4pX3H1ag+3tXak4KjDeA==
-X-Received: by 2002:a6b:7107:: with SMTP id q7mr8454iog.63.1633916171678;
-        Sun, 10 Oct 2021 18:36:11 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id w23sm3121563iot.30.2021.10.10.18.36.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 18:36:11 -0700 (PDT)
-Subject: Re: [PATCH] cdrom: docs: reformat table in
- Documentation/userspace-api/ioctl/cdrom.rst
-To:     Phillip Potter <phil@philpotter.co.uk>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     hch@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lumip@lumip.de
-References: <20211007231720.31997-1-phil@philpotter.co.uk>
- <464a0b2f-c556-ccda-aa3c-26733fba4617@infradead.org>
- <YWOC2Iyszh7WAgzf@equinox>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d9a0177b-f6aa-c03b-0925-9858703d6607@kernel.dk>
-Date:   Sun, 10 Oct 2021 19:36:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 10 Oct 2021 21:39:12 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSLrs20RHzbn2x;
+        Mon, 11 Oct 2021 09:32:45 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (7.193.23.68) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 09:37:11 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 09:37:10 +0800
+Subject: Re: [PATCH 4.19 00/12] 4.19.210-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20211008112714.601107695@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <56680f3a-b1a6-bf67-a065-bb66540095ff@huawei.com>
+Date:   Mon, 11 Oct 2021 09:37:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <YWOC2Iyszh7WAgzf@equinox>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20211008112714.601107695@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 6:18 PM, Phillip Potter wrote:
-> On Thu, Oct 07, 2021 at 04:34:13PM -0700, Randy Dunlap wrote:
->> On 10/7/21 4:17 PM, Phillip Potter wrote:
->>> Add extra space to the first column of ioctl values table, and also realign
->>> the text in the second column, to fix a documentation build warning
->>> introduced by: commit 67f1e027c270 ("drivers/cdrom: improved ioctl for
->>> media change detection")
->>>
->>> Suggested-by: Randy Dunlap <rdunlap@infradead.org>
->>> Fixes: 67f1e027c270 ("drivers/cdrom: improved ioctl for media change detection")
->>> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
->>
->> Looks good. Thanks.
->>
->> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
->>
->>
->>> ---
->>>   Documentation/userspace-api/ioctl/cdrom.rst | 116 ++++++++++----------
->>>   1 file changed, 58 insertions(+), 58 deletions(-)
->>>
->>> diff --git a/Documentation/userspace-api/ioctl/cdrom.rst b/Documentation/userspace-api/ioctl/cdrom.rst
->>> index bac5bbf93ca0..682948fc88a3 100644
->>> --- a/Documentation/userspace-api/ioctl/cdrom.rst
->>> +++ b/Documentation/userspace-api/ioctl/cdrom.rst
->>
->>
->>
->> -- 
->> ~Randy
+
+
+On 2021/10/8 19:27, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.210 release.
+> There are 12 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Thank you for the review Randy.
+> Responses should be made by Sun, 10 Oct 2021 11:27:07 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.210-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Applied.
+Tested on arm64 and x86 for 4.19.210-rc1,
 
--- 
-Jens Axboe
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.210-rc1
+Commit: 0cf6c1babdb51acc917475373133f5d05d584d35
+Compiler: gcc version 7.3.0 (GCC)
 
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8859
+passed: 8859
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
