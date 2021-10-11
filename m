@@ -2,141 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F166A428517
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FD842851B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233615AbhJKCYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:24:48 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38677 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233482AbhJKCYp (ORCPT
+        id S233513AbhJKC1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 22:27:08 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:40181 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232813AbhJKC1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:24:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UrJKfFt_1633918961;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrJKfFt_1633918961)
+        Sun, 10 Oct 2021 22:27:07 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=xuesong.chen@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UrJM6zB_1633919104;
+Received: from 30.225.212.130(mailfrom:xuesong.chen@linux.alibaba.com fp:SMTPD_---0UrJM6zB_1633919104)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 11 Oct 2021 10:22:43 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, willy@infradead.org, song@kernel.org,
-        william.kucharski@oracle.com, hughd@google.com, shy828301@gmail.com
-Subject: [PATCH v4 2/2] mm, thp: bail out early in collapse_file for writeback page
-Date:   Mon, 11 Oct 2021 10:22:41 +0800
-Message-Id: <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211011022241.97072-1-rongwei.wang@linux.alibaba.com>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
- <20211011022241.97072-1-rongwei.wang@linux.alibaba.com>
+          Mon, 11 Oct 2021 10:25:05 +0800
+Message-ID: <aae81415-d460-c2e2-c342-3f80c3618708@linux.alibaba.com>
+Date:   Mon, 11 Oct 2021 10:25:03 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.2
+Subject: Re: [PATCH v2 1/2] PCI: MCFG: Consolidate the separate PCI MCFG table
+ entry list
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     catalin.marinas@arm.com, lorenzo.pieralisi@arm.com,
+        james.morse@arm.com, will@kernel.org, rafael@kernel.org,
+        tony.luck@intel.com, bp@alien8.de, mingo@kernel.org,
+        bhelgaas@google.com, mark.rutland@arm.com,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jayachandran C <c.jayachandran@gmail.com>,
+        Tomasz Nowicki <tn@semihalf.com>,
+        xuesong.chen@linux.alibaba.com
+References: <20211008213143.GA1373034@bhelgaas>
+From:   Xuesong Chen <xuesong.chen@linux.alibaba.com>
+In-Reply-To: <20211008213143.GA1373034@bhelgaas>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently collapse_file does not explicitly check PG_writeback, instead,
-page_has_private and try_to_release_page are used to filter writeback
-pages. This does not work for xfs with blocksize equal to or larger
-than pagesize, because in such case xfs has no page->private.
+Hello Bjorn,
 
-This makes collapse_file bail out early for writeback page. Otherwise,
-xfs end_page_writeback will panic as follows.
+On 09/10/2021 05:31, Bjorn Helgaas wrote:
+> [+cc Jayachandran, Tomasz; not sure if they're still around, but just
+> in case they have a comment on any reasons for keeping the
+> pci_mcfg_list list separate.]
+> 
+> On Fri, Oct 08, 2021 at 04:40:12PM +0800, Xuesong Chen wrote:
+>> The PCI MCFG entry list is discrete on x86 and other architectures like
+>> arm64 in current implementation, this list variable can be consolidated
+>> for unnecessary duplication and other purposes, for example, we can remove
+>> some of the 'arch' specific codes in the APEI/EINJ module and re-implement
+>> it in a more common arch-agnostic way.
+> 
+> This commit log could be more explicit about what's going on here.
+> 
+> From deciphering the patch, I think it takes advantage of the fact
+> that struct pci_mmcfg_region and struct mcfg_entry contain basically
+> the same information, but pci_mmcfg_region contains a little extra
+> information (a struct resource, a virtual address, and a name).
+> 
+Given the PCI MCFG entries are not too much in the reality, so the potential 
+memory space penalty for this little extra information, IMO, can be ignored.
+> To reduce the redundancy, it:
+> 
+>   - Moves the "struct pci_mmcfg_region" definition from
+>     arch/x86/include/asm/pci_x86.h to include/linux/pci.h, where it
+>     can be shared across arches.
+Right.
+> 
+>   - Moves pci_mmcfg_list (a list of pci_mmcfg_region structs) from
+>     arch/x86/pci/mmconfig-shared.c to drivers/pci/pci.c, where it can
+>     be shared across arches.
+Right.
+> 
+>   - On x86 (which does not enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
+>     built in arch/x86/pci/mmconfig-shared.c as before.
+Ah, this pci_mmcfg_list maybe is not built-in as before since it will use
+the shared one re-defined in drivers/pci/pci.c
+> 
+>   - Removes the "struct mcfg_entry" from drivers/acpi/pci_mcfg.c.
+Right, this can be consolidated with "struct pci_mmcfg_region", we need only one.
+> 
+>   - Replaces pci_mcfg_list (previously a list of mcfg_entry structs)
+>     in drivers/acpi/pci_mcfg.c with the newly-shared pci_mmcfg_list (a
+>     list of pci_mmcfg_region structs).
+Right，this is the specific consolidation useage scenario。 
+> 
+>   - On ARM64 (which does enable CONFIG_ACPI_MCFG), pci_mmcfg_list is
+>     built in drivers/acpi/pci_mcfg.c.
+Ah, the newly shared 'pci_mmcfg_list' re-defined in pci.c will be used by 
+drivers/acpi/pci_mcfg.c, which just like what the x86 does.
+IOW, we move the 'pci_mmcfg_list' to the common 'drivers/pci/pci.c', then
+both the arch/x86/pci/mmconfig-shared.c and drivers/acpi/pci_mcfg.c on arm64
+will use that by the 'extern struct list_head pci_mmcfg_list' declaration.
+> 
+> Does that sound about right?
+Bjorn, for the commit log, do you think I need to add the above steps you mentioned
+into the log message to make it be more explicit? I'd like to update it if the
+answer is yes...
 
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-page->mem_cgroup:ffff0000c3e9a000
-------------[ cut here ]------------
-kernel BUG at include/linux/mm.h:1212!
-Internal error: Oops - BUG: 0 [#1] SMP
-Modules linked in:
-BUG: Bad page state in process khugepaged  pfn:84ef32
- xfs(E)
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
- libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : end_page_writeback+0x1c0/0x214
-lr : end_page_writeback+0x1c0/0x214
-sp : ffff800011ce3cc0
-x29: ffff800011ce3cc0 x28: 0000000000000000
-x27: ffff000c04608040 x26: 0000000000000000
-x25: ffff000c04608040 x24: 0000000000001000
-x23: ffff0003f88c8530 x22: 0000000000001000
-x21: ffff0003f88c8530 x20: 0000000000000000
-x19: fffffe00201bcc80 x18: 0000000000000030
-x17: 0000000000000000 x16: 0000000000000000
-x15: ffff000c018f9760 x14: ffffffffffffffff
-x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-x11: ffff8000117b69b8 x10: 00000000ffff8000
-x9 : ffff800010617534 x8 : 0000000000000000
-x7 : ffff8000114f69b8 x6 : 000000000000000f
-x5 : 0000000000000000 x4 : 0000000000000000
-x3 : 0000000000000400 x2 : 0000000000000000
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- end_page_writeback+0x1c0/0x214
- iomap_finish_page_writeback+0x13c/0x204
- iomap_finish_ioend+0xe8/0x19c
- iomap_writepage_end_bio+0x38/0x50
- bio_endio+0x168/0x1ec
- blk_update_request+0x278/0x3f0
- blk_mq_end_request+0x34/0x15c
- virtblk_request_done+0x38/0x74 [virtio_blk]
- blk_done_softirq+0xc4/0x110
- __do_softirq+0x128/0x38c
- __irq_exit_rcu+0x118/0x150
- irq_exit+0x1c/0x30
- __handle_domain_irq+0x8c/0xf0
- gic_handle_irq+0x84/0x108
- el1_irq+0xcc/0x180
- arch_cpu_idle+0x18/0x40
- default_idle_call+0x4c/0x1a0
- cpuidle_idle_call+0x168/0x1e0
- do_idle+0xb4/0x104
- cpu_startup_entry+0x30/0x9c
- secondary_start_kernel+0x104/0x180
-Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
----[ end trace 4a88c6a074082f8c ]---
-Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+Feel free to let me know if you have any comments about the code itself.
 
-Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-Suggested-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
----
- mm/khugepaged.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..48de4e1b0783 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
- 				filemap_flush(mapping);
- 				result = SCAN_FAIL;
- 				goto xa_unlocked;
-+			} else if (PageWriteback(page)) {
-+				xas_unlock_irq(&xas);
-+				result = SCAN_FAIL;
-+				goto xa_unlocked;
- 			} else if (trylock_page(page)) {
- 				get_page(page);
- 				xas_unlock_irq(&xas);
-@@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
- 			goto out_unlock;
- 		}
- 
--		if (!is_shmem && PageDirty(page)) {
-+		if (!is_shmem && (PageDirty(page) ||
-+				  PageWriteback(page))) {
- 			/*
- 			 * khugepaged only works on read-only fd, so this
- 			 * page is dirty because it hasn't been flushed
--- 
-2.27.0
-
+Xuesong
+> 
+>> Signed-off-by: Xuesong Chen <xuesong.chen@linux.alibaba.com>
+>> ---
+>>  arch/x86/include/asm/pci_x86.h | 17 +----------------
+>>  arch/x86/pci/mmconfig-shared.c |  2 --
+>>  drivers/acpi/pci_mcfg.c        | 34 +++++++++++++---------------------
+>>  drivers/pci/pci.c              |  2 ++
+>>  include/linux/pci.h            | 17 +++++++++++++++++
+>>  5 files changed, 33 insertions(+), 39 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
+>> index 490411d..1f4257c 100644
+>> --- a/arch/x86/include/asm/pci_x86.h
+>> +++ b/arch/x86/include/asm/pci_x86.h
+>> @@ -146,20 +146,7 @@ static inline int  __init pci_acpi_init(void)
+>>  extern void pcibios_fixup_irqs(void);
+>>  
+>>  /* pci-mmconfig.c */
+>> -
+>> -/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+>> -#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+>> -
+>> -struct pci_mmcfg_region {
+>> -	struct list_head list;
+>> -	struct resource res;
+>> -	u64 address;
+>> -	char __iomem *virt;
+>> -	u16 segment;
+>> -	u8 start_bus;
+>> -	u8 end_bus;
+>> -	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+>> -};
+>> +struct pci_mmcfg_region;
+>>  
+>>  extern int __init pci_mmcfg_arch_init(void);
+>>  extern void __init pci_mmcfg_arch_free(void);
+>> @@ -174,8 +161,6 @@ extern struct pci_mmcfg_region *__init pci_mmconfig_add(int segment, int start,
+>>  
+>>  extern struct list_head pci_mmcfg_list;
+>>  
+>> -#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
+>> -
+>>  /*
+>>   * On AMD Fam10h CPUs, all PCI MMIO configuration space accesses must use
+>>   * %eax.  No other source or target registers may be used.  The following
+>> diff --git a/arch/x86/pci/mmconfig-shared.c b/arch/x86/pci/mmconfig-shared.c
+>> index 758cbfe..0b961fe6 100644
+>> --- a/arch/x86/pci/mmconfig-shared.c
+>> +++ b/arch/x86/pci/mmconfig-shared.c
+>> @@ -31,8 +31,6 @@
+>>  static DEFINE_MUTEX(pci_mmcfg_lock);
+>>  #define pci_mmcfg_lock_held() lock_is_held(&(pci_mmcfg_lock).dep_map)
+>>  
+>> -LIST_HEAD(pci_mmcfg_list);
+>> -
+>>  static void __init pci_mmconfig_remove(struct pci_mmcfg_region *cfg)
+>>  {
+>>  	if (cfg->res.parent)
+>> diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
+>> index 53cab97..d9506b0 100644
+>> --- a/drivers/acpi/pci_mcfg.c
+>> +++ b/drivers/acpi/pci_mcfg.c
+>> @@ -13,14 +13,7 @@
+>>  #include <linux/pci-acpi.h>
+>>  #include <linux/pci-ecam.h>
+>>  
+>> -/* Structure to hold entries from the MCFG table */
+>> -struct mcfg_entry {
+>> -	struct list_head	list;
+>> -	phys_addr_t		addr;
+>> -	u16			segment;
+>> -	u8			bus_start;
+>> -	u8			bus_end;
+>> -};
+>> +extern struct list_head pci_mmcfg_list;
+>>  
+>>  #ifdef CONFIG_PCI_QUIRKS
+>>  struct mcfg_fixup {
+>> @@ -214,16 +207,13 @@ static void pci_mcfg_apply_quirks(struct acpi_pci_root *root,
+>>  #endif
+>>  }
+>>  
+>> -/* List to save MCFG entries */
+>> -static LIST_HEAD(pci_mcfg_list);
+>> -
+>>  int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+>>  		    const struct pci_ecam_ops **ecam_ops)
+>>  {
+>>  	const struct pci_ecam_ops *ops = &pci_generic_ecam_ops;
+>>  	struct resource *bus_res = &root->secondary;
+>>  	u16 seg = root->segment;
+>> -	struct mcfg_entry *e;
+>> +	struct pci_mmcfg_region *e;
+>>  	struct resource res;
+>>  
+>>  	/* Use address from _CBA if present, otherwise lookup MCFG */
+>> @@ -233,10 +223,10 @@ int pci_mcfg_lookup(struct acpi_pci_root *root, struct resource *cfgres,
+>>  	/*
+>>  	 * We expect the range in bus_res in the coverage of MCFG bus range.
+>>  	 */
+>> -	list_for_each_entry(e, &pci_mcfg_list, list) {
+>> -		if (e->segment == seg && e->bus_start <= bus_res->start &&
+>> -		    e->bus_end >= bus_res->end) {
+>> -			root->mcfg_addr = e->addr;
+>> +	list_for_each_entry(e, &pci_mmcfg_list, list) {
+>> +		if (e->segment == seg && e->start_bus <= bus_res->start &&
+>> +		    e->end_bus >= bus_res->end) {
+>> +			root->mcfg_addr = e->address;
+>>  		}
+>>  
+>>  	}
+>> @@ -268,7 +258,7 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+>>  {
+>>  	struct acpi_table_mcfg *mcfg;
+>>  	struct acpi_mcfg_allocation *mptr;
+>> -	struct mcfg_entry *e, *arr;
+>> +	struct pci_mmcfg_region *e, *arr;
+>>  	int i, n;
+>>  
+>>  	if (header->length < sizeof(struct acpi_table_mcfg))
+>> @@ -285,10 +275,12 @@ static __init int pci_mcfg_parse(struct acpi_table_header *header)
+>>  
+>>  	for (i = 0, e = arr; i < n; i++, mptr++, e++) {
+>>  		e->segment = mptr->pci_segment;
+>> -		e->addr =  mptr->address;
+>> -		e->bus_start = mptr->start_bus_number;
+>> -		e->bus_end = mptr->end_bus_number;
+>> -		list_add(&e->list, &pci_mcfg_list);
+>> +		e->address =  mptr->address;
+>> +		e->start_bus = mptr->start_bus_number;
+>> +		e->end_bus = mptr->end_bus_number;
+>> +		e->res.start = e->address + PCI_MMCFG_BUS_OFFSET(e->start_bus);
+>> +		e->res.end = e->address + PCI_MMCFG_BUS_OFFSET(e->end_bus + 1) - 1;
+>> +		list_add(&e->list, &pci_mmcfg_list);
+>>  	}
+>>  
+>>  #ifdef CONFIG_PCI_QUIRKS
+>> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+>> index ce2ab62..899004e 100644
+>> --- a/drivers/pci/pci.c
+>> +++ b/drivers/pci/pci.c
+>> @@ -47,6 +47,8 @@
+>>  int pci_pci_problems;
+>>  EXPORT_SYMBOL(pci_pci_problems);
+>>  
+>> +LIST_HEAD(pci_mmcfg_list);
+>> +
+>>  unsigned int pci_pm_d3hot_delay;
+>>  
+>>  static void pci_pme_list_scan(struct work_struct *work);
+>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>> index cd8aa6f..71e4c06 100644
+>> --- a/include/linux/pci.h
+>> +++ b/include/linux/pci.h
+>> @@ -55,6 +55,23 @@
+>>  #define PCI_RESET_PROBE		true
+>>  #define PCI_RESET_DO_RESET	false
+>>  
+>> +#define PCI_MMCFG_BUS_OFFSET(bus)      ((bus) << 20)
+>> +
+>> +/* "PCI MMCONFIG %04x [bus %02x-%02x]" */
+>> +#define PCI_MMCFG_RESOURCE_NAME_LEN (22 + 4 + 2 + 2)
+>> +
+>> +/* pci mcfg region */
+>> +struct pci_mmcfg_region {
+>> +	struct list_head list;
+>> +	struct resource res;
+>> +	u64 address;
+>> +	char __iomem *virt;
+>> +	u16 segment;
+>> +	u8 start_bus;
+>> +	u8 end_bus;
+>> +	char name[PCI_MMCFG_RESOURCE_NAME_LEN];
+>> +};
+>> +
+>>  /*
+>>   * The PCI interface treats multi-function devices as independent
+>>   * devices.  The slot/function address of each device is encoded
+>> -- 
+>> 1.8.3.1
+>>
