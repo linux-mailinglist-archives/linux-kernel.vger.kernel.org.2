@@ -2,180 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C674428499
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CA642849D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbhJKB2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:28:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
+        id S233294AbhJKBcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbhJKB2D (ORCPT
+        with ESMTP id S231390AbhJKBcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:28:03 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89A68C061570;
-        Sun, 10 Oct 2021 18:26:04 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id g125so15777872oif.9;
-        Sun, 10 Oct 2021 18:26:04 -0700 (PDT)
+        Sun, 10 Oct 2021 21:32:41 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52899C061570;
+        Sun, 10 Oct 2021 18:30:42 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id d3so33700207edp.3;
+        Sun, 10 Oct 2021 18:30:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D8eerABnlOzPqYuDEBcprrvu0qgvcR5NgBjdlZCpcdM=;
-        b=dZfhGo9DUD7GoSSSUjxDfopaylA9QV9e73trzHGwAKvOB4O3N//alfLD778lEtgbPQ
-         y6AGYTyRs1LZRV6qS96VmXNYlptBO33A1i4pangrLgGqChn18VguCWZ9dg3Ya+BlLYe/
-         tt1FOVM6ATWqgfLe0CbtsNGJmkXbffRnNygslJIqIznfdBBn4Z31uZXh+6mWPIjwKcjK
-         YK1uL2ouI/H2y+wIBwkvUoWzbxPTw5vahRaSi6v/78946vIw6OBqeflR7FA7X4O4VmMl
-         r+A1y6XLhIdc4kLFCMZynZ7Y+ozRo73I8Ecc81aaOTzv15SH0u+ABdy3B4wUdvddj3C3
-         NQVQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=In+JRarX2nyGbELg94Ye35SZR6x4eidKj+QFaJYHnf4=;
+        b=HhGxPqHFo1foKcr5H+M2AtO3lYSm85kpuM+ITZyRofw0BNVdQD4zAWajcCTUFJHwRs
+         9UdYGoTv9/E38qpc35WMVImM8jM1sM3QEH7UlfYlEOhnx5WQlsXXa4hxOZj62zLwLfCt
+         012HoUIerlYQvwabN/siE6tLZlakhNq/D3fGgdpHJ1akFm2sr7+CwlVlD/NHydyRS1El
+         NAC0KBHQIcZZnkFIRMgHdlI4WifMbFy62LNCLqdVjrWtg9ffwwmsflN2icDwlwCAtAG5
+         zFvQ7GI1JzDRdKRKY+Vk+eRIxGLV2l8EsSuqfVLkKkAWOQGSgmU50+7f07C/xthgNLN+
+         nSYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=D8eerABnlOzPqYuDEBcprrvu0qgvcR5NgBjdlZCpcdM=;
-        b=UGD9T5jlfFwVeulVdGzvFW6l8SnsPQ9rZhLopOeTxbcji1PTGsvE73M3BZS/ORX6tH
-         onJqv6JjBbiN8U6gGvaVC9qFDV+crhIm/kVPibyXa4T/uQ1yzr/JXAWPIadSqIc8lHOi
-         SDmeo0resw5f8CLjKs6kFJZaZfe/9jeeaRiKtkUNHzUxg+J3Bc7fFEcADNwV6ywxBnse
-         hDcBPM50UlX0uCd+xRJpGf65qOcTgLRiekdEI820vdkNwgpm5rygAmwAhi/KbFg4WSip
-         22HGGTmC7YJm7w8Pyn+zK9nle7oWuIlBuYVrqXEGQowuxpkbJkD7/hPtBwziTFLY+Vol
-         uIcQ==
-X-Gm-Message-State: AOAM530isYrdluyD0O7TnhRvYe8dbFUnD4FDr7fYC1e6X9WmnOhH6qPo
-        YhzptsdurrXzNxDO00QItsSmWqKZgm0=
-X-Google-Smtp-Source: ABdhPJxMdBCNqusg3UmpRnYYznyvXKs5i78hqESupLDKgpfE2EWMYZL/oY+MgIfbwZjuIpim5xSv5A==
-X-Received: by 2002:a05:6808:1709:: with SMTP id bc9mr15171415oib.18.1633915563905;
-        Sun, 10 Oct 2021 18:26:03 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r184sm1388380oia.38.2021.10.10.18.26.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=In+JRarX2nyGbELg94Ye35SZR6x4eidKj+QFaJYHnf4=;
+        b=kNutkpUZeXiNgeTB6+GSSIsnk/SsssKc/jxmS4d2QZTUAibQcH96hvWTbJMNoOebVj
+         P4m6qzuCcnZnIc8EuuQtP7hsLRXMdE4GqrAU+vB5OjFKXrOqr1inGHrakEoeSzXDC3g9
+         OlnIuvEuWvDCEbS8zMfACJTDvMaQ7pW9JPTgsAe+9x1U+NfYZ48xqqhlxbLrirErqAgn
+         sL7FDdLdv68nCwUePGdLQd3bhclel5nlBQ9qwnJFM5riqLDVwoaEQYpPb38tYkWcxFs2
+         qOX3jUreDYJUnjL/eM0svommEJOb7/CZbjypPPgnA1lg/t0zeij66HuWSdhOlb3yIYpr
+         npxQ==
+X-Gm-Message-State: AOAM530wDzbvy2C7NmmARTst1y2/upH2x8OsmsU4KWXD5Gs9PMzYousG
+        PvR7pc9h7S9Fgxv28dxg6So=
+X-Google-Smtp-Source: ABdhPJwkpTaHBBzjL7+ab5Y9nKz6SGMtncmFQFGISyD9S2/eTwCfkA0KNla1QOs7BVT0/eB2p4+UEw==
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr38551618edv.384.1633915840641;
+        Sun, 10 Oct 2021 18:30:40 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-42-71-246.ip85.fastwebnet.it. [93.42.71.246])
+        by smtp.googlemail.com with ESMTPSA id m15sm21314edd.5.2021.10.10.18.30.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 18:26:03 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 10 Oct 2021 18:26:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] watchdog: add new parameter to start the watchdog on
- module insertion
-Message-ID: <20211011012601.GA3296185@roeck-us.net>
-References: <20210924133509.3454834-1-f.suligoi@asem.it>
+        Sun, 10 Oct 2021 18:30:40 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>
+Subject: [net-next PATCH v5 00/14] Multiple improvement for qca8337 switch
+Date:   Mon, 11 Oct 2021 03:30:10 +0200
+Message-Id: <20211011013024.569-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924133509.3454834-1-f.suligoi@asem.it>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 03:35:09PM +0200, Flavio Suligoi wrote:
-> The new parameter "start_enabled" starts the watchdog at the same time
-> of the module insertion.
-> This feature is very useful in embedded systems, to avoid cases where
-> the system hangs before reaching userspace.
-> 
-> This feature can be enabled in the kernel config, so it can be also
-> used when the watchdog driver is build as "built-in".
-> 
-> This parameter involves the "core" section of the watchdog driver;
-> in this way it is common for all the watchdog hardware implementations.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
-> 
-> v4: - improve code legibility in returned error checking
->     - stop the watchdog if driver registration fails
-> v3: - add check for the returned error of wdog start function
-> v2: - check WDOG_HW_RUNNING before starting watchdog;
->     - remove useless comments in commit text, watchdog-parameters.rst and
->       Kconfig;
-> v1: - first version;
-> 
->  Documentation/watchdog/watchdog-parameters.rst |  3 +++
->  drivers/watchdog/Kconfig                       |  9 +++++++++
->  drivers/watchdog/watchdog_core.c               | 17 +++++++++++++++++
->  3 files changed, 29 insertions(+)
-> 
-> diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
-> index 223c99361a30..7780d0c1fb4a 100644
-> --- a/Documentation/watchdog/watchdog-parameters.rst
-> +++ b/Documentation/watchdog/watchdog-parameters.rst
-> @@ -21,6 +21,9 @@ watchdog core:
->  	timeout. Setting this to a non-zero value can be useful to ensure that
->  	either userspace comes up properly, or the board gets reset and allows
->  	fallback logic in the bootloader to try something else.
-> +    start_enabled:
-> +	Watchdog is started on module insertion. This option can be also
-> +	selected by kernel config (default=kernel config parameter).
->  
->  -------------------------------------------------
->  
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index b81fe4f7d434..19be709e01ac 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -47,6 +47,15 @@ config WATCHDOG_NOWAYOUT
->  	  get killed. If you say Y here, the watchdog cannot be stopped once
->  	  it has been started.
->  
-> +config WATCHDOG_START_ENABLED
-> +	bool "Start watchdog on module insertion"
-> +	help
-> +	  Say Y if you want to start the watchdog at the same time when the
-> +	  driver is loaded.
-> +	  This feature is very useful in embedded systems, to avoid cases where
-> +	  the system could hang before reaching userspace.
-> +	  This parameter applies to all watchdog drivers.
-> +
->  config WATCHDOG_HANDLE_BOOT_ENABLED
->  	bool "Update boot-enabled watchdog until userspace takes over"
->  	default y
-> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-> index 3fe8a7edc252..d9211fea45d7 100644
-> --- a/drivers/watchdog/watchdog_core.c
-> +++ b/drivers/watchdog/watchdog_core.c
-> @@ -44,6 +44,11 @@ static int stop_on_reboot = -1;
->  module_param(stop_on_reboot, int, 0444);
->  MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
->  
-> +static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
-> +module_param(start_enabled, bool, 0444);
-> +MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
-> +	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
-> +
->  /*
->   * Deferred Registration infrastructure.
->   *
-> @@ -252,6 +257,15 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->  	 * corrupted in a later stage then we expect a kernel panic!
->  	 */
->  
-> +	/* If required, start the watchdog immediately */
-> +	if (start_enabled && !watchdog_hw_running(wdd)) {
-> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
-> +		ret = wdd->ops->start(wdd);
-> +		if (ret)
-> +			return ret;
-> +		pr_info("Watchdog enabled\n");
-> +	}
-> +
-I am not convinced that this is the best location to start the watchdog.
-Maybe that should be done in watchdog_cdev_register().
+This series is the final step of a long process of porting 80+ devices
+to use the new qca8k driver instead of the hacky qca one based on never
+merged swconfig platform.
+Some background to justify all these additions.
+QCA used a special binding to declare raw initval to set the swich. I
+made a script to convert all these magic values and convert 80+ dts and
+scan all the needed "unsupported regs". We find a baseline where we
+manage to find the common and used regs so in theory hopefully we don't
+have to add anymore things.
+We discovered lots of things with this, especially about how differently
+qca8327 works compared to qca8337.
 
->  	/* Use alias for watchdog id if possible */
->  	if (wdd->parent) {
->  		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
-> @@ -356,6 +370,9 @@ int watchdog_register_device(struct watchdog_device *wdd)
->  	mutex_unlock(&wtd_deferred_reg_mutex);
->  
->  	if (ret) {
-> +		if (start_enabled && watchdog_hw_running(wdd) &&
-> +		    wdd->ops->stop)
-> +			wdd->ops->stop(wdd);
+In short, we found that qca8327 have some problem with suspend/resume for
+their internal phy. It instead sets some dedicated regs that suspend the
+phy without setting the standard bit. First 4 patch are to fix this.
+There is also a patch about preferring master. This is directly from the
+original driver and it seems to be needed to prevent some problem with
+the pause frame.
 
-This code stops the watchdog if watchdog registration failed even and
-especially if it was already running when the module was inserted.
-This changes semantics and is thus not aceptable.
+Every ipq806x target sets the mac power sel and this specific reg
+regulates the output voltage of the regulator. Without this some
+instability can occur.
 
->  		dev_str = wdd->parent ? dev_name(wdd->parent) :
->  			  (const char *)wdd->info->identity;
->  		pr_err("%s: failed to register watchdog device (err = %d)\n",
+Some configuration (for some reason) swap mac6 with mac0. We add support
+for this.
+Also, we discovered that some device doesn't work at all with pll enabled
+for sgmii line. In the original code this was based on the switch
+revision. In later revision the pll regs were decided based on the switch
+type (disabled for qca8327 and enabled for qca8337) but still some
+device had that disabled in the initval regs.
+Considering we found at least one qca8337 device that required pll
+disabled to work (no traffic problem) we decided to introduce a binding
+to enable pll and set it only with that.
+
+Lastly, we add support for led open drain that require the power-on-sel
+to set. Also, some device have only the power-on-sel set in the initval
+so we add also support for that. This is needed for the correct function
+of the switch leds.
+Qca8327 have a special reg in the pws regs that set it to a reduced
+48pin layout. This is needed or the switch doesn't work.
+
+These are all the special configuration we find on all these devices that
+are from various targets. Mostly ath79, ipq806x and bcm53xx.
+
+Changes v5:
+- Swap patch. Document first then implement.
+- Fix some grammar error reported.
+- Rework function. Remove phylink mac_config DT scan and move everything
+  to dedicated function in probe.
+- Introduce new logic for delay selection where is also supported with
+  internal delay declared and rgmii set as phy mode
+- Start working on ymal conversion. Will later post this in v6 when we
+  finally take final decision about mac swap.
+
+Changes v4:
+- Fix typo in SGMII falling edge about using PHY id instead of
+  switch id
+
+Changes v3:
+- Drop phy patches (proposed separateley)
+- Drop special pwr binding. Rework to ipq806x specific
+- Better describe compatible and add serial print on switch chip
+- Drop mac exchange. Rework falling edge and move it to mac_config
+- Add support for port 6 cpu port. Drop hardcoded cpu port to port0
+- Improve port stability with sgmii. QCA source have intenal delay also
+  for sgmii
+- Add warning with pll enabled on wrong configuration
+
+Changes v2:
+- Reword Documentation patch to dt-bindings
+- Propose first 2 phy patch to net
+- Better describe and add hint on how to use all the new
+  bindings 
+- Rework delay scan function and move to phylink mac_config
+- Drop package48 wrong binding
+- Introduce support for qca8328 switch
+- Fix wrong binding name power-on-sel
+- Return error on wrong config with led open drain and 
+  ignore-power-on-sel not set
+Ansuel Smith (14):
+  net: dsa: qca8k: add mac_power_sel support
+  dt-bindings: net: dsa: qca8k: Add SGMII clock phase properties
+  net: dsa: qca8k: add support for sgmii falling edge
+  dt-bindings: net: dsa: qca8k: Document support for CPU port 6
+  drivers: net: dsa: qca8k: add support for cpu port 6
+  net: dsa: qca8k: rework rgmii delay logic and scan for cpu port 6
+  dt-bindings: net: dsa: qca8k: Document qca,sgmii-enable-pll
+  net: dsa: qca8k: add explicit SGMII PLL enable
+  dt-bindings: net: dsa: qca8k: Document qca,led-open-drain binding
+  drivers: net: dsa: qca8k: add support for pws config reg
+  dt-bindings: net: dsa: qca8k: document support for qca8328
+  drivers: net: dsa: qca8k: add support for QCA8328
+  drivers: net: dsa: qca8k: set internal delay also for sgmii
+  drivers: net: dsa: qca8k: move port config to dedicated struct
+
+ .../devicetree/bindings/net/dsa/qca8k.txt     |  38 +-
+ drivers/net/dsa/qca8k.c                       | 350 ++++++++++++++----
+ drivers/net/dsa/qca8k.h                       |  35 +-
+ 3 files changed, 339 insertions(+), 84 deletions(-)
+
+-- 
+2.32.0
+
