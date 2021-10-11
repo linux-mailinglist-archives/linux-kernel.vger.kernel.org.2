@@ -2,133 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B38F4295F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03C2A4295FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhJKRoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233583AbhJKRo3 (ORCPT
+        id S232927AbhJKRpq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:45:46 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:4157 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhJKRpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:44:29 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AD0C061570;
-        Mon, 11 Oct 2021 10:42:29 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id kk10so13813004pjb.1;
-        Mon, 11 Oct 2021 10:42:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=cv+8p4QBr+yumNO08E52pdNZjmudW0YvW+eKFeVXzNw=;
-        b=X2Ln10Tg4qFyX1S7WwFgytlT9WmcLpxGM4Zit5dEo/o+1WnWYfpNX3gNqY4uzNIAN6
-         Ntyju7CQJyfW85aoc0hfLy+G7n+1MefYEgfBKmm0h1ZuvROPAUWv3EVbcTtD4vcfc+pg
-         XrIwgPiXVy1qkK/HWnDaeiKTRSPRwPmqGK278qGMcqunMoECVG4wY8sKczSXTrp5P7dG
-         p8gHyjLlv03q7Um00Npt36ae6F98ErTGhZoMrEuwsh+yY3MijosVvecksUfE/jMtXzxj
-         vkO9BV7RzVaMhR3xGwb8bNFnp3uyzr8dBPSYQ+ONNzOqyFNGGEhOqfefekQeLs1fMCxj
-         +bCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=cv+8p4QBr+yumNO08E52pdNZjmudW0YvW+eKFeVXzNw=;
-        b=i/rcDgzX2N5JL9nXwT6WaW8czcuaP285NHTUHpGMFy4ARBmvpcAJ3rZMTomSgdaERH
-         Zovr9/B0fO3OmZFhBBL+EgBgD68a2Vf2nByFq5QVSq93QnTF1cqmHeP1D0cQv2f1rcnl
-         ESP4SyYI6v2m8aXSK6v5BtHuy3WnUzfdTGSkEmFjry/3S/+knXS08LLXdqHikwiiiHYj
-         G1khgsMza/WuqUjfduQkKsHNtv501fXa375Fcsh8YuccTYIgrVHa/70IhXhdlaqZlDOf
-         exhkmyXBDzH7hMLP6OmhptNelF7idScEtxvIKEntrNCi2o5UE4kWK9RYo/ymYJKn9o4f
-         +lDw==
-X-Gm-Message-State: AOAM533vpfs+SFrA3OGS4TcaBP347mhxSUCuNNA2h1fOhNVxwr9a21hU
-        qzYA5sgZ4RAByWK6XezbvCo=
-X-Google-Smtp-Source: ABdhPJzFg5/nX0pFvcYymJXdKatF3YOnKw5en66PJoUNMTNFTwT1k00B02IC7OgL2Qt8J7R1nPrwNQ==
-X-Received: by 2002:a17:90a:8b89:: with SMTP id z9mr367573pjn.89.1633974148929;
-        Mon, 11 Oct 2021 10:42:28 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id e12sm8471062pfl.67.2021.10.11.10.42.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 10:42:28 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 11 Oct 2021 07:42:27 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        "Pratik R. Sampat" <psampat@linux.ibm.com>, bristot@redhat.com,
-        christian@brauner.io, ebiederm@xmission.com,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org, mingo@kernel.org,
-        juri.lelli@redhat.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        containers@lists.linux.dev, containers@lists.linux-foundation.org,
-        pratik.r.sampat@gmail.com
-Subject: Re: [RFC 0/5] kernel: Introduce CPU Namespace
-Message-ID: <YWR3g+ZE2j3w1Npz@slm.duckdns.org>
-References: <20211009151243.8825-1-psampat@linux.ibm.com>
- <20211011101124.d5mm7skqfhe5g35h@wittgenstein>
- <20211011141737.GA58758@blackbody.suse.cz>
+        Mon, 11 Oct 2021 13:45:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1633974224; x=1665510224;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+F9l5T5x2PMp6M/KDfNyBQ/u3YF2P+eW3/LZuRhLqB0=;
+  b=RH+H42EfcoxmM/kzqPBnHztha3v32H026a34vh/d2W7wo457rDULmDsh
+   zMqma0ne6QA4/Ja0k+SlHeiHJRjS2lzq+KngdFJEEWfM366jhhy4mQCAy
+   m5ASkv3EjluLknsUk19o9/VRApmdgFBQ78bwgBxIdq/hPMtMyqjbmld7N
+   EacFZEJYsXhq6VxuVx/0Y1+rkewEHsCnz7rH7wj5iZcLD2gVv/v+TWa9s
+   FPVai+CIUIyc+078hw6jMq0NgHVLfi04gIDxW3KxJGm17S5TFppdGC1iY
+   kTIDo/avxF8LmSQMIH5A1ybHvdAwfFCWrLHI4QNimjrcvdaROZcwmNXiE
+   A==;
+IronPort-SDR: YJjfVilpcqhcgN6hjFOU8uvyBBQ7GvCHcIhebE8NRgOG1L6Uv96E4TrLrnvook/IBUG7ahoH56
+ k5zlWGCEieevyNqqOnpFgADJyAe7E52G5ttIspqsIoJkJjwsehIYqOFcpkLjJxU3s/6lj4lvkr
+ AOYhCaBgQm1gUVqHdlcuHsyk4+8lzyRx1easPmdA95V9VtXtYbduksnVeUcOS/RoBktmQo+04U
+ nYw5DcJFs+oYNSOQxFJAqAGvn2C38qV8Oj374tICfCRmnd8eMuuzw6ATzbVj8Sh9LH7Qaz7gCZ
+ V/pu7PitMXQaQATPAVw/QfFW
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="135122494"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Oct 2021 10:43:43 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.14; Mon, 11 Oct 2021 10:43:42 -0700
+Received: from CHE-LT-I21427LX.microchip.com (10.10.115.15) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2176.14 via Frontend Transport; Mon, 11 Oct 2021 10:43:37 -0700
+Message-ID: <6c97e0771204b492f31b3d003a5fd97d789920ef.camel@microchip.com>
+Subject: Re: [PATCH v4 net-next 10/10] net: dsa: microchip: add support for
+ vlan operations
+From:   Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     <andrew@lunn.ch>, <netdev@vger.kernel.org>, <robh+dt@kernel.org>,
+        <UNGLinuxDriver@microchip.com>, <Woojung.Huh@microchip.com>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <devicetree@vger.kernel.org>
+Date:   Mon, 11 Oct 2021 23:13:36 +0530
+In-Reply-To: <20211007201705.polwaqgbzff4u3vx@skbuf>
+References: <20211007151200.748944-1-prasanna.vengateshan@microchip.com>
+         <20211007151200.748944-11-prasanna.vengateshan@microchip.com>
+         <20211007201705.polwaqgbzff4u3vx@skbuf>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211011141737.GA58758@blackbody.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, Oct 11, 2021 at 04:17:37PM +0200, Michal Koutn� wrote:
-> The problem as I see it is the mapping from a real dedicated HW to a
-> cgroup restricted environment ("container"), which can be shared. In
-> this instance, the virtualized view would not be able to represent a
-> situation when a CPU is assigned non-exclusively to multiple cpusets.
-
-There is a fundamental problem with trying to represent a resource shared
-environment controlled with cgroup using system-wide interfaces including
-procfs because the goal of many cgroup resource control includes
-work-conservation, which also is one of the main reason why containers are
-more attractive in resource-intense deployments. System-level interfaces
-naturally describe a discrete system, which can't express the dynamic
-distribution with cgroups.
-
-There are aspects of cgroups which are akin to hard partitioning and thus
-can be represented by diddling with system level interfaces. Whether those
-are worthwhile to pursuit depends on how easy and useful they are; however,
-there's no avoiding that each of those is gonna be a very partial and
-fragmented thing, which significantly contributes the default cons list of
-such attempts.
-
-> > Existing solutions to the problem include userspace tools like LXCFS
-> > which can fake the sysfs information by mounting onto the sysfs online
-> > file to be in coherence with the limits set through cgroup cpuset.
-> > However, LXCFS is an external solution and needs to be explicitly setup
-> > for applications that require it. Another concern is also that tools
-> > like LXCFS don't handle all the other display mechanism like procfs load
-> > stats.
-> >
-> > Therefore, the need of a clean interface could be advocated for.
+On Thu, 2021-10-07 at 23:17 +0300, Vladimir Oltean wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you know the
+> content is safe
 > 
-> I'd like to write something in support of your approach but I'm afraid that the
-> problem of the mapping (dedicated vs shared) makes this most suitable for some
-> external/separate entity such as the LCXFS already.
+> > +static int lan937x_port_vlan_filtering(struct dsa_switch *ds, int port,
+> > +                                    bool flag,
+> > +                                    struct netlink_ext_ack *extack)
+> > +{
+> > +     struct ksz_device *dev = ds->priv;
+> > +     int ret;
+> > +
+> > +     ret = lan937x_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE,
+> > +                       flag);
+> 
+> If you're going to resend anyway, can you please check the entire
+> submission for this pattern, where you can eliminate the intermediary
+> "ret" variable and just return the function call directly?
+> 
+>         return lan937x_cfg(...)
+Sure
 
-This is more of a unit problem than an interface one - ie. the existing
-numbers in the system interface doesn't really fit what needs to be
-described.
+> Do you have an explanation for what SW_VLAN_ENABLE does exactly?
+Enabling the VLAN mode and then act as per the VLAN table.
+Do you want me to add this explanation as a comment? or?
 
-One approach that we've found useful in practice is dynamically changing
-resource consumption based on shortage, as measured by PSI, rather than some
-number representing what's available. e.g. for a build service, building a
-feedback loop which monitors its own cpu, memory and io pressures and
-modulates the number of concurrent jobs.
 
-There are some numbers which would be fundamentlaly useful - e.g. ballpark
-number of threads needed to saturate the computing capacity available to the
-cgroup, or ballpark bytes of memory available without noticeable contention.
-Those, I think we definitely need to work on, but I don't see much point in
-trying to bend existing /proc numbers for them.
 
-Thanks.
+> > 
+> > 
+> > +static int lan937x_port_vlan_del(struct dsa_switch *ds, int port,
+> > +                              const struct switchdev_obj_port_vlan *vlan)
+> > +{
+> > +     bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+> > +     struct ksz_device *dev = ds->priv;
+> > +     struct lan937x_vlan vlan_entry;
+> > +     u16 pvid;
+> > +     int ret;
+> > +
+> > +     lan937x_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
+> > +     pvid &= 0xFFF;
+> > +
+> > +     ret = lan937x_get_vlan_table(dev, vlan->vid, &vlan_entry);
+> > +     if (ret < 0) {
+> > +             dev_err(dev->dev, "Failed to get vlan table\n");
+> > +             return ret;
+> > +     }
+> > +     /* clear port fwd map */
+> > +     vlan_entry.fwd_map &= ~BIT(port);
+> > +
+> > +     if (untagged)
+> > +             vlan_entry.untag_prtmap &= ~BIT(port);
+> 
+> This is bogus.
+> The user can add a VLAN entry using:
+> 
+> bridge vlan add dev lan0 vid 100 pvid untagged
+> 
+> and remove it using
+> 
+> bridge vlan del dev lan0 vid 100
+> 
+> so BRIDGE_VLAN_INFO_UNTAGGED is not set on removal.
+> 
+> Considering the fact that it doesn't matter whether the port is
+> egress-tagged or not when it isn't in the fwd_map in the first place,
+> I suggest you completely drop this condition.
+Sure, i agree with you.
 
--- 
-tejun
+> 
+> > +
+> > +     ret = lan937x_set_vlan_table(dev, vlan->vid, &vlan_entry);
+> > +     if (ret < 0) {
+> > +             dev_err(dev->dev, "Failed to set vlan table\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     ret = lan937x_pwrite16(dev, port, REG_PORT_DEFAULT_VID, pvid);
+> 
+> What is the point of reading the pvid and writing it back unmodified?
+> Is the AND-ing with 0xFFF supposed to do anything? Because when you
+> write to REG_PORT_DEFAULT_VID, you write it with nothing in the upper
+> bits, so I expect there to be nothing in the upper bits when you read it
+> back either.
+I had a feedback for not to reset the PVID as per the switchdev documentation
+during vlan del. As part of the fix , i just removed PVID reset code alone but
+missed these. Read/write PVID to be completely removed. I had a test case to
+make sure that the PVID is not reset during vlan del. Since this is
+reading/writing back the same values, could not catch them. I will clean up in
+the next patch.
+
+
+> 
+> > +     if (ret < 0) {
+> > +             dev_err(dev->dev, "Failed to set pvid\n");
+> > +             return ret;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> 
+> Also, consider the following set of commands:
+> 
+Step (0)
+> ip link add br0 type bridge vlan_filtering 1
+> ip link set lan0 master br0
+> bridge vlan add dev lan0 vid 100 pvid untagged
+Step (1)
+> bridge vlan del dev lan0 vid 100
+Step (2)
+> ip link set br0 type bridge vlan_filtering 0
+> 
+> The expectation is that the switch, being VLAN-unaware as it is currently
+> configured, receives and sends any packet regardless of VLAN ID.
+> If you put an IP on br0 in this state, are you able to ping an outside host?
+
+I have numbered the commands above.
+Results are,
+Before Step (0). Am able to ping outside.
+After Step (0). Am not able to ping outside because the vlan table is set
+After Step (1). Am not able to ping outside
+After Step (2). Am able to ping outside because of vlan unaware mode.
+
