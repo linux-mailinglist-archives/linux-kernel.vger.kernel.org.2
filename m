@@ -2,141 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E5F4292B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1E3A4292C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237654AbhJKPC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:02:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S237857AbhJKPEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:04:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236927AbhJKPC2 (ORCPT
+        with ESMTP id S236647AbhJKPEF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:02:28 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4836C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:00:27 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so5275576otr.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:00:27 -0700 (PDT)
+        Mon, 11 Oct 2021 11:04:05 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5571C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:02:04 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id y3so24115590wrl.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2DGpeO8Luc9doQYqA/bXw4zWcqIaLqf3yim6ESEFJoU=;
-        b=S1EkJWl3MLs2f6FBu5UGz22+FLKPqLD9S7CXDWmrePxbzNmhw8MtPp/+7IjQFZTtXM
-         pfIkf52LAl9qGQXxWLzsnvhnjWtAe7TvAnJmXpj2suuBdaPTVi1VJaLD0zmaENna4PuZ
-         zLkHtETHYfC9FwrQ/CpqTSna8FB58FWAeD+EdQAoak6BwQB04XZ/y6P3OvHLZ9AX7Wz/
-         93jr5Hx66bOON11K4x6ea5RDGeimcLZ3/KJpE861GzoQER7oeIwLSR9A2R/uF1E9Ht6d
-         z4mDNyg4bshCSTFJOK5ZBh3v/D75vD16yRDH4BtNw/LPnTAPl3OOot319cAaDPC59BN5
-         Kqpw==
+        bh=gVndUYssrhT1+TAmUJh5faXD018hrwwoKVlYhzJy80Q=;
+        b=FasKWF+h3LWJMaLN9s630gc2WwMKFbazr2bx1CBPqgeqwfOwdjCMhq/eJK01cwpTAJ
+         gB8eBvjRtQ7DrkC1Pw7bEukO2eMxmZmV7FhMS+skZ52kcwWF5sWZje0+PMK2g6GyB8Ka
+         TqkHo+8i+n7NaNRdpF3aWWvcutEamrnuFNpTujN2YpbK6Jj8d1X8jYvKECFZbeyM4Z8s
+         NCefVt60WsaJtrUa3kpAlqlf6AERtFxyn8FdgkLfRhEwm59XGqk6jfzG7v25CnfrNhCI
+         2Wkf5d7Dred82bLPRErYscWqFyOMb1VIdZt3tZPtF05D4GU4KSdxxbWFqDihZHcAQE9u
+         tdeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2DGpeO8Luc9doQYqA/bXw4zWcqIaLqf3yim6ESEFJoU=;
-        b=v8LUB1yNXyogRo8R5973cJLm8P8Gghji3i0vYci0r+bH5UDjFMPQfbHB/exN3kZYCk
-         Uq8JJmGCnZgwd24D//Y8RFsy18K+GGELbjegEkqoYbaRSz3fhrQ7QsKiJNpjmb9CwvbR
-         9/YCA4QyS2Yl1mL/gup/PihT5b8mFJMwKzeHXwwo/NTdzNoapyZzVs8fTQQQoX9BpDlM
-         o9TUwW881+jsm7OQG1frbZB329HNH+QPwWWZUTDXoZ3KtYLWXyEJ4VKeMX67GLqv88Ax
-         yIxIxn+z/WpzgwdustwnwhZGB0OX9Y6Ybx+yRtnfgUhvMVnXoBZohCvIDGVax8o9Egma
-         lNWA==
-X-Gm-Message-State: AOAM530zpizOl7bKyM2cSxU7565iQ3OgMp3Krkps+RU/Ni1H4qsSdMZQ
-        RWIUKdMfZph/Af/gKoTgSi9yYtPW6pjByXC5oHqbEA==
-X-Google-Smtp-Source: ABdhPJzqsJKb/Ru0jsZmK2bQG3Y1mcmodAMVEzd9DemmptGnoeUHWUCJm9Lb/f0zxWDh8oFbvgni5nt8pc6H0601jqk=
-X-Received: by 2002:a05:6830:402c:: with SMTP id i12mr7413612ots.319.1633964426757;
- Mon, 11 Oct 2021 08:00:26 -0700 (PDT)
+        bh=gVndUYssrhT1+TAmUJh5faXD018hrwwoKVlYhzJy80Q=;
+        b=cWGciFhTaCx10fUmCjTwGnfwcm/80K8w5Uo77vqZyCjhf0KU6/0BY3CWBktdGRvQbn
+         Kq+76tVL71nvpED1MB9wWptstftD/Azrizxfw06s6jm7ZbJJukH7MAXTYRH5iU9BNb5E
+         kGHVLWy2SUte19RxvAZ7Ws6A3uj7XAIRMaSlWCta8Mwo2glrBdj5NFxSJIDYQMjwNyKs
+         ssQv0cunMC6aZbBUP1A74s4ffFRw+9iAsT1vJcraDDPyDjH5bUHiYGaWOBNYoAnhC1as
+         IELeoVwHXOUdSBcbFLGSPzLB3sgM0FSgztiPQWhQ5SU995KletoGFiQVKRWs6WOKSx47
+         qHHg==
+X-Gm-Message-State: AOAM530zs4kVBXl1z2qW1a7Wh5u9OiqEIo5KUnJMQ8Wlq3ODIrEvk6/0
+        M0gjSGOCEVZP3At3kigXZ55skcXTGjZinYruxbGbQJqYjY0=
+X-Google-Smtp-Source: ABdhPJzLl/vVPAkLeynPMkJbCDqObfBfXCwKXMgwbPIBrrMIJpi3K/CBDE3cWw6gazA8Yyn82prufGMxb89OHd2ycRg=
+X-Received: by 2002:a05:6000:1acc:: with SMTP id i12mr24854107wry.249.1633964523086;
+ Mon, 11 Oct 2021 08:02:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <YWLwUUNuRrO7AxtM@arighi-desktop> <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
- <YWPaZSX4WyOwilW+@arighi-desktop> <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
- <YWPjZv7ClDOE66iI@arighi-desktop> <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
- <YWQCknwPcGlOBfUi@arighi-desktop> <YWQJe1ccZ72FZkLB@arighi-desktop>
- <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com> <YWRNVTk9N8K0RMst@arighi-desktop>
-In-Reply-To: <YWRNVTk9N8K0RMst@arighi-desktop>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Oct 2021 17:00:15 +0200
-Message-ID: <CACT4Y+bZGK75S+cyeQda-oHmeDVeownwOj2imQbPYi0dRY18+A@mail.gmail.com>
-Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     Marco Elver <elver@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+References: <20211011132431.2792797-1-guoren@kernel.org>
+In-Reply-To: <20211011132431.2792797-1-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 11 Oct 2021 20:31:51 +0530
+Message-ID: <CAAhSdy1xjRE0TJ_Nd9fdz4RAK2J5FskQYbWDVXO7jhfcZsFm_g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] irqchip/sifive-plic: Fix duplicate mask/unmask for claim/complete
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 at 16:42, Andrea Righi <andrea.righi@canonical.com> wrote:
+On Mon, Oct 11, 2021 at 6:54 PM <guoren@kernel.org> wrote:
 >
-> On Mon, Oct 11, 2021 at 12:03:52PM +0200, Marco Elver wrote:
-> > On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > > On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
-> > > ...
-> > > > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
-> > > > > secs timeout for TCG emulation to avoid false positive warnings:
-> > > > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
-> > > > > There are a number of other timeouts raised as well, some as high as
-> > > > > 420 seconds.
-> > > >
-> > > > I see, I'll try with these settings and see if I can still hit the soft
-> > > > lockup messages.
-> > >
-> > > Still getting soft lockup messages even with the new timeout settings:
-> > >
-> > > [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
-> > > [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
-> > > [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
-> > > [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
-> >
-> > The lockups are expected if you're hitting the TCG bug I linked. Try
-> > to pass '-enable-kvm' to the inner qemu instance (my bad if you
-> > already have), assuming that's somehow easy to do.
+> From: Guo Ren <guoren@linux.alibaba.com>
 >
-> If I add '-enable-kvm' I can triggering other random panics (almost
-> immediately), like this one for example:
->
-> [21383.189976] BUG: kernel NULL pointer dereference, address: 0000000000000098
-> [21383.190633] #PF: supervisor read access in kernel mode
-> [21383.191072] #PF: error_code(0x0000) - not-present page
-> [21383.191529] PGD 0 P4D 0
-> [21383.191771] Oops: 0000 [#1] SMP NOPTI
-> [21383.192113] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15-rc4
-> [21383.192757] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-> [21383.193414] RIP: 0010:wb_timer_fn+0x44/0x3c0
-> [21383.193855] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
-> [21383.195366] RSP: 0018:ffffbcd140003e68 EFLAGS: 00010246
-> [21383.195842] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
-> [21383.196425] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9a3521f4fd80
-> [21383.197010] RBP: ffffbcd140003e90 R08: 0000000000000000 R09: 0000000000000000
-> [21383.197594] R10: 0000000000000004 R11: 000000000000000f R12: ffff9a34c75c4900
-> [21383.198178] R13: ffff9a34c3906de0 R14: 0000000000000000 R15: ffff9a353dc18c00
-> [21383.198763] FS:  0000000000000000(0000) GS:ffff9a353dc00000(0000) knlGS:0000000000000000
-> [21383.199558] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [21383.200212] CR2: 0000000000000098 CR3: 0000000005f54000 CR4: 00000000000006f0
-> [21383.200930] Call Trace:
-> [21383.201210]  <IRQ>
-> [21383.201461]  ? blk_stat_free_callback_rcu+0x30/0x30
-> [21383.202692]  blk_stat_timer_fn+0x138/0x140
-> [21383.203180]  call_timer_fn+0x2b/0x100
-> [21383.203666]  __run_timers.part.0+0x1d1/0x240
-> [21383.204227]  ? kvm_clock_get_cycles+0x11/0x20
-> [21383.204815]  ? ktime_get+0x3e/0xa0
-> [21383.205309]  ? native_apic_msr_write+0x2c/0x30
-> [21383.205914]  ? lapic_next_event+0x20/0x30
-> [21383.206412]  ? clockevents_program_event+0x94/0xf0
-> [21383.206873]  run_timer_softirq+0x2a/0x50
-> [21383.207260]  __do_softirq+0xcb/0x26f
-> [21383.207647]  irq_exit_rcu+0x8c/0xb0
-> [21383.208010]  sysvec_apic_timer_interrupt+0x7c/0x90
-> [21383.208464]  </IRQ>
-> [21383.208713]  asm_sysvec_apic_timer_interrupt+0x12/0x20
->
-> I think that systemd autotest used to use -enable-kvm, but then they
-> removed it, because it was introducing too many problems in the nested
-> KVM context. I'm not sure about the nature of those problems though, I
-> can investigate a bit and see if I can understand what they were
-> exactly.
+> PLIC only has enable-registers not mask/unmask registers. Mixing
+> mask/unmask with irq_eoi is wrong, because readl(claim) could mask
 
-This looks like just a plain bug in wb_timer_fn, not something related
-to virtualization.
-Do you have this fix?
-https://syzkaller.appspot.com/bug?extid=aa0801b6b32dca9dda82
+This is an incorrect assumption about readl(claim). When SW does
+read(claim) the HW updates internal state that IRQ has been claimed.
+The HW can still get same (already claimed) IRQ again before
+writel(claim) which will be delivered after writel(claim).
+
+> irq by hardware. We only need mask/unmask to fixup the hardware
+> which couldn't claim + mask correctly.
+
+The handle_fasteoi_irq() only calls unmask_irq() mostly when the
+underlying IRQ is threaded. Is there any other case ?
+
+Another fact is that all irqchip drivers using handle_fasteoi_irq()
+implement irq_mask/unmask().
+
+Regards,
+Anup
+
+>
+> If hardware supports claim + mask, it would cause unnecessary
+> mask/umak operations.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Anup Patel <anup@brainfault.org>
+> Cc: Atish Patra <atish.patra@wdc.com>
+> ---
+>  drivers/irqchip/irq-sifive-plic.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> index cf74cfa82045..0fa46912f452 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -64,6 +64,7 @@ struct plic_priv {
+>         struct cpumask lmask;
+>         struct irq_domain *irqdomain;
+>         void __iomem *regs;
+> +       bool claim_mask_support;
+>  };
+>
+>  struct plic_handler {
+> @@ -111,7 +112,7 @@ static inline void plic_irq_toggle(const struct cpumask *mask,
+>         }
+>  }
+>
+> -static void plic_irq_unmask(struct irq_data *d)
+> +static void plic_irq_enable(struct irq_data *d)
+>  {
+>         struct cpumask amask;
+>         unsigned int cpu;
+> @@ -125,7 +126,7 @@ static void plic_irq_unmask(struct irq_data *d)
+>         plic_irq_toggle(cpumask_of(cpu), d, 1);
+>  }
+>
+> -static void plic_irq_mask(struct irq_data *d)
+> +static void plic_irq_disable(struct irq_data *d)
+>  {
+>         struct plic_priv *priv = irq_data_get_irq_chip_data(d);
+>
+> @@ -168,8 +169,8 @@ static void plic_irq_eoi(struct irq_data *d)
+>
+>  static struct irq_chip plic_chip = {
+>         .name           = "SiFive PLIC",
+> -       .irq_mask       = plic_irq_mask,
+> -       .irq_unmask     = plic_irq_unmask,
+> +       .irq_enable     = plic_irq_enable,
+> +       .irq_disable    = plic_irq_disable,
+>         .irq_eoi        = plic_irq_eoi,
+>  #ifdef CONFIG_SMP
+>         .irq_set_affinity = plic_set_affinity,
+> @@ -181,6 +182,11 @@ static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
+>  {
+>         struct plic_priv *priv = d->host_data;
+>
+> +       if (!priv->claim_mask_support) {
+> +               plic_chip.irq_mask      = plic_irq_disable;
+> +               plic_chip.irq_unmask    = plic_irq_enable;
+> +       }
+> +
+>         irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
+>                             handle_fasteoi_irq, NULL, NULL);
+>         irq_set_noprobe(irq);
+> @@ -298,6 +304,8 @@ static int __init plic_init(struct device_node *node,
+>         if (WARN_ON(!nr_contexts))
+>                 goto out_iounmap;
+>
+> +       priv->claim_mask_support = of_property_read_bool(node, "claim-mask-support");
+> +
+>         error = -ENOMEM;
+>         priv->irqdomain = irq_domain_add_linear(node, nr_irqs + 1,
+>                         &plic_irqdomain_ops, priv);
+> --
+> 2.25.1
+>
