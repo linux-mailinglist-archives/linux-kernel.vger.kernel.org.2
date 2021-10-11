@@ -2,204 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 456AA42926A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:44:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059F0429262
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244332AbhJKOpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244204AbhJKOp2 (ORCPT
+        id S243462AbhJKOpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:45:02 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44932
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244152AbhJKOoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:45:28 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103AAC0617A4;
-        Mon, 11 Oct 2021 07:42:32 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id o133so8755146pfg.7;
-        Mon, 11 Oct 2021 07:42:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EZOY/BC1v6Dt0Z6NPA0+TD7j4V5L5DCZxaSPpWP5wwg=;
-        b=Id7ba24U8hFZSQi2CM2A0JyKZ06Iu5JLB3WXdMApz4nBesMd0FXqcTCKE/eiLE12ui
-         ePe8DyIThlZUXn+gDMawmrpvThOjWYQ1U2m6+5tERvoMrRLL83UkoxqJ36qZ+zJ+WIqT
-         gXSeskAzTaMp1m9XFEKm4kQRwiwcOZrqAkbU1onSU6Y7qVtn7COyj0jXVf9CY8p3IWes
-         aHspCiT6xu5hYTylbxojBYhJ2+UA0/ozef/FD0opCkxZ8+Gg46E0NGyF+n/mnB27ZTMA
-         TKW8/ottV1wRFwRE1cHt/rXrmIUSZs0IwTaCTkC/B1Vf8FLkS7DjeXwnBcHaYC/+PZ5t
-         E/Vg==
+        Mon, 11 Oct 2021 10:44:32 -0400
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B4373FFFE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633963351;
+        bh=JMT/HDVAUnQSbtufENFCBQ4ItG4NAMh4DkHJqbVm68E=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=uv89gm8OaArN0WEdKK23jdi8Ul5rWDLaKkyENshgSFUOxr3lg/sGzdXPXuPzV+UTz
+         2+08VPk+ccGvQQHP2T1ObUWTOA01ZcbxlAW4rI40mV9Cn9hXBwuI8kXnG6aQxLQPy7
+         2sz9EbU6mnDTABXYQOVhGp853PlSTayro1MephL/JcabLtPvA860NE45LAoXNi+kAv
+         rrFYtoc/N+9g/+1Fr7NM6J6RAHwJEranA3/3WrdHCMzBGa3N2F0s3YB8lUsZQU0Ztt
+         rduNBmlIhTSty8I0Yq2YUerIfPIA4+1Fr41IUmLGrT5lVUkcVM/0Y2LeBPdkBtCl3K
+         z8nwgyfA7K9ZQ==
+Received: by mail-ed1-f70.google.com with SMTP id v2-20020a50f082000000b003db24e28d59so16096446edl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:42:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EZOY/BC1v6Dt0Z6NPA0+TD7j4V5L5DCZxaSPpWP5wwg=;
-        b=NgCGA9NHbISHpfXKsx0TYO4jx2WtL12WyyfcH48XcQOelUqWQn00B7DC5x2HEvNUUP
-         AJ1IjhAmtlkrYlhlioGmV2p2esOSBFgElY2xQMxgGKEA7ZqsZWDiNvtGVwBw92SbeTTk
-         40vy0wjP0Iqah652dWQIFz0M7F8qISzkdglP7KZa1huqsRtMcXdGtBptZ/ayeNAPb66n
-         jIb+gvMUU5z+9M4OHXgd6JsywlmvYMr2Ty9l1AUsaR33qM8spwEI6bTY8Aau5AdDgJae
-         lW9DNH1kpWor+GoEHxtvNt4gBJbf7t94YisZj75kg/iYUBLcL5nIWLZAzgaTX90StzTr
-         wvEg==
-X-Gm-Message-State: AOAM533IxsVmlWXrgDs9VEhh3jH/z3QS8BWDa4DnYMS7Wo8q9snFqQz+
-        RMegNRMr6RFVJnuUwIHQBm0=
-X-Google-Smtp-Source: ABdhPJxrez/BpFr4T3w6q022Crus2C8dDApA6evVbcqw0YxCa4eWR6mXUuYpV8PQV1+0R//jk0V/Vg==
-X-Received: by 2002:a63:2acc:: with SMTP id q195mr17777585pgq.45.1633963351452;
-        Mon, 11 Oct 2021 07:42:31 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:18:efec::50b])
-        by smtp.gmail.com with ESMTPSA id o72sm7769517pjo.50.2021.10.11.07.42.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JMT/HDVAUnQSbtufENFCBQ4ItG4NAMh4DkHJqbVm68E=;
+        b=xDl41d3iNnndA0LH09Ufu9X6yXWPRQIwGI4sAjvub1J7hzUxNM0+kzOD08/4v0WPCg
+         7zd4Yhli7kmaRpnCJSaTJTVYo48sz5KUeuZ396q5TYurJw36K5F5v+y1pMHBMotbg4Q+
+         Kycks96+Zw1xck6UVVsRBLFHdORFlGoeEoXxxmbrnCTb6QFtTP2v5ng5CO7HxnhBokLG
+         V9oMZ1jrBdhYD2Apr/BkXVFelC+6r8Q16sTLnKb0tEp5YAxp0nMncAhFRUzQZ+mSkaKD
+         tbXwtfnu7yNS/14FcvteieCqR+DJoifU2+a86QlcfwyOolb2i9lNZNZcLpOjqCvRux+I
+         WLZw==
+X-Gm-Message-State: AOAM533GkbS0k9JthC838b6OCnYgpnsmJ06Et3sFUF/9aOTIo/SJzgwT
+        JXcja8Gmxm0JTaR/+fi60H0UXjhQjHatYjqT5wezp1+T7zaN7dcr1JCbT+rkayIVUDC7M5FaYae
+        3hAEhq1AUGJMPa3VTc+UVqtsM0UKt4QEVxrjvAIaObg==
+X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr26025335ejb.320.1633963350928;
         Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
-Subject: Re: [PATCH V7 5/9] x86/sev-es: Expose __sev_es_ghcb_hv_call() to call
- ghcb hv call out of sev code
-From:   Tianyu Lan <ltykernel@gmail.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        "bp@alien8.de" <bp@alien8.de>
-Cc:     linux-arch@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        vkuznets@redhat.com, konrad.wilk@oracle.com, hch@lst.de,
-        robin.murphy@arm.com, joro@8bytes.org, parri.andrea@gmail.com,
-        dave.hansen@intel.com, Hikys@microsoft.com, haiyangz@microsoft.com,
-        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, dave.hansen@linux.intel.com, luto@kernel.org,
-        peterz@infradead.org, davem@davemloft.net, kuba@kernel.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, jroedel@suse.de,
-        brijesh.singh@amd.com, Tianyu.Lan@microsoft.com,
-        thomas.lendacky@amd.com, pgonda@google.com,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        rppt@kernel.org, tj@kernel.org, aneesh.kumar@linux.ibm.com,
-        saravanand@fb.com, hannes@cmpxchg.org, rientjes@google.com,
-        michael.h.kelley@microsoft.com
-References: <20211006063651.1124737-1-ltykernel@gmail.com>
- <20211006063651.1124737-6-ltykernel@gmail.com>
-Message-ID: <9b5fc629-9f88-039c-7d5d-27cbdf6b00fd@gmail.com>
-Date:   Mon, 11 Oct 2021 22:42:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+X-Google-Smtp-Source: ABdhPJxtvlNOhx1odK+cE5VgjCaTlWHIv1zPxHvS5moMpOuVv6jmfYIZoPKR3g7+6prB01q1lrZgfg==
+X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr26025313ejb.320.1633963350724;
+        Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id k23sm4333087edv.22.2021.10.11.07.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 16:42:29 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
+Message-ID: <YWRNVTk9N8K0RMst@arighi-desktop>
+References: <YWLwUUNuRrO7AxtM@arighi-desktop>
+ <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
+ <YWPaZSX4WyOwilW+@arighi-desktop>
+ <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
+ <YWPjZv7ClDOE66iI@arighi-desktop>
+ <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
+ <YWQCknwPcGlOBfUi@arighi-desktop>
+ <YWQJe1ccZ72FZkLB@arighi-desktop>
+ <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20211006063651.1124737-6-ltykernel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi @Tom and Borislav:
-      Please have a look at this patch. If it's ok, could you give your ack.
+On Mon, Oct 11, 2021 at 12:03:52PM +0200, Marco Elver wrote:
+> On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
+> > On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
+> > ...
+> > > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
+> > > > secs timeout for TCG emulation to avoid false positive warnings:
+> > > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
+> > > > There are a number of other timeouts raised as well, some as high as
+> > > > 420 seconds.
+> > >
+> > > I see, I'll try with these settings and see if I can still hit the soft
+> > > lockup messages.
+> >
+> > Still getting soft lockup messages even with the new timeout settings:
+> >
+> > [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
+> > [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
+> > [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
+> > [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
+> 
+> The lockups are expected if you're hitting the TCG bug I linked. Try
+> to pass '-enable-kvm' to the inner qemu instance (my bad if you
+> already have), assuming that's somehow easy to do.
 
-Thanks.
+If I add '-enable-kvm' I can triggering other random panics (almost
+immediately), like this one for example:
 
-On 10/6/2021 2:36 PM, Tianyu Lan wrote:
-> From: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> 
-> Hyper-V also needs to call ghcb hv call to write/read MSR in Isolation VM.
-> So expose __sev_es_ghcb_hv_call() to call it in the Hyper-V code.
-> 
-> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
-> ---
->   arch/x86/include/asm/sev.h   | 10 +++++++++
->   arch/x86/kernel/sev-shared.c | 43 +++++++++++++++++++++++++-----------
->   2 files changed, 40 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-> index fa5cd05d3b5b..2e96869f3e9b 100644
-> --- a/arch/x86/include/asm/sev.h
-> +++ b/arch/x86/include/asm/sev.h
-> @@ -81,12 +81,22 @@ static __always_inline void sev_es_nmi_complete(void)
->   		__sev_es_nmi_complete();
->   }
->   extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
-> +extern enum es_result __sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +					    u64 exit_code, u64 exit_info_1,
-> +					    u64 exit_info_2);
->   #else
->   static inline void sev_es_ist_enter(struct pt_regs *regs) { }
->   static inline void sev_es_ist_exit(void) { }
->   static inline int sev_es_setup_ap_jump_table(struct real_mode_header *rmh) { return 0; }
->   static inline void sev_es_nmi_complete(void) { }
->   static inline int sev_es_efi_map_ghcbs(pgd_t *pgd) { return 0; }
-> +static inline enum es_result
-> +__sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +		      u64 exit_code, u64 exit_info_1,
-> +		      u64 exit_info_2)
-> +{
-> +	return ES_VMM_ERROR;
-> +}
->   #endif
->   
->   #endif
-> diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-> index 9f90f460a28c..946c203be08c 100644
-> --- a/arch/x86/kernel/sev-shared.c
-> +++ b/arch/x86/kernel/sev-shared.c
-> @@ -94,10 +94,13 @@ static void vc_finish_insn(struct es_em_ctxt *ctxt)
->   	ctxt->regs->ip += ctxt->insn.length;
->   }
->   
-> -static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> -					  struct es_em_ctxt *ctxt,
-> -					  u64 exit_code, u64 exit_info_1,
-> -					  u64 exit_info_2)
-> +/*
-> + * __sev_es_ghcb_hv_call() is also used in the other platform code(e.g
-> + * Hyper-V).
-> + */
-> +enum es_result __sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +				     u64 exit_code, u64 exit_info_1,
-> +				     u64 exit_info_2)
->   {
->   	enum es_result ret;
->   
-> @@ -109,15 +112,33 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->   	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
->   	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
->   
-> -	sev_es_wr_ghcb_msr(__pa(ghcb));
->   	VMGEXIT();
->   
-> +	if (ghcb->save.sw_exit_info_1 & 0xffffffff)
-> +		ret = ES_VMM_ERROR;
-> +	else
-> +		ret = ES_OK;
-> +
-> +	return ret;
-> +}
-> +
-> +static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-> +					  struct es_em_ctxt *ctxt,
-> +					  u64 exit_code, u64 exit_info_1,
-> +					  u64 exit_info_2)
-> +{
-> +	enum es_result ret;
-> +
-> +	sev_es_wr_ghcb_msr(__pa(ghcb));
-> +
-> +	ret = __sev_es_ghcb_hv_call(ghcb, exit_code, exit_info_1,
-> +					 exit_info_2);
-> +	if (ret == ES_OK)
-> +		return ret;
-> +
->   	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1) {
->   		u64 info = ghcb->save.sw_exit_info_2;
-> -		unsigned long v;
-> -
-> -		info = ghcb->save.sw_exit_info_2;
-> -		v = info & SVM_EVTINJ_VEC_MASK;
-> +		unsigned long v = info & SVM_EVTINJ_VEC_MASK;
->   
->   		/* Check if exception information from hypervisor is sane. */
->   		if ((info & SVM_EVTINJ_VALID) &&
-> @@ -127,11 +148,7 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
->   			if (info & SVM_EVTINJ_VALID_ERR)
->   				ctxt->fi.error_code = info >> 32;
->   			ret = ES_EXCEPTION;
-> -		} else {
-> -			ret = ES_VMM_ERROR;
->   		}
-> -	} else {
-> -		ret = ES_OK;
->   	}
->   
->   	return ret;
-> 
+[21383.189976] BUG: kernel NULL pointer dereference, address: 0000000000000098
+[21383.190633] #PF: supervisor read access in kernel mode
+[21383.191072] #PF: error_code(0x0000) - not-present page
+[21383.191529] PGD 0 P4D 0 
+[21383.191771] Oops: 0000 [#1] SMP NOPTI
+[21383.192113] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15-rc4
+[21383.192757] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
+[21383.193414] RIP: 0010:wb_timer_fn+0x44/0x3c0
+[21383.193855] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
+[21383.195366] RSP: 0018:ffffbcd140003e68 EFLAGS: 00010246
+[21383.195842] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
+[21383.196425] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9a3521f4fd80
+[21383.197010] RBP: ffffbcd140003e90 R08: 0000000000000000 R09: 0000000000000000
+[21383.197594] R10: 0000000000000004 R11: 000000000000000f R12: ffff9a34c75c4900
+[21383.198178] R13: ffff9a34c3906de0 R14: 0000000000000000 R15: ffff9a353dc18c00
+[21383.198763] FS:  0000000000000000(0000) GS:ffff9a353dc00000(0000) knlGS:0000000000000000
+[21383.199558] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[21383.200212] CR2: 0000000000000098 CR3: 0000000005f54000 CR4: 00000000000006f0
+[21383.200930] Call Trace:
+[21383.201210]  <IRQ>
+[21383.201461]  ? blk_stat_free_callback_rcu+0x30/0x30
+[21383.202692]  blk_stat_timer_fn+0x138/0x140
+[21383.203180]  call_timer_fn+0x2b/0x100
+[21383.203666]  __run_timers.part.0+0x1d1/0x240
+[21383.204227]  ? kvm_clock_get_cycles+0x11/0x20
+[21383.204815]  ? ktime_get+0x3e/0xa0
+[21383.205309]  ? native_apic_msr_write+0x2c/0x30
+[21383.205914]  ? lapic_next_event+0x20/0x30
+[21383.206412]  ? clockevents_program_event+0x94/0xf0
+[21383.206873]  run_timer_softirq+0x2a/0x50
+[21383.207260]  __do_softirq+0xcb/0x26f
+[21383.207647]  irq_exit_rcu+0x8c/0xb0
+[21383.208010]  sysvec_apic_timer_interrupt+0x7c/0x90
+[21383.208464]  </IRQ>
+[21383.208713]  asm_sysvec_apic_timer_interrupt+0x12/0x20
+
+I think that systemd autotest used to use -enable-kvm, but then they
+removed it, because it was introducing too many problems in the nested
+KVM context. I'm not sure about the nature of those problems though, I
+can investigate a bit and see if I can understand what they were
+exactly.
+
+-Andrea
