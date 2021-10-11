@@ -2,155 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292CE429559
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1640B42955B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhJKRPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJKRPl (ORCPT
+        id S233779AbhJKRQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:16:32 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:42950 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232866AbhJKRQb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:15:41 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0824BC061570;
-        Mon, 11 Oct 2021 10:13:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f08bb00e407f16cd758a723.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:e407:f16c:d758:a723])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5CE331EC03CA;
-        Mon, 11 Oct 2021 19:13:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1633972419;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=UCf+OlFdFEs0sMpCGO70LL+YcIAZ0CdGrQ0tUSfjgfw=;
-        b=qktKU29O+q+Cm4MJQ6B0HdupzpmRhJPxoEHa3a/KOp8JXcfuZx3cop+7QkbCOXkKqB9VhS
-        OZTBLs4MKbMQJ0TqneCOfARPJ0vMpiruhC0p7TSdhqooDUFG9+62DzfAcDdSDrAIoI3WrL
-        9LeBbAk4KDjhy/rsj8GQ8D5nusKkq7o=
-Date:   Mon, 11 Oct 2021 19:13:40 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>, stable@vger.kernel.org
-Subject: [PATCH] x86/sev: Carve out HV call's return value verification
-Message-ID: <YWRwxImd9Qcls/Yy@zn.tnic>
-References: <efc772af831e9e7f517f0439b13b41f56bad8784.1633063321.git.thomas.lendacky@amd.com>
- <YVbYWz+8J7iMTJjc@zn.tnic>
- <00d48af4-1683-350c-c334-08968d455e4c@amd.com>
- <YVcTDM9hshdlUqbN@zn.tnic>
+        Mon, 11 Oct 2021 13:16:31 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id D39D042C;
+        Mon, 11 Oct 2021 20:14:28 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1633972468;
+        bh=hP5CrubvbNrj+5YR8Nrl4oDNVEbRN1HW7A+zrUZo4Y4=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=iuBdZVohhoTEp9GoRZx2k6k3ACoHG7Fbgjsyoj6GLj34YfKvXuAOYN6gDZ96jz38V
+         k92DCP+sBQJJPZ0m0dYehjZvCKicpX8FJ79FE0qlQ9qVxvjhje8kwRewpkS64SSha4
+         Njbg2YP1+wQBXos2bMEJ39cKoS4U8PDiuvNLovag=
+Received: from [192.168.211.33] (192.168.211.33) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 11 Oct 2021 20:14:28 +0300
+Message-ID: <204a5be9-f0a2-1c85-d3a8-3011578b9299@paragon-software.com>
+Date:   Mon, 11 Oct 2021 20:14:28 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YVcTDM9hshdlUqbN@zn.tnic>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [PATCH v4 7/9] fs/ntfs3: Add iocharset= mount option as alias for
+ nls=
+Content-Language: en-US
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>
+CC:     <ntfs3@lists.linux.dev>, Christoph Hellwig <hch@lst.de>,
+        <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        <torvalds@linux-foundation.org>
+References: <20210907153557.144391-1-kari.argillander@gmail.com>
+ <20210907153557.144391-8-kari.argillander@gmail.com>
+ <20210908190938.l32kihefvtfw5tjp@pali> <20211009114252.jn2uehmaveucimp5@pali>
+ <20211009143327.mqwwwlc4bgwtpush@kari-VirtualBox>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+In-Reply-To: <20211009143327.mqwwwlc4bgwtpush@kari-VirtualBox>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.211.33]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now as a proper patch with typo fixed and tested:
-
----
-From: Borislav Petkov <bp@suse.de>
-
-Carve out the verification of the HV call return value into a separate
-helper and make it more readable.
-
-No functional changes.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
----
- arch/x86/kernel/sev-shared.c | 53 ++++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 24 deletions(-)
-
-diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
-index bf1033a62e48..4579c38a11c4 100644
---- a/arch/x86/kernel/sev-shared.c
-+++ b/arch/x86/kernel/sev-shared.c
-@@ -94,25 +94,15 @@ static void vc_finish_insn(struct es_em_ctxt *ctxt)
- 	ctxt->regs->ip += ctxt->insn.length;
- }
- 
--static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
--					  struct es_em_ctxt *ctxt,
--					  u64 exit_code, u64 exit_info_1,
--					  u64 exit_info_2)
-+static enum es_result verify_exception_info(struct ghcb *ghcb, struct es_em_ctxt *ctxt)
- {
--	enum es_result ret;
-+	u32 ret;
- 
--	/* Fill in protocol and format specifiers */
--	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
--	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
-+	ret = ghcb->save.sw_exit_info_1 & GENMASK_ULL(31, 0);
-+	if (!ret)
-+		return ES_OK;
- 
--	ghcb_set_sw_exit_code(ghcb, exit_code);
--	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
--	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
--
--	sev_es_wr_ghcb_msr(__pa(ghcb));
--	VMGEXIT();
--
--	if ((ghcb->save.sw_exit_info_1 & 0xffffffff) == 1) {
-+	if (ret == 1) {
- 		u64 info = ghcb->save.sw_exit_info_2;
- 		unsigned long v;
- 
-@@ -124,19 +114,34 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
- 		    ((v == X86_TRAP_GP) || (v == X86_TRAP_UD)) &&
- 		    ((info & SVM_EVTINJ_TYPE_MASK) == SVM_EVTINJ_TYPE_EXEPT)) {
- 			ctxt->fi.vector = v;
-+
- 			if (info & SVM_EVTINJ_VALID_ERR)
- 				ctxt->fi.error_code = info >> 32;
--			ret = ES_EXCEPTION;
--		} else {
--			ret = ES_VMM_ERROR;
-+
-+			return ES_EXCEPTION;
- 		}
--	} else if (ghcb->save.sw_exit_info_1 & 0xffffffff) {
--		ret = ES_VMM_ERROR;
--	} else {
--		ret = ES_OK;
- 	}
- 
--	return ret;
-+	return ES_VMM_ERROR;
-+}
-+
-+static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
-+					  struct es_em_ctxt *ctxt,
-+					  u64 exit_code, u64 exit_info_1,
-+					  u64 exit_info_2)
-+{
-+	/* Fill in protocol and format specifiers */
-+	ghcb->protocol_version = GHCB_PROTOCOL_MAX;
-+	ghcb->ghcb_usage       = GHCB_DEFAULT_USAGE;
-+
-+	ghcb_set_sw_exit_code(ghcb, exit_code);
-+	ghcb_set_sw_exit_info_1(ghcb, exit_info_1);
-+	ghcb_set_sw_exit_info_2(ghcb, exit_info_2);
-+
-+	sev_es_wr_ghcb_msr(__pa(ghcb));
-+	VMGEXIT();
-+
-+	return verify_exception_info(ghcb, ctxt);
- }
- 
- /*
--- 
-2.29.2
 
 
--- 
-Regards/Gruss,
-    Boris.
+On 09.10.2021 17:33, Kari Argillander wrote:
+> Choose to add Linus to CC so that he also knows whats coming.
+> 
+> On Sat, Oct 09, 2021 at 01:42:52PM +0200, Pali Rohár wrote:
+>> Hello!
+>>
+>> This patch have not been applied yet:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ntfs3/super.c#n247
+>>
+>> What happened that in upstream tree is still only nls= option and not
+>> this iocharset=?
+> 
+> Very valid question. For some reason Konstantin has not sended pr to
+> Linus. I have also address my concern that pr is not yet sended and he
+> will make very massive "patch dumb" to rc6/rc7. See thread [1]. There is
+> about 50-70 patch already which he will send to rc6/rc7. I have get also
+> impression that patches which are not yet even applied to ntfs3 tree [2]
+> will be also sended to rc6/rc7. There is lot of refactoring and new
+> algorithms which imo are not rc material. I have sended many message to
+> Konstantin about this topic, but basically ignored.
+> 
+> Basically we do not have anything for next merge window and every patch
+> will be sended for 5.15.
+> 
+> [1] lore.kernel.org/lkml/20210925082823.fo2wm62xlcexhwvi@kari-VirtualBox
+> [2] https://github.com/Paragon-Software-Group/linux-ntfs3/commits/master
+> 
+>   Argillander
+> 
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Hello.
+
+I was planning to send pull request on Friday 08.10.
+But there is still one panic, that wasn't resolved [1].
+It seems to be tricky, so I'll be content even with quick band-aid [2].
+After confirming, that it works, I plan on sending pull request.
+I don't want for this panic to remain in 5.15.
+
+[1]: https://lore.kernel.org/ntfs3/f9de5807-2311-7374-afb0-bc5dffb522c0@gmail.com/
+[2]: https://lore.kernel.org/ntfs3/7e5b8dc9-9989-0e8a-9e8d-ae26b6e74df4@paragon-software.com/
+
+>>
+>> On Wednesday 08 September 2021 21:09:38 Pali Rohár wrote:
+>>> On Tuesday 07 September 2021 18:35:55 Kari Argillander wrote:
+>>>> Other fs drivers are using iocharset= mount option for specifying charset.
+>>>> So add it also for ntfs3 and mark old nls= mount option as deprecated.
+>>>>
+>>>> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+>>>
+>>> Reviewed-by: Pali Rohár <pali@kernel.org>
+>>>
+>>>> ---
+>>>>  Documentation/filesystems/ntfs3.rst |  4 ++--
+>>>>  fs/ntfs3/super.c                    | 18 +++++++++++-------
+>>>>  2 files changed, 13 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/filesystems/ntfs3.rst b/Documentation/filesystems/ntfs3.rst
+>>>> index af7158de6fde..ded706474825 100644
+>>>> --- a/Documentation/filesystems/ntfs3.rst
+>>>> +++ b/Documentation/filesystems/ntfs3.rst
+>>>> @@ -32,12 +32,12 @@ generic ones.
+>>>>  
+>>>>  ===============================================================================
+>>>>  
+>>>> -nls=name		This option informs the driver how to interpret path
+>>>> +iocharset=name		This option informs the driver how to interpret path
+>>>>  			strings and translate them to Unicode and back. If
+>>>>  			this option is not set, the default codepage will be
+>>>>  			used (CONFIG_NLS_DEFAULT).
+>>>>  			Examples:
+>>>> -				'nls=utf8'
+>>>> +				'iocharset=utf8'
+>>>>  
+>>>>  uid=
+>>>>  gid=
+>>>> diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
+>>>> index 729ead6f2fac..503e2e23f711 100644
+>>>> --- a/fs/ntfs3/super.c
+>>>> +++ b/fs/ntfs3/super.c
+>>>> @@ -226,7 +226,7 @@ enum Opt {
+>>>>  	Opt_nohidden,
+>>>>  	Opt_showmeta,
+>>>>  	Opt_acl,
+>>>> -	Opt_nls,
+>>>> +	Opt_iocharset,
+>>>>  	Opt_prealloc,
+>>>>  	Opt_no_acs_rules,
+>>>>  	Opt_err,
+>>>> @@ -245,9 +245,13 @@ static const struct fs_parameter_spec ntfs_fs_parameters[] = {
+>>>>  	fsparam_flag_no("hidden",		Opt_nohidden),
+>>>>  	fsparam_flag_no("acl",			Opt_acl),
+>>>>  	fsparam_flag_no("showmeta",		Opt_showmeta),
+>>>> -	fsparam_string("nls",			Opt_nls),
+>>>>  	fsparam_flag_no("prealloc",		Opt_prealloc),
+>>>>  	fsparam_flag("no_acs_rules",		Opt_no_acs_rules),
+>>>> +	fsparam_string("iocharset",		Opt_iocharset),
+>>>> +
+>>>> +	__fsparam(fs_param_is_string,
+>>>> +		  "nls", Opt_iocharset,
+>>>> +		  fs_param_deprecated, NULL),
+>>>>  	{}
+>>>>  };
+>>>>  
+>>>> @@ -346,7 +350,7 @@ static int ntfs_fs_parse_param(struct fs_context *fc,
+>>>>  	case Opt_showmeta:
+>>>>  		opts->showmeta = result.negated ? 0 : 1;
+>>>>  		break;
+>>>> -	case Opt_nls:
+>>>> +	case Opt_iocharset:
+>>>>  		kfree(opts->nls_name);
+>>>>  		opts->nls_name = param->string;
+>>>>  		param->string = NULL;
+>>>> @@ -380,11 +384,11 @@ static int ntfs_fs_reconfigure(struct fs_context *fc)
+>>>>  	new_opts->nls = ntfs_load_nls(new_opts->nls_name);
+>>>>  	if (IS_ERR(new_opts->nls)) {
+>>>>  		new_opts->nls = NULL;
+>>>> -		errorf(fc, "ntfs3: Cannot load nls %s", new_opts->nls_name);
+>>>> +		errorf(fc, "ntfs3: Cannot load iocharset %s", new_opts->nls_name);
+>>>>  		return -EINVAL;
+>>>>  	}
+>>>>  	if (new_opts->nls != sbi->options->nls)
+>>>> -		return invalf(fc, "ntfs3: Cannot use different nls when remounting!");
+>>>> +		return invalf(fc, "ntfs3: Cannot use different iocharset when remounting!");
+>>>>  
+>>>>  	sync_filesystem(sb);
+>>>>  
+>>>> @@ -528,9 +532,9 @@ static int ntfs_show_options(struct seq_file *m, struct dentry *root)
+>>>>  	if (opts->dmask)
+>>>>  		seq_printf(m, ",dmask=%04o", ~opts->fs_dmask_inv);
+>>>>  	if (opts->nls)
+>>>> -		seq_printf(m, ",nls=%s", opts->nls->charset);
+>>>> +		seq_printf(m, ",iocharset=%s", opts->nls->charset);
+>>>>  	else
+>>>> -		seq_puts(m, ",nls=utf8");
+>>>> +		seq_puts(m, ",iocharset=utf8");
+>>>>  	if (opts->sys_immutable)
+>>>>  		seq_puts(m, ",sys_immutable");
+>>>>  	if (opts->discard)
+>>>> -- 
+>>>> 2.25.1
+>>>>
