@@ -2,42 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E3742863F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B45CC428642
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhJKFi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230341AbhJKFiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:38:25 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3BBC061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:36:26 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:bd83:e4f3:bd3e:98d5] (port=52086)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C4rlyn@norir.net>)
-        id 1mZnz5-0001Nj-Jc
-        for linux-kernel@vger.kernel.org; Mon, 11 Oct 2021 07:36:23 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@norir.net>
-Subject: =?UTF-8?Q?Fair_IT-_last_update=3a_=c6=90?=
-Message-ID: <ccac1964-266a-45bc-6ace-6a05a464e645@norir.net>
-Date:   Mon, 11 Oct 2021 07:36:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S233802AbhJKFjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:39:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230341AbhJKFjw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 01:39:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 872A160E94;
+        Mon, 11 Oct 2021 05:37:46 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 11:07:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the pci tree
+Message-ID: <20211011053737.GA1834@thinkpad>
+References: <20211011101250.11902b31@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011101250.11902b31@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have simply started to use the Ɛ symbol in translation. (-Ein-)
-This works the best.
+Hi Stephen,
 
-Serenity,
-Ywe Cærlyn
-http://www.norir.net
+On Mon, Oct 11, 2021 at 10:12:50AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> ERROR: modpost: "dw_pcie_ep_reset_bar" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> ERROR: modpost: "dw_pcie_ep_raise_msi_irq" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> ERROR: modpost: "dw_pcie_ep_raise_legacy_irq" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> 
+> Caused by commit
+> 
+>   3872e6f0544f ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
+> 
+> I have used the pci tree from next-20211008 fot today.
+> 
+
+I have submitted a patch for fixing this issue:
+
+https://patchwork.kernel.org/project/linux-pci/patch/20211010115937.15856-1-manivannan.sadhasivam@linaro.org/
+
+Thanks,
+Mani
+
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
