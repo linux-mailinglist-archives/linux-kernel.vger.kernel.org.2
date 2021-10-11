@@ -2,93 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC7A4287B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3C74287B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234516AbhJKHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234502AbhJKHen (ORCPT
+        id S234550AbhJKHey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:34:54 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28913 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234554AbhJKHew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:34:43 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 154EEC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:32:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id np13so12589311pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WmIH+gyLv1IEII2jV9ccpTyXH9cYgsrJ11N5wI46Cwk=;
-        b=XSShNGiojyLlUovr7IKaqfRGJpRi3a1nfwsAdlxge9m12kC+OTSVuy1GLR6B7pozzZ
-         2Rl6iMtuYWwkXbqErdqkCOJvgE8zZW/XFtcUZKKla8tOsX9oy/ysuNGtrIBm3LPm/3pj
-         ljSQ4C42U4hH0U4gjFtNtkTqGLjSJwRigBLVFxv/19xbaoD3RShtJVW0p7gSvxgnLDCH
-         8G1/J3WaWfZzg4blcTzvQSK09T4S0dE44kil/HQRxDmBVrYquEjoCJ5Zn9o63MRSDq+H
-         5Eg4UMBXurLYyREnHl+Gk3MdPR2OuJOUg6yEOzOwMX4+vKeO6Z4gkSCoUoJ9TwGaD9fX
-         dYWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WmIH+gyLv1IEII2jV9ccpTyXH9cYgsrJ11N5wI46Cwk=;
-        b=oAQ4YyrRWk+x6KSYVKJ4T0kF1RzZVPAzP75fW+tIlF9ip7ldnE68Lm7OE5/ETc7D73
-         3ztFG0QOFcxsLQBNbldeAUSZApwOLrRUxq3VnuoNCdqBi/6XWahtc6iaOjw7wYU80vrN
-         T6zmMuUjalgr5JIBCVMAFzP9MpmhAbLfFqJ+glXYW4hXOVT+d1j8Q3gT6HsEjbT6T9KU
-         J103+i+vgLz0oBhv0drAkW4VBjC4I4ZIPKzuBCUsUl/20CgjOXBH8QHUqPbdGkYgSu30
-         clfKZ69mHLmSY+wskXCucb9/vG/wR9QqhLw3guG7d/EQdaNXCLsfMRIEhN2x7R8wJOb4
-         No5A==
-X-Gm-Message-State: AOAM532XlaARQ3wLwxsr6C1g2W8IDiDiiY8GJu7IjNa/Cjonl90d0Wc5
-        SQSsqIl9k12grps4wQs0Jjk=
-X-Google-Smtp-Source: ABdhPJwVxRo9L4WpR4bARb+c1V+ea9O4L7NYFH2LqqvoQwP7QQE3Eju3POdetRvdkZn3Jow/cKvrJA==
-X-Received: by 2002:a17:90a:6b01:: with SMTP id v1mr29200238pjj.6.1633937563671;
-        Mon, 11 Oct 2021 00:32:43 -0700 (PDT)
-Received: from kvm.asia-northeast3-a.c.our-ratio-313919.internal (24.151.64.34.bc.googleusercontent.com. [34.64.151.24])
-        by smtp.gmail.com with ESMTPSA id k13sm7207015pfc.197.2021.10.11.00.32.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 00:32:43 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 07:32:39 +0000
-From:   Hyeonggon Yoo <42.hyeyoo@gmail.com>
-To:     Christoph Lameter <cl@gentwo.de>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm, slub: Use prefetchw instead of prefetch
-Message-ID: <20211011073239.GA63896@kvm.asia-northeast3-a.c.our-ratio-313919.internal>
-References: <20211008133602.4963-1-42.hyeyoo@gmail.com>
- <alpine.DEB.2.22.394.2110110919050.130815@gentwo.de>
+        Mon, 11 Oct 2021 03:34:52 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSVlD0P90zbmZH;
+        Mon, 11 Oct 2021 15:28:24 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 15:32:50 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 15:32:49 +0800
+To:     <xieyongji@bytedance.com>
+References: <20210831103634.33-1-xieyongji@bytedance.com>
+Subject: Re: [PATCH v13 00/13] Introduce VDUSE - vDPA Device in Userspace
+CC:     "Fangyi (Eric)" <eric.fangyi@huawei.com>, <yebiaoxiang@huawei.com>,
+        <x86@kernel.org>, <kvm@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   Liuxiangdong <liuxiangdong5@huawei.com>
+Message-ID: <6163E8A1.8080901@huawei.com>
+Date:   Mon, 11 Oct 2021 15:32:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2110110919050.130815@gentwo.de>
+In-Reply-To: <20210831103634.33-1-xieyongji@bytedance.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme707-chm.china.huawei.com (10.1.199.103) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 09:20:36AM +0200, Christoph Lameter wrote:
-> On Fri, 8 Oct 2021, Hyeonggon Yoo wrote:
-> 
-> > It's certain that an object will be not only read, but also
-> > written after allocation.
-> 
-> get_freepointer is used in multiple code path not only in allocation. It
-> is for example used when scanning through a freelist.
-> 
-> With this change all objects get needlessly dirtied and the cross cpu
-> cache contention is increased.
+Hi, Yongji.
 
-I didn't touch get_freepointer and there's
-only one caller of prefetch_freepointer.
+I tried vduse with null-blk:
 
-My change was not adding additional prefetch on get_freepointer,
-but changing existing prefetch into prefetchw.
+   $ qemu-storage-daemon \
+       --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
+       --monitor chardev=charmonitor \
+       --blockdev 
+driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0 
+\
+       --export 
+type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
 
-The prefetch was introcued by commit 0ad9500e16fe ("slub: prefetch next
-freelist pointer in slab_alloc()") that you ACKed in 2011.
+The qemu-storage-daemon is yours 
+(https://github.com/bytedance/qemu/tree/vduse)
 
-Do you think removeing existing prefetch is better than changing it
-from prefetch to prefetchw?
+And then, how can we use this vduse-null (dev/vduse/vduse-null) in vm(QEMU)?
+
+Because qemu-storage-daemon open this vduse-null in vduse_dev_init(), 
+all the operations which open this dev
+will report "failed to open '/dev/vduse/vduse-null': Device or resource 
+busy".
+
+Or something I understood wrong?
+
+Thanks!
+Xiangdong Liu
