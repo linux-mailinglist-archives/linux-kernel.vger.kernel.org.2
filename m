@@ -2,83 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1CB428D02
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C04C428D04
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236592AbhJKMbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:31:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25291 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236584AbhJKMbj (ORCPT
+        id S236603AbhJKMcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236593AbhJKMcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:31:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633955379;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=MnnH04LseEOTDWOFIZGCLGe2qMg40d5uyHxJj7UajE8=;
-        b=bBIGEk45OeiHheyC7vME27k8N5IGD2gn3xjAG9IUisFCtBLC9Ixtigdftbb49p/avBTBFH
-        jTV4Gurp4HJCh3VDaliFlzLH3lDV5s7mwfidkuqteNeq1ej5PFgM364RSUdokXapN2W2Ms
-        QeFjvPcZlTcbGPI7XyjV0mVq5hcWhbM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-FbJKiNTpN1my6uqCyi773g-1; Mon, 11 Oct 2021 08:29:35 -0400
-X-MC-Unique: FbJKiNTpN1my6uqCyi773g-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0C7583DBC0;
-        Mon, 11 Oct 2021 12:29:33 +0000 (UTC)
-Received: from lclaudio.dyndns.org (unknown [10.22.35.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A00BE78834;
-        Mon, 11 Oct 2021 12:29:32 +0000 (UTC)
-Received: by lclaudio.dyndns.org (Postfix, from userid 1000)
-        id D80553C0205; Mon, 11 Oct 2021 09:29:30 -0300 (-03)
-Date:   Mon, 11 Oct 2021 09:29:30 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 4.14.250-rt124
-Message-ID: <YWQuKvhgXKsR0NBX@uudg.org>
+        Mon, 11 Oct 2021 08:32:04 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86416C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:30:04 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id z20so66995243edc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8R0yE/cxVHvwquZPbOltOEz0D9tBHQM+oAeyj/5Oe7w=;
+        b=FXzOL5LCnisbrGuuwRWxxVgnOol92yY0RKTJyFSRNA1ojvkI4GQAWxO2KF+j+QRKsu
+         u98Cb8IdU1MYdndfLNE1l03Rfo6rOjDQIhFBnZx4aWXvlrMf2Uv8gUk2ke5rqKeVxs3S
+         YGtwOiVjbdzn4KlA/LfgSIA46/QELQHyML6B4VkL+h8zgu3VSCJio80xD755bgcHYYaz
+         kEe6szTyd9eV//ngArOWp3CjAmjZZSC8TWLqdlsUD4nbcWS4g+bRCBit27oO6cU7653k
+         GHdivWTSzwu+vG11755m46kgU3w6yjkSTmOb4etRTsbdTNZoZwVaFHueYGPfTOhMQghO
+         tv8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8R0yE/cxVHvwquZPbOltOEz0D9tBHQM+oAeyj/5Oe7w=;
+        b=eHb1RGNG0K3PPmzgC2kzOKGBKkYps32wfxLEsWyD1RQ7O23biLUUCqWDyazHTWxy8P
+         sunvxind/o0eQ2v3JtIvDvpd0qr3X91zgEJlInyvfpU55we+Z7/Ihj8drJwqO/quON2F
+         VLQwd4xcvGS4FrHnE4G573n6hpU1drYZhbC0nUTOsQ0v8IyjPLhycVUVfk58lU1nH8Pj
+         D+o8j6CceiGojmnespUOwy87Kb7UU44OEMSS1tIVF+9BNrCht5grSWwFisYWjHN5Dvbm
+         eNYyLFoo6zhMG+ASrmZ01eOLAIqYoOI/DEXvIjo94LPZ9xWo/R0Q9u9NNAmTq+5sEZ4p
+         LZgA==
+X-Gm-Message-State: AOAM530qrnFvU8dw9KBJncprk03TDzUo37TkOIfEY7BaKOywT4g9NjCZ
+        kkqBH3y096s50fVYX1E34EC8AA==
+X-Google-Smtp-Source: ABdhPJxbSB+nDpde8OFxNgOlGrt5t5L/HD+mZszO/+/8GWvGG8Zhv5Z+6xVUSEKeSarJ6WKBDu/DOw==
+X-Received: by 2002:a50:bf05:: with SMTP id f5mr40394285edk.156.1633955402530;
+        Mon, 11 Oct 2021 05:30:02 -0700 (PDT)
+Received: from apalos.home (ppp-94-66-220-73.home.otenet.gr. [94.66.220.73])
+        by smtp.gmail.com with ESMTPSA id f26sm4159873edr.8.2021.10.11.05.30.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 05:30:02 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 15:29:58 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>, davem@davemloft.net,
+        kuba@kernel.org, brouer@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@openeuler.org,
+        akpm@linux-foundation.org, hawk@kernel.org, peterz@infradead.org,
+        yuzhao@google.com, will@kernel.org, willy@infradead.org,
+        jgg@ziepe.ca, mcroce@microsoft.com, willemb@google.com,
+        cong.wang@bytedance.com, pabeni@redhat.com, haokexin@gmail.com,
+        nogikh@google.com, elver@google.com, memxor@gmail.com,
+        vvs@virtuozzo.com, linux-mm@kvack.org, edumazet@google.com,
+        alexander.duyck@gmail.com, dsahern@gmail.com
+Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
+ __put_page()
+Message-ID: <YWQuRpdJOMyJBBrs@apalos.home>
+References: <20211009093724.10539-1-linyunsheng@huawei.com>
+ <20211009093724.10539-4-linyunsheng@huawei.com>
+ <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
+ <89bcc42a-ad95-e729-0748-bf394bf770be@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <89bcc42a-ad95-e729-0748-bf394bf770be@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Mon, Oct 11, 2021 at 02:25:08PM +0200, Jesper Dangaard Brouer wrote:
+> 
+> 
+> On 09/10/2021 21.49, John Hubbard wrote:
+> > So in case it's not clear, I'd like to request that you drop this one
+> > patch from your series.
+> 
+> In my opinion as page_pool maintainer, you should also drop patch 4/4 from
+> this series.
+> 
+> I like the first two patches, and they should be resend and can be applied
+> without too much further discussion.
 
-I'm pleased to announce the 4.14.250-rt124 stable release.
++1
+That's what I hinted on the previous version. The patches right now go way
+beyond the spec of page pool.  We are starting to change core networking
+functions and imho we need a lot more people involved in this discussion,
+than the ones participating already.
 
-This release is just an update to the new stable 4.14.250 version and
-no RT specific changes have been made.
+As a general note and the reason I am so hesitant,  is that we are starting
+to violate layers here (at least in my opinion).  When the recycling was
+added,  my main concern was to keep the network stack unaware (apart from
+the skb bit).  Now suddenly we need to teach frag_ref/unref internal page
+pool counters and that doesn't feel right.  We first need to prove the race
+can actually happen, before starting to change things.
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.14-rt
-  Head SHA1: c7e639ababd959132336f0d89552faf4c0f4ecfc
-
-Or to build 4.14.250-rt124 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.250.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.250-rt124.patch.xz
-
-
-Enjoy!
-Luis
-
+Regards
+/Ilias
+> 
+> --Jesper
+> 
