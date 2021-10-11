@@ -2,162 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EC74285AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 06:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAE64285B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 06:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhJKEJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 00:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
+        id S233906AbhJKELD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 00:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhJKEJB (ORCPT
+        with ESMTP id S232145AbhJKELA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 00:09:01 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15CAC06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:07:01 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id o204so14760263oih.13
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 21:07:01 -0700 (PDT)
+        Mon, 11 Oct 2021 00:11:00 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDF8C061570;
+        Sun, 10 Oct 2021 21:09:00 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so20040183otb.10;
+        Sun, 10 Oct 2021 21:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=x6zJ1TMB99Xj1FgTf/EaXYFiMV4l4PhopS0sskGKUJg=;
-        b=MMWmNas2Kk06bSpFDsluQBhy85L5MC4CSaXQzLEp1VM6YfCxptom3EfbZ9CNodgEHn
-         XYrtNOSNSOtPQLbFOnP/MC5RUYm2+SaZbjkFaJB9RfsA0itlYKmCOz0E4iHn9+hxBZqt
-         M30hT9DrRYaeKfFnX9Z8cOnrK0nIaVPla5p7coiLuri1CBQ4Xy1ngm11PzoMRqCQQ6oz
-         QQpKxfsNulQhqPNOqzGv/zyyqeBjZP8Ld0L5zp83z8k3kMRBq76ZGJiH7sie2TcTRBzU
-         QC61z0hPyd/c95TXvqf82Fl8DZ2/VlTRIbvaW2h9aUDX+2zAbKOx3dVMV5z9zKCJrBot
-         yI8w==
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QunyXUt74Gx3GYDTkgdqDinXhHjEbO9JIPtdoMQbpkY=;
+        b=DHbZF6KgPcU6w2KvrVB6smtJTD/qX+YmRqw+mcDxwjVuNdIObUKwIPmW+mb3XZu966
+         eXi6kgXlFCjkhBQ/MbruKhbA6qI1qDZrTY+FUwELNqhmSan5vjejAghLN7jWjGTcYoSi
+         l9wZ/56Mgvkf/nLAkOJQbHz4PQOgGh//Uu+Q33v+pFbYhGHP/lVpNXxwTF00D145QnnR
+         eVVmOsiaspsKPHM4YzBdlUD4Gdc+Gr+/oMCZOOrzmf4EuZrgzVRO0uZUz54DLolRXlda
+         HVAnNl7oSbfV5pLkFCJfo00Q1HPTTERZPhctrjalhL0QVAUCyjLdEfR6sX6blGBT5Rza
+         v1aA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=x6zJ1TMB99Xj1FgTf/EaXYFiMV4l4PhopS0sskGKUJg=;
-        b=Sl5mo+ANHKvmjUvwDUAzEW/U7QCYyIHQW6RgarqiKuzzzlrMOtvrfb3xCVr0tZZ3zP
-         8e5u7sABuKqFXKbNBa8ijZo6WAL8QgvIR1WTEjEQW1eK8byikCr5g4hdFV5yHbiiS37y
-         Hpb6GNFcVEtVhF5459YZzDWwBl59/XbKB0vMRr9M+LrdUzgkevWmKMLahYUINJNSuEHK
-         cQu5/lNLtoTtWn2V4FOLk1dPtHl0rlT5brmIB/yiRc1+6bpq0f+cQj71jGBzvSrewa4s
-         xvV3GqspPAYxBwyegkr4Ai7DJuEbZr53CcxHAcGiIjQO4SDQaCMO1gZrq+rh4h0mHliC
-         YEwA==
-X-Gm-Message-State: AOAM530zmGTohFOOT+tWqxadnkD/DD0BY5SGO8p+sL5da/jL6nYIePI0
-        gjThf48P9NXldQUX2IwqiB9ZgA==
-X-Google-Smtp-Source: ABdhPJyNBhey2POmoHGytDsM+sjqpo3nS+HnjONu7HSk/QnQNoIRcds2yh6VSQNMRwLWpByqHsAFIw==
-X-Received: by 2002:aca:5b44:: with SMTP id p65mr15644888oib.158.1633925221021;
-        Sun, 10 Oct 2021 21:07:01 -0700 (PDT)
-Received: from [192.168.11.48] (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id bi1sm1506166oib.34.2021.10.10.21.06.59
+        bh=QunyXUt74Gx3GYDTkgdqDinXhHjEbO9JIPtdoMQbpkY=;
+        b=HQTxEjBtQConlcjfmyn3wntAQ31GFYgLzjksR8sUBjb3JmSwmg+UCdrT17Uk8hUrV7
+         +KVr1O/FGsXW3RmtftU1WewS03goOeQEwCrevSUpytbpUIYhiiq+lTMjBvfYUQkqjQwF
+         b3oRwb3vl+MHUW/lk7xI8+zXpnmWy10IgKrWmlH4JRoXESi+KxdpXYSCk9BdMxoSDbi+
+         dSO2qjdG+dVkEHqIRqNBNFQjj6ne56snixhsC4VSHTrICobfeB0gBOfjiL6/Shm0yTuk
+         z17D2/mqhJIsAGMUcqxPl+djXeUxkrVfHMKh/xegIyHq4KN86Nuk5E0LmjsuuMxm4W2r
+         qYGQ==
+X-Gm-Message-State: AOAM530hxxN/CJEXTIzfnakpSVJGcutyE4sCdRBb0yEvg2SnBd5NelZv
+        6h9/ldej5tshIv5RgzoPsGzSbIVPjUg=
+X-Google-Smtp-Source: ABdhPJwpAcgppMcWBFbG7irS9GGd/OPmt76AGy16JZREt0YxmjivC9nUaV7a0yOkQrlVvXnxkZ65dA==
+X-Received: by 2002:a9d:7018:: with SMTP id k24mr5484280otj.168.1633925339859;
+        Sun, 10 Oct 2021 21:08:59 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id az14sm589495oib.51.2021.10.10.21.08.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 21:07:00 -0700 (PDT)
-Message-ID: <e655dd45-7d08-b82b-75b7-a9aa3bd4c50e@kali.org>
-Date:   Sun, 10 Oct 2021 23:06:59 -0500
+        Sun, 10 Oct 2021 21:08:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v7 2/2] hwmon: (nct7802) Make temperature/voltage sensors
+ configurable
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211011012212.91357-1-osk@google.com>
+ <20211011012212.91357-2-osk@google.com>
+ <98dcaa85-d04c-7a9c-1901-8786d361477c@roeck-us.net>
+ <CABoTLcTERUpwPSc7fVUAMqs37XCZJhMFbFRT2oyTt_TodE6GnA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <518a6ab3-80af-bbe9-69e5-55e6741bdcbe@roeck-us.net>
+Date:   Sun, 10 Oct 2021 21:08:57 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [PATCH] iommu: fix ARM_SMMU vs QCOM_SCM compilation
+In-Reply-To: <CABoTLcTERUpwPSc7fVUAMqs37XCZJhMFbFRT2oyTt_TodE6GnA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-References: <20211010023350.978638-1-dmitry.baryshkov@linaro.org>
- <YWJpJnaQ2Nr4PUwr@yoga>
- <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-From:   Steev Klimaszewski <steev@kali.org>
-In-Reply-To: <CAK8P3a3irqEVH2e9wCK4MSSBKRW-n8pFSzYBks9ri-hepewkUw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/10/21 6:53 PM, Oskar Senft wrote:
+> I wasn't sure if submitting JUST a v7 of nuvoton,nct7802.yaml (i.e.
+> the 1/2 in this series) would be the right thing to do and thought it
+> would be easier to follow if I dropped both. I couldn't find
+> documentation on what's the right thing to do in that case. Would it
+> have been better to only submit nuvoton,nct7802.yaml as "PATCH v7" ?
+> 
 
-On 10/10/21 12:42 PM, Arnd Bergmann wrote:
-> On Sun, Oct 10, 2021 at 6:17 AM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
->> On Sat 09 Oct 21:33 CDT 2021, Dmitry Baryshkov wrote:
+First, please don't top-post.
+
+Second, no, submitting both patches was the right thing to do, but
+you should not drop a Reviewed-by: tag if there was no change to
+the patch.
+
+Guenter
+
+> Oskar.
+> 
+> On Sun, Oct 10, 2021 at 9:49 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >>
->>> After commit 424953cf3c66 ("qcom_scm: hide Kconfig symbol") arm-smmu got
->>> qcom_smmu_impl_init() call guarded by IS_ENABLED(CONFIG_ARM_SMMU_QCOM).
->>> However the CONFIG_ARM_SMMU_QCOM Kconfig entry does not exist, so the
->>> qcom_smmu_impl_init() is never called.
+>> On 10/10/21 6:22 PM, Oskar Senft wrote:
+>>> This change allows LTD and RTD inputs to be configured via
+>>> device tree bindings. If the DT bindings are not present or
+>>> invalid, the input configuration is not modified and left at
+>>> HW defaults.
 >>>
->>> So, let's fix this by always calling qcom_smmu_impl_init(). It does not
->>> touch the smmu passed unless the device is a non-Qualcomm one. Make
->>> ARM_SMMU select QCOM_SCM for ARCH_QCOM.
-> Sorry about this bug. I was sure I had it working, but I lost part of the commit
-> during a rebase, and my randconfig builds still succeeded without it, so I
-> sent a wrong version.
->
->> Arnd's intention was to not force QCOM_SCM to be built on non-Qualcomm
->> devices. But as Daniel experienced, attempting to boot most Qualcomm
->> boards without this results in a instant reboot.
+>>> Signed-off-by: Oskar Senft <osk@google.com>
 >>
->> I think it's okay if we tinker with CONFIG_ARM_SMMU_QCOM for v5.16, but
->> we're getting late in v5.15 so I would prefer if we make sure this works
->> out of the box.
-> Yes, makes sense. For reference, see below for how I would fix this properly,
-> this is what I had intended to have in the patch. Feel free to pick
-> either version
-> as the immediate bugfix. I'll give the below a little more randconfig testing
-> overnight though. The pasted version of the patch is probably
-> whitespace-damaged,
-> let me know if you would like me to send it as a proper patch.
->
->         Arnd
->
-> 8<-----
-> Subject: iommu: fix ARM_SMMU_QCOM compilation
->
-> My previous bugfix ended up making things worse for the QCOM IOMMU
-> driver when it forgot to add the Kconfig symbol that is getting used to
-> control the compilation of the SMMU implementation specific code
-> for Qualcomm.
->
-> Fixes: 424953cf3c66 ("qcom_scm: hide Kconfig symbol")
-> Reported-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ----
-> diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
-> index c5c71b7ab7e8..2dfe744ddd97 100644
-> --- a/drivers/iommu/Kconfig
-> +++ b/drivers/iommu/Kconfig
-> @@ -311,6 +311,7 @@ config ARM_SMMU
->          select IOMMU_API
->          select IOMMU_IO_PGTABLE_LPAE
->          select ARM_DMA_USE_IOMMU if ARM
-> +       select QCOM_SCM if ARM_SMMU_QCOM
->          help
->            Support for implementations of the ARM System MMU architecture
->            versions 1 and 2.
-> @@ -355,6 +356,13 @@ config ARM_SMMU_DISABLE_BYPASS_BY_DEFAULT
->            'arm-smmu.disable_bypass' will continue to override this
->            config.
->
-> +config ARM_SMMU_QCOM
-> +       def_bool y
-> +       depends on ARM_SMMU && ARCH_QCOM
-> +       help
-> +         When running on a Qualcomm platform that has the custom variant
-> +         of the ARM SMMU, this needs to be built into the SMMU driver.
-> +
->   config ARM_SMMU_V3
->          tristate "ARM Ltd. System MMU Version 3 (SMMUv3) Support"
->          depends on ARM64
-
-FWIW, I tested this patch on the Lenovo Yoga C630 with Dmitry's patch 
-backed out, and this does the right thing as well.
-
-So if we go this route instead of the other patch, Tested-By: Steev 
-Klimaszewski <steev@kali.org>
+>> I sent a Reviewed-by: for v6 of this patch.
+>>
+>>> ---
+>>> Changes from PATCH v6:
+>>> - None (resubmitted due to changes in nuvoton,nct7802.yaml).
+>>>
+>>
+>> Why did you drop it if there was no change ?
+>>
+>> Guenter
+>>
+>>> Changes from PATCH v5:
+>>> - Removed unused "found_channel_config" variable.
+>>> - Initialize mode_mask and mode_val to defaults.
+>>> ---
+>>>    drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
+>>>    1 file changed, 125 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
+>>> index 604af2f6103a..d56f78327619 100644
+>>> --- a/drivers/hwmon/nct7802.c
+>>> +++ b/drivers/hwmon/nct7802.c
+>>> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
+>>>    #define REG_CHIP_ID         0xfe
+>>>    #define REG_VERSION_ID              0xff
+>>>
+>>> +/*
+>>> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
+>>> + * Selection Register
+>>> + */
+>>> +#define RTD_MODE_CURRENT     0x1
+>>> +#define RTD_MODE_THERMISTOR  0x2
+>>> +#define RTD_MODE_VOLTAGE     0x3
+>>> +
+>>> +#define MODE_RTD_MASK                0x3
+>>> +#define MODE_LTD_EN          0x40
+>>> +
+>>> +/*
+>>> + * Bit offset for sensors modes in REG_MODE.
+>>> + * Valid for index 0..2, indicating RTD1..3.
+>>> + */
+>>> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
+>>> +
+>>>    /*
+>>>     * Data structures and manipulation thereof
+>>>     */
+>>> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
+>>>        .volatile_reg = nct7802_regmap_is_volatile,
+>>>    };
+>>>
+>>> -static int nct7802_init_chip(struct nct7802_data *data)
+>>> +static int nct7802_get_channel_config(struct device *dev,
+>>> +                                   struct device_node *node, u8 *mode_mask,
+>>> +                                   u8 *mode_val)
+>>> +{
+>>> +     u32 reg;
+>>> +     const char *type_str, *md_str;
+>>> +     u8 md;
+>>> +
+>>> +     if (!node->name || of_node_cmp(node->name, "channel"))
+>>> +             return 0;
+>>> +
+>>> +     if (of_property_read_u32(node, "reg", &reg)) {
+>>> +             dev_err(dev, "Could not read reg value for '%s'\n",
+>>> +                     node->full_name);
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>> +     if (reg > 3) {
+>>> +             dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
+>>> +                     node->full_name);
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>> +     if (reg == 0) {
+>>> +             if (!of_device_is_available(node))
+>>> +                     *mode_val &= ~MODE_LTD_EN;
+>>> +             else
+>>> +                     *mode_val |= MODE_LTD_EN;
+>>> +             *mode_mask |= MODE_LTD_EN;
+>>> +             return 0;
+>>> +     }
+>>> +
+>>> +     /* At this point we have reg >= 1 && reg <= 3 */
+>>> +
+>>> +     if (!of_device_is_available(node)) {
+>>> +             *mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
+>>> +             *mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+>>> +             return 0;
+>>> +     }
+>>> +
+>>> +     if (of_property_read_string(node, "sensor-type", &type_str)) {
+>>> +             dev_err(dev, "No type for '%s'\n", node->full_name);
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>> +     if (!strcmp(type_str, "voltage")) {
+>>> +             *mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
+>>> +                          << MODE_BIT_OFFSET_RTD(reg - 1);
+>>> +             *mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+>>> +             return 0;
+>>> +     }
+>>> +
+>>> +     if (strcmp(type_str, "temperature")) {
+>>> +             dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
+>>> +                     node->full_name);
+>>> +             return -EINVAL;
+>>> +     }
+>>> +
+>>> +     if (reg == 3) {
+>>> +             /* RTD3 only supports thermistor mode */
+>>> +             md = RTD_MODE_THERMISTOR;
+>>> +     } else {
+>>> +             if (of_property_read_string(node, "temperature-mode",
+>>> +                                         &md_str)) {
+>>> +                     dev_err(dev, "No mode for '%s'\n", node->full_name);
+>>> +                     return -EINVAL;
+>>> +             }
+>>> +
+>>> +             if (!strcmp(md_str, "thermal-diode"))
+>>> +                     md = RTD_MODE_CURRENT;
+>>> +             else if (!strcmp(md_str, "thermistor"))
+>>> +                     md = RTD_MODE_THERMISTOR;
+>>> +             else {
+>>> +                     dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
+>>> +                             node->full_name);
+>>> +                     return -EINVAL;
+>>> +             }
+>>> +     }
+>>> +
+>>> +     *mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
+>>> +     *mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+>>> +
+>>> +     return 0;
+>>> +}
+>>> +
+>>> +static int nct7802_configure_channels(struct device *dev,
+>>> +                                   struct nct7802_data *data)
+>>> +{
+>>> +     /* Enable local temperature sensor by default */
+>>> +     u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
+>>> +     struct device_node *node;
+>>> +     int err;
+>>> +
+>>> +     if (dev->of_node) {
+>>> +             for_each_child_of_node(dev->of_node, node) {
+>>> +                     err = nct7802_get_channel_config(dev, node, &mode_mask,
+>>> +                                                      &mode_val);
+>>> +                     if (err)
+>>> +                             return err;
+>>> +             }
+>>> +     }
+>>> +
+>>> +     return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
+>>> +}
+>>> +
+>>> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
+>>>    {
+>>>        int err;
+>>>
+>>> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
+>>>        if (err)
+>>>                return err;
+>>>
+>>> -     /* Enable local temperature sensor */
+>>> -     err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
+>>> +     err = nct7802_configure_channels(dev, data);
+>>>        if (err)
+>>>                return err;
+>>>
+>>> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
+>>>        mutex_init(&data->access_lock);
+>>>        mutex_init(&data->in_alarm_lock);
+>>>
+>>> -     ret = nct7802_init_chip(data);
+>>> +     ret = nct7802_init_chip(dev, data);
+>>>        if (ret < 0)
+>>>                return ret;
+>>>
+>>>
+>>
 
