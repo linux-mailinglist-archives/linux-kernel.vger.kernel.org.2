@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D9A428542
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EEC428545
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhJKCqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:46:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53186 "EHLO
+        id S233654AbhJKCrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 22:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbhJKCq2 (ORCPT
+        with ESMTP id S230273AbhJKCrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 22:46:28 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A04CC061570;
-        Sun, 10 Oct 2021 19:44:29 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u69so10283714oie.3;
-        Sun, 10 Oct 2021 19:44:29 -0700 (PDT)
+        Sun, 10 Oct 2021 22:47:18 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F016C061570;
+        Sun, 10 Oct 2021 19:45:19 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id x8so10256405plv.8;
+        Sun, 10 Oct 2021 19:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=FEsKQETeRll8zdrD7pbt3rLtoNmhMueb3RF/kjwBxDg=;
-        b=MOG8/CQTeiJKlF4QcodxH9h7UqnCdawe+sWybHuy0aPFF03SZs8SKwDEk0nfmQYns6
-         C5tESG8ZxSAhTNKdX4py1eHjxlrsrIXNLOqS0jdnfkA/hGdT5QA8eocgieubjLtdit1L
-         u6aKsLOfY868R8LzKenGTO+5+HXM7CMFHT2oANRSXCXmcohRJ4GCEzBPQY7C1JtDM/nh
-         eeuPGMlqucBeU3zLyuZJa4lDY8ZDVfA6BvukxQdKlohA0QwLEGUJ3oMvok8wElNTONMr
-         h+cf1QrlkJS6jrSganY/BovGYRgLLmSCzt0CxfyjTFjR2wltPKBRFDZrmR7oGyhrOb97
-         eC5Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+mAotbMl3KaTUP/0ZTOkObNmPxfcYn3kxOVtDQVB4Sc=;
+        b=OGftsYgpEXlnfW/tx60Ejrq/7M7DHlxqt+dlWV1nHuLJS/3KMDBn5CN78YE+vE8P5i
+         M6DdoKEZ1KpjeAuCvxxo23tk7GO9fPNYwLtCF/yotm+wGco1YaOIB4xBZdwXhIpab72d
+         qnz4iGS535Vx2q8KFL3aciuJ3PT/JltxFYlUy4xDsJBJwbV/BpLz9H8gTC7FJiRC+Vbl
+         syPXUuvdB3OsPZzo7Tk7CIIHKm4AKlzsHxyxFmdl0no5PsNyDIDWWsFop6fc1lORCUKY
+         yY0HZHVJzYkmUwSSbaffeZWNTR1ImWCkSP3uEKvbUBvrvgmXDNHqvMKgvYtrp++VUm8e
+         zZtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FEsKQETeRll8zdrD7pbt3rLtoNmhMueb3RF/kjwBxDg=;
-        b=fg+1/8Lr/93PSFpJOdWBW7Vf6oH6NZD9Sq6kdGnCREpQIxRHZ97H5OzpdToHsmBHac
-         VaHXLA+CFBhJaHuLDxb5eZwgHClcEMiY/XZhPMmbko93oJLCMpWmNyEz1QPn78nsWkQz
-         UujyZ7+iv0iW0DwsiTwZlE5Cm2+DELMvD1mK/7Hq51hABM+x9K4T/foovGrO2o3upSGs
-         T5yi+XKE62HQ60gbIUZKMqxDJNhO3iSUwLHpQvxESjLpPERfyHzHcu8PLF/KcXwHs3Rn
-         L/aJVPsCpOGIjHxNNxTmP4HkLNc7Htu7yqsvbKqDmOTYnbXI7p4o3IfPb15x/tqFEQZs
-         F4oQ==
-X-Gm-Message-State: AOAM5324aU2//gXtwgZToy9jrnaMXLZooM5HuUuve1MGNJejaxMxch3I
-        vglzi4rsnT4jB09CGR4wWFs=
-X-Google-Smtp-Source: ABdhPJyPcjZS82mtyLu0RXGz/DQvMO8GdHs0STaTNsxwe+zq9PNIDfts31et3jc4DqwMDp/Reqq7lQ==
-X-Received: by 2002:aca:41d5:: with SMTP id o204mr25440133oia.41.1633920268505;
-        Sun, 10 Oct 2021 19:44:28 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:3cb6:937e:609b:a590? ([2600:1700:dfe0:49f0:3cb6:937e:609b:a590])
-        by smtp.gmail.com with ESMTPSA id 3sm1110709oif.12.2021.10.10.19.44.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 19:44:28 -0700 (PDT)
-Message-ID: <13904686-9a74-00d9-d2fa-1ebf7e820d0c@gmail.com>
-Date:   Sun, 10 Oct 2021 19:44:25 -0700
+        bh=+mAotbMl3KaTUP/0ZTOkObNmPxfcYn3kxOVtDQVB4Sc=;
+        b=xI7M2XCMLLZzlcry0CsUQyVtUolnPy0D11s6u3P6+mLxbCq7bPH32FcN2w6bFiG3MD
+         M3S6aWhGBz+pfNhKaHEze5KGWvTb0KqZ4+CwpW1e1IJWSZ0B76FqSzBCRxkmTSjmjJRe
+         +nBbzxoJRvskgOXDAHUec83SU5ufO35RyyOlSRz1jkLxzO8qBUvSWyug/R3VE/DpqpIJ
+         tbc+WOShy9zSRcYXgQMrkYoGQ4FcAvFjQxEvr2Rv4SgU18avKk0XuFUbFl2TFlweFYJH
+         3z88lp3o/LGUx8Z93gSogSgxeIHJk0QcPXSl7pJvLRHTpc0T+J/1VEBWqw9nVnGQTy8r
+         GW0Q==
+X-Gm-Message-State: AOAM530azvIkVrmTcWYbk5Vq6vxOOZKhk05otamYTdOtv87Qc6YDYg14
+        vuSnLgTqMRgHkZlHfOKsV9mr4PXhD/AXww==
+X-Google-Smtp-Source: ABdhPJzW8SZ0cPIkCJN1Z+TVmytZRRRADvPvKD+GiemmfsBZpX2ip1x37mqK3fBvhaNVh9BG9mW6EA==
+X-Received: by 2002:a17:90a:8b8d:: with SMTP id z13mr28080267pjn.214.1633920318629;
+        Sun, 10 Oct 2021 19:45:18 -0700 (PDT)
+Received: from localhost.localdomain ([103.112.79.203])
+        by smtp.gmail.com with ESMTPSA id h4sm17554297pjm.14.2021.10.10.19.45.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 10 Oct 2021 19:45:18 -0700 (PDT)
+From:   "Yan, Zheng" <ukernel@gmail.com>
+To:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     axboe@kernel.dk, hch@lst.de, paskripkin@gmail.com,
+        "Yan, Zheng" <yanzheng03@kuaishou.com>
+Subject: [PATCH v2] block: nbd: fix sanity check for first_minor
+Date:   Mon, 11 Oct 2021 10:45:09 +0800
+Message-Id: <20211011024509.2012-1-ukernel@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [net-next PATCH v5 13/14] drivers: net: dsa: qca8k: set internal
- delay also for sgmii
-Content-Language: en-US
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20211011013024.569-1-ansuelsmth@gmail.com>
- <20211011013024.569-14-ansuelsmth@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211011013024.569-14-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Yan, Zheng" <yanzheng03@kuaishou.com>
 
+Device's minor is a 20-bits number, max value is 0xfffff.
 
-On 10/10/2021 6:30 PM, Ansuel Smith wrote:
-> QCA original code report port instability and sa that SGMII also require
-> to set internal delay. Generalize the rgmii delay function and apply the
-> advised value if they are not defined in DT.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->   drivers/net/dsa/qca8k.c | 81 +++++++++++++++++++++++++++--------------
->   drivers/net/dsa/qca8k.h |  2 +
->   2 files changed, 55 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index cb66bdccc233..28635f4feaf5 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -998,6 +998,7 @@ qca8k_parse_port_config(struct qca8k_priv *priv)
->   		case PHY_INTERFACE_MODE_RGMII_ID:
->   		case PHY_INTERFACE_MODE_RGMII_TXID:
->   		case PHY_INTERFACE_MODE_RGMII_RXID:
-> +		case PHY_INTERFACE_MODE_SGMII:
->   			delay = 0;
->   
->   			if (!of_property_read_u32(port_dn, "tx-internal-delay-ps", &delay))
-> @@ -1030,8 +1031,6 @@ qca8k_parse_port_config(struct qca8k_priv *priv)
->   
->   			priv->rgmii_rx_delay[cpu_port_index] = delay;
->   
-> -			break;
-> -		case PHY_INTERFACE_MODE_SGMII:
->   			if (of_property_read_bool(port_dn, "qca,sgmii-txclk-falling-edge"))
->   				priv->sgmii_tx_clk_falling_edge = true;
+Fixes: b1a811633f ("block: nbd: add sanity check for first_minor").
+Signed-off-by: "Yan, Zheng" <yanzheng03@kuaishou.com>
+---
+ drivers/block/nbd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This also makes the RGMII* ports parse the couple of sgmii properties 
-introduced earlier, but since these properties are only acted on for 
-PHY_INTERFACE_MODE_SGMII in the .mac_config, I suppose that is fine.
---
-Florian
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 1183f7872b71..118039d35468 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -1750,10 +1750,10 @@ static struct nbd_device *nbd_dev_add(int index, unsigned int refs)
+ 
+ 	/* Too big first_minor can cause duplicate creation of
+ 	 * sysfs files/links, since first_minor will be truncated to
+-	 * byte in __device_add_disk().
++	 * 20-bits number in __device_add_disk().
+ 	 */
+ 	disk->first_minor = index << part_shift;
+-	if (disk->first_minor > 0xff) {
++	if (disk->first_minor > MINORMASK) {
+ 		err = -EINVAL;
+ 		goto out_free_idr;
+ 	}
+-- 
+2.12.2
+
