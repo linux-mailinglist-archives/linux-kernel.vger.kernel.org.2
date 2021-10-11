@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22703428561
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C46942856A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 05:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233620AbhJKDCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 23:02:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35844 "EHLO
+        id S233725AbhJKDFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 23:05:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38751 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230273AbhJKDCx (ORCPT
+        by vger.kernel.org with ESMTP id S231966AbhJKDFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:02:53 -0400
+        Sun, 10 Oct 2021 23:05:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633921253;
+        s=mimecast20190719; t=1633921381;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=c6AyUo0P4jqww7yBj4YHm5SI0ziK+vWCaJKXgZN+3Gc=;
-        b=bHf2kiXjEdpfUKdu3UG5k2rHq8vQsSz8gbnAwMtvniXqEtzZf05X0bE5hfT9BRJ5THN5TK
-        pp/gEhPuAMTe3RoSAb89hxeJht+i9ppeKK1YVIti/bNGl4din2UzCrBO2P17FCqpK1hPz+
-        umxyhR2x+rQwoyhe3RjcqohctMMmbiE=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-C4pHIf1AMGavPSOT-GFrSA-1; Sun, 10 Oct 2021 23:00:51 -0400
-X-MC-Unique: C4pHIf1AMGavPSOT-GFrSA-1
-Received: by mail-pf1-f200.google.com with SMTP id 2-20020aa79102000000b0044c216dd8ecso6640728pfh.18
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:00:51 -0700 (PDT)
+        bh=ep/IQjZzEUDaeX9b8N3ewSbHxeYltfMqeGu5JVcLuBA=;
+        b=C4lLadh6UqRp8Nz2PHAd9UkVgvYA322gl8MqG0/0BiKSTbT/miKTbem97KymEwmr+esyJ8
+        01vgy51ICfiIxvvZYMHPdu5Hk4UMMU/IlC61PcBhmi1/O0y9b6GoZjuhgpZRV24+fvfBTx
+        s1Fa7RoRKCWFHTwgqldYWeSLGTgJGa4=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-MYxhO66YNfGVx8GF6HzQpA-1; Sun, 10 Oct 2021 23:02:59 -0400
+X-MC-Unique: MYxhO66YNfGVx8GF6HzQpA-1
+Received: by mail-pl1-f199.google.com with SMTP id p2-20020a170902bd0200b0013da15f4ab0so7222613pls.7
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 20:02:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=c6AyUo0P4jqww7yBj4YHm5SI0ziK+vWCaJKXgZN+3Gc=;
-        b=rCfA+FqYvfyXeYOZ4S6wt+xnsC4G834Kug1vWSqssSTXlRqD1t9nE/QdSn8KPRddTp
-         RSgX0E5hHlLkp9ExE5suE+KuXGaLxQJpYC4t7CWodKwOHpJI+8UgB4waB447GK7hfT+F
-         95g8s2t2sbSxxz/SUjJLw29ceGP6XOD7L6a6IPaKJMo12x6L5a0uNXenaHOWzZKQY3gY
-         CmH/vvsZvAMcVUvT2crFN2VlXDCfkLbzGQJf0Y+Krj4mjPTBTadOCgnbtK4Zo8mYT8kz
-         RHoh+CsaN8mqcVdfMYx+CHBz053IcZpiIY0KTLG+WOBkDZel9TWt4yIGP+b7RpAqLjhE
-         tLMw==
-X-Gm-Message-State: AOAM532fs1oXoAob91UoKx5s2AQBkCpR1K5u7djbIk6EdZmwx8TNhTFx
-        BDIQinqjscw1+YgoVgLL/UnBvM98MefxSVAO8jUsmojYaJ2xBZ6j3wx9ADvXoacwlXSkRKgtBqu
-        SA40twjAULyjcpwTNUypWB9Ui
-X-Received: by 2002:a63:200a:: with SMTP id g10mr15940557pgg.242.1633921250249;
-        Sun, 10 Oct 2021 20:00:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy+v5J5UcW5S22Imp2npH1Lehnlm7PtWm446qlfdPovNchz+me5hq/SmmI1GWSZ2xB3kCGgLA==
-X-Received: by 2002:a63:200a:: with SMTP id g10mr15940516pgg.242.1633921249713;
-        Sun, 10 Oct 2021 20:00:49 -0700 (PDT)
+        bh=ep/IQjZzEUDaeX9b8N3ewSbHxeYltfMqeGu5JVcLuBA=;
+        b=SB0bT2AfM0erebw8VxFuGGwSGVi3iimNE9m60fmgTNF6mCCemBp8X3KC/ewNYQbvT4
+         1uB2qna4DbfaC3LFu2eBv8MYVtCF/ipU1wYfchTdBxIV/Y+o1dxChiaC4ar1rBjSAnnM
+         paXf4Sy8lubxFMKjgS7QiU4u6cDlRz/eWhjs1i4oGhSCS+DB7qUjAy1NEbtv5cusC/hP
+         Gix82FZu+WWZLdJBTsk4sU4ojAAiRASdUk8f5ZdY4FlQCL55YP6n1KJUC0MlAu5Fh7mg
+         vaSVThCKsJFljqSJr6rdhX95nORuuNoTViRmDQdtvvf9+7iWiYi+aVCdMSNC9flEpzKd
+         AbLg==
+X-Gm-Message-State: AOAM530wEkcGX095I0OBgPeE24CN7vLefMTXlYN/PxoaVo8NYPAxAgnN
+        ub4LDpOrviDwrtGILmo2Ya7lYYVzfgaIbsu/BgjLonMfUE0nrDJ0wblvket/W+YjyeLr6Ml0+BQ
+        ybA5D5gN1jganYxm9uw8n6Z6I
+X-Received: by 2002:a17:902:e74a:b0:13f:3538:fca0 with SMTP id p10-20020a170902e74a00b0013f3538fca0mr4438673plf.22.1633921378051;
+        Sun, 10 Oct 2021 20:02:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxEsTVqtzKcpaLFRb/oOyLSfXXLORN55ZqgosVL8WudT2ITjI/dGae2/7vv9OSaC1LsR2BaSA==
+X-Received: by 2002:a17:902:e74a:b0:13f:3538:fca0 with SMTP id p10-20020a170902e74a00b0013f3538fca0mr4438639plf.22.1633921377610;
+        Sun, 10 Oct 2021 20:02:57 -0700 (PDT)
 Received: from wangxiaodeMacBook-Air.local ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id z9sm5499043pji.42.2021.10.10.20.00.47
+        by smtp.gmail.com with ESMTPSA id o15sm5959453pfg.14.2021.10.10.20.02.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 20:00:49 -0700 (PDT)
+        Sun, 10 Oct 2021 20:02:57 -0700 (PDT)
 Subject: Re: [PATCH v4 1/7] virtio-pci: introduce legacy device module
 To:     Wu Zongyong <wuzongyong@linux.alibaba.com>,
         virtualization@lists.linux-foundation.org,
@@ -61,8 +61,8 @@ References: <cover.1632313398.git.wuzongyong@linux.alibaba.com>
  <cover.1632882380.git.wuzongyong@linux.alibaba.com>
  <a068c730a0707d35afbbf72a5e0eb29f427f6045.1632882380.git.wuzongyong@linux.alibaba.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <897fb1b2-abf1-0ad5-a7de-7b214c3484d5@redhat.com>
-Date:   Mon, 11 Oct 2021 11:00:45 +0800
+Message-ID: <faf8dfb5-43be-9939-85c7-7cc851740117@redhat.com>
+Date:   Mon, 11 Oct 2021 11:02:53 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
  Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
@@ -80,11 +80,6 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 > later.
 >
 > Signed-off-by: Wu Zongyong <wuzongyong@linux.alibaba.com>
-
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
 > ---
 >   drivers/virtio/Kconfig                 |  10 ++
 >   drivers/virtio/Makefile                |   1 +
@@ -700,6 +695,13 @@ Acked-by: Jason Wang <jasowang@redhat.com>
 > +			     u16 index, u32 queue_pfn);
 > +void vp_legacy_set_queue_enable(struct virtio_pci_legacy_device *ldev,
 > +				u16 idx, bool enable);
+
+
+Just spot this. This is never defined in this patch?
+
+Thanks
+
+
 > +bool vp_legacy_get_queue_enable(struct virtio_pci_legacy_device *ldev,
 > +				u16 idx);
 > +void vp_legacy_set_queue_size(struct virtio_pci_legacy_device *ldev,
