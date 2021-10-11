@@ -2,114 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1861A429763
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAE242975A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhJKTQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 15:16:01 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:27314 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234447AbhJKTQA (ORCPT
+        id S234584AbhJKTNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 15:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234480AbhJKTNT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:16:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633979453;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=isDX4gxvzsSFnMxjqxVHmA92I/egBpGCy8mWWkvJadU=;
-    b=Oewhzq1o0y5xPL4Z5eBmpJL2mQ8lqCqxzkVQ8xZngFB7hzuDc3HGeK/v9/ZeqL38qm
-    WkaMLty7x81AYKIZUT+JJVnOl3lrrQjx5TAy1lbCek4RXj9RXhrodYk8vnoVwrERQeEB
-    4k9jk/4/3ajcqzfcNgVzviEwjIpYtnGBgcP0anGVr4K3OFm57E167FLrbfG20i7+jDBr
-    SxyHvJTc1s5EGs2plx7rUWwvh0UTki1SCJZ/jBwxfMzHvo82HZZBj/0NUFomyVHKOA5i
-    CcFVBQ1ZTXojkJKnE+6ycO+V17VplMcIVnuUULK+NFHHiaPcvc8JFkMR2slwWF6cJlIT
-    Jzow==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusx3hdd0DIgVvBOfXT2V6Q=="
-X-RZG-CLASS-ID: mo00
-Received: from [IPv6:2a00:6020:1cfa:f904::b82]
-    by smtp.strato.de (RZmta 47.33.8 AUTH)
-    with ESMTPSA id 900f80x9BJAqwnd
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 11 Oct 2021 21:10:52 +0200 (CEST)
-Subject: Re: [PATCH net v2 1/2] can: isotp: add result check for
- wait_event_interruptible()
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>, mkl@pengutronix.de
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1633764159.git.william.xuanziyang@huawei.com>
- <10ca695732c9dd267c76a3c30f37aefe1ff7e32f.1633764159.git.william.xuanziyang@huawei.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <d811c05a-59f6-947b-7c1b-dfec1a69d42d@hartkopp.net>
-Date:   Mon, 11 Oct 2021 21:10:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 11 Oct 2021 15:13:19 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A56AC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:11:18 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id w19so11647527edd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HLnB0UKJBywsOE8RYieHcM9J99STUr3x8CGLTaGZ7rg=;
+        b=IbSzotG/gn+bOgJdVHqaoqeGcTECqlVlr8e4zZIiIerhvDXx07DhhDVP0kuBYtb5+b
+         pPN5SMAhRMuJPhNqO7xqyu3qAxkL4JPb4iHrnpcsYsdQCl8U5cm2YR5UQSy+ibh0UrRI
+         CjBTye/93zB5t2AFWScnyeaR3Sp2MrQI3yTVx8CDI66GmyXYeL8yRBPNREY13v9aBv8G
+         LGn8wFb4iF/8ylqnQY1b+1sGTdqBqhEdcnwtqUTxoD2gMY/qcEN87IFjDmuGqUp1dIfm
+         /A5+g6LV00pnIGVOv0SOV2XFuvd7xmm+XpzY6fWt0yd9CUh7m+fEZG/JKU5ZWaunD0ih
+         pYVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HLnB0UKJBywsOE8RYieHcM9J99STUr3x8CGLTaGZ7rg=;
+        b=LErr3ZTKUAVNDyn7BGzZ041onYFIWTqKyDvPfJmD4t+7i0DF7isA47a9T5N+Ovsddn
+         ouCczxLC4BLeS7Xx1R33qZr9bIcBjP+pbaJD4GFOAyzZs+cC8+tJrhL+CgsbpBOuKYSu
+         j1HFp8qfXI2+f8Tvbh1Wztt6/L7NR4fbwfdg99vVOGqCUvFPUkwHYP4frYaYMdcZKj5F
+         uyi3YpfFDDWTApLabRqosC/bvdUe3aFiM90JJAfCb/UMqNXc92m8/LfYqcI/jrGSwisY
+         TFLDS8p63ANq8KN1B7GTEkeyiY3jDciIeFHlonZia3er/E3v/7oHAkzsuCto+XnfzDPG
+         ty3A==
+X-Gm-Message-State: AOAM533pRLkqH/v9/XPBlO1Br/AuELnpa3qfyukki38ix3C49aglKvPa
+        6mAxKX8NMi/8CwoJ/jMpjDQxi/Z6QOgpqsSLBwL0Eg==
+X-Google-Smtp-Source: ABdhPJxif7+cQPoBU/ej9FKwJOZfnKScrvx+4/O3wCZshSb3yKi50AMF5pZDKCV3lgUGxkg4ROGmFKDOLuDEyU4og6c=
+X-Received: by 2002:a05:6402:5255:: with SMTP id t21mr42165596edd.103.1633979476782;
+ Mon, 11 Oct 2021 12:11:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <10ca695732c9dd267c76a3c30f37aefe1ff7e32f.1633764159.git.william.xuanziyang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20211011134517.833565002@linuxfoundation.org> <CA+G9fYutz0ZgJ=rrg8=Fd7vh9c7G-SJfF2YoH5wZyGzUHu4Dqw@mail.gmail.com>
+In-Reply-To: <CA+G9fYutz0ZgJ=rrg8=Fd7vh9c7G-SJfF2YoH5wZyGzUHu4Dqw@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Oct 2021 00:41:05 +0530
+Message-ID: <CA+G9fYsLnz89gHYWkJMgevCrUC3DbMS48TrY4CXge1y24f-iHg@mail.gmail.com>
+Subject: Re: [PATCH 5.14 000/151] 5.14.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
+The reported crash on the arm x15 is an intermittent problem.
+Which is also noticed on Linux next and mainline.
 
-On 09.10.21 09:40, Ziyang Xuan wrote:
-> Using wait_event_interruptible() to wait for complete transmission,
-> but do not check the result of wait_event_interruptible() which can
-> be interrupted. It will result in tx buffer has multiple accessers
-> and the later process interferes with the previous process.
-> 
-> Following is one of the problems reported by syzbot.
-> 
-> =============================================================
-> WARNING: CPU: 0 PID: 0 at net/can/isotp.c:840 isotp_tx_timer_handler+0x2e0/0x4c0
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.13.0-rc7+ #68
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
-> RIP: 0010:isotp_tx_timer_handler+0x2e0/0x4c0
-> Call Trace:
->   <IRQ>
->   ? isotp_setsockopt+0x390/0x390
->   __hrtimer_run_queues+0xb8/0x610
->   hrtimer_run_softirq+0x91/0xd0
->   ? rcu_read_lock_sched_held+0x4d/0x80
->   __do_softirq+0xe8/0x553
->   irq_exit_rcu+0xf8/0x100
->   sysvec_apic_timer_interrupt+0x9e/0xc0
->   </IRQ>
->   asm_sysvec_apic_timer_interrupt+0x12/0x20
-> 
-> Add result check for wait_event_interruptible() in isotp_sendmsg()
-> to avoid multiple accessers for tx buffer.
-> 
-> Reported-by: syzbot+78bab6958a614b0c80b9@syzkaller.appspotmail.com
-> Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+We are investigating this problem.
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+This reported crash is not specific to this rc review.
 
-Many thanks!
-Oliver
-
-> ---
->   net/can/isotp.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index caaa532ece94..2ac29c2b2ca6 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -865,7 +865,9 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->   			return -EAGAIN;
->   
->   		/* wait for complete transmission of current pdu */
-> -		wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-> +		err = wait_event_interruptible(so->wait, so->tx.state == ISOTP_IDLE);
-> +		if (err)
-> +			return err;
->   	}
->   
->   	if (!size || size > MAX_MSG_LENGTH)
-> 
+- Naresh
