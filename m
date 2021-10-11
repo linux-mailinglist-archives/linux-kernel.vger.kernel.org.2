@@ -2,92 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7D5428BB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B61E428BBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236120AbhJKLEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:04:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53108 "EHLO mail.kernel.org"
+        id S236137AbhJKLEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:04:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235971AbhJKLET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:04:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4591460EB4;
-        Mon, 11 Oct 2021 11:02:17 +0000 (UTC)
+        id S236128AbhJKLEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:04:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B41460EB1;
+        Mon, 11 Oct 2021 11:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633950139;
-        bh=rLvTUINnh7X5dxHDbrT7lTQpGD5oMjl+jxUxLtJ+E5o=;
+        s=k20201202; t=1633950169;
+        bh=Oi1WJOMEIm5nh0AAd4dmHC8O35/60euaedtnJCwMV7s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q0ge84XtrlSzpb/dV/z0PauJWEg/iKeEJ27FwrRpvtbFcs7QdNGXcCxzv4797wC3F
-         gAwFr1EwDS8Ewh9vbsOjNuWzjg1+vwMXTSpPVc4/TtgxxLJ2GlTBNvuCuQLQX75res
-         Wg26Q1Mx4JY0HJBzGjT4/rJFiGOqP4dZ4+c5BdG8mC65JrDhlESL3BB/ZO6kBT7Evs
-         OR8meoJZco/NMWMkklSGG3tgi+crhr8XIDWa3eaUfLIcq3zchTM6w9heeUrrrNX4Dj
-         QHTN9PY2Ko3ieiFausxkfjNrDy9HYoBWJzlftoG+xktoIbVow/f9A7/Or1pFSWDo69
-         p9pQbANGVbLvw==
-Date:   Mon, 11 Oct 2021 12:02:14 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 04/13] regulator: Introduce tps68470-regulator driver
-Message-ID: <YWQZtj7N+2QoZKur@sirena.org.uk>
-References: <20211009160548.306550-1-hdegoede@redhat.com>
- <20211009160548.306550-5-hdegoede@redhat.com>
+        b=W/WGpwMN9duErrEx9Z7StzfvIWALhqdOvDhkFkspt04zOct5qTvWSHRCTc5R1/KN+
+         B8TgFUUPbnYFb5Jbjim7tlk/Y4P0Cow2udEufTl2h1YItt1cD04icaeHkI0VXrsvit
+         Z5dIi9wrTlE/QKOTDw9cBlA5YEOJGY82ONlFqPBJWnKtWzulivDOgN47z9G//tM73l
+         aIxRGfGzbfnNS6AA1Ceu79ljfvWUY+sSsswMfzFHbw8gtN8DKct9QARKk1TMFQc3TN
+         2T2/XSBYOOxVKjBxCViLpJO7kkxjWMvQu5jFq3UEoKPQMOuVVGJUkthbXV8/M/JNso
+         Rt5zdq5YCvHjw==
+Date:   Mon, 11 Oct 2021 12:02:44 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Shier <pshier@google.com>,
+        Raghavendra Rao Ananta <rananta@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Oliver Upton <oupton@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 00/17] clocksource/arm_arch_timer: Add basic ARMv8.6
+ support
+Message-ID: <20211011110243.GB4068@willie-the-truck>
+References: <20211010114306.2910453-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6lVS4joxd6WyDi8G"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211009160548.306550-5-hdegoede@redhat.com>
-X-Cookie: Your ignorance cramps my conversation.
+In-Reply-To: <20211010114306.2910453-1-maz@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 10, 2021 at 12:42:49PM +0100, Marc Zyngier wrote:
+> This is v3 of the series enabling ARMv8.6 support for timer subsystem,
+> and was prompted by a discussion with Oliver around the fact that an
+> ARMv8.6 implementation must have a 1GHz counter, which leads to a
+> number of things to break in the timer code:
+> 
+> - the counter rollover can come pretty quickly as we only advertise a
+>   56bit counter,
+> - the maximum timer delta can be remarkably small, as we use the
+>   countdown interface which is limited to 32bit...
+> 
+> Thankfully, there is a way out: we can compute the minimal width of
+> the counter based on the guarantees that the architecture gives us,
+> and we can use the 64bit comparator interface instead of the countdown
+> to program the timer.
+> 
+> Finally, we start making use of the ARMv8.6 ECV features by switching
+> accesses to the counters to a self-synchronising register, removing
+> the need for an ISB. Hopefully, implementations will *not* just stick
+> an invisible ISB there...
+> 
+> A side effect of the switch to CVAL is that XGene-1 breaks. I have
+> added a workaround to keep it alive.
+> 
+> I have added Oliver's original patch[0] to the series and tweaked a
+> couple of things. Blame me if I broke anything.
+> 
+> The whole things has been tested on Juno (sysreg + MMIO timers),
+> XGene-1 (broken sysreg timers), FVP (FEAT_ECV, CNT*CTSS_EL0).
 
---6lVS4joxd6WyDi8G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The arm64 bits look pretty good to me (I left some minor comments).
 
-On Sat, Oct 09, 2021 at 06:05:39PM +0200, Hans de Goede wrote:
+How do you want to merge this series? It would be nice to have the arch
+bits in the arm64 tree, if possible, as we'll be tripping over the cpucaps
+stuff otherwise.
 
-> +/*
-> + * The ACPI tps68470 probe-ordering depends on the clk/gpio/regulator drivers
-> + * registering before the drivers for the camera-sensors which use them bind.
-> + * subsys_initcall() ensures this when the drivers are builtin.
-> + */
-> +static int __init tps68470_regulator_init(void)
-> +{
-> +	return platform_driver_register(&tps68470_regulator_driver);
-> +}
-> +subsys_initcall(tps68470_regulator_init);
-
-If this actually matters it is still going to get broken when the driver
-is built as a module.  We've not been doing this given probe deferral.
-
---6lVS4joxd6WyDi8G
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFkGbUACgkQJNaLcl1U
-h9BLowf/QN6baaUZLF3njsuXlGPn3X9MGZR5O4H4zAegyfy2uqSvwLtZgJj6RnLQ
-5vdRcy0lxfycPGUujHC44jqhb2x2CeyhS3u0zZ1/cD+ZgciSWxJL1cWRLf+CbQ5E
-19rJlzJ1jocQe9jN24xvSxcsmvQU0OXhIUDmkyLQY0j9eqFTqiousuTOrblRtK3A
-mdvRH2OMFXzEKOb9IVa5tc3nLPtRfmsVr6PmCnlgFVfD5mTF+XXYZiTNd+bHn1YG
-wmKXQwT8e+sloWTbwj2xbFasaF4VQ101iycUQGeandv1sfxhHkel9GaIEgtQla+C
-eg9CjLwcWKn0CU9KRru/yZITyPGW2g==
-=WgC1
------END PGP SIGNATURE-----
-
---6lVS4joxd6WyDi8G--
+Will
