@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EB6429419
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9710742941A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhJKQFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S232173AbhJKQFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:05:12 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:40342 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232721AbhJKQFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Oct 2021 12:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbhJKQFF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:05:05 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B10C061749
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 09:03:05 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id r19so73074888lfe.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 09:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kR8cVcJwKF9GXGV4SLswTft9R5wnSnYpe56HVAjGBfY=;
-        b=AiFUgJZSg8qAETiAOyE9EP8tqDeBADXJ6UHtIVcK8TABuDZtWkbDhwKSTJKRegrrDW
-         9Ek4iDhd9druNdgiNpgDzrd7A3mMNenBuoJ2fvKrC1jEjLW6AQE3/JCsWAR3Xo2Ds1Gi
-         6ihck35sDRZTUOFg8MuMTD3+/ynHUdixAKUEZ6Fj7fpz9Au6TlqwFIraM6QOIkkw7UEg
-         q4tPcOvY0GmBAtbgFBP42lYXIK3+uZq+8Uq0b1fkDRfWTDMcsMRBowYgM3J1dCBVYuij
-         v5a4Gn/SylpYgXlv81ncLbOEsIy+SvovpaaQ/1o+fm2tYHOfNyjX5UlPE4OIqoTqfURQ
-         Lk6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kR8cVcJwKF9GXGV4SLswTft9R5wnSnYpe56HVAjGBfY=;
-        b=BtxjLJwHWh+PFoM5ekvnKDy5DMDrplUYHqMUtQaxoeAK6zIOm15DPTz9OGnxayOX3J
-         hHKE0K+O10BuHiuICIDPYD2G48ae165YFuF0t27H0ZoOpf6izFinAw7dDFj0xhNkL8O1
-         etBPl/46xgXaqu6H0u4IBiHx0wF3hAmre/7aM5/FZnKTTcoXxMdUK0XnqUTlhuKYj6y9
-         aCOpmONh3c0dZhdiAUGClH+Q2Xd3GA8Pp9MkAVOhxS2rMvPbqXJS98dhPZFD4SDpV+k5
-         8OtyHjmvZbgylfrAzCfgbIVPiMfs3pSOo1Mms3dJWtHH6BfAYKYkTiO/s6Sw1P+WT7GK
-         E8MQ==
-X-Gm-Message-State: AOAM531cSx91o6j5EGyk8DPen3uOXEJ4NHOzyxA7yBCYizSApgNGWoW7
-        xXg7FbOeNJU8FioTbNeSF507XuAJwRfq3DY++OlwIy1f6OA=
-X-Google-Smtp-Source: ABdhPJxzTdsG5f3qJEq39X5L95WWGuXKApuuacxL9M0wV/cZyW5NowI/jafTFnq3xkTBsGQepLEKzoRs1P7BspxatHY=
-X-Received: by 2002:a05:6512:1056:: with SMTP id c22mr1305274lfb.26.1633968178827;
- Mon, 11 Oct 2021 09:02:58 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08bb0030636ca0dab1dbfc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:3063:6ca0:dab1:dbfc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 89FC81EC03CA;
+        Mon, 11 Oct 2021 18:03:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633968187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=xo81DUxTI79r4bZwrBo156JdbuucSEWl4rjAfXkYrPw=;
+        b=jXbvDrA8iQpoe7DXvfBYZhvwCTU87omzg8Bld7rWiSSHH+3DkQXyPGhANN+axk4179afsg
+        Hp3k36SZ0Ix4VzpM5yJTkDyr/3K1m6wTFLRGufuptvpP6plCtdveKd9wCMFO4duFWdE5Mx
+        3Ka/xiEBNWs+uTb3ZHdYZZVJ1qs+wXY=
+Date:   Mon, 11 Oct 2021 18:03:03 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Subject: [PATCH -v2] x86/Kconfig: Do not enable
+ AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT automatically
+Message-ID: <YWRgN63FOrQGO8jS@zn.tnic>
+References: <CADnq5_N5+SEW4JyXLc=FdSHnSbXrGKWjEw4vW1Jxv9-KdWf+Jg@mail.gmail.com>
+ <96f6dbed-b027-c65e-6888-c0e8630cc006@amd.com>
+ <YV3hbK/uhChK5Pse@zn.tnic>
+ <d704afb9-7c7c-fa55-4329-58bb2fa25b33@molgen.mpg.de>
+ <YWQ3963xcO3xbFo5@zn.tnic>
+ <87d93314-ba3e-464f-d051-84a8de674b06@amd.com>
+ <139ed784-d622-b0d2-3650-736b42e624f0@molgen.mpg.de>
+ <be2b3cca-9822-4bb7-12b4-4c5c89318625@amd.com>
+ <8b21ebbd-f7ca-8af3-5398-8320c6ed6422@molgen.mpg.de>
+ <CADnq5_OLaFFuK-LaEw+aXdbJcXa0pEUEBJaCbaeuOxVbEat_oA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20211006174910.2964885-1-daeho43@gmail.com> <5743eeca-a6e8-87d4-5799-c622fbada429@kernel.org>
-In-Reply-To: <5743eeca-a6e8-87d4-5799-c622fbada429@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Mon, 11 Oct 2021 09:02:47 -0700
-Message-ID: <CACOAw_zfDZMB4pLEuHWU5YcKnAtfBBTSuXwXy+L2rNJxXC3ysg@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH] f2fs: include non-compressed blocks in compr_written_block
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CADnq5_OLaFFuK-LaEw+aXdbJcXa0pEUEBJaCbaeuOxVbEat_oA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-> > index c1bf9ad4c220..9b663eaf4805 100644
-> > --- a/fs/f2fs/compress.c
-> > +++ b/fs/f2fs/compress.c
-> > @@ -1530,6 +1530,7 @@ int f2fs_write_multi_pages(struct compress_ctx *cc,
-> >       if (cluster_may_compress(cc)) {
-> >               err = f2fs_compress_pages(cc);
-> >               if (err == -EAGAIN) {
-> > +                     add_compr_block_stat(cc->inode, cc->cluster_size);
->
-> Shouldn't we relocate this after 'write' label?
->
-> One more concern, it looks we've changed what compr_block stat indicated,
-> literally, the block we account should be compressed..., how about accounting
-> it by introducing .presist_blocks, used_blocks or occupied_blocks.... thoughts?
->
+Ok,
 
-What I wanted to add here is just one case in which compression was
-tried, but couldn't save any block, so gave up.
-If we put this below the "write" label, we will count blocks, even if
-the file is turned off for compression in "user-controlled
-compression" mode.
-Like the commit comment says, I want to estimate the overall compression rate.
-But, if we include every other compression disabled condition, it
-won't work like that.
+here's v2, I've added "however" number 3 below which should summarize
+Christian's note about coherent and concurrent use of memory by the GPU
+and CPU, which obviously cannot work with bounce buffers.
 
-Thanks,
+I'll send it to Linus next week if there are no more complaints.
+
+Thx.
+
+---
+From: Borislav Petkov <bp@suse.de>
+
+This Kconfig option was added initially so that memory encryption is
+enabled by default on machines which support it.
+
+However, devices which have DMA masks that are less than the bit
+position of the encryption bit, aka C-bit, require the use of an IOMMU
+or the use of SWIOTLB.
+
+If the IOMMU is disabled or in passthrough mode, the kernel would switch
+to SWIOTLB bounce-buffering for those transfers.
+
+In order to avoid that,
+
+  2cc13bb4f59f ("iommu: Disable passthrough mode when SME is active")
+
+disables the default IOMMU passthrough mode so that devices for which the
+default 256K DMA is insufficient, can use the IOMMU instead.
+
+However 2, there are cases where the IOMMU is disabled in the BIOS, etc.
+(think the usual hardware folk "oops, I dropped the ball there" cases) or a
+driver doesn't properly use the DMA APIs or a device has a firmware or
+hardware bug, e.g.:
+
+  ea68573d408f ("drm/amdgpu: Fail to load on RAVEN if SME is active")
+
+However 3, in the above GPU use case, there are APIs like Vulkan and
+some OpenGL/OpenCL extensions which are under the assumption that
+user-allocated memory can be passed in to the kernel driver and both the
+GPU and CPU can do coherent and concurrent access to the same memory.
+That cannot work with SWIOTLB bounce buffers, of course.
+
+So, in order for those devices to function, drop the "default y" for the
+SME by default active option so that users who want to have SME enabled,
+will need to either enable it in their config or use "mem_encrypt=on" on
+the kernel command line.
+
+ [ tlendacky: Generalize commit message. ]
+
+Fixes: 7744ccdbc16f ("x86/mm: Add Secure Memory Encryption (SME) support")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/8bbacd0e-4580-3194-19d2-a0ecad7df09c@molgen.mpg.de
+---
+ arch/x86/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index bd70e8a39fbf..d9830e7e1060 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1525,7 +1525,6 @@ config AMD_MEM_ENCRYPT
+ 
+ config AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT
+ 	bool "Activate AMD Secure Memory Encryption (SME) by default"
+-	default y
+ 	depends on AMD_MEM_ENCRYPT
+ 	help
+ 	  Say yes to have system memory encrypted by default if running on
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
