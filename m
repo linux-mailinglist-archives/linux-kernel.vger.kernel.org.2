@@ -2,261 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA2F24284E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9CD4284E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhJKBvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:51:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S233444AbhJKBvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:51:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbhJKBvm (ORCPT
+        with ESMTP id S232748AbhJKBvt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:51:42 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4764C061570;
-        Sun, 10 Oct 2021 18:49:43 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so19696678otb.10;
-        Sun, 10 Oct 2021 18:49:43 -0700 (PDT)
+        Sun, 10 Oct 2021 21:51:49 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E97C061570;
+        Sun, 10 Oct 2021 18:49:50 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id bk7so6150422qkb.13;
+        Sun, 10 Oct 2021 18:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mPp2IC/8XVa9FpmITYRYA6birTrJuBZb+Xd2yUO/arA=;
-        b=bY17w47tT3Z4dmcvdDlUqi0T7m8Go5K5sg3FuLOFbi4CMJQHiieJ6CBNiG0sQfNbE3
-         QY387jwKiaEuSNuRdbE2LkQlTwd/YSdXUt1lnwFx48mVyZYYxtlV2ucA4PGSeY7anmks
-         zw46VyovJTO7LVkq/VVMiNzLu8RKAR6NzmopRrvEu85a8BEBJZkDCRhScJhaNFQYPwk4
-         nHRGq7/FYdeecRDsA9QNBZJQKAWONxemWu9PvvS/NTJal/Y2F1+37vWVy/oHiHwQOF8K
-         MjpmLCYP/wsKEcs8vagRvYAqzoTvnbqRd1KCPs7bDBvLRWlQxCXsc/zT5sxC7q6fDoyl
-         FLkA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=EE7Pw1o/NWSzz3GGzDT9jF9OY6seL1Uyk9vnbe/WKtk=;
+        b=kJv6R7D37Ly/JhMeqT2q5sVlKzFpwWxg9mEJZNro9f79KjEXUT4XtqcFE2nIf4r1Vq
+         ZN+4kLtr25uRzk5OgMI875z57BQXn8oM0j2iTkyy1n2Mc3wUNCR66xljLH6721lAnmLL
+         cvESpdDE6BJHcMJ/XkYFdgIsvhDBIKkUy7d0qIIqbbe0YKtFxdfj6iTRKZWygSJiFRJJ
+         U/wGqGdvhXNr+7L/xFXT2RJY9LyMWGAJ8nUIbvd71tek66u0dAj8cLvn1Vp04jkUfbq6
+         10P74reImg/ycp/s3fWiTr+ujiC0Y+4/MLjAyxJH2+rExkKd9KzEvyEtaXWLop99mjLE
+         9iGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=mPp2IC/8XVa9FpmITYRYA6birTrJuBZb+Xd2yUO/arA=;
-        b=rit4Sz7cIcde2VlxbY3JaHh0X2ZEi4H9HKVAg8ktgs2pRU6/uBhjncJekEs/sjrCRM
-         9ildP8nzCZeb3mNwlZsPDa+gwP08i3JGN9YbrQ6n9PLrnySB0K4azcCyYQaOd6TEWrWe
-         cJor+r0ge/sILjdouM9o1/21aOEai7Lc2eGpWVkY+x8iAjisiGcPoVsTk59FA4EzKgM5
-         GGt5qUR4oHg0DI4jR9ewPDdmlj8ekrslEFHcRhkViiFdLFQGr//9wwyUCZrgPYFoWp9x
-         ttTXo33Wtyk5/qaDPpZ06S94OjQtyntZj/njYce6aF6QzDVPYH8TO4MXH5+yOhgF4RYi
-         QLBw==
-X-Gm-Message-State: AOAM533kdviG+kFNLtKHZFFBI/cIJ0MVLlO5u8OrIRpqN9woPQ4MIzOB
-        SSedqIOSSWeB48u7rnp5vK8NDqQGSRc=
-X-Google-Smtp-Source: ABdhPJw0fd3jfT7oq4wVfJ7vcebpNes7JdZdurzSgVPeljWPSIyBB0yjTb3wlDvkYAyg+f2x8cHJJA==
-X-Received: by 2002:a9d:eac:: with SMTP id 41mr18859144otj.38.1633916982884;
-        Sun, 10 Oct 2021 18:49:42 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f2sm1401111oia.44.2021.10.10.18.49.41
+        bh=EE7Pw1o/NWSzz3GGzDT9jF9OY6seL1Uyk9vnbe/WKtk=;
+        b=lsk8peLAuMdfxjWifVedgd0u0TGgrZv25K7BvzwkhpyybpWWY/IB63hrFszj5FFfEM
+         gyvZF0pkJh+8E7bjCqSifxlV5mhqBVq4Ksl3TBgKaH+7YyS1bPnU5NsngEBuIieYD1VL
+         DFwqZKOywCMgzX/GcNQ5izvpzil1ioQXJdWB90hsoQRSim9wF2Dww5vhSWm4zV7yP3tx
+         uM7g068riHPfPtdKlikgpS3PIFT2AnYRUg49Cx3jAF068aOTS/rfdTOUS0jgviLXRjK7
+         /r2dDwDTwFRsU8yzipYz7oEkM88EQiAIf7eqaSpYAlZgFP7/7pC8/QQcU3wq2F8wRKzP
+         mWvw==
+X-Gm-Message-State: AOAM531JoXgViZpO8h/Ub3qh/r+Ft45+sZt3B0yiGk8BFmGohE+06K8D
+        oJw70iHFPgZVO1+1xa/fL8s=
+X-Google-Smtp-Source: ABdhPJzTmV38I4XymcLr1DTQoBsdeNlLGgWhMQj2OTFzhGEeZPp0IVslyJ/308QGGBfiYtVNV8LSsw==
+X-Received: by 2002:a37:6c83:: with SMTP id h125mr12828684qkc.486.1633916989626;
+        Sun, 10 Oct 2021 18:49:49 -0700 (PDT)
+Received: from ?IPV6:2600:1700:dfe0:49f0:802c:b332:26e0:e0aa? ([2600:1700:dfe0:49f0:802c:b332:26e0:e0aa])
+        by smtp.gmail.com with ESMTPSA id 139sm3592985qkj.44.2021.10.10.18.49.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 18:49:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v7 2/2] hwmon: (nct7802) Make temperature/voltage sensors
- configurable
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211011012212.91357-1-osk@google.com>
- <20211011012212.91357-2-osk@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <98dcaa85-d04c-7a9c-1901-8786d361477c@roeck-us.net>
-Date:   Sun, 10 Oct 2021 18:49:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sun, 10 Oct 2021 18:49:49 -0700 (PDT)
+Message-ID: <d7242e22-9f7c-354a-aabc-3f62fb52533b@gmail.com>
+Date:   Sun, 10 Oct 2021 18:49:46 -0700
 MIME-Version: 1.0
-In-Reply-To: <20211011012212.91357-2-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.2
+Subject: Re: [net-next PATCH v5 03/14] net: dsa: qca8k: add support for sgmii
+ falling edge
 Content-Language: en-US
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Matthew Hagan <mnhagan88@gmail.com>
+References: <20211011013024.569-1-ansuelsmth@gmail.com>
+ <20211011013024.569-4-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20211011013024.569-4-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 6:22 PM, Oskar Senft wrote:
-> This change allows LTD and RTD inputs to be configured via
-> device tree bindings. If the DT bindings are not present or
-> invalid, the input configuration is not modified and left at
-> HW defaults.
+
+
+On 10/10/2021 6:30 PM, Ansuel Smith wrote:
+> Add support for this in the qca8k driver. Also add support for SGMII
+> rx/tx clock falling edge. This is only present for pad0, pad5 and
+> pad6 have these bit reserved from Documentation. Add a comment that this
+> is hardcoded to PAD0 as qca8327/28/34/37 have an unique sgmii line and
+> setting falling in port0 applies to both configuration with sgmii used
+> for port0 or port6.
 > 
-> Signed-off-by: Oskar Senft <osk@google.com>
-
-I sent a Reviewed-by: for v6 of this patch.
-
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 > ---
-> Changes from PATCH v6:
-> - None (resubmitted due to changes in nuvoton,nct7802.yaml).
+>   drivers/net/dsa/qca8k.c | 57 +++++++++++++++++++++++++++++++++++++++++
+>   drivers/net/dsa/qca8k.h |  4 +++
+>   2 files changed, 61 insertions(+)
 > 
-
-Why did you drop it if there was no change ?
-
-Guenter
-
-> Changes from PATCH v5:
-> - Removed unused "found_channel_config" variable.
-> - Initialize mode_mask and mode_val to defaults.
-> ---
->   drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 125 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
-> index 604af2f6103a..d56f78327619 100644
-> --- a/drivers/hwmon/nct7802.c
-> +++ b/drivers/hwmon/nct7802.c
-> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
->   #define REG_CHIP_ID		0xfe
->   #define REG_VERSION_ID		0xff
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index a892b897cd0d..e335a4cfcb75 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -977,6 +977,36 @@ qca8k_setup_mac_pwr_sel(struct qca8k_priv *priv)
+>   	return ret;
+>   }
 >   
-> +/*
-> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
-> + * Selection Register
-> + */
-> +#define RTD_MODE_CURRENT	0x1
-> +#define RTD_MODE_THERMISTOR	0x2
-> +#define RTD_MODE_VOLTAGE	0x3
-> +
-> +#define MODE_RTD_MASK		0x3
-> +#define MODE_LTD_EN		0x40
-> +
-> +/*
-> + * Bit offset for sensors modes in REG_MODE.
-> + * Valid for index 0..2, indicating RTD1..3.
-> + */
-> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
-> +
->   /*
->    * Data structures and manipulation thereof
->    */
-> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
->   	.volatile_reg = nct7802_regmap_is_volatile,
->   };
->   
-> -static int nct7802_init_chip(struct nct7802_data *data)
-> +static int nct7802_get_channel_config(struct device *dev,
-> +				      struct device_node *node, u8 *mode_mask,
-> +				      u8 *mode_val)
+> +static int
+> +qca8k_parse_port_config(struct qca8k_priv *priv)
 > +{
-> +	u32 reg;
-> +	const char *type_str, *md_str;
-> +	u8 md;
+> +	struct device_node *port_dn;
+> +	phy_interface_t mode;
+> +	struct dsa_port *dp;
+> +	int port;
 > +
-> +	if (!node->name || of_node_cmp(node->name, "channel"))
-> +		return 0;
+> +	/* We have 2 CPU port. Check them */
+> +	for (port = 0; port < QCA8K_NUM_PORTS; port++) {
+> +		/* Skip every other port */
+> +		if (port != 0 && port != 6)
+> +			continue;
 > +
-> +	if (of_property_read_u32(node, "reg", &reg)) {
-> +		dev_err(dev, "Could not read reg value for '%s'\n",
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
+> +		dp = dsa_to_port(priv->ds, port);
+> +		port_dn = dp->dn;
+
+You should probably have an:
+
+		if (!of_device_is_available(port_dn))
+			continue
+
+to skip over ports being disabled, which could presumably happen in a 
+sparsely populated switch for instance.
+
 > +
-> +	if (reg > 3) {
-> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
+> +		of_get_phy_mode(port_dn, &mode);
+
+This function returns an error that you are not checking.
+
+> +		if (mode == PHY_INTERFACE_MODE_SGMII) {
+> +			if (of_property_read_bool(port_dn, "qca,sgmii-txclk-falling-edge"))
+> +				priv->sgmii_tx_clk_falling_edge = true;
 > +
-> +	if (reg == 0) {
-> +		if (!of_device_is_available(node))
-> +			*mode_val &= ~MODE_LTD_EN;
-> +		else
-> +			*mode_val |= MODE_LTD_EN;
-> +		*mode_mask |= MODE_LTD_EN;
-> +		return 0;
-> +	}
-> +
-> +	/* At this point we have reg >= 1 && reg <= 3 */
-> +
-> +	if (!of_device_is_available(node)) {
-> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
-> +		dev_err(dev, "No type for '%s'\n", node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!strcmp(type_str, "voltage")) {
-> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
-> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (strcmp(type_str, "temperature")) {
-> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 3) {
-> +		/* RTD3 only supports thermistor mode */
-> +		md = RTD_MODE_THERMISTOR;
-> +	} else {
-> +		if (of_property_read_string(node, "temperature-mode",
-> +					    &md_str)) {
-> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (!strcmp(md_str, "thermal-diode"))
-> +			md = RTD_MODE_CURRENT;
-> +		else if (!strcmp(md_str, "thermistor"))
-> +			md = RTD_MODE_THERMISTOR;
-> +		else {
-> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
-> +				node->full_name);
-> +			return -EINVAL;
+> +			if (of_property_read_bool(port_dn, "qca,sgmii-rxclk-falling-edge"))
+> +				priv->sgmii_rx_clk_falling_edge = true;
 > +		}
 > +	}
-> +
-> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
-> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
 > +
 > +	return 0;
 > +}
 > +
-> +static int nct7802_configure_channels(struct device *dev,
-> +				      struct nct7802_data *data)
-> +{
-> +	/* Enable local temperature sensor by default */
-> +	u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
-> +	struct device_node *node;
-> +	int err;
-> +
-> +	if (dev->of_node) {
-> +		for_each_child_of_node(dev->of_node, node) {
-> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
-> +							 &mode_val);
-> +			if (err)
-> +				return err;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
-> +}
-> +
-> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
+>   static int
+>   qca8k_setup(struct dsa_switch *ds)
 >   {
->   	int err;
+> @@ -990,6 +1020,11 @@ qca8k_setup(struct dsa_switch *ds)
+>   		return -EINVAL;
+>   	}
 >   
-> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
->   	if (err)
->   		return err;
+> +	/* Parse CPU port config to be later used in phy_link mac_config */
+> +	ret = qca8k_parse_port_config(priv);
+> +	if (ret)
+> +		return ret;
+> +
+>   	mutex_init(&priv->reg_mutex);
 >   
-> -	/* Enable local temperature sensor */
-> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
-> +	err = nct7802_configure_channels(dev, data);
->   	if (err)
->   		return err;
+>   	/* Start by setting up the register mapping */
+> @@ -1274,6 +1309,28 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+>   		}
 >   
-> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
->   	mutex_init(&data->access_lock);
->   	mutex_init(&data->in_alarm_lock);
->   
-> -	ret = nct7802_init_chip(data);
-> +	ret = nct7802_init_chip(dev, data);
->   	if (ret < 0)
->   		return ret;
->   
+>   		qca8k_write(priv, QCA8K_REG_SGMII_CTRL, val);
+> +
+> +		/* For qca8327/qca8328/qca8334/qca8338 sgmii is unique and
+> +		 * falling edge is set writing in the PORT0 PAD reg
+> +		 */
+> +		if (priv->switch_id == QCA8K_ID_QCA8327 ||
+> +		    priv->switch_id == QCA8K_ID_QCA8337)
+> +			reg = QCA8K_REG_PORT0_PAD_CTRL;
+> +
+> +		val = 0;
+> +
+> +		/* SGMII Clock phase configuration */
+> +		if (priv->sgmii_rx_clk_falling_edge)
+> +			val |= QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE;
+> +
+> +		if (priv->sgmii_tx_clk_falling_edge)
+> +			val |= QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE;
+> +
+> +		if (val)
+> +			ret = qca8k_rmw(priv, reg,
+> +					QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE |
+> +					QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE,
+> +					val);
+>   		break;
+>   	default:
+>   		dev_err(ds->dev, "xMII mode %s not supported for port %d\n",
+> diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> index fc7db94cc0c9..bc9c89dd7e71 100644
+> --- a/drivers/net/dsa/qca8k.h
+> +++ b/drivers/net/dsa/qca8k.h
+> @@ -35,6 +35,8 @@
+>   #define   QCA8K_MASK_CTRL_DEVICE_ID_MASK		GENMASK(15, 8)
+>   #define   QCA8K_MASK_CTRL_DEVICE_ID(x)			((x) >> 8)
+>   #define QCA8K_REG_PORT0_PAD_CTRL			0x004
+> +#define   QCA8K_PORT0_PAD_SGMII_RXCLK_FALLING_EDGE	BIT(19)
+> +#define   QCA8K_PORT0_PAD_SGMII_TXCLK_FALLING_EDGE	BIT(18)
+>   #define QCA8K_REG_PORT5_PAD_CTRL			0x008
+>   #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
+>   #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
+> @@ -260,6 +262,8 @@ struct qca8k_priv {
+>   	u8 switch_revision;
+>   	u8 rgmii_tx_delay;
+>   	u8 rgmii_rx_delay;
+> +	bool sgmii_rx_clk_falling_edge;
+> +	bool sgmii_tx_clk_falling_edge;
+>   	bool legacy_phy_port_mapping;
+>   	struct regmap *regmap;
+>   	struct mii_bus *bus;
 > 
 
+-- 
+Florian
