@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA65428F18
+	by mail.lfdr.de (Postfix) with ESMTP id 83874428F19
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237870AbhJKNy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40614 "EHLO mail.kernel.org"
+        id S237883AbhJKNy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:54:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237842AbhJKNxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:53:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BD6A660FD7;
-        Mon, 11 Oct 2021 13:51:10 +0000 (UTC)
+        id S237859AbhJKNxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4750B6108F;
+        Mon, 11 Oct 2021 13:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960271;
-        bh=BnucTzdgEn4MCV5ug8uOTdS2GahGemh+33cFkqVmIPg=;
+        s=korg; t=1633960273;
+        bh=zwkOwrPVj08MvLBRWoOT0iHEztYImtGdyqK9eiq5oEQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OO8b3F7SxAVgZnidCHpZ28JJit4j/Wbvvl2tZ3dATbYgcTPcFFbfXDRM4w+s8dNqi
-         BNS7L+zhB3wdcezkxVrFrXCeek5Th9564GN1CMTM8fRI8oLgd9Mk5IuGpAqoE2UhHp
-         5qmnGOb6cgHd3REE2RlXZluj4SgW7NlAvHNAtFKw=
+        b=AbIxSOhwaXEGYwG1hR0/jRU3AkRB1Vb6ynaI4TozxNJmqlHlGTgV8WSn4o4+zdjAl
+         UELOHN7La4KJo1TB/dqgPeHlwc0kT/kqVQ3ugAS9F+U2XERHlHH6yRt2wQHVVQsRi2
+         15DUP0T5N1tII6im4/drrUDKzC7E1ais8arS39Nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?= 
-        <marmarek@invisiblethingslab.com>, Juergen Gross <jgross@suse.com>,
-        Jason Andryuk <jandryuk@gmail.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 5.10 16/83] xen/balloon: fix cancelled balloon action
-Date:   Mon, 11 Oct 2021 15:45:36 +0200
-Message-Id: <20211011134508.919946785@linuxfoundation.org>
+        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 5.10 17/83] ARM: dts: omap3430-sdp: Fix NAND device node
+Date:   Mon, 11 Oct 2021 15:45:37 +0200
+Message-Id: <20211011134508.949311868@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
 References: <20211011134508.362906295@linuxfoundation.org>
@@ -42,70 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Juergen Gross <jgross@suse.com>
+From: Roger Quadros <rogerq@kernel.org>
 
-commit 319933a80fd4f07122466a77f93e5019d71be74c upstream.
+commit 80d680fdccba214e8106dc1aa33de5207ad75394 upstream.
 
-In case a ballooning action is cancelled the new kernel thread handling
-the ballooning might end up in a busy loop.
+Nand is on CS1 so reg properties first field should be 1 not 0.
 
-Fix that by handling the cancelled action gracefully.
-
-While at it introduce a short wait for the BP_WAIT case.
-
-Cc: stable@vger.kernel.org
-Fixes: 8480ed9c2bbd56 ("xen/balloon: use a kernel thread instead a workqueue")
-Reported-by: Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Tested-by: Jason Andryuk <jandryuk@gmail.com>
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Link: https://lore.kernel.org/r/20211005133433.32008-1-jgross@suse.com
-Signed-off-by: Juergen Gross <jgross@suse.com>
+Fixes: 44e4716499b8 ("ARM: dts: omap3: Fix NAND device nodes")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/balloon.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/omap3430-sdp.dts |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/balloon.c
-+++ b/drivers/xen/balloon.c
-@@ -491,12 +491,12 @@ static enum bp_state decrease_reservatio
- }
+--- a/arch/arm/boot/dts/omap3430-sdp.dts
++++ b/arch/arm/boot/dts/omap3430-sdp.dts
+@@ -101,7 +101,7 @@
  
- /*
-- * Stop waiting if either state is not BP_EAGAIN and ballooning action is
-- * needed, or if the credit has changed while state is BP_EAGAIN.
-+ * Stop waiting if either state is BP_DONE and ballooning action is
-+ * needed, or if the credit has changed while state is not BP_DONE.
-  */
- static bool balloon_thread_cond(enum bp_state state, long credit)
- {
--	if (state != BP_EAGAIN)
-+	if (state == BP_DONE)
- 		credit = 0;
- 
- 	return current_credit() != credit || kthread_should_stop();
-@@ -516,10 +516,19 @@ static int balloon_thread(void *unused)
- 
- 	set_freezable();
- 	for (;;) {
--		if (state == BP_EAGAIN)
--			timeout = balloon_stats.schedule_delay * HZ;
--		else
-+		switch (state) {
-+		case BP_DONE:
-+		case BP_ECANCELED:
- 			timeout = 3600 * HZ;
-+			break;
-+		case BP_EAGAIN:
-+			timeout = balloon_stats.schedule_delay * HZ;
-+			break;
-+		case BP_WAIT:
-+			timeout = HZ;
-+			break;
-+		}
-+
- 		credit = current_credit();
- 
- 		wait_event_freezable_timeout(balloon_thread_wq,
+ 	nand@1,0 {
+ 		compatible = "ti,omap2-nand";
+-		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
++		reg = <1 0 4>; /* CS1, offset 0, IO size 4 */
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
 
 
