@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F367B428EF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029A1428EFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:52:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237196AbhJKNxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:53:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S237323AbhJKNxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:53:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237300AbhJKNwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:52:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 583D360F4B;
-        Mon, 11 Oct 2021 13:50:11 +0000 (UTC)
+        id S236641AbhJKNwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:52:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22C836103C;
+        Mon, 11 Oct 2021 13:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960211;
-        bh=AuBVr87Shi6Tg3Fqh1mlcjMeh2zQRTw2nAlNt32fzdo=;
+        s=korg; t=1633960214;
+        bh=9xGdzI778WHnmspTdVkzdRdxxCUIVhNALO34o5istmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lW+em4Vt/L4sbZRdPUFRusps2TXAJORS/Nm1K/AcvWtlKeSoPAhQWEf1EKLKiKpIu
-         ttgWfYm9nZ1KHsG4Lep38lRArO48kxC5IjYmPEo5L50uKjiP6VEwjThLEKdM7tf2kc
-         nxsnQJC/XMcSu8llKcRZdvJckw2uyHJduUrntWJE=
+        b=ilLeDYPtzMRm26iOsU2SWjFF6jNnfo8ST0NEGeQwjKU3dKfi0zaEeRhsBDrHzfrXa
+         2CcciGWWxfCSeM1FOmCHK7j2WNcBQm35nQFF2mjsRK0e7Mn9pWQuKdRA/QtGHouFSr
+         k+plF2S/VhGHqsvWY+eNPaYj1kcnutCko3TjJW5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.4 51/52] x86/hpet: Use another crystalball to evaluate HPET usability
-Date:   Mon, 11 Oct 2021 15:46:20 +0200
-Message-Id: <20211011134505.483011431@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 52/52] x86/Kconfig: Correct reference to MWINCHIP3D
+Date:   Mon, 11 Oct 2021 15:46:21 +0200
+Message-Id: <20211011134505.513981104@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
 References: <20211011134503.715740503@linuxfoundation.org>
@@ -42,159 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 
-commit 6e3cd95234dc1eda488f4f487c281bac8fef4d9b upstream.
+commit 225bac2dc5d192e55f2c50123ee539b1edf8a411 upstream.
 
-On recent Intel systems the HPET stops working when the system reaches PC10
-idle state.
+Commit in Fixes intended to exclude the Winchip series and referred to
+CONFIG_WINCHIP3D, but the config symbol is called CONFIG_MWINCHIP3D.
 
-The approach of adding PCI ids to the early quirks to disable HPET on
-these systems is a whack a mole game which makes no sense.
+Hence, scripts/checkkconfigsymbols.py warns:
 
-Check for PC10 instead and force disable HPET if supported. The check is
-overbroad as it does not take ACPI, intel_idle enablement and command
-line parameters into account. That's fine as long as there is at least
-PMTIMER available to calibrate the TSC frequency. The decision can be
-overruled by adding "hpet=force" on the kernel command line.
+WINCHIP3D
+Referencing files: arch/x86/Kconfig
 
-Remove the related early PCI quirks for affected Ice Cake and Coffin Lake
-systems as they are not longer required. That should also cover all
-other systems, i.e. Tiger Rag and newer generations, which are most
-likely affected by this as well.
+Correct the reference to the intended config symbol.
 
-Fixes: Yet another hardware trainwreck
-Reported-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
-Cc: stable@vger.kernel.org
-Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 69b8d3fcabdc ("x86/Kconfig: Exclude i586-class CPUs lacking PAE support from the HIGHMEM64G Kconfig group")
+Suggested-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210803113531.30720-4-lukas.bulwahn@gmail.com
+[manually adjusted the change to the state on the v4.19.y and v5.4.y stable tree]
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/early-quirks.c |    6 ---
- arch/x86/kernel/hpet.c         |   81 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 81 insertions(+), 6 deletions(-)
+ arch/x86/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/kernel/early-quirks.c
-+++ b/arch/x86/kernel/early-quirks.c
-@@ -710,12 +710,6 @@ static struct chipset early_qrk[] __init
- 	 */
- 	{ PCI_VENDOR_ID_INTEL, 0x0f00,
- 		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
--	{ PCI_VENDOR_ID_INTEL, 0x3e20,
--		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
--	{ PCI_VENDOR_ID_INTEL, 0x3ec4,
--		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
--	{ PCI_VENDOR_ID_INTEL, 0x8a12,
--		PCI_CLASS_BRIDGE_HOST, PCI_ANY_ID, 0, force_disable_hpet},
- 	{ PCI_VENDOR_ID_BROADCOM, 0x4331,
- 	  PCI_CLASS_NETWORK_OTHER, PCI_ANY_ID, 0, apple_airport_reset},
- 	{}
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -9,6 +9,7 @@
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1425,7 +1425,7 @@ config HIGHMEM4G
  
- #include <asm/hpet.h>
- #include <asm/time.h>
-+#include <asm/mwait.h>
- 
- #undef  pr_fmt
- #define pr_fmt(fmt) "hpet: " fmt
-@@ -806,6 +807,83 @@ static bool __init hpet_counting(void)
- 	return false;
- }
- 
-+static bool __init mwait_pc10_supported(void)
-+{
-+	unsigned int eax, ebx, ecx, mwait_substates;
-+
-+	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
-+		return false;
-+
-+	if (!cpu_feature_enabled(X86_FEATURE_MWAIT))
-+		return false;
-+
-+	if (boot_cpu_data.cpuid_level < CPUID_MWAIT_LEAF)
-+		return false;
-+
-+	cpuid(CPUID_MWAIT_LEAF, &eax, &ebx, &ecx, &mwait_substates);
-+
-+	return (ecx & CPUID5_ECX_EXTENSIONS_SUPPORTED) &&
-+	       (ecx & CPUID5_ECX_INTERRUPT_BREAK) &&
-+	       (mwait_substates & (0xF << 28));
-+}
-+
-+/*
-+ * Check whether the system supports PC10. If so force disable HPET as that
-+ * stops counting in PC10. This check is overbroad as it does not take any
-+ * of the following into account:
-+ *
-+ *	- ACPI tables
-+ *	- Enablement of intel_idle
-+ *	- Command line arguments which limit intel_idle C-state support
-+ *
-+ * That's perfectly fine. HPET is a piece of hardware designed by committee
-+ * and the only reasons why it is still in use on modern systems is the
-+ * fact that it is impossible to reliably query TSC and CPU frequency via
-+ * CPUID or firmware.
-+ *
-+ * If HPET is functional it is useful for calibrating TSC, but this can be
-+ * done via PMTIMER as well which seems to be the last remaining timer on
-+ * X86/INTEL platforms that has not been completely wreckaged by feature
-+ * creep.
-+ *
-+ * In theory HPET support should be removed altogether, but there are older
-+ * systems out there which depend on it because TSC and APIC timer are
-+ * dysfunctional in deeper C-states.
-+ *
-+ * It's only 20 years now that hardware people have been asked to provide
-+ * reliable and discoverable facilities which can be used for timekeeping
-+ * and per CPU timer interrupts.
-+ *
-+ * The probability that this problem is going to be solved in the
-+ * forseeable future is close to zero, so the kernel has to be cluttered
-+ * with heuristics to keep up with the ever growing amount of hardware and
-+ * firmware trainwrecks. Hopefully some day hardware people will understand
-+ * that the approach of "This can be fixed in software" is not sustainable.
-+ * Hope dies last...
-+ */
-+static bool __init hpet_is_pc10_damaged(void)
-+{
-+	unsigned long long pcfg;
-+
-+	/* Check whether PC10 substates are supported */
-+	if (!mwait_pc10_supported())
-+		return false;
-+
-+	/* Check whether PC10 is enabled in PKG C-state limit */
-+	rdmsrl(MSR_PKG_CST_CONFIG_CONTROL, pcfg);
-+	if ((pcfg & 0xF) < 8)
-+		return false;
-+
-+	if (hpet_force_user) {
-+		pr_warn("HPET force enabled via command line, but dysfunctional in PC10.\n");
-+		return false;
-+	}
-+
-+	pr_info("HPET dysfunctional in PC10. Force disabled.\n");
-+	boot_hpet_disable = true;
-+	return true;
-+}
-+
- /**
-  * hpet_enable - Try to setup the HPET timer. Returns 1 on success.
-  */
-@@ -819,6 +897,9 @@ int __init hpet_enable(void)
- 	if (!is_hpet_capable())
- 		return 0;
- 
-+	if (hpet_is_pc10_damaged())
-+		return 0;
-+
- 	hpet_set_mapping();
- 	if (!hpet_virt_address)
- 		return 0;
+ config HIGHMEM64G
+ 	bool "64GB"
+-	depends on !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
++	depends on !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !MWINCHIP3D && !MK6
+ 	select X86_PAE
+ 	---help---
+ 	  Select this if you have a 32-bit processor and more than 4
 
 
