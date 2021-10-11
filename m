@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B79F428BAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 970C7428C3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236025AbhJKLDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:03:10 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:25119 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235971AbhJKLDI (ORCPT
+        id S234564AbhJKLmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234514AbhJKLmI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:03:08 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HSbQq5nBPz1DHYp;
-        Mon, 11 Oct 2021 18:59:31 +0800 (CST)
-Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 19:01:06 +0800
-Received: from huawei.com (10.175.113.32) by dggpemm100009.china.huawei.com
- (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 19:01:05 +0800
-From:   Liu Shixin <liushixin2@huawei.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Liu Shixin <liushixin2@huawei.com>
-Subject: [PATCH] media: lm3560: prevent memory leak of v4l2_ctrl_handler
-Date:   Mon, 11 Oct 2021 19:39:15 +0800
-Message-ID: <20211011113915.2646960-1-liushixin2@huawei.com>
+        Mon, 11 Oct 2021 07:42:08 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3809FC061570;
+        Mon, 11 Oct 2021 04:40:09 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id s11so10550585pgr.11;
+        Mon, 11 Oct 2021 04:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AIdt2gZrcPAgzBGpe0+MmYMwpOue6SUFJqjcWdzp4Xs=;
+        b=Z9M10qNcxqFQbNtkVi4lbr0f3chUhD3944rkuM2EacM/gssEceR+RWqeE8YtHZnreo
+         AOOduDa4StyoBO2aP61HYghPod3oOKpzX5VeNygY0hqTWVnhpdkm2GPJh/LiOONfFhlH
+         T7XUX5A80at0u/KlMmzJ742ECM9I+xXEN22o21lv6l2GPKE07J7qF4461c95NwuEQUJG
+         TlGNY0WIuho4Dbq9O5vIva0UnhjzxjYbJIQJIlzAgvb5g6LsCRPu9uc3Nhv+/ayTG9Pw
+         7ZXQLD1ZiTk8SatHzkmuwID9WZQHV7YIv01186ko4iX0qOCPiaxTQivllGxU7r1/gt6M
+         iU4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AIdt2gZrcPAgzBGpe0+MmYMwpOue6SUFJqjcWdzp4Xs=;
+        b=dbDVylzBOSIqXnI6eTJxbF+GBcQfHKM6YKhL9BDFlzQ6+gQJCQ4pR1PKyRdrb4rk9u
+         XY4heWVItuS6GqojkoAH96qNqwmv6GXYq1pC+TLypA/t5TQIJJIoISROD00uPPR0lg7J
+         9BR4wjczUkLqclhw49eBcK5v8aWhP+BZBcxnH6gGo3i9EeS9PuHUVShWh+HrNyq19YDs
+         dGFvy3bRIqCfxCxkxU2pBFbiip6/nkFgS7vd5ccsBdF8+FLKIAIxKMn9qnYsfHXfj7lK
+         cXrN6OU7yGS7p3vao90iJSEd4Ac9L91YKnN7l9mZXmaKTSUammhA+FYkdSeKF9a0uByr
+         nHxw==
+X-Gm-Message-State: AOAM5339I33zLOQoy8ITAGpLN+wteQJngYf4Exansp/i/29LM6lmK2BZ
+        BvP7Y9Jdm4EtlNmF0/b9sNw=
+X-Google-Smtp-Source: ABdhPJxybtQ2r5Zc5YEJ55YHtg1xhml+/ocB7EHnSbOMXtEfP6/CKsKK/SgQ4jr2DdV0xObPlJRlYA==
+X-Received: by 2002:a63:d19:: with SMTP id c25mr17457391pgl.393.1633952408594;
+        Mon, 11 Oct 2021 04:40:08 -0700 (PDT)
+Received: from localhost ([183.173.48.61])
+        by smtp.gmail.com with ESMTPSA id x17sm6918815pfa.209.2021.10.11.04.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 04:40:07 -0700 (PDT)
+From:   Teng Qi <starmiku1207184332@gmail.com>
+To:     lorenzo.bianconi83@gmail.com, jic23@kernel.org, lars@metafoo.de
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        islituo@gmail.com, baijiaju1990@gmail.com,
+        Teng Qi <starmiku1207184332@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH v2] iio: imu: st_lsm6dsx: Fix an array overflow in st_lsm6dsx_set_odr()
+Date:   Mon, 11 Oct 2021 19:40:03 +0800
+Message-Id: <20211011114003.976221-1-starmiku1207184332@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.32]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm100009.china.huawei.com (7.185.36.113)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If lm3560_subdev_init() or lm3560_init_device() failed, lm3560_probe() will
-directly return without free v4l2_ctrl_handler, which results memory leak:
+The length of hw->settings->odr_table is 2 and ref_sensor->id is an enum
+variable whose value is between 0 and 5.
+However, the value ST_LSM6DSX_ID_MAX (i.e. 5) is not catched properly in
+ switch (sensor->id) {
 
-unreferenced object 0xffff8881ea566e00 (size 256):
-  comm "xrun", pid 396, jiffies 4294949372 (age 80.376s)
-  hex dump (first 32 bytes):
-    d8 82 81 4d 81 88 ff ff 00 4c 56 ea 81 88 ff ff  ...M.....LV.....
-    10 6e 56 ea 81 88 ff ff 10 6e 56 ea 81 88 ff ff  .nV......nV.....
-  backtrace:
-    [<0000000055d4bb48>] __kmalloc_node+0x198/0x330
-    [<00000000e3b57405>] kvmalloc_node+0x65/0x130
-    [<0000000061e6063e>] v4l2_ctrl_new+0x820/0x1d40 [videodev]
-    [<00000000d7174c1b>] v4l2_ctrl_new_std+0x1d5/0x2b0 [videodev]
-    [<00000000cefb1a26>] lm3560_subdev_init+0x374/0x5e0 [lm3560]
-    [<00000000cda4c495>] lm3560_probe+0x1c2/0x61a [lm3560]
-    [<00000000d9502788>] i2c_device_probe+0xa07/0xbb0
-    [<00000000a5e908d0>] really_probe+0x285/0xc30
-    [<000000002fee9400>] __driver_probe_device+0x35f/0x4f0
-    [<0000000025fd5e96>] driver_probe_device+0x4f/0x140
-    [<00000000d37732ef>] __device_attach_driver+0x24c/0x330
-    [<000000001e0f0dfd>] bus_for_each_drv+0x15d/0x1e0
-    [<00000000c6c72d57>] __device_attach+0x267/0x410
-    [<000000005f7e4b8c>] bus_probe_device+0x1ec/0x2a0
-    [<000000001c3d09f6>] device_add+0xc1c/0x1d50
-    [<00000000cddb870a>] i2c_new_client_device+0x614/0xb00
+If ref_sensor->id is ST_LSM6DSX_ID_MAX, an array overflow will ocurrs in
+function st_lsm6dsx_check_odr():
+  odr_table = &sensor->hw->settings->odr_table[sensor->id];
 
-Fixes: 7f6b11a18c30 ("[media] media: i2c: add driver for dual LED Flash, lm3560")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+and in function st_lsm6dsx_set_odr():
+  reg = &hw->settings->odr_table[ref_sensor->id].reg;
+
+To fix this array overflow, handle ST_LSM6DSX_ID_GYRO explicitly and 
+return -EINVAL for the default case.
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Teng Qi <starmiku1207184332@gmail.com>
+
 ---
- drivers/media/i2c/lm3560.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+v2:
+* explicitly handle ST_LSM6DSX_ID_GYRO and return -EINVAL for the default
+case instead of adding an if statement behind the switch statement.
+  Thank Lars-Peter Clausen for helpful and friendly advice.
 
-diff --git a/drivers/media/i2c/lm3560.c b/drivers/media/i2c/lm3560.c
-index 9e34ccce4fc3..8d2e224c725b 100644
---- a/drivers/media/i2c/lm3560.c
-+++ b/drivers/media/i2c/lm3560.c
-@@ -432,15 +432,22 @@ static int lm3560_probe(struct i2c_client *client,
+---
+ drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+index db45f1fc0b81..8dbf744c5651 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -1279,6 +1279,8 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+ 	int err;
  
- 	rval = lm3560_subdev_init(flash, LM3560_LED1, "lm3560-led1");
- 	if (rval < 0)
--		return rval;
-+		goto free_led0;
+ 	switch (sensor->id) {
++	case ST_LSM6DSX_ID_GYRO:
++		break;
+ 	case ST_LSM6DSX_ID_EXT0:
+ 	case ST_LSM6DSX_ID_EXT1:
+ 	case ST_LSM6DSX_ID_EXT2:
+@@ -1304,8 +1306,8 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor, u32 req_odr)
+ 		}
+ 		break;
+ 	}
+-	default:
+-		break;
++	default: /* should never occur */
++		return -EINVAL;
+ 	}
  
- 	rval = lm3560_init_device(flash);
- 	if (rval < 0)
--		return rval;
-+		goto free_led1;
- 
- 	i2c_set_clientdata(client, flash);
- 
- 	return 0;
-+
-+free_led1:
-+	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED1]);
-+free_led0:
-+	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED0]);
-+
-+	return rval;
- }
- 
- static int lm3560_remove(struct i2c_client *client)
+ 	if (req_odr > 0) {
 -- 
 2.25.1
 
