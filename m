@@ -2,204 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1653C4288DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805C94288E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhJKIgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:36:18 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:36500 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235064AbhJKIgN (ORCPT
+        id S235118AbhJKIhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:37:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235127AbhJKIgo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:36:13 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 4C3E221D77;
-        Mon, 11 Oct 2021 08:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633941252; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 11 Oct 2021 04:36:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633941284;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vjTMnaMIidSncADrmKdnZ9CHj/C5fBzKzF+5i0zBF2I=;
-        b=LNS2/fNBuU9QILyRScW4Eyh/vQhKN6X44seMw6vtodFuNnE4QRd6RQkcIZo/kz4KWMbDD1
-        t3FrAVRJ72pk5gC0s8O1NU9UzCUgpV1XuDofbJUwQgPXpFLr4mPuw337/lPN2+YfFwHABi
-        j1i3GobXlh7JFJASs5psL9L4RF4VpOo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633941252;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vjTMnaMIidSncADrmKdnZ9CHj/C5fBzKzF+5i0zBF2I=;
-        b=MqkmZl5fy0w3Ul5pEvmvpY4Sz3jeN8BIlad5cyNiwImS+PJEQkOuYL578yE4CVG5AHNU98
-        6Bzn95gRq6KkNcDA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F2B3513C41;
-        Mon, 11 Oct 2021 08:34:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id bvt2OQP3Y2GaewAAMHmgww
-        (envelope-from <nstange@suse.de>); Mon, 11 Oct 2021 08:34:11 +0000
-From:   Nicolai Stange <nstange@suse.de>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Nicolai Stange <nstange@suse.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Stephan =?utf-8?Q?M=C3=BCller?= <smueller@chronox.de>,
-        Torsten Duwe <duwe@suse.de>
-Subject: Re: [PATCH 8/8] crypto: api - make the algorithm lookup priorize non-larvals
-References: <20211003181413.12465-1-nstange@suse.de>
-        <20211003181413.12465-9-nstange@suse.de>
-        <20211008115432.GC26495@gondor.apana.org.au>
-Date:   Mon, 11 Oct 2021 10:34:11 +0200
-In-Reply-To: <20211008115432.GC26495@gondor.apana.org.au> (Herbert Xu's
-        message of "Fri, 8 Oct 2021 19:54:32 +0800")
-Message-ID: <87lf30rmd8.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/25.3 (gnu/linux)
+        bh=Av9k6rWcK0Mzelc/cpt++/TO3lqjdIJG6hSk2ZuzFmw=;
+        b=FbNUvnQuyIzcO8ou76X52xLqHewhpXUy+XWYWz6YXRqWTijEDdjGQB7cfsXBPt04g5WjP+
+        3dYZDEye94LeVTdqIMxslrZXtoCnteqljKE5jEHTUKVHbR1I5D1JvpEHqwf3xmsFkyQFA+
+        nJUW6ZZSR0qQxUc8k6Gm0n7qpuAANKo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-316-OsYe9DuOPIigit1pEX4Xew-1; Mon, 11 Oct 2021 04:34:42 -0400
+X-MC-Unique: OsYe9DuOPIigit1pEX4Xew-1
+Received: by mail-wr1-f70.google.com with SMTP id a15-20020a056000188f00b00161068d8461so2327554wri.11
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:34:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Av9k6rWcK0Mzelc/cpt++/TO3lqjdIJG6hSk2ZuzFmw=;
+        b=0YymSoo2MnoV8KJ0m+ifd9kWAp/p6gZciULV/4GNtbBrQgLN2t1WI0V6jPudAAGMWa
+         QfpfqKHMvCiEmJ0T5aejjNJnlP8VkmS9/V0OD9bxMtPn2iUHKSUBXZaXRYFwyoV74MU6
+         /aQShGxcL9TOTDZQIr6FktA5CYiw5wXw1wjhssakdmCcJ/Lr0NQDjPgQBpfEwvnAlMfs
+         RwPNk3hEA70jzlY0Magu0fkT5BV8WReNQGLc8eNapyizFN2gAfxssjA9pKUWoZh3EPHp
+         VabLA7vx0VZLFOcYuVdtYlxflzrgv8rtTZHtPGp3xdLYzdUMntSONa1IX6fO6IOdpSEg
+         kDQA==
+X-Gm-Message-State: AOAM531ZEcrkvb5a6r2CBaYaIyN2MpQEXRjvzSdwBeJRKkJC5N5VAfr/
+        RduIJuJXBV5qVkPi462R+I7vk02BAS7gC7uhRLeVFlaTzrzpPUGVJCQiXSIZspf/QrPLlMYwGHT
+        0wjsTKmhEQyEr92rberLXJG3k
+X-Received: by 2002:adf:a15c:: with SMTP id r28mr23242869wrr.287.1633941281286;
+        Mon, 11 Oct 2021 01:34:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzwMGVPHnDaGNu4iH5/Oh7YURjzaVOZpfBI3BPOtxfFmYbxV7o0LLHXnbscRCq2aMeh5G30FA==
+X-Received: by 2002:adf:a15c:: with SMTP id r28mr23242855wrr.287.1633941281066;
+        Mon, 11 Oct 2021 01:34:41 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ba.dip0.t-ipconnect.de. [91.12.100.186])
+        by smtp.gmail.com with ESMTPSA id h22sm7769224wmq.42.2021.10.11.01.34.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 01:34:40 -0700 (PDT)
+To:     Faiyaz Mohammed <quic_faiyazm@codeaurora.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     guptap@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+References: <1633936279-26856-1-git-send-email-quic_faiyazm@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2] mm: page_alloc: Add debug log in free_reserved_area
+ for static memory
+Message-ID: <7027fa91-296f-01cb-6c5d-d25c81c835d5@redhat.com>
+Date:   Mon, 11 Oct 2021 10:34:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1633936279-26856-1-git-send-email-quic_faiyazm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert Xu <herbert@gondor.apana.org.au> writes:
+On 11.10.21 09:11, Faiyaz Mohammed wrote:
+> From: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> 
+> For INITRD and initmem memory is reserved through "memblock_reserve"
+> during boot up but it is free via "free_reserved_area" instead
+> of "memblock_free".
+> For example:
+> [    0.294848] Freeing initrd memory: 12K.
+> [    0.696688] Freeing unused kernel memory: 4096K.
+> 
+> To get the start and end address of the above freed memory and to account
+> proper memblock added pr_debug log in "free_reserved_area".
+> After adding log:
+> [    0.294837] 0x00000083600000-0x00000083603000 free_initrd_mem+0x20/0x28
+> [    0.294848] Freeing initrd memory: 12K.
+> [    0.695246] 0x00000081600000-0x00000081a00000 free_initmem+0x70/0xc8
+> [    0.696688] Freeing unused kernel memory: 4096K.
+> 
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> ---
+> changes in v2:
+> 	- To avoid confusion, remove the memblock_dbg print and drop the
+> 	memblock_free string, now using pr_debug to print the address ranges.
+> 
+>   mm/page_alloc.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 668edb1..395df3f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -8153,6 +8153,11 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+>   	if (pages && s)
+>   		pr_info("Freeing %s memory: %ldK\n", s, K(pages));
+>   
+> +#ifdef CONFIG_HAVE_MEMBLOCK
+> +		pr_debug("%#016llx-%#016llx %pS\n",
+> +			__pa(start), __pa(end), (void *)_RET_IP_);
+> +#endif
+> +
 
-> On Sun, Oct 03, 2021 at 08:14:13PM +0200, Nicolai Stange wrote:
->> crypto_alg_mod_lookup() invokes the crypto_larval_lookup() helper
->> to run the actual search for matching crypto_alg implementation and
->> larval entries. The latter is currently considering only the individual
->> entries' relative ->cra_priority for determining which one out of multip=
-le
->> matches to return. This means that it would potentially dismiss a matchi=
-ng
->> crypto_alg implementation in working state in favor of some pending
->> testing larval of higher ->cra_priority. Now, if the testmgr instance
->> invoked asynchronously on that testing larval came to the conclusion that
->> it should mark the tests as failed, any pending crypto_alg_mod_lookup()
->> waiting for it would be made to fail as well with -EAGAIN.
->>=20
->> In summary, crypto_alg_mod_lookup() can fail spuriously with -EAGAIN even
->> though an implementation in working state would have been available, nam=
-ely
->> if the testmgr asynchronously marked another, competing implementation of
->> higher ->cra_priority as failed.
->>=20
->> This is normally not a problem at all with upstream, because the situati=
-on
->> where one algorithm passed its tests, but another competing one failed to
->> do so, would indicate a bug anyway.
->>=20
->> However, for downstream distributions seeking FIPS certification, simply
->> amending the list in crypto/testmgr.c with ->fips_allowed =3D 0 entries
->> matching on ->cra_driver_name would provide a convenient way of
->> selectively blacklisting implementations from drivers/crypto in fips
->> mode. Note that in this scenario failure of competing crypto_alg
->> implementations would become more common, in particular during device
->> enumeration. If the algorithm in question happened to be needed for e.g.
->> module signature verification, module loading could spuriously fail duri=
-ng
->> bootup, which is certainly not desired.
->>=20
->> For transparency: this has not actually been observed, I merely came to
->> the conclusion that it would be possible by reading the code.
->>=20
->> Make crypto_alg_lookup() run an additional search for non-larval matches
->> upfront in the common case that the request has been made for
->> CRYPTO_ALG_TESTED instances.
->>=20
->> Signed-off-by: Nicolai Stange <nstange@suse.de>
->> ---
->>  crypto/api.c | 21 ++++++++++++++++++++-
->>  1 file changed, 20 insertions(+), 1 deletion(-)
+Are we missing parentheses that the code indentation implies?
+Further, I think we want to use "%pa" instead of "%llx" and
+eventually drop the CONFIG_HAVE_MEMBLOCK dependency. Maybe
 
-Hi Herbert,
-
-> It's not clear that this new behaviour is desirable.  For example,
-> when we construct certain complex algorithms, they may depend on a
-> generic version of that same algorithm as a fallback.  We do not
-> want users to get the generic version while the better version is
-> being tested.
-
-Ah I see, you mean something like having 3+ providers of "algXY",
- - algXY_driver0, ->cra_priority =3D 100
- - algXY_driver1, ->cra_priority =3D 200
- - algXY_driver1, ->cra_priority =3D 300
-where the latter needs a different "algXY" as a fallback?
-
-Hmm yes, I haven't thought of this and my patch here would indeed break
-it.
-
-
-> Can you please explain what your failure scenario and perhaps we
-> can come up with another way of resolving your problem?
-
-In order to keep a FIPS certification manageable in terms of scope,
-we're looking for a way to disable everything under drivers/crypto iff
-fips_enabled =3D=3D 1. The most convenient way to achieve this downstream
-would be to add dummy entries to testmgr.c like so:
-
-static int alg_test_nop(const struct alg_test_desc *desc, const char *drive=
-r,
-			u32 type, u32 mask)
-{
-	/* Succeed in non-FIPS mode. */
-	return 0;
-}
-
-static const struct alg_test_desc alg_test_descs[] =3D {
-	...,
-	{
-		.alg =3D "sha256-padlock-nano",
-		.test =3D alg_test_nop,
-		.fips_allowed =3D 0,
-	},
-        ...
-};
-
-The concern is about e.g the following sequence of events during boot:
-- "sha256-padlock-nano" gets registered, the test gets scheduled.
-- An unrelated modprobe is getting invoked. The signature verification
-  code, e.g pkcs7_digest(), requests "sha256", finds the pending
-  "sha256-padlock-nano" testing larval and puts itself in a wait for it.
-- The scheduled "sha256-padlock-nano" test gets to run and, as per
-  ->fips_allowed =3D=3D 0, is forced to fail with -EINVAL.
-- pkcs7_digest() wakes up and fails with -EAGAIN due to the "failed"
-  testing larval.
-- The unrelated modprobe fails even though sha256-generic would
-  have been available all the time.
-
-FWIW, I picked sha256-padlock-nano and modprobe at random for the sake
-of providing an example here -- I haven't checked in detail, but I guess
-that e.g. the combination of dm-crypt + a number of different FIPS
-approved algorithms could be similarly susceptible, too.
-
-So to recap, my initial approach for working around the above was to
-make crypto_alg_lookup() to skip over testing larvals in an additional,
-first search. As you said, this would break the "fallback" scenario
-though.
-
-As an alternative, how about not doing the additional search for
-non-larvals upfront, but only as a resort in case crypto_larval_wait()
-returned failure instead?
-
-But granted, the scenario above is not an issue at all for upstream with
-a pristine testmgr.c and it would be quite relatable if you wouldn't
-like to get bothered with any of this. I'm only bringing it up because
-others might perhaps come across this as well...
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index b37435c274cf..e7946e5ca094 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8097,6 +8097,8 @@ EXPORT_SYMBOL(adjust_managed_page_count);
+  
+  unsigned long free_reserved_area(void *start, void *end, int poison, const char *s)
+  {
++       const phys_addr_t pstart = __pa(start);
++       const phys_addr_t pend = __pa(end);
+         void *pos;
+         unsigned long pages = 0;
+  
+@@ -8125,9 +8127,11 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+                 free_reserved_page(page);
+         }
+  
+-       if (pages && s)
++       if (pages && s) {
+                 pr_info("Freeing %s memory: %ldK\n",
+                         s, pages << (PAGE_SHIFT - 10));
++               pr_debug("[%pa-%pa] %pS\n", &pstart, &pend, (void *)_RET_IP_);
++       }
+  
+         return pages;
+  }
 
 
-Thanks!
 
-Nicolai
+-- 
+Thanks,
 
---=20
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, G=
-ermany
-(HRB 36809, AG N=C3=BCrnberg), GF: Felix Imend=C3=B6rffer
+David / dhildenb
+
