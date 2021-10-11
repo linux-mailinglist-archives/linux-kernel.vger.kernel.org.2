@@ -2,172 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B792429704
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DE39429709
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhJKSnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:43:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhJKSnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:43:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A37F60EB1;
-        Mon, 11 Oct 2021 18:41:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633977707;
-        bh=OUpsvaa2Ww8kOdRdhRMnEsW/y3JxO0MjIcQCoVLgCz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ASGTHeGvamJWUEwSAeRjQDib2OtvfxkhIFCDCwT5tnO2iFyGAoiMCJFQtqRkE0eG8
-         dpmHYWzcNuADcklKZPise08Y0u7QIlVOy2c/3Ri7yj6XIAAlg6OyikBlYNYC5BLyOG
-         PLazxCWmheZqDqaL/TKGcBOlJRA0JWDG8Ujmd2+RMR8O9goVoNsoxV2GZ4q8UgDOHp
-         /lmRda7U4NHhiwMkcChPALtVMFxGTLs+cBOFUhXfQif4KZrEptMlklYraHbIzEhEjT
-         mKey+azEelJu+Dx7KPpl/7vF8QP7MYStdPRDoT9vv1PRuLzKE8O7k0BPO7+P5g6Fgc
-         EnwlapTByzZBw==
-Received: by pali.im (Postfix)
-        id 04A9A7C9; Mon, 11 Oct 2021 20:41:44 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 20:41:44 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        "moderated list:PCI DRIVER FOR AARDVARK (Marvell Armada 3700)" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 09/22] PCI: aardvark: Use SET_PCI_ERROR_RESPONSE() when
- device not found
-Message-ID: <20211011184144.qcbmif7hvzozdgzw@pali>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
- <f423dc9cc90e345680d289d5df7ff469e9b89c60.1633972263.git.naveennaidu479@gmail.com>
- <20211011180850.hgp4ctykvus37fx7@pali>
- <20211011182526.kboaxqofdpd2jjrl@theprophet>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        id S232277AbhJKSpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:45:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:25292 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229824AbhJKSpA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 14:45:00 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BIckQq011753;
+        Mon, 11 Oct 2021 14:42:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=0TVdZp8CZyIcGmhupCXobsLVC7Yz9AAA+YCIK7aqVnM=;
+ b=USa9DOqiZTb8DB3blIIO6uSIoqhm0H69izzOF0G5M4FUVc522BBGgDGT3wHLmke0CsEl
+ Yq2E5GkX1JxzLULQRbkocCFdL497L0oZccCV3Z1uIDGM1BzxFsSgRxFXIoJSjaUvaJes
+ mKaHBxkhW/vbUzGeCxFNidAE6hcrKwAG1al8WPEz1tdRQZWlrSpaptc7haaf84JUlOWw
+ /cGFRhgGLDLEENB2JtoGWT/u7i8yWnU+680RQVRJIMq42Bp8lyz5kOr0OqBGzSoZhyRY
+ xePYPeifsPEMi8q8VOTU23p3qzkXYUAEdWHvQK9xyTBfCOttA/S5fTqiLpCQ9T9An2u2 Hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmsrjse73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 14:42:58 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19BIeVhK019234;
+        Mon, 11 Oct 2021 14:42:58 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmsrjse6n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 14:42:58 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19BIfqEF030557;
+        Mon, 11 Oct 2021 18:42:56 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3bk2bj0u1q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 18:42:56 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BIbJtD59244806
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 18:37:19 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DC52742052;
+        Mon, 11 Oct 2021 18:42:52 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D898142045;
+        Mon, 11 Oct 2021 18:42:51 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.45.119])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 11 Oct 2021 18:42:51 +0000 (GMT)
+Date:   Mon, 11 Oct 2021 20:42:49 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Pierre Morel <pmorel@linux.ibm.com>
+Cc:     Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        bfu@redhat.com, Halil Pasic <pasic@linux.ibm.com>
+Subject: Re: [RFC PATCH 1/1] s390/cio: make ccw_device_dma_* more robust
+Message-ID: <20211011204249.3c53ce2a.pasic@linux.ibm.com>
+In-Reply-To: <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
+References: <20211011115955.2504529-1-pasic@linux.ibm.com>
+        <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: rFoN8xc6J3Czo-dMFnIc_pAlMo6_83_A
+X-Proofpoint-GUID: f3mIXnY0SdR1n0-AW0u5T4jB7f_EPJMt
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211011182526.kboaxqofdpd2jjrl@theprophet>
-User-Agent: NeoMutt/20180716
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-11_06,2021-10-11_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 mlxlogscore=999 phishscore=0 clxscore=1015
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109230001 definitions=main-2110110107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 11 October 2021 23:55:35 Naveen Naidu wrote:
-> On 11/10, Pali Rohár wrote:
-> > On Monday 11 October 2021 23:26:33 Naveen Naidu wrote:
-> > > An MMIO read from a PCI device that doesn't exist or doesn't respond
-> > > causes a PCI error.  There's no real data to return to satisfy the
-> > > CPU read, so most hardware fabricates ~0 data.
-> > > 
-> > > Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
-> > > read occurs.
-> > > 
-> > > This helps unify PCI error response checking and make error check
-> > > consistent and easier to find.
-> > > 
-> > > Compile tested only.
-> > > 
-> > > Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> > > ---
-> > >  drivers/pci/controller/pci-aardvark.c | 8 ++++----
-> > >  1 file changed, 4 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> > > index 596ebcfcc82d..dc2f820ef55f 100644
-> > > --- a/drivers/pci/controller/pci-aardvark.c
-> > > +++ b/drivers/pci/controller/pci-aardvark.c
-> > > @@ -894,7 +894,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > >  	int ret;
-> > >  
-> > >  	if (!advk_pcie_valid_device(pcie, bus, devfn)) {
-> > > -		*val = 0xffffffff;
-> > > +		SET_PCI_ERROR_RESPONSE(val);
+On Mon, 11 Oct 2021 15:45:55 +0200
+Pierre Morel <pmorel@linux.ibm.com> wrote:
+
+> > +	if (IS_ERR_OR_NULL(addr))  
+> 
+> I can be wrong but it seems that only dma_alloc_coherent() used in 
+> cio_gp_dma_zalloc() report an error but the error is ignored and used as 
+> a valid pointer.
+
+
+https://www.kernel.org/doc/Documentation/DMA-API.txt says:
+
+Part Ia - Using large DMA-coherent buffers
+------------------------------------------
+
+::
+
+	void *
+	dma_alloc_coherent(struct device *dev, size_t size,
+			   dma_addr_t *dma_handle, gfp_t flag)
+
+[..]
+
+It returns a pointer to the allocated region (in the processor's virtual
+address space) or NULL if the allocation failed.
+
+I hope that is still true. If not we should fix cio_gp_dma_zalloc().
+
+> 
+> So shouldn't we modify this function and just test for a NULL address here?
+> 
+
+Isn't IS_ERR_OR_NULL() safer, in a sense that even if we decided to
+eventually return an error code, this piece of code would be robust
+and safe?
+
+We may exploit the knowledge that cio_gp_dma_zalloc() either
+returns NULL or a valid pointer, but doing it like this is IMHO also an
+option.
+
+> here what I mean:---------------------------------
+> 
+> diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+> index 2bc55ccf3f23..b45fbaa7131b 100644
+> --- a/drivers/s390/cio/css.c
+> +++ b/drivers/s390/cio/css.c
+> @@ -1176,7 +1176,7 @@ void *cio_gp_dma_zalloc(struct gen_pool *gp_dma, 
+> struct device *dma_dev,
+>                  chunk_size = round_up(size, PAGE_SIZE);
+>                  addr = (unsigned long) dma_alloc_coherent(dma_dev,
+>                                           chunk_size, &dma_addr, 
+> CIO_DMA_GFP);
+> -               if (!addr)
+> +               if (IS_ERR_OR_NULL(addr))
+>                          return NULL;
+>                  gen_pool_add_virt(gp_dma, addr, dma_addr, chunk_size, -1);
+>                  addr = gen_pool_alloc(gp_dma, size);
+> 
+> ---------------------------------
+> 
+> > +		put_device(&cdev->dev);  
+> 
+> addr is not null if addr is ERR.
+> 
+
+Your point?
+
+> > +	return addr;  
+> 
+> may be return IS_ERR_OR_NULL(addr)? NULL : addr;
+> 
+
+See above. I don't think that is necessary.
+
+> >   }
+> >   EXPORT_SYMBOL(ccw_device_dma_zalloc);
+> >   
+> >   void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
+> >   {
+> > +	if (!cpu_addr)
+> > +		return;  
+> 
+> no need, cpu_addr is already tested in cio_gp_dma_free()
+> 
+
+This is added in because of the put_device(). An alternative would be
+to call cio_gp_dma_free() unconditionally do the check just for the
+put_device(). But I like this one better.
+
+Thanks for your feedback!
+
+Halil
+
+> >   	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
+> > +	put_device(&cdev->dev);
+> >   }
+> >   EXPORT_SYMBOL(ccw_device_dma_free);
+> >   
 > > 
-> > Hello! Now I'm looking at this macro, and should not it depends on
-> > "size" argument? If doing 8-bit or 16-bit read operation then should not
-> > it rather sets only low 8 bits or low 16 bits to ones?
-> >
-> 
-> Hello o/, Thank you for the review.
-> 
-> Yes! you are right that it should indeed depend on the "size" argument.
-> And that is what the SET_PCI_ERROR_RESPONSE macro does. The macro is
-> defined as:
-> 
->   #define PCI_ERROR_RESPONSE           (~0ULL)
->   #define SET_PCI_ERROR_RESPONSE(val)  (*val = ((typeof(*val))PCI_ERROR_RESPONSE))
-> 
-> The macro was part of "Patch 1/22" and is present here [1]. Apologies if
-> I added the receipient incorrectly.
-> 
-> [1]:
-> https://lore.kernel.org/linux-pci/d8e423386aad3d78bca575a7521b138508638e3b.1633972263.git.naveennaidu479@gmail.com/T/#m37295a0dcfe0d7e0f67efce3633efd7b891949c4
-> 
-> IIUC, the typeof(*val) helps in setting the value according to the size
-> of the argument.
-> 
-> Please let me know if my understanding is wrong.
-
-Hello! I mean "size" function argument which is passed as variable.
-
-Function itself is declared as:
-
-static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn, int where, int size, u32 *val);
-
-And in "size" argument is stored number of bytes, kind of read operation
-(read byte, read word, read dword). In *val is then stored read value.
-For byte operation, just low 8 bits in *val variable are set.
-
-Because *val is u32 it means that typeof(*val) is always 4 independently
-of the "size" argument.
-
-For example other project U-Boot has also pci-aardvark.c driver and
-U-Boot has for (probably same) purpose pci_get_ff() macro, see:
-https://source.denx.de/u-boot/u-boot/-/blob/v2021.10/drivers/pci/pci-aardvark.c#L367
-
-I'm not saying if current approach to always sets 0xffffffff
-(independently of "size" argument) is correct or not as I do not know
-it too! I'm just giving example that this PCI code has very similar
-implementation of other project (U-Boot) which sets number of ones based
-on the size argument.
-
-So probably something for other people to decide.
-
-Anyway, I very like this your idea to have a macro which purpose is to
-explicitly indicate error during config read operation! And to unify all
-drivers to use same style for signalling config read error.
-
-> > >  		return PCIBIOS_DEVICE_NOT_FOUND;
-> > >  	}
-> > >  
-> > > @@ -920,7 +920,7 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > >  			*val = CFG_RD_CRS_VAL;
-> > >  			return PCIBIOS_SUCCESSFUL;
-> > >  		}
-> > > -		*val = 0xffffffff;
-> > > +		SET_PCI_ERROR_RESPONSE(val);
-> > >  		return PCIBIOS_SET_FAILED;
-> > >  	}
-> > >  
-> > > @@ -955,14 +955,14 @@ static int advk_pcie_rd_conf(struct pci_bus *bus, u32 devfn,
-> > >  			*val = CFG_RD_CRS_VAL;
-> > >  			return PCIBIOS_SUCCESSFUL;
-> > >  		}
-> > > -		*val = 0xffffffff;
-> > > +		SET_PCI_ERROR_RESPONSE(val);
-> > >  		return PCIBIOS_SET_FAILED;
-> > >  	}
-> > >  
-> > >  	/* Check PIO status and get the read result */
-> > >  	ret = advk_pcie_check_pio_status(pcie, allow_crs, val);
-> > >  	if (ret < 0) {
-> > > -		*val = 0xffffffff;
-> > > +		SET_PCI_ERROR_RESPONSE(val);
-> > >  		return PCIBIOS_SET_FAILED;
-> > >  	}
-> > >  
-> > > -- 
-> > > 2.25.1
-> > > 
