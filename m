@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170384292A0
+	by mail.lfdr.de (Postfix) with ESMTP id CD2724292A2
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244034AbhJKOyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:54:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244038AbhJKOye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:54:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE92160BD3;
-        Mon, 11 Oct 2021 14:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633963954;
-        bh=8IgY3wMFqOpx4rMhJDcKyAY4whn8NSW4m12oeeuW8Ck=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZS8rLFxg3wcgkZJBtR7dd7dwh6s+0lyjvOUj7rh59R1lcO4HVwri/glKXUQLzphFG
-         1gHHLVf8/fcmKTzCiw08oYjkteqhSH14KwPj9mWublxylbhCMZkWkus8YJ1axtwoYd
-         Y1VJTZR6aBlfsD/Xd1aZdFdXeVZ8j+BE+Ipe495PTz06qT7S3kcN4b3gjsxYZLPfFj
-         1hiKQNaeBP+eBO9C2hpLr40I83wtOiVX1N93xvi1dOpkKMXlT8TP0cYy756/YVHmJS
-         kgGgp9P0O7YCWdT6n2k1oapwGHWurmQd1Mrpz6jiuuvJ4RdWE5v4d2XIpB6kBtY5Mw
-         3VXWQRlH71eIA==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org
-Subject: [PATCH 11/11] rcu/nocb: Don't invoke local rcu core on callback overload from nocb kthread
-Date:   Mon, 11 Oct 2021 16:51:40 +0200
-Message-Id: <20211011145140.359412-12-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211011145140.359412-1-frederic@kernel.org>
-References: <20211011145140.359412-1-frederic@kernel.org>
+        id S242505AbhJKOyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:54:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244126AbhJKOyh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:54:37 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21D5C061765
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:52:37 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r7so57113669wrc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:52:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5acyx8mtWXW7VMwQQTn2016+YkzgOn6sSwlU3dh0rXE=;
+        b=FzkiXRZ5VhkrJM6F+VlDWN8+7gpi+N5jpIJyNhMNGX1Pvie6baSCXvEOq//F5INNoK
+         CSCWIdPcK1UoliuPOdY+HFIy3KxSyxzB5argZRa39cHIOQsRnl+inw1vcZQE+Xtnrj4L
+         pLxGC7BgTTcnXomAGvKpb8/rfE5bZ83ENw47muAxNScAmQw9cf9KZT4gyccNQTooDwH2
+         24xPNp6zl0NOWVuLTKunM16xgJqkaZHdO/XUNtfHExzPP67F4eFGd2T2cmOlxGP3QV84
+         MYgTemob4zvzvDW3dxItlyTAMA5QbciuxpHhSEhSIlarubIbIdUsAvB51MatL8sk2h1m
+         NYKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5acyx8mtWXW7VMwQQTn2016+YkzgOn6sSwlU3dh0rXE=;
+        b=shgnLw2a8YQ61DkWcNsP//fWwWk/6si1yjwKNF/6PQ553ZVCExQf+lpHsYPCpmbTd8
+         dXjIhIESVe8hx0nL7fiuIONAyu2/1KbJujVnVaCIQM1OxAKd9LnvtTRySdSV11ZsQvQj
+         u1iSM6hIFERzkJq2PJTBgD/jjaArJbIetv/lUWZKvB2zPpA7zFtXM5fT1umogE9O+BlJ
+         jtPfLEBdIHwLAuBHn6YRbBhy8tE7sLyzbNTA6QqArcsyVp7UB9wMaDXnhzD4wYF47HVX
+         ZeF3cXustFchfHdJRxMy1fuBY7kktk5G+8wmmN3XYnQ+rmiQw3uKYNmkKWXDbYTf9lHJ
+         kF7w==
+X-Gm-Message-State: AOAM533SPp5BpGpQAB26KVCNM5ffcY1YGeXbeDBYeB0mMRpSysgNwzlF
+        JPN+fXputtp+Xyfom8NEfLRYcesC1WRLCT9/k8zIRA==
+X-Google-Smtp-Source: ABdhPJyny/1ehYP8OU2mHUCswZL621CNkDqilAKZiJavzBHnmKYteFSk6vwdGZcV8mKtKOx7X1JSRF0kPmdXzGd77FQ=
+X-Received: by 2002:adf:e60a:: with SMTP id p10mr5880295wrm.306.1633963956181;
+ Mon, 11 Oct 2021 07:52:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211011132431.2792797-1-guoren@kernel.org> <20211011132431.2792797-2-guoren@kernel.org>
+In-Reply-To: <20211011132431.2792797-2-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 11 Oct 2021 20:22:25 +0530
+Message-ID: <CAAhSdy29awBS7cATQjGvP1nqC_aYJgKvAQBxMxvhJAOK7VPr9A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: update riscv plic claim-mask-support property
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Atish Patra <atish.patra@wdc.com>, Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Rob Herring <robh@kernel.org>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rcu_core() tries to ensure that its self-invocation in case of callbacks
-overload only happen in softirq/rcuc mode. Indeed it doesn't make sense
-to trigger local RCU core from nocb_cb kthread since it can execute
-on a CPU different from the target rdp. Also in case of overload, the
-nocb_cb kthread simply iterates a new loop of callbacks processing.
+On Mon, Oct 11, 2021 at 6:54 PM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> Add claim-mask-support to control riscv,plic don't call
+> unnecessary mask/unmask operations.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+> Cc: Anup Patel <anup@brainfault.org>
+> Cc: Atish Patra <atish.patra@wdc.com>
+> ---
+>  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml        | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> index 08d5a57ce00f..f32c1792604c 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
+> @@ -71,6 +71,8 @@ properties:
+>      description:
+>        Specifies how many external interrupts are supported by this controller.
+>
+> +  claim-mask-support: true
+> +
 
-However the "offloaded" check that aims at preventing misplaced
-rcu_core() invocations is wrong. First of all that state is volatile
-and second: softirq/rcuc can execute while the target rdp is offloaded.
-As a result rcu_core() can be invoked on the wrong CPU while in the
-process of (de-)offloading.
+This DT property does not describe HW in any way, rather it enable/disable
+a SW behaviour in the driver. IMO, this DT property should not be added.
 
-Fix that with moving the rcu_core() self-invocation to rcu_core() itself,
-irrespective of the rdp offloaded state.
+Regards,
+Anup
 
-Tested-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Josh Triplett <josh@joshtriplett.org>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Boqun Feng <boqun.feng@gmail.com>
-Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/rcu/tree.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 0ca4f4ec724d..8270e58cd0f3 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2470,7 +2470,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	int div;
- 	bool __maybe_unused empty;
- 	unsigned long flags;
--	const bool offloaded = rcu_rdp_is_offloaded(rdp);
- 	struct rcu_head *rhp;
- 	struct rcu_cblist rcl = RCU_CBLIST_INITIALIZER(rcl);
- 	long bl, count = 0;
-@@ -2592,9 +2591,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
--	/* Re-invoke RCU core processing if there are callbacks remaining. */
--	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist))
--		invoke_rcu_core();
- 	tick_dep_clear_task(current, TICK_DEP_BIT_RCU);
- }
- 
-@@ -2781,8 +2777,12 @@ static __latent_entropy void rcu_core(void)
- 
- 	/* If there are callbacks ready, invoke them. */
- 	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
--	    likely(READ_ONCE(rcu_scheduler_fully_active)))
-+	    likely(READ_ONCE(rcu_scheduler_fully_active))) {
- 		rcu_do_batch(rdp);
-+		/* Re-invoke RCU core processing if there are callbacks remaining. */
-+		if (rcu_segcblist_ready_cbs(&rdp->cblist))
-+			invoke_rcu_core();
-+	}
- 
- 	/* Do any needed deferred wakeups of rcuo kthreads. */
- 	do_nocb_deferred_wakeup(rdp);
--- 
-2.25.1
-
+>  required:
+>    - compatible
+>    - '#address-cells'
+> --
+> 2.25.1
+>
