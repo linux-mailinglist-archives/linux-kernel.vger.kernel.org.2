@@ -2,172 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BC54291DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05BF4291DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239963AbhJKOdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:33:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43756 "EHLO
+        id S231540AbhJKOdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231716AbhJKOdp (ORCPT
+        with ESMTP id S240662AbhJKOdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Oct 2021 10:33:45 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90182C061346;
-        Mon, 11 Oct 2021 07:25:41 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1mZwFF-0001Vl-OB; Mon, 11 Oct 2021 16:25:37 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     selinux@vger.kernel.org
-Cc:     paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, linux-kernel@vger.kernel.org,
-        Florian Westphal <fw@strlen.de>
-Subject: [PATCH v2 selinux] selinux: remove unneeded ipv6 hook wrappers
-Date:   Mon, 11 Oct 2021 16:24:16 +0200
-Message-Id: <20211011142416.26798-1-fw@strlen.de>
-X-Mailer: git-send-email 2.32.0
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B20E5C061345;
+        Mon, 11 Oct 2021 07:25:38 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id o4so24832115oia.10;
+        Mon, 11 Oct 2021 07:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/p5U+cPIs1EYHKiD6U4YrHpe9KTVTfBsKJ8HxEXnMLk=;
+        b=Yfe0ZbPT1ZsRLK5v4wae2PFNLtJ56izXoI149bVvdUQRdokMecbZ8xoS0rxFrFfz6t
+         IAektKE8tOD37wchKyuhz1yhlMuEG5CK+UBc3asivQKV8p/14w5mErUTeHnfHyKhR37r
+         qDkzyz+wP6KzxnBW91D8ETEJsQ5YsVTM/10pW84PNKEQVtQhBz2YIc+cn2yCOls7vKKD
+         kXDvoqgehNH5C4qRaRc5W3PFmGRXjmtViyX8T6NGHXSUYhc8+ahB878LtsR90JfW5jgo
+         mH3TOtF7u/hWss5JiTUuESCtlHnqbj7E/rltT57GhcwMSvhSG7NFfPxibbqxOv5ST5NE
+         FGoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=/p5U+cPIs1EYHKiD6U4YrHpe9KTVTfBsKJ8HxEXnMLk=;
+        b=Ez3/Ev1uCwSTVUmBzVzQpHh+Ib8+dHJfMEZ3BYyUjpBJ5xfU0/tOmg7F309HV4JhqH
+         IPwlPrv9jM73XFvNEASFH+uCoucK3kyFFe2dQen7WdKsQSbw6qLSbTTv6k5CKzXvTFc9
+         X2qLdrdilMVRg2CgFc6aMe+A4KBFwrPNRB/u2EBiEAvijdD3t/WorwQo1PmZ7xLGeeb4
+         0PFp/b/R//zT7Jv4sEClN9zDRcs4fhEow72fD7nTyTZOS2l1lVHsCYcqYuGDocbIza0G
+         X9/EmTF3td135kqn/hCB2mdBOoe7CEOYQJA5jS3DZBhT7rftbhqx4vdUTXYMalkXjVFC
+         azrg==
+X-Gm-Message-State: AOAM532rd+MDBaoYxnxnBkTHFXEKQZhmWgA9VDIsy39LDgyo+prmgva5
+        sQHk8XDBFovfp/C1nJ/VbV0=
+X-Google-Smtp-Source: ABdhPJz0tX9UOumFDdWz9PhLR0xPQmGzPGzy9mx/cdCrXjJxPdmqatFd9XRMoItCikF9uwNA2qszGA==
+X-Received: by 2002:a05:6808:16a4:: with SMTP id bb36mr26825361oib.91.1633962338165;
+        Mon, 11 Oct 2021 07:25:38 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p18sm1787448otk.7.2021.10.11.07.25.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 07:25:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 11 Oct 2021 07:25:36 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     linux-kernel@vger.kernel.org,
+        Eugene Shalygin <eugene.shalygin@gmail.com>,
+        Denis Pauk <pauk.denis@gmail.com>,
+        matt-testalltheway <sefoci9222@rerunway.com>,
+        Kamil Dudka <kdudka@redhat.com>,
+        Robert Swiecki <robert@swiecki.net>,
+        Kamil Pietrzak <kpietrzak@disroot.org>, Igor <igor@svelig.com>,
+        Tor Vic <torvic9@mailbox.org>, Poezevara <nephartyz@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 2/3] hwmon: (asus_wmi_sensors) split out T_Sensor
+Message-ID: <20211011142536.GA2036789@roeck-us.net>
+References: <20211003133344.9036-1-oleksandr@natalenko.name>
+ <20211003133344.9036-3-oleksandr@natalenko.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211003133344.9036-3-oleksandr@natalenko.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Netfilter places the protocol number the hook function is getting called
-from in state->pf, so we can use that instead of an extra wrapper.
+On Sun, Oct 03, 2021 at 03:33:43PM +0200, Oleksandr Natalenko wrote:
+> Move `T_Sensor` addition into a separate `case` statement in preparation
+> for the next patch that introduces a board without it.
+> 
+> No functional change.
+> 
+> Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- v2: add back '#endif /* CONFIG_NETFILTER */' erronously axed in v1.
- Applies to 'next' branch of
- https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git/
+This patch depends on acceptance of the asus_wmi_sensors driver,
+which should at least be mentioned here. The same applies to the
+next patch of the series. In general, please do not send patches
+for multiple drivers as single series, and please always mention
+such dependencies.
 
- security/selinux/hooks.c | 52 ++++++++++------------------------------
- 1 file changed, 12 insertions(+), 40 deletions(-)
+Thanks,
+Guenter
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index e7ebd45ca345..831b857d5dd7 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -5746,22 +5746,13 @@ static unsigned int selinux_ip_forward(struct sk_buff *skb,
- 	return NF_ACCEPT;
- }
- 
--static unsigned int selinux_ipv4_forward(void *priv,
-+static unsigned int selinux_hook_forward(void *priv,
- 					 struct sk_buff *skb,
- 					 const struct nf_hook_state *state)
- {
--	return selinux_ip_forward(skb, state->in, PF_INET);
-+	return selinux_ip_forward(skb, state->in, state->pf);
- }
- 
--#if IS_ENABLED(CONFIG_IPV6)
--static unsigned int selinux_ipv6_forward(void *priv,
--					 struct sk_buff *skb,
--					 const struct nf_hook_state *state)
--{
--	return selinux_ip_forward(skb, state->in, PF_INET6);
--}
--#endif	/* IPV6 */
--
- static unsigned int selinux_ip_output(struct sk_buff *skb,
- 				      u16 family)
- {
-@@ -5804,21 +5795,12 @@ static unsigned int selinux_ip_output(struct sk_buff *skb,
- 	return NF_ACCEPT;
- }
- 
--static unsigned int selinux_ipv4_output(void *priv,
--					struct sk_buff *skb,
--					const struct nf_hook_state *state)
--{
--	return selinux_ip_output(skb, PF_INET);
--}
--
--#if IS_ENABLED(CONFIG_IPV6)
--static unsigned int selinux_ipv6_output(void *priv,
-+static unsigned int selinux_hook_output(void *priv,
- 					struct sk_buff *skb,
- 					const struct nf_hook_state *state)
- {
--	return selinux_ip_output(skb, PF_INET6);
-+	return selinux_ip_output(skb, state->pf);
- }
--#endif	/* IPV6 */
- 
- static unsigned int selinux_ip_postroute_compat(struct sk_buff *skb,
- 						int ifindex,
-@@ -5994,22 +5976,12 @@ static unsigned int selinux_ip_postroute(struct sk_buff *skb,
- 	return NF_ACCEPT;
- }
- 
--static unsigned int selinux_ipv4_postroute(void *priv,
-+static unsigned int selinux_hook_postroute(void *priv,
- 					   struct sk_buff *skb,
- 					   const struct nf_hook_state *state)
- {
--	return selinux_ip_postroute(skb, state->out, PF_INET);
-+	return selinux_ip_postroute(skb, state->out, state->pf);
- }
--
--#if IS_ENABLED(CONFIG_IPV6)
--static unsigned int selinux_ipv6_postroute(void *priv,
--					   struct sk_buff *skb,
--					   const struct nf_hook_state *state)
--{
--	return selinux_ip_postroute(skb, state->out, PF_INET6);
--}
--#endif	/* IPV6 */
--
- #endif	/* CONFIG_NETFILTER */
- 
- static int selinux_netlink_send(struct sock *sk, struct sk_buff *skb)
-@@ -7470,38 +7442,38 @@ DEFINE_LSM(selinux) = {
- 
- static const struct nf_hook_ops selinux_nf_ops[] = {
- 	{
--		.hook =		selinux_ipv4_postroute,
-+		.hook =		selinux_hook_postroute,
- 		.pf =		NFPROTO_IPV4,
- 		.hooknum =	NF_INET_POST_ROUTING,
- 		.priority =	NF_IP_PRI_SELINUX_LAST,
- 	},
- 	{
--		.hook =		selinux_ipv4_forward,
-+		.hook =		selinux_hook_forward,
- 		.pf =		NFPROTO_IPV4,
- 		.hooknum =	NF_INET_FORWARD,
- 		.priority =	NF_IP_PRI_SELINUX_FIRST,
- 	},
- 	{
--		.hook =		selinux_ipv4_output,
-+		.hook =		selinux_hook_output,
- 		.pf =		NFPROTO_IPV4,
- 		.hooknum =	NF_INET_LOCAL_OUT,
- 		.priority =	NF_IP_PRI_SELINUX_FIRST,
- 	},
- #if IS_ENABLED(CONFIG_IPV6)
- 	{
--		.hook =		selinux_ipv6_postroute,
-+		.hook =		selinux_hook_postroute,
- 		.pf =		NFPROTO_IPV6,
- 		.hooknum =	NF_INET_POST_ROUTING,
- 		.priority =	NF_IP6_PRI_SELINUX_LAST,
- 	},
- 	{
--		.hook =		selinux_ipv6_forward,
-+		.hook =		selinux_hook_forward,
- 		.pf =		NFPROTO_IPV6,
- 		.hooknum =	NF_INET_FORWARD,
- 		.priority =	NF_IP6_PRI_SELINUX_FIRST,
- 	},
- 	{
--		.hook =		selinux_ipv6_output,
-+		.hook =		selinux_hook_output,
- 		.pf =		NFPROTO_IPV6,
- 		.hooknum =	NF_INET_LOCAL_OUT,
- 		.priority =	NF_IP6_PRI_SELINUX_FIRST,
--- 
-2.32.0
-
+> ---
+>  drivers/hwmon/asus_wmi_sensors.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwmon/asus_wmi_sensors.c b/drivers/hwmon/asus_wmi_sensors.c
+> index 6b04fad18891..98e761861601 100644
+> --- a/drivers/hwmon/asus_wmi_sensors.c
+> +++ b/drivers/hwmon/asus_wmi_sensors.c
+> @@ -144,14 +144,22 @@ static void asus_wmi_ec_fill_board_sensors(struct asus_wmi_ec_info *ec, int boar
+>  		asus_wmi_ec_set_sensor_info(si++, "Motherboard", hwmon_temp,
+>  					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3C),
+>  					    &ec->nr_registers);
+> -		asus_wmi_ec_set_sensor_info(si++, "T_Sensor", hwmon_temp,
+> -					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3D),
+> -					    &ec->nr_registers);
+>  		asus_wmi_ec_set_sensor_info(si++, "VRM", hwmon_temp,
+>  					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3E),
+>  					    &ec->nr_registers);
+>  	}
+>  
+> +	switch (board) {
+> +	case BOARD_RS_B550_E_G:
+> +	case BOARD_RS_X570_E_G:
+> +	case BOARD_R_C8H:
+> +	case BOARD_R_C8DH:
+> +	case BOARD_R_C8F:
+> +		asus_wmi_ec_set_sensor_info(si++, "T_Sensor", hwmon_temp,
+> +					    asus_wmi_ec_make_sensor_address(1, 0x00, 0x3D),
+> +					    &ec->nr_registers);
+> +	}
+> +
+>  	switch (board) {
+>  	case BOARD_RS_X570_E_G:
+>  	case BOARD_R_C8H:
