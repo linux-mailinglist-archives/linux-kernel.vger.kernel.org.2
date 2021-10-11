@@ -2,186 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6010642973A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DECA429746
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234517AbhJKTFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 15:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51652 "EHLO
+        id S234528AbhJKTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 15:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233905AbhJKTFk (ORCPT
+        with ESMTP id S233481AbhJKTIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 15:05:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFB13C061570;
-        Mon, 11 Oct 2021 12:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lly2oV++EB8MLjlYRFL/38jQaOHMGIONvw6X549JSsE=; b=KQbWzxiVJMRkcpVwfk2l9dHU3T
-        xyB4c2qqD/PoaETldJK6z8Yz97yWnLPiJch1snwoFn4gR2mbmkMfGiU4CmuUfqKMMfpmNS6twnf8K
-        VIMijx2oNTCEDy+XXh2yujUogjCQ3vpMspQJyM0+hzrNZSZYG54y3DxGkUrV5PQ2p07MakgkGw2Ag
-        yXCJ4ZEC+kssx3a43eD0mtUEKG+nkHEp5OoSnpIqi157chHG1qAmm1zNVQZxxXdz39vx6bC/B0Whu
-        c/I+vVmGfG43+tVK8TV9IAF1F/s7KFRrD0l6gWmLOSahPUfipwptrP6lqknMd1nx3hZYdco3ECQGk
-        U12+mc1A==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ma0aB-00ARXU-AN; Mon, 11 Oct 2021 19:03:31 +0000
-Date:   Mon, 11 Oct 2021 12:03:31 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 03/12] selftests: add tests_sysfs module
-Message-ID: <YWSKg7+og7ID8cCV@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-4-mcgrof@kernel.org>
- <202110050912.3DF681ED@keescook>
+        Mon, 11 Oct 2021 15:08:47 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8D0C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:06:47 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id j5so77788203lfg.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 12:06:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bN6YNtOkrJhX2wwbUhuBUfzLucgwzma4xrj6nI0TWSQ=;
+        b=Z9/iK3pqXdjZEqc2+ndmdywirvsyYqcMZRmCckcGfICXHyeToASrW6q7MFUH7+d9ts
+         gG8I/ObD1cIsszHAXc+6VpuyMixitWB2eieQcYH/PYEMXbeCctwsAqSf1INSBCiepPMA
+         zI8DNEtuyV6istdlBI0wB1RD3pM+SPlkOK1+7Uqi7PqDIXBCdxosL9JV8oFQGUBBlQxB
+         QZGrqwLGKmNhMUKp5uCRPE0w4oSAJHGrdz7SG8hbLXvap6B8Mdk/7ZlLkFAN60j5wQXJ
+         TNUCymMt9Gxr0+j5qHbg49+6CZlivk3G7iHuTY6xbl3lhcJ0P2W6R74qBdnV/wtbKqpS
+         BTDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bN6YNtOkrJhX2wwbUhuBUfzLucgwzma4xrj6nI0TWSQ=;
+        b=F6mqz2hOB6+4QqU1YmbVHgeor1+WoE30NfHqevMiYp873eRgEXarRbRp+rRXEK6oUA
+         FMI4/Oj5fZ8PCOw+ba+4trFtDm6ha6uERVmI4l2GUA48MTEJdAwTbpU2xXkEJhSHOHsk
+         lZIZfDfQ/dyzVD2X5HZpv+3WRfcl+c9TM9ePY7Z9L24/niYEaAtjz7ejW/vdKuXEKsR+
+         6qLDK+2dHsLHKYPTiVLoVJh9Z/XjwgFlccCeDDFBw0WM3lcxAtNmA6orxiwbC4XYgJ49
+         3Z0Q+hWeNnp88mVqD0p9Mvnht2cPWHNTjbNqGDN02f4EfZSHX/itvN/ayROquN27EGXq
+         r4mQ==
+X-Gm-Message-State: AOAM530O8zpsUqgNrXIize3f1Pj4LfP6SOlLsQSj+u+U5obiSjzArC+6
+        1Oo98p+EFVgKbEiNCbQwzCbfnMhfffxfmK8LCVpfKg==
+X-Google-Smtp-Source: ABdhPJz8B0z5OxxuNF7iOezND3W6urCP638newduN0O2VzTNMBFa+rVWj1l9M2XBeb/OqjVxGdGRFdSxfUSqps76RKk=
+X-Received: by 2002:a05:6512:b0c:: with SMTP id w12mr30160122lfu.240.1633979205128;
+ Mon, 11 Oct 2021 12:06:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110050912.3DF681ED@keescook>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+References: <163369609308.636038.15295764725220907794.stgit@devnote2> <163369615714.636038.1154348556499203165.stgit@devnote2>
+In-Reply-To: <163369615714.636038.1154348556499203165.stgit@devnote2>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 11 Oct 2021 12:06:32 -0700
+Message-ID: <CAKwvOd=n_nUhqmVvy17tR0ZKSwFU76uzvcGu_t3LEvOA4OdO2Q@mail.gmail.com>
+Subject: Re: [PATCH 7/8] ARM: kprobes: Make a frame pointer on __kretprobe_trampoline
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Ananth N Mavinakayanahalli <ananth@linux.ibm.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 09:30:10AM -0700, Kees Cook wrote:
-> On Mon, Sep 27, 2021 at 09:37:56AM -0700, Luis Chamberlain wrote:
-> > --- /dev/null
-> > +++ b/lib/test_sysfs.c
-> > @@ -0,0 +1,921 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later OR copyleft-next-0.3.1
-> > +/*
-> > + * sysfs test driver
-> > + *
-> > + * Copyright (C) 2021 Luis Chamberlain <mcgrof@kernel.org>
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of the GNU General Public License as published by the Free
-> > + * Software Foundation; either version 2 of the License, or at your option any
-> > + * later version; or, when distributed separately from the Linux kernel or
-> > + * when incorporated into other software packages, subject to the following
-> > + * license:
-> > + *
-> > + * This program is free software; you can redistribute it and/or modify it
-> > + * under the terms of copyleft-next (version 0.3.1 or later) as published
-> > + * at http://copyleft-next.org/.
-> 
-> As Greg suggested, please drop the boilerplate here.
+On Fri, Oct 8, 2021 at 5:29 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+>
+> Currently kretprobe on ARM just fills r0-r11 of pt_regs, but
+> that is not enough for the stacktrace. Moreover, from the user
+> kretprobe handler, stacktrace needs a frame pointer on the
+> __kretprobe_trampoline.
+>
+> This adds a frame pointer on __kretprobe_trampoline for both gcc
+> and clang case. Those have different frame pointer so we need
+> different but similar stack on pt_regs.
+>
+> Gcc makes the frame pointer (fp) to point the 'pc' address of
+> the {fp, ip (=sp), lr, pc}, this means {r11, r13, r14, r15}.
+> Thus if we save the r11 (fp) on pt_regs->r12, we can make this
+> set on the end of pt_regs.
+>
+> On the other hand, Clang makes the frame pointer to point the
+> 'fp' address of {fp, lr} on stack. Since the next to the
+> pt_regs->lr is pt_regs->sp, I reused the pair of pt_regs->fp
+> and pt_regs->ip.
+> So this stores the 'lr' on pt_regs->ip and make the fp to point
+> pt_regs->fp.
+>
+> For both cases, saves __kretprobe_trampoline address to
+> pt_regs->lr, so that the stack tracer can identify this frame
+> pointer has been made by the __kretprobe_trampoline.
+>
+> Note that if the CONFIG_FRAME_POINTER is not set, this keeps
+> fp as is.
+>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  arch/arm/probes/kprobes/core.c |   29 ++++++++++++++++++++++++-----
+>  1 file changed, 24 insertions(+), 5 deletions(-)
+>
+> diff --git a/arch/arm/probes/kprobes/core.c b/arch/arm/probes/kprobes/core.c
+> index 95f23b47ba27..7cbd65a22769 100644
+> --- a/arch/arm/probes/kprobes/core.c
+> +++ b/arch/arm/probes/kprobes/core.c
+> @@ -368,16 +368,35 @@ int __kprobes kprobe_exceptions_notify(struct notifier_block *self,
+>  /*
+>   * When a retprobed function returns, trampoline_handler() is called,
+>   * calling the kretprobe's handler. We construct a struct pt_regs to
+> - * give a view of registers r0-r11 to the user return-handler.  This is
+> - * not a complete pt_regs structure, but that should be plenty sufficient
+> - * for kretprobe handlers which should normally be interested in r0 only
+> - * anyway.
+> + * give a view of registers r0-r11, sp, lr, and pc to the user
+> + * return-handler. This is not a complete pt_regs structure, but that
+> + * should be enough for stacktrace from the return handler with or
+> + * without pt_regs.
+>   */
+>  void __naked __kprobes __kretprobe_trampoline(void)
+>  {
+>         __asm__ __volatile__ (
+> -               "sub    sp, sp, #16             \n\t"
+> +               "ldr    lr, =__kretprobe_trampoline     \n\t"
+> +               "stmdb  sp!, {sp, lr, pc}       \n\t"
+> +#ifdef CONFIG_FRAME_POINTER
+> +       /* __kretprobe_trampoline makes a framepointer on pt_regs. */
+> +#ifdef CONFIG_CC_IS_CLANG
+> +               /* In clang case, pt_regs->ip = lr. */
+> +               "stmdb  sp!, {lr}               \n\t"
+>                 "stmdb  sp!, {r0 - r11}         \n\t"
+> +               /* fp points regs->r11 (fp) */
+> +               "add    fp, sp, #44             \n\t"
+> +#else /* !CONFIG_CC_IS_CLANG */
+> +               /* In gcc case, pt_regs->ip = fp. */
+> +               "stmdb  sp!, {fp}               \n\t"
+> +               "stmdb  sp!, {r0 - r11}         \n\t"
+> +               /* fp points regs->r15 (pc) */
+> +               "add    fp, sp, #60             \n\t"
 
-Sure, sorry for missing that fixed.
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-> > +static ssize_t config_show(struct device *dev,
-> > +			   struct device_attribute *attr,
-> > +			   char *buf)
-> > +{
-> > +	struct sysfs_test_device *test_dev = dev_to_test_dev(dev);
-> > +	struct test_config *config = &test_dev->config;
-> > +	int len = 0;
-> > +
-> > +	test_dev_config_lock(test_dev);
-> > +
-> > +	len += snprintf(buf, PAGE_SIZE,
-> > +			"Configuration for: %s\n",
-> > +			dev_name(dev));
-> 
-> Please use sysfs_emit() instead of snprintf().
+> +#endif /* CONFIG_CC_IS_CLANG */
+> +#else /* !CONFIG_FRAME_POINTER */
+> +               "sub    sp, sp, #4              \n\t"
+> +               "stmdb  sp!, {r0 - r11}         \n\t"
+> +#endif /* CONFIG_FRAME_POINTER */
+>                 "mov    r0, sp                  \n\t"
+>                 "bl     trampoline_handler      \n\t"
+>                 "mov    lr, r0                  \n\t"
+>
 
-Oh nice, done and fixed also in the other places.
 
-> > +static int sysfs_test_dev_alloc_blockdev(struct sysfs_test_device *test_dev)
-> > +{
-> > +	int ret = -ENOMEM;
-> > +
-> > +	test_dev->disk = blk_alloc_disk(NUMA_NO_NODE);
-> > +	if (!test_dev->disk) {
-> > +		pr_err("Error allocating disk structure for device %d\n",
-> > +		       test_dev->dev_idx);
-> > +		goto out;
-> > +	}
-> > +
-> > +	test_dev->disk->major = sysfs_test_major;
-> > +	test_dev->disk->first_minor = test_dev->dev_idx + 1;
-> > +	test_dev->disk->fops = &sysfs_testdev_ops;
-> > +	test_dev->disk->private_data = test_dev;
-> > +	snprintf(test_dev->disk->disk_name, 16, "test_sysfs%d",
-> > +		 test_dev->dev_idx);
-> 
-> Prefer sizeof(test_dev->disk->disk_name) over open-coded "16".
-
-Sure.
-
-> > +static ssize_t read_reset_first_test_dev(struct file *file,
-> > +					 char __user *user_buf,
-> > +					 size_t count, loff_t *ppos)
-> > +{
-> > +	ssize_t len;
-> > +	char buf[32];
-> > +
-> > +	reset_first_test_dev++;
-> > +	len = sprintf(buf, "%d\n", reset_first_test_dev);
-> 
-> Even though it's safe as-is, I was going to suggest scnprintf() here
-> (i.e. explicit bounds and a bounds-checked "len"). However, scnprintf()
-> returns ssize_t, and there's no bounds checking in
-> simple_read_from_buffer. That needs fixing (I'll send a patch).
-
-OK we can later change it to scnprintf() once your patch gets merged.
-
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/sysfs/sysfs.sh
-> > @@ -0,0 +1,1208 @@
-> > +#!/bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0-or-later
-> > +# Copyright (C) 2021 Luis Chamberlain <mcgrof@kernel.org>
-> > +#
-> > +# This program is free software; you can redistribute it and/or modify it
-> > +# under the terms of the GNU General Public License as published by the Free
-> > +# Software Foundation; either version 2 of the License, or at your option any
-> > +# later version; or, when distributed separately from the Linux kernel or
-> > +# when incorporated into other software packages, subject to the following
-> > +# license:
-> > +#
-> > +# This program is free software; you can redistribute it and/or modify it
-> > +# under the terms of copyleft-next (version 0.3.1 or later) as published
-> > +# at http://copyleft-next.org/.
-> > +
-> > +# This performs a series tests against the sysfs filesystem.
-> 
-> -boilerplate
-
-Nuked.
-
-> > +check_dmesg()
-> > +{
-> > +	# filter out intentional WARNINGs or Oopses
-> > +	local filter=${1:-_check_dmesg_filter}
-> > +
-> > +	_dmesg_since_test_start | $filter >$seqres.dmesg
-> > +	egrep -q -e "kernel BUG at" \
-> > +	     -e "WARNING:" \
-> > +	     -e "\bBUG:" \
-> > +	     -e "Oops:" \
-> > +	     -e "possible recursive locking detected" \
-> > +	     -e "Internal error" \
-> > +	     -e "(INFO|ERR): suspicious RCU usage" \
-> > +	     -e "INFO: possible circular locking dependency detected" \
-> > +	     -e "general protection fault:" \
-> > +	     -e "BUG .* remaining" \
-> > +	     -e "UBSAN:" \
-> > +	     $seqres.dmesg
-> 
-> Is just looking for "call trace" sufficient here?
-
-So far from my testing yes. This strategy is also borrowed from fstests
-and that's what is done there, and so quite a lot of testing has been
-done with that. If we are to consider an enhancement here we should then
-also consider an enhancement welcome for fstests.
-
-  Luis
+-- 
+Thanks,
+~Nick Desaulniers
