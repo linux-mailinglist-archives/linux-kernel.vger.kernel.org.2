@@ -2,110 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2357428C2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B79F428BAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234354AbhJKLkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhJKLks (ORCPT
+        id S236025AbhJKLDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:03:10 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25119 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235971AbhJKLDI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:40:48 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19003C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:38:48 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id d9so42708909edh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:38:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=aVAseHFlKtR4hY18T2FRHhS7NIeZFLXno7FnFl0RhbU=;
-        b=qomjv+hAHgs1U+H0KeSPd9BBRDuEcnJleuwPcs5pDM6bKTvkTuJ6QEgrJ2LVntS2YX
-         k0prMnz6lKfgCO9svnOiIWDSGLBgy9E58QpgydyRLHTaDlduShMHSzLBOEU5Etrdc55m
-         rWQRAqjY7nDKb8yX8+X5rt7PDtLXTxSQv4fs9iuSXcV24dWoO0Otr12dSdwsChJtcz+L
-         WYd2YHr3Lj5oihAYIkm4gdjXreOisPrpELpCtIXjYxzIds2KosGWgKcsVZZ3zLbz0LSh
-         gYDlRutNPxi7z2lgFIVEFb11+cylpFz8Sj3MJtU7WYdZfqGgTODOTdsmX6LgOI7xVIoX
-         G6fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=aVAseHFlKtR4hY18T2FRHhS7NIeZFLXno7FnFl0RhbU=;
-        b=HdyGs1rvROpwuNZmzg5AN4pmtB5LYOXpvmKxTWtvrzd83pyhRd4jbiO0aiEgE3Qsmj
-         TPHRDctTVrLMKMw51tmogZ+CW4zmbrG78TD9qnpxF38Xdc/cjISrPWY/N/RYZjmlWADG
-         DVENZhOtyNPIiDX30rDc9pl3+TowLcnLRJyhGYUNvCiFcZz1IX5/Q527UIuW3T8GYiWf
-         glBKtf7Cx666eZ8UXWF3EGfKRegyDyYBJFaP8B7WXfbZ2y9dvIKfoA6EMKvJyLPtDVV7
-         y/2ls1M/O5vzvgcoKSqiczh/zRJQwfslMNrcf94zlNV3KxjGG2VgHodqUZ+Gt+o22bCa
-         ylVQ==
-X-Gm-Message-State: AOAM530vNyHa58DQW3v+4+NC1YAL/BsD9qJ0J0Ycu1XY1sJj8vW06slX
-        T8nTgcrygcK6cM8g7pNHXRT4uXnf8ht0OfTv51Hp+0fSiAmaMg==
-X-Google-Smtp-Source: ABdhPJwkQ76ovFx13C9zczM3mcDGc+ax0KkVrNWG1kmrISGVUNnIWrO3TGZ47niR5zT4915iDVERR1VzJAEaX4CubUI=
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr25186720ejy.493.1633952326385;
- Mon, 11 Oct 2021 04:38:46 -0700 (PDT)
+        Mon, 11 Oct 2021 07:03:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HSbQq5nBPz1DHYp;
+        Mon, 11 Oct 2021 18:59:31 +0800 (CST)
+Received: from dggpemm100009.china.huawei.com (7.185.36.113) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 19:01:06 +0800
+Received: from huawei.com (10.175.113.32) by dggpemm100009.china.huawei.com
+ (7.185.36.113) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 19:01:05 +0800
+From:   Liu Shixin <liushixin2@huawei.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>
+Subject: [PATCH] media: lm3560: prevent memory leak of v4l2_ctrl_handler
+Date:   Mon, 11 Oct 2021 19:39:15 +0800
+Message-ID: <20211011113915.2646960-1-liushixin2@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 11 Oct 2021 17:08:35 +0530
-Message-ID: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
-Subject: mm/kasan/init.c:282:20: error: redefinition of 'kasan_populate_early_vm_area_shadow'
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundatio.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.32]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm100009.china.huawei.com (7.185.36.113)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Regression found on x86_64 gcc-11 built with KASAN enabled.
-Following build warnings / errors reported on linux next 20211011.
+If lm3560_subdev_init() or lm3560_init_device() failed, lm3560_probe() will
+directly return without free v4l2_ctrl_handler, which results memory leak:
 
-metadata:
-    git_describe: next-20211011
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
-    git_short_log: d3134eb5de85 (\"Add linux-next specific files for 20211011\")
-    target_arch: x86_64
-    toolchain: gcc-11
+unreferenced object 0xffff8881ea566e00 (size 256):
+  comm "xrun", pid 396, jiffies 4294949372 (age 80.376s)
+  hex dump (first 32 bytes):
+    d8 82 81 4d 81 88 ff ff 00 4c 56 ea 81 88 ff ff  ...M.....LV.....
+    10 6e 56 ea 81 88 ff ff 10 6e 56 ea 81 88 ff ff  .nV......nV.....
+  backtrace:
+    [<0000000055d4bb48>] __kmalloc_node+0x198/0x330
+    [<00000000e3b57405>] kvmalloc_node+0x65/0x130
+    [<0000000061e6063e>] v4l2_ctrl_new+0x820/0x1d40 [videodev]
+    [<00000000d7174c1b>] v4l2_ctrl_new_std+0x1d5/0x2b0 [videodev]
+    [<00000000cefb1a26>] lm3560_subdev_init+0x374/0x5e0 [lm3560]
+    [<00000000cda4c495>] lm3560_probe+0x1c2/0x61a [lm3560]
+    [<00000000d9502788>] i2c_device_probe+0xa07/0xbb0
+    [<00000000a5e908d0>] really_probe+0x285/0xc30
+    [<000000002fee9400>] __driver_probe_device+0x35f/0x4f0
+    [<0000000025fd5e96>] driver_probe_device+0x4f/0x140
+    [<00000000d37732ef>] __device_attach_driver+0x24c/0x330
+    [<000000001e0f0dfd>] bus_for_each_drv+0x15d/0x1e0
+    [<00000000c6c72d57>] __device_attach+0x267/0x410
+    [<000000005f7e4b8c>] bus_probe_device+0x1ec/0x2a0
+    [<000000001c3d09f6>] device_add+0xc1c/0x1d50
+    [<00000000cddb870a>] i2c_new_client_device+0x614/0xb00
 
-build error :
---------------
-mm/kasan/init.c:282:20: error: redefinition of
-'kasan_populate_early_vm_area_shadow'
-  282 | void __init __weak kasan_populate_early_vm_area_shadow(void *start,
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from include/linux/mm.h:34,
-                 from include/linux/memblock.h:13,
-                 from mm/kasan/init.c:9:
-include/linux/kasan.h:463:20: note: previous definition of
-'kasan_populate_early_vm_area_shadow' with type 'void(void *, long
-unsigned int)'
-  463 | static inline void kasan_populate_early_vm_area_shadow(void *start,
-      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-make[3]: *** [scripts/Makefile.build:288: mm/kasan/init.o] Error 1
-make[3]: Target '__build' not remade because of errors.
+Fixes: 7f6b11a18c30 ("[media] media: i2c: add driver for dual LED Flash, lm3560")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+---
+ drivers/media/i2c/lm3560.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-build link:
------------
-https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/build.log
-
-build config:
--------------
-https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
-
-# To install tuxmake on your system globally
-# sudo pip3 install -U tuxmake
-tuxmake --runtime podman --target-arch x86_64 --toolchain gcc-11
---kconfig defconfig --kconfig-add
-https://builds.tuxbuild.com/1zLv2snHfZN8QV01yA9MB8NhUZt/config
-
+diff --git a/drivers/media/i2c/lm3560.c b/drivers/media/i2c/lm3560.c
+index 9e34ccce4fc3..8d2e224c725b 100644
+--- a/drivers/media/i2c/lm3560.c
++++ b/drivers/media/i2c/lm3560.c
+@@ -432,15 +432,22 @@ static int lm3560_probe(struct i2c_client *client,
+ 
+ 	rval = lm3560_subdev_init(flash, LM3560_LED1, "lm3560-led1");
+ 	if (rval < 0)
+-		return rval;
++		goto free_led0;
+ 
+ 	rval = lm3560_init_device(flash);
+ 	if (rval < 0)
+-		return rval;
++		goto free_led1;
+ 
+ 	i2c_set_clientdata(client, flash);
+ 
+ 	return 0;
++
++free_led1:
++	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED1]);
++free_led0:
++	v4l2_ctrl_handler_free(&flash->ctrls_led[LM3560_LED0]);
++
++	return rval;
+ }
+ 
+ static int lm3560_remove(struct i2c_client *client)
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.25.1
+
