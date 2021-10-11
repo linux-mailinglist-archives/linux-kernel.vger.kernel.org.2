@@ -2,118 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086324298D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9B74298E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhJKV14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230114AbhJKV1z (ORCPT
+        id S235321AbhJKV3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:29:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:35968 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235293AbhJKV3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:27:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89388C061570;
-        Mon, 11 Oct 2021 14:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rvR++cOV6St/IKyuFj/V4jUUpnc9vYLPZ+efnuLPdWc=; b=25WRJtmBryphhp7aLK/UkJ4aWA
-        tK73XQukZ8oxuJlQ20xqvbyZ2vAL72VzbO+/iHZ5dWu8l0Tc0dS1+X1oi6wITuyN3WczsfC/2TbAS
-        8i+0OvOlvtM+vtQzQDamnzOhvw3FD2fGqvmkfMBXQz9adj5JPXbLeIv0PtKY6JIpjcR0jw/X857w3
-        J7B/ZD3uRcS6NnIiRdDYtHdxi8o/MPiyFEWaeoj8iXZonj6X7sJ91q3TlaR1N3d14Se1r+cs/QHve
-        soiEUlTGPsgb7VMv7J1IS6q03hcBm3HjPypLaF6BEWefYfZdAQ0+Ey1qR/nUTt1ZlL33O807I0Diy
-        iYbx0SOA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ma2nq-00Al54-96; Mon, 11 Oct 2021 21:25:46 +0000
-Date:   Mon, 11 Oct 2021 14:25:46 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, keescook@chromium.org,
-        rostedt@goodmis.org, linux-spdx@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 09/12] sysfs: fix deadlock race with module removal
-Message-ID: <YWSr2trabEJflzlj@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-10-mcgrof@kernel.org>
- <YVwZwh7qDKfSM59h@T590>
+        Mon, 11 Oct 2021 17:29:53 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 2137D1FEF6;
+        Mon, 11 Oct 2021 21:27:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1633987672;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s6ZJu1et55W9GdtXFoxupmNHG0b7XkGOdyjr+6udjJE=;
+        b=gw8p2TCwfz5IzCgo5mThFQplo4d6gqhnVD0sdCCeEmkBFrE7DZPGzjiev5jDTLRK97SvuZ
+        oJ/0oxz/RObAob5QkkLK2vZ5kp3hJGVhpso1yI8gL1+QdZr+tGDQK4RZZhUyhHiHxYBV8f
+        IcrcrmlxfnqHnMu6xygXd3x6aDx0Zg0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1633987672;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s6ZJu1et55W9GdtXFoxupmNHG0b7XkGOdyjr+6udjJE=;
+        b=pXiNi0LRWCtSONZanTYv1MA26EWnF4DGQsnnvKVaOCFswEbiOJG+V/EwDtbrxk78ps/blq
+        HFxa+4F41SDV1LAQ==
+Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
+        by relay2.suse.de (Postfix) with ESMTP id 1987BA3B83;
+        Mon, 11 Oct 2021 21:27:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D1DB9DA781; Mon, 11 Oct 2021 23:27:28 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 23:27:28 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Btrfs fixes for 5.15-rc6
+Message-ID: <20211011212728.GU9286@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <cover.1633976241.git.dsterba@suse.com>
+ <CAHk-=whyP7conp58OoJA5wjWdMf8BBek3vw0C3n9HBOw8BHZuw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YVwZwh7qDKfSM59h@T590>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <CAHk-=whyP7conp58OoJA5wjWdMf8BBek3vw0C3n9HBOw8BHZuw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 05:24:18PM +0800, Ming Lei wrote:
-> On Mon, Sep 27, 2021 at 09:38:02AM -0700, Luis Chamberlain wrote:
-> > When driver sysfs attributes use a lock also used on module removal we
-> > can race to deadlock. This happens when for instance a sysfs file on
-> > a driver is used, then at the same time we have module removal call
-> > trigger. The module removal call code holds a lock, and then the
-> > driver's sysfs file entry waits for the same lock. While holding the
-> > lock the module removal tries to remove the sysfs entries, but these
-> > cannot be removed yet as one is waiting for a lock. This won't complete
-> > as the lock is already held. Likewise module removal cannot complete,
-> > and so we deadlock.
-> > 
-> > This can now be easily reproducible with our sysfs selftest as follows:
-> > 
-> > ./tools/testing/selftests/sysfs/sysfs.sh -t 0027
-> > 
-> > This uses a local driver lock. Test 0028 can also be used, that uses
-> > the rtnl_lock():
-> > 
-> > ./tools/testing/selftests/sysfs/sysfs.sh -t 0028
-> > 
-> > To fix this we extend the struct kernfs_node with a module reference
-> > and use the try_module_get() after kernfs_get_active() is called. As
-> > documented in the prior patch, we now know that once kernfs_get_active()
-> > is called the module is implicitly guarded to exist and cannot be removed.
-> > This is because the module is the one in charge of removing the same
-> > sysfs file it created, and removal of sysfs files on module exit will wait
-> > until they don't have any active references. By using a try_module_get()
-> > after kernfs_get_active() we yield to let module removal trump calls to
-> > process a sysfs operation, while also preventing module removal if a sysfs
-> > operation is in already progress. This prevents the deadlock.
-> > 
-> > This deadlock was first reported with the zram driver, however the live
+On Mon, Oct 11, 2021 at 12:18:12PM -0700, Linus Torvalds wrote:
+> On Mon, Oct 11, 2021 at 11:40 AM David Sterba <dsterba@suse.com> wrote:
+> >
+> >   git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.15-rc5-tag
 > 
-> Looks not see the lock pattern you mentioned in zram driver, can you
-> share the related zram code?
-
-I recommend to not look at the zram driver, instead look at the
-test_sysfs driver as that abstracts the issue more clearly and uses
-two different locks as an example. The point is that if on module
-removal *any* lock is used which is *also* used on the sysfs file
-created by the module, you can deadlock.
-
-> > And this can lead to this condition:
-> > 
-> > CPU A                              CPU B
-> >                                    foo_store()
-> > foo_exit()
-> >   mutex_lock(&foo)
-> >                                    mutex_lock(&foo)
-> >    del_gendisk(some_struct->disk);
-> >      device_del()
-> >        device_remove_groups()
+> I see the 'for-5.15-rc5' _branch_, but there is no tag there.
 > 
-> I guess the deadlock exists if foo_exit() is called anywhere. If yes,
-> look the issue may not be related with removing module directly, right?
+> Did you forget to push that out?
 
-No, the reason this can deadlock is that the module exit routine will
-patiently wait for the sysfs / kernfs files to be stop being used,
-but clearly they cannot if the exit routine took the mutex also used
-by the sysfs ops. That is, the special condition here is the removal of
-the sysfs files, and the sysfs files using a lock also used on module
-exit.
-
- Luis
+Ah sorry, yes, I even forgot to create the tag. Now it's there.
