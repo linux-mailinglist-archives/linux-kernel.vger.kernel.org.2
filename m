@@ -2,98 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16A4428D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCB5428D8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236800AbhJKNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:10:18 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:42625 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235410AbhJKNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:10:16 -0400
-Received: from [192.168.0.7] (ip5f5aef5a.dynamic.kabel-deutschland.de [95.90.239.90])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id A062561E5FE33;
-        Mon, 11 Oct 2021 15:08:15 +0200 (CEST)
-Subject: Re: SK hynix BC511: warning: nvme nvme0: missing or invalid SUBNQN
- field.
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>, Dell.Client.Kernel@dell.com
-References: <67f74c8e-9d5e-22a1-f1c2-a4284b07ba56@molgen.mpg.de>
- <20210817161638.GC223727@dhcp-10-100-145-180.wdc.com>
- <f3f78d3c-d3f7-67f5-4263-f306b4f623d1@molgen.mpg.de>
- <20210817170222.GA224912@dhcp-10-100-145-180.wdc.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <f02a8989-d255-26ee-2fca-c9db2d1e158c@molgen.mpg.de>
-Date:   Mon, 11 Oct 2021 15:08:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S236814AbhJKNLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:11:34 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28916 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236807AbhJKNLd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:11:33 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSfCh6mvszbn4k;
+        Mon, 11 Oct 2021 21:05:04 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 21:09:29 +0800
+Received: from huawei.com (10.175.104.82) by kwepemm600001.china.huawei.com
+ (7.193.23.3) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 21:09:28 +0800
+From:   Wang Hai <wanghai38@huawei.com>
+To:     <bhelgaas@google.com>, <andy.shevchenko@gmail.com>,
+        <maz@kernel.org>, <tglx@linutronix.de>,
+        <song.bao.hua@hisilicon.com>, <21cnbao@gmail.com>,
+        <gregkh@linuxfoundation.org>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] PCI/MSI: fix page fault when msi_populate_sysfs() failed
+Date:   Mon, 11 Oct 2021 21:08:37 +0800
+Message-ID: <20211011130837.766323-1-wanghai38@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210817170222.GA224912@dhcp-10-100-145-180.wdc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Keith,
+I got a page fault report when doing fault injection test:
 
+BUG: unable to handle page fault for address: fffffffffffffff4
+...
+RIP: 0010:sysfs_remove_groups+0x25/0x60
+...
+Call Trace:
+ msi_destroy_sysfs+0x30/0xa0
+ free_msi_irqs+0x11d/0x1b0
+ __pci_enable_msix_range+0x67f/0x760
+ pci_alloc_irq_vectors_affinity+0xe7/0x170
+ vp_find_vqs_msix+0x129/0x560
+ vp_find_vqs+0x52/0x230
+ vp_modern_find_vqs+0x47/0xb0
+ p9_virtio_probe+0xa1/0x460 [9pnet_virtio]
+...
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Am 17.08.21 um 19:02 schrieb Keith Busch:
-> On Tue, Aug 17, 2021 at 06:53:15PM +0200, Paul Menzel wrote:
->> [cc: +Dell.Client.Kernel@dell.com as it’s a Dell device]
->> Am 17.08.21 um 18:16 schrieb Keith Busch:
->>> On Tue, Aug 17, 2021 at 05:10:40PM +0200, Paul Menzel wrote:
->>>> On a Dell OptiPlex 7780 AIO/04G47W (BIOS 1.6.3 03/08/2021) Linux 5.10.47
->>>> shows the warning below:
->>>>
->>>>       $ dmesg | grep nvme
->>>>       [    3.015392] nvme 0000:02:00.0: platform quirk: setting simple suspend
->>>>       [    3.021861] nvme nvme0: pci function 0000:02:00.0
->>>>       [    3.026593] ahci 0000:00:17.0: version 3.0
->>>>       [    3.026922] ahci 0000:00:17.0: AHCI 0001.0301 32 slots 1 ports 6 Gbps 0x1 impl SATA mode
->>>>       [    3.035020] ahci 0000:00:17.0: flags: 64bit ncq sntf pm clo only pio slum part ems deso sadm sds apst
->>>>       [    3.035219] nvme nvme0: missing or invalid SUBNQN field.
->>>>       [    3.044518] scsi host0: ahci
->>>>       [    3.051632] nvme nvme0: 12/0/0 default/read/poll queues
->>>>       [    3.052590] ata1: SATA max UDMA/133 abar m2048@0xd1339000 port 0xd1339100 irq 125
->>>>       [    3.058538]  nvme0n1: p1 p2 p3
->>>>
->>>> Should it be added to the quirk list in `drivers/nvme/host/pci.c` or is it a
->>>> real issues, the manufacturer should fix? If so, do you have SK Hynix
->>>> contacts?
->>>
->>> It would be great if device makers would be spec compliant, but the
->>> driver will continue to work with the device the same whether you add
->>> the quirk or not.
->>
->> Could you please point me to the NVMe specification section, so I can refer
->> to it, when contacting the manufacturer?
-> 
-> In the section for "Identify Controller Data Structure" (section
-> 5.17.2.1, figure 257 in spec version 2.0), the NQN definition says:
-> 
->    "Support for this field is mandatory if the controller supports revision
->    1.2.1 or later"
-> 
-> The driver does confirm the controller's reported revision meets this
-> requirement before emitting the warning.
+When populating msi_irqs sysfs failed in msi_capability_init() or
+msix_capability_init(), dev->msi_irq_groups will point to ERR_PTR(...).
+This will cause a page fault when destroying the wrong
+dev->msi_irq_groups in free_msi_irqs().
 
-The Dell support came back to me, and said, that Hynix refuses to 
-publish a fixed firmware unless I show them a use case, where I need 
-that field.
+Define a temp variable and assign it to dev->msi_irq_groups if
+the temp variable is not PTR_ERR.
 
-Can somebody think of a use case, and why this field was made mandatory 
-in the specification?
+Fixes: 2f170814bdd2 ("genirq/msi: Move MSI sysfs handling from PCI to MSI core")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Acked-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+v1->v2: introduce temporary variable 'groups'
+ drivers/pci/msi.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/pci/msi.c b/drivers/pci/msi.c
+index 0099a00af361..4b4792940e86 100644
+--- a/drivers/pci/msi.c
++++ b/drivers/pci/msi.c
+@@ -535,6 +535,7 @@ static int msi_verify_entries(struct pci_dev *dev)
+ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 			       struct irq_affinity *affd)
+ {
++	const struct attribute_group **groups;
+ 	struct msi_desc *entry;
+ 	int ret;
+ 
+@@ -558,12 +559,14 @@ static int msi_capability_init(struct pci_dev *dev, int nvec,
+ 	if (ret)
+ 		goto err;
+ 
+-	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+-	if (IS_ERR(dev->msi_irq_groups)) {
+-		ret = PTR_ERR(dev->msi_irq_groups);
++	groups = msi_populate_sysfs(&dev->dev);
++	if (IS_ERR(groups)) {
++		ret = PTR_ERR(groups);
+ 		goto err;
+ 	}
+ 
++	dev->msi_irq_groups = groups;
++
+ 	/* Set MSI enabled bits	*/
+ 	pci_intx_for_msi(dev, 0);
+ 	pci_msi_set_enable(dev, 1);
+@@ -691,6 +694,7 @@ static void msix_mask_all(void __iomem *base, int tsize)
+ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 				int nvec, struct irq_affinity *affd)
+ {
++	const struct attribute_group **groups;
+ 	void __iomem *base;
+ 	int ret, tsize;
+ 	u16 control;
+@@ -730,12 +734,14 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
+ 
+ 	msix_update_entries(dev, entries);
+ 
+-	dev->msi_irq_groups = msi_populate_sysfs(&dev->dev);
+-	if (IS_ERR(dev->msi_irq_groups)) {
+-		ret = PTR_ERR(dev->msi_irq_groups);
++	groups = msi_populate_sysfs(&dev->dev);
++	if (IS_ERR(groups)) {
++		ret = PTR_ERR(groups);
+ 		goto out_free;
+ 	}
+ 
++	dev->msi_irq_groups = groups;
++
+ 	/* Set MSI-X enabled bits and unmask the function */
+ 	pci_intx_for_msi(dev, 0);
+ 	dev->msix_enabled = 1;
+-- 
+2.17.1
 
-Kind regards,
-
-Paul
