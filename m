@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC87B429513
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489F5429515
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhJKREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:04:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
+        id S233351AbhJKRED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:04:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233373AbhJKRD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:03:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0CA56103C;
-        Mon, 11 Oct 2021 17:01:55 +0000 (UTC)
+        id S233445AbhJKRD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:03:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95BDA60F6E;
+        Mon, 11 Oct 2021 17:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633971716;
-        bh=jm+MmghP27mX/Vw4z1PWGh2UsatbCOer/kNjOSXtGSI=;
+        s=k20201202; t=1633971719;
+        bh=sA9IPFPv1s4drjA088OPVEJGCy9qliVmy40+zSZtmG0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SprZptrV5S23fsND4ATcbmrILSVzjoDUuw2bGr9aAyNU1u1MumrMa7BFyULBRae9O
-         JsqmxucdbNDFkuTkBrt6vssF8zUCSKyRA8i9+aVZmpM4ECjKRdo6fg+gdyvRI6l/CG
-         gACeQPsyyVJG6RHI/3K9Jm+1BfOlKjwRQuCCjQOLW74DNe/qSFAWiLH+jJCs1poQef
-         0Ksv2ME3Fs78L+4gWlbJ2F66sqKkeliJXLAJNpJoPv/VaYrJUIjDLLnIQsUv07ecof
-         xbYPDaDNF5rAXkSlyLcRcYxe3yfTCsg3VoFCyKkHOKN86yho4P1vv3rRU3Ue16iSNq
-         OWLOA5qlxilsQ==
+        b=SYyYWH9mT/iTcdd9Z0mFqZXKMTVYnCoSOPHBr/QCsUzmbNnV28TlSnR/5VR+P/FaB
+         bWfaHzBfBsr6IOO9IkCYXkCqiT3amj5kcOjOa4YsVWPFJKJNwGCWtCAv1STSuvd8QC
+         RGaewUOX+MyOhkQGV1f0t+lAZNbyrsyjFATIQpOOMdiq10nRqpnEcc6/5KADLVCrpG
+         7JkETWoPbRO1rb4DvFKAcSk5X09neTSbONIPiMxFBQqejgNRHPlngzQqKbLOrlc/VZ
+         bgASmtGH86JPDlLWi2ExGEoPIbqQ1Py2oFWKliNT20BNgVXSjV885PKI8Z/uKCJx8O
+         eOmskq8GQilyw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
+To:     Ajit Kumar Pandey <AjitKumar.Pandey@amd.com>,
+        alsa-devel@alsa-project.org
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 0/4] ASoC: Intel: bytcr_rt5651: few cleanups
-Date:   Mon, 11 Oct 2021 18:01:41 +0100
-Message-Id: <163397094550.6567.12613609707745181814.b4-ty@kernel.org>
+        Vijendar Mukunda <vijendar.mukunda@amd.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Basavaraj.Hiregoudar@amd.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Alexander.Deucher@amd.com, Vijendar.Mukunda@amd.com,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Sunil-kumar.Dommati@amd.com
+Subject: Re: [PATCH] ASoC: amd: Kconfig: Select fch clock support with machine driver
+Date:   Mon, 11 Oct 2021 18:01:42 +0100
+Message-Id: <163397094549.6567.3180566951499093730.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
-References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
+References: <20211011055354.67719-1-AjitKumar.Pandey@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,15 +48,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Oct 2021 20:02:46 +0300, Andy Shevchenko wrote:
-> The small set of cleanups against bytcr_rt5651 board file.
+On Mon, 11 Oct 2021 11:23:53 +0530, Ajit Kumar Pandey wrote:
+> We are using fch clock controller as parent mclk source for rt5682
+> codec. Add config to enable clock framework support for 48MHz fixed
+> clock when machine driver config is selected.
 > 
-> In v2:
-> - added commit message to patch 2 (Joe, Pierre)
-> - added cover letter (Pierre)
-> - added Hans to Cc list (Hans)
 > 
-> [...]
 
 Applied to
 
@@ -63,14 +61,8 @@ Applied to
 
 Thanks!
 
-[1/4] ASoC: Intel: bytcr_rt5651: Get platform data via dev_get_platdata()
-      commit: 0c465e7a8ea26f4ad52dd9548f22afdaf6e039a5
-[2/4] ASoC: Intel: bytcr_rt5651: Use temporary variable for struct device
-      commit: 269da8f7626b1de69998fe1a0c0e069749d18a28
-[3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional() for mclk
-      commit: a8627df5491e00e23d4f2e648ff796adbfa23cc5
-[4/4] ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log saturation
-      commit: 45c5dc45d80d41596bc0364fafc523648e6124d8
+[1/1] ASoC: amd: Kconfig: Select fch clock support with machine driver
+      commit: 281ddf62f551321982c7d6f525a83a3b3c1d5eae
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
