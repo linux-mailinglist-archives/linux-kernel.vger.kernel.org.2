@@ -2,292 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68878428910
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377874288DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbhJKIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235244AbhJKIsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:48:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3AD160F24;
-        Mon, 11 Oct 2021 08:46:07 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>, Marc Zyngier <maz@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Huacai Chen <chenhuacai@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH V6 10/10] irqchip: Add Loongson PCH LPC controller support
-Date:   Mon, 11 Oct 2021 16:34:05 +0800
-Message-Id: <20211011083405.861416-11-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211011083405.861416-1-chenhuacai@loongson.cn>
-References: <20211011083405.861416-1-chenhuacai@loongson.cn>
+        id S235094AbhJKIgR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 04:36:17 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20437 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234885AbhJKIgL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:36:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-10-3xCUUb26MU6vXGQv3KSaTQ-1; Mon, 11 Oct 2021 09:34:09 +0100
+X-MC-Unique: 3xCUUb26MU6vXGQv3KSaTQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 09:34:06 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Mon, 11 Oct 2021 09:34:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Steven Rostedt' <rostedt@goodmis.org>,
+        Jan Engelhardt <jengelh@inai.de>
+CC:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Lai Jiangshan" <jiangshanlai@gmail.com>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        "Jozsef Kadlecsik" <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, rcu <rcu@vger.kernel.org>,
+        netfilter-devel <netfilter-devel@vger.kernel.org>,
+        coreteam <coreteam@netfilter.org>,
+        netdev <netdev@vger.kernel.org>
+Subject: RE: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Thread-Topic: [RFC][PATCH] rcu: Use typeof(p) instead of typeof(*p) *
+Thread-Index: AQHXui9pmtYafoLH60aZNYgeQxdcxKvNgGPQ
+Date:   Mon, 11 Oct 2021 08:34:06 +0000
+Message-ID: <c30feda1b1e0457d97beafe3e3ca7ce4@AcuMS.aculab.com>
+References: <20211005094728.203ecef2@gandalf.local.home>
+        <ef5b1654-1f75-da82-cab8-248319efbe3f@rasmusvillemoes.dk>
+        <639278914.2878.1633457192964.JavaMail.zimbra@efficios.com>
+        <826o327o-3r46-3oop-r430-8qr0ssp537o3@vanv.qr>
+        <20211005144002.34008ea0@gandalf.local.home>
+        <srqsppq-p657-43qq-np31-pq5pp03271r6@vanv.qr>
+        <20211005154029.46f9c596@gandalf.local.home>
+        <20211005163754.66552fb3@gandalf.local.home>
+        <pn2qp6r2-238q-rs8n-p8n0-9s37sr614123@vanv.qr>
+ <20211005172435.190c62d9@gandalf.local.home>
+In-Reply-To: <20211005172435.190c62d9@gandalf.local.home>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are preparing to add new Loongson (based on LoongArch, not compatible
-with old MIPS-based Loongson) support. This patch add Loongson PCH LPC
-interrupt controller support.
+From: Steven Rostedt
+> Sent: 05 October 2021 22:25
+> 
+...
+> 
+> Basically (one alternative I was looking at) was simply passing around a
+> void pointer. Not sure how the RCU macros would handle that. But to
+> completely abstract it out, I was thinking of just returning void * and
+> accepting void *, but I didn't want to do that because now we just lost any
+> kind of type checking done by the compiler. The tricks I was playing was to
+> keep some kind of type checking.
 
-PCH-LPC stands for "LPC Interrupts" that described in Section 24.3 of
-"Loongson 7A1000 Bridge User Manual". For more information please refer
-Documentation/loongarch/irq-chip-model.rst.
+Yes, don't use 'void *'.
+Sun used it for all the pointers in their DDI/DKI - made it impossible
+to ensure you were passing in the right type of 'token'.
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- drivers/irqchip/Kconfig                |   8 +
- drivers/irqchip/Makefile               |   1 +
- drivers/irqchip/irq-loongson-pch-lpc.c | 204 +++++++++++++++++++++++++
- 3 files changed, 213 insertions(+)
- create mode 100644 drivers/irqchip/irq-loongson-pch-lpc.c
+	David
 
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index 1a784952d51c..4f6395f79425 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -594,6 +594,14 @@ config LOONGSON_PCH_MSI
- 	help
- 	  Support for the Loongson PCH MSI Controller.
- 
-+config LOONGSON_PCH_LPC
-+	bool "Loongson PCH LPC Controller"
-+	depends on MACH_LOONGSON64
-+	default MACH_LOONGSON64
-+	select IRQ_DOMAIN_HIERARCHY
-+	help
-+	  Support for the Loongson PCH LPC Controller.
-+
- config MST_IRQ
- 	bool "MStar Interrupt Controller"
- 	depends on ARCH_MEDIATEK || ARCH_MSTARV7 || COMPILE_TEST
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index eb3fdc6fe808..6fd07980fa47 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -112,6 +112,7 @@ obj-$(CONFIG_LOONGSON_HTPIC)		+= irq-loongson-htpic.o
- obj-$(CONFIG_LOONGSON_HTVEC)		+= irq-loongson-htvec.o
- obj-$(CONFIG_LOONGSON_PCH_PIC)		+= irq-loongson-pch-pic.o
- obj-$(CONFIG_LOONGSON_PCH_MSI)		+= irq-loongson-pch-msi.o
-+obj-$(CONFIG_LOONGSON_PCH_LPC)		+= irq-loongson-pch-lpc.o
- obj-$(CONFIG_MST_IRQ)			+= irq-mst-intc.o
- obj-$(CONFIG_SL28CPLD_INTC)		+= irq-sl28cpld.o
- obj-$(CONFIG_MACH_REALTEK_RTL)		+= irq-realtek-rtl.o
-diff --git a/drivers/irqchip/irq-loongson-pch-lpc.c b/drivers/irqchip/irq-loongson-pch-lpc.c
-new file mode 100644
-index 000000000000..a2236089ee4d
---- /dev/null
-+++ b/drivers/irqchip/irq-loongson-pch-lpc.c
-@@ -0,0 +1,204 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Loongson LPC Interrupt Controller support
-+ *
-+ * Copyright (C) 2020-2021 Loongson Technology Corporation Limited
-+ */
-+
-+#define pr_fmt(fmt) "lpc: " fmt
-+
-+#include <linux/interrupt.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/kernel.h>
-+#include <linux/syscore_ops.h>
-+
-+/* Registers */
-+#define LPC_INT_CTL		0x00
-+#define LPC_INT_ENA		0x04
-+#define LPC_INT_STS		0x08
-+#define LPC_INT_CLR		0x0c
-+#define LPC_INT_POL		0x10
-+#define LPC_COUNT		16
-+
-+struct pch_lpc {
-+	void __iomem		*base;
-+	struct irq_domain	*lpc_domain;
-+	struct fwnode_handle	*domain_handle;
-+	raw_spinlock_t		lpc_lock;
-+	u32			saved_reg_ctl;
-+	u32			saved_reg_ena;
-+	u32			saved_reg_pol;
-+};
-+
-+static struct pch_lpc *pch_lpc_priv;
-+
-+static void ack_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(0x1 << d->irq, pch_lpc_priv->base + LPC_INT_CLR);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+static void mask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) & (~(0x1 << (d->irq))),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static void mask_ack_lpc_irq(struct irq_data *d)
-+{
-+}
-+
-+static void unmask_lpc_irq(struct irq_data *d)
-+{
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&pch_lpc_priv->lpc_lock, flags);
-+	writel(readl(pch_lpc_priv->base + LPC_INT_ENA) | (0x1 << (d->irq)),
-+			pch_lpc_priv->base + LPC_INT_ENA);
-+	raw_spin_unlock_irqrestore(&pch_lpc_priv->lpc_lock, flags);
-+}
-+
-+static struct irq_chip pch_lpc_irq_chip = {
-+	.name			= "PCH LPC",
-+	.irq_mask		= mask_lpc_irq,
-+	.irq_unmask		= unmask_lpc_irq,
-+	.irq_ack		= ack_lpc_irq,
-+	.irq_mask_ack		= mask_ack_lpc_irq,
-+	.irq_eoi		= unmask_lpc_irq,
-+	.flags			= IRQCHIP_SKIP_SET_WAKE,
-+};
-+
-+static void lpc_irq_dispatch(struct irq_desc *desc)
-+{
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	u32 pending;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	pending = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pending &= readl(pch_lpc_priv->base + LPC_INT_STS);
-+	if (!pending)
-+		spurious_interrupt();
-+
-+	while (pending) {
-+		int bit = __ffs(pending);
-+
-+		generic_handle_irq(bit);
-+		pending &= ~BIT(bit);
-+	}
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static int pch_lpc_map(struct irq_domain *d, unsigned int irq,
-+			irq_hw_number_t hw)
-+{
-+	irq_set_chip_and_handler(irq, &pch_lpc_irq_chip, handle_level_irq);
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops pch_lpc_domain_ops = {
-+	.map = pch_lpc_map,
-+	.xlate = irq_domain_xlate_onecell,
-+};
-+
-+static void pch_lpc_reset(struct pch_lpc *priv)
-+{
-+	/* Enable the LPC interrupt, bit31: en  bit30: edge */
-+	writel(0x80000000, priv->base + LPC_INT_CTL);
-+	writel(0, priv->base + LPC_INT_ENA);
-+	/* Clear all 18-bit interrpt bit */
-+	writel(0x3ffff, priv->base + LPC_INT_CLR);
-+}
-+
-+static int pch_lpc_disabled(struct pch_lpc *priv)
-+{
-+	return (readl(priv->base + LPC_INT_ENA) == 0xffffffff) &&
-+			(readl(priv->base + LPC_INT_STS) == 0xffffffff);
-+}
-+
-+static int pch_lpc_suspend(void)
-+{
-+	pch_lpc_priv->saved_reg_ctl = readl(pch_lpc_priv->base + LPC_INT_CTL);
-+	pch_lpc_priv->saved_reg_ena = readl(pch_lpc_priv->base + LPC_INT_ENA);
-+	pch_lpc_priv->saved_reg_pol = readl(pch_lpc_priv->base + LPC_INT_POL);
-+	return 0;
-+}
-+
-+static void pch_lpc_resume(void)
-+{
-+	writel(pch_lpc_priv->saved_reg_ctl, pch_lpc_priv->base + LPC_INT_CTL);
-+	writel(pch_lpc_priv->saved_reg_ena, pch_lpc_priv->base + LPC_INT_ENA);
-+	writel(pch_lpc_priv->saved_reg_pol, pch_lpc_priv->base + LPC_INT_POL);
-+}
-+
-+static struct syscore_ops pch_lpc_syscore_ops = {
-+	.suspend = pch_lpc_suspend,
-+	.resume = pch_lpc_resume,
-+};
-+
-+struct irq_domain *pch_lpc_acpi_init(struct irq_domain *parent,
-+					struct acpi_madt_lpc_pic *acpi_pchlpc)
-+{
-+	int parent_irq;
-+	struct pch_lpc *priv;
-+	struct irq_fwspec fwspec;
-+
-+	if (!acpi_pchlpc)
-+		return NULL;
-+
-+	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return NULL;
-+
-+	raw_spin_lock_init(&priv->lpc_lock);
-+
-+	priv->base = ioremap(acpi_pchlpc->address, acpi_pchlpc->size);
-+	if (!priv->base)
-+		goto free_priv;
-+
-+	if (pch_lpc_disabled(priv)) {
-+		pr_err("Failed to get LPC status\n");
-+		goto iounmap_base;
-+	}
-+
-+	priv->domain_handle = irq_domain_alloc_fwnode((phys_addr_t *)acpi_pchlpc);
-+	if (!priv->domain_handle) {
-+		pr_err("Unable to allocate domain handle\n");
-+		goto iounmap_base;
-+	}
-+	priv->lpc_domain = irq_domain_add_legacy(NULL, LPC_COUNT, 0, 0,
-+						&pch_lpc_domain_ops, priv);
-+	if (!priv->lpc_domain) {
-+		pr_err("Failed to create IRQ domain\n");
-+		goto iounmap_base;
-+	}
-+	pch_lpc_reset(priv);
-+
-+	fwspec.fwnode = parent->fwnode;
-+	fwspec.param[0] = acpi_pchlpc->cascade;
-+	fwspec.param[1] = IRQ_TYPE_LEVEL_HIGH;
-+	fwspec.param_count = 2;
-+	parent_irq = irq_create_fwspec_mapping(&fwspec);
-+	irq_set_chained_handler_and_data(parent_irq, lpc_irq_dispatch, priv);
-+	pch_lpc_priv = priv;
-+
-+	register_syscore_ops(&pch_lpc_syscore_ops);
-+
-+	return irq_find_matching_fwnode(priv->domain_handle, DOMAIN_BUS_ANY);
-+
-+iounmap_base:
-+	iounmap(priv->base);
-+free_priv:
-+	kfree(priv);
-+
-+	return NULL;
-+}
--- 
-2.27.0
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
