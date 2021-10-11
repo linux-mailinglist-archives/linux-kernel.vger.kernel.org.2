@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF00428DA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78131428D98
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236869AbhJKNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:18:37 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:38548
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235144AbhJKNSg (ORCPT
+        id S236835AbhJKNPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:15:32 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13719 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231538AbhJKNP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:18:36 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A1E9B3FE74;
-        Mon, 11 Oct 2021 13:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633958195;
-        bh=wW4bvzsFetfuCZAv7VsHtna8WYq4agNGYBzGaBuz88c=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=I9DAsOaLvXHx5K/S+7EeZNw5reVK9tO5kWqNKzhaEMO/3i/DXQvvaEDS8sDlu2Lr/
-         WkOE8T1hSbHJPTOcLjQRBNFs1hVScTWDOpic5hiJOcukBcbNoKZnKLMSgKMuaC5uaG
-         QR16PcZHS55MxtLmJ4zWGMdb079TZ4J9/QlgN5E4/7y5giXN1hlKoNCRSF7KVz5vaQ
-         xWoahxI8D6j06aZhBb6n8fweqa77FxYlFqAF1GqF4fUqNXSmazBWJLl6yqmSjBT/0l
-         FmLPy/YBt4E7YAxQQthgxrcoAN7tulm+mrvSe3HRdLbxz+1sOeUar1naAeg+wgu6l2
-         OppeZDaPgh3Hg==
-From:   Colin King <colin.king@canonical.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] coredump: Remove redundant initialization of variable core_waiters
-Date:   Mon, 11 Oct 2021 14:16:35 +0100
-Message-Id: <20211011131635.30852-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 11 Oct 2021 09:15:27 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSfMV6DbvzWZ7G;
+        Mon, 11 Oct 2021 21:11:50 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 21:13:25 +0800
+Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 21:13:25 +0800
+From:   Yang Yingliang <yangyingliang@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-rtc@vger.kernel.org>
+CC:     <alexandre.belloni@bootlin.com>, <a.zummo@towertech.it>
+Subject: [PATCH] rtc: class: don't call cdev_device_del() when cdev_device_add() failed
+Date:   Mon, 11 Oct 2021 21:21:14 +0800
+Message-ID: <20211011132114.3663509-1-yangyingliang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.103.91]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+I got a null-ptr-deref report when doing fault injection test:
 
-The variable core_waiters is being initialized with a value that is never
-read, it is being updated later on. The assignment is redundant and can
-be removed.
+general protection fault, probably for non-canonical address 0xdffffc0000000022: 0000 [#1] SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000110-0x0000000000000117]
+RIP: 0010:device_del+0x132/0xdc0
+Call Trace:
+ cdev_device_del+0x1a/0x80
+ devm_rtc_unregister_device+0x37/0x80
+ release_nodes+0xc3/0x3b0
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+If cdev_device_add() fails, 'dev->p' is not set, it causes
+null-ptr-deref when calling cdev_device_del(). Registering
+character device is optional, we don't return error code
+here, so introduce a new flag 'RTC_NO_CDEV' to indicate
+if it has character device, cdev_device_del() is called
+when this bit is not set.
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 ---
- fs/coredump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/rtc/class.c | 9 ++++++---
+ include/linux/rtc.h | 1 +
+ 2 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/fs/coredump.c b/fs/coredump.c
-index a6b3c196cdef..2f79f8f7bd56 100644
---- a/fs/coredump.c
-+++ b/fs/coredump.c
-@@ -390,7 +390,7 @@ static int zap_threads(struct task_struct *tsk,
- static int coredump_wait(int exit_code, struct core_state *core_state)
- {
- 	struct task_struct *tsk = current;
--	int core_waiters = -EBUSY;
-+	int core_waiters;
+diff --git a/drivers/rtc/class.c b/drivers/rtc/class.c
+index 1f18c39a4b82..dbccd71589b9 100644
+--- a/drivers/rtc/class.c
++++ b/drivers/rtc/class.c
+@@ -334,7 +334,8 @@ static void devm_rtc_unregister_device(void *data)
+ 	 * letting any rtc_class_open() users access it again
+ 	 */
+ 	rtc_proc_del_device(rtc);
+-	cdev_device_del(&rtc->char_dev, &rtc->dev);
++	if (!test_bit(RTC_NO_CDEV, &rtc->flags))
++		cdev_device_del(&rtc->char_dev, &rtc->dev);
+ 	rtc->ops = NULL;
+ 	mutex_unlock(&rtc->ops_lock);
+ }
+@@ -399,12 +400,14 @@ int __devm_rtc_register_device(struct module *owner, struct rtc_device *rtc)
+ 	rtc_dev_prepare(rtc);
  
- 	init_completion(&core_state->startup);
- 	core_state->dumper.task = tsk;
+ 	err = cdev_device_add(&rtc->char_dev, &rtc->dev);
+-	if (err)
++	if (err) {
++		set_bit(RTC_NO_CDEV, &rtc->flags);
+ 		dev_warn(rtc->dev.parent, "failed to add char device %d:%d\n",
+ 			 MAJOR(rtc->dev.devt), rtc->id);
+-	else
++	} else {
+ 		dev_dbg(rtc->dev.parent, "char device (%d:%d)\n",
+ 			MAJOR(rtc->dev.devt), rtc->id);
++	}
+ 
+ 	rtc_proc_add_device(rtc);
+ 
+diff --git a/include/linux/rtc.h b/include/linux/rtc.h
+index bd611e26291d..354e0843ab17 100644
+--- a/include/linux/rtc.h
++++ b/include/linux/rtc.h
+@@ -80,6 +80,7 @@ struct rtc_timer {
+ 
+ /* flags */
+ #define RTC_DEV_BUSY 0
++#define RTC_NO_CDEV  1
+ 
+ struct rtc_device {
+ 	struct device dev;
 -- 
-2.32.0
+2.25.1
 
