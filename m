@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8DA429064
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:07:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1753C4291C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237512AbhJKOH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:07:56 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:33340 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236251AbhJKOFc (ORCPT
+        id S239065AbhJKOaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238733AbhJKOaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:05:32 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52]:51804)
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mZvtq-009WKJ-9e; Mon, 11 Oct 2021 08:03:30 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:37486 helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1mZvto-00Dphn-T0; Mon, 11 Oct 2021 08:03:29 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-References: <20211011174103.58413a7b@canb.auug.org.au>
-Date:   Mon, 11 Oct 2021 09:03:22 -0500
-In-Reply-To: <20211011174103.58413a7b@canb.auug.org.au> (Stephen Rothwell's
-        message of "Mon, 11 Oct 2021 17:41:03 +1100")
-Message-ID: <87bl3vbqvp.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 11 Oct 2021 10:30:06 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44854C0F26DB;
+        Mon, 11 Oct 2021 07:03:44 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so21887497otb.1;
+        Mon, 11 Oct 2021 07:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Wk2Xx1j0bx+Uzm6+zVtoR+iElmlhVw742pfk98i7Meo=;
+        b=NIfMYYCFLTpTDfun8Ee/OSUF2VGp2b9acMddBT4BLrYbUwCjhTE86XZtENHr/lLVwM
+         kd2J7rrdc0BSeFP7HL+sHD+h07iwJIxe5DQzwZ39qLDVo8Li4bMdQZw003haCaUHgftQ
+         D28MXSIIJhx88qEwJP3IXr2WB1sF1bfKfe6x2WQUvzNi5BdCKdwil4z3Y9k7zh5iJHup
+         VhIY7pBucw7+jRgfqp8mnUspeUfAJ9U728A688VPbL4C7b9v1ZVybU7CsHmaxXl4J1wf
+         5hrkVf5VSI2cxELQFCWjtpglLDcwzQOjVtVEJup4mR1g/J2QuC9mPvpaLd/DC8hET1SC
+         wtbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wk2Xx1j0bx+Uzm6+zVtoR+iElmlhVw742pfk98i7Meo=;
+        b=CFquIv6loUTDt39gLkt4yVq70A4SRNZxihSunxL+59xaaiqWksUX8EY7nJKdsCwAxQ
+         rZjZBeC9fUGdB3zJkmlRhn/X4ivqQoz2O49sb8p67nUu0qxXhDehKWlVso5TQx6B/Bds
+         ZSCSq1TD1x20SLAlG3XCO4/VwZ3gbxhfy0rT3riu5f8ZomtpkhWiQ1AqTXsaSCXdi0OV
+         Hyabibju1gYsBf4Pe6hSU2Kz1kHNA1HYrutz9DNstj/KQgUhZ/EiMovSIcIeHQpQkqRl
+         5+i08mcMzMRrE+B/JFYc7YjqQ7XoHj6cCUwACjaDJTEXcVrqrH9GHgaUk72jxQ725VPn
+         wx/w==
+X-Gm-Message-State: AOAM533q88EnJg+2Hl8hU1XCnjp4wqihFOqrZumhtLNz8ncK5YlNmcAz
+        HO/Hv5ohzI+Ma3DRS6R69VrWHbq+Vu0=
+X-Google-Smtp-Source: ABdhPJzlP2rpo0wr+QhmeS/8Y69NkoGzg390wQEQY2P2xzrM4BpaVMOPatuwxi8Tt28gZt64LVoHyw==
+X-Received: by 2002:a05:6830:2317:: with SMTP id u23mr19222391ote.385.1633961017772;
+        Mon, 11 Oct 2021 07:03:37 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bc19sm1577028oob.29.2021.10.11.07.03.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 07:03:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v7 2/2] hwmon: (nct7802) Make temperature/voltage sensors
+ configurable
+To:     Oskar Senft <osk@google.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+References: <20211011012212.91357-1-osk@google.com>
+ <20211011012212.91357-2-osk@google.com>
+ <98dcaa85-d04c-7a9c-1901-8786d361477c@roeck-us.net>
+ <CABoTLcTERUpwPSc7fVUAMqs37XCZJhMFbFRT2oyTt_TodE6GnA@mail.gmail.com>
+ <518a6ab3-80af-bbe9-69e5-55e6741bdcbe@roeck-us.net>
+ <CABoTLcQtfoXCy+j9W6-NxAtWN13yTs322BFtCebbMCZr-cWzaA@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <22086eb0-a25a-09c9-0f10-0702e412a6fc@roeck-us.net>
+Date:   Mon, 11 Oct 2021 07:03:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1mZvto-00Dphn-T0;;;mid=<87bl3vbqvp.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18pvCoX97MHC/BwHnU46j5q1g3ulNRVMTw=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.3 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1903]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Stephen Rothwell <sfr@canb.auug.org.au>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 526 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 10 (1.8%), b_tie_ro: 8 (1.6%), parse: 0.76 (0.1%),
-         extract_message_metadata: 11 (2.1%), get_uri_detail_list: 0.82 (0.2%),
-         tests_pri_-1000: 5.0 (0.9%), tests_pri_-950: 1.27 (0.2%),
-        tests_pri_-900: 1.01 (0.2%), tests_pri_-90: 252 (48.0%), check_bayes:
-        247 (46.9%), b_tokenize: 4.6 (0.9%), b_tok_get_all: 4.6 (0.9%),
-        b_comp_prob: 2.6 (0.5%), b_tok_touch_all: 231 (44.0%), b_finish: 1.01
-        (0.2%), tests_pri_0: 231 (43.9%), check_dkim_signature: 0.75 (0.1%),
-        check_dkim_adsp: 12 (2.3%), poll_dns_idle: 2.7 (0.5%), tests_pri_10:
-        2.4 (0.5%), tests_pri_500: 9 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: linux-next: manual merge of the akpm-current tree with the userns tree
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <CABoTLcQtfoXCy+j9W6-NxAtWN13yTs322BFtCebbMCZr-cWzaA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
+On 10/11/21 5:57 AM, Oskar Senft wrote:
+> Hi Guenter
+> 
+> I appreciate your help with this!
+> 
+>> First, please don't top-post.
+> Argh, I'm sorry - old habits! The Gmail web UI makes it too easy to do that :-/
+> 
+>> Second, no, submitting both patches was the right thing to do, but
+>> you should not drop a Reviewed-by: tag if there was no change to
+>> the patch.
+> Got it, makes sense. How do I untangle this mess? Resubmit a v8, this
+> time with the "Reviewed-by:" added back in? Or are you ok tagging the
+> v7 again. I'm sorry!
+> 
 
-> Hi all,
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->
->   kernel/exit.c
->
-> between commits:
->
->   d67e03e36161 ("exit: Factor coredump_exit_mm out of exit_mm")
->   92307383082d ("coredump:  Don't perform any cleanups before dumping core")
->
-> from the userns tree and commit:
->
->   27692e64c49c ("lazy tlb: introduce lazy mm refcount helper functions")
->
-> from the akpm-current tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+I'll tag again. No worries, just keep it in mind for next time.
 
-Thanks.  This looks like a trivial conflict, and the resolution looks
-correct.
-
-Eric
+Thanks,
+Guenter
 
