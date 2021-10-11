@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8D74286FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6A54286EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhJKGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234309AbhJKGsR (ORCPT
+        id S234243AbhJKGjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:39:36 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25117 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233522AbhJKGj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:48:17 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481EDC06161C;
-        Sun, 10 Oct 2021 23:46:18 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id k7so52455777wrd.13;
-        Sun, 10 Oct 2021 23:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TQff7+i6dxs5PfhTnnbZH3nPeykRVJI64ISY+jsjutU=;
-        b=mjDXFQHAIw/wwgAjtRmtVmQ6bn4erS1B7RMWxb8Dxxze0unLCpbV5/Zwx/GVWpx70Y
-         aCr162B9sDBtKtM1NuIY+uvl3ojO1RCmVcd+uYUD7guKBPl3VeVnNIO6SxwQ/p1fasIb
-         W3westEMs4hyfRgHG/lEO7Y/ucGuCwqUXj257CswRskD9MxfK6OnnqVwNC97ks7zolXp
-         Gq8g6PiNKB6Tozy2IBWd+c6xqwyAQYfOFzpl02qROsiRr4hY5Ut4fPACAQ0AJ3Rd4Suo
-         wEedjHd8PCKlRpRMk0bV+AoBXv/OwUcZtvY0KfXbXpCQcWeTIMOrY0J0KCTx1uU4KH7b
-         nE8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TQff7+i6dxs5PfhTnnbZH3nPeykRVJI64ISY+jsjutU=;
-        b=IG8r2k6fz0JXDW6JP2fHygxGkn/7zgIp6gSn469xAzmd6gdWNsXIWLZif4BFfPC7Hs
-         ApQNK04bnj2UaVzWXY2xBbeqFWQhyAk6UjkyJMERZKVjFiyksB52WIDkfwIWSF510Oh1
-         hfM+S7Jyx+5d7018Msvs2ZIvNvDYPLmDk+7i9yMGxbqLo7X82dxTjpV+kx9Mi+gt0Udq
-         qbK23dnrSWvPKVsEA+mVLB7H2Y8xTTASp8ZEvzyht68zE6O5+CuTPWLCTayJ2Ej5Luc0
-         wgD2O0fachHR9a/UbHjW04nEVa/VuGROMJZlA6HUCNRtS5lkNQZYErgXQbZcLOiFE1Qh
-         zVFw==
-X-Gm-Message-State: AOAM533K0tnDx/uezL8DZVZpHedf+g8s68LD/60uHNJjk1rYlya7ME75
-        Dvjo4V4CxJjvMZBvqFZPXtY=
-X-Google-Smtp-Source: ABdhPJykz3+LuwjtpFk2s8G5F0h2oMtTVZHXztmPuNLxOFIlxEzO2wuc1xiuQsB2yOSirVsEZ0uXQQ==
-X-Received: by 2002:adf:bb0a:: with SMTP id r10mr21706481wrg.23.1633934776835;
-        Sun, 10 Oct 2021 23:46:16 -0700 (PDT)
-Received: from localhost.localdomain (i577BCB28.versanet.de. [87.123.203.40])
-        by smtp.gmail.com with ESMTPSA id o23sm6915843wms.18.2021.10.10.23.46.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 23:46:16 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Sekhar Nori <nsekhar@ti.com>, Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH RESEND 1/1] arm: davinci: remove reference to obsolete BLK_DEV_PALMCHIP_BK3710
-Date:   Mon, 11 Oct 2021 08:36:24 +0200
-Message-Id: <20211011063624.12269-2-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20211011063624.12269-1-lukas.bulwahn@gmail.com>
-References: <20211011063624.12269-1-lukas.bulwahn@gmail.com>
+        Mon, 11 Oct 2021 02:39:29 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HSTZb0c8fz1DHJ1;
+        Mon, 11 Oct 2021 14:35:51 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 14:37:25 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Mon, 11 Oct
+ 2021 14:37:25 +0800
+Subject: Re: [PATCH net-next -v5 3/4] mm: introduce __get_page() and
+ __put_page()
+To:     Matthew Wilcox <willy@infradead.org>,
+        John Hubbard <jhubbard@nvidia.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        <akpm@linux-foundation.org>, <hawk@kernel.org>,
+        <ilias.apalodimas@linaro.org>, <peterz@infradead.org>,
+        <yuzhao@google.com>, <will@kernel.org>, <jgg@ziepe.ca>,
+        <mcroce@microsoft.com>, <willemb@google.com>,
+        <cong.wang@bytedance.com>, <pabeni@redhat.com>,
+        <haokexin@gmail.com>, <nogikh@google.com>, <elver@google.com>,
+        <memxor@gmail.com>, <vvs@virtuozzo.com>, <linux-mm@kvack.org>,
+        <edumazet@google.com>, <alexander.duyck@gmail.com>,
+        <dsahern@gmail.com>
+References: <20211009093724.10539-1-linyunsheng@huawei.com>
+ <20211009093724.10539-4-linyunsheng@huawei.com>
+ <62106771-7d2a-3897-c318-79578360a88a@nvidia.com>
+ <YWH4YbkC+XtpXTux@casper.infradead.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <6a072675-89e9-5635-5a9f-08aaf2e5364f@huawei.com>
+Date:   Mon, 11 Oct 2021 14:37:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWH4YbkC+XtpXTux@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme720-chm.china.huawei.com (10.1.199.116) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit b7fb14d3ac63 ("ide: remove the legacy ide driver") removes the
-definition of the config BLK_DEV_PALMCHIP_BK3710.
+On 2021/10/10 4:15, Matthew Wilcox wrote:
+> On Sat, Oct 09, 2021 at 12:49:29PM -0700, John Hubbard wrote:
+>> On 10/9/21 02:37, Yunsheng Lin wrote:
+>>> Introduce __get_page() and __put_page() to operate on the
+>>> base page or head of a compound page for the cases when a
+>>> page is known to be a base page or head of a compound page.
+>>
+>> Hi,
+>>
+>> I wonder if you are aware of a much larger, 137-patch seriesto do that:
+>> folio/pageset [1]?
+>>
+>> The naming you are proposing here does not really improve clarity. There
+>> is nothing about __get_page() that makes it clear that it's meant only
+>> for head/base pages, while get_page() tail pages as well. And the
+>> well-known and widely used get_page() and put_page() get their meaning
+>> shifted.
+>>
+>> This area is hard to get right, and that's why there have been 15
+>> versions, and a lot of contention associated with [1]. If you have an
+>> alternate approach, I think it would be better in its own separate
+>> series, with a cover letter that, at a minimum, explains how it compares
+>> to folios/pagesets.
 
-So, remove the obsolete references in the mach-davinci architecture.
+As I was not familiar enough with mm, so I tried the semantic of
+__page_frag_cache_drain(), which expects a base page or the head
+page of a compound page too.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/arm/mach-davinci/board-dm644x-evm.c  | 3 +--
- arch/arm/mach-davinci/board-dm646x-evm.c  | 3 +--
- arch/arm/mach-davinci/board-neuros-osd2.c | 3 +--
- 3 files changed, 3 insertions(+), 6 deletions(-)
+I suppose we may need to put a BUG_ON() to catch the case of
+user passing a tail page accidentally, which is a run time error
+and has run time overhead?
+And adding a new type like folio will allow the compiler to
+catch the error without any overhead?
 
-diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-index cce3a621eb20..df6dbb3f0faf 100644
---- a/arch/arm/mach-davinci/board-dm644x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm644x-evm.c
-@@ -834,8 +834,7 @@ static int davinci_phy_fixup(struct phy_device *phydev)
- 	return 0;
- }
- 
--#define HAS_ATA		(IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710) || \
--			 IS_ENABLED(CONFIG_PATA_BK3710))
-+#define HAS_ATA		IS_ENABLED(CONFIG_PATA_BK3710)
- 
- #define HAS_NOR		IS_ENABLED(CONFIG_MTD_PHYSMAP)
- 
-diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-index ee91d81ebbfd..744ece6b6b9a 100644
---- a/arch/arm/mach-davinci/board-dm646x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-@@ -151,8 +151,7 @@ static struct platform_device davinci_aemif_device = {
- 	.num_resources	= ARRAY_SIZE(davinci_aemif_resources),
- };
- 
--#define HAS_ATA		(IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710) || \
--			 IS_ENABLED(CONFIG_PATA_BK3710))
-+#define HAS_ATA		IS_ENABLED(CONFIG_PATA_BK3710)
- 
- #ifdef CONFIG_I2C
- /* CPLD Register 0 bits to control ATA */
-diff --git a/arch/arm/mach-davinci/board-neuros-osd2.c b/arch/arm/mach-davinci/board-neuros-osd2.c
-index b4843f68bb57..81c21fe5748a 100644
---- a/arch/arm/mach-davinci/board-neuros-osd2.c
-+++ b/arch/arm/mach-davinci/board-neuros-osd2.c
-@@ -164,8 +164,7 @@ static struct davinci_mmc_config davinci_ntosd2_mmc_config = {
- 	.wires		= 4,
- };
+> 
+> I wasn't initially sure whether network pagepools should be part of
+> struct folio or should be their own separate type.  At this point, I
 
--#define HAS_ATA		(IS_ENABLED(CONFIG_BLK_DEV_PALMCHIP_BK3710) || \
--			 IS_ENABLED(CONFIG_PATA_BK3710))
-+#define HAS_ATA		IS_ENABLED(CONFIG_PATA_BK3710)
- 
- #define HAS_NAND	IS_ENABLED(CONFIG_MTD_NAND_DAVINCI)
- 
--- 
-2.26.2
+Actually only a few driver are using page pool now, and others are mostly
+using page allocator directly, see page_frag_alloc_align() and
+skb_page_frag_refill(), only changing the page pool does not seems helpful
+here, maybe the whole network stack should be using a new type like folio,
+as the netstask does not need to deal with tail page directly? And it seems
+virt_to_page() is one of the things need handling when netstack is changed
+to use a new type like folio?
 
+> 
