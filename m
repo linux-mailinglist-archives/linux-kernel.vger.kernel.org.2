@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A843A428EB6
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCFC428EB4
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235289AbhJKNvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:51:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38618 "EHLO mail.kernel.org"
+        id S237144AbhJKNvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:51:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38748 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237172AbhJKNuG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:50:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DFDB60E8B;
-        Mon, 11 Oct 2021 13:48:04 +0000 (UTC)
+        id S237222AbhJKNuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:50:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB63D60E78;
+        Mon, 11 Oct 2021 13:48:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960086;
-        bh=EHeEZv/fCfogqkXT0f5c56snMJzk59Cw2cJ3d3sEJe0=;
+        s=korg; t=1633960091;
+        bh=MklcxuS10DUz1l3Y51Lb+7IoUzYL1p7xzyJn7Uu7jRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZ7jyPT/7DIYX9CJ/i2BlPH1ESCqGDUBDHnkId3YxpQJJTzvoEcNDN4/lX9PIamQ7
-         1cQL0UcFkg1wgEaFx5mL+sLS+oQQ2J9Xe2Fv9WuXu+myvQqc67qnbzW1pOSzcVorm5
-         uiX8c74BSo5+XR8VNNL7VzwdhcmloFhjRuLjxo/k=
+        b=dAhD+0gwkfSbe7V8HLpfsGAoyQpKz5veZKjTmS18VMhO5Jt7sRz6Qzf85nzS77VGQ
+         afLTdHPxJp/78Cv6mm1VbqsZ67tRCn75U8hfabU6nWhoS3XmHgw/Wwa2hemasF8z1F
+         QqDKUb07BeTtJjgSSUBKIADSeFB3EPVbIqfnmmKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -28,9 +28,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 18/52] ARM: dts: imx: Add missing pinctrl-names for panel on M53Menlo
-Date:   Mon, 11 Oct 2021 15:45:47 +0200
-Message-Id: <20211011134504.334836692@linuxfoundation.org>
+Subject: [PATCH 5.4 19/52] ARM: dts: imx: Fix USB host power regulator polarity on M53Menlo
+Date:   Mon, 11 Oct 2021 15:45:48 +0200
+Message-Id: <20211011134504.374818228@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
 References: <20211011134503.715740503@linuxfoundation.org>
@@ -44,14 +44,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit c8c1efe14a4aadcfe93a158b1272e48298d2de15 ]
+[ Upstream commit 5c187e2eb3f92daa38cb3d4ab45e1107ea34108e ]
 
-The panel already contains pinctrl-0 phandle, but it is missing
-the default pinctrl-names property, so the pin configuration is
-ignored. Fill in the missing pinctrl-names property, so the pin
-configuration is applied.
+The MIC2025 switch input signal nEN is active low, describe it as such
+in the DT. The previous change to this regulator polarity was incorrectly
+influenced by broken quirks in gpiolib-of.c, which is now long fixed. So
+fix this regulator polarity setting here once and for all.
 
-Fixes: d81765d693db6 ("ARM: dts: imx53: Update LCD panel node on M53Menlo")
+Fixes: 3c3601cd6a6d3 ("ARM: dts: imx53: Update USB configuration on M53Menlo")
 Signed-off-by: Marek Vasut <marex@denx.de>
 Cc: Shawn Guo <shawnguo@kernel.org>
 Cc: Fabio Estevam <festevam@gmail.com>
@@ -60,21 +60,23 @@ Reviewed-by: Fabio Estevam <festevam@gmail.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/imx53-m53menlo.dts | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm/boot/dts/imx53-m53menlo.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/arch/arm/boot/dts/imx53-m53menlo.dts b/arch/arm/boot/dts/imx53-m53menlo.dts
-index 64faf5b46d92..a6eb8319f321 100644
+index a6eb8319f321..03c43c1912a7 100644
 --- a/arch/arm/boot/dts/imx53-m53menlo.dts
 +++ b/arch/arm/boot/dts/imx53-m53menlo.dts
-@@ -56,6 +56,7 @@
- 	panel {
- 		compatible = "edt,etm0700g0dh6";
- 		pinctrl-0 = <&pinctrl_display_gpio>;
-+		pinctrl-names = "default";
- 		enable-gpios = <&gpio6 0 GPIO_ACTIVE_HIGH>;
+@@ -77,8 +77,7 @@
+ 		regulator-name = "vbus";
+ 		regulator-min-microvolt = <5000000>;
+ 		regulator-max-microvolt = <5000000>;
+-		gpio = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
++		gpio = <&gpio1 2 0>;
+ 	};
+ };
  
- 		port {
 -- 
 2.33.0
 
