@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AFE42877C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0D342877F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:11:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234138AbhJKHNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:13:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43688 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234111AbhJKHNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:13:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633936269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4ufHdDwqlN79+UhpsetonLDLuFxLVpaRNLOG0+gN/fs=;
-        b=F5UqrGG1+xp96CeEENc58VpRRQP2Jhy04Npd8eazGM1AEal+/zHmkeKanLIxCPAdH+P/xq
-        l5EiekSt2KvL7uWi/nbmM70jMZkrNxOLPOkVNB60ix6hdbIcCWrrbaIL3lJFXKS18vIQ3n
-        gEX5HKCPXthwQ0U31WJq0318TAMgKao=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-441-drEQ-9wrPdOgNRYgUMl4cA-1; Mon, 11 Oct 2021 03:11:07 -0400
-X-MC-Unique: drEQ-9wrPdOgNRYgUMl4cA-1
-Received: by mail-ed1-f69.google.com with SMTP id x5-20020a50f185000000b003db0f796903so14988142edl.18
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:11:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4ufHdDwqlN79+UhpsetonLDLuFxLVpaRNLOG0+gN/fs=;
-        b=N1lTepVvwUrYRr6+eLRb/aazgqHv48ZgAQvL8UTob0rec+8KnWSSj5BeVT+oncT32l
-         QFrYFDs/KQcJzZXTw8gu5fsk/NcQSFuwQNcy67wlOkyDXJebas7mjo41rqemsS4GJaVb
-         0vSQPe9UFiNxJHk8pBEmQPXoe39+W+826y9LVe/9Gu5vSVfUUvJkx2yC6dCEHRNJUFQV
-         F/8gllgRJGsP71O/hmbsFMPJLbmZOeFXH7ss6L3D/qiP9UNm3/xFueCi6+xN4z2Pj3fq
-         aAtBFVVPiW7c76qRFt3tpPIXA3FciWcLTlqcX/Gop2NbVECVoKi2nDHCAmjUxhq5UfQo
-         j6Cw==
-X-Gm-Message-State: AOAM532q5h9fMe0K8XJKcJfXZtlZCXRsRcr7BbuYAfCmQAzkdsMyKvW4
-        0aJ18io6ZXOo3i3k3L2LhgLNqic/fH3NnkjA9jYyOK7dJ8LVpqAxLfq/9tLd4uYljfY9lfIowk2
-        +wIUer8XFyuYefomGmUxKvKrt
-X-Received: by 2002:a50:e1c3:: with SMTP id m3mr39024421edl.28.1633936266779;
-        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRmTTHfeZR3GBvJS0BieP8VpiV3k5sbhkh02O6Mc2oySZA1exPg32XReVdqCdWp4D448Zz+Q==
-X-Received: by 2002:a50:e1c3:: with SMTP id m3mr39024383edl.28.1633936266561;
-        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id la1sm2996905ejc.48.2021.10.11.00.11.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 00:11:06 -0700 (PDT)
-Subject: Re: [PATCH v3 01/11] ACPI: delay enumeration of devices with a _DEP
- pointing to an INT3472 device
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mark Gross <markgross@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Daniel Scally <djrscally@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Len Brown <lenb@kernel.org>,
-        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Kate Hsuan <hpa@redhat.com>, linux-media@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20211010185707.195883-1-hdegoede@redhat.com>
- <20211010185707.195883-2-hdegoede@redhat.com> <YWPXixp/J6KIzWp6@lahna>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0c08069e-7758-fc09-c200-d867d097b499@redhat.com>
-Date:   Mon, 11 Oct 2021 09:11:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <YWPXixp/J6KIzWp6@lahna>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234234AbhJKHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:13:39 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:39516 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234280AbhJKHNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 03:13:35 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633936296; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SxkqQM4LqWhI9JoDud74skgu9QyWuT32tUB57PZ42fM=; b=XCY0jtMseobOzcPTxDciRBgPBmuPHT7lJx18tTRjuRPb5aq/iKSQnSdBw2ZAmlWvXeXxpKIC
+ khTDRrn+GyGxmOYkQAIdMz2Q5ze6OyfDcYW8bky8EGMaRkYR6cNG1a6AXSiQv8sQn9aKMkY0
+ +MSrkoFFe4koQKmwGJJjkEUsJfA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6163e3a58ea00a941fe39168 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 07:11:33
+ GMT
+Sender: quic_faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9A67CC43617; Mon, 11 Oct 2021 07:11:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BCB74C4338F;
+        Mon, 11 Oct 2021 07:11:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org BCB74C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Faiyaz Mohammed <quic_faiyazm@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, david@redhat.com
+Cc:     guptap@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v2] mm: page_alloc: Add debug log in free_reserved_area for static memory
+Date:   Mon, 11 Oct 2021 12:41:19 +0530
+Message-Id: <1633936279-26856-1-git-send-email-quic_faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Faiyaz Mohammed <faiyazm@codeaurora.org>
 
-On 10/11/21 8:19 AM, Mika Westerberg wrote:
-> Hi,
-> 
-> On Sun, Oct 10, 2021 at 08:56:57PM +0200, Hans de Goede wrote:
->> +/* List of HIDs for which we honor deps of matching ACPI devs, when checking _DEP lists. */
->> +static const char * const acpi_honor_dep_ids[] = {
->> +	"INT3472", /* Camera sensor PMIC / clk and regulator info */
-> 
-> Is there some reason why we can't do this for all devices with _DEP?
-> That way we don't need to maintain lists like this.
+For INITRD and initmem memory is reserved through "memblock_reserve"
+during boot up but it is free via "free_reserved_area" instead
+of "memblock_free".
+For example:
+[    0.294848] Freeing initrd memory: 12K.
+[    0.696688] Freeing unused kernel memory: 4096K.
 
-Up until now the ACPI core deliberate mostly ignores _DEP-s because the
-_DEP method may point to pretty much any random ACPI object and Linux does
-not necessarily have a driver for all ACPI objects the driver points too,
-which would lead to the devices never getting instantiated.
+To get the start and end address of the above freed memory and to account
+proper memblock added pr_debug log in "free_reserved_area".
+After adding log:
+[    0.294837] 0x00000083600000-0x00000083603000 free_initrd_mem+0x20/0x28
+[    0.294848] Freeing initrd memory: 12K.
+[    0.695246] 0x00000081600000-0x00000081a00000 free_initmem+0x70/0xc8
+[    0.696688] Freeing unused kernel memory: 4096K.
 
-In hindsight this might not have been the best solution (1), but if we
-now start honoring _DEP-s for all devices all of a sudden then this
-will almost certainly lead to a whole bunch of regressions.
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+changes in v2:
+	- To avoid confusion, remove the memblock_dbg print and drop the
+	memblock_free string, now using pr_debug to print the address ranges.
 
-Note that in this case the HID which triggers this is for the device
-being depended upon and for all camera sensors used with the IPU3 and
-IPU4 Intel camera blocks this is the INT3472 device. By triggering on
-this HID (rather then on the sensor HIDs) I expect that we will not
-need to update this list all that often.
+ mm/page_alloc.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Regards,
-
-Hans
-
-
-
-1) I believe that Windows does pay more reference to the _DEP-s and we've
-had some other related issues lately.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 668edb1..395df3f 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8153,6 +8153,11 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+ 	if (pages && s)
+ 		pr_info("Freeing %s memory: %ldK\n", s, K(pages));
+ 
++#ifdef CONFIG_HAVE_MEMBLOCK
++		pr_debug("%#016llx-%#016llx %pS\n",
++			__pa(start), __pa(end), (void *)_RET_IP_);
++#endif
++
+ 	return pages;
+ }
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
