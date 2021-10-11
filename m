@@ -2,80 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7597942890E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E2B428915
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:46:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhJKIqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:46:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56586 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235253AbhJKIqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A807A60EE3;
-        Mon, 11 Oct 2021 08:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633941872;
-        bh=1OwUVdNn4fURn0fs9OTI0ATGKii2OR1THQNdwkRa6Dc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CBodex6jq4+8Stg3cIR0zRyzu22jFms7KPnST1FATnYsPXO7aC+8bZIOkhXyozxQE
-         1JDZztGiTOqqWPYeAvBSGre0KRfLkDEztsvCUTk+/f1Y/N3Rg3W9Q0zFiLuyCYy1TM
-         MHwon/DQUtonWs8jLRyViH3k5cVmouqgRQqjpDGjt5qXB/toNJC3VG4vUSIVmZai6N
-         z4aZEHivtcrGkLjv6qVVfeuAT2S0wjqjn8bFw07TjlrPpmGRGBJep/ADS1OJV0gf8U
-         O7fJQYPtDvM1sSy8wqEp8ievo/d41aJdFujHLn6e8TKK8U4fYrqOQax794CQlIZQr+
-         GJGdpZVXCCcYA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mZqv1-0002NB-DY; Mon, 11 Oct 2021 10:44:24 +0200
-Date:   Mon, 11 Oct 2021 10:44:23 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     heghedus razvan <heghedus.razvan@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Chen <peter.chen@nxp.com>,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] usb: misc: ehset: Workaround for "special" hubs
-Message-ID: <YWP5Z6IaD3blIfue@hovoldconsulting.com>
-References: <20210915121615.3790-1-heghedus.razvan@gmail.com>
- <YV7KGE9JfibggVVH@hovoldconsulting.com>
- <YV7QSnOlmKHbi94C@kroah.com>
- <CAACGJgbXEV4rnvkmHy-peaO2GiR7Mt=3Y=Q8w1Bnc9mJLwFPnQ@mail.gmail.com>
+        id S235283AbhJKIsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:48:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235327AbhJKIsQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:48:16 -0400
+Received: from smtp-42aa.mail.infomaniak.ch (smtp-42aa.mail.infomaniak.ch [IPv6:2001:1600:4:17::42aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CBEC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:46:16 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4HSXT32QDgzMq0TS;
+        Mon, 11 Oct 2021 10:46:15 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4HSXT10Jtzzlh8TC;
+        Mon, 11 Oct 2021 10:46:13 +0200 (CEST)
+Subject: Re: [PATCH v14 0/3] Add trusted_for(2) (was O_MAYEXEC)
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christian Heimes <christian@python.org>,
+        Deven Bowers <deven.desai@linux.microsoft.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Eric Chiang <ericchiang@google.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>,
+        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Paul Moore <paul@paul-moore.com>,
+        =?UTF-8?Q?Philippe_Tr=c3=a9buchet?= 
+        <philippe.trebuchet@ssi.gouv.fr>,
+        Scott Shell <scottsh@microsoft.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Steve Dower <steve.dower@python.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>,
+        Vincent Strubel <vincent.strubel@ssi.gouv.fr>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+References: <20211008104840.1733385-1-mic@digikod.net>
+ <20211010144814.d9fb99de6b0af65b67dc96cb@linux-foundation.org>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <457941da-c4a4-262f-2981-74a85519c56f@digikod.net>
+Date:   Mon, 11 Oct 2021 10:47:04 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAACGJgbXEV4rnvkmHy-peaO2GiR7Mt=3Y=Q8w1Bnc9mJLwFPnQ@mail.gmail.com>
+In-Reply-To: <20211010144814.d9fb99de6b0af65b67dc96cb@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Please avoid top-posting. ]
 
-On Thu, Oct 07, 2021 at 07:51:00PM +0300, heghedus razvan wrote:
-> Hi all,
+On 10/10/2021 23:48, Andrew Morton wrote:
+> On Fri,  8 Oct 2021 12:48:37 +0200 Mickaël Salaün <mic@digikod.net> wrote:
 > 
-> This was tested only with some external powered hubs. Indeed for the root
-> hub there is
-> a problem. I see that in the HCDs in hub_control there is the handling for
-> testing
-> procedures, but I don't know how they are used for the root hub.
+>> The final goal of this patch series is to enable the kernel to be a
+>> global policy manager by entrusting processes with access control at
+>> their level.  To reach this goal, two complementary parts are required:
+>> * user space needs to be able to know if it can trust some file
+>>   descriptor content for a specific usage;
+>> * and the kernel needs to make available some part of the policy
+>>   configured by the system administrator.
+> 
+> Apologies if I missed this...
+> 
+> It would be nice to see a description of the proposed syscall interface
+> in these changelogs!  Then a few questions I have will be answered...
 
-This isn't just an issue with root hubs, the current implementation is
-just completely broken for all hubs. Which begs the question of how you
-tested this, if at all.
+I described this syscall and it's semantic in the first patch in
+Documentation/admin-guide/sysctl/fs.rst
+Do you want me to copy-paste this content in the cover letter?
 
-> I want to fix this problem, but I don't know how exactly, because I don't
-> have a good
-> grasp on the USB code since it's a huge beast. The main problem is how can I
-> match the VID:PID of the hub_udev(the hub on which the USB testing device
-> was connected) with the hub list for which I need to apply the quirk? I
-> tried to
-> use usb_match_id because I want to use functionality already in the kernel,
-> but it seems that in this context I need to do the checking myself.
+> 
+> long trusted_for(const int fd,
+> 		 const enum trusted_for_usage usage,
+> 		 const u32 flags)
+> 
+> - `usage' must be equal to TRUSTED_FOR_EXECUTION, so why does it
+>   exist?  Some future modes are planned?  Please expand on this.
 
-You can access the interfaces of a USB device through
+Indeed, the current use case is to check if the kernel would allow
+execution of a file. But as Florian pointed out, we may want to add more
+context in the future, e.g. to enforce signature verification, to check
+if this is a legitimate (system) library, to check if the file is
+allowed to be used as (trusted) configuration…
 
-	udev->actconfig->interface
+> 
+> - `flags' is unused (must be zero).  So why does it exist?  What are
+>   the plans here?
 
-but in this case it's probably better to just export
-usb_device_match_id(), which seems to be what you need.
+This is mostly to follow syscall good practices for extensibility. It
+could be used in combination with the usage argument (which defines the
+user space semantic), e.g. to check for extra properties such as
+cryptographic or integrity requirements, origin of the file…
 
-Johan
+> 
+> - what values does the syscall return and what do they mean?
+> 
+
+It returns 0 on success, or -EACCES if the kernel policy denies the
+specified usage.
