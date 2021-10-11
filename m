@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23CD428F3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BD5428F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237790AbhJKN4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:56:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40390 "EHLO mail.kernel.org"
+        id S237814AbhJKN4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:56:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237862AbhJKNye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:54:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 568C6610CC;
-        Mon, 11 Oct 2021 13:52:19 +0000 (UTC)
+        id S235338AbhJKNyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:54:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3756610CB;
+        Mon, 11 Oct 2021 13:52:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960340;
-        bh=6hvihozSgGjPmz/3nASpO5tEwLMVh+jlhT5AeGs0SEM=;
+        s=korg; t=1633960343;
+        bh=q3l7vbbtsJK4uUj/2fRASh/IZJsGxjVAiy8krrP7vUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UOI7aj/yHOdtnCzVjsoVO3SrUfd5PoQi9K/AvB58xWuWYnketvNnSfsL1VAF8uYdY
-         9X8Ph8Pu6QRjo6KKENw+z7pVuKmDRfB0Mbafgrpykzq3sF6WUqOmOfCHYri8w9Th8p
-         NSq2vDFgZtA+v7DZ7iwyKjaYNeoXRy7ePfWDXbbg=
+        b=I0NuIJNWGnQhkIv30XRjdfVYZV06IUTsgVGD0GjLlEFkBjvsa6D1VC5Riio6kTFNo
+         VhgukiPPlcbkz9R4UpgqZF/0OBWEyvqnbFW6Pd0UG8/3D5R95Ae0ktVSYVkyrGCSlo
+         3zCXZMSIWPelRmdzK2fe2tLMHGBxsyLCOxjQg75E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 31/83] arm64: dts: qcom: pm8150: use qcom,pm8998-pon binding
-Date:   Mon, 11 Oct 2021 15:45:51 +0200
-Message-Id: <20211011134509.440004522@linuxfoundation.org>
+Subject: [PATCH 5.10 32/83] xtensa: use CONFIG_USE_OF instead of CONFIG_OF
+Date:   Mon, 11 Oct 2021 15:45:52 +0200
+Message-Id: <20211011134509.476470822@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
 References: <20211011134508.362906295@linuxfoundation.org>
@@ -42,36 +40,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit a153d317168aa3d61a204fadc85bac3995381d33 ]
+[ Upstream commit d67ed2510d28a1eb33171010d35cf52178cfcbdd ]
 
-Change pm8150 to use the qcom,pm8998-pon compatible string for the pon
-in order to pass reboot mode properly.
+CONFIG_OF can be set by a randconfig or by a user -- without setting the
+early flattree option (OF_EARLY_FLATTREE).  This causes build errors.
+However, if randconfig or a user sets USE_OF in the Xtensa config,
+the right kconfig symbols are set to fix the build.
 
-Fixes: 5101f22a5c37 ("arm64: dts: qcom: pm8150: Add base dts file")
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210916151341.1797512-1-dmitry.baryshkov@linaro.org
+Fixes these build errors:
+
+../arch/xtensa/kernel/setup.c:67:19: error: ‘__dtb_start’ undeclared here (not in a function); did you mean ‘dtb_start’?
+   67 | void *dtb_start = __dtb_start;
+      |                   ^~~~~~~~~~~
+../arch/xtensa/kernel/setup.c: In function 'xtensa_dt_io_area':
+../arch/xtensa/kernel/setup.c:201:14: error: implicit declaration of function 'of_flat_dt_is_compatible'; did you mean 'of_machine_is_compatible'? [-Werror=implicit-function-declaration]
+  201 |         if (!of_flat_dt_is_compatible(node, "simple-bus"))
+../arch/xtensa/kernel/setup.c:204:18: error: implicit declaration of function 'of_get_flat_dt_prop' [-Werror=implicit-function-declaration]
+  204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
+../arch/xtensa/kernel/setup.c:204:16: error: assignment to 'const __be32 *' {aka 'const unsigned int *'} from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+  204 |         ranges = of_get_flat_dt_prop(node, "ranges", &len);
+      |                ^
+../arch/xtensa/kernel/setup.c: In function 'early_init_devtree':
+../arch/xtensa/kernel/setup.c:228:9: error: implicit declaration of function 'early_init_dt_scan'; did you mean 'early_init_devtree'? [-Werror=implicit-function-declaration]
+  228 |         early_init_dt_scan(params);
+../arch/xtensa/kernel/setup.c:229:9: error: implicit declaration of function 'of_scan_flat_dt' [-Werror=implicit-function-declaration]
+  229 |         of_scan_flat_dt(xtensa_dt_io_area, NULL);
+
+xtensa-elf-ld: arch/xtensa/mm/mmu.o:(.text+0x0): undefined reference to `xtensa_kio_paddr'
+
+Fixes: da844a81779e ("xtensa: add device trees support")
+Fixes: 6cb971114f63 ("xtensa: remap io area defined in device tree")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/pm8150.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/xtensa/include/asm/kmem_layout.h |  2 +-
+ arch/xtensa/kernel/setup.c            | 12 ++++++------
+ arch/xtensa/mm/mmu.c                  |  2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150.dtsi b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-index 1b6406927509..82edcd74ce98 100644
---- a/arch/arm64/boot/dts/qcom/pm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-@@ -48,7 +48,7 @@
- 		#size-cells = <0>;
+diff --git a/arch/xtensa/include/asm/kmem_layout.h b/arch/xtensa/include/asm/kmem_layout.h
+index 7cbf68ca7106..6fc05cba61a2 100644
+--- a/arch/xtensa/include/asm/kmem_layout.h
++++ b/arch/xtensa/include/asm/kmem_layout.h
+@@ -78,7 +78,7 @@
+ #endif
+ #define XCHAL_KIO_SIZE			0x10000000
  
- 		pon: power-on@800 {
--			compatible = "qcom,pm8916-pon";
-+			compatible = "qcom,pm8998-pon";
- 			reg = <0x0800>;
- 			pwrkey {
- 				compatible = "qcom,pm8941-pwrkey";
+-#if (!XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY) && defined(CONFIG_OF)
++#if (!XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY) && defined(CONFIG_USE_OF)
+ #define XCHAL_KIO_PADDR			xtensa_get_kio_paddr()
+ #ifndef __ASSEMBLY__
+ extern unsigned long xtensa_kio_paddr;
+diff --git a/arch/xtensa/kernel/setup.c b/arch/xtensa/kernel/setup.c
+index ed184106e4cf..ee9082a142fe 100644
+--- a/arch/xtensa/kernel/setup.c
++++ b/arch/xtensa/kernel/setup.c
+@@ -63,7 +63,7 @@ extern unsigned long initrd_end;
+ extern int initrd_below_start_ok;
+ #endif
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ void *dtb_start = __dtb_start;
+ #endif
+ 
+@@ -125,7 +125,7 @@ __tagtable(BP_TAG_INITRD, parse_tag_initrd);
+ 
+ #endif /* CONFIG_BLK_DEV_INITRD */
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 
+ static int __init parse_tag_fdt(const bp_tag_t *tag)
+ {
+@@ -135,7 +135,7 @@ static int __init parse_tag_fdt(const bp_tag_t *tag)
+ 
+ __tagtable(BP_TAG_FDT, parse_tag_fdt);
+ 
+-#endif /* CONFIG_OF */
++#endif /* CONFIG_USE_OF */
+ 
+ static int __init parse_tag_cmdline(const bp_tag_t* tag)
+ {
+@@ -183,7 +183,7 @@ static int __init parse_bootparam(const bp_tag_t *tag)
+ }
+ #endif
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 
+ #if !XCHAL_HAVE_PTP_MMU || XCHAL_HAVE_SPANNING_WAY
+ unsigned long xtensa_kio_paddr = XCHAL_KIO_DEFAULT_PADDR;
+@@ -232,7 +232,7 @@ void __init early_init_devtree(void *params)
+ 		strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
+ }
+ 
+-#endif /* CONFIG_OF */
++#endif /* CONFIG_USE_OF */
+ 
+ /*
+  * Initialize architecture. (Early stage)
+@@ -253,7 +253,7 @@ void __init init_arch(bp_tag_t *bp_start)
+ 	if (bp_start)
+ 		parse_bootparam(bp_start);
+ 
+-#ifdef CONFIG_OF
++#ifdef CONFIG_USE_OF
+ 	early_init_devtree(dtb_start);
+ #endif
+ 
+diff --git a/arch/xtensa/mm/mmu.c b/arch/xtensa/mm/mmu.c
+index fd2193df8a14..511bb92518f2 100644
+--- a/arch/xtensa/mm/mmu.c
++++ b/arch/xtensa/mm/mmu.c
+@@ -100,7 +100,7 @@ void init_mmu(void)
+ 
+ void init_kio(void)
+ {
+-#if XCHAL_HAVE_PTP_MMU && XCHAL_HAVE_SPANNING_WAY && defined(CONFIG_OF)
++#if XCHAL_HAVE_PTP_MMU && XCHAL_HAVE_SPANNING_WAY && defined(CONFIG_USE_OF)
+ 	/*
+ 	 * Update the IO area mapping in case xtensa_kio_paddr has changed
+ 	 */
 -- 
 2.33.0
 
