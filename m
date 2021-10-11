@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0814299B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C9A4299C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235703AbhJKXPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:15:51 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:42877 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbhJKXPs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:15:48 -0400
-Received: by mail-ot1-f46.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso23560443otu.9;
-        Mon, 11 Oct 2021 16:13:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=7zuoS5ImJfku8d8xCEMyvxbsSp1wfRVxODVvjTNPpWI=;
-        b=amsw0I40qmeKasNEjfYH2Jd4dK2wBuvNBUVvnolS+jQRmzD6fAMsKFaDwVx1G6Dh35
-         3knGgQUQoJq+RPbioGihQzCSqF5oiFAf7FB62v122N9WLIQRppUHioW8pDAvvDBT//yq
-         NF0sESjjmW7e4anLcOCyazbM3wd3rHY8AjaIq8SqjZgJchBPct7+xptY80wakF7xC2d5
-         nr7jYET6ZdFzA4D1BUG69J4HQm5WClfpdSp5ifFT6gGbuRxz2uHdVVSxH7lZUCxnr/0q
-         O8gp4T1lRtNG4EwdVr3O3NCxL7czJieyWYjtbYqgr19EdolOPR89jKzg6Ao6EzSuqelA
-         XHRg==
-X-Gm-Message-State: AOAM533zqOlNXUU1b1h9M9bf66Z+woWXfbuLhjkMP6DjnUANESDgvD/K
-        3VxDMZPLTeJznPtyReohAgaB4Kat9w==
-X-Google-Smtp-Source: ABdhPJwgjqa80alYqxnGTfd3HMgT9XwEeOu7Wz9fbyC7hQnvyMYxKzqnL/RZNXXaNYHYTgIuXCirxw==
-X-Received: by 2002:a9d:7114:: with SMTP id n20mr14348496otj.25.1633994026820;
-        Mon, 11 Oct 2021 16:13:46 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r4sm2049640oiw.36.2021.10.11.16.13.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 16:13:45 -0700 (PDT)
-Received: (nullmailer pid 1347640 invoked by uid 1000);
-        Mon, 11 Oct 2021 23:13:43 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Olivier Moysan <olivier.moysan@foss.st.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20211011155717.1594-2-olivier.moysan@foss.st.com>
-References: <20211011155717.1594-1-olivier.moysan@foss.st.com> <20211011155717.1594-2-olivier.moysan@foss.st.com>
-Subject: Re: [PATCH v4 1/7] dt-bindings: iio: stm32-adc: add generic channel binding
-Date:   Mon, 11 Oct 2021 18:13:43 -0500
-Message-Id: <1633994023.340533.1347639.nullmailer@robh.at.kernel.org>
+        id S232626AbhJKXS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:18:59 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:59528 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229771AbhJKXSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 19:18:55 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1ma4XD-0001SF-O2; Tue, 12 Oct 2021 01:16:43 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        linux-riscv@lists.infradead.org
+Cc:     Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Liush <liush@allwinnertech.com>,
+        Anup Patel <anup@brainfault.org>, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Anup Patel <anup.patel@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>
+Subject: Re: [PATCH v8 1/8] RISC-V: Enable CPU_IDLE drivers
+Date:   Tue, 12 Oct 2021 01:16:42 +0200
+Message-ID: <4300884.9bbH7Ay9ha@diego>
+In-Reply-To: <20211011081820.1135261-2-anup.patel@wdc.com>
+References: <20211011081820.1135261-1-anup.patel@wdc.com> <20211011081820.1135261-2-anup.patel@wdc.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Oct 2021 17:57:11 +0200, Olivier Moysan wrote:
-> Add ADC generic channel binding. This binding should
-> be used as an alternate to legacy channel properties
-> whenever possible.
-> ADC generic channel binding allows to identify supported
-> internal channels through the following reserved label names:
-> "vddcore", "vrefint" and "vbat".
-> This binding also allows to set a different sampling time
-> for each channel.
+Hi Anup,
+
+Am Montag, 11. Oktober 2021, 10:18:13 CEST schrieb Anup Patel:
+> We force select CPU_PM and provide asm/cpuidle.h so that we can
+> use CPU IDLE drivers for Linux RISC-V kernel.
 > 
-> Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
-> Reviewed-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
 > ---
->  .../bindings/iio/adc/st,stm32-adc.yaml        | 100 ++++++++++++++++--
->  1 file changed, 93 insertions(+), 7 deletions(-)
+>  arch/riscv/Kconfig                |  7 +++++++
+>  arch/riscv/configs/defconfig      |  1 +
+>  arch/riscv/configs/rv32_defconfig |  1 +
+>  arch/riscv/include/asm/cpuidle.h  | 24 ++++++++++++++++++++++++
+>  arch/riscv/kernel/process.c       |  3 ++-
+>  5 files changed, 35 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/riscv/include/asm/cpuidle.h
 > 
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 8de2afb460f7..d02f1f5a2431 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -46,6 +46,7 @@ config RISCV
+>  	select CLONE_BACKWARDS
+>  	select CLINT_TIMER if !MMU
+>  	select COMMON_CLK
+> +	select CPU_PM if CPU_IDLE
+>  	select EDAC_SUPPORT
+>  	select GENERIC_ARCH_TOPOLOGY if SMP
+>  	select GENERIC_ATOMIC64 if !64BIT
+> @@ -564,5 +565,11 @@ source "kernel/power/Kconfig"
+>  
+>  endmenu
+>  
+> +menu "CPU Power Management"
+> +
+> +source "drivers/cpuidle/Kconfig"
+> +
+> +endmenu
+> +
+>  source "arch/riscv/kvm/Kconfig"
+>  source "drivers/firmware/Kconfig"
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+another issue, the "arch/riscv/kvm/Kconfig" line above comes from a
+commit that is not in the riscv-tree at all but in the kvm-tree [0],
+making this patch fail to apply onto riscv/for-next alone.
 
-yamllint warnings/errors:
+If you have multiple independent patch series in flight, like shown in
+the github branch you references, it might be easier to base each on
+top of the relevant branch cleanly and after one gets applied rebase
+the other ones.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@13: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@14: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.example.dt.yaml: adc@48003000: adc@100:channel@15: 'st,min-sample-time-nsecs' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml
+That way you're not dependent on the others going in first and also
+people can test patch series individually without too much hassle.
 
-doc reference errors (make refcheckdocs):
+Thanks
+Heiko
 
-See https://patchwork.ozlabs.org/patch/1539385
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+[0] https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux.git/commit/?h=next&id=99cdc6c18c2d815e940e81b9b477d469bdd41788
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
 
