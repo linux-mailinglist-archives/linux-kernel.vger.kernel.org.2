@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE450428E9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6A76428F2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237233AbhJKNuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38190 "EHLO mail.kernel.org"
+        id S237399AbhJKNzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236341AbhJKNtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:49:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB84B60E8B;
-        Mon, 11 Oct 2021 13:47:42 +0000 (UTC)
+        id S237535AbhJKNxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:53:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F31160C49;
+        Mon, 11 Oct 2021 13:51:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960063;
-        bh=gsexvnMN9s7xab4M4vz2o2WB5X2KN+CWivJf3f+Tr/w=;
+        s=korg; t=1633960294;
+        bh=NfUNsgt+VZMmzCIjLXLbWZAAS/BhC6Mm2YmrfctCi2M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GvqJeJkpiHGyRqxqKLsoosilZlZ/7dW+xjoiO9Wkndc86kG85CYgfy4adWWJdVAG1
-         geBtQdRFhg2g0EfUIKUJubHDS9lRxwmennar7XNszHuq1Akcfyfr6p5E2b7lAp17Cd
-         uCXDiTVxUH8rcJSAeE1t94fB5SQyZRnhtavaTlak=
+        b=Nbw82ilj4j/WkMkk7+EOV2Pn6CE12UwUzIJuAC4QDEJV+iEGPMYoGw2wAL8n/JhQg
+         Ikrlc9WGbdzCfpUT2qauEusXkpWH96vEncycQCkm5zyXs7L9InjgzaagNMY0vOfu1s
+         9OQ/IFbN0qfJso1+TRNK0ufNjTV2aqxrRcgAcGXw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Heidelberg <david@ixit.cz>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: [PATCH 5.4 12/52] ARM: dts: qcom: apq8064: use compatible which contains chipid
-Date:   Mon, 11 Oct 2021 15:45:41 +0200
-Message-Id: <20211011134504.127859364@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Antonio Martorana <amartora@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 22/83] soc: qcom: socinfo: Fixed argument passed to platform_set_data()
+Date:   Mon, 11 Oct 2021 15:45:42 +0200
+Message-Id: <20211011134509.128878036@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,43 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Heidelberg <david@ixit.cz>
+From: Antonio Martorana <amartora@codeaurora.org>
 
-commit f5c03f131dae3f06d08464e6157dd461200f78d9 upstream.
+[ Upstream commit 9c5a4ec69bbf5951f84ada9e0db9c6c50de61808 ]
 
-Also resolves these kernel warnings for APQ8064:
-adreno 4300000.adreno-3xx: Using legacy qcom,chipid binding!
-adreno 4300000.adreno-3xx: Use compatible qcom,adreno-320.2 instead.
+Set qcom_socinfo pointer as data being stored instead of pointer
+to soc_device structure. Aligns with future calls to platform_get_data()
+which expects qcom_socinfo pointer.
 
-Tested on Nexus 7 2013, no functional changes.
-
-Cc: <stable@vger.kernel.org>
-Signed-off-by: David Heidelberg <david@ixit.cz>
-Link: https://lore.kernel.org/r/20210818065317.19822-1-david@ixit.cz
+Fixes: efb448d0a3fc ("soc: qcom: Add socinfo driver")
+Signed-off-by: Antonio Martorana <amartora@codeaurora.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/1629159879-95777-1-git-send-email-amartora@codeaurora.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/qcom-apq8064.dtsi |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/soc/qcom/socinfo.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/arm/boot/dts/qcom-apq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom-apq8064.dtsi
-@@ -1147,7 +1147,7 @@
- 		};
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index e0620416e574..60c82dcaa8d1 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -521,7 +521,7 @@ static int qcom_socinfo_probe(struct platform_device *pdev)
+ 	/* Feed the soc specific unique data into entropy pool */
+ 	add_device_randomness(info, item_size);
  
- 		gpu: adreno-3xx@4300000 {
--			compatible = "qcom,adreno-3xx";
-+			compatible = "qcom,adreno-320.2", "qcom,adreno";
- 			reg = <0x04300000 0x20000>;
- 			reg-names = "kgsl_3d0_reg_memory";
- 			interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1162,7 +1162,6 @@
- 			    <&mmcc GFX3D_AHB_CLK>,
- 			    <&mmcc GFX3D_AXI_CLK>,
- 			    <&mmcc MMSS_IMEM_AHB_CLK>;
--			qcom,chipid = <0x03020002>;
+-	platform_set_drvdata(pdev, qs->soc_dev);
++	platform_set_drvdata(pdev, qs);
  
- 			iommus = <&gfx3d 0
- 				  &gfx3d 1
+ 	return 0;
+ }
+-- 
+2.33.0
+
 
 
