@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40BE74286C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A19224286CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234156AbhJKGWi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 02:22:38 -0400
-Received: from ni.piap.pl ([195.187.100.5]:54960 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233802AbhJKGWh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:22:37 -0400
-From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v5] Driver for ON Semi AR0521 camera sensor
-References: <m3fstfoexa.fsf@t19.piap.pl>
-        <YV3YkXAKxiLmPYwL@valkosipuli.retiisi.eu> <m3zgrlkxn6.fsf@t19.piap.pl>
-        <20211009090749.hujuwamgkjw2tfcx@uno.localdomain>
-Date:   Mon, 11 Oct 2021 08:20:32 +0200
-In-Reply-To: <20211009090749.hujuwamgkjw2tfcx@uno.localdomain> (Jacopo Mondi's
-        message of "Sat, 9 Oct 2021 11:07:49 +0200")
-Message-ID: <m3v924krpr.fsf@t19.piap.pl>
+        id S234163AbhJKG06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:26:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11979 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234121AbhJKG0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 02:26:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1633933491; h=Date: Message-ID: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=h7IfVo+dSWcnAR0NKGiUy+LkFKcRh55dCDpcuLc57fY=;
+ b=DQtr+LRngRbcdy/aPixwyYOc/WhJzF2Ot9t2mKeBLlglA5eqZN2hZrKdYgCctcRCOcXnYFle
+ RIqu69g6ets10562Ds5SSJweiEhqXsP4Q4/M0zRlMgof1AMEdWnXyX0vz334jfMmBmY/EkOe
+ 7i1zQPIHp4YTIW9DCiFFHH4eRjE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6163d889f3e5b80f1f0f56e9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Oct 2021 06:24:09
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4F401C43460; Mon, 11 Oct 2021 06:24:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D369C4338F;
+        Mon, 11 Oct 2021 06:24:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 5D369C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH][next] ath11k: Remove redundant assignment to variable
+ fw_size
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20211006105529.1011239-1-colin.king@canonical.com>
+References: <20211006105529.1011239-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anilkumar Kolli <akolli@codeaurora.org>,
+        Jouni Malinen <jouni@codeaurora.org>,
+        ath11k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-ID: <163393344268.20318.10512441412282046693.kvalo@codeaurora.org>
+Date:   Mon, 11 Oct 2021 06:24:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+Colin King <colin.king@canonical.com> wrote:
 
-Thanks for your input.
+> Variable fw_size is being assigned a value that is never read and
+> being re-assigned a new value in the next statement. The assignment
+> is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Fixes: 336e7b53c82f ("ath11k: clean up BDF download functions")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-Jacopo Mondi <jacopo@jmondi.org> writes:
+Patch applied to ath-next branch of ath.git, thanks.
 
-> To my understanding the C99 standard added support for the //
-> commenting style and tollerate them, but they're still from C++
+4f50bdfb4e5f ath11k: Remove redundant assignment to variable fw_size
 
-Sure. Not everything coming from C++ is bad.
-
-> and I
-> see very few places where they're used in the kernel,
-
-It's not going to change if no one uses //.
-
-> and per as far I
-> know they're still not allowed by the coding style
-> https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
-
-As Randy wrote, perhaps we need to bring the coding-style up to date?
-
-> Looking at how you used comments in the driver I think you could get
-> rid of most // comments easily, the register tables might be an
-> exception but I would really try to remove them from there as well.
-
-I could. The question is "why?" IMHO the C++ style is (in places I use
-it) better than the /* */. Why should I use the worse thing?
-
-> In my personal opinion lifting that restriction caused more pain than
-> anything, as different subsystem are now imposing different
-> requirements.
-
-I think it was always the restriction causing more harm than good.
-It's not like the "spirit" behind it was wrong - no. The oversided lines
-SHOULD be avoided. It was the hard limit which was wrong: a) the limit
-itself (80) was definitely inadequate, and b) the hard limit should have
-never existed. 8-character tabs only made this worse (e.g. I use 4-chars
-tabs outside the kernel).
-
-This is all about readability, right? Hard rules don't play well with
-it.
-
-Things like:
-                                       fst_tx_dma(card,
-                                                   card->tx_dma_handle_card,
-                                                   BUF_OFFSET(txBuffer[pi]
-                                                              [port->txpos][0]),
-                                                   skb->len);
-Is this better, isn't it?
-However I do realize my opinion may be a bit distorted since I have some
-vision problems.
-
-> 	ret = ar0521_write_regs(sensor, pixel_timing_recommended, ARRAY_SIZE(pixel_timing_recommended));
-> 	if (ret)
-> 		goto off;
->
->
-> should be
->
-> 	ret = ar0521_write_regs(sensor, pixel_timing_recommended,
->                                 ARRAY_SIZE(pixel_timing_recommended));
-> 	if (ret)
-> 		goto off;
-
-Do you consider the second one BETTER? I definitely don't (though it
-this case the difference is small). If it's worse, why should I use it?
-
-Also, in such cases I try to align the arguments (ARRAY_SIZE right below
-sensor). Still IMHO worse than #1.
-
-> if you go over 100 you should ask yourself what are you doing :)
-
-I do. Sometimes the answer is I'm doing the right thing :-)
-And sometimes I change the code. You won't see it because it's already
-changed.
-
-> The sensor frame rate is configured by userspace by changing the
-> blankings through the V4L2_CID_[VH]BLANK.
->
-> You are right the current definition is akward to work with, as there
-> is no way to set the 'total pixels' like you have suggested, but it's
-> rather userspace that knowing the desired total sizes has to compute
-> the blankings by subtracting the visible sizes (plus the mandatory min
-> blanking sizes).
-
-But it can't do that, can it?
-This could be adequate for a sensor with fixed pixel clock. Here we can
-control pixel clocks at will, how is the driver going to know what pixel
-clock should it use? Also, the "extra delay" can't be set with
-V4L2_CID_[VH]BLANK, it needs interval-based timings or the "total pixel"
-or something alike.
 -- 
-Krzysztof "Chris" Hałasa
+https://patchwork.kernel.org/project/linux-wireless/patch/20211006105529.1011239-1-colin.king@canonical.com/
 
-Sieć Badawcza Łukasiewicz
-Przemysłowy Instytut Automatyki i Pomiarów PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
