@@ -2,151 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059F0429262
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0D642926B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243462AbhJKOpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:45:02 -0400
-Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:44932
-        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244152AbhJKOoc (ORCPT
+        id S244200AbhJKOpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:45:41 -0400
+Received: from pv50p00im-zteg10011401.me.com ([17.58.6.41]:59633 "EHLO
+        pv50p00im-zteg10011401.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244058AbhJKOpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:44:32 -0400
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com [209.85.208.70])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 4B4373FFFE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1633963351;
-        bh=JMT/HDVAUnQSbtufENFCBQ4ItG4NAMh4DkHJqbVm68E=;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-         Content-Type:In-Reply-To;
-        b=uv89gm8OaArN0WEdKK23jdi8Ul5rWDLaKkyENshgSFUOxr3lg/sGzdXPXuPzV+UTz
-         2+08VPk+ccGvQQHP2T1ObUWTOA01ZcbxlAW4rI40mV9Cn9hXBwuI8kXnG6aQxLQPy7
-         2sz9EbU6mnDTABXYQOVhGp853PlSTayro1MephL/JcabLtPvA860NE45LAoXNi+kAv
-         rrFYtoc/N+9g/+1Fr7NM6J6RAHwJEranA3/3WrdHCMzBGa3N2F0s3YB8lUsZQU0Ztt
-         rduNBmlIhTSty8I0Yq2YUerIfPIA4+1Fr41IUmLGrT5lVUkcVM/0Y2LeBPdkBtCl3K
-         z8nwgyfA7K9ZQ==
-Received: by mail-ed1-f70.google.com with SMTP id v2-20020a50f082000000b003db24e28d59so16096446edl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:42:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JMT/HDVAUnQSbtufENFCBQ4ItG4NAMh4DkHJqbVm68E=;
-        b=xDl41d3iNnndA0LH09Ufu9X6yXWPRQIwGI4sAjvub1J7hzUxNM0+kzOD08/4v0WPCg
-         7zd4Yhli7kmaRpnCJSaTJTVYo48sz5KUeuZ396q5TYurJw36K5F5v+y1pMHBMotbg4Q+
-         Kycks96+Zw1xck6UVVsRBLFHdORFlGoeEoXxxmbrnCTb6QFtTP2v5ng5CO7HxnhBokLG
-         V9oMZ1jrBdhYD2Apr/BkXVFelC+6r8Q16sTLnKb0tEp5YAxp0nMncAhFRUzQZ+mSkaKD
-         tbXwtfnu7yNS/14FcvteieCqR+DJoifU2+a86QlcfwyOolb2i9lNZNZcLpOjqCvRux+I
-         WLZw==
-X-Gm-Message-State: AOAM533GkbS0k9JthC838b6OCnYgpnsmJ06Et3sFUF/9aOTIo/SJzgwT
-        JXcja8Gmxm0JTaR/+fi60H0UXjhQjHatYjqT5wezp1+T7zaN7dcr1JCbT+rkayIVUDC7M5FaYae
-        3hAEhq1AUGJMPa3VTc+UVqtsM0UKt4QEVxrjvAIaObg==
-X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr26025335ejb.320.1633963350928;
-        Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtvlNOhx1odK+cE5VgjCaTlWHIv1zPxHvS5moMpOuVv6jmfYIZoPKR3g7+6prB01q1lrZgfg==
-X-Received: by 2002:a17:906:e089:: with SMTP id gh9mr26025313ejb.320.1633963350724;
-        Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
-Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
-        by smtp.gmail.com with ESMTPSA id k23sm4333087edv.22.2021.10.11.07.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 07:42:30 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 16:42:29 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Marco Elver <elver@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        kasan-dev@googlegroups.com, linux-mm@kvack.org,
+        Mon, 11 Oct 2021 10:45:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1633963411; bh=Ffmgc+eOs3zeWuYxNFkiIe3ut9JNJ7qAah2dXr12VAo=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=gnbIrso9Cl5Vgx2dO3qzq9do26CMp2D6CoFEew9w9XfIwAeqFze4/WwX8bj3SPj1p
+         uELSAL8XiGYUt2StXsYd2XdlaZ5qo/b/z+8EcbiawP04pnTc1Wngtd96MmxRVpcy1I
+         an4TmeTq3Y2EoyGO3RrUgellfhWnQ98OlCF5/6qhJD936vTWGGDTu4s/MERoMBr6lb
+         75lIxPhWDdG6cBXTDTyUrB06z96h7Q3VwGa2sShytF6oD4wRqJN7mSq8B8Vc7VCipD
+         seccnOL9LRE4fHD/pxRudikLoqikN4oEbLKmDpqiWMJDIsoTsG28rkqQqo/7YyfJlA
+         8pfjfnAHTUVdA==
+Received: from 192.168.1.6 (unknown [120.245.2.114])
+        by pv50p00im-zteg10011401.me.com (Postfix) with ESMTPSA id AD7D49002D2;
+        Mon, 11 Oct 2021 14:43:21 +0000 (UTC)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v2 0/6] Use generic code for randomization of virtual
+ address of x86
+From:   Xiongwei Song <sxwjean@me.com>
+In-Reply-To: <20211011143150.318239-1-sxwjean@me.com>
+Date:   Mon, 11 Oct 2021 22:43:17 +0800
+Cc:     Xiongwei Song <sxwjean@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Kees Cook <keescook@chromium.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        "David S. Miller" <davem@davemloft.net>,
         linux-kernel@vger.kernel.org
-Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
-Message-ID: <YWRNVTk9N8K0RMst@arighi-desktop>
-References: <YWLwUUNuRrO7AxtM@arighi-desktop>
- <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
- <YWPaZSX4WyOwilW+@arighi-desktop>
- <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
- <YWPjZv7ClDOE66iI@arighi-desktop>
- <CACT4Y+b4Xmev7uLhASpHnELcteadhaXCBkkD5hO2YNP5M2451g@mail.gmail.com>
- <YWQCknwPcGlOBfUi@arighi-desktop>
- <YWQJe1ccZ72FZkLB@arighi-desktop>
- <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNNtCf+q21_5Dj49c4D__jznwFbBFrWE0LG5UnC__B+fKA@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <23A70A75-8016-4A80-9AEC-89B41F155104@me.com>
+References: <20211011143150.318239-1-sxwjean@me.com>
+To:     linux-mm@kvack.org, x86@kernel.org
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.425,18.0.790
+ definitions=2021-10-11_05:2021-10-07,2021-10-11 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=892 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2110110086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 12:03:52PM +0200, Marco Elver wrote:
-> On Mon, 11 Oct 2021 at 11:53, Andrea Righi <andrea.righi@canonical.com> wrote:
-> > On Mon, Oct 11, 2021 at 11:23:32AM +0200, Andrea Righi wrote:
-> > ...
-> > > > You seem to use the default 20s stall timeout. FWIW syzbot uses 160
-> > > > secs timeout for TCG emulation to avoid false positive warnings:
-> > > > https://github.com/google/syzkaller/blob/838e7e2cd9228583ca33c49a39aea4d863d3e36d/dashboard/config/linux/upstream-arm64-kasan.config#L509
-> > > > There are a number of other timeouts raised as well, some as high as
-> > > > 420 seconds.
-> > >
-> > > I see, I'll try with these settings and see if I can still hit the soft
-> > > lockup messages.
-> >
-> > Still getting soft lockup messages even with the new timeout settings:
-> >
-> > [  462.663766] watchdog: BUG: soft lockup - CPU#2 stuck for 430s! [systemd-udevd:168]
-> > [  462.755758] watchdog: BUG: soft lockup - CPU#3 stuck for 430s! [systemd-udevd:171]
-> > [  924.663765] watchdog: BUG: soft lockup - CPU#2 stuck for 861s! [systemd-udevd:168]
-> > [  924.755767] watchdog: BUG: soft lockup - CPU#3 stuck for 861s! [systemd-udevd:171]
-> 
-> The lockups are expected if you're hitting the TCG bug I linked. Try
-> to pass '-enable-kvm' to the inner qemu instance (my bad if you
-> already have), assuming that's somehow easy to do.
 
-If I add '-enable-kvm' I can triggering other random panics (almost
-immediately), like this one for example:
 
-[21383.189976] BUG: kernel NULL pointer dereference, address: 0000000000000098
-[21383.190633] #PF: supervisor read access in kernel mode
-[21383.191072] #PF: error_code(0x0000) - not-present page
-[21383.191529] PGD 0 P4D 0 
-[21383.191771] Oops: 0000 [#1] SMP NOPTI
-[21383.192113] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.15-rc4
-[21383.192757] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-[21383.193414] RIP: 0010:wb_timer_fn+0x44/0x3c0
-[21383.193855] Code: 41 8b 9c 24 98 00 00 00 41 8b 94 24 b8 00 00 00 41 8b 84 24 d8 00 00 00 4d 8b 74 24 28 01 d3 01 c3 49 8b 44 24 60 48 8b 40 78 <4c> 8b b8 98 00 00 00 4d 85 f6 0f 84 c4 00 00 00 49 83 7c 24 30 00
-[21383.195366] RSP: 0018:ffffbcd140003e68 EFLAGS: 00010246
-[21383.195842] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000004
-[21383.196425] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff9a3521f4fd80
-[21383.197010] RBP: ffffbcd140003e90 R08: 0000000000000000 R09: 0000000000000000
-[21383.197594] R10: 0000000000000004 R11: 000000000000000f R12: ffff9a34c75c4900
-[21383.198178] R13: ffff9a34c3906de0 R14: 0000000000000000 R15: ffff9a353dc18c00
-[21383.198763] FS:  0000000000000000(0000) GS:ffff9a353dc00000(0000) knlGS:0000000000000000
-[21383.199558] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[21383.200212] CR2: 0000000000000098 CR3: 0000000005f54000 CR4: 00000000000006f0
-[21383.200930] Call Trace:
-[21383.201210]  <IRQ>
-[21383.201461]  ? blk_stat_free_callback_rcu+0x30/0x30
-[21383.202692]  blk_stat_timer_fn+0x138/0x140
-[21383.203180]  call_timer_fn+0x2b/0x100
-[21383.203666]  __run_timers.part.0+0x1d1/0x240
-[21383.204227]  ? kvm_clock_get_cycles+0x11/0x20
-[21383.204815]  ? ktime_get+0x3e/0xa0
-[21383.205309]  ? native_apic_msr_write+0x2c/0x30
-[21383.205914]  ? lapic_next_event+0x20/0x30
-[21383.206412]  ? clockevents_program_event+0x94/0xf0
-[21383.206873]  run_timer_softirq+0x2a/0x50
-[21383.207260]  __do_softirq+0xcb/0x26f
-[21383.207647]  irq_exit_rcu+0x8c/0xb0
-[21383.208010]  sysvec_apic_timer_interrupt+0x7c/0x90
-[21383.208464]  </IRQ>
-[21383.208713]  asm_sysvec_apic_timer_interrupt+0x12/0x20
+> On Oct 11, 2021, at 10:31 PM, sxwjean@me.com wrote:
+>=20
+> From: Xiongwei Song <sxwjean@gmail.com>
+>=20
+> Hello,
+>=20
+> This patchset are to use generic code for randomization of virtual =
+address
+> of x86. Since the basic code logic of x86 is same as generic code, so =
+no
+> need to implement these functions on x86.
+>=20
+> Patch 1~3 are prepared to change the generic code to apply to x86.
+>=20
+> Patch 4 is to switch to generic arch_pick_mmap_layout() with=20
+> ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT enabled. Also provided basically
+> test and the result was put in commit message too.
+>=20
+> Patch 5~6 are used to handle the legacy things.
+>=20
+> Test programs(to verify if the entropy of return value of mmap is kept
+> after applying the patchset):
+> - C code for mmap test:
+> 	#include <stdio.h>
+> 	#include <stdlib.h>
+> 	#include <sys/mman.h>
+>=20
+> 	int main(int argc, char *argv[])
+> 	{
+> 		unsigned long *addr;
+>=20
+> 		addr =3D mmap(NULL, 4096, PROT_READ, =
+MAP_SHARED|MAP_ANONYMOUS, -1, 0);
+> 		if (addr =3D=3D MAP_FAILED) {
+> 			printf("NULL\n");
+> 		} else {
+> 			printf("%lx\n", (unsigned long)addr);
+> 			munmap(addr, 4096);
+> 		}
+>=20
+> 		return 0;
+> 	}
+>=20
+> - Shell script for collecting output of C progarm above and give a
+>  statistics:
+> 	#!/bin/bash
+> 	declare -a COUNT
+>=20
+> 	if [ "$1" =3D=3D "" ]; then
+> 	    echo "Please give a test number!"
+> 	    exit 1
+> 	fi
+> 	number=3D$1
+>=20
+> 	for ((i=3D0; i<$number; i++))
+> 	do
+> 	    addr=3D$(mmaptest)
+> 	    addr=3D$(((16#$addr&0xf000000000)>>36))
+> 	    COUNT[$addr]=3D$((COUNT[$addr]+1))
+> 	done
+>=20
+> 	echo "    Virtual Address Range     |   hit times   "
+> 	echo "----------------------------------------"
+> 	for ((i=3D0; i<16; i++))
+> 	do
+> 	    j=3D`echo "obase=3D16; $i" | bc`
+> 	    echo "0x7f${j,,}000000000 - 0x7f${j,,}ffffff000 |   =
+${COUNT[i]}"
+> 	done
+>=20
+> Run 10 thousands times C progam, collect the output with shell script, =
+get
+> the test results below:
+> 	Before the patchset:
+>            Virtual Address Range       | hit times
+>        ----------------------------------------
+>        0x7f0000000000 - 0x7f0ffffff000 |   655=20
+>        0x7f1000000000 - 0x7f1ffffff000 |   617=20
+>        0x7f2000000000 - 0x7f2ffffff000 |   636=20
+>        0x7f3000000000 - 0x7f3ffffff000 |   625=20
+>        0x7f4000000000 - 0x7f4ffffff000 |   651=20
+>        0x7f5000000000 - 0x7f5ffffff000 |   591=20
+>        0x7f6000000000 - 0x7f6ffffff000 |   623=20
+>        0x7f7000000000 - 0x7f7ffffff000 |   627=20
+>        0x7f8000000000 - 0x7f8ffffff000 |   638=20
+>        0x7f9000000000 - 0x7f9ffffff000 |   586=20
+>        0x7fa000000000 - 0x7faffffff000 |   637=20
+>        0x7fb000000000 - 0x7fbffffff000 |   607=20
+>        0x7fc000000000 - 0x7fcffffff000 |   618=20
+>        0x7fd000000000 - 0x7fdffffff000 |   656=20
+>        0x7fe000000000 - 0x7feffffff000 |   614=20
+>        0x7ff000000000 - 0x7ffffffff000 |   619=20
+>=20
+> 	After the patchset:
+>            Virtual Address Range       | hit times
+>        ----------------------------------------
+>        0x7f0000000000 - 0x7f0ffffff000 |   661=20
+>        0x7f1000000000 - 0x7f1ffffff000 |   645=20
+>        0x7f2000000000 - 0x7f2ffffff000 |   609=20
+>        0x7f3000000000 - 0x7f3ffffff000 |   594=20
+>        0x7f4000000000 - 0x7f4ffffff000 |   616=20
+>        0x7f5000000000 - 0x7f5ffffff000 |   622=20
+>        0x7f6000000000 - 0x7f6ffffff000 |   617=20
+>        0x7f7000000000 - 0x7f7ffffff000 |   582=20
+>        0x7f8000000000 - 0x7f8ffffff000 |   618=20
+>        0x7f9000000000 - 0x7f9ffffff000 |   629=20
+>        0x7fa000000000 - 0x7faffffff000 |   635=20
+>        0x7fb000000000 - 0x7fbffffff000 |   625=20
+>        0x7fc000000000 - 0x7fcffffff000 |   614=20
+>        0x7fd000000000 - 0x7fdffffff000 |   610=20
+>        0x7fe000000000 - 0x7feffffff000 |   648
+>        0x7ff000000000 - 0x7ffffffff000 |   675
 
-I think that systemd autotest used to use -enable-kvm, but then they
-removed it, because it was introducing too many problems in the nested
-KVM context. I'm not sure about the nature of those problems though, I
-can investigate a bit and see if I can understand what they were
-exactly.
+Hi Kees,
 
--Andrea
+Sorry, I have no idea about the entropy measure tools, so I designed a =
+test program
+myself. I=E2=80=99m not sure if my test is enough. Or could you please =
+share a better method to
+measure entropy?
+
+Regards,
+Xiongwei
+
+
