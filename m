@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99B742899B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5864289A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235506AbhJKJ0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:26:31 -0400
-Received: from marcansoft.com ([212.63.210.85]:59924 "EHLO mail.marcansoft.com"
+        id S235471AbhJKJ3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:29:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36758 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235458AbhJKJ0C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:26:02 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 162E03FA5E;
-        Mon, 11 Oct 2021 09:23:54 +0000 (UTC)
-Subject: Re: [PATCH v2 00/11] Add Apple M1 support to PASemi i2c driver
-To:     Wolfram Sang <wsa@kernel.org>, Sven Peter <sven@svenpeter.dev>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "R.T.Dickinson" <rtd@a-eon.com>,
-        Matthew Leaman <matthew@a-eon.biz>,
-        Darren Stevens <darren@stevens-zone.net>
-References: <20211008163532.75569-1-sven@svenpeter.dev>
- <YWFqr4uQGlNgnT1z@ninjato> <8a8afc73-3756-a305-ce5f-70b4bce6999f@xenosoft.de>
- <11d8f784-c90a-4e6c-9abd-564cb5241cb7@www.fastmail.com>
- <YWP71c8cXlE3PcIo@kunai>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <5ae30425-d6d4-5688-36e3-58cc6c6ff264@marcan.st>
-Date:   Mon, 11 Oct 2021 18:23:52 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235443AbhJKJ3V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:29:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B70560EB6;
+        Mon, 11 Oct 2021 09:27:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633944441;
+        bh=361wF0ts4s/b4c9Mi+UY36X5l5csekZIjvRo6UEfjWE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cPVYbzXdqcWIGa3ZJ2ntg+Id9meXu2sa9R86p3FL+IohNRgLQiOiaNzjMiNVKCt5m
+         cls7LhHU3OyziiCtsNTSD59IG4CZ4bhoubq5utmdsP6ol7XtEYImW4ZWrcR/kDEnLv
+         jNlncvxHoe+4xLPbuXVsyA+0uthrIPe4osTQBrNyO3baXu9iTJg2wLw+s5tO6JAw+2
+         OdDZ+G0lO8fYtIGjAt/upma4MVFX2zeM9VkWpVWuQrcnZRY4wmmSxRvH9pW0wkvZxu
+         MeOfOh4gtF7uK5Qb93fuvoCa3fdVNthrpuW0EwBsPqDyzBoPCotAfziTr1UZHGskMT
+         xQHCm+qwRBdQQ==
+Date:   Mon, 11 Oct 2021 12:27:13 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/3] memory-hotplug.rst: fix two instances of
+ "movablecore" that should be "movable_node"
+Message-ID: <YWQDcROoBoreeiHZ@kernel.org>
+References: <20211011082058.6076-1-david@redhat.com>
+ <20211011082058.6076-2-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <YWP71c8cXlE3PcIo@kunai>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011082058.6076-2-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/10/2021 17.54, Wolfram Sang wrote:
->> MAINTAINERS. It'll probably apply cleanly to 5.15-rc5 but if that happens again
+On Mon, Oct 11, 2021 at 10:20:56AM +0200, David Hildenbrand wrote:
+> We really want to refer to the "movable_node" kernel command line
+> parameter here.
 > 
-> It doesn't because Linus' git doesn't have:
-> 
-> Documentation/devicetree/bindings/pci/apple,pcie.yaml
-> 
-> Because MAINTAINER dependencies can be a bit nasty, I suggest I drop the
-> MAINTAINER additions for now and we add them later. Then, you can add
-> the pasemi-core as well. D'accord?
-> 
+> Fixes: ac3332c44767 ("memory-hotplug.rst: complete admin-guide overhaul")
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
-We can just split the MAINTAINERS changes into a separate patch and I 
-can push that one through the SoC tree, along with other MAINTAINERS 
-updates. Does that work for everyone?
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+
+> ---
+>  Documentation/admin-guide/mm/memory-hotplug.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+> index 03dfbc925252..27d748cb6ee0 100644
+> --- a/Documentation/admin-guide/mm/memory-hotplug.rst
+> +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+> @@ -166,7 +166,7 @@ Or alternatively::
+>  	% echo 1 > /sys/devices/system/memory/memoryXXX/online
+>  
+>  The kernel will select the target zone automatically, usually defaulting to
+> -``ZONE_NORMAL`` unless ``movablecore=1`` has been specified on the kernel
+> +``ZONE_NORMAL`` unless ``movable_node`` has been specified on the kernel
+>  command line or if the memory block would intersect the ZONE_MOVABLE already.
+>  
+>  One can explicitly request to associate an offline memory block with
+> @@ -393,7 +393,7 @@ command line parameters are relevant:
+>  ======================== =======================================================
+>  ``memhp_default_state``	 configure auto-onlining by essentially setting
+>                           ``/sys/devices/system/memory/auto_online_blocks``.
+> -``movablecore``		 configure automatic zone selection of the kernel. When
+> +``movable_node``	 configure automatic zone selection in the kernel. When
+>  			 set, the kernel will default to ZONE_MOVABLE, unless
+>  			 other zones can be kept contiguous.
+>  ======================== =======================================================
+> -- 
+> 2.31.1
+> 
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Sincerely yours,
+Mike.
