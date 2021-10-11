@@ -2,126 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8784289B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770BB4289B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235529AbhJKJfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:35:12 -0400
-Received: from mga06.intel.com ([134.134.136.31]:32965 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235476AbhJKJfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:35:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="287715204"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="287715204"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:33:08 -0700
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="490398814"
-Received: from acleivam-mobl1.amr.corp.intel.com (HELO [10.249.40.144]) ([10.249.40.144])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 02:33:05 -0700
-Message-ID: <31b021d0-63e4-32f8-9df9-dcf4f0c4cb6f@linux.intel.com>
-Date:   Mon, 11 Oct 2021 12:33:16 +0300
+        id S235511AbhJKJfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:35:51 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:44902 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235476AbhJKJfu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 05:35:50 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B824oX014133;
+        Mon, 11 Oct 2021 11:33:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=selector1;
+ bh=4IZcyiEmJqJknYqY3HebfFSwzt2k+W5tkomkh6G8X1U=;
+ b=CbpIgAnUR55EcjRZf1X0kVgjPWJoRIC618TZrDIDc9/hstdYIZNTKjMaAcVFmmEiA9ty
+ 9dfQFnqopE80XabEmUdrUQO0oB2f96ucYo2SLLksyD905bB5ncCtsbn0czgIAdKVlhva
+ Y3k12HR74UnyQPep/lQwo+GEaNRfy1bAd2Tn8CScDYlIFp2g2JikFdq0xWSZvj5ZCtKg
+ 5fYwD0gSx56Oed3f5XEea04yInq+K+1GZQUR323V9PWI1wr8Ld7NrviGJQccj/DoWBHk
+ Kx0EBNzHumqaUoR/4nNJwWMqX//70/k+xvWFkVdwgP8jY7A+iY9sUHj9WaeXKFzKKx/x qw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bmasq2kc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 11:33:39 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5049510002A;
+        Mon, 11 Oct 2021 11:33:37 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 47C9E21B501;
+        Mon, 11 Oct 2021 11:33:37 +0200 (CEST)
+Received: from localhost (10.75.127.49) by SFHDAG2NODE2.st.com (10.75.127.5)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct 2021 11:33:36
+ +0200
+From:   Fabien Dessenne <fabien.dessenne@foss.st.com>
+To:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <linux-remoteproc@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fabien Dessenne <fabien.dessenne@foss.st.com>
+Subject: [PATCH] hwspinlock: stm32: enable clock at probe
+Date:   Mon, 11 Oct 2021 11:33:26 +0200
+Message-ID: <20211011093326.817797-1-fabien.dessenne@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2] checkpatch: get default codespell dictionary path from
- package location
-Content-Language: en-US
-To:     Joe Perches <joe@perches.com>, apw@canonical.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20211011063231.6918-1-peter.ujfalusi@linux.intel.com>
- <ad5adffe862f33debdf869465cf90878224ea893.camel@perches.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <ad5adffe862f33debdf869465cf90878224ea893.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joe,
+Set the clock during probe and keep its control during suspend / resume
+operations.
+This fixes an issue when CONFIG_PM is not set and where the clock is
+never enabled.
 
-On 11/10/2021 11:11, Joe Perches wrote:
-> On Mon, 2021-10-11 at 09:32 +0300, Peter Ujfalusi wrote:
->> The standard location of dictionary.txt is under codespell's package, on
->> my machine atm (codespell 2.1, Artix Linux):
->> /usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
->>
->> Since we enable the codespell by default for SOF I have constant:
-> 
-> If you enable it by default, you probably are using a .checkpatch.conf file.
+Make use of devm_ functions to simplify the code.
 
-It is enabled via a commit hook and started to fail after codespell
-update to 2.1 (when the /usr/share/codespell/dictionary.txt no longer exist)
+Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+---
+ drivers/hwspinlock/stm32_hwspinlock.c | 60 +++++++++++++++++----------
+ 1 file changed, 38 insertions(+), 22 deletions(-)
 
-This is downstream port of checkpatch.pl in sof:
-https://thesofproject.github.io
-
-If I would have enabled it locally I would have also specified the
-codespellfile in .checkpatch.conf.
-
-> --codespell is not a typical default so I think always doing this test
-> regardless of --codespell being enabled is inappropriate.
-
-I tend to agree.
-
->> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
->> @@ -73,6 +73,12 @@ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
->>  my $tabsize = 8;
->>  my ${CONFIG_} = "CONFIG_";
->>
->> +# Override the codespellfile location based on codespell install location
->> +if (which("codespell") ne "" && which("python") ne "") {
->> +	my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
->> +	$codespellfile = $codespell_dict if (-e $codespell_dict);
->> +}
->> +
-> 
-> Maybe add a function and/or use something like:
-> 
-> 	if (($codespell || $help) &&
-> 	    which(etc...
-
-Right, so I will move the check after the GetOptions() to have the
-$codespell and $help options evaluated.
-
->>  sub help {
->>  	my ($exitcode) = @_;
->>  
->>
->> @@ -130,7 +136,7 @@ Options:
->>    --ignore-perl-version      override checking of perl version.  expect
->>                               runtime errors.
->>    --codespell                Use the codespell dictionary for spelling/typos
->> -                             (default:/usr/share/codespell/dictionary.txt)
->> +                             (default:$codespellfile)
-> 
-> I think this should not be changed or only be shown as $codespellfile when
-> --codespell is added on the command line
-
-If I run the 'scripts/checkpatch.pl -h' I would like to see the options
-and defaults that will be used and I don't expect that the default of
-the dictionary.tx would be different between
-
-scripts/checkpatch.pl -h
- default:/usr/share/codespell/dictionary.txt)
-
-scripts/checkpatch.pl --codespell -h
- (default:/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt)
-
-I think this is not too intuitive.
-
-Now I have a working and consistent version, let's see how that looks like.
-
-> 
->>    --codespellfile            Use this codespell dictionary
->>    --typedefsfile             Read additional types from this file
->>    --color[=WHEN]             Use colors 'always', 'never', or only when output
-> 
-> 
-
+diff --git a/drivers/hwspinlock/stm32_hwspinlock.c b/drivers/hwspinlock/stm32_hwspinlock.c
+index 3ad0ce0da4d9..6c3be33f3faf 100644
+--- a/drivers/hwspinlock/stm32_hwspinlock.c
++++ b/drivers/hwspinlock/stm32_hwspinlock.c
+@@ -54,8 +54,23 @@ static const struct hwspinlock_ops stm32_hwspinlock_ops = {
+ 	.relax		= stm32_hwspinlock_relax,
+ };
+ 
++static void stm32_hwspinlock_disable_clk(void *data)
++{
++	struct platform_device *pdev = data;
++	struct stm32_hwspinlock *hw = platform_get_drvdata(pdev);
++	struct device *dev = &pdev->dev;
++
++	pm_runtime_get_sync(dev);
++	pm_runtime_disable(dev);
++	pm_runtime_set_suspended(dev);
++	pm_runtime_put_noidle(dev);
++
++	clk_disable_unprepare(hw->clk);
++}
++
+ static int stm32_hwspinlock_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct stm32_hwspinlock *hw;
+ 	void __iomem *io_base;
+ 	size_t array_size;
+@@ -66,41 +81,43 @@ static int stm32_hwspinlock_probe(struct platform_device *pdev)
+ 		return PTR_ERR(io_base);
+ 
+ 	array_size = STM32_MUTEX_NUM_LOCKS * sizeof(struct hwspinlock);
+-	hw = devm_kzalloc(&pdev->dev, sizeof(*hw) + array_size, GFP_KERNEL);
++	hw = devm_kzalloc(dev, sizeof(*hw) + array_size, GFP_KERNEL);
+ 	if (!hw)
+ 		return -ENOMEM;
+ 
+-	hw->clk = devm_clk_get(&pdev->dev, "hsem");
++	hw->clk = devm_clk_get(dev, "hsem");
+ 	if (IS_ERR(hw->clk))
+ 		return PTR_ERR(hw->clk);
+ 
+-	for (i = 0; i < STM32_MUTEX_NUM_LOCKS; i++)
+-		hw->bank.lock[i].priv = io_base + i * sizeof(u32);
++	ret = clk_prepare_enable(hw->clk);
++	if (ret) {
++		dev_err(dev, "Failed to prepare_enable clock\n");
++		return ret;
++	}
++
++	pm_runtime_get_noresume(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++	pm_runtime_put(dev);
+ 
+ 	platform_set_drvdata(pdev, hw);
+-	pm_runtime_enable(&pdev->dev);
+ 
+-	ret = hwspin_lock_register(&hw->bank, &pdev->dev, &stm32_hwspinlock_ops,
+-				   0, STM32_MUTEX_NUM_LOCKS);
++	ret = devm_add_action_or_reset(dev, stm32_hwspinlock_disable_clk, pdev);
++	if (ret) {
++		dev_err(dev, "Failed to register action\n");
++		return ret;
++	}
+ 
+-	if (ret)
+-		pm_runtime_disable(&pdev->dev);
+-
+-	return ret;
+-}
++	for (i = 0; i < STM32_MUTEX_NUM_LOCKS; i++)
++		hw->bank.lock[i].priv = io_base + i * sizeof(u32);
+ 
+-static int stm32_hwspinlock_remove(struct platform_device *pdev)
+-{
+-	struct stm32_hwspinlock *hw = platform_get_drvdata(pdev);
+-	int ret;
++	ret = devm_hwspin_lock_register(dev, &hw->bank, &stm32_hwspinlock_ops,
++					0, STM32_MUTEX_NUM_LOCKS);
+ 
+-	ret = hwspin_lock_unregister(&hw->bank);
+ 	if (ret)
+-		dev_err(&pdev->dev, "%s failed: %d\n", __func__, ret);
+-
+-	pm_runtime_disable(&pdev->dev);
++		dev_err(dev, "Failed to register hwspinlock\n");
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ static int __maybe_unused stm32_hwspinlock_runtime_suspend(struct device *dev)
+@@ -135,7 +152,6 @@ MODULE_DEVICE_TABLE(of, stm32_hwpinlock_ids);
+ 
+ static struct platform_driver stm32_hwspinlock_driver = {
+ 	.probe		= stm32_hwspinlock_probe,
+-	.remove		= stm32_hwspinlock_remove,
+ 	.driver		= {
+ 		.name	= "stm32_hwspinlock",
+ 		.of_match_table = stm32_hwpinlock_ids,
 -- 
-Péter
+2.25.1
+
