@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B9B428763
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D788E428766
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234757AbhJKHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:06:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234598AbhJKHFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:05:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F43461074;
-        Mon, 11 Oct 2021 07:03:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633935832;
-        bh=LO3lJPfriqc1V81Pj+EgxCPgaz8IAMTHZRso2RCz3xU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=EBv7WvHTp3KmMnBQHeLmxkHZlKqyHwL3UUV8nDlBHiwGkW98INtLvw2H8s+6/VywB
-         o2AW/RDjkXHuO0Q7/0Bvx5GIiS+YLSHMt565C3sHZtZWI4Kt4y7YhBwnp1pgSHtsCj
-         1vVGn1XwqD9VxUb0dgQgeB/8ecPheXQ6qPHiyp0t+WscYQGj9C5WDi9kW7V5cWsdMu
-         UMgjGG8hMmIyqYC0C+NQ95IpCRyABG0c3c9CaOycNIZap+c3Bs26TGwRAgBPovevud
-         8+D3g0Uw/wW6rM39WMgMeFlvESZLoLlouyng68+ziEFqig/IHJvTLtoTNvUpLX3yDp
-         gTEugByM8No2A==
-Subject: Re: [PATCH v5 0/8] dt-bindings: memory-controllers: ti,gpmc: Convert
- to yaml
-To:     Tony Lindgren <tony@atomide.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>,
-        robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
-        nsekhar@ti.com, devicetree@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211007120830.17221-1-rogerq@kernel.org>
- <6b90a6fd-001f-a41a-b69f-2bd3ec8a8e26@canonical.com>
- <e165b6ee-91d3-3a50-3b9d-3f15fa82a101@kernel.org>
- <64b65579-7153-1e7d-9866-77ce07fd1df5@canonical.com>
- <YWPRbmaJQN85wRIO@atomide.com>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <f2125e81-07da-92ea-899a-d06ecae1919f@kernel.org>
-Date:   Mon, 11 Oct 2021 10:03:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234502AbhJKHG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:06:27 -0400
+Received: from mx24.baidu.com ([111.206.215.185]:36484 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234736AbhJKHGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 03:06:08 -0400
+Received: from BJHW-Mail-Ex10.internal.baidu.com (unknown [10.127.64.33])
+        by Forcepoint Email with ESMTPS id 8B1C7A047B63647B8EA3;
+        Mon, 11 Oct 2021 15:04:06 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex10.internal.baidu.com (10.127.64.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 11 Oct 2021 15:04:06 +0800
+Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
+ (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 11
+ Oct 2021 15:04:06 +0800
+Date:   Mon, 11 Oct 2021 15:04:05 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     Michael Cyr <mikecyr@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        <linux-scsi@vger.kernel.org>, <target-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] scsi: ibmvscsi_tgt: Use dma_alloc_coherent() instead of
+ get_zeroed_page/dma_map_single()
+Message-ID: <20211011070405.GA173@LAPTOP-UKSR4ENP.internal.baidu.com>
+References: <20211010160055.488-1-caihuoqing@baidu.com>
+ <YWPc1GxFiOloHveI@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <YWPRbmaJQN85wRIO@atomide.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YWPc1GxFiOloHveI@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex17.internal.baidu.com (172.31.51.11) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex10_2021-10-11 15:04:06:519
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-On 11/10/2021 08:53, Tony Lindgren wrote:
-> * Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> [211009 14:56]:
->> On 08/10/2021 21:10, Roger Quadros wrote:
->>> Krzysztof,
->>>
->>> On 07/10/2021 20:37, Krzysztof Kozlowski wrote:
->>>> On 07/10/2021 14:08, Roger Quadros wrote:
->>>>> Hi,
->>>>>
->>>>> This series converts ti,gpmc memory controller and ti,gpmc-nand and
->>>>> ti,gpmc-onenand MTD controller bindings to yaml.
->>>>>
->>>>> cheers,
->>>>> -roger
->>>>>
->>>>
->>>> Hi,
->>>>
->>>> Although you did not mention it here, it looks like you have some
->>>> dependencies between the patches. Maybe this shall go simply via Rob's tree?
->>>>
->>>
->>> Rob has acked all the DT binding patches.
->>> So it is upto you and Miquèl to decide the best way. MTD tree or Memory controller tree
->>> for the dt-bindings patches.
->>>
->>> The ARM: dts changes should go via Tony's OMAP SoC tree.
->>>
->>> Or if Tony is OK with it then maybe all patches can go via Tony's tree? :)
->>>
->>
->>
->> I reviewed the two memory-controller patches, so feel free to take them
->> via MTD or OMAP SoC.
+On 11 10月 21 07:42:28, Christoph Hellwig wrote:
+> On Mon, Oct 11, 2021 at 12:00:53AM +0800, Cai Huoqing wrote:
+> > Replacing get_zeroed_page/free_page/dma_map_single/dma_unmap_single()
+> > with dma_alloc_coherent/dma_free_coherent() helps to reduce
+> > code size, and simplify the code, and coherent DMA will not
+> > clear the cache every time.
 > 
-> Sounds like I should pick up these because of the dts changes.
+> This explanation does not make any sense whatsoever.  Please explain
+> why it would an show numbers.
+Hi Christoph,
+thanks for your feedback.
 
-There is no dependency with the dts patches but it would be great if you can pick them all up.
-Thanks!
+In this case, just simplify the code.
+10 insertions(+), 31 deletions(-)
 
-cheers,
--roger
+dma_sync_ API is not called, I think the hardware may keep cache coherent
+directly or is a no cache system. No need to make perfermance compare.
+
+thanks
+Cai
