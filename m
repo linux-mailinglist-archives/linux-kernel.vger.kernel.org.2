@@ -2,365 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0B5428934
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D616428935
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235182AbhJKI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:56:23 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3954 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235329AbhJKI4G (ORCPT
+        id S235301AbhJKI40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:56:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235163AbhJKI4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:56:06 -0400
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HSXYG48KFz6887d;
-        Mon, 11 Oct 2021 16:49:54 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 10:53:18 +0200
-Received: from localhost (10.52.122.204) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 09:53:17 +0100
-Date:   Mon, 11 Oct 2021 09:52:59 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     "Chindris, Mihail" <Mihail.Chindris@analog.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        "Sa, Nuno" <Nuno.Sa@analog.com>,
-        "Bogdan, Dragos" <Dragos.Bogdan@analog.com>,
-        "alexandru.ardelean@analog.com" <alexandru.ardelean@analog.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
-Message-ID: <20211011095259.0000037b@Huawei.com>
-In-Reply-To: <SJ0PR03MB5791AE72F7666812DFD726B299B59@SJ0PR03MB5791.namprd03.prod.outlook.com>
-References: <20211008123909.1901-1-mihail.chindris@analog.com>
-        <20211008123909.1901-2-mihail.chindris@analog.com>
-        <20211010154856.29f4fd11@jic23-huawei>
-        <SJ0PR03MB5791AE72F7666812DFD726B299B59@SJ0PR03MB5791.namprd03.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Mon, 11 Oct 2021 04:56:20 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C5FC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:54:20 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id d9so40987512edh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:54:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bm3wXMJ4rfAFeHpv39wPQyGuIwFIJmid7Nqz8YDvf6o=;
+        b=TVRxYTOg9IKOYxMjmO5BVUckr++KoEUEpL954fJ9Q7NgyJXNDkssAFnXWfqVFzgKYf
+         DjxjEd7Ec6/4L395nQagHYjuFowEXREwc9rLmjwqvqgdMpPzuKUKu+cl+yRujtVoMXhb
+         T3Jhz4g71lBjVk5PNpSzj4t7kvkZOjoajD2YHimdniVsBaqlm0rKqBOsRg1+pFFCM3mu
+         IsrfY1bibm86Y8/XiDfxJnZXmwMl6iJnkvUlueUJZ8TOoxFnyqEevUDz9IPfscJ6gZi4
+         WgUnDVxnCrU4bI3id8zPxLFn4GUiUDTIDwyLrzhIP7ncYTJQuXkarYbidsKGVdBx/Fqv
+         LliQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bm3wXMJ4rfAFeHpv39wPQyGuIwFIJmid7Nqz8YDvf6o=;
+        b=3Ix4QOHYYVcihETgbEFCTFzS8ItuORoDX3LUSuTywBcW3SBKPbUmQt7KcFuz5qqiC3
+         LPRpjqJKDkmIRG4JQFa9MJ53ZxYECL6tfWACuUJI4srrhdOvIbypikogQE3QWk6HIyHf
+         OIWWzg5ChcgLmADT6x+cZB0HWZpNR0+nQWzyAbvqP8CRWbhRLF0LY5APE7ZqnG3j1w6t
+         ZJ63KyH8kAtN9/OyM6l3eDCeL9R4VH86ICB0YfD6eBFludZ/4G5ZfuRhbJCU+446Nc/M
+         hKiImgR3EMciZN809hK2iXcJ+ECxuNdYZpbbUPei6QTtdZ1dwUhDQUtNY4VZLKJKVybj
+         C89w==
+X-Gm-Message-State: AOAM533W9VlrCCZE/a+VNYx9BOpeopniBWq1T5uW04cRydquWVGWU8AR
+        /m3nHizX40WvFiClexecjR0=
+X-Google-Smtp-Source: ABdhPJwoKQm0lAofAm+QORUkmLZV/tOjW5jc9AD61qOM7PvkhRw+HXESI56q0RrVqNH9qI8svNtOTg==
+X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr25119293ejc.276.1633942458632;
+        Mon, 11 Oct 2021 01:54:18 -0700 (PDT)
+Received: from localhost.localdomain (host-79-43-109-12.retail.telecomitalia.it. [79.43.109.12])
+        by smtp.gmail.com with ESMTPSA id h11sm3130942eji.96.2021.10.11.01.54.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 01:54:18 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
+        ross.schm.dev@gmail.com, marcocesati@gmail.com,
+        saurav.girepunje@gmail.com, insafonov@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     saurav.girepunje@hotmail.com
+Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return statement.
+Date:   Mon, 11 Oct 2021 10:54:11 +0200
+Message-ID: <2482197.HNbSr4JpUv@localhost.localdomain>
+In-Reply-To: <YWJ0vSrgsiKK7suE@user>
+References: <YWJ0vSrgsiKK7suE@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.122.204]
-X-ClientProxiedBy: lhreml723-chm.china.huawei.com (10.201.108.74) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
+> Remove the unneeded and redundant check of variable on goto out.
+> Simplify the return using multiple goto label to avoid
+> unneeded check.
+> 
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> ---
+> 
+> ChangeLog V2:
+> 	-Add goto out after the memcpy for no error case return with
+> 	 ret only. Free is not required on no error case.
 
+Please write versions logs that reflect clearly and unequivocally what you 
+changed between revisions and why. Subjects, Commit messages (Changelogs), 
+and Versions logs are the "specifics" of your work. There must be no 
+inconsistencies between these and the code or the history of the changes of 
+the code.
 
-On Mon, 11 Oct 2021 08:37:44 +0000
-"Chindris, Mihail" <Mihail.Chindris@analog.com> wrote:
+You may think that I'm pedantic, but since I acked your patch, I don't want 
+to be misunderstood to be a promoter of approximate or clearly incorrect 
+messages.
 
-> > -----Original Message-----
-> > From: Jonathan Cameron <jic23@kernel.org>
-> > Sent: Sunday, 10 October 2021 17:49
-> > To: Chindris, Mihail <Mihail.Chindris@analog.com>
-> > Cc: linux-kernel@vger.kernel.org; linux-iio@vger.kernel.org;
-> > lars@metafoo.de; Hennerich, Michael <Michael.Hennerich@analog.com>;
-> > Sa, Nuno <Nuno.Sa@analog.com>; Bogdan, Dragos
-> > <Dragos.Bogdan@analog.com>; alexandru.ardelean@analog.com; Mark
-> > Brown <broonie@kernel.org>
-> > Subject: Re: [PATCH v2 1/2] dt-bindings: iio: dac: Add adi,ad3552r.yaml
-> > 
-> > On Fri, 8 Oct 2021 12:39:08 +0000
-> > Mihail Chindris <mihail.chindris@analog.com> wrote:
-> >   
-> > > Add documentation for ad3552r
-> > >
-> > > Signed-off-by: Mihail Chindris <mihail.chindris@analog.com>  
-> > Hi Mihael,
-> > 
-> > A few comments inline.
-> > 
-> > Thanks,
-> > 
-> > Jonathan
+"Free is not required on no error case" conveys the message that you have 
+changed something that is not required but that is still potentially allowed.
 
-Just realized this is missing cc for Rob + dt list which is a must for
-any new binding doc.  Query for Rob inline.
+This is not the case because the problem that you fix with v2 is _not_ 
+something that is merely not required and unnecessary. You have fixed a bug 
+that is introduced in v1. Introducing bugs is not allowed. If you do 
+something that is not allowed you cannot simply say that it is not required. 
+
+> 
+> ChangeLog V1:
+> 	-Remove the unneeded and redundant check of variable on
+> 	 goto out.
+> 	-Simplify the return using multiple goto label to avoid
+> 	 unneeded check.
+> 
+>  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
+staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> index 0868f56e2979..ae9579dc0848 100644
+> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
+*padapter, char *name, str
+>  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+>  	if (!mon_wdev) {
+>  		ret = -ENOMEM;
+> -		goto out;
+> +		goto err_zmalloc;
+>  	}
+> 
+>  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
+adapter *padapter, char *name, str
+> 
+>  	ret = cfg80211_register_netdevice(mon_ndev);
+>  	if (ret) {
+> -		goto out;
+> +		goto err_register;
+>  	}
+> 
+>  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+>  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
+> +	goto out;
+> 
+> -out:
+> -	if (ret && mon_wdev) {
+> -		kfree(mon_wdev);
+> -		mon_wdev = NULL;
+> -	}
+> -
+> -	if (ret && mon_ndev) {
+> -		free_netdev(mon_ndev);
+> -		*ndev = mon_ndev = NULL;
+> -	}
+> +err_register:
+> +	kfree(mon_wdev);
+> +	mon_wdev = NULL;
+
+Probably you have already read a message by Greg Kroah-Hartman that confirms 
+what I wrote in another message: "There is no need to set a local variable 
+like this to NULL.".
+
+So please submit a v3. With the two changes requested above, my "acked-by" 
+tag is confirmed again.
 
 Thanks,
 
-Jonathan
-
-> >   
-> > > ---
-> > >  .../bindings/iio/dac/adi,ad3552r.yaml         | 199 ++++++++++++++++++
-> > >  1 file changed, 199 insertions(+)
-> > >  create mode 100644
-> > > Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> > >
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> > > b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> > > new file mode 100644
-> > > index 000000000000..1086e935d330
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad3552r.yaml
-> > > @@ -0,0 +1,199 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause) # Copyright 2020
-> > > +Analog Devices Inc.
-> > > +%YAML 1.2
-> > > +---
-> > > +$id:
-> > > +https://urldefense.com/v3/__http://devicetree.org/schemas/iio/dac/adi
-> > >  
-> > +,ad3552r.yaml*__;Iw!!A3Ni8CS0y2Y!pqvd1NyV8G8KXIcfAtV1erPpylxLUGXD
-> > 1Tx5  
-> > > +UoK2MMNNgQpv5RSyFb6NQDSL0sEuJOI$
-> > > +$schema:
-> > > +https://urldefense.com/v3/__http://devicetree.org/meta-  
-> > schemas/core.y  
-> > >  
-> > +aml*__;Iw!!A3Ni8CS0y2Y!pqvd1NyV8G8KXIcfAtV1erPpylxLUGXD1Tx5UoK2
-> > MMNNgQ  
-> > > +pv5RSyFb6NQDSL3G5680U$
-> > > +
-> > > +title: Analog Devices AD2552R DAC device driver
-> > > +
-> > > +maintainers:
-> > > +  - Mihail Chindris <mihail.chindris@analog.com>
-> > > +
-> > > +description: |
-> > > +  Bindings for the Analog Devices AD3552R  DAC device. Datasheet can
-> > > +be  
-> > 
-> > Extra space before DAC, and doesn't mention the other supported part.
-> > One option to avoid a never ending list is "and similar."
-> >   
-> > > +  found here:
-> > > +
-> > > + https://www.analog.com/media/en/technical-documentation/data-  
-> > sheets/  
-> > > + ad3552r.pdf  
-> > 
-> > Good to have datasheet for the other part as well as I don't think this is a
-> > shared datasheet?
-> >   
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - adi,ad3552r
-> > > +      - adi,ad3542r  
-> > 
-> > Alphabetical order preferred.
-> >   
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  spi-max-frequency:
-> > > +    maximum: 30000000
-> > > +
-> > > +  reset-gpios:
-> > > +    maxItems: 1
-> > > +
-> > > +  ldac-gpios:
-> > > +    description: |
-> > > +      If a LDAC gpio is specified it will generate a LDAC pulse each time the
-> > > +      trigger handler sends data to the chip.  
-> > 
-> > Trigger handler is a linux concept. You need to write this more generically.
-> > Something like.
-> > 
-> > "LDAC pin is used as a hardware trigger to update a set of DACs."
-> > 
-> >   
-> > > +    maxItems: 1
-> > > +
-> > > +  vref-supply:
-> > > +    description:
-> > > +      The regulator to use as an external reference. If it does not exists the
-> > > +      internal reference will be used. External reference must be
-> > > + 2.5V
-> > > +
-> > > +  adi,vref-out-en:
-> > > +    description: Vref I/O driven by internal vref to 2.5V. If not set, Vref pin
-> > > +      will be floating.
-> > > +    type: boolean
-> > > +
-> > > +  adi,sdo-drive-strength:
-> > > +    description: |
-> > > +      Configure SDIO0 and SDIO1 strength levels:
-> > > +        - 0: low SDO drive strength.
-> > > +        - 1: medium low SDO drive strength.
-> > > +        - 2: medium high SDO drive strength.
-> > > +        - 3: high SDO drive strength
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > > +    enum: [0, 1, 2, 3]
-> > > +
-> > > +patternProperties:
-> > > +  "^channel@([0-1])$":
-> > > +    type: object
-> > > +    description: Configurations of the DAC Channels
-> > > +    properties:
-> > > +      reg:
-> > > +          description: Channel number
-> > > +          enum: [0, 1]
-> > > +
-> > > +      custom-output-range-config:  
-> > 
-> > Not a generic property so I think this needs an adi prefix.  
-> 
-> I tried with adi prefix but I get weird errors while running dt_binding_check for properties with adi prefix and with type:object
-> Do you have any suggestion for this issues?
-
-@Rob
+Fabio
 
 > 
-> > > +        type: object
-> > > +        description: Configuration of custom range when
-> > > +          adi,output-range-microvolt is not present.
-> > > +          The formulas for calculation the output voltages are
-> > > +            Vout_fs = 2.5 + [(GainN + Offset/1024) * 2.5 * Rfbx * 1.03]
-> > > +            Vout_zs = 2.5 - [(GainP + Offset/1024) * 2.5 * Rfbx * 1.03]
-> > > +        properties:
-> > > +          adi,gain-offset:
-> > > +            description: Gain offset used in the above formula
-> > > +            $ref: /schemas/types.yaml#/definitions/int32
-> > > +            maximum: 511
-> > > +            minimum: -511
-> > > +          adi,gain-scaling-p:
-> > > +            description: |
-> > > +              Scaling p:
-> > > +               0: 1.0
-> > > +               1: 0.5
-> > > +               2: 0.25
-> > > +               3: 0.125  
-> > 
-> > Given this is just a mapping to a simple set of values, could we just have the
-> > values or express it as 1/(2^GainP) in the equation above and call it
-> > adi,gain-scalling-inv-log2 or something like that?
-> > 
-> > If we can avoid a mapping table that is always a nice to have
-> > 
-> >   
-> > > +            $ref: /schemas/types.yaml#/definitions/uint32
-> > > +            enum: [0, 1, 2, 3]
-> > > +          adi,gain-scaling-n:
-> > > +            description: |
-> > > +              Scaling p:
-> > > +               0: 1.0
-> > > +               1: 0.5
-> > > +               2: 0.25
-> > > +               3: 0.125
-> > > +            $ref: /schemas/types.yaml#/definitions/uint32
-> > > +            enum: [0, 1, 2, 3]
-> > > +          adi,rfb-ohms:
-> > > +            description: Feedback Resistor
-> > > +        required:
-> > > +          - adi,gain-offset
-> > > +          - adi,gain-sacling-p
-> > > +          - adi,gain-sacling-n
-> > > +          - adi,rfb-ohms
-> > > +    required:
-> > > +      - reg
-> > > +
-> > > +    oneOf:
-> > > +      # If adi,output-range is missing, custom-output-range-config
-> > > + must be used  
-> > 
-> > adi,output-range-microvolt is missing...
-> >   
-> > > +      - required:
-> > > +        - adi,output-range-microvolt
-> > > +      - required:
-> > > +        - custom-output-range-config
-> > > +
-> > > +allOf:
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: adi,ad3542r
-> > > +    then:
-> > > +      patternProperties:
-> > > +        "^channel@([0-1])$":
-> > > +          type: object
-> > > +          properties:
-> > > +            adi,output-range-microvolt:
-> > > +              description: |
-> > > +                Voltage output range of the channel as <minimum, maximum>
-> > > +                Required connections:
-> > > +                  Rfb1x for: 0 to 2.5 V; 0 to 3V; 0 to 5 V;
-> > > +                  Rfb2x for: 0 to 10 V; 2.5 to 7.5V; -5 to 5 V;
-> > > +              oneOf:
-> > > +                - items:
-> > > +                    - const: 0
-> > > +                    - enum: [2500000, 3000000, 5000000, 10000000]
-> > > +                - items:
-> > > +                    - const: -2500000
-> > > +                    - const: 7500000
-> > > +                - items:
-> > > +                    - const: -5000000
-> > > +                    - const: 5000000
-> > > +          required:
-> > > +            - adi,output-range-microvolt
-> > > +  - if:
-> > > +      properties:
-> > > +        compatible:
-> > > +          contains:
-> > > +            const: adi,ad3552r
-> > > +    then:
-> > > +      patternProperties:
-> > > +        "^channel@([0-1])$":
-> > > +          type: object
-> > > +          properties:
-> > > +            adi,output-range-microvolt: |
-> > > +                Voltage output range of the channel as <minimum, maximum>
-> > > +                Required connections:
-> > > +                  Rfb1x for: 0 to 2.5 V; 0 to 5 V;
-> > > +                  Rfb2x for: 0 to 10 V; -5 to 5 V;
-> > > +                  Rfb4x for: -10 to 10V
-> > > +              oneOf:
-> > > +                - items:
-> > > +                    - const: 0
-> > > +                    - enum: [2500000, 5000000, 10000000]
-> > > +                - items:
-> > > +                    - const: -5000000
-> > > +                    - const: 5000000
-> > > +                - items:
-> > > +                    - const: -10000000
-> > > +                    - const: 10000000
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - spi-max-frequency
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +    ad3552r {
-> > > +            compatible = "adi,ad3552r";
-> > > +            reg = <0>;
-> > > +            spi-max-frequency = <20000000>;
-> > > +            channel@0 {
-> > > +                    reg = <0>;
-> > > +                    adi,output-range-microvolt = <0 10000000>;
-> > > +            };
-> > > +            channel@1 {
-> > > +                    reg = <1>;
-> > > +                    custom-output-range-config {
-> > > +                            adi,gain-offset = <5>;
-> > > +                            adi,gain-scaling-p = <1>;
-> > > +                            adi,gain-scaling-n = <2>;
-> > > +                            adi,rfb-ohms = <1>;
-> > > +                    };
-> > > +          };
-> > > +      };
-> > > +...  
+> +err_zmalloc:
+> +	free_netdev(mon_ndev);
+> +	*ndev = mon_ndev = NULL;
+> +out:
+>  	return ret;
+>  }
 > 
+> --
+> 2.32.0
+> 
+> 
+> 
+
+
+
 
