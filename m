@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61100428D0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEFD428CE2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhJKMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234689AbhJKMds (ORCPT
+        id S236517AbhJKMTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:19:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28915 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235094AbhJKMTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:33:48 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E359C061570;
-        Mon, 11 Oct 2021 05:31:48 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id z20so67014995edc.13;
-        Mon, 11 Oct 2021 05:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c2eTRNvAGOUCjeqJDNL2ksEpYYsNkxxTJa86680pxtA=;
-        b=oJBU9I8B87kw3u2pSyqP3EO9Eo4TyDScNfSk39tYnZgPMgf0m7PACnzfcEGVxCC2os
-         T/g50DDk/tRzWUcWOuYgA5Qa9tcchI/8FEgIDnyXYqf4k6sB13yakKezIfK6KawCCEqd
-         N1wMcW2+Grx5OpIikw2CVUcTkUXn1VgvO2s3WtTAetQ2MviOFPmTXKm6RVA92HKYtsbe
-         PDaiH9gHch65jgi4G3lNoN8ZTnHg3Eczi/2aGF7HBA//4pOAQNOHp/NY1eA64BAuowQU
-         VQ0F9XDbTFeNS2JlYCKrEi7dvxkQLcYVqGQ9jTTL7v76kZi/jwFhVb33y4lh9TVrZkSy
-         Cl3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c2eTRNvAGOUCjeqJDNL2ksEpYYsNkxxTJa86680pxtA=;
-        b=Mg7iFl31JkMBjXu7J5gjFNCIt1biR3k72QpnFj/PuSyyqVchlVWOr/MxaIxa8OaCph
-         7mu4GoiWXxap8uAUix1/JPfFBlDzgEKlgCqhhai9D+MgV0wSpugl+EI1grgm7VoNXUTw
-         SLp295Xh4IzkahE+YNdcIT2oYXUNRWcaXYP5iCCo4d8WxplXx52bwnNsVeVaSOYucgYs
-         Rd5CvQCloA4YsS2U6TYtgRKRsxQV94D0hgkdv61lfLFNPN2Ng93stULTf2rTGRc3CEjp
-         /xCeCYZjmXkdV+4Hq5alSBEzfe5i0CQs40YfYZZLsgaBjMYzIwpSGat/ymNRrEZQ9PqC
-         ZwVg==
-X-Gm-Message-State: AOAM533DXeA9jA7Pd0Gdo7faHVcVLVd1UcE0Hou5iQdSHkQaiW6eto76
-        UQxBA4wzaDkBovNmXFJmI55S6iNkaZFbsIHAIcQNs0/H
-X-Google-Smtp-Source: ABdhPJzyJmztrugduFjx8yXJEK/cUavb61qDiNhKArKQp0oEgoVfgcj0/byTEOFJiWwoBuzOJHOBvnMRrL04aQ8YhTs=
-X-Received: by 2002:a17:907:785a:: with SMTP id lb26mr25156333ejc.77.1633955506928;
- Mon, 11 Oct 2021 05:31:46 -0700 (PDT)
+        Mon, 11 Oct 2021 08:19:19 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HSd3N5MVrzbn3m;
+        Mon, 11 Oct 2021 20:12:48 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 20:17:15 +0800
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 20:17:14 +0800
+From:   Kefeng Wang <wangkefeng.wang@huawei.com>
+To:     <naresh.kamboju@linaro.org>, <akpm@linux-foundatio.org>
+CC:     <andreyknvl@gmail.com>, <dvyukov@google.com>, <glider@google.com>,
+        <kasan-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-next@vger.kernel.org>,
+        <ryabinin.a.a@gmail.com>, <sfr@canb.auug.org.au>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        "Linux Kernel Functional Testing" <lkft@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: [PATCH] mm: kasan: Fix redefinition of 'kasan_populate_early_vm_area_shadow'
+Date:   Mon, 11 Oct 2021 12:32:11 +0000
+Message-ID: <20211011123211.3936196-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
+References: <CA+G9fYv1Vbc-Y_czipb-z1bG=9axE4R1BztKGqWz-yy=+Wcsqw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210723204958.7186-1-tharvey@gateworks.com> <36070609-9f1f-00c8-ccf5-8ed7877b29da@pengutronix.de>
- <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
- <CAJ+vNU1tgVsQWtxa0E8SArO=hA2K8OkqiSPrRSpx0Q5XS4gUWA@mail.gmail.com>
- <CAHCN7xLC1ob_nxRsZezgYQ9p-me7hNd+1MNFQt2wtcRqU+z9Sw@mail.gmail.com> <2eee557db84087acca4665603ba3d2716199f842.camel@pengutronix.de>
-In-Reply-To: <2eee557db84087acca4665603ba3d2716199f842.camel@pengutronix.de>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 11 Oct 2021 07:31:35 -0500
-Message-ID: <CAHCN7xJ-bmEtFFw749m+r5Nr4kNwF2SvFGfTKjRPULqshuA89Q@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Add IMX8M Mini PCI support
-To:     Lucas Stach <l.stach@pengutronix.de>
-Cc:     Tim Harvey <tharvey@gateworks.com>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 7:30 AM Lucas Stach <l.stach@pengutronix.de> wrote:
->
-> Hi Adam,
->
-> Am Montag, dem 11.10.2021 um 07:25 -0500 schrieb Adam Ford:
-> > On Mon, Aug 16, 2021 at 10:45 AM Tim Harvey <tharvey@gateworks.com> wrote:
-> > >
-> > > On Thu, Jul 29, 2021 at 6:28 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
-> > > >
-> > > > Hi Tim:
-> > > > Just as Ahmad mentioned, Lucas had issue one patch-set to support i.MX8MM PCIe.
-> > > > Some comments in the review cycle.
-> > > > - One separate PHY driver should be used for i.MX8MM PCIe driver.
-> > > > - Schema file should be used I think, otherwise the .txt file in the dt-binding.
-> > > >
-> > > > I'm preparing one patch-set, but it's relied on the yaml file exchanges and power-domain changes(block control and so on).
-> > > > Up to now, I only walking on the first step, trying to exchange the dt-binding files to schema yaml file.
-> > > >
-> > > > Best Regards
-> > > > Richard Zhu
-> > >
-> > > Richard / Ahmad,
-> > >
-> > > Thanks for your response - I did not see the series from Lucas. I will
-> > > drop this and wait for him to complete his work.
-> > >
-> >
-> > Tim,
-> >
-> > It appears that the power domain changes have been applied to Shawn's
-> > for-next branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/log/?h=for-next
-> >
-> > Is there any chance you could rebase and resend this series?
->
-> This wasn't about the power domain series. I also tried to get i.MX8M
-> PCIe upstream, but the feedback was that we need to split out the PHY
-> functionality, Richard is currently working on this. There is no point
-> in resending this series.
+Move kasan_populate_early_vm_area_shadow() from mm/kasan/init.c to
+mm/kasan/shadow.c, make it under CONFIG_KASAN_VMALLOC to fix the
+redefinition issue.
 
-Sorry.  I missed that part.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: kasan-dev@googlegroups.com
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+---
+Hi Andrew,
+Could you help to merge this into previos patch
+ "kasan: arm64: fix pcpu_page_first_chunk crash with KASAN_VMALLOC",
+sorry for the build error.
 
-adam
->
-> Regards,
-> Lucas
->
+ mm/kasan/init.c   | 5 -----
+ mm/kasan/shadow.c | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index d39577d088a1..cc64ed6858c6 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -279,11 +279,6 @@ int __ref kasan_populate_early_shadow(const void *shadow_start,
+ 	return 0;
+ }
+ 
+-void __init __weak kasan_populate_early_vm_area_shadow(void *start,
+-						       unsigned long size)
+-{
+-}
+-
+ static void kasan_free_pte(pte_t *pte_start, pmd_t *pmd)
+ {
+ 	pte_t *pte;
+diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+index 8d95ee52d019..4a4929b29a23 100644
+--- a/mm/kasan/shadow.c
++++ b/mm/kasan/shadow.c
+@@ -254,6 +254,11 @@ core_initcall(kasan_memhotplug_init);
+ 
+ #ifdef CONFIG_KASAN_VMALLOC
+ 
++void __init __weak kasan_populate_early_vm_area_shadow(void *start,
++						       unsigned long size)
++{
++}
++
+ static int kasan_populate_vmalloc_pte(pte_t *ptep, unsigned long addr,
+ 				      void *unused)
+ {
+-- 
+2.27.0
+
