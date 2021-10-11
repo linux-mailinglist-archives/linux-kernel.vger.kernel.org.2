@@ -2,150 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DE84295AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929164295B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhJKRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:34:27 -0400
-Received: from mga09.intel.com ([134.134.136.24]:18841 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhJKReZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:34:25 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226828714"
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="226828714"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:32:24 -0700
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="440884638"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.255.229.69]) ([10.255.229.69])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:32:23 -0700
-Message-ID: <78766e28-8353-acc8-19e2-033d4bbf3472@linux.intel.com>
-Date:   Mon, 11 Oct 2021 10:32:23 -0700
+        id S231538AbhJKRfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:35:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230077AbhJKRfk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:35:40 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055C0C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:33:40 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id ec8so20972564edb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:33:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NDVLB8xPEyLszowX8zbQaP4kuxGHzigHw40S/JGzNKI=;
+        b=YzwuSI3Y6D8mgkVik1RX7o5JwXiK5ttPZQZ18wUS9yWZXjd1e6E7HvBm6SYQPs3RmA
+         7FTHNwC71RYlJcUvziljdiy8gTPeQ5s1tF8UCAckuljpeXHg1HGMGfH70kYgPprG1ft5
+         PTvtDcpWmIEPa9BdHY1rn5NXiOWeydZ1vJiBhacC5FB1rertiw8T5WDH3xEl0My4e0cr
+         GEIUc+YrbCRqgfwgwkVDpE00yGR9zqi8n4d97NSi3UikyVKCKFl78rAlwdn4Jv3AtyTo
+         rIm+AdUGythc/hThwluuSbF2gFmGhEVBfckvKKUtls3xM7FAzlMDcjYcpepoYqrLEnXG
+         uyUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NDVLB8xPEyLszowX8zbQaP4kuxGHzigHw40S/JGzNKI=;
+        b=JwXbjya5AkN4pSpgw2oea94n+GWgzrfeZkIubF7r3wOymjrEWpaoPm7vimpb4h9+kD
+         l1dLYqY3Y0XBCVXz8SJcw1g6+n28TaIyiQB0BtZklRNGuuzlRrH3/yj1xmvi7KX3JjIY
+         pg1gkplSRFYOEVE9BIWzJiUaBlQbcv0bUaC7Yji709HRCAQFnXHiko2RlgKKEcyG3gxG
+         co8ioZsW2g8SS9SpDRl/tsGI2mfwLJUez6/iByS5bBmhlEKUDEKyA0/c2iUEASTtrEBm
+         EGiMY/P9i/gwpldM5WPAgfCifxyFj+zv6x5EchpYi5kTqgsxhWEPxpgUsP+UVNU8UNxl
+         WqRg==
+X-Gm-Message-State: AOAM531E4la+HveWlvgvl2syt+AxZVVAt3HCmg458n6Rf5mzmrFzhaWN
+        KgxS5KsecihxRZpkknaUhTJfDYl04EFfbZmc0nWCEw==
+X-Google-Smtp-Source: ABdhPJxsov/zONBIshswr6zn+hWI1hEeFMOyXDMsMIvOspM/pRy2bQXnubWg7aap0FAjHdQsVxWRvzXr1E9zJykq2c8=
+X-Received: by 2002:a17:906:c302:: with SMTP id s2mr26221966ejz.499.1633973618445;
+ Mon, 11 Oct 2021 10:33:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
- <20211011073614-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211011073614-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20211011134503.715740503@linuxfoundation.org> <20211011134505.420785540@linuxfoundation.org>
+In-Reply-To: <20211011134505.420785540@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 11 Oct 2021 23:03:27 +0530
+Message-ID: <CA+G9fYtUcnJioz4rPonLvjhwwNFmXYfiqE+0uUDO5aZcuoa0MQ@mail.gmail.com>
+Subject: Re: [PATCH 5.4 49/52] powerpc/bpf: Fix BPF_MOD when imm == 1
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Because it does not end with I/O operations, that's a trivial example.
-> module unloading is famous for being racy: I just re-read that part of
-> virtio drivers and sure enough we have bugs there, this is after
-> they have presumably been audited, so a TDX guest is better off
-> just disabling hot-unplug completely, and hotplug isn't far behind.
-
-These all shouldn't matter for a confidential guest. The only way it can 
-be attacked is through IO, everything else is protected by hardware.
+stable-rc 5.4 build failed due this patch.
+ - powerpc gcc-10-defconfig - FAILED
+ - powerpc gcc-11-defconfig - FAILED
+ - powerpc gcc-8-defconfig - FAILED
+ - powerpc gcc-9-defconfig - FAILED
 
 
-Also it would all require doing something at the guest level, which we 
-assume is not malicious.
-
-
-> Malicious filesystems can exploit many linux systems unless
-> you take pains to limit what is mounted and how.
-
-That's expected to be handled by authenticated dmcrypt and similar. 
-Hardening at this level has been done for many years.
-
-
-> Networking devices tend to get into the default namespaces and can
-> do more or less whatever CAP_NET_ADMIN can.
-> Etc.
-
-
-Networking should be already hardened, otherwise you would have much 
-worse problems today.
-
-
-
-> hange in your subsystem here.
-> Well I commented on the API patch, not the virtio patch.
-> If it's a way for a driver to say "I am hardened
-> and audited" then I guess it should at least say so.
-
-
-This is handled by the central allow list. We intentionally didn't want 
-each driver to declare itself, but have a central list where changes 
-will get more scrutiny than random driver code.
-
-But then there are the additional opt-ins for the low level firewall. 
-These are in the API. I don't see how it could be done at the driver 
-level, unless you want to pass in a struct device everywhere?
-
->>> How about creating a defconfig that makes sense for TDX then?
->> TDX can be used in many different ways, I don't think a defconfig is
->> practical.
->>
->> In theory you could do some Kconfig dependency (at the pain point of having
->> separate kernel binariees), but why not just do it at run time then if you
->> maintain the list anyways. That's much easier and saner for everyone. In the
->> past we usually always ended up with runtime mechanism for similar things
->> anyways.
->>
->> Also it turns out that the filter mechanisms are needed for some arch
->> drivers which are not even configurable, so alone it's probably not enough,
+On Mon, 11 Oct 2021 at 19:28, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> I guess they aren't really needed though right, or you won't try to
-> filter them?
+> From: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>
+> [ Upstream commit 8bbc9d822421d9ac8ff9ed26a3713c9afc69d6c8 ]
+>
+> Only ignore the operation if dividing by 1.
 
-We're addressing most of them with the device filter for platform 
-drivers. But since we cannot stop them doing ioremap IO in their init 
-code they also need the low level firewall.
+<trim>
 
-Some others that cannot be addressed have explicit disables.
+In file included from arch/powerpc/net/bpf_jit64.h:11,
+                 from arch/powerpc/net/bpf_jit_comp64.c:19:
+arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+arch/powerpc/net/bpf_jit_comp64.c:415:46: error: implicit declaration
+of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
+[-Werror=implicit-function-declaration]
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                              ^~~~~~~~~~
+arch/powerpc/net/bpf_jit.h:32:34: note: in definition of macro 'PLANT_INSTR'
+   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
+      |                                  ^~~~~
+arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                         ^~~~
+cc1: all warnings being treated as errors
 
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> So make them configurable?
-
-Why not just fix the runtime? It's much saner for everyone. Proposing to 
-do things at build time sounds like we're in Linux 0.99 days.
-
--Andi
-
+--
+Linaro LKFT
+https://lkft.linaro.org
+ReplyReply to allForward
