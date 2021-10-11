@@ -2,136 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C6B1428AFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:45:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EC8428B02
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235948AbhJKKrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:47:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235446AbhJKKr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:47:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020F16023D;
-        Mon, 11 Oct 2021 10:45:22 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 12:45:15 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Bobrowski <repnop@google.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH 1/2] pid: add pidfd_get_task() helper
-Message-ID: <20211011104515.exvbxumlxhw7deij@wittgenstein>
-References: <20211004125050.1153693-1-christian.brauner@ubuntu.com>
- <20211004125050.1153693-2-christian.brauner@ubuntu.com>
- <be830537-18e4-d49b-720a-ca40785c4610@redhat.com>
+        id S235954AbhJKKsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:48:52 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51670 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231240AbhJKKsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:48:51 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B9Ru8l022177;
+        Mon, 11 Oct 2021 12:46:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=MGTAKhW1EuXoe7o3K5K7J44GWxLr6cNvfJJs+YkI2z8=;
+ b=JwoYxRPEfEHe4f1sAVWOAKSep0pIe8VGw8tGNg5CVH3ikqzLAs162jNqkpRm7rCLYDRI
+ CqVZ8TDyKeVCDetyzRGKaWjN0PrtF7qRP06/ySJygVj1Ipbz/gHkHclt2UmD8/smK77r
+ v6+rkllDmigMIO6o/2QREMv0OYFKTq8cMWWhy8SUgOspdAFmORI5P2mjmDPG0PdwgWrD
+ tKjYFupOxU3tzqYe35vkR45JCVn5FbK9XJH4QJAVAMUXG8WZENVVJO/V02/KJCUIWdBX
+ 3zDF55mPHlOGNrzW0gknaCyIP3dRUc7cCmin/b2w2laJY2RsL9HLfWDE1Ulelo/ZT553 tg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3bmd35tcpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 12:46:48 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1646F100034;
+        Mon, 11 Oct 2021 12:46:48 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0DC5021CA74;
+        Mon, 11 Oct 2021 12:46:48 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
+ 2021 12:46:47 +0200
+Subject: Re: [PATCH v5 3/4] rpmsg: Move the rpmsg control device from
+ rpmsg_char to rpmsg_ctrl
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
+ <20210712123752.10449-4-arnaud.pouliquen@foss.st.com>
+ <YWDVwArEz5Yub3GJ@ripper>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <f0696b4d-c0b6-5283-2eda-e5791462cbba@foss.st.com>
+Date:   Mon, 11 Oct 2021 12:46:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <be830537-18e4-d49b-720a-ca40785c4610@redhat.com>
+In-Reply-To: <YWDVwArEz5Yub3GJ@ripper>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
+ (10.75.127.5)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 10:47:36AM +0200, David Hildenbrand wrote:
-> On 04.10.21 14:50, Christian Brauner wrote:
-> > The number of system calls making use of pidfds is constantly
-> > increasing. Some of those new system calls duplicate the code to turn a
-> > pidfd into task_struct it refers to. Give them a simple helper for this.
-> > 
-> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > Cc: Suren Baghdasaryan <surenb@google.com>
-> > Cc: Matthew Bobrowski <repnop@google.com>
-> > Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > Cc: Jan Kara <jack@suse.cz>
-> > Cc: Minchan Kim <minchan@kernel.org>
-> > Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > ---
-> >   include/linux/pid.h |  1 +
-> >   kernel/pid.c        | 34 ++++++++++++++++++++++++++++++++++
-> >   2 files changed, 35 insertions(+)
-> > 
-> > diff --git a/include/linux/pid.h b/include/linux/pid.h
-> > index af308e15f174..343abf22092e 100644
-> > --- a/include/linux/pid.h
-> > +++ b/include/linux/pid.h
-> > @@ -78,6 +78,7 @@ struct file;
-> >   extern struct pid *pidfd_pid(const struct file *file);
-> >   struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags);
-> > +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags);
-> >   int pidfd_create(struct pid *pid, unsigned int flags);
-> >   static inline struct pid *get_pid(struct pid *pid)
-> > diff --git a/kernel/pid.c b/kernel/pid.c
-> > index efe87db44683..2ffbb87b2ce8 100644
-> > --- a/kernel/pid.c
-> > +++ b/kernel/pid.c
-> > @@ -539,6 +539,40 @@ struct pid *pidfd_get_pid(unsigned int fd, unsigned int *flags)
-> >   	return pid;
-> >   }
-> > +/**
-> > + * pidfd_get_task() - Get the task associated with a pidfd
-> > + *
-> > + * @pidfd: pidfd for which to get the task
-> > + * @flags: flags associated with this pidfd
-> > + *
-> > + * Return the task associated with the given pidfd.
-> > + * Currently, the process identified by @pidfd is always a thread-group leader.
-> > + * This restriction currently exists for all aspects of pidfds including pidfd
-> > + * creation (CLONE_PIDFD cannot be used with CLONE_THREAD) and pidfd polling
-> > + * (only supports thread group leaders).
-> > + *
-> > + * Return: On success, the task_struct associated with the pidfd.
-> > + *	   On error, a negative errno number will be returned.
-> 
-> Nice doc.
-> 
-> You might want to document what callers of this function are expected to do
-> to clean up.
 
-That's a good idea! Let me add that.
+
+On 10/9/21 1:35 AM, Bjorn Andersson wrote:
+> On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+> 
+>> Create the rpmsg_ctrl.c module and move the code related to the
+>> rpmsg_ctrldev device in this new module.
+>>
+>> Add the dependency between rpmsg_char and rpmsg_ctrl in the
+>> kconfig file.
+>>
+> 
+> As I said in the cover letter, the only reason I can see for doing this
+> refactoring is in relation to the introduction of
+> RPMSG_CREATE_DEV_IOCTL. So I would like this patch to go together with
+> that patch, together with a good motivation why there's merit to
+> creating yet another kernel module (and by bind/unbind can't be used).
+> 
+> Perhaps I'm just missing some good usecase related to this?
+
 
 > 
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> ---
+>>  drivers/rpmsg/Kconfig      |   9 ++
+>>  drivers/rpmsg/Makefile     |   1 +
+>>  drivers/rpmsg/rpmsg_char.c | 170 +----------------------------
+>>  drivers/rpmsg/rpmsg_char.h |   2 +
+>>  drivers/rpmsg/rpmsg_ctrl.c | 215 +++++++++++++++++++++++++++++++++++++
+>>  5 files changed, 229 insertions(+), 168 deletions(-)
+>>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+>>
+> [..]
+>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> [..]
+>> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>> -{
+> [..]
+>> -	dev = &ctrldev->dev;
+>> -	device_initialize(dev);
+>> -	dev->parent = &rpdev->dev;
+>> -	dev->class = rpmsg_class;
+> [..]
+>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> [..]
+>> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>> +{
+> [..]
+>> +	dev = &ctrldev->dev;
+>> +	device_initialize(dev);
+>> +	dev->parent = &rpdev->dev;
 > 
-> > + */
-> > +struct task_struct *pidfd_get_task(int pidfd, unsigned int *flags)
-> > +{
-> > +	unsigned int f_flags;
-> > +	struct pid *pid;
-> > +	struct task_struct *task;
-> > +
-> > +	pid = pidfd_get_pid(pidfd, &f_flags);
-> > +	if (IS_ERR(pid))
-> > +		return ERR_CAST(pid);
-> > +
-> > +	task = get_pid_task(pid, PIDTYPE_TGID);
-> > +	put_pid(pid);
-> 
-> The code to be replaced always does the put_pid() after the
-> put_task_struct(). Is this new ordering safe? (didn't check)
+> You lost the assignment of dev->class here, which breaks the udev rules
+> we use to invoke rpmsgexport to create endpoints and it causes udevadm
+> to complain that rpmsg_ctrlN doesn't have a "subsystem".
 
-I at least see no obvious problems and so do think this is safe. 
-The lifetimes of struct pid and struct task_struct are independent of
-each other. They don't mess with each others refcounts. And the caller's
-aren't going back from struct task_struct to struct pid anywhere.
+We discussed this point with Mathieu, as a first step i kept the class, but that
+generated another dependency with the rpmsg_char device while information was
+available on the rpmsg bus. The char device and ctrl device should share the
+same class. As rpmsg_ctrl is created first it would have to create the class,and
+provide an API to rpmsg char
+
+Please could you details what does means "rpmsg_ctrlN doesn't have a
+"subsystem"." What exactly the udev is looking for? could it base it check on
+the /dev/rpmsg_ctrl0 or /sys/bus/rpmsg/devices/...?
+
+Thanks,
+Arnaud
 
 > 
-> > +	if (!task)
-> > +		return ERR_PTR(-ESRCH);
-> > +
-> > +	*flags = f_flags;
-> > +	return task;
-> > +}
-> > +
-> >   /**
-> >    * pidfd_create() - Create a new pid file descriptor.
-> >    *
-> > 
+> Regards,
+> Bjorn
 > 
-> I'd have squashed this into the second patch, makes it a lot easier to
-> review and it's only a MM cleanup at this point.
-
-Hm, I prefer the split between introducing a helper and making use of a
-helper. I find that nicer than mixing up the two steps. I only tend to
-do both if it would introduce breakage.
