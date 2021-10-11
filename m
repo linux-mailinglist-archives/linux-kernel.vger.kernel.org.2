@@ -2,142 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7EC8428B02
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8FF428B04
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbhJKKsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:48:52 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:51670 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231240AbhJKKsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:48:51 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B9Ru8l022177;
-        Mon, 11 Oct 2021 12:46:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=MGTAKhW1EuXoe7o3K5K7J44GWxLr6cNvfJJs+YkI2z8=;
- b=JwoYxRPEfEHe4f1sAVWOAKSep0pIe8VGw8tGNg5CVH3ikqzLAs162jNqkpRm7rCLYDRI
- CqVZ8TDyKeVCDetyzRGKaWjN0PrtF7qRP06/ySJygVj1Ipbz/gHkHclt2UmD8/smK77r
- v6+rkllDmigMIO6o/2QREMv0OYFKTq8cMWWhy8SUgOspdAFmORI5P2mjmDPG0PdwgWrD
- tKjYFupOxU3tzqYe35vkR45JCVn5FbK9XJH4QJAVAMUXG8WZENVVJO/V02/KJCUIWdBX
- 3zDF55mPHlOGNrzW0gknaCyIP3dRUc7cCmin/b2w2laJY2RsL9HLfWDE1Ulelo/ZT553 tg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bmd35tcpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 12:46:48 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1646F100034;
-        Mon, 11 Oct 2021 12:46:48 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0DC5021CA74;
-        Mon, 11 Oct 2021 12:46:48 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.50) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
- 2021 12:46:47 +0200
-Subject: Re: [PATCH v5 3/4] rpmsg: Move the rpmsg control device from
- rpmsg_char to rpmsg_ctrl
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
- <20210712123752.10449-4-arnaud.pouliquen@foss.st.com>
- <YWDVwArEz5Yub3GJ@ripper>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <f0696b4d-c0b6-5283-2eda-e5791462cbba@foss.st.com>
-Date:   Mon, 11 Oct 2021 12:46:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235966AbhJKKtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:49:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:44616 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231240AbhJKKte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:49:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C65FBED1;
+        Mon, 11 Oct 2021 03:47:34 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.22.9])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B56E43F66F;
+        Mon, 11 Oct 2021 03:47:32 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 11:47:29 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [GIT PULL] arm64 fixes for 5.15-rc5
+Message-ID: <20211011104729.GB1421@C02TD0UTHF1T.local>
+References: <YWCPyK+xotTgUMy/@arm.com>
+ <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YWDVwArEz5Yub3GJ@ripper>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.50]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whWZ4OxfKQwKVrRc-E9=w-ygKdVFn_HcAMW-DW8SgranQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
+[adding Paul and Peter, just in case we need to discuss the RCU and
+accounting bits further]
 
-On 10/9/21 1:35 AM, Bjorn Andersson wrote:
-> On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
+On Fri, Oct 08, 2021 at 01:25:51PM -0700, Linus Torvalds wrote:
+> On Fri, Oct 8, 2021 at 11:37 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> >
+> > Pingfan Liu (2):
+> >       kernel/irq: make irq_{enter,exit}() in handle_domain_irq() arch optional
+> >       arm64: entry: avoid double-accounting IRQ RCU entry
 > 
->> Create the rpmsg_ctrl.c module and move the code related to the
->> rpmsg_ctrldev device in this new module.
->>
->> Add the dependency between rpmsg_char and rpmsg_ctrl in the
->> kconfig file.
->>
+> Ugh. This is *really* ugly. And it seems to be going exactly the wrong way.
 > 
-> As I said in the cover letter, the only reason I can see for doing this
-> refactoring is in relation to the introduction of
-> RPMSG_CREATE_DEV_IOCTL. So I would like this patch to go together with
-> that patch, together with a good motivation why there's merit to
-> creating yet another kernel module (and by bind/unbind can't be used).
+> I read the commit descriptions, and it still doesn't answer the
+> fundamental question of why arm64 needs to do the accounting in
+> arch-specific code, and disable the generic code.
 > 
-> Perhaps I'm just missing some good usecase related to this?
-
-
+> It says
 > 
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->> ---
->>  drivers/rpmsg/Kconfig      |   9 ++
->>  drivers/rpmsg/Makefile     |   1 +
->>  drivers/rpmsg/rpmsg_char.c | 170 +----------------------------
->>  drivers/rpmsg/rpmsg_char.h |   2 +
->>  drivers/rpmsg/rpmsg_ctrl.c | 215 +++++++++++++++++++++++++++++++++++++
->>  5 files changed, 229 insertions(+), 168 deletions(-)
->>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
->>
-> [..]
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> [..]
->> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->> -{
-> [..]
->> -	dev = &ctrldev->dev;
->> -	device_initialize(dev);
->> -	dev->parent = &rpdev->dev;
->> -	dev->class = rpmsg_class;
-> [..]
->> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> [..]
->> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->> +{
-> [..]
->> +	dev = &ctrldev->dev;
->> +	device_initialize(dev);
->> +	dev->parent = &rpdev->dev;
+>     To fix this, we must perform all the accounting from the architecture
+>     code. We prevent the IRQ domain code from performing any accounting by
+>     selecting HAVE_ARCH_IRQENTRY, and must call irq_enter_rcu() and
+>     irq_exit_rcu() around invoking the root IRQ handler.
 > 
-> You lost the assignment of dev->class here, which breaks the udev rules
-> we use to invoke rpmsgexport to create endpoints and it causes udevadm
-> to complain that rpmsg_ctrlN doesn't have a "subsystem".
+> but at no point does it actually explain *why* all the accounting
+> needs to be done by the architecture code.
 
-We discussed this point with Mathieu, as a first step i kept the class, but that
-generated another dependency with the rpmsg_char device while information was
-available on the rpmsg bus. The char device and ctrl device should share the
-same class. As rpmsg_ctrl is created first it would have to create the class,and
-provide an API to rpmsg char
+Sorry; I agree that commit messages don't explain this thoroughly. I can
+go and rework the commit messages to clarify things, if you'd like?
 
-Please could you details what does means "rpmsg_ctrlN doesn't have a
-"subsystem"." What exactly the udev is looking for? could it base it check on
-the /dev/rpmsg_ctrl0 or /sys/bus/rpmsg/devices/...?
+The TL;DR is that a bunch of constraints conspire such that we can't
+defer accounting things to the irqdomain or irqchip code without making
+this even more complicated/fragile, and many architectures get this
+subtly wrong today -- it's not that arm64 is necessarily much different
+from other architectures using this code, just that we're trying to
+solve this first.
+
+More specifically, the problem here is the combination of:
+
+* During entry, rcu_irq_enter() must be called *before*
+  trace_hardirqs_off_finish(), because the latter needs RCU to be
+  watching, but we need to have informed lockdep before poking RCU or
+  lockdep will complain withing the RCU code. To handle that,
+  kernel/entry/common.c and arch/arm64/kernel/entry-common.c have the
+  sequence:
+
+  lockdep_hardirqs_off(CALLER_ADDR0);
+  rcu_irq_enter(): // or rcu_irq_enter_check_tick();
+  trace_hardirqs_off_finish();
+
+  ... and since we don't want something to come in the middle of the
+  sequence, we want those sandwiched together in a noinstr function
+  called before we invoke the root irqchip's handler function.
+
+  A bunch of architectures don't follow this sequence, and are
+  potentially subtly broken today in some configurations.
+
+  Note: the plan is to move arm64 over to the generic entry code, but
+  that has no effect on this specific issue.
+
+* rcu_irq_enter() must be called *precisely once* upon taking an
+  interrupt exception, or we can end up mis-accounting quiescent periods
+  as non-quiescent (since this maintains a nesting count in
+  rcu_data::dynticks_nmi_nesting, checked by
+  rcu_is_cpu_rrupt_from_idle()).
+
+* Prior to these patches, we call rcu_irq_enter() at least twice on
+  arm64, because the architectural entry code must call rcu_irq_enter()
+  for the lockdep bits, then when we invoke the irqchip (e.g. GICv3), we
+  do:
+
+  gic_handle_irq()
+    handle_domain_irq()
+      irq_enter()
+        rcu_irq_enter()
+	irq_enter_rcu()
+
+  ... and so if we take a sched clock IRQ and call
+  rcu_sched_clock_irq(), rcu_is_cpu_rrupt_from_idle() may return false
+  when it should return true(), and we don't decide to preempt the task,
+  leading to stalls.
+
+  Note that since irqchips can be chained (e.g. there can be a second
+  interrupt controller fed into the GIC), handle_domain_irq() can be
+  nested, so even if we somehow removed the accounting from arch code
+  we'd need to handle the nested calls to handle_domain_irq() somehow.
+
+  AFAICT it's far simpler to do that *once* outside of the irqchip code
+  than it is to try to handle that nesting.
+
+  Note that x86 doesn't use handle_domain_irq(), and just maps the raw
+  irqnrs itself, and just calls irq_enter_rcu() when transitioning to
+  the IRQ stack.
+
+> Yes, yes, I read the previous paragraph. But why isn't the fix to just
+> stop doing the double accounting in the arm64 specific code?
+
+As above, that'd require moving *some* of the low-level entry logic into
+the irqchip/irqdomain code, and handling nesting, which is *more*
+fragile.
+
+FWIW, we do need to fix the other architectures too, but that involves
+more substantial rework to each of those (e.g. moving to generic entry),
+since there are a bunch of problems today. The thinking was that this
+gave a way to fix each of those on its own, then remove the old
+behaviour.
+
+Does that all make sense to you?
 
 Thanks,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
+Mark.
