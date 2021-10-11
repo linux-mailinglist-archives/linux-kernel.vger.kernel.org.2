@@ -2,130 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6374296EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8C4296F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhJKSbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:31:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60160 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234540AbhJKSbB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:31:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633976940;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G16gwMe6+CYnKg8tN/Sjy4s4dxSh+B0vWdkeXZ6WaCc=;
-        b=Zl6EWmCQoR9O8W46q+A4dRrfHiQTShQFOTcz0tY7PrUuWMyL44KiH19MEOzhf5AxCgzXXQ
-        SjoZZuDstLs8pcIf19wDm7AJ7RkABwi6eCGPySFC8DSvEZ0PkUoHx0WxvmuSY1rVjOlvZt
-        mpSnNvhZtphISW5C+2iehx2nqi4Iztw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-GZXhh79cNIea5MFWyrWf-Q-1; Mon, 11 Oct 2021 14:28:59 -0400
-X-MC-Unique: GZXhh79cNIea5MFWyrWf-Q-1
-Received: by mail-ed1-f70.google.com with SMTP id e14-20020a056402088e00b003db6ebb9526so7038630edy.22
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:28:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G16gwMe6+CYnKg8tN/Sjy4s4dxSh+B0vWdkeXZ6WaCc=;
-        b=VA+PAHr/hEJC4eJhaty6huN4v2vKJtdc84roUthCGvMjrW9D6o/xm3Hd7l7lYFOVMj
-         nxW5WowRw7hGcvMc9atPoID06CAX2N3K1oGc4LTtOwg0u6gszSJho91DOfjUkqV4BXHg
-         0Q0lRrJ6rw0FwyPKpXni9HbHyP/sxUtbgXpAQYH1+I6iUGh9oNSR+1fr4A6xh9u4cfaV
-         kGbh3NbVx76AYhCSy/BJxRutw80RkxzMSEMVizWFUBbTC/9bKDFMvbMULT6rxnvToojC
-         sgPcQMyaugtQyxZicwscAn4Yap+ZUTZTbaQyEqP3Z3hPV0JeKSY0ktCEB2oDSQu0aeG4
-         OjJQ==
-X-Gm-Message-State: AOAM5311lQGOeRqha/0wJwAcNtAuVRLBkJCE5DVedrJIy5RF3bZ1W7fD
-        vd5jrAzDsdDT9VR9x+9/UOkMSm/4zklnJ2HiSEbG4gOcG1WAgHS0QO/Jv+W6zCGAerK+jlhGrcV
-        O14hCoVMX6GT4EJDodX5S0eC8
-X-Received: by 2002:a17:906:64a:: with SMTP id t10mr29341715ejb.5.1633976938261;
-        Mon, 11 Oct 2021 11:28:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJs31ZBNnkMDy6Y3/bA4NkSUevwMmxI5GLaEsaPOhFcbZtCu9lTE6tYoeFaMp5H2duksbEGQ==
-X-Received: by 2002:a17:906:64a:: with SMTP id t10mr29341674ejb.5.1633976938096;
-        Mon, 11 Oct 2021 11:28:58 -0700 (PDT)
-Received: from redhat.com ([2.55.159.57])
-        by smtp.gmail.com with ESMTPSA id w11sm4722003edl.87.2021.10.11.11.28.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:28:57 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 14:28:51 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
- ioremap_host_shared
-Message-ID: <20211011142330-mutt-send-email-mst@kernel.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009070132-mutt-send-email-mst@kernel.org>
- <8c906de6-5efa-b87a-c800-6f07b98339d0@linux.intel.com>
- <20211011075945-mutt-send-email-mst@kernel.org>
- <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
+        id S234581AbhJKSbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234517AbhJKSb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 14:31:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4149560E90;
+        Mon, 11 Oct 2021 18:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633976965;
+        bh=diBqlvKGtEl8DB+wDdHMTYgQ2IHF2EbrhLa15A4CP2Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B/d+tF0DJkxtwnH29uUnvvLqm5k0JYUASoFRsNCx5L9lbsdvGqW+iRpGiQWHjVR3+
+         wXT9VsHVv0KdfZwZp4OIcA14WgAcjIYNsdl1hhwBohwU+IeaPd8drIjtwmIFAr5hQg
+         SMrunPn+Nc7clyp8hgM5dy6vVp6/LX7ERE0kgXHS4wo0i1R/32sOgvX/CSL9XKCfJK
+         IFpQU/E/TCKr7ixArsVbsljlgFWLbKJ7NWKk8lH3jeJby9oVe60rRGOkVEpM7Zjh9I
+         fPFAKWeMoe22+RY8AO2pVtSNxltMnaTLPYzAGsL+mWouxUwRFB6VMZQVX2g4Bo//+z
+         YZPhXp+TKi/wg==
+Date:   Mon, 11 Oct 2021 19:29:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Cc:     alsa-devel@alsa-project.org, Alexander.Deucher@amd.com,
+        Sunil-kumar.Dommati@amd.com, David.Rhodes@cirrus.com,
+        wtli@nuvoton.com, Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] ASoc: amd: create platform device for VG machine
+ driver
+Message-ID: <YWSCg2Nzi8lRDiIE@sirena.org.uk>
+References: <20211011184715.61573-1-Vijendar.Mukunda@amd.com>
+ <YWR5QH1lYqiT1cX+@sirena.org.uk>
+ <57f313fe-fb8e-8b4b-8839-d9d8653880d1@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="eCPTkh53x3R1J0l+"
 Content-Disposition: inline
-In-Reply-To: <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
+In-Reply-To: <57f313fe-fb8e-8b4b-8839-d9d8653880d1@amd.com>
+X-Cookie: May contain nuts.
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:35:18AM -0700, Andi Kleen wrote:
-> 
-> > Presumably bios code is in arch/x86 and drivers/acpi, right?
-> > Up to 200 calls the majority of which is likely private ...
-> 
-> Yes.
-> 
-> > I don't have better ideas but the current setup will just
-> > result in people making their guests vulnerable whenever they
-> > want to allow device pass-through.
-> 
-> 
-> Yes that's true. For current TDX our target is virtual devices only. But if
-> pass through usage will be really wide spread we may need to revisit.
-> 
-> 
-> -Andi
 
-I mean ... it's already wide spread. If we support it with TDX
-it will be used with TDX. If we don't then I guess it won't,
-exposing this kind of limitation in a userspace visible way isn't great
-though. I guess it boils down to the fact that
-ioremap_host_shared is just not a great interface, users simply
-have no idea whether a given driver uses ioremap.
+--eCPTkh53x3R1J0l+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-MST
+On Mon, Oct 11, 2021 at 11:48:40AM +0530, Mukunda,Vijendar wrote:
+> On 10/11/21 11:19 PM, Mark Brown wrote:
 
+> >> +		pdevinfo[3].name = "acp5x_nu8821_cs35l41_mach";
+
+> > This appears to unconditionally assume that any machine with this
+> > hardware is going to have exactly the same CODEC/amp combination - that
+> > seems like it's going to go badly at some point.  Shouldn't there be
+> > some other check that we're instantiating the right machine driver?
+
+> we will make the platform device as generic one something like "acp5x_mach".
+
+> Currently we have only one target platform with above codec combinations
+> for this APU series.
+
+> When we get new codecs combinations to support, we will address it in
+> machine driver by adding DMI checks for distinguishing codec combinations.
+
+If that's the case then this machine driver that's being instantiated is
+poorly named, and I expect you're going to get issues with assuming a
+default here and trying to instantiate this machine on unsuitable
+hardware.  It'd be better to at least put a bit of the framework in now
+and positively indentify systems that can run this machine driver.
+
+It really would be good if ACPI system vendors were to adopt a more
+standards based approach to platform enumeration, this really isn't
+good.  Something more standards based like DT has would be much more
+scalable.
+
+--eCPTkh53x3R1J0l+
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmFkgoIACgkQJNaLcl1U
+h9COMQf9GXDFZZME1KoLuEwkKs23hk5x6Yd5pCtMgh9arW9h8qHb5Kbfn9adyQW+
+GsGdxXCgHv9MTOFWBeKgprtt4WbMqkp3vJEu+sV0ma3kFKM+0HupofMliz+fJ33t
+aUYZTPWGvdPYUeQHL/g4dqMj0Vg6o8pZsEEbk46NL0pOddaP3o/tt7ficxzS8Jpd
+2bbcA7oIRFi7IZJPHf9QvcSU98M406lgjAzO8bapXs579BATkM9B2y8VupQuGzS2
++Yfzqzg0Yz42FUVKpBlB9Iol0FSUt+DX9TfquoWIhmWNhHm06itGiXWi79R2FfQS
+yfMXsfdEh2KPPxx+0Nh3CAriZpHCAg==
+=15Z3
+-----END PGP SIGNATURE-----
+
+--eCPTkh53x3R1J0l+--
