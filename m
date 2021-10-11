@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C87428633
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7C6428646
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233634AbhJKF3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
+        id S233882AbhJKFk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:40:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhJKF3X (ORCPT
+        with ESMTP id S233868AbhJKFk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:29:23 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F71C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:27:23 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mZnqA-0004do-9g; Mon, 11 Oct 2021 07:27:10 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mZnq8-0001Ul-GZ; Mon, 11 Oct 2021 07:27:08 +0200
-Date:   Mon, 11 Oct 2021 07:27:08 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6dl-prtrvt: drop undocumented TRF7970A NFC
- properties
-Message-ID: <20211011052708.GH29653@pengutronix.de>
-References: <20211010133215.145722-1-krzysztof.kozlowski@canonical.com>
+        Mon, 11 Oct 2021 01:40:27 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD78C061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g6so36290107ybb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Rdn9D4x0MOe4OFaPDRRNFwa5LDZPW7fTkIH7dJRvtJo=;
+        b=fQnLkl/4ss325T4Ag7bFo97Pl94QbRtaKWnoI/kJ8hbfJBqcmPwv5pSbrVta6Pi3vo
+         kKQuqQE8jHHzsupDKHotwshPcqgym6msU82pK07AenEwqPo0qPzCoK4vKFqJh8utYiML
+         IsUd3Cyu7v/akVT+guEqEviOe/LzzHZRaLYWRzp7y6/DbfsJQQfWrZG0qOtoJFmuAVlN
+         c9W+DXpG06920sb1MVLoGavAvwEZu89Rfl/u/LbTuZdeSPibd8/MFj0Fo+RYXB0V4poI
+         BcUi2elFBMySMsWXZLfCv6BQ5VxfP+iePF8c//Tg5XCmumLZ0zZZh1gZAHM5E/t8O4qn
+         iUTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Rdn9D4x0MOe4OFaPDRRNFwa5LDZPW7fTkIH7dJRvtJo=;
+        b=JjhvX4OyT/afHeiiKBpUM+QlkpNOoV4WlMq2jKEgc7M0SLctjWgYJvezcweT3CATQO
+         zBAy9GyxiHc63jSD0G9CzK/hYbVu+Fno3MMJjF+C4zCsrNnjWuXBIKbGQMpZu645evx2
+         FtOh5ZRzuri3DLM1JVyXiIlNOB7reXk74lbNYEmxJtxz+2l7a+E5DrrlRVw+ZgqVMpJB
+         huUTin/sUmeAJh+ajv7/5dEtFpEnOnTgEz4lSoJhrpqZ7lnTQ6DbPiTt83iG0hqVFtu/
+         k0Nd16BBBtZ98t+tivPwdU1YGxX5fo5wq6h007rBZYyTJeDrytPneS+ae92RBF3siaCU
+         630A==
+X-Gm-Message-State: AOAM530FJucZuUTvwNSvaaREg5hndzxjTZ+JnJsNEBHqjw3yEQrxu4h8
+        Na+OTbYVk5lHw+HnWpV6MebTprQT3RK323U9alZmKl6PbmI=
+X-Google-Smtp-Source: ABdhPJxeI/+ttylIYXk2yhhAl4GZB8qsPyQr/goYyEkDHzOO0Ft3WrIzt+j6OvNIgVHCcrT9172zIG8NbDGkQcTQxRw=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr19715743ybc.35.1633930707041;
+ Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20211010133215.145722-1-krzysztof.kozlowski@canonical.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:26:38 up 235 days,  8:50, 102 users,  load average: 0.03, 0.08,
- 0.12
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 11 Oct 2021 07:28:32 +0200
+Message-ID: <CAKXUXMy0FUv25cUGDnhnv=3pTd7NGjepbHao7QoQw8h0hh3CRw@mail.gmail.com>
+Subject: Non-existing config symbols DEBUG_OMAP{3,4,5}UART{1,2}
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 03:32:15PM +0200, Krzysztof Kozlowski wrote:
-> Neither the bindings nor the device driver use/document
-> "vin-voltage-override" and "t5t-rmb-extra-byte-quirk" properties.
-> 
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Dear Tony,
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+With commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for
+omap2 and omap3/4/5 common uarts"), you added address definitions of
+DEBUG_UART_PHYS for OMAP2, OMAP3, OMAP4 and OMAP5 in
+./arch/arm/Kconfig.debug.
 
-Thank you!
+These definitions depend on:
+  - DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || DEBUG_OMAP4UART1 ||
+DEBUG_OMAP5UART1, and
+  - DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || DEBUG_OMAP4UART2 ||
+DEBUG_OMAP5UART2.
 
-> ---
->  arch/arm/boot/dts/imx6dl-prtrvt.dts | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/imx6dl-prtrvt.dts b/arch/arm/boot/dts/imx6dl-prtrvt.dts
-> index 5ac84445e9cc..56bb1ca56a2d 100644
-> --- a/arch/arm/boot/dts/imx6dl-prtrvt.dts
-> +++ b/arch/arm/boot/dts/imx6dl-prtrvt.dts
-> @@ -67,11 +67,9 @@ nfc@0 {
->  		ti,enable-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>,
->  				  <&gpio5 11 GPIO_ACTIVE_LOW>;
->  		vin-supply = <&reg_3v3>;
-> -		vin-voltage-override = <3100000>;
->  		autosuspend-delay = <30000>;
->  		irq-status-read-quirk;
->  		en2-rf-quirk;
-> -		t5t-rmb-extra-byte-quirk;
->  		status = "okay";
->  	};
->  };
-> -- 
-> 2.30.2
-> 
-> 
-> 
+As of now, only DEBUG_OMAP2UART{1,2} are defined in
+./arch/arm/Kconfig.debug, but DEBUG_OMAP{3,4,5}UART{1,2} are not
+defined. Hence, ./scripts/checkkconfigsymbols.py warns here on
+non-existing symbols.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+I am unsure about the best way to resolve this issue.
+
+- Would you like to simply reuse the config DEBUG_OMAP2UART{1,2} also
+for OMAP3, OMAP4 and OMAP5? Then, we probably just need to delete the
+dead references
+to DEBUG_OMAP{3,4,5}UART{1,2}. If you consider this further change
+helpful, we could even rename the configs to DEBUG_OMAP2PLUSUART{1,2}
+to make the architecture more specific.
+
+- Do you see the need for separate config definitions for UART{1,2} on
+OMAP3, OMAP4 and OMAP5? Then, we would need to add further definitions
+DEBUG_OMAP{3,4,5}UART{1,2}
+in this file and link those to the specific architecture.
+
+Once the direction is clear, I am happy to provide a patch to address
+this issue or you can quickly take care of this yourself.
+
+Best regards,
+
+Lukas
