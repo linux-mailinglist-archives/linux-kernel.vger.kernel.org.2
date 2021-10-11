@@ -2,163 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72FD42981A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBCB42981E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhJKUZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234845AbhJKUZs (ORCPT
+        id S234983AbhJKU2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:28:15 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:40684 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234896AbhJKU2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:25:48 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0763C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:23:47 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 133so11837713pgb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aIVgOWTQV2q2xytnYhzRzP72FdeAtxxAi8QL3SVoE6U=;
-        b=Zps0b75rQ08NWDQbkfAWZCIZnFZZBO+a45jWg+fO604pLd1M3qZP9x1cJiPYSVyBN5
-         mToMqLhFmUbzTLAUoKlbSNqH0wWtklHy4TM/4GaVmp5HrEsz6BynDPEQvp9U1bbg3PQF
-         G6SWmC4krC33eKmUNXLWSBFgASzaoOEv3CKxw/wOOMnSeElhcprRjb2vrlFjN1rnCxGF
-         F2kaJVNbkrC24NQe4VEGwbKwv99bpL/Gy6LVCepOprOXj+CYYfavQnpv6IFflsyZ3fFB
-         VCBt7CH/gPB3pVuUp8+5ktpju91msMkrjm9Kteo1vxxVe26jRj/y9cfOkXGS4ed0dp31
-         cqeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aIVgOWTQV2q2xytnYhzRzP72FdeAtxxAi8QL3SVoE6U=;
-        b=OHKU/0WW5inq7etgGPsGJGZ9sqVRDK2albafPx2Kfb2HsrXwZHN4m3vHVw7WvUJl3p
-         TxqWQL17VAd7JfzYmLNkfZm/y0PZU9A56WCipNar9tWqh+9fEmwaHKJxtZaOFqngxqB+
-         eKkhtXdvEs7DhW1MthDvA2mMfm40imYkWnhDLPnqrP47sHgP78QsBfxg5EXNtaAa1yf2
-         ulvbo2ZfqYGcRH7lDXlnobxE+s7697tl6Lbpq8c4P4HPCZihqg5cPWKL43HN8f38hKAn
-         gwsTLWqYcGLx5nd1rcBbdzJvrMvlMYri48hlRE+ig82uO8f36lj9LiKyr4QCPfaxCbU/
-         tfQg==
-X-Gm-Message-State: AOAM532blvh96RgHuz/xnYs3sYUqJmwLh3alYOgfTNfZs1AGxnzOg1qO
-        oCdZZXZ658op1aVsBUupPN4OEA==
-X-Google-Smtp-Source: ABdhPJy019Z5jxKOSsaxG2mUCC6jvfqMPi6oHE53lGwfwiXjVnZkpgQo5DQKMsHc03KDgikpPndfNw==
-X-Received: by 2002:a63:564a:: with SMTP id g10mr19730395pgm.199.1633983826925;
-        Mon, 11 Oct 2021 13:23:46 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l10sm8446000pff.119.2021.10.11.13.23.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 13:23:46 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 20:23:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     pbonzini@redhat.com, dmatlack@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: VMX: Add a wrapper for reading
- INVPCID/INVEPT/INVVPID type
-Message-ID: <YWSdTpkzNt3nppBc@google.com>
-References: <20211011194615.2955791-1-vipinsh@google.com>
+        Mon, 11 Oct 2021 16:28:11 -0400
+Received: from [77.244.183.192] (port=65250 helo=melee.fritz.box)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1ma1s8-00FUmk-SF; Mon, 11 Oct 2021 22:26:08 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+Subject: [PATCH 8/8] rtc: max77686: add MAX77714 support
+Date:   Mon, 11 Oct 2021 22:25:50 +0200
+Message-Id: <20211011155615.257529-9-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211011155615.257529-1-luca@lucaceresoli.net>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011194615.2955791-1-vipinsh@google.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021, Vipin Sharma wrote:
-> Add a common helper function to read invalidation type specified by a
-> trapped INVPCID/INVEPT/INVVPID instruction.
-> 
-> Add a symbol constant for max INVPCID type.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> ---
->  arch/x86/include/asm/invpcid.h |  1 +
->  arch/x86/kvm/vmx/nested.c      |  4 ++--
->  arch/x86/kvm/vmx/vmx.c         |  4 ++--
->  arch/x86/kvm/vmx/vmx.h         | 12 ++++++++++++
->  4 files changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
-> index 734482afbf81..b5ac26784c1b 100644
-> --- a/arch/x86/include/asm/invpcid.h
-> +++ b/arch/x86/include/asm/invpcid.h
-> @@ -21,6 +21,7 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
->  #define INVPCID_TYPE_SINGLE_CTXT	1
->  #define INVPCID_TYPE_ALL_INCL_GLOBAL	2
->  #define INVPCID_TYPE_ALL_NON_GLOBAL	3
-> +#define INVPCID_TYPE_MAX		3
+The RTC included in the MAX77714 PMIC is very similar to the one in the
+MAX77686. Reuse the rtc-max77686.c driver with the minimum required changes
+for the MAX77714 RTC.
 
-...
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+---
 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 1c8b2b6e7ed9..77f72a41dde3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5502,9 +5502,9 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
->  	}
->  
->  	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
-> -	type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-> +	type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
+*** NOTE ***
 
-I would prefer to keep the register read visibile in this code so that it's
-obvious what exactly is being read.  With this approach, it's not clear that KVM
-is reading a GPR vs. VMCS vs. simply extracting "type" from "vmx_instruction_info".
+This patch didn't reach most recipients having hit a limit in my service
+provider (125 e-mails per hour). I'm resending it, as far as possible with
+proper message-id etc. Apologies for any duplicate.
 
-And it's not just the INV* instruction, VMREAD and VMWRITE use the same encoding.
+ drivers/rtc/Kconfig        |  2 +-
+ drivers/rtc/rtc-max77686.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-The hardest part is coming up with a name :-)  Maybe do the usually-ill-advised
-approach of following the SDM verbatim?  Reg2 is common to all flavors, so this?
+diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+index e1bc5214494e..a73591ad292b 100644
+--- a/drivers/rtc/Kconfig
++++ b/drivers/rtc/Kconfig
+@@ -375,7 +375,7 @@ config RTC_DRV_MAX8997
 
-	gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
-	type = kvm_register_read(vcpu, gpr_index);
+ config RTC_DRV_MAX77686
+ 	tristate "Maxim MAX77686"
+-	depends on MFD_MAX77686 || MFD_MAX77620 || COMPILE_TEST
++	depends on MFD_MAX77686 || MFD_MAX77620 || MFD_MAX77714 || COMPILE_TEST
+ 	help
+ 	  If you say yes here you will get support for the
+ 	  RTC of Maxim MAX77686/MAX77620/MAX77802 PMIC.
+diff --git a/drivers/rtc/rtc-max77686.c b/drivers/rtc/rtc-max77686.c
+index 9901c596998a..e6564bc2171e 100644
+--- a/drivers/rtc/rtc-max77686.c
++++ b/drivers/rtc/rtc-max77686.c
+@@ -19,6 +19,7 @@
 
->  
-> -	if (type > 3) {
-> +	if (type > INVPCID_TYPE_MAX) {
+ #define MAX77686_I2C_ADDR_RTC		(0x0C >> 1)
+ #define MAX77620_I2C_ADDR_RTC		0x68
++#define MAX77714_I2C_ADDR_RTC		0x48
+ #define MAX77686_INVALID_I2C_ADDR	(-1)
 
-Hrm, I don't love this because it's not auto-updating in the unlikely chance that
-a new type is added.  I definitely don't like open coding '3' either.  What about
-going with a verbose option of
+ /* Define non existing register */
+@@ -203,6 +204,28 @@ static const struct max77686_rtc_driver_data max77686_drv_data = {
+ 	.regmap_config = &max77686_rtc_regmap_config,
+ };
 
-	if (type != INVPCID_TYPE_INDIV_ADDR &&
-	    type != INVPCID_TYPE_SINGLE_CTXT &&
-	    type != INVPCID_TYPE_ALL_INCL_GLOBAL &&
-	    type != INVPCID_TYPE_ALL_NON_GLOBAL) {
-		kvm_inject_gp(vcpu, 0);
-		return 1;
-	}
-
-It's kind of gross, but gcc10 is smart enought to coalesce those all into a single
-CMP <reg>, 3; JA <#GP>, i.e. the resulting binary is identical.
-
->  		kvm_inject_gp(vcpu, 0);
->  		return 1;
->  	}
-> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> index 592217fd7d92..eeafcce57df7 100644
-> --- a/arch/x86/kvm/vmx/vmx.h
-> +++ b/arch/x86/kvm/vmx/vmx.h
-> @@ -522,4 +522,16 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
->  
->  void dump_vmcs(struct kvm_vcpu *vcpu);
->  
-> +/*
-> + * When handling a VM-exit for one of INVPCID, INVEPT or INVVPID, read the type
-> + * of invalidation specified by the instruction.
-> + */
-> +static inline unsigned long vmx_read_invalidation_type(struct kvm_vcpu *vcpu,
-> +						       u32 vmx_instr_info)
-> +{
-> +	u32 vmx_instr_reg2 = (vmx_instr_info >> 28) & 0xf;
-> +
-> +	return kvm_register_read(vcpu, vmx_instr_reg2);
-> +}
-> +
->  #endif /* __KVM_X86_VMX_H */
-> -- 
-> 2.33.0.882.g93a45727a2-goog
-> 
++static const struct regmap_irq_chip max77714_rtc_irq_chip = {
++	.name		= "max77714-rtc",
++	.status_base	= MAX77686_RTC_INT,
++	.mask_base	= MAX77686_RTC_INTM,
++	.num_regs	= 1,
++	.irqs		= max77686_rtc_irqs,
++	.num_irqs	= ARRAY_SIZE(max77686_rtc_irqs) - 1, /* no WTSR on 77714 */
++};
++
++static const struct max77686_rtc_driver_data max77714_drv_data = {
++	.delay = 16000,
++	.mask  = 0x7f,
++	.map   = max77686_map,
++	.alarm_enable_reg = false,
++	.rtc_irq_from_platform = false,
++	/* On MAX77714 RTCA1 is BIT 1 of RTCINT (0x00). Not supported by this driver. */
++	.alarm_pending_status_reg = MAX77686_INVALID_REG,
++	.rtc_i2c_addr = MAX77714_I2C_ADDR_RTC,
++	.rtc_irq_chip = &max77714_rtc_irq_chip,
++	.regmap_config = &max77686_rtc_regmap_config,
++};
++
+ static const struct regmap_config max77620_rtc_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+@@ -846,6 +869,7 @@ static const struct platform_device_id rtc_id[] = {
+ 	{ "max77686-rtc", .driver_data = (kernel_ulong_t)&max77686_drv_data, },
+ 	{ "max77802-rtc", .driver_data = (kernel_ulong_t)&max77802_drv_data, },
+ 	{ "max77620-rtc", .driver_data = (kernel_ulong_t)&max77620_drv_data, },
++	{ "max77714-rtc", .driver_data = (kernel_ulong_t)&max77714_drv_data, },
+ 	{},
+ };
+ MODULE_DEVICE_TABLE(platform, rtc_id);
+--
+2.25.1
