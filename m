@@ -2,80 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CE4429567
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F6142956B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhJKRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:18:53 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:57352 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232866AbhJKRSw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:18:52 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id C4DE4A003F;
-        Mon, 11 Oct 2021 19:16:48 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz C4DE4A003F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1633972608; bh=QRB5Ou1NGnbNid6JFfjU38Lss1F7V2ixqJfm4FYhiPw=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=fug/BqNlw3eZvAAw/uX5lfGAXUi44nPGHYrG4qmeeATh2kPPfZbkaQnzADYiZJdzm
-         dN0/vLBA2laqK9wQ91k+H418whIm8nHiZDfqZZ5suqFTofU4xR5ENi9EWqQVFBfqSs
-         iTc6bj2Od87GNb6vlkXD6CCmpY1XUGXWJZwEk8vA=
-Received: from [192.168.100.98] (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Mon, 11 Oct 2021 19:16:37 +0200 (CEST)
-Message-ID: <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
-Date:   Mon, 11 Oct 2021 19:16:37 +0200
+        id S233887AbhJKRTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhJKRTB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:19:01 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2BBC061570;
+        Mon, 11 Oct 2021 10:17:01 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v11so11418288pgb.8;
+        Mon, 11 Oct 2021 10:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=47MxuwjdGXsg6hhuLv8z6fw88ymx9GeX72SLuyGJTok=;
+        b=a4RrVVdJ7cUmlCzggWQlfbsOGdWJ2MPLEG7CalU7wsqMn5r+DmcveNvP/dyXMNR51w
+         JtU8Ih35Ce+uEy4ncY5JylViwvaU0igXgKz2jaopbXllKs4Y/NmCftllt9Er3ysq5hxH
+         VPtWr48EAAqhK7X9th7UFB+LRnFN9m99A2smY07IoxO7ZFdPJ7mXc6Pu3qkj4fBcKTyb
+         2Iv2hIOIVZVA3TbxCeJx5383kucVuJsrJ2aavndyzcUgCH8omLECpFhzAfSfBEBllQwh
+         97IPyg91TL5MFJMujwLsnFD+T4IWTukC9iJ8bqhU/7D+IlUe2KDpBVFaOCk696vZlb+a
+         SsYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=47MxuwjdGXsg6hhuLv8z6fw88ymx9GeX72SLuyGJTok=;
+        b=wTJlpTDD5BlXbcIpM5sO91NcjsgMe+tay+GusB4elj5i+pEMKu4cjxGEeamMKs2kbQ
+         xHh/FNxrHvl0NistqwgcxOv8md481QPx6EjgprBHwR2yPlZ9Ldfmyc3kTMo8cZkZIGL/
+         B3z/J65vkT3Xf/3jOOCoJ0SwiI5ApEQECtq4Bcz0h/zYD0m7dDUd2ivFjgU5XsykRo6i
+         QZdFkx2vok9b1zBTT1ATi1erPMRlFDaJsyzAo/9qYdWV/sOLf1KfDFeU2vL2bkCTc7zx
+         IlipuvKzZ8FQpHSOzl1XXfYbPpzH36jXXZCPEcnC5NBX5BvjP2k8Ot10K5NCW32odYaf
+         XUKA==
+X-Gm-Message-State: AOAM531WPpmYZtBIA5FpGcWBSoUMPgmZLjx7Enu1Yd57b8f4L2QgM9eC
+        gjrQoKEFZ3BJSV4I0M3c9AAVR9feZ3olzA==
+X-Google-Smtp-Source: ABdhPJy4J5tHxXt2W+6L6flmSpcpqk/tYiffWv9S20Ntu0LHmWDZ6NMtBsRppjjWJ3+Z9290lnG3tw==
+X-Received: by 2002:a63:2b8c:: with SMTP id r134mr18907749pgr.420.1633972620892;
+        Mon, 11 Oct 2021 10:17:00 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id u193sm8743444pgc.34.2021.10.11.10.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:17:00 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 11 Oct 2021 07:16:59 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
+ blkg_create()
+Message-ID: <YWRxi2OaIHhG9rOc@slm.duckdns.org>
+References: <20211008072720.797814-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.0
-Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
-Content-Language: en-US
-To:     Diederik de Haas <didi.debian@cknow.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Guido_G=c3=bcnther?= <agx@sigxcpu.org>
-References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org> <4974503.Y8KB3sNASq@bagend>
- <61a82214-0de8-816f-ff63-3979b86343bf@perex.cz> <5069869.zQgEQKRxDW@bagend>
-From:   Jaroslav Kysela <perex@perex.cz>
-In-Reply-To: <5069869.zQgEQKRxDW@bagend>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211008072720.797814-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10. 10. 21 12:40, Diederik de Haas wrote:
-> On Sunday, 10 October 2021 10:40:09 CEST Jaroslav Kysela wrote:
->>> Unfortunately this change broke multichannel audio on my Rock64 device
->>> running Debian. My Rock64 is connected to my AVR (Pioneer SC-1224) via a
->>> HDMI cable.
->> This looks like an user space configuration problem.
-> 
-> I have placed ALSA card definitions (I think) from LibreELEC on my system from
-> https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/Rockchip/
-> filesystem/usr/share/alsa/cards
+On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index eb48090eefce..00e1d97621ea 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct blkcg *blkcg,
+>  }
+>  EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
+>  
+> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq *blkg)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < BLKCG_MAX_POLS; i++) {
+> +		struct blkcg_policy *pol = blkcg_policy[i];
+> +
+> +		if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
+> +			pol->pd_free_fn(blkg->pd[i]);
+> +			blkg->pd[i] = NULL;
+> +		}
+> +	}
+> +}
+> +
+>  /*
+>   * If @new_blkg is %NULL, this function tries to allocate a new one as
+>   * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on return.
+> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
+>  		goto err_free_blkg;
+>  	}
+>  
+> +	if (new_blkg)
+> +		blkg_check_pd(q, new_blkg);
+> +
 
-Apparently, the alsa-lib configuration is used in this case.
+Can't this happen the other way around too? ie. Linking a pd which doesn't
+have an entry for a policy which got enabled inbetween? And what if an
+existing policy was de-registered and another policy got the policy id
+inbetween? I think the correct solution here would be synchronizing alloc -
+create blocks against policy deactivation rather than trying to patch an
+allocated blkg later. Deactivation being a really slow path, there are
+plenty of options. The main challenge would making it difficult to make
+mistakes with, I guess.
 
-It seems that there are four sound cards (Analog/HDMI/I2S/SPDIF) created for 
-your hardware. The alsa-lib configuration is a bit weird - an obfuscation for 
-the simple-card driver use. The simple way to resolve this is to create a 
-proper UCM configuration.
-
-If you need further assistance, create an issue for alsa-lib or alsa-ucm-conf 
-on github and with an output from the 'alsa-info.sh' script.
-
-						Jaroslav
+Thanks.
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+tejun
