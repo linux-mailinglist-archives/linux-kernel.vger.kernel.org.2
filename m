@@ -2,118 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54CD428BD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E5D428BDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235982AbhJKLXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:23:16 -0400
-Received: from mga09.intel.com ([134.134.136.24]:51373 "EHLO mga09.intel.com"
+        id S236136AbhJKLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:25:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:46770 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231281AbhJKLXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:23:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226751137"
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="226751137"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 04:21:09 -0700
-X-IronPort-AV: E=Sophos;i="5.85,364,1624345200"; 
-   d="scan'208";a="490431900"
-Received: from acleivam-mobl1.amr.corp.intel.com (HELO [10.249.40.144]) ([10.249.40.144])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 04:21:07 -0700
-Message-ID: <52742f2b-0cde-26f4-1de2-abe83baa0095@linux.intel.com>
-Date:   Mon, 11 Oct 2021 14:21:17 +0300
+        id S230394AbhJKLZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 07:25:03 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 74667106F;
+        Mon, 11 Oct 2021 04:23:03 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 701E43F66F;
+        Mon, 11 Oct 2021 04:23:02 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 12:22:55 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Siddartha Mohanadoss <smohanad@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the pci tree
+Message-ID: <20211011112255.GA20292@lpieralisi>
+References: <20211011101250.11902b31@canb.auug.org.au>
+ <20211011053737.GA1834@thinkpad>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v3] checkpatch: get default codespell dictionary path from
- package location
-Content-Language: en-US
-To:     apw@canonical.com, joe@perches.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-References: <20211011093748.2455-1-peter.ujfalusi@linux.intel.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-In-Reply-To: <20211011093748.2455-1-peter.ujfalusi@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211011053737.GA1834@thinkpad>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 11, 2021 at 11:07:37AM +0530, Manivannan Sadhasivam wrote:
+> Hi Stephen,
+> 
+> On Mon, Oct 11, 2021 at 10:12:50AM +1100, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the pci tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> > 
+> > ERROR: modpost: "dw_pcie_ep_reset_bar" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> > ERROR: modpost: "dw_pcie_ep_raise_msi_irq" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> > ERROR: modpost: "dw_pcie_ep_raise_legacy_irq" [drivers/pci/controller/dwc/pcie-qcom-ep.ko] undefined!
+> > 
+> > Caused by commit
+> > 
+> >   3872e6f0544f ("PCI: qcom-ep: Add Qualcomm PCIe Endpoint controller driver")
+> > 
+> > I have used the pci tree from next-20211008 fot today.
+> > 
+> 
+> I have submitted a patch for fixing this issue:
+> 
+> https://patchwork.kernel.org/project/linux-pci/patch/20211010115937.15856-1-manivannan.sadhasivam@linaro.org/
 
+I have squashed it in the original commit it is fixing.
 
-On 11/10/2021 12:37, Peter Ujfalusi wrote:
-> The standard location of dictionary.txt is under codespell's package, on
-> my machine atm (codespell 2.1, Artix Linux):
-> /usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
-> 
-> Since we enable the codespell by default for SOF I have constant:
-> No codespell typos will be found - \
-> file '/usr/share/codespell/dictionary.txt': No such file or directory
-> 
-> The patch proposes to try to fix up the path following the recommendation
-> found here:
-> https://github.com/codespell-project/codespell/issues/1540
-> 
-> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
-> ---
-> Hi,
-> 
-> Changes since v2:
-> - Only try to check for dictionary path it is enabled or when the help is
->   displayed
->  - Move the check after the GetOptions()
->  - Set $help to 2 in case invalid option is passed in order to be able to use
->    correct exitcode and still display the correct path for dictionary.txt
-> 
-> Changes sicne v1:
-> - add missing ';' to the line updating the $codespellfile with $codespell_dict
-> 
-> Regards,
-> Peter
-> 
->  scripts/checkpatch.pl | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index c27d2312cfc3..179e02acab6e 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -130,7 +130,7 @@ Options:
->    --ignore-perl-version      override checking of perl version.  expect
->                               runtime errors.
->    --codespell                Use the codespell dictionary for spelling/typos
-> -                             (default:/usr/share/codespell/dictionary.txt)
-> +                             (default:$codespellfile)
->    --codespellfile            Use this codespell dictionary
->    --typedefsfile             Read additional types from this file
->    --color[=WHEN]             Use colors 'always', 'never', or only when output
-> @@ -325,9 +325,19 @@ GetOptions(
->  	'kconfig-prefix=s'	=> \${CONFIG_},
->  	'h|help'	=> \$help,
->  	'version'	=> \$help
-> -) or help(1);
-> +) or $help = 2;
->  
-> -help(0) if ($help);
-> +print($help);
-> +
-> +# Override the codespellfile location based on codespell install location
-> +if (($codespell || $help) && which("codespell") ne "" && which("python") ne "") {
-> +	my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
-> +	$codespellfile = $codespell_dict if (-e $codespell_dict);
-
-Hrm, I think this will prevent the use of --codespellfile
-
-> +}
-> +
-> +# $help is 1 if either -h, --help or --version is passed as option - exitcode: 0
-> +# $help is 2 if invalid option is passed - exitcode: 1
-> +help($help - 1) if ($help);
->  
->  die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
->  die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
-> 
-
--- 
-Péter
+Thanks,
+Lorenzo
