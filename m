@@ -2,129 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3174B429362
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93FDE429370
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 17:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238504AbhJKPbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 11:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbhJKPbg (ORCPT
+        id S238457AbhJKPem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 11:34:42 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:9062 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234930AbhJKPek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 11:31:36 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E218C061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:29:36 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id ls18so13519879pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 08:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k8atijS/+iEmLpEHHw2Pegmxv2DcWYYJPJdpIxxMix4=;
-        b=Vrxtp+c7M+8e2l3FL7FJPO1v/t2Zq0exaMrNNv+5TwkIUrG2QTtOLJeTXjEfdETAnv
-         qkUjEvy1FQFOXuIYp2Cg4PpYMXHuMOzqnkPxyxZQkyGV+sFRdT+87AkKARNHFpUDDr3m
-         JarsmFyZlynYfm+fDz6wxY4Rn+2ln1cMFRod1OzI6YgPf8Y9dnUUVnRagOZTBEI+lZCB
-         E07MGyR3xgt3XgHD7zQ+FgHqXdSgNZFlHcsxsw+VnMpa5hjE65b3BKGvZpQ4xUJ3zqRd
-         2NyN8ZSL7zI9l3LU6hoOCnY5Y8QxHEdzSQmAl09ViavJWcCTNMWt7GP934culCU/0Gq1
-         J0qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k8atijS/+iEmLpEHHw2Pegmxv2DcWYYJPJdpIxxMix4=;
-        b=ysgum3XAD/bKgsxxXFLoUgBj/pe/tIh4HEUn8dN9bYcbB8Blh/0lioNmCZfPcTiZyl
-         NKuIdVnEbdTQb4zjzoDd8S9peQfY3rlk/jv3z1JqmVlP+HM5o4Y47HZbFDGIvVTpWvBQ
-         G4L8wmq+6UhcR38MKbNsQ1/MUbyH4klq3q09CUA6tNmhV4NtAUy2jBCQhruVlOJLSxTv
-         WYNUd+QONnTFECk7btNYb0BNKsUzC+JgaY5pMs6TCVdVhWF9FZ8MV8KLhyosGifhszQS
-         rayj6/8nmwJNCqCnZXhlkK7ZO24H/WmfDEhhJ5mcWulXpU2f9BmY143tolYDaMMJrh/A
-         eXYg==
-X-Gm-Message-State: AOAM531W2rpISDnlJ1KvnQ7DJiNdqxXkrpXWXLIC7nNLTPbmiXW8Z0Ji
-        UsedNnhbAKAqZVn3JadZ6iZlRHu8E+R1AaGrK6fGoQ==
-X-Google-Smtp-Source: ABdhPJzCT79jpoEsIiK+BEe6D9q4lUZ8G6Lk7OpB6uQ1SPfMwLyjlWtWJh609WIls5YIP5wXqB9SVMOF70Iz3/n018k=
-X-Received: by 2002:a17:90b:1e4b:: with SMTP id pi11mr31473637pjb.179.1633966175512;
- Mon, 11 Oct 2021 08:29:35 -0700 (PDT)
+        Mon, 11 Oct 2021 11:34:40 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BEfLTw032253;
+        Mon, 11 Oct 2021 15:32:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2021-07-09; bh=NWuNPwAE3ej56Is8nN/XujJ+yffNmSzprTRX3FpQCik=;
+ b=Vmjz1BQRE0AnzNWGK1+B5JRU/HeEBTn6WWTB1g94jt7+56YhjyxqBzc1hntUGboU7yiQ
+ 9rVda9WaIypNnR1E8diqnawaq//xfXxNycDkLCNfmUCDCdW/fgJkfjqaw7pOE/uTJdon
+ geTXIdWj8ujz8S0WjublOWKbfHKABOzUv9BBGPEJVgQB4DqN1GK9DrcMFyrR6o2lMn5E
+ SdAee34w9f+nErfUkwK2NIs9mVbqnN7t0aDMH84DqhHuKccB3emegAYZ6H6e9keYxMES
+ lO/mY0yG8Cy0JJIMHepwUns9OjuLzklq8edWuCv8nssqaXZtJdnmicLRDoBpBolHwRu2 6Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bmq29gh1j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 15:32:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 19BFEgAw091717;
+        Mon, 11 Oct 2021 15:32:15 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 3bmadwe2x1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 15:32:15 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 19BFWETu174897;
+        Mon, 11 Oct 2021 15:32:14 GMT
+Received: from t460.home (dhcp-10-175-30-45.vpn.oracle.com [10.175.30.45])
+        by aserp3020.oracle.com with ESMTP id 3bmadwe2ue-1;
+        Mon, 11 Oct 2021 15:32:14 +0000
+From:   Vegard Nossum <vegard.nossum@oracle.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Vegard Nossum <vegard.nossum@oracle.com>
+Subject: [PATCH] staging: ks7010: select CRYPTO_HASH/CRYPTO_MICHAEL_MIC
+Date:   Mon, 11 Oct 2021 17:29:41 +0200
+Message-Id: <20211011152941.12847-1-vegard.nossum@oracle.com>
+X-Mailer: git-send-email 2.23.0.718.g5ad94255a8
 MIME-Version: 1.0
-References: <20210723204958.7186-1-tharvey@gateworks.com> <36070609-9f1f-00c8-ccf5-8ed7877b29da@pengutronix.de>
- <VI1PR04MB58533AF76EA4DFD8AD6CDA158CEC9@VI1PR04MB5853.eurprd04.prod.outlook.com>
- <CAJ+vNU1tgVsQWtxa0E8SArO=hA2K8OkqiSPrRSpx0Q5XS4gUWA@mail.gmail.com>
- <CAHCN7xLC1ob_nxRsZezgYQ9p-me7hNd+1MNFQt2wtcRqU+z9Sw@mail.gmail.com> <2eee557db84087acca4665603ba3d2716199f842.camel@pengutronix.de>
-In-Reply-To: <2eee557db84087acca4665603ba3d2716199f842.camel@pengutronix.de>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Mon, 11 Oct 2021 08:29:24 -0700
-Message-ID: <CAJ+vNU2MCV9oVru5wPqCMJUwAxHtS8ANv=K2kW4TryOGQXxybA@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Add IMX8M Mini PCI support
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     Adam Ford <aford173@gmail.com>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-ORIG-GUID: 25PLLqA_6KuwNlmXa0FklCm0hqWWSR1_
+X-Proofpoint-GUID: 25PLLqA_6KuwNlmXa0FklCm0hqWWSR1_
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 5:30 AM Lucas Stach <l.stach@pengutronix.de> wrote:
->
-> Hi Adam,
->
-> Am Montag, dem 11.10.2021 um 07:25 -0500 schrieb Adam Ford:
-> > On Mon, Aug 16, 2021 at 10:45 AM Tim Harvey <tharvey@gateworks.com> wrote:
-> > >
-> > > On Thu, Jul 29, 2021 at 6:28 PM Richard Zhu <hongxing.zhu@nxp.com> wrote:
-> > > >
-> > > > Hi Tim:
-> > > > Just as Ahmad mentioned, Lucas had issue one patch-set to support i.MX8MM PCIe.
-> > > > Some comments in the review cycle.
-> > > > - One separate PHY driver should be used for i.MX8MM PCIe driver.
-> > > > - Schema file should be used I think, otherwise the .txt file in the dt-binding.
-> > > >
-> > > > I'm preparing one patch-set, but it's relied on the yaml file exchanges and power-domain changes(block control and so on).
-> > > > Up to now, I only walking on the first step, trying to exchange the dt-binding files to schema yaml file.
-> > > >
-> > > > Best Regards
-> > > > Richard Zhu
-> > >
-> > > Richard / Ahmad,
-> > >
-> > > Thanks for your response - I did not see the series from Lucas. I will
-> > > drop this and wait for him to complete his work.
-> > >
-> >
-> > Tim,
-> >
-> > It appears that the power domain changes have been applied to Shawn's
-> > for-next branch:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/shawnguo/linux.git/log/?h=for-next
-> >
-> > Is there any chance you could rebase and resend this series?
->
-> This wasn't about the power domain series. I also tried to get i.MX8M
-> PCIe upstream, but the feedback was that we need to split out the PHY
-> functionality, Richard is currently working on this. There is no point
-> in resending this series.
->
+Fix the following build/link errors:
 
-Lucas,
+  ld: drivers/staging/ks7010/ks_hostif.o: in function `michael_mic.constprop.0':
+  ks_hostif.c:(.text+0x95b): undefined reference to `crypto_alloc_shash'
+  ld: ks_hostif.c:(.text+0x97a): undefined reference to `crypto_shash_setkey'
+  ld: ks_hostif.c:(.text+0xa13): undefined reference to `crypto_shash_update'
+  ld: ks_hostif.c:(.text+0xa28): undefined reference to `crypto_shash_update'
+  ld: ks_hostif.c:(.text+0xa48): undefined reference to `crypto_shash_finup'
+  ld: ks_hostif.c:(.text+0xa6d): undefined reference to `crypto_destroy_tfm'
 
-Thanks for the update.
+Signed-off-by: Vegard Nossum <vegard.nossum@oracle.com>
+---
+ drivers/staging/ks7010/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Richard - please Cc me when you submit as I have several boards to
-test IMX8MM PCI with, some with PCI bridges and some without.
+diff --git a/drivers/staging/ks7010/Kconfig b/drivers/staging/ks7010/Kconfig
+index 0987fdc2f70db..8ea6c09286798 100644
+--- a/drivers/staging/ks7010/Kconfig
++++ b/drivers/staging/ks7010/Kconfig
+@@ -5,6 +5,9 @@ config KS7010
+ 	select WIRELESS_EXT
+ 	select WEXT_PRIV
+ 	select FW_LOADER
++	select CRYPTO
++	select CRYPTO_HASH
++	select CRYPTO_MICHAEL_MIC
+ 	help
+ 	  This is a driver for KeyStream KS7010 based SDIO WIFI cards. It is
+ 	  found on at least later Spectec SDW-821 (FCC-ID "S2Y-WLAN-11G-K" only,
+-- 
+2.23.0.718.g5ad94255a8
 
-Best regards,
-
-Tim
