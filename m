@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76446428864
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EC142886B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhJKINx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:13:53 -0400
-Received: from smtprelay0130.hostedemail.com ([216.40.44.130]:57216 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231300AbhJKINv (ORCPT
+        id S234675AbhJKIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234849AbhJKIPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:13:51 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 9B09518224D6E;
-        Mon, 11 Oct 2021 08:11:51 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id BB1E8315D73;
-        Mon, 11 Oct 2021 08:11:50 +0000 (UTC)
-Message-ID: <ad5adffe862f33debdf869465cf90878224ea893.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: get default codespell dictionary path
- from package location
-From:   Joe Perches <joe@perches.com>
-To:     Peter Ujfalusi <peter.ujfalusi@linux.intel.com>, apw@canonical.com
-Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 11 Oct 2021 01:11:49 -0700
-In-Reply-To: <20211011063231.6918-1-peter.ujfalusi@linux.intel.com>
-References: <20211011063231.6918-1-peter.ujfalusi@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        Mon, 11 Oct 2021 04:15:40 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED99C061762
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:13:41 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id q189so37133279ybq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+qyxK1U8f1ah2GI5g+Zi1pa0XG3ooDuESdmY2ovm1hQ=;
+        b=LeZMMuQTTS4a9QrG5eyK07bSPAnLGjiZAuVeRywBHEJ6qRUsCA+/ftYiw7BxRz5c++
+         BLbEnrF45g7baksChI5w0yxDsuFTQgz51ic3U5cLUdeOUplxO/NsS18l+RY/cOwl6H1Y
+         SSRKi7eF6VElw/K2Ryxhr3EPSkbLBJ6ubxJVnaFu38PR+T3LqcOHS/C4LoeROx5gUq0k
+         rAr2jAo5dPU61AS310N/PzPB4TDYKzou0TMSSCRP6h71yGVG1CRkxf/xjoVlJnAXJUy1
+         0UuLCODcJUURnKn67SioUJ0ZKdMlVWTFOd6LjdG/RR/dzR5K0xCBrLICNJkCTXNW2OFp
+         a0YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+qyxK1U8f1ah2GI5g+Zi1pa0XG3ooDuESdmY2ovm1hQ=;
+        b=TTw466ourlL3ZNBpdoZ9Ic6OPHnuL1XXEKFoANSen+nYEGokspnaWk888uUC5uMvFt
+         z5bzc+AwtoebbUYQLvZEaZolwCZpXaFR4WeXlc96uRToThkpZR6fc1KwScfOuli3lNqm
+         1jXb70N13Z8z1UHH44gjBtVAnb8WKxcH/I8mX+pPsVzlUK5firZrkGngj3L/az6ibjQj
+         Dg2j2ZOJY5Cfkz3Lad9H7xB8uHcYv0XcZ5BoazmOpBjnVTYl9f9qJFt4T5+ykTnUktCt
+         ggoQXqHBhSJPFxlcdnPyy42oPCbqlk5TTndWYSUSsszdp/sfs0HWuqxftwP9a/tdDLBD
+         6c1A==
+X-Gm-Message-State: AOAM533kxucA8PMNCBvQM/djFyTm2w6iPPK8kQvSkd5QiL7GGgJnixV+
+        uDXHIrMH6nmthrQAea0e6LcXaLKgAqiXgsycHqIWUA==
+X-Google-Smtp-Source: ABdhPJwCpzwyVDj1dBNwAjSmOdYHJGSSO2KQXsFpD/ovyZP9KQV+VD6gzjKtOzl08H77aoIGI2G1nWJ0mMJiMzNvpV0=
+X-Received: by 2002:a05:6902:120e:: with SMTP id s14mr22180060ybu.161.1633940020434;
+ Mon, 11 Oct 2021 01:13:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout01
-X-Rspamd-Queue-Id: BB1E8315D73
-X-Spam-Status: No, score=1.07
-X-Stat-Signature: n84kimb4bz15b5jy74h8onyheou8gaxc
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+c2uvZBT6CEkWr7ldUfzQsdcr/dGbp+bE=
-X-HE-Tag: 1633939910-285310
+References: <1633915150-13220-1-git-send-email-yangtiezhu@loongson.cn> <1633915150-13220-3-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <1633915150-13220-3-git-send-email-yangtiezhu@loongson.cn>
+From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Date:   Mon, 11 Oct 2021 10:13:29 +0200
+Message-ID: <CAM1=_QT+VNhTqH+urp155Hwkoax8O7Pqdv-fwGbFZkG8U2cnaw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/2] bpf, mips: Fix comment on tail call count limiting
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-10-11 at 09:32 +0300, Peter Ujfalusi wrote:
-> The standard location of dictionary.txt is under codespell's package, on
-> my machine atm (codespell 2.1, Artix Linux):
-> /usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
-> 
-> Since we enable the codespell by default for SOF I have constant:
+On Mon, Oct 11, 2021 at 3:19 AM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+> In emit_tail_call() of bpf_jit_comp32.c, "blez t2" (t2 <= 0) is
+> not consistent with the comment "t2 < 0", update the comment to
+> keep consistency.
+>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-If you enable it by default, you probably are using a .checkpatch.conf file.
---codespell is not a typical default so I think always doing this test
-regardless of --codespell being enabled is inappropriate.
+Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -73,6 +73,12 @@ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
->  my $tabsize = 8;
->  my ${CONFIG_} = "CONFIG_";
-> 
-> +# Override the codespellfile location based on codespell install location
-> +if (which("codespell") ne "" && which("python") ne "") {
-> +	my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
-> +	$codespellfile = $codespell_dict if (-e $codespell_dict);
-> +}
-> +
-
-Maybe add a function and/or use something like:
-
-	if (($codespell || $help) &&
-	    which(etc...
-
->  sub help {
->  	my ($exitcode) = @_;
->  
-> 
-> @@ -130,7 +136,7 @@ Options:
->    --ignore-perl-version      override checking of perl version.  expect
->                               runtime errors.
->    --codespell                Use the codespell dictionary for spelling/typos
-> -                             (default:/usr/share/codespell/dictionary.txt)
-> +                             (default:$codespellfile)
-
-I think this should not be changed or only be shown as $codespellfile when
---codespell is added on the command line
-
->    --codespellfile            Use this codespell dictionary
->    --typedefsfile             Read additional types from this file
->    --color[=WHEN]             Use colors 'always', 'never', or only when output
-
-
+> ---
+>  arch/mips/net/bpf_jit_comp32.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
+> index 9d7041a..bd996ed 100644
+> --- a/arch/mips/net/bpf_jit_comp32.c
+> +++ b/arch/mips/net/bpf_jit_comp32.c
+> @@ -1315,7 +1315,7 @@ static int emit_tail_call(struct jit_context *ctx)
+>         /* if (TCC-- <= 0) goto out */
+>         emit(ctx, lw, t2, ctx->stack_size, MIPS_R_SP);  /* t2 = *(SP + size) */
+>         emit_load_delay(ctx);                     /* Load delay slot         */
+> -       emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
+> +       emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 <= 0 */
+>         emit(ctx, addiu, t2, t2, -1);             /* t2-- (delay slot)       */
+>         emit(ctx, sw, t2, ctx->stack_size, MIPS_R_SP);  /* *(SP + size) = t2 */
+>
+> --
+> 2.1.0
+>
