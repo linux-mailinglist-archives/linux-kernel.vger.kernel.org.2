@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57546429141
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC75C429140
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238783AbhJKOQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:16:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34542 "EHLO mail.kernel.org"
+        id S244215AbhJKOQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:16:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244282AbhJKONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244287AbhJKONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Oct 2021 10:13:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7D7D6112D;
-        Mon, 11 Oct 2021 14:04:37 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E824A610E7;
+        Mon, 11 Oct 2021 14:04:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961078;
-        bh=N9C0vj695XLPomDQ/8Ef2C7d2lpKqKHMOpQhIVY19Z8=;
+        s=korg; t=1633961082;
+        bh=90j3KqDcIJeIiJ/g/3FQopNbkD1LE4QJBm6HsNbOlU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E9ZaAC6J/gg3CJ6YWQDBsTJnoHLfsp/LUJh/r4fn32m3YC1iKgi4y9yzjtuSGXX1Q
-         uQmcQCbYu34iaLHwk8CwF9Ybk1h+dYaCoK5VzuRBihqr+kYT7lJ+eCdDtUPT8sOdA1
-         ufGPPvm4hw/7pKNjf68Rprvwty+tcqjbIu1L2dL4=
+        b=oVHbJj13xrQjrLHcg3rJTwIS2oNeoq++4twrVj1qtrjmfgGHbzL55Ikl6mEZNExBy
+         5sexlL4j3c24sgALDo/Y7K/vVCCSnFNDAhPQdTky55oLL3aC0CZ59TLa0I4Wd4ywaO
+         ehoykCvowmO4Drn0ceDxXnjjZdZ6IF0GkiFYgRek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Hutchings <ben@decadent.org.uk>,
-        Salvatore Bonaccorso <carnil@debian.org>
-Subject: [PATCH 4.19 01/28] Partially revert "usb: Kconfig: using select for USB_COMMON dependency"
-Date:   Mon, 11 Oct 2021 15:46:51 +0200
-Message-Id: <20211011134640.758203186@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 02/28] USB: cdc-acm: fix racy tty buffer accesses
+Date:   Mon, 11 Oct 2021 15:46:52 +0200
+Message-Id: <20211011134640.794999985@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
 References: <20211011134640.711218469@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,36 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Hutchings <ben@decadent.org.uk>
+From: Johan Hovold <johan@kernel.org>
 
-commit 4d1aa9112c8e6995ef2c8a76972c9671332ccfea upstream.
+commit 65a205e6113506e69a503b61d97efec43fc10fd7 upstream.
 
-This reverts commit cb9c1cfc86926d0e86d19c8e34f6c23458cd3478 for
-USB_LED_TRIG.  This config symbol has bool type and enables extra code
-in usb_common itself, not a separate driver.  Enabling it should not
-force usb_common to be built-in!
+A recent change that started reporting break events to the line
+discipline caused the tty-buffer insertions to no longer be serialised
+by inserting events also from the completion handler for the interrupt
+endpoint.
 
-Fixes: cb9c1cfc8692 ("usb: Kconfig: using select for USB_COMMON dependency")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-Link: https://lore.kernel.org/r/20210921143442.340087-1-carnil@debian.org
+Completion calls for distinct endpoints are not guaranteed to be
+serialised. For example, in case a host-controller driver uses
+bottom-half completion, the interrupt and bulk-in completion handlers
+can end up running in parallel on two CPUs (high-and low-prio tasklets,
+respectively) thereby breaking the tty layer's single producer
+assumption.
+
+Fix this by holding the read lock also when inserting characters from
+the bulk endpoint.
+
+Fixes: 08dff274edda ("cdc-acm: fix BREAK rx code path adding necessary calls")
+Cc: stable@vger.kernel.org
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210929090937.7410-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/Kconfig
-+++ b/drivers/usb/Kconfig
-@@ -175,8 +175,7 @@ source "drivers/usb/roles/Kconfig"
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -474,11 +474,16 @@ static int acm_submit_read_urbs(struct a
  
- config USB_LED_TRIG
- 	bool "USB LED Triggers"
--	depends on LEDS_CLASS && LEDS_TRIGGERS
--	select USB_COMMON
-+	depends on LEDS_CLASS && USB_COMMON && LEDS_TRIGGERS
- 	help
- 	  This option adds LED triggers for USB host and/or gadget activity.
+ static void acm_process_read_urb(struct acm *acm, struct urb *urb)
+ {
++	unsigned long flags;
++
+ 	if (!urb->actual_length)
+ 		return;
+ 
++	spin_lock_irqsave(&acm->read_lock, flags);
+ 	tty_insert_flip_string(&acm->port, urb->transfer_buffer,
+ 			urb->actual_length);
++	spin_unlock_irqrestore(&acm->read_lock, flags);
++
+ 	tty_flip_buffer_push(&acm->port);
+ }
  
 
 
