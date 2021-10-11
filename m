@@ -2,95 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7C6428646
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111EC428639
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhJKFk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:40:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
+        id S233677AbhJKFeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233868AbhJKFk1 (ORCPT
+        with ESMTP id S230341AbhJKFeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:40:27 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD78C061570
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id g6so36290107ybb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=Rdn9D4x0MOe4OFaPDRRNFwa5LDZPW7fTkIH7dJRvtJo=;
-        b=fQnLkl/4ss325T4Ag7bFo97Pl94QbRtaKWnoI/kJ8hbfJBqcmPwv5pSbrVta6Pi3vo
-         kKQuqQE8jHHzsupDKHotwshPcqgym6msU82pK07AenEwqPo0qPzCoK4vKFqJh8utYiML
-         IsUd3Cyu7v/akVT+guEqEviOe/LzzHZRaLYWRzp7y6/DbfsJQQfWrZG0qOtoJFmuAVlN
-         c9W+DXpG06920sb1MVLoGavAvwEZu89Rfl/u/LbTuZdeSPibd8/MFj0Fo+RYXB0V4poI
-         BcUi2elFBMySMsWXZLfCv6BQ5VxfP+iePF8c//Tg5XCmumLZ0zZZh1gZAHM5E/t8O4qn
-         iUTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Rdn9D4x0MOe4OFaPDRRNFwa5LDZPW7fTkIH7dJRvtJo=;
-        b=JjhvX4OyT/afHeiiKBpUM+QlkpNOoV4WlMq2jKEgc7M0SLctjWgYJvezcweT3CATQO
-         zBAy9GyxiHc63jSD0G9CzK/hYbVu+Fno3MMJjF+C4zCsrNnjWuXBIKbGQMpZu645evx2
-         FtOh5ZRzuri3DLM1JVyXiIlNOB7reXk74lbNYEmxJtxz+2l7a+E5DrrlRVw+ZgqVMpJB
-         huUTin/sUmeAJh+ajv7/5dEtFpEnOnTgEz4lSoJhrpqZ7lnTQ6DbPiTt83iG0hqVFtu/
-         k0Nd16BBBtZ98t+tivPwdU1YGxX5fo5wq6h007rBZYyTJeDrytPneS+ae92RBF3siaCU
-         630A==
-X-Gm-Message-State: AOAM530FJucZuUTvwNSvaaREg5hndzxjTZ+JnJsNEBHqjw3yEQrxu4h8
-        Na+OTbYVk5lHw+HnWpV6MebTprQT3RK323U9alZmKl6PbmI=
-X-Google-Smtp-Source: ABdhPJxeI/+ttylIYXk2yhhAl4GZB8qsPyQr/goYyEkDHzOO0Ft3WrIzt+j6OvNIgVHCcrT9172zIG8NbDGkQcTQxRw=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr19715743ybc.35.1633930707041;
- Sun, 10 Oct 2021 22:38:27 -0700 (PDT)
+        Mon, 11 Oct 2021 01:34:36 -0400
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F179CC061570;
+        Sun, 10 Oct 2021 22:32:36 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 398A7424EC;
+        Mon, 11 Oct 2021 05:32:30 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-serial@vger.kernel.org
+References: <20211005155923.173399-1-marcan@marcan.st>
+ <20211005155923.173399-7-marcan@marcan.st>
+ <77ae3bb1-6da5-3ec6-de33-5e5f661b6145@canonical.com>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 6/7] tty: serial: samsung_tty: Support runtime PM
+Message-ID: <46109820-904b-4e87-5134-7d045dbbe57e@marcan.st>
+Date:   Mon, 11 Oct 2021 14:32:29 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Mon, 11 Oct 2021 07:28:32 +0200
-Message-ID: <CAKXUXMy0FUv25cUGDnhnv=3pTd7NGjepbHao7QoQw8h0hh3CRw@mail.gmail.com>
-Subject: Non-existing config symbols DEBUG_OMAP{3,4,5}UART{1,2}
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <77ae3bb1-6da5-3ec6-de33-5e5f661b6145@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Tony,
+On 06/10/2021 16.43, Krzysztof Kozlowski wrote:
+> On 05/10/2021 17:59, Hector Martin wrote:
+>> +	pm_runtime_get_noresume(&pdev->dev);
+>> +	pm_runtime_set_active(&pdev->dev);
+>> +	pm_runtime_enable(&pdev->dev);
+>> +
+> 
+> You need to cleanup in error paths (put/disable).
 
-With commit d2b310b0234c ("ARM: debug: Use generic 8250 debug_ll for
-omap2 and omap3/4/5 common uarts"), you added address definitions of
-DEBUG_UART_PHYS for OMAP2, OMAP3, OMAP4 and OMAP5 in
-./arch/arm/Kconfig.debug.
+There are none though, this function always returns success past this point.
 
-These definitions depend on:
-  - DEBUG_OMAP2UART1 || DEBUG_OMAP3UART1 || DEBUG_OMAP4UART1 ||
-DEBUG_OMAP5UART1, and
-  - DEBUG_OMAP2UART2 || DEBUG_OMAP3UART2 || DEBUG_OMAP4UART2 ||
-DEBUG_OMAP5UART2.
+>>   	if (port) {
+>> +		pm_runtime_get_sync(&dev->dev);
+> 
+> 1. You need to check return status.
+> 2. Why do you need to resume the device here?
 
-As of now, only DEBUG_OMAP2UART{1,2} are defined in
-./arch/arm/Kconfig.debug, but DEBUG_OMAP{3,4,5}UART{1,2} are not
-defined. Hence, ./scripts/checkkconfigsymbols.py warns here on
-non-existing symbols.
+As Rafael mentioned, this is basically disabling PM so the device is 
+enabled when not bound (which seems to be expected behavior). Not sure 
+what I'd do if the resume fails... this is the remove path after all, 
+it's not like we're doing anything else with the device at this point.
 
-I am unsure about the best way to resolve this issue.
+>> +
+>>   		s3c24xx_serial_cpufreq_deregister(to_ourport(port));
+>>   		uart_remove_one_port(&s3c24xx_uart_drv, port);
+>> +
+>> +		pm_runtime_disable(&dev->dev);
+> 
+> Why disabling it only if port!=NULL? Can remove() be called if
+> platform_set_drvdata() was not?
 
-- Would you like to simply reuse the config DEBUG_OMAP2UART{1,2} also
-for OMAP3, OMAP4 and OMAP5? Then, we probably just need to delete the
-dead references
-to DEBUG_OMAP{3,4,5}UART{1,2}. If you consider this further change
-helpful, we could even rename the configs to DEBUG_OMAP2PLUSUART{1,2}
-to make the architecture more specific.
+Good question, I'm not entirely sure why these code paths have a check 
+for NULL there. They were already there, do you happen to know why? To 
+me it sounds like remove would only be called if probe succeeds, at 
+which point drvdata should always be set.
 
-- Do you see the need for separate config definitions for UART{1,2} on
-OMAP3, OMAP4 and OMAP5? Then, we would need to add further definitions
-DEBUG_OMAP{3,4,5}UART{1,2}
-in this file and link those to the specific architecture.
-
-Once the direction is clear, I am happy to provide a patch to address
-this issue or you can quickly take care of this yourself.
-
-Best regards,
-
-Lukas
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
