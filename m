@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1290D42878A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 442A8428691
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhJKHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:21:55 -0400
-Received: from gandalf.ozlabs.org ([150.107.74.76]:52919 "EHLO
-        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234279AbhJKHVy (ORCPT
+        id S233802AbhJKGDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhJKGDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:21:54 -0400
-Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
-        id 4HSVYP2X9Hz4xqQ; Mon, 11 Oct 2021 18:19:53 +1100 (AEDT)
+        Mon, 11 Oct 2021 02:03:41 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97ADDC061570
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:01:41 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so5611132otk.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:01:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gibson.dropbear.id.au; s=201602; t=1633936793;
-        bh=6mTyoEeD81UgPE8G1mGEU//Fuq65qBZTt4bSRVKbg+w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ovs+Na8a2kRhJXcn14WcB4fglDHKqyAZ8/CQsxyOfabFSpI/zbbDZJwE3j7PULIlS
-         dSMCuiyIYVrWVCN6zc9OEJcA/dKef95nQHaBuR+WNkA4MWDlTuX4a8DC6JODeDtI67
-         hNoQ9jXaUTAluoawqk65gzodmZtswX8RetSUVLXg=
-Date:   Mon, 11 Oct 2021 16:37:38 +1100
-From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "jasowang@redhat.com" <jasowang@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "lkml@metux.net" <lkml@metux.net>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "lushenming@huawei.com" <lushenming@huawei.com>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
-        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
-        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
-Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
-Message-ID: <YWPNoknkNW55KQM4@yekko>
-References: <20210919063848.1476776-1-yi.l.liu@intel.com>
- <20210919063848.1476776-12-yi.l.liu@intel.com>
- <20210921174438.GW327412@nvidia.com>
- <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
- <20210922140911.GT327412@nvidia.com>
- <YVaoamAaqayk1Hja@yekko>
- <20211001122505.GL964074@nvidia.com>
- <YVfeUkW7PWQeYFJQ@yekko>
- <20211002122542.GW964074@nvidia.com>
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7h13AY5afsp7vOYth4Tp6m8iDZB9FmezNoNd7LDicIs=;
+        b=lyUPYDShvubOAEDt7S9DgDqXjg/pLHKhHBiXEIAL/UZd4qHyG0u2JQvRBhznnZ4x35
+         qNS3e4oo10kLWLPIc1XmaUqnnWcNFxG+AuHVjpIddAJhBBoIfh0KW7rRYMekjnF4KyEp
+         1hb5BzmWrPWTphiVf6RtPJdGRevl/uO9NQVZQJKZM/yl0z6sGhxnvY1LpDXFjC5X1pgT
+         MRs1ZGtQpwSKzuBjP0d/wlfAG6FcsQgOSUlAWkpbxwdckN00vxBU6Ge0VQsy1/p/gmHx
+         lLlmy20jRLeLNq4p+nkGMo835+JVweSz4QZf927vSsRBbpLIeZC1AxgIIEXnPg3D44Yg
+         M0/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7h13AY5afsp7vOYth4Tp6m8iDZB9FmezNoNd7LDicIs=;
+        b=sCFVi2ZEEW00hnwnrhxKZJ7Fnhg6YqAUAL7IFo2nuFHrcdw9g/+SHiz36YrYI0g4Bd
+         15eOIwvt580Ktc0mns86VX/Ind5T+oWNJrvT57vntd1PuApW7AEXz/s7PFEBtP70uNAs
+         ur1/jWX99UStCdKrrDyZmMg+X/WnCOyVBilUJAFjwu4ip4iPVZ6dQymNTRXpI85BT9lz
+         CGlcST+yKQwAUaGlat4ob8Sgt5aIkCNK/IgfMph5fpgFB5CIgmS/FMV+TF2s4qyDWQHu
+         TQ0fFJRVeC4Lyx6sb1MoO+szm8jUpnNxOIRA8VDhshO2kvxgjXVGG9J2fFh+UKEgZsjo
+         FkSw==
+X-Gm-Message-State: AOAM533mI8KfON3rMmZxHuORcQnhyBmMVXl1ROwY7RakRTiqcLEoe9+P
+        +V/zMu0ggm50PUtdIkAXVSQZ0YLT/goeP/6rTjAp5w==
+X-Google-Smtp-Source: ABdhPJz6zIDjEcRBmZaIIG+x4aD2tmmvwn24+vDfvh9lRvssH6+aecFI5E50J4ASRStv3JjDrHLbNCI/zEb5vtfp0mY=
+X-Received: by 2002:a9d:3e04:: with SMTP id a4mr20242022otd.329.1633932100754;
+ Sun, 10 Oct 2021 23:01:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="XAp8YQc7m504M8vp"
-Content-Disposition: inline
-In-Reply-To: <20211002122542.GW964074@nvidia.com>
+References: <YWLwUUNuRrO7AxtM@arighi-desktop>
+In-Reply-To: <YWLwUUNuRrO7AxtM@arighi-desktop>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 11 Oct 2021 08:00:00 +0200
+Message-ID: <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
+Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
+To:     Andrea Righi <andrea.righi@canonical.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 10 Oct 2021 at 15:53, Andrea Righi <andrea.righi@canonical.com> wrote:
+> I can systematically reproduce the following soft lockup w/ the latest
+> 5.15-rc4 kernel (and all the 5.14, 5.13 and 5.12 kernels that I've
+> tested so far).
+>
+> I've found this issue by running systemd autopkgtest (I'm using the
+> latest systemd in Ubuntu - 248.3-1ubuntu7 - but it should happen with
+> any recent version of systemd).
+>
+> I'm running this test inside a local KVM instance and apparently systemd
+> is starting up its own KVM instances to run its tests, so the context is
+> a nested KVM scenario (even if I don't think the nested KVM part really
+> matters).
+>
+> Here's the oops:
+>
+> [   36.466565] watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [udevadm:333]
+> [   36.466565] Modules linked in: btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear psmouse floppy
+> [   36.466565] CPU: 0 PID: 333 Comm: udevadm Not tainted 5.15-rc4
+> [   36.466565] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+[...]
+>
+> If I disable CONFIG_KFENCE the soft lockup doesn't happen and systemd
+> autotest completes just fine.
+>
+> We've decided to disable KFENCE in the latest Ubuntu Impish kernel
+> (5.13) for now, because of this issue, but I'm still investigating
+> trying to better understand the problem.
+>
+> Any hint / suggestion?
 
---XAp8YQc7m504M8vp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can you confirm this is not a QEMU TCG instance? There's been a known
+issue with it: https://bugs.launchpad.net/qemu/+bug/1920934
 
-On Sat, Oct 02, 2021 at 09:25:42AM -0300, Jason Gunthorpe wrote:
-> On Sat, Oct 02, 2021 at 02:21:38PM +1000, david@gibson.dropbear.id.au wro=
-te:
->=20
-> > > > No. qemu needs to supply *both* the 32-bit and 64-bit range to its
-> > > > guest, and therefore needs to request both from the host.
-> > >=20
-> > > As I understood your remarks each IOAS can only be one of the formats
-> > > as they have a different PTE layout. So here I ment that qmeu needs to
-> > > be able to pick *for each IOAS* which of the two formats it is.
-> >=20
-> > No.  Both windows are in the same IOAS.  A device could do DMA
-> > simultaneously to both windows. =20
->=20
-> Sure, but that doesn't force us to model it as one IOAS in the
-> iommufd. A while back you were talking about using nesting and 3
-> IOAS's, right?
->=20
-> 1, 2 or 3 IOAS's seems like a decision we can make.
+One thing that I've been wondering is, if we can make
+CONFIG_KFENCE_STATIC_KEYS=n the default, because the static keys
+approach is becoming more trouble than it's worth. It requires us to
+re-benchmark the defaults. If you're thinking of turning KFENCE on by
+default (i.e. CONFIG_KFENCE_SAMPLE_INTERVAL non-zero), you could make
+this decision for Ubuntu with whatever sample interval you choose.
+We've found that for large deployments 500ms or above is more than
+adequate.
 
-Well, up to a point.  We can decide how such a thing should be
-constructed.  However at some point there needs to exist an IOAS in
-which both windows are mapped, whether it's directly or indirectly.
-That's what the device will be attached to.
-
-> PASID support will already require that a device can be multi-bound to
-> many IOAS's, couldn't PPC do the same with the windows?
-
-I don't see how that would make sense.  The device has no awareness of
-multiple windows the way it does of PASIDs.  It just sends
-transactions over the bus with the IOVAs it's told.  If those IOVAs
-lie within one of the windows, the IOMMU picks them up and translates
-them.  If they don't, it doesn't.
-
---=20
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
-
---XAp8YQc7m504M8vp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFjzaIACgkQbDjKyiDZ
-s5LujA/+J+md5jc+nVRrvzZTN2GADL6m83rgNracoDm6uMvDRuCivgx8Gb61JAzj
-4vdjATq7RrfNZK6OtwjU5TW4OPWr5Q6HltxUR7thLNZYgXdcquJZHtHz4VpddvVb
-jbdydqJmo2pBy5lMenRlkZM4s8Yj1ERjPsRelh32pFWP4MGbFQaKDgxbypmWSVvT
-T8eQfFlANqFI6nKKUt0C2vl4i+xHVMSxd+WFcsk1+xue7XI6KsnQ1pNOVJ2lB3Ai
-+6RSwer5qMA001/lYRmFETyW6+eKZuIFR4RCiq1FdJuJnrcqZSofFErPj6IRDHL7
-Dar99VlTQHgVgtrBmFxezRZeBHVQlAdJQgos3VVhL5+o+8KjmusWWxVAKi372cX3
-pDGbUyurpqMrYinPewTVeyT0dDOHXfEnYDgGsj+v8SxtIYENPf92AziOx+KNBRlI
-MCJkh6xQpfgEROvYp7bilA8RqymffYV+rz2sVoGDb8ZfIUeFuNJKqACKN3JIYlZS
-6Hk+LH2QZjBwEw+i/hDrmdfYOLD2h0G1wRFJO6HdiVBgV4P+h08RFd874tU1skeR
-LEYx8SoXpseZuyP45tSblYe7yvnE8cHIjLVHD8H/Aa6kvi4l6FCJeRTANYysWH4s
-weFKjdEHPGNAi6vo19Hw5IaDJufGkPYq0jZA44jesTI0ejvBfqY=
-=xnee
------END PGP SIGNATURE-----
-
---XAp8YQc7m504M8vp--
+Thanks,
+-- Marco
