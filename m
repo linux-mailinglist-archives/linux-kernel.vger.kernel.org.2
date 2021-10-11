@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7354298C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC094298C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235250AbhJKVTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53364 "EHLO
+        id S235265AbhJKVTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235143AbhJKVTF (ORCPT
+        with ESMTP id S235253AbhJKVTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:19:05 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3848EC061570;
-        Mon, 11 Oct 2021 14:17:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oHJKmsHD7penyk6OD1+g+sCSq0p6pDMGXXRqG5EFM2c=; b=h/sv7zpH5SRitkNKfrncMjc6+J
-        LyoGPSyYNuJrXTemLutd74V6qekrmUKV0oY7yjjYyyQGJhekRcD4ptrgU/BKG8NpcfVwPfvBXrj2f
-        BCuTVhE5zRs7TPR1VThprQ1Sn0D2E35Yv4+AQuGeNQY2fvKe5EGLAQIfqsSHQ3SUysdkE4oY+6ma6
-        T/UY8u7j8hhNSY8lxlp48NwGVgU4RsLJJYNiX90cuLkPZE3yqFBUuRv8kNwtzGkVEiz8ffozZ2yCw
-        UEqaT6pj2inuyQJnopCZC+YfY8YA5kK2kroSQdm6AkajSrfiGm78OJDH0/h+KIwo0ZzXWMX5hFBRL
-        6y26P6rA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ma2fK-00Ajc8-3G; Mon, 11 Oct 2021 21:16:58 +0000
-Date:   Mon, 11 Oct 2021 14:16:58 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 06/12] kernel/module: add documentation for
- try_module_get()
-Message-ID: <YWSpyrhK4PA6MFro@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-7-mcgrof@kernel.org>
- <202110051252.790B3F2F0@keescook>
+        Mon, 11 Oct 2021 17:19:10 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FA4C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:17:10 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id t16so5476204qto.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aFaiNjeTvld1X0vmZ2G8WJDTc5Mp6lRCwddZ5BoVR2Q=;
+        b=Gb2RHde2HCKly4rPx15NmHm1f7OWhrDTPB3a0iaNuflguTgncOk7Kvaw1KLKEdTaJO
+         J3AGNOCXxeWy7w2MnHfbSydxQuJhSg4TWodM8k8FSXRmijzpYmSwwufNcfKGVqScyex+
+         2Ozg675RNYEVr4++41Mr1WyJwkpyvI6Gt2UuzdHqsTjlUaRrtfxqCgiLIjrIYqhOo1zk
+         7LT0LEsYSqoEn4P2vgDEl2xHywR5AZulDVopV0wnwTW9xV2e6ncAFzzUXosQGjpp1txA
+         zIylJcrs6sMShuvPgi8O+by4rUyYbYOXiTVrQnoRjeWfM4dz+kVNmgl+hHigM/8Z/uzx
+         LDHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aFaiNjeTvld1X0vmZ2G8WJDTc5Mp6lRCwddZ5BoVR2Q=;
+        b=6BljfqfJFCnEc0ZPQv3rEc27rYWg/MfdyajptTmEf8okcA3keXcc5H+QlaGUY+cSoc
+         OueuvVvlK+DJmVXrYcKzk8CZPwuHAwWb00pQ2tDOIRTDj4Niw2WSAl7hDfhKQlgm2Dvj
+         fqKkgyUdnOmkwub8loG9h29YkOxAeKoqFDI6Is8weRpAxkADFvPlop8PLgWt8fRSNDpJ
+         09JBaxmzta1Vx70jcYeu//CoNRP+oTERC/UVsO0vV1NJMlOYCqo9Ad8Wgj7l0oFg7VT/
+         nu4HqSsNw/CyujD8CCG2+EJcLh9k0oHHlm7HbA6Wge6Fx65jD6xyMC87T/IyNaOXN3GG
+         2cyQ==
+X-Gm-Message-State: AOAM533DajsNAQV3pfhoCEmhQYTw51jl5HetlR5vZwYCrLcTtfX8gva7
+        aG4hgK2cPkRnoPyDRxuWHb/srA==
+X-Google-Smtp-Source: ABdhPJz7OaV0k5DNpo+Cq2aVen8Ye/B/FsyQaMp+I9D3BUe3XJWtXSXSh7FNWC9QRXKN+u3xiB6WjA==
+X-Received: by 2002:ac8:3e8a:: with SMTP id y10mr17839236qtf.31.1633987029152;
+        Mon, 11 Oct 2021 14:17:09 -0700 (PDT)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id c7sm3252830qke.78.2021.10.11.14.17.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 14:17:08 -0700 (PDT)
+Subject: Re: [PATCH 3/5] cpufreq: qcom-cpufreq-hw: Update offline CPUs per-cpu
+ thermal pressure
+To:     Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, sudeep.holla@arm.com,
+        will@kernel.org, catalin.marinas@arm.com, linux@armlinux.org.uk,
+        gregkh@linuxfoundation.org, rafael@kernel.org,
+        viresh.kumar@linaro.org, amitk@kernel.org,
+        daniel.lezcano@linaro.org, amit.kachhap@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org
+References: <20211007080729.8262-1-lukasz.luba@arm.com>
+ <20211007080729.8262-4-lukasz.luba@arm.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <be6fb99f-90bc-9ba1-b5a7-034b30734158@linaro.org>
+Date:   Mon, 11 Oct 2021 17:17:08 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110051252.790B3F2F0@keescook>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+In-Reply-To: <20211007080729.8262-4-lukasz.luba@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:58:47PM -0700, Kees Cook wrote:
-> On Mon, Sep 27, 2021 at 09:37:59AM -0700, Luis Chamberlain wrote:
-> > diff --git a/include/linux/module.h b/include/linux/module.h
-> > index c9f1200b2312..22eacd5e1e85 100644
-> > --- a/include/linux/module.h
-> > +++ b/include/linux/module.h
-> > @@ -609,10 +609,40 @@ void symbol_put_addr(void *addr);
-> >     to handle the error case (which only happens with rmmod --wait). */
-> >  extern void __module_get(struct module *module);
-> >  
-> > -/* This is the Right Way to get a module: if it fails, it's being removed,
-> > - * so pretend it's not there. */
-> > +/**
-> > + * try_module_get() - yields to module removal and bumps refcnt otherwise
+
+
+On 10/7/21 4:07 AM, Lukasz Luba wrote:
+> The thermal pressure signal gives information to the scheduler about
+> reduced CPU capacity due to thermal. It is based on a value stored in
+> a per-cpu 'thermal_pressure' variable. The online CPUs will get the
+> new value there, while the offline won't. Unfortunately, when the CPU
+> is back online, the value read from per-cpu variable might be wrong
+> (stale data).  This might affect the scheduler decisions, since it
+> sees the CPU capacity differently than what is actually available.
 > 
-> I find this hard to parse. How about:
-> 	"Take module refcount unless module is being removed"
-
-Sure.
-
-> > + * @module: the module we should check for
-> > + *
-> > + * This can be used to try to bump the reference count of a module, so to
-> > + * prevent module removal. The reference count of a module is not allowed
-> > + * to be incremented if the module is already being removed.
+> Fix it by making sure that all online+offline CPUs would get the
+> proper value in their per-cpu variable when there is throttling
+> or throttling is removed.
 > 
-> This I understand.
+> Fixes: 275157b367f479 ("cpufreq: qcom-cpufreq-hw: Add dcvs interrupt support")
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Thanks for the fix.
+
+Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
+
+> ---
+>   drivers/cpufreq/qcom-cpufreq-hw.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> > + *
-> > + * Care must be taken to ensure the module cannot be removed during the call to
-> > + * try_module_get(). This can be done by having another entity other than the
-> > + * module itself increment the module reference count, or through some other
-> > + * means which guarantees the module could not be removed during an operation.
-> > + * An example of this later case is using try_module_get() in a sysfs file
-> > + * which the module created. The sysfs store / read file operations are
-> > + * gauranteed to exist through the use of kernfs's active reference (see
-> > + * kernfs_active()). If a sysfs file operation is being run, the module which
-> > + * created it must still exist as the module is in charge of removing the same
-> > + * sysfs file being read. Also, a sysfs / kernfs file removal cannot happen
-> > + * unless the same file is not active.
+> diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+> index a2be0df7e174..0138b2ec406d 100644
+> --- a/drivers/cpufreq/qcom-cpufreq-hw.c
+> +++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+> @@ -304,7 +304,8 @@ static void qcom_lmh_dcvs_notify(struct qcom_cpufreq_data *data)
+>   	if (capacity > max_capacity)
+>   		capacity = max_capacity;
+>   
+> -	arch_set_thermal_pressure(policy->cpus, max_capacity - capacity);
+> +	arch_set_thermal_pressure(policy->related_cpus,
+> +				  max_capacity - capacity);
+>   
+>   	/*
+>   	 * In the unlikely case policy is unregistered do not enable
 > 
-> I can't understand this paragraph at all. "Care must be taken ..."? Why?
 
-Because the routine try_module_get() assumes the struct module pointer
-is valid for the entire call. That can only be true if at least one
-reference is held prior to this call.
-
-> Shouldn't callers of try_module_get() be satisfied with the results?
-
-Yes but only with the above care addressed.
-
-> I don't follow the example at all. It seems to just say "sysfs store/read
-> functions don't need try_module_get() because whatever opened the sysfs
-> file is already keeping the module referenced." ?
-
-That is exactly what I intended to clarify with that example, yes, a
-reference is held but this is done implicitly. *If* a kernfs op is
-active module removal waits for that active reference to go down. So
-while a kernfs file is being used it is simply not possible for the
-module to disappear underneath us. And the reason is that the module
-that created the sysfs file must obviously destroy that same sysfs file.
-But since kernfs ensures that sysfs file cannot be removed if a sysfs
-file is being used, this implicitly holds a module reference.
-
-Let me know if y ou can think of a better way to phrase this.
-
-> > + *
-> > + * One of the real values to try_module_get() is the module_is_live() check
-> > + * which ensures this the caller of try_module_get() can yield to userspace
-> > + * module removal requests and fail whatever it was about to process.
-> 
-> Please document the return value explicitly.
-
-Sure thing.
-
-  Luis
+-- 
+Warm Regards
+Thara (She/Her/Hers)
