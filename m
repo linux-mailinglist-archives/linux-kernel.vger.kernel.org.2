@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7DE4299D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 530EF4299DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235708AbhJKXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
+        id S231339AbhJKXh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235583AbhJKXam (ORCPT
+        with ESMTP id S229576AbhJKXhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:30:42 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249B8C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id az39so4240203qkb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
+        Mon, 11 Oct 2021 19:37:25 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5DAC06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:35:24 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id a8so7472921ilj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 16:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
-        b=HgSVsa1leI1AlSIfToVWroe+BjAOI3ghwR21CHGPDVexnWIRNvq+Q6E9d3FU+ST+no
-         ocS0/TW3SNZ8jyMLrwCJrPh0ePUJ+a688MNeO/SOH6dsbggdYjQGAUsJxiPe5U0kF/4c
-         XY58+grwbQEppK31zpbsIZaW6qYJZ2vewp8ofGFLbXaclZQIMcZ93nEBHioo26AFAdN3
-         o9ugEBJiQo11Zaj9DuRnUJDPPLYMfgS8KowTy+yVz6++iq5k4ln0p/MdXC+vaaQP/YGk
-         4LaDhUUPgzqijbwXAaNpf83nIDlspt7EVCcaadtiRVk58NDA1pLNB31/ejPvhAokpOj1
-         4Y3A==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=5doF16hgQ3anNx2OCPKaP+dXIpOli1yTZ6ngdBuBPis=;
+        b=orely8MgtNwldKi8vvjgwRrrVmEA3FT1+7e7APbVNVZLwik9l0ldgZvrGZX8MEsOjX
+         O5bbA7TNPjFzkEErsb+BRjq5sAQrDNZRat7QASgMHXMUXY7swNKiI5ZtT+GURzKaSPVi
+         DRaCXRT9WHbCfwvSJbc4YMZ6/2iBME/Eu4ohahxAutQG7bKRgDk7/7/XWovPGNg/9iKk
+         h2pYzE0p0q4PnCWbG9JUW4NuvyLHqIgM5ltWqbmRWPYQcV0urE3wDNNMAEWinEx8HkJN
+         FN9fWmHrF0ErNm5Bf+5Z1uUVufyFaigo+TMbjDqV9N5qKBpiysPGNfOoss9aOi4SRJJ3
+         T6IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
-        b=YkOyOJxlFMpX7dMZOSiQJx8By5Wkzgm1r21mfraaqas2syywbIWvUCvw5SSn9vp0Bc
-         mtw6ZKIiA59YammIWBKxKCQ+XefiG7gy6eQ5QdZhg7qMvN0284bIXvS109JF7/SP3uQ3
-         FdbihNRdXXKEU93OSIgnM8IOS6o6Swq7IP+xMdnijf2hnwIm/QCefFXb37SQSg33Tr/x
-         vHAAYFrfyDw2U6l63LR8fbwgNwnCzSVTKqe4MTjcF4D8O97r+YGtjl4TbLqDV2swobd+
-         ufXy677DmeIZSoqxnFy0OSiFiFK9NkorhKjRBO5HpihbpBxWB01/yZfQkHTHWAx8w3CP
-         jgNg==
-X-Gm-Message-State: AOAM532MOjk8nMJNCwgufmcWVWVSoa/QMVVyeZxQoHTrFw5qTOMJvqCq
-        MZYIpw8C4VMYHbcpmXOuRY9U3g==
-X-Google-Smtp-Source: ABdhPJztEyniOAoNC1NU3iq7Ij0MXitTU2tCF7xYZyS71yMXt88Vb38CmA4delGadNYZaeqqHQ8bqQ==
-X-Received: by 2002:a37:f71a:: with SMTP id q26mr16843729qkj.3.1633994921355;
-        Mon, 11 Oct 2021 16:28:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id d5sm5245821qtr.61.2021.10.11.16.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 16:28:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ma4il-00Dk4y-VJ; Mon, 11 Oct 2021 20:28:39 -0300
-Date:   Mon, 11 Oct 2021 20:28:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Message-ID: <20211011232839.GF2688930@ziepe.ca>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
- <20211007114018.GD2688930@ziepe.ca>
- <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=5doF16hgQ3anNx2OCPKaP+dXIpOli1yTZ6ngdBuBPis=;
+        b=xfG5mqhnHPjKX1isJ+3cmHsPf8htQx64szq4F7Xc1EHYY6AsrO9s45JHvYJFCKHyyM
+         8mrslDbNsurm76gAfaLYBsqLm3nfh6UmeM15duhjLpZLtWudwu/p3NKLLAMqLW8ck/Nj
+         eEmjveoknOsG0GNa8lOQojjt56D/f0YHwViQxxMsC9okMqZ4RqwxW3mjB5JUq1HKYAvg
+         TgknIFoc5dRgxOozHupj5XKiHOeTNDd3CuDTN4Lg5/hpFAxaRbrbhIwNXRzKFMciW3j0
+         hpyaXWObbNC0D4NbJhdwZI6NWp5kc4VdNZDArach1IUcddSxbY3QweKt9w7EzlZNF0ym
+         r29Q==
+X-Gm-Message-State: AOAM532MNPoy6CnjnkyQEcQoqQv1d8VJmz5rds1QkdYx1FJY/HEz3ItM
+        FjmzF+32K4Qu51iQbTyUvCPLeJKXn0LnvitdI8IfJg==
+X-Google-Smtp-Source: ABdhPJy2izrFy6yKEjmXxdCtTrauEY8LyyOUbl1XHovhk5CFgmN6Xmv2q/VEA2U+HlGpHWCLx79RI0ExAYTeCmo9bvg=
+X-Received: by 2002:a05:6e02:1e02:: with SMTP id g2mr11836329ila.89.1633995323893;
+ Mon, 11 Oct 2021 16:35:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+References: <20211011232446.250195-1-irogers@google.com> <20211011232446.250195-2-irogers@google.com>
+In-Reply-To: <20211011232446.250195-2-irogers@google.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 11 Oct 2021 16:35:11 -0700
+Message-ID: <CAP-5=fX9czHvqwj9DGABe8M59Rck17U9kDMhAgwxHn_L=D04zw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] perf clang: Fixes for more recent LLVM/clang
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Leo Yan <leo.yan@linaro.org>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
-> On 07/10/2021 14:40, Jason Gunthorpe wrote:
-> > On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
-> > 
-> >> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
-> >>  	return 0;
-> >>  }
-> >>  
-> >> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
-> >> -			 u64 virt_addr, int access_flags,
-> >> -			 struct ib_udata *udata)
-> >> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-> >> +{
-> >> +	WARN_ON_ONCE(1,
-> >> +		     "Invalidate callback should not be called when memory is pinned\n");
-> >> +}
-> >> +
-> >> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
-> >> +	.allow_peer2peer = true,
-> >> +	.move_notify = efa_dmabuf_invalidate_cb,
-> >> +};
-> > 
-> > Shouldn't move_notify really just be left as NULL? I mean fixing
-> > whatever is preventing that?
-> 
-> That's what I had in the previous RFC and I think Christian didn't really like it.
+On Mon, Oct 11, 2021 at 4:24 PM Ian Rogers <irogers@google.com> wrote:
+>
+> The parameters to two functions and the location of a variable have
+> changed in more recent LLVM/clang releases.
+>
+> Tested with LLVM 6, 8, 9, 10 and 11.
+>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/c++/clang.cpp | 20 +++++++++++++-------
+>  1 file changed, 13 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/perf/util/c++/clang.cpp b/tools/perf/util/c++/clang.cpp
+> index c8885dfa3667..756200cb80b1 100644
+> --- a/tools/perf/util/c++/clang.cpp
+> +++ b/tools/perf/util/c++/clang.cpp
+> @@ -44,7 +44,6 @@ createCompilerInvocation(llvm::opt::ArgStringList CFlags, StringRef& Path,
+>                 "-triple", "bpf-pc-linux",
+>                 "-fsyntax-only",
+>                 "-ferror-limit", "19",
+> -               "-fmessage-length", "127",
 
-Well, having drivers define a dummy function that only fails looks
-a lot worse to me. If not null then it should be a general
-'dmabuf_unsupported_move_notify' shared function
+Sorry, missed from the commit message. I removed this flag to format
+output down to 127 columns as with clang 11 I see in perf test:
 
-> >> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
-> >> +	if (err) {
-> >> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
-> >> +		goto err_unpin;
-> >> +	}
-> >> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> > 
-> > If it is really this simple the core code should have this logic,
-> > 'ib_umem_dmabuf_get_pinned()' or something
-> 
-> Should get_pinned do just get + dma_buf_pin, or should it do
-> ib_umem_dmabuf_map_pages as well?
+58: builtin clang support                                           :
+58.1: builtin clang compile C source to IR                          :
+--- start ---
+test child forked, pid 279307
+error: unknown argument: '-fmessage-length'
+1 error generated.
+test child finished with -1
 
-Yes the map_pages too, a umem is supposed to be dma mapped after
-creation.
+The flag isn't necessary for correct operation.
 
-Jason
+Thanks,
+Ian
+
+>                 "-O2",
+>                 "-nostdsysteminc",
+>                 "-nobuiltininc",
+> @@ -55,7 +54,11 @@ createCompilerInvocation(llvm::opt::ArgStringList CFlags, StringRef& Path,
+>                 "-x", "c"};
+>
+>         CCArgs.append(CFlags.begin(), CFlags.end());
+> -       CompilerInvocation *CI = tooling::newInvocation(&Diags, CCArgs);
+> +       CompilerInvocation *CI = tooling::newInvocation(&Diags, CCArgs
+> +#if CLANG_VERSION_MAJOR >= 11
+> +                                                        ,/*BinaryName=*/nullptr
+> +#endif
+> +                                                        );
+>
+>         FrontendOptions& Opts = CI->getFrontendOpts();
+>         Opts.Inputs.clear();
+> @@ -151,13 +154,16 @@ getBPFObjectFromModule(llvm::Module *Module)
+>
+>         legacy::PassManager PM;
+>         bool NotAdded;
+> -#if CLANG_VERSION_MAJOR < 7
+> -       NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream,
+> -                                                     TargetMachine::CGFT_ObjectFile);
+> +       NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream
+> +#if CLANG_VERSION_MAJOR >= 7
+> +                                                      , /*DwoOut=*/nullptr
+> +#endif
+> +#if CLANG_VERSION_MAJOR < 10
+> +                                                      , TargetMachine::CGFT_ObjectFile
+>  #else
+> -       NotAdded = TargetMachine->addPassesToEmitFile(PM, ostream, nullptr,
+> -                                                     TargetMachine::CGFT_ObjectFile);
+> +                                                      , llvm::CGFT_ObjectFile
+>  #endif
+> +                                                      );
+>         if (NotAdded) {
+>                 llvm::errs() << "TargetMachine can't emit a file of this type\n";
+>                 return std::unique_ptr<llvm::SmallVectorImpl<char>>(nullptr);
+> --
+> 2.33.0.882.g93a45727a2-goog
+>
