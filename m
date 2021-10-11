@@ -2,272 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B24428862
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27398428881
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:19:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhJKINY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:13:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:35246 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231300AbhJKINX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:13:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60E7813A1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
-Received: from mail-pl1-f177.google.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 496CF3FA35
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
-Received: by mail-pl1-f177.google.com with SMTP id f21so2010048plb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:11:23 -0700 (PDT)
-X-Gm-Message-State: AOAM533ziykEARnb1Pqr4KjgiUjjEBDSTwWEc5xmP6b+VMtsKJUGqnYp
-        +/+spGn5mdpoV9qE5AeSVu3MYVu++nq81rCxUCI=
-X-Google-Smtp-Source: ABdhPJxpgWkq2JXuhyC5cSUsG8YBYjnxKFd9JFYfb0AdYL4fS13p9K2CJ10dWF5pg4KXSn5b2Uhp22eVuQguQX4tG9g=
-X-Received: by 2002:a17:90a:46c2:: with SMTP id x2mr29707698pjg.207.1633939878591;
- Mon, 11 Oct 2021 01:11:18 -0700 (PDT)
+        id S234961AbhJKIVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:21:16 -0400
+Received: from esa4.fujitsucc.c3s2.iphmx.com ([68.232.151.214]:38094 "EHLO
+        esa4.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234924AbhJKIVI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:21:08 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Oct 2021 04:21:07 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1633940349; x=1665476349;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2AvPQas6Wp8vQBaxKaqOvSqERv9wuDGQKDfCpZXLZfQ=;
+  b=Ut9GE8V3gmoyCdyF7eRtCq6sfkpgUo0Sp+IOPuvc6RguVjYWg6unfZIx
+   dNLC26SBH3J3FRvsO85lXUoUfR9XKBMjxF1K4DKvgRWddDUXQbRA0tlxa
+   a+CkfHaWk8VwWHsVYW7O66rtcW2+99wloMnVVEBmTdCdKBiWHmkkV3hze
+   nng1OH/OgnIb3A0Is5b+EyotGE7lLxmTk5uXj2X0nCubY7vm7jb3nffct
+   FcDFHN8IqbHHm5ID9xV0iVLTCTK0PxHE79m1KLA6FSTwrIH6qhQAaeKrJ
+   CRe2/oFMp9dG3qD1EA/H+EVAd4Ti368KNEBRVOjxqKiUIIH2hagNNedSJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="49064223"
+X-IronPort-AV: E=Sophos;i="5.85,364,1624287600"; 
+   d="scan'208";a="49064223"
+Received: from mail-os2jpn01lp2051.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.51])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 17:11:53 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=caNFRaMV8FhG3IgAcVeuFMg30RopbQg/TkWO1uEv3t/VQLWK8TbB/e7+hoSPJAUxzbQR8PvUfkbyI37nC7aoZvccqeTYnr+7FUsF9wTGzsiz5fM91c1si1W7iuPXeBBktFiwmN3ZoCla4qnSbIgiMAbsGOEBlrVVfhABtyOiyfrjU3GI2PSF2tdFBjXrU7Z3QWlPD1th8JXAtThvYSCzoDRSkkyliQmexIpAVngXxkoRGjhc2AUb9wIWdZToIEMqOYMZOBX6nYCFJvowWsYyCYCxTzFxHyi9OxjzDNKYeoaie71LdxCAtVBKAtMpayF7t4NPOgPtZOqZdDflDO6NtQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IJB6ZxPDnPRqN1nxNaQpqGodoyI6hQwFs+fbS+ilSYE=;
+ b=SDN7gJtahm1ufFcQBNHThJqqe1DKq18kXathzfBCV1HNYinUZkSFEMXYzc1LKffFJc15QnD2pm1uXpIhx9E6jqeVsJRokK4FPmfmESl63VBC91rKIH/Sa8kpbHUF8JhmLb9X9KjJcwK0PhSlLxTEnQ/36lV+vmTiMORWCjrNjuJ4lBTpiaX6chHYvT1h6AzshKhe2wVblHCa72JF+nQ/4GgjOidAXmokj4pDQJA2gLhIJP8HccggdtoxH5rAIL/ic2JXcNemU5zLjH1vW38HYylD/9n5ocD0czFQdr8hnBqtyyi8hEuoWfDER7xLzLD5ZVAc5P5+O5XC9IouWG1CaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJB6ZxPDnPRqN1nxNaQpqGodoyI6hQwFs+fbS+ilSYE=;
+ b=WgPpK8+n0QevEbXu9jdw70UKbwcogb5tGXZf1wlfXsB1+f8QuDhZ6sMt8fKWctro17ZThxNC6LqyjlSTuB6B9/kd4XhufosZQD9Og9DjgMM+Gwi2eNN0PWaXEfp9ThFzxo12/3h8B4rQDry88lnAKUNAf2piTPiLIVOvPYJrzMQ=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB4949.jpnprd01.prod.outlook.com (2603:1096:604:38::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.19; Mon, 11 Oct
+ 2021 08:11:49 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::c4a1:9dfb:41c:bb5f]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::c4a1:9dfb:41c:bb5f%6]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
+ 08:11:49 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH v2] libperf tests: Fix test_stat_cpu
+Thread-Topic: [PATCH v2] libperf tests: Fix test_stat_cpu
+Thread-Index: AQHXu52fLyXHUCgsQkOb79TNHJGPtKvJdFqAgAQDFK4=
+Date:   Mon, 11 Oct 2021 08:11:49 +0000
+Message-ID: <OSBPR01MB4600710A07177677DF2F6E0CF7B59@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20211006094817.477494-1-nakamura.shun@fujitsu.com>
+ <YV8o9nukzBTkWmlw@krava> <YWCTrY/5zQLJm6kd@kernel.org>
+In-Reply-To: <YWCTrY/5zQLJm6kd@kernel.org>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-10-11T08:11:48.948Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+suggested_attachment_session_id: ca6bb222-baac-c034-06c4-e030702adc52
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dfd5bece-c724-4757-81bb-08d98c8ec69e
+x-ms-traffictypediagnostic: OSBPR01MB4949:
+x-microsoft-antispam-prvs: <OSBPR01MB494971B052BED3B21DD56962F7B59@OSBPR01MB4949.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: b78NdzawC+1Ity/+KVJcu3yEkQisNGlqQ4N3aQgvfdFoFZJPlVnW0NETPXXIhUQf2EEH6/BIK452G9YJxP+md1tgEIoQQXvIG5FcwpAQEtIhR+tQ2pNvi1sQXix4l+ERrg6OCkyrTqJbue2eAyxl4Ed5gVVoayOrW3Cgypr23g/D2EF8T03A8x6IBhhqGJ/dKYNdJZDZIaAz3xLhIqZsLvdnNsSuO8JQoDJ/EcRK2xo8j/x24tgZR/qP7ZZNkdscJJrbl4ngG2stsOVx+rh/iVNYjw82nTKjHq3MBrE+NfenlFWD28N5GDeRrmEWqwUc+102Xe+ldfQba1dtjr34abdtZ358mMLwpWGbI3BE3v3wW6v/l2+fJaZvXJFTLrsUai1cxeCXxJ8c4S4pVJaryCpY/sT0N8ikiIPG62WX3tACq0zKN31CyVKTc8sheAKtEM8+kEvbTA5+LXNrfk0VfUXhP2ogKPpWLXe58nxJU63T4MU85Z8ya+Q20O+kiMw9g4q9yanAnrXLrsd5E4GT3as+fg8Ax+oiT+R+1XWWdgsnRVAo0EbBmaRdlq9U8InJEC8v5VLrpjEzEhsyu8LBavTrmG5E790rZh94A3rm9YBF2zpuA5BI5mXBdqPyH0IkIZIFZSQwMrnba2f/AUj3zwkVge3mHepGTXYos6I2jX41EGqwKsJ37DiGvGaA4RPoz9YhKR3aCqa3bGo5ubNcIBtg2jPoMPognNqsoJ8YbymPcbQiFMSIXUMd8UtV1NdtkjE6PMTIcrKXkkGydatvObtx3ExjfdfH37wMGLKmBTQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(26005)(966005)(316002)(9686003)(55016002)(508600001)(66556008)(64756008)(66476007)(66446008)(66946007)(76116006)(38070700005)(54906003)(85182001)(2906002)(71200400001)(7696005)(6506007)(86362001)(110136005)(38100700002)(5660300002)(8676002)(122000001)(83380400001)(33656002)(52536014)(8936002)(4326008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?QVJYVFJBc0IrV0g5emMwMlNMQzBXWXVTVlNmeVhnL2gyRFlSN3FCV3pT?=
+ =?iso-2022-jp?B?UStzVWl2MmJ1cVNWUFBreVkrWnB4TlpsYW9OMmVlM2lQZ3hMTFBoblI5?=
+ =?iso-2022-jp?B?TUtGbjJjOXFKZUZ6VXMwbjJjOENKMlRtbWU2NjR4eGh6M2Z5SDRNRm1D?=
+ =?iso-2022-jp?B?UDNleHdBSWw5ejNxb3MvcXEvTUw5VExudXBjVEZDWnNLR0F1RENOZ2dG?=
+ =?iso-2022-jp?B?UDErazVoU1NXK29wRVhIVmFpOVlNYVdFOFBQMDlOUVp3UzlVOGsyWGdH?=
+ =?iso-2022-jp?B?WWN0bktyQUpaV0hhWE82bTBDaHd0OE5Gb3FBdGtoUHlPWnhvZElzUnJI?=
+ =?iso-2022-jp?B?cTRJUjBXWmtnU3lLUVc0NUtMUzhKZ3dDSU1INURMRDZWVVc5OGZoVWVB?=
+ =?iso-2022-jp?B?aXhtby84aDJEc3Q2RUsrSnJxWjFBQXhXY3RRQjFySHJyZXZ0MGszaU1M?=
+ =?iso-2022-jp?B?T1VMU1RkMXVzNzZpc21TQzV2RVgrNDVkWUFtdVdmZjlPbWZFUExPeVFL?=
+ =?iso-2022-jp?B?NXRpVmplVUV3azN5aWNwejY2c2NyUDhCMFdyNkNCaEp0eU52QU5YaTMr?=
+ =?iso-2022-jp?B?R0d0QnplRkZSMDd3WUFXT1FKcEVCTVBnZHdSKzRvZTBxaFEzN3RMRi9G?=
+ =?iso-2022-jp?B?d2U2WkJHTVJGWEFVQzZLUnY1VlZtYnpiMWwwRUpvL1VvNW9zVTFyb3dj?=
+ =?iso-2022-jp?B?QUNGaGQrQWN5L2RCend3R1VScjVwZkg2ZnFjYkpHVGtWUmhRRVNUeHhk?=
+ =?iso-2022-jp?B?MzFIRU4wYnc3N1NvdXlmNUd4UnBaV0xsZ0p1cUFGb3V4NFdYbUFQZ0pl?=
+ =?iso-2022-jp?B?bytBUkJ2RUVWWXNyVmxQVkNGM1ZRYnZiczBBZXR2MTE1V1dPSFdrVnRO?=
+ =?iso-2022-jp?B?enMvSHljWlRGMWpwYzRUY2Z4aFFCTjY1dmsrV3BKTTZIc1pwd3YybXFD?=
+ =?iso-2022-jp?B?MDZKV2YwZlVlbUtCSzB5dEIrajhDSE45L2NubU05QVFncG9CbkI0QkRH?=
+ =?iso-2022-jp?B?VVFUeDVRaXl0QmE1RHMxZjZPZjhGMkpjU3BRQTA0eVE4TGNYMDI4SWpj?=
+ =?iso-2022-jp?B?cjZZcjJldllTdnBTeXR4YzFET09uSlhOYzBVVmJHOFlmSG1SbzBBcFRY?=
+ =?iso-2022-jp?B?OXJFdFMwQkNGVE9QK3JGNE9Sd0NHK09qbGh0MFcxK1B5aEh1SHhJSHF2?=
+ =?iso-2022-jp?B?a3NwMlpvaUUrenFKeGF5cTJybWJLUVZpSVNUWDRQKy9DdTdLSTA2S2s1?=
+ =?iso-2022-jp?B?SDQyeUlhNFNDaDNxaHkzbW5BOTZrR3VseUhyeHl6VjBJWWJLU1VtZU9B?=
+ =?iso-2022-jp?B?WVp0RW1PWUFwcTJ1OUo2UVgwekRIN3lNcXZqbE9mdTV1Z2oxQnBCQ3lk?=
+ =?iso-2022-jp?B?YVVXNWlKS0V6bndVTWh0SmFCNmNzZWo0NXlLWVRjc3RJemZiUk5ZUkpz?=
+ =?iso-2022-jp?B?Ym81cVU2b2MraHpxeWh4ZVZkM29peEZsUnY2VHliOGczUnNwZnRLbk4z?=
+ =?iso-2022-jp?B?SU0vWVpjVkVvN0RzNk1MTG1UVEw2U2QzMXdHZTFPUWRyZXMyUEwyaEF2?=
+ =?iso-2022-jp?B?SU1JVXJBYW9RR1ZHVitYdUl6SEhXVktKVDNxclZZaVV3NUVTejRYVTU5?=
+ =?iso-2022-jp?B?a2o1b2hlWU1sdmU5SzZYU2swNWVDeVYzSDhBM1BMRi82OUVhY29UK0xl?=
+ =?iso-2022-jp?B?VWZUVGloR3RGcWkrTGlzVG9TU2JtN2dleDR1OHNabHI5NEtESkdiZXJj?=
+ =?iso-2022-jp?B?SFVMUUt0NVpGajFBVmVBZlZsOUNUT3lMVGNwMDhrTEVvV1liR05PRmkv?=
+ =?iso-2022-jp?B?ZStTRXhjZUtSZjI5UVo0bmNGeEdsMThMblduMEc2LytvQXNJTkg1R1JS?=
+ =?iso-2022-jp?B?QUFadUJPdmR1SDNHRmNkUVhnc3BVPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210423095147.27922-1-vivek.gautam@arm.com> <20210423095147.27922-4-vivek.gautam@arm.com>
- <YUoCTV6WYxxE10qj@myrica>
-In-Reply-To: <YUoCTV6WYxxE10qj@myrica>
-From:   Vivek Gautam <vivek.gautam@arm.com>
-Date:   Mon, 11 Oct 2021 13:41:15 +0530
-X-Gmail-Original-Message-ID: <CAFp+6iEM7K8YOnQ4vSNoM+HuHQ-7pr=G3aui-77dGipyJ0+RjQ@mail.gmail.com>
-Message-ID: <CAFp+6iEM7K8YOnQ4vSNoM+HuHQ-7pr=G3aui-77dGipyJ0+RjQ@mail.gmail.com>
-Subject: Re: [PATCH RFC v1 03/11] iommu/virtio: Handle incoming page faults
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>, mst@redhat.com,
-        Will Deacon <will.deacon@arm.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dfd5bece-c724-4757-81bb-08d98c8ec69e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Oct 2021 08:11:49.4587
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H+NOfzVEa8O11eGZwzxK6x+kMVDASUYw6BWa7L6mwexdEAuYptARYYTn3bIU+zkC9R8GCOPqGxgLKncSnLyDTK+NsGL2esMlxP+GJzrwmNw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4949
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean,
-
-
-On Tue, Sep 21, 2021 at 9:33 PM Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
->
-> On Fri, Apr 23, 2021 at 03:21:39PM +0530, Vivek Gautam wrote:
-> > Redirect the incoming page faults to the registered fault handler
-> > that can take the fault information such as, pasid, page request
-> > group-id, address and pasid flags.
-> >
-> > Signed-off-by: Vivek Gautam <vivek.gautam@arm.com>
-> > ---
-> >  drivers/iommu/virtio-iommu.c      | 80 ++++++++++++++++++++++++++++++-
-> >  include/uapi/linux/virtio_iommu.h |  1 +
-> >  2 files changed, 80 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-> > index c970f386f031..fd237cad1ce5 100644
-> > --- a/drivers/iommu/virtio-iommu.c
-> > +++ b/drivers/iommu/virtio-iommu.c
-> > @@ -37,6 +37,13 @@
-> >  /* Some architectures need an Address Space ID for each page table */
-> >  DEFINE_XARRAY_ALLOC1(viommu_asid_xa);
-> >
-> > +struct viommu_dev_pri_work {
-> > +     struct work_struct              work;
-> > +     struct viommu_dev               *dev;
-> > +     struct virtio_iommu_fault       *vfault;
-> > +     u32                             endpoint;
-> > +};
-> > +
-> >  struct viommu_dev {
-> >       struct iommu_device             iommu;
-> >       struct device                   *dev;
-> > @@ -49,6 +56,8 @@ struct viommu_dev {
-> >       struct list_head                requests;
-> >       void                            *evts;
-> >       struct list_head                endpoints;
-> > +     struct workqueue_struct         *pri_wq;
-> > +     struct viommu_dev_pri_work      *pri_work;
->
-> IOPF already has a workqueue, so the driver doesn't need one.
-> iommu_report_device_fault() should be fast enough to be called from the
-> event handler.
-
-Sure, will call iommu_report_device_fault() directly from
-viommu_fault_handler().
-
->
-> >
-> >       /* Device configuration */
-> >       struct iommu_domain_geometry    geometry;
-> > @@ -666,6 +675,58 @@ static int viommu_probe_endpoint(struct viommu_dev *viommu, struct device *dev)
-> >       return ret;
-> >  }
-> >
-> > +static void viommu_handle_ppr(struct work_struct *work)
-> > +{
-> > +     struct viommu_dev_pri_work *pwork =
-> > +                             container_of(work, struct viommu_dev_pri_work, work);
-> > +     struct viommu_dev *viommu = pwork->dev;
-> > +     struct virtio_iommu_fault *vfault = pwork->vfault;
-> > +     struct viommu_endpoint *vdev;
-> > +     struct viommu_ep_entry *ep;
-> > +     struct iommu_fault_event fault_evt = {
-> > +             .fault.type = IOMMU_FAULT_PAGE_REQ,
-> > +     };
-> > +     struct iommu_fault_page_request *prq = &fault_evt.fault.prm;
-> > +
-> > +     u32 flags       = le32_to_cpu(vfault->flags);
-> > +     u32 prq_flags   = le32_to_cpu(vfault->pr_evt_flags);
-> > +     u32 endpoint    = pwork->endpoint;
-> > +
-> > +     memset(prq, 0, sizeof(struct iommu_fault_page_request));
->
-> The fault_evt struct is already initialized
-
-Right, I will remove this line.
-
->
-> > +     prq->addr = le64_to_cpu(vfault->address);
-> > +
-> > +     if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_LAST_PAGE)
-> > +             prq->flags |= IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE;
-> > +     if (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) {
-> > +             prq->flags |= IOMMU_FAULT_PAGE_REQUEST_PASID_VALID;
-> > +             prq->pasid = le32_to_cpu(vfault->pasid);
-> > +             prq->grpid = le32_to_cpu(vfault->grpid);
-> > +     }
-> > +
-> > +     if (flags & VIRTIO_IOMMU_FAULT_F_READ)
-> > +             prq->perm |= IOMMU_FAULT_PERM_READ;
-> > +     if (flags & VIRTIO_IOMMU_FAULT_F_WRITE)
-> > +             prq->perm |= IOMMU_FAULT_PERM_WRITE;
-> > +     if (flags & VIRTIO_IOMMU_FAULT_F_EXEC)
-> > +             prq->perm |= IOMMU_FAULT_PERM_EXEC;
-> > +     if (flags & VIRTIO_IOMMU_FAULT_F_PRIV)
-> > +             prq->perm |= IOMMU_FAULT_PERM_PRIV;
-> > +
-> > +     list_for_each_entry(ep, &viommu->endpoints, list) {
-> > +             if (ep->eid == endpoint) {
-> > +                     vdev = ep->vdev;
-
-I have a question here though -
-Is endpoint-ID unique across all the endpoints available per 'viommu_dev' or
-per 'viommu_domain'?
-If it is per 'viommu_domain' then the above list is also incorrect.
-As you pointed to in the patch [1] -
-[PATCH RFC v1 02/11] iommu/virtio: Maintain a list of endpoints served
-by viommu_dev
-I am planning to add endpoint ID into a static global xarray in
-viommu_probe_device() as below:
-
-        vdev_for_each_id(i, eid, vdev) {
-                ret = xa_insert(&viommu_ep_ids, eid, vdev, GFP_KERNEL);
-                if (ret)
-                        goto err_free_dev;
-        }
-
-and replace the above list traversal as below:
-
-                xa_lock_irqsave(&viommu_ep_ids, flags);
-                xa_for_each(&viommu_ep_ids, eid, vdev) {
-                        if (eid == endpoint) {
-                                ret =
-iommu_report_device_fault(vdev->dev, &fault_evt);
-                                if (ret)
-                                        dev_err(vdev->dev, "Couldn't
-handle page request\n");
-                        }
-                }
-                xa_unlock_irqrestore(&viommu_ep_ids, flags);
-
-But using a global xarray would also be incorrect if the endpointsID are global
-across 'viommu_domain'.
-
-I need to find the correct 'viommu_endpoint' to call iommu_report_device_fault()
-with the correct device.
-
-> > +                     break;
-> > +             }
-> > +     }
-> > +
-> > +     if ((prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_PASID_VALID) &&
-> > +         (prq_flags & VIRTIO_IOMMU_FAULT_PRQ_F_NEEDS_PASID))
-> > +             prq->flags |= IOMMU_FAULT_PAGE_RESPONSE_NEEDS_PASID;
-> > +
-> > +     if (iommu_report_device_fault(vdev->dev, &fault_evt))
-> > +             dev_err(vdev->dev, "Couldn't handle page request\n");
->
-> An error likely means that nobody registered a fault handler, but we could
-> display a few more details about the fault that would help debug the
-> endpoint
-
-Sure, will add more debug info to this log.
-
->
-> > +}
-> > +
-> >  static int viommu_fault_handler(struct viommu_dev *viommu,
-> >                               struct virtio_iommu_fault *fault)
-> >  {
-> > @@ -679,7 +740,13 @@ static int viommu_fault_handler(struct viommu_dev *viommu,
-> >       u32 pasid       = le32_to_cpu(fault->pasid);
-> >
-> >       if (type == VIRTIO_IOMMU_FAULT_F_PAGE_REQ) {
-> > -             dev_info(viommu->dev, "Page request fault - unhandled\n");
-> > +             dev_info_ratelimited(viommu->dev,
-> > +                                  "Page request fault from EP %u\n",
-> > +                                  endpoint);
->
-> That's rather for debugging the virtio-iommu driver, so should be
-> dev_dbg() (or removed entirely)
-
-I will remove this log.
-
->
-> > +
-> > +             viommu->pri_work->vfault = fault;
-> > +             viommu->pri_work->endpoint = endpoint;
-> > +             queue_work(viommu->pri_wq, &viommu->pri_work->work);
-> >               return 0;
-> >       }
-> >
-> > @@ -1683,6 +1750,17 @@ static int viommu_probe(struct virtio_device *vdev)
-> >               goto err_free_vqs;
-> >       }
-> >
-> > +     viommu->pri_work = kzalloc(sizeof(*viommu->pri_work), GFP_KERNEL);
-> > +     if (!viommu->pri_work)
-> > +             return -ENOMEM;
-> > +
-> > +     viommu->pri_work->dev = viommu;
-> > +
-> > +     INIT_WORK(&viommu->pri_work->work, viommu_handle_ppr);
-> > +     viommu->pri_wq = create_singlethread_workqueue("viommu-pri-wq");
-> > +     if (!viommu->pri_wq)
-> > +             return -ENOMEM;
-> > +
-> >       viommu->map_flags = VIRTIO_IOMMU_MAP_F_READ | VIRTIO_IOMMU_MAP_F_WRITE;
-> >       viommu->last_domain = ~0U;
-> >
-> > diff --git a/include/uapi/linux/virtio_iommu.h b/include/uapi/linux/virtio_iommu.h
-> > index accc3318ce46..53aa88e6b077 100644
-> > --- a/include/uapi/linux/virtio_iommu.h
-> > +++ b/include/uapi/linux/virtio_iommu.h
-> > @@ -302,6 +302,7 @@ struct virtio_iommu_req_invalidate {
-> >  #define VIRTIO_IOMMU_FAULT_F_READ            (1 << 0)
-> >  #define VIRTIO_IOMMU_FAULT_F_WRITE           (1 << 1)
-> >  #define VIRTIO_IOMMU_FAULT_F_EXEC            (1 << 2)
-> > +#define VIRTIO_IOMMU_FAULT_F_PRIV            (1 << 3)
->
-> Should go in the previous patch. (I'd also prefer 'privileged' because in
-> this context 'priv' is easily read as 'private')
-
-Sure, will move this to the previous patch.
-
-Thanks & regards
-Vivek
-
-[1] https://lore.kernel.org/all/YUoBW13+CvIljUgc@myrica/#t
-
-[snip]
+Hi Arnaldo, jirka=0A=
+=0A=
+> Em Thu, Oct 07, 2021 at 07:05:58PM +0200, Jiri Olsa escreveu:=0A=
+> > On Wed, Oct 06, 2021 at 06:48:17PM +0900, Shunsuke Nakamura wrote:=0A=
+> > > `cpu` of perf_evsel__read() must be specified the cpu index.=0A=
+> > > perf_cpu_map__for_each_cpu is for iterating the cpu number (not index=
+)=0A=
+> > > and is not appropriate.=0A=
+> > > So, if there is an offline CPU, the cpu number specified in the argum=
+ent=0A=
+> > > may point out of range because the cpu number and the cpu index are=
+=0A=
+> > > different.=0A=
+> > =0A=
+> > nice catch=0A=
+> =0A=
+> Indeed, Nakamura-san, please address Jiri's comment and resubmit,=0A=
+=0A=
+I'll send it right away.=0A=
+=0A=
+=0A=
+> =0A=
+> Thanks,=0A=
+> =0A=
+> - Arnaldo=0A=
+>  =0A=
+> > > =0A=
+> > > Fix test_stat_cpu.=0A=
+> > > =0A=
+> > > Committer testing:=0A=
+> > > =0A=
+> > >   # make tests -C tools/lib/perf/=0A=
+> > >   make: Entering directory '/home/nakamura/kernel_src/linux-5.15-rc4_=
+fix/tools/lib/perf'=0A=
+> > >   running static:=0A=
+> > >   - running tests/test-cpumap.c...OK=0A=
+> > >   - running tests/test-threadmap.c...OK=0A=
+> > >   - running tests/test-evlist.c...OK=0A=
+> > >   - running tests/test-evsel.c...OK=0A=
+> > >   running dynamic:=0A=
+> > >   - running tests/test-cpumap.c...OK=0A=
+> > >   - running tests/test-threadmap.c...OK=0A=
+> > >   - running tests/test-evlist.c...OK=0A=
+> > >   - running tests/test-evsel.c...OK=0A=
+> > >   make: Leaving directory '/home/nakamura/kernel_src/linux-5.15-rc4_f=
+ix/tools/lib/perf'=0A=
+> > > =0A=
+> > > =0A=
+> > > Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>=0A=
+> > > ---=0A=
+> > > Previous version at:=0A=
+> > > https://lore.kernel.org/lkml/20211006080456.474273-1-nakamura.shun@fu=
+jitsu.com/=0A=
+> > > =0A=
+> > > Changes in v2:=0A=
+> > >  - Remove "2/2" from Patch Subject=0A=
+> > > =0A=
+> > >  tools/lib/perf/tests/test-evlist.c | 6 +++---=0A=
+> > >  tools/lib/perf/tests/test-evsel.c  | 6 +++---=0A=
+> > >  2 files changed, 6 insertions(+), 6 deletions(-)=0A=
+> > > =0A=
+> > > diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/test=
+s/test-evlist.c=0A=
+> > > index c67c83399170..47badd7eabf2 100644=0A=
+> > > --- a/tools/lib/perf/tests/test-evlist.c=0A=
+> > > +++ b/tools/lib/perf/tests/test-evlist.c=0A=
+> > > @@ -40,7 +40,7 @@ static int test_stat_cpu(void)=0A=
+> > >  		.type	=3D PERF_TYPE_SOFTWARE,=0A=
+> > >  		.config	=3D PERF_COUNT_SW_TASK_CLOCK,=0A=
+> > >  	};=0A=
+> > > -	int err, cpu, tmp;=0A=
+> > > +	int err, idx;=0A=
+> > >  =0A=
+> > >  	cpus =3D perf_cpu_map__new(NULL);=0A=
+> > >  	__T("failed to create cpus", cpus);=0A=
+> > > @@ -70,10 +70,10 @@ static int test_stat_cpu(void)=0A=
+> > >  	perf_evlist__for_each_evsel(evlist, evsel) {=0A=
+> > >  		cpus =3D perf_evsel__cpus(evsel);=0A=
+> > >  =0A=
+> > > -		perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {=0A=
+> > > +		for (idx =3D 0, idx < perf_cpu_map__nr(cpus); idx++) {=0A=
+> > =0A=
+> > s/,/;/                      ^=0A=
+> > =0A=
+> > tests/test-evlist.c: In function 'test_stat_cpu':=0A=
+> > tests/test-evlist.c:73:52: error: expected ';' before ')' token=0A=
+> >    73 |   for (idx =3D 0, idx < perf_cpu_map__nr(cpus); idx++) {=0A=
+> >       |                                                    ^=0A=
+> >       |                                                    ;=0A=
+=0A=
+Thanks for review.=0A=
+I will fix it.=0A=
+=0A=
+=0A=
+> > =0A=
+> > =0A=
+> > perf_cpu_map__for_each_cpu also returns the cpu index (tmp),=0A=
+> > maybe we could use that instead?=0A=
+=0A=
+Using only cpu index results in a build error.=0A=
+=0A=
+=0A=
+  $ git diff=0A=
+  diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/te=
+st-evlist.c=0A=
+  index c67c83399170..b36aa8afe95c 100644=0A=
+  --- a/tools/lib/perf/tests/test-evlist.c=0A=
+  +++ b/tools/lib/perf/tests/test-evlist.c=0A=
+  @@ -73,7 +73,7 @@ static int test_stat_cpu(void)=0A=
+                  perf_cpu_map__for_each_cpu(cpu, tmp, cpus) {=0A=
+                          struct perf_counts_values counts =3D { .val =3D 0=
+ };=0A=
+=0A=
+  -                       perf_evsel__read(evsel, cpu, 0, &counts);=0A=
+  +                       perf_evsel__read(evsel, tmp, 0, &counts);=0A=
+                          __T("failed to read value for evsel", counts.val =
+!=3D 0);=0A=
+                  }=0A=
+          }=0A=
+=0A=
+=0A=
+  $ make tests -C tools/lib/perf/=0A=
+  make: Entering directory '/ubinux-dev/common/home/nakamura/kernel_Build/l=
+inux/tools/lib/perf'=0A=
+    CC      tests/test-evlist.o=0A=
+  tests/test-evlist.c: In function 'test_stat_cpu':=0A=
+  tests/test-evlist.c:43:11: error: variable 'cpu' set but not used [-Werro=
+r=3Dunused-but-set-variable]=0A=
+     43 |  int err, cpu, tmp;=0A=
+        |=0A=
+=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=0A=
