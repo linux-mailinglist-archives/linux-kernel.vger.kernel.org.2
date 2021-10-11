@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 653EF428ED0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E12428F1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237587AbhJKNwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:52:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39354 "EHLO mail.kernel.org"
+        id S237987AbhJKNzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:55:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236341AbhJKNvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A17B36103C;
-        Mon, 11 Oct 2021 13:48:54 +0000 (UTC)
+        id S237891AbhJKNxX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:53:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D830960F21;
+        Mon, 11 Oct 2021 13:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960135;
-        bh=J3sZIVQhNAnsybZFFKKMvQBCw2rLff2RVndDW7ltiFs=;
+        s=korg; t=1633960278;
+        bh=wyS+FdSL05tcVAmQFHo07rVuRq0L3J5Plorok3M0swE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QcOHt5qfgvk36oo37AhpTxojMHPRiPL4FpIBhMvuG3DRHQYGxmeCcikl/41vO7wZ4
-         m6GdhSUm8WUDdUebXYKUT7Q9ZRoLEog5Nv5dv5g5OVTga9h35ycNjSyUIxPcTsQRTQ
-         SQYc1h/+oMpbgEl25ap1tQdA+sEbnJ3tOjO4igm4=
+        b=wnbXYYHRONWrjclA8c5BG7m7aOFmPYT0gJBJzlp9T85FsczEP2ectgyInx2A3Ad92
+         LOV6pdcDAHnnoFddj/TBNYvB8YQ21HYIUO+cDt35NEyRI+6ft9R+vlic1Gn8rqjOQR
+         xyz68RnTYSHDgY7POI12FkFjRNasYTkZ67wUDiKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Patrick Ho <Patrick.Ho@netapp.com>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Chuck Lever <chuck.lever@oracle.com>
-Subject: [PATCH 5.4 08/52] nfsd: fix error handling of register_pernet_subsys() in init_nfsd()
-Date:   Mon, 11 Oct 2021 15:45:37 +0200
-Message-Id: <20211011134504.003354975@linuxfoundation.org>
+        stable@vger.kernel.org, linux-leds@vger.kernel.org,
+        =?UTF-8?q?Michal=20Vok=C3=A1=C4=8D?= <michal.vokac@ysoft.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 5.10 18/83] ARM: dts: imx6dl-yapp4: Fix lp5562 LED driver probe
+Date:   Mon, 11 Oct 2021 15:45:38 +0200
+Message-Id: <20211011134508.981609489@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,43 +42,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Patrick Ho <Patrick.Ho@netapp.com>
+From: Michal Vokáč <michal.vokac@ysoft.com>
 
-commit 1d625050c7c2dd877e108e382b8aaf1ae3cfe1f4 upstream.
+commit 9b663b34c94a78f39fa2c7a8271b1f828b546e16 upstream.
 
-init_nfsd() should not unregister pernet subsys if the register fails
-but should instead unwind from the last successful operation which is
-register_filesystem().
+Since the LED multicolor framework support was added in commit
+92a81562e695 ("leds: lp55xx: Add multicolor framework support to lp55xx")
+LEDs on this platform stopped working.
 
-Unregistering a failed register_pernet_subsys() call can result in
-a kernel GPF as revealed by programmatically injecting an error in
-register_pernet_subsys().
+Author of the framework attempted to accommodate this DT to the
+framework in commit b86d3d21cd4c ("ARM: dts: imx6dl-yapp4: Add reg property
+to the lp5562 channel node") but that is not sufficient. A color property
+is now required even if the multicolor framework is not used, otherwise
+the driver probe fails:
 
-Verified the fix handled failure gracefully with no lingering nfsd
-entry in /proc/filesystems.  This change was introduced by the commit
-bd5ae9288d64 ("nfsd: register pernet ops last, unregister first"),
-the original error handling logic was correct.
+  lp5562: probe of 1-0030 failed with error -22
 
-Fixes: bd5ae9288d64 ("nfsd: register pernet ops last, unregister first")
-Cc: stable@vger.kernel.org
-Signed-off-by: Patrick Ho <Patrick.Ho@netapp.com>
-Acked-by: J. Bruce Fields <bfields@redhat.com>
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Add the color property to fix this.
+
+Fixes: 92a81562e695 ("leds: lp55xx: Add multicolor framework support to lp55xx")
+Cc: <stable@vger.kernel.org>
+Cc: linux-leds@vger.kernel.org
+Signed-off-by: Michal Vokáč <michal.vokac@ysoft.com>
+Acked-by: Pavel Machek <pavel@ucw.cz>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/nfsd/nfsctl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx6dl-yapp4-common.dtsi |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/fs/nfsd/nfsctl.c
-+++ b/fs/nfsd/nfsctl.c
-@@ -1549,7 +1549,7 @@ static int __init init_nfsd(void)
- 		goto out_free_all;
- 	return 0;
- out_free_all:
--	unregister_pernet_subsys(&nfsd_net_ops);
-+	unregister_filesystem(&nfsd_fs_type);
- out_free_exports:
- 	remove_proc_entry("fs/nfs/exports", NULL);
- 	remove_proc_entry("fs/nfs", NULL);
+--- a/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
++++ b/arch/arm/boot/dts/imx6dl-yapp4-common.dtsi
+@@ -5,6 +5,7 @@
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
+ #include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
+ #include <dt-bindings/pwm/pwm.h>
+ 
+ / {
+@@ -275,6 +276,7 @@
+ 			led-cur = /bits/ 8 <0x20>;
+ 			max-cur = /bits/ 8 <0x60>;
+ 			reg = <0>;
++			color = <LED_COLOR_ID_RED>;
+ 		};
+ 
+ 		chan@1 {
+@@ -282,6 +284,7 @@
+ 			led-cur = /bits/ 8 <0x20>;
+ 			max-cur = /bits/ 8 <0x60>;
+ 			reg = <1>;
++			color = <LED_COLOR_ID_GREEN>;
+ 		};
+ 
+ 		chan@2 {
+@@ -289,6 +292,7 @@
+ 			led-cur = /bits/ 8 <0x20>;
+ 			max-cur = /bits/ 8 <0x60>;
+ 			reg = <2>;
++			color = <LED_COLOR_ID_BLUE>;
+ 		};
+ 
+ 		chan@3 {
+@@ -296,6 +300,7 @@
+ 			led-cur = /bits/ 8 <0x0>;
+ 			max-cur = /bits/ 8 <0x0>;
+ 			reg = <3>;
++			color = <LED_COLOR_ID_WHITE>;
+ 		};
+ 	};
+ 
 
 
