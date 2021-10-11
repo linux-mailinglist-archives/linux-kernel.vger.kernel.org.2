@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EF6428E9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D95428F2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhJKNuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:50:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
+        id S238037AbhJKNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236433AbhJKNtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:49:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04D1360E78;
-        Mon, 11 Oct 2021 13:47:39 +0000 (UTC)
+        id S237967AbhJKNxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:53:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CA0C6103C;
+        Mon, 11 Oct 2021 13:51:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960060;
-        bh=zwkOwrPVj08MvLBRWoOT0iHEztYImtGdyqK9eiq5oEQ=;
+        s=korg; t=1633960291;
+        bh=z0R2Nz3ELb5auMqIhCpY+rn/E2/77H3AVItM0bh2lAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rinUrqldGoekO4wsAQ8a7OrkSdvfbU/UU8D4nNfd1/Y3IOnf5gMZ0VVsOK6tsEDGS
-         ecsupfdTva2hTzuC7Nf54xba6jQLfXzURMXeNSunI4TTNqCj1SvLcna/zKemVsOgcD
-         TK8XRxAZxv2wxK/SxaLsmUWwO4cVljz3N/s4P+bo=
+        b=06iH+XE4qXAkv9Dxsz2zzeUW6pzmmsB/zq3vtE3K8oe2Dm/24se86ag+MW5CUXDNk
+         hrMuQil+gnjCZ5nFvbMAIzcAGYbdn4f1Akj5fP34zP0WWj9LsjFGVop83zvlVixyjI
+         2Jc4wQfzRIWVwJy5dwwba07PNaHBwCiOSWFk843k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
-        Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 5.4 11/52] ARM: dts: omap3430-sdp: Fix NAND device node
-Date:   Mon, 11 Oct 2021 15:45:40 +0200
-Message-Id: <20211011134504.096525188@linuxfoundation.org>
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 21/83] bus: ti-sysc: Add break in switch statement in sysc_init_soc()
+Date:   Mon, 11 Oct 2021 15:45:41 +0200
+Message-Id: <20211011134509.089638723@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roger Quadros <rogerq@kernel.org>
+From: Nathan Chancellor <nathan@kernel.org>
 
-commit 80d680fdccba214e8106dc1aa33de5207ad75394 upstream.
+[ Upstream commit e879f855e590b40fe3c79f2fbd8f65ca3c724120 ]
 
-Nand is on CS1 so reg properties first field should be 1 not 0.
+After commit a6d90e9f2232 ("bus: ti-sysc: AM3: RNG is GP only"), clang
+with -Wimplicit-fallthrough enabled warns:
 
-Fixes: 44e4716499b8 ("ARM: dts: omap3: Fix NAND device nodes")
-Cc: stable@vger.kernel.org # v4.6+
-Signed-off-by: Roger Quadros <rogerq@kernel.org>
+drivers/bus/ti-sysc.c:2958:3: warning: unannotated fall-through between
+switch labels [-Wimplicit-fallthrough]
+                default:
+                ^
+drivers/bus/ti-sysc.c:2958:3: note: insert 'break;' to avoid
+fall-through
+                default:
+                ^
+                break;
+1 warning generated.
+
+Clang's version of this warning is a little bit more pedantic than
+GCC's. Add the missing break to satisfy it to match what has been done
+all over the kernel tree.
+
+Fixes: a6d90e9f2232 ("bus: ti-sysc: AM3: RNG is GP only")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/omap3430-sdp.dts |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/bus/ti-sysc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/omap3430-sdp.dts
-+++ b/arch/arm/boot/dts/omap3430-sdp.dts
-@@ -101,7 +101,7 @@
- 
- 	nand@1,0 {
- 		compatible = "ti,omap2-nand";
--		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
-+		reg = <1 0 4>; /* CS1, offset 0, IO size 4 */
- 		interrupt-parent = <&gpmc>;
- 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
- 			     <1 IRQ_TYPE_NONE>;	/* termcount */
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+index 159b57c6dc4d..d2b7338c073f 100644
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -2922,6 +2922,7 @@ static int sysc_init_soc(struct sysc *ddata)
+ 			break;
+ 		case SOC_AM3:
+ 			sysc_add_disabled(0x48310000);  /* rng */
++			break;
+ 		default:
+ 			break;
+ 		};
+-- 
+2.33.0
+
 
 
