@@ -2,258 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1892E4291C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48B624290A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237712AbhJKOah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238750AbhJKOaa (ORCPT
+        id S239712AbhJKOKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:10:51 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:49226 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236917AbhJKOHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:30:30 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D072C122764;
-        Mon, 11 Oct 2021 07:05:43 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id w10-20020a056830280a00b0054e4e6c85a6so12792156otu.5;
-        Mon, 11 Oct 2021 07:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gBOwSA5CWrwgHLreR7NH6QWAhTPBd3HCpS3K5+L/d9M=;
-        b=EBSMxrCsSueJJCHLftFehMVA6G7wsZsnNZxFALXt2cNl/zpnTH9GG5MyaD//Lcc/Rc
-         PzeSeB8nT0YcooKR0MntxDYypymZ5b3OFlsHoZcSBhSJzka9wfKJs16O72mA6sp1mn+f
-         +z3Z8kyO9JeZPPbEBe4b8JYqg99+xcZg0oMqWz4gY3zTXvlwFM9hS0JmL72/KNuxfxyw
-         QFDD4O/M2Gk42sYAVZoUOyJXfVWYNFHdRHBCIz+vtnuwqVhiHcSwQKM0/b9X5ET8w0Cr
-         sItsyoZO6ti9lXCDWXjqDzWH67JGkMMvgsyDmHtC5FzDh/MySfzvpn9Pp6oB9WAIx4vG
-         PyZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gBOwSA5CWrwgHLreR7NH6QWAhTPBd3HCpS3K5+L/d9M=;
-        b=zjztENTFjdhIx07X0rz4ge9GnPkG4jYsJS8p4aaQwwbaUmqJkTgRuq78Hkxo/TlQnh
-         V91MpXOKJMzvWeJ6CaPGND6UGGZ1p9lN3YZ66ZiXmyUZy1sqxypH1f0qPIDq/E0j8V8m
-         /z/iTQkU+WUShlCYcN37xzaUiKmoW0zbCVeKOpK7LFs3sP48eS6vRJAH77F6CVOh/Hn6
-         nwQ1rTunDtGkgjsKUneULDrZa+AL7FUne35OiMyZj8LjdQFFQnE4dY+zoeuGdTRxhLPf
-         lWtTdTvEv+fLCag+n/By2bNIOwdRU3YrunGk2VT0fGimutYEaZtH1ioi6U6tFAqRgdTM
-         WqBw==
-X-Gm-Message-State: AOAM531PVdE+uNOKunMEd+TeKqtkO8uyy50VINvuFqg3TyXny1tBD6Os
-        kuLqcCzTMqG2V+hKQHL9TUc0I8CgAyE=
-X-Google-Smtp-Source: ABdhPJxso/VdopnfaGkiNX8DG2t2phvqHKoZZMsI+DZA7sM8kAAMtAA87/5Z0SbPD0jzla19Dho+uA==
-X-Received: by 2002:a9d:4616:: with SMTP id y22mr4586551ote.165.1633961140018;
-        Mon, 11 Oct 2021 07:05:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l23sm1776480otk.21.2021.10.11.07.05.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 07:05:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v7 2/2] hwmon: (nct7802) Make temperature/voltage sensors
- configurable
-To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211011012212.91357-1-osk@google.com>
- <20211011012212.91357-2-osk@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <cf4cc661-7128-14b1-e198-08a485a9c12d@roeck-us.net>
-Date:   Mon, 11 Oct 2021 07:05:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 10:07:51 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 9BFA21F42DAF;
+        Mon, 11 Oct 2021 15:05:49 +0100 (BST)
+Date:   Mon, 11 Oct 2021 16:05:46 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] mtd: core: protect access to mtd devices while in
+ suspend
+Message-ID: <20211011160546.707b737b@collabora.com>
+In-Reply-To: <20211011115253.38497-1-sean@geanix.com>
+References: <20211011115253.38497-1-sean@geanix.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20211011012212.91357-2-osk@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 6:22 PM, Oskar Senft wrote:
-> This change allows LTD and RTD inputs to be configured via
-> device tree bindings. If the DT bindings are not present or
-> invalid, the input configuration is not modified and left at
-> HW defaults.
+On Mon, 11 Oct 2021 13:52:50 +0200
+Sean Nyekjaer <sean@geanix.com> wrote:
+
+> Follow-up on discussion in https://lkml.org/lkml/2021/10/4/41
 > 
-> Signed-off-by: Oskar Senft <osk@google.com>
+> Changes since from rfc v1/v2:
+>  - added access protection for all device access hooks in mtd_info.
+>  - added Suggested-by to [1/3] patch.
+>  - removed refereces to commit ef347c0cfd61 ("mtd: rawnand: gpmi: Implement exec_op")
+>    from commit msg as commit 013e6292aaf5 ("mtd: rawnand: Simplify the locking") is 
+>    to be blamed.
+>  - tested on a kernel with LOCKDEP enabled.
+> 
+> @Miquel: I havn't covered every ioctl, to me it looks like they havn't
+> direct device access.
+> 
+> One (small) issue still present. gpmi_nand.c uses the rwsem before it's
+> initialized. Seems cumbersome to have every mtd/nand driver to call
+> init_waitqueue_head() and init_rwsem(). Could we somehow move the call
+> to mtd_set_dev_defaults() before nand_create_bbt()?
 
-Again, for my reference:
+I have a nasty trick for that one, but I'm not sure Miquel will like it
+(actually, I don't like it either, but it's so simple compared to the
+other options we have that I'm tempted to go for this approach until
+someone has time to invest in a cleaner solution :-)):
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 3d6c6e880520..a9ac2d528a4d 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6222,8 +6222,6 @@ static int nand_scan_tail(struct nand_chip *chip)
+        mtd->_sync = nand_sync;
+        mtd->_lock = nand_lock;
+        mtd->_unlock = nand_unlock;
+-       mtd->_suspend = nand_suspend;
+-       mtd->_resume = nand_resume;
+        mtd->_reboot = nand_shutdown;
+        mtd->_block_isreserved = nand_block_isreserved;
+        mtd->_block_isbad = nand_block_isbad;
+@@ -6269,6 +6267,13 @@ static int nand_scan_tail(struct nand_chip *chip)
+        if (ret)
+                goto err_free_secure_regions;
+ 
++       /*
++        * Populate the suspend/resume hooks after the BBT has been scanned to
++        * avoid using the suspend lock and resume waitqueue which are only
++        * initialized when mtd_device_register() is called.
++        */
++       mtd->_suspend = nand_suspend;
++       mtd->_resume = nand_resume;
+        return 0;
+ 
+ err_free_secure_regions:
 
+
+
+> 
 > ---
-> Changes from PATCH v6:
-> - None (resubmitted due to changes in nuvoton,nct7802.yaml).
-> 
-> Changes from PATCH v5:
-> - Removed unused "found_channel_config" variable.
-> - Initialize mode_mask and mode_val to defaults.
+> nand: device found, Manufacturer ID: 0x98, Chip ID: 0xdc
+> nand: Toshiba NAND 512MiB 3,3V 8-bit
+> nand: 512 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 128
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 1 at kernel/locking/rwsem.c:1240 down_read+0x160/0x184
+> DEBUG_RWSEMS_WARN_ON(sem->magic != sem): count = 0x0, magic = 0x0, owner = 0x0, curr 0xc40b0000, list not empty 
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.15.0-rc3-00002-g7eab985fa8cd-dirty #163 
+> Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+> [<c010fa90>] (unwind_backtrace) from [<c010b8fc>] (show_stack+0x10/0x14)
+> [<c010b8fc>] (show_stack) from [<c0b34998>] (dump_stack_lvl+0x58/0x70)
+> [<c0b34998>] (dump_stack_lvl) from [<c0123884>] (__warn+0xd4/0x154) 
+> [<c0123884>] (__warn) from [<c0b2e9ac>] (warn_slowpath_fmt+0x94/0xbc)
+> [<c0b2e9ac>] (warn_slowpath_fmt) from [<c0b428c8>] (down_read+0x160/0x184)
+> [<c0b428c8>] (down_read) from [<c06df42c>] (mtd_read_oob+0xc8/0x284)
+> [<c06df42c>] (mtd_read_oob) from [<c06f28cc>] (scan_block_fast+0x78/0xf4) 
+> [<c06f28cc>] (scan_block_fast) from [<c06f3c14>] (search_bbt+0x268/0x304) 
+> [<c06f3c14>] (search_bbt) from [<c06f3ef0>] (nand_create_bbt+0x240/0x6dc) 
+> [<c06f3ef0>] (nand_create_bbt) from [<c06fa758>] (gpmi_nand_probe+0x568/0x6d0)
+> [<c06fa758>] (gpmi_nand_probe) from [<c068731c>] (platform_probe+0x58/0xb8)
+> [<c068731c>] (platform_probe) from [<c0684a48>] (really_probe.part.0+0x9c/0x32c)
+> [<c0684a48>] (really_probe.part.0) from [<c0684d78>] (__driver_probe_device+0xa0/0x138) 
+> [<c0684d78>] (__driver_probe_device) from [<c0684e40>] (driver_probe_device+0x30/0x10c) 
+> [<c0684e40>] (driver_probe_device) from [<c0685510>] (__driver_attach+0xb4/0x174) 
+> [<c0685510>] (__driver_attach) from [<c0682b84>] (bus_for_each_dev+0x78/0xb8) 
+> [<c0682b84>] (bus_for_each_dev) from [<c0683ea4>] (bus_add_driver+0xf0/0x1d8) 
+> [<c0683ea4>] (bus_add_driver) from [<c0686270>] (driver_register+0x88/0x118)
+> [<c0686270>] (driver_register) from [<c0102108>] (do_one_initcall+0x74/0x378) 
+> [<c0102108>] (do_one_initcall) from [<c1001304>] (kernel_init_freeable+0x2a4/0x348) 
+> [<c1001304>] (kernel_init_freeable) from [<c0b3bc34>] (kernel_init+0x10/0x124)
+> [<c0b3bc34>] (kernel_init) from [<c010011c>] (ret_from_fork+0x14/0x38)
+> Exception stack(0xc40a7fb0 to 0xc40a7ff8) 
+> 7fa0: ???????? ???????? ???????? ???????? 
+> 7fc0: ???????? ???????? ???????? ???????? ???????? ???????? ???????? ???????? 
+> 7fe0: ???????? ???????? ???????? ???????? ???????? ???????? 
+> irq event stamp: 110936 
+> hardirqs lastenabled at (110935): [<c0100b04>] __irq_svc+0x64/0x80
+> hardirqs last disabled at (110936): [<c0100af0>] __irq_svc+0x50/0x80
+> softirqs lastenabled at (110906): [<c093818c>] netlink_insert+0x60/0x8a4
+> softirqs last disabled at (110904): [<c08ac6d4>] release_sock+0x18/0x98 
+> ---[ end trace c70a1a8da23b619d ]---
+> Bad block table found at page 131008, version 0x01
+> Bad block table found at page 130944, version 0x01
 > ---
->   drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 125 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
-> index 604af2f6103a..d56f78327619 100644
-> --- a/drivers/hwmon/nct7802.c
-> +++ b/drivers/hwmon/nct7802.c
-> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
->   #define REG_CHIP_ID		0xfe
->   #define REG_VERSION_ID		0xff
->   
-> +/*
-> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
-> + * Selection Register
-> + */
-> +#define RTD_MODE_CURRENT	0x1
-> +#define RTD_MODE_THERMISTOR	0x2
-> +#define RTD_MODE_VOLTAGE	0x3
-> +
-> +#define MODE_RTD_MASK		0x3
-> +#define MODE_LTD_EN		0x40
-> +
-> +/*
-> + * Bit offset for sensors modes in REG_MODE.
-> + * Valid for index 0..2, indicating RTD1..3.
-> + */
-> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
-> +
->   /*
->    * Data structures and manipulation thereof
->    */
-> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
->   	.volatile_reg = nct7802_regmap_is_volatile,
->   };
->   
-> -static int nct7802_init_chip(struct nct7802_data *data)
-> +static int nct7802_get_channel_config(struct device *dev,
-> +				      struct device_node *node, u8 *mode_mask,
-> +				      u8 *mode_val)
-> +{
-> +	u32 reg;
-> +	const char *type_str, *md_str;
-> +	u8 md;
-> +
-> +	if (!node->name || of_node_cmp(node->name, "channel"))
-> +		return 0;
-> +
-> +	if (of_property_read_u32(node, "reg", &reg)) {
-> +		dev_err(dev, "Could not read reg value for '%s'\n",
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg > 3) {
-> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 0) {
-> +		if (!of_device_is_available(node))
-> +			*mode_val &= ~MODE_LTD_EN;
-> +		else
-> +			*mode_val |= MODE_LTD_EN;
-> +		*mode_mask |= MODE_LTD_EN;
-> +		return 0;
-> +	}
-> +
-> +	/* At this point we have reg >= 1 && reg <= 3 */
-> +
-> +	if (!of_device_is_available(node)) {
-> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
-> +		dev_err(dev, "No type for '%s'\n", node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!strcmp(type_str, "voltage")) {
-> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
-> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +		return 0;
-> +	}
-> +
-> +	if (strcmp(type_str, "temperature")) {
-> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
-> +			node->full_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (reg == 3) {
-> +		/* RTD3 only supports thermistor mode */
-> +		md = RTD_MODE_THERMISTOR;
-> +	} else {
-> +		if (of_property_read_string(node, "temperature-mode",
-> +					    &md_str)) {
-> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
-> +			return -EINVAL;
-> +		}
-> +
-> +		if (!strcmp(md_str, "thermal-diode"))
-> +			md = RTD_MODE_CURRENT;
-> +		else if (!strcmp(md_str, "thermistor"))
-> +			md = RTD_MODE_THERMISTOR;
-> +		else {
-> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
-> +				node->full_name);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
-> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nct7802_configure_channels(struct device *dev,
-> +				      struct nct7802_data *data)
-> +{
-> +	/* Enable local temperature sensor by default */
-> +	u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
-> +	struct device_node *node;
-> +	int err;
-> +
-> +	if (dev->of_node) {
-> +		for_each_child_of_node(dev->of_node, node) {
-> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
-> +							 &mode_val);
-> +			if (err)
-> +				return err;
-> +		}
-> +	}
-> +
-> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
-> +}
-> +
-> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
->   {
->   	int err;
->   
-> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
->   	if (err)
->   		return err;
->   
-> -	/* Enable local temperature sensor */
-> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
-> +	err = nct7802_configure_channels(dev, data);
->   	if (err)
->   		return err;
->   
-> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
->   	mutex_init(&data->access_lock);
->   	mutex_init(&data->in_alarm_lock);
->   
-> -	ret = nct7802_init_chip(data);
-> +	ret = nct7802_init_chip(dev, data);
->   	if (ret < 0)
->   		return ret;
->   
+> Sean Nyekjaer (3):
+>   mtd: core: protect access to MTD devices while in suspend
+>   mtd: rawnand: remove suspended check
+>   mtd: mtdconcat: add suspend lock handling
+
+Patch 3 (with the suggested changes) should be moved at the beginning of
+the series to keep things bisectable.
+
+> 
+>  drivers/mtd/mtdconcat.c          |  11 ++-
+>  drivers/mtd/mtdcore.c            | 133 +++++++++++++++++++++++++++----
+>  drivers/mtd/nand/raw/nand_base.c |  52 +++---------
+>  include/linux/mtd/mtd.h          | 109 +++++++++++++++++++++----
+>  include/linux/mtd/rawnand.h      |   5 +-
+>  5 files changed, 234 insertions(+), 76 deletions(-)
 > 
 
