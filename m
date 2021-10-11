@@ -2,96 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512194291EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415E54291F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238479AbhJKOfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:35:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238419AbhJKOf3 (ORCPT
+        id S237643AbhJKOgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:36:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236647AbhJKOgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:35:29 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35228C061570;
-        Mon, 11 Oct 2021 07:33:29 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@breakpoint.cc>)
-        id 1mZwMm-0001Z7-Ci; Mon, 11 Oct 2021 16:33:24 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     linux-security-module@vger.kernel.org
-Cc:     casey@schaufler-ca.com, jmorris@namei.org, serge@hallyn.com,
-        linux-kernel@vger.kernel.org, Florian Westphal <fw@strlen.de>
-Subject: [PATCH smack] smack: remove duplicated hook function
-Date:   Mon, 11 Oct 2021 16:33:09 +0200
-Message-Id: <20211011143309.17203-1-fw@strlen.de>
-X-Mailer: git-send-email 2.32.0
+        Mon, 11 Oct 2021 10:36:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633962839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mjdKdphfY7KPZN5wR0QNaH0Etrrinh6FGNhtNUHIDSg=;
+        b=VP3BEl7XYan3TWGoPP6gwqrQOUaoiHF5tZs9K2MM6ZzTN/LMVSfczz6hv4K91AvwmoBebc
+        WjVRlFAQavFXCDkPWiuP2iARdYZayypZyrm9ks2RS2p/7rjDNuF1+sqyaOn3tAW5L7Bg6r
+        yJG3ntzwUyfTnse5B4BZENsShQeF35o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-De9s4r4PNaWkljdQSEIPzg-1; Mon, 11 Oct 2021 10:33:54 -0400
+X-MC-Unique: De9s4r4PNaWkljdQSEIPzg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84A571007302;
+        Mon, 11 Oct 2021 14:33:47 +0000 (UTC)
+Received: from localhost (unknown [10.39.193.101])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26D3B5D6D5;
+        Mon, 11 Oct 2021 14:33:46 +0000 (UTC)
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Pierre Morel <pmorel@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, bfu@redhat.com
+Subject: Re: [RFC PATCH 1/1] s390/cio: make ccw_device_dma_* more robust
+In-Reply-To: <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
+Organization: Red Hat GmbH
+References: <20211011115955.2504529-1-pasic@linux.ibm.com>
+ <466de207-e88d-ea93-beec-fbfe10e63a26@linux.ibm.com>
+User-Agent: Notmuch/0.32.1 (https://notmuchmail.org)
+Date:   Mon, 11 Oct 2021 16:33:45 +0200
+Message-ID: <874k9ny6k6.fsf@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ipv4 and ipv6 hook functions are identical, remove one.
+On Mon, Oct 11 2021, Pierre Morel <pmorel@linux.ibm.com> wrote:
 
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- patch targets next branch of
- git://github.com/cschaufler/smack-next.
+> On 10/11/21 1:59 PM, Halil Pasic wrote:
+>> diff --git a/drivers/s390/cio/device_ops.c b/drivers/s390/cio/device_ops.c
+>> index 0fe7b2f2e7f5..c533d1dadc6b 100644
+>> --- a/drivers/s390/cio/device_ops.c
+>> +++ b/drivers/s390/cio/device_ops.c
+>> @@ -825,13 +825,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_chid);
+>>    */
+>>   void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
+>>   {
+>> -	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
+>> +	void *addr;
+>> +
+>> +	if (!get_device(&cdev->dev))
+>> +		return NULL;
+>> +	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
+>> +	if (IS_ERR_OR_NULL(addr))
+>
+> I can be wrong but it seems that only dma_alloc_coherent() used in 
+> cio_gp_dma_zalloc() report an error but the error is ignored and used as 
+> a valid pointer.
 
- security/smack/smack_netfilter.c | 26 +++-----------------------
- 1 file changed, 3 insertions(+), 23 deletions(-)
+Hm, I thought dma_alloc_coherent() returned either NULL or a valid
+address?
 
-diff --git a/security/smack/smack_netfilter.c b/security/smack/smack_netfilter.c
-index fc7399b45373..a7ef2e2abc8a 100644
---- a/security/smack/smack_netfilter.c
-+++ b/security/smack/smack_netfilter.c
-@@ -18,27 +18,7 @@
- #include <net/net_namespace.h>
- #include "smack.h"
- 
--#if IS_ENABLED(CONFIG_IPV6)
--
--static unsigned int smack_ipv6_output(void *priv,
--					struct sk_buff *skb,
--					const struct nf_hook_state *state)
--{
--	struct sock *sk = skb_to_full_sk(skb);
--	struct socket_smack *ssp;
--	struct smack_known *skp;
--
--	if (sk && sk->sk_security) {
--		ssp = sk->sk_security;
--		skp = ssp->smk_out;
--		skb->secmark = skp->smk_secid;
--	}
--
--	return NF_ACCEPT;
--}
--#endif	/* IPV6 */
--
--static unsigned int smack_ipv4_output(void *priv,
-+static unsigned int smack_hook_output(void *priv,
- 					struct sk_buff *skb,
- 					const struct nf_hook_state *state)
- {
-@@ -57,14 +37,14 @@ static unsigned int smack_ipv4_output(void *priv,
- 
- static const struct nf_hook_ops smack_nf_ops[] = {
- 	{
--		.hook =		smack_ipv4_output,
-+		.hook =		smack_hook_output,
- 		.pf =		NFPROTO_IPV4,
- 		.hooknum =	NF_INET_LOCAL_OUT,
- 		.priority =	NF_IP_PRI_SELINUX_FIRST,
- 	},
- #if IS_ENABLED(CONFIG_IPV6)
- 	{
--		.hook =		smack_ipv6_output,
-+		.hook =		smack_hook_output,
- 		.pf =		NFPROTO_IPV6,
- 		.hooknum =	NF_INET_LOCAL_OUT,
- 		.priority =	NF_IP6_PRI_SELINUX_FIRST,
--- 
-2.32.0
+>
+> So shouldn't we modify this function and just test for a NULL address here?
+
+If I read cio_gp_dma_zalloc() correctly, we either get NULL or a valid
+address, so yes.
 
