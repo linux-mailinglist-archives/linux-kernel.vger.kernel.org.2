@@ -2,235 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA306429851
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B518429855
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhJKUq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbhJKUq2 (ORCPT
+        id S235010AbhJKUsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:48:47 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51000 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234918AbhJKUsq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:46:28 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0795C061570;
-        Mon, 11 Oct 2021 13:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ktQ3PVVcg2TTN+o+OAXoDDmRIIVVJexPj9+ndnqpzu8=; b=D2ghYpL2Ow+Sn1V1Fe+THQzT1h
-        vkRE1iM8Meq1G8vSFDmf8zU2Zido3E10mAUlTkcrP7jYr8oeUjCit5bTEYa+0PD8snuo2ATINasgy
-        mrCxmPuAwySK4hhqL5ow8U/55frzluZDop3NxiyN72+Q8icTVBD5yYvHOQs4pBzLZ4NBAgLxKl/ln
-        ywN/ktVvJiJ8SDLCRVUjP/cuyVppHbzsxFdmBnMk2eNc0EQrm+ATv9sCLqYT0Yca8IYz2rwoCbXa3
-        OEAUBunYRoyH6+DWLgSm+gLbU3Dh3LSVau2o8GnVc5c6Ttyy3kt2K3ZSDiks3zyteAxeHoIZTAK9J
-        WWhfYQJg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1ma29j-00AdGr-82; Mon, 11 Oct 2021 20:44:19 +0000
-Date:   Mon, 11 Oct 2021 13:44:19 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     tj@kernel.org, gregkh@linuxfoundation.org,
-        akpm@linux-foundation.org, minchan@kernel.org, jeyu@kernel.org,
-        shuah@kernel.org, bvanassche@acm.org, dan.j.williams@intel.com,
-        joe@perches.com, tglx@linutronix.de, rostedt@goodmis.org,
-        linux-spdx@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 04/12] kernfs: add initial failure injection support
-Message-ID: <YWSiIwr/8/JQE9qW@bombadil.infradead.org>
-References: <20210927163805.808907-1-mcgrof@kernel.org>
- <20210927163805.808907-5-mcgrof@kernel.org>
- <202110051225.419CD64@keescook>
+        Mon, 11 Oct 2021 16:48:46 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 19BKkRYX058438;
+        Mon, 11 Oct 2021 15:46:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1633985187;
+        bh=aREyONMOYnqRN8v42O2++VQ4QoXlpiSb4xj0cGMxL0U=;
+        h=From:To:CC:Subject:Date;
+        b=XzwSqtA7XhUvLhbISa+tUaTG5Ll0BqlsAkgQzJibz7r4dM5tYKnptnHcTBfB1XpQd
+         ihj8nNbkPCiCx633voyYjudC1q3sg6QHuLh7tuK4U3wg1GAHWl72yKZ25VfNmoHLV8
+         fs0M/5ILEQaf8WZarUu17WCHa3sAsLXe22MIf+F4=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 19BKkRbK104929
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Oct 2021 15:46:27 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 11
+ Oct 2021 15:46:26 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Mon, 11 Oct 2021 15:46:26 -0500
+Received: from LT5CD112GSQZ.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 19BKkKEe069811;
+        Mon, 11 Oct 2021 15:46:21 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Apurva Nandan <a-nandan@ti.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>
+CC:     <p.yadav@ti.com>
+Subject: [PATCH v2 00/14] mtd: spinand: Add Octal DTR SPI (8D-8D-8D) mode support
+Date:   Tue, 12 Oct 2021 02:16:05 +0530
+Message-ID: <20211011204619.81893-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202110051225.419CD64@keescook>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 12:47:22PM -0700, Kees Cook wrote:
-> On Mon, Sep 27, 2021 at 09:37:57AM -0700, Luis Chamberlain wrote:
-> > This adds initial failure injection support to kernfs. We start
-> > off with debug knobs which when enabled allow test drivers, such as
-> > test_sysfs, to then make use of these to try to force certain
-> > difficult races to take place with a high degree of certainty.
-> > 
-> > This only adds runtime code *iff* the new bool CONFIG_FAIL_KERNFS_KNOBS is
-> > enabled in your kernel. If you don't have this enabled this provides
-> > no new functional. When CONFIG_FAIL_KERNFS_KNOBS is disabled the new
-> > routine kernfs_debug_should_wait() ends up being transformed to if
-> > (false), and so the compiler should optimize these out as dead code
-> > producing no new effective binary changes.
-> > 
-> > We start off with enabling failure injections in kernfs by allowing us to
-> > alter the way kernfs_fop_write_iter() behaves. We allow for the routine
-> > kernfs_fop_write_iter() to wait for a certain condition in the kernel to
-> > occur, after which it will sleep a predefined amount of time. This lets
-> > kernfs users to time exactly when it want kernfs_fop_write_iter() to
-> > complete, allowing for developing race conditions and test for correctness
-> > in kernfs.
-> > 
-> > You'd boot with this enabled on your kernel command line:
-> > 
-> > fail_kernfs_fop_write_iter=1,100,0,1
-> > 
-> > The values are <interval,probability,size,times>, we don't care for
-> > size, so for now we ignore it. The above ensures a failure will trigger
-> > only once.
-> > 
-> > *How* we allow for this routine to change behaviour is left to knobs we
-> > expose under debugfs:
-> > 
-> >  # ls -1 /sys/kernel/debug/kernfs/config_fail_kernfs_fop_write_iter/
-> 
-> I'd expect this to live under /sys/kernel/debug/fail_kernfs, like the
-> other fault injectors.
+Hi,
+This series proposes patches for adding the following functionality
+in SPI NAND core:
 
-Yes I see, thanks will fix up!
+- Octal DTR SPI (8D-8D-8D) mode support
 
-> > diff --git a/Documentation/fault-injection/fault-injection.rst b/Documentation/fault-injection/fault-injection.rst
-> > index 4a25c5eb6f07..d4d34b082f47 100644
-> > --- a/Documentation/fault-injection/fault-injection.rst
-> > +++ b/Documentation/fault-injection/fault-injection.rst
-> > @@ -28,6 +28,28 @@ Available fault injection capabilities
-> >  
-> >    injects kernel RPC client and server failures.
-> >  
-> > +- fail_kernfs_fop_write_iter
-> > +
-> > +  Allows for failures to be enabled inside kernfs_fop_write_iter(). Enabling
-> > +  this does not immediately enable any errors to occur. You must configure
-> > +  how you want this routine to fail or change behaviour by using the debugfs
-> > +  knobs for it:
-> > +
-> > +  # ls -1 /sys/kernel/debug/kernfs/config_fail_kernfs_fop_write_iter/
-> > +  wait_after_active
-> > +  wait_after_mutex
-> > +  wait_at_start
-> > +  wait_before_mutex
-> 
-> This should be split up and detailed in the "debugfs entries" section
-> below here.
+- Winbond W35N01JW SPI NAND chip support
 
-Done!
+- Power-on-Reset instruction support
 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 1b4cefcb064c..fadfd961ad80 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -10384,7 +10384,7 @@ M:	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >  M:	Tejun Heo <tj@kernel.org>
-> >  S:	Supported
-> >  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
-> > -F:	fs/kernfs/
-> > +F:	fs/kernfs/*
-> >  F:	include/linux/kernfs.h
-> >  
-> >  KEXEC
-> > diff --git a/fs/kernfs/Makefile b/fs/kernfs/Makefile
-> > index 4ca54ff54c98..bc5b32ca39f9 100644
-> > --- a/fs/kernfs/Makefile
-> > +++ b/fs/kernfs/Makefile
-> > @@ -4,3 +4,4 @@
-> >  #
-> >  
-> >  obj-y		:= mount.o inode.o dir.o file.o symlink.o
-> > +obj-$(CONFIG_FAIL_KERNFS_KNOBS)    += failure-injection.o
-> > diff --git a/fs/kernfs/failure-injection.c b/fs/kernfs/failure-injection.c
-> > new file mode 100644
-> > index 000000000000..4130d202c13b
-> > --- /dev/null
-> > +++ b/fs/kernfs/failure-injection.c
-> 
-> I'd name this fault_inject.c, which matches the more common case:
-> 
-> $ find . -type f -name '*fault*inject*.c'
-> ./fs/nfsd/fault_inject.c
-> ./drivers/nvme/host/fault_inject.c
-> ./drivers/scsi/ufs/ufs-fault-injection.c
-> ./lib/fault-inject.c
-> ./lib/fault-inject-usercopy.c
+This series has been tested on TI J721e EVM with the Winbond W35N01JW
+flash with following test utilities:
 
-Sure, done.
+- nandtest
+  Test log: https://textbin.net/raw/fhypoz63f9
 
-> > +int __kernfs_debug_should_wait_kernfs_fop_write_iter(bool evaluate)
-> > +{
-> > +	if (!evaluate)
-> > +		return 0;
-> > +
-> > +	return should_fail(&fail_kernfs_fop_write_iter, 0);
-> > +}
-> 
-> Every caller ends up doing the wait, so how about just including that
-> here instead? It should make things much less intrusive and more readable.
-> 
-> And for the naming, other fault injectors use "should_fail_$topic", so
-> maybe better here would be something like may_wait_kernfs(...).
+- mtd_stresstest
+  Test log: https://textbin.net/raw/0xqjmqntj7
 
-In case anyone is reading Hail Mary by Andy Weir: "Yes yes yes!"
+- UBIFS LTP stress test (NAND_XL_STRESS_DD_RW_UBIFS).
+  Test log: https://textbin.net/raw/pyokws7wku
 
-Indeed, that's a great idea. Changed!
+Datasheet: https://www.winbond.com/export/sites/winbond/datasheet/W35N01JW_Datasheet_Brief.pdf
 
-> > +
-> > +DECLARE_COMPLETION(kernfs_debug_wait_completion);
-> > +EXPORT_SYMBOL_NS_GPL(kernfs_debug_wait_completion, KERNFS_DEBUG_PRIVATE);
-> > +
-> > +void kernfs_debug_wait(void)
-> > +{
-> > +	unsigned long timeout;
-> > +
-> > +	timeout = wait_for_completion_timeout(&kernfs_debug_wait_completion,
-> > +					      msecs_to_jiffies(3000));
-> > +	if (!timeout)
-> > +		pr_info("%s waiting for kernfs_debug_wait_completion timed out\n",
-> > +			__func__);
-> > +	else
-> > +		pr_info("%s received completion with time left on timeout %u ms\n",
-> > +			__func__, jiffies_to_msecs(timeout));
-> > +
-> > +	/**
-> > +	 * The goal is wait for an event, and *then* once we have
-> > +	 * reached it, the other side will try to do something which
-> > +	 * it thinks will break. So we must give it some time to do
-> > +	 * that. The amount of time is configurable.
-> > +	 */
-> > +	msleep(kernfs_config_fail.sleep_after_wait_ms);
-> > +	pr_info("%s ended\n", __func__);
-> > +}
-> 
-> All the uses of "__func__" here seems redundant; I would drop them.
+---
+Changes in v2:
 
-Alright, and I also added the pr_fmt define which I forgot.
+- Removed *_ALL_ARGS() macros from spi-mem.h, and redefined DTR macros.
 
-> > diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-> > index 60e2a86c535e..4479c6580333 100644
-> > --- a/fs/kernfs/file.c
-> > +++ b/fs/kernfs/file.c
-> > @@ -259,6 +259,9 @@ static ssize_t kernfs_fop_write_iter(struct kiocb *iocb, struct iov_iter *iter)
-> >  	const struct kernfs_ops *ops;
-> >  	char *buf;
-> >  
-> > +	if (kernfs_debug_should_wait(kernfs_fop_write_iter, at_start))
-> > +		kernfs_debug_wait();
-> 
-> So this could just be:
-> 
-> 	may_wait_kernfs(kernfs_fop_write_iter, at_start);
+- Renamed spinand_setup_op() to spinand_patch_op(). Reduced one
+  conditional check from this function. Had to keep tweaking in hot-path
+  to avoid complicated implementation "hacks".
 
-Yup! Thanks!
+- Changes in commit messages and added comments.
 
-> > diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-> > index f9cc912c31e1..9e3abf597e2d 100644
-> > --- a/fs/kernfs/kernfs-internal.h
-> > +++ b/fs/kernfs/kernfs-internal.h
-> > +#define __kernfs_config_wait_var(func, when) \
-> > +	(kernfs_config_fail.  func  ## _fail.wait_  ## when)
->                             ^^     ^               ^
-> nit: needless spaces
+- Dropped "Reject 8D-8D-8D op_templates if octal_dtr_enale() is
+  missing in manufacturer_op" patch.
 
-Trimmed.
+- Reduced PoR reset delay.
 
-  Luis
+- Splitted "mtd: spinand: Add support for Winbond W35N01JW SPI NAND
+  flash" into 3 independent patches.
+
+Apurva Nandan (14):
+  spi: spi-mem: Add DTR templates for cmd, address, dummy and data phase
+  mtd: spinand: Add enum spinand_proto to indicate current SPI IO mode
+  mtd: spinand: Patch spi_mem_op for the SPI IO protocol using reg_proto
+  mtd: spinand: Fix odd byte addr and data phase in read and write reg
+    op for Octal DTR mode
+  mtd: spinand: Add adjust_op() in manufacturer_ops to modify the ops
+    for manufacturer specific changes
+  mtd: spinand: Add macros for Octal DTR page read and write operations
+  mtd: spinand: Allow enabling Octal DTR mode in the core
+  mtd: spinand: winbond: Add support for write volatile configuration
+    register op
+  mtd: spinand: winbond: Add octal_dtr_enable() for manufacturer_ops
+  mtd: spinand: Add support for Power-on-Reset (PoR) instruction
+  mtd: spinand: Perform Power-on-Reset on the flash in mtd_suspend()
+  mtd: spinand: Add adjust_op() in Winbond manufacturer_ops
+  mtd: spinand: winbond: Rename cache op_variants struct variable
+  mtd: spinand: winbond: Add support for Winbond W35N01JW SPI NAND flash
+
+ drivers/mtd/nand/spi/core.c    | 187 +++++++++++++++++++++++++++++-
+ drivers/mtd/nand/spi/winbond.c | 200 +++++++++++++++++++++++++++++++--
+ include/linux/mtd/spinand.h    |  67 +++++++++++
+ include/linux/spi/spi-mem.h    |  41 +++++++
+ 4 files changed, 484 insertions(+), 11 deletions(-)
+
+-- 
+2.25.1
+
