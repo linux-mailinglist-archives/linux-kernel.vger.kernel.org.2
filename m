@@ -2,142 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1A74299A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1AE4299AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 01:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235674AbhJKXN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 19:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235622AbhJKXN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 19:13:28 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D5C061570;
-        Mon, 11 Oct 2021 16:11:27 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id c7so17895228qka.2;
-        Mon, 11 Oct 2021 16:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6MEGfH0hL9/oeXXsdllzYyVOfG604h9YDXxJhS4oZDM=;
-        b=jo03eI7iVBVSZFo2Mys3hVqkELAk2ME9kTyxazmWWYFlzOWAqJxuAQT2cHYjC+9BiH
-         reU2umZpV3lzTZNGA3BMHolh5GxnvlyOFwgCj8v6LFCvWXmthGj0CQJUCYzTCo52tyXN
-         jRNpHJhsPIRPhQ5y6NpxBUbIhgQlkLcT2+bV5welOAm5G1eJ/7/5Olfgvhks9rcP9noZ
-         HYXoS8WjCg/o7+0CXSf60pkAH5XGfESciyko40S582Y1beV8osvK4OiDU7RDgYCnBd4N
-         CxT6Da+DC7GBPC8+Hvuezj8a9GVGKb9R7PxlWbb4v5xg+jJQp5UNR3hzVOtWbfvd1g2p
-         dYUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6MEGfH0hL9/oeXXsdllzYyVOfG604h9YDXxJhS4oZDM=;
-        b=DtAlnmFXU1LJd81PtLT209rPYF3RcLK3RGbdQaotqzrN3QbAFtxaCbYmYOY8Mggau+
-         Nc9HxeCbYRiFr2Pgt+h0ANIABbJFaVHKWoQbmEhb3fnjVd3QOl0dcGJWW4A4y+jzFd95
-         HuxZDvJj41Uy2gI4oM2279SarQ3tzaSPFdsjXLFrZ/mutp6B9+ipwgkodfmtMzsI+S5t
-         Tkx8kJDHsQSqFJUhm+oan7hfgo1FXGkrvkUElfHA+L15Sbrs0GAFE9eelbAqz9jaLETp
-         DedNPou/qDem2p2TAkocW8m3qlYyapjicFEEDAUNDDTHCh/jEL6qSBltc/d+845AnYG5
-         vVMg==
-X-Gm-Message-State: AOAM531UN5vDSXehXELkKLiXwZO45f6x36FgaXbWyGEIi9n5mW6swfa+
-        A1wffua8X/V/0FZUhs5WNTU=
-X-Google-Smtp-Source: ABdhPJzOLQrBvZXH6sMBoOOsipKnP5T/uXVxwDVNFZaBqH7F4OlIWcRmuSuyiyefjpq0AGyBqooAXQ==
-X-Received: by 2002:a37:9fc6:: with SMTP id i189mr17243267qke.467.1633993886997;
-        Mon, 11 Oct 2021 16:11:26 -0700 (PDT)
-Received: from localhost.localdomain (c-73-60-226-25.hsd1.nh.comcast.net. [73.60.226.25])
-        by smtp.gmail.com with ESMTPSA id v3sm4957667qkd.20.2021.10.11.16.11.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 16:11:26 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 19:11:24 -0400
-From:   Eric Whitney <enwlinux@gmail.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Eric Whitney <enwlinux@gmail.com>, linux-ext4@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>
-Subject: Re: kernel BUG at fs/ext4/inode.c:1721!
-Message-ID: <20211011231124.GB17897@localhost.localdomain>
-References: <YWANK0HchPv9m6hA@zn.tnic>
- <20211008173305.GA28198@localhost.localdomain>
- <YWCL2OXaz8/OnBiF@zn.tnic>
+        id S235688AbhJKXO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 19:14:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:47884 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235636AbhJKXOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 19:14:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="287867793"
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="287867793"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 16:12:24 -0700
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="490674153"
+Received: from vg1-mobl2.amr.corp.intel.com (HELO [10.212.193.198]) ([10.212.193.198])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 16:12:23 -0700
+Subject: Re: [PATCH v2 01/15] x86/cpu: Move intel-family to arch-independent
+ headers
+To:     "Winiarska, Iwona" <iwona.winiarska@intel.com>,
+        "bp@alien8.de" <bp@alien8.de>
+Cc:     "corbet@lwn.net" <corbet@lwn.net>,
+        "jae.hyun.yoo@linux.intel.com" <jae.hyun.yoo@linux.intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "jdelvare@suse.com" <jdelvare@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "olof@lixom.net" <olof@lixom.net>, "arnd@arndb.de" <arnd@arndb.de>,
+        "linux@roeck-us.net" <linux@roeck-us.net>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "zweiss@equinix.com" <zweiss@equinix.com>,
+        "d.mueller@elsoft.ch" <d.mueller@elsoft.ch>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "yazen.ghannam@amd.com" <yazen.ghannam@amd.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>
+References: <20210803113134.2262882-1-iwona.winiarska@intel.com>
+ <20210803113134.2262882-2-iwona.winiarska@intel.com>
+ <YVtQG+idmwKn0qLe@zn.tnic>
+ <58ef4107e9b2c60a2605aac0d2fb6670a95bc9e0.camel@intel.com>
+ <67f2cfda-c78b-6282-f5a3-2f345f8e2849@intel.com>
+ <43e367e452c6c8d9c6a275299d7ff6f2bb26b8e3.camel@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <18cd5f4a-452b-f043-5686-fc5af47eb5ac@intel.com>
+Date:   Mon, 11 Oct 2021 16:12:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YWCL2OXaz8/OnBiF@zn.tnic>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <43e367e452c6c8d9c6a275299d7ff6f2bb26b8e3.camel@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Borislav Petkov <bp@alien8.de>:
-> Hi Eric,
+On 10/11/21 1:53 PM, Winiarska, Iwona wrote:
+>> If you're in include/linux/x86-hacks.h, what prevents you from doing
+>>
+>> #include "../../arch/x86/include/asm/intel-family.h"
+>>
+>> ?
+>>
+>> In the end, to the compiler, it's just a file in a weird location in the
+>> tree.  I think I'd prefer one weird include to moving that file out of
+>> arch/x86.
+> Using relative includes in include/linux is uncommon (I can see just one usage
+> in libfdt.h pulling stuff from scripts), so I thought I can't use it in this way
+> (seems slightly hacky to pull stuff from outside include path).
 > 
-> On Fri, Oct 08, 2021 at 01:33:05PM -0400, Eric Whitney wrote:
-> > Hi, Boris - thanks very much for your report.
-> 
-> sure, np.
-> 
-> > Was your kernel configured with the CONFIG_FS_ENCRYPTION option?
-> 
-> $ grep CONFIG_FS_ENCRYPTION /boot/config-5.15.0-rc4+ 
-> # CONFIG_FS_ENCRYPTION is not set
-> 
-> > Could you please provide the output of the mount command for the affected
-> > file system?
-> 
-> Well, I can't figure out from dmesg - it's all I have from that run -
-> which fs it was. So lemme give you all ext4 ones:
-> 
-> $ mount | grep ext4
-> /dev/nvme0n1p2 on / type ext4 (rw,relatime,errors=remount-ro)
-> /dev/sdc1 on /home type ext4 (rw,noatime)
-> /dev/sda1 on /mnt/oldhome type ext4 (rw,noatime)
-> /dev/sdb1 on /mnt/smr type ext4 (rw,noatime)
-> /dev/nvme1n1p1 on /mnt/kernel type ext4 (rw,nosuid,nodev,noatime,user)
-> 
-> > Do you recall what sort of code might have been running on this system at
-> > the time of failure (for example, kernel build, desktop apps, etc.)?
-> 
-> Good question. I'm not sure. Kernel build is likely as I do those on
-> that workstation constantly.
-> 
-> Unfortunately, I don't have an exact reproducer. And I can't debug stuff
-> on that box since it is my workstation and I've reverted it to 5.14.
-> 
-> What I can do is, I can slap 5.15-rc4 or whichever version you'd want me
-> to, on a test box and try running kernel builds or some other load to
-> see whether it would fire. I have a similar box to my workstation.
-> 
-> Or if you have a better idea...
+> But if that would be ok, it looks like a good alternative to avoid duplication
+> in this case.
 
-Hi, Boris:
+If you don't want to do it from a header, you can also do it directly
+from a .c file that's outside of arch/x86.
 
-I've tried numerous kernel builds with -rc4 and rerun the full set of xfstests
-we use when regressing ext4 each rc using a kernel that doesn't enable
-FS_ENCRYPTION (I normally run with that) without luck.  The code that caused
-the splat you saw is new and would run when an assertion is violated,
-suggesting that there may be an unsuspected bug elsewhere in ext4.
-
-Do you recall having seen any evidence of ENOMEM or ENOSPC conditions prior
-to the failure?
-
-If you're willing to share, please send along your kernel config file and I'll
-try working with that as well.
-
-In the meantime, should this bug get in your way, just revert the following
-patch and you should be able to run without further trouble:
-
-948ca5f30e1d "ext4: enforce buffer head state assertion in ext4_da_map_blocks"
-
-I'll likely be posting a patch to revert this shortly, since it's going to
-take some time to sort out what's going on without a reproducer.
-
-Thanks again for your help,
-Eric
-
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+I think that's a much better alternative than moving stuff elsewhere.
