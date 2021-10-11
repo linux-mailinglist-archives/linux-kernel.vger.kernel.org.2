@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74E3428AB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018AC428AC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235763AbhJKKZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235602AbhJKKZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:25:09 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41262C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:23:09 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id r1so37772807ybo.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 03:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zO20pXIc4aHnqYviESIViCK1/daYvjDKa+lAXFV6ImY=;
-        b=VTvyESN07hN8p4c7LJuc/GcgP1tX2bSGZJ07QI80hlPXOAmszECnYQd0JMXXLa2b6d
-         89cwC36qC5TQuRBPB7kQ4dVUQrk/SKHTF+uco4qw+KhlFt0ca0mbRiAvyxNEEFTa3Ux6
-         QfgxpopCKoSXCnEbvHqygw19EGAr1RtPzalJyWbfyBEiIevWOtp7MO9x1Ta7b85rnfkJ
-         qvXWOJ2tgVXnqJu4c3QY9YrJPF6yvq8LHecRWoX84OJbDBao8VmlLV3xVK9C86oJ6RVp
-         ywvaKB72vBzakw4dUylEG9y9/OQZCqvFBqpyC4jd/LpopurEu70BtZHLvm1OA2N5BWnp
-         bgCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zO20pXIc4aHnqYviESIViCK1/daYvjDKa+lAXFV6ImY=;
-        b=cNLJn6xss5+vOgZl2PLfyU+AP0xtqgexfYwTksLlmuiJ399iYHnD0Ldt1VbUs60l+w
-         ydomHSVBOGWg+KfJ7e3sWfseg58I0u5YzYFMnIgp8ukZrD9zBP4xQ6U3mrIHwRmbBgY4
-         1hL4BMI1EGOXkkewwotW33jMl6sE7t1ymXBwUJgG7pdD8Nfb5ZJ3NXzBcCxIENttPKjH
-         GBwO5s6QCZDQhPvxTO8dPpPSoSIij6jMRq4si6HzFLZ1aChD1N64qyHOfdtAVw63KQdQ
-         2yQN8LhlIDxTLSvYPVgJw7Er4sswmnMETj8AsEzlmTmrb7oEq9xkHIgXAb20V4yv0/pk
-         x7Yw==
-X-Gm-Message-State: AOAM532DuyHuMt+s6kHQwwFwUvpU6evdmH0BU1qAlaWkquNQkG/Cjzek
-        gzfmyIZdXkJZax70/YL4whqhJf/heWT2c2PAgK8=
-X-Google-Smtp-Source: ABdhPJyGTx+WyAdTDJJlWU6arkGdQ9pu6EWQi7WI6od0zPcwAYIDjrUXkIHD7sKnm9NUKQ9yID3myzerLJMhsKb7Bm4=
-X-Received: by 2002:a25:d1d3:: with SMTP id i202mr22315836ybg.487.1633947788428;
- Mon, 11 Oct 2021 03:23:08 -0700 (PDT)
+        id S235847AbhJKKdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:33:40 -0400
+Received: from muru.com ([72.249.23.125]:43318 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235602AbhJKKdi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:33:38 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 2D2568061;
+        Mon, 11 Oct 2021 10:32:09 +0000 (UTC)
+Date:   Mon, 11 Oct 2021 13:31:36 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?utf-8?Q?Miqu=C3=A8l?= Raynal <miquel.raynal@bootlin.com>,
+        robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+        nsekhar@ti.com, devicetree@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/8] dt-bindings: memory-controllers: ti,gpmc: Convert
+ to yaml
+Message-ID: <YWQSiNX/bBKcdTl2@atomide.com>
+References: <20211007120830.17221-1-rogerq@kernel.org>
+ <6b90a6fd-001f-a41a-b69f-2bd3ec8a8e26@canonical.com>
+ <e165b6ee-91d3-3a50-3b9d-3f15fa82a101@kernel.org>
+ <64b65579-7153-1e7d-9866-77ce07fd1df5@canonical.com>
+ <YWPRbmaJQN85wRIO@atomide.com>
+ <f2125e81-07da-92ea-899a-d06ecae1919f@kernel.org>
 MIME-Version: 1.0
-Received: by 2002:a05:7000:3652:0:0:0:0 with HTTP; Mon, 11 Oct 2021 03:23:08
- -0700 (PDT)
-Reply-To: robertskelvin22@gmail.com
-From:   Roberts kelvin <delepeters200@gmail.com>
-Date:   Mon, 11 Oct 2021 10:23:08 +0000
-Message-ID: <CAPcm=sNdgcbC+ku=ppBJTA4GvJgdOxxfRU4i=CjMbR=6E2Ai+w@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f2125e81-07da-92ea-899a-d06ecae1919f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Sir/Madam,
+* Roger Quadros <rogerq@kernel.org> [211011 07:04]:
+> Hi Tony,
+> 
+> On 11/10/2021 08:53, Tony Lindgren wrote:
+> > * Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com> [211009 14:56]:
+> >> On 08/10/2021 21:10, Roger Quadros wrote:
+> >>> Krzysztof,
+> >>>
+> >>> On 07/10/2021 20:37, Krzysztof Kozlowski wrote:
+> >>>> On 07/10/2021 14:08, Roger Quadros wrote:
+> >>>>> Hi,
+> >>>>>
+> >>>>> This series converts ti,gpmc memory controller and ti,gpmc-nand and
+> >>>>> ti,gpmc-onenand MTD controller bindings to yaml.
+> >>>>>
+> >>>>> cheers,
+> >>>>> -roger
+> >>>>>
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> Although you did not mention it here, it looks like you have some
+> >>>> dependencies between the patches. Maybe this shall go simply via Rob's tree?
+> >>>>
+> >>>
+> >>> Rob has acked all the DT binding patches.
+> >>> So it is upto you and Miquèl to decide the best way. MTD tree or Memory controller tree
+> >>> for the dt-bindings patches.
+> >>>
+> >>> The ARM: dts changes should go via Tony's OMAP SoC tree.
+> >>>
+> >>> Or if Tony is OK with it then maybe all patches can go via Tony's tree? :)
+> >>>
+> >>
+> >>
+> >> I reviewed the two memory-controller patches, so feel free to take them
+> >> via MTD or OMAP SoC.
+> > 
+> > Sounds like I should pick up these because of the dts changes.
+> 
+> There is no dependency with the dts patches but it would be great if you can pick them all up.
 
-My principals have now obtained foreign exchange quotas and approvals
-including capital and under accounts, trade platform, corporate
-accounts and even private accounts.
+OK all pushed out now to omap-for-v5.16/gpmc.
 
-Do you have any viable business plan that needs funding? Depending on
-your business plan/project our principals are in the position to
-provide the capital to the ideal partner ready to work for a mutual
-benefit and the capital will be delivered to you under a non-recourse
-Finance platform.
+Thanks,
 
-It will be my duty to guide you to secure a successful corporate small
-or large capital investment or private capital enhancement.
-
-For more d=C3=A9tails contact me { robertskelvin22@gmail.com }
-Whatsapp +1 {901} 6545402
-
-Regards, Roberts Kelvin
+Tony
