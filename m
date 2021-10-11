@@ -2,160 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3870642966B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5744A429675
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234296AbhJKSGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:06:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234138AbhJKSGo (ORCPT
+        id S234172AbhJKSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:08:28 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:36670 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229496AbhJKSIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:06:44 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7639DC061570;
-        Mon, 11 Oct 2021 11:04:44 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id ls18-20020a17090b351200b001a00250584aso34113pjb.4;
-        Mon, 11 Oct 2021 11:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Wg9CIjlvFpQ0mVyLruVXTyXRfH69nmtxShZyyO67k10=;
-        b=KwLjn5HVCPAN1VyO03eoWTSqXTyEkZVSRrK3txPHLLIh9DhiOwh/bWPmuYTP1e0iL6
-         YCPUrRJkFuvEpLSZ6Se/vQtD44PWVShCYlpelWNoiFet280Bxh/U8X11avhIBa104k8s
-         /Oi5LcHFsMiFjCRQJNnrObmG7WygfC1yAkfZeVLuaIpEVIfbFDTwTTOM6+MVbavO0G1D
-         RO+fuy+VtuMrUg3U/UGarY5fgbMvj3MAbVJRK34KsZ07IFSNSfxryKngR1uTNMcrb7BC
-         DDvYMkIT4n3w44QNHlHcJ4s9eQd2GQ3AkQcHyHFU3HwscstwjIGrAEsxSucysWHQH50H
-         6HFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Wg9CIjlvFpQ0mVyLruVXTyXRfH69nmtxShZyyO67k10=;
-        b=WBKflUg3K9R4I/MwcHbrGonsoqw89N2VEwJtnmfXV0SmOx5Y8Z4R0nGLl2Goyubafc
-         vmbUpQJ3kRhMyIfkoZOFk/xyhVkczvzu7wi6qznTRp7WcJSVVSpB+esK7+e1wa0XnEFS
-         3N4j8EdFAh7I4wycRnVDat5JMiOedMIOol92g8fm2jTkCCHDSo2YaF/P2/v7kHM9ftik
-         kXEfV2mfpNO3FomJAOjm4EpwwTMQD1Kj/CJ5Q52tWK/nv4WgpfIT/0VoEXf8nx6JZvyq
-         u7omexGrc/QjvXQgPxoURT3gojEW/H8aRfiv1vbfYklFvzmKroP4RGFAWWH+ur53bmfM
-         nENw==
-X-Gm-Message-State: AOAM532jf8YF7D5PtyRYK8CJXdyBms5cy2uRi5gvZxcMVRswn7WyquJ4
-        h2P7db+hK+YpuEaASXGMIVXtRwmtxQWVy1v2
-X-Google-Smtp-Source: ABdhPJx8PGs9R92IcdI05aUBG80Gz5bw7EqeWjzkCHnfBwTDDyVwKJ3kiszV1+1ZvjzwJfFZp9JNJQ==
-X-Received: by 2002:a17:90b:3a84:: with SMTP id om4mr476908pjb.153.1633975483812;
-        Mon, 11 Oct 2021 11:04:43 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
-        by smtp.gmail.com with ESMTPSA id u24sm8341425pfm.27.2021.10.11.11.04.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:04:43 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 14/22] PCI/ERR: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
-Date:   Mon, 11 Oct 2021 23:34:21 +0530
-Message-Id: <5117401f4ff1ff8b0d0ebad0ef5b7b7adfee201e.1633972263.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
+        Mon, 11 Oct 2021 14:08:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633975579;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=6LqnHvXTdFYtJDd10vSABCQdR8Ch6Bc2PQELvRrAL7c=;
+    b=FSlO1oIQa83K3kUKOAisqB6w0PxoBb7YrOJZs1ppyRnHA8dAVlAFpbVcHb0qtKHIXI
+    iEb60TZM2/1Ax6OpL1I01KcsYQxFjKCICgRfsXIcgJvfO/Hb8PDKjxomkg8KWPZJH9ZF
+    7V8L0r5HH3lbyv0QxZ0WBe+pmasUNdS9FFOJ26UcvllehCF19bJvQBEhzMq+ushahbNS
+    8RK6Tg2GDbUgmvVk0mIAFrgDsKuE1lI1W0vilU5NJO8xenILNisgdSqSbs5wT5ToMd9s
+    snMy1CTjUZuvV5ZRa29P/obDKb4GtFOzQa0s8ko/GQl2HW9pewIDekJ38FsgmetSeHYV
+    D4HA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4pSA8p7h"
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
+    with ESMTPSA id 301038x9BI6Fw0z
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 11 Oct 2021 20:06:15 +0200 (CEST)
+Date:   Mon, 11 Oct 2021 20:06:12 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Subject: Re: [PATCH net-next v2 2/4] dmaengine: qcom: bam_dma: Add "powered
+ remotely" mode
+Message-ID: <YWR9DSp0ry/wprLn@gerhold.net>
+References: <20211011141733.3999-1-stephan@gerhold.net>
+ <20211011141733.3999-3-stephan@gerhold.net>
+ <YWR2yN3x3zroz1GX@ripper>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YWR2yN3x3zroz1GX@ripper>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An MMIO read from a PCI device that doesn't exist or doesn't respond
-causes a PCI error.  There's no real data to return to satisfy the
-CPU read, so most hardware fabricates ~0 data.
+On Mon, Oct 11, 2021 at 10:39:20AM -0700, Bjorn Andersson wrote:
+> On Mon 11 Oct 07:17 PDT 2021, Stephan Gerhold wrote:
+> 
+> > In some configurations, the BAM DMA controller is set up by a remote
+> > processor and the local processor can simply start making use of it
+> > without setting up the BAM. This is already supported using the
+> > "qcom,controlled-remotely" property.
+> > 
+> > However, for some reason another possible configuration is that the
+> > remote processor is responsible for powering up the BAM, but we are
+> > still responsible for initializing it (e.g. resetting it etc).
+> > 
+> > This configuration is quite challenging to handle properly because
+> > the power control is handled through separate channels
+> > (e.g. device-specific SMSM interrupts / smem-states). Great care
+> > must be taken to ensure the BAM registers are not accessed while
+> > the BAM is powered off since this results in a bus stall.
+> > 
+> > Attempt to support this configuration with minimal device-specific
+> > code in the bam_dma driver by tracking the number of requested
+> > channels. Consumers of DMA channels are responsible to only request
+> > DMA channels when the BAM was powered on by the remote processor,
+> > and to release them before the BAM is powered off.
+> > 
+> > When the first channel is requested the BAM is initialized (reset)
+> > and it is also put into reset when the last channel was released.
+> > 
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> > Changes since RFC:
+> >   - Drop qcom-specific terminology "power collapse", instead rename
+> >     "qcom,remote-power-collapse" -> "qcom,powered-remotely"
+> > 
+> > NOTE: This is *not* a compile-time requirement for the BAM-DMUX driver
+> >       so this could also go through the dmaengine tree.
+> > 
+> > See original RFC for a discussion of alternative approaches to handle
+> > this configuration:
+> >   https://lore.kernel.org/netdev/20210719145317.79692-3-stephan@gerhold.net/
+> > ---
+> >  drivers/dma/qcom/bam_dma.c | 88 ++++++++++++++++++++++++--------------
+> >  1 file changed, 56 insertions(+), 32 deletions(-)
+> > 
+> > diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
+> > index c8a77b428b52..1b33a3ebbfec 100644
+> > --- a/drivers/dma/qcom/bam_dma.c
+> > +++ b/drivers/dma/qcom/bam_dma.c
+> > @@ -388,6 +388,8 @@ struct bam_device {
+> >  	/* execution environment ID, from DT */
+> >  	u32 ee;
+> >  	bool controlled_remotely;
+> > +	bool powered_remotely;
+> > +	u32 active_channels;
+> >  
+> >  	const struct reg_offset_data *layout;
+> >  
+> > @@ -415,6 +417,44 @@ static inline void __iomem *bam_addr(struct bam_device *bdev, u32 pipe,
+> >  		r.ee_mult * bdev->ee;
+> >  }
+> >  
+> > +/**
+> > + * bam_reset - reset and initialize BAM registers
+> 
+> Please include a set of () after the function name.
+> 
 
-Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
-data from hardware.
+Thanks, will fix this in v3.
 
-This unifies PCI error response checking and make error checks
-consistent and easier to find.
+> > + * @bdev: bam device
+> > + */
+> > +static void bam_reset(struct bam_device *bdev)
+> > +{
+> > +	u32 val;
+> > +
+> > +	/* s/w reset bam */
+> > +	/* after reset all pipes are disabled and idle */
+> > +	val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
+> > +	val |= BAM_SW_RST;
+> > +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> > +	val &= ~BAM_SW_RST;
+> > +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> 
+> Seems odd to me that we assert and deassert the reset in back-to-back
+> writes, without any delay etc. That said, this is unrelated to your
+> patch as you just moved this hunk from below.
+> 
 
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
----
- drivers/pci/pci.c   | 10 +++++-----
- drivers/pci/probe.c | 10 +++++-----
- 2 files changed, 10 insertions(+), 10 deletions(-)
+It seems to work fine though. :)
+I'm pretty sure I checked that this actually resets at some point,
+but perhaps I was lucky there. But yeah, seems better to adjust this in
+some future patch instead of here.
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index ce2ab62b64cf..c1575364d1ce 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -1077,7 +1077,7 @@ static int pci_raw_set_power_state(struct pci_dev *dev, pci_power_t state)
- 		return -EIO;
- 
- 	pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
--	if (pmcsr == (u16) ~0) {
-+	if (RESPONSE_IS_PCI_ERROR(&pmcsr)) {
- 		pci_err(dev, "can't change power state from %s to %s (config space inaccessible)\n",
- 			pci_power_name(dev->current_state),
- 			pci_power_name(state));
-@@ -1239,16 +1239,16 @@ static int pci_dev_wait(struct pci_dev *dev, char *reset_type, int timeout)
- 	 * After reset, the device should not silently discard config
- 	 * requests, but it may still indicate that it needs more time by
- 	 * responding to them with CRS completions.  The Root Port will
--	 * generally synthesize ~0 data to complete the read (except when
--	 * CRS SV is enabled and the read was for the Vendor ID; in that
--	 * case it synthesizes 0x0001 data).
-+	 * generally synthesize ~0 (PCI_ERROR_RESPONSE) data to complete
-+	 * the read (except when CRS SV is enabled and the read was for the
-+	 * Vendor ID; in that case it synthesizes 0x0001 data).
- 	 *
- 	 * Wait for the device to return a non-CRS completion.  Read the
- 	 * Command register instead of Vendor ID so we don't have to
- 	 * contend with the CRS SV value.
- 	 */
- 	pci_read_config_dword(dev, PCI_COMMAND, &id);
--	while (id == ~0) {
-+	while (RESPONSE_IS_PCI_ERROR(&id)) {
- 		if (delay > timeout) {
- 			pci_warn(dev, "not ready %dms after %s; giving up\n",
- 				 delay - 1, reset_type);
-diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index d9fc02a71baa..55b94d689eca 100644
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -206,14 +206,14 @@ int __pci_read_base(struct pci_dev *dev, enum pci_bar_type type,
- 	 * memory BAR or a ROM, bit 0 must be clear; if it's an io BAR, bit
- 	 * 1 must be clear.
- 	 */
--	if (sz == 0xffffffff)
-+	if (RESPONSE_IS_PCI_ERROR(&sz))
- 		sz = 0;
- 
- 	/*
- 	 * I don't know how l can have all bits set.  Copied from old code.
- 	 * Maybe it fixes a bug on some ancient platform.
- 	 */
--	if (l == 0xffffffff)
-+	if (RESPONSE_IS_PCI_ERROR(&l))
- 		l = 0;
- 
- 	if (type == pci_bar_unknown) {
-@@ -1660,7 +1660,7 @@ static int pci_cfg_space_size_ext(struct pci_dev *dev)
- 
- 	if (pci_read_config_dword(dev, pos, &status) != PCIBIOS_SUCCESSFUL)
- 		return PCI_CFG_SPACE_SIZE;
--	if (status == 0xffffffff || pci_ext_cfg_is_aliased(dev))
-+	if (RESPONSE_IS_PCI_ERROR(&status) || pci_ext_cfg_is_aliased(dev))
- 		return PCI_CFG_SPACE_SIZE;
- 
- 	return PCI_CFG_SPACE_EXP_SIZE;
-@@ -2336,8 +2336,8 @@ bool pci_bus_generic_read_dev_vendor_id(struct pci_bus *bus, int devfn, u32 *l,
- 	if (pci_bus_read_config_dword(bus, devfn, PCI_VENDOR_ID, l))
- 		return false;
- 
--	/* Some broken boards return 0 or ~0 if a slot is empty: */
--	if (*l == 0xffffffff || *l == 0x00000000 ||
-+	/* Some broken boards return 0 or ~0 (PCI_ERROR_RESPONSE) if a slot is empty: */
-+	if (RESPONSE_IS_PCI_ERROR(l) || *l == 0x00000000 ||
- 	    *l == 0x0000ffff || *l == 0xffff0000)
- 		return false;
- 
--- 
-2.25.1
+> > +
+> > +	/* make sure previous stores are visible before enabling BAM */
+> > +	wmb();
+> > +
+> > +	/* enable bam */
+> > +	val |= BAM_EN;
+> > +	writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> > +
+> > +	/* set descriptor threshhold, start with 4 bytes */
+> > +	writel_relaxed(DEFAULT_CNT_THRSHLD,
+> > +			bam_addr(bdev, 0, BAM_DESC_CNT_TRSHLD));
+> > +
+> > +	/* Enable default set of h/w workarounds, ie all except BAM_FULL_PIPE */
+> > +	writel_relaxed(BAM_CNFG_BITS_DEFAULT, bam_addr(bdev, 0, BAM_CNFG_BITS));
+> > +
+> > +	/* enable irqs for errors */
+> > +	writel_relaxed(BAM_ERROR_EN | BAM_HRESP_ERR_EN,
+> > +			bam_addr(bdev, 0, BAM_IRQ_EN));
+> > +
+> > +	/* unmask global bam interrupt */
+> > +	writel_relaxed(BAM_IRQ_MSK, bam_addr(bdev, 0, BAM_IRQ_SRCS_MSK_EE));
+> > +}
+> > +
+> >  /**
+> >   * bam_reset_channel - Reset individual BAM DMA channel
+> >   * @bchan: bam channel
+> > @@ -512,6 +552,9 @@ static int bam_alloc_chan(struct dma_chan *chan)
+> >  		return -ENOMEM;
+> >  	}
+> >  
+> > +	if (bdev->active_channels++ == 0 && bdev->powered_remotely)
+> > +		bam_reset(bdev);
+> > +
+> >  	return 0;
+> >  }
+> >  
+> > @@ -565,6 +608,13 @@ static void bam_free_chan(struct dma_chan *chan)
+> >  	/* disable irq */
+> >  	writel_relaxed(0, bam_addr(bdev, bchan->id, BAM_P_IRQ_EN));
+> >  
+> > +	if (--bdev->active_channels == 0 && bdev->powered_remotely) {
+> > +		/* s/w reset bam */
+> > +		val = readl_relaxed(bam_addr(bdev, 0, BAM_CTRL));
+> > +		val |= BAM_SW_RST;
+> > +		writel_relaxed(val, bam_addr(bdev, 0, BAM_CTRL));
+> > +	}
+> > +
+> >  err:
+> >  	pm_runtime_mark_last_busy(bdev->dev);
+> >  	pm_runtime_put_autosuspend(bdev->dev);
+> > @@ -1164,38 +1214,10 @@ static int bam_init(struct bam_device *bdev)
+> >  		bdev->num_channels = val & BAM_NUM_PIPES_MASK;
+> >  	}
+> >  
+> > -	if (bdev->controlled_remotely)
+> > +	if (bdev->controlled_remotely || bdev->powered_remotely)
+> >  		return 0;
+> 
+> I think the resulting code would be cleaner if you flipped it around as:
+> 
+> 	/* Reset BAM now if fully controlled locally */
+> 	if (!bdev->controlled_remotely && !bdev->powered_remotely)
+> 		bam_reset(bdev);
+> 
+> 	return 0;
+> 
 
+Hmm, you are probably right, I can flip it in v3.
+
+Thanks!
+Stephan
