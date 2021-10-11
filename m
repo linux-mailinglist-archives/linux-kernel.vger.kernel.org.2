@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D957428EBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F06428F34
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237467AbhJKNvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38572 "EHLO mail.kernel.org"
+        id S237612AbhJKN4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:56:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236249AbhJKNuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 349E460C49;
-        Mon, 11 Oct 2021 13:48:01 +0000 (UTC)
+        id S235235AbhJKNx7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:53:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1D8C60F6E;
+        Mon, 11 Oct 2021 13:51:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960082;
-        bh=KatlpQaVe2Tnj8+hKldMj+ZI/hitDdpstM/2v3SlcLM=;
+        s=korg; t=1633960319;
+        bh=J1bevgMjOGZSt9baN1ki61/2AfSBoET06mjlkdzidVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KAOTO1UyIYzWXHc7AunJKD7Acei4qglXqHvYFk+UCRxhRF+b8xPqGF43jvfWq+9xf
-         k8iqYO8ku7f095tB4G6u9x1jFcMhbWGofEsodjjVM/6LA+AoSQEDCg3B4f66KQ5h+V
-         M3JS240KQ18uc1GBtP7/xaTKJ2iQRrBx6aZwlzno=
+        b=axqpZ8YrSCAvsfCjYF2FfR+ehnlGPassEQcQVI+r/H707P6jiQ2Xvxx/2RFzIbc5w
+         vpg3v+jOfj2bWaTUrAWKBYZg9KjdyN2uBXw4IvSm5qHXNrYzSdmLvv2GntUEokHy/l
+         Iqa3KV67M9rwDn7U5FrmmiuWeHFZZ7DbJymAuYw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 17/52] soc: qcom: mdt_loader: Drop PT_LOAD check on hash segment
-Date:   Mon, 11 Oct 2021 15:45:46 +0200
-Message-Id: <20211011134504.297813804@linuxfoundation.org>
+Subject: [PATCH 5.10 27/83] ARM: dts: imx: Fix USB host power regulator polarity on M53Menlo
+Date:   Mon, 11 Oct 2021 15:45:47 +0200
+Message-Id: <20211011134509.300278126@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shawn Guo <shawn.guo@linaro.org>
+From: Marek Vasut <marex@denx.de>
 
-[ Upstream commit 833d51d7c66d6708abbc02398892b96b950167b9 ]
+[ Upstream commit 5c187e2eb3f92daa38cb3d4ab45e1107ea34108e ]
 
-PT_LOAD type denotes that the segment should be loaded into the final
-firmware memory region.  Hash segment is not one such, because it's only
-needed for PAS init and shouldn't be in the final firmware memory region.
-That's why mdt_phdr_valid() explicitly reject non PT_LOAD segment and
-hash segment.  This actually makes the hash segment type check in
-qcom_mdt_read_metadata() unnecessary and redundant.  For a hash segment,
-it won't be loaded into firmware memory region anyway, due to the
-QCOM_MDT_TYPE_HASH check in mdt_phdr_valid(), even if it has a PT_LOAD
-type for some reason (misusing or abusing?).
+The MIC2025 switch input signal nEN is active low, describe it as such
+in the DT. The previous change to this regulator polarity was incorrectly
+influenced by broken quirks in gpiolib-of.c, which is now long fixed. So
+fix this regulator polarity setting here once and for all.
 
-Some firmware files on Sony phones are such examples, e.g WCNSS firmware
-of Sony Xperia M4 Aqua phone.  The type of hash segment is just PT_LOAD.
-Drop the unnecessary hash segment type check in qcom_mdt_read_metadata()
-to fix firmware loading failure on these phones, while hash segment is
-still kept away from the final firmware memory region.
-
-Fixes: 498b98e93900 ("soc: qcom: mdt_loader: Support loading non-split images")
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20210828070202.7033-1-shawn.guo@linaro.org
+Fixes: 3c3601cd6a6d3 ("ARM: dts: imx53: Update USB configuration on M53Menlo")
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/mdt_loader.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/imx53-m53menlo.dts | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-index eba7f76f9d61..6034cd8992b0 100644
---- a/drivers/soc/qcom/mdt_loader.c
-+++ b/drivers/soc/qcom/mdt_loader.c
-@@ -98,7 +98,7 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
- 	if (ehdr->e_phnum < 2)
- 		return ERR_PTR(-EINVAL);
+diff --git a/arch/arm/boot/dts/imx53-m53menlo.dts b/arch/arm/boot/dts/imx53-m53menlo.dts
+index 48adcfd32cea..4f88e96d81dd 100644
+--- a/arch/arm/boot/dts/imx53-m53menlo.dts
++++ b/arch/arm/boot/dts/imx53-m53menlo.dts
+@@ -77,8 +77,7 @@
+ 		regulator-name = "vbus";
+ 		regulator-min-microvolt = <5000000>;
+ 		regulator-max-microvolt = <5000000>;
+-		gpio = <&gpio1 2 GPIO_ACTIVE_HIGH>;
+-		enable-active-high;
++		gpio = <&gpio1 2 0>;
+ 	};
+ };
  
--	if (phdrs[0].p_type == PT_LOAD || phdrs[1].p_type == PT_LOAD)
-+	if (phdrs[0].p_type == PT_LOAD)
- 		return ERR_PTR(-EINVAL);
- 
- 	if ((phdrs[1].p_flags & QCOM_MDT_TYPE_MASK) != QCOM_MDT_TYPE_HASH)
 -- 
 2.33.0
 
