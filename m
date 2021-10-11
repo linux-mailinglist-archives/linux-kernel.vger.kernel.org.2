@@ -2,90 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A24744295C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1354295CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhJKRhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:37:24 -0400
-Received: from mga17.intel.com ([192.55.52.151]:48880 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230436AbhJKRhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:37:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="207733569"
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="207733569"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:35:19 -0700
-X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
-   d="scan'208";a="440885412"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.255.229.69]) ([10.255.229.69])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:35:18 -0700
-Message-ID: <9d0ac556-6a06-0f2e-c4ff-0c3ce742a382@linux.intel.com>
-Date:   Mon, 11 Oct 2021 10:35:18 -0700
+        id S232799AbhJKRhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231156AbhJKRhv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:37:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B85C061570;
+        Mon, 11 Oct 2021 10:35:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=I6yZ9zx7B4CxK1FcMbBf4dNiqFWQUDhjJKBNKLinZKc=; b=WgW+i+lRiYG5w3GNHZdDYgD3h1
+        F7nq9T466tF0JFQMZxMvZQ5jMMkU1eR/NTRFGdIMYZvoIEov/A2Cm5VcbYz1tgt7fII1FtBj6VpJm
+        rysGbQJJWCPtiYCZLNqqeOAUKkF94GThwcjuFNOFXMPvCr2Toa1L5xhKY79+h+r5UPBlibjMe8j2E
+        svViCRTvnFmkM7iyiLK/ab3RzEsY1F6ZwvawjmK9ljM6EPnjYgxckX+J7cRowQaAYo4vnZ+g7QZdG
+        /Ek4B15RNLd6B0kqiK3irCZ3i3+eme7zVH8glMdZxdTbKgd/G6k4uS87PkAL+MjLJ06fxwExdYNYH
+        6BuPO3hg==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZzD7-00AFE9-DQ; Mon, 11 Oct 2021 17:35:37 +0000
+Date:   Mon, 11 Oct 2021 10:35:37 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     bp@suse.de, akpm@linux-foundation.org, josh@joshtriplett.org,
+        rishabhb@codeaurora.org, kubakici@wp.pl, maco@android.com,
+        david.brown@linaro.org, bjorn.andersson@linaro.org,
+        linux-wireless@vger.kernel.org, keescook@chromium.org,
+        shuah@kernel.org, mfuzzey@parkeon.com, zohar@linux.vnet.ibm.com,
+        dhowells@redhat.com, pali.rohar@gmail.com, tiwai@suse.de,
+        arend.vanspriel@broadcom.com, zajec5@gmail.com, nbroeking@me.com,
+        broonie@kernel.org, dmitry.torokhov@gmail.com, dwmw2@infradead.org,
+        torvalds@linux-foundation.org, Abhay_Salunke@dell.com,
+        jewalt@lgsinnovations.com, cantabile.desu@gmail.com, ast@fb.com,
+        andresx7@gmail.com, dan.rue@linaro.org, brendanhiggins@google.com,
+        yzaikin@google.com, sfr@canb.auug.org.au, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 04/14] firmware_loader: add built-in firmware kconfig
+ entry
+Message-ID: <YWR16e/seTx/wxE+@bombadil.infradead.org>
+References: <20210917182226.3532898-1-mcgrof@kernel.org>
+ <20210917182226.3532898-5-mcgrof@kernel.org>
+ <YVxhbhmNd7tahLV7@kroah.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
- ioremap_host_shared
-Content-Language: en-US
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009070132-mutt-send-email-mst@kernel.org>
- <8c906de6-5efa-b87a-c800-6f07b98339d0@linux.intel.com>
- <20211011075945-mutt-send-email-mst@kernel.org>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <20211011075945-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YVxhbhmNd7tahLV7@kroah.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 05, 2021 at 04:30:06PM +0200, Greg KH wrote:
+> On Fri, Sep 17, 2021 at 11:22:16AM -0700, Luis R. Rodriguez wrote:
+> > From: Luis Chamberlain <mcgrof@kernel.org>
+> > 
+> > The built-in firmware is always supported when a user enables
+> > FW_LOADER=y today, that is, it is built-in to the kernel. When the
+> > firmware loader is built as a module, support for built-in firmware
+> > is skipped. This requirement is not really clear to users or even
+> > developers.
+> > 
+> > Also, by default the EXTRA_FIRMWARE is always set to an empty string
+> > and so by default we really have nothing built-in to that kernel's
+> > sections for built-in firmware, so today a all FW_LOADER=y kernels
+> > spins their wheels on an empty set of built-in firmware for each
+> > firmware request with no true need for it.
+> > 
+> > Add a new kconfig entry to represent built-in firmware support more
+> > clearly. This let's knock 3 birds with one stone:
+> > 
+> >  o Clarifies that support for built-in firmware requires the
+> >    firmware loader to be built-in to the kernel
+> > 
+> >  o By default we now always skip built-in firmware even if a FW_LOADER=y
+> > 
+> >  o This also lets us make it clear that the EXTRA_FIRMWARE_DIR
+> >    kconfig entry is only used for built-in firmware
+> > 
+> > Reviewed-by: Borislav Petkov <bp@suse.de>
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  .../driver-api/firmware/built-in-fw.rst       |  2 ++
+> >  Documentation/x86/microcode.rst               |  5 ++--
+> >  drivers/base/firmware_loader/Kconfig          | 25 +++++++++++++------
+> >  drivers/base/firmware_loader/Makefile         |  3 +--
+> >  drivers/base/firmware_loader/main.c           |  4 +--
+> >  5 files changed, 26 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/Documentation/driver-api/firmware/built-in-fw.rst b/Documentation/driver-api/firmware/built-in-fw.rst
+> > index bc1c961bace1..9dd2b1df44f0 100644
+> > --- a/Documentation/driver-api/firmware/built-in-fw.rst
+> > +++ b/Documentation/driver-api/firmware/built-in-fw.rst
+> > @@ -8,6 +8,7 @@ the filesystem. Instead, firmware can be looked for inside the kernel
+> >  directly. You can enable built-in firmware using the kernel configuration
+> >  options:
+> >  
+> > +  * CONFIG_FW_LOADER_BUILTIN
+> >    * CONFIG_EXTRA_FIRMWARE
+> >    * CONFIG_EXTRA_FIRMWARE_DIR
+> >  
+> > @@ -17,6 +18,7 @@ into the kernel with CONFIG_EXTRA_FIRMWARE:
+> >  * Speed
+> >  * Firmware is needed for accessing the boot device, and the user doesn't
+> >    want to stuff the firmware into the boot initramfs.
+> > +* Testing built-in firmware
+> >  
+> >  Even if you have these needs there are a few reasons why you may not be
+> >  able to make use of built-in firmware:
+> > diff --git a/Documentation/x86/microcode.rst b/Documentation/x86/microcode.rst
+> > index a320d37982ed..d199f0b98869 100644
+> > --- a/Documentation/x86/microcode.rst
+> > +++ b/Documentation/x86/microcode.rst
+> > @@ -114,11 +114,12 @@ Builtin microcode
+> >  =================
+> >  
+> >  The loader supports also loading of a builtin microcode supplied through
+> > -the regular builtin firmware method CONFIG_EXTRA_FIRMWARE. Only 64-bit is
+> > -currently supported.
+> > +the regular builtin firmware method using CONFIG_FW_LOADER_BUILTIN and
+> > +CONFIG_EXTRA_FIRMWARE. Only 64-bit is currently supported.
+> >  
+> >  Here's an example::
+> >  
+> > +  CONFIG_FW_LOADER_BUILTIN=y
+> >    CONFIG_EXTRA_FIRMWARE="intel-ucode/06-3a-09 amd-ucode/microcode_amd_fam15h.bin"
+> >    CONFIG_EXTRA_FIRMWARE_DIR="/lib/firmware"
+> >  
+> > diff --git a/drivers/base/firmware_loader/Kconfig b/drivers/base/firmware_loader/Kconfig
+> > index 5b24f3959255..de4fcd9d41f3 100644
+> > --- a/drivers/base/firmware_loader/Kconfig
+> > +++ b/drivers/base/firmware_loader/Kconfig
+> > @@ -29,8 +29,10 @@ if FW_LOADER
+> >  config FW_LOADER_PAGED_BUF
+> >  	bool
+> >  
+> > -config EXTRA_FIRMWARE
+> > -	string "Build named firmware blobs into the kernel binary"
+> > +config FW_LOADER_BUILTIN
+> > +	bool "Enable support for built-in firmware"
+> > +	default n
+> 
+> n is always the default, no need to list it again.
 
-> Presumably bios code is in arch/x86 and drivers/acpi, right?
-> Up to 200 calls the majority of which is likely private ...
+Oh, alrighty, I'll remove that line.
 
-Yes.
+> > +	depends on FW_LOADER=y
+> 
+> I don't see what this gets us to add another config option.  Are you
+> making things easier later on?
 
-> I don't have better ideas but the current setup will just
-> result in people making their guests vulnerable whenever they
-> want to allow device pass-through.
+This makes a few things clearer for both developers and users.
+The code in question is a *feature* *only* when FW_LOADER=y, by
+adding a new kconfig to represent this and clearly makeing it
+depend on FW_LOADER=y it let's us:
 
+  o Clarify that support for built-in firmware requires
+    the firmware loader to be built-in to the kernel
+  o By default we now always skip built-in firmware even if a FW_LOADER=y
+  o This also lets us make it clear that the EXTRA_FIRMWARE_DIR
+    kconfig entry is only used for built-in firmware
 
-Yes that's true. For current TDX our target is virtual devices only. But 
-if pass through usage will be really wide spread we may need to revisit.
+The above is not easily obvious to developers (including myself when
+I was reviewing this code) or users without this new kconfig entry.
 
+Should I re-send by just removing the one line you asked for?
 
--Andi
+  Luis
