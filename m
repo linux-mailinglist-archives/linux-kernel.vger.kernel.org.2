@@ -2,104 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6587B42969E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6014296A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234386AbhJKSQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
+        id S234107AbhJKSRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234320AbhJKSQO (ORCPT
+        with ESMTP id S234207AbhJKSRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:16:14 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260EBC061570;
-        Mon, 11 Oct 2021 11:14:14 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id l16-20020a9d6a90000000b0054e7ab56f27so5445564otq.12;
-        Mon, 11 Oct 2021 11:14:14 -0700 (PDT)
+        Mon, 11 Oct 2021 14:17:10 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40207C061570;
+        Mon, 11 Oct 2021 11:15:10 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id v11so11551440pgb.8;
+        Mon, 11 Oct 2021 11:15:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=so5v8xcVc8H+6uvaMOS818TeIXcZqDh/c1PHeEhQkb0=;
-        b=dJS2ociZaxImnyy/ctc1JFg0DxR9n+uzK2WvywdKtbLnpKPJ+o6XQ5Vh/f7E2cRZEC
-         /LXvgT39HtTQRqr+UxRHCJbfeAsrSCcmGNnu8EXR9tRAl3ppEvWeLIkqHSG2FiqWYkPZ
-         Sy4HRmErsTzwR9S0HnxF6U+dIBtVCGsPWWyQrk8v90VV0Zw0YlpcPvO18Pi3AzB2fPDW
-         SG71nGm9fSvU+4NWtI5cWNkBywG90U2UVgLlHF0gPUjgLal+ff+XjaqaeUMYz1wAjyJY
-         TmTc5bAyh43f0fkN6KJJvkaEYzdMeDcj1wQzX6MdHcTSct7SK439M0Nbn1R8LDzEX1PO
-         08mg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIyV8cR5GS2rxg2p2WwgQNqm6Dtb0bm+QAw3FrSnNHs=;
+        b=mpifQseRXNKTi9FRbbAFKy+rTYsJrgDaYBasQLtPhOg3EIEBbTof5+DgIJKAoQAjOj
+         rY5jcQKPzhkrgzalaw4snJZMiy3nIMEV2F03PDl2rE/fS/nR9HCtWcRILIxxm7pWS+oi
+         MnZwEU5vPNnzOBl5h0NIH/nW5ZGwrz92cI4DWxlR2ofmKlnhNk3DnOY69op8PU0B0kvJ
+         CBHqnT0TrVelZ5OWEzaQ5YcULxlelzIZqxUGTHoe0PSrHRsiUfySBy7Jyx0zdXtxfmej
+         0RTdQoZuyz4hx9YXFho1BeCACGlIA6qOgbiFiGEKfoIhQEu2F+K0qSy93wvM+22CwhPL
+         AIjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=so5v8xcVc8H+6uvaMOS818TeIXcZqDh/c1PHeEhQkb0=;
-        b=wDnkStO4Kdkk9b61eYeMX/NVKJAjf5vCARqiK1tF0mJcHK1r/u1eSmrr7ULXpyeSmR
-         RY5D/SqTowPntOg1jPsjcUx9Lb54fjMmIdiaiqM793lee4HowEuB0LS6obA8cwuL/Yh5
-         tLcpi2KMMpR+xenu87VpXW7vNK93jdA3TVV84NOrqqQb4XZQnI/sRUOQhEcMM5hO4Fvq
-         kNCyxoajVkmZVh3LGR+KfQcQ1osRB+PBGqBaXW6Chei1MkricF6mOUI+2xKFH4HL4WsV
-         NvMZaM8SYJz8SxdM0a/24LawmU96uMJdGldA9neOfDunuhrSnkESMbMT2KNT7RqIaTWK
-         kUrg==
-X-Gm-Message-State: AOAM5313936SDn2kQvsktVdOC3vmIbFpfnsbSzFouDC/A7fAJ+j5GYuA
-        dNpbuic60Dbn+EeAwBfgvoNL/lB3vPJLmp/vhgUZO16uWk4=
-X-Google-Smtp-Source: ABdhPJxo7Lkg+QlgZlHkpUhc9g80AxNDDCis6WeGaKpbzXyEpPer0n7rrlVxTEMErsvMZrye4BUylFm5IgjzpQASsDw=
-X-Received: by 2002:a05:6830:2816:: with SMTP id w22mr21954487otu.351.1633976053471;
- Mon, 11 Oct 2021 11:14:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kIyV8cR5GS2rxg2p2WwgQNqm6Dtb0bm+QAw3FrSnNHs=;
+        b=IfimMRhCHFmOo9NvBS6tSZkK0o/u9BuewAsnU4MGuo4YuhIXUH4BFfv+z0mmOaLglc
+         I4lElMSdEoXfIOEHOCMHdat+WDKNlY4hn7mic9oxzyMjeJMaME2bClpSfFr8Mw9A6x3F
+         3scMD6z8Ri054rVz5ba0XPktgmhcMAP9xrQLxVCWJn98ASa5oSL2YMCKU9YT5ybHobpj
+         W3q8omM2D+Gf5bCKUBcPqp/p1/sWbFvArsPVBoe6PbCHZYb+yYEv4vkkFASR2oXSoaN+
+         IAD5s7+oqR9Ynat4rhkibOvRIwL3kaxC048hkwCvnnemQj3MEHzkvLEeNyLsNUlmhp4V
+         I0tA==
+X-Gm-Message-State: AOAM530GNhSRMuLsaQgjAGUElSGcB6CGURb15994QzUbHDmaj+Zr9ytg
+        QuEB6zjDpHhchpH1GGOVrko/LLEQBhM=
+X-Google-Smtp-Source: ABdhPJzdcwt2Cycw2thuAovS8gONxp7BCjEUfnYv8mdL2tyQJJpzLK9xK9nRR3P+WDnCTYO4V1H0/g==
+X-Received: by 2002:a63:5453:: with SMTP id e19mr19394477pgm.178.1633976109236;
+        Mon, 11 Oct 2021 11:15:09 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 14sm8109939pfu.29.2021.10.11.11.15.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 11:15:08 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        netdev@vger.kernel.org (open list:ETHERNET PHY LIBRARY)
+Subject: [PATCH stable 5.4] net: phy: bcm7xxx: Fixed indirect MMD operations
+Date:   Mon, 11 Oct 2021 11:15:00 -0700
+Message-Id: <20211011181500.103617-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20211002124012.18186-1-ajaygargnsit@gmail.com>
- <b9afdade-b121-cc9e-ce85-6e4ff3724ed9@linux.intel.com> <CAHP4M8Us753hAeoXL7E-4d29rD9+FzUwAqU6gKNmgd8G0CaQQw@mail.gmail.com>
- <20211004163146.6b34936b.alex.williamson@redhat.com> <CAHP4M8UeGRSqHBV+wDPZ=TMYzio0wYzHPzq2Y+JCY0uzZgBkmA@mail.gmail.com>
- <CAHP4M8UD-k76cg0JmeZAwaWh1deSP82RCE=VC1zHQEYQmX6N9A@mail.gmail.com>
- <CAHP4M8VPem7xEtx3vQPm3bzCQif7JZFiXgiUGZVErTt5vhOF8A@mail.gmail.com> <20211011085247.7f887b12.alex.williamson@redhat.com>
-In-Reply-To: <20211011085247.7f887b12.alex.williamson@redhat.com>
-From:   Ajay Garg <ajaygargnsit@gmail.com>
-Date:   Mon, 11 Oct 2021 23:43:29 +0530
-Message-ID: <CAHP4M8UmnBH58H3qqba1p3kyEiPUk9xTp063yJr8RFduUNjgbg@mail.gmail.com>
-Subject: Re: [PATCH] iommu: intel: remove flooding of non-error logs, when
- new-DMA-PTE is the same as old-DMA-PTE.
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Alex for your time.
+commit d88fd1b546ff19c8040cfaea76bf16aed1c5a0bb upstream
 
-I think I may have found the issue. Right now, when doing a
-dma-unmapping, we do a "soft-unmapping" only, as the pte-values
-themselves are not cleared in the unlinked pagetable-frame.
+When EEE support was added to the 28nm EPHY it was assumed that it would
+be able to support the standard clause 45 over clause 22 register access
+method. It turns out that the PHY does not support that, which is the
+very reason for using the indirect shadow mode 2 bank 3 access method.
 
-I have made the (simple) changes, and things are looking good as of
-now (almost an hour now).
-However, this time I will give it a day ;)
+Implement {read,write}_mmd to allow the standard PHY library routines
+pertaining to EEE querying and configuration to work correctly on these
+PHYs. This forces us to implement a __phy_set_clr_bits() function that
+does not grab the MDIO bus lock since the PHY driver's {read,write}_mmd
+functions are always called with that lock held.
 
-If there is not a single-flooding observed in the next 24 hours, I
-would float the v2 patch for review.
+Fixes: 83ee102a6998 ("net: phy: bcm7xxx: add support for 28nm EPHY")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ drivers/net/phy/bcm7xxx.c | 114 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 110 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/net/phy/bcm7xxx.c b/drivers/net/phy/bcm7xxx.c
+index af8eabe7a6d4..d372626c603d 100644
+--- a/drivers/net/phy/bcm7xxx.c
++++ b/drivers/net/phy/bcm7xxx.c
+@@ -26,7 +26,12 @@
+ #define MII_BCM7XXX_SHD_2_ADDR_CTRL	0xe
+ #define MII_BCM7XXX_SHD_2_CTRL_STAT	0xf
+ #define MII_BCM7XXX_SHD_2_BIAS_TRIM	0x1a
++#define MII_BCM7XXX_SHD_3_PCS_CTRL	0x0
++#define MII_BCM7XXX_SHD_3_PCS_STATUS	0x1
++#define MII_BCM7XXX_SHD_3_EEE_CAP	0x2
+ #define MII_BCM7XXX_SHD_3_AN_EEE_ADV	0x3
++#define MII_BCM7XXX_SHD_3_EEE_LP	0x4
++#define MII_BCM7XXX_SHD_3_EEE_WK_ERR	0x5
+ #define MII_BCM7XXX_SHD_3_PCS_CTRL_2	0x6
+ #define  MII_BCM7XXX_PCS_CTRL_2_DEF	0x4400
+ #define MII_BCM7XXX_SHD_3_AN_STAT	0xb
+@@ -210,25 +215,37 @@ static int bcm7xxx_28nm_resume(struct phy_device *phydev)
+ 	return genphy_config_aneg(phydev);
+ }
+ 
+-static int phy_set_clr_bits(struct phy_device *dev, int location,
+-					int set_mask, int clr_mask)
++static int __phy_set_clr_bits(struct phy_device *dev, int location,
++			      int set_mask, int clr_mask)
+ {
+ 	int v, ret;
+ 
+-	v = phy_read(dev, location);
++	v = __phy_read(dev, location);
+ 	if (v < 0)
+ 		return v;
+ 
+ 	v &= ~clr_mask;
+ 	v |= set_mask;
+ 
+-	ret = phy_write(dev, location, v);
++	ret = __phy_write(dev, location, v);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	return v;
+ }
+ 
++static int phy_set_clr_bits(struct phy_device *dev, int location,
++			    int set_mask, int clr_mask)
++{
++	int ret;
++
++	mutex_lock(&dev->mdio.bus->mdio_lock);
++	ret = __phy_set_clr_bits(dev, location, set_mask, clr_mask);
++	mutex_unlock(&dev->mdio.bus->mdio_lock);
++
++	return ret;
++}
++
+ static int bcm7xxx_28nm_ephy_01_afe_config_init(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -392,6 +409,93 @@ static int bcm7xxx_28nm_ephy_config_init(struct phy_device *phydev)
+ 	return bcm7xxx_28nm_ephy_apd_enable(phydev);
+ }
+ 
++#define MII_BCM7XXX_REG_INVALID	0xff
++
++static u8 bcm7xxx_28nm_ephy_regnum_to_shd(u16 regnum)
++{
++	switch (regnum) {
++	case MDIO_CTRL1:
++		return MII_BCM7XXX_SHD_3_PCS_CTRL;
++	case MDIO_STAT1:
++		return MII_BCM7XXX_SHD_3_PCS_STATUS;
++	case MDIO_PCS_EEE_ABLE:
++		return MII_BCM7XXX_SHD_3_EEE_CAP;
++	case MDIO_AN_EEE_ADV:
++		return MII_BCM7XXX_SHD_3_AN_EEE_ADV;
++	case MDIO_AN_EEE_LPABLE:
++		return MII_BCM7XXX_SHD_3_EEE_LP;
++	case MDIO_PCS_EEE_WK_ERR:
++		return MII_BCM7XXX_SHD_3_EEE_WK_ERR;
++	default:
++		return MII_BCM7XXX_REG_INVALID;
++	}
++}
++
++static bool bcm7xxx_28nm_ephy_dev_valid(int devnum)
++{
++	return devnum == MDIO_MMD_AN || devnum == MDIO_MMD_PCS;
++}
++
++static int bcm7xxx_28nm_ephy_read_mmd(struct phy_device *phydev,
++				      int devnum, u16 regnum)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++				 MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	ret = __phy_read(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	__phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++			   MII_BCM7XXX_SHD_MODE_2);
++	return ret;
++}
++
++static int bcm7xxx_28nm_ephy_write_mmd(struct phy_device *phydev,
++				       int devnum, u16 regnum, u16 val)
++{
++	u8 shd = bcm7xxx_28nm_ephy_regnum_to_shd(regnum);
++	int ret;
++
++	if (!bcm7xxx_28nm_ephy_dev_valid(devnum) ||
++	    shd == MII_BCM7XXX_REG_INVALID)
++		return -EOPNOTSUPP;
++
++	/* set shadow mode 2 */
++	ret = __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST,
++				 MII_BCM7XXX_SHD_MODE_2, 0);
++	if (ret < 0)
++		return ret;
++
++	/* Access the desired shadow register address */
++	ret = __phy_write(phydev, MII_BCM7XXX_SHD_2_ADDR_CTRL, shd);
++	if (ret < 0)
++		goto reset_shadow_mode;
++
++	/* Write the desired value in the shadow register */
++	__phy_write(phydev, MII_BCM7XXX_SHD_2_CTRL_STAT, val);
++
++reset_shadow_mode:
++	/* reset shadow mode 2 */
++	return __phy_set_clr_bits(phydev, MII_BCM7XXX_TEST, 0,
++				  MII_BCM7XXX_SHD_MODE_2);
++}
++
+ static int bcm7xxx_28nm_ephy_resume(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -563,6 +667,8 @@ static int bcm7xxx_28nm_probe(struct phy_device *phydev)
+ 	.get_strings	= bcm_phy_get_strings,				\
+ 	.get_stats	= bcm7xxx_28nm_get_phy_stats,			\
+ 	.probe		= bcm7xxx_28nm_probe,				\
++	.read_mmd	= bcm7xxx_28nm_ephy_read_mmd,			\
++	.write_mmd	= bcm7xxx_28nm_ephy_write_mmd,			\
+ }
+ 
+ #define BCM7XXX_40NM_EPHY(_oui, _name)					\
+-- 
+2.25.1
 
-Thanks again for your time and patience.
-
-
-Thanks and Regards,
-Ajay
-
-
->
-> Even this QEMU explanation doesn't make a lot of sense, vfio tracks
-> userspace mappings and will return an -EEXIST error for duplicate or
-> overlapping IOVA entries.  We expect to have an entirely empty IOMMU
-> domain when a device is assigned, but it seems the only way userspace
-> can trigger duplicate PTEs would be if mappings already exist, or we
-> have a bug somewhere.
->
-> If the most recent instance is purely on bare metal, then it seems the
-> host itself has conflicting mappings.  I can only speculate with the
-> limited data presented, but I'm suspicious there's something happening
-> with RMRRs here (but that should also entirely preclude assignment).
-> dmesg, lspci -vvv, and VM configuration would be useful.  Thanks,
->
-> Alex
->
