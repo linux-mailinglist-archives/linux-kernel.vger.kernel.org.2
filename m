@@ -2,160 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D38E429590
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7323242957C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbhJKRZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:25:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53136 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234034AbhJKRZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:25:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DEF160EB6;
-        Mon, 11 Oct 2021 17:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633972988;
-        bh=Dcah+wiObB2g/yEpi4xb6Ag+IL87PMhakQ1CDFA5VqE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VDUcTDi2YBOX8W+5x7VR1GG9Y8LION2KXj8pcsBuJ9inuvDZDZ7wIexb+tD4fkl64
-         Y+Qt8Q74CDbWFcCFYiU8M8wIPaqaKTN2pXFCtNsjz8jEgoZtFVZyQGpQc6gPt6EsPN
-         qxBrZFOxrHiB+JaXOuXfztYrXfEYK4XKdZSrnJb8=
-Date:   Mon, 11 Oct 2021 19:23:05 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: usb-audio: allow -EPIPE errors for some v2 messages
-Message-ID: <YWRy+UoG1YHcQ7UM@kroah.com>
-References: <YWLbEdHUE3k/i0fe@kroah.com>
- <s5hily46316.wl-tiwai@suse.de>
- <YWRYD7fphcaWKEOG@kroah.com>
- <s5h7dej4kbe.wl-tiwai@suse.de>
+        id S233671AbhJKRYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232866AbhJKRYD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:24:03 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F02DC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:22:03 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id n64so25603865oih.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:22:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HmEokn5oUdJqWXRoigMGBMDU0hXxS+4uBuxS3ZcINxM=;
+        b=HWG22c1i7wrXnbbUxNqP0GHByQbqHrpCQ9uBz2JGkqyvFn+qNXPaX/ofKK/2zDb9wV
+         k8m9YtNdJeHBPpQpvMYTpL420BuMUzo+ihnJARKQz72AF+LjHSrYQZ2oe4q68WisiOzc
+         /JEtbiU1rPu5UMpvkqoY2d8M2LvxemL3g1do7ma8MOEVSzdUoBuCMSyg/L4G8ADl7Vv4
+         ZlBTJX14Ao0cu5Vu5jTq1DEnIU113RrIYZPWuJe31JHmIRrT887KU4xz1yqpQ7T6mYbc
+         wCsv1jKQqL/JUrEzyfyIjQrAQD9ZGOstplnB2HBmL1QHMykf53J3vIo0pKIEzpCAD2d5
+         /SUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HmEokn5oUdJqWXRoigMGBMDU0hXxS+4uBuxS3ZcINxM=;
+        b=YSxKuaKS6NMc0ib//eidKDK9PqF1Q6xE49pRKqJK72P4eTgU59pyXR/Qzhhz/gR4um
+         GYBOZNaq7w5ItnCPeTePtI70ZTwDs8/KL32q4ZQ2rmKyq5X2XK+vqjY6HaDTtCKvtYLe
+         YKpQzyN24nsKGZmBiNpPNYICCfb7dmxHfGdAnJ5temtSV52GLI3RLlNGO0kaTmIQMtZz
+         yYKvsMr8Elv14OKWvjC5Kg5oZQtu8n2mWXBPJtM0Ca3vIIeC+AcxpA3Nc+OWiGGzhuWW
+         5DqysbEKMrnDDralyBh7YGuuC/x/tCA6pq7sSP3FBbfIKDsPitBQJi5svDSM7/we945V
+         JrjA==
+X-Gm-Message-State: AOAM532Go5T9FWVtmJd8B6fG6q54QCqzIMoKLkTxEQ0ZzrLJHkVfhEzL
+        +xqaJtNaQGEDUSxc7zEpT2FCbg==
+X-Google-Smtp-Source: ABdhPJwlzOLG1W4ub2KbV14y6v+gpH90jywxXp37DBQhUdP75EU/sPsEI8FpAo2YyRWcehb3ZZte3A==
+X-Received: by 2002:a05:6808:1141:: with SMTP id u1mr135628oiu.123.1633972922358;
+        Mon, 11 Oct 2021 10:22:02 -0700 (PDT)
+Received: from ripper ([2600:1700:a0:3dc8:205:1bff:fec0:b9b3])
+        by smtp.gmail.com with ESMTPSA id n12sm1596854otq.32.2021.10.11.10.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:22:01 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 10:23:35 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Rob Herring <robh@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Stefano Stabellini <stefanos@xilinx.com>,
+        Bruce Ashfield <bruce.ashfield@xilinx.com>
+Subject: Re: [RFC PATCH 4/7] remoteproc: create the REMOTEPROC_VIRTIO config
+Message-ID: <YWRzFyS5WX6m5rNd@ripper>
+References: <20211001101234.4247-1-arnaud.pouliquen@foss.st.com>
+ <20211001101234.4247-5-arnaud.pouliquen@foss.st.com>
+ <YWEOIHrp4Z8+MHaE@builder.lan>
+ <c16ca06a-96da-ac04-5ae7-bbbdf4b48ee5@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <s5h7dej4kbe.wl-tiwai@suse.de>
+In-Reply-To: <c16ca06a-96da-ac04-5ae7-bbbdf4b48ee5@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 06:07:01PM +0200, Takashi Iwai wrote:
-> On Mon, 11 Oct 2021 17:28:15 +0200,
-> Greg Kroah-Hartman wrote:
-> > 
-> > On Sun, Oct 10, 2021 at 10:25:09PM +0200, Takashi Iwai wrote:
-> > > On Sun, 10 Oct 2021 14:22:41 +0200,
-> > > Greg Kroah-Hartman wrote:
-> > > > 
-> > > > The Schiit Hel device does not like to respond to all get_ctl_value_v2()
-> > > > requests for some reason.  This used to work in older kernels, but now
-> > > > with more strict checking, this failure causes the device to fail to
-> > > > work.
-> > > > 
-> > > > Cc: Jaroslav Kysela <perex@perex.cz>
-> > > > Cc: Takashi Iwai <tiwai@suse.com>
-> > > > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > ---
-> > > > 
-> > > > This fixes the Shiit Hel device that I have.  It used to work on older
-> > > > kernels (a year ago?), but stopped working for some reason and I didn't
-> > > > take the time to track it down.  This change fixes the issue for me, but
-> > > > feels wrong for some reason.  At least now I can use the device as a
-> > > > headphone driver, much better than the built-in one for my current
-> > > > machine...
-> > > > 
-> > > > If needed, I can take the time to do bisection to track down the real
-> > > > issue here, it might be due to stricter endpoint checking in the USB
-> > > > core, but that feels wrong somehow.
-> > > > 
-> > > > Here's the debugfs USB output for this device, showing the endpoints:
-> > > > 
-> > > > T:  Bus=07 Lev=02 Prnt=02 Port=01 Cnt=01 Dev#=  5 Spd=480 MxCh= 0
-> > > > D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> > > > P:  Vendor=30be ProdID=0101 Rev=01.02
-> > > > S:  Manufacturer=Schiit Audio
-> > > > S:  Product=Schiit Hel
-> > > > C:  #Ifs= 4 Cfg#= 1 Atr=c0 MxPwr=0mA
-> > > > I:  If#= 0 Alt= 0 #EPs= 1 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
-> > > > E:  Ad=8f(I) Atr=03(Int.) MxPS=   6 Ivl=1ms
-> > > > I:  If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
-> > > > E:  Ad=05(O) Atr=05(Isoc) MxPS= 104 Ivl=125us
-> > > > E:  Ad=85(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
-> > > > I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
-> > > > E:  Ad=88(I) Atr=05(Isoc) MxPS= 156 Ivl=125us
-> > > > I:  If#= 3 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbhid
-> > > > E:  Ad=84(I) Atr=03(Int.) MxPS=  16 Ivl=1ms
-> > > > 
-> > > > Any other suggestions to fix this are welcome.
-> > > 
-> > > Could you show the exact error messages and lsusb -v output?
-> > > We may paper over only the problematic node instead.
-> > 
-> > Sure, here's the dmesg output on 5.15-rc5 when it is turned on:
-> > 
-> > [Oct11 17:25] usb 7-2.2: new high-speed USB device number 9 using xhci_hcd
-> > [  +0.122422] usb 7-2.2: New USB device found, idVendor=30be, idProduct=0101, bcdDevice= 1.02
-> > [  +0.000009] usb 7-2.2: New USB device strings: Mfr=1, Product=2, SerialNumber=0
-> > [  +0.000002] usb 7-2.2: Product: Schiit Hel
-> > [  +0.000002] usb 7-2.2: Manufacturer: Schiit Audio
-> > [  +0.327172] input: Schiit Audio Schiit Hel as /devices/pci0000:40/0000:40:01.1/0000:41:00.0/0000:42:08.0/0000:47:00.1/usb7/7-2/7-2.2/7-2.2:1.3/0003:30BE:0101.0009/input/input21
-> > [  +0.055134] hid-generic 0003:30BE:0101.0009: input,hidraw8: USB HID v1.00 Device [Schiit Audio Schiit Hel] on usb-0000:47:00.1-2.2/input3
-> > [  +0.135988] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> > [  +0.060647] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> > [  +0.065362] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> > [  +0.192121] usb 7-2.2: cannot get ctl value: req = 0x81, wValue = 0x100, wIndex = 0x1100, type = 1
-> 
-> Thanks.  So this happens at the unit 17, and ...
-> 
-> 
-> > And here is the 'lsusb -v' output of the device.
-> > 
-> > 
-> > Bus 007 Device 009: ID 30be:0101 Schiit Audio Schiit Hel
-> (snip)
-> >       AudioControl Interface Descriptor:
-> >         bLength                18
-> >         bDescriptorType        36
-> >         bDescriptorSubtype      6 (FEATURE_UNIT)
-> >         bUnitID                17
-> >         bSourceID               5
-> >         bmaControls(0)     0x00000003
-> >           Mute Control (read/write)
-> >         bmaControls(1)     0x00000000
-> >         bmaControls(2)     0x00000000
-> >         iFeature                0 
-> 
-> ... this is the entry.
-> 
-> Could you also post the contents of /proc/asound/card*/usbmixer (only
-> for the corresponding device), too?
+On Mon 11 Oct 08:58 PDT 2021, Arnaud POULIQUEN wrote:
 
-Sure, here it is:
+> 
+> 
+> On 10/9/21 5:36 AM, Bjorn Andersson wrote:
+> > On Fri 01 Oct 05:12 CDT 2021, Arnaud Pouliquen wrote:
+> > 
+> >> Create the config to associate to the remoteproc virtio.
+> >>
+> >> Notice that the REMOTEPROC_VIRTIO config can not set to m. the reason
+> >> is that it defines API that is used by the built-in remote proc core.
+> >> Functions such are rproc_add_virtio_dev can be called during the
+> >> Linux boot phase.
+> >>
+> > 
+> > Please don't introduce new Kconfig options for everything. Consider that
+> > the expectation should be that everyone runs the default defconfig on
+> > their boards - and if someone actually needs this level of control, they
+> > are welcome to present patches with numbers showing the benefit of the
+> > savings.
+> 
+> My goal here was to decorrelate the remote virtio from the remote proc,
+> so that platforms based on a non-virtio solution do not embed the code.
+> By reading your commentary it jumps out at me that that's stupid.
 
-USB Mixer: usb_id=0x30be0101, ctrlif=0, ctlerr=0
-Card: Schiit Audio Schiit Hel at usb-0000:47:00.1-2.2, high speed
-  Unit: 5
-    Control: name="Mic - Input Jack", index=0
-    Info: id=5, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 7
-    Control: name="Speaker - Output Jack", index=0
-    Info: id=7, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 13
-    Control: name="PCM Playback Switch", index=0
-    Info: id=13, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 17
-    Control: name="Mic Capture Switch", index=0
-    Info: id=17, control=1, cmask=0x0, channels=1, type="INV_BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 18
-    Control: name="Clock Source 18 Validity", index=0
-    Info: id=18, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
-  Unit: 22
-    Control: name="Clock Source 22 Validity", index=0
-    Info: id=22, control=2, cmask=0x0, channels=1, type="BOOLEAN"
-    Volume: min=0, max=1, dBmin=0, dBmax=0
+I definitely don't think it's stupid. In a resource constraint
+environment that want to use remoteproc but won't use virtio this makes
+total sense.
+
+But the added Kconfig creates complexity and people run into issues
+because the default defconfig is incomplete, they got their defconfig
+"wrong" or "make olddefconfig" misses the new config.
+
+As such, I simply would like us to postpone the introduction of
+configurability until there's someone that can show it's worth the
+complexity.
+
+> The REMOTEPROC_VIRTIO config is useless as the remoteproc_virtio must
+> be kept built-in for legacy compatibility.
+> 
+
+Right, so we would have to make sure that in all "standard"
+configurations REMOTEPROC_VIRTIO is included.
+
+Regards,
+Bjorn
+
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks,
+> > Bjorn
+> > 
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> >> ---
+> >>  drivers/remoteproc/Kconfig               | 11 +++++++++-
+> >>  drivers/remoteproc/Makefile              |  2 +-
+> >>  drivers/remoteproc/remoteproc_internal.h | 28 ++++++++++++++++++++++++
+> >>  3 files changed, 39 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+> >> index 9a6eedc3994a..f271552c0d84 100644
+> >> --- a/drivers/remoteproc/Kconfig
+> >> +++ b/drivers/remoteproc/Kconfig
+> >> @@ -6,7 +6,7 @@ config REMOTEPROC
+> >>  	depends on HAS_DMA
+> >>  	select CRC32
+> >>  	select FW_LOADER
+> >> -	select VIRTIO
+> >> +	select REMOTEPROC_VIRTIO
+> >>  	select WANT_DEV_COREDUMP
+> >>  	help
+> >>  	  Support for remote processors (such as DSP coprocessors). These
+> >> @@ -14,6 +14,15 @@ config REMOTEPROC
+> >>  
+> >>  if REMOTEPROC
+> >>  
+> >> +config REMOTEPROC_VIRTIO
+> >> +	bool "Remoteproc virtio device "
+> >> +	select VIRTIO
+> >> +	help
+> >> +	  Say y here to have a virtio device support for the remoteproc
+> >> +	  communication.
+> >> +
+> >> +	  It's safe to say N if you don't use the virtio for the IPC.
+> >> +
+> >>  config REMOTEPROC_CDEV
+> >>  	bool "Remoteproc character device interface"
+> >>  	help
+> >> diff --git a/drivers/remoteproc/Makefile b/drivers/remoteproc/Makefile
+> >> index bb26c9e4ef9c..73d2384a76aa 100644
+> >> --- a/drivers/remoteproc/Makefile
+> >> +++ b/drivers/remoteproc/Makefile
+> >> @@ -8,8 +8,8 @@ remoteproc-y				:= remoteproc_core.o
+> >>  remoteproc-y				+= remoteproc_coredump.o
+> >>  remoteproc-y				+= remoteproc_debugfs.o
+> >>  remoteproc-y				+= remoteproc_sysfs.o
+> >> -remoteproc-y				+= remoteproc_virtio.o
+> >>  remoteproc-y				+= remoteproc_elf_loader.o
+> >> +obj-$(CONFIG_REMOTEPROC_VIRTIO)		+= remoteproc_virtio.o
+> >>  obj-$(CONFIG_REMOTEPROC_CDEV)		+= remoteproc_cdev.o
+> >>  obj-$(CONFIG_IMX_REMOTEPROC)		+= imx_rproc.o
+> >>  obj-$(CONFIG_INGENIC_VPU_RPROC)		+= ingenic_rproc.o
+> >> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> >> index 152fe2e8668a..4ce012c353c0 100644
+> >> --- a/drivers/remoteproc/remoteproc_internal.h
+> >> +++ b/drivers/remoteproc/remoteproc_internal.h
+> >> @@ -30,10 +30,38 @@ int rproc_of_parse_firmware(struct device *dev, int index,
+> >>  			    const char **fw_name);
+> >>  
+> >>  /* from remoteproc_virtio.c */
+> >> +#if IS_ENABLED(CONFIG_REMOTEPROC_VIRTIO)
+> >> +
+> >>  int rproc_rvdev_add_device(struct rproc_vdev *rvdev);
+> >>  irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id);
+> >>  void rproc_vdev_release(struct kref *ref);
+> >>  
+> >> +#else
+> >> +
+> >> +int rproc_rvdev_add_device(struct rproc_vdev *rvdev)
+> >> +{
+> >> +	/* This shouldn't be possible */
+> >> +	WARN_ON(1);
+> >> +
+> >> +	return -ENXIO;
+> >> +}
+> >> +
+> >> +static inline irqreturn_t rproc_vq_interrupt(struct rproc *rproc, int vq_id)
+> >> +{
+> >> +	/* This shouldn't be possible */
+> >> +	WARN_ON(1);
+> >> +
+> >> +	return IRQ_NONE;
+> >> +}
+> >> +
+> >> +static inline void rproc_vdev_release(struct kref *ref)
+> >> +{
+> >> +	/* This shouldn't be possible */
+> >> +	WARN_ON(1);
+> >> +}
+> >> +
+> >> +#endif
+> >> +
+> >>  /* from remoteproc_debugfs.c */
+> >>  void rproc_remove_trace_file(struct dentry *tfile);
+> >>  struct dentry *rproc_create_trace_file(const char *name, struct rproc *rproc,
+> >> -- 
+> >> 2.17.1
+> >>
