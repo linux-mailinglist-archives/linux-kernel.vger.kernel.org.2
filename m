@@ -2,142 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A332A428620
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 940B2428622
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 07:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhJKFMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 01:12:12 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35949 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230152AbhJKFML (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 01:12:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UrKrhCr_1633929008;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UrKrhCr_1633929008)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 11 Oct 2021 13:10:09 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, akpm@linux-foundation.org,
-        willy@infradead.org, song@kernel.org, william.kucharski@oracle.com,
-        hughd@google.com, shy828301@gmail.com
-Subject: [PATCH v4 RESEND 2/2] mm, thp: bail out early in collapse_file for writeback page
-Date:   Mon, 11 Oct 2021 13:08:07 +0800
-Message-Id: <20211011050807.1732-1-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
-References: <20211011022241.97072-3-rongwei.wang@linux.alibaba.com>
+        id S232813AbhJKFM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 01:12:26 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59776 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230152AbhJKFMZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 01:12:25 -0400
+Received: from [10.180.13.145] (unknown [10.180.13.145])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxD2s6x2NhleMXAA--.22022S2;
+        Mon, 11 Oct 2021 13:10:19 +0800 (CST)
+Subject: Re: [PATCH v3] usb: ohci: add check for host controller functional
+ states
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        Patchwork Bot <patchwork-bot@kernel.org>
+References: <1633677970-10619-1-git-send-email-zhuyinbo@loongson.cn>
+ <20211008142639.GA721194@rowland.harvard.edu>
+ <7a505fc4-ec47-ac83-633f-7a5251bd5f82@loongson.cn>
+ <20211009193901.GA753830@rowland.harvard.edu>
+From:   zhuyinbo <zhuyinbo@loongson.cn>
+Message-ID: <adc67ae2-e162-a427-a8a9-7df55c92a00c@loongson.cn>
+Date:   Mon, 11 Oct 2021 13:10:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20211009193901.GA753830@rowland.harvard.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf9DxD2s6x2NhleMXAA--.22022S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtr4UWF18CFWkZF43ZFWxtFb_yoW7AFWfpa
+        1IkF43KrWDAF10vwnrtr1kKr9Yk3y7G3y5GryDCFW8AwnxXrySgr4IgrWY9a95XrWfK3W7
+        ZF10gayUu34UCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv0b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
+        02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5
+        PpnJUUUUU==
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently collapse_file does not explicitly check PG_writeback, instead,
-page_has_private and try_to_release_page are used to filter writeback
-pages. This does not work for xfs with blocksize equal to or larger
-than pagesize, because in such case xfs has no page->private.
 
-This makes collapse_file bail out early for writeback page. Otherwise,
-xfs end_page_writeback will panic as follows.
+在 2021/10/10 上午3:39, Alan Stern 写道:
+> On Sat, Oct 09, 2021 at 10:01:25AM +0800, zhuyinbo wrote:
+>> 在 2021/10/8 下午10:26, Alan Stern 写道:
+>>> On Fri, Oct 08, 2021 at 03:26:10PM +0800, Yinbo Zhu wrote:
+>>>> The usb states of ohci controller include UsbOperational, UsbReset,
+>>>> UsbSuspend and UsbResume. Among them, only the UsbOperational state
+>>>> supports launching the start of frame for host controller according
+>>>> the ohci protocol spec, but in S3/S4 press test procedure, it may
+>>> Nobody reading this will know what "S3/S4 press test procedure" means.
+>>> You have to explain it, or use a different name that people will
+>>> understand.
+>> okay, I got it.
+>>>> happen that the start of frame was launched in other usb states and
+>>>> cause ohci works abnormally then kernel will allways report rcu
+>>>> call trace. This patch was to add check for host controller
+>>>> functional states and if it is not UsbOperational state that need
+>>>> set INTR_SF in intrdisable register to ensure SOF Token generation
+>>>> was been disabled.
+>>> This doesn't make sense.  You already mentioned that only the
+>>> UsbOperational state supports sending start-of-frame packets.  So if the
+>>> controller is in a different state then it won't send these packets,
+>>> whether INTR_SF is enabled or not.
+>>>
+>>> What problem are you really trying to solve?
+>> Only UsbOperational state supports sending start-of-frame packets, but in
+>> fact, in S3/S4 press test procedure,
+>>
+>> usb in non-UsbOperational state that send start-of-frame packets but hc
+>> driver doesn't deal with this frame. and hc will
+>>
+>> allways lauched the SOF for finishing the frame, the cpu will hand this sof
+>> interrupt and doesn't deal with time interrupt
+>>
+>> that will cause rcu call trace then system doesn't suspend to memory/disk.
+> I still don't understand.
+>
+> Are you saying that your OHCI controller behaves badly because it sends
+> SOF packets even when the state is different from UsbOperational?
 
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-page->mem_cgroup:ffff0000c3e9a000
-------------[ cut here ]------------
-kernel BUG at include/linux/mm.h:1212!
-Internal error: Oops - BUG: 0 [#1] SMP
-Modules linked in:
-BUG: Bad page state in process khugepaged  pfn:84ef32
- xfs(E)
-page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
- libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) ...
-CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: ...
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-pc : end_page_writeback+0x1c0/0x214
-lr : end_page_writeback+0x1c0/0x214
-sp : ffff800011ce3cc0
-x29: ffff800011ce3cc0 x28: 0000000000000000
-x27: ffff000c04608040 x26: 0000000000000000
-x25: ffff000c04608040 x24: 0000000000001000
-x23: ffff0003f88c8530 x22: 0000000000001000
-x21: ffff0003f88c8530 x20: 0000000000000000
-x19: fffffe00201bcc80 x18: 0000000000000030
-x17: 0000000000000000 x16: 0000000000000000
-x15: ffff000c018f9760 x14: ffffffffffffffff
-x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-x11: ffff8000117b69b8 x10: 00000000ffff8000
-x9 : ffff800010617534 x8 : 0000000000000000
-x7 : ffff8000114f69b8 x6 : 000000000000000f
-x5 : 0000000000000000 x4 : 0000000000000000
-x3 : 0000000000000400 x2 : 0000000000000000
-x1 : 0000000000000000 x0 : 0000000000000000
-Call trace:
- end_page_writeback+0x1c0/0x214
- iomap_finish_page_writeback+0x13c/0x204
- iomap_finish_ioend+0xe8/0x19c
- iomap_writepage_end_bio+0x38/0x50
- bio_endio+0x168/0x1ec
- blk_update_request+0x278/0x3f0
- blk_mq_end_request+0x34/0x15c
- virtblk_request_done+0x38/0x74 [virtio_blk]
- blk_done_softirq+0xc4/0x110
- __do_softirq+0x128/0x38c
- __irq_exit_rcu+0x118/0x150
- irq_exit+0x1c/0x30
- __handle_domain_irq+0x8c/0xf0
- gic_handle_irq+0x84/0x108
- el1_irq+0xcc/0x180
- arch_cpu_idle+0x18/0x40
- default_idle_call+0x4c/0x1a0
- cpuidle_idle_call+0x168/0x1e0
- do_idle+0xb4/0x104
- cpu_startup_entry+0x30/0x9c
- secondary_start_kernel+0x104/0x180
-Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
----[ end trace 4a88c6a074082f8c ]---
-Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
+HC will allways report the SoF interrupt in the all time when HC was not 
+in NO-UsbOperation state.
 
-Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
-Suggested-by: Yang Shi <shy828301@gmail.com>
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Yang Shi <shy828301@gmail.com>
----
- mm/khugepaged.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+and no WritebackDoneHead interrupt that is the issue phenomenon. and 
+this situation is badly state for ohci.
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc579f724..48de4e1b0783 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1763,6 +1763,10 @@ static void collapse_file(struct mm_struct *mm,
- 				filemap_flush(mapping);
- 				result = SCAN_FAIL;
- 				goto xa_unlocked;
-+			} else if (PageWriteback(page)) {
-+				xas_unlock_irq(&xas);
-+				result = SCAN_FAIL;
-+				goto xa_unlocked;
- 			} else if (trylock_page(page)) {
- 				get_page(page);
- 				xas_unlock_irq(&xas);
-@@ -1798,7 +1802,8 @@ static void collapse_file(struct mm_struct *mm,
- 			goto out_unlock;
- 		}
- 
--		if (!is_shmem && PageDirty(page)) {
-+		if (!is_shmem && (PageDirty(page) ||
-+				  PageWriteback(page))) {
- 			/*
- 			 * khugepaged only works on read-only fd, so this
- 			 * page is dirty because it hasn't been flushed
--- 
-2.27.0
+>
+>> Hi Alan Stern,
+>>
+>>      even though ed_rm_list is non-NULL, if hc in non-UsbOperation state set
+>> SoF status in usbsts register that is illegal,
+>>
+>> at this time hcd doesn't need care URB whether finished,  because hc had
+>> into a wrong state. even thoug it doesn't has this patch,
+>>
+>> URB was not be able to finish when hc in above worng state. except software
+>> can intervence this wrong state. but the SoF bit of usbsts
+>>
+>> register was set by HC, and this action will happen always !!! software
+>> clear SoF state I think it isn't make sense. software only disable SoF
+>>
+>> interrupt to fix HC wrong state.
+> This problem happens when you go into S3 or S4 suspend, right?  So you
+> should fix the problem by disabling INTR_SF when the root hub is
+> suspended.  Try adding
+>
+> 	/* All ED unlinks should be finished, no need for SOF interrupts */
+> 	ohci_writel(ohci, OHCI_INTR_SF, &ohci->regs->intrdisable);
+>
+> into ohci_rh_suspend(), just before the update_done_list() call.  If you
+> add this then INTR_SF will not be enabled during S3 or S4 suspend, so
+> the problem shouldn't occur.  Does that work for you?
+
+The system doesn't suspend to disk completely by my test result and hc 
+will always produce SoF interrupt.
+
+I encountered SoF interrupt  issue when HC in UsbSuspend state. and I 
+think when hc in
+
+UsbResume/UsbRest/ SoF interrupt issue may be happen so I disable 
+INTR_SF in ohci_irq.
+
+So I think disable INTR_SF in suspend function which this way isn't good 
+for me.
+
+     In addition, I hope my patch was not only fix the bug i encountered 
+and it can limit HC into badly state and it should be the
+
+base limit condition and prevent more unknown problems.  In fact, HC 
+doesn't deal with ed/td list and done list by the ohci spec, so
+
+I think my patch has no risk for ohci.
+
+       by the way, root hub state isn't completely same with HC, but the 
+root hub reset and resume signaling are controlled by the hcfs bits.
+
+and hcd can set hcfs to decide hc usb state, so I judge whether set 
+SF_INT to interrupt disable register only depend on HC state.
+
+>
+>>        In additon, when kernel include my patch, that it does't happen about
+>> what you descriped that driver will not be able to finish unlinging URBs.
+>>
+>> Because above issue happen in S3/S4(Suspend to disk/Suspend to mem) test
+>> procedure, if ed_rm_lis is no-NULL but my patch disable SoF interrupt.
+>>
+>> then when S3/S4 recovery to cpu idle state that usb resume will be called,
+>> reume function has following logic, URB will continue to be processed.
+>>
+>>        static int ohci_rh_resume (struct ohci_hcd *ohci)
+>>
+>>       {
+>>
+>>          ...
+>>
+>>          242         if (ohci->ed_rm_list)
+>>          243                 ohci_writel (ohci, OHCI_INTR_SF,
+>> &ohci->regs->intrenable);
+>>
+>>         ...
+>>
+>>        }
+> I'm worried that your patch may disable INTR_SF even when the controller
+> has not gone into S3 or S4 suspend.  Maybe this won't cause problems,
+> but it's better to be safe and do the disable _only_ when a suspend
+> occurs.
+>
+> Alan Stern
+
+Hi  Alan Stern,
+
+     According to the previous statement, I think my patch has no risk 
+on ohci.
+
+
+
 
