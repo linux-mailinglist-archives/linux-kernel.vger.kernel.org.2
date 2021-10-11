@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DAE428769
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60ECB42876C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhJKHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:07:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhJKHH5 (ORCPT
+        id S233385AbhJKHJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:09:05 -0400
+Received: from dvalin.narfation.org ([213.160.73.56]:40566 "EHLO
+        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhJKHJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:07:57 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E6DC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:05:57 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id r18so52814189wrg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wMNVOKH7I9nZJBmdmY82PpMuTIJnDPrxHG2zjEA5m9s=;
-        b=pzSf3o5Llbrkbhs9yWVdcshQQe7s/EdjJ3wKU95Bwif3mVaeFGYa+EUBkmmBXYW03d
-         DQrx0IEd6u+eYTF2YWHoL5pOUwgorBAP4CKBsOzj44HhL+zXdM2NB+Coh8cr8D/jON43
-         OVCBCDKtMhQ1bWVbbSuOOzrQaLrwM8irwfgxmjgitZRbNQFf7x3CunUxuu3P0G3C50u7
-         Cfr4417v1OZiiH1fXWemiB760QnXpOshNsShWDsTP4CxIloYsyoK7/xS6qR/Dx3wMq9/
-         s8jnuo/KX33cv0vLJyZ9EpkpWlow2W6jwQ/Sirbmjn2IdAOpBih6kOcJW9svajFzl5bC
-         vqlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=wMNVOKH7I9nZJBmdmY82PpMuTIJnDPrxHG2zjEA5m9s=;
-        b=2ryXBdZHxgtjEXG1/TZ7NhTg8qNuqLaLYjso1MscL+bHOAHnTsACMracunkWbIAq1F
-         fXWRqbPcRVbMtU2oy5EsZ8NiupJSUG4b+MR03H0lEglNKKf3f9j9XjrhjNcJ/x4Vqvv0
-         L8qkYxUN5F0fMIqwURcXvJSfAriQ4Mo10T97cNZM4sZ/7NyxNcFqxEpaIXkneD+dOxab
-         qHGbTt9cxuGZpmAsniER91sDdc9CE646vBHMkZjuZX+5k4RcQO8F2+ORb49ydqsEjF2x
-         tzu7wv97p9uJdWnkhK1w1PHe8Pj7YvvLp522r7bh2/F5egUQLXRlz7AkubmPRwexgJcK
-         VbTw==
-X-Gm-Message-State: AOAM530q9+ehVY8rhh5KKu1di5X8sRb+RO0E8OVa4WqAgtD5ey951dnW
-        EtJ8+l7JPWt0OahnWtqzYGX3sfuFnPh/bA==
-X-Google-Smtp-Source: ABdhPJzKBXc4gUSq/yC+ip4ByIKGOGVWV28ONE7yJ0I9k61i/DnvMnUlb1J+JeJXSVO7uRqSmUCoxA==
-X-Received: by 2002:adf:ae1a:: with SMTP id x26mr21985872wrc.30.1633935956529;
-        Mon, 11 Oct 2021 00:05:56 -0700 (PDT)
-Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
-        by smtp.gmail.com with ESMTPSA id u5sm7171049wrg.57.2021.10.11.00.05.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 00:05:56 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Date:   Mon, 11 Oct 2021 09:05:55 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Jeremy Cline <jcline@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] drm/nouveau: fix a use-after-free in postclose()
-Message-ID: <YWPiU+9G0AKglHmi@eldamar.lan>
-References: <20201103194912.184413-1-jcline@redhat.com>
- <20201125202648.5220-1-jcline@redhat.com>
- <b4da382b17a77b66e45fd374c9d806dac6054e3a.camel@redhat.com>
- <YRoN0vWFN6Lw22ej@eldamar.lan>
- <418fdcbcf554d34cc6423a88974f916b64b3664c.camel@redhat.com>
+        Mon, 11 Oct 2021 03:09:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1633936023;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4A5IbiON99sAmaO5rSffIZ7vgzdOWfa8UnMZX6no8SI=;
+        b=XZSyyuZJbarDtRPi2do9RZJzBnzxlFdszrY04nDqWis73okxBzpJoCfh+RA8SLDvuciTLZ
+        9hsVmEICvl3JjYKdA4KeElflamaETDHsW00Be2UMnIKCK70wPJeseVi5tjogKlBOy4AFgd
+        +KVsAJZtmvzYHOzpzms4Kioebl+/rpw=
+From:   Sven Eckelmann <sven@narfation.org>
+To:     openwrt-devel@lists.openwrt.org
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Adrian Schmutzler <dev@schmutzler.it>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-mtd@lists.infradead.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: nvmem: Defining cells on mtd created by mtdparts
+Date:   Mon, 11 Oct 2021 09:06:56 +0200
+Message-ID: <14722734.oMan5NXi5u@sven-desktop>
+In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
+References: <18728084.NGlc0Rocea@sven-desktop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <418fdcbcf554d34cc6423a88974f916b64b3664c.camel@redhat.com>
+Content-Type: multipart/signed; boundary="nextPart27234856.iIAV7Kigx3"; micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ben,
+--nextPart27234856.iIAV7Kigx3
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+To: openwrt-devel@lists.openwrt.org
+Cc: Ansuel Smith <ansuelsmth@gmail.com>, Michael Walle <michael@walle.cc>, Adrian Schmutzler <dev@schmutzler.it>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-kernel@vger.kernel.org
+Subject: Re: nvmem: Defining cells on mtd created by mtdparts
+Date: Mon, 11 Oct 2021 09:06:56 +0200
+Message-ID: <14722734.oMan5NXi5u@sven-desktop>
+In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
+References: <18728084.NGlc0Rocea@sven-desktop>
 
-On Tue, Aug 17, 2021 at 04:32:31PM -0400, Lyude Paul wrote:
-> It may have been, we're in the process of trying to change around how we
-> currently accept nouveau patches to stop this from happening in the future.
-> 
-> Ben, whenever you get a moment can you take a look at this?
-> 
-> On Mon, 2021-08-16 at 09:03 +0200, Salvatore Bonaccorso wrote:
-> > Hi,
-> > 
-> > On Fri, Mar 26, 2021 at 06:00:51PM -0400, Lyude Paul wrote:
-> > > This patch series is:
-> > > 
-> > > Reviewed-by: Lyude Paul <lyude@redhat.com>
-> > > 
-> > > Btw - in the future if you need to send a respin of multiple patches, you
-> > > need
-> > > to send it as it's own separate series instead of replying to the previous
-> > > one
-> > > (one-off respins can just be posted as replies though), otherwise
-> > > patchwork
-> > > won't pick it up
-> > 
-> > Did this patch series somehow fall through the cracks or got lost?
+On Sunday, 10 October 2021 14:53:13 CEST Sven Eckelmann wrote:
+[...]
+> Since there are most likely more devices out there which use mtdparts, I would 
+> guess that there might already be a strategy out there which can be used to 
+> define the nvmem-provider for mtdparts defined partitions. At least I saw that 
+> Bartosz Golaszewski added all the mtd devices automatically as nvmem provider 
+> in c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem 
+> API"). So there might also be something for nvmem-cells to find the correct 
+> mtd instead of relying on the fixed-partitions registration + of_node (which 
+> doesn't exist because it comes from mtdparts and not devicetree).
 
-Looking some older threads, noticed this one. Ben did you got a chance
-to look at it, or is it now irrelevant by other means?
+Ansuel Smith just proposed in OpenWrt [1] a workaround. It basically adds a 
+minimal fixed-partitions parser to the mtd cmdlinepart parser (responsible for 
+the mtdparts=) that tries to find the matching (size + offset) fixed-partition 
+from the devicetree. The code in mtd_device_parse_register
+(add_mtd_partitions -> add_mtd_device -> mtd_nvmem_add) will then 
+automatically take care of the rest.
 
-Regards,
-Salvatore
+Kind regards,
+	Sven
+
+[1] https://github.com/openwrt/openwrt/pull/4664#issuecomment-939567963
+--nextPart27234856.iIAV7Kigx3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFj4pAACgkQXYcKB8Em
+e0b9eBAArC/EsvvrKk2y7/99MES/Eds+2b37/9dxuvOPOxULMobk3Gu1VC1qhKv4
+Z2zYdWP1rGz14r+DqYD9YhSvw1wM8WMN6hT3A2QWErF36fPngvahOLXZjoagaDVN
+PQQ+G8KKV/5WtNGjiah8zMWBcXC0zzLVRkxLsZ2BwuSVXsFo0qJereWknxw7F/Qf
+dw86a5Yf7JbcPaL4oJg/522oC+6O8CLwakwmyjp5ZLDDqo/z+p4DgqDM8OVphX5v
+0MsYCT0YfvEJyVOZfkiUKljqIwyEgJbAtJDxIYAX6Riauz+cEmy6diArVOnNro8/
+EEQuoyJq6Vu9By2E/pnsDahrk1DIkd5pi1hnR8qTMf/VTD2YC85DWg1y7qKdpf8g
+pQ8HsH/5ZCgPcQJFXU50RNaxlHQq8BJVbGcO8SHKUSZY29lo17pafWwMfRKLO1fh
+Qhyk8l19iwmmQ09Uho1xbNE5CBzSP1RH76/4HTEFDXPYSOCu1zDuf5FSlSQZjTop
+KClni0PvXPqeDRRtkoMLO2/LIjE3S8cCsRF37zqJdN6Ko9drwk/Vsp1BEIkzBzB9
+hNihrk6JeaKhQ6Ogmtcw7pIMwrI8TXgvWlYqvaEt7KPHU0HKXOXdkS+4jO1nyaZD
+k4dLtPx5LW4kgHcY0JqaFLOZfTMwPiPL05cPTEp+WkyR7rJCktk=
+=iCmG
+-----END PGP SIGNATURE-----
+
+--nextPart27234856.iIAV7Kigx3--
+
+
+
