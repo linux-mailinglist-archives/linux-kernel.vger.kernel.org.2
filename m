@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC70429158
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2147642925E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240871AbhJKORc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:17:32 -0400
-Received: from www381.your-server.de ([78.46.137.84]:55546 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238262AbhJKOPA (ORCPT
+        id S244172AbhJKOog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:44:36 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:29120 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243934AbhJKOoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:15:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=oXfj/LdcIWi8QBGVWoLeHpPANC5aeTpAQshDalhDSsU=; b=ABxJPME4LUvQro8a+7cOvSj2Xq
-        5u7fd18VGVpoabqCh5wyIG9c72ARX2XLGj16aYcTMxEjRTX5/R7OdMVwi4u+r2LkDhJw2dwiiUEjE
-        K40PyOLzNLDwNRn//96QNZFKeOCHnI1EgFz0a7WcITS4ij+Tja2Vs1+40EArHVS5nFIldUQG6fk+v
-        V4dBk+Gup5aOQnHMD6SqON4DN5EDLSamO2S873iBC5YPhczFN9qqLOx9yZqEsXuS5VOYwXEtlK6GU
-        e6lFPNm2NPjQ07o56AyGJEXwQAx/dcRSN1KxYP1+jsOlJtn127RwlEzt5uwR55LweVPMnASfTpgtp
-        9JKsNF7Q==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1mZw2y-0001XY-JN; Mon, 11 Oct 2021 16:12:56 +0200
-Received: from [82.135.83.71] (helo=[192.168.178.20])
-        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1mZw2y-000IkW-DK; Mon, 11 Oct 2021 16:12:56 +0200
-Subject: Re: [PATCH] iio: core: do not create debugfs when has no dev name
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     ars@metafoo.de, jic23@kernel.org, alexandru.ardelean@analog.com,
-        andy.shevchenko@gmail.com
-References: <20211011135654.282958-1-yangyingliang@huawei.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <2430dc94-ecf8-c246-beaf-52cc0905e3d4@metafoo.de>
-Date:   Mon, 11 Oct 2021 16:12:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 11 Oct 2021 10:44:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633963327;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=xSsNGdNQB08KyOhFukELZ4y35yt3el1uuyG09AFN9Gw=;
+    b=UTq16JQObMxCVxmJy5Bblpbus46OFB8i+8sbv1hd/0iZD95z63xQOSYII3Fj+3uUVS
+    h+F2mYFivYcakD/T+6MMLm/v6SsunRjx33iF/d9JRYAX3FiP/wWFwyRiI9niJ4Of9tat
+    ClsruDZsFkxwVt4bNXP3P7vo4V4MrZ7TElzrjg83QV+s7PQipEjQI7KWjXqYcCvv5H7b
+    /mjHkKlHBzuTmh/AFKzqk9rxqTl3ogFR2mkScG6CvROmZekn/PnIsXuik7diVALyT+0l
+    B2jQwp+sk7vRwzllBomZG251qnwOsXNTZmypLQ57bSHrvnUg3bi4cCAY7/ZrPqvyRbnx
+    yGsQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVORvLd4SsytBXTbAOHjRHIhr3eFeIrw=="
+X-RZG-CLASS-ID: mo00
+Received: from droid..
+    by smtp.strato.de (RZmta 47.33.8 SBL|AUTH)
+    with ESMTPSA id 301038x9BEg3tv6
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 11 Oct 2021 16:42:03 +0200 (CEST)
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Loic Poulain <loic.poulain@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Aleksander Morgado <aleksander@aleksander.es>,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        Stephan Gerhold <stephan@gerhold.net>
+Subject: [PATCH net-next v2 0/4] net: wwan: Add Qualcomm BAM-DMUX WWAN network driver
+Date:   Mon, 11 Oct 2021 16:17:32 +0200
+Message-Id: <20211011141733.3999-1-stephan@gerhold.net>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-In-Reply-To: <20211011135654.282958-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.3/26319/Mon Oct 11 10:18:47 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/21 3:56 PM, Yang Yingliang wrote:
-> I got a null-ptr-deref report when doing fault injection test:
->
-> BUG: kernel NULL pointer dereference, address: 0000000000000000
-> PGD 0 P4D 0
-> Oops: 0000 [#1] SMP KASAN PTI
-> RIP: 0010:strlen+0x0/0x20
-> Call Trace:
->   start_creating+0x199/0x2f0
->   debugfs_create_dir+0x25/0x430
->   __iio_device_register+0x4da/0x1b40 [industrialio]
->   __devm_iio_device_register+0x22/0x80 [industrialio]
->   max1027_probe+0x639/0x860 [max1027]
->   spi_probe+0x183/0x210
->   really_probe+0x285/0xc30
->
-> If dev_set_name() fails, the dev_name() is null, add check for
-> device name before creating debugfs.
+The BAM Data Multiplexer provides access to the network data channels
+of modems integrated into many older Qualcomm SoCs, e.g. Qualcomm MSM8916
+or MSM8974. This series adds a driver that allows using it.
 
-If dev_set_name() fails, shouldn't we better return an error in 
-iio_device_alloc()? Otherwise the device has no name and will show up as 
-<null> in sysfs.
+For more information about BAM-DMUX, see PATCH 4/4.
 
->
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Fixes: e553f182d55b ("staging: iio: core: Introduce debugfs support...")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->   drivers/iio/industrialio-core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-> index 2dc837db50f7..8974490ad536 100644
-> --- a/drivers/iio/industrialio-core.c
-> +++ b/drivers/iio/industrialio-core.c
-> @@ -466,7 +466,7 @@ static void iio_device_register_debugfs(struct iio_dev *indio_dev)
->   	if (indio_dev->info->debugfs_reg_access == NULL)
->   		return;
->   
-> -	if (!iio_debugfs_dentry)
-> +	if (!iio_debugfs_dentry || !dev_name(&indio_dev->dev))
->   		return;
->   
->   	iio_dev_opaque = to_iio_dev_opaque(indio_dev);
+Shortly said, BAM-DMUX is built using a simple protocol layer on top of
+a DMA engine (Qualcomm BAM DMA). For BAM-DMUX, the BAM DMA engine runs in
+a special mode where the modem/remote side is responsible for powering
+on the BAM when needed but we are responsible to initialize it.
+The BAM is powered off when unneeded by coordinating power control
+via bidirectional interrupts from the BAM-DMUX driver.
 
+The series first adds one possible solution for handling the "powered
+remotely" mode in the bam_dma driver, then it adds the BAM-DMUX driver.
+In combination with the RPMSG_WWAN_CTRL driver the WWAN control ports
+(QMI/AT) are exposed via the WWAN subsystem. However, the driver does
+not currently make use of the link management of the WWAN subsystem.
+Unifying the link management for the many different Qualcomm modem
+setups is a huge undertaking that I believe is better addressed
+separately. I discuss this in detail in PATCH 4/4.
+
+All the changes in this patch series are based on a fairly complicated
+driver from Qualcomm [1]. I do not have access to documentation about
+"BAM-DMUX", although Jeffrey Hugo has shared many helpful insights
+about the creation process of BAM-DMUX [2].
+
+The driver has been used in postmarketOS [3] on various smartphones/tablets
+based on Qualcomm MSM8916 and MSM8974 for more than a year now with
+no reported problems. It works out of the box with ModemManager and only
+requires minor changes in oFono (in particular since it does not support
+WWAN control ports, e.g. /dev/wwan0qmi0 yet).
+
+Changes in v2:
+  - Rename "qcom,remote-power-collapse" -> "qcom,powered-remotely"
+  - Rebase on net-net and fix conflicts
+  - Rename network interfaces from "rmnet%d" -> "wwan%d"
+  - Fix wrong file name in MAINTAINERS entry
+
+[1]: https://source.codeaurora.org/quic/la/kernel/msm-3.10/tree/drivers/soc/qcom/bam_dmux.c?h=LA.BR.1.2.9.1-02310-8x16.0
+[2]: https://lore.kernel.org/netdev/e37868ee-2bd0-3b50-eb95-8eb2bf32d956@quicinc.com/
+[3]: https://postmarketos.org/
+
+Stephan Gerhold (4):
+  dt-bindings: dmaengine: bam_dma: Add "powered remotely" mode
+  dmaengine: qcom: bam_dma: Add "powered remotely" mode
+  dt-bindings: net: Add schema for Qualcomm BAM-DMUX
+  net: wwan: Add Qualcomm BAM-DMUX WWAN network driver
+
+ .../devicetree/bindings/dma/qcom_bam_dma.txt  |   2 +
+ .../bindings/net/qcom,bam-dmux.yaml           |  87 ++
+ MAINTAINERS                                   |   8 +
+ drivers/dma/qcom/bam_dma.c                    |  88 +-
+ drivers/net/wwan/Kconfig                      |  13 +
+ drivers/net/wwan/Makefile                     |   1 +
+ drivers/net/wwan/qcom_bam_dmux.c              | 907 ++++++++++++++++++
+ 7 files changed, 1074 insertions(+), 32 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/qcom,bam-dmux.yaml
+ create mode 100644 drivers/net/wwan/qcom_bam_dmux.c
+
+-- 
+2.33.0
 
