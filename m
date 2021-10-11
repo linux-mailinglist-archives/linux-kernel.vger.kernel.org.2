@@ -2,111 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3BD42968C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC72D42968D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbhJKSMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
+        id S234220AbhJKSNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:13:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbhJKSMb (ORCPT
+        with ESMTP id S234363AbhJKSMX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:12:31 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAAC8C061570;
-        Mon, 11 Oct 2021 11:10:30 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id pf6-20020a17090b1d8600b0019fa884ab85so40234pjb.5;
-        Mon, 11 Oct 2021 11:10:30 -0700 (PDT)
+        Mon, 11 Oct 2021 14:12:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 808C5C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:10:23 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id e7so11568652pgk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:10:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hOpzKqtZkl4vpPBZR8uQl2s3BPZXOsp3vKlUaVIS/Mo=;
-        b=NCpPkW2tW+1A9ejqPsw/E89AdQ1IG22gXH4d0M9se1jCFdsfpIKYs4e087pVmidl/e
-         q8qXvAKlGq9XLghs8p7T9gx0F4y0R4IX350PxIBQ7mkLYCyILrSZ460YkVB36SdBHikK
-         rw3NuJ9e5U1bRxNP0zCAQawqJ7QisUHe8RacVwL6iHNGGS7S7+Ecra7/vN+xVk3XU0gt
-         dwP8+iyekUEdEAprLEoIHsnCrxeWBakt7ZC1+zNNyHYBfqOizT3BOii/pEbLivYDE0PA
-         etsTVYzI2VFTdzajkhJOd8NRKWRFxzTiyNhBL5CODQz4JBTbgElhcn8JeIQuYbARVDBX
-         6L0Q==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=V2qwMwE4Z/z5csEUUB1Fs1TS8L6+ma70mWZapSc+y34=;
+        b=XXFoI4eJfByYgGHb1AA2jcV93WtzuMR+I8tx+jmMDXycaVhRVoTZQUvN/DZ5xbyx5v
+         HLjdG5C+AgK/OvlAJYelaDy9iuXhGdMbiU2+A7J7uaFC7LzyJOu2xZffkrGQTHhEzzYg
+         T2tF0w1195FGS57pfu87ET20WmB5b2KYRYLDpudBlMmsd0WG6SVdoO5RymOMGN/5znti
+         zXlA0n+vVEWGG7PNN889cQ3tzPiZmUnUw0mr/Ws8ysQ/0e2FQ2OekxyV1CsZeYc3Q9Nf
+         QQFJ8PtLH9n02fwF0LveJa+o5P+9FvoP+WEKG1B8GQVy0NPrRH9enUtu8RNWk3zS2eyl
+         o6hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hOpzKqtZkl4vpPBZR8uQl2s3BPZXOsp3vKlUaVIS/Mo=;
-        b=HVBStgdDxQ7Tz2N5/tqAcDi0p5i/HSgjkLemb+4Lt96/GJX6hVPIaWvSfsSwjtM9Nm
-         yRzAWHiTpA2UzKYoTojci7YMNUc6oLAlFOCB42Hrc6Jyct97w/GZIQRJvq8NuuXx7k5n
-         uN58SZmFvUzTEOS3pugZcXpSmhZ/7th5YVgWvBkCbuT74OjFHqSrR+OkuSx4APJFnWwS
-         n6HRBqpe/E14Vqu23407Si53buPLNPYMRUKJ9IYkWZrNDja4z1j3TgHqFtWWBGeSrCpU
-         6+3MkgsH+nQJPqSBxIFX9V7grGqi8hSErRchD9NMeT63UxdDrPd0lM3ktvmiBSHkeHmk
-         X4gA==
-X-Gm-Message-State: AOAM531+mq8l7Im65tNYnP7LwDS9MAqy3a4Yu2Rq2F7pVsIJHxAsh8fX
-        Srvjq4SjKEx4pJe4nzNd2wM=
-X-Google-Smtp-Source: ABdhPJyTTIVV9W/Db1QkVLCqIJwuHX9GWdlAoaPYXja1BJeanTcWGwAAwOoIrYet7aTT3B6sBS+BxQ==
-X-Received: by 2002:a17:90b:4a01:: with SMTP id kk1mr552278pjb.208.1633975830306;
-        Mon, 11 Oct 2021 11:10:30 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
-        by smtp.gmail.com with ESMTPSA id j16sm8471216pfr.42.2021.10.11.11.10.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:10:29 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
-        Sean V Kelley <sean.v.kelley@intel.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Subject: [PATCH 18/22] PCI/PME: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
-Date:   Mon, 11 Oct 2021 23:40:14 +0530
-Message-Id: <53e9d01d1683ccae66b07a5b7904e2aa124c5aa3.1633972263.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=V2qwMwE4Z/z5csEUUB1Fs1TS8L6+ma70mWZapSc+y34=;
+        b=a2qkQJ+EPCXPmAQUCsofsbY1iYNkDHSQPCVZJlTBq0pQ7M0QGoIENrRhbRyNfyhjxZ
+         e03Uziw7YCl8/PLlNmhLtF7ebi3pyB7bDEADaakVqTyhffBLMzYbh8/774/QTenyMLse
+         nyw2eK0yGkV3Wl5tUiPSEUX/JXZ6wJJJEGNEQQhb5UbNdFelB/bmoqFQsdt+W32mx2JC
+         lciMYr1e+ip16aeFZv0mFZJljgmcSD6550bUlf1dGbdRIoRX7bXFadnp91n969Dv85rE
+         ioNetBpahaBpb25tQvLWkL3K+hfQoDnMzrcd7s3TvAmY8WJ5BZ8jvt2fJPcgHJ0hU4EG
+         5Cpw==
+X-Gm-Message-State: AOAM530bqEhwK6ag1qc2WUiC/H8B80FfbAcEQD/ZDiricIR/Me+rGQNU
+        D2nCFBvuWlv8Xs4yeDU6WQ4=
+X-Google-Smtp-Source: ABdhPJxsGpDd9BpkUbq67Ww5VPBW1wkU6AGOdcamfPFt9XqttFJ/Q9GFxn28yRAyZLAOT2KmRAuhaw==
+X-Received: by 2002:aa7:843d:0:b0:44d:2199:3ecb with SMTP id q29-20020aa7843d000000b0044d21993ecbmr7007871pfn.78.1633975822873;
+        Mon, 11 Oct 2021 11:10:22 -0700 (PDT)
+Received: from [192.168.1.14] ([223.230.99.151])
+        by smtp.gmail.com with ESMTPSA id k35sm124402pjc.53.2021.10.11.11.10.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 11:10:22 -0700 (PDT)
+Message-ID: <b9ba5a6f-ac0c-de0f-d105-90c50235ea5c@gmail.com>
+Date:   Mon, 11 Oct 2021 23:40:17 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.0
+Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return
+ statement.
+Content-Language: en-GB
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     fabioaiuto83@gmail.com, ross.schm.dev@gmail.com,
+        marcocesati@gmail.com, insafonov@gmail.com,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+References: <YWJ0vSrgsiKK7suE@user> <5843476.m7FxXixzUK@localhost.localdomain>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+In-Reply-To: <5843476.m7FxXixzUK@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An MMIO read from a PCI device that doesn't exist or doesn't respond
-causes a PCI error.  There's no real data to return to satisfy the
-CPU read, so most hardware fabricates ~0 data.
 
-Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
-data from hardware.
 
-This helps unify PCI error response checking and make error checks
-consistent and easier to find.
-
-Compile tested only.
-
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
----
- drivers/pci/pcie/pme.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pci/pcie/pme.c b/drivers/pci/pcie/pme.c
-index 1d0dd77fed3a..24588d0b581f 100644
---- a/drivers/pci/pcie/pme.c
-+++ b/drivers/pci/pcie/pme.c
-@@ -224,7 +224,7 @@ static void pcie_pme_work_fn(struct work_struct *work)
- 			break;
- 
- 		pcie_capability_read_dword(port, PCI_EXP_RTSTA, &rtsta);
--		if (rtsta == (u32) ~0)
-+		if (RESPONSE_IS_PCI_ERROR(&rtsta))
- 			break;
- 
- 		if (rtsta & PCI_EXP_RTSTA_PME) {
-@@ -274,7 +274,7 @@ static irqreturn_t pcie_pme_irq(int irq, void *context)
- 	spin_lock_irqsave(&data->lock, flags);
- 	pcie_capability_read_dword(port, PCI_EXP_RTSTA, &rtsta);
- 
--	if (rtsta == (u32) ~0 || !(rtsta & PCI_EXP_RTSTA_PME)) {
-+	if (RESPONSE_IS_PCI_ERROR(&rtsta) || !(rtsta & PCI_EXP_RTSTA_PME)) {
- 		spin_unlock_irqrestore(&data->lock, flags);
- 		return IRQ_NONE;
- 	}
--- 
-2.25.1
-
+On 10/10/21 12:54 pm, Fabio M. De Francesco wrote:
+> On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
+>> Remove the unneeded and redundant check of variable on goto out.
+>> Simplify the return using multiple goto label to avoid
+>> unneeded check.
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>
+>> ChangeLog V2:
+>> 	-Add goto out after the memcpy for no error case return with
+>> 	 ret only. Free is not required on no error case.
+>>
+>> ChangeLog V1:
+>> 	-Remove the unneeded and redundant check of variable on
+>> 	 goto out.
+>> 	-Simplify the return using multiple goto label to avoid
+>> 	 unneeded check.
+>>
+>>  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
+>>  1 file changed, 10 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
+> staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> index 0868f56e2979..ae9579dc0848 100644
+>> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+>> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
+> *padapter, char *name, str
+>>  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
+>>  	if (!mon_wdev) {
+>>  		ret = -ENOMEM;
+>> -		goto out;
+>> +		goto err_zmalloc;
+>>  	}
+>>
+>>  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
+>> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
+> adapter *padapter, char *name, str
+>>
+>>  	ret = cfg80211_register_netdevice(mon_ndev);
+>>  	if (ret) {
+>> -		goto out;
+>> +		goto err_register;
+>>  	}
+>>
+>>  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
+>>  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
+>> +	goto out;
+> 
+> I think this is the right thing to do in order to remove the bug you 
+> introduced in v1. Well done.
+> 
+Most of the people suggesting to use return 0 from here instead of goto.
+I will send another patch.
+>>
+>> -out:
+>> -	if (ret && mon_wdev) {
+>> -		kfree(mon_wdev);
+>> -		mon_wdev = NULL;
+>> -	}
+>> -
+>> -	if (ret && mon_ndev) {
+>> -		free_netdev(mon_ndev);
+>> -		*ndev = mon_ndev = NULL;
+>> -	}
+>> +err_register:
+>> +	kfree(mon_wdev);
+>> +	mon_wdev = NULL;
+>>
+>> +err_zmalloc:
+>> +	free_netdev(mon_ndev);
+>> +	*ndev = mon_ndev = NULL;
+> 
+> Not sure about what the Linux coding guidelines say, but I think that 
+> assigning NULL to local (on stack) pointers (mon_wdev, mon_ndev) at this 
+> point is unnecessary. There is no risk of reusing them after the "out" 
+> labelled block, because at function exit they are destroyed when the stack is 
+> unwound.
+> 
+> If you decide to remove these assignments, take care to leave "*ndev = NULL;" 
+> as-is (why?).
+> 
+Yes, This is also improvement needed on this function.
+> Aside from this minor objection...
+> 
+> Acked-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> 
+> Thanks,
+> 
+> Fabio
+> 
+>> +out:
+>>  	return ret;
+>>  }
+>>
+>> --
+>> 2.32.0
+>>
+>>
+>>
+> 
+> 
+> 
+> 
+Regards,
+Saurav
