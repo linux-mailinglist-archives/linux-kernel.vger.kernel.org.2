@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E067428F0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2678428EB7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:49:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237794AbhJKNy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:54:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41744 "EHLO mail.kernel.org"
+        id S237320AbhJKNva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:51:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237793AbhJKNwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:52:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36962610CA;
-        Mon, 11 Oct 2021 13:50:46 +0000 (UTC)
+        id S237246AbhJKNuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:50:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70AF960F21;
+        Mon, 11 Oct 2021 13:48:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960247;
-        bh=Au9gKU7YCwJjew/B4WF1/ekGWTtJL8BgRHuBc/Aa5Wk=;
+        s=korg; t=1633960094;
+        bh=90j3KqDcIJeIiJ/g/3FQopNbkD1LE4QJBm6HsNbOlU0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PclHHAzNYtbFMfbtg/hTGua6yIcQ18mAaKMpfQHjmpHuSryr1Zut3V47/gvP6ETNK
-         lkwMcLlXj7AdgfUWoeIdIpd8NA7zmGWibmyF0ySdAMpojrd7eOjMP7EP9hpkAMcd4N
-         47d4K3zr9/h71cmIVlbmWVJzVQD18uShFoqjErWk=
+        b=FBMgW5JFwMmYYXXYlvNYtMcy5sSpFNXRf/s6ya90zzhGQ4tgPG9f1pc7kyuvPat3C
+         uSQ1IyUm3WQgqiXVOgBc9HgTQAcqi4LxFwmkVvaPNsYLEGU+wPgXn6KPqyGqNpyoys
+         9u9M+vgVko4krGe2zQAxy/f1bh4rRVcrz07fjLqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 5.10 10/83] mmc: sdhci-of-at91: replace while loop with read_poll_timeout
-Date:   Mon, 11 Oct 2021 15:45:30 +0200
-Message-Id: <20211011134508.708027648@linuxfoundation.org>
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 02/52] USB: cdc-acm: fix racy tty buffer accesses
+Date:   Mon, 11 Oct 2021 15:45:31 +0200
+Message-Id: <20211011134503.803461169@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
-References: <20211011134508.362906295@linuxfoundation.org>
+In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
+References: <20211011134503.715740503@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudiu Beznea <claudiu.beznea@microchip.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 30d4b990ec644e8bd49ef0a2f074fabc0d189e53 upstream.
+commit 65a205e6113506e69a503b61d97efec43fc10fd7 upstream.
 
-Replace while loop with read_poll_timeout().
+A recent change that started reporting break events to the line
+discipline caused the tty-buffer insertions to no longer be serialised
+by inserting events also from the completion handler for the interrupt
+endpoint.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Completion calls for distinct endpoints are not guaranteed to be
+serialised. For example, in case a host-controller driver uses
+bottom-half completion, the interrupt and bulk-in completion handlers
+can end up running in parallel on two CPUs (high-and low-prio tasklets,
+respectively) thereby breaking the tty layer's single producer
+assumption.
+
+Fix this by holding the read lock also when inserting characters from
+the bulk endpoint.
+
+Fixes: 08dff274edda ("cdc-acm: fix BREAK rx code path adding necessary calls")
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210924082851.2132068-3-claudiu.beznea@microchip.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210929090937.7410-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mmc/host/sdhci-of-at91.c |   16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ drivers/usb/class/cdc-acm.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/mmc/host/sdhci-of-at91.c
-+++ b/drivers/mmc/host/sdhci-of-at91.c
-@@ -62,7 +62,6 @@ static void sdhci_at91_set_force_card_de
- static void sdhci_at91_set_clock(struct sdhci_host *host, unsigned int clock)
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -474,11 +474,16 @@ static int acm_submit_read_urbs(struct a
+ 
+ static void acm_process_read_urb(struct acm *acm, struct urb *urb)
  {
- 	u16 clk;
--	unsigned long timeout;
++	unsigned long flags;
++
+ 	if (!urb->actual_length)
+ 		return;
  
- 	host->mmc->actual_clock = 0;
++	spin_lock_irqsave(&acm->read_lock, flags);
+ 	tty_insert_flip_string(&acm->port, urb->transfer_buffer,
+ 			urb->actual_length);
++	spin_unlock_irqrestore(&acm->read_lock, flags);
++
+ 	tty_flip_buffer_push(&acm->port);
+ }
  
-@@ -87,16 +86,11 @@ static void sdhci_at91_set_clock(struct
- 	sdhci_writew(host, clk, SDHCI_CLOCK_CONTROL);
- 
- 	/* Wait max 20 ms */
--	timeout = 20;
--	while (!((clk = sdhci_readw(host, SDHCI_CLOCK_CONTROL))
--		& SDHCI_CLOCK_INT_STABLE)) {
--		if (timeout == 0) {
--			pr_err("%s: Internal clock never stabilised.\n",
--			       mmc_hostname(host->mmc));
--			return;
--		}
--		timeout--;
--		mdelay(1);
-+	if (read_poll_timeout(sdhci_readw, clk, (clk & SDHCI_CLOCK_INT_STABLE),
-+			      1000, 20000, false, host, SDHCI_CLOCK_CONTROL)) {
-+		pr_err("%s: Internal clock never stabilised.\n",
-+		       mmc_hostname(host->mmc));
-+		return;
- 	}
- 
- 	clk |= SDHCI_CLOCK_CARD_EN;
 
 
