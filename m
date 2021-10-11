@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EB3428C9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950CA428C9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236443AbhJKMJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236440AbhJKMJ4 (ORCPT
+        id S236467AbhJKMKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:10:03 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:54801 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236447AbhJKMJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:09:56 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C7BC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 05:07:56 -0700 (PDT)
+        Mon, 11 Oct 2021 08:09:59 -0400
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HScxg5VgDz4xqM;
-        Mon, 11 Oct 2021 23:07:51 +1100 (AEDT)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HScxp1gYzz4xqc;
+        Mon, 11 Oct 2021 23:07:58 +1100 (AEDT)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+To:     Nick Desaulniers <ndesaulniers@google.com>,
         Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <025754fde3d027904ae9d0191f395890bec93369.1631541649.git.christophe.leroy@csgroup.eu>
-References: <025754fde3d027904ae9d0191f395890bec93369.1631541649.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/mem: Fix arch/powerpc/mm/mem.c:53:12: error: no previous prototype for 'create_section_mapping'
-Message-Id: <163395400153.4094789.2095560885525137957.b4-ty@ellerman.id.au>
-Date:   Mon, 11 Oct 2021 23:06:41 +1100
+Cc:     linuxppc-dev@lists.ozlabs.org, Will Deacon <will@kernel.org>,
+        "Christopher M. Riedl" <cmr@codefail.de>,
+        Paul Mackerras <paulus@samba.org>,
+        David Hildenbrand <david@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>, kvm-ppc@vger.kernel.org,
+        Daniel Axtens <dja@axtens.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>
+In-Reply-To: <20210914161712.2463458-1-ndesaulniers@google.com>
+References: <20210914161712.2463458-1-ndesaulniers@google.com>
+Subject: Re: [PATCH] powerpc: clean up UPD_CONSTR
+Message-Id: <163395400287.4094789.4437570772722636872.b4-ty@ellerman.id.au>
+Date:   Mon, 11 Oct 2021 23:06:42 +1100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -40,19 +44,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Sep 2021 17:17:26 +0200, Christophe Leroy wrote:
-> Commit 8e11d62e2e87 ("powerpc/mem: Add back missing header to fix 'no
-> previous prototype' error") was supposed to fix the problem, but in
-> the meantime commit a927bd6ba952 ("mm: fix phys_to_target_node() and*
-> memory_add_physaddr_to_nid() exports") moved create_section_mapping()
-> prototype from asm/sparsemem.h to asm/mmzone.h
+On Tue, 14 Sep 2021 09:17:04 -0700, Nick Desaulniers wrote:
+> UPD_CONSTR was previously a preprocessor define for an old GCC 4.9 inline
+> asm bug with m<> constraints.
 > 
 > 
-> [...]
+> 
+> 
 
 Applied to powerpc/next.
 
-[1/1] powerpc/mem: Fix arch/powerpc/mm/mem.c:53:12: error: no previous prototype for 'create_section_mapping'
-      https://git.kernel.org/powerpc/c/7eff9bc00ddf1e2281dff575884b7f676c85b006
+[1/1] powerpc: clean up UPD_CONSTR
+      https://git.kernel.org/powerpc/c/2a24d80fc86bcd70c8e780078254e873ea217379
 
 cheers
