@@ -2,108 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B02429602
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749FB429607
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbhJKRsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:48:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
+        id S234021AbhJKRtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhJKRse (ORCPT
+        with ESMTP id S232836AbhJKRtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:48:34 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC68C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:46:34 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id k23-20020a17090a591700b001976d2db364so531695pji.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:46:34 -0700 (PDT)
+        Mon, 11 Oct 2021 13:49:12 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EA9C061570;
+        Mon, 11 Oct 2021 10:47:12 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id t11so11790968plq.11;
+        Mon, 11 Oct 2021 10:47:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QWj2JXkJyQDHBhfB4agrm/K3KXfWNnFY8j3Hsh+xzv0=;
-        b=aB4hreG52B/zYsYowIge7+XqREmGQxHmyq6zfwlKcutYV0fbGt0omMpVJwhTuQqNh7
-         WTSfbnfdKXuha28csdTVKlRjxppqZPX/Ic1C7tpB1KKWKGSaWWY5HkKzyML4Fv48KQP5
-         f+Y5juq8e3hk54zXfJ+Tswyjb7EGiiCzWp0gc=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zxhtuL3HeCmtsqnFNhK74x+usx81ot+S79+zUUitvW0=;
+        b=PD6GjrTQM3KCyYIuR3r9KfKJBDMUoyykds5CzWH4OLLp1/gaFDA33/40tedbUytqNs
+         C6NA/4F//BIJVTDGSfpoVfnI+Sy0cLXqFyLEeS9emQR5US4Ef/UihfKbAwb6TwV7SZUa
+         s1zyFoWYgwEzSCBV1E4l8hJUbSkzs9IE1/H8VwZ7Ygsxm3IV0tjVz3pejMNZsPCjKtXI
+         uMzkMWo0th9vtZqV9Wfx+y+U2utQB5dcO3l3iCFp5LeutR/FRvONywzoVEakuMgKRs7Z
+         0OIg+au2Cc2rP3ui4D9HbMR9Cwrg4a3oN/FgcJP+ZjbF6c9OEFXLLKmMaw1OyqZqdau+
+         m/Zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QWj2JXkJyQDHBhfB4agrm/K3KXfWNnFY8j3Hsh+xzv0=;
-        b=je3wXy+rdEtzkdRsGqncP1y1bKXWV+LubnRG7uTrZ9r2iK3nguac3+jyZ2uIVPr8kh
-         ikY44gbu0RHHVZ45fc0Ox8Q+FGjcqgFQTGjqfEhko2Oo0Z6L8cl16DGAFztCbcYhymMW
-         dxSy7aSS7y9AXU8JutHDrvmSmCNEcBTbYPs3ID4Xffi5ARsVof17s1uZqNZd1PtT5WPh
-         I7O1npdx46hCzHIg9okeW9r8bOudsHtG1UCBU8+Q3WsN6UIPSHvlzckyH8e4by1pEZqa
-         RowpziaYb01rIs7ujPx/2wUWet330CxhjNoWjnsFY4uBbzN/5kbHadiLpB4pGeCXX2oi
-         cTRw==
-X-Gm-Message-State: AOAM532r+bCx6wnaRZU+v7tEg61B7MBpREvBFw4KdxyVv3x/Ar7Xbzo7
-        /9w7PQ66O/m+bWPWz1HJEt0s0Q==
-X-Google-Smtp-Source: ABdhPJwHd8CuR+2nnKmcjuzFIDoW9HXUiH/zkwOgOsehQuamFxaEnAWAhLoqUk4ZAf6ImVhbRguzEQ==
-X-Received: by 2002:a17:902:7804:b0:13e:d4c6:e701 with SMTP id p4-20020a170902780400b0013ed4c6e701mr25958323pll.66.1633974393806;
-        Mon, 11 Oct 2021 10:46:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id l11sm106279pjg.22.2021.10.11.10.46.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zxhtuL3HeCmtsqnFNhK74x+usx81ot+S79+zUUitvW0=;
+        b=RM9Len42ANp242wYZJ4wjyUj7Hh+TG25co2PQ4LRW0r6yHr78PVReYVBz/uwlqjh8T
+         Vps3OXjgOoSuaguMbLwv9Xa0blMMiHInXx5HbQ7nfBrUXH52CO6JPzK/kMEJvrSNVnZi
+         nQ15PkkTfD7pLAD3u23qtEk2h5PN31Oi2R3Qgt/aIRQfSGnsH6QZ5EbnkCpcuxYUWHH7
+         dwRMFO+N5cirCkctt4EnNRUWjsKkd9kQ/y3Hwsd3UnUBnqjXq4N9r4oxzFkQczed7NiR
+         iqGNkZLWzHRKYQgJ+AtHJfYRSwZqRMLfcB6zaej7Fq50DjXoaVp0JHIRyzrg8tmEsmIP
+         UJ/A==
+X-Gm-Message-State: AOAM533xC1XZrhWbOQwDg0t0j5yyL7nhdt6t7bzZPhtiXvw0aD9MXLj7
+        6N/t8+KuL3B9xqD1pZYgHxQ=
+X-Google-Smtp-Source: ABdhPJwIuCQK1VwvP8TNFW8MaB2ve+rMxNFXCiuNx3vXpGFnMP0GHInKPnTxQN1MiUFBM+LvNGahcQ==
+X-Received: by 2002:a17:90a:9f8c:: with SMTP id o12mr437340pjp.96.1633974431830;
+        Mon, 11 Oct 2021 10:47:11 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
+        by smtp.gmail.com with ESMTPSA id m2sm8824461pgd.70.2021.10.11.10.47.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 10:46:33 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 10:46:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the akpm-current tree
-Message-ID: <202110111043.B69F7D419A@keescook>
-References: <20211011183145.6ac3bef3@canb.auug.org.au>
+        Mon, 11 Oct 2021 10:47:11 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM IPROC ARM
+        ARCHITECTURE),
+        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM IPROC ARM
+        ARCHITECTURE)
+Subject: [PATCH 04/22] PCI: iproc: Use SET_PCI_ERROR_RESPONSE() when device not found
+Date:   Mon, 11 Oct 2021 23:16:36 +0530
+Message-Id: <b08c40280615fe9de232a50126b220c5966a69ad.1633972263.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211011183145.6ac3bef3@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 06:31:45PM +1100, Stephen Rothwell wrote:
-> After merging the akpm-current tree, today's linux-next build (htmldocs)
-> produced these warnings:
-> 
-> include/linux/slab.h:577: warning: Function parameter or member '1' not described in '__alloc_size'
-> include/linux/slab.h:577: warning: expecting prototype for kmalloc(). Prototype was for __alloc_size() instead
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the
+CPU read, so most hardware fabricates ~0 data.
 
-Yay kerndoc. Thanks for catching this, and I realize Matthew Wilcox
-predicted this earlier:
-https://lore.kernel.org/lkml/3a0c55a3fabc57ce9771c93499ef19327f3b8621.camel@perches.com/
+Use SET_PCI_ERROR_RESPONSE() to set the error response, when a faulty
+hardware read occurs.
 
-I will get a fix sent.
+This helps unify PCI error response checking and make error check
+consistent and easier to find.
 
--Kees
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+---
+ drivers/pci/controller/pcie-iproc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> include/linux/slab.h:623: warning: Function parameter or member '1' not described in '__alloc_size'
-> include/linux/slab.h:623: warning: Function parameter or member '2' not described in '__alloc_size'
-> include/linux/slab.h:623: warning: expecting prototype for kmalloc_array(). Prototype was for __alloc_size() instead
-> include/linux/slab.h:644: warning: Function parameter or member '2' not described in '__alloc_size'
-> include/linux/slab.h:644: warning: Function parameter or member '3' not described in '__alloc_size'
-> include/linux/slab.h:644: warning: expecting prototype for krealloc_array(). Prototype was for __alloc_size() instead
-> include/linux/slab.h:660: warning: Function parameter or member '1' not described in '__alloc_size'
-> include/linux/slab.h:660: warning: Function parameter or member '2' not described in '__alloc_size'
-> include/linux/slab.h:660: warning: expecting prototype for kcalloc(). Prototype was for __alloc_size() instead
-> include/linux/slab.h:723: warning: Function parameter or member '1' not described in '__alloc_size'
-> include/linux/slab.h:723: warning: expecting prototype for kzalloc(). Prototype was for __alloc_size() instead
-> include/linux/slab.h:734: warning: Function parameter or member '1' not described in '__alloc_size'
-> include/linux/slab.h:734: warning: expecting prototype for kzalloc_node(). Prototype was for __alloc_size() instead
-> include/linux/slab.h:1: warning: no structured comments found
-> 
-> Introduced by commit
-> 
->   04ba82afbbf3 ("slab: add __alloc_size attributes for better bounds checking")
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
-
+diff --git a/drivers/pci/controller/pcie-iproc.c b/drivers/pci/controller/pcie-iproc.c
+index 30ac5fbefbbf..f182dc2cdb0c 100644
+--- a/drivers/pci/controller/pcie-iproc.c
++++ b/drivers/pci/controller/pcie-iproc.c
+@@ -660,7 +660,7 @@ static int iproc_pci_raw_config_read32(struct iproc_pcie *pcie,
+ 
+ 	addr = iproc_pcie_map_cfg_bus(pcie, 0, devfn, where & ~0x3);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
 -- 
-Kees Cook
+2.25.1
+
