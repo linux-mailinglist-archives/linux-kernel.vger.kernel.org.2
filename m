@@ -2,147 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10404286F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:41:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03164286F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:44:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234256AbhJKGnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48824 "EHLO
+        id S234281AbhJKGqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhJKGnG (ORCPT
+        with ESMTP id S229797AbhJKGqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:43:06 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3966EC061570;
-        Sun, 10 Oct 2021 23:41:07 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSThc5f8Yz4xbV;
-        Mon, 11 Oct 2021 17:41:04 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1633934465;
-        bh=LqvuD4D+kOfepT0Wnihi4XbiLrE7R/+cI4dVzIbSY8A=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tDekxlpR8+wK3w9lEA0fI7+S9b5RLbf4IlPC39vSgN4AmOAx44Uk4XowtiQJwEibO
-         DbCJ6K+aZwrVKCHurZC3XkLyv0TPGqUZrpyno7xCC5wIRbi0s1YKKyCg0tY/D3/qRP
-         pbkxa0OFagD3mfC7OKWR3dlhxHqAZesnUDYeJYLlqHCKZhazqDVI64xgRUNXemt+Fv
-         Xago4VpUv7QLz5TOnkNixQfBOz+azGJd+GT2k82FwFBk13HZTcRrCfcRHshtjXW5sX
-         juwnrt8yacamePJ9jo3nvyFg0hbcaJPsx7/wspmJWGq+Tv3ss1bn9eIIv4d5Uc4+U8
-         +QAyPbqbFu4rA==
-Date:   Mon, 11 Oct 2021 17:41:03 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: linux-next: manual merge of the akpm-current tree with the userns
- tree
-Message-ID: <20211011174103.58413a7b@canb.auug.org.au>
+        Mon, 11 Oct 2021 02:46:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35A0C061570;
+        Sun, 10 Oct 2021 23:44:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=itmTim8I8t0MywMgjw5ukf6bQm80r6xY66lzHRGBkrU=; b=JaADK9WMrPpNoBBHBl9idRMMuD
+        BYqj3G7RrDho83bp87br+1sUORGJ+B66XPhavXtKJhRBH53kPDL10sxYORJ510EH72BCXUB3MfrrP
+        v6PWIYIV5lMVSharrgDeJrRKyDrl8BAXI2aSz9dCmIhjMP5b/OrleQ3qT16i4YS+gCZ35wX7iJeKD
+        x+MO9qlQF60UZOViG0m1Bq5lbjoJH1LGWIgMSHDhr6TJCUFfzqDQOzb4/2/0f90jBkHnZDNugIPc0
+        zOdxKyyxHwOsX1AH2Q4iHill4U++SnwwQLytWAX2mvAnF2zlxb62+zVUREYvXF7GEMcuVSsB9kgHW
+        fn8Px/YQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mZp12-005Iw5-IR; Mon, 11 Oct 2021 06:42:47 +0000
+Date:   Mon, 11 Oct 2021 07:42:28 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Michael Cyr <mikecyr@linux.ibm.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: ibmvscsi_tgt: Use dma_alloc_coherent() instead of
+ get_zeroed_page/dma_map_single()
+Message-ID: <YWPc1GxFiOloHveI@infradead.org>
+References: <20211010160055.488-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7Wn0tqi_WrLjsm0io1aaMfX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211010160055.488-1-caihuoqing@baidu.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7Wn0tqi_WrLjsm0io1aaMfX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Oct 11, 2021 at 12:00:53AM +0800, Cai Huoqing wrote:
+> Replacing get_zeroed_page/free_page/dma_map_single/dma_unmap_single()
+> with dma_alloc_coherent/dma_free_coherent() helps to reduce
+> code size, and simplify the code, and coherent DMA will not
+> clear the cache every time.
 
-Hi all,
-
-Today's linux-next merge of the akpm-current tree got a conflict in:
-
-  kernel/exit.c
-
-between commits:
-
-  d67e03e36161 ("exit: Factor coredump_exit_mm out of exit_mm")
-  92307383082d ("coredump:  Don't perform any cleanups before dumping core")
-
-from the userns tree and commit:
-
-  27692e64c49c ("lazy tlb: introduce lazy mm refcount helper functions")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc kernel/exit.c
-index f702a6a63686,8e7b41702ad6..000000000000
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@@ -480,8 -440,42 +480,8 @@@ static void exit_mm(void
-  	if (!mm)
-  		return;
-  	sync_mm_rss(mm);
- -	/*
- -	 * Serialize with any possible pending coredump.
- -	 * We must hold mmap_lock around checking core_state
- -	 * and clearing tsk->mm.  The core-inducing thread
- -	 * will increment ->nr_threads for each thread in the
- -	 * group with ->mm !=3D NULL.
- -	 */
-  	mmap_read_lock(mm);
-- 	mmgrab(mm);
- -	core_state =3D mm->core_state;
- -	if (core_state) {
- -		struct core_thread self;
- -
- -		mmap_read_unlock(mm);
- -
- -		self.task =3D current;
- -		if (self.task->flags & PF_SIGNALED)
- -			self.next =3D xchg(&core_state->dumper.next, &self);
- -		else
- -			self.task =3D NULL;
- -		/*
- -		 * Implies mb(), the result of xchg() must be visible
- -		 * to core_state->dumper.
- -		 */
- -		if (atomic_dec_and_test(&core_state->nr_threads))
- -			complete(&core_state->startup);
- -
- -		for (;;) {
- -			set_current_state(TASK_UNINTERRUPTIBLE);
- -			if (!self.task) /* see coredump_finish() */
- -				break;
- -			freezable_schedule();
- -		}
- -		__set_current_state(TASK_RUNNING);
- -		mmap_read_lock(mm);
- -	}
-+ 	mmgrab_lazy_tlb(mm);
-  	BUG_ON(mm !=3D current->active_mm);
-  	/* more a memory barrier than a real lock */
-  	task_lock(current);
-
---Sig_/7Wn0tqi_WrLjsm0io1aaMfX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFj3H8ACgkQAVBC80lX
-0Gx2Sgf6Ag5I2T7HSX0r75F1ZiyU4d28AlF1HRkjQ7G7Pur/dvSn++sltJFPjrT4
-WPrGfa2ZioYF8UFQpgKpVBXO3Nbzco1UCPF95d53Y/ALouIaskHhBg/b2iwlH6d2
-O6K7JmVNBl+t70YZLIhcOckvYgtF+q1azhYbB3/8Fc2SAKHwme90G4dbaukaao2U
-UHDhQxZJmwLTBZlvDwPuKbc0WlbVD9KbnE58gezzGOFjnCZlV0+RT9DdhXLLvdYQ
-9WRCsZdlId4en7N5wHY3m3zkJjDz2wBggSlRiowHBwfOMU8nw4McMXS0LexAd0Bn
-Ut7KqNYE9MyO7M4pLWXmVkup/Zu6Nw==
-=Nk5n
------END PGP SIGNATURE-----
-
---Sig_/7Wn0tqi_WrLjsm0io1aaMfX--
+This explanation does not make any sense whatsoever.  Please explain
+why it would an show numbers.
