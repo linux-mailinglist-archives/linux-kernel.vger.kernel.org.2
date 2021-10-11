@@ -2,93 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEA44284DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA2F24284E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 03:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233412AbhJKBuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 21:50:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40690 "EHLO
+        id S233434AbhJKBvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Oct 2021 21:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhJKBuE (ORCPT
+        with ESMTP id S232748AbhJKBvm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Oct 2021 21:50:04 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5B7CC061570;
-        Sun, 10 Oct 2021 18:48:05 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id u20-20020a9d7214000000b0054e170300adso19678322otj.13;
-        Sun, 10 Oct 2021 18:48:05 -0700 (PDT)
+        Sun, 10 Oct 2021 21:51:42 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4764C061570;
+        Sun, 10 Oct 2021 18:49:43 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so19696678otb.10;
+        Sun, 10 Oct 2021 18:49:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=duoExRnMrV273AZ/oaZqgFgQ2VuLyiS3q2R3PdjunZM=;
-        b=BSkqTVx2dSUr3qkiO1SJeWpOuLw4BJoeAb0Se4DxVerueo2LN+bRac0vnSnNUzYt0e
-         T3Hb5vLxadZLxGUAj06vjx87bw7L2+q9pcbGNglDIi8JQ8MjT+/gwliezykq+yFHXM6U
-         MtsGPqNkMKeztPbR3m4UQuItJE2lzS2sUHh/eMIT64LIRdnBEU5UrbR82cCA6OYOkNqa
-         a6Sg+KM98YKTEx9vQOGfQ0bjr2cvVX5UNHpK+wAxwVZVgASsJACZf7Jnj3mtLwI3I2RC
-         CeoPExSJQ2mBQhVE0kuKcB/DrLTYbB0vCQmtnRxK/+Gj/TQAtnvbSJtrPjyMutVMZTda
-         4Z2A==
+        h=sender:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mPp2IC/8XVa9FpmITYRYA6birTrJuBZb+Xd2yUO/arA=;
+        b=bY17w47tT3Z4dmcvdDlUqi0T7m8Go5K5sg3FuLOFbi4CMJQHiieJ6CBNiG0sQfNbE3
+         QY387jwKiaEuSNuRdbE2LkQlTwd/YSdXUt1lnwFx48mVyZYYxtlV2ucA4PGSeY7anmks
+         zw46VyovJTO7LVkq/VVMiNzLu8RKAR6NzmopRrvEu85a8BEBJZkDCRhScJhaNFQYPwk4
+         nHRGq7/FYdeecRDsA9QNBZJQKAWONxemWu9PvvS/NTJal/Y2F1+37vWVy/oHiHwQOF8K
+         MjpmLCYP/wsKEcs8vagRvYAqzoTvnbqRd1KCPs7bDBvLRWlQxCXsc/zT5sxC7q6fDoyl
+         FLkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=duoExRnMrV273AZ/oaZqgFgQ2VuLyiS3q2R3PdjunZM=;
-        b=5eI6/Ln4t4RnYEgIAPrk2YOmU+Au+G4JSqmzd1Tws7ViiGvoiNFtYFu4/EvI6eJysj
-         HCYYFcQ7bwE0/X+pvpmWIqlcvwPdwQr+O5bd05jB6Ijcy0R7wiDP/yuZaA3Bv3Ri4aU7
-         XfCEzrI7G7RKsNd0w0s5nkHZ0uWXjKaj/rOQ2fioEtNIB8aciVeTfGNQW7jOpESKxxvP
-         Y4n0J/7OJnURYiMEbBKgJ36Fcll+axYcraZdtrmSDOqorCmtrbQXLxCX/xlJZgd1+8WU
-         6sm1o9AugIQu0hgNtVgprmHsuEF5lAesUxkkoVk7vbmHQLmYIHFEp/M7Vg6y4Dyfk4P0
-         BZkw==
-X-Gm-Message-State: AOAM5320FH0WHCwfbm+xI3qoiXX3saU1zOZYiT8v7oMuoOgYS69veVYJ
-        FW6T7HZLIc25a79LjB713vE=
-X-Google-Smtp-Source: ABdhPJzfnjW9yRbYUmqyekqUG1TfwDv/Xswkuoif7hWoNuiomDatj7UPIW8NMrFc0L4qFq9VTIsrGA==
-X-Received: by 2002:a05:6830:1c6d:: with SMTP id s13mr11911304otg.158.1633916885042;
-        Sun, 10 Oct 2021 18:48:05 -0700 (PDT)
-Received: from ?IPV6:2600:1700:dfe0:49f0:802c:b332:26e0:e0aa? ([2600:1700:dfe0:49f0:802c:b332:26e0:e0aa])
-        by smtp.gmail.com with ESMTPSA id l25sm1282837oot.36.2021.10.10.18.48.02
+        bh=mPp2IC/8XVa9FpmITYRYA6birTrJuBZb+Xd2yUO/arA=;
+        b=rit4Sz7cIcde2VlxbY3JaHh0X2ZEi4H9HKVAg8ktgs2pRU6/uBhjncJekEs/sjrCRM
+         9ildP8nzCZeb3mNwlZsPDa+gwP08i3JGN9YbrQ6n9PLrnySB0K4azcCyYQaOd6TEWrWe
+         cJor+r0ge/sILjdouM9o1/21aOEai7Lc2eGpWVkY+x8iAjisiGcPoVsTk59FA4EzKgM5
+         GGt5qUR4oHg0DI4jR9ewPDdmlj8ekrslEFHcRhkViiFdLFQGr//9wwyUCZrgPYFoWp9x
+         ttTXo33Wtyk5/qaDPpZ06S94OjQtyntZj/njYce6aF6QzDVPYH8TO4MXH5+yOhgF4RYi
+         QLBw==
+X-Gm-Message-State: AOAM533kdviG+kFNLtKHZFFBI/cIJ0MVLlO5u8OrIRpqN9woPQ4MIzOB
+        SSedqIOSSWeB48u7rnp5vK8NDqQGSRc=
+X-Google-Smtp-Source: ABdhPJw0fd3jfT7oq4wVfJ7vcebpNes7JdZdurzSgVPeljWPSIyBB0yjTb3wlDvkYAyg+f2x8cHJJA==
+X-Received: by 2002:a9d:eac:: with SMTP id 41mr18859144otj.38.1633916982884;
+        Sun, 10 Oct 2021 18:49:42 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f2sm1401111oia.44.2021.10.10.18.49.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Oct 2021 18:48:04 -0700 (PDT)
-Message-ID: <ef535d49-f6d2-447e-ff46-090ea9347697@gmail.com>
-Date:   Sun, 10 Oct 2021 18:48:02 -0700
+        Sun, 10 Oct 2021 18:49:42 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v7 2/2] hwmon: (nct7802) Make temperature/voltage sensors
+ configurable
+To:     Oskar Senft <osk@google.com>, Jean Delvare <jdelvare@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20211011012212.91357-1-osk@google.com>
+ <20211011012212.91357-2-osk@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <98dcaa85-d04c-7a9c-1901-8786d361477c@roeck-us.net>
+Date:   Sun, 10 Oct 2021 18:49:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.2
-Subject: Re: [net-next PATCH v5 02/14] dt-bindings: net: dsa: qca8k: Add SGMII
- clock phase properties
+In-Reply-To: <20211011012212.91357-2-osk@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Matthew Hagan <mnhagan88@gmail.com>
-References: <20211011013024.569-1-ansuelsmth@gmail.com>
- <20211011013024.569-3-ansuelsmth@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20211011013024.569-3-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/10/2021 6:30 PM, Ansuel Smith wrote:
-> Add names and descriptions of additional PORT0_PAD_CTRL properties.
-> qca,sgmii-(rx|tx)clk-falling-edge are for setting the respective clock
-> phase to failling edge.
+On 10/10/21 6:22 PM, Oskar Senft wrote:
+> This change allows LTD and RTD inputs to be configured via
+> device tree bindings. If the DT bindings are not present or
+> invalid, the input configuration is not modified and left at
+> HW defaults.
 > 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> Signed-off-by: Oskar Senft <osk@google.com>
 
-This should presumably have Matthew as the Author, so we would see a 
-heading with:
+I sent a Reviewed-by: for v6 of this patch.
 
-From: Matthew Hagan <mnhagan88@gmail.com>
--- 
-Florian
+> ---
+> Changes from PATCH v6:
+> - None (resubmitted due to changes in nuvoton,nct7802.yaml).
+> 
+
+Why did you drop it if there was no change ?
+
+Guenter
+
+> Changes from PATCH v5:
+> - Removed unused "found_channel_config" variable.
+> - Initialize mode_mask and mode_val to defaults.
+> ---
+>   drivers/hwmon/nct7802.c | 129 ++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 125 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/hwmon/nct7802.c b/drivers/hwmon/nct7802.c
+> index 604af2f6103a..d56f78327619 100644
+> --- a/drivers/hwmon/nct7802.c
+> +++ b/drivers/hwmon/nct7802.c
+> @@ -51,6 +51,23 @@ static const u8 REG_VOLTAGE_LIMIT_MSB_SHIFT[2][5] = {
+>   #define REG_CHIP_ID		0xfe
+>   #define REG_VERSION_ID		0xff
+>   
+> +/*
+> + * Resistance temperature detector (RTD) modes according to 7.2.32 Mode
+> + * Selection Register
+> + */
+> +#define RTD_MODE_CURRENT	0x1
+> +#define RTD_MODE_THERMISTOR	0x2
+> +#define RTD_MODE_VOLTAGE	0x3
+> +
+> +#define MODE_RTD_MASK		0x3
+> +#define MODE_LTD_EN		0x40
+> +
+> +/*
+> + * Bit offset for sensors modes in REG_MODE.
+> + * Valid for index 0..2, indicating RTD1..3.
+> + */
+> +#define MODE_BIT_OFFSET_RTD(index) ((index) * 2)
+> +
+>   /*
+>    * Data structures and manipulation thereof
+>    */
+> @@ -1038,7 +1055,112 @@ static const struct regmap_config nct7802_regmap_config = {
+>   	.volatile_reg = nct7802_regmap_is_volatile,
+>   };
+>   
+> -static int nct7802_init_chip(struct nct7802_data *data)
+> +static int nct7802_get_channel_config(struct device *dev,
+> +				      struct device_node *node, u8 *mode_mask,
+> +				      u8 *mode_val)
+> +{
+> +	u32 reg;
+> +	const char *type_str, *md_str;
+> +	u8 md;
+> +
+> +	if (!node->name || of_node_cmp(node->name, "channel"))
+> +		return 0;
+> +
+> +	if (of_property_read_u32(node, "reg", &reg)) {
+> +		dev_err(dev, "Could not read reg value for '%s'\n",
+> +			node->full_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (reg > 3) {
+> +		dev_err(dev, "Invalid reg (%u) in '%s'\n", reg,
+> +			node->full_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (reg == 0) {
+> +		if (!of_device_is_available(node))
+> +			*mode_val &= ~MODE_LTD_EN;
+> +		else
+> +			*mode_val |= MODE_LTD_EN;
+> +		*mode_mask |= MODE_LTD_EN;
+> +		return 0;
+> +	}
+> +
+> +	/* At this point we have reg >= 1 && reg <= 3 */
+> +
+> +	if (!of_device_is_available(node)) {
+> +		*mode_val &= ~(MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1));
+> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+> +		return 0;
+> +	}
+> +
+> +	if (of_property_read_string(node, "sensor-type", &type_str)) {
+> +		dev_err(dev, "No type for '%s'\n", node->full_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!strcmp(type_str, "voltage")) {
+> +		*mode_val |= (RTD_MODE_VOLTAGE & MODE_RTD_MASK)
+> +			     << MODE_BIT_OFFSET_RTD(reg - 1);
+> +		*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+> +		return 0;
+> +	}
+> +
+> +	if (strcmp(type_str, "temperature")) {
+> +		dev_err(dev, "Invalid type '%s' for '%s'\n", type_str,
+> +			node->full_name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (reg == 3) {
+> +		/* RTD3 only supports thermistor mode */
+> +		md = RTD_MODE_THERMISTOR;
+> +	} else {
+> +		if (of_property_read_string(node, "temperature-mode",
+> +					    &md_str)) {
+> +			dev_err(dev, "No mode for '%s'\n", node->full_name);
+> +			return -EINVAL;
+> +		}
+> +
+> +		if (!strcmp(md_str, "thermal-diode"))
+> +			md = RTD_MODE_CURRENT;
+> +		else if (!strcmp(md_str, "thermistor"))
+> +			md = RTD_MODE_THERMISTOR;
+> +		else {
+> +			dev_err(dev, "Invalid mode '%s' for '%s'\n", md_str,
+> +				node->full_name);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	*mode_val |= (md & MODE_RTD_MASK) << MODE_BIT_OFFSET_RTD(reg - 1);
+> +	*mode_mask |= MODE_RTD_MASK << MODE_BIT_OFFSET_RTD(reg - 1);
+> +
+> +	return 0;
+> +}
+> +
+> +static int nct7802_configure_channels(struct device *dev,
+> +				      struct nct7802_data *data)
+> +{
+> +	/* Enable local temperature sensor by default */
+> +	u8 mode_mask = MODE_LTD_EN, mode_val = MODE_LTD_EN;
+> +	struct device_node *node;
+> +	int err;
+> +
+> +	if (dev->of_node) {
+> +		for_each_child_of_node(dev->of_node, node) {
+> +			err = nct7802_get_channel_config(dev, node, &mode_mask,
+> +							 &mode_val);
+> +			if (err)
+> +				return err;
+> +		}
+> +	}
+> +
+> +	return regmap_update_bits(data->regmap, REG_MODE, mode_mask, mode_val);
+> +}
+> +
+> +static int nct7802_init_chip(struct device *dev, struct nct7802_data *data)
+>   {
+>   	int err;
+>   
+> @@ -1047,8 +1169,7 @@ static int nct7802_init_chip(struct nct7802_data *data)
+>   	if (err)
+>   		return err;
+>   
+> -	/* Enable local temperature sensor */
+> -	err = regmap_update_bits(data->regmap, REG_MODE, 0x40, 0x40);
+> +	err = nct7802_configure_channels(dev, data);
+>   	if (err)
+>   		return err;
+>   
+> @@ -1074,7 +1195,7 @@ static int nct7802_probe(struct i2c_client *client)
+>   	mutex_init(&data->access_lock);
+>   	mutex_init(&data->in_alarm_lock);
+>   
+> -	ret = nct7802_init_chip(data);
+> +	ret = nct7802_init_chip(dev, data);
+>   	if (ret < 0)
+>   		return ret;
+>   
+> 
+
