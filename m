@@ -2,98 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C4542882E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729E5428830
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhJKH5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
+        id S234709AbhJKH5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhJKH5c (ORCPT
+        with ESMTP id S234689AbhJKH5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:57:32 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C750DC06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=7aFBilyQzv3eGjfhC1Mgx1dqBHvelIzNlMAAN5gT0Ac=; b=V9gwkBI9pbATcC/40PsmeMBlNw
-        6uNUwP20UUN4B51LnX2b/bLhkHldWu02eXKf+JX8B4Gy116HRsBAXj+DSQYF/45dB4Lv0cxDJOnqy
-        3XmcDypGwNbJf0ZnCRnLcQtWokdAILmj/CFmsfQQ4CYXKW1ElF97UHRrjGJ+VvxzkHCGwzHcL69yf
-        euSlh5KrqNejYPeV1U+lQsVw170ykc/iH1euV2bhzTUE3IC3Ab1HL1BlSQ5LcGYjqSA3vclwtLSy9
-        fmpyGPnNDNffGm+o0tokHY8ycR47OE81VtkYnkubQgMBsmXFUBjFjGdW7/T8oPg8x8zxBZ+gvMHg2
-        mL7+Da4Q==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZq9f-008CaO-EB; Mon, 11 Oct 2021 07:55:27 +0000
-Subject: Re: [PATCH 13/13] ASoC: amd: enable yc machine driver build
-To:     Vijendar Mukunda <Vijendar.Mukunda@amd.com>, broonie@kernel.org,
-        alsa-devel@alsa-project.org
-Cc:     Alexander.Deucher@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, Mario.Limonciello@amd.com,
-        Richard.Gong@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20211011055621.13240-1-Vijendar.Mukunda@amd.com>
- <20211011055621.13240-14-Vijendar.Mukunda@amd.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7d58fea8-cd45-c25d-300f-1e7438079c94@infradead.org>
-Date:   Mon, 11 Oct 2021 00:55:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 03:57:44 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97BD0C061570;
+        Mon, 11 Oct 2021 00:55:44 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4HSWLk5V0zz4xqM;
+        Mon, 11 Oct 2021 18:55:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1633938942;
+        bh=Y1w5b91rWPOG/E+8Iq3qY+BNUz2oYa7A/lduuFtqcY8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hfaKZVjFYFyRfyFUN+xZCM0ffG6jxB5oR8Le68ywAhp6ROf9fVXtx4jYd+iOm8hRt
+         OSIzoPNyToIoAt/nMCGv/L+3JQJFufBg4KcH424ZxlK19g2tIo8TEMntV3bkW+lhcs
+         uKtrtR5xD8Jv7+/66slU1EzeZEJAiAOfPkyziy6UMor+C4hJbrbrVD0zDACQawS7Ro
+         bNqfK/Kffe/v//aGBEMRe2XygtFiBlMrO/m5gpDEYatm8FZXgvOHdFS9bpFqVcITAr
+         00p98b8GcT5KdBHMzQoc8lKXgXKtMaPKtm6u1UO297algsD9pqUIg9i5iTTeCd3QuY
+         62iTpTzdp3ZMw==
+Date:   Mon, 11 Oct 2021 18:55:41 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: contact/tree changes for the swiotlb tree
+Message-ID: <20211011185541.1fe7bcd0@canb.auug.org.au>
+In-Reply-To: <YWPqTEURBGvyguWI@infradead.org>
+References: <20211008082637.78598d36@canb.auug.org.au>
+        <YWCZHIk+QpsDb7Y8@0xbeefdead.lan>
+        <20211009160846.5b90d9ba@canb.auug.org.au>
+        <YWPqTEURBGvyguWI@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20211011055621.13240-14-Vijendar.Mukunda@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/pOLmHrhGHLl/RkxFoz=p9Vr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/10/21 10:56 PM, Vijendar Mukunda wrote:
-> Enable YC platform dmic machine driver build.
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> ---
->   sound/soc/amd/Kconfig     | 7 +++++++
->   sound/soc/amd/yc/Makefile | 2 ++
->   2 files changed, 9 insertions(+)
-> 
-> diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
-> index 42825e8ad2ad..864d80f14421 100644
-> --- a/sound/soc/amd/Kconfig
-> +++ b/sound/soc/amd/Kconfig
-> @@ -67,3 +67,10 @@ config SND_SOC_AMD_ACP6x
->   	depends on X86 && PCI
->   	help
->   	 This option enables ACP v6.x DMIC support on AMD platform
-> +
+--Sig_/pOLmHrhGHLl/RkxFoz=p9Vr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-For the help text above here and the one below:
+Hi Christoph,
 
-a. End the sentence with a period ('.').
+On Mon, 11 Oct 2021 08:39:56 +0100 Christoph Hellwig <hch@infradead.org> wr=
+ote:
+>
+> On Sat, Oct 09, 2021 at 04:08:46PM +1100, Stephen Rothwell wrote:
+> > Hi Konrad,
+> >=20
+> > On Fri, 8 Oct 2021 15:16:44 -0400 Konrad Rzeszutek Wilk <konrad.wilk@or=
+acle.com> wrote: =20
+> > >=20
+> > > Yes please go ahead and drop the swiotlb.git tree from your excellent
+> > > system. =20
+> >=20
+> > Done. =20
+>=20
+> Thanks.  swiotlb will now be covered by the existing dma-mapping tree.
 
-b. Pay attention to the documented/accepted kernel style:
+OK, thanks.
 
-(from Documentation/process/coding-style.rst, section 10):
+--=20
+Cheers,
+Stephen Rothwell
 
-For all of the Kconfig* configuration files throughout the source tree,
-the indentation is somewhat different.  Lines under a ``config`` definition
-are indented with one tab, while help text is indented an additional two
-spaces.
+--Sig_/pOLmHrhGHLl/RkxFoz=p9Vr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-> +config SND_SOC_AMD_YC_MACH
-> +        tristate "AMD YC support for DMIC"
-> +        select SND_SOC_DMIC
-> +        depends on SND_SOC_AMD_ACP6x
-> +        help
-> +         This option enables machine driver for DMIC endpoint
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmFj7f0ACgkQAVBC80lX
+0GyZEAf8DaZkl8x50McLIAQoFX+HqZ/OnY/CYl13sldIZw2pFiL9XN/YjuHgNw3L
+A1ob201smq4nPNzsU006Td9OLiWf6uCfs7HUBOKeEB90HeLVKH4rpiu4aW+SoK+s
+ENvFR/d7HNIHHIBU3IRe6QJ40PzfhhpZg0mP+EgEBFPOjPTdll74Pe1kk1D+huVF
++TPpc3Q7NbPxcBnr7XXtbtfaLeyQTvmki9a7lXzUBjx8prZdvbrkyEWtzzX9cg7W
+ivoMdPwOoJf3eV1E3GugGHBJAqwFYKFmW4xF3OExbPIJitUyYFMJR5yPyii+tBN0
+UtLUQ+j/Be7eBfJRU6LGr3LoWvJwCA==
+=jV7U
+-----END PGP SIGNATURE-----
 
-thanks.
--- 
-~Randy
+--Sig_/pOLmHrhGHLl/RkxFoz=p9Vr--
