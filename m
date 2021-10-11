@@ -2,191 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CF48428C78
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B09B428C7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 14:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236118AbhJKMB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 08:01:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26590 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236045AbhJKMB5 (ORCPT
+        id S236164AbhJKMCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 08:02:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9358 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236045AbhJKMCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 08:01:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633953597;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hwUIXMwF5ZMBaAs7PCxNKL8UZk5q2glV6KYJyh2b2Q4=;
-        b=WSQukelTmKdtW4e8dVO4rBrkyOGQWO3Gk+teXh23DW3jHemasuuFgdsZGRzmnKMlB+tKvZ
-        vIUXknHm9VJCeQGRpSvZnkXsbOff7IeVJrUgNcShJr14aEViJUj/UIMQpwM7XMpVnqsU0r
-        mcEmWebzHmzFNsBkH6NmZWH4sqxwlok=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-228-fNAxKb3dNgqjiE6dIgpKfg-1; Mon, 11 Oct 2021 07:59:25 -0400
-X-MC-Unique: fNAxKb3dNgqjiE6dIgpKfg-1
-Received: by mail-ed1-f72.google.com with SMTP id p13-20020a056402044d00b003db3256e4f2so15751270edw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:59:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hwUIXMwF5ZMBaAs7PCxNKL8UZk5q2glV6KYJyh2b2Q4=;
-        b=KdvHQtLIekqTvpAUkRMOHPJvJelGGvp62Ya5ji/Lq7m5X9g6AtTiNAdW/XG0z/YHrS
-         JDI2PtTEXhpmP5yQpMkYnyz12ixRMsBDeyi2JU+udzjmD8Z+MXUwQFrJnnem2d/5nMhK
-         hooGv9yssnva3iEEAnovbH/GLrLDvCWM1wBPpGvvOwNDd4nWGUw/mGh5StZNcBpqBpMd
-         SXlAumHDTIfGXilBP235LAZUQdyW2EebNPvDW0ld2+dcEq7zyVjDRm8lFHvkSXFxcjLz
-         yTdnAfh7WwiVOd9168Xbo3abK4h7TEozp5QofKf/hQR5n8D7JzJt5Vvb6/HJZCgF9pPS
-         v4GA==
-X-Gm-Message-State: AOAM530mlEENmlnShCevx7cf2bUyFlWq21kcLd/OIegKCuDhff4lzDLm
-        Vin/GuWv24K7IKjSMRuvaHRJwyjqyKs+AaL0zFT46PR7sp23Q1xNNYplv6eI+vFWdEJ3b6e/Jil
-        nLJlu21aVYSdfB/CyO5QTRQB0
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr1207523edz.139.1633953564689;
-        Mon, 11 Oct 2021 04:59:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxe9IbZEyN/NuCWBVGBR/HLcEv3Q4Zpk3pvSHKKh7mzddFCxZ4eLiFif7F1M5YGcdkOoPRk/g==
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr1207493edz.139.1633953564478;
-        Mon, 11 Oct 2021 04:59:24 -0700 (PDT)
-Received: from redhat.com ([2.55.159.57])
-        by smtp.gmail.com with ESMTPSA id lb12sm3498129ejc.28.2021.10.11.04.59.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 04:59:23 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 07:59:17 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Message-ID: <20211011073614-mutt-send-email-mst@kernel.org>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
+        Mon, 11 Oct 2021 08:02:31 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19BBaqMH025554;
+        Mon, 11 Oct 2021 08:00:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=qaCzsk2X6BjoPuaJEXDI1G2yrzJ+5MzB9x07BE2rhaE=;
+ b=sGdMlAoxTyJ1bwobu5NSq9pnNgqtKmDZiXmAKgsGgmZVoUz4mJHaEP+gW9fYkn+4qxC/
+ GfD0Iajj1+HjaWhMI8mu5NOshHadEOtwciY/uOCcl4wZMvH3ADvyvikXon4AGtDny/PR
+ 15AJ8uCVsq1OzSnfseEhnpxZFLk8c/4VpIyjBozYVz5XENzsGlnogNYvmWnZCV5fxIM+
+ gr3C9OMhUAYqHvxC1WuLEsPPP1Z/2VZr7byqIiye9AQZLPL7fWcbMTuFtPP9YSvOGI4B
+ J7tCqhWX84i+gSLcizKTbNYRChpP4uX10I8V4lH+wVwh/I4YZ3XgQHKww6PZl81rHdXs 8g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmka4j0fu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 08:00:30 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19BBdPid000905;
+        Mon, 11 Oct 2021 08:00:30 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3bmka4j0ec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 08:00:29 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19BBvJcs032622;
+        Mon, 11 Oct 2021 12:00:27 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bk2q95ct7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Oct 2021 12:00:27 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19BC0JCQ40763670
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Oct 2021 12:00:19 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2A674AE085;
+        Mon, 11 Oct 2021 12:00:19 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0F7E3AE06A;
+        Mon, 11 Oct 2021 12:00:16 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Oct 2021 12:00:15 +0000 (GMT)
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Vineeth Vijayan <vneethv@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Michael Mueller <mimu@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, bfu@redhat.com
+Subject: [RFC PATCH 1/1]  s390/cio: make ccw_device_dma_* more robust
+Date:   Mon, 11 Oct 2021 13:59:55 +0200
+Message-Id: <20211011115955.2504529-1-pasic@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: iDSaTA3xPLiDeK4GyH0kCZQ9ho-YUcyM
+X-Proofpoint-GUID: dZkFaLNA89pbATjXi9ySpdiXFTiMcOH1
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-10-11_04,2021-10-07_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ mlxscore=0 lowpriorityscore=0 priorityscore=1501 bulkscore=0 adultscore=0
+ phishscore=0 suspectscore=0 spamscore=0 mlxlogscore=832 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2110110066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 03:22:39PM -0700, Andi Kleen wrote:
-> 
-> > To which Andi replied
-> > 	One problem with removing the ioremap opt-in is that
-> > 	it's still possible for drivers to get at devices without going through probe.
-> > 
-> > To which Greg replied:
-> > https://lore.kernel.org/all/YVXBNJ431YIWwZdQ@kroah.com/
-> > 	If there are in-kernel PCI drivers that do not do this, they need to be
-> > 	fixed today.
-> > 
-> > Can you guys resolve the differences here?
-> 
-> 
-> I addressed this in my other mail, but we may need more discussion.
+Since commit 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+classic notifiers") we were supposed to make sure that
+virtio_ccw_release_dev() completes before the ccw device and the
+attached dma pool are torn down, but unfortunately we did not.  Before
+that commit it used to be OK to delay cleaning up the memory allocated
+by virtio-ccw indefinitely (which isn't really intuitive for guys used
+to destruction happens in reverse construction order), but now we
+trigger a BUG_ON if the genpool is destroyed before all memory allocated
+form it. Which brings down the guest. We can observe this problem, when
+unregister_virtio_device() does not give up the last reference to the
+virtio_device (e.g. because a virtio-scsi attached scsi disk got removed
+without previously unmounting its previously mounted  partition).
 
-Hopefully Greg will reply to that one.
+To make sure that the genpool is only destroyed after all the necessary
+freeing is done let us take a reference on the ccw device on each
+ccw_device_dma_zalloc() and give it up on each ccw_device_dma_free().
 
-> 
-> > 
-> > And once they are resolved, mention this in the commit log so
-> > I don't get to re-read the series just to find out nothing
-> > changed in this respect?
-> > 
-> > I frankly do not believe we are anywhere near being able to harden
-> > an arbitrary kernel config against attack.
-> 
-> Why not? Device filter and the opt-ins together are a fairly strong
-> mechanism.
+Actually there are multiple approaches to fixing the problem at hand
+that can work. The upside of this one is that it is the safest one while
+remaining simple. We don't crash the guest even if the driver does not
+pair allocations and frees. The downside is the reference counting
+overhead, that the reference counting for ccw devices becomes more
+complex, in a sense that we need to pair the calls to the aforementioned
+functions for it to be correct, and that if we happen to leak, we leak
+more than necessary (the whole ccw device instead of just the genpool).
 
-Because it does not end with I/O operations, that's a trivial example.
-module unloading is famous for being racy: I just re-read that part of
-virtio drivers and sure enough we have bugs there, this is after
-they have presumably been audited, so a TDX guest is better off
-just disabling hot-unplug completely, and hotplug isn't far behind.
-Malicious filesystems can exploit many linux systems unless
-you take pains to limit what is mounted and how.
-Networking devices tend to get into the default namespaces and can
-do more or less whatever CAP_NET_ADMIN can.
-Etc.
-I am not saying this makes the effort worthless, I am saying userspace
-better know very well what it's doing, and kernel better be
-configured in a very specific way.
+Some alternatives to this approach are taking a reference in
+virtio_ccw_online() and giving it up in virtio_ccw_release_dev() or
+making sure virtio_ccw_release_dev() completes its work before
+virtio_ccw_remove() returns. The downside of these approaches is that
+these are less safe against programming errors.
 
-> And it's not that they're a lot of code or super complicated either.
-> 
-> You're essentially objecting to a single line change in your subsystem here.
+Cc: <stable@vger.kernel.org> # v5.3
+Signed-off-by: Halil Pasic <pasic@linux.ibm.com>
+Fixes: 48720ba56891 ("virtio/s390: use DMA memory for ccw I/O and
+classic notifiers")
+Reported-by: bfu@redhat.com
 
-Well I commented on the API patch, not the virtio patch.
-If it's a way for a driver to say "I am hardened
-and audited" then I guess it should at least say so. It has nothing
-to do with host or sharing, that's an implementation detail,
-and it obscures the actual limitations of the approach,
-in that eventually in an ideal world all drivers would be secure
-and use this API.
+---
 
-Yes, if that's the API that PCI gains then virtio will use it.
+FYI I've proposed a different fix to this very same problem:
+https://lore.kernel.org/lkml/20210915215742.1793314-1-pasic@linux.ibm.com/
 
+This patch is more or less a result of that discussion.
+---
+ drivers/s390/cio/device_ops.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-> > How about creating a defconfig that makes sense for TDX then?
-> 
-> TDX can be used in many different ways, I don't think a defconfig is
-> practical.
-> 
-> In theory you could do some Kconfig dependency (at the pain point of having
-> separate kernel binariees), but why not just do it at run time then if you
-> maintain the list anyways. That's much easier and saner for everyone. In the
-> past we usually always ended up with runtime mechanism for similar things
-> anyways.
-> 
-> Also it turns out that the filter mechanisms are needed for some arch
-> drivers which are not even configurable, so alone it's probably not enough,
+diff --git a/drivers/s390/cio/device_ops.c b/drivers/s390/cio/device_ops.c
+index 0fe7b2f2e7f5..c533d1dadc6b 100644
+--- a/drivers/s390/cio/device_ops.c
++++ b/drivers/s390/cio/device_ops.c
+@@ -825,13 +825,23 @@ EXPORT_SYMBOL_GPL(ccw_device_get_chid);
+  */
+ void *ccw_device_dma_zalloc(struct ccw_device *cdev, size_t size)
+ {
+-	return cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	void *addr;
++
++	if (!get_device(&cdev->dev))
++		return NULL;
++	addr = cio_gp_dma_zalloc(cdev->private->dma_pool, &cdev->dev, size);
++	if (IS_ERR_OR_NULL(addr))
++		put_device(&cdev->dev);
++	return addr;
+ }
+ EXPORT_SYMBOL(ccw_device_dma_zalloc);
+ 
+ void ccw_device_dma_free(struct ccw_device *cdev, void *cpu_addr, size_t size)
+ {
++	if (!cpu_addr)
++		return;
+ 	cio_gp_dma_free(cdev->private->dma_pool, cpu_addr, size);
++	put_device(&cdev->dev);
+ }
+ EXPORT_SYMBOL(ccw_device_dma_free);
+ 
 
-
-I guess they aren't really needed though right, or you won't try to
-filter them? So make them configurable?
-
-> 
-> > Anyone deviating from that better know what they are doing,
-> > this API tweaking is just putting policy into the kernel  ...
-> 
-> Hardening drivers is kernel policy. It cannot be done anywhere else.
-> 
-> 
-> -Andi
-
-To clarify, the policy is which drivers to load into the kernel.
-
+base-commit: 64570fbc14f8d7cb3fe3995f20e26bc25ce4b2cc
 -- 
-MST
+2.25.1
 
