@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A337429174
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7AF429154
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239098AbhJKOS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:18:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33640 "EHLO mail.kernel.org"
+        id S243607AbhJKOR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243754AbhJKONW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:13:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 062D061283;
-        Mon, 11 Oct 2021 14:04:11 +0000 (UTC)
+        id S237280AbhJKOO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:14:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B01C61353;
+        Mon, 11 Oct 2021 14:04:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961052;
-        bh=FCNaVITC6lixF0J3EY+udkvO9AKpYGJwewhfAxiyay0=;
+        s=korg; t=1633961100;
+        bh=k50ZKT8agpX/HBWINfIl13FTeAPQEn1UItCaWf+ONEs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mOCGRztbt/CAK/VJXNfCm6JNSbDNgXw+PAaEPSul1AuyZRDMn1qOl02cL7OAnVUir
-         cBe72iNOTjCFzkdIzdew5HNS4Zap/MpMM70mkXEYG4FijtAyGh4xm69FEr0EQOLd+9
-         L8CsFku6L4kVyxNRNVV+Jwa6FPAqlZR9bZNTWrHs=
+        b=GtThsGzaRrE20j6QXQHd31dlEnDQ4UF4DVt+dOxeCuglfXqH1GBC4rlLeAQ83enet
+         UveCS4EXV/YntiJMSpPISmZnHEV4ZOVDIxqKPEOCJ/JIlJHeDXWI0u3PestpY9GvJt
+         8H95U8q8BTe0tUzoD/D3c9IFu8hgpB0b95eUN04E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.14 145/151] x86/Kconfig: Correct reference to MWINCHIP3D
-Date:   Mon, 11 Oct 2021 15:46:57 +0200
-Message-Id: <20211011134522.499564676@linuxfoundation.org>
+        stable@vger.kernel.org, Roger Quadros <rogerq@kernel.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [PATCH 4.19 08/28] ARM: dts: omap3430-sdp: Fix NAND device node
+Date:   Mon, 11 Oct 2021 15:46:58 +0200
+Message-Id: <20211011134640.978241558@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-References: <20211011134517.833565002@linuxfoundation.org>
+In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
+References: <20211011134640.711218469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Roger Quadros <rogerq@kernel.org>
 
-commit 225bac2dc5d192e55f2c50123ee539b1edf8a411 upstream.
+commit 80d680fdccba214e8106dc1aa33de5207ad75394 upstream.
 
-Commit in Fixes intended to exclude the Winchip series and referred to
-CONFIG_WINCHIP3D, but the config symbol is called CONFIG_MWINCHIP3D.
+Nand is on CS1 so reg properties first field should be 1 not 0.
 
-Hence, scripts/checkkconfigsymbols.py warns:
-
-WINCHIP3D
-Referencing files: arch/x86/Kconfig
-
-Correct the reference to the intended config symbol.
-
-Fixes: 69b8d3fcabdc ("x86/Kconfig: Exclude i586-class CPUs lacking PAE support from the HIGHMEM64G Kconfig group")
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210803113531.30720-4-lukas.bulwahn@gmail.com
+Fixes: 44e4716499b8 ("ARM: dts: omap3: Fix NAND device nodes")
+Cc: stable@vger.kernel.org # v4.6+
+Signed-off-by: Roger Quadros <rogerq@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/Kconfig |    2 +-
+ arch/arm/boot/dts/omap3430-sdp.dts |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1400,7 +1400,7 @@ config HIGHMEM4G
+--- a/arch/arm/boot/dts/omap3430-sdp.dts
++++ b/arch/arm/boot/dts/omap3430-sdp.dts
+@@ -104,7 +104,7 @@
  
- config HIGHMEM64G
- 	bool "64GB"
--	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !WINCHIP3D && !MK6
-+	depends on !M486SX && !M486 && !M586 && !M586TSC && !M586MMX && !MGEODE_LX && !MGEODEGX1 && !MCYRIXIII && !MELAN && !MWINCHIPC6 && !MWINCHIP3D && !MK6
- 	select X86_PAE
- 	help
- 	  Select this if you have a 32-bit processor and more than 4
+ 	nand@1,0 {
+ 		compatible = "ti,omap2-nand";
+-		reg = <0 0 4>; /* CS0, offset 0, IO size 4 */
++		reg = <1 0 4>; /* CS1, offset 0, IO size 4 */
+ 		interrupt-parent = <&gpmc>;
+ 		interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
+ 			     <1 IRQ_TYPE_NONE>;	/* termcount */
 
 
