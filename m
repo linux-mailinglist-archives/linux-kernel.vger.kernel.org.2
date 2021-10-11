@@ -2,188 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480594295A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DE84295AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhJKReP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhJKReO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:34:14 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5C9C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so366881pjq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=+KsewVMapVnqjNR+FmWVZGUP3TdIM7SDkQ2+XhYe4P0=;
-        b=UdH2GouGVsj4bLMhrkV4J4QokQTPkRsVIj19Ny4XVx5bodcgh8ZSUzu8c0KocL8s/z
-         tEZLlcRNQgJj2t3GIV3zPoylE+xwzCXv3CdCXFotgBZY95lglheHFq+LZjY7/Kp7Sd8Y
-         lR/oOSyxVNKCsPjZF5Wwh0q5B+lsGe7yargrOsx23cf1oEx2Zzzt6HYkIkwUOPTAzuJX
-         veyXzCdD4YiJYpTpihXFKv3a4y9ScuPzfWfbwT2VP0NOb+pt9SJqqPLdaqJmicqP7aoc
-         a7ytL28igF/w3rIaJ+WnXSGqZa8pXdQw4QtFDvjJyJ6Xgl9tnoGTz7tNUfBmYzWXcA8u
-         qi3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=+KsewVMapVnqjNR+FmWVZGUP3TdIM7SDkQ2+XhYe4P0=;
-        b=7z6d1TwTyituE1z70Nuue1OkXyIhBadLfeeUhWsGAyprKcF6cZzl6WQsdZeYanJUtK
-         kPVDOtDqUQw8tnUV3RlF1+ts3etaymUm6WlypQQzENGbTMPuo7S+gX3hiqL5SiUS/AJM
-         1F43h7c0ZIHWU+efdvO/LDk4cOHtFutEF3zQ8Cufisnhnx3kAQltG7GNZCM13UPj5XcT
-         FwOTmuFK3wWebVlWJVnJRFtwGMFoJhKEDnpLxvbWfni/DoKpRHoL9cJtkBNRc0qHWCqN
-         3dyW9wc/UoZMsf7Ay/fiXWW4xZLcEKSPIS+SLEMaIXP/+ZDSbGvUUa90YTp+LtjOAwEa
-         +s9Q==
-X-Gm-Message-State: AOAM531TWFdoJzQhGuSxgbdQvt+FJSL5jXwfOIuAHf9rszFIx+Spsq4D
-        hJspfy0mWXHPTFrbSCCLHn17J1T33m4e8Q==
-X-Google-Smtp-Source: ABdhPJzMR1EoMqDfqoj1liajzybAJpHD3VNqw4qjhDRh4KQFXVfPn/a24QObYlSqmZyCZvdjl6/JSA==
-X-Received: by 2002:a17:902:760b:b0:13b:122:5ff0 with SMTP id k11-20020a170902760b00b0013b01225ff0mr25756599pll.22.1633973533266;
-        Mon, 11 Oct 2021 10:32:13 -0700 (PDT)
-Received: from [192.168.1.14] ([223.230.99.151])
-        by smtp.gmail.com with ESMTPSA id e12sm9153728pgv.82.2021.10.11.10.32.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 10:32:12 -0700 (PDT)
-Message-ID: <71f1c0bc-08d1-7b0f-8000-e23a9bd88ba9@gmail.com>
-Date:   Mon, 11 Oct 2021 23:02:08 +0530
+        id S231858AbhJKRe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:34:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:18841 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhJKReZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:34:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10134"; a="226828714"
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="226828714"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:32:24 -0700
+X-IronPort-AV: E=Sophos;i="5.85,365,1624345200"; 
+   d="scan'208";a="440884638"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.255.229.69]) ([10.255.229.69])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 10:32:23 -0700
+Message-ID: <78766e28-8353-acc8-19e2-033d4bbf3472@linux.intel.com>
+Date:   Mon, 11 Oct 2021 10:32:23 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.0
-Subject: Re: [PATCH v2] staging: rtl8723bs: os_dep: simplify the return
- statement.
-Content-Language: en-GB
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, marcocesati@gmail.com,
-        insafonov@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YWJ0vSrgsiKK7suE@user> <2482197.HNbSr4JpUv@localhost.localdomain>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-In-Reply-To: <2482197.HNbSr4JpUv@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
+ pci_iomap_host_shared_range()
+Content-Language: en-US
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org>
+ <cec62ebb-87d7-d725-1096-2c97c5eedbc3@linux.intel.com>
+ <20211011073614-mutt-send-email-mst@kernel.org>
+From:   Andi Kleen <ak@linux.intel.com>
+In-Reply-To: <20211011073614-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> Because it does not end with I/O operations, that's a trivial example.
+> module unloading is famous for being racy: I just re-read that part of
+> virtio drivers and sure enough we have bugs there, this is after
+> they have presumably been audited, so a TDX guest is better off
+> just disabling hot-unplug completely, and hotplug isn't far behind.
 
-On 11/10/21 2:24 pm, Fabio M. De Francesco wrote:
-> On Sunday, October 10, 2021 7:06:05 AM CEST Saurav Girepunje wrote:
->> Remove the unneeded and redundant check of variable on goto out.
->> Simplify the return using multiple goto label to avoid
->> unneeded check.
+These all shouldn't matter for a confidential guest. The only way it can 
+be attacked is through IO, everything else is protected by hardware.
+
+
+Also it would all require doing something at the guest level, which we 
+assume is not malicious.
+
+
+> Malicious filesystems can exploit many linux systems unless
+> you take pains to limit what is mounted and how.
+
+That's expected to be handled by authenticated dmcrypt and similar. 
+Hardening at this level has been done for many years.
+
+
+> Networking devices tend to get into the default namespaces and can
+> do more or less whatever CAP_NET_ADMIN can.
+> Etc.
+
+
+Networking should be already hardened, otherwise you would have much 
+worse problems today.
+
+
+
+> hange in your subsystem here.
+> Well I commented on the API patch, not the virtio patch.
+> If it's a way for a driver to say "I am hardened
+> and audited" then I guess it should at least say so.
+
+
+This is handled by the central allow list. We intentionally didn't want 
+each driver to declare itself, but have a central list where changes 
+will get more scrutiny than random driver code.
+
+But then there are the additional opt-ins for the low level firewall. 
+These are in the API. I don't see how it could be done at the driver 
+level, unless you want to pass in a struct device everywhere?
+
+>>> How about creating a defconfig that makes sense for TDX then?
+>> TDX can be used in many different ways, I don't think a defconfig is
+>> practical.
 >>
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
+>> In theory you could do some Kconfig dependency (at the pain point of having
+>> separate kernel binariees), but why not just do it at run time then if you
+>> maintain the list anyways. That's much easier and saner for everyone. In the
+>> past we usually always ended up with runtime mechanism for similar things
+>> anyways.
 >>
->> ChangeLog V2:
->> 	-Add goto out after the memcpy for no error case return with
->> 	 ret only. Free is not required on no error case.
-> 
-> Please write versions logs that reflect clearly and unequivocally what you 
-> changed between revisions and why. Subjects, Commit messages (Changelogs), 
-> and Versions logs are the "specifics" of your work. There must be no 
-> inconsistencies between these and the code or the history of the changes of 
-> the code.
-> 
-> You may think that I'm pedantic, but since I acked your patch, I don't want 
-> to be misunderstood to be a promoter of approximate or clearly incorrect 
-> messages> "Free is not required on no error case" conveys the message that you have 
-> changed something that is not required but that is still potentially allowed.
-> 
-> This is not the case because the problem that you fix with v2 is _not_ 
-> something that is merely not required and unnecessary. You have fixed a bug 
-> that is introduced in v1. Introducing bugs is not allowed. If you do 
-> something that is not allowed you cannot simply say that it is not required. 
-> 
-My intension was to mention changes done on V2 with respect to V1. 
-I will try to be more clear on changelog messages. 
->>
->> ChangeLog V1:
->> 	-Remove the unneeded and redundant check of variable on
->> 	 goto out.
->> 	-Simplify the return using multiple goto label to avoid
->> 	 unneeded check.
->>
->>  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 22 +++++++++----------
->>  1 file changed, 10 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/
-> staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> index 0868f56e2979..ae9579dc0848 100644
->> --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
->> @@ -2312,7 +2312,7 @@ static int rtw_cfg80211_add_monitor_if(struct adapter 
-> *padapter, char *name, str
->>  	mon_wdev = rtw_zmalloc(sizeof(struct wireless_dev));
->>  	if (!mon_wdev) {
->>  		ret = -ENOMEM;
->> -		goto out;
->> +		goto err_zmalloc;
->>  	}
->>
->>  	mon_wdev->wiphy = padapter->rtw_wdev->wiphy;
->> @@ -2322,23 +2322,21 @@ static int rtw_cfg80211_add_monitor_if(struct 
-> adapter *padapter, char *name, str
->>
->>  	ret = cfg80211_register_netdevice(mon_ndev);
->>  	if (ret) {
->> -		goto out;
->> +		goto err_register;
->>  	}
->>
->>  	*ndev = pwdev_priv->pmon_ndev = mon_ndev;
->>  	memcpy(pwdev_priv->ifname_mon, name, IFNAMSIZ+1);
->> +	goto out;
->>
->> -out:
->> -	if (ret && mon_wdev) {
->> -		kfree(mon_wdev);
->> -		mon_wdev = NULL;
->> -	}
->> -
->> -	if (ret && mon_ndev) {
->> -		free_netdev(mon_ndev);
->> -		*ndev = mon_ndev = NULL;
->> -	}
->> +err_register:
->> +	kfree(mon_wdev);
->> +	mon_wdev = NULL;
-> 
-> Probably you have already read a message by Greg Kroah-Hartman that confirms 
-> what I wrote in another message: "There is no need to set a local variable 
-> like this to NULL.".
-> 
-Yes, Agree this is another improvement possible on this function.
-> So please submit a v3. With the two changes requested above, my "acked-by" 
-> tag is confirmed again.
-> 
-> Thanks,
-> 
-> Fabio
+>> Also it turns out that the filter mechanisms are needed for some arch
+>> drivers which are not even configurable, so alone it's probably not enough,
 >
-I will submit a v3.
->>
->> +err_zmalloc:
->> +	free_netdev(mon_ndev);
->> +	*ndev = mon_ndev = NULL;
->> +out:
->>  	return ret;
->>  }
->>
->> --
->> 2.32.0
->>
->>
->>
-> 
-> 
-> 
-> 
+> I guess they aren't really needed though right, or you won't try to
+> filter them?
+
+We're addressing most of them with the device filter for platform 
+drivers. But since we cannot stop them doing ioremap IO in their init 
+code they also need the low level firewall.
+
+Some others that cannot be addressed have explicit disables.
+
+
+> So make them configurable?
+
+Why not just fix the runtime? It's much saner for everyone. Proposing to 
+do things at build time sounds like we're in Linux 0.99 days.
+
+-Andi
+
