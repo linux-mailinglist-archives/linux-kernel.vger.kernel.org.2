@@ -2,233 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB0614295E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F7F4295E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhJKRk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:40:29 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:34779 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbhJKRk0 (ORCPT
+        id S233586AbhJKRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233497AbhJKRlA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:40:26 -0400
-Received: by mail-il1-f199.google.com with SMTP id b4-20020a056e02048400b0025932d71f2fso2877764ils.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:38:25 -0700 (PDT)
+        Mon, 11 Oct 2021 13:41:00 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C965C06161C;
+        Mon, 11 Oct 2021 10:39:00 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id k23-20020a17090a591700b001976d2db364so515824pji.2;
+        Mon, 11 Oct 2021 10:39:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=uG5YGH1HQhNqI6Rs9B6rHyRWKh0Ji0hRKGqWlkWjVmw=;
+        b=ZTMkXOs4RrOGSszqIfzgTMk40on6vGxBESpWNkSlxPsTuOrMYLrvfRIOBcjzBYwjBF
+         aEWCeQto/K909hUQpon72h6xYWPfgfQnh8n738ZsmlTUjbVGzakQkeevSVhF/zWXEDQY
+         Daw/NL19GwHuG5WCyhdmciQcFgh7ldoE/QHbDRP9mC5l5Cb6LnQI9fAcDrlJri5664CC
+         s/PqtGapp06/k2acCLHkBF/k02bb+uWDc9S9o1pWMlSbOZkXWWdZ4A21Lyz6cxXUbIeo
+         NCGxaPdtidgdRPEL4rm5ZtbD2TdiBi73ulmPim/QXXhqKaYtMU2skRz9S9HcEKQVCcl3
+         0oBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ACc/28EaszY0SCGtGrjPQhT4Qy68dCsQ1xhYur0CyIo=;
-        b=XVgxrAztewaqsl1gVtDpXivWXuPuYxBkT8LYn8/AQ6Ywu6xsRTv5bChvBENL5xcKDW
-         VljiGaag3PmD9+wLbwSdqqOuvEyl4q+7C0BFyfrL4rONlj4OrEhcw7XaprUae6sAjllR
-         byADGzO15CyouHCskNfET3l9hjb0WaQXKcIAnwHsuWna/JOLM27khu44ZDZb6CEcnRrq
-         FB8UE6sPoHs52e7hqkKjB9fFatZ6KiZRnBoTvqe0kZq0qX4Z53Uxjoe/c/LFYesR6fX+
-         rbIgkNaTR8ktElyFwWCgOR5FZzhBZSFGkmB6aYMoOf363rWRIg2MO/gC+VPt7Y1Ut7R0
-         S+vA==
-X-Gm-Message-State: AOAM53038yg7CMBhOHSSoV0uUe5BQ/u21bveQpqyPp0MjGtP/MU+3PCi
-        p47Ng6UICroJJWn8o0Msk3ZEyL9cRXa/goQasnZtXHAbVOTq
-X-Google-Smtp-Source: ABdhPJwhAWCGcxnvgQTGii8bwHa9Jzs6MZfJTj020URKGckFy0XzsN74czfm2ltbfaf0/41S9OaYg2Dls9e/94J6DXwtBu6uPavJ
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=uG5YGH1HQhNqI6Rs9B6rHyRWKh0Ji0hRKGqWlkWjVmw=;
+        b=4J7alUrSGVBQpXodD4mw8nLoOFhv7fcmhqKeLOD9hxIUn651PTz2A8sEJOSP89BdzR
+         C3HHTakV+LdQour6ZR+UMGUFha2aMgeLBwgvPIN30M1E5M/g3xAt7IZmHcddVn/w5BHm
+         Ri9LGW5VZyr9C1R3/R19XR4dA5LT5gqm+0HKz0vYBuGZX9cWT4K8jQ/UWwpzoJRFXU7s
+         6EN/1H1pnlb6yLNz5ViA2Uydc8yKQ0dKuCPfcFmp0RQM6WdfcO3Mnr8aWyu16H7s4wec
+         od4aX4rdskaJQM2/c9LrsIhSxfFmUg9ay3Lg3aUeRUe1Wxuqsu0Ry0Z0PL0g5CBP7hpf
+         xhCA==
+X-Gm-Message-State: AOAM532GVTsjNNUy+DUBhxdyYm5i/EjnOPAwjenLUbaaD96leR6ToKW9
+        fDp+8vXA8j0Xdct2MboZEg/APDSfJQgZTSPW
+X-Google-Smtp-Source: ABdhPJxKbI/iqEe2pHkz+/Uc7eaiYQWFEaZEu4mQ1/aniGv566n8kDeeJO20tnAmbtimzV8JFOvZRA==
+X-Received: by 2002:a17:90a:190:: with SMTP id 16mr379232pjc.152.1633973939735;
+        Mon, 11 Oct 2021 10:38:59 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
+        by smtp.gmail.com with ESMTPSA id b23sm8804907pgn.83.2021.10.11.10.38.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:38:59 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 02/22] PCI: Unify PCI error response checking
+Date:   Mon, 11 Oct 2021 23:08:32 +0530
+Message-Id: <c632b07eb1b08cc7d4346455a55641436a379abd.1633972263.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2dc8:: with SMTP id l8mr11419072iow.151.1633973905607;
- Mon, 11 Oct 2021 10:38:25 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 10:38:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000374f8905ce173204@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in vlan_dev_real_dev (2)
-From:   syzbot <syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com>
-To:     alobakin@pm.me, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the
+CPU read, so most hardware fabricates ~0 data.
 
-syzbot found the following issue on:
+Use SET_PCI_ERROR_RESPONSE() to set the error response and
+RESPONSE_IS_PCI_ERROR() to check the error response during hardware
+read.
 
-HEAD commit:    732b74d64704 virtio-net: fix for skb_over_panic inside big..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1751d798b00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e2ffb281e6323643
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4df4e1389e28972e955
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=103828fb300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14613277300000
+These definitions make error checks consistent and easier to find.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in is_vlan_dev include/linux/if_vlan.h:74 [inline]
-BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120 net/8021q/vlan_core.c:106
-Read of size 4 at addr ffff8880781120c4 by task kworker/u4:1/10
-
-CPU: 1 PID: 10 Comm: kworker/u4:1 Not tainted 5.15.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: gid-cache-wq netdevice_event_work_handler
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- is_vlan_dev include/linux/if_vlan.h:74 [inline]
- vlan_dev_real_dev+0xf9/0x120 net/8021q/vlan_core.c:106
- rdma_vlan_dev_real_dev include/rdma/ib_addr.h:267 [inline]
- is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0 drivers/infiniband/core/roce_gid_mgmt.c:157
- is_eth_port_of_netdev_filter+0x28/0x40 drivers/infiniband/core/roce_gid_mgmt.c:153
- ib_enum_roce_netdev+0x177/0x2f0 drivers/infiniband/core/device.c:2302
- ib_enum_all_roce_netdevs+0xbd/0x130 drivers/infiniband/core/device.c:2331
- netdevice_event_work_handler+0x9c/0x230 drivers/infiniband/core/roce_gid_mgmt.c:627
- process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Allocated by task 6877:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
- kmalloc_node include/linux/slab.h:614 [inline]
- kvmalloc_node+0x61/0x120 mm/util.c:587
- kvmalloc include/linux/mm.h:805 [inline]
- kvzalloc include/linux/mm.h:813 [inline]
- alloc_netdev_mqs+0x98/0xe80 net/core/dev.c:10794
- rtnl_create_link+0x95a/0xb80 net/core/rtnetlink.c:3183
- __rtnl_newlink+0xf73/0x1750 net/core/rtnetlink.c:3448
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3506
- rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5572
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2510
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1935
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 6874:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1700 [inline]
- slab_free_freelist_hook+0x81/0x190 mm/slub.c:1725
- slab_free mm/slub.c:3483 [inline]
- kfree+0xe4/0x530 mm/slub.c:4543
- kvfree+0x42/0x50 mm/util.c:620
- device_release+0x9f/0x240 drivers/base/core.c:2231
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- put_device+0x1b/0x30 drivers/base/core.c:3502
- free_netdev+0x3e0/0x5b0 net/core/dev.c:10934
- ppp_destroy_interface+0x2ab/0x340 drivers/net/ppp/ppp_generic.c:3397
- ppp_release+0x1bf/0x240 drivers/net/ppp/ppp_generic.c:410
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
- exit_to_user_mode_prepare+0x27e/0x290 kernel/entry/common.c:207
- __syscall_exit_to_user_mode_work kernel/entry/common.c:289 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:300
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888078112000
- which belongs to the cache kmalloc-cg-4k of size 4096
-The buggy address is located 196 bytes inside of
- 4096-byte region [ffff888078112000, ffff888078113000)
-The buggy address belongs to the page:
-page:ffffea0001e04400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x78110
-head:ffffea0001e04400 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 0000000000000000 dead000000000122 ffff888010c4c280
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 6880, ts 73160788272, free_ts 73155121785
- prep_new_page mm/page_alloc.c:2424 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4153
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5375
- alloc_pages+0x1a7/0x300 mm/mempolicy.c:2197
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab mm/slub.c:1900 [inline]
- new_slab+0x319/0x490 mm/slub.c:1963
- ___slab_alloc+0x921/0xfe0 mm/slub.c:2994
- __slab_alloc.constprop.0+0x4d/0xa0 mm/slub.c:3081
- slab_alloc_node mm/slub.c:3172 [inline]
- __kmalloc_node+0x2d2/0x370 mm/slub.c:4435
- kmalloc_node include/linux/slab.h:614 [inline]
- kvmalloc_node+0x61/0x120 mm/util.c:587
- kvmalloc include/linux/mm.h:805 [inline]
- seq_buf_alloc fs/seq_file.c:38 [inline]
- seq_read_iter+0x7e7/0x1240 fs/seq_file.c:210
- kernfs_fop_read_iter+0x44f/0x5f0 fs/kernfs/file.c:241
- call_read_iter include/linux/fs.h:2157 [inline]
- new_sync_read+0x421/0x6e0 fs/read_write.c:404
- vfs_read+0x35c/0x600 fs/read_write.c:485
- ksys_read+0x12d/0x250 fs/read_write.c:623
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1338 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1389
- free_unref_page_prepare mm/page_alloc.c:3315 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3394
- __unfreeze_partials+0x340/0x360 mm/slub.c:2495
- qlink_free mm/kasan/quarantine.c:146 [inline]
- qlist_free_all+0x5a/0xc0 mm/kasan/quarantine.c:165
- kasan_quarantine_reduce+0x180/0x200 mm/kasan/quarantine.c:272
- __kasan_slab_alloc+0x95/0xb0 mm/kasan/common.c:444
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:3206 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- kmem_cache_alloc+0x142/0x390 mm/slub.c:3219
- anon_vma_alloc mm/rmap.c:90 [inline]
- anon_vma_fork+0xed/0x630 mm/rmap.c:355
- dup_mmap kernel/fork.c:569 [inline]
- dup_mm+0xa07/0x13e0 kernel/fork.c:1453
- copy_mm kernel/fork.c:1505 [inline]
- copy_process+0x6fcf/0x7580 kernel/fork.c:2194
- kernel_clone+0xe7/0xac0 kernel/fork.c:2584
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2701
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff888078111f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888078112000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888078112080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888078112100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888078112180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/pci/access.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/pci/access.c b/drivers/pci/access.c
+index 46935695cfb9..e1954bbbd137 100644
+--- a/drivers/pci/access.c
++++ b/drivers/pci/access.c
+@@ -81,7 +81,7 @@ int pci_generic_config_read(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, where);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -123,7 +123,7 @@ int pci_generic_config_read32(struct pci_bus *bus, unsigned int devfn,
+ 
+ 	addr = bus->ops->map_bus(bus, devfn, where & ~0x3);
+ 	if (!addr) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 
+@@ -411,10 +411,10 @@ int pcie_capability_read_word(struct pci_dev *dev, int pos, u16 *val)
+ 		ret = pci_read_config_word(dev, pci_pcie_cap(dev) + pos, val);
+ 		/*
+ 		 * Reset *val to 0 if pci_read_config_word() fails, it may
+-		 * have been written as 0xFFFF if hardware error happens
+-		 * during pci_read_config_word().
++		 * have been written as 0xFFFF (PCI_ERROR_RESPONSE) if hardware error
++		 * happens during pci_read_config_word().
+ 		 */
+-		if (ret)
++		if (RESPONSE_IS_PCI_ERROR(val))
+ 			*val = 0;
+ 		return ret;
+ 	}
+@@ -446,10 +446,10 @@ int pcie_capability_read_dword(struct pci_dev *dev, int pos, u32 *val)
+ 		ret = pci_read_config_dword(dev, pci_pcie_cap(dev) + pos, val);
+ 		/*
+ 		 * Reset *val to 0 if pci_read_config_dword() fails, it may
+-		 * have been written as 0xFFFFFFFF if hardware error happens
+-		 * during pci_read_config_dword().
++		 * have been written as 0xFFFFFFFF (PCI_ERROR_RESPONSE) if hardware
++		 * error happens during pci_read_config_dword().
+ 		 */
+-		if (ret)
++		if (RESPONSE_IS_PCI_ERROR(val))
+ 			*val = 0;
+ 		return ret;
+ 	}
+@@ -523,7 +523,7 @@ EXPORT_SYMBOL(pcie_capability_clear_and_set_dword);
+ int pci_read_config_byte(const struct pci_dev *dev, int where, u8 *val)
+ {
+ 	if (pci_dev_is_disconnected(dev)) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 	return pci_bus_read_config_byte(dev->bus, dev->devfn, where, val);
+@@ -533,7 +533,7 @@ EXPORT_SYMBOL(pci_read_config_byte);
+ int pci_read_config_word(const struct pci_dev *dev, int where, u16 *val)
+ {
+ 	if (pci_dev_is_disconnected(dev)) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 	return pci_bus_read_config_word(dev->bus, dev->devfn, where, val);
+@@ -544,7 +544,7 @@ int pci_read_config_dword(const struct pci_dev *dev, int where,
+ 					u32 *val)
+ {
+ 	if (pci_dev_is_disconnected(dev)) {
+-		*val = ~0;
++		SET_PCI_ERROR_RESPONSE(val);
+ 		return PCIBIOS_DEVICE_NOT_FOUND;
+ 	}
+ 	return pci_bus_read_config_dword(dev->bus, dev->devfn, where, val);
+-- 
+2.25.1
+
