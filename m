@@ -2,824 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59381429469
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE3E42953F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231747AbhJKQXo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 12:23:44 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:54801 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231682AbhJKQXn (ORCPT
+        id S233561AbhJKRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:09:03 -0400
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:49781 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232477AbhJKRI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:23:43 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-mW_pcPAjNwacw_KGiCBxGQ-1; Mon, 11 Oct 2021 10:37:30 -0400
-X-MC-Unique: mW_pcPAjNwacw_KGiCBxGQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DCAE138CA90;
-        Mon, 11 Oct 2021 14:37:28 +0000 (UTC)
-Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.22.17.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D6EA819723;
-        Mon, 11 Oct 2021 14:37:20 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, Kate Carcia <kcarcia@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Tom Zanussi <zanussi@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        linux-rt-users@vger.kernel.org, linux-trace-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2 11/19] rtla: Add timerlat tool and timelart top mode
-Date:   Mon, 11 Oct 2021 16:35:59 +0200
-Message-Id: <f8159d596bde9d86aaa560ce64aabe20ac4aa4bd.1633958325.git.bristot@kernel.org>
-In-Reply-To: <cover.1633958325.git.bristot@kernel.org>
-References: <cover.1633958325.git.bristot@kernel.org>
+        Mon, 11 Oct 2021 13:08:59 -0400
+Received: from [77.244.183.192] (port=63592 helo=melee.dev.aim)
+        by hostingweb31.netsons.net with esmtpa (Exim 4.94.2)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1mZxfQ-00DXft-46; Mon, 11 Oct 2021 17:56:44 +0200
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        Chiwoong Byun <woong.byun@samsung.com>,
+        Laxman Dewangan <ldewangan@nvidia.com>
+Subject: [PATCH 6/8] mfd: max77714: Add driver for Maxim MAX77714 PMIC
+Date:   Mon, 11 Oct 2021 17:56:13 +0200
+Message-Id: <20211011155615.257529-7-luca@lucaceresoli.net>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211011155615.257529-1-luca@lucaceresoli.net>
+References: <20211011155615.257529-1-luca@lucaceresoli.net>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bristot@kernel.org
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kernel.org
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rtla timerlat tool is an interface for the timerlat tracer.
-The timerlat tracer dispatches a kernel thread per-cpu. These threads set a
-periodic timer to wake themselves up and go back to sleep. After the wakeup,
-they collect and generate useful information for the debugging of operating
-system timer latency.
+Add a simple driver for the Maxim MAX77714 PMIC, supporting RTC and
+watchdog only.
 
-The timerlat tracer outputs information in two ways. It periodically
-prints the timer latency at the timer IRQ handler and the Thread handler.
-It also provides information for each noise via the osnoise tracepoints.
-
-The rtla timerlat top mode displays a summary of the periodic output from
-the timerlat tracer.
-
-Here is one example of the rtla timerlat tool output:
- ---------- %< ----------
-[root@alien ~]# rtla timerlat top -c 0-3 -d 1m
-                                     Timer Latency
-  0 00:01:00   |          IRQ Timer Latency (us)        |         Thread Timer Latency (us)
-CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max
-  0 #60001     |        0         0         0         3 |        1         1         1         6
-  1 #60001     |        0         0         0         3 |        2         1         1         5
-  2 #60001     |        0         0         1         6 |        1         1         2         7
-  3 #60001     |        0         0         0         7 |        1         1         1        11
- ---------- >% ----------
-
-Running:
-  # rtla timerlat --help
-  # rtla timerlat top --help
-provides information about the available options.
-
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Clark Williams <williams@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Daniel Bristot de Oliveira <bristot@kernel.org>
-Cc: linux-rt-users@vger.kernel.org
-Cc: linux-trace-devel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
+Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
 ---
- tools/tracing/rtla/Makefile           |   2 +
- tools/tracing/rtla/src/rtla.c         |   5 +
- tools/tracing/rtla/src/timerlat.c     |  68 +++
- tools/tracing/rtla/src/timerlat.h     |   2 +
- tools/tracing/rtla/src/timerlat_top.c | 578 ++++++++++++++++++++++++++
- 5 files changed, 655 insertions(+)
- create mode 100644 tools/tracing/rtla/src/timerlat.c
- create mode 100644 tools/tracing/rtla/src/timerlat.h
- create mode 100644 tools/tracing/rtla/src/timerlat_top.c
+ MAINTAINERS                  |   2 +
+ drivers/mfd/Kconfig          |  14 ++++
+ drivers/mfd/Makefile         |   1 +
+ drivers/mfd/max77714.c       | 151 +++++++++++++++++++++++++++++++++++
+ include/linux/mfd/max77714.h |  68 ++++++++++++++++
+ 5 files changed, 236 insertions(+)
+ create mode 100644 drivers/mfd/max77714.c
+ create mode 100644 include/linux/mfd/max77714.h
 
-diff --git a/tools/tracing/rtla/Makefile b/tools/tracing/rtla/Makefile
-index b3ddd5138829..580a33db6645 100644
---- a/tools/tracing/rtla/Makefile
-+++ b/tools/tracing/rtla/Makefile
-@@ -43,6 +43,8 @@ install:
- 	$(INSTALL) rtla -m 755 $(DESTDIR)$(BINDIR)
- 	@test ! -f $(DESTDIR)$(BINDIR)/osnoise || rm $(DESTDIR)$(BINDIR)/osnoise
- 	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/osnoise
-+	@test ! -f $(DESTDIR)$(BINDIR)/timerlat || rm $(DESTDIR)$(BINDIR)/timerlat
-+	ln -s $(DESTDIR)$(BINDIR)/rtla $(DESTDIR)$(BINDIR)/timerlat
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4d0134752537..df394192f14e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11389,6 +11389,8 @@ MAXIM MAX77714 PMIC MFD DRIVER
+ M:	Luca Ceresoli <luca@lucaceresoli.net>
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/mfd/maxim,max77714.yaml
++F:	drivers/mfd/max77714.c
++F:	include/linux/mfd/max77714.h
  
- .PHONY: clean tarball push
- clean:
-diff --git a/tools/tracing/rtla/src/rtla.c b/tools/tracing/rtla/src/rtla.c
-index 9427cab04724..dfc7e08200d1 100644
---- a/tools/tracing/rtla/src/rtla.c
-+++ b/tools/tracing/rtla/src/rtla.c
-@@ -9,6 +9,7 @@
- #include <stdio.h>
+ MAXIM MAX77802 PMIC REGULATOR DEVICE DRIVER
+ M:	Javier Martinez Canillas <javier@dowhile0.org>
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index ca0edab91aeb..b5f6e6174508 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -853,6 +853,20 @@ config MFD_MAX77693
+ 	  additional drivers must be enabled in order to use the functionality
+ 	  of the device.
  
- #include "osnoise.h"
-+#include "timerlat.h"
- 
- /*
-  * rtla_usage - print rtla usage
-@@ -25,6 +26,7 @@ static void rtla_usage(void)
- 		"",
- 		"  commands:",
- 		"     osnoise  - gives information about the operating system noise (osnoise)",
-+		"     timerlat - measures the timer irq and thread latency",
- 		"",
- 		NULL,
- 	};
-@@ -45,6 +47,9 @@ int run_command(int argc, char **argv, int start_position)
- 	if (strcmp(argv[start_position], "osnoise") == 0) {
- 		osnoise_main(argc-start_position, &argv[start_position]);
- 		goto ran;
-+	} else if (strcmp(argv[start_position], "timerlat") == 0) {
-+		timerlat_main(argc-start_position, &argv[start_position]);
-+		goto ran;
- 	}
- 
- 	return 0;
-diff --git a/tools/tracing/rtla/src/timerlat.c b/tools/tracing/rtla/src/timerlat.c
++config MFD_MAX77714
++	bool "Maxim Semiconductor MAX77714 PMIC Support"
++	depends on I2C
++	depends on OF || COMPILE_TEST
++	select MFD_CORE
++	select REGMAP_I2C
++	help
++	  Say yes here to add support for Maxim Semiconductor MAX77714.
++	  This is a Power Management IC with 4 buck regulators, 9
++	  low-dropout regulators, 8 GPIOs, RTC, watchdog etc. This driver
++	  provides common support for accessing the device; additional
++	  drivers must be enabled in order to use each functionality of the
++	  device.
++
+ config MFD_MAX77843
+ 	bool "Maxim Semiconductor MAX77843 PMIC Support"
+ 	depends on I2C=y
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 2ba6646e874c..fe43f2fdd5cb 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -163,6 +163,7 @@ obj-$(CONFIG_MFD_MAX77620)	+= max77620.o
+ obj-$(CONFIG_MFD_MAX77650)	+= max77650.o
+ obj-$(CONFIG_MFD_MAX77686)	+= max77686.o
+ obj-$(CONFIG_MFD_MAX77693)	+= max77693.o
++obj-$(CONFIG_MFD_MAX77714)	+= max77714.o
+ obj-$(CONFIG_MFD_MAX77843)	+= max77843.o
+ obj-$(CONFIG_MFD_MAX8907)	+= max8907.o
+ max8925-objs			:= max8925-core.o max8925-i2c.o
+diff --git a/drivers/mfd/max77714.c b/drivers/mfd/max77714.c
 new file mode 100644
-index 000000000000..bdd7ab55bf91
+index 000000000000..5d6c88d4d6c0
 --- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat.c
++++ b/drivers/mfd/max77714.c
+@@ -0,0 +1,151 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Maxim MAX77714 Watchdog Driver
++ *
++ * Copyright (C) 2021 Luca Ceresoli
++ * Author: Luca Ceresoli <luca@lucaceresoli.net>
++ */
++
++#include <linux/i2c.h>
++#include <linux/interrupt.h>
++#include <linux/mfd/core.h>
++#include <linux/mfd/max77714.h>
++#include <linux/of.h>
++#include <linux/regmap.h>
++
++static const struct regmap_range max77714_readable_ranges[] = {
++	regmap_reg_range(MAX77714_INT_TOP,     MAX77714_INT_TOP),
++	regmap_reg_range(MAX77714_INT_TOPM,    MAX77714_INT_TOPM),
++	regmap_reg_range(MAX77714_32K_STATUS,  MAX77714_32K_CONFIG),
++	regmap_reg_range(MAX77714_CNFG_GLBL2,  MAX77714_CNFG2_ONOFF),
++};
++
++static const struct regmap_range max77714_writable_ranges[] = {
++	regmap_reg_range(MAX77714_INT_TOPM,    MAX77714_INT_TOPM),
++	regmap_reg_range(MAX77714_32K_CONFIG,  MAX77714_32K_CONFIG),
++	regmap_reg_range(MAX77714_CNFG_GLBL2,  MAX77714_CNFG2_ONOFF),
++};
++
++static const struct regmap_access_table max77714_readable_table = {
++	.yes_ranges = max77714_readable_ranges,
++	.n_yes_ranges = ARRAY_SIZE(max77714_readable_ranges),
++};
++
++static const struct regmap_access_table max77714_writable_table = {
++	.yes_ranges = max77714_writable_ranges,
++	.n_yes_ranges = ARRAY_SIZE(max77714_writable_ranges),
++};
++
++static const struct regmap_config max77714_regmap_config = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.max_register = MAX77714_CNFG2_ONOFF,
++	.rd_table = &max77714_readable_table,
++	.wr_table = &max77714_writable_table,
++};
++
++static const struct regmap_irq max77714_top_irqs[] = {
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_ONOFF,   0, MAX77714_INT_TOP_ONOFF),
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_RTC,     0, MAX77714_INT_TOP_RTC),
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_GPIO,    0, MAX77714_INT_TOP_GPIO),
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_LDO,     0, MAX77714_INT_TOP_LDO),
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_SD,      0, MAX77714_INT_TOP_SD),
++	REGMAP_IRQ_REG(MAX77714_IRQ_TOP_GLBL,    0, MAX77714_INT_TOP_GLBL),
++};
++
++static const struct regmap_irq_chip max77714_irq_chip = {
++	.name			= "max77714-pmic",
++	.status_base		= MAX77714_INT_TOP,
++	.mask_base		= MAX77714_INT_TOPM,
++	.num_regs		= 1,
++	.irqs			= max77714_top_irqs,
++	.num_irqs		= ARRAY_SIZE(max77714_top_irqs),
++};
++
++static const struct mfd_cell max77714_cells[] = {
++	{ .name = "max77714-watchdog" },
++	{ .name = "max77714-rtc" },
++};
++
++/*
++ * MAX77714 initially uses the internal, low precision oscillator. Enable
++ * the external oscillator by setting the XOSC_RETRY bit. If the external
++ * oscillator is not OK (probably not installed) this has no effect.
++ */
++static int max77714_setup_xosc(struct max77714 *chip)
++{
++	/* Internal Crystal Load Capacitance, indexed by value of 32KLOAD bits */
++	static const unsigned int load_cap[4] = {0, 10, 12, 22};
++	unsigned int load_cap_idx;
++	unsigned int status;
++	int err;
++
++	err = regmap_update_bits(chip->regmap, MAX77714_32K_CONFIG,
++				 MAX77714_32K_CONFIG_XOSC_RETRY,
++				 MAX77714_32K_CONFIG_XOSC_RETRY);
++	if (err)
++		return dev_err_probe(chip->dev, err, "cannot configure XOSC\n");
++
++	err = regmap_read(chip->regmap, MAX77714_32K_STATUS, &status);
++	if (err)
++		return dev_err_probe(chip->dev, err, "cannot read XOSC status\n");
++
++	load_cap_idx = (status >> MAX77714_32K_STATUS_32KLOAD_SHF)
++		& MAX77714_32K_STATUS_32KLOAD_MSK;
++
++	dev_info(chip->dev, "Using %s oscillator, %d pF load cap\n",
++		 status & MAX77714_32K_STATUS_32KSOURCE ? "internal" : "external",
++		 load_cap[load_cap_idx]);
++
++	return 0;
++}
++
++static int max77714_probe(struct i2c_client *client)
++{
++	struct max77714 *chip;
++	int err;
++
++	chip = devm_kzalloc(&client->dev, sizeof(*chip), GFP_KERNEL);
++	if (!chip)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, chip);
++	chip->dev = &client->dev;
++
++	chip->regmap = devm_regmap_init_i2c(client, &max77714_regmap_config);
++	if (IS_ERR(chip->regmap))
++		return dev_err_probe(chip->dev, PTR_ERR(chip->regmap),
++				     "failed to initialise regmap\n");
++
++	err = max77714_setup_xosc(chip);
++	if (err)
++		return err;
++
++	err = devm_regmap_add_irq_chip(chip->dev, chip->regmap, client->irq,
++				       IRQF_ONESHOT | IRQF_SHARED, 0,
++				       &max77714_irq_chip, &chip->irq_data);
++	if (err)
++		return dev_err_probe(chip->dev, err, "failed to add PMIC irq chip\n");
++
++	err =  devm_mfd_add_devices(chip->dev, PLATFORM_DEVID_NONE,
++				    max77714_cells, ARRAY_SIZE(max77714_cells),
++				    NULL, 0, NULL);
++	if (err)
++		return dev_err_probe(chip->dev, err, "failed adding MFD children\n");
++
++	return 0;
++}
++
++static const struct of_device_id max77714_dt_match[] = {
++	{ .compatible = "maxim,max77714" },
++	{},
++};
++
++static struct i2c_driver max77714_driver = {
++	.driver = {
++		.name = "max77714",
++		.of_match_table = of_match_ptr(max77714_dt_match),
++	},
++	.probe_new = max77714_probe,
++};
++builtin_i2c_driver(max77714_driver);
+diff --git a/include/linux/mfd/max77714.h b/include/linux/mfd/max77714.h
+new file mode 100644
+index 000000000000..ca6b747b73c2
+--- /dev/null
++++ b/include/linux/mfd/max77714.h
 @@ -0,0 +1,68 @@
-+// SPDX-License-Identifier: GPL-2.0
++/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
-+ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
-+ */
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <pthread.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+
-+#include "timerlat.h"
-+
-+static void timerlat_usage(void)
-+{
-+	int i;
-+
-+	char *msg[] = {
-+		"",
-+		"timerlat version " VERSION,
-+		"",
-+		"  usage: [rtla] timerlat [MODE] ...",
-+		"",
-+		"  modes:",
-+		"     top  - prints the summary from timerlat tracer",
-+		"",
-+		"if no MODE is given, the top mode is called, passing the arguments",
-+		NULL,
-+	};
-+
-+	for(i = 0; msg[i]; i++)
-+		fprintf(stderr, "%s\n", msg[i]);
-+	exit(1);
-+}
-+
-+int timerlat_main(int argc, char *argv[])
-+{
-+	if (argc == 0)
-+		goto usage;
-+
-+	/*
-+	 * if timerlat was called without any argument, run the
-+	 * default cmdline.
-+	 */
-+	if (argc == 1) {
-+		timerlat_top_main(argc, argv);
-+		exit(0);
-+	}
-+
-+	if ((strcmp(argv[1], "-h") == 0) || (strcmp(argv[1], "--help") == 0)) {
-+		timerlat_usage();
-+		exit(0);
-+	} else if (strncmp(argv[1], "-", 1) == 0) {
-+		/* the user skipped the tool, call the default one */
-+		timerlat_top_main(argc, argv);
-+		exit(0);
-+	} else if (strcmp(argv[1], "top") == 0) {
-+		timerlat_top_main(argc-1, &argv[1]);
-+		exit(0);
-+	}
-+
-+usage:
-+	timerlat_usage();
-+	exit(1);
-+}
-diff --git a/tools/tracing/rtla/src/timerlat.h b/tools/tracing/rtla/src/timerlat.h
-new file mode 100644
-index 000000000000..4f0f912b3b81
---- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat.h
-@@ -0,0 +1,2 @@
-+int timerlat_top_main(int argc, char *argv[]);
-+int timerlat_main(int argc, char *argv[]);
-diff --git a/tools/tracing/rtla/src/timerlat_top.c b/tools/tracing/rtla/src/timerlat_top.c
-new file mode 100644
-index 000000000000..258eaf796658
---- /dev/null
-+++ b/tools/tracing/rtla/src/timerlat_top.c
-@@ -0,0 +1,578 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2021 Red Hat Inc, Daniel Bristot de Oliveira <bristot@kernel.org>
++ * Maxim MAX77714 Register and data structures definition.
++ *
++ * Copyright (C) 2021 Luca Ceresoli
++ * Author: Luca Ceresoli <luca@lucaceresoli.net>
 + */
 +
-+#include <getopt.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <time.h>
++#ifndef _MFD_MAX77714_H_
++#define _MFD_MAX77714_H_
 +
-+#include "utils.h"
-+#include "osnoise.h"
-+#include "timerlat.h"
++#include <linux/bits.h>
 +
-+struct timerlat_top_params {
-+	char 			*cpus;
-+	char 			*monitored_cpus;
-+	char			*trace_output;
-+	unsigned long long	runtime;
-+	long long		stop_us;
-+	long long		stop_total_us;
-+	long long		timerlat_period_us;
-+	long long		print_stack;
-+	int			sleep_time;
-+	int			output_divisor;
-+	int			duration;
-+	int			quiet;
-+	int			set_sched;
-+	struct sched_attr	sched_param;
++#define MAX77714_INT_TOP	0x00
++#define MAX77714_INT_TOPM	0x07 /* Datasheet says "read only", but it is RW */
++
++#define MAX77714_INT_TOP_ONOFF		BIT(1)
++#define MAX77714_INT_TOP_RTC		BIT(3)
++#define MAX77714_INT_TOP_GPIO		BIT(4)
++#define MAX77714_INT_TOP_LDO		BIT(5)
++#define MAX77714_INT_TOP_SD		BIT(6)
++#define MAX77714_INT_TOP_GLBL		BIT(7)
++
++#define MAX77714_32K_STATUS	0x30
++#define MAX77714_32K_STATUS_SIOSCOK	BIT(5)
++#define MAX77714_32K_STATUS_XOSCOK	BIT(4)
++#define MAX77714_32K_STATUS_32KSOURCE	BIT(3)
++#define MAX77714_32K_STATUS_32KLOAD_MSK	0x3
++#define MAX77714_32K_STATUS_32KLOAD_SHF	1
++#define MAX77714_32K_STATUS_CRYSTAL_CFG	BIT(0)
++
++#define MAX77714_32K_CONFIG	0x31
++#define MAX77714_32K_CONFIG_XOSC_RETRY	BIT(4)
++
++#define MAX77714_CNFG_GLBL2	0x91
++#define MAX77714_WDTEN			BIT(2)
++#define MAX77714_WDTSLPC		BIT(3)
++#define MAX77714_TWD_MASK		0x3
++#define MAX77714_TWD_2s			0x0
++#define MAX77714_TWD_16s		0x1
++#define MAX77714_TWD_64s		0x2
++#define MAX77714_TWD_128s		0x3
++
++#define MAX77714_CNFG_GLBL3	0x92
++#define MAX77714_WDTC			BIT(0)
++
++#define MAX77714_CNFG2_ONOFF	0x94
++#define MAX77714_WD_RST_WK		BIT(5)
++
++/* Interrupts */
++enum {
++	MAX77714_IRQ_TOP_ONOFF,
++	MAX77714_IRQ_TOP_RTC,		/* Real-time clock */
++	MAX77714_IRQ_TOP_GPIO,		/* GPIOs */
++	MAX77714_IRQ_TOP_LDO,		/* Low-dropout regulators */
++	MAX77714_IRQ_TOP_SD,		/* Step-down regulators */
++	MAX77714_IRQ_TOP_GLBL,		/* "Global resources": Low-Battery, overtemp... */
 +};
 +
-+struct timerlat_top_cpu {
-+	int			irq_count;
-+	int			thread_count;
++struct max77714 {
++	struct device *dev;
++	struct regmap *regmap;
++	struct regmap_irq_chip_data *irq_data;
 +
-+	unsigned long long	cur_irq;
-+	unsigned long long	min_irq;
-+	unsigned long long	sum_irq;
-+	unsigned long long	max_irq;
-+
-+	unsigned long long	cur_thread;
-+	unsigned long long	min_thread;
-+	unsigned long long	sum_thread;
-+	unsigned long long	max_thread;
++	int irq;
 +};
 +
-+struct timerlat_top_data {
-+	struct timerlat_top_cpu	*cpu_data;
-+	int 			nr_cpus;
-+};
-+
-+/*
-+ * timerlat_free_top - free runtime data
-+ */
-+static void
-+timerlat_free_top(struct timerlat_top_data *data)
-+{
-+	free(data->cpu_data);
-+	free(data);
-+}
-+
-+/*
-+ * timerlat_alloc_histogram - alloc runtime data
-+ */
-+static struct timerlat_top_data *timerlat_alloc_top(int nr_cpus)
-+{
-+	struct timerlat_top_data *data;
-+	int cpu;
-+
-+	data = calloc(1, sizeof(*data));
-+	if (!data)
-+		return NULL;
-+
-+	data->nr_cpus = nr_cpus;
-+
-+	/* one set of histograms per CPU */
-+	data->cpu_data = calloc(1, sizeof(*data->cpu_data) * nr_cpus);
-+	if (!data->cpu_data)
-+		goto cleanup;
-+
-+	/* set the min to max */
-+	for (cpu = 0; cpu < nr_cpus; cpu++) {
-+		data->cpu_data[cpu].min_irq = ~0;
-+		data->cpu_data[cpu].min_thread = ~0;
-+	}
-+
-+	return data;
-+
-+cleanup:
-+	timerlat_free_top(data);
-+	return NULL;
-+}
-+
-+/*
-+ * timerlat_hist_update - record a new timerlat occurent on cpu, updating data
-+ */
-+static void
-+timerlat_top_update(struct osnoise_tool *tool, int cpu,
-+		    unsigned long long thread,
-+		    unsigned long long latency)
-+{
-+	struct timerlat_top_data *data = tool->data;
-+	struct timerlat_top_cpu *cpu_data = &data->cpu_data[cpu];
-+
-+	if (!thread) {
-+		cpu_data->irq_count++;
-+		cpu_data->cur_irq = latency;
-+		update_min(&cpu_data->min_irq, &latency);
-+		update_sum(&cpu_data->sum_irq, &latency);
-+		update_max(&cpu_data->max_irq, &latency);
-+	} else {
-+		cpu_data->thread_count++;
-+		cpu_data->cur_thread = latency;
-+		update_min(&cpu_data->min_thread, &latency);
-+		update_sum(&cpu_data->sum_thread, &latency);
-+		update_max(&cpu_data->max_thread, &latency);
-+	}
-+}
-+
-+/*
-+ * timerlat_top_handler - this is the handler for timerlat tracer events
-+ */
-+static int
-+timerlat_top_handler(struct trace_seq *s, struct tep_record *record,
-+		     struct tep_event *event, void *context)
-+{
-+	struct trace_instance *trace = context;
-+	unsigned long long latency, thread;
-+	struct osnoise_tool *top;
-+	int cpu = record->cpu;
-+
-+	top = container_of(trace, struct osnoise_tool, trace);
-+
-+	tep_get_field_val(s, event, "context", record, &thread, 1);
-+	tep_get_field_val(s, event, "timer_latency", record, &latency, 1);
-+
-+	timerlat_top_update(top, cpu, thread, latency);
-+
-+	return 0;
-+}
-+
-+/*
-+ * timerlat_top_header - print the header of the tool output
-+ */
-+static void timerlat_top_header(struct osnoise_tool *top)
-+{
-+	struct timerlat_top_params *params = top->params;
-+	struct trace_seq *s = top->trace.seq;
-+	char duration[26];
-+
-+	get_duration(top->start_time, duration, sizeof(duration));
-+
-+	trace_seq_printf(s, "\033[2;37;40m");
-+	trace_seq_printf(s, "                                     Timer Latency                                              ");
-+	trace_seq_printf(s, "\033[0;0;0m");
-+	trace_seq_printf(s, "\n");
-+
-+	trace_seq_printf(s, "%-6s   |          IRQ Timer Latency (%s)        |         Thread Timer Latency (%s) \n", duration,
-+			params->output_divisor == 1 ? "ns" : "us",
-+			params->output_divisor == 1 ? "ns" : "us");
-+
-+	trace_seq_printf(s, "\033[2;30;47m");
-+	trace_seq_printf(s, "CPU COUNT      |      cur       min       avg       max |      cur       min       avg       max");
-+	trace_seq_printf(s, "\033[0;0;0m");
-+	trace_seq_printf(s, "\n");
-+}
-+
-+/*
-+ * timerlat_top_print - prints the output of a given CPU
-+ */
-+static void timerlat_top_print(struct osnoise_tool *top, int cpu)
-+{
-+
-+	struct timerlat_top_params *params = top->params;
-+	struct timerlat_top_data *data = top->data;
-+	struct timerlat_top_cpu *cpu_data = &data->cpu_data[cpu];
-+	int divisor = params->output_divisor;
-+	struct trace_seq *s = top->trace.seq;
-+
-+	if (divisor == 0)
-+		return;
-+
-+	trace_seq_printf(s, "%3d #%-9d |", cpu, cpu_data->irq_count);
-+
-+	trace_seq_printf(s, "%9llu ", cpu_data->cur_irq / params->output_divisor);
-+	trace_seq_printf(s, "%9llu ", cpu_data->min_irq / params->output_divisor);
-+
-+	if (!cpu_data->irq_count)
-+		trace_seq_printf(s, "          ");
-+	else
-+		trace_seq_printf(s, "%9llu ", (cpu_data->sum_irq / cpu_data->irq_count) / divisor);
-+
-+	trace_seq_printf(s, "%9llu |", cpu_data->max_irq / divisor);
-+
-+	trace_seq_printf(s, "%9llu ", cpu_data->cur_thread / divisor);
-+	trace_seq_printf(s, "%9llu ", cpu_data->min_thread / divisor);
-+
-+	if (!cpu_data->thread_count)
-+		trace_seq_printf(s, "          ");
-+	else
-+		trace_seq_printf(s, "%9llu ", (cpu_data->sum_thread / cpu_data->thread_count) / divisor);
-+
-+	trace_seq_printf(s, "%9llu\n", cpu_data->max_thread / divisor);
-+}
-+
-+/*
-+ * clear_terminal - clears the output terminal
-+ */
-+static void clear_terminal(struct trace_seq *seq)
-+{
-+	if (!config_debug)
-+		trace_seq_printf(seq, "\033c");
-+}
-+
-+/*
-+ * timerlat_print_stats - print data for all cpus
-+ */
-+static void
-+timerlat_print_stats(struct timerlat_top_params *params, struct osnoise_tool *top)
-+{
-+	struct trace_instance *trace = &top->trace;
-+	static int nr_cpus = -1;
-+	int i;
-+
-+	if (nr_cpus == -1)
-+		nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-+
-+	if (!params->quiet)
-+		clear_terminal(trace->seq);
-+
-+	timerlat_top_header(top);
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		if (params->cpus && !params->monitored_cpus[i])
-+			continue;
-+		timerlat_top_print(top, i);
-+	}
-+
-+	trace_seq_do_printf(trace->seq);
-+	trace_seq_reset(trace->seq);
-+}
-+
-+/*
-+ * timerlat_top_usage - prints timerlat top usage message
-+ */
-+static void timerlat_top_usage(char *usage)
-+{
-+	int i;
-+
-+	char *msg[] = {
-+		"",
-+		"  usage: rtla timerlat [top] [-h] [-q] [-p us] [-i us] [-t us] [-s us] [-T[=file]] \\",
-+		"	  [-c cpu-list] [-P priority]",
-+		"",
-+		"	  -h/--help: print this menu",
-+		"	  -p/--period us: timerlat period in us",
-+		"	  -i/--irq us: stop trace if the irq latency is higher than the argument in us",
-+		"	  -T/--thread us: stop trace if the thread latency is higher than the argument in us",
-+		"	  -s/--stack us: save the stack trace at the IRQ if a thread latency is higher than the argument in us",
-+		"	  -c/--cpus cpus: run the tracer only on the given cpus"
-+		"	  -d/--duration time[m|h|d]: duration of the session in seconds",
-+		"	  -t/--trace[=file]: save the stopped trace to [file|timerlat_trace.txt]",
-+		"	  -n/--nano: display data in nanoseconds",
-+		"	  -q/--quiet print only a summary at the end",
-+		"	  -P/--priority o:prio|r:prio|f:prio|d:runtime:period : set scheduling parameters",
-+		"		o:prio - use SCHED_OTHER with prio",
-+		"		r:prio - use SCHED_RR with prio",
-+		"		f:prio - use SCHED_FIFO with prio",
-+		"		d:runtime[us|ms|s]:period[us|ms|s] - use SCHED_DEADLINE with runtime and period",
-+		"						       in nanoseconds",
-+		NULL,
-+	};
-+
-+	if (usage)
-+		fprintf(stderr, "%s\n", usage);
-+
-+	fprintf(stderr, "rtla timerlat top: display a per-cpu summary of the timer latency (version %s)\n", VERSION);
-+	for(i = 0; msg[i]; i++)
-+		fprintf(stderr, "%s\n", msg[i]);
-+	exit(1);
-+}
-+
-+/*
-+ * timerlat_top_parse_args - allocs, parse and fill the cmd line parameters
-+ */
-+static struct timerlat_top_params
-+*timerlat_top_parse_args(int argc, char **argv)
-+{
-+	struct timerlat_top_params *params;
-+	int retval;
-+	int c;
-+
-+	params = calloc(1, sizeof(*params));
-+	if (!params)
-+		exit(1);
-+
-+	/* display data in microseconds */
-+	params->output_divisor = 1000;
-+
-+	while (1) {
-+		static struct option long_options[] = {
-+			{"cpus",		required_argument,	0, 'c'},
-+			{"debug",		no_argument,		0, 'D'},
-+			{"duration",		required_argument,	0, 'd'},
-+			{"help",		no_argument,		0, 'h'},
-+			{"irq",			required_argument,	0, 'i'},
-+			{"nano",		no_argument,		0, 'n'},
-+			{"period",		required_argument,	0, 'p'},
-+			{"priority",		required_argument,	0, 'P'},
-+			{"quiet",		no_argument,		0, 'q'},
-+			{"stack",		required_argument,	0, 's'},
-+			{"thread",		required_argument,	0, 'T'},
-+			{"trace",		optional_argument,	0, 't'},
-+			{0, 0, 0, 0}
-+		};
-+
-+		/* getopt_long stores the option index here. */
-+		int option_index = 0;
-+
-+		c = getopt_long(argc, argv, "c:d:Dhi:np:P:qs:t::T:",
-+				 long_options, &option_index);
-+
-+		/* detect the end of the options. */
-+		if (c == -1)
-+			break;
-+
-+		switch (c) {
-+		case 'c':
-+			retval = parse_cpu_list(optarg, &params->monitored_cpus);
-+			if (retval)
-+				timerlat_top_usage("\nInvalid -c cpu list\n");
-+			params->cpus = optarg;
-+			debug_msg("-c for %s\n", params->cpus);
-+			break;
-+		case 'D':
-+			config_debug = 1;
-+			break;
-+		case 'd':
-+			params->duration = parse_seconds_duration(optarg);
-+			if (!params->duration)
-+				timerlat_top_usage("Invalid -D duration\n");
-+			break;
-+		case 'h':
-+		case '?':
-+			timerlat_top_usage(NULL);
-+			break;
-+		case 'i':
-+			params->stop_us = get_long_from_str(optarg);
-+			break;
-+		case 'n':
-+			params->output_divisor = 1;
-+			break;
-+		case 'p':
-+			params->timerlat_period_us = get_long_from_str(optarg);
-+			if (params->timerlat_period_us > 1000000)
-+				timerlat_top_usage("Period longer than 1 s\n");
-+			break;
-+		case 'P':
-+			retval = parse_prio(optarg, &params->sched_param);
-+			if (retval == -1)
-+				timerlat_top_usage("Invalid -P priority");
-+			params->set_sched = 1;
-+			break;
-+		case 'q':
-+			params->quiet = 1;
-+			break;
-+		case 's':
-+			params->print_stack = get_long_from_str(optarg);
-+			break;
-+		case 'T':
-+			params->stop_total_us = get_long_from_str(optarg);
-+			break;
-+		case 't':
-+			if (optarg)
-+				/* skip = */
-+				params->trace_output = &optarg[1];
-+			else
-+				params->trace_output = "timerlat_trace.txt";
-+			break;
-+		default:
-+			timerlat_top_usage("Invalid option");
-+		}
-+	}
-+
-+	if (geteuid()) {
-+		err_msg("rtla needs root permission\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	return params;
-+}
-+
-+/*
-+ * timerlat_top_apply_config - apply the top configs to the initialized tool
-+ */
-+static int
-+timerlat_top_apply_config(struct osnoise_tool *top, struct timerlat_top_params *params)
-+{
-+	int retval;
-+
-+	if (!params->sleep_time)
-+		params->sleep_time = 1;
-+
-+	if (params->cpus) {
-+		retval = osnoise_set_cpus(top->context, params->cpus);
-+		if (retval) {
-+			err_msg("Failed to apply CPUs config\n");
-+			goto out_err;
-+		}
-+	}
-+
-+	if (params->stop_us)
-+		osnoise_set_stop_us(top->context, params->stop_us);
-+
-+	if (params->stop_total_us)
-+		osnoise_set_stop_total_us(top->context, params->stop_total_us);
-+
-+	if (params->timerlat_period_us)
-+		osnoise_set_timerlat_period_us(top->context, params->timerlat_period_us);
-+
-+	if (params->print_stack)
-+		osnoise_set_print_stack(top->context, params->print_stack);
-+
-+	return 0;
-+
-+out_err:
-+	return -1;
-+}
-+
-+/*
-+ * timerlat_init_top - initialize a timerlat top tool with parameters
-+ */
-+static struct osnoise_tool
-+*timerlat_init_top(struct timerlat_top_params *params)
-+{
-+	struct osnoise_tool *top;
-+	int nr_cpus;
-+
-+	nr_cpus = sysconf(_SC_NPROCESSORS_CONF);
-+
-+	top = osnoise_init_tool("timerlat_top");
-+	if (!top)
-+		return NULL;
-+
-+	top->data = timerlat_alloc_top(nr_cpus);
-+	if (!top->data)
-+		goto out_err;
-+
-+	top->params = params;
-+
-+	tep_register_event_handler(top->trace.tep, -1, "ftrace", "timerlat",
-+				   timerlat_top_handler, top);
-+
-+	return top;
-+
-+out_err:
-+	osnoise_destroy_tool(top);
-+	return NULL;
-+}
-+
-+static int stop_tracing = 0;
-+static void stop_top(int sig)
-+{
-+	stop_tracing = 1;
-+}
-+
-+/*
-+ * timerlat_top_set_signals - handles the signal to stop the tool
-+ */
-+static void
-+timerlat_top_set_signals(struct timerlat_top_params *params)
-+{
-+	signal(SIGINT, stop_top);
-+	if (params->duration) {
-+		signal(SIGALRM, stop_top);
-+		alarm(params->duration);
-+	}
-+}
-+
-+int timerlat_top_main(int argc, char *argv[])
-+{
-+	struct timerlat_top_params *params;
-+	struct trace_instance *trace;
-+	struct osnoise_tool *record;
-+	struct osnoise_tool *top;
-+	int return_value = 1;
-+	int retval;
-+
-+	params = timerlat_top_parse_args(argc, argv);
-+	if (!params)
-+		exit(1);
-+
-+	top = timerlat_init_top(params);
-+	if (!top) {
-+		err_msg("Could not init osnoise top\n");
-+		goto out_exit;
-+	}
-+
-+	retval = timerlat_top_apply_config(top, params);
-+	if (retval) {
-+		err_msg("Could not apply config\n");
-+		goto out_exit;
-+	}
-+
-+	trace = &top->trace;
-+
-+	retval = enable_timerlat(trace);
-+	if (retval) {
-+		err_msg("Failed to enable timerlat tracer\n");
-+		goto out_top;
-+	}
-+
-+	if (params->set_sched) {
-+		retval = set_comm_sched_attr("timerlat/", &params->sched_param);
-+		if (retval)
-+			timerlat_top_usage("Failed to set sched parameters\n");
-+	}
-+
-+	trace_instance_start(trace);
-+
-+	if (params->trace_output) {
-+		record = osnoise_init_trace_tool("timerlat");
-+		if (!record) {
-+			err_msg("Failed to enable the trace instance\n");
-+			goto out_top;
-+		}
-+		trace_instance_start(&record->trace);
-+	}
-+
-+	top->start_time = time(NULL);
-+	timerlat_top_set_signals(params);
-+
-+	while (!stop_tracing) {
-+		sleep(params->sleep_time);
-+
-+		retval = tracefs_iterate_raw_events(trace->tep,
-+						    trace->inst,
-+						    NULL,
-+						    0,
-+						    collect_registered_events,
-+						    trace);
-+		if (retval < 0) {
-+			err_msg("Error iterating on events\n");
-+			goto out_top;
-+		}
-+
-+		if (!params->quiet)
-+			timerlat_print_stats(params, top);
-+
-+		if (!tracefs_trace_is_on(trace->inst))
-+			break;
-+
-+	};
-+
-+	timerlat_print_stats(params, top);
-+
-+	return_value = 0;
-+
-+	if (!tracefs_trace_is_on(trace->inst)) {
-+		printf("rtla timelat hit stop tracing\n");
-+		if (params->trace_output) {
-+			printf("  Saving trace to %s\n", params->trace_output);
-+			save_trace_to_file(record->trace.inst, params->trace_output);
-+		}
-+	}
-+
-+out_top:
-+	timerlat_free_top(top->data);
-+	osnoise_destroy_tool(top);
-+	if (params->trace_output)
-+		osnoise_destroy_tool(record);
-+	free(params);
-+out_exit:
-+	exit(return_value);
-+}
++#endif /* _MFD_MAX77714_H_ */
 -- 
-2.31.1
+2.25.1
 
