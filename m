@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AB842917C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1671F429130
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240000AbhJKOTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:19:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
+        id S239588AbhJKOQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:16:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243060AbhJKOPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:15:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 248D560F6E;
-        Mon, 11 Oct 2021 14:05:46 +0000 (UTC)
+        id S244125AbhJKONj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:13:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C649F6128C;
+        Mon, 11 Oct 2021 14:04:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961146;
-        bh=IPGid/75yXg+7JRb6pRPQpFWWSlSgrLrtMJn72uwovM=;
+        s=korg; t=1633961073;
+        bh=H2wGtonXRQ3ezGksb3GjljlWURjnBFJHwrubRUy7DTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=umcXZu3yDsznqUuUrzlOXb06VquHSnJ9wm/vJCxM4k9zlgBpErzFOuSCRzgfR1oAZ
-         vJx3knVmAxraQApb2gJJZD7HDMJRszMCofMMOPFdHVdpUU5pTrd22MAU5pBkKm+yp2
-         daU0u2BvIPAdqMuuAoT243XPTC5qChCapKzvT8UQ=
+        b=gOb+JHv7Q7b+urTJnvZkCeXJvy6wxZAdD3D3TxkGlFQQDXn2pkQt9XdOsadraJsny
+         YlQezrCMQMbYWeiisV7YorRTUD4jx4nfQojOfuRcLHXgVmjUI5Bg7r81fx1GBph1lk
+         KgAdSAQlAX2UlmNWJbo6Za2rcyR1/5cqqBrnasG4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 12/28] bpf, arm: Fix register clobbering in div/mod implementation
-Date:   Mon, 11 Oct 2021 15:47:02 +0200
-Message-Id: <20211011134641.114041074@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.14 151/151] dsa: tag_dsa: Fix mask for trunked packets
+Date:   Mon, 11 Oct 2021 15:47:03 +0200
+Message-Id: <20211011134522.723553019@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
-References: <20211011134640.711218469@linuxfoundation.org>
+In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
+References: <20211011134517.833565002@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,94 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+From: Andrew Lunn <andrew@lunn.ch>
 
-[ Upstream commit 79e3445b38e0cab94264a3894c0c3d57c930b97e ]
+commit b44d52a50bc6f191f0ae03f65de8401f3ef039b3 upstream.
 
-On ARM CPUs that lack div/mod instructions, ALU32 BPF_DIV and BPF_MOD are
-implemented using a call to a helper function. Before, the emitted code
-for those function calls failed to preserve caller-saved ARM registers.
-Since some of those registers happen to be mapped to BPF registers, it
-resulted in eBPF register values being overwritten.
+A packet received on a trunk will have bit 2 set in Forward DSA tagged
+frame. Bit 1 can be either 0 or 1 and is otherwise undefined and bit 0
+indicates the frame CFI. Masking with 7 thus results in frames as
+being identified as being from a trunk when in fact they are not. Fix
+the mask to just look at bit 2.
 
-This patch emits code to push and pop the remaining caller-saved ARM
-registers r2-r3 into the stack during the div/mod function call. ARM
-registers r0-r1 are used as arguments and return value, and those were
-already saved and restored correctly.
-
-Fixes: 39c13c204bb1 ("arm: eBPF JIT compiler")
-Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 5b60dadb71db ("net: dsa: tag_dsa: Support reception of packets from LAG devices")
+Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/net/bpf_jit_32.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ net/dsa/tag_dsa.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-index 79b12e744537..dade3a3ba666 100644
---- a/arch/arm/net/bpf_jit_32.c
-+++ b/arch/arm/net/bpf_jit_32.c
-@@ -39,6 +39,10 @@
-  *                        +-----+
-  *                        |RSVD | JIT scratchpad
-  * current ARM_SP =>      +-----+ <= (BPF_FP - STACK_SIZE + SCRATCH_SIZE)
-+ *                        | ... | caller-saved registers
-+ *                        +-----+
-+ *                        | ... | arguments passed on stack
-+ * ARM_SP during call =>  +-----|
-  *                        |     |
-  *                        | ... | Function call stack
-  *                        |     |
-@@ -66,6 +70,12 @@
-  *
-  * When popping registers off the stack at the end of a BPF function, we
-  * reference them via the current ARM_FP register.
-+ *
-+ * Some eBPF operations are implemented via a call to a helper function.
-+ * Such calls are "invisible" in the eBPF code, so it is up to the calling
-+ * program to preserve any caller-saved ARM registers during the call. The
-+ * JIT emits code to push and pop those registers onto the stack, immediately
-+ * above the callee stack frame.
-  */
- #define CALLEE_MASK	(1 << ARM_R4 | 1 << ARM_R5 | 1 << ARM_R6 | \
- 			 1 << ARM_R7 | 1 << ARM_R8 | 1 << ARM_R9 | \
-@@ -73,6 +83,8 @@
- #define CALLEE_PUSH_MASK (CALLEE_MASK | 1 << ARM_LR)
- #define CALLEE_POP_MASK  (CALLEE_MASK | 1 << ARM_PC)
+--- a/net/dsa/tag_dsa.c
++++ b/net/dsa/tag_dsa.c
+@@ -176,7 +176,7 @@ static struct sk_buff *dsa_rcv_ll(struct
+ 	case DSA_CMD_FORWARD:
+ 		skb->offload_fwd_mark = 1;
  
-+#define CALLER_MASK	(1 << ARM_R0 | 1 << ARM_R1 | 1 << ARM_R2 | 1 << ARM_R3)
-+
- enum {
- 	/* Stack layout - these are offsets from (top of stack - 4) */
- 	BPF_R2_HI,
-@@ -467,6 +479,7 @@ static inline int epilogue_offset(const struct jit_ctx *ctx)
+-		trunk = !!(dsa_header[1] & 7);
++		trunk = !!(dsa_header[1] & 4);
+ 		break;
  
- static inline void emit_udivmod(u8 rd, u8 rm, u8 rn, struct jit_ctx *ctx, u8 op)
- {
-+	const int exclude_mask = BIT(ARM_R0) | BIT(ARM_R1);
- 	const s8 *tmp = bpf2a32[TMP_REG_1];
- 
- #if __LINUX_ARM_ARCH__ == 7
-@@ -498,11 +511,17 @@ static inline void emit_udivmod(u8 rd, u8 rm, u8 rn, struct jit_ctx *ctx, u8 op)
- 		emit(ARM_MOV_R(ARM_R0, rm), ctx);
- 	}
- 
-+	/* Push caller-saved registers on stack */
-+	emit(ARM_PUSH(CALLER_MASK & ~exclude_mask), ctx);
-+
- 	/* Call appropriate function */
- 	emit_mov_i(ARM_IP, op == BPF_DIV ?
- 		   (u32)jit_udiv32 : (u32)jit_mod32, ctx);
- 	emit_blx_r(ARM_IP, ctx);
- 
-+	/* Restore caller-saved registers from stack */
-+	emit(ARM_POP(CALLER_MASK & ~exclude_mask), ctx);
-+
- 	/* Save return value */
- 	if (rd != ARM_R0)
- 		emit(ARM_MOV_R(rd, ARM_R0), ctx);
--- 
-2.33.0
-
+ 	case DSA_CMD_TO_CPU:
 
 
