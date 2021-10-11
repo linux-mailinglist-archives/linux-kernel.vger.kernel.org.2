@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D1942913E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A675442914B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243802AbhJKOQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:16:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34544 "EHLO mail.kernel.org"
+        id S242435AbhJKORK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:17:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244280AbhJKONx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:13:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3490061164;
-        Mon, 11 Oct 2021 14:04:35 +0000 (UTC)
+        id S242256AbhJKOOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 10:14:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C40916134F;
+        Mon, 11 Oct 2021 14:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633961075;
-        bh=+r+a5Dn2X+NIxEfAYDVknaY59vrhDkNcoblzP+o/9ik=;
+        s=korg; t=1633961091;
+        bh=8LN5JaR3NNu+w4nvoNIV28oJquM2WaOUpFHljkennYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t3AIa1VhxbueQTVTLqhDHQyttNerxG/GXKdhCd/DiwFPfUt+45u07XijiAwmHPP9Z
-         Mx1po7bQT5E0E0FmszllvXfpPmTalmu1O5/CwnmCQkAMLpmPUQmo5QnLBOBA2t7eb1
-         nIysLIvNDr3mpHCytv2rVQxfilRFAMKDTyc9XQHk=
+        b=pQvOcM+mRN8okFcQkTjxyHpEMElKqm1HD5ypyOMFVdBVB/vhkfdkUsC8io2YqPREQ
+         QEZ86y88Dx6cVd4CnXWNKiKPxxDN5oWzo//UtgUhpqdVAqMreYa4wUJIMtgFOWPKGu
+         3qcwKt2AcPT46xvmh/bmKwOzjkz666zSN1wO9OEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stan Johnson <userm57@yahoo.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.14 142/151] powerpc/32s: Fix kuap_kernel_restore()
-Date:   Mon, 11 Oct 2021 15:46:54 +0200
-Message-Id: <20211011134522.402251226@linuxfoundation.org>
+        stable@vger.kernel.org, Zheng Liang <zhengliang6@huawei.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.19 05/28] ovl: fix missing negative dentry check in ovl_rename()
+Date:   Mon, 11 Oct 2021 15:46:55 +0200
+Message-Id: <20211011134640.886065565@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134517.833565002@linuxfoundation.org>
-References: <20211011134517.833565002@linuxfoundation.org>
+In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
+References: <20211011134640.711218469@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Zheng Liang <zhengliang6@huawei.com>
 
-[ Upstream commit d93f9e23744b7bf11a98b2ddb091d129482ae179 ]
+commit a295aef603e109a47af355477326bd41151765b6 upstream.
 
-At interrupt exit, kuap_kernel_restore() calls kuap_unlock() with the
-value contained in regs->kuap. However, when regs->kuap contains
-0xffffffff it means that KUAP was not unlocked so calling kuap_unlock()
-is unrelevant and results in jeopardising the contents of kernel space
-segment registers.
+The following reproducer
 
-So check that regs->kuap doesn't contain KUAP_NONE before calling
-kuap_unlock(). In the meantime it also means that if KUAP has not
-been correcly locked back at interrupt exit, it must be locked
-before continuing. This is done by checking the content of
-current->thread.kuap which was returned by kuap_get_and_assert_locked()
+  mkdir lower upper work merge
+  touch lower/old
+  touch lower/new
+  mount -t overlay overlay -olowerdir=lower,upperdir=upper,workdir=work merge
+  rm merge/new
+  mv merge/old merge/new & unlink upper/new
 
-Fixes: 16132529cee5 ("powerpc/32s: Rework Kernel Userspace Access Protection")
-Reported-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/0d0c4d0f050a637052287c09ba521bad960a2790.1631715131.git.christophe.leroy@csgroup.eu
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+may result in this race:
+
+PROCESS A:
+  rename("merge/old", "merge/new");
+  overwrite=true,ovl_lower_positive(old)=true,
+  ovl_dentry_is_whiteout(new)=true -> flags |= RENAME_EXCHANGE
+
+PROCESS B:
+  unlink("upper/new");
+
+PROCESS A:
+  lookup newdentry in new_upperdir
+  call vfs_rename() with negative newdentry and RENAME_EXCHANGE
+
+Fix by adding the missing check for negative newdentry.
+
+Signed-off-by: Zheng Liang <zhengliang6@huawei.com>
+Fixes: e9be9d5e76e3 ("overlay filesystem")
+Cc: <stable@vger.kernel.org> # v3.18
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/powerpc/include/asm/book3s/32/kup.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ fs/overlayfs/dir.c |   10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
-index d4b145b279f6..9f38040f0641 100644
---- a/arch/powerpc/include/asm/book3s/32/kup.h
-+++ b/arch/powerpc/include/asm/book3s/32/kup.h
-@@ -136,6 +136,14 @@ static inline void kuap_kernel_restore(struct pt_regs *regs, unsigned long kuap)
- 	if (kuap_is_disabled())
- 		return;
+--- a/fs/overlayfs/dir.c
++++ b/fs/overlayfs/dir.c
+@@ -1166,9 +1166,13 @@ static int ovl_rename(struct inode *oldd
+ 				goto out_dput;
+ 		}
+ 	} else {
+-		if (!d_is_negative(newdentry) &&
+-		    (!new_opaque || !ovl_is_whiteout(newdentry)))
+-			goto out_dput;
++		if (!d_is_negative(newdentry)) {
++			if (!new_opaque || !ovl_is_whiteout(newdentry))
++				goto out_dput;
++		} else {
++			if (flags & RENAME_EXCHANGE)
++				goto out_dput;
++		}
+ 	}
  
-+	if (unlikely(kuap != KUAP_NONE)) {
-+		current->thread.kuap = KUAP_NONE;
-+		kuap_lock(kuap, false);
-+	}
-+
-+	if (likely(regs->kuap == KUAP_NONE))
-+		return;
-+
- 	current->thread.kuap = regs->kuap;
- 
- 	kuap_unlock(regs->kuap, false);
--- 
-2.33.0
-
+ 	if (olddentry == trap)
 
 
