@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED44429951
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E293429960
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235497AbhJKWID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 18:08:03 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:39678 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235500AbhJKWH5 (ORCPT
+        id S235500AbhJKWVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 18:21:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60644 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235477AbhJKWVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 18:07:57 -0400
-Received: by mail-oi1-f177.google.com with SMTP id m67so421352oif.6;
-        Mon, 11 Oct 2021 15:05:56 -0700 (PDT)
+        Mon, 11 Oct 2021 18:21:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633990763;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aeXcIsOyNcWtQCi9/bt2+iuYkngLdU5FSyhdmH84bAc=;
+        b=ZwewXx7O2Z9uvl4BA/C7r9KNDIFCSpgMsY0UPJPa9t/+dyXdnmwXyMMRlJekfQYakkFSO3
+        pj/chPxBq1BlUGz3f/yoCJiJ7IuHFNBvCkiX4Jxb5vHeu7lhZJ8N/8I5d8mPCKkoSOvPoU
+        aZPMAkT7TlJoMt+E/1nGeEqP2EuZ5zc=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-220-eFi5krm9PryxzWB021CD9Q-1; Mon, 11 Oct 2021 18:19:22 -0400
+X-MC-Unique: eFi5krm9PryxzWB021CD9Q-1
+Received: by mail-ot1-f72.google.com with SMTP id r3-20020a056830236300b0054d43b72ba5so11288720oth.17
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 15:19:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oINn+ngnlK0guwerLyEgPMWYZbLevit1wsPrwjvEJcs=;
-        b=dA5O1vCmuQ0EIJ3iZnZytsA8iEXfCNiC4heD7O99Km1XthjiYQJIwKma/TyZFJXD3P
-         FpIZPuaKdVDXYdrSKkG0pmNVH3VS8o3axfbnMNkh6CiRiOUN103ZbDiAIKIbPUUfixBd
-         4XRFIuXmaWMFQMnxtyYNELP7MGAci83PY26Qc8Ibx7K6jDa/EazFpwf5s1SFfRFuna+s
-         FDyPqIpC1LSQ2tmpzpZp7sC7z1pqi8qvjmmjOTkOywjDmL1qaRK6BTRPsm8nHB4DgKEW
-         d57kG9KyR/7FW19m1DYnuQbJ59ub4eZUaLbaHaD/vj2a4l6QygHes+O5Jf+p2C8KdpgG
-         YmYw==
-X-Gm-Message-State: AOAM530qqqWgBIuoWwzgikglFFQFTsMvmJqWOCDt1wDv3P0oajjmG0bM
-        xak/g5LY2dfcd8+03AXTBe8JzLw9MA==
-X-Google-Smtp-Source: ABdhPJz5Z2csSZa8MPZspzTrKP3JpclGaxTPGaD8wytGzZiZJm1+c9S+z/zVEDMJwCE9KuliaxI/cQ==
-X-Received: by 2002:aca:3606:: with SMTP id d6mr1092094oia.35.1633989956086;
-        Mon, 11 Oct 2021 15:05:56 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id e2sm1733601ooh.40.2021.10.11.15.05.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aeXcIsOyNcWtQCi9/bt2+iuYkngLdU5FSyhdmH84bAc=;
+        b=P2Hka9uU+1wIcJylhd3PiDVQ4/uISycchiJoDn9LlaNp0WORYwaXSt0cvKMkJHufJx
+         qF2nLPADqIptPnWvvBAt+tCnhINIdGZ3AYaubonXoINP1P0c6bcn1Fd5dhAvLkEDuPw5
+         ixD7ap3YK454co+cImpmWzJ0JIqeZ+8XmGzZxE5GUHSG7V5I34TXOo35RT5gFeJVZ+Te
+         Iw9COacyBYfnQH77W0uXxYXqIDS9spsTZDnhk3UYt+FzY1kCcW5WPH5xzooH9IDeaiZT
+         2G8awXbggO1dBntMUlS5IluPny3wb4smF2QSJCkIkzCMonK5VD+rEoNzLIrKqArGyG0z
+         M2SQ==
+X-Gm-Message-State: AOAM533hsOLbz2oDzfUjfCMkz12DmYDVwnewe4FkgQoFnfN5uQvp/0l2
+        +6BN2PhR+cT1uqQYeDdYZHd0XdNzb2IvIAIYkJzfAgPGEp+pFhGTe8pGad3Qd88PTactGINbhEV
+        Fm7tWjyvhJ8irJWssF5wRVDQ8
+X-Received: by 2002:aca:b10b:: with SMTP id a11mr1156557oif.177.1633990760636;
+        Mon, 11 Oct 2021 15:19:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyBgW1M4fQn8z4GIqtMKYD0bAdAahgMyBSniuW90BuiIK088EO9nAEjLcW3ZN8rRzTgzgejrg==
+X-Received: by 2002:aca:b10b:: with SMTP id a11mr1156481oif.177.1633990758983;
+        Mon, 11 Oct 2021 15:19:18 -0700 (PDT)
+Received: from redhat.com ([38.15.36.239])
+        by smtp.gmail.com with ESMTPSA id i15sm1981679otu.67.2021.10.11.15.19.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 15:05:55 -0700 (PDT)
-Received: (nullmailer pid 1251528 invoked by uid 1000);
-        Mon, 11 Oct 2021 22:05:54 -0000
-Date:   Mon, 11 Oct 2021 17:05:54 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Naveen Naidu <naveennaidu479@gmail.com>
-Cc:     bhelgaas@google.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/22] PCI: Unify PCI error response checking
-Message-ID: <YWS1QtNJh7vPCftH@robh.at.kernel.org>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
- <c632b07eb1b08cc7d4346455a55641436a379abd.1633972263.git.naveennaidu479@gmail.com>
+        Mon, 11 Oct 2021 15:19:18 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 16:19:16 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Laurentiu Tudor <laurentiu.tudor@nxp.com>
+Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        kvm@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] vfio/fsl-mc: Add per device reset support
+Message-ID: <20211011161916.6a3aace0.alex.williamson@redhat.com>
+In-Reply-To: <e356b582-7911-6c8e-3201-dbfdbd3e3b1d@nxp.com>
+References: <20210922110530.24736-1-diana.craciun@oss.nxp.com>
+        <20210922110530.24736-2-diana.craciun@oss.nxp.com>
+        <e356b582-7911-6c8e-3201-dbfdbd3e3b1d@nxp.com>
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c632b07eb1b08cc7d4346455a55641436a379abd.1633972263.git.naveennaidu479@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 11:08:32PM +0530, Naveen Naidu wrote:
-> An MMIO read from a PCI device that doesn't exist or doesn't respond
-> causes a PCI error.  There's no real data to return to satisfy the
-> CPU read, so most hardware fabricates ~0 data.
+On Tue, 28 Sep 2021 16:55:06 +0300
+Laurentiu Tudor <laurentiu.tudor@nxp.com> wrote:
+
+> On 9/22/2021 2:05 PM, Diana Craciun wrote:
+> > Currently when a fsl-mc device is reset, the entire DPRC container
+> > is reset which is very inefficient because the devices within a
+> > container will be reset multiple times.
+> > Add support for individually resetting a device.
+> > 
+> > Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
+> > ---  
 > 
-> Use SET_PCI_ERROR_RESPONSE() to set the error response and
-> RESPONSE_IS_PCI_ERROR() to check the error response during hardware
-> read.
-> 
-> These definitions make error checks consistent and easier to find.
-> 
-> Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
-> ---
->  drivers/pci/access.c | 22 +++++++++++-----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 46935695cfb9..e1954bbbd137 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -81,7 +81,7 @@ int pci_generic_config_read(struct pci_bus *bus, unsigned int devfn,
->  
->  	addr = bus->ops->map_bus(bus, devfn, where);
->  	if (!addr) {
-> -		*val = ~0;
-> +		SET_PCI_ERROR_RESPONSE(val);
+> Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
 
-This to me doesn't look like kernel style. I'd rather see a define 
-replace just '~0', but I defer to Bjorn.
+Applied both to vfio next branch for v5.16, with Laurentiu's R-b added
+here.  Thanks,
 
->  		return PCIBIOS_DEVICE_NOT_FOUND;
+Alex
 
-Neither does this using custom error codes rather than standard Linux 
-errno. I point this out as I that's were I'd start with the config 
-accessors. Though there are lots of occurrences so we'd need a way to do 
-this in manageable steps.
-
-Can't we make PCI_OP_READ and PCI_USER_READ_CONFIG set the data value 
-and delete the drivers all doing this? Then we have 2 copies (in source) 
-rather than the many this series modifies. Though I'm not sure if there 
-are other cases of calling pci_bus.ops.read() which expect to get ~0.
-
-Rob
