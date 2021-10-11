@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51548428BDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CCF6428BE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236180AbhJKLZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        id S236219AbhJKLZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236163AbhJKLZG (ORCPT
+        with ESMTP id S233912AbhJKLZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:25:06 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7C9C06161C
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:06 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id u32so38163633ybd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:06 -0700 (PDT)
+        Mon, 11 Oct 2021 07:25:56 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60C7BC061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:56 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id x27so72231370lfa.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
-        b=BDpoaz2Tt8GB7UFJdjBXESDTgMdx0k3SfkeNld999BALyylVcvtT7v9xrV1xT1t/Gq
-         6mMl93yr5vDDArMgyHSN1C3u5pfwPK3jCLsZa9PjyHgg1oAEmOcbv1J54wnpKFFnlg//
-         TwGjpTL3HQuOSOlG2xmZnbEzrFBZXzW3l6RMU7jd1520smxmNNLgABIZIZNjfie1meQw
-         MjPI+z0Cm12Y8tUu25WBum5YUG83tlnYaUZRt2hCXTMUTxrjDLCouIJXXUXbuGSHl6lp
-         /Ih6zG4p/xVRKsl0Fa9RHKs5Q6mnC8DVWRCu4J9FMMnXLVuNHzSRNhJGFsN3MH5AHbkU
-         4awg==
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=oR6LB/YYCviOzRyS9rHfDCuLWfRpmReRbWc3k8+yM1g=;
+        b=lgq9UUjXC03oWhJswAcwW8p/1VtyCst3H4y2N8KWKpt7t+rgzoxMFx7+G99NS+OL08
+         fcnUUu4Ro5yXvX7w3fubcHddO5KTAZUsuytdm4ag2kcHik7I+bq1uOCYD+/izIgancts
+         yTwS3ao0BcOE1yk3aU03wLfkOMuvvJpwRLBhVT9zi/sTP64EtZKmtAggHjybjzmjxW/O
+         qfD4Dt+m3xyS1dvhpaG/wzF5deY7maUQMgefdGmk+54XJax7t1mVXvuEZfGI17ptk43B
+         yCAA9oilXEorDs8bezTSWhxnM/70ysjiEkuq4cWc7+oWl7ZTIGIhoGyU6CGNguBp94qG
+         XmxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
-        b=Nv9NXYuYlx6RfVpTc/AX8Iw1e4FucRg4hFD5ZFcPlR2rdKpghKjjySNy2GzC0He2Cc
-         R9c18/kV04TUpAPfxosVja7ccjSodIY/d7DlJBgEx5enG42YmfLm8wvXtOfbXtn9kFiO
-         bL0yhMXLNZ/ZjJjv3BzGaKiAmV5utir9nqAH+Lh0qJeJSqJOPRKj6NDuJnSb0l8ArQSO
-         kks/vopHY+GNmlYnU/AXcn/G2brTyRPW9v1M2umNGpKXhYLATOqRRvBMpDvVfhxkXEFK
-         oDRE4pLQceDGZqXh81y7/2qx7/alVIPjTfMCl8uC3edc0NaR+GEjNkCRO72B3ongCChv
-         oP6Q==
-X-Gm-Message-State: AOAM5332cP0t6EmZ8oBFXIKV77nF/urNlkIsL154F9YkXwGGK+nPghQx
-        IFdTMufzwGHKZDEOneuKnA8EXGXJNgx/tPosi9w=
-X-Google-Smtp-Source: ABdhPJyB3jxY12lrLphBBleDsh700KMWkKr26rM2MWYTt8t00cU+NWjSTi5u0ApgPFr91q9y7tOIRCPazEV+jbWAjyE=
-X-Received: by 2002:a25:5bc5:: with SMTP id p188mr21376669ybb.301.1633951385875;
- Mon, 11 Oct 2021 04:23:05 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=oR6LB/YYCviOzRyS9rHfDCuLWfRpmReRbWc3k8+yM1g=;
+        b=hiWRTqI5qysIpMJUOwE6hD+G2De4ohudfaLO0YoOg3kdRJBAre8z5Lo89HA4a5tk5H
+         05PFo3RMF84PdihPSXKE9ZL40ObXK4kK/yzd3yTXcY33jv2gJmQWAGS5T0RgzhJgRhpQ
+         9vZB/WvPXXpx29GgG6QLhDyhNi9JaDN+NTzjCrrPTWP1A4nM7pe9NL1UEN5urQ1MvtCJ
+         +ZW7RNfhE0LLNWlc/LZNRjSXvnZWycP0mrpRQ3tP0n3kzr+8a+QlVRmBzkHE4GXoUe/f
+         njl7COAOXTaGWjFqIy6vM4x2er+ZKbVQGrKR7ffGRCm5JbZzg6KRFWQVz9N+7OikArto
+         YVeg==
+X-Gm-Message-State: AOAM533q2Tq9+sbnOpV8Oqv8013F8aQC5sNSZXuao8TBNOLcZn/+qQQM
+        a8ALYn06QDUeLesRl7gaxr5gqA==
+X-Google-Smtp-Source: ABdhPJzg4xlbxhT3ai96z68gpdHWXCnSzZOt0nbEmYikHYetGKqDzfhXMDxeT/xj7psMlAUvOq6adQ==
+X-Received: by 2002:a05:651c:88d:: with SMTP id d13mr21431439ljq.399.1633951434694;
+        Mon, 11 Oct 2021 04:23:54 -0700 (PDT)
+Received: from [192.168.1.102] (62-248-207-242.elisa-laajakaista.fi. [62.248.207.242])
+        by smtp.gmail.com with ESMTPSA id x27sm707098lfn.226.2021.10.11.04.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 04:23:54 -0700 (PDT)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, linux-mm@kvack.org
+From:   Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+Subject: Panic on kmemleak scan
+Message-ID: <8ade5174-b143-d621-8c8e-dc6a1898c6fb@linaro.org>
+Date:   Mon, 11 Oct 2021 14:23:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Sender: mrrnra.kabore@gmail.com
-Received: by 2002:a05:7000:a1c2:0:0:0:0 with HTTP; Mon, 11 Oct 2021 04:23:05
- -0700 (PDT)
-From:   Anderson Thereza <anderson.thereza24@gmail.com>
-Date:   Mon, 11 Oct 2021 04:23:05 -0700
-X-Google-Sender-Auth: 05hm5zLv4SCus3Gt7LrLurQuc5U
-Message-ID: <CAObd1cpOecAfexrnwrJyr3qD7PVahYVvrf_9n-O85kMHTxfGXA@mail.gmail.com>
-Subject: Re: Greetings My Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+Hello Mike,
 
-I sent this mail praying it will find you in a good condition, since I
-myself am in a very critical health condition in which I sleep every
-night without knowing if I may be alive to see the next day. I am
-Mrs.Theresa Anderson, a widow suffering from a long time illness. I
-have some funds I inherited from my late husband, the sum of
-($11,000,000.00, Eleven Million Dollars) my Doctor told me recently
-that I have serious sickness which is a cancer problem. What disturbs
-me most is my stroke sickness. Having known my condition, I decided to
-donate this fund to a good person that will utilize it the way I am
-going to instruct herein. I need a very honest God.
+commit a7259df767 ("memblock: make memblock_find_in_range method private") [1]
+invokes a kernel panic while running kmemleak on OF platforms with nomaped
+regions, basically it's similar to an issue reported and fixed earlier by [2]:
 
-fearing a person who can claim this money and use it for Charity
-works, for orphanages, widows and also build schools for less
-privileges that will be named after my late husband if possible and to
-promote the word of God and the effort that the house of God is
-maintained. I do not want a situation where this money will be used in
-an ungodly manner. That's why I' making this decision. I'm not afraid
-of death so I know where I'm going. I accept this decision because I
-do not have any child who will inherit this money after I die. Please
-I want your sincere and urgent answer to know if you will be able to
-execute this project, and I will give you more information on how the
-fund will be transferred to your bank account. I am waiting for your
-reply.
+   Unable to handle kernel paging request at virtual address ffff000021e00000
+   [...]
+     scan_block+0x64/0x170
+     scan_gray_list+0xe8/0x17c
+     kmemleak_scan+0x270/0x514
+     kmemleak_write+0x34c/0x4ac
 
-May God Bless you,
-Mrs.Theresa Anderson.
+I believe it would be a trivial problem to correct for you, thank you in
+advance!
+
+[1] https://lore.kernel.org/all/20210816122622.30279-1-rppt@kernel.org/T/#u
+[2] https://lore.kernel.org/lkml/20190119132832.GA29881@MBP.local/t/#m032124f36c07
+
+--
+Best wishes,
+Vladimir
