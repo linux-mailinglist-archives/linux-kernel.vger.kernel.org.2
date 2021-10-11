@@ -2,106 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A0C42991F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A08429921
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235358AbhJKVuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231186AbhJKVuI (ORCPT
+        id S235405AbhJKVuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:50:52 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:53995 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhJKVuv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:50:08 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F6C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:48:07 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id e12so60408309wra.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:48:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=w+0Wu3dI7YPT16UswJ5OR0p3TmTEyKkuKUSvBshjyLg=;
-        b=mvZ8ux77RQcyz+njYb6YnApGlh7sPl+4RoU+lS2Pe/1R9WfF2ZefGV+XFzaefErqi2
-         jlqthwAFpi4Gg1sQSY11k/LPDNFarCNj4hxoeJmud2ohm3+3FbgdmOaSckJpolr59nRx
-         /253mj3xXR8vNxQn+4lQB0dyZLKl4mTm6G2KPVCyk9vB7CDXy9HnyW060q+c5hde2nY/
-         BDLqtxN61RerAAfx9rWJYfDQnz8/OCdxjXKsnT1my9CyAd5z2FKkVfw39pM8GFh+j5/F
-         8iG7OQuYImWrrRY4enrel6PMBnsXw444TSw+UYvpIZBWS8QeHL3g/V29xECnGcUBVabE
-         2vvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=w+0Wu3dI7YPT16UswJ5OR0p3TmTEyKkuKUSvBshjyLg=;
-        b=0ogu4ZBLREN2r/iT7caDhjkG+RtjRiWpI4xQUGPiUolxgWGd1a5ylXfM7T4T6t/Hnt
-         Zhr0fDMZ5dXsU889+Wsi9UcSg8MarGMY6Ub2ZaLHK0cs9x6vM2KuhVWbvouor7UAL+GB
-         1lpfVMWAyk0Bld/SKguBIUmczndgOXrX62hmGvxPG298nQFEpq54cLX7gzqblxT0iPIZ
-         9cuF2GVNqshz1AdFvcJkGfyNvRVqTw8p+iKE13u3kN6MgTOlgRJTQCTazrYDIBoyqjSr
-         TbCq+IkCXGJdWE1zAorWs4/4A073/GQ1qy1tB6Se/ABzr9lZe6oo46v4R6+2U2vOXa9Y
-         8lSw==
-X-Gm-Message-State: AOAM530NPs35eJd2Vz2IPeFAXROL85RKbVPzacbZlEN7BSs2gvvYzGM6
-        5lFbGGWQZTorBf2LLjwETHDczG4d5AutwG1h
-X-Google-Smtp-Source: ABdhPJxXzJtujECeK1eJJ4zh6ymKlBpPmRXtz9p1M/G4DaXwoSKT6z0PzlwU2LwzPBjfJGKOK1xUdw==
-X-Received: by 2002:a05:600c:378a:: with SMTP id o10mr1535647wmr.77.1633988885648;
-        Mon, 11 Oct 2021 14:48:05 -0700 (PDT)
-Received: from hallblazzar-Precision-5510 ([2a02:8084:20c7:8d80:41b2:6091:e6eb:9c88])
-        by smtp.gmail.com with ESMTPSA id o19sm9112305wrg.60.2021.10.11.14.48.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 14:48:05 -0700 (PDT)
-Date:   Mon, 11 Oct 2021 22:48:03 +0100
-From:   "Siou-Jhih, Guo" <hallblazzar@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v4] staging: r8188eu: Fix misspelling in comment
-Message-ID: <20211011214803.GA239300@hallblazzar-Precision-5510>
+        Mon, 11 Oct 2021 17:50:51 -0400
+Received: (Authenticated sender: didi.debian@cknow.org)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPA id AB6031C0002;
+        Mon, 11 Oct 2021 21:48:48 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Date:   Mon, 11 Oct 2021 23:48:48 +0200
+From:   didi.debian@cknow.org
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>
+Subject: Re: [PATCH] ASoC: simple-card: Fill in driver name
+In-Reply-To: <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
+References: <YNGe3akAntQi8qJD@qwark.sigxcpu.org> <4974503.Y8KB3sNASq@bagend>
+ <61a82214-0de8-816f-ff63-3979b86343bf@perex.cz> <5069869.zQgEQKRxDW@bagend>
+ <f7efde11-067d-8822-45fa-7cdbe2d17d93@perex.cz>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <97a1c38c48765fb6634de34387e3ce3c@cknow.org>
+X-Sender: didi.debian@cknow.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As format check raised by scripts/checkpatch.pl, comment in the rtw_ap.c
-looks misspelled by accident. Help fix it.
+On 2021-10-11 19:16, Jaroslav Kysela wrote:
+> On 10. 10. 21 12:40, Diederik de Haas wrote:
+>> On Sunday, 10 October 2021 10:40:09 CEST Jaroslav Kysela wrote:
+>>>> Unfortunately this change broke multichannel audio on my Rock64 
+>>>> device
+>>>> running Debian. My Rock64 is connected to my AVR (Pioneer SC-1224) 
+>>>> via a
+>>>> HDMI cable.
+>>> This looks like an user space configuration problem.
+>> 
+>> I have placed ALSA card definitions (I think) from LibreELEC on my 
+>> system from
+>> https://github.com/LibreELEC/LibreELEC.tv/tree/master/projects/Rockchip/
+>> filesystem/usr/share/alsa/cards
+> 
+> Apparently, the alsa-lib configuration is used in this case.
+> 
+> It seems that there are four sound cards (Analog/HDMI/I2S/SPDIF)
+> created for your hardware. The alsa-lib configuration is a bit weird -
+> an obfuscation for the simple-card driver use. The simple way to
+> resolve this is to create a proper UCM configuration.
+> 
+> If you need further assistance, create an issue for alsa-lib or
+> alsa-ucm-conf on github and with an output from the 'alsa-info.sh'
+> script.
 
-The original error is as below shows:
+Will do.
 
-CHECK: 'followign' may be misspelled - perhaps 'following'?
-+Set to 0 (HT pure) under the followign conditions
+FTR: It's now working again for me on a kernel with this patch included:
+https://github.com/LibreELEC/LibreELEC.tv/issues/5734#issuecomment-940088156
 
-Signed-off-by: Siou-Jhih, Guo <hallblazzar@gmail.com>
----
-Changes in v4:
-  - Refer to the latest commit, 98f668b3.
-  - Mail client, thunderbird, seems wrap the text. Use mutt instead.
+I have no idea whether this is a proper solution or another 
+'workaround', but
+it's working for me again :)
 
-Changes in v3:
-  - Fix wrong signed name in "From" field in email header(mismatch with
-    sign-off).
-  - Refer to the latest commit, ecd667f5f.
-  - Add missing change log between each patch version.
+Thanks for your help.
 
-Changes in v2:
-  - Remove redundant "Subject:" from Subject
-  - Fix missing public mail list in cc list
----
- drivers/staging/r8188eu/core/rtw_ap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/r8188eu/core/rtw_ap.c b/drivers/staging/r8188eu/core/rtw_ap.c
-index eea1307768a0..c78feeb9c862 100644
---- a/drivers/staging/r8188eu/core/rtw_ap.c
-+++ b/drivers/staging/r8188eu/core/rtw_ap.c
-@@ -744,7 +744,7 @@ void update_beacon(struct adapter *padapter, u8 ie_id, u8 *oui, u8 tx)
- 
- /*
- op_mode
--Set to 0 (HT pure) under the followign conditions
-+Set to 0 (HT pure) under the following conditions
- 	- all STAs in the BSS are 20/40 MHz HT in 20/40 MHz BSS or
- 	- all STAs in the BSS are 20 MHz HT in 20 MHz BSS
- Set to 1 (HT non-member protection) if there may be non-HT STAs
--- 
-2.25.1
-
+Diederik
