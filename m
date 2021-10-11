@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F601428EDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:50:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE46428F60
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237744AbhJKNwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:52:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39696 "EHLO mail.kernel.org"
+        id S238044AbhJKN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:57:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237397AbhJKNvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:51:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30D0160F4B;
-        Mon, 11 Oct 2021 13:49:20 +0000 (UTC)
+        id S237616AbhJKN4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:56:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 600E060F35;
+        Mon, 11 Oct 2021 13:53:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960160;
-        bh=XC8DOm1IYkfkc3oE4uLp0C4QhgpOBS3pS7pMg3zef1E=;
+        s=korg; t=1633960397;
+        bh=+fswnZI4WsNWnG3NUD08KRViUosIkRT/U4n41dEg5j0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yV2g+Z4RqbjHIKsmmBLtF6eexb0esEoQShraYKMziaO5GbbkHevcyzm1ZO17GJJTz
-         KFYu5TeZY/n6RN7ZQAiti0Yhy8ei65dwRJkx8V9+uakYIzoY4+Jb0a9LdVt6dH14M7
-         Rx5S2kIkp9EjOtjS+iYfPMR+s7HgJ47sM3t0SaNM=
+        b=G16eyW/gZVL5hFATUdDYTTt0WzbbO/uH8P1DEdReKI3qct5xxJUSe2kCR8HHqIh7d
+         8S1HAlGVKjZeU4RfpPxA8aKJqj6ZmPaBj9+C0LgFCS91mFC21aX8BQizwi1UaGNHQ7
+         z5ka/x74t0TzhDlUkka+x/Th/Hvh3SQV9kDRDzXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 39/52] drm/nouveau/debugfs: fix file release memory leak
-Date:   Mon, 11 Oct 2021 15:46:08 +0200
-Message-Id: <20211011134505.071089694@linuxfoundation.org>
+Subject: [PATCH 5.10 49/83] net/sched: sch_taprio: properly cancel timer from taprio_destroy()
+Date:   Mon, 11 Oct 2021 15:46:09 +0200
+Message-Id: <20211011134510.088097091@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,37 +43,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit f5a8703a9c418c6fc54eb772712dfe7641e3991c ]
+[ Upstream commit a56d447f196fa9973c568f54c0d76d5391c3b0c0 ]
 
-When using single_open() for opening, single_release() should be
-called, otherwise the 'op' allocated in single_open() will be leaked.
+There is a comment in qdisc_create() about us not calling ops->reset()
+in some cases.
 
-Fixes: 6e9fc177399f ("drm/nouveau/debugfs: add copy of sysfs pstate interface ported to debugfs")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Karol Herbst <kherbst@redhat.com>
-Signed-off-by: Karol Herbst <kherbst@redhat.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210911075023.3969054-2-yangyingliang@huawei.com
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+err_out4:
+	/*
+	 * Any broken qdiscs that would require a ops->reset() here?
+	 * The qdisc was never in action so it shouldn't be necessary.
+	 */
+
+As taprio sets a timer before actually receiving a packet, we need
+to cancel it from ops->destroy, just in case ops->reset has not
+been called.
+
+syzbot reported:
+
+ODEBUG: free active (active state 0) object type: hrtimer hint: advance_sched+0x0/0x9a0 arch/x86/include/asm/atomic64_64.h:22
+WARNING: CPU: 0 PID: 8441 at lib/debugobjects.c:505 debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Modules linked in:
+CPU: 0 PID: 8441 Comm: syz-executor813 Not tainted 5.14.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:debug_print_object+0x16e/0x250 lib/debugobjects.c:505
+Code: ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 af 00 00 00 48 8b 14 dd e0 d3 e3 89 4c 89 ee 48 c7 c7 e0 c7 e3 89 e8 5b 86 11 05 <0f> 0b 83 05 85 03 92 09 01 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e c3
+RSP: 0018:ffffc9000130f330 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000000000
+RDX: ffff88802baeb880 RSI: ffffffff815d87b5 RDI: fffff52000261e58
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815d25ee R11: 0000000000000000 R12: ffffffff898dd020
+R13: ffffffff89e3ce20 R14: ffffffff81653630 R15: dffffc0000000000
+FS:  0000000000f0d300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffb64b3e000 CR3: 0000000036557000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __debug_check_no_obj_freed lib/debugobjects.c:987 [inline]
+ debug_check_no_obj_freed+0x301/0x420 lib/debugobjects.c:1018
+ slab_free_hook mm/slub.c:1603 [inline]
+ slab_free_freelist_hook+0x171/0x240 mm/slub.c:1653
+ slab_free mm/slub.c:3213 [inline]
+ kfree+0xe4/0x540 mm/slub.c:4267
+ qdisc_create+0xbcf/0x1320 net/sched/sch_api.c:1299
+ tc_modify_qdisc+0x4c8/0x1a60 net/sched/sch_api.c:1663
+ rtnetlink_rcv_msg+0x413/0xb80 net/core/rtnetlink.c:5571
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
+ netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
+ netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2403
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2457
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2486
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+
+Fixes: 44d4775ca518 ("net/sched: sch_taprio: reset child qdiscs before freeing them")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: Davide Caratti <dcaratti@redhat.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Acked-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Acked-by: Davide Caratti <dcaratti@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/nouveau/nouveau_debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/sched/sch_taprio.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_debugfs.c b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
-index 3b13feca970f..3c54d61e4fa9 100644
---- a/drivers/gpu/drm/nouveau/nouveau_debugfs.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_debugfs.c
-@@ -207,6 +207,7 @@ static const struct file_operations nouveau_pstate_fops = {
- 	.open = nouveau_debugfs_pstate_open,
- 	.read = seq_read,
- 	.write = nouveau_debugfs_pstate_set,
-+	.release = single_release,
- };
+diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+index cb5e5220da55..93899559ba6d 100644
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -1630,6 +1630,10 @@ static void taprio_destroy(struct Qdisc *sch)
+ 	list_del(&q->taprio_list);
+ 	spin_unlock(&taprio_list_lock);
  
- static struct drm_info_list nouveau_debugfs_list[] = {
++	/* Note that taprio_reset() might not be called if an error
++	 * happens in qdisc_create(), after taprio_init() has been called.
++	 */
++	hrtimer_cancel(&q->advance_timer);
+ 
+ 	taprio_disable_offload(dev, q, NULL);
+ 
 -- 
 2.33.0
 
