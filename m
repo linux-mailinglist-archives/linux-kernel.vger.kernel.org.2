@@ -2,106 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7245D428E20
+	by mail.lfdr.de (Postfix) with ESMTP id F0B9F428E23
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbhJKNib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:38:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:56735 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236972AbhJKNiW (ORCPT
+        id S237073AbhJKNif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:38:35 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:40923 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237044AbhJKNi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:38:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633959381;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uHe86D0+9HSkQCQI9gdmYfNs35nscG967x0fei7/3Sc=;
-        b=eNIkVUox3E0MyPTV2g6Olj7xkJK4LQShPTllLUT/PHMqlC7/MtL14JwKzKZd/WcQ44ut1R
-        PM24cuIk6YcttA8mzX8gbvvt+zV6iB8f7DJOcxn5zzwZOnx/CrSqt7gsnQS40NAa2BAuDL
-        JRgT3tEieudP0ZHnE9p7qNYfsQ2NY7I=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-23-hZ8-C2wWNriX89zaQ197NA-1; Mon, 11 Oct 2021 09:36:20 -0400
-X-MC-Unique: hZ8-C2wWNriX89zaQ197NA-1
-Received: by mail-ed1-f69.google.com with SMTP id c30-20020a50f61e000000b003daf3955d5aso15939355edn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 06:36:20 -0700 (PDT)
+        Mon, 11 Oct 2021 09:38:28 -0400
+Received: by mail-ot1-f51.google.com with SMTP id s18-20020a0568301e1200b0054e77a16651so4959403otr.7;
+        Mon, 11 Oct 2021 06:36:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uHe86D0+9HSkQCQI9gdmYfNs35nscG967x0fei7/3Sc=;
-        b=axl3bhoZ156jCoXBHrbuAvz2KwyMzbUlEbGYd/d7ul5dnfPK3wnVG2GBnsTLbfsG2T
-         odBy+WKu/BIsP6GlIBltgdpfc05r9AnbLBiFlxP9tBjGi1VRPCZCBzfSDga9PfPtNOS9
-         w+Q67OCvfWkUj6O3ydBLowhVArveGCoVYQTGy3WwgEoCKgbmMwy/vA2IePFgyD1XKn8+
-         vWEPZ4FLuzj8OGkK3Tbdisp014JKekuQKZUJHTncq/PYskUZO4Ua3I6RXFO8fROPoQh9
-         o1Fk8cSNvLxHsCkMydUm27p1ex23in1h5kQyUam6/psiknhWOC7McrAJLg6yuhrWRLu/
-         Wh4g==
-X-Gm-Message-State: AOAM533H2Yx3at17dO4+QyifC5Zlbf6uZVfTwtOG2cuMgymT3tPzyOwm
-        KPLio+5l6YmFnq9I/4GueuTy01dm4fKvzO2YpIczxdqS6wrVujye73/pXzGQ/tU3s69fTuhUA1K
-        XNqbK1Rdt2zKu1IvU4PiMylmZ
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr16099559ede.238.1633959379474;
-        Mon, 11 Oct 2021 06:36:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrJGPPxVQTyMxL0GifZrDFtfAmBX/n9m1xonFauKYVQffG6tYBEjVi/imTxjJfsMZ+H1bUFg==
-X-Received: by 2002:a05:6402:2787:: with SMTP id b7mr16099531ede.238.1633959379286;
-        Mon, 11 Oct 2021 06:36:19 -0700 (PDT)
-Received: from x1.localdomain ([81.30.35.201])
-        by smtp.gmail.com with ESMTPSA id x14sm4744935edd.25.2021.10.11.06.36.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 06:36:18 -0700 (PDT)
-Subject: Re: [PATCH 0/3] platform/x86: intel_scu_ipc: timeout fixes and
- cleanup
-To:     Prashant Malani <pmalani@chromium.org>,
-        linux-kernel@vger.kernel.org
-Cc:     bleung@chromium.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "open list:X86 PLATFORM DRIVERS" 
-        <platform-driver-x86@vger.kernel.org>
-References: <20210928101932.2543937-1-pmalani@chromium.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <95257882-ed9c-eb04-f09e-9d6e559ece2c@redhat.com>
-Date:   Mon, 11 Oct 2021 15:36:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210928101932.2543937-1-pmalani@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=1pi40TIcKotkV6rxOevddDOHbAMj+lS14ZHs3z6ayJg=;
+        b=kiiPY7O38mybeHFGGcJ0uKsgVxFeXUMFEMPlDXV7SMc6PnLkDAurNK6DoNtspSZhnJ
+         Wozllfwp9tm5RwYrh9pGVOD8rsJJ6zYKx9erAijfzj0xh/allqKSxbV9KDHQBqi6in0/
+         0ZEK7x71C47NclOeZp5p2Kc1wfGqXAcTXs8Xnz7i4YF6rJEre2DkqvGaOZqnoBYFtvZP
+         AR3bdoYz8lDRnBhT79T4JOaQ78Vu1/xJsFPy8D9rGS4v6Dj1743xEA4DVLHUwYtTE0o5
+         WE12U07DmibX5BvYXO5Y1zaVVNJfRrl3k8an9Gm+EpM4HN6r/Q2GUyvgk1WZnTuIjOk6
+         zRvQ==
+X-Gm-Message-State: AOAM531aIzkZ/b0nYhR0ZECBmSCd2hRsHnjvN4m1VGXx8FrcijgvPAdK
+        Rmy0MtWt7rgeG9Chx3QEDQ==
+X-Google-Smtp-Source: ABdhPJwCnGSJxyh6fwYssOa8zYwCnn8BcBhPCI+XeOvGYCYE8QJxZ2s1XOnwdrLFg8s4OhTg7uI/aw==
+X-Received: by 2002:a05:6830:3486:: with SMTP id c6mr20994134otu.101.1633959384440;
+        Mon, 11 Oct 2021 06:36:24 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id l9sm45795oie.15.2021.10.11.06.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 06:36:23 -0700 (PDT)
+Received: (nullmailer pid 504942 invoked by uid 1000);
+        Mon, 11 Oct 2021 13:36:18 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Anup Patel <anup.patel@wdc.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-pm@vger.kernel.org, Atish Patra <atish.patra@wdc.com>,
+        linux-kernel@vger.kernel.org,
+        Sandeep Tripathy <milun.tripathy@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Liush <liush@allwinnertech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org
+In-Reply-To: <20211011081820.1135261-8-anup.patel@wdc.com>
+References: <20211011081820.1135261-1-anup.patel@wdc.com> <20211011081820.1135261-8-anup.patel@wdc.com>
+Subject: Re: [PATCH v8 7/8] dt-bindings: Add common bindings for ARM and RISC-V idle states
+Date:   Mon, 11 Oct 2021 08:36:18 -0500
+Message-Id: <1633959378.228904.504941.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/28/21 12:19 PM, Prashant Malani wrote:
-> This is a short series to make some fixes and timeout value
-> modifications to the SCU IPC driver timeout handling.
+On Mon, 11 Oct 2021 13:48:19 +0530, Anup Patel wrote:
+> The RISC-V CPU idle states will be described in under the
+> /cpus/idle-states DT node in the same way as ARM CPU idle
+> states.
 > 
-> Prashant Malani (3):
->   platform/x86: intel_scu_ipc: Fix busy loop expiry time
->   platform/x86: intel_scu_ipc: Increase virtual timeout to 10s
->   platform/x86: intel_scu_ipc: Update timeout value in comment
+> This patch adds common bindings documentation for both ARM
+> and RISC-V idle states.
+> 
+> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../bindings/arm/msm/qcom,idle-state.txt      |   2 +-
+>  .../devicetree/bindings/arm/psci.yaml         |   2 +-
+>  .../bindings/{arm => cpu}/idle-states.yaml    | 228 ++++++++++++++++--
+>  .../devicetree/bindings/riscv/cpus.yaml       |   6 +
+>  4 files changed, 219 insertions(+), 19 deletions(-)
+>  rename Documentation/devicetree/bindings/{arm => cpu}/idle-states.yaml (74%)
+> 
 
-Thank you for your patch-series, I've applied the series to my
-review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Once I've run some tests on this branch the patches there will be
-added to the platform-drivers-x86/for-next branch and eventually
-will be included in the pdx86 pull-request to Linus for the next
-merge-window.
+yamllint warnings/errors:
 
-Since these are clear bug fixes I will also include these
-in my upcoming pdx86-fixes pull-req for 5.15 .
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpu/idle-states.yaml: patternProperties:^(cpu|cluster)-:properties:compatible:oneOf: [{'const': 'arm,idle-state'}, {'const': 'riscv,idle-state'}] should not be valid under {'items': {'propertyNames': {'const': 'const'}, 'required': ['const']}}
+	hint: Use 'enum' rather than 'oneOf' + 'const' entries
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpu/idle-states.yaml: ignoring, error in schema: patternProperties: ^(cpu|cluster)-: properties: compatible: oneOf
+warning: no schema found in file: ./Documentation/devicetree/bindings/cpu/idle-states.yaml
+Documentation/devicetree/bindings/arm/psci.example.dt.yaml:0:0: /example-3/cpus/idle-states/cpu-power-down: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cpu-retention-0-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cluster-retention-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cpu-sleep-0-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cluster-sleep-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cpu-retention-1-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cluster-retention-1: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cpu-sleep-1-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-0/cpus/idle-states/cluster-sleep-1: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-1/cpus/idle-states/cpu-sleep-0-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-1/cpus/idle-states/cluster-sleep-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-1/cpus/idle-states/cpu-sleep-1-0: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-1/cpus/idle-states/cluster-sleep-1: failed to match any schema with compatible: ['arm,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cpu-retentive-0-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cpu-nonretentive-0-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cluster-retentive-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cluster-nonretentive-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cpu-retentive-1-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cpu-nonretentive-1-0: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cluster-retentive-1: failed to match any schema with compatible: ['riscv,idle-state']
+Documentation/devicetree/bindings/cpu/idle-states.example.dt.yaml:0:0: /example-2/cpus/idle-states/cluster-nonretentive-1: failed to match any schema with compatible: ['riscv,idle-state']
 
-Regards,
+doc reference errors (make refcheckdocs):
 
-Hans
+See https://patchwork.ozlabs.org/patch/1539173
 
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
