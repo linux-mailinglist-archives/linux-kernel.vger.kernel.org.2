@@ -2,164 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C07C428A37
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E117D428A3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235663AbhJKJzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
+        id S235676AbhJKJ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 05:58:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235522AbhJKJzo (ORCPT
+        with ESMTP id S235522AbhJKJ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:55:44 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5863AC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 02:53:44 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id d9so41604437edh.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 02:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xJnQ1oTbprGYdIkFA4ySIUQFtDTFkncKqirdWOx0uac=;
-        b=kRBvoqhKzNcoEEhEkPE6VTinGN5nfG0M2/tZNXFf7S+CG04r3Kz2wsO2CbwToW1+qb
-         L7/S8W9iZZB/cTigI89EJwsdPG8PdrAo5xhrDl7636XCAAvXQm4CnFkIWeKIpcjMTL51
-         35NUt88qI1kTElspZnE1tmqNfzW/2ZPoKjwGfAiiz6vd4xyN/i/JSl4wXqKu+JDA6hX8
-         cUHLRbJVz9CVAc3KKIJ7coi6odbhRYt7gMGDVgNMn3B/uf6AHHRtrALuUillPxxEfIFn
-         lH43TFd2U7HM9m+JA/PgVzQbMdaA1yNqV2y5Rf5T7IgViUKZhNrzmzirGVhPZmys9CL3
-         085Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xJnQ1oTbprGYdIkFA4ySIUQFtDTFkncKqirdWOx0uac=;
-        b=vrDf56yhU1KDeMEN2kud0DakDVsZZSpk3cfVXlskRZnW7ESoqDET8I7JpAeQk3Tskr
-         58wnsX+U78n5dqXsQbWsPLsCuLk25IX6kenxqYfSOYF5B+Ssq+YqWRARpQ/TexLd3SmP
-         MIVZ3f8Z140LNIaG1fdk/TH86fJf/n2BBrS0V7QLwxwscoRxK3h+HEUyr2WzCUNOVcVb
-         uOs19xH5odwQdNnuLqiFe74QwLI4Er8pWrwpbIlwm1a+cilymXHTh3Ndf0+3zh7Q/2R7
-         64vHArVYdCiENfsalWvemwr3+dgQLt3KIk1erYULI1XXCnm2xZ9QKKJjNHLlnXBbi8RL
-         EnRw==
-X-Gm-Message-State: AOAM5334x5Pey5zR8HaVZw4VOfsvKLyiqUbYC6E7kfYD+BSmXgSD9Tgf
-        nYBBpOgamR7ZrKBrw6qOrs1g/d5DJK0=
-X-Google-Smtp-Source: ABdhPJwFKNBO/z+f5x/qmFDF3FynFeR0KZ2BJRvFUxzICuqd3Qeg4CND1yB+Bf+9aJnT8HqVKc1Yqw==
-X-Received: by 2002:a17:906:c041:: with SMTP id bm1mr24613535ejb.280.1633946022806;
-        Mon, 11 Oct 2021 02:53:42 -0700 (PDT)
-Received: from localhost.localdomain (host-79-43-109-12.retail.telecomitalia.it. [79.43.109.12])
-        by smtp.gmail.com with ESMTPSA id e13sm3226167eje.95.2021.10.11.02.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 02:53:42 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, julia.lawall@inria.fr
-Subject: Re: [PATCH v2] staging: r8188eu: Provide a TODO file for this driver
-Date:   Mon, 11 Oct 2021 11:53:40 +0200
-Message-ID: <3132934.4g9fEnOrTt@localhost.localdomain>
-In-Reply-To: <20211011082134.GM2083@kadam>
-References: <20210826130342.9552-1-fmdefrancesco@gmail.com> <2664974.42EkL7omyK@localhost.localdomain> <20211011082134.GM2083@kadam>
+        Mon, 11 Oct 2021 05:58:40 -0400
+Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3A0C061570;
+        Mon, 11 Oct 2021 02:56:40 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id Zs2qmxezZk3b0Zs2tmLyFv; Mon, 11 Oct 2021 11:56:36 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1633946196; bh=LG8kagaKuABxfT0AH2KzGKN8lZd+955tYJGlfULwuEM=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=FAWXWuFGc4FXI+oc1huK5f+QRuMsVep8QBV+wiUgK8b7OY0EZBJjk7gmOqs64lzqx
+         vYhsBI9A4IrPmbfsUKJ81mLRtKEi47hVkeqbPNIz4NvheuAOkD+yuiwVbVas+NvNXH
+         13zXTuaq5C8w2haRhsAxdAhytBpkCUNHZikvEd0yfRRMzStjG0T3vQ/JtRGj3uNBJe
+         fcxbl5aLT5qOHfYMAlH4FjpXD4HbDe/ASxpofFZTwk3Y/sgG/ORI3O7X2hX+ylgaQV
+         oyniUHdDdBIT3/CfKqeSINKPU99jMHipextB4O1pMbcQlNVx2GqdOziqvM7aENqHCs
+         +LcJ6rpNSKELA==
+Subject: Re: [RESENT PATCH V0 0/4] media: some framework interface extension
+ for new feature of Mediatek Camsys driver
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To:     Louis Kuo <louis.kuo@mediatek.com>, sakari.ailus@linux.intel.com,
+        laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
+        matthias.bgg@gmail.com, arnd@arndb.de,
+        sergey.senozhatsky@gmail.com, helen.koike@collabora.com,
+        niklas.soderlund+renesas@ragnatech.se, yepeilin.cs@gmail.com
+Cc:     frederic.chen@mediatek.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210507074604.15079-1-louis.kuo@mediatek.com>
+ <61393c9e-6f28-a357-8ea1-3590e883f107@xs4all.nl>
+Message-ID: <4109bf9b-7210-6b1c-1614-abb1bbd74c6c@xs4all.nl>
+Date:   Mon, 11 Oct 2021 11:56:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <61393c9e-6f28-a357-8ea1-3590e883f107@xs4all.nl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfH4GmGFpw4AelMZ2xke1e8WqwMh2XTbSad9xxewZIIjI+sAPk6WMnJOZRxBsAhuiDitwhJn0KvEp3M9tTPq16AJJCLhi+0hdwBIxCAf08bkfaWArKNM7
+ +6yukj4sV4Ev1dwni52GzkMex74U43WPzhajZCw0+7pgoP7LZM17k0MSvRo4VFNqFgpCHSopQaWeD2a0l/zSgKhJcpOXgpyqp4393uZD6h1lJ+XgA6v5nxME
+ ihDZWZ2fig2zqbe9x+i4GAbamVy50WeQqlkcQyOpxYHLXLaZ8cHgtRR6Omerp8TI2cS+wW55R5TOpyxRrLsZN76MnV6vYwklthsJL+BxakUGtKSUkehrADdp
+ zxMr2/5G14E9fzaxGnWhUv7FUb1YAxuyRPTh1VbQwG3/Y3nIlW2GGFJjMd0eKm0TuhaR/jFQfFbdVR4uEVdwG48Z/gZneoZEANsorBl4VMwxJ7KKL04zI/rk
+ I6hPwd6fFVKn4izpHN7OHgrWQ895JOsrtHvOv0XGTH+WcWERZJcG6Nx8z+i+fGKeytQkMq7E+eR7X0wWU2QrmOtmbFXNVoFLepSZ0lUl6sLVGiTGICoIw1Y7
+ TBf7nKoPn6n7bkTwKiStwTo64sVyv1bgwPG7qamBtrNVZH2M6KxOqF8XlqrAEn9Cbu8TDW/fBRg70l72OjvjtI+L0J+KNspQGNeJ2RfQbYkNDTw5elNpeY+m
+ RL+0Qx7DIOFNK7nQ0qQ93WhBuPk3HSKmy8ahR803QfbQet6ycA5eIldHNoGkmR0xlLojO+QLN7Q=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, October 11, 2021 10:21:34 AM CEST Dan Carpenter wrote:
-> On Sun, Oct 10, 2021 at 11:21:49AM +0200, Fabio M. De Francesco wrote:
-> > On Saturday, October 9, 2021 6:31:12 PM CEST Fabio M. De Francesco wrote:
-> > > On Thursday, August 26, 2021 3:54:13 PM CEST Dan Carpenter wrote:
-> > > > Another thing to fix are some of the sleeping in atomic bugs.
-> > > > 
-> > > > drivers/staging/r8188eu/core/rtw_ap.c:139 update_BCNTIM() warn: 
-sleeping
-> > > > in atomic context
-> > > > drivers/staging/r8188eu/core/rtw_ap.c:1296 update_bcn_wps_ie() warn: 
-> > > > sleeping in atomic context
-> > > >
-> > > > [...]
-> > > >
-> > > Hello Dan,
-> > > 
-> > > I'd like to address these kind of bugs, but I have a couple of 
-questions 
-> > > about them.
-> > > 
-> > > 1) You've listed what looks like the output of a compiler or static
-> > > analyzer. 
-> > > How did you get the warnings you copy-pasted above?
-> > > 
-> > > 2) I know that both the execution of interrupt handlers (ISRs) as well 
-as
-> > > any 
-> > > code blocks that are executed holding spinlocks are "atomic contexts". 
-In 
-> > > these cases, "sleeping" is not allowed (for obvious reasons). Besides 
-the
-> > > two 
-> > > mentioned above, are there any further cases of "atomic contexts" in 
-the 
-> > > kernel?
-> > 
-> > After some research, I've found that Softirqs and Tasklets are also 
-executed 
-> > in "atomic context", as hardware interrupt service routines are.
-> > 
-> > Furthermore, I've also found a .config option named DEBUG_ATOMIC_SLEEP
-> > that should warn if some code is sleeping in "atomic context". However, 
-the 
-> > documentation of that option does not explain where the output of these 
-> > checks can be read.
-> > 
-> > I would appreciate any help on this matter.
+On 14/06/2021 12:56, Hans Verkuil wrote:
+> Hi Louis,
 > 
-> These are a new Smatch warning.
+> On 07/05/2021 09:46, Louis Kuo wrote:
+>> Hello,
+>>
+>> This is the first version of the patch series extending V4L2 and media
+>> framework to support some advanced camera function, for example, to change
+>> the sensor when ISP is still streaming. A typical scenario is the wide-angle
+>> sensor and telephoto sensor switching in camera application. When the user
+>> is using the zooming UI, the application needs to switch the sensor from
+>> wide-angle sensor to telephoto sensor smoothly.
+>>
+>> To finish the function, we may need to modify the links of a pipeline and
+>> the format of pad and video device per request. Currently, the link,
+>> pad and video device format and selection settings are not involved in
+>> media request's design. Therefore, we try to extend the related interface
+>> to support the request-based operations. In the early version, we added
+>> request fd to the parameters of MEDIA_IOC_SETUP_LINK,
+>> VIDIOC_S_FMT, VIDIOC_SUBDEV_S_SELECTION, VIDIOC_SUBDEV_S_FMT.
+>> The driver uses media_request_get_by_fd() to retrieve the media request
+>> and save the pending change in it, so that we can apply the pending change
+>> in req_queue() callback then.
+>>
+>> Here is an example:
+>>
+>> int mtk_cam_vidioc_s_selection(struct file *file, void *fh,
+>> 				struct v4l2_selection *s)
+>> {
+>> 	struct mtk_cam_device *cam = video_drvdata(file);
+>> 	struct mtk_cam_video_device *node = file_to_mtk_cam_node(file);
+>> 	struct mtk_cam_request_stream_data *stream_data;
+>> 	struct mtk_cam_request *cam_req;
+>> 	struct media_request *req;
+>> 	s32 fd;
+>>
+>> 	fd = s->request_fd;
+>> 	if (fd < 0)
+>> 		return -EINVAL;
+>>
+>> 	req = media_request_get_by_fd(&cam->media_dev, fd);
+>>
+>> 	/* .... */
+>>  
+>> 	cam_req = to_mtk_cam_req(req);
+>> 	stream_data = &cam_req->stream_data[node->uid.pipe_id];
+>> 	stream_data->vdev_selection_update |= (1 << node->desc.id);
+>> 	stream_data->vdev_selection[node->desc.id] = *s;
+>>
+>> 	/* .... */
+>>
+>> 	media_request_put(req);
+>>
+>> 	return 0;
+>> }
+>>
+>> I posted interface change to discuss first and would like some
+>> review comments.
+>>
+>> Thank you very much.
 > 
-> https://lkml.org/lkml/2021/9/1/950
+> Just adding a request_fd in several places is the easy bit. The much
+> harder part is where to store that information, and even harder is an
+> outstanding issue with the request framework:
 > 
-> You would need to rebuild the Smatch database probably around five times
-> to see the warnings.  It takes a long time to build...  It's probably
-> not that hard to figure out just from looking at the code without the
-> generating the warning.
+> Currently the request framework is only used with decoder drivers, so
+> there are no subdev drivers involved. I suspect that there is a fair
+> amount of work to do to make it work well if part of the request configuration
+> is for subdev drivers.
+> 
+> Ideally I would like to see a proof-of-concept with the vimc driver.
+> 
+> I think getting this right is quite a lot of work. The public API part
+> is just a minor part of that since the public API was designed with support
+> for this in mind. It's the internal kernel support that is lacking.
+> 
+> If you want to pursue this (and that would be great!), then start with
+> vimc and initially just support controls in a request. The core problem
+> is likely to be how to keep track of the request data if it is spread
+> out between the bridge driver and subdev drivers, and that can be tested
+> with just supporting controls.
+> 
+> Adding support for formats and selection rectangles is, I think, much less
+> difficult and can be addressed later. Changing the topology in a request
+> is a separate issue as well, and I would suggest that you postpone that.
+> There is some low-level work going on that might make this easier in the
+> near future (1), we'll have to wait and see.
 
-I must confess that, since I started to submit patches to the Kernel this 
-year in April and until now, I have not ever used Smatch. I thought that 
-building with GCC and setting C=2 and W=1 were enough. Sometimes I've 
-also used Coccinelle. That's all.
-
-Now I admit that I was plainly wrong. My _big_ fault, sorry :(
-
-This morning I have taken a quick look at your code at https://github.com/
-error27/smatch. Obviously, what I could see is only the overall design and it 
-looks quite impressive. I'll start using Smatch soon.
-
-> So spin locks can't sleep.  Mutexes can.  There are read/write locks,
-> built on both mutexes and spin locks.  Rcu_read/write cannot sleep.
-
-Oh, right. RCU were missing from my lists.
-
-Thanks very much for Smatch and for your kind replies.
+Just FYI: I have not heard anything about this since my reply, so I am marking
+this series as RFC in patchwork.
 
 Regards,
 
-Fabio M. De Francesco
+	Hans
 
-P.S.: Yesterday I read the first one third of a paper co-authored by Julia 
-Lawall (Effective Detection of Sleep-in-atomic-context Bugs
-in the Linux Kernel - https://doi.org/10.1145/3381990). 
-
-It talks about a practical static approach named DSAC. It looks really 
-interesting, but it seems that their tool is not yet available to the public. 
-
-Do you know something about it? I've found an old message by Greg K-H that 
-asked for where to find that tool but, as far as I know, he have not yet had 
-that information. With this message I've Cc'd Julia in case she has time to 
-reply.
-
-> regards,
-> dan carpenter
 > 
+> Regards,
 > 
-
-
-
+> 	Hans
+> 
+> (1): https://patchwork.linuxtv.org/project/linux-media/cover/20210524104408.599645-1-tomi.valkeinen@ideasonboard.com/
+> 
+>>
+>>   media: v4l2-core: extend the v4l2 format to support request
+>>   media: subdev: support which in v4l2_subdev_frame_interval
+>>   media: v4l2-ctrl: Add ISP Camsys user control
+>>   media: pixfmt: Add ISP Camsys formats
+>>
+>>  drivers/media/mc/mc-device.c         |   7 +-
+>>  drivers/media/v4l2-core/v4l2-ioctl.c | 153 ++++++++++++++++++++++++++-
+>>  include/media/media-entity.h         |   3 +
+>>  include/uapi/linux/media.h           |   3 +-
+>>  include/uapi/linux/v4l2-controls.h   |   4 +
+>>  include/uapi/linux/v4l2-subdev.h     |   8 +-
+>>  include/uapi/linux/videodev2.h       | 109 ++++++++++++++++++-
+>>  7 files changed, 275 insertions(+), 12 deletions(-)
+>>
+>>
+> 
 
