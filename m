@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD4C4295DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930A44295DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhJKRkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:40:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58900 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232708AbhJKRj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:39:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A26E60560;
-        Mon, 11 Oct 2021 17:37:56 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 18:37:52 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        cluster-devel <cluster-devel@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [RFC][arm64] possible infinite loop in btrfs search_ioctl()
-Message-ID: <YWR2cPKeDrc0uHTK@arm.com>
-References: <20210827164926.1726765-6-agruenba@redhat.com>
- <YSkz025ncjhyRmlB@zeniv-ca.linux.org.uk>
- <CAHk-=wh5p6zpgUUoY+O7e74X9BZyODhnsqvv=xqnTaLRNj3d_Q@mail.gmail.com>
- <YSk7xfcHVc7CxtQO@zeniv-ca.linux.org.uk>
- <CAHk-=wjMyZLH+ta5SohAViSc10iPj-hRnHc-KPDoj1XZCmxdBg@mail.gmail.com>
- <YSk+9cTMYi2+BFW7@zeniv-ca.linux.org.uk>
- <YSldx9uhMYhT/G8X@zeniv-ca.linux.org.uk>
- <YSqOUb7yZ7kBoKRY@zeniv-ca.linux.org.uk>
- <YS40qqmXL7CMFLGq@arm.com>
- <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk>
+        id S233243AbhJKRkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232277AbhJKRkJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:40:09 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F76BC06161C;
+        Mon, 11 Oct 2021 10:38:09 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id y1so11767872plk.10;
+        Mon, 11 Oct 2021 10:38:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WTDymu/kK4gMRJAHOJpsOJeHyCsZ/lww9DjrtPbDpJ4=;
+        b=HwHRRV+S/RE+GIDbxexsfa91uds8RaTJQMPwbLhyAkzd491qats0xSsaC4mhiRl6Jq
+         gXXjtWMCRFCl24UDsqtfCnqLD1Cbtd/93S7HO5AgB4ueGG4bEHV+hcSl1HJMqS26/8sA
+         AKDOYmV4WnzsAqwxPmP3185eWqTzwnWRl2QPIf3ODwukpfqNg79k8CXYXbmjBmwmlM7H
+         JLjBNNDOGJ+Mxf3ToELn+xPiqYpbj9hM9X5kn0apcvp1wMCYCAV20W1pQqigoIPr8oqY
+         TGxAUPwne4Rec2JXIdYu17BaZHyNtS6uIqjuojEWOKeCG+TbAaPT/AAhWcUg9ysN4hhq
+         wH4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WTDymu/kK4gMRJAHOJpsOJeHyCsZ/lww9DjrtPbDpJ4=;
+        b=pEySNMGyfKN0LhsuGrEnaujwUsG5yy6keiiDjkenRyt3junaA3t6EcHB56bVO7oMwO
+         0fb2kE434Zw9nkXAY7/mIPsVxmJoqo5S1AGtZpZAUBiLv2vi/Vb+HAzCTh20wXnOGpqC
+         r4zif068qL9Yq6zL8DsYMHBvJciETqaWZfNHr3uBAfi4dpfVvk/TbPShtKh3+cqrArtC
+         o1a/K9al8UtgA7R53YZYeQKbn5U6d4JPG4rz059vRD+UM2WjLZmWtT+/UIH80WCPFEm0
+         1wygVF7NXAbu9qlbcaklqLDeZnEqgXdQtEmrA8XDJweoqf6vUgGylV6HlXmSqCe8+uTZ
+         930Q==
+X-Gm-Message-State: AOAM531MbS8/QzG1i8jH5G3lMUkVTy/ddLFaUTtkmAAAJ2r9HbjuTUZ9
+        hdYAxTIT6a72KSJFGt0nqfo=
+X-Google-Smtp-Source: ABdhPJxEBdoXamrVCKeesJUkEsfNWnP0PDrt34jLeyC7FqCvn2xqaY1LwruNHL9Qwq4e9o9alifRPA==
+X-Received: by 2002:a17:90a:67c1:: with SMTP id g1mr335114pjm.177.1633973888608;
+        Mon, 11 Oct 2021 10:38:08 -0700 (PDT)
+Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
+        by smtp.gmail.com with ESMTPSA id c12sm8456919pfc.161.2021.10.11.10.38.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 10:38:08 -0700 (PDT)
+From:   Naveen Naidu <naveennaidu479@gmail.com>
+To:     bhelgaas@google.com
+Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-mediatek@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 01/22] PCI: Add PCI_ERROR_RESPONSE and it's related defintions
+Date:   Mon, 11 Oct 2021 23:07:53 +0530
+Message-Id: <5b4ba38fa56c7625d391383a3aed47dea6726946.1633972263.git.naveennaidu479@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
+References: <cover.1633972263.git.naveennaidu479@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS5KudP4DBwlbPEp@zeniv-ca.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 03:28:57PM +0000, Al Viro wrote:
-> On Tue, Aug 31, 2021 at 02:54:50PM +0100, Catalin Marinas wrote:
-> > An arm64-specific workaround would be for pagefault_disable() to disable
-> > tag checking. It's a pretty big hammer, weakening the out of bounds
-> > access detection of MTE. My preference would be a fix in the btrfs code.
-> > 
-> > A btrfs option would be for copy_to_sk() to return an indication of
-> > where the fault occurred and get fault_in_pages_writeable() to check
-> > that location, even if the copying would restart from an earlier offset
-> > (this requires open-coding copy_to_user_nofault()). An attempt below,
-> > untested and does not cover read_extent_buffer_to_user_nofault():
-> 
-> Umm...  There's another copy_to_user_nofault() call in the same function
-> (same story, AFAICS).
+An MMIO read from a PCI device that doesn't exist or doesn't respond
+causes a PCI error.  There's no real data to return to satisfy the
+CPU read, so most hardware fabricates ~0 data.
 
-I cleaned up this patch [1] but I realised it still doesn't solve it.
-The arm64 __copy_to_user_inatomic(), while ensuring progress if called
-in a loop, it does not guarantee precise copy to the fault position. The
-copy_to_sk(), after returning an error, starts again from the previous
-sizeof(sh) boundary rather than from where the __copy_to_user_inatomic()
-stopped. So it can get stuck attempting to copy the same search header.
+Add a PCI_ERROR_RESPONSE definition for that and use it where
+appropriate to make these checks consistent and easier to find.
 
-An ugly fix is to fall back to byte by byte copying so that we can
-attempt the actual fault address in fault_in_pages_writeable().
+Also add helper definitions SET_PCI_ERROR_RESPONSE and
+RESPONSE_IS_PCI_ERROR to make the code more readable.
 
-If the sh being recreated in copy_to_sk() is the same on the retried
-iteration, we could use an *sk_offset that is not a multiple of
-sizeof(sh) in order to have progress. But it's not clear to me whether
-the data being copied can change once btrfs_release_path() is called.
+Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+---
+ include/linux/pci.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/log/?h=devel/btrfs-fix
-
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index cd8aa6fce204..928c589bb5c4 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -154,6 +154,15 @@ enum pci_interrupt_pin {
+ /* The number of legacy PCI INTx interrupts */
+ #define PCI_NUM_INTX	4
+ 
++/*
++ * Reading from a device that doesn't respond typically returns ~0.  A
++ * successful read from a device may also return ~0, so you need additional
++ * information to reliably identify errors.
++ */
++#define PCI_ERROR_RESPONSE			(~0ULL)
++#define SET_PCI_ERROR_RESPONSE(val)	(*val = ((typeof(*val)) PCI_ERROR_RESPONSE))
++#define RESPONSE_IS_PCI_ERROR(val)	(*val == ((typeof(*val)) PCI_ERROR_RESPONSE))
++
+ /*
+  * pci_power_t values must match the bits in the Capabilities PME_Support
+  * and Control/Status PowerState fields in the Power Management capability.
 -- 
-Catalin
+2.25.1
+
