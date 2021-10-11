@@ -2,195 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7463B4286B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A214286B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234121AbhJKGT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234116AbhJKGTz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:19:55 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5843CC06161C
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:17:55 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w14so11606884edv.11
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 23:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=JgZFL1gbaLa9EwP6bgcRPQEmNK/hbPIe9fBJ0qz2WNE=;
-        b=Wn1NP/SCh1lD8vj0hwMTgkYtoME/EeJPlAmzpOBMrfg7wY3yiSCN0Ffgy7EGhmHRPC
-         zRP7m0Y/4+Rm7SZybudj81DF38xcOAVc8Nyg3mIMTy+wAEqIGuqXG8NeBGPaZ6OLFpoU
-         ln5kLnnhFqGos7H5t7+iF1Ul0zQEwfYjTOeMKPAj6lU+wf/Qp3F9r1F7eNjOZIXxaGEg
-         KoZ6nAO/xYkS7A8NBVh3x52f7ZK4SkdCPQSLHl1wumnP0378CA8BmoNLmuA6iHfK3zou
-         t4Z9Bry2XRLH0Uqzprc/zZppCg6s1eUAXvjWeRavbxlmoe9wLpfxiATGoBwEq2F3hobE
-         FheA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=JgZFL1gbaLa9EwP6bgcRPQEmNK/hbPIe9fBJ0qz2WNE=;
-        b=7NcxUrljpe10WdP0StFH0gnmPOq1Jx1f3AHtH+s3iLBOH/h/dO/Y5KavPfdYQ6uWX3
-         XGUELqk/IyHgvrFL7DI/6eza2qPCeKlv4TICnCU4DOpl1aUH2PgGuv5WSqgir+hSS0zD
-         akfkU5vHFMdUYjrnlZb2wIU2tbwTx3EHVqh87BJ5Xn/+z5rzRLS22pXSLuFPfSh3FoAe
-         8g+rVU7kvRzNkxtJ2+yN8LitV25RzodRz46Pc3wf2+qGWEDTf27P6wPCkLJagcqcQdQm
-         k2IhPKYHKIXUZAIqLcSJDjWSL2OG1zOdMXCejqQPamlkS0BorbntSf6BzPsiXa58D6Rs
-         //2w==
-X-Gm-Message-State: AOAM531zuEazjF/PZlAjQTVd1HwWeD6htpZig54Dpn8QmmeCT/HNX/bt
-        dslNEDo4brN1gEfctBs1BHBYkk5nhvSNorTbtsqNBQ==
-X-Google-Smtp-Source: ABdhPJwoQalBJZOhb3Yo1GbsmrfZ+B7X+l1AbPRIvtMqw7LXKPPxvt4v8nMcKO6w2OoJWga+avsMf5+tN/Uwwug30zQ=
-X-Received: by 2002:a17:906:c302:: with SMTP id s2mr22596326ejz.499.1633933073798;
- Sun, 10 Oct 2021 23:17:53 -0700 (PDT)
+        id S234124AbhJKGUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 02:20:31 -0400
+Received: from mga02.intel.com ([134.134.136.20]:9039 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233874AbhJKGUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 02:20:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="213952386"
+X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
+   d="scan'208";a="213952386"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2021 23:18:31 -0700
+X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
+   d="scan'208";a="490337863"
+Received: from acleivam-mobl1.amr.corp.intel.com (HELO pujfalus-desk.ger.corp.intel.com) ([10.249.40.144])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2021 23:18:29 -0700
+From:   Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+To:     apw@canonical.com, joe@perches.com
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com,
+        peter.ujfalusi@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] checkpatch: get default codespell dictionary path from package location
+Date:   Mon, 11 Oct 2021 09:18:39 +0300
+Message-Id: <20211011061839.4199-1-peter.ujfalusi@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 11 Oct 2021 11:47:42 +0530
-Message-ID: <CA+G9fYuqwJD5bFO74vG6Mvbbt1G8rxzd_NDHg-gtOZ6rPjeu3A@mail.gmail.com>
-Subject: clang-13: s390/kernel/head64.S:24:17: error: invalid operand for instruction
-To:     llvm@lists.linux.dev, linux-s390@vger.kernel.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Please ignore this email if it is already reported ]
+The standard location of dictionary.txt is under codespell's package, on
+my machine atm (codespell 2.1, Artix Linux):
+/usr/lib/python3.9/site-packages/codespell_lib/data/dictionary.txt
 
-Following s390 builds failed due to warnings / errors.
+Since we enable the codespell by default for SOF I have constant:
+No codespell typos will be found - \
+file '/usr/share/codespell/dictionary.txt': No such file or directory
 
-metadata:
-    git_describe: v5.15-rc5
-    git_repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-    git_short_log: 64570fbc14f8 (\"Linux 5.15-rc5\")
-    target_arch: s390
-    toolchain: clang-13
+The patch proposes to try to fix up the path following the recommendation
+found here:
+https://github.com/codespell-project/codespell/issues/1540
 
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+---
+ scripts/checkpatch.pl | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-Fail (2861 errors) s390 (tinyconfig) with clang-nightly
-  @ https://builds.tuxbuild.com/1zL35IUSGhDGeVuyIrAp7eyzEUi/
-Fail (2861 errors) s390 (tinyconfig) with clang-13
-  @ https://builds.tuxbuild.com/1zL35Hn7wjErKsLDM6zAgh27BYJ/
-Fail (4112 errors) s390 (allnoconfig) with clang-13
-  @ https://builds.tuxbuild.com/1zL35HR60hSFvBmAcYJvKHm8Lko/
-Fail (4112 errors) s390 (allnoconfig) with clang-nightly
-  @ https://builds.tuxbuild.com/1zL35DTlrX9qRGCtGqgtmmMDjnQ/
-Fail (23048 errors) s390 (defconfig) with clang-13
-  @ https://builds.tuxbuild.com/1zL35DE2KWQUPxbbXeTbwIJaWXS/
-Fail (23045 errors) s390 (defconfig) with clang-nightly
-  @ https://builds.tuxbuild.com/1zL35EgeQfWQDXDupp4itkUO5At/
-
-
-Build errors log:
-----------------
-arch/s390/kernel/head64.S:24:17: error: invalid operand for instruction
- lctlg %c0,%c15,.Lctl-.LPG1(%r13) # load control registers
-                ^
-arch/s390/kernel/head64.S:40:8: error: invalid operand for instruction
- lpswe .Ldw-.(%r13) # load disabled wait psw
-       ^
-make[3]: *** [scripts/Makefile.build:379: arch/s390/kernel/head64.o] Error 1
-In file included from kernel/sched/cputime.c:5:
-In file included from kernel/sched/sched.h:5:
-In file included from include/linux/sched.h:14:
-In file included from include/linux/pid.h:6:
-In file included from include/linux/wait.h:9:
-In file included from include/linux/spinlock.h:94:
-arch/s390/include/asm/spinlock.h:89:3: error: expected absolute expression
-                ALTERNATIVE("", ".long 0xb2fa0070", 49) /* NIAI 7 */
-                ^
-arch/s390/include/asm/alternative.h:111:2: note: expanded from macro
-'ALTERNATIVE'
-        ALTINSTR_REPLACEMENT(altinstr, 1)                               \
-        ^
-arch/s390/include/asm/alternative.h:106:2: note: expanded from macro
-'ALTINSTR_REPLACEMENT'
-        INSTR_LEN_SANITY_CHECK(altinstr_len(num))
-        ^
-arch/s390/include/asm/alternative.h:62:3: note: expanded from macro
-'INSTR_LEN_SANITY_CHECK'
-        ".if " len " > 254\n"                                           \
-         ^
-<inline asm>:5:5: note: instantiated into assembly here
-.if 6651b-6641b > 254
-    ^
-In file included from kernel/sched/cputime.c:5:
-In file included from kernel/sched/sched.h:5:
-In file included from include/linux/sched.h:14:
-In file included from include/linux/pid.h:6:
-In file included from include/linux/wait.h:9:
-In file included from include/linux/spinlock.h:94:
-arch/s390/include/asm/spinlock.h:89:3: error: cpu alternatives does
-not support instructions blocks > 254 bytes
-                ALTERNATIVE("", ".long 0xb2fa0070", 49) /* NIAI 7 */
-                ^
-arch/s390/include/asm/alternative.h:111:2: note: expanded from macro
-'ALTERNATIVE'
-        ALTINSTR_REPLACEMENT(altinstr, 1)                               \
-        ^
-arch/s390/include/asm/alternative.h:106:2: note: expanded from macro
-'ALTINSTR_REPLACEMENT'
-        INSTR_LEN_SANITY_CHECK(altinstr_len(num))
-        ^
-arch/s390/include/asm/alternative.h:63:3: note: expanded from macro
-'INSTR_LEN_SANITY_CHECK'
-        "\t.error \"cpu alternatives does not support instructions "    \
-         ^
-<inline asm>:6:2: note: instantiated into assembly here
-        .error "cpu alternatives does not support instructions blocks
-> 254 bytes"
-        ^
-In file included from kernel/sched/cputime.c:5:
-In file included from kernel/sched/sched.h:5:
-In file included from include/linux/sched.h:14:
-In file included from include/linux/pid.h:6:
-In file included from include/linux/wait.h:9:
-In file included from include/linux/spinlock.h:94:
-arch/s390/include/asm/spinlock.h:89:3: error: expected absolute expression
-                ALTERNATIVE("", ".long 0xb2fa0070", 49) /* NIAI 7 */
-                ^
-arch/s390/include/asm/alternative.h:111:2: note: expanded from macro
-'ALTERNATIVE'
-        ALTINSTR_REPLACEMENT(altinstr, 1)                               \
-        ^
-arch/s390/include/asm/alternative.h:106:2: note: expanded from macro
-'ALTINSTR_REPLACEMENT'
-        INSTR_LEN_SANITY_CHECK(altinstr_len(num))
-        ^
-arch/s390/include/asm/alternative.h:66:3: note: expanded from macro
-'INSTR_LEN_SANITY_CHECK'
-        ".if (" len ") %% 2\n"                                          \
-         ^
-<inline asm>:8:5: note: instantiated into assembly here
-.if (6651b-6641b) % 2
-    ^
-In file included from kernel/sched/cputime.c:5:
-In file included from kernel/sched/sched.h:5:
-In file included from include/linux/sched.h:14:
-In file included from include/linux/pid.h:6:
-In file included from include/linux/wait.h:9:
-In file included from include/linux/spinlock.h:94:
-arch/s390/include/asm/spinlock.h:89:3: error: cpu alternatives
-instructions length is odd
-                ALTERNATIVE("", ".long 0xb2fa0070", 49) /* NIAI 7 */
-                ^
-
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-tuxmake --runtime podman --target-arch s390 --toolchain clang-13
---kconfig defconfig
-
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index c27d2312cfc3..e8e416056066 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -73,6 +73,12 @@ my $git_command ='export LANGUAGE=en_US.UTF-8; git';
+ my $tabsize = 8;
+ my ${CONFIG_} = "CONFIG_";
+ 
++# Override the codespellfile location based on codespell install location
++if (which("codespell") ne "" && which("python") ne "") {
++	my $codespell_dict = `python -c "import os.path as op; import codespell_lib; print(op.join(op.dirname(codespell_lib.__file__), 'data', 'dictionary.txt'), end='')" 2> /dev/null`;
++	$codespellfile = $codespell_dict if (-e $codespell_dict)
++}
++
+ sub help {
+ 	my ($exitcode) = @_;
+ 
+@@ -130,7 +136,7 @@ Options:
+   --ignore-perl-version      override checking of perl version.  expect
+                              runtime errors.
+   --codespell                Use the codespell dictionary for spelling/typos
+-                             (default:/usr/share/codespell/dictionary.txt)
++                             (default:$codespellfile)
+   --codespellfile            Use this codespell dictionary
+   --typedefsfile             Read additional types from this file
+   --color[=WHEN]             Use colors 'always', 'never', or only when output
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.33.0
+
