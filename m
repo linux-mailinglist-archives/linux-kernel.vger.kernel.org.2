@@ -2,259 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E2C42895B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A383428960
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 11:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbhJKJIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 05:08:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235182AbhJKJH7 (ORCPT
+        id S235386AbhJKJJQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Oct 2021 05:09:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53218 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235182AbhJKJJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 05:07:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633943159;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=td4wV2eEygq6y44ECvuPe1lQzGztm03vYG4l5phZGs8=;
-        b=ByPeYBakm62SEsU9uFzeZtyB1ZA61e8iDXJ03zFJ+4KElqN9qd/9psEBEU02kH1qvcyK7Z
-        NYI0qGR3Gus5cbP6nIqsCvuwndEdpQoSCGuKJu+pACQC6J2A69WyfiAPF84lIJhytxSiaf
-        6J6ROFvxLziofxPdtPN3x6/hpS/DrVg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-MNxMOF1vN2CRgZVK_bMYQA-1; Mon, 11 Oct 2021 05:05:54 -0400
-X-MC-Unique: MNxMOF1vN2CRgZVK_bMYQA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC7BC18414A1;
-        Mon, 11 Oct 2021 09:05:51 +0000 (UTC)
-Received: from x1.localdomain.com (unknown [10.39.194.183])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A00157CA8;
-        Mon, 11 Oct 2021 09:05:33 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Juha-Pekka Heikkila <juhapekka.heikkila@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-pci@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Benoit=20Gr=C3=A9goire?= <benoitg@coeus.ca>,
-        Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH v2] x86/PCI: Ignore E820 reservations for bridge windows on newer systems
-Date:   Mon, 11 Oct 2021 11:05:31 +0200
-Message-Id: <20211011090531.244762-1-hdegoede@redhat.com>
+        Mon, 11 Oct 2021 05:09:15 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-231-ej5tqsneN3Wj5_e8EA6vRA-1; Mon, 11 Oct 2021 10:07:13 +0100
+X-MC-Unique: ej5tqsneN3Wj5_e8EA6vRA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Mon, 11 Oct 2021 10:07:10 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Mon, 11 Oct 2021 10:07:10 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "kunit-dev@googlegroups.com" <kunit-dev@googlegroups.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>
+CC:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
+        Thorsten Leemhuis <regressions@leemhuis.info>
+Subject: RE: [PATCH v4 2/7] kernel.h: Split out container_of() and
+ typeof_member() macros
+Thread-Topic: [PATCH v4 2/7] kernel.h: Split out container_of() and
+ typeof_member() macros
+Thread-Index: AQHXu5hFfxTcZGJlCEqsZaCSpNxtnavNhYtQ
+Date:   Mon, 11 Oct 2021 09:07:10 +0000
+Message-ID: <33e1be3f6e3b40eeb6f3cd5524e649fe@AcuMS.aculab.com>
+References: <20211007154407.29746-1-andriy.shevchenko@linux.intel.com>
+         <20211007154407.29746-3-andriy.shevchenko@linux.intel.com>
+ <86b05929e5aa8fa6e975c59cf523ad84498351b6.camel@perches.com>
+In-Reply-To: <86b05929e5aa8fa6e975c59cf523ad84498351b6.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some BIOS-es contain a bug where they add addresses which map to system RAM
-in the PCI bridge memory window returned by the ACPI _CRS method, see
-commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address
-space").
+From: Joe Perches
+> Sent: 07 October 2021 17:28
+...
+> IMO: this new file is missing 2 #include directives.
+...
+> This is not a self-contained header as it requires
+> #include <linux/build_bug.h>
+> which should be at the top of this file.
+...
+> And this requires
+> 
+> #include <linux/err.h>
 
-To avoid this Linux by default excludes E820 reservations when allocating
-addresses since 2010. Windows however ignores E820 reserved regions for PCI
-mem allocations, so in hindsight Linux honoring them is a problem.
+And I bet the biggest problem is the time spent by the compiler
+searching down the -I path for headers.
 
-Recently (2020) some systems have shown-up with E820 reservations which
-cover the entire _CRS returned PCI bridge memory window, causing all
-attempts to assign memory to PCI BARs which have not been setup by the BIOS
-to fail. For example here are the relevant dmesg bits from a
-Lenovo IdeaPad 3 15IIL 81WE:
+If you count system calls during a build I suspect that
+failed opens of .h files dominate.
 
-[    0.000000] BIOS-e820: [mem 0x000000004bc50000-0x00000000cfffffff] reserved
-[    0.557473] pci_bus 0000:00: root bus resource [mem 0x65400000-0xbfffffff window]
+To see how much this really costs try running a build with
+a (traditional) NFS mounted source tree - where every directory
+name in a filename requires an NFS file handle lookup.
 
-Ideally Linux would fully stop honoring E820 reservations for PCI mem
-allocations, but then the old systems this was added for will regress.
-Instead keep the old behavior for old systems, while ignoring the E820
-reservations like Windows does for any systems from now on.
+	David
 
-Old systems are defined here as BIOS year < 2018, this was chosen to
-make sure that pci_use_e820 will not be set on the currently affected
-systems, while at the same time also taking into account that the
-systems for which the E820 checking was orignally added may have
-received BIOS updates for quite a while (esp. CVE related ones),
-giving them a more recent BIOS year then 2010.
-
-Also add pci=no_e820 and pci=use_e820 options to allow overriding
-the BIOS year heuristic.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=206459
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1868899
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1871793
-BugLink: https://bugs.launchpad.net/bugs/1878279
-BugLink: https://bugs.launchpad.net/bugs/1931715
-BugLink: https://bugs.launchpad.net/bugs/1932069
-BugLink: https://bugs.launchpad.net/bugs/1921649
-Cc: Benoit Grégoire <benoitg@coeus.ca>
-Cc: Hui Wang <hui.wang@canonical.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
-Changes in v2:
-- Replace the per model DMI quirk approach with disabling E820 reservations
-  checking for all systems with a BIOS year >= 2018
-- Add documentation for the new kernel-parameters to
-  Documentation/admin-guide/kernel-parameters.txt
----
-Other patches trying to address the same issue:
-https://lore.kernel.org/r/20210624095324.34906-1-hui.wang@canonical.com
-https://lore.kernel.org/r/20200617164734.84845-1-mika.westerberg@linux.intel.com
-V1 patch:
-https://lore.kernel.org/r/20211005150956.303707-1-hdegoede@redhat.com
----
- .../admin-guide/kernel-parameters.txt         |  6 ++++
- arch/x86/include/asm/pci_x86.h                | 10 +++++++
- arch/x86/kernel/resource.c                    |  4 +++
- arch/x86/pci/acpi.c                           | 29 +++++++++++++++++++
- arch/x86/pci/common.c                         |  6 ++++
- 5 files changed, 55 insertions(+)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 43dc35fe5bc0..969cde5d74c8 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3949,6 +3949,12 @@
- 				please report a bug.
- 		nocrs		[X86] Ignore PCI host bridge windows from ACPI.
- 				If you need to use this, please report a bug.
-+		use_e820	[X86] Honor E820 reservations when allocating
-+				PCI host bridge memory. If you need to use this,
-+				please report a bug.
-+		no_e820		[X86] ignore E820 reservations when allocating
-+				PCI host bridge memory. If you need to use this,
-+				please report a bug.
- 		routeirq	Do IRQ routing for all PCI devices.
- 				This is normally done in pci_enable_device(),
- 				so this option is a temporary workaround
-diff --git a/arch/x86/include/asm/pci_x86.h b/arch/x86/include/asm/pci_x86.h
-index 490411dba438..e45d661f81de 100644
---- a/arch/x86/include/asm/pci_x86.h
-+++ b/arch/x86/include/asm/pci_x86.h
-@@ -39,6 +39,8 @@ do {						\
- #define PCI_ROOT_NO_CRS		0x100000
- #define PCI_NOASSIGN_BARS	0x200000
- #define PCI_BIG_ROOT_WINDOW	0x400000
-+#define PCI_USE_E820		0x800000
-+#define PCI_NO_E820		0x1000000
- 
- extern unsigned int pci_probe;
- extern unsigned long pirq_table_addr;
-@@ -64,6 +66,8 @@ void pcibios_scan_specific_bus(int busn);
- 
- /* pci-irq.c */
- 
-+struct pci_dev;
-+
- struct irq_info {
- 	u8 bus, devfn;			/* Bus, device and function */
- 	struct {
-@@ -232,3 +236,9 @@ static inline void mmio_config_writel(void __iomem *pos, u32 val)
- # define x86_default_pci_init_irq	NULL
- # define x86_default_pci_fixup_irqs	NULL
- #endif
-+
-+#if defined CONFIG_PCI && defined CONFIG_ACPI
-+extern bool pci_use_e820;
-+#else
-+#define pci_use_e820 false
-+#endif
-diff --git a/arch/x86/kernel/resource.c b/arch/x86/kernel/resource.c
-index 9b9fb7882c20..e8dc9bc327bd 100644
---- a/arch/x86/kernel/resource.c
-+++ b/arch/x86/kernel/resource.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/ioport.h>
- #include <asm/e820/api.h>
-+#include <asm/pci_x86.h>
- 
- static void resource_clip(struct resource *res, resource_size_t start,
- 			  resource_size_t end)
-@@ -28,6 +29,9 @@ static void remove_e820_regions(struct resource *avail)
- 	int i;
- 	struct e820_entry *entry;
- 
-+	if (!pci_use_e820)
-+		return;
-+
- 	for (i = 0; i < e820_table->nr_entries; i++) {
- 		entry = &e820_table->entries[i];
- 
-diff --git a/arch/x86/pci/acpi.c b/arch/x86/pci/acpi.c
-index 948656069cdd..6c2febe84b6f 100644
---- a/arch/x86/pci/acpi.c
-+++ b/arch/x86/pci/acpi.c
-@@ -21,6 +21,8 @@ struct pci_root_info {
- 
- static bool pci_use_crs = true;
- static bool pci_ignore_seg = false;
-+/* Consumed in arch/x86/kernel/resource.c */
-+bool pci_use_e820 = false;
- 
- static int __init set_use_crs(const struct dmi_system_id *id)
- {
-@@ -160,6 +162,33 @@ void __init pci_acpi_crs_quirks(void)
- 	       "if necessary, use \"pci=%s\" and report a bug\n",
- 	       pci_use_crs ? "Using" : "Ignoring",
- 	       pci_use_crs ? "nocrs" : "use_crs");
-+
-+	/*
-+	 * Some BIOS-es contain a bug where they add addresses which map to system
-+	 * RAM in the PCI bridge memory window returned by the ACPI _CRS method, see
-+	 * commit 4dc2287c1805 ("x86: avoid E820 regions when allocating address space").
-+	 * To avoid this Linux by default excludes E820 reservations when allocating
-+	 * addresses since 2010. Windows however ignores E820 reserved regions for
-+	 * PCI mem allocations, so in hindsight Linux honoring them is a problem.
-+	 * In 2020 some systems have shown-up with E820 reservations which cover the
-+	 * entire _CRS returned PCI bridge memory window, causing all attempts to
-+	 * assign memory to PCI BARs to fail if Linux honors the E820 reservations.
-+	 *
-+	 * Ideally Linux would fully stop honoring E820 reservations for PCI mem
-+	 * allocations, but then the old systems this was added for will regress.
-+	 * Instead keep the old behavior for old systems, while ignoring the E820
-+	 * reservations like Windows does for any systems from now on.
-+	 */
-+	if (year >= 0 && year < 2018)
-+		pci_use_e820 = true;
-+
-+	if (pci_probe & PCI_NO_E820)
-+		pci_use_e820 = false;
-+	else if (pci_probe & PCI_USE_E820)
-+		pci_use_e820 = true;
-+
-+	printk(KERN_INFO "PCI: %s E820 reservations for host bridge windows\n",
-+	       pci_use_e820 ? "Honoring" : "Ignoring");
- }
- 
- #ifdef	CONFIG_PCI_MMCONFIG
-diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-index 3507f456fcd0..091ec7e94fcb 100644
---- a/arch/x86/pci/common.c
-+++ b/arch/x86/pci/common.c
-@@ -595,6 +595,12 @@ char *__init pcibios_setup(char *str)
- 	} else if (!strcmp(str, "nocrs")) {
- 		pci_probe |= PCI_ROOT_NO_CRS;
- 		return NULL;
-+	} else if (!strcmp(str, "use_e820")) {
-+		pci_probe |= PCI_USE_E820;
-+		return NULL;
-+	} else if (!strcmp(str, "no_e820")) {
-+		pci_probe |= PCI_NO_E820;
-+		return NULL;
- #ifdef CONFIG_PHYS_ADDR_T_64BIT
- 	} else if (!strcmp(str, "big_root_window")) {
- 		pci_probe |= PCI_BIG_ROOT_WINDOW;
--- 
-2.31.1
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
