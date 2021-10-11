@@ -2,111 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FB8242992F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241E0429941
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235427AbhJKV4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235301AbhJKV4y (ORCPT
+        id S235452AbhJKWBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 18:01:54 -0400
+Received: from sonic313-15.consmr.mail.ne1.yahoo.com ([66.163.185.38]:37258
+        "EHLO sonic313-15.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235394AbhJKWBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:56:54 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2935EC061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:54:54 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id y3so27369615wrl.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 14:54:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=bDHYnKA2ppG3wjOjjKjo37Uayl924L2DcQk7LMht4jI=;
-        b=mbIpyRfykmfferdbjZNmtqK/brQzSgFRPV1r80JTcbZgwUA3xKeoJExJnJTHQyW0Ai
-         HFEv6Xls/YciilQEXPFqJgFoBot1quirs2JQCO6M3rDqq5q8DMyhj9g7ezhDwfGh3SAM
-         lL3kesExb9VzG17/N3gVYID5yLnY24viS0PHXQucvm1XicVEt0lx7+HKikrql9crFDPr
-         dcsgGUBW3dRdOVRjN1dnc2tLqybIcO+9jaZhP2oFH912DKnKMTzK5MK87/iO6snEo8Db
-         PyjaYcygza5i8PhCQLw6x0j0XLMltHu7ASIuzZVTnSV2un8ml1xBNGmMi27/GjIQ8H1O
-         2ZDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=bDHYnKA2ppG3wjOjjKjo37Uayl924L2DcQk7LMht4jI=;
-        b=vh0/loMAoAtNm3C67OTEFuMY1Mf5oRsOx926sDep3WP0pcQtdTDyEnOj/GesiOqsqJ
-         +waZT7QaQhiBzj3ya9VaaMar/A6PdpVc+zoD9F3BjgKcSq0xvhQvnfaexMsJzWyzjC78
-         zjUZ/W8X5L1Ig1ejZk9S5XicQ3xv0XRWoKPUourBHiOtsFxpEGMQK33xvdR3Mwx3MV2l
-         p6A5C5M+wyrICPM48TvUOacjXdKkIB8wMmlkN0TsDDOHaIrrv2+34Jc5WACjmAseX+JP
-         lvgSvyeKxNe9vPyahxTCzIKpSf7HyYhpFM2u58gfQGGdxwvhsy1OcJIDrNdrXNAER2Hv
-         znUA==
-X-Gm-Message-State: AOAM531l1jxQzxZCAWW0F76fWgKJsoSu499EpX2AuCU6Eq2G/SCvt3uA
-        K45NUxEgnX4QrbD8QWRqP0ETbViewKL1B2o4
-X-Google-Smtp-Source: ABdhPJw8Jyh0nHXNGj9nkBDShxqKHEWeO5WndGq5QTk7ftnTCS58wi/tmZ/LqnPUjt9LQiBVn3pfAA==
-X-Received: by 2002:a1c:540e:: with SMTP id i14mr1624645wmb.100.1633989292455;
-        Mon, 11 Oct 2021 14:54:52 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:20c7:8d80:41b2:6091:e6eb:9c88? ([2a02:8084:20c7:8d80:41b2:6091:e6eb:9c88])
-        by smtp.gmail.com with ESMTPSA id 36sm8856652wrc.92.2021.10.11.14.54.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 14:54:51 -0700 (PDT)
-Subject: Re: [PATCH v2] staging: r8188eu: Fix misspelling in comment
-To:     Joe Perches <joe@perches.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <7bc392d5-11e4-7ad0-dab6-295ccadf63b9@gmail.com>
- <YVwpEa5T4HnOX5/g@kroah.com> <f1569e97-8996-e538-182c-cc5f6510dc35@gmail.com>
- <35a358c67c6220825b37e64c6aa2978741565bdd.camel@perches.com>
-From:   "Siou-Jhih, Guo" <hallblazzar@gmail.com>
-Message-ID: <7fc8382e-629c-b271-d20d-e668d0f9690e@gmail.com>
-Date:   Mon, 11 Oct 2021 22:54:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Mon, 11 Oct 2021 18:01:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633989590; bh=Zqhg448+kp6mEiue7M5/FNvpz96vUnZrgGFVgDvWQDQ=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=Et9ee1Csb2UNZamsi+KZ4pRLbTprSEvdYjruG+zGhpRBL0S/VFpbGIkMg3z8PhibobYmFekZ8DlpCm/u9axYfxHKphk+W/RocVMOgXm4zATIWIpYUCQEdmwwBkBTU540lPEb9Jw3iIITiovwaCBFt88na28VZSmlUvTbwi3eTZeWr7xQ3iWdi8shbqbG01P5Bh6MgoeK/toC9hIyLY8ihXKSDSxJofkZXe8dGiYuvxLgTsLlz91pG4+XKGr4E4KLiJKdPkBAd4AwphRvxMu+A8BuO49OrHXca8RxhybPLA3v5YGUGzg32YZy67lQXtUj5FnVOJavxOVlDz0ik1XF7Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633989590; bh=gCBOFNRCnbv//7buHKjtp80F2ar0lHhJO5vz1hXnyui=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=CPWvjbYrYq7iCfRzzXq+1LRR1zc1HraeIoZvoIASJ0fSmgKvDg+/tjfHBA8+26ASkd4YV7KqTr33xu+M1paQtCPPcF5FoKXp+zY09VMZRVlG0K7n3nj3vo9DEvjyIH/IrMFGK9FMl2deFzhFviD4EEx3OoW2YROT52PcTvs9zYJ9i5PCZopNvWpMnlMJk5Jel5/tIPmWC2cD/MLoDjunmVvApKrEaX0WngSEa7iK7BPTjPxfWu73xgkI7a8A/XLdCELd9UbhDiYR0/gQ10AG4RYwAyWk8C791u6q2dk3Nazfx3NWp194dumoY7mTAFH/D0vd1B4LbU9931OO3nChwg==
+X-YMail-OSG: aC0JH90VM1kfDaKTkIdU2qA35lYCCxBu2otVh_5jlPvwsFge4HpFDaXmDW5vvOB
+ GwrAbfYk95JHT2s.peY5piTSdcmT9U_lm97avpy2QuRQeg232Yvj3mMDUdhLtPc4n39COSGc0mXA
+ SpEWvgxiBhukIU7D5LYOZ1IW7ifATJ418D.5spvthYI4iTdsJX_A8JhTOpKvLGL46FgLVPFK29to
+ afKhuG9_i5hLuhPKVfigyf0c7ebxBcMF5lGT_pJES8NN_wykPN_9H7RHqhs6VDCfzYcFHxyBQlBY
+ MCL_8sxRupLd_TDuiEoMOvFyxEzsUzfBnF3M9CxtMMeaDbtVadc2bWgiDeYMfvXrGdo7i4K6CnPs
+ 9yKe0m3YOzmVGGrKF7EpiE0lC5aM5m3ZwuBUAVKfRLiUbtt.0afW8JFkq_nBLqy6BMjzD_Nu.z4z
+ Up7EvQ0z88cOrjZzfjVqeJZSSLkVO8loo8opin59vIFvJMoRgWObKmg.IzgfSmmQ4fB9gAkHmUAS
+ XYhgiceXQL1oka6ysLgZWAidGXoKac8ja7PehpFWMUzqNXHfknNdUcO8f.MBFCtsVfi.PtVxc_Wk
+ gyCE2V2rQIpbPTcULt_qIp9MSCkeillZ.qcXsaJxe8vRy0uEdrzXzfXYQ3ft0TiCEq3Hj93bcMLQ
+ G_3eq5svQzY6utGHIac5sCV5KYqEyflwc6RbuCLLXWiIGfXtZfUj2_LGShDLWqVmQSDQ.HqTL4hK
+ xdOL6zx0JbdmHiacB0FAZGV7BIkF9_aagRSxHjkSYLOcY1oHXmlcbtpbw6E16ewy7m0HQHEOzoF_
+ j0hwF8qFaILSMtkVuNp1rtMC3Nq5ebOrX43moO.S73qqRRCgRwEXNnVVjufX5G12jTrT7wZqjhme
+ 6Kt5U29KCovNh3qqvyZVAb3Gl.Hlnqmn4ez8T3i0sI4TDcbo3w3MFS.DOfayLt3HobrosfZAsVUL
+ _5sa7awUj2cUka.3xSAOctPBXFnhT_xt3mgW2lnGPxEM7s0DAfY3VuQ9Y3s1D4c9CF.riQYX3pch
+ j7b4_EJDLR_NXc5951c7iaV7pQB.rmExBnVkjk1AygQ7XR4MQEmfywB0UDQnCLW0NP.9nSopLh1t
+ AA7RNBPODRXPYC551LrFF7k1aH5zCKo.8GOleu_KvxA9VulVtzujEyScr6xzPjar2o1LJ8gKz98c
+ xlx6qvslsSHHn6H_LCxQG6EqEkgTPdQPwKYpL3PmBq6fzS_6PidclodJdHHok1wJp5Q35Gv1EHul
+ tYP62nckwEuNQa1w1NFR7CV0WH6VkSgKlCu80PnK5HsrZB0E1H919DLFpHFK7K.EHyOzpIW_FwMb
+ uqzOGmM.z35liqYIz7hOMfdAYYfPlKA5_6kyLDVYX3YG_Pa_vOmFLB7jcyIkaJP.UmUC_1ERZCpN
+ TmZXer7IfecorSQtCBufKfV97KYRJ6MdIYoLO4RgQ8pHU1toRGnWYC_ELrJ8i4NPoH1dA3h58gRn
+ vfh5pmkbS0kwFRsZLcTAddGgceXNDipMTmtT2QCVdzxIWlGJQSmOdUwVizvoUjCIsH.K9AzZrt1R
+ hwRO5HzeR.ewqXZyY1961LOfeG69sI0VAVhfGMVhuQXe66_fsyqi7fuNQ90n_fpykS285RATFuar
+ GIjaWeQqtZtlVgejKB7354d_F3vHWKDEbahvr9dJG.bnwVpZXPo3k_8vaGUl_qrgG3nfBzCTRUFF
+ tINgV_vwbsjh_YN3kAws4bkHGP8O2Yq0vVSHUtXhdW2Kxg7lsF0JPlu5wIESd7p8aE8p6DP0vKHy
+ wZFDZjM1ttPuLzZwx1z4LYou06eLhbtdAE7x4oy9KAA26emlZic4dMHsmzprft1YKtT18U9OYbbV
+ XX8ywJgOzQd9tEc.6It0nNurBrn1DeCaQZY7LA9okkv_oHDE8j4qfJbs6.yWAfM9nkUBanvdU1kt
+ Xih8M.n2ArtWIf6rVCol3M0tNt5d7_NP16o60lKxQZXHykvJjjGtr4_TxZlRVGucwJgiFepVhMgr
+ Q56u_fYQ8GT.ciwl.FbzivVzoBCI9H7DI1XvWkAyv8YZyT6WlQWfUI_NN3AfHlP_4_AAgcYKjaXT
+ fSP8476K9iTcQFK.V2jrt3bD9hklRFUQhud5wNUgD0RpNqPLBe0KZ6Ukm2CCaOPsj9BcNCObdXGg
+ rlHRPVVRmY1uDkeX6.oolgkhPHf.2T6o.Gtk1igEHCu3XwYbwD1xWtKerIWoDlSz_LyU5bo9bT.C
+ 8uSrQAiPf.hLyNn00JtN9oLvLwD4eJ6UqJA8c
+X-Sonic-MF: <casey@schaufler-ca.com>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic313.consmr.mail.ne1.yahoo.com with HTTP; Mon, 11 Oct 2021 21:59:50 +0000
+Received: by kubenode517.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 3ba437dd57240fce1e91852cfbdd0152;
+          Mon, 11 Oct 2021 21:59:14 +0000 (UTC)
+Subject: Re: [PATCH v4 2/3] binder: use cred instead of task for getsecid
+To:     Paul Moore <paul@paul-moore.com>, Todd Kjos <tkjos@google.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, christian@brauner.io,
+        James Morris <jmorris@namei.org>,
+        Serge Hallyn <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>, keescook@chromium.org,
+        jannh@google.com, Jeffrey Vander Stoep <jeffv@google.com>,
+        zohar@linux.ibm.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
+        kernel-team@android.com, kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, Casey Schaufler <casey@schaufler-ca.com>
+References: <20211007004629.1113572-1-tkjos@google.com>
+ <20211007004629.1113572-3-tkjos@google.com>
+ <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com>
+From:   Casey Schaufler <casey@schaufler-ca.com>
+Message-ID: <8c07f9b7-58b8-18b5-84f8-9b6c78acb08b@schaufler-ca.com>
+Date:   Mon, 11 Oct 2021 14:59:13 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <35a358c67c6220825b37e64c6aa2978741565bdd.camel@perches.com>
+In-Reply-To: <CAHC9VhSDnwapGk6Pvn5iuKv0zCtZSbfnGAkZwKcxVYLVRH6CLg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+X-Mailer: WebService/1.1.19116 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 06/10/2021 02:02, Joe Perches wrote:
-> On Tue, 2021-10-05 at 22:16 +0100, Siou-Jhih, Guo wrote:
->> If anything should I additionally aware, I'd like to fix them.
+On 10/11/2021 2:33 PM, Paul Moore wrote:
+> On Wed, Oct 6, 2021 at 8:46 PM Todd Kjos <tkjos@google.com> wrote:
+>> Use the 'struct cred' saved at binder_open() to lookup
+>> the security ID via security_cred_getsecid(). This
+>> ensures that the security context that opened binder
+>> is the one used to generate the secctx.
+>>
+>> Fixes: ec74136ded79 ("binder: create node flag to request sender's
+>> security context")
+>> Signed-off-by: Todd Kjos <tkjos@google.com>
+>> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: stable@vger.kernel.org # 5.4+
+>> ---
+>> v3: added this patch to series
+>> v4: fix build-break for !CONFIG_SECURITY
+>>
+>>  drivers/android/binder.c | 11 +----------
+>>  include/linux/security.h |  4 ++++
+>>  2 files changed, 5 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+>> index ca599ebdea4a..989afd0804ca 100644
+>> --- a/drivers/android/binder.c
+>> +++ b/drivers/android/binder.c
+>> @@ -2722,16 +2722,7 @@ static void binder_transaction(struct binder_proc *proc,
+>>                 u32 secid;
+>>                 size_t added_size;
+>>
+>> -               /*
+>> -                * Arguably this should be the task's subjective LSM secid but
+>> -                * we can't reliably access the subjective creds of a task
+>> -                * other than our own so we must use the objective creds, which
+>> -                * are safe to access.  The downside is that if a task is
+>> -                * temporarily overriding it's creds it will not be reflected
+>> -                * here; however, it isn't clear that binder would handle that
+>> -                * case well anyway.
+>> -                */
+>> -               security_task_getsecid_obj(proc->tsk, &secid);
+>> +               security_cred_getsecid(proc->cred, &secid);
+>>                 ret = security_secid_to_secctx(secid, &secctx, &secctx_sz);
+>>                 if (ret) {
+>>                         return_error = BR_FAILED_REPLY;
+>> diff --git a/include/linux/security.h b/include/linux/security.h
+>> index 6344d3362df7..f02cc0211b10 100644
+>> --- a/include/linux/security.h
+>> +++ b/include/linux/security.h
+>> @@ -1041,6 +1041,10 @@ static inline void security_transfer_creds(struct cred *new,
+>>  {
+>>  }
+>>
+>> +static inline void security_cred_getsecid(const struct cred *c, u32 *secid)
+>> +{
+>> +}
+> Since security_cred_getsecid() doesn't return an error code we should
+> probably set the secid to 0 in this case, for example:
 >
-> Maybe fix these too?
->
-> $ git grep -w -i -P -n 'issuign|fittign|settign|enablign|followign|chargign|beign|startign|accordign|runnign'
-> arch/arm/mach-s3c/sleep-s3c64xx.S:33:    * requires to get the kernel runnign again. This code expects to be
-> drivers/crypto/ccree/cc_driver.c:278:   /* AXI interrupt config are obsoleted startign at cc7x3 */
-> drivers/hid/hid-thrustmaster.c:80: * beign conducted yet. The position and meaning of fields are a
-> drivers/net/ethernet/chelsio/cxgb4/t4fw_api.h:809: * our own HELLO may get lost if it happens right as the MASTER is issuign a
-> drivers/net/ethernet/qlogic/qede/qede_filter.c:2029:    /* Translate the flow specification into something fittign our DB */
-> drivers/net/wireless/realtek/rtlwifi/rtl8821ae/dm.c:1158: * Overview:   88E change all channel tx power accordign to flag.
-> drivers/net/wireless/realtek/rtlwifi/rtl8821ae/dm.c:1837: * Overview:   88E change all channel tx power accordign to flag.
-> drivers/power/supply/ab8500_charger.c:1325: * ab8500_charger_led_en() - turn on/off chargign led
-> drivers/power/supply/ab8500_charger.c:1327: * @on:              flag to turn on/off the chargign led
-> drivers/spi/spi-tegra20-slink.c:543:            /* HW need small delay after settign Packed mode */
-> drivers/staging/media/atomisp/pci/runtime/bufq/src/bufq.c:412:   * by some test apps. Enablign logging here floods the log
-> drivers/staging/media/atomisp/pci/runtime/bufq/src/bufq.c:434:   * by some test apps. Enablign logging here floods the log
-> drivers/staging/r8188eu/core/rtw_ap.c:747:Set to 0 (HT pure) under the followign conditions
-> drivers/staging/r8188eu/hal/HalPhyRf_8188e.c:72: * Overview:    88E change all channel tx power accordign to flag.
-> drivers/thermal/tegra/soctherm.c:844:    * programmed on a different one. This beign a LEVEL interrupt won't
-> drivers/usb/gadget/function/f_hid.c:312:         * Remove this from list to protect it from beign free()
-> net/mac80211/mesh_plink.c:1077:                  * B's peer link establishment or B beign
->
->
+>   static inline void security_cred_getsecid(...)
+>   {
+>     *secid = 0;
+>   }
 
-Hello Joe,
-
-Thanks for your advice. It sounds really great. But this is my very
-first patch, and I'm not sure adding so many modifications is proper or
-not ... Maybe I could contribute after I could successfully pass my
-first patch?
-
-Regards,
-Bill G.
+If CONFIG_SECURITY is unset there shouldn't be any case where
+the secid value is ever used for anything. Are you suggesting that
+it be set out of an abundance of caution?
 
