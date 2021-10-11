@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F6142956B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C943242956D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhJKRTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55638 "EHLO
+        id S233891AbhJKRTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233713AbhJKRTB (ORCPT
+        with ESMTP id S231987AbhJKRTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:19:01 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E2BBC061570;
-        Mon, 11 Oct 2021 10:17:01 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v11so11418288pgb.8;
-        Mon, 11 Oct 2021 10:17:01 -0700 (PDT)
+        Mon, 11 Oct 2021 13:19:20 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1A9C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:17:20 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id d9so46583668edh.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 10:17:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=47MxuwjdGXsg6hhuLv8z6fw88ymx9GeX72SLuyGJTok=;
-        b=a4RrVVdJ7cUmlCzggWQlfbsOGdWJ2MPLEG7CalU7wsqMn5r+DmcveNvP/dyXMNR51w
-         JtU8Ih35Ce+uEy4ncY5JylViwvaU0igXgKz2jaopbXllKs4Y/NmCftllt9Er3ysq5hxH
-         VPtWr48EAAqhK7X9th7UFB+LRnFN9m99A2smY07IoxO7ZFdPJ7mXc6Pu3qkj4fBcKTyb
-         2Iv2hIOIVZVA3TbxCeJx5383kucVuJsrJ2aavndyzcUgCH8omLECpFhzAfSfBEBllQwh
-         97IPyg91TL5MFJMujwLsnFD+T4IWTukC9iJ8bqhU/7D+IlUe2KDpBVFaOCk696vZlb+a
-         SsYA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U0otXV2y5XbiRFTl+VTUE1Rn2Q/EdVlXbDmxI0rU6v8=;
+        b=tLOJJ6fxRtnL4KpCSY3QHaNgy6VnHEvrGi0oWG98M+Zzu62xsSNCv08SEH56U4RNhX
+         slZ9WXSMyHgWoH7VwQZLM1G2x8nJEflaqk4DrgFgMsLRiq9TNZqwqAcSxjQ4oCoP3kUJ
+         Z2o6q8HSodWgAQB5YihoiQ0+Bxqv7g7gTXvlgbtpiRoz3aCtT0OkienMrfXqKN5xfT86
+         94PeyHTQc9+NU12CWnpUi0KJztS2ySA+r3aRnzuX5NFJbQ1qHsgWZdDQgNz1+UyxzHoY
+         g06t0nQ/Ww2tcQbtFyfT4p+8BUsHtS8HosXZKFF344JqbGRBKvelnpL6P2pM6kO1Qz76
+         NJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=47MxuwjdGXsg6hhuLv8z6fw88ymx9GeX72SLuyGJTok=;
-        b=wTJlpTDD5BlXbcIpM5sO91NcjsgMe+tay+GusB4elj5i+pEMKu4cjxGEeamMKs2kbQ
-         xHh/FNxrHvl0NistqwgcxOv8md481QPx6EjgprBHwR2yPlZ9Ldfmyc3kTMo8cZkZIGL/
-         B3z/J65vkT3Xf/3jOOCoJ0SwiI5ApEQECtq4Bcz0h/zYD0m7dDUd2ivFjgU5XsykRo6i
-         QZdFkx2vok9b1zBTT1ATi1erPMRlFDaJsyzAo/9qYdWV/sOLf1KfDFeU2vL2bkCTc7zx
-         IlipuvKzZ8FQpHSOzl1XXfYbPpzH36jXXZCPEcnC5NBX5BvjP2k8Ot10K5NCW32odYaf
-         XUKA==
-X-Gm-Message-State: AOAM531WPpmYZtBIA5FpGcWBSoUMPgmZLjx7Enu1Yd57b8f4L2QgM9eC
-        gjrQoKEFZ3BJSV4I0M3c9AAVR9feZ3olzA==
-X-Google-Smtp-Source: ABdhPJy4J5tHxXt2W+6L6flmSpcpqk/tYiffWv9S20Ntu0LHmWDZ6NMtBsRppjjWJ3+Z9290lnG3tw==
-X-Received: by 2002:a63:2b8c:: with SMTP id r134mr18907749pgr.420.1633972620892;
-        Mon, 11 Oct 2021 10:17:00 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id u193sm8743444pgc.34.2021.10.11.10.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 10:17:00 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 11 Oct 2021 07:16:59 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] blk-cgroup: check blkcg policy is enabled in
- blkg_create()
-Message-ID: <YWRxi2OaIHhG9rOc@slm.duckdns.org>
-References: <20211008072720.797814-1-yukuai3@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U0otXV2y5XbiRFTl+VTUE1Rn2Q/EdVlXbDmxI0rU6v8=;
+        b=mFu4EXQmrUn2DBY+QaOjhy64n4lUXweoZ4Bc0jVbh0z22ohYS6d1i/eqUnAW4OpVyZ
+         M63ISWfcPgyNb9eyAyBn1ZX6/DqQ5WZoH/MmTxb+tvV3Svg4sb2pMO7dL0x+Mqfql9Ls
+         v14V2mFNzRHHHjVjEBIHHtX9Z4v5GCwhr1jnAo4PxuvwYs1TafbeLyYf6rCpr0TljnLM
+         w02eZgf0pA/r/Rnj9XVe4b3nGXyhJ4C9uZtyRkLDc5tFFTJrg2MkHIrt0au+v/4XVwzE
+         VAv0ZcvEkMPhZq06MQptL8SsuJpEgsos5ohHZKnCns5G1Qlw6iytcYjRrUd8aNQALYFF
+         jB0Q==
+X-Gm-Message-State: AOAM530nnon7J3EJyemhzdEgdUSLdod58J7lBmJErb+7WZ5rf9/ijuFe
+        7w+tZ6DcOpiNofCQx1jPjeoGZiO3RXA98VPYcfku4Q==
+X-Google-Smtp-Source: ABdhPJxLGN99sa3B/D5yXgC1k67IFIYt7UU/C8flGFxcNKpEHo6MFV7Yj1SsNO3MdsHIlzOJzNTeGjzeGcRR7sAR/kk=
+X-Received: by 2002:a17:906:7016:: with SMTP id n22mr26595622ejj.567.1633972638776;
+ Mon, 11 Oct 2021 10:17:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211008072720.797814-1-yukuai3@huawei.com>
+References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 11 Oct 2021 22:47:06 +0530
+Message-ID: <CA+G9fYsCPt53vxOoCQtM-2tndioDdzdXdgJT9FV2+c0UhwSs3Q@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/52] 5.4.153-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Song Liu <songliubraving@fb.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 08, 2021 at 03:27:20PM +0800, Yu Kuai wrote:
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index eb48090eefce..00e1d97621ea 100644
-> --- a/block/blk-cgroup.c
-> +++ b/block/blk-cgroup.c
-> @@ -226,6 +226,20 @@ struct blkcg_gq *blkg_lookup_slowpath(struct blkcg *blkcg,
->  }
->  EXPORT_SYMBOL_GPL(blkg_lookup_slowpath);
->  
-> +static void blkg_check_pd(struct request_queue *q, struct blkcg_gq *blkg)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < BLKCG_MAX_POLS; i++) {
-> +		struct blkcg_policy *pol = blkcg_policy[i];
-> +
-> +		if (blkg->pd[i] && !blkcg_policy_enabled(q, pol)) {
-> +			pol->pd_free_fn(blkg->pd[i]);
-> +			blkg->pd[i] = NULL;
-> +		}
-> +	}
-> +}
-> +
->  /*
->   * If @new_blkg is %NULL, this function tries to allocate a new one as
->   * necessary using %GFP_NOWAIT.  @new_blkg is always consumed on return.
-> @@ -252,6 +266,9 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
->  		goto err_free_blkg;
->  	}
->  
-> +	if (new_blkg)
-> +		blkg_check_pd(q, new_blkg);
-> +
+On Mon, 11 Oct 2021 at 19:19, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.153 release.
+> There are 52 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 13 Oct 2021 13:44:51 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.153-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Can't this happen the other way around too? ie. Linking a pd which doesn't
-have an entry for a policy which got enabled inbetween? And what if an
-existing policy was de-registered and another policy got the policy id
-inbetween? I think the correct solution here would be synchronizing alloc -
-create blocks against policy deactivation rather than trying to patch an
-allocated blkg later. Deactivation being a really slow path, there are
-plenty of options. The main challenge would making it difficult to make
-mistakes with, I guess.
 
-Thanks.
+Following patch caused build failures on stable rc 5.4.
+
+> Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+>     powerpc/bpf: Fix BPF_MOD when imm == 1
+
+In file included from arch/powerpc/net/bpf_jit64.h:11,
+                 from arch/powerpc/net/bpf_jit_comp64.c:19:
+arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+arch/powerpc/net/bpf_jit_comp64.c:415:46: error: implicit declaration
+of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
+[-Werror=implicit-function-declaration]
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                              ^~~~~~~~~~
+arch/powerpc/net/bpf_jit.h:32:34: note: in definition of macro 'PLANT_INSTR'
+   32 |         do { if (d) { (d)[idx] = instr; } idx++; } while (0)
+      |                                  ^~~~~
+arch/powerpc/net/bpf_jit_comp64.c:415:41: note: in expansion of macro 'EMIT'
+  415 |                                         EMIT(PPC_RAW_LI(dst_reg, 0));
+      |                                         ^~~~
+cc1: all warnings being treated as errors
+
+
+build url:
+https://builds.tuxbuild.com/1zMdjlqarsON688BoMBlpCN2O3m/
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 -- 
-tejun
+Linaro LKFT
+https://lkft.linaro.org
