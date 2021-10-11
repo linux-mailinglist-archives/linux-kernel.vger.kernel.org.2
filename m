@@ -2,93 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1369042927D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B07742928E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238992AbhJKOtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238914AbhJKOtS (ORCPT
+        id S239081AbhJKOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:52:24 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:25121 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237236AbhJKOwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:49:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA135C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=Gkf7XkH0VdIK/pbuIoYKIaOT9YKA9EZRImkIx3YMJ7Y=; b=Jv0uYq1DnYV+VksvI4hmLWzKTV
-        I/aeYoPtsKVa3iE12nkyRtbx/eXzulMQDvAWllacJiuxsiEtJdhUFYSurWmfGFBy9rjzN9XBNbZXJ
-        WtEqgrZ43hhinyYLisZE6ssA9ZS/CYZGkJkzaW036fxkUXdWGr3BKyn599NjNDtYRsez8zh9opNNu
-        kvA/UQnfIwcztUHQM+IHsCR2UA6gA7AnuLfHXdExK7Gdoq13aph7Rw2zYGLGT+N6XVgDTloLsHkFm
-        StqQO0EZpUMuBSIpbViY3uXzwb4y/NT2FWre783EFvHuI0rZ9kZIP/vmC4RL5jy7KsV60rX8gsE92
-        gVOy44aA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZwYA-005kT9-R5; Mon, 11 Oct 2021 14:45:32 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1304F9811D4; Mon, 11 Oct 2021 16:45:11 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 16:45:10 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [RESEND PATCH v2] trace: prevent preemption in
- perf_ftrace_function_call()
-Message-ID: <20211011144510.GE174703@worktop.programming.kicks-ass.net>
-References: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
- <20211008200328.5b88422d@oasis.local.home>
- <bcdbccc6-a516-2199-d3be-090a5e9f601d@linux.alibaba.com>
- <YWP2rtX9Ol9dZc/l@hirez.programming.kicks-ass.net>
- <YWP6W7Be0Yp6egsn@hirez.programming.kicks-ass.net>
- <87aeef5b-c457-d4df-8abf-f9f035d73dbc@linux.alibaba.com>
+        Mon, 11 Oct 2021 10:52:23 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HShWK2szKz1DHV7;
+        Mon, 11 Oct 2021 22:48:45 +0800 (CST)
+Received: from kwepemm600016.china.huawei.com (7.193.23.20) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 22:50:20 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ kwepemm600016.china.huawei.com (7.193.23.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Mon, 11 Oct 2021 22:50:19 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lipeng321@huawei.com>, <huangguangbin2@huawei.com>,
+        <chenhao288@hisilicon.com>
+Subject: [PATCH net-next] net: hns3: debugfs add support dumping page pool info
+Date:   Mon, 11 Oct 2021 22:46:08 +0800
+Message-ID: <20211011144608.24512-1-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <87aeef5b-c457-d4df-8abf-f9f035d73dbc@linux.alibaba.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600016.china.huawei.com (7.193.23.20)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 05:39:32PM +0800, 王贇 wrote:
-> 
-> 
-> On 2021/10/11 下午4:48, Peter Zijlstra wrote:
-> > On Mon, Oct 11, 2021 at 10:32:46AM +0200, Peter Zijlstra wrote:
-> >> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-> >> index a9f9c5714e65..ca12e2d8e060 100644
-> >> --- a/include/linux/trace_recursion.h
-> >> +++ b/include/linux/trace_recursion.h
-> >> @@ -214,7 +214,14 @@ static __always_inline void trace_clear_recursion(int bit)
-> >>  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
-> >>  							 unsigned long parent_ip)
-> >>  {
-> >> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> >> +	bool ret;
-> >> +
-> >> +	preempt_disable_notrace();
-> >> +	ret = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> >> +	if (!ret)
-> >> +		preempt_enable_notrace();
-> >> +
-> >> +	return ret;
-> >>  }
-> >>  
-> >>  /**
-> > 
-> > Oh, I might've gotten that wrong, I assumed regular trylock semantics,
-> > but it doesn't look like that's right.
-> 
-> I will use bit instead ret and give some testing :-)
-> 
-> BTW, would you prefer to merge these changes into this patch or maybe send
-> another patch with your suggested-by?
+From: Hao Chen <chenhao288@hisilicon.com>
 
-Yeah, please send another patch; once you've confirmed it actually works
-etc.. I did this before waking (as evidence per the above), who knows
-what else I did wrong :-)
+Add a file node "page_pool_info" for debugfs, then cat this
+file node to dump page pool info as below:
+
+QUEUE_ID  ALLOCATE_CNT  FREE_CNT      POOL_SIZE(PAGE_NUM)  ORDER  NUMA_ID  MAX_LEN
+0         512           0             512                  0      2        4K
+1         512           0             512                  0      2        4K
+2         512           0             512                  0      2        4K
+3         512           0             512                  0      2        4K
+4         512           0             512                  0      2        4K
+
+Signed-off-by: Hao Chen <chenhao288@hisilicon.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+---
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h   |  1 +
+ .../ethernet/hisilicon/hns3/hns3_debugfs.c    | 74 +++++++++++++++++++
+ 2 files changed, 75 insertions(+)
+
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hnae3.h b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+index 17872c50b63c..5d188573c433 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hnae3.h
++++ b/drivers/net/ethernet/hisilicon/hns3/hnae3.h
+@@ -298,6 +298,7 @@ enum hnae3_dbg_cmd {
+ 	HNAE3_DBG_CMD_MAC_TNL_STATUS,
+ 	HNAE3_DBG_CMD_SERV_INFO,
+ 	HNAE3_DBG_CMD_UMV_INFO,
++	HNAE3_DBG_CMD_PAGE_POOL_INFO,
+ 	HNAE3_DBG_CMD_UNKNOWN,
+ };
+ 
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+index a1555f074e06..e383033f3f76 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_debugfs.c
+@@ -336,6 +336,13 @@ static struct hns3_dbg_cmd_info hns3_dbg_cmd[] = {
+ 		.buf_len = HNS3_DBG_READ_LEN,
+ 		.init = hns3_dbg_common_file_init,
+ 	},
++	{
++		.name = "page_pool_info",
++		.cmd = HNAE3_DBG_CMD_PAGE_POOL_INFO,
++		.dentry = HNS3_DBG_DENTRY_COMMON,
++		.buf_len = HNS3_DBG_READ_LEN,
++		.init = hns3_dbg_common_file_init,
++	},
+ };
+ 
+ static struct hns3_dbg_cap_info hns3_dbg_cap[] = {
+@@ -941,6 +948,69 @@ static int hns3_dbg_dev_info(struct hnae3_handle *h, char *buf, int len)
+ 	return 0;
+ }
+ 
++static const struct hns3_dbg_item page_pool_info_items[] = {
++	{ "QUEUE_ID", 2 },
++	{ "ALLOCATE_CNT", 2 },
++	{ "FREE_CNT", 6 },
++	{ "POOL_SIZE(PAGE_NUM)", 2 },
++	{ "ORDER", 2 },
++	{ "NUMA_ID", 2 },
++	{ "MAX_LEN", 2 },
++};
++
++static void hns3_dump_page_pool_info(struct hns3_enet_ring *ring,
++				     char **result, u32 index)
++{
++	u32 j = 0;
++
++	sprintf(result[j++], "%u", index);
++	sprintf(result[j++], "%u", ring->page_pool->pages_state_hold_cnt);
++	sprintf(result[j++], "%u",
++		atomic_read(&ring->page_pool->pages_state_release_cnt));
++	sprintf(result[j++], "%u", ring->page_pool->p.pool_size);
++	sprintf(result[j++], "%u", ring->page_pool->p.order);
++	sprintf(result[j++], "%d", ring->page_pool->p.nid);
++	sprintf(result[j++], "%uK", ring->page_pool->p.max_len / 1024);
++}
++
++static int
++hns3_dbg_page_pool_info(struct hnae3_handle *h, char *buf, int len)
++{
++	char data_str[ARRAY_SIZE(page_pool_info_items)][HNS3_DBG_DATA_STR_LEN];
++	char *result[ARRAY_SIZE(page_pool_info_items)];
++	struct hns3_nic_priv *priv = h->priv;
++	char content[HNS3_DBG_INFO_LEN];
++	struct hns3_enet_ring *ring;
++	int pos = 0;
++	u32 i;
++
++	if (!priv->ring) {
++		dev_err(&h->pdev->dev, "priv->ring is NULL\n");
++		return -EFAULT;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(page_pool_info_items); i++)
++		result[i] = &data_str[i][0];
++
++	hns3_dbg_fill_content(content, sizeof(content), page_pool_info_items,
++			      NULL, ARRAY_SIZE(page_pool_info_items));
++	pos += scnprintf(buf + pos, len - pos, "%s", content);
++	for (i = 0; i < h->kinfo.num_tqps; i++) {
++		if (!test_bit(HNS3_NIC_STATE_INITED, &priv->state) ||
++		    test_bit(HNS3_NIC_STATE_RESETTING, &priv->state))
++			return -EPERM;
++		ring = &priv->ring[(u32)(i + h->kinfo.num_tqps)];
++		hns3_dump_page_pool_info(ring, result, i);
++		hns3_dbg_fill_content(content, sizeof(content),
++				      page_pool_info_items,
++				      (const char **)result,
++				      ARRAY_SIZE(page_pool_info_items));
++		pos += scnprintf(buf + pos, len - pos, "%s", content);
++	}
++
++	return 0;
++}
++
+ static int hns3_dbg_get_cmd_index(struct hns3_dbg_data *dbg_data, u32 *index)
+ {
+ 	u32 i;
+@@ -982,6 +1052,10 @@ static const struct hns3_dbg_func hns3_dbg_cmd_func[] = {
+ 		.cmd = HNAE3_DBG_CMD_TX_QUEUE_INFO,
+ 		.dbg_dump = hns3_dbg_tx_queue_info,
+ 	},
++	{
++		.cmd = HNAE3_DBG_CMD_PAGE_POOL_INFO,
++		.dbg_dump = hns3_dbg_page_pool_info,
++	},
+ };
+ 
+ static int hns3_dbg_read_cmd(struct hns3_dbg_data *dbg_data,
+-- 
+2.33.0
+
