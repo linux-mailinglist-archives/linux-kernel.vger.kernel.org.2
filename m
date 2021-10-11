@@ -2,164 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3CE442986D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:51:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD39D429870
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235096AbhJKUxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:53:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
+        id S235059AbhJKUzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhJKUxc (ORCPT
+        with ESMTP id S233598AbhJKUzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:53:32 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530E5C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:51:32 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id x8-20020a4ac588000000b002b716e347eeso107399oop.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:51:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rn09d7caDfoCbeJ1oRsOFnGTsCgujh7Av70+yx/v1WI=;
-        b=IhgME2s1Lw/QYpkgDbnn0nQRygV74w2OrP3PH3TYuBCg5K7lDyq+RPZFd5OHiv1V7V
-         8AA/50E48T7mbhSgUMuJJoS0KhXDLPE25pT7MaZa0XrNES4VnIrnJkm1PBnZoqN5c5oN
-         y7KQsN/gc8JMyXx1PfrSnVTOojAy/Sj8mDvNWSCBYszrVFy51N0aC06AldZ+sp7Z5DyE
-         AihXd3C9TVowWnZIZgFSAYYwhxeP9BCj1LkhPnScdFS++vXtYNzuym4C2zCr0ofa6+M9
-         yRz2bHqAzt+9hpTvtXU9ZmDntB20zhqFBhfbllc6GgUOSv0qPIKJ9ymCZXuMbiqBxxfv
-         FrOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rn09d7caDfoCbeJ1oRsOFnGTsCgujh7Av70+yx/v1WI=;
-        b=vOhRi6Mt8QnU6B54NgCnksbVwJZeSJiNOnN+H6C9+H2uE9kRy4UydKY5bJKmC5aMoD
-         2FZK8QxjUb+sYKIzBHugk20Z14rKGtWul1RhFRk9NTef2XiaMvarmT2jCf7KENjKsaeT
-         YlyndekYhssHQRVK6ZTwFu/1wLxald6a91ONU55U4NyX8vG4byE4MkoeWLucxUmNWtBS
-         ULZ2tIjzLsH8iJ021Duppi4WIKqAXcw1ZPHaDxmKAq+BP5rXsh2cz78KcxglA/HrzPih
-         twB8BiloRPxLmlTdYeR9izKxejGhNItWBF99nU/wvem4iMoQIXjsvv9GkzpoPhjveg8c
-         Egug==
-X-Gm-Message-State: AOAM5312+IX5vN9rXvP2qs0mz8Hqdrhshc/LSmtPkDaoBYqREkRre+U6
-        gI1O0DDoR3ln0Dc7B3/TuJyYibiCxEbsx/msIf+ucw==
-X-Google-Smtp-Source: ABdhPJw1SEPgrTzAzcFlHjeqFH5OMD09k/R0xvA4RipgQ0bJP5ZZLoKzkZzlFuqKK6OL8cCzwu0pdBUZIQ7SHYC9q+I=
-X-Received: by 2002:a4a:c993:: with SMTP id u19mr2904192ooq.31.1633985491354;
- Mon, 11 Oct 2021 13:51:31 -0700 (PDT)
+        Mon, 11 Oct 2021 16:55:15 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D10C061570
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 13:53:15 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E30C1FD3;
+        Mon, 11 Oct 2021 22:53:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1633985591;
+        bh=nCb8Pc9naD2hvMjfW8POZXXVTuH3lwEik2nOAUzxErs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UlB6Wf+qefW7KJvFUnr+gFvcPuYsv2t1/hswzV3aznYW3IaGpfFroFBRohPEWX+8q
+         7lnIl8l1T2w+XgdS7KZrga9ft08+VJCMp2YvePTWFNM9gjkN8y/VsExqEZwC8Njp6V
+         2eGC1/0eR4ZP76xdLjn2WbSSb1VClAzGJEG0DWVU=
+Date:   Mon, 11 Oct 2021 23:52:57 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Guido =?utf-8?Q?G=C3=BCnther?= <agx@sigxcpu.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Marek Vasut <marex@denx.de>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Ondrej Jirman <megous@megous.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 4/5] drm: mxsfb: Print failed bus format in hex
+Message-ID: <YWSkKSBnqTMGq/s7@pendragon.ideasonboard.com>
+References: <cover.1633959458.git.agx@sigxcpu.org>
+ <c84b34855abbb85cd25bbb5126db302f88327640.1633959458.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-References: <20211011194615.2955791-1-vipinsh@google.com> <YWSdTpkzNt3nppBc@google.com>
-In-Reply-To: <YWSdTpkzNt3nppBc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 11 Oct 2021 13:51:20 -0700
-Message-ID: <CALMp9eRzPXg2WS6-Yy6U90+B8wXm=zhVSkmAym4Y924m7FM-7g@mail.gmail.com>
-Subject: Re: [PATCH] KVM: VMX: Add a wrapper for reading INVPCID/INVEPT/INVVPID
- type
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vipin Sharma <vipinsh@google.com>, pbonzini@redhat.com,
-        dmatlack@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c84b34855abbb85cd25bbb5126db302f88327640.1633959458.git.agx@sigxcpu.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 1:23 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Mon, Oct 11, 2021, Vipin Sharma wrote:
-> > Add a common helper function to read invalidation type specified by a
-> > trapped INVPCID/INVEPT/INVVPID instruction.
-> >
-> > Add a symbol constant for max INVPCID type.
-> >
-> > No functional change intended.
-> >
-> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> > ---
-> >  arch/x86/include/asm/invpcid.h |  1 +
-> >  arch/x86/kvm/vmx/nested.c      |  4 ++--
-> >  arch/x86/kvm/vmx/vmx.c         |  4 ++--
-> >  arch/x86/kvm/vmx/vmx.h         | 12 ++++++++++++
-> >  4 files changed, 17 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/invpcid.h b/arch/x86/include/asm/invpcid.h
-> > index 734482afbf81..b5ac26784c1b 100644
-> > --- a/arch/x86/include/asm/invpcid.h
-> > +++ b/arch/x86/include/asm/invpcid.h
-> > @@ -21,6 +21,7 @@ static inline void __invpcid(unsigned long pcid, unsigned long addr,
-> >  #define INVPCID_TYPE_SINGLE_CTXT     1
-> >  #define INVPCID_TYPE_ALL_INCL_GLOBAL 2
-> >  #define INVPCID_TYPE_ALL_NON_GLOBAL  3
-> > +#define INVPCID_TYPE_MAX             3
->
-> ...
->
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index 1c8b2b6e7ed9..77f72a41dde3 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -5502,9 +5502,9 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
-> >       }
-> >
-> >       vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
-> > -     type = kvm_register_read(vcpu, (vmx_instruction_info >> 28) & 0xf);
-> > +     type = vmx_read_invalidation_type(vcpu, vmx_instruction_info);
->
-> I would prefer to keep the register read visibile in this code so that it's
-> obvious what exactly is being read.  With this approach, it's not clear that KVM
-> is reading a GPR vs. VMCS vs. simply extracting "type" from "vmx_instruction_info".
->
-> And it's not just the INV* instruction, VMREAD and VMWRITE use the same encoding.
->
-> The hardest part is coming up with a name :-)  Maybe do the usually-ill-advised
-> approach of following the SDM verbatim?  Reg2 is common to all flavors, so this?
->
->         gpr_index = vmx_get_instr_info_reg2(vmx_instruction_info);
->         type = kvm_register_read(vcpu, gpr_index);
->
-> >
-> > -     if (type > 3) {
-> > +     if (type > INVPCID_TYPE_MAX) {
->
-> Hrm, I don't love this because it's not auto-updating in the unlikely chance that
-> a new type is added.  I definitely don't like open coding '3' either.  What about
-> going with a verbose option of
->
->         if (type != INVPCID_TYPE_INDIV_ADDR &&
->             type != INVPCID_TYPE_SINGLE_CTXT &&
->             type != INVPCID_TYPE_ALL_INCL_GLOBAL &&
->             type != INVPCID_TYPE_ALL_NON_GLOBAL) {
->                 kvm_inject_gp(vcpu, 0);
->                 return 1;
->         }
+Hi Guido,
 
-Better, perhaps, to introduce a new function, valid_invpcid_type(),
-and squirrel away the ugliness there?
+Thank you for the patch.
 
-> It's kind of gross, but gcc10 is smart enought to coalesce those all into a single
-> CMP <reg>, 3; JA <#GP>, i.e. the resulting binary is identical.
->
-> >               kvm_inject_gp(vcpu, 0);
-> >               return 1;
-> >       }
-> > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> > index 592217fd7d92..eeafcce57df7 100644
-> > --- a/arch/x86/kvm/vmx/vmx.h
-> > +++ b/arch/x86/kvm/vmx/vmx.h
-> > @@ -522,4 +522,16 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
-> >
-> >  void dump_vmcs(struct kvm_vcpu *vcpu);
-> >
-> > +/*
-> > + * When handling a VM-exit for one of INVPCID, INVEPT or INVVPID, read the type
-> > + * of invalidation specified by the instruction.
-> > + */
-> > +static inline unsigned long vmx_read_invalidation_type(struct kvm_vcpu *vcpu,
-> > +                                                    u32 vmx_instr_info)
-> > +{
-> > +     u32 vmx_instr_reg2 = (vmx_instr_info >> 28) & 0xf;
-> > +
-> > +     return kvm_register_read(vcpu, vmx_instr_reg2);
-> > +}
-> > +
-> >  #endif /* __KVM_X86_VMX_H */
-> > --
-> > 2.33.0.882.g93a45727a2-goog
-> >
+On Mon, Oct 11, 2021 at 03:41:26PM +0200, Guido Günther wrote:
+> media-bus-formats.h has them in hexadecimal as well so matching with
+> that file saves one conversion when debugging.
+> 
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  drivers/gpu/drm/mxsfb/mxsfb_kms.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/mxsfb/mxsfb_kms.c b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> index af6c620adf6e..d6abd2077114 100644
+> --- a/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> +++ b/drivers/gpu/drm/mxsfb/mxsfb_kms.c
+> @@ -89,7 +89,7 @@ static void mxsfb_set_formats(struct mxsfb_drm_private *mxsfb,
+>  		ctrl |= CTRL_BUS_WIDTH_24;
+>  		break;
+>  	default:
+> -		dev_err(drm->dev, "Unknown media bus format %d\n", bus_format);
+> +		dev_err(drm->dev, "Unknown media bus format 0x%x\n", bus_format);
+
+I may have gone for 0x%04x as current media bus formats all hold in 16
+bits, but it's not big deal.
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+>  		break;
+>  	}
+>  
+
+-- 
+Regards,
+
+Laurent Pinchart
