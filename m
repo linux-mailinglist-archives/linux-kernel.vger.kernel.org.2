@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ADA42950E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B1BC429526
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233035AbhJKRDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:03:04 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3965 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232560AbhJKRDA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:03:00 -0400
-Received: from fraeml745-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HSlMx1p68z67fKq;
-        Tue, 12 Oct 2021 00:57:33 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml745-chm.china.huawei.com (10.206.15.226) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 11 Oct 2021 19:00:58 +0200
-Received: from [10.47.95.202] (10.47.95.202) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Mon, 11 Oct
- 2021 18:00:57 +0100
-Subject: perf tools jevents build flags (was Re: [PATCH] perf jevents: Fix
- sys_event_tables to be freed like arch_std_events)
-From:   John Garry <john.garry@huawei.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     Like Xu <like.xu.linux@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210928102938.69681-1-likexu@tencent.com>
- <YVMB5kt8XG+OdJ1M@kernel.org>
- <c547bc2d-ab7c-1e89-5d12-bd5d875f7aa5@huawei.com>
- <YVMVwDt3QHBPfT/T@kernel.org> <YVMXHM0F/y2ptX8C@kernel.org>
- <3949dfa2-d684-47af-ffa7-71b07141f64d@huawei.com>
- <YVNXTuq1PpLpMH/R@kernel.org>
- <bd98c9f3-de67-7ca5-534c-f7fd6cc69915@huawei.com>
-Message-ID: <e5c0123b-31d2-5f07-52a4-724ae89747c1@huawei.com>
-Date:   Mon, 11 Oct 2021 18:03:19 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S232983AbhJKRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:06:29 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49736 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232477AbhJKRG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:06:28 -0400
+Received: from zn.tnic (p200300ec2f08bb0030636ca0dab1dbfc.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:3063:6ca0:dab1:dbfc])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 119F81EC03CA;
+        Mon, 11 Oct 2021 19:04:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633971867;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Uhi/0mTMQPF1j9oov8A9eUPIu6iaQITd864TbmJf0ic=;
+        b=VpRMYRDncvudkgca57mLLE1vfHN8/99rwHWDnPfp8AZawRrDgEDQRTJXdWxzsFGDRFlfLX
+        FE/bOWMSVvo5PaGcSrl0dRJ5qIM4ItzMqSW9zl7y4eWuX57EiamHACh4p1oueVCsxxNdSu
+        0xkQJ0tm0nDvYIG3TZfhZLAoWKY8J5A=
+Date:   Mon, 11 Oct 2021 19:04:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v10 00/11] Add TDX Guest Support (Initial support)
+Message-ID: <YWRum+BdErvg6874@zn.tnic>
+References: <20211009053747.1694419-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YWFG7+QqVGZ5ZdG9@zn.tnic>
+ <6584b4d5-b7a1-2dbb-1a27-10f9c7949be9@linux.intel.com>
+ <YWQ2JqkLKoDMYO/W@zn.tnic>
+ <1a8898d2-9ac9-f053-23a6-63fb40e2c9dc@intel.com>
+ <1c6ee36e-e42a-bca1-1642-a85a3888144b@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <bd98c9f3-de67-7ca5-534c-f7fd6cc69915@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.95.202]
-X-ClientProxiedBy: lhreml707-chm.china.huawei.com (10.201.108.56) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1c6ee36e-e42a-bca1-1642-a85a3888144b@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2021 21:30, John Garry wrote:
->>>
->>> OK, would you also consider reusing CFLAGS:
->>>
->>> --- a/tools/perf/pmu-events/Build
->>> +++ b/tools/perf/pmu-events/Build
->>> @@ -9,10 +9,12 @@ JSON          =  $(shell [ -d $(JDIR) ] &&
->>> \
->>> JDIR_TEST      =  pmu-events/arch/test
->>> JSON_TEST      =  $(shell [ -d $(JDIR_TEST) ] &&                       \
->>>                         find $(JDIR_TEST) -name '*.json')
->>> -
->>> +HOSTCFLAGS_jevents += $(CFLAGS)
->> Humm, we have to check if CFLAGS doesn't come with cross-build options,
->> i.e. IIRC we have to use HOSTCFLAGS instead. Unsure if there is some
->> *CFLAGS variable that gets the common part, where these -Wall and
->> -Wextra, -Werror could go.
+On Mon, Oct 11, 2021 at 09:48:40AM -0700, Dave Hansen wrote:
+> On 10/11/21 9:33 AM, Dave Hansen wrote:
+> > FWIW, if you're in search of funky Kconfigs for compiling x86, I've got
+> > a big bundle of them. 
 > 
-> not sure. As I see, the bulk of flags we have in CFLAGS comes from 
-> EXTRA_WARNINGS in scripts/Makefile.include; but CFLAGS seems to also 
-> include EXTRA_CLAGS, which are for cross-builds (see perf/Makefile.config)
+> In case anyone's interested, here's a bundle of them:
 > 
+> 	https://sr71.net/~dave/intel/configs-5.15.tar.gz
+> 
+> Nothing magic here, just a list of configs that have caused me problems
+> over the years.  These tend to be tweaked a *bit* away from their
+> namesake.  For instance, "allnoconfig" is typically a "make
+> allnoconfig", with a few things added back so it has a chance of booting
+> somewhere.
+> 
+> These, once untarred, are in a directory structure so you can easily:
+> 
+> 	make O=/path/to/build/64bit menuconfig
+> 
+> or whatever.
 
-Hi Arnaldo,
+Yap, looks good. Lemme add them to my pile of build-test machinery.
 
-I'm just looking at enabling warning cflags for jevents again.
+Thx.
 
-So how about this:
-
---->8----
-
-
-Subject: [PATCH] perf pmu-events: Enable jevents warnings through HOSTCFLAGS
-
-
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 0ae2e3d8b832..65934984f032 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -17,6 +17,7 @@ detected     = $(shell echo "$(1)=y"       >> 
-$(OUTPUT).config-detected)
-  detected_var = $(shell echo "$(1)=$($(1))" >> $(OUTPUT).config-detected)
-
-  CFLAGS := $(EXTRA_CFLAGS) $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-+HOSTCFLAGS := $(filter-out -Wnested-externs,$(EXTRA_WARNINGS))
-
-  include $(srctree)/tools/scripts/Makefile.arch
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index 7df13e74450c..118bcdc70bb4 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -226,7 +226,7 @@ else
-  endif
-
-  export srctree OUTPUT RM CC CXX LD AR CFLAGS CXXFLAGS V BISON FLEX AWK
--export HOSTCC HOSTLD HOSTAR
-+export HOSTCC HOSTLD HOSTAR HOSTCFLAGS
-
-  include $(srctree)/tools/build/Makefile.include
-
-diff --git a/tools/perf/pmu-events/Build b/tools/perf/pmu-events/Build
-index a055dee6a46a..d5c287f069a2 100644
---- a/tools/perf/pmu-events/Build
-+++ b/tools/perf/pmu-events/Build
-@@ -1,7 +1,7 @@
-  hostprogs := jevents
-
-  jevents-y	+= json.o jsmn.o jevents.o
--HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include
-+HOSTCFLAGS_jevents.o	= -I$(srctree)/tools/include $(HOSTCFLAGS)
-  pmu-events-y	+= pmu-events.o
-  JDIR		=  pmu-events/arch/$(SRCARCH)
-  JSON		=  $(shell [ -d $(JDIR) ] &&				\
 -- 
-2.26.2
+Regards/Gruss,
+    Boris.
 
----8<---
-
-The newly generated warnings in jevents.c are pretty straightforward to 
-tidy up.
-
-Thanks,
-John
+https://people.kernel.org/tglx/notes-about-netiquette
