@@ -2,189 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B7C428AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B10CA428ADF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 12:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbhJKKkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 06:40:24 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:46926 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235602AbhJKKkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 06:40:21 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19B9Pjm9022059;
-        Mon, 11 Oct 2021 12:38:20 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=Z6wFIjp+GDDMt9AWdhfvyiX5igurM0IivYOIXWgz0F8=;
- b=NxvFqBVLNeVk6mbzaqNJ2qhGcj4vuJUJaA89zqBsUrGT0jNkDcDkI40LoWoqwunbnXUn
- T/Bx/pjP8PEb2bg8M5Ur8Y3kx92U5BmCg5MdT5aFRQpqX15sai+zFdExPtkXWiRdYNgb
- NiCmjuxiTL5G5xRTJu9WXNvXX1AFsJC2Qj0IeAi21zjZBoT2PcCbylOzzWnvAT+tQmNE
- VVBOEidOyldoPXFS80QVCm+iyHQhRXUlnBk3sgAQxzjkhE4+7lRjy3ziupGX95Uv9LcA
- h53SACOJ473tDN3zfMc87vr6uDteuMFAxIweRWxwmDpQI3/pSPUO7tIc3yiuYSmznTzW Zg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3bmd35tb8p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Oct 2021 12:38:20 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C291C10002A;
-        Mon, 11 Oct 2021 12:38:19 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id B530D21CA77;
-        Mon, 11 Oct 2021 12:38:19 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
- 2021 12:38:18 +0200
-Subject: Re: [PATCH v5 0/4] Restructure the rpmsg char to decorrelate the
- control part.
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210712123752.10449-1-arnaud.pouliquen@foss.st.com>
- <YWDSXu/MDOwOLDg0@ripper>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <8b7179ff-6d0a-8ed5-c0a3-4298fa9b9dc6@foss.st.com>
-Date:   Mon, 11 Oct 2021 12:38:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S235925AbhJKKli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 06:41:38 -0400
+Received: from mout.gmx.net ([212.227.15.18]:45911 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235915AbhJKKle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 06:41:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1633948766;
+        bh=gE3WDMuqGE39JnYoasU93YDWlOoPTsYZPI0m0z1wlII=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=FpZsDn1GodNYeYo1gNW9V7skIlYt7SGOCaou5GQ96pXcsryjQLOLp/sQv/V+tjF1k
+         OwUEq4hHvXm1MkXpRAjOHFcF3xCM99almOzLhRaauI4DXMQdMWHQezWdwxfIkTgKOF
+         oFwGbJfMS90jym4dD31EsThRiL4sy42c5gFS/8MU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1M1HZo-1mcdrr448g-002mAe; Mon, 11 Oct 2021 12:39:26 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Fei Li <fei1.li@intel.com>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] virt: acrn: Prefer array_syze and struct_size over open coded arithmetic
+Date:   Mon, 11 Oct 2021 12:39:02 +0200
+Message-Id: <20211011103902.15638-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YWDSXu/MDOwOLDg0@ripper>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE2.st.com
- (10.75.127.5)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-11_03,2021-10-07_02,2020-04-07_01
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jLpt3mF2cKN3Zhc8hfH+cIgsyGJiEqwmPz2M7LpV3ya/e3tEhMr
+ kCa38ruwuuqwzOa9Gv125IbvHH2X76yC5of6iRe+AImDmae6KISIlN6Tu1hDYzT/nrHskZ7
+ GvMiHLF7P7wr13dCBV6V1wP0sAJ5xCGL65pzGEUHus5mZGa2QsQcAPP2G+mVEbKnfn+ytRH
+ K9qoDrPE1A0pES41T27cQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gRx5sUq1pB0=:7GZFwz/w5DgwTBIHVa5N44
+ +puAnmGeURL6929uQfcwR5KAUwIrJGVK+9xYmEPTeZZJ4cBLZawjcMTctl39Nd/Hi1m2Dh17h
+ fCt0gL+d7PU46Yt8+idAWrLSOJjHb+yHFiU+igeqXa0Ld/iTe3m+i+85XbNeiYDZH5jfA2o9s
+ olCXHZVVVPInurIscwwNzf+WuF5/mrZUTvdg3xD2mlUXYIBy6FWxp6y7XPv7AKQTq4J7z1zmk
+ 9zO5p/txHTyNYeM3Ksas4g94e336oS7xPaS9dZU9zhQ2vPzHxMDoRtVFO/NDIuhe9IvPZw9uJ
+ XGU8ohMpL6sj/HrxkAPGmUhwk+prTfMeMBCdRVJmvBdt9R59jpKToq7lxVej7OQqzAhvAqM27
+ K/KZ46xASDSuza/4USz4q1S/M62r2Bn/HZ9hfoZqwO1S5mTjFnbgSASh41c4DNR9EqUr2Zmjj
+ j6po3xlD79q+jjdHXsDWrbPUnEwpESzCCh+J+cqnCzhTxq86isi3clKFFzKZAfXLnE8mB04Cl
+ nyFjHvXOaSiQixb6D8OfLUmRLvgA60m43ibTE8+Ub/dtDCUW9jgUfvGT2bTVWfO0AYHeu81Cj
+ NJ6Tj6rE9CxeNdDGbOYNY7NzM13iFvdvI5hEoKpVMoQrdqPQvvmQNeMdP/m6yYyGKSq2yDlpk
+ SAJ31LUOKkN1EW8O8tpFyGGhdM0Sv0aVimcwnzU54JskWmyTQ14ExY7yGU6XcVhZUl+qgXeja
+ MQIe0U80JLiSr/f/UGdnRKI05DY98nEqppaY0dvZTzDOV40BcOrY1WypBszs16spxuxJsOCa+
+ 1wIXkQrC+xIuNGmyKivLVbtEIvNDgP83Px5izwibrSZxpHOyuIYYPiTrm1P8WYQ2LfFDsiBYx
+ Ph6LM1IggJvgZBIZO3qrDW9KWx8i3THPe5ZPnOdGL2SR3X37SbxhI2mTphWPSYuCoRummLFyc
+ LzmAbldzGh4X/LoL8xe8IDaeEFrTxSaRISv3D7wnScq5hvvP0eAijkbkAubWhXLOVLStm839t
+ Pfi4DChLMhnSVw2+KTZwZTCIr0OXTXXmB/HmGB6x+x8UOfZJ5gpCD97M5LExGrUz1RwXK5Avk
+ nZC6TvU3SvMn7w=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
+So, use the array_size() helper to do the arithmetic instead of the
+argument "count * size" in the vzalloc() function.
 
-On 10/9/21 1:21 AM, Bjorn Andersson wrote:
-> On Mon 12 Jul 05:37 PDT 2021, Arnaud Pouliquen wrote:
-> 
->> Main update from V4 [1] 
->>  - complete commit messages with Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->>  - rebased on kernel V.14-rc1.
->>
->> This series can be applied and tested on "Linux 5.14-rc1"(e73f0f0ee754) branch
->>
->> Series description:
->> This series is the second step in the division of the series [2]: 
->> "Introducing a Generic IOCTL Interface for RPMsg Channel Management".
->>
->> The purpose of this patchset is to split the code related to the control
->> and the endpoint. The code related to the control part is moved in the rpmsg_ctrl.c.
-> 
-> I'm not convinced about the merits for this refactoring, you're creating
-> yet another kernel module which is fairly tightly coupled with
-> the rpmsg_char kernel module and the only case I can see where this
-> would be useful is if you want to be able to create reach
-> RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_EPT_IOCTL without having to
-> include the rpmsg_char part in your kernel.
+Also, take the opportunity to add a flexible array member of struct
+vm_memory_region_op to the vm_memory_region_batch structure. And then,
+change the code accordingly and use the struct_size() helper to do the
+arithmetic instead of the argument "size + size * count" in the kzalloc
+function.
 
-This is what we discussed during a meeting we had on the rpsmg_tty subject the
-July 7, 2020. [1] sump-up what you requested from me before introducing the
-rpmsg tty. But we miss-understood your requirement?
+This code was detected with the help of Coccinelle and audited and fixed
+manually.
 
-This work is the result of our discussion:
-- decorrelate the control and stream part of the rpmsg_char to be able to reuse
-the control for other rpmsg services such as the rpmsg_tty.
-- Add capability to instantiate other rpmsg service from Linux user land
-applications.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#open-co=
+ded-arithmetic-in-allocator-arguments
 
-The correlation between the rpmsg_char and the rpmsg_ctrl is due to the support
-of the RPMSG_CREATE_EPT_IOCTL RPMSG_DESTROY_EPT_IOCTL legacy controls for the
-QCOM driver.
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/virt/acrn/acrn_drv.h | 10 ++++++----
+ drivers/virt/acrn/mm.c       |  9 ++++-----
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-At the end I guess the rpmsg_ctrl could become, in the future, a channel for
-endpoint signaling between processors.
+diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+index 1be54efa666c..fcc2e3e5232a 100644
+=2D-- a/drivers/virt/acrn/acrn_drv.h
++++ b/drivers/virt/acrn/acrn_drv.h
+@@ -48,6 +48,7 @@ struct vm_memory_region_op {
+  * @reserved:		Reserved.
+  * @regions_num:	The number of vm_memory_region_op.
+  * @regions_gpa:	Physical address of a vm_memory_region_op array.
++ * @regions_op:		Flexible array of vm_memory_region_op.
+  *
+  * HC_VM_SET_MEMORY_REGIONS uses this structure to manage EPT mappings of
+  * multiple memory regions of a User VM. A &struct vm_memory_region_batch
+@@ -55,10 +56,11 @@ struct vm_memory_region_op {
+  * ACRN Hypervisor.
+  */
+ struct vm_memory_region_batch {
+-	u16	vmid;
+-	u16	reserved[3];
+-	u32	regions_num;
+-	u64	regions_gpa;
++	u16				vmid;
++	u16				reserved[3];
++	u32				regions_num;
++	u64				regions_gpa;
++	struct vm_memory_region_op	regions_op[];
+ };
 
-[1] https://lkml.org/lkml/2020/7/15/868
+ /**
+diff --git a/drivers/virt/acrn/mm.c b/drivers/virt/acrn/mm.c
+index c4f2e15c8a2b..a881742cd48d 100644
+=2D-- a/drivers/virt/acrn/mm.c
++++ b/drivers/virt/acrn/mm.c
+@@ -168,7 +168,7 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_vm=
+_memmap *memmap)
 
-> 
->> This split is an intermediate step to extend the controls to allow user applications to
->> instantiate rpmsg devices.
+ 	/* Get the page number of the map region */
+ 	nr_pages =3D memmap->len >> PAGE_SHIFT;
+-	pages =3D vzalloc(nr_pages * sizeof(struct page *));
++	pages =3D vzalloc(array_size(nr_pages, sizeof(struct page *)));
+ 	if (!pages)
+ 		return -ENOMEM;
 
->>     
-> 
-> Can you give a concrete example of when this would be used?
+@@ -220,16 +220,15 @@ int acrn_vm_ram_map(struct acrn_vm *vm, struct acrn_=
+vm_memmap *memmap)
+ 	}
 
-Similar to what it is done with the RPMSG_CREATE_EPT_IOCTL but based on the
-channel not the endpoint (as the rpmsg_bus virtio is channel based).
+ 	/* Prepare the vm_memory_region_batch */
+-	regions_info =3D kzalloc(sizeof(*regions_info) +
+-			       sizeof(*vm_region) * nr_regions,
+-			       GFP_KERNEL);
++	regions_info =3D kzalloc(struct_size(regions_info, regions_op,
++					   nr_regions), GFP_KERNEL);
+ 	if (!regions_info) {
+ 		ret =3D -ENOMEM;
+ 		goto unmap_kernel_map;
+ 	}
 
-For instance we received several issue reports from customer on rpmsg
-communication. The reason was that the coprocessor creates an unidirectional
-channel to transfer data to the main processor. But nothing works because the
-coprocessor doesn't have the remote address until the main processor send a
-first message. The workaround is to send a fake message from the Linux to
-provide is ept address.
-Making this in the other direction allows the Linux application to initiate such
-link when it is ready to receive data.
+ 	/* Fill each vm_memory_region_op */
+-	vm_region =3D (struct vm_memory_region_op *)(regions_info + 1);
++	vm_region =3D regions_info->regions_op;
+ 	regions_info->vmid =3D vm->vmid;
+ 	regions_info->regions_num =3D nr_regions;
+ 	regions_info->regions_gpa =3D virt_to_phys(vm_region);
+=2D-
+2.25.1
 
-Other examples of usage:
-- Create a temporary channel to get for instance logs of the remotre proc
-- destroy and re-create some channels on Linux suspend/resume.
-
-As the proposal of exposing the capability to userland to initiate the link (if
-i well remember) is coming from you, don't hesitate if you have some extra
-uscase that i can add in the cover letter.
-
-> 
-> Per our previous discussions I believe you intend to use this to bind
-> your rpmsg_tty driver to arbitrary channels in runtime, which to me
-> sounds like you're reinventing the bind/unbind sysfs attrs.
-
-Please tell me if I wrong, but the bind /unbind allows to probe/remove an
-exiting device. the RPMSG_CREATE_DEV_IOCTL creates a new one on the rpmsg bus,
-so not exactly the same use case.
-
-Regards,
-Arnaud
-
-> 
-> Regards,
-> Bjorn
-> 
->> Notice that this patchset does not modify the behavior for using the RPMSG_CREATE_EPT_IOCTL
->> and RPMSG_DESTROY_EPT_IOCTL controls.
->>   
->> The next step should be to add the capability to:
->> - instantiate rpmsg_chrdev from the remote side (NS announcement),
->> - instantiate rpmsg_chrdev from local user application by introducing the
->>   IOCTLs RPMSG_CREATE_DEV_IOCTL and RPMSG_DESTROY_DEV_IOCTL to instantiate the rpmsg devices,
->> - send a NS announcement to the remote side on rpmsg_chrdev local instantiation.
->>
->> [1]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=483793
->> [2]: https://patchwork.kernel.org/project/linux-remoteproc/list/?series=435523
->>
->> Arnaud Pouliquen (4):
->>   rpmsg: char: Remove useless include
->>   rpmsg: char: Export eptdev create an destroy functions
->>   rpmsg: Move the rpmsg control device from rpmsg_char to rpmsg_ctrl
->>   rpmsg: Update rpmsg_chrdev_register_device function
->>
->>  drivers/rpmsg/Kconfig             |   9 ++
->>  drivers/rpmsg/Makefile            |   1 +
->>  drivers/rpmsg/qcom_glink_native.c |   2 +-
->>  drivers/rpmsg/qcom_smd.c          |   2 +-
->>  drivers/rpmsg/rpmsg_char.c        | 184 ++-----------------------
->>  drivers/rpmsg/rpmsg_char.h        |  51 +++++++
->>  drivers/rpmsg/rpmsg_ctrl.c        | 215 ++++++++++++++++++++++++++++++
->>  drivers/rpmsg/rpmsg_internal.h    |   8 +-
->>  drivers/rpmsg/virtio_rpmsg_bus.c  |   2 +-
->>  9 files changed, 293 insertions(+), 181 deletions(-)
->>  create mode 100644 drivers/rpmsg/rpmsg_char.h
->>  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
->>
->> -- 
->> 2.17.1
->>
