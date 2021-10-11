@@ -2,278 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E3B4294D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981674294D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 18:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhJKQzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 12:55:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhJKQzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 12:55:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C88AF60E90;
-        Mon, 11 Oct 2021 16:53:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633971183;
-        bh=UhfKGVwptNVcTXaDecknZR62S/vnpiwlxLpJU98Gt0o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=dL8AedcFlZAFeFQ8BWliMp+t59u2GmyOBfK8TlrpOF+jA082CYHsTkqXNh00US3H9
-         SW2IbzhluP7Hv8juSP8AyTPSgZenS4st//h+Pnle8zA+huZ2kldyXIkJCtt9YKpOJ7
-         3BIezXtAKwLqsKwAyiOGSn+nk0bQcSOfRsX7+n8u/g0fxYruz6YE5ZZ7iV1j7ajX5R
-         xgmIjpIazM/Ldql5n8Nj2KxGkLUXS/EM1jrCitETAY8vLM8eo3ModECkEFXpIQYQ7t
-         QslyJTGq8QkDku6a6urHsQp7D8e0EjyCpxO8hrlPbBe3c9DynbfWZvoapNAAtQor+Z
-         kud9y5ggIHw2g==
-Date:   Mon, 11 Oct 2021 11:53:01 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Jonas =?iso-8859-1?Q?Dre=DFler?= <verdre@v0yd.nl>
-Cc:     Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Brian Norris <briannorris@chromium.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH] mwifiex: Add quirk resetting the PCI bridge on MS
- Surface devices
-Message-ID: <20211011165301.GA1650148@bhelgaas>
+        id S232635AbhJKQ4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 12:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhJKQ4S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 12:56:18 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EEEC061570;
+        Mon, 11 Oct 2021 09:54:17 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id lk8-20020a17090b33c800b001a0a284fcc2so1339051pjb.2;
+        Mon, 11 Oct 2021 09:54:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ar6jS9mgPduriNQ+Mw3T/3tllHHOETh5zZmd7CTTh8g=;
+        b=CnD7f7PfOCPYM6mx8VpDO/FqvCEsnAKWb93FFiplG0aVGgg9Xy4NrhyK2Xj8NrJD8G
+         Mh5gOhEc6y0lVbnLAvJOt4EwXgrBIJybNm3bk1icLG9k3BfN+BdB90WfQcUli6Cpf/cv
+         c12FS4OftsP7MCn7xGnm8oX6NH0zqE4ag/+uaRgXE3T0WBX5cu/k8d2+rG9BIboJh3FK
+         oR0hWILjGOiA0B6aZoXNAsUeNy7XJukC1Et/NKqrz+EoKmwNkviGINRXBrFoi6zQeRkk
+         WOAf1RlzDM3ga4giUvTZVMwfi2sg6HPRxDjac1Lvk638LdCYtT3K/BAf0Vxv7D9+QShk
+         nVTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ar6jS9mgPduriNQ+Mw3T/3tllHHOETh5zZmd7CTTh8g=;
+        b=vYf5Rg4KFH9bAh4Z9ye5xVWWgkG4CYgQfVXuLbSMSLmYkxmzN2we6q5SIUEbAKSSrh
+         Br2ZJWaD52jq6K+dhRr1wEydppD+jfBUOtHXp3wW/w4GbJ5mZDPw+FZnu2YXrxbpbcYY
+         MljdF//jMAzwdmn4jyhRtd5j8W3Gh+4bKLBLM3ulGc+dbebhnnV+s35IVDLu2eQYXrK0
+         6CT3C9yOzJ9asGLm4UaYveRmjxT6NW+RRlI/q25i2IEKF3+RfnwDPHFAl12kQMHhxf7P
+         hcxcuvdoMiBKabKaroBZHlrpmZhUYy8tA4RpJD1d5gEzz0xq4maIsetZnmrq3xAXJerY
+         ypWg==
+X-Gm-Message-State: AOAM531LeB8zjEvbw5lIWn330RNhfVwTIXZog1Zd8idpxgC9Pm8BpoIe
+        rem5UUu15jj6sze08zccnWc=
+X-Google-Smtp-Source: ABdhPJzlB+qjbNZ3WdqfeVzSkr3Xz0ShISJfyW+O1HxWp05tfRR2PGnqS7YA+YJCiHo8Fq/D42bLjw==
+X-Received: by 2002:a17:90b:4b4c:: with SMTP id mi12mr79600pjb.57.1633971257200;
+        Mon, 11 Oct 2021 09:54:17 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id f33sm28195pjk.42.2021.10.11.09.54.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 09:54:16 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 11 Oct 2021 06:54:15 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Fabio Estevam <festevam@denx.de>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2] workqueue: fix state-dump console deadlock
+Message-ID: <YWRsN6klE26izr9Q@slm.duckdns.org>
+References: <20211006115852.16986-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211011134238.16551-1-verdre@v0yd.nl>
+In-Reply-To: <20211006115852.16986-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Alex]
-
-On Mon, Oct 11, 2021 at 03:42:38PM +0200, Jonas Dreﬂler wrote:
-> The most recent firmware (15.68.19.p21) of the 88W8897 PCIe+USB card
-> reports a hardcoded LTR value to the system during initialization,
-> probably as an (unsuccessful) attempt of the developers to fix firmware
-> crashes. This LTR value prevents most of the Microsoft Surface devices
-> from entering deep powersaving states (either platform C-State 10 or
-> S0ix state), because the exit latency of that state would be higher than
-> what the card can tolerate.
-
-S0ix and C-State 10 are ACPI concepts that don't mean anything in a
-PCIe context.
-
-I think LTR is only involved in deciding whether to enter the ASPM
-L1.2 substate.  Maybe the system will only enter C-State 10 or S0ix
-when the link is in L1.2?
-
-> Turns out the card works just the same (including the firmware crashes)
-> no matter if that hardcoded LTR value is reported or not, so it's kind
-> of useless and only prevents us from saving power.
+On Wed, Oct 06, 2021 at 01:58:52PM +0200, Johan Hovold wrote:
+> Console drivers often queue work while holding locks also taken in their
+> console write paths, something which can lead to deadlocks on SMP when
+> dumping workqueue state (e.g. sysrq-t or on suspend failures).
 > 
-> To get rid of those hardcoded LTR requirements, it's possible to reset
-> the PCI bridge device after initializing the cards firmware. I'm not
-> exactly sure why that works, maybe the power management subsystem of the
-> PCH resets its stored LTR values when doing a function level reset of
-> the bridge device. Doing the reset once after starting the wifi firmware
-> works very well, probably because the firmware only reports that LTR
-> value a single time during firmware startup.
->
-> Signed-off-by: Jonas Dreﬂler <verdre@v0yd.nl>
-> ---
->  drivers/net/wireless/marvell/mwifiex/pcie.c   | 12 +++++++++
->  .../wireless/marvell/mwifiex/pcie_quirks.c    | 26 +++++++++++++------
->  .../wireless/marvell/mwifiex/pcie_quirks.h    |  1 +
->  3 files changed, 31 insertions(+), 8 deletions(-)
+> For serial console drivers this could look like:
 > 
-> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> index c6ccce426b49..2506e7e49f0c 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> @@ -1748,9 +1748,21 @@ mwifiex_pcie_send_boot_cmd(struct mwifiex_adapter *adapter, struct sk_buff *skb)
->  static int mwifiex_pcie_init_fw_port(struct mwifiex_adapter *adapter)
->  {
->  	struct pcie_service_card *card = adapter->card;
-> +	struct pci_dev *pdev = card->dev;
-> +	struct pci_dev *parent_pdev = pci_upstream_bridge(pdev);
->  	const struct mwifiex_pcie_card_reg *reg = card->pcie.reg;
->  	int tx_wrap = card->txbd_wrptr & reg->tx_wrap_mask;
->  
-> +	/* Trigger a function level reset of the PCI bridge device, this makes
-> +	 * the firmware (latest version 15.68.19.p21) of the 88W8897 PCIe+USB
-> +	 * card stop reporting a fixed LTR value that prevents the system from
-> +	 * entering package C10 and S0ix powersaving states.
-
-I don't believe this.  Why would resetting the root port change what
-the downstream device reports via LTR messages?
-
-From PCIe r5.0, sec 5.5.1:
-
-  The following rules define how the L1.1 and L1.2 substates are entered:
-    ...
-    * When in ASPM L1.0 and the ASPM L1.2 Enable bit is Set, the L1.2
-      substate must be entered when CLKREQ# is deasserted and all of
-      the following conditions are true:
-
-      - The reported snooped LTR value last sent or received by this
-	Port is greater than or equal to the value set by the
-	LTR_L1.2_THRESHOLD Value and Scale fields, or there is no
-	snoop service latency requirement.
-
-      - The reported non-snooped LTR last sent or received by this
-	Port value is greater than or equal to the value set by the
-	LTR_L1.2_THRESHOLD Value and Scale fields, or there is no
-	non-snoop service latency requirement.
-
-From the LTR Message format in sec 6.18:
-
-  No-Snoop Latency and Snoop Latency: As shown in Figure 6-15, these
-  fields include a Requirement bit that indicates if the device has a
-  latency requirement for the given type of Request. If the
-  Requirement bit is Set, the LatencyValue and LatencyScale fields
-  describe the latency requirement. If the Requirement bit is Clear,
-  there is no latency requirement and the LatencyValue and
-  LatencyScale fields are ignored.
-
-Resetting the root port might make it forget the LTR value it last
-received.  If that's equivalent to having no service latency
-requirement, it *might* enable L1.2 entry, although that doesn't seem
-equivalent to the downstream device having sent an LTR message with
-the Requirement bit cleared.
-
-I think the endpoint is required to send a new LTR message before it
-goes to a non-D0 state (sec 6.18), so the bridge will capture the
-latency again, and we'll probably be back in the same state.
-
-This all seems fragile to me.  If we force the link to L1.2 without
-knowing accurate exit latencies and latency tolerance, the device is
-liable to drop packets.
-
-> +	 * We need to do it here because it must happen after firmware
-> +	 * initialization and this function is called right after that is done.
-> +	 */
-> +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
-> +		pci_reset_function(parent_pdev);
-
-PCIe r5.0, sec 7.5.3.3, says Function Level Reset can only be
-supported by endpoints, so I guess this will actually do some other
-kind of reset.
-
->  	/* Write the RX ring read pointer in to reg->rx_rdptr */
->  	if (mwifiex_write_reg(adapter, reg->rx_rdptr, card->rxbd_rdptr |
->  			      tx_wrap)) {
-> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> index 0234cf3c2974..cbf0565353ae 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> @@ -27,7 +27,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Pro 5",
-> @@ -36,7 +37,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Pro 5 (LTE)",
-> @@ -45,7 +47,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Pro 6",
-> @@ -53,7 +56,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Book 1",
-> @@ -61,7 +65,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Book 2",
-> @@ -69,7 +74,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Laptop 1",
-> @@ -77,7 +83,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{
->  		.ident = "Surface Laptop 2",
-> @@ -85,7 +92,8 @@ static const struct dmi_system_id mwifiex_quirk_table[] = {
->  			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
->  			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
->  		},
-> -		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> +		.driver_data = (void *)(QUIRK_FW_RST_D3COLD |
-> +					QUIRK_DO_FLR_ON_BRIDGE),
->  	},
->  	{}
->  };
-> @@ -103,6 +111,8 @@ void mwifiex_initialize_quirks(struct pcie_service_card *card)
->  		dev_info(&pdev->dev, "no quirks enabled\n");
->  	if (card->quirks & QUIRK_FW_RST_D3COLD)
->  		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
-> +	if (card->quirks & QUIRK_DO_FLR_ON_BRIDGE)
-> +		dev_info(&pdev->dev, "quirk do_flr_on_bridge enabled\n");
->  }
->  
->  static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
-> diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> index 8ec4176d698f..f8d463f4269a 100644
-> --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> @@ -18,6 +18,7 @@
->  #include "pcie.h"
->  
->  #define QUIRK_FW_RST_D3COLD	BIT(0)
-> +#define QUIRK_DO_FLR_ON_BRIDGE	BIT(1)
->  
->  void mwifiex_initialize_quirks(struct pcie_service_card *card);
->  int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
-> -- 
-> 2.31.1
+> 	CPU0				CPU1
+> 	----				----
 > 
+> 	show_workqueue_state();
+> 	  lock(&pool->lock);		<IRQ>
+> 	  				  lock(&port->lock);
+> 					  schedule_work();
+> 					    lock(&pool->lock);
+> 	  printk();
+> 	    lock(console_owner);
+> 	    lock(&port->lock);
+> 
+> where workqueues are, for example, used to push data to the line
+> discipline, process break signals and handle modem-status changes. Line
+> disciplines and serdev drivers can also queue work on write-wakeup
+> notifications, etc.
+> 
+> Reworking every console driver to avoid queuing work while holding locks
+> also taken in their write paths would complicate drivers and is neither
+> desirable or feasible.
+> 
+> Instead use the deferred-printk mechanism to avoid printing while
+> holding pool locks when dumping workqueue state.
+> 
+> Note that there are a few WARN_ON() assertions in the workqueue code
+> which could potentially also trigger a deadlock. Hopefully the ongoing
+> printk rework will provide a general solution for this eventually.
+> 
+> This was originally reported after a lockdep splat when executing
+> sysrq-t with the imx serial driver.
+> 
+> Fixes: 3494fc30846d ("workqueue: dump workqueues on sysrq-t")
+> Cc: stable@vger.kernel.org	# 4.0
+> Reported-by: Fabio Estevam <festevam@denx.de>
+> Tested-by: Fabio Estevam <festevam@denx.de>
+> Signed-off-by: Johan Hovold <johan@kernel.org>
+
+Applied to wq/for-5.15-fixes.
+
+Thanks.
+
+-- 
+tejun
