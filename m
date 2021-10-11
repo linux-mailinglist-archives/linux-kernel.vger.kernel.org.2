@@ -2,167 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2044284FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2434284FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 04:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233576AbhJKCHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Oct 2021 22:07:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:35657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233541AbhJKCHI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233540AbhJKCHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 10 Oct 2021 22:07:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1633917909;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dt3W97nn3nLieRHcwrHXkZHoe+y8SxklSbymQfso1QE=;
-        b=De8W9ydjpOM6FchOpHJRXT+DP043yoGNWdJiCoRRfjW2znQU7SQs2R3CzUYBuNZWvhbcRQ
-        XppcF2+Z+UwII6zWo0k6x8A+dKunhWDEO3gcg6vBn99iIVAQs3dBLNAf7wiOrSyY4Owd1t
-        L6xTJIm0yF9q1Qq7MsuLrZgVxUMzfII=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-25-ggvznWhzPSOw_k1kLE8ElQ-1; Sun, 10 Oct 2021 22:05:07 -0400
-X-MC-Unique: ggvznWhzPSOw_k1kLE8ElQ-1
-Received: by mail-lf1-f69.google.com with SMTP id i40-20020a0565123e2800b003f53da59009so11443916lfv.16
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231578AbhJKCHH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Oct 2021 22:07:07 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F73C061570;
+        Sun, 10 Oct 2021 19:05:08 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso9825108pjb.1;
+        Sun, 10 Oct 2021 19:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=63V6FE+fQW+SKi4KjZOqiA/PPlGq7C8uAp1sNW6G/lE=;
+        b=YK0ry9+6jUEWi3XytvEl7n3HWuSftzNe/vVUS5EyJIaSu+QXECvi5h+uUQalpBR5ky
+         sJjrt2tsg/C2zXy5LgU1S9tJn4Os8YZS8DaytV3PuJJfjYegehLt3/zVa0NTsF3e4pJW
+         GaT+cyiNi6T8cOry9xmSp/xt4vpPb69A2xs65cue6c2o33rdfv8YvfTdOFNfKCeaRRFt
+         p02tkZ86+AXqA4Zc/+iYN0q6PX4isfaEAauq4srjIo7vv+ebGvLpSzD6ZlVM0+879L+m
+         W4DgqnHqxskmuAHLPqhqxTAr930+Vs5hxf/6lmNK0sZ99LrX7SvmXixVdFX38AFU0psh
+         JSKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Dt3W97nn3nLieRHcwrHXkZHoe+y8SxklSbymQfso1QE=;
-        b=sRzlEehStqyimq3d+dPaQWPdPQhYjIERzwsmf5PQ4eyRcddQVl9wk20O6F7xfGytJe
-         9M+bXWsbiwzh84Ao/PrcbcpXrATjRrafrrvNa7Tucyk9WcRlIIj2BSAGvOe6w3ItZ70e
-         i2cBF+26OE/UOOHO+Mk9dCyDp2z32P38yfdTytFs8HyP+2OiJMajo8kRg5h7h4nWJLEQ
-         d8bjkQunPFiwknd9W8l2D8CyF6YGWxhot2KP6Cgb+prXe2oDNvERn5jBwaoVagSZYbUC
-         zGVakaA9ZaWH4Dq/0jHRHEuLcFSIP7SJwZrQIFDLPN80Si1iIh7XUk9P5zM4YgULKW1T
-         OgrQ==
-X-Gm-Message-State: AOAM533LS+GgRu9oFlYhFTBe6K3H5dN6dTnmzX+vNfjVbLbxjwUS9Kgl
-        CA52CqyuDo1s2LeHI2Gxz0DN77CMIvTKEgqj365Xr8y9w26E1QlKCeJhcJItSTV/g+vpOQWZRwA
-        uF4EWTHdTUXLU3xQvbtBEjNTGyuZoPCvdP5d5r8fX
-X-Received: by 2002:a2e:8099:: with SMTP id i25mr8180069ljg.277.1633917906367;
-        Sun, 10 Oct 2021 19:05:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzkDiR/BGptgc+pbWgE/RLAuwXL6JyrQ0fkP5KqdZaKCoCdI7ytGhHRzptoWN+ks5B3l30AvuWSt/eeqfwAjQw=
-X-Received: by 2002:a2e:8099:: with SMTP id i25mr8180041ljg.277.1633917906102;
- Sun, 10 Oct 2021 19:05:06 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=63V6FE+fQW+SKi4KjZOqiA/PPlGq7C8uAp1sNW6G/lE=;
+        b=G8/3w91mkcGli+/19zGanT/ltTzIOVtbGju2rjQwZwNQ9FhGJZtC3Q6csohksjj+qh
+         2PaCwhQQj6oytmB2Z/gcYLNSGnae7/2bSEgF73cJhvBGUk4fY7wxvP8e7tsgsno/3j7e
+         BQHgLZ4yLUm6RdbV5bhwSaL9qguMsTYacn2XJCOk3WrcBs+fik1EWf72vgFsrAMT+Rh0
+         nyo/yh7LWAFyR+PFqYG3zYBe084skmSaSoPlDYd/IAGVYGSTVV0KIst8ypoShUoznUnp
+         qbWOElx6Boh0if5mtl8pc6h2V9O77LrbX1D0f8bO497Spwj9ygp7xAMiz+ysqW5D+KBe
+         u+Pw==
+X-Gm-Message-State: AOAM533iQiGApjuzvJMTvSgLJ5CagADU+lsbdcFWIRkE1/6WjpdyA4Rk
+        HJ/PxHXR0PvD6pZyUOFRZ1E0EwO2GKE=
+X-Google-Smtp-Source: ABdhPJzX5fCZjS7AyWKdVTEXgbxHYj08Sl8KmKQcKkvtOxnuKpJD7hbLgsKviAILL8aFkCdQHW5O2A==
+X-Received: by 2002:a17:902:780f:b0:13a:3a88:f4cb with SMTP id p15-20020a170902780f00b0013a3a88f4cbmr22093431pll.68.1633917907564;
+        Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
+Received: from [192.168.11.5] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id i1sm6205802pgc.94.2021.10.10.19.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Oct 2021 19:05:07 -0700 (PDT)
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] docs: pdfdocs: Adjust \headheight for fancyhdr
+Message-ID: <c5a5577e-5de8-9cd4-9253-956ccc748417@gmail.com>
+Date:   Mon, 11 Oct 2021 11:05:04 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20211009091604.84141-1-mst@redhat.com>
-In-Reply-To: <20211009091604.84141-1-mst@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Mon, 11 Oct 2021 10:04:55 +0800
-Message-ID: <CACGkMEsjxm9u8QvQ9c9f34v1WWhGkbwPE-2BgAkRjd+zB6V-AQ@mail.gmail.com>
-Subject: Re: [PATCH net] virtio-net: fix for skb_over_panic inside big mode
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Corentin_No=C3=ABl?= <corentin.noel@collabora.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 9, 2021 at 5:18 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
->
-> commit 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netde=
-v/net")
-> accidentally reverted the effect of
-> commit 1a8024239da ("virtio-net: fix for skb_over_panic inside big mode")
-> on drivers/net/virtio_net.c
->
-> As a result, users of crosvm (which is using large packet mode)
-> are experiencing crashes with 5.14-rc1 and above that do not
-> occur with 5.13.
->
-> Crash trace:
->
-> [   61.346677] skbuff: skb_over_panic: text:ffffffff881ae2c7 len:3762 put=
-:3762 head:ffff8a5ec8c22000 data:ffff8a5ec8c22010 tail:0xec2 end:0xec0 dev:=
-<NULL>
-> [   61.369192] kernel BUG at net/core/skbuff.c:111!
-> [   61.372840] invalid opcode: 0000 [#1] SMP PTI
-> [   61.374892] CPU: 5 PID: 0 Comm: swapper/5 Not tainted 5.14.0-rc1 linux=
--v5.14-rc1-for-mesa-ci.tar.bz2 #1
-> [   61.376450] Hardware name: ChromiumOS crosvm, BIOS 0
->
-> ..
->
-> [   61.393635] Call Trace:
-> [   61.394127]  <IRQ>
-> [   61.394488]  skb_put.cold+0x10/0x10
-> [   61.395095]  page_to_skb+0xf7/0x410
-> [   61.395689]  receive_buf+0x81/0x1660
-> [   61.396228]  ? netif_receive_skb_list_internal+0x1ad/0x2b0
-> [   61.397180]  ? napi_gro_flush+0x97/0xe0
-> [   61.397896]  ? detach_buf_split+0x67/0x120
-> [   61.398573]  virtnet_poll+0x2cf/0x420
-> [   61.399197]  __napi_poll+0x25/0x150
-> [   61.399764]  net_rx_action+0x22f/0x280
-> [   61.400394]  __do_softirq+0xba/0x257
-> [   61.401012]  irq_exit_rcu+0x8e/0xb0
-> [   61.401618]  common_interrupt+0x7b/0xa0
-> [   61.402270]  </IRQ>
->
-> See
-> https://lore.kernel.org/r/5edaa2b7c2fe4abd0347b8454b2ac032b6694e2c.camel%=
-40collabora.com
-> for the report.
->
-> Apply the original 1a8024239da ("virtio-net: fix for skb_over_panic insid=
-e big mode")
-> again, the original logic still holds:
->
-> In virtio-net's large packet mode, there is a hole in the space behind
-> buf.
->
->     hdr_padded_len - hdr_len
->
-> We must take this into account when calculating tailroom.
->
-> Cc: Greg KH <gregkh@linuxfoundation.org>
-> Fixes: fb32856b16ad ("virtio-net: page_to_skb() use build_skb when there'=
-s sufficient tailroom")
-> Fixes: 126285651b7f ("Merge ra.kernel.org:/pub/scm/linux/kernel/git/netde=
-v/net")
-> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> Reported-by: Corentin No=C3=ABl <corentin.noel@collabora.com>
-> Tested-by: Corentin No=C3=ABl <corentin.noel@collabora.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> ---
+Fancyhdr prior to v4.0 outputs a message per document as follows:
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+    Package Fancyhdr Warning: \headheight is too small (12.0pt):
+    Make it at least 13.59999pt.
+    We now make it that large for the rest of the document.
+    This may cause the page layout to be inconsistent, however.
 
->
-> David, I think we need this in stable, too.
->
->  drivers/net/virtio_net.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-> index 096c2ac6b7a6..6b0812f44bbf 100644
-> --- a/drivers/net/virtio_net.c
-> +++ b/drivers/net/virtio_net.c
-> @@ -406,7 +406,7 @@ static struct sk_buff *page_to_skb(struct virtnet_inf=
-o *vi,
->          * add_recvbuf_mergeable() + get_mergeable_buf_len()
->          */
->         truesize =3D headroom ? PAGE_SIZE : truesize;
-> -       tailroom =3D truesize - len - headroom;
-> +       tailroom =3D truesize - len - headroom - (hdr_padded_len - hdr_le=
-n);
->         buf =3D p - headroom;
->
->         len -=3D hdr_len;
-> --
-> MST
->
+Fancyhdr v4.0 complains (once a page!) as follows:
+
+    Package fancyhdr Warning: \headheight is too small (12.0pt):
+    (fancyhdr)    Make it at least 13.59999pt, for example:
+    (fancyhdr)    \setlength{\headheight}{13.59999pt}.
+    (fancyhdr)    You might also make \topmargin smaller to compensate:
+
+    (fancyhdr)    \addtolength{\topmargin}{-1.59999pt}.
+
+Related item in fancyhdr v4.0 announcement on 2021-01-04 [1]:
+
+    Backward incompatible changes:
+      - Eliminate adjustments of \headheight or \footskip, when the
+        header or footer is too high.
+
+[1]: https://www.ctan.org/ctan-ann/id/mailman.2685.1609863692.2532.ctan-ann@ctan.org
+
+Silence the warnings by adding a couple of \addtolength commands in
+the preamble.
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hi,
+
+This update doesn't have much visual effects in the final PDFs
+(adjustment of only 1.6pt), but getting rid of harmless warnings
+would help spot potential important ones.
+
+Tested against Sphinx versions 2.4.4 and 4.2.0, with Tex Live
+versions 2017/debian (Ubuntu 18.04), 2019/debian (Ubuntu 20.04),
+and vanilla 2021 (as of 2021-10-08).
+
+        Thanks, Akira
+--
+ Documentation/conf.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 948a97d6387d..17f7cee56987 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -353,6 +353,9 @@ latex_elements = {
+         \\setsansfont{DejaVu Sans}
+         \\setromanfont{DejaVu Serif}
+         \\setmonofont{DejaVu Sans Mono}
++        % Adjust \\headheight for fancyhdr
++        \\addtolength{\\headheight}{1.6pt}
++        \\addtolength{\\topmargin}{-1.6pt}
+      ''',
+ }
+ 
+
+base-commit: 7275423c177e5dcf53e350ab9db38f99946b8ec5
+-- 
+2.17.1
 
