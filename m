@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D28C429510
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC87B429513
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233111AbhJKRDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 13:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46108 "EHLO mail.kernel.org"
+        id S233260AbhJKREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 13:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231646AbhJKRDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 13:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65D1D60F3A;
-        Mon, 11 Oct 2021 17:01:47 +0000 (UTC)
+        id S233373AbhJKRD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 13:03:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E0CA56103C;
+        Mon, 11 Oct 2021 17:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633971707;
-        bh=trunSQKQ2GIzOU7WZWO6vf/702Eas0ZSDgsLldNfWME=;
+        s=k20201202; t=1633971716;
+        bh=jm+MmghP27mX/Vw4z1PWGh2UsatbCOer/kNjOSXtGSI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Un+XWCdt8ORuG5rRWlbwLJYki3/NppsyktKShn1HHWT4O/1HiOxRtQIo2RP5TsoBo
-         X4gDpM/LxeaKuUJcy4wmXksc4baiXB4dPamcE6/vFEQEcgD2NA1tUsfwFlKiPQUlSB
-         s0p44T+GmDfvrArFDo9C/E526zwuGKwQJaEMebVpOg1Ytc/C98cwpEQ9wm8ngc+j9o
-         IposvsmSNYYJto56ZsAdbUBLfc0VJ7nbvhB0HwOPgC9R4FJd5Qj+sCEKzdV6rEfBQw
-         WIVQOWLooIjQhyN7Y51rt9D38/FZ3VL9paSDh6UBaa9GZrjFmVsHFM1ja/ye0dkxAM
-         ifWdpo2+DV9uQ==
+        b=SprZptrV5S23fsND4ATcbmrILSVzjoDUuw2bGr9aAyNU1u1MumrMa7BFyULBRae9O
+         JsqmxucdbNDFkuTkBrt6vssF8zUCSKyRA8i9+aVZmpM4ECjKRdo6fg+gdyvRI6l/CG
+         gACeQPsyyVJG6RHI/3K9Jm+1BfOlKjwRQuCCjQOLW74DNe/qSFAWiLH+jJCs1poQef
+         0Ksv2ME3Fs78L+4gWlbJ2F66sqKkeliJXLAJNpJoPv/VaYrJUIjDLLnIQsUv07ecof
+         xbYPDaDNF5rAXkSlyLcRcYxe3yfTCsg3VoFCyKkHOKN86yho4P1vv3rRU3Ue16iSNq
+         OWLOA5qlxilsQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-spi@vger.kernel.org, Kamal Dasu <kdasu.kdev@gmail.com>,
-        linux-kernel@vger.kernel.org
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc:     Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        yendapally.reddy@broadcom.com, f.fainelli@gmail.com
-Subject: Re: [PATCH 0/3] spi-bcm-qspi spcr3 enahancements
-Date:   Mon, 11 Oct 2021 18:01:38 +0100
-Message-Id: <163397094904.6819.8623150916603608652.b4-ty@kernel.org>
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2 0/4] ASoC: Intel: bytcr_rt5651: few cleanups
+Date:   Mon, 11 Oct 2021 18:01:41 +0100
+Message-Id: <163397094550.6567.12613609707745181814.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211008203603.40915-1-kdasu.kdev@gmail.com>
-References: <20211008203603.40915-1-kdasu.kdev@gmail.com>
+In-Reply-To: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
+References: <20211007170250.27997-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,29 +47,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Oct 2021 16:36:00 -0400, Kamal Dasu wrote:
-> This change set feature enahancements for spcr3 transfer modes as well as
-> adds support for half-duplex 3-wire mode transfer.
+On Thu, 7 Oct 2021 20:02:46 +0300, Andy Shevchenko wrote:
+> The small set of cleanups against bytcr_rt5651 board file.
 > 
-> Kamal Dasu (3):
->   spi: bcm-qspi: Add mspi spcr3 32/64-bits xfer mode
->   spi: bcm-qspi: clear MSPI spifie interrupt during probe
->   spi: bcm-qspi: add support for 3-wire mode for half duplex transfer
+> In v2:
+> - added commit message to patch 2 (Joe, Pierre)
+> - added cover letter (Pierre)
+> - added Hans to Cc list (Hans)
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/3] spi: bcm-qspi: Add mspi spcr3 32/64-bits xfer mode
-      commit: ee4d62c47326c69e57180da53c057e55f0e73e35
-[2/3] spi: bcm-qspi: clear MSPI spifie interrupt during probe
-      commit: 75b3cb97eb1f05042745c0655a7145b0262d4c5c
-[3/3] spi: bcm-qspi: add support for 3-wire mode for half duplex transfer
-      commit: e81cd07dcf50ef4811f6667dba89c5614278cbdd
+[1/4] ASoC: Intel: bytcr_rt5651: Get platform data via dev_get_platdata()
+      commit: 0c465e7a8ea26f4ad52dd9548f22afdaf6e039a5
+[2/4] ASoC: Intel: bytcr_rt5651: Use temporary variable for struct device
+      commit: 269da8f7626b1de69998fe1a0c0e069749d18a28
+[3/4] ASoC: Intel: bytcr_rt5651: use devm_clk_get_optional() for mclk
+      commit: a8627df5491e00e23d4f2e648ff796adbfa23cc5
+[4/4] ASoC: Intel: bytcr_rt5651: Utilize dev_err_probe() to avoid log saturation
+      commit: 45c5dc45d80d41596bc0364fafc523648e6124d8
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
