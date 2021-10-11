@@ -2,219 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64A94298B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107374298B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 23:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhJKVOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 17:14:21 -0400
-Received: from mail-bn8nam11on2066.outbound.protection.outlook.com ([40.107.236.66]:49376
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S235201AbhJKVQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 17:16:08 -0400
+Received: from mail-bn8nam12on2041.outbound.protection.outlook.com ([40.107.237.41]:28512
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231994AbhJKVOT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 17:14:19 -0400
+        id S231994AbhJKVQG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 17:16:06 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=INbvzda6ldXEtdpsEMxCem/1CofFmuH/YVQYI6FJJfzWnRi6kYHrG87g0MJKxDh9YtTZZUpUrE/jmKlTZpmnY61rugKYWnVB1FVzGfQ8Z4mGCDGl3A3DqW3Wxw251FfLlWaIlM6NisCyCPLV0KdgHxyeZPwP8vprudIskdEqkUL7hUe11hja1P/Qhl0t7P4DE+w4G+jhVfZo26IGwZqPxTVwxlxsxAtM6fAgXVyy591UTrHtisViy4EQFTioAeFH3tmuX1U8g1/viw55w6vZYX1oi8ydSp3cEmwfTw1ex70rT+uylprtMERAY/i5mQqLJzqB4lj2g8ohVpt3MPrtKw==
+ b=bcjcGjs47Ov++9m1tWtmuTCzICHdqdyQ516E0yaXWWX0O8LWUa249Tr3BdqnXNdhpEXCIwRQVH6kWnW67CYccAnikIjimWl/WFpP7x/AqxBuOyRtqw27v/wEr/38xmsiFy2pySYpzdMQ5kXa/sI3qKvIIpq/0uyAOBdutSX2iOqkUP8XMn4Bdf196wPD1kilnR4G3jeTw+xWVNTD4+Oq8MhlSkAJZ+WELX/73mdp6AZSgDBkEk93KLzF4daqA8DmjxSEH5bv525d4SRrtoKRs4uM76NpyOJsTlhOWXQ0KetE0WpjSA4Xdt4J0qLIycH8dhs7NdS8GjkSHYBJFn2JQg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Bbau4jObD8kPzXeqCOPZlLGirYGF3VUJsQn9SyqYelY=;
- b=QhFucq/b+W0TV1JKJpu+Zz7pPoqONS6y19INe+Gy5BzS1mjFxMaU6MPccOCorCCuMsKe3q3130ZmSUspUFhvUl2AS0plbMmemXSUJIcgEMBbqE1sRtXJbKjJMv7abjHmhmyYO0cGpJ7ME5zZb2ml5c+oWCbw61qHnxr1vgkFf2d66KePhR214UTMjQ4/lmP4T6HYZRj4OQuE9IJrgIfe4SORp0tS1xzBuH+Lhm9ObF1iqLO/ffTf6LZR3MtvZS4yK0g/XQiq7VULhMg0l7q++qE1o9HfqrsGnggRE0VLdAm9c64D79y0uiNKf31+ViSGT5UzFaJU4AE0wNXIsB3+4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=1sX5ZNpazDg+CYt7/hc1vcoxwrYj2TnDJfSpll5Y5rA=;
+ b=giHYGj7i+f1HZuQqVAJyfFoSVgVtePkbtJ8CFO9sxn6RLtkg6HaGS/ICB1iV5LAzab7TFom9nLPyV7/FgeIQbq7+Ki64pAakrCjsuXDCubSKraix6UTBlBfHcN0GG57OFq8MwJ915+rfMC6bN50qGmu9Gqn7NEFj9h2oCJ0SiazGS0RxT2KsgbNijcn2SRu7OEhsWBQbNzFcf7LCZHY8Ac1hFxwydyndtZD3aKym/aCiDV7vo/tUwIVABrZ1pMTMzeb/obwT9HDCqUKk8wjjBQLx6bTq5Y9zke7HMX9cU7nWmqoaNA+JAFYTfn7pVboZK+gyYytpyxuqybSS9Bo/2A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Bbau4jObD8kPzXeqCOPZlLGirYGF3VUJsQn9SyqYelY=;
- b=4XOD0lEO3Zx62DlNddJCF+luzEPJZiIJwa+uxN5nkOTIqK495KNFSglcMoDLtsl+e2ZSQZv+fUIrGeQxB4UbSIlzpV9J6nIoGp5yR9ij/SGAFXZA8RZu3sPeRhRBbCR2BHQw+hlvYIEHZdSNKI5RqOVTIVCmrv+CdbAf8fTCrao=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com (2603:10b6:a03:132::30)
- by BYAPR12MB2776.namprd12.prod.outlook.com (2603:10b6:a03:67::31) with
+ bh=1sX5ZNpazDg+CYt7/hc1vcoxwrYj2TnDJfSpll5Y5rA=;
+ b=qxfimY30DfFRnoJkexpezwKQ74IJrC7L1FCxSHJmphxnD6bDeevN6IL2clCYbb5hefXpxzN4k5TQaWv4h18c4AOY8LgKwfC7zz252JUsfx3ujVQXAM4C8Gxv2qBAMBLeaZfZSIhG9rBVms12mJnQwpKi+Lzce4bF6kESFn4DfDBErqeqhiEOA9w9g27h9itO6LGMsSH2HfO1rx+PGZsr8IWo3S2vdl/BWv3B160grJLrIA7iWvc1DZGP+DbR3TVp0hhL4Hhsn1+D5+nYMSNKpxe6jYx3oxXU/WHvRejZmdfixtR/CBoMoo0hcZ6bXczwhmpqeJ2zIUlgE466Cl49PQ==
+Received: from BN9P221CA0008.NAMP221.PROD.OUTLOOK.COM (2603:10b6:408:10a::30)
+ by DM5PR12MB2488.namprd12.prod.outlook.com (2603:10b6:4:b5::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Mon, 11 Oct
- 2021 21:12:16 +0000
-Received: from BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::758d:1b96:8338:9f86]) by BYAPR12MB2869.namprd12.prod.outlook.com
- ([fe80::758d:1b96:8338:9f86%7]) with mapi id 15.20.4587.026; Mon, 11 Oct 2021
- 21:12:15 +0000
-From:   "Koralahalli Channabasappa, Smita" <skoralah@amd.com>
-Subject: Re: [PATCH 1/5] x86/mce/inject: Check if a bank is unpopulated before
- error simulation
-To:     Borislav Petkov <bp@alien8.de>,
-        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>
-Cc:     x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tony Luck <tony.luck@intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, yazen.ghannam@amd.com
-References: <20210915232739.6367-1-Smita.KoralahalliChannabasappa@amd.com>
- <20210915232739.6367-2-Smita.KoralahalliChannabasappa@amd.com>
- <YU2Lm+11Pqg/RBK3@zn.tnic>
-Message-ID: <78bec0e8-a64a-466c-4245-2386de7db5c9@amd.com>
-Date:   Mon, 11 Oct 2021 16:12:14 -0500
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.20; Mon, 11 Oct
+ 2021 21:14:04 +0000
+Received: from BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:10a:cafe::ac) by BN9P221CA0008.outlook.office365.com
+ (2603:10b6:408:10a::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
+ Transport; Mon, 11 Oct 2021 21:14:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ BN8NAM11FT022.mail.protection.outlook.com (10.13.176.112) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4587.18 via Frontend Transport; Mon, 11 Oct 2021 21:14:03 +0000
+Received: from [172.17.173.69] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 11 Oct
+ 2021 21:14:02 +0000
+Subject: Re: [RFC PATCH v1 00/20] Review Request: Add support for Intel PMC
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        "D, Lakshmi Sowjanya" <lakshmi.sowjanya.d@intel.com>
+CC:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "Saha, Tamal" <tamal.saha@intel.com>, <bala.senthil@intel.com>
+References: <20210824164801.28896-1-lakshmi.sowjanya.d@intel.com>
+ <CACRpkdZEp0FZOefBPP_sR4g6rKzeKQhpdL-XHYO+CRt5MfTrYg@mail.gmail.com>
+X-Nvconfidentiality: public
+From:   Dipen Patel <dipenp@nvidia.com>
+Message-ID: <f5f97c30-2b4e-2490-2197-1d5a108992d1@nvidia.com>
+Date:   Mon, 11 Oct 2021 14:14:12 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
-In-Reply-To: <YU2Lm+11Pqg/RBK3@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: BYAPR05CA0084.namprd05.prod.outlook.com
- (2603:10b6:a03:e0::25) To BYAPR12MB2869.namprd12.prod.outlook.com
- (2603:10b6:a03:132::30)
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: from [IPv6:2601:647:5f00:2790:5c4:94b9:8114:59ac] (2601:647:5f00:2790:5c4:94b9:8114:59ac) by BYAPR05CA0084.namprd05.prod.outlook.com (2603:10b6:a03:e0::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.5 via Frontend Transport; Mon, 11 Oct 2021 21:12:15 +0000
+In-Reply-To: <CACRpkdZEp0FZOefBPP_sR4g6rKzeKQhpdL-XHYO+CRt5MfTrYg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 398aa8bb-6dbe-4498-9892-08d98cfbcd13
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2776:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB2776AF2893A9110D6218D7C390B59@BYAPR12MB2776.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 618fba30-ef3b-43f4-c81b-08d98cfc0dc1
+X-MS-TrafficTypeDiagnostic: DM5PR12MB2488:
+X-Microsoft-Antispam-PRVS: <DM5PR12MB2488D123D9124418CFAFBE08AEB59@DM5PR12MB2488.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rv8R0y4k2QWkTCOfHmDp6OWuIrHuKwR+5O3AAdVWgA8kAjM5y5nmMB7/xec7xS3viwIMJYO/8ljA4YogVaeal/cQ3AduvVATsvyzWI8vAOc7465sUNRsEediVPrZ3/+zbzz40otZOVqRhEewrHXTHy/xFhFToXMrDX7nVGXMYUuQ0v370LvrUvokcftzI9jyOY+eYESKKdR/p4TD8Gz5El1rrXtjnm8MYoH4r6XM50xr8rnkOpJ/pMI1PVC721LDDkiKAUkxC03bx2rfbBtTi4DtsqUj2tKDNXKg71oiu8r23XB4zW+27JGwI0nbzmJQy1Y4uXYamJARM1vI0pLg+z79gI3bLtzd3qqNBreccy5aEyeYN/yhGfo0C1yBlJWjtYlAJjSk55YyS6u+PV2XseVdQpno5TApRnss2fkSVe17a0y+fITlDm/r7ucT2JoYhvMjqzW5NehjqKilqEvi2ZMa+YunmDGjjYnUDP6qslcCqt0GYwDrp+HNVN5muwboleZKx4ryftDJWqGi5ZOzn/rA1kBJekuf0zIjqjRrQJTPuvF8ftfErfQ+PiOEmYunKcUeKA8sxq/qURfIBgrZnp7QP86jdhGZZP5qIwXly/j+AnjLsvOLdOXIKaF4LgNlnvU35gmq8kIuCrOTMiyVrbSZoR3ccMaPmoun8tW62h96XQmh1Y+aqnMqJs7nqlYhdf/pqwS4eohDYFtKmaHvNGtBIxCMqIIFR7vuvMExXW4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(5660300002)(110136005)(15650500001)(6486002)(6636002)(2906002)(66556008)(31686004)(66476007)(8676002)(31696002)(66946007)(83380400001)(4326008)(186003)(36756003)(54906003)(508600001)(38100700002)(2616005)(8936002)(53546011)(316002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eC8rOHVrRUFlSmlzdHVqNWRHbTd0WkdSUEpNVlV6cmhJZnpNblhvSDlhQ0Q4?=
- =?utf-8?B?N3VHS3Q3ZEdzaWtiUENiVWxERC9ZSFFXUlFhd1BYUGZ2V01QMHhTL3RvUTFD?=
- =?utf-8?B?R2Z0aWVienVEUUs3OWdWMkJNSk02OVE3MjlMeDU4RlYxNTVpK1BraEwvcnp0?=
- =?utf-8?B?dHMxem5ldTJTRzZNZXdqZlZZTFFEWnc4aUFvVU5nd0FDUHdYajVpYitLb2h5?=
- =?utf-8?B?RUNWdzJoRTFwWkZCeWxXRlBSdkxtL2tzTmNEaHRSMUl5aGxWR2gzRnkwSFJB?=
- =?utf-8?B?MFIvbjdaczB2V3lpL0FjcFRoSlN6ZDR2YXJGWlppVklBUWw4eUx5YW1wMkYx?=
- =?utf-8?B?Y1lDd2dLdERQcGpsOTlHN0M0Vk4yUmtIa2pHYzFuWjVTOEdiYTE0ZDdNUE9j?=
- =?utf-8?B?MnZsS1JrV2hZdFJCS3JRTThJcElMZjJxclRiazJ1MGcySjg4RlV1c1orUXA1?=
- =?utf-8?B?dm43cnBQV2x4L3RmdkxQbkhFWlFIQkpRSmFWS0JUOFYxRFVySnJ2bitXbnZr?=
- =?utf-8?B?N2VNZVJFUHFvWTl0K0kyZlZJdys3NWpLNFZZZzZEamtiU2d1TFp1dFBLbDRH?=
- =?utf-8?B?NjhWSUJVVi9KVDkvbnZiVFgvQXdSSXEvazJNam9SZlZIanNOZW1jMzl1YjVD?=
- =?utf-8?B?T3Ayc09XYVYvUHJjcHhnM25EK092ZHpoUmhqaU1lNU5Fd2RjZk5ZdFJ2Snkx?=
- =?utf-8?B?OWlDNklJdDkzanA1N0VyMDB3S2t3KytMa3ZnTEtCYlhPMEh4b1pPOGdPQ3Y3?=
- =?utf-8?B?S1FWMytZMEV1T1VEUjhhU3dQTjZUUHEyRTc2LzhHQjRORWNERm5PZkpBQ0Q5?=
- =?utf-8?B?bnVoTU5Nczl6bjdnTTdLN1B6bnNKbEJPUXRCUjN3Q3A3TGtWejArVU43WWhV?=
- =?utf-8?B?MVVaaWdoVlc2VlU3cTkzOE9qM2Q1NXN1STBuV0VXQk1SN3ErYnpCWXErR29u?=
- =?utf-8?B?VDc2K0FhWnd5d3lKZEs5Ky9yTXEyVkpmcmtRQTBzQ21Ba3lmdlJadEp4cEFF?=
- =?utf-8?B?M08rSXUyczVKVEc4TUpHOVpwVmZKT2h4T1VHR2VIdUtmM3JxWFBYc2doL3k1?=
- =?utf-8?B?bjVtengyR1JCQmllWVpxTlptQ2V6cnh6cldSZHlYWEtuYnVvbnJ2YS95eE5D?=
- =?utf-8?B?Vm5qdndnNGhDOHJnOFB0eWJzbkFzMXNiaDN5ZjNhR1hHTDZxSHRzd3NpbFBo?=
- =?utf-8?B?RUhtSkU3OFBQcDFkL1Y5NVU4a0N3cDdzS2VTNTZqTVRsWGZqWUdyVkNOam8r?=
- =?utf-8?B?ZWt0Y2JBa2Uxb242Q2Z0TWxyOGdET2RPQVlxR2g5a08wNUpjTW02TDlFTVNQ?=
- =?utf-8?B?RHArY0RRc1lmbTlMR09Wb0xodThOZG5KVndSYjErQk5QWXZoZFZHZStvankr?=
- =?utf-8?B?K0hVV3paait6TTVuS0FXNFY4cTV3NFF5elJmZkZXNVZhWXpFdzU3ZDdLdmlV?=
- =?utf-8?B?SXFkNXpzTnZaR2t6cE9QMDl3TW5EVzlqWUt1OW1FSlE2SXQ5cTAwOVp0TmxV?=
- =?utf-8?B?aC9mZ0lRdkxiOGFhL0ZUa2pIZ3pRMm9VMzlFUWViVlVtY3JKTlEwK05lbERm?=
- =?utf-8?B?OVBzUXN6RjA0VGJJck9ZMGNnZndyOUFQUWZqUE9VUHFMYzRtVnRjanhScHZB?=
- =?utf-8?B?RTRoUVY3d0QySU5MTUJEOC81UlJ5MTRzc2liUE94OVZnMTBQR0praEdqUE9T?=
- =?utf-8?B?ZmNNNjBUMTZiWGpJUDdRR3lsb3A3cldobXh1N0daY3N6ckdYUEFxUEpRL0FH?=
- =?utf-8?B?T0RnMW84d1hoajhjU3RsOWVYcjQvTEE0NXljS21zQlZNRld0Q2FKQTQ5NFZu?=
- =?utf-8?B?T0UvbzdVQk12K1cvOHVtZW5ZcGllVWcvVTkvTURqenNwRXRyc0I5ZHBtV3Zi?=
- =?utf-8?Q?xIUZci4LMnXrE?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 398aa8bb-6dbe-4498-9892-08d98cfbcd13
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 21:12:15.7587
+X-Microsoft-Antispam-Message-Info: l6mlhXK+B3rqq9pkgNpgmopOaT/5Kwy1zfZAhb3LIPDyvf43jqQDxeD9YtVz/6Ki3EQ1fiHzpnO6xcKannQ0E65X3wD6YQnoJLYhbOwU497ZJQOslpChI0zIUs+DVTDcQs5p7J9n1/etd14SqCuwXtU5HkF0UHm3W/QQNG2bQb7X0J4+ruBQyJ2e+wldtGEAobUWPUj8zkhcC7ZdrSUahG3NSl6BQaPuHrPqXH9BzEn4pMe1j+HSFZhACFpodSq9FDquKCEkmRIcR0ZrdaSmo3ChFcjJ5T8ZdIK91sEBqNVvr6KJT3Zey2/lo7rMl8WbpkKjn3uUzZSCfhB0loKosuTH0RO9qyk2u9KaV4RHAdlGxYm1UfekDBx4n7f8xyMvgbmD0usiKU1N8/TTKxliR2nQQSz5bAKepJCw5ZSE6ltZ4uww452DbHjL+zM4gnrYczPJR2MvJPqYIrYQr803FbAUu0/BB+yiGW686rD98edVwGaU95Ht8T8RWiVuK7HpXnPoGc0HwwNVZtgDfrXwcr+POrXFukkubUCZpceEpUbxq5m3tuMoyTVA0EzNQSvHmQoq13QjWOvd2mlZ36bbGEVSKuvg1yZOgFSYrUANCJV2dhD8goyN8U1aE36ZopUGtRWm+hLXxrEsZ445KOh8PeuYmd4ASTeyHXHJI+cMf97uB0As/omXHyeWdW7uUjGIYhp2ch0XKKP+hRe37suSvexgCBniOSZK+ttJzmGVAFPRv2PVX9sCJIkY5ncRVVYSLSK5eJ9SeMVyQKLDLh5Ywt/Z06cWN3dFPcGf/J1kBXreHM6Gy/w1HX8LtGyzsi/yS+EW65nSvmC+2KAMU4hWl0k7KbQDLSUTLXNAgL2yQFk=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(82310400003)(83380400001)(336012)(8676002)(16576012)(31686004)(7636003)(6666004)(966005)(5660300002)(36860700001)(186003)(16526019)(316002)(86362001)(508600001)(426003)(110136005)(70206006)(36756003)(31696002)(2906002)(70586007)(356005)(2616005)(26005)(47076005)(54906003)(8936002)(53546011)(4326008)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2021 21:14:03.8467
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n2jRA7mcQ56NJIYzF3R8rpx8RtmM86In/75kG5HDlXNOgnloV+xxDWf6o5xaZzdTwm4ygeVa0f1Dw0le3mokSA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2776
+X-MS-Exchange-CrossTenant-Network-Message-Id: 618fba30-ef3b-43f4-c81b-08d98cfc0dc1
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT022.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2488
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Boris,
+Thanks Linus for referring. I will take a look.
 
-Sorry for the delayed response.
+@Sowjanya: I have recently sent out the RFC v2 of the HTE (https://patchwork.ozlabs.org/project/linux-tegra/list/?series=264896).
 
-When I was coding this up, I came across few issues. Mentioning below.
+Please have a look and see if you can add TIO as one of the provider. That patch has necessary GPIOLIB and GPIO-CDEV changes
 
-On 9/24/21 3:26 AM, Borislav Petkov wrote:
+which can help userspace and in kernel driver retrieve GPIO realtime timestamps.
 
-> On Wed, Sep 15, 2021 at 06:27:35PM -0500, Smita Koralahalli wrote:
->> The MCA_IPID register uniquely identifies a bank's type on Scalable MCA
->> (SMCA) systems. When an MCA bank is not populated, the MCA_IPID register
->> will read as zero and writes to it will be ignored. Check the value of
->> this register before trying to simulate the error.
+
+Best,
+
+Dipen Patel
+
+On 9/16/21 2:21 PM, Linus Walleij wrote:
+> Hi Sowjanya,
+>
+> thanks for your patches!
+>
+> On Tue, Aug 24, 2021 at 6:48 PM <lakshmi.sowjanya.d@intel.com> wrote:
+>
+>> From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 >>
->> Signed-off-by: Smita Koralahalli<Smita.KoralahalliChannabasappa@amd.com>
->> ---
->>   arch/x86/kernel/cpu/mce/inject.c | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
+>> Starting with Intel(R) Tiger Lake and Elkhart Lake platforms the PMC
+>> hardware adds the Timed I/O hardware interface.
 >>
->> diff --git a/arch/x86/kernel/cpu/mce/inject.c b/arch/x86/kernel/cpu/mce/inject.c
->> index 0bfc14041bbb..51ac575c4605 100644
->> --- a/arch/x86/kernel/cpu/mce/inject.c
->> +++ b/arch/x86/kernel/cpu/mce/inject.c
->> @@ -577,6 +577,24 @@ static int inj_bank_set(void *data, u64 val)
->>   	}
->>   
->>   	m->bank = val;
->> +
->> +	/* Read IPID value to determine if a bank is unpopulated on the target
->> +	 * CPU.
->> +	 */
-> Kernel comments style format is:
+>> The Timed I/O hardware implements some functionality similar to GPIO
+>> with added timing logic that is driven by the Always Running Timer
+>> (ART).
+>>
+>> The Timed I/O Hardware implement 3 basic functions:
+>>   * Input Timestamping
+>>   * Single Shot Timed Output
+>>   * Periodic Timed Output
+>>
+>>  Please help to review the changes.
+> This looks very similar to the usecase proposed for the HTE
+> Hardware Timestamping Engine, proposed by Dipen Patel
+> for the nVidia 194 and which is currently in RFC:
+> https://lore.kernel.org/linux-gpio/20210625235532.19575-1-dipenp@nvidia.com/
 >
-> 	/*
-> 	 * A sentence ending with a full-stop.
-> 	 * Another sentence. ...
-> 	 * More sentences. ...
-> 	 */
+> Please review this new subsystem and see if you can just
+> make a slot-in driver using Dipen's patches instead.
 >
->> +	if (boot_cpu_has(X86_FEATURE_SMCA)) {
-> This whole thing belongs into inj_ipid_set() where you should verify
-> whether the bank is set when you try to set the IPID for that bank.
-
-I do not have the bank number in order to look up the IPID for that bank.
-I couldn't know the bank number because mce-inject files are synchronized
-in a way that once the bank number is written the injection starts.
-Can you please suggest what needs to be done here?
-  
-Also, the IPID register is read only from the OS, hence the user provided
-IPID values could be useful for "sw" error injection types. For "hw" error
-injection types we need to read from the registers to determine the IPID
-value.
-
-Should there be two cases where on a "sw" injection use the user provided
-IPID value whereas on "hw" injection read from registers?
-
-I'm pasting the code snippet after rework on the comments.
-
-static int inj_ipid_set(void *data, u64 val)
-{
-         struct mce *m = (struct mce *)data;
-
-         if (cpu_feature_enabled(X86_FEATURE_SMCA)) {
-                 if (val && inj_type == SW_INJ)
-                         m->ipid = val;
-                 else {
-                         rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(?),
-                                       &m->ipid); // Requires bank number here.
-                         if (!m->ipid) {
-                                 pr_err("Cannot set IPID - unpopulated bank\n");
-                                 return -ENODEV;
-                         }
-                 }
-         }
-
-         return 0;
-  }
-
-Please let me know what do you think?
-Thanks,
-
->> +
->> +		/* Check for user provided IPID value. */
->> +		if (!m->ipid) {
->> +			rdmsrl_on_cpu(m->extcpu, MSR_AMD64_SMCA_MCx_IPID(val),
->> +				      &m->ipid);
-> Oh well, one IPI per ipid write. We're doing injection so we can't be on
-> a production machine so who cares about IPIs there.
+> Dipen: please have a look at Sowjanya's patches to see
+> if this hardware is similar to yours.
 >
->> +			if (!m->ipid) {
->> +				pr_err("Error simulation not possible: Bank %llu unpopulated\n",
-> "Cannot set IPID for bank... - bank %d unpopulated\n"
+> Sometimes several vendors come up with similar hardware
+> around the same time, because of industry trends, so I would
+> not be surprised if these two hardwares address the very
+> same usecase.
 >
-> Also, in all your text, use "injection" instead of "simulation" so that
-> there's no confusion.
->
-> Thx.
->
+> Yours,
+> Linus Walleij
