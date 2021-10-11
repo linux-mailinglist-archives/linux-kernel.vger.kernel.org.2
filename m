@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09053428BDC
+	by mail.lfdr.de (Postfix) with ESMTP id 51548428BDD
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 13:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236161AbhJKLZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 07:25:06 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:52492 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236114AbhJKLZF (ORCPT
+        id S236180AbhJKLZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 07:25:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236163AbhJKLZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 07:25:05 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 51AD31FE9C;
-        Mon, 11 Oct 2021 11:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1633951384; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xw+IlCOw0VN11+4gbW0CcFkV8zMbAYmFEqOL5u+s6vo=;
-        b=oek9t6K1RiKpfTX6tBopWgwd3n6/EwyBZJnKr6ToCyP5ri0SKHrqxbbaWEEwFJ3nrq+mOD
-        NTkafHAmMEmGnugMTQVjryBJQWTNC4rlvnR1DdoZVTnpZ//kMXfRWGKaMmPmVeDMOOpVU4
-        JbsCJY/PLvR9mf8eRghX1hU+TEswqwo=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C86B3A3B83;
-        Mon, 11 Oct 2021 11:23:03 +0000 (UTC)
-Date:   Mon, 11 Oct 2021 13:23:00 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     ultrachin@163.com, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, brookxu.cn@gmail.com,
-        chen xiaoguang <xiaoggchen@tencent.com>,
-        zeng jingxiang <linuszeng@tencent.com>,
-        lu yihui <yihuilu@tencent.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>
-Subject: Re: [PATCH] mm: Free per cpu pages async to shorten program exit time
-Message-ID: <YWQelNijZQ7PuYSa@dhcp22.suse.cz>
-References: <20211008063933.331989-1-ultrachin@163.com>
- <d71e6021-777b-3ca9-b08f-64fe7ff51e08@redhat.com>
- <YWQDqtnA5FXk7xan@dhcp22.suse.cz>
- <278a6cda-3095-5e27-e136-2765f73bc67d@redhat.com>
+        Mon, 11 Oct 2021 07:25:06 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7C9C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:06 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id u32so38163633ybd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 04:23:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
+        b=BDpoaz2Tt8GB7UFJdjBXESDTgMdx0k3SfkeNld999BALyylVcvtT7v9xrV1xT1t/Gq
+         6mMl93yr5vDDArMgyHSN1C3u5pfwPK3jCLsZa9PjyHgg1oAEmOcbv1J54wnpKFFnlg//
+         TwGjpTL3HQuOSOlG2xmZnbEzrFBZXzW3l6RMU7jd1520smxmNNLgABIZIZNjfie1meQw
+         MjPI+z0Cm12Y8tUu25WBum5YUG83tlnYaUZRt2hCXTMUTxrjDLCouIJXXUXbuGSHl6lp
+         /Ih6zG4p/xVRKsl0Fa9RHKs5Q6mnC8DVWRCu4J9FMMnXLVuNHzSRNhJGFsN3MH5AHbkU
+         4awg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=EggiArwUHdzlhhZ9X3Lz0fb6bTSzjLRY73Yy7pjfbDw=;
+        b=Nv9NXYuYlx6RfVpTc/AX8Iw1e4FucRg4hFD5ZFcPlR2rdKpghKjjySNy2GzC0He2Cc
+         R9c18/kV04TUpAPfxosVja7ccjSodIY/d7DlJBgEx5enG42YmfLm8wvXtOfbXtn9kFiO
+         bL0yhMXLNZ/ZjJjv3BzGaKiAmV5utir9nqAH+Lh0qJeJSqJOPRKj6NDuJnSb0l8ArQSO
+         kks/vopHY+GNmlYnU/AXcn/G2brTyRPW9v1M2umNGpKXhYLATOqRRvBMpDvVfhxkXEFK
+         oDRE4pLQceDGZqXh81y7/2qx7/alVIPjTfMCl8uC3edc0NaR+GEjNkCRO72B3ongCChv
+         oP6Q==
+X-Gm-Message-State: AOAM5332cP0t6EmZ8oBFXIKV77nF/urNlkIsL154F9YkXwGGK+nPghQx
+        IFdTMufzwGHKZDEOneuKnA8EXGXJNgx/tPosi9w=
+X-Google-Smtp-Source: ABdhPJyB3jxY12lrLphBBleDsh700KMWkKr26rM2MWYTt8t00cU+NWjSTi5u0ApgPFr91q9y7tOIRCPazEV+jbWAjyE=
+X-Received: by 2002:a25:5bc5:: with SMTP id p188mr21376669ybb.301.1633951385875;
+ Mon, 11 Oct 2021 04:23:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <278a6cda-3095-5e27-e136-2765f73bc67d@redhat.com>
+Sender: mrrnra.kabore@gmail.com
+Received: by 2002:a05:7000:a1c2:0:0:0:0 with HTTP; Mon, 11 Oct 2021 04:23:05
+ -0700 (PDT)
+From:   Anderson Thereza <anderson.thereza24@gmail.com>
+Date:   Mon, 11 Oct 2021 04:23:05 -0700
+X-Google-Sender-Auth: 05hm5zLv4SCus3Gt7LrLurQuc5U
+Message-ID: <CAObd1cpOecAfexrnwrJyr3qD7PVahYVvrf_9n-O85kMHTxfGXA@mail.gmail.com>
+Subject: Re: Greetings My Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-10-21 11:40:12, David Hildenbrand wrote:
-> On 11.10.21 11:28, Michal Hocko wrote:
-> > On Fri 08-10-21 10:17:50, David Hildenbrand wrote:
-> > > On 08.10.21 08:39, ultrachin@163.com wrote:
-> > > > From: chen xiaoguang <xiaoggchen@tencent.com>
-> > > > 
-> > > > The exit time is long when program allocated big memory and
-> > > > the most time consuming part is free memory which takes 99.9%
-> > > > of the total exit time. By using async free we can save 25% of
-> > > > exit time.
-> > > > 
-> > > > Signed-off-by: chen xiaoguang <xiaoggchen@tencent.com>
-> > > > Signed-off-by: zeng jingxiang <linuszeng@tencent.com>
-> > > > Signed-off-by: lu yihui <yihuilu@tencent.com>
-> > > 
-> > > I recently discussed with Claudio if it would be possible to tear down the
-> > > process MM deferred, because for some use cases (secure/encrypted
-> > > virtualization, very large mmaps) tearing down the page tables is already
-> > > the much more expensive operation.
-> > > 
-> > > There is mmdrop_async(), and I wondered if one could reuse that concept when
-> > > tearing down a process -- I didn't look into feasibility, however, so it's
-> > > just some very rough idea.
-> > 
-> > This is not a new problem. Large process tear down can take ages. The
-> > primary road block has been accounting. This lot of work has to be
-> > accounted to the proper domain (e.g. cpu cgroup).
-> 
-> In general, yes. For some setups where admins don't care about that
-> accounting (e.g., enabled via some magic toggle for large VMs), I guess this
-> accounting isn't the major roadblock, correct?
+Greetings,
 
-Right, I would be careful about magic toggles though. Besides there are
-ways to achive this in the userspace. We used to have a request to help
-paralleling process exit from a DB vendor and Vlastimil has come up with
-a clone(CLONE_VM) and madvise(DONT_NEED) from several threads as a
-"workaround". This would work properly from the accounting POV.
-Admittedly a bit of an involved approach though.
--- 
-Michal Hocko
-SUSE Labs
+I sent this mail praying it will find you in a good condition, since I
+myself am in a very critical health condition in which I sleep every
+night without knowing if I may be alive to see the next day. I am
+Mrs.Theresa Anderson, a widow suffering from a long time illness. I
+have some funds I inherited from my late husband, the sum of
+($11,000,000.00, Eleven Million Dollars) my Doctor told me recently
+that I have serious sickness which is a cancer problem. What disturbs
+me most is my stroke sickness. Having known my condition, I decided to
+donate this fund to a good person that will utilize it the way I am
+going to instruct herein. I need a very honest God.
+
+fearing a person who can claim this money and use it for Charity
+works, for orphanages, widows and also build schools for less
+privileges that will be named after my late husband if possible and to
+promote the word of God and the effort that the house of God is
+maintained. I do not want a situation where this money will be used in
+an ungodly manner. That's why I' making this decision. I'm not afraid
+of death so I know where I'm going. I accept this decision because I
+do not have any child who will inherit this money after I die. Please
+I want your sincere and urgent answer to know if you will be able to
+execute this project, and I will give you more information on how the
+fund will be transferred to your bank account. I am waiting for your
+reply.
+
+May God Bless you,
+Mrs.Theresa Anderson.
