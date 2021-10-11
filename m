@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D8A4288CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0F94288CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhJKIdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhJKIdS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:33:18 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE91DC061745
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:31:17 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id d3so37212171edp.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ansIydpls6m1U5UqWIdad2N3UObWfiebM00TNpZEqAY=;
-        b=TIWW8982Q+BdDqaM+mbj+l/YQzuXk531tbljt7vKgGO9oa/m8fg73KmkkPhMtWptos
-         ulMn8Z97rq9fVwI/cCS7AHVvwYFC0U8+L5O15p1gHwJIwxk8PyExzCY7do7+gNMyMkfQ
-         zLCSiytz3l/7g40aZmz9Vec4iFuLHhzmZ0sMFdwv3m5fmjHABBXj6aQDWXKjFyFUEmrv
-         Gfz/Nht0CmY59WiNTNmr3dbE9W7TbhbX4MX83U0M/c9aA8k4FC2uhxKO7nda7r/3Dbp3
-         ojVqZv7rGe14KAMMNHrUFENvh4V0yLPJiCQEz8vzf6/msjMW9+voaJgZxCdP9sP8flFi
-         58xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ansIydpls6m1U5UqWIdad2N3UObWfiebM00TNpZEqAY=;
-        b=uX9I9N5ihHL5vDblw4dlFaxD+0QztNc18z1ZknR7fmIcIyMdrQLU1TpkugTJan9W0c
-         qITxwVjhId6AFAQEzm6461+W/W8tr4O+o0O11bVy0v+2ot4T9nud98yPmNc8f597gLw5
-         RooZKzK6T5CEpftkLi4MFClFNU0UOSKCIwszT2lv/pVQ5oDWoAQbE+i+NMC+AWTTNtoc
-         mrEpd2hp2lwBus2lRkvCtkRdgkm2TbunkL9muQ9MkkRXMuxn+HLTXkZb3WvPqPlTn/I6
-         2Iw12owIpPLfFJy+LJANx9rHDCHzrQuqpPtjJeoI375CRXlu3WU2CuDHr521gjpzPF58
-         qizg==
-X-Gm-Message-State: AOAM531T6npRA7MFEjBfSzalNrtFfC8KP8Lz51G3alw9OaPhmxhKko5q
-        aPNDCivace+8vtRUvz7Be06IB3Zpz7vb7+gUpnfG
-X-Google-Smtp-Source: ABdhPJwHWWKZMdVRBY+KhM8/Mxsd0heuNb4mPMfuhZ9nQLKKdmY9GMewTg3InfLsWTn8tTMygJdLGsym8GZLZpSCJgI=
-X-Received: by 2002:a17:906:ce25:: with SMTP id sd5mr22450654ejb.398.1633941076108;
- Mon, 11 Oct 2021 01:31:16 -0700 (PDT)
+        id S235036AbhJKId7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234932AbhJKId6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 04:33:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C3CE60EB1;
+        Mon, 11 Oct 2021 08:31:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633941119;
+        bh=rWIYz6HvGnzK13wjF7/2M8KNWndYaayhjKVmwsFuzzU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q2oSMzY7EjLkuqphAqKSwZKMkuL+XKMdqA2IamIhMZw7uQbAPTx2Y/bBi2TieaU3L
+         n4VB1YPMqaNunzx6vZZFTDwHgenfk6yZynPlSRrzAk1weCgzXjWreaK7IpcByqOBcj
+         ZxNzK9EjQQE5lHEhHYWVZVXLxUQ81FYmioOC0+eImwydN6rYKC6BPOyfhfkcAOiwKi
+         /Uwj7D61cN0HFsphPetW9jeShZXK1tsIMFqbrUQqQLBrvp6gMvbiypA65dNLTWLddP
+         oX2x2k2XHfMO3zCz1WVpPm9UfcR77jI+2jOjA4Kf9e1aUpwH/JKIJyUjZjioCKtfEm
+         QXanbfzonIs/w==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mZqis-0002KB-Qv; Mon, 11 Oct 2021 10:31:50 +0200
+Date:   Mon, 11 Oct 2021 10:31:50 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Yu-Tung Chang <mtwget@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] USB: serial: option: add Quectel EC200S-CN module
+ support
+Message-ID: <YWP2dpna7WSGen76@hovoldconsulting.com>
+References: <20210930021112.330396-1-mtwget@gmail.com>
+ <YV6mD02BVLXXcTr8@hovoldconsulting.com>
+ <YV6oTZae5zbgX8cV@hovoldconsulting.com>
+ <CAHRgzyNcmhTJHC9vzS-1mbxMLVHw5bYWHVy1+KCvUF61tRnr=A@mail.gmail.com>
+ <CAHRgzyO=VOCAV8oGSR15hiifp7NqHCu13KjcTrv3aA2QiURz_g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210831103634.33-1-xieyongji@bytedance.com> <6163E8A1.8080901@huawei.com>
-In-Reply-To: <6163E8A1.8080901@huawei.com>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Mon, 11 Oct 2021 16:31:05 +0800
-Message-ID: <CACycT3tBCdqPfLCTX4-ZDSos_hYPyBQu0xRHRu=ksaFk0k7_hA@mail.gmail.com>
-Subject: Re: [PATCH v13 00/13] Introduce VDUSE - vDPA Device in Userspace
-To:     Liuxiangdong <liuxiangdong5@huawei.com>
-Cc:     "Fangyi (Eric)" <eric.fangyi@huawei.com>, yebiaoxiang@huawei.com,
-        x86@kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHRgzyO=VOCAV8oGSR15hiifp7NqHCu13KjcTrv3aA2QiURz_g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaodong,
+[ Adding back the lists on CC so that this gets archived. ]
 
-On Mon, Oct 11, 2021 at 3:32 PM Liuxiangdong <liuxiangdong5@huawei.com> wrote:
->
-> Hi, Yongji.
->
-> I tried vduse with null-blk:
->
->    $ qemu-storage-daemon \
->        --chardev socket,id=charmonitor,path=/tmp/qmp.sock,server,nowait \
->        --monitor chardev=charmonitor \
->        --blockdev
-> driver=host_device,cache.direct=on,aio=native,filename=/dev/nullb0,node-name=disk0
-> \
->        --export
-> type=vduse-blk,id=test,node-name=disk0,writable=on,name=vduse-null,num-queues=16,queue-size=128
->
-> The qemu-storage-daemon is yours
-> (https://github.com/bytedance/qemu/tree/vduse)
->
-> And then, how can we use this vduse-null (dev/vduse/vduse-null) in vm(QEMU)?
->
+On Sat, Oct 09, 2021 at 01:50:40PM +0800, Yu-Tung Chang wrote:
+> Yu-Tung Chang <mtwget@gmail.com> 于2021年10月9日周六 下午1:39写道：
+> >
+> > Johan Hovold <johan@kernel.org> 于2021年10月7日周四 下午3:57写道：
+> > >
+> > > On Thu, Oct 07, 2021 at 09:47:28AM +0200, Johan Hovold wrote:
+> > > > On Thu, Sep 30, 2021 at 10:11:12AM +0800, Yu-Tung Chang wrote:
+> > > > > Add usb product id of the Quectel EC200S-CN module.
+> > > > >
+> > > > > usb-devices output for 0x6002:
+> > > > > T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  3 Spd=480 MxCh= 0
+> > > > > D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> > > > > P:  Vendor=2c7c ProdID=6002 Rev=03.18
+> > > > > S:  Manufacturer=Android
+> > > > > S:  Product=Android
+> > > > > S:  SerialNumber=0000
+> > > > > C:  #Ifs= 5 Cfg#= 1 Atr=e0 MxPwr=500mA
+> > > > > I:  If#=0x0 Alt= 0 #EPs= 1 Cls=02(commc) Sub=06 Prot=00 Driver=cdc_ether
+> > > > > I:  If#=0x1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=cdc_ether
+> > > > > I:  If#=0x2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> > > > > I:  If#=0x3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> > > > > I:  If#=0x4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+> > > >
+> > > > Looks good now, but for completeness, could you also mention here what
+> > > > the three ports are used for (and which is which)?
+> > >
+> > > I've applied the patch now, so no need to resend, but please list the
+> > > three ports in a reply if you have that information.
+> >
+> > ttyUSB0 used for debugging, ttyUSB1 used for AT commands,
+> > ttyUSB2 used for PPP dialing.
 
-Then we need to attach this device to vdpa bus via vdpa tool [1]:
+> and lsusb.py -i -e output info:
+>   1-1               2c7c:6002 ef 5IFs [USB 2.00,   480 Mbps, 500mA]
+> (Android Android 0000)
+>                       (EP) 00: Control attr 00 len 07 max 040
+>     1-1:1.0           (IF) 02:06:00 1EP  (Communications) cdc_ether net/usb0
+>                         (EP) 87: Interrupt (4096ms) attr 03 len 07 max 040
+>     1-1:1.1           (IF) 0a:00:00 2EPs (CDC Data) cdc_ether
+>                         (EP) 83: Bulk attr 02 len 07 max 200
+>                         (EP) 0c: Bulk attr 02 len 07 max 200
+>     1-1:1.2           (IF) ff:00:00 2EPs (Vendor Specific Class) option ttyUSB0
+>                         (EP) 0b: Bulk attr 02 len 07 max 200
+>                         (EP) 82: Bulk attr 02 len 07 max 200
+>     1-1:1.3           (IF) ff:00:00 3EPs (Vendor Specific Class) option ttyUSB1
+>                         (EP) 89: Interrupt (4096ms) attr 03 len 07 max 040
+>                         (EP) 86: Bulk attr 02 len 07 max 200
+>                         (EP) 0f: Bulk attr 02 len 07 max 200
+>     1-1:1.4           (IF) ff:00:00 3EPs (Vendor Specific Class) option ttyUSB2
+>                         (EP) 81: Bulk attr 02 len 07 max 200
+>                         (EP) 0a: Bulk attr 02 len 07 max 200
+>                         (EP) 88: Interrupt (4096ms) attr 03 len 07 max 040
 
-# vdpa dev add vduse-null mgmtdev vduse
+Perfect, thanks for the details.
 
-With the virtio-vdpa module loaded, we will see the block device in host.
-
-And if we'd like to use it in a VM, we need to load the vhost-vdpa
-module (a /dev/vhost-vdpa-0 char device will be presented) and build a
-new qemu binary with the source code in
-https://github.com/bytedance/qemu/tree/vhost-vdpa-blk. Then we can use
-the below command line to start a VM with the vhost-vdpa-blk device:
-
-./qemu-system-x86_64 -M pc -cpu host --enable-kvm -smp 8 \
--m 4G -object memory-backend-file,id=mem,size=4G,mem-path=/dev/shm,share=on \
--numa node,memdev=mem -monitor vc -serial stdio -no-user-config -nodefaults \
--vnc 0.0.0.0:1 -k en-us -vga cirrus \
--device vhost-vdpa-blk-pci,num-queues=1,vdpa-dev=/dev/vhost-vdpa-0
-
-[1] https://man7.org/linux/man-pages/man8/vdpa-dev.8.html
-
-Thanks,
-Yongji
+Johan
