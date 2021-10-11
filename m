@@ -2,102 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ECB42876C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A6B428773
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhJKHJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 03:09:05 -0400
-Received: from dvalin.narfation.org ([213.160.73.56]:40566 "EHLO
-        dvalin.narfation.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhJKHJE (ORCPT
+        id S234082AbhJKHMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:12:35 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:56458
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233790AbhJKHMd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 03:09:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-        s=20121; t=1633936023;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4A5IbiON99sAmaO5rSffIZ7vgzdOWfa8UnMZX6no8SI=;
-        b=XZSyyuZJbarDtRPi2do9RZJzBnzxlFdszrY04nDqWis73okxBzpJoCfh+RA8SLDvuciTLZ
-        9hsVmEICvl3JjYKdA4KeElflamaETDHsW00Be2UMnIKCK70wPJeseVi5tjogKlBOy4AFgd
-        +KVsAJZtmvzYHOzpzms4Kioebl+/rpw=
-From:   Sven Eckelmann <sven@narfation.org>
-To:     openwrt-devel@lists.openwrt.org
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Adrian Schmutzler <dev@schmutzler.it>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        linux-mtd@lists.infradead.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: nvmem: Defining cells on mtd created by mtdparts
-Date:   Mon, 11 Oct 2021 09:06:56 +0200
-Message-ID: <14722734.oMan5NXi5u@sven-desktop>
-In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
-References: <18728084.NGlc0Rocea@sven-desktop>
+        Mon, 11 Oct 2021 03:12:33 -0400
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com [209.85.208.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E148C3FFFE
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 07:10:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633936232;
+        bh=h1SUzCf91Jwpb9fhrX0NRvLQL7EyCkzdP0gPLLjD4b8=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Type:In-Reply-To;
+        b=aWQClpvl6MpmGv9YTLKRHj5GGnXK8s2u8T7VdhdRFsL4lf0cgATAFNQrEoL/mNSqF
+         dZSqBHS8N7J1UAHIKMT18lUVqy0jHk/UPvA7+XYn0BtUKRakQS3jhHDP38S3z5tJR/
+         UaR80i0SutViYWZOQZXIoZ0gIFjjkCsVVyxkQleFOY1rZ7CEepHknROdCEo762lzXf
+         KP8u9T7L7A8DX0LGQ5vEZhZTF0Fhh/ill2mmcP91WDMwUenWGinlMRvBoNM0aK7Ynb
+         xKaVm3oOHYlI7Apf7s3v+L+/XdY2Vc595yBTG39QnyaTNCZN648cJLZmrqTUHw1+K3
+         V53T2LWmy11WQ==
+Received: by mail-ed1-f72.google.com with SMTP id v2-20020a50f082000000b003db24e28d59so15003809edl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h1SUzCf91Jwpb9fhrX0NRvLQL7EyCkzdP0gPLLjD4b8=;
+        b=JE+cwE9zO4PVDb4jVhjz/9JtVR/O2ttbHXs9KDbyznDAlCnaOdvTY/BU4pCnm8HGNm
+         9/DNV2ExXFwKI7gvPF84WXaAgXiTbYiS1zmOS1sNW8akcFyqx1kBFBR7Mlwbz6Mk9cqK
+         9hwPiTHk+7LDxjosgvm6CInPj++9qZlxztXvP3qYh60Fk0N1gca6fhk5evGOlsy2wF5v
+         ci8jS4/8mRpXfmwYuf4eeA/GHMSauaGYgDSQ6qWV96NHKaB5heCB17cI6zIiYqFbOoGK
+         U3NjYODEr92Vg513L1MjcTutGMDumMB8Wu8O/XbGmimodXhe3x3Vjv1KFtOFocDiJKPj
+         ZASw==
+X-Gm-Message-State: AOAM531WquwRAvKZKX3kCgbq+wgEs/UePiyI5aJHbGBQuw8um/01Cx9y
+        P3uCLPDSz4pGWfidhiiDi/hEOk2o3wW8IfKGsAFwiDK9QL667LMm9XLJgd2CbG3eIEdc9vvbvpI
+        PObroDSXFOo96+IQnR4MTFlWs5zMakBlEWyXgZURwbA==
+X-Received: by 2002:a17:906:c009:: with SMTP id e9mr23871356ejz.509.1633936232562;
+        Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaYokr373n9+pvypy7SyEpzzJy/337+0O1svYG2JXNNbPWvZ57+ivNRR1KCyf2hS8d9lVTrg==
+X-Received: by 2002:a17:906:c009:: with SMTP id e9mr23871340ejz.509.1633936232329;
+        Mon, 11 Oct 2021 00:10:32 -0700 (PDT)
+Received: from localhost ([2001:67c:1560:8007::aac:c1b6])
+        by smtp.gmail.com with ESMTPSA id y19sm2560185edd.39.2021.10.11.00.10.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Oct 2021 00:10:31 -0700 (PDT)
+Date:   Mon, 11 Oct 2021 09:10:30 +0200
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: BUG: soft lockup in __kmalloc_node() with KFENCE enabled
+Message-ID: <YWPjZv7ClDOE66iI@arighi-desktop>
+References: <YWLwUUNuRrO7AxtM@arighi-desktop>
+ <CANpmjNOw--ZNyhmn-GjuqU+aH5T98HMmBoCM4z=JFvajC913Qg@mail.gmail.com>
+ <YWPaZSX4WyOwilW+@arighi-desktop>
+ <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart27234856.iIAV7Kigx3"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANpmjNMFFFa=6toZJXqo_9hzv05zoD0aXA4D_K93rfw58cEw3w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart27234856.iIAV7Kigx3
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-To: openwrt-devel@lists.openwrt.org
-Cc: Ansuel Smith <ansuelsmth@gmail.com>, Michael Walle <michael@walle.cc>, Adrian Schmutzler <dev@schmutzler.it>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-mtd@lists.infradead.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>, linux-kernel@vger.kernel.org
-Subject: Re: nvmem: Defining cells on mtd created by mtdparts
-Date: Mon, 11 Oct 2021 09:06:56 +0200
-Message-ID: <14722734.oMan5NXi5u@sven-desktop>
-In-Reply-To: <18728084.NGlc0Rocea@sven-desktop>
-References: <18728084.NGlc0Rocea@sven-desktop>
+On Mon, Oct 11, 2021 at 08:48:29AM +0200, Marco Elver wrote:
+> On Mon, 11 Oct 2021 at 08:32, Andrea Righi <andrea.righi@canonical.com> wrote:
+> > On Mon, Oct 11, 2021 at 08:00:00AM +0200, Marco Elver wrote:
+> > > On Sun, 10 Oct 2021 at 15:53, Andrea Righi <andrea.righi@canonical.com> wrote:
+> > > > I can systematically reproduce the following soft lockup w/ the latest
+> > > > 5.15-rc4 kernel (and all the 5.14, 5.13 and 5.12 kernels that I've
+> > > > tested so far).
+> > > >
+> > > > I've found this issue by running systemd autopkgtest (I'm using the
+> > > > latest systemd in Ubuntu - 248.3-1ubuntu7 - but it should happen with
+> > > > any recent version of systemd).
+> > > >
+> > > > I'm running this test inside a local KVM instance and apparently systemd
+> > > > is starting up its own KVM instances to run its tests, so the context is
+> > > > a nested KVM scenario (even if I don't think the nested KVM part really
+> > > > matters).
+> > > >
+> > > > Here's the oops:
+> > > >
+> > > > [   36.466565] watchdog: BUG: soft lockup - CPU#0 stuck for 26s! [udevadm:333]
+> > > > [   36.466565] Modules linked in: btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear psmouse floppy
+> > > > [   36.466565] CPU: 0 PID: 333 Comm: udevadm Not tainted 5.15-rc4
+> > > > [   36.466565] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
+> > > [...]
+> > > >
+> > > > If I disable CONFIG_KFENCE the soft lockup doesn't happen and systemd
+> > > > autotest completes just fine.
+> > > >
+> > > > We've decided to disable KFENCE in the latest Ubuntu Impish kernel
+> > > > (5.13) for now, because of this issue, but I'm still investigating
+> > > > trying to better understand the problem.
+> > > >
+> > > > Any hint / suggestion?
+> > >
+> > > Can you confirm this is not a QEMU TCG instance? There's been a known
+> > > issue with it: https://bugs.launchpad.net/qemu/+bug/1920934
+> >
+> > It looks like systemd is running qemu-system-x86 without any "accel"
+> > options, so IIUC the instance shouldn't use TCG. Is this a correct
+> > assumption or is there a better way to check?
+> 
+> AFAIK, the default is TCG if nothing else is requested. What was the
+> command line?
 
-On Sunday, 10 October 2021 14:53:13 CEST Sven Eckelmann wrote:
-[...]
-> Since there are most likely more devices out there which use mtdparts, I would 
-> guess that there might already be a strategy out there which can be used to 
-> define the nvmem-provider for mtdparts defined partitions. At least I saw that 
-> Bartosz Golaszewski added all the mtd devices automatically as nvmem provider 
-> in c4dfa25ab307 ("mtd: add support for reading MTD devices via the nvmem 
-> API"). So there might also be something for nvmem-cells to find the correct 
-> mtd instead of relying on the fixed-partitions registration + of_node (which 
-> doesn't exist because it comes from mtdparts and not devicetree).
+This is the full command line of what systemd is running:
 
-Ansuel Smith just proposed in OpenWrt [1] a workaround. It basically adds a 
-minimal fixed-partitions parser to the mtd cmdlinepart parser (responsible for 
-the mtdparts=) that tries to find the matching (size + offset) fixed-partition 
-from the devicetree. The code in mtd_device_parse_register
-(add_mtd_partitions -> add_mtd_device -> mtd_nvmem_add) will then 
-automatically take care of the rest.
+  /bin/qemu-system-x86_64 -smp 4 -net none -m 512M -nographic -vga none -kernel /boot/vmlinuz-5.15-rc4 -drive format=raw,cache=unsafe,file=/var/tmp/systemd-test.sI1nrh/badid.img -initrd /boot/initrd.img-5.15-rc4 -append  root=/dev/sda1 rw raid=noautodetect rd.luks=0 loglevel=2 init=/lib/systemd/systemd console=ttyS0 selinux=0  SYSTEMD_UNIT_PATH=/usr/lib/systemd/tests/testdata/testsuite-14.units:/usr/lib/systemd/tests/testdata/units: systemd.unit=testsuite.target systemd.wants=testsuite-14.service systemd.wants=end.service
 
-Kind regards,
-	Sven
+And this is running inside a KVM instance (so a nested KVM scenario).
 
-[1] https://github.com/openwrt/openwrt/pull/4664#issuecomment-939567963
---nextPart27234856.iIAV7Kigx3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmFj4pAACgkQXYcKB8Em
-e0b9eBAArC/EsvvrKk2y7/99MES/Eds+2b37/9dxuvOPOxULMobk3Gu1VC1qhKv4
-Z2zYdWP1rGz14r+DqYD9YhSvw1wM8WMN6hT3A2QWErF36fPngvahOLXZjoagaDVN
-PQQ+G8KKV/5WtNGjiah8zMWBcXC0zzLVRkxLsZ2BwuSVXsFo0qJereWknxw7F/Qf
-dw86a5Yf7JbcPaL4oJg/522oC+6O8CLwakwmyjp5ZLDDqo/z+p4DgqDM8OVphX5v
-0MsYCT0YfvEJyVOZfkiUKljqIwyEgJbAtJDxIYAX6Riauz+cEmy6diArVOnNro8/
-EEQuoyJq6Vu9By2E/pnsDahrk1DIkd5pi1hnR8qTMf/VTD2YC85DWg1y7qKdpf8g
-pQ8HsH/5ZCgPcQJFXU50RNaxlHQq8BJVbGcO8SHKUSZY29lo17pafWwMfRKLO1fh
-Qhyk8l19iwmmQ09Uho1xbNE5CBzSP1RH76/4HTEFDXPYSOCu1zDuf5FSlSQZjTop
-KClni0PvXPqeDRRtkoMLO2/LIjE3S8cCsRF37zqJdN6Ko9drwk/Vsp1BEIkzBzB9
-hNihrk6JeaKhQ6Ogmtcw7pIMwrI8TXgvWlYqvaEt7KPHU0HKXOXdkS+4jO1nyaZD
-k4dLtPx5LW4kgHcY0JqaFLOZfTMwPiPL05cPTEp+WkyR7rJCktk=
-=iCmG
------END PGP SIGNATURE-----
-
---nextPart27234856.iIAV7Kigx3--
-
-
-
+-Andrea
