@@ -2,164 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A05A429866
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D48142986B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbhJKUuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:50:08 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60152 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232898AbhJKUuH (ORCPT
+        id S234238AbhJKUxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:53:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235089AbhJKUxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:50:07 -0400
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 587BD1FEF6;
-        Mon, 11 Oct 2021 20:48:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1633985286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDfY+sGF6MernPT4pQ3s5gAqwzGT2NbUHUDA3NwnXjU=;
-        b=z+iYgMblTz9adtPhxcTEJ3WH5eDlIyXdVm5X475BqUAWWRXaLHCCiXZp4LOH+Lfaay6lT8
-        6tTimtgufFLNxDZ1FRnqlGq9wUvEyvAvt0uOop6P8dhuKOq47qDbX3r6uyUqDOqWidqotQ
-        VA9XWpLArv07TCWrRQLdxBlSxGH5mkI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1633985286;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDfY+sGF6MernPT4pQ3s5gAqwzGT2NbUHUDA3NwnXjU=;
-        b=4Ei2HtQtSon7D75J3o8+ICLDKfm3824+knheXVYZ5paQTMZ/MqW7TOaCxfEJ+Y7ro924eI
-        fAyKzbOXPKd9+ADA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40ACC13BD8;
-        Mon, 11 Oct 2021 20:48:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id vfZXDwajZGGMWAAAMHmgww
-        (envelope-from <bp@suse.de>); Mon, 11 Oct 2021 20:48:06 +0000
-Date:   Mon, 11 Oct 2021 22:48:02 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the tip tree with Linus' tree
-Message-ID: <YWSjAidxoWPcmE3H@zn.tnic>
-References: <20211011132120.7bdb70d9@canb.auug.org.au>
+        Mon, 11 Oct 2021 16:53:14 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96ABC061570;
+        Mon, 11 Oct 2021 13:51:13 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso5754263ooq.8;
+        Mon, 11 Oct 2021 13:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Zpp+ByPTuu11cRdb4qZvSO4X5qVzsBdD+2ORz/hi9KM=;
+        b=e7oJKJ0jv9KnyF/1q2zozxqTQmuwcVt8JrTBvgebjwazhwOq8RvHuUnhxU7D0KQGN6
+         gcSSu0lMd9bNLsDvcXDq9erVShUaxhJGmJvV1bVGwQUYMdxmrYpG9BdoTR/rrYtLqt2K
+         aRKCIh+fOx3vIeqKY2QK7Yf8k5EZy53oq0GZ2uO8qqsIp+PfW3LuspSm08agAv/++cK7
+         Uw++h9W2YNdAxcOVmOAzmBo7WQaJgS+gpLq/fAAIDpujGjRxon9sf5cVI9A31t+UxIEd
+         MLYxv8VJq8Jv2vpC1llP99XlBe8+eB4RA+8H1qr6yL7ifpITa7JzB4AoIB/nNan9zrPC
+         oLOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zpp+ByPTuu11cRdb4qZvSO4X5qVzsBdD+2ORz/hi9KM=;
+        b=AzhfM6WUVi1dAuBUbqZhfhLwBxqciA5cKNz6CQ4EZtbnxsX5YZQKooKWjADB9I0LIt
+         h1pSEFSlKipe8rweaLfXYRARYA5V1judMy0VyEsW6tsH39g8BlwY2Y7v6YUevnlJIkir
+         tv5kcaJqe42QBwzcnTnY4e5pB++EUkLfXwtouZf5kfPaewKNLCEGpywB26fQysTgVeq6
+         IQu4wBnUS66LlbXY2EIVuAWL9+mV1wAQAnqCvmxC0tONb0gQzNy4oqgj8rLzVqaLUJMl
+         d1Q2EoBl5xohQpminkIC8kSUb4P+Zw0kF2dIYFM/MrLkdGgMylWYVwVxAlcee8LsR1Fq
+         zt+Q==
+X-Gm-Message-State: AOAM531AUr9UzJ0q8+Qpbl0r+P2CaQTQBCXxei80ZyNFYYbgLJsJXzd8
+        2sseOR5lU9h8PamMo9rBbi9H0rOIFM8=
+X-Google-Smtp-Source: ABdhPJzx9T/NF6ecmyYusbJp+EleQrbTzkuBFNNqvCY3uOEW302AgOCWSXFQvwwxigVRS5U7luC9lA==
+X-Received: by 2002:a05:6820:1015:: with SMTP id v21mr7158053oor.47.1633985472933;
+        Mon, 11 Oct 2021 13:51:12 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h5sm1946940oti.58.2021.10.11.13.51.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Oct 2021 13:51:12 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20211011134640.711218469@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 4.19 00/28] 4.19.211-rc1 review
+Message-ID: <d8d3263e-f97e-402e-e390-b96a4223c45b@roeck-us.net>
+Date:   Mon, 11 Oct 2021 13:51:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20211011134640.711218469@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211011132120.7bdb70d9@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On 10/11/21 6:46 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.211 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 13 Oct 2021 13:46:31 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Mon, Oct 11, 2021 at 01:21:20PM +1100, Stephen Rothwell wrote:
-> I fixed it up (I just used the version form Linus' tree, but with the
-> changed return type - see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+arch/powerpc/net/bpf_jit_comp64.c: In function 'bpf_jit_build_body':
+arch/powerpc/net/bpf_jit_comp64.c:392:46: error: implicit declaration of function 'PPC_RAW_LI'; did you mean 'PPC_RLWIMI'?
 
-Thanks, below is Ingo's merge resolution which is identical to yours,
-AFAICT.
+This problem affects all release candidates from v4.9.y to v5.4.y.
 
-tip/master and tip/auto-latest are updated so you should be able to
-forget your fixup from now on.
-
-:-)
-
-Cheers!
-
-> diff --cc arch/x86/kernel/fpu/signal.c
-> index fa17a27390ab,ae51e50f25e8..000000000000
-> --- a/arch/x86/kernel/fpu/signal.c
-> +++ b/arch/x86/kernel/fpu/signal.c
-> @@@ -377,16 -382,10 +382,16 @@@ static bool __fpu_restore_sig(void __us
->   	} else {
->   		if (__copy_from_user(&fpu->state.fxsave, buf_fx,
->   				     sizeof(fpu->state.fxsave)))
-> - 			return -EFAULT;
-> + 			return false;
->   
->  -		/* Mask out reserved MXCSR bits. */
->  -		fpu->state.fxsave.mxcsr &= mxcsr_feature_mask;
->  +		if (IS_ENABLED(CONFIG_X86_64)) {
->  +			/* Reject invalid MXCSR values. */
->  +			if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
-> - 				return -EINVAL;
-> ++				return false;
->  +		} else {
->  +			/* Mask invalid bits out for historical reasons (broken hardware). */
->  +			fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
->  +		}
->   
->   		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
->   		if (use_xsave())
-
-commit 3ab37cc4d1e3889ddbb44d62a4741754689f6184 (refs/remotes/tip/x86/fpu)
-Merge: 724fc0248d45 d298b03506d3
-Author: Ingo Molnar <mingo@kernel.org>
-Date:   Mon Oct 11 08:53:07 2021 +0200
-
-    Merge branch 'x86/urgent' into x86/fpu, to resolve conflict
-    
-    Resolve the conflict between these two commits:
-    
-       x86/fpu:      1193f408cd51 ("x86/fpu/signal: Change return type of __fpu_restore_sig() to boolean")
-       x86/urgent:   d298b03506d3 ("x86/fpu: Restore the masking out of reserved MXCSR bits")
-    
-     Conflicts:
-            arch/x86/kernel/fpu/signal.c
-    
-    Signed-off-by: Ingo Molnar <mingo@kernel.org>
-
-diff --cc arch/x86/kernel/fpu/signal.c
-index 39c7bae97daf,fa17a27390ab..37dbfed29d75
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@@ -382,11 -377,16 +382,16 @@@ static bool __fpu_restore_sig(void __us
-  	} else {
-  		if (__copy_from_user(&fpu->state.fxsave, buf_fx,
-  				     sizeof(fpu->state.fxsave)))
- -			return -EFAULT;
- +			return false;
-  
-- 		/* Reject invalid MXCSR values. */
-- 		if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
-- 			return false;
-+ 		if (IS_ENABLED(CONFIG_X86_64)) {
-+ 			/* Reject invalid MXCSR values. */
-+ 			if (fpu->state.fxsave.mxcsr & ~mxcsr_feature_mask)
- -				return -EINVAL;
-++				return false;
-+ 		} else {
-+ 			/* Mask invalid bits out for historical reasons (broken hardware). */
-+ 			fpu->state.fxsave.mxcsr &= ~mxcsr_feature_mask;
-+ 		}
-  
-  		/* Enforce XFEATURE_MASK_FPSSE when XSAVE is enabled */
-  		if (use_xsave())
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Guenter
