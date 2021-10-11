@@ -2,146 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DDC4297E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 21:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E734297E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 22:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhJKUAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 16:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231156AbhJKUAE (ORCPT
+        id S234786AbhJKUCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 16:02:32 -0400
+Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:5204 "EHLO
+        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231156AbhJKUCb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 16:00:04 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1E5C061570;
-        Mon, 11 Oct 2021 12:58:04 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id g8so72056419edt.7;
-        Mon, 11 Oct 2021 12:58:04 -0700 (PDT)
+        Mon, 11 Oct 2021 16:02:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SKh3z8/eFx39DZqeLn4BLSOUQsWLVYgA6sDrH+x4Ulk=;
-        b=mbTZFkNUWLVTd4DmzdjidHDoed1HvzabyqoqjfbSfDSfnZRHFe4aWbFxP2vttXkLYG
-         fgY+vmdfVg8Mb4knc/uzjZjfn95JQUhUJc5HJhCh9fN/PBs8dpnFew/8uq99xByifowb
-         zBoI1HjWz9lcOv+6aEy9mW2W1p2/VB7839rIxbIRaOXmHbm1i2/FZ2WkzUvWFgD76T78
-         vWYhEa2D/8Mzg57eBzfslfMifTlrCf/5JZr9d7Fgj+UFyhA3ujRICitMDtAQmdSFaVMD
-         DAjQ7PSre+Q5+1Lizyafz9GbRf7aeSI9wN0kfkztsb23UEChT6x/uZTDYIyay0WtQ7DR
-         fBzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SKh3z8/eFx39DZqeLn4BLSOUQsWLVYgA6sDrH+x4Ulk=;
-        b=oKATgOAcA0HYmOdQYC+3hsWhPneEOTDRZJMB6Isb42kZpvRoz3wjKlYuvzx7s3tOJE
-         l3A3sbmkUFwMU7ypz54j+BqoQyVYrhYMVQ6aMyRJtPRQophYqaY6gSYCpx4iK4uFrOmF
-         L+2DtT5+rEGO/ukRo24eNHHK58unu8cpsYAZ1+38aQWN/4fONq1KYoWwmchXZcxHYiCc
-         jqZKDXpCxi6GHCZ2roW8GTTIOJiZEnS3QBqyHcQzYLOGx3KpjOhYdvN6dsRa8SYwuHaf
-         AWfrCmVbmJdWe29YI0PK3u/L77wjdmgRg3akHztHfAaARMhwftr0mAbg//gdBTIoejrj
-         c5Uw==
-X-Gm-Message-State: AOAM533jPKP7l3KTiFoQxiHVus7XvKhriXOqAQWGD4fSgbgyjKqJmQUU
-        VzeHiMG/yv+b1gd7XM/5X3DIRUWxzMifwC4W1xpXkiGBBh0=
-X-Google-Smtp-Source: ABdhPJyvPma2sUPqNK2WXoa3c5nzFwAzXULxWPsz1UOgT2ZXXI0SzXbS+dZePUX9ENuRUxmAFHX8Z0px4jAlKssBXrA=
-X-Received: by 2002:a17:907:6297:: with SMTP id nd23mr28983343ejc.62.1633982282937;
- Mon, 11 Oct 2021 12:58:02 -0700 (PDT)
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1633982431; x=1665518431;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=N4CiImnv1AWs5GJEFOOIHHQawf6Kw72cfC4kfIeqxAA=;
+  b=ChndwnomBBfh9slOlR9KmUAmXo7sEzn3Pg4Yart+IfncPnpg+GrQHspE
+   mtvV2z/tfuPgUKs5+HQcC87p1DvxmVJgVDv3BVeyQ3ScKo4dEKJcQYaC3
+   4FuGw0RfefH7xoUHvg9x9+o+yXHMlNGr0vP2AKXFOoi+qsRGuFNnP0Yqd
+   c=;
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-01.qualcomm.com with ESMTP; 11 Oct 2021 13:00:31 -0700
+X-QCInternal: smtphost
+Received: from nasanex01b.na.qualcomm.com ([10.46.141.250])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Oct 2021 13:00:31 -0700
+Received: from hu-gurus-sd.qualcomm.com (10.80.80.8) by
+ nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.922.7;
+ Mon, 11 Oct 2021 13:00:30 -0700
+From:   Guru Das Srinagesh <quic_gurus@quicinc.com>
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        <linux-arm-msm@vger.kernel.org>
+CC:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <quic_eberman@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        "Guru Das Srinagesh" <quic_gurus@quicinc.com>
+Subject: [PATCH] firmware: qcom_scm: Fix error retval in __qcom_scm_is_call_available()
+Date:   Mon, 11 Oct 2021 13:00:14 -0700
+Message-ID: <1633982414-28347-1-git-send-email-quic_gurus@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210917205731.262693-1-shy828301@gmail.com> <CAHbLzkqmooOJ0A6JmGD+y5w_BcFtSAJtKBXpXxYNcYrzbpCrNQ@mail.gmail.com>
- <YUdL3lFLFHzC80Wt@casper.infradead.org> <CAHbLzkrPDDoOsPXQD3Y3Kbmex4ptYH+Ad_P1Ds_ateWb+65Rng@mail.gmail.com>
- <YUkCI2I085Sos/64@casper.infradead.org> <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
-In-Reply-To: <CAHbLzkoXrVJOfOrNhd8nQFRPHhRVYfVYSgLAO3DO7ZmvaZtDVw@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 11 Oct 2021 12:57:51 -0700
-Message-ID: <CAHbLzkrdXQfcudeeDHx8uUD55Rr=Aogi0pnQbBbP8bEZca8-7w@mail.gmail.com>
-Subject: Re: [PATCH] fs: buffer: check huge page size instead of single page
- for invalidatepage
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>, cfijalkovich@google.com,
-        Song Liu <song@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hao Sun <sunhao.th@gmail.com>, Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01b.na.qualcomm.com (10.46.141.250)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 3:35 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Mon, Sep 20, 2021 at 2:50 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Mon, Sep 20, 2021 at 02:23:41PM -0700, Yang Shi wrote:
-> > > On Sun, Sep 19, 2021 at 7:41 AM Matthew Wilcox <willy@infradead.org> wrote:
-> > > >
-> > > > On Fri, Sep 17, 2021 at 05:07:03PM -0700, Yang Shi wrote:
-> > > > > > The debugging showed the page passed to invalidatepage is a huge page
-> > > > > > and the length is the size of huge page instead of single page due to
-> > > > > > read only FS THP support.  But block_invalidatepage() would throw BUG if
-> > > > > > the size is greater than single page.
-> > > >
-> > > > Things have already gone wrong before we get to this point.  See
-> > > > do_dentry_open().  You aren't supposed to be able to get a writable file
-> > > > descriptor on a file which has had huge pages added to the page cache
-> > > > without the filesystem's knowledge.  That's the problem that needs to
-> > > > be fixed.
-> > >
-> > > I don't quite understand your point here. Do you mean do_dentry_open()
-> > > should fail for such cases instead of truncating the page cache?
-> >
-> > No, do_dentry_open() should have truncated the page cache when it was
-> > called and found that there were THPs in the cache.  Then khugepaged
-> > should see that someone has the file open for write and decline to create
-> > new THPs.  So it shouldn't be possible to get here with THPs in the cache.
->
+Since __qcom_scm_is_call_available() returns bool, have it return false
+instead of -EINVAL if an invalid SMC convention is detected.
 
-I think Hugh's skipping special file patch
-(https://lore.kernel.org/linux-mm/a07564a3-b2fc-9ffe-3ace-3f276075ea5c@google.com/)
-could fix this specific BUG report and seems like a more proper fix to
-this.
+This fixes the Smatch static checker warning:
 
-However, it still doesn't make too much sense to have thp_size passed
-to do_invalidatepage(), then have PAGE_SIZE hardcoded in a BUG
-assertion IMHO. So it seems this patch is still useful because
-block_invalidatepage() is called by a few filesystems as well, for
-example, ext4. Or I'm wondering whether we should call
-do_invalidatepage() for each subpage of THP in truncate_cleanup_page()
-since private is for each subpage IIUC.
+	drivers/firmware/qcom_scm.c:255 __qcom_scm_is_call_available()
+	warn: signedness bug returning '(-22)'
 
-> AFAICT, it does so.
->
-> In do_dentry_open():
-> /*
->          * XXX: Huge page cache doesn't support writing yet. Drop all page
->          * cache for this file before processing writes.
->          */
->         if (f->f_mode & FMODE_WRITE) {
->                 /*
->                  * Paired with smp_mb() in collapse_file() to ensure nr_thps
->                  * is up to date and the update to i_writecount by
->                  * get_write_access() is visible. Ensures subsequent insertion
->                  * of THPs into the page cache will fail.
->                  */
->                 smp_mb();
->                 if (filemap_nr_thps(inode->i_mapping))
->                         truncate_pagecache(inode, 0);
->         }
->
->
-> In khugepaged:
-> filemap_nr_thps_inc(mapping);
->                 /*
->                  * Paired with smp_mb() in do_dentry_open() to ensure
->                  * i_writecount is up to date and the update to nr_thps is
->                  * visible. Ensures the page cache will be truncated if the
->                  * file is opened writable.
->                  */
->                 smp_mb();
->                 if (inode_is_open_for_write(mapping->host)) {
->                         result = SCAN_FAIL;
->                         __mod_lruvec_page_state(new_page, NR_FILE_THPS, -nr);
->                         filemap_nr_thps_dec(mapping);
->                         goto xa_locked;
->                 }
->
-> But I'm not quite sure if there is any race condition.
+Fixes: 9d11af8b06a8 ("firmware: qcom_scm: Make __qcom_scm_is_call_available() return bool")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Guru Das Srinagesh <quic_gurus@quicinc.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/firmware/qcom_scm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 2ee97ba..27a64de 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -252,7 +252,7 @@ static bool __qcom_scm_is_call_available(struct device *dev, u32 svc_id,
+ 		break;
+ 	default:
+ 		pr_err("Unknown SMC convention being used\n");
+-		return -EINVAL;
++		return false;
+ 	}
+ 
+ 	ret = qcom_scm_call(dev, &desc, &res);
+-- 
+2.7.4
+
