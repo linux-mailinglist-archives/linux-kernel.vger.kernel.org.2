@@ -2,216 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFA342868F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 08:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1290D42878A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 09:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233650AbhJKGCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 02:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhJKGCE (ORCPT
+        id S234422AbhJKHVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 03:21:55 -0400
+Received: from gandalf.ozlabs.org ([150.107.74.76]:52919 "EHLO
+        gandalf.ozlabs.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234279AbhJKHVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 02:02:04 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA49C061570;
-        Sun, 10 Oct 2021 23:00:04 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id z24so10746143qtv.9;
-        Sun, 10 Oct 2021 23:00:04 -0700 (PDT)
+        Mon, 11 Oct 2021 03:21:54 -0400
+Received: by gandalf.ozlabs.org (Postfix, from userid 1007)
+        id 4HSVYP2X9Hz4xqQ; Mon, 11 Oct 2021 18:19:53 +1100 (AEDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WoA8bZFOoi5k0ksDOVTydnodVp4tRnovR57bU3Fctow=;
-        b=ny0irP5Job3x3J3dTem+vxlidF9XApi6fGc3D9UiqD4GapubfhWJwMpAWdapr+cJzd
-         3TkuF+DbeeMUl/ASD0GrS0XkO+GAPFT+evHaucySUYuRuCRRVf4CTeepqR8bNmRO9q/m
-         +kt/c5AU0+AFKhfctlIWJcH5TNBDurJrKkwLj4Ac5tfyKaK3aQqlxctB4CeFjx8194xZ
-         xqeN7fHm1F9B3o0Ft43oc+PioR+h0VHJRXGjvHWltyYIIU1YdSm53NF7i/SsdoSwf7iu
-         lZ/ynrYcA9BcpUU/hfqnNLkEa1epgPpFsSXWqcyzh8p5UQrNRWJd9LyufnnQWvplWYpT
-         jerA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WoA8bZFOoi5k0ksDOVTydnodVp4tRnovR57bU3Fctow=;
-        b=rFUUTex+RLiO/dzeIwF1kVChIir+ZQujmHzpJGvlZk7S9GU+sMFWuDKpLKtUTcerDv
-         /FJCles8qI0Wz286olZR40nTKKvZmNmhd4jnQY2WcacMH5/iGBkY4kEE97c8J1rQYCs5
-         VqNaZm4yhOzAGBy3UoOZsAugWdjmxcGn9FaKabbLj3ONjHsFws+WwT5Fx5VcTMAFpzQ7
-         0W1OWjU866xZM6dtmWwrjaQpvp22K3cL7X+Ey0zaAEG+ShBmxmGvsgre3gytZSNjScIC
-         EmuKHJA+bbGaO5OwzXGfBWF/lIG2ZoyMI9ADcnoTjhRCai3ljchlasW/eTM+9asJtzX6
-         qNig==
-X-Gm-Message-State: AOAM530uVT1QqRszEBpsI2eJqzvqZ37Y7O5eTGXr+/0XKRGrwZujomeq
-        V3zmuwvMs9LVlVnYMrc2hp4=
-X-Google-Smtp-Source: ABdhPJwrbFpAKDejQajrgzW1vXybkghMf9Qw/qum5gxje2JX1KT6rZXx4y8RcyF+pJhrVXbFzq/LTg==
-X-Received: by 2002:ac8:12:: with SMTP id a18mr12673644qtg.157.1633932003742;
-        Sun, 10 Oct 2021 23:00:03 -0700 (PDT)
-Received: from localhost.localdomain ([179.223.196.141])
-        by smtp.gmail.com with ESMTPSA id z30sm4151653qtm.55.2021.10.10.23.00.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Oct 2021 23:00:03 -0700 (PDT)
-From:   Pedro Demarchi Gomes <pedrodemargomes@gmail.com>
-Cc:     pedrodemargomes@gmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] selftests: vm: add KSM huge pages merging time test
-Date:   Mon, 11 Oct 2021 02:59:07 -0300
-Message-Id: <20211011055908.87140-1-pedrodemargomes@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=gibson.dropbear.id.au; s=201602; t=1633936793;
+        bh=6mTyoEeD81UgPE8G1mGEU//Fuq65qBZTt4bSRVKbg+w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ovs+Na8a2kRhJXcn14WcB4fglDHKqyAZ8/CQsxyOfabFSpI/zbbDZJwE3j7PULIlS
+         dSMCuiyIYVrWVCN6zc9OEJcA/dKef95nQHaBuR+WNkA4MWDlTuX4a8DC6JODeDtI67
+         hNoQ9jXaUTAluoawqk65gzodmZtswX8RetSUVLXg=
+Date:   Mon, 11 Oct 2021 16:37:38 +1100
+From:   "david@gibson.dropbear.id.au" <david@gibson.dropbear.id.au>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "hch@lst.de" <hch@lst.de>,
+        "jasowang@redhat.com" <jasowang@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "lkml@metux.net" <lkml@metux.net>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "lushenming@huawei.com" <lushenming@huawei.com>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "yi.l.liu@linux.intel.com" <yi.l.liu@linux.intel.com>,
+        "Tian, Jun J" <jun.j.tian@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "baolu.lu@linux.intel.com" <baolu.lu@linux.intel.com>,
+        "nicolinc@nvidia.com" <nicolinc@nvidia.com>
+Subject: Re: [RFC 11/20] iommu/iommufd: Add IOMMU_IOASID_ALLOC/FREE
+Message-ID: <YWPNoknkNW55KQM4@yekko>
+References: <20210919063848.1476776-1-yi.l.liu@intel.com>
+ <20210919063848.1476776-12-yi.l.liu@intel.com>
+ <20210921174438.GW327412@nvidia.com>
+ <BN9PR11MB543362CEBDAD02DA9F06D8ED8CA29@BN9PR11MB5433.namprd11.prod.outlook.com>
+ <20210922140911.GT327412@nvidia.com>
+ <YVaoamAaqayk1Hja@yekko>
+ <20211001122505.GL964074@nvidia.com>
+ <YVfeUkW7PWQeYFJQ@yekko>
+ <20211002122542.GW964074@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="XAp8YQc7m504M8vp"
+Content-Disposition: inline
+In-Reply-To: <20211002122542.GW964074@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Pedro Demarchi Gomes <pedrodemargomes@gmail.com>
----
- tools/testing/selftests/vm/ksm_tests.c | 40 +++++++++++++++++++-------
- 1 file changed, 30 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/vm/ksm_tests.c b/tools/testing/selftests/vm/ksm_tests.c
-index b61dcdb44c5b..92b716565d9c 100644
---- a/tools/testing/selftests/vm/ksm_tests.c
-+++ b/tools/testing/selftests/vm/ksm_tests.c
-@@ -5,6 +5,7 @@
- #include <time.h>
- #include <string.h>
- #include <numa.h>
-+#include <err.h>
- 
- #include "../kselftest.h"
- #include "../../../../include/vdso/time64.h"
-@@ -34,7 +35,8 @@ enum ksm_test_name {
- 	CHECK_KSM_ZERO_PAGE_MERGE,
- 	CHECK_KSM_NUMA_MERGE,
- 	KSM_MERGE_TIME,
--	KSM_COW_TIME
-+	KSM_COW_TIME,
-+	KSM_MERGE_TIME_HUGE_PAGES
- };
- 
- static int ksm_write_sysfs(const char *file_path, unsigned long val)
-@@ -99,6 +101,9 @@ static void print_help(void)
- 	       " -U (page unmerging)\n"
- 	       " -P evaluate merging time and speed.\n"
- 	       "    For this test, the size of duplicated memory area (in MiB)\n"
-+	       "    must be provided using -s option\n"
-+		   " -H evaluate merging time and speed of huge pages.\n"
-+	       "    For this test, the size of duplicated memory area (in MiB)\n"
- 	       "    must be provided using -s option\n"
- 	       " -C evaluate the time required to break COW of merged pages.\n\n");
- 
-@@ -118,10 +123,14 @@ static void print_help(void)
- 	exit(0);
- }
- 
--static void  *allocate_memory(void *ptr, int prot, int mapping, char data, size_t map_size)
-+static void  *allocate_memory(void *ptr, int prot, int mapping, char data, size_t map_size,
-+				 bool huge_page)
- {
- 	void *map_ptr = mmap(ptr, map_size, PROT_WRITE, mapping, -1, 0);
- 
-+	if (huge_page && madvise(map_ptr, map_size, MADV_HUGEPAGE))
-+		err(2, "MADV_HUGEPAGE");
-+
- 	if (!map_ptr) {
- 		perror("mmap");
- 		return NULL;
-@@ -250,7 +259,7 @@ static int check_ksm_merge(int mapping, int prot, long page_count, int timeout,
- 	}
- 
- 	/* fill pages with the same data and merge them */
--	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count);
-+	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count, false);
- 	if (!map_ptr)
- 		return KSFT_FAIL;
- 
-@@ -282,7 +291,7 @@ static int check_ksm_unmerge(int mapping, int prot, int timeout, size_t page_siz
- 	}
- 
- 	/* fill pages with the same data and merge them */
--	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count);
-+	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count, false);
- 	if (!map_ptr)
- 		return KSFT_FAIL;
- 
-@@ -325,7 +334,7 @@ static int check_ksm_zero_page_merge(int mapping, int prot, long page_count, int
- 		return KSFT_FAIL;
- 
- 	/* fill pages with zero and try to merge them */
--	map_ptr = allocate_memory(NULL, prot, mapping, 0, page_size * page_count);
-+	map_ptr = allocate_memory(NULL, prot, mapping, 0, page_size * page_count, false);
- 	if (!map_ptr)
- 		return KSFT_FAIL;
- 
-@@ -416,7 +425,7 @@ static int check_ksm_numa_merge(int mapping, int prot, int timeout, bool merge_a
- 	return KSFT_FAIL;
- }
- 
--static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
-+static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size, bool huge_page)
- {
- 	void *map_ptr;
- 	struct timespec start_time, end_time;
-@@ -424,7 +433,7 @@ static int ksm_merge_time(int mapping, int prot, int timeout, size_t map_size)
- 
- 	map_size *= MB;
- 
--	map_ptr = allocate_memory(NULL, prot, mapping, '*', map_size);
-+	map_ptr = allocate_memory(NULL, prot, mapping, '*', map_size, huge_page);
- 	if (!map_ptr)
- 		return KSFT_FAIL;
- 
-@@ -466,7 +475,7 @@ static int ksm_cow_time(int mapping, int prot, int timeout, size_t page_size)
- 	/* page_count must be less than 2*page_size */
- 	size_t page_count = 4000;
- 
--	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count);
-+	map_ptr = allocate_memory(NULL, prot, mapping, '*', page_size * page_count, false);
- 	if (!map_ptr)
- 		return KSFT_FAIL;
- 
-@@ -541,7 +550,7 @@ int main(int argc, char *argv[])
- 	bool merge_across_nodes = KSM_MERGE_ACROSS_NODES_DEFAULT;
- 	long size_MB = 0;
- 
--	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNPC")) != -1) {
-+	while ((opt = getopt(argc, argv, "ha:p:l:z:m:s:MUZNPCH")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			prot = str_to_prot(optarg);
-@@ -598,6 +607,9 @@ int main(int argc, char *argv[])
- 		case 'C':
- 			test_name = KSM_COW_TIME;
- 			break;
-+		case 'H':
-+			test_name = KSM_MERGE_TIME_HUGE_PAGES;
-+			break;
- 		default:
- 			return KSFT_FAIL;
- 		}
-@@ -645,12 +657,20 @@ int main(int argc, char *argv[])
- 			return KSFT_FAIL;
- 		}
- 		ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
--				     size_MB);
-+				     size_MB, false);
- 		break;
- 	case KSM_COW_TIME:
- 		ret = ksm_cow_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
- 				   page_size);
- 		break;
-+	case KSM_MERGE_TIME_HUGE_PAGES:
-+		if (size_MB == 0) {
-+			printf("Option '-s' is required.\n");
-+			return KSFT_FAIL;
-+		}
-+		ret = ksm_merge_time(MAP_PRIVATE | MAP_ANONYMOUS, prot, ksm_scan_limit_sec,
-+				     size_MB, true);
-+		break;
- 	}
- 
- 	if (ksm_restore(&ksm_sysfs_old)) {
--- 
-2.25.1
+--XAp8YQc7m504M8vp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Oct 02, 2021 at 09:25:42AM -0300, Jason Gunthorpe wrote:
+> On Sat, Oct 02, 2021 at 02:21:38PM +1000, david@gibson.dropbear.id.au wro=
+te:
+>=20
+> > > > No. qemu needs to supply *both* the 32-bit and 64-bit range to its
+> > > > guest, and therefore needs to request both from the host.
+> > >=20
+> > > As I understood your remarks each IOAS can only be one of the formats
+> > > as they have a different PTE layout. So here I ment that qmeu needs to
+> > > be able to pick *for each IOAS* which of the two formats it is.
+> >=20
+> > No.  Both windows are in the same IOAS.  A device could do DMA
+> > simultaneously to both windows. =20
+>=20
+> Sure, but that doesn't force us to model it as one IOAS in the
+> iommufd. A while back you were talking about using nesting and 3
+> IOAS's, right?
+>=20
+> 1, 2 or 3 IOAS's seems like a decision we can make.
+
+Well, up to a point.  We can decide how such a thing should be
+constructed.  However at some point there needs to exist an IOAS in
+which both windows are mapped, whether it's directly or indirectly.
+That's what the device will be attached to.
+
+> PASID support will already require that a device can be multi-bound to
+> many IOAS's, couldn't PPC do the same with the windows?
+
+I don't see how that would make sense.  The device has no awareness of
+multiple windows the way it does of PASIDs.  It just sends
+transactions over the bus with the IOVAs it's told.  If those IOVAs
+lie within one of the windows, the IOMMU picks them up and translates
+them.  If they don't, it doesn't.
+
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--XAp8YQc7m504M8vp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAmFjzaIACgkQbDjKyiDZ
+s5LujA/+J+md5jc+nVRrvzZTN2GADL6m83rgNracoDm6uMvDRuCivgx8Gb61JAzj
+4vdjATq7RrfNZK6OtwjU5TW4OPWr5Q6HltxUR7thLNZYgXdcquJZHtHz4VpddvVb
+jbdydqJmo2pBy5lMenRlkZM4s8Yj1ERjPsRelh32pFWP4MGbFQaKDgxbypmWSVvT
+T8eQfFlANqFI6nKKUt0C2vl4i+xHVMSxd+WFcsk1+xue7XI6KsnQ1pNOVJ2lB3Ai
++6RSwer5qMA001/lYRmFETyW6+eKZuIFR4RCiq1FdJuJnrcqZSofFErPj6IRDHL7
+Dar99VlTQHgVgtrBmFxezRZeBHVQlAdJQgos3VVhL5+o+8KjmusWWxVAKi372cX3
+pDGbUyurpqMrYinPewTVeyT0dDOHXfEnYDgGsj+v8SxtIYENPf92AziOx+KNBRlI
+MCJkh6xQpfgEROvYp7bilA8RqymffYV+rz2sVoGDb8ZfIUeFuNJKqACKN3JIYlZS
+6Hk+LH2QZjBwEw+i/hDrmdfYOLD2h0G1wRFJO6HdiVBgV4P+h08RFd874tU1skeR
+LEYx8SoXpseZuyP45tSblYe7yvnE8cHIjLVHD8H/Aa6kvi4l6FCJeRTANYysWH4s
+weFKjdEHPGNAi6vo19Hw5IaDJufGkPYq0jZA44jesTI0ejvBfqY=
+=xnee
+-----END PGP SIGNATURE-----
+
+--XAp8YQc7m504M8vp--
