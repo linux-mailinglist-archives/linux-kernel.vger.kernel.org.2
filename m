@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BE4428EFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A301428F9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 15:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbhJKNxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 09:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40826 "EHLO mail.kernel.org"
+        id S238006AbhJKN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 09:59:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237290AbhJKNwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 09:52:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6FAD60C49;
-        Mon, 11 Oct 2021 13:50:05 +0000 (UTC)
+        id S237916AbhJKN5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Oct 2021 09:57:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A18F561050;
+        Mon, 11 Oct 2021 13:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1633960208;
-        bh=RY+0TqbUFWpr/jiEAPvuKo7HtWP6ZZMQ/NTVq3rkQ+I=;
+        s=korg; t=1633960440;
+        bh=/+o8pKia5fG22sirI5SOdT3jsRxnD1yMd6ydaJaHwdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pP5rj4FEzrcqSZTPuF2X289Z4oqAxoLPke+LOGb94BIWVeD/TwvLSr/pC4hQkxfzL
-         c0hsslBbzls7Qb9LzSL2yVpLorSkS2cUNUzDP1ojTxUbWASI45gGDq3fKLVFOZp89J
-         2faXkid/uNzZgHV4OhEZHjXZAFuH1qj7djzMF+CE=
+        b=v60gMA9IDMMbQyKmInLLnRiltOuL1L6IopCLAyLkT2BgSTuHw8CH+zukSsCsa54ld
+         fBkLkL/B1mt32CO3q6JGM6T28I5y/jXhy2mAgV1V5NZsgkl2YsoBkq5ZhRqNRhOJd+
+         h7h+6MuWwyBu5w3P5Y2DjxqnKpIrDgMDJg70E+L0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 5.4 50/52] x86/platform/olpc: Correct ifdef symbol to intended CONFIG_OLPC_XO15_SCI
-Date:   Mon, 11 Oct 2021 15:46:19 +0200
-Message-Id: <20211011134505.451405730@linuxfoundation.org>
+        stable@vger.kernel.org, Tao Liu <xliutaox@google.com>,
+        Catherine Sully <csully@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 60/83] gve: Avoid freeing NULL pointer
+Date:   Mon, 11 Oct 2021 15:46:20 +0200
+Message-Id: <20211011134510.460465207@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211011134503.715740503@linuxfoundation.org>
-References: <20211011134503.715740503@linuxfoundation.org>
+In-Reply-To: <20211011134508.362906295@linuxfoundation.org>
+References: <20211011134508.362906295@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+From: Tao Liu <xliutaox@google.com>
 
-commit 4758fd801f919b8b9acad78d2e49a195ec2be46b upstream.
+[ Upstream commit 922aa9bcac92b3ab6a423526a8e785b35a60b441 ]
 
-The refactoring in the commit in Fixes introduced an ifdef
-CONFIG_OLPC_XO1_5_SCI, however the config symbol is actually called
-"CONFIG_OLPC_XO15_SCI".
+Prevent possible crashes when cleaning up after unsuccessful
+initializations.
 
-Fortunately, ./scripts/checkkconfigsymbols.py warns:
-
-OLPC_XO1_5_SCI
-Referencing files: arch/x86/platform/olpc/olpc.c
-
-Correct this ifdef condition to the intended config symbol.
-
-Fixes: ec9964b48033 ("Platform: OLPC: Move EC-specific functionality out from x86")
-Suggested-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210803113531.30720-3-lukas.bulwahn@gmail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 893ce44df5658 ("gve: Add basic driver framework for Compute Engine Virtual NIC")
+Signed-off-by: Tao Liu <xliutaox@google.com>
+Signed-off-by: Catherine Sully <csully@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/platform/olpc/olpc.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/google/gve/gve_main.c | 27 ++++++++++++++--------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
---- a/arch/x86/platform/olpc/olpc.c
-+++ b/arch/x86/platform/olpc/olpc.c
-@@ -274,7 +274,7 @@ static struct olpc_ec_driver ec_xo1_driv
+diff --git a/drivers/net/ethernet/google/gve/gve_main.c b/drivers/net/ethernet/google/gve/gve_main.c
+index 0b714b606ba1..22b2c6a8d08f 100644
+--- a/drivers/net/ethernet/google/gve/gve_main.c
++++ b/drivers/net/ethernet/google/gve/gve_main.c
+@@ -71,6 +71,9 @@ static int gve_alloc_counter_array(struct gve_priv *priv)
  
- static struct olpc_ec_driver ec_xo1_5_driver = {
- 	.ec_cmd = olpc_xo1_ec_cmd,
--#ifdef CONFIG_OLPC_XO1_5_SCI
-+#ifdef CONFIG_OLPC_XO15_SCI
- 	/*
- 	 * XO-1.5 EC wakeups are available when olpc-xo15-sci driver is
- 	 * compiled in
+ static void gve_free_counter_array(struct gve_priv *priv)
+ {
++	if (!priv->counter_array)
++		return;
++
+ 	dma_free_coherent(&priv->pdev->dev,
+ 			  priv->num_event_counters *
+ 			  sizeof(*priv->counter_array),
+@@ -131,6 +134,9 @@ static int gve_alloc_stats_report(struct gve_priv *priv)
+ 
+ static void gve_free_stats_report(struct gve_priv *priv)
+ {
++	if (!priv->stats_report)
++		return;
++
+ 	del_timer_sync(&priv->stats_report_timer);
+ 	dma_free_coherent(&priv->pdev->dev, priv->stats_report_len,
+ 			  priv->stats_report, priv->stats_report_bus);
+@@ -301,18 +307,19 @@ static void gve_free_notify_blocks(struct gve_priv *priv)
+ {
+ 	int i;
+ 
+-	if (priv->msix_vectors) {
+-		/* Free the irqs */
+-		for (i = 0; i < priv->num_ntfy_blks; i++) {
+-			struct gve_notify_block *block = &priv->ntfy_blocks[i];
+-			int msix_idx = i;
++	if (!priv->msix_vectors)
++		return;
+ 
+-			irq_set_affinity_hint(priv->msix_vectors[msix_idx].vector,
+-					      NULL);
+-			free_irq(priv->msix_vectors[msix_idx].vector, block);
+-		}
+-		free_irq(priv->msix_vectors[priv->mgmt_msix_idx].vector, priv);
++	/* Free the irqs */
++	for (i = 0; i < priv->num_ntfy_blks; i++) {
++		struct gve_notify_block *block = &priv->ntfy_blocks[i];
++		int msix_idx = i;
++
++		irq_set_affinity_hint(priv->msix_vectors[msix_idx].vector,
++				      NULL);
++		free_irq(priv->msix_vectors[msix_idx].vector, block);
+ 	}
++	free_irq(priv->msix_vectors[priv->mgmt_msix_idx].vector, priv);
+ 	dma_free_coherent(&priv->pdev->dev,
+ 			  priv->num_ntfy_blks * sizeof(*priv->ntfy_blocks),
+ 			  priv->ntfy_blocks, priv->ntfy_block_bus);
+-- 
+2.33.0
+
 
 
