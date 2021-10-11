@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B682742967C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C7A42967A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 20:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234303AbhJKSJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 14:09:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
+        id S234251AbhJKSI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 14:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234182AbhJKSJG (ORCPT
+        with ESMTP id S234209AbhJKSIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 14:09:06 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4481C061570;
-        Mon, 11 Oct 2021 11:07:06 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id qe4-20020a17090b4f8400b0019f663cfcd1so57820pjb.1;
-        Mon, 11 Oct 2021 11:07:06 -0700 (PDT)
+        Mon, 11 Oct 2021 14:08:54 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE617C061745
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:06:54 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id a73so11598407pge.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 11:06:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Avo3ZmMmZNUWQ5EbnH2gCv75rJX+nPxKzCshM1jhNkE=;
-        b=XU0Bm06oTzc+kDweoSZWKTbZfXcxYBFjbb2qZj8hRUwUobVINapWvCas7dpwGUvfJw
-         mWUNs+I0hl6vjawT8/YGO0XgeEm5/hcFVB51PzhCXf8W2CtwjsOipckWUa9jM9v1CWzy
-         0dObet2/YKK6sF+5gpqKjS1jVe/JGQkj68mDql1vadeAHRW/Yb7WWWKE0fok9AjTyKGh
-         Mgg/WwCADP1DEZArTnttZRNK4sjc+mANaJMit16c+wPAQCGmHTc/EMqcXDwnKKlwP3lF
-         5d5lpFmUEyU3rDeePMURYjan/efqJZCUN+4IV3Y9FYQGKS/SYT8umlXOkXxEGFJdXaHP
-         tziw==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AKSWyTyn9n+edaapvkC7vaBB8OJAUZwCu1IHle6rtDY=;
+        b=OZ6zwhqaH/H2H183lbB3m07pe7Owz0pC8AvenQvQ+Mn7A7e2isEn/zdMrmsB6IrDZq
+         AAUMKl/Jj2Xhj9Kd29IH7ShOGKx6qN4tPOO/IT/tu8yEFu6l+a31zjkCBX0KTB/OqgCF
+         EmBdZMLvWwr1uiSAua9XKHwEUtHnOvskOcDe0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Avo3ZmMmZNUWQ5EbnH2gCv75rJX+nPxKzCshM1jhNkE=;
-        b=Kfsf1INaykhO16YUeEPFCYthxby5IMG+kyOdt95lXjOQW8+UQZgA9OIq+llojf15vw
-         yIVqshYzndCVc58XVTEXdH8UDJ1zqtysW9Mc4TU4ixmp+h/10If44lsJXOiHVFXgTD4q
-         J5i7/1eMeAB8uBW/pJBMUTd8J2qOuFL6P8qwZheE+41LOQ6ByF2vhMHCZMHDkX3U0Uyc
-         a6Fcw56MrThFL1UqdfBvRaIF6xwrV/2uPpYcsecnZsK4hmftzaINUxp2zOdx1JBZK5SM
-         4eNohZanAj+faFf09e8h5EL2x4bdJTYaeWqXc7DxhxFmlwN809CK5mBqw8CJB85a5pxi
-         MM+g==
-X-Gm-Message-State: AOAM530TCNfjSMTfCzX6PG+RjjqT8RX9SDf48xpkUORtrZVQ4Vr72QhS
-        ZHQMf00n0Ley6U/vju4x3JE=
-X-Google-Smtp-Source: ABdhPJwblQisXQhgJ0cSa+0Jwyf/uAjHurg3rsbuIqTqyFI+rOTVSPKbf9K0BLqq7G3V4PNEt65PtA==
-X-Received: by 2002:a17:902:ed0b:b0:13f:4318:491a with SMTP id b11-20020a170902ed0b00b0013f4318491amr4577255pld.4.1633975626234;
-        Mon, 11 Oct 2021 11:07:06 -0700 (PDT)
-Received: from localhost.localdomain ([2406:7400:63:9f95:848b:7cc8:d852:ad42])
-        by smtp.gmail.com with ESMTPSA id m28sm9020677pgl.9.2021.10.11.11.07.02
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AKSWyTyn9n+edaapvkC7vaBB8OJAUZwCu1IHle6rtDY=;
+        b=x76uxsz82GkqEvVPR2WPL7tvk+BqWt9pnUZ9OOSCyU7OuwF4Aq051O6q5LqQ+OX8/R
+         hj9Up383I8u9vxnSyOT2Zm7fEVp83sFpliKY/POOGFrC6pbSqVt5jO0KGFOzKT6XfBLU
+         dccgtnLS0Z1rLrS+hSUHqSwY76i+Gis7sqR/LxKNC2DsEpJCn6ggzUO56oiJ+6nUew5e
+         nRRcpQMu27eZ8+pqlv9cTaWUc8JXqR+20u3M0vD1G4RcW/An67vE9nbGWPoIAY2nc8jr
+         60tNDwK8JMr64e8cTHOZZzwYUGyWRuukESwUkSmqdZRx3KYpsLaD9ebNDHBo32LKP4dW
+         ab3Q==
+X-Gm-Message-State: AOAM532Ic7BHD/K0q3ymG2a94bI9i/Rzjq1kTfGjFTEKTfGXEnjqrEAc
+        lMwn60PtZLiQvsML2gMA00pQfbA+oMLfUw==
+X-Google-Smtp-Source: ABdhPJwhEQTsN7pk9oYDwZpjal+msvahUmdOCitxu3gOsNA0gmUZ2ZejS3f5zhKnQFEn4YMoV1oAyQ==
+X-Received: by 2002:a62:3893:0:b0:44b:9369:5de5 with SMTP id f141-20020a623893000000b0044b93695de5mr27094335pfa.40.1633975614215;
+        Mon, 11 Oct 2021 11:06:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 11sm8321884pfl.41.2021.10.11.11.06.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 11:07:05 -0700 (PDT)
-From:   Naveen Naidu <naveennaidu479@gmail.com>
-To:     bhelgaas@google.com
-Cc:     Naveen Naidu <naveennaidu479@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>
-Subject: [PATCH 15/22] PCI: vmd: Use RESPONSE_IS_PCI_ERROR() to check read from hardware
-Date:   Mon, 11 Oct 2021 23:36:38 +0530
-Message-Id: <84ab7a23647e0673d99a8cf59e9c89af9b862354.1633972263.git.naveennaidu479@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1633972263.git.naveennaidu479@gmail.com>
-References: <cover.1633972263.git.naveennaidu479@gmail.com>
+        Mon, 11 Oct 2021 11:06:53 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] scripts: kernel-doc: Ignore __alloc_size() attribute
+Date:   Mon, 11 Oct 2021 11:06:50 -0700
+Message-Id: <20211011180650.3603988-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1303; h=from:subject; bh=zIZBSRypSkBFoFzJsCHrXCrcXGTdO+7AmKLnpzGsLwo=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhZH05wBi3hNvmq6CaS1nNLVd8y9+1L5HHQfD4QA7V WRP7xhKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYWR9OQAKCRCJcvTf3G3AJlAWD/ 9BitfK3CzitxKFMGBbWkij63jPaszUqC0D+tkQfJjMC/UBWFtjH9i9r/ZOzmRYKVw8KysNpEpD5Kni sPbnDdS+3xSm79wNOCzLRrdm2klzOGGtV1rytEcPytE/WH+7rmleedpZ5Uer701hfLkl/hzRdTJe0j gH2eJSFKceWqm8vvq03wU53IcXtzdh5lKoQ89PXQH/zQv24tv34HDh6WhXR1Qubnbk953G2MRNRW10 Z/lsIgFpSuXPT5BPkA2jmibWEl2Q1Uy6tBvIuBzfviW0hhZyGy/OTPh63d+KlV1IfLi/eBjASAF5/v 9wr8qmOH67CYWw8kQGqEfk/ha5HA+vn21EeUdfTjkOpgiq1uFg0obZBTOAEPBeFNKtGbob37jaR5V1 Lr/P9HMRAWcxWBKu56Qfoi9jldfmawjdD0vvakeLRB5AASNmG1fhuGBI3Xvw3bW7SZQCBWzedjpyrc 8x/aEUKkysBNf/oIC+iIDxLnc0so15uOfn6xrdA9dqkZCbYMRb9u/q24st3vaSYsq8Wp30Ftf3VCBX IaDx+NSKLfDdGNy4CnSBCJWhaZXnaLB1NdDKexMl1gyyS7CkYrCmrZhNDf4NAK2q6DZLmPw92VRZEi f/m3tBr1dCs2QeDu4pyHnQH9k61kgXKnK4ilL1uRhBd0mQpbEtlrXbNFAlrQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-An MMIO read from a PCI device that doesn't exist or doesn't respond
-causes a PCI error.  There's no real data to return to satisfy the
-CPU read, so most hardware fabricates ~0 data.
+Fixes "Compiler Attributes: add __alloc_size() for better bounds checking"
+so that the __alloc_size() macro is ignored for function prototypes when
+generating kerndoc. Avoids warnings like:
 
-Use RESPONSE_IS_PCI_ERROR() to check the response we get when we read
-data from hardware.
+./include/linux/slab.h:662: warning: Function parameter or member '1' not described in '__alloc_size'
+./include/linux/slab.h:662: warning: Function parameter or member '2' not described in '__alloc_size'
+./include/linux/slab.h:662: warning: expecting prototype for kcalloc().  Prototype was for __alloc_size() instead
 
-This helps unify PCI error response checking and make error checks
-consistent and easier to find.
-
-Signed-off-by: Naveen Naidu <naveennaidu479@gmail.com>
+Suggested-by: Matthew Wilcox <willy@infradead.org>
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/pci/controller/vmd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/kernel-doc | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
-index a5987e52700e..db81bc4cfe8c 100644
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@ -538,7 +538,7 @@ static int vmd_get_phys_offsets(struct vmd_dev *vmd, bool native_hint,
- 		int ret;
- 
- 		ret = pci_read_config_dword(dev, PCI_REG_VMLOCK, &vmlock);
--		if (ret || vmlock == ~0)
-+		if (ret || RESPONSE_IS_PCI_ERROR(&vmlock))
- 			return -ENODEV;
- 
- 		if (MB2_SHADOW_EN(vmlock)) {
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index cfcb60737957..c123bac28f7a 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1789,6 +1789,7 @@ sub dump_function($$) {
+     $prototype =~ s/__weak +//;
+     $prototype =~ s/__sched +//;
+     $prototype =~ s/__printf\s*\(\s*\d*\s*,\s*\d*\s*\) +//;
++    $prototype =~ s/__alloc_size\s*\(\s*\d+\s*(?:,\s*\d+\s*)?\) +//;
+     my $define = $prototype =~ s/^#\s*define\s+//; #ak added
+     $prototype =~ s/__attribute_const__ +//;
+     $prototype =~ s/__attribute__\s*\(\(
 -- 
-2.25.1
+2.30.2
 
