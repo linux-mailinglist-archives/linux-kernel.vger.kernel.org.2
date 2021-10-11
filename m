@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C68F42892A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:52:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D7342891B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 10:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235301AbhJKIx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 04:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50950 "EHLO
+        id S235295AbhJKIug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 04:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235276AbhJKIx5 (ORCPT
+        with ESMTP id S235276AbhJKIue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 04:53:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA63C061570
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 01:51:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7YVymMd1SbIp4GGj6cvsViy3NVnVBW502IFSGTTc15g=; b=hC/2VI3bQPtweCVTvBVDOAPH2H
-        opdczrNE5tbrFkVWctScNRc9NA1YZlHh4OGk1LNSSM4CJYsK9trCjmrPLeB9TSHlxDvls7kyOwf7D
-        MsH2pqc8Y1wjwcCvzBU3nJlL5Vk9TpDgzKCbk2UCbEFbPFwPQVPqiah7GXDWrTxYsvW1E7NUnvBck
-        od8/6qMrctyy5uTJZPyyFAowAm6aWYc6HAc0IGuOApG4gKoRbFYOyfNj3wypf5s25MExqRDjsg9sp
-        /z0ppkyWA6NQMPY2cQDZ3aA4vpjLelQPcgAy3iinw/JysDFKyWPtmLcTNGlJZoSfmvCmsSHFYqTkM
-        TlCWEjbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mZqyy-005OkA-DM; Mon, 11 Oct 2021 08:48:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 67EBB3001E1;
-        Mon, 11 Oct 2021 10:48:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 09ED72BFB0E3D; Mon, 11 Oct 2021 10:48:28 +0200 (CEST)
-Date:   Mon, 11 Oct 2021 10:48:27 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: Re: [RESEND PATCH v2] trace: prevent preemption in
- perf_ftrace_function_call()
-Message-ID: <YWP6W7Be0Yp6egsn@hirez.programming.kicks-ass.net>
-References: <eafba880-c1ae-2b99-c11e-d5041a2f6c3e@linux.alibaba.com>
- <20211008200328.5b88422d@oasis.local.home>
- <bcdbccc6-a516-2199-d3be-090a5e9f601d@linux.alibaba.com>
- <YWP2rtX9Ol9dZc/l@hirez.programming.kicks-ass.net>
+        Mon, 11 Oct 2021 04:50:34 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9294C061570;
+        Mon, 11 Oct 2021 01:48:34 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f08bb008041f0293f2a9501.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:bb00:8041:f029:3f2a:9501])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8ED011EC01CE;
+        Mon, 11 Oct 2021 10:48:32 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1633942112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=WX7Mv16IItiWUhDYtgsQ58XhYcnYoY2/nQSVZ23QgEg=;
+        b=Ue70iMsndjsy737r0a//5qQ1NU65dolZ0oHJYGSTMEMzKT3itfDJfBtMRSqYuWrKViHFS3
+        2eZO2GQS2SA1qZ6pyQ0CvE9ttnnQNX3/j6ygLUtSzi8mRTaSJD9CRoohuRLpaGHYGxN4Xf
+        nQqfHtGyOog15JWmfroRpy+iRXtWPqk=
+Date:   Mon, 11 Oct 2021 10:48:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH v6 03/42] x86/sev: Get rid of excessive use of defines
+Message-ID: <YWP6XDbbqyWalbSa@zn.tnic>
+References: <20211008180453.462291-1-brijesh.singh@amd.com>
+ <20211008180453.462291-4-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YWP2rtX9Ol9dZc/l@hirez.programming.kicks-ass.net>
+In-Reply-To: <20211008180453.462291-4-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 11, 2021 at 10:32:46AM +0200, Peter Zijlstra wrote:
-> diff --git a/include/linux/trace_recursion.h b/include/linux/trace_recursion.h
-> index a9f9c5714e65..ca12e2d8e060 100644
-> --- a/include/linux/trace_recursion.h
-> +++ b/include/linux/trace_recursion.h
-> @@ -214,7 +214,14 @@ static __always_inline void trace_clear_recursion(int bit)
->  static __always_inline int ftrace_test_recursion_trylock(unsigned long ip,
->  							 unsigned long parent_ip)
->  {
-> -	return trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	bool ret;
-> +
-> +	preempt_disable_notrace();
-> +	ret = trace_test_and_set_recursion(ip, parent_ip, TRACE_FTRACE_START, TRACE_FTRACE_MAX);
-> +	if (!ret)
-> +		preempt_enable_notrace();
-> +
-> +	return ret;
->  }
->  
->  /**
+On Fri, Oct 08, 2021 at 01:04:14PM -0500, Brijesh Singh wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> Remove all the defines of masks and bit positions for the GHCB MSR
+> protocol and use comments instead which correspond directly to the spec
+> so that following those can be a lot easier and straightforward with the
+> spec opened in parallel to the code.
+> 
+> Aligh vertically while at it.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-Oh, I might've gotten that wrong, I assumed regular trylock semantics,
-but it doesn't look like that's right.
+When you handle someone else's patch, you need to add your SOB
+underneath to state that fact. I'll add it now but don't forget rule as
+it is important to be able to show how a patch found its way upstream.
+
+Like you've done for the next patch. :)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
