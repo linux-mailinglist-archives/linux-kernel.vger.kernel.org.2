@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E8F42997E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3E4429982
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Oct 2021 00:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235582AbhJKWmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 18:42:32 -0400
-Received: from sonic309-27.consmr.mail.ne1.yahoo.com ([66.163.184.153]:39486
-        "EHLO sonic309-27.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235499AbhJKWma (ORCPT
+        id S235504AbhJKWru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 18:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231307AbhJKWrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 18:42:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633992027; bh=jLQluOCMPO5rRjRMl+Q68u9ZH7qqQfyDRJUR6BJ2huY=; h=From:Subject:To:Cc:Date:References:From:Subject:Reply-To; b=ijGoSwinX9Rir2agJRG26TqgBbberIguVcPSmPSJEYVJoD9r//vqNCH1UMhjJap/P+/9Ase4i/7GvPgi/0XmbBru7ZUQoYxw05tZmLWlU8NcJFG1SF8KUOzez2PWDnMwGqjD7r9nOfj0K4dtyHxem3vVk9cplDocX51tDJdqeqN+mBUWqlTMZVopYJBYOjKJbRpEv/YMpd/byBcWCOWUQjTMeMcSJZQ2bZ+p7L3hw6+ebtgpdcU75jgLJmfy6dldZ4NbrEaeVU9RN3YdX5ZEuJTKrCBeg9TX9MJ/vzuUQHTwqGKNJTzns5kdNRQzEHqiVLCrXi4yc8gqKN5xmqRkhg==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1633992027; bh=2NSEyr+UEwaAiyOvJyRV5A9MRNYgSMLHldikQZIKAaA=; h=X-Sonic-MF:From:Subject:To:Date:From:Subject; b=nIut1lOmM2ziHv9OOjNQkFojQzm9FU8n8yLpMqdLQHDBezg8GduVBInIv1oQrw4dkcMtaDlFDBHqpIscVn4N9KVIGmwweJyBqChrSoBgK1ap+TKnScJrXvRRt0aFCmDX8DyzWSQnTJzOASqUchfXmSZKGDyLfnrdDjxm+JpdpUiL4nTCMSMOOtElmEKu+gj/qCHLw1D/6r6gpk13GqIHxdUCGyVhhnpKnnNgKNYcYqucr60QOb5gJbPg8Qn/gQQJmwLMOovzspKEGxOn88se6xQxfWEUkWhCyiqXF1BPPw9ss+XCLmR1N4QcqX/g8Cjv+y3TvfXqYifJ6jsd2dUu4w==
-X-YMail-OSG: ul8tsh4VM1kSmoq8PSS.5GHSk2Jrqvk6pvXuXpfWvb7jm8Fsjaqc.fQ_o1gr0Ws
- tgAl.6uBGfMrNNzvu2_VQ3YzrkhMzmzOMgGR7sK0A7.m1sP.utDG1n2jxiahlr1I4dZODwuNwxJR
- MLNPUM5TZDy9aha4eSEL01hQMiv9eiXEAW4_qom_odoG6lkl_lqJEo_XRTAey93NhCl0NHoY6nsX
- v.70p6bZMcK0AMnNOyu6mG7rSzn2r.m2kPhFZNuGcngdNXuDO81u1sA1UsHlXmBBOO.zgNEJm0DF
- m.rnCQU2nrxd4NnSGlvaczYccEsE7RLY8Jqoe3OjM26hxebAgVzIaQB3fNV.eeKiLk03u6VrZ1bH
- aIXvhyusIr.qS7.tfBz5xbBFWi1uEaxB4_K7Pl2STw7iwD5LOc_vr.LwumwO6RDw373ol1CeTen0
- Fq.iiTUNn5McZbCsTyXNrIkjrDXzlJzUhutPxNXTHRftKX_.wfEtCJ7XEOYKYrEPdIesIKaASEZz
- 6Dt7E4whVGuxMLqbIohtsdCyAylD1wX5OuQ1J_VNX2UcWQhbiGmKGvZZYWpf7flGs89Jgp46aWlJ
- Z9jTCcFP.MFthVfj_p.qL1piCgXrX8HJlSiEQyKVWDZd_Krp8c8cgAcY1ohozs35KhpSPCdljJWo
- dlPebdgetxudvj2x3H3ixjMHwBNywQHzsOqeKXvlEOePsZ1lo.U5p.se95Aaizk3OPecB9STaRsW
- DFc4PEOWD7w4xMK2cUqFyTEFAK6Ohp84Z9Q_duVllfVwCj6w4byEwk0eFMoP9rBBmuPlh8sg7.uw
- M6t15i5GpPNsVTOrMUBNq8VBbqhuRARcuXFKVkX2ox6x5J5LWGD.qKckc317OCpEbYAfznsTaUL4
- lqyinpmnMqt4r5x9KPfYq2GInx01BFHkk7hgRcAQLW7Uz3Apf5maf9MFEtWK7hoyIIG1cGVX86e8
- RU.PbjYxqkhlLEfkhZosMUz7yTtUZTpvNtX9HWuIvFwZXVkVzl3.HEUTBw9uo96_2hSss5GArXNe
- dwcd4qPaPP7h2wTcfhOyKf7DXS1sYNfKnAD8d0wdmcFfp2lMS90.P5Yh9_NLXXh0Wl_cfHczYGKt
- O_2WCSubtQzCHgqI7_FuT.mtcIgqMYz6_TCprcv8b8dcFWLXKsbBofBqEbrfywfg10EWipmtm0p3
- rQhk3.RzMGZIOxIBQJ9j8_xp1xBLFm65uLvsyI0hFArW5zyQbKdP1yTQ.LpKsG.6G_eFVqoW5v_M
- kfjPOnx8fa7wGdNnv9q8XygooTwLSsdqB0UvN2ueCX6km21HJZdMEgtSgn.6GuXdA_JZMT44fK71
- LGXPhJfai4ouaXIjj5SWExRCdpWdctV4Q3wrgVx7s.bZOudYIEDnro55YY6j34hds9gxvX73wDJl
- 2wFPkXZypQVR3q4IpePJueHupXtM8OJ5v09HloNZX3b2MwjiG4AUT3tAoqg.l7MN9PROvFEFTysD
- kMIqeVR.OfuvJqL7vF6aagjWQXdrkfnAUqBasVd5Z3Xi2Cfuc7cCEH2YfJecjW7KQuCWJPMOqtaj
- jJSDU0esPrvhI2VDx53h8ONFXBJNqudEk6we8pd9cozFnSYAahygWKFAdHn97YAO4.m8dhH_07SY
- wQe.muuHb7mdPBn_T4TO7WCzC3OJqB1V2HfizSzYU2NnLxmphq79lQ2N3CwjnXE371jFteds9JAB
- L8gmDpDlVOeNglelFDL.RR_ZoqNJyCJUafYJzss1O.HU6j1gqsTB1JIWsEHsKUrQrcS3gUN5ysHz
- fMeqJK5bnNPqxfRZUh.0TrptlIKI7cQMhmaF9XS5hzisS1tBxwKPdlufp_0DxdPwKDcai_fuuwVc
- tfOU7zT.5lGTfqVo0oVBk5tpsgyJzgDd4VvSf8O0ugzvuAzvhnr6RaNI2wa0bzP2YimgY6Gsb184
- YQk7TMWujNZZZQzAzsOynaaEvi2mW_Zy4YxxuYauH4BiMC_pk7B5VaaC8ILchpPaAwJROna0NhaE
- rX44KS2s2AYnnFOplS8igSnmvyRnfz88tkrsyMSRCWf8b8IhoirzsHRViQXnC6ei_oLv7uxfWT_N
- nr6ieCOtUGHUpzVEVU81fbTJirdAIbfFlBxnJc84Uege5WRSmoQaei.Id.e2CltqgN00BH11wDxy
- YjHxdcnWOpP_HdnLWIsMzm30cqY_NHEGYcG0mjSkjVa8tfnY2.rMm97NIfodC3gy2MTNntNUgRLI
- UgSkVUmbSbR179sntPTSM1XQ2yc.0iSe9ezF5PXJ3FX3qEVk-
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Mon, 11 Oct 2021 22:40:27 +0000
-Received: by kubenode543.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 2e663ab451f2d92c944ad4412edf944a;
-          Mon, 11 Oct 2021 22:40:23 +0000 (UTC)
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Subject: [PATCH] LSM: general protection fault in legacy_parse_param
-To:     Christian Brauner <christian@brauner.io>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <018a9bb4-accb-c19a-5b0a-fde22f4bc822@schaufler-ca.com>
-Date:   Mon, 11 Oct 2021 15:40:22 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Mon, 11 Oct 2021 18:47:49 -0400
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FCF2C06161C
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 15:45:48 -0700 (PDT)
+Received: by mail-ua1-x934.google.com with SMTP id j8so7222995uak.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Oct 2021 15:45:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+F7mbCRUVIAd5+FarZoaSUIAm/NRPRaqoitjHUAk/CY=;
+        b=LdRWzX87yafLKh5rG+nJLozEgMBzBfZOwRq0iZYO7pBUujGAfc+4up+udWikXfY6KZ
+         hZLapqKfV+4JeGhaBwsQAcJSNckPuWK5xG/vr8S7xCGXFoBNzLBmKhU5p0Khz9D28Ste
+         mxW6bDcLg6QlS8Tv9dDjEcZxh3TFEM69BTUp+9cqoUg+/VprmXiNAR/v7Zt/AwlRvvJn
+         tMD84x4JYHWids3F7LCalEml1oK3Bxel+lZvYVCEoG6e5sEz805yZacx7BuQRkpatC3e
+         w/gKEzaBtA61cMuFlSdQsNGNvn1RnjQEEbOvEBdrS9Zk6ITrb3nbun+2se0iJalRqpO4
+         0Fzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+F7mbCRUVIAd5+FarZoaSUIAm/NRPRaqoitjHUAk/CY=;
+        b=t0cIJpP59R4yiyYGtN6hkYJVWNGCGUQIE/PRMYN5apJh6DihrpqIqZu/FlcpzhTteM
+         8gzxj1oRgXH2v0bontUi/usMH9cncDiBsiX395J9Yn+Njftk4oPjd96b0Ja1dIM5tLjq
+         aGWFNlM0u9k/GdD+PjPAS3KQwuC9sW606YfXFEiLIjAfOBi1MKiHaY68SwmdbwNJ67fG
+         QTku8v6ciakiQXLSRKBMsHOhxTsh1Fp8pSOqU//ek2hLz8b+mMJa6g8VbKbS57lHAjYl
+         YPpbBLshkroBkjQAto/xf/uO/KPeESDuFaGhKfR42ldGrO67Tn8vRoW/OHovNuQABTnz
+         IDMA==
+X-Gm-Message-State: AOAM532titvmjovp3tmSEazh0wMpBCHOJO30x3+hV1dOC/8aEEJFE+hc
+        Fw7zX9sg9rSV8ssjEB7R63TEkek5tJ5+O1Xg2mdk5w==
+X-Google-Smtp-Source: ABdhPJzVVPdR4DP73VKGuQiecj7yDMIBF8hL25OwiQSohQYG9orfm3O7WMGfKA4wsIle29LnHWO67wZyVf9Gek2YfOY=
+X-Received: by 2002:ab0:1623:: with SMTP id k32mr18245214uae.71.1633992347458;
+ Mon, 11 Oct 2021 15:45:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-References: <018a9bb4-accb-c19a-5b0a-fde22f4bc822.ref@schaufler-ca.com>
-X-Mailer: WebService/1.1.19116 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20210917180323.278250-1-posk@google.com> <20210917180323.278250-6-posk@google.com>
+ <12eb2300-4a78-9e93-30a3-8e2ddba4693f@uwaterloo.ca>
+In-Reply-To: <12eb2300-4a78-9e93-30a3-8e2ddba4693f@uwaterloo.ca>
+From:   Peter Oskolkov <posk@posk.io>
+Date:   Mon, 11 Oct 2021 15:45:36 -0700
+Message-ID: <CAFTs51W6ZHrGaoXEbXNCkVKLxe7_S2raYcXMBzypC7VUDMrU-w@mail.gmail.com>
+Subject: Re: [PATCH 5/5 v0.6] sched/umcg: add Documentation/userspace-api/umcg.txt
+To:     Thierry Delisle <tdelisle@uwaterloo.ca>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api@vger.kernel.org, Paul Turner <pjt@google.com>,
+        Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@google.com>,
+        Andrei Vagin <avagin@google.com>, Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usual LSM hook "bail on fail" scheme doesn't work for cases where
-a security module may return an error code indicating that it does not
-recognize an input.  In this particular case Smack sees a mount option
-that it recognizes, and returns 0. A call to a BPF hook follows, which
-returns -ENOPARAM, which confuses the caller because Smack has processed
-its data.
+Hi Thierry,
 
-Reported-by: syzbot+d1e3b1d92d25abf97943@syzkaller.appspotmail.com
-Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
----
-=C2=A0security/security.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+sorry for the delayed reply - I'm finally going through the
+documentation patches in preparation for the upcoming next version
+patchset mail-out.
 
-diff --git a/security/security.c b/security/security.c
-index 09533cbb7221..3cf0faaf1c5b 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -885,7 +885,19 @@ int security_fs_context_dup(struct fs_context *fc, s=
-truct fs_context *src_fc)
-=20
- int security_fs_context_parse_param(struct fs_context *fc, struct fs_par=
-ameter *param)
- {
--	return call_int_hook(fs_context_parse_param, -ENOPARAM, fc, param);
-+	struct security_hook_list *hp;
-+	int trc;
-+	int rc =3D -ENOPARAM;
-+
-+	hlist_for_each_entry(hp, &security_hook_heads.fs_context_parse_param,
-+			     list) {
-+		trc =3D hp->hook.fs_context_parse_param(fc, param);
-+		if (trc =3D=3D 0)
-+			rc =3D 0;
-+		else if (trc !=3D -ENOPARAM)
-+			return trc;
-+	}
-+	return rc;
- }
-=20
- int security_sb_alloc(struct super_block *sb)
+On Wed, Sep 22, 2021 at 11:39 AM Thierry Delisle <tdelisle@uwaterloo.ca> wrote:
+>
+> On 2021-09-17 2:03 p.m., Peter Oskolkov wrote:
+>  > [...]
+>  > +SYS_UMCG_WAIT()
+>  > +
+>  > +int sys_umcg_wait(uint32_t flags, uint64_t abs_timeout) operates on
+>  > +registered UMCG servers and workers: struct umcg_task *self provided to
+>  > +sys_umcg_ctl() when registering the current task is consulted in
+> addition
+>  > +to flags and abs_timeout parameters.
+>  > +
+>  > +The function can be used to perform one of the three operations:
+>  > +
+>  > +* wait: if self->next_tid is zero, sys_umcg_wait() puts the current
+>  > +  server or worker to sleep;
+>
+> I believe this description is misleading but I might be wrong.
+>  From the example
+>      * worker to server context switch (worker "yields"):
+>        S:IDLE+W:RUNNING => +S:RUNNING+W:IDLE
+>
+> It seems to me that when a worker goes from running to idle, it should
+> *not* set the next_tid to 0, it should preserve the next_tid as-is,
+> which is expected to point to its current server. This is consistent
+> with my understanding of the umcg_wait implementation. This operation
+> is effectively a direct context-switch to the server.
 
+The documentation here outlines what sys_umcg_wait does, and it does
+put the current task to sleep without context switching if next_tid is
+zero. The question of whether this behavior is or is not appropriate
+for a worker wishing to yield/park itself is at a "policy" level, if
+you wish, and this "policy" level is described in "state transitions"
+section later in the document. sys_umcg_wait() does not enforce this
+"policy" directly, in order to make it simpler and easier to describe
+and reason about.
 
+>
+> With that said, I'm a little confused by the usage of "yields" in that
+> example. I would expect workers yielding to behave like kernel threads
+> calling sched_yield(), i.e., context switch to the server but also be
+> immediately added to the idle_workers_ptr.
+>
+>  From my understanding of the umcg_wait call, "worker to server context
+> switch" does not have analogous behaviour to sched_yield. Am I correct?
+> If so, I suggest using "park" instead of "yield" in the description
+> of that example. I believe the naming of wait/wake as park/unpark is
+> consistent with Java[1] and Rust[2], but I don't know if that naming
+> is used in contexts closer to the linux kernel.
+>
+> [1]
+> https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/locks/LockSupport.html
+> [2] https://doc.rust-lang.org/std/thread/fn.park.html
+
+I'm not a fan of arguing about how to name things. If the maintainers
+ask me to rename wait/wake to park/unpark, I'll do that. But it seems
+they are OK with this terminology, I believe because wait/wake is a
+relatively well understood pair of verbs in the kernel context;
+futexes, for example, have wait/wake operations. A higher level
+library in the userspace may later expose park/unpark functions that
+at the lower level call sys_umcg_wait...
