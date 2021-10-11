@@ -2,228 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 270DE4291B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4245E429017
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Oct 2021 16:04:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240569AbhJKO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Oct 2021 10:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243088AbhJKO1Y (ORCPT
+        id S238600AbhJKOFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Oct 2021 10:05:00 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:38908 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237175AbhJKOCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Oct 2021 10:27:24 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932B1C09B054;
-        Mon, 11 Oct 2021 06:58:34 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id i1so15287923qtr.6;
-        Mon, 11 Oct 2021 06:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kqrxxGCbuV1+Wb54X2S9cpbSCgL2RLWSvelFSnVKInA=;
-        b=faORq9Uk/3SyX2hlObvqIDLLC9yibUJ////9EJLmx1I2hoa5xmtfqXHgWjWjnkATym
-         5dd0OwI8rQ7asznjmDC+cs23/JyvmbF/9KCo4SryVVM4ZV6BvelduJL9qu+lZHeNfFOD
-         yG6RYF7X+zSEaBtSmz1XEKPwoVkttXiIPihX5H4UdY7g2YmgCeE6R0mywFWIljhkb5ot
-         WPz5z/peWojuy2Pe2Pj4mZQgYnE4vYpgZbP5AAHfZNbHNKN9cZV5lD5U47pE20DLNzPt
-         O4ZTtKQmtRJys6uU3rrBG1DMXi2dUchxi0nawJmYwrUK6vscjGty3vJ9Rfxs/qnlc6SK
-         UC4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kqrxxGCbuV1+Wb54X2S9cpbSCgL2RLWSvelFSnVKInA=;
-        b=MkHEn2I/VWOoIKfiiwzw3U4TOPajTu0XI7HyKKTP/hnIXjplOvAsYSE57UYL8pRhj1
-         4u3pJibp7KWAYS6539rVyoSfgMVracRrTA/NNK86yrGRfPnZMy1CpPgrIJNqbKencCTS
-         kHM64smbGQQWMxIPw87kPdae49MAngJP9XmC5tjLio+1hFKnfL2Excpu0rmmxrj5yRVK
-         nT9YnMjBhRQsg3jSm6G7qnvArm7KMgTXbaIQdSjY4xD9dP6YrhnQmN7BKgG6lbM5199a
-         5kWeyVOMFT4qEy09VkVvpAvH+Yeoxd0CKO6dZyd0srfFa0CJHkdrx8PmYmkazKy56vuw
-         IR9w==
-X-Gm-Message-State: AOAM530aYyqcxnhENkOJ2hxSct1XbdEhgZqt8Ly2k1ZarAqm6OKjTgzv
-        oNKsz1JMuHKLBWiZ2vyYnwg=
-X-Google-Smtp-Source: ABdhPJy8eU96X6cybbCi+HK8BrLg44dixtV4huqfV0oNdJTb5amfv1e8vOpH4rgFrXrFILKgKrGnGg==
-X-Received: by 2002:a05:622a:1341:: with SMTP id w1mr15254404qtk.127.1633960713719;
-        Mon, 11 Oct 2021 06:58:33 -0700 (PDT)
-Received: from ?IPv6:2600:2b00:7f04:c300:b01e:1134:3ab1:111a? ([2600:2b00:7f04:c300:b01e:1134:3ab1:111a])
-        by smtp.gmail.com with ESMTPSA id j15sm4718788qth.3.2021.10.11.06.58.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Oct 2021 06:58:33 -0700 (PDT)
-Subject: Re: [PATCH 6/9] of: add support for 'dynamic' DT property
-From:   Frank Rowand <frowand.list@gmail.com>
-To:     Zev Weiss <zev@bewilderbeest.net>, openbmc@lists.ozlabs.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20211007000954.30621-1-zev@bewilderbeest.net>
- <20211007000954.30621-7-zev@bewilderbeest.net>
- <7bf5cfce-e84d-f0e8-e6e8-8e6fedffd154@gmail.com>
-Message-ID: <05e4c31e-db7e-e8f2-fa37-3cdcdf902e19@gmail.com>
-Date:   Mon, 11 Oct 2021 08:58:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 11 Oct 2021 10:02:16 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:32978)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mZvqh-007fHh-1d; Mon, 11 Oct 2021 08:00:15 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:37162 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mZvqf-004EpR-QP; Mon, 11 Oct 2021 08:00:14 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Coiby Xu <coxu@redhat.com>
+Cc:     kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        Dave Young <dyoung@redhat.com>, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT))
+References: <20211009095458.297191-1-coxu@redhat.com>
+        <20211009095458.297191-2-coxu@redhat.com>
+Date:   Mon, 11 Oct 2021 08:58:36 -0500
+In-Reply-To: <20211009095458.297191-2-coxu@redhat.com> (Coiby Xu's message of
+        "Sat, 9 Oct 2021 17:54:57 +0800")
+Message-ID: <87ily3br3n.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <7bf5cfce-e84d-f0e8-e6e8-8e6fedffd154@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mZvqf-004EpR-QP;;;mid=<87ily3br3n.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/o+ODauzQUhwR/xCs9RDYPu7Ki8f9PEWk=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,XMSubLong autolearn=disabled version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Coiby Xu <coxu@redhat.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 532 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 8 (1.6%), b_tie_ro: 7 (1.3%), parse: 1.00 (0.2%),
+        extract_message_metadata: 4.3 (0.8%), get_uri_detail_list: 2.1 (0.4%),
+        tests_pri_-1000: 4.0 (0.7%), tests_pri_-950: 1.29 (0.2%),
+        tests_pri_-900: 1.15 (0.2%), tests_pri_-90: 140 (26.3%), check_bayes:
+        138 (26.0%), b_tokenize: 10 (1.8%), b_tok_get_all: 6 (1.1%),
+        b_comp_prob: 2.5 (0.5%), b_tok_touch_all: 117 (21.9%), b_finish: 0.99
+        (0.2%), tests_pri_0: 355 (66.7%), check_dkim_signature: 0.75 (0.1%),
+        check_dkim_adsp: 3.0 (0.6%), poll_dns_idle: 0.86 (0.2%), tests_pri_10:
+        2.2 (0.4%), tests_pri_500: 7 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 1/2] kexec, KEYS: make the code in bzImage64_verify_sig generic
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matt, Greg,
+Coiby Xu <coxu@redhat.com> writes:
 
-On 10/8/21 1:51 PM, Frank Rowand wrote:
-> On 10/6/21 7:09 PM, Zev Weiss wrote:
->> Nodes marked with this (boolean) property will have a writable status
->> sysfs file, which can be used to toggle them between "okay" and
->> "reserved", effectively hot-plugging them.  Note that this will only
->> be effective for devices on busses that register for OF reconfig
->> notifications (currently spi, i2c, and platform), and only if
->> CONFIG_OF_DYNAMIC is enabled.
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  drivers/of/kobj.c | 69 +++++++++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 69 insertions(+)
->>
->> diff --git a/drivers/of/kobj.c b/drivers/of/kobj.c
->> index 378cb421aae1..141ae23f3130 100644
->> --- a/drivers/of/kobj.c
->> +++ b/drivers/of/kobj.c
->> @@ -36,6 +36,69 @@ static ssize_t of_node_property_read(struct file *filp, struct kobject *kobj,
->>      return memory_read_from_buffer(buf, count, &offset, pp->value, pp->length);
->>  }
->>  
->> +static ssize_t of_node_status_write(struct file *filp, struct kobject *kobj,
->> +                                    struct bin_attribute *bin_attr, char *buf,
->> +                                    loff_t offset, size_t count)
->> +{
->> +    int rc;
->> +    char *newstatus;
->> +    struct property **deadprev;
->> +    struct property *newprop = NULL;
->> +    struct property *oldprop = container_of(bin_attr, struct property, attr);
->> +    struct device_node *np = container_of(kobj, struct device_node, kobj);
->> +
->> +    if (WARN_ON_ONCE(strcmp(oldprop->name, "status")))
->> +            return -EIO;
->> +
->> +    if (offset)
->> +            return -EINVAL;
->> +
->> +    if (sysfs_buf_streq(buf, count, "okay") || sysfs_buf_streq(buf, count, "ok"))
->> +            newstatus = "okay";
->> +    else if (sysfs_buf_streq(buf, count, "reserved"))
->> +            newstatus = "reserved";
->> +    else if (sysfs_buf_streq(buf, count, "disabled"))
->> +            newstatus = "disabled";
->> +    else
->> +            return -EINVAL;
->> +
->> +    if (!strcmp(newstatus, oldprop->value))
->> +            return count;
->> +
-> 
-> If the general approach of this patch set is the correct way to provide the desired
-> functionality (I'm still pondering that), then a version of the following code
+> The code in bzImage64_verify_sig could make use of system keyrings including
+> .buitin_trusted_keys, .secondary_trusted_keys and .platform keyring to verify
+> signed kernel image as PE file. Make it generic so both x86_64 and arm64 can 
+> use it.
 
-After pondering, this approach does not appear workable to me.
+The naming is problematic.
 
-If we allow one property to be writable via sysfs we open the door for any property to
-be writable from sysfs.  This will likely lead to a desire to modify more than one
-related property as a single transaction (so that the changes occur as a single
-transaction, under a single lock event, with a single notification after all
-of the properties are modified).  This is not meant to be an exhaustive list of
-the issues that have already been thought through in the context of overlays
-(though not all of the issues have been addressed with overlays, at least many
-of them, such as one transaction to apply an entire overlay, have been.)
+At a minimum please name the new function kexec_kernel_verify_pe_sig.
+AKA what you named it without the "arch_" prefix.  A function named with
+an "arch_" prefix  implies that it has an architecture specific
+implementation.
 
-I don't want to make this a long missive, but will at least note the next
-issue that popped up in my pondering, which is complications from modifying
-the same items in a devicetree via different methods, such as both writing
-to sysfs and applying/removing overlays.  If the problems in the previous
-paragraph are not sufficient to prevent the sysfs approach then I can
-elaborate further on these additional issues.
+It looks like arch_kexec_kernel_verify_sig should be killed as well
+as it only has one implementation in the generic code.  And the code
+should always call kexec_image_verify_sig_default.  Not that you should
+do that but I am pointing it out as it seems that is the bad example you
+are copying.
 
-So another approach is needed.  I have no yet thought this through, but I
-have an alternative.  First, change the new property name from "dynamic"
-to something more descriptive like "ownership_shifts_between_os_and_others"
-(yes, my suggestions is way too verbose and needs to be word smithed, but
-the point is to clearly state the underlying action that occurs), then
-define the result of this variable to be driver specific, where the
-driver is required upon probe to instantiate the device in a manner
-that does not impact the other user(s) of the underlying hardware
-and to use a driver specific method to transfer control of the
-hardware between the os and the other user(s).  I propose the method
-would be via a device specific file (or set of files) in sysfs (Greg's
-input invited on the use of sysfs in this manner - if I recall correctly
-this is the current preferred mechanism).
+Eric
 
--Frank
-
-
-> probably belongs in drivers/of/dynamic.c so that it is easier to maintain and keep
-> consistent with other dynamic devicetree updates.  If you look at the code there
-> that touches deadprops (eg __of_changeset_entry_apply()) you will notice that the
-> locking issues are more extensive than what is implemented here.
-> 
-> I'm still thinking about how this interacts with other forms of dynamic devicetree
-> changes (eg drivers/of/dynamic.c and also overlays).
-> 
->> +    /*
->> +     * of_update_property_self() doesn't free replaced properties, so
->> +     * rifle through deadprops first to see if there's an equivalent old
->> +     * status property we can reuse instead of allocating a new one.
->> +     */
->> +    mutex_lock(&of_mutex);
->> +    for (deadprev = &np->deadprops; *deadprev; deadprev = &(*deadprev)->next) {
->> +            struct property *deadprop = *deadprev;
->> +            if (!strcmp(deadprop->name, "status") &&
->> +                deadprop->length == strlen(newstatus) + 1 &&
->> +                !strcmp(deadprop->value, newstatus)) {
->> +                    *deadprev = deadprop->next;
->> +                    deadprop->next = NULL;
->> +                    newprop = deadprop;
->> +                    break;
->> +            }
->> +    }
->> +    mutex_unlock(&of_mutex);
->> +
->> +    if (!newprop) {
->> +            newprop = kzalloc(sizeof(*newprop), GFP_KERNEL);
->> +            if (!newprop)
->> +                    return -ENOMEM;
->> +
->> +            newprop->name = oldprop->name;
->> +            newprop->value = newstatus;
->> +            newprop->length = strlen(newstatus) + 1;
->> +    }
->> +
->> +    rc = of_update_property_self(np, newprop, true);
-> 
-> -Frank
-> 
->> +
->> +    return rc ? rc : count;
->> +}
->> +
->>  /* always return newly allocated name, caller must free after use */
->>  static const char *safe_name(struct kobject *kobj, const char *orig_name)
->>  {
->> @@ -79,6 +142,12 @@ int __of_add_property_sysfs(struct device_node *np, struct property *pp)
->>      pp->attr.size = secure ? 0 : pp->length;
->>      pp->attr.read = of_node_property_read;
->>  
->> +    if (!strcmp(pp->name, "status") && of_property_read_bool(np, "dynamic")) {
->> +            pp->attr.attr.mode |= 0200;
->> +            pp->attr.write = of_node_status_write;
->> +            pp->attr.growable = true;
->> +    }
->> +
->>      rc = sysfs_create_bin_file(&np->kobj, &pp->attr);
->>      WARN(rc, "error adding attribute %s to node %pOF\n", pp->name, np);
->>      return rc;
->>
+> Signed-off-by: Coiby Xu <coxu@redhat.com>
+> ---
+>  arch/x86/kernel/kexec-bzimage64.c | 13 +------------
+>  include/linux/kexec.h             |  3 +++
+>  kernel/kexec_file.c               | 17 +++++++++++++++++
+>  3 files changed, 21 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+> index 170d0fd68b1f..4136dd3be5a9 100644
+> --- a/arch/x86/kernel/kexec-bzimage64.c
+> +++ b/arch/x86/kernel/kexec-bzimage64.c
+> @@ -17,7 +17,6 @@
+>  #include <linux/kernel.h>
+>  #include <linux/mm.h>
+>  #include <linux/efi.h>
+> -#include <linux/verification.h>
+>  
+>  #include <asm/bootparam.h>
+>  #include <asm/setup.h>
+> @@ -531,17 +530,7 @@ static int bzImage64_cleanup(void *loader_data)
+>  #ifdef CONFIG_KEXEC_BZIMAGE_VERIFY_SIG
+>  static int bzImage64_verify_sig(const char *kernel, unsigned long kernel_len)
+>  {
+> -	int ret;
+> -
+> -	ret = verify_pefile_signature(kernel, kernel_len,
+> -				      VERIFY_USE_SECONDARY_KEYRING,
+> -				      VERIFYING_KEXEC_PE_SIGNATURE);
+> -	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+> -		ret = verify_pefile_signature(kernel, kernel_len,
+> -					      VERIFY_USE_PLATFORM_KEYRING,
+> -					      VERIFYING_KEXEC_PE_SIGNATURE);
+> -	}
+> -	return ret;
+> +	return arch_kexec_kernel_verify_pe_sig(kernel, kernel_len);
+>  }
+>  #endif
+>  
+> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+> index 0c994ae37729..d45f32336dbe 100644
+> --- a/include/linux/kexec.h
+> +++ b/include/linux/kexec.h
+> @@ -19,6 +19,7 @@
+>  #include <asm/io.h>
+>  
+>  #include <uapi/linux/kexec.h>
+> +#include <linux/verification.h>
+>  
+>  #ifdef CONFIG_KEXEC_CORE
+>  #include <linux/list.h>
+> @@ -199,6 +200,8 @@ int arch_kimage_file_post_load_cleanup(struct kimage *image);
+>  #ifdef CONFIG_KEXEC_SIG
+>  int arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>  				 unsigned long buf_len);
+> +int arch_kexec_kernel_verify_pe_sig(const char *kernel,
+> +				    unsigned long kernel_len);
+>  #endif
+>  int arch_kexec_locate_mem_hole(struct kexec_buf *kbuf);
+>  
+> diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+> index 33400ff051a8..0530275b7aa3 100644
+> --- a/kernel/kexec_file.c
+> +++ b/kernel/kexec_file.c
+> @@ -106,6 +106,23 @@ int __weak arch_kexec_kernel_verify_sig(struct kimage *image, void *buf,
+>  {
+>  	return kexec_image_verify_sig_default(image, buf, buf_len);
+>  }
+> +
+> +#ifdef CONFIG_SIGNED_PE_FILE_VERIFICATION
+> +int arch_kexec_kernel_verify_pe_sig(const char *kernel, unsigned long kernel_len)
+> +{
+> +	int ret;
+> +
+> +	ret = verify_pefile_signature(kernel, kernel_len,
+> +				      VERIFY_USE_SECONDARY_KEYRING,
+> +				      VERIFYING_KEXEC_PE_SIGNATURE);
+> +	if (ret == -ENOKEY && IS_ENABLED(CONFIG_INTEGRITY_PLATFORM_KEYRING)) {
+> +		ret = verify_pefile_signature(kernel, kernel_len,
+> +					      VERIFY_USE_PLATFORM_KEYRING,
+> +					      VERIFYING_KEXEC_PE_SIGNATURE);
+> +	}
+> +	return ret;
+> +}
+> +#endif
+>  #endif
+>  
+>  /*
